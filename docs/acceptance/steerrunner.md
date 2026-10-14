@@ -1,10 +1,10 @@
 # SteerRunner 首版独立化专属验收
 
-日期：2026-10-14。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：本轮契约自查及实施规划完成，尚无可运行程序或运行验收证据。
+日期：2026-10-14。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：已实施 P0/P1 独立基础层，并完成下列定向验证；完整 Run 执行、SteerLine 切换和真实 PR 尚未实现/验收。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
-下面的场景 ID 是本次规划标识，尚未成为现有测试入口。Plan §5已为每个自动项给出测试级别、组/场景、具体命令、环境、时点、通过条件及本文登记位置；Plan P1–P7明确其入口建设步骤。工具/驱动落实后才能执行，不能把规划命令当作已有能力。同一场景可覆盖多个项。
+下面的场景 ID 是本次规划标识。基础入口 B1/U1/U1-S/U1-H/C1/C2 已建设，其他入口按 Plan P2–P7 建设。Plan §5为每个自动项给出测试级别、组/场景、具体命令、环境、时点、通过条件及本文登记位置；不能把后续规划命令当作当前已有能力。同一场景可覆盖多个项。
 
 - unit：协议解析、请求去重、流程规则与依赖边界，使用定向测试。
 - controlled：真实 EXE/CLI/服务/IPC/持久化、隔离 Git 仓库，使用受控代理和 provider，并记录实际动作计数。
@@ -20,14 +20,14 @@ Runner 自身受控测试使用本次新建的临时目录和独立 Git 夹具�
 
 | ID / Spec 范围 | 最小场景与通过条件 | 环境及证据 | 状态 |
 | --- | --- | --- | --- |
-| SR-A01 / §1–4、10 | `package.standalone`：干净目录只有一个 EXE，可离线查询版本、启动服务、查询协议/schema；默认资源内嵌，不读 SteerLine 文件，不要求 Python/Node。检查依赖与迁出清单，Runner 不导入 Task/DAG/产品实现 | unit + controlled；package.log、dependency-audit.md | 待实施/待验 |
-| SR-A02 / §5 | `cli.contract`：每个公开命令的成功/拒绝/未知输出符合协议；stdout 单 JSON、stderr 分离、UTF-8/中文正确；版本不支持、重复键、尾随对象、超限、未知字段在动作前拒绝；exit 0 不被解释为执行完成 | unit + controlled；cli-contract.jsonl、cli-stdout.log、cli-stderr.log | 待实施/待验 |
-| SR-A03 / §3–4 | `service.ownership`：同目录及路径别名并发启动只有一个写者；独立目录各自隔离；CLI/父Job退出不杀服务，无法安全独立启动时明确失败且零Run接受；陈旧实例/未知旧写者不可接管；查询不自动启动，submit 可幂等启动 | controlled；service-identity.json、service-ownership.log、write-counts.json | 待实施/待验 |
-| SR-A04 / §5.3、6 | `input.freeze`：inline/git 两种文档保存同一实际快照；变更/移除原文档、改变模板/Profile后不改变旧 Run；错 remote/base、非法路径、材料缺失不接受业务执行；重复 request 返回原 Run，变更正文或命令返回冲突；并发提交只有一次接受；响应丢失后可凭原request_id查询回执与Run | unit + controlled；input-manifest.json、request-receipts.jsonl、side-effects.json | 待实施/待验 |
+| SR-A01 / §1–4、10 | `package.standalone`：干净目录只有一个 EXE，可离线查询版本、启动服务、查询协议/schema；默认资源内嵌，不读 SteerLine 文件，不要求 Python/Node。检查依赖与迁出清单，Runner 不导入 Task/DAG/产品实现 | unit + controlled；package.log、dependency-audit.md | 部分通过，详见§6；完整项待验 |
+| SR-A02 / §5 | `cli.contract`：每个公开命令的成功/拒绝/未知输出符合协议；stdout 单 JSON、stderr 分离、UTF-8/中文正确；版本不支持、重复键、尾随对象、超限、未知字段在动作前拒绝；exit 0 不被解释为执行完成 | unit + controlled；cli-contract.jsonl、cli-stdout.log、cli-stderr.log | 部分通过，详见§6；完整项待验 |
+| SR-A03 / §3–4 | `service.ownership`：同目录及路径别名并发启动只有一个写者；独立目录各自隔离；CLI/父Job退出不杀服务，无法安全独立启动时明确失败且零Run接受；陈旧实例/未知旧写者不可接管；查询不自动启动，submit 可幂等启动 | controlled；service-identity.json、service-ownership.log、write-counts.json | 部分通过，详见§6；完整项待验 |
+| SR-A04 / §5.3、6 | `input.freeze`：inline/git 两种文档保存同一实际快照；变更/移除原文档、改变模板/Profile后不改变旧 Run；错 remote/base、非法路径、材料缺失不接受业务执行；重复 request 返回原 Run，变更正文或命令返回冲突；并发提交只有一次接受；响应丢失后可凭原request_id查询回执与Run | unit + controlled；input-manifest.json、request-receipts.jsonl、side-effects.json | 部分通过，详见§6；完整项待验 |
 | SR-A05 / §7 | `workflow.development`：实施→报告→发布及必要补报在原会话按绑定推进；提示词覆盖不删除固定材料/机器格式；格式修正有界、源失败不被 done 掩盖、未知/截断/错回合正文不推进；反馈更新原分支及同一 PR | unit + controlled；workflow-events.jsonl、prompt-digests.json、report-cases.json | 待实施/待验 |
 | SR-A06 / §5.3、8 | `reliability.reconcile`：保存意图失败零外部动作；外部成功但回执提交失败只查原请求；CLI丢响应/服务换代不重复输入、推送或建 PR；服务重启只读对账，未消费输入/旧授权不自动发送；新 resume 按原身份且仅一次执行 | controlled；operation-journal.jsonl、fault-points.json、side-effects.json | 待实施/待验 |
 | SR-A07 / §3、7.2、8 | `lifecycle.original-session`：stop先持久撤销新输入授权，原生停止unsupported/unknown及服务重启也不恢复后继输入；停止与观察退出分别表达，原会话/原问题/Attempt绑定核验；旧写者未结束、原目标未知、能力 unsupported/unverified时零替代会话/错目标回复；合法恢复复用同thread；迟到事件不推进其他Run | unit + controlled；bindings.json、lifecycle-cases.json、side-effects.json | 待实施/待验 |
-| SR-A08 / §4–5、7.2 | `storage.logs-events`：所有本地执行日志落本次state-dir，远端可取得记录和缺口归原Run；已知凭据字段不入快照/日志；事件游标分页重读可去重；inspect返回完整持久事实和真实缺口；日志变化不驱动业务状态 | controlled；directory-audit.json、events-pages.json、redaction-cases.json | 待实施/待验 |
+| SR-A08 / §4–5、7.2 | `storage.logs-events`：所有本地执行日志落本次state-dir，远端可取得记录和缺口归原Run；已知凭据字段不入快照/日志；事件游标分页重读可去重；inspect返回完整持久事实和真实缺口；日志变化不驱动业务状态 | controlled；directory-audit.json、events-pages.json、redaction-cases.json | 部分通过，详见§6；完整项待验 |
 | SR-A09 / §7–9 | `publication.identity`：真实隔离Git commit/push配受控provider；正确PR归属才pr_ready；错仓库/base/head/URL拒绝，head推进/缺可选HeadRevision不成为成果锁；已有PR反馈复用；发布未知仅查询，补报不再次发布；refresh-pr只读刷新，查询失败不冒充最新或撤销原绑定 | controlled；git-facts.json、provider-queries.jsonl、pr-bindings.json、side-effects.json | 待实施/待验 |
 | SR-A10 / §2、9–10 | `integration.steerline`：SteerLine只经CLI提交/查询/反馈/恢复/停止；原request幂等绑定候选；重复/丢失事件可补查询；正确绑定候选真实合并在SteerLine自有事务关闭一次并释放后继，其他候选未知/Runner阶段不成为门槛；Task终态待stop及迟到Run接受可重启对账，撤销回执后零新输入，确认窗口/native停止缺口不虚报；closed后零PR查询；Runner无任务图/TaskDelivery写权，原执行实现删除 | integration + controlled；caller-commands.jsonl、task-delivery.json、stop-receipts.jsonl、deletion-audit.md | 待实施/待验 |
 | SR-A11 / §1、6–9 | `native.local-codex`：独立CLI在本次真实本地Codex环境完成最小Spec/Plan、必要检查、原生final及真实测试PR核验；材料/工作区/会话/PR来源明确；其他环境或模型不自动扩大矩阵 | live（先过相关controlled）；source-identity.json、native-facts.json、checks.log、pr-facts.json | 待实施/待验 |
@@ -62,10 +62,27 @@ SR-A11/SR-A12 只做支持声明所需的最小真实闭环，不把全部故障
 
 | 项目 | 当前结论 |
 | --- | --- |
-| Spec / Plan / acceptance覆盖与示例检查 | 2026-10-14通过本轮文档检查与契约自查；运行能力尚未实施 |
-| Runner构建及独立执行 | 未实施/未验 |
-| CLI / IPC / 服务 / 幂等 / 恢复 | 未实施/未验 |
+| Spec / Plan / acceptance覆盖与示例检查 | 契约文档已固定；实施补充了 Windows 启动机制、settings schema、当前能力和定向入口 |
+| Runner构建及独立执行 | P0/P1 可构建一个 EXE；干净目录版本→服务→schema通过。业务执行尚未接通 |
+| CLI / IPC / 服务 / 幂等 / 恢复 | 已验证基础 CLI/命名管道、唯一写者、独立进程和停服命令回执；Run 幂等、原生恢复未实现/未验 |
 | SteerLine切换及删码 | 未实施/未验 |
 | 本地Codex / Orca本机 / Orca远端真实PR | 分别未验 |
 
 验收失败保持失败及原证据，不重跑掩盖。历史SteerLine或第三方项目的能力说明只能作为设计参考，不能记作本次通过。
+
+## 6. P0/P1 实施交付
+
+已建设 `cmd/steerrunner`、`internal/cli`、`contracts`、`host`、`storage`、`resources` 和真实 EXE 进程夹具；无 SteerLine Go 导入，没有动原产品工作树。默认 workflow/提示词/schema 内嵌；依赖 go-winio、x/sys、纯 Go SQLite，没有引入额外执行引擎。Windows 自动启动的系统 broker 使用系统自带 PowerShell/CIM，不读取外部脚本文件。
+
+| 验收项 | 此阶段实际覆盖 | 完整项结论 |
+| --- | --- | --- |
+| SR-A01 | B1/C1：只复制 EXE 到干净目录、中文状态路径、离线 version、服务与 capabilities/schema；声明 execution unsupported；合法形状 submit 明确拒绝且没有持久回执 | 部分通过，执行规则/原生提取依赖审计待 P2 |
+| SR-A02 | U1：精确字段/重复键/非法UTF-8/null/控制字符/超限/多对象/未知设置/不支持版本/参数错误；单JSON和退出码。C1/C2：真实CLI成功、拒绝、持久停服回执 | 部分通过，Run 命令成功与未知结果路径待 P3/P4 |
+| SR-A03 | C2：别名并发一个实例、不同目录隔离、CLI退出存活、允许父Job关闭仍活、禁止breakaway明确失败且无DB、只读查询不启动、原写者持锁拒绝第二serve、旧进程死亡后换代、旧实例stop拒绝；U1-H：原启动未知保留意图且不盲重建 | 基础宿主通过；submit幂等启动/Run接收待 P3/P4 |
+| SR-A04 | U1/U1-S/C2：纯输入形状及路径/已知秘密配置反例；停服ID幂等、不同正文冲突、持久回执查询、旧ID不停止新服务 | 部分通过，未实现文档物化/快照及Run接受，不冒充 input.freeze 通过 |
+| SR-A08 | C1/C2：服务日志、DB、发现及启动痕迹归本次 state-dir；CLI不打开DB | 仅服务目录部分通过；Run/远端日志/事件/完整凭据处理待 P3/P4 |
+| SR-A05–SR-A07、SR-A09–SR-A12 | 未进入执行规则、原生或跨仓场景 | 未实现/未验 |
+
+Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍有关联 Job，保留 `.evidence/foundation-20261014-105427/integration.log` 和 result.json（exit 1）。后续加入系统 broker 和身份/权限核验，`.evidence/foundation-20261014-111246`、`111559`、`111759` 对应版本两组均 exit 0；这些是递进版本记录，不替代最终来源版本证据。
+
+最终构建、命令及来源证据在提交基础实现后登记。当前 P2 的实际前置仍未满足：重新 fetch 的 SteerLine origin/main 为 `ab814da9d5fcec17f3ba46b59827734d171ba6b7`，尚无三层 workflow/reliable。不能以另一工作区存在提交视为主干交接完成。未运行真实代理/PR、未修改安装环境，未进行 SteerLine 接入或删码。

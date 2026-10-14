@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "steerrunner-cli/v1/request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "request_id", "input"],
+  "properties": {
+    "protocol": {"const": "steerrunner-cli/v1"},
+    "request_id": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"},
+    "input": {"type": "object"}
+  }
+}

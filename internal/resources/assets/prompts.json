@@ -1,0 +1,6 @@
+{
+  "implement.execute": "Implement the following Spec and Plan.",
+  "implement.report": "Format the preceding implementation result as JSON. Do not change files, run checks or publish.",
+  "publish": "Push and create or reuse a PR using the current checked-out branch. Read its exact name with git branch --show-current and use that same name for the remote branch and PR head.",
+  "publish.report": "Format the preceding publication result as JSON. Do not change files, run checks or publish."
+}

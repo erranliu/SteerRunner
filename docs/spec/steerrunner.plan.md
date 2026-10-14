@@ -1,6 +1,6 @@
 # Plan：SteerRunner 首版独立化与 SteerLine 切换
 
-日期：2026-10-14。状态：用户授权的下一步契约审阅与实施计划已编写；本轮不启动源码迁移、运行验证或发布。[Spec](steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../acceptance/steerrunner.md)。P0–P7 是一个跨仓交付的实施检查点，不是 roadmap Task 或新的执行聊天。
+日期：2026-10-14。用户已授权实施本计划。[Spec](steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../acceptance/steerrunner.md)。P0–P7 是跨仓交付检查点，不是 roadmap Task 或新的执行聊天。原调查基线保留下表；实施来源与主干交接事实见 [source-map](../extraction/source-map.md)。
 
 ## 1. 调查版本、交接与前置
 
@@ -30,7 +30,7 @@ P0/P1 可在三层交接前开展文档、公共 schema、CLI/宿主及纯协议
 
 ## 3. 目标代码和迁出/保留清单
 
-下列 Runner 路径为计划建设的位置，目前并不存在。包数随实际职责可收敛，但依赖方向与所有权不可混合。
+下列为目标 Runner 代码位置。包数随实际职责可收敛，但依赖方向与所有权不可混合；已建/未建与实际验证见验收文档。
 
 | SteerRunner 位置 | 来源与工作 |
 | --- | --- |
@@ -71,6 +71,7 @@ SteerLine 的保留/替换安排：
 2. 固定公共配置 schema：Codex 复用 executable/model/reasoning_effort及原固定权限；Orca把transport executable/args/wait_timeout、agent_launch及target.environment分开，路由只能来自冻结target；command/gitea provider复用base_url、query argv、认证引用等必要字段。settings非法或未知字段拒绝，模板覆盖不能扩大权限。把完整字段/默认值补入Spec并附可验证样例后再接业务执行。
 3. 实现规范化state-dir、实例发现、目录锁、当前用户ACL命名管道、握手和有界通信。服务单写，CLI不打开DB；状态不兼容在原生准备前拒绝。
 4. 实现同EXE的serve宿主和独立后台启动。检查Windows Job继承，不能仅用新窗口/进程组模拟脱离；父Job不允许安全独立启动时返回明确错误且零Run接受。SteerLine调用CLI的超时清理只结束本次CLI，不结束已独立运行的服务。
+   原生 breakaway 被禁止时拒绝；创建成功却仍有关联时使用系统 Windows PowerShell/CIM 挂起创建，经用户/完整性/授权组/权限/EXE核验后恢复。先保存启动意图；原创建未知保留 startup_unverified，禁止盲重建。此路径属于 Windows 宿主实现，不增加后台执行引擎或外部脚本资源依赖。
 5. 新建服务锁/别名/并发启动/陈旧实例/正常停止/父进程退出用例；无代理环境也可启动服务并查询schema。所有有副作用命令先持久化接受，再执行外部动作。
 
 ### P2 提取三层规则和原生 owner
@@ -127,16 +128,18 @@ SteerLine 的保留/替换安排：
 
 ### 5.1 入口建设及执行约定
 
-除R1既有场景外，下列包/Test/manifest/helper均为待建设入口；在指定P步骤落地后才能执行，不能把这些命令当成当前已可运行。P4需验证每个选定Test非零匹配且无意外skip，P6对R1核验迁移后确实经Runner CLI，没有旧执行fallback。
+下表含已建基础入口和后续待建设入口；在指定P步骤落地后才能执行，当前可用入口及结果见验收文档。P4需验证每个选定Test非零匹配且无意外skip，P6对R1核验迁移后确实经Runner CLI，没有旧执行fallback。
 
-Runner进程测试统一接受测试专用环境变量 `STEERRUNNER_TEST_EXE` 与 `STEERRUNNER_TEST_EVIDENCE_DIR`，指向B1实际构建和本次空证据根；仅测试driver消费它们，生产仍用公开state-dir/请求。driver创建新目录、记录EXE/hash/来源、清理本次owned资源；每个场景写独立证据。native组额外使用 `STEERRUNNER_NATIVE_MANIFEST`，只存非秘密配置、双仓身份、目标主机、专属仓库/base/head及状态目录。
+Runner进程测试接受测试专用环境变量 `STEERRUNNER_TEST_EXE`（或测试参数 `-runner-exe`）和 `STEERRUNNER_TEST_EVIDENCE_DIR`（或 `-evidence-dir`），指向B1实际构建和本次空证据根；仅测试driver消费，生产仍用公开state-dir/请求。`scripts/test-foundation.ps1` 构建后以系统 CIM 启动隐藏独立测试宿主，避免工具自身的 Job 链影响允许/禁止反例。脚本返回仅代表已启动；须等待 result.json 的 exit_code=0、scenario_count=2 且无skip，查看 integration.log/caller-commands.jsonl。driver记录EXE/hash/来源、清理本次owned资源；native组额外使用 `STEERRUNNER_NATIVE_MANIFEST`，只存非秘密配置、双仓身份、目标主机、专属仓库/base/head及状态目录。
 
 live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest才启动真实代理；缺必需前置失败并保持未验。真实调试现场统一由P6扩展后的debug生成器创建在C:/SteerlineDebug；测试现场构造工具不成为Runner发布包依赖。
 
 | 入口 | 级别/场景与命令（cwd明确） | 环境、时点 | 自动项 | 通过条件与本文外证据 |
 | --- | --- | --- | --- | --- |
-| B1 | Runner构建：`go build -trimpath -o bin/steerrunner.exe ./cmd/steerrunner` | Windows/amd64；P1后、代码变更后必要重建 | SR-A01及所有进程组前置 | 一个EXE，version/资源可查询；build.log、exe-sha256.txt |
+| B1 | Runner构建：`./scripts/build.ps1`（底层 `go build -trimpath`） | Windows/amd64；P1后、代码变更后必要重建 | SR-A01及所有进程组前置 | 一个EXE，version/资源可查询；exe.build.json记录来源/hash，不覆盖运行服务 |
 | U1 | Runner unit：`go test ./internal/contracts ./internal/cli -run '^TestSRCLIContract$' -count=1 -timeout=2m -v` | 无模型；P1、公共协议改变后 | SR-A02、SR-A04 | 全部公开命令/错误分类/UTF-8/schema/请求指纹反例有效；cli-contract.jsonl、unit-cli.log |
+| U1-S | Runner存储：`go test ./internal/storage -run '^(TestSRShutdownReceipt\|TestSRUnsupportedStorage)$' -count=1 -timeout=2m -v` | 独立临时目录；P1、回执/格式变更后 | SR-A02、SR-A03、SR-A04（命令回执部分） | 停服回执持久、旧ID重试不作用新实例、不同正文冲突、外来格式拒绝且原文件不变；unit-foundation.log |
+| U1-H | Runner宿主：`go test ./internal/host -run '^TestSRStartupIntent$' -count=1 -timeout=2m -v` | 同owner临时启动意图fixture；P1、启动逻辑变更后 | SR-A03 | 未核清启动可见、后续启动拒绝、原意图不改且零DB；unit-foundation.log |
 | U2 | Runner unit：`go test ./internal/execution/workflow ./internal/execution/reliable -run '^(TestSRWorkflowDevelopment\|TestSRReliableRules)$' -count=1 -timeout=5m -v` | 纯原生事实fixture；P2/P3后 | SR-A01、SR-A05–SR-A07 | 三层依赖守卫、业务/技术规则及原会话/授权/来源反例有效；dependency-audit.md、unit-rules.log |
 | C1 | Runner controlled：`go test ./tests/integration -run '^TestSRStandalonePackage$' -count=1 -timeout=3m -v` | 只有EXE的干净目录，无SteerLine资源/代理；P1/P4后 | SR-A01 | version→服务→capabilities闭环；package.log、resource-manifest.json |
 | C2 | Runner controlled：`go test ./tests/integration -run '^TestSRServiceOwnership$' -count=1 -timeout=5m -v` | 独立/别名目录、并发CLI、允许/禁止独立启动的父Job；P1/P4后 | SR-A03 | 唯一写者、CLI父进程退出服务仍活、非法接管拒绝；service-identity.json、write-counts.json |
@@ -160,7 +163,7 @@ live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest
 
 ## 6. 交付与停止条件
 
-Runner独立可用、全部承诺自动项通过、SteerLine固定版本并切换删码后，才标记这次跨仓交付完成。PR/发布安排属于后续实施阶段，本轮不创建或发送外部事项。
+Runner独立可用、全部承诺自动项通过、SteerLine固定版本并切换删码后，才标记这次跨仓交付完成。PR/发布按P7执行；基础层阶段不创建发布或修改产品业务状态。
 
 各P步骤只有满足本步骤能力和测试门槛才进入依赖步骤；三层代码尚未交接不阻止P1纯宿主/协议建设，但不能启动P2另拆旧规则。运行验收环境缺失时明确保留未验，不能把文档计划、helper输出或历史结果写作通过。
 

@@ -1,6 +1,6 @@
 # Spec：SteerRunner 首版产品与 CLI 契约
 
-日期：2026-10-14。状态：已按用户授权完成本轮契约自查及[实施 Plan](steerrunner.plan.md)，尚未启动源码拆分或运行验收。所属交付：SteerRunner 首版独立化及 SteerLine 接入。专属验收：[steerrunner.md](../acceptance/steerrunner.md)。本轮审阅修正与检查登记在该文档；不宣称已经独立复审或实现完成。
+日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
 ## 1. 目标、依据与首版范围
 
@@ -64,6 +64,8 @@ Windows 首版 IPC 使用命名管道。端点绑定规范化 `state-dir`、随�
 同一规范化目录最多一个服务写者。并发启动对账同一实例，不生成两个宿主；别名/大小写路径指向同一实际目录时也不能绕过锁。启动失败或实例失效返回明确错误，未证明旧写者结束不得接管。每个状态目录的服务独立管理其 Run。
 
 `submit` 和显式 `service start` 可在服务不存在时启动同目录的后台服务；后台启动不弹可见窗口。服务必须脱离 CLI/调用方的生命周期和会随其退出而结束的 Job 所有权；不能仅创建一个继承父 Job 的子进程就声称常驻。无法独立启动时在接受 Run 前明确失败，允许用户从独立入口启动同一个 serve 宿主，不增加另一种执行机制。`inspect`、`events`、`reply`、`resume`、`stop` 不隐式启动服务，服务不可用时返回 `service_unavailable`。`version` 不需要服务；`service status` 仅核验发现/进程/握手事实，不成为数据库读取后门。
+
+Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止时拒绝；创建成功但仍有关联时，可使用系统自带 Windows PowerShell/CIM 创建挂起进程，核验用户 SID、完整性级别、授权组/权限与 EXE，不能提升权限。系统能力缺失或核验失败明确拒绝。启动意图先保存；原进程创建结果无法核清时，状态/错误为 `startup_unverified`（exit 4），保留原意图，不盲目再次启动。手动 `serve` 的生命周期由独立宿主负责，`detached` 如实报告。
 
 CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次输入明确接受后，正常服务实例可继续既定 workflow；客户端进程是否存在不改变其授权。服务停机后的规则见第 8 节。
 
@@ -221,12 +223,24 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
     },
     "workflow": {"id": "development", "version": 1, "prompt_overrides": {}},
     "execution": {"adapter": "codex-app-server", "target": {"kind": "local"}, "settings": {}},
-    "publication": {"provider": "command", "repository": "example/project", "base_branch": "main", "settings": {}}
+    "publication": {"provider": "gitea", "repository": "example/project", "base_branch": "main", "settings": {"base_url": "https://example.com"}}
   }
 }
 ```
 
 首版 adapter ID 为 `codex-app-server`、`orca-terminal`；Codex 目标只支持 local，Orca 支持 local/orca_environment。`capabilities` 必须返回 settings schema 标识、版本和 schema 正文；程序内嵌相应 schema/默认值，实施 Plan 补齐模型、启动/权限、环境、超时及认证引用的具体字段，不把 settings 当作任意透传脚本。缺少必填配置明确拒绝，未知键不静默忽略。
+
+配置 schema v1 的公开字段如下。默认值在字段省略时适用；字段出现时不得为 null，executable/model/reasoning_effort/wait_timeout 不得为空字符串。参数均为 argv，不经 shell 拼接。
+
+| 配置 | 字段及默认值 |
+| --- | --- |
+| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。无权限覆盖字段，原生固定权限在 P2 接线时按原后端保留 |
+| Orca settings.transport | `executable` 默认 `orca.exe`；`args` 默认空数组；`wait_timeout` 默认 `30s`，Go duration，须大于 0 且不超过 1 分钟。args 不得覆盖 environment/pairing-code，路由来自冻结 target |
+| Orca settings.agent_launch | `executable` 默认 `codex`；`args` 默认空数组；可选 `model`、`reasoning_effort`（同枚举，省略继承工具）。transport 与 agent_launch 不混用 |
+| command provider settings | 必填 `base_url`、`query.executable`、非空 `query.args`；可选 `authentication_refs`（环境认证的引用名称数组，不是凭据值）。实际查询协议/身份沿用提取的 provider |
+| gitea provider settings | 必填 `base_url`；可选 `authentication_refs`。不接收内嵌 token/password 字段 |
+
+所有字段精确命名、拒绝未知键；已知凭据参数不得放在 args。默认 schema 被内嵌并可查询不等于后端已 ready；阶段版本必须在 capabilities 中明确 execution 状态，未接通执行时拒绝提交而不持久接受虚构 Run。
 
 ## 7. 默认流程、提示词及查询结果
 
