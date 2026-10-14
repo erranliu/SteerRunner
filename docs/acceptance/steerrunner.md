@@ -1,6 +1,6 @@
 # SteerRunner 首版独立化专属验收
 
-日期：2026-10-14。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：已实施 P0/P1 独立基础层，并完成下列定向验证；完整 Run 执行、SteerLine 切换和真实 PR 尚未实现/验收。来源见 [source-map](../extraction/source-map.md)。
+日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：基础层及独立 Run 执行已接通，本地真实 EXE 受控闭环通过；Orca、SteerLine 实际切换及真实 PR 仍待实施/验收。§6 为历史基础层交付，最新进度见§7。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
@@ -85,4 +85,20 @@ SR-A11/SR-A12 只做支持声明所需的最小真实闭环，不把全部故障
 
 Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍有关联 Job，保留 `.evidence/foundation-20261014-105427/integration.log` 和 result.json（exit 1）。后续加入系统 broker 和身份/权限核验，`.evidence/foundation-20261014-111246`、`111559`、`111759` 对应版本两组均 exit 0；这些是递进版本记录，不替代最终来源版本证据。
 
-最终构建和验证来源为干净提交 `7cfad777b0e41e19000cc6fda6cc21973109e0ad`。5 个定向 unit 入口、2 组真实 EXE 进程场景、定向 go vet 通过，无skip；详细命令/摘要/原始证据位置见[基础层验收记录](evidence/steerrunner-foundation-20261014.md)。当前 P2 的实际前置仍未满足：最终重新 fetch 的 SteerLine origin/main 为 `2f7312b485cfeebf9a5cfdea127ce0041eef6094`，尚无三层 workflow/reliable。不能以另一工作区存在提交视为主干交接完成。未运行真实代理/PR、未修改安装环境，未进行 SteerLine 接入或删码。
+该阶段构建和验证来源为干净提交 `7cfad777b0e41e19000cc6fda6cc21973109e0ad`。5 个定向 unit 入口、2 组真实 EXE 进程场景、定向 go vet 通过，无skip；详细命令/摘要/原始证据位置见[基础层验收记录](evidence/steerrunner-foundation-20261014.md)。当时 P2 主干前置未满足；2026-10-15 已核实 `d20a72284705b4daac476d4fa5770151dca03e56` 完成三层交接并继续提取。历史结论不替代下面的新执行验证。
+
+## 7. P2/P3/P4 继续实施
+
+已从固定主干提取三层及原生/Git/PR owner，独立 application/runstate/SQLite 提交 Run、命令、原意图与事件。默认流程到 pr_ready；不含 Task/DAG/Delivery。恢复不新建替代原生会话，重启零自动输入，旧未发送答案/反馈需要新用户请求。Orca 采用输入内冻结正文，已做不访问本机路径的单元反例，尚不计原生闭环通过。
+
+| 当前执行证据 | 实际结果与范围 |
+| --- | --- |
+| `.evidence/extraction-20261015/ported-tests.jsonl` | 来源执行子树 341 个 pass 节点；5 个 skip 分别为两个 subprocess helper 和三个 native opt-in，不计真机通过。新增工作流正文/依赖守卫另行通过 |
+| `.evidence/foundation-20261014-232904` | exit 0 / 5 组：单 EXE、服务所有权、三轮开发+反馈、原输入回执丢失零重发+停止、服务重启零自动输入+当前原 session resume |
+| `.evidence/foundation-20261014-233133` | exit 0 / 1 组：并发同 ID 只接受一个 Run，inline/git 固定快照、源文件变更不影响执行、改正文冲突，实际 native 一会话三轮 |
+| `.evidence/foundation-20261014-233246` | exit 1 / 2 组：缺原 final 阻止后继通过；PR 刷新测试解码到复用对象，遗漏字段未清零而误报失败，保留原失败。修正测试使用新对象，未放宽产品归属核验 |
+| `.evidence/foundation-20261014-233540` | exit 0 / 1 组：发布正文只补报一次（共四轮）；错误 PR head 刷新记录 query_error 且保留旧事实时间，恢复正确 provider 后刷新；查询零原生输入 |
+| `TestSRRunAtomicCommit` | 事件提交触发失败，Run/命令/事件全部回滚；重复提交零额外事件、跨 Run 游标拒绝、整数指纹不丢精度 |
+| `TestSROrcaFrozenMaterials` | 无远端/本机共享目录下，固定正文、commit、摘要及引用完整进入实施输入，覆盖正文不能删除固定材料 |
+
+以上进程证据记录了各次构建的 source_dirty、EXE 摘要和调用输出；是递进工作树验证，最终清洁来源验证另行登记。完整 SR-A01–SR-A12 仍按对应项逐项完成，不将这些局部通过外推为全部验收。SteerLine 新 CLI/桥接模块已通过自身协议及故障单测，但尚未接通产品任务事务或删除旧执行者；SR-A10 待验。真实代理/平台 PR 未执行；未修改安装环境。

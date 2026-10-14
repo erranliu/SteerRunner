@@ -20,6 +20,8 @@ import (
 )
 
 var runnerEXE string
+var helperEXE string
+var helperFlag = flag.String("helper-exe", "", "Native protocol fixture EXE")
 var runnerFlag = flag.String("runner-exe", "", "Exact Runner EXE under test")
 var evidenceFlag = flag.String("evidence-dir", "", "Owned directory for test evidence")
 var testCount atomic.Int32
@@ -30,6 +32,7 @@ func TestMain(m *testing.M) {
 		os.Exit(runJobHelper())
 	}
 	flag.Parse()
+	helperEXE = *helperFlag
 	if *evidenceFlag == "" {
 		*evidenceFlag = os.Getenv("STEERRUNNER_TEST_EVIDENCE_DIR")
 	}
@@ -62,6 +65,22 @@ func TestMain(m *testing.M) {
 		if output, err := command.CombinedOutput(); err != nil {
 			fmt.Fprintln(os.Stderr, string(output))
 			os.RemoveAll(root)
+			os.Exit(1)
+		}
+	}
+	if helperEXE == "" {
+		if root == "" {
+			var err error
+			root, err = os.MkdirTemp("", "steerrunner-test-helper-")
+			if err != nil {
+				panic(err)
+			}
+		}
+		helperEXE = filepath.Join(root, "native-fixture.exe")
+		command := exec.Command("go", "build", "-o", helperEXE, "./tests/helpers/native")
+		command.Dir = filepath.Join("..", "..")
+		if output, err := command.CombinedOutput(); err != nil {
+			fmt.Fprintln(os.Stderr, string(output))
 			os.Exit(1)
 		}
 	}
@@ -204,17 +223,17 @@ func TestSRStandalonePackage(t *testing.T) {
 		t.Fatal("resident service lost after CLI exit")
 	}
 	data := response.Data.(map[string]any)
-	if data["execution"].(map[string]any)["status"] != "unsupported" {
-		t.Fatal("unimplemented execution advertised")
+	if data["execution"].(map[string]any)["status"] != "implemented" {
+		t.Fatal("execution capability is missing")
 	}
-	request := `{"protocol":"steerrunner-cli/v1","request_id":"unsupported-submit","input":{"title":"中文","repository":{"url":"https://example.invalid/repo.git","remote":"origin","base_branch":"main","base_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"documents":{"spec":{"kind":"inline","path":"spec.md","content":"Spec"},"plan":{"kind":"inline","path":"plan.md","content":"Plan"}},"workflow":{"id":"development","version":1},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"executable":"steerrunner-nonexistent-native.exe"}},"publication":{"provider":"gitea","repository":"owner/repo","base_branch":"main","settings":{"base_url":"https://example.invalid"}}}}`
+	request := `{"protocol":"steerrunner-cli/v1","request_id":"unsupported-submit","input":{"title":"中文","repository":{"url":"https://example.invalid/owner/repo.git","remote":"origin","base_branch":"main","base_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"documents":{"spec":{"kind":"inline","path":"spec.md","content":"Spec"},"plan":{"kind":"inline","path":"plan.md","content":"Plan"}},"workflow":{"id":"development","version":1},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"executable":"steerrunner-nonexistent-native.exe"}},"publication":{"provider":"gitea","repository":"owner/repo","base_branch":"main","settings":{"base_url":"https://example.invalid"}}}}`
 	response, exit, _, err = invoke(copyEXE, []string{"submit", "--state-dir", dir, "--input", "-", "--json"}, request)
-	if err != nil || exit != 3 || response.Error == nil || response.Error.Code != "unsupported_capability" {
-		t.Fatal("unwired submit was not explicitly rejected")
+	if err != nil || exit != 4 || response.Error == nil || response.Error.Code != "environment_unavailable" {
+		t.Fatal("unavailable native executable was not rejected before acceptance")
 	}
 	response, exit, _, err = invoke(copyEXE, []string{"inspect", "--state-dir", dir, "--request-id", "unsupported-submit", "--json"}, "")
 	if err != nil || exit != 5 || response.Error == nil || response.Error.Code != "request_not_found" {
-		t.Fatal("unwired submit persisted a receipt")
+		t.Fatal("rejected submit persisted an accepted receipt")
 	}
 	for _, name := range []string{"runner.db", "logs/service.log"} {
 		if _, err := os.Stat(filepath.Join(dir, name)); err != nil {

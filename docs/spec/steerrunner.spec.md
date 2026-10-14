@@ -199,7 +199,7 @@ spec/plan 的 path 必须不同。references 可以包含验收或公共约束�
 
 服务必须在返回 accepted 前，持久化完整材料快照、规范化请求、实际流程/模板/配置内容及版本摘要；任何尚未完成的准备动作保存为原操作意图。输入无法完整取得则拒绝本次 submit，不启动业务代理。读取 Git 材料所需的缓存/fetch 可在接受前进行，但缓存副作用不代表 Run 已接受；并发同 ID 只能提交一个 Run。
 
-执行时向代理提供本 Run 冻结文档的实际可读位置，并保持其来源与摘要；准备方式由 adapter 实现，不能悄悄退回调用方文件。运行过程中修改调用方文档、全局配置或模板不影响已接受 Run。反馈沿用固定材料；更换 Spec/Plan、workflow 或后端应提交新 Run。
+执行时向代理提供本 Run 冻结文档的实际可读位置，并保持其来源与摘要；准备方式由 adapter 实现，不能悄悄退回调用方文件。本地 Codex 使用独立工作区 Git admin 下的固定文件；Orca 使用实施输入中附带的固定正文、来源 commit 与 SHA256，`prompt:<path>` 标识该输入内的文档，反馈实施再次附带同一正文。调用方仍可在 snapshot_path 找到本机持久快照，execution_location 表示代理实际读取位置。Orca 当前 CLI 以参数传输文本，首版固定材料的 JSON 表示与四份提示词正文合计最多 12000 UTF-16 单元，超过时在接受前明确拒绝。Orca 必须提供已注册项目的 local_path，environment 中按原适配器的同名项目规则解析并核验固定 base。运行过程中修改调用方文档、全局配置或模板不影响已接受 Run。反馈沿用固定材料；更换 Spec/Plan、workflow 或后端应提交新 Run。
 
 RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状示例，adapter/provider settings 的完整 schema 由内嵌能力提供）：
 
@@ -256,7 +256,7 @@ implement.execute → implement.report → publish → pr_ready
 
 实施轮按固定 Spec/Plan 实现、测试及修复；检查和审查范围来自任务材料，不固定增加 verify/review 阶段。报告轮只格式化前一指定实施结果；发布轮推送并创建/复用 PR。发布正文无法解析时按现有规则补报，发布补报只格式化原发布结果，不再次发布。每个源结果最多一次报告格式修正；源失败或缺口不能由报告 done 覆盖。
 
-首版 `prompt_overrides` 只覆盖上述四个步骤的指令正文，未知步骤拒绝。固定材料引用、报告输入来源、publication 目标和机器结果格式由 Runner 附加并保存，不允许模板删除这些契约。覆盖内容是 UTF-8 文字，不执行脚本或任意模板表达式。override 不改变权限、步骤门槛、重试次数或 PR 归属。
+首版 `prompt_overrides` 只覆盖上述四个步骤的非空指令正文，未知步骤拒绝。固定材料引用、报告输入来源、publication 目标和机器结果格式由 Runner 附加并保存，不允许模板删除这些契约。覆盖内容是 UTF-8 文字，不执行脚本或任意模板表达式。override 不改变权限、步骤门槛、重试次数或 PR 归属。
 
 机器报告沿用 `outcome:done|needs_input|blocked`、summary、可选 question/blocker/outputs；发布 done 必含实际 pr_url。机器报告最大 128 KiB，超限明确记录格式/结果缺口。已知业务字段必须唯一且一致，接受一份可完整识别的 JSON 或完整 JSON 代码围栏，不从散文、工具输出或多个对象中猜选结果。额外解释字段不驱动业务；报告需绑定源输入、回合和来源，不能取另一次用户输入后的正文代替。
 

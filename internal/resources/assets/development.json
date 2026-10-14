@@ -1,7 +1,7 @@
 {
   "id": "development",
   "version": 1,
-  "status": "definition_only",
+  "status": "available",
   "steps": ["implement.execute", "implement.report", "publish"],
   "publication_report_step": "publish.report",
   "maximum_report_corrections": 1,

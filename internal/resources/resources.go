@@ -56,11 +56,10 @@ func Capabilities() any {
 	return map[string]any{
 		"protocol": contracts.Protocol, "version": Version,
 		"resource_version": 1, "resource_digest": Digest(),
-		"execution":             map[string]any{"status": "unsupported", "reason": "Native execution extraction is pending its verified source handoff."},
+		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
 		"configuration_schemas": json.RawMessage(Read("settings.schema.json")),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "capabilities", "inspect"},
-		"planned_commands":      []string{"submit", "events", "reply", "resume", "stop"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "capabilities", "inspect", "submit", "events", "reply", "resume", "stop"},
 	}
 }

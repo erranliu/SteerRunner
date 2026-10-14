@@ -15,6 +15,10 @@
 
 P0/P1 可在三层交接前开展文档、公共 schema、CLI/宿主及纯协议夹具建设。P2 搬迁执行规则前，核实三层实现和必要修复已进入选定主干 commit；没有完成该交接就不从旧 Service 另拆第二套规则。实际交接路径/commit/差异和继承场景写入 `docs/extraction/source-map.md`。
 
+2026-10-15 实施补充：三层及其审计修复已经进入来源 `d20a72284705b4daac476d4fa5770151dca03e56`，P2 按该提交抽取。Worker 统一规则以该提交的 [worker-lifecycle.md](https://github.com/erranliu/SteerLine/blob/d20a72284705b4daac476d4fa5770151dca03e56/docs/product-design/worker-lifecycle.md) 为输入；保留 W02–W16/W18 的准备、原意图、身份、结果及恢复边界，W01/Task 与 W17/TaskDelivery 留在 SteerLine，Runner 的成功里程碑改为 pr_ready。本文不把来源中尚未实现的初始化重试、Orca 替代会话恢复声明为已支持。
+
+材料实施补充：本地 Codex 的固定材料放在本 Run 的工作区 Git admin 下，保持代码工作树内容。当前 Orca CLI 无文件上传命令，本机/environment 均在实施输入中附带完整冻结正文及来源摘要；agent 的 `prompt:<path>` 引用指向该输入，反馈重用固定正文，不访问中心机器路径。材料和正文的 CLI 传输上限在接受前核验并记录于 Spec §6。`TestSROrcaFrozenMaterials` 覆盖无共享文件系统的材料引用与正文覆盖反例（SR-A04/A05），不代替 native/live。
+
 首版依赖现有 Git、原生 Codex/Orca、账号与目标主机准备，能力验证按实际现场进行。当前支持范围固定为 Windows/amd64；通用远端服务、第三方运行时和任意 workflow 图不串入本次交接。
 
 ## 2. 本轮契约审阅结论
@@ -141,6 +145,8 @@ live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest
 | U1-S | Runner存储：`go test ./internal/storage -run '^(TestSRShutdownReceipt\|TestSRUnsupportedStorage)$' -count=1 -timeout=2m -v` | 独立临时目录；P1、回执/格式变更后 | SR-A02、SR-A03、SR-A04（命令回执部分） | 停服回执持久、旧ID重试不作用新实例、不同正文冲突、外来格式拒绝且原文件不变；unit-foundation.log |
 | U1-H | Runner宿主：`go test ./internal/host -run '^TestSRStartupIntent$' -count=1 -timeout=2m -v` | 同owner临时启动意图fixture；P1、启动逻辑变更后 | SR-A03 | 未核清启动可见、后续启动拒绝、原意图不改且零DB；unit-foundation.log |
 | U2 | Runner unit：`go test ./internal/execution/workflow ./internal/execution/reliable -run '^(TestSRWorkflowDevelopment\|TestSRReliableRules)$' -count=1 -timeout=5m -v` | 纯原生事实fixture；P2/P3后 | SR-A01、SR-A05–SR-A07 | 三层依赖守卫、业务/技术规则及原会话/授权/来源反例有效；dependency-audit.md、unit-rules.log |
+| U2-E | 来源组件定向：`go test ./internal/execution/... -count=1 -timeout=5m -json`；新增 `TestSRExecutionDependencyBoundary`、`TestSRWorkflowDevelopment` | 仅本次实际迁出的包；P2后，复用来源codec/规则/故障fixture；live opt-in 保持关闭 | SR-A01、SR-A05–SR-A07、SR-A09 | 禁止反向依赖、固定材料与机器格式不可由正文覆盖、原始native身份/未知零重发及来源规则通过；ported-tests.jsonl，单列真正skip，不计真机通过 |
+| C-RUN | 真实EXE受控：`./scripts/test-foundation.ps1 -Pattern '^(TestSRRunWorkflow\|TestSRNativeUnknownAndStop\|TestSRRestartRequiresResume)$'` | 隔离Git/SQLite/当前用户服务，独立宿主；测试helper只经Codex公开RPC；P3/P4后 | SR-A01–SR-A09 中相关执行边界 | 实现→报告→真实本地Git push→受控PR核验；反馈更新原PR/分支/session；unknown零重发、stop撤销后零输入、重启零自动输入、当前resume沿原session。fixture原始调用计数、CLI/结果/版本均入本次证据根；不替代其他Run/Orca/跨仓项 |
 | C1 | Runner controlled：`go test ./tests/integration -run '^TestSRStandalonePackage$' -count=1 -timeout=3m -v` | 只有EXE的干净目录，无SteerLine资源/代理；P1/P4后 | SR-A01 | version→服务→capabilities闭环；package.log、resource-manifest.json |
 | C2 | Runner controlled：`go test ./tests/integration -run '^TestSRServiceOwnership$' -count=1 -timeout=5m -v` | 独立/别名目录、并发CLI、允许/禁止独立启动的父Job；P1/P4后 | SR-A03 | 唯一写者、CLI父进程退出服务仍活、非法接管拒绝；service-identity.json、write-counts.json |
 | C3 | Runner controlled：`go test ./tests/integration -run '^TestSRInputFreeze$' -count=1 -timeout=5m -v` | 隔离Git与受控helper；P3/P4后 | SR-A04 | inline/git快照及完整接受、同ID查询/并发/冲突、移动源材料不变；input-manifest.json、request-receipts.jsonl |

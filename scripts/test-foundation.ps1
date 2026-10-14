@@ -10,6 +10,7 @@ if (Test-Path -LiteralPath $taskEvidence) { throw 'Evidence directory must be ne
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
 $taskRunnerExe = Join-Path $taskEvidence 'steerrunner.exe'
 $taskTestExe = Join-Path $taskEvidence 'integration.test.exe'
+$taskHelperExe = Join-Path $taskEvidence 'native-fixture.exe'
 Push-Location $taskRepo
 try {
     & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe
@@ -17,12 +18,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Foundation unit tests failed; inspect unit-foundation.log.' }
     & go test -c -o $taskTestExe ./tests/integration
     if ($LASTEXITCODE -ne 0) { throw 'Integration fixture build failed.' }
+    & go build -o $taskHelperExe ./tests/helpers/native
+    if ($LASTEXITCODE -ne 0) { throw 'Native protocol fixture build failed.' }
 } finally { Pop-Location }
 
 function Quote-WindowsArgument([string]$Argument) {
     '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
 }
-$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=5m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence)
+$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=5m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
 $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
 $taskStartup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
 # Test harness only: a CIM-created process does not inherit the tool caller's

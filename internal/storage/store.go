@@ -14,7 +14,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-const Format = "steerrunner-state/v1"
+const Format = "steerrunner-state/v2"
 
 type Store struct{ db *sql.DB }
 
@@ -50,20 +50,23 @@ func Open(dir string) (*Store, error) {
 		if _, err := db.Exec(`
 BEGIN IMMEDIATE;
 CREATE TABLE metadata (format TEXT NOT NULL);
-INSERT INTO metadata VALUES ('steerrunner-state/v1');
+INSERT INTO metadata VALUES ('steerrunner-state/v2');
 CREATE TABLE commands (
  request_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE,
  command TEXT NOT NULL, instance_id TEXT NOT NULL, digest TEXT NOT NULL,
- response BLOB NOT NULL, action_status TEXT NOT NULL
+ response BLOB NOT NULL, action_status TEXT NOT NULL, run_id TEXT
 );
-PRAGMA user_version=1;
+CREATE TABLE runs(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
+CREATE TABLE events(seq INTEGER PRIMARY KEY AUTOINCREMENT,run_id TEXT NOT NULL,event_id TEXT NOT NULL UNIQUE,body BLOB NOT NULL);
+CREATE INDEX events_run ON events(run_id,seq);
+PRAGMA user_version=2;
 COMMIT;`); err != nil {
 			return fail(err)
 		}
 	}
 	var format string
 	var version int
-	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 1 {
+	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 2 {
 		return fail(contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory."))
 	}
 	if _, err := db.Exec(`PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;`); err != nil {
@@ -128,7 +131,7 @@ func (s *Store) AcceptStop(input contracts.Request, instance string) (contracts.
 	if err != nil {
 		return contracts.Response{}, false, err
 	}
-	if _, err := tx.Exec(`INSERT INTO commands VALUES (?,?,?,?,?,?,?)`, input.RequestID, commandID, "service stop", instance, digest, body, "pending"); err != nil {
+	if _, err := tx.Exec(`INSERT INTO commands(request_id,command_id,command,instance_id,digest,response,action_status) VALUES (?,?,?,?,?,?,?)`, input.RequestID, commandID, "service stop", instance, digest, body, "pending"); err != nil {
 		return contracts.Response{}, false, err
 	}
 	if err := tx.Commit(); err != nil {
@@ -155,10 +158,12 @@ func (s *Store) Command(selector, id string) (contracts.CommandView, error) {
 	if selector == "command_id" {
 		column = "command_id"
 	}
-	err := s.db.QueryRow(`SELECT request_id, command_id, command, action_status FROM commands WHERE `+column+`=?`, id).Scan(&value.RequestID, &value.CommandID, &value.Command, &value.ActionStatus)
+	err := s.db.QueryRow(`SELECT request_id, command_id, command, action_status,run_id FROM commands WHERE `+column+`=?`, id).Scan(&value.RequestID, &value.CommandID, &value.Command, &value.ActionStatus, &value.RunID)
 	if err != nil {
 		return value, err
 	}
 	value.ReceiptStatus = "accepted"
 	return value, nil
 }
+
+func digestBytes(raw []byte) string { value := sha256.Sum256(raw); return hex.EncodeToString(value[:]) }

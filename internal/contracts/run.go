@@ -198,10 +198,18 @@ func ValidateRun(data []byte) *Fault {
 	if value.Workflow.ID != "development" || value.Workflow.Version != 1 {
 		return Fail(3, "unsupported_schema", "This executable defines development/1.")
 	}
-	for step := range value.Workflow.PromptOverrides {
+	for step, body := range value.Workflow.PromptOverrides {
+		if strings.TrimSpace(body) == "" {
+			return invalid
+		}
 		switch step {
 		case "implement.execute", "implement.report", "publish", "publish.report":
 		default:
+			return invalid
+		}
+	}
+	for key := range value.Correlation {
+		if secretArgument.MatchString(key) {
 			return invalid
 		}
 	}

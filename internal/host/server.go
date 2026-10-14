@@ -3,8 +3,6 @@ package host
 import (
 	"bufio"
 	"context"
-	"database/sql"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -14,12 +12,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/erranliu/SteerRunner/internal/application"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
 type server struct {
+	engine   *application.Engine
 	endpoint endpoint
 	store    *storage.Store
 	mutex    sync.Mutex // command acceptance and service state are serialized
@@ -58,6 +58,17 @@ func Serve(ctx context.Context, dir, startupID string) error {
 		return err
 	}
 	defer store.Close()
+	engine, err := application.New(ctx, dir, store, logger)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		shutdown, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+		defer cancel()
+		if err := engine.Shutdown(shutdown); err != nil {
+			logger.Print("execution shutdown remains unverified")
+		}
+	}()
 	pipe, err := pipeName(dir)
 	if err != nil {
 		return err
@@ -71,13 +82,14 @@ func Serve(ctx context.Context, dir, startupID string) error {
 		return err
 	}
 	defer listener.Close()
-	s := &server{endpoint: endpoint{Service: service, Pipe: pipe, Token: contracts.NewID()}, store: store, stop: make(chan string, 1), logger: logger}
+	s := &server{endpoint: endpoint{Service: service, Pipe: pipe, Token: contracts.NewID()}, store: store, stop: make(chan string, 1), logger: logger, engine: engine}
 	if err := writeEndpoint(dir, s.endpoint); err != nil {
 		return err
 	}
 	defer removeOwnEndpoint(dir, service.InstanceID)
 	completeBootstrap(dir, startupID)
 	logger.Printf("service ready instance=%s pid=%d detached=%t", service.InstanceID, service.PID, service.Detached)
+	engine.Start()
 	var activeMu sync.Mutex
 	active := map[net.Conn]bool{}
 	var handlers sync.WaitGroup
@@ -143,9 +155,7 @@ func (s *server) handle(connection net.Conn) string {
 	if wire.Request != nil {
 		id = wire.Request.RequestID
 	}
-	s.mutex.Lock()
 	response, stop := s.dispatch(wire)
-	s.mutex.Unlock()
 	if err := contracts.Encode(response, connection); err != nil {
 		s.logger.Printf("response delivery unavailable command=%s request=%s", wire.Options.Command, id)
 	}
@@ -176,6 +186,12 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
+	case "submit", "inspect", "events", "reply", "resume", "stop":
+		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
+	}
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	switch wire.Options.Command {
 	case "service status":
 		info := s.endpoint.Service
 		if s.stopping {
@@ -184,22 +200,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		return contracts.Success("", info), false
 	case "capabilities":
 		return contracts.Success("", resources.Capabilities()), false
-	case "inspect":
-		selector, target := "request_id", wire.Options.RequestID
-		if wire.Options.RunID != "" {
-			return reject(contracts.Fail(5, "run_not_found", "No run is bound to this identifier."))
-		}
-		if wire.Options.CommandID != "" {
-			selector, target = "command_id", wire.Options.CommandID
-		}
-		value, err := s.store.Command(selector, target)
-		if errors.Is(err, sql.ErrNoRows) {
-			return reject(contracts.Fail(5, selector[:len(selector)-3]+"_not_found", "The requested command was not found."))
-		}
-		if err != nil {
-			return reject(contracts.Fail(1, "internal_error", "Cannot read the committed command."))
-		}
-		return contracts.Success("", map[string]any{"command": value, "run": nil}), false
 	case "service stop":
 		if wire.Request == nil {
 			return reject(contracts.Fail(2, "invalid_request", "A stop request is required."))
@@ -212,8 +212,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 			s.stopping = true
 		}
 		return response, stop
-	case "submit", "reply", "resume", "stop", "events":
-		return reject(contracts.Fail(3, "unsupported_capability", "Native execution is not wired; no run or native operation was accepted."))
 	default:
 		return reject(contracts.Fail(2, "invalid_arguments", fmt.Sprintf("Unsupported service command %q.", wire.Options.Command)))
 	}

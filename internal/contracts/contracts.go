@@ -69,9 +69,9 @@ func ExitCode(response Response) int {
 		return 2
 	case "unsupported_protocol", "unsupported_schema", "unsupported_capability", "unsupported_platform":
 		return 3
-	case "service_unavailable", "service_start_failed", "detach_unsupported", "startup_unverified":
+	case "service_unavailable", "service_start_failed", "detach_unsupported", "startup_unverified", "environment_unavailable":
 		return 4
-	case "request_conflict", "request_not_found", "command_not_found", "run_not_found", "stale_instance", "directory_conflict":
+	case "request_conflict", "request_not_found", "command_not_found", "run_not_found", "stale_instance", "directory_conflict", "stale_revision", "invalid_state", "stale_question", "resume_required", "operation_unverified", "answer_pending", "repository_conflict":
 		return 5
 	case "request_outcome_unknown":
 		return 6

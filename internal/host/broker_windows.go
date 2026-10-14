@@ -30,7 +30,7 @@ $ErrorActionPreference = 'Stop'
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 try {
   $request = [Console]::In.ReadToEnd() | ConvertFrom-Json
-  $startup = New-CimInstance Win32_ProcessStartup -ClientOnly -Property @{ShowWindow=[uint16]0; CreateFlags=[uint32]524}
+  $startup = New-CimInstance Win32_ProcessStartup -ClientOnly -Property @{ShowWindow=[uint16]0; CreateFlags=[uint32]524; EnvironmentVariables=[string[]]$request.environment}
   $created = Invoke-CimMethod Win32_Process -MethodName Create -Arguments @{CommandLine=$request.command_line; CurrentDirectory=$request.directory; ProcessStartupInformation=$startup}
   @{code=[uint32]$created.ReturnValue; pid=[uint32]$created.ProcessId} | ConvertTo-Json -Compress
 } catch { exit 1 }
@@ -119,7 +119,7 @@ func startBrokered(ctx context.Context, executable, dir, startupID string) error
 	for i := range args {
 		args[i] = syscall.EscapeArg(args[i])
 	}
-	payload, _ := json.Marshal(map[string]string{"command_line": strings.Join(args, " "), "directory": dir})
+	payload, _ := json.Marshal(map[string]any{"command_line": strings.Join(args, " "), "directory": dir, "environment": os.Environ()})
 	command := exec.CommandContext(ctx, filepath.Join(systemDir, "WindowsPowerShell", "v1.0", "powershell.exe"), "-NoLogo", "-NoProfile", "-NonInteractive", "-Command", suspendedBroker)
 	command.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	command.Stdin = bytes.NewReader(payload)
