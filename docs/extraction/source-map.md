@@ -9,7 +9,7 @@
 | Runner 仓库 | `https://github.com/erranliu/SteerRunner.git`；module `github.com/erranliu/SteerRunner` | 新建 Go 项目，无 SteerLine Go 依赖 |
 | 最初交付输入 | commit `60c1b0900b25eced5cb9e4ffb9c636995bc8a69e`：README、`docs/spec/steerrunner.spec.md`、`docs/spec/steerrunner.plan.md`、`docs/acceptance/steerrunner.md` | 实施前提交固定；当前修改在 `codex/steerrunner-foundation`，后续提交补充启动实现和配置细节 |
 | SteerLine 主工作区 | `C:/Project/SteerLine`，实施时 HEAD `1fdb7265a6043646b383e815cfe5dbf54ca302e3`，分支 `codex/web-frontend-full-regression` | 他人在途修改，只读，不在此抽取旧 Service |
-| SteerLine 主干 | 2026-10-14 实际 fetch 的 `origin/main` = `ab814da9d5fcec17f3ba46b59827734d171ba6b7` | 尚无 `internal/execution/workflow` / `reliable`；不满足 P2 交接 |
+| SteerLine 主干 | 启动时 `origin/main` = `ab814da9d5fcec17f3ba46b59827734d171ba6b7`；2026-10-14 最终 fetch = `2f7312b485cfeebf9a5cfdea127ce0041eef6094` | 两次版本均无 `internal/execution/workflow` / `reliable`；不满足 P2 交接 |
 | 三层工作区 | `C:/Users/lmas1/.codex/worktrees/0998/SteerLine`，HEAD `44f54055abe54fa08944afb6dfb31393e39a4a56`；核心提取 `4a6034f0ff8d8d9fb2ce1a56ca9dd58af4228255` | 后有修复且工作树有在途验收/夹具变更，仅作调查；最终抽取基线待主干交接，不修改或代为合并此工作区 |
 
 ## P0/P1 已建设来源
@@ -38,3 +38,5 @@ Windows Job 继承无法仅凭后台进程组保证。[Microsoft Job 文档](htt
 | debug-template / 构建/安装/测试 driver | 固定 Runner EXE 版本及摘要，项目运行目录下 runner/ | 使用独立 debug 生成器复验，不读取或修改安装现场 |
 
 当前没有迁出这些执行包，也没有删除 SteerLine 代码。没有进行双写、旧数据迁移或旧执行回退；没有修改远端仓库业务状态、创建 PR 或发布版本。P2 前重新 fetch、确认最终主干包含三层及修复、记录实际抽取 commit/path/测试，然后进入提取。
+
+P0/P1 实现固定为 `7cfad777b0e41e19000cc6fda6cc21973109e0ad`，来自干净工作树的实际 EXE/单测/进程证据见[基础层验收记录](../acceptance/evidence/steerrunner-foundation-20261014.md)。后续证据登记提交不改变该已验实现。

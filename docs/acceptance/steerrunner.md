@@ -85,4 +85,4 @@ SR-A11/SR-A12 只做支持声明所需的最小真实闭环，不把全部故障
 
 Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍有关联 Job，保留 `.evidence/foundation-20261014-105427/integration.log` 和 result.json（exit 1）。后续加入系统 broker 和身份/权限核验，`.evidence/foundation-20261014-111246`、`111559`、`111759` 对应版本两组均 exit 0；这些是递进版本记录，不替代最终来源版本证据。
 
-最终构建、命令及来源证据在提交基础实现后登记。当前 P2 的实际前置仍未满足：重新 fetch 的 SteerLine origin/main 为 `ab814da9d5fcec17f3ba46b59827734d171ba6b7`，尚无三层 workflow/reliable。不能以另一工作区存在提交视为主干交接完成。未运行真实代理/PR、未修改安装环境，未进行 SteerLine 接入或删码。
+最终构建和验证来源为干净提交 `7cfad777b0e41e19000cc6fda6cc21973109e0ad`。5 个定向 unit 入口、2 组真实 EXE 进程场景、定向 go vet 通过，无skip；详细命令/摘要/原始证据位置见[基础层验收记录](evidence/steerrunner-foundation-20261014.md)。当前 P2 的实际前置仍未满足：最终重新 fetch 的 SteerLine origin/main 为 `2f7312b485cfeebf9a5cfdea127ce0041eef6094`，尚无三层 workflow/reliable。不能以另一工作区存在提交视为主干交接完成。未运行真实代理/PR、未修改安装环境，未进行 SteerLine 接入或删码。
