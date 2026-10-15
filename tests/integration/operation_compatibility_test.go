@@ -74,6 +74,10 @@ func TestSROperationV2Compatibility(t *testing.T) {
 			}
 			retainCompatibilityDB(t, dir, state+"-baseline-v2.db")
 			original := compatibilityRecord(t, dir)
+			// The previous worker may reconcile between the first inspection and
+			// shutdown. Compare the final durable baseline after its owner exited,
+			// rather than attributing that legitimate update to the new EXE.
+			before = original.View()
 			expectedOperations := append([]contracts.OperationView(nil), before.Operations...)
 			if state == "stop_pending" {
 				if original.PendingStop == "" || len(original.Intents) != len(before.Operations) || original.Intents[len(original.Intents)-1].Request.Operation.Status != b.OperationInFlight {
