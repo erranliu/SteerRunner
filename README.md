@@ -74,6 +74,14 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 定向验证
 
+接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：
+
+```powershell
+go test ./internal/application -run '^(TestSRFreezeBaseBranchRefresh|TestSRRepositoryCacheWithLongBranchPath|TestSRCompactCacheCanPublishLinkedWorktree)$' -count=1 -timeout=4m -v
+```
+
+场景、故障反例及结果见[分支刷新测试计划](docs/spec/repository-base-refresh.plan.md)和[验收记录](docs/acceptance/repository-base-refresh.md)。
+
 ```powershell
 go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage)$' -count=1 -timeout=2m -v
 .\scripts\test-foundation.ps1
