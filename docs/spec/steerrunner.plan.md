@@ -123,7 +123,7 @@ SteerLine 的保留/替换安排：
 
 1. 相关controlled通过后，按本次native manifest跑用户保留的本地Codex最小实现→PR；Orca 两目标已由用户取消验收。同一小任务材料可复用，各目标独立Run/工作区/base/head/PR，不扩大为真实故障矩阵。
 2. 真机前核验工具/账号/目录信任/模型配置和主机版本；能力缺失保持未验并如实声明，不以受控environment替代真机。未通过承诺范围的验收不标首版交付完成。
-3. Runner实现PR合入并形成一个明确预发布版本及EXE摘要；SteerLine切换PR最终固定该已可取得版本，复验I1/R1后合入。两仓相互引用实际PR/commit/版本，不假设原子合入。
+3. 两仓分别提交可审阅 PR，SteerLine 固定远端可取得的 Runner commit、EXE 版本及 SHA，两仓相互引用实际 PR。按用户最新要求，本轮停在审计修复与 PR 交付；合并、预发布及最终版本 I1/R1/live 验收另按已满足的门槛推进，不在本轮自动合并或发布。
 4. 同步README使用例、source-map和验收证据，明确未实现能力。源码复制仅限抽取过渡；切换后功能修复归Runner，SteerLine只维护客户侧任务集成。
 
 ## 5. 测试计划
@@ -183,3 +183,5 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 
 
 本机产品冷启动的原生版本资格核验曾在 10 秒预算耗尽；该步骤保持单次只读探测，预算与现有外部命令统一为 30 秒，不自动重试、不缓存跳过资格核验、不创建未合格会话。SR-A06/A11 复验：现有 PermissionQualification 定向/实际 EXE 场景和新包本机 live，证据 `native-policy-budget.log` 及对应新包。
+
+审计补充（SR-A06，测试计划）：本机隔离 SQLite/受控原生端口，在本轮修复后、PR 推送前运行 `go test ./internal/application ./internal/execution/adapters/codex -run '^(TestSRNativeAnswerRejectsAmbiguityBeforeIntent|TestAsyncQuestionNativeIdentityOptionsReplayAndFinal|TestAsyncQuestionObserverUsesNewInputCommand|TestAsyncQuestionObserveSteerAndReconcile)$' -count=1 -timeout=2m -v`。原题集精确匹配，重复键/额外题目/固定选项额外答案/空回答/未提供选项须在保存原生意图前拒绝，合法选项 ID 映射为标签；现有原问题路由、原回合和恢复零重发场景不得退化。证据登记至专属验收 §9 与 `.evidence/audit-answer-native.log`。不因这次输入校验变更重跑已通过的完整 workflow/live 矩阵。

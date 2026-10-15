@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -10,6 +9,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"strings"
 	"time"
 )
 
@@ -31,31 +31,10 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 		}
 		return e.feedbackValue(id, w, p, saved, true)
 	}
-	answers := map[string][]string{}
-	if len(r.Snapshot.PendingQuestions) == 1 {
-		answers[r.Snapshot.PendingQuestions[0].ID] = []string{saved.Text}
-	} else if json.Unmarshal([]byte(saved.Text), &answers) != nil {
-		e.failControl(id, saved.CommandID, errors.New("Multiple questions require a JSON object mapping every original question ID to answer strings"))
+	answers, err := nativeAnswers(r.Snapshot.PendingQuestions, saved.Text)
+	if err != nil {
+		e.failControl(id, saved.CommandID, err)
 		return false
-	}
-	for _, q := range r.Snapshot.PendingQuestions {
-		values := answers[q.ID]
-		if len(values) == 0 || len(values) > 2 {
-			e.failControl(id, saved.CommandID, errors.New("Answer does not cover the original native questions"))
-			return false
-		}
-		if !q.AllowFreeText && len(q.Options) > 0 {
-			offered := false
-			for _, option := range q.Options {
-				if values[0] == option.ID || values[0] == option.Label {
-					offered = true
-				}
-			}
-			if !offered {
-				e.failControl(id, saved.CommandID, errors.New("Answer is not an offered option"))
-				return false
-			}
-		}
 	}
 	input := b.LifecycleInput{Feedback: &b.FeedbackInput{DecisionID: saved.CommandID, QuestionID: saved.QuestionID, Message: saved.Text, Answer: &b.Answer{Answers: answers}}}
 	index, err := e.saveIntent(id, r, b.LifecycleCandidate{Action: b.LifecycleDeliverFeedback, Input: input})
@@ -368,4 +347,48 @@ func (e *Engine) writersAbsent(r *runstate.Record, w *worker, identity b.Process
 		return false
 	}
 	return process.InspectProcess(&identity) == "process absent"
+}
+
+// Validate the complete native question set before persisting any input intent.
+func nativeAnswers(questions []b.Question, text string) (map[string][]string, error) {
+	answers := map[string][]string{}
+	if len(questions) == 0 {
+		return nil, errors.New("Original native questions are missing")
+	}
+	if len(questions) == 1 {
+		answers[questions[0].ID] = []string{text}
+	} else if contracts.DecodeStrict([]byte(text), &answers) != nil {
+		return nil, errors.New("Multiple questions require unambiguous JSON keyed by original question ID")
+	}
+	if len(answers) != len(questions) {
+		return nil, errors.New("Answer must cover exactly the original native questions")
+	}
+	seen := map[string]bool{}
+	for _, q := range questions {
+		if q.ID == "" || seen[q.ID] {
+			return nil, errors.New("Original native question identity is ambiguous")
+		}
+		seen[q.ID] = true
+		values, ok := answers[q.ID]
+		if !ok || len(values) == 0 || len(values) > 2 || len(values) > 1 && !q.AllowFreeText {
+			return nil, errors.New("Answer differs from the original native question")
+		}
+		for i, value := range values {
+			if strings.TrimSpace(value) == "" {
+				return nil, errors.New("Native answer cannot be empty")
+			}
+			offered := false
+			for _, option := range q.Options {
+				if value == option.ID || value == option.Label {
+					values[i] = option.Label
+					offered = true
+					break
+				}
+			}
+			if !offered && !q.AllowFreeText {
+				return nil, errors.New("Answer is not an offered option")
+			}
+		}
+	}
+	return answers, nil
 }

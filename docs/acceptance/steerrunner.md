@@ -1,6 +1,6 @@
 # SteerRunner 首版独立化专属验收
 
-日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，本机真实 Codex/PR 已通过；跨仓三个本机 R1 场景已通过，最新产品真机包收尾中，Orca 验收已由用户取消。最新结果见§8，以下保留递进阶段的原始结论。§6 为历史基础层交付，§7 保留后续递进记录。来源见 [source-map](../extraction/source-map.md)。
+日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，历史版本本机真实 Codex/PR 与跨仓三个本机 R1 场景已有通过证据；最新产品真机补验失败，不能声明最终版本全链通过，Orca 验收已由用户取消。本轮按用户要求审计修复、分别交付 PR，不自动合并或发布。最新结果见§8–9，以下保留递进阶段的原始结论。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
@@ -189,3 +189,11 @@ SteerLine 最新实际产品真机包另在补充验证：一包版本预检超�
 
 
 后续本机产品包 `dev-20261015-145352-9e195790` 再次在会话创建前资格版本探测的 10 秒预算超时（108.53 秒，零模型输入，无 PR，清理通过）。同 EXE 的直接版本探测 0.427 秒，使用 Runner 自己的 managed-process、相同包 TEMP/TMP 的只读探测 0.662 秒。保留两次超时事实；资格探测的独立冷启动预算统一为现有外部命令的 30 秒，不自动重试、不跳过或放宽版本/资源校验。必须新构建和新包复验，不能把快速独立探测记作业务通过。
+
+## 9. 双仓 PR 审计与最新失败边界
+
+本轮为当前聊天自查，不宣称独立复审。已修复 Runner 原生多题回答校验遗漏：额外题目、固定选项后的第二个答案和重复 JSON 键曾可进入原生意图；现在要求完整且精确的原题集，拒绝空回答和未提供的选项，并把合法选项 ID 规范为原生标签。`TestSRNativeAnswerRejectsAmbiguityBeforeIntent` 使用真实存储和 nil native port，证明全部六类非法回答零原生意图、原问题保留、原命令失败；合法回答不改原题。`.evidence/audit-answer-native.log` 的四个定向测试通过；`.evidence/audit-contract.log` 的公开契约检查通过。SteerLine 同时修复文本回答重复键和已绑定 PR 消失，详见其 [接入验收](https://github.com/erranliu/SteerLine/blob/codex/steerrunner-cutover/docs/acceptance/steerrunner-cutover.md)。
+
+Runner `7bede6e` 的 `.evidence/foundation-20261015-070142/result.json` exit 0 / 1 场景，只证明实际 EXE 的权限资格反例。最新 SteerLine `bba00436` + Runner `7bede6e` 包 `C:/SteerlineDebug/slcodex/dev-20261015-150152-bba00436` 未通过真实产品链路：SteerLine 服务退出，原清理 Git 子进程报 `0xc000026b`；原候选提交状态为 unknown，不能据未绑定 Run 猜测零接受。随后通过冻结包原 helper/公开 CLI，在外部独立宿主核清原请求并停止，`evidence/original-public-cleanup-external-result.json` exit 0、`original-public-cleanup-external.log` confirmed=true。没有业务 resume 或新发布，也未修改冻结配置/二进制；工具 Job 内清理曾安全拒绝 `detach_unsupported`，未放宽 token 校验。
+
+同版本 SteerLine `local-final` 受控补验在 TestBasicDelivery 报 Git `0xc000026b`，批次无完成汇总，不计通过。此前 §8 的真实 Codex/PR #253 和三个 R1 通过记录仍只归属各自版本。当前不宣称最新版产品真机、最终固定版本 R1 或完整跨仓交付完成；用户已要求本轮审计后分别提 PR，保持草稿，不合并、不创建 Release。
