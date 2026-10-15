@@ -37,14 +37,17 @@ Windows Job 继承无法仅凭后台进程组保证。[Microsoft Job 文档](htt
 | query / API / TUI / Web | 留在 SteerLine，读取已提交的 Runner 投影 | 在途前端基于切换时主干适配，不重建另一套产品模型 |
 | debug-template / 构建/安装/测试 driver | 固定 Runner EXE 版本及摘要，项目运行目录下 runner/ | 使用独立 debug 生成器复验，不读取或修改安装现场 |
 
-P0/P1 时尚未迁出这些执行包。2026-10-15 已按下文来源提取；SteerLine 产品切换和旧执行者删除仍待完成。没有进行双写、旧数据迁移或旧执行回退；尚未创建 PR 或发布版本。
+P0/P1 时尚未迁出这些执行包。2026-10-15 已按下文来源提取；SteerLine 产品服务与公开 CLI 切换、旧执行 owner 删除已实施；实际受控基础闭环通过，恢复及真机仍未全部验收。没有双写、旧数据迁移或旧执行回退；Runner 草稿 PR 为 https://github.com/erranliu/SteerRunner/pull/1 ，尚未正式发布。
 
 P0/P1 实现固定为 `7cfad777b0e41e19000cc6fda6cc21973109e0ad`，来自干净工作树的实际 EXE/单测/进程证据见[基础层验收记录](../acceptance/evidence/steerrunner-foundation-20261014.md)。后续证据登记提交不改变该已验实现。
 
 ## 2026-10-15 主干交接与继续实施
 
-最终交接来源固定为 `d20a72284705b4daac476d4fa5770151dca03e56`（SteerLine `origin/main`，包含三层重构及审计修复）。SteerLine 切换工作区为 `C:/Users/lmas1/.codex/worktrees/steerrunner-cutover/SteerLine`，分支 `codex/steerrunner-cutover`，从该主干建立；原前端分支不修改。SteerRunner 远端仍无分支，本地 foundation 分支 rebase main 为 up to date。
+最终交接来源固定为 `d20a72284705b4daac476d4fa5770151dca03e56`（SteerLine `origin/main`，包含三层重构及审计修复）。SteerLine 切换工作区为 `C:/Users/lmas1/.codex/worktrees/steerrunner-cutover/SteerLine`，分支 `codex/steerrunner-cutover`，从该主干建立；原前端分支不修改。SteerRunner 使用独立 foundation 分支和草稿 PR，SteerLine 使用独立 cutover 分支。
 
 本次抽取 `internal/execution/{workflow,reliable,backend,adapters,workspace,publication,process,agentlaunch,conversation}` 及必要纯值。来源 `model/conversation.go`、`model/publication.go`、`model/pr.go` 和原问题内容规范化进入 Runner 的 `execution/evidence`，没有复制 Task、DAG、Service、SQLite 或产品 API。来源 `internal/testkit/protocol` 只供测试helper导入。
 
 明确的变更：module导入改为SteerRunner；原TaskID在原生取证关联中改为无业务含义的CorrelationID；Workflow的TaskFacts改为固定MaterialFacts，默认development/1和pr_ready；四个正文覆盖始终附加固定材料/来源/机器契约。原生回执、资源编码、固定权限和身份规则保留；新的 application/runstate/storage 为 Runner 唯一执行写权。来源包的实际验证、未验live及切换结果以专属验收登记为准。
+
+
+SteerLine 后续 P6 检查点（rebase 后 `11a2ca7a`）：旧根 actor/worker、adapters/workflow/reliable/conversation、执行写表及闲置执行事务/原生重建函数已物理移除。workspace 仅保留调用方仓库身份解析，publication 仅保留配置校验；执行工作区生命周期和 PR 原生查询归 Runner。SteerLine 原生测试辅助只使用公开 CLI/Run/事件、外部工具自身 rollout，不导入 Runner Go 包、原生 codec 或私有数据库。受控产品闭环 `025de7fc` + Runner `6b18f3e` 的 result-13 exit 0；不能据此声明真机或全恢复验收完成。

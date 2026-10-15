@@ -157,3 +157,11 @@ SteerLine 实际服务接入在新模拟包 `C:/SteerlineDebug/caller/dev-202610
 `ede6dc5` 的 `.evidence/foundation-20261015-044428/result.json` 四组实际 EXE 回归 exit 0：权限资格、完整工作流、未知输入/停止、服务重启显式恢复。原远端第三轮 harness exit 1、1 场景，原 Run 最终 stop_status=stopped，未创建测试 PR；不得将修正后的受控通过写作该冻结旧包的真机通过。
 
 SteerLine 后续完整产品包 `C:/SteerlineDebug/caller/dev-20261015-124412-ef780c60` 使用此版，已在原会话完成实现/报告；受控 helper 发布时暴露原 Git 缓存布局的 linked-worktree admin 路径过深，Git 报 `$GIT_DIR too big`。改为私有 `repos/<128-bit SHA-256 prefix>`，缓存命中仍验证精确 remote/冻结提交，不改变原完整输入摘要、分支/Run 身份或日志归属，不读取旧布局。`.evidence/compact-cache-publish.log` 真实长分支 clone 与较深 state-dir 的 linked worktree push 两项通过。必须新包复验实际产品链路，旧包不替换运行文件。
+
+
+2026-10-15 后续验收：
+
+- SteerLine 实际受控包 `C:/SteerlineDebug/caller/dev-20261015-130023-025de7fc` 使用干净 Runner `6b18f3e` / EXE SHA `c27e84a1c30f5a567bfd76beeef1c0b6134ce2ca182ede15db53556f3560c65b`，独立产品 CLI 完成三阶段、真实 Git push、受控 PR、合并交付及后继、停止与重置；result-13 exit 0 / 1 场景，137.44 秒。基础跨仓闭环通过，SR-A10 的恢复和固定最终版本子项尚未全部完成。
+- 远端第四轮 `C:/SteerlineDebug/srremote/dev-20261015-130412-7b42cd7f`，Run `ad72d46669e9520db416c53739aa204d`，1 场景 exit 1（191.54 秒）。原启动接受保持、没有重复发送；业务输入前准备期限耗尽。另有 Orca CLI 本地 environments 缓存 EPERM rename。停止原 Run 后，只读同一 runtime/terminal/incarnation 的终端事实证实 Codex TUI 报 `account/read failed: workspace routing discovery timed out` 并退出；证据 `.evidence/native-remote4-show.json` / `read.json`。原 Run stop_status=stopped，原终端 operator_close；不把 CLI 缓存错误当作唯一根因。
+- 用户曾选择远端待验，随后明确通知原生环境已修复并恢复验收。下一轮必须生成新 debug 包、专属 base/head，先原生准备，再重跑。第四轮冻结文件不替换，不计通过。
+- Apache-2.0 为用户已选定许可证，根 LICENSE 及第三方声明已提供。当前仅草稿 PR，无正式 Release；所有未验/失败项保留。
