@@ -33,7 +33,7 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 	if err := e.attachWriteRoots(r); err != nil {
 		return err
 	}
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
 	defer cancel()
 	bound, err := codex.BuildPolicyResourceEnvelope(ctx, codex.PolicyResourceBuildRequest{
 		ProfileData: r.Profile, ProfileIdentity: codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest},

@@ -180,3 +180,6 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 
 
 最新用户范围：取消全部 Orca 路径验收，本次仅本机 Codex。L2/SR-A12 不再执行，历史结果保留；R1 仅 delivery.basic、recovery.waiting-merge-restart、recovery.codex-resume。补充 SR-A09/A10 的更深路径回归：`go test ./internal/application -run '^TestSRCompactCacheCanPublishLinkedWorktree$' -count=1 -timeout=2m`，以原 hex 布局超过 Windows Git 管理路径界限、当前私有紧凑布局低于界限的实际 linked-worktree push 核验，证据 `compact-cache-deep-publish.log`。本机 L1 使用修正后新 EXE/新 debug 包复验，证据按 SR-A11 登记，不替换冻结现场。
+
+
+本机产品冷启动的原生版本资格核验曾在 10 秒预算耗尽；该步骤保持单次只读探测，预算与现有外部命令统一为 30 秒，不自动重试、不缓存跳过资格核验、不创建未合格会话。SR-A06/A11 复验：现有 PermissionQualification 定向/实际 EXE 场景和新包本机 live，证据 `native-policy-budget.log` 及对应新包。

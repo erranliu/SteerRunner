@@ -186,3 +186,6 @@ SR-A11 本机真机已通过：干净 Runner `c85f4e71e88e1e9c51d73284a12d3034e6
 Runner dc24205 的更深路径回归 `compact-cache-deep-publish.log` 两个场景通过（真实 Git clone/ref/linked-worktree push）；`.evidence/foundation-20261015-063029/result.json` exit 0 / 2 组，实际 EXE workflow 与 publication identity 通过。对应构建 SHA `59801148b84cd7eff52416eb2afd11cf7749cf36ec3c083acc05bb93f603f762`。SteerLine [切换 PR #325](https://github.com/erranliu/SteerLine/pull/325) 已创建；用户保留的 delivery.basic、codex-resume、waiting-merge-restart 三个本机 R1 场景分别通过，后者在干净 ca5d8563 + dc24205 下 319.75 秒，清理通过。批次中已取消 Orca 场景的失败不冒充通过。
 
 SteerLine 最新实际产品真机包另在补充验证：一包版本预检超时，零模型输入；同源新包随后已完成权限资格、沙箱、实施和报告，发布普通命令及查询 401，代理直接给出 permission blocker，未申请原生自动审核，无 PR，清理通过。对齐前述独立 L1 的已验证提示规则后，正在以新冻结包复验。这里没有原生审核拒绝，不将其写成拒绝或全链通过。
+
+
+后续本机产品包 `dev-20261015-145352-9e195790` 再次在会话创建前资格版本探测的 10 秒预算超时（108.53 秒，零模型输入，无 PR，清理通过）。同 EXE 的直接版本探测 0.427 秒，使用 Runner 自己的 managed-process、相同包 TEMP/TMP 的只读探测 0.662 秒。保留两次超时事实；资格探测的独立冷启动预算统一为现有外部命令的 30 秒，不自动重试、不跳过或放宽版本/资源校验。必须新构建和新包复验，不能把快速独立探测记作业务通过。
