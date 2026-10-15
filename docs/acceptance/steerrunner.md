@@ -1,6 +1,6 @@
 # SteerRunner 首版独立化专属验收
 
-日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，本机真实 Codex/PR 已通过；跨仓重启回归收尾中，Orca 验收已由用户取消。最新结果见§8，以下保留递进阶段的原始结论。§6 为历史基础层交付，最新进度见§7。来源见 [source-map](../extraction/source-map.md)。
+日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，本机真实 Codex/PR 已通过；跨仓三个本机 R1 场景已通过，最新产品真机包收尾中，Orca 验收已由用户取消。最新结果见§8，以下保留递进阶段的原始结论。§6 为历史基础层交付，§7 保留后续递进记录。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
@@ -181,3 +181,8 @@ SR-A11 本机真机已通过：干净 Runner `c85f4e71e88e1e9c51d73284a12d3034e6
 原生普通发布命令先返回 HTTP 401，原生自动审批批准同一命令后成功推送并创建 [SteerlineTest PR #253](https://github.com/erranliu/SteerlineTest/pull/253)。模型后续普通查询仍 401；Runner 自己的只读 provider 核验正确仓库、专属 base/head/提交后才进入 pr_ready，不以模型声明替代 PR 事实。PR 为 OPEN draft，未合并。原 Run `f292bda278eb655e6854b388067bdca8` 已确认 stop_status=stopped。原始公开命令、快照及清理证据为包内 `evidence/runner-native-calls.jsonl`、`runner-native-local-codex.json`、`runner-native-local-codex-cleanup.json`；没有宿主代发布或认证复制。
 
 后续 SteerLine 本机 waiting-merge-restart 暴露更深 state-dir 的 Git `$GIT_DIR too big`，外部夹具原错误已保存；不改写历史失败。私有缓存改为 `r/<128-bit base32>`，工作区叶目录为 Run 身份的 128-bit base32；原 Run ID、branch、完整输入摘要和精确仓库/提交核验不变，命中已有工作区仍拒绝。更深管理路径的真实 Git push 必须复验，新构建须新包，不覆盖已验冻结包。
+
+
+Runner dc24205 的更深路径回归 `compact-cache-deep-publish.log` 两个场景通过（真实 Git clone/ref/linked-worktree push）；`.evidence/foundation-20261015-063029/result.json` exit 0 / 2 组，实际 EXE workflow 与 publication identity 通过。对应构建 SHA `59801148b84cd7eff52416eb2afd11cf7749cf36ec3c083acc05bb93f603f762`。SteerLine [切换 PR #325](https://github.com/erranliu/SteerLine/pull/325) 已创建；用户保留的 delivery.basic、codex-resume、waiting-merge-restart 三个本机 R1 场景分别通过，后者在干净 ca5d8563 + dc24205 下 319.75 秒，清理通过。批次中已取消 Orca 场景的失败不冒充通过。
+
+SteerLine 最新实际产品真机包另在补充验证：一包版本预检超时，零模型输入；同源新包随后已完成权限资格、沙箱、实施和报告，发布普通命令及查询 401，代理直接给出 permission blocker，未申请原生自动审核，无 PR，清理通过。对齐前述独立 L1 的已验证提示规则后，正在以新冻结包复验。这里没有原生审核拒绝，不将其写成拒绝或全链通过。
