@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"testing"
@@ -15,9 +16,10 @@ import (
 
 type pendingResourcePort struct {
 	b.LifecyclePort
-	confirm  bool
-	executes int
-	observed []string
+	confirm       bool
+	executes      int
+	observed      []string
+	originalInput string
 }
 
 func (p *pendingResourcePort) Execute(_ context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
@@ -25,6 +27,9 @@ func (p *pendingResourcePort) Execute(_ context.Context, r b.LifecycleRequest) (
 	return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}, nil, nil
 }
 func (p *pendingResourcePort) Reconcile(_ context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if r.Snapshot.Session.SessionID != "original-session" || r.Operation.LifecycleIdentity.InputBindingDigest != p.originalInput {
+		return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}, nil, fmt.Errorf("accepted resource facts or original operation binding lost")
+	}
 	p.observed = append(p.observed, r.Operation.ID)
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationAccepted, State: b.LifecycleStateFacts{ResourceID: "original-terminal", ResourcePending: true}}
 	if p.confirm {
@@ -56,6 +61,7 @@ func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {
 			r.Intents[i].Request.Operation.Status = b.OperationAccepted
 			r.Intents[i].Receipt = &b.LifecycleReceipt{Operation: r.Intents[i].Request.Operation, Disposition: b.OperationAccepted, State: b.LifecycleStateFacts{ResourceID: "original-terminal", ResourcePending: true}}
 			r.Snapshot.Operations[i].Status = b.OperationAccepted
+			r.Snapshot.Session.SessionID = "original-session"
 			if expired {
 				r.PreparationDeadline = time.Now().Add(-time.Second)
 			}
@@ -63,7 +69,7 @@ func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {
 				t.Fatal(err)
 			}
 			original := r.Intents[i].Request.Operation.ID
-			port := &pendingResourcePort{}
+			port := &pendingResourcePort{originalInput: r.Intents[i].Request.Operation.LifecycleIdentity.InputBindingDigest}
 			worker := &worker{port: port}
 			for j := 0; j < 3; j++ {
 				if e.advance(r.ID, worker) {
@@ -72,6 +78,9 @@ func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {
 			}
 			if len(e.runs[r.ID].Intents) != 1 || port.executes != 0 || len(port.observed) != 3 {
 				t.Fatal("accepted resource was recreated", len(e.runs[r.ID].Intents), port.executes, port.observed)
+			}
+			if e.runs[r.ID].Intents[i].Request.Snapshot.Session.SessionID != "" {
+				t.Fatal("reconciliation rewrote the original intent snapshot")
 			}
 			for _, id := range port.observed {
 				if id != original {

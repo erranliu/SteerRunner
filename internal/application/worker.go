@@ -248,8 +248,18 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	if !reconcile && !r.Allowed && intent.Request.Operation.Action != string(b.LifecycleStopExecution) {
 		return false
 	}
+	request := intent.Request.Clone()
+	if reconcile {
+		// The operation and its input stay immutable. Reconciliation needs the
+		// committed facts returned by that operation (accepted launch, original
+		// native resource/session), rather than its pre-effect observation.
+		if request.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID || request.Snapshot.ResourceGeneration != r.Snapshot.ResourceGeneration || request.Snapshot.ConfigurationDigest != r.Snapshot.ConfigurationDigest {
+			return false
+		}
+		request.Snapshot = r.Snapshot.Clone()
+	}
 	ctx, cancel := context.WithTimeout(e.ctx, 90*time.Second)
-	result := reliable.Invoke(ctx, p, p, intent.Request, mode)
+	result := reliable.Invoke(ctx, p, p, request, mode)
 	cancel()
 	if result.Observer != nil {
 		if w.observer != nil {
