@@ -152,3 +152,8 @@ SteerLine 实际服务接入在新模拟包 `C:/SteerlineDebug/caller/dev-202610
 2026-10-15 后续：SteerLine 干净 `849f8737` 的实际 CLI 接入暴露 Windows 深目录加专属 base 分支路径超过 Git 默认限制。Runner `5f664a9` 对自有 Git 进程和原生工具环境设置 scoped `core.longpaths=true`，固定运行契约 v7，不修改全局/仓库配置或权限根。`.evidence/git-longpaths-integration.log` 真实长 ref clone 通过；`.evidence/foundation-20261015-042423/result.json` 两组（权限资格、完整工作流）exit 0。
 
 台式机64G 的新包 `C:/SteerlineDebug/srremote/dev-20261015-122505-849f8737` 已仅推送专属 base `314d2d10bbefdd281ba601d5e17dfaa9e1a3c5c5`，经独立准备终端验证 fetch/cat-file 后关闭原终端。原生 Run `f8cec0f0d039831fbed5c22025eb270c` 创建工作区/终端并接受启动命令，尚无业务输入；对账进入 unknown，诊断 pending lifecycle resource。发现应用层对账传回创建前快照，丢掉已提交的 LaunchAccepted 事实。修正为在同 Attempt/generation/config 下使用当前已提交事实，保留原 operation、输入、binding digest 和原 intent snapshot；不重发启动。`.evidence/reconcile-current-facts.log` 定向通过，新增检查原操作不变、零执行重发且旧快照未重写。实际远端修正需要新包复验，当前包保持冻结，不计 SR-A12 通过。
+
+
+`ede6dc5` 的 `.evidence/foundation-20261015-044428/result.json` 四组实际 EXE 回归 exit 0：权限资格、完整工作流、未知输入/停止、服务重启显式恢复。原远端第三轮 harness exit 1、1 场景，原 Run 最终 stop_status=stopped，未创建测试 PR；不得将修正后的受控通过写作该冻结旧包的真机通过。
+
+SteerLine 后续完整产品包 `C:/SteerlineDebug/caller/dev-20261015-124412-ef780c60` 使用此版，已在原会话完成实现/报告；受控 helper 发布时暴露原 Git 缓存布局的 linked-worktree admin 路径过深，Git 报 `$GIT_DIR too big`。改为私有 `repos/<128-bit SHA-256 prefix>`，缓存命中仍验证精确 remote/冻结提交，不改变原完整输入摘要、分支/Run 身份或日志归属，不读取旧布局。`.evidence/compact-cache-publish.log` 真实长分支 clone 与较深 state-dir 的 linked worktree push 两项通过。必须新包复验实际产品链路，旧包不替换运行文件。

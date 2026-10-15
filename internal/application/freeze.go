@@ -30,6 +30,14 @@ import (
 
 var repositoryLocks sync.Map
 
+// Keep linked-worktree Git administration paths comfortably below native Git's
+// Windows buffer limits. The full request identities remain in accepted input;
+// a cache hit still verifies the exact remote and every frozen commit.
+func repositoryCache(dir string, repository contracts.Repository) string {
+	key := reliable.Digest([]byte(repository.URL + "\x00" + repository.BaseRevision + "\x00" + repository.LocalPath))
+	return filepath.Join(dir, "repos", key[:32])
+}
+
 func gitHost() workspace.Git {
 	return workspace.Git{Command: b.LaunchCommand{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Timeout: 30 * time.Second, Start: process.New(30 * time.Second).StartManaged}
 }
@@ -143,7 +151,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
 	git := gitHost()
-	cache := filepath.Join(dir, "repositories", reliable.Digest([]byte(request.Repository.URL+"\x00"+request.Repository.BaseRevision+"\x00"+request.Repository.LocalPath)), "repository")
+	cache := repositoryCache(dir, request.Repository)
 	entry, _ := repositoryLocks.LoadOrStore(cache, &sync.Mutex{})
 	cacheLock := entry.(*sync.Mutex)
 	cacheLock.Lock()
