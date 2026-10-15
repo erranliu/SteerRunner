@@ -2,8 +2,9 @@
 
 SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment 执行开发 workflow，处理反馈并产出可核验 PR。SteerLine 保留任务、DAG、候选关系和 TaskDelivery，通过 CLI 使用它。
 
-当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。真实 EXE 配受控原生协议已跑通本地闭环；SteerLine 实际产品 CLI 受控闭环已通过，旧执行 owner 已移除；本机真实 Codex/PR 与保留的三项本机交付/恢复场景已有通过证据，最新产品真机包仍在验证。
+当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
+- [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
@@ -42,6 +43,7 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --request-id my-submit-001 --json
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 .\bin\steerrunner.exe events --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
+.\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
@@ -75,6 +77,11 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 定向验证
 
+独立三级测试入口见 [测试说明](docs/testing.md)：L1 为规则/组件测试，受控集成为
+L2/L3 前置；L2 在本机真实 Codex + SteerlineTest 上消耗 token、创建并合入 PR；
+L3 为可扩展的真机真实环境场景集，当前包含远端 Orca 完整 smoke。
+统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
+
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：
 
 ```powershell
@@ -92,4 +99,5 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 程序清单资源已生成并纳入源码；只在修改 `app.manifest` 后运行 `go generate ./cmd/steerrunner` 重新生成。项目采用 [Apache-2.0](LICENSE)，来源说明见 [NOTICE](NOTICE)。第三方运行依赖和 Go runtime 的许可声明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。正式发布须完成对应验收。
 
-本次验收范围为 Windows/amd64 本机 Codex。用户已取消本机与远端 Orca 路径验收；Orca 适配器保留为未验能力，不声明真机支持。
+当前测试建设范围包含 Windows/amd64 本机 Codex L2 和远端 Orca L3。历史取消及失败记录保留；
+支持声明以对应版本的实际三级测试结果为准。

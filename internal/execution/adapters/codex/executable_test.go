@@ -2,8 +2,8 @@ package codexworker
 
 import (
 	"os"
-	"os/exec"
-	"strings"
+	"path/filepath"
+	"runtime"
 	"testing"
 )
 
@@ -12,16 +12,28 @@ func TestAppServerLaunchBindsNativeExecutable(t *testing.T) {
 	if err != nil || !isNativeCodexExecutable(path) {
 		t.Fatalf("Go test executable was not recognized as a direct process: %q %v", path, err)
 	}
-	if _, err := exec.LookPath("codex"); err != nil {
-		t.Skip("Codex CLI is not installed")
+	// L1 must not depend on a separately installed Codex package. Exercise the
+	// Windows npm layout with a native header, without launching a real agent.
+	if runtime.GOOS != "windows" || runtime.GOARCH != "amd64" {
+		return
 	}
-	native, err := NativeExecutable("codex")
-	if err != nil || !isNativeCodexExecutable(native) {
-		t.Fatalf("configured Codex command did not bind its native app-server: %q %v", native, err)
+	root, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
 	}
-	configuredVersion, configuredErr := exec.Command("codex", "--version").Output()
-	nativeVersion, nativeErr := exec.Command(native, "--version").Output()
-	if configuredErr != nil || nativeErr != nil || strings.TrimSpace(string(configuredVersion)) != strings.TrimSpace(string(nativeVersion)) {
-		t.Fatalf("configured and native Codex versions differ: %q %q %v %v", configuredVersion, nativeVersion, configuredErr, nativeErr)
+	shim := filepath.Join(root, "codex.cmd")
+	if err := os.WriteFile(shim, []byte(`@node "%~dp0\node_modules\@openai\codex\bin\codex.js" %*`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	want := filepath.Join(root, "node_modules", "@openai", "codex", "vendor", "x86_64-pc-windows-msvc", "bin", "codex.exe")
+	if err := os.MkdirAll(filepath.Dir(want), 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(want, []byte{'M', 'Z', 0, 0}, 0600); err != nil {
+		t.Fatal(err)
+	}
+	native, err := NativeExecutable(shim)
+	if err != nil || native != want {
+		t.Fatalf("npm wrapper did not resolve the native process: %q %v", native, err)
 	}
 }

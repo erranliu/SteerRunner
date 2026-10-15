@@ -109,14 +109,43 @@ type RunView struct {
 	UpdatedAt        time.Time         `json:"updated_at"`
 }
 type Event struct {
-	EventID   string     `json:"event_id"`
-	RunID     string     `json:"run_id"`
-	Revision  uint64     `json:"revision"`
-	Type      string     `json:"type"`
-	CommandID string     `json:"command_id,omitempty"`
-	AttemptID string     `json:"attempt_id,omitempty"`
-	Final     *FinalView `json:"final,omitempty"`
-	CreatedAt time.Time  `json:"created_at"`
+	Transition *WorkflowTransition `json:"transition,omitempty"`
+	EventID    string              `json:"event_id"`
+	RunID      string              `json:"run_id"`
+	Revision   uint64              `json:"revision"`
+	Type       string              `json:"type"`
+	CommandID  string              `json:"command_id,omitempty"`
+	AttemptID  string              `json:"attempt_id,omitempty"`
+	Final      *FinalView          `json:"final,omitempty"`
+	CreatedAt  time.Time           `json:"created_at"`
+}
+
+// WorkflowTransition is captured in the same transaction as the aggregate.
+type WorkflowState struct {
+	Stage      string `json:"workflow_stage"`
+	Status     string `json:"workflow_status"`
+	Diagnostic string `json:"diagnostic,omitempty"`
+}
+type WorkflowTransition struct {
+	From WorkflowState `json:"from"`
+	To   WorkflowState `json:"to"`
+}
+
+// LastMessage is best-effort telemetry, never execution or recovery authority.
+// ObservedAt is when the native notification arrived, not a query timestamp.
+type LastMessage struct {
+	RunID      string    `json:"run_id"`
+	AttemptID  string    `json:"attempt_id"`
+	SessionID  string    `json:"session_id"`
+	TurnID     string    `json:"turn_id"`
+	Kind       string    `json:"kind"`
+	Text       string    `json:"text"`
+	ObservedAt time.Time `json:"observed_at"`
+}
+type LastMessageView struct {
+	RunID     string       `json:"run_id"`
+	AttemptID string       `json:"attempt_id"`
+	Message   *LastMessage `json:"message"`
 }
 type EventPage struct {
 	Events     []Event `json:"events"`

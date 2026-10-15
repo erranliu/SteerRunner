@@ -6,7 +6,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -23,38 +25,32 @@ import (
 func TestOrcaWorkspaceStartupLive(t *testing.T) {
 	root := os.Getenv("STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT")
 	if root == "" {
-		t.Skip("requires a generated debug package")
+		t.Skip("requires a generated Runner fixture")
 	}
 	root, err := filepath.Abs(root)
-	if err != nil || !strings.HasPrefix(strings.ToLower(root), `c:\steerlinedebug\`) {
-		t.Fatal("probe must use an independent debug package")
-	}
-	if _, err := os.Stat(filepath.Join(root, "manifest.json")); err != nil {
-		t.Fatal(err)
-	}
-	var catalog struct {
-		Profiles []struct {
-			ID      string              `json:"id"`
-			Launch  *agentlaunch.Config `json:"agent_launch"`
-			Configs []struct {
-				Payload json.RawMessage `json:"payload"`
-			} `json:"implementation_configs"`
-		} `json:"execution_profiles"`
-	}
-	raw, err := os.ReadFile(filepath.Join(root, "home", "execution.json"))
-	if err != nil || json.Unmarshal(raw, &catalog) != nil || len(catalog.Profiles) != 1 || len(catalog.Profiles[0].Configs) != 1 || catalog.Profiles[0].Launch == nil {
-		t.Fatal("missing generated Orca launch profile", err)
-	}
-	profile := catalog.Profiles[0]
-	p, err := DecodeProfile(profile.Configs[0].Payload)
 	if err != nil {
 		t.Fatal(err)
 	}
-	launch, err := profile.Launch.Command("codex")
+	raw, err := os.ReadFile(filepath.Join(root, "manifest.json"))
+	var fixture livetest.Manifest
+	if err != nil || contracts.DecodeStrict(raw, &fixture) != nil || fixture.Validate() != nil || fixture.Execution.Adapter != "orca-terminal" {
+		t.Fatal("requires an independent Runner Orca fixture")
+	}
+	var settings contracts.OrcaSettings
+	if err := contracts.DecodeStrict(fixture.Execution.Settings, &settings); err != nil {
+		t.Fatal(err)
+	}
+	p := Profile{Executable: settings.Transport.Executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: fixture.Execution.Target.Environment}
+	profileID := "native-startup-probe"
+	payload, err := json.Marshal(p)
 	if err != nil {
 		t.Fatal(err)
 	}
-	repository := filepath.Join(root, "projects", "SteerlineTest")
+	launch, err := (&agentlaunch.Config{Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}).Command("codex")
+	if err != nil {
+		t.Fatal(err)
+	}
+	repository := fixture.RepositoryPath
 	base, err := exec.Command("git", "-C", repository, "rev-parse", "HEAD").Output()
 	if err != nil {
 		t.Fatal(err)
@@ -79,11 +75,11 @@ func TestOrcaWorkspaceStartupLive(t *testing.T) {
 			}
 			runID := hex.EncodeToString(id)
 			s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: p.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: runID, AttemptID: runID}, Session: b.SessionContext{ProjectID: repository, CorrelationID: "startup-probe", ExecutionID: runID, AttemptID: runID, WorkflowRunID: runID}, ConfigurationDigest: "startup-probe", ResourceGeneration: runID, WorkspacePlan: b.WorkspaceIntent{BaseCommit: strings.TrimSpace(string(base))}}
-			data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: repository, ProfileID: profile.ID, AcceptedConfigVersion: "startup-probe"}, profile.Configs[0].Payload)
+			data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: repository, ProfileID: profileID, AcceptedConfigVersion: "startup-probe"}, payload)
 			if err != nil {
 				t.Fatal(err)
 			}
-			setup := b.LifecycleSetup{Snapshot: s, ProfileData: []b.ImplementationDataEnvelope{data}, ProfileID: profile.ID, AcceptedConfigVersion: "startup-probe", ProcessHost: host, RepositoryPath: repository, RunDirectory: root, AgentLaunchCommand: launch}
+			setup := b.LifecycleSetup{Snapshot: s, ProfileData: []b.ImplementationDataEnvelope{data}, ProfileID: profileID, AcceptedConfigVersion: "startup-probe", ProcessHost: host, RepositoryPath: repository, RunDirectory: root, AgentLaunchCommand: launch}
 			port, err := NewLifecycle(setup)
 			if err != nil {
 				t.Fatal(err)

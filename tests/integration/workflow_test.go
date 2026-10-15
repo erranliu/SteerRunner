@@ -186,6 +186,40 @@ func TestSRRunWorkflow(t *testing.T) {
 	if current.PR == nil || current.PR.HeadBranch != current.Execution.Branch || current.Execution.SessionID == "" || len(current.Materials) != 2 {
 		t.Fatalf("incomplete public view: %+v", current)
 	}
+	var observed time.Time
+	for i := 0; i < 2; i++ {
+		response := call(t, dir, []string{"last-message", "--run-id", id}, "", 0)
+		raw, _ := json.Marshal(response.Data)
+		var view contracts.LastMessageView
+		if err := json.Unmarshal(raw, &view); err != nil || view.RunID != id || view.AttemptID != current.Execution.AttemptID || view.Message == nil || view.Message.Text == "" || view.Message.SessionID != current.Execution.SessionID || view.Message.ObservedAt.IsZero() {
+			t.Fatal("public message missing or wrong identity", string(raw), err)
+		}
+		if i == 0 {
+			observed = view.Message.ObservedAt
+		} else if !observed.Equal(view.Message.ObservedAt) {
+			t.Fatal("query advanced observation time")
+		}
+	}
+	unchanged := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
+	if unchanged.Revision != current.Revision || countNative(t, "turn/start") != 3 {
+		t.Fatal("read query mutated execution")
+	}
+	changes := call(t, dir, []string{"events", "--run-id", id}, "", 0)
+	changesRaw, _ := json.Marshal(changes.Data)
+	var facts contracts.EventPage
+	_ = json.Unmarshal(changesRaw, &facts)
+	readable := 0
+	for _, event := range facts.Events {
+		if event.Transition != nil {
+			readable++
+			if event.Transition.To.Stage == "" || event.Transition.To.Status == "" {
+				t.Fatal("missing workflow state")
+			}
+		}
+	}
+	if readable < 3 {
+		t.Fatal("workflow changes missing from CLI events")
+	}
 	retry := call(t, dir, []string{"submit", "--input", "-"}, string(input), 0)
 	if retry.Data.(map[string]any)["run_id"] != id {
 		t.Fatal("retry created another run")

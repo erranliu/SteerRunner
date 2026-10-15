@@ -47,6 +47,9 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 }
 
 func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
+	if event.PublicMessage != nil {
+		return e.acceptMessage(id, *event.PublicMessage)
+	}
 	f := event.Fact
 	if f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && len(event.Implementation) == 0 {
 		return nil

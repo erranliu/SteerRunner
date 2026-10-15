@@ -1,0 +1,9 @@
+{
+  "schema": "steerrunner-tests/v1",
+  "l1_packages": ["./internal/..."],
+  "controlled_scenarios": ["TestSRStandalonePackage", "TestSRServiceOwnership", "TestSRInputFreeze", "TestSRPermissionQualification", "TestSRRunWorkflow", "TestSRStorageLogsEvents", "TestSRPublicationIdentity", "TestSRPublicationBeforeWorkflowReady", "TestSRNativeUnknownAndStop", "TestSRRestartRequiresResume"],
+  "scenarios": [
+    {"id": "local-codex.smoke", "level": "L2", "driver": "development-smoke", "target": "local-codex", "timeout_minutes": 30},
+    {"id": "orca-remote.smoke", "level": "L3", "driver": "development-smoke", "target": "orca-environment", "timeout_minutes": 30}
+  ]
+}

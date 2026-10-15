@@ -2,6 +2,11 @@
 
 接受前 Git 缓存目标分支刷新修复单独见[分支刷新 Plan](repository-base-refresh.plan.md)及其测试计划，不扩大本计划历史 live/恢复结果。
 
+> 2026-10-15 独立三级测试更新：当前定义与实施入口以 [独立测试说明](../testing.md) 为准。
+> L1=规则/组件；Controlled=L2/L3 前置；L2=本机 Codex + SteerlineTest 真实创建/合入 PR；
+> L3=可持续扩展的真机真实环境测试集，包含远端 Orca。以下首版历史入口中的 L1/L2
+> 曾是 live 场景编号，旧取消范围和 SteerLine 测试依赖不再作为本项目测试目标。
+
 日期：2026-10-14。用户已授权实施本计划。[Spec](steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../acceptance/steerrunner.md)。P0–P7 是跨仓交付检查点，不是 roadmap Task 或新的执行聊天。原调查基线保留下表；实施来源与主干交接事实见 [source-map](../extraction/source-map.md)。
 
 ## 1. 调查版本、交接与前置
@@ -197,3 +202,7 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 | 产品安装核验；WB-A04 | 用户授权的新安装目录；SteerLine `build-deploy.bat -NoPause`、`status --json` 及各项目 Runner `service status` | 打包后；三项目和宿主/Web ready，正常停启、配置/任务保持；仅安装运行操作，不派发任务 | SteerLine 安装迁移专属验收与安装目录 migration 记录 |
 
 仅宿主 Windows token 恢复发生变化，不跑模型/PR、L2/L3/full；本次空闲安装核验不替代历史任务恢复和 live 验收。
+
+## 执行可见性增量
+
+用户授权的流程/状态展示及最后消息查询独立见 [Plan](execution-observability.plan.md) / [验收](../acceptance/execution-observability.md)。保持单写事务和原恢复规则，不作为原生真机验收通过证据。

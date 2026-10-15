@@ -365,6 +365,12 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	}
 	prompt += workflow.PublicationInstruction(input.StepID, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
 	input.Prompt = prompt
+	// A newly authorized stage gets its own preparation budget. Time spent in
+	// the previous business turn must not expire preparation of the next one.
+	// Keep the initial workspace budget, and never reset unresolved intents.
+	if len(r.Workflow.StageInputs) > 0 {
+		r.PreparationDeadline = time.Time{}
+	}
 	r.Workflow.StepID = input.StepID
 	r.Workflow.StageInputs = append(r.Workflow.StageInputs, input)
 	r.Snapshot.PendingTurn = &b.TurnInput{StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...)}

@@ -2,7 +2,11 @@
 
 后续安装期 Windows broker 权限修复单独记录在 [Windows 启动验收](windows-broker-install.md)；空闲服务的通过不改变本页产品真机/R1 的既有失败边界。
 
-日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，历史版本本机真实 Codex/PR 与跨仓三个本机 R1 场景已有通过证据；最新产品真机补验失败，不能声明最终版本全链通过，Orca 验收已由用户取消。本轮按用户要求审计修复、分别交付 PR，不自动合并或发布。最新结果见§8–9，以下保留递进阶段的原始结论。来源见 [source-map](../extraction/source-map.md)。
+> 当前建设范围已恢复远端 Orca，采用 [独立三级测试契约](../testing.md)。L2/L3 均从冻结
+> Spec/Plan 开始，经过真实模型实施、检查、PR、反馈、合入、合并事实核验及停止收尾。
+> L3 是持续扩展的真机场景集。以下为历史验收原始记录；旧通过与旧取消结论不替代新套件结果。
+
+日期：2026-10-15。[Spec](../spec/steerrunner.spec.md)是产品行为依据，[Plan](../spec/steerrunner.plan.md)保留首版拆分与跨仓切换映射。当前本仓独立测试结果见 §10；§1–9 保留历史版本、当时的范围调整和失败证据，不作为新套件的通过依据。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
@@ -201,3 +205,31 @@ Runner `7bede6e` 的 `.evidence/foundation-20261015-070142/result.json` exit 0 /
 同版本 SteerLine `local-final` 受控补验在 TestBasicDelivery 报 Git `0xc000026b`，批次无完成汇总，不计通过。此前 §8 的真实 Codex/PR #253 和三个 R1 通过记录仍只归属各自版本。当前不宣称最新版产品真机、最终固定版本 R1 或完整跨仓交付完成；用户已要求本轮审计后分别提 PR，保持草稿，不合并、不创建 Release。
 
 审计修复实现提交 `41908e641b34a890448158d2f21a9edc597d08cb` 已推送远端。干净 Windows/amd64 构建版本 `0.1.0-dev.1`，EXE SHA-256 `5eb9c3a9162d13449d55d363dd136e0ee50dea0d1e06ac5afaa8b439b73e5a71`，资源摘要不变。`.evidence/audit-standalone/result.json` exit 0 / 1 场景，TestSRStandalonePackage 通过（15.41 秒）：从实际 EXE 验证独立包与公开服务契约；其 unit-foundation.log 的契约/存储/启动定向检查也通过。它不是模型或最新版 SteerLine 产品真机通过。
+
+## 10. 本仓独立三级测试（2026-10-15）
+
+用户重新明确本次验收范围：L1 为规则/组件测试，受控集成为真实测试的前置；L2 为本机原生 Codex + SteerlineTest；L3 为持续扩展的真机真实环境集合，首个场景为远端 Orca「台式机64G」。L2/L3 均须从可执行 Spec/Plan 到实际 PR、反馈复用、合入专属 base、Runner 核验 merged、停止原 Run 与服务。此定义取代上文历史层级编号及 Orca 取消范围。
+
+统一入口、catalog、Spec/Plan、checker/publisher、现场生成器、Go live driver 和结果判据均已归属本仓，详见 [三级测试指南](../testing.md)。独立现场使用 `C:/srt/<ID>`，不调用 SteerLine 代码、测试或配置。L3 以场景 ID 和 driver 注册表扩展，不将启动成功、零场景、skip 或残留进程视为通过。
+
+首轮独立 L2 完整通过：`.evidence/three-level-live-20261015-r3/summary.json`，现场 `C:/srt/60ffacd6e2a6`，Run `5ecfbecf883eb925cdd0a0921b47eb02`，固定 Codex 0.159.2 / gpt-6-luna / medium。[SteerlineTest PR #254](https://github.com/erranliu/SteerlineTest/pull/254) 从原 head `c7cc1a29de5edf4e5f79b047facb2055e604aa5e` 经原会话反馈更新为 `8e73e061d99078109f6d8cd5f72d5cd8ceff1107`，合入 `codex/srtest/60ffacd6e2a6/base`，merge commit `8146628855b6e62c67a2efbf319a7db4f3dd6029`。原生 final、实际 fetch 内容、合入后 checker、Run stop、服务退出全部通过。该现场对应 Runner EXE SHA `9a215f39112e8bfc5807ed2c923df7481daaa2a339e1fa6f6ef67ecb651a815e`，来源 `af545563` + 工作区测试变更。
+
+失败证据按原现场保留：初次 manifest 的时间解码及 Windows PowerShell 日期解析问题已修复；`C:/srt/8ee74d168d25` 实际发布暴露 PowerShell 5 空 JSON 数组计数问题，修复后新增空列表/已有 PR/冲突/查询失败反例，再完成上述 L2。`C:/srt/f45f2aefa9ba` 远端启动报账户路由 discovery timeout；`C:/srt/ecc1bec8965d` 原生 shell 报 `helper_unknown_error: setup refresh had errors`，均失败且已确认停止，没有 PR。
+
+按用户在 Orca terminal 中裸启动 `codex` 的方式，`C:/srt/36f0b13817be` 使用远端原生默认模型复验。Codex 0.162.1 仍在 shell 工具初始化失败后请求交互权限确认。诊断过程中对四个具体、已授权的仓库读取/单文件写入检查/本地提交命令进行了单次确认，没有永久规则；原生最终记录提交 `b855397912a47d09fd4d88a881ee9c908659c35b` 与 checker exit 0。切换报告时触发 `preparation_deadline`，没有发布/PR；该次 exit 1，Run 与服务均停止。确认介入证据和终端快照保存在现场 `evidence/`，不能作为无人值守通过。
+
+该真机失败暴露准备预算误用于后续阶段：长业务回合结束后报告准备仍沿用首次启动期限。已修复为新阶段输入获得新准备预算，原未决操作继续使用原期限。`TestSRLongTurnCanPrepareNextStage` 验证实际报告准备可在原 session 执行，原资源超时/迟到就绪反例继续通过。远端同一工作区执行官方 MXC 兼容探针返回 `MXC_OK` / exit 0，诊断终端已核实 `ptyKilled=true`。新批次使用进程级 MXC 与原生自动审核配置复验，旧失败现场不覆盖。
+
+修复后的批次 `.evidence/three-level-live-20261015-r6`：L1 顶层测试 149 项通过，5 项明确 helper/opt-in skip，语句覆盖率 44.2%；9 项脚本 guard、live driver 编译/零匹配拒绝及 10 项受控集成均通过。该覆盖率仅是 L1 Go 语句覆盖，不包含独立 EXE 与真机执行，也不表示所有故障已做真机验证。
+
+按包覆盖率：contracts 59.0%、Codex adapter 51.8%、Orca transport 73.1%、publication 60.5%、storage 62.8%；application 22.8%、host 12.7% 仍是单元覆盖薄弱处。当前 `go test -coverprofile` 按各包自己的测试计数，跨包调用及独立 EXE 的执行未汇总为联合覆盖；例如 resources/runstate 的 0% 不能解释为完全未被集成场景执行。后续应补关键分支测试及跨进程覆盖采集，不能把“三级入口齐备”表述为“全部代码已覆盖”。
+
+同批次 L2 已在新构建上再次完整通过：EXE SHA `04c9f6e08c413f8febb0481b3fcff0625628a080b02b37639ce435483e5b4492`，现场 `C:/srt/44e2387b7042`，Run `d9b3fb6a0c4b69b456b200456bb86138`，[PR #255](https://github.com/erranliu/SteerlineTest/pull/255)。原 head `f5e01e400207eee5423065f1bc1018daff9216ff`，原会话反馈 head `6dad91936b0ee4e3276679733b9653e004882d75`，合入专属 base 的 merge commit `6c32ee35dbea7a32b8973cd31a90ec7acfd20a24`。`scenario.json` 和 `result.json` 确认完整验证通过、Run 停止、服务退出。
+
+同批次远端 `C:/srt/c9d63e387b4b` 在业务输入前再次出现账户路由 discovery timeout，exit 1，原 Run 与服务停止已核实。因此 r6 混合批次整体为 failed，不能用 L2 成功覆盖 L3 失败。后续新现场使用 `--no-daemon --strict-config` 隔离原生后台路由，再验证 MXC/原生自动审核配置。
+
+远端 L3 在新批次 `.evidence/three-level-live-20261015-r7/summary.json` 完整通过（exit 0 / 1 个真实场景），其 L1、9 项脚本 guard、10 项受控前置也全部通过。现场 `C:/srt/beceb027f358` 使用上述同 SHA 的 Runner；远端 Codex 0.162.1，原生默认 GPT-6.1-Sol/high，启动参数为 `--no-daemon --strict-config -c windows.sandbox=mxc -c approvals_reviewer=auto_review`，未修改主机全局配置。该配置消除了本次运行中的路由及 shell 初始化阻塞，不声称已修复远端默认启动配置。
+
+Run `406c7e4fe039276d6be62ab62af172ba` 在固定远端 runtime `f8616747-34af-4543-8487-ec6b5d8de4ff` 的原会话完成实施、报告、发布及反馈。[PR #257](https://github.com/erranliu/SteerlineTest/pull/257) 原 head `d4ffa4818da4f3006dc084ad1092917ad4d9430e`，反馈 head `33d6c0f57933b8e39c8206280d24302c27b29b68`，merge commit `eb101e2f55c34f96e3c205d0ee987aef105c9f77`，base `codex/srtest/beceb027f358/base`。本轮没有手动权限确认或宿主代发布；GitHub 实际对象、原 session/attempt/branch/PR 复用、merged 事实、合入 checkout checker、Run stop、服务退出全部验证通过。
+
+当前结果汇总：L1 149 项、脚本 guard 9 项、受控前置 10 项通过；L2 采用 r6 的 PR #255 完整通过，L3 采用 r7 的 PR #257 完整通过。两者使用相同 Runner EXE；各批次原始状态保持原样。现有真机场景各 1 个，L3 后续通过 catalog/driver 持续增加环境和流程，不将此结果扩大为未注册场景的通过。
