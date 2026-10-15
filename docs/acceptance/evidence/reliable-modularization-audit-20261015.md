@@ -55,3 +55,13 @@ go test ./internal/execution/adapters/codex ./internal/execution/adapters/orcatr
 兼容结论仅覆盖四类隔离受控样本。三个原样本继续要求 journal/Snapshot 保持；stop_pending 允许结算状态变化，但要求原请求/ID/幂等键/摘要/完整绑定不变、操作数量不增、写者退出已核验且没有新 thread/start 或 turn/start。
 
 对本次最终输出的四对数据库另作只读复核，全部符合上述要求，见 v2-compatibility-summary.json。Spec/Plan 所选范围及审计确认的问题均已处理，没有遗留待验项；真实模型/真实 PR 和未覆盖的历史状态组合不在此次通过结论内。
+
+## PR 交付前与 main 的整合复验
+
+用户随后授权提交 PR。分支已无冲突地更新到 main `d2f0d094e857d6ff162b68ab1dc9f81d49261dc5`，包含远端已合入的启动权限与基线刷新修复；它们不计入本 PR 的变更。整合后的可靠层、Workflow、application、storage、host 共 40 个顶层单元测试及 vet 通过，日志为本地 `.evidence/reliable-pr-unit.log`；比原审计组合增加 main 的基线刷新测试及 host 测试。
+
+第一次整合复验 `.evidence/foundation-20261015-095739` 中七个业务场景通过，但 unknown 兼容项失败：测试在旧服务退出前取公开视图，旧 worker 随后的合法对账更新了诊断，导致比较时点不一致。现改为严格比较旧服务确认退出后的最终持久基线，保留身份、输入和诊断检查；没有为通过测试而放宽字段比较。该次失败不计为兼容验收通过。
+
+修正后的完整组合以干净源码提交 `69d9a47b2416a7534f74262033e36b6580d5c87c` 重新构建验证，证据为 `.evidence/foundation-20261015-100201`。result.json 为 exit_code=0、scenario_count=8，8 个顶层场景和 4 个兼容子场景全部通过，无 FAIL/SKIP，完成时间 `2026-10-15T10:05:32.8930709Z`。EXE SHA256 为 `B41FE23D30E682C84989F8DBA0EFC41DF67777AFC4BF8428C07C4B85C28BA15D`，测试 EXE SHA256 为 `3C25C2F76EBC2AEB499B0EB59290311ACAD0626BEE4616D407926F4BB12E4D50`；source-identity.json 记录来源。四对数据库的只读复核也通过，见同目录 v2-compatibility-summary.json。
+
+单元测试验证的整合提交为 `e400258131291988ba4cbf602f121e907cb722c9`，到上述构建提交只修改兼容测试取样时点，生产源码与这些单元测试均未改变。此后的提交仅补交付文档；不以文档提交另冒充构建来源。未合并或发布。
