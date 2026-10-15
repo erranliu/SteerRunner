@@ -31,6 +31,8 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	PRClues             []string                       `json:"pr_clues,omitempty"`
+	PRClueProbeAt       time.Time                      `json:"pr_clue_probe_at,omitempty"`
 	LastFinal           *contracts.FinalView           `json:"last_final,omitempty"`
 	NativeStarted       bool                           `json:"native_started"`
 	SeenNative          map[string]string              `json:"seen_native,omitempty"`
@@ -92,7 +94,10 @@ func (r *Record) View() contracts.RunView {
 	v := contracts.RunView{RunID: r.ID, Revision: r.Revision, Title: r.Request.Title, Correlation: r.Request.Correlation, InputDigest: r.InputDigest, ResourceDigest: r.ResourceDigest, Workflow: r.Request.Workflow, Step: r.Workflow.StepID, Status: r.Status, Phase: r.Phase, Diagnostic: r.Diagnostic, NewInputsAllowed: r.Allowed, ResumeRequired: r.ResumeRequired, StopStatus: r.StopStatus, Question: r.Question, PR: r.PR, Summary: r.Summary, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, Materials: []contracts.MaterialView{}}
 	s := r.Snapshot
 	v.Final = r.LastFinal
-	v.Execution = contracts.ExecutionView{AttemptID: s.Session.AttemptID, TurnStarted: r.NativeStarted, Generation: s.ResourceGeneration, Backend: string(s.Ref.Backend), Protocol: string(s.Ref.Protocol), SessionID: s.Session.SessionID, TurnID: s.Session.CurrentTurnID, Workspace: s.Ref.WorkspacePath, Branch: s.Ref.WorkspaceBranch}
+	v.Execution = contracts.ExecutionView{AttemptID: s.Session.AttemptID, TurnStarted: r.NativeStarted, Generation: s.ResourceGeneration, Backend: string(s.Ref.Backend), Protocol: string(s.Ref.Protocol), SessionID: s.Session.SessionID, TurnID: s.Session.CurrentTurnID}
+	if r.WorkspaceFact != nil {
+		v.Execution.Workspace, v.Execution.Branch, v.Execution.WorkspaceScope = r.WorkspaceFact.Worktree, r.WorkspaceFact.Branch, r.WorkspaceFact.InspectionScope
+	}
 	if r.Result != nil {
 		v.Execution.NativeOutcome = r.Result.NativeOutcome
 		v.Execution.FinalAvailable = r.Result.FinalVerified && r.Result.FinalSource != "" && r.Result.FinalItemID != ""
@@ -109,6 +114,12 @@ func (r *Record) View() contracts.RunView {
 	}
 	unresolved := false
 	for _, intent := range r.Intents {
+		op := intent.Request.Operation
+		view := contracts.OperationView{ID: op.ID, Action: op.Action, Status: string(op.Status), Diagnostic: op.Diagnostic}
+		if intent.Receipt != nil {
+			view.OriginalDiagnostic = intent.Receipt.Operation.Diagnostic
+		}
+		v.Operations = append(v.Operations, view)
 		if intent.Request.Operation.Status == b.OperationUnknown || intent.Request.Operation.Status == b.OperationInFlight {
 			unresolved = true
 		}

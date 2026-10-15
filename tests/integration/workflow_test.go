@@ -75,6 +75,24 @@ func TestSRInputFreeze(t *testing.T) {
 	}
 }
 
+func TestSRPermissionQualification(t *testing.T) {
+	testCount.Add(1)
+	dir, request := setupRun(t)
+	t.Setenv("SR_FIXTURE_VERSION", "codex-cli unsupported")
+	if err := os.WriteFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"), nil, 0600); err != nil {
+		t.Fatal(err)
+	}
+	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, info)
+	raw, _ := json.Marshal(request)
+	accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
+	id := accepted.Data.(map[string]any)["run_id"].(string)
+	view := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "blocked" })
+	if view.Phase != "permission_resources_unverified" || !view.ResumeRequired || view.NewInputsAllowed || countNative(t, "thread/start") != 0 || countNative(t, "turn/start") != 0 {
+		t.Fatalf("unqualified native executable crossed the input boundary: %+v", view)
+	}
+}
+
 func git(t *testing.T, dir string, args ...string) string {
 	t.Helper()
 	command := exec.Command("git", append([]string{"-C", dir}, args...)...)
@@ -104,7 +122,21 @@ func waitRun(t *testing.T, dir, id string, match func(contracts.RunView) bool) c
 }
 func setupRun(t *testing.T) (string, contracts.Request) {
 	t.Helper()
-	root := t.TempDir()
+	// Local receive-pack on Git for Windows has a short GIT_DIR buffer. Keep
+	// this controlled bare-remote fixture independent of the Go test name.
+	root, err := os.MkdirTemp(os.TempDir(), "sr-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if filepath.Dir(root) != filepath.Clean(os.TempDir()) || !strings.HasPrefix(filepath.Base(root), "sr-") {
+			t.Error("refuse cleanup outside the fixture's temporary root")
+			return
+		}
+		if err := os.RemoveAll(root); err != nil {
+			t.Error(err)
+		}
+	})
 	config := filepath.Join(root, "gitconfig")
 	t.Setenv("GIT_CONFIG_GLOBAL", config)
 	t.Setenv("GIT_CONFIG_NOSYSTEM", "1")
@@ -127,6 +159,14 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 	t.Setenv("STEERRUNNER_FIXTURE_STATE", native)
 	t.Setenv("CODEX_HOME", native)
 	t.Setenv("STEERRUNNER_FIXTURE_PROVIDER", provider)
+	t.Cleanup(func() {
+		if !t.Failed() || *evidenceFlag == "" {
+			return
+		}
+		if body, err := os.ReadFile(filepath.Join(native, "calls.jsonl")); err == nil {
+			_ = os.WriteFile(filepath.Join(*evidenceFlag, strings.ReplaceAll(t.Name(), "/", "-")+"-native-calls.jsonl"), body, 0600)
+		}
+	})
 	spec, plan := "Inline Spec：固定材料", "Inline Plan：固定计划"
 	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://github.com/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
 	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{Executable: helperEXE})
@@ -239,6 +279,49 @@ func TestSRPublicationIdentity(t *testing.T) {
 	}
 }
 
+func TestSRPublicationBeforeWorkflowReady(t *testing.T) {
+	testCount.Add(1)
+	dir, request := setupRun(t)
+	t.Setenv("STEERRUNNER_STAGE_PUBLISH_PLAIN", "1")
+	_ = os.WriteFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report"), []byte("hold original formatting turn"), 0600)
+	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, info)
+	raw, _ := json.Marshal(request)
+	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
+	current := waitRun(t, dir, id, func(r contracts.RunView) bool {
+		return r.PR != nil && r.Step == "publish.report" && r.Execution.TurnStarted
+	})
+	if current.Status == "pr_ready" {
+		t.Fatal("fixture did not retain incomplete workflow")
+	}
+	provider := os.Getenv("STEERRUNNER_FIXTURE_PROVIDER")
+	body, _ := os.ReadFile(provider)
+	var fact map[string]any
+	_ = json.Unmarshal(body, &fact)
+	fact["state"], fact["merged"], fact["merged_at"], fact["merge_commit"] = "merged", true, time.Now().UTC().Format(time.RFC3339Nano), current.PR.HeadRevision
+	body, _ = json.Marshal(fact)
+	_ = os.WriteFile(provider, body, 0600)
+	response := call(t, dir, []string{"inspect", "--run-id", id, "--refresh-pr"}, "", 0)
+	var refreshed struct {
+		Run contracts.RunView `json:"run"`
+	}
+	raw, _ = json.Marshal(response.Data)
+	_ = json.Unmarshal(raw, &refreshed)
+	if refreshed.Run.PR == nil || !refreshed.Run.PR.Merged || refreshed.Run.Status == "pr_ready" {
+		t.Fatal("merged PR was gated on workflow readiness", refreshed.Run)
+	}
+	writeCommand(t, dir, "stop", id, "terminal-stop", refreshed.Run.Revision)
+	stopped := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+	if stopped.NewInputsAllowed {
+		t.Fatal("terminal stop did not revoke input")
+	}
+	queries, turns := countNative(t, "provider/query"), countNative(t, "turn/start")
+	time.Sleep(1500 * time.Millisecond)
+	if countNative(t, "provider/query") != queries || countNative(t, "turn/start") != turns {
+		t.Fatal("terminal stop continued provider queries or native inputs")
+	}
+}
+
 func countNative(t *testing.T, method string) int {
 	t.Helper()
 	body, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
@@ -247,6 +330,9 @@ func countNative(t *testing.T, method string) int {
 	}
 	count := 0
 	for _, line := range strings.Split(strings.TrimSpace(string(body)), "\n") {
+		if line == "" {
+			continue
+		}
 		var entry map[string]any
 		if json.Unmarshal([]byte(line), &entry) != nil {
 			t.Fatal("invalid native evidence")

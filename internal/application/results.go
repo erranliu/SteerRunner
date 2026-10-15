@@ -119,6 +119,21 @@ func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 		return false
 	}
 	inputCopy := *input
+	if workflow.PublicationStep(inputCopy.StepID) && result.ContentVerified {
+		provider, providerErr := providerFor(r)
+		if providerErr == nil {
+			seen := map[string]bool{}
+			for _, url := range r.PRClues {
+				seen[url] = true
+			}
+			for _, url := range value.PRCandidates {
+				if _, err := provider.Config.PRNumber(url); err == nil && !seen[url] && len(r.PRClues) < 8 {
+					r.PRClues = append(r.PRClues, url)
+					seen[url] = true
+				}
+			}
+		}
+	}
 	transition := workflow.Route(r.Workflow, inputCopy, result, "")
 	if !transition.AcceptResult {
 		r.Status, r.Phase, r.Diagnostic = transition.Status, "result_unverified", transition.Reason
@@ -221,4 +236,37 @@ func (e *Engine) verifyPublication(id string) bool {
 	next.Workflow.StepID = workflow.StepPRReady
 	next.Status, next.Phase, next.Diagnostic = "pr_ready", "pr_ready", ""
 	return e.commitLocked(next, nil, "pr_ready") == nil
+}
+
+// A verified PR binding is independent of workflow completion. In particular,
+// formatting the publication report cannot prevent the caller from observing
+// a correctly bound PR that has already merged.
+func (e *Engine) probePRClues(id string) bool {
+	e.mu.Lock()
+	r := e.runs[id].Clone()
+	e.mu.Unlock()
+	provider, err := providerFor(r)
+	if err != nil {
+		return false
+	}
+	verified := []evidence.PRInfo{}
+	for _, url := range r.PRClues {
+		info, err := provider.Query(e.ctx, url)
+		if err == nil && publication.ValidateWorkerPRIdentity(info, url, r.Request.Publication.Repository, r.Request.Repository.BaseBranch, r.Snapshot.Ref.WorkspaceBranch) == nil {
+			verified = append(verified, info)
+		}
+	}
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	next := e.runs[id].Clone()
+	if next.PR != nil || next.Snapshot.Ref.WorkspaceBranch != r.Snapshot.Ref.WorkspaceBranch {
+		return false
+	}
+	next.PRClueProbeAt = time.Now().UTC().Add(5 * time.Second)
+	if len(verified) == 1 {
+		next.PR = prFact(next, verified[0])
+		next.Workflow.PRURL = verified[0].URL
+		return e.commitLocked(next, nil, "pr_bound") == nil
+	}
+	return e.commitLocked(next, nil, "pr_clues_unverified") == nil
 }

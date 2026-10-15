@@ -101,4 +101,20 @@ Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍�
 | `TestSRRunAtomicCommit` | 事件提交触发失败，Run/命令/事件全部回滚；重复提交零额外事件、跨 Run 游标拒绝、整数指纹不丢精度 |
 | `TestSROrcaFrozenMaterials` | 无远端/本机共享目录下，固定正文、commit、摘要及引用完整进入实施输入，覆盖正文不能删除固定材料 |
 
-以上进程证据记录了各次构建的 source_dirty、EXE 摘要和调用输出；是递进工作树验证，最终清洁来源验证另行登记。完整 SR-A01–SR-A12 仍按对应项逐项完成，不将这些局部通过外推为全部验收。SteerLine 新 CLI/桥接模块已通过自身协议及故障单测，但尚未接通产品任务事务或删除旧执行者；SR-A10 待验。真实代理/平台 PR 未执行；未修改安装环境。
+以上进程证据记录了各次构建的 source_dirty、EXE 摘要和调用输出；是递进工作树验证，最终清洁来源验证另行登记。完整 SR-A01–SR-A12 仍按对应项逐项完成，不将这些局部通过外推为全部验收。
+
+### 2026-10-15 继续验证
+
+| 证据 | 结果与限制 |
+| --- | --- |
+| `.evidence/foundation-20261014-234128` | 干净提交 `f5c99cadfc646ba87a252edea26883eb86e336d3`，exit 0 / 8 组实际 EXE 场景；构建 SHA `ac60ec162bc54f5edc9d354829244035b0783db8a7744d8979110e882ab1be73` |
+| `.evidence/foundation-20261015-001224` | 新增发布报告尚未完成时先绑定已核实 PR，仍保持 running；fresh refresh 可暴露真实 merged；stop 后零新输入/后台 PR 查询。exit 0 / 1 组 |
+| `.evidence/foundation-20261015-000958` | 保留失败：受控 bare remote 的 Windows 路径过长导致 Git `$GIT_DIR too big`，原生结果未知未重发；夹具改为自身短临时目录后通过，未放宽生产核验 |
+| `.evidence/foundation-20261015-003511` | 加入固定权限资源构建与提交后，exit 0 / 5 组：包/所有权/材料/PR身份/提前绑定 |
+| `.evidence/foundation-20261015-003706` | 10 组中既有 9 组全部通过；新增权限资格场景因测试记录器将空调用日志当非法 JSON 失败。原生版本不合格实际上已在零 thread/turn 创建处阻断。完整运行 exit 1，不能写作全通过 |
+| `.evidence/foundation-20261015-004040`、`004158` | 空日志文件处理的第一次修复仍因空行解码失败；修复空行后权限资格场景 exit 0 / 1 组。两份失败证据均保留 |
+| SteerLine `.evidence/steerrunner-cutover/` | 新 CLI/桥接及 SQLite 原子候选/交付定向通过：正确合并候选不要求 pr_ready，兄弟未知不阻塞；故障全回滚。实际 app 切换与旧执行域删除仍未完成，SR-A10 待验 |
+
+本地真机 SR-A11 已执行但未通过：独立包 `C:\SteerlineDebug\dev-20261015-075410-d20a7228-dirty` 的桌面 Codex `0.162.0-alpha.17.2` 和 `dev-20261015-080121-d20a7228-dirty` 的固定 native `0.159.2` 均遇到 `windows unelevated restricted-token sandbox cannot enforce split writable root sets directly; refusing to run unsandboxed`。前者撤销并停止原 Run；后者原生 final 核实为 blocked，不能算实施成功。没有测试 PR。证据在各包 `evidence/native-*`、`evidence/runner-native-calls.jsonl` 及原 Run app-server 日志。桌面不同版本在补齐权限资源资格检查后应于原生启动前拒绝，不再将它当固定版本的可用替代。
+
+远端 SR-A12 使用用户授权 Orca「台式机64G」，注册仓库 `C:\Projects\SteerlineTest`、远程 URL 核实为 `erranliu/SteerlineTest`。首次包 `C:\SteerlineDebug\sr\dev-20261015-083903-d20a7228-dirty` 的 Run `bdd3f96ba780860491ca879a4d7af59b` 在 `git worktree add` 因远端未获取固定 base commit 失败。Runner 保留原操作未知，不新建替代执行；已接受撤销新输入并请求停止自有服务。原生工作区/代理和 PR 均未完成。只读库存、专属 base fetch 的自有终端及关闭回执留在包/`.evidence/remote-base-*`。之后新包应先完成明确环境预检；不将手动 fetch、helper、终端空闲或旧失败写作真机闭环通过。未修改安装环境、用户认证或原生权限策略。

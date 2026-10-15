@@ -36,6 +36,9 @@ type server struct {
 
 func main() {
 	if len(os.Args) > 2 && os.Args[1] == "--query" {
+		if os.Getenv("STEERRUNNER_FIXTURE_STATE") != "" {
+			_ = appendCall(map[string]any{"method": "provider/query"})
+		}
 		body, err := os.ReadFile(os.Args[2])
 		if err != nil {
 			os.Exit(2)
@@ -45,7 +48,11 @@ func main() {
 	}
 	args := strings.Join(os.Args[1:], " ")
 	if strings.Contains(args, "--version") {
-		fmt.Println("codex-cli controlled-1")
+		version := os.Getenv("SR_FIXTURE_VERSION")
+		if version == "" {
+			version = "codex-cli 0.159.2"
+		}
+		fmt.Println(version)
 		return
 	}
 	if strings.Contains(args, "--help") {
@@ -129,6 +136,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 	_ = json.Unmarshal(request.Params, &params)
 	str := func(key string) string { var value string; _ = json.Unmarshal(params[key], &value); return value }
 	fail := func(err error) (map[string]any, []map[string]any) {
+		_ = appendCall(map[string]any{"method": "rpc/error", "rpc_method": request.Method, "error": err.Error()})
 		response["error"] = map[string]any{"code": -32600, "message": err.Error()}
 		return response, nil
 	}
@@ -190,7 +198,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			_ = os.Remove(marker)
 			return nil, nil
 		}
-		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
+		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
 			turn["status"] = "inProgress"
 			turn["items"] = []any{}
 			delete(turn, "completedAt")

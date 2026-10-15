@@ -12,6 +12,7 @@ type MaterialView struct {
 }
 
 type ExecutionView struct {
+	WorkspaceScope string `json:"workspace_scope,omitempty"`
 	TurnStarted    bool   `json:"turn_started"`
 	AttemptID      string `json:"attempt_id"`
 	Generation     string `json:"generation"`
@@ -73,7 +74,16 @@ type FinalView struct {
 	Text          string `json:"text,omitempty"`
 	Diagnostic    string `json:"diagnostic,omitempty"`
 }
+
+type OperationView struct {
+	ID                 string `json:"operation_id"`
+	Action             string `json:"action"`
+	Status             string `json:"status"`
+	Diagnostic         string `json:"diagnostic,omitempty"`
+	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
+}
 type RunView struct {
+	Operations       []OperationView   `json:"operations"`
 	RunID            string            `json:"run_id"`
 	Revision         uint64            `json:"revision"`
 	Title            string            `json:"title"`

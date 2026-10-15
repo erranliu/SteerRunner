@@ -82,6 +82,9 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.PendingStop != "" {
 		return e.stopRun(id, w, p)
 	}
+	if r.StopStatus == "stopped" && r.PendingResume == "" {
+		return false
+	}
 	if unknown(r) {
 		for i, intent := range r.Intents {
 			if intent.Request.Operation.Status == b.OperationInFlight || intent.Request.Operation.Status == b.OperationUnknown {
@@ -92,8 +95,11 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.PendingResume != "" {
 		return e.resumeRun(id, w, p)
 	}
-	if r.PendingPRURL != "" {
+	if r.PendingPRURL != "" && r.StopStatus == "" {
 		return e.verifyPublication(id)
+	}
+	if r.PR == nil && len(r.PRClues) > 0 && r.StopStatus == "" && !time.Now().Before(r.PRClueProbeAt) {
+		return e.probePRClues(id)
 	}
 	if r.PendingAnswer != nil && r.Allowed && !r.ResumeRequired {
 		return e.answer(id, w, p)
@@ -134,6 +140,18 @@ func (e *Engine) advance(id string, w *worker) bool {
 	}
 	if !r.Allowed || r.ResumeRequired {
 		return false
+	}
+	if r.Request.Execution.Adapter == "codex-app-server" && r.Snapshot.Workspace.Path != "" {
+		if err := e.verifyPolicyResources(r); err != nil {
+			e.block(id, "permission_resources_unverified", err, false)
+			return false
+		}
+		if e.runsPolicyMissing(id) {
+			e.mu.Lock()
+			err := e.commitLocked(r, nil, "permission_resources_bound")
+			e.mu.Unlock()
+			return err == nil
+		}
 	}
 	if r.PendingFeedback != nil {
 		return e.feedback(id, w, p)
@@ -265,6 +283,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	op.UpdatedAt = time.Now().UTC()
 	op.Diagnostic = e.redact(next, diagnostic)
 	savedReceipt := result.Receipt.Clone()
+	savedReceipt.Operation.Diagnostic = e.redact(next, savedReceipt.Operation.Diagnostic)
 	if intent.Request.Operation.Action != string(b.LifecyclePrepareWorkspace) {
 		savedReceipt.Operation.Receipt = nil
 	}
