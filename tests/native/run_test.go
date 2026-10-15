@@ -158,6 +158,16 @@ func run(t *testing.T, key string) {
 	if !ok {
 		t.Fatalf("manifest target %s is required", key)
 	}
+	if key == "local-codex" {
+		ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		command := exec.CommandContext(ctx, "gh", "auth", "status", "--active", "--hostname", "github.com")
+		out, err := command.CombinedOutput()
+		cancel()
+		_ = os.WriteFile(filepath.Join(m.DebugRoot, "evidence", "native-host-gh-auth-status.log"), out, 0600)
+		if err != nil {
+			t.Fatalf("host-side GitHub login is unavailable: %v", err)
+		}
+	}
 	dir := filepath.Join(m.ProjectRunDir, "runner", key)
 	if _, err := os.Stat(dir); !os.IsNotExist(err) {
 		t.Fatal("native state directory must be new; use a new debug package for a new execution plan")
@@ -171,6 +181,9 @@ func run(t *testing.T, key string) {
 	})
 	spec := "Run powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sandbox-check.ps1 using the normal sandbox and login=false; preserve its actual exit code and output. Replace result.txt with exactly two lines: SteerlineTest debug result, then the exact current branch from git branch --show-current, followed by a newline. Verify and commit only result.txt locally. No push or PR until a separate publication input. Publication must invoke powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./publish.ps1 and target this environment's dedicated base."
 	plan := "Read the frozen Spec, run its exact sandbox probe, update and verify result.txt and commit locally. The later report only formats the original implementation result. The separate publication input authorizes the fixed publish.ps1 command; use its exact verified PR URL. A sandbox denial may use the existing bounded automatic review route for that same command, preserving any denial."
+	if key == "local-codex" {
+		plan += " Host-side gh auth status was verified successfully before this Run. If the exact publication command receives HTTP 401 inside MXC, request native automatic review once for that same command; preserve any denial and do not copy credentials or change login configuration."
+	}
 	if selected.Execution.Adapter == "orca-terminal" {
 		spec = "Use the execution host's native permissions. Replace result.txt with exactly two lines: SteerlineTest debug result, then the exact current branch from git branch --show-current, followed by a newline. Verify and commit only result.txt locally. No push or PR until a separate publication input. Publication must invoke powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./publish.ps1 and target this environment's dedicated base. Return actual command results and blockers."
 		plan = "Read the attached frozen Spec and Plan, verify this worktree's repository/base/branch, update and verify result.txt and commit locally. The later report only formats the original implementation result. The separate publication input authorizes the fixed publish.ps1 command; use its verified PR URL. Preserve native permission denials or missing credentials as blockers."
