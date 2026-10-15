@@ -1,5 +1,7 @@
 # SteerRunner 首版独立化专属验收
 
+后续安装期 Windows broker 权限修复单独记录在 [Windows 启动验收](windows-broker-install.md)；空闲服务的通过不改变本页产品真机/R1 的既有失败边界。
+
 日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，历史版本本机真实 Codex/PR 与跨仓三个本机 R1 场景已有通过证据；最新产品真机补验失败，不能声明最终版本全链通过，Orca 验收已由用户取消。本轮按用户要求审计修复、分别交付 PR，不自动合并或发布。最新结果见§8–9，以下保留递进阶段的原始结论。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
