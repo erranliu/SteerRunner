@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-const PolicyContract = "codex-policy-v6:0.159.2:mxc:explicit-roots:server-admin-temp:native-tool-temp:tool-env:git-no-maintenance:auto_review"
+const PolicyContract = "codex-policy-v7:0.159.2:mxc:explicit-roots:server-admin-temp:native-tool-temp:tool-env:git-longpaths-no-maintenance:auto_review"
 const PolicyCodexVersion = "codex-cli 0.159.2"
 
 type Permissions struct {

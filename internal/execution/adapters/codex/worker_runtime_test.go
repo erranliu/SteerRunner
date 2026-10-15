@@ -74,13 +74,13 @@ func TestWorkerRuntimeEnvironmentPreservesGitConfigAndRejectsAlias(t *testing.T)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if environmentValue(env, "GIT_CONFIG_COUNT") != "3" || environmentValue(env, "GIT_CONFIG_VALUE_0") != "private-test-placeholder" || environmentValue(env, "TEMP") != r.Temp || environmentValue(env, "TMP") != r.Temp {
+	if environmentValue(env, "GIT_CONFIG_COUNT") != "4" || environmentValue(env, "GIT_CONFIG_VALUE_0") != "private-test-placeholder" || environmentValue(env, "TEMP") != r.Temp || environmentValue(env, "TMP") != r.Temp {
 		t.Fatal("runtime discarded existing Git configuration or temp setup")
 	}
 	if strings.Contains(environmentValue(env, "PATH"), alias) {
 		t.Fatal("zero-length PowerShell alias remained in PATH")
 	}
-	if environmentValue(env, "GIT_CONFIG_KEY_1") != "maintenance.auto" || environmentValue(env, "GIT_CONFIG_VALUE_1") != "false" || environmentValue(env, "GIT_CONFIG_KEY_2") != "gc.auto" || environmentValue(env, "GIT_CONFIG_VALUE_2") != "0" {
+	if environmentValue(env, "GIT_CONFIG_KEY_1") != "maintenance.auto" || environmentValue(env, "GIT_CONFIG_VALUE_1") != "false" || environmentValue(env, "GIT_CONFIG_KEY_2") != "gc.auto" || environmentValue(env, "GIT_CONFIG_VALUE_2") != "0" || environmentValue(env, "GIT_CONFIG_KEY_3") != "core.longpaths" || environmentValue(env, "GIT_CONFIG_VALUE_3") != "true" {
 		t.Fatal("automatic Git maintenance remained enabled")
 	}
 	if base[1] != "TEMP=old" {

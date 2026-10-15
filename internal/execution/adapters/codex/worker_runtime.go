@@ -123,11 +123,13 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 	}
 	values := map[string]string{
 		"PATH": strings.Join(paths, string(os.PathListSeparator)), "TEMP": r.Temp, "TMP": r.Temp,
-		"GIT_CONFIG_COUNT":                          strconv.Itoa(count + 2),
+		"GIT_CONFIG_COUNT":                          strconv.Itoa(count + 3),
 		fmt.Sprintf("GIT_CONFIG_KEY_%d", count):     "maintenance.auto",
 		fmt.Sprintf("GIT_CONFIG_VALUE_%d", count):   "false",
 		fmt.Sprintf("GIT_CONFIG_KEY_%d", count+1):   "gc.auto",
 		fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+1): "0",
+		fmt.Sprintf("GIT_CONFIG_KEY_%d", count+2):   "core.longpaths",
+		fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+2): "true",
 	}
 	return setEnvironmentValues(env, values), nil
 }
@@ -138,12 +140,13 @@ func (r *workerRuntime) instructions() string {
 
 func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 	count, err := strconv.Atoi(environmentValue(env, "GIT_CONFIG_COUNT"))
-	if err != nil || count < 2 || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2)) != "maintenance.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1)) != "gc.auto" {
+	if err != nil || count < 3 || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-3)) != "maintenance.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2)) != "gc.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1)) != "core.longpaths" {
 		return nil, errors.New("worker native environment lacks its fixed Git configuration")
 	}
 	values := [][2]string{{"PATH", environmentValue(env, "PATH")}, {"GIT_CONFIG_COUNT", strconv.Itoa(count)},
-		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2), "maintenance.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-2), "false"},
-		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1), "gc.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-1), "0"}}
+		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-3), "maintenance.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-3), "false"},
+		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2), "gc.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-2), "0"},
+		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1), "core.longpaths"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-1), "true"}}
 	args := make([]string, 0, len(values)*2)
 	for _, entry := range values {
 		args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))

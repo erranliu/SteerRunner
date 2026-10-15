@@ -31,7 +31,7 @@ import (
 var repositoryLocks sync.Map
 
 func gitHost() workspace.Git {
-	return workspace.Git{Command: b.LaunchCommand{Executable: "git"}, Timeout: 30 * time.Second, Start: process.New(30 * time.Second).StartManaged}
+	return workspace.Git{Command: b.LaunchCommand{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Timeout: 30 * time.Second, Start: process.New(30 * time.Second).StartManaged}
 }
 func canonical(value any) []byte {
 	raw, err := json.Marshal(value)
@@ -62,7 +62,7 @@ func providerFor(r *runstate.Record) (*publication.Client, error) {
 	if len(refs) > 0 {
 		config.TokenEnv = refs[0]
 	}
-	settings := evidence.PublicationSettings{Provider: evidence.PRProviderConfig(config), Git: b.Command{Executable: "git"}, Remote: r.Request.Repository.Remote, RemoteURL: r.Request.Repository.URL, BaseBranch: r.Request.Repository.BaseBranch, AuthenticationRefs: refs}
+	settings := evidence.PublicationSettings{Provider: evidence.PRProviderConfig(config), Git: b.Command{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Remote: r.Request.Repository.Remote, RemoteURL: r.Request.Repository.URL, BaseBranch: r.Request.Repository.BaseBranch, AuthenticationRefs: refs}
 	if err := publication.ValidateSettings(settings); err != nil {
 		return nil, err
 	}
