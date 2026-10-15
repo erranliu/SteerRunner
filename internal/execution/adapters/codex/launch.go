@@ -61,6 +61,14 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 			_ = output.Close()
 			return identity, nil, "", err
 		}
+		// Native execution servers may rebuild their tool environment. Pin only
+		// this task's public runtime values through the native shell policy too.
+		runtimeArgs, runtimeErr := config.Runtime.configArgs(cmd.Env)
+		if runtimeErr != nil {
+			_ = output.Close()
+			return identity, nil, "", runtimeErr
+		}
+		cmd.Args = append([]string{launch.Executable}, append(runtimeArgs, launch.Args...)...)
 	}
 	cmd.Stdout, cmd.Stderr = output, output
 	identity, err = start(cmd)

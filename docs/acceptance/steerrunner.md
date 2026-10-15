@@ -130,3 +130,7 @@ Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍�
 本地新包 `C:\SteerlineDebug\sr\dev-20261015-092541-d20a7228-dirty` 的 Run `be918ac793bab3b34581e624fb3c36c9` 使用 MXC，已实际读取冻结 Spec/Plan，写入并提交 result.txt，但原始 sandbox-check 首次报告 TEMP 不在指定目录；后一次探针被原生代理中断，仍为失败。12 分钟时处于 implement.report，缺发布/PR，harness exit 1（726.98 秒），服务已核验 not_running。完整 final 保留真实探针失败，不能将原生 turn completed 或 Git commit 当作任务验收成功。后续启动显式添加 `--no-daemon --strict-config`，避免会话被路由到其他环境的原生 daemon；这是待真机验证的修正，不声明已解决 TEMP/探针问题。没有测试 PR。
 
 用户已确认 Apache-2.0；仓库加入完整 LICENSE、NOTICE，保留来源提交及第三方说明。许可证选择不改变当前尚未通过的真机与跨仓切换验收状态。
+
+干净构建 `bd6353377e08e9aace7660fcc5a68acfc194ac4f`（EXE SHA `8247cb16ef4707556aa95cb21851e5badf4723f70cc8441bb36cce9c8171cb48`）在新包 `C:\SteerlineDebug\sr\dev-20261015-095009-d20a7228-dirty` 复验。Run `e27398eeadcb2c6cfd686cdac8b482fe` 的原始探针仍因 TEMP 不匹配失败，证明 no-daemon 单独不足；12 分钟时尚在 publish、无已核实 PR，harness exit 1（728.69 秒）。新 cleanup driver 在停止原服务前等待原 Run，已记录 `stop_status=stopped`，不再用服务 stop 回执代替原生停止事实。
+
+按[固定版本原生环境构造实现](https://github.com/openai/codex/blob/rust-v0.159.2/codex-rs/protocol/src/shell_environment.rs)，新增任务公开运行值的 shell_environment_policy.set 覆盖：TEMP/TMP、已过滤 PATH、维护禁用的 Git count/新增索引；不输出或复制继承 Git 认证配置，不修改用户配置或权限根。权限资源契约为 v5。原生效果待新包复验；`.evidence/runtime-tool-env.log` 的 Codex/application 定向通过，`.evidence/foundation-20261015-020258` 的权限资格和完整受控工作流两组 exit 0。原生 driver 加强为核验首次探针实际 item/completed 的退出码和 temp/兄弟写入拒绝 proof，模型总结、提交或 PR 本身不满足该验收项。

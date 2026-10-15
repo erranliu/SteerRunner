@@ -237,8 +237,69 @@ func run(t *testing.T, key string) {
 		if err != nil || strings.ReplaceAll(string(body), "\r\n", "\n") != "SteerlineTest debug result\n"+view.Execution.Branch+"\n" {
 			t.Fatalf("native committed result differs: %v %q", err, body)
 		}
+		if err := verifyNativeSandboxProbe(dir, id); err != nil {
+			t.Fatal(err)
+		}
 	}
 	t.Logf("native target=%s run=%s PR=%s session=%s final_source=%s", key, id, view.PR.URL, view.Execution.SessionID, view.Final.Source)
+}
+
+// The original sandbox probe must actually pass. A model's success summary,
+// local commit or later verified PR is not evidence of this runtime property.
+func verifyNativeSandboxProbe(dir, id string) error {
+	paths, err := filepath.Glob(filepath.Join(dir, "runs", id, "turns", "*", "appserver.jsonl"))
+	if err != nil {
+		return err
+	}
+	var first *struct {
+		At     int64
+		Exit   *int
+		Output string
+	}
+	for _, path := range paths {
+		body, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		for _, line := range bytes.Split(body, []byte{'\n'}) {
+			var event struct {
+				Method string `json:"method"`
+				Params struct {
+					CompletedAt int64 `json:"completedAtMs"`
+					Item        struct {
+						Type    string `json:"type"`
+						Command string `json:"command"`
+						Exit    *int   `json:"exitCode"`
+						Output  string `json:"aggregatedOutput"`
+					} `json:"item"`
+				} `json:"params"`
+			}
+			if json.Unmarshal(line, &event) != nil || event.Method != "item/completed" || event.Params.Item.Type != "commandExecution" || !strings.Contains(event.Params.Item.Command, "-File ./sandbox-check.ps1") {
+				continue
+			}
+			if first == nil || event.Params.CompletedAt < first.At {
+				first = &struct {
+					At     int64
+					Exit   *int
+					Output string
+				}{event.Params.CompletedAt, event.Params.Item.Exit, event.Params.Item.Output}
+			}
+		}
+	}
+	if first == nil || first.Exit == nil || *first.Exit != 0 {
+		return fmt.Errorf("original native sandbox probe did not complete successfully; preserve its actual failure")
+	}
+	for _, line := range strings.Split(first.Output, "\n") {
+		var proof struct {
+			Passed  bool `json:"passed"`
+			Temp    bool `json:"temp_in_admin"`
+			Sibling bool `json:"sibling_write_denied"`
+		}
+		if json.Unmarshal([]byte(strings.TrimSpace(line)), &proof) == nil && proof.Passed && proof.Temp && proof.Sibling {
+			return nil
+		}
+	}
+	return fmt.Errorf("original native sandbox probe lacks its temp and sibling-denial proof")
 }
 func TestSRNativeLocalCodex(t *testing.T) { run(t, "local-codex") }
 func TestSRNativeOrcaTargets(t *testing.T) {

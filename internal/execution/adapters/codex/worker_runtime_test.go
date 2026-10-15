@@ -86,6 +86,14 @@ func TestWorkerRuntimeEnvironmentPreservesGitConfigAndRejectsAlias(t *testing.T)
 	if base[1] != "TEMP=old" {
 		t.Fatal("mutated the inherited environment")
 	}
+	args, err := r.configArgs(env)
+	if err != nil {
+		t.Fatal(err)
+	}
+	joined := strings.Join(args, " ")
+	if !strings.Contains(joined, "shell_environment_policy.set.TEMP=") || !strings.Contains(joined, "shell_environment_policy.set.GIT_CONFIG_KEY_1=\"maintenance.auto\"") || strings.Contains(joined, "private-test-placeholder") || strings.Contains(joined, "http.example.extraheader") {
+		t.Fatal("native runtime pin omitted fixed values or exposed inherited Git settings")
+	}
 	if _, err := r.environment([]string{"GIT_CONFIG_COUNT=invalid"}); err == nil {
 		t.Fatal("invalid inherited Git configuration accepted")
 	}
