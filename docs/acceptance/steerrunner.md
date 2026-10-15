@@ -1,6 +1,6 @@
 # SteerRunner 首版独立化专属验收
 
-日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：基础层及独立 Run 执行已接通，本地真实 EXE 受控闭环通过；Orca、SteerLine 实际切换及真实 PR 仍待实施/验收。§6 为历史基础层交付，最新进度见§7。来源见 [source-map](../extraction/source-map.md)。
+日期：2026-10-15。仅归属「SteerRunner 首版独立化及 SteerLine 接入」这一交付，不覆盖其他规划/运行时集成任务。[Spec](../spec/steerrunner.spec.md)是行为依据，[Plan](../spec/steerrunner.plan.md)给出实施与完整测试映射。状态：执行与 SteerLine 实际切换已实施，本机真实 Codex/PR 已通过；跨仓重启回归收尾中，Orca 验收已由用户取消。最新结果见§8，以下保留递进阶段的原始结论。§6 为历史基础层交付，最新进度见§7。来源见 [source-map](../extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 
@@ -30,8 +30,8 @@ Runner 自身受控测试使用本次新建的临时目录和独立 Git 夹具�
 | SR-A08 / §4–5、7.2 | `storage.logs-events`：所有本地执行日志落本次state-dir，远端可取得记录和缺口归原Run；已知凭据字段不入快照/日志；事件游标分页重读可去重；inspect返回完整持久事实和真实缺口；日志变化不驱动业务状态 | controlled；directory-audit.json、events-pages.json、redaction-cases.json | 部分通过，详见§6；完整项待验 |
 | SR-A09 / §7–9 | `publication.identity`：真实隔离Git commit/push配受控provider；正确PR归属才pr_ready；错仓库/base/head/URL拒绝，head推进/缺可选HeadRevision不成为成果锁；已有PR反馈复用；发布未知仅查询，补报不再次发布；refresh-pr只读刷新，查询失败不冒充最新或撤销原绑定 | controlled；git-facts.json、provider-queries.jsonl、pr-bindings.json、side-effects.json | 待实施/待验 |
 | SR-A10 / §2、9–10 | `integration.steerline`：SteerLine只经CLI提交/查询/反馈/恢复/停止；原request幂等绑定候选；重复/丢失事件可补查询；正确绑定候选真实合并在SteerLine自有事务关闭一次并释放后继，其他候选未知/Runner阶段不成为门槛；Task终态待stop及迟到Run接受可重启对账，撤销回执后零新输入，确认窗口/native停止缺口不虚报；closed后零PR查询；Runner无任务图/TaskDelivery写权，原执行实现删除 | integration + controlled；caller-commands.jsonl、task-delivery.json、stop-receipts.jsonl、deletion-audit.md | 待实施/待验 |
-| SR-A11 / §1、6–9 | `native.local-codex`：独立CLI在本次真实本地Codex环境完成最小Spec/Plan、必要检查、原生final及真实测试PR核验；材料/工作区/会话/PR来源明确；其他环境或模型不自动扩大矩阵 | live（先过相关controlled）；source-identity.json、native-facts.json、checks.log、pr-facts.json | 待实施/待验 |
-| SR-A12 / §1、6–9 | `native.orca-targets`：实际承诺的Orca本机和environment分别证明准备/原身份/完成final来源及最小真实PR闭环；可复用一个很小任务定义，两个目标各有独立Run/分支/PR。未核实的停止、替代终端恢复、其他agent不声明支持，受控environment不冒充远端真机 | native + 最小live（先过相关controlled）；按target分目录的native-facts.json、checks.log、pr-facts.json、capabilities.json | 待实施/待验 |
+| SR-A11 / §1、6–9 | `native.local-codex`：独立CLI在本次真实本地Codex环境完成最小Spec/Plan、必要检查、原生final及真实测试PR核验；材料/工作区/会话/PR来源明确；其他环境或模型不自动扩大矩阵 | live（先过相关controlled）；source-identity.json、native-facts.json、checks.log、pr-facts.json | 本机已通过，见§8；后续目录修正须新包复验 |
+| SR-A12 / §1、6–9 | `native.orca-targets`：实际承诺的Orca本机和environment分别证明准备/原身份/完成final来源及最小真实PR闭环；可复用一个很小任务定义，两个目标各有独立Run/分支/PR。未核实的停止、替代终端恢复、其他agent不声明支持，受控environment不冒充远端真机 | native + 最小live（先过相关controlled）；按target分目录的native-facts.json、checks.log、pr-facts.json、capabilities.json | 用户取消；未计通过 |
 
 SR-A01–SR-A10 优先复用既有规则、协议样本和隔离夹具，新增只覆盖新的CLI/宿主/跨仓边界。运行源码实际采用哪一份三层产物、哪些既有场景可复用，由实施 Plan 固定，不能引用不存在的命令作可用入口。
 
@@ -170,3 +170,14 @@ SteerLine 后续完整产品包 `C:/SteerlineDebug/caller/dev-20261015-124412-ef
 远端第五轮：用户修复原生环境后，`C:/SteerlineDebug/srremote/dev-20261015-134657-ed44a08b` / Run `76b4e1992e576c0964ada38a398dda0d` 已确认原 agent/session/turn_started，完成实施原轮次。进入 implement.report 时原生策略资格拒绝：应用层传空 reportPolicy，Workflow 采用本机默认值，与 Orca `host_managed_permissions` 不一致。不是环境失败，也不能跳过资格门槛；harness exit 1 / 1 场景（157.86 秒）。修正应用层在处理原结果时，使用该原 worker port 的实际 PolicyCapabilities 冻结报告策略。`.evidence/report-origin-policy.log` 定向通过，覆盖原结果→下一 report→同策略资格通过、换策略拒绝，以及原资源/远端材料回归。下一轮须用新构建/新包。
 
 2026-10-15 用户明确放弃本机 Orca 路径：本次支持/自动验收范围为本机 Codex 与远端 Orca environment；本机 Orca 不再列为待完成目标，也不得记为通过。原本跨仓 R1 的本机 terminal 场景从本次必验清单移除，其历史失败仍保留。
+
+
+## 8. 最新验收范围与本机真机结果
+
+用户已明确取消本机和远端 Orca 路径验收，本次仅本机 Codex 为真机门槛。SR-A12 记为「用户取消，不计通过」；保留所有旧失败证据，不继续启动 Orca 场景。第六轮远端包 `C:/SteerlineDebug/srremote/dev-20261015-135928-d045c509` 原 Run `66c944425084d05d2401eeea5961cf82` 在通知前已 exit 1（148 秒）且 stop_status=stopped，没有 PR；后续查询服务不可用，不将它记作本次取消请求的停止回执。
+
+SR-A11 本机真机已通过：干净 Runner `c85f4e71e88e1e9c51d73284a12d3034e6778f4e`、EXE SHA `f58aa9eb850df89d768957b740490eafc7cb89312ab762b66d53740e39ebe8dd`，干净 SteerLine `560ce11e` 生成包 `C:/SteerlineDebug/srlocal/dev-20261015-141218-560ce11e`。`evidence/native-20261015-061410/result.json` exit 0 / 1 场景、235.62 秒。固定 Codex 0.159.2、gpt-6-luna/medium；原生 AppContainer/TEMP/项目检查/相邻写拒绝探针 exit 0。实施→报告→发布来自同一原会话与实际 final，指定两行 result.txt 提交 `5d74b109c9f6035029ac8152d360d8fb36039b1b`。
+
+原生普通发布命令先返回 HTTP 401，原生自动审批批准同一命令后成功推送并创建 [SteerlineTest PR #253](https://github.com/erranliu/SteerlineTest/pull/253)。模型后续普通查询仍 401；Runner 自己的只读 provider 核验正确仓库、专属 base/head/提交后才进入 pr_ready，不以模型声明替代 PR 事实。PR 为 OPEN draft，未合并。原 Run `f292bda278eb655e6854b388067bdca8` 已确认 stop_status=stopped。原始公开命令、快照及清理证据为包内 `evidence/runner-native-calls.jsonl`、`runner-native-local-codex.json`、`runner-native-local-codex-cleanup.json`；没有宿主代发布或认证复制。
+
+后续 SteerLine 本机 waiting-merge-restart 暴露更深 state-dir 的 Git `$GIT_DIR too big`，外部夹具原错误已保存；不改写历史失败。私有缓存改为 `r/<128-bit base32>`，工作区叶目录为 Run 身份的 128-bit base32；原 Run ID、branch、完整输入摘要和精确仓库/提交核验不变，命中已有工作区仍拒绝。更深管理路径的真实 Git push 必须复验，新构建须新包，不覆盖已验冻结包。

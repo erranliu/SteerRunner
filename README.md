@@ -65,7 +65,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 状态目录
 
-调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner`。目录下有 `runner.db`、`service/`、`inputs/`、`repos/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
+调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
 不兼容旧 SteerLine 数据或其他数据库，不提供旧格式迁移。替换构建前先停服；构建脚本不会结束或替换正在运行的服务。
 
@@ -80,4 +80,4 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 程序清单资源已生成并纳入源码；只在修改 `app.manifest` 后运行 `go generate ./cmd/steerrunner` 重新生成。项目采用 [Apache-2.0](LICENSE)，来源说明见 [NOTICE](NOTICE)。第三方运行依赖和 Go runtime 的许可声明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。正式发布须完成对应验收。
 
-当前支持/验收范围为本机 Codex 和远端 Orca environment；用户已放弃本机 Orca 路径，不列为待验目标。
+本次验收范围为 Windows/amd64 本机 Codex。用户已取消本机与远端 Orca 路径验收；Orca 适配器保留为未验能力，不声明真机支持。

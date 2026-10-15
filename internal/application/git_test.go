@@ -73,8 +73,13 @@ func TestSRCompactCacheCanPublishLinkedWorktree(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := root
-	for len(dir) < 110 {
-		dir = filepath.Join(dir, "project-state")
+	if len(dir) < 139 {
+		dir = filepath.Join(dir, strings.Repeat("s", 139-len(dir)))
+	}
+	// This is deeper than the formerly passing fixture: the old hex cache
+	// and full Run directory cross Git's Windows PATH_MAX minus 40 guard.
+	if len(filepath.Join(dir, "repos", strings.Repeat("a", 32), ".git", "worktrees", strings.Repeat("b", 32))) <= 220 {
+		t.Fatal("fixture misses native Git administration length guard")
 	}
 	input := contracts.Repository{URL: "https://example.invalid/owned/repo.git", BaseRevision: strings.TrimSpace(string(head)), LocalPath: source}
 	cache := repositoryCache(dir, input)
@@ -85,7 +90,7 @@ func TestSRCompactCacheCanPublishLinkedWorktree(t *testing.T) {
 		t.Fatal(err)
 	}
 	id := strings.Repeat("b", 32)
-	worktree := filepath.Join(dir, "workspaces", id)
+	worktree := executionWorkspace(dir, id)
 	if _, err := git.Output(ctx, cache, "worktree", "add", "-b", "codex/runner-"+id, worktree, input.BaseRevision); err != nil {
 		t.Fatal(err)
 	}

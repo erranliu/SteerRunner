@@ -177,3 +177,6 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 
 
 2026-10-15 用户范围调整：本机 Orca 路径已放弃，不再执行或阻塞本次验收。原 L2 只选择 environment；R1 去掉本机 terminal-local-reconnect，保留本机 Codex 恢复和远端未知输入零重发。历史失败/已冻结运行结果仍保留，不能改写成通过。
+
+
+最新用户范围：取消全部 Orca 路径验收，本次仅本机 Codex。L2/SR-A12 不再执行，历史结果保留；R1 仅 delivery.basic、recovery.waiting-merge-restart、recovery.codex-resume。补充 SR-A09/A10 的更深路径回归：`go test ./internal/application -run '^TestSRCompactCacheCanPublishLinkedWorktree$' -count=1 -timeout=2m`，以原 hex 布局超过 Windows Git 管理路径界限、当前私有紧凑布局低于界限的实际 linked-worktree push 核验，证据 `compact-cache-deep-publish.log`。本机 L1 使用修正后新 EXE/新 debug 包复验，证据按 SR-A11 登记，不替换冻结现场。

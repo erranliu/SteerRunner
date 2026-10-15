@@ -2,6 +2,8 @@ package application
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base32"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,8 +36,18 @@ var repositoryLocks sync.Map
 // Windows buffer limits. The full request identities remain in accepted input;
 // a cache hit still verifies the exact remote and every frozen commit.
 func repositoryCache(dir string, repository contracts.Repository) string {
-	key := reliable.Digest([]byte(repository.URL + "\x00" + repository.BaseRevision + "\x00" + repository.LocalPath))
-	return filepath.Join(dir, "repos", key[:32])
+	return filepath.Join(dir, "r", compactDirectoryKey(repository.URL+"\x00"+repository.BaseRevision+"\x00"+repository.LocalPath))
+}
+
+// A case-insensitive 26-character encoding retains 128 bits without the
+// additional hex expansion in native Git's fixed-size administration buffers.
+func compactDirectoryKey(identity string) string {
+	key := sha256.Sum256([]byte(identity))
+	return strings.ToLower(base32.StdEncoding.WithPadding(base32.NoPadding).EncodeToString(key[:16]))
+}
+
+func executionWorkspace(dir, id string) string {
+	return filepath.Join(dir, "workspaces", compactDirectoryKey(id))
 }
 
 func gitHost() workspace.Git {
@@ -261,7 +273,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 	}
 	branch := "codex/runner-" + id
-	worktree := filepath.Join(dir, "workspaces", id)
+	worktree := executionWorkspace(dir, id)
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: "codex"}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement}
 	return r, nil
