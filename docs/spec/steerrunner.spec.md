@@ -1,6 +1,8 @@
 # Spec：SteerRunner 首版产品与 CLI 契约
 
-日期：2026-10-14。状态：已按用户授权完成本轮契约自查及[实施 Plan](steerrunner.plan.md)，尚未启动源码拆分或运行验收。所属交付：SteerRunner 首版独立化及 SteerLine 接入。专属验收：[steerrunner.md](../acceptance/steerrunner.md)。本轮审阅修正与检查登记在该文档；不宣称已经独立复审或实现完成。
+日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
+
+最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
 ## 1. 目标、依据与首版范围
 
@@ -65,6 +67,8 @@ Windows 首版 IPC 使用命名管道。端点绑定规范化 `state-dir`、随�
 
 `submit` 和显式 `service start` 可在服务不存在时启动同目录的后台服务；后台启动不弹可见窗口。服务必须脱离 CLI/调用方的生命周期和会随其退出而结束的 Job 所有权；不能仅创建一个继承父 Job 的子进程就声称常驻。无法独立启动时在接受 Run 前明确失败，允许用户从独立入口启动同一个 serve 宿主，不增加另一种执行机制。`inspect`、`events`、`reply`、`resume`、`stop` 不隐式启动服务，服务不可用时返回 `service_unavailable`。`version` 不需要服务；`service status` 仅核验发现/进程/握手事实，不成为数据库读取后门。
 
+Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止时拒绝；创建成功但仍有关联时，可使用系统自带 Windows PowerShell/CIM 创建挂起进程，核验用户 SID、完整性级别、授权组/权限与 EXE，不能提升权限。系统能力缺失或核验失败明确拒绝。启动意图先保存；原进程创建结果无法核清时，状态/错误为 `startup_unverified`（exit 4），保留原意图，不盲目再次启动。手动 `serve` 的生命周期由独立宿主负责，`detached` 如实报告。
+
 CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次输入明确接受后，正常服务实例可继续既定 workflow；客户端进程是否存在不改变其授权。服务停机后的规则见第 8 节。
 
 `service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。前者不能报告所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。首版复用后端现有停服行为：本地 owned Codex 有界处理自己的进程树，Orca 可以只结束本地观察。Windows 系统服务注册与开机自启动另行设计。
@@ -105,7 +109,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 | 命令 | 输入与行为 | 成功响应 |
 | --- | --- | --- |
 | `version --json` | 离线版本查询 | 程序/协议/资源版本 |
-| `service start --state-dir ... --json` | 幂等启动或连接同目录服务；就绪代表能接受命令，不代表所有执行环境可用 | 实例身份、目录、就绪事实 |
+| `service start --state-dir ... --json` | 幂等启动或连接同目录的同一 EXE 发行包；不同 EXE SHA/版本/资源摘要拒绝 directory_conflict，保留原服务 | 实例身份、目录、就绪事实、`executable_sha256` |
 | `service status --state-dir ... --json` | 不自动启动；核验服务是否可达 | 实例身份与服务状态；不可达如实表达 |
 | `service stop --state-dir ... --input - --json` | 幂等接受有界停服请求；保存处理意图后再执行，最终状态由 status/重启对账核验 | command 回执与已知执行处理事实 |
 | `capabilities --state-dir ... --json` | 在线查询内置流程、adapter/config schema、平台能力与限制 | 能力版本和适用性；声明不替代现场事实 |
@@ -197,7 +201,7 @@ spec/plan 的 path 必须不同。references 可以包含验收或公共约束�
 
 服务必须在返回 accepted 前，持久化完整材料快照、规范化请求、实际流程/模板/配置内容及版本摘要；任何尚未完成的准备动作保存为原操作意图。输入无法完整取得则拒绝本次 submit，不启动业务代理。读取 Git 材料所需的缓存/fetch 可在接受前进行，但缓存副作用不代表 Run 已接受；并发同 ID 只能提交一个 Run。
 
-执行时向代理提供本 Run 冻结文档的实际可读位置，并保持其来源与摘要；准备方式由 adapter 实现，不能悄悄退回调用方文件。运行过程中修改调用方文档、全局配置或模板不影响已接受 Run。反馈沿用固定材料；更换 Spec/Plan、workflow 或后端应提交新 Run。
+执行时向代理提供本 Run 冻结文档的实际可读位置，并保持其来源与摘要；准备方式由 adapter 实现，不能悄悄退回调用方文件。本地 Codex 使用独立工作区 Git admin 下的固定文件；Orca 使用实施输入中附带的固定正文、来源 commit 与 SHA256，`prompt:<path>` 标识该输入内的文档，反馈实施再次附带同一正文。调用方仍可在 snapshot_path 找到本机持久快照，execution_location 表示代理实际读取位置。Orca 当前 CLI 以参数传输文本，首版固定材料的 JSON 表示与四份提示词正文合计最多 12000 UTF-16 单元，超过时在接受前明确拒绝。Orca 必须提供已注册项目的 local_path，environment 中按原适配器的同名项目规则解析并核验固定 base。运行过程中修改调用方文档、全局配置或模板不影响已接受 Run。反馈沿用固定材料；更换 Spec/Plan、workflow 或后端应提交新 Run。
 
 RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状示例，adapter/provider settings 的完整 schema 由内嵌能力提供）：
 
@@ -221,12 +225,24 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
     },
     "workflow": {"id": "development", "version": 1, "prompt_overrides": {}},
     "execution": {"adapter": "codex-app-server", "target": {"kind": "local"}, "settings": {}},
-    "publication": {"provider": "command", "repository": "example/project", "base_branch": "main", "settings": {}}
+    "publication": {"provider": "gitea", "repository": "example/project", "base_branch": "main", "settings": {"base_url": "https://example.com"}}
   }
 }
 ```
 
 首版 adapter ID 为 `codex-app-server`、`orca-terminal`；Codex 目标只支持 local，Orca 支持 local/orca_environment。`capabilities` 必须返回 settings schema 标识、版本和 schema 正文；程序内嵌相应 schema/默认值，实施 Plan 补齐模型、启动/权限、环境、超时及认证引用的具体字段，不把 settings 当作任意透传脚本。缺少必填配置明确拒绝，未知键不静默忽略。
+
+配置 schema v1 的公开字段如下。默认值在字段省略时适用；字段出现时不得为 null，executable/model/reasoning_effort/wait_timeout 不得为空字符串。参数均为 argv，不经 shell 拼接。
+
+| 配置 | 字段及默认值 |
+| --- | --- |
+| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。无权限覆盖字段，原生固定权限在 P2 接线时按原后端保留 |
+| Orca settings.transport | `executable` 默认 `orca.exe`；`args` 默认空数组；`wait_timeout` 默认 `30s`，Go duration，须大于 0 且不超过 1 分钟。args 不得覆盖 environment/pairing-code，路由来自冻结 target |
+| Orca settings.agent_launch | `executable` 默认 `codex`；`args` 默认空数组；可选 `model`、`reasoning_effort`（同枚举，省略继承工具）。transport 与 agent_launch 不混用 |
+| command provider settings | 必填 `base_url`、`query.executable`、非空 `query.args`；可选 `authentication_refs`（环境认证的引用名称数组，不是凭据值）。实际查询协议/身份沿用提取的 provider |
+| gitea provider settings | 必填 `base_url`；可选 `authentication_refs`。不接收内嵌 token/password 字段 |
+
+所有字段精确命名、拒绝未知键；已知凭据参数不得放在 args。默认 schema 被内嵌并可查询不等于后端已 ready；阶段版本必须在 capabilities 中明确 execution 状态，未接通执行时拒绝提交而不持久接受虚构 Run。
 
 ## 7. 默认流程、提示词及查询结果
 
@@ -242,7 +258,7 @@ implement.execute → implement.report → publish → pr_ready
 
 实施轮按固定 Spec/Plan 实现、测试及修复；检查和审查范围来自任务材料，不固定增加 verify/review 阶段。报告轮只格式化前一指定实施结果；发布轮推送并创建/复用 PR。发布正文无法解析时按现有规则补报，发布补报只格式化原发布结果，不再次发布。每个源结果最多一次报告格式修正；源失败或缺口不能由报告 done 覆盖。
 
-首版 `prompt_overrides` 只覆盖上述四个步骤的指令正文，未知步骤拒绝。固定材料引用、报告输入来源、publication 目标和机器结果格式由 Runner 附加并保存，不允许模板删除这些契约。覆盖内容是 UTF-8 文字，不执行脚本或任意模板表达式。override 不改变权限、步骤门槛、重试次数或 PR 归属。
+首版 `prompt_overrides` 只覆盖上述四个步骤的非空指令正文，未知步骤拒绝。固定材料引用、报告输入来源、publication 目标和机器结果格式由 Runner 附加并保存，不允许模板删除这些契约。覆盖内容是 UTF-8 文字，不执行脚本或任意模板表达式。override 不改变权限、步骤门槛、重试次数或 PR 归属。
 
 机器报告沿用 `outcome:done|needs_input|blocked`、summary、可选 question/blocker/outputs；发布 done 必含实际 pr_url。机器报告最大 128 KiB，超限明确记录格式/结果缺口。已知业务字段必须唯一且一致，接受一份可完整识别的 JSON 或完整 JSON 代码围栏，不从散文、工具输出或多个对象中猜选结果。额外解释字段不驱动业务；报告需绑定源输入、回合和来源，不能取另一次用户输入后的正文代替。
 
@@ -291,6 +307,8 @@ request_id、Run、Attempt、操作、会话/原生回合和原生资源身份�
 stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可用；历史失败/停止记录不能覆盖成从未发生。首版不自动删除工作区、分支或 PR；原生清理失败另记，不撤销已核实 PR 结果。
 
 ## 9. PR 成果与 SteerLine 协作
+
+本地 Windows 使用固定 MXC 权限资源契约。app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
 
 Runner 按冻结 publication 配置和当前实际工作分支推送，创建或复用该分支 PR。模型返回 URL 后，provider 需核验平台实例、仓库、base/head 仓库及分支与 Run 的绑定一致，才能进入 pr_ready。URL、仓库、number、查询状态和可取得的 revision/时间及诊断作为 PRFact 返回。
 

@@ -1,0 +1,47 @@
+package cli
+
+import (
+	"bytes"
+	"strings"
+	"testing"
+
+	"github.com/erranliu/SteerRunner/internal/contracts"
+)
+
+func TestSRCLIContract(t *testing.T) {
+	cases := []struct {
+		name  string
+		args  []string
+		input string
+		exit  int
+	}{
+		{"version", []string{"version", "--json"}, "", 0},
+		{"unknown_command", []string{"unknown", "--json"}, "", 2},
+		{"unknown_option", []string{"version", "--unknown", "value", "--json"}, "", 2},
+		{"duplicate_option", []string{"service", "start", "--state-dir", "C:/one", "--state-dir", "C:/two", "--json"}, "", 2},
+		{"protocol", []string{"version", "--protocol", "steerrunner-cli/v99", "--json"}, "", 3},
+		{"selector", []string{"inspect", "--run-id", "a", "--request-id", "b", "--json"}, "", 2},
+		{"missing_input", []string{"stop", "--run-id", "a", "--json"}, "", 2},
+		{"reply_schema", []string{"reply", "--run-id", "a", "--input", "-", "--json"}, `{"protocol":"steerrunner-cli/v1","request_id":"one","input":{"expected_revision":1,"kind":"answer","text":"value"}}`, 2},
+		{"invalid_utf8", []string{"submit", "--input", "-", "--json"}, string([]byte{0xff}), 2},
+	}
+	for _, item := range cases {
+		t.Run(item.name, func(t *testing.T) {
+			var output, diagnostics bytes.Buffer
+			exit := Run(item.args, strings.NewReader(item.input), &output, &diagnostics)
+			if exit != item.exit {
+				t.Fatalf("exit=%d wanted=%d output=%s stderr=%s", exit, item.exit, output.Bytes(), diagnostics.Bytes())
+			}
+			var response contracts.Response
+			if err := contracts.DecodeStrict(output.Bytes(), &response); err != nil {
+				t.Fatalf("not one JSON response: %s", output.Bytes())
+			}
+			if diagnostics.Len() != 0 {
+				t.Fatalf("unexpected diagnostic content: %s", diagnostics.Bytes())
+			}
+			if response.OK != (exit == 0) {
+				t.Fatalf("exit/envelope disagreement: %s", output.Bytes())
+			}
+		})
+	}
+}

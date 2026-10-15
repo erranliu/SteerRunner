@@ -1,0 +1,10 @@
+SteerRunner
+Copyright 2026 SteerRunner contributors
+
+Licensed under the Apache License, Version 2.0.
+
+Execution components were extracted from the SteerLine project,
+https://github.com/erranliu/SteerLine, starting from commit
+d20a72284705b4daac476d4fa5770151dca03e56.
+
+Third-party dependency notices are in THIRD_PARTY_NOTICES.txt.

@@ -1,6 +1,6 @@
 # Plan：SteerRunner 首版独立化与 SteerLine 切换
 
-日期：2026-10-14。状态：用户授权的下一步契约审阅与实施计划已编写；本轮不启动源码迁移、运行验证或发布。[Spec](steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../acceptance/steerrunner.md)。P0–P7 是一个跨仓交付的实施检查点，不是 roadmap Task 或新的执行聊天。
+日期：2026-10-14。用户已授权实施本计划。[Spec](steerrunner.spec.md)为行为依据，自动/人工验收及实时结果统一登记在[专属验收](../acceptance/steerrunner.md)。P0–P7 是跨仓交付检查点，不是 roadmap Task 或新的执行聊天。原调查基线保留下表；实施来源与主干交接事实见 [source-map](../extraction/source-map.md)。
 
 ## 1. 调查版本、交接与前置
 
@@ -14,6 +14,10 @@
 已读取 SteerLine `docs/spec/SpecGuide.md` 的 Spec/Plan 分工与最小验证要求，以及当前 PR、原会话、停服恢复和 Orca 取证约束。普通开发不需要 roadmap 转正或修改 execution-map。
 
 P0/P1 可在三层交接前开展文档、公共 schema、CLI/宿主及纯协议夹具建设。P2 搬迁执行规则前，核实三层实现和必要修复已进入选定主干 commit；没有完成该交接就不从旧 Service 另拆第二套规则。实际交接路径/commit/差异和继承场景写入 `docs/extraction/source-map.md`。
+
+2026-10-15 实施补充：三层及其审计修复已经进入来源 `d20a72284705b4daac476d4fa5770151dca03e56`，P2 按该提交抽取。Worker 统一规则以该提交的 [worker-lifecycle.md](https://github.com/erranliu/SteerLine/blob/d20a72284705b4daac476d4fa5770151dca03e56/docs/product-design/worker-lifecycle.md) 为输入；保留 W02–W16/W18 的准备、原意图、身份、结果及恢复边界，W01/Task 与 W17/TaskDelivery 留在 SteerLine，Runner 的成功里程碑改为 pr_ready。本文不把来源中尚未实现的初始化重试、Orca 替代会话恢复声明为已支持。
+
+材料实施补充：本地 Codex 的固定材料放在本 Run 的工作区 Git admin 下，保持代码工作树内容。当前 Orca CLI 无文件上传命令，本机/environment 均在实施输入中附带完整冻结正文及来源摘要；agent 的 `prompt:<path>` 引用指向该输入，反馈重用固定正文，不访问中心机器路径。材料和正文的 CLI 传输上限在接受前核验并记录于 Spec §6。`TestSROrcaFrozenMaterials` 覆盖无共享文件系统的材料引用与正文覆盖反例（SR-A04/A05），不代替 native/live。
 
 首版依赖现有 Git、原生 Codex/Orca、账号与目标主机准备，能力验证按实际现场进行。当前支持范围固定为 Windows/amd64；通用远端服务、第三方运行时和任意 workflow 图不串入本次交接。
 
@@ -30,7 +34,7 @@ P0/P1 可在三层交接前开展文档、公共 schema、CLI/宿主及纯协议
 
 ## 3. 目标代码和迁出/保留清单
 
-下列 Runner 路径为计划建设的位置，目前并不存在。包数随实际职责可收敛，但依赖方向与所有权不可混合。
+下列为目标 Runner 代码位置。包数随实际职责可收敛，但依赖方向与所有权不可混合；已建/未建与实际验证见验收文档。
 
 | SteerRunner 位置 | 来源与工作 |
 | --- | --- |
@@ -71,6 +75,7 @@ SteerLine 的保留/替换安排：
 2. 固定公共配置 schema：Codex 复用 executable/model/reasoning_effort及原固定权限；Orca把transport executable/args/wait_timeout、agent_launch及target.environment分开，路由只能来自冻结target；command/gitea provider复用base_url、query argv、认证引用等必要字段。settings非法或未知字段拒绝，模板覆盖不能扩大权限。把完整字段/默认值补入Spec并附可验证样例后再接业务执行。
 3. 实现规范化state-dir、实例发现、目录锁、当前用户ACL命名管道、握手和有界通信。服务单写，CLI不打开DB；状态不兼容在原生准备前拒绝。
 4. 实现同EXE的serve宿主和独立后台启动。检查Windows Job继承，不能仅用新窗口/进程组模拟脱离；父Job不允许安全独立启动时返回明确错误且零Run接受。SteerLine调用CLI的超时清理只结束本次CLI，不结束已独立运行的服务。
+   原生 breakaway 被禁止时拒绝；创建成功却仍有关联时使用系统 Windows PowerShell/CIM 挂起创建，经用户/完整性/授权组/权限/EXE核验后恢复。先保存启动意图；原创建未知保留 startup_unverified，禁止盲重建。此路径属于 Windows 宿主实现，不增加后台执行引擎或外部脚本资源依赖。
 5. 新建服务锁/别名/并发启动/陈旧实例/正常停止/父进程退出用例；无代理环境也可启动服务并查询schema。所有有副作用命令先持久化接受，再执行外部动作。
 
 ### P2 提取三层规则和原生 owner
@@ -116,9 +121,9 @@ SteerLine 的保留/替换安排：
 
 ### P7 最小真实验证与双仓交付
 
-1. 相关controlled通过后，按本次native manifest分别跑本地Codex和实际承诺的Orca两目标最小实现→PR。同一小任务材料可复用，各目标独立Run/工作区/base/head/PR，不扩大为真实故障矩阵。
+1. 相关controlled通过后，按本次native manifest跑用户保留的本地Codex最小实现→PR；Orca 两目标已由用户取消验收。同一小任务材料可复用，各目标独立Run/工作区/base/head/PR，不扩大为真实故障矩阵。
 2. 真机前核验工具/账号/目录信任/模型配置和主机版本；能力缺失保持未验并如实声明，不以受控environment替代真机。未通过承诺范围的验收不标首版交付完成。
-3. Runner实现PR合入并形成一个明确预发布版本及EXE摘要；SteerLine切换PR最终固定该已可取得版本，复验I1/R1后合入。两仓相互引用实际PR/commit/版本，不假设原子合入。
+3. 两仓分别提交可审阅 PR，SteerLine 固定远端可取得的 Runner commit、EXE 版本及 SHA，两仓相互引用实际 PR。按用户最新要求，本轮停在审计修复与 PR 交付；合并、预发布及最终版本 I1/R1/live 验收另按已满足的门槛推进，不在本轮自动合并或发布。
 4. 同步README使用例、source-map和验收证据，明确未实现能力。源码复制仅限抽取过渡；切换后功能修复归Runner，SteerLine只维护客户侧任务集成。
 
 ## 5. 测试计划
@@ -127,27 +132,31 @@ SteerLine 的保留/替换安排：
 
 ### 5.1 入口建设及执行约定
 
-除R1既有场景外，下列包/Test/manifest/helper均为待建设入口；在指定P步骤落地后才能执行，不能把这些命令当成当前已可运行。P4需验证每个选定Test非零匹配且无意外skip，P6对R1核验迁移后确实经Runner CLI，没有旧执行fallback。
+下表含已建基础入口和后续待建设入口；在指定P步骤落地后才能执行，当前可用入口及结果见验收文档。P4需验证每个选定Test非零匹配且无意外skip，P6对R1核验迁移后确实经Runner CLI，没有旧执行fallback。
 
-Runner进程测试统一接受测试专用环境变量 `STEERRUNNER_TEST_EXE` 与 `STEERRUNNER_TEST_EVIDENCE_DIR`，指向B1实际构建和本次空证据根；仅测试driver消费它们，生产仍用公开state-dir/请求。driver创建新目录、记录EXE/hash/来源、清理本次owned资源；每个场景写独立证据。native组额外使用 `STEERRUNNER_NATIVE_MANIFEST`，只存非秘密配置、双仓身份、目标主机、专属仓库/base/head及状态目录。
+Runner进程测试接受测试专用环境变量 `STEERRUNNER_TEST_EXE`（或测试参数 `-runner-exe`）和 `STEERRUNNER_TEST_EVIDENCE_DIR`（或 `-evidence-dir`），指向B1实际构建和本次空证据根；仅测试driver消费，生产仍用公开state-dir/请求。`scripts/test-foundation.ps1` 构建后以系统 CIM 启动隐藏独立测试宿主，避免工具自身的 Job 链影响允许/禁止反例。脚本返回仅代表已启动；须等待 result.json 的 exit_code=0、scenario_count=2 且无skip，查看 integration.log/caller-commands.jsonl。driver记录EXE/hash/来源、清理本次owned资源；native组额外使用 `STEERRUNNER_NATIVE_MANIFEST`，只存非秘密配置、双仓身份、目标主机、专属仓库/base/head及状态目录。
 
 live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest才启动真实代理；缺必需前置失败并保持未验。真实调试现场统一由P6扩展后的debug生成器创建在C:/SteerlineDebug；测试现场构造工具不成为Runner发布包依赖。
 
 | 入口 | 级别/场景与命令（cwd明确） | 环境、时点 | 自动项 | 通过条件与本文外证据 |
 | --- | --- | --- | --- | --- |
-| B1 | Runner构建：`go build -trimpath -o bin/steerrunner.exe ./cmd/steerrunner` | Windows/amd64；P1后、代码变更后必要重建 | SR-A01及所有进程组前置 | 一个EXE，version/资源可查询；build.log、exe-sha256.txt |
+| B1 | Runner构建：`./scripts/build.ps1`（底层 `go build -trimpath`） | Windows/amd64；P1后、代码变更后必要重建 | SR-A01及所有进程组前置 | 一个EXE，version/资源可查询；exe.build.json记录来源/hash，不覆盖运行服务 |
 | U1 | Runner unit：`go test ./internal/contracts ./internal/cli -run '^TestSRCLIContract$' -count=1 -timeout=2m -v` | 无模型；P1、公共协议改变后 | SR-A02、SR-A04 | 全部公开命令/错误分类/UTF-8/schema/请求指纹反例有效；cli-contract.jsonl、unit-cli.log |
+| U1-S | Runner存储：`go test ./internal/storage -run '^(TestSRShutdownReceipt\|TestSRUnsupportedStorage)$' -count=1 -timeout=2m -v` | 独立临时目录；P1、回执/格式变更后 | SR-A02、SR-A03、SR-A04（命令回执部分） | 停服回执持久、旧ID重试不作用新实例、不同正文冲突、外来格式拒绝且原文件不变；unit-foundation.log |
+| U1-H | Runner宿主：`go test ./internal/host -run '^TestSRStartupIntent$' -count=1 -timeout=2m -v` | 同owner临时启动意图fixture；P1、启动逻辑变更后 | SR-A03 | 未核清启动可见、后续启动拒绝、原意图不改且零DB；unit-foundation.log |
 | U2 | Runner unit：`go test ./internal/execution/workflow ./internal/execution/reliable -run '^(TestSRWorkflowDevelopment\|TestSRReliableRules)$' -count=1 -timeout=5m -v` | 纯原生事实fixture；P2/P3后 | SR-A01、SR-A05–SR-A07 | 三层依赖守卫、业务/技术规则及原会话/授权/来源反例有效；dependency-audit.md、unit-rules.log |
+| U2-E | 来源组件定向：`go test ./internal/execution/... -count=1 -timeout=5m -json`；新增 `TestSRExecutionDependencyBoundary`、`TestSRWorkflowDevelopment` | 仅本次实际迁出的包；P2后，复用来源codec/规则/故障fixture；live opt-in 保持关闭 | SR-A01、SR-A05–SR-A07、SR-A09 | 禁止反向依赖、固定材料与机器格式不可由正文覆盖、原始native身份/未知零重发及来源规则通过；ported-tests.jsonl，单列真正skip，不计真机通过 |
+| C-RUN | 真实EXE受控：`./scripts/test-foundation.ps1 -Pattern '^(TestSRRunWorkflow\|TestSRNativeUnknownAndStop\|TestSRRestartRequiresResume)$'` | 隔离Git/SQLite/当前用户服务，独立宿主；测试helper只经Codex公开RPC；P3/P4后 | SR-A01–SR-A09 中相关执行边界 | 实现→报告→真实本地Git push→受控PR核验；反馈更新原PR/分支/session；unknown零重发、stop撤销后零输入、重启零自动输入、当前resume沿原session。fixture原始调用计数、CLI/结果/版本均入本次证据根；不替代其他Run/Orca/跨仓项 |
 | C1 | Runner controlled：`go test ./tests/integration -run '^TestSRStandalonePackage$' -count=1 -timeout=3m -v` | 只有EXE的干净目录，无SteerLine资源/代理；P1/P4后 | SR-A01 | version→服务→capabilities闭环；package.log、resource-manifest.json |
 | C2 | Runner controlled：`go test ./tests/integration -run '^TestSRServiceOwnership$' -count=1 -timeout=5m -v` | 独立/别名目录、并发CLI、允许/禁止独立启动的父Job；P1/P4后 | SR-A03 | 唯一写者、CLI父进程退出服务仍活、非法接管拒绝；service-identity.json、write-counts.json |
 | C3 | Runner controlled：`go test ./tests/integration -run '^TestSRInputFreeze$' -count=1 -timeout=5m -v` | 隔离Git与受控helper；P3/P4后 | SR-A04 | inline/git快照及完整接受、同ID查询/并发/冲突、移动源材料不变；input-manifest.json、request-receipts.jsonl |
-| C4 | Runner controlled：`go test ./tests/integration -run '^(TestSRReconcile\|TestSROriginalSession)$' -count=1 -timeout=10m -v` | Codex/Orca local/environment受控协议，提交端口故障和进程断线；P3/P4后 | SR-A06、SR-A07 | 意图失败零动作、未知零重发、换代门槛、同thread恢复、stop授权持久/迟到隔离；fault-points.json、operation-journal.jsonl、side-effects.json |
+| C4 | Runner controlled：`./scripts/test-foundation.ps1 -Pattern '^(TestSRNativeUnknownAndStop\|TestSRRestartRequiresResume\|TestSRPermissionQualification)$'` | 实际 CLI/本地受控 Codex RPC；Orca 两目标另复用其来源 adapter 定向测试并保留未覆盖缺口；P3/P4后 | SR-A06、SR-A07 | 未知零重发、同thread恢复、重启零自动输入、stop授权持久、权限资源不合格零原生会话；integration.log、原调用计数和原生绑定 |
 | C5 | Runner controlled：`go test ./tests/integration -run '^TestSRStorageLogsEvents$' -count=1 -timeout=5m -v` | 两state-dir、分页/重复事件、已知秘密测试值与缺final；P3/P4后 | SR-A08 | 日志定位与缺口真实、事件可去重、日志不推进业务；directory-audit.json、events-pages.json、redaction-cases.json |
 | C6 | Runner controlled：`go test ./tests/integration -run '^TestSRPublicationIdentity$' -count=1 -timeout=10m -v` | 实际隔离Git push配loopback provider，三目标helper及反馈；P3/P4后 | SR-A05、SR-A09 | 三轮/补报有界、原source、正确PR/错误归属/复用/查询未知与刷新；workflow-events.jsonl、pr-bindings.json、side-effects.json |
 | I1 | SteerLine定向集成：`go run ./cmd/test-feedback -- ./tests/integration -run '^(TestSteerRunnerCLIIntegration\|TestSteerRunnerTaskDelivery\|TestSteerRunnerTerminalStop)$' -count=1 -timeout=10m -v` | 真实Runner EXE/CLI、独立双库和受控PR事实；P5/P6后、最终固定版本后 | SR-A10及SR-A06的跨仓边界 | 候选绑定、未知提交、唯一交付/后继、终态待stop重启/逻辑撤销/native缺口；caller-commands.jsonl、task-delivery.json、stop-receipts.jsonl |
-| R1 | SteerLine L3 controlled：`go run ./cmd/test-feedback -level=L3 '-suite=delivery,recovery' -env=controlled '-scenario=delivery.basic,recovery.waiting-merge-restart,recovery.codex-resume,recovery.terminal-local-reconnect,recovery.terminal-environment-unknown-send'` | 已有隔离夹具，经P6 driver改为真实Runner CLI；P6/固定版本后 | SR-A10、SR-A06、SR-A07 | 5个原登记场景非零、实际新链路、闭环身份/恢复保持；summary.json及场景日志 |
+| R1 | SteerLine L3 controlled：`go run ./cmd/test-feedback -level=L3 '-suite=delivery,recovery' -env=controlled '-scenario=delivery.basic,recovery.waiting-merge-restart,recovery.codex-resume,recovery.terminal-environment-unknown-send'` | 已有隔离夹具，经P6 driver改为真实Runner CLI；P6/固定版本后 | SR-A10、SR-A06、SR-A07 | 4个当前登记场景非零、实际新链路、闭环身份/恢复保持；summary.json及场景日志 |
 | L1 | Runner live：`go test -tags=live ./tests/native -run '^TestSRNativeLocalCodex$' -count=1 -timeout=15m -v` | 新debug包及native manifest，本地真实Codex/SteerlineTest专属PR；P7、相关controlled通过后 | SR-A11 | 小任务实际实现/指定检查/完整final/真实PR归属，所有版本可追溯；native-facts.json、checks.log、pr-facts.json |
-| L2 | Runner native + live：`go test -tags=live ./tests/native -run '^TestSRNativeOrcaTargets$/^(local\|environment)$' -count=1 -timeout=30m -v` | 同上；两个目标串行，各独立Run/分支/PR，缺任一目标不宣称通过；P7 | SR-A12 | 两端公开原生准备/完成取证及最小真实PR；按target登记native-facts.json、capabilities.json、checks.log、pr-facts.json |
+| L2 | Runner native + live：`go test -tags=live ./tests/native -run '^TestSRNativeOrcaTargets$/^environment$' -count=1 -timeout=30m -v` | 同上；用户已放弃本机 Orca，仅远端 environment；独立 Run/分支/PR；P7 | SR-A12 | 两端公开原生准备/完成取证及最小真实PR；按target登记native-facts.json、capabilities.json、checks.log、pr-facts.json |
 | D1 | 文档/来源/删除审计与受影响闭包编译：两仓`git diff --check`，必要时`go build ./...`；定向`rg`审计实际迁出符号/导入/SQL | 文档完成后；P2/P6及最终 | SR-A01、SR-A10（辅助，不能代替行为验证） | 无漏链接、零旧写者/反向依赖/闲置schema，当前消费者可编译；deletion-audit.md、compile.log |
 
 每组结果登记到验收文档相应SR-A项，并附本次证据根和实际Test/场景数量。源码/规则守卫放在U2的真实负例中；D1文本搜索只辅助。SR-A01–SR-A12均有行为入口，不能以构建或文档检查代替。
@@ -160,8 +169,19 @@ live测试使用 `//go:build live`，只有显式 `-tags=live` 和完整manifest
 
 ## 6. 交付与停止条件
 
-Runner独立可用、全部承诺自动项通过、SteerLine固定版本并切换删码后，才标记这次跨仓交付完成。PR/发布安排属于后续实施阶段，本轮不创建或发送外部事项。
+Runner独立可用、全部承诺自动项通过、SteerLine固定版本并切换删码后，才标记这次跨仓交付完成。PR/发布按P7执行；基础层阶段不创建发布或修改产品业务状态。
 
 各P步骤只有满足本步骤能力和测试门槛才进入依赖步骤；三层代码尚未交接不阻止P1纯宿主/协议建设，但不能启动P2另拆旧规则。运行验收环境缺失时明确保留未验，不能把文档计划、helper输出或历史结果写作通过。
 
 Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限制登记专属验收；source-map记录出处与实际删除，不恢复roadmap编号、外部Task准入或长期双维护路径。
+
+
+2026-10-15 用户范围调整：本机 Orca 路径已放弃，不再执行或阻塞本次验收。原 L2 只选择 environment；R1 去掉本机 terminal-local-reconnect，保留本机 Codex 恢复和远端未知输入零重发。历史失败/已冻结运行结果仍保留，不能改写成通过。
+
+
+最新用户范围：取消全部 Orca 路径验收，本次仅本机 Codex。L2/SR-A12 不再执行，历史结果保留；R1 仅 delivery.basic、recovery.waiting-merge-restart、recovery.codex-resume。补充 SR-A09/A10 的更深路径回归：`go test ./internal/application -run '^TestSRCompactCacheCanPublishLinkedWorktree$' -count=1 -timeout=2m`，以原 hex 布局超过 Windows Git 管理路径界限、当前私有紧凑布局低于界限的实际 linked-worktree push 核验，证据 `compact-cache-deep-publish.log`。本机 L1 使用修正后新 EXE/新 debug 包复验，证据按 SR-A11 登记，不替换冻结现场。
+
+
+本机产品冷启动的原生版本资格核验曾在 10 秒预算耗尽；该步骤保持单次只读探测，预算与现有外部命令统一为 30 秒，不自动重试、不缓存跳过资格核验、不创建未合格会话。SR-A06/A11 复验：现有 PermissionQualification 定向/实际 EXE 场景和新包本机 live，证据 `native-policy-budget.log` 及对应新包。
+
+审计补充（SR-A06，测试计划）：本机隔离 SQLite/受控原生端口，在本轮修复后、PR 推送前运行 `go test ./internal/application ./internal/execution/adapters/codex -run '^(TestSRNativeAnswerRejectsAmbiguityBeforeIntent|TestAsyncQuestionNativeIdentityOptionsReplayAndFinal|TestAsyncQuestionObserverUsesNewInputCommand|TestAsyncQuestionObserveSteerAndReconcile)$' -count=1 -timeout=2m -v`。原题集精确匹配，重复键/额外题目/固定选项额外答案/空回答/未提供选项须在保存原生意图前拒绝，合法选项 ID 映射为标签；现有原问题路由、原回合和恢复零重发场景不得退化。证据登记至专属验收 §9 与 `.evidence/audit-answer-native.log`。不因这次输入校验变更重跑已通过的完整 workflow/live 矩阵。
