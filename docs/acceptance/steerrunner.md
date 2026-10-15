@@ -134,3 +134,9 @@ Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍�
 干净构建 `bd6353377e08e9aace7660fcc5a68acfc194ac4f`（EXE SHA `8247cb16ef4707556aa95cb21851e5badf4723f70cc8441bb36cce9c8171cb48`）在新包 `C:\SteerlineDebug\sr\dev-20261015-095009-d20a7228-dirty` 复验。Run `e27398eeadcb2c6cfd686cdac8b482fe` 的原始探针仍因 TEMP 不匹配失败，证明 no-daemon 单独不足；12 分钟时尚在 publish、无已核实 PR，harness exit 1（728.69 秒）。新 cleanup driver 在停止原服务前等待原 Run，已记录 `stop_status=stopped`，不再用服务 stop 回执代替原生停止事实。
 
 按[固定版本原生环境构造实现](https://github.com/openai/codex/blob/rust-v0.159.2/codex-rs/protocol/src/shell_environment.rs)，新增任务公开运行值的 shell_environment_policy.set 覆盖：TEMP/TMP、已过滤 PATH、维护禁用的 Git count/新增索引；不输出或复制继承 Git 认证配置，不修改用户配置或权限根。权限资源契约为 v5。原生效果待新包复验；`.evidence/runtime-tool-env.log` 的 Codex/application 定向通过，`.evidence/foundation-20261015-020258` 的权限资格和完整受控工作流两组 exit 0。原生 driver 加强为核验首次探针实际 item/completed 的退出码和 temp/兄弟写入拒绝 proof，模型总结、提交或 PR 本身不满足该验收项。
+
+v5 新包 `C:\SteerlineDebug\sr\dev-20261015-100648-bdd894a8-dirty` 的 Run `4b222526ce17594724cc52cd5eec5614` 仍失败，日志首次输出实际路径，确认 MXC 将 TEMP 设为原生 `Packages/sandbox.{…}/AC/Temp`。强制等于 Git admin 是旧验收与原生内核语义冲突；移除工具 TEMP/TMP 强制值，改为 v6 的宿主临时目录/原生工具临时目录分工，固定写入根不变。保留公开 PATH/Git 禁用维护配置；不关闭沙箱或添加内核回退。
+
+原生能力包 `C:\SteerlineDebug\cap\dev-20261015-101834-bdd894a8-dirty` 的 `native-kernel-probe-2.log` 与 result.json 已核验 exit 0：实际 TokenIsAppContainer、TokenAppContainerSid 与 GetAppContainerFolderPath，TEMP 位于其 OS 容器目录，临时文件写读成功，本包兄弟 sentinel 的写访问为 PermissionDenied。原始 native-kernel-probe.log 的 `--strict-config` 不适用 sandbox 子命令错误保留，第二次使用该命令支持的参数，没有更改内核或权限范围。实现依据：[Windows token 信息](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_information_class)、[容器目录 API](https://learn.microsoft.com/en-us/windows/win32/api/userenv/nf-userenv-getappcontainerfolderpath)。此探针不是 Spec→PR 闭环通过。
+
+v6 `.evidence/native-kernel-temp-unit.log` 的 Codex/application 定向通过；`.evidence/foundation-20261015-021835` 权限资格/完整受控工作流两组 exit 0。原生 driver 在实际首次探针失败时立即保存 Run 并清理，避免把已知失败拖成发布超时。完整本地和 Orca 真机验收仍待对应新包运行结果。

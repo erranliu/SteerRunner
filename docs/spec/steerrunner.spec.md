@@ -306,6 +306,8 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 ## 9. PR 成果与 SteerLine 协作
 
+本地 Windows 使用固定 MXC 权限资源契约。app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
+
 Runner 按冻结 publication 配置和当前实际工作分支推送，创建或复用该分支 PR。模型返回 URL 后，provider 需核验平台实例、仓库、base/head 仓库及分支与 Run 的绑定一致，才能进入 pr_ready。URL、仓库、number、查询状态和可取得的 revision/时间及诊断作为 PRFact 返回。
 
 PRFact 是带来源的观察事实；Runner 的业务结果不是 TaskDelivery。inspect 默认返回持久快照，不保证读取时已经刷新平台状态。`inspect --run-id ... --refresh-pr` 可有界查询已绑定 PR 并持久化新的观察，不推送、发布、合并或继续代理；查询失败保留已核实的历史绑定并返回 query_error/观察时间，不将旧事实冒充最新。未绑定 PR 时明确无可刷新目标。PR head 可因反馈变化，不增加历史候选 SHA 锁；保留固定 workspace/base 和 PR 身份检查。当前 head 与历史不一致、缺可选 HeadRevision 不单独阻止合法反馈/发布。

@@ -133,7 +133,7 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 }
 
 func (r *workerRuntime) instructions() string {
-	return fmt.Sprintf("SteerLine Windows tool setup: use shell %q and login=false for shell tools. TEMP and TMP point to this execution's writable temporary directory %q, outside tracked files. Git automatic maintenance is disabled in this worker; do not re-enable it or widen Git writable roots. Do not dump authentication or the complete environment. If an authorized command fails because the Windows sandbox cannot start a process, credential helper or system pipe, request native automatic review with sandbox_permissions=require_escalated for the exact command in the fixed worktree. Keep the assigned remote and branch. Before retrying publication, query its actual branch/PR outcome. A denied or unavailable review must be reported; do not work around a denial, change permission settings, or use a GitHub ref-creation API instead of uploading Git objects. Opening a native viewer or granting folder trust is not a prerequisite for task execution.", r.Shell, r.Temp)
+	return fmt.Sprintf("SteerRunner Windows tool setup: use shell %q and login=false for shell tools. MXC assigns TEMP and TMP to each native AppContainer's private temporary directory. Preserve those native tool values; do not replace them with the app-server's host temporary directory or add writable roots. Git automatic maintenance is disabled in this worker; do not re-enable it or widen Git writable roots. Do not dump authentication or the complete environment. If an authorized command fails because the Windows sandbox cannot start a process, credential helper or system pipe, request native automatic review with sandbox_permissions=require_escalated for the exact command in the fixed worktree. Keep the assigned remote and branch. Before retrying publication, query its actual branch/PR outcome. A denied or unavailable review must be reported; do not work around a denial, change permission settings, or use a GitHub ref-creation API instead of uploading Git objects. Opening a native viewer or granting folder trust is not a prerequisite for task execution.", r.Shell)
 }
 
 func (r *workerRuntime) configArgs(env []string) ([]string, error) {
@@ -141,7 +141,7 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 	if err != nil || count < 2 || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2)) != "maintenance.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1)) != "gc.auto" {
 		return nil, errors.New("worker native environment lacks its fixed Git configuration")
 	}
-	values := [][2]string{{"TEMP", r.Temp}, {"TMP", r.Temp}, {"PATH", environmentValue(env, "PATH")}, {"GIT_CONFIG_COUNT", strconv.Itoa(count)},
+	values := [][2]string{{"PATH", environmentValue(env, "PATH")}, {"GIT_CONFIG_COUNT", strconv.Itoa(count)},
 		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2), "maintenance.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-2), "false"},
 		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1), "gc.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-1), "0"}}
 	args := make([]string, 0, len(values)*2)

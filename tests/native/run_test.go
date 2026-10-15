@@ -8,6 +8,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -217,6 +218,12 @@ func run(t *testing.T, key string) {
 		if json.Unmarshal(raw, &view) != nil {
 			t.Fatal("invalid Run view")
 		}
+		if selected.Execution.Target.Kind == "local" {
+			if err := verifyNativeSandboxProbe(dir, id); err != nil && !errors.Is(err, errNativeProbePending) {
+				_ = os.WriteFile(filepath.Join(m.DebugRoot, "evidence", "runner-native-"+key+".json"), raw, 0600)
+				t.Fatal(err)
+			}
+		}
 		if view.Status == "pr_ready" {
 			break
 		}
@@ -246,6 +253,8 @@ func run(t *testing.T, key string) {
 
 // The original sandbox probe must actually pass. A model's success summary,
 // local commit or later verified PR is not evidence of this runtime property.
+var errNativeProbePending = errors.New("original native sandbox probe has not completed")
+
 func verifyNativeSandboxProbe(dir, id string) error {
 	paths, err := filepath.Glob(filepath.Join(dir, "runs", id, "turns", "*", "appserver.jsonl"))
 	if err != nil {
@@ -286,16 +295,20 @@ func verifyNativeSandboxProbe(dir, id string) error {
 			}
 		}
 	}
-	if first == nil || first.Exit == nil || *first.Exit != 0 {
+	if first == nil {
+		return errNativeProbePending
+	}
+	if first.Exit == nil || *first.Exit != 0 {
 		return fmt.Errorf("original native sandbox probe did not complete successfully; preserve its actual failure")
 	}
 	for _, line := range strings.Split(first.Output, "\n") {
 		var proof struct {
-			Passed  bool `json:"passed"`
-			Temp    bool `json:"temp_in_admin"`
-			Sibling bool `json:"sibling_write_denied"`
+			Passed    bool `json:"passed"`
+			Temp      bool `json:"temp_in_kernel"`
+			Container bool `json:"app_container"`
+			Sibling   bool `json:"sibling_write_denied"`
 		}
-		if json.Unmarshal([]byte(strings.TrimSpace(line)), &proof) == nil && proof.Passed && proof.Temp && proof.Sibling {
+		if json.Unmarshal([]byte(strings.TrimSpace(line)), &proof) == nil && proof.Passed && proof.Temp && proof.Container && proof.Sibling {
 			return nil
 		}
 	}
