@@ -4,6 +4,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。真实 EXE 配受控原生协议已跑通本地闭环；SteerLine 实际产品 CLI 受控闭环已通过，旧执行 owner 已移除；本机真实 Codex/PR 与保留的三项本机交付/恢复场景已有通过证据，最新产品真机包仍在验证。
 
+- [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
@@ -41,6 +42,7 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --request-id my-submit-001 --json
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 .\bin\steerrunner.exe events --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
+.\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。

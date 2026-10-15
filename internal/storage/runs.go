@@ -72,6 +72,22 @@ func (s *Store) Commit(r *runstate.Record, expected uint64, command *Command, ev
 		return err
 	}
 	defer tx.Rollback()
+	var from contracts.WorkflowState
+	if expected != 0 {
+		var previous []byte
+		if err := tx.QueryRow(`SELECT body FROM runs WHERE id=? AND revision=?`, r.ID, expected).Scan(&previous); err != nil {
+			return err
+		}
+		var prior runstate.Record
+		if err := json.Unmarshal(previous, &prior); err != nil {
+			return err
+		}
+		from = contracts.WorkflowState{Stage: prior.Workflow.StepID, Status: prior.Status, Diagnostic: prior.Diagnostic}
+	}
+	to := contracts.WorkflowState{Stage: r.Workflow.StepID, Status: r.Status, Diagnostic: r.Diagnostic}
+	if from != to {
+		events = append(events, "workflow_changed")
+	}
 	if expected == 0 {
 		_, err = tx.Exec(`INSERT INTO runs(id,revision,body) VALUES(?,?,?)`, r.ID, r.Revision, raw)
 	} else {
@@ -104,6 +120,9 @@ func (s *Store) Commit(r *runstate.Record, expected uint64, command *Command, ev
 	}
 	for _, kind := range events {
 		event := contracts.Event{EventID: contracts.NewID(), RunID: r.ID, Revision: r.Revision, Type: kind, AttemptID: r.Snapshot.Session.AttemptID, CreatedAt: time.Now().UTC()}
+		if kind == "workflow_changed" {
+			event.Transition = &contracts.WorkflowTransition{From: from, To: to}
+		}
 		if kind == "result_committed" || kind == "final_unavailable" {
 			event.Final = r.View().Final
 		}

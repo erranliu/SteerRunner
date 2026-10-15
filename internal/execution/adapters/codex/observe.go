@@ -4,19 +4,22 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"os"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 )
 
 type ObservationEvent struct {
-	Persisted chan error
-	Summary   string
-	Envelope  codexapp.Envelope
-	Forward   bool
-	Kind      string
-	Status    string
-	Title     string
+	PublicMessage *b.PublicMessage
+	Persisted     chan error
+	Summary       string
+	Envelope      codexapp.Envelope
+	Forward       bool
+	Kind          string
+	Status        string
+	Title         string
 }
 
 // Observe journals native notifications before reporting them to the service.
@@ -46,6 +49,14 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 				return false, err
 			}
 			event := ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true}
+			if message := publicMessage(envelope, threadID, turnID, time.Now().UTC()); message != nil {
+				if !deliver(ObservationEvent{Envelope: envelope, PublicMessage: message}) {
+					if ctx.Err() != nil {
+						return false, nil
+					}
+					return false, errors.New("Codex observation channel ended")
+				}
+			}
 			if envelope.Method == "item/tool/call" || IsAsyncQuestion(envelope) {
 				if err := validateAsk(envelope); err != nil {
 					if len(envelope.ID) != 0 {
