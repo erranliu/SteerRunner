@@ -194,7 +194,7 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
-	case "submit", "inspect", "events", "reply", "resume", "stop":
+	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
 		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
 	}
 	s.mutex.Lock()

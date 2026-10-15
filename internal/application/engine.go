@@ -20,18 +20,19 @@ import (
 )
 
 type Engine struct {
-	epoch    string
-	identity *b.ProcessIdentity
-	mu       sync.Mutex
-	requests sync.Map
-	dir      string
-	store    *storage.Store
-	ctx      context.Context
-	cancel   context.CancelFunc
-	runs     map[string]*runstate.Record
-	workers  map[string]*worker
-	logger   *log.Logger
-	wait     sync.WaitGroup
+	lastMessages map[string]contracts.LastMessage
+	epoch        string
+	identity     *b.ProcessIdentity
+	mu           sync.Mutex
+	requests     sync.Map
+	dir          string
+	store        *storage.Store
+	ctx          context.Context
+	cancel       context.CancelFunc
+	runs         map[string]*runstate.Record
+	workers      map[string]*worker
+	logger       *log.Logger
+	wait         sync.WaitGroup
 }
 type worker struct {
 	gate     sync.Mutex // serializes new native dispatch with committed revocation
@@ -266,6 +267,14 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 	}
 	e.mu.Lock()
 	r := e.runs[runID]
+	if command == "last-message" && r != nil {
+		defer e.mu.Unlock()
+		view := contracts.LastMessageView{RunID: runID, AttemptID: r.Snapshot.Session.AttemptID}
+		if message, ok := e.lastMessages[runID]; ok && message.AttemptID == view.AttemptID {
+			view.Message = &message
+		}
+		return contracts.Success("", view)
+	}
 	if r != nil {
 		r = r.Clone()
 	}
@@ -273,6 +282,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 	if r == nil {
 		return reject(contracts.Fail(5, "run_not_found", "Run was not found."))
 	}
+
 	if command == "events" {
 		page, err := e.store.Events(runID, after, limit)
 		if err != nil {

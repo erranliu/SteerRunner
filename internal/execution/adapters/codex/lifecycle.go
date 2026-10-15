@@ -891,6 +891,10 @@ func (observer *lifecycleObserver) Close(ctx context.Context) error {
 func (observer *lifecycleObserver) forward() {
 	defer close(observer.events)
 	for value := range observer.original.Events {
+		if value.PublicMessage != nil {
+			value.PublicMessage.AttemptID = observer.fixed.AttemptID
+			value.PublicMessage.Generation = observer.fixed.Generation
+		}
 		fact := executionbackend.EventFact{}
 		if value.Forward {
 			decoded, err := DecodeEvent(value.Envelope, observer.fixed, true)
@@ -908,6 +912,7 @@ func (observer *lifecycleObserver) forward() {
 		}
 		persisted := make(chan error, 1)
 		event := executionbackend.LifecycleEvent{Fact: fact, Summary: value.Summary, Kind: value.Kind, Status: value.Status, Title: value.Title, Persisted: persisted}
+		event.PublicMessage = value.PublicMessage
 		select {
 		case observer.events <- event:
 		case <-observer.original.Finished:
