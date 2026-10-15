@@ -5,10 +5,8 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $taskInput = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
-$taskRoot = [IO.Path]::GetFullPath($taskInput.debug_root).TrimEnd('\')
-if (-not $taskRoot.StartsWith('C:\SteerlineDebug\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Use a newly generated SteerlineDebug package' }
-$taskPackage = Get-Content -LiteralPath (Join-Path $taskRoot 'manifest.json') -Raw | ConvertFrom-Json
-if ($taskPackage.status -ne 'ready' -or $taskInput.base_branch -ne $taskPackage.base_branch -or $taskInput.base_branch -notmatch '^codex/debug/[A-Za-z0-9.-]+/base$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated native test provenance is incomplete' }
+$taskRoot = [IO.Path]::GetFullPath($taskInput.root).TrimEnd('\')
+if ($taskInput.schema -ne 'steerrunner-test/v1' -or $taskInput.base_branch -cne ('codex/srtest/' + $taskInput.id + '/base') -or $taskInput.id -notmatch '^[a-f0-9]{12}$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated Runner fixture provenance is incomplete' }
 if (-not [IO.Path]::IsPathRooted($OrcaExe) -or -not (Test-Path -LiteralPath $OrcaExe -PathType Leaf)) { throw 'Use the selected absolute Orca executable' }
 $taskEvidence = Join-Path $taskRoot ('evidence/orca-preparation-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
@@ -35,7 +33,7 @@ $taskMarker = 'SR_BASE_' + [Guid]::NewGuid().ToString('N') + ':'
 # This is an isolated fixture preparation terminal, never a business agent.
 # Split the marker in the command so command echo cannot prove completion.
 $taskCommand = '& git -C ' + $taskRepoQuoted + ' fetch --no-tags origin +refs/heads/' + $taskInput.base_branch + ':refs/remotes/origin/' + $taskInput.base_branch + '; if ($LASTEXITCODE -eq 0) { & git -C ' + $taskRepoQuoted + " cat-file -e '" + $taskInput.base_revision + "^{commit}'; if (`$LASTEXITCODE -eq 0) { Write-Output ('SR_' + '" + $taskMarker.Substring(3) + "' + '" + $taskInput.base_revision + "') } }"
-$taskCreated = Invoke-TaskOrca @('terminal','create','--worktree',('id:'+$taskMains[0].id),'--title','SteerRunner native base preparation','--command',$taskCommand,'--focus')
+$taskCreated = Invoke-TaskOrca @('terminal','create','--worktree',('id:'+$taskMains[0].id),'--title','SteerRunner native base preparation','--command',$taskCommand)
 $taskHandle = $taskCreated.result.terminal.handle
 if (-not $taskHandle -or $taskCreated._meta.runtimeId -ne $taskListing._meta.runtimeId) { throw 'Preparation terminal creation is unverified; do not recreate it' }
 try {
@@ -49,8 +47,11 @@ try {
         Start-Sleep -Milliseconds 750
     } while ([DateTime]::UtcNow -lt $taskUntil)
     if (-not $taskVerified) { throw 'Native Git fetch/cat-file completion is unverified; preserve the preparation evidence' }
-    [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{status='prepared';base_revision=$taskInput.base_revision;runtime_id=$taskListing._meta.runtimeId;repository_id=$taskRepo.id;terminal_handle=$taskHandle}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{status='base_verified';base_revision=$taskInput.base_revision;runtime_id=$taskListing._meta.runtimeId;repository_id=$taskRepo.id;terminal_handle=$taskHandle}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 } finally {
-    $null = Invoke-TaskOrca @('terminal','close','--terminal',$taskHandle)
+    $taskClosed = Invoke-TaskOrca @('terminal','close','--terminal',$taskHandle)
+    if ($taskClosed._meta.runtimeId -ne $taskListing._meta.runtimeId -or $taskClosed.result.close.handle -ne $taskHandle -or -not $taskClosed.result.close.ptyKilled) { throw 'Preparation terminal stop was not confirmed' }
 }
-Write-Output "Native base prepared through the selected Orca host; evidence $taskEvidence"
+[IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{status='prepared';base_revision=$taskInput.base_revision;runtime_id=$taskListing._meta.runtimeId;repository_id=$taskRepo.id;terminal_handle=$taskHandle;terminal_stopped=$true}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+Write-Host "Native base prepared through the selected Orca host; evidence $taskEvidence"
+Write-Output $taskListing._meta.runtimeId
