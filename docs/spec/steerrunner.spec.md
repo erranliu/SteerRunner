@@ -192,6 +192,8 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 
 base_revision 为完整 40 或 64 位 Git commit ID，不能仅保存可移动分支。local_path 是入口而非结果工作区；Runner 验证其 remote 与固定 url/目标一致，再为本 Run 准备独立工作区。保留调用方仓库未提交文件，不能 reset 用户现场。publication.base_branch 必须与 repository.base_branch 一致，provider 仓库与 Git remote 身份必须匹配。
 
+接受新提交前，Runner 在私有缓存中从固定 remote 显式刷新 base_branch，再验证原 base_revision 属于该目标分支；local_path 的本地分支和已有缓存引用不作为最新远端事实。刷新失败则在接受前报告环境不可用，不能使用旧引用放行；远端前进不改变冻结基线，远端回退排除该基线时仍拒绝。此规则不重新解析已接受 Run 的固定输入，验证见[分支刷新 Plan](repository-base-refresh.plan.md)。
+
 每份文档为下列来源之一，并含用于展示与物化的安全相对 path：
 
 - `kind:inline`：含 UTF-8 content，接受时保存正文与 SHA256。

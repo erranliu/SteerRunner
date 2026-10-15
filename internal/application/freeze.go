@@ -204,6 +204,16 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if err != nil || strings.TrimSpace(string(remote)) != request.Repository.URL {
 		return nil, contracts.Fail(5, "repository_conflict", "Repository cache identity does not match.")
 	}
+	if _, err := git.Output(ctx, cache, "check-ref-format", "refs/heads/"+request.Repository.BaseBranch); err != nil {
+		return nil, contracts.Fail(2, "invalid_input", "Invalid base branch.")
+	}
+	baseRef := "refs/remotes/" + request.Repository.Remote + "/" + request.Repository.BaseBranch
+	// A local clone copies the caller's branch heads, which can lag its fetched
+	// remote refs. Warm caches also retain old heads. Refresh the exact target
+	// before checking ancestry without changing the caller's pinned revision.
+	if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, "+refs/heads/"+request.Repository.BaseBranch+":"+baseRef); err != nil {
+		return nil, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
+	}
 	commits := []string{request.Repository.BaseRevision}
 	for _, doc := range append([]contracts.Document{request.Documents.Spec, request.Documents.Plan}, request.Documents.References...) {
 		if doc.Kind == "git" {
@@ -217,10 +227,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 		}
 	}
-	if _, err := git.Output(ctx, cache, "check-ref-format", "refs/heads/"+request.Repository.BaseBranch); err != nil {
-		return nil, contracts.Fail(2, "invalid_input", "Invalid base branch.")
-	}
-	if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", request.Repository.BaseRevision, "refs/remotes/"+request.Repository.Remote+"/"+request.Repository.BaseBranch); err != nil {
+	if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", request.Repository.BaseRevision, baseRef); err != nil {
 		return nil, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
 	}
 	repo, err := workspace.ResolveRepository(ctx, git, cache)
