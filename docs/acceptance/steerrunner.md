@@ -165,3 +165,8 @@ SteerLine 后续完整产品包 `C:/SteerlineDebug/caller/dev-20261015-124412-ef
 - 远端第四轮 `C:/SteerlineDebug/srremote/dev-20261015-130412-7b42cd7f`，Run `ad72d46669e9520db416c53739aa204d`，1 场景 exit 1（191.54 秒）。原启动接受保持、没有重复发送；业务输入前准备期限耗尽。另有 Orca CLI 本地 environments 缓存 EPERM rename。停止原 Run 后，只读同一 runtime/terminal/incarnation 的终端事实证实 Codex TUI 报 `account/read failed: workspace routing discovery timed out` 并退出；证据 `.evidence/native-remote4-show.json` / `read.json`。原 Run stop_status=stopped，原终端 operator_close；不把 CLI 缓存错误当作唯一根因。
 - 用户曾选择远端待验，随后明确通知原生环境已修复并恢复验收。下一轮必须生成新 debug 包、专属 base/head，先原生准备，再重跑。第四轮冻结文件不替换，不计通过。
 - Apache-2.0 为用户已选定许可证，根 LICENSE 及第三方声明已提供。当前仅草稿 PR，无正式 Release；所有未验/失败项保留。
+
+
+远端第五轮：用户修复原生环境后，`C:/SteerlineDebug/srremote/dev-20261015-134657-ed44a08b` / Run `76b4e1992e576c0964ada38a398dda0d` 已确认原 agent/session/turn_started，完成实施原轮次。进入 implement.report 时原生策略资格拒绝：应用层传空 reportPolicy，Workflow 采用本机默认值，与 Orca `host_managed_permissions` 不一致。不是环境失败，也不能跳过资格门槛；harness exit 1 / 1 场景（157.86 秒）。修正应用层在处理原结果时，使用该原 worker port 的实际 PolicyCapabilities 冻结报告策略。`.evidence/report-origin-policy.log` 定向通过，覆盖原结果→下一 report→同策略资格通过、换策略拒绝，以及原资源/远端材料回归。下一轮须用新构建/新包。
+
+2026-10-15 用户明确放弃本机 Orca 路径：本次支持/自动验收范围为本机 Codex 与远端 Orca environment；本机 Orca 不再列为待完成目标，也不得记为通过。原本跨仓 R1 的本机 terminal 场景从本次必验清单移除，其历史失败仍保留。

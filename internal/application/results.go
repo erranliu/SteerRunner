@@ -134,7 +134,14 @@ func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 			}
 		}
 	}
-	transition := workflow.Route(r.Workflow, inputCopy, result, "")
+	owner := e.workers[id]
+	if owner == nil || owner.port == nil {
+		return false
+	}
+	// Freeze the originating adapter's actual policy in the next report.
+	// Workflow must not substitute its local default for Orca permissions.
+	reportPolicy := owner.port.PolicyCapabilities().ReportToolPolicy
+	transition := workflow.Route(r.Workflow, inputCopy, result, reportPolicy)
 	if !transition.AcceptResult {
 		r.Status, r.Phase, r.Diagnostic = transition.Status, "result_unverified", transition.Reason
 		_ = e.commitLocked(r, nil, "result_unverified")
