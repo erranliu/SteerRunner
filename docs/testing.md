@@ -106,6 +106,16 @@ Orca 取证入口 skip；这些 skip 不计真机通过。
 `test-native.ps1 -Manifest <绝对路径>`。它们供已有前置通过证据的开发诊断使用；正式分级
 验收使用 `test.ps1`，确保前置门槛和批次汇总完整。
 
+审计 workflow 的两模型定向诊断复用同一个 native driver。配置中先显式指定执行 `model`，
+再用下列命令选择不同的审计模型；省略审计 effort 时继承执行 effort。此诊断核验两项审计、
+执行模型回切及实际 PR 后停止原 Run/服务，保留测试 PR 未合并，不计作普通 L2 完整 smoke。
+它不改变默认 L2/L3 场景选择或生产默认发布提示词；该新 Run 冻结测试用发布提示词覆盖。
+
+```powershell
+$auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.smoke -Config .evidence/live-config.json -AuditModel '<审计模型>' -AuditReasoningEffort high
+./scripts/test-native.ps1 -Manifest $auditManifest
+```
+
 ## 扩展 L3
 
 场景注册在 `tests/catalog.json`。L3 是环境场景集合，增加场景无需新增测试级别。

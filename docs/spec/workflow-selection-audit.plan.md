@@ -64,7 +64,7 @@
 ### P4 定向集成与最小真机
 
 1. 扩展已有 controlled helper 和实际 EXE 测试：两流程选择、通过、修复后重审、预算耗尽、审计答案、stop/restart/unknown、旧流程回归。用原操作记录证明 A→B→A→B→A 同 thread/workspace。
-2. controlled 通过后，在新 `C:/SteerlineDebug` 专属包运行一次真实审计流程，使用两个不同且实际可用的模型，完成审计与回切执行模型发布。接受业务 Run 前，准备本包专属远端 base，并用 `git ls-remote --heads origin refs/heads/<本包base>` 核对其 revision 等于 manifest.base_revision；仅生成本地 debug 包不代表远端 base 就绪。native 驱动会在启动 Runner 前拒绝未准备的 base。自然出现 finding 时保留实际修复证据；不人为要求模型一定发现问题。
+2. controlled 通过后，用本仓 `new-test-fixture.ps1 -Scenario local-codex.smoke -Config <配置> -AuditModel <审计模型>` 生成新的独立现场，再通过 `test-native.ps1` 运行真实审计流程。配置中显式指定执行模型，两个模型须不同且实际可用；可用 `-AuditReasoningEffort` 覆盖继承值。共用现有 native driver 的准备、实施、PR 核验和清理链路；审计诊断在已验证 PR 后停止，不进入普通 smoke 的反馈/合并阶段。接受业务 Run 前，用 `git ls-remote --heads origin refs/heads/<本包base>` 核对 revision 等于 manifest.base_revision；native 驱动会拒绝未准备的 base。自然出现 finding 时保留实际修复证据；不人为要求模型一定发现问题。旧 SteerlineDebug 证据仅作为历史记录保留。
 3. 真实 final、原会话和 provider PR 归属按既有标准核验。不新增 head tree 证明或全模型矩阵，不替换旧运行包。通过公开 stop/inspect 清理原 Run，保留失败现场及清理证据；不自动合并或 Release。
 
 ## 4. 最小验证安排
@@ -76,7 +76,7 @@
 | U0/B0 | 实施前固定旧回归；相关控制逻辑完成后复验一次 | WA-02/06/07 |
 | U1 | 输入/目录、最小审计结果、路由/预算、模型原意图相等性和旧 v2 记录 | WA-01–07 |
 | C1 | 真实 EXE + controlled 原生/provider，选择、修复/重审、预算、回答、停止/重启与未知结果 | WA-01–06 |
-| L1 | 两不同模型真实同会话审计、切回执行并发布一次测试 PR | WA-08 |
+| N1 | 两不同模型真实同会话审计、切回执行并发布一次测试 PR | WA-08 |
 | D1 | 本地链接、JSON 示例、验收映射、git diff --check；代码变更完成后构建及受影响包 go vet | 文档/构建，不替代行为测试 |
 
 ```powershell
@@ -85,14 +85,15 @@ go test ./internal/contracts ./internal/execution/workflow ./internal/applicatio
 # B0：现有实际 EXE 入口。
 ./scripts/test-foundation.ps1 -Pattern '^(TestSRRunWorkflow|TestSRPublicationIdentity|TestSRNativeUnknownAndStop|TestSRRestartRequiresResume)$'
 # U1：新增入口，每个用例用 subtest 覆盖相关反例。
-go test ./internal/contracts ./internal/resources ./internal/execution/workflow ./internal/execution/reliable ./internal/execution/adapters/codex ./internal/application -run '^(TestSRWorkflowSelection|TestSRAuditContractAndRouting|TestSRTurnModelBinding|TestSRAuditLifecycle|TestSRWorkflowLegacyRecord|TestSRWorkflowDevelopment|TestSRExecutionDependencyBoundary)$' -count=1 -timeout=2m
+go test ./internal/contracts ./internal/resources ./internal/execution/workflow ./internal/execution/reliable ./internal/execution/adapters/codex ./internal/application -run '^(TestSRWorkflowSelection|TestSRAuditContractAndRouting|TestSRTurnModelBinding|TestSRAuditLifecycle|TestSRFrozenInputRestoration|TestSRWorkflowLegacyRecord|TestSRWorkflowDevelopment|TestSRExecutionDependencyBoundary)$' -count=1 -timeout=2m
 # C1：两个新增实际 EXE 测试入口，分别覆盖选择与审计闭环/控制故障。
 ./scripts/test-foundation.ps1 -Pattern '^(TestSRWorkflowDiscoveryAndSelection|TestSRAuditedWorkflow)$'
-# L1：native manifest 增加 audit_model，使用两个不同模型；替换绝对路径占位值。
-./scripts/test-native.ps1 -Manifest '<新包内绝对路径>' -Pattern '^TestSRNativeAuditedWorkflow$'
+# N1：本仓生成新现场；配置中的执行模型与审计模型须不同。
+$auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.smoke -Config '<配置绝对路径>' -AuditModel '<审计模型>' -AuditReasoningEffort high
+./scripts/test-native.ps1 -Manifest $auditManifest
 ```
 
-B0/C1 与现有 native 脚本异步返回证据目录；等待该目录 result.json，并核对 exit_code/scenario_count，不能将启动成功计作通过。故障分支主要由 U1/C1 覆盖，L1 仅验证原生切模型及最小闭环，不重复整个矩阵。
+B0/C1 异步返回证据目录；等待该目录 result.json，并核对 exit_code/scenario_count，不能将启动成功计作通过。现行 native 脚本等待结果后返回；N1 仅验证原生切模型及最小闭环，故障分支主要由 U1/C1 覆盖，不重复整个矩阵。N1 是本文验证项编号，与统一测试入口的 L1 组件测试层级不同。
 
 ## 5. 结果登记与完成条件
 
@@ -107,7 +108,7 @@ B0/C1 与现有 native 脚本异步返回证据目录；等待该目录 result.j
 
 基线 `.evidence/foundation-20261015-090943/result.json` exit 0 / 4 场景；U0 见 `.evidence/workflow-audit/baseline-unit.log`。扩展的前两轮受控失败保留在 `foundation-20261015-091934`、`foundation-20261015-092828`：首轮发现空原生日志/旧 revision 的测试夹具问题；修正夹具后确认审计问题在重启后回答会被拒绝。根因是无新输入时提前切换 Attempt，原历史证明随后无法核验。现在延迟至新输入准备好才切换，并复用同一恢复函数，仍先核验原会话空闲、原写者退出及原绑定；未放宽资格条件。最终 11 场景通过不改写这两次失败。
 
-本次构建来自 `af545563c58171c584bd35d098166cf39012e699` 加未提交工作树，EXE SHA-256 `c3111a8c9a91b9309bc823eac44fac3ff554c1a661b89f651c21958e3a826dd4`。构建来源详见 controlled 的 source-identity.json；修改文件摘要见 `.evidence/workflow-audit/source.json`。不是已提交/发布版本。
+首轮实现构建来自 `af545563c58171c584bd35d098166cf39012e699` 加当时未提交工作树，EXE SHA-256 `c3111a8c9a91b9309bc823eac44fac3ff554c1a661b89f651c21958e3a826dd4`。历史构建来源详见 controlled 的 source-identity.json；修改文件摘要见 `.evidence/workflow-audit/source.json`。这些记录不代表之后审计修复构建的来源。
 
 原生前两轮失败保留：
 
@@ -119,3 +120,20 @@ B0/C1 与现有 native 脚本异步返回证据目录；等待该目录 result.j
 最终新增 README 示例后，4 份文档的 19 个本地链接、3 个 JSON 示例及两份资源 JSON 解析通过；格式与 `git diff --check` 通过。构建输出为 `bin/steerrunner.exe`，来源和 SHA 见同目录 steerrunner.exe.build.json。
 
 WA-01–07 的 unit/controlled 通过后，才可交付相应功能；WA-08 真正通过后才能声明本机两模型审计已真机验证。原生环境阻断则保留缺口。不得为简化实现放宽原会话、原 final、停止授权和 PR 归属门槛。
+
+## 6. 实现审计后的修复
+
+2026-10-15 实现审计确认并修复两个 P2 问题：
+
+1. 审计答案已冻结到 PendingTurn、尚未发出时，原进程退出后的同会话恢复会重新渲染并丢掉答案。现在保留原 StageInput 的完整 prompt/model/effort，通过原 queueInput 更新 attempt/command 绑定。新增 `TestSRFrozenInputRestoration` 从 SQLite 重载输入，覆盖审计回答、人工反馈、自动修复、报告补正四个窗口，检查原来源、完整原生输入及两类预算保持。
+2. 已知结果字段去重与 encoding/json 的 Unicode 折叠不一致，`findingſ` 可覆盖含 P1 的 findings。现在用 EqualFold 匹配已知字段再去重；新增正反顺序、嵌套 severity 和真实 EXE 阻断反例，不能升级为 pass 或进入发布。
+
+提交前同步到 `57d6f6f` 的 main，保留基线刷新与逐阶段准备期限修复。审计 native 诊断迁移至本仓现有 manifest/driver；没有保留旧 SteerLine 测试驱动或新增生产执行链路。第一轮完整 L1 `.evidence/workflow-audit-fix/summary.json` 因上游新增的长回合测试夹具缺少 workflow ID 失败；补齐夹具的 development/1 标识，保持生产校验不变，随后重跑。首轮失败证据保留。
+
+| 修复后验证 | 结果 | 证据 |
+| --- | --- | --- |
+| 完整 L1、原有 Controlled | 通过；159 个顶层 pass，5 个入口允许的 helper/显式真机取证 skip；Controlled exit 0 / 10 场景 | `.evidence/workflow-audit-fix-final/summary.json`；包括全部内部包、9 项框架断言、native driver 编译和零匹配拒绝门槛 |
+| 审计 Controlled | exit 0 / 8 场景，无 skip | `.evidence/workflow-audit-fix-controlled/result.json`；新增 Unicode 别名阻断，保留修复、预算、坏 JSON、模型不可用、问题重启及未知结果场景 |
+| 构建、静态及脚本检查 | 通过 | `go build ./...`、受影响包 go vet（`.evidence/workflow-audit-review/build-fix.log` / `vet-fix.log`）；两份变更 PowerShell 解析、资源 JSON 解析及 git diff --check |
+
+上述最终测试来源为 `142f01c` 加本轮后续测试/文档补丁，构建身份见各 evidence 的 source-identity.json；审计 Controlled EXE SHA-256 为 `8e8f033757860b0a8c30e980d592e164e371de34efc25fcdf358211f821e6d52`。本轮未重跑两模型真机；前述旧包的真实 PR 证据不扩展为审计修复后或迁移后 driver 的真机通过声明。

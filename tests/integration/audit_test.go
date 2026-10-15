@@ -119,7 +119,7 @@ func TestSRAuditedWorkflow(t *testing.T) {
 			t.Fatal("feedback skipped audits, reset budget or replaced original session/PR")
 		}
 	})
-	for _, scenario := range []string{"budget", "bad_json", "unavailable", "question_restart", "unknown_audit"} {
+	for _, scenario := range []string{"budget", "bad_json", "unicode_alias", "unavailable", "question_restart", "unknown_audit"} {
 		t.Run(scenario, func(t *testing.T) {
 			testCount.Add(1)
 			dir, envelope := auditedRun(t)
@@ -129,6 +129,8 @@ func TestSRAuditedWorkflow(t *testing.T) {
 				t.Setenv("STEERRUNNER_AUDIT_FAILURES", "3")
 			case "bad_json":
 				_ = os.WriteFile(filepath.Join(state, "audit-bad-json"), []byte("true"), 0600)
+			case "unicode_alias":
+				_ = os.WriteFile(filepath.Join(state, "audit-unicode-alias"), []byte("true"), 0600)
 			case "unavailable":
 				_ = os.WriteFile(filepath.Join(state, "audit-unavailable"), []byte("true"), 0600)
 			case "question_restart", "unknown_audit":
@@ -183,6 +185,9 @@ func TestSRAuditedWorkflow(t *testing.T) {
 			}
 			if scenario == "budget" && (blocked.Audit.RepairCount != 2 || blocked.Diagnostic != "audit_repair_limit" || countNative(t, "turn/start") != 9) {
 				t.Fatal("repair budget not enforced", blocked)
+			}
+			if scenario == "unicode_alias" && (countNative(t, "turn/start") != 3 || blocked.Audit == nil || len(blocked.Audit.Results) != 1 || blocked.Audit.Results[0].Verdict != "" || blocked.Audit.Results[0].Failure == "") {
+				t.Fatal("ambiguous audit advanced or was recorded as pass")
 			}
 		})
 	}

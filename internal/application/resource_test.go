@@ -50,6 +50,7 @@ func TestSRLongTurnCanPrepareNextStage(t *testing.T) {
 	e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
 	r := &runstate.Record{ID: "run", Allowed: true, Status: "running", PreparationDeadline: time.Now().Add(-time.Minute), CommandStates: map[string]string{}, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, PromptBodies: map[string]string{workflow.StepReport: "Format the original result as JSON."}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec.md"}}, {MaterialView: contracts.MaterialView{Path: "plan.md"}}}}
 	r.Snapshot.Ref = b.ExecutionRef{RunID: "run", AttemptID: "attempt"}
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 1}
 	r.Snapshot.Session = b.SessionContext{WorkflowRunID: "run", SessionID: "original-session", AttemptID: "attempt", CurrentCommandID: "command", CurrentTurnID: "turn"}
 	r.Snapshot.Workspace.Path = "original-workspace"
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement, StageInputs: []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", StepID: workflow.StepImplement, Version: 1}}}
@@ -94,6 +95,7 @@ func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {
 			e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, logger: log.New(io.Discard, "", 0)}
 			r := &runstate.Record{ID: "run", Allowed: true, Status: "running", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, CommandStates: map[string]string{}}
 			r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt"}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "run", ExecutionID: "run", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
+			r.Request.Workflow = contracts.Workflow{ID: "development", Version: 1}
 			if err := e.commitLocked(r, nil, "accepted"); err != nil {
 				t.Fatal(err)
 			}

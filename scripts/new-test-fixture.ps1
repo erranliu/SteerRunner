@@ -108,8 +108,8 @@ $taskManifest = [ordered]@{
     execution=$taskExecution;publication=@{provider='command';repository='erranliu/SteerlineTest';base_branch=$taskBase;settings=@{base_url='https://github.com';query=@{executable='powershell.exe';args=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$taskQuery,'-URL','{pr_url}')}}}
     created_at=[DateTime]::UtcNow.ToString('o')
 }
-# Persist the intended ref before its first external mutation; uncertain pushes
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
+# Persist the intended ref before its first external mutation; uncertain pushes
 # retain this identity and are never retried under a replacement fixture name.
 Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 $taskPreparation.status = 'pushing-base'

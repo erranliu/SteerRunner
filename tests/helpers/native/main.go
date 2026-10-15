@@ -244,6 +244,9 @@ func auditResult(prompt string) (string, error) {
 	if exists(filepath.Join(root, "audit-bad-json")) {
 		return "not JSON", nil
 	}
+	if exists(filepath.Join(root, "audit-unicode-alias")) {
+		return `{"outcome":"done","summary":"ambiguous audit","verdict":"pass","findings":[{"severity":"P1","message":"blocking defect"}],"findingſ":[]}`, nil
+	}
 	if strings.HasPrefix(prompt, "Audit the current implementation") {
 		if marker := filepath.Join(root, "audit-question"); exists(marker) {
 			_ = os.Remove(marker)
