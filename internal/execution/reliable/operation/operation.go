@@ -1,8 +1,9 @@
-package reliable
+package operation
 
 import (
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -44,5 +45,5 @@ func OperationKey(executionID string, action executionbackend.LifecycleAction, i
 	if err != nil {
 		return "", nil, err
 	}
-	return "worker-lifecycle:" + executionID + ":" + string(action) + ":" + Digest(wire), value, nil
+	return "worker-lifecycle:" + executionID + ":" + string(action) + ":" + reliable.Digest(wire), value, nil
 }

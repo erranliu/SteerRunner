@@ -6,6 +6,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
+- [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
 - [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
 - [来源清单及 P2 交接门槛](docs/extraction/source-map.md)
 

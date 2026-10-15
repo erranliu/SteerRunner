@@ -7,9 +7,8 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/runstate"
-	"strings"
 	"time"
 )
 
@@ -43,54 +42,6 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	return e.invoke(id, w, p, index, false)
 }
-func (e *Engine) feedback(id string, w *worker, p b.LifecyclePort) bool {
-	e.mu.Lock()
-	r := e.runs[id].Clone()
-	e.mu.Unlock()
-	return e.feedbackValue(id, w, p, r.PendingFeedback, false)
-}
-func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *runstate.Answer, businessAnswer bool) bool {
-	if answer == nil {
-		return false
-	}
-	if answer.Epoch != e.epoch {
-		e.block(id, "fresh_feedback_required", errors.New("Saved feedback from a prior service requires a fresh user request"), false)
-		return false
-	}
-	e.mu.Lock()
-	r := e.runs[id].Clone()
-	e.mu.Unlock()
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
-	facts, err := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
-	cancel()
-	if err != nil || !reliable.CanContinueOriginal(facts) {
-		e.failControl(id, answer.CommandID, errors.New("The original session is not verifiably idle and available for feedback"))
-		return false
-	}
-	step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: "implement", Continue: true})
-	if err != nil {
-		e.failControl(id, answer.CommandID, err)
-		return false
-	}
-	r.Workflow.ReportRetry = retry
-	if err := queueInput(r, workflow.StageInput{StepID: step, FeedbackDecisionID: answer.CommandID}, answer.Text); err != nil {
-		e.failControl(id, answer.CommandID, err)
-		return false
-	}
-	r.Question = nil
-	r.Snapshot.QuestionRoute = nil
-	r.Snapshot.PendingQuestions = nil
-	r.CommandStates[answer.CommandID] = "running"
-	if businessAnswer {
-		r.PendingAnswer = nil
-	} else {
-		r.PendingFeedback = nil
-	}
-	e.mu.Lock()
-	err = e.commitLocked(r, nil, "feedback_input_frozen")
-	e.mu.Unlock()
-	return err == nil
-}
 func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
@@ -119,14 +70,7 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 			}
 			previous := r.Snapshot.Clone()
 			r.Attempts = append(r.Attempts, runstate.Attempt{Snapshot: previous, EndedAt: time.Now().UTC()})
-			if r.NextStage == nil && r.Snapshot.PendingTurn != nil {
-				if prior := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID); prior != nil {
-					copy := *prior
-					copy.CommandID = ""
-					copy.Prompt = ""
-					r.NextStage = &copy
-				}
-			}
+			preservePendingStage(r)
 			r.Snapshot.Ref.AttemptID = contracts.NewID()
 			r.Snapshot.Ref.External = b.ProcessIdentity{}
 			r.Snapshot.Ref.Generation = ""
@@ -161,27 +105,9 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	r.PendingResume = ""
 	r.Diagnostic = ""
 	r.StopStatus = ""
-	if r.NextStage != nil {
-		input := *r.NextStage
-		r.NextStage = nil
-		if err := queueInput(r, input, ""); err != nil {
-			e.failControl(id, command, err)
-			return false
-		}
-	} else if r.Status != "pr_ready" && r.Question == nil && r.Snapshot.PendingTurn == nil && r.Result != nil {
-		step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Continue: true, Option: "implement"})
-		if err != nil {
-			e.failControl(id, command, err)
-			return false
-		}
-		r.Workflow.ReportRetry = retry
-		if err := queueInput(r, workflow.StageInput{StepID: step}, ""); err != nil {
-			e.failControl(id, command, err)
-			return false
-		}
-	} else if r.Status != "pr_ready" && r.Question == nil {
-		r.Status = "running"
-		r.Phase = "resumed"
+	if err := resumeWorkflow(r); err != nil {
+		e.failControl(id, command, err)
+		return false
 	}
 	r.CommandStates[command] = "completed"
 	e.mu.Lock()
@@ -216,11 +142,6 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		if err != nil {
 			return false
 		}
-		e.mu.Lock()
-		r = e.runs[id].Clone()
-		r.Intents[index].Request.Operation.IdempotencyKey = command
-		_ = e.commitLocked(r, nil, "stop_intent_bound")
-		e.mu.Unlock()
 	}
 	e.mu.Lock()
 	r = e.runs[id].Clone()
@@ -257,15 +178,8 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	next := e.runs[id].Clone()
-	status, diagnostic := reliable.Outcome(receipt, err)
-	next.Intents[index].Request.Operation.Status = b.OperationStatus(status)
-	receipt.Operation = request.Operation
-	next.Intents[index].Receipt = &receipt
-	for i := range next.Snapshot.Operations {
-		if next.Snapshot.Operations[i].ID == request.Operation.ID {
-			next.Snapshot.Operations[i].Status = b.OperationStatus(status)
-		}
-	}
+	status, diagnostic := operation.Outcome(receipt, err)
+	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
 	if err == nil && receipt.State.Stopped {
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
 		next.PendingStop = ""
@@ -349,46 +263,14 @@ func (e *Engine) writersAbsent(r *runstate.Record, w *worker, identity b.Process
 	return process.InspectProcess(&identity) == "process absent"
 }
 
-// Validate the complete native question set before persisting any input intent.
-func nativeAnswers(questions []b.Question, text string) (map[string][]string, error) {
-	answers := map[string][]string{}
-	if len(questions) == 0 {
-		return nil, errors.New("Original native questions are missing")
+func (e *Engine) retainHandle(w *worker, h b.StopHandle) {
+	if h == nil {
+		return
 	}
-	if len(questions) == 1 {
-		answers[questions[0].ID] = []string{text}
-	} else if contracts.DecodeStrict([]byte(text), &answers) != nil {
-		return nil, errors.New("Multiple questions require unambiguous JSON keyed by original question ID")
-	}
-	if len(answers) != len(questions) {
-		return nil, errors.New("Answer must cover exactly the original native questions")
-	}
-	seen := map[string]bool{}
-	for _, q := range questions {
-		if q.ID == "" || seen[q.ID] {
-			return nil, errors.New("Original native question identity is ambiguous")
-		}
-		seen[q.ID] = true
-		values, ok := answers[q.ID]
-		if !ok || len(values) == 0 || len(values) > 2 || len(values) > 1 && !q.AllowFreeText {
-			return nil, errors.New("Answer differs from the original native question")
-		}
-		for i, value := range values {
-			if strings.TrimSpace(value) == "" {
-				return nil, errors.New("Native answer cannot be empty")
-			}
-			offered := false
-			for _, option := range q.Options {
-				if value == option.ID || value == option.Label {
-					values[i] = option.Label
-					offered = true
-					break
-				}
-			}
-			if !offered && !q.AllowFreeText {
-				return nil, errors.New("Answer is not an offered option")
-			}
+	if owned, ok := w.handle.(b.OwnedProcessHandle); ok && owned.OwnedProcess() {
+		if incoming, ok := h.(b.OwnedProcessHandle); !ok || !incoming.OwnedProcess() {
+			return
 		}
 	}
-	return answers, nil
+	w.handle = h
 }

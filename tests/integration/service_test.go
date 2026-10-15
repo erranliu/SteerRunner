@@ -24,6 +24,7 @@ var helperEXE string
 var helperFlag = flag.String("helper-exe", "", "Native protocol fixture EXE")
 var runnerFlag = flag.String("runner-exe", "", "Exact Runner EXE under test")
 var evidenceFlag = flag.String("evidence-dir", "", "Owned directory for test evidence")
+var baselineFlag = flag.String("baseline-exe", "", "Previous Runner EXE for v2 compatibility checks")
 var testCount atomic.Int32
 var evidenceMutex sync.Mutex
 

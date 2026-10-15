@@ -1,10 +1,11 @@
-package reliable
+package operation
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 )
 
 type EffectResult struct {
@@ -24,7 +25,10 @@ const (
 
 // Invoke receives an already committed immutable intent. An existing intent
 // has only the reconciliation route, even when acceptance was never observed.
-func Invoke(ctx context.Context, port b.LifecyclePort, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode) EffectResult {
+func Invoke(ctx context.Context, port interface {
+	b.LifecyclePreparationPort
+	b.LifecycleExecutePort
+}, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode) EffectResult {
 	if err := request.Validate(); err != nil {
 		return EffectResult{Request: request.Clone(), Receipt: b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationRejected}, Err: err}
 	}
@@ -45,7 +49,7 @@ func Invoke(ctx context.Context, port b.LifecyclePort, reconciler b.LifecycleRec
 	if !reconcile {
 		err := ctx.Err()
 		if err == nil {
-			err = QualifyAction(ctx, port, request)
+			err = reliable.QualifyAction(ctx, port, request)
 		}
 		if err == nil {
 			err = ctx.Err() // Read-only qualification may have consumed the deadline.
@@ -117,4 +121,12 @@ func ReconciliationRequest(result EffectResult) (b.LifecycleRequest, bool) {
 		request.Operation.Receipt, _ = json.Marshal(result.Receipt)
 	}
 	return request, true
+}
+
+func ResourceOutcome(receipt b.LifecycleReceipt, callErr error) (string, string) {
+	status, diagnostic := Outcome(receipt, callErr)
+	if callErr == nil && status == "accepted" && receipt.State.ResourceID == "" && receipt.State.WorktreeID == "" && receipt.Process == nil {
+		return "outcome_unknown", "resource lifecycle receipt did not identify its accepted resource"
+	}
+	return status, diagnostic
 }

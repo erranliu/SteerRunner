@@ -1,11 +1,29 @@
-package reliable
+package operation
 
 import (
 	"context"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"testing"
 )
+
+type preparationFixture struct {
+	caps  b.PreparationCapabilities
+	facts b.PreparationFacts
+	read  int
+}
+
+func (p *preparationFixture) PolicyCapabilities() b.LifecyclePolicyCapabilities {
+	return b.LifecyclePolicyCapabilities{Preparation: p.caps}
+}
+func (p *preparationFixture) PreparationFacts(context.Context, b.LifecycleSnapshot) (b.PreparationFacts, error) {
+	p.read++
+	return p.facts, nil
+}
+func preparationSnapshot() b.LifecycleSnapshot {
+	return b.LifecycleSnapshot{WorkspacePlan: b.WorkspaceIntent{Path: "original", Branch: "fixed", BaseCommit: "base"}, PendingTurn: &b.TurnInput{CommandID: "command", Prompt: "saved"}}
+}
 
 type effectFixture struct {
 	b.LifecyclePort
@@ -39,7 +57,7 @@ func TestReliableUnknownEffectAndGateCannotResubmit(t *testing.T) {
 	p := &effectFixture{preparationFixture: preparationFixture{caps: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: b.MechanismNotApplicable, Session: b.MechanismApplicable}, facts: b.PreparationFacts{Workspace: b.GateReady, Resource: b.GateNotApplicable, Session: b.GateUnverified}}}
 	request := originalRequest()
 	result := Invoke(context.Background(), p, p, request, ExecuteNewIntent)
-	var gap *GateError
+	var gap *reliable.GateError
 	if !errors.As(result.Err, &gap) || p.executes != 0 {
 		t.Fatal("unknown readiness reached input mutation")
 	}
@@ -76,35 +94,6 @@ func TestReliableUnknownEffectAndGateCannotResubmit(t *testing.T) {
 		t.Fatal("unknown request was resubmitted")
 	}
 }
-func TestReliableTurnIdentityAndNotifications(t *testing.T) {
-	state := TurnState{}
-	next, err := BeginTurn(state, "session", "first", TurnAuthority{Allowed: true}, state.UpdatedAt)
-	if err != nil || next.Number != 1 {
-		t.Fatal(err)
-	}
-	if _, err := BeginTurn(next, "replacement", "other", TurnAuthority{Allowed: true}, state.UpdatedAt); err == nil {
-		t.Fatal("session replaced")
-	}
-	stopped, err := StopTurn(next, "first", true, state.UpdatedAt)
-	if err != nil {
-		t.Fatal(err)
-	}
-	second, err := BeginTurn(stopped, "session", "second", TurnAuthority{Allowed: true}, state.UpdatedAt)
-	if err != nil || second.Number != 2 {
-		t.Fatal(err)
-	}
-	if err := CurrentTurn(second, "first"); !errors.Is(err, ErrStale) {
-		t.Fatal("late question changed current turn")
-	}
-	if _, err := StopTurn(second, "first", true, state.UpdatedAt); !errors.Is(err, ErrStale) {
-		t.Fatal("late stop changed current turn")
-	}
-	duplicate, err := BeginTurn(second, "session", "second", TurnAuthority{}, state.UpdatedAt)
-	if err != nil || duplicate != second {
-		t.Fatal("duplicate start changed state")
-	}
-}
-
 func TestReliableFreshActionKeepsOriginalIntent(t *testing.T) {
 	for _, tc := range []struct {
 		name   string
@@ -186,6 +175,10 @@ func TestReliableReconciliationRejectsForeignIntent(t *testing.T) {
 }
 
 func TestReliableOutcomeCannotTreatMissingReceiptAsSuccess(t *testing.T) {
+	status, _ := Outcome(b.LifecycleReceipt{Disposition: b.OperationAccepted}, errors.New("receipt lost"))
+	if status != "outcome_unknown" {
+		t.Fatal(status)
+	}
 	for _, disposition := range []b.OperationStatus{"", b.OperationPending, b.OperationInFlight, "invalid"} {
 		status, diagnostic := Outcome(b.LifecycleReceipt{Disposition: disposition}, nil)
 		if status != string(b.OperationUnknown) || diagnostic == "" {

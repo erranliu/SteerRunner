@@ -95,10 +95,6 @@ func TestReliableInputOutcomeBoundaries(t *testing.T) {
 	if StartAccepted(receipt, nil, true) {
 		t.Fatal("acceptance inferred start")
 	}
-	status, _ := Outcome(receipt, errors.New("receipt lost"))
-	if status != "outcome_unknown" {
-		t.Fatal(status)
-	}
 }
 
 func TestReliableRecoveryAndAuthorization(t *testing.T) {

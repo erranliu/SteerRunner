@@ -1,4 +1,4 @@
-package reliable
+package operation
 
 import (
 	"encoding/json"

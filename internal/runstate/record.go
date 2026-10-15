@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"time"
 )
@@ -14,17 +15,6 @@ type Material struct {
 	contracts.MaterialView
 	Content string `json:"content"`
 }
-type Intent struct {
-	Request b.LifecycleRequest  `json:"request"`
-	Receipt *b.LifecycleReceipt `json:"receipt,omitempty"`
-	Mode    string              `json:"mode"`
-}
-
-func (i Intent) NeedsReconciliation() bool {
-	status := i.Request.Operation.Status
-	return status == b.OperationInFlight || status == b.OperationUnknown || status == b.OperationAccepted && i.Receipt != nil && i.Receipt.State.ResourcePending
-}
-
 type Answer struct {
 	Epoch      string              `json:"epoch"`
 	CommandID  string              `json:"command_id"`
@@ -71,7 +61,7 @@ type Record struct {
 	Profile             []b.ImplementationDataEnvelope `json:"profile"`
 	LaunchCommand       string                         `json:"launch_command,omitempty"`
 	Workflow            workflow.Snapshot              `json:"workflow"`
-	Intents             []Intent                       `json:"intents"`
+	Intents             []operation.Intent             `json:"intents"`
 	Attempts            []Attempt                      `json:"attempts,omitempty"`
 	Result              *b.TurnEvidence                `json:"result,omitempty"`
 	Question            *contracts.QuestionView        `json:"question,omitempty"`
