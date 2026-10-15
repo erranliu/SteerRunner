@@ -154,7 +154,8 @@ func startDetached(ctx context.Context, executable, dir, startupID string) error
 		CreationFlags: windows.CREATE_SUSPENDED | windows.CREATE_BREAKAWAY_FROM_JOB | windows.DETACHED_PROCESS | windows.CREATE_NEW_PROCESS_GROUP,
 		HideWindow:    true,
 	}
-	if parentInJob, parentErr := inAnyJob(windows.CurrentProcess()); parentErr == nil && parentInJob {
+	parentInJob, parentErr := inAnyJob(windows.CurrentProcess())
+	if parentErr == nil && parentInJob {
 		var limits windows.JOBOBJECT_EXTENDED_LIMIT_INFORMATION
 		queryErr := windows.QueryInformationJobObject(0, windows.JobObjectExtendedLimitInformation, uintptr(unsafe.Pointer(&limits)), uint32(unsafe.Sizeof(limits)), nil)
 		fmt.Fprintf(log, "launcher job flags=0x%x query=%v\n", limits.BasicLimitInformation.LimitFlags, queryErr)
@@ -162,6 +163,12 @@ func startDetached(ctx context.Context, executable, dir, startupID string) error
 	if err := command.Start(); err != nil {
 		_ = os.Remove(bootstrapPath(dir))
 		fmt.Fprintf(log, "detached creation rejected: %v\n", err)
+		// A containing Job may prohibit BREAKAWAY even for an ordinary user.
+		// The broker still suspends and verifies the exact child token/image;
+		// it cannot adopt an elevated or restricted caller's permissions.
+		if parentErr == nil && parentInJob && errors.Is(err, windows.ERROR_ACCESS_DENIED) {
+			return startBrokered(ctx, executable, dir, startupID)
+		}
 		return contracts.Fail(4, "detach_unsupported", "Cannot start a service independent of the caller Job; start serve from an independent terminal.")
 	}
 	fail := func(err error) error {

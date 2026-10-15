@@ -105,24 +105,16 @@ func testParentJobs(t *testing.T) {
 			if err := contracts.DecodeStrict(data, &response); err != nil {
 				t.Fatalf("job response: %s", data)
 			}
-			if mode == "allow" {
-				if !response.OK {
-					t.Fatalf("allowed breakaway rejected: %+v", response)
-				}
-				info := serviceInfo(t, response)
-				cleanupService(t, dir, info)
-				status := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
-				if status.InstanceID != info.InstanceID || !status.Detached || status.Status != "ready" {
-					t.Fatal("service lost when parent Job closed")
-				}
-			} else {
-				if response.OK || response.Error == nil || response.Error.Code != "detach_unsupported" {
-					t.Fatalf("blocked breakaway not explicit: %+v", response)
-				}
-				if _, err := os.Stat(filepath.Join(dir, "runner.db")); !os.IsNotExist(err) {
-					t.Fatal("blocked child executed storage instructions")
-				}
+			if !response.OK {
+				t.Fatalf("ordinary user Job mode %s failed verified independent launch: %+v", mode, response)
 			}
+			info := serviceInfo(t, response)
+			cleanupService(t, dir, info)
+			status := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
+			if status.InstanceID != info.InstanceID || !status.Detached || status.Status != "ready" {
+				t.Fatal("service lost when parent Job closed")
+			}
+
 		})
 	}
 }

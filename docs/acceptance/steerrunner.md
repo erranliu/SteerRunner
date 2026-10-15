@@ -140,3 +140,10 @@ v5 新包 `C:\SteerlineDebug\sr\dev-20261015-100648-bdd894a8-dirty` 的 Run `4b2
 原生能力包 `C:\SteerlineDebug\cap\dev-20261015-101834-bdd894a8-dirty` 的 `native-kernel-probe-2.log` 与 result.json 已核验 exit 0：实际 TokenIsAppContainer、TokenAppContainerSid 与 GetAppContainerFolderPath，TEMP 位于其 OS 容器目录，临时文件写读成功，本包兄弟 sentinel 的写访问为 PermissionDenied。原始 native-kernel-probe.log 的 `--strict-config` 不适用 sandbox 子命令错误保留，第二次使用该命令支持的参数，没有更改内核或权限范围。实现依据：[Windows token 信息](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ne-winnt-token_information_class)、[容器目录 API](https://learn.microsoft.com/en-us/windows/win32/api/userenv/nf-userenv-getappcontainerfolderpath)。此探针不是 Spec→PR 闭环通过。
 
 v6 `.evidence/native-kernel-temp-unit.log` 的 Codex/application 定向通过；`.evidence/foundation-20261015-021835` 权限资格/完整受控工作流两组 exit 0。原生 driver 在实际首次探针失败时立即保存 Run 并清理，避免把已知失败拖成发布超时。完整本地和 Orca 真机验收仍待对应新包运行结果。
+
+
+2026-10-15 后续本地复验：干净 `4bb484d` 的新包 `C:/SteerlineDebug/sr/dev-20261015-103740-bdd894a8-dirty`（Run `5f0cdc218311df889d4c7bca696393ad`）首次真实探针 exit 0，实际 AppContainer/TEMP/兄弟写拒绝均通过，提交 `212a761`；发布在 MXC 中因 `gh` HTTP 401 阻塞，完整 harness exit 1（454.01 秒）。宿主已有登录有效；没有复制认证/配置。此结果只解决真实沙箱检查，不是 Spec→PR 验收通过。
+
+干净 `9b5b527`、EXE SHA `152f4b191e746e36f2b5bb790e787372bb3b14aeb56fb2e468fc7f5f579b508a` 的新包 `C:/SteerlineDebug/sr/dev-20261015-110134-bdd894a8-dirty`，Run `23206cc624f4651d02c6863149f9d1e9`：首次沙箱检查通过，原生提交 `d95d57d`。固定发布命令普通沙箱返回 401；同一命令的原生自动审核明确 approved（review `f3cdd9a5-0d6e-496b-868c-48eb84025bce`），之后只见原命令开始与轮询，无完成回执。模型终答将其描述为“审核待返回”，该文本不能代替审核事实。harness exit 1（443.32 秒），原 Run stop_status=stopped；停止后按专属 base/head 查询 GitHub 为 `[]`，证据 `.evidence/native-auth-provider-after-stop.json`。完整真机发布仍未通过，不声明审核拒绝或发布成功。
+
+SteerLine 实际服务接入在新模拟包 `C:/SteerlineDebug/caller/dev-20261015-111825-bdd894a8-dirty` 暴露其 managed Job 禁止 BREAKAWAY（flags 0x2000），常驻启动在任何 Run 前拒绝。Runner 扩展已有的暂停子进程 broker：仅在已核实父 Job 且 CreateProcess 明确 AccessDenied 时尝试；仍拒绝受限/提升 token，核对同 SID、integrity、授权组/权限、EXE、创建时间，并在服务执行存储前验证无 Job。`.evidence/foundation-20261015-032334` 服务归属组 exit 0；加强为 ordinary allow/deny Job 都必须成功且父 Job 关闭后同实例存活的 `.evidence/foundation-20261015-032530` exit 0。实际 SteerLine 包须使用新 EXE 重建复验，原失败包保持冻结。

@@ -21,7 +21,8 @@ import (
 )
 
 // Win32_Process.Create creates outside the caller's Job chain. We use it only
-// after native BREAKAWAY creation succeeded but retained a Job association.
+// after native BREAKAWAY is denied by a verified containing Job or creates a
+// child that retains a Job association.
 // The child stays suspended until its executable and token have been checked.
 // https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects
 const suspendedBroker = `
