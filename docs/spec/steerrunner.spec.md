@@ -2,6 +2,8 @@
 
 日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
+最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
+
 ## 1. 目标、依据与首版范围
 
 SteerRunner 接收固定 Spec、Plan、参考材料及执行配置，在指定本地或远端环境按 workflow 实现、验证、处理反馈并提交、推送、创建或复用 PR，输出可核验的执行结果。它可由用户独立使用，也可由 SteerLine 或其他调用方经同一 CLI 契约使用。

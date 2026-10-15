@@ -2,7 +2,7 @@
 
 SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment 执行开发 workflow，处理反馈并产出可核验 PR。SteerLine 保留任务、DAG、候选关系和 TaskDelivery，通过 CLI 使用它。
 
-当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。真实 EXE 配受控原生协议已跑通本地闭环；SteerLine 实际产品 CLI 受控闭环已通过，旧执行 owner 已移除；恢复和真机验收尚未全部通过，完整跨仓交付仍在进行。
+当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。真实 EXE 配受控原生协议已跑通本地闭环；SteerLine 实际产品 CLI 受控闭环已通过，旧执行 owner 已移除；本机真实 Codex/PR 与保留的三项本机交付/恢复场景已有通过证据，最新产品真机包仍在验证。
 
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
@@ -15,7 +15,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 
 ## 构建和启动
 
-开发构建需要 Go 1.24.2 或更新版本、Windows/amd64 和 Git。在仓库根目录用 PowerShell 执行：
+开发构建需要 Go 1.24.2 或更新版本、Windows/amd64 和 Git（本次验证使用 Go 1.26.4）。在仓库根目录用 PowerShell 执行：
 
 ```powershell
 .\scripts\build.ps1
@@ -31,9 +31,12 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 
 ## 提交与查看执行
 
+本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。需要已有的 Git/PR provider 登录；Runner 不接收或复制登录凭据。
+
 把[契约示例](docs/spec/steerrunner.spec.md)中的仓库、完整 commit、材料、adapter 和 publication 改为自己的环境，保存为 UTF-8 `request.json`：
 
 ```powershell
+$OutputEncoding = [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --state-dir C:\Temp\SteerRunnerDemo --input - --json
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --request-id my-submit-001 --json
 .\bin\steerrunner.exe inspect --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json

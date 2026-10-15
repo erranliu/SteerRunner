@@ -121,7 +121,7 @@ SteerLine 的保留/替换安排：
 
 ### P7 最小真实验证与双仓交付
 
-1. 相关controlled通过后，按本次native manifest分别跑本地Codex和实际承诺的Orca两目标最小实现→PR。同一小任务材料可复用，各目标独立Run/工作区/base/head/PR，不扩大为真实故障矩阵。
+1. 相关controlled通过后，按本次native manifest跑用户保留的本地Codex最小实现→PR；Orca 两目标已由用户取消验收。同一小任务材料可复用，各目标独立Run/工作区/base/head/PR，不扩大为真实故障矩阵。
 2. 真机前核验工具/账号/目录信任/模型配置和主机版本；能力缺失保持未验并如实声明，不以受控environment替代真机。未通过承诺范围的验收不标首版交付完成。
 3. Runner实现PR合入并形成一个明确预发布版本及EXE摘要；SteerLine切换PR最终固定该已可取得版本，复验I1/R1后合入。两仓相互引用实际PR/commit/版本，不假设原子合入。
 4. 同步README使用例、source-map和验收证据，明确未实现能力。源码复制仅限抽取过渡；切换后功能修复归Runner，SteerLine只维护客户侧任务集成。
