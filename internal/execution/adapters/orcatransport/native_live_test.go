@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -55,24 +57,26 @@ func (liveProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]by
 func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	root := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_ROOT")
 	if root == "" {
-		t.Skip("native production lifecycle is opt-in through -Lifecycle")
+		t.Skip("native lifecycle is opt-in through STEERRUNNER_ORCA_STATE_PROBE_ROOT")
 	}
 	root, err := filepath.Abs(root)
-	if err != nil || !strings.HasPrefix(strings.ToLower(root), `c:\steerlinedebug\`) {
-		t.Fatal("native lifecycle requires a generated debug package")
-	}
-	if _, err := os.Stat(filepath.Join(root, "manifest.json")); err != nil {
+	if err != nil {
 		t.Fatal(err)
+	}
+	rawFixture, err := os.ReadFile(filepath.Join(root, "manifest.json"))
+	var fixture livetest.Manifest
+	if err != nil || contracts.DecodeStrict(rawFixture, &fixture) != nil || fixture.Validate() != nil || fixture.Execution.Adapter != "orca-terminal" {
+		t.Fatal("native lifecycle requires an independent Runner Orca fixture")
 	}
 	worktree, runtime, executable := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_WORKTREE"), os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_RUNTIME"), os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_CLI")
 	environment := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_ENVIRONMENT")
 	queryOnly := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_QUERY_ONLY") == "1"
-	if worktree == "" || runtime == "" || executable == "" {
+	if worktree == "" || runtime == "" || executable == "" || environment != fixture.Execution.Target.Environment || runtime != fixture.RemoteRuntimeID {
 		t.Fatal("missing fixed native probe target")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
-	repository := filepath.Join(root, "projects", "SteerlineTest")
+	repository := fixture.RepositoryPath
 	host := liveProbeHost{}
 	creator := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		if environment != "" {
@@ -86,7 +90,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	created, err := creator.MetaCall(ctx, "terminal", "create", "--worktree", worktree, "--title", "SteerLine production state probe", "--command", launch, "--json")
+	created, err := creator.MetaCall(ctx, "terminal", "create", "--worktree", worktree, "--title", "SteerRunner production state probe", "--command", launch, "--json")
 	var result struct{ Terminal native.Terminal }
 	if err != nil || created.RuntimeID != runtime || json.Unmarshal(created.Payload, &result) != nil || result.Terminal.Handle == "" {
 		t.Fatalf("native ordinary terminal creation unverified: %v", err)
@@ -112,7 +116,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	p := Profile{Executable: executable, Environment: environment + strings.Split(terminal.WorktreeID, "::")[0], WaitTimeout: "40s"}
+	p := Profile{Executable: executable, Environment: environment, WaitTimeout: "40s"}
 	process := b.ProcessIdentity{Kind: "orca_terminal", Executable: executable, Terminal: terminal.Handle, RuntimeID: runtime, Incarnation: terminal.IncarnationID, WorktreeID: terminal.WorktreeID, ExecutionHost: p.Target().ExecutionHost}
 	startup, startupCancel := context.WithTimeout(ctx, 90*time.Second)
 	defer startupCancel()

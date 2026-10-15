@@ -10,6 +10,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -20,6 +21,49 @@ type pendingResourcePort struct {
 	executes      int
 	observed      []string
 	originalInput string
+}
+
+type stagePreparationPort struct {
+	b.LifecyclePort
+	actions []string
+}
+
+func (p *stagePreparationPort) PolicyCapabilities() b.LifecyclePolicyCapabilities {
+	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: b.MechanismNotApplicable, Session: b.MechanismApplicable}, ReportToolPolicy: "host_managed_permissions; business_read_only_is_prompt_policy"}
+}
+func (p *stagePreparationPort) PreparationFacts(context.Context, b.LifecycleSnapshot) (b.PreparationFacts, error) {
+	return b.PreparationFacts{Workspace: b.GateReady, Resource: b.GateNotApplicable, Session: b.GateRequired}, nil
+}
+func (p *stagePreparationPort) Execute(_ context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	p.actions = append(p.actions, request.Operation.Action)
+	return b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationConfirmed}, nil, nil
+}
+
+func TestSRLongTurnCanPrepareNextStage(t *testing.T) {
+	store, err := storage.Open(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	port := &stagePreparationPort{}
+	w := &worker{port: port, wake: make(chan struct{}, 1)}
+	e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
+	r := &runstate.Record{ID: "run", Allowed: true, Status: "running", PreparationDeadline: time.Now().Add(-time.Minute), CommandStates: map[string]string{}, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, PromptBodies: map[string]string{workflow.StepReport: "Format the original result as JSON."}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec.md"}}, {MaterialView: contracts.MaterialView{Path: "plan.md"}}}}
+	r.Snapshot.Ref = b.ExecutionRef{RunID: "run", AttemptID: "attempt"}
+	r.Snapshot.Session = b.SessionContext{WorkflowRunID: "run", SessionID: "original-session", AttemptID: "attempt", CurrentCommandID: "command", CurrentTurnID: "turn"}
+	r.Snapshot.Workspace.Path = "original-workspace"
+	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement, StageInputs: []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", StepID: workflow.StepImplement, Version: 1}}}
+	if err := e.commitLocked(r, nil, "accepted"); err != nil {
+		t.Fatal(err)
+	}
+	evidence := b.TurnEvidence{CommandID: "command", SessionID: "original-session", TurnID: "turn", Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "final-item", LastMessage: "original verified result"}
+	if !e.finish("run", evidence) || !e.advance("run", w) {
+		t.Fatal("long business turn prevented report preparation", e.runs["run"].Phase)
+	}
+	next := e.runs["run"]
+	if len(port.actions) != 1 || port.actions[0] != string(b.LifecyclePrepareSession) || next.Workflow.StepID != workflow.StepReport || next.Snapshot.Session.SessionID != "original-session" || !next.PreparationDeadline.After(time.Now()) {
+		t.Fatal("report did not prepare on the original session with a fresh bounded budget")
+	}
 }
 
 func (p *pendingResourcePort) Execute(_ context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
