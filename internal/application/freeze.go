@@ -169,7 +169,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		defer os.RemoveAll(staging) // Only the private directory created above.
 		if _, err := git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", request.Repository.Remote, "--", source, staging); err != nil {
-			return nil, contracts.Fail(4, "environment_unavailable", "Cannot prepare the repository cache; no run was accepted.")
+			return nil, contracts.Fail(4, "environment_unavailable", "Cannot prepare the repository cache; no run was accepted. "+redactDiagnostic(r, err.Error()))
 		}
 		if _, err := git.Output(ctx, staging, "remote", "set-url", request.Repository.Remote, request.Repository.URL); err != nil {
 			return nil, err

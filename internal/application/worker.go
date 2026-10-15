@@ -456,11 +456,15 @@ func (e *Engine) block(id, phase string, err error, uncertain bool) {
 	}
 }
 func (e *Engine) redact(r *runstate.Record, text string) string {
+	return redactDiagnostic(r, text)
+}
+
+func redactDiagnostic(r *runstate.Record, text string) string {
 	var refs struct {
 		AuthenticationRefs []string `json:"authentication_refs"`
 	}
 	_ = json.Unmarshal(r.Request.Publication.Settings, &refs)
-	for _, name := range refs.AuthenticationRefs {
+	for _, name := range append(refs.AuthenticationRefs, "GH_TOKEN", "GITHUB_TOKEN", "GITEA_TOKEN") {
 		if secret := os.Getenv(name); secret != "" {
 			text = strings.ReplaceAll(text, secret, "[REDACTED]")
 		}
