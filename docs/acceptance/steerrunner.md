@@ -197,3 +197,5 @@ SteerLine 最新实际产品真机包另在补充验证：一包版本预检超�
 Runner `7bede6e` 的 `.evidence/foundation-20261015-070142/result.json` exit 0 / 1 场景，只证明实际 EXE 的权限资格反例。最新 SteerLine `bba00436` + Runner `7bede6e` 包 `C:/SteerlineDebug/slcodex/dev-20261015-150152-bba00436` 未通过真实产品链路：SteerLine 服务退出，原清理 Git 子进程报 `0xc000026b`；原候选提交状态为 unknown，不能据未绑定 Run 猜测零接受。随后通过冻结包原 helper/公开 CLI，在外部独立宿主核清原请求并停止，`evidence/original-public-cleanup-external-result.json` exit 0、`original-public-cleanup-external.log` confirmed=true。没有业务 resume 或新发布，也未修改冻结配置/二进制；工具 Job 内清理曾安全拒绝 `detach_unsupported`，未放宽 token 校验。
 
 同版本 SteerLine `local-final` 受控补验在 TestBasicDelivery 报 Git `0xc000026b`，批次无完成汇总，不计通过。此前 §8 的真实 Codex/PR #253 和三个 R1 通过记录仍只归属各自版本。当前不宣称最新版产品真机、最终固定版本 R1 或完整跨仓交付完成；用户已要求本轮审计后分别提 PR，保持草稿，不合并、不创建 Release。
+
+审计修复实现提交 `41908e641b34a890448158d2f21a9edc597d08cb` 已推送远端。干净 Windows/amd64 构建版本 `0.1.0-dev.1`，EXE SHA-256 `5eb9c3a9162d13449d55d363dd136e0ee50dea0d1e06ac5afaa8b439b73e5a71`，资源摘要不变。`.evidence/audit-standalone/result.json` exit 0 / 1 场景，TestSRStandalonePackage 通过（15.41 秒）：从实际 EXE 验证独立包与公开服务契约；其 unit-foundation.log 的契约/存储/启动定向检查也通过。它不是模型或最新版 SteerLine 产品真机通过。
