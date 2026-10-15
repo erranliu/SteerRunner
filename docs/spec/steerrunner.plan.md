@@ -185,3 +185,13 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 本机产品冷启动的原生版本资格核验曾在 10 秒预算耗尽；该步骤保持单次只读探测，预算与现有外部命令统一为 30 秒，不自动重试、不缓存跳过资格核验、不创建未合格会话。SR-A06/A11 复验：现有 PermissionQualification 定向/实际 EXE 场景和新包本机 live，证据 `native-policy-budget.log` 及对应新包。
 
 审计补充（SR-A06，测试计划）：本机隔离 SQLite/受控原生端口，在本轮修复后、PR 推送前运行 `go test ./internal/application ./internal/execution/adapters/codex -run '^(TestSRNativeAnswerRejectsAmbiguityBeforeIntent|TestAsyncQuestionNativeIdentityOptionsReplayAndFinal|TestAsyncQuestionObserverUsesNewInputCommand|TestAsyncQuestionObserveSteerAndReconcile)$' -count=1 -timeout=2m -v`。原题集精确匹配，重复键/额外题目/固定选项额外答案/空回答/未提供选项须在保存原生意图前拒绝，合法选项 ID 映射为标签；现有原问题路由、原回合和恢复零重发场景不得退化。证据登记至专属验收 §9 与 `.evidence/audit-answer-native.log`。不因这次输入校验变更重跑已通过的完整 workflow/live 矩阵。
+
+安装启动补充测试计划（[WB-A01–WB-A04](../acceptance/windows-broker-install.md)）：
+
+| 级别/场景 | 环境与命令 | 时点、通过条件 | 证据 |
+| --- | --- | --- | --- |
+| Windows token 定向；WB-A01/A02 | 本机隔离 token/临时 state；`go test ./internal/host -run 'TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights\|TestSRStartupIntent' -count=1 -v` | 修复后、打包前；仅禁用多启用权限、缺少原权限或启用状态拒绝且不启用、原 token 不变、旧 startup 意图不重试 | `.evidence/token-diagnostic/host-tests.log` |
+| 实际 CLI；WB-A03 | 本机构建 EXE；`service start` / `service status`，以固定 instance/request envelope 执行 `service stop`；独立 `.evidence/token-diagnostic/state` | 定向通过后；ready/detached，短命启动者退出后仍 ready，停止核验原实例不在运行 | `.evidence/token-diagnostic/`、SteerLine `.evidence/install-migration/` |
+| 产品安装核验；WB-A04 | 用户授权的新安装目录；SteerLine `build-deploy.bat -NoPause`、`status --json` 及各项目 Runner `service status` | 打包后；三项目和宿主/Web ready，正常停启、配置/任务保持；仅安装运行操作，不派发任务 | SteerLine 安装迁移专属验收与安装目录 migration 记录 |
+
+仅宿主 Windows token 恢复发生变化，不跑模型/PR、L2/L3/full；本次空闲安装核验不替代历史任务恢复和 live 验收。

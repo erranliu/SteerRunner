@@ -75,21 +75,68 @@ func tokenProfile(token windows.Token) (string, error) {
 		}
 		profile = append(profile, fmt.Sprintf("group:%s:%d", group.Sid.String(), group.Attributes))
 	}
-	var size uint32
-	_ = windows.GetTokenInformation(token, windows.TokenPrivileges, nil, 0, &size)
-	if size == 0 {
-		return "", fmt.Errorf("token privileges unavailable")
-	}
-	buffer := make([]byte, size)
-	if err := windows.GetTokenInformation(token, windows.TokenPrivileges, &buffer[0], size, &size); err != nil {
+	privileges, err := tokenPrivileges(token)
+	if err != nil {
 		return "", err
 	}
-	privileges := (*windows.Tokenprivileges)(unsafe.Pointer(&buffer[0]))
-	for _, privilege := range privileges.AllPrivileges() {
-		profile = append(profile, fmt.Sprintf("privilege:%d:%d:%d", privilege.Luid.HighPart, privilege.Luid.LowPart, privilege.Attributes))
+	for _, privilege := range privileges {
+		// USED_FOR_ACCESS records past access checks, not authorization.
+		profile = append(profile, fmt.Sprintf("privilege:%d:%d:%d", privilege.Luid.HighPart, privilege.Luid.LowPart, privilege.Attributes&^windows.SE_PRIVILEGE_USED_FOR_ACCESS))
 	}
 	sort.Strings(profile)
 	return strings.Join(profile, "\n"), nil
+}
+
+func tokenPrivileges(token windows.Token) ([]windows.LUIDAndAttributes, error) {
+	var size uint32
+	_ = windows.GetTokenInformation(token, windows.TokenPrivileges, nil, 0, &size)
+	if size == 0 {
+		return nil, fmt.Errorf("token privileges unavailable")
+	}
+	buffer := make([]byte, size)
+	if err := windows.GetTokenInformation(token, windows.TokenPrivileges, &buffer[0], size, &size); err != nil {
+		return nil, err
+	}
+	return append([]windows.LUIDAndAttributes(nil), (*windows.Tokenprivileges)(unsafe.Pointer(&buffer[0])).AllPrivileges()...), nil
+}
+
+// WMI enables some existing privileges when creating a process. Disable only
+// those the caller holds disabled, while the exact owned child is suspended.
+// Never add/enable a privilege or alter groups to make a different token pass.
+func preserveTokenProfile(caller, child windows.Token) error {
+	privileges, err := tokenPrivileges(caller)
+	if err != nil {
+		return err
+	}
+	want := map[windows.LUID]uint32{}
+	for _, p := range privileges {
+		want[p.Luid] = p.Attributes
+	}
+	actual, err := tokenPrivileges(child)
+	if err != nil {
+		return err
+	}
+	for _, p := range actual {
+		attributes, exists := want[p.Luid]
+		if exists && attributes&windows.SE_PRIVILEGE_ENABLED == 0 && p.Attributes&windows.SE_PRIVILEGE_ENABLED != 0 {
+			state := windows.Tokenprivileges{PrivilegeCount: 1, Privileges: [1]windows.LUIDAndAttributes{{Luid: p.Luid, Attributes: 0}}}
+			if err := windows.AdjustTokenPrivileges(child, false, &state, 0, nil, nil); err != nil {
+				return err
+			}
+		}
+	}
+	wantProfile, err := tokenProfile(caller)
+	if err != nil {
+		return err
+	}
+	actualProfile, err := tokenProfile(child)
+	if err != nil {
+		return err
+	}
+	if wantProfile != actualProfile {
+		return fmt.Errorf("independent token profile differs")
+	}
+	return nil
 }
 
 func startBrokered(ctx context.Context, executable, dir, startupID string) error {
@@ -159,7 +206,7 @@ func startBrokered(ctx context.Context, executable, dir, startupID string) error
 		}
 	}()
 	var token windows.Token
-	if err := windows.OpenProcessToken(process, windows.TOKEN_QUERY, &token); err != nil {
+	if err := windows.OpenProcessToken(process, windows.TOKEN_QUERY|windows.TOKEN_ADJUST_PRIVILEGES, &token); err != nil {
 		return err
 	}
 	defer token.Close()
@@ -182,15 +229,7 @@ func startBrokered(ctx context.Context, executable, dir, startupID string) error
 	if user.User.Sid.String() != sid || restricted || token.IsElevated() || childIntegrity != callerIntegrity {
 		return contracts.Fail(4, "detach_unsupported", "Independent startup did not preserve the caller's user and permissions.")
 	}
-	callerProfile, err := tokenProfile(caller)
-	if err != nil {
-		return err
-	}
-	childProfile, err := tokenProfile(token)
-	if err != nil {
-		return err
-	}
-	if childProfile != callerProfile {
+	if err := preserveTokenProfile(caller, token); err != nil {
 		return contracts.Fail(4, "detach_unsupported", "Independent startup changed the caller's authorization groups or privileges.")
 	}
 	image := make([]uint16, 32768)
