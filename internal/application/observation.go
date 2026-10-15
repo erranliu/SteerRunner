@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -8,7 +9,42 @@ import (
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"reflect"
 	"strings"
+	"time"
 )
+
+// advance holds the dispatch gate while attaching the original observation.
+// Publish the observer and its handle only after its facts commit successfully.
+func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePort, r *runstate.Record) bool {
+	if w.observer != nil {
+		return false
+	}
+	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
+	receipt, observer, err := p.ObserveLifecycle(ctx, r.Snapshot.Clone())
+	cancel()
+	if err != nil {
+		if observer != nil {
+			_ = observer.Close(context.Background())
+		}
+		e.block(id, "observation_unverified", err, true)
+		return false
+	}
+	if !e.applyObservation(id, r, receipt) {
+		if observer != nil {
+			_ = observer.Close(context.Background())
+		}
+		return false
+	}
+	if observer != nil {
+		w.observer = observer
+		if h := observer.StopHandle(); h != nil {
+			e.retainHandle(w, h)
+		}
+	}
+	if receipt.TurnEvidence != nil {
+		return e.finish(id, *receipt.TurnEvidence)
+	}
+	return false
+}
 
 func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	f := event.Fact

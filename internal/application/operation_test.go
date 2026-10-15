@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -22,6 +23,47 @@ type operationCommitPort struct {
 	executes, reconciles int
 	requests             []b.LifecycleRequest
 	stops                int
+}
+
+type partialReceiptPort struct{ operationCommitPort }
+
+func (p *partialReceiptPort) Execute(_ context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	p.executes++
+	p.requests = append(p.requests, request.Clone())
+	return b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationUnknown, State: b.LifecycleStateFacts{SessionID: "original-session"}}, nil, errors.New("receipt lost after session creation")
+}
+
+func (p *partialReceiptPort) Reconcile(_ context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	p.reconciles++
+	p.requests = append(p.requests, request.Clone())
+	return b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationUnknown}, nil, errors.New("original request still unavailable")
+}
+
+func TestSROperationReconciliationKeepsPartialBinding(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	p := &partialReceiptPort{}
+	w.port = p
+	if e.advance("run", w) || e.runs["run"].Snapshot.Session.SessionID != "original-session" {
+		t.Fatal("partial native receipt was not committed as an unknown original operation")
+	}
+	original := e.runs["run"].Intents[0].Request.Clone()
+	for n := 0; n < 2; n++ {
+		if e.advance("run", w) {
+			t.Fatal("missing reconciliation facts reported progress")
+		}
+	}
+	if p.executes != 1 || p.reconciles != 2 || len(e.runs["run"].Intents) != 1 {
+		t.Fatal("unverified reconciliation resent or replaced the original effect")
+	}
+	for _, request := range p.requests[1:] {
+		if request.Snapshot.Session.SessionID != "original-session" || request.Operation.ID != original.Operation.ID || request.Operation.IdempotencyKey != original.Operation.IdempotencyKey || request.Operation.PayloadDigest != original.Operation.PayloadDigest || string(request.Operation.Request) != string(original.Operation.Request) || *request.Operation.LifecycleIdentity != *original.Operation.LifecycleIdentity {
+			t.Fatal("reconciliation lost partial facts or replaced its fixed request binding")
+		}
+	}
+	runs, err := e.store.Runs()
+	if err != nil || len(runs) != 1 || runs[0].Snapshot.Session.SessionID != "original-session" || runs[0].Intents[0].Request.Snapshot.Session.SessionID != "" || !runs[0].Intents[0].NeedsReconciliation() {
+		t.Fatal("reconciliation erased durable partial facts or rewrote the intent snapshot", err)
+	}
 }
 
 type gatedOperationPort struct {

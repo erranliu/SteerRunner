@@ -70,14 +70,13 @@ func TestReliableUnknownEffectAndGateCannotResubmit(t *testing.T) {
 	p.caps.Session = b.MechanismApplicable
 	p.facts.Session = b.GateReady
 	first := Invoke(context.Background(), p, p, request, ExecuteNewIntent)
-	if !first.Uncertain || p.executes != 1 {
+	if !first.Uncertain || p.executes != 1 || first.Receipt.State.SessionID != "partial-original" {
 		t.Fatal("lost mutation receipt was not unknown")
 	}
 	for i := 0; i < 2; i++ {
 		result = Invoke(context.Background(), p, p, request, ReconcileOriginalIntent)
-		result = ReconciledResult(result, &first)
-		if result.Receipt.State.SessionID != "partial-original" {
-			t.Fatal("partial original binding discarded")
+		if result.Err == nil || result.Receipt.Disposition != b.OperationUnknown {
+			t.Fatal("missing reconciliation facts were mistaken for success")
 		}
 	}
 	request.Operation.Status = b.OperationUnknown
@@ -153,11 +152,7 @@ func TestReliableUnverifiedReceiptRequiresOriginalReconciliation(t *testing.T) {
 		if result.Err == nil || !result.Uncertain || p.executes != 1 {
 			t.Fatalf("unverified receipt was not an uncertain effect: %+v", result)
 		}
-		reconcile, needed := ReconciliationRequest(result)
-		if !needed || reconcile.Operation.ID != request.Operation.ID {
-			t.Fatal("receipt loss did not retain the original reconciliation identity")
-		}
-		_ = Invoke(context.Background(), p, p, reconcile, ReconcileOriginalIntent)
+		_ = Invoke(context.Background(), p, p, request, ReconcileOriginalIntent)
 		if p.executes != 1 || p.reconciles != 1 {
 			t.Fatal("unverified receipt was resubmitted")
 		}

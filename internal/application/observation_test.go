@@ -1,10 +1,86 @@
 package application
 
 import (
+	"context"
+	"errors"
 	"testing"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+type observationTestHandle struct{ owned bool }
+
+func (h *observationTestHandle) Identity() b.ProcessIdentity {
+	return b.ProcessIdentity{Kind: "test-observation"}
+}
+func (h *observationTestHandle) Kill()              {}
+func (h *observationTestHandle) Close()             {}
+func (h *observationTestHandle) OwnedProcess() bool { return h.owned }
+
+type attachmentObserver struct {
+	handle b.StopHandle
+	closed int
+}
+
+func (o *attachmentObserver) Events() <-chan b.LifecycleEvent { return nil }
+func (o *attachmentObserver) Done() <-chan error              { return nil }
+func (o *attachmentObserver) StopHandle() b.StopHandle        { return o.handle }
+func (o *attachmentObserver) Close(context.Context) error {
+	o.closed++
+	return nil
+}
+
+type observationAttachmentPort struct {
+	b.LifecyclePort
+	observer b.LifecycleObserver
+	err      error
+	calls    int
+}
+
+func (p *observationAttachmentPort) ObserveLifecycle(context.Context, b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	p.calls++
+	return b.LifecycleReceipt{State: b.LifecycleStateFacts{SessionID: "session"}}, p.observer, p.err
+}
+
+func TestSRObservationAttachmentCommitsBeforePublishingObserver(t *testing.T) {
+	for _, outcome := range []string{"native_error", "commit_failure", "success"} {
+		t.Run(outcome, func(t *testing.T) {
+			e, w, db := operationEngine(t)
+			r := e.runs["run"].Clone()
+			r.Snapshot.Session.SessionID = "session"
+			r.Snapshot.Session.CurrentTurnID = "original-turn"
+			r.Allowed, r.ResumeRequired = false, true
+			if err := e.commitLocked(r, nil, "turn_started"); err != nil {
+				t.Fatal(err)
+			}
+			revision := e.runs["run"].Revision
+			owned := &observationTestHandle{owned: true}
+			w.handle = owned
+			observer := &attachmentObserver{handle: &observationTestHandle{}}
+			p := &observationAttachmentPort{observer: observer}
+			w.port = p
+			if outcome == "native_error" {
+				p.err = errors.New("observation unavailable")
+			} else if outcome == "commit_failure" {
+				failOperationCommit(t, db)
+			}
+			if e.advance("run", w) || p.calls != 1 || w.handle != owned || e.runs["run"].Allowed || !e.runs["run"].ResumeRequired {
+				t.Fatal("read-only observation changed authorization or replaced the owned writer handle")
+			}
+			if outcome == "success" {
+				if w.observer != observer || observer.closed != 0 || e.runs["run"].Revision != revision+1 {
+					t.Fatal("committed observation was not attached")
+				}
+				e.advance("run", w)
+				if p.calls != 1 {
+					t.Fatal("an existing observation was attached twice")
+				}
+			} else if w.observer != nil || observer.closed != 1 || outcome == "commit_failure" && e.runs["run"].Revision != revision {
+				t.Fatal("failed observation was published or its temporary observer leaked")
+			}
+		})
+	}
+}
 
 func TestSRObservationUnchangedProjectionStillCommitsIdentity(t *testing.T) {
 	for _, kind := range []b.EventKind{b.EventCompleted, b.EventQuestion} {

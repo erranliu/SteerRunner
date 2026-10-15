@@ -107,38 +107,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 		return e.answer(id, w, p)
 	}
 	if r.Snapshot.Session.PendingTurnID != "" || r.Snapshot.Session.CurrentTurnID != "" && r.Snapshot.Session.CurrentTurnID != r.Snapshot.Session.LastStoppedTurnID {
-		if r.PendingAnswer != nil && r.Allowed && !r.ResumeRequired {
-			return e.answer(id, w, p)
-		}
-		if w.observer != nil {
-			return false
-		}
-		ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
-		receipt, observer, err := p.ObserveLifecycle(ctx, r.Snapshot.Clone())
-		cancel()
-		if err != nil {
-			if observer != nil {
-				_ = observer.Close(context.Background())
-			}
-			e.block(id, "observation_unverified", err, true)
-			return false
-		}
-		if !e.applyObservation(id, r, receipt) {
-			if observer != nil {
-				_ = observer.Close(context.Background())
-			}
-			return false
-		}
-		if observer != nil {
-			w.observer = observer
-			if h := observer.StopHandle(); h != nil {
-				e.retainHandle(w, h)
-			}
-		}
-		if receipt.TurnEvidence != nil {
-			return e.finish(id, *receipt.TurnEvidence)
-		}
-		return false
+		return e.attachObservation(id, w, p, r)
 	}
 	if !r.Allowed || r.ResumeRequired {
 		return false
@@ -161,49 +130,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.Status == "blocked" || r.Status == "waiting_input" || r.Status == "stopped" {
 		return false
 	}
-	if r.Snapshot.Workspace.Path != "" && r.Snapshot.PendingTurn == nil && len(r.Workflow.StageInputs) == 0 {
-		if err := materialize(r); err != nil {
-			e.block(id, "materialization_failed", err, false)
-			return false
-		}
-		if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
-			e.block(id, "input_failed", err, false)
-			return false
-		}
-		if err := e.attachWriteRoots(r); err != nil {
-			e.block(id, "workspace_unverified", err, false)
-			return false
-		}
-		e.mu.Lock()
-		err := e.commitLocked(r, nil, "input_frozen")
-		e.mu.Unlock()
-		return err == nil
-	}
-	if r.Snapshot.PendingTurn == nil && r.Snapshot.Workspace.Path != "" {
-		return false
-	}
-	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
-	candidate, err := reliable.Next(ctx, p, r.Snapshot.Clone())
-	cancel()
-	if err != nil {
-		e.block(id, "preparation_blocked", err, false)
-		return false
-	}
-	if candidate.Done {
-		return false
-	}
-	if r.PreparationDeadline.IsZero() {
-		r.PreparationDeadline = time.Now().UTC().Add(3 * time.Minute)
-	}
-	if time.Now().After(r.PreparationDeadline) && candidate.Action != b.LifecycleStartTurn && candidate.Action != b.LifecycleSubmitInput {
-		e.block(id, "preparation_deadline", errors.New("The original preparation budget is exhausted"), false)
-		return false
-	}
-	i, err := e.saveIntent(id, r, candidate)
-	if err != nil {
-		return false
-	}
-	return e.invoke(id, w, p, i, false)
+	return e.prepareRun(id, w, p, r)
 }
 
 func (e *Engine) saveIntent(id string, r *runstate.Record, candidate b.LifecycleCandidate) (int, error) {

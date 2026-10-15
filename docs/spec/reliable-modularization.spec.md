@@ -124,3 +124,14 @@ Run stop 中已经持久化的操作可以复用操作更新函数，但 StopLif
 第一轮完成条件为：operation 提取、相关旧入口移除、实际新增依赖无环、RM-A01–A08 针对本轮变更有足够验证。RM-A03/04 等允许复用现有测试，不能以未拆成包为由判失败。若触发 RM-A09，完成相应最小验证；未触发则记录原因即可。
 
 其余职责允许保留原位，但须逐项核对并记录依据；operation 完成不替代这一核对。本次交付还须完成 Plan 中已选的 RM-P2 整理及同一最终构建的 RM-P3 复验。状态与证据登记在 Plan §6。
+
+## 9. 后续收敛：清理旧规则并简化 advance
+
+用户在 PR #5 打开期间授权继续建议中的两项整理，基线为 `6f1db96ab0537743db4010256b92396d0557ddc8`：
+
+- 删除没有生产调用的 OperationKey、ValidateSavedIntent、HasUnknownOperation、ResourceOutcome、ReconciledResult、ReconciliationRequest 及只服务它们的 SavedIntent、OperationFact、Reconciled 标记。测试保留原意图对账断言，并通过真实 application 路径验证部分原生事实不会因后续对账缺失而丢失。
+- 观察挂接进入 application/observation.go 的 attachObservation，使用已有 LifecycleObservePort；输入物化和准备推进进入同包 preparation.go 的 prepareRun。它们均为普通函数，不新增职责包或状态对象。
+
+advance 保留 gate、控制优先级、授权/权限门槛及反馈与准备的先后顺序；移除的重复答案条件已由紧邻的前置判断覆盖。两个搬迁代码块的主体与本次基线逐段比较相同，不移动提交或外发边界。观察挂接须在事实提交成功后接收 observer，失败则关闭临时观察；保留更强的 owned 句柄。
+
+持久 Intent/Record、SQL/JSON、事件、原生调用/参数/权限/生命周期均不变。验收复用既有依赖、准备、停止和原意图测试，补宿主部分事实保留及观察提交/句柄边界；对最终构建重跑现有 8 个受控场景和 4 个兼容子场景。此次没有进一步拆包的要求。

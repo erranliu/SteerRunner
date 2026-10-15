@@ -2,18 +2,17 @@ package operation
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 )
 
 type EffectResult struct {
-	Request               b.LifecycleRequest
-	Receipt               b.LifecycleReceipt
-	Observer              b.LifecycleObserver
-	Err                   error
-	Uncertain, Reconciled bool
+	Request   b.LifecycleRequest
+	Receipt   b.LifecycleReceipt
+	Observer  b.LifecycleObserver
+	Err       error
+	Uncertain bool
 }
 
 type InvocationMode string
@@ -45,7 +44,7 @@ func Invoke(ctx context.Context, port interface {
 		return EffectResult{Request: request.Clone(), Err: errors.New("external action invocation mode is unverified")}
 	}
 	reconcile := mode == ReconcileOriginalIntent
-	result := EffectResult{Request: request.Clone(), Reconciled: reconcile}
+	result := EffectResult{Request: request.Clone()}
 	if !reconcile {
 		err := ctx.Err()
 		if err == nil {
@@ -72,27 +71,6 @@ func Invoke(ctx context.Context, port interface {
 	return result
 }
 
-// ReconciledResult retains partial native successes if the read-only follow-up
-// loses its receipt. The initial observer has already been released by owner.
-func ReconciledResult(result EffectResult, original *EffectResult) EffectResult {
-	if original == nil {
-		return result
-	}
-	result.Uncertain = true
-	validationErr := result.Receipt.ValidateFor(result.Request)
-	if result.Err == nil && validationErr == nil && result.Receipt.Disposition != b.OperationUnknown {
-		return result
-	}
-	if result.Observer != nil {
-		_ = result.Observer.Close(context.Background())
-	}
-	fallback := *original
-	fallback.Observer = nil
-	fallback.Err = errors.Join(original.Err, result.Err, validationErr)
-	fallback.Reconciled = true
-	return fallback
-}
-
 func Outcome(receipt b.LifecycleReceipt, err error) (string, string) {
 	status, diagnostic := string(receipt.Disposition), receipt.Diagnostic
 	switch receipt.Disposition {
@@ -108,25 +86,6 @@ func Outcome(receipt b.LifecycleReceipt, err error) (string, string) {
 		if receipt.Disposition != b.OperationRejected {
 			status = "outcome_unknown"
 		}
-	}
-	return status, diagnostic
-}
-
-func ReconciliationRequest(result EffectResult) (b.LifecycleRequest, bool) {
-	if !result.Uncertain || result.Reconciled {
-		return b.LifecycleRequest{}, false
-	}
-	request := result.Request.Clone()
-	if request.Operation.Action == string(b.LifecyclePrepareWorkspace) && len(result.Receipt.Operation.Receipt) > 0 && result.Receipt.ValidateFor(request) == nil {
-		request.Operation.Receipt, _ = json.Marshal(result.Receipt)
-	}
-	return request, true
-}
-
-func ResourceOutcome(receipt b.LifecycleReceipt, callErr error) (string, string) {
-	status, diagnostic := Outcome(receipt, callErr)
-	if callErr == nil && status == "accepted" && receipt.State.ResourceID == "" && receipt.State.WorktreeID == "" && receipt.Process == nil {
-		return "outcome_unknown", "resource lifecycle receipt did not identify its accepted resource"
 	}
 	return status, diagnostic
 }
