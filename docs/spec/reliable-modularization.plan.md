@@ -164,4 +164,6 @@ PR 交付前分支又更新到最新 main `d2f0d094e857d6ff162b68ab1dc9f81d49261
 2. 已将观察挂接、输入物化及准备推进按原块移到 attachObservation/prepareRun。advance 保留 gate 和原优先级；两个函数体与基线原代码块比较相同。新增 TestSRObservationAttachmentCommitsBeforePublishingObserver，验证读取失败/提交失败关闭临时 observer、成功提交后才挂接、owned 句柄不降级及禁止输入授权不被观察恢复。
 3. 定向测试、最终 42 个顶层单元测试（含 host）和 vet 已通过；干净提交 `839cd12466e8fe5c0695b94f9e72e2c543b32ebc` 构建后复跑 §5 的 8 项受控组合及 4 个兼容子场景全部通过，无失败或跳过。四对 v2 数据库的只读复核也通过。实际构建及证据见[后续收敛证据](../acceptance/evidence/reliable-followup-20261015.md)，代码和验收记录更新到同一 PR；历史验收没有替代本轮结果。
 
+首次推送后主线又合入测试分层及执行可观测性，已合入 main `0a34148c7505bf90b2027b3d2224baf19735ad63`，将公开活动消息分流保留在迁移后的 observation.go。合入后的 47 个顶层单元测试、adapter 定向测试、vet，以及选定的 8 个受控场景和 4 个兼容子场景全部通过；最终受控构建来自 `f176d7ed3121d158147d9a7ebdf2ba1d6e1d8a48`，证据目录 `.evidence/foundation-20261015-102921`，四对 v2 数据库只读复核也通过。新主线的来源核验、脱敏和阶段预算语义保留，主线整合没有沿用首次收敛的构建结果。
+
 出口已满足：剩余调用无编译/依赖问题，没有新增状态、包或框架；准备与观察的外发、提交、授权顺序保持。全套复验结果已登记在后续收敛证据中。
