@@ -169,7 +169,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 // StartTurn is a separate operation: the center must persist PrepareSession's
 // partial binding before calling it. No persistence callback drives the backend.
 func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executionbackend.TurnInput, linkedArgs []string) (*Observation, string, error) {
-	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) {
+	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
 		return nil, "", errors.New("app-server turn changed its prepared request identity or input")
 	}
 	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return linkedArgs, nil })

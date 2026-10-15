@@ -1,5 +1,28 @@
 {
   "version": 1,
+  "workflow": {
+    "type": "object", "additionalProperties": false, "required": ["id", "version"],
+    "properties": {
+      "id": {"enum": ["development", "development-audited"]},
+      "version": {"const": 1},
+      "audit_model": {
+        "type": "object", "additionalProperties": false, "required": ["model"],
+        "properties": {
+          "model": {"type": "string", "minLength": 1, "pattern": "^\\S(?:.*\\S)?$", "not": {"pattern": "[\\u0000-\\u001f\\u007f-\\u009f]"}},
+          "reasoning_effort": {"enum": ["minimal", "low", "medium", "high", "xhigh", "max", "ultra"]}
+        }
+      },
+      "prompt_overrides": {"type": "object", "additionalProperties": {"type": "string", "minLength": 1, "pattern": "\\S"}}
+    },
+    "allOf": [
+      {
+        "if": {"properties": {"id": {"const": "development-audited"}}},
+        "then": {"required": ["audit_model"], "properties": {"prompt_overrides": {"propertyNames": {"enum": ["implement.execute", "implement.report", "publish", "publish.report", "audit.spec", "audit.code"]}}}},
+        "else": {"not": {"required": ["audit_model"]}, "properties": {"prompt_overrides": {"propertyNames": {"enum": ["implement.execute", "implement.report", "publish", "publish.report"]}}}}
+      }
+    ],
+    "description": "Audited workflow additionally requires local codex-app-server and an explicit execution.settings.model. Omitted audit effort inherits the normalized execution effort."
+  },
   "adapters": {
     "codex-app-server": {
       "$id": "steerrunner/adapters/codex-app-server/settings/v1",

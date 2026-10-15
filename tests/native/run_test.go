@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
@@ -26,7 +27,7 @@ var scenarioCount int
 
 // New real-environment workflows register a driver; catalog entries choose
 // that driver and an execution target without changing the meaning of L3.
-var drivers = map[string]func(*testing.T, livetest.Manifest){"development-smoke": developmentSmoke}
+var drivers = map[string]func(*testing.T, livetest.Manifest){"development-smoke": developmentSmoke, "development-audited": developmentSmoke}
 
 func TestMain(m *testing.M) {
 	flag.Parse()
@@ -309,11 +310,12 @@ func verifyHead(t *testing.T, m livetest.Manifest, view contracts.RunView, earli
 }
 
 func developmentSmoke(t *testing.T, m livetest.Manifest) {
+	audited := m.Driver == "development-audited"
 	r := scenarioResult{Scenario: m.Scenario, Level: m.Level, Stage: "preflight"}
 	checkpoint := func(stage string) { r.Stage = stage; save(t, "scenario.json", r) }
 	// Registered first: final success is written after every cleanup ran.
 	t.Cleanup(func() {
-		r.Passed = !t.Failed() && r.RunStopped && r.ServiceStopped && r.MergeCommit != ""
+		r.Passed = !t.Failed() && r.RunStopped && r.ServiceStopped && (audited && r.OriginalHead != "" || !audited && r.MergeCommit != "")
 		if r.Passed {
 			r.Stage = "completed"
 		}
@@ -324,6 +326,10 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	}
 	if got := strings.TrimSpace(string(git(t, m, "rev-parse", "HEAD"))); got != m.BaseRevision {
 		t.Fatal("fixture repository base changed")
+	}
+	base := strings.Fields(string(git(t, m, "ls-remote", "--heads", "origin", "refs/heads/"+m.BaseBranch)))
+	if len(base) != 2 || base[0] != m.BaseRevision || base[1] != "refs/heads/"+m.BaseBranch {
+		t.Fatal("prepare and verify the dedicated remote base before native execution")
 	}
 	shell(t, m.Root, "gh", "auth", "status", "--active", "--hostname", "github.com")
 	dir := filepath.Join(m.Root, "s")
@@ -416,6 +422,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	plan, _ := os.ReadFile(m.PlanPath)
 	specText, planText := string(spec), string(plan)
 	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
+	if audited {
+		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel, PromptOverrides: map[string]string{workflow.StepPublish: "Publish the already audited work using the original fixed publication command from the frozen Plan. Read the exact current branch. If native permission review is required, request it once for that same command and preserve any denial. Wait for the original command to finish, including polling its session_id if needed. Use its full successful receipt and actual PR URL; a later unreviewed query failure must not override that receipt. Runner will independently verify the PR. Do not invent a URL, copy credentials, change permissions or use an alternate publication route."}}
+	}
 	checkpoint("submit")
 	req := request("smoke-submit", input)
 	accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
@@ -427,6 +436,27 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	checkpoint("verify-original-pr")
 	originalAt := verifyHead(t, m, first, startedAt)
 	save(t, "original-pr-ready.json", first)
+	if audited {
+		var settings contracts.CodexSettings
+		_ = json.Unmarshal(m.Execution.Settings, &settings)
+		effort := settings.ReasoningEffort
+		if effort == "" {
+			effort = "medium"
+		}
+		if first.Audit == nil || len(first.Audit.Results) != 2 || first.Execution.RequestedModel != settings.Model || first.Execution.RequestedReasoningEffort != effort || first.Audit.Model != m.AuditModel.Model {
+			t.Fatal("audit passes or execution model restoration are missing")
+		}
+		source := first.Audit.Results[0].SourceCommandID
+		for i, step := range []string{workflow.StepAuditSpec, workflow.StepAuditCode} {
+			a := first.Audit.Results[i]
+			if a.StepID != step || a.Verdict != "pass" || a.Failure != "" || a.CommandID == "" || a.TurnID == "" || source == "" || a.SourceCommandID != source {
+				t.Fatal("audit did not pass for one implementation report")
+			}
+		}
+		checkpoint("stop-and-cleanup")
+		t.Logf("audited native run=%s PR=%s; leave test PR unmerged", r.RunID, r.PRURL)
+		return
+	}
 	feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
 	checkpoint("feedback")
 	req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})

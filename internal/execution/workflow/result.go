@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"maps"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -23,6 +25,12 @@ type Outputs struct {
 }
 
 type Report struct {
+	reportBody
+	Verdict  string    `json:"verdict,omitempty"`
+	Findings []Finding `json:"findings,omitempty"`
+}
+
+type reportBody struct {
 	Outcome  string   `json:"outcome"`
 	Outputs  Outputs  `json:"outputs,omitempty"`
 	Summary  string   `json:"summary"`
@@ -35,6 +43,10 @@ const ResultContract = `Return one JSON object:
 For needs_input add question. For blocked add blocker: {"category":"failure|unknown_external|permission|prerequisite","action":"action","error":"error","known":"optional","unknown":"optional"}.`
 
 func ResultInstruction(step string) string {
+	if AuditStep(step) {
+		return ResultContract + `
+For done add verdict: "pass|changes_requested" and findings: [{"severity":"P0|P1|P2|P3","message":"specific issue and evidence","path":"optional relative path","line":1}]. P0-P2 block publication; P3 is advisory. Verdict must match the findings. Use an empty array for no findings. For needs_input or blocked omit verdict and findings.`
+	}
 	if step == StepReport {
 		return ResultContract
 	}
@@ -73,8 +85,11 @@ func uniqueJSON(dec *json.Decoder, fields resultFields) error {
 			// Match the struct decoder's aliases only for fields consumed here.
 			// Distinct keys in ignored metadata remain valid JSON.
 			var child resultFields
-			if nested, known := fields[strings.ToLower(name)]; known {
-				name, child = strings.ToLower(name), nested
+			for field, nested := range fields {
+				if strings.EqualFold(name, field) {
+					name, child = field, nested
+					break
+				}
 			}
 			if !ok || seen[name] {
 				return errors.New("duplicate or invalid result key")
@@ -86,7 +101,7 @@ func uniqueJSON(dec *json.Decoder, fields resultFields) error {
 		}
 	case '[':
 		for dec.More() {
-			if err := uniqueJSON(dec, nil); err != nil {
+			if err := uniqueJSON(dec, fields); err != nil {
 				return err
 			}
 		}
@@ -112,7 +127,13 @@ func DecodeReport(body, step string) (Report, error) {
 		}
 	}
 	check := json.NewDecoder(strings.NewReader(body))
-	if err := uniqueJSON(check, reportFields); err != nil {
+	fields := reportFields
+	if AuditStep(step) {
+		fields = maps.Clone(reportFields)
+		fields["verdict"] = nil
+		fields["findings"] = resultFields{"severity": nil, "message": nil, "path": nil, "line": nil}
+	}
+	if err := uniqueJSON(check, fields); err != nil {
 		return value, err
 	}
 	if _, err := check.Token(); err != io.EOF {
@@ -121,7 +142,11 @@ func DecodeReport(body, step string) (Report, error) {
 	dec := json.NewDecoder(bytes.NewBufferString(body))
 	// Only the known business fields drive the flow. Extra explanatory fields
 	// do not make an otherwise unambiguous result unusable.
-	if err := dec.Decode(&value); err != nil {
+	var target any = &value.reportBody
+	if AuditStep(step) {
+		target = &value
+	}
+	if err := dec.Decode(target); err != nil {
 		return value, err
 	}
 	value.Outcome = strings.TrimSpace(value.Outcome)
@@ -157,6 +182,51 @@ func DecodeReport(body, step string) (Report, error) {
 		}
 	default:
 		return value, errors.New("unsupported result outcome")
+	}
+	if AuditStep(step) {
+		if value.Outcome != "done" {
+			var fields map[string]json.RawMessage
+			_ = json.Unmarshal([]byte(body), &fields)
+			for key := range fields {
+				if strings.EqualFold(key, "verdict") || strings.EqualFold(key, "findings") {
+					return value, errors.New("incomplete audit contains a verdict or findings")
+				}
+			}
+		} else {
+			if value.Findings == nil {
+				return value, errors.New("audit findings array missing")
+			}
+			var locations struct {
+				Findings []struct {
+					Path json.RawMessage
+					Line json.RawMessage
+				}
+			}
+			_ = json.Unmarshal([]byte(body), &locations)
+			blocking := false
+			for index, finding := range value.Findings {
+				location := locations.Findings[index]
+				if len(location.Line) > 0 && finding.Line <= 0 || len(location.Path) > 0 && finding.Path == "" {
+					return value, errors.New("empty audit location")
+				}
+				if strings.TrimSpace(finding.Message) == "" {
+					return value, errors.New("audit finding lacks evidence")
+				}
+				switch finding.Severity {
+				case "P0", "P1", "P2":
+					blocking = true
+				case "P3":
+				default:
+					return value, errors.New("invalid audit severity")
+				}
+				if finding.Path != "" && (path.IsAbs(finding.Path) || path.Clean(finding.Path) != finding.Path || finding.Path == "." || finding.Path == ".." || strings.HasPrefix(finding.Path, "../") || strings.ContainsAny(finding.Path, "\\:\x00\r\n")) || finding.Line < 0 || finding.Line > 0 && finding.Path == "" {
+					return value, errors.New("invalid audit location")
+				}
+			}
+			if blocking && value.Verdict != "changes_requested" || !blocking && value.Verdict != "pass" {
+				return value, errors.New("audit verdict conflicts with findings")
+			}
+		}
 	}
 	return value, nil
 }

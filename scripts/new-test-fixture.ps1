@@ -3,7 +3,9 @@ param(
     [Parameter(Mandatory=$true)][string]$Config,
     [string]$Catalog = '',
     [string]$FixtureParent = 'C:\srt',
-    [string]$RecordPath = ''
+    [string]$RecordPath = '',
+    [string]$AuditModel = '',
+    [string]$AuditReasoningEffort = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -55,6 +57,13 @@ if ($taskScenario.target -eq 'local-codex') {
     $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
+$taskAudit = $null
+if ($AuditModel) {
+    if ($taskScenario.target -ne 'local-codex' -or -not (Read-Setting 'model') -or $AuditModel -eq (Read-Setting 'model') -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires local Codex and two explicit, different models' }
+    if ($AuditReasoningEffort -and $AuditReasoningEffort -notin @('minimal','low','medium','high','xhigh','max','ultra')) { throw 'Invalid audit reasoning effort' }
+    $taskAudit = @{model=$AuditModel}
+    if ($AuditReasoningEffort) { $taskAudit['reasoning_effort'] = $AuditReasoningEffort }
+} elseif ($AuditReasoningEffort) { throw 'AuditReasoningEffort requires AuditModel' }
 & gh auth status --active --hostname github.com 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }
 $taskID = [Guid]::NewGuid().ToString('N').Substring(0,12)
@@ -100,6 +109,7 @@ $taskManifest = [ordered]@{
     created_at=[DateTime]::UtcNow.ToString('o')
 }
 # Persist the intended ref before its first external mutation; uncertain pushes
+if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
 # retain this identity and are never retried under a replacement fixture name.
 Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 $taskPreparation.status = 'pushing-base'

@@ -66,6 +66,8 @@ type TurnInput struct {
 	Prompt             string
 	Purpose            string
 	LinkedWorktreeArgs []string `json:"linked_worktree_args,omitempty"`
+	Model              string   `json:"model,omitempty"`
+	ReasoningEffort    string   `json:"reasoning_effort,omitempty"`
 }
 
 // Answer is the structured answer content for the original verified question.

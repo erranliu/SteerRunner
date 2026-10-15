@@ -85,7 +85,7 @@ func QualifyInput(input *b.TurnInput, caps b.LifecyclePolicyCapabilities) error 
 	return nil
 }
 func SameInput(candidate *b.TurnInput, input b.TurnInput) bool {
-	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs)
+	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
 }
 
 type SavedIntent struct {

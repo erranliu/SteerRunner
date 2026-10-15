@@ -1,6 +1,9 @@
 package contracts
 
-import "time"
+import (
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"time"
+)
 
 type MaterialView struct {
 	Kind              string `json:"kind"`
@@ -12,18 +15,20 @@ type MaterialView struct {
 }
 
 type ExecutionView struct {
-	WorkspaceScope string `json:"workspace_scope,omitempty"`
-	TurnStarted    bool   `json:"turn_started"`
-	AttemptID      string `json:"attempt_id"`
-	Generation     string `json:"generation"`
-	Backend        string `json:"backend"`
-	Protocol       string `json:"protocol"`
-	SessionID      string `json:"session_id,omitempty"`
-	TurnID         string `json:"turn_id,omitempty"`
-	NativeOutcome  string `json:"native_outcome,omitempty"`
-	FinalAvailable bool   `json:"final_available"`
-	Workspace      string `json:"workspace"`
-	Branch         string `json:"branch"`
+	RequestedModel           string `json:"requested_model,omitempty"`
+	RequestedReasoningEffort string `json:"requested_reasoning_effort,omitempty"`
+	WorkspaceScope           string `json:"workspace_scope,omitempty"`
+	TurnStarted              bool   `json:"turn_started"`
+	AttemptID                string `json:"attempt_id"`
+	Generation               string `json:"generation"`
+	Backend                  string `json:"backend"`
+	Protocol                 string `json:"protocol"`
+	SessionID                string `json:"session_id,omitempty"`
+	TurnID                   string `json:"turn_id,omitempty"`
+	NativeOutcome            string `json:"native_outcome,omitempty"`
+	FinalAvailable           bool   `json:"final_available"`
+	Workspace                string `json:"workspace"`
+	Branch                   string `json:"branch"`
 }
 
 type QuestionOption struct {
@@ -83,6 +88,7 @@ type OperationView struct {
 	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
 }
 type RunView struct {
+	Audit            *AuditView        `json:"audit,omitempty"`
 	Operations       []OperationView   `json:"operations"`
 	RunID            string            `json:"run_id"`
 	Revision         uint64            `json:"revision"`
@@ -107,6 +113,13 @@ type RunView struct {
 	Final            *FinalView        `json:"final,omitempty"`
 	CreatedAt        time.Time         `json:"created_at"`
 	UpdatedAt        time.Time         `json:"updated_at"`
+}
+
+type AuditView struct {
+	Model           string                 `json:"model"`
+	ReasoningEffort string                 `json:"reasoning_effort"`
+	RepairCount     uint64                 `json:"repair_count"`
+	Results         []workflow.AuditRecord `json:"results"`
 }
 type Event struct {
 	EventID   string     `json:"event_id"`

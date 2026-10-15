@@ -53,7 +53,7 @@ func FeedbackStep(w Snapshot, intent FeedbackIntent) (string, uint64, error) {
 }
 func FeedbackInput(w Snapshot) StageInput {
 	input := StageInput{StepID: w.StepID, MaterialFacts: MaterialFacts(w)}
-	if ReportStep(w.StepID) {
+	if ReportStep(w.StepID) || AuditStep(w.StepID) {
 		for i := len(w.StageInputs) - 1; i >= 0; i-- {
 			previous := w.StageInputs[i]
 			if previous.StepID == w.StepID {

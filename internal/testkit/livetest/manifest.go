@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
 const Repository = "erranliu/SteerlineTest"
@@ -20,28 +21,29 @@ const RemoteURL = "https://github.com/erranliu/SteerlineTest.git"
 const Artifact = "evidence/native-101.md"
 
 type Manifest struct {
-	Schema          string                `json:"schema"`
-	ID              string                `json:"id"`
-	Level           string                `json:"level"`
-	Scenario        string                `json:"scenario"`
-	Driver          string                `json:"driver"`
-	Root            string                `json:"root"`
-	RunnerExe       string                `json:"runner_exe"`
-	RunnerSHA256    string                `json:"runner_sha256"`
-	SourceCommit    string                `json:"source_commit"`
-	SourceDirty     bool                  `json:"source_dirty"`
-	RepositoryPath  string                `json:"repository_path"`
-	SourceRevision  string                `json:"source_revision"`
-	BaseBranch      string                `json:"base_branch"`
-	BaseRevision    string                `json:"base_revision"`
-	SpecPath        string                `json:"spec_path"`
-	SpecSHA256      string                `json:"spec_sha256"`
-	PlanPath        string                `json:"plan_path"`
-	PlanSHA256      string                `json:"plan_sha256"`
-	Execution       contracts.Execution   `json:"execution"`
-	Publication     contracts.Publication `json:"publication"`
-	RemoteRuntimeID string                `json:"remote_runtime_id,omitempty"`
-	CreatedAt       string                `json:"created_at"`
+	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	Schema          string                  `json:"schema"`
+	ID              string                  `json:"id"`
+	Level           string                  `json:"level"`
+	Scenario        string                  `json:"scenario"`
+	Driver          string                  `json:"driver"`
+	Root            string                  `json:"root"`
+	RunnerExe       string                  `json:"runner_exe"`
+	RunnerSHA256    string                  `json:"runner_sha256"`
+	SourceCommit    string                  `json:"source_commit"`
+	SourceDirty     bool                    `json:"source_dirty"`
+	RepositoryPath  string                  `json:"repository_path"`
+	SourceRevision  string                  `json:"source_revision"`
+	BaseBranch      string                  `json:"base_branch"`
+	BaseRevision    string                  `json:"base_revision"`
+	SpecPath        string                  `json:"spec_path"`
+	SpecSHA256      string                  `json:"spec_sha256"`
+	PlanPath        string                  `json:"plan_path"`
+	PlanSHA256      string                  `json:"plan_sha256"`
+	Execution       contracts.Execution     `json:"execution"`
+	Publication     contracts.Publication   `json:"publication"`
+	RemoteRuntimeID string                  `json:"remote_runtime_id,omitempty"`
+	CreatedAt       string                  `json:"created_at"`
 }
 
 var idPattern = regexp.MustCompile(`^[a-f0-9]{12}$`)
@@ -58,6 +60,14 @@ func (m Manifest) Validate() error {
 	}
 	if m.Publication.Repository != Repository || m.Publication.BaseBranch != m.BaseBranch {
 		return errors.New("live publication is restricted to the dedicated SteerlineTest base")
+	}
+	if m.Driver == "development-audited" {
+		var settings contracts.CodexSettings
+		if m.AuditModel == nil || strings.TrimSpace(m.AuditModel.Model) == "" || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.Model == "" || settings.Model == m.AuditModel.Model || m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" {
+			return errors.New("audited live fixture requires local Codex and two explicit, different models")
+		}
+	} else if m.AuditModel != nil {
+		return errors.New("audit model requires the audited live driver")
 	}
 	switch m.Level {
 	case "L2":

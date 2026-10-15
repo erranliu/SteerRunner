@@ -6,6 +6,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
+- [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
 - [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
 - [来源清单及 P2 交接门槛](docs/extraction/source-map.md)
 
@@ -25,7 +26,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 .\bin\steerrunner.exe capabilities --state-dir C:\Temp\SteerRunnerDemo --json
 ```
 
-构建输出 `bin/steerrunner.exe` 及构建来源/摘要记录。运行只需 EXE；默认流程、四份提示词及 schema 已内嵌，不需要 SteerLine、模板目录、Python 或 Node。CLI 启动成功后退出，常驻服务继续运行。CLI 与服务使用同一个 EXE 文件，但各自是独立进程。
+构建输出 `bin/steerrunner.exe` 及构建来源/摘要记录。运行只需 EXE；内置流程、六份步骤提示词及 schema 已内嵌，不需要 SteerLine、模板目录、Python 或 Node。CLI 启动成功后退出，常驻服务继续运行。CLI 与服务使用同一个 EXE 文件，但各自是独立进程。
 
 Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway 被明确禁止或创建后仍有 Job 关联时，使用系统自带 Windows PowerShell/CIM 挂起创建独立进程，核验用户、权限与 EXE 后才恢复执行，不请求提升权限。该系统能力不可用时返回明确错误。`startup_unverified` 表示原启动结果未核清，须核实 `service/bootstrap.json` 对应的原进程，不会自动重建另一份启动。`serve --state-dir <绝对路径>` 可从已有独立宿主前台运行，生命周期由该宿主负责。
 
@@ -46,6 +47,37 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
 
 本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；其远端原生闭环尚未验收。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
+
+## 选择 workflow 与审计模型
+
+服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
+
+- `development/1`：原实现→报告→发布流程，原请求保持可用。
+- `development-audited/1`：报告后依次审计 Spec 和代码；有阻断问题时复用原实施/报告步骤修复，最多自动修复两次，每次重新审计。本期仅本机 `codex-app-server`。
+
+带审计请求的相关字段如下，其余 RunRequest 字段仍必填。模型标识请替换为账号实际可用型号：
+
+```json
+{
+  "workflow": {
+    "id": "development-audited",
+    "version": 1,
+    "audit_model": {"model": "review-model-id", "reasoning_effort": "high"},
+    "prompt_overrides": {"audit.spec": "核对冻结 Spec/Plan，报告有依据的偏差。"}
+  },
+  "execution": {
+    "adapter": "codex-app-server",
+    "target": {"kind": "local"},
+    "settings": {"model": "execution-model-id", "reasoning_effort": "medium"}
+  }
+}
+```
+
+审计与实施使用同一 agent、thread、工作区和分支。审计流程要求显式填写执行模型与审计模型，确保实施、修复和发布切回执行模型；省略审计 effort 时继承规范化执行 effort。模型不可用时明确阻断，不回退或换会话。
+
+`inspect.audit` 显示当前实施结果的审计与修复计数，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。P0–P2 findings 阻断发布，P3 为建议；坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
+
+存储保持 v2，新构建可读取旧普通 Run；原未核清操作不回填新字段。旧 EXE 不承诺读取新审计 Run，升级后不要将同一状态目录回退交给旧程序。
 
 ## 停服及回执
 

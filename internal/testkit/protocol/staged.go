@@ -26,6 +26,13 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		if strings.Contains(prompt, "Existing PR:") {
 			content += "updated after feedback\n"
 		}
+		if strings.Contains(prompt, "Repair the following verified audit findings") {
+			previous, err := os.ReadFile(filepath.Join(cwd, "stage-result.txt"))
+			if err != nil {
+				return "", err
+			}
+			content = string(previous) + "repaired after audit\n"
+		}
 		if err := os.WriteFile(filepath.Join(cwd, "stage-result.txt"), []byte(content), 0600); err != nil {
 			return "", err
 		}

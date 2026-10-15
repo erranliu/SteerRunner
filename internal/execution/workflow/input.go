@@ -6,11 +6,17 @@ import (
 )
 
 type Snapshot struct {
-	StepID       string
-	ReportRetry  uint64
-	PRURL        string
-	StageInputs  []StageInput
-	StageResults []StageResult
+	Config               *Profile       `json:"config,omitempty"`
+	ExecutionModel       *ModelSettings `json:"execution_model,omitempty"`
+	AuditModel           *ModelSettings `json:"audit_model,omitempty"`
+	AuditReportCommandID string         `json:"audit_report_command_id,omitempty"`
+	RepairCount          uint64         `json:"repair_count,omitempty"`
+	Audits               []AuditRecord  `json:"audits,omitempty"`
+	StepID               string
+	ReportRetry          uint64
+	PRURL                string
+	StageInputs          []StageInput
+	StageResults         []StageResult
 }
 
 func Input(w Snapshot, command string) *StageInput {
@@ -62,6 +68,14 @@ func RenderInputWithBody(w Snapshot, input StageInput, body string) (string, err
 			materials = MaterialFacts(w)
 		}
 		facts["materials"] = materials
+	case StepAuditSpec, StepAuditCode:
+		if !AuditSource(w, input) {
+			return "", errors.New("audit lacks its current successful implementation report")
+		}
+		facts["materials"] = input.MaterialFacts
+		facts["implementation_report_command_id"] = input.SourceCommandID
+		facts["implementation_report_turn_id"] = input.SourceTurnID
+		facts["implementation_report"] = Result(w, input.SourceCommandID).Final
 	case StepReport, StepPublishReport:
 		source := Result(w, input.SourceCommandID)
 		original := Input(w, input.SourceCommandID)
@@ -99,6 +113,16 @@ func RenderInputWithBody(w Snapshot, input StageInput, body string) (string, err
 		return "", errors.New("no automatic prompt for this step")
 	}
 	prompt, err := RenderPromptWithBody(input.StepID, facts, body)
+	if input.StepID == StepImplement && len(input.RepairFindings) > 0 {
+		raw, marshalErr := json.Marshal(input.RepairFindings)
+		if marshalErr != nil {
+			return "", marshalErr
+		}
+		prompt += "\nRepair the following verified audit findings in the original work, run necessary checks, and do not publish:\n" + string(raw)
+	}
+	if input.StepID == StepPublish && w.Config != nil {
+		prompt += "\nPublish the work that passed the current audits. Do not make further implementation changes during publication."
+	}
 	if w.PRURL != "" && (input.StepID == StepImplement || input.StepID == StepPublish) {
 		prompt += "\nExisting PR: " + w.PRURL + "\nContinue on the original branch and update this same PR; do not create another PR."
 	}

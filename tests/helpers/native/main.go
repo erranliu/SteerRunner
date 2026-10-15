@@ -15,6 +15,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -176,10 +177,26 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return fail(fmt.Errorf("one input required"))
 		}
 		prompt := input[0].Text
-		if err := appendCall(map[string]any{"method": "turn/start", "thread": s.thread.ID, "cwd": s.thread.Cwd, "prompt": prompt}); err != nil {
+		if err := appendCall(map[string]any{"method": "turn/start", "thread": s.thread.ID, "cwd": s.thread.Cwd, "prompt": prompt, "model": str("model"), "effort": str("effort")}); err != nil {
 			return fail(err)
 		}
-		content, err := protocol.StagedBusiness(s.thread.Cwd, prompt, os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "origin")
+		audit := strings.HasPrefix(prompt, "Audit the current")
+		if os.Getenv("STEERRUNNER_AUDIT_EXPECT_MODELS") == "1" {
+			expectedModel, expectedEffort := "executor", "medium"
+			if audit {
+				expectedModel, expectedEffort = "reviewer", "high"
+			}
+			if str("model") != expectedModel || str("effort") != expectedEffort {
+				return fail(fmt.Errorf("wrong per-turn model or effort"))
+			}
+		}
+		content := ""
+		var err error
+		if audit {
+			content, err = auditResult(prompt)
+		} else {
+			content, err = protocol.StagedBusiness(s.thread.Cwd, prompt, os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "origin")
+		}
 		if err != nil {
 			return fail(err)
 		}
@@ -217,6 +234,33 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		return fail(fmt.Errorf("unsupported fixture method %s", request.Method))
 	}
 	return response, nil
+}
+
+func auditResult(prompt string) (string, error) {
+	root := os.Getenv("STEERRUNNER_FIXTURE_STATE")
+	if exists(filepath.Join(root, "audit-unavailable")) {
+		return "", fmt.Errorf("requested audit model unavailable")
+	}
+	if exists(filepath.Join(root, "audit-bad-json")) {
+		return "not JSON", nil
+	}
+	if strings.HasPrefix(prompt, "Audit the current implementation") {
+		if marker := filepath.Join(root, "audit-question"); exists(marker) {
+			_ = os.Remove(marker)
+			return `{"outcome":"needs_input","summary":"clarify scope","question":"Is this required?"}`, nil
+		}
+		limit, _ := strconv.Atoi(os.Getenv("STEERRUNNER_AUDIT_FAILURES"))
+		usedPath := filepath.Join(root, "audit-failures-used")
+		raw, _ := os.ReadFile(usedPath)
+		used, _ := strconv.Atoi(string(raw))
+		if used < limit {
+			if err := os.WriteFile(usedPath, []byte(strconv.Itoa(used+1)), 0600); err != nil {
+				return "", err
+			}
+			return `{"outcome":"done","summary":"repair required","verdict":"changes_requested","findings":[{"severity":"P1","message":"controlled defect requires a repair"}]}`, nil
+		}
+	}
+	return `{"outcome":"done","summary":"checked","verdict":"pass","findings":[]}`, nil
 }
 func exists(path string) bool { _, err := os.Stat(path); return err == nil }
 func (s *server) save() error {

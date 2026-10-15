@@ -55,5 +55,8 @@ while (-not (Test-Path -LiteralPath $taskResultPath)) {
 $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
 if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1) { throw "Live scenario failed; inspect $taskEvidence/native.log" }
 $taskScenario = Get-Content -LiteralPath (Join-Path $taskEvidence 'scenario.json') -Raw | ConvertFrom-Json
-if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped -or -not $taskScenario.merge_commit) { throw 'Live result lacks merge or confirmed cleanup' }
+if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped) { throw 'Live result lacks confirmed completion or cleanup' }
+if ($taskNative.driver -eq 'development-audited') {
+    if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskScenario.merge_commit) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
+} elseif (-not $taskScenario.merge_commit) { throw 'Live smoke lacks its verified merge' }
 Write-Output $taskEvidence
