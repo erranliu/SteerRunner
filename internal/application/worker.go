@@ -87,7 +87,10 @@ func (e *Engine) advance(id string, w *worker) bool {
 	}
 	if unknown(r) {
 		for i, intent := range r.Intents {
-			if intent.Request.Operation.Status == b.OperationInFlight || intent.Request.Operation.Status == b.OperationUnknown {
+			if intent.NeedsReconciliation() {
+				if intent.Request.Operation.Status == b.OperationAccepted && intent.Receipt != nil && intent.Receipt.State.ResourcePending && !r.PreparationDeadline.IsZero() && time.Now().After(r.PreparationDeadline) {
+					e.block(id, "preparation_deadline", errors.New("The original native resource did not become ready within its preparation budget"), false)
+				}
 				return e.invoke(id, w, p, i, true)
 			}
 		}
@@ -297,7 +300,8 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		}
 	}
 	next.Diagnostic = op.Diagnostic
-	if reconcile && status == string(b.OperationUnknown) && intent.Request.Operation.Status == b.OperationUnknown && intent.Request.Operation.Diagnostic == op.Diagnostic && b.LifecycleBindingDigest(next.Snapshot) == b.LifecycleBindingDigest(r.Snapshot) {
+	resourcePending := status == string(b.OperationAccepted) && savedReceipt.State.ResourcePending
+	if reconcile && (status == string(b.OperationUnknown) || resourcePending) && intent.Request.Operation.Status == b.OperationStatus(status) && intent.Request.Operation.Diagnostic == op.Diagnostic && b.LifecycleBindingDigest(next.Snapshot) == b.LifecycleBindingDigest(r.Snapshot) {
 		e.mu.Unlock()
 		return false
 	}
@@ -336,7 +340,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	if savedReceipt.TurnEvidence != nil {
 		return e.finish(id, *savedReceipt.TurnEvidence)
 	}
-	return progress
+	return progress && !resourcePending
 }
 
 func (e *Engine) retainHandle(w *worker, h b.StopHandle) {

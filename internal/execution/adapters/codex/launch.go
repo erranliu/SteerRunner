@@ -29,7 +29,10 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	if err != nil {
 		return identity, nil, "", err
 	}
-	args := append(append([]string(nil), config.Args...), permissions.Args()...)
+	// Each Runner session owns its app-server and environment. Do not route a
+	// new session through a pre-existing user daemon with another environment.
+	args := append([]string{"--no-daemon", "--strict-config"}, config.Args...)
+	args = append(args, permissions.Args()...)
 	err = ValidateManagedArgs(config.Args)
 	if err != nil {
 		return identity, nil, "", err

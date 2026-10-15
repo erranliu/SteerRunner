@@ -185,6 +185,28 @@ func run(t *testing.T, key string) {
 		body, _ := json.Marshal(map[string]any{"expected_revision": run["revision"]})
 		stop := contracts.Request{Protocol: contracts.Protocol, RequestID: "native-run-cleanup-" + key, Input: body}
 		invoke(t, m, dir, []string{"stop", "--run-id", id, "--input", "-"}, &stop)
+		// Keep the daemon alive while its accepted original stop can reconcile.
+		// A service-stop acknowledgement alone does not prove remote PTY closure.
+		deadline := time.Now().Add(35 * time.Second)
+		var final contracts.RunView
+		for time.Now().Before(deadline) {
+			response := invoke(t, m, dir, []string{"inspect", "--run-id", id}, nil)
+			raw, _ := json.Marshal(response.Data.(map[string]any)["run"])
+			final = contracts.RunView{}
+			if err := json.Unmarshal(raw, &final); err != nil {
+				t.Error(err)
+				break
+			}
+			if final.StopStatus == "stopped" || final.StopStatus == "unsupported" {
+				break
+			}
+			time.Sleep(time.Second)
+		}
+		raw, _ := json.MarshalIndent(final, "", "  ")
+		_ = os.WriteFile(filepath.Join(m.DebugRoot, "evidence", "runner-native-"+key+"-cleanup.json"), raw, 0600)
+		if final.StopStatus != "stopped" {
+			t.Logf("native cleanup remains %q; original resource confirmation is not claimed", final.StopStatus)
+		}
 	})
 	until := time.Now().Add(12 * time.Minute)
 	var view contracts.RunView

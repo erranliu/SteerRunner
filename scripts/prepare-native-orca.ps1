@@ -10,8 +10,7 @@ if (-not $taskRoot.StartsWith('C:\SteerlineDebug\',[StringComparison]::OrdinalIg
 $taskPackage = Get-Content -LiteralPath (Join-Path $taskRoot 'manifest.json') -Raw | ConvertFrom-Json
 if ($taskPackage.status -ne 'ready' -or $taskInput.base_branch -ne $taskPackage.base_branch -or $taskInput.base_branch -notmatch '^codex/debug/[A-Za-z0-9.-]+/base$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated native test provenance is incomplete' }
 if (-not [IO.Path]::IsPathRooted($OrcaExe) -or -not (Test-Path -LiteralPath $OrcaExe -PathType Leaf)) { throw 'Use the selected absolute Orca executable' }
-$taskEvidence = Join-Path $taskRoot 'evidence/orca-preparation'
-if (Test-Path -LiteralPath $taskEvidence) { throw 'Preparation already exists; preserve its original outcome' }
+$taskEvidence = Join-Path $taskRoot ('evidence/orca-preparation-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
 $taskCallCount = 0
 function Invoke-TaskOrca([string[]]$Arguments) {
@@ -36,7 +35,7 @@ $taskMarker = 'SR_BASE_' + [Guid]::NewGuid().ToString('N') + ':'
 # This is an isolated fixture preparation terminal, never a business agent.
 # Split the marker in the command so command echo cannot prove completion.
 $taskCommand = '& git -C ' + $taskRepoQuoted + ' fetch --no-tags origin +refs/heads/' + $taskInput.base_branch + ':refs/remotes/origin/' + $taskInput.base_branch + '; if ($LASTEXITCODE -eq 0) { & git -C ' + $taskRepoQuoted + " cat-file -e '" + $taskInput.base_revision + "^{commit}'; if (`$LASTEXITCODE -eq 0) { Write-Output ('SR_' + '" + $taskMarker.Substring(3) + "' + '" + $taskInput.base_revision + "') } }"
-$taskCreated = Invoke-TaskOrca @('terminal','create','--worktree',('id:'+$taskMains[0].id),'--title','SteerRunner native base preparation','--command',$taskCommand)
+$taskCreated = Invoke-TaskOrca @('terminal','create','--worktree',('id:'+$taskMains[0].id),'--title','SteerRunner native base preparation','--command',$taskCommand,'--focus')
 $taskHandle = $taskCreated.result.terminal.handle
 if (-not $taskHandle -or $taskCreated._meta.runtimeId -ne $taskListing._meta.runtimeId) { throw 'Preparation terminal creation is unverified; do not recreate it' }
 try {

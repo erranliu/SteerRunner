@@ -107,7 +107,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 | 命令 | 输入与行为 | 成功响应 |
 | --- | --- | --- |
 | `version --json` | 离线版本查询 | 程序/协议/资源版本 |
-| `service start --state-dir ... --json` | 幂等启动或连接同目录服务；就绪代表能接受命令，不代表所有执行环境可用 | 实例身份、目录、就绪事实 |
+| `service start --state-dir ... --json` | 幂等启动或连接同目录的同一 EXE 发行包；不同 EXE SHA/版本/资源摘要拒绝 directory_conflict，保留原服务 | 实例身份、目录、就绪事实、`executable_sha256` |
 | `service status --state-dir ... --json` | 不自动启动；核验服务是否可达 | 实例身份与服务状态；不可达如实表达 |
 | `service stop --state-dir ... --input - --json` | 幂等接受有界停服请求；保存处理意图后再执行，最终状态由 status/重启对账核验 | command 回执与已知执行处理事实 |
 | `capabilities --state-dir ... --json` | 在线查询内置流程、adapter/config schema、平台能力与限制 | 能力版本和适用性；声明不替代现场事实 |

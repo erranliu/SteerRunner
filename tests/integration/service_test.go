@@ -291,6 +291,30 @@ func TestSRServiceOwnership(t *testing.T) {
 		}
 	})
 	t.Run("parent_job", func(t *testing.T) { testParentJobs(t) })
+	t.Run("different_release", func(t *testing.T) {
+		dir := filepath.Join(t.TempDir(), "runner")
+		original := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+		cleanupService(t, dir, original)
+		if len(original.ExecutableSHA256) != 64 {
+			t.Fatal("service did not publish its executable identity")
+		}
+		body, err := os.ReadFile(runnerEXE)
+		if err != nil {
+			t.Fatal(err)
+		}
+		other := filepath.Join(t.TempDir(), "other-release.exe")
+		// A PE overlay keeps the same version/protocol while changing the release hash.
+		if err := os.WriteFile(other, append(body, []byte("different release")...), 0700); err != nil {
+			t.Fatal(err)
+		}
+		response, exit, _, err := invoke(other, []string{"service", "start", "--state-dir", dir, "--json"}, "")
+		if err != nil || exit != 5 || response.Error == nil || response.Error.Code != "directory_conflict" {
+			t.Fatal("different release connected", exit, response, err)
+		}
+		if current := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0)); current.InstanceID != original.InstanceID {
+			t.Fatal("release conflict replaced original writer")
+		}
+	})
 	t.Run("stale_writer", func(t *testing.T) {
 		dir := filepath.Join(t.TempDir(), "runner")
 		old := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))

@@ -86,7 +86,7 @@ func Status(ctx context.Context, dir string) (contracts.ServiceInfo, *contracts.
 
 func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo, *contracts.Fault) {
 	if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
-		return info, nil
+		return selectedService(info, executable)
 	}
 	for _, name := range []string{"service", "logs"} {
 		if err := os.MkdirAll(filepath.Join(dir, name), 0700); err != nil {
@@ -104,7 +104,7 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 			break
 		}
 		if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
-			return info, nil
+			return selectedService(info, executable)
 		}
 		if !pause(ctx) {
 			break
@@ -119,7 +119,7 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 		return contracts.ServiceInfo{}, statusErr
 	}
 	if info.Status == "ready" {
-		return info, nil
+		return selectedService(info, executable)
 	}
 	if info.Status == "unavailable" {
 		return contracts.ServiceInfo{}, contracts.Fail(5, "directory_conflict", "The original writer still owns this directory; do not replace it.")
@@ -135,7 +135,7 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 	}
 	for contextAlive(ctx) {
 		if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
-			return info, nil
+			return selectedService(info, executable)
 		}
 		if data, err := os.ReadFile(startupPath); err == nil {
 			var failure startupFailure

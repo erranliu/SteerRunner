@@ -19,6 +19,12 @@ type Intent struct {
 	Receipt *b.LifecycleReceipt `json:"receipt,omitempty"`
 	Mode    string              `json:"mode"`
 }
+
+func (i Intent) NeedsReconciliation() bool {
+	status := i.Request.Operation.Status
+	return status == b.OperationInFlight || status == b.OperationUnknown || status == b.OperationAccepted && i.Receipt != nil && i.Receipt.State.ResourcePending
+}
+
 type Answer struct {
 	Epoch      string              `json:"epoch"`
 	CommandID  string              `json:"command_id"`
@@ -120,7 +126,7 @@ func (r *Record) View() contracts.RunView {
 			view.OriginalDiagnostic = intent.Receipt.Operation.Diagnostic
 		}
 		v.Operations = append(v.Operations, view)
-		if intent.Request.Operation.Status == b.OperationUnknown || intent.Request.Operation.Status == b.OperationInFlight {
+		if intent.NeedsReconciliation() {
 			unresolved = true
 		}
 	}

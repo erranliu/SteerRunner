@@ -100,15 +100,16 @@ func ValidRequestID(value string) bool {
 }
 
 type ServiceInfo struct {
-	InstanceID     string `json:"instance_id"`
-	StateDir       string `json:"state_dir"`
-	PID            int    `json:"pid"`
-	ProcessCreated string `json:"process_created"`
-	Status         string `json:"status"`
-	Detached       bool   `json:"detached"`
-	Version        string `json:"version"`
-	Protocol       string `json:"protocol"`
-	ResourceDigest string `json:"resource_digest"`
+	InstanceID       string `json:"instance_id"`
+	StateDir         string `json:"state_dir"`
+	PID              int    `json:"pid"`
+	ProcessCreated   string `json:"process_created"`
+	Status           string `json:"status"`
+	Detached         bool   `json:"detached"`
+	Version          string `json:"version"`
+	Protocol         string `json:"protocol"`
+	ResourceDigest   string `json:"resource_digest"`
+	ExecutableSHA256 string `json:"executable_sha256"`
 }
 
 type ServiceStopInput struct {

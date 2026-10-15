@@ -118,3 +118,15 @@ Windows 启动层的早期验证曾失败：原生 breakaway 创建成功后仍�
 本地真机 SR-A11 已执行但未通过：独立包 `C:\SteerlineDebug\dev-20261015-075410-d20a7228-dirty` 的桌面 Codex `0.162.0-alpha.17.2` 和 `dev-20261015-080121-d20a7228-dirty` 的固定 native `0.159.2` 均遇到 `windows unelevated restricted-token sandbox cannot enforce split writable root sets directly; refusing to run unsandboxed`。前者撤销并停止原 Run；后者原生 final 核实为 blocked，不能算实施成功。没有测试 PR。证据在各包 `evidence/native-*`、`evidence/runner-native-calls.jsonl` 及原 Run app-server 日志。桌面不同版本在补齐权限资源资格检查后应于原生启动前拒绝，不再将它当固定版本的可用替代。
 
 远端 SR-A12 使用用户授权 Orca「台式机64G」，注册仓库 `C:\Projects\SteerlineTest`、远程 URL 核实为 `erranliu/SteerlineTest`。首次包 `C:\SteerlineDebug\sr\dev-20261015-083903-d20a7228-dirty` 的 Run `bdd3f96ba780860491ca879a4d7af59b` 在 `git worktree add` 因远端未获取固定 base commit 失败。Runner 保留原操作未知，不新建替代执行；已接受撤销新输入并请求停止自有服务。原生工作区/代理和 PR 均未完成。只读库存、专属 base fetch 的自有终端及关闭回执留在包/`.evidence/remote-base-*`。之后新包应先完成明确环境预检；不将手动 fetch、helper、终端空闲或旧失败写作真机闭环通过。未修改安装环境、用户认证或原生权限策略。
+
+后续包 `C:\SteerlineDebug\sr\dev-20261015-085549-d20a7228-dirty` 使用干净 Runner `20fd3f89188e6fdede2a581dca05e054b6580ac8`。远端预检保留一次无输出及一次 GitHub 网络失败；新预检通过后，Run `693e2b7f86804d701b4f694a39ebd825` 创建了正确 base 的原工作区和终端，但 Codex TUI 报 `account/read failed … workspace routing discovery timed out`，未发送业务输入，无 PR。还暴露应用层未持续对账 accepted+ResourcePending 的遗漏，产生多份内部启动意图；适配器保留 LaunchAttempted，未再次发送启动命令。准备期限后 blocked；native harness exit 1，Run stop 和服务 stop 回执已留存。停止服务后另按原 runtime/handle/incarnation 核实并关闭本次终端，`ptyKilled=true` 的 CLI 回执在 `.evidence/native-remote-2-terminal-close.json`，不冒充 Runner 原停止动作已结算。
+
+该应用遗漏已补成：accepted 且原资源仍 pending 时只对账原 Operation、暂停即时准备循环、无变化不增加 revision；准备超时撤回输入授权，迟到就绪须新 resume。`TestSRAcceptedResourceUsesOriginalOperation` 的正常/超时两个反例通过；`.evidence/foundation-20261015-011213` 的 workflow/unknown-stop/restart 三组 exit 0。这些验证不解决远端原生账户路由故障，SR-A12 仍未通过。
+
+本地沙箱能力探针在独立包 `C:\SteerlineDebug\cap\dev-20261015-091408-d20a7228-dirty` 执行：已安装固定 `0.159.2` 和桌面版本分别显式选择 `mxc` 运行只读 echo 成功；固定版本对非法内核配置明确拒绝，证明选项被实际解析。证据为该包 `evidence/mxc-*.log`、`invalid-kernel-*.json`。据[官方 Windows sandbox 说明](https://learn.chatgpt.com/docs/windows/windows-sandbox)，改用显式 MXC；本地固定权限契约更新为 v4，继续固定 native 版本、workspace-write、原写入根、on-request/auto_review、网络和临时目录限制，不添加内核回退。探针不是 SR-A11 闭环通过，linked worktree 的真实读写/PR 仍须新包验收。
+
+`.evidence/foundation-20261015-011953`：含 ResourcePending 修正与 MXC 的实际 EXE，8 组 exit 0；覆盖材料固定、权限资格、完整受控工作流、日志/事件、PR 身份/提前绑定、未知原输入/停止及重启显式恢复。`.evidence/foundation-20261015-013358` 的服务所有权组 exit 0，新增同版本号但不同 EXE SHA 的冲突测试：不能接管原服务，实例不变。
+
+本地新包 `C:\SteerlineDebug\sr\dev-20261015-092541-d20a7228-dirty` 的 Run `be918ac793bab3b34581e624fb3c36c9` 使用 MXC，已实际读取冻结 Spec/Plan，写入并提交 result.txt，但原始 sandbox-check 首次报告 TEMP 不在指定目录；后一次探针被原生代理中断，仍为失败。12 分钟时处于 implement.report，缺发布/PR，harness exit 1（726.98 秒），服务已核验 not_running。完整 final 保留真实探针失败，不能将原生 turn completed 或 Git commit 当作任务验收成功。后续启动显式添加 `--no-daemon --strict-config`，避免会话被路由到其他环境的原生 daemon；这是待真机验证的修正，不声明已解决 TEMP/探针问题。没有测试 PR。
+
+用户已确认 Apache-2.0；仓库加入完整 LICENSE、NOTICE，保留来源提交及第三方说明。许可证选择不改变当前尚未通过的真机与跨仓切换验收状态。

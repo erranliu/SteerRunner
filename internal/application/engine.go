@@ -284,8 +284,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 }
 func unknown(r *runstate.Record) bool {
 	for _, intent := range r.Intents {
-		status := intent.Request.Operation.Status
-		if status == b.OperationInFlight || status == b.OperationUnknown {
+		if intent.NeedsReconciliation() {
 			return true
 		}
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
-	base := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Sandbox: "workspace-write", WindowsSandbox: "unelevated"}
+	base := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Sandbox: "workspace-write", WindowsSandbox: "mxc"}
 	for _, model := range []string{"", "chosen-model"} {
 		options := base
 		options.Model = model
@@ -15,21 +15,21 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 			options.ReasoningEffort = "high"
 		}
 		command, err := ManagedCommand(options)
-		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "auto_review") || !strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=unelevated") {
+		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "auto_review") || !strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=mxc") {
 			t.Fatalf("permissions not frozen: %v / %v", command, err)
 		}
 		if model == "" && strings.Contains(strings.Join(command.Args, " "), "--model") {
 			t.Fatal("default model was overwritten")
 		}
 	}
-	for _, args := range [][]string{{"-a", "on-request"}, {"--ask-for-approval=on-request"}, {"-sworkspace-write"}, {"-c", "windows.sandbox=unelevated"}, {"-capproval_policy=never"}, {"--config=model='x'"}, {"--config", "sandbox_workspace_write.writable_roots=['C:/']"}, {"--profile=x"}, {"-p", "x"}, {"--add-dir=C:/"}, {"-C", "C:/"}, {"exec"}, {"--dangerously-bypass-approvals-and-sandbox"}, {"--approve-for-me"}, {"--remote", "ws://localhost"}, {"--worktree"}} {
+	for _, args := range [][]string{{"-a", "on-request"}, {"--ask-for-approval=on-request"}, {"-sworkspace-write"}, {"-c", "windows.sandbox=mxc"}, {"-capproval_policy=never"}, {"--config=model='x'"}, {"--config", "sandbox_workspace_write.writable_roots=['C:/']"}, {"--profile=x"}, {"-p", "x"}, {"--add-dir=C:/"}, {"-C", "C:/"}, {"exec"}, {"--dangerously-bypass-approvals-and-sandbox"}, {"--approve-for-me"}, {"--remote", "ws://localhost"}, {"--worktree"}} {
 		options := base
 		options.Args = args
 		if _, err := ManagedCommand(options); err == nil {
 			t.Fatalf("conflicting args accepted: %v", args)
 		}
 	}
-	for _, mode := range []string{"", "automatic", "danger-full-access"} {
+	for _, mode := range []string{"", "automatic", "danger-full-access", "unelevated", "elevated"} {
 		options := base
 		options.WindowsSandbox = mode
 		if _, err := ManagedCommand(options); err == nil {
@@ -39,7 +39,7 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 }
 
 func TestManagedCommandIndependentEffortAndOrderedPermissionArgs(t *testing.T) {
-	options := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Args: []string{"--no-alt-screen", "--search"}, ReasoningEffort: "high", Sandbox: "workspace-write", WindowsSandbox: "unelevated", WorkingDirectory: "C:/worker's checkout", WriteRoots: []string{"C:/repo/.git/objects"}}
+	options := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Args: []string{"--no-alt-screen", "--search"}, ReasoningEffort: "high", Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkingDirectory: "C:/worker's checkout", WriteRoots: []string{"C:/repo/.git/objects"}}
 	command, err := ManagedCommand(options)
 	if err != nil {
 		t.Fatal(err)

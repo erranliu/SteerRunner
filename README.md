@@ -78,4 +78,4 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 进程测试脚本构建真实 EXE，创建独立测试宿主后返回证据路径。等待该路径的 `result.json`，其中 `exit_code: 0` 且 `scenario_count: 2` 才表示两组测试通过；脚本启动成功不等于测试成功。详细断言在 `integration.log`，调用输出在 `caller-commands.jsonl`。测试使用本次临时目录，不启动真实代理或 PR，也不使用 SteerLine 安装目录。
 
-程序清单资源已生成并纳入源码；只在修改 `app.manifest` 后运行 `go generate ./cmd/steerrunner` 重新生成。第三方运行依赖和 Go runtime 的许可声明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。项目自身的开源许可证与正式发布安排在发布前确定。
+程序清单资源已生成并纳入源码；只在修改 `app.manifest` 后运行 `go generate ./cmd/steerrunner` 重新生成。项目采用 [Apache-2.0](LICENSE)，来源说明见 [NOTICE](NOTICE)。第三方运行依赖和 Go runtime 的许可声明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。正式发布须完成对应验收。

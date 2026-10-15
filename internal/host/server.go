@@ -73,7 +73,15 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	if err != nil {
 		return err
 	}
-	service := contracts.ServiceInfo{InstanceID: contracts.NewID(), StateDir: dir, PID: os.Getpid(), ProcessCreated: created, Status: "ready", Detached: detached, Version: resources.Version, Protocol: contracts.Protocol, ResourceDigest: resources.Digest()}
+	executable, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	executableSHA, err := executableDigest(executable)
+	if err != nil {
+		return err
+	}
+	service := contracts.ServiceInfo{InstanceID: contracts.NewID(), StateDir: dir, PID: os.Getpid(), ProcessCreated: created, Status: "ready", Detached: detached, Version: resources.Version, Protocol: contracts.Protocol, ResourceDigest: resources.Digest(), ExecutableSHA256: executableSHA}
 	if err := store.ReconcileStops(service.InstanceID); err != nil {
 		return err
 	}

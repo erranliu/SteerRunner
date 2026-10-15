@@ -15,11 +15,14 @@ func TestLaunchServerFixesWindowsSandboxBeforeStarting(t *testing.T) {
 	}
 	called := false
 	sentinel := errors.New("captured launch")
-	config := LaunchConfig{Executable: os.Args[0], Workspace: t.TempDir(), ServerDir: t.TempDir(), Sandbox: "workspace-write", WindowsSandbox: "unelevated"}
+	config := LaunchConfig{Executable: os.Args[0], Workspace: t.TempDir(), ServerDir: t.TempDir(), Sandbox: "workspace-write", WindowsSandbox: "mxc"}
 	_, _, _, err := LaunchServer(config, func(cmd *exec.Cmd) (int, error) {
 		called = true
-		if !strings.Contains(strings.Join(cmd.Args, " "), `--config windows.sandbox=unelevated`) {
+		if !strings.Contains(strings.Join(cmd.Args, " "), `--config windows.sandbox=mxc`) {
 			t.Fatalf("missing fixed mode: %v", cmd.Args)
+		}
+		if len(cmd.Args) < 3 || cmd.Args[1] != "--no-daemon" || cmd.Args[2] != "--strict-config" {
+			t.Fatal("session can route through an unrelated native daemon", cmd.Args)
 		}
 		return 0, sentinel
 	}, func(env []string) []string { return env })

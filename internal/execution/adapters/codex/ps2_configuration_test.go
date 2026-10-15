@@ -54,12 +54,12 @@ func TestPS2NativeLaunchAndInputUseAutomaticReview(t *testing.T) {
 			t.Fatal(err)
 		}
 		args := strings.Join(permissions.Args(), " ")
-		for _, setting := range []string{"sandbox_mode=workspace-write", "windows.sandbox=unelevated", "approval_policy=on-request", "approvals_reviewer=auto_review", "network_access=true", "exclude_tmpdir_env_var=true", "exclude_slash_tmp=true"} {
+		for _, setting := range []string{"sandbox_mode=workspace-write", "windows.sandbox=mxc", "approval_policy=on-request", "approvals_reviewer=auto_review", "network_access=true", "exclude_tmpdir_env_var=true", "exclude_slash_tmp=true"} {
 			if !strings.Contains(args, setting) {
 				t.Fatal("missing", setting, args)
 			}
 		}
-		for _, forbidden := range []string{"=elevated", "danger-full-access", "approval_policy=never"} {
+		for _, forbidden := range []string{"=elevated", "=unelevated", "danger-full-access", "approval_policy=never"} {
 			if strings.Contains(args, forbidden) {
 				t.Fatal("unexpected fallback", args)
 			}
