@@ -59,6 +59,7 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 	bound, err := codex.BuildPolicyResourceEnvelope(ctx, codex.PolicyResourceBuildRequest{
 		ProfileData: r.Profile, ProfileIdentity: codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest},
 		ResourceIdentity: identity, Host: "local", Agent: "codex", GOOS: runtime.GOOS, Workspace: s.Workspace.Path, LinkedWriteArgs: r.LinkedWriteArgs,
+		RunDirectory: e.dir, RepositoryURL: r.Request.Repository.URL,
 	}, func(ctx context.Context, executable string) (string, error) {
 		out, err := (commandHost{}).Output(ctx, b.Command{Executable: executable}, "--version")
 		return strings.TrimSpace(string(out)), err

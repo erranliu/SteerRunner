@@ -191,6 +191,12 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 		}
 		args = append(args, "--config", "shell_environment_policy.set.GIT_CONFIG_COUNT="+strconv.Quote(strconv.Itoa(count+3)))
 		if broker := r.Auth.broker; broker != nil {
+			if broker.socketLease != nil {
+				if err := broker.socketLease.verify(); err != nil {
+					return nil, err
+				}
+				args = append(args, "--add-dir", broker.socketLease.plan.Directory)
+			}
 			// Public transport values belong to tool policy, not the app-server's
 			// own model/network environment. No machine-wide proxy or trust change.
 			for _, entry := range [][2]string{{"HTTPS_PROXY", broker.address}, {"HTTP_PROXY", broker.address}, {"NO_PROXY", ""}, {"SSL_CERT_FILE", broker.caPath}, {"GIT_SSL_CAINFO", broker.caPath}, {"GH_CONFIG_DIR", broker.configDir}} {
