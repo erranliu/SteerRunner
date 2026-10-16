@@ -1,0 +1,6 @@
+{
+  "exit_code": 0,
+  "output": "warning: in the working copy of 'evidence/native-101.md', LF will be replaced by CRLF the next time Git touches it\nerror: Unable to create 'C:/slr/d3s63lrnpd3uptndbxvumj6ryu/r/vwrlefvsfsidgv23t2j5zh5kdm/.git/packed-refs.lock': Permission denied\n[codex/runner-e1c45e6a07af77e66e10d3b6a00d6c32 d3d37b4] Add native evidence sample 101\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+  "run_id": "e1c45e6a07af77e66e10d3b6a00d6c32",
+  "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'git add -- evidence/native-101.md; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; git commit -m \"Add native evidence sample 101\"'"
+}

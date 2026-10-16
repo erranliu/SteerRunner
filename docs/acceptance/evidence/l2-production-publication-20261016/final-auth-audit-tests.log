@@ -1,0 +1,34 @@
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker
+--- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker (0.00s)
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command
+--- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.182s

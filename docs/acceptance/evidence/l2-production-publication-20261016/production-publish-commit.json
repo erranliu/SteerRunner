@@ -1,0 +1,6 @@
+{
+  "turn_id": "01a1445a-e924-77f1-9757-9f44093eea5f",
+  "output": "warning: in the working copy of 'evidence/native-101.md', LF will be replaced by CRLF the next time Git touches it\ndiff --git a/evidence/native-101.md b/evidence/native-101.md\nindex 3b2f900..b5d4f94 100644\n--- a/evidence/native-101.md\n+++ b/evidence/native-101.md\n@@ -1,5 +1,5 @@\n # Evidence sample 101\n - sample_id: 101\n-- generated_at: 2026-10-15T02:22:22Z\n+- generated_at: 2026-10-16T10:55:06Z\n - 模拟任务\n - 未修改业务代码\nwarning: in the working copy of 'evidence/native-101.md', LF will be replaced by CRLF the next time Git touches it\n[codex/runner-a11091eab835ce80d55f3c4f6daefa1c 4380a77] Add native 101 smoke evidence\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+  "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'git diff -- evidence/native-101.md; git add -- evidence/native-101.md; git commit -m \"Add native 101 smoke evidence\"'",
+  "exit_code": 0
+}

@@ -1,0 +1,146 @@
+=== RUN   TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts
+--- PASS: TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts (0.00s)
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker
+--- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker (0.00s)
+=== RUN   TestRegistryPreservesReliabilityAndBindsControlledEdges
+--- PASS: TestRegistryPreservesReliabilityAndBindsControlledEdges (0.00s)
+=== RUN   TestLiveRegistryHasCompleteL3Cases
+--- PASS: TestLiveRegistryHasCompleteL3Cases (0.01s)
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-fault
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-audit
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-repeat
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/dynamic-outcome
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-native-stop
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-facility-restore
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-merge
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/unproven
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-case
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/duplicate
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/missing-contract
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/failed-assertion
+--- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence (0.01s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-fault (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-audit (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-repeat (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/dynamic-outcome (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-native-stop (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-facility-restore (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-merge (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/unproven (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-case (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/duplicate (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/missing-contract (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/failed-assertion (0.00s)
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command
+--- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command (0.00s)
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/wrong-prompt
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/cancelled
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/tool-output
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/boundary
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/restored
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/no-body
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/title-only
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/working
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/unknown-outcome
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/interrupted
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/stale
+--- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/wrong-prompt (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/cancelled (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/tool-output (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/boundary (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/restored (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/no-body (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/title-only (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/working (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/unknown-outcome (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/interrupted (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/stale (0.00s)
+=== RUN   TestFailedObservationRequiresLaterOriginalRead
+--- PASS: TestFailedObservationRequiresLaterOriginalRead (0.00s)
+=== RUN   TestDiagnosticReadNeverReplaysMutation
+--- PASS: TestDiagnosticReadNeverReplaysMutation (0.50s)
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure
+--- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure (0.00s)
+=== RUN   TestStabilityEvidenceRejectsFlagOnlySuccess
+--- PASS: TestStabilityEvidenceRejectsFlagOnlySuccess (0.00s)
+=== RUN   TestManifestRejectsChangedInputsAndUnsafeTargets
+--- PASS: TestManifestRejectsChangedInputsAndUnsafeTargets (0.08s)
+=== RUN   TestArtifactRejectsStaleAndForgedEvidence
+--- PASS: TestArtifactRejectsStaleAndForgedEvidence (0.00s)
+=== RUN   TestMergeGuardRejectsForeignAndUnverifiedPR
+--- PASS: TestMergeGuardRejectsForeignAndUnverifiedPR (0.00s)
+=== RUN   TestCoreSmokeRequiresQualifiedFeedbackForExactBuild
+--- PASS: TestCoreSmokeRequiresQualifiedFeedbackForExactBuild (0.14s)
+=== RUN   TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles
+--- PASS: TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles (0.05s)
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/good
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/missing
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-policy
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-session
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/keyword-is-not-request
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/escalation
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/bypass
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/approval
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode-escalation
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/unknown-custom-tool
+--- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/good (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/missing (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-policy (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-session (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/keyword-is-not-request (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/escalation (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/bypass (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/approval (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode-escalation (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/unknown-custom-tool (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	2.076s

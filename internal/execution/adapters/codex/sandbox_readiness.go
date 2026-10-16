@@ -136,7 +136,7 @@ func (b Backend) verifySandboxReadiness(ctx context.Context, h *SessionHandle, i
 
 func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, input backend.TurnInput, call func(context.Context, string, any, any) error) error {
 	roots, err := WritableRoots(input.LinkedWorktreeArgs)
-	if err != nil || len(roots) != 4 {
+	if err != nil || (len(roots) != 4 && len(roots) != 5) {
 		return errors.New("sandbox_readiness_git_roots_invalid")
 	}
 	script, expires, err := b.Config.Authentication.readinessScript(roots, b.Config.RemoteName, b.Config.Sandbox)

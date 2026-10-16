@@ -1,0 +1,9 @@
+{
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "scripted_publisher_present": false,
+  "access_mode": "sandbox",
+  "request_id": "smoke-submit"
+}

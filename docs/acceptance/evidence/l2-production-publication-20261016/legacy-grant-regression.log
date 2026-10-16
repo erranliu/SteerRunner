@@ -1,0 +1,4 @@
+=== RUN   TestPrivateRunGitGrantDoesNotExpandLegacyCache
+--- PASS: TestPrivateRunGitGrantDoesNotExpandLegacyCache (21.03s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	24.089s

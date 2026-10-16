@@ -1,0 +1,5 @@
+{
+  "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command \"powershell.exe -NoProfile -ExecutionPolicy Bypass -File \\\"C:\\\\srt\\\\9000197bda8a\\\\bin\\\\query-pr.ps1\\\" -URL \\\"https://github.com/erranliu/SteerlineTest/pull/345\\\"; \"'$queryExit = $LASTEXITCODE; Write-Output \"QUERY_EXIT_CODE=$queryExit\"; git status --short --branch; git branch --show-current'",
+  "output": "gh: execution repository or operation denied (HTTP 403)\nGitHub PR query failed\r\nAt C:\\srt\\9000197bda8a\\bin\\query-pr.ps1:5 char:28\r\n+ if ($LASTEXITCODE -ne 0) { throw 'GitHub PR query failed' }\r\n+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (GitHub PR query failed:String) [], RuntimeException\r\n    + FullyQualifiedErrorId : GitHub PR query failed\r\n \r\nQUERY_EXIT_CODE=1\r\n## codex/runner-ed4c8d2a51b8d9422a9e67f0d00069c4...origin/codex/runner-ed4c8d2a51b8d9422a9e67f0d00069c4\ncodex/runner-ed4c8d2a51b8d9422a9e67f0d00069c4\n",
+  "exit_code": 0
+}
