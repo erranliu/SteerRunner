@@ -197,3 +197,45 @@ func TestAuthenticationBrokerMissingAndWrongTarget(t *testing.T) {
 		})
 	}
 }
+func TestExecutionHostGHCreateWireRetainsRepositoryBoundary(t *testing.T) {
+	raw, err := os.ReadFile("testdata/gh-v2.101.0-pr-create.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var wire struct {
+		Requests []json.RawMessage `json:"requests"`
+	}
+	if json.Unmarshal(raw, &wire) != nil || len(wire.Requests) != 3 {
+		t.Fatal("missing execution-host metadata, original PR query or create request")
+	}
+	broker := &authenticationBroker{repository: "erranliu/SteerlineTest", repositoryID: "target-ID"}
+	for i, request := range wire.Requests {
+		if !broker.permitGraphQL(request) {
+			t.Fatalf("execution-host gh request %d rejected", i)
+		}
+		var changed struct {
+			Query     string         `json:"query"`
+			Variables map[string]any `json:"variables"`
+		}
+		_ = json.Unmarshal(request, &changed)
+		if input, ok := changed.Variables["input"].(map[string]any); ok {
+			input["repositoryId"] = "foreign-ID"
+		} else {
+			changed.Variables["owner"] = "foreign-owner"
+		}
+		foreign, _ := json.Marshal(changed)
+		if broker.permitGraphQL(foreign) {
+			t.Fatalf("gh compatibility admitted foreign repository request %d", i)
+		}
+	}
+	for _, query := range []string{
+		`{repository(owner:"erranliu",name:"SteerlineTest"){databaseId{secret}}}`,
+		`{repository(owner:"erranliu",name:"SteerlineTest"){sshUrl(token:"secret")}}`,
+		`{repository(owner:"erranliu",name:"SteerlineTest"){parent{deployKeys{nodes{id}}}}}`,
+	} {
+		body, _ := json.Marshal(map[string]any{"query": query})
+		if broker.permitGraphQL(body) {
+			t.Fatal("gh metadata compatibility widened the field boundary")
+		}
+	}
+}

@@ -1,0 +1,172 @@
+{
+  "at": "2026-10-16T18:33:14.0690938Z",
+  "remote_cases_checked": 15,
+  "all_owned_execution_resources_absent": true,
+  "cases": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-0d35ff2fcd87fc72538a0ac4363d5d23",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "e72f0d69aa3d5f24c763950c52d544dc238ed1cfe9be3d9b36d49daf1ac8f3f7"
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-2757d653257fb64e01d181e9c14550d9",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "87f071fa4538dceb9aa4ff96b3800702c0c2e12e36f38b41602694218696d7db"
+    },
+    {
+      "scenario": "orca-remote.smoke",
+      "case_id": "default",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-952c450c7466c4c871bc3f78f00716b2",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "25610a53551542474271726a324db4b47929a1c5ba9dffa1b674b0194be4e6bc"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-e6a40c2f311c0e5241ebfee2872dd4d1",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "b93ae4a1a299ac47934aba2c39f2f1a7f4f809ce6f9e10b8555024ec92e09bc7"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-60c511b8004c585bc46a5a1b43e2163f",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "433eb2a1592151adcb16ed549b9aac4724b6b49c82025418d55473458e3b1c1f"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-a48754d520c99bc42584e927a1c4d8fe",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "b4adea0877705eb7741113dfd69b2d15caf30a1cfb2ec9cf7943cb17ae1d8e04"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-0c93cfb5bcde485a0ebb457afe7f76c3",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "285326176f990e373e56d5823221b990e3d4938baca6b8241e3616501964425c"
+    },
+    {
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-5f031d5386c4a8587063c63d38b55dcf",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "0bb9ac91c793b22011ab5341b8339d885c946eed09db3af170d606145769e29b"
+    },
+    {
+      "scenario": "environment-check.orca-sandbox",
+      "case_id": "complete",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "complete": true,
+      "terminal_count": 2,
+      "owned_check_actor": "term_254478e1-2e65-41ac-8c8e-3bc03162fd55",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "751a53b1113137538dbfe91d7a53e69f2fb9eff18ff4ac2e0bc0808fb9bc1c0f"
+    },
+    {
+      "scenario": "environment-check.orca-full-access",
+      "case_id": "complete",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "complete": true,
+      "terminal_count": 2,
+      "owned_check_actor": "term_782938de-b9d3-4847-97a3-be4dbbb473c5",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "8862bd11c2add3f670e22936047125531e0733fab2df970ccadf39db825f645a"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-52c3799545ad0f37b1704d3e08d73887",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "04b7543d958c88a0ef3e4b39ac445280940a5f228015db7e2711909431761416"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-f91607717af4c0935f6bdf8083b22e7f",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "91e5f2a6210eae28007bcb77fbde90ede19bed560370f2855dba356ed66022aa"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-14daf8638ef3f2734af59c869aa26216",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "57e80324d49a4c107d2abe9c0b829e13765b0a9873416b09681a23828f036daa"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8548db7238d8c65070dbf8ba9b1c3f06",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "178a65df9a44f8b82a4b02f4c75b0cbb13bc751b38363174193e6fa11aa66787"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-4176bd47bfd112ff96080b3ba90880cc",
+      "complete": true,
+      "terminal_count": 0,
+      "owned_check_actor": "",
+      "owned_check_actor_present": false,
+      "inventory_sha256": "b5870e2c64aa791bf312ddec054a9d004ce3f5fe798a6afd774e91ba70f7d224"
+    }
+  ]
+}

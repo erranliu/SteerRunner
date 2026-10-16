@@ -231,7 +231,9 @@ func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contr
 	t.Helper()
 	until := time.Now().Add(12 * time.Minute)
 	for time.Now().Before(until) {
-		view, err := inspect(m, dir, id, false)
+		view, err := livetest.ObservePublicationReady(oldHead, func(refresh bool) (contracts.RunView, error) {
+			return inspect(m, dir, id, refresh)
+		})
 		if err != nil {
 			t.Fatal(err)
 		}

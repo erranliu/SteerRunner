@@ -168,6 +168,49 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	} else if _, err := os.Stat(filepath.Join(server, "thread.json")); !os.IsNotExist(err) {
 		t.Error("failed readiness created native business thread")
 	}
+	// Git 2.55 unconditionally deletes the absent AUTO_MERGE after committing.
+	// Its packed-refs cleanup remains denied. Verify the commit's own exit and
+	// actual Git state independently; never repair/retry the denied operation.
+	{
+		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", []string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")})
+		script := `$ErrorActionPreference='Continue'
+$before=(& git rev-parse HEAD | Out-String).Trim()
+[IO.File]::WriteAllText((Join-Path $pwd 'native-commit-probe'),'owned native Git diagnostic')
+git add -- native-commit-probe
+if($LASTEXITCODE -ne 0){exit 21}
+git -c user.name=Diagnostic -c user.email=diagnostic@example.invalid commit -m 'native Git boundary'
+$commitCode=$LASTEXITCODE
+$head=(& git rev-parse HEAD | Out-String).Trim()
+$parent=(& git rev-parse HEAD^ | Out-String).Trim()
+$paths=@(& git diff-tree --no-commit-id --name-only -r HEAD)
+$clean=[string]::IsNullOrWhiteSpace((& git status --porcelain | Out-String))
+$pending=@('AUTO_MERGE','MERGE_HEAD','CHERRY_PICK_HEAD','REVERT_HEAD')|Where-Object{& git rev-parse --verify -q $_ 2>$null | Out-Null;$LASTEXITCODE -eq 0}
+$configDenied=$false;$packedLockDenied=$false
+try{$f=[IO.File]::Open(` + psLiteral(filepath.Join(repo, ".git", "config")) + `,[IO.FileMode]::Open,[IO.FileAccess]::Write);$f.Dispose()}catch{$configDenied=$true}
+try{[IO.File]::WriteAllText(` + psLiteral(filepath.Join(repo, ".git", "packed-refs.lock")) + `,'owned diagnostic')}catch{$packedLockDenied=$true}finally{if(-not $packedLockDenied){[IO.File]::Delete(` + psLiteral(filepath.Join(repo, ".git", "packed-refs.lock")) + `)}}
+git -c user.name=Diagnostic -c user.email=diagnostic@example.invalid commit -m 'must not create another commit' 1>$null 2>$null
+$emptyCode=$LASTEXITCODE
+$unchanged=((& git rev-parse HEAD|Out-String).Trim() -ceq $head)
+$verified=$commitCode -eq 0 -and $head -cne $before -and $parent -ceq $before -and $paths.Count -eq 1 -and $paths[0] -ceq 'native-commit-probe' -and $clean -and $pending.Count -eq 0 -and $configDenied -and $packedLockDenied -and $emptyCode -ne 0 -and $unchanged
+Write-Output ('SR_NATIVE_GIT_BOUNDARY:'+(@{verified=$verified;commit_exit=$commitCode;empty_commit_exit=$emptyCode;head=$head;parent=$parent;config_denied=$configDenied;packed_lock_denied=$packedLockDenied;clean=$clean;pending_count=$pending.Count}|ConvertTo-Json -Compress))
+if(-not $verified){exit 22};exit 0`
+		var result struct {
+			ExitCode       int
+			Stdout, Stderr string
+		}
+		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", script}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
+		marker := ""
+		for _, line := range strings.Split(result.Stdout, "\n") {
+			if strings.HasPrefix(strings.TrimSpace(line), "SR_NATIVE_GIT_BOUNDARY:") {
+				marker = strings.TrimSpace(strings.TrimPrefix(strings.TrimSpace(line), "SR_NATIVE_GIT_BOUNDARY:"))
+			}
+		}
+		var proof struct{ Verified bool }
+		if err != nil || result.ExitCode != 0 || json.Unmarshal([]byte(marker), &proof) != nil || !proof.Verified {
+			t.Errorf("native Git commit boundary failed: exit=%d rpc=%v stdout=%s stderr=%s", result.ExitCode, err, result.Stdout, result.Stderr)
+		}
+		_ = os.WriteFile(filepath.Join(evidence, "native-git-boundary.json"), encode(map[string]any{"exit_code": result.ExitCode, "proof": json.RawMessage(marker), "packed_cleanup_denial": strings.Contains(result.Stdout+result.Stderr, "packed-refs.lock"), "business_inputs": 0, "external_writes": 0}), 0600)
+	}
 	// Never count this controlled invalid token as real authenticated publication.
 	for _, dir := range []string{server, filepath.Join(root, "runs"), r.Temp} {
 		_ = filepath.WalkDir(dir, func(path string, d os.DirEntry, err error) error {

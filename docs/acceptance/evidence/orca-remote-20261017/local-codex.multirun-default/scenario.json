@@ -1,0 +1,268 @@
+{
+  "runs": [
+    {
+      "operations": [
+        {
+          "operation_id": "049b4459e6e29f4f169b9f5cd5e16546",
+          "action": "prepare_workspace",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "56fd1bbeeef0d61156e0bbe72f21aa86",
+          "action": "prepare_session",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "5ec68618ee69886bbe0b0ffcc38c28a3",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "a7163d12c2213c39b96056f6781ce948",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "b58562ecc16c02577120e72cb83ac3f4",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "ec1821759fad6b3ad6f00945ed74014f",
+          "action": "stop_execution",
+          "status": "confirmed"
+        }
+      ],
+      "run_id": "bd4710c44aa257201f412175101a6888",
+      "revision": 29,
+      "title": "SteerRunner multi-Run 0",
+      "correlation": {
+        "fixture_id": "300082e7a1e8",
+        "peer": "0"
+      },
+      "input_digest": "6a95fd916f420a0b5dac6c3bec5ebf096c5ab147ce02eb5c1f7c9ad7445c19d9",
+      "resource_digest": "f65f6c0fbbd933a06cab6adba8d01d38e3139b83cf22d3f49ed0395033922ebf",
+      "workflow": {
+        "id": "development",
+        "version": 1,
+        "prompt_overrides": {
+          "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+          "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+        }
+      },
+      "step": "pr_ready",
+      "status": "stopped",
+      "phase": "stopped",
+      "new_inputs_allowed": false,
+      "resume_required": true,
+      "stop_status": "stopped",
+      "materials": [
+        {
+          "kind": "inline",
+          "path": "smoke.spec.md",
+          "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+          "snapshot_path": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\jxvrpxfwmxzotrnabqp57k77xy\\steerrunner-inputs\\smoke.spec.md",
+          "execution_location": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\jxvrpxfwmxzotrnabqp57k77xy\\steerrunner-inputs\\smoke.spec.md"
+        },
+        {
+          "kind": "inline",
+          "path": "smoke.plan.md",
+          "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+          "snapshot_path": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\jxvrpxfwmxzotrnabqp57k77xy\\steerrunner-inputs\\smoke.plan.md",
+          "execution_location": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\jxvrpxfwmxzotrnabqp57k77xy\\steerrunner-inputs\\smoke.plan.md"
+        }
+      ],
+      "execution": {
+        "workspace_scope": "working_tree",
+        "turn_started": true,
+        "attempt_id": "f903a9b87eaec360a742c9e195aa6131",
+        "generation": "74a057f43b720a08239ad4e19f7d873d",
+        "backend": "local",
+        "protocol": "local_codex_app_server_v1",
+        "session_id": "01a145f7-d4a6-71a0-b9c1-93f90fd039fa",
+        "turn_id": "01a145f9-a3ee-7c13-aff8-c4e27067736d",
+        "native_outcome": "succeeded",
+        "final_available": true,
+        "workspace": "c:\\srt\\300082e7a1e8\\s\\workspaces\\jxvrpxfwmxzotrnabqp57k77xy",
+        "branch": "codex/runner-bd4710c44aa257201f412175101a6888"
+      },
+      "controls": {
+        "can_reply": false,
+        "can_resume": true,
+        "can_stop": false
+      },
+      "pr": {
+        "url": "https://github.com/erranliu/SteerlineTest/pull/427",
+        "provider": "command",
+        "repository": "erranliu/SteerlineTest",
+        "number": 427,
+        "base_branch": "codex/srtest/300082e7a1e8/base",
+        "head_repository": "erranliu/SteerlineTest",
+        "head_branch": "codex/runner-bd4710c44aa257201f412175101a6888",
+        "head_revision": "d8c813fe1bdd1dad326c1dca765c4595f27d97eb",
+        "state": "open",
+        "merged": false,
+        "merge_commit": "df0cd7ea8da93e52c3e20881c293450e7dd17fb2",
+        "checked_at": "2026-10-16T18:29:38.8846264Z"
+      },
+      "summary": "The specified publish command completed with exit code 0 and returned the PR URL.",
+      "final": {
+        "command_id": "e2a6bf8832572ac9752669e176875148",
+        "attempt_id": "f903a9b87eaec360a742c9e195aa6131",
+        "session_id": "01a145f7-d4a6-71a0-b9c1-93f90fd039fa",
+        "turn_id": "01a145f9-a3ee-7c13-aff8-c4e27067736d",
+        "native_outcome": "succeeded",
+        "verified": true,
+        "source": "codex.agentMessage.final_answer",
+        "item_id": "msg_049d67b7495080aa016ad26d0d798481919fbd2d38f2aabf0c",
+        "text": "{\"outcome\":\"done\",\"summary\":\"The specified publish command completed with exit code 0 and returned the PR URL.\",\"outputs\":{\"pr_url\":\"https://github.com/erranliu/SteerlineTest/pull/427\"}}"
+      },
+      "created_at": "2026-10-16T18:26:47.9631464Z",
+      "updated_at": "2026-10-16T18:29:50.1918867Z"
+    },
+    {
+      "operations": [
+        {
+          "operation_id": "a50349aa653b47c41938fce17fa8884c",
+          "action": "prepare_workspace",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "fe22424730dc7137e015045a9f5dd4f5",
+          "action": "prepare_session",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "cb42918c16114b78fa2cf89c9b42c5fc",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "ba5e1d1a0af90e746ad03f963aec2e43",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "208abaef3c4c3685ad3de37566689ab0",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "4da5b0d1d84f4a9f82b7aff4afc1680c",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "21c4ff846e63217c063b768e22d3b7e2",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "b1fb7adaf1190043baf428bdefffbd65",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "7098929c1e8af12951b0ac0dfc6f4f1e",
+          "action": "stop_execution",
+          "status": "confirmed"
+        }
+      ],
+      "run_id": "64b2a8fbb02b9e70108b6615414c7b58",
+      "revision": 52,
+      "title": "SteerRunner multi-Run 1",
+      "correlation": {
+        "fixture_id": "300082e7a1e8",
+        "peer": "1"
+      },
+      "input_digest": "d71d0bbd5c85397da0b3f609cf8483c5f1105275da4641f4ced54782d31a1f07",
+      "resource_digest": "f65f6c0fbbd933a06cab6adba8d01d38e3139b83cf22d3f49ed0395033922ebf",
+      "workflow": {
+        "id": "development",
+        "version": 1,
+        "prompt_overrides": {
+          "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+          "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+        }
+      },
+      "step": "pr_ready",
+      "status": "stopped",
+      "phase": "stopped",
+      "new_inputs_allowed": false,
+      "resume_required": true,
+      "stop_status": "stopped",
+      "materials": [
+        {
+          "kind": "inline",
+          "path": "smoke.spec.md",
+          "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+          "snapshot_path": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\zk2dewb7hp2dmg2i4szbkoa6x4\\steerrunner-inputs\\smoke.spec.md",
+          "execution_location": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\zk2dewb7hp2dmg2i4szbkoa6x4\\steerrunner-inputs\\smoke.spec.md"
+        },
+        {
+          "kind": "inline",
+          "path": "smoke.plan.md",
+          "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+          "snapshot_path": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\zk2dewb7hp2dmg2i4szbkoa6x4\\steerrunner-inputs\\smoke.plan.md",
+          "execution_location": "C:\\srt\\300082e7a1e8\\s\\r\\ci6lojspy6yswxqweabgzzjqym\\.git\\worktrees\\zk2dewb7hp2dmg2i4szbkoa6x4\\steerrunner-inputs\\smoke.plan.md"
+        }
+      ],
+      "execution": {
+        "workspace_scope": "working_tree",
+        "turn_started": true,
+        "attempt_id": "97acdbd4b022d9c6b4979984d5b0c07c",
+        "generation": "11c4129fd0b97111e41ce265bee22cbc",
+        "backend": "local",
+        "protocol": "local_codex_app_server_v1",
+        "session_id": "01a145f7-e0ca-7a41-840f-185332971ad7",
+        "turn_id": "01a145fb-af74-75d0-b5a1-9eed5ec04c9e",
+        "native_outcome": "succeeded",
+        "final_available": true,
+        "workspace": "c:\\srt\\300082e7a1e8\\s\\workspaces\\zk2dewb7hp2dmg2i4szbkoa6x4",
+        "branch": "codex/runner-64b2a8fbb02b9e70108b6615414c7b58"
+      },
+      "controls": {
+        "can_reply": false,
+        "can_resume": true,
+        "can_stop": false
+      },
+      "pr": {
+        "url": "https://github.com/erranliu/SteerlineTest/pull/426",
+        "provider": "command",
+        "repository": "erranliu/SteerlineTest",
+        "number": 426,
+        "base_branch": "codex/srtest/300082e7a1e8/base",
+        "head_repository": "erranliu/SteerlineTest",
+        "head_branch": "codex/runner-64b2a8fbb02b9e70108b6615414c7b58",
+        "head_revision": "9e2d33594eb0cb47d39a9e342802f43275aa2a88",
+        "state": "open",
+        "merged": false,
+        "merge_commit": "da8cc25810759a9cb660bde18c35b127a7464a1e",
+        "checked_at": "2026-10-16T18:31:45.3564416Z"
+      },
+      "summary": "The specified publish command completed with exit code 0 and updated the existing PR.",
+      "final": {
+        "command_id": "bc199540561116e524de0d2a1c143866",
+        "attempt_id": "97acdbd4b022d9c6b4979984d5b0c07c",
+        "session_id": "01a145f7-e0ca-7a41-840f-185332971ad7",
+        "turn_id": "01a145fb-af74-75d0-b5a1-9eed5ec04c9e",
+        "native_outcome": "succeeded",
+        "verified": true,
+        "source": "codex.agentMessage.final_answer",
+        "item_id": "msg_0ff263e619a8e5b6016ad26d8c6ec88191a75f1fa5e3eb18cb",
+        "text": "{\"outcome\":\"done\",\"summary\":\"The specified publish command completed with exit code 0 and updated the existing PR.\",\"outputs\":{\"pr_url\":\"https://github.com/erranliu/SteerlineTest/pull/426\"}}"
+      },
+      "created_at": "2026-10-16T18:26:51.7546521Z",
+      "updated_at": "2026-10-16T18:31:51.73785Z"
+    }
+  ],
+  "scenario": "local-codex.multirun",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "bd4710c44aa257201f412175101a6888",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/427",
+  "original_head": "d8c813fe1bdd1dad326c1dca765c4595f27d97eb",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true
+}

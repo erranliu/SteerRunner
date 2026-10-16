@@ -1,0 +1,258 @@
+{
+  "schema": "steerrunner-orca-remote-qualification/v1",
+  "status": "passed_with_same_build_recheck",
+  "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+  "source_dirty": true,
+  "frozen_files_checked": 1006,
+  "frozen_files_changed": 0,
+  "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+  "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+  "remote_helper_sha256": "60035e89d301065f4acdba728f7f00d22499a9358f3d408ce7fa64f793a0ff7c",
+  "remote_helper": "C:/sr-runtime/2ba0/24/steerrunner-agent.exe",
+  "native_version": "0.159.2",
+  "native_executable_sha256": "52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a",
+  "first_full_batch": {
+    "planned": 20,
+    "failed": 1,
+    "executed": 20,
+    "authorized_exclusions": 0,
+    "passed": 19,
+    "max_parallel": 2
+  },
+  "targeted_recheck": {
+    "scenario": "local-codex.multirun",
+    "same_runner_and_driver": true,
+    "source_or_configuration_changes": false,
+    "passed": 1,
+    "failed": 0
+  },
+  "covered_cases": 20,
+  "remote_first_attempt_passed": 15,
+  "cases": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\bbe5a005af90\\manifest.json",
+      "evidence": "C:\\srt\\bbe5a005af90\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\ee46f06c1c53\\manifest.json",
+      "evidence": "C:\\srt\\ee46f06c1c53\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.smoke",
+      "case_id": "default",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\bb57196567d0\\manifest.json",
+      "evidence": "C:\\srt\\bb57196567d0\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\f30fdcefcc11\\manifest.json",
+      "evidence": "C:\\srt\\f30fdcefcc11\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\ac8f9d55294e\\manifest.json",
+      "evidence": "C:\\srt\\ac8f9d55294e\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\14778bb2fb1b\\manifest.json",
+      "evidence": "C:\\srt\\14778bb2fb1b\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\fa7aa9ad5335\\manifest.json",
+      "evidence": "C:\\srt\\fa7aa9ad5335\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\f76d543922b1\\manifest.json",
+      "evidence": "C:\\srt\\f76d543922b1\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "environment-check.orca-sandbox",
+      "case_id": "complete",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\8b2613743eef\\manifest.json",
+      "evidence": "C:\\srt\\8b2613743eef\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "environment-check.orca-full-access",
+      "case_id": "complete",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\15edf990c6a7\\manifest.json",
+      "evidence": "C:\\srt\\15edf990c6a7\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\9989a85c22a4\\manifest.json",
+      "evidence": "C:\\srt\\9989a85c22a4\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\86025a57c0f6\\manifest.json",
+      "evidence": "C:\\srt\\86025a57c0f6\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\5dfb67e00c52\\manifest.json",
+      "evidence": "C:\\srt\\5dfb67e00c52\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\a5c61dc411a8\\manifest.json",
+      "evidence": "C:\\srt\\a5c61dc411a8\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\0d909197ddfd\\manifest.json",
+      "evidence": "C:\\srt\\0d909197ddfd\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "local-codex.feedback",
+      "case_id": "default",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\7663bdc7975a\\manifest.json",
+      "evidence": "C:\\srt\\7663bdc7975a\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "local-codex.audited",
+      "case_id": "default",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\e7ec8f467b13\\manifest.json",
+      "evidence": "C:\\srt\\e7ec8f467b13\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "environment-check.local-sandbox",
+      "case_id": "complete",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\2d33faa7921c\\manifest.json",
+      "evidence": "C:\\srt\\2d33faa7921c\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "environment-check.local-full-access",
+      "case_id": "complete",
+      "status": "passed",
+      "first_attempt_status": "passed",
+      "attempts": 1,
+      "manifest": "C:\\srt\\980fd3fe2723\\manifest.json",
+      "evidence": "C:\\srt\\980fd3fe2723\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    },
+    {
+      "scenario": "local-codex.multirun",
+      "case_id": "default",
+      "status": "passed",
+      "first_attempt_status": "failed_tls_verification_fetch",
+      "attempts": 2,
+      "manifest": "C:\\srt\\300082e7a1e8\\manifest.json",
+      "evidence": "C:\\srt\\300082e7a1e8\\evidence",
+      "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+      "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c"
+    }
+  ],
+  "coverage_gaps": [
+    "Remote two-model audited L3 driver absent",
+    "Remote same-service multirun L3 driver absent",
+    "Remote optional GitHub App settings unwired; this qualification uses execution-host gh login"
+  ]
+}

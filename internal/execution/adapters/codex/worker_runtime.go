@@ -11,9 +11,10 @@ import (
 )
 
 type workerRuntime struct {
-	Shell string
-	Temp  string
-	Auth  *AuthenticationRuntime
+	Shell     string
+	Temp      string
+	Auth      *AuthenticationRuntime
+	OrcaHooks bool
 }
 
 // The temp directory is a child of the already frozen linked-worktree admin
@@ -162,7 +163,7 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 }
 
 func (r *workerRuntime) instructions() string {
-	return fmt.Sprintf("SteerRunner Windows tool setup: use shell %q and login=false. MXC owns each tool AppContainer temporary directory. Keep the fixed workspace and Git roots. Git maintenance is disabled. The trusted execution runtime owns repository authentication; model-generated code can read its process environment. Do not dump authentication or the environment. Never request elevated or sandbox-external execution, repair authentication, run login, or change permission settings. Authentication expiry or sandbox access failure is an environment blocker: preserve the exact failure and original branch/PR outcome for reconciliation. Do not repeat an uncertain publication. A denied command remains blocked.", r.Shell)
+	return fmt.Sprintf("SteerRunner Windows tool setup: use shell %q and login=false. MXC owns each tool AppContainer temporary directory. Keep the fixed workspace and Git roots. Git maintenance is disabled. The trusted execution runtime owns repository authentication; model-generated code can read its process environment. Do not dump authentication or the environment. Never request elevated or sandbox-external execution, repair authentication, run login, or change permission settings. For EVERY git commit, first stage ONLY the exact intended task paths with git add -- <exact task paths>, immediately capture its own exit code and stop if it is nonzero. Verify git diff --cached --name-only is nonempty and contains all and only the intended task paths before invoking git commit. Run staging, staged-diff verification and commit sequentially, never in parallel. Then preserve and print git commit\u0027s own exit code in that same tool call immediately after git commit, before git status or any other command. In PowerShell use: git commit <task arguments>; $srCommitExit=$LASTEXITCODE; Write-Output ('SR_COMMIT_EXIT='+$srCommitExit); if($srCommitExit -ne 0){exit $srCommitExit}. Do not put git commit in a pipeline. Git 2.55 compatibility: an exact shared .git/packed-refs.lock permission warning can come from deleting the absent AUTO_MERGE ref AFTER a successful commit. This warning alone does not make that commit fail. If the captured commit exit is zero, verify HEAD advanced on the assigned branch to the intended commit, its parent and changed paths match the task, the worktree is clean, and no AUTO_MERGE or pending merge/cherry-pick/revert state exists; report the successful commit together with this precise warning and continue. Never retry that commit or repair the denied cleanup. A nonzero or unknown commit exit, any OTHER denied operation, authentication expiry, sandbox access failure or unverified Git state is an environment blocker: preserve the exact failure and original branch/PR outcome for reconciliation. Do not repeat an uncertain publication.", r.Shell)
 }
 
 func (r *workerRuntime) configArgs(env []string) ([]string, error) {
@@ -186,6 +187,13 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 		// explicit allowlist prevents the App key and unrelated caller secrets
 		// from reaching shell tools even when native defaults exclude *TOKEN*.
 		args = append(args, "--config", `shell_environment_policy.inherit="all"`, "--config", "shell_environment_policy.ignore_default_excludes=true", "--config", `shell_environment_policy.include_only=["PATH","PATHEXT","SystemRoot","SystemDrive","COMSPEC","WINDIR","TEMP","TMP","USERPROFILE","HOME","APPDATA","LOCALAPPDATA","ProgramFiles","ProgramFiles(x86)","ProgramData","GH_HOST","GH_TOKEN","GH_PROMPT_DISABLED","GH_CONFIG_DIR","GIT_TERMINAL_PROMPT","GIT_CONFIG_*","HTTPS_PROXY","HTTP_PROXY","NO_PROXY","SSL_CERT_FILE","GIT_SSL_CAINFO"]`)
+		if r.OrcaHooks {
+			// Native Codex command hooks use this same environment policy. Keep
+			// only the existing pane-scoped hook transport and identity; never
+			// admit remote pairing credentials or the whole ORCA_* namespace.
+			const hookNames = `,"ORCA_AGENT_HOOK_ENDPOINT","ORCA_AGENT_HOOK_PORT","ORCA_AGENT_HOOK_TOKEN","ORCA_AGENT_HOOK_TRANSPORT","ORCA_AGENT_HOOK_ENV","ORCA_AGENT_HOOK_NODE","ORCA_AGENT_HOOK_VERSION","ORCA_PANE_KEY","ORCA_AGENT_PANE","ORCA_AGENT_LAUNCH_TOKEN","ORCA_AGENT_LAUNCH","ORCA_TAB_ID","ORCA_WORKTREE_ID","ORCA_USER_DATA_PATH"`
+			args[len(args)-1] = strings.TrimSuffix(args[len(args)-1], "]") + hookNames + "]"
+		}
 		for i := count; i < count+3; i++ {
 			for _, prefix := range []string{"GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_"} {
 				if i == count+1 && prefix == "GIT_CONFIG_VALUE_" {
@@ -205,7 +213,13 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 			}
 			// Public transport values belong to tool policy, not the app-server's
 			// own model/network environment. No machine-wide proxy or trust change.
-			for _, entry := range [][2]string{{"HTTPS_PROXY", broker.address}, {"HTTP_PROXY", broker.address}, {"NO_PROXY", ""}, {"SSL_CERT_FILE", broker.caPath}, {"GIT_SSL_CAINFO", broker.caPath}, {"GH_CONFIG_DIR", broker.configDir}} {
+			noProxy := ""
+			if r.OrcaHooks {
+				// Native status hooks must reach Orca's loopback listener rather
+				// than the repository-only GitHub authentication proxy.
+				noProxy = "127.0.0.1,localhost,::1"
+			}
+			for _, entry := range [][2]string{{"HTTPS_PROXY", broker.address}, {"HTTP_PROXY", broker.address}, {"NO_PROXY", noProxy}, {"SSL_CERT_FILE", broker.caPath}, {"GIT_SSL_CAINFO", broker.caPath}, {"GH_CONFIG_DIR", broker.configDir}} {
 				args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))
 			}
 		}

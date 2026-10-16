@@ -7,6 +7,7 @@ import (
 	"io"
 	"reflect"
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
@@ -97,6 +98,14 @@ func exactFields(value any, kind reflect.Type) error {
 		kind = kind.Elem()
 	}
 	if kind == rawMessageType || kind.Kind() == reflect.Interface {
+		return nil
+	}
+	if kind == reflect.TypeFor[time.Time]() {
+		// time.Time has a scalar JSON representation. Its own UnmarshalJSON
+		// validates RFC3339 after exact field/duplicate checks have completed.
+		if _, ok := value.(string); !ok {
+			return errJSON
+		}
 		return nil
 	}
 	switch kind.Kind() {

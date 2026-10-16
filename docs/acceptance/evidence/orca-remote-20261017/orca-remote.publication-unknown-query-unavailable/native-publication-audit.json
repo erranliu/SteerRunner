@@ -1,0 +1,59 @@
+{
+  "entered": true,
+  "released": true,
+  "published": {
+    "baseRefName": "codex/srtest/0d909197ddfd/base",
+    "headRefName": "erranliu/sl-4176bd47bfd112ff96080b3ba90880cc",
+    "headRefOid": "8bc17c22b44d9fa29f49f35d3163fd2708566809",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/419"
+  },
+  "audit": [
+    {
+      "kind": "checker",
+      "data": {}
+    },
+    {
+      "kind": "publisher",
+      "data": {}
+    },
+    {
+      "kind": "checker",
+      "data": {}
+    },
+    {
+      "kind": "push",
+      "data": {
+        "branch": "erranliu/sl-4176bd47bfd112ff96080b3ba90880cc"
+      }
+    },
+    {
+      "kind": "create",
+      "data": {
+        "base": "codex/srtest/0d909197ddfd/base",
+        "branch": "erranliu/sl-4176bd47bfd112ff96080b3ba90880cc"
+      }
+    },
+    {
+      "kind": "published",
+      "data": {
+        "baseRefName": "codex/srtest/0d909197ddfd/base",
+        "headRefName": "erranliu/sl-4176bd47bfd112ff96080b3ba90880cc",
+        "headRefOid": "8bc17c22b44d9fa29f49f35d3163fd2708566809",
+        "url": "https://github.com/erranliu/SteerlineTest/pull/419"
+      }
+    },
+    {
+      "kind": "gate-entered",
+      "data": {
+        "stage": "publication",
+        "branch": "erranliu/sl-4176bd47bfd112ff96080b3ba90880cc"
+      }
+    },
+    {
+      "kind": "gate-released",
+      "data": {
+        "stage": "publication"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "case_id": "query-unavailable",
+  "started_at": "2026-10-16T18:11:28.4443828Z",
+  "level": "L3",
+  "identity": {
+    "pid": 55116,
+    "manifest_sha256": "239d4efd60249157aeda0ea27b1cddd139299c6111914758cf2cc8ead24a6d7f",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.publication-unknown",
+    "level": "L3",
+    "helper_sha256": "cec6301a4ed0f18163396464e52e5419990e7787d4f3f5a659e562a2b6fb9dfe",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f",
+    "case_id": "query-unavailable",
+    "repeat_index": 1
+  },
+  "expected_outcome": "merged",
+  "scenario": "orca-remote.publication-unknown",
+  "manifest": "C:\\srt\\0d909197ddfd\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\0d909197ddfd",
+    "base:codex/srtest/0d909197ddfd/base",
+    "run:4176bd47bfd112ff96080b3ba90880cc",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-4176bd47bfd112ff96080b3ba90880cc",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_1201912f-6f57-4085-a3e1-44a62a6c0824:ee3a7f4e-5f50-431a-b375-1c8d283487aa",
+    "branch:erranliu/sl-4176bd47bfd112ff96080b3ba90880cc",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/419"
+  ],
+  "evidence": "C:\\srt\\0d909197ddfd\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\orca-remote.publication-unknown-query-unavailable-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T18:18:24.0523644Z"
+}

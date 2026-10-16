@@ -48,6 +48,19 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
 	}
+	full := m
+	full.Scenario, full.Level, full.RemoteRuntimeID = "orca-remote.full-access", "L3", "paired-runtime"
+	full.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}
+	if err := full.Validate(); err != nil {
+		t.Fatal("explicit remote full-access fixture rejected", err)
+	}
+	for _, settings := range []string{`{}`, `{"access_mode":"sandbox"}`} {
+		changed := full
+		changed.Execution.Settings = json.RawMessage(settings)
+		if changed.Validate() == nil {
+			t.Fatal("full-access case silently changed its frozen mode")
+		}
+	}
 	audited := m
 	audited.Driver = "development-audited"
 	audited.AuditModel = &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}

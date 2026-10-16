@@ -15,6 +15,7 @@ import (
 )
 
 type fakeHost struct {
+	callerFileWriter              func(string, []byte) error
 	nativeSends                   int
 	nativePrompt                  string
 	nativeReply                   string
@@ -46,7 +47,10 @@ func (f *fakeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
 }
 func (f *fakeHost) InspectProcess(*b.ProcessIdentity) string { return "unknown" }
 func (f *fakeHost) NewProcessGeneration() string             { return "generation" }
-func (f *fakeHost) WriteExecutionFile(string, []byte) error {
+func (f *fakeHost) WriteExecutionFile(path string, data []byte) error {
+	if f.callerFileWriter != nil {
+		return f.callerFileWriter(path, data)
+	}
 	return errors.New("terminal path has no file channel")
 }
 func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, error) {

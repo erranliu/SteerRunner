@@ -54,6 +54,11 @@ func TestWorkspaceCreationUsesConfiguredTimeout(t *testing.T) {
 			l.client = native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 				want := 40 * time.Second
 				if args[0] == "worktree" && args[1] == "create" {
+					for _, arg := range args {
+						if arg == "--activate" {
+							t.Fatal("background execution changed the active Orca view")
+						}
+					}
 					want = 2 * time.Minute
 					creations++
 				}

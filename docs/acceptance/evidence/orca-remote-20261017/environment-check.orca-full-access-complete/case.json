@@ -1,0 +1,33 @@
+{
+  "case_id": "complete",
+  "started_at": "2026-10-16T17:59:03.342323Z",
+  "level": "L3",
+  "identity": {
+    "pid": 55400,
+    "manifest_sha256": "3857ce6d010d38d6b1d6c6d946ce0267e476ba4f5999db7ba0593a391afec509",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "environment-check.orca-full-access",
+    "level": "L3"
+  },
+  "expected_outcome": "checked",
+  "scenario": "environment-check.orca-full-access",
+  "manifest": "C:\\srt\\15edf990c6a7\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\15edf990c6a7",
+    "base:codex/srtest/15edf990c6a7/base",
+    "run:abdabab27fe20f12e6c3b70aa532300d",
+    "workspace:C:\\sr-runtime\\2ba0\\24\\checks\\abdabab27fe2\\w",
+    "session:01a145de-afd7-78d2-8512-d0952ace2272",
+    "branch:refs/heads/steerline-check/abdabab27fe20f12e6c3b70aa532300d/head",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/417"
+  ],
+  "evidence": "C:\\srt\\15edf990c6a7\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\environment-check.orca-full-access-complete-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T18:03:02.2471335Z"
+}

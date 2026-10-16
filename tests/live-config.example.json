@@ -9,6 +9,7 @@
   "orca_executable": "C:/path/to/orca.exe",
   "orca_environment": "saved-environment-id",
   "remote_agent": "codex",
+  "remote_runtime_executable": "C:/SteerRunnerRuntime/steerrunner-agent.exe",
   "remote_model": "",
   "remote_reasoning_effort": "",
   "remote_args": [

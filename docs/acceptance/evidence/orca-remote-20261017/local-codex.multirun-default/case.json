@@ -1,0 +1,38 @@
+{
+  "case_id": "default",
+  "status": "passed",
+  "finished_at": "2026-10-16T18:31:54.9099785Z",
+  "level": "L3",
+  "expected_outcome": "pr_ready",
+  "identity": {
+    "pid": 17012,
+    "manifest_sha256": "5febaec0c943f9d794dc49d5f8ab11541a025633a93294615c6547d6c32ab6a0",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.multirun",
+    "level": "L3"
+  },
+  "scenario": "local-codex.multirun",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-multirun-recheck-25\\local-codex.multirun-default-r1-fixture.json",
+  "repeat_index": 1,
+  "manifest": "C:\\srt\\300082e7a1e8\\manifest.json",
+  "started_at": "2026-10-16T18:26:29.6750178Z",
+  "resources": [
+    "root:C:\\srt\\300082e7a1e8",
+    "base:codex/srtest/300082e7a1e8/base",
+    "run:bd4710c44aa257201f412175101a6888",
+    "workspace:c:\\srt\\300082e7a1e8\\s\\workspaces\\jxvrpxfwmxzotrnabqp57k77xy",
+    "session:01a145f7-d4a6-71a0-b9c1-93f90fd039fa",
+    "branch:codex/runner-bd4710c44aa257201f412175101a6888",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/427",
+    "run:64b2a8fbb02b9e70108b6615414c7b58",
+    "workspace:c:\\srt\\300082e7a1e8\\s\\workspaces\\zk2dewb7hp2dmg2i4szbkoa6x4",
+    "session:01a145f7-e0ca-7a41-840f-185332971ad7",
+    "branch:codex/runner-64b2a8fbb02b9e70108b6615414c7b58",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/426"
+  ],
+  "evidence": "C:\\srt\\300082e7a1e8\\evidence"
+}

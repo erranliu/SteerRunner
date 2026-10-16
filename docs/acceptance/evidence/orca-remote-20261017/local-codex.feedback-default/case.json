@@ -1,0 +1,33 @@
+{
+  "case_id": "default",
+  "started_at": "2026-10-16T18:14:08.474586Z",
+  "level": "L3",
+  "identity": {
+    "pid": 52984,
+    "manifest_sha256": "e87287cf5d8546e006600ad2a6fc54cd94ea58d778a8d1158c48be5ec37ba048",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.feedback",
+    "level": "L3"
+  },
+  "expected_outcome": "merged",
+  "scenario": "local-codex.feedback",
+  "manifest": "C:\\srt\\7663bdc7975a\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\7663bdc7975a",
+    "base:codex/srtest/7663bdc7975a/base",
+    "run:d0fda0daa92354d4729ad07f07fa6659",
+    "workspace:c:\\srt\\7663bdc7975a\\s\\workspaces\\uri7yxfjw76vr43ctkylmgvrmm",
+    "session:01a145ec-9ad9-76b0-8aa4-6a0434c12082",
+    "branch:codex/runner-d0fda0daa92354d4729ad07f07fa6659",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/420"
+  ],
+  "evidence": "C:\\srt\\7663bdc7975a\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\local-codex.feedback-default-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T18:20:06.3835374Z"
+}

@@ -16,10 +16,13 @@ const ServiceStopBehavior = b.ContinueExecutionOnServiceStop
 
 // Environment is routing only; local and paired execution have the same ports.
 type Profile struct {
-	Executable  string   `json:"executable"`
-	Args        []string `json:"args,omitempty"`
-	Environment string   `json:"environment,omitempty"`
-	WaitTimeout string   `json:"wait_timeout"`
+	RuntimeSHA256              string   `json:"runtime_sha256,omitempty"`
+	RuntimeExecutable          string   `json:"runtime_executable,omitempty"`
+	RuntimeConfigurationDigest string   `json:"runtime_configuration_digest,omitempty"`
+	Executable                 string   `json:"executable"`
+	Args                       []string `json:"args,omitempty"`
+	Environment                string   `json:"environment,omitempty"`
+	WaitTimeout                string   `json:"wait_timeout"`
 }
 
 func DecodeProfile(data []byte) (Profile, error) {

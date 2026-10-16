@@ -198,6 +198,12 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "runtime_executable": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Trusted steerrunner-agent executable installed on the execution host; owns host authentication and same-mode native preparation."
+            },
+            "runtime_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "Optional frozen SHA256 of the execution-host helper; required in qualification configs." },
             "executable": {
               "type": "string",
               "minLength": 1,

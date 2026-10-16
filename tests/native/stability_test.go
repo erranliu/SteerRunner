@@ -17,6 +17,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -453,7 +454,7 @@ func (s *stabilityRun) calls() ([]string, int) {
 	if err != nil {
 		s.t.Fatal("missing native call audit", err)
 	}
-	facts, err := livetest.AnalyzeNativeAudit(raw, s.m.RemoteRuntimeID)
+	facts, err := livetest.AnalyzeNativeAudit(raw, s.m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(s.m))
 	if err != nil {
 		s.t.Fatal(err)
 	}
@@ -487,6 +488,7 @@ func (s *stabilityRun) merge(v contracts.RunView) {
 		s.t.Fatal(err)
 	}
 	s.check("merge-head-stable", fresh.PR.HeadRevision == v.PR.HeadRevision && fresh.PR.URL == v.PR.URL, "original PR verified before exact-head merge")
+	s.auditPermissions()
 	shell(s.t, s.m.Root, "gh", "pr", "merge", v.PR.URL, "--merge", "--match-head-commit", v.PR.HeadRevision)
 	merged, err := inspect(s.m, s.dir, s.r.RunID, true)
 	if err != nil {
@@ -559,6 +561,9 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 	case "orca-remote.caller-exit":
 		v := s.wait("caller-original-execution", 14*time.Minute, func(v contracts.RunView) bool { return v.Status == "pr_ready" })
 		s.bind(v)
+		if _, err := s.native(); err != nil {
+			t.Fatal(err)
+		}
 		s.merge(v)
 	case "orca-remote.connection-reconnect":
 		s.disconnect()
@@ -734,7 +739,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		seen[k] = true
 	}
-	s.check("no-duplicate-inputs", unique && launches == 1, "native-calls.jsonl: unique prompt sends and single worktree with its original terminal")
+	s.check("no-duplicate-inputs", unique && launches == 1, "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately")
 	if m.Scenario == "orca-remote.caller-exit" {
 		s.originalIdentity(s.view())
 	}
@@ -752,18 +757,48 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		s.check("single-native-publication", pubs == 1 && creates == 1, "native-publication-audit.json: publisher/create counts")
 	}
-	s.r.AuditComplete = s.completeNativeReceipts()
-	s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl: every native send/create has original-runtime successful receipt")
+	s.r.AuditComplete = s.completeNativeReceipts(keys)
+	s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json: original business receipts and every bound readonly inspector closed; no new business input")
+	if m.Stability.ExpectedOutcome != "merged" {
+		s.auditPermissions()
+	}
 	s.stage("cleanup")
 }
 
-func (s *stabilityRun) completeNativeReceipts() bool {
-	raw, err := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
-	if err != nil {
-		return false
+func (s *stabilityRun) auditPermissions() {
+	// Stop cases can already have closed their original business terminal.
+	// Read the saved native provider using an isolated, fully settled inspector.
+	t, m := s.t, s.m
+	var permissionSettings contracts.OrcaSettings
+	_ = json.Unmarshal(m.Execution.Settings, &permissionSettings)
+	permissionCtx, permissionCancel := context.WithTimeout(context.Background(), 90*time.Second)
+	permissionClient := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
+		return s.diagnostic(ctx, args...)
+	}})
+	permissionAudit, permissionErr := livetest.RemotePermissionAudit(permissionCtx, permissionClient, s.process, permissionSettings.AgentLaunch.RuntimeExecutable, s.original.Workspace, s.provider)
+	permissionCancel()
+	save(t, "remote-worker-permission-audit.json", permissionAudit)
+	mode := permissionSettings.AccessMode
+	if mode == "" {
+		mode = "sandbox"
 	}
-	facts, err := livetest.AnalyzeNativeAudit(raw, s.m.RemoteRuntimeID)
-	return err == nil && facts.Complete
+	s.check("native-permissions", permissionErr == nil && permissionAudit.Readiness.Verified && permissionAudit.InspectorClosed && permissionAudit.Readiness.AccessMode == mode && permissionSettings.AgentLaunch.RuntimeSHA256 != "" && permissionAudit.Readiness.RuntimeSHA256 == permissionSettings.AgentLaunch.RuntimeSHA256, "remote-worker-permission-audit.json: original provider, frozen helper, access mode, never and no escape/approval")
+}
+
+func (s *stabilityRun) completeNativeReceipts(expected []string) bool {
+	// Stop can cancel an in-flight readonly observation. Await its existing
+	// bounded close; this loop never creates, retries or closes a native resource.
+	until := time.Now().Add(30 * time.Second)
+	for {
+		raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
+		facts, err := livetest.AnalyzeNativeAudit(raw, s.m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(s.m))
+		verified := readErr == nil && err == nil && facts.Complete && facts.Creations == 1 && reflect.DeepEqual(facts.Prompts, expected)
+		if verified || !time.Now().Before(until) {
+			save(s.t, "native-resource-audit.json", map[string]any{"verified": verified, "business_creations": facts.Creations, "initial_terminal_creations": facts.InitialTerminals, "prompt_sends": len(facts.Prompts), "inspections": facts.Inspections, "closed_inspections": facts.ClosedInspections})
+			return verified
+		}
+		time.Sleep(200 * time.Millisecond)
+	}
 }
 func (s *stabilityRun) caller(req contracts.Request) {
 	raw, _ := json.Marshal(req)

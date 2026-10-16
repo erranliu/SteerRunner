@@ -285,8 +285,13 @@ func (s *EnvironmentSession) probeScript(action string, r contracts.CheckResourc
 	content := q(s.setup.Nonce)
 	repo := s.backend.Config.Authentication.repository
 	api := q("repos/" + repo + "/pulls")
-	lookup := `$p=@(API -X GET ` + api + ` -f state=all -f head=` + q(strings.Split(repo, "/")[0]+":"+s.gate.head) + ` -f base=` + q(s.gate.base) + ` -f per_page=100); if ($p.Count -ne 1) { throw 'original_pr_ambiguous' }; $p=$p[0]; `
-	prFacts := `if ($p.number -le 0 -or $p.html_url -cne (` + q("https://github.com/"+repo+"/pull/") + `+[string]$p.number) -or (` + strconv.Itoa(r.PRNumber) + ` -gt 0 -and $p.number -ne ` + strconv.Itoa(r.PRNumber) + `) -or $p.base.sha -cne ` + q(r.BaseSHA) + ` -or $p.base.ref -cne ` + q(s.gate.base) + ` -or $p.head.ref -cne ` + q(s.gate.head) + ` -or $p.head.sha -cne ` + q(r.HeadSHA) + ` -or $p.base.repo.full_name -ine ` + q(repo) + ` -or $p.head.repo.full_name -ine ` + q(repo) + ` -or $p.merged_at -or $p.body -cne ` + content + `) { throw 'original_pr_identity_changed' }; $facts['pr_url']=[string]$p.html_url; $facts['pr_number']=[string]$p.number; $facts['pr_closed']=[string]($p.state -eq 'closed')`
+	lookup := `$p=@(API -X GET ` + api + ` -f state=all -f head=` + q(strings.Split(repo, "/")[0]+":"+s.gate.head) + ` -f base=` + q(s.gate.base) + ` -f per_page=100); if ($p.Count -ne 1) { $script:failureStage='original_pr_ambiguous'; throw 'original_pr_ambiguous' }; $p=$p[0]; `
+	if r.PRNumber > 0 {
+		// A created PR has a stable object address. Its filtered list index may
+		// lag creation; verify that original object without repeating a write.
+		lookup = `$p=API -X GET ` + q("repos/"+repo+"/pulls/"+strconv.Itoa(r.PRNumber)) + `; `
+	}
+	prFacts := `if ($p.number -le 0 -or $p.html_url -cne (` + q("https://github.com/"+repo+"/pull/") + `+[string]$p.number) -or (` + strconv.Itoa(r.PRNumber) + ` -gt 0 -and $p.number -ne ` + strconv.Itoa(r.PRNumber) + `) -or $p.base.sha -cne ` + q(r.BaseSHA) + ` -or $p.base.ref -cne ` + q(s.gate.base) + ` -or $p.head.ref -cne ` + q(s.gate.head) + ` -or $p.head.sha -cne ` + q(r.HeadSHA) + ` -or $p.base.repo.full_name -ine ` + q(repo) + ` -or $p.head.repo.full_name -ine ` + q(repo) + ` -or $p.merged_at -or $p.body -cne ` + content + `) { $script:failureStage='original_pr_identity_changed'; throw 'original_pr_identity_changed' }; $facts['pr_url']=[string]$p.html_url; $facts['pr_number']=[string]$p.number; $facts['pr_closed']=[string]($p.state -eq 'closed')`
 	switch action {
 	case "permissions":
 		want := "1"
@@ -431,7 +436,10 @@ func EnvironmentDiagnostic(err error) string {
 	if err == nil {
 		return ""
 	}
-	for _, stage := range []string{"authentication_api_binding_invalid", "authentication_api_binding_missing", "authentication_api_binding_mismatch", "authentication_api_directory_unverified", "authentication_api_directory_redirected", "authentication_api_directory_unavailable", "authentication_api_directory_conflict", "authentication_api_directory_identity_changed", "authentication_api_socket_identity_changed", "authentication_api_socket_unverified", "authentication_api_socket_unavailable", "authentication_api_config_unavailable"} {
+	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
+		return stage
+	}
+	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed", "authentication_api_binding_invalid", "authentication_api_binding_missing", "authentication_api_binding_mismatch", "authentication_api_directory_unverified", "authentication_api_directory_redirected", "authentication_api_directory_unavailable", "authentication_api_directory_conflict", "authentication_api_directory_identity_changed", "authentication_api_socket_identity_changed", "authentication_api_socket_unverified", "authentication_api_socket_unavailable", "authentication_api_config_unavailable"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}

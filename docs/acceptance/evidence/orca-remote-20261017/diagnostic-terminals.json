@@ -1,0 +1,16 @@
+[
+  {
+    "name": "staging",
+    "terminal": "term_554d7581-3877-46b5-b825-2e8866a17899",
+    "incarnation": "ff3d5a81-69bd-4bbc-8d7b-606a49b66bdd",
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-auth-runtime-2ba0",
+    "pty_killed": true
+  },
+  {
+    "name": "inventory",
+    "terminal": "term_b7156fd4-c01a-4664-8132-b6f33a2a9a59",
+    "incarnation": "21ead345-6005-43f0-af04-daf1ab14c4c4",
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+    "pty_killed": true
+  }
+]

@@ -148,6 +148,12 @@ func (m Manifest) Validate() error {
 			return fmt.Errorf("frozen fixture input changed: %s", path)
 		}
 	}
+	if m.Scenario == "orca-remote.full-access" {
+		var settings contracts.OrcaSettings
+		if m.Level != "L3" || m.Driver != "development-smoke" || m.Execution.Adapter != "orca-terminal" || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != "full_access" {
+			return errors.New("remote full-access smoke requires its explicit frozen access mode")
+		}
+	}
 	if m.Stability != nil {
 		for _, tool := range []Tool{m.Stability.Helper, m.Stability.Firewall, m.Stability.NativeOrca, m.Stability.CLIEntry, m.Stability.RuntimeFiles} {
 			actual, err := filepath.EvalSymlinks(tool.Path)

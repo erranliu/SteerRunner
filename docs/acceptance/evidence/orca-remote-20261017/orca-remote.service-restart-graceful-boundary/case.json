@@ -1,0 +1,38 @@
+{
+  "case_id": "graceful-boundary",
+  "started_at": "2026-10-16T17:47:04.1682827Z",
+  "level": "L3",
+  "identity": {
+    "pid": 30844,
+    "manifest_sha256": "d66649c2948092598db754f3f6de3a7512763b7ce94671d07e0ffb161c6e4c63",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.service-restart",
+    "level": "L3",
+    "helper_sha256": "cec6301a4ed0f18163396464e52e5419990e7787d4f3f5a659e562a2b6fb9dfe",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f",
+    "case_id": "graceful-boundary",
+    "repeat_index": 1
+  },
+  "expected_outcome": "merged",
+  "scenario": "orca-remote.service-restart",
+  "manifest": "C:\\srt\\14778bb2fb1b\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\14778bb2fb1b",
+    "base:codex/srtest/14778bb2fb1b/base",
+    "run:a48754d520c99bc42584e927a1c4d8fe",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-a48754d520c99bc42584e927a1c4d8fe",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_bccab78b-13ef-4a37-bf31-0132846088f6:3acccbec-1942-4188-b978-b15eb65feb06",
+    "branch:erranliu/sl-a48754d520c99bc42584e927a1c4d8fe",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/413"
+  ],
+  "evidence": "C:\\srt\\14778bb2fb1b\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\orca-remote.service-restart-graceful-boundary-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T17:53:46.3883773Z"
+}

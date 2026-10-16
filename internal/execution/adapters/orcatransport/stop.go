@@ -37,6 +37,23 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 			receipt.State = saved.State
 			return receipt, nil, nil
 		}
+	case "business-confirmed":
+		if !saved.State.WorkerAbsent {
+			return receipt, nil, errors.New("original business stop proof missing")
+		}
+		state, err := l.state(r.Snapshot)
+		if err != nil {
+			return receipt, nil, err
+		}
+		if err = l.cleanupInspections(ctx, &state); err != nil {
+			return receipt, nil, err
+		}
+		progress.Phase = "confirmed"
+		receipt.Operation.Receipt, _ = json.Marshal(progress)
+		receipt.Disposition = b.OperationConfirmed
+		receipt.State.Stopped = true
+		receipt.State.WorkerAbsent = true
+		return receipt, nil, nil
 	}
 	return receipt, nil, errors.New("Original terminal close outcome is unknown; no close was repeated")
 }
