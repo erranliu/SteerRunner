@@ -21,19 +21,20 @@ import (
 )
 
 type Engine struct {
-	lastMessages map[string]contracts.LastMessage
-	epoch        string
-	identity     *b.ProcessIdentity
-	mu           sync.Mutex
-	requests     sync.Map
-	dir          string
-	store        *storage.Store
-	ctx          context.Context
-	cancel       context.CancelFunc
-	runs         map[string]*runstate.Record
-	workers      map[string]*worker
-	logger       *log.Logger
-	wait         sync.WaitGroup
+	openNativeConsole func(context.Context, b.LaunchCommand) error
+	lastMessages      map[string]contracts.LastMessage
+	epoch             string
+	identity          *b.ProcessIdentity
+	mu                sync.Mutex
+	requests          sync.Map
+	dir               string
+	store             *storage.Store
+	ctx               context.Context
+	cancel            context.CancelFunc
+	runs              map[string]*runstate.Record
+	workers           map[string]*worker
+	logger            *log.Logger
+	wait              sync.WaitGroup
 }
 type worker struct {
 	gate     sync.Mutex // serializes new native dispatch with committed revocation

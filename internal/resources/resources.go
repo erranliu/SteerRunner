@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io/fs"
+	"runtime"
 	"sort"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -54,14 +55,19 @@ func VersionInfo() any {
 }
 
 func Capabilities() any {
+	viewerAdapters := []string{}
+	if runtime.GOOS == "windows" {
+		viewerAdapters = append(viewerAdapters, "codex-app-server")
+	}
 	return map[string]any{
-		"protocol": contracts.Protocol, "version": Version,
+		"native_session_viewer": map[string]any{"adapters": viewerAdapters},
+		"protocol":              contracts.Protocol, "version": Version,
 		"resource_version": 1, "resource_digest": Digest(),
 		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
 		"workflows":             workflow.Catalog(),
 		"configuration_schemas": json.RawMessage(Read("settings.schema.json")),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "events", "reply", "resume", "stop"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop"},
 	}
 }

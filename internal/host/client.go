@@ -35,6 +35,9 @@ func Call(ctx context.Context, dir string, options Options, input *contracts.Req
 	}
 	wire := wireRequest{Protocol: contracts.Protocol, InstanceID: endpoint.Service.InstanceID, StateDir: dir, Token: endpoint.Token, Options: options, Request: input}
 	unknown := func() (contracts.Response, *contracts.Fault) {
+		if options.Command == "open-native-session" {
+			return contracts.Response{}, contracts.Fail(6, "request_outcome_unknown", "Native viewer may have opened; do not replay this operation.")
+		}
 		if input != nil {
 			return contracts.Response{}, contracts.Fail(6, "request_outcome_unknown", "The original request outcome is unknown; inspect or retry the same request_id and input.")
 		}

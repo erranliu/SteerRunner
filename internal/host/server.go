@@ -211,6 +211,13 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
+	case "open-native-session":
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+		if s.stopping || wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
+			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))
+		}
+		return s.engine.OpenNativeSession(*wire.Options.NativeSession), false
 	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
 		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
 	}
