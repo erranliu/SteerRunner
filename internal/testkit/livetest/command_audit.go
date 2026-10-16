@@ -37,7 +37,7 @@ func AuditCommandJournal(source io.Reader) (CommandAudit, error) {
 		}
 		audit.Completed++
 		output := strings.ToLower(row.Params.Item.Output)
-		for _, denied := range []string{"permission denied", "access is denied", "unauthorizedaccessexception", "operation not permitted", "拒绝访问"} {
+		for _, denied := range []string{"permission denied", "access is denied", "access denied", "unauthorizedaccessexception", "operation not permitted", "operation denied", "http 401", "http 403", "拒绝访问"} {
 			if strings.Contains(output, denied) {
 				audit.PermissionErrors++
 				break

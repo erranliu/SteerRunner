@@ -411,6 +411,10 @@ func (b *authenticationBroker) forward(r *http.Request) *http.Response {
 		} else {
 			b.prQueries++
 		}
+	default:
+		if r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/repos/"+b.repository+"/pulls/") {
+			b.prQueries++
+		}
 	}
 	b.mu.Unlock()
 	// No redirect following, caller-controlled proxy, auth, cookies, or arbitrary
@@ -506,6 +510,23 @@ func (b *authenticationBroker) permit(r *http.Request) bool {
 	}
 	if b.checkGate != nil {
 		return false
+	}
+	// The frozen publication provider may expose a single-PR REST query to
+	// the worker. Admit that same-repository read, without admitting PR lists,
+	// subresources, query parameters or REST mutations.
+	if r.Method == http.MethodGet && r.URL.RawQuery == "" {
+		if number, ok := strings.CutPrefix(path, "/repos/"+b.repository+"/pulls/"); ok && number != "" && number[0] != '0' {
+			digits := true
+			for _, c := range number {
+				if c < '0' || c > '9' {
+					digits = false
+					break
+				}
+			}
+			if n, err := strconv.ParseUint(number, 10, 64); digits && err == nil && n > 0 {
+				return true
+			}
+		}
 	}
 	if r.Method != "POST" || path != "/graphql" || r.URL.RawQuery != "" {
 		return false

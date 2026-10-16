@@ -1,0 +1,6 @@
+{
+  "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command 'git add -- evidence/native-101.md; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; $staged = @(git diff --cached --name-only); $staged; if (($staged.Count -ne 1) -or ($staged[0] -ne '\"'evidence/native-101.md')) { Write-Error 'Unexpected staged file scope'; exit 2 }; git commit -m \\\"Add native 101 smoke evidence\\\"\"",
+  "output": "warning: in the working copy of 'evidence/native-101.md', LF will be replaced by CRLF the next time Git touches it\nevidence/native-101.md\r\n[codex/runner-ed4c8d2a51b8d9422a9e67f0d00069c4 1177a7c] Add native 101 smoke evidence\n 1 file changed, 1 insertion(+), 1 deletion(-)\n",
+  "turn_id": "01a14448-bc89-76b0-a409-f84d0f86a1b6",
+  "exit_code": 0
+}

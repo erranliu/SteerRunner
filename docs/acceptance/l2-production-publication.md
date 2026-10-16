@@ -35,4 +35,13 @@ Run 不在授权范围。原四个子目录和认证 transport 的绑定保持�
 
 ## 本轮验证
 
-验证记录将在本轮真实 L2 收尾后写入；原失败现场和历史资格不覆盖。
+首轮 `C:/srt/9000197bda8a` 的 Runner 构建为干净 `7c44b8c`，完成真实提交、PR #345、
+原会话反馈及专属 base 合入，Run/服务均停止，原批次汇总显示 passed。
+复核发现一条 `gh api repos/erranliu/SteerlineTest/pulls/345` 被 broker 拒绝（HTTP 403），
+外层 PowerShell 在后续只读命令成功后仍返回 0，旧审计只检查文件系统拒绝而漏检。
+因此该轮不作为最终权限资格；原现场及报告保留，不改写历史 passed 字段。
+
+补充修复只允许当前仓库的 `GET /repos/<repository>/pulls/<正整数>`，无 query 参数、
+无列表/子资源/REST 写操作。跨仓库、畸形编号及写操作仍在 broker 内拒绝，受控测试
+确认拒绝不访问 upstream。命令审计同时拒绝 operation denied 与 HTTP 401/403，
+仍不依赖外层退出码。最终资格须在新独立现场重跑完整 L2 后登记。
