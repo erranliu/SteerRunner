@@ -69,6 +69,18 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				value.input = parameter
 			case "--run-id":
 				value.opts.RunID = parameter
+			case "--attempt-id", "--session-id", "--generation":
+				if value.opts.NativeSession == nil {
+					value.opts.NativeSession = &contracts.NativeSessionTarget{}
+				}
+				switch name {
+				case "--attempt-id":
+					value.opts.NativeSession.AttemptID = parameter
+				case "--session-id":
+					value.opts.NativeSession.SessionID = parameter
+				case "--generation":
+					value.opts.NativeSession.Generation = parameter
+				}
 			case "--request-id":
 				value.opts.RequestID = parameter
 			case "--command-id":
@@ -99,7 +111,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		value.opts.Command = "service " + positional[1]
 	}
 	switch value.opts.Command {
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -127,7 +139,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if selectors != 1 || value.opts.RefreshPR && value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
 		}
-	case "last-message", "events", "reply", "resume", "stop":
+	case "last-message", "open-native-session", "events", "reply", "resume", "stop":
 		if selectors != 1 || value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "This command requires only run-id.")
 		}
@@ -141,6 +153,15 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	}
 	if value.opts.Command == "events" && value.opts.Limit == 0 {
 		value.opts.Limit = 200
+	}
+	if value.opts.Command == "open-native-session" {
+		target := value.opts.NativeSession
+		if target == nil || target.AttemptID == "" || target.SessionID == "" || target.Generation == "" {
+			return value, contracts.Fail(2, "invalid_arguments", "Native viewer requires run-id, attempt-id, session-id and generation.")
+		}
+		target.RunID = value.opts.RunID
+	} else if value.opts.NativeSession != nil {
+		return value, contracts.Fail(2, "invalid_arguments", "Native session options apply only to open-native-session.")
 	}
 	return value, nil
 }
@@ -172,7 +193,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
 	}
 	var request *contracts.Request
 	if writes(options.opts.Command) {

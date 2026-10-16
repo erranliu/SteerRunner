@@ -9,6 +9,21 @@ import (
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
+// NativeViewerCommand verifies the fixed private binding and live thread using
+// reads only. It never prepares resources or reconnects via thread/resume.
+func (l *ExecutionLifecycle) NativeViewerCommand(ctx context.Context, snapshot executionbackend.LifecycleSnapshot) (executionbackend.LaunchCommand, error) {
+	binding, found, err := l.readBinding(snapshot)
+	if err != nil || !found || binding.Process == nil || l.Backend.Process.Inspect == nil || l.Backend.Process.Inspect(binding.Process) != "matching process still exists" || binding.SessionID != snapshot.Session.SessionID {
+		return executionbackend.LaunchCommand{}, errors.New("原 app-server 进程或会话绑定不可核实")
+	}
+	native := AppServerBinding{Endpoint: binding.Endpoint, Generation: binding.Generation, SessionID: binding.SessionID}
+	command, err := NativeViewerCommand(l.Backend.Config.Executable, snapshot.Workspace.Path, native)
+	if err != nil {
+		return command, err
+	}
+	return command, VerifyNativeViewer(ctx, native, snapshot.Workspace.Path)
+}
+
 // NativeViewerCommand attaches the TUI to the existing worker server. Omitting
 // a prompt keeps opening the viewer from starting another business turn.
 func NativeViewerCommand(executable, workspace string, binding AppServerBinding) (executionbackend.LaunchCommand, error) {

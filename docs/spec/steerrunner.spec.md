@@ -124,6 +124,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 | `inspect --state-dir ... --run-id ... --json` | 查询已提交的同一快照；也可用 --request-id 或 --command-id 定位原命令，三个定位参数必须恰选一个 | 原命令回执及关联 RunView；提交丢响应时不需要先知道 Run ID |
 | `events --state-dir ... --run-id ... --after ... --limit ... --json` | 有限分页，省略 after 从起点读取；limit 默认 200，允许 1–500 | 事件页、下一游标、是否还有数据 |
 | `last-message --state-dir ... --run-id ... --json` | 只读进程内最佳努力活动摘要，不启动原生历史读取或新输入 | run_id、attempt_id、message（无样本为 null）；message 包含 Run/Attempt/Session/Turn、kind、text、observed_at |
+| `open-native-session --state-dir ... --run-id R --attempt-id A --session-id S --generation G --json` | 不隐式启动服务；在原 worker gate 内验证当前身份、原进程及只读 thread/workspace，再开独立 Codex CLI 窗口 | 同一 Run/Attempt/Session/Generation 及 opened；仅说明窗口已创建，响应未知不自动重放 |
 | `reply --state-dir ... --run-id ... --input - --json` | 回复指定问题或提交业务反馈，保存后异步对原目标执行 | command 回执；保存、投递、回合开始分别查询 |
 | `resume --state-dir ... --run-id ... --input - --json` | 对当前恢复状态给出新授权，仅在资格满足时继续原会话 | command 回执；实际结果另查 |
 | `stop --state-dir ... --run-id ... --input - --json` | 先持久化撤销本 Run 新输入授权，再按真实能力停止原执行；区分接受、授权撤销、实际停止与未知 | command 回执；实际结果另查 |
