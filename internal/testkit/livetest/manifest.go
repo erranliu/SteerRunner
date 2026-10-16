@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
 const Repository = "erranliu/SteerlineTest"
@@ -20,31 +21,32 @@ const RemoteURL = "https://github.com/erranliu/SteerlineTest.git"
 const Artifact = "evidence/native-101.md"
 
 type Manifest struct {
-	Schema          string                `json:"schema"`
-	ID              string                `json:"id"`
-	Level           string                `json:"level"`
-	Scenario        string                `json:"scenario"`
-	Driver          string                `json:"driver"`
-	Root            string                `json:"root"`
-	RunnerExe       string                `json:"runner_exe"`
-	RunnerSHA256    string                `json:"runner_sha256"`
-	SourceCommit    string                `json:"source_commit"`
-	SourceDirty     bool                  `json:"source_dirty"`
-	RepositoryPath  string                `json:"repository_path"`
-	SourceRevision  string                `json:"source_revision"`
-	BaseBranch      string                `json:"base_branch"`
-	BaseRevision    string                `json:"base_revision"`
-	SpecPath        string                `json:"spec_path"`
-	SpecSHA256      string                `json:"spec_sha256"`
-	PlanPath        string                `json:"plan_path"`
-	PlanSHA256      string                `json:"plan_sha256"`
-	Execution       contracts.Execution   `json:"execution"`
-	Publication     contracts.Publication `json:"publication"`
-	RemoteRuntimeID string                `json:"remote_runtime_id,omitempty"`
-	CreatedAt       string                `json:"created_at"`
-	CaseID          string                `json:"case_id,omitempty"`
-	RepeatIndex     int                   `json:"repeat_index,omitempty"`
-	Stability       *StabilityConfig      `json:"stability,omitempty"`
+	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	Schema          string                  `json:"schema"`
+	ID              string                  `json:"id"`
+	Level           string                  `json:"level"`
+	Scenario        string                  `json:"scenario"`
+	Driver          string                  `json:"driver"`
+	Root            string                  `json:"root"`
+	RunnerExe       string                  `json:"runner_exe"`
+	RunnerSHA256    string                  `json:"runner_sha256"`
+	SourceCommit    string                  `json:"source_commit"`
+	SourceDirty     bool                    `json:"source_dirty"`
+	RepositoryPath  string                  `json:"repository_path"`
+	SourceRevision  string                  `json:"source_revision"`
+	BaseBranch      string                  `json:"base_branch"`
+	BaseRevision    string                  `json:"base_revision"`
+	SpecPath        string                  `json:"spec_path"`
+	SpecSHA256      string                  `json:"spec_sha256"`
+	PlanPath        string                  `json:"plan_path"`
+	PlanSHA256      string                  `json:"plan_sha256"`
+	Execution       contracts.Execution     `json:"execution"`
+	Publication     contracts.Publication   `json:"publication"`
+	RemoteRuntimeID string                  `json:"remote_runtime_id,omitempty"`
+	CreatedAt       string                  `json:"created_at"`
+	CaseID          string                  `json:"case_id,omitempty"`
+	RepeatIndex     int                     `json:"repeat_index,omitempty"`
+	Stability       *StabilityConfig        `json:"stability,omitempty"`
 }
 
 type Tool struct {
@@ -72,8 +74,8 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && (m.Driver != "development-smoke" || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
-		return errors.New("v1 is reserved for unchanged smoke fixtures")
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "development-smoke" && m.Driver != "development-audited") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+		return errors.New("v1 requires a development fixture without stability fields")
 	}
 	if m.Schema == "steerrunner-test/v2" {
 		s, c, err := Lookup(m.Scenario, m.CaseID)
@@ -89,6 +91,14 @@ func (m Manifest) Validate() error {
 	}
 	if m.Publication.Repository != Repository || m.Publication.BaseBranch != m.BaseBranch {
 		return errors.New("live publication is restricted to the dedicated SteerlineTest base")
+	}
+	if m.Driver == "development-audited" {
+		var settings contracts.CodexSettings
+		if m.AuditModel == nil || strings.TrimSpace(m.AuditModel.Model) == "" || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.Model == "" || settings.Model == m.AuditModel.Model || m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" {
+			return errors.New("audited live fixture requires local Codex and two explicit, different models")
+		}
+	} else if m.AuditModel != nil {
+		return errors.New("audit model requires the audited live driver")
 	}
 	switch m.Level {
 	case "L2":

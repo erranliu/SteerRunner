@@ -23,6 +23,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -132,6 +133,13 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		settings.Executable = executable
 		r.Request.Execution.Settings = canonical(settings)
+		if request.Workflow.AuditModel != nil {
+			model := *request.Workflow.AuditModel
+			if model.ReasoningEffort == "" {
+				model.ReasoningEffort = settings.ReasoningEffort
+			}
+			r.Request.Workflow.AuditModel = &model
+		}
 		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
 	} else {
 		var settings contracts.OrcaSettings
@@ -265,6 +273,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Commit: doc.Commit, Digest: reliable.Digest(content), SnapshotPath: path}, Content: string(content)})
 	}
 	_ = json.Unmarshal(resources.Read("prompts.json"), &r.PromptBodies)
+	flowProfile, _ := workflow.Lookup(request.Workflow.ID, request.Workflow.Version)
+	for step := range r.PromptBodies {
+		if !slices.Contains(flowProfile.PromptSteps, step) {
+			delete(r.PromptBodies, step)
+		}
+	}
 	for step, body := range request.Workflow.PromptOverrides {
 		r.PromptBodies[step] = body
 	}
@@ -283,6 +297,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	worktree := executionWorkspace(dir, id)
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: "codex"}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement}
+	if flowProfile.AuditModelRequired {
+		var settings contracts.CodexSettings
+		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		r.Workflow.Config = &flowProfile
+		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
+		model := *r.Request.Workflow.AuditModel
+		r.Workflow.AuditModel = &model
+	}
 	return r, nil
 }
 
@@ -333,38 +355,69 @@ func materialize(r *runstate.Record) error {
 	return nil
 }
 func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) error {
-	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
-	if len(r.Materials) < 2 {
-		return fmt.Errorf("frozen material manifest incomplete")
-	}
-	refs := []workflow.FileReference{}
-	location := func(m runstate.Material) string {
-		if m.ExecutionLocation != "" {
-			return m.ExecutionLocation
-		}
-		return m.SnapshotPath
-	}
-	for _, m := range r.Materials[2:] {
-		refs = append(refs, workflow.FileReference{Path: location(m)})
-	}
-	// Use explicit JSON names for the fixed material references consumed by Workflow.
-	input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
-	prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[input.StepID])
-	if err != nil {
+	if err := validateWorkflow(r); err != nil {
 		return err
 	}
-	if feedback != "" {
-		prompt += "\nUser feedback for the original session:\n" + feedback
+	if workflow.PublicationStep(input.StepID) && !workflow.AuditsPassed(r.Workflow) {
+		return errors.New("publication requires current audits")
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" && input.StepID == workflow.StepImplement {
-		attached := []map[string]string{}
-		for _, m := range r.Materials {
-			attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
+	if !workflow.ModelStep(input.StepID) {
+		return errors.New("no automatic input for this step")
+	}
+	if workflow.AuditStep(input.StepID) && !workflow.AuditSource(r.Workflow, input) {
+		return errors.New("audit lacks its current successful implementation report")
+	}
+	// A restored, unsent input already contains its complete frozen prompt,
+	// including any user answer. Only fresh stages need rendering and models.
+	if input.Prompt != "" && feedback != "" {
+		return errors.New("cannot append feedback to an already frozen input")
+	}
+	if input.Prompt == "" {
+		if r.Workflow.Config != nil {
+			model := r.Workflow.ExecutionModel
+			if workflow.AuditStep(input.StepID) {
+				model = r.Workflow.AuditModel
+			}
+			input.Model, input.ReasoningEffort = model.Model, model.ReasoningEffort
 		}
-		prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
+		if len(r.Materials) < 2 {
+			return fmt.Errorf("frozen material manifest incomplete")
+		}
+		refs := []workflow.FileReference{}
+		location := func(m runstate.Material) string {
+			if m.ExecutionLocation != "" {
+				return m.ExecutionLocation
+			}
+			return m.SnapshotPath
+		}
+		for _, m := range r.Materials[2:] {
+			refs = append(refs, workflow.FileReference{Path: location(m)})
+		}
+		// Use explicit JSON names for the fixed material references consumed by Workflow.
+		input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
+		prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[input.StepID])
+		if err != nil {
+			return err
+		}
+		if feedback != "" {
+			prompt += "\nUser feedback for the original session:\n" + feedback
+		}
+		if r.Request.Execution.Adapter == "orca-terminal" && input.StepID == workflow.StepImplement {
+			attached := []map[string]string{}
+			for _, m := range r.Materials {
+				attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
+			}
+			prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
+		}
+		prompt += workflow.PublicationInstruction(input.StepID, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
+		input.Prompt = prompt
 	}
-	prompt += workflow.PublicationInstruction(input.StepID, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
-	input.Prompt = prompt
+	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
+	if input.StepID == workflow.StepImplement {
+		r.Workflow.ReportRetry = 0
+		r.Workflow.AuditReportCommandID = ""
+		r.Workflow.Audits = nil
+	}
 	// A newly authorized stage gets its own preparation budget. Time spent in
 	// the previous business turn must not expire preparation of the next one.
 	// Keep the initial workspace budget, and never reset unresolved intents.
@@ -373,7 +426,7 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	}
 	r.Workflow.StepID = input.StepID
 	r.Workflow.StageInputs = append(r.Workflow.StageInputs, input)
-	r.Snapshot.PendingTurn = &b.TurnInput{StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...)}
+	r.Snapshot.PendingTurn = &b.TurnInput{StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
 	r.Snapshot.Session.PendingCommandID = input.CommandID
 	r.Snapshot.Session.PendingTurnID = ""
 	r.Status, r.Phase = "running", "input_queued"

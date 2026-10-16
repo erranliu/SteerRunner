@@ -25,6 +25,9 @@ type StageInput struct {
 	SourceCommandID    string          `json:"source_command_id,omitempty"`
 	SourceTurnID       string          `json:"source_turn_id,omitempty"`
 	ReportToolPolicy   string          `json:"report_tool_policy,omitempty"`
+	Model              string          `json:"model,omitempty"`
+	ReasoningEffort    string          `json:"reasoning_effort,omitempty"`
+	RepairFindings     []Finding       `json:"repair_findings,omitempty"`
 }
 
 // StageResult contains normalized business source facts. Native provenance
@@ -38,7 +41,7 @@ type StageResult struct {
 }
 
 func ModelStep(step string) bool {
-	return step == StepImplement || ReportStep(step) || step == StepPublish
+	return step == StepImplement || ReportStep(step) || step == StepPublish || AuditStep(step)
 }
 
 func ReportStep(step string) bool { return step == StepReport || step == StepPublishReport }

@@ -11,6 +11,7 @@ type Transition struct {
 	Status, Reason, Outcome, PRCandidateURL                 string
 	Report                                                  *Report
 	ReportRetry                                             uint64
+	Repair                                                  bool
 	AcceptResult, RecoverOriginal, Publish, ExpireQuestions bool
 }
 
@@ -26,7 +27,11 @@ func PublicationSourceSucceeded(w Snapshot, input StageInput) bool {
 // ReportRetry is a business format correction, never a transport retry.
 func Route(w Snapshot, input StageInput, result reliable.Result, reportPolicy string) Transition {
 	t := Transition{ReportRetry: w.ReportRetry, AcceptResult: true}
-	failedCore := !result.Succeeded && (input.StepID == StepImplement || input.StepID == StepReport)
+	if AuditStep(input.StepID) && (w.Config == nil || !AuditSource(w, input)) || PublicationStep(input.StepID) && !AuditsPassed(w) {
+		t.Status, t.Reason = "blocked", "audit source or publication gate is invalid"
+		return t
+	}
+	failedCore := !result.Succeeded && (input.StepID == StepImplement || input.StepID == StepReport || AuditStep(input.StepID))
 	if !failedCore && input.StepID != StepImplement && !result.ContentVerified {
 		t.AcceptResult = false
 		t.Status = "reconciling"
@@ -94,7 +99,47 @@ func Route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 			return t
 		}
 		t.ExpireQuestions = true
-		t.Next = &StageInput{StepID: StepPublish}
+		if w.Config != nil && len(w.Config.AuditSteps) > 0 {
+			t.Next = &StageInput{StepID: w.Config.AuditSteps[0], SourceCommandID: input.CommandID, SourceTurnID: result.TurnID}
+		} else {
+			t.Next = &StageInput{StepID: StepPublish}
+		}
+		return t
+	}
+	if AuditStep(input.StepID) {
+		if report.Verdict == "changes_requested" {
+			if w.RepairCount >= w.Config.MaximumRepairCycles {
+				t.Status, t.Reason = "blocked", "audit_repair_limit"
+				return t
+			}
+			findings := []Finding{}
+			for _, finding := range report.Findings {
+				if finding.Severity != "P3" {
+					findings = append(findings, finding)
+				}
+			}
+			t.Repair = true
+			t.Next = &StageInput{StepID: StepImplement, SourceCommandID: input.CommandID, SourceTurnID: result.TurnID, RepairFindings: findings}
+			return t
+		}
+		current := w
+		current.Audits = append(append([]AuditRecord(nil), w.Audits...), AuditRecord{StepID: input.StepID, SourceCommandID: input.SourceCommandID, Verdict: report.Verdict})
+		for index, step := range w.Config.AuditSteps {
+			if step != input.StepID {
+				continue
+			}
+			if index+1 < len(w.Config.AuditSteps) {
+				t.Next = &StageInput{StepID: w.Config.AuditSteps[index+1], SourceCommandID: input.SourceCommandID, SourceTurnID: input.SourceTurnID}
+				return t
+			}
+			if !AuditsPassed(current) {
+				t.Status, t.Reason = "blocked", "audit sequence is incomplete"
+				return t
+			}
+			t.Next = &StageInput{StepID: StepPublish}
+			return t
+		}
+		t.Status, t.Reason = "blocked", "audit step is not in frozen workflow"
 		return t
 	}
 	if input.StepID == StepPublishReport && !PublicationSourceSucceeded(w, input) {

@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"os"
 	"path/filepath"
 	"testing"
@@ -46,6 +47,29 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	}
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
+	}
+	audited := m
+	audited.Driver = "development-audited"
+	audited.AuditModel = &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}
+	audited.Execution.Settings = json.RawMessage(`{"model":"executor","reasoning_effort":"medium"}`)
+	if err := audited.Validate(); err != nil {
+		t.Fatal("valid audited fixture rejected", err)
+	}
+	for _, mutate := range []func(*Manifest){
+		func(x *Manifest) { x.AuditModel = nil },
+		func(x *Manifest) { x.Execution.Settings = json.RawMessage(`{}`) },
+		func(x *Manifest) { x.AuditModel = &workflow.ModelSettings{Model: "executor"} },
+		func(x *Manifest) { x.Driver = "development-smoke" },
+		func(x *Manifest) { x.Execution.Adapter = "orca-terminal" },
+		func(x *Manifest) { x.CaseID = "default" },
+		func(x *Manifest) { x.RepeatIndex = 1 },
+		func(x *Manifest) { x.Stability = &StabilityConfig{} },
+	} {
+		x := audited
+		mutate(&x)
+		if x.Validate() == nil {
+			t.Fatal("invalid audited fixture was accepted", x)
+		}
 	}
 	for _, mutate := range []func(*Manifest){func(x *Manifest) { x.BaseBranch = "main" }, func(x *Manifest) { x.Publication.Repository = "other/repo" }, func(x *Manifest) { x.Level = "L1" }, func(x *Manifest) { x.RunnerSHA256 = "wrong" }, func(x *Manifest) { x.SpecPath = filepath.Dir(root) }, func(x *Manifest) {
 		x.Level = "L3"

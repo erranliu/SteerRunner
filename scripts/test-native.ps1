@@ -59,5 +59,10 @@ $taskScenario = Get-Content -LiteralPath (Join-Path $taskEvidence 'scenario.json
 if ($taskNative.schema -eq 'steerrunner-test/v2') {
     & $taskNative.stability.helper.path validate-result -manifest $taskManifestPath
     if ($LASTEXITCODE -ne 0) { throw 'Stability result lacks case assertions or confirmed cleanup' }
-} elseif (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped -or -not $taskScenario.merge_commit) { throw 'Live result lacks merge or confirmed cleanup' }
+} else {
+    if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped) { throw 'Live result lacks confirmed completion or cleanup' }
+    if ($taskNative.driver -eq 'development-audited') {
+        if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskScenario.merge_commit) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
+    } elseif (-not $taskScenario.merge_commit) { throw 'Live smoke lacks its verified merge' }
+}
 Write-Output $taskEvidence

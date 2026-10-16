@@ -4,6 +4,8 @@
 
 最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
+扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
+
 ## 1. 目标、依据与首版范围
 
 SteerRunner 接收固定 Spec、Plan、参考材料及执行配置，在指定本地或远端环境按 workflow 实现、验证、处理反馈并提交、推送、创建或复用 PR，输出可核验的执行结果。它可由用户独立使用，也可由 SteerLine 或其他调用方经同一 CLI 契约使用。

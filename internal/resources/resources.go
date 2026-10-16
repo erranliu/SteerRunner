@@ -10,6 +10,7 @@ import (
 	"sort"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
 var Version = "0.1.0-dev.1"
@@ -58,6 +59,7 @@ func Capabilities() any {
 		"resource_version": 1, "resource_digest": Digest(),
 		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
+		"workflows":             workflow.Catalog(),
 		"configuration_schemas": json.RawMessage(Read("settings.schema.json")),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
 		"commands":              []string{"version", "service start", "service status", "service stop", "capabilities", "inspect", "submit", "last-message", "events", "reply", "resume", "stop"},

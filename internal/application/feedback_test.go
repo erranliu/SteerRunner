@@ -13,11 +13,12 @@ import (
 func TestSRResumeWorkflowRetainsOriginalReportSource(t *testing.T) {
 	input := workflow.StageInput{CommandID: "old-report", AttemptID: "old-attempt", StepID: workflow.StepReport, Prompt: "old frozen prompt", SourceCommandID: "implementation", SourceTurnID: "implementation-turn", ReportToolPolicy: "original-policy"}
 	r := &runstate.Record{Allowed: true, PromptBodies: map[string]string{workflow.StepReport: "Report the original result."}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{SnapshotPath: "spec.md"}}, {MaterialView: contracts.MaterialView{SnapshotPath: "plan.md"}}}}
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 1}
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepReport, StageInputs: []workflow.StageInput{{CommandID: "implementation", StepID: workflow.StepImplement}, input}, StageResults: []workflow.StageResult{{CommandID: "implementation", StepID: workflow.StepImplement, TurnID: "implementation-turn", Succeeded: true, FinalVerified: true, Final: "verified original result"}}}
 	r.Snapshot.PendingTurn = &b.TurnInput{CommandID: "old-report"}
 	preservePendingStage(r)
-	if r.NextStage == nil || r.NextStage.CommandID != "" || r.NextStage.Prompt != "" {
-		t.Fatal("pending report retained a stale command for the restored attempt")
+	if r.NextStage == nil || r.NextStage.CommandID != "" || r.NextStage.Prompt != input.Prompt {
+		t.Fatal("pending report lost its frozen prompt or retained a stale command")
 	}
 	// Control restores the same native session with a new Attempt before handing
 	// business continuation back to this helper.

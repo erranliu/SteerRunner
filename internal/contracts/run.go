@@ -2,11 +2,14 @@ package contracts
 
 import (
 	"encoding/json"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"net/url"
 	"path"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
+	"unicode"
 )
 
 type Repository struct {
@@ -31,9 +34,10 @@ type Documents struct {
 }
 
 type Workflow struct {
-	ID              string            `json:"id"`
-	Version         int               `json:"version"`
-	PromptOverrides map[string]string `json:"prompt_overrides,omitempty"`
+	ID              string                  `json:"id"`
+	Version         int                     `json:"version"`
+	PromptOverrides map[string]string       `json:"prompt_overrides,omitempty"`
+	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
 }
 
 type Target struct {
@@ -195,16 +199,37 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
-	if value.Workflow.ID != "development" || value.Workflow.Version != 1 {
-		return Fail(3, "unsupported_schema", "This executable defines development/1.")
+	profile, supported := workflow.Lookup(value.Workflow.ID, value.Workflow.Version)
+	if !supported {
+		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
+	}
+	var requestFields map[string]json.RawMessage
+	_ = json.Unmarshal(data, &requestFields)
+	var workflowFields map[string]json.RawMessage
+	_ = json.Unmarshal(requestFields["workflow"], &workflowFields)
+	if raw, present := workflowFields["audit_model"]; present {
+		if !profile.AuditModelRequired || value.Workflow.AuditModel == nil || !optionalStrings(raw, "model", "reasoning_effort") {
+			return invalid
+		}
+	}
+	if profile.AuditModelRequired {
+		model := value.Workflow.AuditModel
+		if model == nil || !plain(model.Model) || strings.TrimSpace(model.Model) != model.Model || strings.ContainsFunc(model.Model, unicode.IsControl) || !effort(model.ReasoningEffort) {
+			return invalid
+		}
+		if !slices.Contains(profile.SupportedAdapters, value.Execution.Adapter) || value.Execution.Target.Kind != "local" || value.Execution.Target.Environment != "" {
+			return Fail(3, "unsupported_capability", "The audited workflow requires local codex-app-server.")
+		}
+		var settings CodexSettings
+		if DecodeStrict(value.Execution.Settings, &settings) != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) {
+			return invalid
+		}
 	}
 	for step, body := range value.Workflow.PromptOverrides {
 		if strings.TrimSpace(body) == "" {
 			return invalid
 		}
-		switch step {
-		case "implement.execute", "implement.report", "publish", "publish.report":
-		default:
+		if !slices.Contains(profile.PromptSteps, step) {
 			return invalid
 		}
 	}

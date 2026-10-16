@@ -95,10 +95,18 @@ func (e *Engine) advance(id string, w *worker) bool {
 		}
 	}
 	if r.PendingResume != "" {
+		if err := validateWorkflow(r); err != nil {
+			e.failControl(id, r.PendingResume, err)
+			return false
+		}
 		return e.resumeRun(id, w, p)
 	}
 	if r.PendingPRURL != "" && r.StopStatus == "" {
 		return e.verifyPublication(id)
+	}
+	if err := validateWorkflow(r); err != nil {
+		e.block(id, "workflow_configuration", err, false)
+		return false
 	}
 	if r.PR == nil && len(r.PRClues) > 0 && r.StopStatus == "" && !time.Now().Before(r.PRClueProbeAt) {
 		return e.probePRClues(id)

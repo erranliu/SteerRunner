@@ -35,5 +35,9 @@ func TurnParams(ctx context.Context, input TurnParamsInput, linkedWorktreeArgs f
 			return nil, err
 		}
 	}
-	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, input.Model, input.ReasoningEffort, roots)
+	model, effort := input.Model, input.ReasoningEffort
+	if input.TurnInput.Model != "" {
+		model, effort = input.TurnInput.Model, input.TurnInput.ReasoningEffort
+	}
+	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, model, effort, roots)
 }

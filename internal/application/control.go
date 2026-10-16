@@ -63,41 +63,18 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 			e.failControl(id, command, errors.Join(err, errors.New("The original session or prior writers cannot be verified for resume: "+facts.Diagnostic)))
 			return false
 		}
-		if facts.ProcessAbsent {
+		// Wait for an actual input before replacing an idle attempt. A question
+		// answer must still be qualified against the original process/history.
+		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil || r.Status != "pr_ready" && r.Question == nil && r.Result != nil
+		if facts.ProcessAbsent && needsInput {
 			if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, false); err != nil {
 				e.failControl(id, command, err)
 				return false
 			}
-			previous := r.Snapshot.Clone()
-			r.Attempts = append(r.Attempts, runstate.Attempt{Snapshot: previous, EndedAt: time.Now().UTC()})
-			preservePendingStage(r)
-			r.Snapshot.Ref.AttemptID = contracts.NewID()
-			r.Snapshot.Ref.External = b.ProcessIdentity{}
-			r.Snapshot.Ref.Generation = ""
-			r.Snapshot.ResourceGeneration = contracts.NewID()
-			r.Snapshot.Session.AttemptID = r.Snapshot.Ref.AttemptID
-			r.Snapshot.Session.AttemptNumber++
-			r.Snapshot.Session.Generation = ""
-			r.Snapshot.Session.LastStoppedTurnID = r.Snapshot.Session.CurrentTurnID
-			r.Snapshot.PendingTurn = nil
-			r.Snapshot.Session.PendingCommandID = ""
-			r.Snapshot.Session.PendingTurnID = ""
-			r.Snapshot.Operations = nil
-			ctx, cancel = context.WithTimeout(e.ctx, 10*time.Second)
-			binding, err := p.BindRecovery(ctx, previous, r.Snapshot.Clone())
-			cancel()
-			if err != nil {
+			if err := e.restoreOriginalAttempt(r, w, p); err != nil {
 				e.failControl(id, command, err)
 				return false
 			}
-			r.Snapshot.Implementation = []b.ImplementationDataEnvelope{binding}
-			r.Snapshot.QuestionRoute = nil
-			r.Snapshot.PolicyResources = nil
-			if owner, ok := w.port.(b.LifecyclePreparationOwner); ok {
-				owner.ReleasePreparation()
-			}
-			w.port = nil
-			w.handle = nil
 		}
 	}
 	r.Allowed = true
@@ -198,6 +175,40 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	next.Diagnostic = e.redact(next, diagnostic)
 	_ = e.commitLocked(next, nil, "stop_"+next.StopStatus)
 	return false
+}
+
+// Called only after original-session/idle/writer-absence verification.
+func (e *Engine) restoreOriginalAttempt(r *runstate.Record, w *worker, p b.LifecyclePort) error {
+	previous := r.Snapshot.Clone()
+	r.Attempts = append(r.Attempts, runstate.Attempt{Snapshot: previous, EndedAt: time.Now().UTC()})
+	preservePendingStage(r)
+	r.Snapshot.Ref.AttemptID = contracts.NewID()
+	r.Snapshot.Ref.External = b.ProcessIdentity{}
+	r.Snapshot.Ref.Generation = ""
+	r.Snapshot.ResourceGeneration = contracts.NewID()
+	r.Snapshot.Session.AttemptID = r.Snapshot.Ref.AttemptID
+	r.Snapshot.Session.AttemptNumber++
+	r.Snapshot.Session.Generation = ""
+	r.Snapshot.Session.LastStoppedTurnID = r.Snapshot.Session.CurrentTurnID
+	r.Snapshot.PendingTurn = nil
+	r.Snapshot.Session.PendingCommandID = ""
+	r.Snapshot.Session.PendingTurnID = ""
+	r.Snapshot.Operations = nil
+	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
+	binding, err := p.BindRecovery(ctx, previous, r.Snapshot.Clone())
+	cancel()
+	if err != nil {
+		return err
+	}
+	r.Snapshot.Implementation = []b.ImplementationDataEnvelope{binding}
+	r.Snapshot.QuestionRoute = nil
+	r.Snapshot.PolicyResources = nil
+	if owner, ok := w.port.(b.LifecyclePreparationOwner); ok {
+		owner.ReleasePreparation()
+	}
+	w.port = nil
+	w.handle = nil
+	return nil
 }
 func (e *Engine) failControl(id, command string, err error) {
 	e.mu.Lock()

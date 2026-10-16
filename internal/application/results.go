@@ -79,6 +79,22 @@ func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 	r.Snapshot.PendingTurn = nil
 	r.Workflow.StageResults = append(r.Workflow.StageResults, workflow.StageResult{CommandID: value.CommandID, AttemptID: r.Snapshot.Session.AttemptID, StepID: inputCopy.StepID, InputVersion: inputCopy.Version, TurnID: value.TurnID, Succeeded: value.Succeeded, FinalVerified: value.FinalVerified, Final: value.LastMessage, Failure: value.Failure, FinalDiagnostic: value.FinalDiagnostic, Outcome: value.NativeOutcome})
 	r.Workflow.ReportRetry = transition.ReportRetry
+	if r.Workflow.Config != nil && inputCopy.StepID == workflow.StepReport && transition.Report != nil && transition.Report.Outcome == "done" && transition.Next != nil {
+		r.Workflow.AuditReportCommandID = inputCopy.CommandID
+	}
+	if workflow.AuditStep(inputCopy.StepID) {
+		a := workflow.AuditRecord{StepID: inputCopy.StepID, SourceCommandID: inputCopy.SourceCommandID, CommandID: inputCopy.CommandID, TurnID: result.TurnID, Failure: transition.Reason}
+		if transition.Report != nil {
+			a.Verdict, a.Findings = transition.Report.Verdict, transition.Report.Findings
+		}
+		current := []workflow.AuditRecord{}
+		for _, prior := range r.Workflow.Audits {
+			if prior.StepID != a.StepID {
+				current = append(current, prior)
+			}
+		}
+		r.Workflow.Audits = append(current, a)
+	}
 	r.Diagnostic = transition.Reason
 	r.Question = nil
 	r.Snapshot.QuestionRoute = nil
@@ -103,9 +119,18 @@ func (e *Engine) finish(id string, value b.TurnEvidence) bool {
 		if r.Allowed && !r.ResumeRequired {
 			if err := queueInput(r, *transition.Next, ""); err != nil {
 				r.Status, r.Diagnostic = "blocked", err.Error()
+			} else if transition.Repair {
+				r.Workflow.RepairCount++
 			}
 		} else {
 			r.NextStage = transition.Next
+			if transition.Repair {
+				r.Workflow.RepairCount++
+			}
+			if transition.Next.StepID == workflow.StepImplement {
+				r.Workflow.Audits = nil
+				r.Workflow.AuditReportCommandID = ""
+			}
 			r.ResumeRequired = true
 			r.Phase = "next_stage_requires_resume"
 		}
@@ -136,6 +161,14 @@ func (e *Engine) verifyPublication(id string) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if err := validateWorkflow(r); err != nil {
+		e.block(id, "workflow_configuration", err, false)
+		return false
+	}
+	if !workflow.AuditsPassed(r.Workflow) {
+		e.block(id, "audit_incomplete", errors.New("Publication lacks current audit passes"), false)
+		return false
+	}
 	provider, err := providerFor(r)
 	if err != nil {
 		e.block(id, "pr_configuration", err, false)

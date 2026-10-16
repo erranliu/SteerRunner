@@ -122,9 +122,17 @@ func TestSROperationV2Compatibility(t *testing.T) {
 				settled := compatibilityRecord(t, dir)
 				index := len(original.Intents) - 1
 				// Compare the original durable request, including input, digest, key
-				// and full binding. Only the outcome is allowed to change.
+				// and full binding. Only status and a verified original stop
+				// progress receipt may change as the outcome is reconciled.
 				want := original.Intents[index].Request
 				want.Operation.Status = b.OperationConfirmed
+				if len(settled.Intents) == len(original.Intents) && len(settled.Intents[index].Request.Operation.Receipt) > 0 {
+					var progress b.LifecycleReceipt
+					if err := json.Unmarshal(settled.Intents[index].Request.Operation.Receipt, &progress); err != nil || progress.ValidateFor(original.Intents[index].Request) != nil || progress.Disposition != b.OperationConfirmed || !progress.State.WritersAbsent {
+						t.Fatal("upgraded stop progress lacks its original binding or writer absence")
+					}
+					want.Operation.Receipt = settled.Intents[index].Request.Operation.Receipt
+				}
 				if len(settled.Intents) != len(original.Intents) || !reflect.DeepEqual(settled.Intents[index].Request, want) || settled.PendingStop != "" || settled.Intents[index].Receipt == nil || !settled.Intents[index].Receipt.State.WritersAbsent {
 					t.Fatal("upgraded stop replaced its original request or failed to prove writer absence")
 				}

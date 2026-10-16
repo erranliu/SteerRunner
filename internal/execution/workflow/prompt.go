@@ -28,6 +28,10 @@ func RenderPromptWithBody(step string, facts any, body string) (string, error) {
 		text = publishPrompt
 	case StepPublishReport:
 		text = PublishReportPrompt
+	case StepAuditSpec:
+		text = "Audit the current implementation against the frozen Spec and Plan. Report only evidenced deviations. Do not repair, commit or publish."
+	case StepAuditCode:
+		text = "Audit the current code for correctness, regressions, edge cases, tests and evidenced security issues. Do not repair, commit or publish."
 	default:
 		return "", errors.New("no automatic prompt for this step")
 	}
@@ -60,7 +64,7 @@ func RenderPromptWithBody(step string, facts any, body string) (string, error) {
 	} else if string(raw) != "{}" && string(raw) != "null" {
 		text += "\nDiagnostics:\n" + string(raw)
 	}
-	if step == StepReport || PublicationStep(step) {
+	if step == StepReport || PublicationStep(step) || AuditStep(step) {
 		text += "\n" + ResultInstruction(step)
 	}
 	return text, nil

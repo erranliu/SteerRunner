@@ -34,13 +34,32 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 		e.failControl(id, answer.CommandID, errors.New("The original session is not verifiably idle and available for feedback"))
 		return false
 	}
-	step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: "implement", Continue: true})
+	if facts.ProcessAbsent {
+		if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, unknown(r)); err != nil {
+			e.failControl(id, answer.CommandID, err)
+			return false
+		}
+		if err := e.restoreOriginalAttempt(r, w, p); err != nil {
+			e.failControl(id, answer.CommandID, err)
+			return false
+		}
+	}
+	option := "implement"
+	if businessAnswer && workflow.AuditStep(r.Workflow.StepID) {
+		option = ""
+	}
+	step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: option, Continue: true})
 	if err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false
 	}
 	r.Workflow.ReportRetry = retry
-	if err := queueInput(r, workflow.StageInput{StepID: step, FeedbackDecisionID: answer.CommandID}, answer.Text); err != nil {
+	stage := workflow.StageInput{StepID: step, FeedbackDecisionID: answer.CommandID}
+	if workflow.AuditStep(step) {
+		stage = workflow.FeedbackInput(r.Workflow)
+		stage.FeedbackDecisionID = answer.CommandID
+	}
+	if err := queueInput(r, stage, answer.Text); err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false
 	}
@@ -66,7 +85,6 @@ func preservePendingStage(r *runstate.Record) {
 		if prior := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID); prior != nil {
 			copy := *prior
 			copy.CommandID = ""
-			copy.Prompt = ""
 			r.NextStage = &copy
 		}
 	}
@@ -82,12 +100,20 @@ func resumeWorkflow(r *runstate.Record) error {
 			return err
 		}
 	} else if r.Status != "pr_ready" && r.Question == nil && r.Snapshot.PendingTurn == nil && r.Result != nil {
-		step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Continue: true, Option: "implement"})
+		option := "implement"
+		if workflow.AuditStep(r.Workflow.StepID) {
+			option = ""
+		}
+		step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Continue: true, Option: option})
 		if err != nil {
 			return err
 		}
 		r.Workflow.ReportRetry = retry
-		if err := queueInput(r, workflow.StageInput{StepID: step}, ""); err != nil {
+		stage := workflow.StageInput{StepID: step}
+		if workflow.AuditStep(step) {
+			stage = workflow.FeedbackInput(r.Workflow)
+		}
+		if err := queueInput(r, stage, ""); err != nil {
 			return err
 		}
 	} else if r.Status != "pr_ready" && r.Question == nil {

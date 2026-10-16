@@ -91,6 +91,18 @@ func (r *Record) View() contracts.RunView {
 	s := r.Snapshot
 	v.Final = r.LastFinal
 	v.Execution = contracts.ExecutionView{AttemptID: s.Session.AttemptID, TurnStarted: r.NativeStarted, Generation: s.ResourceGeneration, Backend: string(s.Ref.Backend), Protocol: string(s.Ref.Protocol), SessionID: s.Session.SessionID, TurnID: s.Session.CurrentTurnID}
+	if len(r.Workflow.StageInputs) > 0 {
+		input := r.Workflow.StageInputs[len(r.Workflow.StageInputs)-1]
+		v.Execution.RequestedModel, v.Execution.RequestedReasoningEffort = input.Model, input.ReasoningEffort
+	}
+	if r.Workflow.AuditModel != nil {
+		v.Audit = &contracts.AuditView{Model: r.Workflow.AuditModel.Model, ReasoningEffort: r.Workflow.AuditModel.ReasoningEffort, RepairCount: r.Workflow.RepairCount, Results: []workflow.AuditRecord{}}
+		for _, a := range r.Workflow.Audits {
+			if a.SourceCommandID == r.Workflow.AuditReportCommandID {
+				v.Audit.Results = append(v.Audit.Results, a)
+			}
+		}
+	}
 	if r.WorkspaceFact != nil {
 		v.Execution.Workspace, v.Execution.Branch, v.Execution.WorkspaceScope = r.WorkspaceFact.Worktree, r.WorkspaceFact.Branch, r.WorkspaceFact.InspectionScope
 	}
