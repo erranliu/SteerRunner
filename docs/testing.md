@@ -42,14 +42,25 @@ L2 当前原生资格固定 Codex 0.159.2；配置 `codex_executable` 为实际 
 `remote_model`、`remote_reasoning_effort`、`remote_args`；`remote_model` 显式留空表示采用
 远端 Codex 的原生默认模型和 effort，与手动运行 `codex` 一致。省略该字段才继承共用 model。
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
-项目。两端须具备自身 Git/GitHub 登录，不从调用方复制认证，也不修改全局权限配置。
+项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
+本机 GitHub worker 默认使用执行主机已有 gh 登录的受限认证代理。OAuth 只在可信
+runtime 内存中，worker 只继承随机单仓库 capability，一小时到期、退出即失效。
+Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_UNIX 接口；原工具
+仍在 MXC 内执行，原 GitHub URL 保持。socket 位于已有 Git 写入根，证书不安装到系统。
+代理仅允许目标仓库的 Git 上传/下载、身份/仓库只读查询和 PR 查询/创建；禁止其它
+仓库、管理接口、未知 GraphQL 及重定向。可选 `execution.settings.github_auth` 使用
+App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 App 才能测试。
+宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
+参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
 省略 `remote_args` 或设为空时，使用远端原生权限配置。如果明确选择一次测试的原生参数，
 在配置中填写 `remote_args`，这些参数会冻结到 manifest，不能把不同配置的运行合并为
 同一通过结果。已验证支持 MXC 的 Windows 主机可显式配置
-`["--no-daemon","--strict-config","-c","windows.sandbox=mxc","-c","approvals_reviewer=auto_review"]`：
-使用独立原生进程、选择原生沙箱和自动审核，不写全局配置，不自动批准被拒绝的命令。
-示例配置采用此组合。先按
+`["--no-daemon","--strict-config","-c","windows.sandbox=mxc","-c","approval_policy=never","-c","approvals_reviewer=user"]`：
+使用独立原生进程和原生沙箱，拒绝沙箱外审批，不写全局配置。
+示例配置采用此组合。当前 Orca terminal 适配器尚无可信执行主机认证准备及同沙箱
+确定性命令能力，GitHub worker 在任何业务输入前明确 unsupported；配置这些原生参数
+不等于补齐该能力，远端真机及稳定性本次尚未验收。先按
 [官方兼容性探针](https://learn.chatgpt.com/docs/windows/windows-sandbox)验证主机支持。
 采用原生默认模型时可使用这些参数；指定 model 时，启动编译器拒绝额外 `-c` 覆盖。
 出现交互权限确认、原生拒绝或 shell 初始化失败时保留失败；手动诊断中的单次确认
@@ -92,8 +103,13 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许明确列出的两个 subprocess helper 和三个显式
-Orca 取证入口 skip；这些 skip 不计真机通过。
+禁止重复创建。L1 只允许明确列出的两个 subprocess helper、三个显式 Orca 取证入口及一个
+显式 MXC 工具环境诊断 skip；这些 skip 不计真机通过。后者用
+`go test ./internal/execution/adapters/codex -run '^TestAuthenticationNativeToolBoundary$' -v -count=1 -args -sandbox-auth-native=<Codex绝对路径>`
+单独执行，使用无效受控 canary，不运行模型、不证明真实认证/发布。
+同一命令增加 `-sandbox-auth-host-broker=true` 可在全新诊断现场使用宿主登录的受限代理，
+验证真实 MXC 的 Git/gh 只读能力；仍零业务输入、不证明 push/PR 创建。此入口保留原进程
+身份、准备事实和关闭计数，不导出宿主 token。
 
 未满足冻结 case 预期的失败、超时、unknown、unsupported、缺 final 均不通过；不可达停止
 的 `revoked-unverified` 按其故障窗口契约独立判定，不冒充停止确认或业务交付。清理未确认

@@ -41,8 +41,9 @@ type AskReply struct {
 
 type ThreadReceipt struct {
 	Thread struct {
-		ID  string `json:"id"`
-		Cwd string `json:"cwd"`
+		ID   string `json:"id"`
+		Cwd  string `json:"cwd"`
+		Path string `json:"path,omitempty"`
 	} `json:"thread"`
 }
 

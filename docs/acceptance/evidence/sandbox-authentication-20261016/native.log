@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:471: original execution needs intervention: status=blocked phase=operation_rejected diagnostic=authentication_reference_missing: configure a repository-scoped GitHub App on the execution host
+--- FAIL: TestSRLiveScenario (38.60s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (38.52s)
+FAIL

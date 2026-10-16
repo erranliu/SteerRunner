@@ -283,6 +283,9 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 	if err := l.validate(s); err != nil {
 		return b.PreparationFacts{}, err
 	}
+	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
+		return b.PreparationFacts{}, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "remote_sandbox_authentication_unsupported: Orca terminal transport has no trusted execution-host credential preparation and deterministic same-sandbox command capability; zero business input"}
+	}
 	if s.Workspace.Path == "" {
 		return b.PreparationFacts{Workspace: b.GateRequired, Resource: b.GateUnverified, Session: b.GateUnverified}, nil
 	}
@@ -390,6 +393,9 @@ func nativeRequest(operation string) string {
 func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
+	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
+		return receipt, errors.New("remote_sandbox_authentication_unsupported: no trusted same-sandbox credential readiness; zero business input")
+	}
 	state, err := l.state(s)
 	if err != nil {
 		return receipt, err
@@ -426,6 +432,9 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
+	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
+		return receipt, errors.New("remote_sandbox_authentication_unsupported: no trusted same-sandbox credential readiness; zero business input")
+	}
 	state, err := l.state(s)
 	if err != nil {
 		return receipt, err

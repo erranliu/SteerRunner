@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -79,6 +80,12 @@ func encode(v any) []byte { b, _ := json.Marshal(v); return append(b, '\n') }
 
 func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input executionbackend.TurnInput) (handle *SessionHandle, receipt Binding, err error) {
 	receipt = fixed
+	credentialPrepared := false
+	defer func() {
+		if err != nil && fixed.Process == nil && credentialPrepared {
+			b.Config.Authentication.Close()
+		}
+	}()
 	if !executionbackend.StableExecutionID(input.CommandID) || input.Prompt == "" || b.Config.Workspace == "" || b.Config.Executable == "" || fixed.SessionID != "" && !ValidNativeID(fixed.SessionID) {
 		return nil, receipt, errors.New("app-server worker turn lacks its fixed workspace or command")
 	}
@@ -97,10 +104,37 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		if err != nil {
 			return nil, receipt, err
 		}
+		workerSetup.Auth = b.Config.Authentication
+		if workerSetup.Auth != nil {
+			if err = workerSetup.Auth.prepare(ctx); err != nil {
+				return nil, receipt, preparationBlocked(err)
+			}
+			credentialPrepared = true
+			if workerSetup.Auth.broker != nil {
+				if err = workerSetup.Auth.broker.installPublicCA(workerSetup.Temp); err != nil {
+					return nil, receipt, preparationBlocked(err)
+				}
+				roots, _ := WritableRoots(input.LinkedWorktreeArgs)
+				if err = workerSetup.Auth.broker.installAPITransport(workerSetup.Temp, roots); err != nil {
+					return nil, receipt, preparationBlocked(err)
+				}
+			}
+		}
 	}
 	paths, err := PrepareTurn(b.Config.RunDir, b.Config.RunID, input.CommandID, b.Config.ServerDir, input.Prompt, b.Process.WriteAtomic)
 	if err != nil {
 		return nil, receipt, err
+	}
+	if auth := b.Config.Authentication; auth != nil {
+		auth.mu.Lock()
+		auth.onClose = func(revoked bool) {
+			facts := map[string]any{"revocation_confirmed": revoked, "checked_at": time.Now().UTC(), "expires_at": auth.expires, "repository": auth.repository}
+			if auth.broker != nil {
+				facts["broker"] = auth.broker.facts()
+			}
+			_ = b.Process.WriteAtomic(filepath.Join(b.Config.ServerDir, "authentication-cleanup.json"), encode(facts))
+		}
+		auth.mu.Unlock()
 	}
 	h := &SessionHandle{Binding: fixed, Paths: paths, input: input}
 	defer func() {
@@ -143,6 +177,12 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		return nil, receipt, err
 	}
 	if fixed.SessionID == "" {
+		if err = b.verifySandboxReadiness(ctx, h, input); err != nil {
+			// No thread/input was created. Retain the original owned handle so
+			// the center can record and settle this process tree through W18.
+			h.owned = false
+			return h, receipt, preparationBlocked(err)
+		}
 		params, paramErr := ThreadParams(b.Config.Workspace, b.Config.Sandbox, b.Config.Model, []any{codexapp.AskDynamicTool()})
 		if paramErr != nil {
 			return nil, receipt, paramErr
@@ -171,6 +211,9 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executionbackend.TurnInput, linkedArgs []string) (*Observation, string, error) {
 	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
 		return nil, "", errors.New("app-server turn changed its prepared request identity or input")
+	}
+	if err := b.verifySandboxReadiness(ctx, h, input); err != nil {
+		return nil, "", preparationBlocked(err)
 	}
 	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return linkedArgs, nil })
 	if err != nil {

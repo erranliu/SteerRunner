@@ -1,0 +1,12 @@
+{
+  "business_inputs": 0,
+  "credential": "controlled-invalid-canary",
+  "process": {
+    "kind": "os",
+    "pid": 29620,
+    "created": "01dd5d241a68a22a",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "process_state": "process absent",
+  "revocation_confirmed": true
+}

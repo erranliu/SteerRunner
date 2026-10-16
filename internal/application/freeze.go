@@ -140,7 +140,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			r.Request.Workflow.AuditModel = &model
 		}
-		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
+		var auth *codex.AuthenticationConfig
+		if settings.GitHubAuth != nil {
+			auth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
+			if err := auth.Validate(); err != nil {
+				return nil, contracts.Fail(2, "invalid_input", err.Error())
+			}
+		}
+		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, GitHubAuth: auth})
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)

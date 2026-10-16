@@ -76,6 +76,11 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	if err != nil {
 		return identity, nil, "", err
 	}
-	go func() { _ = cmd.Wait() }()
+	go func() {
+		_ = cmd.Wait()
+		if config.Runtime != nil && config.Runtime.Auth != nil {
+			config.Runtime.Auth.Close()
+		}
+	}()
 	return identity, cmd.Process, endpoint, nil
 }

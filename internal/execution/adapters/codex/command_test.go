@@ -15,14 +15,14 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 			options.ReasoningEffort = "high"
 		}
 		command, err := ManagedCommand(options)
-		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "auto_review") || !strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=mxc") {
+		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "approval_policy=never") || !strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=mxc") {
 			t.Fatalf("permissions not frozen: %v / %v", command, err)
 		}
 		if model == "" && strings.Contains(strings.Join(command.Args, " "), "--model") {
 			t.Fatal("default model was overwritten")
 		}
 	}
-	for _, args := range [][]string{{"-a", "on-request"}, {"--ask-for-approval=on-request"}, {"-sworkspace-write"}, {"-c", "windows.sandbox=mxc"}, {"-capproval_policy=never"}, {"--config=model='x'"}, {"--config", "sandbox_workspace_write.writable_roots=['C:/']"}, {"--profile=x"}, {"-p", "x"}, {"--add-dir=C:/"}, {"-C", "C:/"}, {"exec"}, {"--dangerously-bypass-approvals-and-sandbox"}, {"--approve-for-me"}, {"--remote", "ws://localhost"}, {"--worktree"}} {
+	for _, args := range [][]string{{"-a", "never"}, {"--ask-for-approval=on-request"}, {"-sworkspace-write"}, {"-c", "windows.sandbox=mxc"}, {"-capproval_policy=never"}, {"--config=model='x'"}, {"--config", "sandbox_workspace_write.writable_roots=['C:/']"}, {"--profile=x"}, {"-p", "x"}, {"--add-dir=C:/"}, {"-C", "C:/"}, {"exec"}, {"--dangerously-bypass-approvals-and-sandbox"}, {"--approve-for-me"}, {"--remote", "ws://localhost"}, {"--worktree"}} {
 		options := base
 		options.Args = args
 		if _, err := ManagedCommand(options); err == nil {

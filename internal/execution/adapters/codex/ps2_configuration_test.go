@@ -47,19 +47,19 @@ func TestPS2NativeResourceRejectsApprovalChanges(t *testing.T) {
 	}
 }
 
-func TestPS2NativeLaunchAndInputUseAutomaticReview(t *testing.T) {
+func TestPS2NativeLaunchAndInputForbidEscalation(t *testing.T) {
 	for _, host := range []string{"local", "orca"} {
 		permissions, err := NativePermissions("windows", host, "codex")
 		if err != nil {
 			t.Fatal(err)
 		}
 		args := strings.Join(permissions.Args(), " ")
-		for _, setting := range []string{"sandbox_mode=workspace-write", "windows.sandbox=mxc", "approval_policy=on-request", "approvals_reviewer=auto_review", "network_access=true", "exclude_tmpdir_env_var=true", "exclude_slash_tmp=true"} {
+		for _, setting := range []string{"sandbox_mode=workspace-write", "windows.sandbox=mxc", "approval_policy=never", "approvals_reviewer=user", "network_access=true", "exclude_tmpdir_env_var=true", "exclude_slash_tmp=true"} {
 			if !strings.Contains(args, setting) {
 				t.Fatal("missing", setting, args)
 			}
 		}
-		for _, forbidden := range []string{"=elevated", "=unelevated", "danger-full-access", "approval_policy=never"} {
+		for _, forbidden := range []string{"=elevated", "=unelevated", "danger-full-access", "auto_review", "approval_policy=on-request"} {
 			if strings.Contains(args, forbidden) {
 				t.Fatal("unexpected fallback", args)
 			}
@@ -74,7 +74,7 @@ func TestPS2NativeLaunchAndInputUseAutomaticReview(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, params := range []map[string]any{thread, turn} {
-		if params["approvalPolicy"] != "on-request" || params["approvalsReviewer"] != "auto_review" {
+		if params["approvalPolicy"] != "never" || params["approvalsReviewer"] != "user" {
 			t.Fatal("input changed native reviewer", params)
 		}
 	}

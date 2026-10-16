@@ -43,6 +43,7 @@ if ($taskScenario.target -eq 'local-codex') {
     $taskVersion = (& $taskCodex --version | Out-String).Trim()
     if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
     $taskExecution = @{adapter='codex-app-server'; target=@{kind='local'}; settings=@{executable=$taskCodex; model=(Read-Setting 'model'); reasoning_effort=(Read-Setting 'reasoning_effort' 'medium')}}
+    if ($taskConfig.PSObject.Properties['github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.github_auth }
 } elseif ($taskScenario.target -eq 'orca-environment') {
     $taskOrca = Read-Setting 'orca_executable'
     $taskEnvironment = Read-Setting 'orca_environment'
@@ -117,20 +118,9 @@ if ($taskStability) {
         $taskText = [IO.File]::ReadAllText((Join-Path $taskRepo ('tests/fixtures/evidence-stability/' + $taskName)))
         [IO.File]::WriteAllText((Join-Path $taskToolDir $taskName),$taskText,[Text.UTF8Encoding]::new($true))
     }
-    $taskText = [IO.File]::ReadAllText((Join-Path $taskToolDir 'spec.md'))
-    $taskText += "`nThe checker and publisher contain bounded test gates. Run each exact command once and wait for completion. The test controller owns gate release; never change or bypass gates, retry a pending command, or start a second checker. Keep the original terminal/session open. Gate timeout is a real source failure.`n"
-    [IO.File]::WriteAllText((Join-Path $taskToolDir 'spec.md'),$taskText,[Text.UTF8Encoding]::new($false))
-    $taskPlanText=[IO.File]::ReadAllText((Join-Path $taskToolDir 'plan.md'))
-    $taskPlanText+="`nFor the exact fixed publication command, request the configured native automatic review BEFORE its first execution: it requires Git/GitHub network access outside the native sandbox. Wait for the review outcome. Do not execute the publisher sandboxed first, do not retry a denied review, and do not alter permissions, authentication or command scope. A denial or unavailable review remains a blocker. The publisher itself must execute only once.`n"
-    [IO.File]::WriteAllText((Join-Path $taskToolDir 'plan.md'),$taskPlanText,[Text.UTF8Encoding]::new($false))
     $taskGate = if ($Scenario -eq 'orca-remote.publication-unknown') { 'publication' } elseif ($Scenario -eq 'orca-remote.caller-exit') { 'none' } else { 'implementation' }
     Write-JSON (Join-Path $taskToolDir 'stability.json') @{fixture_id=$taskID;case_id=$Case;gate=$taskGate;gate_timeout_seconds=600}
     [IO.File]::AppendAllText((Join-Path $taskRepository '.gitignore'),"`n.sr-stability-*/`n",[Text.UTF8Encoding]::new($false))
-}
-if (-not $taskStability -and $taskScenario.target -eq 'orca-environment') {
-    $taskPlanText=[IO.File]::ReadAllText((Join-Path $taskToolDir 'plan.md'))
-    $taskPlanText+="`nFor the exact fixed publication command, request the configured native automatic review before its first execution because Git/GitHub network access is required outside the native sandbox. Wait for the native decision; denial or unavailable review remains a blocker. Preserve authentication and permissions. Feedback continues on the original session, branch and PR.`n"
-    [IO.File]::WriteAllText((Join-Path $taskToolDir 'plan.md'),$taskPlanText,[Text.UTF8Encoding]::new($false))
 }
 $taskQuery = Join-Path $taskRoot 'bin/query-pr.ps1'
 Copy-Item -LiteralPath (Join-Path $taskTemplates 'query-pr.ps1') -Destination $taskQuery

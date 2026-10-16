@@ -8,5 +8,5 @@
   "remote_agent": "codex",
   "remote_model": "",
   "remote_reasoning_effort": "",
-  "remote_args": ["--no-daemon", "--strict-config", "-c", "windows.sandbox=mxc", "-c", "approvals_reviewer=auto_review"]
+  "remote_args": ["--no-daemon", "--strict-config", "-c", "windows.sandbox=mxc", "-c", "approval_policy=never", "-c", "approvals_reviewer=user"]
 }

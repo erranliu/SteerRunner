@@ -57,13 +57,22 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 	processEnv := func(base []string) []string {
 		return lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, setup.BlockedEnvironment)
 	}
+	var authentication *AuthenticationRuntime
+	if strings.Contains(strings.ToLower(setup.RepositoryURL), "github.com") {
+		authentication, err = newAuthentication(profile.GitHubAuth, setup.RepositoryURL)
+		if err != nil {
+			return nil, err
+		}
+	} else if profile.GitHubAuth != nil {
+		return nil, errors.New("github_auth does not match the fixed repository")
+	}
 	backend := Backend{
 		Config: Config{
 			Executable: profile.Executable, Args: []string(nil),
 			Profile: "", Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox,
 			Model: profile.Model, ReasoningEffort: profile.ReasoningEffort, Workspace: snapshot.Ref.WorkspacePath,
 			RunDir: setup.RunDirectory, RunID: snapshot.Session.WorkflowRunID, ServerDir: serverDir,
-			Environment: processEnv, WorkerRuntime: true,
+			Environment: processEnv, WorkerRuntime: true, Authentication: authentication, RemoteName: setup.RemoteName,
 		},
 		Process: ProcessPort{
 			Start: setup.ProcessHost.StartManaged, Inspect: setup.ProcessHost.InspectProcess,
@@ -495,7 +504,7 @@ func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request execution
 	if l.Backend.Process.Inspect(&ref.External) == "process absent" {
 		handle.Close()
 		result.Disposition, result.State.Stopped = executionbackend.OperationConfirmed, true
-		return result, nil
+		return result, l.closeAuthentication()
 	}
 	handle.Kill()
 	ticker := time.NewTicker(40 * time.Millisecond)
@@ -504,7 +513,7 @@ func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request execution
 		if l.Backend.Process.Inspect(&ref.External) == "process absent" {
 			handle.Close()
 			result.Disposition, result.State.Stopped = executionbackend.OperationConfirmed, true
-			return result, nil
+			return result, l.closeAuthentication()
 		}
 		select {
 		case <-ctx.Done():
@@ -654,6 +663,9 @@ func (l *ExecutionLifecycle) prepareSession(ctx context.Context, snapshot execut
 	}
 	if prepareErr != nil {
 		receipt.Disposition = executionbackend.OperationUnknown
+		if isPreparationBlocked(prepareErr) {
+			receipt.Disposition = executionbackend.OperationRejected
+		}
 		receipt.Diagnostic = prepareErr.Error()
 		if handle != nil {
 			receipt.Handle = handle.Detach()
@@ -709,6 +721,9 @@ func (l *ExecutionLifecycle) startTurn(ctx context.Context, snapshot executionba
 		receipt.State.SessionID = binding.SessionID
 		receipt.State.SessionGeneration = binding.Generation
 		receipt.Disposition, receipt.Diagnostic = executionbackend.OperationUnknown, err.Error()
+		if isPreparationBlocked(err) {
+			receipt.Disposition = executionbackend.OperationRejected
+		}
 		if binding.Process != nil {
 			process := *binding.Process
 			receipt.Process = &process
@@ -733,6 +748,9 @@ func (l *ExecutionLifecycle) startTurn(ctx context.Context, snapshot executionba
 	}
 	if startErr != nil {
 		receipt.Disposition, receipt.Diagnostic = executionbackend.OperationUnknown, startErr.Error()
+		if isPreparationBlocked(startErr) {
+			receipt.Disposition = executionbackend.OperationRejected
+		}
 		if handle != nil {
 			receipt.Handle = handle.Detach()
 		}
