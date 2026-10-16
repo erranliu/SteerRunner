@@ -1,0 +1,128 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+  "source_dirty": true,
+  "started_at": "2026-10-16T07:27:38.8727269Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestAuthenticationNativeToolBoundary",
+        "TestServiceStopWorkerHelper"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\framework",
+      "native_driver_compile_exit": 0,
+      "test_count": 207,
+      "native_zero_match_guard": true,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02",
+      "level": "L1",
+      "exit_code": 0
+    },
+    {
+      "level": "Controlled",
+      "scenario_count": 15,
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\controlled"
+    },
+    {
+      "finished_at": "2026-10-16T07:46:12.908792Z",
+      "started_at": "2026-10-16T07:39:36.8456974Z",
+      "expected_outcome": "merged",
+      "case_id": "default",
+      "level": "L3",
+      "identity": {
+        "pid": 23704,
+        "manifest_sha256": "7aa58c604ad0f8c69fb0a1a3d0c8663a3ce1f075c7ff3a1634f31a54b322404e",
+        "driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.feedback",
+        "level": "L3"
+      },
+      "resources": [
+        "root:C:\\srt\\cd869b9a1e02",
+        "base:codex/srtest/cd869b9a1e02/base",
+        "run:b80a405e772c3cb93c5dc21281893d8e",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/335"
+      ],
+      "manifest": "C:\\srt\\cd869b9a1e02\\manifest.json",
+      "evidence": "C:\\srt\\cd869b9a1e02\\evidence",
+      "scenario": "local-codex.feedback",
+      "status": "passed",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\local-codex.feedback-default-r1-fixture.json"
+    },
+    {
+      "level": "L3",
+      "case_id": "default",
+      "finished_at": "2026-10-16T07:45:46.9644996Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\local-codex.audited-default-r1-fixture.json",
+      "status": "failed",
+      "scenario": "local-codex.audited",
+      "evidence": "C:\\srt\\e644499678e9\\evidence",
+      "error": "The property 'merge_commit' cannot be found on this object. Verify that the property exists.",
+      "started_at": "2026-10-16T07:39:36.8456003Z",
+      "manifest": "C:\\srt\\e644499678e9\\manifest.json",
+      "repeat_index": 1
+    },
+    {
+      "finished_at": "2026-10-16T07:52:42.5602553Z",
+      "started_at": "2026-10-16T07:45:48.073138Z",
+      "expected_outcome": "pr_ready",
+      "case_id": "default",
+      "level": "L3",
+      "identity": {
+        "pid": 45256,
+        "manifest_sha256": "830731821e9442ae8297ab674a858388c36fd9836ad7a54d2194adc2bec2914b",
+        "driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.multirun",
+        "level": "L3"
+      },
+      "resources": [
+        "root:C:\\srt\\523c02855a9c",
+        "base:codex/srtest/523c02855a9c/base",
+        "run:8d87070ac2d0d28b89b08055d70f6070",
+        "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\ylvcccbcaqv44xf4tveksnff44",
+        "session:01a143ad-48a0-7b21-94f9-466b50d314b9",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/339",
+        "run:07299a6a68ea6709ee87286ebbd3ccee",
+        "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\pypqrl6sce6uybeul4dhxmhx7m",
+        "session:01a143ad-5730-72a1-901f-9d2385a25df3",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/338"
+      ],
+      "manifest": "C:\\srt\\523c02855a9c\\manifest.json",
+      "evidence": "C:\\srt\\523c02855a9c\\evidence",
+      "scenario": "local-codex.multirun",
+      "status": "passed",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\local-codex.multirun-default-r1-fixture.json"
+    }
+  ],
+  "executed_case_count": 3,
+  "passed_case_count": 2,
+  "first_pass_rate": 0.6666666666666666,
+  "max_parallel": 2,
+  "selected_scenarios": [
+    "local-codex.feedback",
+    "local-codex.audited",
+    "local-codex.multirun"
+  ],
+  "repeat": 1,
+  "planned_case_count": 3,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T07:52:42.6812832Z"
+}

@@ -1,0 +1,30 @@
+{
+  "driver": "development-core",
+  "feedback_qualification": {
+    "sha256": "8e16f58463658deb20a79e7612e0ba8234cdae5483f10475bb7df6e1f66b1b7d",
+    "path": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-03\\local-codex.feedback-default-r1-case.json"
+  },
+  "execution": {
+    "adapter": "codex-app-server",
+    "target": {
+      "kind": "local"
+    },
+    "settings": {
+      "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+      "reasoning_effort": "high",
+      "model": "gpt-6-luna"
+    }
+  },
+  "manifest_sha256": "6157950454f85339ea370d1b1d0d9d41754697465f4de8176fb713e69b8c2c14",
+  "feedback_head_absent": true,
+  "resources": [
+    "root:C:\\srt\\f0db28b15b91",
+    "base:codex/srtest/f0db28b15b91/base",
+    "run:00d9fa680098825f877ece8de9063c46",
+    "workspace:c:\\srt\\f0db28b15b91\\s\\workspaces\\kjpyty5ut474q6lzl2hqepp32i",
+    "session:01a143cc-9b5d-73e3-bc39-6c58dcb296ba",
+    "branch:codex/runner-00d9fa680098825f877ece8de9063c46",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/342"
+  ],
+  "scenario": "local-codex.smoke"
+}

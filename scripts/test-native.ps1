@@ -28,6 +28,10 @@ try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
     if ($LASTEXITCODE -ne 0) { throw 'Native driver build failed' }
 } finally { Pop-Location }
+if ($taskNative.driver -eq 'development-core') {
+    $taskProof = Get-Content -LiteralPath $taskNative.feedback_qualification.path -Raw | ConvertFrom-Json
+    if ($taskProof.identity.driver_sha256.ToLowerInvariant() -cne (Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Core smoke feedback qualification was produced by a different native driver build' }
+}
 function Quote-WindowsArgument([string]$Argument) { '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"' }
 $taskArguments = @($taskTestExe,"-test.run=$Pattern",'-test.v',("-test.timeout={0}m" -f $TimeoutMinutes),'-native-manifest',$taskManifestPath,'-evidence-dir',$taskEvidence)
 $taskCommandLine = ($taskArguments | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
@@ -70,21 +74,16 @@ if ($taskNative.schema -eq 'steerrunner-test/v2') {
     & $taskNative.stability.helper.path validate-result -manifest $taskManifestPath
     if ($LASTEXITCODE -ne 0) { throw 'Stability result lacks case assertions or confirmed cleanup' }
 } else {
-    if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped) { throw 'Live result lacks confirmed completion or cleanup' }
-    if ($taskNative.driver -eq 'environment-check') {
- $taskCheckEnvelope = Get-Content -LiteralPath (Join-Path $taskEvidence 'check-latest.json') -Raw | ConvertFrom-Json
- $taskCheck = $taskCheckEnvelope.data.check
- if (-not $taskCheckEnvelope.ok -or $taskCheck.check_id -ne $taskScenario.run_id -or $taskCheck.status -ne 'completed' -or $taskCheck.result -ne 'passed' -or $taskCheck.cleanup_status -ne 'completed' -or $taskCheck.input.execution.settings.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.approval_policy -ne 'never' -or -not $taskCheck.actual.session_id -or -not $taskCheck.actual.turn_id -or $taskCheck.resources.base_sha -ne $taskNative.base_revision -or $taskCheck.resources.head_sha -ne $taskScenario.original_head -or $taskCheck.resources.pr_url -ne $taskScenario.pr_url) { throw 'Original complete Check context/result does not match the frozen native case' }
- foreach ($taskField in @('pr_closed','base_deleted','head_deleted','writer_stopped','local_removed')) { if (-not $taskCheck.resources.$taskField) { throw "Unsettled original Check resource: $taskField" } }
- if (@($taskCheck.items).Count -ne 12) { throw 'Original native manifest is incomplete' }
- foreach ($taskItem in $taskCheck.items) {
-  if (-not $taskItem.required -or $taskItem.status -ne 'passed' -or @($taskItem.evidence).Count -eq 0) { throw 'Original native item lacks passed required evidence' }
-  foreach ($taskFact in $taskItem.evidence) { if (-not $taskFact.verified -or $taskFact.source -ne 'native_tool_and_owner_verification' -or $taskFact.check_id -ne $taskCheck.check_id -or $taskFact.session_id -ne $taskCheck.actual.session_id -or $taskFact.turn_id -ne $taskCheck.actual.turn_id -or $taskFact.nonce -ne $taskCheck.actual.nonce -or -not $taskFact.operation_id -or -not $taskFact.tool_call_id) { throw 'Original native evidence identity conflicts with its Check' } }
- }
-
- if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskMerge) { throw 'Environment check must verify and close its owned PR without merging' }
- } elseif ($taskNative.driver -eq 'development-audited') {
-        if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskMerge) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
-    } elseif (-not $taskMerge) { throw 'Live smoke lacks its verified merge' }
+    . (Join-Path $PSScriptRoot 'native-result.ps1')
+    Assert-SRNativeScenario $taskNative $taskResult $taskScenario
+    if($taskNative.driver -eq 'environment-check'){
+        $taskEnvelope=Get-Content -LiteralPath (Join-Path $taskEvidence 'check-latest.json') -Raw|ConvertFrom-Json
+        Assert-SREnvironmentScenario $taskNative $taskScenario $taskEnvelope
+    } elseif($taskNative.driver -eq 'development-audited'){
+        $taskView=Get-Content -LiteralPath (Join-Path $taskEvidence 'latest-run.json') -Raw|ConvertFrom-Json
+        $taskThread=Get-Content -LiteralPath (Join-Path $taskRoot ('s/runs/'+$taskScenario.run_id+'/app-server/thread.json')) -Raw|ConvertFrom-Json
+        $taskModels=Assert-SRAuditModels $taskNative $taskView $taskThread.thread.path
+        [IO.File]::WriteAllText((Join-Path $taskEvidence 'audit-models.json'),($taskModels|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
+    }
 }
 Write-Output $taskEvidence

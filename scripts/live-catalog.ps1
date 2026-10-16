@@ -13,7 +13,7 @@ function Get-SRLiveCases($Entry) {
     $taskCaseIDs = @($taskDefinition.cases | ForEach-Object { $_.id })
     if ($Entry.PSObject.Properties['cases']) {
         if (($Entry.cases -join ',') -cne ($taskCaseIDs -join ',')) { throw "Catalog has missing, duplicate or unknown cases for $($Entry.id)" }
-    } elseif ($Entry.driver -ne 'development-smoke') { throw "Stability scenario requires all registered cases: $($Entry.id)" }
+    } elseif ($taskCaseIDs.Count -ne 1 -or $taskCaseIDs[0] -cne 'default') { throw "Scenario requires all registered cases: $($Entry.id)" }
     return $taskDefinition.cases
 }
 function Test-SRAdminCase([string]$Scenario,[string]$Case) {

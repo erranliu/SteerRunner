@@ -117,6 +117,101 @@
       ]
     },
     {
+      "id": "local-codex.feedback",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "local-codex",
+      "timeout_minutes": 45,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready"
+        }
+      ]
+    },
+    {
+      "id": "controlled.permanent-evidence-loss",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgePermanentEvidenceLoss",
+          "id": "default",
+          "outcome": "resume_required"
+        }
+      ]
+    },
+    {
+      "id": "controlled.stop-commit-race",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeStopCommitRace",
+          "id": "default",
+          "outcome": "stopped"
+        }
+      ]
+    },
+    {
+      "id": "controlled.storage-failure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeStorageFailure",
+          "id": "default",
+          "outcome": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "controlled.resource-pressure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeResourcePressure",
+          "id": "default",
+          "outcome": "stopped"
+        }
+      ]
+    },
+    {
       "id": "environment-check.local-sandbox",
       "level": "L3",
       "driver": "environment-check",

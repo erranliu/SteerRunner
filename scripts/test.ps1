@@ -1,16 +1,19 @@
 param(
-    [ValidateSet('L1','Controlled','L2','L3')][string[]]$Level = @('L1'),
+    [ValidateSet('L1','Controlled','L2','L3','L4')][string[]]$Level = @('L1'),
     [string[]]$Scenario = @(),
     [string]$Config = '',
+    [string]$FeedbackQualification = '',
     [string]$Catalog = '',
     [string]$OutDir = '',
     [string]$FixtureParent = 'C:\srt',
     [int]$Repeat = 1,
+    [int]$MaxParallel = 1,
     [switch]$SkipAdminRequired
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'live-catalog.ps1')
+. (Join-Path $PSScriptRoot 'test-scheduler.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
 if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/tests-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0,6)) }
@@ -25,16 +28,20 @@ function Save-Summary { $taskTemporary=Join-Path $taskOut 'summary.json.tmp';[IO
 Save-Summary
 Push-Location $taskRepo
 try {
+    if ($MaxParallel -lt 1 -or $MaxParallel -gt 8) { throw 'MaxParallel must be between 1 and 8' }
+    $taskSummary['max_parallel'] = $MaxParallel
     if ($Repeat -lt 1 -or $Repeat -gt 10) { throw 'Repeat must be between 1 and 10' }
-    if ($Repeat -ne 1 -and 'L2' -notin $Level -and 'L3' -notin $Level) { throw 'Repeat requires a live level' }
+    if ($Repeat -ne 1 -and 'L2' -notin $Level -and 'L3' -notin $Level -and 'L4' -notin $Level) { throw 'Repeat requires a live level' }
     $taskCatalog = Get-Content -LiteralPath $Catalog -Raw | ConvertFrom-Json
     if ($taskCatalog.schema -ne 'steerrunner-tests/v1') { throw 'Unsupported catalog' }
     $taskIDs = @{}
     foreach ($taskEntry in $taskCatalog.scenarios) {
-        if ($taskEntry.id -notmatch '^[a-z][a-z0-9.-]+$' -or $taskIDs.ContainsKey($taskEntry.id) -or $taskEntry.level -notin @('L2','L3') -or $taskEntry.timeout_minutes -lt 1 -or $taskEntry.timeout_minutes -gt 60) { throw 'Invalid or duplicate live catalog entry' }
+        if ($taskEntry.id -notmatch '^[a-z][a-z0-9.-]+$' -or $taskIDs.ContainsKey($taskEntry.id) -or $taskEntry.level -notin @('L2','L3','L4') -or $taskEntry.timeout_minutes -lt 1 -or $taskEntry.timeout_minutes -gt 60) { throw 'Invalid or duplicate live catalog entry' }
         if (($taskEntry.level -eq 'L2' -and $taskEntry.target -ne 'local-codex') -or ($taskEntry.target -eq 'orca-environment' -and $taskEntry.level -ne 'L3')) { throw 'Catalog execution target conflicts with test level' }
+        if (($taskEntry.level -eq 'L4') -ne ($taskEntry.driver -eq 'controlled-integration') -or ($taskEntry.level -eq 'L4' -and $taskEntry.target -ne 'controlled')) { throw 'Controlled edge scenarios require L4 and the controlled target' }
         $taskIDs[$taskEntry.id] = $true
         $null = @(Get-SRLiveCases $taskEntry)
+        foreach ($taskCase in @(Get-SRLiveCases $taskEntry)) { if ($taskEntry.level -eq 'L4' -and $taskCase.test -notmatch '^TestSREdge[A-Za-z]+$') { throw 'L4 must bind an exact registered controlled test' } }
     }
     $taskSelected = @($taskCatalog.scenarios | Where-Object { $_.level -in $Level -and ($Scenario.Count -eq 0 -or $_.id -in $Scenario) })
     if ($Scenario.Count -eq 0) {
@@ -44,11 +51,17 @@ try {
     }
     if (@($Scenario | Select-Object -Unique).Count -ne $Scenario.Count) { throw 'Duplicate scenario selection' }
     foreach ($taskID in $Scenario) { if (@($taskSelected | Where-Object { $_.id -eq $taskID }).Count -ne 1) { throw "Scenario was not selected by the requested levels: $taskID" } }
-    foreach ($taskLiveLevel in @('L2','L3')) { if ($taskLiveLevel -in $Level -and @($taskSelected | Where-Object { $_.level -eq $taskLiveLevel }).Count -eq 0) { throw "No scenario matched $taskLiveLevel" } }
-    if ($taskSelected.Count -gt 0 -and (-not $Config -or -not (Test-Path -LiteralPath $Config))) { throw 'Live levels require an explicit non-secret config; see tests/live-config.example.json' }
+    foreach ($taskLiveLevel in @('L2','L3','L4')) { if ($taskLiveLevel -in $Level -and @($taskSelected | Where-Object { $_.level -eq $taskLiveLevel }).Count -eq 0) { throw "No scenario matched $taskLiveLevel" } }
+    if (@($taskSelected | Where-Object { $_.target -ne 'controlled' }).Count -gt 0 -and (-not $Config -or -not (Test-Path -LiteralPath $Config))) { throw 'Live levels require an explicit non-secret config; see tests/live-config.example.json' }
+    if (@($taskSelected | Where-Object { $_.driver -eq 'development-audited' }).Count) {
+        $taskAuditConfig=Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
+        $taskExecutionModel=$taskAuditConfig.PSObject.Properties['model']
+        $taskAuditModel=$taskAuditConfig.PSObject.Properties['audit_model']
+        if (-not $taskExecutionModel -or -not $taskAuditModel -or [string]::IsNullOrWhiteSpace([string]$taskExecutionModel.Value) -or [string]::IsNullOrWhiteSpace([string]$taskAuditModel.Value) -or $taskExecutionModel.Value -ceq $taskAuditModel.Value) { throw 'Audited scenario requires two explicit, different model and audit_model values before any fixture is created' }
+    }
     $taskExpanded = @()
     foreach ($taskRound in 1..$Repeat) {
-        foreach ($taskEntry in $taskSelected) {
+        foreach ($taskEntry in @($taskSelected | Sort-Object { if ($_.level -eq 'L4') { 1 } else { 0 } })) {
             foreach ($taskCase in @(Get-SRLiveCases $taskEntry)) {
                 $taskExcluded = $SkipAdminRequired -and (Test-SRAdminCase $taskEntry.id $taskCase.id)
                 $taskExpanded += @{entry=$taskEntry;case=$taskCase;repeat_index=$taskRound;excluded=$taskExcluded}
@@ -112,45 +125,13 @@ try {
         Save-Summary
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne @($taskCatalog.controlled_scenarios).Count -or (Select-String -LiteralPath (Join-Path $taskControlled 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario' }
     }
-    $taskFrozenBuilds = $null
-    $taskFrozenStabilityBuilds = $null
-    foreach ($taskExecution in $taskExpanded) {
-        $taskEntry = $taskExecution.entry
-        $taskCase = $taskExecution.case
-        $taskRecord = @{level=$taskEntry.level;scenario=$taskEntry.id;case_id=$taskCase.id;repeat_index=$taskExecution.repeat_index;status='preparing';manifest=$null;evidence=$null;fixture_record=(Join-Path $taskOut ($taskEntry.id + '-' + $taskCase.id + '-r' + $taskExecution.repeat_index + '-fixture.json'));started_at=[DateTime]::UtcNow.ToString('o')}
-        $taskSummary.results += $taskRecord
+    $taskPrerequisites = @($taskSummary.results)
+    $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
+    $taskResolvedProof=if($FeedbackQualification){(Resolve-Path -LiteralPath $FeedbackQualification).ProviderPath}else{''}
+    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -FeedbackQualification $taskResolvedProof -Checkpoint {
+        param($Records)
+        $taskSummary.results = @($taskPrerequisites) + @($Records)
         Save-Summary
-        if ($taskExecution.excluded) {
-            $taskRecord.status = 'excluded'
-            $taskRecord['reason'] = 'User explicitly excluded tests requiring administrator privileges; not executed and not counted as passed'
-            Save-Summary
-            continue
-        }
-        try {
-            $taskManifest = & (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskEntry.id -Case $taskCase.id -RepeatIndex $taskExecution.repeat_index -Config $Config -Catalog $Catalog -FixtureParent $FixtureParent -RecordPath $taskRecord.fixture_record
-            $taskRecord.manifest = [string]$taskManifest
-            $taskRecord.evidence = Join-Path (Split-Path -Parent $taskManifest) 'evidence'
-            $taskRecord.status = 'running'
-            Save-Summary
-            $taskRecord.evidence = & (Join-Path $PSScriptRoot 'test-native.ps1') -Manifest $taskManifest -TimeoutMinutes $taskEntry.timeout_minutes
-            $taskRecord.status = 'passed'
-            $taskIdentity = Get-Content (Join-Path $taskRecord.evidence 'source-identity.json') -Raw | ConvertFrom-Json
-            $taskBuilds = @($taskIdentity.runner_sha256,$taskIdentity.driver_sha256)
-            if ($null -eq $taskFrozenBuilds) { $taskFrozenBuilds = $taskBuilds }
-            if (($taskFrozenBuilds -join ',') -cne ($taskBuilds -join ',')) { throw 'Source/build changed within qualification batch' }
-            if ($taskEntry.driver -eq 'execution-stability') {
-                $taskStabilityBuilds = @($taskIdentity.helper_sha256,$taskIdentity.runtime_sha256,$taskIdentity.network_sha256)
-                if ($null -eq $taskFrozenStabilityBuilds) { $taskFrozenStabilityBuilds = $taskStabilityBuilds }
-                if (($taskFrozenStabilityBuilds -join ',') -cne ($taskStabilityBuilds -join ',')) { throw 'Source/build changed within qualification batch: stability tools' }
-            }
-        } catch {
-            $taskRecord.status = 'failed'
-            $taskRecord['error'] = $_.Exception.Message
-            Write-Host "$($taskEntry.id): $($_.Exception.Message)" -ForegroundColor Red
-        }
-        $taskRecord['finished_at'] = [DateTime]::UtcNow.ToString('o')
-        Save-Summary
-        if ($taskRecord.ContainsKey('error') -and $taskRecord.error -like 'Source/build changed*') { throw $taskRecord.error }
     }
     $taskSummary['executed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -ne 'excluded' }).Count
     $taskSummary['passed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -eq 'passed' }).Count

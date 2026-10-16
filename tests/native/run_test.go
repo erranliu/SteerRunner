@@ -28,7 +28,7 @@ var scenarioCount int
 
 // New real-environment workflows register a driver; catalog entries choose
 // that driver and an execution target without changing the meaning of L3.
-var drivers = map[string]func(*testing.T, livetest.Manifest){"environment-check": environmentCheck, "development-smoke": developmentSmoke, "development-audited": developmentSmoke, "execution-stability": executionStability}
+var drivers = map[string]func(*testing.T, livetest.Manifest){"environment-check": environmentCheck, "development-core": developmentSmoke, "development-smoke": developmentSmoke, "development-feedback": developmentSmoke, "development-audited": developmentSmoke, "development-multirun": developmentMultipleRuns, "execution-stability": executionStability}
 
 func TestMain(m *testing.M) {
 	flag.Parse()
@@ -85,17 +85,18 @@ func TestSRLiveScenario(t *testing.T) {
 }
 
 type scenarioResult struct {
-	Scenario       string `json:"scenario"`
-	Level          string `json:"level"`
-	Stage          string `json:"stage"`
-	RunID          string `json:"run_id,omitempty"`
-	PRURL          string `json:"pr_url,omitempty"`
-	OriginalHead   string `json:"original_head,omitempty"`
-	FeedbackHead   string `json:"feedback_head,omitempty"`
-	MergeCommit    string `json:"merge_commit,omitempty"`
-	RunStopped     bool   `json:"run_stopped"`
-	ServiceStopped bool   `json:"service_stopped"`
-	Passed         bool   `json:"passed"`
+	Runs           []contracts.RunView `json:"runs,omitempty"`
+	Scenario       string              `json:"scenario"`
+	Level          string              `json:"level"`
+	Stage          string              `json:"stage"`
+	RunID          string              `json:"run_id,omitempty"`
+	PRURL          string              `json:"pr_url,omitempty"`
+	OriginalHead   string              `json:"original_head,omitempty"`
+	FeedbackHead   string              `json:"feedback_head,omitempty"`
+	MergeCommit    string              `json:"merge_commit,omitempty"`
+	RunStopped     bool                `json:"run_stopped"`
+	ServiceStopped bool                `json:"service_stopped"`
+	Passed         bool                `json:"passed"`
 }
 
 func save(t *testing.T, name string, value any) {
@@ -330,7 +331,11 @@ func verifyHead(t *testing.T, m livetest.Manifest, view contracts.RunView, earli
 		t.Fatal(err)
 	}
 	checkout := filepath.Join(m.Root, "check-"+head[:12])
-	git(t, m, "worktree", "add", "--detach", checkout, head)
+	if _, err := os.Stat(checkout); os.IsNotExist(err) {
+		git(t, m, "worktree", "add", "--detach", checkout, head)
+	} else if err != nil || string(bytes.TrimSpace(shell(t, checkout, "git", "rev-parse", "HEAD"))) != head {
+		t.Fatal("verification checkout does not match the frozen PR head", err)
+	}
 	shell(t, checkout, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(checkout, "sr-smoke", "check.ps1"))
 	return at
 }
@@ -496,18 +501,21 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		t.Logf("audited native run=%s PR=%s; leave test PR unmerged", r.RunID, r.PRURL)
 		return
 	}
-	feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
-	checkpoint("feedback")
-	req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})
-	invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
-	updated := waitReady(t, m, dir, r.RunID, first.PR.HeadRevision)
-	if updated.PR.URL != first.PR.URL || updated.Execution.Branch != first.Execution.Branch || updated.Execution.SessionID != first.Execution.SessionID || updated.Execution.AttemptID != first.Execution.AttemptID {
-		t.Fatal("feedback replaced original PR, branch, attempt or session")
+	updated := first
+	if m.Driver != "development-core" {
+		feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
+		checkpoint("feedback")
+		req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})
+		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
+		updated = waitReady(t, m, dir, r.RunID, first.PR.HeadRevision)
+		if updated.PR.URL != first.PR.URL || updated.Execution.Branch != first.Execution.Branch || updated.Execution.SessionID != first.Execution.SessionID || updated.Execution.AttemptID != first.Execution.AttemptID {
+			t.Fatal("feedback replaced original PR, branch, attempt or session")
+		}
+		r.FeedbackHead = updated.PR.HeadRevision
+		checkpoint("verify-feedback-pr")
+		verifyHead(t, m, updated, originalAt.Add(time.Nanosecond))
+		save(t, "feedback-pr-ready.json", updated)
 	}
-	r.FeedbackHead = updated.PR.HeadRevision
-	checkpoint("verify-feedback-pr")
-	verifyHead(t, m, updated, originalAt.Add(time.Nanosecond))
-	save(t, "feedback-pr-ready.json", updated)
 	fresh, err := inspect(m, dir, r.RunID, true)
 	if err != nil {
 		t.Fatal(err)

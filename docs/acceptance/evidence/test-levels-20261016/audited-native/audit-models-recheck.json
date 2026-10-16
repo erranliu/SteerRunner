@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "turns": [
+    {
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "step": "audit.spec",
+      "turn_id": "01a143c0-95f1-7eb3-89c5-7557a8d7972c"
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "effort": "high",
+      "step": "audit.code",
+      "turn_id": "01a143c1-60ca-7ac0-809d-6a32b9186288"
+    },
+    {
+      "model": "gpt-6-luna",
+      "effort": "high",
+      "step": "publish",
+      "turn_id": "01a143c1-dd75-7532-b345-15925262b628"
+    }
+  ],
+  "native_sha256": "61c8ca97e1ef8106e352d04bfdd8c6798e0013821c53f12e0267711785a416b9",
+  "session": "01a143ba-9d40-7132-9e6b-5959505f0e24"
+}

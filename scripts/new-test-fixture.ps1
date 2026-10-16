@@ -5,6 +5,7 @@ param(
     [string]$FixtureParent = 'C:\srt',
     [string]$RecordPath = '',
     [string]$AuditModel = '',
+    [string]$FeedbackQualification = '',
     [string]$AuditReasoningEffort = '',
     [string]$Case = 'default',
     [ValidateRange(1,10)][int]$RepeatIndex = 1
@@ -31,9 +32,10 @@ function Read-Setting([string]$Name, [string]$Default = '') {
     return [string]$taskProperty.Value
 }
 function Write-JSON([string]$Path, $Value) { [IO.File]::WriteAllText($Path, ($Value | ConvertTo-Json -Depth 30), [Text.UTF8Encoding]::new($false)) }
+if (-not $FeedbackQualification -and $Scenario -eq 'local-codex.smoke') { $FeedbackQualification=Read-Setting 'feedback_qualification' }
 function Invoke-Git([string[]]$Arguments) {
-    $taskOutput = & git -c core.longpaths=true @Arguments
-    if ($LASTEXITCODE -ne 0) { throw ('Fixture Git failed: ' + ($Arguments -join ' ')) }
+    $taskOutput = & git -c core.longpaths=true @Arguments 2>&1
+    if ($LASTEXITCODE -ne 0) { throw ('Fixture Git failed: ' + ($Arguments -join ' ') + ': ' + ($taskOutput | Out-String).Trim()) }
     return ($taskOutput | Out-String).Trim()
 }
 $taskExecution = $null
@@ -71,6 +73,11 @@ if ($Scenario -eq 'environment-check.local-sandbox') { $taskMode = 'sandbox' }
 if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
 $taskExecution.settings['access_mode'] = $taskMode
 $taskAudit = $null
+if ($taskScenario.driver -eq 'development-audited' -and -not $AuditModel) {
+    $AuditModel = Read-Setting 'audit_model'
+    $AuditReasoningEffort = Read-Setting 'audit_reasoning_effort'
+    if (-not $AuditModel) { throw 'Audited scenario requires audit_model and explicit execution model in the non-secret config' }
+}
 if ($AuditModel) {
     if ($taskScenario.target -ne 'local-codex' -or -not (Read-Setting 'model') -or $AuditModel -eq (Read-Setting 'model') -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires local Codex and two explicit, different models' }
     if ($AuditReasoningEffort -and $AuditReasoningEffort -notin @('minimal','low','medium','high','xhigh','max','ultra')) { throw 'Invalid audit reasoning effort' }
@@ -161,6 +168,13 @@ $taskManifest = [ordered]@{
     created_at=[DateTime]::UtcNow.ToString('o')
 }
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
+if ($FeedbackQualification -and $Scenario -eq 'local-codex.smoke') {
+    $taskProofPath=[IO.Path]::GetFullPath($FeedbackQualification)
+    $taskProof=Get-Content -LiteralPath $taskProofPath -Raw | ConvertFrom-Json
+    if ($taskProof.scenario -ne 'local-codex.feedback' -or $taskProof.status -ne 'passed' -or $taskProof.identity.runner_sha256 -cne $taskManifest.runner_sha256) { throw 'Core smoke requires a passed feedback case for the exact Runner build' }
+    $taskManifest.driver='development-core'
+    $taskManifest['feedback_qualification']=@{path=$taskProofPath;sha256=(Get-FileHash -LiteralPath $taskProofPath -Algorithm SHA256).Hash.ToLowerInvariant()}
+}
 if ($taskStability) {
     function Frozen-Tool([string]$Path) { return @{path=$Path;sha256=(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()} }
     $taskManifest.schema = 'steerrunner-test/v2'

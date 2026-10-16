@@ -1,0 +1,36 @@
+{
+  "level": "L3",
+  "case_id": "default",
+  "finished_at": "2026-10-16T07:52:42.5602553Z",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-02\\local-codex.multirun-default-r1-fixture.json",
+  "status": "passed",
+  "scenario": "local-codex.multirun",
+  "evidence": "C:\\srt\\523c02855a9c\\evidence",
+  "started_at": "2026-10-16T07:45:48.0731380Z",
+  "manifest": "C:\\srt\\523c02855a9c\\manifest.json",
+  "repeat_index": 1,
+  "resources": [
+    "root:C:\\srt\\523c02855a9c",
+    "base:codex/srtest/523c02855a9c/base",
+    "run:8d87070ac2d0d28b89b08055d70f6070",
+    "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\ylvcccbcaqv44xf4tveksnff44",
+    "session:01a143ad-48a0-7b21-94f9-466b50d314b9",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/339",
+    "run:07299a6a68ea6709ee87286ebbd3ccee",
+    "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\pypqrl6sce6uybeul4dhxmhx7m",
+    "session:01a143ad-5730-72a1-901f-9d2385a25df3",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/338"
+  ],
+  "identity": {
+    "pid": 45256,
+    "manifest_sha256": "830731821e9442ae8297ab674a858388c36fd9836ad7a54d2194adc2bec2914b",
+    "driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+    "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.multirun",
+    "level": "L3"
+  },
+  "expected_outcome": "pr_ready"
+}

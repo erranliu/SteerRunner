@@ -16,6 +16,9 @@
     "TestSRRestartRequiresResume",
     "TestSRStabilityLostSubmitResponse",
     "TestSRStabilityRevocationAcrossRestart",
+    "TestSRWorkflowDiscoveryAndSelection",
+    "TestSRAuditedWorkflow",
+    "TestSRMultipleRunsIsolation",
     "TestEnvironmentCheckCLI"
   ],
   "scenarios": [
@@ -87,6 +90,67 @@
       "cases": [
         "completion-gap",
         "query-unavailable"
+      ]
+    },
+    {
+      "id": "local-codex.feedback",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "local-codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "local-codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "local-codex",
+      "timeout_minutes": 45
+    },
+    {
+      "id": "controlled.permanent-evidence-loss",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.stop-commit-race",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.storage-failure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.resource-pressure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
       ]
     },
     {

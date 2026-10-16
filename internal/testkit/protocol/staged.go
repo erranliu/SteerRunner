@@ -1,8 +1,11 @@
 package testprotocol
 
 import (
+	"crypto/sha256"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -13,6 +16,13 @@ import (
 // substitute. Its artifacts are real Git facts; each native input does only
 // the action for its bound step. It is never reachable from production code.
 func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
+	prURL := "https://controlled.invalid/owner/repo/pull/84"
+	if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" {
+		sum := sha256.Sum256([]byte(cwd))
+		number := binary.BigEndian.Uint32(sum[:4]) + 1
+		prURL = fmt.Sprintf("https://controlled.invalid/owner/repo/pull/%d", number)
+		provider = filepath.Join(filepath.Dir(provider), fmt.Sprintf("pr-%d.json", number))
+	}
 	git := func(args ...string) (string, error) {
 		data, err := exec.Command("git", append([]string{"-C", cwd}, args...)...).CombinedOutput()
 		if err != nil {
@@ -76,14 +86,15 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		if _, err := git("push", remote, "HEAD:refs/heads/"+branch); err != nil {
 			return "", err
 		}
-		body, _ := json.Marshal(map[string]any{"url": "https://controlled.invalid/owner/repo/pull/84", "repository": "owner/repo", "base_branch": "main", "head_repository": "owner/repo", "head_branch": branch, "head_revision": head, "state": "open", "merged": false})
+		body, _ := json.Marshal(map[string]any{"url": prURL, "repository": "owner/repo", "base_branch": "main", "head_repository": "owner/repo", "head_branch": branch, "head_revision": head, "state": "open", "merged": false})
 		if err := os.WriteFile(provider, body, 0600); err != nil {
 			return "", err
 		}
 		if os.Getenv("STEERRUNNER_STAGE_PUBLISH_PLAIN") == "1" {
-			return "Published PR: https://controlled.invalid/owner/repo/pull/84", nil
+			return "Published PR: " + prURL, nil
 		}
-		return `{"outcome":"done","outputs":{"pr_url":"https://controlled.invalid/owner/repo/pull/84"},"summary":"candidate pushed and PR created"}`, nil
+		result, _ := json.Marshal(map[string]any{"outcome": "done", "outputs": map[string]string{"pr_url": prURL}, "summary": "candidate pushed and PR created"})
+		return string(result), nil
 	}
 	return "", errors.New("fixture received an unknown stage")
 }

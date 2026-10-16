@@ -1,0 +1,33 @@
+=== RUN   TestSREdgePermanentEvidenceLoss
+    edge_test.go:87: outcome=resume_required original=a75529eca300e78225bdc8254345342d starts=1; native history remains unavailable
+--- PASS: TestSREdgePermanentEvidenceLoss (27.57s)
+=== RUN   TestSREdgeStopCommitRace
+    edge_test.go:127: outcome=stopped original intent settled after two receipt-commit failures/generations
+--- PASS: TestSREdgeStopCommitRace (21.82s)
+=== RUN   TestSREdgeStorageFailure
+    edge_test.go:157: outcome=rejected acceptance rollback verified; original-ID retry after recovery executed once
+--- PASS: TestSREdgeStorageFailure (18.95s)
+=== RUN   TestSREdgeResourcePressure
+    edge_test.go:207: round=1 handles=223 baseline=223
+    edge_test.go:207: round=2 handles=236 baseline=223
+    edge_test.go:207: round=3 handles=245 baseline=223
+    edge_test.go:207: round=4 handles=249 baseline=223
+    edge_test.go:207: round=5 handles=249 baseline=223
+    edge_test.go:207: round=6 handles=249 baseline=223
+    edge_test.go:207: round=7 handles=255 baseline=223
+    edge_test.go:207: round=8 handles=257 baseline=223
+    edge_test.go:207: round=9 handles=257 baseline=223
+    edge_test.go:207: round=10 handles=255 baseline=223
+    edge_test.go:207: round=11 handles=255 baseline=223
+    edge_test.go:207: round=12 handles=261 baseline=223
+    edge_test.go:207: round=13 handles=263 baseline=223
+    edge_test.go:207: round=14 handles=263 baseline=223
+    edge_test.go:207: round=15 handles=263 baseline=223
+    edge_test.go:207: round=16 handles=269 baseline=223
+    edge_test.go:207: round=17 handles=269 baseline=223
+    edge_test.go:207: round=18 handles=269 baseline=223
+    edge_test.go:207: round=19 handles=269 baseline=223
+    edge_test.go:207: round=20 handles=272 baseline=223
+    edge_test.go:212: outcome=stopped rounds=20 handle_growth_limit=128
+--- PASS: TestSREdgeResourcePressure (328.35s)
+PASS

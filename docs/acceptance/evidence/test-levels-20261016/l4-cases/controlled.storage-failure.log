@@ -1,0 +1,4 @@
+=== RUN   TestSREdgeStorageFailure
+    edge_test.go:157: outcome=rejected acceptance rollback verified; original-ID retry after recovery executed once
+--- PASS: TestSREdgeStorageFailure (29.59s)
+PASS

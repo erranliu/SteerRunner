@@ -1,0 +1,4 @@
+=== RUN   TestSREdgePermanentEvidenceLoss
+    edge_test.go:87: outcome=resume_required original=7bcc6c9ead5a069088621626f747457e starts=1; native history remains unavailable
+--- PASS: TestSREdgePermanentEvidenceLoss (34.86s)
+PASS

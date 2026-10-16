@@ -71,7 +71,7 @@ func revokeWithFreshRevision(t *testing.T, dir, id string, revision uint64) {
 	t.Helper()
 	for attempt := 0; attempt < 5; attempt++ {
 		input, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: revision})
-		raw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("stability-revoke-%d", attempt), Input: input})
+		raw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("stability-revoke-%s-%d", id, attempt), Input: input})
 		response, exit, diagnostics, err := invoke(runnerEXE, []string{"stop", "--run-id", id, "--input", "-", "--state-dir", dir, "--json"}, string(raw))
 		if err == nil && exit == 0 && response.OK {
 			return

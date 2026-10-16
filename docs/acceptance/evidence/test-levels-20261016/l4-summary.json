@@ -1,0 +1,146 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+  "source_dirty": true,
+  "started_at": "2026-10-16T07:11:46.3625302Z",
+  "requested_levels": [
+    "L4"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01",
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "native_zero_match_guard": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\framework",
+      "test_count": 207,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled",
+      "level": "Controlled",
+      "scenario_count": 15
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.permanent-evidence-loss-default-r1-fixture.json",
+      "scenario": "controlled.permanent-evidence-loss",
+      "repeat_index": 1,
+      "manifest": null,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.permanent-evidence-loss-r1",
+      "started_at": "2026-10-16T07:25:35.6299152Z",
+      "status": "passed",
+      "case_id": "default",
+      "expected_outcome": "resume_required",
+      "identity": {
+        "pid": 46268,
+        "pattern": "^TestSREdgePermanentEvidenceLoss$",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "fixture_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "level": "L4",
+      "finished_at": "2026-10-16T07:26:34.5903366Z"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.stop-commit-race-default-r1-fixture.json",
+      "scenario": "controlled.stop-commit-race",
+      "repeat_index": 1,
+      "manifest": null,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.stop-commit-race-r1",
+      "started_at": "2026-10-16T07:26:36.2100022Z",
+      "status": "passed",
+      "case_id": "default",
+      "expected_outcome": "stopped",
+      "identity": {
+        "pid": 15372,
+        "pattern": "^TestSREdgeStopCommitRace$",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "fixture_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "level": "L4",
+      "finished_at": "2026-10-16T07:27:36.0643971Z"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.storage-failure-default-r1-fixture.json",
+      "scenario": "controlled.storage-failure",
+      "repeat_index": 1,
+      "manifest": null,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.storage-failure-r1",
+      "started_at": "2026-10-16T07:27:37.3609921Z",
+      "status": "passed",
+      "case_id": "default",
+      "expected_outcome": "rejected",
+      "identity": {
+        "pid": 55788,
+        "pattern": "^TestSREdgeStorageFailure$",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "fixture_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "level": "L4",
+      "finished_at": "2026-10-16T07:28:26.2973581Z"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.resource-pressure-default-r1-fixture.json",
+      "scenario": "controlled.resource-pressure",
+      "repeat_index": 1,
+      "manifest": null,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.resource-pressure-r1",
+      "started_at": "2026-10-16T07:28:27.8412996Z",
+      "status": "passed",
+      "case_id": "default",
+      "expected_outcome": "stopped",
+      "identity": {
+        "pid": 30408,
+        "pattern": "^TestSREdgeResourcePressure$",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "fixture_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "level": "L4",
+      "finished_at": "2026-10-16T07:35:59.010706Z"
+    }
+  ],
+  "executed_case_count": 4,
+  "passed_case_count": 4,
+  "first_pass_rate": 1,
+  "max_parallel": 2,
+  "selected_scenarios": [
+    "controlled.permanent-evidence-loss",
+    "controlled.stop-commit-race",
+    "controlled.storage-failure",
+    "controlled.resource-pressure"
+  ],
+  "repeat": 1,
+  "planned_case_count": 4,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T07:35:59.1478549Z"
+}

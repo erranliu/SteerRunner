@@ -13,7 +13,9 @@ $taskCases = @(
     @{name='missing-config';args=@('-Level','L2');error='explicit non-secret config'},
     @{name='duplicate-catalog';args=@('-Level','L3','-Catalog',$taskBadCatalog);error='Invalid or duplicate'},
     @{name='repeat-zero';args=@('-Level','L3','-Repeat','0');error='Repeat must be'},
-    @{name='repeat-non-live';args=@('-Level','L1','-Repeat','3');error='Repeat requires a live level'}
+    @{name='repeat-non-live';args=@('-Level','L1','-Repeat','3');error='Repeat requires a live level'},
+    @{name='parallel-zero';args=@('-Level','L3','-MaxParallel','0');error='MaxParallel must be'},
+    @{name='parallel-excess';args=@('-Level','L4','-MaxParallel','9');error='MaxParallel must be'}
 )
 $taskResults = @()
 foreach ($taskCase in $taskCases) {
@@ -60,5 +62,11 @@ foreach ($taskCase in @('empty','existing','conflict','query-failure')) {
 & $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/stability-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'stability-framework.log')
 if ($LASTEXITCODE -ne 0) { throw 'Stability framework guards failed; inspect stability-framework.log' }
 $taskResults += @{name='stability-registry-gate-scope';passed=$true}
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/scheduler-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'scheduler-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Parallel scheduler checks failed; inspect scheduler-framework.log' }
+$taskResults += @{name='parallel-scheduler-isolation';passed=$true}
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/native-result-test.ps1') -Repository $taskRepo -Evidence (Join-Path $taskEvidence 'native-result') *> (Join-Path $taskEvidence 'native-result-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Native result contract checks failed; inspect native-result-framework.log' }
+$taskResults += @{name='native-result-contracts';passed=$true}
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{exit_code=0;test_count=$taskResults.Count;tests=$taskResults}|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
 Write-Host 'Framework guards and Windows PowerShell checker passed'

@@ -2,8 +2,41 @@ package livetest
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 )
+
+func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
+	reliability, edges := 0, 0
+	seen := map[string]bool{}
+	for _, scenario := range Scenarios() {
+		cases := map[string]bool{}
+		for _, c := range scenario.Cases {
+			if c.ID == "" || c.Outcome == "" || cases[c.ID] {
+				t.Fatal("empty or duplicate case", scenario.ID, c.ID)
+			}
+			cases[c.ID] = true
+			if scenario.Driver == "execution-stability" {
+				if scenario.Level != "L3" || scenario.Target != "orca-environment" || c.Test != "" {
+					t.Fatal("core reliability changed level or target", scenario.ID)
+				}
+				reliability++
+			}
+			if scenario.Level == "L4" {
+				if scenario.Driver != "controlled-integration" || scenario.Target != "controlled" || !strings.HasPrefix(c.Test, "TestSREdge") || seen[c.Test] {
+					t.Fatal("edge has missing, duplicate or unsafe test binding", scenario.ID)
+				}
+				seen[c.Test] = true
+				edges++
+			} else if c.Test != "" {
+				t.Fatal("native case bound to a controlled substitute", scenario.ID)
+			}
+		}
+	}
+	if reliability != 11 || edges != 4 {
+		t.Fatalf("core/edge coverage changed: reliability=%d edges=%d", reliability, edges)
+	}
+}
 
 func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 	scenarios, cases := 0, 0
@@ -24,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 8 || cases != 14 {
-		t.Fatalf("expected eight scenarios/fourteen cases, got %d/%d", scenarios, cases)
+	if scenarios != 11 || cases != 17 {
+		t.Fatalf("expected eleven scenarios/seventeen cases, got %d/%d", scenarios, cases)
 	}
 	for _, v := range [][2]string{{"orca-remote.smoke", "kill-active"}, {"unknown", "default"}, {"orca-remote.service-restart", ""}} {
 		if _, _, err := Lookup(v[0], v[1]); err == nil {

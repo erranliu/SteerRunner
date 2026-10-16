@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "kind": "read-only-resource-recheck",
+  "records": [
+    {
+      "scenario": "local-codex.feedback",
+      "resources": [
+        "root:C:\\srt\\67fffa7e3345",
+        "base:codex/srtest/67fffa7e3345/base",
+        "run:a53ede1ddfcc05c2b29240f1e40e6e69",
+        "workspace:c:\\srt\\67fffa7e3345\\s\\workspaces\\3442qo4vv6mmbqxcujxualfzwi",
+        "session:01a143ba-a091-7123-b1e1-f985939b1f6d",
+        "branch:codex/runner-a53ede1ddfcc05c2b29240f1e40e6e69",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/340"
+      ]
+    },
+    {
+      "scenario": "local-codex.audited",
+      "resources": [
+        "root:C:\\srt\\f73d36e9f622",
+        "base:codex/srtest/f73d36e9f622/base",
+        "run:741329ad8d27d8753688259acc54c348",
+        "workspace:c:\\srt\\f73d36e9f622\\s\\workspaces\\6w5decb6e3h46f555uc6ksf2sq",
+        "session:01a143ba-9d40-7132-9e6b-5959505f0e24",
+        "branch:codex/runner-741329ad8d27d8753688259acc54c348",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/341"
+      ]
+    },
+    {
+      "scenario": "local-codex.multirun",
+      "resources": [
+        "root:C:\\srt\\523c02855a9c",
+        "base:codex/srtest/523c02855a9c/base",
+        "run:8d87070ac2d0d28b89b08055d70f6070",
+        "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\ylvcccbcaqv44xf4tveksnff44",
+        "session:01a143ad-48a0-7b21-94f9-466b50d314b9",
+        "branch:codex/runner-8d87070ac2d0d28b89b08055d70f6070",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/339",
+        "run:07299a6a68ea6709ee87286ebbd3ccee",
+        "workspace:c:\\srt\\523c02855a9c\\s\\workspaces\\pypqrl6sce6uybeul4dhxmhx7m",
+        "session:01a143ad-5730-72a1-901f-9d2385a25df3",
+        "branch:codex/runner-07299a6a68ea6709ee87286ebbd3ccee",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/338"
+      ]
+    }
+  ]
+}

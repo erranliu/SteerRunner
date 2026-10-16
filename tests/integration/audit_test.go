@@ -81,8 +81,8 @@ func TestSRWorkflowDiscoveryAndSelection(t *testing.T) {
 }
 
 func TestSRAuditedWorkflow(t *testing.T) {
+	testCount.Add(1)
 	t.Run("repair_and_feedback", func(t *testing.T) {
-		testCount.Add(1)
 		dir, envelope := auditedRun(t)
 		t.Setenv("STEERRUNNER_AUDIT_FAILURES", "1")
 		id := submitAudited(t, dir, envelope)
@@ -121,7 +121,6 @@ func TestSRAuditedWorkflow(t *testing.T) {
 	})
 	for _, scenario := range []string{"budget", "bad_json", "unicode_alias", "unavailable", "question_restart", "unknown_audit"} {
 		t.Run(scenario, func(t *testing.T) {
-			testCount.Add(1)
 			dir, envelope := auditedRun(t)
 			state := os.Getenv("STEERRUNNER_FIXTURE_STATE")
 			switch scenario {
