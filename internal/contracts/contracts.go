@@ -100,16 +100,28 @@ func ValidRequestID(value string) bool {
 }
 
 type ServiceInfo struct {
+	InstanceID       string           `json:"instance_id"`
+	StateDir         string           `json:"state_dir"`
+	PID              int              `json:"pid"`
+	ProcessCreated   string           `json:"process_created"`
+	Status           string           `json:"status"`
+	Detached         bool             `json:"detached"`
+	Version          string           `json:"version"`
+	Protocol         string           `json:"protocol"`
+	ResourceDigest   string           `json:"resource_digest"`
+	ExecutableSHA256 string           `json:"executable_sha256"`
+	LastShutdown     *ServiceShutdown `json:"last_shutdown,omitempty"`
+}
+
+// ServiceShutdown is published after worker shutdown, before releasing the
+// writer lease. Service exit by itself is not native resource evidence.
+type ServiceShutdown struct {
 	InstanceID       string `json:"instance_id"`
+	RequestID        string `json:"request_id"`
 	StateDir         string `json:"state_dir"`
-	PID              int    `json:"pid"`
-	ProcessCreated   string `json:"process_created"`
-	Status           string `json:"status"`
-	Detached         bool   `json:"detached"`
-	Version          string `json:"version"`
-	Protocol         string `json:"protocol"`
-	ResourceDigest   string `json:"resource_digest"`
 	ExecutableSHA256 string `json:"executable_sha256"`
+	ResourcesSettled bool   `json:"resources_settled"`
+	Diagnostic       string `json:"diagnostic,omitempty"`
 }
 
 type ServiceStopInput struct {

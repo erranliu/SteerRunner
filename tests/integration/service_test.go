@@ -355,6 +355,10 @@ func TestSRServiceOwnership(t *testing.T) {
 		for until := time.Now().Add(5 * time.Second); ; {
 			status := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
 			if status.Status == "not_running" {
+				proof := status.LastShutdown
+				if proof == nil || proof.InstanceID != old.InstanceID || proof.RequestID != "stop-once" || proof.ExecutableSHA256 != old.ExecutableSHA256 || proof.StateDir != old.StateDir || !proof.ResourcesSettled || proof.Diagnostic != "" {
+					t.Fatalf("final original shutdown evidence missing: %+v", proof)
+				}
 				break
 			}
 			if time.Now().After(until) {
@@ -380,6 +384,18 @@ func TestSRServiceOwnership(t *testing.T) {
 		conflict := call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("stop-once", current.InstanceID), 5)
 		if conflict.Error.Code != "request_conflict" {
 			t.Fatal("request conflict not preserved")
+		}
+		// A replacement that crashes cannot expose the original generation's
+		// successful shutdown as proof for its own resources.
+		if err := killOwnedService(current); err != nil {
+			t.Fatal(err)
+		}
+		if err := waitOwnedService(current); err != nil {
+			t.Fatal(err)
+		}
+		afterCrash := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
+		if afterCrash.Status != "not_running" || afterCrash.LastShutdown != nil {
+			t.Fatal("replacement crash reused an old shutdown proof", afterCrash)
 		}
 	})
 }

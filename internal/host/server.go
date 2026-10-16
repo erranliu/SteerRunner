@@ -46,6 +46,10 @@ func Serve(ctx context.Context, dir, startupID string) error {
 		return contracts.Fail(5, "directory_conflict", "This state directory already has a writer.")
 	}
 	defer lock.Close()
+	// A new writer invalidates prior shutdown evidence even if startup fails.
+	if err := os.Remove(shutdownPath(dir)); err != nil && !os.IsNotExist(err) {
+		return err
+	}
 	output, err := os.OpenFile(filepath.Join(dir, "logs", "service.log"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		return err
@@ -62,12 +66,32 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	if err != nil {
 		return err
 	}
+	var service contracts.ServiceInfo
+	stopID := ""
 	defer func() {
 		shutdown, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 		defer cancel()
-		if err := engine.Shutdown(shutdown); err != nil {
-			logger.Print("execution shutdown remains unverified")
+		shutdownErr := engine.Shutdown(shutdown)
+		if service.InstanceID == "" {
+			return
 		}
+		settlementErr := engine.ResourceSettlementError()
+		result := contracts.ServiceShutdown{InstanceID: service.InstanceID, RequestID: stopID, StateDir: dir, ExecutableSHA256: service.ExecutableSHA256, ResourcesSettled: shutdownErr == nil && settlementErr == nil}
+		if !result.ResourcesSettled {
+			result.Diagnostic = "Worker shutdown or native resource settlement remains unverified."
+			if settlementErr != nil {
+				result.Diagnostic += " " + settlementErr.Error()
+			}
+		}
+		if shutdownErr == nil && stopID != "" {
+			if err := store.CompleteStop(stopID); err != nil {
+				logger.Print("shutdown receipt remains pending: ", err)
+			}
+		}
+		if err := writeShutdown(dir, result); err != nil {
+			logger.Print("shutdown evidence publication failed: ", err)
+		}
+		logger.Printf("service stopped instance=%s resources_settled=%t", service.InstanceID, result.ResourcesSettled)
 	}()
 	pipe, err := pipeName(dir)
 	if err != nil {
@@ -81,7 +105,7 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	if err != nil {
 		return err
 	}
-	service := contracts.ServiceInfo{InstanceID: contracts.NewID(), StateDir: dir, PID: os.Getpid(), ProcessCreated: created, Status: "ready", Detached: detached, Version: resources.Version, Protocol: contracts.Protocol, ResourceDigest: resources.Digest(), ExecutableSHA256: executableSHA}
+	service = contracts.ServiceInfo{InstanceID: contracts.NewID(), StateDir: dir, PID: os.Getpid(), ProcessCreated: created, Status: "ready", Detached: detached, Version: resources.Version, Protocol: contracts.Protocol, ResourceDigest: resources.Digest(), ExecutableSHA256: executableSHA}
 	if err := store.ReconcileStops(service.InstanceID); err != nil {
 		return err
 	}
@@ -126,7 +150,6 @@ func Serve(ctx context.Context, dir, startupID string) error {
 			}()
 		}
 	}()
-	stopID := ""
 	select {
 	case stopID = <-s.stop:
 	case <-ctx.Done():
@@ -143,12 +166,6 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	}
 	activeMu.Unlock()
 	handlers.Wait()
-	if stopID != "" {
-		if completeErr := store.CompleteStop(stopID); completeErr != nil {
-			logger.Print("shutdown receipt remains pending: ", completeErr)
-		}
-	}
-	logger.Printf("service stopped instance=%s", service.InstanceID)
 	return nil
 }
 

@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
@@ -385,6 +386,22 @@ func (e *Engine) Shutdown(ctx context.Context) error {
 	case <-ctx.Done():
 		return ctx.Err()
 	}
+}
+
+// ResourceSettlementError reads committed evidence after worker shutdown.
+// Unknown/unsupported resources remain unresolved, including detached Orca.
+func (e *Engine) ResourceSettlementError() error {
+	runs, err := e.store.Runs()
+	if err != nil {
+		return err
+	}
+	var failures []error
+	for _, r := range runs {
+		if r.StopStatus != "stopped" {
+			failures = append(failures, fmt.Errorf("run %s: native stop status %q", r.ID, r.StopStatus))
+		}
+	}
+	return errors.Join(failures...)
 }
 
 func runLogPath(dir, id string) string { return filepath.Join(dir, "logs", id+".log") }
