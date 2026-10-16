@@ -49,6 +49,8 @@ type authenticationBroker struct {
 	listener                                net.Listener
 	apiListener                             net.Listener
 	configDir, socketPath                   string
+	socketLease                             *authenticationSocketLease
+	cleanupConfirmed                        bool
 	connections                             map[net.Conn]bool
 	transport                               http.RoundTripper
 	timer                                   *time.Timer
@@ -189,30 +191,51 @@ func (b *authenticationBroker) installPublicCA(temp string) error {
 	return nil
 }
 
-func (b *authenticationBroker) installAPITransport(temp string, roots []string) error {
+func (b *authenticationBroker) installAPITransport(temp string, plan *AuthenticationTransport) (err error) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	if b.apiListener != nil {
-		return nil
-	}
-	if b.closed || len(roots) != 4 {
-		return errors.New("authentication_api_transport_unavailable")
-	}
-	name := make([]byte, 6)
-	if _, err := rand.Read(name); err != nil {
+	if err := plan.validate(); err != nil {
 		return err
 	}
-	b.socketPath = filepath.Join(roots[0], ".sr-auth-"+base64.RawURLEncoding.EncodeToString(name)+".sock")
-	// AF_UNIX has a bounded address. Never create a shorter socket outside the
-	// already frozen Git roots to work around an unsupported workspace path.
-	if len(b.socketPath) > 106 {
-		return errors.New("authentication_api_socket_path_too_long")
+	if b.apiListener != nil {
+		if b.socketLease == nil || b.socketLease.plan != *plan || b.configDir != filepath.Join(temp, "gh-public") {
+			return errors.New("authentication_api_binding_mismatch")
+		}
+		return b.socketLease.verify()
 	}
+	if b.closed {
+		return errors.New("authentication_api_transport_unavailable")
+	}
+	lease, err := acquireAuthenticationSocket(plan)
+	if err != nil {
+		return err
+	}
+	b.socketLease = lease
+	defer func() {
+		if err != nil {
+			if b.apiListener != nil {
+				_ = b.apiListener.Close()
+				b.apiListener = nil
+			}
+			if !lease.close() {
+				err = errors.Join(err, errors.New("authentication_cleanup_unverified"))
+			}
+		}
+	}()
+	b.socketPath = filepath.Join(plan.Directory, "s")
 	listener, err := net.Listen("unix", b.socketPath)
 	if err != nil {
 		return errors.New("authentication_api_socket_unavailable")
 	}
+	listener.(*net.UnixListener).SetUnlinkOnClose(false)
 	b.apiListener = listener
+	lease.socket, err = lease.root.Lstat("s")
+	if err != nil {
+		return errors.New("authentication_api_socket_unverified")
+	}
+	if err = lease.verify(); err != nil {
+		return err
+	}
 	b.configDir = filepath.Join(temp, "gh-public")
 	if err = os.MkdirAll(b.configDir, 0700); err != nil {
 		return errors.New("authentication_api_config_unavailable")
@@ -255,7 +278,7 @@ func (b *authenticationBroker) close() bool {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	if b.closed {
-		return true
+		return b.cleanupConfirmed
 	}
 	b.closed = true
 	if b.timer != nil {
@@ -275,7 +298,8 @@ func (b *authenticationBroker) close() bool {
 	b.secret = nil
 	b.capability = ""
 	b.certificate.PrivateKey = nil
-	return true
+	b.cleanupConfirmed = b.socketLease.close()
+	return b.cleanupConfirmed
 }
 
 func (b *authenticationBroker) connect(w http.ResponseWriter, r *http.Request) {
@@ -435,7 +459,12 @@ func (b *authenticationBroker) forward(r *http.Request) *http.Response {
 func (b *authenticationBroker) facts() map[string]any {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	return map[string]any{"mode": "host-gh-repository-broker", "repository": b.repository, "repository_id": b.repositoryID, "identity": b.login, "expires_at": b.expires, "closed": b.closed, "allowed_requests": b.allowed, "denied_requests": b.denied, "git_upload_pack": b.gitRead, "git_receive_pack": b.gitWrite, "pr_queries": b.prQueries, "pr_creates": b.prCreates}
+	facts := map[string]any{"mode": "host-gh-repository-broker", "repository": b.repository, "repository_id": b.repositoryID, "identity": b.login, "expires_at": b.expires, "closed": b.closed, "allowed_requests": b.allowed, "denied_requests": b.denied, "git_upload_pack": b.gitRead, "git_receive_pack": b.gitWrite, "pr_queries": b.prQueries, "pr_creates": b.prCreates}
+	if b.socketLease != nil {
+		facts["authentication_transport"] = b.socketLease.plan
+		facts["socket_cleanup_confirmed"] = b.socketLease.cleaned
+	}
+	return facts
 }
 
 type brokerResponseBody struct {

@@ -15,15 +15,16 @@ import (
 )
 
 type sandboxReadiness struct {
-	CommandID  string                   `json:"command_id"`
-	Process    *backend.ProcessIdentity `json:"process"`
-	Workspace  string                   `json:"workspace"`
-	Contract   string                   `json:"contract"`
-	CheckedAt  time.Time                `json:"checked_at"`
-	ExpiresAt  time.Time                `json:"expires_at"`
-	Repository string                   `json:"repository"`
-	Verified   bool                     `json:"verified"`
-	Stage      string                   `json:"stage"`
+	CommandID               string                   `json:"command_id"`
+	Process                 *backend.ProcessIdentity `json:"process"`
+	Workspace               string                   `json:"workspace"`
+	Contract                string                   `json:"contract"`
+	CheckedAt               time.Time                `json:"checked_at"`
+	ExpiresAt               time.Time                `json:"expires_at"`
+	Repository              string                   `json:"repository"`
+	Verified                bool                     `json:"verified"`
+	Stage                   string                   `json:"stage"`
+	AuthenticationDirectory string                   `json:"authentication_directory,omitempty"`
 }
 
 func psLiteral(value string) string { return "'" + strings.ReplaceAll(value, "'", "''") + "'" }
@@ -142,7 +143,11 @@ func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, in
 	if err != nil {
 		return err
 	}
-	params, err := TurnStartParams(b.Config.Workspace, "probe", "probe", "probe", b.Config.Sandbox, "", "", roots)
+	toolRoots, err := WritableRoots(b.toolWriteArgs(input.LinkedWorktreeArgs))
+	if err != nil {
+		return err
+	}
+	params, err := TurnStartParams(b.Config.Workspace, "probe", "probe", "probe", b.Config.Sandbox, "", "", toolRoots)
 	if err != nil {
 		return err
 	}
@@ -154,6 +159,9 @@ func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, in
 	}
 	err = call(ctx, "command/exec", command, &result)
 	fact := sandboxReadiness{CommandID: input.CommandID, Process: h.Binding.Process, Workspace: b.Config.Workspace, Contract: PolicyContract, CheckedAt: time.Now().UTC(), ExpiresAt: expires, Repository: b.Config.Authentication.repository, Stage: "native_sandbox_command"}
+	if p := b.Config.AuthenticationTransport; p != nil {
+		fact.AuthenticationDirectory = p.Directory
+	}
 	var output struct {
 		Verified bool   `json:"verified"`
 		Stage    string `json:"stage"`

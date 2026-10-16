@@ -82,6 +82,8 @@ native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest
 
 在仓库根目录使用 PowerShell 7：
 
+认证 socket 的快速回归随 L1 运行（`TestAuthenticationSocket*`），覆盖原安装布局的 124 字节旧路径与 90 字节新路径、冻结资源身份、各 Run/attempt 的隔离、目录 junction/替换、socket 替换、错误 capability、部分准备失败及精确清理。定向原生入口 `TestAuthenticationNativeToolBoundary -sandbox-auth-native <codex.exe> -sandbox-auth-host-broker` 使用独立长路径 Git 夹具和只读 GitHub 查询，检查实际 MXC 工具连接、共享认证父目录写入拒绝及退出清理，不运行模型或发布 PR。
+
 ```powershell
 .\scripts\test.ps1 -Level L1
 .\scripts\test.ps1 -Level Controlled
