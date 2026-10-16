@@ -1,0 +1,127 @@
+{
+  "operations": [
+    {
+      "operation_id": "04f3d263a0ae92eaf80e7a2f1debaaa4",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "70ae9579d8ac8f99501ff49fcabc05fa",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "09e897bba6484e95956391d16240f34d",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "f5fcfc09717a93eed4899b85639da1d6",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "c1575511be84ca9ca51ea241631ebd1e",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "5e57b5d43f9bbbb77d3ed5648a549b77",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "abc96bda953571343ed0ab0a9fae46a5",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "3b44b1c046502e13e9dd5b64b83ffd0d",
+      "action": "start_turn",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "9c76c5dd3967e6b4a3a8437a41937192",
+  "revision": 47,
+  "title": "SteerRunner L3 orca-remote.caller-exit/accepted-response-lost",
+  "correlation": {
+    "case": "accepted-response-lost",
+    "fixture_id": "7abfa868c34a",
+    "scenario": "orca-remote.caller-exit"
+  },
+  "input_digest": "708557b51888cb56ab361682dda250b8a5495e21f8b56337f2de9c20b4837412",
+  "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "step": "pr_ready",
+  "status": "pr_ready",
+  "phase": "pr_ready",
+  "new_inputs_allowed": true,
+  "resume_required": false,
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "3baab58c404ee88e1a07128892888a0d6a42c436b31f07ea5674be99f1adaa14",
+      "snapshot_path": "c:\\srt\\7abfa868c34a\\s\\inputs\\9c76c5dd3967e6b4a3a8437a41937192\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "c38056269b6f92ce7762b6a50b3195ccc1f0c3d98aefe6e8846b378ab785baca",
+      "snapshot_path": "c:\\srt\\7abfa868c34a\\s\\inputs\\9c76c5dd3967e6b4a3a8437a41937192\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "e812893a04d83ef21a1e84fcdc704863",
+    "generation": "9a987c7f778a4439d8bd601e99defdfa",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_c9db81cf-5fb5-4458-9c62-dd75455f94ef:42cc077f-d9d8-4e57-86bd-c7782e5508b4",
+    "turn_id": "7f4a6468b8bcd25242d37f531994bd43",
+    "native_outcome": "unknown",
+    "final_available": true,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-9c76c5dd3967e6b4a3a8437a41937192",
+    "branch": "erranliu/sl-9c76c5dd3967e6b4a3a8437a41937192"
+  },
+  "controls": {
+    "can_reply": true,
+    "can_resume": false,
+    "can_stop": true
+  },
+  "pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/308",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 308,
+    "base_branch": "codex/srtest/7abfa868c34a/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "erranliu/sl-9c76c5dd3967e6b4a3a8437a41937192",
+    "head_revision": "0fc50361de7bc16a38f0d90959917bb3054cff33",
+    "state": "open",
+    "merged": false,
+    "merge_commit": "3388e8ba2cf8d6d90923cc19a020a5314b373f8e",
+    "checked_at": "2026-10-16T01:26:14.203305Z"
+  },
+  "summary": "Publisher completed with exit code 0, pushed erranliu/sl-9c76c5dd3967e6b4a3a8437a41937192 to origin using the same branch name, and created PR #308 targeting codex/srtest/7abfa868c34a/base.",
+  "final": {
+    "command_id": "7f4a6468b8bcd25242d37f531994bd43",
+    "attempt_id": "e812893a04d83ef21a1e84fcdc704863",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_c9db81cf-5fb5-4458-9c62-dd75455f94ef:42cc077f-d9d8-4e57-86bd-c7782e5508b4",
+    "turn_id": "7f4a6468b8bcd25242d37f531994bd43",
+    "native_outcome": "unknown",
+    "verified": true,
+    "source": "orca.terminal.native-state-reply.v1",
+    "item_id": "60b1339cd11e1f1ac70ef952385b7cdccb8e4c5230b09a289e3148dca1ca2ba1",
+    "text": "{\"outcome\":\"done\",\"summary\":\"Publisher completed with exit code 0, pushed erranliu/sl-9c76c5dd3967e6b4a3a8437a41937192 to origin using the same branch name, and created PR #308 targeting codex/srtest/7abfa868c34a/base.\",\"outputs\":{\"pr_url\":\"https://github.com/erranliu/SteerlineTest/pull/308\"}}"
+  },
+  "created_at": "2026-10-16T01:23:49.8539878Z",
+  "updated_at": "2026-10-16T01:26:14.203305Z"
+}

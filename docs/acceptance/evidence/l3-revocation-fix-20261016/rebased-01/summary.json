@@ -1,0 +1,25 @@
+{
+  "schema": "steerrunner-live-recheck/v1",
+  "source_commit": "a778ba7b6ac1fed1fafeb5aa7ea331da9f16d499",
+  "source_dirty": false,
+  "prerequisites": ".evidence/l3-revocation-rebased-prerequisites-01",
+  "status": "failed",
+  "started_at": "2026-10-16T07:05:18.4460940Z",
+  "semantics": "Rebased fixed source, focused unreachable rerun. New main authentication capability gate is preserved; a readiness rejection is a failed native execution, not a qualified unreachable-window pass.",
+  "results": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-16T07:05:18.4461890Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-rebased-01\\unreachable-fixture.json",
+      "manifest": "C:\\srt\\c3fa314612bb\\manifest.json",
+      "evidence": "C:\\srt\\c3fa314612bb\\evidence",
+      "error": "Live scenario failed; inspect C:\\srt\\c3fa314612bb\\evidence/native.log",
+      "finished_at": "2026-10-16T07:10:26.3802787Z"
+    }
+  ],
+  "finished_at": "2026-10-16T07:10:26.3811492Z"
+}

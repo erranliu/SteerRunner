@@ -1,0 +1,86 @@
+{
+  "operations": [
+    {
+      "operation_id": "f81aeb82b00904e8cbeda26b5385d86d",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "5c65c7e9a3a33753d3d1275a2c25a31a",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "a5d03e4ad3a424b981cf39b3238407c7",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "10c1a422b33f848ebb165f586c966175",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "e2dce54f2a012a45ec2e188ad23b29cf",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "0ec35d24f734e1581ee7b872787aec84",
+  "revision": 25,
+  "title": "SteerRunner L3 orca-remote.stop-revocation/boundary",
+  "correlation": {
+    "case": "boundary",
+    "fixture_id": "f359daf6938a",
+    "scenario": "orca-remote.stop-revocation"
+  },
+  "input_digest": "fece90fd0868e5ed7030f1d6d687969253e944522ddc37f6180b15970c875770",
+  "resource_digest": "fc188e8e6abea1c23cdd15dbd5957063ceded2e6367cbf36726e90355d4757e8",
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "3baab58c404ee88e1a07128892888a0d6a42c436b31f07ea5674be99f1adaa14",
+      "snapshot_path": "c:\\srt\\f359daf6938a\\s\\inputs\\0ec35d24f734e1581ee7b872787aec84\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "c38056269b6f92ce7762b6a50b3195ccc1f0c3d98aefe6e8846b378ab785baca",
+      "snapshot_path": "c:\\srt\\f359daf6938a\\s\\inputs\\0ec35d24f734e1581ee7b872787aec84\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "d5a35a65fe656693d57eb146711668d6",
+    "generation": "80d81dc2fe1db69d1bcacf786e10fa0b",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_3dfbe1bb-1a89-46dc-a2a7-a9fa16a72a17:a408c84c-e615-4d25-b503-ee04f22d1993",
+    "turn_id": "da7ca7d3a1589951fbe817ec5eed48d3",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-0ec35d24f734e1581ee7b872787aec84",
+    "branch": "erranliu/sl-0ec35d24f734e1581ee7b872787aec84"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "created_at": "2026-10-16T06:44:07.311221Z",
+  "updated_at": "2026-10-16T06:48:24.7348778Z"
+}

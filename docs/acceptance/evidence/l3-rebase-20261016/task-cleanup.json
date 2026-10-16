@@ -1,0 +1,108 @@
+{
+  "fixture_count": 28,
+  "at": "2026-10-16T05:15:38.4727352Z",
+  "owned_processes": [],
+  "recorded_last_injection_watchdogs": [
+    {
+      "original_exited": true,
+      "fixture": "3ddbd4c8b4d7",
+      "pid": 33588,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "80a364f87d59",
+      "pid": 39468,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "150ca92ed502",
+      "pid": 30772,
+      "pid_reused": true
+    },
+    {
+      "original_exited": true,
+      "fixture": "6f13f73faf23",
+      "pid": 12116,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "31832bb11815",
+      "pid": 27352,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "cd059ca8a742",
+      "pid": 7888,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "4d0507a8f034",
+      "pid": 36136,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "755d28ce2c69",
+      "pid": 12244,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "041439dc374d",
+      "pid": 25520,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "280667c60633",
+      "pid": 19704,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "fdbf85a58bb6",
+      "pid": 44112,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "47948528f248",
+      "pid": 5080,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "151d75b03e1c",
+      "pid": 20260,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "365e8c0249a5",
+      "pid": 10628,
+      "pid_reused": false
+    },
+    {
+      "original_exited": true,
+      "fixture": "38ea0757c002",
+      "pid": 47892,
+      "pid_reused": false
+    }
+  ],
+  "semantics": "Elevated host cooperatively stopped by its owned stop marker; original process absence independently verified through CIM and the matching finished receipt.",
+  "admin_host": {
+    "pid": 30536,
+    "pending_requests": 0,
+    "created": "134365867898948446",
+    "host_id": "b05119a551144e7ea62f0b85e1c63f1a",
+    "finished_at": "2026-10-16T05:14:08.423297Z",
+    "exited": true
+  },
+  "owned_firewall_rules": [],
+  "schema": "steerrunner-live-task-cleanup/v1"
+}

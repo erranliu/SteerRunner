@@ -1,0 +1,36 @@
+{
+  "schema": "steerrunner-live-recheck/v1",
+  "source_commit": "95d24e5a44df8813b736f052e2ba831363a97b20",
+  "source_dirty": false,
+  "status": "failed",
+  "started_at": "2026-10-16T04:53:10.5998044Z",
+  "semantics": "Independent fresh-fixture rechecks of failed cases; does not alter or count as first-pass success in the complete original round",
+  "results": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-16T04:53:10.6876377Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-failure-recheck-02\\orca-remote.service-restart-graceful-active-fixture.json",
+      "manifest": "C:\\srt\\79964edef822\\manifest.json",
+      "evidence": "C:\\srt\\79964edef822\\evidence",
+      "finished_at": "2026-10-16T05:03:34.3418738Z"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-16T05:03:34.3487135Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-failure-recheck-02\\orca-remote.stop-revocation-unreachable-fixture.json",
+      "manifest": "C:\\srt\\38ea0757c002\\manifest.json",
+      "evidence": "C:\\srt\\38ea0757c002\\evidence",
+      "error": "Live scenario failed; inspect C:\\srt\\38ea0757c002\\evidence/native.log",
+      "finished_at": "2026-10-16T05:12:42.6779509Z"
+    }
+  ],
+  "finished_at": "2026-10-16T05:12:42.6878962Z"
+}

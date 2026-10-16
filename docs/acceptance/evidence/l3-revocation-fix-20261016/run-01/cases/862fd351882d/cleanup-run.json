@@ -1,0 +1,76 @@
+{
+  "operations": [
+    {
+      "operation_id": "f513b52eac0573806a1dd2b7c66bf15b",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "01eb3c63039be865f96aca364ddd93f8",
+      "action": "create_resource",
+      "status": "accepted",
+      "diagnostic": "Original startup command accepted; waiting for the original native agent identity",
+      "original_diagnostic": "C:\\srt\\862fd351882d\\bin\\stability.exe failed: exit status 1 ()\nCould not connect to the remote Orca runtime at ws://192.168.0.56:6768: the host did not answer, so anything running on it is unverifiable."
+    },
+    {
+      "operation_id": "9a91ac04a6f10bad1a2e8472a89ff00d",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "478f392ff8abafc66b55496a79e1a261",
+  "revision": 12,
+  "title": "SteerRunner L3 orca-remote.stop-revocation/boundary",
+  "correlation": {
+    "case": "boundary",
+    "fixture_id": "862fd351882d",
+    "scenario": "orca-remote.stop-revocation"
+  },
+  "input_digest": "f71cc59108c997c770ab4cd3abc94305b30add3818dd5401cbbf95280004bbb0",
+  "resource_digest": "fc188e8e6abea1c23cdd15dbd5957063ceded2e6367cbf36726e90355d4757e8",
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "3baab58c404ee88e1a07128892888a0d6a42c436b31f07ea5674be99f1adaa14",
+      "snapshot_path": "c:\\srt\\862fd351882d\\s\\inputs\\478f392ff8abafc66b55496a79e1a261\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "c38056269b6f92ce7762b6a50b3195ccc1f0c3d98aefe6e8846b378ab785baca",
+      "snapshot_path": "c:\\srt\\862fd351882d\\s\\inputs\\478f392ff8abafc66b55496a79e1a261\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "revision",
+    "turn_started": false,
+    "attempt_id": "569278e04ef77fcbaa98280861534a3a",
+    "generation": "74f4b75168295045fe835d40402f8090",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_64dceb65-c557-4e84-a233-ad777fab3631:aa85b24a-baa9-4726-ae18-206ba10168e5",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-478f392ff8abafc66b55496a79e1a261",
+    "branch": "erranliu/sl-478f392ff8abafc66b55496a79e1a261"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": false
+  },
+  "created_at": "2026-10-16T06:23:57.2974951Z",
+  "updated_at": "2026-10-16T06:27:10.3337361Z"
+}

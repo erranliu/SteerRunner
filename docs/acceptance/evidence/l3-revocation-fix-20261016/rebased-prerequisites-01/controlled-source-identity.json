@@ -1,0 +1,11 @@
+{
+  "pid": 50220,
+  "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartRequiresResume|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart)$",
+  "runner_sha256": "D6648B45400BFD5DBDB25618E6D31FFD6ABF2138D6E127D321B2FC5074CE2456",
+  "fixture_sha256": "5D9DEE3E045E4E209E8BCC1B3CB465D87E9689C545A77FF75DA0AEF50F771B33",
+  "source_commit": "a778ba7b6ac1fed1fafeb5aa7ea331da9f16d499",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

@@ -1,0 +1,35 @@
+{
+  "schema": "steerrunner-live-recheck/v1",
+  "source_commit": "946875bf3abc4a58b301e935fcd164f6c4dab977",
+  "source_dirty": false,
+  "status": "passed",
+  "started_at": "2026-10-16T02:28:07.3483297Z",
+  "semantics": "Independent fresh-fixture rechecks of failed cases; does not alter or count as first-pass success in the complete original round",
+  "results": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-16T02:28:07.3831429Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-failure-recheck-01\\orca-remote.caller-exit-accepted-response-lost-fixture.json",
+      "manifest": "C:\\srt\\971ffdc305bb\\manifest.json",
+      "evidence": "C:\\srt\\971ffdc305bb\\evidence",
+      "finished_at": "2026-10-16T02:33:59.2650202Z"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-16T02:33:59.2703899Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-failure-recheck-01\\orca-remote.stop-revocation-active-fixture.json",
+      "manifest": "C:\\srt\\19a70f35833f\\manifest.json",
+      "evidence": "C:\\srt\\19a70f35833f\\evidence",
+      "finished_at": "2026-10-16T02:37:15.8579670Z"
+    }
+  ],
+  "finished_at": "2026-10-16T02:37:15.8673614Z"
+}

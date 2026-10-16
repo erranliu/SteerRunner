@@ -1,0 +1,83 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "source_dirty": false,
+  "started_at": "2026-10-16T06:01:53.2002518Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01",
+      "native_zero_match_guard": true,
+      "exit_code": 0,
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestProcessHostCommandHelper",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01\\framework",
+      "level": "L1",
+      "test_count": 192
+    },
+    {
+      "scenario_count": 12,
+      "exit_code": 0,
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01\\controlled"
+    },
+    {
+      "evidence": "C:\\srt\\e7960860cba8\\evidence",
+      "status": "failed",
+      "error": "Live scenario failed; inspect C:\\srt\\e7960860cba8\\evidence/native.log",
+      "manifest": "C:\\srt\\e7960860cba8\\manifest.json",
+      "repeat_index": 1,
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T06:21:11.2703768Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01\\orca-remote.stop-revocation-active-r1-fixture.json",
+      "case_id": "active",
+      "started_at": "2026-10-16T06:10:30.9578009Z"
+    },
+    {
+      "evidence": "C:\\srt\\862fd351882d\\evidence",
+      "status": "failed",
+      "error": "Live scenario failed; inspect C:\\srt\\862fd351882d\\evidence/native.log",
+      "manifest": "C:\\srt\\862fd351882d\\manifest.json",
+      "repeat_index": 1,
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T06:27:16.4039730Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01\\orca-remote.stop-revocation-boundary-r1-fixture.json",
+      "case_id": "boundary",
+      "started_at": "2026-10-16T06:21:11.2796739Z"
+    },
+    {
+      "evidence": "C:\\srt\\f0b9c9cd4d80\\evidence",
+      "status": "passed",
+      "manifest": "C:\\srt\\f0b9c9cd4d80\\manifest.json",
+      "repeat_index": 1,
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T06:35:07.6822688Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-01\\orca-remote.stop-revocation-unreachable-r1-fixture.json",
+      "case_id": "unreachable",
+      "started_at": "2026-10-16T06:27:16.4077101Z"
+    }
+  ],
+  "executed_case_count": 3,
+  "passed_case_count": 1,
+  "first_pass_rate": 0.3333333333333333,
+  "selected_scenarios": [
+    "orca-remote.stop-revocation"
+  ],
+  "repeat": 1,
+  "planned_case_count": 3,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T06:35:07.7067717Z"
+}

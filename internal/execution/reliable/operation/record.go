@@ -3,6 +3,7 @@
 package operation
 
 import (
+	"bytes"
 	"encoding/json"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
@@ -68,6 +69,7 @@ func (i *Intent) Settle(operations []b.Operation, receipt b.LifecycleReceipt, mo
 // timestamps or receipt summary to the journal's representation.
 func (i *Intent) SettleStop(operations []b.Operation, receipt b.LifecycleReceipt, status b.OperationStatus) {
 	original := i.Request.Operation
+	unchanged := false
 	// Preserve the implementation's committed progress under the same original
 	// operation binding. Missing or foreign receipts never authorize continuation.
 	if receipt.ValidateFor(i.Request) == nil {
@@ -75,13 +77,19 @@ func (i *Intent) SettleStop(operations []b.Operation, receipt b.LifecycleReceipt
 		if err != nil {
 			panic(err)
 		}
+		unchanged = i.Receipt != nil && original.Status == status && bytes.Equal(original.Receipt, wire)
 		i.Request.Operation.Receipt = wire
 	} else {
 		i.Request.Operation.Receipt = nil
 	}
 	i.Request.Operation.Status = status
-	receipt.Operation = original
-	i.Receipt = &receipt
+	// An identical canonical receipt is not new progress. Keep its original
+	// journal representation instead of shifting the prior receipt into it on
+	// each probe and manufacturing a change solely from that wrapper.
+	if !unchanged {
+		receipt.Operation = original
+		i.Receipt = &receipt
+	}
 	for n := range operations {
 		if operations[n].ID == original.ID {
 			operations[n].Status = status

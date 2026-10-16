@@ -9,6 +9,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"reflect"
 	"time"
 )
 
@@ -154,7 +155,8 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	e.mu.Lock()
 	defer e.mu.Unlock()
-	next := e.runs[id].Clone()
+	prior := e.runs[id]
+	next := prior.Clone()
 	status, diagnostic := operation.Outcome(receipt, err)
 	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
 	if err == nil && receipt.State.Stopped {
@@ -173,6 +175,12 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 	}
 	next.Diagnostic = e.redact(next, diagnostic)
+	// Continue probing an unresolved stop, but only publish a new revision when
+	// its durable facts change. Otherwise slow callers can never pass CAS while
+	// the worker repeatedly observes the same unreachable original resource.
+	if reflect.DeepEqual(next, prior) {
+		return false
+	}
 	_ = e.commitLocked(next, nil, "stop_"+next.StopStatus)
 	return false
 }

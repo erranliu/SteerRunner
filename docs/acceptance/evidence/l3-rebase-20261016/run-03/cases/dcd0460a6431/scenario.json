@@ -1,0 +1,81 @@
+{
+  "scenario": "orca-remote.caller-exit",
+  "case_id": "accepted-response-lost",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "e500e021db18639bd53e3b88a9a2a117",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/319",
+  "merge_commit": "d445849abd6b3c8dc06a36b14fd4075b768d94ff",
+  "test_outcome": "passed",
+  "business_outcome": "merged",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: owned caller terminated after original request was accepted"
+    },
+    {
+      "name": "caller-service-survives",
+      "passed": true,
+      "evidence": "faults.jsonl and caller-commands.jsonl: same service survived caller termination"
+    },
+    {
+      "name": "submit-replay-original",
+      "passed": true,
+      "evidence": "caller-commands.jsonl: original request replay returns original Run"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "single-actual-pr",
+      "passed": true,
+      "evidence": "pr-list.json: exactly one PR on this fixture base"
+    },
+    {
+      "name": "merge-head-stable",
+      "passed": true,
+      "evidence": "original PR verified before exact-head merge"
+    },
+    {
+      "name": "merged-base",
+      "passed": true,
+      "evidence": "actual base fetch matches merge commit"
+    },
+    {
+      "name": "merged-content",
+      "passed": true,
+      "evidence": "merged Git object equals verified head"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique prompt sends and single worktree with its original terminal"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "single-native-publication",
+      "passed": true,
+      "evidence": "native-publication-audit.json: publisher/create counts"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl: every native send/create has original-runtime successful receipt"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

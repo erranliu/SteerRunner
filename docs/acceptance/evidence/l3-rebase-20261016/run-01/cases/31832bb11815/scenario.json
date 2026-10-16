@@ -1,0 +1,109 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "unreachable",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "344d14af7d8316dd6d92c65497881fb2",
+  "test_outcome": "passed",
+  "business_outcome": "revoked-unverified",
+  "faults_hit": 2,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "direct-state-blocked",
+      "passed": true,
+      "evidence": "faults.jsonl: fixture helper direct native state request failed"
+    },
+    {
+      "name": "native-cli-blocked",
+      "passed": true,
+      "evidence": "faults.jsonl: real private CLI request failed"
+    },
+    {
+      "name": "remote-still-live",
+      "passed": true,
+      "evidence": "faults.jsonl: independent original runtime still queryable"
+    },
+    {
+      "name": "failed-observation-retried",
+      "passed": true,
+      "evidence": "native-calls.jsonl: failed original terminal read followed by a later original read during the 60-second network window"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "network-blocked.json and dual-path failure probes"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "revocation-survives-restart",
+      "passed": true,
+      "evidence": "latest-run.json after unreachable stop and service replacement"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "revoked-feedback-rejected",
+      "passed": true,
+      "evidence": "caller-commands.jsonl: current-version feedback explicitly refused with resume_required"
+    },
+    {
+      "name": "stale-revoked-write-rejected",
+      "passed": true,
+      "evidence": "caller-commands.jsonl: old revision explicitly refused without restoring authority"
+    },
+    {
+      "name": "unreachable-revocation-window",
+      "passed": true,
+      "evidence": "faults.jsonl: revocation and unknown stop retained throughout the frozen 240-second outage"
+    },
+    {
+      "name": "no-unexpected-publication",
+      "passed": true,
+      "evidence": "driver-commands.jsonl: no PR for dedicated stop fixture"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique prompt sends and single worktree with its original terminal"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl: every native send/create has original-runtime successful receipt"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

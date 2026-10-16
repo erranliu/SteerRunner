@@ -1,0 +1,6 @@
+{
+  "native_stopped": true,
+  "service_stopped": true,
+  "facilities_restored": true,
+  "driver_native_cleanup": false
+}

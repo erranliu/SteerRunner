@@ -1,0 +1,24 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "boundary",
+  "repeat_index": 1,
+  "stage": "await-implementation-gate",
+  "run_id": "478f392ff8abafc66b55496a79e1a261",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 0,
+  "audit_complete": false,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

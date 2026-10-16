@@ -1,0 +1,19 @@
+{
+  "schema": "steerrunner-stop-regression-proof/v1",
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "regression": "TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress",
+  "original_source": "acb3f965b620036f9a2de88c14c47be1726acb44",
+  "original_test_exit": 1,
+  "original_failure_code": "stale_revision",
+  "fixed_targeted_test_exit": 0,
+  "related_packages": [
+    "internal/application",
+    "internal/execution/reliable/operation",
+    "internal/execution/adapters/orcatransport"
+  ],
+  "related_packages_test_exit": 0,
+  "vet_command": "go vet ./...",
+  "vet_exit": 0,
+  "native_test_source_changed": false,
+  "at": "2026-10-16T06:18:06.6894286Z"
+}

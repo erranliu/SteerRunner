@@ -1,0 +1,40 @@
+{
+  "owned_firewall_rules": [],
+  "owned_processes": [],
+  "source_commit": "95d24e5a44df8813b736f052e2ba831363a97b20",
+  "case_count": 2,
+  "schema": "steerrunner-live-recheck-audit/v1",
+  "at": "2026-10-16T05:14:05.1763837Z",
+  "cases": [
+    {
+      "auxiliary_closed": 5,
+      "outcome": "merged",
+      "run_id": "aa3175600da6789e342567ee146d3a9b",
+      "fixture": "79964edef822",
+      "merge_commit": "e71c6fd4157cf14a689f9a25614211510ad9a623",
+      "case_id": "graceful-active",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/329",
+      "service_status": "not_running",
+      "runner_identical_to_original_round": true,
+      "scenario": "orca-remote.service-restart",
+      "status": "passed",
+      "driver_identical_to_original_round": true
+    },
+    {
+      "auxiliary_closed": 4,
+      "outcome": "",
+      "run_id": "a9d0a8185ba1bf15e88ff74da09f333b",
+      "fixture": "38ea0757c002",
+      "merge_commit": null,
+      "case_id": "unreachable",
+      "pr_url": null,
+      "service_status": "not_running",
+      "runner_identical_to_original_round": true,
+      "scenario": "orca-remote.stop-revocation",
+      "status": "failed",
+      "driver_identical_to_original_round": true
+    }
+  ],
+  "status": "failed",
+  "source_unchanged": true
+}

@@ -1,0 +1,43 @@
+{
+  "network_seconds_before_failure_cleanup": 93.6183722,
+  "semantics": "Fresh-fixture reproduction on the identical build: five explicit stale_revision rejections; resume_required assertion not reached; the planned 240-second observation window was not completed.",
+  "attempts": [
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 26,
+      "at": "2026-10-16T05:10:04.9939462Z",
+      "request_id": "38ea0757c002-revoked-feedback-0",
+      "ok": false
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 28,
+      "at": "2026-10-16T05:10:07.7656299Z",
+      "request_id": "38ea0757c002-revoked-feedback-1",
+      "ok": false
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 30,
+      "at": "2026-10-16T05:10:10.5074822Z",
+      "request_id": "38ea0757c002-revoked-feedback-2",
+      "ok": false
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 32,
+      "at": "2026-10-16T05:10:12.9945649Z",
+      "request_id": "38ea0757c002-revoked-feedback-3",
+      "ok": false
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 34,
+      "at": "2026-10-16T05:10:15.5284473Z",
+      "request_id": "38ea0757c002-revoked-feedback-4",
+      "ok": false
+    }
+  ],
+  "schema": "steerrunner-live-cas-diagnostic/v1",
+  "all_attempts_explicitly_rejected": true
+}

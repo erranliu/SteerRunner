@@ -1,0 +1,9 @@
+{
+  "incarnation": "eeceb7fc-85c6-486e-92d6-4e68438d5b9f",
+  "at": "2026-10-16T03:26:10.1627653Z",
+  "terminal": "term_de238267-b1fb-4f68-be91-fca1cb5e374a",
+  "call_id": "762897025477977c616911c032d0f7aa",
+  "schema": "steerrunner-live-startup-diagnostic/v1",
+  "preview": "ything?forshortcuts~\\orca\\workspaces\\SteerlineTest\\sl-cf48b6dbb3978338c241f915df6b182bError: account/read failed during TUI bootstrap: account/read failed: workspace routing discovery timed out (code -32603)\nPS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-cf48b6dbb3978338c241f915df6b182b>",
+  "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+}

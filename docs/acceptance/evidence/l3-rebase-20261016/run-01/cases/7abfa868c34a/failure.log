@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.caller-exit
+    stability_test.go:487: PR is not a verified open PR on this fixture's exact repository/base/head
+--- FAIL: TestSRLiveScenario (172.78s)
+    --- FAIL: TestSRLiveScenario/orca-remote.caller-exit (172.65s)
+FAIL

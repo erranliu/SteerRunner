@@ -1,0 +1,44 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "a778ba7b6ac1fed1fafeb5aa7ea331da9f16d499",
+  "source_dirty": false,
+  "started_at": "2026-10-16T06:54:12.2104900Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-rebased-prerequisites-01\\framework",
+      "test_count": 206,
+      "skipped_tests": [
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestProcessHostCommandHelper",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-rebased-prerequisites-01",
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 12,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-rebased-prerequisites-01\\controlled"
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T07:05:10.4613755Z"
+}
