@@ -1,0 +1,4816 @@
+{
+  "case_count": 36,
+  "semantics": "Total time includes preparation and verification; native harness duration comes from Go test output. Checkpoint intervals are wall-clock intervals between recorded driver markers, not CPU time or inferred business-phase durations. Smoke has no fault journal.",
+  "schema": "steerrunner-live-timings/v1",
+  "cases": [
+    {
+      "total_seconds": 262.0,
+      "status": "passed",
+      "fixture": "2cd651115cc9",
+      "finished_at": "2026-10-15T21:54:06.9657097Z",
+      "started_at": "2026-10-15T21:49:44.8535514Z",
+      "driver_checkpoint_intervals": [],
+      "scenario": "orca-remote.smoke",
+      "repeat_index": 1,
+      "case_id": "default",
+      "native_harness_seconds": 241.3
+    },
+    {
+      "total_seconds": 202.0,
+      "status": "passed",
+      "fixture": "b7b5cc1a7cdf",
+      "finished_at": "2026-10-15T21:57:28.1694185Z",
+      "started_at": "2026-10-15T21:54:06.9697632Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T21:54:49.8250705Z",
+          "finished_at": "2026-10-15T21:54:49.8332452Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "b6ce09210687fdc3eacb7b217c2819f8",
+            "state_dir": "c:\\srt\\b7b5cc1a7cdf\\s",
+            "pid": 32320,
+            "process_created": "134365748895011676",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T21:54:49.8332452Z",
+          "finished_at": "2026-10-15T21:54:54.5689176Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T21:54:54.5689176Z",
+          "finished_at": "2026-10-15T21:56:56.3651005Z",
+          "kind": "stage",
+          "seconds": 122.0,
+          "value": "caller-original-execution"
+        },
+        {
+          "started_at": "2026-10-15T21:56:56.3651005Z",
+          "finished_at": "2026-10-15T21:57:19.2484422Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T21:57:19.2484422Z",
+          "finished_at": "2026-10-15T21:57:26.4144406Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.caller-exit",
+      "repeat_index": 1,
+      "case_id": "accepted-response-lost",
+      "native_harness_seconds": 161.46
+    },
+    {
+      "total_seconds": 298.0,
+      "status": "passed",
+      "fixture": "df540e60ac5c",
+      "finished_at": "2026-10-15T22:02:26.5906944Z",
+      "started_at": "2026-10-15T21:57:28.175327Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T21:58:09.4662883Z",
+          "finished_at": "2026-10-15T21:58:11.2032183Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T21:58:11.2032183Z",
+          "finished_at": "2026-10-15T21:58:15.1827403Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T21:58:15.1827403Z",
+          "finished_at": "2026-10-15T21:58:15.8241458Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T21:58:15.8241458Z",
+          "finished_at": "2026-10-15T21:58:21.8975954Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T21:58:21.8975954Z",
+          "finished_at": "2026-10-15T21:58:25.5019559Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T21:58:25.5019559Z",
+          "finished_at": "2026-10-15T21:58:25.5081867Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "f62f49a7ef43b99f3d200517d954400f",
+            "state_dir": "c:\\srt\\df540e60ac5c\\s",
+            "pid": 30784,
+            "process_created": "134365751051675309",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T21:58:25.5081867Z",
+          "finished_at": "2026-10-15T21:58:28.8490317Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T21:58:28.8490317Z",
+          "finished_at": "2026-10-15T21:59:26.8917919Z",
+          "kind": "stage",
+          "seconds": 58.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T21:59:26.8917919Z",
+          "finished_at": "2026-10-15T21:59:33.0432341Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T21:59:33.0432341Z",
+          "finished_at": "2026-10-15T22:00:33.1967921Z",
+          "kind": "network-confirmed",
+          "seconds": 60.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:00:33.1967921Z",
+          "finished_at": "2026-10-15T22:00:38.9429433Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:00:38.9429433Z",
+          "finished_at": "2026-10-15T22:00:43.3271422Z",
+          "kind": "network-confirmed",
+          "seconds": 5.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:00:43.3271422Z",
+          "finished_at": "2026-10-15T22:01:55.4908319Z",
+          "kind": "stage",
+          "seconds": 72.0,
+          "value": "reconnected-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:01:55.4908319Z",
+          "finished_at": "2026-10-15T22:02:18.6634368Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:02:18.6634368Z",
+          "finished_at": "2026-10-15T22:02:26.3738821Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.connection-reconnect",
+      "repeat_index": 1,
+      "case_id": "active-disconnect",
+      "native_harness_seconds": 259.39
+    },
+    {
+      "total_seconds": 241.0,
+      "status": "passed",
+      "fixture": "8cb489f9002d",
+      "finished_at": "2026-10-15T22:06:27.4453319Z",
+      "started_at": "2026-10-15T22:02:26.5936496Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:03:11.0157751Z",
+          "finished_at": "2026-10-15T22:03:11.0243655Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "a3afeaa7da3e305cd9fe5e835a6baf31",
+            "state_dir": "c:\\srt\\8cb489f9002d\\s",
+            "pid": 45780,
+            "process_created": "134365753906761572",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:03:11.0243655Z",
+          "finished_at": "2026-10-15T22:03:14.5192479Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:03:14.5192479Z",
+          "finished_at": "2026-10-15T22:04:21.3103105Z",
+          "kind": "stage",
+          "seconds": 67.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:04:21.3103105Z",
+          "finished_at": "2026-10-15T22:04:22.3774129Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "a3afeaa7da3e305cd9fe5e835a6baf31",
+            "state_dir": "c:\\srt\\8cb489f9002d\\s",
+            "pid": 45780,
+            "process_created": "134365753906761572",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:04:22.3774129Z",
+          "finished_at": "2026-10-15T22:04:23.9543454Z",
+          "kind": "service-stopped",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "a3afeaa7da3e305cd9fe5e835a6baf31",
+            "state_dir": "c:\\srt\\8cb489f9002d\\s",
+            "pid": 45780,
+            "process_created": "134365753906761572",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:04:23.9543454Z",
+          "finished_at": "2026-10-15T22:04:23.972004Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "ddfcb02671489dc04f8f4f64690519e3",
+            "state_dir": "c:\\srt\\8cb489f9002d\\s",
+            "pid": 47072,
+            "process_created": "134365754637015601",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:04:23.972004Z",
+          "finished_at": "2026-10-15T22:04:59.1724461Z",
+          "kind": "stage",
+          "seconds": 36.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:04:59.1724461Z",
+          "finished_at": "2026-10-15T22:04:59.2908863Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T22:04:59.2908863Z",
+          "finished_at": "2026-10-15T22:04:59.299526Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-131",
+              "input": {
+                "expected_revision": 33
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:04:59.299526Z",
+          "finished_at": "2026-10-15T22:05:57.0138709Z",
+          "kind": "stage",
+          "seconds": 58.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:05:57.0138709Z",
+          "finished_at": "2026-10-15T22:06:19.4682694Z",
+          "kind": "stage",
+          "seconds": 22.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:06:19.4682694Z",
+          "finished_at": "2026-10-15T22:06:26.5643823Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 1,
+      "case_id": "graceful-active",
+      "native_harness_seconds": 200.39
+    },
+    {
+      "total_seconds": 236.0,
+      "status": "passed",
+      "fixture": "bbea2827bc88",
+      "finished_at": "2026-10-15T22:10:23.0588367Z",
+      "started_at": "2026-10-15T22:06:27.447782Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:07:12.7528411Z",
+          "finished_at": "2026-10-15T22:07:12.760903Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "7c45038f1414075e2886b71e46bd5183",
+            "state_dir": "c:\\srt\\bbea2827bc88\\s",
+            "pid": 39880,
+            "process_created": "134365756324059026",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:07:12.760903Z",
+          "finished_at": "2026-10-15T22:07:16.0478396Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:07:16.0478396Z",
+          "finished_at": "2026-10-15T22:08:19.1129222Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:08:19.1129222Z",
+          "finished_at": "2026-10-15T22:08:20.5393805Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "7c45038f1414075e2886b71e46bd5183",
+            "state_dir": "c:\\srt\\bbea2827bc88\\s",
+            "pid": 39880,
+            "process_created": "134365756324059026",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:08:20.5393805Z",
+          "finished_at": "2026-10-15T22:08:22.3050378Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "7c45038f1414075e2886b71e46bd5183",
+            "state_dir": "c:\\srt\\bbea2827bc88\\s",
+            "pid": 39880,
+            "process_created": "134365756324059026",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:08:22.3050378Z",
+          "finished_at": "2026-10-15T22:08:22.3199981Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "2afa73098cfe0562e06a2d3e9887aeeb",
+            "state_dir": "c:\\srt\\bbea2827bc88\\s",
+            "pid": 26552,
+            "process_created": "134365757019769337",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:08:22.3199981Z",
+          "finished_at": "2026-10-15T22:08:57.4985956Z",
+          "kind": "stage",
+          "seconds": 35.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:08:57.4985956Z",
+          "finished_at": "2026-10-15T22:08:57.6227264Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T22:08:57.6227264Z",
+          "finished_at": "2026-10-15T22:08:57.6286054Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-117",
+              "input": {
+                "expected_revision": 27
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:08:57.6286054Z",
+          "finished_at": "2026-10-15T22:09:51.1929489Z",
+          "kind": "stage",
+          "seconds": 54.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:09:51.1929489Z",
+          "finished_at": "2026-10-15T22:10:15.0633657Z",
+          "kind": "stage",
+          "seconds": 24.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:10:15.0633657Z",
+          "finished_at": "2026-10-15T22:10:22.3382925Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 1,
+      "case_id": "kill-active",
+      "native_harness_seconds": 194.54
+    },
+    {
+      "total_seconds": 333.0,
+      "status": "passed",
+      "fixture": "1a526bccbc98",
+      "finished_at": "2026-10-15T22:15:56.7939768Z",
+      "started_at": "2026-10-15T22:10:23.0627069Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:11:05.4120843Z",
+          "finished_at": "2026-10-15T22:11:07.1622857Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:11:07.1622857Z",
+          "finished_at": "2026-10-15T22:11:11.1331441Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:11:11.1331441Z",
+          "finished_at": "2026-10-15T22:11:11.8247101Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:11:11.8247101Z",
+          "finished_at": "2026-10-15T22:11:18.3858087Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:11:18.3858087Z",
+          "finished_at": "2026-10-15T22:11:22.1059675Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:11:22.1059675Z",
+          "finished_at": "2026-10-15T22:11:22.1114902Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "c6063b86696ca611cd322c4480c68a91",
+            "state_dir": "c:\\srt\\1a526bccbc98\\s",
+            "pid": 46832,
+            "process_created": "134365758817662765",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:11:22.1114902Z",
+          "finished_at": "2026-10-15T22:11:25.4292163Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:11:25.4292163Z",
+          "finished_at": "2026-10-15T22:12:27.8194171Z",
+          "kind": "stage",
+          "seconds": 62.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:12:27.8194171Z",
+          "finished_at": "2026-10-15T22:12:32.0186663Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:12:32.0186663Z",
+          "finished_at": "2026-10-15T22:14:03.9122643Z",
+          "kind": "network-confirmed",
+          "seconds": 91.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:14:03.9122643Z",
+          "finished_at": "2026-10-15T22:14:04.9948078Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "c6063b86696ca611cd322c4480c68a91",
+            "state_dir": "c:\\srt\\1a526bccbc98\\s",
+            "pid": 46832,
+            "process_created": "134365758817662765",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:14:04.9948078Z",
+          "finished_at": "2026-10-15T22:14:07.0688525Z",
+          "kind": "service-stopped",
+          "seconds": 3.0,
+          "value": {
+            "instance_id": "c6063b86696ca611cd322c4480c68a91",
+            "state_dir": "c:\\srt\\1a526bccbc98\\s",
+            "pid": 46832,
+            "process_created": "134365758817662765",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:14:07.0688525Z",
+          "finished_at": "2026-10-15T22:14:07.0796086Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "fb923bff99dd9ff22cb16eae32df5f32",
+            "state_dir": "c:\\srt\\1a526bccbc98\\s",
+            "pid": 24648,
+            "process_created": "134365760467187930",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:14:07.0796086Z",
+          "finished_at": "2026-10-15T22:14:07.1560997Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:14:07.1560997Z",
+          "finished_at": "2026-10-15T22:14:13.5951932Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:14:13.5951932Z",
+          "finished_at": "2026-10-15T22:14:24.5286608Z",
+          "kind": "network-confirmed",
+          "seconds": 11.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:14:24.5286608Z",
+          "finished_at": "2026-10-15T22:14:24.6656585Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T22:14:24.6656585Z",
+          "finished_at": "2026-10-15T22:14:24.6723283Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-170",
+              "input": {
+                "expected_revision": 28
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:14:24.6723283Z",
+          "finished_at": "2026-10-15T22:15:22.4571428Z",
+          "kind": "stage",
+          "seconds": 58.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:15:22.4571428Z",
+          "finished_at": "2026-10-15T22:15:47.556854Z",
+          "kind": "stage",
+          "seconds": 25.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:15:47.556854Z",
+          "finished_at": "2026-10-15T22:15:55.0754013Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 1,
+      "case_id": "graceful-boundary",
+      "native_harness_seconds": 292.12
+    },
+    {
+      "total_seconds": 312.0,
+      "status": "passed",
+      "fixture": "ece4ab5b645d",
+      "finished_at": "2026-10-15T22:21:08.1377335Z",
+      "started_at": "2026-10-15T22:15:56.7967775Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:16:38.9890246Z",
+          "finished_at": "2026-10-15T22:16:40.6625603Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:16:40.6625603Z",
+          "finished_at": "2026-10-15T22:16:44.5763264Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:16:44.5763264Z",
+          "finished_at": "2026-10-15T22:16:45.2326378Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:16:45.2326378Z",
+          "finished_at": "2026-10-15T22:16:51.2173554Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:16:51.2173554Z",
+          "finished_at": "2026-10-15T22:16:54.8199044Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:16:54.8199044Z",
+          "finished_at": "2026-10-15T22:16:54.8354456Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "0d21f6dabf6536a6c8126e9b3aef366a",
+            "state_dir": "c:\\srt\\ece4ab5b645d\\s",
+            "pid": 13244,
+            "process_created": "134365762144767932",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:16:54.8354456Z",
+          "finished_at": "2026-10-15T22:16:58.3713239Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:16:58.3713239Z",
+          "finished_at": "2026-10-15T22:17:55.376209Z",
+          "kind": "stage",
+          "seconds": 57.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:17:55.376209Z",
+          "finished_at": "2026-10-15T22:18:00.1380311Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:18:00.1380311Z",
+          "finished_at": "2026-10-15T22:19:22.6916889Z",
+          "kind": "network-confirmed",
+          "seconds": 82.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:19:22.6916889Z",
+          "finished_at": "2026-10-15T22:19:23.9443894Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "0d21f6dabf6536a6c8126e9b3aef366a",
+            "state_dir": "c:\\srt\\ece4ab5b645d\\s",
+            "pid": 13244,
+            "process_created": "134365762144767932",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:19:23.9443894Z",
+          "finished_at": "2026-10-15T22:19:25.692109Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "0d21f6dabf6536a6c8126e9b3aef366a",
+            "state_dir": "c:\\srt\\ece4ab5b645d\\s",
+            "pid": 13244,
+            "process_created": "134365762144767932",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:19:25.692109Z",
+          "finished_at": "2026-10-15T22:19:25.7039841Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "cfb7a082fb98ba601d5c1294b8f5aa3e",
+            "state_dir": "c:\\srt\\ece4ab5b645d\\s",
+            "pid": 27408,
+            "process_created": "134365763653531649",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:19:25.7039841Z",
+          "finished_at": "2026-10-15T22:19:25.7657028Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:19:25.7657028Z",
+          "finished_at": "2026-10-15T22:19:32.1478455Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:19:32.1478455Z",
+          "finished_at": "2026-10-15T22:19:43.3452544Z",
+          "kind": "network-confirmed",
+          "seconds": 11.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:19:43.3452544Z",
+          "finished_at": "2026-10-15T22:19:43.4650033Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T22:19:43.4650033Z",
+          "finished_at": "2026-10-15T22:19:43.4704068Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-152",
+              "input": {
+                "expected_revision": 24
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:19:43.4704068Z",
+          "finished_at": "2026-10-15T22:20:35.1123093Z",
+          "kind": "stage",
+          "seconds": 52.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:20:35.1123093Z",
+          "finished_at": "2026-10-15T22:20:59.2219676Z",
+          "kind": "stage",
+          "seconds": 24.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:20:59.2219676Z",
+          "finished_at": "2026-10-15T22:21:07.0502406Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 1,
+      "case_id": "kill-boundary",
+      "native_harness_seconds": 270.56
+    },
+    {
+      "total_seconds": 121.0,
+      "status": "passed",
+      "fixture": "4a998ce12213",
+      "finished_at": "2026-10-15T22:23:09.9170674Z",
+      "started_at": "2026-10-15T22:21:08.1413651Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:21:52.3005329Z",
+          "finished_at": "2026-10-15T22:21:52.3091672Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "0c9d787d88a7db853a12d7692a9d5e37",
+            "state_dir": "c:\\srt\\4a998ce12213\\s",
+            "pid": 29196,
+            "process_created": "134365765119521670",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:21:52.3091672Z",
+          "finished_at": "2026-10-15T22:21:55.6783277Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:21:55.6783277Z",
+          "finished_at": "2026-10-15T22:23:00.4253879Z",
+          "kind": "stage",
+          "seconds": 65.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:23:00.4253879Z",
+          "finished_at": "2026-10-15T22:23:00.4302667Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-76",
+              "input": {
+                "expected_revision": 23
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:23:00.4302667Z",
+          "finished_at": "2026-10-15T22:23:03.6715198Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-15T22:23:03.6715198Z",
+          "finished_at": "2026-10-15T22:23:08.290047Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 1,
+      "case_id": "active",
+      "native_harness_seconds": 81.04
+    },
+    {
+      "total_seconds": 225.0,
+      "status": "passed",
+      "fixture": "adb892f77012",
+      "finished_at": "2026-10-15T22:26:54.8755513Z",
+      "started_at": "2026-10-15T22:23:09.9194662Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:23:50.2289075Z",
+          "finished_at": "2026-10-15T22:23:51.9722411Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:23:51.9722411Z",
+          "finished_at": "2026-10-15T22:23:56.265118Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:23:56.265118Z",
+          "finished_at": "2026-10-15T22:23:56.9377321Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:23:56.9377321Z",
+          "finished_at": "2026-10-15T22:24:02.7247857Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:24:02.7247857Z",
+          "finished_at": "2026-10-15T22:24:06.1796264Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:24:06.1796264Z",
+          "finished_at": "2026-10-15T22:24:06.1924978Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "de7ca435ff5ea60c2471c7043e19436f",
+            "state_dir": "c:\\srt\\adb892f77012\\s",
+            "pid": 41496,
+            "process_created": "134365766458218981",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:24:06.1924978Z",
+          "finished_at": "2026-10-15T22:24:09.715341Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:24:09.715341Z",
+          "finished_at": "2026-10-15T22:25:13.1385917Z",
+          "kind": "stage",
+          "seconds": 64.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:25:13.1385917Z",
+          "finished_at": "2026-10-15T22:25:17.2622748Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:25:17.2622748Z",
+          "finished_at": "2026-10-15T22:26:42.4136951Z",
+          "kind": "network-confirmed",
+          "seconds": 85.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:26:42.4136951Z",
+          "finished_at": "2026-10-15T22:26:42.4136951Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-146",
+              "input": {
+                "expected_revision": 22
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:26:42.4136951Z",
+          "finished_at": "2026-10-15T22:26:48.0156573Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:26:48.0156573Z",
+          "finished_at": "2026-10-15T22:26:48.0270633Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:26:48.0270633Z",
+          "finished_at": "2026-10-15T22:26:49.1091781Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-15T22:26:49.1091781Z",
+          "finished_at": "2026-10-15T22:26:54.5159144Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 1,
+      "case_id": "boundary",
+      "native_harness_seconds": 186.8
+    },
+    {
+      "total_seconds": 383.0,
+      "status": "passed",
+      "fixture": "4c92a234918b",
+      "finished_at": "2026-10-15T22:33:17.8474577Z",
+      "started_at": "2026-10-15T22:26:54.8792432Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:27:36.1327053Z",
+          "finished_at": "2026-10-15T22:27:37.8524789Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:27:37.8524789Z",
+          "finished_at": "2026-10-15T22:27:41.7187613Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:27:41.7187613Z",
+          "finished_at": "2026-10-15T22:27:42.3750224Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:27:42.3750224Z",
+          "finished_at": "2026-10-15T22:27:48.8955114Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:27:48.8955114Z",
+          "finished_at": "2026-10-15T22:27:52.4506767Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:27:52.4506767Z",
+          "finished_at": "2026-10-15T22:27:52.4571146Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "c1ac8972a10f4899c78d405dfd6cccc3",
+            "state_dir": "c:\\srt\\4c92a234918b\\s",
+            "pid": 31252,
+            "process_created": "134365768721077370",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:27:52.4571146Z",
+          "finished_at": "2026-10-15T22:27:55.8238846Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:27:55.8238846Z",
+          "finished_at": "2026-10-15T22:28:58.9438049Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:28:58.9438049Z",
+          "finished_at": "2026-10-15T22:29:03.5042001Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:29:03.5042001Z",
+          "finished_at": "2026-10-15T22:30:03.7180233Z",
+          "kind": "network-confirmed",
+          "seconds": 60.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:30:03.7180233Z",
+          "finished_at": "2026-10-15T22:30:03.7246006Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-125",
+              "input": {
+                "expected_revision": 22
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:30:03.7246006Z",
+          "finished_at": "2026-10-15T22:30:03.887853Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "unknown-stop-revocation"
+        },
+        {
+          "started_at": "2026-10-15T22:30:03.887853Z",
+          "finished_at": "2026-10-15T22:30:04.9629294Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "c1ac8972a10f4899c78d405dfd6cccc3",
+            "state_dir": "c:\\srt\\4c92a234918b\\s",
+            "pid": 31252,
+            "process_created": "134365768721077370",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:30:04.9629294Z",
+          "finished_at": "2026-10-15T22:30:06.7463938Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "c1ac8972a10f4899c78d405dfd6cccc3",
+            "state_dir": "c:\\srt\\4c92a234918b\\s",
+            "pid": 31252,
+            "process_created": "134365768721077370",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:30:06.7463938Z",
+          "finished_at": "2026-10-15T22:30:06.7620924Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "ece3aa1895e4858ea64f61f08ff7ec3e",
+            "state_dir": "c:\\srt\\4c92a234918b\\s",
+            "pid": 15400,
+            "process_created": "134365770064015132",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:30:06.7620924Z",
+          "finished_at": "2026-10-15T22:33:03.9687325Z",
+          "kind": "stage",
+          "seconds": 177.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:33:03.9687325Z",
+          "finished_at": "2026-10-15T22:33:10.2327455Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:33:10.2327455Z",
+          "finished_at": "2026-10-15T22:33:11.3261513Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:33:11.3261513Z",
+          "finished_at": "2026-10-15T22:33:16.5594929Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 1,
+      "case_id": "unreachable",
+      "native_harness_seconds": 342.85
+    },
+    {
+      "total_seconds": 299.0,
+      "status": "passed",
+      "fixture": "a8924baa7b9c",
+      "finished_at": "2026-10-15T22:38:16.0273095Z",
+      "started_at": "2026-10-15T22:33:17.8503713Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:33:58.6699351Z",
+          "finished_at": "2026-10-15T22:34:00.4187509Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:34:00.4187509Z",
+          "finished_at": "2026-10-15T22:34:04.0440813Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:34:04.0440813Z",
+          "finished_at": "2026-10-15T22:34:04.7153045Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:34:04.7153045Z",
+          "finished_at": "2026-10-15T22:34:10.5974057Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:34:10.5974057Z",
+          "finished_at": "2026-10-15T22:34:14.0637547Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:34:14.0637547Z",
+          "finished_at": "2026-10-15T22:34:14.0702836Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "54788f7092ac9116f309488f50cb735b",
+            "state_dir": "c:\\srt\\a8924baa7b9c\\s",
+            "pid": 4520,
+            "process_created": "134365772537239697",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:34:14.0702836Z",
+          "finished_at": "2026-10-15T22:34:17.402522Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:34:17.402522Z",
+          "finished_at": "2026-10-15T22:36:21.6305929Z",
+          "kind": "stage",
+          "seconds": 124.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:36:21.6305929Z",
+          "finished_at": "2026-10-15T22:36:26.0820473Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:36:26.0820473Z",
+          "finished_at": "2026-10-15T22:37:35.208145Z",
+          "kind": "network-confirmed",
+          "seconds": 69.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:37:35.208145Z",
+          "finished_at": "2026-10-15T22:37:41.0328511Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:37:41.0328511Z",
+          "finished_at": "2026-10-15T22:37:41.0410349Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:37:41.0410349Z",
+          "finished_at": "2026-10-15T22:37:43.2225156Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-15T22:37:43.2225156Z",
+          "finished_at": "2026-10-15T22:38:07.1194225Z",
+          "kind": "stage",
+          "seconds": 24.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:38:07.1194225Z",
+          "finished_at": "2026-10-15T22:38:14.358603Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 1,
+      "case_id": "completion-gap",
+      "native_harness_seconds": 258.08
+    },
+    {
+      "total_seconds": 304.0,
+      "status": "passed",
+      "fixture": "07fcb71846c2",
+      "finished_at": "2026-10-15T22:43:20.4236931Z",
+      "started_at": "2026-10-15T22:38:16.0304144Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:38:57.0132734Z",
+          "finished_at": "2026-10-15T22:38:58.730847Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:38:58.730847Z",
+          "finished_at": "2026-10-15T22:39:02.4424404Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:39:02.4424404Z",
+          "finished_at": "2026-10-15T22:39:03.0847503Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:39:03.0847503Z",
+          "finished_at": "2026-10-15T22:39:09.2741521Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:39:09.2741521Z",
+          "finished_at": "2026-10-15T22:39:12.5884014Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:39:12.5884014Z",
+          "finished_at": "2026-10-15T22:39:12.5942593Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "f2e4fd2ac883cb291034c61368d8ef3a",
+            "state_dir": "c:\\srt\\07fcb71846c2\\s",
+            "pid": 42492,
+            "process_created": "134365775522609579",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:39:12.5942593Z",
+          "finished_at": "2026-10-15T22:39:16.2012499Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:39:16.2012499Z",
+          "finished_at": "2026-10-15T22:41:21.1553441Z",
+          "kind": "stage",
+          "seconds": 125.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:41:21.1553441Z",
+          "finished_at": "2026-10-15T22:41:25.8088468Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:41:25.8088468Z",
+          "finished_at": "2026-10-15T22:42:34.7877332Z",
+          "kind": "network-confirmed",
+          "seconds": 69.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:42:34.7877332Z",
+          "finished_at": "2026-10-15T22:42:40.5948043Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:42:40.5948043Z",
+          "finished_at": "2026-10-15T22:42:40.601289Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:42:40.601289Z",
+          "finished_at": "2026-10-15T22:42:42.8107304Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "provider-query-failure-observed"
+        },
+        {
+          "started_at": "2026-10-15T22:42:42.8107304Z",
+          "finished_at": "2026-10-15T22:42:47.0693233Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-15T22:42:47.0693233Z",
+          "finished_at": "2026-10-15T22:43:12.1007543Z",
+          "kind": "stage",
+          "seconds": 25.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:43:12.1007543Z",
+          "finished_at": "2026-10-15T22:43:19.1597287Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 1,
+      "case_id": "query-unavailable",
+      "native_harness_seconds": 264.52
+    },
+    {
+      "total_seconds": 272.0,
+      "status": "passed",
+      "fixture": "a896c51c22c9",
+      "finished_at": "2026-10-15T22:47:52.757471Z",
+      "started_at": "2026-10-15T22:43:20.426998Z",
+      "driver_checkpoint_intervals": [],
+      "scenario": "orca-remote.smoke",
+      "repeat_index": 2,
+      "case_id": "default",
+      "native_harness_seconds": 253.32
+    },
+    {
+      "total_seconds": 206.0,
+      "status": "passed",
+      "fixture": "3b1299d44b52",
+      "finished_at": "2026-10-15T22:51:18.5423977Z",
+      "started_at": "2026-10-15T22:47:52.7614584Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:48:36.5832076Z",
+          "finished_at": "2026-10-15T22:48:36.5916326Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "1be3ae4c046fc721e470b220cb970254",
+            "state_dir": "c:\\srt\\3b1299d44b52\\s",
+            "pid": 20124,
+            "process_created": "134365781162438273",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:48:36.5916326Z",
+          "finished_at": "2026-10-15T22:48:41.3600198Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:48:41.3600198Z",
+          "finished_at": "2026-10-15T22:50:46.9637722Z",
+          "kind": "stage",
+          "seconds": 125.0,
+          "value": "caller-original-execution"
+        },
+        {
+          "started_at": "2026-10-15T22:50:46.9637722Z",
+          "finished_at": "2026-10-15T22:51:09.5435334Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:51:09.5435334Z",
+          "finished_at": "2026-10-15T22:51:16.5103018Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.caller-exit",
+      "repeat_index": 2,
+      "case_id": "accepted-response-lost",
+      "native_harness_seconds": 165.14
+    },
+    {
+      "total_seconds": 302.0,
+      "status": "passed",
+      "fixture": "c95631e96886",
+      "finished_at": "2026-10-15T22:56:20.4767331Z",
+      "started_at": "2026-10-15T22:51:18.5451333Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:52:01.2646406Z",
+          "finished_at": "2026-10-15T22:52:02.9614507Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T22:52:02.9614507Z",
+          "finished_at": "2026-10-15T22:52:06.7163524Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:52:06.7163524Z",
+          "finished_at": "2026-10-15T22:52:07.3459768Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:52:07.3459768Z",
+          "finished_at": "2026-10-15T22:52:13.4891866Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:52:13.4891866Z",
+          "finished_at": "2026-10-15T22:52:17.1152435Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:52:17.1152435Z",
+          "finished_at": "2026-10-15T22:52:17.120785Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "6378eb32a98162a619f69c79734038a5",
+            "state_dir": "c:\\srt\\c95631e96886\\s",
+            "pid": 34508,
+            "process_created": "134365783367528901",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:52:17.120785Z",
+          "finished_at": "2026-10-15T22:52:20.6151077Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:52:20.6151077Z",
+          "finished_at": "2026-10-15T22:53:18.1216779Z",
+          "kind": "stage",
+          "seconds": 58.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:53:18.1216779Z",
+          "finished_at": "2026-10-15T22:53:22.6603834Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:53:22.6603834Z",
+          "finished_at": "2026-10-15T22:54:23.0188414Z",
+          "kind": "network-confirmed",
+          "seconds": 61.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T22:54:23.0188414Z",
+          "finished_at": "2026-10-15T22:54:29.3806202Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:54:29.3806202Z",
+          "finished_at": "2026-10-15T22:54:35.6601982Z",
+          "kind": "network-confirmed",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T22:54:35.6601982Z",
+          "finished_at": "2026-10-15T22:55:47.8209397Z",
+          "kind": "stage",
+          "seconds": 72.0,
+          "value": "reconnected-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:55:47.8209397Z",
+          "finished_at": "2026-10-15T22:56:12.3799302Z",
+          "kind": "stage",
+          "seconds": 25.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T22:56:12.3799302Z",
+          "finished_at": "2026-10-15T22:56:19.7218397Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.connection-reconnect",
+      "repeat_index": 2,
+      "case_id": "active-disconnect",
+      "native_harness_seconds": 260.99
+    },
+    {
+      "total_seconds": 234.0,
+      "status": "passed",
+      "fixture": "e375cae0fe1e",
+      "finished_at": "2026-10-15T23:00:14.8351987Z",
+      "started_at": "2026-10-15T22:56:20.479517Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T22:57:02.2473502Z",
+          "finished_at": "2026-10-15T22:57:02.2556922Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "d7e423dd6f3577f08383ed9ab0ea4a6b",
+            "state_dir": "c:\\srt\\e375cae0fe1e\\s",
+            "pid": 28480,
+            "process_created": "134365786219137352",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:57:02.2556922Z",
+          "finished_at": "2026-10-15T22:57:05.4548969Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T22:57:05.4548969Z",
+          "finished_at": "2026-10-15T22:58:07.7715988Z",
+          "kind": "stage",
+          "seconds": 62.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:58:07.7715988Z",
+          "finished_at": "2026-10-15T22:58:08.8451518Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "d7e423dd6f3577f08383ed9ab0ea4a6b",
+            "state_dir": "c:\\srt\\e375cae0fe1e\\s",
+            "pid": 28480,
+            "process_created": "134365786219137352",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:58:08.8451518Z",
+          "finished_at": "2026-10-15T22:58:10.6287372Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "d7e423dd6f3577f08383ed9ab0ea4a6b",
+            "state_dir": "c:\\srt\\e375cae0fe1e\\s",
+            "pid": 28480,
+            "process_created": "134365786219137352",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:58:10.6287372Z",
+          "finished_at": "2026-10-15T22:58:10.6458031Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "aa1bdee870524e4ddc9371e1e95993a1",
+            "state_dir": "c:\\srt\\e375cae0fe1e\\s",
+            "pid": 46408,
+            "process_created": "134365786903277599",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:58:10.6458031Z",
+          "finished_at": "2026-10-15T22:58:46.9535999Z",
+          "kind": "stage",
+          "seconds": 36.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T22:58:46.9535999Z",
+          "finished_at": "2026-10-15T22:58:47.1075718Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T22:58:47.1075718Z",
+          "finished_at": "2026-10-15T22:58:47.1131177Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-110",
+              "input": {
+                "expected_revision": 30
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T22:58:47.1131177Z",
+          "finished_at": "2026-10-15T22:59:38.7146802Z",
+          "kind": "stage",
+          "seconds": 51.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T22:59:38.7146802Z",
+          "finished_at": "2026-10-15T23:00:06.8232898Z",
+          "kind": "stage",
+          "seconds": 28.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:00:06.8232898Z",
+          "finished_at": "2026-10-15T23:00:13.7471395Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 2,
+      "case_id": "graceful-active",
+      "native_harness_seconds": 196.32
+    },
+    {
+      "total_seconds": 228.0,
+      "status": "passed",
+      "fixture": "f9a380b0890e",
+      "finished_at": "2026-10-15T23:04:02.0799219Z",
+      "started_at": "2026-10-15T23:00:14.8376204Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:00:55.3371758Z",
+          "finished_at": "2026-10-15T23:00:55.3443094Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "b6e0b1b01280b49f07ab61abb82e7b99",
+            "state_dir": "c:\\srt\\f9a380b0890e\\s",
+            "pid": 30168,
+            "process_created": "134365788549980145",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:00:55.3443094Z",
+          "finished_at": "2026-10-15T23:00:58.6925423Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:00:58.6925423Z",
+          "finished_at": "2026-10-15T23:01:53.980033Z",
+          "kind": "stage",
+          "seconds": 55.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:01:53.980033Z",
+          "finished_at": "2026-10-15T23:01:55.3343078Z",
+          "kind": "service-stop-intent",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "b6e0b1b01280b49f07ab61abb82e7b99",
+            "state_dir": "c:\\srt\\f9a380b0890e\\s",
+            "pid": 30168,
+            "process_created": "134365788549980145",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:01:55.3343078Z",
+          "finished_at": "2026-10-15T23:01:57.0531387Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "b6e0b1b01280b49f07ab61abb82e7b99",
+            "state_dir": "c:\\srt\\f9a380b0890e\\s",
+            "pid": 30168,
+            "process_created": "134365788549980145",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:01:57.0531387Z",
+          "finished_at": "2026-10-15T23:01:57.0811908Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "43842eeb4bf50c3054ab0ce53c8646e2",
+            "state_dir": "c:\\srt\\f9a380b0890e\\s",
+            "pid": 8716,
+            "process_created": "134365789167188633",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:01:57.0811908Z",
+          "finished_at": "2026-10-15T23:02:35.8265882Z",
+          "kind": "stage",
+          "seconds": 38.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:02:35.8265882Z",
+          "finished_at": "2026-10-15T23:02:35.9581515Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T23:02:35.9581515Z",
+          "finished_at": "2026-10-15T23:02:35.9620901Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-107",
+              "input": {
+                "expected_revision": 28
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:02:35.9620901Z",
+          "finished_at": "2026-10-15T23:03:29.8083937Z",
+          "kind": "stage",
+          "seconds": 54.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T23:03:29.8083937Z",
+          "finished_at": "2026-10-15T23:03:54.0486845Z",
+          "kind": "stage",
+          "seconds": 25.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:03:54.0486845Z",
+          "finished_at": "2026-10-15T23:04:01.1783222Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 2,
+      "case_id": "kill-active",
+      "native_harness_seconds": 190.43
+    },
+    {
+      "total_seconds": 319.0,
+      "status": "passed",
+      "fixture": "acef493a9162",
+      "finished_at": "2026-10-15T23:09:21.2600446Z",
+      "started_at": "2026-10-15T23:04:02.0833875Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:04:41.7966758Z",
+          "finished_at": "2026-10-15T23:04:43.4848459Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:04:43.4848459Z",
+          "finished_at": "2026-10-15T23:04:46.9811037Z",
+          "kind": "network-intent",
+          "seconds": 3.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:04:46.9811037Z",
+          "finished_at": "2026-10-15T23:04:47.6111269Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:04:47.6111269Z",
+          "finished_at": "2026-10-15T23:04:54.3618385Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:04:54.3618385Z",
+          "finished_at": "2026-10-15T23:04:57.7116688Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:04:57.7116688Z",
+          "finished_at": "2026-10-15T23:04:57.7182299Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "3d93f543fd7b08cad858e4434883f6c9",
+            "state_dir": "c:\\srt\\acef493a9162\\s",
+            "pid": 7848,
+            "process_created": "134365790973953182",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:04:57.7182299Z",
+          "finished_at": "2026-10-15T23:05:03.1625414Z",
+          "kind": "stage",
+          "seconds": 6.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:05:03.1625414Z",
+          "finished_at": "2026-10-15T23:06:05.8606656Z",
+          "kind": "stage",
+          "seconds": 62.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:06:05.8606656Z",
+          "finished_at": "2026-10-15T23:06:10.709374Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:06:10.709374Z",
+          "finished_at": "2026-10-15T23:07:32.1289142Z",
+          "kind": "network-confirmed",
+          "seconds": 82.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:07:32.1289142Z",
+          "finished_at": "2026-10-15T23:07:33.1949736Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "3d93f543fd7b08cad858e4434883f6c9",
+            "state_dir": "c:\\srt\\acef493a9162\\s",
+            "pid": 7848,
+            "process_created": "134365790973953182",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:07:33.1949736Z",
+          "finished_at": "2026-10-15T23:07:34.9039668Z",
+          "kind": "service-stopped",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "3d93f543fd7b08cad858e4434883f6c9",
+            "state_dir": "c:\\srt\\acef493a9162\\s",
+            "pid": 7848,
+            "process_created": "134365790973953182",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:07:34.9039668Z",
+          "finished_at": "2026-10-15T23:07:34.924278Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "cf09ffbc6fb3fca4761421e26e7f5d0c",
+            "state_dir": "c:\\srt\\acef493a9162\\s",
+            "pid": 29780,
+            "process_created": "134365792545594489",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:07:34.924278Z",
+          "finished_at": "2026-10-15T23:07:34.9893733Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:07:34.9893733Z",
+          "finished_at": "2026-10-15T23:07:41.4521262Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:07:41.4521262Z",
+          "finished_at": "2026-10-15T23:07:52.7425701Z",
+          "kind": "network-confirmed",
+          "seconds": 11.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:07:52.7425701Z",
+          "finished_at": "2026-10-15T23:07:52.8570034Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T23:07:52.8570034Z",
+          "finished_at": "2026-10-15T23:07:52.8634603Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-167",
+              "input": {
+                "expected_revision": 28
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:07:52.8634603Z",
+          "finished_at": "2026-10-15T23:08:46.5632458Z",
+          "kind": "stage",
+          "seconds": 54.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T23:08:46.5632458Z",
+          "finished_at": "2026-10-15T23:09:12.2230292Z",
+          "kind": "stage",
+          "seconds": 26.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:09:12.2230292Z",
+          "finished_at": "2026-10-15T23:09:20.814796Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 2,
+      "case_id": "graceful-boundary",
+      "native_harness_seconds": 281.32
+    },
+    {
+      "total_seconds": 319.0,
+      "status": "passed",
+      "fixture": "93f474c81356",
+      "finished_at": "2026-10-15T23:14:40.9307715Z",
+      "started_at": "2026-10-15T23:09:21.2637Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:10:01.3869351Z",
+          "finished_at": "2026-10-15T23:10:03.141726Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:10:03.141726Z",
+          "finished_at": "2026-10-15T23:10:06.8805898Z",
+          "kind": "network-intent",
+          "seconds": 3.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:10:06.8805898Z",
+          "finished_at": "2026-10-15T23:10:07.519565Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:10:07.519565Z",
+          "finished_at": "2026-10-15T23:10:13.5669188Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:10:13.5669188Z",
+          "finished_at": "2026-10-15T23:10:17.1271504Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:10:17.1271504Z",
+          "finished_at": "2026-10-15T23:10:17.1321765Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "5118dcc8a9aa16129fd02f4dc482e0a4",
+            "state_dir": "c:\\srt\\93f474c81356\\s",
+            "pid": 20772,
+            "process_created": "134365794167998539",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:10:17.1321765Z",
+          "finished_at": "2026-10-15T23:10:20.4620144Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:10:20.4620144Z",
+          "finished_at": "2026-10-15T23:11:23.7602516Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:11:23.7602516Z",
+          "finished_at": "2026-10-15T23:11:29.2537399Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:11:29.2537399Z",
+          "finished_at": "2026-10-15T23:12:53.974371Z",
+          "kind": "network-confirmed",
+          "seconds": 84.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:12:53.974371Z",
+          "finished_at": "2026-10-15T23:12:55.1944145Z",
+          "kind": "service-stop-intent",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "5118dcc8a9aa16129fd02f4dc482e0a4",
+            "state_dir": "c:\\srt\\93f474c81356\\s",
+            "pid": 20772,
+            "process_created": "134365794167998539",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:12:55.1944145Z",
+          "finished_at": "2026-10-15T23:12:57.0272986Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "5118dcc8a9aa16129fd02f4dc482e0a4",
+            "state_dir": "c:\\srt\\93f474c81356\\s",
+            "pid": 20772,
+            "process_created": "134365794167998539",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:12:57.0272986Z",
+          "finished_at": "2026-10-15T23:12:57.0391951Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "a9c50e1c7236ac19fbd8322c87f1bb4f",
+            "state_dir": "c:\\srt\\93f474c81356\\s",
+            "pid": 17896,
+            "process_created": "134365795766974647",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:12:57.0391951Z",
+          "finished_at": "2026-10-15T23:12:57.1052089Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:12:57.1052089Z",
+          "finished_at": "2026-10-15T23:13:03.8865974Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:13:03.8865974Z",
+          "finished_at": "2026-10-15T23:13:14.9859861Z",
+          "kind": "network-confirmed",
+          "seconds": 11.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:13:14.9859861Z",
+          "finished_at": "2026-10-15T23:13:15.101601Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T23:13:15.101601Z",
+          "finished_at": "2026-10-15T23:13:15.1066858Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-168",
+              "input": {
+                "expected_revision": 23
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:13:15.1066858Z",
+          "finished_at": "2026-10-15T23:14:06.7194578Z",
+          "kind": "stage",
+          "seconds": 51.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T23:14:06.7194578Z",
+          "finished_at": "2026-10-15T23:14:29.9554395Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:14:29.9554395Z",
+          "finished_at": "2026-10-15T23:14:38.9253614Z",
+          "kind": "stage",
+          "seconds": 9.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 2,
+      "case_id": "kill-boundary",
+      "native_harness_seconds": 279.74
+    },
+    {
+      "total_seconds": 109.0,
+      "status": "passed",
+      "fixture": "d8f8e8ffd1c7",
+      "finished_at": "2026-10-15T23:16:29.8801741Z",
+      "started_at": "2026-10-15T23:14:40.93486Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:15:24.0796333Z",
+          "finished_at": "2026-10-15T23:15:24.0874538Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "cde1ef034e876891f3527b924ca7fe62",
+            "state_dir": "c:\\srt\\d8f8e8ffd1c7\\s",
+            "pid": 13460,
+            "process_created": "134365797237581119",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:15:24.0874538Z",
+          "finished_at": "2026-10-15T23:15:28.0057143Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:15:28.0057143Z",
+          "finished_at": "2026-10-15T23:16:21.4386748Z",
+          "kind": "stage",
+          "seconds": 53.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:16:21.4386748Z",
+          "finished_at": "2026-10-15T23:16:21.444588Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-61",
+              "input": {
+                "expected_revision": 18
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:16:21.444588Z",
+          "finished_at": "2026-10-15T23:16:24.6363343Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-15T23:16:24.6363343Z",
+          "finished_at": "2026-10-15T23:16:29.712087Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 2,
+      "case_id": "active",
+      "native_harness_seconds": 70.44
+    },
+    {
+      "total_seconds": 319.0,
+      "status": "passed",
+      "fixture": "833226eddf42",
+      "finished_at": "2026-10-15T23:21:48.043245Z",
+      "started_at": "2026-10-15T23:16:29.8844053Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:17:11.7558612Z",
+          "finished_at": "2026-10-15T23:17:13.5062585Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:17:13.5062585Z",
+          "finished_at": "2026-10-15T23:17:17.4257929Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:17:17.4257929Z",
+          "finished_at": "2026-10-15T23:17:18.0600262Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:17:18.0600262Z",
+          "finished_at": "2026-10-15T23:17:23.8433168Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:17:23.8433168Z",
+          "finished_at": "2026-10-15T23:17:27.1484699Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:17:27.1484699Z",
+          "finished_at": "2026-10-15T23:17:27.1542212Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "bf93459b4647f5228e2829bf1c099185",
+            "state_dir": "c:\\srt\\833226eddf42\\s",
+            "pid": 13876,
+            "process_created": "134365798468191690",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:17:27.1542212Z",
+          "finished_at": "2026-10-15T23:17:30.9892588Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:17:30.9892588Z",
+          "finished_at": "2026-10-15T23:18:33.3310809Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:18:33.3310809Z",
+          "finished_at": "2026-10-15T23:18:37.4277291Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:18:37.4277291Z",
+          "finished_at": "2026-10-15T23:20:08.6311538Z",
+          "kind": "network-confirmed",
+          "seconds": 91.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:20:08.6311538Z",
+          "finished_at": "2026-10-15T23:20:08.6311538Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-146",
+              "input": {
+                "expected_revision": 20
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:20:08.6311538Z",
+          "finished_at": "2026-10-15T23:20:15.0050956Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:20:15.0050956Z",
+          "finished_at": "2026-10-15T23:20:15.0120792Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:20:15.0120792Z",
+          "finished_at": "2026-10-15T23:20:18.2305435Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-15T23:20:18.2305435Z",
+          "finished_at": "2026-10-15T23:21:47.1813276Z",
+          "kind": "stage",
+          "seconds": 89.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 2,
+      "case_id": "boundary",
+      "native_harness_seconds": 277.57
+    },
+    {
+      "total_seconds": 466.0,
+      "status": "passed",
+      "fixture": "ff82e4d1cbca",
+      "finished_at": "2026-10-15T23:29:34.1304408Z",
+      "started_at": "2026-10-15T23:21:48.0459471Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:24:04.3214697Z",
+          "finished_at": "2026-10-15T23:24:06.0879753Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:24:06.0879753Z",
+          "finished_at": "2026-10-15T23:24:09.3377727Z",
+          "kind": "network-intent",
+          "seconds": 3.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:24:09.3377727Z",
+          "finished_at": "2026-10-15T23:24:09.9764502Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:24:09.9764502Z",
+          "finished_at": "2026-10-15T23:24:16.1420245Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:24:16.1420245Z",
+          "finished_at": "2026-10-15T23:24:19.5139329Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:24:19.5139329Z",
+          "finished_at": "2026-10-15T23:24:19.5197865Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "72e766f2bcbffe13b1f987851ab9b145",
+            "state_dir": "c:\\srt\\ff82e4d1cbca\\s",
+            "pid": 35820,
+            "process_created": "134365802591962416",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:24:19.5197865Z",
+          "finished_at": "2026-10-15T23:24:23.6380422Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:24:23.6380422Z",
+          "finished_at": "2026-10-15T23:25:15.8036222Z",
+          "kind": "stage",
+          "seconds": 52.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:25:15.8036222Z",
+          "finished_at": "2026-10-15T23:25:20.2213759Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:25:20.2213759Z",
+          "finished_at": "2026-10-15T23:26:20.5719049Z",
+          "kind": "network-confirmed",
+          "seconds": 60.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:26:20.5719049Z",
+          "finished_at": "2026-10-15T23:26:20.5797525Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-115",
+              "input": {
+                "expected_revision": 19
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:26:20.5797525Z",
+          "finished_at": "2026-10-15T23:26:20.7027095Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "unknown-stop-revocation"
+        },
+        {
+          "started_at": "2026-10-15T23:26:20.7027095Z",
+          "finished_at": "2026-10-15T23:26:21.7690926Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "72e766f2bcbffe13b1f987851ab9b145",
+            "state_dir": "c:\\srt\\ff82e4d1cbca\\s",
+            "pid": 35820,
+            "process_created": "134365802591962416",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:26:21.7690926Z",
+          "finished_at": "2026-10-15T23:26:23.4824774Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "72e766f2bcbffe13b1f987851ab9b145",
+            "state_dir": "c:\\srt\\ff82e4d1cbca\\s",
+            "pid": 35820,
+            "process_created": "134365802591962416",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:26:23.4824774Z",
+          "finished_at": "2026-10-15T23:26:23.4942648Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "f5a7509f6700fba2309463e020e43261",
+            "state_dir": "c:\\srt\\ff82e4d1cbca\\s",
+            "pid": 39436,
+            "process_created": "134365803831649285",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:26:23.4942648Z",
+          "finished_at": "2026-10-15T23:29:20.6665328Z",
+          "kind": "stage",
+          "seconds": 177.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:29:20.6665328Z",
+          "finished_at": "2026-10-15T23:29:27.1994018Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:29:27.1994018Z",
+          "finished_at": "2026-10-15T23:29:28.2177856Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:29:28.2177856Z",
+          "finished_at": "2026-10-15T23:29:33.2704771Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 2,
+      "case_id": "unreachable",
+      "native_harness_seconds": 331.16
+    },
+    {
+      "total_seconds": 307.0,
+      "status": "passed",
+      "fixture": "6b312a46178b",
+      "finished_at": "2026-10-15T23:34:41.2978352Z",
+      "started_at": "2026-10-15T23:29:34.132391Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:30:13.7553721Z",
+          "finished_at": "2026-10-15T23:30:15.464292Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:30:15.464292Z",
+          "finished_at": "2026-10-15T23:30:19.1192266Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:30:19.1192266Z",
+          "finished_at": "2026-10-15T23:30:19.7887815Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:30:19.7887815Z",
+          "finished_at": "2026-10-15T23:30:25.559579Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:30:25.559579Z",
+          "finished_at": "2026-10-15T23:30:28.9577983Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:30:28.9577983Z",
+          "finished_at": "2026-10-15T23:30:28.9703169Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "06ff4a5c4fc23a3edda5d8daa7e67a85",
+            "state_dir": "c:\\srt\\6b312a46178b\\s",
+            "pid": 3388,
+            "process_created": "134365806286364737",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:30:28.9703169Z",
+          "finished_at": "2026-10-15T23:30:32.1465479Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:30:32.1465479Z",
+          "finished_at": "2026-10-15T23:32:46.1960129Z",
+          "kind": "stage",
+          "seconds": 134.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:32:46.1960129Z",
+          "finished_at": "2026-10-15T23:32:50.6579501Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:32:50.6579501Z",
+          "finished_at": "2026-10-15T23:33:59.7693669Z",
+          "kind": "network-confirmed",
+          "seconds": 69.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:33:59.7693669Z",
+          "finished_at": "2026-10-15T23:34:06.1222747Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:34:06.1222747Z",
+          "finished_at": "2026-10-15T23:34:06.1333521Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:34:06.1333521Z",
+          "finished_at": "2026-10-15T23:34:10.379146Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-15T23:34:10.379146Z",
+          "finished_at": "2026-10-15T23:34:33.2119966Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:34:33.2119966Z",
+          "finished_at": "2026-10-15T23:34:40.7747924Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 2,
+      "case_id": "completion-gap",
+      "native_harness_seconds": 269.24
+    },
+    {
+      "total_seconds": 293.0,
+      "status": "passed",
+      "fixture": "d69337e59418",
+      "finished_at": "2026-10-15T23:39:34.5401036Z",
+      "started_at": "2026-10-15T23:34:41.3016378Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:35:21.2267356Z",
+          "finished_at": "2026-10-15T23:35:22.8890764Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:35:22.8890764Z",
+          "finished_at": "2026-10-15T23:35:26.7727808Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:35:26.7727808Z",
+          "finished_at": "2026-10-15T23:35:27.4340419Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:35:27.4340419Z",
+          "finished_at": "2026-10-15T23:35:32.7181884Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:35:32.7181884Z",
+          "finished_at": "2026-10-15T23:35:35.925859Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:35:35.925859Z",
+          "finished_at": "2026-10-15T23:35:35.9319574Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "fe29c34fb79760121b087fa41c3491ce",
+            "state_dir": "c:\\srt\\d69337e59418\\s",
+            "pid": 22192,
+            "process_created": "134365809355978989",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:35:35.9319574Z",
+          "finished_at": "2026-10-15T23:35:39.2078563Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:35:39.2078563Z",
+          "finished_at": "2026-10-15T23:37:38.4804964Z",
+          "kind": "stage",
+          "seconds": 119.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:37:38.4804964Z",
+          "finished_at": "2026-10-15T23:37:42.452861Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:37:42.452861Z",
+          "finished_at": "2026-10-15T23:38:51.8021866Z",
+          "kind": "network-confirmed",
+          "seconds": 69.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:38:51.8021866Z",
+          "finished_at": "2026-10-15T23:38:57.5737619Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:38:57.5737619Z",
+          "finished_at": "2026-10-15T23:38:57.5859003Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:38:57.5859003Z",
+          "finished_at": "2026-10-15T23:38:59.8131982Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "provider-query-failure-observed"
+        },
+        {
+          "started_at": "2026-10-15T23:38:59.8131982Z",
+          "finished_at": "2026-10-15T23:39:04.0579835Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-15T23:39:04.0579835Z",
+          "finished_at": "2026-10-15T23:39:26.9050459Z",
+          "kind": "stage",
+          "seconds": 22.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:39:26.9050459Z",
+          "finished_at": "2026-10-15T23:39:34.2084799Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 2,
+      "case_id": "query-unavailable",
+      "native_harness_seconds": 255.27
+    },
+    {
+      "total_seconds": 283.0,
+      "status": "passed",
+      "fixture": "f2d3ea2de1da",
+      "finished_at": "2026-10-15T23:44:17.6481509Z",
+      "started_at": "2026-10-15T23:39:34.5431905Z",
+      "driver_checkpoint_intervals": [],
+      "scenario": "orca-remote.smoke",
+      "repeat_index": 3,
+      "case_id": "default",
+      "native_harness_seconds": 262.89
+    },
+    {
+      "total_seconds": 213.0,
+      "status": "passed",
+      "fixture": "1c77fcfe714d",
+      "finished_at": "2026-10-15T23:47:50.4675637Z",
+      "started_at": "2026-10-15T23:44:17.6508357Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:44:59.9995203Z",
+          "finished_at": "2026-10-15T23:45:00.0083199Z",
+          "kind": "service-instance",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "9dc17a1bdc0259e29e7b1cbfc781d2eb",
+            "state_dir": "c:\\srt\\1c77fcfe714d\\s",
+            "pid": 1532,
+            "process_created": "134365814996820472",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:45:00.0083199Z",
+          "finished_at": "2026-10-15T23:45:04.7103108Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:45:04.7103108Z",
+          "finished_at": "2026-10-15T23:47:18.4347828Z",
+          "kind": "stage",
+          "seconds": 134.0,
+          "value": "caller-original-execution"
+        },
+        {
+          "started_at": "2026-10-15T23:47:18.4347828Z",
+          "finished_at": "2026-10-15T23:47:41.8318781Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:47:41.8318781Z",
+          "finished_at": "2026-10-15T23:47:49.5714356Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.caller-exit",
+      "repeat_index": 3,
+      "case_id": "accepted-response-lost",
+      "native_harness_seconds": 174.22
+    },
+    {
+      "total_seconds": 300.0,
+      "status": "passed",
+      "fixture": "8d7189879801",
+      "finished_at": "2026-10-15T23:52:50.5397744Z",
+      "started_at": "2026-10-15T23:47:50.4708031Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:48:29.3540687Z",
+          "finished_at": "2026-10-15T23:48:31.1385367Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-15T23:48:31.1385367Z",
+          "finished_at": "2026-10-15T23:48:35.0065587Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:48:35.0065587Z",
+          "finished_at": "2026-10-15T23:48:35.6208863Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:48:35.6208863Z",
+          "finished_at": "2026-10-15T23:48:41.5911511Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:48:41.5911511Z",
+          "finished_at": "2026-10-15T23:48:44.8138522Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:48:44.8138522Z",
+          "finished_at": "2026-10-15T23:48:44.8189288Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "f821ddd805611cab7d509b9b8310f02f",
+            "state_dir": "c:\\srt\\8d7189879801\\s",
+            "pid": 43176,
+            "process_created": "134365817244882022",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:48:44.8189288Z",
+          "finished_at": "2026-10-15T23:48:48.2048504Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:48:48.2048504Z",
+          "finished_at": "2026-10-15T23:49:51.2124877Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:49:51.2124877Z",
+          "finished_at": "2026-10-15T23:49:55.3807713Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:49:55.3807713Z",
+          "finished_at": "2026-10-15T23:50:55.5647738Z",
+          "kind": "network-confirmed",
+          "seconds": 60.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-15T23:50:55.5647738Z",
+          "finished_at": "2026-10-15T23:51:02.3466508Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:51:02.3466508Z",
+          "finished_at": "2026-10-15T23:51:06.7003923Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-15T23:51:06.7003923Z",
+          "finished_at": "2026-10-15T23:52:20.8901239Z",
+          "kind": "stage",
+          "seconds": 74.0,
+          "value": "reconnected-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T23:52:20.8901239Z",
+          "finished_at": "2026-10-15T23:52:42.7831053Z",
+          "kind": "stage",
+          "seconds": 22.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:52:42.7831053Z",
+          "finished_at": "2026-10-15T23:52:50.2919864Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.connection-reconnect",
+      "repeat_index": 3,
+      "case_id": "active-disconnect",
+      "native_harness_seconds": 263.42
+    },
+    {
+      "total_seconds": 228.0,
+      "status": "passed",
+      "fixture": "7521065f67e1",
+      "finished_at": "2026-10-15T23:56:38.7363073Z",
+      "started_at": "2026-10-15T23:52:50.5437852Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:53:32.0674192Z",
+          "finished_at": "2026-10-15T23:53:32.0762682Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "e399a56170c457c2dab964eb10bfab8c",
+            "state_dir": "c:\\srt\\7521065f67e1\\s",
+            "pid": 45376,
+            "process_created": "134365820117410422",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:53:32.0762682Z",
+          "finished_at": "2026-10-15T23:53:35.3511969Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:53:35.3511969Z",
+          "finished_at": "2026-10-15T23:54:38.2017261Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:54:38.2017261Z",
+          "finished_at": "2026-10-15T23:54:39.2707839Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "e399a56170c457c2dab964eb10bfab8c",
+            "state_dir": "c:\\srt\\7521065f67e1\\s",
+            "pid": 45376,
+            "process_created": "134365820117410422",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:54:39.2707839Z",
+          "finished_at": "2026-10-15T23:54:40.8008667Z",
+          "kind": "service-stopped",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "e399a56170c457c2dab964eb10bfab8c",
+            "state_dir": "c:\\srt\\7521065f67e1\\s",
+            "pid": 45376,
+            "process_created": "134365820117410422",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:54:40.8008667Z",
+          "finished_at": "2026-10-15T23:54:40.8207649Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "379bf314b40e21583f6b77fbb0847434",
+            "state_dir": "c:\\srt\\7521065f67e1\\s",
+            "pid": 42668,
+            "process_created": "134365820805657068",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:54:40.8207649Z",
+          "finished_at": "2026-10-15T23:55:12.6839255Z",
+          "kind": "stage",
+          "seconds": 32.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:55:12.6839255Z",
+          "finished_at": "2026-10-15T23:55:12.799942Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T23:55:12.799942Z",
+          "finished_at": "2026-10-15T23:55:12.8055675Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-116",
+              "input": {
+                "expected_revision": 29
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:55:12.8055675Z",
+          "finished_at": "2026-10-15T23:56:06.4816995Z",
+          "kind": "stage",
+          "seconds": 54.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-15T23:56:06.4816995Z",
+          "finished_at": "2026-10-15T23:56:29.3634279Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-15T23:56:29.3634279Z",
+          "finished_at": "2026-10-15T23:56:36.5996347Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 3,
+      "case_id": "graceful-active",
+      "native_harness_seconds": 189.17
+    },
+    {
+      "total_seconds": 239.0,
+      "status": "passed",
+      "fixture": "4f87cdbab59c",
+      "finished_at": "2026-10-16T00:00:37.2952839Z",
+      "started_at": "2026-10-15T23:56:38.7391405Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-15T23:57:20.5473266Z",
+          "finished_at": "2026-10-15T23:57:20.5550086Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "881aa555a3a684acd11098d6916cc556",
+            "state_dir": "c:\\srt\\4f87cdbab59c\\s",
+            "pid": 39904,
+            "process_created": "134365822402332617",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:57:20.5550086Z",
+          "finished_at": "2026-10-15T23:57:23.8039548Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-15T23:57:23.8039548Z",
+          "finished_at": "2026-10-15T23:58:31.6242971Z",
+          "kind": "stage",
+          "seconds": 68.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:58:31.6242971Z",
+          "finished_at": "2026-10-15T23:58:32.9865674Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "881aa555a3a684acd11098d6916cc556",
+            "state_dir": "c:\\srt\\4f87cdbab59c\\s",
+            "pid": 39904,
+            "process_created": "134365822402332617",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:58:32.9865674Z",
+          "finished_at": "2026-10-15T23:58:34.7103779Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "881aa555a3a684acd11098d6916cc556",
+            "state_dir": "c:\\srt\\4f87cdbab59c\\s",
+            "pid": 39904,
+            "process_created": "134365822402332617",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:58:34.7103779Z",
+          "finished_at": "2026-10-15T23:58:34.7486364Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "2d17ce41e39721ada8d517522cb562a7",
+            "state_dir": "c:\\srt\\4f87cdbab59c\\s",
+            "pid": 37588,
+            "process_created": "134365823143933774",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:58:34.7486364Z",
+          "finished_at": "2026-10-15T23:59:10.0316789Z",
+          "kind": "stage",
+          "seconds": 36.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-15T23:59:10.0316789Z",
+          "finished_at": "2026-10-15T23:59:10.1531163Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-15T23:59:10.1531163Z",
+          "finished_at": "2026-10-15T23:59:10.1594323Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-118",
+              "input": {
+                "expected_revision": 32
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-15T23:59:10.1594323Z",
+          "finished_at": "2026-10-16T00:00:05.9196951Z",
+          "kind": "stage",
+          "seconds": 55.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-16T00:00:05.9196951Z",
+          "finished_at": "2026-10-16T00:00:28.8733449Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-16T00:00:28.8733449Z",
+          "finished_at": "2026-10-16T00:00:36.4351711Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 3,
+      "case_id": "kill-active",
+      "native_harness_seconds": 200.43
+    },
+    {
+      "total_seconds": 317.0,
+      "status": "passed",
+      "fixture": "6accd95f2674",
+      "finished_at": "2026-10-16T00:05:54.7162372Z",
+      "started_at": "2026-10-16T00:00:37.2976949Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:01:17.0318325Z",
+          "finished_at": "2026-10-16T00:01:18.7681461Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:01:18.7681461Z",
+          "finished_at": "2026-10-16T00:01:22.4547973Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:01:22.4547973Z",
+          "finished_at": "2026-10-16T00:01:23.068425Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:01:23.068425Z",
+          "finished_at": "2026-10-16T00:01:29.1450761Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:01:29.1450761Z",
+          "finished_at": "2026-10-16T00:01:32.6936701Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:01:32.6936701Z",
+          "finished_at": "2026-10-16T00:01:32.6993177Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "1038bfcfa6e13a1fd568bae93475f856",
+            "state_dir": "c:\\srt\\6accd95f2674\\s",
+            "pid": 43696,
+            "process_created": "134365824923631346",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:01:32.6993177Z",
+          "finished_at": "2026-10-16T00:01:35.94345Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:01:35.94345Z",
+          "finished_at": "2026-10-16T00:02:38.9630606Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:02:38.9630606Z",
+          "finished_at": "2026-10-16T00:02:43.221858Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:02:43.221858Z",
+          "finished_at": "2026-10-16T00:04:08.0284678Z",
+          "kind": "network-confirmed",
+          "seconds": 85.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:04:08.0284678Z",
+          "finished_at": "2026-10-16T00:04:09.0959887Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "1038bfcfa6e13a1fd568bae93475f856",
+            "state_dir": "c:\\srt\\6accd95f2674\\s",
+            "pid": 43696,
+            "process_created": "134365824923631346",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:04:09.0959887Z",
+          "finished_at": "2026-10-16T00:04:10.8343667Z",
+          "kind": "service-stopped",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "1038bfcfa6e13a1fd568bae93475f856",
+            "state_dir": "c:\\srt\\6accd95f2674\\s",
+            "pid": 43696,
+            "process_created": "134365824923631346",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:04:10.8343667Z",
+          "finished_at": "2026-10-16T00:04:10.8455633Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "99a6165803b2b959d384fc658378ac64",
+            "state_dir": "c:\\srt\\6accd95f2674\\s",
+            "pid": 43188,
+            "process_created": "134365826505186858",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:04:10.8455633Z",
+          "finished_at": "2026-10-16T00:04:10.9089653Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:04:10.9089653Z",
+          "finished_at": "2026-10-16T00:04:16.7943104Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:04:16.7943104Z",
+          "finished_at": "2026-10-16T00:04:28.0249448Z",
+          "kind": "network-confirmed",
+          "seconds": 12.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:04:28.0249448Z",
+          "finished_at": "2026-10-16T00:04:28.1467983Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-16T00:04:28.1467983Z",
+          "finished_at": "2026-10-16T00:04:28.1537261Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-168",
+              "input": {
+                "expected_revision": 28
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:04:28.1537261Z",
+          "finished_at": "2026-10-16T00:05:23.8952987Z",
+          "kind": "stage",
+          "seconds": 55.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-16T00:05:23.8952987Z",
+          "finished_at": "2026-10-16T00:05:46.5135944Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-16T00:05:46.5135944Z",
+          "finished_at": "2026-10-16T00:05:53.8442135Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 3,
+      "case_id": "graceful-boundary",
+      "native_harness_seconds": 279.05
+    },
+    {
+      "total_seconds": 316.0,
+      "status": "passed",
+      "fixture": "d612c0616552",
+      "finished_at": "2026-10-16T00:11:10.6957739Z",
+      "started_at": "2026-10-16T00:05:54.7206011Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:06:33.0989942Z",
+          "finished_at": "2026-10-16T00:06:34.7956117Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:06:34.7956117Z",
+          "finished_at": "2026-10-16T00:06:38.4261488Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:06:38.4261488Z",
+          "finished_at": "2026-10-16T00:06:39.0666895Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:06:39.0666895Z",
+          "finished_at": "2026-10-16T00:06:45.0065148Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:06:45.0065148Z",
+          "finished_at": "2026-10-16T00:06:48.541628Z",
+          "kind": "network-confirmed",
+          "seconds": 3.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:06:48.541628Z",
+          "finished_at": "2026-10-16T00:06:48.5470762Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "02feafd0a5aa74074bec5f7de917fb5d",
+            "state_dir": "c:\\srt\\d612c0616552\\s",
+            "pid": 27748,
+            "process_created": "134365828081828158",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:06:48.5470762Z",
+          "finished_at": "2026-10-16T00:06:51.885444Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:06:51.885444Z",
+          "finished_at": "2026-10-16T00:07:54.3760785Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:07:54.3760785Z",
+          "finished_at": "2026-10-16T00:07:59.445225Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:07:59.445225Z",
+          "finished_at": "2026-10-16T00:09:24.1567444Z",
+          "kind": "network-confirmed",
+          "seconds": 85.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:09:24.1567444Z",
+          "finished_at": "2026-10-16T00:09:25.3859574Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "02feafd0a5aa74074bec5f7de917fb5d",
+            "state_dir": "c:\\srt\\d612c0616552\\s",
+            "pid": 27748,
+            "process_created": "134365828081828158",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:09:25.3859574Z",
+          "finished_at": "2026-10-16T00:09:27.1354703Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "02feafd0a5aa74074bec5f7de917fb5d",
+            "state_dir": "c:\\srt\\d612c0616552\\s",
+            "pid": 27748,
+            "process_created": "134365828081828158",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:09:27.1354703Z",
+          "finished_at": "2026-10-16T00:09:27.1470252Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "21dc508357f895d8bbdd066061239194",
+            "state_dir": "c:\\srt\\d612c0616552\\s",
+            "pid": 15352,
+            "process_created": "134365829668150689",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:09:27.1470252Z",
+          "finished_at": "2026-10-16T00:09:27.2104608Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:09:27.2104608Z",
+          "finished_at": "2026-10-16T00:09:33.9782013Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:09:33.9782013Z",
+          "finished_at": "2026-10-16T00:09:45.4192198Z",
+          "kind": "network-confirmed",
+          "seconds": 12.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:09:45.4192198Z",
+          "finished_at": "2026-10-16T00:09:45.5492921Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "await-original-resume-qualification"
+        },
+        {
+          "started_at": "2026-10-16T00:09:45.5492921Z",
+          "finished_at": "2026-10-16T00:09:45.5560998Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "resume",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "resume-168",
+              "input": {
+                "expected_revision": 23
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:09:45.5560998Z",
+          "finished_at": "2026-10-16T00:10:39.176218Z",
+          "kind": "stage",
+          "seconds": 54.0,
+          "value": "resumed-original-workflow"
+        },
+        {
+          "started_at": "2026-10-16T00:10:39.176218Z",
+          "finished_at": "2026-10-16T00:11:01.473641Z",
+          "kind": "stage",
+          "seconds": 22.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-16T00:11:01.473641Z",
+          "finished_at": "2026-10-16T00:11:08.8111897Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.service-restart",
+      "repeat_index": 3,
+      "case_id": "kill-boundary",
+      "native_harness_seconds": 277.84
+    },
+    {
+      "total_seconds": 119.0,
+      "status": "passed",
+      "fixture": "024474849fad",
+      "finished_at": "2026-10-16T00:13:09.2397332Z",
+      "started_at": "2026-10-16T00:11:10.7002075Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:11:53.1467787Z",
+          "finished_at": "2026-10-16T00:11:53.1566783Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "7014b958ceb9c9215737512c078b27f9",
+            "state_dir": "c:\\srt\\024474849fad\\s",
+            "pid": 31544,
+            "process_created": "134365831128277745",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:11:53.1566783Z",
+          "finished_at": "2026-10-16T00:11:56.3456787Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:11:56.3456787Z",
+          "finished_at": "2026-10-16T00:13:00.2424537Z",
+          "kind": "stage",
+          "seconds": 64.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:13:00.2424537Z",
+          "finished_at": "2026-10-16T00:13:00.2481434Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-76",
+              "input": {
+                "expected_revision": 20
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:13:00.2481434Z",
+          "finished_at": "2026-10-16T00:13:03.40912Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-16T00:13:03.40912Z",
+          "finished_at": "2026-10-16T00:13:08.4183651Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 3,
+      "case_id": "active",
+      "native_harness_seconds": 79.84
+    },
+    {
+      "total_seconds": 222.0,
+      "status": "passed",
+      "fixture": "8ca340f2bae7",
+      "finished_at": "2026-10-16T00:16:51.2722342Z",
+      "started_at": "2026-10-16T00:13:09.2425243Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:13:48.1985739Z",
+          "finished_at": "2026-10-16T00:13:49.949621Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:13:49.949621Z",
+          "finished_at": "2026-10-16T00:13:54.0190941Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:13:54.0190941Z",
+          "finished_at": "2026-10-16T00:13:54.6478343Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:13:54.6478343Z",
+          "finished_at": "2026-10-16T00:14:00.5799658Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:14:00.5799658Z",
+          "finished_at": "2026-10-16T00:14:04.1559039Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:14:04.1559039Z",
+          "finished_at": "2026-10-16T00:14:04.1613434Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "0813c4ec51575c3de051f1e4d00be054",
+            "state_dir": "c:\\srt\\8ca340f2bae7\\s",
+            "pid": 19884,
+            "process_created": "134365832438340477",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:14:04.1613434Z",
+          "finished_at": "2026-10-16T00:14:07.4252163Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:14:07.4252163Z",
+          "finished_at": "2026-10-16T00:15:10.3125714Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:15:10.3125714Z",
+          "finished_at": "2026-10-16T00:15:14.5657603Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:15:14.5657603Z",
+          "finished_at": "2026-10-16T00:16:37.2341361Z",
+          "kind": "network-confirmed",
+          "seconds": 83.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:16:37.2341361Z",
+          "finished_at": "2026-10-16T00:16:37.2346774Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-145",
+              "input": {
+                "expected_revision": 21
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:16:37.2346774Z",
+          "finished_at": "2026-10-16T00:16:43.3649867Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:16:43.3649867Z",
+          "finished_at": "2026-10-16T00:16:43.3766169Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:16:43.3766169Z",
+          "finished_at": "2026-10-16T00:16:44.4841323Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "original-stopped"
+        },
+        {
+          "started_at": "2026-10-16T00:16:44.4841323Z",
+          "finished_at": "2026-10-16T00:16:49.5947835Z",
+          "kind": "stage",
+          "seconds": 5.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 3,
+      "case_id": "boundary",
+      "native_harness_seconds": 183.55
+    },
+    {
+      "total_seconds": 379.0,
+      "status": "passed",
+      "fixture": "48a31b7798ea",
+      "finished_at": "2026-10-16T00:23:10.4331802Z",
+      "started_at": "2026-10-16T00:16:51.2759973Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:17:30.4654395Z",
+          "finished_at": "2026-10-16T00:17:32.1944718Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:17:32.1944718Z",
+          "finished_at": "2026-10-16T00:17:35.4188388Z",
+          "kind": "network-intent",
+          "seconds": 3.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:17:35.4188388Z",
+          "finished_at": "2026-10-16T00:17:36.0626916Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:17:36.0626916Z",
+          "finished_at": "2026-10-16T00:17:41.7944601Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:17:41.7944601Z",
+          "finished_at": "2026-10-16T00:17:45.274935Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:17:45.274935Z",
+          "finished_at": "2026-10-16T00:17:45.2816378Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "ec94f3548090b59380a5334048a373ce",
+            "state_dir": "c:\\srt\\48a31b7798ea\\s",
+            "pid": 30620,
+            "process_created": "134365834649482393",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:17:45.2816378Z",
+          "finished_at": "2026-10-16T00:17:48.5954372Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:17:48.5954372Z",
+          "finished_at": "2026-10-16T00:18:51.5529988Z",
+          "kind": "stage",
+          "seconds": 63.0,
+          "value": "await-implementation-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:18:51.5529988Z",
+          "finished_at": "2026-10-16T00:18:55.7682766Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:18:55.7682766Z",
+          "finished_at": "2026-10-16T00:19:56.2678571Z",
+          "kind": "network-confirmed",
+          "seconds": 61.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:19:56.2678571Z",
+          "finished_at": "2026-10-16T00:19:56.2736592Z",
+          "kind": "explicit-driver-authorization",
+          "seconds": 0.0,
+          "value": {
+            "command": "stop",
+            "request": {
+              "protocol": "steerrunner-cli/v1",
+              "request_id": "stop-123",
+              "input": {
+                "expected_revision": 21
+              }
+            }
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:19:56.2736592Z",
+          "finished_at": "2026-10-16T00:19:56.3697945Z",
+          "kind": "stage",
+          "seconds": 0.0,
+          "value": "unknown-stop-revocation"
+        },
+        {
+          "started_at": "2026-10-16T00:19:56.3697945Z",
+          "finished_at": "2026-10-16T00:19:57.4474749Z",
+          "kind": "service-stop-intent",
+          "seconds": 1.0,
+          "value": {
+            "instance_id": "ec94f3548090b59380a5334048a373ce",
+            "state_dir": "c:\\srt\\48a31b7798ea\\s",
+            "pid": 30620,
+            "process_created": "134365834649482393",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:19:57.4474749Z",
+          "finished_at": "2026-10-16T00:19:59.1757432Z",
+          "kind": "service-stopped",
+          "seconds": 2.0,
+          "value": {
+            "instance_id": "ec94f3548090b59380a5334048a373ce",
+            "state_dir": "c:\\srt\\48a31b7798ea\\s",
+            "pid": 30620,
+            "process_created": "134365834649482393",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:19:59.1757432Z",
+          "finished_at": "2026-10-16T00:19:59.1932384Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "d8de7962e8e78f338f7ba6877e72ff42",
+            "state_dir": "c:\\srt\\48a31b7798ea\\s",
+            "pid": 30960,
+            "process_created": "134365835988521952",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:19:59.1932384Z",
+          "finished_at": "2026-10-16T00:22:56.3358538Z",
+          "kind": "stage",
+          "seconds": 177.0,
+          "value": "restart-resume-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:22:56.3358538Z",
+          "finished_at": "2026-10-16T00:23:02.8583057Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:23:02.8583057Z",
+          "finished_at": "2026-10-16T00:23:03.8302111Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:23:03.8302111Z",
+          "finished_at": "2026-10-16T00:23:09.2129717Z",
+          "kind": "stage",
+          "seconds": 6.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.stop-revocation",
+      "repeat_index": 3,
+      "case_id": "unreachable",
+      "native_harness_seconds": 340.93
+    },
+    {
+      "total_seconds": 314.0,
+      "status": "passed",
+      "fixture": "48a36caf27ff",
+      "finished_at": "2026-10-16T00:28:24.4903583Z",
+      "started_at": "2026-10-16T00:23:10.4362086Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:23:49.0047746Z",
+          "finished_at": "2026-10-16T00:23:50.8264566Z",
+          "kind": "stage",
+          "seconds": 1.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:23:50.8264566Z",
+          "finished_at": "2026-10-16T00:23:54.6591449Z",
+          "kind": "network-intent",
+          "seconds": 4.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:23:54.6591449Z",
+          "finished_at": "2026-10-16T00:23:55.2921303Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:23:55.2921303Z",
+          "finished_at": "2026-10-16T00:24:01.6075357Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:24:01.6075357Z",
+          "finished_at": "2026-10-16T00:24:05.1606843Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:24:05.1606843Z",
+          "finished_at": "2026-10-16T00:24:05.166058Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "410e44b2d6a4ce39c54618ccf4f8eb72",
+            "state_dir": "c:\\srt\\48a36caf27ff\\s",
+            "pid": 45980,
+            "process_created": "134365838448333876",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:24:05.166058Z",
+          "finished_at": "2026-10-16T00:24:08.7049819Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:24:08.7049819Z",
+          "finished_at": "2026-10-16T00:26:29.5255547Z",
+          "kind": "stage",
+          "seconds": 141.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:26:29.5255547Z",
+          "finished_at": "2026-10-16T00:26:34.1510522Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:26:34.1510522Z",
+          "finished_at": "2026-10-16T00:27:43.4940672Z",
+          "kind": "network-confirmed",
+          "seconds": 69.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:27:43.4940672Z",
+          "finished_at": "2026-10-16T00:27:49.4505929Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:27:49.4505929Z",
+          "finished_at": "2026-10-16T00:27:49.4565027Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:27:49.4565027Z",
+          "finished_at": "2026-10-16T00:27:53.7029801Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-16T00:27:53.7029801Z",
+          "finished_at": "2026-10-16T00:28:16.3279443Z",
+          "kind": "stage",
+          "seconds": 23.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-16T00:28:16.3279443Z",
+          "finished_at": "2026-10-16T00:28:23.9573455Z",
+          "kind": "stage",
+          "seconds": 7.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 3,
+      "case_id": "completion-gap",
+      "native_harness_seconds": 277.28
+    },
+    {
+      "total_seconds": 311.0,
+      "status": "passed",
+      "fixture": "3069d3b64b1a",
+      "finished_at": "2026-10-16T00:33:35.0745898Z",
+      "started_at": "2026-10-16T00:28:24.4929987Z",
+      "driver_checkpoint_intervals": [
+        {
+          "started_at": "2026-10-16T00:29:03.6441739Z",
+          "finished_at": "2026-10-16T00:29:05.4788071Z",
+          "kind": "stage",
+          "seconds": 2.0,
+          "value": "dual-path-network-preflight"
+        },
+        {
+          "started_at": "2026-10-16T00:29:05.4788071Z",
+          "finished_at": "2026-10-16T00:29:08.953426Z",
+          "kind": "network-intent",
+          "seconds": 3.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:29:08.953426Z",
+          "finished_at": "2026-10-16T00:29:09.5811729Z",
+          "kind": "network-confirmed",
+          "seconds": 1.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:29:09.5811729Z",
+          "finished_at": "2026-10-16T00:29:15.6907398Z",
+          "kind": "network-intent",
+          "seconds": 6.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:29:15.6907398Z",
+          "finished_at": "2026-10-16T00:29:19.1405888Z",
+          "kind": "network-confirmed",
+          "seconds": 4.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:29:19.1405888Z",
+          "finished_at": "2026-10-16T00:29:19.148056Z",
+          "kind": "service-instance",
+          "seconds": 0.0,
+          "value": {
+            "instance_id": "00d6769daf4b04fe3c15a04e2de9196e",
+            "state_dir": "c:\\srt\\3069d3b64b1a\\s",
+            "pid": 38552,
+            "process_created": "134365841588131086",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c8ae815c11ee602fa7d676ab81525347742fb89d6ebfa537ef7e8babcf4b52de",
+            "executable_sha256": "5598cba9041c9be57dde3f975cbff296631ad9331cc78330286a0085ce0870d9"
+          }
+        },
+        {
+          "started_at": "2026-10-16T00:29:19.148056Z",
+          "finished_at": "2026-10-16T00:29:22.8158514Z",
+          "kind": "stage",
+          "seconds": 3.0,
+          "value": "submit"
+        },
+        {
+          "started_at": "2026-10-16T00:29:22.8158514Z",
+          "finished_at": "2026-10-16T00:31:29.7039871Z",
+          "kind": "stage",
+          "seconds": 127.0,
+          "value": "await-publication-gate"
+        },
+        {
+          "started_at": "2026-10-16T00:31:29.7039871Z",
+          "finished_at": "2026-10-16T00:31:34.7867963Z",
+          "kind": "network-intent",
+          "seconds": 5.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:31:34.7867963Z",
+          "finished_at": "2026-10-16T00:32:45.6551298Z",
+          "kind": "network-confirmed",
+          "seconds": 71.0,
+          "value": "block"
+        },
+        {
+          "started_at": "2026-10-16T00:32:45.6551298Z",
+          "finished_at": "2026-10-16T00:32:52.2296627Z",
+          "kind": "network-intent",
+          "seconds": 7.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:32:52.2296627Z",
+          "finished_at": "2026-10-16T00:32:52.236369Z",
+          "kind": "network-confirmed",
+          "seconds": 0.0,
+          "value": "restore"
+        },
+        {
+          "started_at": "2026-10-16T00:32:52.236369Z",
+          "finished_at": "2026-10-16T00:32:56.5351536Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "provider-query-failure-observed"
+        },
+        {
+          "started_at": "2026-10-16T00:32:56.5351536Z",
+          "finished_at": "2026-10-16T00:33:00.7737918Z",
+          "kind": "stage",
+          "seconds": 4.0,
+          "value": "reconciled-original-publication"
+        },
+        {
+          "started_at": "2026-10-16T00:33:00.7737918Z",
+          "finished_at": "2026-10-16T00:33:26.408959Z",
+          "kind": "stage",
+          "seconds": 26.0,
+          "value": "verify-original-pr"
+        },
+        {
+          "started_at": "2026-10-16T00:33:26.408959Z",
+          "finished_at": "2026-10-16T00:33:34.2369903Z",
+          "kind": "stage",
+          "seconds": 8.0,
+          "value": "cleanup"
+        }
+      ],
+      "scenario": "orca-remote.publication-unknown",
+      "repeat_index": 3,
+      "case_id": "query-unavailable",
+      "native_harness_seconds": 272.9
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "57d6f6f2455b6a748b56aafc75668915bd1d87eb",
+  "source_dirty": true,
+  "started_at": "2026-10-15T21:01:11.5059201Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-local-regression-04\\framework",
+      "exit_code": 0,
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_zero_match_guard": true,
+      "level": "L1",
+      "test_count": 161,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-local-regression-04"
+    },
+    {
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-local-regression-04\\controlled",
+      "scenario_count": 12,
+      "exit_code": 0
+    },
+    {
+      "repeat_index": 1,
+      "case_id": "default",
+      "started_at": "2026-10-15T21:05:14.5381833Z",
+      "finished_at": "2026-10-15T21:10:21.3029594Z",
+      "scenario": "local-codex.smoke",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-local-regression-04\\local-codex.smoke-default-r1-fixture.json",
+      "level": "L2",
+      "status": "passed",
+      "manifest": "C:\\srt\\96158bdc5ce7\\manifest.json",
+      "evidence": "C:\\srt\\96158bdc5ce7\\evidence"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 1,
+  "first_pass_rate": 1,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-15T21:10:21.3199763Z"
+}

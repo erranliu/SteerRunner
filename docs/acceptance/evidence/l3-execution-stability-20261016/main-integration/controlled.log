@@ -1,0 +1,42 @@
+=== RUN   TestSRStandalonePackage
+--- PASS: TestSRStandalonePackage (4.49s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (17.46s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.07s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (3.58s)
+    --- PASS: TestSRServiceOwnership/parent_job (3.69s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.75s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.94s)
+    --- PASS: TestSRServiceOwnership/different_release (3.16s)
+    --- PASS: TestSRServiceOwnership/stale_writer (3.29s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (3.66s)
+=== RUN   TestSRStabilityLostSubmitResponse
+--- PASS: TestSRStabilityLostSubmitResponse (14.07s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+    stability_test.go:51: stop explicitly rejected stale_revision at revision 9; refresh before a new request
+--- PASS: TestSRStabilityRevocationAcrossRestart (16.44s)
+=== RUN   TestSRInputFreeze
+--- PASS: TestSRInputFreeze (15.38s)
+=== RUN   TestSRPermissionQualification
+--- PASS: TestSRPermissionQualification (10.48s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (16.83s)
+=== RUN   TestSRStorageLogsEvents
+--- PASS: TestSRStorageLogsEvents (14.98s)
+=== RUN   TestSRPublicationIdentity
+--- PASS: TestSRPublicationIdentity (14.05s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+--- PASS: TestSRPublicationBeforeWorkflowReady (15.84s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (16.04s)
+=== RUN   TestSRRestartRequiresResume
+--- PASS: TestSRRestartRequiresResume (16.02s)
+PASS

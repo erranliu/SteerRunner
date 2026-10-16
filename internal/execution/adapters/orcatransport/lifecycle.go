@@ -609,13 +609,16 @@ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.Life
 			}
 		}
 		return receipt, nil, err
+	case b.LifecycleStopExecution:
+		return l.reconcileStop(ctx, r)
 	default:
 		return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}, nil, errors.New("unsupported terminal reconciliation")
 	}
 }
 
-func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
-	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
+func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b.StopHandle) (receipt b.LifecycleReceipt, err error) {
+	receipt = b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
+	receipt.Operation.Receipt = nil
 	if err := r.Validate(); err != nil {
 		return receipt, err
 	}
@@ -626,17 +629,21 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		receipt.Disposition = b.OperationConfirmed
 		return receipt, nil
 	}
-	if _, err := l.original(ctx, r.Snapshot); err != nil {
-		return receipt, err
-	}
 	if b.LifecycleAction(r.Operation.Action) != b.LifecycleStopExecution {
 		return receipt, errors.New("unsupported terminal stop")
 	}
+	progress := stopProgress{Version: 1, Phase: "not-attempted"}
+	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
+	if _, err := l.original(ctx, r.Snapshot); err != nil {
+		return receipt, err
+	}
+	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(ctx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
 		return receipt, err
 	}
 	if proof.Disposition == "confirmed" {
+		progress.Phase = "confirmed"
 		receipt.Disposition = b.OperationConfirmed
 		receipt.State.Stopped = true
 		receipt.State.WorkerAbsent = true

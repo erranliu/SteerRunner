@@ -1,0 +1,116 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-boundary",
+  "repeat_index": 3,
+  "stage": "completed",
+  "run_id": "9ace951048c865ae17efdc6ebc589146",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/304",
+  "merge_commit": "3e6912d17c40b07c264b0520e0b12c2a3c34a256",
+  "test_outcome": "passed",
+  "business_outcome": "merged",
+  "faults_hit": 2,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "direct-state-blocked",
+      "passed": true,
+      "evidence": "faults.jsonl: fixture helper direct native state request failed"
+    },
+    {
+      "name": "native-cli-blocked",
+      "passed": true,
+      "evidence": "faults.jsonl: real private CLI request failed"
+    },
+    {
+      "name": "remote-still-live",
+      "passed": true,
+      "evidence": "faults.jsonl: independent original runtime still queryable"
+    },
+    {
+      "name": "failed-observation-retried",
+      "passed": true,
+      "evidence": "native-calls.jsonl: failed original terminal read followed by a later original read during the 60-second network window"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "network-blocked.json and dual-path failure probes"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "resume-required-before-authorization",
+      "passed": true,
+      "evidence": "latest-run.json and native-calls.jsonl after original completion"
+    },
+    {
+      "name": "single-actual-pr",
+      "passed": true,
+      "evidence": "pr-list.json: exactly one PR on this fixture base"
+    },
+    {
+      "name": "merge-head-stable",
+      "passed": true,
+      "evidence": "original PR verified before exact-head merge"
+    },
+    {
+      "name": "merged-base",
+      "passed": true,
+      "evidence": "actual base fetch matches merge commit"
+    },
+    {
+      "name": "merged-content",
+      "passed": true,
+      "evidence": "merged Git object equals verified head"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique prompt sends and single worktree with its original terminal"
+    },
+    {
+      "name": "single-native-publication",
+      "passed": true,
+      "evidence": "native-publication-audit.json: publisher/create counts"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl: every native send/create has original-runtime successful receipt"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}
