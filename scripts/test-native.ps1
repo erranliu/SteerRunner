@@ -21,6 +21,10 @@ try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
     if ($LASTEXITCODE -ne 0) { throw 'Native driver build failed' }
 } finally { Pop-Location }
+if ($taskNative.driver -eq 'development-core') {
+    $taskProof = Get-Content -LiteralPath $taskNative.feedback_qualification.path -Raw | ConvertFrom-Json
+    if ($taskProof.identity.driver_sha256.ToLowerInvariant() -cne (Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Core smoke feedback qualification was produced by a different native driver build' }
+}
 function Quote-WindowsArgument([string]$Argument) { '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"' }
 $taskArguments = @($taskTestExe,"-test.run=$Pattern",'-test.v',("-test.timeout={0}m" -f $TimeoutMinutes),'-native-manifest',$taskManifestPath,'-evidence-dir',$taskEvidence)
 $taskCommandLine = ($taskArguments | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
@@ -60,9 +64,13 @@ if ($taskNative.schema -eq 'steerrunner-test/v2') {
     & $taskNative.stability.helper.path validate-result -manifest $taskManifestPath
     if ($LASTEXITCODE -ne 0) { throw 'Stability result lacks case assertions or confirmed cleanup' }
 } else {
-    if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped) { throw 'Live result lacks confirmed completion or cleanup' }
-    if ($taskNative.driver -eq 'development-audited') {
-        if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskScenario.merge_commit) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
-    } elseif (-not $taskScenario.merge_commit) { throw 'Live smoke lacks its verified merge' }
+    . (Join-Path $PSScriptRoot 'native-result.ps1')
+    Assert-SRNativeScenario $taskNative $taskResult $taskScenario
+    if($taskNative.driver -eq 'development-audited'){
+        $taskView=Get-Content -LiteralPath (Join-Path $taskEvidence 'latest-run.json') -Raw|ConvertFrom-Json
+        $taskThread=Get-Content -LiteralPath (Join-Path $taskRoot ('s/runs/'+$taskScenario.run_id+'/app-server/thread.json')) -Raw|ConvertFrom-Json
+        $taskModels=Assert-SRAuditModels $taskNative $taskView $taskThread.thread.path
+        [IO.File]::WriteAllText((Join-Path $taskEvidence 'audit-models.json'),($taskModels|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
+    }
 }
 Write-Output $taskEvidence

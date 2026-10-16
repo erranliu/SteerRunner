@@ -1,0 +1,24 @@
+=== RUN   TestSREdgeResourcePressure
+    edge_test.go:207: round=1 handles=216 baseline=216
+    edge_test.go:207: round=2 handles=236 baseline=216
+    edge_test.go:207: round=3 handles=240 baseline=216
+    edge_test.go:207: round=4 handles=248 baseline=216
+    edge_test.go:207: round=5 handles=248 baseline=216
+    edge_test.go:207: round=6 handles=248 baseline=216
+    edge_test.go:207: round=7 handles=250 baseline=216
+    edge_test.go:207: round=8 handles=250 baseline=216
+    edge_test.go:207: round=9 handles=252 baseline=216
+    edge_test.go:207: round=10 handles=259 baseline=216
+    edge_test.go:207: round=11 handles=259 baseline=216
+    edge_test.go:207: round=12 handles=267 baseline=216
+    edge_test.go:207: round=13 handles=267 baseline=216
+    edge_test.go:207: round=14 handles=267 baseline=216
+    edge_test.go:207: round=15 handles=267 baseline=216
+    edge_test.go:207: round=16 handles=267 baseline=216
+    edge_test.go:207: round=17 handles=267 baseline=216
+    edge_test.go:207: round=18 handles=267 baseline=216
+    edge_test.go:207: round=19 handles=267 baseline=216
+    edge_test.go:207: round=20 handles=267 baseline=216
+    edge_test.go:212: outcome=stopped rounds=20 handle_growth_limit=128
+--- PASS: TestSREdgeResourcePressure (428.91s)
+PASS

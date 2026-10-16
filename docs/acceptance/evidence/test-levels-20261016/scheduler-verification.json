@@ -1,0 +1,85 @@
+{
+  "records": [
+    {
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:first"
+      ],
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\framework-final-models\\scheduler\\first-default-r1-fixture.json",
+      "started_at": "2026-10-16T08:11:44.6901283Z",
+      "finished_at": "2026-10-16T08:11:46.5285187Z",
+      "evidence": null,
+      "status": "passed",
+      "level": "L3",
+      "scenario": "first",
+      "manifest": null,
+      "case_id": "default",
+      "repeat_index": 1
+    },
+    {
+      "identity": {
+        "runner_sha256": "runner",
+        "fixture_sha256": "driver"
+      },
+      "resources": [
+        "run:second"
+      ],
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\framework-final-models\\scheduler\\second-default-r1-fixture.json",
+      "started_at": "2026-10-16T08:11:44.788766Z",
+      "finished_at": "2026-10-16T08:11:46.6250675Z",
+      "evidence": null,
+      "status": "passed",
+      "level": "L3",
+      "scenario": "second",
+      "manifest": null,
+      "case_id": "default",
+      "repeat_index": 1
+    },
+    {
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:exclusive"
+      ],
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\framework-final-models\\scheduler\\exclusive-default-r1-fixture.json",
+      "started_at": "2026-10-16T08:11:48.1250612Z",
+      "finished_at": "2026-10-16T08:11:49.958877Z",
+      "evidence": null,
+      "status": "passed",
+      "level": "L4",
+      "scenario": "exclusive",
+      "manifest": null,
+      "case_id": "default",
+      "repeat_index": 1
+    },
+    {
+      "identity": {
+        "runner_sha256": "runner",
+        "fixture_sha256": "driver"
+      },
+      "resources": [
+        "run:last"
+      ],
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\framework-final-models\\scheduler\\last-default-r1-fixture.json",
+      "started_at": "2026-10-16T08:11:50.9850821Z",
+      "finished_at": "2026-10-16T08:11:52.8389823Z",
+      "evidence": null,
+      "status": "passed",
+      "level": "L3",
+      "scenario": "last",
+      "manifest": null,
+      "case_id": "default",
+      "repeat_index": 1
+    }
+  ],
+  "changed_build_rejected": true,
+  "exclusive_case_count": 1,
+  "parallel_case_count": 2,
+  "worker_loss_rejected": true,
+  "resource_collision_rejected": true
+}

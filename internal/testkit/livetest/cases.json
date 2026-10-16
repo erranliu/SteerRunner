@@ -1,12 +1,215 @@
 {
   "schema": "steerrunner-live-cases/v1",
   "scenarios": [
-    {"id":"local-codex.smoke","level":"L2","driver":"development-smoke","target":"local-codex","timeout_minutes":30,"cases":[{"id":"default","outcome":"merged"}]},
-    {"id":"orca-remote.smoke","level":"L3","driver":"development-smoke","target":"orca-environment","timeout_minutes":30,"cases":[{"id":"default","outcome":"merged"}]},
-    {"id":"orca-remote.caller-exit","level":"L3","driver":"execution-stability","target":"orca-environment","timeout_minutes":30,"cases":[{"id":"accepted-response-lost","outcome":"merged"}]},
-    {"id":"orca-remote.connection-reconnect","level":"L3","driver":"execution-stability","target":"orca-environment","timeout_minutes":30,"cases":[{"id":"active-disconnect","outcome":"merged"}]},
-    {"id":"orca-remote.service-restart","level":"L3","driver":"execution-stability","target":"orca-environment","timeout_minutes":45,"cases":[{"id":"graceful-active","outcome":"merged"},{"id":"kill-active","outcome":"merged"},{"id":"graceful-boundary","outcome":"merged"},{"id":"kill-boundary","outcome":"merged"}]},
-    {"id":"orca-remote.stop-revocation","level":"L3","driver":"execution-stability","target":"orca-environment","timeout_minutes":30,"cases":[{"id":"active","outcome":"stopped"},{"id":"boundary","outcome":"stopped"},{"id":"unreachable","outcome":"revoked-unverified"}]},
-    {"id":"orca-remote.publication-unknown","level":"L3","driver":"execution-stability","target":"orca-environment","timeout_minutes":45,"cases":[{"id":"completion-gap","outcome":"merged"},{"id":"query-unavailable","outcome":"merged"}]}
+    {
+      "id": "local-codex.smoke",
+      "level": "L2",
+      "driver": "development-smoke",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.smoke",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.caller-exit",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "accepted-response-lost",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.connection-reconnect",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "active-disconnect",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.service-restart",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        {
+          "id": "graceful-active",
+          "outcome": "merged"
+        },
+        {
+          "id": "kill-active",
+          "outcome": "merged"
+        },
+        {
+          "id": "graceful-boundary",
+          "outcome": "merged"
+        },
+        {
+          "id": "kill-boundary",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.stop-revocation",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "active",
+          "outcome": "stopped"
+        },
+        {
+          "id": "boundary",
+          "outcome": "stopped"
+        },
+        {
+          "id": "unreachable",
+          "outcome": "revoked-unverified"
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.publication-unknown",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        {
+          "id": "completion-gap",
+          "outcome": "merged"
+        },
+        {
+          "id": "query-unavailable",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.feedback",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "merged"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "local-codex",
+      "timeout_minutes": 45,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready"
+        }
+      ]
+    },
+    {
+      "id": "controlled.permanent-evidence-loss",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgePermanentEvidenceLoss",
+          "id": "default",
+          "outcome": "resume_required"
+        }
+      ]
+    },
+    {
+      "id": "controlled.stop-commit-race",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeStopCommitRace",
+          "id": "default",
+          "outcome": "stopped"
+        }
+      ]
+    },
+    {
+      "id": "controlled.storage-failure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeStorageFailure",
+          "id": "default",
+          "outcome": "rejected"
+        }
+      ]
+    },
+    {
+      "id": "controlled.resource-pressure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "test": "TestSREdgeResourcePressure",
+          "id": "default",
+          "outcome": "stopped"
+        }
+      ]
+    }
   ]
 }

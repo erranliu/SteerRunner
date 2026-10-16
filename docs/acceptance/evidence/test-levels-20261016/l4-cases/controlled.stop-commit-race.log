@@ -1,0 +1,4 @@
+=== RUN   TestSREdgeStopCommitRace
+    edge_test.go:127: outcome=stopped original intent settled after two receipt-commit failures/generations
+--- PASS: TestSREdgeStopCommitRace (32.36s)
+PASS

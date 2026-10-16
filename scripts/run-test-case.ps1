@@ -1,0 +1,52 @@
+param([Parameter(Mandatory=$true)][string]$Request)
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+$taskJob = Get-Content -LiteralPath $Request -Raw | ConvertFrom-Json
+$taskRecord = $taskJob.record | ConvertTo-Json -Depth 30 | ConvertFrom-Json -AsHashtable
+function Save-Case {
+    $taskTemporary = $taskJob.result_path + '.tmp'
+    [IO.File]::WriteAllText($taskTemporary,($taskRecord | ConvertTo-Json -Depth 40),[Text.UTF8Encoding]::new($false))
+    [IO.File]::Move($taskTemporary,$taskJob.result_path,$true)
+}
+try {
+    $taskRecord.started_at = [DateTime]::UtcNow.ToString('o')
+    $taskRecord.status=if($taskJob.entry.driver -eq 'controlled-integration'){'running'}else{'preparing'}
+    Save-Case
+    if ($taskJob.entry.driver -eq 'controlled-integration') {
+        $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-r' + $taskJob.repeat_index)
+        $taskPattern = '^' + [regex]::Escape($taskJob.case.test) + '$'
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern | Out-Host
+        $taskUntil = [DateTime]::UtcNow.AddMinutes(15).AddSeconds(30)
+        $taskResultPath = Join-Path $taskRecord.evidence 'result.json'
+        while (-not (Test-Path -LiteralPath $taskResultPath)) {
+            if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled case timed out; preserve original evidence' }
+            Start-Sleep -Milliseconds 500
+        }
+        $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
+        if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1 -or (Select-String -LiteralPath (Join-Path $taskRecord.evidence 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled case failed, skipped or did not execute exactly once' }
+    } else {
+        $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -FeedbackQualification $taskJob.feedback_qualification)
+        $taskRecord.evidence = Join-Path (Split-Path -Parent $taskRecord.manifest) 'evidence'
+        $taskRecord.status = 'running'
+        Save-Case
+        $taskRecord.evidence = & (Join-Path $PSScriptRoot 'test-native.ps1') -Manifest $taskRecord.manifest -TimeoutMinutes $taskJob.entry.timeout_minutes
+        $taskManifest = Get-Content -LiteralPath $taskRecord.manifest -Raw | ConvertFrom-Json
+        $taskScenario = Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'scenario.json') -Raw | ConvertFrom-Json
+        . (Join-Path $PSScriptRoot 'native-result.ps1')
+        $taskView=if($taskScenario.PSObject.Properties['runs']){$null}else{Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'latest-run.json') -Raw|ConvertFrom-Json}
+        $taskRecord.resources = @(Get-SRNativeResources $taskManifest $taskScenario $taskView)
+    }
+    $taskRecord.identity = Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'source-identity.json') -Raw | ConvertFrom-Json -AsHashtable
+    foreach ($taskKey in @($taskRecord.identity.Keys)) {
+        if ($taskKey -like '*_sha256') { $taskRecord.identity[$taskKey]=([string]$taskRecord.identity[$taskKey]).ToLowerInvariant() }
+    }
+    $taskRecord.expected_outcome=$taskJob.case.outcome
+    $taskRecord.status = 'passed'
+} catch {
+    $taskRecord.status = 'failed'
+    $taskRecord.error = $_.Exception.Message
+} finally {
+    $taskRecord.finished_at = [DateTime]::UtcNow.ToString('o')
+    Save-Case
+}
+if ($taskRecord.status -ne 'passed') { exit 1 }

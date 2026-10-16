@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type thread struct {
@@ -40,7 +41,19 @@ func main() {
 		if os.Getenv("STEERRUNNER_FIXTURE_STATE") != "" {
 			_ = appendCall(map[string]any{"method": "provider/query"})
 		}
-		body, err := os.ReadFile(os.Args[2])
+		path := os.Args[2]
+		if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" && len(os.Args) == 4 {
+			uri, err := url.Parse(os.Args[3])
+			if err != nil || uri.Host != "controlled.invalid" {
+				os.Exit(2)
+			}
+			number, err := strconv.ParseUint(filepath.Base(uri.Path), 10, 32)
+			if err != nil {
+				os.Exit(2)
+			}
+			path = filepath.Join(filepath.Dir(path), fmt.Sprintf("pr-%d.json", number))
+		}
+		body, err := os.ReadFile(path)
 		if err != nil {
 			os.Exit(2)
 		}
@@ -94,6 +107,8 @@ func main() {
 			return
 		}
 		defer connection.CloseNow()
+		connectionContext, cancel := context.WithCancel(context.Background())
+		defer cancel()
 		connection.SetReadLimit(16 << 20)
 		for {
 			_, body, err := connection.Read(context.Background())
@@ -115,6 +130,9 @@ func main() {
 				if connection.Write(context.Background(), websocket.MessageText, encode(event)) != nil {
 					return
 				}
+			}
+			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" && request.Method == "turn/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
+				go s.releaseHeld(connectionContext, connection)
 			}
 		}
 	}))
@@ -216,6 +234,11 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return nil, nil
 		}
 		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
+			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" {
+				if err := os.WriteFile(statePath(s.thread.ID)+".completed", encode(s.thread), 0600); err != nil {
+					return fail(err)
+				}
+			}
 			turn["status"] = "inProgress"
 			turn["items"] = []any{}
 			delete(turn, "completedAt")
@@ -266,6 +289,38 @@ func auditResult(prompt string) (string, error) {
 	return `{"outcome":"done","summary":"checked","verdict":"pass","findings":[]}`, nil
 }
 func exists(path string) bool { _, err := os.Stat(path); return err == nil }
+
+func (s *server) releaseHeld(ctx context.Context, connection *websocket.Conn) {
+	for exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(20 * time.Millisecond):
+		}
+	}
+	s.mu.Lock()
+	var complete thread
+	path := statePath(s.thread.ID) + ".completed"
+	body, err := os.ReadFile(path)
+	if err != nil || json.Unmarshal(body, &complete) != nil || len(complete.Turns) == 0 || complete.ID != s.thread.ID {
+		s.mu.Unlock()
+		return
+	}
+	s.thread = complete
+	if err = s.save(); err != nil {
+		s.mu.Unlock()
+		return
+	}
+	_ = os.Remove(path)
+	turn := complete.Turns[len(complete.Turns)-1]
+	s.mu.Unlock()
+	if items, ok := turn["items"].([]any); ok {
+		for _, item := range items {
+			_ = connection.Write(ctx, websocket.MessageText, encode(map[string]any{"method": "item/completed", "params": map[string]any{"threadId": complete.ID, "turnId": turn["id"], "item": item}}))
+		}
+	}
+	_ = connection.Write(ctx, websocket.MessageText, encode(map[string]any{"method": "turn/completed", "params": map[string]any{"threadId": complete.ID, "turn": turn}}))
+}
 func (s *server) save() error {
 	if err := os.MkdirAll(filepath.Dir(statePath(s.thread.ID)), 0700); err != nil {
 		return err

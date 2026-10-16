@@ -1,0 +1,13 @@
+{
+  "scenario": "local-codex.feedback",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "a53ede1ddfcc05c2b29240f1e40e6e69",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/340",
+  "original_head": "7638824d562c15feea2c726600c0e40166fe3235",
+  "feedback_head": "9c5a74d5c60bde4542a5dd70771b1c52402ec4b0",
+  "merge_commit": "7d43a4c4092251925f9a2eb5b656aeb2a05c2655",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true
+}

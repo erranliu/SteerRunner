@@ -2,7 +2,7 @@
 
 SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment 执行开发 workflow，处理反馈并产出可核验 PR。SteerLine 保留任务、DAG、候选关系和 TaskDelivery，通过 CLI 使用它。
 
-当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
+当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke、L3 流程/核心可靠性测试和 L4 受控边界测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
@@ -115,10 +115,15 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 定向验证
 
-独立三级测试入口见 [测试说明](docs/testing.md)：L1 为规则/组件测试，受控集成为
-L2/L3 前置；L2 在本机真实 Codex + SteerlineTest 上消耗 token、创建并合入 PR；
-L3 为可扩展的真机真实环境场景集，已注册远端 Orca smoke 及五个稳定性场景，合计十二 case。
-实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，完整资格为同构建连续三轮。
+L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)，具体内容见
+[测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
+L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
+边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
+当前已注册 L2 一 case、L3 十五 case（含原远端十二项与本机反馈/两模型审计/多 Run）、
+L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
+driver 需要同构建反馈通过资格。真实后端并行及当前远端认证缺口分别登记，逐项内容见清单。
+历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
+该受测套件完整资格为同构建连续三轮。
 统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
 
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：
@@ -138,8 +143,9 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 程序清单资源已生成并纳入源码；只在修改 `app.manifest` 后运行 `go generate ./cmd/steerrunner` 重新生成。项目采用 [Apache-2.0](LICENSE)，来源说明见 [NOTICE](NOTICE)。第三方运行依赖和 Go runtime 的许可声明见 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt)。正式发布须完成对应验收。
 
-当前测试建设范围包含 Windows/amd64 本机 Codex L2 和远端 Orca L3。历史取消及失败记录保留；
-支持声明以对应版本的实际三级测试结果为准。
+当前测试建设范围包含 Windows/amd64 本机 Codex L2/L3、远端 Orca L3 和 L4 受控边界。历史取消及失败记录保留；
+支持声明以对应版本的实际测试结果为准，分层规范见[测试指南](docs/testing.md)，
+当前覆盖与缺口见[测试清单](docs/test-catalog.md)。
 
 ## 环境检查规划入口
 

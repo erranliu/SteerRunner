@@ -13,6 +13,7 @@ var caseFiles embed.FS
 type Case struct {
 	ID      string `json:"id"`
 	Outcome string `json:"outcome"`
+	Test    string `json:"test,omitempty"`
 }
 type Scenario struct {
 	ID             string `json:"id"`

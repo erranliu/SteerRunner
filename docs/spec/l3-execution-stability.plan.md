@@ -1,5 +1,8 @@
 # Plan：L3 执行稳定性验收
 
+> 本文实施的是首批远端六场景/十二 case；它们继续保留在 L3。当前扩展后的完整清单与
+> 新增测试验收见[测试清单](../test-catalog.md)和[测试功能验收](../acceptance/test-levels.md)。
+
 日期：2026-10-15。状态：实施完成；2026-10-16 同一构建完整三轮真机资格验收通过（36/36），无排除。用户已授权实施及全部 L3 真机执行，取代最初仅交付文档的范围。结果与失败历史见[专属验收](../acceptance/l3-execution-stability.md)。
 
 依据 [Spec](l3-execution-stability.spec.md)。首次实施输入基线为 SteerRunner `57d6f6f2455b6a748b56aafc75668915bd1d87eb`；实施前核对最新工作区及冻结文档摘要。生产恢复与停止规则继续归 [Runner Spec](steerrunner.spec.md)，测试扩展不另立执行权威。

@@ -1,0 +1,30 @@
+{
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T08:10:47.0398282Z",
+  "manifest": "C:\\srt\\f73d36e9f622\\manifest.json",
+  "status": "passed",
+  "case_id": "default",
+  "scenario": "local-codex.audited",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\local-qualification-03\\local-codex.audited-default-r1-fixture.json",
+  "started_at": "2026-10-16T08:00:20.3314632Z",
+  "level": "L3",
+  "evidence": "C:\\srt\\f73d36e9f622\\evidence",
+  "resources": [
+    "root:C:\\srt\\f73d36e9f622",
+    "base:codex/srtest/f73d36e9f622/base",
+    "run:741329ad8d27d8753688259acc54c348",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/341"
+  ],
+  "identity": {
+    "pid": 32772,
+    "manifest_sha256": "7bbfa5f135505ce829984a59aa85409a3a63341c3611aa4f671ddafc6e5babb5",
+    "driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+    "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.audited",
+    "level": "L3"
+  },
+  "expected_outcome": "pr_ready"
+}

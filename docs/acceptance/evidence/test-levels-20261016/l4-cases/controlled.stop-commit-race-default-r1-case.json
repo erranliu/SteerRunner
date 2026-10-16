@@ -1,0 +1,24 @@
+{
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.stop-commit-race-default-r1-fixture.json",
+  "scenario": "controlled.stop-commit-race",
+  "repeat_index": 1,
+  "manifest": null,
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\edge-qualification-01\\controlled.stop-commit-race-r1",
+  "started_at": "2026-10-16T07:26:36.2100022Z",
+  "status": "passed",
+  "case_id": "default",
+  "level": "L4",
+  "finished_at": "2026-10-16T07:27:36.0643971Z",
+  "identity": {
+    "pid": 15372,
+    "pattern": "^TestSREdgeStopCommitRace$",
+    "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+    "fixture_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "go_version": "go version go1.26.4 windows/amd64",
+    "os_version": "Microsoft Windows NT 10.0.26200.0",
+    "machine": "LIUMING-ASUS"
+  },
+  "expected_outcome": "stopped"
+}

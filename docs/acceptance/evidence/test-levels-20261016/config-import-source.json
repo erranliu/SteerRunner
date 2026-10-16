@@ -1,0 +1,19 @@
+{
+  "copied_fields": [
+    "schema",
+    "codex_executable",
+    "model",
+    "reasoning_effort",
+    "orca_executable",
+    "orca_environment",
+    "remote_agent",
+    "remote_model",
+    "remote_reasoning_effort"
+  ],
+  "source_sha256": "E7F2ECC2F2F96733474EC443BACDBA7B3A2B36FD912DF0E7A2D930AD51E191C3",
+  "audit_model": "Not configured in source",
+  "remote_profile": "orca-remote-desktop64g",
+  "source": "C:/SteerlineInstall/execution.json",
+  "remote_args": "Not copied: source bypass flags conflict with Runner test permission contract",
+  "local_profile": "project-default"
+}

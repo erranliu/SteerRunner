@@ -1,0 +1,80 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+  "source_dirty": true,
+  "started_at": "2026-10-16T08:10:48.2966908Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\core-qualification-01",
+      "exit_code": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\core-qualification-01\\framework",
+      "test_count": 207,
+      "native_zero_match_guard": true
+    },
+    {
+      "exit_code": 0,
+      "scenario_count": 15,
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\core-qualification-01\\controlled"
+    },
+    {
+      "case_id": "default",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\core-qualification-01\\local-codex.smoke-default-r1-fixture.json",
+      "expected_outcome": "merged",
+      "started_at": "2026-10-16T08:19:56.8275293Z",
+      "resources": [
+        "root:C:\\srt\\f0db28b15b91",
+        "base:codex/srtest/f0db28b15b91/base",
+        "run:00d9fa680098825f877ece8de9063c46",
+        "workspace:c:\\srt\\f0db28b15b91\\s\\workspaces\\kjpyty5ut474q6lzl2hqepp32i",
+        "session:01a143cc-9b5d-73e3-bc39-6c58dcb296ba",
+        "branch:codex/runner-00d9fa680098825f877ece8de9063c46",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/342"
+      ],
+      "scenario": "local-codex.smoke",
+      "repeat_index": 1,
+      "status": "passed",
+      "level": "L2",
+      "identity": {
+        "pid": 9356,
+        "manifest_sha256": "6157950454f85339ea370d1b1d0d9d41754697465f4de8176fb713e69b8c2c14",
+        "driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+        "runner_sha256": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+        "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.smoke",
+        "level": "L2"
+      },
+      "finished_at": "2026-10-16T08:24:09.3253653Z",
+      "manifest": "C:\\srt\\f0db28b15b91\\manifest.json",
+      "evidence": "C:\\srt\\f0db28b15b91\\evidence"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 1,
+  "first_pass_rate": 1,
+  "max_parallel": 1,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T08:24:09.5892380Z"
+}

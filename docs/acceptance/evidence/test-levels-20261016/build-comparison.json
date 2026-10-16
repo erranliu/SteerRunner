@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "source_files_checked": 346,
+  "native_driver_sha256": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8",
+  "local_cases": [
+    {
+      "scenario": "local-codex.feedback",
+      "runner": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+      "driver": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8"
+    },
+    {
+      "scenario": "local-codex.audited",
+      "runner": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+      "driver": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8"
+    },
+    {
+      "scenario": "local-codex.multirun",
+      "runner": "9239d4179e96665ad2c774f35622a914f6a8647286ce62ca76e5b72bfb2d737a",
+      "driver": "98ffedce7706544e00506becab651d3e802dbee7374b1f1622a8fed2cafa65b8"
+    }
+  ],
+  "controlled_driver_sha256": "6963f86b88a4e95b9707a0f5308fda6f4adfe60fe700e2a160f46a9cc396b854",
+  "l4_case_count": 4,
+  "core_build_matches_feedback": true
+}
