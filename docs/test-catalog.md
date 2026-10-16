@@ -20,6 +20,9 @@ PR 整合主线后保留两项环境检查，当前为 L3 十一场景/十七 ca
 | `local-codex.smoke` / `default` | 最小开发交付：冻结 Spec/Plan → 接受任务 → 执行 → 发布并核验 `pr_ready` → driver 合入核验 → 停止及清理 | `-Level L2`；预期 `merged`。已实现 `-FeedbackQualification` 资格门，并正式通过无反馈核心模式 1/1；无资格仍执行原完整 smoke，构建或执行配置变化后重新取资格 | 每次独立现场/state-dir/Run/本机 worker/分支/PR/认证 capability；无共享可变构建输出；本轮 L2 串行验收，实际并行资格单独登记 |
 
 前置为 L1、完整 Controlled、本机原生 Codex 资格、SteerlineTest 仓库及执行主机认证。
+L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无 stderr 错误，
+跨仓库写入须被拒绝。业务 smoke 使用生产默认提示词及真实 Git/gh 命令，不装载测试
+发布器；审计实际命令输出中的权限拒绝，退出码 0 不能掩盖 `packed-refs.lock` 错误。
 每次独立现场、Run、base/head 和 PR；执行步骤及收尾见[测试指南的完整 smoke 契约](testing.md#当前完整-smoke-契约)。
 目标 L2 不包含额外反馈轮、恢复或审计流程；driver 的真实合并可保留为交付核验手段，
 不把合并变成 Runner 的生产交付能力，保留 `merged` 预期和原 PR/分支/现场证据。

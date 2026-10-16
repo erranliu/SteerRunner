@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"errors"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"time"
@@ -83,6 +84,12 @@ func (e *Engine) attachWriteRoots(r *runstate.Record) error {
 		return err
 	}
 	args, err := codex.LinkedWorktreeWriteArgs(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
+	// Never broaden an old shared cache's frozen authorization. Only the new
+	// per-Run repository identity can receive root-level Git lockfile access.
+	if strings.EqualFold(filepath.Clean(r.RepositoryPath), privateRunRepository(e.dir, r.Request.Repository, r.ID)) &&
+		strings.EqualFold(filepath.Clean(r.RepositoryCommon), filepath.Join(r.RepositoryPath, ".git")) {
+		args, err = codex.PrivateLinkedWorktreeWriteArgs(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
+	}
 	if err != nil {
 		return err
 	}

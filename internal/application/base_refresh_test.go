@@ -122,11 +122,20 @@ func TestSRFreezeBaseBranchRefresh(t *testing.T) {
 		newHead := f.commit("advanced")
 		f.git(f.writer, "push", f.remoteName, "HEAD:refs/heads/"+f.branch)
 		second := f.freeze()
-		if first.RepositoryPath != second.RepositoryPath || first.InputDigest != second.InputDigest {
-			t.Fatal("warm refresh changed cache or frozen input identity")
+		if first.RepositoryPath == second.RepositoryPath || first.InputDigest != second.InputDigest {
+			t.Fatal("local Runs shared their writable repository or changed frozen input identity")
 		}
-		if f.git(second.RepositoryPath, "rev-parse", "refs/remotes/"+f.remoteName+"/"+f.branch) != newHead {
+		cache := repositoryCache(f.state, f.request.Repository)
+		if f.git(cache, "rev-parse", "refs/remotes/"+f.remoteName+"/"+f.branch) != newHead {
 			t.Fatal("warm cache did not refresh the configured target")
+		}
+		if first.RepositoryCommon == second.RepositoryCommon || first.RepositoryPath != privateRunRepository(f.state, f.request.Repository, first.ID) || second.RepositoryPath != privateRunRepository(f.state, f.request.Repository, second.ID) {
+			t.Fatal("local Runs share a Git common directory")
+		}
+		for _, record := range []*runstate.Record{first, second} {
+			if _, err := os.Stat(filepath.Join(record.RepositoryCommon, "objects", "info", "alternates")); !errors.Is(err, os.ErrNotExist) {
+				t.Fatal("private Run repository depends on mutable shared objects", err)
+			}
 		}
 	})
 	for _, scenario := range []string{"off-branch", "rewound", "deleted", "offline"} {

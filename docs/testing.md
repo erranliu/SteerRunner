@@ -151,6 +151,13 @@ App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 Ap
 `tests/fixtures/evidence-smoke/`，只更新 `evidence/native-101.md`，实际读取 UTC，
 运行检查并提交。执行步骤：
 
+L2 使用生产默认的实施/报告/发布提示词，不覆盖 `prompt_overrides`，也不把
+`publish.ps1` 发布器放入 L2 夹具；Git 提交、push 和 gh PR 创建由原 worker 完成。
+夹具显式保留 packed refs。L2 前置另通过实际 native `command/exec` 验证 loose/packed
+head 提交的 stderr 为空，且另一个仓库仍不可写；不使用模型或远端写操作。
+worker 命令日志审计会拒绝权限错误，即使命令退出码为 0、提交及 PR 已成功。
+L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
+
 1. 生成 `C:/srt/<随机ID>` 短路径现场（可用 `-FixtureParent` 指定父目录），构建 Runner，
    冻结 EXE/Spec/Plan 摘要、配置、来源与专属 `codex/srtest/<ID>/base`。
 2. 克隆固定 SteerlineTest 源提交，提交本轮 checker/publisher 和材料作为测试 base，

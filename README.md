@@ -144,6 +144,11 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
+本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
+worker 的 common Git 目录只属于该 Run，允许 Git 创建 `packed-refs.lock` 等根级锁；
+不会授权共享缓存、其它 Run 或整个状态目录。代价是每个 Run 多一份本机仓库副本。
+已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
+
 本机 GitHub 认证 broker 的 socket 使用 `a/<26位资源键>/s`，避免把 Git 管理目录的深度叠加到 AF_UNIX 地址上。资源键保留 128 位摘要，绑定项目、执行、attempt、资源 generation、配置摘要、工作区和 remote；权限资源 codec v4 在会话创建前固定该目录。原生启动、就绪检查、正式回合和环境检查只增加本执行的目录访问，不授权共享的 `a/` 或整个状态目录。地址仍按 106 字节预检，超限时明确阻断。
 
 认证关闭、进程退出或准备失败时，仅删除原 socket 和已核验的空目录；目录重定向、身份替换、外来文件或崩溃遗留目录不会被递归删除或自动接管，未完成清理会如实报告。旧 codec v3 权限资源仍可读取，但不能静默增加认证目录授权；需要使用新资源创建执行。

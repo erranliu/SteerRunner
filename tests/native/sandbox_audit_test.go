@@ -35,6 +35,7 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		t.Fatal(err)
 	}
 	verifiedTurns := 0
+	commandAudit := livetest.CommandAudit{}
 	defer reader.Close()
 	thread, err := reader.ReadThread(ctx, run.Execution.SessionID, run.Execution.Workspace)
 	if err != nil || !filepath.IsAbs(thread.Path) {
@@ -65,6 +66,14 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 			if containsApprovalRequest(body) {
 				t.Error("native approval request in worker journal")
 			}
+			if m.Level == "L2" {
+				audit, auditErr := livetest.AuditCommandJournal(bytes.NewReader(body))
+				commandAudit.Completed += audit.Completed
+				commandAudit.PermissionErrors += audit.PermissionErrors
+				if auditErr != nil {
+					t.Error(auditErr)
+				}
+			}
 		}
 		if d.Name() == "turn-start.json" {
 			var fact struct {
@@ -91,6 +100,12 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 	}
 	if verifiedTurns == 0 {
 		t.Fatal("native tool audit found no qualified business turns")
+	}
+	if m.Level == "L2" {
+		save(t, "worker-command-audit.json", commandAudit)
+		if commandAudit.Completed == 0 {
+			t.Fatal("L2 requires actual worker command results")
+		}
 	}
 	save(t, "sandbox-readiness-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
 }

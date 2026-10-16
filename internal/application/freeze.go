@@ -40,6 +40,13 @@ func repositoryCache(dir string, repository contracts.Repository) string {
 	return filepath.Join(dir, "r", compactDirectoryKey(repository.URL+"\x00"+repository.BaseRevision+"\x00"+repository.LocalPath))
 }
 
+// Local workers need to create root-level Git lockfiles (including commit's
+// AUTO_MERGE cleanup). Their common directory must therefore belong to one
+// Run, rather than granting a worker write access to a shared repository cache.
+func privateRunRepository(dir string, repository contracts.Repository, id string) string {
+	return filepath.Join(dir, "r", compactDirectoryKey(repository.URL+"\x00"+repository.BaseRevision+"\x00"+repository.LocalPath+"\x00run\x00"+id))
+}
+
 // A case-insensitive 26-character encoding retains 128 bits without the
 // additional hex expansion in native Git's fixed-size administration buffers.
 func compactDirectoryKey(identity string) string {
@@ -250,6 +257,29 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", request.Repository.BaseRevision, baseRef); err != nil {
 		return nil, contracts.Fail(2, "invalid_input", "Pinned base is not in the configured base branch.")
+	}
+	if request.Execution.Adapter == "codex-app-server" {
+		private := privateRunRepository(dir, request.Repository, id)
+		staging, err := os.MkdirTemp(filepath.Dir(private), ".run-clone-")
+		if err != nil {
+			return nil, err
+		}
+		defer os.RemoveAll(staging) // Only the private directory allocated above.
+		if _, err = git.Output(ctx, dir, "clone", "--no-checkout", "--no-hardlinks", "--dissociate", "--origin", request.Repository.Remote, "--", cache, staging); err != nil {
+			return nil, contracts.Fail(4, "environment_unavailable", "Cannot prepare the private Run repository; no run was accepted. "+redactDiagnostic(r, err.Error()))
+		}
+		if _, err = git.Output(ctx, staging, "remote", "set-url", request.Repository.Remote, request.Repository.URL); err != nil {
+			return nil, err
+		}
+		// Local clone copies branch heads, not the refreshed tracking ref. Keep
+		// the exact validated base visible in the worker's independent clone.
+		if _, err = git.Output(ctx, staging, "fetch", "--no-tags", "--no-write-fetch-head", "--", cache, "+"+baseRef+":"+baseRef); err != nil {
+			return nil, err
+		}
+		if err = os.Rename(staging, private); err != nil {
+			return nil, err
+		}
+		cache = private
 	}
 	repo, err := workspace.ResolveRepository(ctx, git, cache)
 	if err != nil {
