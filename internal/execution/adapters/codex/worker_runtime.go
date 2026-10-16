@@ -1,6 +1,7 @@
 package codexworker
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -12,6 +13,7 @@ import (
 type workerRuntime struct {
 	Shell string
 	Temp  string
+	Auth  *AuthenticationRuntime
 }
 
 // The temp directory is a child of the already frozen linked-worktree admin
@@ -98,6 +100,13 @@ func setEnvironmentValues(env []string, values map[string]string) []string {
 }
 
 func (r *workerRuntime) environment(env []string) ([]string, error) {
+	if r.Auth != nil {
+		var err error
+		env, err = r.Auth.environment(env)
+		if err != nil {
+			return nil, err
+		}
+	}
 	paths := []string{filepath.Dir(r.Shell)}
 	for _, path := range filepath.SplitList(environmentValue(env, "PATH")) {
 		// WindowsApps execution aliases are zero-length reparse files. Codex's
@@ -131,15 +140,30 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 		fmt.Sprintf("GIT_CONFIG_KEY_%d", count+2):   "core.longpaths",
 		fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+2): "true",
 	}
+	if r.Auth != nil {
+		// Git's helper launcher invokes MSYS sh, which cannot create its named
+		// objects in MXC. Send a URL-scoped HTTP header from process environment
+		// instead. Never pin this secret value with a native config argv.
+		header := "AUTHORIZATION: basic " + base64.StdEncoding.EncodeToString([]byte("x-access-token:"+environmentValue(env, "GH_TOKEN")))
+		entries := [][2]string{{"credential.helper", ""}, {"http." + r.Auth.remoteURL + ".extraheader", header}, {"credential.interactive", "false"}}
+		for i, entry := range entries {
+			values[fmt.Sprintf("GIT_CONFIG_KEY_%d", count+3+i)] = entry[0]
+			values[fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+3+i)] = entry[1]
+		}
+		values["GIT_CONFIG_COUNT"] = strconv.Itoa(count + 6)
+	}
 	return setEnvironmentValues(env, values), nil
 }
 
 func (r *workerRuntime) instructions() string {
-	return fmt.Sprintf("SteerRunner Windows tool setup: use shell %q and login=false for shell tools. MXC assigns TEMP and TMP to each native AppContainer's private temporary directory. Preserve those native tool values; do not replace them with the app-server's host temporary directory or add writable roots. Git automatic maintenance is disabled in this worker; do not re-enable it or widen Git writable roots. Do not dump authentication or the complete environment. If an authorized command fails because the Windows sandbox cannot start a process, credential helper or system pipe, request native automatic review with sandbox_permissions=require_escalated for the exact command in the fixed worktree. Keep the assigned remote and branch. When the frozen publication command returns HTTP 401 inside MXC while host-side login was verified, treat the native credential boundary as a possible cause: request native automatic review for that same exact publication command, at most once. Do not run a login flow, copy credentials, export tokens or change authentication settings. Before retrying publication, query its actual branch/PR outcome. A denied or unavailable review must be reported; do not work around a denial, change permission settings, or use a GitHub ref-creation API instead of uploading Git objects. Opening a native viewer or granting folder trust is not a prerequisite for task execution.", r.Shell)
+	return fmt.Sprintf("SteerRunner Windows tool setup: use shell %q and login=false. MXC owns each tool AppContainer temporary directory. Keep the fixed workspace and Git roots. Git maintenance is disabled. The trusted execution runtime owns repository authentication; model-generated code can read its process environment. Do not dump authentication or the environment. Never request elevated or sandbox-external execution, repair authentication, run login, or change permission settings. Authentication expiry or sandbox access failure is an environment blocker: preserve the exact failure and original branch/PR outcome for reconciliation. Do not repeat an uncertain publication. A denied command remains blocked.", r.Shell)
 }
 
 func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 	count, err := strconv.Atoi(environmentValue(env, "GIT_CONFIG_COUNT"))
+	if r.Auth != nil {
+		count -= 3
+	}
 	if err != nil || count < 3 || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-3)) != "maintenance.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2)) != "gc.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1)) != "core.longpaths" {
 		return nil, errors.New("worker native environment lacks its fixed Git configuration")
 	}
@@ -150,6 +174,29 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 	args := make([]string, 0, len(values)*2)
 	for _, entry := range values {
 		args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))
+	}
+	if r.Auth != nil {
+		// Values are inherited from the process environment, never argv. The
+		// explicit allowlist prevents the App key and unrelated caller secrets
+		// from reaching shell tools even when native defaults exclude *TOKEN*.
+		args = append(args, "--config", `shell_environment_policy.inherit="all"`, "--config", "shell_environment_policy.ignore_default_excludes=true", "--config", `shell_environment_policy.include_only=["PATH","PATHEXT","SystemRoot","SystemDrive","COMSPEC","WINDIR","TEMP","TMP","USERPROFILE","HOME","APPDATA","LOCALAPPDATA","ProgramFiles","ProgramFiles(x86)","ProgramData","GH_HOST","GH_TOKEN","GH_PROMPT_DISABLED","GH_CONFIG_DIR","GIT_TERMINAL_PROMPT","GIT_CONFIG_*","HTTPS_PROXY","HTTP_PROXY","NO_PROXY","SSL_CERT_FILE","GIT_SSL_CAINFO"]`)
+		for i := count; i < count+3; i++ {
+			for _, prefix := range []string{"GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_"} {
+				if i == count+1 && prefix == "GIT_CONFIG_VALUE_" {
+					continue
+				} // secret: environment only
+				name := fmt.Sprintf("%s%d", prefix, i)
+				args = append(args, "--config", "shell_environment_policy.set."+name+"="+strconv.Quote(environmentValue(env, name)))
+			}
+		}
+		args = append(args, "--config", "shell_environment_policy.set.GIT_CONFIG_COUNT="+strconv.Quote(strconv.Itoa(count+3)))
+		if broker := r.Auth.broker; broker != nil {
+			// Public transport values belong to tool policy, not the app-server's
+			// own model/network environment. No machine-wide proxy or trust change.
+			for _, entry := range [][2]string{{"HTTPS_PROXY", broker.address}, {"HTTP_PROXY", broker.address}, {"NO_PROXY", ""}, {"SSL_CERT_FILE", broker.caPath}, {"GIT_SSL_CAINFO", broker.caPath}, {"GH_CONFIG_DIR", broker.configDir}} {
+				args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))
+			}
+		}
 	}
 	return args, nil
 }

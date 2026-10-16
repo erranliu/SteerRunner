@@ -1,0 +1,31 @@
+{
+  "remote_worker_refs": [],
+  "native_tool_journals": 0,
+  "preparation_operations": [
+    {
+      "operation_id": "8d87f7efba2f32f28f7a24929402fbb5",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "b9439e8872b644641fba58514122a8d5",
+      "action": "prepare_session",
+      "status": "rejected",
+      "diagnostic": "authentication_reference_missing: configure a repository-scoped GitHub App on the execution host"
+    }
+  ],
+  "stop_status": "stopped",
+  "turn_started": false,
+  "new_inputs_allowed": false,
+  "thread_records": 0,
+  "business_turn_start_records": 0,
+  "fixture": "02ba5748823f",
+  "run_id": "ebe48b721394cd36ff285e8cb3f0d984",
+  "pr_query": [],
+  "native_permission_audit": "worker not started; full business tool audit not exercised",
+  "worker_head": "codex/runner-ebe48b721394cd36ff285e8cb3f0d984",
+  "native_session": "",
+  "checked_at": "2026-10-16T04:15:58.2516936Z",
+  "pr_query_exit_code": 0,
+  "pr_query_raw": "[]"
+}

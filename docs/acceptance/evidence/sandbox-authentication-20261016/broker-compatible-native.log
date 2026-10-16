@@ -1,0 +1,5 @@
+=== RUN   TestAuthenticationNativeToolBoundary
+    authentication_native_test.go:35: preserved native diagnostic: C:/srt\auth-boundary-4148347561
+--- PASS: TestAuthenticationNativeToolBoundary (45.90s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	48.991s

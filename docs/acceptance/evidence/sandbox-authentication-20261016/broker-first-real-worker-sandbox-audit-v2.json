@@ -1,0 +1,13 @@
+{
+  "audit": {
+    "session": "01a1433a-c857-7fc0-bf8c-02a784ad118e",
+    "contexts": 3,
+    "tools": 7,
+    "escalations": 0,
+    "approvals": 0,
+    "bypasses": 0,
+    "native_sha256": "1a0c8f5d677840570b06767c73ddfe33333e9ad891d1d5c7ab0483e1e7a8a1f0"
+  },
+  "history_path": "C:/Users/lmas1/.codex/sessions/2026/10/16/rollout-2026-10-16T13-41-28-01a1433a-c857-7fc0-bf8c-02a784ad118e.jsonl",
+  "source": "original native rollout, read-only audit"
+}

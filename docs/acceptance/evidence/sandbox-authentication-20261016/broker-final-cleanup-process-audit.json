@@ -1,0 +1,18 @@
+{
+  "original_process": {
+    "kind": "os",
+    "pid": 43688,
+    "created": "01dd5d33d3623c87",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "original_process_absent": true,
+  "captured_at": "2026-10-16T06:11:12.4607965Z",
+  "state_dir": "C:/srt/19081a536d8f/s",
+  "shutdown_receipt": {
+    "instance_id": "78f3ec407c71764487c78591e47d308d",
+    "request_id": "cleanup-service",
+    "state_dir": "c:\\srt\\19081a536d8f\\s",
+    "executable_sha256": "d16357a4b1f36050a087b2eb1d0c65a5414405962c5e0ca4cb44177392f7ff63",
+    "resources_settled": true
+  }
+}

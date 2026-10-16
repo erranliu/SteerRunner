@@ -1,0 +1,32 @@
+[
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/authdiag-402847155"
+  },
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/authdiag-3783072331"
+  },
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/authdiag-3971120298"
+  },
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/auth-boundary-3768020956"
+  },
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/auth-boundary-1628824273"
+  },
+  {
+    "original_process_still_live": false,
+    "recorded_process_state": "process absent",
+    "root": "C:/srt/auth-boundary-2007950559"
+  }
+]

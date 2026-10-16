@@ -1,0 +1,8 @@
+{
+  "tested_source_manifest": "broker-compatible-source.json",
+  "delivery_commit": "6818e711c8ee6874799411a00bdc11c014ea9c56",
+  "checked_files": 335,
+  "changed_count": 0,
+  "changed_paths": [],
+  "source_note": "Test build was frozen before delivery commit. All implementation/test/script/module working-file hashes still match."
+}

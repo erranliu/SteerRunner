@@ -152,8 +152,8 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 	git(t, source, "add", ".")
 	git(t, source, "-c", "user.name=Runner Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-m", "fixture")
 	revision := git(t, source, "rev-parse", "HEAD")
-	git(t, root, "config", "--global", "url."+filepath.ToSlash(bare)+".insteadOf", "https://github.com/owner/repo.git")
-	git(t, source, "remote", "add", "origin", "https://github.com/owner/repo.git")
+	git(t, root, "config", "--global", "url."+filepath.ToSlash(bare)+".insteadOf", "https://controlled.invalid/owner/repo.git")
+	git(t, source, "remote", "add", "origin", "https://controlled.invalid/owner/repo.git")
 	git(t, source, "push", "origin", "main")
 	provider := filepath.Join(root, "provider.json")
 	t.Setenv("STEERRUNNER_FIXTURE_STATE", native)
@@ -168,9 +168,9 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 		}
 	})
 	spec, plan := "Inline Spec：固定材料", "Inline Plan：固定计划"
-	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://github.com/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
+	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
 	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{Executable: helperEXE})
-	request.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://github.com", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", provider}}})
+	request.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", provider}}})
 	raw, _ := json.Marshal(request)
 	return filepath.Join(root, "runner"), contracts.Request{Protocol: contracts.Protocol, RequestID: "original-submit", Input: raw}
 }

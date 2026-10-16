@@ -1,0 +1,22 @@
+[
+  {
+    "sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+    "path": "tests/fixtures/evidence-smoke/spec.md",
+    "legacy_approval_or_auth_repair": false
+  },
+  {
+    "sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+    "path": "tests/fixtures/evidence-smoke/plan.md",
+    "legacy_approval_or_auth_repair": false
+  },
+  {
+    "sha256": "a455bdbaa7df315f733829e63636699f5bfd0a7d7ab55fffa07e4e36d8a5543a",
+    "path": "scripts/new-test-fixture.ps1",
+    "legacy_approval_or_auth_repair": false
+  },
+  {
+    "sha256": "99e8447888d9c11cf6eda3c8e138f8e1df856696b7040a3d984a8591181d20b1",
+    "path": "tests/native/prompts_test.go",
+    "legacy_approval_or_auth_repair": false
+  }
+]

@@ -1,0 +1,106 @@
+{
+  "operations": [
+    {
+      "operation_id": "64e624cafc272aa511c7988e27993685",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "9c83b6de73af981292e85d3b5b29d9e4",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "2480804ac49d98f681e28523657dd00e",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "1baf47cd6a495867ff2935353b947529",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "4458f6d583d1a784a990653378600408",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "79c1ce7823388659d9f7fdd00ec15fdb",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "3e5fb02cd39adb442a6c4f637c0c85b3",
+  "revision": 28,
+  "title": "SteerRunner L2 local-codex.smoke",
+  "correlation": {
+    "fixture_id": "b71076c814f1",
+    "scenario": "local-codex.smoke"
+  },
+  "input_digest": "6e28b62568df354d673f60ab6f9576d70a56cb9991416849d0b139c3052da207",
+  "resource_digest": "c6881820406db68c06d32cad0ba7ee6f144702643b776d3887e22b5111f358fb",
+  "workflow": {
+    "id": "development",
+    "version": 1,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "publish",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "C:\\srt\\b71076c814f1\\s\\r\\dy255pgiec7jshr2jsokkoduje\\.git\\worktrees\\eiiktlbnie4lhrlcop7q3ticha\\steerrunner-inputs\\smoke.spec.md",
+      "execution_location": "C:\\srt\\b71076c814f1\\s\\r\\dy255pgiec7jshr2jsokkoduje\\.git\\worktrees\\eiiktlbnie4lhrlcop7q3ticha\\steerrunner-inputs\\smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "C:\\srt\\b71076c814f1\\s\\r\\dy255pgiec7jshr2jsokkoduje\\.git\\worktrees\\eiiktlbnie4lhrlcop7q3ticha\\steerrunner-inputs\\smoke.plan.md",
+      "execution_location": "C:\\srt\\b71076c814f1\\s\\r\\dy255pgiec7jshr2jsokkoduje\\.git\\worktrees\\eiiktlbnie4lhrlcop7q3ticha\\steerrunner-inputs\\smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "working_tree",
+    "turn_started": true,
+    "attempt_id": "b77674b0f20f085d89c9d3c041d25e8f",
+    "generation": "31f0f304de386daa7761ecac4ab1dd13",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a1433a-c857-7fc0-bf8c-02a784ad118e",
+    "turn_id": "01a1433d-0176-7341-a010-069e203146fa",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "c:\\srt\\b71076c814f1\\s\\workspaces\\eiiktlbnie4lhrlcop7q3ticha",
+    "branch": "codex/runner-3e5fb02cd39adb442a6c4f637c0c85b3"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "summary": "Ran the publication command once and waited for completion. It exited with code 1 after pushing the original branch. No replacement publication was attempted.",
+  "final": {
+    "command_id": "90f5bec6c1da890cc32927278235d901",
+    "attempt_id": "b77674b0f20f085d89c9d3c041d25e8f",
+    "session_id": "01a1433a-c857-7fc0-bf8c-02a784ad118e",
+    "turn_id": "01a1433d-0176-7341-a010-069e203146fa",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_09fd15384bd7db50016ad1b9b27e6c8191a9a59eeb854c64b4",
+    "text": "{\"outcome\":\"blocked\",\"summary\":\"Ran the publication command once and waited for completion. It exited with code 1 after pushing the original branch. No replacement publication was attempted.\",\"blocker\":{\"category\":\"permission\",\"action\":\"Create PR for codex/runner-3e5fb02cd39adb442a6c4f637c0c85b3\",\"error\":\"HTTP 403: execution repository or operation denied (https://api.github.com/graphql). PR creation outcome unavailable; query the original PR before retrying.\",\"known\":\"Original branch was pushed to erranliu/SteerlineTest: codex/runner-3e5fb02cd39adb442a6c4f637c0c85b3.\",\"unknown\":\"Whether the original PR was created and its actual URL; original branch/PR reconciliation is required.\"}}"
+  },
+  "created_at": "2026-10-16T05:40:47.8239628Z",
+  "updated_at": "2026-10-16T05:44:24.6615888Z"
+}

@@ -434,6 +434,18 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus == "stopped" && !view.NewInputsAllowed {
 				r.RunStopped = true
 				save(t, "cleanup-run.json", view)
+				if m.Execution.Adapter == "codex-app-server" && view.Execution.SessionID != "" {
+					var cleanup struct {
+						Revoked    bool      `json:"revocation_confirmed"`
+						Repository string    `json:"repository"`
+						Expires    time.Time `json:"expires_at"`
+					}
+					body, readErr := os.ReadFile(filepath.Join(dir, "runs", r.RunID, "app-server", "authentication-cleanup.json"))
+					if readErr != nil || json.Unmarshal(body, &cleanup) != nil || !cleanup.Revoked || cleanup.Repository != livetest.Repository {
+						t.Error("worker authentication cleanup is unverified", readErr)
+					}
+					save(t, "authentication-cleanup.json", cleanup)
+				}
 				return
 			}
 			if view.StopStatus == "unsupported" {
@@ -448,8 +460,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	specText, planText := string(spec), string(plan)
 	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
 	if audited {
-		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel, PromptOverrides: map[string]string{workflow.StepPublish: "Publish the already audited work using the original fixed publication command from the frozen Plan. Read the exact current branch. If native permission review is required, request it once for that same command and preserve any denial. Wait for the original command to finish, including polling its session_id if needed. Use its full successful receipt and actual PR URL; a later unreviewed query failure must not override that receipt. Runner will independently verify the PR. Do not invent a URL, copy credentials, change permissions or use an alternate publication route."}}
+		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel}
 	}
+	input.Workflow.PromptOverrides = smokePromptOverrides()
 	checkpoint("submit")
 	req := request("smoke-submit", input)
 	accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
@@ -462,6 +475,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	originalAt := verifyHead(t, m, first, startedAt)
 	save(t, "original-pr-ready.json", first)
 	if audited {
+		auditWorkerSandbox(t, m, first)
 		var settings contracts.CodexSettings
 		_ = json.Unmarshal(m.Execution.Settings, &settings)
 		effort := settings.ReasoningEffort
@@ -504,6 +518,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	if fresh.PR.HeadRevision != updated.PR.HeadRevision || fresh.PR.URL != updated.PR.URL {
 		t.Fatal("PR changed before merge")
 	}
+	auditWorkerSandbox(t, m, fresh)
 	checkpoint("merge-requested")
 	shell(t, m.Root, "gh", "pr", "merge", r.PRURL, "--merge", "--match-head-commit", updated.PR.HeadRevision)
 	merged, err := inspect(m, dir, r.RunID, true)

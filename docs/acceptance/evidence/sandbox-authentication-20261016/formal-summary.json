@@ -1,0 +1,59 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "e04d07fde31710b5b93d3186010074927a44effc",
+  "source_dirty": true,
+  "started_at": "2026-10-16T04:03:35.8094383Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "test_count": 197,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-l2\\framework",
+      "native_zero_match_guard": true,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-l2",
+      "level": "L1",
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "exit_code": 0
+    },
+    {
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-l2\\controlled",
+      "exit_code": 0,
+      "scenario_count": 12
+    },
+    {
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "local-codex.smoke",
+      "manifest": "C:\\srt\\02ba5748823f\\manifest.json",
+      "error": "Live scenario failed; inspect C:\\srt\\02ba5748823f\\evidence/native.log",
+      "started_at": "2026-10-16T04:12:26.8945154Z",
+      "level": "L2",
+      "finished_at": "2026-10-16T04:13:37.5397480Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-l2\\local-codex.smoke-default-r1-fixture.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\02ba5748823f\\evidence"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T04:13:37.6461592Z"
+}

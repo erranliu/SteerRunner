@@ -76,9 +76,16 @@ type AgentSettings struct {
 }
 
 type CodexSettings struct {
-	Executable      string `json:"executable,omitempty"`
-	Model           string `json:"model,omitempty"`
-	ReasoningEffort string `json:"reasoning_effort,omitempty"`
+	Executable      string              `json:"executable,omitempty"`
+	Model           string              `json:"model,omitempty"`
+	ReasoningEffort string              `json:"reasoning_effort,omitempty"`
+	GitHubAuth      *GitHubAppReference `json:"github_auth,omitempty"`
+}
+
+type GitHubAppReference struct {
+	AppID          int64  `json:"app_id"`
+	InstallationID int64  `json:"installation_id"`
+	PrivateKeyEnv  string `json:"private_key_env"`
 }
 
 type TransportSettings struct {
@@ -242,6 +249,9 @@ func ValidateRun(data []byte) *Fault {
 	case "codex-app-server":
 		var settings CodexSettings
 		if value.Execution.Target.Kind != "local" || value.Execution.Target.Environment != "" || DecodeStrict(value.Execution.Settings, &settings) != nil || !optionalStrings(value.Execution.Settings, "executable", "model", "reasoning_effort") || !effort(settings.ReasoningEffort) || settings.Model != strings.TrimSpace(settings.Model) {
+			return invalid
+		}
+		if settings.GitHubAuth != nil && (settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
 		}
 	case "orca-terminal":

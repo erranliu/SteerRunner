@@ -1,0 +1,136 @@
+{
+  "operations": [
+    {
+      "operation_id": "e927458da297a6dbac3a890a7e5ecd54",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "c8a8d297e1b87780ec71afa574e61c5b",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "f53a38e6345d34a9dde549d1360a3127",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "1849f432fc06fa63977b3e36581d125a",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "05a8204e2fb55a8be12f48c894d4f907",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "7fbaaa2bff46ce06303f87b215bad4af",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "75116e5c19cdecbb428d30ef1bfbad7e",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "e6a545528ffd897616ca8cff2c16ff1b",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "00f5596d274f67a3538121f044a75956",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "3aca51937d926e4e7b0e31b87cb0a638",
+  "revision": 52,
+  "title": "SteerRunner L2 local-codex.smoke",
+  "correlation": {
+    "fixture_id": "19081a536d8f",
+    "scenario": "local-codex.smoke"
+  },
+  "input_digest": "974bc6c77458a594b477c18bcfb71c57cc430c75460ca4e2b8f69d1d8b9cac25",
+  "resource_digest": "c6881820406db68c06d32cad0ba7ee6f144702643b776d3887e22b5111f358fb",
+  "workflow": {
+    "id": "development",
+    "version": 1,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "pr_ready",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "C:\\srt\\19081a536d8f\\s\\r\\shmnh5jlqjuge3cpfzzoucuxni\\.git\\worktrees\\3l5ai2635kuto3u44emsrub6e4\\steerrunner-inputs\\smoke.spec.md",
+      "execution_location": "C:\\srt\\19081a536d8f\\s\\r\\shmnh5jlqjuge3cpfzzoucuxni\\.git\\worktrees\\3l5ai2635kuto3u44emsrub6e4\\steerrunner-inputs\\smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "C:\\srt\\19081a536d8f\\s\\r\\shmnh5jlqjuge3cpfzzoucuxni\\.git\\worktrees\\3l5ai2635kuto3u44emsrub6e4\\steerrunner-inputs\\smoke.plan.md",
+      "execution_location": "C:\\srt\\19081a536d8f\\s\\r\\shmnh5jlqjuge3cpfzzoucuxni\\.git\\worktrees\\3l5ai2635kuto3u44emsrub6e4\\steerrunner-inputs\\smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "working_tree",
+    "turn_started": true,
+    "attempt_id": "7e60509b51ab05a4b5a55b2118db75ab",
+    "generation": "ef5b462dad834530094709e1beb9deb1",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a1434d-9529-7083-b796-7fe8882b1ecc",
+    "turn_id": "01a14352-44e5-7c71-998e-d9b668718669",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "c:\\srt\\19081a536d8f\\s\\workspaces\\3l5ai2635kuto3u44emsrub6e4",
+    "branch": "codex/runner-3aca51937d926e4e7b0e31b87cb0a638"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/330",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 330,
+    "base_branch": "codex/srtest/19081a536d8f/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "codex/runner-3aca51937d926e4e7b0e31b87cb0a638",
+    "head_revision": "501ab449dfd34eb3f044823bb8e921525440a584",
+    "state": "merged",
+    "merged": true,
+    "merged_at": "2026-10-16T06:07:55Z",
+    "merge_commit": "8ceb8ba08ba4dce2d83e6541c6a058f3c0eb2442",
+    "checked_at": "2026-10-16T06:08:01.6291886Z"
+  },
+  "summary": "Ran the fixed publication command once and waited for completion. It succeeded with exit code 0, pushed commit 501ab44 on the original branch, and updated existing PR #330.",
+  "final": {
+    "command_id": "1ca2e8546796b1b4dbdbcf89b50db54e",
+    "attempt_id": "7e60509b51ab05a4b5a55b2118db75ab",
+    "session_id": "01a1434d-9529-7083-b796-7fe8882b1ecc",
+    "turn_id": "01a14352-44e5-7c71-998e-d9b668718669",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_0d5faa7164d1bfd1016ad1bf2393f081919bc2c3a4b73fc9a1",
+    "text": "{\"outcome\":\"done\",\"summary\":\"Ran the fixed publication command once and waited for completion. It succeeded with exit code 0, pushed commit 501ab44 on the original branch, and updated existing PR #330.\",\"outputs\":{\"pr_url\":\"https://github.com/erranliu/SteerlineTest/pull/330\"}}"
+  },
+  "created_at": "2026-10-16T06:01:25.0125673Z",
+  "updated_at": "2026-10-16T06:08:08.9160715Z"
+}

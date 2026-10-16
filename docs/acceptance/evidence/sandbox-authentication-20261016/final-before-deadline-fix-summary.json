@@ -1,0 +1,41 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "e04d07fde31710b5b93d3186010074927a44effc",
+  "source_dirty": true,
+  "started_at": "2026-10-16T04:17:47.2178531Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "test_count": 198,
+      "exit_code": 0,
+      "level": "L1",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-final",
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-final\\framework",
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "Controlled harness timed out; inspect integration.log",
+  "finished_at": "2026-10-16T04:27:07.6968809Z"
+}
