@@ -1,4 +1,5 @@
-// Package cli is a short-lived client. It never opens the service database.
+// Package cli is a short-lived client. Offline verification is delegated to
+// the host under the writer lease; ordinary queries never open storage.
 package cli
 
 import (
@@ -98,7 +99,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		value.opts.Command = "service " + positional[1]
 	}
 	switch value.opts.Command {
-	case "version", "serve", "service start", "service status", "service stop", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -171,7 +172,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
 	}
 	var request *contracts.Request
 	if writes(options.opts.Command) {
@@ -221,6 +222,13 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 			return reject(statusErr)
 		}
 		return finish(contracts.Success("", service), 0)
+	}
+	if options.opts.Command == "service verify-stopped" {
+		result, verifyErr := host.VerifyStopped(ctx, dir)
+		if verifyErr != nil {
+			return reject(verifyErr)
+		}
+		return finish(contracts.Success("", result), 0)
 	}
 	response, callErr := host.Call(ctx, dir, options.opts, request)
 	if callErr != nil {

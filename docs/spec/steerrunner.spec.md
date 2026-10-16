@@ -77,6 +77,8 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 
 服务在所有 worker 退出并读取持久化停止事实后、释放写锁前发布最终结算。`service status` 仅在写锁空闲且无未核实启动时公开 `last_shutdown`，绑定 `instance_id/request_id/state_dir/executable_sha256`，分别返回 `resources_settled` 和诊断；不读取或推导私有执行库。只有全部 Run 已持久化 stopped 且关闭无错误才标为 true；未知、unsupported、观察脱离、缺失证据不等于已停止。新写者获得写锁后首先移除旧结算，防止启动失败或异常退出后继续使用上一代证明。无记录不伪造成功。
 
+显式 `service verify-stopped` 为停机后的独立只读取证入口，不能隐式进入启动或恢复：取得既有 writer.lock、拒绝未核实启动后，只读当前格式数据库，逐 Run 返回原 ID、input_digest 和资源结论。已持久化 stopped 可作为原证据；未保存 stopped 的本地 managed Codex 仅在记录完整、原 Job 唯一 owner 和精确 root 都已退出时核实资源消失，复用现有 managed 恢复证明。缺记录、身份/权限未知、仍活动、非 managed 或 Orca 观察脱离都不能据此成功。缺目录、锁、库或不支持格式直接失败，不创建/迁移现场，不保存 stopped、不重写历史回执。调用方只消费该公开 CLI，不读取 Runner 私有库。
+
 ## 4. 状态目录、内嵌资源与环境依赖
 
 所有有目录上下文的命令使用 `--state-dir <绝对路径>`。独立使用时省略该参数，默认目录为当前用户 `%LOCALAPPDATA%/SteerRunner`；SteerLine 必须显式传入项目运行目录下的 `runner` 子目录。CLI 参数优先，不能依赖调用时 cwd 或 SteerLine 环境变量改变目标。
@@ -115,6 +117,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 | `version --json` | 离线版本查询 | 程序/协议/资源版本 |
 | `service start --state-dir ... --json` | 幂等启动或连接同目录的同一 EXE 发行包；不同 EXE SHA/版本/资源摘要拒绝 directory_conflict，保留原服务 | 实例身份、目录、就绪事实、`executable_sha256` |
 | `service status --state-dir ... --json` | 不自动启动；核验服务是否可达 | 实例身份与服务状态；不可达如实表达 |
+| `service verify-stopped --state-dir ... --json` | 显式取得既有写锁后只读当前执行证据，核验原资源消失 | 目录、逐 Run 身份/输入摘要及资源结论；不修改原回执 |
 | `service stop --state-dir ... --input - --json` | 幂等接受有界停服请求；保存处理意图后再执行，最终状态由 status/重启对账核验 | command 回执与已知执行处理事实 |
 | `capabilities --state-dir ... --json` | 在线查询内置流程、adapter/config schema、平台能力与限制 | 能力版本和适用性；声明不替代现场事实 |
 | `submit --state-dir ... --input - --json` | 固定 RunRequest 并接受异步执行；可按第 3 节启动服务 | 原请求的 command_id、run_id、接受状态 |

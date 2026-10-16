@@ -62,6 +62,6 @@ func Capabilities() any {
 		"workflows":             workflow.Catalog(),
 		"configuration_schemas": json.RawMessage(Read("settings.schema.json")),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "capabilities", "inspect", "submit", "last-message", "events", "reply", "resume", "stop"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "events", "reply", "resume", "stop"},
 	}
 }

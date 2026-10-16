@@ -265,13 +265,9 @@ func (e *Engine) writersAbsent(r *runstate.Record, w *worker, identity b.Process
 	// Managed execution Jobs have non-inheritable kill-on-close handles owned
 	// only by their recorded service. Prove that owner exited as well as the
 	// exact root before relying on the Job's enforced tree teardown.
-	if !r.NativeManaged || r.NativeOwner == nil {
-		return false
-	}
-	if process.NewServiceFacts().Probe(r.NativeOwner).State != "absent" {
-		return false
-	}
-	return process.InspectProcess(&identity) == "process absent"
+	return managedRecordWritersAbsent(r, identity, func(id *b.ProcessIdentity) bool {
+		return process.NewServiceFacts().Probe(id).State == "absent"
+	})
 }
 
 func (e *Engine) retainHandle(w *worker, h b.StopHandle) {

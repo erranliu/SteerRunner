@@ -7,8 +7,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"net/url"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	_ "modernc.org/sqlite"
@@ -64,15 +66,46 @@ COMMIT;`); err != nil {
 			return fail(err)
 		}
 	}
-	var format string
-	var version int
-	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 2 {
-		return fail(contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory."))
+	if err := validateFormat(db); err != nil {
+		return fail(err)
 	}
 	if _, err := db.Exec(`PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;`); err != nil {
 		return fail(err)
 	}
 	return &Store{db: db}, nil
+}
+
+// OpenReader never creates or migrates storage. The host must hold the writer
+// lease while using this snapshot for offline resource verification.
+func OpenReader(dir string) (*Store, error) {
+	path, err := filepath.Abs(filepath.Join(dir, "runner.db"))
+	if err != nil {
+		return nil, err
+	}
+	value := filepath.ToSlash(path)
+	if runtime.GOOS == "windows" {
+		value = "/" + value
+	}
+	uri := url.URL{Scheme: "file", Path: value}
+	db, err := sql.Open("sqlite", uri.String()+"?mode=ro&_pragma=query_only(1)&_pragma=busy_timeout(5000)")
+	if err != nil {
+		return nil, err
+	}
+	db.SetMaxOpenConns(1)
+	if err := validateFormat(db); err != nil {
+		db.Close()
+		return nil, err
+	}
+	return &Store{db: db}, nil
+}
+
+func validateFormat(db *sql.DB) error {
+	var format string
+	var version int
+	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 2 {
+		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory.")
+	}
+	return nil
 }
 
 func (s *Store) Close() error { return s.db.Close() }
