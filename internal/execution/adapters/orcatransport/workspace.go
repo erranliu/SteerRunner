@@ -49,7 +49,7 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 			receipt.Disposition = b.OperationRejected
 			return receipt, resolveErr
 		}
-		args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--activate", "--json"}
+		args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--json"}
 		if l.setup.AgentLaunchCommand == "" {
 			args = append(args, "--agent", s.Ref.Agent.Name)
 		}
@@ -103,7 +103,13 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		if l.setup.AgentLaunchCommand == "" {
 			return receipt, errors.New("agent launch did not provide a supported terminal handle; no task was injected")
 		}
-		sole, inventoryErr := l.soleWorkspaceTerminal(ctx, worktree.ID, created.RuntimeID)
+		var sole native.Terminal
+		var inventoryErr error
+		if created.Terminal.Handle == "" && handle == "" {
+			sole, inventoryErr = l.initialWorkspaceTerminal(ctx, s, created)
+		} else {
+			sole, inventoryErr = l.soleWorkspaceTerminal(ctx, worktree.ID, created.RuntimeID)
+		}
 		err = inventoryErr
 		if err != nil {
 			return receipt, err

@@ -67,6 +67,10 @@ type CheckItem struct {
 }
 
 type CheckContext struct {
+	RuntimeID            string `json:"runtime_id,omitempty"`
+	Terminal             string `json:"terminal,omitempty"`
+	TerminalIncarnation  string `json:"terminal_incarnation,omitempty"`
+	WorktreeID           string `json:"worktree_id,omitempty"`
 	Nonce                string `json:"nonce,omitempty"`
 	NativeGeneration     string `json:"native_generation,omitempty"`
 	AttemptID            string `json:"attempt_id"`

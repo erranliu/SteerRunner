@@ -1,0 +1,6 @@
+{
+  "source_file": "native-completion-proof.json",
+  "source_sha256": "d7f886041bae1e6254e98b43cb4cc13f40528eddba4f6e693c661b6260a3841f",
+  "raw_model_text_exported": false,
+  "note": "Original complete proof remains in the fixture evidence directory linked by case.json; public export contains only this digest."
+}

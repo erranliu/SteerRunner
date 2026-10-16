@@ -1,0 +1,37 @@
+{
+  "inspector": {
+    "terminal": "term_01fa2dff-c854-4306-b2e1-a8f6d0b2dd60",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "incarnation": "7ed01843-75ce-43a6-9c56-0788dfc8332e",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8548db7238d8c65070dbf8ba9b1c3f06"
+  },
+  "inspector_closed": true,
+  "readiness": {
+    "native_transport": "codex-remote-inline-v2",
+    "runtime_sha256": "60035e89d301065f4acdba728f7f00d22499a9358f3d408ce7fa64f793a0ff7c",
+    "verified": true,
+    "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+    "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-8548db7238d8c65070dbf8ba9b1c3f06",
+    "repository": "https://github.com/erranliu/SteerlineTest.git",
+    "session_id": "01a145e7-7df7-70e1-ac42-a6e506b9c564",
+    "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+    "process": {
+      "kind": "os",
+      "pid": 4800,
+      "created": "01dd5d99736ae19d",
+      "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+    },
+    "checked_at": "2026-10-16T18:09:28.9002716Z",
+    "expires_at": "2026-10-17T03:09:12.6907576+08:00",
+    "access_mode": "sandbox"
+  },
+  "native": {
+    "session": "01a145e7-7df7-70e1-ac42-a6e506b9c564",
+    "contexts": 4,
+    "tools": 9,
+    "escalations": 0,
+    "approvals": 0,
+    "bypasses": 0,
+    "native_sha256": "039fe8991d6b6b0df2bcee46a580db715a17a4b82c13d8e3f34cee9933218c2f"
+  }
+}

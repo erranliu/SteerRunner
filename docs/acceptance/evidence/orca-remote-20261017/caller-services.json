@@ -1,0 +1,133 @@
+{
+  "at": "2026-10-16T18:34:01.7155719Z",
+  "services_checked": 21,
+  "all_not_running": true,
+  "fixtures": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "fixture": "bbe5a005af90",
+      "state_dir": "C:\\srt\\bbe5a005af90\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "fixture": "ee46f06c1c53",
+      "state_dir": "C:\\srt\\ee46f06c1c53\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.smoke",
+      "fixture": "bb57196567d0",
+      "state_dir": "C:\\srt\\bb57196567d0\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "fixture": "f30fdcefcc11",
+      "state_dir": "C:\\srt\\f30fdcefcc11\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "fixture": "ac8f9d55294e",
+      "state_dir": "C:\\srt\\ac8f9d55294e\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "fixture": "14778bb2fb1b",
+      "state_dir": "C:\\srt\\14778bb2fb1b\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "fixture": "fa7aa9ad5335",
+      "state_dir": "C:\\srt\\fa7aa9ad5335\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.caller-exit",
+      "fixture": "f76d543922b1",
+      "state_dir": "C:\\srt\\f76d543922b1\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "environment-check.orca-sandbox",
+      "fixture": "8b2613743eef",
+      "state_dir": "C:\\srt\\8b2613743eef\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "environment-check.orca-full-access",
+      "fixture": "15edf990c6a7",
+      "state_dir": "C:\\srt\\15edf990c6a7\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "fixture": "9989a85c22a4",
+      "state_dir": "C:\\srt\\9989a85c22a4\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "fixture": "86025a57c0f6",
+      "state_dir": "C:\\srt\\86025a57c0f6\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "fixture": "5dfb67e00c52",
+      "state_dir": "C:\\srt\\5dfb67e00c52\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "fixture": "a5c61dc411a8",
+      "state_dir": "C:\\srt\\a5c61dc411a8\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "fixture": "0d909197ddfd",
+      "state_dir": "C:\\srt\\0d909197ddfd\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "local-codex.feedback",
+      "fixture": "7663bdc7975a",
+      "state_dir": "C:\\srt\\7663bdc7975a\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "local-codex.audited",
+      "fixture": "e7ec8f467b13",
+      "state_dir": "C:\\srt\\e7ec8f467b13\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "local-codex.multirun",
+      "fixture": "3af0317e9a7b",
+      "state_dir": "C:\\srt\\3af0317e9a7b\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "environment-check.local-sandbox",
+      "fixture": "2d33faa7921c",
+      "state_dir": "C:\\srt\\2d33faa7921c\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "environment-check.local-full-access",
+      "fixture": "980fd3fe2723",
+      "state_dir": "C:\\srt\\980fd3fe2723\\s",
+      "service_status": "not_running"
+    },
+    {
+      "scenario": "local-codex.multirun",
+      "fixture": "300082e7a1e8",
+      "state_dir": "C:\\srt\\300082e7a1e8\\s",
+      "service_status": "not_running"
+    }
+  ]
+}

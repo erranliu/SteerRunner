@@ -10,11 +10,12 @@ import (
 )
 
 type observer struct {
-	events  chan b.LifecycleEvent
-	done    chan error
-	cancel  context.CancelFunc
-	process b.ProcessIdentity
-	once    sync.Once
+	events   chan b.LifecycleEvent
+	done     chan error
+	finished chan struct{}
+	cancel   context.CancelFunc
+	process  b.ProcessIdentity
+	once     sync.Once
 }
 
 func (o *observer) Events() <-chan b.LifecycleEvent { return o.events }
@@ -24,6 +25,21 @@ func (o *observer) StopHandle() b.StopHandle        { return &observationHandle{
 // Passive cancellation cannot await a completion event which the actor is acknowledging.
 func (o *observer) Close(context.Context) error { o.once.Do(o.cancel); return nil }
 
+// Passive cancellation stays nonblocking: the actor may be acknowledging an
+// event. Service shutdown can separately await the canceled goroutine, including
+// the original readonly inspector's background close, before its process exits.
+func (o *observer) awaitCleanup(ctx context.Context) error {
+	if o.finished == nil {
+		return nil
+	}
+	select {
+	case <-o.finished:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
 type observationHandle struct{ owner *observer }
 
 func (h *observationHandle) Identity() b.ProcessIdentity { return h.owner.process }
@@ -32,11 +48,12 @@ func (h *observationHandle) Close()                      { _ = h.owner.Close(con
 
 func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 	ctx, cancel := context.WithCancel(context.Background())
-	o := &observer{events: make(chan b.LifecycleEvent, 4), done: make(chan error, 1), cancel: cancel, process: s.Ref.External}
+	o := &observer{events: make(chan b.LifecycleEvent, 4), done: make(chan error, 1), finished: make(chan struct{}), cancel: cancel, process: s.Ref.External}
 	l.feedMu.Lock()
 	ownedFeed := l.feed
 	l.feedMu.Unlock()
 	go func() {
+		defer close(o.finished)
 		defer func() { l.releaseStateFeed(ownedFeed) }()
 		defer close(o.events)
 		defer close(o.done)
@@ -108,7 +125,13 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				committed = true
 			}
 			if receipt.State.TurnStarted && !started {
-				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventStarted, Source: NativeReplySource, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":started", SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), InputAccepted: true, Matched: true}, Implementation: receipt.Implementation}) {
+				source := NativeReplySource
+				if state, e := l.state(s); e == nil {
+					if turn := turnFor(&state, command(s)); turn != nil && turn.Recorded != nil {
+						source = turn.Recorded.Source
+					}
+				}
+				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventStarted, Source: source, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":started", SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), InputAccepted: true, Matched: true}, Implementation: receipt.Implementation}) {
 					return
 				}
 				started = true
@@ -128,7 +151,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				if evidence.NativeOutcome != "" {
 					outcome = evidence.NativeOutcome
 				}
-				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventCompleted, Source: NativeReplySource, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: evidence.FinalItemID, SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), Completed: true, Matched: true, Outcome: outcome, LastMessage: evidence.LastMessage}, Implementation: receipt.Implementation}) {
+				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventCompleted, Source: evidence.FinalSource, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: evidence.FinalItemID, SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), Completed: true, Matched: true, Outcome: outcome, LastMessage: evidence.LastMessage}, Implementation: receipt.Implementation}) {
 					return
 				}
 				o.done <- nil

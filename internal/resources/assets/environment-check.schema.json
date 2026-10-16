@@ -346,6 +346,10 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "runtime_id": { "type": "string" },
+        "terminal": { "type": "string" },
+        "terminal_incarnation": { "type": "string" },
+        "worktree_id": { "type": "string" },
         "attempt_id": {
           "type": "string"
         },

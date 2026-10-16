@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-16T18:33:14.1339929Z",
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-auth-runtime-2ba0",
+  "original_instance": "f7ec3cac-5a91-45f8-a8ac-fc3b25bbbf67",
+  "worktree_absent": true,
+  "public_stage_files_archived": 33,
+  "archive": "C:/sr-runtime/2ba0/staging-archive-20261017",
+  "runtime_helper_retained": "C:/sr-runtime/2ba0/24/steerrunner-agent.exe",
+  "native_retained": "C:/sr-runtime/2ba0/01/native/codex.exe",
+  "diagnostic_terminals_closed": true
+}

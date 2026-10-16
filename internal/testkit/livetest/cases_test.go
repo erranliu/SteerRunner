@@ -57,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 11 || cases != 17 {
-		t.Fatalf("expected eleven scenarios/seventeen cases, got %d/%d", scenarios, cases)
+	if scenarios != 14 || cases != 20 {
+		t.Fatalf("expected fourteen scenarios/twenty cases, got %d/%d", scenarios, cases)
 	}
 	for _, v := range [][2]string{{"orca-remote.smoke", "kill-active"}, {"unknown", "default"}, {"orca-remote.service-restart", ""}} {
 		if _, _, err := Lookup(v[0], v[1]); err == nil {

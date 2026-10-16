@@ -1,0 +1,59 @@
+{
+  "entered": false,
+  "released": false,
+  "published": {
+    "baseRefName": "codex/srtest/ac8f9d55294e/base",
+    "headRefName": "erranliu/sl-60c511b8004c585bc46a5a1b43e2163f",
+    "headRefOid": "84b3662ac80c750c3b60726c09409a318898dfcb",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/412"
+  },
+  "audit": [
+    {
+      "kind": "checker",
+      "data": {}
+    },
+    {
+      "kind": "gate-entered",
+      "data": {
+        "stage": "implementation",
+        "branch": "erranliu/sl-60c511b8004c585bc46a5a1b43e2163f"
+      }
+    },
+    {
+      "kind": "gate-released",
+      "data": {
+        "stage": "implementation"
+      }
+    },
+    {
+      "kind": "publisher",
+      "data": {}
+    },
+    {
+      "kind": "checker",
+      "data": {}
+    },
+    {
+      "kind": "push",
+      "data": {
+        "branch": "erranliu/sl-60c511b8004c585bc46a5a1b43e2163f"
+      }
+    },
+    {
+      "kind": "create",
+      "data": {
+        "base": "codex/srtest/ac8f9d55294e/base",
+        "branch": "erranliu/sl-60c511b8004c585bc46a5a1b43e2163f"
+      }
+    },
+    {
+      "kind": "published",
+      "data": {
+        "baseRefName": "codex/srtest/ac8f9d55294e/base",
+        "headRefName": "erranliu/sl-60c511b8004c585bc46a5a1b43e2163f",
+        "headRefOid": "84b3662ac80c750c3b60726c09409a318898dfcb",
+        "url": "https://github.com/erranliu/SteerlineTest/pull/412"
+      }
+    }
+  ]
+}

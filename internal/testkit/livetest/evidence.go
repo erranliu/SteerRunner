@@ -28,9 +28,23 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 		}
 	}
 	raw, _ := os.ReadFile(filepath.Join(root, "native-calls.jsonl"))
-	facts, err := AnalyzeNativeAudit(raw, m.RemoteRuntimeID)
+	facts, err := AnalyzeNativeAudit(raw, m.RemoteRuntimeID, ReceiptAuditPolicy(m))
 	if err != nil || !facts.Complete || facts.Creations != 1 {
 		return errors.New("native mutation receipts incomplete or duplicated")
+	}
+	if facts.Inspections > 0 || facts.InitialTerminals > 0 {
+		proofRaw, proofErr := os.ReadFile(filepath.Join(root, "native-resource-audit.json"))
+		var proof struct {
+			Verified    bool `json:"verified"`
+			Creations   int  `json:"business_creations"`
+			Prompts     int  `json:"prompt_sends"`
+			Inspections int  `json:"inspections"`
+			Closed      int  `json:"closed_inspections"`
+			Initial     int  `json:"initial_terminal_creations"`
+		}
+		if proofErr != nil || json.Unmarshal(proofRaw, &proof) != nil || !proof.Verified || proof.Creations != facts.Creations || proof.Initial != facts.InitialTerminals || proof.Prompts != len(facts.Prompts) || proof.Inspections != facts.Inspections || proof.Closed != facts.ClosedInspections || proof.Closed != proof.Inspections {
+			return errors.New("readonly inspector closure evidence incomplete or changed")
+		}
 	}
 	seen := map[string]bool{}
 	for _, prompt := range facts.Prompts {

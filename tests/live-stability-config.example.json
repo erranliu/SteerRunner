@@ -10,6 +10,7 @@
   "orca_environment": "saved-environment-id",
   "admin_host": "C:/srt-admin",
   "remote_agent": "codex",
+  "remote_runtime_executable": "C:/SteerRunnerRuntime/steerrunner-agent.exe",
   "remote_model": "",
   "remote_args": [
     "--no-daemon"

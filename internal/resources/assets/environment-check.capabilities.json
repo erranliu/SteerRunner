@@ -39,8 +39,12 @@
         "sandbox",
         "full_access"
       ],
-      "mechanism": "unsupported",
-      "reason": "SA07: execution-host authentication, deterministic preparation and per-tool write association are unavailable"
+      "mechanism": "implemented",
+      "authentication_sources": [
+        "host-gh-repository-broker"
+      ],
+      "native_version": "codex-cli 0.159.2",
+      "required_runtime": "agent_launch.runtime_executable (steerrunner-agent on execution host)"
     },
     {
       "adapter": "orca-terminal",
@@ -49,8 +53,12 @@
         "sandbox",
         "full_access"
       ],
-      "mechanism": "unsupported",
-      "reason": "Native per-tool write association is unavailable"
+      "mechanism": "implemented",
+      "authentication_sources": [
+        "host-gh-repository-broker"
+      ],
+      "native_version": "codex-cli 0.159.2",
+      "required_runtime": "agent_launch.runtime_executable (steerrunner-agent on execution host)"
     }
   ],
   "publication": {

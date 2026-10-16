@@ -419,3 +419,50 @@ func TestEnvironmentCheckRestartReconcilesWithoutNewInput(t *testing.T) {
 		t.Fatal("verify-stopped ignored unresolved Check resources")
 	}
 }
+
+func TestEnvironmentCheckOperationUsesFrozenExecutionHost(t *testing.T) {
+	for _, remote := range []bool{false, true} {
+		e := environmentEngine(t)
+		value := contracts.DecodeCheckInput(environmentRequest(t, "target").Input)
+		if remote {
+			value.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "environment", Environment: "original-remote"}, Settings: json.RawMessage(`{"transport":{"executable":"fixed-orca.exe"},"agent_launch":{"executable":"codex.exe","runtime_executable":"runtime.exe"}}`)}
+		}
+		r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "original", Input: value, Actual: contracts.CheckContext{AttemptID: "attempt"}}, CommandStates: map[string]string{}}
+		e.mu.Lock()
+		err := e.commitCheckLocked(r, nil)
+		e.mu.Unlock()
+		if err != nil {
+			t.Fatal(err)
+		}
+		index, err := e.checkIntent("original", "prepare_workspace", "original-call", map[string]string{"identity": "original"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		op := e.checkSnapshot("original").Operations[index]
+		if remote {
+			if op.Backend != b.BackendOrca || op.Protocol != b.ProtocolOrcaTerminalV3 || op.Target.ExecutionHost != "original-remote" || op.Target.ExternalRuntime != "original-remote" {
+				t.Fatalf("remote operation mislabeled as caller-local: %+v", op)
+			}
+		} else if op.Backend != b.BackendLocal || op.Protocol != b.ProtocolLocalCodexAppServer || op.Target.ExecutionHost != "local" {
+			t.Fatalf("local operation target changed: %+v", op)
+		}
+	}
+}
+
+func TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup(t *testing.T) {
+	e := environmentEngine(t)
+	value := contracts.DecodeCheckInput(environmentRequest(t, "completed-remote").Input)
+	value.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "environment", Environment: "original-remote"}, Settings: json.RawMessage(`{"transport":{"executable":"missing-orca.exe"},"agent_launch":{"executable":"codex.exe","runtime_executable":"runtime.exe"}}`)}
+	r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "original", Input: value, Status: "stopping", Result: "passed", CleanupStatus: "completed", CleanupDeadline: time.Now().Add(time.Minute), Resources: contracts.CheckResources{PRClosed: true, BaseDeleted: true, HeadDeleted: true, WriterStopped: true, LocalRemoved: true}}, AgentSettled: true, Endpoint: "closed-original-actor", NativeRoot: &b.ProcessIdentity{RuntimeID: "original-runtime", Terminal: "original-terminal"}, CommandStates: map[string]string{}}
+	e.mu.Lock()
+	err := e.commitCheckLocked(r, nil)
+	e.mu.Unlock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	e.finishCheck("original", &checkWorker{})
+	result := e.checkSnapshot("original")
+	if result.View.CleanupStatus != "completed" || !result.View.Resources.WriterStopped || !result.View.Resources.LocalRemoved || len(result.Operations) != 0 {
+		t.Fatalf("confirmed cleanup regressed after stopping a completed remote check: %+v", result)
+	}
+}

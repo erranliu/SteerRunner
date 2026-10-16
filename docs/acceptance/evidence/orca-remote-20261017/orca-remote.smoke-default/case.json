@@ -1,0 +1,33 @@
+{
+  "case_id": "default",
+  "started_at": "2026-10-16T17:40:03.4772106Z",
+  "level": "L3",
+  "identity": {
+    "pid": 43020,
+    "manifest_sha256": "1536fe7586383b0548aaaa1ca6f37685fc40a471fb0372d8f7510ed98d6f32fe",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.smoke",
+    "level": "L3"
+  },
+  "expected_outcome": "merged",
+  "scenario": "orca-remote.smoke",
+  "manifest": "C:\\srt\\bb57196567d0\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\bb57196567d0",
+    "base:codex/srtest/bb57196567d0/base",
+    "run:952c450c7466c4c871bc3f78f00716b2",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-952c450c7466c4c871bc3f78f00716b2",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_224885c7-0990-4b4a-aa38-1429b153d62b:6e118aa8-2a29-40ce-b403-0c5808c190e2",
+    "branch:erranliu/sl-952c450c7466c4c871bc3f78f00716b2",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/410"
+  ],
+  "evidence": "C:\\srt\\bb57196567d0\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\orca-remote.smoke-default-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T17:47:03.1427763Z"
+}

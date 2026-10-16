@@ -1,6 +1,8 @@
 package codexworker
 
 import (
+	"encoding/json"
+	"fmt"
 	"net"
 	"os"
 	"os/exec"
@@ -9,14 +11,17 @@ import (
 )
 
 type LaunchConfig struct {
-	Executable     string
-	Args           []string
-	Profile        string
-	Workspace      string
-	ServerDir      string
-	Sandbox        string
-	WindowsSandbox string
-	Runtime        *workerRuntime
+	WritableRoots   []string
+	Model           string
+	ReasoningEffort string
+	Executable      string
+	Args            []string
+	Profile         string
+	Workspace       string
+	ServerDir       string
+	Sandbox         string
+	WindowsSandbox  string
+	Runtime         *workerRuntime
 }
 
 // LaunchServer starts the fixed native app-server. The caller supplies its
@@ -33,6 +38,22 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	// new session through a pre-existing user daemon with another environment.
 	args := append([]string{"--no-daemon", "--strict-config"}, config.Args...)
 	args = append(args, permissions.Args()...)
+	if len(config.WritableRoots) > 0 {
+		if len(config.WritableRoots) != 4 {
+			return identity, nil, "", fmt.Errorf("remote native server needs four verified Git roots")
+		}
+		encoded, _ := json.Marshal(config.WritableRoots)
+		args = append(args, "--config", "sandbox_workspace_write.writable_roots="+string(encoded))
+	}
+	if config.Model != "" {
+		args = append(args, "--config", fmt.Sprintf("model=%q", config.Model))
+	}
+	if config.ReasoningEffort != "" {
+		if !ValidReasoningEffort(config.ReasoningEffort) {
+			return identity, nil, "", fmt.Errorf("invalid server reasoning effort")
+		}
+		args = append(args, "--config", fmt.Sprintf("model_reasoning_effort=%q", config.ReasoningEffort))
+	}
 	err = ValidateManagedArgs(config.Args)
 	if err != nil {
 		return identity, nil, "", err

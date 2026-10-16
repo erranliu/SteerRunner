@@ -598,7 +598,7 @@ func (b *authenticationBroker) permitGraphQL(body []byte) bool {
 					next = "created"
 				case "repo":
 					switch s.Name {
-					case "id", "name", "nameWithOwner", "url", "hasIssuesEnabled", "hasWikiEnabled", "description", "viewerPermission", "isPrivate", "isFork", "mergeCommitAllowed", "squashMergeAllowed", "rebaseMergeAllowed":
+					case "id", "databaseId", "name", "nameWithOwner", "url", "sshUrl", "hasIssuesEnabled", "hasWikiEnabled", "description", "viewerPermission", "isPrivate", "isFork", "mergeCommitAllowed", "squashMergeAllowed", "rebaseMergeAllowed":
 						scalar = true
 					case "owner":
 						next = "owner"
@@ -615,7 +615,7 @@ func (b *authenticationBroker) permitGraphQL(body []byte) bool {
 					}
 				case "repoMetadata":
 					switch s.Name {
-					case "id", "name", "nameWithOwner", "viewerPermission", "isPrivate", "hasIssuesEnabled", "hasWikiEnabled", "description":
+					case "id", "databaseId", "name", "nameWithOwner", "sshUrl", "viewerPermission", "isPrivate", "hasIssuesEnabled", "hasWikiEnabled", "description":
 						scalar = true
 					case "owner":
 						next = "owner"

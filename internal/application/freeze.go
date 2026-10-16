@@ -175,6 +175,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+		launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
+		profile.RuntimeExecutable = launch.RuntimeExecutable
+		profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
+		if launch.RuntimeExecutable != "" {
+			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(codex.RemoteAgentConfig{Executable: launch.Executable, Args: launch.Args, Model: launch.Model, ReasoningEffort: launch.ReasoningEffort, AccessMode: launch.AccessMode, RepositoryURL: request.Repository.URL})
+		}
 		r.LaunchCommand, err = launch.Command("codex")
 		if err != nil {
 			return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")

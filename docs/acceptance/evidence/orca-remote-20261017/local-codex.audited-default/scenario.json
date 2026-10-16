@@ -1,0 +1,11 @@
+{
+  "scenario": "local-codex.audited",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "bef5c5ab503fbedf0ce4811ce595fcac",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/421",
+  "original_head": "b7b46369070025af44615d3590ee897e327f8d31",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true
+}

@@ -7,10 +7,10 @@
 以下清单于 **2026-10-16** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 十七 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
-PR 整合主线后保留两项环境检查，当前为 L3 十一场景/十七 case；下文已有真机通过
+PR 整合主线后保留两项本机环境检查，现补齐两项 Orca 环境检查和显式 full_access 远端开发闭环，当前为 L3 十四场景/二十 case；下文已有真机通过
 记录仍绑定原构建，整合后不继承反馈资格，须以新构建重新验收。
 
 ## L2：最小核心 smoke
@@ -31,7 +31,7 @@ PR 整合主线后保留两项环境检查，当前为 L3 十一场景/十七 ca
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的十一场景、十七 case，含原远端流程、11 个核心可靠性 case 、三个本机流程和两种本机环境检查。全部保留在
+以下为已注册的十三场景、十九 case，含原远端流程、11 个核心可靠性 case、三个本机流程和本机/Orca 各两种权限环境检查。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -62,6 +62,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | 场景 ID | Case ID | 独有验证目标 | 固定预期 | 除通用条件外的并行条件与待验证项 |
 | --- | --- | --- | --- | --- |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话、一次原会话反馈与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；验证并发 worktree/会话及原 PR 反馈的隔离 |
+| `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、原会话反馈及实际权限审计 | `merged`，Run/服务及审计终端停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
 | `orca-remote.connection-reconnect` | `active-disconnect` | 原服务不换代的活动回合断连，恢复后自动重接原 Attempt/会话，无需 resume、零重发 | `merged` | 专属网络故障范围；验证本现场双通路中断且其它现场通信不受影响 |
 | `orca-remote.service-restart` | `graceful-active` | 活动回合正常停服换代，原结果可对账，显式 resume 前零新输入 | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
@@ -78,6 +79,8 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个接受真实反馈并更新同一 PR，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
 | `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR，沿用主线环境检查判据；原真机记录见[环境检查验收](acceptance/environment-check.md)，整合后未重跑真机/并行资格 |
 | `environment-check.local-full-access` | `complete` | 显式 full_access 的实际权限与认证/工具/资源闭环，验证模式生效及其独立能力契约 | 同上；实际模式必须为 `full_access` | 独立 Check 资源；不能借 sandbox 结果代替本模式；来源及整合后缺口同上 |
+| `environment-check.orca-sandbox` | `complete` | 执行主机认证、同 app-server 的 MXC 预检、实际 Agent 的 Git/PR 全部十二项与原对象收尾 | `checked`，Check passed/completed；owned PR 关闭不合入、owned 引用/目录删除、writer 停止 | 安装可信 `steerrunner-agent`；原 runtime/terminal incarnation/native session 与工具调用绑定；新场地独立验证，不能借本机结果 |
+| `environment-check.orca-full-access` | `complete` | 显式 full_access 的远端同权限预检及实际工具闭环；不能回退或借用 MXC 证据 | 同上；实际模式必须为 `full_access` | 与 sandbox 分开冻结和判定；检查会话、引用、PR、目录和认证 capability 独立 |
 
 远端共同前置为 L1、完整 Controlled、指定 Orca CLI、已配对 environment、远端同名
 Git 项目和执行主机认证。11 个可靠性 case 另需稳定性 v2 配置和故障取证工具。
@@ -127,13 +130,13 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共十六场景、二十二 case：L2 一项、L3 十七项（含原 11 项核心可靠性）、L4 四项。
+当前共十九场景、二十五 case：L2 一项、L3 二十项（含原 11 项核心可靠性）、L4 四项。
 Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
 实现与资格分别登记：调度器检查可以证明队列上限、L4 互斥、worker 失联及构建变化拒绝，
-不能代替真机后端并发资格。当前远端认证/同沙箱工具检查仍有生产能力缺口，保留原失败
-和 unsupported，不由测试绕过，不使用旧 36/36 冒充当前全 L3 通过。
+不能代替真机后端并发资格。远端认证/同权限检查由执行主机辅助程序提供，未配置或准备
+失败时仍阻断。保留历史失败和 unsupported，不使用旧 36/36 冒充当前全 L3 通过。
 
 本机 smoke 的默认完整反馈链保留；同构建独立反馈正式通过并提供资格文件后，可启用
 最小核心 driver，本轮该模式已正式通过。新两模型与多 Run 真实 PR 均显式保留未合入，仍要求原资源和服务停止。
@@ -146,7 +149,7 @@ L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控�
 
 | 顺序 | 实现状态与验收门槛 |
 | --- | --- |
-| 1 | 审计发现/修复/预算及多 Run 受控测试已纳入默认前置；当前远端认证能力仍须独立补齐后重验 |
+| 1 | 审计发现/修复/预算及多 Run 受控测试已纳入默认前置；远端认证/同权限检查接线已补，真机资格按新场地证据判断 |
 | 2 | 已实现 `-MaxParallel`、独立 worker/记录、跨批次槽锁和 L4 独占；框架检查与实际后端并发资格分别登记 |
 | 3 | 已注册本机反馈、两模型审计及多 Run；L2 使用同构建反馈资格门，只有正式反馈通过才能省去 L2 反馈步骤 |
 | 4 | L4 已落实四个有界受控契约；物理损坏、长期内存压力及整机极端耗尽等未实现条件仍是明确缺口，不计当前覆盖 |

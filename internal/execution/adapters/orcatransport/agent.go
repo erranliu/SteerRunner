@@ -91,6 +91,38 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 			return receipt, err
 		}
 	}
+	if state.LaunchAccepted && l.profile.RuntimeExecutable != "" {
+		receipt.Disposition = b.OperationAccepted
+		receipt.Diagnostic = "Waiting for the original execution-host preparation receipt"
+		if state.RemoteReadiness == nil {
+			ready, readErr := l.readRemoteReadiness(ctx, r.Snapshot)
+			if readErr != nil && !errors.Is(readErr, errRemoteReadinessPending) {
+				receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+				return receipt, readErr
+			}
+			if readErr == nil {
+				state.RemoteReadiness = &ready
+				receipt.Diagnostic = "Original remote preparation verified; committing before first business input"
+			}
+			receipt.Implementation, err = l.envelope(r.Snapshot, state)
+			return receipt, err
+		}
+		if readyErr := l.checkRemoteReadiness(state); readyErr != nil {
+			receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+			return receipt, readyErr
+		}
+		if term.AgentIdentity == r.Snapshot.Ref.Agent.Name {
+			current, readyErr := l.ready(ctx, r.Snapshot)
+			l.closeStateFeed()
+			if readyErr != nil {
+				receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+				return receipt, readyErr
+			}
+			if current.ProviderSession.ID != state.RemoteReadiness.SessionID {
+				return receipt, errors.New("native provider differs from committed remote preparation")
+			}
+		}
+	}
 	if state.LaunchAccepted && term.AgentIdentity == r.Snapshot.Ref.Agent.Name {
 		state.LaunchConfirmed = true
 		receipt.Disposition = b.OperationConfirmed

@@ -1,6 +1,9 @@
 package agentlaunch
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"strings"
 	"testing"
 )
@@ -34,5 +37,24 @@ func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 	cmd, err := c.Command("opaque")
 	if err != nil || !strings.Contains(cmd, "'agent''s path'") || !strings.Contains(cmd, "'$secret; other'") {
 		t.Fatal("shell quoting changed values", cmd, err)
+	}
+}
+
+func TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration(t *testing.T) {
+	for _, mode := range []string{"sandbox", "full_access"} {
+		c := Config{RuntimeExecutable: "C:/runner runtime/steerrunner-agent.exe", RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: "high", AccessMode: mode}
+		command, err := c.Command("codex")
+		if err != nil {
+			t.Fatal(err)
+		}
+		parts := strings.Split(command, " '--configuration' '")
+		if len(parts) != 2 {
+			t.Fatal(command)
+		}
+		raw, err := base64.RawURLEncoding.DecodeString(strings.TrimSuffix(parts[1], "'"))
+		var got codex.RemoteAgentConfig
+		if err != nil || json.Unmarshal(raw, &got) != nil || got.AccessMode != mode || got.Model != c.Model || got.RepositoryURL != c.RepositoryURL {
+			t.Fatalf("lost remote settings: %s %v", raw, err)
+		}
 	}
 }

@@ -41,6 +41,16 @@
 - SA08：每个 live worker 审计原生权限、工具与审批；零提权请求、零沙箱外审批、
   零 bypass。驱动准备 base、故障注入及合并与 worker 发布分别记证据。
 
+Git 2.55 的已知兼容边界：成功 commit 后无条件删除不存在的 `AUTO_MERGE`，会在四个
+Git 写根之外尝试创建共享 `.git/packed-refs.lock`；该清理写仍被拒绝，不扩大权限。
+只有独立保存的 commit 自身退出码为 0、原分支 HEAD/父提交/任务改动/干净工作区均已核实，
+且不存在 AUTO_MERGE 或未完成 merge/cherry-pick/revert，才将这一条精确诊断记录为非致命警告。
+不得补执行或修复被拒清理；非零/未知退出码、其他拒写及任何未核实 Git 状态仍阻断。
+运行时指引须明确要求顺序暂存精确任务路径、核对非空且仅含任务路径的 staged diff，
+然后提交并立即保存 commit 自身退出码；退出码捕获模板不能省略暂存前置步骤。
+真机工具边界测试保留该警告，并独立断言共享 config/packed lock 拒写和原 commit 成功；
+不能把模型忽略警告或复合命令最后一项的零退出码当作提交证明。
+
 旧 L2 `C:/srt/96158bdc5ce7` / PR #272 和 L3 `C:/srt/2cd651115cc9` 保留原结论，
 其审批路径不作为本次 SA04/SA08 通过。仅在新独立现场验证；禁止触碰安装环境。
 
@@ -55,7 +65,7 @@
 | W16、V05/V08 | 原 worker 在 never 策略下执行原发布器，复用原 PR；provider 独立只读核验 | 过期或权限拒绝不放宽策略；未知结果沿原分支/PR 对账，不能重复发布 | publisher 固定身份与 query-failure 夹具、原生权限审计、L2 闭环 |
 | W18、V07 | 原 owned 树退出后关闭代理/所有连接并清空内存凭据，或撤销可选 App token；保存非秘密关闭/期限事实 | 清理未确认另记 blocker；保留工作区/历史/PR | broker 关闭、issuer 撤销、原进程停止及 native cleanup.json |
 | 服务换代、V06 | 原身份/Attempt/期限/显式 resume 规则保持 | 不从准备探针恢复旧业务输入，不从历史 ready/旧进程继承秘密；没有实际新准备证据不发送 | 既有重启/未知投递/撤销受控前置 |
-| 远端 W05–W07 | 必须由实际执行主机提供可信认证与同沙箱确定性能力 | 当前 terminal transport 缺能力：unsupported，零业务输入；只读对账/停止原资源仍可用 | remote capability 反例；本次 L3 未验 |
+| 远端 W05–W07 | 指定执行主机上的可信 `steerrunner-agent`，复用认证 owner，在实际 app-server 上完成同权限无模型预检；inline TUI 保留准备回执，Runner 持久化后直接发送首个业务输入，无额外控制提示 | 未配置 helper 仍 unsupported；构建/配置/原会话/transport/期限不匹配阻断，零业务输入；未知启动不重发；只读对账/停止原资源仍可用 | 缺能力、身份/摘要/期限/旧 transport 反例及启动零重发；真实闭环和权限审计按新构建单独登记 |
 
 只读检查不承诺远端写权限、分支保护允许或 PR 创建权限。首次真实发布、反馈更新和完整
 收尾必须单独取证。关闭 shell snapshots，且从命令行 pin 中排除 token 和 Git HTTP header；

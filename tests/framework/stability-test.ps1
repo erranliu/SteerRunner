@@ -4,10 +4,10 @@ $ErrorActionPreference='Stop'
 $taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 17){throw 'L3 registry did not expand to seventeen cases'}
+if($taskCount -ne 20){throw 'L3 registry did not expand to twenty cases'}
 $taskEnvironmentCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.driver -eq 'environment-check'})){$taskEnvironmentCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskEnvironmentCount -ne 2){throw 'Environment check registry must include both local access modes'}
+if($taskEnvironmentCount -ne 4){throw 'Environment check registry must include both local and Orca access modes'}
 $taskEntry=$taskCatalog.scenarios|Where-Object {$_.id -eq 'orca-remote.service-restart'}
 $taskEntry.cases=@('graceful-active')
 $taskRejected=$false

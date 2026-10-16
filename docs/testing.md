@@ -66,7 +66,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十一场景/十七 case 数量；原 11 个
+[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十三场景/十九 case 数量；原 11 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
@@ -134,8 +134,20 @@ App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 Ap
 权限模式由非秘密配置 `access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
 普通业务与环境检查复用生产权限编译。`remote_args` 只填写支持的启动参数（示例为
 `["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
-合并为同一通过结果。当前 Orca terminal 缺执行主机认证及同权限确定性预检能力，
-两模式均保持 unsupported；配置 `full_access` 不补齐该缺口。
+合并为同一通过结果。Orca 的 `agent_launch.runtime_executable` 指向执行主机安装的
+`steerrunner-agent.exe`（本仓 `cmd/steerrunner-agent`）。辅助程序在该主机解析 gh 登录、
+启动同一受限认证代理和固定权限 app-server，执行无模型 `command/exec` 预检，然后完成
+READY 初始化。TUI 通过 `--remote --no-alt-screen` 恢复同一个 app-server/thread，保留
+准备回执的滚动历史。Runner 先核验并提交绑定原工作区、配置摘要、helper SHA、native
+session、inline transport 和期限的回执，再发送首个业务输入，不额外发送控制提示。
+权限与四个固定 Git roots 在服务端冻结，不由 TUI 放宽。启动结果未知不重发，过期不再接受输入。
+缺辅助程序或缺可信回执仍阻断；`full_access` 是显式模式，不能作为准备失败的回退。
+
+辅助程序由可信执行主机安装，目录必须在任务工作区和 Git 写入根之外；不把调用方的
+认证配置、OAuth 或 App 私钥传到远端。版本化测试目录可以与日常 Codex/Orca 并存。
+固定 native Codex 仍为 0.159.2，`remote_agent` 指向该执行主机实际 native EXE。
+远端 smoke 与全部可靠性 case 均审计原 provider 的原生历史，验证实际模式、never、
+零提权/审批/bypass，并独立确认审计终端关闭；不接受模型的成功声明作为权限证据。
 出现交互权限确认、原生拒绝或 shell 初始化失败时保留失败；手动诊断中的单次确认
 必须另记介入证据，不能记作无人值守通过。
 
@@ -257,7 +269,7 @@ v2 配置；保持原生自身认证。完整资格入口：
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十一场景十七 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮十四场景二十 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
@@ -279,7 +291,38 @@ v2 配置；保持原生自身认证。完整资格入口：
 `codex/srtest/<fixture>/base`、独立源仓库及只读取证；Worker 通过已保存意图的固定原生工具创建
 `steerline-check/<check_id>/base|head`、commit/push 和 PR，driver 不代做这些动作、不合并 PR。
 每种模式必须独立核实权限、实际工具、Git/PR 及原对象收尾，不能用 L1/Controlled 或另一模式替代。
-远端缺 SA07 的两个模式保持 unsupported，由确定性反例验证，不作为已通过的 live 场景注册。
+远端两种模式另注册 `environment-check.orca-sandbox/complete` 与
+`environment-check.orca-full-access/complete`。它们通过原 Orca runtime/terminal incarnation
+绑定执行主机的有限检查会话；复用相同的无模型预检、实际 Agent/工具、一次性外部写门、
+owner 核验及精确资源收尾。重启只允许结算原会话，不创建替代检查。调用端不探测远端 PID。
+登记与实现不等于真机通过；各受测构建、模式和清理结果按本轮证据独立判断。
+
+受控 Orca helper 的 inline-v2 输入包含唯一 command ID 和完整原输入摘要。普通开发回合通过
+执行主机的只读 Codex `thread/read` 核对原工作区/会话、完整实际输入摘要、native turn/user item
+及 `final_answer`，用于处理 Orca 漏报短回合启动事件。只读查询不 resume 或发送业务输入；
+独立查询终端必须按 runtime/terminal/incarnation 确认关闭后才能采用回执。重复匹配、后继外来输入、
+原身份变化或未知查询资源归属均保持未核实，不能用终端画面、静默或 accepted 回执推断完成。
+可靠性日志继续要求唯一业务工作区/终端及零业务重发。新增查询终端只在冻结 helper 路径/摘要、
+精确 `--original-turn` 命令、原 ready/session/workspace、实际完整输入摘要、terminal incarnation
+和确认关闭全部吻合时单独计数；不能仅凭 title 前缀豁免。取消的只读查询不产生业务证据，
+仍需确认其资源关闭；最终审计仅在原 case 预算内等待既有关闭，不发出任何补建/重发动作。
+`native-resource-audit.json` 的计数还须由原始 native journal 独立复核，不能自报通过。
+服务优雅关闭会取消原观察器，并在既有服务关闭期限内等待其查询清理 goroutine 结束；
+不等待 actor 的事件确认，也不停止继续运行的远端业务会话。关闭期限届满仍报未核实。
+调用端在创建查询终端前持久保存意图，取得原 runtime/terminal/incarnation 后立即保存身份，
+关闭后保存回执；这些文件只位于调用端 Run 目录，不把远端 PID 或路径作为本机对象探测。
+强杀重启后先清理记录中的原查询终端，完整原工作区清单可证明其已经不存在；仅原 incarnation
+仍存活时可继续关闭。创建结果未知且没有资源身份时继续阻断，不能凭 title 或补建推断成功。
+业务终端关闭已确认、查询清理未确认时分别保存进度，恢复只继续原查询资源清理。
+已受理回合首次历史查询沿用 30 秒观察间隔；原会话的完成通知可提前触发查询，但通知本身
+不作为完成证据。此间隔和后续查询均占用原 case 预算，不延长超时或改变故障命中条件。
+工作区创建不切换 Orca 当前视图。新 worktree 已有终端时继续使用原终端；若连续完整清单
+确认没有终端，在原准备预算内等待其异步出现后，仅允许一次首个终端创建。调用端先持久保存
+创建意图、再保存返回的原 runtime/worktree/terminal/incarnation，重启只核对原身份；未知创建
+不补建。返回后仍要求原工作区仅有该终端，才进入原 agent-start 和无模型权限准备步骤。
+原生审计将这一可选首次创建单列为 initial_terminal_creations（0 或 1）；business_creations
+仍要求只有一个业务工作区。首次终端必须有完整空清单、精确固定参数、原身份及后续 ready
+证明，不能按 title 单独豁免；第二个业务终端创建、身份变化或不完整清单均失败。
 
 定向 native canary 使用有效 gh broker、同一原生准备和 `command/exec`，无模型输入：
 `go test -tags=live ./internal/execution/adapters/codex -run '^TestEnvironmentCheckNativeBoundary$' -sandbox-auth-native <原生Codex绝对路径> -count=1 -v`。
@@ -290,3 +333,10 @@ owned canary，证据目录保留。普通用户检查不重复执行沙箱安�
 `./scripts/test-native.ps1 -Manifest <原 manifest> -ValidateOnly` 只读复验完整结果。
 该路径核对原 manifest/Runner/driver SHA、完整 Check、上下文/分项与资源结算，拒绝失败或未核实结果；
 不重新启动 Agent、服务或 Git/PR 操作，也不重写原批次记录。正常首次执行仍自动调用相同结果校验逻辑。
+
+反馈闭环的 driver 等待原 PR 更新时，默认 inspect 只是持久快照。若工作流已回到 pr_ready，
+快照仍是反馈前的 head，则通过现有 inspect --refresh-pr 只读刷新原绑定 provider。刷新后仍须
+保持原 Run、PR/仓库/base/head 分支、Attempt、Session 和工作区；查询失败或身份变化不能通过。
+driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对象/产物/时间与 checker、
+精确 head 合入及停止断言均不变。组件反例包含平台迟到的新 head、运行中不刷新、未绑定 PR、
+查询失败和替换 PR/Session；不得用反复读取旧快照来声称反馈未交付。

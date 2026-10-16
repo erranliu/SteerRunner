@@ -16,6 +16,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
@@ -116,8 +117,16 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 		if runtime.GOOS != "windows" {
 			return reject(contracts.Fail(3, "unsupported_platform", "Environment checks require Windows native permission evidence."))
 		}
-		if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" {
-			return reject(contracts.Fail(3, "unsupported_capability", "Orca lacks execution-host authentication, same-mode preparation and per-tool write evidence (SA07)."))
+		remote := value.Execution.Adapter == "orca-terminal"
+		if !remote && (value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local") {
+			return reject(contracts.Fail(3, "unsupported_capability", "Unsupported environment-check execution target."))
+		}
+		if remote {
+			var settings contracts.OrcaSettings
+			_ = json.Unmarshal(value.Execution.Settings, &settings)
+			if settings.AgentLaunch.RuntimeExecutable == "" {
+				return reject(contracts.Fail(3, "unsupported_capability", "Orca environment checks require an installed execution-host runtime."))
+			}
 		}
 		if !codex.SupportsEnvironmentRepository(value.Repository.URL) {
 			return reject(contracts.Fail(3, "unsupported_capability", "Check authentication currently requires an HTTPS github.com repository URL ending in .git."))
@@ -138,14 +147,29 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 			}
 		}
 		var settings contracts.CodexSettings
-		_ = json.Unmarshal(value.Execution.Settings, &settings)
+		if remote {
+			var settingsRemote contracts.OrcaSettings
+			_ = json.Unmarshal(value.Execution.Settings, &settingsRemote)
+			if settingsRemote.AccessMode == "" {
+				settingsRemote.AccessMode = "sandbox"
+			}
+			if settingsRemote.AgentLaunch.Executable == "" {
+				settingsRemote.AgentLaunch.Executable = "codex"
+			}
+			value.Execution.Settings = canonical(settingsRemote)
+			settings.AccessMode = settingsRemote.AccessMode
+		} else {
+			_ = json.Unmarshal(value.Execution.Settings, &settings)
+		}
 		if settings.GitHubAuth != nil {
 			return reject(contracts.Fail(3, "unsupported_capability", "Check write gating currently supports host-gh-repository-broker; installation-token checks require an equivalent native write gate."))
 		}
 		if settings.AccessMode == "" {
 			settings.AccessMode = "sandbox"
 		}
-		value.Execution.Settings = canonical(settings)
+		if !remote {
+			value.Execution.Settings = canonical(settings)
+		}
 		execution, cleanup, _ := contracts.CheckDurations(value)
 		now := time.Now().UTC()
 		checkID = contracts.NewID()
@@ -262,7 +286,18 @@ func (e *Engine) checkIntent(id, action, callID string, request any) (int, error
 		index = len(r.Operations)
 		raw := canonical(request)
 		now := time.Now().UTC()
-		r.Operations = append(r.Operations, b.Operation{Version: 1, ID: contracts.NewID(), RunID: id, AttemptID: r.View.Actual.AttemptID, Backend: b.BackendLocal, Protocol: b.ProtocolLocalCodexAppServer, Target: b.ExecutionTarget{ID: "local", ExecutionHost: "local"}, Action: action, IdempotencyKey: callID, Request: raw, PayloadDigest: reliable.Digest(raw), Status: b.OperationInFlight, StartedAt: now, UpdatedAt: now})
+		kind, protocol := b.BackendLocal, b.ProtocolLocalCodexAppServer
+		target := b.ExecutionTarget{ID: "local", ExecutionHost: "local"}
+		if r.View.Input.Execution.Adapter == "orca-terminal" {
+			var settings contracts.OrcaSettings
+			_ = json.Unmarshal(r.View.Input.Execution.Settings, &settings)
+			if settings.Transport.Executable == "" {
+				settings.Transport.Executable = "orca.exe"
+			}
+			kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
+			target = (orca.Profile{Executable: settings.Transport.Executable, Args: settings.Transport.Args, Environment: r.View.Input.Execution.Target.Environment}).Target()
+		}
+		r.Operations = append(r.Operations, b.Operation{Version: 1, ID: contracts.NewID(), RunID: id, AttemptID: r.View.Actual.AttemptID, Backend: kind, Protocol: protocol, Target: target, Action: action, IdempotencyKey: callID, Request: raw, PayloadDigest: reliable.Digest(raw), Status: b.OperationInFlight, StartedAt: now, UpdatedAt: now})
 	})
 	return index, err
 }
@@ -307,7 +342,11 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 		return
 	}
 	r = e.checkSnapshot(id)
-	port, err := codex.NewEnvironmentSession(codex.EnvironmentSetup{CheckID: id, Nonce: r.Nonce, Directory: checkDirectory(e.dir, id), Workspace: r.Workspace.Path, Input: r.View.Input, LinkedWriteArgs: r.LinkedWriteArgs})
+	port := w.port
+	var err error
+	if port == nil {
+		port, err = codex.NewEnvironmentSession(codex.EnvironmentSetup{CheckID: id, Nonce: r.Nonce, Directory: checkDirectory(e.dir, id), Workspace: r.Workspace.Path, Input: r.View.Input, LinkedWriteArgs: r.LinkedWriteArgs})
+	}
 	if err != nil {
 		fail("authentication_configuration_failed", err)
 		return
@@ -326,6 +365,9 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 	binding, prepareErr := port.Prepare(ctx)
 	// Persist even partial/late process receipts before observing cancellation.
 	err = e.updateCheck(id, func(r *runstate.CheckRecord) {
+		if binding.Workspace != "" {
+			r.Workspace.Path = binding.Workspace
+		}
 		r.NativeRoot = binding.Process
 		r.NativeOwner = e.identity
 		r.Managed = binding.Process != nil
@@ -339,11 +381,17 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 		if binding.Process != nil {
 			r.View.Actual.PID = binding.Process.PID
 			r.View.Actual.ProcessCreated = binding.Process.Created
+			r.View.Actual.RuntimeID = binding.Process.RuntimeID
+			r.View.Actual.Terminal = binding.Process.Terminal
+			r.View.Actual.TerminalIncarnation = binding.Process.Incarnation
+			r.View.Actual.WorktreeID = binding.Process.WorktreeID
 		}
-		if binding.Process != nil {
+		if binding.Process != nil && binding.Process.PID > 0 {
 			r.View.Actual.RuntimeVersion = codex.PolicyCodexVersion
 			r.View.Actual.AuthenticationSource = "host-gh-repository-broker"
-			var settings contracts.CodexSettings
+			var settings struct {
+				AccessMode string `json:"access_mode"`
+			}
 			_ = json.Unmarshal(r.View.Input.Execution.Settings, &settings)
 			r.View.Actual.AccessMode = settings.AccessMode
 		}
@@ -537,6 +585,33 @@ func (e *Engine) prepareCheckWorkspace(ctx context.Context, id string, w *checkW
 	if !r.Allowed || ctx.Err() != nil {
 		return errors.New("check preparation revoked")
 	}
+	if r.View.Input.Execution.Adapter == "orca-terminal" {
+		index, err := e.checkIntent(id, "prepare_workspace", "", map[string]string{"target": r.View.Input.Execution.Target.Environment})
+		if err != nil {
+			return err
+		}
+		port, err := orca.NewRemoteEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
+		if err != nil {
+			return err
+		}
+		w.port = port
+		binding, err := port.Initialize(ctx)
+		if binding.Process != nil {
+			saveErr := e.updateCheck(id, func(next *runstate.CheckRecord) {
+				next.NativeRoot = binding.Process
+				next.Endpoint = binding.Endpoint
+				next.NativeOwner = e.identity
+				next.Managed = true
+			})
+			if saveErr != nil {
+				return saveErr
+			}
+		}
+		if err != nil {
+			return err
+		}
+		return e.settleCheckOperation(id, index, b.OperationConfirmed)
+	}
 	root := checkDirectory(e.dir, id)
 	// Exact paths and ownership intent precede creation; no shared cache is
 	// removed during settlement, and a restart never retries this clone.
@@ -574,7 +649,7 @@ func (e *Engine) prepareCheckWorkspace(ctx context.Context, id string, w *checkW
 			return errors.New("repository_identity_mismatch")
 		}
 	}
-	if _, err = git.Output(ctx, e.dir, "clone", "--no-checkout", "--no-hardlinks", "--origin", r.View.Input.Repository.Remote, "--", source, r.RepositoryPath); err != nil {
+	if err = workspace.CloneIsolated(ctx, git, e.dir, source, r.RepositoryPath, r.View.Input.Repository.Remote, r.View.Input.Repository.BaseRevision); err != nil {
 		_ = e.settleCheckOperation(id, index, b.OperationRejected)
 		return err
 	}
@@ -609,6 +684,12 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 	w.gate.Lock()
 	defer w.gate.Unlock()
 	r := e.checkSnapshot(id)
+	if w.port == nil && r.View.Input.Execution.Adapter == "orca-terminal" && r.Endpoint != "" && !r.View.Resources.WriterStopped {
+		port, err := orca.NewRemoteEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
+		if err == nil {
+			w.port = port
+		}
+	}
 	_ = e.updateCheck(id, func(r *runstate.CheckRecord) {
 		r.Allowed = false
 		if !r.AgentSettled {
@@ -670,6 +751,9 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 
 	stopped := r.View.Resources.WriterStopped || r.NativeRoot == nil && !checkUnknown(r)
 	if w.port != nil {
+		if remote, ok := w.port.(*orca.RemoteEnvironmentSession); ok {
+			remote.SetCleanupScope(externalSettled)
+		}
 		index, err := e.checkIntent(id, "stop_original_writer", "", map[string]any{"process": r.NativeRoot, "owner": r.NativeOwner, "session_id": r.View.Actual.SessionID})
 		if err == nil {
 			stopped = w.port.Stop(ctx)
@@ -681,14 +765,14 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 		} else {
 			stopped = w.port.Stop(ctx)
 		}
-	} else if r.NativeRoot != nil && !stopped {
+	} else if r.NativeRoot != nil && !stopped && r.View.Input.Execution.Adapter != "orca-terminal" {
 		stopped = r.Managed && r.NativeOwner != nil && process.NewServiceFacts().Probe(r.NativeOwner).State == "absent" && process.NewServiceFacts().Probe(r.NativeRoot).State == "absent"
 	}
 	// Preparation with no native launch needs no native writer evidence.
 	if r.NativeRoot == nil {
 		stopped = true
 		for _, op := range r.Operations {
-			if op.Action == "prepare_session" && op.Status == b.OperationInFlight {
+			if (op.Action == "prepare_session" || op.Action == "prepare_workspace" && r.View.Input.Execution.Adapter == "orca-terminal") && (op.Status == b.OperationInFlight || op.Status == b.OperationUnknown) {
 				stopped = false
 			}
 		}
@@ -706,6 +790,9 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 		})
 	}
 	localRemoved := r.View.Resources.LocalRemoved || (!r.DirectoryOwned && !checkUnknown(r))
+	if remote, ok := w.port.(*orca.RemoteEnvironmentSession); ok {
+		localRemoved = remote.LocalRemoved()
+	}
 	if stopped && externalSettled && r.DirectoryOwned && !localRemoved {
 		root := checkDirectory(e.dir, id)
 		actual, err := filepath.EvalSymlinks(root)

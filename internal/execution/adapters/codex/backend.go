@@ -26,6 +26,7 @@ type ProcessPort struct {
 }
 
 type Binding struct {
+	Workspace  string
 	Process    *executionbackend.ProcessIdentity
 	Endpoint   string
 	Generation string

@@ -1,0 +1,120 @@
+{
+  "at": "2026-10-16T18:21:32.3840607Z",
+  "host_id": "e3d69f36d78e455aa93b338fab6dadd4",
+  "host_pid_absent": true,
+  "pending_requests": 0,
+  "owned_rule_groups_checked": 22,
+  "owned_rules_remaining": 0,
+  "watchdogs": [
+    {
+      "manifest": "C:\\srt\\0d909197ddfd\\manifest.json",
+      "original_watchdog_pid": 33212,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\14778bb2fb1b\\manifest.json",
+      "original_watchdog_pid": 39812,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\27dd873abcd8\\manifest.json",
+      "original_watchdog_pid": 50752,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\3b7747687289\\manifest.json",
+      "original_watchdog_pid": 38384,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\4006841a5c67\\manifest.json",
+      "original_watchdog_pid": 19492,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\5d642842e283\\manifest.json",
+      "original_watchdog_pid": 7192,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\5dfb67e00c52\\manifest.json",
+      "original_watchdog_pid": 43844,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\787516600322\\manifest.json",
+      "original_watchdog_pid": 35928,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\83d10bf52280\\manifest.json",
+      "original_watchdog_pid": 45336,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\86025a57c0f6\\manifest.json",
+      "original_watchdog_pid": 41856,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\8733c137a0b7\\manifest.json",
+      "original_watchdog_pid": 52744,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\8ba2d7ace359\\manifest.json",
+      "original_watchdog_pid": 11732,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\98894614973e\\manifest.json",
+      "original_watchdog_pid": 51092,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\a0339cf37b8e\\manifest.json",
+      "original_watchdog_pid": 42376,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\a34865667cd7\\manifest.json",
+      "original_watchdog_pid": 25488,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\a5c61dc411a8\\manifest.json",
+      "original_watchdog_pid": 30244,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\b87e68c2d122\\manifest.json",
+      "original_watchdog_pid": 30516,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\bafebb00b2ed\\manifest.json",
+      "original_watchdog_pid": 53080,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\bbe5a005af90\\manifest.json",
+      "original_watchdog_pid": 33512,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\c44805c92094\\manifest.json",
+      "original_watchdog_pid": 45324,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\fa7aa9ad5335\\manifest.json",
+      "original_watchdog_pid": 35348,
+      "original_watchdog_absent": true
+    },
+    {
+      "manifest": "C:\\srt\\fd473344f1bd\\manifest.json",
+      "original_watchdog_pid": 43000,
+      "original_watchdog_absent": true
+    }
+  ]
+}

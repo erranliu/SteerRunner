@@ -1,0 +1,38 @@
+{
+  "case_id": "graceful-active",
+  "started_at": "2026-10-16T17:40:13.8139613Z",
+  "level": "L3",
+  "identity": {
+    "pid": 56276,
+    "manifest_sha256": "79c5d563c12ec93e4dd1f0f5a65d12bed3f9ba43d2cf0edd27902b609276af78",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.service-restart",
+    "level": "L3",
+    "helper_sha256": "cec6301a4ed0f18163396464e52e5419990e7787d4f3f5a659e562a2b6fb9dfe",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f",
+    "case_id": "graceful-active",
+    "repeat_index": 1
+  },
+  "expected_outcome": "merged",
+  "scenario": "orca-remote.service-restart",
+  "manifest": "C:\\srt\\f30fdcefcc11\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\f30fdcefcc11",
+    "base:codex/srtest/f30fdcefcc11/base",
+    "run:e6a40c2f311c0e5241ebfee2872dd4d1",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-e6a40c2f311c0e5241ebfee2872dd4d1",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_dd0f6dfe-b9c3-4b1d-8958-cc073bb13582:321d3f85-fe9c-4911-84ba-6ab36488b7e1",
+    "branch:erranliu/sl-e6a40c2f311c0e5241ebfee2872dd4d1",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/411"
+  ],
+  "evidence": "C:\\srt\\f30fdcefcc11\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\orca-remote.service-restart-graceful-active-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T17:45:29.5715112Z"
+}

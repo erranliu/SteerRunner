@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"strings"
 	"sync"
 	"time"
@@ -15,40 +16,48 @@ import (
 )
 
 type Turn struct {
-	Native      NativeProof `json:"native"`
-	Command     string      `json:"command"`
-	Request     string      `json:"request,omitempty"`
-	InputDigest string      `json:"input_digest"`
-	Attempted   bool        `json:"attempted"`
-	Rejected    bool        `json:"rejected,omitempty"`
-	Accepted    bool        `json:"accepted"`
-	Started     bool        `json:"started"`
-	Settled     bool        `json:"settled"`
-	Prompt      string      `json:"prompt"`
-	Reply       string      `json:"reply,omitempty"`
-	ReplyDigest string      `json:"reply_digest,omitempty"`
+	WireFormat  string                   `json:"wire_format,omitempty"`
+	Recorded    *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
+	Inspection  *NativeInspection        `json:"inspection,omitempty"`
+	Native      NativeProof              `json:"native"`
+	Command     string                   `json:"command"`
+	Request     string                   `json:"request,omitempty"`
+	InputDigest string                   `json:"input_digest"`
+	Attempted   bool                     `json:"attempted"`
+	Rejected    bool                     `json:"rejected,omitempty"`
+	Accepted    bool                     `json:"accepted"`
+	Started     bool                     `json:"started"`
+	Settled     bool                     `json:"settled"`
+	Prompt      string                   `json:"prompt"`
+	Reply       string                   `json:"reply,omitempty"`
+	ReplyDigest string                   `json:"reply_digest,omitempty"`
 }
 type State struct {
-	Process         b.ProcessIdentity `json:"process"`
-	Turns           []Turn            `json:"turns"`
-	LaunchDigest    string            `json:"launch_digest,omitempty"`
-	LaunchRequest   string            `json:"launch_request,omitempty"`
-	LaunchAttempted bool              `json:"launch_attempted,omitempty"`
-	LaunchAccepted  bool              `json:"launch_accepted,omitempty"`
-	LaunchConfirmed bool              `json:"launch_confirmed,omitempty"`
+	AdmissionAttempted bool                   `json:"admission_attempted,omitempty"`
+	AdmissionAccepted  bool                   `json:"admission_accepted,omitempty"`
+	RemoteReadiness    *codex.RemoteReadiness `json:"remote_readiness,omitempty"`
+	Process            b.ProcessIdentity      `json:"process"`
+	Turns              []Turn                 `json:"turns"`
+	LaunchDigest       string                 `json:"launch_digest,omitempty"`
+	LaunchRequest      string                 `json:"launch_request,omitempty"`
+	LaunchAttempted    bool                   `json:"launch_attempted,omitempty"`
+	LaunchAccepted     bool                   `json:"launch_accepted,omitempty"`
+	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
-	setup        b.LifecycleSetup
-	profile      Profile
-	client       native.Client
-	stateFactory native.StateFeedFactory
-	queryNative  func(context.Context, b.ProcessIdentity, string) (native.AgentState, error)
-	feed         native.StateFeed
-	feedProcess  b.ProcessIdentity
-	feedMu       sync.Mutex
-	feedRetryAt  time.Time
-	clock        func() time.Time
-	nativeAccess bool
+	setup            b.LifecycleSetup
+	profile          Profile
+	client           native.Client
+	stateFactory     native.StateFeedFactory
+	queryNative      func(context.Context, b.ProcessIdentity, string) (native.AgentState, error)
+	feed             native.StateFeed
+	feedProcess      b.ProcessIdentity
+	feedMu           sync.Mutex
+	feedRetryAt      time.Time
+	clock            func() time.Time
+	nativeAccess     bool
+	inspectionOnce   sync.Once
+	inspectionSerial chan struct{}
 }
 
 func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
@@ -167,8 +176,22 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	if state.LaunchAttempted && (state.LaunchDigest != digest([]byte(l.setup.AgentLaunchCommand)) || state.LaunchRequest == "") || state.LaunchAccepted && !state.LaunchAttempted || state.LaunchConfirmed && !state.LaunchAccepted {
 		return state, errors.New("original agent launch binding changed")
 	}
+	if state.AdmissionAttempted && state.RemoteReadiness == nil || state.AdmissionAccepted && !state.AdmissionAttempted {
+		return state, errors.New("remote admission lost its original preparation binding")
+	}
 	seen := map[string]bool{}
 	for _, turn := range state.Turns {
+		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand {
+			return state, errors.New("unknown native input wire format")
+		}
+		if turn.Recorded != nil {
+			if err := validateRecordedTurn(state, &turn, *turn.Recorded); err != nil {
+				return state, err
+			}
+			if turn.Settled && (turn.Inspection == nil || !turn.Inspection.Closed || turn.Inspection.Unknown || turn.Inspection.Process == nil || turn.Inspection.Process.RuntimeID != state.Process.RuntimeID || turn.Inspection.Process.WorktreeID != state.Process.WorktreeID) {
+				return state, errors.New("original native inspector closure evidence missing")
+			}
+		}
 		if !b.StableExecutionID(turn.Command) || seen[turn.Command] || len(turn.InputDigest) != 64 || turn.Request != "" && !b.StableExecutionID(strings.ReplaceAll(turn.Request, "-", "")) || turn.Started && !turn.Accepted || turn.Accepted && !turn.Attempted || turn.Settled && (turn.Reply == "" || turn.ReplyDigest != digest([]byte(turn.Reply))) {
 			return state, errors.New("invalid original terminal input binding")
 		}
@@ -179,7 +202,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		if turn.InputDigest != digest([]byte(turn.Prompt)) || len(turn.Reply) > maxReplyBytes {
 			return state, errors.New("invalid saved terminal reply binding")
 		}
-		if turn.Native.Pane == "" || turn.Native.WorkingAt > 0 && (turn.Native.Provider == "" || turn.Native.Authority == "" || turn.Native.Revision <= 0) || turn.Native.EndedAt > 0 && turn.Native.EndedAt <= turn.Native.WorkingAt || turn.Settled && (turn.Native.EndedAt == 0 || turn.Native.ReplyDigest != digest([]byte(turn.Reply))) {
+		if turn.Native.Pane == "" || turn.Native.WorkingAt > 0 && (turn.Native.Provider == "" || turn.Native.Authority == "" || turn.Native.Revision <= 0) || turn.Native.EndedAt > 0 && turn.Native.EndedAt <= turn.Native.WorkingAt || turn.Settled && turn.Recorded == nil && (turn.Native.EndedAt == 0 || turn.Native.ReplyDigest != digest([]byte(turn.Reply))) || turn.Settled && turn.Recorded != nil && (!turn.Recorded.Completed || turn.Recorded.Status != "completed" || turn.Recorded.FinalText != turn.Reply) {
 			return state, errors.New("invalid original native turn evidence")
 		}
 	}
@@ -283,7 +306,7 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 	if err := l.validate(s); err != nil {
 		return b.PreparationFacts{}, err
 	}
-	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
+	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") && l.profile.RuntimeExecutable == "" {
 		return b.PreparationFacts{}, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "remote_sandbox_authentication_unsupported: Orca terminal transport has no trusted execution-host credential preparation and deterministic same-sandbox command capability; zero business input"}
 	}
 	if s.Workspace.Path == "" {
@@ -393,11 +416,11 @@ func nativeRequest(operation string) string {
 func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
-	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
-		return receipt, errors.New("remote_sandbox_authentication_unsupported: no trusted same-sandbox credential readiness; zero business input")
-	}
 	state, err := l.state(s)
 	if err != nil {
+		return receipt, err
+	}
+	if err := l.checkRemoteReadiness(state); err != nil {
 		return receipt, err
 	}
 	if l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed {
@@ -418,8 +441,15 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 		if readyErr != nil {
 			return receipt, readyErr
 		}
+		if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
+			return receipt, errors.New("remote preparation native session changed")
+		}
 		baseline := nativeBaseline(initial, l.clock())
-		state.Turns = append(state.Turns, Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline})
+		prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline}
+		if state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
+			prepared.WireFormat = remoteWireCommand
+		}
+		state.Turns = append(state.Turns, prepared)
 	}
 	receipt.Process = &state.Process
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, SessionAvailable: true, WorkerLive: true}
@@ -432,11 +462,11 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
-	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
-		return receipt, errors.New("remote_sandbox_authentication_unsupported: no trusted same-sandbox credential readiness; zero business input")
-	}
 	state, err := l.state(s)
 	if err != nil {
+		return receipt, err
+	}
+	if err := l.checkRemoteReadiness(state); err != nil {
 		return receipt, err
 	}
 	if l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed {
@@ -458,6 +488,10 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		l.closeStateFeed()
 		return receipt, readyErr
 	}
+	if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
+		l.closeStateFeed()
+		return receipt, errors.New("remote preparation native session changed")
+	}
 	if initial.PaneKey != turn.Native.Pane || turn.Native.Provider != "" && initial.ProviderSession.ID != turn.Native.Provider {
 		l.closeStateFeed()
 		return receipt, errors.New("native original session changed before submission")
@@ -473,7 +507,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		return receipt, err
 	}
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, TurnID: input.CommandID, SessionAvailable: true, WorkerLive: true}
-	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", input.Prompt, "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
+	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", wirePrompt(turn), "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
 	receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
 	var sent struct {
 		Send struct {
@@ -528,11 +562,19 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 		if _, err = l.original(ctx, s); err != nil {
 			return receipt, nil, err
 		}
-		receipt.Diagnostic = l.observeNative(ctx, s, &state, turn)
+		if turn.WireFormat == remoteWireCommand {
+			receipt.Diagnostic = l.observeRecorded(ctx, &state, turn)
+		} else {
+			receipt.Diagnostic = l.observeNative(ctx, s, &state, turn)
+		}
 		// Bind every streamed observation to the original live PTY, including
 		// ended-without-body facts. Never infer identity from an omitted field.
 		if _, err = l.original(ctx, s); err != nil {
+			receipt.Implementation, _ = l.envelope(s, state)
 			return receipt, nil, err
+		}
+		if turn.WireFormat == remoteWireCommand {
+			goto observed
 		}
 		if !turn.Accepted || !turn.Started || turn.Native.EndedAt == 0 || turn.Native.ReplyBody == "" || receipt.Diagnostic != "" {
 			goto observed
@@ -553,8 +595,8 @@ observed:
 	}
 	receipt.State.InputAccepted, receipt.State.TurnStarted = turn.Accepted, turn.Started
 	receipt.Disposition = b.OperationAccepted
-	receipt.State.WorkerLive = turn.Native.EndedAt == 0
-	receipt.State.TurnCompleted = turn.Native.EndedAt > 0
+	receipt.State.TurnCompleted = turn.Native.EndedAt > 0 || turn.Recorded != nil && turn.Recorded.Completed
+	receipt.State.WorkerLive = !receipt.State.TurnCompleted
 	if !turn.Settled {
 		return receipt, nil, nil
 	}
@@ -566,6 +608,14 @@ observed:
 		nativeOutcome = "succeeded"
 	}
 	receipt.TurnEvidence = &b.TurnEvidence{NativeOutcome: nativeOutcome, FinalOrigin: "terminal_observed", FinalSource: NativeReplySource, FinalItemID: turn.ReplyDigest, FinalVerified: true, TurnID: turn.Command, CommandID: turn.Command, SessionID: SessionID(state.Process), Started: true, Completed: true, Succeeded: true, LastMessage: turn.Reply}
+	if turn.Recorded != nil {
+		receipt.TurnEvidence.FinalOrigin = "native_history"
+		receipt.TurnEvidence.FinalSource = codex.RemoteTurnSource
+		receipt.TurnEvidence.FinalItemID = turn.Recorded.FinalItemID
+		receipt.TurnEvidence.NativeOutcome = "succeeded"
+		receipt.TurnEvidence.FinalNativeSessionID = state.RemoteReadiness.SessionID
+		receipt.TurnEvidence.FinalNativeTurnID = turn.Recorded.NativeTurnID
+	}
 	return receipt, nil, nil
 }
 
@@ -652,6 +702,20 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		return receipt, err
 	}
 	if proof.Disposition == "confirmed" {
+		progress.Phase = "business-confirmed"
+		receipt.State.WorkerAbsent = true
+		state, stateErr := l.state(r.Snapshot)
+		if stateErr != nil {
+			return receipt, stateErr
+		}
+		if err := l.cleanupInspections(ctx, &state); err != nil {
+			return receipt, err
+		}
+		for _, turn := range state.Turns {
+			if turn.Inspection != nil && !turn.Inspection.Closed {
+				return receipt, errors.New("business terminal closed; original native inspector cleanup remains unverified")
+			}
+		}
 		progress.Phase = "confirmed"
 		receipt.Disposition = b.OperationConfirmed
 		receipt.State.Stopped = true
@@ -675,8 +739,27 @@ func (l *Lifecycle) CleanupLifecycle(ctx context.Context, r b.LifecycleRequest) 
 	return receipt, err
 }
 
-func (l *Lifecycle) ShutdownLifecycle(_ context.Context, s b.LifecycleSnapshot, _ b.StopHandle) (b.LifecycleStateFacts, error) {
-	return b.LifecycleStateFacts{}, l.validate(s)
+func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot, owned b.StopHandle) (b.LifecycleStateFacts, error) {
+	if err := l.validate(s); err != nil {
+		return b.LifecycleStateFacts{}, err
+	}
+	if h, ok := owned.(*observationHandle); ok {
+		if h.Identity() != s.Ref.External {
+			return b.LifecycleStateFacts{}, errors.New("shutdown changed the original observation identity")
+		}
+		_ = h.owner.Close(ctx)
+		if err := h.owner.awaitCleanup(ctx); err != nil {
+			return b.LifecycleStateFacts{}, fmt.Errorf("original readonly observation cleanup remains unverified: %w", err)
+		}
+	}
+	state, err := l.state(s)
+	if err != nil {
+		return b.LifecycleStateFacts{}, err
+	}
+	if err = l.cleanupInspections(ctx, &state); err != nil {
+		return b.LifecycleStateFacts{}, err
+	}
+	return b.LifecycleStateFacts{}, nil
 }
 func (l *Lifecycle) InspectLifecycleWorkspace(ctx context.Context, s b.LifecycleSnapshot) (b.WorkspaceInspection, error) {
 	return InspectWorkspace(ctx, l.client, s.Ref, s.Session.ProjectID)

@@ -83,6 +83,9 @@ func environmentCheck(t *testing.T, m livetest.Manifest) {
 		if check.Actual.ApprovalPolicy != "never" || check.Actual.SessionID == "" || check.Actual.TurnID == "" || check.Actual.Account == "" || check.Actual.AuthenticationSource != "host-gh-repository-broker" {
 			t.Fatal("missing native context", check.Actual)
 		}
+		if m.Execution.Adapter == "orca-terminal" && (check.Actual.RuntimeID != m.RemoteRuntimeID || check.Actual.Terminal == "" || check.Actual.TerminalIncarnation == "" || check.Actual.WorktreeID == "") {
+			t.Fatal("missing original Orca execution-host identity", check.Actual)
+		}
 		if check.Resources.PRNumber <= 0 || !check.Resources.PRClosed || !check.Resources.BaseDeleted || !check.Resources.HeadDeleted || !check.Resources.WriterStopped || !check.Resources.LocalRemoved {
 			t.Fatal("owned objects not settled", check.Resources)
 		}

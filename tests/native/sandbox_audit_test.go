@@ -14,15 +14,18 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
+	"os/exec"
 )
 
 func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView) {
 	t.Helper()
 	if m.Execution.Adapter != "codex-app-server" {
-		t.Fatal("remote same-sandbox native permission audit is unsupported")
+		auditRemoteWorker(t, m, run)
+		return
 	}
 	var settings contracts.CodexSettings
 	if json.Unmarshal(m.Execution.Settings, &settings) != nil {
@@ -93,6 +96,52 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		t.Fatal("native tool audit found no qualified business turns")
 	}
 	save(t, "sandbox-readiness-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
+}
+
+func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
+	t.Helper()
+	var settings contracts.OrcaSettings
+	if json.Unmarshal(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable == "" {
+		t.Fatal("remote trusted runtime is required")
+	}
+	parts := strings.Split(strings.TrimPrefix(run.Execution.SessionID, "orca-terminal:"+m.RemoteRuntimeID+":"), ":")
+	if len(parts) != 2 {
+		t.Fatal("remote original terminal binding missing")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	defer cancel()
+	client := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
+		all := append(append([]string(nil), settings.Transport.Args...), args...)
+		return exec.CommandContext(ctx, settings.Transport.Executable, append(all, "--environment", m.Execution.Target.Environment)...).Output()
+	}})
+	term, err := client.ShowTerminal(ctx, parts[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	original := b.ProcessIdentity{RuntimeID: m.RemoteRuntimeID, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
+	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, m.RemoteRuntimeID, "id:"+original.WorktreeID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	state, err := orca.DecodeOriginalState(raw, original)
+	if err != nil {
+		t.Fatal(err)
+	}
+	audit, err := livetest.RemotePermissionAudit(ctx, client, original, settings.AgentLaunch.RuntimeExecutable, run.Execution.Workspace, state.ProviderSession.ID)
+	save(t, "remote-worker-permission-audit.json", audit)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mode := settings.AccessMode
+	if mode == "" {
+		mode = "sandbox"
+	}
+	if audit.Readiness.AccessMode != mode || audit.Readiness.Contract != codex.PolicyContract {
+		t.Fatal("remote native access mode or policy changed")
+	}
+	if settings.AgentLaunch.RuntimeSHA256 == "" || audit.Readiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+		t.Fatal("remote runtime build is not frozen to the tested helper")
+	}
 }
 
 func containsApprovalRequest(body []byte) bool {

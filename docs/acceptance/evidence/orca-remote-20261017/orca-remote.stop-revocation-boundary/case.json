@@ -1,0 +1,37 @@
+{
+  "case_id": "boundary",
+  "started_at": "2026-10-16T18:03:03.173549Z",
+  "level": "L3",
+  "identity": {
+    "pid": 10792,
+    "manifest_sha256": "3660358542234fc286c16e015288e5287e18529200cc01d358faf01a8305a0d5",
+    "driver_sha256": "3f16a011ec69a412e921999d955761d7a6ea3150d3ff4cd397796867948c925c",
+    "runner_sha256": "bf05b0b4ba131174f25094c5fad884a7376e0dd6ce53dcefc2947ca242a47a82",
+    "source_commit": "072688f145c8917bceb08223aa019b9560d366f6",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.stop-revocation",
+    "level": "L3",
+    "helper_sha256": "cec6301a4ed0f18163396464e52e5419990e7787d4f3f5a659e562a2b6fb9dfe",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f",
+    "case_id": "boundary",
+    "repeat_index": 1
+  },
+  "expected_outcome": "stopped",
+  "scenario": "orca-remote.stop-revocation",
+  "manifest": "C:\\srt\\86025a57c0f6\\manifest.json",
+  "resources": [
+    "root:C:\\srt\\86025a57c0f6",
+    "base:codex/srtest/86025a57c0f6/base",
+    "run:f91607717af4c0935f6bdf8083b22e7f",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-f91607717af4c0935f6bdf8083b22e7f",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_d8313ce9-87d7-4a2b-a191-e49e08f46f8b:d927e6d5-3c18-4b17-97ca-11a782846e99",
+    "branch:erranliu/sl-f91607717af4c0935f6bdf8083b22e7f"
+  ],
+  "evidence": "C:\\srt\\86025a57c0f6\\evidence",
+  "status": "passed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\l3-parallel-20\\orca-remote.stop-revocation-boundary-r1-fixture.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-16T18:07:51.4706198Z"
+}

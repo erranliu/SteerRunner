@@ -37,6 +37,13 @@
       "timeout_minutes": 30
     },
     {
+      "id": "orca-remote.full-access",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30
+    },
+    {
       "id": "orca-remote.caller-exit",
       "level": "L3",
       "driver": "execution-stability",
@@ -168,6 +175,26 @@
       "level": "L3",
       "driver": "environment-check",
       "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.orca-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.orca-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-environment",
       "timeout_minutes": 15,
       "cases": [
         "complete"

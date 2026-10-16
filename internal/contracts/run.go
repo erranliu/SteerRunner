@@ -69,10 +69,12 @@ type RunRequest struct {
 }
 
 type AgentSettings struct {
-	Executable      string   `json:"executable,omitempty"`
-	Model           string   `json:"model,omitempty"`
-	ReasoningEffort string   `json:"reasoning_effort,omitempty"`
-	Args            []string `json:"args,omitempty"`
+	RuntimeSHA256     string   `json:"runtime_sha256,omitempty"`
+	RuntimeExecutable string   `json:"runtime_executable,omitempty"`
+	Executable        string   `json:"executable,omitempty"`
+	Model             string   `json:"model,omitempty"`
+	ReasoningEffort   string   `json:"reasoning_effort,omitempty"`
+	Args              []string `json:"args,omitempty"`
 }
 
 type CodexSettings struct {
@@ -277,13 +279,16 @@ func ValidateExecution(value Execution) *Fault {
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid
 		}
-		if raw, ok := fields["agent_launch"]; ok && !optionalStrings(raw, "executable", "model", "reasoning_effort") {
+		if raw, ok := fields["agent_launch"]; ok && !optionalStrings(raw, "runtime_executable", "executable", "model", "reasoning_effort") {
 			return invalid
 		}
 		if value.Target.Kind != "local" && value.Target.Kind != "orca_environment" || value.Target.Kind == "local" && value.Target.Environment != "" || value.Target.Kind == "orca_environment" && !plain(value.Target.Environment) {
 			return invalid
 		}
-		if strings.ContainsAny(settings.Transport.Executable+settings.AgentLaunch.Executable+settings.AgentLaunch.Model, "\x00\r\n") {
+		if strings.ContainsAny(settings.Transport.Executable+settings.AgentLaunch.Executable+settings.AgentLaunch.RuntimeExecutable+settings.AgentLaunch.Model, "\x00\r\n") {
+			return invalid
+		}
+		if settings.AgentLaunch.RuntimeSHA256 != "" && (!regexp.MustCompile(`^[a-f0-9]{64}$`).MatchString(settings.AgentLaunch.RuntimeSHA256) || settings.AgentLaunch.RuntimeExecutable == "") {
 			return invalid
 		}
 		if settings.Transport.WaitTimeout != "" {

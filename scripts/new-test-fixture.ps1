@@ -55,6 +55,8 @@ if ($taskScenario.target -eq 'local-codex') {
     $taskRemoteEffort = Read-Setting 'reasoning_effort' 'medium'
     if ($taskConfig.PSObject.Properties['remote_reasoning_effort']) { $taskRemoteEffort = [string]$taskConfig.remote_reasoning_effort }
     $taskLaunch = @{executable=(Read-Setting 'remote_agent' 'codex')}
+    if (Read-Setting 'remote_runtime_executable') { $taskLaunch['runtime_executable'] = Read-Setting 'remote_runtime_executable' }
+    if (Read-Setting 'remote_runtime_sha256') { $taskLaunch['runtime_sha256'] = Read-Setting 'remote_runtime_sha256' }
     if ($taskRemoteModel) {
         $taskLaunch['model'] = $taskRemoteModel
         if ($taskRemoteEffort) { $taskLaunch['reasoning_effort'] = $taskRemoteEffort }
@@ -68,8 +70,8 @@ if ($taskScenario.target -eq 'local-codex') {
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
 $taskMode = Read-Setting 'access_mode' 'sandbox'
-if ($Scenario -eq 'environment-check.local-full-access') { $taskMode = 'full_access' }
-if ($Scenario -eq 'environment-check.local-sandbox') { $taskMode = 'sandbox' }
+if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','orca-remote.full-access')) { $taskMode = 'full_access' }
+if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox')) { $taskMode = 'sandbox' }
 if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
 $taskExecution.settings['access_mode'] = $taskMode
 $taskAudit = $null

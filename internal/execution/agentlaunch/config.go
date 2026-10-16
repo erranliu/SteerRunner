@@ -3,6 +3,8 @@
 package agentlaunch
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
@@ -11,11 +13,13 @@ import (
 
 // Config targets a PowerShell terminal on the execution host.
 type Config struct {
-	AccessMode      string   `json:"access_mode,omitempty"`
-	Executable      string   `json:"executable"`
-	Args            []string `json:"args,omitempty"`
-	Model           string   `json:"model,omitempty"`
-	ReasoningEffort string   `json:"reasoning_effort,omitempty"`
+	RuntimeExecutable string   `json:"runtime_executable,omitempty"`
+	RepositoryURL     string   `json:"repository_url,omitempty"`
+	AccessMode        string   `json:"access_mode,omitempty"`
+	Executable        string   `json:"executable"`
+	Args              []string `json:"args,omitempty"`
+	Model             string   `json:"model,omitempty"`
+	ReasoningEffort   string   `json:"reasoning_effort,omitempty"`
 }
 
 func (c *Config) Clone() *Config {
@@ -31,6 +35,18 @@ func quote(text string) string { return "'" + strings.ReplaceAll(text, "'", "''"
 func (c *Config) Command(agent string) (string, error) {
 	if c == nil {
 		return "", nil
+	}
+	if c.RuntimeExecutable != "" {
+		copy := *c
+		copy.RuntimeExecutable = ""
+		if _, err := copy.Command(agent); err != nil {
+			return "", err
+		}
+		if strings.ContainsAny(c.RuntimeExecutable, "\x00\r\n") || agent != "codex" || c.RepositoryURL == "" {
+			return "", errors.New("invalid remote runtime configuration")
+		}
+		payload, _ := json.Marshal(codex.RemoteAgentConfig{Executable: c.Executable, Args: c.Args, Model: c.Model, ReasoningEffort: c.ReasoningEffort, AccessMode: c.AccessMode, RepositoryURL: c.RepositoryURL})
+		return "& " + quote(c.RuntimeExecutable) + " '--configuration' " + quote(base64.RawURLEncoding.EncodeToString(payload)), nil
 	}
 	if strings.TrimSpace(c.Executable) == "" || strings.ContainsAny(c.Executable+c.Model+c.ReasoningEffort, "\x00\r\n") {
 		return "", errors.New("invalid agent launch executable or preferences")

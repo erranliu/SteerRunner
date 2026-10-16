@@ -7,27 +7,51 @@ import (
 )
 
 type AuditFacts struct {
-	Prompts   []string
-	Creations int
-	Complete  bool
+	Prompts           []string
+	Creations         int
+	Complete          bool
+	Inspections       int
+	ClosedInspections int
+	InitialTerminals  int
 }
 
-// AnalyzeNativeAudit counts actual CLI attempts. Orca worktree.create owns the initial terminal.
-func AnalyzeNativeAudit(raw []byte, runtime string) (AuditFacts, error) {
+type nativeAuditCall struct {
+	Kind     string          `json:"kind"`
+	ID       string          `json:"call_id"`
+	Args     []string        `json:"args"`
+	Response json.RawMessage `json:"response"`
+	Failed   bool            `json:"failed"`
+}
+
+// AnalyzeNativeAudit counts business workspace attempts and separately records
+// a verified first terminal when Orca did not create its implicit terminal.
+func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAuditPolicy) (AuditFacts, error) {
 	facts := AuditFacts{Complete: true}
-	intents := map[string]bool{}
-	receipts := map[string]bool{}
+	var calls []nativeAuditCall
 	for _, line := range bytes.Split(bytes.TrimSpace(raw), []byte("\n")) {
-		var c struct {
-			Kind     string          `json:"kind"`
-			ID       string          `json:"call_id"`
-			Args     []string        `json:"args"`
-			Response json.RawMessage `json:"response"`
-			Failed   bool            `json:"failed"`
-		}
+		var c nativeAuditCall
 		if json.Unmarshal(line, &c) != nil {
 			return facts, errors.New("invalid native call journal")
 		}
+		calls = append(calls, c)
+	}
+	aux := map[string]bool{}
+	if len(policies) > 1 {
+		return facts, errors.New("multiple native receipt policies")
+	}
+	if len(policies) == 1 {
+		var err error
+		aux, facts.Inspections, facts.ClosedInspections, facts.InitialTerminals, err = analyzeReceiptInspectors(calls, runtime, policies[0])
+		if err != nil {
+			return facts, err
+		}
+		if facts.Inspections != facts.ClosedInspections {
+			facts.Complete = false
+		}
+	}
+	intents := map[string]bool{}
+	receipts := map[string]bool{}
+	for _, c := range calls {
 		if len(c.Args) < 2 {
 			continue
 		}
@@ -45,7 +69,7 @@ func AnalyzeNativeAudit(raw []byte, runtime string) (AuditFacts, error) {
 				return facts, errors.New("duplicate native intent identity")
 			}
 			intents[c.ID] = true
-			if create {
+			if create && !aux[c.ID] {
 				facts.Creations++
 			}
 			if send {

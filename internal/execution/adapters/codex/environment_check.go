@@ -269,8 +269,13 @@ func (s *EnvironmentSession) probeScript(action string, r contracts.CheckResourc
 	content := q(s.setup.Nonce)
 	repo := s.backend.Config.Authentication.repository
 	api := q("repos/" + repo + "/pulls")
-	lookup := `$p=@(API -X GET ` + api + ` -f state=all -f head=` + q(strings.Split(repo, "/")[0]+":"+s.gate.head) + ` -f base=` + q(s.gate.base) + ` -f per_page=100); if ($p.Count -ne 1) { throw 'original_pr_ambiguous' }; $p=$p[0]; `
-	prFacts := `if ($p.number -le 0 -or $p.html_url -cne (` + q("https://github.com/"+repo+"/pull/") + `+[string]$p.number) -or (` + strconv.Itoa(r.PRNumber) + ` -gt 0 -and $p.number -ne ` + strconv.Itoa(r.PRNumber) + `) -or $p.base.sha -cne ` + q(r.BaseSHA) + ` -or $p.base.ref -cne ` + q(s.gate.base) + ` -or $p.head.ref -cne ` + q(s.gate.head) + ` -or $p.head.sha -cne ` + q(r.HeadSHA) + ` -or $p.base.repo.full_name -ine ` + q(repo) + ` -or $p.head.repo.full_name -ine ` + q(repo) + ` -or $p.merged_at -or $p.body -cne ` + content + `) { throw 'original_pr_identity_changed' }; $facts['pr_url']=[string]$p.html_url; $facts['pr_number']=[string]$p.number; $facts['pr_closed']=[string]($p.state -eq 'closed')`
+	lookup := `$p=@(API -X GET ` + api + ` -f state=all -f head=` + q(strings.Split(repo, "/")[0]+":"+s.gate.head) + ` -f base=` + q(s.gate.base) + ` -f per_page=100); if ($p.Count -ne 1) { $script:failureStage='original_pr_ambiguous'; throw 'original_pr_ambiguous' }; $p=$p[0]; `
+	if r.PRNumber > 0 {
+		// A created PR has a stable object address. Its filtered list index may
+		// lag creation; verify that original object without repeating a write.
+		lookup = `$p=API -X GET ` + q("repos/"+repo+"/pulls/"+strconv.Itoa(r.PRNumber)) + `; `
+	}
+	prFacts := `if ($p.number -le 0 -or $p.html_url -cne (` + q("https://github.com/"+repo+"/pull/") + `+[string]$p.number) -or (` + strconv.Itoa(r.PRNumber) + ` -gt 0 -and $p.number -ne ` + strconv.Itoa(r.PRNumber) + `) -or $p.base.sha -cne ` + q(r.BaseSHA) + ` -or $p.base.ref -cne ` + q(s.gate.base) + ` -or $p.head.ref -cne ` + q(s.gate.head) + ` -or $p.head.sha -cne ` + q(r.HeadSHA) + ` -or $p.base.repo.full_name -ine ` + q(repo) + ` -or $p.head.repo.full_name -ine ` + q(repo) + ` -or $p.merged_at -or $p.body -cne ` + content + `) { $script:failureStage='original_pr_identity_changed'; throw 'original_pr_identity_changed' }; $facts['pr_url']=[string]$p.html_url; $facts['pr_number']=[string]$p.number; $facts['pr_closed']=[string]($p.state -eq 'closed')`
 	switch action {
 	case "permissions":
 		want := "1"
@@ -414,6 +419,14 @@ func (s *EnvironmentSession) Stop(ctx context.Context) bool {
 func EnvironmentDiagnostic(err error) string {
 	if err == nil {
 		return ""
+	}
+	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
+		return stage
+	}
+	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed"} {
+		if strings.Contains(err.Error(), stage) {
+			return stage
+		}
 	}
 	for _, stage := range []string{"native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "native_thread_identity_unverified", "native_thread_identity_mismatch", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_key_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "authentication_scope_or_expiry_invalid", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git", "repository_identity_mismatch"} {
 		if strings.Contains(err.Error(), stage) {
