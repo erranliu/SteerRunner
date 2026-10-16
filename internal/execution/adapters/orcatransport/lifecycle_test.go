@@ -38,6 +38,7 @@ type fakeHost struct {
 	waitBudgets                   []time.Duration
 	workspace                     map[string]any
 	repoInventory                 any
+	failShow, unknownClose        bool
 }
 
 func (f *fakeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
@@ -84,6 +85,9 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 	case "worktree show":
 		result = map[string]any{"worktree": f.workspace}
 	case "terminal show":
+		if f.failShow {
+			return nil, errors.New("offline before close")
+		}
 		result = map[string]any{"terminal": terminal}
 	case "terminal list":
 		result = map[string]any{"terminals": []any{terminal}}
@@ -152,6 +156,9 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 		}
 		result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation, "stages": stages}}}
 	case "terminal close":
+		if f.unknownClose {
+			return nil, errors.New("close response lost")
+		}
 		result = map[string]any{"close": map[string]any{"handle": "terminal", "ptyKilled": true}}
 	default:
 		return nil, errors.New("unexpected resource or orchestration dependency")

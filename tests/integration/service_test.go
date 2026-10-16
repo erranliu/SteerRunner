@@ -136,7 +136,8 @@ func call(t *testing.T, dir string, argv []string, input string, expected int) c
 	argv = append(argv, "--state-dir", dir, "--json")
 	response, exit, diagnostics, err := invoke(runnerEXE, argv, input)
 	if err != nil || exit != expected {
-		t.Fatalf("%v exit=%d expected=%d error=%v response=%+v stderr=%s", argv, exit, expected, err, response, diagnostics)
+		body, _ := json.Marshal(response)
+		t.Fatalf("%v exit=%d expected=%d error=%v response=%s stderr=%s", argv, exit, expected, err, body, diagnostics)
 	}
 	return response
 }

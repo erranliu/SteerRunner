@@ -1,0 +1,91 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "graceful-active",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "54d55a5ac12d59d9bd09a5ba042d7164",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/283",
+  "merge_commit": "97ca271324e0d21bf9d1197b1fdedcc3bec07421",
+  "test_outcome": "passed",
+  "business_outcome": "merged",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "resume-required-before-authorization",
+      "passed": true,
+      "evidence": "latest-run.json and native-calls.jsonl after original completion"
+    },
+    {
+      "name": "single-actual-pr",
+      "passed": true,
+      "evidence": "pr-list.json: exactly one PR on this fixture base"
+    },
+    {
+      "name": "merge-head-stable",
+      "passed": true,
+      "evidence": "original PR verified before exact-head merge"
+    },
+    {
+      "name": "merged-base",
+      "passed": true,
+      "evidence": "actual base fetch matches merge commit"
+    },
+    {
+      "name": "merged-content",
+      "passed": true,
+      "evidence": "merged Git object equals verified head"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique prompt sends and single worktree with its original terminal"
+    },
+    {
+      "name": "single-native-publication",
+      "passed": true,
+      "evidence": "native-publication-audit.json: publisher/create counts"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl: every native send/create has original-runtime successful receipt"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

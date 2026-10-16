@@ -11,7 +11,9 @@ $taskBadCatalog = Join-Path $taskEvidence 'duplicate-catalog.json'
 $taskCases = @(
     @{name='zero-match';args=@('-Level','L3','-Scenario','missing.scenario');error='No scenario matched|not selected'},
     @{name='missing-config';args=@('-Level','L2');error='explicit non-secret config'},
-    @{name='duplicate-catalog';args=@('-Level','L3','-Catalog',$taskBadCatalog);error='Invalid or duplicate'}
+    @{name='duplicate-catalog';args=@('-Level','L3','-Catalog',$taskBadCatalog);error='Invalid or duplicate'},
+    @{name='repeat-zero';args=@('-Level','L3','-Repeat','0');error='Repeat must be'},
+    @{name='repeat-non-live';args=@('-Level','L1','-Repeat','3');error='Repeat requires a live level'}
 )
 $taskResults = @()
 foreach ($taskCase in $taskCases) {
@@ -55,5 +57,8 @@ foreach ($taskCase in @('empty','existing','conflict','query-failure')) {
     if ($taskCreates -ne [int]($taskCase -eq 'empty')) { throw "Publisher created the wrong number of PRs: $taskCase" }
     $taskResults += @{name=('publisher-' + $taskCase);passed=$true}
 }
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/stability-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'stability-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Stability framework guards failed; inspect stability-framework.log' }
+$taskResults += @{name='stability-registry-gate-scope';passed=$true}
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{exit_code=0;test_count=$taskResults.Count;tests=$taskResults}|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
 Write-Host 'Framework guards and Windows PowerShell checker passed'

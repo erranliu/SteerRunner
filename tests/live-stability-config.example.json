@@ -1,0 +1,12 @@
+{
+  "schema": "steerrunner-live-config/v2",
+  "codex_executable": "C:/path/to/native/codex.exe",
+  "model": "",
+  "reasoning_effort": "medium",
+  "orca_executable": "C:/Users/example/AppData/Local/Programs/orca/resources/bin/orca.exe",
+  "orca_environment": "saved-environment-id",
+  "admin_host": "C:/srt-admin",
+  "remote_agent": "codex",
+  "remote_model": "",
+  "remote_args": ["--no-daemon", "--strict-config", "-c", "windows.sandbox=mxc", "-c", "approvals_reviewer=auto_review"]
+}

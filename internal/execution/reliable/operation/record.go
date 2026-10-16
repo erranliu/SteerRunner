@@ -68,6 +68,17 @@ func (i *Intent) Settle(operations []b.Operation, receipt b.LifecycleReceipt, mo
 // timestamps or receipt summary to the journal's representation.
 func (i *Intent) SettleStop(operations []b.Operation, receipt b.LifecycleReceipt, status b.OperationStatus) {
 	original := i.Request.Operation
+	// Preserve the implementation's committed progress under the same original
+	// operation binding. Missing or foreign receipts never authorize continuation.
+	if receipt.ValidateFor(i.Request) == nil {
+		wire, err := json.Marshal(receipt)
+		if err != nil {
+			panic(err)
+		}
+		i.Request.Operation.Receipt = wire
+	} else {
+		i.Request.Operation.Receipt = nil
+	}
 	i.Request.Operation.Status = status
 	receipt.Operation = original
 	i.Receipt = &receipt

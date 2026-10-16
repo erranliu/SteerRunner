@@ -61,6 +61,9 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 		func(x *Manifest) { x.AuditModel = &workflow.ModelSettings{Model: "executor"} },
 		func(x *Manifest) { x.Driver = "development-smoke" },
 		func(x *Manifest) { x.Execution.Adapter = "orca-terminal" },
+		func(x *Manifest) { x.CaseID = "default" },
+		func(x *Manifest) { x.RepeatIndex = 1 },
+		func(x *Manifest) { x.Stability = &StabilityConfig{} },
 	} {
 		x := audited
 		mutate(&x)

@@ -10,10 +10,11 @@ checkout、EXE、数据库、配置或测试调度器。运行目标为 Windows/
 | L2 | 本机真实 Codex + SteerlineTest 完整 smoke | 消耗模型 token，真实提交、push、创建并合入专属测试 PR |
 | L3 | 持续扩展的真机真实环境场景集；首个场景为远端 Orca environment smoke | 每个场景按其 driver 执行真实副作用，记录独立证据 |
 
-受控前置目前有 10 个场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+受控前置目前有 12 个场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复。
-真实 L2/L3 当前各有一个 development smoke；重启恢复、网络故障等反例的受控通过
-不等于这些故障已经在每台真机上逐项验收。
+另增加丢响应找回和停止授权跨重启保持。L2 保留一个 development smoke；L3 已注册
+原 smoke 和五个执行稳定性场景，共十二 case。新增真机验收进度见
+[稳定性验收](acceptance/l3-execution-stability.md)，注册齐全不代表真机已通过。
 
 ## 入口
 
@@ -87,17 +88,23 @@ Runner 生产契约的交付里程碑仍为 `pr_ready`。合并属于测试 driv
 driver 的 Git/GitHub/checker 调用、原始/反馈 PR、合并与停止快照。Runner 自身业务数据和
 原生协议日志在该现场 `s/` 中，模型 token 信息以原生记录可提供的真实数据为准。
 
-通过要求：非零且精确的场景数、无意外 skip、真实产物正确、检查通过、PR 合入、merged
+smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物正确、检查通过、PR 合入、merged
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
 禁止重复创建。L1 只允许明确列出的两个 subprocess helper 和三个显式
 Orca 取证入口 skip；这些 skip 不计真机通过。
 
-失败、超时、unknown、unsupported、缺 final 或清理未确认均不通过。保留原现场，不自动
+未满足冻结 case 预期的失败、超时、unknown、unsupported、缺 final 均不通过；不可达停止
+的 `revoked-unverified` 按其故障窗口契约独立判定，不冒充停止确认或业务交付。清理未确认
+一律不通过。保留原现场，不自动
 重发原生输入或替换会话。`scenario.json` 在外部动作前保存阶段和已知 Run/PR 身份；若
 进程异常退出没有结果，批次失败，须用原 state-dir、request_id/Run ID 对账及停止。
 修复后创建新现场；旧失败证据不改写。
+
+这里的 unknown 指操作、结果来源或副作用无法对账。原生主代理已经核实当前回合 done、
+原正文和来源完整时，可省略的 native outcome 仍按 unreported/unknown 原样保留，不补成
+success；它与“原操作结果未知”分别判断，沿用既有 Orca 完成契约。
 
 准备期限只覆盖当前阶段的准备。一个已完成的长业务回合切换报告、发布或反馈阶段时，
 新输入获得自己的有限准备预算；未决原操作的对账仍沿用原期限，不因重试获得新预算。
@@ -125,4 +132,29 @@ $auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.smoke -Con
 新的流程在 `tests/native/run_test.go` 的 `drivers` 注册表增加 driver，并在
 `new-test-fixture.ps1` 增加对应现场构造。Driver 使用公开 Runner CLI，定义可独立核验的
 产物和完整停止判据。增加错误 PR/错误 runtime/陈旧产物等受控反例后，再加入真机目录。
-每个场景都要有自己的现场、Run、base/head、PR 和结果，禁止用模拟目标替代真实环境。
+每个 case 都要有自己的现场、Run、base/head 和结果；交付 case 必须核验本轮真实 PR，
+停止 case 保存专属分支的无 PR 证据。禁止用模拟目标替代真实环境。
+
+L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
+[Plan](spec/l3-execution-stability.plan.md) 和[实际验收登记](acceptance/l3-execution-stability.md)。
+选择场景即执行其全部变体，每个 case/repeat 独立建现场。稳定性通过还要求故障命中、
+原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
+
+完整稳定性套件需要管理员测试宿主、Node.js、已安装的 Windows Orca CLI 公开运行文件及
+已配对的真实 environment。使用 `tests/live-stability-config.example.json` 创建本地非秘密
+v2 配置；保持原生自身认证。完整资格入口：
+
+主测试保持普通用户身份，管理员终端单独运行
+`./scripts/stability-admin-host.ps1 -Directory C:/srt-admin`，并将 v2 配置中的
+`admin_host` 设置为该目录的绝对路径。该宿主只接受固定现场的网络 block/restore，
+核验宿主 PID/创建时间与原 manifest；每次操作有独立回执和恢复 watchdog。
+宿主最多运行十二小时，可在该目录写入 `stop` 文件结束；先确认本轮故障设施均已恢复。
+重复验收请使用新的空目录，避免上次的 `stop` 文件使宿主立即结束。
+
+```powershell
+.\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
+```
+
+每轮六场景合计十二 case，三轮共三十六次；L1/Controlled 每批完整执行一次。
+`-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
+报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。

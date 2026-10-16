@@ -137,3 +137,20 @@ WA-01–07 的 unit/controlled 通过后，才可交付相应功能；WA-08 真�
 | 构建、静态及脚本检查 | 通过 | `go build ./...`、受影响包 go vet（`.evidence/workflow-audit-review/build-fix.log` / `vet-fix.log`）；两份变更 PowerShell 解析、资源 JSON 解析及 git diff --check |
 
 上述最终测试来源为 `142f01c` 加本轮后续测试/文档补丁，构建身份见各 evidence 的 source-identity.json；审计 Controlled EXE SHA-256 为 `8e8f033757860b0a8c30e980d592e164e371de34efc25fcdf358211f821e6d52`。本轮未重跑两模型真机；前述旧包的真实 PR 证据不扩展为审计修复后或迁移后 driver 的真机通过声明。
+
+## 7. 2026-10-16 主分支冲突处理
+
+先合入 `f156263` 的可靠执行模块化和执行可见性变更，再同步验证期间新合入的 `946875b` L3 稳定性测试：
+
+- 沿用主分支的 `feedback.go`、`resumeWorkflow`、`preservePendingStage` 分工；审计回答保留原步骤与来源，待发送输入保留完整冻结正文。`control.go` 的恢复资格校验仍先于业务续行；原进程恢复只保留一个共享实现。
+- 模型请求与摘要测试改用现行 `operation.New`/`operation.Invoke`，实际验证 model/effort 改变不会触达原生发送；不恢复已经移除的 SavedIntent API。
+- 保留执行可见性、停止进度和原操作原子提交的主分支实现。更新新增测试夹具的 development/1 标识，未放宽未知 workflow 的生产校验。
+- 测试 manifest、driver 注册表和脚本同时保留审计诊断与 L3 稳定性入口。v1 审计诊断不能混入 case/stability 字段，v2 继续使用稳定性断言与清理校验；审计 PR 仍保留未合并。
+
+第一阶段 `.evidence/workflow-audit-merge-20261016/summary.json` 通过 175 个 L1 顶层测试和 10 个受控场景；`.evidence/workflow-audit-merge-compat-20261016/result.json` exit 0 / 9 场景，包含 8 个审计场景及旧 EXE 的 4 种 v2 状态升级检查。最终同步 L3 后重新构建、验证，单独记录下述最终证据，不将第一阶段结果当作最终构建通过。
+
+最终统一入口 `.evidence/workflow-audit-merge-final-20261016/summary.json` status=passed：187 个 L1 顶层 pass，仅 5 个既有允许的 helper/显式取证 skip，12 个 Controlled 场景通过；native driver 编译、零匹配拒绝、框架检查、构建及受影响包 go vet 通过。本次未运行真实模型或真实 L3 故障场景。
+
+`.evidence/workflow-audit-merge-final-compat-20261016/integration.log` 中 8 个审计场景通过；同批旧 EXE 升级测试的 stop_pending 断言失败，整批 exit 1，保留该失败。数据库核对确认差异仅为主分支新增的停止进度回执，原请求、摘要、身份及写者退出证明保持。兼容性断言改为额外核验回执绑定原操作及 writer absence，再严格比较其余全部请求字段；未修改或放宽生产逻辑。该受影响测试单独重新执行，记录于 `.evidence/workflow-audit-merge-compat-check-20261016`。
+
+单独兼容性复验 result.json exit 0 / 1 测试入口，4 个状态子用例全部通过（pr_ready、stopped、unknown、stop_pending），没有 skip。最终受控 EXE SHA-256 `86f22396b163f0dcb1244dbecf9ed9d4cf2f0828cb8c5f0eb45edcc14d854d0d`；旧 EXE SHA-256 `8e8f033757860b0a8c30e980d592e164e371de34efc25fcdf358211f821e6d52`，来源与冻结摘要见各 source-identity.json。
