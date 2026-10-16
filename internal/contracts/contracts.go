@@ -128,6 +128,19 @@ type ServiceStopInput struct {
 	ExpectedInstanceID string `json:"expected_instance_id"`
 }
 
+type StoppedVerification struct {
+	StateDir         string       `json:"state_dir"`
+	ResourcesSettled bool         `json:"resources_settled"`
+	Runs             []StoppedRun `json:"runs"`
+}
+
+type StoppedRun struct {
+	RunID            string `json:"run_id"`
+	InputDigest      string `json:"input_digest"`
+	ResourcesSettled bool   `json:"resources_settled"`
+	Diagnostic       string `json:"diagnostic,omitempty"`
+}
+
 type CommandView struct {
 	RequestID     string  `json:"request_id"`
 	CommandID     string  `json:"command_id"`
