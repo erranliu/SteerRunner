@@ -1,0 +1,6 @@
+{
+  "turn_id": "01a1445a-e924-77f1-9757-9f44093eea5f",
+  "exit_code": 0,
+  "output": "{\"url\":\"https://github.com/erranliu/SteerlineTest/pull/346\",\"repository\":\"erranliu/SteerlineTest\",\"base_branch\":\"codex/srtest/0a02b593ad83/base\",\"head_repository\":\"erranliu/SteerlineTest\",\"head_branch\":\"codex/runner-a11091eab835ce80d55f3c4f6daefa1c\",\"head_revision\":\"4380a77390cc8fad68302bbac18d78147f084d9d\",\"state\":\"open\",\"merged\":false,\"merged_at\":null,\"merge_commit\":\"4deb56409925d005387f8e456d8837139ad7bc65\"}\r\nquery_exit_code=0\r\n## codex/runner-a11091eab835ce80d55f3c4f6daefa1c...origin/codex/runner-a11091eab835ce80d55f3c4f6daefa1c\ncodex/runner-a11091eab835ce80d55f3c4f6daefa1c\n",
+  "command": "\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\" -NoProfile -Command \"powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\\\srt\\\\0a02b593ad83\\\\bin\\\\query-pr.ps1 -URL https://github.com/erranliu/SteerlineTest/pull/346; \"'$queryExit = $LASTEXITCODE; Write-Output \"query_exit_code=$queryExit\"; git status --short --branch; git branch --show-current'"
+}

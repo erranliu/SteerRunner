@@ -3,68 +3,68 @@
   "exit_code": 0,
   "tests": [
     {
-      "name": "zero-match",
-      "passed": true
+      "passed": true,
+      "name": "zero-match"
     },
     {
-      "name": "missing-config",
-      "passed": true
+      "passed": true,
+      "name": "missing-config"
     },
     {
-      "name": "duplicate-catalog",
-      "passed": true
+      "passed": true,
+      "name": "duplicate-catalog"
     },
     {
-      "name": "repeat-zero",
-      "passed": true
+      "passed": true,
+      "name": "repeat-zero"
     },
     {
-      "name": "repeat-non-live",
-      "passed": true
+      "passed": true,
+      "name": "repeat-non-live"
     },
     {
-      "name": "parallel-zero",
-      "passed": true
+      "passed": true,
+      "name": "parallel-zero"
     },
     {
-      "name": "parallel-excess",
-      "passed": true
+      "passed": true,
+      "name": "parallel-excess"
     },
     {
-      "name": "checker-positive-negative",
-      "passed": true
+      "passed": true,
+      "name": "checker-positive-negative"
     },
     {
-      "name": "pr-list-zero-one-many",
-      "passed": true
+      "passed": true,
+      "name": "pr-list-zero-one-many"
     },
     {
-      "name": "publisher-empty",
-      "passed": true
+      "passed": true,
+      "name": "publisher-empty"
     },
     {
-      "name": "publisher-existing",
-      "passed": true
+      "passed": true,
+      "name": "publisher-existing"
     },
     {
-      "name": "publisher-conflict",
-      "passed": true
+      "passed": true,
+      "name": "publisher-conflict"
     },
     {
-      "name": "publisher-query-failure",
-      "passed": true
+      "passed": true,
+      "name": "publisher-query-failure"
     },
     {
-      "name": "stability-registry-gate-scope",
-      "passed": true
+      "passed": true,
+      "name": "stability-registry-gate-scope"
     },
     {
-      "name": "parallel-scheduler-isolation",
-      "passed": true
+      "passed": true,
+      "name": "parallel-scheduler-isolation"
     },
     {
-      "name": "native-result-contracts",
-      "passed": true
+      "passed": true,
+      "name": "native-result-contracts"
     }
   ]
 }

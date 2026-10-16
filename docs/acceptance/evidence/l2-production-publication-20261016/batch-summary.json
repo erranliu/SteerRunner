@@ -1,73 +1,73 @@
 {
   "schema": "steerrunner-test-report/v1",
-  "source_commit": "b42e04407204fcd863b48d45b8c7f4b9538ac7c3",
-  "source_dirty": true,
-  "started_at": "2026-10-16T10:23:08.2136492Z",
+  "source_commit": "ff90bc71ae791f02422bfd14afc1da73a21925c0",
+  "source_dirty": false,
+  "started_at": "2026-10-16T10:43:44.0989351Z",
   "requested_levels": [
     "L2"
   ],
   "status": "passed",
   "results": [
     {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production-final",
+      "exit_code": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production-final\\framework",
       "native_zero_match_guard": true,
-      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production",
-      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production\\framework",
-      "test_count": 235,
+      "native_driver_compile_exit": 0,
+      "test_count": 236,
+      "level": "L1",
       "skipped_tests": [
         "TestProcessHostCommandHelper",
         "TestOrcaLocalPipeNativeEvidence",
-        "TestAuthenticationNativeToolBoundary",
         "TestOrcaNativeStateLiveLifecycle",
+        "TestAuthenticationNativeToolBoundary",
         "TestOrcaWorkspaceStartupLive",
         "TestServiceStopWorkerHelper"
-      ],
-      "native_driver_compile_exit": 0,
-      "level": "L1",
-      "exit_code": 0
+      ]
     },
     {
-      "exit_code": 0,
       "level": "Controlled",
-      "scenario_count": 16,
-      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production\\controlled"
-    },
-    {
       "exit_code": 0,
-      "level": "L2-GitBoundary",
-      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production\\l2-git-boundary.log"
+      "scenario_count": 16,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production-final\\controlled"
     },
     {
-      "started_at": "2026-10-16T10:33:52.030802Z",
+      "level": "L2-GitBoundary",
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production-final\\l2-git-boundary.log"
+    },
+    {
       "scenario": "local-codex.smoke",
       "repeat_index": 1,
-      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production\\local-codex.smoke-default-r1-fixture.json",
-      "finished_at": "2026-10-16T10:40:22.8701343Z",
-      "evidence": "C:\\srt\\9000197bda8a\\evidence",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\l2-git-publication\\SteerRunner\\.evidence\\l2-production-final\\local-codex.smoke-default-r1-fixture.json",
+      "started_at": "2026-10-16T10:53:28.1553144Z",
+      "expected_outcome": "merged",
       "status": "passed",
+      "evidence": "C:\\srt\\0a02b593ad83\\evidence",
+      "finished_at": "2026-10-16T11:01:15.671636Z",
       "case_id": "default",
+      "resources": [
+        "root:C:\\srt\\0a02b593ad83",
+        "base:codex/srtest/0a02b593ad83/base",
+        "run:a11091eab835ce80d55f3c4f6daefa1c",
+        "workspace:c:\\srt\\0a02b593ad83\\s\\workspaces\\ffhkityetzrxdgmj7pjwegdoma",
+        "session:01a14459-300e-7cc1-8f44-7e6bbe159e01",
+        "branch:codex/runner-a11091eab835ce80d55f3c4f6daefa1c",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/346"
+      ],
       "level": "L2",
       "identity": {
-        "pid": 25656,
-        "manifest_sha256": "266d49bb415e2ab7d5611b73254369194fda964f0ab6def14d47e7373d763367",
-        "driver_sha256": "2575dc0b615f153bcb5b0dc368c839a867d6ebf3c99045c6ed723261e50e67ed",
-        "runner_sha256": "487e7ce1afd2745414528db3add29712c76b4f50e7967708a1c12fa6b836e3b9",
-        "source_commit": "7c44b8c645c38b8d2dfb63a609bf138b7287fd1a",
+        "pid": 11520,
+        "manifest_sha256": "9075b4ccba0caa40cdc523f659018a65d0e1b041947b49b27971190c48929126",
+        "driver_sha256": "0fd6b3454854cc9c7fc3683787193d5e035490c21b77b2b291346d4393e20491",
+        "runner_sha256": "f8170b43db7ebd813fdc7a9c8e71d20e24f6f18d5a106822951943671789c995",
+        "source_commit": "ecd4b068cdd18bf2932cb0ca2de8c1e0a174348b",
         "source_dirty": false,
         "pattern": "^TestSRLiveScenario$",
         "scenario": "local-codex.smoke",
         "level": "L2"
       },
-      "resources": [
-        "root:C:\\srt\\9000197bda8a",
-        "base:codex/srtest/9000197bda8a/base",
-        "run:ed4c8d2a51b8d9422a9e67f0d00069c4",
-        "workspace:c:\\srt\\9000197bda8a\\s\\workspaces\\zzbqtay6bevjbyyfig2ijcfmqa",
-        "session:01a14447-3b89-7de2-8fdd-71d1a7b0be25",
-        "branch:codex/runner-ed4c8d2a51b8d9422a9e67f0d00069c4",
-        "pr:https://github.com/erranliu/SteerlineTest/pull/345"
-      ],
-      "manifest": "C:\\srt\\9000197bda8a\\manifest.json",
-      "expected_outcome": "merged"
+      "manifest": "C:\\srt\\0a02b593ad83\\manifest.json"
     }
   ],
   "executed_case_count": 1,
@@ -81,5 +81,5 @@
   "planned_case_count": 1,
   "authorized_exclusion_count": 0,
   "scope": "selected-complete",
-  "finished_at": "2026-10-16T10:40:23.0353917Z"
+  "finished_at": "2026-10-16T11:01:15.8862312Z"
 }
