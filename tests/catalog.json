@@ -18,7 +18,8 @@
     "TestSRStabilityRevocationAcrossRestart",
     "TestSRWorkflowDiscoveryAndSelection",
     "TestSRAuditedWorkflow",
-    "TestSRMultipleRunsIsolation"
+    "TestSRMultipleRunsIsolation",
+    "TestEnvironmentCheckCLI"
   ],
   "scenarios": [
     {
@@ -150,6 +151,26 @@
       "timeout_minutes": 15,
       "cases": [
         "default"
+      ]
+    },
+    {
+      "id": "environment-check.local-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.local-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
       ]
     }
   ]

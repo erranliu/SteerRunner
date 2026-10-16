@@ -67,6 +67,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				value.protocol = parameter
 			case "--input":
 				value.input = parameter
+			case "--check-id":
+				value.opts.CheckID = parameter
 			case "--run-id":
 				value.opts.RunID = parameter
 			case "--attempt-id", "--session-id", "--generation":
@@ -107,11 +109,11 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	if len(positional) == 1 {
 		value.opts.Command = positional[0]
 	}
-	if len(positional) == 2 && positional[0] == "service" {
-		value.opts.Command = "service " + positional[1]
+	if len(positional) == 2 && (positional[0] == "service" || positional[0] == "environment-check") {
+		value.opts.Command = positional[0] + " " + positional[1]
 	}
 	switch value.opts.Command {
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -129,14 +131,18 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		return value, contracts.Fail(2, "invalid_arguments", "Write commands require --input -; other commands do not accept input.")
 	}
 	selectors := 0
-	for _, id := range []string{value.opts.RunID, value.opts.RequestID, value.opts.CommandID} {
+	for _, id := range []string{value.opts.RunID, value.opts.RequestID, value.opts.CommandID, value.opts.CheckID} {
 		if id != "" {
 			selectors++
 		}
 	}
 	switch value.opts.Command {
+	case "environment-check inspect":
+		if selectors != 1 || (value.opts.CheckID == "" && value.opts.RequestID == "") {
+			return value, contracts.Fail(2, "invalid_arguments", "environment-check inspect requires exactly one check-id or request-id.")
+		}
 	case "inspect":
-		if selectors != 1 || value.opts.RefreshPR && value.opts.RunID == "" {
+		if selectors != 1 || value.opts.CheckID != "" || value.opts.RefreshPR && value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
 		}
 	case "last-message", "open-native-session", "events", "reply", "resume", "stop":
@@ -168,7 +174,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 
 func writes(command string) bool {
 	switch command {
-	case "submit", "service stop", "reply", "resume", "stop":
+	case "environment-check start", "environment-check stop", "submit", "service stop", "reply", "resume", "stop":
 		return true
 	default:
 		return false
@@ -193,7 +199,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
 	}
 	var request *contracts.Request
 	if writes(options.opts.Command) {
@@ -202,7 +208,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		if requestErr != nil {
 			return reject(requestErr)
 		}
-		if invalid := contracts.ValidateInput(options.opts.Command, value.Input); invalid != nil {
+		if invalid := contracts.ValidateInput(options.opts.Command, value.Input); invalid != nil && options.opts.Command != "environment-check start" && options.opts.Command != "environment-check stop" {
 			return reject(invalid)
 		}
 		request = &value
@@ -224,7 +230,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
 	defer cancel()
-	if options.opts.Command == "service start" || options.opts.Command == "submit" {
+	if options.opts.Command == "service start" || options.opts.Command == "submit" || options.opts.Command == "environment-check start" {
 		executable, err := os.Executable()
 		if err != nil {
 			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))

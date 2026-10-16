@@ -7,9 +7,11 @@
 以下清单于 **2026-10-16** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 十五 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 十七 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
+PR 整合主线后保留两项环境检查，当前为 L3 十一场景/十七 case；下文已有真机通过
+记录仍绑定原构建，整合后不继承反馈资格，须以新构建重新验收。
 
 ## L2：最小核心 smoke
 
@@ -29,7 +31,7 @@
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的九场景、十五 case，含原远端流程、11 个核心可靠性 case 和三个本机流程。全部保留在
+以下为已注册的十一场景、十七 case，含原远端流程、11 个核心可靠性 case 、三个本机流程和两种本机环境检查。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -38,6 +40,8 @@ worktree/terminal/session、base/head、PR、控制门、journal 和证据目录
 每项只能停止/清理自己的资源，不能切断共享 runtime 或整机网络。模型和平台限流需要
 明确并发上限，资源等待不能误记为故障命中。并行验收须证明各项身份、输入/发布计数、
 故障窗口与清理互不干扰，不能只看最终全部 passed。
+环境检查使用独立 Check，运行中核验 session/workspace 和 owned base/head/PR，收尾
+后保留身份；不要求创建 development Run，不用已删除的 owned 资源冒充未执行。
 
 上述隔离适用于 case 之间。L3-P04 已实现同一服务的多 Run，允许 case 内多个 Run
 共享一个服务/state-dir；该服务与其它 case 独立，不能以“每 case 独立服务”跳过产品
@@ -72,6 +76,8 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `local-codex.feedback` | `default` | 明确发送一次反馈，取得更新的 UTC/new commit，复用原 session/Attempt/工作区/分支/PR，再验证合入及完整停止 | `merged` | 本机原生进程及 capability 按 Run 隔离；已与 audited 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.audited` | `default` | 两实际不同模型完成 Spec/代码两项审计并切回执行模型发布；同会话、同实施报告来源、真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个接受真实反馈并更新同一 PR，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
+| `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR，沿用主线环境检查判据；原真机记录见[环境检查验收](acceptance/environment-check.md)，整合后未重跑真机/并行资格 |
+| `environment-check.local-full-access` | `complete` | 显式 full_access 的实际权限与认证/工具/资源闭环，验证模式生效及其独立能力契约 | 同上；实际模式必须为 `full_access` | 独立 Check 资源；不能借 sandbox 结果代替本模式；来源及整合后缺口同上 |
 
 远端共同前置为 L1、完整 Controlled、指定 Orca CLI、已配对 environment、远端同名
 Git 项目和执行主机认证。11 个可靠性 case 另需稳定性 v2 配置和故障取证工具。
@@ -121,8 +127,8 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共十四场景、二十 case：L2 一项、L3 十五项（含原 11 项核心可靠性）、L4 四项。
-Controlled 默认前置十五个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
+当前共十六场景、二十二 case：L2 一项、L3 十七项（含原 11 项核心可靠性）、L4 四项。
+Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
 实现与资格分别登记：调度器检查可以证明队列上限、L4 互斥、worker 失联及构建变化拒绝，

@@ -26,7 +26,7 @@ func ManagedCommand(options ManagedCommandOptions) (executionbackend.LaunchComma
 	if options.Host != "orca" || options.Agent != "codex" || options.Executable == "" {
 		return executionbackend.LaunchCommand{}, errors.New("managed Orca launch requires Codex and an executable")
 	}
-	permissions, err := NativePermissions(runtime.GOOS, options.Host, options.Agent)
+	permissions, err := NativePermissions(runtime.GOOS, options.Host, options.Agent, accessMode(options.Sandbox))
 	if err != nil {
 		return executionbackend.LaunchCommand{}, err
 	}

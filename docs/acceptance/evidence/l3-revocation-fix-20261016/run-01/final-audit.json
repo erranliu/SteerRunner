@@ -1,0 +1,92 @@
+{
+  "config_unchanged": true,
+  "owned_processes": [],
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "at": "2026-10-16T06:36:09.2428074Z",
+  "owned_firewall_rules": [],
+  "schema": "steerrunner-live-stop-fix-audit/v1",
+  "source_unchanged": true,
+  "cases": [
+    {
+      "fixture": "e7960860cba8",
+      "outcome": "",
+      "case_id": "active",
+      "auxiliary_closed": 0,
+      "cleanup_mode": "operator-cleaned-after-failure; original Runner stop remains unverified",
+      "scenario": "orca-remote.stop-revocation",
+      "network_seconds": null,
+      "service_status": "not_running",
+      "revoked_feedback": [],
+      "stale_feedback": [],
+      "run_id": "5a1d02da7365084bee20389f3b08a2c8",
+      "stage": "await-implementation-gate",
+      "status": "failed",
+      "faults_hit": 0
+    },
+    {
+      "fixture": "862fd351882d",
+      "outcome": "",
+      "case_id": "boundary",
+      "auxiliary_closed": 0,
+      "cleanup_mode": "Runner-confirmed",
+      "scenario": "orca-remote.stop-revocation",
+      "network_seconds": 8.4326483,
+      "service_status": "not_running",
+      "revoked_feedback": [],
+      "stale_feedback": [],
+      "run_id": "478f392ff8abafc66b55496a79e1a261",
+      "stage": "await-implementation-gate",
+      "status": "failed",
+      "faults_hit": 0
+    },
+    {
+      "fixture": "f0b9c9cd4d80",
+      "outcome": "revoked-unverified",
+      "case_id": "unreachable",
+      "auxiliary_closed": 6,
+      "cleanup_mode": "Runner-confirmed",
+      "scenario": "orca-remote.stop-revocation",
+      "network_seconds": 249.6550153,
+      "service_status": "not_running",
+      "revoked_feedback": [
+        {
+          "ok": false,
+          "request_id": "f0b9c9cd4d80-revoked-feedback-0",
+          "error_code": "stale_revision",
+          "at": "2026-10-16T06:32:01.9274655Z",
+          "expected_revision": 29
+        },
+        {
+          "ok": false,
+          "request_id": "f0b9c9cd4d80-revoked-feedback-1",
+          "error_code": "resume_required",
+          "at": "2026-10-16T06:32:04.3023716Z",
+          "expected_revision": 30
+        }
+      ],
+      "stale_feedback": [
+        {
+          "ok": false,
+          "request_id": "f0b9c9cd4d80-stale-revoked-feedback",
+          "error_code": "stale_revision",
+          "at": "2026-10-16T06:32:06.5695072Z",
+          "expected_revision": 29
+        }
+      ],
+      "run_id": "7ba487f6e7298166326c165713a365c4",
+      "stage": "completed",
+      "status": "passed",
+      "faults_hit": 2
+    }
+  ],
+  "source_file_count": 324,
+  "status": "failed",
+  "case_count": 3,
+  "identical_builds": [
+    "bb480efc2d22995647bf51fb1e8baa783353ec1a61ef90c46d53dbf6ca2fcd39",
+    "A20FCAF8E9CEC5A0A8A56475C6CBB3125FE912FA7BDFFEF736375D392577A308",
+    "4287df4ac54f313aed197a7d30869e3caeb411771d74365230fcfbdbe1eb6a85",
+    "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f"
+  ]
+}

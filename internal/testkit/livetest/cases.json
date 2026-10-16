@@ -210,6 +210,32 @@
           "outcome": "stopped"
         }
       ]
+    },
+    {
+      "id": "environment-check.local-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "complete",
+          "outcome": "checked"
+        }
+      ]
+    },
+    {
+      "id": "environment-check.local-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "complete",
+          "outcome": "checked"
+        }
+      ]
     }
   ]
 }

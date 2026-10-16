@@ -1,0 +1,88 @@
+{
+  "operations": [
+    {
+      "operation_id": "a03cb5551be30fa6963008ea9a1cbb5f",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "1f5abcf9d758264330aad7d24223940d",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "8d99e6cfd149a6d3f521396302d113e1",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "846ce1d715275f80accf09c974b8984a",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "30ff09da066dc64a48549f6fb124cfdf",
+      "action": "stop_execution",
+      "status": "outcome_unknown"
+    }
+  ],
+  "run_id": "3e069e934a495b04e667d43ddc803de8",
+  "revision": 34,
+  "title": "SteerRunner L3 orca-remote.stop-revocation/unreachable",
+  "correlation": {
+    "case": "unreachable",
+    "fixture_id": "47948528f248",
+    "scenario": "orca-remote.stop-revocation"
+  },
+  "input_digest": "c2f108617ab557d74ccbac9ae113482ec14df5882bfdf5eead5a6f85b3e6bf37",
+  "resource_digest": "fc188e8e6abea1c23cdd15dbd5957063ceded2e6367cbf36726e90355d4757e8",
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "step": "implement.execute",
+  "status": "reconciling",
+  "phase": "service_restarted",
+  "diagnostic": "C:\\srt\\47948528f248\\bin\\stability.exe failed: exit status 1 ()\nCould not connect to the remote Orca runtime.",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "unknown",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "3baab58c404ee88e1a07128892888a0d6a42c436b31f07ea5674be99f1adaa14",
+      "snapshot_path": "c:\\srt\\47948528f248\\s\\inputs\\3e069e934a495b04e667d43ddc803de8\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "c38056269b6f92ce7762b6a50b3195ccc1f0c3d98aefe6e8846b378ab785baca",
+      "snapshot_path": "c:\\srt\\47948528f248\\s\\inputs\\3e069e934a495b04e667d43ddc803de8\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "5bfedea64d9b67b59ddfca5943d8c005",
+    "generation": "f592cd251240e8accb20da1445cc369a",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_7cedab14-6a19-4a19-a04d-e48a76cfd163:0eee8f2d-a6e1-4f7f-9965-69144f7a9fb8",
+    "turn_id": "f9084b25d7b997895b60365a9846a523",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3e069e934a495b04e667d43ddc803de8",
+    "branch": "erranliu/sl-3e069e934a495b04e667d43ddc803de8"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": true,
+    "reason": "C:\\srt\\47948528f248\\bin\\stability.exe failed: exit status 1 ()\nCould not connect to the remote Orca runtime."
+  },
+  "created_at": "2026-10-16T04:19:06.3804107Z",
+  "updated_at": "2026-10-16T04:22:15.8695711Z"
+}

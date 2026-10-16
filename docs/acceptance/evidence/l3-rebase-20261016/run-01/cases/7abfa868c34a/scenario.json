@@ -1,0 +1,45 @@
+{
+  "scenario": "orca-remote.caller-exit",
+  "case_id": "accepted-response-lost",
+  "repeat_index": 1,
+  "stage": "verify-original-pr",
+  "run_id": "9c76c5dd3967e6b4a3a8437a41937192",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/308",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 1,
+  "audit_complete": false,
+  "assertions": [
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: owned caller terminated after original request was accepted"
+    },
+    {
+      "name": "caller-service-survives",
+      "passed": true,
+      "evidence": "faults.jsonl and caller-commands.jsonl: same service survived caller termination"
+    },
+    {
+      "name": "submit-replay-original",
+      "passed": true,
+      "evidence": "caller-commands.jsonl: original request replay returns original Run"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "single-actual-pr",
+      "passed": true,
+      "evidence": "pr-list.json: exactly one PR on this fixture base"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

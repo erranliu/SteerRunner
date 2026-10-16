@@ -33,6 +33,8 @@ type Engine struct {
 	cancel            context.CancelFunc
 	runs              map[string]*runstate.Record
 	workers           map[string]*worker
+	checks            map[string]*runstate.CheckRecord
+	checkWorkers      map[string]*checkWorker
 	logger            *log.Logger
 	wait              sync.WaitGroup
 }
@@ -47,6 +49,22 @@ type worker struct {
 func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger) (*Engine, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	e := &Engine{dir: dir, store: store, ctx: ctx, cancel: cancel, logger: logger, runs: map[string]*runstate.Record{}, workers: map[string]*worker{}}
+	e.checks = map[string]*runstate.CheckRecord{}
+	e.checkWorkers = map[string]*checkWorker{}
+	checks, checkErr := store.Checks()
+	if checkErr != nil {
+		cancel()
+		return nil, checkErr
+	}
+	for _, r := range checks {
+		e.checks[r.View.CheckID] = r
+		if next := reconcileCheckOwnership(r); next != nil {
+			if err := e.commitCheckLocked(next, nil); err != nil {
+				cancel()
+				return nil, err
+			}
+		}
+	}
 	runs, err := store.Runs()
 	if err != nil {
 		cancel()
@@ -84,6 +102,21 @@ func (e *Engine) Start() {
 	defer e.mu.Unlock()
 	for id, w := range e.workers {
 		e.launch(id, w)
+	}
+	for id, r := range e.checks {
+		if r.View.CleanupStatus != "completed" || r.Allowed {
+			next := r.Clone()
+			next.Allowed = false
+			next.AgentSettled = r.AgentSettled || r.View.Status == "completed"
+			next.View.Status = "interrupted"
+			next.View.Diagnostic = "service_restarted_reconcile_original_only"
+			if !next.AgentSettled && next.View.Result == "passed" && r.View.Status != "completed" {
+				next.View.Result = "unverified"
+			}
+			if e.commitCheckLocked(next, nil) == nil {
+				e.launchCheckLocked(id)
+			}
+		}
 	}
 }
 func (e *Engine) launch(id string, w *worker) {
@@ -400,6 +433,15 @@ func (e *Engine) ResourceSettlementError() error {
 	for _, r := range runs {
 		if r.StopStatus != "stopped" {
 			failures = append(failures, fmt.Errorf("run %s: native stop status %q", r.ID, r.StopStatus))
+		}
+	}
+	checks, err := e.store.Checks()
+	if err != nil {
+		return err
+	}
+	for _, r := range checks {
+		if r.View.CleanupStatus != "completed" || !r.View.Resources.WriterStopped || checkUnknown(r) {
+			failures = append(failures, fmt.Errorf("check %s: resources remain unverified", r.View.CheckID))
 		}
 	}
 	return errors.Join(failures...)

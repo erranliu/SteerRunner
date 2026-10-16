@@ -30,7 +30,7 @@ func psLiteral(value string) string { return "'" + strings.ReplaceAll(value, "'"
 
 // Only the trusted script's finite result is persisted. No raw native command
 // output, credential-helper response or environment is copied into diagnostics.
-func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName string) (string, time.Time, error) {
+func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName string, modes ...string) (string, time.Time, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	if err := a.validLocked(); err != nil {
@@ -61,13 +61,17 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
  if ((($raw -join [char]10) | ConvertFrom-Json).login -cne ` + psLiteral(a.broker.login) + `) { throw 'broker identity mismatch' }`
 		transportProbe = `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + ` -or -not [IO.File]::Exists($env:SSL_CERT_FILE)) { throw 'transport filtered' }`
 	}
+	containerValue := "1"
+	if len(modes) > 0 && modes[0] == "danger-full-access" {
+		containerValue = "0"
+	}
 	script := `$ErrorActionPreference='Stop'
 $stage='tool_environment'
 try {
  $stage='sandbox_identity'
  Add-Type -TypeDefinition 'using System; using System.Runtime.InteropServices; public static class SRTokenProbe { [DllImport("advapi32.dll", SetLastError=true)] public static extern bool GetTokenInformation(IntPtr h,int c,out int v,int n,out int r); }'
  $value=0; $size=0
- if (-not [SRTokenProbe]::GetTokenInformation([Security.Principal.WindowsIdentity]::GetCurrent().Token,29,[ref]$value,4,[ref]$size) -or $value -ne 1) { throw 'AppContainer required' }
+ if (-not [SRTokenProbe]::GetTokenInformation([Security.Principal.WindowsIdentity]::GetCurrent().Token,29,[ref]$value,4,[ref]$size) -or $value -ne ` + containerValue + `) { throw 'execution token boundary differs' }
  $stage='tool_environment'
  if (-not $env:GH_TOKEN -or -not $env:GIT_CONFIG_COUNT -or $env:GH_HOST -ne 'github.com' -or $env:GH_PROMPT_DISABLED -ne '1') { throw 'filtered' }
  $sha=[Security.Cryptography.SHA256]::Create()
@@ -121,6 +125,11 @@ func (b Backend) verifySandboxReadiness(ctx context.Context, h *SessionHandle, i
 	if b.Config.Authentication == nil {
 		return nil
 	}
+	if b.Config.EnvironmentCheck {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
+		defer cancel()
+	}
 	return b.checkSandboxReadiness(ctx, h, input, h.client.Call)
 }
 
@@ -129,7 +138,7 @@ func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, in
 	if err != nil || len(roots) != 4 {
 		return errors.New("sandbox_readiness_git_roots_invalid")
 	}
-	script, expires, err := b.Config.Authentication.readinessScript(roots, b.Config.RemoteName)
+	script, expires, err := b.Config.Authentication.readinessScript(roots, b.Config.RemoteName, b.Config.Sandbox)
 	if err != nil {
 		return err
 	}

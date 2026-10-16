@@ -1,0 +1,51 @@
+{
+  "failures": [
+    {
+      "fixture": "C:/srt/8977b8094fed",
+      "check_id": "e2ce8979ec9161a6d16c0ba5211d8446",
+      "result": "failed",
+      "cleanup_status": "residual",
+      "diagnostic": "service_restarted_reconcile_original_only",
+      "base_ref": "refs/heads/steerline-check/e2ce8979ec9161a6d16c0ba5211d8446/base",
+      "base_sha": "4ad7226bcd5bc8bd68902326e7625d25496b5854",
+      "writer_stopped": true,
+      "local_removed": true,
+      "offline_verification": {
+        "checks": [
+          {
+            "check_id": "e2ce8979ec9161a6d16c0ba5211d8446",
+            "input_digest": "0d3f469a29eef477280fd50890ce303018f4c4f376682a00d23336444beacb8b",
+            "resources_settled": false
+          }
+        ],
+        "state_dir": "c:\\srt\\8977b8094fed\\s",
+        "resources_settled": false,
+        "runs": []
+      }
+    },
+    {
+      "fixture": "C:/srt/5178487b98d7",
+      "check_id": "887c8608f0b83ed06b789d82d46e8045",
+      "result": "failed",
+      "cleanup_status": "residual",
+      "diagnostic": "service_restarted_reconcile_original_only",
+      "base_ref": "refs/heads/steerline-check/887c8608f0b83ed06b789d82d46e8045/base",
+      "base_sha": "7252338cb5d163e576fc5bbe40c6acc803d4e928",
+      "writer_stopped": true,
+      "local_removed": true,
+      "offline_verification": {
+        "checks": [
+          {
+            "check_id": "887c8608f0b83ed06b789d82d46e8045",
+            "input_digest": "8ff64479d9c0942a994d99d2b726b8dd2441de1cf2da5e7f2bd76e021a2dbc2b",
+            "resources_settled": false
+          }
+        ],
+        "state_dir": "c:\\srt\\5178487b98d7\\s",
+        "resources_settled": false,
+        "runs": []
+      }
+    }
+  ],
+  "note": "Initial prototype stderr handling falsely reported settlement; corrected code reconciles original effects as residual. The exact references are retained; no central credential was used to delete them."
+}

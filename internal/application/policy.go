@@ -25,8 +25,28 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 	s := &r.Snapshot
 	identity := codex.PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}
 	if s.PolicyResources != nil {
-		_, err := codex.DecodePolicyResourceEnvelope(*s.PolicyResources, identity)
-		return err
+		payload, err := codex.DecodePolicyResourceEnvelope(*s.PolicyResources, identity)
+		if err != nil {
+			return err
+		}
+		profile, err := codex.DecodeProfileConfigEnvelope(r.Profile, codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest})
+		if err != nil {
+			return err
+		}
+		mode := profile.AccessMode
+		if mode == "" {
+			mode = "sandbox"
+		}
+		actual := "sandbox"
+		for _, arg := range payload.Settings.Args {
+			if arg == "sandbox_mode=danger-full-access" {
+				actual = "full_access"
+			}
+		}
+		if actual != mode {
+			return errors.New("permission resources differ from frozen access mode")
+		}
+		return nil
 	}
 	if s.Ref.External.Kind != "" || s.Session.SessionID != "" && s.Session.AttemptNumber <= 1 {
 		return errors.New("original session has no verified permission resources; preserve it without new input")

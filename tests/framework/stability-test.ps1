@@ -4,7 +4,7 @@ $ErrorActionPreference='Stop'
 $taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 15){throw 'L3 registry did not expand to fifteen cases'}
+if($taskCount -ne 17){throw 'L3 registry did not expand to seventeen cases'}
 $taskEntry=$taskCatalog.scenarios|Where-Object {$_.id -eq 'orca-remote.service-restart'}
 $taskEntry.cases=@('graceful-active')
 $taskRejected=$false

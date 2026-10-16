@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.stop-revocation
+    stability_test.go:98: stability assertion revoked-feedback-rejected failed: caller-commands.jsonl: current-version feedback explicitly refused with resume_required
+--- FAIL: TestSRLiveScenario (258.97s)
+    --- FAIL: TestSRLiveScenario/orca-remote.stop-revocation (258.76s)
+FAIL

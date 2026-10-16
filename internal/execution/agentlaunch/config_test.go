@@ -7,7 +7,7 @@ import (
 
 func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 	for _, effort := range []string{"high", "xhigh"} {
-		c := &Config{Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: effort, Args: []string{"--dangerously-bypass-approvals-and-sandbox"}}
+		c := &Config{Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: effort, Args: []string{"--no-alt-screen"}}
 		cmd, err := c.Command("codex")
 		if err != nil || !strings.Contains(cmd, "'gpt-6-luna'") || !strings.Contains(cmd, "model_reasoning_effort=\""+effort+"\"") || !strings.Contains(cmd, "tui.animations=false") {
 			t.Fatal(cmd, err)
@@ -20,6 +20,7 @@ func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 	}
 	for _, config := range []*Config{
 		{Executable: "codex", ReasoningEffort: "high"},
+		{Executable: "codex", Args: []string{"--dangerously-bypass-approvals-and-sandbox"}},
 		{Executable: "codex", Model: "chosen", ReasoningEffort: "invalid"},
 		{Executable: "codex", Model: "chosen", Args: []string{"--model", "different"}},
 		{Executable: "codex", Model: "chosen", Args: []string{"-c", "model_reasoning_effort=\"low\""}},

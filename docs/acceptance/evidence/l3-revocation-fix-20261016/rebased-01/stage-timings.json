@@ -1,0 +1,87 @@
+{
+  "schema": "steerrunner-live-timings/v1",
+  "semantics": "Total time includes preparation and verification; native harness duration comes from Go test output. Checkpoint intervals are wall-clock intervals between recorded driver markers, not CPU time or inferred business-phase durations. Smoke has no fault journal.",
+  "cases": [
+    {
+      "fixture": "c3fa314612bb",
+      "started_at": "2026-10-16T07:05:18.446189Z",
+      "case_id": "unreachable",
+      "scenario": "orca-remote.stop-revocation",
+      "total_seconds": 307.934,
+      "repeat_index": 1,
+      "finished_at": "2026-10-16T07:10:26.3802787Z",
+      "status": "failed",
+      "native_harness_seconds": 41.6,
+      "driver_checkpoint_intervals": [
+        {
+          "kind": "stage",
+          "seconds": 2.813,
+          "value": "dual-path-network-preflight",
+          "finished_at": "2026-10-16T07:09:52.1787249Z",
+          "started_at": "2026-10-16T07:09:49.3654603Z"
+        },
+        {
+          "kind": "network-intent",
+          "seconds": 7.291,
+          "value": "block",
+          "finished_at": "2026-10-16T07:09:59.4697491Z",
+          "started_at": "2026-10-16T07:09:52.1787249Z"
+        },
+        {
+          "kind": "network-confirmed",
+          "seconds": 1.145,
+          "value": "block",
+          "finished_at": "2026-10-16T07:10:00.6149824Z",
+          "started_at": "2026-10-16T07:09:59.4697491Z"
+        },
+        {
+          "kind": "network-intent",
+          "seconds": 8.195,
+          "value": "restore",
+          "finished_at": "2026-10-16T07:10:08.8100454Z",
+          "started_at": "2026-10-16T07:10:00.6149824Z"
+        },
+        {
+          "kind": "network-confirmed",
+          "seconds": 5.544,
+          "value": "restore",
+          "finished_at": "2026-10-16T07:10:14.3536262Z",
+          "started_at": "2026-10-16T07:10:08.8100454Z"
+        },
+        {
+          "kind": "service-instance",
+          "seconds": 0.008,
+          "value": {
+            "instance_id": "163e218e414db564248521775fc0512b",
+            "state_dir": "c:\\srt\\c3fa314612bb\\s",
+            "pid": 44148,
+            "process_created": "134366082138213590",
+            "status": "ready",
+            "detached": true,
+            "version": "0.1.0-dev.1",
+            "protocol": "steerrunner-cli/v1",
+            "resource_digest": "c6881820406db68c06d32cad0ba7ee6f144702643b776d3887e22b5111f358fb",
+            "executable_sha256": "d6648b45400bfd5dbdb25618e6d31ffd6abf2138d6e127d321b2fc5074ce2456"
+          },
+          "finished_at": "2026-10-16T07:10:14.3618637Z",
+          "started_at": "2026-10-16T07:10:14.3536262Z"
+        },
+        {
+          "kind": "stage",
+          "seconds": 5.753,
+          "value": "submit",
+          "finished_at": "2026-10-16T07:10:20.1145382Z",
+          "started_at": "2026-10-16T07:10:14.3618637Z"
+        },
+        {
+          "kind": "stage",
+          "seconds": 5.373,
+          "value": "await-implementation-gate",
+          "finished_at": "2026-10-16T07:10:25.4872346Z",
+          "started_at": "2026-10-16T07:10:20.1145382Z"
+        }
+      ]
+    }
+  ],
+  "case_count": 1
+}

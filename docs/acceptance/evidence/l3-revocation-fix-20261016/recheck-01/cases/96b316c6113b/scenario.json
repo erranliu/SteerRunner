@@ -1,0 +1,18 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "repeat_index": 1,
+  "stage": "await-implementation-gate",
+  "run_id": "6e8929e1d7f80cf6f77cb4d187b68832",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 0,
+  "audit_complete": false,
+  "assertions": null,
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

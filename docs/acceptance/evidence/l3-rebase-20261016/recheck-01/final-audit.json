@@ -1,0 +1,38 @@
+{
+  "cases": [
+    {
+      "scenario": "orca-remote.caller-exit",
+      "fixture": "971ffdc305bb",
+      "case_id": "accepted-response-lost",
+      "outcome": "merged",
+      "runner_identical_to_original_round": true,
+      "driver_identical_to_original_round": true,
+      "service_status": "not_running",
+      "run_id": "5a0752ab7c722b0677a873cc561a13fa",
+      "merge_commit": "5597b081f9b4ffe78614fc6af3a03424f7ee0f1f",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/316",
+      "status": "passed",
+      "auxiliary_closed": 1
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "fixture": "19a70f35833f",
+      "case_id": "active",
+      "outcome": "stopped",
+      "runner_identical_to_original_round": true,
+      "driver_identical_to_original_round": true,
+      "service_status": "not_running",
+      "run_id": "330a3751c2d7dbf7780988aaae6921ed",
+      "merge_commit": null,
+      "pr_url": null,
+      "status": "passed",
+      "auxiliary_closed": 4
+    }
+  ],
+  "at": "2026-10-16T02:39:24.6254991Z",
+  "case_count": 2,
+  "status": "passed",
+  "schema": "steerrunner-live-recheck-audit/v1",
+  "source_unchanged": true,
+  "source_commit": "946875bf3abc4a58b301e935fcd164f6c4dab977"
+}

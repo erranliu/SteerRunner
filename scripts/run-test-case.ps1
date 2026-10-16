@@ -33,7 +33,12 @@ try {
         $taskManifest = Get-Content -LiteralPath $taskRecord.manifest -Raw | ConvertFrom-Json
         $taskScenario = Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'scenario.json') -Raw | ConvertFrom-Json
         . (Join-Path $PSScriptRoot 'native-result.ps1')
-        $taskView=if($taskScenario.PSObject.Properties['runs']){$null}else{Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'latest-run.json') -Raw|ConvertFrom-Json}
+        if($taskManifest.driver -eq 'environment-check'){
+            $taskCheck=(Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'check-latest.json') -Raw|ConvertFrom-Json).data.check
+            $taskView=[pscustomobject]@{run_id=$taskCheck.check_id;execution=[pscustomobject]@{workspace=$taskCheck.actual.workspace;session_id=$taskCheck.actual.session_id;branch=$taskCheck.resources.head_ref};pr=[pscustomobject]@{url=$taskCheck.resources.pr_url}}
+        } else {
+            $taskView=if($taskScenario.PSObject.Properties['runs']){$null}else{Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'latest-run.json') -Raw|ConvertFrom-Json}
+        }
         $taskRecord.resources = @(Get-SRNativeResources $taskManifest $taskScenario $taskView)
     }
     $taskRecord.identity = Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'source-identity.json') -Raw | ConvertFrom-Json -AsHashtable

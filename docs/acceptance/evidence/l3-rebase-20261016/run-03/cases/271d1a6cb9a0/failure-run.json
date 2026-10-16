@@ -1,0 +1,71 @@
+{
+  "operations": [
+    {
+      "operation_id": "ea4dc21ce71ef30f73f08db709c9f3f6",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "9741faf01f2facbf6b455680daeaa7f8",
+      "action": "create_resource",
+      "status": "accepted",
+      "diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    }
+  ],
+  "run_id": "cf48b6dbb3978338c241f915df6b182b",
+  "revision": 7,
+  "title": "SteerRunner L3 orca-remote.service-restart/graceful-active",
+  "correlation": {
+    "case": "graceful-active",
+    "fixture_id": "271d1a6cb9a0",
+    "scenario": "orca-remote.service-restart"
+  },
+  "input_digest": "0470eeaa0eba13d0e38648530bd6758fbfd304f3193b6c6967973fbfc6fad0da",
+  "resource_digest": "fc188e8e6abea1c23cdd15dbd5957063ceded2e6367cbf36726e90355d4757e8",
+  "workflow": {
+    "id": "development",
+    "version": 1
+  },
+  "step": "implement.execute",
+  "status": "blocked",
+  "phase": "preparation_deadline",
+  "diagnostic": "The original native resource did not become ready within its preparation budget",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "3baab58c404ee88e1a07128892888a0d6a42c436b31f07ea5674be99f1adaa14",
+      "snapshot_path": "c:\\srt\\271d1a6cb9a0\\s\\inputs\\cf48b6dbb3978338c241f915df6b182b\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "c38056269b6f92ce7762b6a50b3195ccc1f0c3d98aefe6e8846b378ab785baca",
+      "snapshot_path": "c:\\srt\\271d1a6cb9a0\\s\\inputs\\cf48b6dbb3978338c241f915df6b182b\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "revision",
+    "turn_started": false,
+    "attempt_id": "798c1ef2f5e7082833430c14f86f9c15",
+    "generation": "165f0bd2527f0ec1849a21a8e72597a7",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_de238267-b1fb-4f68-be91-fca1cb5e374a:eeceb7fc-85c6-486e-92d6-4e68438d5b9f",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-cf48b6dbb3978338c241f915df6b182b",
+    "branch": "erranliu/sl-cf48b6dbb3978338c241f915df6b182b"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": true,
+    "reason": "The original native resource did not become ready within its preparation budget"
+  },
+  "created_at": "2026-10-16T03:22:59.3369342Z",
+  "updated_at": "2026-10-16T03:26:05.1639436Z"
+}

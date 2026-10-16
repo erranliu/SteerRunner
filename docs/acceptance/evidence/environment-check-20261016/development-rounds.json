@@ -1,0 +1,148 @@
+{
+  "round1": {
+    "schema": "steerrunner-test-report/v1",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "started_at": "2026-10-16T06:50:07.2137173Z",
+    "requested_levels": [
+      "L3"
+    ],
+    "status": "failed",
+    "results": [
+      {
+        "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-1\\framework",
+        "test_count": 217,
+        "exit_code": 0,
+        "skipped_tests": [
+          "TestProcessHostCommandHelper",
+          "TestOrcaLocalPipeNativeEvidence",
+          "TestAuthenticationNativeToolBoundary",
+          "TestOrcaNativeStateLiveLifecycle",
+          "TestOrcaWorkspaceStartupLive",
+          "TestServiceStopWorkerHelper"
+        ],
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-1",
+        "native_zero_match_guard": true,
+        "level": "L1",
+        "native_driver_compile_exit": 0
+      },
+      {
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-1\\controlled",
+        "scenario_count": 13,
+        "exit_code": 0,
+        "level": "Controlled"
+      },
+      {
+        "finished_at": "2026-10-16T07:05:19.2314061Z",
+        "evidence": "C:\\srt\\8977b8094fed\\evidence",
+        "status": "failed",
+        "repeat_index": 1,
+        "scenario": "environment-check.local-sandbox",
+        "manifest": "C:\\srt\\8977b8094fed\\manifest.json",
+        "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-1\\environment-check.local-sandbox-complete-r1-fixture.json",
+        "error": "Live scenario failed; inspect C:\\srt\\8977b8094fed\\evidence/native.log",
+        "case_id": "complete",
+        "started_at": "2026-10-16T07:01:04.3462292Z",
+        "level": "L3"
+      },
+      {
+        "finished_at": "2026-10-16T07:08:46.0711963Z",
+        "evidence": "C:\\srt\\5178487b98d7\\evidence",
+        "status": "failed",
+        "repeat_index": 1,
+        "scenario": "environment-check.local-full-access",
+        "manifest": "C:\\srt\\5178487b98d7\\manifest.json",
+        "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-1\\environment-check.local-full-access-complete-r1-fixture.json",
+        "error": "Live scenario failed; inspect C:\\srt\\5178487b98d7\\evidence/native.log",
+        "case_id": "complete",
+        "started_at": "2026-10-16T07:05:19.2378403Z",
+        "level": "L3"
+      }
+    ],
+    "executed_case_count": 2,
+    "passed_case_count": 0,
+    "first_pass_rate": 0,
+    "selected_scenarios": [
+      "environment-check.local-sandbox",
+      "environment-check.local-full-access"
+    ],
+    "repeat": 1,
+    "planned_case_count": 2,
+    "authorized_exclusion_count": 0,
+    "scope": "selected-complete",
+    "finished_at": "2026-10-16T07:08:46.1014876Z"
+  },
+  "round2": {
+    "schema": "steerrunner-test-report/v1",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "started_at": "2026-10-16T07:10:33.2580112Z",
+    "requested_levels": [
+      "L3"
+    ],
+    "status": "failed",
+    "results": [
+      {
+        "test_count": 219,
+        "native_zero_match_guard": true,
+        "native_driver_compile_exit": 0,
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-2",
+        "skipped_tests": [
+          "TestProcessHostCommandHelper",
+          "TestOrcaLocalPipeNativeEvidence",
+          "TestAuthenticationNativeToolBoundary",
+          "TestOrcaNativeStateLiveLifecycle",
+          "TestOrcaWorkspaceStartupLive",
+          "TestServiceStopWorkerHelper"
+        ],
+        "level": "L1",
+        "exit_code": 0,
+        "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-2\\framework"
+      },
+      {
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-2\\controlled",
+        "level": "Controlled",
+        "exit_code": 0,
+        "scenario_count": 13
+      },
+      {
+        "error": "Live scenario failed; inspect C:\\srt\\ed7595e78507\\evidence/native.log",
+        "level": "L3",
+        "started_at": "2026-10-16T07:20:12.6489787Z",
+        "case_id": "complete",
+        "evidence": "C:\\srt\\ed7595e78507\\evidence",
+        "status": "failed",
+        "manifest": "C:\\srt\\ed7595e78507\\manifest.json",
+        "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-2\\environment-check.local-sandbox-complete-r1-fixture.json",
+        "repeat_index": 1,
+        "scenario": "environment-check.local-sandbox",
+        "finished_at": "2026-10-16T07:25:04.3121972Z"
+      },
+      {
+        "error": "Live scenario failed; inspect C:\\srt\\26ee227f284f\\evidence/native.log",
+        "level": "L3",
+        "started_at": "2026-10-16T07:25:04.3179824Z",
+        "case_id": "complete",
+        "evidence": "C:\\srt\\26ee227f284f\\evidence",
+        "status": "failed",
+        "manifest": "C:\\srt\\26ee227f284f\\manifest.json",
+        "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-2\\environment-check.local-full-access-complete-r1-fixture.json",
+        "repeat_index": 1,
+        "scenario": "environment-check.local-full-access",
+        "finished_at": "2026-10-16T07:29:56.9393819Z"
+      }
+    ],
+    "executed_case_count": 2,
+    "passed_case_count": 0,
+    "first_pass_rate": 0,
+    "selected_scenarios": [
+      "environment-check.local-sandbox",
+      "environment-check.local-full-access"
+    ],
+    "repeat": 1,
+    "planned_case_count": 2,
+    "authorized_exclusion_count": 0,
+    "scope": "selected-complete",
+    "finished_at": "2026-10-16T07:29:57.0443931Z"
+  }
+}

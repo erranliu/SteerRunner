@@ -46,7 +46,7 @@ L3 的正交性按主要验证目标判断：新增 workflow、交互路径、�
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 15 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 16 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
 丢响应找回、停止授权跨重启保持、审计发现/修复/预算及同服务多 Run 隔离。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
@@ -66,7 +66,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的九场景/十五 case 数量；原 11 个
+[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十一场景/十七 case 数量；原 11 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
@@ -131,16 +131,11 @@ App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 Ap
 宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
 参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
-省略 `remote_args` 或设为空时，使用远端原生权限配置。如果明确选择一次测试的原生参数，
-在配置中填写 `remote_args`，这些参数会冻结到 manifest，不能把不同配置的运行合并为
-同一通过结果。已验证支持 MXC 的 Windows 主机可显式配置
-`["--no-daemon","--strict-config","-c","windows.sandbox=mxc","-c","approval_policy=never","-c","approvals_reviewer=user"]`：
-使用独立原生进程和原生沙箱，拒绝沙箱外审批，不写全局配置。
-示例配置采用此组合。当前 Orca terminal 适配器尚无可信执行主机认证准备及同沙箱
-确定性命令能力，GitHub worker 在任何业务输入前明确 unsupported；配置这些原生参数
-不等于补齐该能力，远端真机及稳定性本次尚未验收。先按
-[官方兼容性探针](https://learn.chatgpt.com/docs/windows/windows-sandbox)验证主机支持。
-采用原生默认模型时可使用这些参数；指定 model 时，启动编译器拒绝额外 `-c` 覆盖。
+权限模式由非秘密配置 `access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
+普通业务与环境检查复用生产权限编译。`remote_args` 只填写支持的启动参数（示例为
+`["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
+合并为同一通过结果。当前 Orca terminal 缺执行主机认证及同权限确定性预检能力，
+两模式均保持 unsupported；配置 `full_access` 不补齐该缺口。
 出现交互权限确认、原生拒绝或 shell 初始化失败时保留失败；手动诊断中的单次确认
 必须另记介入证据，不能记作无人值守通过。
 
@@ -242,6 +237,8 @@ L3 扩展须说明独有流程/可靠性覆盖和并行隔离；同一流程的�
 
 L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
 [Plan](spec/l3-execution-stability.plan.md) 和[实际验收登记](acceptance/l3-execution-stability.md)。
+主线 rebase 后的一轮复测及未通过项另见[复测记录](acceptance/l3-rebase-20261016.md)。
+连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](acceptance/l3-revocation-fix-20261016.md)；最新主线的远端认证能力阻断未计为 L3 通过。
 选择场景即执行其全部变体，每个 case/repeat 独立建现场。稳定性通过还要求故障命中、
 原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
 
@@ -260,7 +257,36 @@ v2 配置；保持原生自身认证。完整资格入口：
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮九场景十五 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮十一场景十七 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
+
+## 环境检查定向验收
+
+规则：`go test ./internal/application ./internal/contracts ./internal/cli ./internal/storage ./internal/execution/... -run '^TestEnvironmentCheck' -count=1`。
+`TestEnvironmentCheckPublicFixtures` 通过生产存储/查询路径校验内嵌公开样例；合约有意变化时可用
+`STEERRUNNER_UPDATE_CHECK_FIXTURES=1` 生成后复验，样例文件变化会改变 resource_digest。
+`TestEnvironmentCheckCLI` 已注册到 Controlled，验证真实 EXE/IPC/SQLite、受理后失败、两种查询、原 stop
+回执、无 Check 拒绝、只读查询、重启与 verify-stopped。测试不会访问安装目录。
+
+```powershell
+./scripts/test.ps1 -Level Controlled
+./scripts/test.ps1 -Level L3 -Scenario @('environment-check.local-sandbox','environment-check.local-full-access') -Config .evidence/live-config.json
+```
+
+两种原生场景沿正式分级入口，分别创建新 fixture 和 Check。driver 只准备
+`codex/srtest/<fixture>/base`、独立源仓库及只读取证；Worker 通过已保存意图的固定原生工具创建
+`steerline-check/<check_id>/base|head`、commit/push 和 PR，driver 不代做这些动作、不合并 PR。
+每种模式必须独立核实权限、实际工具、Git/PR 及原对象收尾，不能用 L1/Controlled 或另一模式替代。
+远端缺 SA07 的两个模式保持 unsupported，由确定性反例验证，不作为已通过的 live 场景注册。
+
+定向 native canary 使用有效 gh broker、同一原生准备和 `command/exec`，无模型输入：
+`go test -tags=live ./internal/execution/adapters/codex -run '^TestEnvironmentCheckNativeBoundary$' -sandbox-auth-native <原生Codex绝对路径> -count=1 -v`。
+该测试为 sandbox 记录工作区外拒写、为 full_access 记录允许写；只操作 `C:/srt/ecb-*` 中本次
+owned canary，证据目录保留。普通用户检查不重复执行沙箱安全 canary。
+
+已完成 native driver 的 environment-check fixture 可用
+`./scripts/test-native.ps1 -Manifest <原 manifest> -ValidateOnly` 只读复验完整结果。
+该路径核对原 manifest/Runner/driver SHA、完整 Check、上下文/分项与资源结算，拒绝失败或未核实结果；
+不重新启动 Agent、服务或 Git/PR 操作，也不重写原批次记录。正常首次执行仍自动调用相同结果校验逻辑。

@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-16T01:30:27.5391604Z",
+  "seconds": 2.8681371,
+  "exit_code": 0,
+  "output": "{\"url\":\"https://github.com/erranliu/SteerlineTest/pull/308\",\"repository\":\"erranliu/SteerlineTest\",\"base_branch\":\"codex/srtest/7abfa868c34a/base\",\"head_repository\":\"erranliu/SteerlineTest\",\"head_branch\":\"erranliu/sl-9c76c5dd3967e6b4a3a8437a41937192\",\"head_revision\":\"0fc50361de7bc16a38f0d90959917bb3054cff33\",\"state\":\"open\",\"merged\":false,\"merged_at\":null,\"merge_commit\":\"3388e8ba2cf8d6d90923cc19a020a5314b373f8e\"}\r\n",
+  "semantics": "Independent read-only diagnostic after original failure; does not rewrite failed case"
+}

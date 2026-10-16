@@ -1,0 +1,196 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "946875bf3abc4a58b301e935fcd164f6c4dab977",
+  "source_dirty": false,
+  "started_at": "2026-10-16T01:13:21.0315313Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\framework",
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "test_count": 178,
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "native_zero_match_guard": true
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\controlled",
+      "scenario_count": 12
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.smoke-default-r1-fixture.json",
+      "case_id": "default",
+      "scenario": "orca-remote.smoke",
+      "finished_at": "2026-10-16T01:23:05.5963033Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\d3c4adc2c152\\evidence",
+      "manifest": "C:\\srt\\d3c4adc2c152\\manifest.json",
+      "started_at": "2026-10-16T01:18:01.1578847Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.caller-exit-accepted-response-lost-r1-fixture.json",
+      "case_id": "accepted-response-lost",
+      "scenario": "orca-remote.caller-exit",
+      "finished_at": "2026-10-16T01:26:36.6042936Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\7abfa868c34a\\evidence",
+      "manifest": "C:\\srt\\7abfa868c34a\\manifest.json",
+      "started_at": "2026-10-16T01:23:05.5992594Z",
+      "error": "Live scenario failed; inspect C:\\srt\\7abfa868c34a\\evidence/native.log",
+      "repeat_index": 1,
+      "status": "failed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.connection-reconnect-active-disconnect-r1-fixture.json",
+      "case_id": "active-disconnect",
+      "scenario": "orca-remote.connection-reconnect",
+      "finished_at": "2026-10-16T01:32:01.7153604Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\3ddbd4c8b4d7\\evidence",
+      "manifest": "C:\\srt\\3ddbd4c8b4d7\\manifest.json",
+      "started_at": "2026-10-16T01:26:36.6126386Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.service-restart-graceful-active-r1-fixture.json",
+      "case_id": "graceful-active",
+      "scenario": "orca-remote.service-restart",
+      "finished_at": "2026-10-16T01:36:48.7379803Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\71a3e9c6a683\\evidence",
+      "manifest": "C:\\srt\\71a3e9c6a683\\manifest.json",
+      "started_at": "2026-10-16T01:32:01.7172991Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.service-restart-kill-active-r1-fixture.json",
+      "case_id": "kill-active",
+      "scenario": "orca-remote.service-restart",
+      "finished_at": "2026-10-16T01:41:08.6106423Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\d605ccad390e\\evidence",
+      "manifest": "C:\\srt\\d605ccad390e\\manifest.json",
+      "started_at": "2026-10-16T01:36:48.7401282Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.service-restart-graceful-boundary-r1-fixture.json",
+      "case_id": "graceful-boundary",
+      "scenario": "orca-remote.service-restart",
+      "finished_at": "2026-10-16T01:49:09.7455046Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\80a364f87d59\\evidence",
+      "manifest": "C:\\srt\\80a364f87d59\\manifest.json",
+      "started_at": "2026-10-16T01:41:08.6139527Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.service-restart-kill-boundary-r1-fixture.json",
+      "case_id": "kill-boundary",
+      "scenario": "orca-remote.service-restart",
+      "finished_at": "2026-10-16T01:55:06.4861668Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\150ca92ed502\\evidence",
+      "manifest": "C:\\srt\\150ca92ed502\\manifest.json",
+      "started_at": "2026-10-16T01:49:09.7480661Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.stop-revocation-active-r1-fixture.json",
+      "case_id": "active",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T01:59:34.2783520Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\74c405699e97\\evidence",
+      "manifest": "C:\\srt\\74c405699e97\\manifest.json",
+      "started_at": "2026-10-16T01:55:06.4904950Z",
+      "error": "Live scenario failed; inspect C:\\srt\\74c405699e97\\evidence/native.log",
+      "repeat_index": 1,
+      "status": "failed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.stop-revocation-boundary-r1-fixture.json",
+      "case_id": "boundary",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T02:05:05.1343335Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\6f13f73faf23\\evidence",
+      "manifest": "C:\\srt\\6f13f73faf23\\manifest.json",
+      "started_at": "2026-10-16T01:59:34.2826426Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.stop-revocation-unreachable-r1-fixture.json",
+      "case_id": "unreachable",
+      "scenario": "orca-remote.stop-revocation",
+      "finished_at": "2026-10-16T02:14:02.8299035Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\31832bb11815\\evidence",
+      "manifest": "C:\\srt\\31832bb11815\\manifest.json",
+      "started_at": "2026-10-16T02:05:05.1385362Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.publication-unknown-completion-gap-r1-fixture.json",
+      "case_id": "completion-gap",
+      "scenario": "orca-remote.publication-unknown",
+      "finished_at": "2026-10-16T02:20:33.6445082Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\cd059ca8a742\\evidence",
+      "manifest": "C:\\srt\\cd059ca8a742\\manifest.json",
+      "started_at": "2026-10-16T02:14:02.8322181Z",
+      "repeat_index": 1,
+      "status": "passed"
+    },
+    {
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-01\\orca-remote.publication-unknown-query-unavailable-r1-fixture.json",
+      "case_id": "query-unavailable",
+      "scenario": "orca-remote.publication-unknown",
+      "finished_at": "2026-10-16T02:27:19.5756415Z",
+      "level": "L3",
+      "evidence": "C:\\srt\\4d0507a8f034\\evidence",
+      "manifest": "C:\\srt\\4d0507a8f034\\manifest.json",
+      "started_at": "2026-10-16T02:20:33.6460985Z",
+      "repeat_index": 1,
+      "status": "passed"
+    }
+  ],
+  "executed_case_count": 12,
+  "passed_case_count": 10,
+  "first_pass_rate": 0.8333333333333334,
+  "selected_scenarios": [
+    "orca-remote.smoke",
+    "orca-remote.caller-exit",
+    "orca-remote.connection-reconnect",
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation",
+    "orca-remote.publication-unknown"
+  ],
+  "repeat": 1,
+  "planned_case_count": 12,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T02:27:19.6502149Z"
+}

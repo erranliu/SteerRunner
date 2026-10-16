@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.stop-revocation
+--- PASS: TestSRLiveScenario (486.90s)
+    --- PASS: TestSRLiveScenario/orca-remote.stop-revocation (486.42s)
+PASS

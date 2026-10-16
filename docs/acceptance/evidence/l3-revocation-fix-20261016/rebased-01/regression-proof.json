@@ -1,0 +1,41 @@
+{
+  "schema": "steerrunner-stop-regression-proof/v1",
+  "source_commit": "a778ba7b6ac1fed1fafeb5aa7ea331da9f16d499",
+  "pre_rebase_source": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "files": [
+    {
+      "identical_to_pre_rebase": true,
+      "sha256": "fd5fa083a33933c8b717f825abacceec9a7f3c008d99ad15ad04d4e43f6c0881",
+      "path": "internal/application/control.go"
+    },
+    {
+      "identical_to_pre_rebase": true,
+      "sha256": "ee5bc94c4c2a6b4224655ca725d1f8ae10883264ff58a6a115312857b8a28085",
+      "path": "internal/execution/reliable/operation/record.go"
+    },
+    {
+      "identical_to_pre_rebase": true,
+      "sha256": "c060766a2e0859ac6a800e7e91e8cf0aa3114dbfb59fc2f073ea0362f641b843",
+      "path": "internal/application/stop_progress_test.go"
+    }
+  ],
+  "regression_pass_events": [
+    {
+      "Time": "2026-10-16T14:57:38.5920655+08:00",
+      "Action": "pass",
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress",
+      "Elapsed": 0.22
+    },
+    {
+      "Time": "2026-10-16T14:57:39.0150414+08:00",
+      "Action": "pass",
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation",
+      "Elapsed": 0.42
+    }
+  ],
+  "vet_command": "go vet ./...",
+  "vet_exit": 0,
+  "at": "2026-10-16T07:13:11.4787910Z"
+}

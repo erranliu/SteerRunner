@@ -62,32 +62,35 @@ func canonical(value any) []byte {
 	return raw
 }
 func providerFor(r *runstate.Record) (*publication.Client, error) {
+	return providerForInput(r.Request.Repository, r.Request.Publication)
+}
+func providerForInput(repositoryInput contracts.Repository, publicationInput contracts.Publication) (*publication.Client, error) {
 	var base string
 	var refs []string
 	var query b.Command
-	if r.Request.Publication.Provider == "gitea" {
+	if publicationInput.Provider == "gitea" {
 		var settings contracts.GiteaSettings
-		if err := contracts.DecodeStrict(r.Request.Publication.Settings, &settings); err != nil {
+		if err := contracts.DecodeStrict(publicationInput.Settings, &settings); err != nil {
 			return nil, err
 		}
 		base, refs = settings.BaseURL, settings.AuthenticationRefs
 	} else {
 		var settings contracts.CommandProviderSettings
-		if err := contracts.DecodeStrict(r.Request.Publication.Settings, &settings); err != nil {
+		if err := contracts.DecodeStrict(publicationInput.Settings, &settings); err != nil {
 			return nil, err
 		}
 		base, refs = settings.BaseURL, settings.AuthenticationRefs
 		query = b.Command{Executable: settings.Query.Executable, Args: settings.Query.Args}
 	}
-	config := publication.Config{Kind: r.Request.Publication.Provider, BaseURL: base, Repository: r.Request.Publication.Repository, Query: query}
+	config := publication.Config{Kind: publicationInput.Provider, BaseURL: base, Repository: publicationInput.Repository, Query: query}
 	if len(refs) > 0 {
 		config.TokenEnv = refs[0]
 	}
-	settings := evidence.PublicationSettings{Provider: evidence.PRProviderConfig(config), Git: b.Command{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Remote: r.Request.Repository.Remote, RemoteURL: r.Request.Repository.URL, BaseBranch: r.Request.Repository.BaseBranch, AuthenticationRefs: refs}
+	settings := evidence.PublicationSettings{Provider: evidence.PRProviderConfig(config), Git: b.Command{Executable: "git", Args: []string{"-c", "core.longpaths=true"}}, Remote: repositoryInput.Remote, RemoteURL: repositoryInput.URL, BaseBranch: repositoryInput.BaseBranch, AuthenticationRefs: refs}
 	if err := publication.ValidateSettings(settings); err != nil {
 		return nil, err
 	}
-	if err := config.ValidateRemote(r.Request.Repository.URL); err != nil {
+	if err := config.ValidateRemote(repositoryInput.URL); err != nil {
 		return nil, err
 	}
 	return publication.NewClient(config, commandHost{}, 30*time.Second), nil
@@ -121,6 +124,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if request.Execution.Adapter == "codex-app-server" {
 		var settings contracts.CodexSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
+		if settings.AccessMode == "" {
+			settings.AccessMode = "sandbox"
+		}
 		if settings.Executable == "" {
 			settings.Executable = "codex.exe"
 		}
@@ -147,7 +153,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 				return nil, contracts.Fail(2, "invalid_input", err.Error())
 			}
 		}
-		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, GitHubAuth: auth})
+		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, GitHubAuth: auth})
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
@@ -168,7 +174,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		profile := orca.Profile{Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
-		launch := agentlaunch.Config{Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 		r.LaunchCommand, err = launch.Command("codex")
 		if err != nil {
 			return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")

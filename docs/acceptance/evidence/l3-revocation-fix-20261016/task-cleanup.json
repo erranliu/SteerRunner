@@ -1,0 +1,84 @@
+{
+  "schema": "steerrunner-stop-fix-task-cleanup/v1",
+  "at": "2026-10-16T07:12:00.4385584Z",
+  "fixture_count": 6,
+  "fixtures": [
+    "e7960860cba8",
+    "862fd351882d",
+    "f0b9c9cd4d80",
+    "96b316c6113b",
+    "f359daf6938a",
+    "c3fa314612bb"
+  ],
+  "owned_processes": [],
+  "owned_firewall_rules": [],
+  "services": [
+    {
+      "resources_settled": false,
+      "fixture": "e7960860cba8",
+      "service_status": "not_running"
+    },
+    {
+      "resources_settled": true,
+      "fixture": "862fd351882d",
+      "service_status": "not_running"
+    },
+    {
+      "resources_settled": true,
+      "fixture": "f0b9c9cd4d80",
+      "service_status": "not_running"
+    },
+    {
+      "resources_settled": true,
+      "fixture": "96b316c6113b",
+      "service_status": "not_running"
+    },
+    {
+      "resources_settled": true,
+      "fixture": "f359daf6938a",
+      "service_status": "not_running"
+    },
+    {
+      "resources_settled": true,
+      "fixture": "c3fa314612bb",
+      "service_status": "not_running"
+    }
+  ],
+  "watchdogs": [
+    {
+      "pid": 24836,
+      "fixture": "862fd351882d",
+      "original_pid_absent": true
+    },
+    {
+      "pid": 12072,
+      "fixture": "f0b9c9cd4d80",
+      "original_pid_absent": true
+    },
+    {
+      "pid": 42400,
+      "fixture": "f359daf6938a",
+      "original_pid_absent": true
+    },
+    {
+      "pid": 4336,
+      "fixture": "c3fa314612bb",
+      "original_pid_absent": true
+    }
+  ],
+  "admin_host_ready": {
+    "at": "2026-10-16T05:57:41.4794671Z",
+    "pid": 49256,
+    "host_id": "d3e3e5eee98040fdb568b0056865c460",
+    "elevated": true,
+    "fixture_parent": "C:\\srt",
+    "created": "134366038600857597"
+  },
+  "admin_host_finished": {
+    "host_id": "d3e3e5eee98040fdb568b0056865c460",
+    "at": "2026-10-16T07:11:59.7080101Z"
+  },
+  "admin_host_original_pid_absent": true,
+  "admin_pending_requests": 0,
+  "semantics": "All six fixture programs, both Controlled directories and scoped firewall groups checked. The first startup-failed fixture required identity-verified operator cleanup after an ambiguous close; its original failure and unverified Runner stop remain recorded."
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "steerrunner-post-failure-cleanup/v1",
+  "at": "2026-10-16T06:27:34.5235908Z",
+  "fixture": "e7960860cba8",
+  "semantics": "Historical failed result unchanged. Runner close outcome remained unknown after lost transport response; independently reverified the exact original runtime, terminal incarnation and worktree, then performed explicit fixture cleanup. This is not a test pass or Runner-confirmed native stop.",
+  "native_cleanup_by_operator": true,
+  "original_runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "original_terminal": {
+    "handle": "term_5b8cc2a1-45f1-4a5f-ad75-294bc8e4c0cb",
+    "incarnationId": "10b934ff-bf91-49db-8fc5-48125be24a24",
+    "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-5a1d02da7365084bee20389f3b08a2c8"
+  },
+  "original_terminal_close": {
+    "id": "f49808a8-a334-4a57-9b15-9a2d440f6ddc",
+    "ok": true,
+    "result": {
+      "close": {
+        "handle": "term_5b8cc2a1-45f1-4a5f-ad75-294bc8e4c0cb",
+        "tabId": "13759d52-a8a5-466f-b424-9987f2ad54f8",
+        "ptyKilled": true
+      }
+    },
+    "_meta": {
+      "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+    }
+  },
+  "service_stop_response": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": "post-failure-stop-8762297ab5adb5d902071a4e5e5cd9c9",
+    "data": {
+      "action_status": "pending",
+      "command_id": "aa18a70943c6e02d29cd172b455b9fde",
+      "instance_id": "8762297ab5adb5d902071a4e5e5cd9c9",
+      "receipt_status": "accepted",
+      "run_id": null
+    },
+    "error": null
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "watchdog_pid": 24836,
+  "rules": "SteerRunner-L3-862fd351882d",
+  "at": "2026-10-16T06:23:42.7189278Z",
+  "closed": [
+    {
+      "pid": 55920,
+      "at": "2026-10-16T06:23:42.7075632Z",
+      "exit_code": 0,
+      "exact_connection_remaining": false,
+      "elevated": true,
+      "api_called": true,
+      "creation_time": "2026-10-16T14:23:28.367506+08:00",
+      "local_port": 57416,
+      "remote_port": 6768,
+      "local": "198.18.0.1",
+      "remote": "192.168.0.56",
+      "program": "C:\\srt\\862fd351882d\\bin\\stability.exe"
+    }
+  ]
+}

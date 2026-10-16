@@ -1,0 +1,18 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "graceful-active",
+  "repeat_index": 1,
+  "stage": "await-implementation-gate",
+  "run_id": "cf48b6dbb3978338c241f915df6b182b",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 0,
+  "audit_complete": false,
+  "assertions": null,
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}
