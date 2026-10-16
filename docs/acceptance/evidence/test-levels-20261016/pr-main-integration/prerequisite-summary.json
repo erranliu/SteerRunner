@@ -1,0 +1,45 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "39e0009f1756d7981638c3c85334c922c0d96cbf",
+  "source_dirty": true,
+  "started_at": "2026-10-16T08:43:00.3091047Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "test_count": 224,
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\pr-merge-regression-01",
+      "native_zero_match_guard": true,
+      "level": "L1",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\pr-merge-regression-01\\framework",
+      "native_driver_compile_exit": 0
+    },
+    {
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\bb2f\\SteerRunner\\.evidence\\testing-implementation\\pr-merge-regression-01\\controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T08:53:34.0279004Z"
+}

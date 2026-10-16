@@ -24,6 +24,8 @@ L4 资源检查固定为同一服务 20 轮，首轮后允许句柄增长最多 
 消失，实际 thread=20、turn=60。它不证明物理磁盘损坏、长期内存稳定或整机资源耗尽。
 L4 的故障均限受控夹具/测试数据库，未修改真实 Codex 历史或系统网络/存储配置。
 
+PR 整合后的结果见文末；下列初次真机证据不自动扩展到整合后版本。
+
 ## 配置与失败记录
 
 经用户要求，从 `C:/SteerlineInstall/execution.json` 的有效本机/远端 profile 提取非秘密
@@ -66,3 +68,22 @@ PR #342 已精确绑定 head 合入，merge `552b45f29ce3927d08819784e22aacacb29
 Run、原生资源/capability 和服务收尾均确认，最终 case 还登记 workspace/session/branch
 身份。配置中的 `feedback_qualification` 已指向本轮正式反馈 case；后续构建或执行配置变化
 时须重新取得资格，不能复用本轮记录删除反馈覆盖。
+
+## PR 主线整合回归（2026-10-16）
+
+为提交 PR 整合 `origin/main` 的 `ea1bfd9`，保留停止结算修复和独立环境检查能力。
+测试 registry 现为十六场景、二十二 case：L2 1、L3 17、L4 4；Controlled 默认 16 项，
+包括原三项新增受控覆盖和主线的 `TestEnvironmentCheckCLI`。原 11 个核心可靠性 case
+仍在 L3。两种 Check 场景沿用原完整判据、ValidateOnly 及资源身份登记，不创建 development Run。
+
+- `scripts/test.ps1 -Level Controlled`：L1 224 个顶层测试、框架 16 组、Controlled 16 项全部通过；live driver 编译和零匹配保护通过。[前置汇总](evidence/test-levels-20261016/pr-main-integration/prerequisite-summary.json)、[框架](evidence/test-levels-20261016/pr-main-integration/framework-result.json)、[受控结果](evidence/test-levels-20261016/pr-main-integration/controlled-result.json)。
+- 前置通过后，持有全宿主槽独占锁，通过 `test-foundation.ps1` 精确选择四项 `TestSREdge*` 做定向回归，4/4、零 skip；未重跑相同前置。[结果](evidence/test-levels-20261016/pr-main-integration/l4-result.json)、[原始日志](evidence/test-levels-20261016/pr-main-integration/l4-integration.log)、[构建身份](evidence/test-levels-20261016/pr-main-integration/l4-source-identity.json)。资源项 20/20 轮完成，handles 223→272，增长 49≤128。
+- 主线的 sandbox/full_access 两份原生环境检查报告均通过整合后结果校验器和资源身份的只读复核；新增反例拒绝模式不符、PR 未关闭和原生 evidence 身份错误。两种模式的注册数量保护也单独复验通过。这些不是新一轮模型运行。
+
+整合后的受测源码清单见[摘要](evidence/test-levels-20261016/pr-main-integration/source-hashes.json)。
+最初批次是在 merge 前 dirty 工作树启动，原 summary 中的来源字段保留；merge 后代码纳入
+`8e5e128`，后补的环境模式数量保护有独立复验，最终以源码清单和各实际 EXE/driver 摘要
+区分受测范围。没有改写初次真机、历史失败或主线环境检查的原报告。
+
+本次 PR 整合后未重跑模型/真实 PR，不能复用旧 Runner/driver/执行配置的反馈资格；L2 和
+本机 L3 的整合后真机资格仍须新现场取得，远端 L3 仍受认证/同权限预检能力缺口阻断。

@@ -1,0 +1,11 @@
+{
+  "pid": 6876,
+  "pattern": "^TestSREdge(PermanentEvidenceLoss|StopCommitRace|StorageFailure|ResourcePressure)$",
+  "runner_sha256": "84C92B6C7B07D985A5956EFE58DA189A722D0537D07DB359DE273D26E881172A",
+  "fixture_sha256": "46B124954362649360AA27C06EA79537191EFB57F9BA00A549D3F7E7430EEB0F",
+  "source_commit": "8e5e1286480c0d66ce8afba78e6aebf178449f3b",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}
