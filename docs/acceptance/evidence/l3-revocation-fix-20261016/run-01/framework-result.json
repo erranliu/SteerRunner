@@ -1,0 +1,54 @@
+{
+  "tests": [
+    {
+      "passed": true,
+      "name": "zero-match"
+    },
+    {
+      "passed": true,
+      "name": "missing-config"
+    },
+    {
+      "passed": true,
+      "name": "duplicate-catalog"
+    },
+    {
+      "passed": true,
+      "name": "repeat-zero"
+    },
+    {
+      "passed": true,
+      "name": "repeat-non-live"
+    },
+    {
+      "passed": true,
+      "name": "checker-positive-negative"
+    },
+    {
+      "passed": true,
+      "name": "pr-list-zero-one-many"
+    },
+    {
+      "passed": true,
+      "name": "publisher-empty"
+    },
+    {
+      "passed": true,
+      "name": "publisher-existing"
+    },
+    {
+      "passed": true,
+      "name": "publisher-conflict"
+    },
+    {
+      "passed": true,
+      "name": "publisher-query-failure"
+    },
+    {
+      "passed": true,
+      "name": "stability-registry-gate-scope"
+    }
+  ],
+  "exit_code": 0,
+  "test_count": 12
+}

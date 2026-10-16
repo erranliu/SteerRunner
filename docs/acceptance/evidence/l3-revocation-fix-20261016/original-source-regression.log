@@ -1,0 +1,6 @@
+=== RUN   TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress
+    stop_progress_test.go:95: unchanged reconciliation starved revoked feedback: &{Code:stale_revision Message:Run revision changed; inspect the current run before a new request.}
+--- FAIL: TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress (0.10s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	3.837s
+FAIL

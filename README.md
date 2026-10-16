@@ -120,6 +120,7 @@ L2/L3 前置；L2 在本机真实 Codex + SteerlineTest 上消耗 token、创建
 L3 为可扩展的真机真实环境场景集，已注册远端 Orca smoke 及五个稳定性场景，合计十二 case。
 历史三轮资格见[稳定性验收](docs/acceptance/l3-execution-stability.md)，完整资格为同构建连续三轮。
 最新[主线 rebase 复测](docs/acceptance/l3-rebase-20261016.md)完整轮为 10/12，含独立复现的未通过项。
+后续[不可达撤销修复复测](docs/acceptance/l3-revocation-fix-20261016.md)记录连续 revision 冲突的修复验证，以及合入新认证能力门槛后的 L3 阻断。
 统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
 
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：

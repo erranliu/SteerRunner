@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.stop-revocation
+    stability_test.go:329: native gate blocked: The original native resource did not become ready within its preparation budget
+--- FAIL: TestSRLiveScenario (237.41s)
+    --- FAIL: TestSRLiveScenario/orca-remote.stop-revocation (237.26s)
+FAIL

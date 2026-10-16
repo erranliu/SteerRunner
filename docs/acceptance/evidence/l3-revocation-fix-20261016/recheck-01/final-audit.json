@@ -1,0 +1,53 @@
+{
+  "source_file_count": 324,
+  "owned_firewall_rules": [],
+  "at": "2026-10-16T06:52:32.5233353Z",
+  "cases": [
+    {
+      "auxiliary_closed": 0,
+      "service_status": "not_running",
+      "stale_feedback": [],
+      "faults_hit": 0,
+      "status": "failed",
+      "cleanup_mode": "Runner-confirmed",
+      "scenario": "orca-remote.stop-revocation",
+      "outcome": "",
+      "fixture": "96b316c6113b",
+      "run_id": "6e8929e1d7f80cf6f77cb4d187b68832",
+      "case_id": "active",
+      "stage": "await-implementation-gate",
+      "revoked_feedback": [],
+      "network_seconds": null
+    },
+    {
+      "auxiliary_closed": 3,
+      "service_status": "not_running",
+      "stale_feedback": [],
+      "faults_hit": 1,
+      "status": "passed",
+      "cleanup_mode": "Runner-confirmed",
+      "scenario": "orca-remote.stop-revocation",
+      "outcome": "stopped",
+      "fixture": "f359daf6938a",
+      "run_id": "0ec35d24f734e1581ee7b872787aec84",
+      "case_id": "boundary",
+      "stage": "completed",
+      "revoked_feedback": [],
+      "network_seconds": 99.9239075
+    }
+  ],
+  "source_unchanged": true,
+  "identical_builds": [
+    "bb480efc2d22995647bf51fb1e8baa783353ec1a61ef90c46d53dbf6ca2fcd39",
+    "A20FCAF8E9CEC5A0A8A56475C6CBB3125FE912FA7BDFFEF736375D392577A308",
+    "4287df4ac54f313aed197a7d30869e3caeb411771d74365230fcfbdbe1eb6a85",
+    "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "2bb48886afbbd16677db57f21010bb8aa5f59522f984d75439a3638a8588496f"
+  ],
+  "schema": "steerrunner-live-stop-fix-audit/v1",
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "status": "failed",
+  "config_unchanged": true,
+  "case_count": 2,
+  "owned_processes": []
+}

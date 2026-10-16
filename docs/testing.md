@@ -155,6 +155,7 @@ $auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.smoke -Con
 L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
 [Plan](spec/l3-execution-stability.plan.md) 和[实际验收登记](acceptance/l3-execution-stability.md)。
 主线 rebase 后的一轮复测及未通过项另见[复测记录](acceptance/l3-rebase-20261016.md)。
+连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](acceptance/l3-revocation-fix-20261016.md)；最新主线的远端认证能力阻断未计为 L3 通过。
 选择场景即执行其全部变体，每个 case/repeat 独立建现场。稳定性通过还要求故障命中、
 原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
 

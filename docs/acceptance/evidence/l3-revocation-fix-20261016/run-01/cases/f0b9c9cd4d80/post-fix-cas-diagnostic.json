@@ -1,0 +1,35 @@
+{
+  "steady_outage_revisions": [
+    30
+  ],
+  "network_seconds": 249.6550153,
+  "semantics": "Fresh fixed-source fixture; original five-attempt limit and 240-second window unchanged",
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "stale_attempts": [
+    {
+      "ok": false,
+      "request_id": "f0b9c9cd4d80-stale-revoked-feedback",
+      "error_code": "stale_revision",
+      "at": "2026-10-16T06:32:06.5695072Z",
+      "expected_revision": 29
+    }
+  ],
+  "steady_outage_snapshot_count": 82,
+  "attempts": [
+    {
+      "ok": false,
+      "request_id": "f0b9c9cd4d80-revoked-feedback-0",
+      "error_code": "stale_revision",
+      "at": "2026-10-16T06:32:01.9274655Z",
+      "expected_revision": 29
+    },
+    {
+      "ok": false,
+      "request_id": "f0b9c9cd4d80-revoked-feedback-1",
+      "error_code": "resume_required",
+      "at": "2026-10-16T06:32:04.3023716Z",
+      "expected_revision": 30
+    }
+  ],
+  "schema": "steerrunner-live-cas-diagnostic/v1"
+}

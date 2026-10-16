@@ -1,0 +1,36 @@
+{
+  "schema": "steerrunner-live-recheck/v1",
+  "source_commit": "46f0946ddcaefaa6e44eeb2b94619900050cf720",
+  "source_dirty": false,
+  "status": "failed",
+  "started_at": "2026-10-16T06:36:01.6954704Z",
+  "semantics": "Independent fresh-fixture rechecks of active/boundary startup failures; original selected stop batch remains separate. Uses the identical source/build and successful L1/Controlled prerequisite report .evidence/l3-revocation-fix-01.",
+  "results": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-16T06:36:01.7367915Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-recheck-01\\active-fixture.json",
+      "manifest": "C:\\srt\\96b316c6113b\\manifest.json",
+      "evidence": "C:\\srt\\96b316c6113b\\evidence",
+      "error": "Live scenario failed; inspect C:\\srt\\96b316c6113b\\evidence/native.log",
+      "finished_at": "2026-10-16T06:41:08.8093465Z"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-16T06:41:08.8132839Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-revocation-fix-recheck-01\\boundary-fixture.json",
+      "manifest": "C:\\srt\\f359daf6938a\\manifest.json",
+      "evidence": "C:\\srt\\f359daf6938a\\evidence",
+      "finished_at": "2026-10-16T06:51:13.6820424Z"
+    }
+  ],
+  "finished_at": "2026-10-16T06:51:13.6904313Z"
+}
