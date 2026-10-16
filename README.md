@@ -57,6 +57,39 @@ accepted 表示材料及原请求已提交，执行结果以 Run 和命令 actio
 
 本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；远端真机闭环及执行稳定性的已验收范围见[专属记录](docs/acceptance/l3-execution-stability.md)。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
+## 主动环境检查
+
+`environment-check` 独立于 development Run，不接收 Task、Spec/Plan 或 workflow。
+检查和普通执行均通过 `execution.settings.access_mode` 选择 `sandbox`（默认）或显式
+`full_access`，两者始终 `never`，不会从沙箱失败自动切换模式。全访问不增加 OS 权限。
+
+开始前应展示 `steerline-check/<check_id>/base|head` 命名空间及检查清单：原生权限、工作区/临时/Git
+管理目录读写、远端读取/fetch、提交与专属引用 push；传入 Publication 时还必须创建、查询并关闭
+专属 base/head 间的测试 PR。PR 不合并，清理按原 SHA 删除 owned 引用。无 Publication 时 PR 项为
+`not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
+
+本机已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
+App installation-token 的逐操作写门和 Orca SA07 原生端口尚未实现，对应输入明确
+`unsupported_capability`。已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。
+真实验收和发布状态以[专属验收](docs/acceptance/environment-check.md)为准。
+
+`check-request.json` 使用 v1 信封，input 含 `repository`、`execution`，可含 `correlation`、
+`publication`、`execution_timeout`（默认 `10m`）和 `cleanup_timeout`（默认 `2m`）。Repository 和
+Publication 形状沿普通执行；项目 base 只核对来源，测试 PR 使用 Runner 分配的专属 base。
+capabilities 返回内嵌检查 schema、操作清单、支持矩阵和经过生产查询路径校验的公开样例。
+
+```powershell
+Get-Content -Raw -Encoding utf8 .\check-request.json | .\bin\steerrunner.exe environment-check start --state-dir C:\Temp\SteerRunnerCheck --input - --json
+.\bin\steerrunner.exe environment-check inspect --state-dir C:\Temp\SteerRunnerCheck --request-id check-start-001 --json
+.\bin\steerrunner.exe environment-check inspect --state-dir C:\Temp\SteerRunnerCheck --check-id <check_id> --json
+```
+
+start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID","expected_revision":当前revision}`，
+同样使用 `environment-check stop --input -`；按 stop request_id 查询返回原停止命令。
+查询不启动服务、恢复 Agent 或清理资源；服务重启只对账原对象，不重放模型输入/写操作。
+同一写操作的重复工具请求不会再次转发；未知结果只查原对象。能力结果与清理结算分别判断，
+残留对象不显示全部完成。公开契约及样例随 `resource_digest` 固定。
+
 ## 选择 workflow 与审计模型
 
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
@@ -86,7 +119,7 @@ accepted 表示材料及原请求已提交，执行结果以 Run 和命令 actio
 
 `inspect.audit` 显示当前实施结果的审计与修复计数，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。P0–P2 findings 阻断发布，P3 为建议；坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
 
-存储保持 v2，新构建可读取旧普通 Run；原未核清操作不回填新字段。旧 EXE 不承诺读取新审计 Run，升级后不要将同一状态目录回退交给旧程序。
+本次权限契约与独立检查使用存储 v3。v2 状态目录返回 `unsupported_schema`，请保留原目录并为新构建使用新目录；不迁移或静默改写旧执行的权限模式。
 
 ## 停服及回执
 

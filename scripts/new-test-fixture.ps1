@@ -65,6 +65,11 @@ if ($taskScenario.target -eq 'local-codex') {
     $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
+$taskMode = Read-Setting 'access_mode' 'sandbox'
+if ($Scenario -eq 'environment-check.local-full-access') { $taskMode = 'full_access' }
+if ($Scenario -eq 'environment-check.local-sandbox') { $taskMode = 'sandbox' }
+if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
+$taskExecution.settings['access_mode'] = $taskMode
 $taskAudit = $null
 if ($AuditModel) {
     if ($taskScenario.target -ne 'local-codex' -or -not (Read-Setting 'model') -or $AuditModel -eq (Read-Setting 'model') -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires local Codex and two explicit, different models' }

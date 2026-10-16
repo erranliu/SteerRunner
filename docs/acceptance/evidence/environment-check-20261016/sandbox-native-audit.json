@@ -1,0 +1,32 @@
+{
+  "session_id": "01a143a5-87be-7eb2-b575-e014c216ae1c",
+  "turn_id": "01a143a5-b5d0-7b51-a4d3-7078f4cc3a70",
+  "history_path": "C:\\Users\\lmas1\\.codex\\sessions\\2026\\10\\16\\rollout-2026-10-16T15-38-04-01a143a5-87be-7eb2-b575-e014c216ae1c.jsonl",
+  "history_sha256": "afbd9eeb98949e269eb380a8d1aa706a04e889e7406bfdd7a4a05368bab35d35",
+  "model_tool_calls": 12,
+  "original_turn_complete_events": 1,
+  "approval_or_permission_request_events": 0,
+  "models": [
+    "gpt-6.1-sol"
+  ],
+  "input_contexts": [
+    {
+      "turn_id": "01a143a5-b5d0-7b51-a4d3-7078f4cc3a70",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "workspace-write",
+        "writable_roots": [
+          "C:\\srt\\2c6c8b81c43b\\s\\c\\aynyhgk23czs6pcjtienuqoufu\\r\\.git\\objects",
+          "C:\\srt\\2c6c8b81c43b\\s\\c\\aynyhgk23czs6pcjtienuqoufu\\r\\.git\\refs",
+          "C:\\srt\\2c6c8b81c43b\\s\\c\\aynyhgk23czs6pcjtienuqoufu\\r\\.git\\logs",
+          "C:\\srt\\2c6c8b81c43b\\s\\c\\aynyhgk23czs6pcjtienuqoufu\\r\\.git\\worktrees\\w"
+        ],
+        "network_access": true,
+        "exclude_tmpdir_env_var": true,
+        "exclude_slash_tmp": true
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  ]
+}

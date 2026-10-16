@@ -60,14 +60,17 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
-		"native_session_viewer": map[string]any{"adapters": viewerAdapters},
-		"protocol":              contracts.Protocol, "version": Version,
+		"environment_check":          json.RawMessage(Read("environment-check.capabilities.json")),
+		"environment_check_fixtures": json.RawMessage(Read("environment-check.fixtures.json")),
+		"environment_check_schema":   json.RawMessage(Read("environment-check.schema.json")),
+		"native_session_viewer":      map[string]any{"adapters": viewerAdapters},
+		"protocol":                   contracts.Protocol, "version": Version,
 		"resource_version": 1, "resource_digest": Digest(),
 		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
 		"workflows":             workflow.Catalog(),
 		"configuration_schemas": json.RawMessage(Read("settings.schema.json")),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop"},
 	}
 }

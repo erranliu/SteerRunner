@@ -1,0 +1,11 @@
+{
+  "pid": 36004,
+  "manifest_sha256": "E3FE8E0002D9927D2A6C8D6C715384E17A9D6B7BFB0A1653CC0C5DCAD8380F36",
+  "driver_sha256": "E5034425605B18366B25D69FF305BC99E0778F7931B9BA5732446B1FC026E2FF",
+  "runner_sha256": "9049008c47b4ef11ba66ff0b0cb13330823b61fc409a387c6377e20fa679d021",
+  "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "environment-check.local-full-access",
+  "level": "L3"
+}

@@ -25,7 +25,7 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	if err = (Config{Sandbox: config.Sandbox, WindowsSandbox: config.WindowsSandbox, Args: config.Args, Profile: config.Profile}).Validate(runtime.GOOS); err != nil {
 		return identity, nil, "", err
 	}
-	permissions, err := NativePermissions(runtime.GOOS, "local", "codex")
+	permissions, err := NativePermissions(runtime.GOOS, "local", "codex", accessMode(config.Sandbox))
 	if err != nil {
 		return identity, nil, "", err
 	}

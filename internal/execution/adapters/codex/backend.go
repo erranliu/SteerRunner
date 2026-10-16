@@ -140,7 +140,14 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	defer func() {
 		receipt = h.Binding
 		if err != nil {
-			h.Close()
+			if b.Config.EnvironmentCheck && h.process != nil {
+				// Preserve partial/late owned launch handles for explicit tree
+				// settlement, including handshake and thread-create failures.
+				h.owned = false
+				handle = h
+			} else {
+				h.Close()
+			}
 		}
 	}()
 	if fixed.Process != nil {
@@ -183,18 +190,44 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			h.owned = false
 			return h, receipt, preparationBlocked(err)
 		}
-		params, paramErr := ThreadParams(b.Config.Workspace, b.Config.Sandbox, b.Config.Model, []any{codexapp.AskDynamicTool()})
+		tools := []any{codexapp.AskDynamicTool()}
+		if b.Config.EnvironmentCheck {
+			tools = []any{environmentProbeTool()}
+		}
+		params, paramErr := ThreadParams(b.Config.Workspace, b.Config.Sandbox, b.Config.Model, tools)
 		if paramErr != nil {
 			return nil, receipt, paramErr
 		}
 		if workerSetup != nil {
 			params["developerInstructions"] = workerSetup.instructions()
 		}
-		response, startErr := StartThread(ctx, h.client, params, b.Config.Workspace)
+		if b.Config.EnvironmentCheck {
+			// All check tools route through a closed native probe port. The
+			// credential broker additionally gates each external write once.
+			params["config"] = map[string]any{"features.shell_tool": false, "features.apply_patch_freeform": false, "features.multi_agent": false, "features.apps": false, "web_search": "disabled", "mcp_servers": map[string]any{}}
+			params["developerInstructions"] = "Execute the requested finite environment probes using steerrunner_environment_probe only. Use the exact nonce and actions from the input, sequentially. Stop after a failed tool. Do not use other tools or repeat a failed/uncertain action. Report completion after the last action."
+		}
+		threadCtx := ctx
+		threadCancel := func() {}
+		if b.Config.EnvironmentCheck {
+			threadCtx, threadCancel = context.WithTimeout(ctx, 30*time.Second)
+		}
+		response, startErr := StartThread(threadCtx, h.client, params, b.Config.Workspace)
+		threadCancel()
 		if startErr != nil {
 			return nil, receipt, startErr
 		}
 		h.Binding.SessionID = response.Thread.ID
+		if b.Config.EnvironmentCheck {
+			want := "workspaceWrite"
+			if b.Config.Sandbox == "danger-full-access" {
+				want = "dangerFullAccess"
+			}
+			if response.ApprovalPolicy != "never" || response.ApprovalsReviewer != "user" || response.Sandbox.Type != want {
+				h.owned = false
+				return h, h.Binding, errors.New("native_effective_permissions_unverified")
+			}
+		}
 		if err = b.Process.WriteAtomic(filepath.Join(b.Config.ServerDir, "thread.json"), encode(response)); err != nil {
 			return nil, receipt, err
 		}

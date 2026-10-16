@@ -46,7 +46,7 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 	if err != nil {
 		return nil, err
 	}
-	permissions, err := NativePermissions(runtime.GOOS, "local", "codex")
+	permissions, err := NativePermissions(runtime.GOOS, "local", "codex", profile.AccessMode)
 	if err != nil {
 		return nil, err
 	}

@@ -58,7 +58,7 @@ func NewPolicyResourceEnvelope(identity PolicyResourceIdentity, payload PolicyRe
 		return executionbackend.ImplementationDataEnvelope{}, err
 	}
 	return executionbackend.NewImplementationDataEnvelope(executionbackend.ImplementationDataEnvelope{
-		CodecVersion: 2, Purpose: executionbackend.ImplementationResourcePurpose,
+		CodecVersion: 3, Purpose: executionbackend.ImplementationResourcePurpose,
 		ImplementationKey: PolicyResourcesCodecKey, ProjectID: identity.ProjectID,
 		ExecutionID: identity.ExecutionID, AttemptID: identity.AttemptID,
 		Generation: identity.Generation, ConfigDigest: identity.ConfigDigest,
@@ -77,7 +77,7 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 	if err != nil {
 		return BoundPolicyResources{}, err
 	}
-	permissions, err := NativePermissions(request.GOOS, request.Host, request.Agent)
+	permissions, err := NativePermissions(request.GOOS, request.Host, request.Agent, settings.AccessMode)
 	if err != nil {
 		return BoundPolicyResources{}, err
 	}
@@ -149,7 +149,7 @@ func profileConfigFromEnvelopes(data []executionbackend.ImplementationDataEnvelo
 }
 
 func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity) (PolicyResourcePayload, error) {
-	if envelope.ImplementationKey != PolicyResourcesCodecKey || envelope.CodecVersion != 2 {
+	if envelope.ImplementationKey != PolicyResourcesCodecKey || envelope.CodecVersion != 3 {
 		return PolicyResourcePayload{}, errors.New("unsupported permission resource codec")
 	}
 	if err := envelope.ValidateResourceIdentity(identity.ProjectID, identity.ExecutionID, identity.AttemptID, identity.Generation, identity.ConfigDigest); err != nil {
@@ -169,7 +169,13 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 }
 
 func validateNativeLaunchArgs(args []string) error {
-	permissions, _ := NativePermissions("windows", "local", "codex")
+	mode := "sandbox"
+	for _, arg := range args {
+		if arg == "sandbox_mode=danger-full-access" {
+			mode = "full_access"
+		}
+	}
+	permissions, _ := NativePermissions("windows", "local", "codex", mode)
 	expected := map[string]string{}
 	for i := 0; i < len(permissions.Args()); i += 2 {
 		key, value, _ := strings.Cut(permissions.Args()[i+1], "=")

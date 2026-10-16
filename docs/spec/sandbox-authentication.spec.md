@@ -4,6 +4,14 @@
 [Plan](sandbox-authentication.plan.md)。沿用 SteerLine
 `docs/product-design/worker-lifecycle.md` 的 W05–W07、W16、W18 和 E/V 规则；不新增状态机。
 
+## 作用域补充（2026-10-16，环境检查整合）
+
+本专项 SA02/SA04/SA08 的 workspace-write/MXC/零旁路结论仅约束 `sandbox` 分支。
+显式 `execution.settings.access_mode=full_access` 由 [environment-check Spec](environment-check.spec.md)
+单独定义与验收；不作为沙箱失败回退，不计为 SA04/SA08 通过。两模式共用 SA01/SA03 的认证 owner，
+各自首个输入前必须完成与实际模式一致的无模型准备；`full_access` 核实非 AppContainer 执行事实，
+不伪造 MXC 证据。历史 SA 验收记录保持原结论。
+
 ## 契约
 
 - SA01：可信执行主机准备认证。默认使用该主机已有 gh 登录，宿主凭据仅留在可信

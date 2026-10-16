@@ -28,7 +28,7 @@ var scenarioCount int
 
 // New real-environment workflows register a driver; catalog entries choose
 // that driver and an execution target without changing the meaning of L3.
-var drivers = map[string]func(*testing.T, livetest.Manifest){"development-smoke": developmentSmoke, "development-audited": developmentSmoke, "execution-stability": executionStability}
+var drivers = map[string]func(*testing.T, livetest.Manifest){"environment-check": environmentCheck, "development-smoke": developmentSmoke, "development-audited": developmentSmoke, "execution-stability": executionStability}
 
 func TestMain(m *testing.M) {
 	flag.Parse()

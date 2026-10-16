@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory=$true)][string]$Manifest,
     [string]$Pattern = '^TestSRLiveScenario$',
-    [ValidateRange(1,60)][int]$TimeoutMinutes = 30
+    [ValidateRange(1,60)][int]$TimeoutMinutes = 30,
+    [switch]$ValidateOnly
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -13,9 +14,15 @@ $taskRoot = [IO.Path]::GetFullPath($taskNative.root)
 $taskPreparation = Get-Content -LiteralPath (Join-Path $taskRoot 'preparation.json') -Raw | ConvertFrom-Json
 if ($taskPreparation.status -ne 'ready' -or $taskPreparation.fixture_id -ne $taskNative.id -or $taskPreparation.base_branch -ne $taskNative.base_branch) { throw 'Fixture preparation is incomplete; do not start an agent' }
 $taskEvidence = Join-Path $taskRoot 'evidence'
-if (Test-Path -LiteralPath (Join-Path $taskEvidence 'native.log')) { throw 'Fixture is frozen after execution; generate a new fixture' }
+if (-not $ValidateOnly -and (Test-Path -LiteralPath (Join-Path $taskEvidence 'native.log'))) { throw 'Fixture is frozen after execution; generate a new fixture' }
 if ((Get-FileHash -LiteralPath $taskNative.runner_exe -Algorithm SHA256).Hash -ne $taskNative.runner_sha256) { throw 'Frozen Runner executable changed' }
 $taskTestExe = Join-Path $taskRoot 'bin/native.test.exe'
+$taskResultPath = Join-Path $taskEvidence 'result.json'
+if ($ValidateOnly) {
+    if ($taskNative.driver -ne 'environment-check') { throw 'Read-only result validation currently supports environment-check fixtures only' }
+    $taskOriginal = Get-Content -LiteralPath (Join-Path $taskEvidence 'source-identity.json') -Raw | ConvertFrom-Json
+    if ($taskOriginal.manifest_sha256 -ne (Get-FileHash -LiteralPath $taskManifestPath -Algorithm SHA256).Hash -or $taskOriginal.driver_sha256 -ne (Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash -or $taskOriginal.runner_sha256 -ne $taskNative.runner_sha256 -or $taskOriginal.scenario -ne $taskNative.scenario) { throw 'Original frozen fixture/build identity changed' }
+} else {
 Push-Location $taskRepo
 try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
@@ -53,16 +60,31 @@ while (-not (Test-Path -LiteralPath $taskResultPath)) {
     }
     Start-Sleep -Seconds 2
 }
+
+}
 $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
 if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1) { throw "Live scenario failed; inspect $taskEvidence/native.log" }
 $taskScenario = Get-Content -LiteralPath (Join-Path $taskEvidence 'scenario.json') -Raw | ConvertFrom-Json
+$taskMerge = if ($taskScenario.PSObject.Properties['merge_commit']) { [string]$taskScenario.merge_commit } else { '' }
 if ($taskNative.schema -eq 'steerrunner-test/v2') {
     & $taskNative.stability.helper.path validate-result -manifest $taskManifestPath
     if ($LASTEXITCODE -ne 0) { throw 'Stability result lacks case assertions or confirmed cleanup' }
 } else {
     if (-not $taskScenario.passed -or -not $taskScenario.run_stopped -or -not $taskScenario.service_stopped) { throw 'Live result lacks confirmed completion or cleanup' }
-    if ($taskNative.driver -eq 'development-audited') {
-        if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskScenario.merge_commit) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
-    } elseif (-not $taskScenario.merge_commit) { throw 'Live smoke lacks its verified merge' }
+    if ($taskNative.driver -eq 'environment-check') {
+ $taskCheckEnvelope = Get-Content -LiteralPath (Join-Path $taskEvidence 'check-latest.json') -Raw | ConvertFrom-Json
+ $taskCheck = $taskCheckEnvelope.data.check
+ if (-not $taskCheckEnvelope.ok -or $taskCheck.check_id -ne $taskScenario.run_id -or $taskCheck.status -ne 'completed' -or $taskCheck.result -ne 'passed' -or $taskCheck.cleanup_status -ne 'completed' -or $taskCheck.input.execution.settings.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.approval_policy -ne 'never' -or -not $taskCheck.actual.session_id -or -not $taskCheck.actual.turn_id -or $taskCheck.resources.base_sha -ne $taskNative.base_revision -or $taskCheck.resources.head_sha -ne $taskScenario.original_head -or $taskCheck.resources.pr_url -ne $taskScenario.pr_url) { throw 'Original complete Check context/result does not match the frozen native case' }
+ foreach ($taskField in @('pr_closed','base_deleted','head_deleted','writer_stopped','local_removed')) { if (-not $taskCheck.resources.$taskField) { throw "Unsettled original Check resource: $taskField" } }
+ if (@($taskCheck.items).Count -ne 12) { throw 'Original native manifest is incomplete' }
+ foreach ($taskItem in $taskCheck.items) {
+  if (-not $taskItem.required -or $taskItem.status -ne 'passed' -or @($taskItem.evidence).Count -eq 0) { throw 'Original native item lacks passed required evidence' }
+  foreach ($taskFact in $taskItem.evidence) { if (-not $taskFact.verified -or $taskFact.source -ne 'native_tool_and_owner_verification' -or $taskFact.check_id -ne $taskCheck.check_id -or $taskFact.session_id -ne $taskCheck.actual.session_id -or $taskFact.turn_id -ne $taskCheck.actual.turn_id -or $taskFact.nonce -ne $taskCheck.actual.nonce -or -not $taskFact.operation_id -or -not $taskFact.tool_call_id) { throw 'Original native evidence identity conflicts with its Check' } }
+ }
+
+ if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskMerge) { throw 'Environment check must verify and close its owned PR without merging' }
+ } elseif ($taskNative.driver -eq 'development-audited') {
+        if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskMerge) { throw 'Audited diagnostic must verify its PR and leave it unmerged' }
+    } elseif (-not $taskMerge) { throw 'Live smoke lacks its verified merge' }
 }
 Write-Output $taskEvidence

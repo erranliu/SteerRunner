@@ -1,0 +1,16 @@
+{
+  "generation": "df749812b1a4fda63a34c7a5b2479f16",
+  "mode": "full_access",
+  "outside_file_exists": true,
+  "outside_write_succeeded": true,
+  "passed": true,
+  "policy_contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+  "process": {
+    "kind": "os",
+    "pid": 28136,
+    "created": "01dd5d3f290c4f48",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "session_id": "01a14397-e028-7a93-90ff-a05d6a155a3b",
+  "valid_authentication_preparation": true
+}

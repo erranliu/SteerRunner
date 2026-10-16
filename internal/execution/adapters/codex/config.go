@@ -7,21 +7,22 @@ import (
 // Config is the native implementation input assembled from frozen records.
 // It is never embedded in contracts or read from mutable project state.
 type Config struct {
-	Executable      string
-	Args            []string
-	Profile         string
-	Sandbox         string
-	WindowsSandbox  string
-	Model           string
-	ReasoningEffort string
-	Workspace       string
-	RunDir          string
-	RunID           string
-	ServerDir       string
-	Environment     func([]string) []string
-	WorkerRuntime   bool
-	Authentication  *AuthenticationRuntime
-	RemoteName      string
+	Executable       string
+	Args             []string
+	Profile          string
+	Sandbox          string
+	WindowsSandbox   string
+	Model            string
+	ReasoningEffort  string
+	Workspace        string
+	RunDir           string
+	RunID            string
+	ServerDir        string
+	Environment      func([]string) []string
+	WorkerRuntime    bool
+	Authentication   *AuthenticationRuntime
+	RemoteName       string
+	EnvironmentCheck bool
 }
 
 func ValidReasoningEffort(value string) bool {
@@ -43,7 +44,7 @@ func (c Config) Validate(goos string) error {
 	if c.Profile != "" {
 		return fmt.Errorf("native profile overrides are unsupported")
 	}
-	permissions, err := NativePermissions(goos, "local", "codex")
+	permissions, err := NativePermissions(goos, "local", "codex", accessMode(c.Sandbox))
 	if err != nil {
 		return err
 	}

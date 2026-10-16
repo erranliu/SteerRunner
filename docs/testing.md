@@ -171,6 +171,35 @@ v2 配置；保持原生自身认证。完整资格入口：
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-每轮六场景合计十二 case，三轮共三十六次；L1/Controlled 每批完整执行一次。
+原稳定性组每轮六场景合计十二 case，三轮共三十六次；本次新增的两个 environment-check 场景分别验证本机 sandbox/full_access。指定 `-Scenario` 可单独选择原组或新增组，L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
+
+## 环境检查定向验收
+
+规则：`go test ./internal/application ./internal/contracts ./internal/cli ./internal/storage ./internal/execution/... -run '^TestEnvironmentCheck' -count=1`。
+`TestEnvironmentCheckPublicFixtures` 通过生产存储/查询路径校验内嵌公开样例；合约有意变化时可用
+`STEERRUNNER_UPDATE_CHECK_FIXTURES=1` 生成后复验，样例文件变化会改变 resource_digest。
+`TestEnvironmentCheckCLI` 已注册到 Controlled，验证真实 EXE/IPC/SQLite、受理后失败、两种查询、原 stop
+回执、无 Check 拒绝、只读查询、重启与 verify-stopped。测试不会访问安装目录。
+
+```powershell
+./scripts/test.ps1 -Level Controlled
+./scripts/test.ps1 -Level L3 -Scenario @('environment-check.local-sandbox','environment-check.local-full-access') -Config .evidence/live-config.json
+```
+
+两种原生场景沿正式分级入口，分别创建新 fixture 和 Check。driver 只准备
+`codex/srtest/<fixture>/base`、独立源仓库及只读取证；Worker 通过已保存意图的固定原生工具创建
+`steerline-check/<check_id>/base|head`、commit/push 和 PR，driver 不代做这些动作、不合并 PR。
+每种模式必须独立核实权限、实际工具、Git/PR 及原对象收尾，不能用 L1/Controlled 或另一模式替代。
+远端缺 SA07 的两个模式保持 unsupported，由确定性反例验证，不作为已通过的 live 场景注册。
+
+定向 native canary 使用有效 gh broker、同一原生准备和 `command/exec`，无模型输入：
+`go test -tags=live ./internal/execution/adapters/codex -run '^TestEnvironmentCheckNativeBoundary$' -sandbox-auth-native <原生Codex绝对路径> -count=1 -v`。
+该测试为 sandbox 记录工作区外拒写、为 full_access 记录允许写；只操作 `C:/srt/ecb-*` 中本次
+owned canary，证据目录保留。普通用户检查不重复执行沙箱安全 canary。
+
+已完成 native driver 的 environment-check fixture 可用
+`./scripts/test-native.ps1 -Manifest <原 manifest> -ValidateOnly` 只读复验完整结果。
+该路径核对原 manifest/Runner/driver SHA、完整 Check、上下文/分项与资源结算，拒绝失败或未核实结果；
+不重新启动 Agent、服务或 Git/PR 操作，也不重写原批次记录。正常首次执行仍自动调用相同结果校验逻辑。

@@ -74,7 +74,7 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "development-smoke" && m.Driver != "development-audited") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "development-smoke" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
 		return errors.New("v1 requires a development fixture without stability fields")
 	}
 	if m.Schema == "steerrunner-test/v2" {

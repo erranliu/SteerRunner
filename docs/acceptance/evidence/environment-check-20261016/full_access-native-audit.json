@@ -1,0 +1,23 @@
+{
+  "session_id": "01a143a9-90cb-7c02-b897-c319f0bfcb22",
+  "turn_id": "01a143a9-b596-7eb1-8a73-c677f6825d54",
+  "history_path": "C:\\Users\\lmas1\\.codex\\sessions\\2026\\10\\16\\rollout-2026-10-16T15-42-28-01a143a9-90cb-7c02-b897-c319f0bfcb22.jsonl",
+  "history_sha256": "57e28a8af8c8305f22283d57f016ce37b0259a7b9a235c059bae63a94c9ccef6",
+  "model_tool_calls": 12,
+  "original_turn_complete_events": 1,
+  "approval_or_permission_request_events": 0,
+  "models": [
+    "gpt-6.1-sol"
+  ],
+  "input_contexts": [
+    {
+      "turn_id": "01a143a9-b596-7eb1-8a73-c677f6825d54",
+      "approval_policy": "never",
+      "sandbox_policy": {
+        "type": "danger-full-access"
+      },
+      "model": "gpt-6.1-sol",
+      "effort": "medium"
+    }
+  ]
+}

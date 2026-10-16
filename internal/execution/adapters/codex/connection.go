@@ -40,6 +40,11 @@ type AskReply struct {
 }
 
 type ThreadReceipt struct {
+	ApprovalPolicy    string `json:"approvalPolicy,omitempty"`
+	ApprovalsReviewer string `json:"approvalsReviewer,omitempty"`
+	Sandbox           struct {
+		Type string `json:"type"`
+	} `json:"sandbox,omitempty"`
 	Thread struct {
 		ID   string `json:"id"`
 		Cwd  string `json:"cwd"`

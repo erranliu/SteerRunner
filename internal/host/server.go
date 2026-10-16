@@ -206,11 +206,13 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		if wire.Request.Protocol != contracts.Protocol || !contracts.ValidRequestID(id) {
 			return reject(contracts.Fail(2, "invalid_request", "Invalid request envelope."))
 		}
-		if invalid := contracts.ValidateInput(wire.Options.Command, wire.Request.Input); invalid != nil {
+		if invalid := contracts.ValidateInput(wire.Options.Command, wire.Request.Input); invalid != nil && wire.Options.Command != "environment-check start" && wire.Options.Command != "environment-check stop" {
 			return reject(invalid)
 		}
 	}
 	switch wire.Options.Command {
+	case "environment-check start", "environment-check stop", "environment-check inspect":
+		return s.engine.HandleEnvironmentCheck(wire.Options.Command, wire.Options.CheckID, wire.Options.RequestID, wire.Request), false
 	case "open-native-session":
 		s.mutex.Lock()
 		defer s.mutex.Unlock()
