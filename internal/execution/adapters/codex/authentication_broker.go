@@ -37,6 +37,7 @@ import (
 )
 
 type authenticationBroker struct {
+	checkGate                               *checkWriteGate
 	mu                                      sync.Mutex
 	secret                                  []byte
 	capability                              string
@@ -448,6 +449,9 @@ func (b *authenticationBroker) permit(r *http.Request) bool {
 	if r.URL.User != nil || r.URL.Fragment != "" || r.URL.RawPath != "" || strings.ContainsAny(r.URL.Path, "\\%") || strings.Contains(r.URL.Path, "..") {
 		return false
 	}
+	if b.checkGate != nil && !b.checkGate.permit(r, b.repository) {
+		return false
+	}
 	host := strings.TrimSuffix(r.URL.Host, ":443")
 	path := r.URL.Path
 	if host == "github.com" {
@@ -467,6 +471,12 @@ func (b *authenticationBroker) permit(r *http.Request) bool {
 	}
 	if r.Method == "GET" && r.URL.RawQuery == "" && (path == "/meta" || path == "/user" || path == "/repos/"+b.repository) {
 		return true
+	}
+	if b.checkGate != nil && strings.HasPrefix(path, "/repos/"+b.repository+"/pulls") {
+		return true
+	}
+	if b.checkGate != nil {
+		return false
 	}
 	if r.Method != "POST" || path != "/graphql" || r.URL.RawQuery != "" {
 		return false

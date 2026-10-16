@@ -16,7 +16,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
-const Format = "steerrunner-state/v2"
+const Format = "steerrunner-state/v3"
 
 type Store struct{ db *sql.DB }
 
@@ -52,16 +52,17 @@ func Open(dir string) (*Store, error) {
 		if _, err := db.Exec(`
 BEGIN IMMEDIATE;
 CREATE TABLE metadata (format TEXT NOT NULL);
-INSERT INTO metadata VALUES ('steerrunner-state/v2');
+INSERT INTO metadata VALUES ('steerrunner-state/v3');
 CREATE TABLE commands (
  request_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE,
  command TEXT NOT NULL, instance_id TEXT NOT NULL, digest TEXT NOT NULL,
- response BLOB NOT NULL, action_status TEXT NOT NULL, run_id TEXT
+ response BLOB NOT NULL, action_status TEXT NOT NULL, run_id TEXT, check_id TEXT
 );
+CREATE TABLE checks(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
 CREATE TABLE runs(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
 CREATE TABLE events(seq INTEGER PRIMARY KEY AUTOINCREMENT,run_id TEXT NOT NULL,event_id TEXT NOT NULL UNIQUE,body BLOB NOT NULL);
 CREATE INDEX events_run ON events(run_id,seq);
-PRAGMA user_version=2;
+PRAGMA user_version=3;
 COMMIT;`); err != nil {
 			return fail(err)
 		}
@@ -102,7 +103,7 @@ func OpenReader(dir string) (*Store, error) {
 func validateFormat(db *sql.DB) error {
 	var format string
 	var version int
-	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 2 {
+	if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || format != Format || version != 3 {
 		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory.")
 	}
 	return nil

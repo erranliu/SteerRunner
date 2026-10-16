@@ -76,6 +76,7 @@ type AgentSettings struct {
 }
 
 type CodexSettings struct {
+	AccessMode      string              `json:"access_mode,omitempty"`
 	Executable      string              `json:"executable,omitempty"`
 	Model           string              `json:"model,omitempty"`
 	ReasoningEffort string              `json:"reasoning_effort,omitempty"`
@@ -95,6 +96,7 @@ type TransportSettings struct {
 }
 
 type OrcaSettings struct {
+	AccessMode  string            `json:"access_mode,omitempty"`
 	Transport   TransportSettings `json:"transport,omitempty"`
 	AgentLaunch AgentSettings     `json:"agent_launch,omitempty"`
 }
@@ -245,10 +247,21 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
-	switch value.Execution.Adapter {
+	if err := ValidateExecution(value.Execution); err != nil {
+		return err
+	}
+	return ValidatePublication(value.Repository, value.Publication)
+}
+
+func ValidateExecution(value Execution) *Fault {
+	invalid := Fail(2, "invalid_input", "Execution settings do not satisfy the embedded contract.")
+	switch value.Adapter {
 	case "codex-app-server":
 		var settings CodexSettings
-		if value.Execution.Target.Kind != "local" || value.Execution.Target.Environment != "" || DecodeStrict(value.Execution.Settings, &settings) != nil || !optionalStrings(value.Execution.Settings, "executable", "model", "reasoning_effort") || !effort(settings.ReasoningEffort) || settings.Model != strings.TrimSpace(settings.Model) {
+		if value.Target.Kind != "local" || value.Target.Environment != "" || DecodeStrict(value.Settings, &settings) != nil || !optionalStrings(value.Settings, "executable", "model", "reasoning_effort") || !effort(settings.ReasoningEffort) || settings.Model != strings.TrimSpace(settings.Model) {
+			return invalid
+		}
+		if !validAccessMode(settings.AccessMode) {
 			return invalid
 		}
 		if settings.GitHubAuth != nil && (settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
@@ -256,18 +269,18 @@ func ValidateRun(data []byte) *Fault {
 		}
 	case "orca-terminal":
 		var settings OrcaSettings
-		if DecodeStrict(value.Execution.Settings, &settings) != nil || !effort(settings.AgentLaunch.ReasoningEffort) {
+		if DecodeStrict(value.Settings, &settings) != nil || !validAccessMode(settings.AccessMode) || !effort(settings.AgentLaunch.ReasoningEffort) {
 			return invalid
 		}
 		var fields map[string]json.RawMessage
-		_ = json.Unmarshal(value.Execution.Settings, &fields)
+		_ = json.Unmarshal(value.Settings, &fields)
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid
 		}
 		if raw, ok := fields["agent_launch"]; ok && !optionalStrings(raw, "executable", "model", "reasoning_effort") {
 			return invalid
 		}
-		if value.Execution.Target.Kind != "local" && value.Execution.Target.Kind != "orca_environment" || value.Execution.Target.Kind == "local" && value.Execution.Target.Environment != "" || value.Execution.Target.Kind == "orca_environment" && !plain(value.Execution.Target.Environment) {
+		if value.Target.Kind != "local" && value.Target.Kind != "orca_environment" || value.Target.Kind == "local" && value.Target.Environment != "" || value.Target.Kind == "orca_environment" && !plain(value.Target.Environment) {
 			return invalid
 		}
 		if strings.ContainsAny(settings.Transport.Executable+settings.AgentLaunch.Executable+settings.AgentLaunch.Model, "\x00\r\n") {
@@ -284,6 +297,13 @@ func ValidateRun(data []byte) *Fault {
 				return invalid
 			}
 		}
+		for _, arg := range settings.AgentLaunch.Args {
+			switch arg {
+			case "--no-alt-screen", "--no-daemon", "--search":
+			default:
+				return invalid
+			}
+		}
 		for _, arg := range settings.Transport.Args {
 			if strings.HasPrefix(arg, "--environment") || strings.HasPrefix(arg, "--pairing-code") {
 				return invalid
@@ -292,13 +312,18 @@ func ValidateRun(data []byte) *Fault {
 	default:
 		return Fail(3, "unsupported_capability", "The execution adapter is not defined by this executable.")
 	}
-	if !plain(value.Publication.Repository) || value.Publication.BaseBranch != value.Repository.BaseBranch {
+	return nil
+}
+
+func ValidatePublication(repository Repository, value Publication) *Fault {
+	invalid := Fail(2, "invalid_input", "Publication settings do not match the fixed repository.")
+	if !plain(value.Repository) || value.BaseBranch != repository.BaseBranch {
 		return invalid
 	}
-	switch value.Publication.Provider {
+	switch value.Provider {
 	case "command":
 		var settings CommandProviderSettings
-		if DecodeStrict(value.Publication.Settings, &settings) != nil || !safeURL(settings.BaseURL) || !plain(settings.Query.Executable) || len(settings.Query.Args) == 0 {
+		if DecodeStrict(value.Settings, &settings) != nil || !safeURL(settings.BaseURL) || !plain(settings.Query.Executable) || len(settings.Query.Args) == 0 {
 			return invalid
 		}
 		for _, arg := range settings.Query.Args {
@@ -308,7 +333,7 @@ func ValidateRun(data []byte) *Fault {
 		}
 	case "gitea":
 		var settings GiteaSettings
-		if DecodeStrict(value.Publication.Settings, &settings) != nil || !safeURL(settings.BaseURL) {
+		if DecodeStrict(value.Settings, &settings) != nil || !safeURL(settings.BaseURL) {
 			return invalid
 		}
 	default:
@@ -320,6 +345,13 @@ func ValidateRun(data []byte) *Fault {
 func ValidateInput(command string, data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Input does not satisfy the command contract.")
 	switch command {
+	case "environment-check start":
+		return ValidateEnvironmentCheck(data)
+	case "environment-check stop":
+		var value CheckStopInput
+		if DecodeStrict(data, &value) != nil || !plain(value.CheckID) || value.ExpectedRevision == 0 {
+			return invalid
+		}
 	case "submit":
 		return ValidateRun(data)
 	case "service stop":
@@ -341,4 +373,8 @@ func ValidateInput(command string, data []byte) *Fault {
 		return invalid
 	}
 	return nil
+}
+
+func validAccessMode(value string) bool {
+	return value == "" || value == "sandbox" || value == "full_access"
 }

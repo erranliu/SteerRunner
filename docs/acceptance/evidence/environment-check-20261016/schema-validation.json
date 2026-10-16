@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "sample_count": 13,
+  "samples": [
+    "inspect_by_check_id",
+    "inspect_by_start_request_id",
+    "inspect_by_stop_request_id",
+    "preparation_failure",
+    "rejection_without_check",
+    "stale_revision",
+    "start_receipt",
+    "start_request",
+    "stop_receipt",
+    "stop_request",
+    "unknown_request",
+    "unknown_write_response",
+    "unverified_original"
+  ]
+}

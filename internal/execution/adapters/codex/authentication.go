@@ -56,6 +56,7 @@ func githubTarget(remote string) (string, error) {
 // AuthenticationRuntime is process-local, never part of an envelope. For host
 // login, token is an opaque broker capability, never the host OAuth credential.
 type AuthenticationRuntime struct {
+	checkGate   *checkWriteGate
 	mu          sync.Mutex
 	config      *AuthenticationConfig
 	repository  string
@@ -106,6 +107,7 @@ func (a *AuthenticationRuntime) prepare(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+		broker.checkGate = a.checkGate
 		a.broker, a.token, a.expires = broker, broker.capability, broker.expires
 		return nil
 	}

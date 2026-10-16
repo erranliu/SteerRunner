@@ -1,6 +1,6 @@
 # Spec：无人执行权限与 Git 环境检查能力
 
-日期：2026-10-16。状态：仅设计，未授权实现。Runner 独立前置；[Plan](environment-check.plan.md) · [专属验收](../acceptance/environment-check.md)。本文件是 Runner 权限模式、检查输入/结果和执行行为的权威；SteerLine 只消费公开契约，不另行定义这些规则。
+日期：2026-10-16。状态：已于本会话获用户授权实施；实现与验收状态见专属验收记录。Runner 独立前置；[Plan](environment-check.plan.md) · [专属验收](../acceptance/environment-check.md)。本文件是 Runner 权限模式、检查输入/结果和执行行为的权威；SteerLine 只消费公开契约，不另行定义这些规则。
 
 ## 1. 范围与调查基线
 
@@ -49,7 +49,7 @@ Runner 在公开 `execution.settings.access_mode` 声明 `sandbox` / `full_acces
 
 ## 4. 最小公开接口
 
-沿 `steerrunner-cli/v1` 请求信封增加三个命令，均为计划接口，当前不可调用：
+沿 `steerrunner-cli/v1` 请求信封增加三个命令，为本次新增接口，实际支持组合见 capabilities 和专属验收：
 
 | 命令 | 语义 |
 | --- | --- |
@@ -107,6 +107,6 @@ Agent 在原检查 base/head 间创建、查询并关闭测试 PR；Runner 核�
 
 计划覆盖本机 Codex 和 Orca 远端 Codex 的两模式。按目标/模式分别公布支持与验收：本机可先交付；远端在 SA07 等原生前置缺失时保留目标和缺口，明确 unsupported，不能以模型检查放行，也不要求 SteerLine 扩展 Orca 原生协议。远端补齐后分别实测再声明支持。本机通过不代表远端，全访问通过不代表沙箱。
 
-本规格与独立 [SREC 验收](../acceptance/environment-check.md)归属 Runner 前置任务；SteerLine 自有接入规格/验收单独维护。Runner 契约及必要目标实现合入并发布固定 version/SHA/resource_digest 后，才作为 SteerLine 集成前置；UI 可提前消费公开 fixture 开发。当前不实现、不启动服务或 Agent、不做 Git/PR 操作。
+本规格与独立 [SREC 验收](../acceptance/environment-check.md)归属 Runner 前置任务；SteerLine 自有接入规格/验收单独维护。Runner 契约及必要目标实现合入并发布固定 version/SHA/resource_digest 后，才作为 SteerLine 集成前置；UI 可提前消费公开 fixture 开发。本段原调查时未实现；本次用户已授权实施与定向验证，结果单独登记专属验收。
 
 交接必须附固定提交上的 CLI/schema 和本仓 Controlled 测试实际校验的公开请求/响应样例（含 start/stop 回执、两种 inspect 选择、拒绝无 check、准备失败、未知/陈旧 revision），调用方 fixture 消费同版样例。样例不是另一状态权威，不携带秘密；样例或 schema 变更须使契约/resource 摘要变化。SREC 验证执行事实，SLEC 验证消费/项目隔离，二者不替代 SA 前置验收。

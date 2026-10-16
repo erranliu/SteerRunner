@@ -19,6 +19,7 @@ const TimeoutSeconds = 30
 const maxWireBytes = 2*contracts.MaxRequestBytes + 1024*1024
 
 type Options struct {
+	CheckID       string                         `json:"check_id,omitempty"`
 	NativeSession *contracts.NativeSessionTarget `json:"native_session,omitempty"`
 	Command       string                         `json:"command"`
 	RunID         string                         `json:"run_id,omitempty"`

@@ -5,11 +5,13 @@ package agentlaunch
 import (
 	"errors"
 	"fmt"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"strings"
 )
 
 // Config targets a PowerShell terminal on the execution host.
 type Config struct {
+	AccessMode      string   `json:"access_mode,omitempty"`
 	Executable      string   `json:"executable"`
 	Args            []string `json:"args,omitempty"`
 	Model           string   `json:"model,omitempty"`
@@ -34,6 +36,16 @@ func (c *Config) Command(agent string) (string, error) {
 		return "", errors.New("invalid agent launch executable or preferences")
 	}
 	args := append([]string(nil), c.Args...)
+	if agent == "codex" {
+		if err := codex.ValidateManagedArgs(args); err != nil {
+			return "", err
+		}
+		permissions, err := codex.NativePermissions("windows", "orca", "codex", c.AccessMode)
+		if err != nil {
+			return "", err
+		}
+		args = append(args, permissions.Args()...)
+	}
 	for _, arg := range args {
 		if strings.ContainsAny(arg, "\x00\r\n") {
 			return "", errors.New("invalid agent launch argument")
@@ -51,7 +63,7 @@ func (c *Config) Command(agent string) (string, error) {
 		default:
 			return "", errors.New("invalid reasoning effort")
 		}
-		for _, arg := range args {
+		for _, arg := range c.Args {
 			if arg == "--" || strings.HasPrefix(arg, "-m") && !strings.HasPrefix(arg, "--") || arg == "--model" || strings.HasPrefix(arg, "--model=") || strings.HasPrefix(arg, "-c") && !strings.HasPrefix(arg, "--") || arg == "--config" || strings.HasPrefix(arg, "--config=") {
 				return "", errors.New("agent arguments cannot override declared model preferences")
 			}

@@ -1,0 +1,27 @@
+{
+  "build": {
+    "version": "0.1.0-dev.1",
+    "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "9049008C47B4EF11BA66FF0B0CB13330823B61FC409A387C6377E20FA679D021"
+  },
+  "version_response": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "platform": "windows/amd64",
+      "protocols": [
+        "steerrunner-cli/v1"
+      ],
+      "resource_digest": "efc0cf54a81cdb2be672ba6a7e5e6657c715e60b0b37756840cd25d012c6629e",
+      "resource_version": 1,
+      "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd-dirty",
+      "version": "0.1.0-dev.1"
+    },
+    "error": null
+  },
+  "publication_status": "local development build; uncommitted, not merged or published"
+}

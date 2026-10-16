@@ -12,7 +12,7 @@ import (
 // VerifyStopped reads current-format records under the host's exclusive lease.
 // It probes original managed identities only, without constructing an Engine,
 // invoking adapters, restarting observers or changing execution records.
-func VerifyStopped(dir string, runs []*runstate.Record) contracts.StoppedVerification {
+func VerifyStopped(dir string, runs []*runstate.Record, checks ...*runstate.CheckRecord) contracts.StoppedVerification {
 	result := contracts.StoppedVerification{StateDir: dir, ResourcesSettled: true, Runs: []contracts.StoppedRun{}}
 	seen := map[string]bool{}
 	for _, r := range runs {
@@ -27,6 +27,12 @@ func VerifyStopped(dir string, runs []*runstate.Record) contracts.StoppedVerific
 		}
 		result.ResourcesSettled = result.ResourcesSettled && settled
 		result.Runs = append(result.Runs, v)
+	}
+	result.Checks = []contracts.StoppedCheck{}
+	for _, r := range checks {
+		settled := r.View.CleanupStatus == "completed" && r.View.Resources.WriterStopped && !checkUnknown(r)
+		result.Checks = append(result.Checks, contracts.StoppedCheck{CheckID: r.View.CheckID, InputDigest: r.View.InputDigest, ResourcesSettled: settled})
+		result.ResourcesSettled = result.ResourcesSettled && settled
 	}
 	return result
 }

@@ -1,0 +1,67 @@
+{
+  "status": "passed",
+  "case_count": 2,
+  "runner_sha256": "9049008c47b4ef11ba66ff0b0cb13330823b61fc409a387c6377e20fa679d021",
+  "driver_sha256": "e5034425605b18366b25d69ff305bc99e0778f7931b9ba5732446b1fc026e2ff",
+  "cases": [
+    {
+      "mode": "sandbox",
+      "fixture": "C:\\srt\\2c6c8b81c43b",
+      "check_id": "2c02420a63633458a8570ca1ecb80681",
+      "session_id": "01a143a5-87be-7eb2-b575-e014c216ae1c",
+      "turn_id": "01a143a5-b5d0-7b51-a4d3-7078f4cc3a70",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/334",
+      "base_ref": "refs/heads/steerline-check/2c02420a63633458a8570ca1ecb80681/base",
+      "head_ref": "refs/heads/steerline-check/2c02420a63633458a8570ca1ecb80681/head",
+      "head_sha": "8d96c0982f87acca6d260bda134f91e9f0393d11",
+      "result": "passed",
+      "cleanup_status": "completed",
+      "native_driver_exit_code": 0,
+      "readonly_result_validation": "passed",
+      "validation_command": "scripts/test-native.ps1 -Manifest C:\\srt\\2c6c8b81c43b/manifest.json -ValidateOnly"
+    },
+    {
+      "mode": "full_access",
+      "fixture": "C:\\srt\\9cade92f6d06",
+      "check_id": "d5cca89aa844d2229cb517072b1b8f45",
+      "session_id": "01a143a9-90cb-7c02-b897-c319f0bfcb22",
+      "turn_id": "01a143a9-b596-7eb1-8a73-c677f6825d54",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/336",
+      "base_ref": "refs/heads/steerline-check/d5cca89aa844d2229cb517072b1b8f45/base",
+      "head_ref": "refs/heads/steerline-check/d5cca89aa844d2229cb517072b1b8f45/head",
+      "head_sha": "544857d6ac9f1d148aa43602a9c8ab8183850b38",
+      "result": "passed",
+      "cleanup_status": "completed",
+      "native_driver_exit_code": 0,
+      "readonly_result_validation": "passed",
+      "validation_command": "scripts/test-native.ps1 -Manifest C:\\srt\\9cade92f6d06/manifest.json -ValidateOnly"
+    }
+  ],
+  "prerequisites": [
+    {
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_zero_match_guard": true,
+      "level": "L1",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-3",
+      "native_driver_compile_exit": 0,
+      "test_count": 221,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-3\\framework",
+      "exit_code": 0
+    },
+    {
+      "exit_code": 0,
+      "scenario_count": 13,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\923a\\SteerRunner\\.evidence\\environment-check-native-3\\controlled",
+      "level": "Controlled"
+    }
+  ],
+  "wrapper_note": "Original batch summary retains its post-driver optional merge_commit property error. Both original complete native driver cases passed; the corrected shared wrapper revalidated each whole original case read-only, with frozen manifest/executable/driver hashes. No model/Git/PR operation was replayed.",
+  "readonly_negative_validation_count": 2
+}

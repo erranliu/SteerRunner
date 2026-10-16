@@ -1,0 +1,11 @@
+{
+  "pid": 53880,
+  "manifest_sha256": "249C74BA3529E90303C072B7EE90AB07223522D8AD8C1E839514AF0FBF97697E",
+  "driver_sha256": "E5034425605B18366B25D69FF305BC99E0778F7931B9BA5732446B1FC026E2FF",
+  "runner_sha256": "9049008c47b4ef11ba66ff0b0cb13330823b61fc409a387c6377e20fa679d021",
+  "source_commit": "c976cc4b5781c2ca65a6a85a47aed3ec44d305dd",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "environment-check.local-sandbox",
+  "level": "L3"
+}
