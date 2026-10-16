@@ -1,7 +1,6 @@
-package reliable
+package operation
 
 import (
-	"encoding/json"
 	"errors"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -33,16 +32,4 @@ func InputValue(action executionbackend.LifecycleAction, input executionbackend.
 	default:
 		return nil, errors.New("unsupported lifecycle operation action")
 	}
-}
-
-func OperationKey(executionID string, action executionbackend.LifecycleAction, input executionbackend.LifecycleInput) (string, any, error) {
-	value, err := InputValue(action, input)
-	if err != nil {
-		return "", nil, err
-	}
-	wire, err := json.Marshal(value)
-	if err != nil {
-		return "", nil, err
-	}
-	return "worker-lifecycle:" + executionID + ":" + string(action) + ":" + Digest(wire), value, nil
 }

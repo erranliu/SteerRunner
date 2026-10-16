@@ -202,3 +202,7 @@ Spec/Plan不维护实时运行结果。实施源版本、命令、结果和限�
 | 产品安装核验；WB-A04 | 用户授权的新安装目录；SteerLine `build-deploy.bat -NoPause`、`status --json` 及各项目 Runner `service status` | 打包后；三项目和宿主/Web ready，正常停启、配置/任务保持；仅安装运行操作，不派发任务 | SteerLine 安装迁移专属验收与安装目录 migration 记录 |
 
 仅宿主 Windows token 恢复发生变化，不跑模型/PR、L2/L3/full；本次空闲安装核验不替代历史任务恢复和 live 验收。
+
+## 执行可见性增量
+
+用户授权的流程/状态展示及最后消息查询独立见 [Plan](execution-observability.plan.md) / [验收](../acceptance/execution-observability.md)。保持单写事务和原恢复规则，不作为原生真机验收通过证据。

@@ -10,6 +10,8 @@
 
 可在 GitHub 直接查看的完整结果存于 [验收证据目录](evidence/l3-execution-stability-20261016/README.md)：包含三轮汇总、36 个现场的测试结果/断言/构建身份、独立最终审计、阶段耗时、来源摘要、L2 回归和设施退出核对。下文的本机路径用于追溯原始现场，远程审阅请使用该目录中的提交副本。
 
+提交范围：上述完整三轮对应归档提交 `9425d2a433d533ae6f3ceee24ec687e60bac6d83`。随后整合最新 main `f156263`，将停止进度持久化接入主线新的 `operation.Intent.SettleStop`；整合版本通过 L1 178 项、脚本检查 12 项、Controlled 12 场景、live driver 编译/零匹配 guard 和 go vet。该版本未重跑完整 L3 三轮，不能将此前 36/36 表述为整合版本的新资格；详见 [主线整合回归](evidence/l3-execution-stability-20261016/main-integration.md)。
+
 真实目标为已配对 environment `e68f4edf-8a83-42c2-a9da-6d404d3aa3d8`，已核实 runtime `f8616747-34af-4543-8487-ec6b5d8de4ff`，注册仓库 `C:/Projects/SteerlineTest`。用户已恢复全部管理员测试范围，不在最终批次使用 SkipAdminRequired。
 
 网络设施通过每现场专属 Runner、helper、Node 程序路径建立防火墙规则，并用 [SetTcpEntry](https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-settcpentry) 关闭同范围已有 IPv4 连接。真实 Orca CLI 的公开 JavaScript/依赖复制到现场，由专属 Node 执行；不复制认证，不针对共享 Orca/Electron 程序路径加规则。IPv6 连接不支持时明确失败。业务模型前验证真实订阅断开、双通路失败和恢复，另有独立有界恢复 watchdog。

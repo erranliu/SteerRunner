@@ -9,6 +9,7 @@ import (
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
@@ -49,5 +50,24 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 		return err
 	}
 	s.PolicyResources = &bound.Envelope
+	return nil
+}
+
+func (e *Engine) attachWriteRoots(r *runstate.Record) error {
+	if r.Request.Execution.Adapter != "codex-app-server" {
+		return nil
+	}
+	roots, err := workspace.ResolveLinkedResources(e.ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.Workspace)
+	if err != nil {
+		return err
+	}
+	args, err := codex.LinkedWorktreeWriteArgs(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
+	if err != nil {
+		return err
+	}
+	r.LinkedWriteArgs = args
+	if r.Snapshot.PendingTurn != nil {
+		r.Snapshot.PendingTurn.LinkedWorktreeArgs = args
+	}
 	return nil
 }

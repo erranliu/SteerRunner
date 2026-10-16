@@ -1,18 +1,18 @@
-package reliable
+package operation
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 )
 
 type EffectResult struct {
-	Request               b.LifecycleRequest
-	Receipt               b.LifecycleReceipt
-	Observer              b.LifecycleObserver
-	Err                   error
-	Uncertain, Reconciled bool
+	Request   b.LifecycleRequest
+	Receipt   b.LifecycleReceipt
+	Observer  b.LifecycleObserver
+	Err       error
+	Uncertain bool
 }
 
 type InvocationMode string
@@ -24,7 +24,10 @@ const (
 
 // Invoke receives an already committed immutable intent. An existing intent
 // has only the reconciliation route, even when acceptance was never observed.
-func Invoke(ctx context.Context, port b.LifecyclePort, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode) EffectResult {
+func Invoke(ctx context.Context, port interface {
+	b.LifecyclePreparationPort
+	b.LifecycleExecutePort
+}, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode) EffectResult {
 	if err := request.Validate(); err != nil {
 		return EffectResult{Request: request.Clone(), Receipt: b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationRejected}, Err: err}
 	}
@@ -41,11 +44,11 @@ func Invoke(ctx context.Context, port b.LifecyclePort, reconciler b.LifecycleRec
 		return EffectResult{Request: request.Clone(), Err: errors.New("external action invocation mode is unverified")}
 	}
 	reconcile := mode == ReconcileOriginalIntent
-	result := EffectResult{Request: request.Clone(), Reconciled: reconcile}
+	result := EffectResult{Request: request.Clone()}
 	if !reconcile {
 		err := ctx.Err()
 		if err == nil {
-			err = QualifyAction(ctx, port, request)
+			err = reliable.QualifyAction(ctx, port, request)
 		}
 		if err == nil {
 			err = ctx.Err() // Read-only qualification may have consumed the deadline.
@@ -68,27 +71,6 @@ func Invoke(ctx context.Context, port b.LifecyclePort, reconciler b.LifecycleRec
 	return result
 }
 
-// ReconciledResult retains partial native successes if the read-only follow-up
-// loses its receipt. The initial observer has already been released by owner.
-func ReconciledResult(result EffectResult, original *EffectResult) EffectResult {
-	if original == nil {
-		return result
-	}
-	result.Uncertain = true
-	validationErr := result.Receipt.ValidateFor(result.Request)
-	if result.Err == nil && validationErr == nil && result.Receipt.Disposition != b.OperationUnknown {
-		return result
-	}
-	if result.Observer != nil {
-		_ = result.Observer.Close(context.Background())
-	}
-	fallback := *original
-	fallback.Observer = nil
-	fallback.Err = errors.Join(original.Err, result.Err, validationErr)
-	fallback.Reconciled = true
-	return fallback
-}
-
 func Outcome(receipt b.LifecycleReceipt, err error) (string, string) {
 	status, diagnostic := string(receipt.Disposition), receipt.Diagnostic
 	switch receipt.Disposition {
@@ -106,15 +88,4 @@ func Outcome(receipt b.LifecycleReceipt, err error) (string, string) {
 		}
 	}
 	return status, diagnostic
-}
-
-func ReconciliationRequest(result EffectResult) (b.LifecycleRequest, bool) {
-	if !result.Uncertain || result.Reconciled {
-		return b.LifecycleRequest{}, false
-	}
-	request := result.Request.Clone()
-	if request.Operation.Action == string(b.LifecyclePrepareWorkspace) && len(result.Receipt.Operation.Receipt) > 0 && result.Receipt.ValidateFor(request) == nil {
-		request.Operation.Receipt, _ = json.Marshal(result.Receipt)
-	}
-	return request, true
 }

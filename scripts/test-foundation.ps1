@@ -1,9 +1,13 @@
 param(
     [string]$OutDir = '',
-    [string]$Pattern = '^(TestSRStandalonePackage|TestSRServiceOwnership)$'
+    [string]$Pattern = '^(TestSRStandalonePackage|TestSRServiceOwnership)$',
+    [string]$BaselineExe = ''
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if ($BaselineExe) {
+    $BaselineExe = (Resolve-Path -LiteralPath $BaselineExe).Path
+}
 if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/foundation-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')) }
 $taskEvidence = [IO.Path]::GetFullPath($OutDir)
 if (Test-Path -LiteralPath $taskEvidence) { throw 'Evidence directory must be new.' }
@@ -25,7 +29,10 @@ try {
 function Quote-WindowsArgument([string]$Argument) {
     '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
 }
-$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=5m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
+# The optional compatibility matrix starts both EXEs repeatedly; allow the
+# combined regression selection to finish without weakening per-call deadlines.
+$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=8m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
+if ($BaselineExe) { $taskArgs += @('-baseline-exe', $BaselineExe) }
 $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
 $taskStartup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
 # Test harness only: a CIM-created process does not inherit the tool caller's
@@ -51,6 +58,10 @@ $taskMetadata = [ordered]@{
     go_version = (& go version | Out-String).Trim()
     os_version = [Environment]::OSVersion.VersionString
     machine = $env:COMPUTERNAME
+}
+if ($BaselineExe) {
+    $taskMetadata['baseline_exe'] = $BaselineExe
+    $taskMetadata['baseline_sha256'] = (Get-FileHash -Algorithm SHA256 -LiteralPath $BaselineExe).Hash
 }
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'source-identity.json'), ($taskMetadata | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
 Write-Output "Independent tests running; PID $($taskCreated.ProcessId); evidence $taskEvidence"

@@ -122,11 +122,3 @@ func RecoveryResult(dead, completed, writersAbsent, unknown bool, readErr error)
 	}
 	return RecoveryObservationAttached
 }
-
-func ResourceOutcome(receipt b.LifecycleReceipt, callErr error) (string, string) {
-	status, diagnostic := Outcome(receipt, callErr)
-	if callErr == nil && status == "accepted" && receipt.State.ResourceID == "" && receipt.State.WorktreeID == "" && receipt.Process == nil {
-		return "outcome_unknown", "resource lifecycle receipt did not identify its accepted resource"
-	}
-	return status, diagnostic
-}

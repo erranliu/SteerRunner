@@ -2,7 +2,7 @@
 
 同一构建完整三轮：6 个场景、12 个 case，每轮 12/12，合计 **36/36 通过**，首次通过率 100%，管理员 case 无排除。运行时间为北京时间 2026-10-16 05:45:36–08:33:35。此前诊断失败不计入本批，也未覆盖其原始结果；过程与失败历史见 [专属验收记录](../../l3-execution-stability.md)。
 
-此目录为原始结果文件的逐字节副本。运行时的 `source_commit` 为当时基线，`source_dirty=true` 如实记录尚未提交的实施；真正受测来源由 288 个文件的 SHA256 和每现场的构建 SHA256 确定。提交前已重新逐项匹配全部冻结来源。原始路径、时间、PID、状态与摘要均保留；路径字段用于本机追溯，不要求远程审阅者能访问测试主机。
+此目录为原始结果文件的内容副本，Git 可规范化行尾。运行时的 `source_commit` 为当时基线，`source_dirty=true` 如实记录尚未提交的实施；真正受测来源由 288 个文件的 SHA256 和每现场的构建 SHA256 确定。提交前已重新逐项匹配全部冻结来源，受测实施已归档为提交 `9425d2a433d533ae6f3ceee24ec687e60bac6d83`。原始路径、时间、PID、状态与摘要均保留；路径字段用于本机追溯，不要求远程审阅者能访问测试主机。
 
 | 文件 | 内容 |
 | --- | --- |
@@ -17,6 +17,7 @@
 | [watchdog-cleanup.json](watchdog-cleanup.json) | 21 个最后注入记录中的原 watchdog 进程已退出 |
 | [post-run-shells.json](post-run-shells.json) | 批次期间创建的 PowerShell 进程无残留 |
 | [admin-host-cleanup.json](admin-host-cleanup.json) | 受限管理员宿主已退出，待处理请求为零 |
+| [main-integration.md](main-integration.md) | 归档受测提交后整合最新 main 的变更说明和单独回归；不混入完整 L3 三轮结果 |
 
 业务结果分别为 27 个 merged、6 个 stopped、3 个 revoked-unverified。最后一种表示不可达故障窗口中按契约保留未知，恢复后原资源仍已停止。199 个稳定性控制辅助终端已按原身份配对关闭，所有现场均由 Runner 确认原生停止，driver 未代替完成停止。
 

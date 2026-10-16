@@ -614,6 +614,8 @@ func cloneAnswers(values map[string][]string) map[string][]string {
 }
 
 type LifecycleEvent struct {
+	// PublicMessage is an optional bounded native activity hint, not a fact.
+	PublicMessage  *PublicMessage
 	InputWait      bool
 	Diagnostic     string
 	Fact           EventFact
@@ -629,7 +631,16 @@ type LifecycleEvent struct {
 	Processed      chan error
 }
 
+type PublicMessage struct {
+	AttemptID, Generation, SessionID, TurnID, Kind, Text string
+	ObservedAt                                           time.Time
+}
+
 func (event LifecycleEvent) Clone() LifecycleEvent {
+	if event.PublicMessage != nil {
+		message := *event.PublicMessage
+		event.PublicMessage = &message
+	}
 	event.Implementation = cloneImplementationData(event.Implementation)
 	event.Fact = cloneFacts([]EventFact{event.Fact})[0]
 	if event.Candidate != nil {

@@ -33,10 +33,10 @@ func forbidden(path, layer string) bool {
 	if strings.Contains(path, "SteerLine") || strings.Contains(path, "/application") || strings.Contains(path, "/runstate") || strings.Contains(path, "/storage") || strings.Contains(path, "/task") {
 		return true
 	}
-	if layer == "reliable" && (strings.Contains(path, "/workflow") || strings.Contains(path, "/publication")) {
+	if layer == "reliable" && (strings.Contains(path, "/workflow") || strings.Contains(path, "/publication") || strings.Contains(path, "/adapters")) {
 		return true
 	}
-	if layer == "workflow" && (strings.Contains(path, "/adapters") || strings.Contains(path, "/backend")) {
+	if layer == "workflow" && (strings.Contains(path, "/adapters") || strings.Contains(path, "/backend") || strings.Contains(path, "/reliable/operation")) {
 		return true
 	}
 	return false
@@ -70,7 +70,7 @@ func TestSRExecutionDependencyBoundary(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, negative := range []struct{ layer, path string }{{"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
+	for _, negative := range []struct{ layer, path string }{{"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/reliable/operation"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
 		if !forbidden(negative.path, negative.layer) {
 			t.Fatal("guard did not catch a forbidden dependency")
 		}
