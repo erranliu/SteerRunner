@@ -134,3 +134,7 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 
 当前测试建设范围包含 Windows/amd64 本机 Codex L2 和远端 Orca L3。历史取消及失败记录保留；
 支持声明以对应版本的实际三级测试结果为准。
+
+## 环境检查规划入口
+
+2026-10-16 仅规划、先不实现：[无人执行权限与 Git 环境检查 Spec](docs/spec/environment-check.spec.md) · [Plan](docs/spec/environment-check.plan.md) · [专属验收](docs/acceptance/environment-check.md)。本仓维护 Runner 公开契约与执行事实；SteerLine 独立维护调用与展示。沙箱认证工作保持原作用域，整合冲突及远端前置见 Spec。
