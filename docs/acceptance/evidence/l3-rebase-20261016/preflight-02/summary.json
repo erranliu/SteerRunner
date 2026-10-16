@@ -1,0 +1,45 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "e04d07fde31710b5b93d3186010074927a44effc",
+  "source_dirty": false,
+  "started_at": "2026-10-16T02:40:18.2515423Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "test_count": 191,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-02",
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_driver_compile_exit": 0,
+      "exit_code": 0,
+      "level": "L1",
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\633c\\SteerRunner\\.evidence\\l3-rebase-20261016-02\\framework"
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [
+    "orca-remote.smoke",
+    "orca-remote.caller-exit",
+    "orca-remote.connection-reconnect",
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation",
+    "orca-remote.publication-unknown"
+  ],
+  "repeat": 1,
+  "planned_case_count": 12,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "Controlled harness timed out; inspect integration.log",
+  "finished_at": "2026-10-16T02:49:11.9658083Z"
+}

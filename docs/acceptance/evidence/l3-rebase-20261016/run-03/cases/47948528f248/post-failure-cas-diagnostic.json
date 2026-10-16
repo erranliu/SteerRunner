@@ -1,0 +1,43 @@
+{
+  "semantics": "The required resume_required rejection was not observed within five explicit stale_revision refresh attempts; the original case remains failed and did not complete its planned 240-second observation window.",
+  "all_attempts_explicitly_rejected": true,
+  "attempts": [
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 26,
+      "ok": false,
+      "at": "2026-10-16T04:22:07.0662089Z",
+      "request_id": "47948528f248-revoked-feedback-0"
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 28,
+      "ok": false,
+      "at": "2026-10-16T04:22:09.9348514Z",
+      "request_id": "47948528f248-revoked-feedback-1"
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 30,
+      "ok": false,
+      "at": "2026-10-16T04:22:12.8693448Z",
+      "request_id": "47948528f248-revoked-feedback-2"
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 32,
+      "ok": false,
+      "at": "2026-10-16T04:22:15.9259693Z",
+      "request_id": "47948528f248-revoked-feedback-3"
+    },
+    {
+      "error_code": "stale_revision",
+      "expected_revision": 34,
+      "ok": false,
+      "at": "2026-10-16T04:22:19.1711366Z",
+      "request_id": "47948528f248-revoked-feedback-4"
+    }
+  ],
+  "schema": "steerrunner-live-cas-diagnostic/v1",
+  "network_seconds_before_failure_cleanup": 106.7154924
+}

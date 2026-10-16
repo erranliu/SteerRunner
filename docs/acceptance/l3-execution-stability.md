@@ -2,6 +2,8 @@
 
 日期：2026-10-16。依据 [Spec](../spec/l3-execution-stability.spec.md) 和 [Plan](../spec/l3-execution-stability.plan.md)。状态：已实施，同一最终构建完整三轮真机资格验收通过，36/36，首次通过率 100%，无管理员测试排除。此前失败独立保留，不计入本批通过率。
 
+后续主线 rebase 复测另见[2026-10-16 复测记录](l3-rebase-20261016.md)：`e04d07f` 基线加等待门槛修复 `95d24e5` 的完整轮为 10/12，独立补测为 1/2，不可达反馈版本冲突可复现。本页 36/36 为原归档构建的历史资格。
+
 ## 范围与环境
 
 固定六个 L3 场景、十二个 case；完整资格为同一最终构建连续三轮，共三十六次。新增五个场景包含十一个故障 case，原 smoke 保留反馈及真实合并契约。目录为 `tests/catalog.json`，唯一 case 定义为 `internal/testkit/livetest/cases.json`。

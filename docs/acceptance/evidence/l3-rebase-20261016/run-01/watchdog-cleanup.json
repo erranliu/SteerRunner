@@ -1,0 +1,51 @@
+[
+  {
+    "fixture": "3ddbd4c8b4d7",
+    "pid": 33588,
+    "blocked_at": "2026-10-16T01:28:57.8885006Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "80a364f87d59",
+    "pid": 39468,
+    "blocked_at": "2026-10-16T01:43:47.7677668Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "150ca92ed502",
+    "pid": 30772,
+    "blocked_at": "2026-10-16T01:51:43.7834065Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "6f13f73faf23",
+    "pid": 12116,
+    "blocked_at": "2026-10-16T02:03:15.7552349Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "31832bb11815",
+    "pid": 27352,
+    "blocked_at": "2026-10-16T02:07:56.2972329Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "cd059ca8a742",
+    "pid": 7888,
+    "blocked_at": "2026-10-16T02:18:35.2279159Z",
+    "original_exited": true,
+    "pid_reused": false
+  },
+  {
+    "fixture": "4d0507a8f034",
+    "pid": 36136,
+    "blocked_at": "2026-10-16T02:25:15.0490389Z",
+    "original_exited": true,
+    "pid_reused": false
+  }
+]
