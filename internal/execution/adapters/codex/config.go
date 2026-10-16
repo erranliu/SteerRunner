@@ -20,6 +20,8 @@ type Config struct {
 	ServerDir       string
 	Environment     func([]string) []string
 	WorkerRuntime   bool
+	Authentication  *AuthenticationRuntime
+	RemoteName      string
 }
 
 func ValidReasoningEffort(value string) bool {

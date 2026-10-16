@@ -1,0 +1,3 @@
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	19.050s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	5.703s
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	2.328s

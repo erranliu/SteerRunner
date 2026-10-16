@@ -9,6 +9,11 @@ require (
 )
 
 require (
+	github.com/agnivade/levenshtein v1.2.1 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.30 // indirect
+)
+
+require (
 	github.com/coder/websocket v1.8.14
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect

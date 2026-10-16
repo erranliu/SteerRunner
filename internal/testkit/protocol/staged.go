@@ -76,14 +76,14 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		if _, err := git("push", remote, "HEAD:refs/heads/"+branch); err != nil {
 			return "", err
 		}
-		body, _ := json.Marshal(map[string]any{"url": "https://github.com/owner/repo/pull/84", "repository": "owner/repo", "base_branch": "main", "head_repository": "owner/repo", "head_branch": branch, "head_revision": head, "state": "open", "merged": false})
+		body, _ := json.Marshal(map[string]any{"url": "https://controlled.invalid/owner/repo/pull/84", "repository": "owner/repo", "base_branch": "main", "head_repository": "owner/repo", "head_branch": branch, "head_revision": head, "state": "open", "merged": false})
 		if err := os.WriteFile(provider, body, 0600); err != nil {
 			return "", err
 		}
 		if os.Getenv("STEERRUNNER_STAGE_PUBLISH_PLAIN") == "1" {
-			return "Published PR: https://github.com/owner/repo/pull/84", nil
+			return "Published PR: https://controlled.invalid/owner/repo/pull/84", nil
 		}
-		return `{"outcome":"done","outputs":{"pr_url":"https://github.com/owner/repo/pull/84"},"summary":"candidate pushed and PR created"}`, nil
+		return `{"outcome":"done","outputs":{"pr_url":"https://controlled.invalid/owner/repo/pull/84"},"summary":"candidate pushed and PR created"}`, nil
 	}
 	return "", errors.New("fixture received an unknown stage")
 }

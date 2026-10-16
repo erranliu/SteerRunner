@@ -24,6 +24,13 @@ func (l ExecutionLifecycle) writersAbsent(binding Binding) bool {
 	return l.setup.WorkerTreeAbsent != nil && l.setup.WorkerTreeAbsent(*binding.Process)
 }
 
+func (l ExecutionLifecycle) closeAuthentication() error {
+	if auth := l.Backend.Config.Authentication; auth != nil && !auth.Close() {
+		return errors.New("authentication_revocation_unverified: process exited; installation token remains bounded by its recorded expiry")
+	}
+	return nil
+}
+
 // ShutdownLifecycle releases only this worker's owned process tree. It does not
 // send turn/interrupt or claim the interrupted native turn completed.
 func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, owned executionbackend.StopHandle) (executionbackend.LifecycleStateFacts, error) {
@@ -43,7 +50,7 @@ func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot exec
 	defer ticker.Stop()
 	for {
 		if tree, ok := owned.(executionbackend.ProcessTreeHandle); ok && tree.WritersAbsent() && l.Backend.Process.Inspect(&identity) == "process absent" {
-			return executionbackend.LifecycleStateFacts{WorkerAbsent: true, WritersAbsent: true, Stopped: true}, nil
+			return executionbackend.LifecycleStateFacts{WorkerAbsent: true, WritersAbsent: true, Stopped: true}, l.closeAuthentication()
 		}
 		select {
 		case <-ctx.Done():

@@ -30,7 +30,16 @@
       "properties": {
         "executable": {"type": "string", "minLength": 1, "default": "codex.exe"},
         "model": {"type": "string", "minLength": 1},
-        "reasoning_effort": {"enum": ["minimal", "low", "medium", "high", "xhigh", "max", "ultra"], "default": "medium"}
+        "reasoning_effort": {"enum": ["minimal", "low", "medium", "high", "xhigh", "max", "ultra"], "default": "medium"},
+        "github_auth": {
+          "type":"object", "additionalProperties":false, "required":["app_id","installation_id","private_key_env"],
+          "properties": {
+            "app_id":{"type":"integer","minimum":1},
+            "installation_id":{"type":"integer","minimum":1},
+            "private_key_env":{"type":"string","pattern":"^[A-Z][A-Z0-9_]{0,127}$"}
+          },
+          "description":"Execution-host GitHub App key reference. Runner requests one repository, contents/PR write only. Never embed a key or token."
+        }
       }
     },
     "orca-terminal": {

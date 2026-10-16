@@ -1,0 +1,32 @@
+{
+  "approval_policy": "never",
+  "policy": {
+    "excludeSlashTmp": true,
+    "excludeTmpdirEnvVar": true,
+    "networkAccess": true,
+    "type": "workspaceWrite",
+    "writableRoots": [
+      "C:\\srt\\authdiag-2631366071\\repo\\.git\\objects",
+      "C:\\srt\\authdiag-2631366071\\repo\\.git\\refs",
+      "C:\\srt\\authdiag-2631366071\\repo\\.git\\logs",
+      "C:\\srt\\authdiag-2631366071\\repo\\.git\\worktrees\\worker"
+    ]
+  },
+  "process": {
+    "kind": "os",
+    "pid": 47036,
+    "created": "01dd5d2994f29c8e",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "root": "C:/srt\\authdiag-2631366071",
+  "tests": [
+    {
+      "name": "keyring_access",
+      "result": {
+        "exitCode": 0,
+        "stdout": "[{\"reference\":\"gh:github.com:erranliu\",\"win32_error\":5,\"read_succeeded\":false},{\"reference\":\"gh:github.com\",\"win32_error\":5,\"read_succeeded\":false}]\r\n",
+        "stderr": ""
+      }
+    }
+  ]
+}

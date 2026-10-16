@@ -1,0 +1,74 @@
+{
+  "operations": [
+    {
+      "operation_id": "8d87f7efba2f32f28f7a24929402fbb5",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "b9439e8872b644641fba58514122a8d5",
+      "action": "prepare_session",
+      "status": "rejected",
+      "diagnostic": "authentication_reference_missing: configure a repository-scoped GitHub App on the execution host"
+    }
+  ],
+  "run_id": "ebe48b721394cd36ff285e8cb3f0d984",
+  "revision": 9,
+  "title": "SteerRunner L2 local-codex.smoke",
+  "correlation": {
+    "fixture_id": "02ba5748823f",
+    "scenario": "local-codex.smoke"
+  },
+  "input_digest": "4d1da3d3f88ee6f98e852eb98fcda40bed9a20a21cea3149dffb8f0b163ea187",
+  "resource_digest": "c6881820406db68c06d32cad0ba7ee6f144702643b776d3887e22b5111f358fb",
+  "workflow": {
+    "id": "development",
+    "version": 1,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "diagnostic": "authentication_reference_missing: configure a repository-scoped GitHub App on the execution host",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "C:\\srt\\02ba5748823f\\s\\r\\wjs5iggngleloa3hiz42u2n44q\\.git\\worktrees\\aqsuglzjotsemdjhujs3bihg5m\\steerrunner-inputs\\smoke.spec.md",
+      "execution_location": "C:\\srt\\02ba5748823f\\s\\r\\wjs5iggngleloa3hiz42u2n44q\\.git\\worktrees\\aqsuglzjotsemdjhujs3bihg5m\\steerrunner-inputs\\smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "C:\\srt\\02ba5748823f\\s\\r\\wjs5iggngleloa3hiz42u2n44q\\.git\\worktrees\\aqsuglzjotsemdjhujs3bihg5m\\steerrunner-inputs\\smoke.plan.md",
+      "execution_location": "C:\\srt\\02ba5748823f\\s\\r\\wjs5iggngleloa3hiz42u2n44q\\.git\\worktrees\\aqsuglzjotsemdjhujs3bihg5m\\steerrunner-inputs\\smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "workspace_scope": "working_tree",
+    "turn_started": false,
+    "attempt_id": "c6896eec819b955047ab05c7bb060862",
+    "generation": "69bd16f5912e6347d3c4018a7a3e10dc",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "final_available": false,
+    "workspace": "c:\\srt\\02ba5748823f\\s\\workspaces\\aqsuglzjotsemdjhujs3bihg5m",
+    "branch": "codex/runner-ebe48b721394cd36ff285e8cb3f0d984"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false,
+    "reason": "authentication_reference_missing: configure a repository-scoped GitHub App on the execution host"
+  },
+  "created_at": "2026-10-16T04:13:15.865006Z",
+  "updated_at": "2026-10-16T04:13:35.97195Z"
+}

@@ -814,6 +814,7 @@ type LifecycleSetup struct {
 	OwnedProcess       StopHandle
 	WorkerTreeAbsent   func(ProcessIdentity) bool
 	RepositoryPath     string
+	RepositoryURL      string
 	RunDirectory       string
 	CommandTimeout     time.Duration
 	AttemptNumber      int

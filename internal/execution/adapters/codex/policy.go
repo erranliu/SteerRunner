@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-const PolicyContract = "codex-policy-v7:0.159.2:mxc:explicit-roots:server-admin-temp:native-tool-temp:tool-env:git-longpaths-no-maintenance:auto_review"
+const PolicyContract = "codex-policy-v9:0.159.2:mxc:explicit-roots:repository-auth-broker:never"
 const PolicyCodexVersion = "codex-cli 0.159.2"
 
 type Permissions struct {
@@ -23,7 +23,7 @@ func NativePermissions(goos, host, agent string) (Permissions, error) {
 	if goos != "windows" || (host != "local" && host != "orca") || agent != "codex" {
 		return Permissions{}, fmt.Errorf("fixed Codex Windows launch is unsupported for %s/%s/%s", goos, host, agent)
 	}
-	return Permissions{Sandbox: "workspace-write", WindowsSandbox: "mxc", NetworkAccess: true, ApprovalPolicy: "on-request", ApprovalsReviewer: "auto_review", Contract: PolicyContract}, nil
+	return Permissions{Sandbox: "workspace-write", WindowsSandbox: "mxc", NetworkAccess: true, ApprovalPolicy: "never", ApprovalsReviewer: "user", Contract: PolicyContract}, nil
 }
 func VerifyPolicyVersion(version string) error {
 	if strings.TrimSpace(version) != PolicyCodexVersion {
@@ -34,6 +34,7 @@ func VerifyPolicyVersion(version string) error {
 func (p Permissions) Args() []string {
 	return []string{"--config", "sandbox_mode=" + p.Sandbox, "--config", "windows.sandbox=" + p.WindowsSandbox,
 		"--config", "allow_login_shell=false",
+		"--config", "features.shell_snapshot=false", "--config", "features.shell_snapshot_v2=false",
 		"--config", "approval_policy=" + p.ApprovalPolicy, "--config", "approvals_reviewer=" + p.ApprovalsReviewer,
 		"--config", "sandbox_workspace_write.writable_roots=[]", "--config", "sandbox_workspace_write.exclude_tmpdir_env_var=true",
 		"--config", "sandbox_workspace_write.exclude_slash_tmp=true", "--config", "sandbox_workspace_write.network_access=true"}

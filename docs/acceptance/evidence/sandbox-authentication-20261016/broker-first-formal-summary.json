@@ -1,0 +1,59 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "e04d07fde31710b5b93d3186010074927a44effc",
+  "source_dirty": true,
+  "started_at": "2026-10-16T05:31:03.9527953Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "exit_code": 0,
+      "native_zero_match_guard": true,
+      "test_count": 200,
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "skipped_tests": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-host-broker-1\\framework",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-host-broker-1"
+    },
+    {
+      "exit_code": 0,
+      "scenario_count": 12,
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-host-broker-1\\controlled"
+    },
+    {
+      "manifest": "C:\\srt\\b71076c814f1\\manifest.json",
+      "scenario": "local-codex.smoke",
+      "started_at": "2026-10-16T05:40:13.8169837Z",
+      "status": "failed",
+      "repeat_index": 1,
+      "finished_at": "2026-10-16T05:44:27.2058781Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\8876\\SteerRunner\\.evidence\\sandbox-auth\\formal-host-broker-1\\local-codex.smoke-default-r1-fixture.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\b71076c814f1\\evidence",
+      "level": "L2",
+      "error": "Live scenario failed; inspect C:\\srt\\b71076c814f1\\evidence/native.log"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-16T05:44:27.2914554Z"
+}

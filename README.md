@@ -34,7 +34,13 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 
 ## 提交与查看执行
 
-本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。需要已有的 Git/PR provider 登录；Runner 不接收或复制登录凭据。
+本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。
+GitHub worker 默认使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
+Runner 在业务前准备有限期 capability，并执行实际 MXC 工具检查。可选 App 引用位于
+`execution.settings.github_auth`（`app_id`、`installation_id`、`private_key_env`）。认证秘密
+不写进请求、持久化配置或材料；固定 approval never，失败不会回退自动审核发布。
+当前 Orca terminal 的可信认证/同沙箱检查能力尚缺，GitHub 任务在业务前阻断。
+设置、外部前置及受控/真实验收边界见[测试指南](docs/testing.md)和[专属记录](docs/acceptance/sandbox-authentication.md)。
 
 把[契约示例](docs/spec/steerrunner.spec.md)中的仓库、完整 commit、材料、adapter 和 publication 改为自己的环境，保存为 UTF-8 `request.json`：
 

@@ -1,0 +1,78 @@
+{
+  "approval_policy": "never",
+  "process": {
+    "kind": "os",
+    "pid": 24860,
+    "created": "01dd5d227b84a084",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "policy": {
+    "excludeSlashTmp": true,
+    "excludeTmpdirEnvVar": true,
+    "networkAccess": true,
+    "type": "workspaceWrite",
+    "writableRoots": [
+      "C:\\srt\\authdiag-3971120298\\repo\\.git\\objects",
+      "C:\\srt\\authdiag-3971120298\\repo\\.git\\refs",
+      "C:\\srt\\authdiag-3971120298\\repo\\.git\\logs",
+      "C:\\srt\\authdiag-3971120298\\repo\\.git\\worktrees\\worker"
+    ]
+  },
+  "root": "C:/srt\\authdiag-3971120298",
+  "results": [
+    {
+      "name": "identity",
+      "diagnostic": null,
+      "exit_code": 1,
+      "stdout": null
+    },
+    {
+      "name": "token_identity",
+      "diagnostic": null,
+      "exit_code": 0,
+      "stdout": "{\"is_app_container\":1}\r\n"
+    },
+    {
+      "name": "github_auth_status",
+      "diagnostic": "sandbox default token invalid",
+      "exit_code": 1,
+      "stdout": null
+    },
+    {
+      "name": "environment",
+      "diagnostic": null,
+      "exit_code": 0,
+      "stdout": "{\"gh_token_present\":false,\"diagnostic_token_present\":true,\"github_token_present\":false,\"git_config_count_present\":false,\"temp_exists\":true}\r\n"
+    },
+    {
+      "name": "git_admin",
+      "diagnostic": null,
+      "exit_code": 0,
+      "stdout": "ok\r\nok\r\nok\r\nok\r\n"
+    },
+    {
+      "name": "network",
+      "diagnostic": null,
+      "exit_code": 0,
+      "stdout": "200\r\n"
+    },
+    {
+      "name": "github_identity",
+      "diagnostic": "HTTP 401",
+      "exit_code": 1,
+      "stdout": null
+    },
+    {
+      "name": "git_remote",
+      "diagnostic": "      0 [main] sh (39816) C:\\Program Files\\Git\\usr\\bin\\sh.exe: *** fatal error - NtCreateDirectoryObject(\\BaseNamedObjects\\msys-2.0S5-1888ae32e00d56aa): 0xC0000022",
+      "exit_code": 128,
+      "stdout": null
+    },
+    {
+      "name": "git_remote_without_helper",
+      "diagnostic": "fatal: could not read Username for 'https://github.com': terminal prompts disabled\n",
+      "exit_code": 128,
+      "stdout": null
+    }
+  ]
+}

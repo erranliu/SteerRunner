@@ -188,6 +188,7 @@ func (c *HistoryClient) call(ctx context.Context, method string, params any) (js
 type HistoryThread struct {
 	ID    string        `json:"id"`
 	Cwd   string        `json:"cwd"`
+	Path  string        `json:"path,omitempty"`
 	Turns []HistoryTurn `json:"turns"`
 }
 

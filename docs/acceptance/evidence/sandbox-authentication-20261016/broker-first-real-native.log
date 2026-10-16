@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:471: original execution needs intervention: status=blocked phase=result_committed diagnostic=permission: Create PR for codex/runner-3e5fb02cd39adb442a6c4f637c0c85b3; HTTP 403: execution repository or operation denied (https://api.github.com/graphql). PR creation outcome unavailable; query the original PR before retrying.; known=Original branch was pushed to erranliu/SteerlineTest: codex/runner-3e5fb02cd39adb442a6c4f637c0c85b3.; unknown=Whether the original PR was created and its actual URL; original branch/PR reconciliation is required.
+--- FAIL: TestSRLiveScenario (226.95s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (226.92s)
+FAIL

@@ -90,7 +90,7 @@ try {
     $taskEvents = @(Get-Content -LiteralPath (Join-Path $taskOut 'l1.jsonl') | ForEach-Object { $_ | ConvertFrom-Json })
     $taskPassed = @($taskEvents | Where-Object { $_.Action -eq 'pass' -and $_.PSObject.Properties['Test'] -and $_.Test -notmatch '/' }).Count
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
-    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive')
+    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
     $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard}
     Save-Summary
@@ -100,7 +100,9 @@ try {
         $taskControlled = Join-Path $taskOut 'controlled'
         $taskPattern = '^(' + (($taskCatalog.controlled_scenarios | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')$'
         & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern | Out-Host
-        $taskUntil = [DateTime]::UtcNow.AddMinutes(6)
+        # The child owns a 15m aggregate test deadline. Do not declare timeout
+        # before that contract ends; allow only result-file/cleanup latency.
+        $taskUntil = [DateTime]::UtcNow.AddMinutes(15).AddSeconds(30)
         while (-not (Test-Path -LiteralPath (Join-Path $taskControlled 'result.json'))) {
             if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled harness timed out; inspect integration.log' }
             Start-Sleep -Seconds 2

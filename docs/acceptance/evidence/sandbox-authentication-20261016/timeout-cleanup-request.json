@@ -1,0 +1,51 @@
+{
+  "after": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "instance_id": "",
+      "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-1442161568\\runner",
+      "pid": 0,
+      "process_created": "",
+      "status": "unavailable",
+      "detached": false,
+      "version": "",
+      "protocol": "steerrunner-cli/v1",
+      "resource_digest": "",
+      "executable_sha256": ""
+    },
+    "error": null
+  },
+  "stop": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": "timeout-cleanup-1442161568",
+    "data": {
+      "action_status": "pending",
+      "command_id": "33f0410b3a4820955d4ddfc998690591",
+      "instance_id": "2e37edec3a643bf17004b3478dea334c",
+      "receipt_status": "accepted",
+      "run_id": null
+    },
+    "error": null
+  },
+  "before": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "instance_id": "2e37edec3a643bf17004b3478dea334c",
+      "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-1442161568\\runner",
+      "pid": 27020,
+      "process_created": "134365993340798870",
+      "status": "ready",
+      "detached": true,
+      "version": "0.1.0-dev.1",
+      "protocol": "steerrunner-cli/v1",
+      "resource_digest": "c6881820406db68c06d32cad0ba7ee6f144702643b776d3887e22b5111f358fb",
+      "executable_sha256": "3e0b41d189ee31c5ea42766527a62496d6c073ce89074e023a0ff467015e65ae"
+    },
+    "error": null
+  }
+}
