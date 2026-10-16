@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
@@ -26,7 +27,7 @@ var scenarioCount int
 
 // New real-environment workflows register a driver; catalog entries choose
 // that driver and an execution target without changing the meaning of L3.
-var drivers = map[string]func(*testing.T, livetest.Manifest){"development-smoke": developmentSmoke}
+var drivers = map[string]func(*testing.T, livetest.Manifest){"development-smoke": developmentSmoke, "execution-stability": executionStability}
 
 func TestMain(m *testing.M) {
 	flag.Parse()
@@ -50,7 +51,7 @@ func TestMain(m *testing.M) {
 		code = 1
 	}
 	body, _ := json.MarshalIndent(map[string]any{"exit_code": code, "scenario_count": scenarioCount, "finished_at": time.Now().UTC(), "pattern": flag.Lookup("test.run").Value.String()}, "", "  ")
-	if err := os.WriteFile(filepath.Join(*evidenceFlag, "result.json"), body, 0600); err != nil {
+	if err := process.New(0).WriteExecutionFile(filepath.Join(*evidenceFlag, "result.json"), body); err != nil {
 		fmt.Fprintln(log, err)
 		code = 1
 	}
@@ -100,7 +101,7 @@ func save(t *testing.T, name string, value any) {
 	t.Helper()
 	body, err := json.MarshalIndent(value, "", "  ")
 	if err == nil {
-		err = os.WriteFile(filepath.Join(*evidenceFlag, name), body, 0600)
+		err = process.New(0).WriteExecutionFile(filepath.Join(*evidenceFlag, name), body)
 	}
 	if err != nil {
 		t.Fatal(err)
@@ -167,6 +168,31 @@ func inspect(m livetest.Manifest, dir, id string, refresh bool) (contracts.RunVi
 	}
 	err = json.Unmarshal(body, &data)
 	return data.Run, err
+}
+
+// A stale revision proves rejection before acceptance. Only this explicit case
+// permits a refreshed stop with a new request; unknown outcomes retain their ID.
+func revokeOriginalRun(m livetest.Manifest, dir, id, prefix string) error {
+	var last error
+	for attempt := 0; attempt < 5; attempt++ {
+		view, err := inspect(m, dir, id, false)
+		if err != nil {
+			return err
+		}
+		if view.StopStatus == "stopped" && !view.NewInputsAllowed {
+			return nil
+		}
+		req := request(fmt.Sprintf("%s-%d", prefix, attempt), contracts.RevisionInput{ExpectedRevision: view.Revision})
+		response, err := command(m, dir, []string{"stop", "--run-id", id, "--input", "-"}, &req)
+		if err == nil {
+			return nil
+		}
+		last = err
+		if response.Error == nil || response.Error.Code != "stale_revision" {
+			return err
+		}
+	}
+	return fmt.Errorf("stop revision remained unstable after explicit rejections: %w", last)
 }
 
 func shell(t *testing.T, dir, exe string, args ...string) []byte {
@@ -389,8 +415,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 				t.Logf("original remote diagnostic unavailable: %v", diagErr)
 			}
 		}
-		req := request("cleanup-run", map[string]any{"expected_revision": view.Revision})
-		if _, err = command(m, dir, []string{"stop", "--run-id", r.RunID, "--input", "-"}, &req); err != nil {
+		if err = revokeOriginalRun(m, dir, r.RunID, "cleanup-run"); err != nil {
 			t.Error(err)
 			return
 		}

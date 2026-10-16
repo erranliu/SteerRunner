@@ -45,7 +45,7 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
 
-本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；其远端原生闭环尚未验收。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
+本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；远端真机闭环及执行稳定性的已验收范围见[专属记录](docs/acceptance/l3-execution-stability.md)。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
 ## 停服及回执
 
@@ -76,7 +76,8 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 独立三级测试入口见 [测试说明](docs/testing.md)：L1 为规则/组件测试，受控集成为
 L2/L3 前置；L2 在本机真实 Codex + SteerlineTest 上消耗 token、创建并合入 PR；
-L3 为可扩展的真机真实环境场景集，当前包含远端 Orca 完整 smoke。
+L3 为可扩展的真机真实环境场景集，已注册远端 Orca smoke 及五个稳定性场景，合计十二 case。
+实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，完整资格为同构建连续三轮。
 统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
 
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：

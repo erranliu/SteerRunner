@@ -259,6 +259,13 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	next := e.runs[id].Clone()
 	status, diagnostic := reliable.Outcome(receipt, err)
 	next.Intents[index].Request.Operation.Status = b.OperationStatus(status)
+	// Preserve the implementation's committed progress under the same original
+	// operation binding. Missing or foreign receipts never authorize continuation.
+	if receipt.ValidateFor(request) == nil {
+		next.Intents[index].Request.Operation.Receipt = canonical(receipt)
+	} else {
+		next.Intents[index].Request.Operation.Receipt = nil
+	}
 	receipt.Operation = request.Operation
 	next.Intents[index].Receipt = &receipt
 	for i := range next.Snapshot.Operations {

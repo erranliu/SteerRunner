@@ -42,6 +42,25 @@ type Manifest struct {
 	Publication     contracts.Publication `json:"publication"`
 	RemoteRuntimeID string                `json:"remote_runtime_id,omitempty"`
 	CreatedAt       string                `json:"created_at"`
+	CaseID          string                `json:"case_id,omitempty"`
+	RepeatIndex     int                   `json:"repeat_index,omitempty"`
+	Stability       *StabilityConfig      `json:"stability,omitempty"`
+}
+
+type Tool struct {
+	Path   string `json:"path"`
+	SHA256 string `json:"sha256"`
+}
+type StabilityConfig struct {
+	Helper          Tool   `json:"helper"`
+	Firewall        Tool   `json:"firewall"`
+	NativeOrca      Tool   `json:"native_orca"`
+	CLIEntry        Tool   `json:"cli_entry"`
+	RuntimeFiles    Tool   `json:"runtime_files"`
+	AdminHost       string `json:"admin_host,omitempty"`
+	DiagnosticOrca  string `json:"diagnostic_orca"`
+	ExpectedOutcome string `json:"expected_outcome"`
+	TimeoutMinutes  int    `json:"timeout_minutes"`
 }
 
 var idPattern = regexp.MustCompile(`^[a-f0-9]{12}$`)
@@ -50,8 +69,20 @@ var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 
 func (m Manifest) Validate() error {
 	createdAt, createdErr := time.Parse(time.RFC3339Nano, m.CreatedAt)
-	if m.Schema != "steerrunner-test/v1" || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
+	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
+	}
+	if m.Schema == "steerrunner-test/v1" && (m.Driver != "development-smoke" || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+		return errors.New("v1 is reserved for unchanged smoke fixtures")
+	}
+	if m.Schema == "steerrunner-test/v2" {
+		s, c, err := Lookup(m.Scenario, m.CaseID)
+		if err != nil {
+			return err
+		}
+		if m.Driver != "execution-stability" || s.Driver != m.Driver || m.Level != s.Level || m.Stability == nil || m.RepeatIndex < 1 || m.RepeatIndex > 10 || m.Stability.ExpectedOutcome != c.Outcome || m.Stability.TimeoutMinutes != s.TimeoutMinutes || m.Execution.Adapter != "orca-terminal" {
+			return errors.New("invalid stability case contract")
+		}
 	}
 	if m.BaseBranch != "codex/srtest/"+m.ID+"/base" || !revisionPattern.MatchString(m.BaseRevision) || !revisionPattern.MatchString(m.SourceRevision) || !revisionPattern.MatchString(m.SourceCommit) {
 		return errors.New("fixture must freeze source revisions and its dedicated test base")
@@ -91,6 +122,24 @@ func (m Manifest) Validate() error {
 		sum := sha256.Sum256(body)
 		if err != nil || hex.EncodeToString(sum[:]) != strings.ToLower(want) {
 			return fmt.Errorf("frozen fixture input changed: %s", path)
+		}
+	}
+	if m.Stability != nil {
+		for _, tool := range []Tool{m.Stability.Helper, m.Stability.Firewall, m.Stability.NativeOrca, m.Stability.CLIEntry, m.Stability.RuntimeFiles} {
+			actual, err := filepath.EvalSymlinks(tool.Path)
+			rel, relErr := filepath.Rel(root, actual)
+			if err != nil || relErr != nil || !filepath.IsAbs(tool.Path) || rel == "." || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || !strings.EqualFold(actual, tool.Path) {
+				return errors.New("stability tool escapes or redirects fixture")
+			}
+			raw, err := os.ReadFile(actual)
+			sum := sha256.Sum256(raw)
+			if err != nil || hex.EncodeToString(sum[:]) != tool.SHA256 {
+				return errors.New("frozen stability tool changed")
+			}
+		}
+		var settings contracts.OrcaSettings
+		if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.Transport.Executable != m.Stability.Helper.Path {
+			return errors.New("stability transport must use frozen audit helper")
 		}
 	}
 	return nil

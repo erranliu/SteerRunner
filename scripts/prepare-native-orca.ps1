@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $taskInput = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
 $taskRoot = [IO.Path]::GetFullPath($taskInput.root).TrimEnd('\')
-if ($taskInput.schema -ne 'steerrunner-test/v1' -or $taskInput.base_branch -cne ('codex/srtest/' + $taskInput.id + '/base') -or $taskInput.id -notmatch '^[a-f0-9]{12}$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated Runner fixture provenance is incomplete' }
+if ($taskInput.schema -notin @('steerrunner-test/v1','steerrunner-test/v2') -or $taskInput.base_branch -cne ('codex/srtest/' + $taskInput.id + '/base') -or $taskInput.id -notmatch '^[a-f0-9]{12}$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated Runner fixture provenance is incomplete' }
 if (-not [IO.Path]::IsPathRooted($OrcaExe) -or -not (Test-Path -LiteralPath $OrcaExe -PathType Leaf)) { throw 'Use the selected absolute Orca executable' }
 $taskEvidence = Join-Path $taskRoot ('evidence/orca-preparation-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
