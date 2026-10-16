@@ -1,11 +1,7 @@
 package reliable
 
 import (
-	"bytes"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"slices"
@@ -87,27 +83,3 @@ func QualifyInput(input *b.TurnInput, caps b.LifecyclePolicyCapabilities) error 
 func SameInput(candidate *b.TurnInput, input b.TurnInput) bool {
 	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
 }
-
-type SavedIntent struct {
-	Request       []byte
-	PayloadDigest string
-}
-
-func ValidateSavedIntent(saved *SavedIntent, action b.LifecycleAction, input b.LifecycleInput) error {
-	if saved == nil {
-		return errors.New("lifecycle operation is missing")
-	}
-	value, err := InputValue(action, input)
-	if err != nil {
-		return err
-	}
-	wire, err := json.Marshal(value)
-	if err != nil {
-		return err
-	}
-	if !bytes.Equal(saved.Request, wire) || saved.PayloadDigest != Digest(wire) {
-		return errors.New("lifecycle operation input differs from its original durable intent")
-	}
-	return nil
-}
-func Digest(wire []byte) string { value := sha256.Sum256(wire); return hex.EncodeToString(value[:]) }

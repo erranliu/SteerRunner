@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 type auditPort struct{ reportPolicyPort }
@@ -207,8 +208,9 @@ func TestSRWorkflowLegacyRecord(t *testing.T) {
 	if !bytes.Equal(before, after) || rows[0].View().Audit != nil || rows[0].View().Execution.RequestedModel != "" {
 		t.Fatal("legacy input was filled from defaults")
 	}
-	old := &reliable.SavedIntent{Request: before, PayloadDigest: reliable.Digest(before)}
-	if err := reliable.ValidateSavedIntent(old, b.LifecycleStartTurn, b.LifecycleInput{Turn: rows[0].Snapshot.PendingTurn}); err != nil {
+	snapshot := b.LifecycleSnapshot{PendingTurn: rows[0].Snapshot.PendingTurn, Ref: b.ExecutionRef{RunID: "legacy", AttemptID: "attempt"}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "legacy", ExecutionID: "legacy", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
+	intent, err := operation.New("legacy", snapshot, b.LifecycleCandidate{Action: b.LifecycleStartTurn, Input: b.LifecycleInput{Turn: snapshot.PendingTurn}}, "original", "original-key", time.Unix(100, 0))
+	if err != nil || !bytes.Equal(intent.Request.Operation.Request, before) {
 		t.Fatal("old original intent changed", err)
 	}
 	r.Request.Workflow.ID = workflow.AuditedDevelopment

@@ -30,18 +30,4 @@ func TestSRTurnModelBinding(t *testing.T) {
 	if SameInput(&same, input) {
 		t.Fatal("effort changed without new intent")
 	}
-	value := b.LifecycleInput{Turn: &input}
-	raw, err := InputValue(b.LifecycleStartTurn, value)
-	if err != nil {
-		t.Fatal(err)
-	}
-	request, _ := json.Marshal(raw)
-	saved := &SavedIntent{Request: request, PayloadDigest: Digest(request)}
-	if err := ValidateSavedIntent(saved, b.LifecycleStartTurn, value); err != nil {
-		t.Fatal(err)
-	}
-	value.Turn.Model = "changed"
-	if ValidateSavedIntent(saved, b.LifecycleStartTurn, value) == nil {
-		t.Fatal("changed model replay accepted")
-	}
 }

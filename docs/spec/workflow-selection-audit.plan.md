@@ -25,9 +25,9 @@
 | `internal/contracts/run.go`、`view.go` | audit_model、流程相关校验、最小 audit 与请求模型投影 |
 | `internal/resources`、`assets` | 两流程目录/轻量配置、两审计提示词、既有 schema 的新增字段 |
 | `internal/execution/workflow` | Lookup、审计步骤/结果、在原 Route 中加入审计分支和回实施循环 |
-| `internal/application/freeze.go`、`results.go`、`control.go`、`worker.go` | 冻结配置/参数，实施来源、计数、审计问题回答与后继输入的原子提交 |
+| `internal/application/freeze.go`、`results.go`、`control.go`、`feedback.go`、`worker.go` | 冻结配置/参数，实施来源、计数、审计问题回答与后继输入的原子提交 |
 | `internal/runstate/record.go`、workflow Snapshot | 可选审计配置/结果、当前实施报告关联、自动修复计数；复用现有阶段记录 |
-| `internal/execution/backend/session.go`、`reliable/intent.go`、`adapters/codex` | TurnInput 的 model/effort、SameInput、prepared input 比较和原 turn/start 映射 |
+| `internal/execution/backend/session.go`、`reliable/intent.go`、`reliable/operation`、`adapters/codex` | TurnInput 的 model/effort、SameInput、原操作请求/摘要、prepared input 比较和原 turn/start 映射 |
 | `tests/helpers/native`、`tests/integration`、`tests/native` | 逐轮模型断言、修复及恢复场景、最小原生闭环 |
 
 不新增图引擎包，不改 workspace/publication 的业务协议，不更改 storage Format/表结构。不修改 SteerLine UI 或创建新的模型 SDK 调用路径。
@@ -56,7 +56,7 @@
 
 ### P3 反馈、停止、恢复与查询
 
-1. 修正 `control.go` 固定 `Option: implement` 的使用边界：显式反馈重入实施；审计问题答案继续原审计并保留来源；未结束原生问题仍用原精确 route。
+1. 修正 `control.go`/`feedback.go` 中固定 `Option: implement` 的使用边界：显式反馈重入实施；审计问题答案继续原审计并保留来源；未结束原生问题仍用原精确 route。
 2. 复用现有 gate/CAS/NextStage。结果接受、计数、pass 失效、后继输入和事件同事务提交；重复观察不能重复扣预算。stop 与审计结果竞争时，撤销授权后不得发实施或发布。
 3. 重启零输入；resume 先对账原未知操作，继续冻结步骤与模型。业务反馈、重启和 resume 不重置 Run 自动修复总预算，也不跳审计直达 publish。
 4. 最小 audit 投影只显示当前实施报告的结果和计数，历史沿用现有结果/事件；模型只标请求参数。更新 README 的发现/选择/模型样例，无存储目录强制切换。
@@ -85,7 +85,7 @@ go test ./internal/contracts ./internal/execution/workflow ./internal/applicatio
 # B0：现有实际 EXE 入口。
 ./scripts/test-foundation.ps1 -Pattern '^(TestSRRunWorkflow|TestSRPublicationIdentity|TestSRNativeUnknownAndStop|TestSRRestartRequiresResume)$'
 # U1：新增入口，每个用例用 subtest 覆盖相关反例。
-go test ./internal/contracts ./internal/resources ./internal/execution/workflow ./internal/execution/reliable ./internal/execution/adapters/codex ./internal/application -run '^(TestSRWorkflowSelection|TestSRAuditContractAndRouting|TestSRTurnModelBinding|TestSRAuditLifecycle|TestSRFrozenInputRestoration|TestSRWorkflowLegacyRecord|TestSRWorkflowDevelopment|TestSRExecutionDependencyBoundary)$' -count=1 -timeout=2m
+go test ./internal/contracts ./internal/resources ./internal/execution/workflow ./internal/execution/reliable/... ./internal/execution/adapters/codex ./internal/application -run '^(TestSRWorkflowSelection|TestSRAuditContractAndRouting|TestSRTurnModelBinding|TestSRTurnModelOperation|TestSRAuditLifecycle|TestSRFrozenInputRestoration|TestSRWorkflowLegacyRecord|TestSRWorkflowDevelopment|TestSRExecutionDependencyBoundary)$' -count=1 -timeout=2m
 # C1：两个新增实际 EXE 测试入口，分别覆盖选择与审计闭环/控制故障。
 ./scripts/test-foundation.ps1 -Pattern '^(TestSRWorkflowDiscoveryAndSelection|TestSRAuditedWorkflow)$'
 # N1：本仓生成新现场；配置中的执行模型与审计模型须不同。

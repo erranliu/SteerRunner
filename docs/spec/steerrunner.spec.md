@@ -67,7 +67,7 @@ Windows 首版 IPC 使用命名管道。端点绑定规范化 `state-dir`、随�
 
 同一规范化目录最多一个服务写者。并发启动对账同一实例，不生成两个宿主；别名/大小写路径指向同一实际目录时也不能绕过锁。启动失败或实例失效返回明确错误，未证明旧写者结束不得接管。每个状态目录的服务独立管理其 Run。
 
-`submit` 和显式 `service start` 可在服务不存在时启动同目录的后台服务；后台启动不弹可见窗口。服务必须脱离 CLI/调用方的生命周期和会随其退出而结束的 Job 所有权；不能仅创建一个继承父 Job 的子进程就声称常驻。无法独立启动时在接受 Run 前明确失败，允许用户从独立入口启动同一个 serve 宿主，不增加另一种执行机制。`inspect`、`events`、`reply`、`resume`、`stop` 不隐式启动服务，服务不可用时返回 `service_unavailable`。`version` 不需要服务；`service status` 仅核验发现/进程/握手事实，不成为数据库读取后门。
+`submit` 和显式 `service start` 可在服务不存在时启动同目录的后台服务；后台启动不弹可见窗口。服务必须脱离 CLI/调用方的生命周期和会随其退出而结束的 Job 所有权；不能仅创建一个继承父 Job 的子进程就声称常驻。无法独立启动时在接受 Run 前明确失败，允许用户从独立入口启动同一个 serve 宿主，不增加另一种执行机制。`inspect`、`events`、`last-message`、`reply`、`resume`、`stop` 不隐式启动服务，服务不可用时返回 `service_unavailable`。`version` 不需要服务；`service status` 仅核验发现/进程/握手事实，不成为数据库读取后门。
 
 Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止时拒绝；创建成功但仍有关联时，可使用系统自带 Windows PowerShell/CIM 创建挂起进程，核验用户 SID、完整性级别、授权组/权限与 EXE，不能提升权限。系统能力缺失或核验失败明确拒绝。启动意图先保存；原进程创建结果无法核清时，状态/错误为 `startup_unverified`（exit 4），保留原意图，不盲目再次启动。手动 `serve` 的生命周期由独立宿主负责，`detached` 如实报告。
 
@@ -118,6 +118,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 | `submit --state-dir ... --input - --json` | 固定 RunRequest 并接受异步执行；可按第 3 节启动服务 | 原请求的 command_id、run_id、接受状态 |
 | `inspect --state-dir ... --run-id ... --json` | 查询已提交的同一快照；也可用 --request-id 或 --command-id 定位原命令，三个定位参数必须恰选一个 | 原命令回执及关联 RunView；提交丢响应时不需要先知道 Run ID |
 | `events --state-dir ... --run-id ... --after ... --limit ... --json` | 有限分页，省略 after 从起点读取；limit 默认 200，允许 1–500 | 事件页、下一游标、是否还有数据 |
+| `last-message --state-dir ... --run-id ... --json` | 只读进程内最佳努力活动摘要，不启动原生历史读取或新输入 | run_id、attempt_id、message（无样本为 null）；message 包含 Run/Attempt/Session/Turn、kind、text、observed_at |
 | `reply --state-dir ... --run-id ... --input - --json` | 回复指定问题或提交业务反馈，保存后异步对原目标执行 | command 回执；保存、投递、回合开始分别查询 |
 | `resume --state-dir ... --run-id ... --input - --json` | 对当前恢复状态给出新授权，仅在资格满足时继续原会话 | command 回执；实际结果另查 |
 | `stop --state-dir ... --run-id ... --input - --json` | 先持久化撤销本 Run 新输入授权，再按真实能力停止原执行；区分接受、授权撤销、实际停止与未知 | command 回执；实际结果另查 |
@@ -345,3 +346,11 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 自动验收 SR-A01–SR-A12 与人工项 SR-M01 统一见[专属验收](../acceptance/steerrunner.md)。只验证本次独立化及实际支持能力；受控/native/live 证据分开，旧 SteerLine 验收不搬成 Runner 通过结果。不默认跑 Full 或完整真实模型矩阵。
 
 当前文档阶段交付 README、此 Spec、实施 Plan 和专属验收文档，并核对链接、示例 JSON 和覆盖关系；不复制源码、不运行服务或真实模型、不创建/合并 PR、不修改 SteerLine 或安装环境。运行验收入口尚未存在，Plan 标明待建设的真实场景/命令、建设步骤与执行时点；先落实能力，再执行并登记结果。
+
+## 执行可见性
+
+`workflow_changed` 事件在 Run 提交事务内比较前后值，仅 workflow stage/status/diagnostic 发生变化时追加。`transition.from/to` 各含 `workflow_stage`、`workflow_status`、可选 `diagnostic`；外层保留原 event_id、Run/Attempt、revision、created_at。初次提交 from 为空。不用当前 Run 重画缺少 transition 的历史。
+
+`last-message` 返回的 `observed_at` 为现有观察流收到原生通知时的 UTC 时间，不是查询时间；同一摘要重复读取时间不变。只采样本地 Codex completed agentMessage 或固定工具标签，不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，Orca 无样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。
+
+客户端按当前显示的执行按需查询；SteerLine 在页面可见且在线时每 3 秒读取，后台/切换/离开时停止。具体边界与最小验证见[增量 Plan](execution-observability.plan.md)和[验收](../acceptance/execution-observability.md)。

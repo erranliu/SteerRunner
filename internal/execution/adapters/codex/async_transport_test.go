@@ -49,12 +49,16 @@ func TestAsyncQuestionObserveSteerAndReconcile(t *testing.T) {
 	}
 	defer journal.Close()
 	asked := make(chan codexworker.ObservationEvent, 1)
+	sampled := false
 	done := make(chan error, 1)
 	go func() {
 		completed, err := codexworker.Observe(ctx, client, journal, thread.Thread.ID, turn.Turn.ID, nil, func(e codexapp.Envelope) error {
 			_, err := codexworker.ParseAskCall(e, thread.Thread.ID, turn.Turn.ID)
 			return err
 		}, func(e codexworker.ObservationEvent) bool {
+			if e.PublicMessage != nil && e.PublicMessage.Text == "done after answer" && !e.PublicMessage.ObservedAt.IsZero() {
+				sampled = true
+			}
 			if e.Kind == "question" {
 				asked <- e
 			}
@@ -79,6 +83,9 @@ func TestAsyncQuestionObserveSteerAndReconcile(t *testing.T) {
 	}
 	if err := <-done; err != nil {
 		t.Fatal(err)
+	}
+	if !sampled {
+		t.Fatal("native public message did not cross the observer")
 	}
 	confirmed, err := codexworker.AsyncAnswerEvidence(path, thread.Thread.ID, turn.Turn.ID, command, message)
 	if err != nil || !confirmed {
