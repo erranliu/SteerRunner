@@ -1,0 +1,78 @@
+[
+  {
+    "sha256": "8781470016955eadcf95ad09711c2ddf170908cc4ad231aa74ea080a6ae2d912",
+    "path": "internal/application/base_refresh_test.go"
+  },
+  {
+    "sha256": "8d2fd22c1e6b1804a2ada335facf546b3af4ae4331db548f78a6b86cbeb21a5d",
+    "path": "internal/application/freeze.go"
+  },
+  {
+    "sha256": "cc6fd3fbaa18b99afbf8a59c351270a6843893c4d0604a5754a5846572508d55",
+    "path": "internal/application/policy.go"
+  },
+  {
+    "sha256": "e8b56b88125f4ac44bbeb436582d66541b1d6efeebbc22eae77ccbe6a88eca9b",
+    "path": "internal/application/private_repository_test.go"
+  },
+  {
+    "sha256": "213583794ee8b5c18b38c09ab63bef263efaa4e56b381fbdb11cbcc23a354bcf",
+    "path": "internal/execution/adapters/codex/authentication_broker.go"
+  },
+  {
+    "sha256": "cc55e73d2c5377c5c7319f940e29149f429bfad720d76198f8477c517db0fb2e",
+    "path": "internal/execution/adapters/codex/authentication_broker_test.go"
+  },
+  {
+    "sha256": "94cb5dd300a9d0c527f5934e3c064827eba70aaa227098b2888970e782ff0324",
+    "path": "internal/execution/adapters/codex/git_boundary_live_test.go"
+  },
+  {
+    "sha256": "fa79e4d5ded9ec1bafe8358f07c4b054585cb3d6031e6132d0f63c061c27bf61",
+    "path": "internal/execution/adapters/codex/permissions.go"
+  },
+  {
+    "sha256": "ddfdc3b1cdf7e03b2741f0f3b8f4410839e740d376b32c64de64f271ea1cfff9",
+    "path": "internal/execution/adapters/codex/permissions_test.go"
+  },
+  {
+    "sha256": "d809f5603fc070da920d6f3e2611222c72261b84981d35a9bf9b6c5971780a84",
+    "path": "internal/execution/adapters/codex/sandbox_readiness.go"
+  },
+  {
+    "sha256": "e2f558564407c404915708ee79abb9eedaed5d74c6896f393b3f1a0eb216c8dd",
+    "path": "internal/execution/adapters/codex/worker_runtime.go"
+  },
+  {
+    "sha256": "f69e8db363cf8692be5ceb50b18b61a300354d036dd906f8601ebf6d0463a78a",
+    "path": "internal/testkit/livetest/authentication_audit.go"
+  },
+  {
+    "sha256": "8b76a38e74a2df58a1e573b97838a0b3fd95e42e7eead1b69df7dc942c36079a",
+    "path": "internal/testkit/livetest/authentication_audit_test.go"
+  },
+  {
+    "sha256": "d70a21a6f709c8c2a437687ea22c2caa1f1836aedadad95505630120f70c47ff",
+    "path": "internal/testkit/livetest/command_audit.go"
+  },
+  {
+    "sha256": "42178c0f12a87dff7978258e7b05c5606d6686369ba2ea68d274ef26b8e98402",
+    "path": "internal/testkit/livetest/command_audit_test.go"
+  },
+  {
+    "sha256": "59af591acdf724bef85643b0885caf95a2bfdb832e816c7e6ec260fa7fe88cdb",
+    "path": "scripts/new-test-fixture.ps1"
+  },
+  {
+    "sha256": "e5e367d886dec502bee2fc240193674c5aea11cb9df6d0ed9e5f3ec0242399af",
+    "path": "scripts/test.ps1"
+  },
+  {
+    "sha256": "edf4b2c3eff329862c848a0d9c60ee15c589edf5163a91fe9aaf8b36b8508c14",
+    "path": "tests/native/run_test.go"
+  },
+  {
+    "sha256": "9c5b93a7ccacc1178e24b0477287d0544867a3e29e11314c89a7f370c274ea37",
+    "path": "tests/native/sandbox_audit_test.go"
+  }
+]

@@ -33,12 +33,15 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Logf("preserved native diagnostic: %s", root)
-	repo := filepath.Join(root, "repo")
+	// Match the installed Runner's 59-byte state root and 26-byte cache key.
+	// The former objects/.sr-auth-*.sock layout is 124 bytes in this fixture.
+	state := filepath.Join(root, strings.Repeat("x", 58-len(root)))
+	repo := filepath.Join(state, "r", strings.Repeat("r", 26))
 	work := filepath.Join(root, "worker")
 	server := filepath.Join(root, "server")
 	evidence := filepath.Join(root, "evidence")
 	for _, dir := range []string{repo, server, evidence} {
-		if err = os.Mkdir(dir, 0700); err != nil {
+		if err = os.MkdirAll(dir, 0700); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -84,6 +87,15 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	host := process.New(30 * time.Second)
 	canary := a.token
 	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: server, Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Authentication: a, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "diagnostic-generation" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
+	if *authenticationHostBroker {
+		backend.Config.AuthenticationTransport, err = PlanAuthenticationTransport(state, work, a.remoteURL, PolicyResourceIdentity{ProjectID: repo, ExecutionID: backend.Config.RunID, AttemptID: "diagnostic-attempt", Generation: "diagnostic-generation", ConfigDigest: "diagnostic-config"})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(filepath.Join(repo, ".git", "objects", ".sr-auth-12345678.sock")) != 124 || len(filepath.Join(backend.Config.AuthenticationTransport.Directory, "s")) != 90 {
+			t.Fatal("wrong long-path fixture")
+		}
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	h, binding, probeErr := backend.PrepareSession(ctx, Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "business input must not be sent", LinkedWorktreeArgs: roots})
@@ -111,6 +123,11 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 		if !a.Close() {
 			t.Error("controlled token revocation unverified")
 		}
+		if p := backend.Config.AuthenticationTransport; p != nil {
+			if _, err := os.Lstat(p.Directory); !os.IsNotExist(err) {
+				t.Error("authentication socket directory remains", err)
+			}
+		}
 		if host.InspectProcess(&identity) != "process absent" {
 			t.Error("native process exit unverified")
 		}
@@ -127,7 +144,14 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 			Stdout   string `json:"stdout"`
 			Stderr   string `json:"stderr"`
 		}
-		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", []string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")})
+		toolRoots, _ := WritableRoots(backend.toolWriteArgs(roots))
+		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", toolRoots)
+		// The additional grant must not permit writes to the shared parent.
+		outside := filepath.Join(filepath.Dir(backend.Config.AuthenticationTransport.Directory), "outside-canary")
+		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `[IO.File]::WriteAllText(` + psLiteral(outside) + `,'unexpected')`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
+		if _, statErr := os.Stat(outside); err != nil || result.ExitCode == 0 || !os.IsNotExist(statErr) {
+			t.Fatal("authentication parent boundary not enforced", err, result.ExitCode, statErr)
+		}
 		// Query only. No worker business input, Git push, or PR mutation occurs.
 		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `gh pr list --repo erranliu/SteerlineTest --head sandbox-readiness-nonexistent --state all --json url,state`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
 		if err != nil || result.ExitCode != 0 {

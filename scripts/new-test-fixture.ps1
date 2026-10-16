@@ -121,12 +121,14 @@ $null = Invoke-Git @('-C',$taskRepository,'checkout','-b',$taskBase,$taskSourceR
 $taskToolDir = Join-Path $taskRepository 'sr-smoke'
 New-Item -ItemType Directory -Path $taskToolDir | Out-Null
 $taskTemplates = Join-Path $taskRepo 'tests/fixtures/evidence-smoke'
-foreach ($taskName in @('spec.md','plan.md','check.ps1','publish.ps1','pr-list.ps1')) {
+$taskTemplateNames = @('spec.md','plan.md','check.ps1','publish.ps1','pr-list.ps1')
+if ($taskScenario.level -eq 'L2') { $taskTemplateNames = @('spec.md','plan.md','check.ps1') }
+foreach ($taskName in $taskTemplateNames) {
     $taskText = [IO.File]::ReadAllText((Join-Path $taskTemplates $taskName))
     # Windows PowerShell 5 requires a BOM for non-ASCII source literals.
     [IO.File]::WriteAllText((Join-Path $taskToolDir $taskName),$taskText,[Text.UTF8Encoding]::new($taskName.EndsWith('.ps1')))
 }
-Write-JSON (Join-Path $taskToolDir 'publication.json') @{fixture_id=$taskID;base_branch=$taskBase}
+if ($taskScenario.level -ne 'L2') { Write-JSON (Join-Path $taskToolDir 'publication.json') @{fixture_id=$taskID;base_branch=$taskBase} }
 if ($taskStability) {
     foreach ($taskName in @('control.ps1','check.ps1','publish.ps1')) {
         $taskText = [IO.File]::ReadAllText((Join-Path $taskRepo ('tests/fixtures/evidence-stability/' + $taskName)))
@@ -155,6 +157,12 @@ $null = Invoke-Git @('-C',$taskRepository,'add','--','sr-smoke')
 if ($taskStability) { $null = Invoke-Git @('-C',$taskRepository,'add','--','.gitignore') }
 $null = Invoke-Git @('-C',$taskRepository,'-c','user.name=SteerRunner Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m',('Prepare independent smoke ' + $taskID))
 $taskBaseRevision = Invoke-Git @('-C',$taskRepository,'rev-parse','HEAD')
+if ($taskScenario.level -eq 'L2') {
+    # Preserve a real packed reference fixture; the worker must still commit
+    # without root-level packed-refs.lock permission errors.
+    $null = Invoke-Git @('-C',$taskRepository,'pack-refs','--all')
+    if (-not (Test-Path -LiteralPath (Join-Path $taskRepository '.git/packed-refs') -PathType Leaf)) { throw 'L2 packed reference fixture is missing' }
+}
 $taskExe = Join-Path $taskRoot 'bin/steerrunner.exe'
 & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskExe | Out-Host
 $taskBuild = Get-Content -LiteralPath ($taskExe + '.build.json') -Raw | ConvertFrom-Json

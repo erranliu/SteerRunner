@@ -360,6 +360,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	if got := strings.TrimSpace(string(git(t, m, "rev-parse", "HEAD"))); got != m.BaseRevision {
 		t.Fatal("fixture repository base changed")
 	}
+	if m.Level == "L2" {
+		if _, err := os.Stat(filepath.Join(m.RepositoryPath, "sr-smoke", "publish.ps1")); !errors.Is(err, os.ErrNotExist) {
+			t.Fatal("L2 must exercise production publication without the scripted publisher", err)
+		}
+	}
 	base := strings.Fields(string(git(t, m, "ls-remote", "--heads", "origin", "refs/heads/"+m.BaseBranch)))
 	if len(base) != 2 || base[0] != m.BaseRevision || base[1] != "refs/heads/"+m.BaseBranch {
 		t.Fatal("prepare and verify the dedicated remote base before native execution")
@@ -451,6 +456,17 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 					if readErr != nil || json.Unmarshal(body, &cleanup) != nil || !cleanup.Revoked || cleanup.Repository != livetest.Repository {
 						t.Error("worker authentication cleanup is unverified", readErr)
 					}
+					if m.Level == "L2" {
+						var settings contracts.CodexSettings
+						if err := json.Unmarshal(m.Execution.Settings, &settings); err != nil {
+							t.Error(err)
+						}
+						if settings.GitHubAuth == nil {
+							if err := livetest.CheckBrokerCleanup(body); err != nil {
+								t.Error(err)
+							}
+						}
+					}
 					save(t, "authentication-cleanup.json", cleanup)
 				}
 				return
@@ -469,13 +485,36 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	if audited {
 		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel}
 	}
-	input.Workflow.PromptOverrides = smokePromptOverrides()
+	// L2 exercises the production prompts and worker-owned Git/PR commands.
+	// L3 keeps its explicit publisher gates for feedback and fault injection.
+	if m.Level != "L2" {
+		input.Workflow.PromptOverrides = smokePromptOverrides()
+	}
 	checkpoint("submit")
 	req := request("smoke-submit", input)
 	accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
 	r.RunID = accepted.Data.(map[string]any)["run_id"].(string)
 	checkpoint("implementation")
 	first := waitReady(t, m, dir, r.RunID, "")
+	if m.Level == "L2" {
+		common := strings.TrimSpace(string(shell(t, first.Execution.Workspace, "git", "rev-parse", "--path-format=absolute", "--git-common-dir")))
+		if !filepath.IsAbs(common) || !strings.EqualFold(filepath.Base(common), ".git") {
+			t.Fatal("L2 requires the worker's actual Git common directory")
+		}
+		rel, err := filepath.Rel(filepath.Join(dir, "r"), filepath.Dir(common))
+		if err != nil || len(rel) != 26 || strings.ContainsAny(rel, `/\`) {
+			t.Fatal("L2 worker repository is outside the owned compact layout")
+		}
+		packed, err := os.ReadFile(filepath.Join(common, "packed-refs"))
+		if err != nil || !bytes.Contains(packed, []byte("refs/")) {
+			t.Fatal("L2 worker did not retain the packed reference precondition")
+		}
+		registered := string(shell(t, first.Execution.Workspace, "git", "worktree", "list", "--porcelain"))
+		if strings.Count(registered, "worktree ") != 2 || strings.Count(registered, "branch refs/heads/codex/runner-") != 1 {
+			t.Fatal("L2 Git common directory is shared with another worker")
+		}
+		save(t, "worker-git-repository.json", map[string]any{"common": common, "packed_refs": true, "worker_worktrees": 1, "production_prompts": true})
+	}
 	r.PRURL = first.PR.URL
 	r.OriginalHead = first.PR.HeadRevision
 	checkpoint("verify-original-pr")
@@ -506,6 +545,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	updated := first
 	if m.Driver != "development-core" {
 		feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
+		if m.Level == "L2" {
+			feedback = "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan and run the checker. Preserve the original branch, session and PR."
+		}
 		checkpoint("feedback")
 		req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})
 		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)

@@ -2,6 +2,7 @@ package codexworker
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -33,6 +34,7 @@ type EnvironmentCall struct {
 
 type EnvironmentSetup struct {
 	CheckID, Nonce, Directory, Workspace string
+	AuthenticationStateDirectory         string
 	Input                                contracts.CheckInput
 	LinkedWriteArgs                      []string
 }
@@ -80,6 +82,18 @@ func NewEnvironmentSession(setup EnvironmentSetup) (*EnvironmentSession, error) 
 	s.backend = Backend{Config: Config{Executable: settings.Executable, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, Workspace: setup.Workspace, RunDir: setup.Directory, RunID: setup.CheckID, ServerDir: filepath.Join(setup.Directory, "app-server"), Environment: func(env []string) []string {
 		return lifecycleProcessEnvironment(env, setup.CheckID, setup.CheckID, nil)
 	}, WorkerRuntime: true, Authentication: auth, RemoteName: setup.Input.Repository.Remote, EnvironmentCheck: true}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: host.NewProcessGeneration, WriteAtomic: host.WriteExecutionFile}}
+	if config == nil {
+		state := setup.AuthenticationStateDirectory
+		if state == "" {
+			state = setup.Directory
+		}
+		raw, _ := json.Marshal(setup.Input)
+		digest := fmt.Sprintf("%x", sha256.Sum256(raw))
+		s.backend.Config.AuthenticationTransport, err = PlanAuthenticationTransport(state, setup.Workspace, setup.Input.Repository.URL, PolicyResourceIdentity{ProjectID: setup.Input.Repository.URL, ExecutionID: setup.CheckID, AttemptID: setup.Nonce, Generation: setup.Nonce, ConfigDigest: digest})
+		if err != nil {
+			return nil, err
+		}
+	}
 	actions := []string{}
 	for _, item := range contracts.CheckManifest(setup.Input.Publication != nil) {
 		if item.Required {
@@ -140,7 +154,9 @@ func (s *EnvironmentSession) Start(ctx context.Context) (string, error) {
 	if err := s.backend.verifySandboxReadiness(ctx, s.handle, s.input); err != nil {
 		return "", err
 	}
-	params, err := TurnParams(ctx, TurnParamsInput{Worktree: s.setup.Workspace, ThreadID: s.handle.Binding.SessionID, TurnInput: s.input, Sandbox: s.backend.Config.Sandbox, Model: s.backend.Config.Model, ReasoningEffort: s.backend.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return s.setup.LinkedWriteArgs, nil })
+	params, err := TurnParams(ctx, TurnParamsInput{Worktree: s.setup.Workspace, ThreadID: s.handle.Binding.SessionID, TurnInput: s.input, Sandbox: s.backend.Config.Sandbox, Model: s.backend.Config.Model, ReasoningEffort: s.backend.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) {
+		return s.backend.toolWriteArgs(s.setup.LinkedWriteArgs), nil
+	})
 	if err != nil {
 		return "", err
 	}
@@ -199,7 +215,7 @@ func (s *EnvironmentSession) exec(ctx context.Context, body string) (map[string]
 	if s.handle == nil || s.handle.client == nil {
 		return nil, errors.New("original_tool_context_missing")
 	}
-	roots, err := WritableRoots(s.setup.LinkedWriteArgs)
+	roots, err := WritableRoots(s.backend.toolWriteArgs(s.setup.LinkedWriteArgs))
 	if err != nil {
 		return nil, err
 	}
@@ -423,7 +439,7 @@ func EnvironmentDiagnostic(err error) string {
 	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
 		return stage
 	}
-	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed"} {
+	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed", "authentication_api_binding_invalid", "authentication_api_binding_missing", "authentication_api_binding_mismatch", "authentication_api_directory_unverified", "authentication_api_directory_redirected", "authentication_api_directory_unavailable", "authentication_api_directory_conflict", "authentication_api_directory_identity_changed", "authentication_api_socket_identity_changed", "authentication_api_socket_unverified", "authentication_api_socket_unavailable", "authentication_api_config_unavailable"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}

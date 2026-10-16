@@ -26,6 +26,9 @@ func (l ExecutionLifecycle) writersAbsent(binding Binding) bool {
 
 func (l ExecutionLifecycle) closeAuthentication() error {
 	if auth := l.Backend.Config.Authentication; auth != nil && !auth.Close() {
+		if auth.broker != nil {
+			return errors.New("authentication_cleanup_unverified: credential revoked; original socket resources could not be confirmed removed")
+		}
 		return errors.New("authentication_revocation_unverified: process exited; installation token remains bounded by its recorded expiry")
 	}
 	return nil

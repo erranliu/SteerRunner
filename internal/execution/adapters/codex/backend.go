@@ -84,7 +84,9 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	credentialPrepared := false
 	defer func() {
 		if err != nil && fixed.Process == nil && credentialPrepared {
-			b.Config.Authentication.Close()
+			if !b.Config.Authentication.Close() {
+				err = preparationBlocked(errors.Join(err, errors.New("authentication_cleanup_unverified")))
+			}
 		}
 	}()
 	if !executionbackend.StableExecutionID(input.CommandID) || input.Prompt == "" || b.Config.Workspace == "" || b.Config.Executable == "" || fixed.SessionID != "" && !ValidNativeID(fixed.SessionID) {
@@ -115,8 +117,11 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 				if err = workerSetup.Auth.broker.installPublicCA(workerSetup.Temp); err != nil {
 					return nil, receipt, preparationBlocked(err)
 				}
-				roots, _ := WritableRoots(input.LinkedWorktreeArgs)
-				if err = workerSetup.Auth.broker.installAPITransport(workerSetup.Temp, roots); err != nil {
+				plan := b.Config.AuthenticationTransport
+				if plan == nil || !sameWorkspace(plan.Workspace, b.Config.Workspace) || plan.Remote != workerSetup.Auth.remoteURL {
+					return nil, receipt, preparationBlocked(errors.New("authentication_api_binding_mismatch"))
+				}
+				if err = workerSetup.Auth.broker.installAPITransport(workerSetup.Temp, plan); err != nil {
 					return nil, receipt, preparationBlocked(err)
 				}
 			}
@@ -249,7 +254,7 @@ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executio
 	if err := b.verifySandboxReadiness(ctx, h, input); err != nil {
 		return nil, "", preparationBlocked(err)
 	}
-	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return linkedArgs, nil })
+	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return b.toolWriteArgs(linkedArgs), nil })
 	if err != nil {
 		return nil, "", err
 	}

@@ -11,17 +11,18 @@ import (
 )
 
 type LaunchConfig struct {
-	WritableRoots   []string
-	Model           string
-	ReasoningEffort string
-	Executable      string
-	Args            []string
-	Profile         string
-	Workspace       string
-	ServerDir       string
-	Sandbox         string
-	WindowsSandbox  string
-	Runtime         *workerRuntime
+	AuthenticationTransport *AuthenticationTransport
+	WritableRoots           []string
+	Model                   string
+	ReasoningEffort         string
+	Executable              string
+	Args                    []string
+	Profile                 string
+	Workspace               string
+	ServerDir               string
+	Sandbox                 string
+	WindowsSandbox          string
+	Runtime                 *workerRuntime
 }
 
 // LaunchServer starts the fixed native app-server. The caller supplies its
@@ -38,11 +39,23 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	// new session through a pre-existing user daemon with another environment.
 	args := append([]string{"--no-daemon", "--strict-config"}, config.Args...)
 	args = append(args, permissions.Args()...)
-	if len(config.WritableRoots) > 0 {
+	roots := append([]string(nil), config.WritableRoots...)
+	if len(roots) > 0 {
 		if len(config.WritableRoots) != 4 {
 			return identity, nil, "", fmt.Errorf("remote native server needs four verified Git roots")
 		}
-		encoded, _ := json.Marshal(config.WritableRoots)
+	}
+	if plan := config.AuthenticationTransport; plan != nil {
+		if err = plan.validate(); err != nil {
+			return identity, nil, "", err
+		}
+		if len(roots) != 4 || !sameWorkspace(plan.Workspace, config.Workspace) {
+			return identity, nil, "", fmt.Errorf("authentication_api_binding_mismatch")
+		}
+		roots = append(roots, plan.Directory)
+	}
+	if len(roots) > 0 {
+		encoded, _ := json.Marshal(roots)
 		args = append(args, "--config", "sandbox_workspace_write.writable_roots="+string(encoded))
 	}
 	if config.Model != "" {

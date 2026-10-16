@@ -35,6 +35,8 @@ type PolicyResourceBuildRequest struct {
 	GOOS            string
 	Workspace       string
 	LinkedWriteArgs []string
+	RunDirectory    string
+	RepositoryURL   string
 }
 
 type PolicyVersionProbe func(context.Context, string) (string, error)
@@ -47,9 +49,10 @@ type BoundPolicyResources struct {
 // PolicyResourcePayload contains native version, permission contract and launch
 // settings. The center stores it as opaque, identity-bound codec data.
 type PolicyResourcePayload struct {
-	NativeVersion string                         `json:"native_version"`
-	Contract      string                         `json:"contract"`
-	Settings      executionbackend.LaunchCommand `json:"settings"`
+	NativeVersion           string                         `json:"native_version"`
+	Contract                string                         `json:"contract"`
+	Settings                executionbackend.LaunchCommand `json:"settings"`
+	AuthenticationTransport *AuthenticationTransport       `json:"authentication_transport,omitempty"`
 }
 
 func NewPolicyResourceEnvelope(identity PolicyResourceIdentity, payload PolicyResourcePayload) (executionbackend.ImplementationDataEnvelope, error) {
@@ -58,7 +61,7 @@ func NewPolicyResourceEnvelope(identity PolicyResourceIdentity, payload PolicyRe
 		return executionbackend.ImplementationDataEnvelope{}, err
 	}
 	return executionbackend.NewImplementationDataEnvelope(executionbackend.ImplementationDataEnvelope{
-		CodecVersion: 3, Purpose: executionbackend.ImplementationResourcePurpose,
+		CodecVersion: 4, Purpose: executionbackend.ImplementationResourcePurpose,
 		ImplementationKey: PolicyResourcesCodecKey, ProjectID: identity.ProjectID,
 		ExecutionID: identity.ExecutionID, AttemptID: identity.AttemptID,
 		Generation: identity.Generation, ConfigDigest: identity.ConfigDigest,
@@ -118,6 +121,15 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 		return BoundPolicyResources{}, err
 	}
 	payload := PolicyResourcePayload{NativeVersion: version, Contract: permissions.Contract, Settings: command}
+	if request.Host == "local" && settings.GitHubAuth == nil && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
+		payload.AuthenticationTransport, err = PlanAuthenticationTransport(request.RunDirectory, request.Workspace, request.RepositoryURL, request.ResourceIdentity)
+		if err != nil {
+			return BoundPolicyResources{}, err
+		}
+		if permissions.Sandbox == "workspace-write" {
+			roots = append(roots, payload.AuthenticationTransport.Directory)
+		}
+	}
 	envelope, err := NewPolicyResourceEnvelope(request.ResourceIdentity, payload)
 	if err != nil {
 		return BoundPolicyResources{}, err
@@ -149,7 +161,7 @@ func profileConfigFromEnvelopes(data []executionbackend.ImplementationDataEnvelo
 }
 
 func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity) (PolicyResourcePayload, error) {
-	if envelope.ImplementationKey != PolicyResourcesCodecKey || envelope.CodecVersion != 3 {
+	if envelope.ImplementationKey != PolicyResourcesCodecKey || (envelope.CodecVersion != 3 && envelope.CodecVersion != 4) {
 		return PolicyResourcePayload{}, errors.New("unsupported permission resource codec")
 	}
 	if err := envelope.ValidateResourceIdentity(identity.ProjectID, identity.ExecutionID, identity.AttemptID, identity.Generation, identity.ConfigDigest); err != nil {
@@ -164,6 +176,14 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 	}
 	if err := validateNativeLaunchArgs(payload.Settings.Args); err != nil {
 		return PolicyResourcePayload{}, err
+	}
+	if p := payload.AuthenticationTransport; p != nil {
+		if envelope.CodecVersion != 4 || p.Identity != identity || !sameWorkspace(p.Workspace, payload.Settings.WorkingDirectory) {
+			return PolicyResourcePayload{}, errors.New("authentication_api_binding_mismatch")
+		}
+		if err := p.validate(); err != nil {
+			return PolicyResourcePayload{}, err
+		}
 	}
 	return payload, nil
 }

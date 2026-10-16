@@ -649,6 +649,9 @@ func (l *ExecutionLifecycle) ReleasePreparation() {
 
 func (l *ExecutionLifecycle) prepareSession(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, input executionbackend.TurnInput) (executionbackend.LifecycleReceipt, executionbackend.LifecycleObserver, error) {
 	l.ReleasePreparation()
+	if err := l.bindAuthenticationTransport(snapshot); err != nil {
+		return executionbackend.LifecycleReceipt{Disposition: executionbackend.OperationRejected, Diagnostic: err.Error()}, nil, err
+	}
 	fixed, _, err := l.readBinding(snapshot)
 	if err != nil {
 		return executionbackend.LifecycleReceipt{}, nil, err
@@ -698,6 +701,9 @@ func (l *ExecutionLifecycle) prepareSession(ctx context.Context, snapshot execut
 }
 
 func (l *ExecutionLifecycle) startTurn(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, input executionbackend.TurnInput) (executionbackend.LifecycleReceipt, executionbackend.LifecycleObserver, error) {
+	if err := l.bindAuthenticationTransport(snapshot); err != nil {
+		return executionbackend.LifecycleReceipt{Disposition: executionbackend.OperationRejected, Diagnostic: err.Error()}, nil, err
+	}
 	fixed, found, err := l.readBinding(snapshot)
 	if err != nil {
 		return executionbackend.LifecycleReceipt{}, nil, err

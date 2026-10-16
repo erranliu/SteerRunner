@@ -1,0 +1,17 @@
+=== RUN   TestLinkedGitNativeCommit
+    git_boundary_live_test.go:26: preserved Git boundary: C:/srt\git-boundary-2771916332
+=== RUN   TestLinkedGitNativeCommit/baseline
+    git_boundary_live_test.go:65: err=<nil> exit=0 stdout=[boundary b4e7be2] boundary
+         stderr=error: Unable to create 'C:/srt/git-boundary-2771916332/repo/.git/packed-refs.lock': Permission denied
+=== RUN   TestLinkedGitNativeCommit/files
+    git_boundary_live_test.go:65: err=<nil> exit=0 stdout=[boundary dc5f188] boundary
+         stderr=error: Unable to create 'C:/srt/git-boundary-2771916332/repo/.git/packed-refs.lock': Permission denied
+=== RUN   TestLinkedGitNativeCommit/common
+    git_boundary_live_test.go:65: err=<nil> exit=0 stdout=[boundary a1267a9] boundary
+         stderr=
+--- PASS: TestLinkedGitNativeCommit (10.17s)
+    --- PASS: TestLinkedGitNativeCommit/baseline (2.94s)
+    --- PASS: TestLinkedGitNativeCommit/files (2.45s)
+    --- PASS: TestLinkedGitNativeCommit/common (2.87s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	12.148s

@@ -119,9 +119,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	roots, _ := WritableRoots(writeArgs)
-	if err = auth.broker.installAPITransport(worker.Temp, roots); err != nil {
-		return err
-	}
 	dir := RemoteRuntimeDirectory(wd)
 	// Evidence lives outside the workspace and all four writable Git roots.
 	if err = os.MkdirAll(dir, 0700); err != nil {
@@ -133,10 +130,20 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if _, err = os.Stat(filepath.Join(dir, "ready.json")); err == nil {
 		return errors.New("remote_runtime_already_exists; reconcile original session")
 	}
+	plan, err := remoteAuthenticationTransport(c, wd)
+	if err != nil {
+		return err
+	}
+	if err = auth.broker.installAPITransport(worker.Temp, plan); err != nil {
+		return err
+	}
+	if err = remoteTrustedPaths(wd, []string{plan.Directory}, []string{self, native, dir}); err != nil {
+		return err
+	}
 	auth.onClose = func(revoked bool) {
 		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"revocation_confirmed": revoked, "broker": auth.broker.facts()}))
 	}
-	owned, _, endpoint, err := LaunchServer(LaunchConfig{Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
+	owned, _, endpoint, err := LaunchServer(LaunchConfig{AuthenticationTransport: plan, Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
 		return lifecycleProcessEnvironment(env, "remote-runtime", "remote-runtime", nil)
 	})
 	if err != nil {
@@ -150,7 +157,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	defer client.Close()
 	identity := owned.Identity()
 	h := &SessionHandle{Binding: Binding{Process: &identity, Endpoint: endpoint}, Paths: TurnPaths{TurnDir: dir}}
-	backend := Backend{Config: Config{Executable: native, Workspace: wd, Sandbox: permissions.Sandbox, Authentication: auth, RemoteName: "origin"}, Process: ProcessPort{WriteAtomic: host.WriteExecutionFile}}
+	backend := Backend{Config: Config{AuthenticationTransport: plan, Executable: native, Workspace: wd, Sandbox: permissions.Sandbox, Authentication: auth, RemoteName: "origin"}, Process: ProcessPort{WriteAtomic: host.WriteExecutionFile}}
 	if err = backend.checkSandboxReadiness(ctx, h, b.TurnInput{CommandID: "remote-preparation", LinkedWorktreeArgs: writeArgs}, client.Call); err != nil {
 		return err
 	}
@@ -173,7 +180,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	// Codex does not persist an empty thread's rollout. Complete the same
 	// tool-free READY bootstrap used by the terminal launcher before the TUI
 	// resumes it, so a second connection cannot invent a replacement session.
-	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", "Initialize this agent session. Reply READY only. Do not use tools or change files.", permissions.Sandbox, c.Model, c.ReasoningEffort, roots)
+	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", "Initialize this agent session. Reply READY only. Do not use tools or change files.", permissions.Sandbox, c.Model, c.ReasoningEffort, append(roots, plan.Directory))
 	if err != nil {
 		return err
 	}
@@ -240,6 +247,15 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	// policy owns all tool execution; native --remote rejects client overrides.
 	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", []string{"GH_TOKEN", "GITHUB_TOKEN"})
 	return tui.Run()
+}
+
+// Keep the socket below the execution-host state root, rather than the deep
+// Git or protected evidence directory. The exact lease binds the original
+// workspace and frozen public configuration; only its child gets write access.
+func remoteAuthenticationTransport(c RemoteAgentConfig, wd string) (*AuthenticationTransport, error) {
+	state := filepath.Join(os.Getenv("LOCALAPPDATA"), "SteerRunner")
+	id := filepath.Base(RemoteRuntimeDirectory(wd))
+	return PlanAuthenticationTransport(state, wd, c.RepositoryURL, PolicyResourceIdentity{ProjectID: c.RepositoryURL, ExecutionID: id, AttemptID: id, Generation: id, ConfigDigest: RemoteConfigurationDigest(c)})
 }
 
 func remoteTUIArgs(c RemoteAgentConfig, endpoint, session string) []string {

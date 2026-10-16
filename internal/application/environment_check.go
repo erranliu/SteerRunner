@@ -345,7 +345,7 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 	port := w.port
 	var err error
 	if port == nil {
-		port, err = codex.NewEnvironmentSession(codex.EnvironmentSetup{CheckID: id, Nonce: r.Nonce, Directory: checkDirectory(e.dir, id), Workspace: r.Workspace.Path, Input: r.View.Input, LinkedWriteArgs: r.LinkedWriteArgs})
+		port, err = codex.NewEnvironmentSession(codex.EnvironmentSetup{CheckID: id, Nonce: r.Nonce, Directory: checkDirectory(e.dir, id), AuthenticationStateDirectory: e.dir, Workspace: r.Workspace.Path, Input: r.View.Input, LinkedWriteArgs: r.LinkedWriteArgs})
 	}
 	if err != nil {
 		fail("authentication_configuration_failed", err)

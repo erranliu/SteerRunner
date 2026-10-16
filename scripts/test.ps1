@@ -125,6 +125,15 @@ try {
         Save-Summary
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne @($taskCatalog.controlled_scenarios).Count -or (Select-String -LiteralPath (Join-Path $taskControlled 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario' }
     }
+    if (@($taskSelected | Where-Object { $_.id -eq 'local-codex.smoke' -and $_.level -eq 'L2' }).Count) {
+        Write-Host 'Running L2 native Git boundary prerequisite (no model or publication)'
+        $taskGitConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
+        & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskGitConfig.codex_executable 1> (Join-Path $taskOut 'l2-git-boundary.log') 2> (Join-Path $taskOut 'l2-git-boundary-stderr.log')
+        $taskGitCode = $LASTEXITCODE
+        $taskSummary.results += @{level='L2-GitBoundary';exit_code=$taskGitCode;evidence=(Join-Path $taskOut 'l2-git-boundary.log')}
+        Save-Summary
+        if ($taskGitCode -ne 0) { throw 'L2 native Git commit or repository isolation failed' }
+    }
     $taskPrerequisites = @($taskSummary.results)
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
     $taskResolvedProof=if($FeedbackQualification){(Resolve-Path -LiteralPath $FeedbackQualification).ProviderPath}else{''}

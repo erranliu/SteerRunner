@@ -21,8 +21,14 @@ type workerRuntime struct {
 // root. It needs no additional writable root and cannot enter the candidate.
 func prepareWorkerRuntime(worktree string, linkedArgs []string) (*workerRuntime, error) {
 	roots, err := WritableRoots(linkedArgs)
-	if err != nil || len(roots) != 4 {
-		return nil, errors.Join(err, errors.New("worker runtime needs four fixed linked Git roots"))
+	if err != nil || (len(roots) != 4 && len(roots) != 5) {
+		return nil, errors.Join(err, errors.New("worker runtime needs fixed linked Git roots"))
+	}
+	if len(roots) == 5 {
+		verified, verifyErr := PrivateLinkedWorktreeWriteArgs(roots[0], roots[1], roots[2], roots[3])
+		if verifyErr != nil || !strings.EqualFold(filepath.Clean(verified[len(verified)-1]), filepath.Clean(roots[4])) {
+			return nil, errors.New("worker private Git common directory differs from its fixed roots")
+		}
 	}
 	gitfile, err := os.ReadFile(filepath.Join(worktree, ".git"))
 	if err != nil {
@@ -199,6 +205,12 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 		}
 		args = append(args, "--config", "shell_environment_policy.set.GIT_CONFIG_COUNT="+strconv.Quote(strconv.Itoa(count+3)))
 		if broker := r.Auth.broker; broker != nil {
+			if broker.socketLease != nil {
+				if err := broker.socketLease.verify(); err != nil {
+					return nil, err
+				}
+				args = append(args, "--add-dir", broker.socketLease.plan.Directory)
+			}
 			// Public transport values belong to tool policy, not the app-server's
 			// own model/network environment. No machine-wide proxy or trust change.
 			noProxy := ""
