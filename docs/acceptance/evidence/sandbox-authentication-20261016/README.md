@@ -2,6 +2,9 @@
 
 本次结论在 [专属验收](../../sandbox-authentication.md)。本目录仅导出非秘密配置、事实和摘要；
 原始工具诊断、调用日志及所有失败场地保留在原位置。受控无效 canary 不是有效执行凭据。
+最终本机真实通过在 `broker-final-*`：正式 summary、manifest、原/反馈/merged PR、
+6 回合输入与权限 ledger、14 次工具的原生审计、代码匹配及原资源清理。现场
+`C:/srt/19081a536d8f`、测试 PR #330；L3/远端真实闭环仍未验。
 下面原有 final/delivery 名称代表各历史时点，当前默认 gh 代理修订以 `host-broker-*`、
 `broker-first-*`、`broker-compatible-*` 分别记录源码、实际只读回归、首次真实失败及兼容修复。
 `broker-first-formal-summary.json` 保持 L2 失败；其 PR 对账为空、原资源已关闭，原生审计

@@ -6,7 +6,8 @@
 2026-10-16 后续修订：按用户授权，以执行主机已有 gh 登录的单仓库代理作为默认方案，
 App 为可选来源。下表及此前批次段落记录早期 App 方案的历史结果，不能用于新代理版本通过。
 代理版本 `codex-policy-v9` 的新结果单列文末。用户最新要求先提交 PR，再查看第二轮结果；
-因此交付 PR 创建时明确保留 L2 pending，不预报通过。
+因此 [交付 PR #13](https://github.com/erranliu/SteerRunner/pull/13) 创建时明确保留 L2 pending；
+随后第二轮通过，最终结论及构建/清理证据见本文末节。
 
 | 项目 | 当前状态 | 证据/限制 |
 | --- | --- | --- |
@@ -198,3 +199,62 @@ evidence incomplete，并未当作零审批通过。补齐格式后对同一 SHA
 
 最终新批次 `.evidence/sandbox-auth/formal-host-broker-2` 正在执行；源码独立摘要见
 `broker-compatible-source.json`。不复用首轮 PR/head，不拿首轮构建拼接最终通过。
+
+## 最终交付结果：本机 L2Smoke 真实通过
+
+2026-10-16 06:08:11 UTC，正式入口 `formal-host-broker-2/summary.json` 返回 passed，
+非零且精确执行 1 个 L2 case。L1 exit 0 / 200 顶层测试、6 个明确登记 skip；
+完整 Controlled exit 0 / 12 场景。没有在本轮中修改实现、权限配置、版本或模型来绕过失败。
+
+| 验收项 | 本次结论 | 证据 |
+| --- | --- | --- |
+| SA01/03 | 默认宿主 gh 单仓库 broker：受控及真实本机通过；宿主 OAuth 不进入 worker | `broker-compatible-components.log`、`broker-final-worker-process-policy.json`、`broker-final-transport-cleanup.json` |
+| SA02/04/08 | 实际 MXC 就绪后才输入；原会话 6 个业务回合、14 次 native 工具调用，零提权请求/审批/bypass；四个 Git 根与单个工作区保持 | `broker-final-input-permission-ledger.json`、`broker-final-worker-sandbox-audit.json`、`broker-final-sandbox-readiness-audit.json` |
+| SA05 | 本机真实实现、验证、提交、两次 push、创建并复用原 PR、反馈、合并核验和完整 stop 收尾通过 | `broker-final-formal-summary.json`、`broker-final-scenario.json`、`broker-final-original-pr-ready.json`、`broker-final-feedback-pr-ready.json`、`broker-final-merged-run.json` |
+| SA06 | 生成的新冻结材料仅描述产物和最小验证；发布/阶段/权限/认证由 driver/runtime 承担 | 本轮 manifest、Spec/Plan 摘要；清理后的源夹具和驱动 |
+| SA07 | **L3/Orca 真实闭环及稳定性未验**；当前仅实现准备能力缺失时 fail-closed，远端可信准备协议仍需实现 | 远端受控反例；不能以本机或历史审批结果代替 |
+| 可选 App 来源 | issuer/范围/期限/撤销受控通过；真实 App 正例未验 | 本轮正常路径不要求 App，不因没有 App 阻断宿主 gh broker |
+
+实际执行身份：
+
+- 现场 `C:/srt/19081a536d8f`；Runner SHA256
+  `d16357a4b1f36050a087b2eb1d0c65a5414405962c5e0ca4cb44177392f7ff63`；driver
+  `b2459a9e0d920679fa365bc7c133edd4682da99c75f898de2a150ee555bcd81c`。
+- 构建源为 `e04d07fde31710b5b93d3186010074927a44effc-dirty`，在交付提交前冻结。
+  `broker-compatible-source.json` 的 335 个实现/测试/脚本/module 文件在测试结束后逐一核验，
+  与提交 `6818e711c8ee6874799411a00bdc11c014ea9c56` 完全一致，changed_count=0；
+  见 `broker-final-delivery-source-match.json`。没有把后来提交号冒充测试 EXE 的内嵌身份。
+- Codex 固定 `0.159.2`，实际默认模型 `gpt-6.1-sol`、effort medium；6 个 native context
+  均为 never/user/workspace-write/network true，仅原四个 Git roots。AppContainer 身份在实际
+ 准备命令中验证；OS 进程 PID 43688、created `01dd5d33d3623c87` 与原准备记录精确匹配。
+- Run `3aca51937d926e4e7b0e31b87cb0a638`，attempt `7e60509b51ab05a4b5a55b2118db75ab`，
+  generation `ef5b462dad834530094709e1beb9deb1`，session `01a1434d-9529-7083-b796-7fe8882b1ecc`。
+  6 个 distinct dispatch IDs 对应 6 个 distinct native turn IDs，每个就绪检查时间均早于
+  对应 native context；没有因探针重复业务输入、替换会话或恢复旧执行。
+- 专属 base `codex/srtest/19081a536d8f/base`，冻结 revision
+  `897d27b54a3bef904d114af8640c059c61d38c58`；head `codex/runner-3aca51937d926e4e7b0e31b87cb0a638`。
+
+[测试 PR #330](https://github.com/erranliu/SteerlineTest/pull/330) 由沙箱内 worker 创建，
+首次 head `d8c0395d5a4130c3dfe35eaf3d79c33ec80cfe49`，反馈后 head
+`501ab449dfd34eb3f044823bb8e921525440a584`；原 PR 复用后由明确授权的测试 driver
+以匹配 head 的方式合入上述专属 base，merge `8ceb8ba08ba4dce2d83e6541c6a058f3c0eb2442`。
+driver fetch Git objects 校验产物、仅目标文件变更、时间戳及合入内容并重新运行 checker。
+driver 的 base 准备、只读核验和 merge 没有代替 worker 提交、push 或创建 PR。
+
+原生历史 SHA256 `0e6fae1e9025d5bd2696c24693e71791ec9c2c52aaa2034116fbf15d48590851`；
+14 native tool calls、6 contexts，escalations=0、approvals=0、bypasses=0；通知 journal 另查
+审批请求也为零。broker 记录 allowed=37、denied=0、receive-pack=2、PR create=1、query=4；
+因此发布不再依赖自动审批，反馈没有重复创建 PR。只有这个真实回归证明本次 push/create
+可用；准备探针和 dry-run 只证明只读链路及查询兼容性。
+
+最终 `new_inputs_allowed=false`、`stop_status=stopped`；原 worker 进程精确身份已不存在，
+broker closed=true、capability 已失效。原服务 instance `78f3ec407c71764487c78591e47d308d`
+确认停止，shutdown receipt resources_settled=true。见 `broker-final-cleanup-run.json`、
+`broker-final-cleanup-process-audit.json`、`broker-final-transport-cleanup.json`。
+41 个 Runner 材料/日志/数据库及原 rollout 文件的已知 GitHub credential 前缀扫描零命中；
+这是有范围的辅助检查，不宣称检测任意编码秘密。秘密边界还依据受控 canary、argv/
+有限日志测试及宿主 token 不进入子进程的数据流；不导出原始全历史。
+
+本次未使用、修改或重置 `C:/SteerlineInstall`、`C:/SteerlineRuntime` 及其中任务；
+所有失败现场、旧结论和本轮分支/工作区保留。交付 PR #13 已先于第二轮完成创建，
+本节与非秘密证据随后作为验收补充提交，不改变已通过的实现源码。

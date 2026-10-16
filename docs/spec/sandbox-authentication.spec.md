@@ -43,7 +43,7 @@
 | 既有节点/分组 | 本次动作与正常出口 | 异常/恢复边界 | 最小验证 |
 | --- | --- | --- | --- |
 | W05/W06、V01/V02 | 执行主机解析 gh 登录、启动单仓库代理（或可选 App 签发）；原 endpoint/protocol 握手 | 缺登录、401、目标/权限/期限/传输能力不符具体阻断；不创建业务 thread/turn，不自动重试登录 | broker/issuer 受控反例、缺认证零 native start |
-| W07、V02/V03 | 相同 app-server `command/exec`、固定 workspace/Git roots/MXC/network，验证 AppContainer、工具环境、Git 管理目录、GitHub 安装身份/仓库及 remote | 任一工具事实缺失/过滤/拒写/网络/身份失败阻断；不是模型业务回合，不消费或刷新恢复授权 | 确定性 RPC 受控用例、实际 MXC 无效 canary；真实有效认证待凭据 |
+| W07、V02/V03 | 相同 app-server `command/exec`、固定 workspace/Git roots/MXC/network，验证 AppContainer、工具环境、Git 管理目录、GitHub 身份/仓库及 remote | 任一工具事实缺失/过滤/拒写/网络/身份失败阻断；不是模型业务回合，不消费或刷新恢复授权 | 确定性 RPC 受控用例、MXC 无效 canary、默认 broker 真实正例及 L2；可选 App issuer 受控 |
 | W16、V05/V08 | 原 worker 在 never 策略下执行原发布器，复用原 PR；provider 独立只读核验 | 过期或权限拒绝不放宽策略；未知结果沿原分支/PR 对账，不能重复发布 | publisher 固定身份与 query-failure 夹具、原生权限审计、L2 闭环 |
 | W18、V07 | 原 owned 树退出后关闭代理/所有连接并清空内存凭据，或撤销可选 App token；保存非秘密关闭/期限事实 | 清理未确认另记 blocker；保留工作区/历史/PR | broker 关闭、issuer 撤销、原进程停止及 native cleanup.json |
 | 服务换代、V06 | 原身份/Attempt/期限/显式 resume 规则保持 | 不从准备探针恢复旧业务输入，不从历史 ready/旧进程继承秘密；没有实际新准备证据不发送 | 既有重启/未知投递/撤销受控前置 |
