@@ -73,7 +73,9 @@ Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止
 
 CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次输入明确接受后，正常服务实例可继续既定 workflow；客户端进程是否存在不改变其授权。服务停机后的规则见第 8 节。
 
-`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。前者不能报告所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。首版复用后端现有停服行为：本地 owned Codex 有界处理自己的进程树，Orca 可以只结束本地观察。Windows 系统服务注册与开机自启动另行设计。
+`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。停服接受回执不能证明所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。本地 owned Codex 有界处理自己的进程树，Orca 可以只结束本地观察。Windows 系统服务注册与开机自启动另行设计。
+
+服务在所有 worker 退出并读取持久化停止事实后、释放写锁前发布最终结算。`service status` 仅在写锁空闲且无未核实启动时公开 `last_shutdown`，绑定 `instance_id/request_id/state_dir/executable_sha256`，分别返回 `resources_settled` 和诊断；不读取或推导私有执行库。只有全部 Run 已持久化 stopped 且关闭无错误才标为 true；未知、unsupported、观察脱离、缺失证据不等于已停止。新写者获得写锁后首先移除旧结算，防止启动失败或异常退出后继续使用上一代证明。无记录不伪造成功。
 
 ## 4. 状态目录、内嵌资源与环境依赖
 

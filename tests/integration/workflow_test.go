@@ -427,6 +427,11 @@ func TestSRRestartRequiresResume(t *testing.T) {
 	if err := waitOwnedService(info); err != nil {
 		t.Fatal(err)
 	}
+	stoppedService := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
+	proof := stoppedService.LastShutdown
+	if stoppedService.Status != "not_running" || proof == nil || proof.InstanceID != info.InstanceID || proof.RequestID != "service-stop" || !proof.ResourcesSettled || proof.Diagnostic != "" {
+		t.Fatalf("native worker final settlement was not published: %+v", proof)
+	}
 	currentService := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, currentService)
 	current := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.ResumeRequired })

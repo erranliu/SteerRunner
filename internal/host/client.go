@@ -81,7 +81,30 @@ func Status(ctx context.Context, dir string) (contracts.ServiceInfo, *contracts.
 	} else if _, err := os.Stat(bootstrapPath(dir)); err == nil {
 		status = "startup_unverified"
 	}
-	return contracts.ServiceInfo{StateDir: dir, Status: status, Protocol: contracts.Protocol}, nil
+	info := contracts.ServiceInfo{StateDir: dir, Status: status, Protocol: contracts.Protocol}
+	if status == "not_running" {
+		// Hold the writer lease while reading: no replacement can invalidate
+		// this proof and create resources between the ownership check and read.
+		lock, busy, err := tryLock(filepath.Join(dir, "service", "writer.lock"), false)
+		if os.IsNotExist(err) {
+			return info, nil
+		}
+		if err != nil {
+			return info, fault(err, contracts.Fail(4, "service_unavailable", "Cannot verify shutdown ownership."))
+		}
+		if busy {
+			info.Status = "unavailable"
+			return info, nil
+		}
+		if lock != nil {
+			defer lock.Close()
+		}
+		info.LastShutdown, err = readShutdown(dir)
+		if err != nil {
+			return info, fault(err, contracts.Fail(4, "service_unavailable", "Cannot read shutdown evidence."))
+		}
+	}
+	return info, nil
 }
 
 func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo, *contracts.Fault) {
