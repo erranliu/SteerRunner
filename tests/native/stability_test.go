@@ -348,7 +348,7 @@ func (s *stabilityRun) gate(stage string) {
 }
 func (s *stabilityRun) network(action string) {
 	s.note("network-intent", action)
-	if action == "block" {
+	if action == "block" || action == "block-state" {
 		s.blocked = true
 	}
 	cmd := exec.Command("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", s.m.Stability.Firewall.Path, "-Manifest", *manifestFlag, "-Action", action)
@@ -566,11 +566,16 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		s.merge(v)
 	case "orca-remote.connection-reconnect":
-		s.disconnect()
-		s.sameService()
-		s.noMoreInputs(len(before))
-		s.network("restore")
-		s.control("release", "implementation")
+		if m.CaseID == "pre-send-disconnect" {
+			s.control("release", "implementation")
+			s.preSendDisconnect()
+		} else {
+			s.disconnect()
+			s.sameService()
+			s.noMoreInputs(len(before))
+			s.network("restore")
+			s.control("release", "implementation")
+		}
 		v := s.wait("reconnected-original-workflow", 14*time.Minute, func(v contracts.RunView) bool { return v.Status == "pr_ready" })
 		s.sameService()
 		s.check("normal-reconnect-no-resume", !v.ResumeRequired && v.Execution.AttemptID == s.original.AttemptID && v.Execution.Generation == s.original.Generation, "latest-run.json: original Attempt/generation retained without driver resume")
@@ -763,6 +768,50 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		s.auditPermissions()
 	}
 	s.stage("cleanup")
+}
+
+func (s *stabilityRun) preSendDisconnect() {
+	s.stage("await-publication-pre-send")
+	gatePath := filepath.Join(s.m.Root, "evidence", "pre-send-gate.json")
+	until := time.Now().Add(5 * time.Minute)
+	var gate livetest.PreSendGate
+	for time.Now().Before(until) {
+		raw, err := os.ReadFile(gatePath)
+		if err == nil && json.Unmarshal(raw, &gate) == nil {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	s.check("publication-pre-send-gate", gate.View.RunID == s.r.RunID && gate.Terminal == s.process.Terminal && livetest.PublicationPreSend(gate.View, gate.Terminal), "pre-send-gate.json: committed publish input before direct state connect")
+	s.originalIdentity(gate.View)
+	s.network("block-state")
+	if err := os.WriteFile(filepath.Join(s.m.Root, "evidence", "pre-send-released"), []byte("released"), 0600); err != nil {
+		s.t.Fatal(err)
+	}
+	until = time.Now().Add(20 * time.Second)
+	var raw []byte
+	var retried bool
+	for time.Now().Before(until) {
+		returned, err := os.ReadFile(filepath.Join(s.m.Root, "evidence", "pre-send-returned.json"))
+		if err == nil && json.Unmarshal(returned, &gate) == nil {
+			raw, _ = os.ReadFile(filepath.Join(s.m.Root, "evidence", "native-calls.jsonl"))
+			if livetest.PreSendReadRetried(raw, gate) {
+				retried = true
+				break
+			}
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	s.check("pre-send-connection-retried", retried, "pre-send-returned.json and native-calls.jsonl: original readiness retried after a full failed direct dial; zero new sends")
+	if err := os.WriteFile(filepath.Join(s.m.Root, "evidence", "pre-send-retry-audit.jsonl"), raw, 0600); err != nil {
+		s.t.Fatal(err)
+	}
+	v := s.view()
+	s.check("pre-send-authority-retained", v.Status == "running" && v.NewInputsAllowed && !v.ResumeRequired && len(v.Operations) > 0 && v.Operations[len(v.Operations)-1].ID == gate.View.Operations[len(gate.View.Operations)-1].ID, "pre-send-blocked-run.json: original operation/authority retained")
+	save(s.t, "pre-send-blocked-run.json", v)
+	s.r.FaultsHit++
+	s.check("fault-hit", true, "Runner-only direct connection blocked after original publish identity read")
+	s.network("restore")
 }
 
 func (s *stabilityRun) auditPermissions() {

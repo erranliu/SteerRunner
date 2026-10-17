@@ -4,7 +4,7 @@ $ErrorActionPreference='Stop'
 $taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 20){throw 'L3 registry did not expand to twenty cases'}
+if($taskCount -ne 21){throw 'L3 registry did not expand to twenty-one cases'}
 $taskEnvironmentCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.driver -eq 'environment-check'})){$taskEnvironmentCount+=@(Get-SRLiveCases $taskEntry).Count}
 if($taskEnvironmentCount -ne 4){throw 'Environment check registry must include both local and Orca access modes'}
@@ -40,6 +40,8 @@ if(-not (Test-Path -LiteralPath (Join-Path $taskControl 'implementation.entered'
 if($LASTEXITCODE -ne 0){throw 'Released gate did not complete real checker'}
 $taskFake=Join-Path $taskRoot 'wrong-scope.json'
 [IO.File]::WriteAllText($taskFake,(@{schema='steerrunner-test/v2';id='012345abcdef';root=$taskRoot;runner_exe=(Get-Command powershell.exe).Source;stability=@{native_orca=@{path=(Get-Command powershell.exe).Source};helper=@{path=(Get-Command powershell.exe).Source}}}|ConvertTo-Json -Depth 5))
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Repository 'scripts/stability-network.ps1') -Manifest $taskFake -Action block *> (Join-Path $taskRoot 'wrong-scope.log')
-if($LASTEXITCODE -eq 0 -or (Get-Content (Join-Path $taskRoot 'wrong-scope.log') -Raw) -notmatch 'escapes fixture'){throw 'Network scope guard failed'}
+foreach($taskAction in @('block','block-state')){
+ & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Repository 'scripts/stability-network.ps1') -Manifest $taskFake -Action $taskAction *> (Join-Path $taskRoot ('wrong-scope-'+$taskAction+'.log'))
+ if($LASTEXITCODE -eq 0 -or (Get-Content (Join-Path $taskRoot ('wrong-scope-'+$taskAction+'.log')) -Raw) -notmatch 'escapes fixture'){throw 'Network scope guard failed'}
+}
 Write-Output 'Stability registry, bounded gate, real checker and network scope guard passed'
