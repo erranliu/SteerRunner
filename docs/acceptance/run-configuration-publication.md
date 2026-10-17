@@ -36,3 +36,6 @@ The previous evidence remains historical. The review found a caller status/busin
 
 The fix test plan is limited to the above R1/R3 plus caller U1/U3/I1 and the audited product chain. R2 frozen-turn semantics are unchanged and retain their earlier evidence. Cross-repository PRs must land Runner before enabling the new caller with this contract; version text alone cannot substitute for selecting the new SHA/EXE.
 
+
+
+Implementation PRs: [Runner #20](https://github.com/erranliu/SteerRunner/pull/20) and [SteerLine #347](https://github.com/erranliu/SteerLine/pull/347). Caller final U1 passed after integrating its current main; recovery/transaction U3 (77 cases), real EXE I1 and controlled delivery passed. The first new-build audited product attempt completed both audits but was blocked by the native sandbox command readiness gate before publication; no real PR was created and cleanup was complete. It is recorded as a failure, with one fresh isolated retry in progress; the gate is not bypassed and the old submission is not replayed. Detailed native results remain in caller acceptance, rather than inheriting the previous build's N1 success.
