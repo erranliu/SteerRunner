@@ -642,8 +642,14 @@ func (b *authenticationBroker) permitGraphQL(body []byte) bool {
 					}
 					head, hok := input["headRefName"].(string)
 					base, bok := input["baseRefName"].(string)
-					if !hok || !bok || head == "" || base == "" || strings.Contains(head, ":") {
+					if !hok || !bok || head == "" || base == "" {
 						return false
+					}
+					if owner, branch, qualified := strings.Cut(head, ":"); qualified {
+						targetOwner, _, _ := strings.Cut(b.repository, "/")
+						if !strings.EqualFold(owner, targetOwner) || branch == "" || strings.Contains(branch, ":") {
+							return false
+						}
 					}
 					next = "created"
 				case "repo":
@@ -707,6 +713,8 @@ func (b *authenticationBroker) permitGraphQL(body []byte) bool {
 						next = "owner"
 					case "headRepository", "repository":
 						next = "repoMetadata"
+					case "mergeCommit":
+						next = "commitMetadata"
 					default:
 						return false
 					}
@@ -714,6 +722,8 @@ func (b *authenticationBroker) permitGraphQL(body []byte) bool {
 					scalar = s.Name == "login" || s.Name == "id" || s.Name == "name" || s.Name == "__typename"
 				case "ref":
 					scalar = s.Name == "name"
+				case "commitMetadata":
+					scalar = s.Name == "oid"
 				}
 				if scalar {
 					if len(s.SelectionSet) != 0 {
