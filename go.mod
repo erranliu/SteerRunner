@@ -4,6 +4,7 @@ go 1.24.2
 
 require (
 	github.com/Microsoft/go-winio v0.6.2
+	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	golang.org/x/sys v0.38.0
 	modernc.org/sqlite v1.38.2
 )
@@ -11,6 +12,7 @@ require (
 require (
 	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.30 // indirect
+	golang.org/x/text v0.31.0 // indirect
 )
 
 require (

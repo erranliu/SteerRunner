@@ -21,6 +21,9 @@ func Call(ctx context.Context, dir string, options Options, input *contracts.Req
 	if err != nil {
 		return contracts.Response{}, fault(err, contracts.Fail(4, "service_unavailable", "Service discovery is unavailable; start the service explicitly."))
 	}
+	if options.ExpectedInstanceID != "" && options.ExpectedInstanceID != endpoint.Service.InstanceID {
+		return contracts.Response{}, contracts.Fail(5, "stale_instance", "Original Runner instance changed; restart SteerLine explicitly.")
+	}
 	connection, err := dialPipe(ctx, endpoint.Pipe)
 	if err != nil {
 		return contracts.Response{}, contracts.Fail(4, "service_unavailable", "Cannot connect to this directory's service.")

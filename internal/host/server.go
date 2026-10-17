@@ -202,6 +202,9 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	if wire.InstanceID != s.endpoint.Service.InstanceID || wire.Token != s.endpoint.Token || wire.StateDir != s.endpoint.Service.StateDir {
 		return reject(contracts.Fail(5, "stale_instance", "Service target identity does not match."))
 	}
+	if wire.Options.ExpectedInstanceID != "" && wire.Options.ExpectedInstanceID != s.endpoint.Service.InstanceID {
+		return reject(contracts.Fail(5, "stale_instance", "Original Runner instance changed; restart SteerLine explicitly."))
+	}
 	if wire.Request != nil {
 		if wire.Request.Protocol != contracts.Protocol || !contracts.ValidRequestID(id) {
 			return reject(contracts.Fail(2, "invalid_request", "Invalid request envelope."))

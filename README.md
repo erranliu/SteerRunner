@@ -194,3 +194,5 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 ## 环境检查规划入口
 
 2026-10-16 仅规划、先不实现：[无人执行权限与 Git 环境检查 Spec](docs/spec/environment-check.spec.md) · [Plan](docs/spec/environment-check.plan.md) · [专属验收](docs/acceptance/environment-check.md)。本仓维护 Runner 公开契约与执行事实；SteerLine 独立维护调用与展示。沙箱认证工作保持原作用域，整合冲突及远端前置见 Spec。
+
+绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](docs/spec/steerrunner.spec.md)。
