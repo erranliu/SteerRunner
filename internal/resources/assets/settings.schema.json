@@ -29,7 +29,7 @@
             "minLength": 1,
             "pattern": "^\\S(?:.*\\S)?$",
             "not": {
-              "pattern": "[\\u0000-\\u001f\\u007f-\\u009f]"
+              "pattern": "[\u0000-\u001f-]"
             }
           },
           "reasoning_effort": {
@@ -118,7 +118,11 @@
         },
         "model": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "pattern": "^\\S(?:[\\s\\S]*\\S)?$",
+          "not": {
+            "pattern": "[\u0000\r\n]"
+          }
         },
         "reasoning_effort": {
           "enum": [
@@ -203,7 +207,11 @@
               "minLength": 1,
               "description": "Trusted steerrunner-agent executable installed on the execution host; owns host authentication and same-mode native preparation."
             },
-            "runtime_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "Optional frozen SHA256 of the execution-host helper; required in qualification configs." },
+            "runtime_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "Optional frozen SHA256 of the execution-host helper; required in qualification configs."
+            },
             "executable": {
               "type": "string",
               "minLength": 1,

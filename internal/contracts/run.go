@@ -210,6 +210,33 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
+	var fields map[string]json.RawMessage
+	_ = json.Unmarshal(data, &fields)
+	configuration, _ := json.Marshal(map[string]json.RawMessage{"execution": fields["execution"], "workflow": fields["workflow"]})
+	if err := ValidateRunConfiguration(configuration); err != nil {
+		return err
+	}
+	for key := range value.Correlation {
+		if secretArgument.MatchString(key) {
+			return invalid
+		}
+	}
+	return ValidatePublication(value.Repository, value.Publication)
+}
+
+// RunConfiguration is the execution/workflow portion shared by presets and submit.
+type RunConfiguration struct {
+	Execution Execution `json:"execution"`
+	Workflow  Workflow  `json:"workflow"`
+}
+
+// ValidateRunConfiguration is pure admission; it performs no environment I/O.
+func ValidateRunConfiguration(data []byte) *Fault {
+	invalid := Fail(2, "invalid_input", "Run configuration does not satisfy the published contract.")
+	var value RunConfiguration
+	if DecodeStrict(data, &value) != nil {
+		return invalid
+	}
 	profile, supported := workflow.Lookup(value.Workflow.ID, value.Workflow.Version)
 	if !supported {
 		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
@@ -244,15 +271,7 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
-	for key := range value.Correlation {
-		if secretArgument.MatchString(key) {
-			return invalid
-		}
-	}
-	if err := ValidateExecution(value.Execution); err != nil {
-		return err
-	}
-	return ValidatePublication(value.Repository, value.Publication)
+	return ValidateExecution(value.Execution)
 }
 
 func ValidateExecution(value Execution) *Fault {
