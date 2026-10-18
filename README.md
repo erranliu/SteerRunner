@@ -56,6 +56,8 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
 
+同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
+
 本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；远端真机闭环及执行稳定性的已验收范围见[专属记录](docs/acceptance/l3-execution-stability.md)。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
 ## 主动环境检查

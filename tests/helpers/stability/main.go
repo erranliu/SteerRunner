@@ -122,6 +122,11 @@ func main() {
 		callID := contracts.NewID()
 		appendCall(m, map[string]any{"kind": "intent", "call_id": callID, "at": started, "args": args})
 		err = cmd.Run()
+		if err == nil && m.Scenario == "orca-remote.connection-reconnect" && m.CaseID == "pre-send-disconnect" {
+			if gateErr := preSendBarrier(m, args, out.Bytes(), callID); gateErr != nil {
+				fatal(gateErr)
+			}
+		}
 		sum := sha256.Sum256([]byte(fmt.Sprint(args)))
 		entry := map[string]any{"kind": "receipt", "call_id": callID, "at": started, "ended_at": time.Now().UTC(), "argv_sha256": hex.EncodeToString(sum[:]), "command": args[:min(2, len(args))], "args": args, "response": json.RawMessage(out.Bytes()), "failed": err != nil}
 		body, marshalErr := json.Marshal(entry)
@@ -149,4 +154,68 @@ func main() {
 	default:
 		fatal(fmt.Errorf("unsupported helper mode %s", mode))
 	}
+}
+
+func preSendBarrier(m livetest.Manifest, args []string, output []byte, callID string) error {
+	if len(args) < 4 || args[0] != "terminal" || args[1] != "show" {
+		return nil
+	}
+	path := filepath.Join(m.Root, "evidence", "pre-send-gate.json")
+	if _, err := os.Stat(path); err == nil {
+		return nil
+	}
+	var envelope struct {
+		Result struct {
+			Terminal native.Terminal `json:"terminal"`
+		} `json:"result"`
+	}
+	if json.Unmarshal(output, &envelope) != nil || envelope.Result.Terminal.Handle == "" {
+		return nil
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	raw, err := exec.CommandContext(ctx, m.RunnerExe, "inspect", "--request-id", m.ID+"-submit", "--state-dir", filepath.Join(m.Root, "s"), "--json").Output()
+	if err != nil {
+		return err
+	}
+	var view struct {
+		Data struct {
+			Run contracts.RunView `json:"run"`
+		} `json:"data"`
+	}
+	if json.Unmarshal(raw, &view) != nil {
+		return fmt.Errorf("invalid pre-send public snapshot")
+	}
+	if !livetest.PublicationPreSend(view.Data.Run, envelope.Result.Terminal.Handle) {
+		return nil
+	}
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if os.IsExist(err) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	gate := livetest.PreSendGate{CallID: callID, Terminal: envelope.Result.Terminal.Handle, View: view.Data.Run}
+	err = json.NewEncoder(f).Encode(gate)
+	closeErr := f.Close()
+	if err != nil {
+		return err
+	}
+	if closeErr != nil {
+		return closeErr
+	}
+	until := time.Now().Add(25 * time.Second)
+	for time.Now().Before(until) {
+		if _, err := os.Stat(filepath.Join(m.Root, "evidence", "pre-send-released")); err == nil {
+			gate.ReturnedAt = time.Now().UTC()
+			raw, err := json.Marshal(gate)
+			if err != nil {
+				return err
+			}
+			return os.WriteFile(filepath.Join(m.Root, "evidence", "pre-send-returned.json"), raw, 0600)
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	return fmt.Errorf("pre-send fault gate timed out; no input released")
 }

@@ -14,7 +14,7 @@ try {
    $taskResult=@{ok=$false;host_id=$taskHostID;at=[DateTime]::UtcNow.ToString('o')}
    try {
     $taskRequest=Get-Content -LiteralPath $taskRequestFile.FullName -Raw|ConvertFrom-Json
-    if($taskRequest.host_id -ne $taskHostID -or $taskRequest.action -notin @('block','restore')){throw 'Invalid network host request'}
+    if($taskRequest.host_id -ne $taskHostID -or $taskRequest.action -notin @('block','block-state','restore')){throw 'Invalid network host request'}
     $taskManifest=Get-Content -LiteralPath $taskRequest.manifest -Raw|ConvertFrom-Json
     $taskExpected=Join-Path $taskReady.fixture_parent $taskManifest.id
     if($taskManifest.id -notmatch '^[a-f0-9]{12}$' -or [IO.Path]::GetFullPath($taskManifest.root) -ine $taskExpected -or [IO.Path]::GetFullPath($taskRequest.manifest) -ine (Join-Path $taskExpected 'manifest.json')){throw 'Network host fixture scope mismatch'}

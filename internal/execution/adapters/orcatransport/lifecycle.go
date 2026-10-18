@@ -379,6 +379,35 @@ func (l *Lifecycle) ready(ctx context.Context, s b.LifecycleSnapshot) (native.Ag
 	wait, _ := time.ParseDuration(l.profile.WaitTimeout)
 	readyCtx, cancel := context.WithTimeout(ctx, wait)
 	defer cancel()
+	backoff := 250 * time.Millisecond
+	for {
+		// Only failed read-only connections qualify. The protocol bounds each
+		// dial so a stalled connection leaves room in this readiness budget.
+		current, err := l.readyOnce(readyCtx, s)
+		if err == nil {
+			return current, nil
+		}
+		if !native.IsStateConnectionError(err) {
+			return current, err
+		}
+		l.closeStateFeed()
+		timer := time.NewTimer(backoff)
+		select {
+		case <-readyCtx.Done():
+			timer.Stop()
+			return current, fmt.Errorf("original native connection recovery exhausted; no input was sent: %w", errors.Join(err, readyCtx.Err()))
+		case <-timer.C:
+		}
+		if backoff < 2*time.Second {
+			backoff *= 2
+		}
+	}
+}
+
+func (l *Lifecycle) readyOnce(readyCtx context.Context, s b.LifecycleSnapshot) (native.AgentState, error) {
+	if err := readyCtx.Err(); err != nil {
+		return native.AgentState{}, err
+	}
 	if _, err := l.original(readyCtx, s); err != nil {
 		return native.AgentState{}, err
 	}

@@ -66,7 +66,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十三 case 数量；原 11 个
+[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十四 case 数量；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
@@ -284,16 +284,26 @@ v2 配置；保持原生自身认证。完整资格入口：
 
 主测试保持普通用户身份，管理员终端单独运行
 `./scripts/stability-admin-host.ps1 -Directory C:/srt-admin`，并将 v2 配置中的
-`admin_host` 设置为该目录的绝对路径。该宿主只接受固定现场的网络 block/restore，
+`admin_host` 设置为该目录的绝对路径。该宿主只接受固定现场的网络 block/block-state/restore，
 核验宿主 PID/创建时间与原 manifest；每次操作有独立回执和恢复 watchdog。
 宿主最多运行十二小时，可在该目录写入 `stop` 文件结束；先确认本轮故障设施均已恢复。
 重复验收请使用新的空目录，避免上次的 `stop` 文件使宿主立即结束。
+
+`orca-remote.connection-reconnect` 同时运行 `active-disconnect` 和 `pre-send-disconnect`。
+后者在发布输入提交后、首次状态建连前由测试 helper 设门，通过 `block-state` 只阻断
+现场 Runner EXE，保留 CLI 通道；核验原发布 operation 仍处于 in-flight、授权未撤销，
+至少一次建连失败后重新读取原终端，且阻断期无新 send。恢复后无需 resume，到达同一
+原会话/Attempt 的 `pr_ready` 并只发布一次。结果校验独立读取原门、原生调用日志、
+Runner-only 网络 scope 和阻断期快照，不接受仅凭 passed 标志的结论。
+L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗尽、认证/身份变化不可重试、
+恢复后原 provider 绑定及已尝试输入零重发。新 L3 case 仍需有效 v2 配置和管理员故障宿主
+做真机验收；注册和受控测试通过不代表该 case 的真机或并行资格通过。
 
 ```powershell
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十七场景二十三 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮十七场景二十四 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。

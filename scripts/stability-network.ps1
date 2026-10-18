@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$Manifest,[ValidateSet('block','restore','watchdog')][string]$Action='block')
+param([Parameter(Mandatory=$true)][string]$Manifest,[ValidateSet('block','block-state','restore','watchdog')][string]$Action='block')
 $ErrorActionPreference='Stop'
 $taskManifestPath=[IO.Path]::GetFullPath($Manifest)
 $taskM=Get-Content -LiteralPath $taskManifestPath -Raw | ConvertFrom-Json
@@ -47,6 +47,9 @@ if($Action -eq 'watchdog'){
  [IO.File]::WriteAllText((Join-Path $taskRoot 'evidence/network-watchdog-expired.json'),'true')
  exit 1
 }
+# The pre-send case cuts only Runner's direct state connection. The original
+# CLI remains reachable through its fixture-owned helper/Node executables.
+if($Action -eq 'block-state'){$taskPrograms=@($taskM.runner_exe)}
 $taskPrincipal=[Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if(-not $taskPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){throw 'admin_required'}
 [IO.File]::WriteAllText($taskIntent,(@{id=$taskM.id;programs=$taskPrograms;at=[DateTime]::UtcNow.ToString('o')}|ConvertTo-Json))
