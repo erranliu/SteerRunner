@@ -311,6 +311,25 @@
               ]
             }
           }
+        },
+        {
+          "if": {
+            "required": [
+              "github_auth"
+            ]
+          },
+          "then": {
+            "required": [
+              "agent_launch"
+            ],
+            "properties": {
+              "agent_launch": {
+                "required": [
+                  "runtime_executable"
+                ]
+              }
+            }
+          }
         }
       ],
       "properties": {
