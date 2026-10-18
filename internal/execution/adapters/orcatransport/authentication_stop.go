@@ -14,10 +14,11 @@ import (
 )
 
 type authenticationStopJournal struct {
-	Failure string                             `json:"failure,omitempty"`
-	Binding string                             `json:"binding"`
-	Attempt NativeInspection                   `json:"attempt"`
-	Proof   *codex.RemoteAuthenticationCleanup `json:"proof,omitempty"`
+	Failure     string                             `json:"failure,omitempty"`
+	FailureCode string                             `json:"failure_code,omitempty"`
+	Binding     string                             `json:"binding"`
+	Attempt     NativeInspection                   `json:"attempt"`
+	Proof       *codex.RemoteAuthenticationCleanup `json:"proof,omitempty"`
 }
 
 var errAuthenticationProofUnverified = errors.New("original authentication revocation remains unverified")
@@ -82,11 +83,11 @@ func (l *Lifecycle) authenticationStop(ctx context.Context, state State, allowCr
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	if existed && (b.DecodeStrictJSON(raw, &j, "trailing authentication stop checkpoint") != nil || j.Binding != binding || j.Attempt.At.IsZero() || !j.Attempt.Attempted && (j.Attempt.Process != nil || j.Attempt.Unknown || j.Attempt.Closed || j.Proof != nil || j.Failure != "")) {
+	if existed && (b.DecodeStrictJSON(raw, &j, "trailing authentication stop checkpoint") != nil || j.Binding != binding || j.Attempt.At.IsZero() || !j.Attempt.Attempted && (j.Attempt.Process != nil || j.Attempt.Unknown || j.Attempt.Closed || j.Proof != nil || j.Failure != "" || j.FailureCode != "")) {
 		return errors.New("authentication stop checkpoint changed")
 	}
 	if j.Failure != "" {
-		return errAuthenticationProofUnverified
+		return authenticationFailure(j.FailureCode)
 	}
 	save := func() error { body, _ := json.Marshal(j); return l.setup.ProcessHost.WriteExecutionFile(path, body) }
 	if j.Proof != nil {
@@ -156,6 +157,13 @@ func (l *Lifecycle) authenticationStop(ctx context.Context, state State, allowCr
 			}
 			for _, line := range output.Terminal.Tail {
 				line = strings.TrimSpace(line)
+				if strings.HasPrefix(line, codex.RemoteAuthenticationFailurePrefix) {
+					code := strings.TrimPrefix(line, codex.RemoteAuthenticationFailurePrefix)
+					// Re-classify untrusted terminal text through the same finite map.
+					j.FailureCode = codex.RemoteAuthenticationDiagnostic(errors.New(code))
+					j.Failure = "unverified"
+					return errors.Join(authenticationFailure(j.FailureCode), save())
+				}
 				if strings.HasPrefix(line, codex.RemoteAuthenticationPrefix) {
 					body, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteAuthenticationPrefix))
 					var proof codex.RemoteAuthenticationCleanup
@@ -195,6 +203,13 @@ func (l *Lifecycle) authenticationStop(ctx context.Context, state State, allowCr
 		return errors.Join(err, errors.New("original authentication revoker closure remains unverified"))
 	}
 	return nil
+}
+
+func authenticationFailure(code string) error {
+	if code == "" {
+		return errAuthenticationProofUnverified
+	}
+	return errors.Join(errAuthenticationProofUnverified, errors.New(codex.RemoteAuthenticationDiagnostic(errors.New(code))))
 }
 
 // A failed credential receipt never keeps a known auxiliary process alive after

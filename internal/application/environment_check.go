@@ -443,7 +443,10 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 			_ = e.updateCheck(id, func(r *runstate.CheckRecord) {
 				r.Allowed = false
 				r.View.Status = "unverified"
-				r.View.Diagnostic = "original_turn_unsettled"
+				r.View.Diagnostic = codex.EnvironmentDiagnostic(nextErr)
+				if r.View.Diagnostic == "preparation_unverified" {
+					r.View.Diagnostic = "original_turn_unsettled"
+				}
 			})
 			return
 		}

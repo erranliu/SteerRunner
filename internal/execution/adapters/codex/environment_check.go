@@ -441,6 +441,11 @@ func EnvironmentDiagnostic(err error) string {
 	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
 		return stage
 	}
+	for _, stage := range []string{"original_native_connection_lost", "original_native_turn_unsettled", "native_tool_identity_mismatch", "native_tool_nonce_mismatch", "unexpected_native_approval_or_tool_request", "native_command_queue_unavailable", "native_cli_request_unverified"} {
+		if strings.Contains(err.Error(), stage) {
+			return stage
+		}
+	}
 	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed", "authentication_api_binding_invalid", "authentication_api_binding_missing", "authentication_api_binding_mismatch", "authentication_api_directory_unverified", "authentication_api_directory_redirected", "authentication_api_directory_unavailable", "authentication_api_directory_conflict", "authentication_api_directory_identity_changed", "authentication_api_socket_identity_changed", "authentication_api_socket_unverified", "authentication_api_socket_unavailable", "authentication_api_config_unavailable"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage

@@ -31,6 +31,7 @@ func main() {
 				return
 			}
 		}
+		fmt.Fprintln(os.Stdout, codex.RemoteAuthenticationFailurePrefix+codex.RemoteAuthenticationDiagnostic(err))
 		fmt.Fprintln(os.Stderr, "remote authentication stop unverified")
 		os.Exit(1)
 	}

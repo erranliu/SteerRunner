@@ -10,12 +10,13 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
 
 func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
-	for _, mode := range []string{"success", "queued-create", "lost-read", "lost-close-absent", "unknown-create", "wrong-session", "wrong-runtime", "wrong-incarnation", "revocation-unconfirmed"} {
+	for _, mode := range []string{"success", "queued-create", "lost-read", "lost-close-absent", "unknown-create", "wrong-session", "wrong-runtime", "wrong-incarnation", "revocation-unconfirmed", "finite-failure"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s := fixture(t)
 			receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -97,6 +98,10 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 					result = map[string]any{"terminal": shown}
 				case "terminal read":
 					reads++
+					if mode == "finite-failure" {
+						result = map[string]any{"terminal": map[string]any{"handle": "auth-actor", "tail": []string{codex.RemoteAuthenticationFailurePrefix + "remote_authentication_helper_mismatch", "remote authentication stop unverified"}}}
+						break
+					}
 					if mode == "lost-read" && reads == 1 {
 						return nil, errors.New("read lost")
 					}
@@ -125,6 +130,14 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 				}
 			}
 			err = l.revokeAuthentication(context.Background(), state)
+			if mode == "finite-failure" {
+				if err == nil || !strings.Contains(err.Error(), "remote_authentication_helper_mismatch") {
+					t.Fatal("finite cause lost", err)
+				}
+				if err = l.reconcileAuthenticationStop(context.Background(), state); err == nil || !strings.Contains(err.Error(), "remote_authentication_helper_mismatch") || creates != 1 {
+					t.Fatal("restart lost finite cause or repeated create", err, creates)
+				}
+			}
 			if mode == "queued-create" {
 				if err == nil || creates != 0 {
 					t.Fatal("queued revoker was invoked", err, creates)

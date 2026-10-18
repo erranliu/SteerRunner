@@ -7,10 +7,35 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
 const RemoteAuthenticationPrefix = "SR_REMOTE_AUTHENTICATION_STOP:"
+const RemoteAuthenticationFailurePrefix = "SR_REMOTE_AUTHENTICATION_FAILURE:"
+
+// RemoteAuthenticationDiagnostic exports only a finite category, never an OS
+// path, provider response, command output or credential-bearing error message.
+func RemoteAuthenticationDiagnostic(err error) string {
+	if err == nil {
+		return ""
+	}
+	for _, code := range []string{"remote_authentication_binding_invalid", "remote_authentication_helper_mismatch", "remote_authentication_configuration_mismatch", "remote_authentication_original_owner_absent", "remote_authentication_original_owner_changed", "remote_authentication_original_owner_unavailable", "remote_authentication_stop_conflict", "remote_authentication_stop_request_unverified", "remote_authentication_cleanup_unverified", "remote_authentication_stop_deadline", "remote_authentication_stop_canceled", "remote_authentication_stop_permission_denied", "remote_authentication_stop_unverified"} {
+		if strings.Contains(err.Error(), code) {
+			return code
+		}
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return "remote_authentication_stop_deadline"
+	}
+	if errors.Is(err, context.Canceled) {
+		return "remote_authentication_stop_canceled"
+	}
+	if errors.Is(err, os.ErrPermission) {
+		return "remote_authentication_stop_permission_denied"
+	}
+	return "remote_authentication_stop_unverified"
+}
 
 type RemoteAuthenticationQuery struct {
 	Workspace string `json:"workspace"`
@@ -73,8 +98,15 @@ func RevokeRemoteAuthentication(ctx context.Context, q RemoteAuthenticationQuery
 	if proof, e := readRemoteAuthenticationCleanup(dir, ready); e == nil {
 		return proof, nil
 	}
-	if process.Probe(&ready.Process).State != "matches" {
-		return RemoteAuthenticationCleanup{}, errors.New("remote_authentication_original_owner_unavailable")
+	if probe := process.Probe(&ready.Process); probe.State != "matches" {
+		code := "remote_authentication_original_owner_unavailable"
+		if probe.State == "absent" {
+			code = "remote_authentication_original_owner_absent"
+		}
+		if probe.State == "pid-reused" {
+			code = "remote_authentication_original_owner_changed"
+		}
+		return RemoteAuthenticationCleanup{}, errors.New(code)
 	}
 	signal, _ := json.Marshal(remoteAuthenticationSignal{Session: ready.SessionID, ConfigurationDigest: ready.ConfigurationDigest})
 	path := filepath.Join(dir, "authentication-stop.json")

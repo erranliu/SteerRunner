@@ -51,9 +51,16 @@ func NewRemoteEnvironmentSession(setup codex.RemoteCheckSetup, endpoint string) 
 		}
 		callCtx, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
-		return native.SerializeCLI(callCtx, func(ctx context.Context) ([]byte, error) {
+		out, err := native.SerializeCLI(callCtx, func(ctx context.Context) ([]byte, error) {
 			return host.OutputCommand(ctx, b.LaunchCommand{Executable: settings.Transport.Executable, Args: all, Timeout: timeout, BlockedEnvironment: []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}})
 		})
+		if native.IsCLIQueueError(err) {
+			return nil, fmt.Errorf("native_command_queue_unavailable: %w", err)
+		}
+		if err != nil {
+			return nil, errors.New("native_cli_request_unverified")
+		}
+		return out, nil
 	}})
 	return s, nil
 }
