@@ -128,7 +128,15 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 			}
 			blocked = []string{"ORCA_ENVIRONMENT"}
 		}
-		return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+		invoke := func(ctx context.Context) ([]byte, error) {
+			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+		}
+		if l.nativeAccess {
+			callCtx, cancel := context.WithTimeout(ctx, timeout)
+			defer cancel()
+			return native.SerializeCLI(callCtx, invoke)
+		}
+		return invoke(ctx)
 	}
 	l.client = native.New(native.Config{CommandTimeout: "40s", Target: p.Target(), Output: call})
 	return l, nil
@@ -546,7 +554,10 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		return receipt, err
 	}
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, TurnID: input.CommandID, SessionAvailable: true, WorkerLive: true}
-	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", wirePrompt(turn), "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
+	// Capture acceptance promptly; the original native history/state supplies
+	// start/completion evidence. A 30s CLI wait would hold the shared file lock
+	// while other Runs need independent preparation/observation calls.
+	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", wirePrompt(turn), "--enter", "--retry-request", turn.Request, "--json")
 	receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
 	var sent struct {
 		Send struct {

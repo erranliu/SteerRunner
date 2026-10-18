@@ -44,6 +44,13 @@ L3 的正交性按主要验证目标判断：新增 workflow、交互路径、�
 会话、分支和 PR 独立。该 case 仍须与其它 case 隔离。独立服务的测试并行通过，不能替代
 同一服务的多 Run 隔离验证；产品允许的资源排队也不能误判为要求所有 Run 同时执行。
 
+Windows 的 Orca CLI 会刷新同一用户的环境配置文件，多个进程同时调用会产生
+`orca-environments.json` 的 `EPERM rename`。Runner、真机诊断和 fixture 准备共用
+`%LOCALAPPDATA%/SteerRunner/orca-cli.lock` 的内核文件互斥，只串行 CLI 进程，远端
+Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启动命令，不重试未知发送。
+业务 send 立即捕获受理回执，实际开始/完成继续由原 native history/state 证明，
+不在持锁的 CLI 内等待模型回合。原始失败批次保留，不能用重跑改写首轮结果。
+
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
 PR。目前固定 16 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、

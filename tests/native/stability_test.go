@@ -44,6 +44,7 @@ type stabilityRun struct {
 	disconnectedAt         time.Time
 	auxiliary              map[string]b.ProcessIdentity
 	auxiliaryCreatePending bool
+	auditedPrompts         []string
 }
 
 func (s *stabilityRun) note(kind string, value any) {
@@ -151,7 +152,9 @@ func (s *stabilityRun) diagnostic(ctx context.Context, args ...string) ([]byte, 
 		if !hasJSON {
 			argv = append(argv, "--json")
 		}
-		out, err := exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		out, err := orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+			return exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		})
 		s.note("diagnostic-attempt", map[string]any{"args": args, "output": string(out), "error": fmt.Sprint(err)})
 		v, parseErr := orca.ParseEnvelope(out)
 		if v.OK && v.Meta.RuntimeID != s.m.RemoteRuntimeID {
@@ -762,7 +765,8 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		s.check("single-native-publication", pubs == 1 && creates == 1, "native-publication-audit.json: publisher/create counts")
 	}
-	s.r.AuditComplete = s.completeNativeReceipts(keys)
+	s.auditedPrompts = append([]string(nil), keys...)
+	s.r.AuditComplete = s.completeNativeReceipts(s.auditedPrompts)
 	s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json: original business receipts and every bound readonly inspector closed; no new business input")
 	if m.Stability.ExpectedOutcome != "merged" {
 		s.auditPermissions()
@@ -1092,6 +1096,15 @@ func (s *stabilityRun) cleanup() {
 	}
 	if !s.r.Cleanup.ServiceStopped {
 		s.t.Error("current service exit unconfirmed")
+	}
+	if s.r.AuditComplete && s.r.Cleanup.NativeStopped && s.r.Cleanup.ServiceStopped {
+		// Stop adds the bound authentication revoker to the original raw journal.
+		// Recheck the final journal with the already-frozen business prompt list;
+		// never compare a pre-stop auxiliary count with post-stop receipts.
+		if !s.completeNativeReceipts(s.auditedPrompts) {
+			s.r.AuditComplete = false
+			s.t.Error("final original receipt audit changed or cleanup remains unverified")
+		}
 	}
 	save(s.t, "cleanup.json", s.r.Cleanup)
 }

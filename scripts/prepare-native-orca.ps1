@@ -4,6 +4,7 @@ param(
     [Parameter(Mandatory=$true)][string]$Environment
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'orca-cli-lock.ps1')
 $taskInput = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
 $taskRoot = [IO.Path]::GetFullPath($taskInput.root).TrimEnd('\')
 if ($taskInput.schema -notin @('steerrunner-test/v1','steerrunner-test/v2') -or $taskInput.base_branch -cne ('codex/srtest/' + $taskInput.id + '/base') -or $taskInput.id -notmatch '^[a-f0-9]{12}$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated Runner fixture provenance is incomplete' }
@@ -12,8 +13,9 @@ $taskEvidence = Join-Path $taskRoot ('evidence/orca-preparation-' + [Guid]::NewG
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
 $taskCallCount = 0
 function Invoke-TaskOrca([string[]]$Arguments) {
-    $taskRaw = & $OrcaExe @Arguments --environment $Environment --json
-    $taskCode = $LASTEXITCODE
+    $taskCall = Invoke-SRLockedOrca -Executable $OrcaExe -Arguments @($Arguments + @('--environment',$Environment,'--json'))
+    $taskRaw = $taskCall.output
+    $taskCode = $taskCall.exit_code
     $taskValue = $taskRaw | ConvertFrom-Json
     $script:taskCallCount++
     $taskRecord = @{at=[DateTime]::UtcNow.ToString('o');arguments=$Arguments;exit_code=$taskCode;response=$taskValue}

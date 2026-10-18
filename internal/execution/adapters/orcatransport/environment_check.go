@@ -49,7 +49,11 @@ func NewRemoteEnvironmentSession(setup codex.RemoteCheckSetup, endpoint string) 
 		if setup.Input.Execution.Target.Environment != "" {
 			all = append(all, "--environment", setup.Input.Execution.Target.Environment)
 		}
-		return host.OutputCommand(ctx, b.LaunchCommand{Executable: settings.Transport.Executable, Args: all, Timeout: timeout, BlockedEnvironment: []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}})
+		callCtx, cancel := context.WithTimeout(ctx, timeout)
+		defer cancel()
+		return native.SerializeCLI(callCtx, func(ctx context.Context) ([]byte, error) {
+			return host.OutputCommand(ctx, b.LaunchCommand{Executable: settings.Transport.Executable, Args: all, Timeout: timeout, BlockedEnvironment: []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}})
+		})
 	}})
 	return s, nil
 }

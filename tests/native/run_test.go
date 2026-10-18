@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
@@ -276,7 +277,9 @@ func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, erro
 	args := append(append([]string{}, settings.Transport.Args...), "terminal", "show", "--terminal", parts[0], "--environment", m.Execution.Target.Environment, "--json")
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
-	out, err := exec.CommandContext(ctx, settings.Transport.Executable, args...).Output()
+	out, err := orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+		return exec.CommandContext(ctx, settings.Transport.Executable, args...).Output()
+	})
 	if err != nil {
 		return nil, err
 	}

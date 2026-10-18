@@ -13,6 +13,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'live-catalog.ps1')
+. (Join-Path $PSScriptRoot 'orca-cli-lock.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
 $taskCatalog = Get-Content -LiteralPath $Catalog -Raw | ConvertFrom-Json
@@ -113,8 +114,9 @@ if ($taskStability) {
     $taskRuntimeFiles = & (Join-Path $PSScriptRoot 'prepare-test-orca-runtime.ps1') -OrcaExe $taskOrca -Destination $taskRuntime
     $taskNode = Join-Path $taskRuntime 'node.exe'
     $taskCLI = Join-Path $taskRuntime 'out/cli/index.js'
-    $taskProbe = & $taskNode $taskCLI repo list --environment $taskEnvironment --json | ConvertFrom-Json
-    if ($LASTEXITCODE -ne 0 -or -not $taskProbe.ok) { throw 'Private native Orca runtime failed preflight' }
+    $taskProbeCall = Invoke-SRLockedOrca -Executable $taskNode -Arguments @($taskCLI,'repo','list','--environment',$taskEnvironment,'--json')
+    $taskProbe = $taskProbeCall.output | ConvertFrom-Json
+    if ($taskProbeCall.exit_code -ne 0 -or -not $taskProbe.ok) { throw 'Private native Orca runtime failed preflight' }
     $taskExecution.settings.transport.executable = $taskHelper
     $taskExecution.settings.transport['args'] = @('audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'--')
 }
