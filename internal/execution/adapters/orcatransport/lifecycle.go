@@ -105,25 +105,11 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		return nil, errors.New("terminal profile differs from frozen target")
 	}
 	l := &Lifecycle{setup: setup, profile: p, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
-	var pairedOnce sync.Once
-	var pairedErr error
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		all := append(append([]string(nil), p.Args...), args...)
 		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
 		if p.Environment != "" {
 			all = append(all, "--environment", p.Environment)
-		} else if l.nativeAccess {
-			pairedOnce.Do(func() {
-				runtime, err := native.LocalRuntimeID()
-				if err == nil {
-					_, err = native.QueryWorktreeAgents(ctx, "", runtime)
-				}
-				pairedErr = err
-			})
-			if pairedErr != nil {
-				return nil, pairedErr
-			}
-			blocked = []string{"ORCA_ENVIRONMENT"}
 		}
 		return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
 	}
@@ -295,11 +281,32 @@ func (l *Lifecycle) PreflightLifecycle(ctx context.Context, setup b.LifecycleSet
 		return b.CapabilityReport{}, errors.New("Orca prompt identity/replay capability is unavailable")
 	}
 	if l.nativeAccess {
-		if _, err := native.QueryWorktreeAgents(ctx, l.profile.Environment, r.RuntimeID); err != nil {
+		if l.profile.Environment == "" {
+			if err := l.verifyLocalObservation(ctx, r.RuntimeID); err != nil {
+				return b.CapabilityReport{}, err
+			}
+		} else if _, err := native.QueryWorktreeAgents(ctx, l.profile.Environment, r.RuntimeID); err != nil {
 			return b.CapabilityReport{}, fmt.Errorf("Orca native observation authentication/access: %w", err)
 		}
 	}
 	return b.CapabilityReport{Version: 1, Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: setup.Snapshot.Ref.Target, Agent: setup.Snapshot.Ref.Agent, PlatformVersion: status.Runtime.AppVersion, CheckedAt: time.Now().UTC(), Capabilities: []b.Capability{{Name: "start", Status: b.CapabilityVerified}, {Name: "observe", Status: b.CapabilityVerified}, {Name: "output_final_answer", Status: b.CapabilityVerified, Evidence: "original accepted request, bound native main-agent start/end and complete native final body"}}}, nil
+}
+
+// Probe the already registered source before creating a business workspace.
+// Local observation uses native queries; it does not require a streaming pipe.
+func (l *Lifecycle) verifyLocalObservation(ctx context.Context, runtime string) error {
+	bootstrap, err := native.LocalRuntimeID()
+	if err != nil {
+		return err
+	}
+	if bootstrap != runtime {
+		return fmt.Errorf("%w: local CLI/bootstrap runtime changed", native.ErrStateIdentityChanged)
+	}
+	if _, err := native.QueryWorktreeAgents(ctx, "", runtime); err != nil {
+		return err
+	}
+	_, err = native.QueryState(ctx, "", runtime, "path:"+l.setup.RepositoryPath)
+	return err
 }
 
 func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {

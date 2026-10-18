@@ -1,9 +1,12 @@
 param(
     [Parameter(Mandatory=$true)][string]$Manifest,
     [Parameter(Mandatory=$true)][string]$OrcaExe,
-    [Parameter(Mandatory=$true)][string]$Environment
+    [string]$Environment = '',
+    [ValidateSet('local','orca_environment')][string]$Target = 'orca_environment',
+    [string]$RepositoryPath = ''
 )
 $ErrorActionPreference = 'Stop'
+if (($Target -eq 'orca_environment' -and -not $Environment) -or ($Target -eq 'local' -and $Environment)) { throw 'Use an explicit local target or a fixed remote environment' }
 $taskInput = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
 $taskRoot = [IO.Path]::GetFullPath($taskInput.root).TrimEnd('\')
 if ($taskInput.schema -notin @('steerrunner-test/v1','steerrunner-test/v2') -or $taskInput.base_branch -cne ('codex/srtest/' + $taskInput.id + '/base') -or $taskInput.id -notmatch '^[a-f0-9]{12}$' -or $taskInput.base_revision -notmatch '^[0-9a-f]{40}$' -or $taskInput.publication.repository -ne 'erranliu/SteerlineTest') { throw 'Dedicated Runner fixture provenance is incomplete' }
@@ -12,7 +15,9 @@ $taskEvidence = Join-Path $taskRoot ('evidence/orca-preparation-' + [Guid]::NewG
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
 $taskCallCount = 0
 function Invoke-TaskOrca([string[]]$Arguments) {
-    $taskRaw = & $OrcaExe @Arguments --environment $Environment --json
+    $taskRoute = @()
+    if ($Target -eq 'orca_environment') { $taskRoute=@('--environment',$Environment) }
+    $taskRaw = & $OrcaExe @Arguments @taskRoute --json
     $taskCode = $LASTEXITCODE
     $taskValue = $taskRaw | ConvertFrom-Json
     $script:taskCallCount++
@@ -23,6 +28,10 @@ function Invoke-TaskOrca([string[]]$Arguments) {
 }
 $taskListing = Invoke-TaskOrca @('repo','list')
 $taskRepos = @($taskListing.result.repos | Where-Object { $_.kind -eq 'git' -and [IO.Path]::GetFileName($_.path.TrimEnd('/','\')) -eq 'SteerlineTest' -and $_.gitRemoteIdentity.remoteUrl -eq 'https://github.com/erranliu/SteerlineTest.git' })
+if ($RepositoryPath) {
+    if (-not [IO.Path]::IsPathFullyQualified($RepositoryPath)) { throw 'Registered repository selection must be an absolute path' }
+    $taskRepos = @($taskRepos | Where-Object { $_.path.Replace('\','/').TrimEnd('/') -ieq $RepositoryPath.Replace('\','/').TrimEnd('/') })
+}
 if ($taskRepos.Count -ne 1 -or -not $taskListing._meta.runtimeId) { throw 'The selected host must have one unambiguous registered SteerlineTest Git repository' }
 $taskRepo = $taskRepos[0]
 $taskWorktrees = Invoke-TaskOrca @('worktree','list','--repo',('id:'+$taskRepo.id))
@@ -54,4 +63,5 @@ try {
 }
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{status='prepared';base_revision=$taskInput.base_revision;runtime_id=$taskListing._meta.runtimeId;repository_id=$taskRepo.id;terminal_handle=$taskHandle;terminal_stopped=$true}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 Write-Host "Native base prepared through the selected Orca host; evidence $taskEvidence"
-Write-Output $taskListing._meta.runtimeId
+if ($Target -eq 'local') { Write-Output (@{runtime_id=$taskListing._meta.runtimeId;repository_path=$taskRepo.path} | ConvertTo-Json -Compress) }
+else { Write-Output $taskListing._meta.runtimeId }

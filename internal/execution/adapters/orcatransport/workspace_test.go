@@ -110,9 +110,9 @@ func TestWorkspaceTerminalSurfaceReadiness(t *testing.T) {
 					t.Fatal("query deadlines or creation checkpoint lost", receipt, err, attempts)
 				}
 			case "other-error", "create-error":
-				wantCalls := 2
+				wantCalls := 3
 				if scenario == "create-error" {
-					wantCalls = 1
+					wantCalls = 2
 				}
 				if err == nil || len(*calls) != wantCalls {
 					t.Fatal("unexpected retry", err, *calls)

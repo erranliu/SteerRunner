@@ -1,0 +1,11 @@
+{
+  "query_exit": 0,
+  "at": "2026-10-18T07:13:41.9366903Z",
+  "original_result": "failed",
+  "helper_directory_exists": false,
+  "owned_refs_remaining": 0,
+  "source": "readonly independent recheck",
+  "check_id": "33f8542bb812fbfc61e28e7e962c860c",
+  "model_started": false,
+  "original_cleanup": "residual"
+}

@@ -119,7 +119,11 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 	if json.Unmarshal(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable == "" {
 		t.Fatal("remote trusted runtime is required")
 	}
-	parts := strings.Split(strings.TrimPrefix(run.Execution.SessionID, "orca-terminal:"+m.RemoteRuntimeID+":"), ":")
+	runtime, err := m.OrcaRuntimeID()
+	if err != nil {
+		t.Fatal(err)
+	}
+	parts := strings.Split(strings.TrimPrefix(run.Execution.SessionID, "orca-terminal:"+runtime+":"), ":")
 	if len(parts) != 2 {
 		t.Fatal("remote original terminal binding missing")
 	}
@@ -127,14 +131,17 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 	defer cancel()
 	client := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
 		all := append(append([]string(nil), settings.Transport.Args...), args...)
-		return exec.CommandContext(ctx, settings.Transport.Executable, append(all, "--environment", m.Execution.Target.Environment)...).Output()
+		if m.Execution.Target.Environment != "" {
+			all = append(all, "--environment", m.Execution.Target.Environment)
+		}
+		return exec.CommandContext(ctx, settings.Transport.Executable, all...).Output()
 	}})
 	term, err := client.ShowTerminal(ctx, parts[0])
 	if err != nil {
 		t.Fatal(err)
 	}
-	original := b.ProcessIdentity{RuntimeID: m.RemoteRuntimeID, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
-	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, m.RemoteRuntimeID, "id:"+original.WorktreeID)
+	original := b.ProcessIdentity{RuntimeID: runtime, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
+	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, runtime, "id:"+original.WorktreeID)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -13,6 +14,56 @@ import (
 	"testing"
 	"time"
 )
+
+func TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection(t *testing.T) {
+	for _, name := range []string{"local-selected", "local-missing", "local-duplicate", "remote-ambiguous"} {
+		t.Run(name, func(t *testing.T) {
+			input := contracts.CheckInput{Repository: contracts.Repository{URL: "https://github.com/owner/repo.git", LocalPath: `C:\project`}, Execution: contracts.Execution{Target: contracts.Target{Kind: "local"}}}
+			if name == "local-missing" {
+				input.Repository.LocalPath = `C:\missing`
+			}
+			if name == "remote-ambiguous" {
+				input.Execution.Target = contracts.Target{Kind: "orca_environment", Environment: "remote"}
+			}
+			s := &RemoteEnvironmentSession{setup: codex.RemoteCheckSetup{CheckID: strings.Repeat("a", 32), Input: input}, settings: contracts.OrcaSettings{AgentLaunch: contracts.AgentSettings{RuntimeExecutable: "C:/trusted/agent.exe"}}}
+			creations := 0
+			s.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				result := map[string]any{}
+				switch args[0] + " " + args[1] {
+				case "repo list":
+					other := "C:/other"
+					if name == "local-duplicate" {
+						other = "C:/project/"
+					}
+					rows := []any{}
+					for i, path := range []string{"C:/project/", other} {
+						rows = append(rows, map[string]any{"id": fmt.Sprintf("repo-%d", i), "path": path, "kind": "git", "gitRemoteIdentity": map[string]string{"remoteUrl": input.Repository.URL}})
+					}
+					result["repos"] = rows
+				case "worktree show":
+					if args[3] != "path:C:/project/" {
+						t.Fatal("local project selector changed", args)
+					}
+					result["worktree"] = map[string]any{"id": "repo-0::project", "path": "C:/project/", "isMainWorktree": true}
+				case "terminal create":
+					creations++
+					result["terminal"] = map[string]string{"handle": "actor", "incarnationId": "original", "worktreeId": "repo-0::project"}
+				default:
+					t.Fatal("unexpected check preparation call", args)
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]string{"runtimeId": "runtime"}})
+			}})
+			binding, err := s.Initialize(context.Background())
+			if name == "local-selected" {
+				if err != nil || creations != 1 || binding.Process == nil || binding.Process.RuntimeID != "runtime" {
+					t.Fatal(binding, err, creations)
+				}
+			} else if err == nil || creations != 0 {
+				t.Fatal("ambiguous/missing project created an actor", binding, err, creations)
+			}
+		})
+	}
+}
 
 func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testing.T) {
 	for _, scenario := range []string{"normal", "changed-incarnation", "wrong-runtime", "partial-write", "lost-response", "wrong-response-id"} {

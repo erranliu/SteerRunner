@@ -8,6 +8,8 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -95,11 +97,15 @@ func TestOrcaNativeStateStream(t *testing.T) {
 				}
 			}))
 			defer server.Close()
-			encoded, _ := json.Marshal(statePairing{Version: 2, Endpoint: "ws" + strings.TrimPrefix(server.URL, "http"), Token: "test-only-token", PublicKey: base64.StdEncoding.EncodeToString(pub[:]), Scope: "runtime"})
-			t.Setenv("ORCA_PAIRING_CODE", "orca://pair?code="+base64.RawURLEncoding.EncodeToString(encoded))
+			dir := t.TempDir()
+			t.Setenv("ORCA_USER_DATA_PATH", dir)
+			store, _ := json.Marshal(map[string]any{"environments": []any{map[string]any{"id": "test-remote", "preferredEndpointId": "endpoint", "endpoints": []any{map[string]string{"id": "endpoint", "endpoint": "ws" + strings.TrimPrefix(server.URL, "http"), "deviceToken": "test-only-token", "publicKeyB64": base64.StdEncoding.EncodeToString(pub[:])}}}}})
+			if err := os.WriteFile(filepath.Join(dir, "orca-environments.json"), store, 0600); err != nil {
+				t.Fatal(err)
+			}
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancel()
-			sub, _, err := SubscribeState(ctx, "", "runtime", "id:worktree")
+			sub, _, err := SubscribeState(ctx, "test-remote", "runtime", "id:worktree")
 			if sub != nil {
 				defer sub.Close()
 			}
@@ -115,10 +121,10 @@ func TestOrcaNativeStateStream(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if _, err = QueryState(ctx, "", "runtime", "id:worktree"); err != nil {
+			if _, err = QueryState(ctx, "test-remote", "runtime", "id:worktree"); err != nil {
 				t.Fatal(err)
 			}
-			if _, err = QueryWorktreeAgents(ctx, "", "runtime"); err != nil {
+			if _, err = QueryWorktreeAgents(ctx, "test-remote", "runtime"); err != nil {
 				t.Fatal(err)
 			}
 		})

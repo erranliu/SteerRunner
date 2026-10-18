@@ -66,12 +66,14 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		}
 		created.RuntimeID = result.RuntimeID
 		if runtimeID != "" {
-			created.ResolvedRepositoryID = strings.TrimPrefix(selector, "id:")
+			if strings.HasPrefix(selector, "id:") {
+				created.ResolvedRepositoryID = strings.TrimPrefix(selector, "id:")
+			}
 			created.ResolvedRuntimeID = runtimeID
 		}
 	}
 	worktree := created.Worktree
-	if l.profile.Environment != "" && (created.ResolvedRuntimeID == "" || created.ResolvedRuntimeID != created.RuntimeID || created.ResolvedRepositoryID == "" || created.ResolvedRepositoryID != worktree.RepoID) {
+	if (l.profile.Environment != "" || created.ResolvedRuntimeID != "") && (created.ResolvedRuntimeID == "" || created.ResolvedRuntimeID != created.RuntimeID || l.profile.Environment != "" && created.ResolvedRepositoryID == "" || created.ResolvedRepositoryID != "" && created.ResolvedRepositoryID != worktree.RepoID) {
 		// Keep both the discovery identity and creation response for reconciliation.
 		receipt.Operation.Receipt, _ = json.Marshal(created)
 		return receipt, errors.New("Orca workspace creation changed the resolved repository/runtime")
@@ -174,7 +176,16 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 		return "", "", errors.New("missing project repository path")
 	}
 	if l.profile.Environment == "" {
-		return "path:" + repository, "", nil
+		result, err := l.client.MetaCall(ctx, "status", "--json")
+		if err != nil || result.RuntimeID == "" {
+			return "", "", errors.Join(err, errors.New("local Orca runtime identity is unavailable"))
+		}
+		if l.nativeAccess {
+			if err := l.verifyLocalObservation(ctx, result.RuntimeID); err != nil {
+				return "", "", err
+			}
+		}
+		return "path:" + repository, result.RuntimeID, nil
 	}
 	name := repositoryDirectoryName(repository)
 	if name == "." || name == "/" || name == "" || strings.HasSuffix(name, ":") {

@@ -1,0 +1,23 @@
+{
+  "scenario": "orca-local.smoke",
+  "fixture": "C:/srt/d8e613a93d50",
+  "runner_sha256": "4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e",
+  "driver_sha256": "A85321BD7D471A93E34704E6B93784292A153D885B640D739F1E1A095E001E65",
+  "run_id": "77e9ae88c0528acc6043d13c48246187",
+  "passed": true,
+  "stage": "completed",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/490",
+  "original_head": "e1b613670a9f7751658ac32a0dc7442bb6c688db",
+  "feedback_head": "cea1d6dfe4b975271d1d7dfe5f7d7f1c8b7d1038",
+  "merge_commit": "68de9d1b3f305a1a58a257fe28927702934c8af5",
+  "run_stopped": true,
+  "service_stopped": true,
+  "connection": {
+    "implicit_environment_present": false,
+    "observation_mode": "native-query",
+    "pairing_present": false,
+    "remote_pairing_present": false,
+    "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+    "transport": "local-ipc"
+  }
+}

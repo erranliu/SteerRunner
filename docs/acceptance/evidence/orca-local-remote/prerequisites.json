@@ -1,0 +1,31 @@
+{
+  "source_commit": "9f9eca01777f4259f34bd5e1449e8fa2a1278069",
+  "source_dirty": true,
+  "runner_sha256": "876b542ae436763922032cdd8abe5f9c3de9d2252643c29ccb32a9fd4eeeefc0",
+  "status": "passed",
+  "results": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 272,
+      "scenario_count": null,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "test_count": null,
+      "scenario_count": 16,
+      "skipped_tests": null
+    }
+  ],
+  "source_report": "C:\\Users\\lmas1\\.codex\\worktrees\\orca-local-remote\\SteerRunner\\.evidence\\olr\\final-verified\\summary.json"
+}

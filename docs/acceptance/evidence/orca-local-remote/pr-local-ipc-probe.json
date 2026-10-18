@@ -1,0 +1,13 @@
+{
+  "observation_mode": "native-query",
+  "pairing_present": false,
+  "passed": true,
+  "query_change_verified": true,
+  "reopened_original_terminal": true,
+  "resources_cleaned": true,
+  "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "transport": "local-ipc",
+  "upload_bytes": 444000,
+  "upload_sha256": "c485da7d1424b233112e87594f9181816208acffd050c719c64b85d9b58d538c",
+  "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-ipc-olr-pr-ipc-a079f3dbd4"
+}

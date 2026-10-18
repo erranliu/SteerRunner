@@ -10,7 +10,7 @@ import (
 // StateSubscription reads public runtime state. It neither sends agent input nor
 // interprets titles, screen text or worktree activity as completion.
 type StateSubscription struct {
-	socket *stateSocket
+	socket stateConnection
 	id     string
 }
 
@@ -20,17 +20,13 @@ func SubscribeState(ctx context.Context, environment, runtime, worktree string) 
 	}
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
-	pairing, err := resolveStatePairing(environment)
-	if err != nil {
-		return nil, nil, err
-	}
-	socket, err := openStateSocket(ctx, pairing, runtime)
+	socket, err := openStateConnection(ctx, environment, runtime)
 	if err != nil {
 		return nil, nil, err
 	}
 	id, err := socket.request(ctx, "session.tabs.subscribe", map[string]string{"worktree": worktree})
 	if err != nil {
-		socket.conn.CloseNow()
+		_ = socket.close()
 		return nil, nil, err
 	}
 	sub := &StateSubscription{socket: socket, id: id}
@@ -48,19 +44,10 @@ func SubscribeState(ctx context.Context, environment, runtime, worktree string) 
 }
 
 func (s *StateSubscription) Next(ctx context.Context) (json.RawMessage, error) {
-	for {
-		data, err := s.socket.read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		result, err := s.socket.response(data, s.id)
-		if err != nil || result != nil {
-			return result, err
-		}
-	}
+	return s.socket.next(ctx, s.id)
 }
 
-func (s *StateSubscription) Close() { _ = s.socket.conn.CloseNow() }
+func (s *StateSubscription) Close() { _ = s.socket.close() }
 
 // A separate bounded connection leaves the streaming reader uninterrupted.
 func QueryState(ctx context.Context, environment, runtime, worktree string) (json.RawMessage, error) {
@@ -69,16 +56,12 @@ func QueryState(ctx context.Context, environment, runtime, worktree string) (jso
 	}
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
-	pairing, err := resolveStatePairing(environment)
+	socket, err := openStateConnection(ctx, environment, runtime)
 	if err != nil {
 		return nil, err
 	}
-	socket, err := openStateSocket(ctx, pairing, runtime)
-	if err != nil {
-		return nil, err
-	}
-	defer socket.conn.CloseNow()
-	return socket.call(ctx, "session.tabs.list", map[string]string{"worktree": worktree})
+	defer socket.close()
+	return callState(ctx, socket, "session.tabs.list", map[string]string{"worktree": worktree})
 }
 
 // QueryWorktreeAgents reads the public hook-store projection. Callers must
@@ -90,14 +73,10 @@ func QueryWorktreeAgents(ctx context.Context, environment, runtime string) (json
 	}
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
-	pairing, err := resolveStatePairing(environment)
+	socket, err := openStateConnection(ctx, environment, runtime)
 	if err != nil {
 		return nil, err
 	}
-	socket, err := openStateSocket(ctx, pairing, runtime)
-	if err != nil {
-		return nil, err
-	}
-	defer socket.conn.CloseNow()
-	return socket.call(ctx, "worktree.ps", map[string]int{"limit": 100})
+	defer socket.close()
+	return callState(ctx, socket, "worktree.ps", map[string]int{"limit": 100})
 }

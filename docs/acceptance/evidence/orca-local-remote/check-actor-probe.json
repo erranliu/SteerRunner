@@ -1,0 +1,11 @@
+{
+  "check_id": "738d15813dd02241d4c07bb67ce6df5a",
+  "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Projects/SteerlineTest",
+  "terminal": "term_49c94636-ebd2-4cf2-8ff4-13505b88e417",
+  "incarnation": "13d991cb-033a-4add-8723-16f0297ba05b",
+  "actor_stopped": true,
+  "local_removed": true,
+  "model_started": false,
+  "prepare_called": false
+}

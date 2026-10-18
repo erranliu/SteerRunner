@@ -66,7 +66,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十四场景/二十一 case 数量；原 11 个
+[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十四 case 数量；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
@@ -79,6 +79,19 @@ native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest
 文档规划不表示入口已经支持新 case、L4 或并行调度。
 
 ## 当前执行入口
+
+Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandbox` 和
+`environment-check.orca-local-full-access`，沿用现有 driver/schema，配置补充可选
+`orca_local_runtime_executable`；多个同名注册项目时另用可选 `orca_local_repository_path`
+明确选择真实项目，不能任选一个。本机 agent/model/effort 取已有本机字段，不需要远程
+environment。执行主机 helper 安装在业务工作区外。本机 fixture 的 caller clone 与 Orca
+已注册项目分别记录，原 runtime 从准备证据核验，不复用 `remote_runtime_id`。
+本机通过原生 IPC 查询观察，远程保留订阅加补查；注册不代表已验通过，当前构建结果见[专属验收](acceptance/orca-local-remote.md)。
+无模型探针使用显式 `STEERRUNNER_ORCA_IPC_PROBE_ROOT/CLI/REPO/BASE` 环境变量，运行
+`go test ./internal/execution/adapters/protocol/orca -run '^TestOrcaLocalIPCNativeProbe$' -count=1 -timeout=2m -v`。
+ROOT 必须为新的绝对证据目录，CLI 是选定原生 Orca EXE，REPO 是真实已注册 repository ID，
+BASE 是该项目已有完整 commit；探针只创建/清理自己的 worktree/terminal 和 nonce 文件。
+L1 拒绝该 live opt-in，默认 skip 不计真机通过。
 
 在仓库根目录使用 PowerShell 7：
 
@@ -290,7 +303,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十四场景二十一 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮十七场景二十四 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。

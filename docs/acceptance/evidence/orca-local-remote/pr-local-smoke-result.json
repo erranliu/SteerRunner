@@ -1,0 +1,43 @@
+{
+  "scenario": "orca-local.smoke",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "157981fd455639fa4df31e918c3a7e1f",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/499",
+  "original_head": "2a6f0317130e0715c2e81f16e5610b618d04fd38",
+  "feedback_head": "4da654ca7f71fb1f83da007164766133a5ee221e",
+  "merge_commit": "fca62e8fbbfd7613d7e8d2990a3e90b3a9f57b79",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true,
+  "fixture_root": "C:\\srt\\76ed03994f4e",
+  "fixture_id": "76ed03994f4e",
+  "identity": {
+    "pid": 39864,
+    "manifest_sha256": "73C85341596F07EB8DBD8D2386815B4D1C18A3123E3D5861F7BA48D2FFD9EFEF",
+    "driver_sha256": "3D63EBE66FA0EC4C7940110CB26FF5702D03F66E70CA20989CDDBC2207B9F1A3",
+    "runner_sha256": "49104e8a725718ddb3f974c85678d2b22e3d5890b955cffea05e2926d3f1dc8c",
+    "source_commit": "0aa7f2df624ac6595d88a5eb0d149a3db7858da9",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-local.smoke",
+    "level": "L3"
+  },
+  "local_runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "local_repository_path": "C:\\Projects\\SteerlineTest",
+  "connection": {
+    "implicit_environment_present": false,
+    "observation_mode": "native-query",
+    "pairing_present": false,
+    "remote_pairing_present": false,
+    "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+    "transport": "local-ipc"
+  },
+  "result": {
+    "exit_code": 0,
+    "finished_at": "2026-10-18T09:36:16.5482192Z",
+    "pattern": "^TestSRLiveScenario$",
+    "scenario_count": 1
+  },
+  "prerequisites": "pr-prerequisites.json"
+}
