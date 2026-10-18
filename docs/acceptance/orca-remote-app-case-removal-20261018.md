@@ -50,3 +50,22 @@ L1 **295 项通过**、Controlled **16/16 通过**，包括 native driver 编译
 原始摘要见 [main-regression.json](evidence/orca-app-case-removal-20261018/main-regression.json)，
 整合后的清单见 [main-scope.json](evidence/orca-app-case-removal-20261018/main-scope.json)。
 其后仅补本文及有限证据；本次未重跑整合构建的真机 L3，不能将原十项记录提升为新构建完整资格。
+
+## 随后整合主线 PR #26
+
+主线推进到 `59c7597ac8056fc5c29ad622034e10e74e4395de`，新增 Pi/DSH 原生终端能力。
+冲突解决提交 `1585a61ef7bd125a4c856cd092d49e573b58f61c` 保留远端双模型审计、App 引用与认证撤销、
+CLI 互斥和多 Run，以及主线原生扩展、DSH 粘贴编码和 owned Job/认证清理。
+同时避免将 Codex 审计模型或 App 配置应用到尚无对应映射的 Pi/DSH；
+多 Run 按各自的 manifest 和 agent 检查证据，Codex 清理查询区分本机/远端路由。
+仅在显式指定 Codex 模型时补默认推理强度，保留无模型旧配置的启动兼容性。
+相关边界和两种 wire framing 的组件测试已通过。
+
+合并后的 L3 为 **24 场景、31 case**：远端 18、本机 Codex 5、本机 Orca 8；
+含 L2/L4 共 29 场景、36 case。独立 App 专项仍已删除，八项管理员远端缺口保持不变。
+清单见 [terminal-agents-merge-scope.json](evidence/orca-app-case-removal-20261018/terminal-agents-merge-scope.json)。
+
+受测合并提交工作树干净，正式入口重新完成 L1 **317 项**、终端扩展 **28 项**、Controlled **16/16**，
+包括目录/PowerShell 框架、native driver 编译和零匹配保护；7 个显式 helper/native skip 不计真机通过。
+摘要见 [terminal-agents-merge-regression.json](evidence/orca-app-case-removal-20261018/terminal-agents-merge-regression.json)。
+回归后仅增加本节和有限 JSON 证据。本次未重跑合并构建的远端 L3，原真机报告保持原构建归属，PR 继续保持草稿。
