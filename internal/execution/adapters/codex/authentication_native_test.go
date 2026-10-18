@@ -171,7 +171,10 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	// Git 2.55 unconditionally deletes the absent AUTO_MERGE after committing.
 	// Its packed-refs cleanup remains denied. Verify the commit's own exit and
 	// actual Git state independently; never repair/retry the denied operation.
-	{
+	// A rejected preparation closes its native client; do not issue more calls
+	// after the expected invalid-credential rejection. The qualified branch and
+	// TestLinkedGitNativeCommit exercise the actual Git boundary.
+	if *authenticationHostBroker {
 		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", []string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")})
 		script := `$ErrorActionPreference='Continue'
 $before=(& git rev-parse HEAD | Out-String).Trim()
