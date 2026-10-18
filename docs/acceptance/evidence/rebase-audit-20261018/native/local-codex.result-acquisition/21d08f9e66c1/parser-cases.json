@@ -1,0 +1,25 @@
+[
+  {
+    "case": "parser-default",
+    "observed_model": "",
+    "passed": true,
+    "requested_model": "native default under ignore-user-config",
+    "session": "01a14f51-6895-7791-a3d7-79013f44a2e2",
+    "stopped": true,
+    "tool_events": 0
+  },
+  {
+    "active_cancel_stopped": true,
+    "canary_unchanged": true,
+    "case": "parser-boundaries",
+    "induced_output_status": "completed",
+    "observed_model": "",
+    "parser_calls": 2,
+    "passed": true,
+    "permission_probe_calls": 1,
+    "read_only_command_denied": true,
+    "requested_model": "gpt-6-luna",
+    "session": "01a14f51-a9d7-73d3-8e1d-0342a0636a97",
+    "tool_events": 0
+  }
+]

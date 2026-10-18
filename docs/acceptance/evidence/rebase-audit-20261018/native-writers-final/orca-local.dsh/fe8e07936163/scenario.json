@@ -1,0 +1,9 @@
+{
+  "scenario": "orca-local.dsh",
+  "level": "L3",
+  "stage": "implementation",
+  "run_id": "5aacffda88ab384e916f5cfb4f48801d",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

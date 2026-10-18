@@ -1,0 +1,12 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke
+    run_test.go:399: L2 must exercise production publication without the scripted publisher <nil>
+--- FAIL: TestSRLiveScenario (51.42s)
+    --- FAIL: TestSRLiveScenario/local-codex.result-acquisition (51.40s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-default (16.56s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries (34.74s)
+        --- FAIL: TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke (0.11s)
+FAIL

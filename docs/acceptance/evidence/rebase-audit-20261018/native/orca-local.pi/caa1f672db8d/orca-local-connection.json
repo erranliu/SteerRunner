@@ -1,0 +1,8 @@
+{
+  "implicit_environment_present": false,
+  "observation_mode": "native-query",
+  "pairing_present": false,
+  "remote_pairing_present": false,
+  "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "transport": "local-ipc"
+}

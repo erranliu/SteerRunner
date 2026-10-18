@@ -1,0 +1,13 @@
+{
+  "scenario": "orca-local.pi",
+  "level": "L3",
+  "stage": "stop-and-cleanup",
+  "run_id": "6e4c076fb03fc7e4e08f0bbef6062c56",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/542",
+  "original_head": "55702bd30b49e448ee12d3edf657f711959e796a",
+  "feedback_rejected": true,
+  "merge_commit": "dfd155e134d885bdba60d9ab52f90be938842444",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

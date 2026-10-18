@@ -1,0 +1,8 @@
+{
+  "scenario": "local-codex.result-acquisition",
+  "level": "L2",
+  "stage": "preflight",
+  "run_stopped": false,
+  "service_stopped": false,
+  "passed": false
+}

@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.codex
+    run_test.go:548: real native accepted response was not withheld
+--- FAIL: TestSRLiveScenario (198.45s)
+    --- FAIL: TestSRLiveScenario/orca-local.codex (198.42s)
+FAIL

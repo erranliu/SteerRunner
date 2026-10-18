@@ -1,0 +1,3 @@
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	1.122s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.144s
+ok  	github.com/erranliu/SteerRunner/internal/application	303.483s

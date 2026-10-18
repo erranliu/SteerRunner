@@ -1,0 +1,50 @@
+{
+  "planned_case_count": 3,
+  "scope": "fresh-rerun-with-dedicated-active-writer-documents",
+  "status": "failed",
+  "results": [
+    {
+      "finished_at": "2026-10-18T14:39:07.6463402Z",
+      "error": "Live scenario failed; inspect C:\\srt\\5f31b004f5ff\\evidence/native.log",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-writers-final\\orca-local.codex-default-r1-fixture.json",
+      "scenario": "orca-local.codex",
+      "evidence": "C:\\srt\\5f31b004f5ff\\evidence",
+      "started_at": "2026-10-18T14:28:07.5800857Z",
+      "manifest": "C:\\srt\\5f31b004f5ff\\manifest.json",
+      "level": "L3",
+      "status": "failed",
+      "case_id": "default"
+    },
+    {
+      "finished_at": "2026-10-18T14:35:23.3063157Z",
+      "error": "Live scenario failed; inspect C:\\srt\\ace6d882146b\\evidence/native.log",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-writers-final\\orca-local.pi-default-r1-fixture.json",
+      "scenario": "orca-local.pi",
+      "evidence": "C:\\srt\\ace6d882146b\\evidence",
+      "started_at": "2026-10-18T14:28:07.6516527Z",
+      "manifest": "C:\\srt\\ace6d882146b\\manifest.json",
+      "level": "L3",
+      "status": "failed",
+      "case_id": "default"
+    },
+    {
+      "finished_at": "2026-10-18T14:50:21.4875948Z",
+      "error": "Live scenario failed; inspect C:\\srt\\fe8e07936163\\evidence/native.log",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-writers-final\\orca-local.dsh-default-r1-fixture.json",
+      "scenario": "orca-local.dsh",
+      "evidence": "C:\\srt\\fe8e07936163\\evidence",
+      "started_at": "2026-10-18T14:35:24.5282145Z",
+      "manifest": "C:\\srt\\fe8e07936163\\manifest.json",
+      "level": "L3",
+      "status": "failed",
+      "case_id": "default"
+    }
+  ],
+  "source_commit": "36a1cc346b68660ecfa69d250b36fc6251cbecff",
+  "max_parallel": 2,
+  "prerequisite": "../full-final/summary.json",
+  "finished_at": "2026-10-18T14:50:21.6206460Z"
+}

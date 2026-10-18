@@ -1,0 +1,8 @@
+{
+  "scenario": "orca-local.codex",
+  "level": "L3",
+  "stage": "preflight",
+  "run_stopped": false,
+  "service_stopped": true,
+  "passed": false
+}

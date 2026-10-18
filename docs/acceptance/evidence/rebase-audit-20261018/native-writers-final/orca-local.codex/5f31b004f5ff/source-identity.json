@@ -1,0 +1,11 @@
+{
+  "pid": 34244,
+  "manifest_sha256": "DB0807E0D55DB1FBEB351C5A39D1529ED9F6CE83511615A1E91E6C12B7C45ED3",
+  "driver_sha256": "DD4485386A634C5DEB5CBF0FEC95C099216CE8CE1F4F78B48E37F9B5D2EAFFCF",
+  "runner_sha256": "af2d2f5bb6571e4b957ee64a40954f5c00ce31701368cfcea628fd6039723013",
+  "source_commit": "36a1cc346b68660ecfa69d250b36fc6251cbecff",
+  "source_dirty": false,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-local.codex",
+  "level": "L3"
+}
