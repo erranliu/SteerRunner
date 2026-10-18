@@ -96,22 +96,8 @@ try {
  $stage='git_transport_authentication'
  $helpers=@(& git config --get-all credential.helper 2>$null)
  if ($LASTEXITCODE -ne 0 -or $helpers.Count -eq 0 -or $helpers[-1] -ne '') { throw 'helper boundary' }
- $stage='network'
- try {
-  $response=Invoke-WebRequest -UseBasicParsing -Uri 'https://api.github.com/meta' -TimeoutSec 12
-  if ($response.StatusCode -ne 200) { $stage='network_rejected'; throw 'network' }
- } catch {
-  switch ([string]$_.Exception.Status) {
-   'Timeout' { $stage='network_timeout' }
-   'TrustFailure' { $stage='network_trust' }
-   'SecureChannelFailure' { $stage='network_trust' }
-   'ConnectFailure' { $stage='network_transport' }
-   'NameResolutionFailure' { $stage='network_transport' }
-   'ProxyNameResolutionFailure' { $stage='network_transport' }
-   'ProtocolError' { $stage='network_rejected' }
-  }
-  throw 'network probe failed'
- }
+ # The authenticated native gh/Git operations below establish connectivity.
+ # An anonymous WebRequest to /meta adds an unrelated shared-IP quota gate.
  $stage='github_identity'
  ` + identityProbe + `
  $stage='github_repository'
@@ -182,10 +168,7 @@ func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, in
 		Verified bool   `json:"verified"`
 		Stage    string `json:"stage"`
 	}
-	allowed := map[string]bool{"sandbox_identity": true, "tool_environment": true, "git_admin_read": true, "git_admin_write": true, "remote_identity": true, "git_transport_authentication": true, "network": true, "github_identity": true, "github_repository": true, "remote_git": true, "ready": true}
-	for _, stage := range []string{"network_timeout", "network_trust", "network_transport", "network_rejected"} {
-		allowed[stage] = true
-	}
+	allowed := map[string]bool{"sandbox_identity": true, "tool_environment": true, "git_admin_read": true, "git_admin_write": true, "remote_identity": true, "git_transport_authentication": true, "github_identity": true, "github_repository": true, "remote_git": true, "ready": true}
 	for _, stage := range []string{"github_identity_trust", "github_identity_transport", "github_identity_rejected", "remote_git_trust", "remote_git_transport", "remote_git_rejected"} {
 		allowed[stage] = true
 	}

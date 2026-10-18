@@ -93,7 +93,7 @@ export async function prepareTerminalTools(config, environment, launch = spawn) 
       let result;
       failure = "native_tool_preparation_invalid";
       try { result = JSON.parse(probe.stdout.toString("utf8").trim()); } catch { throw new Error(failure); }
-      const stages = new Set(["sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "network", "network_timeout", "network_trust", "network_transport", "network_rejected", "github_identity", "github_repository", "remote_git", "ready",
+      const stages = new Set(["sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity", "github_repository", "remote_git", "ready",
         "github_identity_trust", "github_identity_transport", "github_identity_rejected", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected"]);
       if (stages.has(result?.stage)) stage = result.stage;
       failure = "native_tool_preparation_failed";

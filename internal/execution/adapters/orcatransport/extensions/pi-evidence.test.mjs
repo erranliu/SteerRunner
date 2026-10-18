@@ -11,7 +11,7 @@ import { attachEvidence, writeReceipt } from "./pi-evidence.mjs";
 
 const hash = (value) => createHash("sha256").update(value).digest("hex");
 test("failed native initialization publishes a bounded failure for either terminal agent", async(t) => {
-  for (const stage of ["network_timeout", "raw-secret-that-must-not-be-persisted"]) {
+  for (const stage of ["remote_git_transport", "raw-secret-that-must-not-be-persisted"]) {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), "sr-preparation-failure-"));
     t.after(() => fs.rmSync(directory, {recursive:true}));
     let calls = 0;
@@ -29,7 +29,7 @@ test("failed native initialization publishes a bounded failure for either termin
     assert.equal(fact.pid,process.pid); assert.equal(fact.run_id,config.run_id); assert.equal(fact.session_id,config.session_id);
     assert.equal(fact.extension_bundle_sha256,config.extension_bundle_sha256);
     assert.equal(fact.failure,"native_tool_preparation_failed");
-    assert.equal(fact.probe_stage,stage === "network_timeout" ? stage : "unverified");
+    assert.equal(fact.probe_stage,stage === "remote_git_transport" ? stage : "unverified");
     assert.ok(!raw.includes("raw-secret") && !raw.includes("private-diagnostic"));
     assert.equal(fs.existsSync(path.join(directory,"readiness.json")),false);
   }

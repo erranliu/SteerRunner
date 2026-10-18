@@ -25,7 +25,7 @@ func TestNativePreparationFailureIsBoundAndNeverReady(t *testing.T) {
 			if err := os.WriteFile(filepath.Join(c.StateDirectory, "owner.json"), body, 0600); err != nil {
 				t.Fatal(err)
 			}
-			fact := map[string]any{"version": 1, "run_id": c.ExecutionID, "session_id": c.SessionID, "extension_bundle_sha256": TerminalExtensionDigest(), "pid": 2, "failure": "native_tool_preparation_failed", "probe_stage": "network_timeout"}
+			fact := map[string]any{"version": 1, "run_id": c.ExecutionID, "session_id": c.SessionID, "extension_bundle_sha256": TerminalExtensionDigest(), "pid": 2, "failure": "native_tool_preparation_failed", "probe_stage": "remote_git_transport"}
 			write := func() {
 				t.Helper()
 				body, _ := json.Marshal(fact)
