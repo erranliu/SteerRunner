@@ -4,16 +4,16 @@
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-16** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-17** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十三 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十四 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
 新增远端 `orca-remote.audited/default`、`orca-remote.multirun/default`、`orca-remote.app-auth/default`：
 分别要求原 native 会话中执行/审计模型及发布恢复的实际历史、同一服务两个 Run 在停止一方后另一方仍能反馈更新、
 以及真实 GitHub App installation 闭环及撤销。App case 需要执行主机已有的 App 引用；缺配置就是未验收。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
-PR 整合主线后保留两项本机环境检查，现补齐两项 Orca 环境检查和显式 full_access 远端开发闭环，前一版为 L3 十四场景/二十 case；下文已有真机通过
+PR 整合主线后保留两项本机环境检查，现补齐两项 Orca 环境检查和显式 full_access 远端开发闭环，整合重连用例后，前一版为 L3 十四场景/二十一 case；下文已有真机通过
 记录仍绑定原构建，整合后不继承反馈资格，须以新构建重新验收。
 
 ## L2：最小核心 smoke
@@ -38,7 +38,7 @@ L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的十三场景、十九 case，含原远端流程、11 个核心可靠性 case、三个本机流程和本机/Orca 各两种权限环境检查。全部保留在
+以下为已注册的十四场景、二十一 case，含原远端流程、12 个核心可靠性 case、三个本机流程和本机/Orca 各两种权限环境检查。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -72,6 +72,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、原会话反馈及实际权限审计 | `merged`，Run/服务及审计终端停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
 | `orca-remote.connection-reconnect` | `active-disconnect` | 原服务不换代的活动回合断连，恢复后自动重接原 Attempt/会话，无需 resume、零重发 | `merged` | 专属网络故障范围；验证本现场双通路中断且其它现场通信不受影响 |
+| `orca-remote.connection-reconnect` | `pre-send-disconnect` | 实施/报告结束，发布 `start_turn` 已提交但尚未发出；仅阻断 Runner 直连状态通道，原 CLI 身份读取仍成功；自动重试后保留原 operation/Attempt/session，无需 resume 且发布一次 | `merged` | 专属 helper 在原发布终端的首次发送前身份读取处设门；仅阻断现场 Runner EXE，保留 CLI/诊断通路。证据须含门前快照、阻断后返回的原读取、完整建连超时后的再次读取、阻断期零新输入/授权保留及单次 PR。已实现并注册，真机及并行资格尚未执行 |
 | `orca-remote.service-restart` | `graceful-active` | 活动回合正常停服换代，原结果可对账，显式 resume 前零新输入 | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
 | `orca-remote.service-restart` | `kill-active` | 活动回合异常终止服务后持久状态可恢复，旧写者失效，显式恢复原会话 | `merged` | 精确匹配本现场服务 PID/创建时间；验证异常退出及重启不影响其它服务 |
 | `orca-remote.service-restart` | `graceful-boundary` | 实施已完成但证据尚未交付时正常停服；迟到完成事实不得越过换代后的授权门槛 | `merged` | 专属网络/完成屏障，加本现场正常服务换代；验证屏障与网络恢复不会释放其它 case |
@@ -90,8 +91,8 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `environment-check.orca-full-access` | `complete` | 显式 full_access 的远端同权限预检及实际工具闭环；不能回退或借用 MXC 证据 | 同上；实际模式必须为 `full_access` | 与 sandbox 分开冻结和判定；检查会话、引用、PR、目录和认证 capability 独立 |
 
 远端共同前置为 L1、完整 Controlled、指定 Orca CLI、已配对 environment、远端同名
-Git 项目和执行主机认证。11 个可靠性 case 另需稳定性 v2 配置和故障取证工具。
-`active-disconnect`、两个 publication case、两个 restart boundary case 以及 stop 的
+Git 项目和执行主机认证。12 个可靠性 case 另需稳定性 v2 配置和故障取证工具。
+`active-disconnect`、`pre-send-disconnect`、两个 publication case、两个 restart boundary case 以及 stop 的
 `boundary/unreachable` 需管理员网络宿主，其余无需该宿主。网络故障限各现场专属
 Runner/helper/Node；共享管理员宿主的队列回执归属、恢复动作与 watchdog 也需并发验证。
 历史 36/36 属于[稳定性验收](acceptance/l3-execution-stability.md)中冻结的受测构建，
@@ -137,7 +138,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共二十二场景、二十八 case：L2 一项、L3 二十三项（含原 11 项核心可靠性）、L4 四项。
+当前共二十二场景、二十九 case：L2 一项、L3 二十四项（含原 11 项核心可靠性）、L4 四项。
 Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 

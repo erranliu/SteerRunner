@@ -61,6 +61,11 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				parameter = argv[i]
 			}
 			switch name {
+			case "--expected-instance-id":
+				if !contracts.ValidRequestID(parameter) {
+					return value, contracts.Fail(2, "invalid_arguments", "Expected instance identity must be nonempty plain text.")
+				}
+				value.opts.ExpectedInstanceID = parameter
 			case "--state-dir":
 				value.dir = parameter
 			case "--protocol":
@@ -124,6 +129,12 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		decoded, err := hex.DecodeString(value.startupID)
 		if value.opts.Command != "serve" || err != nil || len(decoded) != 16 {
 			return value, contracts.Fail(2, "invalid_arguments", "Invalid internal startup identity.")
+		}
+	}
+	if value.opts.ExpectedInstanceID != "" {
+		switch value.opts.Command {
+		case "version", "serve", "service start", "service status", "service stop", "service verify-stopped":
+			return value, contracts.Fail(2, "invalid_arguments", "Expected instance identity applies to resident business/query commands.")
 		}
 	}
 	mutating := writes(value.opts.Command)
@@ -199,7 +210,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	var request *contracts.Request
 	if writes(options.opts.Command) {
@@ -230,7 +241,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
 	defer cancel()
-	if options.opts.Command == "service start" || options.opts.Command == "submit" || options.opts.Command == "environment-check start" {
+	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && (options.opts.Command == "submit" || options.opts.Command == "environment-check start") {
 		executable, err := os.Executable()
 		if err != nil {
 			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))

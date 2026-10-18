@@ -55,6 +55,8 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 
 accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
 
+同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
+
 本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；远端真机闭环及执行稳定性的已验收范围见[专属记录](docs/acceptance/l3-execution-stability.md)。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
 ## 主动环境检查
@@ -194,3 +196,5 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 ## 环境检查规划入口
 
 2026-10-16 仅规划、先不实现：[无人执行权限与 Git 环境检查 Spec](docs/spec/environment-check.spec.md) · [Plan](docs/spec/environment-check.plan.md) · [专属验收](docs/acceptance/environment-check.md)。本仓维护 Runner 公开契约与执行事实；SteerLine 独立维护调用与展示。沙箱认证工作保持原作用域，整合冲突及远端前置见 Spec。
+
+绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](docs/spec/steerrunner.spec.md)。

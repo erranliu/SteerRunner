@@ -2,6 +2,8 @@ package cli
 
 import (
 	"bytes"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -50,5 +52,26 @@ func TestSRCLIContract(t *testing.T) {
 				t.Fatalf("exit/envelope disagreement: %s", output.Bytes())
 			}
 		})
+	}
+}
+
+func TestSRExpectedInstanceDoesNotStartService(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "not-created")
+	var output, diagnostics bytes.Buffer
+	exit := Run([]string{"environment-check", "start", "--state-dir", dir, "--expected-instance-id", "A", "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"check-original","input":{}}`), &output, &diagnostics)
+	if exit != 4 || !strings.Contains(output.String(), "service_unavailable") {
+		t.Fatalf("exit=%d output=%s", exit, &output)
+	}
+	if _, err := os.Stat(dir); !os.IsNotExist(err) {
+		t.Fatalf("bound call started/created replacement service: %v", err)
+	}
+	parsed, fault := parse([]string{"inspect", "--run-id", "run", "--expected-instance-id", "A"})
+	if fault != nil || parsed.opts.ExpectedInstanceID != "A" {
+		t.Fatal(parsed, fault)
+	}
+	for _, command := range [][]string{{"service", "start"}, {"version"}, {"service", "status"}} {
+		if _, fault := parse(append(command, "--expected-instance-id", "A")); fault == nil {
+			t.Fatal("unsupported binding ignored", command)
+		}
 	}
 }

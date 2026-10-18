@@ -95,6 +95,12 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 		required = []string{"submit-replay-original", "single-native-publication"}
 	case "orca-remote.connection-reconnect":
 		required = []string{"network-preflight", "direct-state-blocked", "native-cli-blocked", "original-service-unchanged", "normal-reconnect-no-resume", "single-native-publication"}
+		if m.CaseID == "pre-send-disconnect" {
+			required = []string{"network-preflight", "publication-pre-send-gate", "pre-send-connection-retried", "pre-send-authority-retained", "original-service-unchanged", "normal-reconnect-no-resume", "single-native-publication"}
+			if err := validatePreSendEvidence(m); err != nil {
+				return err
+			}
+		}
 	case "orca-remote.service-restart":
 		required = []string{"service-replaced", "resume-required-before-authorization", "no-input-after-revocation-or-before-resume", "single-native-publication"}
 	case "orca-remote.stop-revocation":
@@ -109,7 +115,7 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 		}
 	}
 	assertions := map[string]bool{}
-	if m.Scenario == "orca-remote.connection-reconnect" || m.Scenario == "orca-remote.publication-unknown" || strings.HasSuffix(m.CaseID, "boundary") || m.CaseID == "unreachable" {
+	if m.Scenario == "orca-remote.connection-reconnect" && m.CaseID == "active-disconnect" || m.Scenario == "orca-remote.publication-unknown" || strings.HasSuffix(m.CaseID, "boundary") || m.CaseID == "unreachable" {
 		required = append(required, "failed-observation-retried")
 		proofRaw, proofErr := os.ReadFile(filepath.Join(root, "network-observation-proof.json"))
 		var proof ConnectionProof
