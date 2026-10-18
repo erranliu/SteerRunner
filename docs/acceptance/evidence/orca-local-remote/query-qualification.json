@@ -1,0 +1,33 @@
+{
+  "status": "incomplete",
+  "runner_sha256": "4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e",
+  "driver_sha256": "A85321BD7D471A93E34704E6B93784292A153D885B640D739F1E1A095E001E65",
+  "production_scope": "Orca adapters only",
+  "L1_passed": 273,
+  "controlled_existing_passed": 16,
+  "native_query_probe_passed": true,
+  "orca_modified": false,
+  "L3_planned": 5,
+  "L3_executed": 4,
+  "L3_passed": 4,
+  "L3_blocked": 1,
+  "passed_scenarios": [
+    "orca-local.smoke",
+    "environment-check.orca-local-sandbox",
+    "environment-check.orca-local-full-access",
+    "orca-remote.smoke"
+  ],
+  "blocked": [
+    {
+      "reason": "administrator network injection host unavailable",
+      "model_started": false,
+      "scenario": "orca-remote.connection-reconnect"
+    }
+  ],
+  "unverified": [
+    "Spec V04 same-service dual-connection Controlled subvariant"
+  ],
+  "historical_failures_preserved": true,
+  "not_full_l3_stability_or_parallel_qualification": true,
+  "tested_at": "2026-10-18T08:23:32.5629437Z"
+}

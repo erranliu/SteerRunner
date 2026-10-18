@@ -4,7 +4,7 @@
 本次移除 `orca-remote.app-auth/default` 的两份注册、专用 fixture 配置和说明，
 同步更新目录计数及既有目录回归检查；不修改可选 App 生产能力及其组件边界测试。
 
-当前 L3 为 16 场景、23 case：远端 18、本机 5；含 L2/L4 的目录总数为 21 场景、28 case。
+删除提交 `882f2b1` 时，L3 为 16 场景、23 case：远端 18、本机 5；含 L2/L4 的目录总数为 21 场景、28 case。
 这属于用户要求的清单变更，不把删除的未执行项记为通过。原
 [扩展验收](orca-remote-extensions-20261018.md)及所有历史 JSON 保持不变，
 其 19 项远端清单、9 项当时缺口仅描述变更前状态。
@@ -34,3 +34,12 @@ L1 **289 项通过**，包括目录/PowerShell 框架检查、native driver 编�
 当前清单及八项管理员 case 见 [scope.json](evidence/orca-app-case-removal-20261018/scope.json)。
 原受测实现至本次删除提交之间的 `cmd`、application/contracts/execution/resources、
 `go.mod/go.sum` 无变更；原 10 项 L3 报告仍归属 `e492ec1`，不改为新 driver 的真机资格。
+
+## 随后整合主线 PR #24
+
+推送删除后，主线推进到 `7c48969669f7027814f3f30c4e27241b1bb54d7e`（本机 Orca 查询及 L3）。
+合并保留主线 3 个本机 Orca case、当前远端审计/多 Run 和 App 专项删除结果。
+当前 L3 为 **19 场景、26 case**：远端 18、本机 Codex 5、本机 Orca 3；
+含 L2/L4 共 24 场景、31 case。远端八项管理员缺口不变。
+准备脚本同时保留本机/远端显式路由校验与 CLI 命名互斥。
+上述 `882f2b1` 回归发生在本次主线整合前；整合后的生产代码已变化，原真机记录继续保持原构建归属。

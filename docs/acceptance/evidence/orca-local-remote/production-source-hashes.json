@@ -1,0 +1,46 @@
+[
+  {
+    "path": "internal/execution/adapters/orcatransport/environment_check.go",
+    "sha256": "09db8e84a044e3eff0bedd1e67ced0c1bc923b35a0168f77f0a5243fbaec7cac"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+    "sha256": "78abb8969b175f01cdcf4be4a0d160f03d00dfad1e646673c4ec50d881faa130"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/workspace.go",
+    "sha256": "8a4eb363c2d33811f35497bd6d0b469bd9fa90b66250201ccd39ee99985844bf"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/artifact.go",
+    "sha256": "49295e74900b1a836b7d4a43ceae869adeef0443970e65416f5063dbd4fabb36"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_config.go",
+    "sha256": "2a2ec12f2c5431b3db9cff8a072526af83aac453407324a7b05e7b22166452e8"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_connection.go",
+    "sha256": "d68dc56d2c9a3bc41a0d5ff95fcedee5106c73802fe23b303ee2273d1005e971"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_local_other.go",
+    "sha256": "05dae7da799229797231cd62682a56c00cab436cf92000f31aadc442309ce611"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_local_windows.go",
+    "sha256": "f5ff31892d47be9764af79242d6dd1ad972f432e749208e67e24d5288aba7b48"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_local.go",
+    "sha256": "d281097ab94ffb3012952b7d3de39f71221a7895026c36e70f68a33f0902b988"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_stream.go",
+    "sha256": "f0bc6b557bd3191581451422c3d00f18606701b52bd73a2337ad92f8e9f26844"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/state_subscription.go",
+    "sha256": "b142f23b38c3292615bc2f99f0187146183653d2f57633cf48e32a4c5fd46ca9"
+  }
+]

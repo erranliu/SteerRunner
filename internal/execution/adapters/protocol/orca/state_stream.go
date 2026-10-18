@@ -20,28 +20,9 @@ import (
 )
 
 type statePairing struct {
-	Version   int    `json:"v"`
 	Endpoint  string `json:"endpoint"`
 	Token     string `json:"deviceToken"`
 	PublicKey string `json:"publicKeyB64"`
-	Scope     string `json:"scope"`
-}
-
-func parseStatePairing(code string) (statePairing, error) {
-	var pairing statePairing
-	u, err := url.Parse(code)
-	if err != nil || u.Scheme != "orca" || u.Host != "pair" {
-		return pairing, errors.New("invalid Orca state pairing link")
-	}
-	encoded := u.Query().Get("code")
-	data, err := base64.RawURLEncoding.DecodeString(encoded)
-	if err != nil {
-		data, err = base64.URLEncoding.DecodeString(encoded)
-	}
-	if err != nil || json.Unmarshal(data, &pairing) != nil || pairing.Version != 2 || pairing.Scope != "runtime" {
-		return pairing, errors.New("Orca state pairing requires a runtime-scope v2 link")
-	}
-	return validateStatePairing(pairing)
 }
 
 func validateStatePairing(pairing statePairing) (statePairing, error) {
@@ -53,19 +34,11 @@ func validateStatePairing(pairing statePairing) (statePairing, error) {
 	return pairing, nil
 }
 
-// Credentials stay in the native environment store or process environment,
-// never in execution/profile envelopes. An explicit environment never falls
-// back to a local pairing.
+// Remote credentials stay in the explicitly selected native environment store.
+// Local connections never resolve pairing information.
 func resolveStatePairing(environment string) (statePairing, error) {
 	if environment == "" {
-		code := os.Getenv("ORCA_PAIRING_CODE")
-		if code == "" {
-			code = os.Getenv("ORCA_REMOTE_PAIRING")
-		}
-		if code == "" {
-			return statePairing{}, errors.New("Orca native state subscription requires native pairing authentication")
-		}
-		return parseStatePairing(code)
+		return statePairing{}, errors.New("remote Orca requires an explicit environment")
 	}
 	dir, err := stateUserDataDir()
 	if err != nil {
@@ -86,15 +59,26 @@ func resolveStatePairing(environment string) (statePairing, error) {
 	if json.Unmarshal(data, &store) != nil {
 		return statePairing{}, errors.New("fixed Orca environment authentication is invalid")
 	}
+	var selected *statePairing
+	matches := 0
 	for _, entry := range store.Environments {
 		if entry.ID != environment && entry.Name != environment && "id:"+entry.ID != environment && "name:"+entry.Name != environment {
 			continue
 		}
+		matches++
+		if matches > 1 {
+			return statePairing{}, errors.New("fixed Orca environment selector is ambiguous")
+		}
 		for _, endpoint := range entry.Endpoints {
 			if endpoint.ID == entry.PreferredEndpointID {
-				return validateStatePairing(statePairing{Endpoint: endpoint.Endpoint, Token: endpoint.DeviceToken, PublicKey: endpoint.PublicKeyB64})
+				pairing := statePairing{Endpoint: endpoint.Endpoint, Token: endpoint.DeviceToken, PublicKey: endpoint.PublicKeyB64}
+				selected = &pairing
+				break
 			}
 		}
+	}
+	if selected != nil {
+		return validateStatePairing(*selected)
 	}
 	return statePairing{}, errors.New("fixed Orca environment endpoint is unavailable")
 }
@@ -217,37 +201,16 @@ func (s *stateSocket) request(ctx context.Context, method string, params any) (s
 }
 
 func (s *stateSocket) response(data []byte, requestID string) (json.RawMessage, error) {
-	var response struct {
-		ID        string                     `json:"id"`
-		OK        bool                       `json:"ok"`
-		Result    json.RawMessage            `json:"result"`
-		Error     *StateRPCError             `json:"error"`
-		Keepalive bool                       `json:"_keepalive"`
-		Meta      struct{ RuntimeID string } `json:"_meta"`
-	}
-	if json.Unmarshal(data, &response) != nil {
-		return nil, errors.New("invalid Orca state envelope")
-	}
-	if response.Keepalive {
-		return nil, nil
-	}
-	if response.ID != requestID || response.Meta.RuntimeID != s.runtime {
-		return nil, stateIdentityError("request/runtime identity changed")
-	}
-	if !response.OK {
-		if response.Error != nil {
-			return nil, response.Error
-		}
-		return nil, errors.New("Orca state request was rejected")
-	}
-	return response.Result, nil
+	return stateResponse(data, requestID, s.runtime)
 }
 
 func (s *stateSocket) call(ctx context.Context, method string, params any) (json.RawMessage, error) {
-	id, err := s.request(ctx, method, params)
-	if err != nil {
-		return nil, err
-	}
+	return callState(ctx, s, method, params)
+}
+
+func (s *stateSocket) close() error { return s.conn.CloseNow() }
+
+func (s *stateSocket) next(ctx context.Context, id string) (json.RawMessage, error) {
 	for {
 		data, err := s.read(ctx)
 		if err != nil {

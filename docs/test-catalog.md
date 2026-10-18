@@ -7,14 +7,15 @@
 以下清单于 **2026-10-18** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十三 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十六 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 新增远端 `orca-remote.audited/default`、`orca-remote.multirun/default`：
 分别要求原 native 会话中执行/审计模型及发布恢复的实际历史，以及同一服务两个 Run 在停止一方后另一方仍能反馈更新。
 按用户要求移除独立 App 认证 L3 case；可选 App 产品能力与组件边界测试保留，不记为真实 App 验收通过。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
-PR 整合主线后保留两项本机环境检查，现补齐两项 Orca 环境检查和显式 full_access 远端开发闭环，整合重连用例后，前一版为 L3 十四场景/二十一 case；下文已有真机通过
-记录仍绑定原构建，整合后不继承反馈资格，须以新构建重新验收。
+主线新增本机 Orca 开发及两种权限环境检查；与当前远端审计、多 Run 合并并移除 App 专项后，L3 共十九场景/二十六 case。
+新增项采用本机原生查询、远程订阅加补查；协议差异及实际结果见[专属验收](acceptance/orca-local-remote.md)；下文已有真机通过
+记录仍绑定原构建，不继承为新构建资格。
 
 ## L2：最小核心 smoke
 
@@ -38,7 +39,7 @@ L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的十四场景、二十一 case，含原远端流程、12 个核心可靠性 case、三个本机流程和本机/Orca 各两种权限环境检查。全部保留在
+以下为已注册的十七场景、二十四 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -68,6 +69,9 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 
 | 场景 ID | Case ID | 独有验证目标 | 固定预期 | 除通用条件外的并行条件与待验证项 |
 | --- | --- | --- | --- | --- |
+| `orca-local.smoke` | `default` | 无 pair 的真实本机 IPC 查询、原请求开始回执/新主代理 done、原生 final、原会话一次反馈及真实 PR 交付/停止 | `merged` | 独立现场/工作区/会话；当前查询式实现的真机结果单列，不要求修改 Orca |
+| `environment-check.orca-local-sandbox` | `complete` | 本机 Orca helper、MXC、认证与既有十二项工具检查 | `checked`，owned PR 关闭不合入、引用/工作区删除、writer 停止 | 独立 Check 资源；已接线，真机结果单列于专属验收 |
+| `environment-check.orca-local-full-access` | `complete` | 本机 Orca 的显式 full_access 准备及工具/资源闭环 | 同上，实际 full_access | 不借用 sandbox 通过；已接线，真机结果单列 |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话、一次原会话反馈与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；验证并发 worktree/会话及原 PR 反馈的隔离 |
 | `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、原会话反馈及实际权限审计 | `merged`，Run/服务及审计终端停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
@@ -138,7 +142,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共二十一场景、二十八 case：L2 一项、L3 二十三项（含原 11 项核心可靠性）、L4 四项。
+当前共二十四场景、三十一 case：L2 一项、L3 二十六项（含原 12 项核心可靠性）、L4 四项。
 Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 

@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-// Bootstrap identity fences local pairing without returning its authentication.
+// Bootstrap identity fences local IPC without returning its authentication.
 func LocalRuntimeID() (string, error) {
 	dir, err := stateUserDataDir()
 	if err != nil {

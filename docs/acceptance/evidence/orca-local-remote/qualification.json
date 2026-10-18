@@ -1,0 +1,37 @@
+{
+  "status": "incomplete",
+  "runner_sha256": "876b542ae436763922032cdd8abe5f9c3de9d2252643c29ccb32a9fd4eeeefc0",
+  "driver_sha256": "FF848045DFF4E6631D67C8CF0DB42F4B342A95C8ACB56CBC48C5E338BDF3CA86",
+  "production_scope": "Orca adapters only",
+  "L1_passed": 272,
+  "controlled_existing_passed": 16,
+  "L3_planned": 5,
+  "L3_passed": 3,
+  "L3_blocked": 2,
+  "passed_scenarios": [
+    "environment-check.orca-local-sandbox",
+    "environment-check.orca-local-full-access",
+    "orca-remote.smoke"
+  ],
+  "blocked": [
+    {
+      "reason": "native IPC method_not_supported for state subscription",
+      "model_started": false,
+      "scenario": "orca-local.smoke"
+    },
+    {
+      "reason": "administrator network injection host unavailable",
+      "model_started": false,
+      "scenario": "orca-remote.connection-reconnect"
+    }
+  ],
+  "unverified": [
+    "Spec V04 new same-service dual-target Controlled subvariant"
+  ],
+  "failure_history_preserved": [
+    "C:/srt/olr-ipc-b36a2d9922",
+    "C:/srt/olr-ipc-411cac9178",
+    "C:/srt/f55ba9662a63"
+  ],
+  "tested_at": "2026-10-18T07:36:00.9123975Z"
+}

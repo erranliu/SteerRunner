@@ -145,6 +145,9 @@ type nativeStateFeed struct {
 }
 
 func OpenStateFeed(ctx context.Context, environment string, p b.ProcessIdentity) (StateFeed, error) {
+	if environment == "" {
+		return openLocalQueryFeed(ctx, p)
+	}
 	sub, raw, err := SubscribeState(ctx, environment, p.RuntimeID, "id:"+p.WorktreeID)
 	if err != nil {
 		return nil, err

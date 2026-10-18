@@ -1,0 +1,47 @@
+{
+  "reviewed_at": "2026-10-18T07:47:38.4310412Z",
+  "history_commit": "687eb3f21c8c626b87f8af408fca1d8f2c5cf2dc",
+  "history_evidence": "C:/SteerlineDebug/dev-20261014-123419-ca6590b0-dirty/evidence",
+  "historical_orca_version": "1.4.224",
+  "paired": false,
+  "local_named_pipe": true,
+  "rounds": [
+    {
+      "label": "LOCAL_PIPE_A",
+      "input_accepted": true,
+      "turn_started": true,
+      "working_observed": true,
+      "done_observed": true,
+      "sample_count": 17
+    },
+    {
+      "label": "LOCAL_PIPE_B",
+      "input_accepted": true,
+      "turn_started": true,
+      "working_observed": true,
+      "done_observed": true,
+      "sample_count": 14
+    }
+  ],
+  "current_code_tests": [
+    {
+      "subtests": 2,
+      "name": "TestOrcaLocalPipeNativeEvidence",
+      "scope": "historical real unary IPC data replay",
+      "passed": true
+    },
+    {
+      "subtests": 29,
+      "name": "TestOrcaCompletionQuery",
+      "scope": "current completion rules, including no working notification and rejection cases",
+      "passed": true
+    },
+    {
+      "name": "TestOrcaCompletionQueryRecoveryClosesFailedRead",
+      "passed": true
+    }
+  ],
+  "conclusion": "Native IPC query mode is a viable adapter-local design; not yet implemented or qualified by new L3",
+  "proposed_local_observation": "session.tabs.list + worktree.ps, existing StateFeed and 30-second authoritative query schedule",
+  "remote_observation": "existing subscription + authoritative query, unchanged"
+}

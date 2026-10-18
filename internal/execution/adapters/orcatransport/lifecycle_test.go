@@ -78,6 +78,8 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 	}
 	var result any
 	switch c.Args[0] + " " + c.Args[1] {
+	case "status --json":
+		result = map[string]any{"runtime": map[string]any{"state": "ready", "capabilities": []string{"terminal.prompt-delivery.v1"}}}
 	case "repo list":
 		result = f.repoInventory
 		if result == nil {

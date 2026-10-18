@@ -44,6 +44,8 @@ type Manifest struct {
 	Execution             contracts.Execution     `json:"execution"`
 	Publication           contracts.Publication   `json:"publication"`
 	RemoteRuntimeID       string                  `json:"remote_runtime_id,omitempty"`
+	LocalRuntimeID        string                  `json:"local_runtime_id,omitempty"`
+	LocalRepositoryPath   string                  `json:"local_repository_path,omitempty"`
 	CreatedAt             string                  `json:"created_at"`
 	CaseID                string                  `json:"case_id,omitempty"`
 	RepeatIndex           int                     `json:"repeat_index,omitempty"`
@@ -71,6 +73,9 @@ var scenarioPattern = regexp.MustCompile(`^[a-z][a-z0-9.-]+$`)
 var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 
 func (m Manifest) Validate() error {
+	if (m.LocalRuntimeID != "" || m.LocalRepositoryPath != "") && (m.Level != "L3" || m.Execution.Adapter != "orca-terminal" || m.Execution.Target.Kind != "local") {
+		return errors.New("local Orca identity requires a local Orca fixture")
+	}
 	createdAt, createdErr := time.Parse(time.RFC3339Nano, m.CreatedAt)
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
@@ -121,8 +126,33 @@ func (m Manifest) Validate() error {
 		}
 	case "L3":
 		// Additional real-environment drivers can be registered without changing levels.
-		if m.Execution.Adapter == "orca-terminal" && (m.Execution.Target.Kind != "orca_environment" || m.Execution.Target.Environment == "" || m.RemoteRuntimeID == "") {
-			return errors.New("remote Orca requires a fixed environment and runtime")
+		if m.Execution.Adapter == "orca-terminal" {
+			if m.Execution.Target.Kind == "local" {
+				if m.Execution.Target.Environment != "" || m.RemoteRuntimeID != "" {
+					return errors.New("local Orca cannot carry remote routing")
+				}
+				caseID := "default"
+				if m.Driver == "environment-check" {
+					caseID = "complete"
+				}
+				scenario, _, err := Lookup(m.Scenario, caseID)
+				if err != nil || scenario.Target != "orca-local" || scenario.Driver != m.Driver {
+					return errors.New("unregistered local Orca fixture")
+				}
+				if m.LocalRuntimeID == "" || !filepath.IsAbs(m.LocalRepositoryPath) {
+					return errors.New("local Orca requires a frozen runtime and absolute repository path")
+				}
+				var settings contracts.OrcaSettings
+				mode := "sandbox"
+				if m.Scenario == "environment-check.orca-local-full-access" {
+					mode = "full_access"
+				}
+				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
+					return errors.New("local Orca requires its frozen native runtime and case access mode")
+				}
+			} else if m.Execution.Target.Kind != "orca_environment" || m.Execution.Target.Environment == "" || m.RemoteRuntimeID == "" {
+				return errors.New("remote Orca requires a fixed environment and runtime")
+			}
 		}
 	default:
 		return errors.New("live fixtures require L2 or L3")
@@ -175,6 +205,29 @@ func (m Manifest) Validate() error {
 	return nil
 }
 
+func (m Manifest) OrcaRuntimeID() (string, error) {
+	if m.Execution.Target.Kind == "local" {
+		if m.LocalRuntimeID == "" {
+			return "", errors.New("missing frozen local Orca runtime")
+		}
+		return m.LocalRuntimeID, nil
+	}
+	if m.RemoteRuntimeID == "" {
+		return "", errors.New("missing remote Orca runtime")
+	}
+	return m.RemoteRuntimeID, nil
+}
+
+func (m Manifest) ExecutionRepositoryPath() (string, error) {
+	if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
+		if !filepath.IsAbs(m.LocalRepositoryPath) {
+			return "", errors.New("missing frozen local Orca repository")
+		}
+		return m.LocalRepositoryPath, nil
+	}
+	return m.RepositoryPath, nil
+}
+
 // ValidateArtifact is also used on Git objects fetched from the PR host, including remote runs.
 func ValidateArtifact(body []byte, earliest, latest time.Time) (time.Time, error) {
 	text := strings.ReplaceAll(string(body), "\r\n", "\n")
@@ -202,6 +255,12 @@ func CheckPR(m Manifest, view contracts.RunView) error {
 	}
 	if m.RemoteRuntimeID != "" && !strings.HasPrefix(f.SessionID, "orca-terminal:"+m.RemoteRuntimeID+":") {
 		return errors.New("native session belongs to a different remote runtime")
+	}
+	if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
+		runtime, err := m.OrcaRuntimeID()
+		if err != nil || !strings.HasPrefix(f.SessionID, "orca-terminal:"+runtime+":") {
+			return errors.New("native session belongs to a different local Orca runtime")
+		}
 	}
 	return nil
 }

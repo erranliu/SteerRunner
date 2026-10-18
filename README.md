@@ -5,6 +5,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke、L3 流程/核心可靠性测试和 L4 受控边界测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
+- [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
@@ -166,7 +167,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 十六场景二十三 case（远端十八、本机五项）、
+当前已注册 L2 一 case、L3 十九场景二十六 case（远端十八、本机 Codex 五项、本机 Orca 三项）、
 L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
 driver 需要同构建反馈通过资格。真实后端并行和剩余管理员验收分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
