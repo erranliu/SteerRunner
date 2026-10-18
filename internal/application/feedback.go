@@ -59,11 +59,7 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 			return false
 		}
 	}
-	option := "implement"
-	if state, _ := r.Workflow.CurrentState(); businessAnswer && state.Kind == "input" && state.Continue == "" {
-		option = ""
-	}
-	step, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: option, Continue: true})
+	step, err := workflow.FeedbackStep(r.Workflow, "implement")
 	if err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false

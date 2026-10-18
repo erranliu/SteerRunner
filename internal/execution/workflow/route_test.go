@@ -93,14 +93,14 @@ func TestRADefinitionRename(t *testing.T) {
 func TestRAFeedback(t *testing.T) {
 	w, _, _ := plainFixture()
 	w.StepID = StepImplementInput
-	if step, err := FeedbackStep(w, FeedbackIntent{Option: "implement"}); err != nil || step != StepImplement {
+	if step, err := FeedbackStep(w, "implement"); err != nil || step != StepImplement {
 		t.Fatal(step, err)
 	}
-	if _, err := FeedbackStep(w, FeedbackIntent{Continue: true}); err == nil {
+	if _, err := FeedbackStep(w, ""); err == nil {
 		t.Fatal("resume authorized implementation")
 	}
 	w.StepID = StepPRReady
-	if _, err := FeedbackStep(w, FeedbackIntent{Option: "implement"}); err == nil {
+	if _, err := FeedbackStep(w, "implement"); err == nil {
 		t.Fatal("milestone acquired feedback edge")
 	}
 }

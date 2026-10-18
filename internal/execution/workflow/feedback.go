@@ -2,15 +2,9 @@ package workflow
 
 import "errors"
 
-type FeedbackIntent struct {
-	Option                                         string
-	Continue, Async                                bool
-	SourceTurn, SourceAttempt, UnsentReportCommand string
-}
-
 // Only a deliberate new implementation instruction can leave business input.
 // Native questions are answered through their original request, outside here.
-func FeedbackStep(w Snapshot, intent FeedbackIntent) (string, error) {
+func FeedbackStep(w Snapshot, option string) (string, error) {
 	state, ok := w.CurrentState()
 	if !ok {
 		return "", errors.New("unknown frozen state")
@@ -18,7 +12,7 @@ func FeedbackStep(w Snapshot, intent FeedbackIntent) (string, error) {
 	if state.Kind == "milestone" {
 		return "", errors.New("milestone has no implementation feedback edge")
 	}
-	if intent.Option == "implement" {
+	if option == "implement" {
 		if state.ManualImplementation != "" {
 			return state.ManualImplementation, nil
 		}
