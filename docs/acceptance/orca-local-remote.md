@@ -10,6 +10,18 @@
 生产改动仅在 `adapters/protocol/orca` 与 `adapters/orcatransport`；上层生产代码、公开契约、
 Profile v3、State v5、target hash 和数据库格式不变。测试/现场脚本/文档另列。
 
+## 结构审计修复与 PR 构建
+
+三个确认的问题均已修复：本机 runtime/源路径冻结到 manifest；本机 pipe 测试只验证实际支持的查询/上传；删除无人调用的 pair 解析函数。preparation 改写不再改变目标，目标改写会改变 manifest 摘要，缺项和跨目标混入均被回归测试拒绝。没有新增 schema 或 driver。
+
+已整合主线 `0e34595` 的发送前只读连接恢复。本机 IPC 的连接与 I/O 失败使用同一错误分类和 5 秒连接上限；认证、身份与协议错误不因此变成可重试。受测生产源码为提交 `0aa7f2d`，共 13 个修改文件，均在两个 Orca adapter，见[最终生产源码摘要](evidence/orca-local-remote/pr-production-source-hashes.json)。
+
+修复后的 L1 280 项、框架守卫、native driver 编译/零命中守卫及 Controlled 16/16 已通过，见[完整前置](evidence/orca-local-remote/pr-prerequisites.json)。L1 在该生产改动提交前启动，报告保留原 HEAD/dirty；启动后生产源码没有再变化。Controlled 使用干净提交 `0aa7f2d`，Runner SHA256 为 `49104e8a725718ddb3f974c85678d2b22e3d5890b955cffea05e2926d3f1dc8c`。
+
+修复后[真实 IPC 无模型探针](evidence/orca-local-remote/pr-local-ipc-probe.json)通过：查询观察终端变化、关闭后重开原终端、444000 字节上传及独立摘要核对，辅助资源已精确清理。重新生成的本机 smoke 现场 `C:/srt/76ed03994f4e` 使用同一 Runner，manifest 已冻结原生 runtime/源路径；该现场已通过完整开发、原会话一次反馈、新 head、同一测试 [PR #499](https://github.com/erranliu/SteerlineTest/pull/499) 精确合入及 Run/服务停止，见[最终本机 smoke](evidence/orca-local-remote/pr-local-smoke-result.json)。原生配对变量均为空。
+
+主线增加了 `pre-send-disconnect`，总目录为 17 场景/24 case，本功能仍只新增三个 case。Plan 用既有 `-Case active-disconnect` 精确选择重连回归，本次五项定向集合不扩大。远程管理员故障宿主和 V04 同服务双连接子变体仍是未完成项；历史四项 L3 不移作最终构建资格；本轮仅补跑受影响的本机 smoke，未重新签收最终构建的两个 Check 和远程 smoke。见[修复验证汇总](evidence/orca-local-remote/pr-verification.json)。实现 [PR #24](https://github.com/erranliu/SteerRunner/pull/24) 在验收缺口关闭前保留 draft。
+
 ## 审计修复前查询构建（历史证据）
 
 Runner SHA256 `4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e`，

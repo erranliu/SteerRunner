@@ -1,0 +1,17 @@
+{
+  "scope": "audit fixes and main integration",
+  "verification_status": "passed",
+  "feature_acceptance_status": "incomplete",
+  "tested_production_commit": "0aa7f2df624ac6595d88a5eb0d149a3db7858da9",
+  "runner_sha256": "49104e8a725718ddb3f974c85678d2b22e3d5890b955cffea05e2926d3f1dc8c",
+  "l1_passed_count": 280,
+  "controlled_passed_count": 16,
+  "native_ipc_probe": "passed",
+  "final_build_local_smoke": "passed",
+  "previous_build_four_l3_results": "historical; not relabeled",
+  "remaining": [
+    "V04 same-service dual-connection Controlled variant",
+    "remote reconnect requires an administrator network-fault host; final-build remote regression not rerun"
+  ],
+  "source_hashes": "pr-production-source-hashes.json"
+}

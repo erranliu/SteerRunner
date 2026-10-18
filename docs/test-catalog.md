@@ -4,7 +4,7 @@
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-17** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-18** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
 已注册 L2 一 case、L3 二十四 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。

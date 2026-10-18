@@ -77,17 +77,23 @@
 
 ## 7. P4：5 case 定向真机验收
 
-依赖 P3。以下为完整批次入口，新 ID 已注册；只有原生能力及前置满足后才运行对应模型 case。命令在仓库根目录 PowerShell 7 执行，v2 配置同时保留本机/远程字段并指向存活的管理员故障宿主，不含凭据。完整入口会先跑一次 L1/Controlled，无需人为再分层重复运行。
+依赖 P3。以下为本次精确 5 case 的串行入口；主线重连场景另有 `pre-send-disconnect`，整场景选择会多跑一项，因此用现有 fixture 的 `-Case` 参数限定范围。新 ID 已注册；只有原生能力及前置满足后才运行对应模型 case。命令在仓库根目录 PowerShell 7 执行，v2 配置同时保留本机/远程字段并指向存活的管理员故障宿主，不含凭据。完整入口会先跑一次 L1/Controlled，无需人为再分层重复运行。
 
 ```powershell
+$ErrorActionPreference = 'Stop'
+$config = '.evidence/live-orca-stability.json'
+.\scripts\test.ps1 -Level Controlled -OutDir .evidence/orca-local-remote-prerequisites
 $cases = @(
-    'orca-local.smoke',
-    'environment-check.orca-local-sandbox',
-    'environment-check.orca-local-full-access',
-    'orca-remote.smoke',
-    'orca-remote.connection-reconnect'
+    @{scenario='orca-local.smoke'; case='default'; timeout=30},
+    @{scenario='environment-check.orca-local-sandbox'; case='complete'; timeout=15},
+    @{scenario='environment-check.orca-local-full-access'; case='complete'; timeout=15},
+    @{scenario='orca-remote.smoke'; case='default'; timeout=30},
+    @{scenario='orca-remote.connection-reconnect'; case='active-disconnect'; timeout=30}
 )
-.\scripts\test.ps1 -Level L3 -Scenario $cases -Config .evidence/live-orca-stability.json -Repeat 1 -MaxParallel 1
+foreach ($item in $cases) {
+    $manifest = & .\scripts\new-test-fixture.ps1 -Scenario $item.scenario -Case $item.case -Config $config | Select-Object -Last 1
+    & .\scripts\test-native.ps1 -Manifest $manifest -TimeoutMinutes $item.timeout
+}
 ```
 
 管理员前置未满足时，不应让该阻断隐藏其他 case 的实际结果。本轮已先用 `scripts/test.ps1 -Level Controlled -OutDir .evidence/olr/query-verified` 完整执行一次 L1/Controlled，再用现有 `new-test-fixture.ps1` 和 `test-native.ps1 -Manifest <本 case 的 manifest.json> -TimeoutMinutes <既有期限>` 串行执行四个可运行 case。每个现场核对相同 Runner/driver 和生产源码摘要，并引用该完整前置结果；直接 native 入口本身不会自动补做前置。第五项单列管理员预检阻断，整批不能报五项全过；管理员宿主就绪后仍须补跑原重连 case。
@@ -144,3 +150,5 @@ git diff --check
 3. 删除无人调用的 pair 链接解析函数及其专用字段，不引入替代层。
 4. 合入主线发送前恢复，本机只读 IPC 的 I/O 失败使用既有连接错误类型及 5 秒连接上限；认证、身份和协议错误保持不可重试。
 5. 最终构建执行完整 L1/Controlled、native driver 编译、框架校验及受影响的原生验证。历史 L3 的源码/构建摘要不改写；远程故障与 V04 缺口单列，PR 在验收缺口关闭前保留 draft。
+
+最终审计修复验证：干净生产提交 `0aa7f2d`、Runner `49104e8a725718ddb3f974c85678d2b22e3d5890b955cffea05e2926d3f1dc8c`。L1 280 项、Controlled 16/16、真实无模型 IPC 探针及修复后的本机 smoke 均通过；本机反馈、新 head、精确合入及 Run/服务停止已确认。[汇总](../acceptance/evidence/orca-local-remote/pr-verification.json)单列历史 L3 和剩余缺口，后续提交仅追加文档/证据，不修改受测生产源码。
