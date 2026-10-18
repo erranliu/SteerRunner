@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -108,6 +109,16 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				l.feedMu.Unlock()
 			}
 			if err != nil {
+				if ctx.Err() == nil && native.IsCLIQueueError(err) {
+					// Retry only this read-only metadata observation. The callback
+					// never ran; no input or auxiliary actor can be duplicated.
+					select {
+					case <-ctx.Done():
+						return
+					case <-time.After(250 * time.Millisecond):
+						continue
+					}
+				}
 				if ctx.Err() == nil {
 					o.done <- err
 				}

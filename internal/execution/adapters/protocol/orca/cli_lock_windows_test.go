@@ -52,7 +52,7 @@ func TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation(t *te
 	defer cancelWait()
 	calls := 0
 	_, err = SerializeCLI(wait, func(context.Context) ([]byte, error) { calls++; return nil, nil })
-	if !errors.Is(err, context.DeadlineExceeded) || calls != 0 {
+	if !errors.Is(err, context.DeadlineExceeded) || !IsCLIQueueError(err) || calls != 0 {
 		t.Fatal("canceled queued invocation dispatched or retried", calls, err)
 	}
 	// A killed owner releases the kernel lock without deleting a shared path.

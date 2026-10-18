@@ -2,9 +2,21 @@ package orca
 
 import (
 	"context"
+	"errors"
 	"os"
 	"path/filepath"
 )
+
+// CLIQueueError proves the callback never ran. A command's unknown transport
+// outcome is different and must never authorize a resend.
+type CLIQueueError struct{ Cause error }
+
+func (e *CLIQueueError) Error() string { return "Orca CLI queue ended before command invocation" }
+func (e *CLIQueueError) Unwrap() error { return e.Cause }
+func IsCLIQueueError(err error) bool {
+	var queued *CLIQueueError
+	return errors.As(err, &queued)
+}
 
 // SerializeCLI protects Orca's shared environments file from concurrent CLI
 // refresh/rename on Windows. It fences command processes, not remote workers or
@@ -22,11 +34,14 @@ func SerializeCLI(ctx context.Context, invoke func(context.Context) ([]byte, err
 	}
 	release, err := lockCLIFile(ctx, path)
 	if err != nil {
+		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			return nil, &CLIQueueError{Cause: err}
+		}
 		return nil, err
 	}
 	defer release()
 	if err = ctx.Err(); err != nil {
-		return nil, err
+		return nil, &CLIQueueError{Cause: err}
 	}
 	return invoke(ctx)
 }
