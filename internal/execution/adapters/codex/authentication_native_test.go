@@ -96,7 +96,7 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 			t.Fatal("wrong long-path fixture")
 		}
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
 	defer cancel()
 	h, binding, probeErr := backend.PrepareSession(ctx, Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "business input must not be sent", LinkedWorktreeArgs: roots})
 	if h == nil || binding.Process == nil {
@@ -146,6 +146,28 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 		}
 		toolRoots, _ := WritableRoots(backend.toolWriteArgs(roots))
 		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", toolRoots)
+		// Exercise the actual generated probe's finite catch output in the same
+		// native sandbox. Override only this child command's network client; no
+		// host trust/permissions, business input, or credential value changes.
+		probeScript, _, scriptErr := a.readinessScript([]string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")}, "origin")
+		if scriptErr != nil {
+			t.Fatal(scriptErr)
+		}
+		cases := map[string]string{"Timeout": "network_timeout", "TrustFailure": "network_trust", "ConnectFailure": "network_transport", "ProtocolError": "network_rejected"}
+		proofs := []map[string]any{}
+		for status, expected := range cases {
+			script := "function Invoke-WebRequest { throw [Net.WebException]::new('controlled-network-client-failure',[Net.WebExceptionStatus]::" + status + ") }\n" + probeScript
+			err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", script}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
+			var finite struct {
+				Verified bool   `json:"verified"`
+				Stage    string `json:"stage"`
+			}
+			if err != nil || result.ExitCode != 1 || json.Unmarshal([]byte(strings.TrimSpace(result.Stdout)), &finite) != nil || finite.Verified || finite.Stage != expected {
+				t.Fatalf("native finite network failure %s: exit=%d rpc=%v", status, result.ExitCode, err)
+			}
+			proofs = append(proofs, map[string]any{"injected_client_status": status, "observed_stage": finite.Stage, "exit_code": result.ExitCode, "verified": finite.Verified, "business_inputs": 0})
+		}
+		_ = os.WriteFile(filepath.Join(evidence, "network-probe-cases.json"), encode(proofs), 0600)
 		// The additional grant must not permit writes to the shared parent.
 		outside := filepath.Join(filepath.Dir(backend.Config.AuthenticationTransport.Directory), "outside-canary")
 		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `[IO.File]::WriteAllText(` + psLiteral(outside) + `,'unexpected')`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)

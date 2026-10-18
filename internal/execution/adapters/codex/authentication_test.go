@@ -235,7 +235,7 @@ func TestAuthenticationEnvironmentAndArgumentsNeverExportSecrets(t *testing.T) {
 }
 
 func TestSandboxReadinessUsesNativePolicyAndFiniteEvidence(t *testing.T) {
-	for _, stage := range []string{"ready", "tool_environment", "git_admin_write", "network", "github_identity", "remote_git", "untrusted-secret"} {
+	for _, stage := range []string{"ready", "tool_environment", "git_admin_write", "network", "network_timeout", "network_trust", "network_transport", "network_rejected", "github_identity", "remote_git", "untrusted-secret"} {
 		t.Run(stage, func(t *testing.T) {
 			a := testAuthentication(t)
 			dir := t.TempDir()

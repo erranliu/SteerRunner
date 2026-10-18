@@ -2,6 +2,7 @@
 // No agent session, RPC client, retry queue or background receiver is created.
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { writeReceipt } from "./receipt.mjs";
 
 const literal = (value) => "'" + value.replaceAll("'", "''") + "'";
 const executableLimit = 16 * 1024 * 1024;
@@ -80,22 +81,43 @@ export function createTerminalToolOperations({ executable, policy, environment =
   };
 }
 
-export async function prepareTerminalTools(config, environment) {
+export async function prepareTerminalTools(config, environment, launch = spawn) {
+  let failure = "native_preparation_failed", stage = "unverified";
+  try {
+      failure = "native_authentication_preparation_missing";
       if (!config.tool_policy || !config.auth_probe || !environment || !Number.isFinite(Date.parse(config.authentication_expires_at)) ||
           Date.parse(config.authentication_expires_at) <= Date.now() + 5000) throw new Error("native_authentication_preparation_missing");
-      const operations = createTerminalToolOperations({ executable: config.tool_host, policy: config.tool_policy, environment: environment });
+      failure = "native_preparation_failed";
+      const operations = createTerminalToolOperations({ executable: config.tool_host, policy: config.tool_policy, environment: environment }, launch);
       const probe = await operations.execute("$ErrorActionPreference='Stop';\n" + config.auth_probe);
       let result;
-      try { result = JSON.parse(probe.stdout.toString("utf8").trim()); } catch { throw new Error("native_tool_preparation_invalid"); }
+      failure = "native_tool_preparation_invalid";
+      try { result = JSON.parse(probe.stdout.toString("utf8").trim()); } catch { throw new Error(failure); }
+      const stages = new Set(["sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "network", "network_timeout", "network_trust", "network_transport", "network_rejected", "github_identity", "github_repository", "remote_git", "ready",
+        "github_identity_trust", "github_identity_transport", "github_identity_rejected", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected"]);
+      if (stages.has(result?.stage)) stage = result.stage;
+      failure = "native_tool_preparation_failed";
       if (probe.exitCode !== 0 || !result.verified || result.stage !== "ready") throw new Error("native_tool_preparation_failed:" + result.stage);
       const quote = (value) => "'" + value.replaceAll("'", "''") + "'";
       const canary = path.join(config.cwd, `.steerrunner-tool-${config.run_id}`);
       const outside = path.join(config.directory, `outside-${config.run_id}`);
+      failure = "native_tool_environment_audit_failed";
       const inside = await operations.execute(`$ErrorActionPreference='Stop';if($env:OPENROUTER_API_KEY -or $env:DEEPSEEK_API_KEY -or $env:OPENAI_API_KEY -or $env:ANTHROPIC_API_KEY){throw 'provider_environment_leak'};[IO.File]::WriteAllText(${quote(canary)},'verified');if([IO.File]::ReadAllText(${quote(canary)}) -cne 'verified'){throw 'write_read_failed'};[IO.File]::Delete(${quote(canary)})`);
       if (inside.exitCode !== 0) throw new Error("native_tool_environment_audit_failed");
+      failure = "native_write_boundary_audit_failed";
       const boundary = await operations.execute(`$ErrorActionPreference='Stop';[IO.File]::WriteAllText(${quote(outside)},'verified');[IO.File]::Delete(${quote(outside)})`);
       if ((boundary.exitCode === 0) !== (config.tool_policy.access_mode === "full_access")) throw new Error("native_write_boundary_audit_failed");
       return { operations, preparation: { contract: "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never", access_mode: config.tool_policy.access_mode,
         authentication_expires_at: config.authentication_expires_at, verified: true,
         inside_write_verified: true, provider_environment_absent: true, outside_write_denied: boundary.exitCode !== 0 } };
+  } catch (error) {
+      // A plugin manager may keep its TUI alive after a rejected initializer.
+      // Preserve a bounded failure fact, never raw output/env or success proof.
+      if (path.isAbsolute(config.directory ?? "") && /^[a-f0-9]{32}$/.test(config.run_id ?? "") &&
+          typeof config.session_id === "string" && /^[a-f0-9]{64}$/.test(config.extension_bundle_sha256 ?? "")) {
+        writeReceipt(config.directory, "preparation-failure", { version: 1, run_id: config.run_id,
+          session_id: config.session_id, extension_bundle_sha256: config.extension_bundle_sha256, pid: process.pid, failure, probe_stage: stage });
+      }
+      throw error;
+  }
 }
