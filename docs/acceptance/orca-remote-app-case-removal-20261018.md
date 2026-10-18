@@ -31,7 +31,7 @@ L1 **289 项通过**，包括目录/PowerShell 框架检查、native driver 编�
 回归后只补本节及有限 JSON 证据，未修改受测测试代码。
 
 原始回归摘要见 [regression.json](evidence/orca-app-case-removal-20261018/regression.json)，
-当前清单及八项管理员 case 见 [scope.json](evidence/orca-app-case-removal-20261018/scope.json)。
+删除提交时的清单及八项管理员 case 见 [scope.json](evidence/orca-app-case-removal-20261018/scope.json)。
 原受测实现至本次删除提交之间的 `cmd`、application/contracts/execution/resources、
 `go.mod/go.sum` 无变更；原 10 项 L3 报告仍归属 `e492ec1`，不改为新 driver 的真机资格。
 
@@ -43,3 +43,10 @@ L1 **289 项通过**，包括目录/PowerShell 框架检查、native driver 编�
 含 L2/L4 共 24 场景、31 case。远端八项管理员缺口不变。
 准备脚本同时保留本机/远端显式路由校验与 CLI 命名互斥。
 上述 `882f2b1` 回归发生在本次主线整合前；整合后的生产代码已变化，原真机记录继续保持原构建归属。
+
+整合提交 `09e8fd43f0440d9acbde1d6e64f45a3d894b0537` 的干净工作树重新完成
+L1 **295 项通过**、Controlled **16/16 通过**，包括 native driver 编译、零匹配及
+目录/PowerShell 框架检查；7 个显式 helper/native skip 不计真机通过。
+原始摘要见 [main-regression.json](evidence/orca-app-case-removal-20261018/main-regression.json)，
+整合后的清单见 [main-scope.json](evidence/orca-app-case-removal-20261018/main-scope.json)。
+其后仅补本文及有限证据；本次未重跑整合构建的真机 L3，不能将原十项记录提升为新构建完整资格。
