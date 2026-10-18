@@ -7,6 +7,8 @@
   "feedback_qualification": "",
   "reasoning_effort": "medium",
   "orca_executable": "C:/path/to/orca.exe",
+  "orca_local_runtime_executable": "C:/SteerRunnerRuntime/local/steerrunner-agent.exe",
+  "orca_local_repository_path": "C:/Projects/SteerlineTest",
   "orca_environment": "saved-environment-id",
   "remote_agent": "codex",
   "remote_runtime_executable": "C:/SteerRunnerRuntime/steerrunner-agent.exe",

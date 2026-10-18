@@ -1,0 +1,19 @@
+{
+  "scenario": "orca-remote.smoke",
+  "fixture": "C:/srt/2a85b0663850",
+  "runner_sha256": "4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e",
+  "driver_sha256": "A85321BD7D471A93E34704E6B93784292A153D885B640D739F1E1A095E001E65",
+  "run_id": "5a56dc337344ef7b178f0691cc1856a6",
+  "passed": true,
+  "stage": "completed",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/497",
+  "original_head": "b3a5c4f1fb4ea2fb79f65b00e7670aa064a5c7c7",
+  "feedback_head": "a16df69af6aeada8ce45211e324418d6ff6c93f4",
+  "merge_commit": "9221618df59da4197f360965e6751b47ae51e9e1",
+  "run_stopped": true,
+  "service_stopped": true,
+  "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "transport": "paired-websocket",
+  "exit_code": 0,
+  "scenario_count": 1
+}

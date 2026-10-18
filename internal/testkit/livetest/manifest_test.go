@@ -48,11 +48,60 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
 	}
+	local := m
+	local.Level, local.Scenario = "L3", "orca-local.smoke"
+	local.LocalRuntimeID, local.LocalRepositoryPath = "local-original", repo
+	local.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"sandbox","agent_launch":{"runtime_executable":"C:/trusted/agent.exe","runtime_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}`)}
+	preparation, _ := json.Marshal(map[string]any{"fixture_id": local.ID, "status": "ready", "orca_runtime_id": "local-original", "orca_repository_path": repo})
+	if err := os.WriteFile(filepath.Join(root, "preparation.json"), preparation, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err := local.Validate(); err != nil {
+		t.Fatal("valid local Orca fixture rejected", err)
+	}
+	if runtime, err := local.OrcaRuntimeID(); err != nil || runtime != "local-original" {
+		t.Fatal(runtime, err)
+	}
+	// Preparation is evidence, never a mutable routing source outside the manifest hash.
+	frozen, _ := json.Marshal(local)
+	if err := os.WriteFile(filepath.Join(root, "preparation.json"), []byte(`{"orca_runtime_id":"foreign","orca_repository_path":"foreign"}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if runtime, err := local.OrcaRuntimeID(); err != nil || runtime != "local-original" {
+		t.Fatal("preparation changed runtime", runtime, err)
+	}
+	if path, err := local.ExecutionRepositoryPath(); err != nil || path != repo {
+		t.Fatal("preparation changed repository", path, err)
+	}
+	if err := local.Validate(); err != nil {
+		t.Fatal("routing depends on preparation", err)
+	}
+	for _, mutate := range []func(*Manifest){func(x *Manifest) { x.LocalRuntimeID = "other" }, func(x *Manifest) { x.LocalRepositoryPath = filepath.Join(root, "other") }} {
+		changed := local
+		mutate(&changed)
+		wire, _ := json.Marshal(changed)
+		if sha256.Sum256(wire) == sha256.Sum256(frozen) {
+			t.Fatal("local target escaped frozen manifest identity")
+		}
+	}
+	for _, mutate := range []func(*Manifest){func(x *Manifest) { x.LocalRuntimeID = "" }, func(x *Manifest) { x.LocalRepositoryPath = "relative" }, func(x *Manifest) { x.Execution.Adapter = "codex-app-server" }, func(x *Manifest) { x.RemoteRuntimeID = "foreign" }, func(x *Manifest) { x.Execution.Target.Environment = "remote" }, func(x *Manifest) { x.Scenario = "orca-remote.smoke" }, func(x *Manifest) { x.Execution.Settings = json.RawMessage(`{"access_mode":"full_access"}`) }} {
+		changed := local
+		mutate(&changed)
+		if changed.Validate() == nil {
+			t.Fatal("local fixture accepted conflicting route/mode", changed)
+		}
+	}
 	full := m
 	full.Scenario, full.Level, full.RemoteRuntimeID = "orca-remote.full-access", "L3", "paired-runtime"
 	full.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}
 	if err := full.Validate(); err != nil {
 		t.Fatal("explicit remote full-access fixture rejected", err)
+	}
+	for _, target := range []Manifest{m, full} {
+		target.LocalRuntimeID, target.LocalRepositoryPath = "local-original", repo
+		if target.Validate() == nil {
+			t.Fatal("non-local fixture accepted local routing")
+		}
 	}
 	for _, settings := range []string{`{}`, `{"access_mode":"sandbox"}`} {
 		changed := full

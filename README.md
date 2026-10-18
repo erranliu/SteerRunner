@@ -5,6 +5,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke、L3 流程/核心可靠性测试和 L4 受控边界测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
+- [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)

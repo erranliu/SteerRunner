@@ -73,6 +73,24 @@ func TestSRLiveScenario(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
 	}
+	if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
+		for _, key := range []string{"ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING", "ORCA_ENVIRONMENT"} {
+			previous, exists := os.LookupEnv(key)
+			_ = os.Unsetenv(key)
+			t.Cleanup(func() {
+				if exists {
+					_ = os.Setenv(key, previous)
+				} else {
+					_ = os.Unsetenv(key)
+				}
+			})
+		}
+		runtime, err := m.OrcaRuntimeID()
+		if err != nil {
+			t.Fatal(err)
+		}
+		save(t, "orca-local-connection.json", map[string]any{"transport": "local-ipc", "observation_mode": "native-query", "runtime_id": runtime, "pairing_present": false, "remote_pairing_present": false, "implicit_environment_present": false})
+	}
 	root, err := filepath.EvalSymlinks(*evidenceFlag)
 	if err != nil || !strings.EqualFold(root, filepath.Join(m.Root, "evidence")) {
 		t.Fatal("evidence must be the generated fixture's own evidence directory")
@@ -265,7 +283,11 @@ func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, erro
 	if err := contracts.DecodeStrict(m.Execution.Settings, &settings); err != nil {
 		return nil, err
 	}
-	prefix := "orca-terminal:" + m.RemoteRuntimeID + ":"
+	runtime, err := m.OrcaRuntimeID()
+	if err != nil {
+		return nil, err
+	}
+	prefix := "orca-terminal:" + runtime + ":"
 	if !strings.HasPrefix(view.Execution.SessionID, prefix) {
 		return nil, errors.New("original remote session identity is unavailable")
 	}
@@ -273,7 +295,10 @@ func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, erro
 	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		return nil, errors.New("original terminal identity is incomplete")
 	}
-	args := append(append([]string{}, settings.Transport.Args...), "terminal", "show", "--terminal", parts[0], "--environment", m.Execution.Target.Environment, "--json")
+	args := append(append([]string{}, settings.Transport.Args...), "terminal", "show", "--terminal", parts[0], "--json")
+	if m.Execution.Target.Environment != "" {
+		args = append(args, "--environment", m.Execution.Target.Environment)
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	out, err := exec.CommandContext(ctx, settings.Transport.Executable, args...).Output()
@@ -292,7 +317,7 @@ func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, erro
 			} `json:"terminal"`
 		} `json:"result"`
 	}
-	if json.Unmarshal(out, &proof) != nil || !proof.OK || proof.Meta.Runtime != m.RemoteRuntimeID || proof.Result.Terminal.Handle != parts[0] || proof.Result.Terminal.Incarnation != parts[1] {
+	if json.Unmarshal(out, &proof) != nil || !proof.OK || proof.Meta.Runtime != runtime || proof.Result.Terminal.Handle != parts[0] || proof.Result.Terminal.Incarnation != parts[1] {
 		return nil, errors.New("remote diagnostic identity did not match the original terminal")
 	}
 	return out, nil
@@ -481,7 +506,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	spec, _ := os.ReadFile(m.SpecPath)
 	plan, _ := os.ReadFile(m.PlanPath)
 	specText, planText := string(spec), string(plan)
-	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
+	source, err := m.ExecutionRepositoryPath()
+	if err != nil {
+		t.Fatal(err)
+	}
+	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
 	if audited {
 		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel}
 	}

@@ -1,0 +1,99 @@
+{
+  "scenario": "environment-check.orca-local-sandbox",
+  "fixture": "C:/srt/36504a1549f9",
+  "check_id": "53d98a6093fee687e4643d70a6480369",
+  "passed": true,
+  "runner_sha256": "4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e",
+  "driver_sha256": "A85321BD7D471A93E34704E6B93784292A153D885B640D739F1E1A095E001E65",
+  "status": "completed",
+  "result": "passed",
+  "cleanup_status": "completed",
+  "connection": {
+    "implicit_environment_present": false,
+    "observation_mode": "native-query",
+    "pairing_present": false,
+    "remote_pairing_present": false,
+    "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+    "transport": "local-ipc"
+  },
+  "actual": {
+    "access_mode": "sandbox",
+    "approval_policy": "never",
+    "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+    "terminal": "term_4b039ed2-f1ac-4c11-a7fa-a9ccddfbc5d1",
+    "terminal_incarnation": "6336f22e-864c-4f5a-9c70-ab5914de1547",
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Projects/SteerlineTest",
+    "session_id": "01a14e0d-a1a1-78c2-85b9-fdc880b0a637"
+  },
+  "items": [
+    {
+      "id": "permissions",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "workspace",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "temporary",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "git_admin",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "remote_read",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "fetch",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "base_push",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "commit",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "head_push",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "pr_create",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "pr_query",
+      "status": "passed",
+      "stage": "native_probe"
+    },
+    {
+      "id": "pr_close",
+      "status": "passed",
+      "stage": "native_probe"
+    }
+  ],
+  "resources": {
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/493",
+    "pr_closed": true,
+    "base_deleted": true,
+    "head_deleted": true,
+    "writer_stopped": true,
+    "local_removed": true
+  },
+  "service_stopped": true
+}

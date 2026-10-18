@@ -77,7 +77,8 @@ func (s *RemoteEnvironmentSession) Initialize(ctx context.Context) (codex.Bindin
 	}
 	var id string
 	for _, repo := range repos.Repos {
-		if repo.Kind == "git" && repo.GitRemoteIdentity.RemoteURL == s.setup.Input.Repository.URL {
+		if repo.Kind == "git" && repo.GitRemoteIdentity.RemoteURL == s.setup.Input.Repository.URL &&
+			(s.setup.Input.Execution.Target.Kind != "local" || sameRemotePath(repo.Path, s.setup.Input.Repository.LocalPath)) {
 			if id != "" {
 				return codex.Binding{}, errors.New("ambiguous remote check repository")
 			}
@@ -130,7 +131,7 @@ func (s *RemoteEnvironmentSession) Initialize(ctx context.Context) (codex.Bindin
 	return s.binding(), nil
 }
 func sameRemotePath(a, b string) bool {
-	return strings.EqualFold(strings.ReplaceAll(a, "\\", "/"), strings.ReplaceAll(b, "\\", "/"))
+	return strings.EqualFold(strings.TrimRight(strings.ReplaceAll(a, "\\", "/"), "/"), strings.TrimRight(strings.ReplaceAll(b, "\\", "/"), "/"))
 }
 func (s *RemoteEnvironmentSession) binding() codex.Binding {
 	p := s.original

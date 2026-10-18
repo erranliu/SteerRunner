@@ -1,0 +1,9 @@
+{
+  "model_started": false,
+  "fixture_created": false,
+  "status": "blocked",
+  "at": "2026-10-18T06:52:09.5412789Z",
+  "scenario": "orca-remote.connection-reconnect",
+  "case_id": "active-disconnect",
+  "reason": "admin_required: isolated dual-path network injection requires elevated firewall management"
+}

@@ -46,10 +46,10 @@ if ($taskScenario.target -eq 'local-codex') {
     if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
     $taskExecution = @{adapter='codex-app-server'; target=@{kind='local'}; settings=@{executable=$taskCodex; model=(Read-Setting 'model'); reasoning_effort=(Read-Setting 'reasoning_effort' 'medium')}}
     if ($taskConfig.PSObject.Properties['github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.github_auth }
-} elseif ($taskScenario.target -eq 'orca-environment') {
+} elseif ($taskScenario.target -in @('orca-environment','orca-local')) {
     $taskOrca = Read-Setting 'orca_executable'
     $taskEnvironment = Read-Setting 'orca_environment'
-    if (-not [IO.Path]::IsPathRooted($taskOrca) -or -not (Test-Path -LiteralPath $taskOrca -PathType Leaf) -or -not $taskEnvironment) { throw 'Configure a selected Orca executable and remote environment' }
+    if (-not [IO.Path]::IsPathRooted($taskOrca) -or -not (Test-Path -LiteralPath $taskOrca -PathType Leaf) -or ($taskScenario.target -eq 'orca-environment' -and -not $taskEnvironment)) { throw 'Configure a selected Orca executable and the selected target' }
     $taskRemoteModel = Read-Setting 'model'
     if ($taskConfig.PSObject.Properties['remote_model']) { $taskRemoteModel = [string]$taskConfig.remote_model }
     $taskRemoteEffort = Read-Setting 'reasoning_effort' 'medium'
@@ -67,11 +67,21 @@ if ($taskScenario.target -eq 'local-codex') {
         $taskLaunch['args'] = $taskRemoteArgs
     }
     $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
+    if ($taskScenario.target -eq 'orca-local') {
+        foreach ($taskRouteKey in @('ORCA_ENVIRONMENT','ORCA_PAIRING_CODE','ORCA_REMOTE_PAIRING')) { [Environment]::SetEnvironmentVariable($taskRouteKey,$null,'Process') }
+        $taskExecution.target = @{kind='local'}
+        $taskLocalHelper = Read-Setting 'orca_local_runtime_executable'
+        $taskLocalAgent = Read-Setting 'codex_executable'
+        if (-not [IO.Path]::IsPathFullyQualified($taskLocalHelper) -or -not (Test-Path -LiteralPath $taskLocalHelper -PathType Leaf) -or -not [IO.Path]::IsPathFullyQualified($taskLocalAgent) -or -not (Test-Path -LiteralPath $taskLocalAgent -PathType Leaf)) { throw 'Local Orca requires absolute native Codex and installed helper paths' }
+        $taskLaunch = @{executable=$taskLocalAgent;runtime_executable=$taskLocalHelper;runtime_sha256=(Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant();args=@('--no-daemon')}
+        if (Read-Setting 'model') { $taskLaunch['model']=Read-Setting 'model'; $taskLaunch['reasoning_effort']=Read-Setting 'reasoning_effort' 'medium' }
+        $taskExecution.settings.agent_launch = $taskLaunch
+    }
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
 $taskMode = Read-Setting 'access_mode' 'sandbox'
-if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','orca-remote.full-access')) { $taskMode = 'full_access' }
-if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox')) { $taskMode = 'sandbox' }
+if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','environment-check.orca-local-full-access','orca-remote.full-access')) { $taskMode = 'full_access' }
+if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox','environment-check.orca-local-sandbox','orca-local.smoke')) { $taskMode = 'sandbox' }
 if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
 $taskExecution.settings['access_mode'] = $taskMode
 $taskAudit = $null
@@ -202,6 +212,13 @@ $null = Invoke-Git @('-C',$taskRepository,'push','origin',('HEAD:refs/heads/' + 
 if ($taskScenario.target -eq 'orca-environment') {
     $taskRuntime = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Environment $taskEnvironment
     $taskManifest['remote_runtime_id'] = [string]$taskRuntime
+    Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
+} elseif ($taskScenario.target -eq 'orca-local') {
+    $taskLocalPreparation = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Target local -RepositoryPath (Read-Setting 'orca_local_repository_path') | Select-Object -Last 1 | ConvertFrom-Json
+    $taskPreparation['orca_runtime_id'] = $taskLocalPreparation.runtime_id
+    $taskPreparation['orca_repository_path'] = $taskLocalPreparation.repository_path
+    $taskManifest['local_runtime_id'] = [string]$taskLocalPreparation.runtime_id
+    $taskManifest['local_repository_path'] = [string]$taskLocalPreparation.repository_path
     Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 }
 $taskPreparation.status = 'ready'
