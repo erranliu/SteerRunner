@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -90,6 +91,24 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 			receipt.Implementation, _ = l.envelope(r.Snapshot, state)
 			return receipt, err
 		}
+	}
+	if state.LaunchAccepted && l.profile.Terminal != nil {
+		receipt.Disposition = b.OperationAccepted
+		if e := l.readTerminalReadiness(&state, true); e != nil {
+			receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+			if errors.Is(e, os.ErrNotExist) {
+				receipt.Diagnostic = "Waiting for original " + l.profile.Terminal.Agent + " native preparation"
+				return receipt, nil
+			}
+			return receipt, e
+		}
+		state.LaunchConfirmed = true
+		receipt.Disposition = b.OperationConfirmed
+		receipt.State.ResourcePending = false
+		receipt.State.SessionAvailable, receipt.State.WorkerLive = true, true
+		receipt.RequestID = state.LaunchRequest
+		receipt.Implementation, err = l.envelope(r.Snapshot, state)
+		return receipt, err
 	}
 	if state.LaunchAccepted && l.profile.RuntimeExecutable != "" {
 		receipt.Disposition = b.OperationAccepted

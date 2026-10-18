@@ -75,13 +75,20 @@ if ($taskScenario.target -eq 'local-codex') {
         if (-not [IO.Path]::IsPathFullyQualified($taskLocalHelper) -or -not (Test-Path -LiteralPath $taskLocalHelper -PathType Leaf) -or -not [IO.Path]::IsPathFullyQualified($taskLocalAgent) -or -not (Test-Path -LiteralPath $taskLocalAgent -PathType Leaf)) { throw 'Local Orca requires absolute native Codex and installed helper paths' }
         $taskLaunch = @{executable=$taskLocalAgent;runtime_executable=$taskLocalHelper;runtime_sha256=(Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant();args=@('--no-daemon')}
         if (Read-Setting 'model') { $taskLaunch['model']=Read-Setting 'model'; $taskLaunch['reasoning_effort']=Read-Setting 'reasoning_effort' 'medium' }
+        if ($taskScenario.PSObject.Properties['agent'] -and $taskScenario.agent -ne 'codex') {
+            $taskAgent=$taskScenario.agent
+            $taskExecution.settings['agent']=$taskAgent
+            $taskLaunch=@{executable=(Read-Setting ($taskAgent+'_executable') ($taskAgent+'.cmd'));runtime_executable=$taskLocalHelper;runtime_sha256=(Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant()}
+            if (Read-Setting ($taskAgent+'_model')) { $taskLaunch['model']=Read-Setting ($taskAgent+'_model') }
+            if (Read-Setting ($taskAgent+'_reasoning_effort')) { $taskLaunch['reasoning_effort']=Read-Setting ($taskAgent+'_reasoning_effort') }
+        }
         $taskExecution.settings.agent_launch = $taskLaunch
     }
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
 $taskMode = Read-Setting 'access_mode' 'sandbox'
-if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','environment-check.orca-local-full-access','orca-remote.full-access')) { $taskMode = 'full_access' }
-if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox','environment-check.orca-local-sandbox','orca-local.smoke')) { $taskMode = 'sandbox' }
+if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','environment-check.orca-local-full-access','orca-remote.full-access','orca-local.pi-full-access')) { $taskMode = 'full_access' }
+if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox','environment-check.orca-local-sandbox','orca-local.smoke','orca-local.codex','orca-local.pi','orca-local.dsh','orca-local.mixed')) { $taskMode = 'sandbox' }
 if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
 $taskExecution.settings['access_mode'] = $taskMode
 $taskAudit = $null
@@ -123,6 +130,15 @@ if ($taskStability) {
     if ($LASTEXITCODE -ne 0 -or -not $taskProbe.ok) { throw 'Private native Orca runtime failed preflight' }
     $taskExecution.settings.transport.executable = $taskHelper
     $taskExecution.settings.transport['args'] = @('audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'--')
+}
+# A test-only forwarding CLI records actual local sends for all agents and can
+# withhold one real business-send receipt. It never replaces Orca execution.
+if ($taskScenario.target -eq 'orca-local') {
+    $taskLocalAudit = Join-Path $taskRoot 'bin/local-audit.exe'
+    Push-Location $taskRepo
+    try { & go build -trimpath -o $taskLocalAudit ./tests/helpers/stability; if ($LASTEXITCODE -ne 0) { throw 'Local audit helper build failed' } } finally { Pop-Location }
+    $taskExecution.settings.transport.executable = $taskLocalAudit
+    $taskExecution.settings.transport['args'] = @('local-audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'-orca',$taskOrca,'--')
 }
 $taskSourceRevision = 'cebdd5ab552150c49743e40593c836689ecf789b'
 $taskRepository = Join-Path $taskRoot 'SteerlineTest'
@@ -188,6 +204,12 @@ $taskManifest = [ordered]@{
     created_at=[DateTime]::UtcNow.ToString('o')
 }
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
+if ($Scenario -eq 'orca-local.mixed') {
+    $taskPeerLaunch=@{executable=(Read-Setting 'dsh_executable' 'dsh.cmd');runtime_executable=$taskLocalHelper;runtime_sha256=$taskLaunch.runtime_sha256}
+    if (Read-Setting 'dsh_model') { $taskPeerLaunch['model']=Read-Setting 'dsh_model' }
+    if (Read-Setting 'dsh_reasoning_effort') { $taskPeerLaunch['reasoning_effort']=Read-Setting 'dsh_reasoning_effort' }
+    $taskManifest['peer_execution']=@{adapter='orca-terminal';target=@{kind='local'};settings=@{agent='dsh';access_mode='sandbox';transport=$taskExecution.settings.transport;agent_launch=$taskPeerLaunch}}
+}
 if ($FeedbackQualification -and $Scenario -eq 'local-codex.smoke') {
     $taskProofPath=[IO.Path]::GetFullPath($FeedbackQualification)
     $taskProof=Get-Content -LiteralPath $taskProofPath -Raw | ConvertFrom-Json
@@ -210,7 +232,7 @@ $taskPreparation.status = 'pushing-base'
 Write-JSON (Join-Path $taskRoot 'preparation.json') $taskPreparation
 $null = Invoke-Git @('-C',$taskRepository,'push','origin',('HEAD:refs/heads/' + $taskBase))
 if ($taskScenario.target -eq 'orca-environment') {
-    $taskRuntime = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Environment $taskEnvironment
+    $taskRuntime = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Environment $taskEnvironment -Target orca_environment
     $taskManifest['remote_runtime_id'] = [string]$taskRuntime
     Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 } elseif ($taskScenario.target -eq 'orca-local') {

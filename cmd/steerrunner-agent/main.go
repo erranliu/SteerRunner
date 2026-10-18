@@ -6,14 +6,64 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"os"
+	"os/exec"
 	"time"
 )
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--terminal-metadata" {
+		metadata, err := orca.TerminalRuntimeMetadata()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "terminal runtime metadata unavailable")
+			os.Exit(1)
+		}
+		raw, _ := json.Marshal(metadata)
+		fmt.Println(string(raw))
+		return
+	}
+	if len(os.Args) == 3 && os.Args[1] == "--terminal-configuration" {
+		var config orca.TerminalConfig
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &config)
+		}
+		if err == nil {
+			err = orca.RunTerminalAgent(context.Background(), config, os.Stdin, os.Stdout, os.Stderr)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Native terminal preparation/execution failed:", err)
+			os.Exit(1)
+		}
+		return
+	}
+	if len(os.Args) == 3 && os.Args[1] == "--terminal-tool" {
+		var config terminaltools.Config
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &config)
+		}
+		if err == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
+			defer cancel()
+			err = terminaltools.Run(ctx, config, os.Stdin, os.Stdout, os.Stderr)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "terminal tool failed:", err)
+			var exit *exec.ExitError
+			if errors.As(err, &exit) {
+				os.Exit(1)
+			}
+			os.Exit(2)
+		}
+		return
+	}
 	if len(os.Args) == 3 && os.Args[1] == "--original-turn" {
 		var query codex.RemoteTurnQuery
 		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])

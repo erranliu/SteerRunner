@@ -7,6 +7,9 @@ import (
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -16,6 +19,7 @@ import (
 )
 
 type Turn struct {
+	Extension   *TerminalReceipt         `json:"extension,omitempty"`
 	WireFormat  string                   `json:"wire_format,omitempty"`
 	Recorded    *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
 	Inspection  *NativeInspection        `json:"inspection,omitempty"`
@@ -33,6 +37,8 @@ type Turn struct {
 	ReplyDigest string                   `json:"reply_digest,omitempty"`
 }
 type State struct {
+	TerminalReadiness  *TerminalReceipt       `json:"terminal_readiness,omitempty"`
+	TerminalOwner      *TerminalOwner         `json:"terminal_owner,omitempty"`
 	AdmissionAttempted bool                   `json:"admission_attempted,omitempty"`
 	AdmissionAccepted  bool                   `json:"admission_accepted,omitempty"`
 	RemoteReadiness    *codex.RemoteReadiness `json:"remote_readiness,omitempty"`
@@ -45,6 +51,8 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
+	terminalMu       sync.Mutex
+	terminalJob      b.ProcessTreeHandle
 	setup            b.LifecycleSetup
 	profile          Profile
 	client           native.Client
@@ -167,7 +175,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	}
 	seen := map[string]bool{}
 	for _, turn := range state.Turns {
-		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand {
+		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand && turn.WireFormat != extensionWireCommand {
 			return state, errors.New("unknown native input wire format")
 		}
 		if turn.Recorded != nil {
@@ -187,6 +195,21 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		}
 		if turn.InputDigest != digest([]byte(turn.Prompt)) || len(turn.Reply) > maxReplyBytes {
 			return state, errors.New("invalid saved terminal reply binding")
+		}
+		if turn.Native.agentName() != s.Ref.Agent.Name {
+			return state, errors.New("original native proof agent differs from frozen execution")
+		}
+		if turn.WireFormat == extensionWireCommand {
+			if l.profile.Terminal == nil || state.TerminalReadiness == nil || state.TerminalOwner == nil || turn.Recorded != nil || turn.Inspection != nil {
+				return state, errors.New("native extension readiness/turn binding missing")
+			}
+			if err := l.validateTerminalReceipt(*state.TerminalReadiness); err != nil {
+				return state, err
+			}
+			if err := l.validateTerminalTurn(state, &turn); err != nil {
+				return state, err
+			}
+			continue
 		}
 		if turn.Native.Pane == "" || turn.Native.WorkingAt > 0 && (turn.Native.Provider == "" || turn.Native.Authority == "" || turn.Native.Revision <= 0) || turn.Native.EndedAt > 0 && turn.Native.EndedAt <= turn.Native.WorkingAt || turn.Settled && turn.Recorded == nil && (turn.Native.EndedAt == 0 || turn.Native.ReplyDigest != digest([]byte(turn.Reply))) || turn.Settled && turn.Recorded != nil && (!turn.Recorded.Completed || turn.Recorded.Status != "completed" || turn.Recorded.FinalText != turn.Reply) {
 			return state, errors.New("invalid original native turn evidence")
@@ -244,7 +267,11 @@ func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native
 	// A connected native background terminal can be unadopted by the UI
 	// (orphaned=true). Its original runtime/incarnation/worktree and agent must
 	// still match; adoption into a visible tab is not execution identity.
-	if t.WorktreeID != s.Ref.External.WorktreeID || t.AgentIdentity != s.Ref.Agent.Name && !(initializing && t.AgentIdentity == "") || !t.Connected || t.Exited() {
+	// This label is a display heuristic: the native DSH TUI can be labeled Gemini.
+	// Managed agents instead require their original OS owner and native receipt
+	// before every business input/observation. PTY/runtime/incarnation still bind.
+	unknownNativeAgent := l.profile.Terminal != nil
+	if t.WorktreeID != s.Ref.External.WorktreeID || t.AgentIdentity != s.Ref.Agent.Name && !(initializing && t.AgentIdentity == "") && !unknownNativeAgent || !t.Connected || t.Exited() {
 		return t, fmt.Errorf("original Orca agent/worktree changed (worktree=%q expected=%q agent=%q orphaned=%t)", t.WorktreeID, s.Ref.External.WorktreeID, t.AgentIdentity, t.Orphaned)
 	}
 	return t, nil
@@ -254,8 +281,11 @@ func (l *Lifecycle) PreflightLifecycle(ctx context.Context, setup b.LifecycleSet
 	if err := l.validate(setup.Snapshot); err != nil {
 		return b.CapabilityReport{}, err
 	}
-	if setup.Snapshot.Ref.Agent.Name != "codex" {
-		return b.CapabilityReport{}, errors.New("Orca native final reply collection currently supports only Codex")
+	if err := l.agentExecutionSupport(setup.Snapshot.Ref.Agent.Name); err != nil {
+		return b.CapabilityReport{}, err
+	}
+	if (setup.Snapshot.Ref.Agent.Name == "pi" || setup.Snapshot.Ref.Agent.Name == "dsh") && (l.profile.Environment != "" || l.profile.Terminal == nil || len(l.profile.RuntimeSHA256) != 64) {
+		return b.CapabilityReport{}, errors.New("terminal agent requires a frozen local managed runtime and native receipt profile; zero business input")
 	}
 	r, err := l.client.MetaCall(ctx, "status", "--json")
 	if err != nil {
@@ -309,9 +339,23 @@ func (l *Lifecycle) verifyLocalObservation(ctx context.Context, runtime string) 
 	return err
 }
 
+func (l *Lifecycle) agentExecutionSupport(agent string) error {
+	if agent != "codex" && !((agent == "pi" || agent == "dsh") && l.profile.Terminal != nil && l.profile.Terminal.Agent == agent && l.profile.Environment == "" && len(l.profile.RuntimeSHA256) == 64) {
+		// Orca 1.4.224 lacks the start, root outcome and permission preparation contract.
+		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "terminal_agent_evidence_unsupported: selected agent lacks verified native turn and permission preparation; zero business input"}
+	}
+	return nil
+}
+
 func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (b.PreparationFacts, error) {
 	if err := l.validate(s); err != nil {
 		return b.PreparationFacts{}, err
+	}
+	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {
+		return b.PreparationFacts{}, err
+	}
+	if (s.Ref.Agent.Name == "pi" || s.Ref.Agent.Name == "dsh") && (l.profile.Terminal == nil || l.profile.Environment != "" || len(l.profile.RuntimeSHA256) != 64) {
+		return b.PreparationFacts{}, errors.New("native terminal preparation profile missing; zero business input")
 	}
 	if strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") && l.profile.RuntimeExecutable == "" {
 		return b.PreparationFacts{}, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "remote_sandbox_authentication_unsupported: Orca terminal transport has no trusted execution-host credential preparation and deterministic same-sandbox command capability; zero business input"}
@@ -349,6 +393,10 @@ func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.Lifecy
 		return receipt, nil, err
 	}
 	if err := l.validate(r.Snapshot); err != nil {
+		return receipt, nil, err
+	}
+	if err := l.agentExecutionSupport(r.Snapshot.Ref.Agent.Name); err != nil {
+		receipt.Disposition = b.OperationRejected
 		return receipt, nil, err
 	}
 	var err error
@@ -423,7 +471,7 @@ func (l *Lifecycle) readyOnce(readyCtx context.Context, s b.LifecycleSnapshot) (
 		if _, err := l.original(readyCtx, s); err != nil {
 			return current, err
 		}
-		if current.PaneKey != feed.Initial().PaneKey || current.AgentType != "codex" {
+		if current.PaneKey != feed.Initial().PaneKey || current.AgentType != s.Ref.Agent.Name {
 			return current, errors.New("original native main-agent identity changed; no input was sent")
 		}
 		if current.MainAgent != nil && current.ProviderSession.ID != "" {
@@ -472,20 +520,30 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 			return receipt, errors.New("prepared worker input changed")
 		}
 	} else {
-		defer l.closeStateFeed()
-		initial, readyErr := l.ready(ctx, s)
-		if readyErr != nil {
-			return receipt, readyErr
+		if l.profile.Terminal != nil {
+			if _, e := l.original(ctx, s); e != nil {
+				return receipt, e
+			}
+			if e := l.readTerminalReadiness(&state, true); e != nil {
+				return receipt, e
+			}
+			state.Turns = append(state.Turns, Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, WireFormat: extensionWireCommand, Native: NativeProof{Agent: s.Ref.Agent.Name}})
+		} else {
+			defer l.closeStateFeed()
+			initial, readyErr := l.ready(ctx, s)
+			if readyErr != nil {
+				return receipt, readyErr
+			}
+			if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
+				return receipt, errors.New("remote preparation native session changed")
+			}
+			baseline := nativeBaseline(initial, l.clock())
+			prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline}
+			if state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
+				prepared.WireFormat = remoteWireCommand
+			}
+			state.Turns = append(state.Turns, prepared)
 		}
-		if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
-			return receipt, errors.New("remote preparation native session changed")
-		}
-		baseline := nativeBaseline(initial, l.clock())
-		prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline}
-		if state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
-			prepared.WireFormat = remoteWireCommand
-		}
-		state.Turns = append(state.Turns, prepared)
 	}
 	receipt.Process = &state.Process
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, SessionAvailable: true, WorkerLive: true}
@@ -519,20 +577,29 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	if turn.Attempted {
 		return receipt, errors.New("original terminal input was already attempted; reconcile only")
 	}
-	initial, readyErr := l.ready(ctx, s)
-	if readyErr != nil {
-		l.closeStateFeed()
-		return receipt, readyErr
+	if l.profile.Terminal != nil {
+		if _, e := l.original(ctx, s); e != nil {
+			return receipt, e
+		}
+		if e := l.readTerminalReadiness(&state, true); e != nil {
+			return receipt, e
+		}
+	} else {
+		initial, readyErr := l.ready(ctx, s)
+		if readyErr != nil {
+			l.closeStateFeed()
+			return receipt, readyErr
+		}
+		if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
+			l.closeStateFeed()
+			return receipt, errors.New("remote preparation native session changed")
+		}
+		if initial.PaneKey != turn.Native.Pane || turn.Native.Provider != "" && initial.ProviderSession.ID != turn.Native.Provider {
+			l.closeStateFeed()
+			return receipt, errors.New("native original session changed before submission")
+		}
+		turn.Native = nativeBaseline(initial, l.clock())
 	}
-	if state.RemoteReadiness != nil && initial.ProviderSession.ID != state.RemoteReadiness.SessionID {
-		l.closeStateFeed()
-		return receipt, errors.New("remote preparation native session changed")
-	}
-	if initial.PaneKey != turn.Native.Pane || turn.Native.Provider != "" && initial.ProviderSession.ID != turn.Native.Provider {
-		l.closeStateFeed()
-		return receipt, errors.New("native original session changed before submission")
-	}
-	turn.Native = nativeBaseline(initial, l.clock())
 	turn.Request = nativeRequest(r.Operation.ID)
 	turn.Attempted = true
 	receipt.Disposition = b.OperationUnknown
@@ -543,7 +610,15 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		return receipt, err
 	}
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, TurnID: input.CommandID, SessionAvailable: true, WorkerLive: true}
-	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", wirePrompt(turn), "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
+	text := wirePrompt(turn)
+	if l.profile.Terminal != nil && l.profile.Terminal.Agent == "dsh" {
+		// ConPTY's paste ingress uses CR for line breaks. DSH normalizes these
+		// back to LF in the original composer; raw LF is lost by its Windows
+		// input path. Keep logical framing/digests unchanged and verify the
+		// exact committed native text, as for every other input.
+		text = "\x1b[200~" + strings.ReplaceAll(text, "\n", "\r") + "\x1b[201~"
+	}
+	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
 	receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
 	var sent struct {
 		Send struct {
@@ -570,7 +645,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	}
 	turn.Accepted = true
 	for _, stage := range sent.Send.Prompt.Stages {
-		if stage == "turn_started" {
+		if stage == "turn_started" && l.profile.Terminal == nil {
 			turn.Started = true
 		}
 	}
@@ -598,7 +673,9 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 		if _, err = l.original(ctx, s); err != nil {
 			return receipt, nil, err
 		}
-		if turn.WireFormat == remoteWireCommand {
+		if turn.WireFormat == extensionWireCommand {
+			receipt.Diagnostic = l.observeTerminal(&state, turn)
+		} else if turn.WireFormat == remoteWireCommand {
 			receipt.Diagnostic = l.observeRecorded(ctx, &state, turn)
 		} else {
 			receipt.Diagnostic = l.observeNative(ctx, s, &state, turn)
@@ -609,7 +686,7 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 			receipt.Implementation, _ = l.envelope(s, state)
 			return receipt, nil, err
 		}
-		if turn.WireFormat == remoteWireCommand {
+		if turn.WireFormat == remoteWireCommand || turn.WireFormat == extensionWireCommand {
 			goto observed
 		}
 		if !turn.Accepted || !turn.Started || turn.Native.EndedAt == 0 || turn.Native.ReplyBody == "" || receipt.Diagnostic != "" {
@@ -633,6 +710,12 @@ observed:
 	receipt.Disposition = b.OperationAccepted
 	receipt.State.TurnCompleted = turn.Native.EndedAt > 0 || turn.Recorded != nil && turn.Recorded.Completed
 	receipt.State.WorkerLive = !receipt.State.TurnCompleted
+	if failure := l.terminalFailure(state, *turn); failure != nil {
+		receipt.TurnEvidence = failure
+		receipt.State.TurnCompleted, receipt.State.WorkerLive = true, false
+		receipt.Disposition = b.OperationConfirmed
+		return receipt, nil, nil
+	}
 	if !turn.Settled {
 		return receipt, nil, nil
 	}
@@ -644,6 +727,9 @@ observed:
 		nativeOutcome = "succeeded"
 	}
 	receipt.TurnEvidence = &b.TurnEvidence{NativeOutcome: nativeOutcome, FinalOrigin: "terminal_observed", FinalSource: NativeReplySource, FinalItemID: turn.ReplyDigest, FinalVerified: true, TurnID: turn.Command, CommandID: turn.Command, SessionID: SessionID(state.Process), Started: true, Completed: true, Succeeded: true, LastMessage: turn.Reply}
+	if turn.Extension != nil {
+		receipt.TurnEvidence = l.terminalEvidence(state, *turn)
+	}
 	if turn.Recorded != nil {
 		receipt.TurnEvidence.FinalOrigin = "native_history"
 		receipt.TurnEvidence.FinalSource = codex.RemoteTurnSource
@@ -732,12 +818,76 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 	if _, err := l.original(ctx, r.Snapshot); err != nil {
 		return receipt, err
 	}
+	var terminalOwner *TerminalOwner
+	if l.profile.Terminal != nil {
+		state, e := l.state(r.Snapshot)
+		if e != nil {
+			return receipt, e
+		}
+		owner, e := l.readTerminalOwner()
+		if e != nil {
+			// Only a positive pre-worker exit can qualify this fallback. A lost
+			// owner after readiness/input is never evidence that no worker ran.
+			if !errors.Is(e, os.ErrNotExist) || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.LaunchConfirmed || len(state.Turns) != 0 {
+				return receipt, e
+			}
+			owner, e = l.startupFailureOwner()
+			if e != nil {
+				return receipt, e
+			}
+		}
+		terminalOwner = &owner
+		if state.TerminalOwner != nil && !reflect.DeepEqual(state.TerminalOwner, terminalOwner) {
+			return receipt, errors.New("original terminal owner changed before stop")
+		}
+		if owner.Job.Handle != 0 && !l.terminalExitVerified(owner) {
+			if e = l.pinTerminalJob(owner); e != nil {
+				return receipt, e
+			}
+			l.terminalMu.Lock()
+			l.terminalJob.Kill()
+			until := time.Now().Add(3 * time.Second)
+			for !l.terminalJob.WritersAbsent() && time.Now().Before(until) {
+				time.Sleep(10 * time.Millisecond)
+			}
+			absent := l.terminalJob.WritersAbsent()
+			l.terminalMu.Unlock()
+			if !absent {
+				return receipt, errors.New("original native terminal owned writers remain unverified")
+			}
+		}
+		// Let the helper close its broker and commit its exit before closing
+		// the PTY. Closing the PTY first can terminate that cleanup mid-write.
+		if owner.Job.Handle != 0 && l.profile.Terminal.ReceiptVersion >= 2 {
+			until := time.Now().Add(3 * time.Second)
+			for !l.terminalExitVerified(owner) && time.Now().Before(until) {
+				time.Sleep(20 * time.Millisecond)
+			}
+			if !l.terminalExitVerified(owner) {
+				return receipt, errors.New("original native terminal exit/authentication cleanup unverified")
+			}
+		}
+	}
+
 	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(ctx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
 		return receipt, err
 	}
 	if proof.Disposition == "confirmed" {
+		if l.profile.Terminal != nil {
+			until := time.Now().Add(3 * time.Second)
+			for process.Probe(&terminalOwner.Job.Owner).State == "matches" && time.Now().Before(until) {
+				time.Sleep(20 * time.Millisecond)
+			}
+			if process.Probe(&terminalOwner.Job.Owner).State != "absent" {
+				return receipt, errors.New("original native terminal runtime root stop unverified")
+			}
+			if terminalOwner.Job.Handle != 0 && l.profile.Terminal.ReceiptVersion >= 2 && !l.terminalExitVerified(*terminalOwner) {
+				return receipt, errors.New("original native terminal exit/authentication cleanup unverified")
+			}
+			l.closeTerminalJob()
+		}
 		progress.Phase = "business-confirmed"
 		receipt.State.WorkerAbsent = true
 		state, stateErr := l.state(r.Snapshot)
@@ -788,6 +938,7 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 			return b.LifecycleStateFacts{}, fmt.Errorf("original readonly observation cleanup remains unverified: %w", err)
 		}
 	}
+	defer l.closeTerminalJob()
 	state, err := l.state(s)
 	if err != nil {
 		return b.LifecycleStateFacts{}, err
@@ -809,6 +960,30 @@ func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnaps
 	if err != nil {
 		evidence.Diagnostic = "Original terminal unavailable; replacement recovery is unsupported: " + err.Error()
 		return evidence, err
+	}
+	if l.profile.Terminal != nil {
+		state, e := l.state(s)
+		if e != nil {
+			return evidence, e
+		}
+		if e = l.readTerminalReadiness(&state, false); e != nil {
+			return evidence, e
+		}
+		active := state.TerminalReadiness.ActiveCommandID
+		if active == "" && len(state.Turns) == 0 {
+			evidence.SessionIdle = true
+			return evidence, nil
+		}
+		turn := turnFor(&state, active)
+		if turn == nil {
+			return evidence, errors.New("original native idle boundary unavailable")
+		}
+		diagnostic := l.observeTerminal(&state, turn)
+		evidence.SessionIdle = turn.Extension != nil && turn.Extension.Stage == "settled" && (diagnostic == "" || strings.HasPrefix(diagnostic, "Original native turn failed: "))
+		if !evidence.SessionIdle {
+			evidence.Diagnostic = "Original native agent remains active/unverified; no recovery input is allowed"
+		}
+		return evidence, nil
 	}
 	// A rendered idle screen can belong to a previous turn. Qualification uses
 	// the same original native main-agent source as normal observation.
@@ -834,12 +1009,12 @@ func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnaps
 	if err != nil {
 		return evidence, err
 	}
-	idle := current.PaneKey == initial.PaneKey && initial.PaneKey != "" && current.AgentType == "codex" &&
+	idle := current.PaneKey == initial.PaneKey && initial.PaneKey != "" && current.AgentType == s.Ref.Agent.Name &&
 		current.ProviderSession.ID != "" && current.ProviderSession.ID == initial.ProviderSession.ID &&
 		(provider == "" || current.ProviderSession.ID == provider) &&
 		(pane == "" || current.PaneKey == pane) &&
 		current.MainAgent != nil && current.MainAgent.State == "done" && current.MainAgent.StateStartedAt > 0 &&
-		current.UpdatedAt >= current.MainAgent.StateStartedAt && !current.Interrupted && (current.MainAgent.Outcome == "" || current.MainAgent.Outcome == "success") &&
+		current.UpdatedAt >= current.MainAgent.StateStartedAt && !current.Interrupted && (current.MainAgent.Outcome == "success" || s.Ref.Agent.Name == "codex" && current.MainAgent.Outcome == "") &&
 		(initial.MainAgent == nil || current.MainAgent.StateStartedAt >= initial.MainAgent.StateStartedAt)
 	if _, err := l.original(ctx, s); err != nil {
 		return b.LifecycleRecoveryEvidence{}, err

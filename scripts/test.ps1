@@ -37,7 +37,7 @@ try {
     $taskIDs = @{}
     foreach ($taskEntry in $taskCatalog.scenarios) {
         if ($taskEntry.id -notmatch '^[a-z][a-z0-9.-]+$' -or $taskIDs.ContainsKey($taskEntry.id) -or $taskEntry.level -notin @('L2','L3','L4') -or $taskEntry.timeout_minutes -lt 1 -or $taskEntry.timeout_minutes -gt 60) { throw 'Invalid or duplicate live catalog entry' }
-        if (($taskEntry.level -eq 'L2' -and $taskEntry.target -ne 'local-codex') -or ($taskEntry.target -eq 'orca-environment' -and $taskEntry.level -ne 'L3')) { throw 'Catalog execution target conflicts with test level' }
+        if (($taskEntry.level -eq 'L2' -and $taskEntry.target -ne 'local-codex') -or ($taskEntry.target -in @('orca-environment','orca-local') -and $taskEntry.level -ne 'L3')) { throw 'Catalog execution target conflicts with test level' }
         if (($taskEntry.level -eq 'L4') -ne ($taskEntry.driver -eq 'controlled-integration') -or ($taskEntry.level -eq 'L4' -and $taskEntry.target -ne 'controlled')) { throw 'Controlled edge scenarios require L4 and the controlled target' }
         $taskIDs[$taskEntry.id] = $true
         $null = @(Get-SRLiveCases $taskEntry)
@@ -86,6 +86,14 @@ try {
     $taskCoverage = Join-Path $taskOut 'coverage.out'
     & go test @($taskCatalog.l1_packages) -count=1 -timeout=5m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
     $taskUnitCode = $LASTEXITCODE
+    # The two formal native extensions are part of L1, including on machines
+    # without model credentials or a running Orca instance.
+    $taskExtensionLog = Join-Path $taskOut 'terminal-extensions.tap'
+    & node --test --test-reporter=tap internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs internal/execution/adapters/orcatransport/extensions/dsh-managed.test.mjs 1> $taskExtensionLog 2> (Join-Path $taskOut 'terminal-extensions-stderr.log')
+    $taskExtensionCode = $LASTEXITCODE
+    $taskExtensionResult = Get-Content -LiteralPath $taskExtensionLog -Raw
+    $taskExtensionCount = if ($taskExtensionResult -match '(?m)^# tests (\d+)\s*$') { [int]$Matches[1] } else { 0 }
+    $taskExtensionsPassed = $taskExtensionCode -eq 0 -and $taskExtensionCount -gt 0 -and $taskExtensionResult -match '(?m)^# fail 0\s*$' -and $taskExtensionResult -match '(?m)^# skipped 0\s*$'
     # Compile live drivers without running them. This gate precedes all real
     # fixture mutations and token-consuming execution.
     $taskDriver = Join-Path $taskOut 'native.test.exe'
@@ -105,9 +113,9 @@ try {
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
     $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
-    $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard}
+    $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard;terminal_extension_exit=$taskExtensionCode;terminal_extension_test_count=$taskExtensionCount;terminal_extensions_passed=$taskExtensionsPassed}
     Save-Summary
-    if ($taskUnitCode -ne 0 -or $taskPassed -eq 0 -or $taskUnexpected.Count -gt 0 -or $taskCompileCode -ne 0 -or -not $taskZeroGuard) { throw 'L1 failed, had unexpected skips, or live driver compile/zero-match guard failed' }
+    if ($taskUnitCode -ne 0 -or $taskPassed -eq 0 -or $taskUnexpected.Count -gt 0 -or $taskCompileCode -ne 0 -or -not $taskZeroGuard -or -not $taskExtensionsPassed) { throw 'L1 failed, had unexpected skips, or native extension/driver guards failed' }
     if ('Controlled' -in $Level -or $taskSelected.Count -gt 0) {
         Write-Host 'Running controlled integration prerequisite'
         $taskControlled = Join-Path $taskOut 'controlled'

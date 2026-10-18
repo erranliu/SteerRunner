@@ -57,8 +57,14 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 17 || cases != 24 {
-		t.Fatalf("expected seventeen scenarios/twenty-four cases, got %d/%d", scenarios, cases)
+	if scenarios != 22 || cases != 29 {
+		t.Fatalf("expected twenty-two scenarios/twenty-nine cases, got %d/%d", scenarios, cases)
+	}
+	for _, agent := range []string{"codex", "pi", "dsh"} {
+		scenario, _, err := Lookup("orca-local."+agent, "default")
+		if err != nil || scenario.Target != "orca-local" || scenario.Agent != agent || scenario.Driver != "development-feedback" || scenario.Level != "L3" {
+			t.Fatal("missing terminal agent validation route", scenario, err)
+		}
 	}
 	for _, v := range [][2]string{{"orca-remote.smoke", "kill-active"}, {"unknown", "default"}, {"orca-remote.service-restart", ""}} {
 		if _, _, err := Lookup(v[0], v[1]); err == nil {

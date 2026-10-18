@@ -6,6 +6,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
+- [通用 Orca Agent 接入 Spec](docs/spec/orca-generic-agent.spec.md) / [Plan](docs/spec/orca-generic-agent.plan.md)（不修改 Orca；本机 Pi/DSH 原 TUI 已接通，支持受管工具与实际权限；[当前构建验收](docs/acceptance/orca-generic-agent.md)）
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)

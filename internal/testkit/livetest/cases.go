@@ -20,6 +20,7 @@ type Scenario struct {
 	Level          string `json:"level"`
 	Driver         string `json:"driver"`
 	Target         string `json:"target"`
+	Agent          string `json:"agent,omitempty"`
 	TimeoutMinutes int    `json:"timeout_minutes"`
 	Cases          []Case `json:"cases"`
 }

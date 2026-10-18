@@ -14,15 +14,21 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	terminal "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os/exec"
 )
 
 func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView) {
 	t.Helper()
+	if m.Execution.Adapter == "orca-terminal" && (run.Execution.Agent == "pi" || run.Execution.Agent == "dsh") {
+		auditTerminalWorker(t, m, run)
+		return
+	}
 	if m.Execution.Adapter != "codex-app-server" {
 		auditRemoteWorker(t, m, run)
 		return
@@ -111,6 +117,73 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		}
 	}
 	save(t, "sandbox-readiness-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
+}
+
+func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
+	t.Helper()
+	var settings contracts.OrcaSettings
+	if json.Unmarshal(m.Execution.Settings, &settings) != nil {
+		t.Fatal("frozen Pi settings missing")
+	}
+	directory := filepath.Join(m.Root, "s", "terminal-agents", run.RunID, run.Execution.AttemptID)
+	read := func(name string, v any) {
+		body, e := os.ReadFile(filepath.Join(directory, name+".json"))
+		if e != nil || len(body) > 65536 || contracts.DecodeStrict(body, v) != nil {
+			t.Fatal("bounded Pi native audit unavailable", name, e)
+		}
+	}
+	var ready terminal.TerminalReceipt
+	var owner terminal.TerminalOwner
+	read("readiness", &ready)
+	read("owner", &owner)
+	p := ready.Preparation
+	source := "pi-extension-v1"
+	if settings.AgentName() == "dsh" {
+		source = "dsh-plugin-v1"
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	metadataBytes, e := exec.CommandContext(ctx, settings.AgentLaunch.RuntimeExecutable, "--terminal-metadata").Output()
+	var metadata terminal.TerminalMetadata
+	if e != nil || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+		t.Fatal("frozen native helper metadata changed", e)
+	}
+	expectedSource := metadata.PiSHA256
+	if settings.AgentName() == "dsh" {
+		expectedSource = metadata.DSHSHA256
+	}
+	if ready.SourceSHA256 != expectedSource {
+		t.Fatal("native extension differs from frozen helper")
+	}
+	if ready.Source != source || ready.Stage != "ready" || ready.RunID != run.RunID || ready.SessionID != owner.SessionID || ready.PID != owner.Job.Worker.PID || !p.Verified || p.Contract != terminaltools.Contract || p.AccessMode != settings.AccessMode || !p.InsideWriteVerified || !p.ProviderEnvironmentAbsent || p.OutsideWriteDenied != (p.AccessMode == "sandbox") || owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || owner.ExtensionSHA256 != metadata.BundleSHA256 {
+		t.Fatal("original Pi native permission/authentication audit failed")
+	}
+	job, e := process.AttachOwnedJob(owner.Job)
+	if e != nil {
+		t.Fatal("original Pi owned Job cannot be reattached", e)
+	}
+	job.Close()
+	files, e := filepath.Glob(filepath.Join(directory, "*.json"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	qualified := 0
+	for _, file := range files {
+		name := strings.TrimSuffix(filepath.Base(file), ".json")
+		if !b.StableExecutionID(name) {
+			continue
+		}
+		var fact terminal.TerminalReceipt
+		read(name, &fact)
+		if fact.RunID != run.RunID || fact.SessionID != ready.SessionID || fact.InstanceID != ready.InstanceID || fact.PID != ready.PID || fact.CommandID != name || fact.Stage != "settled" || fact.Outcome != "completed" || fact.StopReason != "stop" || fact.NativeInputID == "" || fact.NativeReplyID == "" {
+			t.Fatal("Pi business turn lacks original native settlement", name)
+		}
+		qualified++
+	}
+	if qualified < 3 {
+		t.Fatal("Pi native audit lacks business implement/report/publication turns")
+	}
+	save(t, settings.AgentName()+"-native-permission-audit.json", map[string]any{"readiness": ready, "owner": owner, "qualified_turns": qualified, "os_job_reattached": true})
 }
 
 func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {

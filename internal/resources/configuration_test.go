@@ -31,6 +31,14 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		valid                     bool
 	}{
 		{"plain", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":1}`, true},
+		{"orca_legacy", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":1}`, true},
+		{"orca_pi", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi"}}`, `{"id":"development","version":1}`, true},
+		{"orca_dsh", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","access_mode":"full_access"}}`, `{"id":"development","version":1}`, true},
+		{"orca_empty_agent", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":""}}`, `{"id":"development","version":1}`, false},
+		{"orca_null_agent", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":null}}`, `{"id":"development","version":1}`, false},
+		{"orca_agent_shell", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi --unsafe"}}`, `{"id":"development","version":1}`, false},
+		{"orca_pi_model", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi","agent_launch":{"model":"m"}}}`, `{"id":"development","version":1}`, true},
+		{"orca_dsh_args", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","agent_launch":{"args":["--no-daemon"]}}}`, `{"id":"development","version":1}`, false},
 		{"audited_inherit_effort", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"model":"execute-model"}}`, `{"id":"development-audited","version":1,"audit_model":{"model":"audit-model"}}`, true},
 		{"audited_explicit", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"model":"execute-model","reasoning_effort":"medium"}}`, `{"id":"development-audited","version":1,"audit_model":{"model":"audit-model","reasoning_effort":"high"},"prompt_overrides":{"audit.spec":"Review spec"}}`, true},
 

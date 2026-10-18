@@ -23,6 +23,10 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	var runs [2]contracts.RunView
 	var ids [2]string
 	var commands [2]string
+	manifests := [2]livetest.Manifest{m, m}
+	if m.PeerExecution != nil {
+		manifests[1].Execution = *m.PeerExecution
+	}
 	t.Cleanup(func() {
 		r.Passed = !t.Failed() && r.RunStopped && r.ServiceStopped && len(r.Runs) == 2
 		if r.Passed {
@@ -90,6 +94,9 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 				Revoked    bool   `json:"revocation_confirmed"`
 				Repository string `json:"repository"`
 			}
+			if manifests[i].Execution.Adapter == "orca-terminal" {
+				continue
+			}
 			data, err := os.ReadFile(filepath.Join(dir, "runs", ids[i], "app-server", "authentication-cleanup.json"))
 			if err != nil || json.Unmarshal(data, &fact) != nil || !fact.Revoked || fact.Repository != livetest.Repository {
 				allStopped = false
@@ -108,8 +115,12 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	}
 	specText, planText := string(spec), string(plan)
 	started := time.Now().UTC().Add(-time.Minute)
+	source, err := m.ExecutionRepositoryPath()
+	if err != nil {
+		t.Fatal(err)
+	}
 	for i := range ids {
-		input := contracts.RunRequest{Title: fmt.Sprintf("SteerRunner multi-Run %d", i), Correlation: map[string]string{"fixture_id": m.ID, "peer": fmt.Sprint(i)}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1, PromptOverrides: smokePromptOverrides()}, Execution: m.Execution, Publication: m.Publication}
+		input := contracts.RunRequest{Title: fmt.Sprintf("SteerRunner multi-Run %d", i), Correlation: map[string]string{"fixture_id": m.ID, "peer": fmt.Sprint(i)}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1, PromptOverrides: smokePromptOverrides()}, Execution: manifests[i].Execution, Publication: m.Publication}
 		req := request(fmt.Sprintf("multi-submit-%d", i), input)
 		accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
 		ids[i] = accepted.Data.(map[string]any)["run_id"].(string)
@@ -130,13 +141,17 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	r.RunID = ids[0]
 	var peerAt time.Time
 	for i := range ids {
-		runs[i] = waitReady(t, m, dir, ids[i], "")
-		at := verifyHead(t, m, runs[i], started)
+		runs[i] = waitReady(t, manifests[i], dir, ids[i], "")
+		at := verifyHead(t, manifests[i], runs[i], started)
 		if i == 1 {
 			peerAt = at
 		}
-		auditWorkerSandbox(t, m, runs[i])
-		for _, name := range []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"} {
+		auditWorkerSandbox(t, manifests[i], runs[i])
+		names := []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"}
+		if manifests[i].Execution.Adapter == "orca-terminal" {
+			names = []string{runs[i].Execution.Agent + "-native-permission-audit.json"}
+		}
+		for _, name := range names {
 			data, err := os.ReadFile(filepath.Join(*evidenceFlag, name))
 			if err != nil {
 				t.Fatal(err)
@@ -201,12 +216,12 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + peerAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
 	req := request("multi-peer-feedback", contracts.ReplyInput{ExpectedRevision: peer.Revision, Kind: "feedback", Text: feedback})
 	invoke(t, m, dir, []string{"reply", "--run-id", ids[1], "--input", "-"}, &req)
-	updated := waitReady(t, m, dir, ids[1], peer.PR.HeadRevision)
+	updated := waitReady(t, manifests[1], dir, ids[1], peer.PR.HeadRevision)
 	if updated.PR.URL != peer.PR.URL || updated.Execution.SessionID != peer.Execution.SessionID || updated.Execution.AttemptID != peer.Execution.AttemptID || updated.Execution.Branch != peer.Execution.Branch {
 		t.Fatal("peer input replaced original resources after unrelated stop")
 	}
-	verifyHead(t, m, updated, peerAt.Add(time.Nanosecond))
-	auditWorkerSandbox(t, m, updated)
+	verifyHead(t, manifests[1], updated, peerAt.Add(time.Nanosecond))
+	auditWorkerSandbox(t, manifests[1], updated)
 	save(t, "peer-feedback-after-first-stop.json", updated)
 	stopped, err := inspect(m, dir, ids[0], false)
 	if err != nil || stopped.NewInputsAllowed || stopped.StopStatus != "stopped" || stopped.PR == nil || !strings.EqualFold(stopped.PR.HeadRevision, runs[0].PR.HeadRevision) {
