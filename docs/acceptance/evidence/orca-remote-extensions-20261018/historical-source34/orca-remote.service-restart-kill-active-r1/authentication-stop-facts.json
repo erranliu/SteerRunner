@@ -1,0 +1,46 @@
+[
+  {
+    "failure_code": null,
+    "failure": null,
+    "binding": "26246c33983a7b87b554d2efb5e91abefe129b948ab714bdccfc1e7c43e5233b",
+    "attempt": {
+      "attempted": true,
+      "unknown": false,
+      "process": {
+        "kind": "orca_authentication_revoker",
+        "terminal": "term_bca14b05-0adf-47b2-a3c9-7b58673c1c89",
+        "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+        "incarnation": "b5711bc0-4296-4979-a6ac-87859a68e483",
+        "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-fa1aecf243c20ee87b78448eb38f2858"
+      },
+      "closed": true,
+      "at": "2026-10-18T06:39:59.9020999Z"
+    },
+    "proof": {
+      "readiness": {
+        "authentication_control": true,
+        "native_transport": "codex-remote-inline-v2",
+        "runtime_sha256": "c81d856d5fca34bce9a3ad1414e54506db4619932bfc57ade95dd934da8de5b9",
+        "verified": true,
+        "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+        "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-fa1aecf243c20ee87b78448eb38f2858",
+        "repository": "https://github.com/erranliu/SteerlineTest.git",
+        "session_id": "01a14db8-a23f-7b90-9107-6ce27801e409",
+        "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+        "process": {
+          "kind": "os",
+          "pid": 21740,
+          "created": "01dd5ecacd30ba1e",
+          "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+        },
+        "checked_at": "2026-10-18T06:35:17.8358019Z",
+        "expires_at": "2026-10-18T15:34:58.7579855+08:00",
+        "access_mode": "sandbox"
+      },
+      "revocation_confirmed": true,
+      "broker_closed": true,
+      "socket_cleanup_confirmed": true,
+      "mode": "host-gh-repository-broker"
+    }
+  }
+]

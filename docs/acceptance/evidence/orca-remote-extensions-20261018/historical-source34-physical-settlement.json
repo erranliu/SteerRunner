@@ -1,0 +1,75 @@
+{
+  "all_original_resources_absent": true,
+  "entries": [
+    {
+      "original_resources_absent": true,
+      "checked_at": "2026-10-18T07:16:31.0692100Z",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8e3980f278c30a16cab1e1a2446400ca",
+      "total_count": 0,
+      "complete_inventory": true,
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "host_scope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      }
+    },
+    {
+      "original_resources_absent": true,
+      "checked_at": "2026-10-18T07:16:31.8309290Z",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-1e0374e8fb925f4eabd4f84d1ace3fb4",
+      "total_count": 0,
+      "complete_inventory": true,
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "host_scope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      }
+    },
+    {
+      "original_resources_absent": true,
+      "checked_at": "2026-10-18T07:16:32.5122718Z",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-69acc9907f2668d2925249097950add0",
+      "total_count": 0,
+      "complete_inventory": true,
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "host_scope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      }
+    },
+    {
+      "original_resources_absent": true,
+      "checked_at": "2026-10-18T07:16:33.2116697Z",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-0ea5f61b80268c417c42810ecc8629f5",
+      "total_count": 0,
+      "complete_inventory": true,
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "host_scope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      }
+    },
+    {
+      "original_resources_absent": true,
+      "checked_at": "2026-10-18T07:16:33.9471028Z",
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "total_count": 3,
+      "complete_inventory": true,
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "host_scope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      }
+    }
+  ]
+}

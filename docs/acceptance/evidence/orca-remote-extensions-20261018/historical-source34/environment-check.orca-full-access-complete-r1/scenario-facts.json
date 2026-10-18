@@ -1,0 +1,9 @@
+{
+  "scenario": "environment-check.orca-full-access",
+  "level": "L3",
+  "stage": "unverified:completed",
+  "run_id": "23d26323951af4e87b8dac10faaa845e",
+  "run_stopped": false,
+  "service_stopped": true,
+  "passed": false
+}

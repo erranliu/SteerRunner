@@ -1,0 +1,10 @@
+{
+  "scenario": "environment-check.orca-full-access",
+  "case_id": "complete",
+  "repeat_index": 1,
+  "status": "failed",
+  "manifest": "C:\\srt\\6a29d8f8dd98\\manifest.json",
+  "started_at": "2026-10-18T06:57:36.0736445Z",
+  "finished_at": "2026-10-18T07:03:01.1372739Z",
+  "error": "Live scenario failed; inspect C:\\srt\\6a29d8f8dd98\\evidence/native.log"
+}

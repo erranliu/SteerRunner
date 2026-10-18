@@ -1,0 +1,33 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\324de659bba4\\manifest.json",
+  "started_at": "2026-10-18T05:58:29.9170195Z",
+  "finished_at": "2026-10-18T06:01:48.2798332Z",
+  "identity": {
+    "pid": 15840,
+    "manifest_sha256": "791bbeea019e8dbafebc495f8f6fa33572034571525b21423862213e94c0e3a7",
+    "driver_sha256": "ee4c6bcf51208342cae8ca9689e916b9aed957e1508740362f70af164d62441b",
+    "runner_sha256": "8a0c98d511f752701bf8e4ce94f1c2631182be3c9f30b19c5efefa4da52510f3",
+    "source_commit": "62aee13db07731ef8206cfcf756959cfe5a27de5",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.stop-revocation",
+    "level": "L3",
+    "helper_sha256": "e88b3b6741bc36278fff164d81f0839965397b15eed01da8f198492507c4cd1f",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+    "case_id": "active",
+    "repeat_index": 1
+  },
+  "resources": [
+    "root:C:\\srt\\324de659bba4",
+    "base:codex/srtest/324de659bba4/base",
+    "run:49912ec39f9aad42bbe7d5aa4e836109",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-49912ec39f9aad42bbe7d5aa4e836109",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_c49ad181-6ada-4adf-8cc7-e68c289eed33:23fae5e5-0573-47fa-9111-28684b163094",
+    "branch:erranliu/sl-49912ec39f9aad42bbe7d5aa4e836109"
+  ]
+}

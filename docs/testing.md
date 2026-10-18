@@ -322,6 +322,9 @@ App case 必须实际提交、推送、PR/反馈/合入，并确认原 installat
 审计 case 的 `audit_model/audit_reasoning_effort` 必须与远端执行模型显式不同，实际模型来自
 同一原始 native history 的 `turn_context`，发布还须验证切回执行模型。
 
+2026-10-18 的当前构建结果、同构建三个批次、外部 CLI 版本限制，以及 App/管理员前置缺口见
+[Orca 扩展验收](acceptance/orca-remote-extensions-20261018.md)。选定十项通过不能记为完整十九项通过。
+
 原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，

@@ -1,0 +1,10 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "repeat_index": 1,
+  "status": "failed",
+  "manifest": "C:\\srt\\6f8324f6f182\\manifest.json",
+  "started_at": "2026-10-18T05:37:36.0702481Z",
+  "finished_at": "2026-10-18T05:44:16.6034314Z",
+  "error": "Live scenario failed; inspect C:\\srt\\6f8324f6f182\\evidence/native.log"
+}

@@ -1,0 +1,10 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "repeat_index": 1,
+  "status": "failed",
+  "manifest": "C:\\srt\\7f8f4cfde073\\manifest.json",
+  "started_at": "2026-10-18T05:37:17.9785242Z",
+  "finished_at": "2026-10-18T05:42:07.4523252Z",
+  "error": "Live scenario failed; inspect C:\\srt\\7f8f4cfde073\\evidence/native.log"
+}
