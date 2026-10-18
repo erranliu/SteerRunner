@@ -99,6 +99,11 @@ func TestRAPRCluesRespectMarkdownBoundaries(t *testing.T) {
 		"Published: <" + first + ">.",
 		"Published: (" + first + "),",
 		"Published: `" + first + "`.",
+		"**PR URL: " + first + "**\n本次发布已完成。",
+		"Published: **" + first + "**. " + first,
+		"Published: __" + first + "__。",
+		"Published: *" + first + "*;",
+		"Published: _" + first + "_,",
 	} {
 		got := PRURLs(text)
 		if len(got) != 1 || got[0] != first {
@@ -108,5 +113,14 @@ func TestRAPRCluesRespectMarkdownBoundaries(t *testing.T) {
 	got := PRURLs("[" + first + "](" + second + ")")
 	if len(got) != 2 || got[0] != first || got[1] != second {
 		t.Fatal("different label/destination must retain ambiguity", got)
+	}
+	got = PRURLs("**" + first + "** __" + second + "__")
+	if len(got) != 2 || got[0] != first || got[1] != second {
+		t.Fatal("formatted distinct PRs must retain ambiguity", got)
+	}
+	for _, text := range []string{"**" + first + "?token=x**", "__" + first + "#issuecomment-1__"} {
+		if got := PRURLs(text); len(got) != 0 {
+			t.Fatalf("query/fragment must remain rejected: %q: %v", text, got)
+		}
 	}
 }
