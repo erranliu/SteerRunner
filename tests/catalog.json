@@ -23,6 +23,38 @@
   ],
   "scenarios": [
     {
+      "id": "orca-local.codex",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.pi",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.pi-full-access",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.dsh",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "dsh",
+      "timeout_minutes": 30
+    },
+    {
       "id": "local-codex.smoke",
       "level": "L2",
       "driver": "development-smoke",
@@ -227,6 +259,14 @@
       "cases": [
         "complete"
       ]
+    },
+    {
+      "id": "orca-local.mixed",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
     }
   ]
 }

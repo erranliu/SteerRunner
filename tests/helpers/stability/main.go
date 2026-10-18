@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -43,6 +44,7 @@ func main() {
 	path := fs.String("manifest", "", "frozen fixture")
 	requestFile := fs.String("request", "", "caller request file")
 	worktree := fs.String("worktree", "", "original worktree")
+	nativeCLI := fs.String("orca", "", "installed local Orca CLI")
 	_ = fs.Parse(os.Args[2:])
 	raw, err := os.ReadFile(*path)
 	if err != nil {
@@ -112,9 +114,17 @@ func main() {
 				return
 			}
 		}
-	case "audit":
+	case "audit", "local-audit":
 		args := fs.Args()
-		cmd := exec.Command(m.Stability.NativeOrca.Path, append([]string{m.Stability.CLIEntry.Path}, args...)...)
+		var cmd *exec.Cmd
+		if mode == "local-audit" {
+			if m.Execution.Target.Kind != "local" || !filepath.IsAbs(*nativeCLI) {
+				fatal(fmt.Errorf("local audit requires the frozen installed CLI"))
+			}
+			cmd = exec.Command(*nativeCLI, args...)
+		} else {
+			cmd = exec.Command(m.Stability.NativeOrca.Path, append([]string{m.Stability.CLIEntry.Path}, args...)...)
+		}
 		var out, stderr bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Stderr = &stderr
@@ -142,6 +152,26 @@ func main() {
 		_ = f.Close()
 		if e != nil {
 			fatal(e)
+		}
+		// Test-only response loss: the installed Orca has executed and returned
+		// its real receipt. Only this caller's response is withheld; never replay.
+		if mode == "local-audit" && err == nil && len(args) > 1 && args[0] == "terminal" && args[1] == "send" {
+			text := ""
+			for i, arg := range args {
+				if arg == "--text" && i+1 < len(args) {
+					text = args[i+1]
+				}
+			}
+			if strings.HasPrefix(strings.TrimPrefix(text, "\x1b[200~"), "[SteerRunner command=") {
+				marker := filepath.Join(m.Root, "evidence", "drop-next-native-send")
+				if e := os.Rename(marker, marker+".consumed"); e == nil {
+					fact, _ := json.Marshal(map[string]any{"call_id": callID, "args": args, "response": json.RawMessage(out.Bytes())})
+					if e = os.WriteFile(filepath.Join(m.Root, "evidence", "withheld-native-send.json"), fact, 0600); e != nil {
+						fatal(e)
+					}
+					fatal(fmt.Errorf("injected native send response loss after actual Orca receipt"))
+				}
+			}
 		}
 		_, _ = os.Stdout.Write(out.Bytes())
 		_, _ = os.Stderr.Write(stderr.Bytes())

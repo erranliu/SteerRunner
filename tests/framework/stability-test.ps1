@@ -4,7 +4,7 @@ $ErrorActionPreference='Stop'
 $taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 24){throw 'L3 registry did not expand to twenty-four cases'}
+if($taskCount -ne 29){throw 'L3 registry must include the four local agent cases and mixed-agent case'}
 $taskEnvironmentCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.driver -eq 'environment-check'})){$taskEnvironmentCount+=@(Get-SRLiveCases $taskEntry).Count}
 if($taskEnvironmentCount -ne 6){throw 'Environment check registry must include Codex, local Orca and remote Orca access modes'}

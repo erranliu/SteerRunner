@@ -259,6 +259,10 @@ func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contr
 		if view.Status == "pr_ready" && view.PR != nil && view.PR.HeadRevision != oldHead {
 			return view
 		}
+		if view.Status == "waiting_input" && view.Phase == "answer_saved" {
+			time.Sleep(time.Second)
+			continue
+		}
 		if view.Status == "blocked" || view.Status == "waiting_input" || view.Status == "stopped" || view.ResumeRequired {
 			t.Fatalf("original execution needs intervention: status=%s phase=%s diagnostic=%s", view.Status, view.Phase, view.Diagnostic)
 		}
@@ -276,7 +280,7 @@ func request(id string, value any) contracts.Request {
 	return contracts.Request{Protocol: contracts.Protocol, RequestID: id, Input: body}
 }
 
-// Diagnostic reads are fenced to the original remote resource and never
+// Diagnostic reads are fenced to the original Orca resource and never
 // replace the Runner's native evidence or change business state.
 func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, error) {
 	var settings contracts.OrcaSettings
@@ -314,6 +318,7 @@ func remoteDiagnostic(m livetest.Manifest, view contracts.RunView) ([]byte, erro
 			Terminal struct {
 				Handle      string `json:"handle"`
 				Incarnation string `json:"incarnationId"`
+				Agent       string `json:"agentIdentity"`
 			} `json:"terminal"`
 		} `json:"result"`
 	}
@@ -426,7 +431,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	})
 	// Resolve the original submission by request ID if its CLI response was lost.
 	startedAt := time.Now().UTC().Add(-time.Minute)
+	primarySubmitted := false
 	t.Cleanup(func() {
+		if !primarySubmitted {
+			return
+		}
 		if r.RunID == "" {
 			response, err := command(m, dir, []string{"inspect", "--request-id", "smoke-submit"}, nil)
 			if err != nil {
@@ -519,12 +528,66 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	if m.Level != "L2" {
 		input.Workflow.PromptOverrides = smokePromptOverrides()
 	}
+	genericTerminal := m.Driver == "development-feedback" && m.Execution.Adapter == "orca-terminal"
+	if genericTerminal {
+		input.Workflow.PromptOverrides[workflow.StepImplement] += " For the FIRST implementation input, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}. Do not call tools on that first input. After receiving the caller's separate answer, or on later feedback in this same session, implement the task and do not repeat the question."
+	}
+	if genericTerminal {
+		verifyLocalTerminalFaults(t, m, dir, input)
+	}
 	checkpoint("submit")
+	primarySubmitted = true
 	req := request("smoke-submit", input)
 	accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
+	if genericTerminal {
+		// Deliberately discard the real submit response. Recover only through
+		// the original request ID, then replay that same request, never a new ID.
+		accepted = contracts.Response{}
+		found := invoke(t, m, dir, []string{"inspect", "--request-id", req.RequestID}, nil)
+		raw, _ := json.Marshal(found.Data.(map[string]any)["run"])
+		var recovered contracts.RunView
+		if json.Unmarshal(raw, &recovered) != nil || recovered.RunID == "" {
+			t.Fatal("lost submit response could not be recovered by original request ID")
+		}
+		accepted = invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
+		if accepted.Data.(map[string]any)["run_id"] != recovered.RunID {
+			t.Fatal("same request replay created a second Run")
+		}
+		save(t, "request-id-replay.json", map[string]any{"original_request_id": req.RequestID, "recovered_run_id": recovered.RunID, "same_request_replay": accepted.Data})
+	}
 	r.RunID = accepted.Data.(map[string]any)["run_id"].(string)
 	checkpoint("implementation")
+	if genericTerminal {
+		var question contracts.RunView
+		until := time.Now().Add(5 * time.Minute)
+		for time.Now().Before(until) {
+			question, err = inspect(m, dir, r.RunID, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if question.Status == "waiting_input" && question.Question != nil {
+				break
+			}
+			if question.Status == "blocked" || question.ResumeRequired {
+				t.Fatal("native business question failed", question.Status, question.Diagnostic)
+			}
+			time.Sleep(time.Second)
+		}
+		if question.Status != "waiting_input" || question.Question == nil {
+			t.Fatal("native needs_input was not reached")
+		}
+		save(t, "business-question.json", question)
+		answer := request("business-answer", contracts.ReplyInput{ExpectedRevision: question.Revision, Kind: "answer", QuestionID: question.Question.ID, Text: "SR_L3_ARTIFACT_AUTHORIZED. Implement the frozen Spec and Plan now."})
+		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &answer)
+	}
 	first := waitReady(t, m, dir, r.RunID, "")
+	if m.Execution.Adapter == "orca-terminal" {
+		body, err := remoteDiagnostic(m, first)
+		if err != nil {
+			t.Fatal("original agent terminal identity is unverified", err)
+		}
+		save(t, "original-terminal.json", json.RawMessage(body))
+	}
 	if m.Level == "L2" {
 		common := strings.TrimSpace(string(shell(t, first.Execution.Workspace, "git", "rev-parse", "--path-format=absolute", "--git-common-dir")))
 		if !filepath.IsAbs(common) || !strings.EqualFold(filepath.Base(common), ".git") {
@@ -549,6 +612,13 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	checkpoint("verify-original-pr")
 	originalAt := verifyHead(t, m, first, startedAt)
 	save(t, "original-pr-ready.json", first)
+	if genericTerminal {
+		restartTerminalService(t, m, dir, &instance, first)
+		first, err = inspect(m, dir, r.RunID, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 	if audited {
 		auditWorkerSandbox(t, m, first)
 		var settings contracts.CodexSettings
@@ -581,6 +651,13 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})
 		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
 		updated = waitReady(t, m, dir, r.RunID, first.PR.HeadRevision)
+		if m.Execution.Adapter == "orca-terminal" {
+			body, err := remoteDiagnostic(m, updated)
+			if err != nil {
+				t.Fatal("feedback agent terminal identity is unverified", err)
+			}
+			save(t, "feedback-terminal.json", json.RawMessage(body))
+		}
 		if updated.PR.URL != first.PR.URL || updated.Execution.Branch != first.Execution.Branch || updated.Execution.SessionID != first.Execution.SessionID || updated.Execution.AttemptID != first.Execution.AttemptID {
 			t.Fatal("feedback replaced original PR, branch, attempt or session")
 		}
@@ -626,5 +703,8 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	git(t, m, "worktree", "add", "--detach", checkout, r.MergeCommit)
 	shell(t, checkout, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(checkout, "sr-smoke", "check.ps1"))
 	checkpoint("stop-and-cleanup")
+	if genericTerminal {
+		activeTerminalStop(t, m, dir, merged)
+	}
 	t.Logf("%s %s run=%s PR=%s merge=%s", m.Level, m.Scenario, r.RunID, r.PRURL, r.MergeCommit)
 }

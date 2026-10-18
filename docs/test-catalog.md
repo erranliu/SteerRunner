@@ -36,7 +36,7 @@ L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的十七场景、二十四 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
+以下为已注册的二十二场景、二十九 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -69,6 +69,11 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-local.smoke` | `default` | 无 pair 的真实本机 IPC 查询、原请求开始回执/新主代理 done、原生 final、原会话一次反馈及真实 PR 交付/停止 | `merged` | 独立现场/工作区/会话；当前查询式实现的真机结果单列，不要求修改 Orca |
 | `environment-check.orca-local-sandbox` | `complete` | 本机 Orca helper、MXC、认证与既有十二项工具检查 | `checked`，owned PR 关闭不合入、引用/工作区删除、writer 停止 | 独立 Check 资源；已接线，真机结果单列于专属验收 |
 | `environment-check.orca-local-full-access` | `complete` | 本机 Orca 的显式 full_access 准备及工具/资源闭环 | 同上，实际 full_access | 不借用 sandbox 通过；已接线，真机结果单列 |
+| `orca-local.codex` | `default` | 本机 Orca terminal 的开发、原会话反馈、原终端/agent 身份、真实 PR 与清理 | `merged`，权限审计及 Run/服务停止 | 复用 development-feedback；含业务 reply、丢 submit 响应对账、换代显式 resume 和活动 stop；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
+| `orca-local.pi` | `default` | Pi 的同一 terminal 开发与反馈闭环，不能继承 Codex 原生证据 | 同上 | A01 扩展、双权限工具及原生权限审计已接线；包含业务 reply、换代和活动写者停止；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
+| `orca-local.dsh` | `default` | DSH 的同一 terminal 开发与反馈闭环，排除 SessionStart/子事件假完成 | 同上 | A02 原 TUI 固定 profile、原生持久事实、业务 reply 及 H01 已接线；不改 Orca，结果见[通用接入验收](acceptance/orca-generic-agent.md) |
+| `orca-local.pi-full-access` | `default` | Pi 显式 full_access 的完整交付与同会话恢复、活动写者停止 | `merged`，Run/服务停止 | 独立双权限实测，不借 sandbox 结果 |
+| `orca-local.mixed` | `default` | 同一服务的 Pi/DSH：独立输入/原生会话/回执/PR，停止 Pi 后 DSH 继续反馈 | 两个原 PR、隔离验证及 Run/服务停止 | 冻结 peer_execution；只验证一个混合组合 |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话、一次原会话反馈与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；验证并发 worktree/会话及原 PR 反馈的隔离 |
 | `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、原会话反馈及实际权限审计 | `merged`，Run/服务及审计终端停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |

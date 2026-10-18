@@ -129,6 +129,8 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				if state, e := l.state(s); e == nil {
 					if turn := turnFor(&state, command(s)); turn != nil && turn.Recorded != nil {
 						source = turn.Recorded.Source
+					} else if turn := turnFor(&state, command(s)); turn != nil && turn.Extension != nil {
+						source = turn.Extension.Source
 					}
 				}
 				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventStarted, Source: source, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":started", SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), InputAccepted: true, Matched: true}, Implementation: receipt.Implementation}) {

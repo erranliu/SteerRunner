@@ -13,6 +13,7 @@ import (
 )
 
 type NativeProof struct {
+	Agent         string    `json:"agent,omitempty"`
 	Pane          string    `json:"pane"`
 	Provider      string    `json:"provider,omitempty"`
 	BaseAuthority string    `json:"base_authority,omitempty"`
@@ -39,6 +40,9 @@ func stateHint(s native.AgentState) string {
 }
 func nativeBaseline(s native.AgentState, now time.Time) NativeProof {
 	p := NativeProof{Pane: s.PaneKey, Provider: s.ProviderSession.ID, LastSignal: now, LastQuery: now, Hint: stateHint(s)}
+	if s.AgentType != "codex" {
+		p.Agent = s.AgentType
+	}
 	if trustedState(s) {
 		p.BaseAuthority = s.Observation.AuthorityID
 		p.BaseRevision = s.Observation.Revision
@@ -50,7 +54,14 @@ func nativeBaseline(s native.AgentState, now time.Time) NativeProof {
 }
 func trustedState(s native.AgentState) bool {
 	o := s.Observation
-	return s.AgentType == "codex" && s.MainAgent != nil && o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Revision > 0 && o.ObservedAt > 0
+	return s.AgentType != "" && s.MainAgent != nil && o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Revision > 0 && o.ObservedAt > 0
+}
+
+func (p NativeProof) agentName() string {
+	if p.Agent == "" {
+		return "codex"
+	}
+	return p.Agent
 }
 func preview(text string) string {
 	runes := []rune(strings.Join(strings.Fields(text), " "))
@@ -70,7 +81,7 @@ func preview(text string) string {
 }
 
 func (p *NativeProof) body(message string) {
-	// The public Codex hook field is capped at 8000 UTF-16 code units. Reject
+	// The public Orca hook field is capped at 8000 UTF-16 code units. Reject
 	// the surrogate-safe truncation boundary too; never treat a prefix as full.
 	if strings.TrimSpace(message) == "" || len(utf16.Encode([]rune(message))) >= 7999 {
 		return
@@ -91,6 +102,10 @@ func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time) {
 	}
 	if s.PaneKey != p.Pane {
 		p.Diagnostic = "Native original pane changed"
+		return
+	}
+	if s.AgentType != "" && s.AgentType != p.agentName() {
+		p.Diagnostic = "Native original agent changed"
 		return
 	}
 	if p.Provider != "" && s.ProviderSession.ID != "" && s.ProviderSession.ID != p.Provider {
@@ -156,14 +171,14 @@ func (p *NativeProof) rejectProvenance(s native.AgentState, turn *Turn) bool {
 	return false
 }
 func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time) bool {
-	if !turn.Accepted || !turn.Started || p.Provider == "" || s.MainAgent == nil || s.MainAgent.State != "done" || s.AgentType != "codex" || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider || s.MainAgent.StateStartedAt <= p.WorkingAt || s.MainAgent.StateStartedAt <= p.BaseRootAt || p.WorkingAt == 0 && p.BaseRootAt <= 0 {
+	if !turn.Accepted || !turn.Started || p.Provider == "" || s.MainAgent == nil || s.MainAgent.State != "done" || s.AgentType != p.agentName() || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider || s.MainAgent.StateStartedAt <= p.WorkingAt || s.MainAgent.StateStartedAt <= p.BaseRootAt || p.WorkingAt == 0 && p.BaseRootAt <= 0 {
 		return false
 	}
 	if s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Prompt != preview(turn.Prompt) {
 		p.Diagnostic = "Native original completion/input provenance is unverified"
 		return false
 	}
-	if s.Interrupted || s.MainAgent.Outcome != "" && s.MainAgent.Outcome != "success" {
+	if s.Interrupted || s.MainAgent.Outcome != "" && s.MainAgent.Outcome != "success" || p.agentName() != "codex" && s.MainAgent.Outcome != "success" {
 		p.Diagnostic = "Native interruption/outcome cannot verify ordinary completion"
 		return false
 	}
@@ -192,11 +207,11 @@ func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time) bool
 	if s.MainAgent == nil || s.UpdatedAt < s.MainAgent.StateStartedAt {
 		return false
 	}
-	if s.ProviderSession.ID == "" {
+	if s.AgentType == "" || s.ProviderSession.ID == "" {
 		return false // Missing metadata is unavailable evidence, not replacement.
 	}
-	if s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider {
-		p.Diagnostic = "Native original queried pane/provider changed"
+	if s.AgentType != p.agentName() || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider {
+		p.Diagnostic = "Native original queried agent/pane/provider changed"
 		return false
 	}
 	if p.rejectProvenance(s, turn) {

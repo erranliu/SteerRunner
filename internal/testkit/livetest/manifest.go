@@ -42,6 +42,7 @@ type Manifest struct {
 	PlanPath              string                  `json:"plan_path"`
 	PlanSHA256            string                  `json:"plan_sha256"`
 	Execution             contracts.Execution     `json:"execution"`
+	PeerExecution         *contracts.Execution    `json:"peer_execution,omitempty"`
 	Publication           contracts.Publication   `json:"publication"`
 	RemoteRuntimeID       string                  `json:"remote_runtime_id,omitempty"`
 	LocalRuntimeID        string                  `json:"local_runtime_id,omitempty"`
@@ -73,6 +74,14 @@ var scenarioPattern = regexp.MustCompile(`^[a-z][a-z0-9.-]+$`)
 var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 
 func (m Manifest) Validate() error {
+	if m.Scenario == "orca-local.mixed" {
+		var first, peer contracts.OrcaSettings
+		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || peer.AccessMode != "sandbox" || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
+			return errors.New("mixed local fixture requires frozen Pi and DSH executions on the same helper")
+		}
+	} else if m.PeerExecution != nil {
+		return errors.New("peer execution requires the registered mixed local fixture")
+	}
 	if (m.LocalRuntimeID != "" || m.LocalRepositoryPath != "") && (m.Level != "L3" || m.Execution.Adapter != "orca-terminal" || m.Execution.Target.Kind != "local") {
 		return errors.New("local Orca identity requires a local Orca fixture")
 	}
@@ -119,9 +128,12 @@ func (m Manifest) Validate() error {
 	} else if m.AuditModel != nil {
 		return errors.New("audit model requires the audited live driver")
 	}
+	if strings.HasPrefix(m.Scenario, "orca-local.") && (m.Execution.Adapter != "orca-terminal" || m.Execution.Target.Kind != "local" || m.Level != "L3") {
+		return errors.New("local Orca agent cases cannot use another adapter, target or level")
+	}
 	switch m.Level {
 	case "L2":
-		if m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" || m.Execution.Target.Environment != "" || m.RemoteRuntimeID != "" {
+		if m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" || m.Execution.Target.Environment != "" || m.RemoteRuntimeID != "" || m.LocalRuntimeID != "" {
 			return errors.New("L2 requires local Codex")
 		}
 	case "L3":
@@ -144,11 +156,14 @@ func (m Manifest) Validate() error {
 				}
 				var settings contracts.OrcaSettings
 				mode := "sandbox"
-				if m.Scenario == "environment-check.orca-local-full-access" {
+				if m.Scenario == "environment-check.orca-local-full-access" || m.Scenario == "orca-local.pi-full-access" {
 					mode = "full_access"
 				}
 				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
 					return errors.New("local Orca requires its frozen native runtime and case access mode")
+				}
+				if scenario.Agent != "" && settings.AgentName() != scenario.Agent {
+					return errors.New("local Orca fixture agent differs from registered case")
 				}
 			} else if m.Execution.Target.Kind != "orca_environment" || m.Execution.Target.Environment == "" || m.RemoteRuntimeID == "" {
 				return errors.New("remote Orca requires a fixed environment and runtime")
@@ -253,8 +268,14 @@ func CheckPR(m Manifest, view contracts.RunView) error {
 	if f == nil || !f.Verified || f.Source == "" || f.ItemID == "" || f.SessionID == "" || f.SessionID != view.Execution.SessionID || f.AttemptID != view.Execution.AttemptID || f.CommandID == "" || f.TurnID == "" || f.TurnID != view.Execution.TurnID {
 		return errors.New("original native final provenance is incomplete")
 	}
-	if m.RemoteRuntimeID != "" && !strings.HasPrefix(f.SessionID, "orca-terminal:"+m.RemoteRuntimeID+":") {
-		return errors.New("native session belongs to a different remote runtime")
+	if runtime, err := m.OrcaRuntimeID(); err == nil && runtime != "" && !strings.HasPrefix(f.SessionID, "orca-terminal:"+runtime+":") {
+		return errors.New("native session belongs to a different Orca runtime")
+	}
+	if m.Execution.Adapter == "orca-terminal" {
+		var settings contracts.OrcaSettings
+		if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || view.Execution.Agent != settings.AgentName() {
+			return errors.New("native result belongs to a different terminal agent")
+		}
 	}
 	if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
 		runtime, err := m.OrcaRuntimeID()
