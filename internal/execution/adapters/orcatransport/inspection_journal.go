@@ -56,7 +56,7 @@ func (l *Lifecycle) loadInspections(state State) (inspectionJournal, error) {
 	for _, entry := range j.Entries {
 		t := turnFor(&state, entry.Command)
 		a := entry.Inspection
-		if !b.StableExecutionID(entry.ID) || seen[entry.ID] || t == nil || t.WireFormat != remoteWireCommand || entry.InputDigest != digest([]byte(wirePrompt(t))) || !a.Attempted || a.At.IsZero() || a.Closed && (a.Unknown || a.Process == nil) {
+		if !b.StableExecutionID(entry.ID) || seen[entry.ID] || t == nil || t.WireFormat != remoteWireCommand && t.WireFormat != remoteModelWireCommand || entry.InputDigest != digest([]byte(wirePrompt(t))) || !a.Attempted || a.At.IsZero() || a.Closed && (a.Unknown || a.Process == nil) {
 			return j, errors.New("readonly checkpoint input binding changed")
 		}
 		seen[entry.ID] = true

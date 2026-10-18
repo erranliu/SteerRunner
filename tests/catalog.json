@@ -199,6 +199,36 @@
       "cases": [
         "complete"
       ]
+    },
+    {
+      "id": "orca-remote.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.app-auth",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
     }
   ]
 }

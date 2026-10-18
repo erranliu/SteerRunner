@@ -86,6 +86,16 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus != "stopped" || view.NewInputsAllowed {
 				allStopped = false
 			}
+			if m.Execution.Adapter == "orca-terminal" {
+				proof, err := remoteStopEvidence(m, view)
+				if err != nil {
+					allStopped = false
+					t.Error("remote multi-Run cleanup unconfirmed", err)
+				} else {
+					save(t, fmt.Sprintf("peer-%d-authentication-cleanup.json", i), proof)
+				}
+				continue
+			}
 			var fact struct {
 				Revoked    bool   `json:"revocation_confirmed"`
 				Repository string `json:"repository"`
@@ -136,7 +146,11 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			peerAt = at
 		}
 		auditWorkerSandbox(t, m, runs[i])
-		for _, name := range []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"} {
+		names := []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"}
+		if m.Execution.Adapter == "orca-terminal" {
+			names = []string{"remote-worker-permission-audit.json"}
+		}
+		for _, name := range names {
 			data, err := os.ReadFile(filepath.Join(*evidenceFlag, name))
 			if err != nil {
 				t.Fatal(err)

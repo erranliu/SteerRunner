@@ -81,4 +81,28 @@ if($Evidence){
         $taskHistoryRows[$taskIndex].payload[$taskField]=$taskOriginal
     }
 }
-Write-Output 'Optional merge field, required cleanup/feedback, and independent multi-Run result checks passed'
+$taskRemoteManifest=Convert-ResultObject @{audit_model=@{model='auditor';reasoning_effort='high'};execution=@{settings=@{agent_launch=@{model='executor';reasoning_effort='high'}}}}
+$taskRemoteView=Convert-ResultObject @{run_id='remote-run';execution=@{session_id='original-outer';turn_id='publish-command'};audit=@{results=@(@{step='audit.spec';command_id='spec-command';turn_id='spec-command';verdict='pass'},@{step='audit.code';command_id='code-command';turn_id='code-command';verdict='pass'})}}
+$taskRemoteTurns=@()
+foreach($taskRemoteStep in @('audit.spec','audit.code','publish.report')){
+    $taskRemoteCommand=switch($taskRemoteStep){'audit.spec'{'spec-command'};'audit.code'{'code-command'};default{'publish-command'}}
+    $taskRemoteModel=if($taskRemoteStep -eq 'publish.report'){'executor'}else{'auditor'}
+    $taskRemoteTurns+=@{step=$taskRemoteStep;command_id=$taskRemoteCommand;turn_id=$taskRemoteCommand;native_turn_id=('native-'+$taskRemoteCommand);model=$taskRemoteModel;effort='high';source='codex.app-server.original-turn.v1';session='original-native';final_digest='native-final';inspector_closed=$true}
+}
+$taskRemoteProof=Convert-ResultObject @{passed=$true;run_id='remote-run';session='original-outer';provider_session='original-native';turns=$taskRemoteTurns}
+Assert-SRRemoteAuditModels $taskRemoteManifest $taskRemoteView $taskRemoteProof
+foreach($taskMutation in @('foreign-run','foreign-provider','unclosed','duplicate-native','wrong-audit','wrong-publication','no-proof')){
+    $taskBad=$taskRemoteProof|ConvertTo-Json -Depth 20|ConvertFrom-Json
+    switch($taskMutation){
+        'foreign-run'{$taskBad.run_id='foreign'}
+        'foreign-provider'{$taskBad.turns[0].session='foreign'}
+        'unclosed'{$taskBad.turns[0].inspector_closed=$false}
+        'duplicate-native'{$taskBad.turns[1].native_turn_id=$taskBad.turns[0].native_turn_id}
+        'wrong-audit'{$taskBad.turns[0].model='executor'}
+        'wrong-publication'{$taskBad.turns[2].model='auditor'}
+        'no-proof'{$taskBad.passed=$false}
+    }
+    $taskRejected=$false;try{Assert-SRRemoteAuditModels $taskRemoteManifest $taskRemoteView $taskBad}catch{$taskRejected=$true}
+    if(-not $taskRejected){throw "Remote audit accepted invalid native model evidence: $taskMutation"}
+}
+Write-Output 'Optional merge field, required cleanup/feedback, independent multi-Run and remote native model evidence checks passed'

@@ -55,9 +55,12 @@ try {
     if (@($taskSelected | Where-Object { $_.target -ne 'controlled' }).Count -gt 0 -and (-not $Config -or -not (Test-Path -LiteralPath $Config))) { throw 'Live levels require an explicit non-secret config; see tests/live-config.example.json' }
     if (@($taskSelected | Where-Object { $_.driver -eq 'development-audited' }).Count) {
         $taskAuditConfig=Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
-        $taskExecutionModel=$taskAuditConfig.PSObject.Properties['model']
         $taskAuditModel=$taskAuditConfig.PSObject.Properties['audit_model']
-        if (-not $taskExecutionModel -or -not $taskAuditModel -or [string]::IsNullOrWhiteSpace([string]$taskExecutionModel.Value) -or [string]::IsNullOrWhiteSpace([string]$taskAuditModel.Value) -or $taskExecutionModel.Value -ceq $taskAuditModel.Value) { throw 'Audited scenario requires two explicit, different model and audit_model values before any fixture is created' }
+        foreach($taskAuditEntry in @($taskSelected|Where-Object {$_.driver -eq 'development-audited'})){
+            $taskModelProperty=if($taskAuditEntry.target -eq 'orca-environment' -and $taskAuditConfig.PSObject.Properties['remote_model']){'remote_model'}else{'model'}
+            $taskExecutionModel=$taskAuditConfig.PSObject.Properties[$taskModelProperty]
+            if (-not $taskExecutionModel -or -not $taskAuditModel -or [string]::IsNullOrWhiteSpace([string]$taskExecutionModel.Value) -or [string]::IsNullOrWhiteSpace([string]$taskAuditModel.Value) -or $taskExecutionModel.Value -ceq $taskAuditModel.Value) { throw 'Audited scenario requires two explicit, different execution and audit_model values before any fixture is created' }
+        }
     }
     $taskExpanded = @()
     foreach ($taskRound in 1..$Repeat) {

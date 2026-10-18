@@ -50,6 +50,13 @@ func (l *Lifecycle) readRemoteReadiness(ctx context.Context, s b.LifecycleSnapsh
 	found := 0
 	for _, line := range value.Terminal.Tail {
 		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, codex.RemoteFailurePrefix) {
+			code := strings.TrimPrefix(line, codex.RemoteFailurePrefix)
+			if code == "" || len(code) > 128 || strings.Trim(code, "abcdefghijklmnopqrstuvwxyz0123456789_") != "" {
+				return ready, errors.New("invalid remote startup failure receipt")
+			}
+			return ready, errors.New("remote_agent_preparation_failed:" + code)
+		}
 		if !strings.HasPrefix(line, codex.RemoteReadyPrefix) {
 			continue
 		}

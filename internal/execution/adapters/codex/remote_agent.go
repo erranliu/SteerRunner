@@ -17,36 +17,41 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/nativeaudit"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
 // RemoteAgentConfig is public configuration. Authentication is resolved only on
 // the machine that runs this helper, never transported by the Orca caller.
 type RemoteAgentConfig struct {
-	Executable      string   `json:"executable"`
-	Args            []string `json:"args,omitempty"`
-	Model           string   `json:"model,omitempty"`
-	ReasoningEffort string   `json:"reasoning_effort,omitempty"`
-	AccessMode      string   `json:"access_mode,omitempty"`
-	RepositoryURL   string   `json:"repository_url"`
+	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	GitHubAuth      *AuthenticationConfig   `json:"github_auth,omitempty"`
+	Executable      string                  `json:"executable"`
+	Args            []string                `json:"args,omitempty"`
+	Model           string                  `json:"model,omitempty"`
+	ReasoningEffort string                  `json:"reasoning_effort,omitempty"`
+	AccessMode      string                  `json:"access_mode,omitempty"`
+	RepositoryURL   string                  `json:"repository_url"`
 }
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
+const RemoteFailurePrefix = "SR_REMOTE_AGENT_FAILURE:"
 const RemoteNativeTransport = "codex-remote-inline-v2"
 
 type RemoteReadiness struct {
-	NativeTransport     string            `json:"native_transport"`
-	RuntimeSHA256       string            `json:"runtime_sha256"`
-	Verified            bool              `json:"verified"`
-	Contract            string            `json:"contract"`
-	Workspace           string            `json:"workspace"`
-	Repository          string            `json:"repository"`
-	SessionID           string            `json:"session_id"`
-	ConfigurationDigest string            `json:"configuration_digest"`
-	Process             b.ProcessIdentity `json:"process"`
-	CheckedAt           time.Time         `json:"checked_at"`
-	ExpiresAt           time.Time         `json:"expires_at"`
-	AccessMode          string            `json:"access_mode"`
+	AuthenticationControl bool              `json:"authentication_control,omitempty"`
+	NativeTransport       string            `json:"native_transport"`
+	RuntimeSHA256         string            `json:"runtime_sha256"`
+	Verified              bool              `json:"verified"`
+	Contract              string            `json:"contract"`
+	Workspace             string            `json:"workspace"`
+	Repository            string            `json:"repository"`
+	SessionID             string            `json:"session_id"`
+	ConfigurationDigest   string            `json:"configuration_digest"`
+	Process               b.ProcessIdentity `json:"process"`
+	CheckedAt             time.Time         `json:"checked_at"`
+	ExpiresAt             time.Time         `json:"expires_at"`
+	AccessMode            string            `json:"access_mode"`
 }
 
 func RemoteConfigurationDigest(c RemoteAgentConfig) string {
@@ -63,6 +68,9 @@ func RemoteRuntimeDirectory(worktree string) string {
 // The TUI resumes that same server/thread only after its deterministic native
 // command/exec probe passes. It never executes Git or publication on the host.
 func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer) error {
+	if err := c.validateModels(); err != nil {
+		return err
+	}
 	if err := ValidateManagedArgs(c.Args); err != nil {
 		return err
 	}
@@ -105,11 +113,12 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth, err := newAuthentication(nil, c.RepositoryURL)
+	auth, err := newAuthentication(c.GitHubAuth, c.RepositoryURL)
 	if err != nil {
 		return err
 	}
 	defer auth.Close()
+	auth.repositoryBroker = true
 	if err = auth.prepare(ctx); err != nil {
 		return err
 	}
@@ -124,11 +133,13 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
-	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
-		return err
-	}
 	if _, err = os.Stat(filepath.Join(dir, "ready.json")); err == nil {
 		return errors.New("remote_runtime_already_exists; reconcile original session")
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
+		return err
 	}
 	plan, err := remoteAuthenticationTransport(c, wd)
 	if err != nil {
@@ -141,7 +152,10 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	auth.onClose = func(revoked bool) {
-		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"revocation_confirmed": revoked, "broker": auth.broker.facts()}))
+		var original RemoteReadiness
+		body, _ := os.ReadFile(filepath.Join(dir, "ready.json"))
+		_ = json.Unmarshal(body, &original)
+		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"session_id": original.SessionID, "configuration_digest": RemoteConfigurationDigest(c), "revocation_confirmed": revoked, "broker": auth.broker.facts()}))
 	}
 	owned, _, endpoint, err := LaunchServer(LaunchConfig{AuthenticationTransport: plan, Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
 		return lifecycleProcessEnvironment(env, "remote-runtime", "remote-runtime", nil)
@@ -220,6 +234,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		mode = "sandbox"
 	}
 	ready := RemoteReadiness{NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
+	ready.AuthenticationControl = true
 	ready.RuntimeSHA256, err = RuntimeBinarySHA256()
 	if err != nil {
 		return err
@@ -227,6 +242,9 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = host.WriteExecutionFile(filepath.Join(dir, "ready.json"), encode(ready)); err != nil {
 		return err
 	}
+	controlCtx, cancelControl := context.WithCancel(ctx)
+	defer cancelControl()
+	go watchRemoteAuthentication(controlCtx, dir, ready, auth)
 	// The transport captures this finite receipt before any business input and
 	// binds it to the original PTY incarnation and native provider session.
 	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(ready)))
@@ -239,13 +257,33 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 			}
 		}
 	}()
+	bridgeToken := ""
+	if c.AuditModel != nil {
+		bridgeToken, err = remoteModelToken()
+		if err != nil {
+			return err
+		}
+		bridge, closeBridge, bridgeErr := startRemoteModelBridge(ctx, c, endpoint, thread.Thread.ID, bridgeToken)
+		if bridgeErr != nil {
+			return bridgeErr
+		}
+		defer closeBridge()
+		endpoint = bridge
+	}
 	args := remoteTUIArgs(c, endpoint, thread.Thread.ID)
 	tui := exec.CommandContext(ctx, native, args...)
 	tui.Dir = wd
 	tui.Stdin, tui.Stdout, tui.Stderr = input, output, diagnostics
 	// Only the app-server receives capability-bearing environment. Its frozen
 	// policy owns all tool execution; native --remote rejects client overrides.
-	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", []string{"GH_TOKEN", "GITHUB_TOKEN"})
+	blocked := []string{"GH_TOKEN", "GITHUB_TOKEN", remoteModelTokenEnv}
+	if c.GitHubAuth != nil {
+		blocked = append(blocked, c.GitHubAuth.PrivateKeyEnv)
+	}
+	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", blocked)
+	if bridgeToken != "" {
+		tui.Env = setEnvironmentValues(tui.Env, map[string]string{remoteModelTokenEnv: bridgeToken})
+	}
 	return tui.Run()
 }
 
@@ -262,6 +300,9 @@ func remoteTUIArgs(c RemoteAgentConfig, endpoint, session string) []string {
 	// Inline mode preserves the preparation receipt. A second tracked Orca
 	// prompt for helper admission would consume the next native input boundary.
 	args := []string{"--remote", endpoint, "--strict-config", "--no-alt-screen"}
+	if c.AuditModel != nil {
+		args = append(args, "--remote-auth-token-env", remoteModelTokenEnv)
+	}
 	for _, arg := range c.Args {
 		if arg != "--no-daemon" && arg != "--no-alt-screen" {
 			args = append(args, arg)

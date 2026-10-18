@@ -2,6 +2,20 @@ function Get-SRResultField($Value,[string]$Name) {
     if($null -ne $Value -and $Value.PSObject.Properties[$Name]) { return $Value.$Name }
     return $null
 }
+function Assert-SRRemoteAuditModels($Manifest,$View,$Proof) {
+    if($Proof.passed -isnot [bool] -or -not $Proof.passed -or $Proof.run_id -cne $View.run_id -or $Proof.session -cne $View.execution.session_id -or -not $Proof.provider_session -or @($Proof.turns).Count -ne 3 -or @($View.audit.results).Count -ne 2){throw 'Remote audit proof lacks original execution and three native model contexts'}
+    $taskSeen=@{}
+    foreach($taskFact in $Proof.turns){
+        if(-not $taskFact.command_id -or -not $taskFact.native_turn_id -or $taskSeen.ContainsKey($taskFact.native_turn_id) -or $taskFact.source -cne 'codex.app-server.original-turn.v1' -or $taskFact.session -cne $Proof.provider_session -or -not $taskFact.final_digest -or $taskFact.inspector_closed -isnot [bool] -or -not $taskFact.inspector_closed){throw 'Remote native model context is incomplete, duplicated or foreign'}
+        $taskSeen[$taskFact.native_turn_id]=$true
+    }
+    foreach($taskAudit in $View.audit.results){
+        $taskFacts=@($Proof.turns|Where-Object {$_.command_id -ceq $taskAudit.command_id -and $_.turn_id -ceq $taskAudit.turn_id -and $_.step -ceq $taskAudit.step})
+        if($taskAudit.verdict -cne 'pass' -or $taskFacts.Count -ne 1 -or $taskFacts[0].model -cne $Manifest.audit_model.model -or $taskFacts[0].effort -cne $Manifest.audit_model.reasoning_effort){throw 'Remote native audit did not use the frozen audit model and effort'}
+    }
+    $taskPublication=@($Proof.turns|Where-Object {$_.command_id -ceq $View.execution.turn_id -and $_.step -in @('publish','publish.report')})
+    if($taskPublication.Count -ne 1 -or $taskPublication[0].model -cne $Manifest.execution.settings.agent_launch.model -or $taskPublication[0].effort -cne $Manifest.execution.settings.agent_launch.reasoning_effort -or $taskPublication[0].model -ceq $Manifest.audit_model.model){throw 'Remote native publication did not restore the distinct execution model'}
+}
 function Assert-SRAuditModels($Manifest,$View,[string]$History) {
     $taskContexts=@{}
     $taskBound=$false

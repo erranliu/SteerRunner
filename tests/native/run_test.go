@@ -446,6 +446,14 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus == "stopped" && !view.NewInputsAllowed {
 				r.RunStopped = true
 				save(t, "cleanup-run.json", view)
+				if m.Execution.Adapter == "orca-terminal" {
+					proof, proofErr := remoteStopEvidence(m, view)
+					if proofErr != nil {
+						t.Error("remote authentication cleanup unconfirmed", proofErr)
+					} else {
+						save(t, "authentication-cleanup.json", proof)
+					}
+				}
 				if m.Execution.Adapter == "codex-app-server" && view.Execution.SessionID != "" {
 					var cleanup struct {
 						Revoked    bool      `json:"revocation_confirmed"`
@@ -522,8 +530,10 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	save(t, "original-pr-ready.json", first)
 	if audited {
 		auditWorkerSandbox(t, m, first)
-		var settings contracts.CodexSettings
-		_ = json.Unmarshal(m.Execution.Settings, &settings)
+		settings, modelErr := contracts.ExecutionModel(m.Execution)
+		if modelErr != nil {
+			t.Fatal(modelErr)
+		}
 		effort := settings.ReasoningEffort
 		if effort == "" {
 			effort = "medium"
@@ -537,6 +547,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if a.StepID != step || a.Verdict != "pass" || a.Failure != "" || a.CommandID == "" || a.TurnID == "" || source == "" || a.SourceCommandID != source {
 				t.Fatal("audit did not pass for one implementation report")
 			}
+		}
+		if m.Execution.Adapter == "orca-terminal" {
+			auditRemoteModels(t, m, first)
 		}
 		checkpoint("stop-and-cleanup")
 		t.Logf("audited native run=%s PR=%s; leave test PR unmerged", r.RunID, r.PRURL)

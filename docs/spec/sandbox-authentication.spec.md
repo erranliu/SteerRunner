@@ -14,6 +14,13 @@
 
 ## 契约
 
+2026-10-18 Orca 扩展：可选 `execution.settings.github_auth` 将 App ID、Installation ID 和私钥环境变量名冻结到
+执行主机 runtime 配置；只在执行主机解析该引用，不回退到 gh。原 App installation grant 留在可信 runtime，
+Worker 只接收有限期的单仓库 broker capability。原 helper 在受保护目录接受绑定原 session/configuration 的停止请求，
+成功路径先关闭 broker、撤销原 grant 并写出有限证明，调用端确认该原辅助终端关闭后关闭原业务 PTY。
+撤销证明失败仍须终止原 Worker，并保留认证收尾未验证；原 Worker 已停止不能替代 App 撤销证明。
+未知辅助创建结果不创建替代；丢失读取或关闭只对账原辅助身份。App 撤销失败不能报告停止成功。
+
 - SA01：可信执行主机准备认证。默认使用该主机已有 gh 登录，宿主凭据仅留在可信
   runtime 内存；worker 获得有限期、单仓库、限定操作的代理 capability。Git push 和
   gh PR 请求由沙箱内原工具发起，代理只验证范围并认证转发。拒绝跨仓库、管理接口、

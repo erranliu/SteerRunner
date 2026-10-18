@@ -2,7 +2,7 @@
 
 日期：2026-10-15。状态：已按收敛方案实施，定向 unit/controlled 与本机最小真机验证通过；具体构建、配置与历史失败见 [Plan](workflow-selection-audit.plan.md)。
 
-本文扩展[首版契约](steerrunner.spec.md)。原有冻结输入、单写者、原会话、未知结果对账、停止授权和 PR 归属规则继续适用。新审计流程本期只验收 Windows/amd64 本机 Codex，不恢复 Orca 验收。
+本文扩展[首版契约](steerrunner.spec.md)。原有冻结输入、单写者、原会话、未知结果对账、停止授权和 PR 归属规则继续适用。2026-10-18 扩展：审计流程同时支持本机 Codex 与配置可信执行主机 runtime 的 Orca；各自保留独立真机验收记录。
 
 ## 1. 目标与范围
 
@@ -19,7 +19,7 @@
 | 标识 | 流程 | 审计模型 | 支持范围 |
 | --- | --- | --- | --- |
 | `development/1` | 实现→报告→发布→必要时发布补报→PR 核验 | 不接受 | 保留原能力与准入检查 |
-| `development-audited/1` | 实现→报告→Spec 审计→代码审计→发布；有阻断问题则回到实施修复并重审 | 必填 | `codex-app-server` / local |
+| `development-audited/1` | 实现→报告→Spec 审计→代码审计→发布；有阻断问题则回到实施修复并重审 | 必填 | `codex-app-server` / local；受管理的 `orca-terminal` |
 
 原四个模型步骤 `implement.execute`、`implement.report`、`publish`、`publish.report` 保持。新流程只增加：
 

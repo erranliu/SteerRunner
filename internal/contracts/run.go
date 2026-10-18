@@ -98,9 +98,10 @@ type TransportSettings struct {
 }
 
 type OrcaSettings struct {
-	AccessMode  string            `json:"access_mode,omitempty"`
-	Transport   TransportSettings `json:"transport,omitempty"`
-	AgentLaunch AgentSettings     `json:"agent_launch,omitempty"`
+	GitHubAuth  *GitHubAppReference `json:"github_auth,omitempty"`
+	AccessMode  string              `json:"access_mode,omitempty"`
+	Transport   TransportSettings   `json:"transport,omitempty"`
+	AgentLaunch AgentSettings       `json:"agent_launch,omitempty"`
 }
 
 type QuerySettings struct {
@@ -228,11 +229,11 @@ func ValidateRun(data []byte) *Fault {
 		if model == nil || !plain(model.Model) || strings.TrimSpace(model.Model) != model.Model || strings.ContainsFunc(model.Model, unicode.IsControl) || !effort(model.ReasoningEffort) {
 			return invalid
 		}
-		if !slices.Contains(profile.SupportedAdapters, value.Execution.Adapter) || value.Execution.Target.Kind != "local" || value.Execution.Target.Environment != "" {
-			return Fail(3, "unsupported_capability", "The audited workflow requires local codex-app-server.")
+		if !slices.Contains(profile.SupportedAdapters, value.Execution.Adapter) {
+			return Fail(3, "unsupported_capability", "The audited workflow requires a managed Codex execution adapter.")
 		}
-		var settings CodexSettings
-		if DecodeStrict(value.Execution.Settings, &settings) != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) {
+		settings, err := ExecutionModel(value.Execution)
+		if err != nil || !plain(settings.Model) || strings.ContainsFunc(settings.Model, unicode.IsControl) || settings.Model == model.Model {
 			return invalid
 		}
 	}
@@ -272,6 +273,9 @@ func ValidateExecution(value Execution) *Fault {
 	case "orca-terminal":
 		var settings OrcaSettings
 		if DecodeStrict(value.Settings, &settings) != nil || !validAccessMode(settings.AccessMode) || !effort(settings.AgentLaunch.ReasoningEffort) {
+			return invalid
+		}
+		if settings.GitHubAuth != nil && (settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
 		}
 		var fields map[string]json.RawMessage

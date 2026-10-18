@@ -67,6 +67,8 @@ if ($taskScenario.target -eq 'local-codex') {
         $taskLaunch['args'] = $taskRemoteArgs
     }
     $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
+    if ($Scenario -eq 'orca-remote.app-auth' -and $taskConfig.PSObject.Properties['remote_github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.remote_github_auth }
+    if ($Scenario -eq 'orca-remote.app-auth' -and -not $taskExecution.settings.ContainsKey('github_auth')) { throw 'App authentication scenario requires remote_github_auth references to the execution-host App installation and key environment variable' }
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
 $taskMode = Read-Setting 'access_mode' 'sandbox'
@@ -81,10 +83,12 @@ if ($taskScenario.driver -eq 'development-audited' -and -not $AuditModel) {
     if (-not $AuditModel) { throw 'Audited scenario requires audit_model and explicit execution model in the non-secret config' }
 }
 if ($AuditModel) {
-    if ($taskScenario.target -ne 'local-codex' -or -not (Read-Setting 'model') -or $AuditModel -eq (Read-Setting 'model') -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires local Codex and two explicit, different models' }
+    $taskWriterModel = if ($taskScenario.target -eq 'orca-environment') { $taskRemoteModel } else { Read-Setting 'model' }
+    if (-not $taskWriterModel -or $AuditModel -eq $taskWriterModel -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires managed Codex and two explicit, different models' }
     if ($AuditReasoningEffort -and $AuditReasoningEffort -notin @('minimal','low','medium','high','xhigh','max','ultra')) { throw 'Invalid audit reasoning effort' }
     $taskAudit = @{model=$AuditModel}
     if ($AuditReasoningEffort) { $taskAudit['reasoning_effort'] = $AuditReasoningEffort }
+    else { $taskAudit['reasoning_effort'] = if ($taskScenario.target -eq 'orca-environment') { $taskRemoteEffort } else { Read-Setting 'reasoning_effort' 'medium' } }
 } elseif ($AuditReasoningEffort) { throw 'AuditReasoningEffort requires AuditModel' }
 & gh auth status --active --hostname github.com 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }

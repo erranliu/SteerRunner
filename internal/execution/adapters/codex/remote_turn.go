@@ -25,17 +25,19 @@ type RemoteTurnQuery struct {
 }
 
 type RemoteTurnReceipt struct {
-	Source       string          `json:"source"`
-	Readiness    RemoteReadiness `json:"readiness"`
-	InputDigest  string          `json:"input_digest"`
-	NativeTurnID string          `json:"native_turn_id,omitempty"`
-	UserItemID   string          `json:"user_item_id,omitempty"`
-	Started      bool            `json:"started"`
-	Completed    bool            `json:"completed"`
-	Status       string          `json:"status,omitempty"`
-	FinalItemID  string          `json:"final_item_id,omitempty"`
-	FinalText    string          `json:"final_text,omitempty"`
-	FinalDigest  string          `json:"final_digest,omitempty"`
+	Model           string          `json:"model,omitempty"`
+	ReasoningEffort string          `json:"reasoning_effort,omitempty"`
+	Source          string          `json:"source"`
+	Readiness       RemoteReadiness `json:"readiness"`
+	InputDigest     string          `json:"input_digest"`
+	NativeTurnID    string          `json:"native_turn_id,omitempty"`
+	UserItemID      string          `json:"user_item_id,omitempty"`
+	Started         bool            `json:"started"`
+	Completed       bool            `json:"completed"`
+	Status          string          `json:"status,omitempty"`
+	FinalItemID     string          `json:"final_item_id,omitempty"`
+	FinalText       string          `json:"final_text,omitempty"`
+	FinalDigest     string          `json:"final_digest,omitempty"`
 }
 
 func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (RemoteTurnReceipt, error) {
@@ -81,6 +83,18 @@ func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (RemoteTurnReceip
 		return out, errors.New("original_turn_process_unverified")
 	}
 	out, err = MatchRemoteTurn(thread, q.InputDigest)
+	if err == nil && out.Started && cfg.AuditModel != nil {
+		file, openErr := os.Open(thread.Path)
+		if openErr != nil {
+			return out, errors.New("native_model_history_unavailable")
+		}
+		choice, modelErr := RemoteTurnModel(file, out.NativeTurnID)
+		_ = file.Close()
+		if modelErr != nil {
+			return out, modelErr
+		}
+		out.Model, out.ReasoningEffort = choice.Model, choice.ReasoningEffort
+	}
 	out.Readiness = ready
 	return out, err
 }

@@ -41,11 +41,18 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 		if !saved.State.WorkerAbsent {
 			return receipt, nil, errors.New("original business stop proof missing")
 		}
+		receipt.State.WorkerAbsent = true
 		state, err := l.state(r.Snapshot)
 		if err != nil {
 			return receipt, nil, err
 		}
 		if err = l.cleanupInspections(ctx, &state); err != nil {
+			return receipt, nil, err
+		}
+		if err = l.reconcileAuthenticationStop(ctx, state); err != nil {
+			if errors.Is(err, errAuthenticationProofUnverified) {
+				err = errors.Join(err, l.closeFailedAuthenticationActor(ctx, state))
+			}
 			return receipt, nil, err
 		}
 		progress.Phase = "confirmed"

@@ -20,7 +20,7 @@ func validateWorkflow(r *runstate.Record) error {
 		}
 		return nil
 	}
-	if w.Config == nil || w.Config.ID != p.ID || w.Config.Version != p.Version || !slices.Equal(w.Config.AuditSteps, p.AuditSteps) || w.Config.MaximumRepairCycles != p.MaximumRepairCycles || w.ExecutionModel == nil || w.AuditModel == nil || w.ExecutionModel.Model == "" || w.AuditModel.Model == "" || w.ExecutionModel.ReasoningEffort == "" || w.AuditModel.ReasoningEffort == "" || r.Request.Execution.Adapter != "codex-app-server" || r.Request.Execution.Target.Kind != "local" {
+	if w.Config == nil || w.Config.ID != p.ID || w.Config.Version != p.Version || !slices.Equal(w.Config.AuditSteps, p.AuditSteps) || w.Config.MaximumRepairCycles != p.MaximumRepairCycles || w.ExecutionModel == nil || w.AuditModel == nil || w.ExecutionModel.Model == "" || w.AuditModel.Model == "" || w.ExecutionModel.ReasoningEffort == "" || w.AuditModel.ReasoningEffort == "" || !slices.Contains(p.SupportedAdapters, r.Request.Execution.Adapter) {
 		return errors.New("audited workflow lacks its supported frozen configuration or models")
 	}
 	return nil

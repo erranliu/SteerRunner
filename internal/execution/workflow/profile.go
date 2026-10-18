@@ -33,7 +33,6 @@ func Lookup(id string, version int) (Profile, bool) {
 		p.Description = "Implement, report and publish a verified PR."
 	case AuditedDevelopment:
 		p.Description = "Implement, audit Spec and code, repair up to twice, then publish."
-		p.SupportedAdapters = []string{"codex-app-server"}
 		p.AuditModelRequired = true
 		p.AuditSteps = []string{StepAuditSpec, StepAuditCode}
 		p.PromptSteps = append(p.PromptSteps, p.AuditSteps...)

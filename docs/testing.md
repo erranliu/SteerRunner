@@ -280,7 +280,22 @@ v2 配置；保持原生自身认证。完整资格入口：
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十四场景二十 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮十七场景二十三 case；新增 `orca-remote.audited`、`orca-remote.multirun` 和
+`orca-remote.app-auth`。前两项分别验证原远端会话逐轮模型切换和同一真实服务内两个 Run 的隔离。
+App case 额外要求非秘密配置 `remote_github_auth`，例如：
+
+```json
+{"remote_github_auth":{"app_id":123,"installation_id":456,"private_key_env":"STEERRUNNER_REMOTE_APP_KEY"}}
+```
+
+这些数值与变量名只是引用；私钥必须预先存在于远端执行主机环境，不从调用端复制。
+测试配置只将该引用应用到 App case，其他远端 case 继续覆盖默认执行主机 gh 登录。
+App case 必须实际提交、推送、PR/反馈/合入，并确认原 installation token 撤销及辅助终端关闭；
+引用缺失或访问被拒绝均为未通过，不能降级为 gh、静默跳过或宣称全 L3 通过。
+审计 case 的 `audit_model/audit_reasoning_effort` 必须与远端执行模型显式不同，实际模型来自
+同一原始 native history 的 `turn_context`，发布还须验证切回执行模型。
+
+原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。

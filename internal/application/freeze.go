@@ -178,15 +178,30 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			return nil, contracts.Fail(4, "environment_unavailable", "The configured Orca executable is unavailable.")
 		}
 		settings.Transport.Executable = executable
+		if settings.AgentLaunch.ReasoningEffort == "" {
+			settings.AgentLaunch.ReasoningEffort = "medium"
+		}
 		profile := orca.Profile{Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 		launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
+		if request.Workflow.AuditModel != nil {
+			model := *request.Workflow.AuditModel
+			if model.ReasoningEffort == "" {
+				model.ReasoningEffort = settings.AgentLaunch.ReasoningEffort
+			}
+			r.Request.Workflow.AuditModel = &model
+			launch.AuditModel = &model
+		}
+		if settings.GitHubAuth != nil {
+			a := settings.GitHubAuth
+			launch.GitHubAuth = &codex.AuthenticationConfig{AppID: a.AppID, InstallationID: a.InstallationID, PrivateKeyEnv: a.PrivateKeyEnv}
+		}
 		profile.RuntimeExecutable = launch.RuntimeExecutable
 		profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
 		if launch.RuntimeExecutable != "" {
-			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(codex.RemoteAgentConfig{Executable: launch.Executable, Args: launch.Args, Model: launch.Model, ReasoningEffort: launch.ReasoningEffort, AccessMode: launch.AccessMode, RepositoryURL: request.Repository.URL})
+			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
 		}
 		r.LaunchCommand, err = launch.Command("codex")
 		if err != nil {
@@ -347,8 +362,10 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: "codex"}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement}
 	if flowProfile.AuditModelRequired {
-		var settings contracts.CodexSettings
-		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		settings, modelErr := contracts.ExecutionModel(r.Request.Execution)
+		if modelErr != nil {
+			return nil, modelErr
+		}
 		r.Workflow.Config = &flowProfile
 		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
 		model := *r.Request.Workflow.AuditModel

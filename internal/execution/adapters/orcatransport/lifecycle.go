@@ -16,21 +16,24 @@ import (
 )
 
 type Turn struct {
-	WireFormat  string                   `json:"wire_format,omitempty"`
-	Recorded    *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
-	Inspection  *NativeInspection        `json:"inspection,omitempty"`
-	Native      NativeProof              `json:"native"`
-	Command     string                   `json:"command"`
-	Request     string                   `json:"request,omitempty"`
-	InputDigest string                   `json:"input_digest"`
-	Attempted   bool                     `json:"attempted"`
-	Rejected    bool                     `json:"rejected,omitempty"`
-	Accepted    bool                     `json:"accepted"`
-	Started     bool                     `json:"started"`
-	Settled     bool                     `json:"settled"`
-	Prompt      string                   `json:"prompt"`
-	Reply       string                   `json:"reply,omitempty"`
-	ReplyDigest string                   `json:"reply_digest,omitempty"`
+	Model           string                   `json:"model,omitempty"`
+	ReasoningEffort string                   `json:"reasoning_effort,omitempty"`
+	StepID          string                   `json:"step_id,omitempty"`
+	WireFormat      string                   `json:"wire_format,omitempty"`
+	Recorded        *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
+	Inspection      *NativeInspection        `json:"inspection,omitempty"`
+	Native          NativeProof              `json:"native"`
+	Command         string                   `json:"command"`
+	Request         string                   `json:"request,omitempty"`
+	InputDigest     string                   `json:"input_digest"`
+	Attempted       bool                     `json:"attempted"`
+	Rejected        bool                     `json:"rejected,omitempty"`
+	Accepted        bool                     `json:"accepted"`
+	Started         bool                     `json:"started"`
+	Settled         bool                     `json:"settled"`
+	Prompt          string                   `json:"prompt"`
+	Reply           string                   `json:"reply,omitempty"`
+	ReplyDigest     string                   `json:"reply_digest,omitempty"`
 }
 type State struct {
 	AdmissionAttempted bool                   `json:"admission_attempted,omitempty"`
@@ -181,7 +184,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	}
 	seen := map[string]bool{}
 	for _, turn := range state.Turns {
-		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand {
+		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand {
 			return state, errors.New("unknown native input wire format")
 		}
 		if turn.Recorded != nil {
@@ -198,6 +201,9 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		seen[turn.Command] = true
 		if s.PendingTurn != nil && s.PendingTurn.CommandID == turn.Command && turn.InputDigest != digest([]byte(s.PendingTurn.Prompt)) {
 			return state, errors.New("saved terminal input differs from original command")
+		}
+		if s.PendingTurn != nil && s.PendingTurn.CommandID == turn.Command && (turn.Model != s.PendingTurn.Model || turn.ReasoningEffort != s.PendingTurn.ReasoningEffort || turn.Model != "" && turn.StepID != s.PendingTurn.StepID) {
+			return state, errors.New("saved native model preferences changed")
 		}
 		if turn.InputDigest != digest([]byte(turn.Prompt)) || len(turn.Reply) > maxReplyBytes {
 			return state, errors.New("invalid saved terminal reply binding")
@@ -446,8 +452,12 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 		}
 		baseline := nativeBaseline(initial, l.clock())
 		prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline}
+		prepared.Model, prepared.ReasoningEffort, prepared.StepID = input.Model, input.ReasoningEffort, input.StepID
 		if state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
 			prepared.WireFormat = remoteWireCommand
+			if input.Model != "" {
+				prepared.WireFormat = remoteModelWireCommand
+			}
 		}
 		state.Turns = append(state.Turns, prepared)
 	}
@@ -562,7 +572,7 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 		if _, err = l.original(ctx, s); err != nil {
 			return receipt, nil, err
 		}
-		if turn.WireFormat == remoteWireCommand {
+		if turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand {
 			receipt.Diagnostic = l.observeRecorded(ctx, &state, turn)
 		} else {
 			receipt.Diagnostic = l.observeNative(ctx, s, &state, turn)
@@ -573,7 +583,7 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 			receipt.Implementation, _ = l.envelope(s, state)
 			return receipt, nil, err
 		}
-		if turn.WireFormat == remoteWireCommand {
+		if turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand {
 			goto observed
 		}
 		if !turn.Accepted || !turn.Started || turn.Native.EndedAt == 0 || turn.Native.ReplyBody == "" || receipt.Diagnostic != "" {
@@ -696,10 +706,23 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 	if _, err := l.original(ctx, r.Snapshot); err != nil {
 		return receipt, err
 	}
+	state, stateErr := l.state(r.Snapshot)
+	if stateErr != nil {
+		return receipt, stateErr
+	}
+	authErr := l.revokeAuthentication(ctx, state)
+	// Stop authorization is already durable. Credential uncertainty cannot keep
+	// the original worker running; finish its exact PTY closure within a bounded
+	// cleanup context even if the preceding credential observation timed out.
+	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancelStop()
+	if _, err = l.original(stopCtx, r.Snapshot); err != nil {
+		return receipt, errors.Join(authErr, err)
+	}
 	progress.Phase = "attempted"
-	proof, err := l.client.CloseTerminalChecked(ctx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
+	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
-		return receipt, err
+		return receipt, errors.Join(authErr, err)
 	}
 	if proof.Disposition == "confirmed" {
 		progress.Phase = "business-confirmed"
@@ -708,8 +731,12 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		if stateErr != nil {
 			return receipt, stateErr
 		}
-		if err := l.cleanupInspections(ctx, &state); err != nil {
-			return receipt, err
+		cleanupErr := l.cleanupInspections(stopCtx, &state)
+		if errors.Is(authErr, errAuthenticationProofUnverified) {
+			cleanupErr = errors.Join(cleanupErr, l.closeFailedAuthenticationActor(stopCtx, state))
+		}
+		if authErr != nil || cleanupErr != nil {
+			return receipt, errors.Join(authErr, cleanupErr)
 		}
 		for _, turn := range state.Turns {
 			if turn.Inspection != nil && !turn.Inspection.Closed {
