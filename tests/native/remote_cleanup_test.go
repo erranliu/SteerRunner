@@ -65,12 +65,14 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 		defer cancel()
 		client := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
 			all := append(append([]string(nil), settings.Transport.Args...), args...)
-			all = append(all, "--environment", m.Execution.Target.Environment)
+			if m.Execution.Target.Environment != "" {
+				all = append(all, "--environment", m.Execution.Target.Environment)
+			}
 			return orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
 				return exec.CommandContext(ctx, settings.Transport.Executable, all...).Output()
 			})
 		}})
-		if state.Process.RuntimeID != m.RemoteRuntimeID {
+		if m.Execution.Target.Kind == "orca_environment" && state.Process.RuntimeID != m.RemoteRuntimeID {
 			return nil, errors.New("remote cleanup runtime changed")
 		}
 		inventory, err := livetest.WaitRemoteWorkspaceEmpty(ctx, client, state.Process)

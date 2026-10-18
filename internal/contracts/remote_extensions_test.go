@@ -44,3 +44,17 @@ func TestRemoteAuditedAndAppReferencesRequireManagedRuntime(t *testing.T) {
 		})
 	}
 }
+
+func TestTerminalAgentsCannotUseCodexAuditModels(t *testing.T) {
+	for _, agent := range []string{"pi", "dsh"} {
+		t.Run(agent, func(t *testing.T) {
+			execution := Execution{Adapter: "orca-terminal", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"agent":"` + agent + `","agent_launch":{"runtime_executable":"helper.exe","model":"writer"}}`)}
+			if fault := ValidateExecution(execution); fault != nil {
+				t.Fatal(fault)
+			}
+			if _, err := ExecutionModel(execution); err == nil {
+				t.Fatal("native terminal agent admitted to Codex model switching")
+			}
+		})
+	}
+}

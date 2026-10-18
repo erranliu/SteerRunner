@@ -14,6 +14,13 @@ import (
 var errRemoteReadinessPending = errors.New("remote preparation receipt not yet available")
 
 func (l *Lifecycle) checkRemoteReadiness(s State) error {
+	if l.profile.Terminal != nil {
+		r := s.TerminalReadiness
+		if r == nil || r.Stage != "ready" || !r.Preparation.AuthenticationExpiresAt.After(l.clock().Add(5*time.Second)) {
+			return errors.New("Pi original preparation missing or expired; zero business input")
+		}
+		return l.validateTerminalReceipt(*r)
+	}
 	if !strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
 		return nil
 	}

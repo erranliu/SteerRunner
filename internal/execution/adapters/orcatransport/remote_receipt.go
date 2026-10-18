@@ -16,18 +16,24 @@ import (
 )
 
 const remoteWireCommand = "native-command-v1"
+const extensionWireCommand = "terminal-extension-v1"
 const remoteModelWireCommand = "native-model-command-v1"
 
 func wirePrompt(t *Turn) string {
 	if t.WireFormat == remoteModelWireCommand {
 		return codex.RemoteModelPrompt(t.Command, t.InputDigest, t.StepID, t.Model, t.ReasoningEffort, t.Prompt)
 	}
-	if t.WireFormat != remoteWireCommand {
+	if t.WireFormat != remoteWireCommand && t.WireFormat != extensionWireCommand {
 		return t.Prompt
 	}
 	// The TUI removes trailing line terminators. Compile that wire text before
 	// hashing, so history verification compares every delivered byte.
-	return fmt.Sprintf("[SteerRunner command=%s input=%s]\n%s", t.Command, t.InputDigest, strings.TrimRight(strings.ReplaceAll(t.Prompt, "\r\n", "\n"), "\r\n"))
+	prompt := strings.TrimRight(strings.ReplaceAll(t.Prompt, "\r\n", "\n"), "\r\n")
+	inputDigest := t.InputDigest
+	if t.WireFormat == extensionWireCommand {
+		inputDigest = digest([]byte(prompt))
+	}
+	return fmt.Sprintf("[SteerRunner command=%s input=%s]\n%s", t.Command, inputDigest, prompt)
 }
 
 type NativeInspection struct {

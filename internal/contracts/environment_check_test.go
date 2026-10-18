@@ -10,6 +10,18 @@ func checkInputFixture() CheckInput {
 	return CheckInput{Repository: Repository{URL: "https://github.com/owner/repo.git", BaseRevision: strings.Repeat("a", 40), Remote: "origin", BaseBranch: "main"}, Execution: Execution{Adapter: "codex-app-server", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"sandbox"}`)}}
 }
 
+func TestEnvironmentCheckDoesNotAssumeCodexPolicyForOtherAgents(t *testing.T) {
+	for _, agent := range []string{"pi", "dsh"} {
+		value := checkInputFixture()
+		value.Execution = Execution{Adapter: "orca-terminal", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"agent":"` + agent + `"}`)}
+		raw, _ := json.Marshal(value)
+		fault := ValidateEnvironmentCheck(raw)
+		if fault == nil || fault.Detail.Code != "unsupported_capability" {
+			t.Fatal("Codex environment check silently qualified another agent", agent, fault)
+		}
+	}
+}
+
 func TestEnvironmentCheckInputAndManifest(t *testing.T) {
 	value := checkInputFixture()
 	raw, _ := json.Marshal(value)

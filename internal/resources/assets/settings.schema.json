@@ -174,7 +174,135 @@
       "$id": "steerrunner/adapters/orca-terminal/settings/v1",
       "type": "object",
       "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"required": ["agent"], "properties": {"agent": {"not": {"const": "codex"}}}},
+          "then": {"not": {"required": ["github_auth"]}}
+        },
+        {
+          "if": {
+            "required": [
+              "agent"
+            ],
+            "properties": {
+              "agent": {
+                "not": {
+                  "enum": [
+                    "codex",
+                    "pi",
+                    "dsh"
+                  ]
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "agent_launch": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "model"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "reasoning_effort"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "runtime_executable"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "runtime_sha256"
+                      ]
+                    }
+                  ]
+                },
+                "properties": {
+                  "args": {
+                    "maxItems": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "agent"
+            ],
+            "properties": {
+              "agent": {
+                "const": "pi"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "agent_launch": {
+                "properties": {
+                  "args": {
+                    "maxItems": 0
+                  },
+                  "reasoning_effort": {
+                    "enum": [
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high",
+                      "xhigh"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "agent"
+            ],
+            "properties": {
+              "agent": {
+                "const": "dsh"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "agent_launch": {
+                "properties": {
+                  "args": {
+                    "maxItems": 0
+                  },
+                  "reasoning_effort": {
+                    "enum": [
+                      "low",
+                      "medium",
+                      "high",
+                      "max"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
       "properties": {
+        "agent": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]{0,63}$",
+          "default": "codex",
+          "description": "Orca terminal agent identifier. Missing preserves the Codex default; runtime evidence and permission qualification are still required."
+        },
         "transport": {
           "type": "object",
           "additionalProperties": false,
@@ -215,7 +343,7 @@
             "executable": {
               "type": "string",
               "minLength": 1,
-              "default": "codex"
+              "description": "Native executable; defaults to codex, pi.cmd or dsh.cmd for the corresponding managed agent."
             },
             "args": {
               "type": "array",

@@ -16,6 +16,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/publication"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/resources"
@@ -125,6 +126,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	target := b.ExecutionTarget{ID: "local", ExecutionHost: "local"}
 	kind, protocol := b.BackendLocal, b.ProtocolLocalCodexAppServer
+	agent := "codex"
 	var key string
 	var codec int
 	var payload []byte
@@ -164,22 +166,36 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
+		agent = settings.AgentName()
 		if settings.Transport.Executable == "" {
 			settings.Transport.Executable = "orca.exe"
 		}
 		if settings.Transport.WaitTimeout == "" {
 			settings.Transport.WaitTimeout = "30s"
 		}
-		if settings.AgentLaunch.Executable == "" {
+		if settings.AgentLaunch.Executable == "" && agent == "codex" {
 			settings.AgentLaunch.Executable = "codex"
+		}
+		if settings.AgentLaunch.Executable == "" && (agent == "pi" || agent == "dsh") {
+			settings.AgentLaunch.Executable = agent + ".cmd"
 		}
 		executable, err := exec.LookPath(settings.Transport.Executable)
 		if err != nil {
 			return nil, contracts.Fail(4, "environment_unavailable", "The configured Orca executable is unavailable.")
 		}
 		settings.Transport.Executable = executable
-		if settings.AgentLaunch.ReasoningEffort == "" {
+		if agent == "codex" && settings.AgentLaunch.Model != "" && settings.AgentLaunch.ReasoningEffort == "" {
 			settings.AgentLaunch.ReasoningEffort = "medium"
+		}
+		if (agent == "pi" || agent == "dsh") && settings.AgentLaunch.RuntimeExecutable != "" {
+			helper, helperErr := exec.LookPath(settings.AgentLaunch.RuntimeExecutable)
+			if helperErr == nil {
+				helper, helperErr = filepath.Abs(helper)
+			}
+			if helperErr != nil {
+				return nil, contracts.Fail(4, "environment_unavailable", "The configured native terminal helper is unavailable.")
+			}
+			settings.AgentLaunch.RuntimeExecutable = helper
 		}
 		profile := orca.Profile{Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
@@ -200,10 +216,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		profile.RuntimeExecutable = launch.RuntimeExecutable
 		profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
-		if launch.RuntimeExecutable != "" {
+		if launch.RuntimeExecutable != "" && agent == "codex" {
 			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
 		}
-		r.LaunchCommand, err = launch.Command("codex")
+		if agent == "codex" || settings.AgentLaunch.Executable != "" && agent != "pi" && agent != "dsh" {
+			r.LaunchCommand, err = launch.Command(agent)
+		}
 		if err != nil {
 			return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")
 		}
@@ -307,6 +325,41 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		return nil, err
 	}
 	r.RepositoryPath, r.RepositoryCommon = repo.Path, repo.CommonDir
+	if agent == "pi" || agent == "dsh" {
+		var settings contracts.OrcaSettings
+		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		var p orca.Profile
+		_ = json.Unmarshal(payload, &p)
+		if settings.AgentLaunch.RuntimeExecutable != "" {
+			metadataBytes, e := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: settings.AgentLaunch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
+			var metadata orca.TerminalMetadata
+			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 3 || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+				return nil, contracts.Fail(4, "environment_unavailable", "The selected local terminal helper metadata or frozen build does not match.")
+			}
+			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
+			p.RuntimeSHA256 = metadata.RuntimeSHA256
+			r.Request.Execution.Settings = canonical(settings)
+			r.InputDigest = reliable.Digest(canonical(r.Request))
+			sandbox, e := codex.NativeExecutable("codex.cmd")
+			if e != nil {
+				return nil, contracts.Fail(4, "environment_unavailable", "Pi native Windows sandbox executable is unavailable.")
+			}
+			c := orca.TerminalConfig{ReceiptVersion: 2, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, SandboxExecutable: sandbox, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: filepath.Join(dir, "terminal-auth", id), RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+			c.BundleSHA256 = metadata.BundleSHA256
+			c.EvidenceSHA256 = metadata.PiSHA256
+			if agent == "dsh" {
+				c.EvidenceSHA256 = metadata.DSHSHA256
+			}
+			// Pi session IDs use its native UUID spelling; the Run remains a hex ID.
+			c.SessionID = c.SessionID[:8] + "-" + c.SessionID[8:12] + "-" + c.SessionID[12:16] + "-" + c.SessionID[16:20] + "-" + c.SessionID[20:]
+			if c.AccessMode == "" {
+				c.AccessMode = "sandbox"
+			}
+			p.Terminal = &c
+			r.LaunchCommand = c.Command(settings.AgentLaunch.RuntimeExecutable)
+		}
+		payload = canonical(p)
+	}
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: key, CodecVersion: codec, Purpose: b.ImplementationConfigPurpose, ProjectID: repo.CommonDir, ProfileID: id, AcceptedConfigVersion: r.InputDigest}, payload)
 	if err != nil {
 		return nil, err
@@ -359,7 +412,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	branch := "codex/runner-" + id
 	worktree := executionWorkspace(dir, id)
-	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: "codex"}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
+	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: agent}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: agent}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement}
 	if flowProfile.AuditModelRequired {
 		settings, modelErr := contracts.ExecutionModel(r.Request.Execution)

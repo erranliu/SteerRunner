@@ -83,7 +83,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十四 case 数量；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的二十四场景/三十一 case 数量；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
@@ -153,6 +153,44 @@ L2 当前原生资格固定 Codex 0.159.2；配置 `codex_executable` 为实际 
 远端 Codex 的原生默认模型和 effort，与手动运行 `codex` 一致。省略该字段才继承共用 model。
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
 项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
+
+本机 Orca 的 `orca-local.codex`、`orca-local.pi`、`orca-local.pi-full-access`、`orca-local.dsh`
+使用 L3 development-feedback driver，覆盖业务 needs_input/reply、原会话反馈、独立 PR/head/合入，
+每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放、服务换代后的显式 resume、实际活动写者停止。
+本机 fixture 使用 test-only CLI 转发器记录真实原终端 send；重启零输入指纹必须有非零基线，Codex 不再读取不存在的扩展目录。原 Orca CLI 和 TUI 仍是真实执行来源。
+`orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个仍能反馈。
+例如 `./scripts/test.ps1 -Level L3 -Scenario orca-local.pi -Config <配置路径>`；真实结果见[通用接入验收](acceptance/orca-generic-agent.md)。
+
+配置使用 `orca_executable`、`orca_local_runtime_executable` 和已登记的 `orca_local_repository_path`；
+运行期间不依赖 pairing/environment，manifest 冻结 `local_runtime_id` 与 `local_repository_path`。
+Pi/DSH 分别读取 `pi_executable/model/reasoning_effort`、`dsh_executable/model/reasoning_effort`，
+不继承 Codex 参数。本机原 TUI 和 helper 均在所选执行主机运行。
+
+受管版本为 Pi 0.87.1、DSH 0.2.1-rc.2 + 社区 dsh-tui 0.16.1、Node 24；Windows 权限工具使用
+native Codex 0.159.2 的 sandbox 子命令，不启动 Codex 模型或会话。两种 access_mode 均无审批升级。
+Helper 可用 `go build -o <安装路径>/steerrunner-agent.exe ./cmd/steerrunner-agent` 构建，然后配置绝对路径；
+新 Run 要求 helper metadata v3／原生回执 v2，回执核验实际 reasoning effort；旧冻结实例仍按原构建和来源读取。
+Pi/DSH 要求原生依赖已安装，Run 不联网安装、不修改全局 profile。独立 DSH 安装示例：
+
+```powershell
+npm install --prefix C:/AgentTools/dsh @deepseek-ai/dsh@0.2.1-rc.2 @deepseek-harness-tui/dsh-tui@0.16.1
+# dsh_executable 指向 C:/AgentTools/dsh/node_modules/.bin/dsh.cmd
+```
+
+原 TUI 的正式扩展提供开始/完成事实，现有 Orca 只负责资源和投递；不修改 Orca。
+Node 28 项扩展及共享工具宿主契约测试已纳入统一 L1，可单独运行：
+
+```powershell
+node --test internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs internal/execution/adapters/orcatransport/extensions/dsh-managed.test.mjs
+```
+
+`scripts/probe-orca-pi.ps1` 仅诊断 Pi 0.87.1 / Orca 1.4.224 的无工具原 TUI，先运行上述测试。
+须提供已在 Orca 登记、位于用户临时目录直属 `steerrunner-orca-pi-p0-<32位UUID>` 的独立无 remote Git 仓库，
+以及新的 `-EvidenceDirectory`；不能使用业务仓库或旧现场。脚本只请求固定短答，使用已有 Pi 模型访问，
+限定探针输出 256 token，关闭工具和发现，只显式装载 Run 私有候选。它不安装依赖、修改全局 profile、
+发布 PR 或放行生产。真实证据见[新实施记录](spec/orca-generic-agent.plan.md#7-约束收敛后的实施pi-p0)；
+P0 探针不计为三个已注册 L3 case 或 Runner 真实重启/生产权限通过。
+
 本机 GitHub worker 默认使用执行主机已有 gh 登录的受限认证代理。OAuth 只在可信
 runtime 内存中，worker 只继承随机单仓库 capability，一小时到期、退出即失效。
 Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_UNIX 接口；原工具
@@ -320,7 +358,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十九场景二十六 case（远端十八、本机 Codex 五项、本机 Orca 三项）；新增 `orca-remote.audited`、
+当前全 L3 每轮二十四场景三十一 case（远端十八、本机 Codex 五项、本机 Orca 八项）；新增 `orca-remote.audited`、
 `orca-remote.multirun` 分别验证原远端会话逐轮模型切换和同一真实服务内两个 Run 的隔离。
 按用户要求移除独立 App 认证 L3 case 及其测试配置 `remote_github_auth`；保留生产
 `execution.settings.github_auth` 能力及 App 签发、范围、秘密边界、撤销等组件测试。

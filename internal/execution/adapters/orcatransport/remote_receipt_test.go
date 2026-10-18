@@ -317,3 +317,16 @@ func TestRemoteWireCommandSeparatesIdenticalReportPrompts(t *testing.T) {
 		t.Fatal("wire identity/canonicalization lost")
 	}
 }
+
+func TestRemoteModelAndTerminalExtensionWireFormatsCoexist(t *testing.T) {
+	a := Turn{WireFormat: remoteModelWireCommand, Command: strings.Repeat("a", 32), Prompt: "report\r\n", Model: "reviewer", ReasoningEffort: "high", StepID: "audit.code"}
+	a.InputDigest = digest([]byte(a.Prompt))
+	got := wirePrompt(&a)
+	if got != codex.RemoteModelPrompt(a.Command, a.InputDigest, a.StepID, a.Model, a.ReasoningEffort, a.Prompt) {
+		t.Fatal("remote model framing lost")
+	}
+	a.WireFormat = extensionWireCommand
+	if got == wirePrompt(&a) || wirePrompt(&a) != "[SteerRunner command="+a.Command+" input="+digest([]byte("report"))+"]\nreport" {
+		t.Fatal("terminal extension framing borrowed Codex model protocol")
+	}
+}

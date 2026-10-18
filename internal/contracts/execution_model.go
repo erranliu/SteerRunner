@@ -19,7 +19,7 @@ func ExecutionModel(e Execution) (workflow.ModelSettings, error) {
 		if err := DecodeStrict(e.Settings, &s); err != nil {
 			return workflow.ModelSettings{}, err
 		}
-		if s.AgentLaunch.RuntimeExecutable == "" {
+		if s.AgentName() != "codex" || s.AgentLaunch.RuntimeExecutable == "" {
 			return workflow.ModelSettings{}, errors.New("auditing requires the managed execution-host runtime")
 		}
 		return workflow.ModelSettings{Model: s.AgentLaunch.Model, ReasoningEffort: s.AgentLaunch.ReasoningEffort}, nil

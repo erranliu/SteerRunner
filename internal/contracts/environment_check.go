@@ -162,6 +162,13 @@ func ValidateEnvironmentCheck(data []byte) *Fault {
 	if err := ValidateExecution(value.Execution); err != nil {
 		return err
 	}
+	if value.Execution.Adapter == "orca-terminal" {
+		var settings OrcaSettings
+		_ = json.Unmarshal(value.Execution.Settings, &settings)
+		if settings.AgentName() != "codex" {
+			return Fail(3, "unsupported_capability", "Environment checks currently support only Codex.")
+		}
+	}
 	if value.Publication != nil {
 		return ValidatePublication(value.Repository, *value.Publication)
 	}

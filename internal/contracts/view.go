@@ -15,6 +15,7 @@ type MaterialView struct {
 }
 
 type ExecutionView struct {
+	Agent                    string `json:"agent,omitempty"`
 	RequestedModel           string `json:"requested_model,omitempty"`
 	RequestedReasoningEffort string `json:"requested_reasoning_effort,omitempty"`
 	WorkspaceScope           string `json:"workspace_scope,omitempty"`

@@ -10,6 +10,7 @@ function Get-SRLiveCases($Entry) {
     foreach ($taskField in @('level','driver','target','timeout_minutes')) {
         if ($Entry.$taskField -cne $taskDefinition.$taskField) { throw "Catalog conflicts with registered $taskField for $($Entry.id)" }
     }
+    if ($taskDefinition.PSObject.Properties['agent'] -and (-not $Entry.PSObject.Properties['agent'] -or $Entry.agent -cne $taskDefinition.agent)) { throw "Catalog conflicts with registered agent for $($Entry.id)" }
     $taskCaseIDs = @($taskDefinition.cases | ForEach-Object { $_.id })
     if ($Entry.PSObject.Properties['cases']) {
         if (($Entry.cases -join ',') -cne ($taskCaseIDs -join ',')) { throw "Catalog has missing, duplicate or unknown cases for $($Entry.id)" }

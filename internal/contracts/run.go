@@ -98,10 +98,19 @@ type TransportSettings struct {
 }
 
 type OrcaSettings struct {
-	GitHubAuth  *GitHubAppReference `json:"github_auth,omitempty"`
+	Agent       string              `json:"agent,omitempty"`
 	AccessMode  string              `json:"access_mode,omitempty"`
 	Transport   TransportSettings   `json:"transport,omitempty"`
 	AgentLaunch AgentSettings       `json:"agent_launch,omitempty"`
+	GitHubAuth  *GitHubAppReference `json:"github_auth,omitempty"`
+}
+
+// AgentName preserves the original Codex default without rewriting old input.
+func (s OrcaSettings) AgentName() string {
+	if s.Agent == "" {
+		return "codex"
+	}
+	return s.Agent
 }
 
 type QuerySettings struct {
@@ -291,11 +300,26 @@ func ValidateExecution(value Execution) *Fault {
 		}
 	case "orca-terminal":
 		var settings OrcaSettings
-		if DecodeStrict(value.Settings, &settings) != nil || !validAccessMode(settings.AccessMode) || !effort(settings.AgentLaunch.ReasoningEffort) {
+		if DecodeStrict(value.Settings, &settings) != nil || !validAccessMode(settings.AccessMode) || !optionalStrings(value.Settings, "agent") {
 			return invalid
 		}
-		if settings.GitHubAuth != nil && (settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
+		if settings.GitHubAuth != nil && (settings.AgentName() != "codex" || settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
+		}
+		if !regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_-]{0,63}$`).MatchString(settings.AgentName()) {
+			return invalid
+		}
+		if settings.AgentName() == "codex" && !effort(settings.AgentLaunch.ReasoningEffort) {
+			return invalid
+		}
+		if settings.AgentName() == "pi" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "minimal", "low", "medium", "high", "xhigh"}, settings.AgentLaunch.ReasoningEffort)) {
+			return Fail(3, "unsupported_capability", "Pi requires the local managed TUI, fixed tools and a supported thinking level.")
+		}
+		if settings.AgentName() == "dsh" && (value.Target.Kind != "local" || len(settings.AgentLaunch.Args) != 0 || !slices.Contains([]string{"", "low", "medium", "high", "max"}, settings.AgentLaunch.ReasoningEffort)) {
+			return Fail(3, "unsupported_capability", "DSH requires the local managed TUI and fixed native tools.")
+		}
+		if settings.AgentName() != "codex" && settings.AgentName() != "pi" && settings.AgentName() != "dsh" && (settings.AgentLaunch.Model != "" || settings.AgentLaunch.ReasoningEffort != "" || settings.AgentLaunch.RuntimeExecutable != "" || len(settings.AgentLaunch.Args) != 0) {
+			return Fail(3, "unsupported_capability", "This agent has no verified model, argument or execution-host preparation mapping; no Codex settings were applied.")
 		}
 		var fields map[string]json.RawMessage
 		_ = json.Unmarshal(value.Settings, &fields)
