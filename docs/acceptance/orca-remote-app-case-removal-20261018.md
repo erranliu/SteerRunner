@@ -22,3 +22,15 @@
 这些 case 保留注册，尚缺 ready 管理员故障宿主；前次 UAC 由用户取消后未再次发起。
 按此前完整远端 L3 的验收目标，PR 仍保持草稿。移除 App 项不等于剩余 18 项全部通过，
 也不把无冲突、无 GitHub CI 检查项作为真机通过证明。
+
+## 删除后的回归
+
+受测提交 `882f2b155fdf8e0364b296e9442d2088e3462b27`，开始时工作树干净。
+L1 **289 项通过**，包括目录/PowerShell 框架检查、native driver 编译和零匹配保护；
+6 个显式 helper/native skip 仍不计真机通过。Controlled **16/16 通过**。
+回归后只补本节及有限 JSON 证据，未修改受测测试代码。
+
+原始回归摘要见 [regression.json](evidence/orca-app-case-removal-20261018/regression.json)，
+当前清单及八项管理员 case 见 [scope.json](evidence/orca-app-case-removal-20261018/scope.json)。
+原受测实现至本次删除提交之间的 `cmd`、application/contracts/execution/resources、
+`go.mod/go.sum` 无变更；原 10 项 L3 报告仍归属 `e492ec1`，不改为新 driver 的真机资格。
