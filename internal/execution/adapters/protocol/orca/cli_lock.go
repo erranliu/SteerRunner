@@ -43,5 +43,8 @@ func SerializeCLI(ctx context.Context, invoke func(context.Context) ([]byte, err
 	if err = ctx.Err(); err != nil {
 		return nil, &CLIQueueError{Cause: err}
 	}
+	if err = CheckpointDispatch(ctx); err != nil {
+		return nil, err
+	}
 	return invoke(ctx)
 }

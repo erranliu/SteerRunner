@@ -15,7 +15,7 @@ import (
 )
 
 func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
-	for _, mode := range []string{"success", "lost-read", "lost-close-absent", "unknown-create", "wrong-session", "wrong-runtime", "wrong-incarnation", "revocation-unconfirmed"} {
+	for _, mode := range []string{"success", "queued-create", "lost-read", "lost-close-absent", "unknown-create", "wrong-session", "wrong-runtime", "wrong-incarnation", "revocation-unconfirmed"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s := fixture(t)
 			receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -35,6 +35,7 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 				return os.WriteFile(path, raw, 0600)
 			}
 			creates, reads, closes, businessCloses := 0, 0, 0, 0
+			queueCanceled := false
 			actor := map[string]any{"handle": "auth-actor", "incarnationId": "auth-inc", "worktreeId": state.Process.WorktreeID, "connected": true, "status": "running"}
 			proof := codex.RemoteAuthenticationCleanup{Readiness: *state.RemoteReadiness, Revoked: true, BrokerClosed: true, SocketCleaned: true, Mode: "host-gh-repository-broker"}
 			if mode == "wrong-session" {
@@ -61,6 +62,22 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 				action := args[0] + " " + args[1]
 				switch action {
 				case "terminal create":
+					if mode == "queued-create" && !queueCanceled {
+						queueCanceled = true
+						return nil, &native.CLIQueueError{Cause: context.DeadlineExceeded}
+					}
+					if err := native.CheckpointDispatch(ctx); err != nil {
+						return nil, err
+					}
+					path, _, err := l.journalPath(state)
+					if err != nil {
+						t.Fatal(err)
+					}
+					intentRaw, err := os.ReadFile(path + ".authentication-stop")
+					var intent authenticationStopJournal
+					if err != nil || json.Unmarshal(intentRaw, &intent) != nil || !intent.Attempt.Attempted || !intent.Attempt.Unknown || intent.Attempt.Process != nil {
+						t.Fatal("authentication create crossed dispatch without durable intent", err)
+					}
 					creates++
 					if mode == "unknown-create" {
 						return nil, errors.New("lost create")
@@ -102,14 +119,27 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 				}
 				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]any{"runtimeId": runtime}})
 			}})
+			if mode == "queued-create" {
+				if err = l.reconcileAuthenticationStop(context.Background(), state); err == nil || creates != 0 {
+					t.Fatal("recovery created a new stop intent", err, creates)
+				}
+			}
 			err = l.revokeAuthentication(context.Background(), state)
+			if mode == "queued-create" {
+				if err == nil || creates != 0 {
+					t.Fatal("queued revoker was invoked", err, creates)
+				}
+				// Reconciliation may dispatch this original unattempted intent, but
+				// still cannot create a new intent when the journal is absent.
+				err = l.reconcileAuthenticationStop(context.Background(), state)
+			}
 			if mode == "lost-read" {
 				if err == nil {
 					t.Fatal("lost read falsely confirmed")
 				}
 				err = l.revokeAuthentication(context.Background(), state)
 			}
-			success := mode == "success" || mode == "lost-read" || mode == "lost-close-absent"
+			success := mode == "success" || mode == "queued-create" || mode == "lost-read" || mode == "lost-close-absent"
 			if (err == nil) != success {
 				t.Fatal("unexpected stop result", mode, err)
 			}

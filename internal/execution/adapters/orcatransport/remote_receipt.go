@@ -141,19 +141,26 @@ func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) 
 	query := codex.RemoteTurnQuery{Workspace: state.RemoteReadiness.Workspace, Session: state.RemoteReadiness.SessionID, InputDigest: digest([]byte(wirePrompt(turn)))}
 	raw, _ := json.Marshal(query)
 	command := "& '" + strings.ReplaceAll(l.profile.RuntimeExecutable, "'", "''") + "' '--original-turn' '" + base64.RawURLEncoding.EncodeToString(raw) + "'"
-	attempt := &NativeInspection{Attempted: true, At: l.clock()}
-	turn.Inspection = attempt
+	attempt := &NativeInspection{Attempted: true, Unknown: true}
 	j, journalErr := l.loadInspections(*state)
 	if journalErr != nil {
 		return nil, journalErr
 	}
-	j.Entries = append(j.Entries, inspectionEntry{ID: contracts.NewID(), Command: turn.Command, InputDigest: query.InputDigest, Inspection: *attempt})
-	index := len(j.Entries) - 1
-	if err := l.saveInspections(*state, j); err != nil {
-		return nil, err
-	}
+	index := -1
 	checkpoint := func() error { j.Entries[index].Inspection = *attempt; return l.saveInspections(*state, j) }
-	result, err := l.client.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner original native receipt "+turn.Command, "--command", command, "--json")
+	// Persist immediately before invocation, while owning the CLI queue. A killed
+	// queued caller has not attempted creation and must not leave an unknown actor.
+	createCtx := native.WithDispatchCheckpoint(ctx, func() error {
+		attempt.At = l.clock()
+		turn.Inspection = attempt
+		j.Entries = append(j.Entries, inspectionEntry{ID: contracts.NewID(), Command: turn.Command, InputDigest: query.InputDigest, Inspection: *attempt})
+		index = len(j.Entries) - 1
+		return checkpoint()
+	})
+	result, err := l.client.MetaCall(createCtx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner original native receipt "+turn.Command, "--command", command, "--json")
+	if index < 0 {
+		return nil, errors.Join(err, errors.New("original native inspector command was not invoked"))
+	}
 	var created struct{ Terminal native.Terminal }
 	if err != nil || result.CallUncertain || json.Unmarshal(result.Payload, &created) != nil || result.RuntimeID != state.Process.RuntimeID || created.Terminal.Handle == "" || created.Terminal.IncarnationID == "" || created.Terminal.WorktreeID != state.Process.WorktreeID {
 		attempt.Unknown = true
@@ -162,6 +169,7 @@ func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) 
 	}
 	inspector := b.ProcessIdentity{Kind: "orca_original_turn_reader", RuntimeID: result.RuntimeID, Terminal: created.Terminal.Handle, Incarnation: created.Terminal.IncarnationID, WorktreeID: state.Process.WorktreeID}
 	attempt.Process = &inspector
+	attempt.Unknown = false
 	if err := checkpoint(); err != nil {
 		closeCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()

@@ -16,7 +16,7 @@ import (
 )
 
 func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
-	for _, mode := range []string{"success", "wrong-runtime", "wrong-incarnation", "wrong-session", "wrong-hash", "wrong-config", "wrong-input", "failed", "unknown-create", "unknown-close", "in-progress", "shutdown-during-close", "shutdown-deadline", "restart-known-close", "restart-absent-close", "restart-unknown-create", "restart-corrupt-journal", "bounded-first-inspection"} {
+	for _, mode := range []string{"success", "wrong-runtime", "wrong-incarnation", "wrong-session", "wrong-hash", "wrong-config", "wrong-input", "failed", "unknown-create", "unknown-close", "in-progress", "shutdown-during-close", "shutdown-deadline", "restart-known-close", "restart-absent-close", "restart-unknown-create", "restart-corrupt-journal", "restart-queued", "bounded-first-inspection"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s := fixtureOn(t, "paired-remote")
 			f.callerFileWriter = func(path string, data []byte) error {
@@ -103,6 +103,16 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				var result any
 				switch args[1] {
 				case "create":
+					if mode == "restart-queued" && !recovering {
+						return nil, &native.CLIQueueError{Cause: context.DeadlineExceeded}
+					}
+					if err := native.CheckpointDispatch(ctx); err != nil {
+						return nil, err
+					}
+					intent, err := l.loadInspections(state)
+					if err != nil || len(intent.Entries) == 0 || !intent.Entries[len(intent.Entries)-1].Inspection.Unknown || intent.Entries[len(intent.Entries)-1].Inspection.Process != nil {
+						t.Fatal("create crossed dispatch without durable unknown intent", err)
+					}
 					creates++
 					if mode == "unknown-create" || mode == "restart-unknown-create" {
 						return nil, errors.New("lost create")
@@ -218,6 +228,11 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
+				if mode == "restart-queued" {
+					if _, err := os.Stat(path); !os.IsNotExist(err) || creates != 0 {
+						t.Fatal("queued command left an ambiguous create intent", err, creates)
+					}
+				}
 				if mode == "restart-corrupt-journal" {
 					j, err := l.loadInspections(state)
 					if err != nil {
@@ -251,7 +266,11 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if mode == "restart-known-close" || mode == "restart-absent-close" {
+				if mode == "restart-queued" {
+					if r.TurnEvidence == nil || creates != 1 || closes != 1 {
+						t.Fatal("never-invoked query did not recover original observation", r.Diagnostic, creates, closes)
+					}
+				} else if mode == "restart-known-close" || mode == "restart-absent-close" {
 					wantCloses := 3 // Lost close, original cleanup, new query cleanup.
 					if mode == "restart-absent-close" {
 						wantCloses = 2

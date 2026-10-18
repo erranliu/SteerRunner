@@ -136,6 +136,9 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 			defer cancel()
 			return native.SerializeCLI(callCtx, invoke)
 		}
+		if err := native.CheckpointDispatch(ctx); err != nil {
+			return nil, err
+		}
 		return invoke(ctx)
 	}
 	l.client = native.New(native.Config{CommandTimeout: "40s", Target: p.Target(), Output: call})

@@ -82,7 +82,7 @@ func (l *Lifecycle) authenticationStop(ctx context.Context, state State, allowCr
 	if err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	if existed && (b.DecodeStrictJSON(raw, &j, "trailing authentication stop checkpoint") != nil || j.Binding != binding || !j.Attempt.Attempted) {
+	if existed && (b.DecodeStrictJSON(raw, &j, "trailing authentication stop checkpoint") != nil || j.Binding != binding || j.Attempt.At.IsZero() || !j.Attempt.Attempted && (j.Attempt.Process != nil || j.Attempt.Unknown || j.Attempt.Closed || j.Proof != nil || j.Failure != "")) {
 		return errors.New("authentication stop checkpoint changed")
 	}
 	if j.Failure != "" {
@@ -100,17 +100,28 @@ func (l *Lifecycle) authenticationStop(ctx context.Context, state State, allowCr
 		}
 		return nil
 	}
-	if !existed {
-		if !allowCreate {
+	if !existed || !j.Attempt.Attempted {
+		if !existed && !allowCreate {
 			return errors.New("original authentication stop intent unavailable; no new actor created")
 		}
-		j.Attempt = NativeInspection{Attempted: true, Unknown: true, At: l.clock()}
-		if err = save(); err != nil {
-			return err
+		if !existed {
+			// The stop intent survives queue cancellation, but is not a create
+			// attempt until the dispatch checkpoint commits under CLI ownership.
+			j.Attempt = NativeInspection{At: l.clock()}
+			if err = save(); err != nil {
+				return err
+			}
 		}
 		query, _ := json.Marshal(codex.RemoteAuthenticationQuery{Workspace: state.RemoteReadiness.Workspace, Session: state.RemoteReadiness.SessionID})
 		command := "& '" + strings.ReplaceAll(l.profile.RuntimeExecutable, "'", "''") + "' '--authentication-stop' '" + base64.RawURLEncoding.EncodeToString(query) + "'"
-		result, e := l.client.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner original authentication revocation", "--command", command, "--json")
+		createCtx := native.WithDispatchCheckpoint(ctx, func() error {
+			j.Attempt.Attempted, j.Attempt.Unknown, j.Attempt.At = true, true, l.clock()
+			return save()
+		})
+		result, e := l.client.MetaCall(createCtx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner original authentication revocation", "--command", command, "--json")
+		if !j.Attempt.Attempted {
+			return errors.Join(e, errors.New("original authentication revoker command was not invoked"))
+		}
 		var created struct{ Terminal native.Terminal }
 		if e != nil || result.CallUncertain || json.Unmarshal(result.Payload, &created) != nil || result.RuntimeID != state.Process.RuntimeID || created.Terminal.Handle == "" || created.Terminal.Handle == state.Process.Terminal || created.Terminal.IncarnationID == "" || created.Terminal.WorktreeID != state.Process.WorktreeID {
 			return errors.New("original authentication revoker creation is unverified; no replacement created")
