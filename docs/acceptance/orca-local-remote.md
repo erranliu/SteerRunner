@@ -1,6 +1,6 @@
 # Orca 本机/远程连接实施与验收
 
-日期：2026-10-18。状态：已按“不修改 Orca”实施本机查询模式，当前同构建四项可运行 L3 全部通过；远程 reconnect 前置阻断，V04 新子变体未验，未完成全部验收。旧订阅失败与三项 L3 通过均作为历史独立保留。
+日期：2026-10-18。状态：已实施查询模式并修复三项结构审计发现，已整合主线连接恢复。下列四项 L3 属于审计修复前同一构建，最终构建结果另列；远程 reconnect 前置阻断，V04 新子变体未验，未完成全部验收。旧订阅失败与三项 L3 通过均作为历史独立保留。
 依据 [Spec](../spec/orca-local-remote.spec.md)及 [Plan](../spec/orca-local-remote.plan.md)。
 
 ## 来源与生产范围
@@ -10,10 +10,10 @@
 生产改动仅在 `adapters/protocol/orca` 与 `adapters/orcatransport`；上层生产代码、公开契约、
 Profile v3、State v5、target hash 和数据库格式不变。测试/现场脚本/文档另列。
 
-## 当前查询构建
+## 审计修复前查询构建（历史证据）
 
 Runner SHA256 `4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e`，
-当前生产文件冻结于[查询构建源码清单](evidence/orca-local-remote/query-production-source-hashes.json)。
+该历史构建生产文件冻结于[查询构建源码清单](evidence/orca-local-remote/query-production-source-hashes.json)。
 本机用 named pipe/authToken 原生查询，不依赖 pair、不调用订阅、不修改 Orca；远程继续订阅加补查。
 现有 StateFeed 接口、30 秒补查、NativeProof 和开始/完成判定保持；本机 feed 无后台采样线程，不合成 working 事件。
 查询式 feed Close 会取消在途查询；查询/身份失效仍阻断，未知输入不重发。

@@ -1,6 +1,6 @@
 # Plan：Orca 本机与远程连接统一
 
-日期：2026-10-18。状态：本机查询、远程订阅加补查已实施；当前同构建 L1 273 项、既有 Controlled 16/16、无模型 IPC 探针及四项定向 L3 均通过。远程 reconnect 前置阻断，V04 新子变体未验，未完成全部验收。上一构建结果独立保留。依据 [Spec](orca-local-remote.spec.md)，调查基线 `9f9eca0`。过程、失败历史和实际验证见[专属验收](../acceptance/orca-local-remote.md)。
+日期：2026-10-18。状态：查询模式已实施，三项结构审计发现已修复，并整合 `origin/main` 的发送前连接恢复。最终构建验证与历史四项 L3 分开登记；远程 reconnect 前置阻断，V04 新子变体未验，尚未完成全部验收。依据 [Spec](orca-local-remote.spec.md)，调查基线 `9f9eca0`，整合主线 `0e34595`。实际验证见[专属验收](../acceptance/orca-local-remote.md)。
 
 ## 1. 审计结论与删除项
 
@@ -67,10 +67,10 @@
 依赖 P2。
 
 1. 在 catalog/cases 及测试清单同步注册 3 场景：`orca-local.smoke/default`、`environment-check.orca-local-sandbox/complete`、`environment-check.orca-local-full-access/complete`。复用现有两种 driver/outcome，不新建完整本机 execution-stability 矩阵。
-2. manifest 继续使用现有 v1；v2 远程稳定性不变。本机 runtime 从准备证据与原生回执交叉校验，不把 `RemoteRuntimeID` 改为双重含义，不引入混合目标 manifest。
+2. manifest 继续使用现有 v1；v2 远程稳定性不变。本机 `local_runtime_id` / `local_repository_path` 在准备成功后写入最终 manifest，受 manifest 摘要保护并与原生回执交叉校验；preparation 仅作证据，不参与运行时目标选择，不把 `RemoteRuntimeID` 改为双重含义，不引入混合目标 manifest。
 3. 现场生成器增加 `orca-local` 分支，复用 `codex_executable / model / reasoning_effort`；增加必要的可选 `orca_local_runtime_executable`，多个同名注册项目时用测试配置 `orca_local_repository_path` 精确选择，更新白名单/example，沿用原 schema。后者来自真机发现的两份同名注册仓库，不改变生产配置。远程 `remote_*` 保持原义。本机单目标无需 remote environment。
 4. `prepare-native-orca.ps1` 接受明确本机/远程目标，只有远程必需且传 environment。本机对真实注册项目准备专属 base，保存 runtime，确认原准备终端关闭；不复制认证文件。
-5. `manifest.go`、case 集校验和 PowerShell 校验允许本机 Orca L3，旧远程和原 11 项可靠性集合完整保留。按调查基线总 L3 调整为 17 场景/23 case，不只修改数字而漏查 ID 集。
+5. `manifest.go`、case 集校验和 PowerShell 校验允许本机 Orca L3，旧远程和主线 12 项可靠性集合完整保留。整合主线后总 L3 为 17 场景/24 case，不只修改数字而漏查 ID 集。
 6. 结果复用既有证据文件，增加必要的本机通路、pair absence 和原生事实证明即可；缺证据/错 runtime/缺清理不能通过。无模型探针可为本机 smoke 准备前置，不另计 L3 case。Close/reopen 证据明确标注仅连接级验证。
 
 退出条件：注册展开、现有框架及新增错误目标/缺证据反例通过；本机 fixture 不再隐含要求远程配置；原生查询/上传探针真实可用。
@@ -116,9 +116,9 @@ git diff --check
 
 文档检查包括相对链接、范围一致性、3+2 case 计数及文本格式；实际实施/测试以专属验收为准，不将文档检查写作功能或真机通过。
 
-## 9. 当前执行状态与后续顺序
+## 9. 查询模式构建的历史执行状态
 
-当前源码位于独立 worktree 的 `codex/orca-local-remote` 分支，未提交；Runner SHA256 为
+以下为结构审计修复前的查询模式构建记录；Runner SHA256 为
 `4f0fdaac779e2c7f302eedfce7a18815eaa4b898e1d0bf6879d8d24a4460339e`。
 生产修改仍限两个 Orca adapter；[当前源码摘要](../acceptance/evidence/orca-local-remote/query-production-source-hashes.json)
 与[验证登记](../acceptance/orca-local-remote.md)独立保存，旧构建结果不拼接为新构建资格。
@@ -136,3 +136,11 @@ git diff --check
 远程重连的管理员前置与本机查询能力分开登记。完整验收仍要求 V04 与五项 L3 的明确结果，不能因当前部分通过就标记全部完成。
 当前四项通过与一项前置阻断的同构建记录见[验证汇总](../acceptance/evidence/orca-local-remote/query-qualification.json)。
 剩余工作为补验 V04 的现有 Controlled 子变体，并在管理员宿主就绪后补跑远程重连；不要求用户修改 Orca。
+
+## 10. 结构审计修复与 PR 验证
+
+1. 删除 testkit 每次读取 preparation 选择目标的逻辑，将本机 runtime/源路径冻结到现有 manifest；回归测试证明 preparation 改写不改变目标，目标改写会改变 manifest 摘要，缺项及跨目标混入被拒绝。
+2. 删除本机订阅成功夹具，保留真实 pipe 查询、上传、取消和关闭测试；远程订阅覆盖不变。
+3. 删除无人调用的 pair 链接解析函数及其专用字段，不引入替代层。
+4. 合入主线发送前恢复，本机只读 IPC 的 I/O 失败使用既有连接错误类型及 5 秒连接上限；认证、身份和协议错误保持不可重试。
+5. 最终构建执行完整 L1/Controlled、native driver 编译、框架校验及受影响的原生验证。历史 L3 的源码/构建摘要不改写；远程故障与 V04 缺口单列，PR 在验收缺口关闭前保留 draft。

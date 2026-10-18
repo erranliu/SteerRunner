@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type localState struct {
@@ -52,9 +53,11 @@ func openLocalState(ctx context.Context, runtime string) (*localState, error) {
 	if !strings.HasPrefix(endpoint, `\\.\pipe\`) {
 		return nil, errors.New("local Orca named pipe is unavailable")
 	}
-	conn, err := dialLocalState(ctx, endpoint)
+	dialCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	conn, err := dialLocalState(dialCtx, endpoint)
+	cancel()
 	if err != nil {
-		return nil, errors.New("local Orca IPC connection failed")
+		return nil, &StateConnectionError{Cause: err}
 	}
 	s := &localState{conn: conn, reader: bufio.NewReaderSize(conn, 64<<10), token: metadata.AuthToken, runtime: runtime}
 	if _, err := callState(ctx, s, "status.get", nil); err != nil {
@@ -86,7 +89,7 @@ func (s *localState) request(ctx context.Context, method string, params any) (st
 	for len(data) > 0 {
 		n, err := s.conn.Write(data)
 		if err != nil {
-			return "", err
+			return "", &StateConnectionError{Cause: err}
 		}
 		data = data[n:]
 	}
@@ -115,7 +118,7 @@ func (s *localState) next(ctx context.Context, id string) (json.RawMessage, erro
 				if ctx.Err() != nil {
 					return nil, ctx.Err()
 				}
-				return nil, err
+				return nil, &StateConnectionError{Cause: err}
 			}
 			break
 		}

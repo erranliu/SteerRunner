@@ -1,6 +1,6 @@
 # Spec：Orca 本机与远程连接统一
 
-日期：2026-10-18。状态：本机原生查询、远程订阅加补查已实现；当前同构建 L1 273 项、既有 Controlled 16/16、无模型 IPC 探针、本机三项 L3 及远程 smoke 全部通过。远程 reconnect 前置阻断，V04 新子变体未验，尚未完成全部验收。未修改 Orca，生产改动限两个 adapter。上一构建结果独立保留。配套 [Plan](orca-local-remote.plan.md)，实际结果与未验边界见[专属验收](../acceptance/orca-local-remote.md)。
+日期：2026-10-18。状态：本机原生查询、远程订阅加补查已实施，三项结构审计发现已修复并整合主分支连接恢复。最终构建验证与历史四项 L3 分开登记；远程 reconnect 前置阻断，V04 新子变体未验，尚未完成全部验收。未修改 Orca，生产改动限两个 adapter。配套 [Plan](orca-local-remote.plan.md)，证据见[专属验收](../acceptance/orca-local-remote.md)。
 
 调查基线：SteerRunner `9f9eca0`。执行语义继续遵守 [Runner Spec](steerrunner.spec.md)和[沙箱认证 Spec](sandbox-authentication.spec.md)；测试按[测试指南](../testing.md)分层。原 [L3 稳定性 Spec](l3-execution-stability.spec.md)的既有 case、三轮资格及历史结果保持原范围，本次不复制或重取整个稳定性矩阵的资格。
 
@@ -98,11 +98,11 @@ L1/Controlled 使用协议夹具验证确定性负例，不启动模型、不创
 
 取消前版 18 个新增 case、99 次资格、强制跨目标并行批次、IPC relay/进程重定向设施及新 routing driver 的要求。这些不是本次的待办项。只有实施暴露了独立的传输缺陷、现有验证确实不能覆盖时，才按具体风险增加最小测试；不得自动恢复整套矩阵。
 
-按调查基线，现有 L3 14 场景/20 case 保留，实施后为 17 场景/23 case；实际计数由注册展开校验。只声明本次 5 项验证及各层结果，不宣称重新通过完整 L3、完整稳定性或本机全 IPC 故障/多目标真机并发资格。失败保留原记录，修复后以新现场补跑受影响项，不能覆写历史失败。
+整合主分支后，既有 L3 14 场景/21 case 保留，本功能只新增 3 case，当前为 17 场景/24 case；实际计数由注册展开校验。只声明本次 5 项验证及各层结果，不宣称重新通过完整 L3、完整稳定性或本机全 IPC 故障/多目标真机并发资格。失败保留原记录，修复后以新现场补跑受影响项，不能覆写历史失败。
 
 ## 6. 结果与验收
 
-复用现有 manifest v1/v2、live-config 和结果格式。不增加 manifest/config v3、新 outcome、混合目标数据模型或通用审计事件系统。允许为本机 fixture 添加必要的可选 helper 路径；agent/model/effort 优先复用已有本机配置。不能把远程专用 runtime 字段改成本机含义；本机 runtime 用原生准备证据和既有资源回执交叉核验。
+复用现有 manifest v1/v2、live-config 和结果格式。不增加 manifest/config v3、新 outcome、混合目标数据模型或通用审计事件系统。允许为本机 fixture 添加必要的可选 helper 路径；agent/model/effort 优先复用已有本机配置。不能把远程专用 runtime 字段改成本机含义；本机 `local_runtime_id` 与 `local_repository_path` 冻结进现有 manifest，受其摘要保护，再与原生回执交叉核验。`preparation.json` 只记录准备结果，不能作为运行时路由来源；远程/Codex fixture 拒绝携带这两个本机 Orca 字段。
 
 新增 3 case 各自独立 fixture、state-dir、Run/Check、工作区/会话、分支、PR 和证据目录，可共享只读安装及 Orca runtime。没有本机故障设施，不修改共享端点/ACL。默认串行验收；并行安全由资源隔离设计和 Controlled 验证，本次不外推真机并行资格。
 

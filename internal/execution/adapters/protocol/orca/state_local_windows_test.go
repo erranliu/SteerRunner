@@ -235,14 +235,20 @@ func TestOrcaLocalIPCFrameFailuresAndCancellation(t *testing.T) {
 			if scenario == "cancelled" && !errors.Is(err, context.DeadlineExceeded) {
 				t.Fatal(err)
 			}
+			if (scenario == "truncated") != IsStateConnectionError(err) {
+				t.Fatal("connection recovery classification changed", scenario, err)
+			}
 		})
 	}
 }
 
 func TestOrcaLocalIPCConcurrentClose(t *testing.T) {
+	reading := make(chan struct{})
 	localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
 		if req.Method == "status.get" {
 			ipcReply(conn, req, "runtime", map[string]any{})
+		} else if req.Method == "worktree.ps" {
+			close(reading)
 		}
 	})
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -253,6 +259,11 @@ func TestOrcaLocalIPCConcurrentClose(t *testing.T) {
 	}
 	done := make(chan error, 1)
 	go func() { _, err := callState(ctx, conn, "worktree.ps", map[string]any{}); done <- err }()
+	select {
+	case <-reading:
+	case <-ctx.Done():
+		t.Fatal("query did not reach the pipe")
+	}
 	_ = conn.close()
 	_ = conn.close()
 	select {
