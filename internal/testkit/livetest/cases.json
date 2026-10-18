@@ -305,19 +305,6 @@
           "outcome": "pr_ready"
         }
       ]
-    },
-    {
-      "id": "orca-remote.app-auth",
-      "level": "L3",
-      "driver": "development-smoke",
-      "target": "orca-environment",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "merged"
-        }
-      ]
     }
   ]
 }

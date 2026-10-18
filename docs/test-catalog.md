@@ -4,13 +4,13 @@
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-17** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-18** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十四 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
-新增远端 `orca-remote.audited/default`、`orca-remote.multirun/default`、`orca-remote.app-auth/default`：
-分别要求原 native 会话中执行/审计模型及发布恢复的实际历史、同一服务两个 Run 在停止一方后另一方仍能反馈更新、
-以及真实 GitHub App installation 闭环及撤销。App case 需要执行主机已有的 App 引用；缺配置就是未验收。
+已注册 L2 一 case、L3 二十三 case、L4 四 case；原 11 个可靠性 case 全部保留在 L3。
+新增远端 `orca-remote.audited/default`、`orca-remote.multirun/default`：
+分别要求原 native 会话中执行/审计模型及发布恢复的实际历史，以及同一服务两个 Run 在停止一方后另一方仍能反馈更新。
+按用户要求移除独立 App 认证 L3 case；可选 App 产品能力与组件边界测试保留，不记为真实 App 验收通过。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 PR 整合主线后保留两项本机环境检查，现补齐两项 Orca 环境检查和显式 full_access 远端开发闭环，整合重连用例后，前一版为 L3 十四场景/二十一 case；下文已有真机通过
@@ -138,7 +138,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共二十二场景、二十九 case：L2 一项、L3 二十四项（含原 11 项核心可靠性）、L4 四项。
+当前共二十一场景、二十八 case：L2 一项、L3 二十三项（含原 11 项核心可靠性）、L4 四项。
 Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 

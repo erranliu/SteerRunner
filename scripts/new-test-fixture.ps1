@@ -68,8 +68,6 @@ if ($taskScenario.target -eq 'local-codex') {
         $taskLaunch['args'] = $taskRemoteArgs
     }
     $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
-    if ($Scenario -eq 'orca-remote.app-auth' -and $taskConfig.PSObject.Properties['remote_github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.remote_github_auth }
-    if ($Scenario -eq 'orca-remote.app-auth' -and -not $taskExecution.settings.ContainsKey('github_auth')) { throw 'App authentication scenario requires remote_github_auth references to the execution-host App installation and key environment variable' }
 } else { throw 'Unregistered execution target' }
 if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
 $taskMode = Read-Setting 'access_mode' 'sandbox'

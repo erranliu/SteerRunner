@@ -73,7 +73,7 @@ accepted 表示材料及原请求已提交，执行结果以 Run 和命令 actio
 `not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
 
 本机及 Orca 已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
-本机 App installation-token 的环境检查逐操作写门仍未支持；远端可选 App 的真实正向验收仍缺执行主机引用。
+本机 App installation-token 的环境检查逐操作写门仍未支持；远端可选 App 保留组件测试，独立 App L3 case 已按用户要求移除，未取得真实 App 资格。
 已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
 [环境检查记录](docs/acceptance/environment-check.md)和[Orca 扩展记录](docs/acceptance/orca-remote-extensions-20261018.md)。
 
@@ -166,13 +166,14 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 十七场景二十四 case（远端十九、本机五项）、
+当前已注册 L2 一 case、L3 十六场景二十三 case（远端十八、本机五项）、
 L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
-driver 需要同构建反馈通过资格。真实后端并行和剩余 App/管理员验收分别登记，逐项内容见清单。
+driver 需要同构建反馈通过资格。真实后端并行和剩余管理员验收分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。
 历史[主线复测](docs/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](docs/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；
-当前 Orca 选定十项通过及其余九项未验收见[扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)。
+原构建 Orca 十项通过记录见[扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)，
+当前清单移除 App 专项后仍有八项管理员故障未验收，见[变更记录](docs/acceptance/orca-remote-app-case-removal-20261018.md)。
 统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
 
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：

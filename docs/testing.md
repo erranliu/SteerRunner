@@ -307,23 +307,17 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
 ```
 
-当前全 L3 每轮十七场景二十四 case；新增 `orca-remote.audited`、`orca-remote.multirun` 和
-`orca-remote.app-auth`。前两项分别验证原远端会话逐轮模型切换和同一真实服务内两个 Run 的隔离。
-App case 额外要求非秘密配置 `remote_github_auth`，例如：
-
-```json
-{"remote_github_auth":{"app_id":123,"installation_id":456,"private_key_env":"STEERRUNNER_REMOTE_APP_KEY"}}
-```
-
-这些数值与变量名只是引用；私钥必须预先存在于远端执行主机环境，不从调用端复制。
-测试配置只将该引用应用到 App case，其他远端 case 继续覆盖默认执行主机 gh 登录。
-App case 必须实际提交、推送、PR/反馈/合入，并确认原 installation token 撤销及辅助终端关闭；
-引用缺失或访问被拒绝均为未通过，不能降级为 gh、静默跳过或宣称全 L3 通过。
+当前全 L3 每轮十六场景二十三 case（远端十八、本机五项）；新增 `orca-remote.audited`、
+`orca-remote.multirun` 分别验证原远端会话逐轮模型切换和同一真实服务内两个 Run 的隔离。
+按用户要求移除独立 App 认证 L3 case 及其测试配置 `remote_github_auth`；保留生产
+`execution.settings.github_auth` 能力及 App 签发、范围、秘密边界、撤销等组件测试。
+移除未执行 case 不构成真实 App 认证通过，也不移除其余管理员故障用例。
 审计 case 的 `audit_model/audit_reasoning_effort` 必须与远端执行模型显式不同，实际模型来自
 同一原始 native history 的 `turn_context`，发布还须验证切回执行模型。
 
-2026-10-18 的当前构建结果、同构建三个批次、外部 CLI 版本限制，以及 App/管理员前置缺口见
-[Orca 扩展验收](acceptance/orca-remote-extensions-20261018.md)。选定十项通过不能记为完整十九项通过。
+2026-10-18 的原构建结果、同构建三个批次及外部 CLI 版本限制见
+[Orca 扩展验收](acceptance/orca-remote-extensions-20261018.md)；清单变更和剩余八项管理员故障缺口见
+[App 专项移除记录](acceptance/orca-remote-app-case-removal-20261018.md)。原十项通过记录不能记为完整十八项通过。
 
 原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。

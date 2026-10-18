@@ -220,16 +220,6 @@
       "cases": [
         "default"
       ]
-    },
-    {
-      "id": "orca-remote.app-auth",
-      "level": "L3",
-      "driver": "development-smoke",
-      "target": "orca-environment",
-      "timeout_minutes": 30,
-      "cases": [
-        "default"
-      ]
     }
   ]
 }
