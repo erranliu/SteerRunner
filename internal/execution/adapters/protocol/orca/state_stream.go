@@ -7,10 +7,12 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/coder/websocket"
 	"golang.org/x/crypto/nacl/box"
@@ -106,9 +108,21 @@ type stateSocket struct {
 }
 
 func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime string) (*stateSocket, error) {
-	conn, _, err := websocket.Dial(ctx, pairing.Endpoint, nil)
+	dialCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	conn, response, err := websocket.Dial(dialCtx, pairing.Endpoint, nil)
+	cancel()
 	if err != nil {
-		return nil, errors.New("Orca state streaming connection failed")
+		status := 0
+		if response != nil {
+			status = response.StatusCode
+			if status != 429 && status < 500 {
+				return nil, fmt.Errorf("Orca state WebSocket upgrade rejected: HTTP %d", status)
+			}
+		}
+		if status != 0 {
+			return nil, &StateConnectionError{Cause: err, Status: status}
+		}
+		return nil, stateConnectionFailure(err)
 	}
 	conn.SetReadLimit(4 << 20)
 	socket := &stateSocket{conn: conn, token: pairing.Token, runtime: expectedRuntime}
@@ -126,11 +140,14 @@ func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime 
 	box.Precompute(&socket.key, &host, private)
 	hello, _ := json.Marshal(map[string]string{"type": "e2ee_hello", "publicKeyB64": base64.StdEncoding.EncodeToString(pub[:])})
 	if err := conn.Write(ctx, websocket.MessageText, hello); err != nil {
-		return fail(err)
+		return fail(stateConnectionFailure(err))
 	}
 	_, data, err := conn.Read(ctx)
 	var ready struct{ Type string }
-	if err != nil || json.Unmarshal(data, &ready) != nil || ready.Type != "e2ee_ready" {
+	if err != nil {
+		return fail(stateConnectionFailure(err))
+	}
+	if json.Unmarshal(data, &ready) != nil || ready.Type != "e2ee_ready" {
 		return fail(errors.New("Orca state host handshake is unverified"))
 	}
 	if err := socket.write(ctx, map[string]any{"type": "e2ee_auth", "deviceToken": pairing.Token,
@@ -139,7 +156,10 @@ func openStateSocket(ctx context.Context, pairing statePairing, expectedRuntime 
 	}
 	data, err = socket.read(ctx)
 	var auth struct{ Type string }
-	if err != nil || json.Unmarshal(data, &auth) != nil || auth.Type != "e2ee_authenticated" {
+	if err != nil {
+		return fail(err)
+	}
+	if json.Unmarshal(data, &auth) != nil || auth.Type != "e2ee_authenticated" {
 		return fail(errors.New("Orca state pairing authentication was rejected"))
 	}
 	if _, err := socket.call(ctx, "status.get", nil); err != nil {
@@ -160,13 +180,16 @@ func (s *stateSocket) write(ctx context.Context, value any) error {
 	encrypted := secretbox.Seal(nonce[:], data, &nonce, &s.key)
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.conn.Write(ctx, websocket.MessageText, []byte(base64.StdEncoding.EncodeToString(encrypted)))
+	if err := s.conn.Write(ctx, websocket.MessageText, []byte(base64.StdEncoding.EncodeToString(encrypted))); err != nil {
+		return stateConnectionFailure(err)
+	}
+	return nil
 }
 
 func (s *stateSocket) read(ctx context.Context) ([]byte, error) {
 	kind, data, err := s.conn.Read(ctx)
 	if err != nil {
-		return nil, err
+		return nil, stateConnectionFailure(err)
 	}
 	if kind != websocket.MessageText {
 		return nil, errors.New("unexpected binary Orca state frame")

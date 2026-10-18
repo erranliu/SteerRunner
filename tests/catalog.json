@@ -60,7 +60,8 @@
       "target": "orca-environment",
       "timeout_minutes": 30,
       "cases": [
-        "active-disconnect"
+        "active-disconnect",
+        "pre-send-disconnect"
       ]
     },
     {

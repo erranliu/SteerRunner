@@ -33,7 +33,7 @@ func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
 			}
 		}
 	}
-	if reliability != 11 || edges != 4 {
+	if reliability != 12 || edges != 4 {
 		t.Fatalf("core/edge coverage changed: reliability=%d edges=%d", reliability, edges)
 	}
 }
@@ -57,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 14 || cases != 20 {
-		t.Fatalf("expected fourteen scenarios/twenty cases, got %d/%d", scenarios, cases)
+	if scenarios != 14 || cases != 21 {
+		t.Fatalf("expected fourteen scenarios/twenty-one cases, got %d/%d", scenarios, cases)
 	}
 	for _, v := range [][2]string{{"orca-remote.smoke", "kill-active"}, {"unknown", "default"}, {"orca-remote.service-restart", ""}} {
 		if _, _, err := Lookup(v[0], v[1]); err == nil {
