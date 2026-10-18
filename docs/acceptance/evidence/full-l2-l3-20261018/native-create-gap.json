@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-18T08:00:41.364839+00:00",
+  "scenario": "orca-remote.service-restart/kill-active",
+  "fixture": "20550476584f",
+  "run_id": "7f44b5a0ad692c8cb3cf065a7e387fc2",
+  "failure_window": "inspection intent persisted, terminal.create response/resource identity not persisted before exact service kill",
+  "original_inspection_journal": "C:\\srt\\20550476584f\\s\\orca-native-inspections\\48375b8327ada2beb43580207f24ef09c2a4902979e45984f70d21d5fdd30aaa.json",
+  "original_inspection_journal_sha256": "cad1e025730afec9ec419e9dfc0f21d822a93a4949515321b8de0c899c163a7b",
+  "pending_entry": {
+    "id": "b64783ddca50a9406ba4b072d4f11e9a",
+    "command": "00e9af51a7672846480fde1012726b29",
+    "input_digest": "a872738f088fc5b546e8d44ca34e622f34904256e049d8c1b34f5a644db541c9",
+    "inspection": {
+      "attempted": true,
+      "unknown": false,
+      "closed": false,
+      "at": "2026-10-18T07:52:09.5811001Z"
+    }
+  },
+  "native_create_has_caller_idempotency_key": false,
+  "native_create_has_request_id_lookup": false,
+  "capability_source": {
+    "path": "C:\\srt\\20550476584f\\bin\\orca-runtime\\out\\shared\\orchestration-rpc-contract.js",
+    "sha256": "2587fe83042e5f68d472eb8029f207ef64ebf365507c5285191608871afb79a1",
+    "finding": "isDurableMutation covers orchestration mutations and terminal agent prompt sends; terminal.create is excluded. terminal create handler passes no caller recovery ID."
+  },
+  "inventory_evidence": {
+    "raw": ".evidence\\full-validation-20261018\\kill-active-final-workspace-inventory.json",
+    "sha256": "24e75d6e7b01332bc69b652b7b29f31c51942aa6cc9d8f3055c8ca449bfc800b",
+    "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "total": 1,
+    "truncated": false,
+    "visible_handles": [
+      "term_fb8d1fd9-7a11-436d-89b1-f56e6bceda94"
+    ],
+    "does_not_prove_no_late_create": true
+  },
+  "recovery_policy": "Preserve original unknown creation. Do not clear it from current absence or title matches, do not create a replacement, do not resend business input. Native case must not pass until actual recovery and cleanup are verified.",
+  "manual_cleanup": "Separate follow-up evidence; original Run, private inspection journal and native test result remain unchanged."
+}

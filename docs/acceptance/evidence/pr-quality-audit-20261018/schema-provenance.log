@@ -1,0 +1,76 @@
+=== RUN   TestSRPublishedRunConfiguration
+=== RUN   TestSRPublishedRunConfiguration/plain
+=== RUN   TestSRPublishedRunConfiguration/audited_inherit_effort
+=== RUN   TestSRPublishedRunConfiguration/audited_explicit
+=== RUN   TestSRPublishedRunConfiguration/plain_trimmed_model
+=== RUN   TestSRPublishedRunConfiguration/plain_padded_model
+=== RUN   TestSRPublishedRunConfiguration/plain_blank_model
+=== RUN   TestSRPublishedRunConfiguration/plain_newline_model
+=== RUN   TestSRPublishedRunConfiguration/plain_audit_model
+=== RUN   TestSRPublishedRunConfiguration/missing_audit_model
+=== RUN   TestSRPublishedRunConfiguration/missing_execution_model
+=== RUN   TestSRPublishedRunConfiguration/remote
+=== RUN   TestSRPublishedRunConfiguration/adapter
+=== RUN   TestSRPublishedRunConfiguration/override
+=== RUN   TestSRPublishedRunConfiguration/unknown
+=== RUN   TestSRPublishedRunConfiguration/null_model
+=== RUN   TestSRPublishedRunConfiguration/null_effort
+=== RUN   TestSRPublishedRunConfiguration/empty_effort
+=== RUN   TestSRPublishedRunConfiguration/null_overrides
+--- PASS: TestSRPublishedRunConfiguration (0.01s)
+    --- PASS: TestSRPublishedRunConfiguration/plain (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/audited_inherit_effort (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/audited_explicit (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/plain_trimmed_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/plain_padded_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/plain_blank_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/plain_newline_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/plain_audit_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/missing_audit_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/missing_execution_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/remote (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/adapter (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/override (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/unknown (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/null_model (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/null_effort (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/empty_effort (0.00s)
+    --- PASS: TestSRPublishedRunConfiguration/null_overrides (0.00s)
+=== RUN   TestRAPublicContract
+--- PASS: TestRAPublicContract (0.00s)
+=== RUN   TestSRWorkflowSelection
+--- PASS: TestSRWorkflowSelection (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.094s
+=== RUN   TestRAAuditSources
+--- PASS: TestRAAuditSources (0.00s)
+=== RUN   TestRAAuditPartialAndFallback
+--- PASS: TestRAAuditPartialAndFallback (0.00s)
+=== RUN   TestRAParserFieldProvenance
+=== RUN   TestRAParserFieldProvenance/question
+=== RUN   TestRAParserFieldProvenance/blocker
+--- PASS: TestRAParserFieldProvenance (0.00s)
+    --- PASS: TestRAParserFieldProvenance/question (0.00s)
+    --- PASS: TestRAParserFieldProvenance/blocker (0.00s)
+=== RUN   TestSRWorkflowDevelopment
+--- PASS: TestSRWorkflowDevelopment (0.00s)
+=== RUN   TestSRExecutionDependencyBoundary
+--- PASS: TestSRExecutionDependencyBoundary (0.02s)
+=== RUN   TestRASuccessOutputRouting
+--- PASS: TestRASuccessOutputRouting (0.00s)
+=== RUN   TestRASemantics
+--- PASS: TestRASemantics (0.00s)
+=== RUN   TestRADefinitionRename
+--- PASS: TestRADefinitionRename (0.00s)
+=== RUN   TestRAFeedback
+--- PASS: TestRAFeedback (0.00s)
+=== RUN   TestRAPublicationProgramClue
+--- PASS: TestRAPublicationProgramClue (0.00s)
+=== RUN   TestRAVerificationConflictSurvivesResume
+--- PASS: TestRAVerificationConflictSurvivesResume (0.00s)
+=== RUN   TestRASuccessOutputLargeFinal
+--- PASS: TestRASuccessOutputLargeFinal (0.00s)
+=== RUN   TestRASourcesReportUsesOriginalContext
+--- PASS: TestRASourcesReportUsesOriginalContext (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.041s

@@ -168,3 +168,28 @@ func TestReliableLateFacts(t *testing.T) {
 		t.Fatal("invalid partial receipt leaked a mutation")
 	}
 }
+
+func TestRAReportPolicyUnknown(t *testing.T) {
+	input := &b.TurnInput{ReportToolPolicy: "frozen native policy"}
+	if QualifyInput(input, b.LifecyclePolicyCapabilities{}) == nil {
+		t.Fatal("unknown policy accepted")
+	}
+	if QualifyInput(input, b.LifecyclePolicyCapabilities{ReportToolPolicy: input.ReportToolPolicy}) != nil {
+		t.Fatal("same frozen native policy rejected")
+	}
+}
+
+// A coarse completion flag cannot supersede an explicit native failure, even
+// when the final contains the workflow's success declaration or a done report.
+func TestRANativeFailureDominatesCompletion(t *testing.T) {
+	session := b.SessionContext{CurrentCommandID: "command", CurrentTurnID: "turn", SessionID: "session"}
+	for _, outcome := range []string{"failed", "cancelled"} {
+		t.Run(outcome, func(t *testing.T) {
+			source := b.TurnEvidence{CommandID: "command", TurnID: "turn", SessionID: "session", Started: true, Completed: true, Succeeded: true, NativeOutcome: outcome, LastMessage: `{"outcome":"done","summary":"claimed success"}`, FinalVerified: true, FinalSource: "native", FinalItemID: "final"}
+			got, err := NormalizeResult(session, source)
+			if err != nil || got.Succeeded || !got.ContentVerified || got.NativeOutcome != outcome || got.Content != source.LastMessage {
+				t.Fatal(got, err)
+			}
+		})
+	}
+}

@@ -1,9 +1,16 @@
 {
   "id": "development",
-  "version": 1,
+  "version": 2,
   "status": "available",
-  "steps": ["implement.execute", "implement.report", "publish"],
-  "publication_report_step": "publish.report",
-  "maximum_report_corrections": 1,
+  "steps": [
+    "implement.execute",
+    "implement.report",
+    "implement.input",
+    "publish.execute",
+    "publish.report",
+    "publish.verify",
+    "pr_ready"
+  ],
+  "maximum_reports_per_source": 1,
   "milestone": "pr_ready"
 }

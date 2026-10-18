@@ -1,6 +1,6 @@
 param(
     [string]$OutFile = '',
-    [string]$Version = '0.1.0-dev.1'
+    [string]$Version = '0.2.0-dev.2'
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))

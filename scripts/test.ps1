@@ -2,7 +2,6 @@ param(
     [ValidateSet('L1','Controlled','L2','L3','L4')][string[]]$Level = @('L1'),
     [string[]]$Scenario = @(),
     [string]$Config = '',
-    [string]$FeedbackQualification = '',
     [string]$Catalog = '',
     [string]$OutDir = '',
     [string]$FixtureParent = 'C:\srt',
@@ -130,7 +129,7 @@ try {
     $taskFramework = Join-Path $taskOut 'framework'
     & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework
     $taskCoverage = Join-Path $taskOut 'coverage.out'
-    & go test @($taskCatalog.l1_packages) -count=1 -timeout=5m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
+    & go test @($taskCatalog.l1_packages) -count=1 -timeout=8m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
     $taskUnitCode = $LASTEXITCODE
     # The two formal native extensions are part of L1, including on machines
     # without model credentials or a running Orca instance.

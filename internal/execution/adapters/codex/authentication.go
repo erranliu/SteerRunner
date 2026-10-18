@@ -56,22 +56,25 @@ func githubTarget(remote string) (string, error) {
 // AuthenticationRuntime is process-local, never part of an envelope. For host
 // login, token is an opaque broker capability, never the host OAuth credential.
 type AuthenticationRuntime struct {
-	checkGate   *checkWriteGate
-	mu          sync.Mutex
-	config      *AuthenticationConfig
-	repository  string
-	remoteURL   string
-	token       string
-	expires     time.Time
-	client      *http.Client
-	endpoint    string
-	lookup      func(string) string
-	now         func() time.Time
-	closed      bool
-	onClose     func(bool)
-	revoked     bool
-	broker      *authenticationBroker
-	resolveHost func(context.Context) ([]byte, error)
+	repositoryBroker  bool
+	installationToken string
+	brokerTransport   http.RoundTripper
+	checkGate         *checkWriteGate
+	mu                sync.Mutex
+	config            *AuthenticationConfig
+	repository        string
+	remoteURL         string
+	token             string
+	expires           time.Time
+	client            *http.Client
+	endpoint          string
+	lookup            func(string) string
+	now               func() time.Time
+	closed            bool
+	onClose           func(bool)
+	revoked           bool
+	broker            *authenticationBroker
+	resolveHost       func(context.Context) ([]byte, error)
 }
 
 func newAuthentication(config *AuthenticationConfig, remote string) (*AuthenticationRuntime, error) {
@@ -175,6 +178,22 @@ func (a *AuthenticationRuntime) prepare(ctx context.Context) error {
 		a.revokeLocked(ctx)
 		return errors.New("authentication_scope_or_expiry_invalid: expected one repository and minimal installation permissions")
 	}
+	if a.repositoryBroker {
+		transport := http.DefaultTransport.(*http.Transport).Clone()
+		transport.Proxy = nil
+		var upstream http.RoundTripper = transport
+		if a.brokerTransport != nil {
+			upstream = a.brokerTransport
+		}
+		broker, brokerErr := prepareRepositoryBroker(ctx, a.repository, func(context.Context) ([]byte, error) { return []byte(grant.Token), nil }, upstream, true, grant.Expires, fmt.Sprintf("installation:%d", a.config.InstallationID))
+		if brokerErr != nil {
+			a.revokeLocked(ctx)
+			return brokerErr
+		}
+		broker.checkGate = a.checkGate
+		a.installationToken = grant.Token
+		a.broker, a.token, a.expires = broker, broker.capability, broker.expires
+	}
 	return nil
 }
 
@@ -209,8 +228,17 @@ func (a *AuthenticationRuntime) revokeLocked(ctx context.Context) bool {
 	if a.broker != nil {
 		confirmed := a.broker.close()
 		a.token = ""
-		return confirmed
+		if a.installationToken == "" {
+			return confirmed
+		}
+		a.token = a.installationToken
+		a.installationToken = ""
+		return a.revokeInstallationLocked(ctx) && confirmed
 	}
+	return a.revokeInstallationLocked(ctx)
+}
+
+func (a *AuthenticationRuntime) revokeInstallationLocked(ctx context.Context) bool {
 	confirmed := a.token == ""
 	if a.token != "" {
 		req, _ := http.NewRequestWithContext(ctx, http.MethodDelete, a.endpoint+"/installation/token", nil)

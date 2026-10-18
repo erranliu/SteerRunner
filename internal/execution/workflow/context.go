@@ -35,10 +35,13 @@ func FeedbackText(option, label, note string, asyncFacts json.RawMessage) string
 	}
 	return text
 }
-func PublicationInstruction(step string, policy json.RawMessage, remote, base string) string {
+func PublicationInstruction(state State, policy json.RawMessage, remote, base string) string {
+	if state.Contract != "publication" || state.Kind != "execute" {
+		return ""
+	}
 	facts, _ := json.Marshal(map[string]any{"publication_policy": policy})
 	text := "\nFixed execution facts: " + string(facts) + "\n"
-	if step == StepPublish {
+	if state.Contract == "publication" {
 		target, _ := json.Marshal(struct {
 			Remote     string `json:"remote"`
 			BaseBranch string `json:"base_branch"`

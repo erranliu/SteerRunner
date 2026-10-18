@@ -11,7 +11,7 @@ func TestSRWorkflowSelection(t *testing.T) {
 	if err := json.Unmarshal(validRun(), &base); err != nil {
 		t.Fatal(err)
 	}
-	base["workflow"] = map[string]any{"id": workflow.AuditedDevelopment, "version": 1, "audit_model": map[string]any{"model": "reviewer"}, "prompt_overrides": map[string]any{"audit.code": "custom audit"}}
+	base["workflow"] = map[string]any{"id": workflow.AuditedDevelopment, "version": 2, "audit_model": map[string]any{"model": "reviewer"}, "prompt_overrides": map[string]any{"audit.code": "custom audit"}}
 	base["execution"].(map[string]any)["settings"] = map[string]any{"model": "executor"}
 	data, _ := json.Marshal(base)
 	if fault := ValidateRun(data); fault != nil {

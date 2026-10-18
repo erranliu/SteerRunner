@@ -1,0 +1,8 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+    result_acquisition_test.go:101: native parser: &{DisabledMCPServers:[] NativeArgsDigest:2c4b44c1bc67303ca72beccea518db94cf75f25193bae39e17405b53ef26ec3f NativeHome:C:\Users\lmas1\.codex WorkingDirectory:C:\Users\lmas1\AppData\Local\Temp\steerrunner-parser\parser-e2cb6f3d2018-parser-default\parser-default Status:failed Content: ContentDigest: SessionID:01a14d19-a421-7203-8123-72d390b9f41e Model: Executable:C:\Users\lmas1\.local\bin\node_modules\@openai\codex\node_modules\@openai\codex-win32-x64\vendor\x86_64-pc-windows-msvc\bin\codex.exe ExecutableDigest:52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a Version:codex-cli 0.159.2 ToolEvents:0 Diagnostic:parser item outside original turn}
+--- FAIL: TestSRLiveScenario (2.87s)
+    --- FAIL: TestSRLiveScenario/local-codex.result-acquisition (2.85s)
+        --- FAIL: TestSRLiveScenario/local-codex.result-acquisition/parser-default (2.85s)
+FAIL

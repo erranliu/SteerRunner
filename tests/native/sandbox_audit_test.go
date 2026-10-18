@@ -7,6 +7,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -20,7 +21,6 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
-	"os/exec"
 )
 
 func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView) {
@@ -197,7 +197,7 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 		t.Fatal(err)
 	}
 	parts := strings.Split(strings.TrimPrefix(run.Execution.SessionID, "orca-terminal:"+runtime+":"), ":")
-	if len(parts) != 2 {
+	if !strings.HasPrefix(run.Execution.SessionID, "orca-terminal:"+runtime+":") || len(parts) != 2 || parts[0] == "" || parts[1] == "" {
 		t.Fatal("remote original terminal binding missing")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
@@ -207,7 +207,9 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 		if m.Execution.Target.Environment != "" {
 			all = append(all, "--environment", m.Execution.Target.Environment)
 		}
-		return exec.CommandContext(ctx, settings.Transport.Executable, all...).Output()
+		return orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+			return exec.CommandContext(ctx, settings.Transport.Executable, all...).Output()
+		})
 	}})
 	term, err := client.ShowTerminal(ctx, parts[0])
 	if err != nil {

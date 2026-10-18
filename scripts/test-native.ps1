@@ -28,10 +28,6 @@ try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
     if ($LASTEXITCODE -ne 0) { throw 'Native driver build failed' }
 } finally { Pop-Location }
-if ($taskNative.driver -eq 'development-core') {
-    $taskProof = Get-Content -LiteralPath $taskNative.feedback_qualification.path -Raw | ConvertFrom-Json
-    if ($taskProof.identity.driver_sha256.ToLowerInvariant() -cne (Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash.ToLowerInvariant()) { throw 'Core smoke feedback qualification was produced by a different native driver build' }
-}
 function Quote-WindowsArgument([string]$Argument) { '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"' }
 $taskArguments = @($taskTestExe,"-test.run=$Pattern",'-test.v',("-test.timeout={0}m" -f $TimeoutMinutes),'-native-manifest',$taskManifestPath,'-evidence-dir',$taskEvidence)
 $taskCommandLine = ($taskArguments | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '

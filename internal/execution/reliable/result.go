@@ -51,7 +51,7 @@ func NormalizeResult(session b.SessionContext, evidence b.TurnEvidence) (Result,
 	default:
 		return Result{}, errors.New("invalid normalized native outcome")
 	}
-	return Result{CommandID: evidence.CommandID, TurnID: evidence.TurnID, SessionID: evidence.SessionID, Succeeded: evidence.Succeeded, NativeOutcome: outcome, Content: evidence.LastMessage, Failure: evidence.Failure, Diagnostic: evidence.FinalDiagnostic, ContentVerified: evidence.FinalVerified && evidence.FinalSource != "" && evidence.FinalItemID != ""}, nil
+	return Result{CommandID: evidence.CommandID, TurnID: evidence.TurnID, SessionID: evidence.SessionID, Succeeded: evidence.Succeeded && outcome != "failed" && outcome != "cancelled", NativeOutcome: outcome, Content: evidence.LastMessage, Failure: evidence.Failure, Diagnostic: evidence.FinalDiagnostic, ContentVerified: evidence.FinalVerified && evidence.FinalSource != "" && evidence.FinalItemID != ""}, nil
 }
 
 type ContinuationConstraints struct {

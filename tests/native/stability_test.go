@@ -151,7 +151,9 @@ func (s *stabilityRun) diagnostic(ctx context.Context, args ...string) ([]byte, 
 		if !hasJSON {
 			argv = append(argv, "--json")
 		}
-		out, err := exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		out, err := orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+			return exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		})
 		s.note("diagnostic-attempt", map[string]any{"args": args, "output": string(out), "error": fmt.Sprint(err)})
 		v, parseErr := orca.ParseEnvelope(out)
 		if v.OK && v.Meta.RuntimeID != s.m.RemoteRuntimeID {
@@ -371,7 +373,9 @@ func (s *stabilityRun) disconnect() {
 	s.check("direct-state-blocked", err != nil, "faults.jsonl: fixture helper direct native state request failed")
 	ctx2, cancel2 := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel2()
-	out, err = exec.CommandContext(ctx2, s.m.Stability.NativeOrca.Path, s.m.Stability.CLIEntry.Path, "terminal", "show", "--terminal", s.process.Terminal, "--environment", s.m.Execution.Target.Environment, "--json").CombinedOutput()
+	out, err = orca.SerializeCLI(ctx2, func(ctx context.Context) ([]byte, error) {
+		return exec.CommandContext(ctx, s.m.Stability.NativeOrca.Path, s.m.Stability.CLIEntry.Path, "terminal", "show", "--terminal", s.process.Terminal, "--environment", s.m.Execution.Target.Environment, "--json").CombinedOutput()
+	})
 	s.note("blocked-cli-probe", map[string]any{"error": fmt.Sprint(err), "output": string(out)})
 	s.check("native-cli-blocked", err != nil, "faults.jsonl: real private CLI request failed")
 	state, e := s.native()
@@ -536,7 +540,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 	spec, _ := os.ReadFile(m.SpecPath)
 	plan, _ := os.ReadFile(m.PlanPath)
 	a, z := string(spec), string(plan)
-	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
+	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
 	selectedWorkflow, workflowErr := m.RunWorkflow(nil)
 	if workflowErr != nil {
 		t.Fatal(workflowErr)

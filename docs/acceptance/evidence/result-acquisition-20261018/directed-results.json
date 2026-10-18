@@ -1,0 +1,38 @@
+[
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/execution/reliable ./internal/execution/workspace -run '^TestRA(Contract|Selection|Sources|Semantics|Budget|SuccessOutput|WorkspaceSource)' -count=1 -timeout=2m -v",
+    "top_level_passed": 8,
+    "group": "t1"
+  },
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/execution/workflow ./internal/application ./internal/execution/publication -run '^TestRA(Workflow|Audit|Feedback|Publication)' -count=1 -timeout=3m -v",
+    "top_level_passed": 7,
+    "group": "t2"
+  },
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/contracts ./internal/resources ./internal/application ./internal/storage ./internal/cli -run '^TestRA(Config|Freeze|PublicContract|Version)' -count=1 -timeout=3m -v",
+    "top_level_passed": 5,
+    "group": "t3"
+  },
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/execution/resultacquisition ./internal/execution/resultacquisition/codexexec ./internal/execution/adapters/codex ./internal/execution/process ./internal/application -run '^TestRA(Parser|Fallback|Process|Redaction)' -count=1 -timeout=4m -v",
+    "top_level_passed": 6,
+    "group": "t4"
+  },
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/storage ./internal/application ./internal/host -run '^TestRA(Atomic|Recovery|Stop|Shutdown|Late|Concurrency)' -count=1 -timeout=4m -v",
+    "top_level_passed": 8,
+    "group": "t5"
+  },
+  {
+    "exit_code": 0,
+    "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/application -run '^TestRA(Definition|Transition|Verification|StateAuthority)' -count=1 -timeout=3m -v",
+    "top_level_passed": 8,
+    "group": "t8"
+  }
+]

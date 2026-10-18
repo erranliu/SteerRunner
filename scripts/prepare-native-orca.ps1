@@ -6,6 +6,7 @@ param(
     [string]$RepositoryPath = ''
 )
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'orca-cli-lock.ps1')
 if (($Target -eq 'orca_environment' -and -not $Environment) -or ($Target -eq 'local' -and $Environment)) { throw 'Use an explicit local target or a fixed remote environment' }
 $taskInput = Get-Content -LiteralPath $Manifest -Raw | ConvertFrom-Json
 $taskRoot = [IO.Path]::GetFullPath($taskInput.root).TrimEnd('\')
@@ -17,8 +18,9 @@ $taskCallCount = 0
 function Invoke-TaskOrca([string[]]$Arguments) {
     $taskRoute = @()
     if ($Target -eq 'orca_environment') { $taskRoute=@('--environment',$Environment) }
-    $taskRaw = & $OrcaExe @Arguments @taskRoute --json
-    $taskCode = $LASTEXITCODE
+    $taskCall = Invoke-SRLockedOrca -Executable $OrcaExe -Arguments @($Arguments + $taskRoute + @('--json'))
+    $taskRaw = $taskCall.output
+    $taskCode = $taskCall.exit_code
     $taskValue = $taskRaw | ConvertFrom-Json
     $script:taskCallCount++
     $taskRecord = @{at=[DateTime]::UtcNow.ToString('o');arguments=$Arguments;exit_code=$taskCode;response=$taskValue}

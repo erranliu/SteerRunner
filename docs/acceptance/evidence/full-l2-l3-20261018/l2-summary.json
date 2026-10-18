@@ -1,0 +1,39 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "scope": "selected-complete",
+  "requested_levels": [
+    "L2"
+  ],
+  "authorized_exclusion_count": 0,
+  "status": "passed",
+  "planned_case_count": 2,
+  "executed_case_count": 2,
+  "passed_case_count": 2,
+  "results": [
+    {
+      "finished_at": "2026-10-18T07:34:09.3501382Z",
+      "manifest": "C:\\srt\\130e2f841585\\manifest.json",
+      "level": "L2",
+      "status": "passed",
+      "evidence": "C:\\srt\\130e2f841585\\evidence",
+      "scenario": "local-codex.result-acquisition",
+      "started_at": "2026-10-18T07:30:10.5091123Z",
+      "case_id": "default"
+    },
+    {
+      "finished_at": "2026-10-18T07:37:23.4071528Z",
+      "manifest": "C:\\srt\\1077862978d8\\manifest.json",
+      "level": "L2",
+      "status": "passed",
+      "evidence": "C:\\srt\\1077862978d8\\evidence",
+      "scenario": "local-codex.smoke",
+      "started_at": "2026-10-18T07:34:09.3550170Z",
+      "case_id": "default"
+    }
+  ],
+  "started_at": "2026-10-18T07:30:10.3609848Z",
+  "prerequisite_report": ".evidence/full-l2-20261018-r5/summary.json",
+  "fixture_framework": "C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/.evidence/full-validation-20261018/framework-after-fixture-fix/result.json",
+  "final_l1_report": ".evidence/final-l1-20261018/summary.json",
+  "finished_at": "2026-10-18T07:37:23.4304779Z"
+}

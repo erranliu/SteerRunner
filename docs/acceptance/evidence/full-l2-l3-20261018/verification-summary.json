@@ -1,0 +1,12 @@
+{
+  "case_count": 14,
+  "status_counts": {
+    "passed": 6,
+    "blocked": 7,
+    "failed": 1
+  },
+  "evidence_hashes_verified": true,
+  "controlled_final_binary_verified": true,
+  "zero_match_rejection_verified": true,
+  "owned_process_audit_verified": true
+}

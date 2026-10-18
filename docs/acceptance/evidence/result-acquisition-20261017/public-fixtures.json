@@ -1,0 +1,70 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "workflow_version": 2,
+  "state_schema": "steerrunner-state/v3",
+  "sqlite_user_version": 3,
+  "resource_version": 2,
+  "resource_digest": "1d82aa6517e3e661ee0ebb88b71fc858e14bea9a8a17453e1fbbbdf738924b91",
+  "passed_assertions": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/resources",
+      "test": "TestRAPublicContract",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/contracts",
+      "test": "TestRAPublicContract",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/null",
+      "elapsed": 0.02
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/duplicate",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/range",
+      "elapsed": 0.02
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/alias",
+      "elapsed": 0.01
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/home",
+      "elapsed": 0.03
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/unknown",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig",
+      "elapsed": 0.12
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/storage",
+      "test": "TestRAVersion",
+      "elapsed": 0.07
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConfigRejectBeforeEffects",
+      "elapsed": 0.01
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAVersionRejectLegacy",
+      "elapsed": 0
+    }
+  ]
+}

@@ -33,6 +33,7 @@ type EnvironmentCall struct {
 }
 
 type EnvironmentSetup struct {
+	RepositoryBroker                     bool
 	CheckID, Nonce, Directory, Workspace string
 	AuthenticationStateDirectory         string
 	Input                                contracts.CheckInput
@@ -77,12 +78,13 @@ func NewEnvironmentSession(setup EnvironmentSetup) (*EnvironmentSession, error) 
 	}
 	gate := &checkWriteGate{base: "steerline-check/" + setup.CheckID + "/base", head: "steerline-check/" + setup.CheckID + "/head"}
 	auth.checkGate = gate
+	auth.repositoryBroker = setup.RepositoryBroker
 	host := process.New(30 * time.Second)
 	s := &EnvironmentSession{setup: setup, gate: gate}
 	s.backend = Backend{Config: Config{Executable: settings.Executable, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, Workspace: setup.Workspace, RunDir: setup.Directory, RunID: setup.CheckID, ServerDir: filepath.Join(setup.Directory, "app-server"), Environment: func(env []string) []string {
 		return lifecycleProcessEnvironment(env, setup.CheckID, setup.CheckID, nil)
 	}, WorkerRuntime: true, Authentication: auth, RemoteName: setup.Input.Repository.Remote, EnvironmentCheck: true}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: host.NewProcessGeneration, WriteAtomic: host.WriteExecutionFile}}
-	if config == nil {
+	if config == nil || setup.RepositoryBroker {
 		state := setup.AuthenticationStateDirectory
 		if state == "" {
 			state = setup.Directory

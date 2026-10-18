@@ -1,0 +1,58 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+  "source_dirty": true,
+  "started_at": "2026-10-17T09:01:42.6446633Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-live-workflow-verified-20261017",
+      "native_zero_match_guard": true,
+      "exit_code": 0,
+      "native_driver_compile_exit": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-live-workflow-verified-20261017\\framework",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "test_count": 237,
+      "level": "L1"
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 13,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-live-workflow-verified-20261017\\controlled"
+    },
+    {
+      "status": "passed",
+      "level": "L2",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-live-workflow-verified-20261017\\local-codex.smoke-default-r1-fixture.json",
+      "finished_at": "2026-10-17T09:15:49.4798718Z",
+      "evidence": "C:\\srt\\4316df69fdd2\\evidence",
+      "scenario": "local-codex.smoke",
+      "case_id": "default",
+      "started_at": "2026-10-17T09:12:39.0396676Z",
+      "manifest": "C:\\srt\\4316df69fdd2\\manifest.json"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 1,
+  "first_pass_rate": 1,
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-17T09:15:49.5310539Z"
+}

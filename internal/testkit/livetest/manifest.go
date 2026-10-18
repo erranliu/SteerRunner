@@ -81,7 +81,7 @@ var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 // Configured choices survive fixture generation. Test-owned prompt steps may
 // only be installed when they do not silently overwrite a caller override.
 func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, error) {
-	selection := contracts.Workflow{ID: "development", Version: 1}
+	selection := contracts.Workflow{ID: "development", Version: 2}
 	if m.Workflow != nil {
 		raw, _ := json.Marshal(m.Workflow)
 		if err := json.Unmarshal(raw, &selection); err != nil {
@@ -143,21 +143,8 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "development-core" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
 		return errors.New("v1 requires a development fixture without stability fields")
-	}
-	if m.Driver == "development-core" {
-		if m.Scenario != "local-codex.smoke" || m.Level != "L2" || m.FeedbackQualification == nil {
-			return errors.New("core smoke requires a qualified local feedback case")
-		}
-		if err := ValidateFeedbackQualification(*m.FeedbackQualification, m.RunnerSHA256); err != nil {
-			return err
-		}
-		if err := ValidateFeedbackExecution(*m.FeedbackQualification, m.Execution); err != nil {
-			return err
-		}
-	} else if m.FeedbackQualification != nil {
-		return errors.New("feedback qualification only applies to the core smoke")
 	}
 	if m.Schema == "steerrunner-test/v2" {
 		s, c, err := Lookup(m.Scenario, m.CaseID)

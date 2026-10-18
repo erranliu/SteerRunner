@@ -1,0 +1,54 @@
+{
+  "l1_top_level_passed": 237,
+  "l1_allowed_skips": [
+    "TestProcessHostCommandHelper",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestAuthenticationNativeToolBoundary",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestOrcaWorkspaceStartupLive",
+    "TestServiceStopWorkerHelper"
+  ],
+  "controlled_top_level_passed": 13,
+  "controlled_new_cases": 5,
+  "native_smoke_passed": 1,
+  "parser_live_cases_run": 0,
+  "directed": [
+    {
+      "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/execution/reliable ./internal/execution/workspace -run ^TestRA(Contract|Selection|Sources|Semantics|Budget|SuccessOutput|WorkspaceSource) -count=1 -timeout=2m -v",
+      "group": "T1",
+      "exit_code": 0,
+      "top_level_passed": 8
+    },
+    {
+      "command": "go test ./internal/execution/workflow ./internal/application ./internal/execution/publication -run ^TestRA(Workflow|Audit|Feedback|Publication) -count=1 -timeout=3m -v",
+      "group": "T2",
+      "exit_code": 0,
+      "top_level_passed": 7
+    },
+    {
+      "command": "go test ./internal/contracts ./internal/resources ./internal/application ./internal/storage ./internal/cli -run ^TestRA(Config|Freeze|PublicContract|Version) -count=1 -timeout=3m -v",
+      "group": "T3",
+      "exit_code": 0,
+      "top_level_passed": 5
+    },
+    {
+      "command": "go test ./internal/execution/resultacquisition ./internal/execution/process ./internal/application -run ^TestRA(Parser|Fallback|Process|Redaction) -count=1 -timeout=4m -v",
+      "group": "T4",
+      "exit_code": 0,
+      "top_level_passed": 1
+    },
+    {
+      "command": "go test ./internal/storage ./internal/application ./internal/host -run ^TestRA(Atomic|Recovery|Stop|Shutdown|Late|Concurrency) -count=1 -timeout=4m -v",
+      "group": "T5",
+      "exit_code": 0,
+      "top_level_passed": 5
+    },
+    {
+      "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/application -run ^TestRA(Definition|Transition|Verification|StateAuthority) -count=1 -timeout=3m -v",
+      "group": "T8",
+      "exit_code": 0,
+      "top_level_passed": 6
+    }
+  ],
+  "l1_ra_assertion_results": 72
+}

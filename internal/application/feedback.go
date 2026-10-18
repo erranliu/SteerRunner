@@ -27,6 +27,21 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if state, _ := r.Workflow.CurrentState(); businessAnswer && state.Kind == "input" && state.Continue == "" {
+		// Additional material is retained as user evidence, never an authorization
+		// to repeat the completed audit or to continue an ended native request.
+		r.AnswerHistory = append(r.AnswerHistory, *answer)
+		r.PendingAnswer = nil
+		r.CommandStates[answer.CommandID] = "completed"
+		r.Status = "waiting_input"
+		e.mu.Lock()
+		defer e.mu.Unlock()
+		if e.runs[id].Revision != r.Revision {
+			return false
+		}
+		_ = e.commitLocked(r, nil, "business_material_retained")
+		return false
+	}
 	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
 	facts, err := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
 	cancel()
@@ -45,20 +60,17 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 		}
 	}
 	option := "implement"
-	if businessAnswer && workflow.AuditStep(r.Workflow.StepID) {
+	if state, _ := r.Workflow.CurrentState(); businessAnswer && state.Kind == "input" && state.Continue == "" {
 		option = ""
 	}
-	step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: option, Continue: true})
+	step, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Option: option, Continue: true})
 	if err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false
 	}
-	r.Workflow.ReportRetry = retry
+	r.NextStage = nil // Explicit new business work supersedes only qualified unsent input.
 	stage := workflow.StageInput{StepID: step, FeedbackDecisionID: answer.CommandID}
-	if workflow.AuditStep(step) {
-		stage = workflow.FeedbackInput(r.Workflow)
-		stage.FeedbackDecisionID = answer.CommandID
-	}
+
 	if err := queueInput(r, stage, answer.Text); err != nil {
 		e.failControl(id, answer.CommandID, err)
 		return false
@@ -73,6 +85,10 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 		r.PendingFeedback = nil
 	}
 	e.mu.Lock()
+	if e.runs[id].Revision != r.Revision {
+		e.mu.Unlock()
+		return false
+	}
 	err = e.commitLocked(r, nil, "feedback_input_frozen")
 	e.mu.Unlock()
 	return err == nil
@@ -81,7 +97,7 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 // preservePendingStage retains business input before the original session's
 // resource binding is restored. It does not authorize or dispatch the input.
 func preservePendingStage(r *runstate.Record) {
-	if r.NextStage == nil && r.Snapshot.PendingTurn != nil {
+	if r.NextStage == nil && r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.CommandID != r.Snapshot.Session.CurrentCommandID {
 		if prior := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID); prior != nil {
 			copy := *prior
 			copy.CommandID = ""
@@ -99,26 +115,32 @@ func resumeWorkflow(r *runstate.Record) error {
 		if err := queueInput(r, input, ""); err != nil {
 			return err
 		}
-	} else if r.Status != "pr_ready" && r.Question == nil && r.Snapshot.PendingTurn == nil && r.Result != nil {
-		option := "implement"
-		if workflow.AuditStep(r.Workflow.StepID) {
-			option = ""
+	} else if state, _ := r.Workflow.CurrentState(); state.Kind == "milestone" {
+		r.Status = "pr_ready"
+	} else if state, _ := r.Workflow.CurrentState(); state.Kind == "input" {
+		r.Status = "waiting_input"
+	} else if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
+		r.Status = "running"
+		r.Phase = "parser_resumed"
+	} else if r.Snapshot.PendingTurn == nil && r.Result != nil && r.PendingPRURL == "" {
+		// Technical resume renews control eligibility, not completed business work.
+		if r.Status != "pr_ready" {
+			r.Status = "blocked"
 		}
-		step, retry, err := workflow.FeedbackStep(r.Workflow, workflow.FeedbackIntent{Continue: true, Option: option})
-		if err != nil {
-			return err
-		}
-		r.Workflow.ReportRetry = retry
-		stage := workflow.StageInput{StepID: step}
-		if workflow.AuditStep(step) {
-			stage = workflow.FeedbackInput(r.Workflow)
-		}
-		if err := queueInput(r, stage, ""); err != nil {
-			return err
+	} else if r.Snapshot.PendingTurn == nil && r.Snapshot.Session.CurrentCommandID != "" && r.PendingPRURL == "" {
+		if turn := r.Snapshot.Session.CurrentTurnID; turn != "" && turn != r.Snapshot.Session.LastStoppedTurnID {
+			// Accepted input is consumed, but its original completion may still be
+			// arriving after restart. Renew observation; never queue its prompt.
+			r.Status, r.Phase = "reconciling", "original_result_pending"
+			r.Diagnostic = "Awaiting original execution evidence; no input was resent"
+		} else {
+			r.Status = "blocked"
+			r.Diagnostic = "Consumed original input requires original evidence or explicit business feedback; resume cannot resend it"
 		}
 	} else if r.Status != "pr_ready" && r.Question == nil {
 		r.Status = "running"
 		r.Phase = "resumed"
+
 	}
 	return nil
 }

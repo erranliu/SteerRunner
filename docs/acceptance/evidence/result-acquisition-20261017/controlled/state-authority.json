@@ -1,0 +1,6 @@
+{
+  "assertions": "../state-authority.json",
+  "observed_public_snapshots": "../definition-traces.json",
+  "test_log": "integration.log",
+  "scope": "Program/agent/executor branches only; parser resource assertions not run"
+}

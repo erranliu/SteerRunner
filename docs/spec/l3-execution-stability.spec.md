@@ -13,7 +13,7 @@
 
 本批验证五条性质：已接受任务不随调用方退出而丢失；连接恢复不重复输入；服务换代遵守显式继续门槛；停止授权撤销持久有效；发布结果未知不重复发布。每条性质都必须有动作和资源身份的正、反证，不能只检查最终文件。
 
-不包含多轮反馈压力、多个 Run 并发隔离、长时间资源增长、其他模型/平台矩阵、SteerLine 集成、安装或发布。现有 smoke 的一次反馈、真实合并及收尾契约保留。新增成功恢复场景验证首次交付并合入专属 base，不额外重复反馈轮。
+不包含多轮反馈压力、多个 Run 并发隔离、长时间资源增长、其他模型/平台矩阵、SteerLine 集成、安装或发布。2026-10-18 随已确认的 [workflow/2 定义](../workflows/development.md)同步 smoke：首次交付到 pr_ready 后，由 driver 核验真实合并及收尾，不添加定义中不存在的反馈返工边。成功恢复场景同样验证首次交付并合入专属 base；各 case 的预期 merged/stopped 等结果不变。
 
 ## 2. 固定场景与必跑变体
 
@@ -21,7 +21,7 @@
 
 | 场景 ID | Case ID | 预期业务结果 | 核心验收 |
 | --- | --- | --- | --- |
-| `orca-remote.smoke` | `default` | merged | 保留当前完整 smoke，包括一次原会话反馈 |
+| `orca-remote.smoke` | `default` | merged | workflow/2 首次交付、真实合并核验及原 Run/服务收尾 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | merged | 接受后结束调用方，原请求找回且执行继续 |
 | `orca-remote.connection-reconnect` | `active-disconnect` | merged | 服务不换代，真实断连后重接原资源并继续 |
 | `orca-remote.service-restart` | `graceful-active`、`kill-active`、`graceful-boundary`、`kill-boundary` | merged | 正常停服与异常终止各覆盖活动回合及阶段边界；恢复前禁止新输入 |

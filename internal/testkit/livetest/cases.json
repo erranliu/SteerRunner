@@ -1,6 +1,7 @@
 {
   "schema": "steerrunner-live-cases/v1",
   "scenarios": [
+    {"id":"local-codex.result-acquisition","level":"L2","driver":"result-acquisition","target":"local-codex","timeout_minutes":30,"cases":[{"id":"default","outcome":"merged"}]},
     {
       "id": "orca-local.codex",
       "level": "L3",

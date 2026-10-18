@@ -184,8 +184,9 @@ func operationEngine(t *testing.T) (*Engine, *worker, *sql.DB) {
 	w := &worker{port: &operationCommitPort{}, wake: make(chan struct{}, 1)}
 	e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}, logger: log.New(io.Discard, "", 0)}
 	r := &runstate.Record{ID: "run", Allowed: true, Status: "running", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, CommandStates: map[string]string{}}
-	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 1}
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt"}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "run", ExecutionID: "run", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
+	bindTestWorkflow(r)
 	if err := e.commitLocked(r, nil, "accepted"); err != nil {
 		t.Fatal(err)
 	}
@@ -260,6 +261,7 @@ func TestSRStopBindingCommitFailureDoesNotDispatch(t *testing.T) {
 	r.Allowed, r.ResumeRequired = false, true
 	r.PendingStop = "stop-command"
 	r.CommandStates[r.PendingStop] = "pending"
+	bindTestWorkflow(r)
 	if err := e.commitLocked(r, nil, "stop_accepted"); err != nil {
 		t.Fatal(err)
 	}

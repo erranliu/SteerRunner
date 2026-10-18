@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-17T08:30:11.2331897Z",
+  "native_executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+  "native_sha256": "52F75C649BEBB8001102A1DD129C1EA6D02B0940321E6D7E82EE0526753BD58A",
+  "native_version": "codex-cli 0.159.2",
+  "upstream_tag": "rust-v0.159.2",
+  "upstream_commit": "ff6aec96948b70d94983af2641a6b67c94faeff5",
+  "tool_policy_sha256": "623585476E749127266A7BC0572925FFCA10CDF47E22EB0BA74DB1E9B0B3C190",
+  "tool_registry_sha256": "DE207801D8150FB687BBB57AD5A426CF172CC1DF4E7A08088FA0DFF243ED3AF0",
+  "config_schema_sha256": "DA7F6B0217EEEEE3AFCC3D21E9CF551490C0DE07BB0F3D2716AD287223C72D10",
+  "parser_qualification": "unsupported",
+  "reason": "No verified stock exec entry for empty startup ToolPolicy and full implicit-context exclusion",
+  "model_calls": 0,
+  "real_parser_process_starts": 0,
+  "runner_credential_reads": 0,
+  "runner_credential_copies": 0
+}

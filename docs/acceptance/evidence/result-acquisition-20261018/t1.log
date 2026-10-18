@@ -1,0 +1,75 @@
+=== RUN   TestRASuccessOutputRouting
+--- PASS: TestRASuccessOutputRouting (0.00s)
+=== RUN   TestRASemantics
+--- PASS: TestRASemantics (0.00s)
+=== RUN   TestRASuccessOutputLargeFinal
+--- PASS: TestRASuccessOutputLargeFinal (0.00s)
+=== RUN   TestRASourcesReportUsesOriginalContext
+--- PASS: TestRASourcesReportUsesOriginalContext (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.063s
+=== RUN   TestRASuccessOutput
+=== RUN   TestRASuccessOutput/bare
+=== RUN   TestRASuccessOutput/final
+=== RUN   TestRASuccessOutput/closed_fence
+=== RUN   TestRASuccessOutput/tilde
+=== RUN   TestRASuccessOutput/tab
+=== RUN   TestRASuccessOutput/inline
+=== RUN   TestRASuccessOutput/open-fence
+=== RUN   TestRASuccessOutput/space
+=== RUN   TestRASuccessOutput/echo
+=== RUN   TestRASuccessOutput/quote
+=== RUN   TestRASuccessOutput/indent
+=== RUN   TestRASuccessOutput/substring
+=== RUN   TestRASuccessOutput/not-last
+=== RUN   TestRASuccessOutput/long-fence
+=== RUN   TestRASuccessOutput/tilde-open
+--- PASS: TestRASuccessOutput (0.00s)
+    --- PASS: TestRASuccessOutput/bare (0.00s)
+    --- PASS: TestRASuccessOutput/final (0.00s)
+    --- PASS: TestRASuccessOutput/closed_fence (0.00s)
+    --- PASS: TestRASuccessOutput/tilde (0.00s)
+    --- PASS: TestRASuccessOutput/tab (0.00s)
+    --- PASS: TestRASuccessOutput/inline (0.00s)
+    --- PASS: TestRASuccessOutput/open-fence (0.00s)
+    --- PASS: TestRASuccessOutput/space (0.00s)
+    --- PASS: TestRASuccessOutput/echo (0.00s)
+    --- PASS: TestRASuccessOutput/quote (0.00s)
+    --- PASS: TestRASuccessOutput/indent (0.00s)
+    --- PASS: TestRASuccessOutput/substring (0.00s)
+    --- PASS: TestRASuccessOutput/not-last (0.00s)
+    --- PASS: TestRASuccessOutput/long-fence (0.00s)
+    --- PASS: TestRASuccessOutput/tilde-open (0.00s)
+=== RUN   TestRAContract
+=== RUN   TestRAContract/old
+=== RUN   TestRAContract/unknown
+=== RUN   TestRAContract/remaining
+=== RUN   TestRAContract/count
+=== RUN   TestRAContract/null
+=== RUN   TestRAContract/missing
+=== RUN   TestRAContract/bad_severity
+=== RUN   TestRAContract/alias
+=== RUN   TestRAContract/duplicate
+=== RUN   TestRAContract/trailing
+--- PASS: TestRAContract (0.00s)
+    --- PASS: TestRAContract/old (0.00s)
+    --- PASS: TestRAContract/unknown (0.00s)
+    --- PASS: TestRAContract/remaining (0.00s)
+    --- PASS: TestRAContract/count (0.00s)
+    --- PASS: TestRAContract/null (0.00s)
+    --- PASS: TestRAContract/missing (0.00s)
+    --- PASS: TestRAContract/bad_severity (0.00s)
+    --- PASS: TestRAContract/alias (0.00s)
+    --- PASS: TestRAContract/duplicate (0.00s)
+    --- PASS: TestRAContract/trailing (0.00s)
+=== RUN   TestRASelectionPRClues
+--- PASS: TestRASelectionPRClues (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.712s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable	0.916s [no tests to run]
+=== RUN   TestRAWorkspaceSource
+--- PASS: TestRAWorkspaceSource (7.76s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	8.699s

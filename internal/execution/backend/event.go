@@ -79,6 +79,7 @@ type TurnEvidence struct {
 // EventFact contains verified execution facts. Empty fields convey no evidence.
 // Source identity and cursor always refer to the original native observation.
 type EventFact struct {
+	BusinessWork    string
 	Kind            EventKind
 	Source          string
 	SourceEventID   string
@@ -115,6 +116,7 @@ const (
 	EventCompleted     EventKind = "completed"
 	EventGap           EventKind = "gap"
 	EventStatus        EventKind = "status"
+	EventWorkObserved  EventKind = "work_observed"
 	EventEscalation    EventKind = "escalation"
 )
 

@@ -120,7 +120,15 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		if p.Environment != "" {
 			all = append(all, "--environment", p.Environment)
 		}
-		return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+		invoke := func(ctx context.Context) ([]byte, error) {
+			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+		}
+		if l.nativeAccess {
+			callCtx, cancel := context.WithTimeout(ctx, timeout)
+			defer cancel()
+			return native.SerializeCLI(callCtx, invoke)
+		}
+		return invoke(ctx)
 	}
 	l.client = native.New(native.Config{CommandTimeout: "40s", Target: p.Target(), Output: call})
 	return l, nil
@@ -619,7 +627,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		// exact committed native text, as for every other input.
 		text = "\x1b[200~" + strings.ReplaceAll(text, "\n", "\r") + "\x1b[201~"
 	}
-	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--wait-submit", "30", "--retry-request", turn.Request, "--json")
+	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, "terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--retry-request", turn.Request, "--json")
 	receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
 	var sent struct {
 		Send struct {
@@ -888,10 +896,26 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		}
 	}
 
+	state, stateErr := l.state(r.Snapshot)
+	if stateErr != nil {
+		return receipt, stateErr
+	}
+	var authErr error
+	if l.profile.Terminal == nil {
+		authErr = l.revokeAuthentication(ctx, state)
+	}
+	// Stop authorization is already durable. Credential uncertainty cannot keep
+	// the original worker running; finish its exact PTY closure within a bounded
+	// cleanup context even if the preceding credential observation timed out.
+	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancelStop()
+	if _, err = l.original(stopCtx, r.Snapshot); err != nil {
+		return receipt, errors.Join(authErr, err)
+	}
 	progress.Phase = "attempted"
-	proof, err := l.client.CloseTerminalChecked(ctx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
+	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
-		return receipt, err
+		return receipt, errors.Join(authErr, err)
 	}
 	if proof.Disposition == "confirmed" {
 		if l.profile.Terminal != nil {
@@ -913,8 +937,12 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		if stateErr != nil {
 			return receipt, stateErr
 		}
-		if err := l.cleanupInspections(ctx, &state); err != nil {
-			return receipt, err
+		cleanupErr := l.cleanupInspections(stopCtx, &state)
+		if errors.Is(authErr, errAuthenticationProofUnverified) {
+			cleanupErr = errors.Join(cleanupErr, l.closeFailedAuthenticationActor(stopCtx, state))
+		}
+		if authErr != nil || cleanupErr != nil {
+			return receipt, errors.Join(authErr, cleanupErr)
 		}
 		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
 			// Orca's acknowledged PTY close can precede its published inventory.

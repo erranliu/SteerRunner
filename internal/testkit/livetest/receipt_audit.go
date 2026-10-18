@@ -33,7 +33,12 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 	if mode == "" {
 		mode = "sandbox"
 	}
-	return NativeReceiptAuditPolicy{Executable: a.RuntimeExecutable, SHA256: a.RuntimeSHA256, AccessMode: mode, Environment: m.Execution.Target.Environment, ConfigurationDigest: codex.RemoteConfigurationDigest(codex.RemoteAgentConfig{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: mode, RepositoryURL: RemoteURL})}
+	config := codex.RemoteAgentConfig{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: mode, RepositoryURL: RemoteURL}
+	if s.GitHubAuth != nil {
+		auth := s.GitHubAuth
+		config.GitHubAuth = &codex.AuthenticationConfig{AppID: auth.AppID, InstallationID: auth.InstallationID, PrivateKeyEnv: auth.PrivateKeyEnv}
+	}
+	return NativeReceiptAuditPolicy{Executable: a.RuntimeExecutable, SHA256: a.RuntimeSHA256, AccessMode: mode, Environment: m.Execution.Target.Environment, ConfigurationDigest: codex.RemoteConfigurationDigest(config)}
 }
 
 func auditArg(args []string, key string) string {
@@ -64,6 +69,7 @@ func auditJSON(c nativeAuditCall, runtime string, v any) bool {
 }
 
 type receiptInspector struct {
+	revoker                   bool
 	id, handle, inc, worktree string
 	query                     codex.RemoteTurnQuery
 	read, shown, closed       bool
@@ -143,6 +149,15 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 			}
 			if action == "terminal create" && ready != nil {
 				encoded := auditArg(c.Args, "--command")
+				stopPrefix := "& '" + strings.ReplaceAll(p.Executable, "'", "''") + "' '--authentication-stop' '"
+				if ready.AuthenticationControl && strings.HasPrefix(encoded, stopPrefix) && strings.HasSuffix(encoded, "'") {
+					body, e := base64.RawURLEncoding.DecodeString(strings.TrimSuffix(strings.TrimPrefix(encoded, stopPrefix), "'"))
+					var query codex.RemoteAuthenticationQuery
+					if e == nil && contracts.DecodeStrict(body, &query) == nil && query.Session == ready.SessionID && sameAuditPath(query.Workspace, ready.Workspace) && onlyReceiptCreateFlags(c.Args, p) && auditArg(c.Args, "--worktree") == "id:"+worktree && auditArg(c.Args, "--title") == "SteerRunner original authentication revocation" {
+						exempt[c.ID] = true
+						inspectors[c.ID] = &receiptInspector{id: c.ID, worktree: worktree, revoker: true}
+					}
+				}
 				prefix := "& '" + strings.ReplaceAll(p.Executable, "'", "''") + "' '--original-turn' '"
 				if strings.HasPrefix(encoded, prefix) && strings.HasSuffix(encoded, "'") {
 					payload := strings.TrimSuffix(strings.TrimPrefix(encoded, prefix), "'")
@@ -367,6 +382,19 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 				continue
 			}
 			for _, line := range v.Terminal.Tail {
+				if a.revoker {
+					if !strings.HasPrefix(strings.TrimSpace(line), codex.RemoteAuthenticationPrefix) {
+						continue
+					}
+					body, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(strings.TrimSpace(line), codex.RemoteAuthenticationPrefix))
+					var proof codex.RemoteAuthenticationCleanup
+					if e != nil || json.Unmarshal(body, &proof) != nil || !sameReceiptReady(*ready, proof.Readiness) || !proof.Revoked || !proof.BrokerClosed || !proof.SocketCleaned || proof.Mode != "host-gh-repository-broker" && proof.Mode != "github-app-repository-broker" {
+						a.invalid = true
+					} else {
+						a.read = true
+					}
+					continue
+				}
 				if !strings.HasPrefix(strings.TrimSpace(line), codex.RemoteTurnPrefix) {
 					continue
 				}
@@ -397,7 +425,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 	}
 	closed := 0
 	for _, a := range inspectors {
-		if a.closed && !a.invalid {
+		if a.closed && !a.invalid && (!a.revoker || a.read) {
 			closed++
 		}
 	}
@@ -431,5 +459,5 @@ func onlyInitialTerminalFlags(args []string, p NativeReceiptAuditPolicy) bool {
 }
 
 func sameReceiptReady(a, b codex.RemoteReadiness) bool {
-	return a.Verified == b.Verified && a.NativeTransport == b.NativeTransport && a.RuntimeSHA256 == b.RuntimeSHA256 && a.Contract == b.Contract && a.SessionID == b.SessionID && a.ConfigurationDigest == b.ConfigurationDigest && a.Repository == b.Repository && a.AccessMode == b.AccessMode && a.Process == b.Process && sameAuditPath(a.Workspace, b.Workspace) && a.CheckedAt.Equal(b.CheckedAt) && a.ExpiresAt.Equal(b.ExpiresAt)
+	return a.AuthenticationControl == b.AuthenticationControl && a.Verified == b.Verified && a.NativeTransport == b.NativeTransport && a.RuntimeSHA256 == b.RuntimeSHA256 && a.Contract == b.Contract && a.SessionID == b.SessionID && a.ConfigurationDigest == b.ConfigurationDigest && a.Repository == b.Repository && a.AccessMode == b.AccessMode && a.Process == b.Process && sameAuditPath(a.Workspace, b.Workspace) && a.CheckedAt.Equal(b.CheckedAt) && a.ExpiresAt.Equal(b.ExpiresAt)
 }

@@ -67,6 +67,11 @@ func TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts(t *tes
 	if f.nativeSends != 0 {
 		t.Fatal("bootstrap sent business input")
 	}
+	f.lines = append(f.lines, codex.RemoteFailurePrefix+"authentication_key_unavailable")
+	failed, failureErr := l.launchAgent(context.Background(), request(s, b.LifecycleCreateResource, input), true)
+	if failureErr == nil || !strings.Contains(failureErr.Error(), "authentication_key_unavailable") || failed.Disposition == b.OperationConfirmed || f.nativeSends != 0 {
+		t.Fatal("startup failure after saved readiness admitted business", failed, failureErr)
+	}
 }
 
 func decodeReceiptState(l *Lifecycle, s b.LifecycleSnapshot, r b.LifecycleReceipt) (State, error) {

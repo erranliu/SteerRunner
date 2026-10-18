@@ -170,3 +170,61 @@ func TestReadonlyReceiptAuditKeepsBusinessIdentityAndClosureStrict(t *testing.T)
 		})
 	}
 }
+
+func TestAuthenticationRevokerAuditRequiresOriginalProofAndClosure(t *testing.T) {
+	for _, mode := range []string{"valid", "no-control", "foreign-helper", "foreign-session", "foreign-workspace", "no-proof", "unconfirmed-revoke", "unconfirmed-socket", "foreign-receipt", "no-close", "unknown-create", "extra-agent"} {
+		t.Run(mode, func(t *testing.T) {
+			policy := NativeReceiptAuditPolicy{Executable: "C:/trusted/helper.exe", SHA256: strings.Repeat("a", 64), ConfigurationDigest: strings.Repeat("b", 64), AccessMode: "sandbox", Environment: "paired"}
+			ready := codex.RemoteReadiness{AuthenticationControl: mode != "no-control", Verified: true, NativeTransport: codex.RemoteNativeTransport, RuntimeSHA256: policy.SHA256, ConfigurationDigest: policy.ConfigurationDigest, AccessMode: policy.AccessMode, Contract: codex.PolicyContract, Repository: RemoteURL, Workspace: "C:/worker", SessionID: "01a1453f-0327-7f21-b0b9-ee79dad66108", Process: b.ProcessIdentity{PID: 1, Created: "original"}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().UTC().Add(time.Hour)}
+			encoded := func(v any) string { raw, _ := json.Marshal(v); return base64.RawURLEncoding.EncodeToString(raw) }
+			calls := []nativeAuditCall{}
+			add := func(id string, args []string, result any, failed bool) {
+				raw, _ := json.Marshal(map[string]any{"ok": !failed, "result": result, "_meta": map[string]string{"runtimeId": "runtime"}})
+				calls = append(calls, nativeAuditCall{Kind: "intent", ID: id, Args: args}, nativeAuditCall{Kind: "receipt", ID: id, Args: args, Response: raw, Failed: failed})
+			}
+			wt := "repo::C:/worker"
+			add("work", []string{"worktree", "create"}, map[string]any{"worktree": map[string]string{"id": wt, "path": ready.Workspace}}, false)
+			add("launch", []string{"terminal", "send", "--terminal", "original", "--text", "launch"}, map[string]any{"send": map[string]any{"handle": "original", "accepted": true}}, false)
+			add("ready", []string{"terminal", "read", "--terminal", "original"}, map[string]any{"terminal": map[string]any{"handle": "original", "tail": []string{codex.RemoteReadyPrefix + encoded(ready)}}}, false)
+			query := codex.RemoteAuthenticationQuery{Workspace: ready.Workspace, Session: ready.SessionID}
+			if mode == "foreign-session" {
+				query.Session = "foreign"
+			}
+			if mode == "foreign-workspace" {
+				query.Workspace = "C:/foreign"
+			}
+			helper := policy.Executable
+			if mode == "foreign-helper" {
+				helper = "C:/foreign/helper.exe"
+			}
+			args := []string{"terminal", "create", "--worktree", "id:" + wt, "--title", "SteerRunner original authentication revocation", "--command", "& '" + helper + "' '--authentication-stop' '" + encoded(query) + "'", "--json", "--environment", policy.Environment}
+			if mode == "extra-agent" {
+				args = append(args, "--agent", "codex")
+			}
+			term := map[string]any{"terminal": map[string]any{"handle": "revoker", "incarnationId": "owned-inc", "worktreeId": wt}}
+			add("create", args, term, mode == "unknown-create")
+			add("show", []string{"terminal", "show", "--terminal", "revoker"}, term, false)
+			proof := codex.RemoteAuthenticationCleanup{Readiness: ready, Revoked: mode != "unconfirmed-revoke", BrokerClosed: true, SocketCleaned: mode != "unconfirmed-socket", Mode: "host-gh-repository-broker"}
+			if mode == "foreign-receipt" {
+				proof.Readiness.SessionID = "foreign"
+			}
+			if mode != "no-proof" {
+				add("read", []string{"terminal", "read", "--terminal", "revoker"}, map[string]any{"terminal": map[string]any{"handle": "revoker", "tail": []string{codex.RemoteAuthenticationPrefix + encoded(proof)}}}, false)
+			}
+			add("before-close", []string{"terminal", "show", "--terminal", "revoker"}, term, false)
+			if mode != "no-close" {
+				add("close", []string{"terminal", "close", "--terminal", "revoker"}, map[string]any{"close": map[string]any{"handle": "revoker", "ptyKilled": true}}, false)
+			}
+			var lines []string
+			for _, call := range calls {
+				raw, _ := json.Marshal(call)
+				lines = append(lines, string(raw))
+			}
+			facts, err := AnalyzeNativeAudit([]byte(strings.Join(lines, "\n")), "runtime", policy)
+			passing := err == nil && facts.Complete && facts.Creations == 1 && facts.Inspections == 1 && facts.ClosedInspections == 1
+			if passing != (mode == "valid") {
+				t.Fatal("authentication cleanup audit lost strict identity/proof/closure checks", mode, facts, err)
+			}
+		})
+	}
+}

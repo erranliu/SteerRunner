@@ -1,0 +1,35 @@
+{
+  "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+  "source_dirty": true,
+  "file_count": 360,
+  "source_manifest_sha256": "913a175402792d60a334ca34a9c8b8403ca24a9552ef7615de81111e8a8397c5",
+  "build": {
+    "version": "0.2.0-dev.2",
+    "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "91F74CBBD24985DFB08E4BD79F7C20CA1A300DDAC7B3F84DC71B30D12A732C10"
+  },
+  "resource_digest": "70115ad9daa49bb620c6e980730a3ef07d84a1d52665dfcc526014d903cd8883",
+  "command": "./scripts/new-test-fixture.ps1 -Scenario local-codex.result-acquisition -Config .evidence/ra-live-config.json -RecordPath .evidence/ra-parser-native-platform-fixture.json; ./scripts/test-native.ps1 -Manifest <recorded manifest> -TimeoutMinutes 30",
+  "exit_code": 0,
+  "raw_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-parser-final-20261018",
+  "native_fixture": "C:\\srt\\780ef09fdcf1",
+  "environment": {
+    "go": "go version go1.26.4 windows/amd64",
+    "platform": "Windows/amd64",
+    "powershell": "7.6.5"
+  },
+  "steerline": {
+    "writes_by_task": 0,
+    "head": "bfe392447591137e6d762f19daf90cdc828aa428",
+    "status": "",
+    "lifecycle_sha256": "5378389fb393871b4939022b67fc9fac1a10843441e7ee807a1a3ef94712cde9"
+  },
+  "controlled_build": "controlled/build.json",
+  "native_build": "native/build.json",
+  "final_build_command": "./scripts/build.ps1 -OutFile .evidence/ra-parser-final-code.exe",
+  "final_driver_sha256": "9da296f29ed25798cca6ca5e8b118fe87baaf866d6825e4cf8059a7dc15caf70",
+  "final_delta": "Receipt read cap raised from 256 KiB to 2 MiB for bounded JSON/base64 overhead; new large-escape recovery and oversize rejection regression passed. Native flags/permissions and workflow/actor unchanged."
+}

@@ -1,0 +1,10 @@
+{
+  "attempted": true,
+  "canary_unchanged": true,
+  "command_denied": true,
+  "native_exit_ok": true,
+  "native_shell": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "native_shell_used": true,
+  "profile_delta": "shell_tool=true and process-only unpackaged shell selection for negative probe; production shell=false",
+  "tree_stopped": true
+}

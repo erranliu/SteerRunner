@@ -12,6 +12,8 @@ import (
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"log"
@@ -39,11 +41,14 @@ type Engine struct {
 	wait              sync.WaitGroup
 }
 type worker struct {
-	gate     sync.Mutex // serializes new native dispatch with committed revocation
-	wake     chan struct{}
-	port     b.LifecyclePort
-	observer b.LifecycleObserver
-	handle   b.StopHandle
+	parserTask  *parser.Task
+	ownedInputs map[string]bool
+	checkpoints map[string]*workflow.WorkspaceSource
+	gate        sync.Mutex // serializes new native dispatch with committed revocation
+	wake        chan struct{}
+	port        b.LifecyclePort
+	observer    b.LifecycleObserver
+	handle      b.StopHandle
 }
 
 func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger) (*Engine, error) {
@@ -253,7 +258,11 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				next.PendingAnswer = &runstate.Answer{CommandID: receipt.ID, QuestionID: reply.QuestionID, Text: reply.Text, Epoch: e.epoch}
 				next.Phase = "answer_saved"
 			} else {
-				if r.Status != "pr_ready" && r.Status != "blocked" {
+				state, _ := r.Workflow.CurrentState()
+				if state.Kind == "milestone" {
+					return reject(contracts.Fail(5, "invalid_state", "This milestone has no feedback transition."))
+				}
+				if r.Status != "blocked" && !(r.Status == "waiting_input" && state.ManualImplementation != "") {
 					return reject(contracts.Fail(5, "invalid_state", "Business feedback requires an ended original turn."))
 				}
 				if r.PendingFeedback != nil {
@@ -431,7 +440,7 @@ func (e *Engine) ResourceSettlementError() error {
 	}
 	var failures []error
 	for _, r := range runs {
-		if r.StopStatus != "stopped" {
+		if r.StopStatus != "stopped" || !parserResourcesSettled(r) {
 			failures = append(failures, fmt.Errorf("run %s: native stop status %q", r.ID, r.StopStatus))
 		}
 	}

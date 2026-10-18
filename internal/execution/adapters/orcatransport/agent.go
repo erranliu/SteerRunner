@@ -113,18 +113,25 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 	if state.LaunchAccepted && l.profile.RuntimeExecutable != "" {
 		receipt.Disposition = b.OperationAccepted
 		receipt.Diagnostic = "Waiting for the original execution-host preparation receipt"
+		ready, readErr := l.readRemoteReadiness(ctx, r.Snapshot)
+		if readErr != nil && !errors.Is(readErr, errRemoteReadinessPending) {
+			receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+			return receipt, readErr
+		}
 		if state.RemoteReadiness == nil {
-			ready, readErr := l.readRemoteReadiness(ctx, r.Snapshot)
-			if readErr != nil && !errors.Is(readErr, errRemoteReadinessPending) {
-				receipt.Implementation, _ = l.envelope(r.Snapshot, state)
-				return receipt, readErr
-			}
 			if readErr == nil {
 				state.RemoteReadiness = &ready
 				receipt.Diagnostic = "Original remote preparation verified; committing before first business input"
 			}
 			receipt.Implementation, err = l.envelope(r.Snapshot, state)
 			return receipt, err
+		}
+		if readErr == nil {
+			original, _ := json.Marshal(state.RemoteReadiness)
+			observed, _ := json.Marshal(ready)
+			if string(original) != string(observed) {
+				return receipt, errors.New("original remote preparation changed before first business input")
+			}
 		}
 		if readyErr := l.checkRemoteReadiness(state); readyErr != nil {
 			receipt.Implementation, _ = l.envelope(r.Snapshot, state)

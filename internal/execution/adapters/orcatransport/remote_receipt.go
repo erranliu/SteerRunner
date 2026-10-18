@@ -107,7 +107,7 @@ func validateReaderExit(state State, turn *Turn, value codex.RemoteTurnReceipt) 
 	if ready == nil || !value.ReaderWritersAbsent || turn.WireFormat != remoteWireCommand || !turn.Accepted || value.Source != codex.RemoteTurnSource || value.InputDigest != digest([]byte(wirePrompt(turn))) || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.SessionID != ready.SessionID || r.ConfigurationDigest != ready.ConfigurationDigest || r.RuntimeSHA256 != ready.RuntimeSHA256 || r.Repository != ready.Repository || r.Contract != ready.Contract || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(ready.Workspace, "\\", "/")) || r.Process.PID != ready.Process.PID || r.Process.Created != ready.Process.Created {
 		return errors.New("original native receipt binding changed")
 	}
-	if r.Process != ready.Process || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
+	if r.AuthenticationControl != ready.AuthenticationControl || r.Process != ready.Process || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
 		return errors.New("original native readiness identity changed")
 	}
 	return nil
@@ -127,6 +127,15 @@ func validateRecordedTurn(state State, turn *Turn, value codex.RemoteTurnReceipt
 		return errors.New("original native receipt changed after capture")
 	}
 	return nil
+}
+
+// ValidateRecordedTurn independently verifies persisted native completion and
+// model evidence using the same original resource/input binding as observation.
+func ValidateRecordedTurn(state State, turn *Turn) error {
+	if turn == nil || turn.Recorded == nil {
+		return errors.New("original native receipt missing")
+	}
+	return validateRecordedTurn(state, turn, *turn.Recorded)
 }
 
 // This inspector starts only a read-only history client. It never resumes a

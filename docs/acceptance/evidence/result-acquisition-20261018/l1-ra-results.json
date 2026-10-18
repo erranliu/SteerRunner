@@ -1,0 +1,517 @@
+[
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "test": "TestRAReportPolicyUnknown",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/resources",
+    "test": "TestRAPublicContract",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/bare",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/final",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/closed_fence",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/tilde",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/quote",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/substring",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/not-last",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/open-fence",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/echo",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/indent",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/tab",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/inline",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/long-fence",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/tilde-open",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput/space",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASuccessOutput",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/duplicate",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/count",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/null",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/trailing",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/old",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/bad_severity",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/remaining",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/missing",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/unknown",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract/alias",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAContract",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/home",
+    "elapsed": 0.01
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/unknown",
+    "elapsed": 0.01
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/null",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/duplicate",
+    "elapsed": 0.02
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/range",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig/alias",
+    "elapsed": 0.02
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAConfig",
+    "elapsed": 0.13
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRAParserQualification",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "test": "TestRASelectionPRClues",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "test": "TestRAPublicContract",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRAAuditSources",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRAAuditPartialAndFallback",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRASuccessOutputRouting",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRASemantics",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRADefinitionRename",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRAFeedback",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRAPublicationProgramClue",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRAVerificationConflictSurvivesResume",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRASuccessOutputLargeFinal",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "test": "TestRASourcesReportUsesOriginalContext",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/storage",
+    "test": "TestRAVersion",
+    "elapsed": 0.09
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/GOOD",
+    "elapsed": 1.6
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/BAD",
+    "elapsed": 0.78
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/TOOL",
+    "elapsed": 0.76
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAReportWorkObservation",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAReportPolicyDeclaration",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/EXTERNAL",
+    "elapsed": 0.52
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAParserConfigurationProjection/user",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAParserConfigurationProjection/system",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAParserConfigurationProjection/cloud",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "test": "TestRAParserConfigurationProjection",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/EXIT",
+    "elapsed": 0.7
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/MODEL",
+    "elapsed": 0.7
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/NOFINAL",
+    "elapsed": 0.65
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/HUGE",
+    "elapsed": 0.56
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess/HANG",
+    "elapsed": 0.52
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserProcess",
+    "elapsed": 6.8
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserIdentityCommitFailure",
+    "elapsed": 0.43
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "test": "TestRAParserPolicyAndEvents",
+    "elapsed": 0
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "test": "TestRAWorkspaceSource",
+    "elapsed": 13.86
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/completed",
+    "elapsed": 10.43
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/needs_input",
+    "elapsed": 10.3
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/conflict",
+    "elapsed": 9.84
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/failed",
+    "elapsed": 13.07
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/policy_violation",
+    "elapsed": 13.85
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/side_effect_unverified",
+    "elapsed": 10.41
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/stop",
+    "elapsed": 6.93
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/source-drift",
+    "elapsed": 9.48
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition/new-source",
+    "elapsed": 6.15
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAParserAcquisition",
+    "elapsed": 90.45
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRALateParserReceiptAndDuplicate",
+    "elapsed": 8.78
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAStateAuthorityParserHistory",
+    "elapsed": 6.2
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAAtomicParserRecovery",
+    "elapsed": 11.55
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyParserStopResources",
+    "elapsed": 8.43
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAStateAuthorityParserReferences",
+    "elapsed": 5.89
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAAtomicCompletion",
+    "elapsed": 6.13
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRARecoveryMissingCheckpoint",
+    "elapsed": 0.58
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAStateAuthority",
+    "elapsed": 0.57
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRABudgetReportOnce",
+    "elapsed": 5.88
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyPublication/stop",
+    "elapsed": 13.72
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyPublication/new-source",
+    "elapsed": 14.08
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyPublication/head-drift",
+    "elapsed": 13.88
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyPublication/wrong-pr-head",
+    "elapsed": 10.8
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConcurrencyPublication",
+    "elapsed": 52.47
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAConfigRejectBeforeEffects",
+    "elapsed": 0.02
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAAuditObservedReportWork",
+    "elapsed": 8.85
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRATransitionUnknownNativeGate",
+    "elapsed": 0.56
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAStateAuthorityQuestionSource",
+    "elapsed": 3.1
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRARecoveryConsumedInput",
+    "elapsed": 0.53
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAStateAuthorityMilestone",
+    "elapsed": 0.6
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAFeedbackSupersedesUnsent",
+    "elapsed": 3.01
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAAuditLifecycle",
+    "elapsed": 8.74
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRARecoveryBusinessInput",
+    "elapsed": 5.59
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/application",
+    "test": "TestRAVersionRejectLegacy",
+    "elapsed": 0
+  }
+]

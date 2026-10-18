@@ -129,6 +129,9 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 .\scripts\test.ps1 -Level L4
 ```
 
+L2/L3 自动先运行 L1 和完整受控前置。任何前置失败都不会启动模型。
+L1 每个 package 上限为 8 分钟：独立仓库冻结回归含多次真实 Git clone/fetch，完整应用 package 本轮耗时约 346 秒，已超过旧 5 分钟上限。
+Controlled 独立 Go 宿主上限为 15 分钟，入口额外等待 30 秒以覆盖结果落盘；前置必须完整执行并通过。
 PowerShell 交互调用多个场景时可使用数组；外部命令行请传实际数组参数，不把逗号串作为
 单个场景 ID。审计配置 `local-codex-audited` 的 settings.model 与 workflow.audit_model.model
 须显式且不同，effort 位于各自的 reasoning_effort。独立两模型场景仍保留原会话，不要求模型产生 finding。
@@ -243,11 +246,11 @@ L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
    冻结 EXE/Spec/Plan 摘要、配置、来源与专属 `codex/srtest/<ID>/base`。
 2. 克隆固定 SteerlineTest 源提交，提交本轮 checker/publisher 和材料作为测试 base，
    推送这个新 base。远端通过独立准备终端 fetch/cat-file，记录固定 runtime 并确认终端关闭。
-3. 通过真实 Runner CLI 提交冻结 Spec/Plan，由 Runner 实施、检查、提交、报告、发布、
+3. 通过真实 Runner CLI 提交冻结 Spec/Plan，由 Runner 实施、检查、提交、按需报告、发布、
    核验 PR，到达 `pr_ready`。宿主不代替模型提交或发布业务改动。
 4. Driver 从 GitHub fetch 实际 PR Git objects，校验原生 final、PR 身份、仅目标文件变更、
    精确格式和新鲜时间戳。远端同样核验实际 Git 内容和固定 runtime 的原会话。
-5. 发送一次真实反馈，生成更新的 UTC 记录，检查新 commit、原 session/attempt/branch/PR 复用。
+5. workflow/2 的 pr_ready 没有返工边；保持首次已核验的 PR/head，检查冻结原 final 与程序结果来源；原材料不足时允许一次同源 report，parser 始终为 0。
 6. 刷新原 PR，精确绑定 head，driver 以 `--match-head-commit` 合入本轮专属测试 base。
    Runner 通过 `inspect --refresh-pr` 保存真实 merged、merge commit 和时间。
 7. Fetch 合入后的 base，验证 merge commit、原 head 的祖先关系和文件内容，并在实际合入
@@ -255,8 +258,8 @@ L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
 8. 显式 stop 原 Run，确认 `new_inputs_allowed=false` 和 `stop_status=stopped`；再停止服务并确认
    `not_running`。保留 Git 工作区、分支、PR 和原始现场供审计。
 
-资格通过的 L2 `development-core` 仅省略第 5 步，合入和收尾要求保持。独立 L3 feedback
-保留完整步骤；audited/multirun 按各自清单验证真实 PR，保留未合入并停止原资源。
+L2 和普通远端 smoke 均执行首次交付、合入和收尾；独立 L3 feedback 在合入前
+额外验证发布后反馈拒绝。audited/multirun 按各自清单验证真实 PR，保留未合入并停止原资源。
 两模型入口额外生成 `audit-models.json`，从原 session/workspace 的原生 history 按审计
 turn_id 和发布 turn_id 校验实际 model/effort，不能仅凭请求配置认定发生了模型切换。
 
@@ -272,7 +275,7 @@ Runner 生产契约的交付里程碑仍为 `pr_ready`。合并属于测试 driv
 显式 Scenario 子集可通过，但不能代表全级通过。本机基线配置完整性与实际同构建 L2 通过分开报告。
 前置失败仍保留全部请求项和 unavailable 原因；尚未派发的可用项为 queued，不计执行。
 现场 manifest 记录冻结输入；`evidence/` 保存 `result.json`、`scenario.json`、CLI journal、
-driver 的 Git/GitHub/checker 调用、原始/反馈 PR、合并与停止快照。Runner 自身业务数据和
+driver 的 Git/GitHub/checker 调用、实际 PR、合并与停止快照。Runner 自身业务数据和
 原生协议日志在该现场 `s/` 中，模型 token 信息以原生记录可提供的真实数据为准。
 
 smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物正确、检查通过、PR 合入、merged
@@ -298,7 +301,7 @@ PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用
 原正文和来源完整时，可省略的 native outcome 仍按 unreported/unknown 原样保留，不补成
 success；它与“原操作结果未知”分别判断，沿用既有 Orca 完成契约。
 
-准备期限只覆盖当前阶段的准备。一个已完成的长业务回合切换报告、发布或反馈阶段时，
+准备期限只覆盖当前阶段的准备。一个已完成的长业务回合切换报告或发布阶段时，
 新输入获得自己的有限准备预算；未决原操作的对账仍沿用原期限，不因重试获得新预算。
 
 单步诊断入口为 `new-test-fixture.ps1 -Scenario ... -Config ...` 和
@@ -363,7 +366,7 @@ L3 扩展须说明独有流程/可靠性覆盖和并行隔离；同一流程的�
 L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
 [Plan](spec/l3-execution-stability.plan.md) 和[实际验收登记](acceptance/l3-execution-stability.md)。
 主线 rebase 后的一轮复测及未通过项另见[复测记录](acceptance/l3-rebase-20261016.md)。
-连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](acceptance/l3-revocation-fix-20261016.md)；最新主线的远端认证能力阻断未计为 L3 通过。
+连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](acceptance/l3-revocation-fix-20261016.md)；历史远端认证阻断未计为通过。本轮完整范围复验、后续修正与未通过项见[2026-10-18 记录](acceptance/evidence/full-l2-l3-20261018/README.md)。
 选择场景即执行其全部变体，每个 case/repeat 独立建现场。稳定性通过还要求故障命中、
 原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
 
@@ -397,6 +400,11 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
 
+## 结果获取重构的当前验证边界
+
+结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，八项内部 case 覆盖成功行、零/正数审计修复、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式恢复；不创建真实 PR。单项获取链等待上限 120 秒，其余既有场景仍 60 秒，Controlled 独立宿主既有聚合预算 15 分钟。
+
+`local-codex.result-acquisition` 已注册为 L2 专属 driver；入口先 L1 和完整 Controlled，再运行默认原生认证解析、已有 home/显式模型与权限反例/取消、development 真实 PR 闭环三项内部 case。原生只读权限、行为约定和工具事后检测分别取证，不宣称空工具表、零隐式上下文或工具执行前拦截。2026-10-17 原强隔离阻断记录保持历史原样。实际命令、失败修正及最新通过状态以验收证据为准。
 ## 环境检查定向验收
 
 规则：`go test ./internal/application ./internal/contracts ./internal/cli ./internal/storage ./internal/execution/... -run '^TestEnvironmentCheck' -count=1`。

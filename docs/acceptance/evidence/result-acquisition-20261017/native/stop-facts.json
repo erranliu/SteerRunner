@@ -1,0 +1,56 @@
+{
+  "run_id": "fde5860c1ae88e9d3ff43d237613a846",
+  "revision": 25,
+  "status": "stopped",
+  "step": "pr_ready",
+  "phase": "stopped",
+  "operations": [
+    {
+      "operation_id": "7bda2d87e586bf1eeebfc92b638663e4",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "1c66e363c8a145f4526d4c5f195b8559",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "56b41e7c142ee21f0c9dc71479db3712",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "12b93d74ba4b55c572b424fda0731e15",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "db6a8bbbcd00c43545b3c3062a0b65b0",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "execution": {
+    "requested_reasoning_effort": "medium",
+    "workspace_scope": "working_tree",
+    "turn_started": true,
+    "attempt_id": "838daa8b2907f5817dba9e55ecc11aff",
+    "generation": "ba9ea722b83ee52666bf8fd4f5317050",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a14923-2e8f-7951-b4e4-7f0521270a6b",
+    "turn_id": "01a14924-a552-7750-bac4-89f12b7e4308",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "c:\\srt\\4316df69fdd2\\s\\workspaces\\bctchdy6mjg6lnxpfzdkfotxcu",
+    "branch": "codex/runner-fde5860c1ae88e9d3ff43d237613a846"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "new_inputs_allowed": false,
+  "resume_required": true
+}

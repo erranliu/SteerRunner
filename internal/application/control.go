@@ -66,7 +66,13 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 		// Wait for an actual input before replacing an idle attempt. A question
 		// answer must still be qualified against the original process/history.
-		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil || r.Status != "pr_ready" && r.Question == nil && r.Result != nil
+		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil
+		// A completed acquisition can select report/publication only AFTER resume
+		// qualification. Restore its original idle session now, without a model
+		// input, so that the later fallback cannot target the stopped old process.
+		if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
+			needsInput = true
+		}
 		if facts.ProcessAbsent && needsInput {
 			if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, false); err != nil {
 				e.failControl(id, command, err)
@@ -89,6 +95,10 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	r.CommandStates[command] = "completed"
 	e.mu.Lock()
+	if e.runs[id].Revision != r.Revision {
+		e.mu.Unlock()
+		return false
+	}
 	err := e.commitLocked(r, nil, "resume_qualified")
 	e.mu.Unlock()
 	return err == nil
@@ -236,6 +246,7 @@ func (e *Engine) failControl(id, command string, err error) {
 	_ = e.commitLocked(r, nil, "control_rejected")
 }
 func (e *Engine) closeWorker(id string, w *worker) {
+	e.stopParserForShutdown(id, w)
 	if w.observer != nil {
 		_ = w.observer.Close(context.Background())
 		w.observer = nil
@@ -257,7 +268,7 @@ func (e *Engine) closeWorker(id string, w *worker) {
 	next := e.runs[id].Clone()
 	next.Allowed = false
 	next.ResumeRequired = true
-	if err == nil && facts.Stopped {
+	if err == nil && facts.Stopped && parserResourcesSettled(next) {
 		next.StopStatus = "stopped"
 	} else if err != nil {
 		next.Diagnostic = e.redact(next, err.Error())
