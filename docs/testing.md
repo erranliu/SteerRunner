@@ -46,11 +46,12 @@ L3 的正交性按主要验证目标判断：新增 workflow、交互路径、�
 
 Windows 的 Orca CLI 会刷新同一用户的环境配置文件，多个进程同时调用会产生
 `orca-environments.json` 的 `EPERM rename`。Runner、真机诊断和 fixture 准备共用
-`%LOCALAPPDATA%/SteerRunner/orca-cli.lock` 的内核文件互斥，只串行 CLI 进程，远端
+规范化的 `%LOCALAPPDATA%/SteerRunner/orca-cli.lock` 路径摘要构成的 Windows 命名互斥，只串行 CLI 进程，远端
 Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启动命令，不重试未知发送。
 业务 send 立即捕获受理回执，实际开始/完成继续由原 native history/state 证明，
 不在持锁的 CLI 内等待模型回合。原始失败批次保留，不能用重跑改写首轮结果。
-锁请求使用可取消的内核异步排队，并结算取消完成，避免高频轮询抢占等待者。
+命名互斥按拥有线程持有，Go 调用期间固定该 OS 线程；取消通过独立事件结束等待。
+持锁进程被杀后按 abandoned-owner 语义取得互斥，但必须重新核验原资源身份。
 只有明确未调用 CLI 的排队错误才可重新观察原对象；未核实的创建/发送不据此重试。
 真机控制请求只有收到明确 `stale_revision` 拒绝后，才刷新原 Run 并用新请求 ID 提交；
 未知或丢失回执仍保留原身份，不能重复授权。

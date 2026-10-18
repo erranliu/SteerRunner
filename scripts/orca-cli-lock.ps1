@@ -1,21 +1,22 @@
-# Match protocol/orca.SerializeCLI. Only the outer process takes the lock;
-# its audit wrapper's native child must not take it again.
+# Match protocol/orca.cliMutexName. Lock only the outer CLI invocation.
+function Get-SRCLIMutexName([string]$Path) {
+    $taskBytes=[Text.Encoding]::UTF8.GetBytes([IO.Path]::GetFullPath($Path).ToLowerInvariant())
+    $taskSHA=[Security.Cryptography.SHA256]::Create()
+    try{$taskHash=$taskSHA.ComputeHash($taskBytes)}finally{$taskSHA.Dispose()}
+    return 'Global\SteerRunner.OrcaCLI.'+([BitConverter]::ToString($taskHash[0..15]).Replace('-','').ToLowerInvariant())
+}
 function Invoke-SRLockedOrca([string]$Executable,[string[]]$Arguments,[int]$TimeoutSeconds=40) {
-    $taskLockDirectory=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'SteerRunner'
-    [IO.Directory]::CreateDirectory($taskLockDirectory)|Out-Null
-    $taskLock=[IO.File]::Open((Join-Path $taskLockDirectory 'orca-cli.lock'),[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::ReadWrite)
+    $taskPath=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'SteerRunner/orca-cli.lock'
+    $taskLock=[Threading.Mutex]::new($false,(Get-SRCLIMutexName $taskPath))
     $taskOwned=$false
-    $taskDeadline=[DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
     try {
-        while(-not $taskOwned){
-            if([DateTime]::UtcNow -ge $taskDeadline){throw 'Orca CLI queue deadline exhausted; no command invoked'}
-            try{$taskLock.Lock(0,1);$taskOwned=$true}catch [IO.IOException]{Start-Sleep -Milliseconds 25}
-        }
+        try{$taskOwned=$taskLock.WaitOne([TimeSpan]::FromSeconds($TimeoutSeconds))}catch [Threading.AbandonedMutexException]{$taskOwned=$true}
+        if(-not $taskOwned){throw 'Orca CLI queue deadline exhausted; no command invoked'}
         $taskOutput=@(& $Executable @Arguments)
         $taskCode=$LASTEXITCODE
         return [pscustomobject]@{output=$taskOutput;exit_code=$taskCode}
     } finally {
-        if($taskOwned){$taskLock.Unlock(0,1)}
+        if($taskOwned){$taskLock.ReleaseMutex()}
         $taskLock.Dispose()
     }
 }

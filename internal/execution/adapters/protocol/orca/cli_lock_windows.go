@@ -4,56 +4,62 @@ package orca
 
 import (
 	"context"
+	"crypto/sha256"
 	"errors"
+	"fmt"
 	"golang.org/x/sys/windows"
+	"path/filepath"
+	"runtime"
+	"strings"
 )
+
+func cliMutexName(path string) string {
+	key := sha256.Sum256([]byte(strings.ToLower(filepath.Clean(path))))
+	return fmt.Sprintf("Global\\SteerRunner.OrcaCLI.%x", key[:16])
+}
 
 func lockCLIFile(ctx context.Context, path string) (func(), error) {
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	name, err := windows.UTF16PtrFromString(path)
+	// Windows mutex ownership belongs to a thread, not a Go goroutine or an
+	// inherited file handle. Keep this goroutine on its owning thread until release.
+	runtime.LockOSThread()
+	fail := func(err error) (func(), error) { runtime.UnlockOSThread(); return nil, err }
+	name, err := windows.UTF16PtrFromString(cliMutexName(path))
 	if err != nil {
-		return nil, err
+		return fail(err)
 	}
-	file, err := windows.CreateFile(name, windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ|windows.FILE_SHARE_WRITE|windows.FILE_SHARE_DELETE, nil, windows.OPEN_ALWAYS, windows.FILE_ATTRIBUTE_NORMAL|windows.FILE_FLAG_OVERLAPPED, 0)
+	mutex, err := windows.CreateMutex(nil, false, name)
+	if err != nil && !errors.Is(err, windows.ERROR_ALREADY_EXISTS) {
+		return fail(err)
+	}
+	canceled, err := windows.CreateEvent(nil, 1, 0, nil)
 	if err != nil {
-		return nil, err
+		windows.CloseHandle(mutex)
+		return fail(err)
 	}
-	event, err := windows.CreateEvent(nil, 1, 0, nil)
-	if err != nil {
-		windows.CloseHandle(file)
-		return nil, err
-	}
-	closeHandles := func() { _ = windows.CloseHandle(file); _ = windows.CloseHandle(event) }
-	var overlap windows.Overlapped
-	overlap.HEvent = event
-	// Queue in the kernel instead of polling FAIL_IMMEDIATELY; busy readers
-	// must not repeatedly win ahead of calls that are already waiting.
-	// https://learn.microsoft.com/windows/win32/api/fileapi/nf-fileapi-lockfileex
-	err = windows.LockFileEx(file, windows.LOCKFILE_EXCLUSIVE_LOCK, 0, 1, 0, &overlap)
-	if errors.Is(err, windows.ERROR_IO_PENDING) {
-		canceled := make(chan struct{})
-		stopCancel := context.AfterFunc(ctx, func() {
-			_ = windows.CancelIoEx(file, &overlap)
-			close(canceled)
-		})
-		var transferred uint32
-		// Drain completion, including canceled I/O, before freeing OVERLAPPED
-		// or its event. CancelIoEx alone is not completion proof.
-		err = windows.GetOverlappedResult(file, &overlap, &transferred, true)
-		if !stopCancel() {
-			<-canceled
-		}
+	closeHandles := func() { _ = windows.CloseHandle(mutex); _ = windows.CloseHandle(canceled) }
+	done := make(chan struct{})
+	stopCancel := context.AfterFunc(ctx, func() { _ = windows.SetEvent(canceled); close(done) })
+	result, err := windows.WaitForMultipleObjects([]windows.Handle{mutex, canceled}, false, windows.INFINITE)
+	if !stopCancel() {
+		<-done
 	}
 	if err != nil {
 		closeHandles()
-		if ctx.Err() != nil {
-			return nil, ctx.Err()
-		}
-		return nil, err
+		return fail(err)
 	}
-	release := func() { _ = windows.UnlockFileEx(file, 0, 1, 0, &overlap); closeHandles() }
+	// An owner killed during a CLI call abandons its mutex; Windows grants the
+	// next waiter ownership. It must still revalidate original resource identity.
+	if result != windows.WAIT_OBJECT_0 && result != windows.WAIT_ABANDONED {
+		closeHandles()
+		if ctx.Err() != nil {
+			return fail(ctx.Err())
+		}
+		return fail(fmt.Errorf("unexpected CLI mutex wait result: %d", result))
+	}
+	release := func() { _ = windows.ReleaseMutex(mutex); closeHandles(); runtime.UnlockOSThread() }
 	if err = ctx.Err(); err != nil {
 		release()
 		return nil, err
