@@ -113,6 +113,7 @@ $taskToolDir = Join-Path $taskRepository 'sr-smoke'
 New-Item -ItemType Directory -Path $taskToolDir | Out-Null
 $taskTemplates = Join-Path $taskRepo 'tests/fixtures/evidence-smoke'
 $taskTemplateNames = @('spec.md','plan.md','check.ps1','publish.ps1','pr-list.ps1')
+if ($taskScenario.level -eq 'L2') { $taskTemplateNames = @('spec.md','plan.md','check.ps1') }
 foreach ($taskName in $taskTemplateNames) {
     $taskText = [IO.File]::ReadAllText((Join-Path $taskTemplates $taskName))
     # Windows PowerShell 5 requires a BOM for non-ASCII source literals.

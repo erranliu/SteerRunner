@@ -12,9 +12,29 @@ import (
 // report fallback. An agent's failure to repeat an exact marker is not itself a
 // product failure; unnecessary calls and a changed source remain failures.
 func CheckDevelopmentAcquisition(w workflow.Snapshot, views []contracts.AcquisitionView) error {
-	if len(views) != 2 {
-		return fmt.Errorf("expected implementation and publication results")
+	if w.ImplementationResultID == "" || w.PublicationResultID == "" || w.ImplementationResultID == w.PublicationResultID {
+		return fmt.Errorf("current implementation and publication result references missing")
 	}
+	// Business questions retain their original acquisition history. Completion
+	// is tied to the current frozen result IDs, never a count or last-row guess.
+	var current []contracts.AcquisitionView
+	ids := map[string]bool{}
+	for _, a := range views {
+		if a.ID == "" || ids[a.ID] || a.Contract != "implementation" && a.Contract != "publication" {
+			return fmt.Errorf("duplicate or unexpected acquisition identity")
+		}
+		ids[a.ID] = true
+		if a.ID == w.ImplementationResultID || a.ID == w.PublicationResultID {
+			if a.ID == w.ImplementationResultID && a.Contract != "implementation" || a.ID == w.PublicationResultID && a.Contract != "publication" {
+				return fmt.Errorf("current acquisition contract mismatch")
+			}
+			current = append(current, a)
+		}
+	}
+	if len(current) != 2 {
+		return fmt.Errorf("current implementation and publication results missing")
+	}
+	views = current
 	seen := map[string]bool{}
 	for _, a := range views {
 		step, reportStep := workflow.StepImplement, workflow.StepReport

@@ -35,6 +35,11 @@ func smokeAcquisitionFixture(report bool) (workflow.Snapshot, []contracts.Acquis
 			a.Attempts = append(a.Attempts, ra.Attempt{Method: "agent_report", CommandID: "report", Source: source, Status: "satisfied"})
 			a.Fields[0].Source, a.Fields[0].Method = workflow.Source(reported), "agent_report"
 		}
+		if contract == "implementation" {
+			w.ImplementationResultID = a.ID
+		} else {
+			w.PublicationResultID = a.ID
+		}
 		views = append(views, a)
 	}
 	return w, views
@@ -80,5 +85,24 @@ func TestDevelopmentAcquisitionNativeAssertions(t *testing.T) {
 				t.Fatalf("error=%v, wantErr=%v", err, tt.wantErr)
 			}
 		})
+	}
+}
+
+func TestDevelopmentAcquisitionRetainsQuestionHistory(t *testing.T) {
+	w, views := smokeAcquisitionFixture(false)
+	old := workflow.StageResult{SessionID: "session", CommandID: "question", TurnID: "question", AttemptID: "attempt", InputVersion: 7, StepID: workflow.StepImplement, Succeeded: true, FinalVerified: true, Final: `{"outcome":"needs_input","summary":"authorization required","question":"May I continue?"}`}
+	w.StageInputs = append(w.StageInputs, workflow.StageInput{CommandID: old.CommandID, StepID: old.StepID, Version: old.InputVersion})
+	w.StageResults = append(w.StageResults, old)
+	views = append(views, contracts.AcquisitionView{ID: "old-question", Contract: "implementation", Source: workflow.Source(old), Method: "program", Status: "satisfied"})
+	if err := CheckDevelopmentAcquisition(w, views); err != nil {
+		t.Fatal("historical question invalidated current completion", err)
+	}
+	w.ImplementationResultID = "old-question"
+	if CheckDevelopmentAcquisition(w, views) == nil {
+		t.Fatal("historical incomplete source became current completion")
+	}
+	w.ImplementationResultID = "missing"
+	if CheckDevelopmentAcquisition(w, views) == nil {
+		t.Fatal("missing current source accepted")
 	}
 }
