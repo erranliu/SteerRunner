@@ -1,0 +1,152 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+  "source_dirty": false,
+  "started_at": "2026-10-18T22:57:47.4377906Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "terminal_extension_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified\\framework",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified",
+      "terminal_extension_test_count": 29,
+      "exit_code": 0,
+      "level": "L1",
+      "native_driver_compile_exit": 0,
+      "terminal_extensions_passed": true,
+      "test_count": 360,
+      "native_zero_match_guard": true
+    },
+    {
+      "exit_code": 0,
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified\\controlled",
+      "scenario_count": 16
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\b0106f290a5e\\manifest.json",
+      "status": "passed",
+      "finished_at": "2026-10-18T23:23:47.1935884Z",
+      "evidence": "C:\\srt\\b0106f290a5e\\evidence",
+      "case_id": "default",
+      "expected_outcome": "merged",
+      "resources": [
+        "root:C:\\srt\\b0106f290a5e",
+        "base:codex/srtest/b0106f290a5e/base",
+        "run:882a957d37149a0de345d32884e52f86",
+        "workspace:C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-882a957d37149a0de345d32884e52f86",
+        "session:orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_a129a914-4d7c-4472-93f5-aa5d13743cca:b2f0fdc2-86f4-4923-a64d-dbc5c76814bf",
+        "branch:erranliu/sl-882a957d37149a0de345d32884e52f86",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/549"
+      ],
+      "started_at": "2026-10-18T23:15:10.797105Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified\\orca-local.codex-default-r1-fixture.json",
+      "scenario": "orca-local.codex",
+      "identity": {
+        "pid": 12840,
+        "manifest_sha256": "632aa9023e6d744c0e14fada0102baaf5be1bb79f816e72019fdbd1cb58d8dfe",
+        "driver_sha256": "b04b826b80d389cdebaaded1cfc14805348f52616e43df1578eb0c6c7206a416",
+        "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+        "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-local.codex",
+        "level": "L3"
+      },
+      "repeat_index": 1
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\f09f72df0eb8\\manifest.json",
+      "status": "passed",
+      "finished_at": "2026-10-18T23:21:41.8028778Z",
+      "evidence": "C:\\srt\\f09f72df0eb8\\evidence",
+      "case_id": "default",
+      "expected_outcome": "merged",
+      "resources": [
+        "root:C:\\srt\\f09f72df0eb8",
+        "base:codex/srtest/f09f72df0eb8/base",
+        "run:de40abfbc9b2fea69d36eecc0d4bac87",
+        "workspace:C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+        "session:orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_47e89015-321e-4bea-81a3-6954b22b3407:d6e4a410-c79d-42ec-a2c9-0ed59147ea41",
+        "branch:erranliu/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/548"
+      ],
+      "started_at": "2026-10-18T23:15:10.7971049Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified\\orca-local.pi-default-r1-fixture.json",
+      "scenario": "orca-local.pi",
+      "identity": {
+        "pid": 19984,
+        "manifest_sha256": "24017e45f564ef9bbc42ec0b985783c0d689a5e9605121527ad855ba7fcc18bd",
+        "driver_sha256": "b04b826b80d389cdebaaded1cfc14805348f52616e43df1578eb0c6c7206a416",
+        "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+        "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-local.pi",
+        "level": "L3"
+      },
+      "repeat_index": 1
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\e115bfecb7b8\\manifest.json",
+      "status": "passed",
+      "finished_at": "2026-10-18T23:28:57.9216493Z",
+      "evidence": "C:\\srt\\e115bfecb7b8\\evidence",
+      "case_id": "default",
+      "expected_outcome": "merged",
+      "resources": [
+        "root:C:\\srt\\e115bfecb7b8",
+        "base:codex/srtest/e115bfecb7b8/base",
+        "run:8f295d86d37e1eb8907151b70d245600",
+        "workspace:C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600",
+        "session:orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+        "branch:erranliu/sl-8f295d86d37e1eb8907151b70d245600",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/550"
+      ],
+      "started_at": "2026-10-18T23:21:42.7477344Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-qualified\\orca-local.dsh-default-r1-fixture.json",
+      "scenario": "orca-local.dsh",
+      "identity": {
+        "pid": 41468,
+        "manifest_sha256": "ca574edca8bb3995dc41a541d4a9af56c812b6b09685ffd54ade59dd69c6af35",
+        "driver_sha256": "b04b826b80d389cdebaaded1cfc14805348f52616e43df1578eb0c6c7206a416",
+        "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+        "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-local.dsh",
+        "level": "L3"
+      },
+      "repeat_index": 1
+    }
+  ],
+  "executed_case_count": 3,
+  "passed_case_count": 3,
+  "first_pass_rate": 1,
+  "max_parallel": 2,
+  "selected_scenarios": [
+    "orca-local.codex",
+    "orca-local.pi",
+    "orca-local.dsh"
+  ],
+  "repeat": 1,
+  "planned_case_count": 3,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-18T23:28:58.1262305Z"
+}

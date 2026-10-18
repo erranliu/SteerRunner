@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T22:54:26.5947557Z",
+  "coordinator_pid": 46036,
+  "created": "2026-10-19T06:52:27.606025+08:00",
+  "children": [
+    {
+      "ProcessId": 36628,
+      "CreationDate": "2026-10-19T06:54:16.531784+08:00",
+      "Name": "go.exe"
+    }
+  ],
+  "reason": "Stop before any model/PR case to remove unrelated unauthenticated API quota gate; old evidence retained",
+  "native_results": []
+}

@@ -1,0 +1,257 @@
+{
+  "result_acquisition": [
+    {
+      "id": "254266ba69aa92ea0cd9ee7eb904c451694db93d5957e524b01cb3a5030a6957",
+      "contract": "implementation",
+      "source": {
+        "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+        "command_id": "ae361c11081f8c9df7e3871a3f2c25bb",
+        "turn_id": "01a15159-dd6e-74d3-80bc-2ee8367966eb",
+        "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+        "input_version": 1,
+        "final_digest": "ba423714013a3c2261f13e2b980ed4b246170f3e6e9ce5f4860fc7c28469a330"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "ae361c11081f8c9df7e3871a3f2c25bb",
+            "turn_id": "01a15159-dd6e-74d3-80bc-2ee8367966eb",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 1,
+            "final_digest": "ba423714013a3c2261f13e2b980ed4b246170f3e6e9ce5f4860fc7c28469a330"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "ae361c11081f8c9df7e3871a3f2c25bb",
+            "turn_id": "01a15159-dd6e-74d3-80bc-2ee8367966eb",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 1,
+            "final_digest": "ba423714013a3c2261f13e2b980ed4b246170f3e6e9ce5f4860fc7c28469a330"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "ae361c11081f8c9df7e3871a3f2c25bb",
+            "turn_id": "01a15159-dd6e-74d3-80bc-2ee8367966eb",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 1,
+            "final_digest": "ba423714013a3c2261f13e2b980ed4b246170f3e6e9ce5f4860fc7c28469a330"
+          },
+          "command_id": "ae361c11081f8c9df7e3871a3f2c25bb",
+          "status": "satisfied"
+        }
+      ]
+    },
+    {
+      "id": "e071cf7a8594f7f2e7a8fd3249445abd28abb6bfc1ebc78b7b414608af5de665",
+      "contract": "publication",
+      "source": {
+        "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+        "command_id": "feea72432dd268f6ad70090f1de1936b",
+        "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+        "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+        "input_version": 2,
+        "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "feea72432dd268f6ad70090f1de1936b",
+            "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 2,
+            "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+          },
+          "locator": "native.final:pr_url_match/outcome",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "feea72432dd268f6ad70090f1de1936b",
+            "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 2,
+            "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+          },
+          "locator": "native.final:pr_url_match/summary",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "feea72432dd268f6ad70090f1de1936b",
+            "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 2,
+            "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+          },
+          "locator": "native.final:pr_url_match",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "feea72432dd268f6ad70090f1de1936b",
+            "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 2,
+            "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+          },
+          "locator": "provider.Query(https://github.com/erranliu/SteerlineTest/pull/552):verified_repository_base_head",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+            "command_id": "feea72432dd268f6ad70090f1de1936b",
+            "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+            "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+            "input_version": 2,
+            "final_digest": "8dd359a59b3bd0c5093dab3736b3ecaa9fc7fc233125f9a681e08de0359f0535"
+          },
+          "command_id": "feea72432dd268f6ad70090f1de1936b",
+          "status": "satisfied"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "e483b5903ffac04946130a9c5353d6c2",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "c4fe430a0f8c7e93580cfb4d72b17589",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "78edd153d6a80e046068a2cb5b7b606e",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "75f50cb640031bbf32c98f50b5e435e8",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "b194327502a28d4ab040064cc9a47707",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "d45f05126379c0713b5fa8cb913a7e09",
+  "revision": 25,
+  "title": "SteerRunner L2 local-codex.smoke",
+  "correlation": {
+    "fixture_id": "84fc08bff39c",
+    "scenario": "local-codex.smoke"
+  },
+  "input_digest": "b71b70f2e6f9ce2c87d39ea1c92b06ed7171cc91c80d2e5921c1dd92325fab37",
+  "resource_digest": "f0cd4c4acf3296319aec9305999143f3c3739151f364c91a1b05df0d80ccbbdb",
+  "workflow": {
+    "id": "development",
+    "version": 2
+  },
+  "step": "pr_ready",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "C:\\srt\\84fc08bff39c\\s\\r\\gcucqdvutqgelb7sx4jukdm4g4\\.git\\worktrees\\aqn2k6j3s4v2ux5nzcxrspy2ym\\steerrunner-inputs\\smoke.spec.md",
+      "execution_location": "C:\\srt\\84fc08bff39c\\s\\r\\gcucqdvutqgelb7sx4jukdm4g4\\.git\\worktrees\\aqn2k6j3s4v2ux5nzcxrspy2ym\\steerrunner-inputs\\smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "C:\\srt\\84fc08bff39c\\s\\r\\gcucqdvutqgelb7sx4jukdm4g4\\.git\\worktrees\\aqn2k6j3s4v2ux5nzcxrspy2ym\\steerrunner-inputs\\smoke.plan.md",
+      "execution_location": "C:\\srt\\84fc08bff39c\\s\\r\\gcucqdvutqgelb7sx4jukdm4g4\\.git\\worktrees\\aqn2k6j3s4v2ux5nzcxrspy2ym\\steerrunner-inputs\\smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "requested_model": "gpt-6-luna",
+    "requested_reasoning_effort": "medium",
+    "workspace_scope": "working_tree",
+    "turn_started": true,
+    "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+    "generation": "ff81ea1fdb31b71ab3861f814bc5a7bd",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+    "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "c:\\srt\\84fc08bff39c\\s\\workspaces\\aqn2k6j3s4v2ux5nzcxrspy2ym",
+    "branch": "codex/runner-d45f05126379c0713b5fa8cb913a7e09"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/552",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 552,
+    "base_branch": "codex/srtest/84fc08bff39c/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "codex/runner-d45f05126379c0713b5fa8cb913a7e09",
+    "head_revision": "cfdf7a85fda7b955cc41087df503b0a704a9d951",
+    "state": "merged",
+    "merged": true,
+    "merged_at": "2026-10-18T23:33:06Z",
+    "merge_commit": "3dd71a5d7513d495a2bfd9ed68efd1b66320b1a6",
+    "checked_at": "2026-10-18T23:33:09.9578459Z"
+  },
+  "summary": "PR verification pending: https://github.com/erranliu/SteerlineTest/pull/552",
+  "final": {
+    "command_id": "feea72432dd268f6ad70090f1de1936b",
+    "attempt_id": "bc115f4e83447757fa76bd42111c0cda",
+    "session_id": "01a15159-c175-7971-adbc-cdc8553641ea",
+    "turn_id": "01a1515a-d526-7f40-bc6b-f39f05e62ddf",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_0be30e10351f61e5016ad55720827c8191a233d0ebb1e41ffb",
+    "text": "已推送当前分支 `codex/runner-d45f05126379c0713b5fa8cb913a7e09`，并创建 PR 到 `codex/srtest/84fc08bff39c/base`。查询确认 PR #552 状态为 open，head 提交为 `cfdf7a8`。\n\n[查看 PR #552](https://github.com/erranliu/SteerlineTest/pull/552)\n\n本次发布已完成。"
+  },
+  "created_at": "2026-10-18T23:29:37.1584229Z",
+  "updated_at": "2026-10-18T23:33:14.9235816Z"
+}

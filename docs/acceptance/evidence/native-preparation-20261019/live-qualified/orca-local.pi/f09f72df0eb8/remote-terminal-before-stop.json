@@ -1,0 +1,30 @@
+{
+  "id": "ea1d2365-5971-4129-bb64-780fd546d6c7",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_47e89015-321e-4bea-81a3-6954b22b3407",
+      "ptyId": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-de40abfbc9b2fea69d36eecc0d4bac87@@477e8dad",
+      "incarnationId": "d6e4a410-c79d-42ec-a2c9-0ed59147ea41",
+      "orphaned": false,
+      "worktreeId": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+      "branch": "refs/heads/erranliu/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+      "tabId": "248d87c7-5189-4f5c-bfbd-af700873f0d0",
+      "leafId": "4d7e608b-f5f9-444d-ac00-4c26eaa28ea2",
+      "title": "π - sl-de40abfbc9b2fea69d36eecc0d4bac87",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792365542441,
+      "preview": "- Branch: erranliu/sl-de40abfbc9b2fea69d36eecc0d4bac87\n- PR URL: https://github.com/erranliu/SteerlineTest/pull/548\n- No replacement branch or PR was created.\n本次发布已完成。\n────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────",
+      "executionHostId": "local",
+      "agentIdentity": "pi",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "456f70a1-9c53-406c-a48a-72833d36abdb"
+  }
+}

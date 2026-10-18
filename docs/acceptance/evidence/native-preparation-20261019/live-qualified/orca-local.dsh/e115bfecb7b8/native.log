@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.dsh
+    run_test.go:730: L3 orca-local.dsh run=8f295d86d37e1eb8907151b70d245600 PR=https://github.com/erranliu/SteerlineTest/pull/550 merge=8d1c4ba3a0579387a2fe6730f23cb81449ddb9c7
+--- PASS: TestSRLiveScenario (405.63s)
+    --- PASS: TestSRLiveScenario/orca-local.dsh (405.59s)
+PASS

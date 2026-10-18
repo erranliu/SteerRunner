@@ -257,6 +257,10 @@ Codex 自己登录、读取原生 credential store 并续期，Runner 只管理�
 
 共同 W/E/V 规则继续作为语义入口；下表为本功能的唯一差异维护，不修改 SteerLine 文档。
 
+执行准备继续归原适配器管理。本期 GitHub 就绪探针由同一原生 sandbox 内实际使用的认证 `gh` 身份/仓库查询和 Git 远端访问核验连通性，不额外依赖匿名 `/meta` 的共享 IP 配额；权限、凭据摘要及 Git/remote 资格条件保持。
+
+Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `preparation-failure.json`，仅保留有限错误码及 Run/会话/bundle/worker PID 来源。只有初始化尚无原 readiness/owner/launch/turns、且 readiness 文件缺失时，原适配器才在核对原 owner 后将其作为失败诊断；它不构成就绪、业务结果或停止结算证明，不覆盖活动会话缺失的原生证据，不新增 Workflow 状态、操作权威或重试路径。公开 CLI、Run/Orca 持久格式版本不变；源码及复验见[执行准备修复记录](../acceptance/evidence/native-preparation-20261019/README.md)。
+
 | 位置 | 增量与保留规则 |
 | --- | --- |
 | W14 / V05,V08 | 先原子保存原执行终态、原 final 及待获取意图。可同次完成程序提取；需要异步解析时先提交意图再启动。获取结果 satisfied 与真实下一业务输入意图原子提交；提交失败/相同回执幂等，冲突不推进 |

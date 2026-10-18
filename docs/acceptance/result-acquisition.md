@@ -1,5 +1,7 @@
 # Workflow 能力解耦与结构化结果获取验收
 
+> 2026-10-19 后续定位与修复：移除无关的匿名 GitHub 配额门槛，补充绑定原 owner 的工具初始化失败事实。最终同源完整 L1 360 Go/29 Node、Controlled 16、三终端 L3 及两项 L2 全部通过，原 Run/服务已清理。见[修复与原始证据](evidence/native-preparation-20261019/README.md)。准备阻塞已解除；既有强杀创建身份缺口仍缺原生保证，源 PR 保持 Draft，不宣称全量 L3 已通过。
+
 > 最新 rebase 与影响范围复验：已接入主线 `59c7597`，完整 L1 358 Go / 28 Node、Controlled 16、两项 L2 通过；最终三项 Orca L3 在原生准备阶段失败，强杀恢复缺口仍未闭环。**暂不建议合入，PR 保持 Draft**。见[本轮质量与证据](evidence/rebase-audit-20261018/README.md)。历史批次不替代最终构建验收。
 
 > PR 前接入最新主线后的质量审查、修正及验证范围见[质量记录](evidence/pr-quality-audit-20261018/README.md)。原生历史结果不自动继承为本次构建通过。

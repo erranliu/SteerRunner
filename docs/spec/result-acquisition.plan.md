@@ -1,5 +1,7 @@
 # Plan：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-19 合入前复验：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[本轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。原 terminal.create 强杀窗口的原生恢复保证仍缺，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
+
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。按用户授权实施；本轮不部署、不创建 roadmap 调度。[Spec](result-acquisition.spec.md) · [验收登记](../acceptance/result-acquisition.md)。
 
