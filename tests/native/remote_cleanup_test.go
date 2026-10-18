@@ -9,10 +9,13 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	orcatransport "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
+	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"time"
 )
 
@@ -47,23 +50,37 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 				found = true
 			}
 		}
-		if !found || state.Process != record.Snapshot.Ref.External || orcatransport.SessionID(state.Process) != view.Execution.SessionID || state.RemoteReadiness == nil {
+		if !found || state.Process != record.Snapshot.Ref.External || orcatransport.SessionID(state.Process) != view.Execution.SessionID {
 			return nil, errors.New("remote cleanup original resource binding missing")
 		}
-		proof, actor, err := orcatransport.ReadAuthenticationStopEvidence(filepath.Join(m.Root, "s"), record.Snapshot, state)
-		if err != nil {
-			return nil, err
-		}
 		var settings contracts.OrcaSettings
-		if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || proof.Readiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
-			return nil, errors.New("remote cleanup helper was not frozen")
+		if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
+			return nil, errors.New("frozen cleanup settings invalid")
 		}
-		expectedMode := "host-gh-repository-broker"
-		if settings.GitHubAuth != nil {
-			expectedMode = "github-app-repository-broker"
-		}
-		if proof.Mode != expectedMode {
-			return nil, errors.New("remote cleanup authentication source changed")
+		var evidence any
+		if settings.AgentName() == "pi" || settings.AgentName() == "dsh" {
+			var fact orcatransport.TerminalExit
+			raw, readErr := os.ReadFile(filepath.Join(m.Root, "s", "terminal-agents", view.RunID, view.Execution.AttemptID, "exit.json"))
+			if readErr != nil || contracts.DecodeStrict(raw, &fact) != nil || state.TerminalOwner == nil || !reflect.DeepEqual(fact.Owner, *state.TerminalOwner) || fact.Owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || fact.Version != 1 || !fact.WritersAbsent || fact.AuthenticationClosed == nil || !*fact.AuthenticationClosed || fact.ClosedAt.IsZero() || process.Probe(&fact.Owner.Job.Owner).State != "absent" {
+				return nil, errors.New("original terminal exit/authentication cleanup unverified")
+			}
+			evidence = fact
+		} else {
+			proof, actor, proofErr := orcatransport.ReadAuthenticationStopEvidence(filepath.Join(m.Root, "s"), record.Snapshot, state)
+			if proofErr != nil {
+				return nil, proofErr
+			}
+			if proof.Readiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+				return nil, errors.New("remote cleanup helper was not frozen")
+			}
+			expectedMode := "host-gh-repository-broker"
+			if settings.GitHubAuth != nil {
+				expectedMode = "github-app-repository-broker"
+			}
+			if proof.Mode != expectedMode {
+				return nil, errors.New("remote cleanup authentication source changed")
+			}
+			evidence = map[string]any{"proof": proof, "revoker": actor}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()
@@ -83,7 +100,7 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 		if err != nil {
 			return nil, err
 		}
-		return map[string]any{"run_id": view.RunID, "proof": proof, "revoker": actor, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
+		return map[string]any{"run_id": view.RunID, "authentication": evidence, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
 	}
 	return nil, errors.New("original Run missing from cleanup store")
 }

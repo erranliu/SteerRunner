@@ -157,10 +157,10 @@ L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名
 项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
 
 本机 Orca 的 `orca-local.codex`、`orca-local.pi`、`orca-local.pi-full-access`、`orca-local.dsh`
-使用 L3 development-feedback driver，覆盖业务 needs_input/reply、原会话反馈、独立 PR/head/合入，
-每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放、服务换代后的显式 resume、实际活动写者停止。
+使用 L3 development-feedback driver，覆盖业务 needs_input/reply、发布后反馈拒绝且原来源不变、独立 PR/head/合入，
+每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放和服务换代后的显式 resume；独立实现 Run 验证实际活动写者停止。
 本机 fixture 使用 test-only CLI 转发器记录真实原终端 send；重启零输入指纹必须有非零基线，Codex 不再读取不存在的扩展目录。原 Orca CLI 和 TUI 仍是真实执行来源。
-`orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个仍能反馈。
+`orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个的原生资源、权限及完成来源保持有效。
 例如 `./scripts/test.ps1 -Level L3 -Scenario orca-local.pi -Config <配置路径>`；真实结果见[通用接入验收](acceptance/orca-generic-agent.md)。
 
 Orca 配置使用 execution.settings.transport.executable、agent_launch.runtime_executable／runtime_sha256 和 fixture.repository.local_path；

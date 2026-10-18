@@ -729,7 +729,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	shell(t, checkout, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(checkout, "sr-smoke", "check.ps1"))
 	checkpoint("stop-and-cleanup")
 	if genericTerminal {
-		activeTerminalStop(t, m, dir, merged)
+		activeTerminalStop(t, m, dir, input)
 	}
 	t.Logf("%s %s run=%s PR=%s merge=%s", m.Level, m.Scenario, r.RunID, r.PRURL, r.MergeCommit)
 }

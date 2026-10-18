@@ -161,3 +161,9 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 		})
 	}
 }
+
+func TestAuthenticationStopRejectsNonCodexReadiness(t *testing.T) {
+	if _, _, err := ReadAuthenticationStopEvidence(t.TempDir(), b.LifecycleSnapshot{}, State{}); err == nil {
+		t.Fatal("missing original Codex authentication binding accepted")
+	}
+}

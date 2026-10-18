@@ -114,21 +114,33 @@ func psEncoded(script string) string {
 // Fault timing depends on positively observed OS writers, not a model promise
 // or elapsed startup delay. Both parent and detached child must belong to the
 // original native Job, including when the tool runs inside AppContainer.
-func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, original contracts.RunView) {
+func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, input contracts.RunRequest) {
 	t.Helper()
-	root := filepath.Join(original.Execution.Workspace, "sr-owned-stop")
-	if err := os.Mkdir(root, 0700); err != nil {
-		t.Fatal(err)
-	}
+	// A separate implementation Run supplies an active writer. workflow/2 has
+	// no feedback edge after publication; do not invent one for fault timing.
 	identity := "$p=Get-Process -Id $PID;@{kind='os';pid=$PID;created=$p.StartTime.ToUniversalTime().ToFileTimeUtc().ToString('x16');executable=$p.Path.ToLowerInvariant()}|ConvertTo-Json -Compress"
-	child := identity + " | Set-Content -LiteralPath " + psquote(filepath.Join(root, "child.json")) + " -Encoding UTF8;Start-Sleep -Seconds 45;Set-Content -LiteralPath " + psquote(filepath.Join(root, "late.txt")) + " -Value late"
-	parent := "$ErrorActionPreference='Stop';Start-Process -WindowStyle Hidden -FilePath (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -ArgumentList @('-NoProfile','-EncodedCommand'," + psquote(psEncoded(child)) + ") | Out-Null;" + identity + " | Set-Content -LiteralPath " + psquote(filepath.Join(root, "parent.json")) + " -Encoding UTF8;Start-Sleep -Seconds 55"
-	script := filepath.Join(root, "active-writer.ps1")
-	if err := os.WriteFile(script, append([]byte{0xef, 0xbb, 0xbf}, []byte(parent)...), 0600); err != nil {
-		t.Fatal(err)
+	child := identity + " | Set-Content -LiteralPath " + "(Join-Path $PWD 'sr-owned-stop/child.json')" + " -Encoding UTF8;Start-Sleep -Seconds 45;Set-Content -LiteralPath " + "(Join-Path $PWD 'sr-owned-stop/late.txt')" + " -Value late"
+	parent := "$ErrorActionPreference='Stop';New-Item -ItemType Directory -Path (Join-Path $PWD 'sr-owned-stop') | Out-Null;Start-Process -WindowStyle Hidden -FilePath (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -ArgumentList @('-NoProfile','-EncodedCommand'," + psquote(psEncoded(child)) + ") | Out-Null;" + identity + " | Set-Content -LiteralPath " + "(Join-Path $PWD 'sr-owned-stop/parent.json')" + " -Encoding UTF8;Start-Sleep -Seconds 55"
+	input.Workflow.PromptOverrides = map[string]string{"implement.execute": "Immediately call your native PowerShell tool exactly once with this command: powershell.exe -NoProfile -EncodedCommand " + psEncoded(parent) + ". Wait for that command; the test driver will stop this Run while it is running."}
+	req := request("start-owned-native-writers", input)
+	response := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
+	id := response.Data.(map[string]any)["run_id"].(string)
+	defer cleanupTerminalFaultRun(t, m, dir, id, "active-writer-cleanup")
+	var original contracts.RunView
+	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
+		var err error
+		original, err = inspect(m, dir, id, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if original.Execution.Workspace != "" {
+			break
+		}
 	}
-	feedback := request("start-owned-native-writers", contracts.ReplyInput{ExpectedRevision: original.Revision, Kind: "feedback", Text: "This is the final owned-process stop test. Immediately call your native PowerShell tool exactly once with this command: powershell.exe -NoProfile -ExecutionPolicy Bypass -File " + psquote(script) + " . Do not read, edit, commit or publish any other files; the test driver will stop this Run while that command is still running."})
-	invoke(t, m, dir, []string{"reply", "--run-id", original.RunID, "--input", "-"}, &feedback)
+	if original.Execution.Workspace == "" {
+		t.Fatal("active writer workspace unavailable")
+	}
+	root := filepath.Join(original.Execution.Workspace, "sr-owned-stop")
 	var writers [2]b.ProcessIdentity
 	for until := time.Now().Add(3 * time.Minute); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
 		complete := true

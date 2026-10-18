@@ -318,7 +318,7 @@ func ValidateExecution(value Execution) *Fault {
 		if settings.AgentName() != "codex" && settings.AgentName() != "pi" && settings.AgentName() != "dsh" && (settings.AgentLaunch.Model != "" || settings.AgentLaunch.ReasoningEffort != "" || settings.AgentLaunch.RuntimeExecutable != "" || len(settings.AgentLaunch.Args) != 0) {
 			return Fail(3, "unsupported_capability", "This agent has no verified model, argument or execution-host preparation mapping; no Codex settings were applied.")
 		}
-		if settings.GitHubAuth != nil && (settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
+		if settings.GitHubAuth != nil && (settings.AgentName() != "codex" || settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
 		}
 		var fields map[string]json.RawMessage

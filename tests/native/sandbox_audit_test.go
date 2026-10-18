@@ -180,8 +180,8 @@ func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunVie
 		}
 		qualified++
 	}
-	if qualified < 3 {
-		t.Fatal("Pi native audit lacks business implement/report/publication turns")
+	if qualified < 2 {
+		t.Fatal("Pi native audit lacks business implementation and publication turns")
 	}
 	save(t, settings.AgentName()+"-native-permission-audit.json", map[string]any{"readiness": ready, "owner": owner, "qualified_turns": qualified, "os_job_reattached": true})
 }

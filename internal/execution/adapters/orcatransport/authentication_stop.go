@@ -25,6 +25,9 @@ var errAuthenticationProofUnverified = errors.New("original authentication revoc
 // ReadAuthenticationStopEvidence verifies caller-owned cleanup evidence without
 // contacting or recreating any remote actor.
 func ReadAuthenticationStopEvidence(directory string, snapshot b.LifecycleSnapshot, state State) (codex.RemoteAuthenticationCleanup, NativeInspection, error) {
+	if state.RemoteReadiness == nil {
+		return codex.RemoteAuthenticationCleanup{}, NativeInspection{}, errors.New("original Codex authentication readiness missing")
+	}
 	l := &Lifecycle{setup: b.LifecycleSetup{RunDirectory: directory, Snapshot: snapshot}}
 	path, binding, err := l.journalPath(state)
 	if err != nil {
