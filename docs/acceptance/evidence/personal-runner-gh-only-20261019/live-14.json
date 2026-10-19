@@ -1,0 +1,213 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "e045d3cd7b86c8c0b734c03c330dd38f479e1c00",
+  "source_dirty": false,
+  "started_at": "2026-10-19T08:10:45.9441838Z",
+  "finished_at": "2026-10-19T08:40:15.2746076Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "scope": "selected-complete",
+  "max_parallel": 2,
+  "planned_case_count": 2,
+  "authorized_exclusion_count": 0,
+  "executed_case_count": 2,
+  "passed_case_count": 1,
+  "first_pass_rate": 0.5,
+  "levels": {
+    "L3": {
+      "executed": [
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ],
+      "complete_level_passed": false,
+      "unavailable": [],
+      "excluded": [],
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness"
+      ],
+      "passed": [
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ],
+      "requested": [
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ],
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ]
+    }
+  },
+  "source_config_digest": "16d8f628a54ed3176b6be18233ae27d8d7772f0b212dc31fee60507e2e5cd089",
+  "configuration_sha256": "e8dcebac06362e1be049024c96c8addb5509e6dbb6b538cae1d4b261cf10129a",
+  "requirements_sha256": "65187283f2a6cf9a4e915e0d7ccfc5de115eaef17a58f8e7c8532ac3b6986bd8",
+  "resource_digest": "09c802a81379707c98a6c5f9351c129e017588d22b5576bde7f00e5ba6ef14c0",
+  "runner_sha256": "801faac217f490449c98978825e21932c6aca842b48ea48f3869e886170c5a1e",
+  "helper_sha256": "515d873731b42c7761843612a38b23e8d825e82e8b1a796d3240eca0e1e6236f",
+  "prerequisites": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 421,
+      "terminal_extension_test_count": 29,
+      "terminal_extension_exit": 0,
+      "terminal_extensions_passed": true,
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ],
+  "cases": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.initialization-stop",
+      "case_id": "before-readiness",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-19T08:35:00.3635711Z",
+      "finished_at": "2026-10-19T08:36:50.1812078Z",
+      "error": "The process cannot access the file 'C:\\Users\\lmas1\\.codex\\worktrees\\native-init-stop\\SteerRunner\\.evidence\\native-runtime\\9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df\\node_modules\\zod\\v4\\locales\\mk.cjs' because it is being used by another process.",
+      "test_stage": "fixture_preparation",
+      "native_driver_started": false
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.initialization-stop",
+      "case_id": "restart-before-readiness",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T08:35:00.4300292Z",
+      "finished_at": "2026-10-19T08:40:15.1268131Z",
+      "expected_outcome": "stopped",
+      "identity": {
+        "manifest_sha256": "E7D062D0B59DA75F152A152A3FACD6278C7AD998510C57291618F7067D3A4E89",
+        "driver_sha256": "30B085745CA469B30953F8EA6E3FAAC79F1A0369FF124B3D898198611162C1EF",
+        "runner_sha256": "801faac217f490449c98978825e21932c6aca842b48ea48f3869e886170c5a1e",
+        "source_commit": "e045d3cd7b86c8c0b734c03c330dd38f479e1c00",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.initialization-stop",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "target_kind": "orca_environment",
+      "remote_helper_used": false,
+      "native_parameters_requested": {
+        "model": "gpt-6-luna",
+        "reasoning_effort": "high",
+        "executable": "C:/sr-runtime/2ba0/01/native/codex.exe",
+        "args": [
+          "--no-daemon"
+        ]
+      },
+      "effective_parameters_verified": false,
+      "credential_isolation": "native execution-host credentials; no Runner capability or login revocation",
+      "result": {
+        "stage": "completed",
+        "test_outcome": "passed",
+        "business_outcome": "stopped",
+        "faults_hit": 2,
+        "audit_complete": true,
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "run_id": "b8176de89b59aa627f95cba96754fa3c"
+      },
+      "resources": [
+        "root:C:\\srt\\97d9f6c09028",
+        "base:codex/srtest/97d9f6c09028/base",
+        "run:b8176de89b59aa627f95cba96754fa3c",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-b8176de89b59aa627f95cba96754fa3c",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_d85c81f4-fdf9-4dd2-8025-3709673bdaf7:f2b67af8-41e6-4d37-9355-86b4d5a33ac9",
+        "branch:erranliu/sl-b8176de89b59aa627f95cba96754fa3c"
+      ],
+      "offline_stop": {
+        "resources_settled": true,
+        "runs": [
+          {
+            "run_id": "b8176de89b59aa627f95cba96754fa3c",
+            "input_digest": "bb2ec65a71fef1190eeffe3af580d260b49268eeb626018e2d5e8a4d89318bea",
+            "resources_settled": true,
+            "stop_evidence_scope": "orca_terminal"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -2,11 +2,11 @@
 
 日期：2026-10-19。用户要求按个人多机执行器边界移除 GitHub App 支持，保留 gh 单仓库 broker 和 Run 隔离，并更新产品定位、契约、文档和测试。
 
-## 当前基线与主分支冲突
+## 当前基线与边界选择
 
 本文的 helper 链路验证基于 main `95ae8a7`，生产 helper 来源为 `7c6ea40`；不代表后续架构的资格。测试期间 main 合入 `0b55928` / [PR #31](https://github.com/erranliu/SteerRunner/pull/31)，明确改为无远端 helper 的 Orca 原生执行，并移除远端 Runner broker、同工具完整环境检查及相关原生历史/退出证明保证。该增量与本分支的远端安全/审计链存在实质契约冲突。
 
-用户已确认跟随最新 main：保留本机/Orca local 的 gh broker，远端使用 Orca 原生认证，不再保证远端单仓库 capability、helper 审计或完整环境检查。PR #28 继续按该边界整合并重新验证；不恢复被移除的 helper，也不把旧证明套用于新原生路径。下文分别记录当前原生范围与历史 helper 范围，各项资格绑定实际源码和批次。
+用户已确认跟随最新 main：保留本机/Orca local 的 gh broker，远端使用 Orca 原生认证，不再保证远端单仓库 capability、helper 审计或完整环境检查。PR #28 已按该边界整合并完成下列验证；不恢复被移除的 helper，也不把旧证明套用于新原生路径。下文分别记录当前原生范围与历史 helper 范围，各项资格绑定实际源码和批次。
 
 ## 交付范围
 
@@ -78,7 +78,7 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 
 `98e4e76` 的旧 helper 定向批次完成：Go L1 408、扩展 29、Controlled 16、两项现场均通过（远端 full_access 与实际双模型审计）。结合同生产代码 `1700a95` 的其余九项，旧 helper 范围的十一项各有明确通过记录；原批次九通过二失败仍保持 failed。额外 `917194a` full_access 的正式前置及一项现场也通过。有限 JSON 与 SHA 清单在 evidence/personal-runner-gh-only-20261019，legacy-helper-qualification.json 明记 latest_main_qualified=false。
 
-整合 #31 后的新验收范围：保留本机/Orca local 的 broker 与 Run 隔离，原生远端无 helper/capability。退役远端审计和完整 Check 正向登记，增加纯校验及 capability 的明确拒绝用例；同服务原生多 Run 固定 full_access、核实独立请求/命令/会话/事件/PR，服务停止后离线核验两个原终端 scope。新场景注册为 21 场景/28 case；Sandbox 远端参数与失败语义沿受控验证，不沿用旧 helper 的真机 sandbox 通过。当前原生验收等待新整合提交的正式前置及独立现场，不继承上面的旧资格。
+整合 #31 后的新验收范围：保留本机/Orca local 的 broker 与 Run 隔离，原生远端无 helper/capability。退役远端审计和完整 Check 正向登记，增加纯校验及 capability 的明确拒绝用例；同服务原生多 Run 固定 full_access、核实独立请求/命令/会话/事件/PR，服务停止后离线核验两个原终端 scope。整合 #31 时登记为 21 场景/28 case，随后 #30 新增初始化停止后为 22 场景/30 case；Sandbox 远端参数与失败语义沿受控验证，不沿用旧 helper 的真机 sandbox 通过。当前原生验收结果见下文；不继承上面的旧 helper 资格。
 
 随后 main 合入 #30 的原生初始化停止补丁（c65b193）；在独立工作区整合，当前 aa02b65 批次继续使用冻结源码。新停止分支仅允许尚未确认启动、零 turn 的原 terminal 缺分支元数据，仍核对确切 worktree/path/runtime/incarnation，不授权任何业务输入。新增 before-readiness 与 restart-before-readiness 两项登记，总计 22 场景/30 case；按新提交补跑完整前置与两项实际初始化停止，不把正常完成后的停止证据当作初始化验证。
 
@@ -94,3 +94,23 @@ Orca local 的 sandbox 准备检查通过，后续 READY 回合原生完成记�
 `aa02b65`（live-15）同模型本机 Orca 复测已完成实现、建 PR #622，并确认原 Run/broker/服务停止；在反馈拒绝断言前，测试审计器把独立丢回执探针与正式 Run 的两套控制通道当成一套，报 invalid or late native control creation，原批次保持 failed。同时该断言仍使用空的 remote_runtime_id，本机应取 local_runtime_id。修复只涉及测试：在已停止探针的确定边界冻结完整日志前缀，保留整个 append-only journal，仅对正式 Run 的后续调用执行单 Run 断言；拒绝前缀变更、行内截断、缺正式日志，runtime 由 OrcaRuntimeID 解析。本机旧日志分开后的只读诊断为一项业务创建、一项控制创建且已关闭、零错误；该复核不提升原测试，须新现场通过。
 
 `c63d784`（live-16）正式前置 L1 Go 421、扩展 29、Controlled 16 及全部框架守卫通过；before-readiness 与 restart-before-readiness 两项真实初始化停止均通过。后续仅测试日志边界修正不改变生产代码，按同生产构建复用该批前置，并执行 testkit 组件回归、原生驱动重新编译及独立 fixture；最终资格分别列出测试驱动与生产构建来源。
+
+## 当前交付资格
+
+正式入口 `scripts/test.ps1` 的完整前置来源为 `c63d784bd5df4f13fe06602dcdec0e970a8f8f77`：L1 Go 421、终端扩展 29、Controlled 16、框架/原生编译/零匹配守卫通过。缓存共享互斥守卫通过；两项初始化停止均在新独立现场通过。本机 Orca 使用修正日志边界后的干净驱动 `770223767ce17dd3d0aa9d8e4bd36b6ef3191746`，同模型、同 sandbox 新现场通过；驱动 testkit 组件回归和编译/零匹配守卫通过。生产源码无差异，复用上述同构建完整前置及原 Runner/config-helper 二进制，实际核验 gh broker/socket 撤销及原 native 收尾。
+
+| 场景 / case | 结果 | 原始批次 / 源码 |
+| --- | --- | --- |
+| `orca-remote.multirun` / `default` | 通过 | live-13 / `aa02b65` |
+| `orca-remote.full-access` / `default` | 通过 | live-13 / `aa02b65` |
+| `orca-remote.stop-revocation` / `active` | 通过 | live-13 / `aa02b65` |
+| `local-codex.feedback` / `default` | 通过 | live-13 / `aa02b65` |
+| `orca-local.codex` / `default` | 通过 | live-17 / `7702237` |
+| `orca-remote.initialization-stop` / `before-readiness` | 通过 | live-16 / `c63d784` |
+| `orca-remote.initialization-stop` / `restart-before-readiness` | 通过 | live-16 / `c63d784` |
+
+七项资格来自上表三个独立干净批次，并非一次全绿批次。`live-13` 的模型容量失败、`live-14` 的 fixture 共享冲突及 `live-15` 的探针日志混用仍保持 failed；原 Run 停止未核实不因物理清理改写。`aa02b65` 到最终测试提交的 internal/cmd 生产差异仅为 main #30 的 `native_stop.go`，由 live-16 两项真实初始化停止核验；后续 live-17 仅改测试日志边界，testkit 包组件回归通过，生产源码差异为零。其余差异为测试、脚本和文档。本机 helper 固定为 aa02b65 / SHA256 cd2a0fd9f15c4199f83ec05e882a2ba66768ea07dd13dd5c4bfd47e6d0088939，远端 helper 调用为零。
+
+有限结果、构建归属、原失败及独立清理记录见 [qualification.json](evidence/personal-runner-gh-only-20261019/qualification.json)，文件摘要清单绑定本次结果。原生远端真实验证为 full_access；仅初始化停止请求 sandbox 不构成 sandbox 业务闭环通过。模型、effort、access_mode 仅证明冻结与传递，不宣称实际参数回读；停止证据范围为原 Orca 终端，不证明整机 OS 树或登录撤销。
+
+当前不是全 30 case 的 L3 验收：8 项管理员故障仍未验证，本次选择排除其中 2 项，不重复触发 UAC。原生远端双模型来源审计、完整环境检查按确认边界 unsupported，纯校验和 Controlled 已覆盖零相关资源拒绝。workflow/2 已移除 PR 后反馈返工；当前本机反馈 case 验证拒绝边界，不声称保留旧返工闭环。

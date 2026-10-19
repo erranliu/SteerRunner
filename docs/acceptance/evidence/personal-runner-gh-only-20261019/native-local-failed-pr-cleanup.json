@@ -1,0 +1,21 @@
+{
+  "after": {
+    "baseRefName": "codex/srtest/b9acfa7e0850/base",
+    "headRefName": "erranliu/sl-9179e55dc81fe8c8b4f1fbc9b4b87239",
+    "headRefOid": "5fe303fc8880ea2db33bcf240fa93bf10b3cf210",
+    "mergedAt": null,
+    "state": "CLOSED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/622"
+  },
+  "scope": "Close exact owned unmerged failed fixture PR; no test outcome promotion",
+  "before": {
+    "baseRefName": "codex/srtest/b9acfa7e0850/base",
+    "headRefName": "erranliu/sl-9179e55dc81fe8c8b4f1fbc9b4b87239",
+    "headRefOid": "5fe303fc8880ea2db33bcf240fa93bf10b3cf210",
+    "mergedAt": null,
+    "state": "OPEN",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/622"
+  },
+  "at": "2026-10-19T09:16:36.0772391Z",
+  "original_test_outcome": "failed"
+}

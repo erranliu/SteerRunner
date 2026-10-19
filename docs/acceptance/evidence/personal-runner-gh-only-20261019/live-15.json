@@ -1,0 +1,215 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9",
+  "source_dirty": false,
+  "started_at": "2026-10-19T08:31:15.3752384Z",
+  "finished_at": "2026-10-19T09:07:39.7355782Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "scope": "admin-free-subset",
+  "max_parallel": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "executed_case_count": 1,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "levels": {
+    "L3": {
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "passed": [],
+      "complete_level_passed": false,
+      "excluded": [],
+      "executed": [
+        "orca-local.codex/default"
+      ],
+      "unavailable": [],
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "requested": [
+        "orca-local.codex/default"
+      ]
+    }
+  },
+  "source_config_digest": "16d8f628a54ed3176b6be18233ae27d8d7772f0b212dc31fee60507e2e5cd089",
+  "configuration_sha256": "e8dcebac06362e1be049024c96c8addb5509e6dbb6b538cae1d4b261cf10129a",
+  "requirements_sha256": "f457bce15a8d3d1340172df4bf2a0d75df3213754fa9a39514dcbce0647bfe24",
+  "resource_digest": "09c802a81379707c98a6c5f9351c129e017588d22b5576bde7f00e5ba6ef14c0",
+  "runner_sha256": "c02a2df43895edc4721d95b0675c4d0ae53a265aa9be2d6cb242bf9609f25bb8",
+  "helper_sha256": "97a39993c357bf1da0371969aeb8bbc1fe61be710873098b63c7aae0e8c6d005",
+  "prerequisites": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 420,
+      "terminal_extension_test_count": 29,
+      "terminal_extension_exit": 0,
+      "terminal_extensions_passed": true,
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ],
+  "cases": [
+    {
+      "level": "L3",
+      "scenario": "orca-local.codex",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-19T08:58:37.3789594Z",
+      "finished_at": "2026-10-19T09:07:39.5589982Z",
+      "error": "Live scenario failed; inspect C:\\srt\\b9acfa7e0850\\evidence/native.log",
+      "identity": {
+        "manifest_sha256": "48566BAAF75FA707799D4055111DDCA7CA6DA37CC178970CDCD68B20D4B24806",
+        "driver_sha256": "DD59518F7A40E44C37376DE7B65B29AC88F1D1D7DCC6C441C988EFC8BEE8A6B7",
+        "runner_sha256": "c02a2df43895edc4721d95b0675c4d0ae53a265aa9be2d6cb242bf9609f25bb8",
+        "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-local.codex",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "target_kind": "local",
+      "local_helper_sha256": "cd2a0fd9f15c4199f83ec05e882a2ba66768ea07dd13dd5c4bfd47e6d0088939",
+      "result": {
+        "stage": "verify-original-pr",
+        "passed": false,
+        "run_id": "9179e55dc81fe8c8b4f1fbc9b4b87239",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/622"
+      },
+      "remote-authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_transient_read_failures": 0,
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0,
+        "signed_native_exit": {
+          "proof": {
+            "readiness": {
+              "authentication_control": true,
+              "exit_public_key": "Zlcish83cym4jPqUqQAbw8HFPqDXqnTFQ6BBixs9/Wo=",
+              "owner": {
+                "kind": "os",
+                "pid": 15380,
+                "created": "01dd5fa856d66575",
+                "executable": "c:\\users\\lmas1\\.codex\\worktrees\\2ba0\\steerrunner\\.evidence\\gh-only\\local-agent-aa02b65.exe"
+              },
+              "native_transport": "codex-remote-inline-v3",
+              "runtime_sha256": "cd2a0fd9f15c4199f83ec05e882a2ba66768ea07dd13dd5c4bfd47e6d0088939",
+              "verified": true,
+              "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+              "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sl-9179e55dc81fe8c8b4f1fbc9b4b87239",
+              "repository": "https://github.com/erranliu/SteerlineTest.git",
+              "session_id": "01a15364-9f38-7e93-9b41-70df003c0683",
+              "configuration_digest": "676f49926e953fed48ccfb2bbad18a2ba3692e3cae3b6dee44e6c616b3fdf81c",
+              "process": {
+                "kind": "os",
+                "pid": 10796,
+                "created": "01dd5fa85adf46f0",
+                "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+              },
+              "checked_at": "2026-10-19T09:01:16.7346914Z",
+              "expires_at": "2026-10-19T18:00:54.9835351+08:00",
+              "access_mode": "sandbox"
+            },
+            "revocation_confirmed": true,
+            "broker_closed": true,
+            "socket_cleanup_confirmed": true,
+            "mode": "host-gh-repository-broker"
+          },
+          "control": {
+            "process": {
+              "kind": "orca_native_control",
+              "terminal": "term_89c33c07-2bf3-4059-96bc-df94c54e92b5",
+              "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+              "incarnation": "2f43a087-4fac-4c9b-887b-a894092066b3",
+              "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-9179e55dc81fe8c8b4f1fbc9b4b87239"
+            },
+            "closed": true
+          },
+          "signed_native_exit_bytes": "eyJib2R5Ijp7InJlYWRpbmVzcyI6eyJhdXRoZW50aWNhdGlvbl9jb250cm9sIjp0cnVlLCJleGl0X3B1YmxpY19rZXkiOiJabGNpc2g4M2N5bTRqUHFVcVFBYnc4SEZQcURYcW5URlE2QkJpeHM5L1dvPSIsIm93bmVyIjp7ImtpbmQiOiJvcyIsInBpZCI6MTUzODAsImNyZWF0ZWQiOiIwMWRkNWZhODU2ZDY2NTc1IiwiZXhlY3V0YWJsZSI6ImM6XFx1c2Vyc1xcbG1hczFcXC5jb2RleFxcd29ya3RyZWVzXFwyYmEwXFxzdGVlcnJ1bm5lclxcLmV2aWRlbmNlXFxnaC1vbmx5XFxsb2NhbC1hZ2VudC1hYTAyYjY1LmV4ZSJ9LCJuYXRpdmVfdHJhbnNwb3J0IjoiY29kZXgtcmVtb3RlLWlubGluZS12MyIsInJ1bnRpbWVfc2hhMjU2IjoiY2QyYTBmZDlmMTVjNDE5OWY4M2VjMDVlODgyYTJiYTY2NzY4ZWEwN2RkMTNkZDVjNGJmZDQ3ZTZkMDA4ODkzOSIsInZlcmlmaWVkIjp0cnVlLCJjb250cmFjdCI6ImNvZGV4LXBvbGljeS12MTA6MC4xNTkuMjpleHBsaWNpdC1hY2Nlc3MtbW9kZTpyZXBvc2l0b3J5LWF1dGgtYnJva2VyOm5ldmVyIiwid29ya3NwYWNlIjoiQzpcXFVzZXJzXFxsbWFzMVxcb3JjYVxcd29ya3NwYWNlc1xcU3RlZXJsaW5lVGVzdFxcc2wtOTE3OWU1NWRjODFmZThjOGI0ZjFmYmM5YjRiODcyMzkiLCJyZXBvc2l0b3J5IjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0Iiwic2Vzc2lvbl9pZCI6IjAxYTE1MzY0LTlmMzgtN2U5My05YjQxLTcwZGYwMDNjMDY4MyIsImNvbmZpZ3VyYXRpb25fZGlnZXN0IjoiNjc2ZjQ5OTI2ZTk1M2ZlZDQ4Y2NmYjJiYmFkMThhMmJhMzY5MmUzY2FlM2I2ZGVlNDRlNmM2MTZiM2ZkZjgxYyIsInByb2Nlc3MiOnsia2luZCI6Im9zIiwicGlkIjoxMDc5NiwiY3JlYXRlZCI6IjAxZGQ1ZmE4NWFkZjQ2ZjAiLCJleGVjdXRhYmxlIjoiYzpcXHVzZXJzXFxsbWFzMVxcLmxvY2FsXFxiaW5cXG5vZGVfbW9kdWxlc1xcQG9wZW5haVxcY29kZXhcXG5vZGVfbW9kdWxlc1xcQG9wZW5haVxcY29kZXgtd2luMzIteDY0XFx2ZW5kb3JcXHg4Nl82NC1wYy13aW5kb3dzLW1zdmNcXGJpblxcY29kZXguZXhlIn0sImNoZWNrZWRfYXQiOiIyMDI2LTEwLTE5VDA5OjAxOjE2LjczNDY5MTRaIiwiZXhwaXJlc19hdCI6IjIwMjYtMTAtMTlUMTg6MDA6NTQuOTgzNTM1MSswODowMCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCJ9LCJ0dWkiOnsia2luZCI6Im9zIiwicGlkIjo1MTYxNiwiY3JlYXRlZCI6IjAxZGQ1ZmE4NjY2NjI0MWYiLCJleGVjdXRhYmxlIjoiYzpcXHVzZXJzXFxsbWFzMVxcLmxvY2FsXFxiaW5cXG5vZGVfbW9kdWxlc1xcQG9wZW5haVxcY29kZXhcXG5vZGVfbW9kdWxlc1xcQG9wZW5haVxcY29kZXgtd2luMzIteDY0XFx2ZW5kb3JcXHg4Nl82NC1wYy13aW5kb3dzLW1zdmNcXGJpblxcY29kZXguZXhlIn0sIndyaXRlcnNfYWJzZW50Ijp0cnVlLCJhdXRoZW50aWNhdGlvbl9jbG9zZWQiOnRydWUsImNsb3NlZF9hdCI6IjIwMjYtMTAtMTlUMDk6MDc6MjMuNzA3MDI2NloifSwic2lnbmF0dXJlIjoiZm02SzB2NmhwdGltZWx3eFVUakdVZy9uYzdIa2V5Z3BTMU04ckpUS0NreW11T2ZHR3lkV3QyOVVRbDNralZESVNkUXE2WDV6L1J6YWdzM0I2SGpPQUE9PSJ9Cg=="
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9",
+  "batch": "live-13",
+  "scenario": "orca-local.codex",
+  "run_id": "29d93cca2e8ff57bec67ac66c257aaf4",
+  "rollout_sha256": "546c53e70b8e69a32481a8602c62c41f3aaed90b74f319a7c20410bcf49ed905",
+  "native_completion": [
+    {
+      "type": "task_complete",
+      "turn_id": "01a15342-c5ba-7d30-94ea-46e64be8b11e",
+      "started_at": 1792398247,
+      "completed_at": 1792398256,
+      "error": {
+        "message": "Selected model is at capacity. Please try a different model.",
+        "codex_error_info": "server_overloaded"
+      }
+    }
+  ],
+  "sandbox_probe_verified": true,
+  "business_input_sent": false,
+  "logical_stop_confirmed": false,
+  "broker_revocation_confirmed": true,
+  "retry_requires_new_run": true
+}

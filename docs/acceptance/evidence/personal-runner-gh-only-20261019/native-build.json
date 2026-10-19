@@ -1,0 +1,21 @@
+{
+  "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9",
+  "local_helper_sha256": "cd2a0fd9f15c4199f83ec05e882a2ba66768ea07dd13dd5c4bfd47e6d0088939",
+  "local_helper_path": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\gh-only\\local-agent-aa02b65.exe",
+  "remote_helper_used": false,
+  "remote_authentication": "native Orca user credentials",
+  "local_authentication": "per-Run host-gh repository broker",
+  "native_version": "0.159.2",
+  "orca_cli_version": "1.4.224",
+  "orca_cli_sha256": "894700bc388af843b06628ded98dbdd1d9d25e3a94fea661dbf4dc16eeed5ae2",
+  "selected": [
+    "orca-local.codex",
+    "orca-remote.multirun",
+    "orca-remote.full-access",
+    "orca-remote.stop-revocation",
+    "local-codex.feedback"
+  ],
+  "sandbox_remote_native_e2e_qualified": false,
+  "remote_audited_supported": false,
+  "remote_complete_check_supported": false
+}
