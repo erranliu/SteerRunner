@@ -31,7 +31,7 @@ func TestDiagnosticReadNeverReplaysMutation(t *testing.T) {
 }
 
 func TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory(t *testing.T) {
-	for _, mode := range []string{"still-live", "already-absent", "foreign-incarnation", "foreign-runtime", "truncated", "missing-completeness", "persistent-failure"} {
+	for _, mode := range []string{"still-live", "already-absent", "null-inventory", "foreign-host", "omitted-local-host", "foreign-incarnation", "foreign-runtime", "truncated", "missing-completeness", "persistent-failure"} {
 		t.Run(mode, func(t *testing.T) {
 			closes := 0
 			original := b.ProcessIdentity{RuntimeID: "runtime", Terminal: "original", Incarnation: "incarnation", WorktreeID: "workspace"}
@@ -51,6 +51,9 @@ func TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory(t *testing.T)
 				case "list":
 					terminals := []any{tm}
 					if mode == "already-absent" {
+						terminals = []any{}
+					}
+					if mode == "null-inventory" {
 						terminals = nil
 					}
 					if mode == "foreign-incarnation" {
@@ -60,6 +63,12 @@ func TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory(t *testing.T)
 						runtime = "replacement"
 					}
 					inventory := map[string]any{"terminals": terminals, "totalCount": len(terminals), "truncated": mode == "truncated", "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
+					if mode == "foreign-host" {
+						inventory["hostScope"] = map[string]any{"hostIds": []string{"other"}, "omittedHostIds": []string{}}
+					}
+					if mode == "omitted-local-host" {
+						inventory["hostScope"] = map[string]any{"hostIds": []string{"other"}, "omittedHostIds": []string{"local"}}
+					}
 					if mode == "missing-completeness" {
 						delete(inventory, "truncated")
 					}

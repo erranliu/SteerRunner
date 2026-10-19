@@ -33,3 +33,5 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 复测准备提交 `4a0aa59` 的 L1 323 项、扩展 28 项和 Controlled 16 项均通过。其前置期间主分支合入 `a3dc15d`（原生停止证明）；在任何真机 case 创建前中止外层调度，原 Controlled 自行通过并退出。该批次没有 L3 结果，不计为失败重试或通过。
 
 合并同时保留原生退出签名/树为空证明、gh broker 撤销、原 reader 结算、双模型字段与核验。修复合并交互：helper 正常退出返回 shell 后，关闭前继续核对原 runtime/terminal/incarnation/worktree/path/branch，原生退出另验；不依赖已退出 agent 的显示标签。现有正向停止测试复现并验证修复，另加 shell 分支变化拒绝，认证 actor 的失回执测试使用实际 `local` host scope。
+
+合并提交 `f2d6ee3` 的正式 L1 保留一次失败：辅助清理正向夹具将空列表序列化为 null，新完整清单校验正确拒绝。修正为显式空数组，补 null、外来主机及 local 被省略的拒绝子项；本批未启动 Controlled/L3，不能计入真机通过。
