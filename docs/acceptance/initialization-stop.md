@@ -13,7 +13,7 @@
 
 ## 最终验收结果
 
-2026-10-19，Runner 分支 `codex/initialization-stop`，基于 `2aa17cce7da6fd75e59db76e18f2521d9e9777db` 的未提交实现。可携带的[证据摘要](evidence/initialization-stop/summary.json)固定原始报告摘要、Run、构建摘要和收尾结果；完整现场保留在以下独立调试包。
+2026-10-19，Runner 分支 `codex/initialization-stop`，测试基于 `2aa17cce7da6fd75e59db76e18f2521d9e9777db` 的工作区实现（现实现提交 `a98adb5`）。可携带的[证据摘要](evidence/initialization-stop/summary.json)固定原始报告摘要、Run、构建摘要和收尾结果；完整现场保留在以下独立调试包。
 
 正式批次为 `C:/SteerlineDebug/dev-20261019-123304-d1277973-dirty/evidence/l3-initialization-stop/summary.json`，通过公开 `scripts/test.ps1 -Level L3 -Scenario orca-remote.initialization-stop -MaxParallel 2` 入口执行：L1 Go 324 项、Node 扩展 28 项、framework（含双 worker 冷缓存）及 Controlled 16/16 通过；所选两个 L3 case 均通过。Runner EXE SHA256 为 `bcf9cc4cd53303302804a08739e43ff224027e92bc464049272f9b4eeb062545`，该批次 helper SHA256 为 `fb087fe8611b5e1c970eafe25b1a39b0fcd80f8e70047cb9945f8d80965523b1`。
 
@@ -27,6 +27,10 @@
 两个 case 只有一次可核对正文摘要的 helper 启动发送，业务发送为零；签名退出均验证 writers_absent/authentication_closed，公开离线重验 resources_settled=true。各 `cleanup.json` 均记录 native_stopped/service_stopped/facilities_restored=true；helper 暂存工作区及 PTY 已关闭移除，收尾回执保存在最终包 `evidence/guard-stage-*.json`。`evidence/source-snapshot.json` 固定最终 24 个代码/脚本/注册文件摘要。
 
 测试清单现为 L3 23 个场景、31 个 case；本次选择其中 2 个，完整 L3 未执行。所有真实执行均限于新调试包及 SteerlineTest 专属夹具。未操作安装/保留运行环境，未修写历史 Run，未部署；原安装失败 Run 仍需保留其证据缺失状态。
+
+## PR 集成边界
+
+提 PR 时最新主干为 `95ae8a7`，已合入另一批固定控制终端/认证撤销与 workflow 改动。本分支尚未集成该主干；只读合并预检显示 `docs/test-catalog.md`、Codex `remote_agent.go`、Orca `lifecycle.go` / `stop_test.go` / `verify_stopped.go` 五处冲突。因此提交草稿 PR，以上通过记录只对应原测试源与构建。合并新主干、适配控制终端和 reader 取证后，需要按 Plan 重新建立独立调试包验证，不能将既有报告当作新主干通过证明。
 
 ## 已保留的首轮记录
 
