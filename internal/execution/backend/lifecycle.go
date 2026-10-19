@@ -865,6 +865,12 @@ type LifecycleResolver interface {
 // LifecycleSetup carries only fixed, non-secret values needed to construct an
 // implementation port. It is not a center record or a write capability.
 type LifecycleSetup struct {
+	// Optional host scope, invoked synchronously during Execute with the host's
+	// dispatch gate held. Only the supplied read-only query may run with that
+	// gate released. The scope restores the gate and rechecks authorization
+	// before returning; creation and input must remain outside the query.
+	ReadOnlyPreparation   func(context.Context, func(context.Context) error) error
+	Logf                  func(string, ...any)
 	AgentLaunchCommand    string
 	Snapshot              LifecycleSnapshot
 	ProfileData           []ImplementationDataEnvelope

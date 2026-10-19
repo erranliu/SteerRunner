@@ -191,9 +191,18 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 	if name == "." || name == "/" || name == "" || strings.HasSuffix(name, ":") {
 		return "", "", errors.New("project repository has no directory name")
 	}
-	result, err := l.client.MetaCall(ctx, "repo", "list", "--json")
+	var result native.Result
+	query := func(ctx context.Context) (err error) {
+		result, err = l.queryRepositoryInventory(ctx)
+		return err
+	}
+	if l.setup.ReadOnlyPreparation != nil {
+		err = l.setup.ReadOnlyPreparation(ctx, query)
+	} else {
+		err = query(ctx)
+	}
 	if err != nil {
-		return "", "", fmt.Errorf("cannot find Orca repository directory %q: %w", name, err)
+		return "", "", fmt.Errorf("cannot query Orca repository inventory for directory %q: %w", name, err)
 	}
 	var listing struct {
 		Repos []struct {
