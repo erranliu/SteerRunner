@@ -89,3 +89,8 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 Orca local 的 sandbox 准备检查通过，后续 READY 回合原生完成记录为 server_overloaded（Selected model is at capacity），未发送业务输入。原测试保持失败，Run 停止因缺正式 readiness/退出绑定而未核实；broker/socket 已撤销。独立核对原 runtime/worktree 和两项 terminal incarnation 后关闭，完整清单为空，原 native PID 不存在；物理清理不提升逻辑停止结论。保留原模型和权限的新 Run 复测另记。
 
 `e045d3c`（live-14）合入 main #30 的初始化停止：L1 Go 421、扩展 29、Controlled 16 与框架守卫通过；restart-before-readiness 真实 case 通过，before-readiness 在 fixture 运行时缓存准备阶段遭遇 Windows 文件共享冲突，业务执行为零，原批次保持失败。缓存已原子发布仍不足以避免并行哈希/硬链接/复制之间的共享冲突；补同缓存目录互斥、期限及 abandoned owner 处理，守卫核验持锁期间禁止发布、释放后两个冷缓存 worker 字节完整一致。补跑以新干净测试提交记录，不继承原失败为成功。
+
+
+`aa02b65`（live-15）同模型本机 Orca 复测已完成实现、建 PR #622，并确认原 Run/broker/服务停止；在反馈拒绝断言前，测试审计器把独立丢回执探针与正式 Run 的两套控制通道当成一套，报 invalid or late native control creation，原批次保持 failed。同时该断言仍使用空的 remote_runtime_id，本机应取 local_runtime_id。修复只涉及测试：在已停止探针的确定边界冻结完整日志前缀，保留整个 append-only journal，仅对正式 Run 的后续调用执行单 Run 断言；拒绝前缀变更、行内截断、缺正式日志，runtime 由 OrcaRuntimeID 解析。本机旧日志分开后的只读诊断为一项业务创建、一项控制创建且已关闭、零错误；该复核不提升原测试，须新现场通过。
+
+`c63d784`（live-16）正式前置 L1 Go 421、扩展 29、Controlled 16 及全部框架守卫通过；before-readiness 与 restart-before-readiness 两项真实初始化停止均通过。后续仅测试日志边界修正不改变生产代码，按同生产构建复用该批前置，并执行 testkit 组件回归、原生驱动重新编译及独立 fixture；最终资格分别列出测试驱动与生产构建来源。
