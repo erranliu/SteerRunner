@@ -1,6 +1,8 @@
 # SteerRunner
 
-SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment 执行开发 workflow，处理反馈并产出可核验 PR。SteerLine 保留任务、DAG、候选关系和 TaskDelivery，通过 CLI 使用它。
+SteerRunner 是个人多机执行器：在本人管理和信任、预先配置好的执行主机上，接收冻结的 Spec / Plan，执行开发 workflow、处理反馈并产出可核验 PR。支持同一服务多个独立 Run；调用方显式选择本机或 Orca environment。SteerLine 保留任务、DAG、机器选择、候选关系和 TaskDelivery，通过 CLI 使用它。
+
+用户负责每台执行机的工具安装和 gh 登录。Runner 负责环境检查、Run 隔离、有限期单仓库授权、执行与发布对账、显式恢复、停止及清理。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。
 
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke、L3 流程/核心可靠性测试和 L4 受控边界测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
@@ -38,11 +40,14 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 
 本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。
 GitHub worker 默认使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
-Runner 在业务前准备有限期 capability，并执行与实际权限模式一致的原生工具检查。可选 App 引用位于
-`execution.settings.github_auth`（`app_id`、`installation_id`、`private_key_env`）。认证秘密
-不写进请求、持久化配置或材料；固定 approval never，失败不会回退自动审核发布。
+Runner 在业务前准备各 Run 独立的有限期 capability，并执行与实际权限模式一致的原生工具检查。
+认证秘密不写进请求、持久化配置或材料；停止关闭该 Run 的 broker，不退出宿主 gh 登录，不影响其他 Run。
+GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null）明确拒绝，不能静默改用个人身份。
+升级前须用旧版本停止、核实并收尾已有 App Run/Check；新版本不迁移其身份或接管旧 App 凭据。
+固定 approval never，失败不会回退自动审核发布。
 Orca terminal 已接入执行主机可信 helper、同权限准备和认证撤销；须显式配置并核验 helper 路径与摘要。
-远端双模型审计、同服务多 Run 及可选 App 引用已接线，当前真机范围与待验收项见
+个人多机边界、App 移除和本次验证见[专项记录](docs/acceptance/personal-runner-gh-only-20261019.md)。
+远端双模型审计、同服务多 Run 已接线；历史构建真机范围与待验收项见
 [Orca 扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)。
 设置、外部前置及受控/真实验收边界见[测试指南](docs/testing.md)和[专属记录](docs/acceptance/sandbox-authentication.md)。
 
@@ -75,7 +80,7 @@ accepted 表示材料及原请求已提交，执行结果以 Run 和命令 actio
 `not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
 
 本机及 Orca 已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
-本机 App installation-token 的环境检查逐操作写门仍未支持；远端可选 App 保留组件测试，独立 App L3 case 已按用户要求移除，未取得真实 App 资格。
+普通执行与环境检查统一使用执行主机 gh 单仓库 broker；不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
 已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
 [环境检查记录](docs/acceptance/environment-check.md)和[Orca 扩展记录](docs/acceptance/orca-remote-extensions-20261018.md)。
 

@@ -198,9 +198,9 @@ func ServeRemoteCheck(ctx context.Context, setup RemoteCheckSetup, input io.Read
 				localInput := setup.Input
 				localInput.Repository.LocalPath = ""
 				localInput.Execution = contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}}
-				localInput.Execution.Settings = encode(contracts.CodexSettings{GitHubAuth: settings.GitHubAuth, AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort})
+				localInput.Execution.Settings = encode(contracts.CodexSettings{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort})
 				stage = "remote_check_configuration_failed"
-				session, err = NewEnvironmentSession(EnvironmentSetup{RepositoryBroker: true, CheckID: setup.CheckID, Nonce: setup.Nonce, Directory: root, Workspace: wd, Input: localInput, LinkedWriteArgs: args})
+				session, err = NewEnvironmentSession(EnvironmentSetup{CheckID: setup.CheckID, Nonce: setup.Nonce, Directory: root, Workspace: wd, Input: localInput, LinkedWriteArgs: args})
 				if err != nil {
 					break
 				}

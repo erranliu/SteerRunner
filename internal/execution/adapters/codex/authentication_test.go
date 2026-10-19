@@ -2,17 +2,11 @@ package codexworker
 
 import (
 	"context"
-	"crypto"
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha256"
-	"crypto/x509"
 	"encoding/base64"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
+	"io"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -35,7 +29,7 @@ func TestAuthenticationMissingBlocksBeforeNativeStartAndBusinessInput(t *testing
 	if err := os.WriteFile(filepath.Join(work, ".git"), []byte("gitdir: "+admin), 0600); err != nil {
 		t.Fatal(err)
 	}
-	a, err := newAuthentication(nil, "https://github.com/erranliu/SteerlineTest.git")
+	a, err := newAuthentication("https://github.com/erranliu/SteerlineTest.git")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +49,11 @@ func TestAuthenticationMissingBlocksBeforeNativeStartAndBusinessInput(t *testing
 }
 
 func TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession(t *testing.T) {
-	root := t.TempDir()
+	root, err := os.MkdirTemp("", "sr-exp-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(root) })
 	work := filepath.Join(root, "worker")
 	admin := filepath.Join(root, "admin")
 	for _, dir := range []string{work, admin} {
@@ -73,6 +71,19 @@ func TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession(t *testi
 	process := b.ProcessIdentity{Kind: "os", PID: 123, Created: "original"}
 	binding := Binding{Process: &process, Endpoint: "ws://127.0.0.1:1", Generation: "original-generation", SessionID: "00000000-0000-0000-0000-000000000008"}
 	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{External: process}, Session: b.SessionContext{ProjectID: strings.Repeat("a", 32), ExecutionID: strings.Repeat("b", 32), AttemptID: strings.Repeat("c", 32)}, ConfigurationDigest: "fixed-config", ResourceGeneration: strings.Repeat("d", 32)}
+
+	s.Ref.WorkspacePath = work
+	policyID := PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}
+	plan, err := PlanAuthenticationTransport(root, work, a.remoteURL, policyID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	permissions, _ := NativePermissions("windows", "local", "codex", "sandbox")
+	policy, err := NewPolicyResourceEnvelope(policyID, PolicyResourcePayload{AuthenticationTransport: plan, NativeVersion: PolicyCodexVersion, Contract: PolicyContract, Settings: b.LaunchCommand{Executable: os.Args[0], WorkingDirectory: work, Args: permissions.Args()}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.PolicyResources = &policy
 	s.Implementation = l.bindingReceipt(s, binding).Implementation
 	input := b.TurnInput{CommandID: strings.Repeat("e", 32), Prompt: "new stage input", LinkedWorktreeArgs: []string{"--add-dir", root, "--add-dir", root, "--add-dir", root, "--add-dir", admin}}
 	receipt, observer, err := l.startTurn(context.Background(), s, input)
@@ -81,139 +92,36 @@ func TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession(t *testi
 	}
 }
 
-func TestAuthenticationIssuanceScopeExpiryAndCleanup(t *testing.T) {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		t.Fatal(err)
-	}
-	keyText := string(pem.EncodeToMemory(&pem.Block{Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(key)}))
-	now := time.Now().UTC().Truncate(time.Second)
-	for _, name := range []string{"valid", "missing-key", "invalid-key", "unauthorized", "expired", "wrong-repository", "multiple-repositories", "extra-permission", "malformed", "long-expiry"} {
-		t.Run(name, func(t *testing.T) {
-			issued, revoked := 0, 0
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				if r.Method == http.MethodDelete {
-					if r.Header.Get("Authorization") != "Bearer sandbox-test-secret" {
-						t.Error("wrong revoke credential")
-					}
-					revoked++
-					w.WriteHeader(204)
-					return
-				}
-				issued++
-				if r.URL.Path != "/app/installations/7/access_tokens" || r.Method != "POST" {
-					t.Error("wrong issuance target")
-				}
-				parts := strings.Split(strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer "), ".")
-				if len(parts) != 3 {
-					t.Error("missing JWT")
-					return
-				}
-				digest := sha256.Sum256([]byte(parts[0] + "." + parts[1]))
-				signature, _ := base64.RawURLEncoding.DecodeString(parts[2])
-				if rsa.VerifyPKCS1v15(&key.PublicKey, crypto.SHA256, digest[:], signature) != nil {
-					t.Error("invalid App signature")
-				}
-				var request struct {
-					Repositories []string          `json:"repositories"`
-					Permissions  map[string]string `json:"permissions"`
-				}
-				if json.NewDecoder(r.Body).Decode(&request) != nil || len(request.Repositories) != 1 || request.Repositories[0] != "SteerlineTest" || len(request.Permissions) != 2 || request.Permissions["contents"] != "write" || request.Permissions["pull_requests"] != "write" {
-					t.Error("issuance exceeded fixed scope")
-				}
-				if name == "unauthorized" {
-					w.WriteHeader(401)
-					fmt.Fprint(w, "private-key-that-must-not-be-logged")
-					return
-				}
-				w.WriteHeader(201)
-				if name == "malformed" {
-					fmt.Fprint(w, "{bad private-key-that-must-not-be-logged")
-					return
-				}
-				expires := now.Add(time.Hour)
-				repos := []map[string]string{{"full_name": "erranliu/SteerlineTest"}}
-				permissions := map[string]string{"contents": "write", "pull_requests": "write", "metadata": "read"}
-				switch name {
-				case "expired":
-					expires = now.Add(-time.Minute)
-				case "long-expiry":
-					expires = now.Add(2 * time.Hour)
-				case "wrong-repository":
-					repos[0]["full_name"] = "other/private"
-				case "multiple-repositories":
-					repos = append(repos, map[string]string{"full_name": "other/private"})
-				case "extra-permission":
-					permissions["administration"] = "write"
-				}
-				_ = json.NewEncoder(w).Encode(map[string]any{"token": "sandbox-test-secret", "expires_at": expires, "repositories": repos, "permissions": permissions})
-			}))
-			defer server.Close()
-			a, err := newAuthentication(&AuthenticationConfig{AppID: 3, InstallationID: 7, PrivateKeyEnv: "TEST_APP_KEY"}, "https://github.com/erranliu/SteerlineTest.git")
-			if err != nil {
-				t.Fatal(err)
-			}
-			a.endpoint = server.URL
-			a.now = func() time.Time { return now }
-			a.lookup = func(string) string {
-				if name == "missing-key" {
-					return ""
-				}
-				if name == "invalid-key" {
-					return "not a PEM"
-				}
-				return keyText
-			}
-			err = a.prepare(context.Background())
-			if (err == nil) != (name == "valid") {
-				t.Fatalf("unexpected issuance: %v", err)
-			}
-			if err != nil && (strings.Contains(err.Error(), "sandbox-test-secret") || strings.Contains(err.Error(), "private-key-that")) {
-				t.Fatal("secret in diagnostic")
-			}
-			if name == "valid" {
-				if err = a.prepare(context.Background()); err != nil || issued != 1 {
-					t.Fatal("reissued active lease")
-				}
-				a.now = func() time.Time { return now.Add(59 * time.Minute) }
-				if _, err = a.environment(nil); err == nil {
-					t.Fatal("expired lease remained usable")
-				}
-			}
-			a.Close()
-			a.Close()
-			if a.token != "" {
-				t.Fatal("secret retained after close")
-			}
-			if name == "valid" && revoked != 1 {
-				t.Fatal("lease not revoked exactly once")
-			}
-			if (name == "expired" || name == "wrong-repository" || name == "multiple-repositories" || name == "extra-permission" || name == "long-expiry") && revoked != 1 {
-				t.Fatal("invalid grant not revoked")
-			}
-		})
-	}
-}
-
 func testAuthentication(t *testing.T) *AuthenticationRuntime {
 	t.Helper()
-	a, err := newAuthentication(&AuthenticationConfig{AppID: 1, InstallationID: 2, PrivateKeyEnv: "TEST_APP_KEY"}, "https://github.com/erranliu/SteerlineTest.git")
+	a, err := newAuthentication("https://github.com/erranliu/SteerlineTest.git")
 	if err != nil {
 		t.Fatal(err)
 	}
-	a.token = "sandbox-test-secret"
-	a.expires = time.Now().Add(time.Hour)
+	a.resolveHost = func(context.Context) ([]byte, error) { return []byte("controlled-host-secret-never-exported"), nil }
+	a.brokerTransport = brokerTransport(func(r *http.Request) (*http.Response, error) {
+		body := `{"full_name":"erranliu/SteerlineTest","node_id":"original-repository","fork":false}`
+		if r.URL.Path == "/user" {
+			body = `{"login":"original-user"}`
+		}
+		return &http.Response{StatusCode: 200, Header: http.Header{}, Body: io.NopCloser(strings.NewReader(body))}, nil
+	})
+	if err = a.prepare(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	originalBroker := a.broker
+	t.Cleanup(func() { originalBroker.close() })
 	return a
 }
 
 func TestAuthenticationEnvironmentAndArgumentsNeverExportSecrets(t *testing.T) {
 	a := testAuthentication(t)
 	r := &workerRuntime{Shell: os.Args[0], Temp: t.TempDir(), Auth: a}
-	env, err := r.environment([]string{"PATH=tools", "TEST_APP_KEY=private-key-that-must-not-escape", "GH_TOKEN=caller-token", "GITHUB_TOKEN=caller-token", "GIT_CONFIG_COUNT=1", "GIT_CONFIG_KEY_0=http.extraheader", "GIT_CONFIG_VALUE_0=caller-token"})
+	env, err := r.environment([]string{"PATH=tools", "GH_TOKEN=caller-token", "GITHUB_TOKEN=caller-token", "GIT_CONFIG_COUNT=1", "GIT_CONFIG_KEY_0=http.extraheader", "GIT_CONFIG_VALUE_0=caller-token"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if environmentValue(env, "TEST_APP_KEY") != "" || environmentValue(env, "GITHUB_TOKEN") != "" || strings.Contains(strings.Join(env, "\n"), "caller-token") {
+	if environmentValue(env, "GITHUB_TOKEN") != "" || strings.Contains(strings.Join(env, "\n"), "caller-token") {
 		t.Fatal("inherited credentials escaped")
 	}
 	if environmentValue(env, "GH_TOKEN") != a.token || environmentValue(env, "GH_HOST") != "github.com" || environmentValue(env, "GIT_CONFIG_VALUE_3") != "" || environmentValue(env, "GIT_CONFIG_KEY_4") != "http.https://github.com/erranliu/SteerlineTest.git.extraheader" {
@@ -224,7 +132,7 @@ func TestAuthenticationEnvironmentAndArgumentsNeverExportSecrets(t *testing.T) {
 		t.Fatal(err)
 	}
 	encoded := base64.StdEncoding.EncodeToString([]byte("x-access-token:" + a.token))
-	for _, secret := range []string{a.token, encoded, "private-key-that-must-not-escape", "caller-token"} {
+	for _, secret := range []string{a.token, encoded, "caller-token"} {
 		if strings.Contains(strings.Join(args, " "), secret) {
 			t.Fatal("credential entered argv")
 		}

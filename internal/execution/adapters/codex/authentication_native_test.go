@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"net/http"
-	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -70,20 +69,17 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	}
 	a := testAuthentication(t)
 	if *authenticationHostBroker {
-		a, err = newAuthentication(nil, "https://github.com/erranliu/SteerlineTest.git")
+		a, err = newAuthentication("https://github.com/erranliu/SteerlineTest.git")
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
+	if !*authenticationHostBroker {
+		upstream := http.DefaultTransport.(*http.Transport).Clone()
+		upstream.Proxy = nil
+		a.broker.transport = upstream
+	}
 	r.Auth = a
-	revocation := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "DELETE" || r.URL.Path != "/installation/token" {
-			t.Error("unexpected controlled cleanup")
-		}
-		w.WriteHeader(204)
-	}))
-	t.Cleanup(revocation.Close)
-	a.endpoint = revocation.URL
 	host := process.New(30 * time.Second)
 	canary := a.token
 	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: server, Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Authentication: a, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "diagnostic-generation" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}

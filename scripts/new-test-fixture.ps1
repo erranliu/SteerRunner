@@ -24,9 +24,10 @@ $taskCases = @(Get-SRLiveCases $taskScenario)
 $taskCase = @($taskCases | Where-Object { $_.id -ceq $Case })
 if ($taskCase.Count -ne 1) { throw 'Select an exact registered case; multi-case scenarios require -Case' }
 $taskStability = $taskScenario.driver -eq 'execution-stability'
-if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
 $taskConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
+if ($taskConfig.PSObject.Properties['github_auth'] -or $taskConfig.PSObject.Properties['remote_github_auth']) { throw 'GitHub App authentication is unsupported; use gh login on the execution host' }
 if ($taskConfig.schema -notin @('steerrunner-live-config/v1','steerrunner-live-config/v2')) { throw 'Unsupported live config' }
+if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
 function Read-Setting([string]$Name, [string]$Default = '') {
     $taskProperty = $taskConfig.PSObject.Properties[$Name]
     if ($null -eq $taskProperty -or -not $taskProperty.Value) { return $Default }
@@ -46,7 +47,6 @@ if ($taskScenario.target -eq 'local-codex') {
     $taskVersion = (& $taskCodex --version | Out-String).Trim()
     if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
     $taskExecution = @{adapter='codex-app-server'; target=@{kind='local'}; settings=@{executable=$taskCodex; model=(Read-Setting 'model'); reasoning_effort=(Read-Setting 'reasoning_effort' 'medium')}}
-    if ($taskConfig.PSObject.Properties['github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.github_auth }
 } elseif ($taskScenario.target -in @('orca-environment','orca-local')) {
     $taskOrca = Read-Setting 'orca_executable'
     $taskEnvironment = Read-Setting 'orca_environment'

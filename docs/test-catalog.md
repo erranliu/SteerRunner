@@ -10,7 +10,7 @@
 已注册 L2 一 case、L3 三十一 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 新增远端 `orca-remote.audited/default`、`orca-remote.multirun/default`：
 分别要求原 native 会话中执行/审计模型及发布恢复的实际历史，以及同一服务两个 Run 在停止一方后另一方仍能反馈更新。
-按用户要求移除独立 App 认证 L3 case；可选 App 产品能力与组件边界测试保留，不记为真实 App 验收通过。
+2026-10-19 移除 GitHub App 产品支持；保留旧字段拒绝和 gh 单仓库 broker/Run 隔离测试。已删除的 App L3 不恢复，历史未验结论不改写。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 主线新增本机 Orca 开发及两种权限环境检查；与当前远端审计、多 Run 合并并移除 App 专项后，L3 共二十四场景/三十一 case。

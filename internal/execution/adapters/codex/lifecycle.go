@@ -59,12 +59,10 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 	}
 	var authentication *AuthenticationRuntime
 	if strings.Contains(strings.ToLower(setup.RepositoryURL), "github.com") {
-		authentication, err = newAuthentication(profile.GitHubAuth, setup.RepositoryURL)
+		authentication, err = newAuthentication(setup.RepositoryURL)
 		if err != nil {
 			return nil, err
 		}
-	} else if profile.GitHubAuth != nil {
-		return nil, errors.New("github_auth does not match the fixed repository")
 	}
 	backend := Backend{
 		Config: Config{

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"path/filepath"
@@ -69,7 +70,7 @@ func readRemoteAuthenticationCleanup(dir string, ready RemoteReadiness) (RemoteA
 			Mode   string `json:"mode"`
 		} `json:"broker"`
 	}
-	if json.Unmarshal(raw, &fact) != nil || fact.Session != ready.SessionID || fact.Configuration != ready.ConfigurationDigest || !fact.Revoked || !fact.Broker.Closed || !fact.Broker.Socket {
+	if json.Unmarshal(raw, &fact) != nil || fact.Session != ready.SessionID || fact.Configuration != ready.ConfigurationDigest || !fact.Revoked || !fact.Broker.Closed || !fact.Broker.Socket || fact.Broker.Mode != "host-gh-repository-broker" {
 		return out, errors.New("remote_authentication_cleanup_unverified")
 	}
 	out.Revoked, out.BrokerClosed, out.SocketCleaned, out.Mode = fact.Revoked, fact.Broker.Closed, fact.Broker.Socket, fact.Broker.Mode
@@ -92,7 +93,7 @@ func RevokeRemoteAuthentication(ctx context.Context, q RemoteAuthenticationQuery
 	}
 	var cfg RemoteAgentConfig
 	raw, err = os.ReadFile(filepath.Join(dir, "configuration.json"))
-	if err != nil || json.Unmarshal(raw, &cfg) != nil || cfg.RepositoryURL != ready.Repository || RemoteConfigurationDigest(cfg) != ready.ConfigurationDigest {
+	if err != nil || contracts.DecodeStrict(raw, &cfg) != nil || cfg.RepositoryURL != ready.Repository || RemoteConfigurationDigest(cfg) != ready.ConfigurationDigest {
 		return RemoteAuthenticationCleanup{}, errors.New("remote_authentication_configuration_mismatch")
 	}
 	if proof, e := readRemoteAuthenticationCleanup(dir, ready); e == nil {

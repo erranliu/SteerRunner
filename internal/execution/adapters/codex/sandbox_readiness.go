@@ -37,6 +37,9 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
 	if err := a.validLocked(); err != nil {
 		return "", time.Time{}, err
 	}
+	if a.broker == nil {
+		return "", time.Time{}, errors.New("authentication_broker_unavailable")
+	}
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(a.token)))
 	paths := []string{}
 	for _, root := range roots {
@@ -45,13 +48,7 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
 	if remoteName == "" {
 		remoteName = "origin"
 	}
-	identityProbe := `$raw=@(& gh api installation/repositories --paginate=false 2>$null)
- if ($LASTEXITCODE -ne 0) { throw 'installation rejected' }
- $identity=($raw -join [char]10) | ConvertFrom-Json
- if ($identity.total_count -ne 1 -or $identity.repositories.Count -ne 1 -or $identity.repositories[0].full_name -ine ` + psLiteral(a.repository) + `) { throw 'scope mismatch' }`
-	transportProbe := ""
-	if a.broker != nil && !a.broker.installation {
-		identityProbe = `$ErrorActionPreference='Continue'; $raw=@(& gh api user 2>&1); $code=$LASTEXITCODE; $ErrorActionPreference='Stop'
+	identityProbe := `$ErrorActionPreference='Continue'; $raw=@(& gh api user 2>&1); $code=$LASTEXITCODE; $ErrorActionPreference='Stop'
  if ($code -ne 0) {
   $message=($raw -join [char]10)
   if ($message -match 'x509|certificate|TLS') { $stage='github_identity_trust' }
@@ -60,11 +57,7 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
   throw 'broker identity rejected'
  }
  if ((($raw -join [char]10) | ConvertFrom-Json).login -cne ` + psLiteral(a.broker.login) + `) { throw 'broker identity mismatch' }`
-		transportProbe = `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + ` -or -not [IO.File]::Exists($env:SSL_CERT_FILE)) { throw 'transport filtered' }`
-	}
-	if a.broker != nil && a.broker.installation {
-		transportProbe = `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + `) { throw 'transport filtered' }`
-	}
+	transportProbe := `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + ` -or -not [IO.File]::Exists($env:SSL_CERT_FILE)) { throw 'transport filtered' }`
 	containerValue := "1"
 	if len(modes) > 0 && modes[0] == "danger-full-access" {
 		containerValue = "0"

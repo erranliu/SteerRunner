@@ -155,14 +155,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			r.Request.Workflow.AuditModel = &model
 		}
-		var auth *codex.AuthenticationConfig
-		if settings.GitHubAuth != nil {
-			auth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
-			if err := auth.Validate(); err != nil {
-				return nil, contracts.Fail(2, "invalid_input", err.Error())
-			}
-		}
-		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, GitHubAuth: auth})
+		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
@@ -209,10 +202,6 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			r.Request.Workflow.AuditModel = &model
 			launch.AuditModel = &model
-		}
-		if settings.GitHubAuth != nil {
-			a := settings.GitHubAuth
-			launch.GitHubAuth = &codex.AuthenticationConfig{AppID: a.AppID, InstallationID: a.InstallationID, PrivateKeyEnv: a.PrivateKeyEnv}
 		}
 		profile.RuntimeExecutable = launch.RuntimeExecutable
 		profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256

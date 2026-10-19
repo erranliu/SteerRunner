@@ -121,7 +121,7 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 		return BoundPolicyResources{}, err
 	}
 	payload := PolicyResourcePayload{NativeVersion: version, Contract: permissions.Contract, Settings: command}
-	if request.Host == "local" && settings.GitHubAuth == nil && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
+	if request.Host == "local" && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
 		payload.AuthenticationTransport, err = PlanAuthenticationTransport(request.RunDirectory, request.Workspace, request.RepositoryURL, request.ResourceIdentity)
 		if err != nil {
 			return BoundPolicyResources{}, err

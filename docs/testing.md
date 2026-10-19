@@ -196,8 +196,8 @@ runtime 内存中，worker 只继承随机单仓库 capability，一小时到期
 Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_UNIX 接口；原工具
 仍在 MXC 内执行，原 GitHub URL 保持。socket 位于已有 Git 写入根，证书不安装到系统。
 代理仅允许目标仓库的 Git 上传/下载、身份/仓库只读查询和 PR 查询/创建；禁止其它
-仓库、管理接口、未知 GraphQL 及重定向。可选 `execution.settings.github_auth` 使用
-App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 App 才能测试。
+仓库、管理接口、未知 GraphQL 及重定向。GitHub App 支持已移除：`execution.settings.github_auth`（含 null）严格拒绝；fixture 的旧
+`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。所有正式认证使用执行主机 gh 单仓库 broker。
 宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
 参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
@@ -360,9 +360,8 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 
 当前全 L3 每轮二十四场景三十一 case（远端十八、本机 Codex 五项、本机 Orca 八项）；新增 `orca-remote.audited`、
 `orca-remote.multirun` 分别验证原远端会话逐轮模型切换和同一真实服务内两个 Run 的隔离。
-按用户要求移除独立 App 认证 L3 case 及其测试配置 `remote_github_auth`；保留生产
-`execution.settings.github_auth` 能力及 App 签发、范围、秘密边界、撤销等组件测试。
-移除未执行 case 不构成真实 App 认证通过，也不移除其余管理员故障用例。
+2026-10-19 按个人多机执行器边界移除 App 生产能力及签发测试，保留旧字段拒绝、gh broker
+范围/秘密/到期/停止与多 Run 隔离测试。此前移除的 App L3 不恢复；其历史未验证结论及其他管理员故障用例保持。
 审计 case 的 `audit_model/audit_reasoning_effort` 必须与远端执行模型显式不同，实际模型来自
 同一原始 native history 的 `turn_context`，发布还须验证切回执行模型。
 

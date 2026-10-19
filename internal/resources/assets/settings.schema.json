@@ -136,30 +136,6 @@
           ],
           "default": "medium"
         },
-        "github_auth": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "app_id",
-            "installation_id",
-            "private_key_env"
-          ],
-          "properties": {
-            "app_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "installation_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "private_key_env": {
-              "type": "string",
-              "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
-            }
-          },
-          "description": "Execution-host GitHub App key reference. Runner requests one repository, contents/PR write only. Never embed a key or token."
-        },
         "access_mode": {
           "enum": [
             "sandbox",
@@ -175,10 +151,6 @@
       "type": "object",
       "additionalProperties": false,
       "allOf": [
-        {
-          "if": {"required": ["agent"], "properties": {"agent": {"not": {"const": "codex"}}}},
-          "then": {"not": {"required": ["github_auth"]}}
-        },
         {
           "if": {
             "required": [
@@ -375,30 +347,6 @@
           ],
           "default": "sandbox",
           "description": "Frozen explicit permission mode. Both modes use native never; no approval or fallback."
-        },
-        "github_auth": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "app_id",
-            "installation_id",
-            "private_key_env"
-          ],
-          "properties": {
-            "app_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "installation_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "private_key_env": {
-              "type": "string",
-              "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
-            }
-          },
-          "description": "Execution-host GitHub App key reference. Runner requests one repository, contents/PR write only. Never embed a key or token."
         }
       }
     }

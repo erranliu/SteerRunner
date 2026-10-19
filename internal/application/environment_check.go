@@ -161,9 +161,6 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 		} else {
 			_ = json.Unmarshal(value.Execution.Settings, &settings)
 		}
-		if settings.GitHubAuth != nil {
-			return reject(contracts.Fail(3, "unsupported_capability", "Check write gating currently supports host-gh-repository-broker; installation-token checks require an equivalent native write gate."))
-		}
 		if settings.AccessMode == "" {
 			settings.AccessMode = "sandbox"
 		}

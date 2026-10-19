@@ -1,5 +1,7 @@
 # 沙箱认证专属验收
 
+2026-10-19 当前产品边界及 gh-only 变更见[专项记录](personal-runner-gh-only-20261019.md)。下文保留各历史构建的实际认证来源与验收结论，App 相关记录不表示当前版本支持。
+
 归属 [Spec](../spec/sandbox-authentication.spec.md) / [Plan](../spec/sandbox-authentication.plan.md)。
 开始日期：2026-10-16。旧 L2/L3 的成功记录保持，含沙箱外审批的结果不证明本次新要求。
 

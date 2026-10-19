@@ -43,7 +43,7 @@ func TestAuthenticationBrokerScopeAndSecretBoundary(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer broker.close()
-	a, _ := newAuthentication(nil, "https://github.com/erranliu/SteerlineTest.git")
+	a, _ := newAuthentication("https://github.com/erranliu/SteerlineTest.git")
 	a.broker, a.token, a.expires = broker, broker.capability, broker.expires
 	runtime := &workerRuntime{Shell: os.Args[0], Temp: t.TempDir(), Auth: a}
 	if err = broker.installPublicCA(runtime.Temp); err != nil {
@@ -245,6 +245,49 @@ func TestExecutionHostGHCreateWireRetainsRepositoryBoundary(t *testing.T) {
 		body, _ := json.Marshal(map[string]any{"query": query})
 		if broker.permitGraphQL(body) {
 			t.Fatal("gh metadata compatibility widened the field boundary")
+		}
+	}
+}
+
+func TestGHBrokerRunIsolationAndIndependentCleanup(t *testing.T) {
+	first, peer := testAuthentication(t), testAuthentication(t)
+	firstCap, peerCap := first.token, peer.token
+	if firstCap == peerCap || first.broker.address == peer.broker.address {
+		t.Fatal("Runs shared authentication resources")
+	}
+	request := func(a *AuthenticationRuntime, cap string) int {
+		req, _ := http.NewRequest(http.MethodGet, "https://api.github.com/repos/erranliu/SteerlineTest", nil)
+		req.Header.Set("Authorization", "Bearer "+cap)
+		res := a.broker.forward(req)
+		defer res.Body.Close()
+		return res.StatusCode
+	}
+	if request(first, peerCap) != 401 || request(peer, firstCap) != 401 || request(peer, peerCap) != 200 {
+		t.Fatal("Run capabilities crossed owners")
+	}
+	closes := 0
+	first.onClose = func(ok bool) {
+		if !ok {
+			t.Error("original Run cleanup unconfirmed")
+		}
+		closes++
+	}
+	if !first.Close() || !first.Close() || closes != 1 {
+		t.Fatal("Run closure not idempotent")
+	}
+	if request(first, firstCap) != 401 || request(peer, peerCap) != 200 {
+		t.Fatal("stopping one Run affected another or left its capability usable")
+	}
+	if err := first.prepare(context.Background()); err == nil {
+		t.Fatal("stopped Run recreated authentication")
+	}
+	if err := peer.prepare(context.Background()); err != nil || peer.token != peerCap {
+		t.Fatal("live peer credential replaced", err)
+	}
+	for _, a := range []*AuthenticationRuntime{first, peer} {
+		raw, _ := json.Marshal(a.broker.facts())
+		if strings.Contains(string(raw), "controlled-host-secret") || strings.Contains(string(raw), firstCap) || strings.Contains(string(raw), peerCap) {
+			t.Fatal("authentication secret in durable facts")
 		}
 	}
 }

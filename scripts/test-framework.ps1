@@ -27,6 +27,18 @@ foreach ($taskCase in $taskCases) {
     if ($taskSummary.status -ne 'failed' -or @($taskSummary.results).Count -ne 0 -or $taskSummary.error -notmatch $taskCase.error) { throw "Guard performed work or failed for the wrong reason: $($taskCase.name)" }
     $taskResults += @{name=$taskCase.name;passed=$true}
 }
+# Retired auth fields must be rejected before native/Orca/Git fixture effects.
+foreach ($taskRetiredField in @('github_auth','remote_github_auth')) {
+    $taskRetiredConfig = Join-Path $taskEvidence ($taskRetiredField + '.json')
+    $taskRetiredInput = @{schema='steerrunner-live-config/v1'}
+    $taskRetiredInput[$taskRetiredField] = $null
+    [IO.File]::WriteAllText($taskRetiredConfig,($taskRetiredInput|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+    $taskRetiredRoot = Join-Path $taskEvidence ($taskRetiredField + '-fixtures')
+    $taskRetiredLog = Join-Path $taskEvidence ($taskRetiredField + '.log')
+    & $taskShell -NoProfile -File (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario 'orca-remote.smoke' -Config $taskRetiredConfig -FixtureParent $taskRetiredRoot *> $taskRetiredLog
+    if ($LASTEXITCODE -ne 1 -or (Test-Path -LiteralPath $taskRetiredRoot) -or -not (Select-String -LiteralPath $taskRetiredLog -Pattern 'GitHub App authentication is unsupported' -Quiet)) { throw 'Legacy App input was ignored or reached fixture effects' }
+    $taskResults += @{name=('retired-auth-' + $taskRetiredField);passed=$true}
+}
 $taskCheckRoot = Join-Path $taskEvidence 'checker'
 New-Item -ItemType Directory -Path (Join-Path $taskCheckRoot 'evidence') | Out-Null
 $taskFile = Join-Path $taskCheckRoot 'evidence/native-101.md'

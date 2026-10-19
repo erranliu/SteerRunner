@@ -31,7 +31,7 @@ func PrepareTerminalAuthentication(ctx context.Context, workspace, remote, state
 	if err != nil {
 		return nil, err
 	}
-	auth, err := newAuthentication(nil, remote)
+	auth, err := newAuthentication(remote)
 	if err != nil {
 		return nil, err
 	}

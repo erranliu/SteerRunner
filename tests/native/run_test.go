@@ -502,14 +502,8 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 						t.Error("worker authentication cleanup is unverified", readErr)
 					}
 					if m.Level == "L2" {
-						var settings contracts.CodexSettings
-						if err := json.Unmarshal(m.Execution.Settings, &settings); err != nil {
+						if err := livetest.CheckBrokerCleanup(body); err != nil {
 							t.Error(err)
-						}
-						if settings.GitHubAuth == nil {
-							if err := livetest.CheckBrokerCleanup(body); err != nil {
-								t.Error(err)
-							}
 						}
 					}
 					save(t, "authentication-cleanup.json", cleanup)

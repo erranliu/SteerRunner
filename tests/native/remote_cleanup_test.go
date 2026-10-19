@@ -55,9 +55,6 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 			return nil, errors.New("remote cleanup helper was not frozen")
 		}
 		expectedMode := "host-gh-repository-broker"
-		if settings.GitHubAuth != nil {
-			expectedMode = "github-app-repository-broker"
-		}
 		if proof.Mode != expectedMode {
 			return nil, errors.New("remote cleanup authentication source changed")
 		}

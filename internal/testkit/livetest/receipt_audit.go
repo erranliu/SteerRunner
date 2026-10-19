@@ -34,10 +34,6 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 		mode = "sandbox"
 	}
 	config := codex.RemoteAgentConfig{AuditModel: m.AuditModel, Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: mode, RepositoryURL: RemoteURL}
-	if s.GitHubAuth != nil {
-		auth := s.GitHubAuth
-		config.GitHubAuth = &codex.AuthenticationConfig{AppID: auth.AppID, InstallationID: auth.InstallationID, PrivateKeyEnv: auth.PrivateKeyEnv}
-	}
 	return NativeReceiptAuditPolicy{Executable: a.RuntimeExecutable, SHA256: a.RuntimeSHA256, AccessMode: mode, Environment: m.Execution.Target.Environment, ConfigurationDigest: codex.RemoteConfigurationDigest(config)}
 }
 
@@ -391,7 +387,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 					}
 					body, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(strings.TrimSpace(line), codex.RemoteAuthenticationPrefix))
 					var proof codex.RemoteAuthenticationCleanup
-					if e != nil || json.Unmarshal(body, &proof) != nil || !sameReceiptReady(*ready, proof.Readiness) || !proof.Revoked || !proof.BrokerClosed || !proof.SocketCleaned || proof.Mode != "host-gh-repository-broker" && proof.Mode != "github-app-repository-broker" {
+					if e != nil || json.Unmarshal(body, &proof) != nil || !sameReceiptReady(*ready, proof.Readiness) || !proof.Revoked || !proof.BrokerClosed || !proof.SocketCleaned || proof.Mode != "host-gh-repository-broker" {
 						a.invalid = true
 					} else {
 						a.read = true

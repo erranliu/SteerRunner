@@ -25,7 +25,6 @@ import (
 // the machine that runs this helper, never transported by the Orca caller.
 type RemoteAgentConfig struct {
 	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
-	GitHubAuth      *AuthenticationConfig   `json:"github_auth,omitempty"`
 	Executable      string                  `json:"executable"`
 	Args            []string                `json:"args,omitempty"`
 	Model           string                  `json:"model,omitempty"`
@@ -113,12 +112,11 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth, err := newAuthentication(c.GitHubAuth, c.RepositoryURL)
+	auth, err := newAuthentication(c.RepositoryURL)
 	if err != nil {
 		return err
 	}
 	defer auth.Close()
-	auth.repositoryBroker = true
 	if err = auth.prepare(ctx); err != nil {
 		return err
 	}
@@ -277,9 +275,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	// Only the app-server receives capability-bearing environment. Its frozen
 	// policy owns all tool execution; native --remote rejects client overrides.
 	blocked := []string{"GH_TOKEN", "GITHUB_TOKEN", remoteModelTokenEnv}
-	if c.GitHubAuth != nil {
-		blocked = append(blocked, c.GitHubAuth.PrivateKeyEnv)
-	}
 	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", blocked)
 	if bridgeToken != "" {
 		tui.Env = setEnvironmentValues(tui.Env, map[string]string{remoteModelTokenEnv: bridgeToken})
@@ -364,7 +359,7 @@ func AuditRemoteAgent(ctx context.Context, wd, session string) (RemoteAudit, err
 	}
 	var c RemoteAgentConfig
 	raw, err = os.ReadFile(filepath.Join(dir, "configuration.json"))
-	if err != nil || json.Unmarshal(raw, &c) != nil {
+	if err != nil || b.DecodeStrictJSON(raw, &c, "remote audit configuration has trailing JSON") != nil {
 		return audit, errors.New("remote audit configuration unavailable")
 	}
 	if RemoteConfigurationDigest(c) != audit.Readiness.ConfigurationDigest {

@@ -2,9 +2,19 @@
 
 日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
-最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
+历史用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
 扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
+
+## 当前产品边界（2026-10-19）
+
+SteerRunner 面向个人，在本人管理和信任的多台执行主机上运行冻结的 Spec/Plan。调用方指定本机或已配对 Orca environment；SteerLine 负责任务规划、DAG、目标选择和最终交付组织。Runner 负责独立 Run、环境检查、执行事实、反馈、显式恢复、停止和可核验 PR。
+
+每台执行机由用户安装工具、登录 gh 并准备固定仓库/base；Runner 不复制调用方凭据，也不自动安装、修复登录、提升 OS 权限或迁移正在执行的 Run。当前平台和 agent 支持仍以 capabilities 与对应验收矩阵为准，个人多机定位不代表所有 OS/agent 已通过验证。
+
+GitHub 认证统一为执行主机已有 gh 登录的单仓库 broker。各 Run/Check 独立 capability、期限、操作边界、socket 与清理证明；停止一个 Run 不退出宿主登录、不撤销其他 Run。保留多 Run、双模型审计、sandbox/full_access 显式选择和未知结果零重发。
+
+本阶段不提供 GitHub App 签发/私钥管理、团队/多租户账号系统、集中密钥托管或自动跨机故障迁移。移除 `execution.settings.github_auth`，所有形态（含 null）在 Run/Check 接受前返回 invalid_input；内部 profile/helper 配置同样严格拒绝，不能静默切换身份。旧 App 执行必须用原版本完成停止和认证收尾后升级；历史请求/报告保留，不转换为新身份或本构建资格。
 
 ## 1. 目标、依据与首版范围
 
@@ -249,7 +259,7 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
 
 | 配置 | 字段及默认值 |
 | --- | --- |
-| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。GitHub worker 默认使用执行主机 gh 登录的单仓库代理；可选 `github_auth` 包含正整数 `app_id`/`installation_id` 和环境变量名 `private_key_env`。无权限覆盖字段，固定 workspace-write/MXC/network enabled/never |
+| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。GitHub worker 使用执行主机 gh 登录的单仓库代理；`github_auth` 已移除，含 null 也返回 invalid_input。无权限覆盖字段，固定 workspace-write/MXC/network enabled/never |
 | Orca settings.transport | `executable` 默认 `orca.exe`；`args` 默认空数组；`wait_timeout` 默认 `30s`，Go duration，须大于 0 且不超过 1 分钟。args 不得覆盖 environment/pairing-code，路由来自冻结 target |
 | Orca settings.agent_launch | `executable` 默认 `codex`；`args` 默认空数组；可选 `model`、`reasoning_effort`（同枚举，省略继承工具）。transport 与 agent_launch 不混用 |
 | command provider settings | 必填 `base_url`、`query.executable`、非空 `query.args`；可选 `authentication_refs`（环境认证的引用名称数组，不是凭据值）。实际查询协议/身份沿用提取的 provider |
@@ -325,7 +335,7 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 GitHub worker 的 W05–W07 新增可信执行主机认证准备与确定性原生沙箱检查，
 固定权限改为 workspace-write/MXC/network enabled/approval never，关闭 shell snapshot。
-不再申请自动审核发布。单仓库认证代理、可选 App 引用、进程环境、期限、失败零业务输入及远端能力
+不再申请自动审核发布。单仓库认证代理、进程环境、期限、失败零业务输入及远端能力
 边界见[认证契约](sandbox-authentication.spec.md)；W16 原发布责任和未知结果对账保持。
 本机可执行此准备；Orca terminal 缺同沙箱确定性能力时在业务前阻断，不接受模型检查声明。
 

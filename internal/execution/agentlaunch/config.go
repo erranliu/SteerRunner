@@ -14,15 +14,14 @@ import (
 
 // Config targets a PowerShell terminal on the execution host.
 type Config struct {
-	AuditModel        *workflow.ModelSettings     `json:"audit_model,omitempty"`
-	GitHubAuth        *codex.AuthenticationConfig `json:"github_auth,omitempty"`
-	RuntimeExecutable string                      `json:"runtime_executable,omitempty"`
-	RepositoryURL     string                      `json:"repository_url,omitempty"`
-	AccessMode        string                      `json:"access_mode,omitempty"`
-	Executable        string                      `json:"executable"`
-	Args              []string                    `json:"args,omitempty"`
-	Model             string                      `json:"model,omitempty"`
-	ReasoningEffort   string                      `json:"reasoning_effort,omitempty"`
+	AuditModel        *workflow.ModelSettings `json:"audit_model,omitempty"`
+	RuntimeExecutable string                  `json:"runtime_executable,omitempty"`
+	RepositoryURL     string                  `json:"repository_url,omitempty"`
+	AccessMode        string                  `json:"access_mode,omitempty"`
+	Executable        string                  `json:"executable"`
+	Args              []string                `json:"args,omitempty"`
+	Model             string                  `json:"model,omitempty"`
+	ReasoningEffort   string                  `json:"reasoning_effort,omitempty"`
 }
 
 func (c *Config) Clone() *Config {
@@ -34,10 +33,6 @@ func (c *Config) Clone() *Config {
 	if c.AuditModel != nil {
 		model := *c.AuditModel
 		copy.AuditModel = &model
-	}
-	if c.GitHubAuth != nil {
-		auth := *c.GitHubAuth
-		copy.GitHubAuth = &auth
 	}
 	return &copy
 }
@@ -116,7 +111,7 @@ func (c *Config) Command(agent string) (string, error) {
 }
 
 func (c *Config) RemoteConfig() codex.RemoteAgentConfig {
-	return codex.RemoteAgentConfig{AuditModel: c.AuditModel, GitHubAuth: c.GitHubAuth, Executable: c.Executable, Args: c.Args, Model: c.Model, ReasoningEffort: c.ReasoningEffort, AccessMode: c.AccessMode, RepositoryURL: c.RepositoryURL}
+	return codex.RemoteAgentConfig{AuditModel: c.AuditModel, Executable: c.Executable, Args: c.Args, Model: c.Model, ReasoningEffort: c.ReasoningEffort, AccessMode: c.AccessMode, RepositoryURL: c.RepositoryURL}
 }
 func (c *Config) Display() []string {
 	if c == nil {
