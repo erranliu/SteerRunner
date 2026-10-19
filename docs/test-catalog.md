@@ -4,13 +4,14 @@
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-18** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-19** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十四 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十二场景二十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
-在原 L3 十四场景/二十一 case 基础上新增本机 Orca 开发及两种权限环境检查，当前为十七场景/二十四 case。
+配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
+缺配置项记 unavailable，完整请求不缩小，完整级别通过独立计算；规则及本轮证据见[独立配置验收](acceptance/independent-configuration.md)。
 新增项采用本机原生查询、远程订阅加补查；协议差异及实际结果见[专属验收](acceptance/orca-local-remote.md)；下文已有真机通过
 记录仍绑定原构建，不继承为新构建资格。
 
@@ -91,13 +92,13 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `local-codex.feedback` | `default` | 明确发送一次反馈，取得更新的 UTC/new commit，复用原 session/Attempt/工作区/分支/PR，再验证合入及完整停止 | `merged` | 本机原生进程及 capability 按 Run 隔离；已与 audited 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.audited` | `default` | 两实际不同模型完成 Spec/代码两项审计并切回执行模型发布；同会话、同实施报告来源、真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个接受真实反馈并更新同一 PR，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
-| `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR，沿用主线环境检查判据；原真机记录见[环境检查验收](acceptance/environment-check.md)，整合后未重跑真机/并行资格 |
-| `environment-check.local-full-access` | `complete` | 显式 full_access 的实际权限与认证/工具/资源闭环，验证模式生效及其独立能力契约 | 同上；实际模式必须为 `full_access` | 独立 Check 资源；不能借 sandbox 结果代替本模式；来源及整合后缺口同上 |
+| `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR；本轮串行真机通过，PR #556 关闭并收尾，见[独立配置验收](acceptance/independent-configuration.md)；并行资格另验 |
+| `environment-check.local-full-access` | `complete` | 显式 full_access 的实际权限与认证/工具/资源闭环，验证模式生效及其独立能力契约 | 同上；实际模式必须为 `full_access` | 独立 Check 资源；不能借 sandbox 结果代替本模式；本轮缺该模式配置，记 unavailable，历史结果见[环境检查验收](acceptance/environment-check.md) |
 | `environment-check.orca-sandbox` | `complete` | 执行主机认证、同 app-server 的 MXC 预检、实际 Agent 的 Git/PR 全部十二项与原对象收尾 | `checked`，Check passed/completed；owned PR 关闭不合入、owned 引用/目录删除、writer 停止 | 安装可信 `steerrunner-agent`；原 runtime/terminal incarnation/native session 与工具调用绑定；新场地独立验证，不能借本机结果 |
 | `environment-check.orca-full-access` | `complete` | 显式 full_access 的远端同权限预检及实际工具闭环；不能回退或借用 MXC 证据 | 同上；实际模式必须为 `full_access` | 与 sandbox 分开冻结和判定；检查会话、引用、PR、目录和认证 capability 独立 |
 
 远端共同前置为 L1、完整 Controlled、指定 Orca CLI、已配对 environment、远端同名
-Git 项目和执行主机认证。12 个可靠性 case 另需稳定性 v2 配置和故障取证工具。
+Git 项目和执行主机认证。12 个可靠性 case 另需新测试配置中对应角色、harness.admin_host 和故障取证工具。
 `active-disconnect`、`pre-send-disconnect`、两个 publication case、两个 restart boundary case 以及 stop 的
 `boundary/unreachable` 需管理员网络宿主，其余无需该宿主。网络故障限各现场专属
 Runner/helper/Node；共享管理员宿主的队列回执归属、恢复动作与 watchdog 也需并发验证。

@@ -25,7 +25,18 @@ try {
         $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1 -or (Select-String -LiteralPath (Join-Path $taskRecord.evidence 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled case failed, skipped or did not execute exactly once' }
     } else {
-        $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -FeedbackQualification $taskJob.feedback_qualification)
+        foreach ($taskArtifact in @(@{identity='configuration_sha256';path='config'},@{identity='runner_sha256';path='runner_exe'},@{identity='helper_sha256';path='config_helper'})) {
+            $taskExpected=$taskJob.PSObject.Properties[$taskArtifact.identity]
+            if ($taskExpected -and $taskExpected.Value) {
+                $taskPath=[string]$taskJob.($taskArtifact.path)
+                if ((Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskExpected.Value) { throw ('Frozen batch artifact changed: ' + $taskArtifact.identity) }
+            }
+        }
+        $taskExpectedIdentities=@{}
+        foreach ($taskIdentity in @(@{field='configuration_sha256';parameter='ConfigurationSHA256'},@{field='runner_sha256';parameter='RunnerSHA256'},@{field='helper_sha256';parameter='HelperSHA256'},@{field='requirements_sha256';parameter='RequirementsSHA256'})) {
+            if ($taskJob.PSObject.Properties[$taskIdentity.field]) { $taskExpectedIdentities[$taskIdentity.parameter]=[string]$taskJob.($taskIdentity.field) }
+        }
+        $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -FeedbackQualification $taskJob.feedback_qualification -RunnerExe $taskJob.runner_exe -ConfigHelper $taskJob.config_helper @taskExpectedIdentities)
         $taskRecord.evidence = Join-Path (Split-Path -Parent $taskRecord.manifest) 'evidence'
         $taskRecord.status = 'running'
         Save-Case

@@ -1,0 +1,7 @@
+{
+  "configuration_contract": "passed",
+  "complete_level_passed": false,
+  "missing_count": 29,
+  "missing_batch": "incomplete",
+  "independent_dispatch": "passed"
+}

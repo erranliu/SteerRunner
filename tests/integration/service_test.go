@@ -228,6 +228,21 @@ func TestSRStandalonePackage(t *testing.T) {
 	if data["execution"].(map[string]any)["status"] != "implemented" {
 		t.Fatal("execution capability is missing")
 	}
+	source := data["capability_source"].(map[string]any)
+	if source["kind"] != "service" || source["instance_id"] != info.InstanceID || source["executable_sha256"] != info.ExecutableSHA256 || source["resource_digest"] != info.ResourceDigest {
+		t.Fatal("online capabilities lost responding service identity", source)
+	}
+	onlineCatalog, _ := json.Marshal(data["capability_catalog"])
+	response, exit, _, err = invoke(copyEXE, []string{"capabilities", "--offline", "--json"}, "")
+	if err != nil || exit != 0 || !response.OK {
+		t.Fatal("standalone offline capabilities failed", err)
+	}
+	offline := response.Data.(map[string]any)
+	source = offline["capability_source"].(map[string]any)
+	offlineCatalog, _ := json.Marshal(offline["capability_catalog"])
+	if source["kind"] != "executable" || source["instance_id"] != nil || source["executable_sha256"] != info.ExecutableSHA256 || source["resource_digest"] != info.ResourceDigest || string(onlineCatalog) != string(offlineCatalog) {
+		t.Fatal("offline build identity or static catalog changed", source)
+	}
 	request := `{"protocol":"steerrunner-cli/v1","request_id":"unsupported-submit","input":{"title":"中文","repository":{"url":"https://example.invalid/owner/repo.git","remote":"origin","base_branch":"main","base_revision":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"documents":{"spec":{"kind":"inline","path":"spec.md","content":"Spec"},"plan":{"kind":"inline","path":"plan.md","content":"Plan"}},"workflow":{"id":"development","version":1},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"executable":"steerrunner-nonexistent-native.exe"}},"publication":{"provider":"gitea","repository":"owner/repo","base_branch":"main","settings":{"base_url":"https://example.invalid"}}}}`
 	response, exit, _, err = invoke(copyEXE, []string{"submit", "--state-dir", dir, "--input", "-", "--json"}, request)
 	if err != nil || exit != 4 || response.Error == nil || response.Error.Code != "environment_unavailable" {

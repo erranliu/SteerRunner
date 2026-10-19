@@ -29,6 +29,10 @@ func Read(name string) []byte {
 }
 
 func Digest() string {
+	return resourceDigest(Catalog())
+}
+
+func resourceDigest(catalog CapabilityCatalog) string {
 	names, err := fs.Glob(assets, "assets/*")
 	if err != nil {
 		panic("invalid embedded resource glob")
@@ -45,6 +49,8 @@ func Digest() string {
 	}
 	digest.Write([]byte("published-configuration\x00"))
 	digest.Write(ConfigurationSchemas())
+	digest.Write([]byte("capability-catalog\x00"))
+	digest.Write(marshal(catalog))
 	return hex.EncodeToString(digest.Sum(nil))
 }
 
@@ -73,7 +79,8 @@ func Capabilities() any {
 		"workflow":              json.RawMessage(Read("development.json")),
 		"workflows":             workflow.Catalog(),
 		"configuration_schemas": ConfigurationSchemas(),
+		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate"},
 	}
 }

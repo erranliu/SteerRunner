@@ -236,7 +236,8 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		return contracts.Success("", info), false
 	case "capabilities":
-		return contracts.Success("", resources.Capabilities()), false
+		info := s.endpoint.Service
+		return contracts.Success("", resources.CapabilitiesFrom(resources.CapabilitySource{Kind: "service", Version: info.Version, Protocol: info.Protocol, ExecutableSHA256: info.ExecutableSHA256, ResourceDigest: info.ResourceDigest, InstanceID: info.InstanceID})), false
 	case "service stop":
 		if wire.Request == nil {
 			return reject(contracts.Fail(2, "invalid_request", "A stop request is required."))

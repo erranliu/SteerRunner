@@ -1,7 +1,9 @@
 package livetest
 
 import (
+	"crypto/sha256"
 	"embed"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -10,10 +12,33 @@ import (
 //go:embed cases.json
 var caseFiles embed.FS
 
+func RegistryDigest() string {
+	raw, _ := caseFiles.ReadFile("cases.json")
+	sum := sha256.Sum256(raw)
+	return hex.EncodeToString(sum[:])
+}
+
 type Case struct {
-	ID      string `json:"id"`
-	Outcome string `json:"outcome"`
-	Test    string `json:"test,omitempty"`
+	ID           string        `json:"id"`
+	Outcome      string        `json:"outcome"`
+	Test         string        `json:"test,omitempty"`
+	Requirements *Requirements `json:"requirements,omitempty"`
+}
+
+type RoleRequirement struct {
+	Configuration   string `json:"configuration"`
+	Adapter         string `json:"adapter"`
+	TargetKind      string `json:"target_kind"`
+	Agent           string `json:"agent"`
+	AccessMode      string `json:"access_mode"`
+	Workflow        string `json:"workflow,omitempty"`
+	DifferentModels bool   `json:"different_models,omitempty"`
+}
+type Requirements struct {
+	Roles       map[string]RoleRequirement `json:"roles"`
+	Operation   string                     `json:"operation"`
+	Publication bool                       `json:"publication"`
+	Admin       bool                       `json:"admin"`
 }
 type Scenario struct {
 	ID             string `json:"id"`

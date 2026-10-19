@@ -8,23 +8,35 @@ param(
     [string]$FixtureParent = 'C:\srt',
     [int]$Repeat = 1,
     [int]$MaxParallel = 1,
-    [switch]$SkipAdminRequired
+    [switch]$SkipAdminRequired,
+    [switch]$ListAvailability,
+    [string]$RunnerExe = '',
+    [string]$ConfigHelper = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'live-catalog.ps1')
 . (Join-Path $PSScriptRoot 'test-scheduler.ps1')
+. (Join-Path $PSScriptRoot 'test-configuration.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FeedbackQualification','FixtureParent')) {
+    $taskValue = Get-Variable -Name $taskParameter -ValueOnly
+    if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
+}
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
-if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/tests-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0,6)) }
-$taskOut = [IO.Path]::GetFullPath($OutDir)
-if (Test-Path -LiteralPath $taskOut) { throw 'Test report directory must be new' }
-New-Item -ItemType Directory -Path $taskOut | Out-Null
+if (-not $OutDir -and -not $ListAvailability) { $OutDir = Join-Path $taskRepo ('.evidence/tests-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0,6)) }
+$taskOut = if($OutDir){[IO.Path]::GetFullPath($OutDir)}else{''}
+if ($taskOut) {
+    if (Test-Path -LiteralPath $taskOut) { throw 'Test report directory must be new' }
+    New-Item -ItemType Directory -Path $taskOut | Out-Null
+}
 $taskSummary = [ordered]@{schema='steerrunner-test-report/v1';source_commit=(& git -C $taskRepo rev-parse HEAD).Trim();source_dirty=-not [string]::IsNullOrWhiteSpace((& git -C $taskRepo status --porcelain | Out-String));started_at=[DateTime]::UtcNow.ToString('o');requested_levels=$Level;status='running';results=@()}
 $taskSummary['executed_case_count']=0
 $taskSummary['passed_case_count']=0
 $taskSummary['first_pass_rate']=0
-function Save-Summary { $taskTemporary=Join-Path $taskOut 'summary.json.tmp';[IO.File]::WriteAllText($taskTemporary,($taskSummary|ConvertTo-Json -Depth 30),[Text.UTF8Encoding]::new($false));[IO.File]::Move($taskTemporary,(Join-Path $taskOut 'summary.json'),$true) }
+function Save-Summary { if(-not $taskOut){return}; $taskTemporary=Join-Path $taskOut 'summary.json.tmp';[IO.File]::WriteAllText($taskTemporary,($taskSummary|ConvertTo-Json -Depth 70),[Text.UTF8Encoding]::new($false));[IO.File]::Move($taskTemporary,(Join-Path $taskOut 'summary.json'),$true) }
+$taskExitCode = 2
+$taskExpanded = @()
 Save-Summary
 Push-Location $taskRepo
 try {
@@ -52,19 +64,47 @@ try {
     if (@($Scenario | Select-Object -Unique).Count -ne $Scenario.Count) { throw 'Duplicate scenario selection' }
     foreach ($taskID in $Scenario) { if (@($taskSelected | Where-Object { $_.id -eq $taskID }).Count -ne 1) { throw "Scenario was not selected by the requested levels: $taskID" } }
     foreach ($taskLiveLevel in @('L2','L3','L4')) { if ($taskLiveLevel -in $Level -and @($taskSelected | Where-Object { $_.level -eq $taskLiveLevel }).Count -eq 0) { throw "No scenario matched $taskLiveLevel" } }
-    if (@($taskSelected | Where-Object { $_.target -ne 'controlled' }).Count -gt 0 -and (-not $Config -or -not (Test-Path -LiteralPath $Config))) { throw 'Live levels require an explicit non-secret config; see tests/live-config.example.json' }
-    if (@($taskSelected | Where-Object { $_.driver -eq 'development-audited' }).Count) {
-        $taskAuditConfig=Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
-        $taskExecutionModel=$taskAuditConfig.PSObject.Properties['model']
-        $taskAuditModel=$taskAuditConfig.PSObject.Properties['audit_model']
-        if (-not $taskExecutionModel -or -not $taskAuditModel -or [string]::IsNullOrWhiteSpace([string]$taskExecutionModel.Value) -or [string]::IsNullOrWhiteSpace([string]$taskAuditModel.Value) -or $taskExecutionModel.Value -ceq $taskAuditModel.Value) { throw 'Audited scenario requires two explicit, different model and audit_model values before any fixture is created' }
+    if ($ListAvailability -and @($Level | Where-Object {$_ -notin @('L2','L3')}).Count) { throw 'Availability only supports L2/L3 selections' }
+    $taskAssessment = $null
+    $taskLiveSelected = @($taskSelected | Where-Object {$_.target -ne 'controlled'})
+    if ($taskLiveSelected.Count) {
+        if (-not $RunnerExe) {
+            $RunnerExe = if($ListAvailability){Join-Path $taskRepo 'bin/steerrunner.exe'}else{Join-Path $taskOut 'bin/steerrunner.exe'}
+            if (-not $ListAvailability) { & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $RunnerExe | Out-Host }
+        }
+        if (-not $ConfigHelper) {
+            $ConfigHelper = if($ListAvailability){Join-Path $taskRepo 'bin/test-config.exe'}else{Join-Path $taskOut 'bin/test-config.exe'}
+            if (-not $ListAvailability) { & go build -trimpath -o $ConfigHelper ./tests/helpers/native; if($LASTEXITCODE -ne 0){throw 'Test configuration helper build failed'} }
+        }
+        $taskAssessment = Get-SRTestConfiguration -RunnerExe $RunnerExe -Helper $ConfigHelper -Config $Config
+        $taskSummary['baseline'] = @{configuration_issues=@($taskAssessment.baseline);l2_verified=$false}
+        $taskSummary['availability'] = @($taskAssessment.cases | Where-Object {$_.scenario_id -in @($taskSelected.id)})
+        $taskSummary['runner_exe'] = $taskAssessment.runner_exe
+        $taskSummary['runner_sha256'] = $taskAssessment.runner_sha256
+        $taskSummary['resource_digest'] = $taskAssessment.resource_digest
+        $taskSummary['source_config_digest'] = $taskAssessment.source_digest
+        $taskSummary['requirements_sha256'] = $taskAssessment.requirements_digest
+        $taskSummary['helper_sha256'] = $taskAssessment.helper_sha256
+        if ($ListAvailability) {
+            $taskSummary.status='availability'
+            Save-Summary
+            $taskSummary | ConvertTo-Json -Depth 70
+            exit 0
+        }
+        $Config = Join-Path $taskOut 'frozen-config.json'
+        [IO.File]::WriteAllText($Config,($taskAssessment.configuration | ConvertTo-Json -Depth 60),[Text.UTF8Encoding]::new($false))
+        $taskSummary['configuration_sha256'] = (Get-FileHash -LiteralPath $Config -Algorithm SHA256).Hash.ToLowerInvariant()
+        # Workers consume the batch catalog rather than a mutable caller file.
+        $Catalog = Join-Path $taskOut 'frozen-catalog.json'
+        [IO.File]::WriteAllText($Catalog,($taskCatalog | ConvertTo-Json -Depth 60),[Text.UTF8Encoding]::new($false))
     }
     $taskExpanded = @()
     foreach ($taskRound in 1..$Repeat) {
         foreach ($taskEntry in @($taskSelected | Sort-Object { if ($_.level -eq 'L4') { 1 } else { 0 } })) {
             foreach ($taskCase in @(Get-SRLiveCases $taskEntry)) {
                 $taskExcluded = $SkipAdminRequired -and (Test-SRAdminCase $taskEntry.id $taskCase.id)
-                $taskExpanded += @{entry=$taskEntry;case=$taskCase;repeat_index=$taskRound;excluded=$taskExcluded}
+                $taskAvailability = if($taskEntry.target -eq 'controlled'){$null}else{@($taskSummary.availability | Where-Object {$_.scenario_id -ceq $taskEntry.id -and $_.case_id -ceq $taskCase.id})[0]}
+                $taskExpanded += @{entry=$taskEntry;case=$taskCase;repeat_index=$taskRound;excluded=$taskExcluded;unavailable=($null -ne $taskAvailability -and $taskAvailability.availability -ne 'available');availability=$taskAvailability}
             }
         }
     }
@@ -73,10 +113,16 @@ try {
     $taskSummary['planned_case_count'] = $taskExpanded.Count
     $taskSummary['authorized_exclusion_count'] = @($taskExpanded | Where-Object { $_.excluded }).Count
     $taskSummary['scope'] = if ($SkipAdminRequired) { 'admin-free-subset' } else { 'selected-complete' }
+    $taskSummary.results = @(Merge-SRCaseRecords -Executions $taskExpanded -Records @())
     Save-Summary
-    if (@($taskExpanded | Where-Object { -not $_.excluded -and $_.entry.driver -eq 'execution-stability' }).Count) {
-        $taskNeedsAdmin = @($taskExpanded | Where-Object { -not $_.excluded -and (Test-SRAdminCase $_.entry.id $_.case.id) }).Count -gt 0
-        & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -RequireAdmin:$taskNeedsAdmin
+    $taskExitCode = 1
+    if ($taskLiveSelected.Count -and @($taskExpanded | Where-Object {-not $_.excluded -and -not $_.unavailable}).Count -eq 0) {
+        $taskSummary.results=@($taskExpanded | ForEach-Object {@{level=$_.entry.level;scenario=$_.entry.id;case_id=$_.case.id;repeat_index=$_.repeat_index;status=$(if($_.excluded){'excluded'}else{'unavailable'});availability=$_.availability}})
+        $taskSummary.status='incomplete'
+        $taskSummary['unavailable_case_count']=@($taskSummary.results | Where-Object {$_.status -eq 'unavailable'}).Count
+        Set-SRLevelCoverage -Summary $taskSummary -Registered @(Get-SRCaseRegistry) -Records $taskSummary.results -Levels $Level
+        Save-Summary
+        exit 1
     }
     # Unit tests and controlled integration are prerequisites for every live batch.
     foreach ($taskKey in @('STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT')) { if ([Environment]::GetEnvironmentVariable($taskKey)) { throw "Unexpected live opt-in in L1: $taskKey" } }
@@ -133,27 +179,28 @@ try {
         Save-Summary
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne @($taskCatalog.controlled_scenarios).Count -or (Select-String -LiteralPath (Join-Path $taskControlled 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario' }
     }
-    if (@($taskSelected | Where-Object { $_.id -eq 'local-codex.smoke' -and $_.level -eq 'L2' }).Count) {
+    if (@($taskExpanded | Where-Object { $_.entry.id -eq 'local-codex.smoke' -and -not $_.unavailable -and -not $_.excluded }).Count) {
         Write-Host 'Running L2 native Git boundary prerequisite (no model or publication)'
         $taskGitConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
-        & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskGitConfig.codex_executable 1> (Join-Path $taskOut 'l2-git-boundary.log') 2> (Join-Path $taskOut 'l2-git-boundary-stderr.log')
+        & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskGitConfig.configurations.'local-codex'.execution.settings.executable 1> (Join-Path $taskOut 'l2-git-boundary.log') 2> (Join-Path $taskOut 'l2-git-boundary-stderr.log')
         $taskGitCode = $LASTEXITCODE
         $taskSummary.results += @{level='L2-GitBoundary';exit_code=$taskGitCode;evidence=(Join-Path $taskOut 'l2-git-boundary.log')}
         Save-Summary
         if ($taskGitCode -ne 0) { throw 'L2 native Git commit or repository isolation failed' }
     }
-    $taskPrerequisites = @($taskSummary.results)
+    $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
     $taskResolvedProof=if($FeedbackQualification){(Resolve-Path -LiteralPath $FeedbackQualification).ProviderPath}else{''}
-    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -FeedbackQualification $taskResolvedProof -Checkpoint {
+    $taskConfigSHA=if($taskAssessment){$taskSummary.configuration_sha256}else{''}
+    $taskRunnerSHA=if($taskAssessment){$taskSummary.runner_sha256}else{''}
+    $taskHelperSHA=if($taskAssessment){$taskSummary.helper_sha256}else{''}
+    $taskRequirementsSHA=if($taskAssessment){$taskSummary.requirements_sha256}else{''}
+    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -FeedbackQualification $taskResolvedProof -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
         param($Records)
-        $taskSummary.results = @($taskPrerequisites) + @($Records)
+        $taskSummary.results = @($taskPrerequisites) + @(Merge-SRCaseRecords -Executions $taskExpanded -Records $Records)
         Save-Summary
     }
-    $taskSummary['executed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -ne 'excluded' }).Count
-    $taskSummary['passed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -eq 'passed' }).Count
-    $taskSummary['first_pass_rate'] = if ($taskSummary.executed_case_count) { $taskSummary.passed_case_count / $taskSummary.executed_case_count } else { 0 }
-    $taskSummary.status = if (@($taskSummary.results | Where-Object { $_.ContainsKey('status') -and $_.status -eq 'failed' }).Count -or $taskSummary.executed_case_count -ne ($taskExpanded.Count - $taskSummary.authorized_exclusion_count)) { 'failed' } elseif ($taskSummary.authorized_exclusion_count) { 'passed_with_exclusions' } else { 'passed' }
+    $taskSummary.status = Get-SRBatchOutcome -Records $taskSummary.results -SelectedScenarioCount $taskSelected.Count -AuthorizedExclusions $taskSummary.authorized_exclusion_count
 } catch {
     foreach ($taskFailed in @($taskSummary.results | Where-Object { $_.ContainsKey('status') -and $_.status -in @('preparing','running') })) { $taskFailed.status = 'failed' }
     $taskSummary.status = 'failed'
@@ -161,8 +208,16 @@ try {
     Write-Host $_.Exception.Message -ForegroundColor Red
 } finally {
     Pop-Location
+    if ($taskExpanded.Count) {
+        $taskSummary['executed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -in @('preparing','running','passed','failed') }).Count
+        $taskSummary['passed_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('case_id') -and $_.status -eq 'passed' }).Count
+        $taskSummary['first_pass_rate'] = if ($taskSummary.executed_case_count) { $taskSummary.passed_case_count / $taskSummary.executed_case_count } else { 0 }
+        $taskSummary['unavailable_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('status') -and $_.status -eq 'unavailable' }).Count
+        Set-SRLevelCoverage -Summary $taskSummary -Registered @(Get-SRCaseRegistry) -Records @($taskSummary.results | Where-Object {$_.ContainsKey('case_id')}) -Levels $Level
+        if ($taskAssessment -and $taskSummary.levels.ContainsKey('L2')) { $taskSummary.baseline.l2_verified = $taskSummary.levels.L2.complete_level_passed }
+    }
     $taskSummary['finished_at'] = [DateTime]::UtcNow.ToString('o')
     Save-Summary
-    Write-Host "Test report: $taskOut/summary.json"
+    if ($taskOut -and -not $ListAvailability) { Write-Host "Test report: $taskOut/summary.json" }
 }
-if ($taskSummary.status -notin @('passed','passed_with_exclusions')) { exit 1 }
+if ($taskSummary.status -notin @('passed','passed_with_exclusions')) { exit $taskExitCode }

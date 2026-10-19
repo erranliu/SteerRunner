@@ -520,13 +520,17 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		t.Fatal(err)
 	}
 	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
-	if audited {
-		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel}
+	input.Workflow, err = m.RunWorkflow(nil)
+	if err != nil {
+		t.Fatal(err)
 	}
 	// L2 exercises the production prompts and worker-owned Git/PR commands.
 	// L3 keeps its explicit publisher gates for feedback and fault injection.
 	if m.Level != "L2" {
-		input.Workflow.PromptOverrides = smokePromptOverrides()
+		input.Workflow, err = m.RunWorkflow(smokePromptOverrides())
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 	genericTerminal := m.Driver == "development-feedback" && m.Execution.Adapter == "orca-terminal"
 	if genericTerminal {

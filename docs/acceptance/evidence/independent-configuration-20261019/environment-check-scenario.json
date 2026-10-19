@@ -1,0 +1,11 @@
+{
+  "scenario": "environment-check.local-sandbox",
+  "level": "L3",
+  "stage": "check_verified",
+  "run_id": "a46b6f429cac4895b9c427df47ee0207",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/556",
+  "original_head": "d96865390c1bf44d45f32614b13195303c435986",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true
+}

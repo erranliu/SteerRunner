@@ -1,0 +1,10 @@
+{
+  "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+  "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee",
+  "qualified_config_helper_sha256": "17472995e1275aad5ce7490ee4274eae209876f5e1a97c93300d08eecdbc2914",
+  "delivery_config_helper_sha256": "ad48fd5244caed8dcf9041039349b23810f425d291830a23720884cf6413d7b3",
+  "native_driver_sha256": "9849b98a65a5ca048103a6afb0c21e45bd977dd5bfb71b616952760c978d2c48",
+  "registry_sha256": "e312d68bf866a9c6cc696ff55b4bdf8730d6ea7447212a3d416fbd767912575a",
+  "frozen_configuration_sha256": "69f7213d4844e582d826801b147ce9e72de359b0780a3d6b4facc2887d631a19",
+  "final_helper_accepts_qualified_snapshot": true
+}
