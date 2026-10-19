@@ -27,8 +27,8 @@ func (o *observer) StopHandle() b.StopHandle        { return &observationHandle{
 func (o *observer) Close(context.Context) error { o.once.Do(o.cancel); return nil }
 
 // Passive cancellation stays nonblocking: the actor may be acknowledging an
-// event. Service shutdown can separately await the canceled goroutine, including
-// the original readonly inspector's background close, before its process exits.
+// event. Service shutdown separately awaits this caller-side goroutine; the
+// fixed execution-host control actor stays owned by the original execution.
 func (o *observer) awaitCleanup(ctx context.Context) error {
 	if o.finished == nil {
 		return nil

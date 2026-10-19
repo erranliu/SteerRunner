@@ -35,7 +35,7 @@ func (l *Lifecycle) controlSetup(s b.LifecycleSnapshot, state State) codex.Remot
 		Project, Execution, Attempt, Generation, Configuration, Helper string
 		Process                                                        b.ProcessIdentity
 		Workspace                                                      string
-	}{s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest, l.profile.RuntimeSHA256, state.Process, workspace})
+	}{s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest, l.profile.RuntimeSHA256, state.Process, strings.ToLower(strings.ReplaceAll(workspace, "\\", "/"))})
 	return codex.RemoteControlSetup{Binding: digest(raw), Workspace: workspace, RuntimeSHA256: l.profile.RuntimeSHA256}
 }
 
@@ -54,7 +54,8 @@ func (l *Lifecycle) validateControl(s b.LifecycleSnapshot, state State, ready bo
 	if p.Kind != "orca_native_control" || p.RuntimeID != state.Process.RuntimeID || p.WorktreeID != state.Process.WorktreeID || p.Terminal == "" || p.Terminal == state.Process.Terminal || p.Incarnation == "" {
 		return errors.New("original native control resource changed")
 	}
-	if c.Ready != nil && *c.Ready != l.controlSetup(s, state) || ready && c.Ready == nil {
+	expected := l.controlSetup(s, state)
+	if c.Ready != nil && (c.Ready.Binding != expected.Binding || c.Ready.RuntimeSHA256 != expected.RuntimeSHA256 || !strings.EqualFold(strings.ReplaceAll(c.Ready.Workspace, "\\", "/"), strings.ReplaceAll(expected.Workspace, "\\", "/"))) || ready && c.Ready == nil {
 		return errors.New("original native control readiness unavailable or changed")
 	}
 	return nil

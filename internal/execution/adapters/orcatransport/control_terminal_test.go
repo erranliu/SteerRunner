@@ -318,3 +318,22 @@ func TestFixedControlRunStopAndServiceRelease(t *testing.T) {
 		})
 	}
 }
+
+func TestFixedControlWindowsPathSpellings(t *testing.T) {
+	l, _, s, c := fixtureFixedControl(t)
+	c.ready.Workspace = strings.ToUpper(strings.ReplaceAll(c.ready.Workspace, "/", "\\"))
+	s = prepareFixedControl(t, l, s, c)
+	state, err := l.state(s)
+	if err != nil {
+		t.Fatal("same Windows workspace lost control binding", err)
+	}
+	if err := l.validateControl(l.setup.Snapshot, state, true); err != nil {
+		t.Fatal(err)
+	}
+	foreign := *state.RemoteReadiness
+	foreign.Workspace += "-other"
+	state.RemoteReadiness = &foreign
+	if err := l.validateControl(s, state, true); err == nil {
+		t.Fatal("foreign workspace accepted")
+	}
+}
