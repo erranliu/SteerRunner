@@ -164,6 +164,7 @@ type environmentProbePort struct {
 	t                 *testing.T
 	e                 *Engine
 	executes, replies int
+	replyErr          error
 	fail              bool
 	reject            bool
 	denied            bool
@@ -288,7 +289,10 @@ func TestEnvironmentCheckFreshSettlementPreservesCompletedCapability(t *testing.
 func (p *environmentProbePort) Verify(context.Context, string, contracts.CheckResources) (map[string]string, error) {
 	return map[string]string{"sha": strings.Repeat("a", 40)}, nil
 }
-func (p *environmentProbePort) Reply(codex.EnvironmentCall, string) error { p.replies++; return nil }
+func (p *environmentProbePort) Reply(codex.EnvironmentCall, string) error {
+	p.replies++
+	return p.replyErr
+}
 
 func TestEnvironmentCheckDuplicateAndUnknownNativeTools(t *testing.T) {
 	for _, unknown := range []bool{false, true} {
@@ -464,5 +468,72 @@ func TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup(t *testing.T) 
 	result := e.checkSnapshot("original")
 	if result.View.CleanupStatus != "completed" || !result.View.Resources.WriterStopped || !result.View.Resources.LocalRemoved || len(result.Operations) != 0 {
 		t.Fatalf("confirmed cleanup regressed after stopping a completed remote check: %+v", result)
+	}
+}
+
+func TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes(t *testing.T) {
+	for _, name := range []string{"preflight-rejected", "legacy-error", "uncertain-rpc", "contradictory-turn"} {
+		t.Run(name, func(t *testing.T) {
+			e := environmentEngine(t)
+			r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "original", Input: contracts.DecodeCheckInput(environmentRequest(t, "input").Input), Actual: contracts.CheckContext{AttemptID: "attempt"}}, Allowed: true, StartCommand: "start", CommandStates: map[string]string{"start": "pending"}}
+			e.mu.Lock()
+			err := e.commitCheckLocked(r, nil)
+			e.mu.Unlock()
+			if err != nil {
+				t.Fatal(err)
+			}
+			index, err := e.checkIntent("original", "start_turn", "", map[string]string{"session": "original"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			var failure error = &codex.EnvironmentInputRejectedError{Reason: "authentication_expired_or_unavailable"}
+			turn := ""
+			if name == "legacy-error" {
+				failure = errors.New("authentication_expired_or_unavailable")
+			}
+			if name == "uncertain-rpc" {
+				failure = errors.New("native_cli_request_unverified: provider-secret")
+			}
+			if name == "contradictory-turn" {
+				turn = "possibly-accepted"
+			}
+			e.failCheckStart("original", index, turn, failure)
+			next := e.checkSnapshot("original")
+			want := b.OperationUnknown
+			command := "unknown"
+			status := "unverified"
+			if name == "preflight-rejected" {
+				want = b.OperationRejected
+				command = "failed"
+				status = "failed"
+			}
+			if next.Operations[index].Status != want || next.CommandStates["start"] != command || next.View.Status != status || next.Allowed || strings.Contains(next.View.Diagnostic, "provider-secret") {
+				t.Fatal("input uncertainty was weakened or its diagnostic lost", next.View, next.Operations)
+			}
+		})
+	}
+}
+func TestCheckReplyFailurePersistsUnknownWithoutRepeatingProbe(t *testing.T) {
+	e := environmentEngine(t)
+	r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "original", Input: contracts.DecodeCheckInput(environmentRequest(t, "input").Input), Items: contracts.CheckManifest(false), Actual: contracts.CheckContext{AttemptID: "attempt", SessionID: "session", TurnID: "turn", Nonce: "nonce"}}, Nonce: "nonce", Allowed: true, StartCommand: "start", CommandStates: map[string]string{"start": "pending"}}
+	e.mu.Lock()
+	err := e.commitCheckLocked(r, nil)
+	e.mu.Unlock()
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := &environmentProbePort{t: t, e: e, replyErr: errors.New("native_cli_request_unverified: provider-secret")}
+	w := &checkWorker{port: p}
+	call := codex.EnvironmentCall{CallID: "original-call", Action: "permissions", Nonce: "nonce"}
+	if err = e.executeCheckProbe(context.Background(), "original", w, call); err == nil {
+		t.Fatal("lost tool reply became success")
+	}
+	next := e.checkSnapshot("original")
+	if next.View.Status != "unverified" || next.View.Diagnostic != "native_reply_unverified: native_cli_request_unverified" || next.Allowed || next.CommandStates["start"] != "unknown" || next.Operations[0].Status != b.OperationConfirmed {
+		t.Fatal("reply failure discarded original verified effect or uncertainty", next.View)
+	}
+	_ = e.executeCheckProbe(context.Background(), "original", w, call)
+	if p.executes != 1 || p.replies != 1 {
+		t.Fatal("probe was repeated after a lost reply")
 	}
 }

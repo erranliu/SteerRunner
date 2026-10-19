@@ -144,16 +144,16 @@ func (s *EnvironmentSession) Prepare(ctx context.Context) (Binding, error) {
 
 func (s *EnvironmentSession) Start(ctx context.Context) (string, error) {
 	if s.handle == nil || s.handle.client == nil {
-		return "", errors.New("original_session_missing")
+		return "", rejectEnvironmentInput(errors.New("original_session_missing"))
 	}
 	if err := s.backend.verifySandboxReadiness(ctx, s.handle, s.input); err != nil {
-		return "", err
+		return "", rejectEnvironmentInput(err)
 	}
 	params, err := TurnParams(ctx, TurnParamsInput{Worktree: s.setup.Workspace, ThreadID: s.handle.Binding.SessionID, TurnInput: s.input, Sandbox: s.backend.Config.Sandbox, Model: s.backend.Config.Model, ReasoningEffort: s.backend.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) {
 		return s.backend.toolWriteArgs(s.setup.LinkedWriteArgs), nil
 	})
 	if err != nil {
-		return "", err
+		return "", rejectEnvironmentInput(err)
 	}
 	turnCtx, turnCancel := context.WithTimeout(ctx, 30*time.Second)
 	defer turnCancel()
@@ -434,7 +434,7 @@ func EnvironmentDiagnostic(err error) string {
 	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
 		return stage
 	}
-	for _, stage := range []string{"original_native_connection_lost", "original_native_turn_unsettled", "native_tool_identity_mismatch", "native_tool_nonce_mismatch", "unexpected_native_approval_or_tool_request", "native_command_queue_unavailable", "native_cli_request_unverified"} {
+	for _, stage := range []string{"check_dispatch_revoked", "unexpected_check_action", "upstream_probe_unresolved", "original_native_connection_lost", "original_native_turn_unsettled", "native_tool_identity_mismatch", "native_tool_nonce_mismatch", "unexpected_native_approval_or_tool_request", "native_command_queue_unavailable", "native_cli_request_unverified"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}
@@ -444,7 +444,7 @@ func EnvironmentDiagnostic(err error) string {
 			return stage
 		}
 	}
-	for _, stage := range []string{"native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "native_thread_identity_unverified", "native_thread_identity_mismatch", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_key_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "authentication_scope_or_expiry_invalid", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git", "repository_identity_mismatch"} {
+	for _, stage := range []string{"original_session_missing", "authentication_broker_unavailable", "sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "native_thread_identity_unverified", "native_thread_identity_mismatch", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git", "repository_identity_mismatch"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}

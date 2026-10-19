@@ -62,3 +62,21 @@ func TestRemoteCheckSetupWireRoundTripKeepsDeadlines(t *testing.T) {
 		t.Fatal("decoded setup did not reach ready", err)
 	}
 }
+
+func TestRemoteCheckStartBeforePreparationReportsNoInput(t *testing.T) {
+	setup := RemoteCheckSetup{CheckID: strings.Repeat("a", 32), Nonce: strings.Repeat("b", 32), SourcePath: t.TempDir(), Input: contracts.CheckInput{Execution: contracts.Execution{Settings: json.RawMessage(`{"agent_launch":{"runtime_executable":"trusted"}}`)}}}
+	raw, _ := json.Marshal(RemoteCheckRequest{ID: strings.Repeat("c", 32), Method: "start"})
+	var output strings.Builder
+	if err := ServeRemoteCheck(context.Background(), setup, strings.NewReader(base64.RawURLEncoding.EncodeToString(raw)+"\n"), &output); err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(strings.TrimSpace(output.String()), "\n")
+	raw, err := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(lines[1], RemoteCheckPrefix))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var response RemoteCheckResponse
+	if err = json.Unmarshal(raw, &response); err != nil || !response.InputNotSent || response.Turn != "" || response.Error != "original_session_missing" {
+		t.Fatal("remote preflight rejection lost its certainty", response, err)
+	}
+}

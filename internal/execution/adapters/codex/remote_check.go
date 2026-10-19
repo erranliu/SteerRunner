@@ -37,6 +37,7 @@ type RemoteCheckRequest struct {
 	RemoveDirectory bool                     `json:"remove_directory,omitempty"`
 }
 type RemoteCheckResponse struct {
+	InputNotSent bool                     `json:"input_not_sent,omitempty"`
 	ID           string                   `json:"id"`
 	Error        string                   `json:"error,omitempty"`
 	Binding      Binding                  `json:"binding"`
@@ -209,7 +210,7 @@ func ServeRemoteCheck(ctx context.Context, setup RemoteCheckSetup, input io.Read
 				response.Binding.Workspace = wd
 			case "start":
 				if session == nil {
-					err = errors.New("remote session missing")
+					err = rejectEnvironmentInput(errors.New("original_session_missing"))
 				} else {
 					response.Turn, err = session.Start(callCtx)
 				}
@@ -261,6 +262,8 @@ func ServeRemoteCheck(ctx context.Context, setup RemoteCheckSetup, input io.Read
 			}
 			cancel()
 			if err != nil {
+				var rejected *EnvironmentInputRejectedError
+				response.InputNotSent = request.Method == "start" && response.Turn == "" && errors.As(err, &rejected)
 				response.Error = EnvironmentDiagnostic(err)
 				if response.Error == "preparation_unverified" && stage != "" {
 					response.Error = stage

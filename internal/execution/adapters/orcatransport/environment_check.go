@@ -192,6 +192,9 @@ func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.Remot
 	for !s.actorReady {
 		lines, err := s.read(ctx)
 		if err != nil {
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
 			return response, err
 		}
 		ready := false
@@ -218,8 +221,14 @@ func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.Remot
 		case <-time.After(200 * time.Millisecond):
 		}
 	}
-	if _, err := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); err != nil {
-		return response, err
+	for {
+		if _, err := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); err != nil {
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
+			return response, err
+		}
+		break
 	}
 	raw, _ := json.Marshal(request)
 	// This terminal hosts a machine actor, not a model TUI. Send its complete
@@ -235,12 +244,22 @@ func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.Remot
 			BytesWritten int
 		}
 	}
-	if err != nil || r.CallUncertain || json.Unmarshal(r.Payload, &sent) != nil || r.RuntimeID != s.original.RuntimeID || sent.Send.Handle != s.original.Terminal || !sent.Send.Accepted || sent.Send.BytesWritten != len(payload) {
+	decoded := json.Unmarshal(r.Payload, &sent) == nil
+	if r.RuntimeID != "" && r.RuntimeID != s.original.RuntimeID || decoded && sent.Send.Handle != "" && sent.Send.Handle != s.original.Terminal {
+		return response, errors.New("remote check dispatch identity mismatch")
+	}
+	if err == nil && !r.CallUncertain && (!decoded || r.RuntimeID == "" || sent.Send.Handle != s.original.Terminal || !sent.Send.Accepted || sent.Send.BytesWritten != len(payload)) {
 		return response, errors.New("remote check dispatch outcome unknown")
 	}
+	// A lost receipt is not a reason to send the machine request again. Only
+	// the original actor's cached response can settle that exact request ID.
+observe:
 	for {
 		lines, err := s.readOutput(ctx)
 		if err != nil {
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
 			return response, err
 		}
 		for _, line := range lines {
@@ -252,6 +271,9 @@ func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.Remot
 			var value codex.RemoteCheckResponse
 			if e == nil && json.Unmarshal(raw, &value) == nil && value.ID == request.ID {
 				if _, identityErr := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); identityErr != nil {
+					if retryCheckObservation(ctx, identityErr) {
+						continue observe
+					}
 					return response, identityErr
 				}
 				if value.Error != "" {
@@ -285,6 +307,9 @@ func (s *RemoteEnvironmentSession) Prepare(ctx context.Context) (codex.Binding, 
 }
 func (s *RemoteEnvironmentSession) Start(ctx context.Context) (string, error) {
 	r, e := s.call(ctx, codex.RemoteCheckRequest{Method: "start"})
+	if e != nil && r.InputNotSent && r.Turn == "" {
+		e = &codex.EnvironmentInputRejectedError{Reason: codex.EnvironmentDiagnostic(e)}
+	}
 	return r.Turn, e
 }
 func (s *RemoteEnvironmentSession) Next(ctx context.Context) (codex.EnvironmentCall, error) {
@@ -335,4 +360,16 @@ func (s *RemoteEnvironmentSession) Stop(ctx context.Context) bool {
 	}
 	receipt, e := s.client.CloseTerminalChecked(ctx, s.original.Terminal, s.original.RuntimeID)
 	return e == nil && receipt.Disposition == "confirmed"
+}
+
+func retryCheckObservation(ctx context.Context, err error) bool {
+	if ctx.Err() != nil || !(strings.Contains(err.Error(), "native_cli_request_unverified") || strings.Contains(err.Error(), "native_command_queue_unavailable")) {
+		return false
+	}
+	select {
+	case <-ctx.Done():
+		return false
+	case <-time.After(200 * time.Millisecond):
+		return true
+	}
 }

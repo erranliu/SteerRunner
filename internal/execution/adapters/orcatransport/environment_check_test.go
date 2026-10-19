@@ -66,9 +66,9 @@ func TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection(t *testi
 }
 
 func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testing.T) {
-	for _, scenario := range []string{"normal", "changed-incarnation", "wrong-runtime", "partial-write", "lost-response", "wrong-response-id"} {
+	for _, scenario := range []string{"normal", "changed-incarnation", "wrong-runtime", "partial-write", "lost-response", "lost-response-no-record", "read-failure-once", "show-failure-once", "permanent-read-failure", "wrong-response-id"} {
 		t.Run(scenario, func(t *testing.T) {
-			sends, shows := 0, 0
+			sends, shows, reads := 0, 0, 0
 			var response codex.RemoteCheckResponse
 			s := &RemoteEnvironmentSession{setup: codex.RemoteCheckSetup{CheckID: strings.Repeat("a", 32)}, original: b.ProcessIdentity{RuntimeID: "original", Terminal: "actor", Incarnation: "incarnation", WorktreeID: "repo::path"}, actorReady: true}
 			s.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
@@ -77,6 +77,9 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 				switch args[1] {
 				case "show":
 					shows++
+					if scenario == "show-failure-once" && shows == 1 {
+						return nil, errors.New("native_cli_request_unverified")
+					}
 					incarnation := "incarnation"
 					if scenario == "changed-incarnation" && shows > 1 {
 						incarnation = "replacement"
@@ -105,7 +108,7 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 					if scenario == "wrong-response-id" {
 						response.ID = "foreign"
 					}
-					if scenario == "lost-response" {
+					if scenario == "lost-response" || scenario == "lost-response-no-record" {
 						return nil, errors.New("lost receipt")
 					}
 					written := len(payload)
@@ -114,6 +117,13 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 					}
 					result["send"] = map[string]any{"handle": "actor", "accepted": true, "bytesWritten": written}
 				case "read":
+					reads++
+					if scenario == "permanent-read-failure" || scenario == "read-failure-once" && reads == 1 {
+						return nil, errors.New("native_cli_request_unverified")
+					}
+					if scenario == "lost-response-no-record" {
+						response = codex.RemoteCheckResponse{}
+					}
 					if scenario == "wrong-runtime" {
 						runtime = "foreign"
 					}
@@ -122,11 +132,19 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 				}
 				return json.Marshal(map[string]any{"ok": true, "_meta": map[string]string{"runtimeId": runtime}, "result": result})
 			}})
-			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+			budget := 100 * time.Millisecond
+			if scenario == "read-failure-once" || scenario == "show-failure-once" {
+				budget = time.Second
+			}
+			ctx, cancel := context.WithTimeout(context.Background(), budget)
 			defer cancel()
 			facts, err := s.Verify(ctx, "permissions", contracts.CheckResources{})
-			if scenario == "normal" {
-				if err != nil || facts["owner"] != "same" || shows != 2 {
+			if scenario == "normal" || scenario == "lost-response" || scenario == "read-failure-once" || scenario == "show-failure-once" {
+				wantShows := 2
+				if scenario == "show-failure-once" {
+					wantShows = 3
+				}
+				if err != nil || facts["owner"] != "same" || shows != wantShows {
 					t.Fatal("original response not verified", facts, err, shows)
 				}
 			} else if err == nil {
@@ -151,6 +169,52 @@ func TestRemoteEnvironmentCheckWrongRuntimeBlocksBeforeDispatch(t *testing.T) {
 	_, err := s.Execute(context.Background(), "head_push", contracts.CheckResources{})
 	if err == nil || inputs != 0 {
 		t.Fatal("foreign remote runtime received input", err, inputs)
+	}
+}
+
+func TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence(t *testing.T) {
+	for _, mode := range []string{"rejected", "legacy-unknown", "contradictory-turn"} {
+		t.Run(mode, func(t *testing.T) {
+			var response codex.RemoteCheckResponse
+			s := &RemoteEnvironmentSession{setup: codex.RemoteCheckSetup{CheckID: strings.Repeat("a", 32)}, original: b.ProcessIdentity{RuntimeID: "original", Terminal: "actor", Incarnation: "incarnation"}, actorReady: true}
+			sends := 0
+			s.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				result := map[string]any{}
+				switch args[1] {
+				case "show":
+					result["terminal"] = map[string]string{"handle": "actor", "incarnationId": "incarnation"}
+				case "send":
+					sends++
+					var payload string
+					for i, arg := range args {
+						if arg == "--text" {
+							payload = args[i+1]
+						}
+					}
+					raw, _ := base64.RawURLEncoding.DecodeString(strings.TrimSuffix(payload, "\r"))
+					var request codex.RemoteCheckRequest
+					if json.Unmarshal(raw, &request) != nil || request.Method != "start" {
+						t.Fatal("unexpected request")
+					}
+					response = codex.RemoteCheckResponse{ID: request.ID, Error: "authentication_expired_or_unavailable", InputNotSent: mode != "legacy-unknown"}
+					if mode == "contradictory-turn" {
+						response.Turn = "original-turn"
+					}
+					result["send"] = map[string]any{"handle": "actor", "accepted": true, "bytesWritten": len(payload)}
+				case "read":
+					raw, _ := json.Marshal(response)
+					result["terminal"] = map[string]any{"handle": "actor", "tail": []string{codex.RemoteCheckPrefix + base64.RawURLEncoding.EncodeToString(raw)}}
+				default:
+					t.Fatal("unexpected actor call", args)
+				}
+				return json.Marshal(map[string]any{"ok": true, "_meta": map[string]string{"runtimeId": "original"}, "result": result})
+			}})
+			_, err := s.Start(context.Background())
+			var rejected *codex.EnvironmentInputRejectedError
+			if err == nil || errors.As(err, &rejected) != (mode == "rejected") || sends != 1 {
+				t.Fatal("no-input evidence classification changed", mode, err, sends)
+			}
+		})
 	}
 }
 

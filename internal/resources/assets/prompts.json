@@ -1,7 +1,7 @@
 {
   "implement.execute": "Implement the following Spec and Plan.",
   "implement.report": "Format the preceding implementation result as JSON. Do not change files, run checks or publish.",
-  "publish": "Push and create or reuse a PR using the current checked-out branch. Read its exact name with git branch --show-current and use that same name for the remote branch and PR head.",
+  "publish": "Push and create or reuse a PR using the current checked-out branch. Read its exact name with git branch --show-current and use that same name for the remote branch and PR head. Wait for the original publication command to exit and inspect its exit code and PR URL. If a shell tool returns a session_id or running status, poll that same session until it exits; polling observes the original command and must not start publication again.",
   "publish.report": "Format the preceding publication result as JSON. Do not change files, run checks or publish.",
   "audit.spec": "Audit the current implementation against the frozen Spec and Plan. Report only evidenced deviations. Do not repair, commit or publish.",
   "audit.code": "Audit the current code for correctness, regressions, edge cases, tests and evidenced security issues. Do not repair, commit or publish."
