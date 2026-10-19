@@ -23,3 +23,5 @@
 [content-workflows-20261019](../acceptance/evidence/content-workflows-20261019/README.md)。
 实际完整命令、受测版本与未覆盖范围见[验收登记](../acceptance/content-workflows.md)。
 最终 `content-final-receipts` 专项通过，当前生产源码重新构建的 SHA256 与真实受测 EXE 相同。
+
+PR 阶段在隔离检出合入最新 main，按同一测试计划复验；源码、受测 EXE、公开能力与逐项结果见[PR 复验登记](../acceptance/evidence/content-workflows-pr-20261019/README.md)。

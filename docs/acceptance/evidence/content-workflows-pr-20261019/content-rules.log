@@ -1,0 +1,9 @@
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.109s
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.316s
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.237s [no tests to run]
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	0.841s [no tests to run]
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable	0.766s [no tests to run]
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable/operation	0.747s [no tests to run]
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.822s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	1.985s
+ok  	github.com/erranliu/SteerRunner/internal/application	4.003s

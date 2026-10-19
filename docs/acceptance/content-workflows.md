@@ -82,3 +82,18 @@ Runner `0.2.0-dev.2`，源码 `c65b1936a637e19368039ad09e125e4e8f6d96c1-dirty`�
 `215d7fb619916a4a3cebded4995d82052127ab0fd67f214ce053bf8ee5fd3643`。
 资源摘要：`c03261da8704a0e459b69445844baa42fab0e3bab2690f6ce65cc807ccdedd4f`。
 原生 EXE 摘要及能力来源在 manifest。只构建本仓隔离产物，未复制到安装目录。
+
+## PR 合并后复验（2026-10-19）
+
+在隔离 worktree 合入 `origin/main` 的 `7d830e7`，生产源码提交为
+`46d66d7645f653277dd4b8617a5f632139ea3826`。上文保留首次验收历史；本次接入应使用
+[PR 复验登记](evidence/content-workflows-pr-20261019/README.md)、
+[capabilities](evidence/content-workflows-pr-20261019/capabilities.json)及其同目录 schema。
+新版移除了 main 已退役的认证字段声明，仍拒绝该字段，包括 null。
+
+Runner `0.2.0-dev.2`，EXE SHA256：
+`5892bd49ebc37500486924f4f8d0f8e087a0aa4b791bdc1c6cf454c247e4b000`。
+资源摘要：`536edcaf2ed199109a1b42875f61fbb27af048a6441c5494d8afe36f4ca1bf56`。
+真实 Codex 再次通过结构化生成、同会话多轮、中断继续及重启继续（63.99 秒）；
+原生会话 `01a153ca-73ef-7921-94b3-87f62c988691`。公开 verify-stopped 确认两个 Run 资源均已结算。
+受控场景与开发回归使用同一摘要的 EXE；未部署安装环境。验证范围和未验证项沿用上述限制。

@@ -1,0 +1,76 @@
+{
+  "operations": [
+    {
+      "operation_id": "31dd1b7deeb498c9c4622a2bc06f94bc",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "142d13dcc33bb04abe3acdceecf49255",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "a032fe52c1d348acf4c156ec0fbaebba",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "b2a63c8a59624e3b610e0dce46bde728",
+      "action": "start_turn",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "fc5471f052d1ef29873de9f21cde005b",
+  "revision": 24,
+  "title": "Native continued conversation",
+  "input_digest": "02d88bb794b0571b1b8ff37bf659b983a2cddab6783d366f6be52941aa6acd60",
+  "resource_digest": "536edcaf2ed199109a1b42875f61fbb27af048a6441c5494d8afe36f4ca1bf56",
+  "workflow": {
+    "id": "conversation",
+    "version": 1
+  },
+  "step": "execute",
+  "status": "running",
+  "phase": "observing",
+  "new_inputs_allowed": true,
+  "resume_required": false,
+  "materials": [],
+  "execution": {
+    "agent": "codex",
+    "requested_model": "gpt-6.1-sol",
+    "requested_reasoning_effort": "low",
+    "workspace_scope": "read_only_directory",
+    "turn_started": true,
+    "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+    "generation": "d95d250dfe0efebe1c975ce5f43b8e41",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+    "turn_id": "01a153ca-c659-7192-ad25-051cb02fb867",
+    "final_available": false,
+    "workspace": "C:\\srt\\cw-3996079217\\materials",
+    "branch": ""
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": true,
+    "can_close": true,
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": true
+  },
+  "final": {
+    "command_id": "40bf1fef831abcf5d8105547b8fae960",
+    "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+    "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+    "turn_id": "01a153ca-a11c-76e3-94af-5b0bd15988ac",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_065772b28e523b21016ad5f6746920819189534c43edfb2e5b",
+    "text": "cw-18f21624902382d846b8583e4426558b"
+  },
+  "created_at": "2026-10-19T10:52:13.1564688Z",
+  "updated_at": "2026-10-19T10:52:40.4654774Z"
+}

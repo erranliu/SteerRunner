@@ -1,0 +1,153 @@
+{
+  "entries": [
+    {
+      "command_id": "36402a6500a67416ae83029419dab831",
+      "request_command_id": "6f5f4cb149cbbbcd7deb75a9e09bb0d3",
+      "role": "user",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "Remember the token cw-18f21624902382d846b8583e4426558b for this session. Reply with this exact token only. Do not use tools.",
+      "turn_id": "01a153ca-7f54-7292-8915-e3a2622c724c"
+    },
+    {
+      "command_id": "36402a6500a67416ae83029419dab831",
+      "result": {
+        "source": {
+          "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+          "command_id": "36402a6500a67416ae83029419dab831",
+          "item_id": "msg_0e82d357306d055d016ad5f66acd0081919ee94aad0966fd34",
+          "native_outcome": "succeeded",
+          "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-18f21624902382d846b8583e4426558b",
+          "turn_id": "01a153ca-7f54-7292-8915-e3a2622c724c",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-18f21624902382d846b8583e4426558b"
+      },
+      "role": "assistant",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "cw-18f21624902382d846b8583e4426558b",
+      "turn_id": "01a153ca-7f54-7292-8915-e3a2622c724c"
+    },
+    {
+      "command_id": "40bf1fef831abcf5d8105547b8fae960",
+      "request_command_id": "904eed8b2fd2de23244203ccaf0ba5aa",
+      "role": "user",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "Repeat the token from my first message exactly, with no tools.",
+      "turn_id": "01a153ca-a11c-76e3-94af-5b0bd15988ac"
+    },
+    {
+      "command_id": "40bf1fef831abcf5d8105547b8fae960",
+      "result": {
+        "source": {
+          "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+          "command_id": "40bf1fef831abcf5d8105547b8fae960",
+          "item_id": "msg_065772b28e523b21016ad5f6746920819189534c43edfb2e5b",
+          "native_outcome": "succeeded",
+          "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-18f21624902382d846b8583e4426558b",
+          "turn_id": "01a153ca-a11c-76e3-94af-5b0bd15988ac",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-18f21624902382d846b8583e4426558b"
+      },
+      "role": "assistant",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "cw-18f21624902382d846b8583e4426558b",
+      "turn_id": "01a153ca-a11c-76e3-94af-5b0bd15988ac"
+    },
+    {
+      "command_id": "848d3b1a03b3c29f42cbc16d7804953c",
+      "request_command_id": "5f07dc724026cfe7a7d5757bdaf5b143",
+      "role": "user",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "Use a shell tool to wait 45 seconds, then reply LONG_DONE. The command only waits and writes to standard output; do not change any files.",
+      "turn_id": "01a153ca-c659-7192-ad25-051cb02fb867"
+    },
+    {
+      "command_id": "848d3b1a03b3c29f42cbc16d7804953c",
+      "result": {
+        "diagnostic": "native turn ended with status interrupted",
+        "source": {
+          "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+          "command_id": "848d3b1a03b3c29f42cbc16d7804953c",
+          "native_outcome": "cancelled",
+          "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+          "turn_id": "01a153ca-c659-7192-ad25-051cb02fb867",
+          "verified": false
+        },
+        "status": "cancelled"
+      },
+      "role": "assistant",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "turn_id": "01a153ca-c659-7192-ad25-051cb02fb867"
+    },
+    {
+      "command_id": "29303aa66779c639c91ced668f5d348f",
+      "request_command_id": "8fba3f99f2ba33b56739d096c8ee2619",
+      "role": "user",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "Repeat the token from my first message exactly. Do not use tools.",
+      "turn_id": "01a153ca-d444-7492-9176-39a1bc213358"
+    },
+    {
+      "command_id": "29303aa66779c639c91ced668f5d348f",
+      "result": {
+        "source": {
+          "attempt_id": "6fe1da60a886745057a24fa96a52abb0",
+          "command_id": "29303aa66779c639c91ced668f5d348f",
+          "item_id": "msg_0b25e8558737148e016ad5f67edbdc819199585d31e9ec0155",
+          "native_outcome": "succeeded",
+          "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-18f21624902382d846b8583e4426558b",
+          "turn_id": "01a153ca-d444-7492-9176-39a1bc213358",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-18f21624902382d846b8583e4426558b"
+      },
+      "role": "assistant",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "cw-18f21624902382d846b8583e4426558b",
+      "turn_id": "01a153ca-d444-7492-9176-39a1bc213358"
+    },
+    {
+      "command_id": "1b864fb77b1687ae5d1ac165696abbf4",
+      "request_command_id": "1aa99f5cccb0510acb3f2a162afb6587",
+      "role": "user",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "Repeat the token from my first message exactly. Do not use tools.",
+      "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b"
+    },
+    {
+      "command_id": "1b864fb77b1687ae5d1ac165696abbf4",
+      "result": {
+        "source": {
+          "attempt_id": "bf879f5c37315f7ce5a74afdf89b1611",
+          "command_id": "1b864fb77b1687ae5d1ac165696abbf4",
+          "item_id": "msg_0ab50fc1417eba8b016ad5f68ae2448191a0f9d92acf8b0989",
+          "native_outcome": "succeeded",
+          "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-18f21624902382d846b8583e4426558b",
+          "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-18f21624902382d846b8583e4426558b"
+      },
+      "role": "assistant",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "text": "cw-18f21624902382d846b8583e4426558b",
+      "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": "fc5471f052d1ef29873de9f21cde005b:10",
+  "run_id": "fc5471f052d1ef29873de9f21cde005b"
+}
