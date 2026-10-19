@@ -205,13 +205,13 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 4. 迁移主线单元/原生测试的资源夹具到真实固定控制准备，不构造旧 inspection 字段。测试同源 helper/Runner，真实原生 cleanup 归档并验签退出正文；零业务停止探针在 helper 前先准备控制，离线 probe 禁止服务启动、模型/业务输入和 DB/原失败回执修改。
 5. 审计后冻结源码与 helper，执行下表；归档最终与失败结果，更新 Spec/验收及 PR，再给出是否适合合入的结论。SteerLine/Orca 不改，不部署/合并。
 
-证据目录 `docs/acceptance/evidence/rebase-control-20261019/`（R），原现场 `.evidence/rebase-control-20261019/`。Windows/amd64、现有 Codex/Orca/认证、原有配对主机及隔离 SteerlineTest worktrees；无需新账号或管理员网络设施。
+证据目录 `docs/acceptance/evidence/rebase-control-20261019/`（R），原现场 `.evidence/rebase-control-20261019/`。Windows/amd64、现有 Codex/Orca/认证、原有配对主机及隔离 SteerlineTest worktrees；无需新账号或管理员网络设施。审计补齐主线新增 native stop opt-in 的允许跳过登记；正式入口的 L1/Controlled 整套预算按实测设为12/25分钟，单场景/产品期限、断言和计数门槛不变。最终由新冻结源码的正式入口整体重跑，早期超时/夹具失败均保留，不用组合报告替代最终通过。
 
 | 级别/场景 | 环境、命令与时点 | 通过条件/证据 |
 | --- | --- | --- |
-| 组件 | 改后适配器/协议/审计包定向回归，application/host 的 `TestSROffline|TestSRShutdown|TestSRStopProgress|TestSRCLIContract` 定向；整包由下述完整 L1 的8分钟预算覆盖 | 原签名改写/重放/缺认证/活树/原主机等负例、失败查询但 reader 已退出/未知 reader 禁止覆盖、认证/控制/只读及现工作流回归通过；`R/checks/component-*.log`、`R/checks/stop-consumer.log`。早期扩大至 application 全包的5分钟总超时保留，不算通过 |
+| 组件 | 改后适配器/协议/审计包定向回归，application/host 的 `TestSROffline|TestSRShutdown|TestSRStopProgress|TestSRCLIContract` 定向；整包由下述完整 L1 的12分钟预算覆盖 | 原签名改写/重放/缺认证/活树/原主机等负例、失败查询但 reader 已退出/未知 reader 禁止覆盖、认证/控制/只读及现工作流回归通过；`R/checks/component-*.log`、`R/checks/stop-consumer.log`。早期扩大至 application 全包的5分钟总超时保留，不算通过 |
 | 完整 L1 | 冻结源码后 `./scripts/test.ps1 -Level L1 -OutDir .evidence/rebase-control-20261019/l1` | 全部本层测试通过，允许的 opt-in/helper 跳过逐项登记；native compile/零匹配守卫/框架通过；`R/prerequisites/l1/` |
-| 完整 Controlled16 | L1 后，以 `tests/catalog.json` 全部受控场景 pattern 构建/运行原 integration harness。只把其已确认总预算从15改为25分钟、保持原构建/独立进程启动/断言/单场景预算；实际命令和与原脚本的差异归档 | 16/16 顶层及8条获取子路径无跳过通过，EXE/SHA/源码一致；`R/prerequisites/controlled/` |
+| 完整 Controlled16 | L1 后，以 `tests/catalog.json` 全部受控场景 pattern 经正式入口构建/运行 integration harness，总预算25分钟、保持原构建/独立进程启动/断言/单场景预算 | 16/16 顶层及8条获取子路径无跳过通过，EXE/SHA/源码一致；`R/prerequisites/controlled/` |
 | 原生 workflow 3 cases | 前置通过后，原 `Invoke-SRCaseBatch` 入口执行 `orca-remote.service-restart` 的 graceful-active/kill-active、`orca-remote.stop-revocation` 的 active，冻结配置，最大并行2，明确排除4管理员变体 | 原控制在业务前就绪、同身份恢复、原 complete final/reader 退出、零业务重发；原签名退出/认证/控制关闭/完整清单/服务结算均通过；`R/native/` |
 | 既有无业务停止探针 | 前置通过后本机与已配对远端各一次 `go test ./internal/host -run '^TestOrcaStoppedNativeProbe$' -count=1 -timeout=8m`；显式 `STEERRUNNER_ORCA_STOP_PROBE_*` 固定新隔离目录、同源 EXE/helper/native/model/repo/base/原 host；与其他真机合计并行不超2 | 活动拒绝、原 helper 真实签名退出后公开 EXE 离线 verify 成功，原 DB/失败回执不变、不启动服务、零业务输入、原控制及自有 worktree 清理；`R/probes/`。Reader 真实结算由前一行实际业务查询覆盖，不再创建旧一次性 reader 终端 |
 

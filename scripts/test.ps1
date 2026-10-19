@@ -129,7 +129,7 @@ try {
     $taskFramework = Join-Path $taskOut 'framework'
     & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework
     $taskCoverage = Join-Path $taskOut 'coverage.out'
-    & go test @($taskCatalog.l1_packages) -count=1 -timeout=8m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
+    & go test @($taskCatalog.l1_packages) -count=1 -timeout=12m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
     $taskUnitCode = $LASTEXITCODE
     # The two formal native extensions are part of L1, including on machines
     # without model credentials or a running Orca instance.
@@ -166,9 +166,9 @@ try {
         $taskControlled = Join-Path $taskOut 'controlled'
         $taskPattern = '^(' + (($taskCatalog.controlled_scenarios | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')$'
         & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern | Out-Host
-        # The child owns a 15m aggregate test deadline. Do not declare timeout
+        # The child owns a 25m aggregate test deadline. Do not declare timeout
         # before that contract ends; allow only result-file/cleanup latency.
-        $taskUntil = [DateTime]::UtcNow.AddMinutes(15).AddSeconds(30)
+        $taskUntil = [DateTime]::UtcNow.AddMinutes(25).AddSeconds(30)
         while (-not (Test-Path -LiteralPath (Join-Path $taskControlled 'result.json'))) {
             if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled harness timed out; inspect integration.log' }
             Start-Sleep -Seconds 2
