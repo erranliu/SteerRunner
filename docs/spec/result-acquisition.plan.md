@@ -186,3 +186,5 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 | L3：执行期强杀恢复、正常重启、停止及跨重启撤销；原生完整回执和控制资源归属 | 前置通过后用同源构建运行 `./scripts/test.ps1 -Level L3 -Scenario orca-remote.service-restart,orca-remote.stop-revocation -SkipAdminRequired -Config <冻结配置> -OutDir .evidence/fixed-control-20261019/native -MaxParallel 2`；实际运行 graceful-active、kill-active、active 三项，明确排除四项管理员网络/阶段边界用例，不另造“成功”预期 | 原控制终端在首条业务输入前已提交；kill-active 恢复仍为同一 handle/incarnation，原请求/final 可核验、零重发输入/零新建辅助终端；stop 证明原认证 broker/socket 清理、业务写者及控制终端关闭，无晚到写入，原 Run/service 结算完整；`F/native/`、`F/cleanup-summary.json` |
 
 上述入口保留注册 case 集并明确记录管理员变体排除，不将子集标为完整场景通过；不扩大为全 L2/L3 或管理员网络矩阵。辅助资源创建前置、初始化未知与身份变化用确定性 L1 覆盖；真实强杀只验证用户确认的执行期窗口。测试发现问题直接修复并对新源码重跑相关前置/场景，未经验证的分支保持明确未验。
+
+验收时点增量：固定控制终端在业务完成时仍应存活，关闭审计在 Run stop/cleanup 后执行，必须同时保存原认证撤销、完整 inventory 与控制关闭证明，不能把“仍归属本 Run”计成“已关闭”。原生批次若仅因旧 driver 的提前关闭断言失败，保留原失败；改正 driver 后用新现场重新运行，不将事后复核改写成原用例通过。仅测试代码/文档变化时，逐文件证明生产源码与已通过完整 L1/Controlled 的源码完全相同，记录 helper 原构建 SHA/源提交与新 driver 提交；可复用该同源生产前置，再执行审计包回归、完整 native driver 编译/零匹配保护/注册检查和受影响真实 cases。生产源码有变化则重新执行原前置。

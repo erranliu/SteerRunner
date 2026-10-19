@@ -514,8 +514,17 @@ func (s *stabilityRun) merge(v contracts.RunView) {
 
 func executionStability(t *testing.T, m livetest.Manifest) {
 	s := &stabilityRun{t: t, m: m, dir: filepath.Join(m.Root, "s"), started: time.Now().UTC(), r: livetest.StabilityResult{Scenario: m.Scenario, CaseID: m.CaseID, RepeatIndex: m.RepeatIndex, Stage: "preflight", TestOutcome: "failed"}}
+	var inputsBeforeCleanup []string
 	t.Cleanup(func() {
 		s.cleanup()
+		// The fixed control actor deliberately remains live through business
+		// completion. Require its actual closure only after Run stop/cleanup.
+		keys, _ := s.calls()
+		if inputsBeforeCleanup != nil {
+			s.check("no-input-during-cleanup", reflect.DeepEqual(keys, inputsBeforeCleanup), "original business forwarding intents unchanged by stop/authentication/control cleanup")
+		}
+		s.r.AuditComplete = s.completeNativeReceipts(keys)
+		s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts, fixed control identity, authentication revocation and confirmed closure")
 		if err := livetest.ValidateRuntime(m); err != nil {
 			t.Error(err)
 		}
@@ -745,6 +754,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		s.r.BusinessOutcome = "merged"
 	}
 	keys, launches := s.calls()
+	inputsBeforeCleanup = append([]string{}, keys...)
 	seen := map[string]bool{}
 	unique := true
 	for _, k := range keys {
@@ -771,8 +781,6 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		s.check("single-native-publication", pubs == 1 && creates == 1, "native-publication-audit.json: publisher/create counts")
 	}
-	s.r.AuditComplete = s.completeNativeReceipts(keys)
-	s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json: original business receipts and every bound readonly inspector closed; no new business input")
 	if m.Stability.ExpectedOutcome != "merged" {
 		s.auditPermissions()
 	}
@@ -844,8 +852,8 @@ func (s *stabilityRun) auditPermissions() {
 }
 
 func (s *stabilityRun) completeNativeReceipts(expected []string) bool {
-	// Stop can cancel an in-flight readonly observation. Await its existing
-	// bounded close; this loop never creates, retries or closes a native resource.
+	// Run cleanup already stopped the original business/control resources.
+	// This loop only awaits their existing bound receipts, with no new effects.
 	until := time.Now().Add(30 * time.Second)
 	for {
 		raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
@@ -1046,6 +1054,12 @@ func (s *stabilityRun) cleanup() {
 					if err == nil && v.StopStatus == "stopped" && !v.NewInputsAllowed {
 						s.r.Cleanup.NativeStopped = true
 						save(s.t, "cleanup-run.json", v)
+						proof, proofErr := remoteStopEvidence(s.m, v)
+						if proofErr != nil {
+							s.t.Error("original authentication/control cleanup unverified", proofErr)
+						} else {
+							save(s.t, "remote-authentication-cleanup.json", proof)
+						}
 						break
 					}
 					time.Sleep(time.Second)

@@ -80,7 +80,7 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 			if proof.Mode != expectedMode {
 				return nil, errors.New("remote cleanup authentication source changed")
 			}
-			evidence = map[string]any{"proof": proof, "revoker": actor}
+			evidence = map[string]any{"proof": proof, "control": actor}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()
