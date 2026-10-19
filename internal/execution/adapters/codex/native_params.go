@@ -24,7 +24,7 @@ func AppServerLaunch(executable string, args []string, profile, endpoint string)
 }
 
 func ThreadStartParams(worktree, sandbox, model string, dynamicTools []any) (map[string]any, error) {
-	if worktree == "" || (sandbox != "workspace-write" && sandbox != "danger-full-access") {
+	if worktree == "" || (sandbox != "workspace-write" && sandbox != "danger-full-access" && sandbox != "read-only") {
 		return nil, errors.New("Codex app-server thread has no fixed worktree")
 	}
 	params := map[string]any{"cwd": worktree, "sandbox": sandbox, "approvalPolicy": "never", "approvalsReviewer": "user"}
@@ -55,6 +55,8 @@ func TurnStartParams(worktree, threadID, commandID, prompt, sandbox, model, effo
 	}
 	policy := map[string]any{}
 	switch sandbox {
+	case "read-only":
+		policy["type"] = "readOnly"
 	case "danger-full-access":
 		policy["type"] = "dangerFullAccess"
 	case "workspace-write":

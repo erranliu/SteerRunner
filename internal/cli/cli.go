@@ -125,7 +125,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		value.opts.Command = positional[0] + " " + positional[1]
 	}
 	switch value.opts.Command {
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -177,7 +177,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if selectors != 1 || value.opts.CheckID != "" || value.opts.RefreshPR && value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
 		}
-	case "last-message", "open-native-session", "events", "reply", "resume", "stop":
+	case "last-message", "open-native-session", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		if selectors != 1 || value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "This command requires only run-id.")
 		}
@@ -186,10 +186,10 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			return value, contracts.Fail(2, "invalid_arguments", "This command does not accept a target identifier.")
 		}
 	}
-	if value.opts.Command != "events" && (value.opts.After != "" || value.opts.Limit != 0) || value.opts.Command != "inspect" && value.opts.RefreshPR {
+	if value.opts.Command != "events" && value.opts.Command != "history" && (value.opts.After != "" || value.opts.Limit != 0) || value.opts.Command != "inspect" && value.opts.RefreshPR {
 		return value, contracts.Fail(2, "invalid_arguments", "An option does not apply to this command.")
 	}
-	if value.opts.Command == "events" && value.opts.Limit == 0 {
+	if (value.opts.Command == "events" || value.opts.Command == "history") && value.opts.Limit == 0 {
 		value.opts.Limit = 200
 	}
 	if value.opts.Command == "open-native-session" {
@@ -206,7 +206,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 
 func writes(command string) bool {
 	switch command {
-	case "environment-check start", "environment-check stop", "submit", "service stop", "reply", "resume", "stop":
+	case "environment-check start", "environment-check stop", "submit", "service stop", "reply", "resume", "stop", "message", "interrupt", "close":
 		return true
 	default:
 		return false
@@ -231,7 +231,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object, without a request envelope.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object, without a request envelope.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline {
 		executable, err := os.Executable()

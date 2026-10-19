@@ -26,7 +26,7 @@ func TestSRWorkflowSelection(t *testing.T) {
 	if err := json.Unmarshal(Read("prompts.json"), &prompts); err != nil {
 		t.Fatal(err)
 	}
-	if len(catalog) != 2 || len(schema.Workflow.Properties.ID.Enum) != 2 || data["workflow"] == nil {
+	if len(catalog) != 4 || len(schema.Workflow.Properties.ID.Enum) != 4 || data["workflow"] == nil {
 		t.Fatal("discovery mismatch")
 	}
 	for _, p := range catalog {

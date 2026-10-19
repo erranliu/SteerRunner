@@ -1,0 +1,123 @@
+{
+  "entries": [
+    {
+      "command_id": "16b5ffceac731cc7e47d117a1eefd70d",
+      "request_command_id": "813a8fbf76cee3d47a70e0f09bfbdcf2",
+      "role": "user",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "Remember the token cw-95d99406a0ba662546449101c185dd9d for this session. Reply with this exact token only. Do not use tools.",
+      "turn_id": "01a1538d-bc15-7761-8a17-5be3cc475655"
+    },
+    {
+      "command_id": "16b5ffceac731cc7e47d117a1eefd70d",
+      "result": {
+        "source": {
+          "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+          "command_id": "16b5ffceac731cc7e47d117a1eefd70d",
+          "item_id": "msg_09829e5fe2abeaf0016ad5e6dd0a108191abe3e39972dac4f2",
+          "native_outcome": "succeeded",
+          "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-95d99406a0ba662546449101c185dd9d",
+          "turn_id": "01a1538d-bc15-7761-8a17-5be3cc475655",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-95d99406a0ba662546449101c185dd9d"
+      },
+      "role": "assistant",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "cw-95d99406a0ba662546449101c185dd9d",
+      "turn_id": "01a1538d-bc15-7761-8a17-5be3cc475655"
+    },
+    {
+      "command_id": "87c09ac3894320e28d226e0efaabfbe9",
+      "request_command_id": "05787ed27de0ad30ec80c2708650fba4",
+      "role": "user",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "Repeat the token from my first message exactly, with no tools.",
+      "turn_id": "01a1538d-de74-7232-a1dd-8812bbbccfe1"
+    },
+    {
+      "command_id": "87c09ac3894320e28d226e0efaabfbe9",
+      "result": {
+        "source": {
+          "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+          "command_id": "87c09ac3894320e28d226e0efaabfbe9",
+          "item_id": "msg_0287c50b8c01edcb016ad5e6e44bd88191a2ca9d9ac1a2c3f9",
+          "native_outcome": "succeeded",
+          "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-95d99406a0ba662546449101c185dd9d",
+          "turn_id": "01a1538d-de74-7232-a1dd-8812bbbccfe1",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-95d99406a0ba662546449101c185dd9d"
+      },
+      "role": "assistant",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "cw-95d99406a0ba662546449101c185dd9d",
+      "turn_id": "01a1538d-de74-7232-a1dd-8812bbbccfe1"
+    },
+    {
+      "command_id": "378ecd5d02343456124b8f917b7d63d6",
+      "request_command_id": "4963a8eff8638763e5980a213402bd60",
+      "role": "user",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "Use a shell tool to wait 45 seconds, then reply LONG_DONE. The command only waits and writes to standard output; do not change any files.",
+      "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed"
+    },
+    {
+      "command_id": "378ecd5d02343456124b8f917b7d63d6",
+      "result": {
+        "diagnostic": "native turn ended with status interrupted",
+        "source": {
+          "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+          "command_id": "378ecd5d02343456124b8f917b7d63d6",
+          "native_outcome": "cancelled",
+          "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+          "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed",
+          "verified": false
+        },
+        "status": "cancelled"
+      },
+      "role": "assistant",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed"
+    },
+    {
+      "command_id": "fbc223331ee2e69f1dd66d15dfbfda3b",
+      "request_command_id": "3f09bcfb893eba0c8daef9b02f729c9f",
+      "role": "user",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "Repeat the token from my first message exactly. Do not use tools.",
+      "turn_id": "01a1538e-07c3-76a0-a7ec-0a2a81814c6c"
+    },
+    {
+      "command_id": "fbc223331ee2e69f1dd66d15dfbfda3b",
+      "result": {
+        "source": {
+          "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+          "command_id": "fbc223331ee2e69f1dd66d15dfbfda3b",
+          "item_id": "msg_051db839ffa98d02016ad5e6ef08f88191b5640d3c79b0a8f3",
+          "native_outcome": "succeeded",
+          "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+          "source": "codex.agentMessage.final_answer",
+          "text": "cw-95d99406a0ba662546449101c185dd9d",
+          "turn_id": "01a1538e-07c3-76a0-a7ec-0a2a81814c6c",
+          "verified": true
+        },
+        "status": "succeeded",
+        "text": "cw-95d99406a0ba662546449101c185dd9d"
+      },
+      "role": "assistant",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "text": "cw-95d99406a0ba662546449101c185dd9d",
+      "turn_id": "01a1538e-07c3-76a0-a7ec-0a2a81814c6c"
+    }
+  ],
+  "has_more": false,
+  "next_cursor": "bf21091e74bcdb3fe3683d0e6e68d3c0:8",
+  "run_id": "bf21091e74bcdb3fe3683d0e6e68d3c0"
+}

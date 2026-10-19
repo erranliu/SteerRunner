@@ -1,0 +1,4 @@
+=== RUN   TestSRContentNative
+    content_native_test.go:139: native=true generate=passed conversation=passed interrupt=passed restart=passed session=01a153ca-73ef-7921-94b3-87f62c988691 root=C:/srt\cw-3996079217
+--- PASS: TestSRContentNative (63.99s)
+PASS

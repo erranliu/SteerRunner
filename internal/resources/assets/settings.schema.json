@@ -11,11 +11,16 @@
       "id": {
         "enum": [
           "development",
-          "development-audited"
+          "development-audited",
+          "conversation",
+          "generate"
         ]
       },
       "version": {
-        "const": 2
+        "enum": [
+          1,
+          2
+        ]
       },
       "audit_model": {
         "type": "object",
@@ -98,6 +103,35 @@
                   "publish.report"
                 ]
               }
+            }
+          }
+        }
+      },
+      {
+        "if": {
+          "properties": {
+            "id": {
+              "enum": [
+                "conversation",
+                "generate"
+              ]
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "version": {
+              "const": 1
+            },
+            "prompt_overrides": {
+              "maxProperties": 0
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "version": {
+              "const": 2
             }
           }
         }

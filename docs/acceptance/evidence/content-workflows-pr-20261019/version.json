@@ -1,0 +1,16 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "platform": "windows/amd64",
+    "protocols": [
+      "steerrunner-cli/v1"
+    ],
+    "resource_digest": "536edcaf2ed199109a1b42875f61fbb27af048a6441c5494d8afe36f4ca1bf56",
+    "resource_version": 2,
+    "source_commit": "46d66d7645f653277dd4b8617a5f632139ea3826",
+    "version": "0.2.0-dev.2"
+  },
+  "error": null
+}

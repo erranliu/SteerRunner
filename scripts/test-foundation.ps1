@@ -1,7 +1,9 @@
 param(
     [string]$OutDir = '',
     [string]$Pattern = '^(TestSRStandalonePackage|TestSRServiceOwnership)$',
-    [string]$BaselineExe = ''
+    [string]$BaselineExe = '',
+    [string]$ContentNativeExecutable = '',
+    [string]$ContentNativeModel = ''
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -20,7 +22,11 @@ try {
     & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe
     & go test ./internal/contracts ./internal/cli ./internal/storage ./internal/host -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage|TestSRStartupIntent)$' -count=1 -timeout=2m -v 2>&1 | Tee-Object -FilePath (Join-Path $taskEvidence 'unit-foundation.log') | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Foundation unit tests failed; inspect unit-foundation.log.' }
-    & go test -c -o $taskTestExe ./tests/integration
+	if ($ContentNativeExecutable) {
+		& go test -tags live -c -o $taskTestExe ./tests/integration
+	} else {
+		& go test -c -o $taskTestExe ./tests/integration
+	}
     if ($LASTEXITCODE -ne 0) { throw 'Integration fixture build failed.' }
     & go build -o $taskHelperExe ./tests/helpers/native
     if ($LASTEXITCODE -ne 0) { throw 'Native protocol fixture build failed.' }
@@ -34,6 +40,8 @@ function Quote-WindowsArgument([string]$Argument) {
 # change any CLI, preparation, fault, or scenario polling deadline.
 $taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=25m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
 if ($BaselineExe) { $taskArgs += @('-baseline-exe', $BaselineExe) }
+if ($ContentNativeExecutable) { $taskArgs += @('-content-native-exe', (Resolve-Path -LiteralPath $ContentNativeExecutable).Path) }
+if ($ContentNativeModel) { $taskArgs += @('-content-native-model', $ContentNativeModel) }
 $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
 $taskStartup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
 # Test harness only: a CIM-created process does not inherit the tool caller's

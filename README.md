@@ -1,5 +1,11 @@
 # SteerRunner
 
+新增 [conversation/1](docs/workflows/conversation.md) 持续会话与
+[generate/1](docs/workflows/generate.md) 一次性内容生成：独立输入、inline 材料快照、
+本机 Codex `read_only`，无需仓库、Spec/Plan 或 publication。复用现有 Run、可靠执行、
+问答/恢复与资源结算；通过 `message / interrupt / close / history` 操作原会话。
+实现范围与真实 Codex 证据见[专属验收](docs/acceptance/content-workflows.md)。
+
 SteerRunner 是个人多机执行器：在本人管理和信任、预先配置好的执行主机上，接收冻结的 Spec / Plan，执行开发 workflow、处理反馈并产出可核验 PR。支持同一服务多个独立 Run；调用方显式选择本机或 Orca environment。SteerLine 保留任务、DAG、机器选择、候选关系和 TaskDelivery，通过 CLI 使用它。
 
 用户负责每台执行机的工具安装和 gh 登录。Runner 负责 Run 隔离、执行与发布对账、显式恢复、停止及清理；本机和 Orca local 受管执行另提供环境检查与有限期单仓库授权。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。

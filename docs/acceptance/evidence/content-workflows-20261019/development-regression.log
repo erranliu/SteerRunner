@@ -1,0 +1,33 @@
+=== RUN   TestSRContentGenerate
+=== RUN   TestSRContentGenerate/text
+=== RUN   TestSRContentGenerate/json
+=== RUN   TestSRContentGenerate/schema_mismatch
+=== RUN   TestSRContentGenerate/bad_json
+=== RUN   TestSRContentGenerate/failed
+=== RUN   TestSRContentGenerate/cancelled
+=== RUN   TestSRContentGenerate/no_final
+=== RUN   TestSRContentGenerate/question
+--- PASS: TestSRContentGenerate (32.71s)
+    --- PASS: TestSRContentGenerate/text (6.37s)
+    --- PASS: TestSRContentGenerate/json (3.46s)
+    --- PASS: TestSRContentGenerate/schema_mismatch (3.75s)
+    --- PASS: TestSRContentGenerate/bad_json (3.95s)
+    --- PASS: TestSRContentGenerate/failed (3.74s)
+    --- PASS: TestSRContentGenerate/cancelled (4.20s)
+    --- PASS: TestSRContentGenerate/no_final (3.50s)
+    --- PASS: TestSRContentGenerate/question (3.72s)
+=== RUN   TestSRContentConversation
+--- PASS: TestSRContentConversation (10.39s)
+=== RUN   TestSRContentQuestionAndUnknown
+=== RUN   TestSRContentQuestionAndUnknown/question
+=== RUN   TestSRContentQuestionAndUnknown/unknown
+--- PASS: TestSRContentQuestionAndUnknown (12.23s)
+    --- PASS: TestSRContentQuestionAndUnknown/question (3.75s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown (8.47s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (29.33s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (31.25s)
+=== RUN   TestSRRestartRequiresResume
+--- PASS: TestSRRestartRequiresResume (33.30s)
+PASS

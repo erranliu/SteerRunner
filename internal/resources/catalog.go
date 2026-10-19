@@ -83,6 +83,14 @@ func Catalog() CapabilityCatalog {
 			}
 		}
 	}
+	for _, id := range []string{"conversation", "generate"} {
+		selection := &contracts.Workflow{ID: id, Version: 1}
+		operations := []string{"submit", "inspect", "history", "stop", "resume"}
+		if id == "conversation" {
+			operations = append(operations, "message", "reply", "interrupt", "close")
+		}
+		result.Combinations = append(result.Combinations, Combination{"codex-app-server", "local", "codex", selection, "read_only", operations, "/configuration_schemas/" + id + "_input", []string{"per_execution_native_verification", "native_codex_0.159.2_permissions", "self_contained_schema_only"}})
+	}
 	return result
 }
 

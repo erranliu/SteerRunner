@@ -1,0 +1,335 @@
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["note"],"extra":["unexpected"]}
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes","unexpected"],"note":["note"]}
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"choice":["yes"],"note":["note"]}
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"]}
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["unknown"],"note":["note"]}
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["_"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent (0.40s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["note"],"extra":["unexpected"]} (0.05s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes","unexpected"],"note":["note"]} (0.06s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"choice":["yes"],"note":["note"]} (0.05s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"]} (0.06s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["unknown"],"note":["note"]} (0.07s)
+    --- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["_"]} (0.11s)
+=== RUN   TestContentConcurrentMessages
+--- PASS: TestContentConcurrentMessages (0.22s)
+=== RUN   TestContentCleanupFailureIndependent
+--- PASS: TestContentCleanupFailureIndependent (0.10s)
+=== RUN   TestContentGenerateResults
+=== RUN   TestContentGenerateResults/text
+=== RUN   TestContentGenerateResults/json
+=== RUN   TestContentGenerateResults/invalid_json
+=== RUN   TestContentGenerateResults/schema
+=== RUN   TestContentGenerateResults/failed
+=== RUN   TestContentGenerateResults/cancelled
+=== RUN   TestContentGenerateResults/no_final
+=== RUN   TestContentGenerateResults/unknown
+--- PASS: TestContentGenerateResults (0.73s)
+    --- PASS: TestContentGenerateResults/text (0.06s)
+    --- PASS: TestContentGenerateResults/json (0.06s)
+    --- PASS: TestContentGenerateResults/invalid_json (0.06s)
+    --- PASS: TestContentGenerateResults/schema (0.05s)
+    --- PASS: TestContentGenerateResults/failed (0.07s)
+    --- PASS: TestContentGenerateResults/cancelled (0.09s)
+    --- PASS: TestContentGenerateResults/no_final (0.21s)
+    --- PASS: TestContentGenerateResults/unknown (0.12s)
+=== RUN   TestContentConversationControls
+--- PASS: TestContentConversationControls (0.11s)
+=== RUN   TestContentDirectoryAndUnknownResult
+--- PASS: TestContentDirectoryAndUnknownResult (0.15s)
+=== RUN   TestEnvironmentCheckPublicFixtures
+--- PASS: TestEnvironmentCheckPublicFixtures (0.16s)
+=== RUN   TestEnvironmentCheckAcceptedFailureOriginalCommandsAndRestart
+--- PASS: TestEnvironmentCheckAcceptedFailureOriginalCommandsAndRestart (0.58s)
+=== RUN   TestEnvironmentCheckUnsupportedIsQueryableWithoutCheck
+--- PASS: TestEnvironmentCheckUnsupportedIsQueryableWithoutCheck (0.06s)
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject/uncertain_exit
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject/authorization_denied
+--- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject (0.24s)
+    --- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject/uncertain_exit (0.10s)
+    --- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject/authorization_denied (0.14s)
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/owned
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/foreign_marker
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/already_removed
+--- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath (0.24s)
+    --- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/owned (0.10s)
+    --- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/foreign_marker (0.07s)
+    --- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/already_removed (0.07s)
+=== RUN   TestEnvironmentCheckFreshSettlementPreservesCompletedCapability
+--- PASS: TestEnvironmentCheckFreshSettlementPreservesCompletedCapability (0.07s)
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools/confirmed
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools/lost_response
+--- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools (0.52s)
+    --- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools/confirmed (0.06s)
+    --- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools/lost_response (0.46s)
+=== RUN   TestEnvironmentCheckSettlementKeepsCapabilityAndOriginalIdentity
+--- PASS: TestEnvironmentCheckSettlementKeepsCapabilityAndOriginalIdentity (0.12s)
+=== RUN   TestEnvironmentCheckRestartReconcilesWithoutNewInput
+--- PASS: TestEnvironmentCheckRestartReconcilesWithoutNewInput (0.07s)
+=== RUN   TestEnvironmentCheckOperationUsesFrozenExecutionHost
+--- PASS: TestEnvironmentCheckOperationUsesFrozenExecutionHost (0.11s)
+=== RUN   TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup
+--- PASS: TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup (0.13s)
+=== RUN   TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources
+--- PASS: TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources (0.08s)
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment
+--- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor (0.09s)
+    --- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment (0.04s)
+    --- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment (0.05s)
+=== RUN   TestSRResumeWorkflowRetainsOriginalReportSource
+--- PASS: TestSRResumeWorkflowRetainsOriginalReportSource (0.00s)
+=== RUN   TestLastMessageIsBoundedReadOnlyTelemetry
+--- PASS: TestLastMessageIsBoundedReadOnlyTelemetry (0.00s)
+=== RUN   TestSROrcaFrozenMaterials
+--- PASS: TestSROrcaFrozenMaterials (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/ready
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/attempt
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/generation
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/session
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/missing
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/unverified
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/stopping
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/ready (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/attempt (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/generation (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/session (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/missing (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/unverified (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/stopping (0.00s)
+    --- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed (0.00s)
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/native_error
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/commit_failure
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/success
+--- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver (0.20s)
+    --- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/native_error (0.06s)
+    --- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/commit_failure (0.08s)
+    --- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/success (0.06s)
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity/completed
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity/question
+--- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity (0.20s)
+    --- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity/completed (0.09s)
+    --- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity/question (0.11s)
+=== RUN   TestSRObservationCommitFailureKeepsEventReplayable
+--- PASS: TestSRObservationCommitFailureKeepsEventReplayable (0.09s)
+=== RUN   TestSROperationReconciliationKeepsPartialBinding
+--- PASS: TestSROperationReconciliationKeepsPartialBinding (0.07s)
+=== RUN   TestSRStopSerializesWithNativeDispatch
+--- PASS: TestSRStopSerializesWithNativeDispatch (0.07s)
+=== RUN   TestSROperationIntentCommitFailureDoesNotDispatch
+--- PASS: TestSROperationIntentCommitFailureDoesNotDispatch (0.08s)
+=== RUN   TestSROperationReceiptCommitFailureReconcilesOriginal
+--- PASS: TestSROperationReceiptCommitFailureReconcilesOriginal (0.10s)
+=== RUN   TestSRStopBindingCommitFailureDoesNotDispatch
+--- PASS: TestSRStopBindingCommitFailureDoesNotDispatch (0.10s)
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+=== RUN   TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly
+--- PASS: TestSRFreezeOrcaAgent (73.71s)
+    --- PASS: TestSRFreezeOrcaAgent/agent= (12.25s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=codex (13.90s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=pi (16.09s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=dsh (16.72s)
+    --- PASS: TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly (14.74s)
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+=== RUN   TestRAParserAcquisition/needs_input
+=== RUN   TestRAParserAcquisition/conflict
+=== RUN   TestRAParserAcquisition/failed
+=== RUN   TestRAParserAcquisition/policy_violation
+=== RUN   TestRAParserAcquisition/side_effect_unverified
+=== RUN   TestRAParserAcquisition/stop
+=== RUN   TestRAParserAcquisition/source-drift
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition (129.49s)
+    --- PASS: TestRAParserAcquisition/completed (17.91s)
+    --- PASS: TestRAParserAcquisition/needs_input (18.41s)
+    --- PASS: TestRAParserAcquisition/conflict (14.23s)
+    --- PASS: TestRAParserAcquisition/failed (16.25s)
+    --- PASS: TestRAParserAcquisition/policy_violation (15.63s)
+    --- PASS: TestRAParserAcquisition/side_effect_unverified (19.33s)
+    --- PASS: TestRAParserAcquisition/stop (9.52s)
+    --- PASS: TestRAParserAcquisition/source-drift (11.02s)
+    --- PASS: TestRAParserAcquisition/new-source (7.19s)
+=== RUN   TestRALateParserReceiptAndDuplicate
+--- PASS: TestRALateParserReceiptAndDuplicate (10.13s)
+=== RUN   TestRAStateAuthorityParserHistory
+--- PASS: TestRAStateAuthorityParserHistory (10.65s)
+=== RUN   TestRAAtomicParserRecovery
+--- PASS: TestRAAtomicParserRecovery (21.40s)
+=== RUN   TestRAConcurrencyParserStopResources
+--- PASS: TestRAConcurrencyParserStopResources (14.98s)
+=== RUN   TestRAStateAuthorityParserReferences
+--- PASS: TestRAStateAuthorityParserReferences (10.25s)
+=== RUN   TestSRPreparationQueryStopAuthorization
+=== RUN   TestSRPreparationQueryStopAuthorization/cancel-blocked-query
+=== RUN   TestSRPreparationQueryStopAuthorization/successful-query-races-stop
+=== RUN   TestSRPreparationQueryStopAuthorization/failed-stop-commit
+=== RUN   TestSRPreparationQueryStopAuthorization/stale-stop
+=== RUN   TestSRPreparationQueryStopAuthorization/normal-query
+--- PASS: TestSRPreparationQueryStopAuthorization (0.31s)
+    --- PASS: TestSRPreparationQueryStopAuthorization/cancel-blocked-query (0.06s)
+    --- PASS: TestSRPreparationQueryStopAuthorization/successful-query-races-stop (0.06s)
+    --- PASS: TestSRPreparationQueryStopAuthorization/failed-stop-commit (0.08s)
+    --- PASS: TestSRPreparationQueryStopAuthorization/stale-stop (0.05s)
+    --- PASS: TestSRPreparationQueryStopAuthorization/normal-query (0.06s)
+=== RUN   TestSRPreparationQueryStopSettlesOriginalOperation
+--- PASS: TestSRPreparationQueryStopSettlesOriginalOperation (0.09s)
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState (0.12s)
+    --- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked (0.05s)
+    --- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed (0.06s)
+=== RUN   TestPrivateRunGitGrantDoesNotExpandLegacyCache
+--- PASS: TestPrivateRunGitGrantDoesNotExpandLegacyCache (26.71s)
+=== RUN   TestSRReportFreezesOriginatingNativePolicy
+=== RUN   TestSRReportFreezesOriginatingNativePolicy/frozen_native_permissions;_business_read_only_is_prompt_policy
+=== RUN   TestSRReportFreezesOriginatingNativePolicy/host_managed_permissions;_business_read_only_is_prompt_policy
+--- PASS: TestSRReportFreezesOriginatingNativePolicy (0.15s)
+    --- PASS: TestSRReportFreezesOriginatingNativePolicy/frozen_native_permissions;_business_read_only_is_prompt_policy (0.09s)
+    --- PASS: TestSRReportFreezesOriginatingNativePolicy/host_managed_permissions;_business_read_only_is_prompt_policy (0.06s)
+=== RUN   TestSRLongTurnCanPrepareNextStage
+--- PASS: TestSRLongTurnCanPrepareNextStage (0.07s)
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation/pending
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation/deadline
+--- PASS: TestSRAcceptedResourceUsesOriginalOperation (0.16s)
+    --- PASS: TestSRAcceptedResourceUsesOriginalOperation/pending (0.07s)
+    --- PASS: TestSRAcceptedResourceUsesOriginalOperation/deadline (0.08s)
+=== RUN   TestRAAtomicCompletion
+--- PASS: TestRAAtomicCompletion (10.49s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (0.81s)
+=== RUN   TestRAStateAuthority
+--- PASS: TestRAStateAuthority (0.72s)
+=== RUN   TestRABudgetReportOnce
+--- PASS: TestRABudgetReportOnce (10.21s)
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+=== RUN   TestRAConcurrencyPublication/new-source
+panic: test timed out after 6m0s
+	running tests:
+		TestRAConcurrencyPublication (34s)
+		TestRAConcurrencyPublication/new-source (10s)
+
+goroutine 4834 [running]:
+testing.(*M).startAlarm.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2802 +0x354
+created by time.goFunc
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/time/sleep.go:215 +0x2d
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0x21965db9a000, {0x7ff69ce75f99?, 0x7ff69c6b082e?}, 0x7ff69ced11d8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+testing.runTests.func1(0x21965db9a000)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2585 +0x3e
+testing.tRunner(0x21965db9a000, 0x21965df1fc58)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+testing.runTests({0x7ff69ce7962b, 0x1f}, {0x7ff69ce8e084, 0x34}, 0x21965dd80150, {0x7ff69d4c90c0, 0x45, 0x45}, {0xc2ad95af786c65a0, 0x53d2570669, ...})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2583 +0x4f0
+testing.(*M).Run(0x21965ddb5040)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2443 +0x6ac
+main.main()
+	_testmain.go:182 +0x9b
+
+goroutine 4663 [select]:
+database/sql.(*DB).connectionOpener(0x21965e2441a0, {0x7ff69cee1340, 0x21965dd860f0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/database/sql/sql.go:1261 +0x89
+created by database/sql.OpenDB in goroutine 4662
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/database/sql/sql.go:841 +0x130
+
+goroutine 1345 [chan receive]:
+testing.(*T).Run(0x21965dc28000, {0x7ff69ce64ceb?, 0x21965df20d28?}, 0x21965db12468)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+github.com/erranliu/SteerRunner/internal/application.TestRAConcurrencyPublication(0x21965dc28000)
+	C:/Project/SteerRunner/internal/application/result_acquisition_test.go:97 +0x90
+testing.tRunner(0x21965dc28000, 0x7ff69ced11d8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+
+goroutine 4662 [syscall]:
+syscall.syscalln(0x0?, 0x0?, {0x21965ded4408?, 0x2e58?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x7ff69c61570d?, {0x21965ded4408?, 0x21?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+syscall.CreateProcess(0x0?, 0x20002?, 0x20?, 0x18?, 0x1, 0x80604, 0xf?, 0x7ff69c5f48f3?, 0x21965df20008?, 0x21965ded45c8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/zsyscall_windows.go:545 +0x148
+syscall.StartProcess({0x21965da51280?, 0x7ff69cd8e480?}, {0x21965dd722a0, 0x6, 0x6}, 0x21965df65428?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/exec_windows.go:441 +0xbd7
+os.startProcess({0x21965da51280, 0x20}, {0x21965dd722a0, 0x6, 0x6}, 0x21965ded48b0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec_posix.go:55 +0x2fa
+os.StartProcess({0x21965da51280, 0x20}, {0x21965dd722a0, 0x6, 0x6}, 0x21965ded48b0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec.go:272 +0x54
+os/exec.(*Cmd).Start(0x21965de66680)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:733 +0x5ce
+github.com/erranliu/SteerRunner/internal/execution/process.startManagedBound(0x21965de66680, 0x0)
+	C:/Project/SteerRunner/internal/execution/process/facts_windows.go:87 +0x105
+github.com/erranliu/SteerRunner/internal/execution/process.StartManaged(...)
+	C:/Project/SteerRunner/internal/execution/process/facts_windows.go:64
+github.com/erranliu/SteerRunner/internal/execution/process.Host.StartManaged({0x7ff69cdea480?}, 0x1?)
+	C:/Project/SteerRunner/internal/execution/process/host.go:26 +0x18
+github.com/erranliu/SteerRunner/internal/execution/workspace.Git.Output({{{0x7ff69ce61a14, 0x3}, {0x21965dce2780, 0x2, 0x2}, {0x0, 0x0}, {0x0, 0x0, 0x0}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/git.go:55 +0x493
+github.com/erranliu/SteerRunner/internal/execution/workspace.InspectAudit({_, _}, {{{0x7ff69ce61a14, 0x3}, {0x21965dce2780, 0x2, 0x2}, {0x0, 0x0}, {0x0, ...}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/audit.go:33 +0x8c7
+github.com/erranliu/SteerRunner/internal/application.(*Engine).inspectSource(0x7ff69cdc22a0?, 0x21965dd74008, {0x0, 0x0})
+	C:/Project/SteerRunner/internal/application/workspace_source.go:16 +0x251
+github.com/erranliu/SteerRunner/internal/application.(*Engine).originalCheckpoint(_, _, _, {{0x0, 0x0}, {0x21965dcc2de0, 0x20}, {0x21965e510c14, 0x7}, {0x21965e510c20, ...}, ...})
+	C:/Project/SteerRunner/internal/application/workspace_source.go:41 +0x52c
+github.com/erranliu/SteerRunner/internal/application.(*Engine).finishWithGate(_, {_, _}, {{0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0}, {0x0, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/application/results.go:84 +0x11f4
+github.com/erranliu/SteerRunner/internal/application.(*Engine).finish(...)
+	C:/Project/SteerRunner/internal/application/results.go:19
+github.com/erranliu/SteerRunner/internal/application.finishStage(0x21965db9a200, 0x21965e244c30, {0x21965da4e370, 0x4c})
+	C:/Project/SteerRunner/internal/application/workflow_test.go:88 +0x3a6
+github.com/erranliu/SteerRunner/internal/application.TestRAConcurrencyPublication.func1(0x21965db9a200)
+	C:/Project/SteerRunner/internal/application/result_acquisition_test.go:121 +0x74b
+testing.tRunner(0x21965db9a200, 0x21965db12468)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1345
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+
+goroutine 4775 [IO wait]:
+internal/poll.runtime_pollWait(0x267edd41400, 0x72)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/netpoll.go:351 +0x85
+internal/poll.(*pollDesc).wait(0x21965da40360?, 0x7ff69c5848c6?, 0x0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_poll_runtime.go:84 +0x27
+internal/poll.(*FD).waitIO(0x21965da40360?, 0x21965df8bb58?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:228 +0x4c
+internal/poll.(*FD).execIO(0x21965e1600e0, 0x72, 0x21965df8bbc8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:311 +0x365
+internal/poll.(*FD).acceptOne(0x21965e1600e0, 0xa84, {0x21965dad2000?, 0x7ff69c5f48f3?, 0x39?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:1129 +0x79
+internal/poll.(*FD).Accept(0x21965e1600e0, 0x21965df8bdb0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:1164 +0x190
+net.(*netFD).accept(0x21965e1600e0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/fd_windows.go:202 +0x4b
+net.(*TCPListener).accept(0x21965e55a180)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/tcpsock_posix.go:159 +0x1b
+net.(*TCPListener).Accept(0x21965e55a180)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/tcpsock.go:387 +0x30
+net/http.(*Server).Serve(0x21965dfb9200, {0x7ff69cee0db0, 0x21965e55a180})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/http/server.go:3434 +0x30c
+net/http/httptest.(*Server).goServe.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/http/httptest/server.go:341 +0x55
+created by net/http/httptest.(*Server).goServe in goroutine 4662
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/net/http/httptest/server.go:339 +0x65
+FAIL	github.com/erranliu/SteerRunner/internal/application	363.734s
+FAIL

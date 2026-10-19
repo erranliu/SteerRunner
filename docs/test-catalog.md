@@ -170,3 +170,17 @@ L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控�
 | 4 | L4 已落实四个有界受控契约；物理损坏、长期内存压力及整机极端耗尽等未实现条件仍是明确缺口，不计当前覆盖 |
 
 2026-10-19：远端完整 Check 已从当前注册清单退役，Controlled 验证 unsupported；远端普通 Run 只走 Orca 原生链路。停止证据限原终端、参数只承诺传递，历史 helper 资格不代表本次构建，详见 [原生验收](acceptance/orca-remote-native.md)。
+
+## 内容流程专项（2026-10-19）
+
+`tests/catalog.json.controlled_scenarios` 新增 `TestSRContentGenerate`、
+`TestSRContentConversation`、`TestSRContentQuestionAndUnknown`，分别覆盖单轮结果十个分支、
+原会话多轮/中断/重启/关闭，以及原生问答和未知发送。无真实模型/Git/PR，独立 state-dir。
+
+真实 L3 专属入口为 `scripts/test-content-workflows.ps1 -NativeExecutable <原生0.159.2 EXE>`，
+注册在 `focused_native_scenarios`，不混入 development 的 Git/PR manifest driver。入口先运行
+定向规则与三个受控场景，再以 `-tags live` 的 `TestSRContentNative` 在新 `C:/srt/cw-*` 现场
+通过公开 CLI 验证 JSON 生成、五个串行原轮（含中断）、空闲重启后原 thread 继续及结算。
+模型可通过 `-Model` 显式选择；省略 `-NativeExecutable` 仅运行受控测试，不声称真实通过。
+原生 opt-in 仅编译 live 时存在；默认不执行真实会话。证据及本构建结论见
+[内容流程专属验收](acceptance/content-workflows.md)。

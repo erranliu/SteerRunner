@@ -92,6 +92,32 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 	if current.Revision != r.Revision {
 		return false
 	}
+	if state.Contract == "final" {
+		if r.Request.Conversation != nil && (result.NativeOutcome == "unknown" || result.NativeOutcome == "unreported") {
+			r.Result = &value
+			r.Status, r.Phase, r.Diagnostic = "reconciling", "native_outcome_unverified", "Original native turn outcome remains unverified"
+			_ = e.commitLocked(r, nil, "final_unavailable")
+			return false
+		}
+		if result.ContentVerified && (value.FinalNativeSessionID != value.SessionID || value.FinalNativeTurnID != value.TurnID) {
+			r.Result = &value
+			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_source_unverified", "Original final identity does not match the current native turn"
+			_ = e.commitLocked(r, nil, "final_unavailable")
+			return false
+		}
+		if r.Request.Conversation != nil && result.Succeeded && !result.ContentVerified {
+			r.Result = &value
+			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_unavailable", "Original final content remains unverified"
+			_ = e.commitLocked(r, nil, "final_unavailable")
+			return false
+		}
+		finishContent(r, inputCopy, value, result)
+		if err := e.commitLocked(r, nil, "result_committed"); err != nil {
+			return false
+		}
+		e.signal(owner)
+		return true
+	}
 	if result.Succeeded && !result.ContentVerified {
 		if r.Result != nil && reflect.DeepEqual(*r.Result, value) {
 			return false

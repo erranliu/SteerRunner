@@ -1,0 +1,11 @@
+{
+  "pid": 26968,
+  "pattern": "^TestSR(ContentGenerate|ContentConversation|ContentQuestionAndUnknown|RunWorkflow|NativeUnknownAndStop|RestartRequiresResume)$",
+  "runner_sha256": "5892BD49EBC37500486924F4F8D0F8E087A0AA4B791BDC1C6CF454C247E4B000",
+  "fixture_sha256": "C164EC54AE4D5C5CE65A7B59EBFCE5F0CEAA287CEB9FFC45CAD38EA408098FE9",
+  "source_commit": "46d66d7645f653277dd4b8617a5f632139ea3826",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

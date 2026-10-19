@@ -191,6 +191,9 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 func validateNativeLaunchArgs(args []string) error {
 	mode := "sandbox"
 	for _, arg := range args {
+		if arg == "sandbox_mode=read-only" {
+			mode = "read_only"
+		}
 		if arg == "sandbox_mode=danger-full-access" {
 			mode = "full_access"
 		}

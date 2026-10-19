@@ -1,0 +1,96 @@
+{
+  "content_result": {
+    "status": "cancelled",
+    "diagnostic": "native turn ended with status interrupted",
+    "source": {
+      "command_id": "378ecd5d02343456124b8f917b7d63d6",
+      "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+      "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+      "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed",
+      "native_outcome": "cancelled",
+      "verified": false
+    }
+  },
+  "operations": [
+    {
+      "operation_id": "f191cfbc7469912212bfa739a7aee75d",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "ed62b622ad509f2a8b53f21c15e2f150",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "6d4f12c4e1ef74577519764e4d9497a6",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "771661c9e6033e80f5c12542a85028fc",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "11157cdb51228799eed7eec700c4feac",
+      "action": "stop_observation",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "bf21091e74bcdb3fe3683d0e6e68d3c0",
+  "revision": 30,
+  "title": "Native continued conversation",
+  "input_digest": "b5ca43115a39cec5e03f738c814e9218486c1fd174f22a28f4d2d7ea616d8dd7",
+  "resource_digest": "c03261da8704a0e459b69445844baa42fab0e3bab2690f6ce65cc807ccdedd4f",
+  "workflow": {
+    "id": "conversation",
+    "version": 1
+  },
+  "step": "input",
+  "status": "waiting_input",
+  "phase": "turn_completed",
+  "diagnostic": "native turn ended with status interrupted",
+  "new_inputs_allowed": true,
+  "resume_required": false,
+  "materials": [],
+  "execution": {
+    "agent": "codex",
+    "requested_model": "gpt-6.1-sol",
+    "requested_reasoning_effort": "low",
+    "workspace_scope": "read_only_directory",
+    "turn_started": true,
+    "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+    "generation": "0cbeee18c58b1d6d84e9e3cbfcc769b5",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+    "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed",
+    "native_outcome": "cancelled",
+    "final_available": false,
+    "workspace": "C:\\srt\\cw-1402274103\\materials",
+    "branch": ""
+  },
+  "controls": {
+    "can_message": true,
+    "can_interrupt": false,
+    "can_close": true,
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": true,
+    "reason": "native turn ended with status interrupted"
+  },
+  "final": {
+    "command_id": "378ecd5d02343456124b8f917b7d63d6",
+    "attempt_id": "eeaa8660754ab08131c3b6fe596fb13e",
+    "session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+    "turn_id": "01a1538d-f991-7e30-9312-46106bf425ed",
+    "native_outcome": "cancelled",
+    "verified": false,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_0287c50b8c01edcb016ad5e6e44bd88191a2ca9d9ac1a2c3f9",
+    "text": "cw-95d99406a0ba662546449101c185dd9d"
+  },
+  "created_at": "2026-10-19T09:45:53.0599928Z",
+  "updated_at": "2026-10-19T09:46:16.401301Z"
+}

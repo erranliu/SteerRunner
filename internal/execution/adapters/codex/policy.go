@@ -32,6 +32,11 @@ func NativePermissions(goos, host, agent string, modes ...string) (Permissions, 
 		mode = modes[0]
 	}
 	switch mode {
+	case "read_only":
+		if host != "local" {
+			return Permissions{}, fmt.Errorf("read_only is local only")
+		}
+		p.Sandbox, p.NetworkAccess = "read-only", false
 	case "sandbox":
 	case "full_access":
 		p.Sandbox, p.WindowsSandbox = "danger-full-access", ""
@@ -56,10 +61,16 @@ func (p Permissions) Args() []string {
 	if p.WindowsSandbox != "" {
 		args = append(args[:2], append([]string{"--config", "windows.sandbox=" + p.WindowsSandbox}, args[2:]...)...)
 	}
+	if p.Sandbox == "read-only" {
+		args = append(args, "--config", "features.apps=false", "--config", "features.plugins=false", "--config", "features.hooks=false", "--config", "features.multi_agent=false", "--config", "features.multi_agent_v2=false")
+	}
 	return args
 }
 
 func accessMode(sandbox string) string {
+	if sandbox == "read-only" {
+		return "read_only"
+	}
 	if sandbox == "danger-full-access" {
 		return "full_access"
 	}

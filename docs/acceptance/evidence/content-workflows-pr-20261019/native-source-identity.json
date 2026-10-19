@@ -1,0 +1,11 @@
+{
+  "pid": 2164,
+  "pattern": "^TestSRContentNative$",
+  "runner_sha256": "5892BD49EBC37500486924F4F8D0F8E087A0AA4B791BDC1C6CF454C247E4B000",
+  "fixture_sha256": "B3EDA5CCE7A395563E62E55BAE064F3B79E12DAAB69254263E9B61711F49AD4E",
+  "source_commit": "46d66d7645f653277dd4b8617a5f632139ea3826",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

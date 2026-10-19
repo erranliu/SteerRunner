@@ -40,6 +40,9 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 		}
 		actual := "sandbox"
 		for _, arg := range payload.Settings.Args {
+			if arg == "sandbox_mode=read-only" {
+				actual = "read_only"
+			}
 			if arg == "sandbox_mode=danger-full-access" {
 				actual = "full_access"
 			}
@@ -76,6 +79,9 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 }
 
 func (e *Engine) attachWriteRoots(r *runstate.Record) error {
+	if r.Request.Conversation != nil || r.Request.Generate != nil {
+		return verifyContentDirectory(r)
+	}
 	if r.Request.Execution.Adapter != "codex-app-server" {
 		return nil
 	}

@@ -1,0 +1,37 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "generate-001",
+  "input": {
+    "title": "生成测试安排",
+    "workflow": {
+      "id": "generate",
+      "version": 1
+    },
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "read_only",
+        "executable": "C:/Tools/codex.exe"
+      }
+    },
+    "generate": {
+      "instruction": "根据材料返回测试条目列表。只返回 JSON。",
+      "materials": [
+        {
+          "kind": "inline",
+          "path": "requirements.txt",
+          "content": "验证创建和关闭会话。"
+        }
+      ],
+      "output_schema": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

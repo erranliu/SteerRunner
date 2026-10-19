@@ -1,5 +1,11 @@
 # SteerRunner L1–L4 测试指南
 
+内容流程的最小定向入口为 `./scripts/test-content-workflows.ps1`；附加
+`-NativeExecutable <已有原生 Codex 0.159.2 EXE> -Model <可用模型>` 后，在三个内容受控场景
+通过后运行真实生成/多轮/中断/重启与结算。原生测试创建新的 `C:/srt/cw-*`，不使用
+SteerLine 安装环境、Git 或 PR。此专属 L3 入口独立登记在 `tests/catalog.json.focused_native_scenarios`，
+不改变现有开发 manifest driver；命令、构建摘要与实际结果见[专属验收](acceptance/content-workflows.md)。
+
 测试源码、夹具、现场生成、执行和结果判定全部归属本仓；不要求 SteerLine
 checkout、EXE、数据库、配置或测试调度器。运行目标为 Windows/amd64。
 
@@ -67,7 +73,7 @@ Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 16 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 19 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
 丢响应找回、停止授权跨重启保持、审计发现/修复/预算及同服务多 Run 隔离。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
