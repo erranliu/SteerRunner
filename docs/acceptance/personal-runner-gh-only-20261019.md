@@ -6,25 +6,25 @@
 
 本文的 helper 链路验证基于 main `95ae8a7`，生产 helper 来源为 `7c6ea40`；不代表后续架构的资格。测试期间 main 合入 `0b55928` / [PR #31](https://github.com/erranliu/SteerRunner/pull/31)，明确改为无远端 helper 的 Orca 原生执行，并移除远端 Runner broker、同工具完整环境检查及相关原生历史/退出证明保证。该增量与本分支的远端安全/审计链存在实质契约冲突。
 
-用户已确认跟随最新 main：保留本机/Orca local 的 gh broker，远端使用 Orca 原生认证，不再保证远端单仓库 capability、helper 审计或完整环境检查。PR #28 继续按该边界整合并重新验证；不恢复被移除的 helper，也不把旧证明套用于新原生路径。下文保留原交付与全部测试来源，以便审查，不声明最新 main 已通过本专项。
+用户已确认跟随最新 main：保留本机/Orca local 的 gh broker，远端使用 Orca 原生认证，不再保证远端单仓库 capability、helper 审计或完整环境检查。PR #28 继续按该边界整合并重新验证；不恢复被移除的 helper，也不把旧证明套用于新原生路径。下文分别记录当前原生范围与历史 helper 范围，各项资格绑定实际源码和批次。
 
 ## 交付范围
 
 - 在本人管理和信任的预配置主机上执行冻结 Spec/Plan；调用方/SteerLine 选择本机或 Orca environment，组织任务与 DAG。
-- 工具安装、仓库准备、gh 登录由执行主机用户负责。Runner 管理环境检查、Run、反馈、显式恢复、发布对账、停止和清理。
+- 工具安装、仓库准备、gh 登录由执行主机用户负责。Runner 管理 Run、反馈、显式恢复、发布对账、停止和清理；完整环境检查限本机受管路径。
 - 移除 App 引用、私钥/JWT/installation token 签发与撤销、App 特有就绪/停止证明和测试；不提供团队、多租户、集中密钥托管或自动跨机迁移。
 - 公共 Run/Check、冻结 Codex profile、远端 helper 配置严格拒绝旧 github_auth（包括 null）；测试 fixture 同样拒绝 github_auth/remote_github_auth，不能静默改用个人身份。
 - 升级前用原版本停止并核实已有 App Run/Check 的认证/进程清理；新版本不迁移旧身份，不接管旧 App 凭据。历史记录和 JSON 保留原结论。
 
-保留每 Run/Check 独立、有限期的 gh 单仓库 capability、固定操作白名单、原身份校验、未知投递零重发及 broker/socket 清理。宿主凭据不进入 worker；停止不退出宿主登录，也不影响其他 Run。远端双模型审计、同服务多 Run、Pi/DSH 及显式 sandbox/full_access 保持各自契约。
+本机 codex-app-server 与 Orca local 受管路径保留每 Run/Check 独立、有限期的 gh 单仓库 capability、固定操作白名单、原身份校验及 broker/socket 清理。宿主凭据不进入这些 worker；停止不退出宿主登录。新远端使用已有 Orca 原生认证，不提供 Runner capability、实际参数回读、双模型来源审计或完整环境检查；停止 scope 为原 orca_terminal。全路径保留 Run 隔离及未知投递零重发。
 
 ## 验证要求
 
 组件覆盖旧字段拒绝（对象/空对象/null）、内部 profile/helper 配置拒绝、缺登录零 native 输入、授权到期、跨仓库/跨 Run capability 拒绝、停止幂等和另一 Run 继续、原远端停止 owner 及秘密不进入 argv/持久化事实。正式 L1 包含 PowerShell fixture 旧配置零副作用保护、native driver 编译和零匹配保护；Controlled 保留审计和多 Run。
 
-远端正式复测使用新独立现场和冻结的新 helper，覆盖可运行的非管理员范围：sandbox/full_access 闭环、原会话反馈/PR、双模型审计、同服务多 Run、活动停止、两种权限环境检查及调用方/服务换代。八项管理员故障沿历史缺口登记；不重复发起此前取消的 UAC，不把授权排除或组件通过记为真机通过。
+旧 helper 正式复测曾覆盖 sandbox/full_access 闭环、原会话反馈/PR、双模型审计、同服务多 Run、活动停止、两种权限环境检查及调用方/服务换代。该范围属于下文历史，不代表新原生远端资格。当前选择本机两条 broker 路径、原生远端 full_access、多 Run、活动停止和初始化停止。八项管理员故障沿历史缺口登记；不重复发起此前取消的 UAC，不把授权排除或组件通过记为真机通过。
 
-## 首轮与补充修复
+## 历史 helper 批次与补充修复
 
 首轮源码 `424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f`、工作树干净。L1 318 项、终端扩展 28 项、Controlled 16 项通过；native 编译/零匹配与 PowerShell fixture 18 项守卫通过。七项缺原生现场的组件跳过不算真机通过。
 
@@ -81,3 +81,11 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 整合 #31 后的新验收范围：保留本机/Orca local 的 broker 与 Run 隔离，原生远端无 helper/capability。退役远端审计和完整 Check 正向登记，增加纯校验及 capability 的明确拒绝用例；同服务原生多 Run 固定 full_access、核实独立请求/命令/会话/事件/PR，服务停止后离线核验两个原终端 scope。新场景注册为 21 场景/28 case；Sandbox 远端参数与失败语义沿受控验证，不沿用旧 helper 的真机 sandbox 通过。当前原生验收等待新整合提交的正式前置及独立现场，不继承上面的旧资格。
 
 随后 main 合入 #30 的原生初始化停止补丁（c65b193）；在独立工作区整合，当前 aa02b65 批次继续使用冻结源码。新停止分支仅允许尚未确认启动、零 turn 的原 terminal 缺分支元数据，仍核对确切 worktree/path/runtime/incarnation，不授权任何业务输入。新增 before-readiness 与 restart-before-readiness 两项登记，总计 22 场景/30 case；按新提交补跑完整前置与两项实际初始化停止，不把正常完成后的停止证据当作初始化验证。
+
+## 当前原生批次（资格与历史分开）
+
+`aa02b65`（live-13）正式前置：L1 Go 420、终端扩展 29、Controlled 16 和框架/编译/零匹配守卫全部通过。五项实际执行四通过、一失败，另排除两项管理员故障。原生远端 full_access、多 Run、活动停止和本机 codex-app-server 闭环均通过；多 Run 的两个原 PR、停止互不影响及服务释放写者锁后的离线终端 scope 均核验。
+
+Orca local 的 sandbox 准备检查通过，后续 READY 回合原生完成记录为 server_overloaded（Selected model is at capacity），未发送业务输入。原测试保持失败，Run 停止因缺正式 readiness/退出绑定而未核实；broker/socket 已撤销。独立核对原 runtime/worktree 和两项 terminal incarnation 后关闭，完整清单为空，原 native PID 不存在；物理清理不提升逻辑停止结论。保留原模型和权限的新 Run 复测另记。
+
+`e045d3c`（live-14）合入 main #30 的初始化停止：L1 Go 421、扩展 29、Controlled 16 与框架守卫通过；restart-before-readiness 真实 case 通过，before-readiness 在 fixture 运行时缓存准备阶段遭遇 Windows 文件共享冲突，业务执行为零，原批次保持失败。缓存已原子发布仍不足以避免并行哈希/硬链接/复制之间的共享冲突；补同缓存目录互斥、期限及 abandoned owner 处理，守卫核验持锁期间禁止发布、释放后两个冷缓存 worker 字节完整一致。补跑以新干净测试提交记录，不继承原失败为成功。

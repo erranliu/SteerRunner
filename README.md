@@ -92,8 +92,8 @@ accepted 表示材料及原请求已提交，执行结果以 Run 和命令 actio
 专属 base/head 间的测试 PR。PR 不合并，清理按原 SHA 删除 owned 引用。无 Publication 时 PR 项为
 `not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
 
-本机及 Orca 已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
-普通执行与环境检查统一使用执行主机 gh 单仓库 broker；不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
+本机 codex-app-server 及 Orca local 受管路径已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
+上述本机路径的普通执行与环境检查统一使用执行主机 gh 单仓库 broker；原生远端完整环境检查明确 unsupported，普通远端 Run 使用已有 Orca 原生认证。不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
 已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
 [环境检查记录](docs/acceptance/environment-check.md)和[Orca 扩展记录](docs/acceptance/orca-remote-extensions-20261018.md)。
 
@@ -123,7 +123,7 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 
 - `development/2`：实施→发布→pr_ready；可信成功行或完整机器结果可跳过补报，每个原源最多补报一次。未完成的实施等待输入。
-- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布；审计记录修复数量、内容及提交前后来源。支持本机 `codex-app-server` 与配置可信 helper 的 Orca Codex；原生模型回执和远端 Git 来源均须核实。
+- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布；审计记录修复数量、内容及提交前后来源。支持本机 `codex-app-server` 与配置可信 helper 的 Orca local Codex；实际模型回执和执行主机 Git 来源均须核实。原生远端在接受前返回 unsupported_capability。
 
 带审计请求的相关字段如下，其余 RunRequest 字段仍必填。模型标识请替换为账号实际可用型号：
 
