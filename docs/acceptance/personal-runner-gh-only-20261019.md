@@ -37,3 +37,9 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 合并提交 `f2d6ee3` 的正式 L1 保留一次失败：辅助清理正向夹具将空列表序列化为 null，新完整清单校验正确拒绝。修正为显式空数组，补 null、外来主机及 local 被省略的拒绝子项；本批未启动 Controlled/L3，不能计入真机通过。
 
 `641d460` 的 332 项 Go 与 28 项扩展全部通过，正式入口因合并遗漏主分支既有 `TestOrcaStoppedNativeProbe` 显式 opt-in 跳过名单而失败，未启动 Controlled/L3。恢复主分支名单；八项缺原生/独立现场参数的 L1 跳过只登记，不算真机通过。该修正不改变 helper 二进制。
+
+`e70471a` 正式前置 L1 332、扩展 28、Controlled 16 通过。其 L3 前两项 sandbox/full_access 完成实现、原 PR 反馈及专属基线合入，但停止时完整清单读取耗尽预算；暂停调度后，让已启动的 caller-exit 和 graceful-active 自行收尾，两者也完成原业务但停止未确认。共启动 4 项、通过 0；其余尚未调度，原报告和中断记录保留。
+
+复核确认同工作区原 reader 在 journal 和快照中被逐个重复读取，9 个已关闭 reader 可触发 15 次清单查询，加业务 PTY 共 16 次。修复为每次核验读取一份新鲜、完整、同 runtime/worktree 的清单，按全部原 terminal/incarnation 核验，并去除同一 reader 的重复查询；继续先验签名退出和各 reader 的原生结算，缺创建身份、活动/替换 reader、空身份、外来范围或省略 local 均拒绝。组件新增单清单多身份用例，并要求 journal/快照重复 reader 仅查询一次。
+
+临时编译覆盖的定向测试通过，未修改当时仍在运行的旧源码。该只读实现对前两项原失败服务执行 `service verify-stopped`，约 5 秒及 8 秒返回 resources_settled=true，核验既有原生签名、原 writer 与 reader 清单；没有重启服务或回写旧 Run。物理资源结算不补记原 L3 成功，后续以新提交的新现场复测为准。

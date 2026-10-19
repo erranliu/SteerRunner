@@ -126,6 +126,8 @@ func (l *Lifecycle) verifyInspectionsStopped(ctx context.Context, state State) e
 	if err != nil {
 		return err
 	}
+	originals := []b.ProcessIdentity{}
+	seen := map[b.ProcessIdentity]bool{}
 	check := func(a *NativeInspection) error {
 		if a == nil {
 			return nil
@@ -137,7 +139,11 @@ func (l *Lifecycle) verifyInspectionsStopped(ctx context.Context, state State) e
 		if p.Kind != "orca_original_turn_reader" || p.RuntimeID != state.Process.RuntimeID || p.WorktreeID != state.Process.WorktreeID || p.Terminal == state.Process.Terminal || p.Terminal == "" || p.Incarnation == "" {
 			return errors.New("original readonly resource identity differs")
 		}
-		return l.client.VerifyTerminalStopped(ctx, *a.Process)
+		if !seen[*p] {
+			originals = append(originals, *p)
+			seen[*p] = true
+		}
+		return nil
 	}
 	for _, entry := range j.Entries {
 		if err = check(&entry.Inspection); err != nil {
@@ -156,5 +162,8 @@ func (l *Lifecycle) verifyInspectionsStopped(ctx context.Context, state State) e
 			return err
 		}
 	}
-	return ctx.Err()
+	if len(originals) == 0 {
+		return ctx.Err()
+	}
+	return l.client.VerifyTerminalsStopped(ctx, originals)
 }

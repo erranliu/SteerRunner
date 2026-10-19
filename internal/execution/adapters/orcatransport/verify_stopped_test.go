@@ -139,6 +139,7 @@ func TestCodexStoppedRequiresSignedExitAndEveryOriginalReader(t *testing.T) {
 				t.Fatal(err)
 			}
 			before, _ := json.Marshal(s)
+			inventoryCalls := 0
 			l.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
 				if strings.HasPrefix(mode, "stop-after-helper-") && args[1] == "show" {
 					branch := s.Workspace.Branch
@@ -153,6 +154,7 @@ func TestCodexStoppedRequiresSignedExitAndEveryOriginalReader(t *testing.T) {
 				if len(args) < 2 || args[0] != "terminal" || args[1] != "list" {
 					t.Fatalf("offline effect: %v", args)
 				}
+				inventoryCalls++
 				terminals := []any{}
 				if mode == "live-business" {
 					terminals = append(terminals, map[string]any{"handle": state.Process.Terminal, "incarnationId": state.Process.Incarnation, "worktreeId": state.Process.WorktreeID, "status": "running"})
@@ -177,6 +179,9 @@ func TestCodexStoppedRequiresSignedExitAndEveryOriginalReader(t *testing.T) {
 			}
 			err = l.verifyStopped(context.Background(), s)
 			want := mode == "complete" || mode == "reader-complete" || mode == "journal-reader"
+			if (mode == "reader-complete" || mode == "journal-reader") && inventoryCalls != 2 {
+				t.Fatal("original reader was queried repeatedly", inventoryCalls)
+			}
 			if (err == nil) != want {
 				t.Fatal(mode, err)
 			}
