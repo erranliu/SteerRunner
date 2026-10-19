@@ -91,27 +91,55 @@ if($Evidence){
     }
 }
 $taskRemoteManifest=Convert-ResultObject @{audit_model=@{model='auditor';reasoning_effort='high'};execution=@{settings=@{agent_launch=@{model='executor';reasoning_effort='high'}}}}
-$taskRemoteView=Convert-ResultObject @{run_id='remote-run';execution=@{session_id='original-outer';turn_id='publish-command'};audit=@{results=@(@{step='audit.spec';command_id='spec-command';turn_id='spec-command';verdict='pass'},@{step='audit.code';command_id='code-command';turn_id='code-command';verdict='pass'})}}
+$taskRemoteView=Convert-ResultObject @{run_id='remote-run';execution=@{session_id='original-outer';turn_id='publish-command'};pr=@{head_revision='post'};audit=@{results=@(@{step='audit.code.execute';command_id='code-command';turn_id='code-command';source_result_id='implementation';result_id='audit';pre_head='pre';post_head='post'})}}
 $taskRemoteTurns=@()
-foreach($taskRemoteStep in @('audit.spec','audit.code','publish.report')){
-    $taskRemoteCommand=switch($taskRemoteStep){'audit.spec'{'spec-command'};'audit.code'{'code-command'};default{'publish-command'}}
-    $taskRemoteModel=if($taskRemoteStep -eq 'publish.report'){'executor'}else{'auditor'}
-    $taskRemoteTurns+=@{step=$taskRemoteStep;command_id=$taskRemoteCommand;turn_id=$taskRemoteCommand;native_turn_id=('native-'+$taskRemoteCommand);model=$taskRemoteModel;effort='high';source='codex.app-server.original-turn.v1';session='original-native';final_digest='native-final';inspector_closed=$true}
+foreach($taskRemoteStep in @('audit.code.execute','publish.execute')){
+    $taskRemoteCommand=if($taskRemoteStep -eq 'audit.code.execute'){'code-command'}else{'publish-command'}
+    $taskRemoteModel=if($taskRemoteStep -eq 'audit.code.execute'){'auditor'}else{'executor'}
+    $taskRemoteTurns+=@{step=$taskRemoteStep;command_id=$taskRemoteCommand;turn_id=$taskRemoteCommand;native_turn_id=('native-'+$taskRemoteCommand);model=$taskRemoteModel;effort='high';source='codex.app-server.original-turn.v1';session='original-native';final_digest='native-final';reader_writers_absent=$true;control_request_id=('control-'+$taskRemoteCommand)}
 }
-$taskRemoteProof=Convert-ResultObject @{passed=$true;run_id='remote-run';session='original-outer';provider_session='original-native';turns=$taskRemoteTurns}
+$taskRemoteProof=Convert-ResultObject @{passed=$true;run_id='remote-run';session='original-outer';provider_session='original-native';configuration_digest=('a'*64);turns=$taskRemoteTurns}
 Assert-SRRemoteAuditModels $taskRemoteManifest $taskRemoteView $taskRemoteProof
-foreach($taskMutation in @('foreign-run','foreign-provider','unclosed','duplicate-native','wrong-audit','wrong-publication','no-proof')){
+$taskRemoteProof.turns[1].step='publish.report'
+Assert-SRRemoteAuditModels $taskRemoteManifest $taskRemoteView $taskRemoteProof
+$taskRemoteProof.turns[1].step='publish.execute'
+foreach($taskMutation in @('foreign-run','foreign-outer','foreign-provider','no-configuration','unclosed','string-closure','duplicate-native','duplicate-command','duplicate-control','missing-control','foreign-source','missing-final','wrong-turn','wrong-step','wrong-audit','wrong-effort','wrong-publication','wrong-publication-effort','no-proof','missing-turn','extra-spec')){
     $taskBad=$taskRemoteProof|ConvertTo-Json -Depth 20|ConvertFrom-Json
     switch($taskMutation){
         'foreign-run'{$taskBad.run_id='foreign'}
+        'foreign-outer'{$taskBad.session='foreign'}
         'foreign-provider'{$taskBad.turns[0].session='foreign'}
-        'unclosed'{$taskBad.turns[0].inspector_closed=$false}
+        'no-configuration'{$taskBad.configuration_digest=''}
+        'unclosed'{$taskBad.turns[0].reader_writers_absent=$false}
+        'string-closure'{$taskBad.turns[0].reader_writers_absent='true'}
         'duplicate-native'{$taskBad.turns[1].native_turn_id=$taskBad.turns[0].native_turn_id}
+        'duplicate-command'{$taskBad.turns[1].command_id=$taskBad.turns[0].command_id;$taskBad.turns[1].turn_id=$taskBad.turns[0].turn_id}
+        'duplicate-control'{$taskBad.turns[1].control_request_id=$taskBad.turns[0].control_request_id}
+        'missing-control'{$taskBad.turns[0].control_request_id=''}
+        'foreign-source'{$taskBad.turns[0].source='foreign'}
+        'missing-final'{$taskBad.turns[0].final_digest=''}
+        'wrong-turn'{$taskBad.turns[0].turn_id='foreign'}
+        'wrong-step'{$taskBad.turns[0].step='audit.spec'}
         'wrong-audit'{$taskBad.turns[0].model='executor'}
-        'wrong-publication'{$taskBad.turns[2].model='auditor'}
+        'wrong-effort'{$taskBad.turns[0].effort='low'}
+        'wrong-publication'{$taskBad.turns[1].model='auditor'}
+        'wrong-publication-effort'{$taskBad.turns[1].effort='low'}
         'no-proof'{$taskBad.passed=$false}
+        'missing-turn'{$taskBad.turns=@($taskBad.turns[0])}
+        'extra-spec'{$taskBad.turns+=($taskRemoteTurns[0]|ConvertTo-Json|ConvertFrom-Json)}
     }
     $taskRejected=$false;try{Assert-SRRemoteAuditModels $taskRemoteManifest $taskRemoteView $taskBad}catch{$taskRejected=$true}
     if(-not $taskRejected){throw "Remote audit accepted invalid native model evidence: $taskMutation"}
+}
+foreach($taskMutation in @('source_result_id','result_id','pre_head','post_head','failure','step','turn_id','command_id','extra-audit')){
+    $taskBadView=$taskRemoteView|ConvertTo-Json -Depth 20|ConvertFrom-Json
+    switch($taskMutation){
+        'failure'{$taskBadView.audit.results[0]|Add-Member -NotePropertyName failure -NotePropertyValue 'unqualified'}
+        'step'{$taskBadView.audit.results[0].step='audit.spec'}
+        'extra-audit'{$taskBadView.audit.results+=($taskRemoteView.audit.results[0]|ConvertTo-Json|ConvertFrom-Json)}
+        default{$taskBadView.audit.results[0].$taskMutation=''}
+    }
+    $taskRejected=$false;try{Assert-SRRemoteAuditModels $taskRemoteManifest $taskBadView $taskRemoteProof}catch{$taskRejected=$true}
+    if(-not $taskRejected){throw "Remote audit accepted invalid source binding: $taskMutation"}
 }
 Write-Output 'Optional merge field, required cleanup/feedback, independent multi-Run and remote native model evidence checks passed'
