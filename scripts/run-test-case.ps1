@@ -32,6 +32,20 @@ try {
                 if ((Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskExpected.Value) { throw ('Frozen batch artifact changed: ' + $taskArtifact.identity) }
             }
         }
+        if ($taskJob.entry.id -eq 'local-codex.smoke') {
+            . (Join-Path $PSScriptRoot 'test-configuration.ps1')
+            $taskBoundaryConfig=Get-SRTestConfiguration -RunnerExe $taskJob.runner_exe -Helper $taskJob.config_helper -Config $taskJob.config
+            if ($taskJob.PSObject.Properties['configuration_sha256'] -and $taskJob.configuration_sha256 -and $taskBoundaryConfig.source_digest -cne $taskJob.configuration_sha256) { throw 'Frozen batch artifact changed before L2 Git boundary' }
+            $taskBoundaryLog=Join-Path $taskJob.output ('local-codex-smoke-r'+$taskJob.repeat_index+'-git-boundary.log')
+            $taskRecord['git_boundary']=@{evidence=$taskBoundaryLog}
+            Save-Case
+            Push-Location ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')))
+            try {
+                & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskBoundaryConfig.configuration.configurations.'local-codex'.execution.settings.executable 1> $taskBoundaryLog 2> ($taskBoundaryLog+'.stderr.log')
+                $taskRecord.git_boundary['exit_code']=$LASTEXITCODE
+            } finally { Pop-Location }
+            if ($taskRecord.git_boundary.exit_code -ne 0) { throw 'L2 native Git commit or repository isolation failed' }
+        }
         $taskExpectedIdentities=@{}
         foreach ($taskIdentity in @(@{field='configuration_sha256';parameter='ConfigurationSHA256'},@{field='runner_sha256';parameter='RunnerSHA256'},@{field='helper_sha256';parameter='HelperSHA256'},@{field='requirements_sha256';parameter='RequirementsSHA256'})) {
             if ($taskJob.PSObject.Properties[$taskIdentity.field]) { $taskExpectedIdentities[$taskIdentity.parameter]=[string]$taskJob.($taskIdentity.field) }

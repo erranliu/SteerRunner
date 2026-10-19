@@ -57,6 +57,14 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 			t.Fatal("fixture generation would silently replace the configured publication provider")
 		}
 	}
+	shared.Publication.Provider = "command"
+	shared.Publication.Settings = json.RawMessage(`{"base_url":"https://github.com/","query":{"executable":"gh","args":["api"]}}`)
+	wrongProvider.Fixture, _ = json.Marshal(shared)
+	for _, test := range AssessConfig(wrongProvider, digest, resources.Catalog()).Cases {
+		if test.ScenarioID == "environment-check.local-sandbox" && test.Availability != "unavailable" {
+			t.Fatal("noncanonical fixture URL cannot pass the actual check admission", test)
+		}
+	}
 	// Removing workflow only disables Run cases; a Check still consumes the same Execution.
 	var value map[string]json.RawMessage
 	_ = json.Unmarshal(entry, &value)
@@ -156,6 +164,61 @@ func TestSRCheckAuthenticationAvailability(t *testing.T) {
 			if test.Availability != "available" {
 				t.Fatal("check limitation changed ordinary Run selection", test)
 			}
+		}
+	}
+}
+
+func TestSRNativePreparationReferencesAreStaticConstraints(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "tests", "test-config.example.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var config TestConfig
+	if err := json.Unmarshal(raw, &config); err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	var fixture TestFixture
+	_ = json.Unmarshal(config.Fixture, &fixture)
+	fixture.Repository.LocalPath = filepath.Join(dir, "uninstalled-project")
+	config.Fixture = marshalConfig(fixture)
+	for _, test := range []struct {
+		name, transport, helper string
+		available               bool
+	}{
+		{"absolute-uninstalled", filepath.Join(dir, "orca.cmd"), filepath.Join(dir, "helper.exe"), true},
+		{"relative-transport", "orca.cmd", filepath.Join(dir, "helper.exe"), false},
+		{"relative-local-helper", filepath.Join(dir, "orca.cmd"), "helper.exe", false},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{AccessMode: "sandbox", Transport: contracts.TransportSettings{Executable: test.transport}, AgentLaunch: contracts.AgentSettings{RuntimeExecutable: test.helper, RuntimeSHA256: strings.Repeat("a", 64)}})}
+			if fault := contracts.ValidateExecution(execution); fault != nil {
+				t.Fatal("test constraint leaked into the public gate", fault)
+			}
+			config.Configurations["orca-local-codex"] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+			scenario, c, err := Lookup("orca-local.codex", "default")
+			if err != nil {
+				t.Fatal(err)
+			}
+			result := assessCase(config, scenario, c, resources.Catalog())
+			if (result.Availability == "available") != test.available {
+				t.Fatal("availability disagrees with fixture path requirements", result)
+			}
+		})
+	}
+	for _, shared := range []bool{true, false} {
+		for _, agent := range []string{"pi", "dsh"} {
+			helper := filepath.Join(dir, "helper.exe")
+			if !shared && agent == "dsh" {
+				helper = filepath.Join(dir, "other-helper.exe")
+			}
+			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{Agent: agent, AccessMode: "sandbox", Transport: contracts.TransportSettings{Executable: filepath.Join(dir, "orca.cmd")}, AgentLaunch: contracts.AgentSettings{RuntimeExecutable: helper, RuntimeSHA256: strings.Repeat("a", 64)}})}
+			config.Configurations["orca-local-"+agent] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+		}
+		scenario, c, _ := Lookup("orca-local.mixed", "default")
+		result := assessCase(config, scenario, c, resources.Catalog())
+		if (result.Availability == "available") != shared {
+			t.Fatal("mixed helper constraint was deferred to runtime", result)
 		}
 	}
 }

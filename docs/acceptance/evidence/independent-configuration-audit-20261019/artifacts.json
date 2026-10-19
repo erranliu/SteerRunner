@@ -1,0 +1,16 @@
+{
+  "source_commit": "3c7df3d94a68cc5e788541c0131c6ab071d3c852",
+  "portable_text_normalization": "UTF-8 without BOM, LF; original source hashes refer to preserved reports under .evidence/ic-audit-20261019",
+  "max_parallel": 2,
+  "portable_summary_sha256": "b6545feeafeb76ac78471aa0c2753829798af39544dd0e68fe343309fec5731a",
+  "final_config_helper_sha256": "c0124263cf1f8c0cf806a4c0de6f2092380a8075093f1f0566e5e88e56e7e085",
+  "native_driver_sha256": "8fd5b78aca213279db6bea80d10970942582ec0cbb34c2ac1e4761d2447cab24",
+  "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee",
+  "requirements_sha256": "5df65beb6fceba0ff937320b0b62ea0c4201fa8484d1edb0bcb61dc9c25a2e20",
+  "original_summary_sha256": "74bccef077fa70b4477d802fcc47005472a3017e978cd79970ca344a6dd53e74",
+  "runner_sha256": "70bddb0197bbad4270b81d458636c36772119a8bf1275741e1d2c495a753bb30",
+  "source_dirty": true,
+  "selected_config_helper_sha256": "bab7d7ef4ba5eb317a355e68d7df979abd44c290bf26285860d2d4198298a442",
+  "main_base": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "frozen_configuration_sha256": "69f7213d4844e582d826801b147ce9e72de359b0780a3d6b4facc2887d631a19"
+}

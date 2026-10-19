@@ -41,7 +41,7 @@ $taskRequired = $taskCase[0].requirements
 $taskSelected = $taskConfig.configurations[$taskRequired.roles.primary.configuration]
 $taskExecution = $taskSelected.execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
 $taskFixture = $taskConfig.fixture
-if ($taskFixture.publication.provider -cne 'command' -or ([string]$taskFixture.publication.settings.base_url).TrimEnd('/') -cne 'https://github.com') { throw 'Dedicated live fixtures require the explicit GitHub command publication provider' }
+if ($taskFixture.publication.provider -cne 'command' -or $taskFixture.publication.settings.base_url -cne 'https://github.com') { throw 'Dedicated live fixtures require the explicit GitHub command publication provider' }
 $taskAudit = if ($taskScenario.driver -eq 'development-audited') { $taskSelected.workflow.audit_model } else { $null }
 $taskOrca = ''; $taskEnvironment = ''; $taskLocalHelper = ''
 if ($taskExecution.adapter -eq 'codex-app-server') {

@@ -130,7 +130,7 @@ func (m Manifest) Validate() error {
 	}
 	if m.Scenario == "orca-local.mixed" {
 		var first, peer contracts.OrcaSettings
-		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || peer.AccessMode != "sandbox" || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
+		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || (peer.AccessMode != "" && peer.AccessMode != "sandbox") || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
 			return errors.New("mixed local fixture requires frozen Pi and DSH executions on the same helper")
 		}
 	} else if m.PeerExecution != nil {
@@ -213,7 +213,13 @@ func (m Manifest) Validate() error {
 				if m.Scenario == "environment-check.orca-local-full-access" || m.Scenario == "orca-local.pi-full-access" {
 					mode = "full_access"
 				}
-				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
+				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
+					return errors.New("invalid local Orca settings")
+				}
+				if settings.AccessMode == "" {
+					settings.AccessMode = "sandbox"
+				}
+				if settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
 					return errors.New("local Orca requires its frozen native runtime and case access mode")
 				}
 				if scenario.Agent != "" && settings.AgentName() != scenario.Agent {

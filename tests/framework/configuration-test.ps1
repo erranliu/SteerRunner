@@ -105,5 +105,26 @@ try {
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
 if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 29 -or $taskPrerequisite.levels.L3.requested.Count -ne 29 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 26 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
 if(-not (Test-Path -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json'))){throw 'Batch catalog was not frozen'}
+# L2's native preparation is a case dependency, never a global L3 prerequisite.
+$taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'
+$taskBoundaryBody=@'
+param([string]$Request)
+$job=Get-Content -LiteralPath $Request -Raw | ConvertFrom-Json -AsHashtable
+if($job.entry.id -eq 'local-codex.smoke') { & $job.entry.native_worker -Request $Request; exit $LASTEXITCODE }
+$record=$job.record
+$record.status='passed';$record.identity=@{runner_sha256='same-build';driver_sha256='same-driver'}
+[IO.File]::WriteAllText($job.result_path,($record|ConvertTo-Json -Depth 30))
+'@
+[IO.File]::WriteAllText($taskBoundaryWorker,$taskBoundaryBody,[Text.UTF8Encoding]::new($false))
+$taskBoundaryOut=Join-Path $taskRoot 'boundary-isolation'
+New-Item -ItemType Directory -Path $taskBoundaryOut | Out-Null
+$taskBoundaryExecutions=@(
+    @{entry=@{id='local-codex.smoke';level='L2';driver='development-smoke';timeout_minutes=1;native_worker=(Join-Path $Repository 'scripts/run-test-case.ps1')};case=@{id='default'};repeat_index=1;excluded=$false;unavailable=$false},
+    @{entry=@{id='configured';level='L3';driver='development-smoke';timeout_minutes=1};case=@{id='default'};repeat_index=1;excluded=$false;unavailable=$false}
+)
+$script:taskBoundaryRecords=@()
+Invoke-SRCaseBatch -Executions $taskBoundaryExecutions -Output $taskBoundaryOut -Config $taskPath -RunnerExe $taskRunner -ConfigHelper $taskHelper -ConfigurationSHA256 $taskAssessment.source_digest -MaxParallel 2 -WorkerScript $taskBoundaryWorker -LeaseDirectory (Join-Path $taskRoot 'locks') -Checkpoint {param($records)$script:taskBoundaryRecords=@($records)}
+$taskBoundaryFailed=@($script:taskBoundaryRecords | Where-Object {$_.scenario -eq 'local-codex.smoke'})[0]
+if($taskBoundaryFailed.status -ne 'failed' -or $taskBoundaryFailed.error -notmatch 'L2 native Git' -or $taskBoundaryFailed.git_boundary.exit_code -eq 0 -or (Test-Path -LiteralPath $taskBoundaryFailed.fixture_record) -or @($script:taskBoundaryRecords | Where-Object {$_.scenario -eq 'configured' -and $_.status -eq 'passed'}).Count -ne 1){throw 'L2 preparation failure blocked its independent L3 peer or was reclassified as unavailable'}
 [IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{configuration_contract='passed';missing_batch='incomplete';missing_count=29;independent_dispatch='passed';complete_level_passed=$false}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 Write-Output 'Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed'

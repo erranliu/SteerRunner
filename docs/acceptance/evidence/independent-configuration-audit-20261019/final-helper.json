@@ -1,0 +1,13 @@
+{
+  "helper_sha256": "c0124263cf1f8c0cf806a4c0de6f2092380a8075093f1f0566e5e88e56e7e085",
+  "requirements_sha256": "5df65beb6fceba0ff937320b0b62ea0c4201fa8484d1edb0bcb61dc9c25a2e20",
+  "available": [
+    "local-codex.smoke/default",
+    "local-codex.feedback/default",
+    "local-codex.multirun/default",
+    "environment-check.local-sandbox/complete"
+  ],
+  "configuration_sha256": "69f7213d4844e582d826801b147ce9e72de359b0780a3d6b4facc2887d631a19",
+  "baseline_issues": [],
+  "runner_sha256": "70bddb0197bbad4270b81d458636c36772119a8bf1275741e1d2c495a753bb30"
+}

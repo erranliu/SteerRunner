@@ -70,14 +70,14 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十四 case 数量；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／二十九 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
 当前 `-FeedbackQualification <case.json>` 可选择无反馈的 `development-core` driver：
 它要求正式反馈 case 为 passed、协调器批次通过、真实新 head/合入/清理完整、Runner 与
 native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest。也可在非秘密配置的
-`feedback_qualification` 填写该 case 记录的绝对路径；未提供资格时保留原完整 smoke。
+`harness.feedback_qualification` 填写该 case 记录的绝对路径；未提供资格时保留原完整 smoke。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
 文档规划不表示入口已经支持新 case、L4 或并行调度。
@@ -85,9 +85,10 @@ native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest
 ## 当前执行入口
 
 Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandbox` 和
-`environment-check.orca-local-full-access`，沿用现有 driver/schema，配置补充可选
-`orca_local_runtime_executable`；多个同名注册项目时另用可选 `orca_local_repository_path`
-明确选择真实项目，不能任选一个。本机 agent/model/effort 取已有本机字段，不需要远程
+`environment-check.orca-local-full-access`，沿用现有 driver/schema。对应配置项的
+`execution.settings.agent_launch.runtime_executable` 指向本机 helper，
+`fixture.repository.local_path` 明确选择真实注册项目，不能任选同名项目。
+本机 agent/model/effort 取该项 execution.settings 的公开字段，不需要远程
 environment。执行主机 helper 安装在业务工作区外。本机 fixture 的 caller clone 与 Orca
 已注册项目分别记录，原 runtime 从准备证据核验，不复用 `remote_runtime_id`。
 本机通过原生 IPC 查询观察，远程保留订阅加补查；注册不代表已验通过，当前构建结果见[专属验收](acceptance/orca-local-remote.md)。
@@ -132,7 +133,7 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 单个场景 ID。审计配置 `local-codex-audited` 的 settings.model 与 workflow.audit_model.model
 须显式且不同，effort 位于各自的 reasoning_effort。独立两模型场景仍保留原会话，不要求模型产生 finding。
 
-有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整受控前置；全缺配置时只报告不可用，不启动这些前置。任何前置失败都不会启动模型。L4 不需要真机
+有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整受控前置；全缺配置时只报告不可用，不启动这些前置。共享前置失败阻止所依赖的 case；L2 专属原生 Git 检查归其 worker 准备，失败不阻止独立 L3。L4 不需要真机
 配置，执行真实 EXE/服务/Git/SQLite 和受控原生协议，不消耗模型 token 或创建真实 PR。
 `-MaxParallel` 默认为 1，范围 1–8；L2/L3 可并行，L4 先排空队列后独占执行。调度器还
 用当前用户宿主的八个 OS 文件锁槽协调不同批次的场景；L4 占全部槽，L2/L3 各占一槽。
@@ -199,8 +200,8 @@ App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 Ap
 宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
 参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
-权限模式由非秘密配置 `access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
-普通业务与环境检查复用生产权限编译。`remote_args` 只填写支持的启动参数（示例为
+权限模式由配置项的 `execution.settings.access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
+普通业务与环境检查复用生产权限编译。`execution.settings.agent_launch.args` 只填写支持的启动参数（示例为
 `["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
 合并为同一通过结果。Orca 的 `agent_launch.runtime_executable` 指向执行主机安装的
 `steerrunner-agent.exe`（本仓 `cmd/steerrunner-agent`）。辅助程序在该主机解析 gh 登录、
@@ -231,7 +232,7 @@ session、inline transport 和期限的回执，再发送首个业务输入，�
 
 L2 使用生产默认的实施/报告/发布提示词，不覆盖 `prompt_overrides`，也不把
 `publish.ps1` 发布器放入 L2 夹具；Git 提交、push 和 gh PR 创建由原 worker 完成。
-夹具显式保留 packed refs。L2 前置另通过实际 native `command/exec` 验证 loose/packed
+夹具显式保留 packed refs。L2 case 的准备另通过实际 native `command/exec` 验证 loose/packed
 head 提交的 stderr 为空，且另一个仓库仍不可写；不使用模型或远端写操作。
 worker 命令日志审计会拒绝权限错误，即使命令退出码为 0、提交及 PR 已成功。
 文件系统拒绝及 HTTP 401/403 均在审计范围内；默认 host broker 的可信收尾事实还须
@@ -265,10 +266,11 @@ Runner 生产契约的交付里程碑仍为 `pr_ready`。合并属于测试 driv
 ## 证据与失败
 
 批次 `.evidence/tests-*/summary.json` 包含来源、每级结果及现场路径。
-报告保存原请求范围、每 case 的 availability／原因，以及每级 registered／passed／missing
+报告保存原请求范围、每 case 的 availability／原因，以及每级 registered／requested／excluded／unavailable／executed／passed／missing
 集合和 `complete_level_passed`；repeat 单独计数。缺配置的项为 unavailable，零派发，独立的
 已配项仍执行；只要请求范围有不可用项，批次为 incomplete、退出 1，实际失败优先记 failed。
 显式 Scenario 子集可通过，但不能代表全级通过。本机基线配置完整性与实际同构建 L2 通过分开报告。
+前置失败仍保留全部请求项和 unavailable 原因；尚未派发的可用项为 queued，不计执行。
 现场 manifest 记录冻结输入；`evidence/` 保存 `result.json`、`scenario.json`、CLI journal、
 driver 的 Git/GitHub/checker 调用、原始/反馈 PR、合并与停止快照。Runner 自身业务数据和
 原生协议日志在该现场 `s/` 中，模型 token 信息以原生记录可提供的真实数据为准。

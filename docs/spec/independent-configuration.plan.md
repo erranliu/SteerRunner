@@ -50,7 +50,7 @@
 
 ### P2 独立测试配置与本地基线
 
-1. 新配置只由显式 Config 指定；按入口 cwd 解析文件路径，读取一次并固定本批副本／摘要，文件内辅助路径按原文件目录处理。worker 与 fixture 生成器只消费快照。execution 始终校验，workflow 若提供则校验完整 RunConfiguration；Run case 缺 workflow 不可用，检查仅发送 execution，不强带 workflow。共用一份 fixture 的完整 Repository／可选 Publication。
+1. 新配置只由显式 Config 指定；按入口 cwd 解析文件路径，读取一次并固定本批副本／摘要，文件内辅助路径按原文件目录处理。worker 与 fixture 生成器只消费快照，同时保存批次 catalog；固定 Runner／helper／需求身份，生成器在解析后再次对照批次原摘要，拒绝旧 helper 使用不同注册。execution 始终校验，workflow 若提供则校验完整 RunConfiguration；Run case 缺 workflow 不可用，检查仅发送 execution，不强带 workflow。共用一份 fixture 的完整 Repository／可选 Publication。
 2. 严格区分全文件损坏与单项无效、未配置与显式空值。拒绝未知版本、字段、重复键及隐式继承；按字段返回无秘密诊断。需求引用由 registry 维护；用户不维护 case 绑定、baseline 指针或多项目 fixture 目录。
 3. 基线固定 configurations.local-codex，为 development/sandbox；检查显式绝对 native 路径和 L2 的注册引用。路径／版本等现场核验复用原资格机制，不写进静态可用性状态；不把它作为全部外部请求／L3 的硬依赖。
 4. 现场生成器只替换 Spec 允许的临时仓库、分支、固定 commit、路径和材料，记录原值／生成值；保留 Orca 注册项目入口，caller clone 不能替代它。既有 provider/query 取证与故障 helper 仍由 case 生成，记录具体路径／参数，不要求配置填伪造占位值。不通过场景名改变模式或模型，不扩展既有测试仓库范围。生成后校验完整请求及测试独有约束，再保存 request_id 和正文。
@@ -64,8 +64,8 @@
 1. 扩展唯一 registry 的需求，计算 available／unavailable 及全部原因；这是配置可用性，不新增 configuration_status／environment_status 或就绪缓存。缺角色列原因，不猜测回落；目录未声明的所需链路记 undeclared_capability，不冒充 gate 拒绝或现场失败。
 2. 只新增 ListAvailability 静态模式，限定 L2／L3，零 L1／Controlled、调度锁、现场、服务、工具／账号／网络探测与模型。查询前明确既有流程产出的待测构建；缺产物按查询失败，不能查旧 EXE 后跑新 EXE。实际 worker 使用同一产物并核对摘要。沿既有实际测试准备核验环境，不增 CheckEnvironment／AvailableOnly 两套模式。
 3. 保留请求集合；unavailable 项零派发，其他独立 available 项仍能执行。通过现有 Scenario 显式选子集；所选缺项标记 incomplete／非零退出，不能自动缩小覆盖后宣称通过。整文件错误和公共前置失败才全局阻止派发。
-4. 沿原 L1／Controlled、锁和隔离前置启动 worker，再做各 case 必要现场准备；不额外强制 L2。准备／执行失败保留原事实并收尾，不倒改成配置不可用或排除。
-5. 复用 scope、原 case outcome／cleanup，增加配置原因和逐级 complete_level_passed，从注册／请求／排除／不可用／执行／通过集合计算覆盖，重复次数另计。整文件／选择／查询错误 exit 2、实际失败或请求缺项／零真机执行 exit 1，显式子集沿原通过规则；失败优先且保留缺配置事实。
+4. 沿原 L1／Controlled、锁和隔离前置启动 worker，再做各 case 必要现场准备；L2 专属原生 Git 前置由其 worker 承担，失败不阻断独立 L3，不额外强制 L2。准备／执行失败保留原事实并收尾，不倒改成配置不可用或排除。
+5. 复用 scope、原 case outcome／cleanup，增加配置原因和逐级 complete_level_passed，从注册／请求／排除／不可用／执行／通过集合计算覆盖，重复次数另计。前置失败／中途退出时补齐仍为 queued 的原请求项，queued 不计执行，保留 unavailable 原因。整文件／选择／查询错误 exit 2、实际失败或请求缺项／零真机执行 exit 1，显式子集沿原通过规则；失败优先且保留缺配置事实。
 
 完成条件：IC-05／06／07 的框架测试通过；原并行／独占、丢响应、重启、停止和清理语义保持。
 
@@ -112,6 +112,8 @@ Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe valid
 ## 5. 文档、验收与当前交付
 
 实施时同步 README、docs/testing.md、docs/test-catalog.md、测试 schema／示例、help、注册需求及调用样例。产品／测试入口变更与规则文档在同一变更中完成；历史验收不改写为新规则通过。
+
+下表保留首次实施的构建结果。实现审计已同步到主线 `a3dc15d` 并完成复测：完整 L1 318 个 Go／28 个 Node、Controlled 16/16、L2 1/1、已配置 L3 3/3；26 项 unavailable，完整 L3 仍不通过。最新身份、修复、补充反例及运行中父入口差异见[验收末节](../acceptance/independent-configuration.md#实现审计与主线复测)。
 
 | 阶段 | 当前状态 | 证据／边界 |
 | --- | --- | --- |

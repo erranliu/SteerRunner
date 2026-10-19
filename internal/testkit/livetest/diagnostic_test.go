@@ -51,7 +51,7 @@ func TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory(t *testing.T)
 				case "list":
 					terminals := []any{tm}
 					if mode == "already-absent" {
-						terminals = nil
+						terminals = []any{}
 					}
 					if mode == "foreign-incarnation" {
 						tm["incarnationId"] = "replacement"

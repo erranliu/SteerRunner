@@ -2,6 +2,8 @@
 
 日期：2026-10-19。[Spec](../spec/independent-configuration.spec.md) / [Plan](../spec/independent-configuration.plan.md)。
 
+以下保存首次实施验收；实现审计后的修复和最新主线构建复测另见末节，原构建结果不覆盖为新构建通过。
+
 本轮按用户授权实施 Runner 仓库，保持生产 CLI v1、写信封、原生产 gate、存储与冻结恢复路径。
 Runner 发布静态能力／schema 并校验输入；SteerLine 管理实际环境、配置方案和选择；测试框架
 独立读取新测试文件、按唯一 registry 装配与调度。未修改 SteerLine，不能代记其集成验收。
@@ -84,3 +86,53 @@ unavailable／executed ID 集合，未重分类结果。原批次前置 L1 为 3
 
 `final/` 在原生派发前主动中止，用于修正上述旧 schema 与 gate 差异；保留 interrupted 状态。
 这些批次均不计通过。`framework-initial/` 是早期定向检查，正式资格仍取本次完整批次。
+
+## 实现审计与主线复测
+
+用户授权再次审计并提交 PR；本轮人工核对 Spec／Plan、生产增量与内部测试调用路径。
+分支同步到主线 `a3dc15d`（包含 PR #27 的停服取证），本轮证据根为
+`.evidence/ic-audit-20261019/`。生产写 gate、信封、默认值、冻结／存储／恢复路径没有因配置管理而改变。
+
+| 确认问题 | 修复与回归 |
+| --- | --- |
+| worker 预检与生成器重读之间，配置可能偏离批次原摘要；旧 helper 可能使用不同需求 | 生成器在实际解析后对照批次配置／Runner／helper／需求身份；校验 helper 内嵌 registry；冻结 catalog；错误摘要和旧 helper 反例在准备前拒绝 |
+| 前置失败／调度 checkpoint 会漏掉未派发请求，queued 被计作执行 | 合并完整计划与实际记录，保留 unavailable／excluded 原因；queued 不计执行或通过，失败仍优先；真实入口前置失败与结果真值表覆盖 |
+| L2 专属 Git 前置放在批次层，会阻断独立 L3 | 移入 L2 worker 的准备步骤，保留每 case Git 边界日志；实际 L2 准备失败／独立 L3 调度反例覆盖，不改变原检查内容 |
+| 检查附带合法审计 workflow 时可能误选审计 driver | driver 由注册确定，检查 manifest 只投影 execution；配置携带的 workflow 仍走原公共校验 |
+| 静态可用性与已有现场约束不一致 | 提前报告已知不支持的检查 App 认证、非规范 GitHub fixture URL、准备要求的绝对路径及混合角色 helper 不一致；Run 支持不受检查限制影响，静态不探测工具 |
+| Orca manifest 将原公开的空模式／省略模式拒绝为非 sandbox | 仅在只读匹配时采用原 sandbox 默认，不改写冻结 execution；补 manifest 默认值反例 |
+| 主线严格空清单契约与旧夹具不一致，新增 native opt-in 未纳入允许 skip 集 | 将测试空清单从 null 修为 []，保持生产严格性；显式登记新探针的默认 skip，仍禁止 L1 开启 native opt-in |
+| 指南仍含已删除的扁平配置字段及旧 case 数量 | 改为统一公开字段路径，并与唯一 registry 当前 22 个 L3 场景／29 case 对齐 |
+
+上述修复沿现有接口、case 注册、queued 状态及报告器完成，没有增加生产 profile／环境库、就绪缓存或另一套调度状态机。
+
+| 最新复测 | 结果 |
+| --- | --- |
+| 完整 L1 | 318 个 Go 顶层测试、28 个 Node 测试通过；live driver 编译与零匹配门通过。8 个已登记 opt-in／subprocess skip 不计真机通过 |
+| 最终定向与框架 | 资源／CLI／contracts／testkit 最新反例通过；完整 framework 通过，包括真实 L2 准备失败与独立受控 L3 继续调度 |
+| Controlled | 16/16，无 skip；与真机使用的 Runner EXE SHA 相同 |
+| L2 | 1/1；worker 内原生 Git loose/packed／跨仓库边界通过；默认生产提示词、反馈更新、PR #577 合入与完整停止／认证收尾通过 |
+| 已配置 L3 | 3/3：环境检查 PR #573 关闭且 owned 对象收尾；反馈 PR #576 合入；多 Run PR #574／#575 按原 case 要求保留未合入，两 Run／服务均停止 |
+| 完整范围 | L2 请求 1、通过 1；L3 请求 29、通过 3、unavailable 26；实际 failed=0、excluded=0。批次 incomplete／exit 1；baseline.l2_verified=true，L3.complete_level_passed=false |
+
+正式批次为 `acceptance-r2/`，MaxParallel=2，四个实际 case 的 Runner／native driver／冻结配置身份一致。
+Runner SHA 为 `70bddb0197bbad4270b81d458636c36772119a8bf1275741e1d2c495a753bb30`，
+构建源为 `3c7df3d` 加本轮工作树改动；精确身份及源码摘要见便携证据。
+缺项仍为 Orca 本机 8、Orca 远端 16、本机审计 1、full_access 检查 1；不能授予完整 L3 资格。
+SteerLine 自有客户端端到端未在本仓执行，不能代记通过。
+
+最新便携证据：[构建身份](evidence/independent-configuration-audit-20261019/artifacts.json)、
+[L1](evidence/independent-configuration-audit-20261019/l1-result.json)、
+[Controlled](evidence/independent-configuration-audit-20261019/controlled-result.json)、
+[框架](evidence/independent-configuration-audit-20261019/framework-result.json)、
+[L2 失败隔离反例](evidence/independent-configuration-audit-20261019/dependency-isolation.json)、
+[完整真机报告](evidence/independent-configuration-audit-20261019/live-summary.json)、
+[L2 原生 Git](evidence/independent-configuration-audit-20261019/l2-git-boundary.log)。
+文本副本统一为 UTF-8／LF；原报告 hash 与便携副本 hash 分别登记，不改写结果或重新分类。
+
+本轮留证与适用范围：
+
+- `acceptance/` 在模型派发前因主线严格空清单与旧 null 夹具不符而失败；修复为 [] 后复跑。该失败报告仍保留 30 个请求、26 unavailable、0 executed，基线 false。
+- L1 后补充的可选配置反例以最终定向 Go／framework 复测覆盖。批次冻结的 helper 未被替换；最终 helper 对同一冻结配置复评仍恰为同四项 available，见[身份与选择对照](evidence/independent-configuration-audit-20261019/final-helper.json)。
+- 正式批次的父脚本启动时仍含原批次层 L2 Git 前置；其已通过且原日志保留。L2 worker 实际另通过移入后的同一检查；最终父入口已删除公共 L2 门，失败隔离由最终完整 framework 的反例验证，没有用旧批次层通过代替新 worker 取证。
+- `boundary-final/` 是一次以相对 Evidence 调用框架子脚本的手动准备失败，未派发模型，不计通过；随后从正式 framework 入口使用绝对证据目录重跑，`framework-after-boundary/` 全部通过。

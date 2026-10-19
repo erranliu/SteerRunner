@@ -157,7 +157,7 @@ try {
     $taskEvents = @(Get-Content -LiteralPath (Join-Path $taskOut 'l1.jsonl') | ForEach-Object { $_ | ConvertFrom-Json })
     $taskPassed = @($taskEvents | Where-Object { $_.Action -eq 'pass' -and $_.PSObject.Properties['Test'] -and $_.Test -notmatch '/' }).Count
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
-    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary')
+    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
     $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard;terminal_extension_exit=$taskExtensionCode;terminal_extension_test_count=$taskExtensionCount;terminal_extensions_passed=$taskExtensionsPassed}
     Save-Summary
@@ -178,15 +178,6 @@ try {
         $taskSummary.results += @{level='Controlled';exit_code=$taskResult.exit_code;scenario_count=$taskResult.scenario_count;evidence=$taskControlled}
         Save-Summary
         if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne @($taskCatalog.controlled_scenarios).Count -or (Select-String -LiteralPath (Join-Path $taskControlled 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario' }
-    }
-    if (@($taskExpanded | Where-Object { $_.entry.id -eq 'local-codex.smoke' -and -not $_.unavailable -and -not $_.excluded }).Count) {
-        Write-Host 'Running L2 native Git boundary prerequisite (no model or publication)'
-        $taskGitConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
-        & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskGitConfig.configurations.'local-codex'.execution.settings.executable 1> (Join-Path $taskOut 'l2-git-boundary.log') 2> (Join-Path $taskOut 'l2-git-boundary-stderr.log')
-        $taskGitCode = $LASTEXITCODE
-        $taskSummary.results += @{level='L2-GitBoundary';exit_code=$taskGitCode;evidence=(Join-Path $taskOut 'l2-git-boundary.log')}
-        Save-Summary
-        if ($taskGitCode -ne 0) { throw 'L2 native Git commit or repository isolation failed' }
     }
     $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
