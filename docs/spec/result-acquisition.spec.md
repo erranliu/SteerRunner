@@ -2,6 +2,8 @@
 
 > 2026-10-19 固定控制终端已实施：同源完整 L1 366 Go/29 Node、Controlled 16，以及正常重启、执行期强杀恢复、活动执行撤销三项原生用例通过；原控制身份、完整 final、撤销和关闭分别核验。初始化创建身份未知仍阻塞，无第二状态权威，SteerLine/Orca 不改。内部 Orca state codec 升至 6；四项管理员变体未执行。见[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)及 §7.1。
 
+> 以上通过绑定212ebee；推送后发现新主线 `a3dc15d` 的原生退出/查询进程结算改动冲突，尚未集成或验证组合源码。当前 PR 保持 Draft，不适合直接合入；原停止证明不得在后续变基中弱化，见[集成状态](../acceptance/evidence/fixed-control-20261019/checks/integration-status.json)。
+
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](result-acquisition.plan.md) · [专属验收](../acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
 

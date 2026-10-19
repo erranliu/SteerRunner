@@ -2,6 +2,8 @@
 
 执行期强杀恢复、原生完整回执读取与认证撤销已在固定控制终端方案下验证。初始化创建身份未知仍阻塞，不重试创建、不按标题或空 inventory 认领。未修改 SteerLine 或 Orca，未部署或合并源 PR。本记录只覆盖本增量，不宣称完整 L3 或旧批次全部通过。
 
+**当前集成状态：PR #25 仍为 Draft，不能直接合入。** 推送后发现新主线 `a3dc15d` 新增原生退出/只读查询进程结算证明，与本分支控制通道改动产生五处源码冲突。本轮只做只读合并预检，未变基、未丢弃新主线规则；本记录的通过结论仅绑定下述已验源码。变基须同时保留原 Codex owner/退出公钥证明、查询进程 writers-absent 及固定控制/撤销/关闭事实，再重新验证受影响路径；不能用本轮 PTY/inventory 与认证清理事实替代新主线增加的原生退出证明。见[集成状态](checks/integration-status.json)及[原合并预检](checks/main-merge-preview.txt)。
+
 ## 最终实现与状态边界
 
 每次 Codex/Orca 执行在 agent 启动和任何业务输入前，经原资源准备操作创建并提交一个控制终端。它仅支持 `original-turn`、`authentication-stop`；执行期查询/停止不再创建临时 inspector/revoker。控制身份绑定原 runtime/worktree/handle/incarnation/helper/config/generation；主执行 final 及原生/Git/provider 判定保持原来源。

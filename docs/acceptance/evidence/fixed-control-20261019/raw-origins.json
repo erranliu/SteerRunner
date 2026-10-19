@@ -542,5 +542,13 @@
   "checks/validate-archive.py": {
     "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\validate-archive.py",
     "sha256": "7c08fcd11821d09f5d6f5386ddd1753f294df37a4b5e9cf6222cbc7b91969c97"
+  },
+  "checks/integration-status.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\integration-status.json",
+    "sha256": "7b8173ee44bf101c7a43e05e0007dc414cb5557e11bd6c6cff5b5d46c2d8940c"
+  },
+  "checks/main-merge-preview.txt": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\main-merge-preview.txt",
+    "sha256": "19d2f244f75467a2317463c69c7fa86718d2889430243fffbac61d07eb619d78"
   }
 }

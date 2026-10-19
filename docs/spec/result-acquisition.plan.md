@@ -192,3 +192,5 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 停止补充验收：覆盖挂起只读请求、调用方 stop 上下文取消后原撤销的独立 45 秒清理预算；撤销未核实必须保留同一控制终端、原业务写者仍停止，后续 business-confirmed 对账只补读原请求并关闭原控制终端，不重关业务终端。测试计数允许已验证身份/有限载荷的控制请求暂未完成而不误算为业务输入，但最终资源审计必须拒绝任何未决控制回执。此项为生产改动，重新冻结 helper、完整 L1/Controlled 后再执行三项真实用例，不沿用此前生产前置通过结论。
 
 最终执行记录：clean 源码 `212ebee3abeae798c05fe53ede19f8b2a5e0f0f3`、helper SHA `afb08225…df7235`。标准 L3 入口先完整 L1 366 Go/29 Node 通过，Controlled 的 15 分钟总预算耗尽，原批次失败且未启动 native cases；遗留服务仅经原实例公共 stop 清理并核实结算。随后 `run-controlled-25.ps1` 校验并复用同一组 EXE 的源提交/SHA，将 harness 总预算设为 25 分钟，单场景/产品预算及断言不变，16/16 无跳过通过（实际约 15 分 51 秒）。`run-final-native.ps1` 严格校验同源 L1/完整 Controlled 前置后，调用原 scheduler/driver 在新现场运行三项原生用例，3/3 通过，四项管理员变体明确排除。脚本、原超时/失败记录、实际配置/构建及每项原生证明见 `F/checks/`、`F/prerequisites/`、`F/historical/` 和 `F/native/`；汇总及精确命令以 `F/README.md` 为准。未复跑无关全量 L2 或管理员网络矩阵。
+
+推送后主线已到 `a3dc15d`，原生退出/只读查询进程结算证明与本分支存在五处源码冲突；本批次未变基，PR 保持 Draft。后续集成必须保留原 Codex owner/退出公钥、查询进程 writers-absent、原控制身份及撤销/关闭证明，不能恢复临时 reader 创建或以 PTY/inventory 代替新原生退出证明。组合实现须重新冻结 helper/源码并验证受影响路径，本批次通过不自动继承。只读预检与差异见 `F/checks/integration-status.json`、`F/checks/main-merge-preview.txt`。

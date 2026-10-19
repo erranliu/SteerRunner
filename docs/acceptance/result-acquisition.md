@@ -2,6 +2,8 @@
 
 > 2026-10-19 固定控制终端最终验收：同源完整 L1 **366 Go/29 Node**、完整 Controlled **16/16**、正常重启/执行期强杀恢复/活动执行撤销 **3/3** 通过。三份原生记录均核实首条业务输入前的控制身份、原回执/来源、认证撤销及实际关闭，最终服务均 not_running/resources_settled=true。初始化创建身份未知继续阻塞；未新增状态权威，SteerLine/Orca 未修改。内部 Orca codec 5→6、旧版拒绝，无兼容迁移。四项管理员变体未执行，不宣称完整 L3；失败迭代及同一冻结 EXE 的 Controlled 25 分钟总预算重跑见[本增量证据](evidence/fixed-control-20261019/README.md)。
 
+> 推送后的集成障碍：新主线 `a3dc15d` 的原生退出/只读查询进程结算证明与本分支冲突，尚未变基或验证组合后的代码。**当前不适合直接合入，PR 保持 Draft**；本轮通过仅绑定212ebee。具体冲突及必须保留的停止证明见[集成状态](evidence/fixed-control-20261019/checks/integration-status.json)。
+
 > 2026-10-19 此前准备修复批次（固定控制终端实施前）：移除无关的匿名 GitHub 配额门槛，补充绑定原 owner 的工具初始化失败事实。同源完整 L1 360 Go/29 Node、Controlled 16、三终端 L3 及两项 L2 全部通过，原 Run/服务已清理。见[修复与原始证据](evidence/native-preparation-20261019/README.md)。当时准备阻塞已解除、强杀创建身份缺口仍缺原生保证，源 PR 保持 Draft，不宣称全量 L3 已通过。
 
 > 此前 rebase 与影响范围复验：已接入主线 `59c7597`，完整 L1 358 Go / 28 Node、Controlled 16、两项 L2 通过；当时最终三项 Orca L3 在原生准备阶段失败，强杀恢复缺口未闭环。**该批次暂不建议合入，PR 保持 Draft**。见[该轮质量与证据](evidence/rebase-audit-20261018/README.md)。历史批次不替代最终构建验收。
