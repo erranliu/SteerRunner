@@ -833,7 +833,7 @@ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.Life
 	}
 }
 
-func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b.StopHandle) (receipt b.LifecycleReceipt, err error) {
+func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, owned b.StopHandle) (receipt b.LifecycleReceipt, err error) {
 	receipt = b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	receipt.Operation.Receipt = nil
 	if err := r.Validate(); err != nil {
@@ -851,6 +851,15 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 	}
 	progress := stopProgress{Version: 1, Phase: "not-attempted"}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
+	if h, ok := owned.(*observationHandle); ok {
+		if h.Identity() != r.Snapshot.Ref.External {
+			return receipt, errors.New("stop changed original observation identity")
+		}
+		_ = h.owner.Close(ctx)
+		// Do not await an event acknowledgement from the actor performing stop.
+		// The control gate drains in-flight reads; its revocation checkpoint
+		// rejects later queries even before this goroutine has fully returned.
+	}
 	if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
 		// A helper that has already settled may have returned to its original
 		// shell. Bind the exact PTY/worktree, then require the native proof below;

@@ -337,3 +337,104 @@ func TestFixedControlWindowsPathSpellings(t *testing.T) {
 		t.Fatal("foreign workspace accepted")
 	}
 }
+
+func TestFixedControlRevocationPreventsLateQuery(t *testing.T) {
+	l, _, s, c := fixtureFixedControl(t)
+	s = prepareFixedControl(t, l, s, c)
+	state, _ := l.state(s)
+	if err := l.revokeAuthentication(context.Background(), state); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := l.callControl(context.Background(), state, "original-turn", strings.Repeat("d", 64)); err == nil {
+		t.Fatal("late query overwrote revocation proof")
+	}
+	j, err := l.loadControlCheckpoint(state)
+	if err != nil || j.Response == nil || j.Response.Authentication == nil || c.sends != 1 {
+		t.Fatal("revocation proof lost", j, err, c.sends)
+	}
+}
+
+func TestFixedControlStopCancelsOnlyOriginalObserver(t *testing.T) {
+	for _, foreign := range []bool{false, true} {
+		t.Run(map[bool]string{false: "original", true: "foreign"}[foreign], func(t *testing.T) {
+			l, _, s, c := fixtureFixedControl(t)
+			s = prepareFixedControl(t, l, s, c)
+			cancelled := false
+			finished := make(chan struct{})
+			close(finished)
+			identity := s.Ref.External
+			if foreign {
+				identity.Incarnation = "foreign"
+			}
+			o := &observer{process: identity, finished: finished, cancel: func() { cancelled = true }}
+			r, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), &observationHandle{owner: o})
+			if foreign {
+				if err == nil || cancelled || c.sends != 0 || c.closes != 0 {
+					t.Fatal("foreign observer affected", err, cancelled, c.sends, c.closes)
+				}
+			} else if err != nil || !cancelled || !r.State.Stopped {
+				t.Fatal("original observer not cancelled", r, err, cancelled)
+			}
+		})
+	}
+}
+
+func TestFixedControlUnverifiedReceiptBackoff(t *testing.T) {
+	l, f, s, c := fixtureFixedControl(t)
+	s = prepareFixedControl(t, l, s, c)
+	s, input := prepared(t, l, s, strings.Repeat("c", 32))
+	f.unstarted = true
+	r, err := l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	bind(&s, r)
+	c.mode = "wrong-response"
+	l.clock = func() time.Time { return c.ready.CheckedAt.Add(31 * time.Second) }
+	r, _, err = l.observeOnce(context.Background(), s)
+	if err != nil || r.TurnEvidence != nil {
+		t.Fatal(r, err)
+	}
+	bind(&s, r)
+	before := c.sends
+	r, _, err = l.observeOnce(context.Background(), s)
+	if err != nil || r.TurnEvidence != nil || c.sends != before {
+		t.Fatal("unverified query retried without backoff", r, err, c.sends, before)
+	}
+}
+
+func TestFixedControlTransportCheckpointFailure(t *testing.T) {
+	for _, phase := range []string{"intent", "response"} {
+		t.Run(phase, func(t *testing.T) {
+			l, f, s, c := fixtureFixedControl(t)
+			s = prepareFixedControl(t, l, s, c)
+			state, _ := l.state(s)
+			write := f.callerFileWriter
+			writes := 0
+			f.callerFileWriter = func(path string, raw []byte) error {
+				writes++
+				if phase == "intent" || writes == 2 {
+					return errors.New("checkpoint write failed")
+				}
+				return write(path, raw)
+			}
+			if err := l.revokeAuthentication(context.Background(), state); err == nil {
+				t.Fatal("storage fault hidden")
+			}
+			if phase == "intent" {
+				if c.sends != 0 {
+					t.Fatal("uncommitted control input sent")
+				}
+				return
+			}
+			f.callerFileWriter = write
+			l = &Lifecycle{setup: l.setup, profile: l.profile, client: l.client, clock: l.clock}
+			if err := l.reconcileAuthenticationStop(context.Background(), state); err != nil {
+				t.Fatal("original response not recovered", err)
+			}
+			if c.sends != 1 || c.creates != 1 {
+				t.Fatal("commit recovery repeated effect", c.sends, c.creates)
+			}
+		})
+	}
+}

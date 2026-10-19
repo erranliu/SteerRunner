@@ -124,6 +124,7 @@ func ValidateRecordedTurn(state State, turn *Turn) error {
 
 // The fixed original control actor reads native history without a model input.
 func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) (*codex.RemoteTurnReceipt, error) {
+	turn.ReceiptQueriedAt = l.clock()
 	response, err := l.callControl(ctx, *state, "original-turn", digest([]byte(wirePrompt(turn))))
 	if err != nil {
 		return nil, err

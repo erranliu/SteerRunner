@@ -165,6 +165,9 @@ func (l *Lifecycle) callControl(ctx context.Context, state State, method, input 
 	if j.Closed {
 		return empty, errors.New("original native control already closed")
 	}
+	if method == "original-turn" && j.Request.Method == "authentication-stop" {
+		return empty, errors.New("original authentication revocation requested; no later receipt query")
+	}
 	if j.Request.ID != "" && j.Response == nil {
 		r, err := l.dispatchControl(ctx, state, j.Request)
 		if err != nil {
