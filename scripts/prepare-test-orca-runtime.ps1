@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$OrcaExe,[Parameter(Mandatory=$true)][string]$Destination)
+﻿param([Parameter(Mandatory=$true)][string]$OrcaExe,[Parameter(Mandatory=$true)][string]$Destination)
 $ErrorActionPreference='Stop'
 $taskResources=Split-Path -Parent (Split-Path -Parent $OrcaExe)
 $taskSources=@()
@@ -21,7 +21,15 @@ foreach($taskFile in $taskSources){
  $taskTarget=Join-Path $Destination $taskFile.path
  if(-not (Test-Path -LiteralPath $taskCached)){
   New-Item -ItemType Directory -Force -Path (Split-Path -Parent $taskCached)|Out-Null
-  Copy-Item -LiteralPath $taskFile.source -Destination $taskCached
+  # Publish a complete immutable file atomically. Other workers must never
+  # hash/link a cache entry while its first writer is still copying it.
+  $taskCacheTemporary=$taskCached+'.'+[Guid]::NewGuid().ToString('N')+'.tmp'
+  try {
+   Copy-Item -LiteralPath $taskFile.source -Destination $taskCacheTemporary
+   if((Get-FileHash -LiteralPath $taskCacheTemporary -Algorithm SHA256).Hash -ine $taskFile.sha256){throw 'Runtime source changed during cache preparation'}
+   try {[IO.File]::Move($taskCacheTemporary,$taskCached,$false)}
+   catch {if(-not (Test-Path -LiteralPath $taskCached -PathType Leaf)){throw}}
+  } finally {if(Test-Path -LiteralPath $taskCacheTemporary){Remove-Item -LiteralPath $taskCacheTemporary}}
  }
  if((Get-FileHash -LiteralPath $taskCached -Algorithm SHA256).Hash -ine $taskFile.sha256){throw 'Immutable test runtime cache changed'}
  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $taskTarget)|Out-Null

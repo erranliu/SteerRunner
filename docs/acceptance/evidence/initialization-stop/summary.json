@@ -1,0 +1,71 @@
+{
+  "schema": "steerrunner-initialization-stop-acceptance/v1",
+  "source_commit": "2aa17cce7da6fd75e59db76e18f2521d9e9777db",
+  "source_dirty": true,
+  "branch": "codex/initialization-stop",
+  "formal_batch": {
+    "path": "C:/SteerlineDebug/dev-20261019-123304-d1277973-dirty/evidence/l3-initialization-stop/summary.json",
+    "sha256": "828b7673b7d799ab813b1d2bc532e6cb323046127f6f46ae8ec76a8d42003afd",
+    "status": "passed",
+    "l1_go_top_level": 324,
+    "node_extension_tests": 28,
+    "controlled_scenarios": 16,
+    "registered_l3_cases_passed": 2
+  },
+  "final_helper_increment": {
+    "path": "C:/SteerlineDebug/dev-20261019-125200-d1277973-dirty/evidence/helper-guard-recheck/summary.json",
+    "sha256": "67b521d7943b72f83358011df956e3d64ecc774e6018be6284da5be0e3cf43ad",
+    "status": "passed",
+    "scope": "helper-only increment; exact qualified caller reused; registered coordinator and evidence validation retained",
+    "helper_unit_tests_passed": [
+      "TestRemoteOwnershipPreparationFailureStillSignsSettlement",
+      "TestRemoteOwnershipRequiresSignedCompleteOriginalExit",
+      "TestRemoteOwnershipStopCancelsBeforeReadiness",
+      "TestRemoteOwnershipFailedLaunchKeepsUnknownCreationUnsettled"
+    ],
+    "parallel_overlap_verified": true,
+    "cases": [
+      {
+        "case_id": "before-readiness",
+        "run_id": "56b560dfd8dc639894f717b0b074f47b",
+        "test_outcome": "passed",
+        "business_outcome": "stopped",
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "offline_resources_settled": true,
+        "signed_writers_absent": true,
+        "signed_authentication_closed": true,
+        "runner_sha256": "bcf9cc4cd53303302804a08739e43ff224027e92bc464049272f9b4eeb062545",
+        "driver_sha256": "413f3aed47c76a4d5bbc7ed0adcddf59a16f8ff22ee5ec31b947ee96693540b8",
+        "runtime_helper_sha256": "5a195821932a14784b4d0fb2c30fcc07ca5d25d773702bef3afb90996b45b3c4",
+        "evidence": "C:/SteerlineDebug/dev-20261019-125200-d1277973-dirty/cases/dcfa1e1bebab/evidence"
+      },
+      {
+        "case_id": "restart-before-readiness",
+        "run_id": "f360fc632ba10737d8c49c44750804f2",
+        "test_outcome": "passed",
+        "business_outcome": "stopped",
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "offline_resources_settled": true,
+        "signed_writers_absent": true,
+        "signed_authentication_closed": true,
+        "runner_sha256": "bcf9cc4cd53303302804a08739e43ff224027e92bc464049272f9b4eeb062545",
+        "driver_sha256": "413f3aed47c76a4d5bbc7ed0adcddf59a16f8ff22ee5ec31b947ee96693540b8",
+        "runtime_helper_sha256": "5a195821932a14784b4d0fb2c30fcc07ca5d25d773702bef3afb90996b45b3c4",
+        "evidence": "C:/SteerlineDebug/dev-20261019-125200-d1277973-dirty/cases/91b3bccfc13b/evidence"
+      }
+    ]
+  },
+  "complete_l3_level_passed": false,
+  "installed_environment_operated": false,
+  "historical_runs_rewritten": false
+}

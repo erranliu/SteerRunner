@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$Evidence)
+﻿param([Parameter(Mandatory=$true)][string]$Evidence)
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $taskEvidence = [IO.Path]::GetFullPath($Evidence)
@@ -19,6 +19,8 @@ $taskCases = @(
 $taskResults = @()
 & (Join-Path $taskRepo 'tests/framework/configuration-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
 $taskResults += @{name='independent-configuration';passed=$true}
+& (Join-Path $taskRepo 'tests/framework/runtime-cache-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
+$taskResults += @{name='parallel-runtime-cache';passed=$true}
 foreach ($taskCase in $taskCases) {
     $taskOut = Join-Path $taskEvidence $taskCase.name
     $taskArgs = @('-NoProfile','-File',(Join-Path $PSScriptRoot 'test.ps1'),'-OutDir',$taskOut) + $taskCase.args
