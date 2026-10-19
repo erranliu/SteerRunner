@@ -938,7 +938,11 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	}
 	var authErr error
 	if l.profile.Terminal == nil {
-		authErr = l.revokeAuthentication(ctx, state)
+		// An original pending read may have consumed the caller's stop budget.
+		// Finish that same actor/request within a separate bounded cleanup budget.
+		authCtx, cancelAuth := context.WithTimeout(context.WithoutCancel(ctx), 45*time.Second)
+		authErr = l.revokeAuthentication(authCtx, state)
+		cancelAuth()
 	}
 	// Stop authorization is already durable. Credential uncertainty cannot keep
 	// the original worker running; finish its exact PTY closure within a bounded
@@ -973,9 +977,13 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		if stateErr != nil {
 			return receipt, stateErr
 		}
-		cleanupErr := l.closeControl(stopCtx, state)
-		if authErr != nil || cleanupErr != nil {
-			return receipt, errors.Join(authErr, cleanupErr)
+		// Do not destroy the sole route to an uncommitted revocation proof.
+		// The known original control actor remains owned and blocks settlement.
+		if authErr != nil {
+			return receipt, authErr
+		}
+		if cleanupErr := l.closeControl(stopCtx, state); cleanupErr != nil {
+			return receipt, cleanupErr
 		}
 		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
 			// Orca's acknowledged PTY close can precede its published inventory.

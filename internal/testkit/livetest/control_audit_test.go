@@ -129,6 +129,9 @@ func TestFixedControlNativeAudit(t *testing.T) {
 				raw = append(raw, '\n')
 			}
 			facts, err := AnalyzeNativeAudit(raw, "runtime", p)
+			if mode == "unresolved-send" && (err != nil || !facts.PendingControlRequests || facts.Complete || len(facts.Prompts) != 2) {
+				t.Fatal("pending control input corrupted business fence or passed final audit", facts, err)
+			}
 			passed := err == nil && facts.Complete && facts.Creations == 1 && facts.Inspections == 1 && facts.ClosedInspections == 1 && len(facts.Prompts) == 2
 			want := mode == "valid" || mode == "lost-send-receipt" || mode == "lost-close-inventory" || mode == "initial-valid"
 			if passed != want {

@@ -12,7 +12,7 @@ import (
 
 // A fixed control terminal is exempt only with its frozen command, readiness,
 // exact finite requests, original native facts, incarnation and final closure.
-func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeReceiptAuditPolicy) (map[string]bool, int, int, int, error) {
+func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeReceiptAuditPolicy, pending *bool) (map[string]bool, int, int, int, error) {
 	exempt := map[string]bool{}
 	if p.Executable == "" || len(p.SHA256) != 64 {
 		return exempt, 0, 0, 0, nil
@@ -302,7 +302,9 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 	exempt[createID] = true
 	for callID, requestID := range sends {
 		if !responses[requestID] {
-			return exempt, 1, 0, initial, errors.New("original control request unresolved")
+			// Its exact target/payload is a known finite control request, not a
+			// business input. Final completeness still requires its response.
+			*pending = true
 		}
 		exempt[callID] = true
 	}

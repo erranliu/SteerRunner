@@ -7,12 +7,13 @@ import (
 )
 
 type AuditFacts struct {
-	Prompts           []string
-	Creations         int
-	Complete          bool
-	Inspections       int
-	ClosedInspections int
-	InitialTerminals  int
+	Prompts                []string
+	Creations              int
+	Complete               bool
+	Inspections            int
+	ClosedInspections      int
+	InitialTerminals       int
+	PendingControlRequests bool
 }
 
 type nativeAuditCall struct {
@@ -41,11 +42,11 @@ func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAud
 	}
 	if len(policies) == 1 {
 		var err error
-		aux, facts.Inspections, facts.ClosedInspections, facts.InitialTerminals, err = analyzeReceiptInspectors(calls, runtime, policies[0])
+		aux, facts.Inspections, facts.ClosedInspections, facts.InitialTerminals, err = analyzeReceiptInspectors(calls, runtime, policies[0], &facts.PendingControlRequests)
 		if err != nil {
 			return facts, err
 		}
-		if facts.Inspections != facts.ClosedInspections {
+		if facts.Inspections != facts.ClosedInspections || facts.PendingControlRequests {
 			facts.Complete = false
 		}
 	}

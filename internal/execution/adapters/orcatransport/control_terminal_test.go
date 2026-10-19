@@ -23,6 +23,7 @@ type fixedControlFixture struct {
 	creates, sends, closes int
 	requestIDs             []string
 	closed                 bool
+	authBudget             time.Duration
 }
 
 func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
@@ -102,6 +103,9 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 			result = map[string]any{"terminal": terminal}
 		case "send":
 			c.sends++
+			if deadline, ok := ctx.Deadline(); ok {
+				c.authBudget = time.Until(deadline)
+			}
 			var q codex.RemoteControlRequest
 			raw, e := base64.RawURLEncoding.DecodeString(arg("--text"))
 			if e != nil || json.Unmarshal(raw, &q) != nil || q.Validate(c.setup) != nil {
@@ -304,7 +308,11 @@ func TestFixedControlRunStopAndServiceRelease(t *testing.T) {
 					businessClosed = true
 				}
 			}
-			if !businessClosed || c.closes != 1 || c.creates != 1 {
+			wantCloses := 1
+			if mode == "bad-auth" {
+				wantCloses = 0
+			}
+			if !businessClosed || c.closes != wantCloses || c.creates != 1 {
 				t.Fatal("stop did not close original resources", businessClosed, c.closes, c.creates)
 			}
 			if (err == nil && r.State.Stopped) != (mode == "success") {
@@ -436,5 +444,50 @@ func TestFixedControlTransportCheckpointFailure(t *testing.T) {
 				t.Fatal("commit recovery repeated effect", c.sends, c.creates)
 			}
 		})
+	}
+}
+
+func TestFixedControlStopCleanupBudgetSurvivesCallerCancellation(t *testing.T) {
+	l, f, s, c := fixtureFixedControl(t)
+	s = prepareFixedControl(t, l, s, c)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	write := f.callerFileWriter
+	f.callerFileWriter = func(path string, raw []byte) error {
+		var j controlCheckpoint
+		_ = json.Unmarshal(raw, &j)
+		if j.Request.Method == "authentication-stop" {
+			cancel()
+		}
+		return write(path, raw)
+	}
+	r, err := l.StopLifecycle(ctx, request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
+	if err != nil || !r.State.Stopped || c.authBudget < 40*time.Second || c.closes != 1 {
+		t.Fatal("revocation lost the bounded cleanup budget", r, err, c.authBudget, c.closes)
+	}
+}
+
+func TestFixedControlStopRetainsUnresolvedRevocationRoute(t *testing.T) {
+	l, f, s, c := fixtureFixedControl(t)
+	s = prepareFixedControl(t, l, s, c)
+	c.mode = "lost-send"
+	q := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
+	r, err := l.StopLifecycle(context.Background(), q, nil)
+	if err == nil || r.State.Stopped || !r.State.WorkerAbsent || c.closes != 0 {
+		t.Fatal("unresolved proof route destroyed", r, err, c.closes)
+	}
+	q.Operation.Receipt, _ = json.Marshal(r)
+	r, _, err = l.Reconcile(context.Background(), q)
+	if err != nil || !r.State.Stopped || c.closes != 1 || c.creates != 1 || c.sends != 1 {
+		t.Fatal("original revocation not reconciled", r, err, c.closes, c.creates, c.sends)
+	}
+	closes := 0
+	for _, call := range f.calls {
+		if len(call) > 3 && call[0] == "terminal" && call[1] == "close" && call[3] == s.Ref.External.Terminal {
+			closes++
+		}
+	}
+	if closes != 1 {
+		t.Fatal("business close repeated", closes)
 	}
 }
