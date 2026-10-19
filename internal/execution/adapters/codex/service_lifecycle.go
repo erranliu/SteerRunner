@@ -72,6 +72,11 @@ func (l ExecutionLifecycle) reconcileStoppedObservation(ctx context.Context, req
 	if err := ctx.Err(); err != nil {
 		return receipt, nil, err
 	}
+	if outcome, err := l.readRecoveryOutcome(ctx, request.Snapshot, binding, request.Input.Stop.TurnID); err == nil && outcome.Completed {
+		receipt.Disposition = executionbackend.OperationConfirmed
+		receipt.State.TurnCompleted = true
+		return receipt, nil, nil
+	}
 	if l.writersAbsent(binding) {
 		receipt.Disposition = executionbackend.OperationConfirmed
 		receipt.State = executionbackend.LifecycleStateFacts{SessionAvailable: true, WorkerAbsent: true, WritersAbsent: true, Stopped: true}

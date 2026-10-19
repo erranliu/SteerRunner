@@ -15,7 +15,11 @@ import (
 // higher-priority controls before preparing or dispatching the next input.
 func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate.Record) bool {
 	if r.Snapshot.Workspace.Path != "" && r.Snapshot.PendingTurn == nil && len(r.Workflow.StageInputs) == 0 {
-		if err := materialize(r); err != nil {
+		var materialErr error
+		if !workflow.Content(r.Request.Workflow.ID) {
+			materialErr = materialize(r)
+		}
+		if err := materialErr; err != nil {
 			e.block(id, "materialization_failed", err, false)
 			return false
 		}

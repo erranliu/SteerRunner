@@ -171,6 +171,9 @@ func main() {
 			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" && request.Method == "turn/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
 				go s.releaseHeld(connectionContext, connection)
 			}
+			if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" && request.Method == "turn/start" {
+				go s.releaseContent(connectionContext, connection)
+			}
 		}
 	}))
 }
@@ -197,6 +200,20 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		return response, nil
 	}
 	switch request.Method {
+	case "account/read":
+		if err := appendCall(map[string]any{"method": "account/read"}); err != nil {
+			return fail(err)
+		}
+		response["result"] = map[string]any{"requiresOpenaiAuth": true, "account": map[string]any{"type": "apiKey"}}
+		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "content-no-auth")) {
+			response["result"] = map[string]any{"requiresOpenaiAuth": true, "account": nil}
+		}
+	case "command/exec":
+		result, err := contentReadinessFixture(params)
+		if err != nil {
+			return fail(err)
+		}
+		response["result"] = result
 	case "initialize":
 		home := os.Getenv("STEERRUNNER_FIXTURE_STATE")
 		if home == "" {
@@ -221,6 +238,9 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return fail(err)
 		}
 		response["result"] = map[string]any{"thread": s.thread}
+		if str("sandbox") == "read-only" {
+			response["result"] = map[string]any{"thread": s.thread, "approvalPolicy": "never", "approvalsReviewer": "user", "sandbox": map[string]any{"type": "readOnly"}}
+		}
 	case "thread/resume", "thread/read":
 		body, err := os.ReadFile(statePath(str("threadId")))
 		if err != nil {
@@ -230,6 +250,41 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return fail(err)
 		}
 		response["result"] = map[string]any{"thread": s.thread}
+		if str("sandbox") == "read-only" {
+			response["result"] = map[string]any{"thread": s.thread, "approvalPolicy": "never", "approvalsReviewer": "user", "sandbox": map[string]any{"type": "readOnly"}}
+		}
+	case "turn/interrupt", "turn/steer":
+		body, err := os.ReadFile(statePath(str("threadId")))
+		if err != nil {
+			return fail(err)
+		}
+		if json.Unmarshal(body, &s.thread) != nil || len(s.thread.Turns) == 0 {
+			return fail(fmt.Errorf("original turn missing"))
+		}
+		turn := s.thread.Turns[len(s.thread.Turns)-1]
+		id := str("turnId")
+		if request.Method == "turn/steer" {
+			id = str("expectedTurnId")
+		}
+		if turn["id"] != id || turn["status"] != "inProgress" {
+			return fail(fmt.Errorf("original turn is not active"))
+		}
+		if err := appendCall(map[string]any{"method": request.Method, "thread": s.thread.ID, "turn": id}); err != nil {
+			return fail(err)
+		}
+		turn["status"], turn["completedAt"] = "interrupted", 1
+		if request.Method == "turn/steer" {
+			turn["status"] = "completed"
+			turn["items"] = append(turn["items"].([]any), map[string]any{"type": "agentMessage", "id": "answer-final", "phase": "final_answer", "text": "answered"}, map[string]any{"type": "userMessage", "id": "answer-user", "clientId": str("clientUserMessageId"), "content": json.RawMessage(params["input"])})
+		}
+		if err := s.save(); err != nil {
+			return fail(err)
+		}
+		if request.Method == "turn/interrupt" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "drop-next-interrupt")) {
+			return nil, nil
+		}
+		response["result"] = map[string]any{"turnId": id}
+		return response, nil
 	case "turn/start":
 		if str("threadId") != s.thread.ID {
 			return fail(fmt.Errorf("wrong original thread"))
@@ -257,7 +312,13 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		}
 		content := ""
 		var err error
-		if audit {
+		if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" {
+			body, readErr := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "content-final"))
+			if readErr != nil {
+				return fail(readErr)
+			}
+			content = string(body)
+		} else if audit {
 			content, err = auditResult(s.thread.Cwd, prompt)
 		} else {
 			content, err = protocol.StagedBusiness(s.thread.Cwd, prompt, os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "origin")
@@ -268,6 +329,20 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		id := fmt.Sprintf("00000000-0000-0000-0000-%012d", len(s.thread.Turns)+1)
 		item := map[string]any{"type": "agentMessage", "id": "final-" + id, "phase": "final_answer", "text": content}
 		turn := map[string]any{"id": id, "status": "completed", "completedAt": 1, "items": []any{item}}
+		if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" {
+			root := os.Getenv("STEERRUNNER_FIXTURE_STATE")
+			if exists(filepath.Join(root, "content-failed")) {
+				turn["status"] = "failed"
+			}
+			if exists(filepath.Join(root, "content-cancelled")) {
+				turn["status"] = "interrupted"
+			}
+			if exists(filepath.Join(root, "content-question")) {
+				item = map[string]any{"type": "agentMessage", "id": "question-" + id, "phase": "final_answer", "delivery": "async", "text": "Choose a value", "questions": []any{map[string]any{"title": "Choose a value", "options": []string{"one", "two"}}}}
+				turn["items"], turn["status"] = []any{item}, "inProgress"
+				delete(turn, "completedAt")
+			}
+		}
 		missingFinal := exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "missing-final"))
 		if missingFinal {
 			turn["items"] = []any{}
@@ -294,6 +369,9 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			return response, []map[string]any{{"method": "turn/started", "params": map[string]any{"threadId": s.thread.ID, "turn": map[string]string{"id": id}}}}
 		}
 		response["result"] = map[string]any{"turn": map[string]any{"id": id, "status": "inProgress"}}
+		if os.Getenv("STEERRUNNER_CONTENT_FIXTURE") == "1" && turn["status"] == "inProgress" {
+			return response, []map[string]any{{"method": "turn/started", "params": map[string]any{"threadId": s.thread.ID, "turn": map[string]any{"id": id}}}, {"method": "item/completed", "params": map[string]any{"threadId": s.thread.ID, "turnId": id, "item": item}}}
+		}
 		if missingFinal {
 			return response, []map[string]any{{"method": "turn/started", "params": map[string]any{"threadId": s.thread.ID, "turn": map[string]string{"id": id}}}, {"method": "turn/completed", "params": map[string]any{"threadId": s.thread.ID, "turn": turn}}}
 		}

@@ -64,10 +64,13 @@ type PRFact struct {
 	QueryError     string     `json:"query_error,omitempty"`
 }
 type Controls struct {
-	CanReply  bool   `json:"can_reply"`
-	CanResume bool   `json:"can_resume"`
-	CanStop   bool   `json:"can_stop"`
-	Reason    string `json:"reason,omitempty"`
+	CanMessage   bool   `json:"can_message"`
+	CanInterrupt bool   `json:"can_interrupt"`
+	CanClose     bool   `json:"can_close"`
+	CanReply     bool   `json:"can_reply"`
+	CanResume    bool   `json:"can_resume"`
+	CanStop      bool   `json:"can_stop"`
+	Reason       string `json:"reason,omitempty"`
 }
 
 // FinalView keeps native outcome separate from verified original result content.
@@ -92,6 +95,8 @@ type OperationView struct {
 	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
 }
 type RunView struct {
+	Closed            bool              `json:"closed,omitempty"`
+	ContentResult     *ContentResult    `json:"content_result,omitempty"`
 	ResultAcquisition []AcquisitionView `json:"result_acquisition,omitempty"`
 	Audit             *AuditView        `json:"audit,omitempty"`
 	Operations        []OperationView   `json:"operations"`

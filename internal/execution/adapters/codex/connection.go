@@ -64,12 +64,28 @@ func StartThread(ctx context.Context, client *codexapp.Client, params map[string
 }
 
 func ResumeThread(ctx context.Context, client *codexapp.Client, threadID, workspace string) error {
+	return resumeThread(ctx, client, threadID, workspace, "")
+}
+
+func resumeThread(ctx context.Context, client *codexapp.Client, threadID, workspace, sandbox string) error {
 	var receipt ThreadReceipt
-	if err := client.Call(ctx, "thread/resume", map[string]any{"threadId": threadID, "cwd": workspace, "excludeTurns": true}, &receipt); err != nil {
+	params := map[string]any{"threadId": threadID, "cwd": workspace, "excludeTurns": true}
+	if sandbox == "read-only" {
+		config, err := contentConfiguration(ctx, client, workspace)
+		if err != nil {
+			return err
+		}
+		params["config"] = config
+		params["sandbox"], params["approvalPolicy"], params["approvalsReviewer"] = sandbox, "never", "user"
+	}
+	if err := client.Call(ctx, "thread/resume", params, &receipt); err != nil {
 		return err
 	}
 	if receipt.Thread.ID != threadID || !sameWorkspace(receipt.Thread.Cwd, workspace) {
 		return errors.New("app-server resumed a different thread/workspace")
+	}
+	if sandbox == "read-only" && (receipt.ApprovalPolicy != "never" || receipt.ApprovalsReviewer != "user" || receipt.Sandbox.Type != "readOnly") {
+		return errors.New("resumed_native_permissions_unverified")
 	}
 	return nil
 }

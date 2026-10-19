@@ -21,6 +21,9 @@ type ModelSettings struct {
 const AuditedDevelopment = "development-audited"
 
 func Lookup(id string, version int) (Profile, bool) {
+	if version == 1 && (id == "conversation" || id == "generate") {
+		return contentProfile(id), true
+	}
 	if version != 2 {
 		return Profile{}, false
 	}
@@ -43,7 +46,9 @@ func Lookup(id string, version int) (Profile, bool) {
 func Catalog() []Profile {
 	p, _ := Lookup("development", 2)
 	a, _ := Lookup(AuditedDevelopment, 2)
-	return []Profile{p, a}
+	c, _ := Lookup("conversation", 1)
+	g, _ := Lookup("generate", 1)
+	return []Profile{p, a, c, g}
 }
 func AuditStep(step string) bool {
 	return step == StepAuditCode || step == StepAuditReport || step == StepAuditParse || step == StepAuditInput || step == "audit.code"

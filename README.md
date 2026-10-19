@@ -1,5 +1,11 @@
 # SteerRunner
 
+新增 [conversation/1](docs/workflows/conversation.md) 持续会话与
+[generate/1](docs/workflows/generate.md) 一次性内容生成：独立输入、inline 材料快照、
+本机 Codex `read_only`，无需仓库、Spec/Plan 或 publication。复用现有 Run、可靠执行、
+问答/恢复与资源结算；通过 `message / interrupt / close / history` 操作原会话。
+实现范围与真实 Codex 证据见[专属验收](docs/acceptance/content-workflows.md)。
+
 SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment 执行开发 workflow，处理反馈并产出可核验 PR。SteerLine 保留任务、DAG、候选关系和 TaskDelivery，通过 CLI 使用它。
 
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、按需报告→发布→核验 PR、原会话人工续执行、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。

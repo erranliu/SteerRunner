@@ -59,7 +59,7 @@ func NormalizeProfileConfig(config ProfileConfig, host, agent string) (ProfileCo
 	if config.AccessMode == "" {
 		config.AccessMode = "sandbox"
 	}
-	if config.AccessMode != "sandbox" && config.AccessMode != "full_access" {
+	if config.AccessMode != "sandbox" && config.AccessMode != "full_access" && !(host == "local" && config.AccessMode == "read_only") {
 		return ProfileConfig{}, errors.New("unsupported access mode")
 	}
 	if config.GitHubAuth != nil {

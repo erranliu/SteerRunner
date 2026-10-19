@@ -69,6 +69,9 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	if err := workflow.VerifyPrerequisites(r.Workflow, input, state); err != nil {
 		return err
 	}
+	if state.Contract == "final" {
+		return verifyContentDirectory(r)
+	}
 	if state.Workspace == "" {
 		return nil
 	}

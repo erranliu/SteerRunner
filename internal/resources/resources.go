@@ -86,7 +86,7 @@ func Capabilities() any {
 		"configuration_schemas": ConfigurationSchemas(),
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
 	}

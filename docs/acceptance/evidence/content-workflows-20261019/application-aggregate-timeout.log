@@ -1,0 +1,154 @@
+panic: test timed out after 8m0s
+	running tests:
+		TestRAFeedbackSupersedesUnsent (1s)
+
+goroutine 6523 [running]:
+testing.(*M).startAlarm.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2802 +0x354
+created by time.goFunc
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/time/sleep.go:215 +0x2d
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0x2eaff9f50000, {0x7ff642890b22?, 0x7ff6420d082e?}, 0x7ff6428e9458)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+testing.runTests.func1(0x2eaff9f50000)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2585 +0x3e
+testing.tRunner(0x2eaff9f50000, 0x2eaff9fdfc58)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+testing.runTests({0x7ff642891abc, 0x1f}, {0x7ff6428a6375, 0x34}, 0x2eaff9c92d98, {0x7ff642edd0c0, 0x42, 0x42}, {0xc2ad951ccffc58a0, 0x6fc2cb56d9, ...})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2583 +0x4f0
+testing.(*M).Run(0x2eaff9f4c1e0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2443 +0x6ac
+main.main()
+	_testmain.go:176 +0x9b
+
+goroutine 6520 [syscall]:
+syscall.syscalln(0x0?, 0x0?, {0x2eaffa3b0518?, 0x0?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x0?, {0x2eaffa3b0518?, 0x10?, 0x2eaff9e1b230?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+golang.org/x/sys/windows.CreateToolhelp32Snapshot(0x4, 0x0)
+	C:/Users/lmas1/go/pkg/mod/golang.org/x/sys@v0.38.0/windows/zsyscall_windows.go:1944 +0x6a
+github.com/erranliu/SteerRunner/internal/execution/process.startManagedBound(0x2eaff9ca2d00, 0x0)
+	C:/Project/SteerRunner/internal/execution/process/facts_windows.go:114 +0x35d
+github.com/erranliu/SteerRunner/internal/execution/process.StartManaged(...)
+	C:/Project/SteerRunner/internal/execution/process/facts_windows.go:64
+github.com/erranliu/SteerRunner/internal/execution/process.Host.StartManaged({0x7ff642803060?}, 0x1?)
+	C:/Project/SteerRunner/internal/execution/process/host.go:26 +0x18
+github.com/erranliu/SteerRunner/internal/execution/workspace.Git.Output({{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, 0x2}, {0x0, 0x0}, {0x0, 0x0, 0x0}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/git.go:55 +0x493
+github.com/erranliu/SteerRunner/internal/execution/workspace.ResolveRepository({0x7ff6428f9570, 0x2eaff9efed90}, {{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, 0x2}, {0x0, 0x0}, {0x0, ...}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/inspect.go:25 +0xda
+github.com/erranliu/SteerRunner/internal/execution/workspace.Repository.Verify({{0x2eaffa332320?, 0x0?}, {0x2eaffa1097a0?, 0x0?}}, {0x7ff6428f9570, 0x2eaff9efed90}, {{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, ...}, ...}, ...})
+	C:/Project/SteerRunner/internal/execution/workspace/inspect.go:48 +0x12c
+github.com/erranliu/SteerRunner/internal/execution/workspace.Verify({0x7ff6428f9570, 0x2eaff9efed90}, {{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, 0x2}, {0x0, 0x0}, {0x0, ...}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/inspect.go:62 +0x1cc
+github.com/erranliu/SteerRunner/internal/execution/workspace.Inspect({_, _}, {{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, 0x2}, {0x0, 0x0}, {0x0, ...}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/inspect.go:112 +0xf5
+github.com/erranliu/SteerRunner/internal/execution/workspace.InspectAudit({_, _}, {{{0x7ff642879f14, 0x3}, {0x2eaff9d78680, 0x2, 0x2}, {0x0, 0x0}, {0x0, ...}, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/execution/workspace/audit.go:13 +0x151
+github.com/erranliu/SteerRunner/internal/application.(*Engine).inspectSource(0x7ff6427daf80?, 0x2eaff9d62a88, {0x0, 0x0})
+	C:/Project/SteerRunner/internal/application/workspace_source.go:16 +0x251
+github.com/erranliu/SteerRunner/internal/application.(*Engine).originalCheckpoint(_, _, _, {{0x0, 0x0}, {0x2eaff9f932c0, 0x20}, {0x2eaff9e1a274, 0x7}, {0x2eaff9be5800, ...}, ...})
+	C:/Project/SteerRunner/internal/application/workspace_source.go:41 +0x52c
+github.com/erranliu/SteerRunner/internal/application.(*Engine).finishWithGate(_, {_, _}, {{0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0}, {0x0, ...}, ...}, ...)
+	C:/Project/SteerRunner/internal/application/results.go:84 +0x11f4
+github.com/erranliu/SteerRunner/internal/application.(*Engine).finish(...)
+	C:/Project/SteerRunner/internal/application/results.go:19
+github.com/erranliu/SteerRunner/internal/application.finishStage(0x2eaff9d0c000, 0x2eaffa296750, {0x7ff64288d52f, 0x1b})
+	C:/Project/SteerRunner/internal/application/workflow_test.go:88 +0x3a6
+github.com/erranliu/SteerRunner/internal/application.TestRAFeedbackSupersedesUnsent(0x2eaff9d0c000)
+	C:/Project/SteerRunner/internal/application/result_acquisition_test.go:260 +0x4d
+testing.tRunner(0x2eaff9d0c000, 0x7ff6428e9458)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+
+goroutine 6581 [syscall]:
+syscall.syscalln(0x0?, 0x0?, {0x2eaff9fa1a70?, 0x28b60a50108?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x2eaff9fa1a80?, {0x2eaff9fa1a70?, 0x28b661628a8?, 0x2eaff9fa1ab0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+syscall.readFile(0x620, {0x2eaffa314000?, 0x200, 0x0?}, 0x0?, 0x0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/zsyscall_windows.go:1030 +0xba
+syscall.ReadFile(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/syscall_windows.go:510
+internal/poll.(*FD).Read.func1(0x7ff642ec8aa0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:586 +0x4a
+internal/poll.(*FD).execIO(0x2eaff9f08900, 0x72, 0x2eaff9fa1c90)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:304 +0x2c9
+internal/poll.(*FD).Read(0x2eaff9f08900, {0x2eaffa314000, 0x200, 0x200})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:585 +0x290
+os.(*File).read(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file_posix.go:29
+os.(*File).Read(0x2eaffa12a1d8, {0x2eaffa314000?, 0x7ff642013c74?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:144 +0x4f
+bytes.(*Buffer).ReadFrom(0x2eaff9d894a0, {0x7ff6428f3f60, 0x2eaffa12a1d8})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/bytes/buffer.go:229 +0x98
+io.copyBuffer({0x7ff6428f4900, 0x2eaff9d894a0}, {0x7ff6428f3f60, 0x2eaffa12a1d8}, {0x0, 0x0, 0x0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:415 +0x151
+io.Copy(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:388
+os.genericWriteTo(0x1e?, {0x7ff6428f4900?, 0x2eaff9d894a0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:295 +0x35
+os.(*File).WriteTo(0x7ff642014e3f?, {0x7ff6428f4900?, 0x2eaff9d894a0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:273 +0x49
+io.copyBuffer({0x7ff6428f4900, 0x2eaff9d894a0}, {0x7ff6428f4060, 0x2eaffa12a1d8}, {0x0, 0x0, 0x0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:411 +0x9d
+io.Copy(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:388
+os/exec.(*Cmd).writerDescriptor.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:602 +0x34
+os/exec.(*Cmd).Start.func2(0x0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:757 +0x2c
+created by os/exec.(*Cmd).Start in goroutine 6520
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:756 +0x9c5
+
+goroutine 6580 [syscall]:
+syscall.syscalln(0x0?, 0x0?, {0x2eaffa1bba70?, 0x7ff642eef060?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x2eaffa1bba80?, {0x2eaffa1bba70?, 0x28b660a2b28?, 0x2eaffa1bbad0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+syscall.readFile(0x580, {0x2eaff9f54c00?, 0x200, 0x7ff6420666ff?}, 0x7ff64278f740?, 0x7ff642066777?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/zsyscall_windows.go:1030 +0xba
+syscall.ReadFile(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/syscall_windows.go:510
+internal/poll.(*FD).Read.func1(0x7ff642ec8aa0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:586 +0x4a
+internal/poll.(*FD).execIO(0x2eaff9f08780, 0x72, 0x2eaffa1bbc90)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:304 +0x2c9
+internal/poll.(*FD).Read(0x2eaff9f08780, {0x2eaff9f54c00, 0x200, 0x200})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/internal/poll/fd_windows.go:585 +0x290
+os.(*File).read(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file_posix.go:29
+os.(*File).Read(0x2eaffa12a1c0, {0x2eaff9f54c00?, 0x7ff642013c74?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:144 +0x4f
+bytes.(*Buffer).ReadFrom(0x2eaff9d89470, {0x7ff6428f3f60, 0x2eaffa12a1c0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/bytes/buffer.go:229 +0x98
+io.copyBuffer({0x7ff6428f4900, 0x2eaff9d89470}, {0x7ff6428f3f60, 0x2eaffa12a1c0}, {0x0, 0x0, 0x0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:415 +0x151
+io.Copy(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:388
+os.genericWriteTo(0x0?, {0x7ff6428f4900?, 0x2eaff9d89470?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:295 +0x35
+os.(*File).WriteTo(0x7ff642014e3f?, {0x7ff6428f4900?, 0x2eaff9d89470?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/file.go:273 +0x49
+io.copyBuffer({0x7ff6428f4900, 0x2eaff9d89470}, {0x7ff6428f4060, 0x2eaffa12a1c0}, {0x0, 0x0, 0x0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:411 +0x9d
+io.Copy(...)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/io/io.go:388
+os/exec.(*Cmd).writerDescriptor.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:602 +0x34
+os/exec.(*Cmd).Start.func2(0x0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:757 +0x2c
+created by os/exec.(*Cmd).Start in goroutine 6520
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:756 +0x9c5
+
+goroutine 6521 [select]:
+database/sql.(*DB).connectionOpener(0x2eaffa2961a0, {0x7ff6428f9500, 0x2eaff9d000a0})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/database/sql/sql.go:1261 +0x89
+created by database/sql.OpenDB in goroutine 6520
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/database/sql/sql.go:841 +0x130
+FAIL	github.com/erranliu/SteerRunner/internal/application	483.356s
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.830s
+FAIL

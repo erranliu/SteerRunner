@@ -125,6 +125,9 @@ try {
 }
 
 func (b Backend) verifySandboxReadiness(ctx context.Context, h *SessionHandle, input backend.TurnInput) error {
+	if b.Config.Sandbox == "read-only" {
+		return b.verifyContentReadiness(ctx, h, input)
+	}
 	if b.Config.Authentication == nil {
 		return nil
 	}

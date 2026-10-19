@@ -58,6 +58,16 @@ func Rejected(id string, fault *Fault) Response {
 }
 
 func ExitCode(response Response) int {
+	if response.Error != nil {
+		switch response.Error.Code {
+		case "session_closed":
+			return 5
+		case "invalid_output_schema":
+			return 2
+		case "directory_unavailable":
+			return 4
+		}
+	}
 	if response.OK {
 		return 0
 	}

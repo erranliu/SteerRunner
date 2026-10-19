@@ -27,6 +27,9 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if r.Request.Workflow.ID == "conversation" {
+		return e.contentMessage(id, w, p, r, answer)
+	}
 	if state, _ := r.Workflow.CurrentState(); businessAnswer && state.Kind == "input" && state.Continue == "" {
 		// Additional material is retained as user evidence, never an authorization
 		// to repeat the completed audit or to continue an ended native request.

@@ -72,7 +72,7 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 			Profile: "", Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox,
 			Model: profile.Model, ReasoningEffort: profile.ReasoningEffort, Workspace: snapshot.Ref.WorkspacePath,
 			RunDir: setup.RunDirectory, RunID: snapshot.Session.WorkflowRunID, ServerDir: serverDir,
-			Environment: processEnv, WorkerRuntime: true, Authentication: authentication, RemoteName: setup.RemoteName,
+			Environment: processEnv, WorkerRuntime: profile.AccessMode != "read_only", Authentication: authentication, RemoteName: setup.RemoteName,
 		},
 		Process: ProcessPort{
 			Start: setup.ProcessHost.StartManaged, Inspect: setup.ProcessHost.InspectProcess,
@@ -202,6 +202,18 @@ func (l *ExecutionLifecycle) Execute(ctx context.Context, request executionbacke
 		receipt, observer, err = l.startTurn(ctx, snapshot, *request.Input.Turn)
 	case executionbackend.LifecycleDeliverFeedback:
 		receipt, err = l.deliverFeedback(ctx, request)
+	case executionbackend.LifecycleStopObservation:
+		if l.Backend.Process.Inspect == nil || l.Backend.Process.Inspect(&snapshot.Ref.External) != "matching process still exists" {
+			receipt.Disposition = executionbackend.OperationRejected
+			err = &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "original interrupt process identity is not verifiably live"}
+			break
+		}
+		handle, attachErr := attachProcess(snapshot.Ref.External)
+		if attachErr != nil {
+			err = attachErr
+		} else {
+			receipt, err = l.StopLifecycle(ctx, request, handle)
+		}
 	default:
 		return executionbackend.LifecycleReceipt{}, nil, errors.New("app-server lifecycle does not implement this operation")
 	}
@@ -298,6 +310,9 @@ func (l ExecutionLifecycle) Reconcile(ctx context.Context, request executionback
 	receipt.State.SessionGeneration = recovered.Binding.Generation
 	receipt.State.TurnID = recovered.TurnID
 	receipt.State.TurnCompleted = recovered.Completed
+	if executionbackend.LifecycleAction(request.Operation.Action) == executionbackend.LifecycleStartTurn && reconcileErr == nil && recovered.TurnID != "" && (recovered.Completed || recovered.Observer != nil) {
+		receipt.State.InputAccepted, receipt.State.TurnStarted = true, true
+	}
 	receipt.State.WorkerAbsent = recovered.Dead
 	receipt.State.WritersAbsent = l.writersAbsent(recovered.Binding)
 	receipt.State.SessionAvailable = ValidNativeID(recovered.Binding.SessionID)
@@ -345,17 +360,17 @@ func (l ExecutionLifecycle) ObserveLifecycle(ctx context.Context, snapshot execu
 			receipt.State.TurnCompleted = true
 			receipt.TurnEvidence = &executionbackend.TurnEvidence{
 				FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, SourcePath: path, TurnID: recovered.TurnID, CommandID: commandID, SessionID: outcome.SessionID,
-				Started: outcome.Started, Completed: outcome.Completed, Succeeded: outcome.Succeeded,
+				Started: outcome.Started, Completed: outcome.Completed, Succeeded: outcome.Succeeded, NativeOutcome: outcome.nativeOutcome(),
 				LastMessage: outcome.LastMessage, Failure: outcome.Failure, PRCandidates: append([]string(nil), outcome.PRCandidates...),
 			}
 			return receipt, nil, nil
 		}
 	}
-	if recovered.Dead {
+	if recovered.Dead || recovered.Completed || err != nil {
 		outcome, readErr := l.readRecoveryOutcome(ctx, snapshot, recovered.Binding, recovered.TurnID)
 		if readErr == nil && outcome.Started && outcome.Completed {
 			receipt.Disposition, receipt.State.TurnCompleted = executionbackend.OperationConfirmed, true
-			receipt.TurnEvidence = &executionbackend.TurnEvidence{CommandID: commandID, TurnID: recovered.TurnID, SessionID: outcome.SessionID, Started: true, Completed: true, Succeeded: outcome.Succeeded, LastMessage: outcome.LastMessage, Failure: outcome.Failure, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID}
+			receipt.TurnEvidence = &executionbackend.TurnEvidence{CommandID: commandID, TurnID: recovered.TurnID, SessionID: outcome.SessionID, Started: true, Completed: true, Succeeded: outcome.Succeeded, NativeOutcome: outcome.nativeOutcome(), LastMessage: outcome.LastMessage, Failure: outcome.Failure, FinalSource: outcome.FinalSource, FinalItemID: outcome.FinalItemID, FinalVerified: outcome.FinalVerified, FinalNativeSessionID: outcome.SessionID, FinalNativeTurnID: recovered.TurnID}
 			return receipt, nil, nil
 		}
 		if readErr != nil {

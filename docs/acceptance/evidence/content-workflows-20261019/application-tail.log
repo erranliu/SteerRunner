@@ -1,0 +1,78 @@
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+=== RUN   TestRAConcurrencyPublication/new-source
+=== RUN   TestRAConcurrencyPublication/head-drift
+=== RUN   TestRAConcurrencyPublication/wrong-pr-head
+--- PASS: TestRAConcurrencyPublication (97.57s)
+    --- PASS: TestRAConcurrencyPublication/stop (27.12s)
+    --- PASS: TestRAConcurrencyPublication/new-source (28.29s)
+    --- PASS: TestRAConcurrencyPublication/head-drift (24.34s)
+    --- PASS: TestRAConcurrencyPublication/wrong-pr-head (17.82s)
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.02s)
+=== RUN   TestRAAuditObservedReportWork
+--- PASS: TestRAAuditObservedReportWork (13.79s)
+=== RUN   TestRATransitionUnknownNativeGate
+--- PASS: TestRATransitionUnknownNativeGate (0.81s)
+=== RUN   TestRAStateAuthorityQuestionSource
+--- PASS: TestRAStateAuthorityQuestionSource (4.99s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.97s)
+=== RUN   TestRAStateAuthorityMilestone
+--- PASS: TestRAStateAuthorityMilestone (0.80s)
+=== RUN   TestRAFeedbackSupersedesUnsent
+--- PASS: TestRAFeedbackSupersedesUnsent (5.33s)
+=== RUN   TestRAResumeConsumedActiveInputWaitsForOriginalEvidence
+--- PASS: TestRAResumeConsumedActiveInputWaitsForOriginalEvidence (0.96s)
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped
+--- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence (0.12s)
+    --- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown (0.06s)
+    --- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped (0.06s)
+=== RUN   TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress
+--- PASS: TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress (0.08s)
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt
+--- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation (0.12s)
+    --- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original (0.06s)
+    --- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt (0.06s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca (0.00s)
+    --- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped (0.00s)
+=== RUN   TestRAAuditLifecycle
+--- PASS: TestRAAuditLifecycle (14.70s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (9.45s)
+=== RUN   TestRAVersionRejectLegacy
+--- PASS: TestRAVersionRejectLegacy (0.00s)
+=== RUN   TestRAUnreportedOutcomeBoundary
+=== RUN   TestRAUnreportedOutcomeBoundary/unreported
+=== RUN   TestRAUnreportedOutcomeBoundary/unknown
+=== RUN   TestRAUnreportedOutcomeBoundary/failed
+=== RUN   TestRAUnreportedOutcomeBoundary/cancelled
+=== RUN   TestRAUnreportedOutcomeBoundary/business-blocked
+--- PASS: TestRAUnreportedOutcomeBoundary (24.10s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unreported (5.02s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unknown (4.78s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/failed (4.48s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/cancelled (4.86s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/business-blocked (4.95s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	177.645s

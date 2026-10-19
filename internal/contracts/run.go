@@ -53,19 +53,21 @@ type Execution struct {
 
 type Publication struct {
 	Provider   string          `json:"provider"`
-	Repository string          `json:"repository"`
+	Repository string          `json:"repository,omitzero"`
 	BaseBranch string          `json:"base_branch"`
 	Settings   json.RawMessage `json:"settings"`
 }
 
 type RunRequest struct {
-	Title       string            `json:"title"`
-	Correlation map[string]string `json:"correlation,omitempty"`
-	Repository  Repository        `json:"repository"`
-	Documents   Documents         `json:"documents"`
-	Workflow    Workflow          `json:"workflow"`
-	Execution   Execution         `json:"execution"`
-	Publication Publication       `json:"publication"`
+	Conversation *ConversationInput `json:"conversation,omitempty"`
+	Generate     *GenerateInput     `json:"generate,omitempty"`
+	Title        string             `json:"title"`
+	Correlation  map[string]string  `json:"correlation,omitempty"`
+	Repository   Repository         `json:"repository,omitzero"`
+	Documents    Documents          `json:"documents,omitzero"`
+	Workflow     Workflow           `json:"workflow"`
+	Execution    Execution          `json:"execution"`
+	Publication  Publication        `json:"publication,omitzero"`
 }
 
 type AgentSettings struct {
@@ -209,7 +211,13 @@ func optionalStrings(data []byte, names ...string) bool {
 func ValidateRun(data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Run input does not satisfy the embedded configuration contract.")
 	var value RunRequest
-	if DecodeStrict(data, &value) != nil || !plain(value.Title) || !safeURL(value.Repository.URL) || !commitPattern.MatchString(value.Repository.BaseRevision) || !plain(value.Repository.Remote) || !plain(value.Repository.BaseBranch) {
+	if DecodeStrict(data, &value) != nil || !plain(value.Title) {
+		return invalid
+	}
+	if workflow.Content(value.Workflow.ID) {
+		return validateContentRun(data, value)
+	}
+	if value.Conversation != nil || value.Generate != nil || !safeURL(value.Repository.URL) || !commitPattern.MatchString(value.Repository.BaseRevision) || !plain(value.Repository.Remote) || !plain(value.Repository.BaseBranch) {
 		return invalid
 	}
 	if !safeDocument(value.Documents.Spec) || !safeDocument(value.Documents.Plan) || strings.EqualFold(value.Documents.Spec.Path, value.Documents.Plan.Path) {
@@ -251,10 +259,37 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	if !supported {
 		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
 	}
+	if workflow.Content(profile.ID) {
+		if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" {
+			return Fail(3, "unsupported_capability", "Content workflows require local codex-app-server.")
+		}
+		var settings CodexSettings
+		if DecodeStrict(value.Execution.Settings, &settings) != nil || settings.AccessMode != "read_only" || settings.GitHubAuth != nil || len(value.Workflow.PromptOverrides) != 0 || value.Workflow.AuditModel != nil {
+			return invalid
+		}
+	} else {
+		var settings struct {
+			AccessMode string `json:"access_mode"`
+		}
+		_ = json.Unmarshal(value.Execution.Settings, &settings)
+		if settings.AccessMode == "read_only" {
+			return invalid
+		}
+	}
 	var requestFields map[string]json.RawMessage
 	_ = json.Unmarshal(data, &requestFields)
 	var workflowFields map[string]json.RawMessage
 	_ = json.Unmarshal(requestFields["workflow"], &workflowFields)
+	if workflow.Content(profile.ID) {
+		if _, present := workflowFields["prompt_overrides"]; present {
+			return invalid
+		}
+		var settingsFields map[string]json.RawMessage
+		_ = json.Unmarshal(value.Execution.Settings, &settingsFields)
+		if _, present := settingsFields["github_auth"]; present {
+			return invalid
+		}
+	}
 	if raw, present := workflowFields["audit_model"]; present {
 		if !profile.AuditModelRequired || value.Workflow.AuditModel == nil || !optionalStrings(raw, "model", "reasoning_effort") {
 			return invalid
@@ -292,7 +327,7 @@ func ValidateExecution(value Execution) *Fault {
 		if value.Target.Kind != "local" || value.Target.Environment != "" || DecodeStrict(value.Settings, &settings) != nil || !optionalStrings(value.Settings, "executable", "model", "reasoning_effort") || !effort(settings.ReasoningEffort) || settings.Model != strings.TrimSpace(settings.Model) {
 			return invalid
 		}
-		if !validAccessMode(settings.AccessMode) {
+		if !validAccessMode(settings.AccessMode) && settings.AccessMode != "read_only" {
 			return invalid
 		}
 		if settings.GitHubAuth != nil && (settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
@@ -420,7 +455,7 @@ func ValidateInput(command string, data []byte) *Fault {
 		if DecodeStrict(data, &value) != nil || !plain(value.ExpectedInstanceID) {
 			return invalid
 		}
-	case "resume", "stop":
+	case "resume", "stop", "interrupt", "close":
 		var value RevisionInput
 		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 {
 			return invalid
@@ -428,6 +463,11 @@ func ValidateInput(command string, data []byte) *Fault {
 	case "reply":
 		var value ReplyInput
 		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 || value.Text == "" || value.Kind != "answer" && value.Kind != "feedback" || value.Kind == "answer" && !plain(value.QuestionID) || value.Kind == "feedback" && value.QuestionID != "" {
+			return invalid
+		}
+	case "message":
+		var value MessageInput
+		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 || strings.TrimSpace(value.Text) == "" {
 			return invalid
 		}
 	default:

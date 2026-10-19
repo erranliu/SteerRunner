@@ -115,18 +115,29 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if err := contracts.DecodeStrict(input.Input, &request); err != nil {
 		return nil, err
 	}
+	if workflow.Content(request.Workflow.ID) {
+		if err := contracts.ValidateRun(input.Input); err != nil {
+			return nil, err
+		}
+	}
 	if request.Execution.Adapter == "orca-terminal" && request.Repository.LocalPath == "" {
 		return nil, contracts.Fail(2, "invalid_input", "Orca execution requires repository.local_path for its registered project identity.")
 	}
-	acquisitionConfig, err := ra.LoadConfig(dir)
-	if err != nil {
-		return nil, contracts.Fail(2, "invalid_input", err.Error())
+	var acquisitionConfig ra.FrozenConfig
+	var err error
+	if !workflow.Content(request.Workflow.ID) {
+		acquisitionConfig, err = ra.LoadConfig(dir)
+		if err != nil {
+			return nil, contracts.Fail(2, "invalid_input", err.Error())
+		}
 	}
 	id, attempt, generation := contracts.NewID(), contracts.NewID(), contracts.NewID()
 	now := time.Now().UTC()
 	r := &runstate.Record{AcquisitionConfig: acquisitionConfig, ID: id, Request: request, Allowed: true, Status: "queued", Phase: "accepted", CreatedAt: now, UpdatedAt: now, ResourceDigest: resources.Digest(), CommandStates: map[string]string{}}
-	if _, err := providerFor(r); err != nil {
-		return nil, contracts.Fail(2, "invalid_input", "Publication configuration does not match the fixed repository or non-secret schema.")
+	if !workflow.Content(request.Workflow.ID) {
+		if _, err := providerFor(r); err != nil {
+			return nil, contracts.Fail(2, "invalid_input", "Publication configuration does not match the fixed repository or non-secret schema.")
+		}
 	}
 	target := b.ExecutionTarget{ID: "local", ExecutionHost: "local"}
 	kind, protocol := b.BackendLocal, b.ProtocolLocalCodexAppServer
@@ -226,6 +237,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
+	if workflow.Content(request.Workflow.ID) {
+		return freezeContent(dir, r, attempt, generation, payload)
+	}
 	git := gitHost()
 	cache := repositoryCache(dir, request.Repository)
 	entry, _ := repositoryLocks.LoadOrStore(cache, &sync.Mutex{})
@@ -522,38 +536,46 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			}
 			input.Model, input.ReasoningEffort = model.Model, model.ReasoningEffort
 		}
-		if len(r.Materials) < 2 {
-			return fmt.Errorf("frozen material manifest incomplete")
-		}
-		refs := []workflow.FileReference{}
-		location := func(m runstate.Material) string {
-			if m.ExecutionLocation != "" {
-				return m.ExecutionLocation
+		if state.Contract == "final" {
+			prompt, err := contentPrompt(r, feedback)
+			if err != nil {
+				return err
 			}
-			return m.SnapshotPath
-		}
-		for _, m := range r.Materials[2:] {
-			refs = append(refs, workflow.FileReference{Path: location(m)})
-		}
-		// Use explicit JSON names for the fixed material references consumed by Workflow.
-		input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
-		prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
-		if err != nil {
-			return err
-		}
-		if feedback != "" {
-			prompt += "\nUser feedback for the original session:\n" + feedback
-		}
-		if r.Request.Execution.Adapter == "orca-terminal" && state.Kind == "execute" && state.Contract == "implementation" {
-			attached := []map[string]string{}
-			for _, m := range r.Materials {
-				attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
+			input.Prompt = prompt
+		} else {
+			if len(r.Materials) < 2 {
+				return fmt.Errorf("frozen material manifest incomplete")
 			}
-			prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
+			refs := []workflow.FileReference{}
+			location := func(m runstate.Material) string {
+				if m.ExecutionLocation != "" {
+					return m.ExecutionLocation
+				}
+				return m.SnapshotPath
+			}
+			for _, m := range r.Materials[2:] {
+				refs = append(refs, workflow.FileReference{Path: location(m)})
+			}
+			// Use explicit JSON names for the fixed material references consumed by Workflow.
+			input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
+			prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
+			if err != nil {
+				return err
+			}
+			if feedback != "" {
+				prompt += "\nUser feedback for the original session:\n" + feedback
+			}
+			if r.Request.Execution.Adapter == "orca-terminal" && state.Kind == "execute" && state.Contract == "implementation" {
+				attached := []map[string]string{}
+				for _, m := range r.Materials {
+					attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
+				}
+				prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
+			}
+			prompt += workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
+			input.Prompt = prompt
+			input.SuccessOutput = state.SuccessOutput
 		}
-		prompt += workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
-		input.Prompt = prompt
-		input.SuccessOutput = state.SuccessOutput
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
 	if state.Kind == "execute" && state.Contract == "implementation" {
@@ -570,6 +592,29 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	}
 	r.Workflow.StepID = input.StepID
 	r.Workflow.StageInputs = append(r.Workflow.StageInputs, input)
+	if state.Contract == "final" {
+		r.ContentResult = nil
+		text := feedback
+		if text == "" {
+			text, _, _ = r.Request.ContentInput()
+		}
+		requestCommand := input.FeedbackDecisionID
+		if requestCommand == "" {
+			requestCommand = r.SubmitCommandID
+		}
+		bound := false
+		for i := range r.History {
+			entry := &r.History[i]
+			if entry.Role == "user" && entry.CommandID == "" && entry.RequestCommandID == requestCommand {
+				entry.CommandID, entry.SessionID = input.CommandID, r.Snapshot.Session.SessionID
+				bound = true
+				break
+			}
+		}
+		if !bound {
+			r.History = append(r.History, contracts.HistoryEntry{RequestCommandID: requestCommand, CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, Role: "user", Text: text})
+		}
+	}
 	r.Snapshot.PendingTurn = &b.TurnInput{StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
 	r.Snapshot.Session.PendingCommandID = input.CommandID
 	r.Snapshot.Session.PendingTurnID = ""

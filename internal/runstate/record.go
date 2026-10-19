@@ -28,6 +28,11 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	Closed              bool                           `json:"closed,omitempty"`
+	PendingInterrupt    string                         `json:"pending_interrupt,omitempty"`
+	ContentResult       *contracts.ContentResult       `json:"content_result,omitempty"`
+	History             []contracts.HistoryEntry       `json:"history,omitempty"`
+	DirectoryIdentity   string                         `json:"directory_identity,omitempty"`
 	ReportWork          map[string]string              `json:"observed_report_work,omitempty"`
 	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config"`
 	PRClues             []string                       `json:"pr_clues,omitempty"`
@@ -140,5 +145,13 @@ func (r *Record) View() contracts.RunView {
 		}
 	}
 	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && !unresolved, CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+	if workflow.Content(r.Request.Workflow.ID) {
+		v.Closed, v.ContentResult = r.Closed, r.ContentResult
+		v.Controls.CanReply = r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.Question != nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
+		v.Controls.CanResume = r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == ""
+		v.Controls.CanMessage = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.Workflow.StepID == "input" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
+		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
+		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed
+	}
 	return v
 }
