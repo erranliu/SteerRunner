@@ -62,7 +62,7 @@ func ConfigurationSchemas() json.RawMessage {
 		overrides := any(map[string]any{"propertyNames": promptNames})
 		if workflow.Content(profile.ID) {
 			overrides = false
-			execution["properties"].(map[string]any)["settings"] = map[string]any{"required": []string{"access_mode"}, "properties": map[string]any{"access_mode": map[string]any{"const": "read_only"}, "github_auth": false}}
+			execution["properties"].(map[string]any)["settings"] = map[string]any{"required": []string{"access_mode"}, "properties": map[string]any{"access_mode": map[string]any{"const": "read_only"}}}
 		} else {
 			execution["properties"].(map[string]any)["settings"] = mergeSettingsRestriction(execution["properties"].(map[string]any)["settings"])
 		}
