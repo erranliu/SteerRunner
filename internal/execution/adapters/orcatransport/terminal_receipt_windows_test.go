@@ -5,6 +5,7 @@ package orcatransport
 import (
 	"context"
 	"encoding/json"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
@@ -306,11 +307,29 @@ func TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup(t *testing.T) {
 	if e = readTerminalFile(c.StateDirectory, "exit", &exit); e != nil {
 		t.Fatal(e)
 	}
+	state, e := l.state(s)
+	if e != nil {
+		t.Fatal(e)
+	}
+	state.TerminalOwner = &owner
+	s.Implementation, e = l.envelope(s, state)
+	if e != nil {
+		t.Fatal(e)
+	}
+	l.client = native.New(native.Config{Output: func(context.Context, time.Duration, ...string) ([]byte, error) {
+		return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
+	}})
+	if e = l.verifyStopped(context.Background(), s); e != nil {
+		t.Fatal("original helper exit proof was not accepted", e)
+	}
 	no := false
 	exit.AuthenticationClosed = &no
 	raw, _ = json.Marshal(exit)
 	os.WriteFile(filepath.Join(c.StateDirectory, "exit.json"), raw, 0600)
 	if l.terminalExitVerified(owner) {
 		t.Fatal("failed authentication cleanup was ignored")
+	}
+	if e = l.verifyStopped(context.Background(), s); e == nil {
+		t.Fatal("offline verification ignored failed authentication cleanup")
 	}
 }

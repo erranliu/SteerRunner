@@ -16,7 +16,7 @@ import (
 )
 
 func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
-	for _, mode := range []string{"success", "wrong-runtime", "wrong-incarnation", "wrong-session", "wrong-hash", "wrong-config", "wrong-input", "failed", "unknown-create", "unknown-close", "in-progress", "shutdown-during-close", "shutdown-deadline", "restart-known-close", "restart-absent-close", "restart-unknown-create", "restart-corrupt-journal", "restart-queued", "bounded-first-inspection"} {
+	for _, mode := range []string{"success", "wrong-runtime", "wrong-incarnation", "wrong-session", "wrong-hash", "wrong-config", "wrong-input", "failed", "unknown-create", "unknown-close", "in-progress", "shutdown-during-close", "shutdown-deadline", "restart-known-close", "restart-absent-close", "restart-unknown-create", "restart-corrupt-journal", "restart-queued", "bounded-first-inspection", "reader-query-failed"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s := fixtureOn(t, "paired-remote")
 			f.callerFileWriter = func(path string, data []byte) error {
@@ -36,7 +36,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 			bind(&s, r)
 			state, _ := l.state(s)
 			now := time.Now().UTC()
-			ready := codex.RemoteReadiness{NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: strings.Repeat("b", 64), ConfigurationDigest: strings.Repeat("a", 64), Process: b.ProcessIdentity{PID: 123, Created: "native-process"}, CheckedAt: now, ExpiresAt: now.Add(time.Hour)}
+			ready := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: strings.Repeat("b", 64), ConfigurationDigest: strings.Repeat("a", 64), Process: b.ProcessIdentity{PID: 123, Created: "native-process"}, CheckedAt: now, ExpiresAt: now.Add(time.Hour)}
 			l.setup.RepositoryURL = ready.Repository
 			l.profile.RuntimeExecutable = "C:/runtime/steerrunner-agent.exe"
 			l.profile.RuntimeConfigurationDigest = ready.ConfigurationDigest
@@ -65,7 +65,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 			recovering := false
 			absenceObserved := false
 			closeEntered, allowClose := make(chan struct{}), make(chan struct{})
-			value := codex.RemoteTurnReceipt{Source: codex.RemoteTurnSource, Readiness: ready, InputDigest: digest([]byte(f.nativePrompt)), NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", Started: true, Completed: true, Status: "completed", FinalItemID: "native-final", FinalText: "exact report"}
+			value := codex.RemoteTurnReceipt{ReaderWritersAbsent: true, Source: codex.RemoteTurnSource, Readiness: ready, InputDigest: digest([]byte(f.nativePrompt)), NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", Started: true, Completed: true, Status: "completed", FinalItemID: "native-final", FinalText: "exact report"}
 			value.FinalDigest = digest([]byte(value.FinalText))
 			switch mode {
 			case "wrong-session":
@@ -76,6 +76,8 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				value.Readiness.ConfigurationDigest = strings.Repeat("d", 64)
 			case "wrong-input":
 				value.InputDigest = strings.Repeat("0", 64)
+			case "reader-query-failed":
+				value.InspectionFailed = true
 			case "failed":
 				value.Status = "failed"
 			case "in-progress":
@@ -87,6 +89,9 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 			}
 			l.client = native.New(native.Config{CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
 				joined := strings.Join(args, " ")
+				if strings.HasPrefix(mode, "shutdown-") && len(args) > 1 && args[0] == "terminal" && args[1] == "list" {
+					return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": []any{map[string]any{"handle": s.Ref.External.Terminal, "incarnationId": s.Ref.External.Incarnation, "worktreeId": s.Ref.External.WorktreeID, "status": "running"}}, "totalCount": 1, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
+				}
 				aux := strings.Contains(joined, "inspector") || len(args) > 1 && args[0] == "terminal" && (args[1] == "create" || args[1] == "list" && strings.HasPrefix(mode, "restart-"))
 				if !aux {
 					return original.Raw(ctx, d, args...)
@@ -128,7 +133,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 						return nil, errors.New("inventory unavailable during process loss")
 					}
 					absenceObserved = true
-					result = map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"execution-host"}, "omittedHostIds": []string{}}}
+					result = map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
 				case "read":
 					raw, _ := json.Marshal(value)
 					terminal["tail"] = []string{codex.RemoteTurnPrefix + base64.RawURLEncoding.EncodeToString(raw)}
@@ -189,8 +194,8 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 					close(allowClose)
 					select {
 					case err := <-done:
-						if err != nil {
-							t.Fatal(err)
+						if err == nil || !strings.Contains(err.Error(), "still active") {
+							t.Fatal("active business terminal was not left unverified", err)
 						}
 					case <-time.After(time.Second):
 						t.Fatal("shutdown did not observe inspector close")
@@ -204,7 +209,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 				defer cancel()
 				facts, err := l.ShutdownLifecycle(ctx, s, o.StopHandle())
-				if err != nil || facts.Stopped || f.nativeSends != 1 || creates != 1 || closes != 1 {
+				if err == nil || !strings.Contains(err.Error(), "still active") || facts.Stopped || f.nativeSends != 1 || creates != 1 || closes != 1 {
 					t.Fatal("shutdown changed business execution or retried a resource", facts, err, creates, closes, f.nativeSends)
 				}
 				return
@@ -222,6 +227,13 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				t.Fatalf("invalid evidence promoted: %+v", r)
 			}
 			bind(&s, r)
+			if mode == "reader-query-failed" {
+				j, e := l.loadInspections(state)
+				if e != nil || len(j.Entries) != 1 || !j.Entries[0].Inspection.NativeSettled || !j.Entries[0].Inspection.Closed || r.TurnEvidence != nil {
+					t.Fatal("failed query lost native reader settlement", e)
+				}
+				return
+			}
 			if strings.HasPrefix(mode, "restart-") {
 				s = beforeObservation
 				path, binding, err := l.journalPath(state)

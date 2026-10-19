@@ -117,7 +117,7 @@ func TestRemoteAuthenticationStopReconcilesOnlyOriginalFacility(t *testing.T) {
 					}
 					result = map[string]any{"close": map[string]any{"handle": "auth-actor", "ptyKilled": true}}
 				case "terminal list":
-					result = map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"original"}, "omittedHostIds": []string{}}}
+					result = map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
 				default:
 					got, e := original.MetaCall(ctx, args...)
 					return json.Marshal(map[string]any{"ok": e == nil, "result": json.RawMessage(got.Payload), "_meta": map[string]any{"runtimeId": got.RuntimeID}})

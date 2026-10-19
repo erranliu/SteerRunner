@@ -24,16 +24,17 @@ import (
 // HistoryClient only uses the public app-server protocol. It never opens
 // Codex's database or rollout files and never resumes a thread while reading it.
 type HistoryClient struct {
-	input      io.WriteCloser
-	lines      chan []byte
-	done       chan struct{}
-	proc       executionbackend.StopHandle
-	mu         sync.Mutex
-	next       int
-	err        error
-	userAgent  string
-	serverHome string
-	platformOS string
+	input         io.WriteCloser
+	lines         chan []byte
+	done          chan struct{}
+	proc          executionbackend.StopHandle
+	mu            sync.Mutex
+	next          int
+	err           error
+	userAgent     string
+	serverHome    string
+	platformOS    string
+	writersAbsent bool
 }
 
 func OpenHistory(ctx context.Context, command executionbackend.Command, dir, home string, start func(*exec.Cmd) (executionbackend.StopHandle, error)) (*HistoryClient, error) {
@@ -87,6 +88,9 @@ func OpenHistory(ctx context.Context, command executionbackend.Command, dir, hom
 		if waitErr := cmd.Wait(); c.err == nil {
 			c.err = waitErr
 		}
+		// Keep the Job open through accounting. The caller may export a native
+		// reader-settlement fact only after this entire tree is actually empty.
+		c.writersAbsent = settleRemoteTree(proc)
 		proc.Close()
 	}()
 	initialized, initErr := c.call(ctx, "initialize", map[string]any{"clientInfo": map[string]string{"name": "steerline_conversation", "version": "1"}, "capabilities": map[string]bool{"experimentalApi": true}})
@@ -139,6 +143,15 @@ func (c *HistoryClient) Close() {
 		case <-timer.C:
 			c.proc.Kill()
 		}
+	}
+}
+
+func (c *HistoryClient) WritersAbsent() bool {
+	select {
+	case <-c.done:
+		return c.writersAbsent
+	default:
+		return false
 	}
 }
 

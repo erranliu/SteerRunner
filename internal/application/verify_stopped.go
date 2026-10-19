@@ -1,29 +1,46 @@
 package application
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
 // VerifyStopped reads current-format records under the host's exclusive lease.
-// It probes original managed identities only, without constructing an Engine,
-// invoking adapters, restarting observers or changing execution records.
-func VerifyStopped(dir string, runs []*runstate.Record, checks ...*runstate.CheckRecord) contracts.StoppedVerification {
+// It probes original identities without constructing an Engine, restarting
+// observers, sending input or changing execution records.
+func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record, checks ...*runstate.CheckRecord) contracts.StoppedVerification {
 	result := contracts.StoppedVerification{StateDir: dir, ResourcesSettled: true, Runs: []contracts.StoppedRun{}}
 	seen := map[string]bool{}
 	for _, r := range runs {
 		settled := stoppedRecord(r, func(id *b.ProcessIdentity) bool {
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
+		var probeErr error
+		if !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
+			repository := r.RepositoryPath
+			if r.Request.Repository.LocalPath != "" {
+				repository = r.Request.Repository.LocalPath
+			}
+			probeCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+			probeErr = orca.VerifyStopped(probeCtx, b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: dir})
+			cancel()
+			settled = probeErr == nil
+		}
 		settled = settled && !seen[r.ID]
 		seen[r.ID] = true
 		v := contracts.StoppedRun{RunID: r.ID, InputDigest: r.InputDigest, ResourcesSettled: settled}
 		if !settled {
 			v.Diagnostic = fmt.Sprintf("run %s: original native writer absence is unverified", r.ID)
+			if probeErr != nil {
+				v.Diagnostic += ": " + probeErr.Error()
+			}
 		}
 		result.ResourcesSettled = result.ResourcesSettled && settled
 		result.Runs = append(result.Runs, v)

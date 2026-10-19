@@ -55,6 +55,11 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 			}
 			return receipt, nil, err
 		}
+		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
+			if err = l.verifyStopped(ctx, r.Snapshot); err != nil {
+				return receipt, nil, err
+			}
+		}
 		progress.Phase = "confirmed"
 		receipt.Operation.Receipt, _ = json.Marshal(progress)
 		receipt.Disposition = b.OperationConfirmed

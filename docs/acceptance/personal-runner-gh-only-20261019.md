@@ -29,3 +29,7 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 补充修复为原 actor 回执/CLI 读取增加有界只读重查，保持请求发送一次与原身份复核；区分明确未调用 turn/start 的拒绝和未知，持久化有限启动/工具回复/分派诊断。发布提示要求异步 shell 返回 session_id 后读取同一 session 的退出状态和 PR URL。组件新增丢回执、有/无原缓存、暂时/持续读取失败、身份变化、旧 helper 和矛盾 turn 标记、已确认操作后回复失败的守卫。
 
 正式复测构建、命令和有限结果完成后追加；首轮失败及历史验收均不继承为新构建通过。
+
+复测准备提交 `4a0aa59` 的 L1 323 项、扩展 28 项和 Controlled 16 项均通过。其前置期间主分支合入 `a3dc15d`（原生停止证明）；在任何真机 case 创建前中止外层调度，原 Controlled 自行通过并退出。该批次没有 L3 结果，不计为失败重试或通过。
+
+合并同时保留原生退出签名/树为空证明、gh broker 撤销、原 reader 结算、双模型字段与核验。修复合并交互：helper 正常退出返回 shell 后，关闭前继续核对原 runtime/terminal/incarnation/worktree/path/branch，原生退出另验；不依赖已退出 agent 的显示标签。现有正向停止测试复现并验证修复，另加 shell 分支变化拒绝，认证 actor 的失回执测试使用实际 `local` host scope。

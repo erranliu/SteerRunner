@@ -37,11 +37,12 @@ func wirePrompt(t *Turn) string {
 }
 
 type NativeInspection struct {
-	Attempted bool               `json:"attempted"`
-	Unknown   bool               `json:"unknown"`
-	Process   *b.ProcessIdentity `json:"process,omitempty"`
-	Closed    bool               `json:"closed"`
-	At        time.Time          `json:"at"`
+	NativeSettled bool               `json:"native_settled,omitempty"`
+	Attempted     bool               `json:"attempted"`
+	Unknown       bool               `json:"unknown"`
+	Process       *b.ProcessIdentity `json:"process,omitempty"`
+	Closed        bool               `json:"closed"`
+	At            time.Time          `json:"at"`
 }
 
 func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Turn) string {
@@ -104,17 +105,27 @@ func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Tur
 	return ""
 }
 
-func validateRecordedTurn(state State, turn *Turn, value codex.RemoteTurnReceipt) error {
+func validateReaderExit(state State, turn *Turn, value codex.RemoteTurnReceipt) error {
 	ready := state.RemoteReadiness
 	r := value.Readiness
-	if ready == nil || turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand || !turn.Accepted || value.Source != codex.RemoteTurnSource || value.InputDigest != digest([]byte(wirePrompt(turn))) || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.SessionID != ready.SessionID || r.ConfigurationDigest != ready.ConfigurationDigest || r.RuntimeSHA256 != ready.RuntimeSHA256 || r.Repository != ready.Repository || r.Contract != ready.Contract || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(ready.Workspace, "\\", "/")) || r.Process.PID != ready.Process.PID || r.Process.Created != ready.Process.Created {
+	if ready == nil || !value.ReaderWritersAbsent || turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand || !turn.Accepted || value.Source != codex.RemoteTurnSource || value.InputDigest != digest([]byte(wirePrompt(turn))) || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.SessionID != ready.SessionID || r.ConfigurationDigest != ready.ConfigurationDigest || r.RuntimeSHA256 != ready.RuntimeSHA256 || r.Repository != ready.Repository || r.Contract != ready.Contract || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(ready.Workspace, "\\", "/")) || r.Process.PID != ready.Process.PID || r.Process.Created != ready.Process.Created {
 		return errors.New("original native receipt binding changed")
 	}
 	if turn.Model != "" && value.Started && (value.Model != turn.Model || value.ReasoningEffort != turn.ReasoningEffort) {
 		return errors.New("original native model differs from the frozen workflow turn")
 	}
-	if r.AuthenticationControl != ready.AuthenticationControl || r.Process != ready.Process || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
+	if r.AuthenticationControl != ready.AuthenticationControl || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.Process != ready.Process || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
 		return errors.New("original native readiness identity changed")
+	}
+	return nil
+}
+
+func validateRecordedTurn(state State, turn *Turn, value codex.RemoteTurnReceipt) error {
+	if err := validateReaderExit(state, turn, value); err != nil {
+		return err
+	}
+	if value.InspectionFailed {
+		return errors.New("original native history query failed after reader cleanup")
 	}
 	if value.Completed && !value.Started || value.Started && (!codex.ValidNativeID(value.NativeTurnID) || value.UserItemID == "") || value.FinalText != "" && (len(value.FinalText) > maxReplyBytes || value.FinalItemID == "" || value.FinalDigest != digest([]byte(value.FinalText))) {
 		return errors.New("original native receipt evidence is incomplete")
@@ -209,6 +220,13 @@ func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) 
 					var candidate codex.RemoteTurnReceipt
 					if e != nil || json.Unmarshal(body, &candidate) != nil {
 						return errors.New("original native receipt is invalid")
+					}
+					if e = validateReaderExit(*state, turn, candidate); e != nil {
+						return e
+					}
+					attempt.NativeSettled = true
+					if e = checkpoint(); e != nil {
+						return e
 					}
 					if e = validateRecordedTurn(*state, turn, candidate); e != nil {
 						return e
