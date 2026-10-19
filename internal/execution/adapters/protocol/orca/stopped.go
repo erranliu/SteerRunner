@@ -15,6 +15,22 @@ func (c Client) VerifyTerminalStopped(ctx context.Context, p b.ProcessIdentity) 
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
 		return errors.New("original terminal stop identity is incomplete")
 	}
+	t, err := c.originalTerminalInventory(ctx, p)
+	if err != nil {
+		return err
+	}
+	if t != nil && !t.Exited() {
+		return errors.New("original terminal is still active")
+	}
+	return nil
+}
+
+// Both offline verification and readonly close use the same original-host
+// inventory proof. A nil terminal means absence, not native writer-tree exit.
+func (c Client) originalTerminalInventory(ctx context.Context, p b.ProcessIdentity) (*Terminal, error) {
+	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
+		return nil, errors.New("original terminal identity is incomplete")
+	}
 	r, err := c.MetaCall(ctx, "terminal", "list", "--worktree", "id:"+p.WorktreeID, "--json")
 	var v struct {
 		Terminals []Terminal `json:"terminals"`
@@ -26,12 +42,12 @@ func (c Client) VerifyTerminalStopped(ctx context.Context, p b.ProcessIdentity) 
 		} `json:"hostScope"`
 	}
 	if err != nil || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &v) != nil || v.Terminals == nil || v.Truncated == nil || *v.Truncated || v.Total == nil || *v.Total != len(v.Terminals) || v.Hosts == nil || len(v.Hosts.IDs) == 0 || v.Hosts.Omitted == nil {
-		return errors.Join(err, errors.New("original terminal stop inventory is incomplete or foreign"))
+		return nil, errors.Join(err, errors.New("original terminal stop inventory is incomplete or foreign"))
 	}
 	seen := map[string]bool{}
 	for _, host := range v.Hosts.IDs {
 		if host == "" || seen[host] {
-			return errors.New("original terminal host scope is invalid")
+			return nil, errors.New("original terminal host scope is invalid")
 		}
 		seen[host] = true
 	}
@@ -39,22 +55,27 @@ func (c Client) VerifyTerminalStopped(ctx context.Context, p b.ProcessIdentity) 
 	// are host "local". Its unrelated paired hosts may be omitted; they cannot
 	// own an identity bound to this runtime. Never infer absence without local.
 	if !seen["local"] {
-		return errors.New("original terminal host was not observed")
+		return nil, errors.New("original terminal host was not observed")
 	}
 	for _, host := range v.Hosts.Omitted {
 		if host == "" || seen[host] {
-			return errors.New("original terminal host scope is inconsistent")
+			return nil, errors.New("original terminal host scope is inconsistent")
 		}
 	}
 	seen = map[string]bool{}
+	var original *Terminal
 	for _, t := range v.Terminals {
 		if t.Handle == "" || t.IncarnationID == "" || t.WorktreeID != p.WorktreeID || seen[t.Handle] {
-			return errors.New("original terminal stop inventory scope changed")
+			return nil, errors.New("original terminal stop inventory scope changed")
 		}
 		seen[t.Handle] = true
-		if t.Handle == p.Terminal && (t.IncarnationID != p.Incarnation || !t.Exited()) {
-			return errors.New("original terminal is still active or its incarnation changed")
+		if t.Handle == p.Terminal {
+			if t.IncarnationID != p.Incarnation {
+				return nil, errors.New("original terminal incarnation changed")
+			}
+			copy := t
+			original = &copy
 		}
 	}
-	return ctx.Err()
+	return original, ctx.Err()
 }

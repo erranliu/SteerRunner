@@ -13,9 +13,11 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -68,7 +70,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	cleaned := false
 	t.Cleanup(func() {
 		defer func() {
-			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "model_inputs": 0, "fixture": "current-format Run bound to real native PTY"})
+			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "model_inputs": 0, "fixture": "real PTY plus recorded live OS root; PTY exit must not prove native settlement"})
 			_ = os.WriteFile(filepath.Join(root, "result.json"), raw, 0600)
 		}()
 		cleanup, stop := context.WithTimeout(context.Background(), 40*time.Second)
@@ -104,7 +106,11 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	stateRaw, _ := json.Marshal(orca.State{Process: p})
+	rootIdentity, err := process.CurrentIdentity()
+	if err != nil {
+		t.Fatal(err)
+	}
+	stateRaw, _ := json.Marshal(orca.State{Process: p, RemoteReadiness: &codex.RemoteReadiness{Process: *rootIdentity, SessionID: "probe-live-root"}})
 	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
 	if err != nil {
 		t.Fatal(err)
@@ -194,10 +200,15 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		case <-time.After(50 * time.Millisecond):
 		}
 	}
-	verify("stopped-verified", true)
+	// This live process stands for the recorded native writer; its existence
+	// must not be erased by the disappearance of the independent original PTY.
+	if process.Probe(rootIdentity).State != "matches" {
+		t.Fatal("recorded writer fixture is not live")
+	}
+	verify("closed-pty-native-unverified", false)
 	facts, err = port.ShutdownLifecycle(ctx, s, nil)
-	if err != nil || !facts.Stopped {
-		t.Fatal("shutdown lost native stop proof", facts, err)
+	if err == nil || facts.Stopped || !strings.Contains(err.Error(), "PTY exit is insufficient") {
+		t.Fatal("shutdown trusted PTY disappearance instead of native exit", facts, err)
 	}
 }
 

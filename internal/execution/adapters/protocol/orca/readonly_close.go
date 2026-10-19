@@ -2,7 +2,6 @@ package orca
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -15,33 +14,17 @@ func (c Client) CloseReadonlyTerminal(ctx context.Context, p b.ProcessIdentity) 
 		return b.StopReceipt{}, errors.New("readonly close identity missing")
 	}
 	inventory := func() (bool, error) {
-		r, e := c.MetaCall(ctx, "terminal", "list", "--worktree", "id:"+p.WorktreeID, "--json")
-		var v struct {
-			Terminals []Terminal `json:"terminals"`
-			Truncated *bool      `json:"truncated"`
-			Total     *int       `json:"totalCount"`
-			Hosts     *struct {
-				IDs     []string `json:"hostIds"`
-				Omitted []string `json:"omittedHostIds"`
-			} `json:"hostScope"`
+		t, e := c.originalTerminalInventory(ctx, p)
+		if e != nil {
+			return false, e
 		}
-		if e != nil || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &v) != nil || v.Truncated == nil || *v.Truncated || v.Total == nil || *v.Total != len(v.Terminals) || v.Hosts == nil || len(v.Hosts.IDs) == 0 || len(v.Hosts.Omitted) != 0 {
-			return false, errors.Join(e, errors.New("readonly close inventory incomplete or foreign"))
+		if t == nil {
+			return true, nil
 		}
-		seen := map[string]bool{}
-		for _, t := range v.Terminals {
-			if t.Handle == "" || t.WorktreeID != p.WorktreeID || seen[t.Handle] {
-				return false, errors.New("readonly close inventory scope changed")
-			}
-			seen[t.Handle] = true
-			if t.Handle == p.Terminal {
-				if t.IncarnationID != p.Incarnation || t.WorktreeID != p.WorktreeID || !t.Connected || t.Exited() {
-					return false, errors.New("readonly terminal incarnation or liveness changed")
-				}
-				return false, nil
-			}
+		if !t.Connected || t.Exited() {
+			return false, errors.New("readonly terminal liveness changed")
 		}
-		return true, nil
+		return false, nil
 	}
 	for attempt := 0; attempt < 3; attempt++ {
 		if e := ctx.Err(); e != nil {

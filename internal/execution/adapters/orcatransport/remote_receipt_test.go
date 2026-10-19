@@ -121,7 +121,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 						return nil, errors.New("inventory unavailable during process loss")
 					}
 					absenceObserved = true
-					result = map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"execution-host"}, "omittedHostIds": []string{}}}
+					result = map[string]any{"terminals": []any{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
 				case "read":
 					raw, _ := json.Marshal(value)
 					terminal["tail"] = []string{codex.RemoteTurnPrefix + base64.RawURLEncoding.EncodeToString(raw)}

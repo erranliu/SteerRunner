@@ -72,6 +72,14 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 			if (err == nil) != want || calls != 1 {
 				t.Fatalf("%s: %v calls=%d", name, err, calls)
 			}
+			// The recovery close must apply exactly the same completeness/identity
+			// checks before using an absent original PTY as cleanup evidence.
+			calls = 0
+			original, inventoryErr := c.originalTerminalInventory(ctx, p)
+			inventoryPass := want || name == "active" || name == "disconnected"
+			if (inventoryErr == nil) != inventoryPass || calls != 1 {
+				t.Fatal("inventory consumers diverged", original, inventoryErr, calls)
+			}
 		})
 	}
 }

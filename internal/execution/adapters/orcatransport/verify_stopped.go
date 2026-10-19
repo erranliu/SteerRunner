@@ -3,7 +3,6 @@ package orcatransport
 import (
 	"context"
 	"errors"
-	"fmt"
 	"reflect"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -29,48 +28,23 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 	if err = l.client.VerifyTerminalStopped(ctx, state.Process); err != nil {
 		return err
 	}
-	// Generic native helpers additionally own a Job/authentication broker outside
-	// the PTY. Reuse their bound exit proof; PTY absence alone is insufficient.
-	if l.profile.Terminal != nil {
-		owner, e := l.readTerminalOwner()
-		if e != nil || state.TerminalOwner == nil || !reflect.DeepEqual(state.TerminalOwner, &owner) || !l.terminalExitVerified(owner) {
-			return errors.Join(e, errors.New("original native terminal exit/authentication cleanup is unverified"))
-		}
-	}
-	verifyReader := func(a *NativeInspection) error {
-		if a == nil {
-			return nil
-		}
-		if !a.Attempted || a.At.IsZero() || a.Process == nil {
-			return errors.New("original readonly creation identity is unverified")
-		}
-		p := *a.Process
-		if p.Kind != "orca_original_turn_reader" || p.RuntimeID != state.Process.RuntimeID || p.WorktreeID != state.Process.WorktreeID || p.Terminal == "" || p.Incarnation == "" || p.Terminal == state.Process.Terminal {
-			return errors.New("original readonly resource binding changed")
-		}
-		if a.Closed && !a.Unknown {
-			return nil
-		}
-		if e := l.client.VerifyTerminalStopped(ctx, p); e != nil {
-			return fmt.Errorf("original readonly cleanup is unverified: %w", e)
-		}
-		return nil
-	}
-	for _, turn := range state.Turns {
-		if err = verifyReader(turn.Inspection); err != nil {
-			return err
-		}
+	// Inventory absence proves only PTY exit. Codex readiness records a root,
+	// but has no bound owner/tree/authentication exit proof. Do not substitute
+	// a local PID probe for a remote execution-host fact or invent new proof.
+	if l.profile.Terminal == nil {
+		return errors.New("original Codex native writer-tree and authentication settlement remains unverified; PTY exit is insufficient")
 	}
 	if state.RemoteReadiness != nil {
-		journal, e := l.loadInspections(state)
-		if e != nil {
-			return e
+		return errors.New("native terminal helper has incompatible Codex resource evidence")
+	}
+	for _, turn := range state.Turns {
+		if turn.Inspection != nil {
+			return errors.New("native terminal helper has unexpected readonly resources")
 		}
-		for _, entry := range journal.Entries {
-			if err = verifyReader(&entry.Inspection); err != nil {
-				return err
-			}
-		}
+	}
+	owner, e := l.readTerminalOwner()
+	if e != nil || state.TerminalOwner == nil || !reflect.DeepEqual(state.TerminalOwner, &owner) || !l.terminalExitVerified(owner) {
+		return errors.Join(e, errors.New("original native terminal exit/authentication cleanup is unverified"))
 	}
 	return ctx.Err()
 }
