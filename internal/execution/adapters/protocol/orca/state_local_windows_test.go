@@ -163,6 +163,41 @@ func TestOrcaLocalIPCQueryAndUpload(t *testing.T) {
 	}
 }
 
+func TestOrcaLocalIPCReadsOnlyBoundStopArtifact(t *testing.T) {
+	const relative = ".sr-runtime-stage/native-stop/public-key/exit.json"
+	localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
+		switch req.Method {
+		case "status.get":
+			ipcReply(conn, req, "runtime", map[string]any{})
+		case "files.readChunk":
+			var p struct {
+				Worktree, RelativePath string
+				Offset, Length         int
+			}
+			if json.Unmarshal(req.Params, &p) != nil || p.Worktree != "id:worktree" || p.RelativePath != relative || p.Offset != 0 || p.Length != 65536 {
+				t.Error("wrong original resource read")
+				return
+			}
+			ipcReply(conn, req, "runtime", map[string]any{"contentBase64": base64.StdEncoding.EncodeToString([]byte("proof")), "bytesRead": 5, "eof": true})
+		default:
+			t.Error("unexpected native effect", req.Method)
+		}
+	})
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	if raw, err := ReadStopArtifact(ctx, "", "runtime", "worktree", relative); err != nil || string(raw) != "proof" {
+		t.Fatal(string(raw), err)
+	}
+	if _, err := ReadStopArtifact(ctx, "", "foreign-runtime", "worktree", relative); !errors.Is(err, ErrStateIdentityChanged) {
+		t.Fatal("foreign runtime accepted", err)
+	}
+	for _, path := range []string{"../escape", ".sr-runtime-stage/native-stop/../exit.json", ".sr-runtime-stage/native-stop/key/request.json"} {
+		if _, err := ReadStopArtifact(ctx, "", "runtime", "worktree", path); err == nil {
+			t.Fatal("foreign path accepted", path)
+		}
+	}
+}
+
 func TestOrcaLocalIPCFrameFailuresAndCancellation(t *testing.T) {
 	for _, scenario := range []string{"unauthorized", "wrong-runtime", "wrong-request", "invalid", "truncated", "oversized", "cancelled", "legacy"} {
 		t.Run(scenario, func(t *testing.T) {

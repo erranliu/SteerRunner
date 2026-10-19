@@ -32,9 +32,11 @@ type RemoteAgentConfig struct {
 }
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
-const RemoteNativeTransport = "codex-remote-inline-v2"
+const RemoteNativeTransport = "codex-remote-inline-v3"
 
 type RemoteReadiness struct {
+	ExitPublicKey       []byte            `json:"exit_public_key,omitempty"`
+	Owner               b.ProcessIdentity `json:"owner"`
 	NativeTransport     string            `json:"native_transport"`
 	RuntimeSHA256       string            `json:"runtime_sha256"`
 	Verified            bool              `json:"verified"`
@@ -62,7 +64,7 @@ func RemoteRuntimeDirectory(worktree string) string {
 // RunRemoteAgent owns the credential broker and the original app-server tree.
 // The TUI resumes that same server/thread only after its deterministic native
 // command/exec probe passes. It never executes Git or publication on the host.
-func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer) error {
+func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
 	if err := ValidateManagedArgs(c.Args); err != nil {
 		return err
 	}
@@ -140,6 +142,22 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = remoteTrustedPaths(wd, []string{plan.Directory}, []string{self, native, dir}); err != nil {
 		return err
 	}
+	exitWriter, publicKey, err := newRemoteExitWriter(wd)
+	if err != nil {
+		return err
+	}
+	defer exitWriter.close()
+	exclude, err := workspace.ResolveInfoExclude(ctx, git, repo, wd)
+	if err != nil {
+		return err
+	}
+	if err = excludeRemoteExit(exclude); err != nil {
+		return err
+	}
+	owner, err := process.CurrentIdentity()
+	if err != nil {
+		return err
+	}
 	auth.onClose = func(revoked bool) {
 		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"revocation_confirmed": revoked, "broker": auth.broker.facts()}))
 	}
@@ -150,6 +168,29 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	defer owned.Close()
+	var ready *RemoteReadiness
+	var tuiOwned b.StopHandle
+	defer func() {
+		// Never close a Job before querying its complete tree. Both the native
+		// server/tools and the remote TUI are owned, non-breakaway Jobs.
+		tuiAbsent := settleRemoteTree(tuiOwned)
+		writersAbsent := settleRemoteTree(owned) && tuiAbsent
+		authenticationClosed := auth.Close()
+		if ready != nil {
+			proof := RemoteExit{Readiness: *ready, WritersAbsent: writersAbsent, AuthenticationClosed: authenticationClosed, ClosedAt: time.Now().UTC()}
+			if tuiOwned != nil {
+				identity := tuiOwned.Identity()
+				proof.TUI = &identity
+			}
+			result = errors.Join(result, exitWriter.write(proof))
+		}
+		if tuiOwned != nil {
+			tuiOwned.Close()
+		}
+		if !writersAbsent || !authenticationClosed {
+			result = errors.Join(result, errors.New("original native tree/authentication cleanup unverified"))
+		}
+	}()
 	client, err := ConnectAppServer(ctx, endpoint)
 	if err != nil {
 		return err
@@ -219,14 +260,15 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if mode == "" {
 		mode = "sandbox"
 	}
-	ready := RemoteReadiness{NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
-	ready.RuntimeSHA256, err = RuntimeBinarySHA256()
+	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
+	prepared.RuntimeSHA256, err = RuntimeBinarySHA256()
 	if err != nil {
 		return err
 	}
-	if err = host.WriteExecutionFile(filepath.Join(dir, "ready.json"), encode(ready)); err != nil {
+	if err = host.WriteExecutionFile(filepath.Join(dir, "ready.json"), encode(prepared)); err != nil {
 		return err
 	}
+	ready = &prepared
 	// The transport captures this finite receipt before any business input and
 	// binds it to the original PTY incarnation and native provider session.
 	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(ready)))
@@ -240,13 +282,38 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		}
 	}()
 	args := remoteTUIArgs(c, endpoint, thread.Thread.ID)
-	tui := exec.CommandContext(ctx, native, args...)
+	tui := exec.Command(native, args...)
 	tui.Dir = wd
 	tui.Stdin, tui.Stdout, tui.Stderr = input, output, diagnostics
 	// Only the app-server receives capability-bearing environment. Its frozen
 	// policy owns all tool execution; native --remote rejects client overrides.
 	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", []string{"GH_TOKEN", "GITHUB_TOKEN"})
-	return tui.Run()
+	started, err := host.StartManaged(tui)
+	if err != nil {
+		return err
+	}
+	tuiOwned = started
+	waited := make(chan error, 1)
+	go func() { waited <- tui.Wait() }()
+	stopCtx, stop := context.WithCancel(ctx)
+	defer stop()
+	requested := make(chan bool, 1)
+	go func() { requested <- awaitRemoteStop(stopCtx, prepared) }()
+	select {
+	case err = <-waited:
+		return err
+	case explicit := <-requested:
+		tuiOwned.Kill()
+		<-waited
+		if explicit {
+			return nil
+		}
+		return ctx.Err()
+	case <-ctx.Done():
+		tuiOwned.Kill()
+		<-waited
+		return ctx.Err()
+	}
 }
 
 // Keep the socket below the execution-host state root, rather than the deep

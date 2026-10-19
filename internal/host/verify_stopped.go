@@ -41,7 +41,7 @@ func VerifyStopped(ctx context.Context, dir string) (contracts.StoppedVerificati
 	if err != nil {
 		return empty, contracts.Fail(4, "service_unavailable", "Current check evidence cannot be read.")
 	}
-	result := application.VerifyStopped(dir, runs, checks...)
+	result := application.VerifyStopped(ctx, dir, runs, checks...)
 	if err := ctx.Err(); err != nil {
 		return empty, contracts.Fail(4, "service_unavailable", "Verification deadline expired.")
 	}

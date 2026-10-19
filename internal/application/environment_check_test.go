@@ -415,7 +415,7 @@ func TestEnvironmentCheckRestartReconcilesWithoutNewInput(t *testing.T) {
 	if restarted.ResourceSettlementError() == nil {
 		t.Fatal("service settlement hid unknown Check operation")
 	}
-	if proof := VerifyStopped(e.dir, nil, restarted.checkSnapshot("original")); proof.ResourcesSettled {
+	if proof := VerifyStopped(ctx, e.dir, nil, restarted.checkSnapshot("original")); proof.ResourcesSettled {
 		t.Fatal("verify-stopped ignored unresolved Check resources")
 	}
 }
