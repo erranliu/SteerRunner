@@ -1,0 +1,29 @@
+{
+  "scenario": "orca-remote.full-access",
+  "case_id": "default",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\daffcc157a1b\\manifest.json",
+  "started_at": "2026-10-18T05:18:29.545621Z",
+  "finished_at": "2026-10-18T05:25:34.4330296Z",
+  "identity": {
+    "pid": 10000,
+    "manifest_sha256": "38f6be903d1e7aa89736ac42aca2d9becc9da5fe9ff031e00a58ee8d2f81f603",
+    "driver_sha256": "f291615f0f377362ce94cc686c8eafb46dad2f76f7be01442895fb1f714b04e4",
+    "runner_sha256": "004a52466f2764e17f99c73e6aa7b1cf9e0d03d4abca359971b8dd99d15656cb",
+    "source_commit": "371f91d41cd727690c62202da0807430d0ac2452",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.full-access",
+    "level": "L3"
+  },
+  "resources": [
+    "root:C:\\srt\\daffcc157a1b",
+    "base:codex/srtest/daffcc157a1b/base",
+    "run:9e9f976f9fada48f4089604047854204",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-9e9f976f9fada48f4089604047854204",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_9d94dcbd-46fc-4b8d-9b9b-923f27a38575:92f9d002-7164-4633-af9f-bd42fdf7849f",
+    "branch:erranliu/sl-9e9f976f9fada48f4089604047854204",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/455"
+  ]
+}

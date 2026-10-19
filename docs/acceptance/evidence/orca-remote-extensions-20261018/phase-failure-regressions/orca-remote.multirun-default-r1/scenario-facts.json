@@ -1,0 +1,83 @@
+{
+  "scenario": "orca-remote.multirun",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "9b8cd7545a749491ca23dfd4eb8a899e",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/487",
+  "original_head": "b0b14fbb7aea2d1702be343e03e6bc00d45e3b3c",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true,
+  "runs": [
+    {
+      "new_inputs_allowed": false,
+      "run_id": "9b8cd7545a749491ca23dfd4eb8a899e",
+      "pr": {
+        "url": "https://github.com/erranliu/SteerlineTest/pull/487",
+        "provider": "command",
+        "repository": "erranliu/SteerlineTest",
+        "number": 487,
+        "base_branch": "codex/srtest/1fe8993395bc/base",
+        "head_repository": "erranliu/SteerlineTest",
+        "head_branch": "erranliu/sl-9b8cd7545a749491ca23dfd4eb8a899e",
+        "head_revision": "b0b14fbb7aea2d1702be343e03e6bc00d45e3b3c",
+        "state": "open",
+        "merged": false,
+        "merge_commit": "8ee7393dc138a95d46c89e2e0108c7df53edb601",
+        "checked_at": "2026-10-18T07:52:42.6127846Z"
+      },
+      "phase": "stopped",
+      "status": "stopped",
+      "execution": {
+        "workspace_scope": "revision",
+        "turn_started": true,
+        "attempt_id": "8b2464cfcb6cd7034b2f168dca144614",
+        "generation": "eb9871f55eb1d578b1ee7e953ad39ada",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_7610d8c4-4196-4d65-8995-418f8e845acd:a3c3e86a-0244-49fa-8f8d-18148e512c2d",
+        "turn_id": "95e646a637ca063218248dd3574e454c",
+        "native_outcome": "succeeded",
+        "final_available": true,
+        "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-9b8cd7545a749491ca23dfd4eb8a899e",
+        "branch": "erranliu/sl-9b8cd7545a749491ca23dfd4eb8a899e"
+      },
+      "stop_status": "stopped"
+    },
+    {
+      "new_inputs_allowed": false,
+      "run_id": "a4b98d14503d27e0be4c0ced0e8657c0",
+      "pr": {
+        "url": "https://github.com/erranliu/SteerlineTest/pull/488",
+        "provider": "command",
+        "repository": "erranliu/SteerlineTest",
+        "number": 488,
+        "base_branch": "codex/srtest/1fe8993395bc/base",
+        "head_repository": "erranliu/SteerlineTest",
+        "head_branch": "erranliu/sl-a4b98d14503d27e0be4c0ced0e8657c0",
+        "head_revision": "a25b0947e5c9657e3aceb3aad016719413b1ec2e",
+        "state": "open",
+        "merged": false,
+        "merge_commit": "e0480cdf69eb4e367ea01f127e19e2fc054ded0d",
+        "checked_at": "2026-10-18T07:56:03.430439Z"
+      },
+      "phase": "stopped",
+      "status": "stopped",
+      "execution": {
+        "workspace_scope": "revision",
+        "turn_started": true,
+        "attempt_id": "9d4a101e146f9c8ca00fd04a8d220880",
+        "generation": "d9cfd420140f1a150e535ff41d9705f3",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_17ff2999-14fa-4916-aa15-92f172febb8e:90b92599-b8f5-48e9-a501-aac724f0a876",
+        "turn_id": "0479583b4a679ece5ba54b812c5dc4e2",
+        "native_outcome": "succeeded",
+        "final_available": true,
+        "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-a4b98d14503d27e0be4c0ced0e8657c0",
+        "branch": "erranliu/sl-a4b98d14503d27e0be4c0ced0e8657c0"
+      },
+      "stop_status": "stopped"
+    }
+  ]
+}

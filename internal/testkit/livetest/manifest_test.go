@@ -126,6 +126,16 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	if err := audited.Validate(); err != nil {
 		t.Fatal("valid audited fixture rejected", err)
 	}
+	remoteAudited := audited
+	remoteAudited.Level, remoteAudited.Scenario, remoteAudited.RemoteRuntimeID = "L3", "orca-remote.audited", "paired-runtime"
+	remoteAudited.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"agent_launch":{"runtime_executable":"C:/trusted/helper.exe","model":"executor","reasoning_effort":"high"}}`)}
+	if remoteAudited.Validate() == nil {
+		t.Fatal("native remote fixture accepted retired helper audit")
+	}
+	remoteAudited.Execution.Settings = json.RawMessage(`{"agent_launch":{"model":"executor"}}`)
+	if remoteAudited.Validate() == nil {
+		t.Fatal("remote audit fixture accepted without managed model control")
+	}
 	for _, mutate := range []func(*Manifest){
 		func(x *Manifest) { x.AuditModel = nil },
 		func(x *Manifest) { x.Execution.Settings = json.RawMessage(`{}`) },

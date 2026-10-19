@@ -5,6 +5,7 @@ package native
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -533,14 +534,8 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 						t.Error("worker authentication cleanup is unverified", readErr)
 					}
 					if m.Level == "L2" {
-						var settings contracts.CodexSettings
-						if err := json.Unmarshal(m.Execution.Settings, &settings); err != nil {
+						if err := livetest.CheckBrokerCleanup(body); err != nil {
 							t.Error(err)
-						}
-						if settings.GitHubAuth == nil {
-							if err := livetest.CheckBrokerCleanup(body); err != nil {
-								t.Error(err)
-							}
 						}
 					}
 					save(t, "authentication-cleanup.json", cleanup)
@@ -575,11 +570,20 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		}
 	}
 	genericTerminal := m.Driver == "development-feedback" && m.Execution.Adapter == "orca-terminal"
+	var stoppedProbeJournal []byte
 	if genericTerminal {
 		input.Workflow.PromptOverrides[workflow.StepImplement] += " For the FIRST implementation input, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}. Do not call tools on that first input. After receiving the caller's separate answer, or on later feedback in this same session, implement the task and do not repeat the question."
 	}
 	if genericTerminal {
 		verifyLocalTerminalFaults(t, m, dir, input)
+		stoppedProbeJournal, err = os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
+		if err != nil || len(stoppedProbeJournal) == 0 || stoppedProbeJournal[len(stoppedProbeJournal)-1] != '\n' {
+			t.Fatal("stopped probe journal is incomplete", err)
+		}
+		if err := os.WriteFile(filepath.Join(*evidenceFlag, "native-probe-calls.jsonl"), stoppedProbeJournal, 0600); err != nil {
+			t.Fatal(err)
+		}
+		save(t, "native-probe-boundary.json", map[string]any{"bytes": len(stoppedProbeJournal), "sha256": fmt.Sprintf("%x", sha256.Sum256(stoppedProbeJournal)), "probe_stopped": true})
 	}
 	checkpoint("submit")
 	primarySubmitted = true
@@ -667,8 +671,10 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	}
 	if audited {
 		auditWorkerSandbox(t, m, first)
-		var settings contracts.CodexSettings
-		_ = json.Unmarshal(m.Execution.Settings, &settings)
+		settings, modelErr := contracts.ExecutionModel(m.Execution)
+		if modelErr != nil {
+			t.Fatal(modelErr)
+		}
 		effort := settings.ReasoningEffort
 		if effort == "" {
 			effort = "medium"
@@ -679,6 +685,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		a := first.Audit.Results[0]
 		if a.SourceResultID == "" || a.CommandID == "" || a.TurnID == "" || a.PostHead != first.PR.HeadRevision || a.Failure != "" {
 			t.Fatal("audit revision provenance missing")
+		}
+		if m.Execution.Adapter == "orca-terminal" {
+			auditManagedLocalOrcaModels(t, m, first)
 		}
 		checkpoint("stop-and-cleanup")
 		t.Logf("audited native run=%s PR=%s; leave test PR unmerged", r.RunID, r.PRURL)
@@ -716,7 +725,17 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			audit, err := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(m))
+			if genericTerminal {
+				raw, err = livetest.NativeAuditAfterProbe(raw, stoppedProbeJournal)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			runtime, err := m.OrcaRuntimeID()
+			if err != nil {
+				t.Fatal(err)
+			}
+			audit, err := livetest.AnalyzeNativeAudit(raw, runtime, livetest.ReceiptAuditPolicy(m))
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -2,9 +2,11 @@
 
 > 本文记录 workflow/1 的历史设计与验收。当前 workflow/2 的阶段、单次代码审计修复、来源绑定与公开字段以[结果获取 Spec](result-acquisition.spec.md)和[具体 Workflow 定义](../workflows/README.md)为准；不继续执行本文的 Spec 审计或自动返修路径。
 
+当前能力边界（2026-10-19）：原生远端 Orca 不提供有来源证明的双模型审计，接受前明确 unsupported_capability。本机 codex-app-server 和 Orca local 受管 Codex 保留冻结执行/审计模型与来源核验；旧 helper 远端记录不作为新路径资格。
+
 日期：2026-10-15。状态：已按收敛方案实施，定向 unit/controlled 与本机最小真机验证通过；具体构建、配置与历史失败见 [Plan](workflow-selection-audit.plan.md)。
 
-本文扩展[首版契约](steerrunner.spec.md)。原有冻结输入、单写者、原会话、未知结果对账、停止授权和 PR 归属规则继续适用。新审计流程本期只验收 Windows/amd64 本机 Codex，不恢复 Orca 验收。
+本文扩展[首版契约](steerrunner.spec.md)。原有冻结输入、单写者、原会话、未知结果对账、停止授权和 PR 归属规则继续适用。2026-10-18 扩展：审计流程同时支持本机 Codex 与配置可信执行主机 runtime 的 Orca；各自保留独立真机验收记录。
 
 ## 1. 目标与范围
 
@@ -21,7 +23,7 @@
 | 标识 | 流程 | 审计模型 | 支持范围 |
 | --- | --- | --- | --- |
 | `development/1` | 实现→报告→发布→必要时发布补报→PR 核验 | 不接受 | 保留原能力与准入检查 |
-| `development-audited/1` | 实现→报告→Spec 审计→代码审计→发布；有阻断问题则回到实施修复并重审 | 必填 | `codex-app-server` / local |
+| `development-audited/1` | 实现→报告→Spec 审计→代码审计→发布；有阻断问题则回到实施修复并重审 | 必填 | `codex-app-server` / local；受管理的 `orca-terminal` |
 
 原四个模型步骤 `implement.execute`、`implement.report`、`publish`、`publish.report` 保持。新流程只增加：
 

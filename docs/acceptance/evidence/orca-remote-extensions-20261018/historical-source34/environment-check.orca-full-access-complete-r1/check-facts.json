@@ -1,0 +1,258 @@
+{
+  "check_id": "23d26323951af4e87b8dac10faaa845e",
+  "status": "unverified",
+  "result": "unverified",
+  "cleanup_status": "completed",
+  "diagnostic": "original_turn_unsettled",
+  "created_at": "2026-10-18T06:58:11.3879694Z",
+  "updated_at": "2026-10-18T07:02:58.3879628Z",
+  "execution_deadline": "2026-10-18T07:08:11.3879694Z",
+  "cleanup_deadline": "2026-10-18T07:10:11.3879694Z",
+  "actual": {
+    "access_mode": "full_access",
+    "account": "LIUMING-5600\\Administrator",
+    "approval_policy": "never",
+    "attempt_id": "f84b61440855a4b59cad91883c84d7c2",
+    "authentication_source": "host-gh-repository-broker",
+    "generation": "2b048a27797e9b217aac18e0d4dbc467",
+    "native_generation": "c84e570debc10abccdefa3055ee2a29c",
+    "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+    "pid": 496,
+    "process_created": "01dd5ece1281a45c",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "runtime_version": "codex-cli 0.159.2",
+    "sandbox": "danger-full-access",
+    "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+    "terminal": "term_7e8df79d-34b8-41c0-b025-0c1a831b2b30",
+    "terminal_incarnation": "e50f0cea-d226-484d-bdd7-f10a8a4fa07e",
+    "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+    "workspace": "C:\\sr-runtime\\2ba0\\31\\checks\\23d26323951a\\w",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest"
+  },
+  "resources": {
+    "base_deleted": true,
+    "base_owned": true,
+    "base_ref": "refs/heads/steerline-check/23d26323951af4e87b8dac10faaa845e/base",
+    "base_sha": "bd46de2ea729582ba0b3d2d0ee3c3180e56b2326",
+    "head_deleted": false,
+    "head_owned": false,
+    "head_ref": "refs/heads/steerline-check/23d26323951af4e87b8dac10faaa845e/head",
+    "head_sha": "d5eb253b1d1ef86265339bd53dbb4b1441df240a",
+    "local_removed": true,
+    "pr_closed": false,
+    "writer_stopped": true
+  },
+  "items": [
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "account": "LIUMING-5600\\Administrator",
+            "approval_policy": "never",
+            "owner_owner": "same_native_tool_context",
+            "sandbox": "danger-full-access"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "f22e41447f2cd48c861072dbea923787",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-cb3aec3e-5595-4d29-bbfe-e61890494bac",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "permissions",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "ee551d8224fe56b1ab2f9213b29a0cb6",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-d960d568-6ea2-4fbf-b254-2856560338f3",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "workspace",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "ee0e6f00a401f8d2a86ff0800c1970f9",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-51d5cf0e-5086-4af9-a0cd-36b4c9f38c26",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "temporary",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "4002b19f771abee2aff6a448439b9ac2",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-810d7b01-4787-4397-a176-75448e954cdb",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "git_admin",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "remote_ref": "bd46de2ea729582ba0b3d2d0ee3c3180e56b2326\trefs/heads/codex/srtest/6a29d8f8dd98/base"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "60f256daaf406c9cfb7564186f752df0",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-b81be1b9-96d6-4dc1-be3c-e62ac7bec36c",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "remote_read",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "base_sha": "bd46de2ea729582ba0b3d2d0ee3c3180e56b2326",
+            "owner_owner": "same_native_tool_context"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "1001e4e9cf7537902d6151382a621b47",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-2d623190-1330-4967-a718-ffd0954d7274",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "fetch",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "owner_sha": "bd46de2ea729582ba0b3d2d0ee3c3180e56b2326",
+            "pushed": "true"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "a6d69e393bd67bbd2fb4997bfaa87b3f",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-ab3d0476-9183-4c2a-8a60-0c76d4768032",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "base_push",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "23d26323951af4e87b8dac10faaa845e",
+          "facts": {
+            "head_sha": "d5eb253b1d1ef86265339bd53dbb4b1441df240a",
+            "owner_sha": "d5eb253b1d1ef86265339bd53dbb4b1441df240a"
+          },
+          "nonce": "9d2741fd380d893ca3a5ffc944aa5b4f",
+          "operation_id": "5973d8a80f071c59547ea9d2503ffcaa",
+          "session_id": "01a14dce-0df0-7141-9282-776a5c5b0ce2",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-0e45a912-3561-4c68-9f42-e2cb668f8aaa",
+          "turn_id": "01a14dce-3547-7162-a543-71e3e9d62053",
+          "verified": true
+        }
+      ],
+      "id": "commit",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "head_push",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_create",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_query",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_close",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    }
+  ],
+  "excluded": [
+    "build",
+    "tests",
+    "business_resources"
+  ]
+}

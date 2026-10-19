@@ -1,0 +1,176 @@
+{
+  "source_dirty": false,
+  "started_at": "2026-10-18T07:56:40.9022168Z",
+  "finished_at": "2026-10-18T08:16:59.9235972Z",
+  "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+  "scope": "selected-cases",
+  "executed_case_count": 5,
+  "cases": [
+    {
+      "scenario": "orca-remote.audited",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "manifest": "C:\\srt\\44159a904d43\\manifest.json",
+      "started_at": "2026-10-18T07:56:41.7370749Z",
+      "finished_at": "2026-10-18T08:04:37.55484Z",
+      "identity": {
+        "pid": 16348,
+        "manifest_sha256": "cd2ac9937cd8260753f68011dbcd64a370e661692eda345fe66d7df8a88f30be",
+        "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+        "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+        "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.audited",
+        "level": "L3"
+      },
+      "resources": [
+        "root:C:\\srt\\44159a904d43",
+        "base:codex/srtest/44159a904d43/base",
+        "run:02152b802c9c3183aa225bcca4563eae",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-02152b802c9c3183aa225bcca4563eae",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_aac52a94-4622-435a-ab74-a77b3029d207:d8987ca5-d050-4e88-957f-aaa077940cfd",
+        "branch:erranliu/sl-02152b802c9c3183aa225bcca4563eae",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/491"
+      ]
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "manifest": "C:\\srt\\1042d8e08a86\\manifest.json",
+      "started_at": "2026-10-18T07:56:41.7841547Z",
+      "finished_at": "2026-10-18T08:05:24.820578Z",
+      "identity": {
+        "pid": 32396,
+        "manifest_sha256": "564f5cfbe9a75c5ae762515569abc4ca271490fa2401785f988b3e964cc24359",
+        "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+        "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+        "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.full-access",
+        "level": "L3"
+      },
+      "resources": [
+        "root:C:\\srt\\1042d8e08a86",
+        "base:codex/srtest/1042d8e08a86/base",
+        "run:2cfdaac118d60e4e7e467ad6f8e00d0a",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-2cfdaac118d60e4e7e467ad6f8e00d0a",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_06f378ad-33fa-4ed9-b2a6-6fe817a724aa:1b7e1c9e-4abf-4a38-a107-95b86cccad99",
+        "branch:erranliu/sl-2cfdaac118d60e4e7e467ad6f8e00d0a",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/489"
+      ]
+    },
+    {
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "repeat_index": 1,
+      "status": "passed",
+      "manifest": "C:\\srt\\7008c08b1969\\manifest.json",
+      "started_at": "2026-10-18T08:04:38.6742645Z",
+      "finished_at": "2026-10-18T08:10:45.7538418Z",
+      "identity": {
+        "pid": 39876,
+        "manifest_sha256": "d2f09ec0787cb57331a3bec3eb7e208786bbb8236b0314b89fec74aac0193ae1",
+        "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+        "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+        "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.caller-exit",
+        "level": "L3",
+        "helper_sha256": "03822b29ff009593899ca9a2a8fe6962f4465f5a4ccc96e751bdc46ce58087cf",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "accepted-response-lost",
+        "repeat_index": 1
+      },
+      "resources": [
+        "root:C:\\srt\\7008c08b1969",
+        "base:codex/srtest/7008c08b1969/base",
+        "run:99ad53b5914504ac873363cdb7607cd1",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-99ad53b5914504ac873363cdb7607cd1",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_a39ce1b6-bc67-46aa-87d7-2175747d8c52:da5379c3-19b7-4097-b85e-4b391b7a84ec",
+        "branch:erranliu/sl-99ad53b5914504ac873363cdb7607cd1",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/492"
+      ]
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "repeat_index": 1,
+      "status": "passed",
+      "manifest": "C:\\srt\\aed52d549c17\\manifest.json",
+      "started_at": "2026-10-18T08:05:25.7403958Z",
+      "finished_at": "2026-10-18T08:12:02.1517004Z",
+      "identity": {
+        "pid": 40268,
+        "manifest_sha256": "b76a2a8de1b04613d6798cf63fbdceb2b027c43590d2f2b0b1a35fb74e85b04d",
+        "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+        "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+        "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "03822b29ff009593899ca9a2a8fe6962f4465f5a4ccc96e751bdc46ce58087cf",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "graceful-active",
+        "repeat_index": 1
+      },
+      "resources": [
+        "root:C:\\srt\\aed52d549c17",
+        "base:codex/srtest/aed52d549c17/base",
+        "run:14784e8b367a590f488e2085b66396ea",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-14784e8b367a590f488e2085b66396ea",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_610ad6b6-4dec-4d01-a8c4-63b503cc617d:d95dd8f5-23fa-43a7-8c21-be5392e4f7d8",
+        "branch:erranliu/sl-14784e8b367a590f488e2085b66396ea",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/494"
+      ]
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "repeat_index": 1,
+      "status": "passed",
+      "manifest": "C:\\srt\\80ffc6e64b07\\manifest.json",
+      "started_at": "2026-10-18T08:10:46.8266876Z",
+      "finished_at": "2026-10-18T08:16:59.7336395Z",
+      "identity": {
+        "pid": 23792,
+        "manifest_sha256": "2000c80d5a26d9a064d73d665879794e0ab79ed4462adcd349a2d80db9ac6cfd",
+        "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+        "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+        "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "03822b29ff009593899ca9a2a8fe6962f4465f5a4ccc96e751bdc46ce58087cf",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "kill-active",
+        "repeat_index": 1
+      },
+      "resources": [
+        "root:C:\\srt\\80ffc6e64b07",
+        "base:codex/srtest/80ffc6e64b07/base",
+        "run:ca1d43316bd68264e787c708eec253e9",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-ca1d43316bd68264e787c708eec253e9",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_26a24791-5116-4a8f-ac23-2080f9523517:f6252265-3254-4b8a-ac5e-596fdedd0e8f",
+        "branch:erranliu/sl-ca1d43316bd68264e787c708eec253e9",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/496"
+      ]
+    }
+  ],
+  "planned_case_count": 5,
+  "authorized_exclusion_count": 0,
+  "schema": "steerrunner-finite-acceptance/v1",
+  "max_parallel": 2,
+  "status": "passed",
+  "passed_case_count": 5
+}

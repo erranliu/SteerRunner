@@ -78,17 +78,10 @@ type AgentSettings struct {
 }
 
 type CodexSettings struct {
-	AccessMode      string              `json:"access_mode,omitempty"`
-	Executable      string              `json:"executable,omitempty"`
-	Model           string              `json:"model,omitempty"`
-	ReasoningEffort string              `json:"reasoning_effort,omitempty"`
-	GitHubAuth      *GitHubAppReference `json:"github_auth,omitempty"`
-}
-
-type GitHubAppReference struct {
-	AppID          int64  `json:"app_id"`
-	InstallationID int64  `json:"installation_id"`
-	PrivateKeyEnv  string `json:"private_key_env"`
+	AccessMode      string `json:"access_mode,omitempty"`
+	Executable      string `json:"executable,omitempty"`
+	Model           string `json:"model,omitempty"`
+	ReasoningEffort string `json:"reasoning_effort,omitempty"`
 }
 
 type TransportSettings struct {
@@ -98,11 +91,10 @@ type TransportSettings struct {
 }
 
 type OrcaSettings struct {
-	Agent       string              `json:"agent,omitempty"`
-	GitHubAuth  *GitHubAppReference `json:"github_auth,omitempty"`
-	AccessMode  string              `json:"access_mode,omitempty"`
-	Transport   TransportSettings   `json:"transport,omitempty"`
-	AgentLaunch AgentSettings       `json:"agent_launch,omitempty"`
+	Agent       string            `json:"agent,omitempty"`
+	AccessMode  string            `json:"access_mode,omitempty"`
+	Transport   TransportSettings `json:"transport,omitempty"`
+	AgentLaunch AgentSettings     `json:"agent_launch,omitempty"`
 }
 
 // AgentName preserves the original Codex default without rewriting old input.
@@ -260,6 +252,12 @@ func ValidateRunConfiguration(data []byte) *Fault {
 			return invalid
 		}
 	}
+	if failure := ValidateExecution(value.Execution); failure != nil {
+		return failure
+	}
+	if profile.AuditModelRequired && value.Execution.Adapter == "orca-terminal" && value.Execution.Target.Kind == "orca_environment" {
+		return Fail(3, "unsupported_capability", "Native remote Orca does not provide verified audit model or workspace provenance; use development/2.")
+	}
 	if profile.AuditModelRequired {
 		model := value.Workflow.AuditModel
 		if model == nil || !plain(model.Model) || strings.TrimSpace(model.Model) != model.Model || strings.ContainsFunc(model.Model, unicode.IsControl) || !effort(model.ReasoningEffort) {
@@ -285,6 +283,14 @@ func ValidateRunConfiguration(data []byte) *Fault {
 }
 
 func ValidateExecution(value Execution) *Fault {
+	// Retired settings are rejected even when null: never change auth identity
+	// by silently treating a former App request as an execution-host gh login.
+	var fields map[string]json.RawMessage
+	if json.Unmarshal(value.Settings, &fields) == nil {
+		if _, exists := fields["github_auth"]; exists {
+			return Fail(2, "invalid_input", "GitHub App authentication is unsupported. Remove github_auth and sign in with gh on the execution host.")
+		}
+	}
 	invalid := Fail(2, "invalid_input", "Execution settings do not satisfy the embedded contract.")
 	switch value.Adapter {
 	case "codex-app-server":
@@ -293,9 +299,6 @@ func ValidateExecution(value Execution) *Fault {
 			return invalid
 		}
 		if !validAccessMode(settings.AccessMode) {
-			return invalid
-		}
-		if settings.GitHubAuth != nil && (settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
 		}
 	case "orca-terminal":
@@ -328,9 +331,6 @@ func ValidateExecution(value Execution) *Fault {
 		}
 		if settings.AgentName() != "codex" && settings.AgentName() != "pi" && settings.AgentName() != "dsh" && (settings.AgentLaunch.Model != "" || settings.AgentLaunch.ReasoningEffort != "" || settings.AgentLaunch.RuntimeExecutable != "" || len(settings.AgentLaunch.Args) != 0) {
 			return Fail(3, "unsupported_capability", "This agent has no verified model, argument or execution-host preparation mapping; no Codex settings were applied.")
-		}
-		if settings.GitHubAuth != nil && (settings.AgentName() != "codex" || settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
-			return invalid
 		}
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid

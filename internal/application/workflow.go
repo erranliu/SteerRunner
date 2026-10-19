@@ -5,6 +5,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"reflect"
+	"slices"
 )
 
 func validateWorkflow(r *runstate.Record) error {
@@ -37,8 +38,9 @@ func validateWorkflow(r *runstate.Record) error {
 			return errors.New("native prompt differs from frozen business input")
 		}
 	}
-	if p.AuditModelRequired && (r.Workflow.ExecutionModel == nil || r.Workflow.AuditModel == nil || r.Workflow.ExecutionModel.Model == "" || r.Workflow.AuditModel.Model == "" || r.Request.Execution.Adapter != "codex-app-server") {
+	if p.AuditModelRequired && (r.Workflow.ExecutionModel == nil || r.Workflow.AuditModel == nil || r.Workflow.ExecutionModel.Model == "" || r.Workflow.AuditModel.Model == "" || !slices.Contains(p.SupportedAdapters, r.Request.Execution.Adapter)) {
 		return errors.New("audited workflow lacks frozen model configuration")
 	}
+
 	return nil
 }

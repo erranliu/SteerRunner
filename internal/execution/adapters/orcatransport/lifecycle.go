@@ -19,6 +19,9 @@ import (
 )
 
 type Turn struct {
+	Model            string                   `json:"model,omitempty"`
+	ReasoningEffort  string                   `json:"reasoning_effort,omitempty"`
+	StepID           string                   `json:"step_id,omitempty"`
 	Extension        *TerminalReceipt         `json:"extension,omitempty"`
 	WireFormat       string                   `json:"wire_format,omitempty"`
 	Recorded         *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
@@ -145,6 +148,9 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 			defer cancel()
 			return native.SerializeCLI(callCtx, invoke)
 		}
+		if err := native.CheckpointDispatch(ctx); err != nil {
+			return nil, err
+		}
 		return invoke(ctx)
 	}
 	l.client = native.New(native.Config{CommandTimeout: "40s", Target: p.Target(), Output: call})
@@ -246,7 +252,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	}
 	seen := map[string]bool{}
 	for _, turn := range state.Turns {
-		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand && turn.WireFormat != extensionWireCommand {
+		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand && turn.WireFormat != extensionWireCommand {
 			return state, errors.New("unknown native input wire format")
 		}
 		if turn.Recorded != nil {
@@ -263,6 +269,9 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		seen[turn.Command] = true
 		if s.PendingTurn != nil && s.PendingTurn.CommandID == turn.Command && turn.InputDigest != digest([]byte(s.PendingTurn.Prompt)) {
 			return state, errors.New("saved terminal input differs from original command")
+		}
+		if s.PendingTurn != nil && s.PendingTurn.CommandID == turn.Command && (turn.Model != s.PendingTurn.Model || turn.ReasoningEffort != s.PendingTurn.ReasoningEffort || turn.Model != "" && turn.StepID != s.PendingTurn.StepID) {
+			return state, errors.New("saved native model preferences changed")
 		}
 		if turn.InputDigest != digest([]byte(turn.Prompt)) || len(turn.Reply) > maxReplyBytes {
 			return state, errors.New("invalid saved terminal reply binding")
@@ -622,9 +631,12 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 				return receipt, errors.New("remote preparation native session changed")
 			}
 			baseline := nativeBaseline(initial, l.clock())
-			prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline}
+			prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline, Model: input.Model, ReasoningEffort: input.ReasoningEffort, StepID: input.StepID}
 			if l.profile.Environment == "" && state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
 				prepared.WireFormat = remoteWireCommand
+				if input.Model != "" {
+					prepared.WireFormat = remoteModelWireCommand
+				}
 			}
 			state.Turns = append(state.Turns, prepared)
 		}
@@ -696,6 +708,9 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		return receipt, err
 	}
 	receipt.State = b.LifecycleStateFacts{SessionID: SessionID(state.Process), SessionGeneration: state.Process.Incarnation, TurnID: input.CommandID, SessionAvailable: true, WorkerLive: true}
+	// Capture acceptance promptly; the original native history/state supplies
+	// start/completion evidence. A 30s CLI wait would hold the shared file lock
+	// while other Runs need independent preparation/observation calls.
 	text := wirePrompt(turn)
 	if l.profile.Terminal != nil && l.profile.Terminal.Agent == "dsh" {
 		// ConPTY's paste ingress uses CR for line breaks. DSH normalizes these
@@ -768,7 +783,7 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 		}
 		if turn.WireFormat == extensionWireCommand {
 			receipt.Diagnostic = l.observeTerminal(&state, turn)
-		} else if turn.WireFormat == remoteWireCommand {
+		} else if turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand {
 			receipt.Diagnostic = l.observeRecorded(ctx, &state, turn)
 		} else {
 			receipt.Diagnostic = l.observeNative(ctx, s, &state, turn)
@@ -779,7 +794,7 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 			receipt.Implementation, _ = l.envelope(s, state)
 			return receipt, nil, err
 		}
-		if turn.WireFormat == remoteWireCommand || turn.WireFormat == extensionWireCommand {
+		if turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand || turn.WireFormat == extensionWireCommand {
 			goto observed
 		}
 		if !turn.Accepted || !turn.Started || turn.Native.EndedAt == 0 || turn.Native.ReplyBody == "" || receipt.Diagnostic != "" {

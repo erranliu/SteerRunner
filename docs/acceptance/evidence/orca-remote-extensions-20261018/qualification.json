@@ -1,0 +1,251 @@
+{
+  "schema": "steerrunner-remote-extension-qualification/v1",
+  "status": "selected_remote_cases_passed_full_remote_pending_inputs",
+  "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+  "source_dirty": false,
+  "source_files_verified": 1234,
+  "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+  "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+  "helper_path": "C:/sr-runtime/2ba0/35/steerrunner-agent.exe",
+  "helper_sha256": "4afff003df688a257b705c82a98ff7f5be6b613cf696b9a6282f9bb783736ec0",
+  "native_version": "codex-cli 0.159.2",
+  "native_sha256": "52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a",
+  "writer": {
+    "reasoning_effort": "high",
+    "model": "gpt-6-luna"
+  },
+  "auditor": {
+    "reasoning_effort": "high",
+    "model": "gpt-6.1-sol"
+  },
+  "gates": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 289,
+      "scenario_count": null,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_zero_match_guard": true
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "test_count": null,
+      "scenario_count": 16,
+      "skipped_tests": null,
+      "native_zero_match_guard": null
+    }
+  ],
+  "scope": "selected-cases",
+  "remote_registry_case_count": 19,
+  "selected_distinct_case_count": 10,
+  "passed_selected_case_count": 10,
+  "authorized_exclusion_count": 0,
+  "full_remote_passed": false,
+  "pending_app_cases": [
+    {
+      "scenario": "orca-remote.app-auth",
+      "app": true,
+      "target": "orca-environment",
+      "case": "default",
+      "administrator": false
+    }
+  ],
+  "pending_administrator_cases": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "app": false,
+      "target": "orca-environment",
+      "case": "active-disconnect",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "app": false,
+      "target": "orca-environment",
+      "case": "pre-send-disconnect",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "app": false,
+      "target": "orca-environment",
+      "case": "graceful-boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "app": false,
+      "target": "orca-environment",
+      "case": "kill-boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "app": false,
+      "target": "orca-environment",
+      "case": "boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "app": false,
+      "target": "orca-environment",
+      "case": "unreachable",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "app": false,
+      "target": "orca-environment",
+      "case": "completion-gap",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "app": false,
+      "target": "orca-environment",
+      "case": "query-unavailable",
+      "administrator": true
+    }
+  ],
+  "batches": [
+    {
+      "phase": "targeted",
+      "started_at": "2026-10-18T07:32:45.9165354Z",
+      "finished_at": "2026-10-18T07:40:01.1038147Z",
+      "report_sha256": "3ec2fec9f4ddcacfabd9509545cc119fa68946858cd0a81ec80a65bcad9f09c9",
+      "planned_case_count": 2,
+      "report": ".evidence/orca-remote/l3-extension35-targeted/summary.json",
+      "max_parallel": 2,
+      "passed_case_count": 2
+    },
+    {
+      "phase": "failure-regressions",
+      "started_at": "2026-10-18T07:40:03.4724354Z",
+      "finished_at": "2026-10-18T07:56:31.6465014Z",
+      "report_sha256": "886f507056ec77dc375188fe47d15eb8130c07126f0b4ec509ea3dc12adc7eb5",
+      "planned_case_count": 3,
+      "report": ".evidence/orca-remote/l3-extension35-failure-regressions/summary.json",
+      "max_parallel": 2,
+      "passed_case_count": 3
+    },
+    {
+      "phase": "regressions",
+      "started_at": "2026-10-18T07:56:40.9022168Z",
+      "finished_at": "2026-10-18T08:16:59.9235972Z",
+      "report_sha256": "b37820835fdf4861efe7d9bee02478d41c887a9034d2f5d8f4598df7254c4197",
+      "planned_case_count": 5,
+      "report": ".evidence/orca-remote/l3-extension35-regressions/summary.json",
+      "max_parallel": 2,
+      "passed_case_count": 5
+    }
+  ],
+  "cases": [
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\8df0b5bf78ef\\manifest.json",
+      "case_id": "active",
+      "status": "passed",
+      "scenario": "orca-remote.stop-revocation"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\6cae57f49934\\manifest.json",
+      "case_id": "complete",
+      "status": "passed",
+      "scenario": "environment-check.orca-sandbox"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\e528f6c1cf61\\manifest.json",
+      "case_id": "default",
+      "status": "passed",
+      "scenario": "orca-remote.smoke"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\8f26984072e2\\manifest.json",
+      "case_id": "complete",
+      "status": "passed",
+      "scenario": "environment-check.orca-full-access"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\1fe8993395bc\\manifest.json",
+      "case_id": "default",
+      "status": "passed",
+      "scenario": "orca-remote.multirun"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\44159a904d43\\manifest.json",
+      "case_id": "default",
+      "status": "passed",
+      "scenario": "orca-remote.audited"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\1042d8e08a86\\manifest.json",
+      "case_id": "default",
+      "status": "passed",
+      "scenario": "orca-remote.full-access"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\7008c08b1969\\manifest.json",
+      "case_id": "accepted-response-lost",
+      "status": "passed",
+      "scenario": "orca-remote.caller-exit"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\aed52d549c17\\manifest.json",
+      "case_id": "graceful-active",
+      "status": "passed",
+      "scenario": "orca-remote.service-restart"
+    },
+    {
+      "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+      "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+      "manifest": "C:\\srt\\80ffc6e64b07\\manifest.json",
+      "case_id": "kill-active",
+      "status": "passed",
+      "scenario": "orca-remote.service-restart"
+    }
+  ],
+  "historical_source34": {
+    "executed_case_count": 10,
+    "diagnostic_only_change_does_not_establish_root_fix": true,
+    "passed_case_count": 5,
+    "status": "failed",
+    "source_commit": "8b9a98ad65885390caa64fda536b3e6cdea56890",
+    "failure_records_preserved": true
+  },
+  "verified_at": "2026-10-18T08:17:40.1771647Z",
+  "orca_cli": {
+    "path": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "previous_recorded_version": "1.4.223",
+    "version_observed_after": "1.4.224",
+    "per_case_binary_pinned": false,
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "upgrade_timing_known": false,
+    "sha256_observed_after": "894700bc388af843b06628ded98dbdd1d9d25e3a94fea661dbf4dc16eeed5ae2"
+  }
+}

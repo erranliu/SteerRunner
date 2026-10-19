@@ -9,7 +9,7 @@
 
 实施和发布按 development 的思路：可信 final 命中阶段成功输出且核验通过即完成，无法判断时原 agent 最多 report 一次，不使用独立解析或格式修正。独立解析仅用于整理实际代码审计结果；不能替代真正审计或生成原审计没有作出的结论。
 
-本流程仍沿当前本机 Codex 支持边界，不增加 Orca 审计支持。执行模型用于实施/其补报和发布；审计模型用于正式审计修复及其补报，均在原执行会话通过提示词调用并冻结。独立 parser 使用隔离会话和 Runner 自身配置；切回实施/发布时恢复执行模型。共同 worktree 初始化及统一生命周期不在本定义重写。
+本流程支持本机 codex-app-server，以及配置并核验可信 helper 的 Orca local Codex。原生远端 orca_environment 不提供实际双模型来源证明，在接受前返回 unsupported_capability，不创建执行资源。Orca 在同一原生会话按冻结角色选择执行/审计模型；固定控制通道只读取原生回执和执行认证撤销，实际 model/effort 必须与该业务 Command 对应的冻结选择一致。Pi/DSH 不声明审计能力。执行模型用于实施/其补报和发布；审计模型用于正式审计修复及其补报，均在原执行会话通过提示词调用并冻结。独立 parser 使用隔离会话和 Runner 自身配置；切回实施/发布时恢复执行模型。共同 worktree 初始化及统一生命周期不在本定义重写。
 
 ## 2. Workflow 整体状态图
 
@@ -229,6 +229,8 @@ Runner 对当前源只发一次正式审计修复输入，工作在这次 execut
 stop、服务换代、未知操作优先于所有边，所有 executor/parser owned 资源纳入原停止核验。可信 final 缺失先原来源补读，原生失败/冲突不通过解析或补报解除。实施 input 的用户输入不能越过原会话/原操作资格；审计原生问答仍承接原请求。本次发布产生的 PR 可独立绑定、核验、刷新 merged，不因此越过当前审计或提交 TaskDelivery。
 
 所有核验复用内置函数和原 owner，本期无定制脚本端口/宿主或通用快照设施。Runner 独立管理 parser 配置、认证引用和资源；执行/审计/parser 模型分别选择。SteerLine 不增加配置覆盖或调用义务。实际支持范围及验证结果见总 Spec §6 与专属验收，不宣称空工具面或零隐式上下文。
+
+原生远端 Orca 不提供该流程需要的实际模型与 Git 来源证明，接受前返回 unsupported_capability；本机 codex-app-server 与 Orca local 受管 Codex 继续沿原模型切换及原工作树 owner 核验，不调用远端 helper。
 
 ## 当前实现映射
 

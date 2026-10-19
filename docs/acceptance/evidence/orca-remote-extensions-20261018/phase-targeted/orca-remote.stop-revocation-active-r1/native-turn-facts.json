@@ -1,0 +1,75 @@
+{
+  "new_inputs_allowed": false,
+  "pending_stop": "",
+  "phase": "stopped",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:\\srt\\8df0b5bf78ef\\bin\\stability.exe",
+    "terminal": "term_8d37c9a6-00b4-452a-a4da-3772de0de110",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "incarnation": "57945ad8-42df-4237-a6bd-f5acf2921fd1",
+    "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-077a1369bcc0a5cc9723136b03272cf4"
+  },
+  "readiness": {
+    "authentication_control": true,
+    "native_transport": "codex-remote-inline-v2",
+    "runtime_sha256": "4afff003df688a257b705c82a98ff7f5be6b613cf696b9a6282f9bb783736ec0",
+    "verified": true,
+    "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+    "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-077a1369bcc0a5cc9723136b03272cf4",
+    "repository": "https://github.com/erranliu/SteerlineTest.git",
+    "session_id": "01a14df0-e521-7370-aafd-bcc3e685efa2",
+    "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+    "process": {
+      "kind": "os",
+      "pid": 18704,
+      "created": "01dd5ed362c09c2a",
+      "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+    },
+    "checked_at": "2026-10-18T07:36:44.9545253Z",
+    "expires_at": "2026-10-18T16:36:26.6483728+08:00",
+    "access_mode": "sandbox"
+  },
+  "run_id": "077a1369bcc0a5cc9723136b03272cf4",
+  "stop_status": "stopped",
+  "turns": [
+    {
+      "accepted": true,
+      "command": "3ddd807aecf5bed26b5235624d8dedfe",
+      "inspection": {
+        "attempted": true,
+        "unknown": false,
+        "process": {
+          "kind": "orca_original_turn_reader",
+          "terminal": "term_98e4a2fa-f491-4770-95cf-fa7c74e61f4b",
+          "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+          "incarnation": "f28715db-58a1-4cbd-af21-1d0248df4710",
+          "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-077a1369bcc0a5cc9723136b03272cf4"
+        },
+        "closed": true,
+        "at": "2026-10-18T07:37:36.8834671Z"
+      },
+      "recorded": {
+        "completed": false,
+        "effort": "",
+        "final_digest": "",
+        "final_item_id": "",
+        "input_digest": "0e58ee320252db8493a188ddd80fddb6a903ac1a4997b72a0ed7167fc9cc6ed5",
+        "model": "",
+        "native_turn_id": "01a14df1-6d3c-7852-b579-eef0d372007a",
+        "source": "codex.app-server.original-turn.v1",
+        "started": true,
+        "status": "interrupted",
+        "user_item_id": "01a14df1-7138-7451-9b99-50e2967fdefc"
+      },
+      "request": "a8f0411f-1a57-3507-e72c-9b79242500fb",
+      "requested_effort": "",
+      "requested_model": "",
+      "settled": false,
+      "started": true,
+      "step": "implement.execute",
+      "wire_format": "native-command-v1"
+    }
+  ]
+}

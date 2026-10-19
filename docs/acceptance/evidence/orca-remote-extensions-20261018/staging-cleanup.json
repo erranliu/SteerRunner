@@ -1,0 +1,17 @@
+{
+  "instance": "b3055beb-7c2d-4612-89fe-2ae332447b22",
+  "complete_empty_terminal_inventory": true,
+  "terminal": "term_88f5a53a-123b-4a1e-a1f9-992d44a42e6d",
+  "incarnation": "fdda6def-3a5f-4c5d-8f19-43fd237f8e57",
+  "original_selector_not_found": true,
+  "installed_runtime_preserved": [
+    "C:/sr-runtime/2ba0/35/steerrunner-agent.exe",
+    "C:/sr-runtime/2ba0/01/native/codex.exe"
+  ],
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-remote-extension-2ba0",
+  "original_pty_killed": true,
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "verified_at": "2026-10-18T08:20:21.9708645Z",
+  "filesystem_path_independently_checked_after_removal": false,
+  "remove_acknowledged": true
+}

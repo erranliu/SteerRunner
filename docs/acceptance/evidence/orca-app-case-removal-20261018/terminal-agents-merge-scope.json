@@ -1,0 +1,49 @@
+{
+  "source_commit": "1585a61ef7bd125a4c856cd092d49e573b58f61c",
+  "merged_main": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+  "l3_scenario_count": 24,
+  "l3_case_count": 31,
+  "l3_cases_by_target": {
+    "local-codex": 5,
+    "orca-environment": 18,
+    "orca-local": 8
+  },
+  "total_scenario_count": 29,
+  "total_case_count": 36,
+  "app_l3_case_removed": true,
+  "remote_l3_not_rerun": true,
+  "remote_admin_cases_unverified": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "case": "active-disconnect"
+    },
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "case": "pre-send-disconnect"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case": "graceful-boundary"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case": "kill-boundary"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case": "boundary"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case": "unreachable"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case": "completion-gap"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "case": "query-unavailable"
+    }
+  ]
+}

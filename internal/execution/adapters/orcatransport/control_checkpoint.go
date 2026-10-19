@@ -55,7 +55,7 @@ func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error
 	if j.Request.Method == "original-turn" {
 		found := false
 		for _, turn := range state.Turns {
-			if turn.Accepted && turn.WireFormat == remoteWireCommand && digest([]byte(wirePrompt(&turn))) == j.Request.InputDigest {
+			if turn.Accepted && (turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand) && digest([]byte(wirePrompt(&turn))) == j.Request.InputDigest {
 				found = true
 			}
 		}
@@ -89,12 +89,24 @@ func validateControlResponse(q codex.RemoteControlRequest, r codex.RemoteControl
 		return errors.New("original native control response binding changed")
 	}
 	if r.Error != "" {
-		if r.Authentication != nil || r.Error != "original_turn_unverified" && r.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (r.Error == "original_turn_unverified") || r.Turn != nil && (q.Method != "original-turn" || !r.Turn.InspectionFailed) {
+		if q.Method == "workspace-audit" {
+			if r.Error != "workspace_audit_unverified" || r.Turn != nil || r.Authentication != nil || r.Workspace == nil {
+				return errors.New("native workspace control error invalid")
+			}
+			return nil
+		}
+		if r.Workspace != nil || r.Authentication != nil || r.Error != "original_turn_unverified" && r.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (r.Error == "original_turn_unverified") || r.Turn != nil && (q.Method != "original-turn" || !r.Turn.InspectionFailed) {
 			return errors.New("native control error invalid")
 		}
 		return nil
 	}
-	if q.Method == "original-turn" && (r.Turn == nil || r.Authentication != nil) || q.Method == "authentication-stop" && (r.Authentication == nil || r.Turn != nil) {
+	if q.Method == "workspace-audit" {
+		if r.Workspace == nil || r.Turn != nil || r.Authentication != nil {
+			return errors.New("native workspace response kind changed")
+		}
+		return nil
+	}
+	if r.Workspace != nil || q.Method == "original-turn" && (r.Turn == nil || r.Authentication != nil) || q.Method == "authentication-stop" && (r.Authentication == nil || r.Turn != nil) {
 		return errors.New("native control response kind changed")
 	}
 	return nil
@@ -154,6 +166,14 @@ func (l *Lifecycle) dispatchControl(ctx context.Context, state State, q codex.Re
 }
 
 func (l *Lifecycle) callControl(ctx context.Context, state State, method, input string) (codex.RemoteControlResponse, error) {
+	return l.callControlWithAudit(ctx, state, method, input, nil)
+}
+
+func sameWorkspaceQuery(a, b *codex.RemoteWorkspaceAuditQuery) bool {
+	return a == nil && b == nil || a != nil && b != nil && *a == *b
+}
+
+func (l *Lifecycle) callControlWithAudit(ctx context.Context, state State, method, input string, audit *codex.RemoteWorkspaceAuditQuery) (codex.RemoteControlResponse, error) {
 	var empty codex.RemoteControlResponse
 	if err := l.validateControl(l.setup.Snapshot, state, true); err != nil {
 		return empty, err
@@ -165,7 +185,7 @@ func (l *Lifecycle) callControl(ctx context.Context, state State, method, input 
 	if j.Closed {
 		return empty, errors.New("original native control already closed")
 	}
-	if method == "original-turn" && j.Request.Method == "authentication-stop" {
+	if method != "authentication-stop" && j.Request.Method == "authentication-stop" {
 		return empty, errors.New("original authentication revocation requested; no later receipt query")
 	}
 	if j.Request.ID != "" && j.Response == nil {
@@ -177,7 +197,7 @@ func (l *Lifecycle) callControl(ctx context.Context, state State, method, input 
 		if err := l.saveControlCheckpoint(state, j); err != nil {
 			return empty, err
 		}
-		if j.Request.Method == method && j.Request.InputDigest == input {
+		if j.Request.Method == method && j.Request.InputDigest == input && sameWorkspaceQuery(j.Request.Audit, audit) {
 			return r, nil
 		}
 	}
@@ -198,7 +218,10 @@ func (l *Lifecycle) callControl(ctx context.Context, state State, method, input 
 			return empty, errors.New("original native reader settlement unverified; control proof retained")
 		}
 	}
-	j.Request = codex.RemoteControlRequest{ID: contracts.NewID(), Binding: state.Control.Ready.Binding, Method: method, Session: state.RemoteReadiness.SessionID, InputDigest: input}
+	if j.Request.Method == "workspace-audit" && j.Response != nil && (j.Response.Workspace == nil || !j.Response.Workspace.WritersAbsent) {
+		return empty, errors.New("original workspace reader settlement unverified; control proof retained")
+	}
+	j.Request = codex.RemoteControlRequest{ID: contracts.NewID(), Binding: state.Control.Ready.Binding, Method: method, Session: state.RemoteReadiness.SessionID, InputDigest: input, Audit: audit}
 	j.Response = nil
 	if err := l.saveControlCheckpoint(state, j); err != nil {
 		return empty, err

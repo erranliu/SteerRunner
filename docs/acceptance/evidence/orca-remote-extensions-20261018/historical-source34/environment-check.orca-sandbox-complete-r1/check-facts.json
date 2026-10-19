@@ -1,0 +1,241 @@
+{
+  "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+  "status": "stopped",
+  "result": "unverified",
+  "cleanup_status": "completed",
+  "created_at": "2026-10-18T06:56:46.078728Z",
+  "updated_at": "2026-10-18T07:00:38.971443Z",
+  "execution_deadline": "2026-10-18T07:06:46.078728Z",
+  "cleanup_deadline": "2026-10-18T07:08:46.078728Z",
+  "actual": {
+    "access_mode": "sandbox",
+    "account": "LIUMING-5600\\Administrator",
+    "approval_policy": "never",
+    "attempt_id": "e56df00969d19a5507a89216717def1b",
+    "authentication_source": "host-gh-repository-broker",
+    "generation": "eadeafb8aabf1dc49f03ce72676ad9b9",
+    "native_generation": "65fc953953c3b3adefd8a98000cc59c4",
+    "nonce": "316eadfa54d87410533084ed0645c2c7",
+    "pid": 18120,
+    "process_created": "01dd5ecddd1eb273",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "runtime_version": "codex-cli 0.159.2",
+    "sandbox": "workspace-write",
+    "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+    "terminal": "term_bc24fff9-192d-4038-bca7-f927ab220105",
+    "terminal_incarnation": "421ac4a6-9d2a-44e4-9b72-8bff58f1e3f2",
+    "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+    "workspace": "C:\\sr-runtime\\2ba0\\31\\checks\\63505f43a6c4\\w",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest"
+  },
+  "resources": {
+    "base_deleted": true,
+    "base_owned": true,
+    "base_ref": "refs/heads/steerline-check/63505f43a6c4cc6082e72eafa9c90c37/base",
+    "base_sha": "2f8384bbfd6e5590a64d3a4ad3e1f88ee587868c",
+    "head_deleted": false,
+    "head_owned": false,
+    "head_ref": "refs/heads/steerline-check/63505f43a6c4cc6082e72eafa9c90c37/head",
+    "local_removed": true,
+    "pr_closed": false,
+    "writer_stopped": true
+  },
+  "items": [
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "account": "LIUMING-5600\\Administrator",
+            "approval_policy": "never",
+            "owner_owner": "same_native_tool_context",
+            "sandbox": "workspace-write"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "deb21b9c8640645708d61ba082066ced",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-a9a1a4f8-131b-4221-a242-9f2ae0976e1e",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "permissions",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "f7d8f6053508de329097dbf86098fa56",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-d3da36ff-f6b9-4af4-8c7f-363819607841",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "workspace",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "d6c10a4fc0a1429611b8f723657be2e9",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-cf7e2580-11e3-488c-8649-1fb0364e21f1",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "temporary",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "b87ec2819bcdbdfd3312be53746e90c5",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-d7f417c9-07ce-4a83-b55a-2259dc406d86",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "git_admin",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "remote_ref": "2f8384bbfd6e5590a64d3a4ad3e1f88ee587868c\trefs/heads/codex/srtest/edafd9b634f1/base"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "b821ae4ff4f562ed0f2a2d91d5766fad",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-25f68a2a-b624-4044-b38f-7de18afdf551",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "remote_read",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "base_sha": "2f8384bbfd6e5590a64d3a4ad3e1f88ee587868c",
+            "owner_owner": "same_native_tool_context"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "3541444fb67d6122f5399b33c03390f3",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-9299f2cb-6355-4cd1-948c-27fbaab236fe",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "fetch",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "63505f43a6c4cc6082e72eafa9c90c37",
+          "facts": {
+            "owner_sha": "2f8384bbfd6e5590a64d3a4ad3e1f88ee587868c",
+            "pushed": "true"
+          },
+          "nonce": "316eadfa54d87410533084ed0645c2c7",
+          "operation_id": "06a8e6e4045acee60131412c86cc8311",
+          "session_id": "01a14dcc-b3e6-70a3-a102-6246b532be36",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-e5f0a320-122e-4728-83d0-b42694374738",
+          "turn_id": "01a14dcc-ded3-7e81-bc25-4897b32630df",
+          "verified": true
+        }
+      ],
+      "id": "base_push",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [],
+      "id": "commit",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "head_push",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_create",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_query",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    },
+    {
+      "evidence": [],
+      "id": "pr_close",
+      "required": true,
+      "stage": "not_started",
+      "status": "unverified"
+    }
+  ],
+  "excluded": [
+    "build",
+    "tests",
+    "business_resources"
+  ]
+}

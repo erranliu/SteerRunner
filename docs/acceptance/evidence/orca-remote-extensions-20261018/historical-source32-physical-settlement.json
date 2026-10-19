@@ -1,0 +1,36 @@
+[
+  {
+    "remaining": 0,
+    "root": "C:/srt/7f8f4cfde073",
+    "original": {
+      "kind": "orca_terminal",
+      "executable": "C:\\srt\\7f8f4cfde073\\bin\\stability.exe",
+      "terminal": "term_15b5a25a-a558-4ccc-9d8c-51dc0ab6f3b2",
+      "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "incarnation": "2beda2ec-0ec8-4dc0-b389-f9c4f3682689",
+      "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+      "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-1bfa3c18e0b653e4649c5168cd6950bc"
+    },
+    "run": "1bfa3c18e0b653e4649c5168cd6950bc",
+    "complete": true,
+    "stop": "unknown",
+    "terminals": []
+  },
+  {
+    "remaining": 0,
+    "root": "C:/srt/6f8324f6f182",
+    "original": {
+      "kind": "orca_terminal",
+      "executable": "C:\\srt\\6f8324f6f182\\bin\\stability.exe",
+      "terminal": "term_845c2585-81c6-408f-99ce-746f7dc71f8c",
+      "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "incarnation": "9714380d-77e9-48ea-af0b-caff2fc124ed",
+      "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+      "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-23ee7cde62d44f1c2b6dfb78555afb7f"
+    },
+    "run": "23ee7cde62d44f1c2b6dfb78555afb7f",
+    "complete": true,
+    "stop": "unknown",
+    "terminals": []
+  }
+]

@@ -36,14 +36,23 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 		command, _ := (&agentlaunch.Config{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: s.AccessMode}).Command("codex")
 		return NativeReceiptAuditPolicy{Environment: m.Execution.Target.Environment, NativeLaunchCommand: command}
 	}
+	if a.Executable == "" && s.AgentName() == "codex" {
+		a.Executable = "codex"
+	}
+	if a.Model != "" && a.ReasoningEffort == "" {
+		a.ReasoningEffort = "medium"
+	}
 	mode := s.AccessMode
 	if mode == "" {
 		mode = "sandbox"
 	}
 	config := codex.RemoteAgentConfig{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: mode, RepositoryURL: RemoteURL}
-	if s.GitHubAuth != nil {
-		auth := s.GitHubAuth
-		config.GitHubAuth = &codex.AuthenticationConfig{AppID: auth.AppID, InstallationID: auth.InstallationID, PrivateKeyEnv: auth.PrivateKeyEnv}
+	if m.AuditModel != nil {
+		model := *m.AuditModel
+		if model.ReasoningEffort == "" {
+			model.ReasoningEffort = a.ReasoningEffort
+		}
+		config.AuditModel = &model
 	}
 	return NativeReceiptAuditPolicy{Executable: a.RuntimeExecutable, SHA256: a.RuntimeSHA256, AccessMode: mode, Environment: m.Execution.Target.Environment, ConfigurationDigest: codex.RemoteConfigurationDigest(config)}
 }

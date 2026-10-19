@@ -1,0 +1,48 @@
+{
+  "complete_inventory": true,
+  "inventory_checked_at": "2026-10-18T06:57:33.5193337Z",
+  "inventory_observations": 1,
+  "proof": {
+    "readiness": {
+      "authentication_control": true,
+      "native_transport": "codex-remote-inline-v2",
+      "runtime_sha256": "c81d856d5fca34bce9a3ad1414e54506db4619932bfc57ade95dd934da8de5b9",
+      "verified": true,
+      "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+      "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-37b2da93732fce3c6e21d3b9806c661c",
+      "repository": "https://github.com/erranliu/SteerlineTest.git",
+      "session_id": "01a14dc5-1074-7ea2-805f-bde992f4d1b8",
+      "configuration_digest": "82a4fffc50b43be8b88b88ae4c90404d5eed72134a39ee4a71d668291c5b4c85",
+      "process": {
+        "kind": "os",
+        "pid": 7292,
+        "created": "01dd5eccb3b28de4",
+        "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+      },
+      "checked_at": "2026-10-18T06:48:51.1578861Z",
+      "expires_at": "2026-10-18T15:48:36.0774957+08:00",
+      "access_mode": "full_access"
+    },
+    "revocation_confirmed": true,
+    "broker_closed": true,
+    "socket_cleanup_confirmed": true,
+    "mode": "host-gh-repository-broker"
+  },
+  "remaining_terminals": 0,
+  "revoker": {
+    "attempted": true,
+    "unknown": false,
+    "process": {
+      "kind": "orca_authentication_revoker",
+      "terminal": "term_8f63e52b-b0bd-429d-8405-7a6cd13b7116",
+      "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "incarnation": "672a5821-8eaa-48b1-97cf-05bf3be0e99f",
+      "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-37b2da93732fce3c6e21d3b9806c661c"
+    },
+    "closed": true,
+    "at": "2026-10-18T06:57:20.5466664Z"
+  },
+  "run_id": "37b2da93732fce3c6e21d3b9806c661c",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-37b2da93732fce3c6e21d3b9806c661c"
+}

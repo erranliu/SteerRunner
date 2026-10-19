@@ -1,0 +1,54 @@
+{
+  "scenario": "orca-remote.multirun",
+  "level": "L3",
+  "stage": "submit-two-runs",
+  "run_id": "69acc9907f2668d2925249097950add0",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false,
+  "runs": [
+    {
+      "phase": "stopped",
+      "stop_status": "stopped",
+      "execution": {
+        "workspace_scope": "revision",
+        "turn_started": true,
+        "attempt_id": "6642658d0175605e80068bdadd8c7afe",
+        "generation": "0074929dd9929c16624663c5d5c444ee",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_f71ecf2b-3ebd-4bd4-9164-224933d1bf2b:748ee8a3-ae1f-422b-9aae-997828d17ccd",
+        "turn_id": "ecbddf5f1dccdb3b4df60bcad6340e61",
+        "native_outcome": "succeeded",
+        "final_available": true,
+        "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-69acc9907f2668d2925249097950add0",
+        "branch": "erranliu/sl-69acc9907f2668d2925249097950add0"
+      },
+      "status": "stopped",
+      "new_inputs_allowed": false,
+      "run_id": "69acc9907f2668d2925249097950add0",
+      "pr": null
+    },
+    {
+      "phase": "stopped",
+      "stop_status": "stopped",
+      "execution": {
+        "workspace_scope": "revision",
+        "turn_started": false,
+        "attempt_id": "8f97ce556647f1cb6cde1e74684e1924",
+        "generation": "75ff1ad591b8ca43bc7f93e85cfd7698",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_3e9d5092-46e9-4870-a7d3-b6006c3654c4:adbe47b9-7d3a-4efc-9c7f-d36c23590447",
+        "turn_id": "103eed009244dce6a759e31df5ce209c",
+        "final_available": false,
+        "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-1e0374e8fb925f4eabd4f84d1ace3fb4",
+        "branch": "erranliu/sl-1e0374e8fb925f4eabd4f84d1ace3fb4"
+      },
+      "status": "stopped",
+      "new_inputs_allowed": false,
+      "run_id": "1e0374e8fb925f4eabd4f84d1ace3fb4",
+      "pr": null
+    }
+  ]
+}

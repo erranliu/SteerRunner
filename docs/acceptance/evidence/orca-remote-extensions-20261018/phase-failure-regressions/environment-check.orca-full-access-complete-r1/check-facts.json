@@ -1,0 +1,331 @@
+{
+  "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+  "status": "completed",
+  "result": "passed",
+  "cleanup_status": "completed",
+  "created_at": "2026-10-18T07:40:38.4215312Z",
+  "updated_at": "2026-10-18T07:48:17.0983354Z",
+  "execution_deadline": "2026-10-18T07:50:38.4215312Z",
+  "cleanup_deadline": "2026-10-18T07:52:38.4215312Z",
+  "actual": {
+    "access_mode": "full_access",
+    "account": "LIUMING-5600\\Administrator",
+    "approval_policy": "never",
+    "attempt_id": "647d2ca69e23e77a712bbc0fd1d725f1",
+    "authentication_source": "host-gh-repository-broker",
+    "generation": "28f179465cceeb5c507602f67ba367ca",
+    "native_generation": "262d83b6006e86a22cfca99e1e9ca750",
+    "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+    "pid": 19208,
+    "process_created": "01dd5ed4038ebd53",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "runtime_version": "codex-cli 0.159.2",
+    "sandbox": "danger-full-access",
+    "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+    "terminal": "term_ed69283b-04f0-4527-bec8-f659ff63cd79",
+    "terminal_incarnation": "91b2c10b-e726-417d-bd3e-ba463a666a70",
+    "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+    "workspace": "C:\\sr-runtime\\2ba0\\35\\checks\\fb025d37ba29\\w",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest"
+  },
+  "resources": {
+    "base_deleted": true,
+    "base_owned": true,
+    "base_ref": "refs/heads/steerline-check/fb025d37ba29a69f8f5c98b7dda5b331/base",
+    "base_sha": "666159c6edf072594109a1bbca28ea048eb477c0",
+    "head_deleted": true,
+    "head_owned": true,
+    "head_ref": "refs/heads/steerline-check/fb025d37ba29a69f8f5c98b7dda5b331/head",
+    "head_sha": "8502bf820746570a6238de85840ee8829126f6a5",
+    "local_removed": true,
+    "pr_closed": true,
+    "pr_number": 485,
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/485",
+    "writer_stopped": true
+  },
+  "items": [
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "account": "LIUMING-5600\\Administrator",
+            "approval_policy": "never",
+            "owner_owner": "same_native_tool_context",
+            "sandbox": "danger-full-access"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "48f7a53f544fb68096a608f42c27f2d8",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-18107282-ecaf-4fd2-b9dc-076ee2280661",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "permissions",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "080acb1da0161101d2cba98968235760",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-1f40a4e4-d69a-42a9-99a8-074b0fe2af5f",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "workspace",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "2c65572f17318ac44d04679cb9498d51",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-e5859ff9-5179-4e74-ba49-798665a4b625",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "temporary",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "read_write": "verified"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "ef58cc2b8538b601ad1751def8b9b577",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-90cdb2d9-bdcb-4b9f-8022-1ea09c583419",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "git_admin",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_owner": "same_native_tool_context",
+            "remote_ref": "666159c6edf072594109a1bbca28ea048eb477c0\trefs/heads/codex/srtest/8f26984072e2/base"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "2bd7e3fc22b48eeabb58e558e887bc47",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-cfb691e5-8677-4161-a927-816ef420d38e",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "remote_read",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "base_sha": "666159c6edf072594109a1bbca28ea048eb477c0",
+            "owner_owner": "same_native_tool_context"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "0b0c931043b3a618b48024c0bfa18081",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-11f1e8ad-e250-4dcc-8a71-bb6d462f464d",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "fetch",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_sha": "666159c6edf072594109a1bbca28ea048eb477c0",
+            "pushed": "true"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "d1b40e5de8a417ecc013240eb793162e",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-6b8bb6ef-9597-42f7-b067-cecd6aeb5d96",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "base_push",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "head_sha": "8502bf820746570a6238de85840ee8829126f6a5",
+            "owner_sha": "8502bf820746570a6238de85840ee8829126f6a5"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "c9f19957ce98c89786df8fbdfad325ee",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-d1d16374-0e09-4192-be22-1af07975e341",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "commit",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_sha": "8502bf820746570a6238de85840ee8829126f6a5",
+            "pushed": "true"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "da0c5cee36b1738c0bc57ccfd93a50c0",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-ab96c2fe-32e2-462c-bfec-54e4bb4c6567",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "head_push",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_pr_closed": "False",
+            "owner_pr_number": "485",
+            "owner_pr_url": "https://github.com/erranliu/SteerlineTest/pull/485",
+            "pr_closed": "False",
+            "pr_number": "485",
+            "pr_url": "https://github.com/erranliu/SteerlineTest/pull/485"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "4c3687f508858a8cd514ced9d88fbc36",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-c9608459-36d5-4ce6-9364-782e96684f91",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "pr_create",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_pr_closed": "False",
+            "owner_pr_number": "485",
+            "owner_pr_url": "https://github.com/erranliu/SteerlineTest/pull/485",
+            "pr_closed": "False",
+            "pr_number": "485",
+            "pr_url": "https://github.com/erranliu/SteerlineTest/pull/485"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "d7f6d5fc8e764437be2894e24789fc47",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-cfcc8235-7846-48b2-96ae-60e5fbb2e5e7",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "pr_query",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    },
+    {
+      "evidence": [
+        {
+          "check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+          "facts": {
+            "owner_pr_closed": "True",
+            "owner_pr_number": "485",
+            "owner_pr_url": "https://github.com/erranliu/SteerlineTest/pull/485",
+            "pr_closed": "True",
+            "pr_number": "485",
+            "pr_url": "https://github.com/erranliu/SteerlineTest/pull/485"
+          },
+          "nonce": "6154241a9b85ce7aa55e8b495bd03489",
+          "operation_id": "5097058719153783b29cf7102b37ccbf",
+          "session_id": "01a14df4-fe1c-7751-88fd-48e7af64b9ad",
+          "source": "native_tool_and_owner_verification",
+          "tool_call_id": "exec-517882e8-5958-44bb-8aa7-21d54a328336",
+          "turn_id": "01a14df5-3639-7be1-854c-ce2120bf8692",
+          "verified": true
+        }
+      ],
+      "id": "pr_close",
+      "required": true,
+      "stage": "native_probe",
+      "status": "passed"
+    }
+  ],
+  "excluded": [
+    "build",
+    "tests",
+    "business_resources"
+  ]
+}

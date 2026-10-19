@@ -30,7 +30,7 @@ func Lookup(id string, version int) (Profile, bool) {
 		p.Description = "Implement and publish a verified PR."
 	case AuditedDevelopment:
 		p.Description = "Implement, audit and repair code once, then publish the verified revision."
-		p.SupportedAdapters = []string{"codex-app-server"}
+		p.SupportedAdapters = []string{"codex-app-server", "orca-terminal"}
 		p.AuditModelRequired = true
 		p.AuditSteps = []string{StepAuditCode}
 		p.PromptSteps = append(p.PromptSteps, "audit.code", StepAuditReport)

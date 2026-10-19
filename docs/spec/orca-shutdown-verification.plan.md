@@ -39,6 +39,8 @@
 
 ### 测试计划增量
 
+同一 runtime/worktree 的原 reader 在一次核验中共用一份新鲜完整清单，逐一校验全部 terminal/incarnation；journal 与快照的同一身份去重，保留每个 reader 的原生结算要求。避免按 reader 数量重复读取同一清单而耗尽停止预算；不跨核验缓存，不改变未知创建或残缺主机清单的拒绝门槛。L1 `TestTerminalsStoppedUseOneCompleteOriginalInventory` 和 `TestCodexStopped*` 覆盖单次查询及原身份反例；真机闭环另在个人多机认证专项登记。
+
 | 验收项 | 级别 / 场景与命令 | 环境 / 时点 | 通过条件 / 证据 |
 | --- | --- | --- | --- |
 | OSV-A08 | L1 `TestRemoteExit*`、`TestRemoteReader*`、`TestCodexStopped*`、`TestManagedRemoteReceipt*`、`TestOrcaLocalIPCReadsOnlyBoundStopArtifact`、`TestStopArtifact*` | 隔离夹具；实现后 go test codex/protocol/orca/orcatransport 定向组 | 正向签名与完整退出通过；活树/缺认证/改写/重放/缺 reader/截断/错 runtime 拒绝，重验零写入；登记本专属 acceptance |

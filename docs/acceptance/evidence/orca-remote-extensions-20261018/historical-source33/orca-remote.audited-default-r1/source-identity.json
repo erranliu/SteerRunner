@@ -1,0 +1,11 @@
+{
+  "pid": 39156,
+  "manifest_sha256": "744B3D7F3B603FC03CB4F5CC422C2803E74FA0B38B666FA7F66C87308A963682",
+  "driver_sha256": "EE4C6BCF51208342CAE8CA9689E916B9AED957E1508740362F70AF164D62441B",
+  "runner_sha256": "8a0c98d511f752701bf8e4ce94f1c2631182be3c9f30b19c5efefa4da52510f3",
+  "source_commit": "62aee13db07731ef8206cfcf756959cfe5a27de5",
+  "source_dirty": false,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.audited",
+  "level": "L3"
+}

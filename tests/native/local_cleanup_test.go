@@ -78,9 +78,6 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 				return nil, errors.New("remote cleanup helper was not frozen")
 			}
 			expectedMode := "host-gh-repository-broker"
-			if settings.GitHubAuth != nil {
-				expectedMode = "github-app-repository-broker"
-			}
 			if proof.Mode != expectedMode {
 				return nil, errors.New("remote cleanup authentication source changed")
 			}
@@ -94,7 +91,7 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 			if readErr != nil || codex.VerifyRemoteExit(raw, proof.Readiness) != nil {
 				return nil, errors.Join(readErr, errors.New("original signed native exit unverified"))
 			}
-			evidence = livetest.SignedNativeExitEvidence{Proof: proof, Control: actor, Bytes: raw}
+			evidence = livetest.SignedNativeExitEvidence{Proof: proof, Control: livetest.SignedNativeControlClosure{Process: actor.Process, Closed: actor.Closed}, Bytes: raw}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()
@@ -114,7 +111,7 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 		if err != nil {
 			return nil, err
 		}
-		return map[string]any{"run_id": view.RunID, "authentication": evidence, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
+		return map[string]any{"run_id": view.RunID, "authentication": evidence, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_transient_read_failures": inventory.TransientReadFailures, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
 	}
 	return nil, errors.New("original Run missing from cleanup store")
 }

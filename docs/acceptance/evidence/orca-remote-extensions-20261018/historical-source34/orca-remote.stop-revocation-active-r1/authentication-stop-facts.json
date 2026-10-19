@@ -1,0 +1,21 @@
+[
+  {
+    "failure_code": null,
+    "failure": "unverified",
+    "binding": "8450ed5410dd461fef416839da9ecc0570aca988dc2850946ba7e0572b427b9d",
+    "attempt": {
+      "attempted": true,
+      "unknown": false,
+      "process": {
+        "kind": "orca_authentication_revoker",
+        "terminal": "term_262c40b2-8d15-422f-a819-8e17c7ce8442",
+        "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+        "incarnation": "1b2c914c-530a-44e2-8f15-8040fdd80336",
+        "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8e3980f278c30a16cab1e1a2446400ca"
+      },
+      "closed": true,
+      "at": "2026-10-18T06:37:10.2625787Z"
+    },
+    "proof": null
+  }
+]

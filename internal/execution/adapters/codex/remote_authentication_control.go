@@ -4,13 +4,39 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
 const RemoteAuthenticationPrefix = "SR_REMOTE_AUTHENTICATION_STOP:"
+const RemoteAuthenticationFailurePrefix = "SR_REMOTE_AUTHENTICATION_FAILURE:"
+
+// RemoteAuthenticationDiagnostic exports only a finite category, never an OS
+// path, provider response, command output or credential-bearing error message.
+func RemoteAuthenticationDiagnostic(err error) string {
+	if err == nil {
+		return ""
+	}
+	for _, code := range []string{"remote_authentication_binding_invalid", "remote_authentication_helper_mismatch", "remote_authentication_configuration_mismatch", "remote_authentication_original_owner_absent", "remote_authentication_original_owner_changed", "remote_authentication_original_owner_unavailable", "remote_authentication_stop_conflict", "remote_authentication_stop_request_unverified", "remote_authentication_cleanup_unverified", "remote_authentication_stop_deadline", "remote_authentication_stop_canceled", "remote_authentication_stop_permission_denied", "remote_authentication_stop_unverified"} {
+		if strings.Contains(err.Error(), code) {
+			return code
+		}
+	}
+	if errors.Is(err, context.DeadlineExceeded) {
+		return "remote_authentication_stop_deadline"
+	}
+	if errors.Is(err, context.Canceled) {
+		return "remote_authentication_stop_canceled"
+	}
+	if errors.Is(err, os.ErrPermission) {
+		return "remote_authentication_stop_permission_denied"
+	}
+	return "remote_authentication_stop_unverified"
+}
 
 type RemoteAuthenticationQuery struct {
 	Workspace string `json:"workspace"`
@@ -44,7 +70,7 @@ func readRemoteAuthenticationCleanup(dir string, ready RemoteReadiness) (RemoteA
 			Mode   string `json:"mode"`
 		} `json:"broker"`
 	}
-	if json.Unmarshal(raw, &fact) != nil || fact.Session != ready.SessionID || fact.Configuration != ready.ConfigurationDigest || !fact.Revoked || !fact.Broker.Closed || !fact.Broker.Socket {
+	if json.Unmarshal(raw, &fact) != nil || fact.Session != ready.SessionID || fact.Configuration != ready.ConfigurationDigest || !fact.Revoked || !fact.Broker.Closed || !fact.Broker.Socket || fact.Broker.Mode != "host-gh-repository-broker" {
 		return out, errors.New("remote_authentication_cleanup_unverified")
 	}
 	out.Revoked, out.BrokerClosed, out.SocketCleaned, out.Mode = fact.Revoked, fact.Broker.Closed, fact.Broker.Socket, fact.Broker.Mode
@@ -67,14 +93,21 @@ func RevokeRemoteAuthentication(ctx context.Context, q RemoteAuthenticationQuery
 	}
 	var cfg RemoteAgentConfig
 	raw, err = os.ReadFile(filepath.Join(dir, "configuration.json"))
-	if err != nil || json.Unmarshal(raw, &cfg) != nil || cfg.RepositoryURL != ready.Repository || RemoteConfigurationDigest(cfg) != ready.ConfigurationDigest {
+	if err != nil || contracts.DecodeStrict(raw, &cfg) != nil || cfg.RepositoryURL != ready.Repository || RemoteConfigurationDigest(cfg) != ready.ConfigurationDigest {
 		return RemoteAuthenticationCleanup{}, errors.New("remote_authentication_configuration_mismatch")
 	}
 	if proof, e := readRemoteAuthenticationCleanup(dir, ready); e == nil {
 		return proof, nil
 	}
-	if process.Probe(&ready.Process).State != "matches" {
-		return RemoteAuthenticationCleanup{}, errors.New("remote_authentication_original_owner_unavailable")
+	if probe := process.Probe(&ready.Process); probe.State != "matches" {
+		code := "remote_authentication_original_owner_unavailable"
+		if probe.State == "absent" {
+			code = "remote_authentication_original_owner_absent"
+		}
+		if probe.State == "pid-reused" {
+			code = "remote_authentication_original_owner_changed"
+		}
+		return RemoteAuthenticationCleanup{}, errors.New(code)
 	}
 	signal, _ := json.Marshal(remoteAuthenticationSignal{Session: ready.SessionID, ConfigurationDigest: ready.ConfigurationDigest})
 	path := filepath.Join(dir, "authentication-stop.json")

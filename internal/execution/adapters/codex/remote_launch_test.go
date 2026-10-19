@@ -3,6 +3,7 @@ package codexworker
 import (
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -130,5 +131,10 @@ func TestRemoteTUIUsesServerOwnedPermissionsAndRoots(t *testing.T) {
 		if strings.Contains(joined, forbidden) {
 			t.Fatalf("TUI tried to override server-owned setting %q", forbidden)
 		}
+	}
+	audited := RemoteAgentConfig{AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}}
+	args = remoteTUIArgs(audited, "ws://127.0.0.1:1234", "original-session")
+	if !strings.Contains(strings.Join(args, " "), "--remote-auth-token-env "+remoteModelTokenEnv) {
+		t.Fatal("native bridge authentication flag missing")
 	}
 }

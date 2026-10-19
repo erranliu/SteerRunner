@@ -1,0 +1,54 @@
+{
+  "verified_at": "2026-10-18T08:18:59.2122026Z",
+  "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+  "helper_path": "C:/sr-runtime/2ba0/35/steerrunner-agent.exe",
+  "helper_sha256": "4afff003df688a257b705c82a98ff7f5be6b613cf696b9a6282f9bb783736ec0",
+  "native_path": "C:/sr-runtime/2ba0/01/native/codex.exe",
+  "native_sha256": "52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a",
+  "native_version": "codex-cli 0.159.2",
+  "staging_path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-remote-extension-2ba0",
+  "staging_git_status": [
+    "?? .sr-runtime-stage/"
+  ],
+  "staging_files": [
+    {
+      "name": "steerrunner-agent-26.exe",
+      "length": 12360704
+    },
+    {
+      "name": "steerrunner-agent-28.exe",
+      "length": 12364288
+    },
+    {
+      "name": "steerrunner-agent-29.exe",
+      "length": 12365312
+    },
+    {
+      "name": "steerrunner-agent-30.exe",
+      "length": 12365312
+    },
+    {
+      "name": "steerrunner-agent-31.exe",
+      "length": 12365312
+    },
+    {
+      "name": "steerrunner-agent-35.exe",
+      "length": 12368384
+    }
+  ],
+  "orca_cli": {
+    "path": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "previous_recorded_version": "1.4.223",
+    "version_observed_after": "1.4.224",
+    "per_case_binary_pinned": false,
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "upgrade_timing_known": false,
+    "sha256_observed_after": "894700bc388af843b06628ded98dbdd1d9d25e3a94fea661dbf4dc16eeed5ae2"
+  },
+  "receipt_binding": {
+    "terminal": "term_88f5a53a-123b-4a1e-a1f9-992d44a42e6d",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "request_id": "a57f6a64-e1cc-45ef-85ca-3652e7f42ebc",
+    "incarnation": "fdda6def-3a5f-4c5d-8f19-43fd237f8e57"
+  }
+}

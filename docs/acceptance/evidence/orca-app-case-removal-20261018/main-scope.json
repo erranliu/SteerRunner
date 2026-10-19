@@ -1,0 +1,75 @@
+{
+  "source_dirty": false,
+  "original_live_source": "e492ec1167be4168f7a56bd14ece4355efab057d",
+  "production_changed_by_main_merge": true,
+  "source_commit": "09e8fd43f0440d9acbde1d6e64f45a3d894b0537",
+  "live_rerun_after_merge": false,
+  "l3_scenario_count": 19,
+  "removed_app_case_registered": false,
+  "remaining_administrator_cases": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "target": "orca-environment",
+      "case_id": "active-disconnect",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "target": "orca-environment",
+      "case_id": "pre-send-disconnect",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "target": "orca-environment",
+      "case_id": "graceful-boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "target": "orca-environment",
+      "case_id": "kill-boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "target": "orca-environment",
+      "case_id": "boundary",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "target": "orca-environment",
+      "case_id": "unreachable",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "target": "orca-environment",
+      "case_id": "completion-gap",
+      "administrator": true
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "target": "orca-environment",
+      "case_id": "query-unavailable",
+      "administrator": true
+    }
+  ],
+  "l3_case_count": 26,
+  "cases_by_target": [
+    {
+      "target": "local-codex",
+      "count": 5
+    },
+    {
+      "target": "orca-environment",
+      "count": 18
+    },
+    {
+      "target": "orca-local",
+      "count": 3
+    }
+  ],
+  "merged_main": "7c48969669f7027814f3f30c4e27241b1bb54d7e"
+}

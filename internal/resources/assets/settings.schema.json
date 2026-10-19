@@ -103,7 +103,7 @@
         }
       }
     ],
-    "description": "Audited workflow additionally requires local codex-app-server and an explicit execution.settings.model. Omitted audit effort inherits the normalized execution effort."
+    "description": "Audited workflow requires managed Codex with two explicit, different models. Orca uses execution.settings.agent_launch.model and the trusted execution-host runtime. Omitted audit effort inherits the normalized execution effort."
   },
   "adapters": {
     "codex-app-server": {
@@ -135,30 +135,6 @@
             "ultra"
           ],
           "default": "medium"
-        },
-        "github_auth": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "app_id",
-            "installation_id",
-            "private_key_env"
-          ],
-          "properties": {
-            "app_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "installation_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "private_key_env": {
-              "type": "string",
-              "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
-            }
-          },
-          "description": "Execution-host GitHub App key reference. Runner requests one repository, contents/PR write only. Never embed a key or token."
         },
         "access_mode": {
           "enum": [
@@ -290,46 +266,6 @@
               }
             }
           }
-        },
-        {
-          "if": {
-            "required": [
-              "agent"
-            ],
-            "properties": {
-              "agent": {
-                "not": {
-                  "const": "codex"
-                }
-              }
-            }
-          },
-          "then": {
-            "not": {
-              "required": [
-                "github_auth"
-              ]
-            }
-          }
-        },
-        {
-          "if": {
-            "required": [
-              "github_auth"
-            ]
-          },
-          "then": {
-            "required": [
-              "agent_launch"
-            ],
-            "properties": {
-              "agent_launch": {
-                "required": [
-                  "runtime_executable"
-                ]
-              }
-            }
-          }
         }
       ],
       "properties": {
@@ -411,30 +347,6 @@
           ],
           "default": "sandbox",
           "description": "Frozen explicit permission mode. Both modes use native never; no approval or fallback."
-        },
-        "github_auth": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "app_id",
-            "installation_id",
-            "private_key_env"
-          ],
-          "properties": {
-            "app_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "installation_id": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "private_key_env": {
-              "type": "string",
-              "pattern": "^[A-Z][A-Z0-9_]{0,127}$"
-            }
-          },
-          "description": "Execution-host GitHub App key reference. Runner requests one repository, contents/PR write only. Never embed a key or token."
         }
       }
     }
