@@ -60,3 +60,4 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 整合核实 workflow/2 的工作树来源原实现仅读取调用方本机 Git，不能支持远端审计资格。补齐原 adapter 的可选审计 owner 接口，以及固定控制通道内只读 workspace-audit；实际使用原执行主机 Git 完整检查，绑定原 session/helper/configuration/workspace intent 与 pre-head，核验各查询 Job 退出。未知 reader 不覆盖、缺 owner 不回退调用方 Git、成功查询不跨阶段复用。定向测试含真实临时 Git clean/dirty/隐藏索引/稀疏/外来仓库与分支/祖先、索引及 HEAD 不变、原进程不受影响，以及原请求失回执对账、模型不符与源证明拒绝。旧按回合 reader 与 revoker 测试由固定通道原归属/关闭测试替代，不恢复 App 正向资格。
 
 `7c6ea40` 的正式入口在 framework guard 阶段失败，Go L1/Controlled 和真机均未启动（0 执行）：上游独立配置守卫仍写死 29 个 L3 case，加入本 PR 两项登记后为 31。修正完整缺配置/前置失败范围断言为 31，缺配置数 26→28，并显式断言远端审计/多 Run 不得继承本机配置。独立框架守卫完成，verified.json 保留 incomplete、31 请求、零执行及 complete_level_passed=false。此变更仅测试与登记文档，生产源码不变，远端继续使用明确归属 7c6ea40 的已冻结 helper；新批次记录新的测试提交。
+冻结 helper 来源为 7c6ea40，SHA256 658e4b899c2947f60e529fa297fd165f210cc0221777131986c5d094b4f03bbe；部署于独立目录 gh-only-7c6ea40。后续框架断言/登记变更与该构建的 internal/cmd 生产源码完全相同，分开记录测试提交与 helper 来源，不覆盖旧 helper。

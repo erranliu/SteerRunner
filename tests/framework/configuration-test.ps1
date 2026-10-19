@@ -22,7 +22,7 @@ try {
 if(@($taskAssessment.cases|Where-Object {$_.scenario_id -eq 'local-codex.feedback' -and $_.availability -eq 'available'}).Count -ne 1){throw 'Static configuration availability incorrectly probed the native tool'}
 if(@($taskAssessment.cases|Where-Object {$_.scenario_id -eq 'orca-local.pi' -and $_.availability -eq 'unavailable'}).Count -ne 1){throw 'Missing optional agent configuration became available'}
 foreach ($taskRemoteCase in @('orca-remote.audited','orca-remote.multirun')) {
-    if (@($taskAssessment.cases | Where-Object {$_.scenario_id -eq $taskRemoteCase -and $_.availability -eq 'unavailable'}).Count -ne 1) {throw 'Missing remote configuration was omitted or inherited the local baseline'} 
+    if (@($taskAssessment.cases | Where-Object {$_.scenario_id -eq $taskRemoteCase -and $_.availability -eq 'unavailable'}).Count -ne 1) {throw 'Missing remote configuration was omitted or inherited the local baseline'}
 }
 $taskShell=(Get-Process -Id $PID).Path
 $taskMissing=Join-Path $taskRoot 'not-configured.json'
