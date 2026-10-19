@@ -267,6 +267,17 @@
       "target": "orca-local",
       "agent": "pi",
       "timeout_minutes": 30
+    },
+    {
+      "id": "orca-remote.initialization-stop",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "before-readiness",
+        "restart-before-readiness"
+      ]
     }
   ]
 }

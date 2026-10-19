@@ -187,7 +187,7 @@ func (s *stabilityRun) bind(v contracts.RunView) {
 	}
 	_ = json.Unmarshal(s.cli("terminal", "show", "--terminal", parts[0]), &raw)
 	q := raw.Terminal
-	s.check("terminal-binding", q.Handle == parts[0] && q.IncarnationID == parts[1] && q.WorktreePath == v.Execution.Workspace && strings.TrimPrefix(q.Branch, "refs/heads/") == v.Execution.Branch, "faults.jsonl: diagnostic terminal identity")
+	s.check("terminal-binding", q.Handle == parts[0] && q.IncarnationID == parts[1] && q.WorktreePath == v.Execution.Workspace && (strings.TrimPrefix(q.Branch, "refs/heads/") == v.Execution.Branch || s.m.Scenario == "orca-remote.initialization-stop" && q.Branch == ""), "faults.jsonl: diagnostic terminal identity")
 	s.process = b.ProcessIdentity{RuntimeID: s.m.RemoteRuntimeID, Terminal: q.Handle, Incarnation: q.IncarnationID, WorktreeID: q.WorktreeID}
 	s.original = v.Execution
 }
@@ -578,6 +578,10 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 	} else {
 		r := invoke(t, m, s.dir, []string{"submit", "--input", "-"}, &req)
 		s.r.RunID = r.Data.(map[string]any)["run_id"].(string)
+	}
+	if m.Scenario == "orca-remote.initialization-stop" {
+		s.initializationStop()
+		return
 	}
 	if m.Scenario != "orca-remote.caller-exit" {
 		stage := "implementation"

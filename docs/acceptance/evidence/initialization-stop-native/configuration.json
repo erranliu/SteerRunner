@@ -1,0 +1,54 @@
+{
+  "schema": "steerrunner-test-config/v1",
+  "configurations": {
+    "orca-remote-codex": {
+      "workflow": {
+        "version": 2,
+        "id": "development"
+      },
+      "execution": {
+        "target": {
+          "kind": "orca_environment",
+          "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        },
+        "settings": {
+          "agent_launch": {
+            "model": "gpt-6-luna",
+            "reasoning_effort": "high",
+            "executable": "C:/sr-runtime/2ba0/01/native/codex.exe"
+          },
+          "transport": {
+            "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+            "wait_timeout": "40s"
+          },
+          "access_mode": "sandbox"
+        },
+        "adapter": "orca-terminal"
+      }
+    }
+  },
+  "fixture": {
+    "repository": {
+      "base_branch": "main",
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "remote": "origin",
+      "base_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+      "local_path": "C:/Projects/SteerlineTest"
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "main",
+      "settings": {
+        "query": {
+          "executable": "gh",
+          "args": [
+            "api"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  },
+  "harness": {}
+}

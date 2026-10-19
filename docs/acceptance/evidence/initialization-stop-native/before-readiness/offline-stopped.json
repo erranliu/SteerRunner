@@ -1,0 +1,13 @@
+{
+  "checks": [],
+  "state_dir": "c:\\steerlinedebug\\dev-20261019-154407-be8f3b54\\cases\\ab7810b9fc43\\s",
+  "resources_settled": true,
+  "runs": [
+    {
+      "stop_evidence_scope": "orca_terminal",
+      "run_id": "8ad7520b6c192a9db3d2771c8ad9d7eb",
+      "input_digest": "535c9cc94557eeb6ee4ff8cea542dfb5c56da776884e10dbed4c662a9cf80b85",
+      "resources_settled": true
+    }
+  ]
+}

@@ -843,6 +843,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "orca-remote.initialization-stop",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "before-readiness",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        },
+        {
+          "id": "restart-before-readiness",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
     }
   ]
 }

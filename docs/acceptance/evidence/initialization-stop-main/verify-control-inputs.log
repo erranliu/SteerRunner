@@ -1,0 +1,2 @@
+before-readiness: exactly one original helper launch; zero control requests and business sends
+restart-before-readiness: exactly one original helper launch; zero control requests and business sends

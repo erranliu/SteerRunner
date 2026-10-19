@@ -153,6 +153,21 @@ func main() {
 		if e != nil {
 			fatal(e)
 		}
+		delivered := out.Bytes()
+		if err == nil && m.Scenario == "orca-remote.initialization-stop" && len(args) > 1 && args[0] == "terminal" && args[1] == "show" {
+			filtered, hidden, e := livetest.WithholdNativeAgentIdentity(delivered)
+			if e != nil {
+				fatal(e)
+			}
+			if hidden {
+				fact, _ := json.Marshal(map[string]any{"call_id": callID, "original": json.RawMessage(delivered), "delivered": json.RawMessage(filtered)})
+				appendCall(m, map[string]any{"kind": "agent-identity-withheld", "call_id": callID, "at": time.Now().UTC(), "original": json.RawMessage(delivered), "delivered": json.RawMessage(filtered)})
+				if e = os.WriteFile(filepath.Join(m.Root, "evidence", "agent-identity-withheld.json"), fact, 0600); e != nil {
+					fatal(e)
+				}
+				delivered = filtered
+			}
+		}
 		// Test-only response loss: the installed Orca has executed and returned
 		// its real receipt. Only this caller's response is withheld; never replay.
 		if mode == "local-audit" && err == nil && len(args) > 1 && args[0] == "terminal" && args[1] == "send" {
@@ -173,7 +188,7 @@ func main() {
 				}
 			}
 		}
-		_, _ = os.Stdout.Write(out.Bytes())
+		_, _ = os.Stdout.Write(delivered)
 		_, _ = os.Stderr.Write(stderr.Bytes())
 		if err != nil {
 			if e, ok := err.(*exec.ExitError); ok {

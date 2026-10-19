@@ -1,0 +1,90 @@
+{
+  "results": [
+    {
+      "manifest": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\dddbaf198def\\manifest.json",
+      "started_at": "2026-10-19T05:35:29.9150114Z",
+      "identity": {
+        "pid": 51724,
+        "manifest_sha256": "314d73cd712bab119a5b2b8052c10031cab368e0a54545e9f9bdf2e06c7560a4",
+        "driver_sha256": "e2ceba53d9ec6a82d9cb33cb1d20861098ca895b295fed8bdaba04757351695b",
+        "runner_sha256": "18ebe2345c177f9a8b621694ec2e70ed1faa2864879b8c1e88a543a071935219",
+        "source_commit": "cf7b47a5eca1968de2e13997c3752f76a6caa0e6",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.initialization-stop",
+        "level": "L3",
+        "helper_sha256": "9f32f3eb3900cf87fcf87bbc61bfe520265c0eaa95cc9bb907c6b80ac6910f85",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "before-readiness",
+        "repeat_index": 1
+      },
+      "finished_at": "2026-10-19T05:38:31.3683733Z",
+      "status": "passed",
+      "fixture_record": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\evidence\\l3-initialization-stop-retry-02\\orca-remote.initialization-stop-before-readiness-r1-fixture.json",
+      "case_id": "before-readiness",
+      "level": "L3",
+      "resources": [
+        "root:C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\dddbaf198def",
+        "base:codex/srtest/dddbaf198def/base",
+        "run:df2537924e895669c58cd24fce3a9d05",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-df2537924e895669c58cd24fce3a9d05",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_2aca030d-62e0-4872-81f1-d82af55dc257:f38bda15-e283-4820-8f37-0ade5ce2464e",
+        "branch:erranliu/sl-df2537924e895669c58cd24fce3a9d05"
+      ],
+      "evidence": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\dddbaf198def\\evidence",
+      "repeat_index": 1,
+      "expected_outcome": "stopped",
+      "scenario": "orca-remote.initialization-stop"
+    },
+    {
+      "manifest": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\42799287026e\\manifest.json",
+      "started_at": "2026-10-19T05:35:29.9781437Z",
+      "identity": {
+        "pid": 20476,
+        "manifest_sha256": "85b534531aa22638b4cc766e0360ae8d80573b774fa32256719eb4c76511566d",
+        "driver_sha256": "e2ceba53d9ec6a82d9cb33cb1d20861098ca895b295fed8bdaba04757351695b",
+        "runner_sha256": "18ebe2345c177f9a8b621694ec2e70ed1faa2864879b8c1e88a543a071935219",
+        "source_commit": "cf7b47a5eca1968de2e13997c3752f76a6caa0e6",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.initialization-stop",
+        "level": "L3",
+        "helper_sha256": "9f32f3eb3900cf87fcf87bbc61bfe520265c0eaa95cc9bb907c6b80ac6910f85",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "restart-before-readiness",
+        "repeat_index": 1
+      },
+      "finished_at": "2026-10-19T05:38:40.1690797Z",
+      "status": "passed",
+      "fixture_record": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\evidence\\l3-initialization-stop-retry-02\\orca-remote.initialization-stop-restart-before-readiness-r1-fixture.json",
+      "case_id": "restart-before-readiness",
+      "level": "L3",
+      "resources": [
+        "root:C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\42799287026e",
+        "base:codex/srtest/42799287026e/base",
+        "run:e9a6df7d4a303595093603ba5f218f3d",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-e9a6df7d4a303595093603ba5f218f3d",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_03422b18-37bf-4f31-9ecb-71f3bcbeeec4:61f478e0-7e47-4040-8546-1f70c7ce2c14",
+        "branch:erranliu/sl-e9a6df7d4a303595093603ba5f218f3d"
+      ],
+      "evidence": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\42799287026e\\evidence",
+      "repeat_index": 1,
+      "expected_outcome": "stopped",
+      "scenario": "orca-remote.initialization-stop"
+    }
+  ],
+  "runner_sha256": "18ebe2345c177f9a8b621694ec2e70ed1faa2864879b8c1e88a543a071935219",
+  "scope": "registered L3 retry after restoring unchanged build receipt; exact newly qualified prerequisites retained",
+  "status": "passed",
+  "schema": "steerrunner-registered-l3-retry/v1",
+  "max_parallel": 2,
+  "source_dirty": false,
+  "complete_l3_level_passed": false,
+  "runtime_helper_sha256": "52a2261351290f49366a331119d2f72afa36b60d7ef7aff12063206053ae573a",
+  "source_commit": "cf7b47a5eca1968de2e13997c3752f76a6caa0e6",
+  "prerequisites_sha256": "6e584ee467aa6d8c80b7a0f032de6200c9d472bf790746b649de8c9f4da0eb53",
+  "prerequisites": "C:/SteerlineDebug/dev-20261019-130825-dc5dc4a5-dirty/evidence/l3-initialization-stop/summary.json",
+  "passed_case_count": 2
+}
