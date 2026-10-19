@@ -441,6 +441,11 @@ func ValidatePublication(repository Repository, value Publication) *Fault {
 func ValidateInput(command string, data []byte) *Fault {
 	invalid := Fail(2, "invalid_input", "Input does not satisfy the command contract.")
 	switch command {
+	case "artifacts collect":
+		var value CollectArtifactInput
+		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 || !ValidArtifactPath(value.RelativePath) {
+			return Fail(2, "artifact_path_invalid", "Expected revision and a portable relative artifact path are required.")
+		}
 	case "environment-check start":
 		return ValidateEnvironmentCheck(data)
 	case "environment-check stop":

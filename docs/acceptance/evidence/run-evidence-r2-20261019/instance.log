@@ -1,0 +1,4 @@
+=== RUN   TestSRExpectedInstanceFencesReplacement
+--- PASS: TestSRExpectedInstanceFencesReplacement (0.03s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	2.636s

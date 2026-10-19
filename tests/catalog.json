@@ -22,7 +22,8 @@
     "TestSRResultAcquisition",
     "TestSRContentGenerate",
     "TestSRContentConversation",
-    "TestSRContentQuestionAndUnknown"
+    "TestSRContentQuestionAndUnknown",
+    "TestSRRunEvidenceR2"
   ],
   "scenarios": [
     {

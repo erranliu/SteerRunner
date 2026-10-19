@@ -16,6 +16,10 @@
 记录仍绑定原构建，不继承为新构建资格。
 workflow/2 不再保留反馈资格门，旧原生记录不作为本次构建通过。
 
+## R2 定向受控增量
+
+`TestSRRunEvidenceR2` 已登记到 controlled_scenarios；隔离 state-dir、两个原开发 Run、Git 工作区和 native fixture。验证程序报告/原始日志、追加/幂等/跨 Run 隔离、缺失/越界/超限、实际 Git 干净/修改/未跟踪/新 commit，以及零新 Agent 调用、停止并移除工作区后仍读旧报告。workspace/application 定向反例另验证 junction 越界、来源不明及观察中变化。此为 R2 专属最小验证，不增加真机矩阵。
+
 ## L2：最小核心 smoke
 
 | 场景 ID / Case ID | 独有验证目标与目标范围 | 当前入口、预期及缺口 | 并行条件 |

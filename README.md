@@ -1,5 +1,8 @@
 # SteerRunner
 
+开发 Run 的 [R2 报告/日志收集、不可变读取与当前 Git 查询](docs/run-evidence-r2.md)
+使用公开 `artifacts discover/collect/list/read` 和 `workspace-git`，契约随 capabilities/schema 发布。
+
 新增 [conversation/1](docs/workflows/conversation.md) 持续会话与
 [generate/1](docs/workflows/generate.md) 一次性内容生成：独立输入、inline 材料快照、
 本机 Codex `read_only`，无需仓库、Spec/Plan 或 publication。复用现有 Run、可靠执行、

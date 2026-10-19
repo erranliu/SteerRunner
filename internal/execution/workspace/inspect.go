@@ -192,3 +192,6 @@ func canonical(path string) string {
 	}
 	return path
 }
+
+// SamePath compares persisted host-local path spellings without changing scope.
+func SamePath(a, b string) bool { return a != "" && b != "" && canonical(a) == canonical(b) }

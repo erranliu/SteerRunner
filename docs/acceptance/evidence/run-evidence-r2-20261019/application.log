@@ -1,0 +1,4 @@
+=== RUN   TestR2UnknownSourceAndReadOnlyQueries
+--- PASS: TestR2UnknownSourceAndReadOnlyQueries (10.64s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	13.500s

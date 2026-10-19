@@ -1,0 +1,123 @@
+{
+  "changed_commit": {
+    "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+    "commit": "07431b653e0d2149435c1a22eda3e55568651164",
+    "clean": true,
+    "observed_at": "2026-10-19T13:39:25.7834617Z",
+    "verified": true,
+    "diagnostic": ""
+  },
+  "collect": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": "r2-report",
+    "data": {
+      "action_status": "completed",
+      "artifact": {
+        "artifact_id": "f50d382f6d8971124d6ebef9dc217179",
+        "collected_at": "2026-10-19T13:39:31.9171703Z",
+        "read_command": "artifacts read --run-id 7c2cd15b0e8e752a13df29c3fea49318 --artifact-id f50d382f6d8971124d6ebef9dc217179",
+        "relative_path": "execution-001/report.json",
+        "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+        "sha256": "3c906a915ad60335eae54f0e202cfb0b195c037dad5c9fc19afde255afe610d3",
+        "size_bytes": 40
+      },
+      "command_id": "0c4dd8c44b0807ae688ff3e0911fe25e",
+      "receipt_status": "accepted",
+      "run_id": "7c2cd15b0e8e752a13df29c3fea49318"
+    },
+    "error": null
+  },
+  "discover": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "candidates": [
+        {
+          "relative_path": "execution-001/raw.log",
+          "size_bytes": 6
+        },
+        {
+          "relative_path": "execution-001/report.json",
+          "size_bytes": 40
+        }
+      ],
+      "directory": ".steerrunner/artifacts",
+      "run_id": "7c2cd15b0e8e752a13df29c3fea49318"
+    },
+    "error": null
+  },
+  "first_commit": {
+    "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+    "commit": "635f9aaaaa0ea9b2a1c5659efade550bba10d5a1",
+    "clean": true,
+    "observed_at": "2026-10-19T13:39:02.9846831Z",
+    "verified": true,
+    "diagnostic": ""
+  },
+  "list": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "artifacts": [
+        {
+          "artifact_id": "f50d382f6d8971124d6ebef9dc217179",
+          "collected_at": "2026-10-19T13:39:31.9171703Z",
+          "read_command": "artifacts read --run-id 7c2cd15b0e8e752a13df29c3fea49318 --artifact-id f50d382f6d8971124d6ebef9dc217179",
+          "relative_path": "execution-001/report.json",
+          "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+          "sha256": "3c906a915ad60335eae54f0e202cfb0b195c037dad5c9fc19afde255afe610d3",
+          "size_bytes": 40
+        },
+        {
+          "artifact_id": "e91ea9e0c1a2ab8ff5e5e1579d586689",
+          "collected_at": "2026-10-19T13:39:35.2533987Z",
+          "read_command": "artifacts read --run-id 7c2cd15b0e8e752a13df29c3fea49318 --artifact-id e91ea9e0c1a2ab8ff5e5e1579d586689",
+          "relative_path": "execution-001/raw.log",
+          "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+          "sha256": "15a5717a2f0a1ff5d238bead66a227aa345c471ca9084f4923ee8c76a7e2798a",
+          "size_bytes": 6
+        },
+        {
+          "artifact_id": "943b247b2e3eb20a00f478d53be99818",
+          "collected_at": "2026-10-19T13:39:38.628166Z",
+          "read_command": "artifacts read --run-id 7c2cd15b0e8e752a13df29c3fea49318 --artifact-id 943b247b2e3eb20a00f478d53be99818",
+          "relative_path": "execution-001/report.json",
+          "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+          "sha256": "dae0388955e212f5b5d1bf7dc703f0f1816a80b25620f537668239a1824d5c4e",
+          "size_bytes": 12
+        }
+      ],
+      "run_id": "7c2cd15b0e8e752a13df29c3fea49318"
+    },
+    "error": null
+  },
+  "read": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "artifact_id": "f50d382f6d8971124d6ebef9dc217179",
+      "collected_at": "2026-10-19T13:39:31.9171703Z",
+      "content_base64": "eyJhY3R1YWwiOnRydWUsIue7k+aenCI6Iueoi+W6j+aKpeWRiiJ9Cg==",
+      "encoding": "base64",
+      "read_command": "artifacts read --run-id 7c2cd15b0e8e752a13df29c3fea49318 --artifact-id f50d382f6d8971124d6ebef9dc217179",
+      "relative_path": "execution-001/report.json",
+      "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+      "sha256": "3c906a915ad60335eae54f0e202cfb0b195c037dad5c9fc19afde255afe610d3",
+      "size_bytes": 40
+    },
+    "error": null
+  },
+  "unavailable": {
+    "clean": null,
+    "commit": null,
+    "diagnostic": "Original Run workspace cannot be verified: GetFileAttributesEx c:\\users\\lmas1\\appdata\\local\\temp\\sr-1506920039\\runner\\workspaces\\etxeksjvnwkedje2rk73r3sg2q: The system cannot find the file specified.",
+    "observed_at": "2026-10-19T13:39:44.8522085Z",
+    "run_id": "7c2cd15b0e8e752a13df29c3fea49318",
+    "verified": false
+  },
+  "zero_agent_calls_for_evidence": true
+}

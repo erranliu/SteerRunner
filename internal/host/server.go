@@ -214,6 +214,8 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
+	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
+		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
 	case "environment-check start", "environment-check stop", "environment-check inspect":
 		return s.engine.HandleEnvironmentCheck(wire.Options.Command, wire.Options.CheckID, wire.Options.RequestID, wire.Request), false
 	case "open-native-session":
