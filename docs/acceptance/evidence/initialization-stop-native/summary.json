@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "scope": "native rebase increment; not complete L1/Controlled/L3",
+  "package": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54",
+  "runner_source_commit": "60c805861c0ae26626716b21d71b5f68aa9d4eef",
+  "test_source_commit": "735d8a293808f9ab2dc62e54ae579e4251007868",
+  "runner_sha256": "777b69f0db1887edf079138e8d1c561fd5876eca74db5ee528e3e1d5a9d3858f",
+  "components": 126,
+  "framework": 17,
+  "controlled": 3,
+  "l3_cases": 2,
+  "terminal_scope": "orca_terminal",
+  "no_remote_helper": true,
+  "go_source_identical_between_build_and_test": true
+}

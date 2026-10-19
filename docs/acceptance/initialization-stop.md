@@ -4,10 +4,10 @@
 
 | ID | 自动验收内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
-| IS-A01 | 原生初始化/换代停止、原身份与 scope 反例、local 回归 | 原生 rebase 待验 | 旧 helper 证明仅保留历史；新主干组件结果待登记 |
-| IS-A02 | before-readiness：原生已启动，caller 未确认时显式停止并离线重验 | 原生 rebase 待验 | 新独立 native case 待登记 |
-| IS-A03 | restart-before-readiness：初始化中服务换代，零自动输入/重建 | 原生 rebase 待验 | 新独立 native case 待登记 |
-| IS-A04 | 注册/审计、并发缓存、停止/离线 scope/恢复前置 | 原生 rebase 待验 | 本轮最小组件、framework 与三个 Controlled 项待登记 |
+| IS-A01 | 原生初始化/换代停止、原身份与 scope 反例、local 回归 | passed | [组件 126 项](evidence/initialization-stop-native/components-serial.jsonl)；初始化空 branch 正例与已开始/错身份反例 |
+| IS-A02 | before-readiness：原生已启动，caller 未确认时显式停止并离线重验 | passed | [原生 case](evidence/initialization-stop-native/before-readiness/scenario.json)、[离线结算](evidence/initialization-stop-native/before-readiness/offline-settlement.json) |
+| IS-A03 | restart-before-readiness：初始化中服务换代，零自动输入/重建 | passed | [原生 case](evidence/initialization-stop-native/restart-before-readiness/scenario.json)、[换代原身份](evidence/initialization-stop-native/restart-before-readiness/initialization-restart.json) |
+| IS-A04 | 注册/审计、并发缓存、停止/离线 scope/恢复前置 | passed | [framework 17 项](evidence/initialization-stop-native/framework/result.json)、[Controlled 3 项](evidence/initialization-stop-native/controlled/result.json)、[两个独立审计通过](evidence/initialization-stop-native/batch-summary.json) |
 
 无人工验收项。当前记录不表示完整 L3 或安装现场已通过。
 
@@ -15,7 +15,22 @@
 
 Runner 最新主干 `0b55928` 已合入 #31（`3a053ea`），远端不再使用 helper 或固定控制终端。rebase 处理 10 处文本冲突后，还需移除旧方案的语义冲突：当前生产差异仅为 native stop 的初始化空分支元数据处理；两个 L3 case 改为隐藏 caller 原生 agentIdentity 并保留真实响应。local helper 代码保持主干原样，旧 helper/Job/认证/签名的通过记录不继承为 native 资格。
 
-当前 native scope 只证明原 Orca 终端结束，不证明脱离终端的后台进程或执行主机登录撤销。新的源码/构建与最小验证结果在本节登记；通过前不将旧 394/29/16 与两个 helper L3 的结果当作新组合通过。
+当前 native scope 只证明原 Orca 终端结束，不证明脱离终端的后台进程或执行主机登录撤销。旧 394/29/16 与两个 helper L3 的结果不作为新组合通过证明。
+
+2026-10-19 15:48–15:52（Asia/Shanghai），经 `scripts/new-debug-release.ps1` 创建的 `C:/SteerlineDebug/dev-20261019-154407-be8f3b54` 完成原生增量验证。Runner 构建 clean 源为 `60c805861c0ae26626716b21d71b5f68aa9d4eef`，EXE SHA256 `777b69f0db1887edf079138e8d1c561fd5876eca74db5ee528e3e1d5a9d3858f`；测试 clean 源为 `735d8a293808f9ab2dc62e54ae579e4251007868`，两者 Go 源完全相同，后者只修复 framework PowerShell 文件的 UTF-8 BOM。SteerLine 包来源 `be8f3b54`，已 rebase 到 `4c5409f3`。配置冻结 workflow/2、profile v4 原生执行，无远端 helper 配置、上传或控制终端。
+
+最小验证通过：三个相关组件 126 项、framework 17 项（含冷缓存并发）、live driver 编译、Controlled 3 项 `TestSRServiceOwnership` / `TestSRNativeUnknownAndStop` / `TestSRRestartRequiresResume`。Controlled 与两个 L3 使用同一 Runner EXE。[增量脚本](evidence/initialization-stop-native/run-native-initialization-l3.ps1)核对本轮前置、源文件/构建回执/配置/registry 摘要后，经现有协调器、隔离租约、worker 与独立核验器以 MaxParallel=2 执行；未新增通用跳过开关。
+
+| 原生 case | 独立夹具 / Run | 结果 |
+| --- | --- | --- |
+| before-readiness | `ab7810b9fc43` / `8ad7520b6c192a9db3d2771c8ad9d7eb` | passed；真实原 Codex 已启动而 caller 未确认，显式停止及公开离线终端 scope 通过 |
+| restart-before-readiness | `3ee15abdd90f` / `45bbbd02b43e3a00c2e21901afd76d71` | passed；服务换代保留原身份、零自动输入/替换，显式停止及同样离线核验通过 |
+
+两者执行时间重叠，均核对一次精确直接原生启动发送、一个原工作区、零业务输入、零额外终端/文件部署。`agent-identity-withheld.json` 保留原始及仅隐藏 agentIdentity 的 caller 响应，并关联完整原始调用审计；初始化快照无 helper/控制状态。换代原资源快照保持，输入授权关闭。各 cleanup 均为 native_stopped/service_stopped/facilities_restored=true、driver_native_cleanup=false；离线 resources_settled=true，stop_evidence_scope=orca_terminal。
+
+[本轮证据摘要](evidence/initialization-stop-native/summary.json)、[逐文件摘要](evidence/initialization-stop-native/hashes.json)及原始报告已归档。首轮并行组件测试曾因共享 CLI 排队耗尽 3 秒预算失败，未改 Go 源的串行重跑通过；framework 首次因编辑时误解码 BOM 在执行 case 前失败，恢复主干编码后 17 项通过。失败记录保留在[前置记录](evidence/initialization-stop-native/preflight-failures.json)，未计通过。另一个 `dev-20261019-154251-be8f3b54` 包未启动执行。
+
+当前注册为 L3 21 场景/29 case，保留主干已退役的两个远端 Check case 的移除。本轮只验证所选两个 case 与最小前置，不表示完整 L1/Controlled/L3/L4 通过；未操作安装/保留运行环境，未部署、未改写历史 Run。归档中的 helper_sha256 是本机测试故障转发器身份，不是远端 steerrunner-agent。
 
 ## 历史 helper 方案最终验收（已退役）
 

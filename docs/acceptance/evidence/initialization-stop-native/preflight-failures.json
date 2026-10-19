@@ -1,0 +1,5 @@
+{
+  "component_initial_run": "failed: TestLocalIPCQueryCapabilityBeforeCreation, 3s shared CLI queue budget; serial unchanged-code component rerun passed",
+  "framework_initial_run": "failed before case execution: PowerShell configuration test UTF-8 BOM was mis-decoded during editing; restored exact upstream UTF-8 encoding, rerun native-framework-02",
+  "unused_debug_package": "C:/SteerlineDebug/dev-20261019-154251-be8f3b54; no execution started"
+}
