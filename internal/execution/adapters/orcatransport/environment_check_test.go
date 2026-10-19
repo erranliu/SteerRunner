@@ -66,7 +66,7 @@ func TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection(t *testi
 }
 
 func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testing.T) {
-	for _, scenario := range []string{"normal", "changed-incarnation", "wrong-runtime", "partial-write", "lost-response", "lost-response-no-record", "read-failure-once", "show-failure-once", "permanent-read-failure", "wrong-response-id"} {
+	for _, scenario := range []string{"normal", "changed-incarnation", "wrong-runtime", "partial-write", "lost-response", "lost-response-no-record", "read-failure-once", "show-failure-once", "prefixed-frame", "identity-read-once", "identity-changed-after-retry", "identity-unavailable", "permanent-read-failure", "wrong-response-id"} {
 		t.Run(scenario, func(t *testing.T) {
 			sends, shows, reads := 0, 0, 0
 			var response codex.RemoteCheckResponse
@@ -80,7 +80,13 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 					if scenario == "show-failure-once" && shows == 1 {
 						return nil, errors.New("native_cli_request_unverified")
 					}
+					if (scenario == "identity-read-once" || scenario == "identity-changed-after-retry") && shows == 2 || scenario == "identity-unavailable" && shows >= 2 {
+						return nil, errors.New("native_cli_request_unverified")
+					}
 					incarnation := "incarnation"
+					if scenario == "identity-changed-after-retry" && shows >= 3 {
+						incarnation = "replacement"
+					}
 					if scenario == "changed-incarnation" && shows > 1 {
 						incarnation = "replacement"
 					}
@@ -127,21 +133,28 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 					if scenario == "wrong-runtime" {
 						runtime = "foreign"
 					}
+					if (scenario == "identity-read-once" || scenario == "identity-changed-after-retry") && reads > 1 {
+						response = codex.RemoteCheckResponse{}
+					}
 					body, _ := json.Marshal(response)
-					result["terminal"] = map[string]any{"handle": "actor", "tail": []string{codex.RemoteCheckPrefix + base64.RawURLEncoding.EncodeToString(body)}}
+					line := codex.RemoteCheckPrefix + base64.RawURLEncoding.EncodeToString(body)
+					if scenario == "prefixed-frame" {
+						line = "echoed input fragment> " + line
+					}
+					result["terminal"] = map[string]any{"handle": "actor", "tail": []string{line}}
 				}
 				return json.Marshal(map[string]any{"ok": true, "_meta": map[string]string{"runtimeId": runtime}, "result": result})
 			}})
 			budget := 100 * time.Millisecond
-			if scenario == "read-failure-once" || scenario == "show-failure-once" {
+			if scenario == "read-failure-once" || scenario == "show-failure-once" || scenario == "identity-read-once" || scenario == "identity-changed-after-retry" {
 				budget = time.Second
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), budget)
 			defer cancel()
 			facts, err := s.Verify(ctx, "permissions", contracts.CheckResources{})
-			if scenario == "normal" || scenario == "lost-response" || scenario == "read-failure-once" || scenario == "show-failure-once" {
+			if scenario == "normal" || scenario == "lost-response" || scenario == "read-failure-once" || scenario == "show-failure-once" || scenario == "identity-read-once" || scenario == "prefixed-frame" {
 				wantShows := 2
-				if scenario == "show-failure-once" {
+				if scenario == "show-failure-once" || scenario == "identity-read-once" {
 					wantShows = 3
 				}
 				if err != nil || facts["owner"] != "same" || shows != wantShows {
@@ -149,6 +162,9 @@ func TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity(t *testin
 				}
 			} else if err == nil {
 				t.Fatal("unverified actor response promoted", scenario)
+			}
+			if scenario == "identity-read-once" && reads != 1 {
+				t.Fatal("original response was discarded", reads)
 			}
 			if sends != 1 {
 				t.Fatal("ambiguous native work was resent", sends)
@@ -255,5 +271,52 @@ func TestRemoteEnvironmentStartupFailureReturnsWithoutDispatchAndClosesOriginalA
 	}
 	if !s.Stop(ctx) || !s.LocalRemoved() || closes != 1 || inputs != 0 {
 		t.Fatal("original failed actor not settled", closes, inputs)
+	}
+}
+
+func TestRemoteCheckFixedProbeHasBoundedControlDeadline(t *testing.T) {
+	for _, method := range []string{"execute", "verify"} {
+		t.Run(method, func(t *testing.T) {
+			s := &RemoteEnvironmentSession{setup: codex.RemoteCheckSetup{CheckID: strings.Repeat("a", 32)}, original: b.ProcessIdentity{RuntimeID: "runtime", Terminal: "actor", Incarnation: "inc"}, actorReady: true}
+			var response codex.RemoteCheckResponse
+			started := time.Now()
+			s.client = native.New(native.Config{Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				deadline, ok := ctx.Deadline()
+				if !ok || deadline.After(started.Add(41*time.Second)) {
+					t.Fatal("fixed control inherited model execution budget", deadline)
+				}
+				result := map[string]any{}
+				switch args[1] {
+				case "show":
+					result["terminal"] = map[string]string{"handle": "actor", "incarnationId": "inc"}
+				case "send":
+					var payload string
+					for i, arg := range args {
+						if arg == "--text" {
+							payload = args[i+1]
+						}
+					}
+					raw, _ := base64.RawURLEncoding.DecodeString(strings.TrimSuffix(payload, "\r"))
+					var request codex.RemoteCheckRequest
+					if json.Unmarshal(raw, &request) != nil || request.Method != method {
+						t.Fatal("unexpected control")
+					}
+					response = codex.RemoteCheckResponse{ID: request.ID, Facts: map[string]string{"owner": "same"}}
+					result["send"] = map[string]any{"handle": "actor", "accepted": true, "bytesWritten": len(payload)}
+				case "read":
+					raw, _ := json.Marshal(response)
+					result["terminal"] = map[string]any{"handle": "actor", "tail": []string{codex.RemoteCheckPrefix + base64.RawURLEncoding.EncodeToString(raw)}}
+				default:
+					t.Fatal("unexpected operation", args)
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]string{"runtimeId": "runtime"}})
+			}})
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
+			defer cancel()
+			r, err := s.call(ctx, codex.RemoteCheckRequest{Method: method, Action: "permissions"})
+			if err != nil || r.Facts["owner"] != "same" {
+				t.Fatal(r, err)
+			}
+		})
 	}
 }

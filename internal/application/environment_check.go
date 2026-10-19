@@ -566,6 +566,13 @@ func (e *Engine) executeCheckProbe(ctx context.Context, id string, w *checkWorke
 			next.Allowed = false
 			next.View.Status = itemStatus
 			next.View.Diagnostic = call.Action + "_" + itemStatus
+			failure := probeErr
+			if failure == nil {
+				failure = verifyErr
+			}
+			if category := codex.EnvironmentDiagnostic(failure); category != "" && category != "preparation_unverified" {
+				next.View.Diagnostic += ": " + category
+			}
 		}
 	})
 	if err != nil {

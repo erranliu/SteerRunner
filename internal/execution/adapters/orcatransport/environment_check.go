@@ -177,6 +177,14 @@ func (s *RemoteEnvironmentSession) readOutput(ctx context.Context) ([]string, er
 
 func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.RemoteCheckRequest) (codex.RemoteCheckResponse, error) {
 	var response codex.RemoteCheckResponse
+	// Fixed execute/owner-query controls include a native RPC capped at 30s.
+	// Queue and observation consume one bounded 40s budget, never the entire
+	// model execution deadline. A timeout remains unknown and never resends.
+	if request.Method == "execute" || request.Method == "verify" {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, 40*time.Second)
+		defer cancel()
+	}
 	if s.startupFailure != "" {
 		return response, errors.New(s.startupFailure)
 	}
@@ -253,28 +261,38 @@ func (s *RemoteEnvironmentSession) call(ctx context.Context, request codex.Remot
 	}
 	// A lost receipt is not a reason to send the machine request again. Only
 	// the original actor's cached response can settle that exact request ID.
-observe:
 	for {
 		lines, err := s.readOutput(ctx)
 		if err != nil {
 			if retryCheckObservation(ctx, err) {
 				continue
 			}
-			return response, err
+			return response, fmt.Errorf("remote_check_response_unverified: %w", err)
 		}
 		for _, line := range lines {
 			line = strings.TrimSpace(line)
+			// Retained PTY stream rows can include an earlier input echo. Only
+			// a complete frame for this request and the original actor is used.
+			if marker := strings.Index(line, codex.RemoteCheckPrefix); marker >= 0 {
+				line = line[marker:]
+			}
 			if !strings.HasPrefix(line, codex.RemoteCheckPrefix) {
 				continue
 			}
 			raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteCheckPrefix))
 			var value codex.RemoteCheckResponse
 			if e == nil && json.Unmarshal(raw, &value) == nil && value.ID == request.ID {
-				if _, identityErr := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); identityErr != nil {
-					if retryCheckObservation(ctx, identityErr) {
-						continue observe
+				// Retain the original matching response while retrying only
+				// its original identity observation. A stream need not repeat
+				// an already observed frame after a transient show failure.
+				for {
+					if _, identityErr := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); identityErr != nil {
+						if retryCheckObservation(ctx, identityErr) {
+							continue
+						}
+						return response, fmt.Errorf("remote_check_identity_unverified: %w", identityErr)
 					}
-					return response, identityErr
+					break
 				}
 				if value.Error != "" {
 					return value, errors.New(value.Error)
@@ -284,7 +302,7 @@ observe:
 		}
 		select {
 		case <-ctx.Done():
-			return response, ctx.Err()
+			return response, fmt.Errorf("remote_check_response_missing: %w", ctx.Err())
 		case <-time.After(200 * time.Millisecond):
 		}
 	}

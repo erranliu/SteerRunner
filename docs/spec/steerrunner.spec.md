@@ -259,9 +259,10 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
 
 | 配置 | 字段及默认值 |
 | --- | --- |
-| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。GitHub worker 使用执行主机 gh 登录的单仓库代理；`github_auth` 已移除，含 null 也返回 invalid_input。无权限覆盖字段，固定 workspace-write/MXC/network enabled/never |
+| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra；`access_mode` 默认 `sandbox`，可显式选 `full_access`。两种模式均为 approval never，不接受额外权限覆盖参数。GitHub worker 使用执行主机 gh 单仓库代理；`github_auth` 含 null 均返回 invalid_input |
+| Orca settings | `agent` 默认 `codex`，本期受管 agent 包括 `codex`/`pi`/`dsh`；`access_mode` 默认 `sandbox`，可显式选 `full_access`，冻结后按对应模式准备和核验，不作失败回退。未知 agent/模式组合以 capabilities 和实际准备资格为准 |
 | Orca settings.transport | `executable` 默认 `orca.exe`；`args` 默认空数组；`wait_timeout` 默认 `30s`，Go duration，须大于 0 且不超过 1 分钟。args 不得覆盖 environment/pairing-code，路由来自冻结 target |
-| Orca settings.agent_launch | `executable` 默认 `codex`；`args` 默认空数组；可选 `model`、`reasoning_effort`（同枚举，省略继承工具）。transport 与 agent_launch 不混用 |
+| Orca settings.agent_launch | 原生 `executable` 按 agent 默认 `codex`/`pi.cmd`/`dsh.cmd`；`args` 默认空数组；可选 `model`、`reasoning_effort`。可信执行主机 helper 使用 `runtime_executable`；`runtime_sha256` 为 64 位小写十六进制，schema 允许省略，但正式验收及本期可核验的远端闭环/停止配置须冻结其摘要。transport 与 agent_launch 不混用 |
 | command provider settings | 必填 `base_url`、`query.executable`、非空 `query.args`；可选 `authentication_refs`（环境认证的引用名称数组，不是凭据值）。实际查询协议/身份沿用提取的 provider |
 | gitea provider settings | 必填 `base_url`；可选 `authentication_refs`。不接收内嵌 token/password 字段 |
 
@@ -331,10 +332,10 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 ## 9. PR 成果与 SteerLine 协作
 
-本地 Windows 使用固定 MXC 权限资源契约。app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
+Windows 的默认 `sandbox` 使用固定 MXC 权限资源契约；显式 `full_access` 核验对应的原生完整访问权限。sandbox 下 app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。sandbox 验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
 
-GitHub worker 的 W05–W07 新增可信执行主机认证准备与确定性原生沙箱检查，
-固定权限改为 workspace-write/MXC/network enabled/approval never，关闭 shell snapshot。
+GitHub worker 的 W05–W07 使用可信执行主机认证准备与确定性同权限工具检查：
+默认 sandbox 为 workspace-write/MXC/network enabled/approval never；显式 full_access 为 danger-full-access/approval never，不能用作准备失败的回退。关闭 shell snapshot。
 不再申请自动审核发布。单仓库认证代理、进程环境、期限、失败零业务输入及远端能力
 边界见[认证契约](sandbox-authentication.spec.md)；W16 原发布责任和未知结果对账保持。
 本机可执行此准备；Orca terminal 缺同沙箱确定性能力时在业务前阻断，不接受模型检查声明。

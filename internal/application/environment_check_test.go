@@ -165,6 +165,7 @@ type environmentProbePort struct {
 	e                 *Engine
 	executes, replies int
 	replyErr          error
+	executeErr        error
 	fail              bool
 	reject            bool
 	denied            bool
@@ -180,6 +181,9 @@ func (p *environmentProbePort) Execute(_ context.Context, action string, r contr
 		p.t.Fatal("write preceded durable original intent", last)
 	}
 	p.executes++
+	if p.executeErr != nil {
+		return nil, p.executeErr
+	}
 	if p.denied {
 		return map[string]string{"failure_stage": "authorization_denied"}, errors.New("native_probe_rejected")
 	}
@@ -535,5 +539,34 @@ func TestCheckReplyFailurePersistsUnknownWithoutRepeatingProbe(t *testing.T) {
 	_ = e.executeCheckProbe(context.Background(), "original", w, call)
 	if p.executes != 1 || p.replies != 1 {
 		t.Fatal("probe was repeated after a lost reply")
+	}
+}
+
+func TestCheckProbeFailureKeepsFiniteObservationStage(t *testing.T) {
+	for _, category := range []string{"remote_check_response_missing", "remote_check_response_unverified", "remote_check_identity_unverified"} {
+		t.Run(category, func(t *testing.T) {
+			e := environmentEngine(t)
+			r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "original", Input: contracts.DecodeCheckInput(environmentRequest(t, "input").Input), Items: contracts.CheckManifest(false), Actual: contracts.CheckContext{AttemptID: "attempt", SessionID: "session", TurnID: "turn", Nonce: "nonce"}}, Nonce: "nonce", Allowed: true, StartCommand: "start", CommandStates: map[string]string{"start": "pending"}}
+			e.mu.Lock()
+			err := e.commitCheckLocked(r, nil)
+			e.mu.Unlock()
+			if err != nil {
+				t.Fatal(err)
+			}
+			p := &environmentProbePort{t: t, e: e, executeErr: errors.New(category + ": provider-secret")}
+			w := &checkWorker{port: p}
+			call := codex.EnvironmentCall{CallID: "original-call", Action: "permissions", Nonce: "nonce"}
+			if e.executeCheckProbe(context.Background(), "original", w, call) == nil {
+				t.Fatal("unknown probe became success")
+			}
+			next := e.checkSnapshot("original")
+			if next.View.Diagnostic != "permissions_unverified: "+category || next.View.Status != "unverified" || next.Allowed || next.Operations[0].Status != b.OperationUnknown {
+				t.Fatal("finite diagnosis or uncertainty lost", next.View.Diagnostic)
+			}
+			_ = e.executeCheckProbe(context.Background(), "original", w, call)
+			if p.executes != 1 || p.replies != 1 {
+				t.Fatal("unknown probe was repeated", p.executes, p.replies)
+			}
+		})
 	}
 }

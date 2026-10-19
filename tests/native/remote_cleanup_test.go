@@ -76,7 +76,7 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 		if err != nil {
 			return nil, err
 		}
-		return map[string]any{"run_id": view.RunID, "proof": proof, "revoker": actor, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
+		return map[string]any{"run_id": view.RunID, "proof": proof, "revoker": actor, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_transient_read_failures": inventory.TransientReadFailures, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
 	}
 	return nil, errors.New("original Run missing from cleanup store")
 }
