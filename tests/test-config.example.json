@@ -3,7 +3,7 @@
   "configurations": {
     "local-codex": {
       "workflow": {
-        "version": 1,
+        "version": 2,
         "id": "development"
       },
       "execution": {

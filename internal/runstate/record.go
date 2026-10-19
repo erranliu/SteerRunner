@@ -7,6 +7,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"time"
 )
@@ -27,6 +28,8 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	ReportWork          map[string]string              `json:"observed_report_work,omitempty"`
+	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config"`
 	PRClues             []string                       `json:"pr_clues,omitempty"`
 	PRClueProbeAt       time.Time                      `json:"pr_clue_probe_at,omitempty"`
 	LastFinal           *contracts.FinalView           `json:"last_final,omitempty"`
@@ -88,6 +91,9 @@ func (r *Record) Clone() *Record {
 }
 func (r *Record) View() contracts.RunView {
 	v := contracts.RunView{RunID: r.ID, Revision: r.Revision, Title: r.Request.Title, Correlation: r.Request.Correlation, InputDigest: r.InputDigest, ResourceDigest: r.ResourceDigest, Workflow: r.Request.Workflow, Step: r.Workflow.StepID, Status: r.Status, Phase: r.Phase, Diagnostic: r.Diagnostic, NewInputsAllowed: r.Allowed, ResumeRequired: r.ResumeRequired, StopStatus: r.StopStatus, Question: r.Question, PR: r.PR, Summary: r.Summary, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, Materials: []contracts.MaterialView{}}
+	for _, a := range r.Workflow.Results {
+		v.ResultAcquisition = append(v.ResultAcquisition, contracts.AcquisitionView{ID: a.ID, Contract: a.Contract, Source: a.Source, Method: a.Method, Status: a.Status, Missing: a.Missing, Conflicts: a.Conflicts, Attempts: a.Attempts, Fields: a.Fields})
+	}
 	s := r.Snapshot
 	v.Final = r.LastFinal
 	v.Execution = contracts.ExecutionView{AttemptID: s.Session.AttemptID, TurnStarted: r.NativeStarted, Generation: s.ResourceGeneration, Backend: string(s.Ref.Backend), Protocol: string(s.Ref.Protocol), SessionID: s.Session.SessionID, TurnID: s.Session.CurrentTurnID}
@@ -97,9 +103,9 @@ func (r *Record) View() contracts.RunView {
 		v.Execution.RequestedModel, v.Execution.RequestedReasoningEffort = input.Model, input.ReasoningEffort
 	}
 	if r.Workflow.AuditModel != nil {
-		v.Audit = &contracts.AuditView{Model: r.Workflow.AuditModel.Model, ReasoningEffort: r.Workflow.AuditModel.ReasoningEffort, RepairCount: r.Workflow.RepairCount, Results: []workflow.AuditRecord{}}
+		v.Audit = &contracts.AuditView{Model: r.Workflow.AuditModel.Model, ReasoningEffort: r.Workflow.AuditModel.ReasoningEffort, Results: []workflow.AuditRecord{}}
 		for _, a := range r.Workflow.Audits {
-			if a.SourceCommandID == r.Workflow.AuditReportCommandID {
+			if a.SourceResultID == r.Workflow.ImplementationResultID {
 				v.Audit.Results = append(v.Audit.Results, a)
 			}
 		}

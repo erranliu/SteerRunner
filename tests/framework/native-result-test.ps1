@@ -28,9 +28,11 @@ if(-not $taskRejected){throw 'Audited PR merge was accepted'}
 $taskManifest.driver='development-feedback'
 $taskRejected=$false;try{Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskBase)}catch{$taskRejected=$true}
 if(-not $taskRejected){throw 'Feedback case passed without feedback/merge'}
-$taskFull=$taskBase.Clone();$taskFull.merge_commit='merge';$taskFull.feedback_head='updated'
+$taskFull=$taskBase.Clone();$taskFull.merge_commit='merge';$taskFull.feedback_rejected=$true
 Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
-$taskManifest.driver='development-core';$taskFull.Remove('feedback_head')
+$taskManifest.driver='development-smoke';$taskFull.Remove('feedback_rejected')
+Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
+$taskManifest.driver='result-acquisition'
 Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
 $taskManifest.driver='development-multirun'
 $taskMulti=$taskBase.Clone();$taskMulti.runs=@(@{run_id='a';stop_status='stopped';new_inputs_allowed=$false;execution=@{session_id='s-a';workspace='w-a';branch='b-a'};pr=@{url='pr-a'}},@{run_id='b';stop_status='stopped';new_inputs_allowed=$false;execution=@{session_id='s-b';workspace='w-b';branch='b-b'};pr=@{url='pr-b'}})
@@ -67,12 +69,19 @@ if($Evidence){
     $null=[IO.Directory]::CreateDirectory($Evidence)
     $taskHistory=Join-Path $Evidence 'audit-history.jsonl'
     $taskModelManifest=Convert-ResultObject @{audit_model=@{model='auditor';reasoning_effort='high'};execution=@{settings=@{model='executor';reasoning_effort='high'}}}
-    $taskModelView=Convert-ResultObject @{execution=@{session_id='session';workspace='C:/fixture';turn_id='publish'};audit=@{results=@(@{step='audit.spec';turn_id='spec';verdict='pass'},@{step='audit.code';turn_id='code';verdict='pass'})}}
-    $taskHistoryRows=@(@{type='session_meta';payload=@{id='session';cwd='C:/fixture'}},@{type='turn_context';payload=@{turn_id='spec';model='auditor';effort='high'}},@{type='turn_context';payload=@{turn_id='code';model='auditor';effort='high'}},@{type='turn_context';payload=@{turn_id='publish';model='executor';effort='high'}})
+    $taskModelView=Convert-ResultObject @{execution=@{session_id='session';workspace='C:/fixture';turn_id='publish'};pr=@{head_revision='post'};audit=@{results=@(@{step='audit.code.execute';turn_id='code';source_result_id='implementation';result_id='audit';pre_head='pre';post_head='post'})}}
+    $taskHistoryRows=@(@{type='session_meta';payload=@{id='session';cwd='C:/fixture'}},@{type='turn_context';payload=@{turn_id='code';model='auditor';effort='high'}},@{type='turn_context';payload=@{turn_id='publish';model='executor';effort='high'}})
     function Write-AuditHistory { [IO.File]::WriteAllLines($taskHistory,@($taskHistoryRows|ForEach-Object {$_|ConvertTo-Json -Depth 10 -Compress})) }
     Write-AuditHistory
+    foreach($taskSourceField in @('source_result_id','result_id','pre_head','post_head')) {
+        $taskSource=$taskModelView.audit.results[0].$taskSourceField
+        $taskModelView.audit.results[0].$taskSourceField=''
+        $taskRejected=$false;try{Assert-SRAuditModels $taskModelManifest $taskModelView $taskHistory|Out-Null}catch{$taskRejected=$true}
+        if(-not $taskRejected){throw "Audit accepted missing source binding: $taskSourceField"}
+        $taskModelView.audit.results[0].$taskSourceField=$taskSource
+    }
     Assert-SRAuditModels $taskModelManifest $taskModelView $taskHistory|Out-Null
-    foreach($taskIndex in @(0,1,3)){
+    foreach($taskIndex in @(0,1,2)){
         $taskField=if($taskIndex -eq 0){'id'}else{'model'}
         $taskOriginal=$taskHistoryRows[$taskIndex].payload[$taskField];$taskHistoryRows[$taskIndex].payload[$taskField]='foreign'
         Write-AuditHistory

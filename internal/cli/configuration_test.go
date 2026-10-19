@@ -22,9 +22,9 @@ func TestSRStaticConfigurationInterfaces(t *testing.T) {
 	// Neither static path may normalize/create the host default directory.
 	absent := filepath.Join(t.TempDir(), "missing-local-app-data")
 	t.Setenv("LOCALAPPDATA", absent)
-	valid := `{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}},"workflow":{"id":"development","version":1}}`
+	valid := `{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}},"workflow":{"id":"development","version":2}}`
 	text := "Frozen document"
-	run := contracts.RunRequest{Title: "Validate without readiness", Repository: contracts.Repository{URL: "https://github.com/example/repository.git", Remote: "origin", BaseBranch: "main", BaseRevision: strings.Repeat("a", 40)}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"executable":"not-installed-codex.exe"}`)}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "spec.md", Content: &text}, Plan: contracts.Document{Kind: "inline", Path: "plan.md", Content: &text}}, Publication: contracts.Publication{Provider: "gitea", Repository: "example/repository", BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://example.invalid"}`)}}
+	run := contracts.RunRequest{Title: "Validate without readiness", Repository: contracts.Repository{URL: "https://github.com/example/repository.git", Remote: "origin", BaseBranch: "main", BaseRevision: strings.Repeat("a", 40)}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"executable":"not-installed-codex.exe"}`)}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "spec.md", Content: &text}, Plan: contracts.Document{Kind: "inline", Path: "plan.md", Content: &text}}, Publication: contracts.Publication{Provider: "gitea", Repository: "example/repository", BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://example.invalid"}`)}}
 	validRun, _ := json.Marshal(run)
 	validCheck, _ := json.Marshal(contracts.CheckInput{Repository: run.Repository, Execution: run.Execution})
 	tests := []struct {

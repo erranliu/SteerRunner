@@ -1,0 +1,57 @@
+{
+  "os_job_reattached": true,
+  "owner": {
+    "job": {
+      "owner": {
+        "kind": "os",
+        "pid": 44784,
+        "created": "01dd5f56d61fecbb",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\native-preparation-fix-20261019\\steerrunner-agent-qualified.exe"
+      },
+      "worker": {
+        "kind": "os",
+        "pid": 38688,
+        "created": "01dd5f56d8604d10",
+        "executable": "c:\\program files\\nodejs\\node.exe"
+      },
+      "handle": 1268
+    },
+    "runtime_sha256": "128695a6788848ccfa3f67708289d5f179876d4a1c5aad8b73a0863716ffd62e",
+    "extension_bundle_sha256": "0b2e7c5ea62a47dd52a9452281d61af6d29622d5548cc2d1643cea6ac457eb5c",
+    "session_id": "4c282c54-15b0-a3cf-cac1-1d724466db56",
+    "run_id": "de40abfbc9b2fea69d36eecc0d4bac87",
+    "configuration_digest": "4ddcfea2391971d24329baa88ac9e78c496700ef84d37de88a880771a8d7d259",
+    "access_mode": "sandbox"
+  },
+  "qualified_turns": 3,
+  "readiness": {
+    "reasoning_effort": "low",
+    "active_command_id": "853fbae6185d7d5aa751bc0951f5a368",
+    "version": 2,
+    "source": "pi-extension-v1",
+    "source_sha256": "62a850310dc63403b76349d0f1774876837795d00b92f693983266fcfb11d2ef",
+    "run_id": "de40abfbc9b2fea69d36eecc0d4bac87",
+    "session_id": "4c282c54-15b0-a3cf-cac1-1d724466db56",
+    "instance_id": "f29d31b8-806a-45ab-8a48-022846202285",
+    "pid": 38688,
+    "process_started_at": "2026-10-18T23:17:29.427Z",
+    "mode": "tui",
+    "tools": [
+      "read",
+      "write",
+      "edit",
+      "powershell"
+    ],
+    "model": "deepseek/deepseek-flash",
+    "preparation": {
+      "inside_write_verified": true,
+      "provider_environment_absent": true,
+      "outside_write_denied": true,
+      "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+      "access_mode": "sandbox",
+      "authentication_expires_at": "2026-10-19T08:17:28.0624466+08:00",
+      "verified": true
+    },
+    "stage": "ready"
+  }
+}

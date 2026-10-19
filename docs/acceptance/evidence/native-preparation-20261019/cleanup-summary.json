@@ -1,0 +1,37 @@
+[
+  {
+    "scenario": "orca-local.codex",
+    "fixture": "b0106f290a5e",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "live-qualified/orca-local.codex/b0106f290a5e/service-status-final.json"
+  },
+  {
+    "scenario": "orca-local.pi",
+    "fixture": "f09f72df0eb8",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "live-qualified/orca-local.pi/f09f72df0eb8/service-status-final.json"
+  },
+  {
+    "scenario": "orca-local.dsh",
+    "fixture": "e115bfecb7b8",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "live-qualified/orca-local.dsh/e115bfecb7b8/service-status-final.json"
+  },
+  {
+    "scenario": "local-codex.smoke",
+    "fixture": "84fc08bff39c",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "live-l2/local-codex.smoke/84fc08bff39c/service-status-final.json"
+  },
+  {
+    "scenario": "local-codex.result-acquisition",
+    "fixture": "448b2ef40ccb",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "live-l2/local-codex.result-acquisition/448b2ef40ccb/service-status-final.json"
+  }
+]

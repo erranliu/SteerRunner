@@ -1,0 +1,49 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "a96556b06410139b63c1c419543cf87783b29f7c",
+  "source_dirty": false,
+  "started_at": "2026-10-18T13:44:34.7433938Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "test_count": 356,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final",
+      "terminal_extension_test_count": 28,
+      "native_zero_match_guard": true,
+      "terminal_extension_exit": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\framework",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "level": "L1",
+      "exit_code": 0,
+      "terminal_extensions_passed": true,
+      "native_driver_compile_exit": 0
+    },
+    {
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled",
+      "level": "Controlled",
+      "scenario_count": 16
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-18T14:01:02.4321292Z"
+}

@@ -16,7 +16,8 @@ func TestSROrcaFrozenMaterials(t *testing.T) {
 	if err := materialize(r); err != nil {
 		t.Fatal("remote material preparation accessed center filesystem", err)
 	}
-	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 1}
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
+	bindTestWorkflow(r)
 	if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
 		t.Fatal(err)
 	}

@@ -1,0 +1,2 @@
+{"args":["-c","core.longpaths=true","remote","get-url","origin"],"at":"2026-10-18T14:01:36.7145599Z","exe":"git","failed":false,"stderr":"","stdout":"https://github.com/erranliu/SteerlineTest.git\n"}
+{"args":["-c","core.longpaths=true","rev-parse","HEAD"],"at":"2026-10-18T14:01:36.7681406Z","exe":"git","failed":false,"stderr":"","stdout":"7baac62e8457f382b8207507a32d4f2461fd3c36\n"}

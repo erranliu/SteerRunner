@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-10-18T15:12:37.231429+00:00",
+  "fixture": "C:\\srt\\ace6d882146b",
+  "exit_code": 0,
+  "stdout": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\ace6d882146b\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"not_running\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\",\"last_shutdown\":{\"instance_id\":\"3e509cd0dd1d7efcee6ed95c633876c4\",\"request_id\":\"cleanup-service\",\"state_dir\":\"c:\\\\srt\\\\ace6d882146b\\\\s\",\"executable_sha256\":\"af2d2f5bb6571e4b957ee64a40954f5c00ce31701368cfcea628fd6039723013\",\"resources_settled\":true}},\"error\":null}\n",
+  "stderr": ""
+}

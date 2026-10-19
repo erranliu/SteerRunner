@@ -1,0 +1,156 @@
+{
+  "recorded_at": "2026-10-18T15:14:09.076359+00:00",
+  "source_commit": "8a7e339c78951dde1be7d698c1a81de4479fe7c6",
+  "base_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+  "recommendation": "not-ready-for-merge",
+  "source_pr": "https://github.com/erranliu/SteerRunner/pull/25",
+  "source_pr_draft": true,
+  "scope": "Complete L1/Controlled and two L2 plus five affected L3 scenarios; not complete registered L3",
+  "source_differences": [
+    {
+      "from": "a96556b06410139b63c1c419543cf87783b29f7c",
+      "to": "67640c4365c6174e7aa7808a5b5b777c4bced1a5",
+      "changed_files": [
+        "internal/resources/assets/settings.schema.json",
+        "internal/resources/configuration_test.go"
+      ]
+    },
+    {
+      "from": "67640c4365c6174e7aa7808a5b5b777c4bced1a5",
+      "to": "1c4b08088bb73516eb3cd8fb0b147c02cb199807",
+      "changed_files": [
+        "internal/testkit/livetest/acquisition.go",
+        "internal/testkit/livetest/acquisition_test.go",
+        "internal/testkit/livetest/remote_cleanup.go",
+        "internal/testkit/livetest/remote_cleanup_test.go",
+        "scripts/new-test-fixture.ps1"
+      ]
+    },
+    {
+      "from": "1c4b08088bb73516eb3cd8fb0b147c02cb199807",
+      "to": "36a1cc346b68660ecfa69d250b36fc6251cbecff",
+      "changed_files": [
+        "tests/native/terminal_reliability_test.go"
+      ]
+    },
+    {
+      "from": "36a1cc346b68660ecfa69d250b36fc6251cbecff",
+      "to": "4472afb99b861df9db894f762e89ab2dc2a6d34d",
+      "changed_files": [
+        "internal/execution/adapters/orcatransport/extensions/receipt.mjs",
+        "internal/execution/adapters/orcatransport/receipt_write_windows_test.go"
+      ]
+    },
+    {
+      "from": "4472afb99b861df9db894f762e89ab2dc2a6d34d",
+      "to": "4bcfb8cc3bd669a1f6f79dc17c8e589b1f8394e4",
+      "changed_files": [
+        "tests/native/terminal_reliability_test.go"
+      ]
+    },
+    {
+      "from": "4bcfb8cc3bd669a1f6f79dc17c8e589b1f8394e4",
+      "to": "8a7e339c78951dde1be7d698c1a81de4479fe7c6",
+      "changed_files": [
+        "internal/execution/resultacquisition/acquisition_test.go",
+        "internal/execution/resultacquisition/extract.go"
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "command": "pwsh -NoProfile -File scripts/test.ps1 -Level Controlled -OutDir .evidence/rebase-audit-20261018/full-final",
+      "source": "a96556b",
+      "exit_code": 0,
+      "result": "L1 356 Go roots/28 Node; Controlled 16/16",
+      "evidence": "full-final/summary.json"
+    },
+    {
+      "command": "pwsh -NoProfile -File scripts/test.ps1 -Level L1 -OutDir .evidence/rebase-audit-20261018/l1-latest",
+      "source": "4bcfb8c",
+      "exit_code": 0,
+      "result": "358 Go roots/28 Node; seven explicitly allowed skips",
+      "evidence": "l1-latest/summary.json"
+    },
+    {
+      "command": "go test ./internal/execution/resultacquisition ./internal/execution/workflow ./internal/application/...",
+      "source": "8a7e339 (same source bytes, started before commit; docs dirty)",
+      "exit_code": 0,
+      "evidence": "checks/markdown-pr-regression.log"
+    },
+    {
+      "command": "go test -count=1 -run '^TestRA|^TestRAPRCluesRespectMarkdownBoundaries$' ./internal/execution/resultacquisition ./internal/execution/workflow ./internal/application",
+      "source": "8a7e339 (docs dirty)",
+      "exit_code": 0,
+      "evidence": "checks/markdown-pr-focused.log"
+    },
+    {
+      "command": "go test ./internal/execution/adapters/orcatransport -count=1 -v",
+      "source": "4472afb",
+      "exit_code": 0,
+      "evidence": "checks/receipt-final-package.log"
+    },
+    {
+      "command": "go test ./internal/execution/adapters/orcatransport -run ^TestNativeReceiptPublicationAcrossWindowsReaders$ -count=1 -v",
+      "source": "4472afb",
+      "exit_code": 0,
+      "evidence": "checks/receipt-publication-regression.log"
+    },
+    {
+      "command": "node --test internal/execution/adapters/orcatransport/extensions/*.test.mjs",
+      "source": "4472afb",
+      "exit_code": 0,
+      "evidence": "checks/receipt-final-extensions.tap"
+    },
+    {
+      "command": "go test -tags=live ./tests/native -run ^TestSRFreezeOrcaAgent$ -count=1 -v",
+      "source": "4472afb",
+      "exit_code": 0,
+      "evidence": "checks/receipt-final-freeze.log"
+    },
+    {
+      "command": "pwsh -NoProfile -File .evidence/rebase-audit-20261018/run-native-final.ps1",
+      "source": "67640c4",
+      "helper_source": "67640c4",
+      "exit_code": 1,
+      "evidence": "native/summary.json"
+    },
+    {
+      "command": "pwsh -NoProfile -File .evidence/rebase-audit-20261018/run-native-retry.ps1",
+      "source": "1c4b080",
+      "helper_source": "67640c4",
+      "exit_code": 1,
+      "evidence": "native-retry/summary.json"
+    },
+    {
+      "command": "pwsh -NoProfile -File .evidence/rebase-audit-20261018/run-native-writers-final.ps1",
+      "source": "36a1cc3",
+      "helper_source": "67640c4",
+      "exit_code": 1,
+      "evidence": "native-writers-final/summary.json"
+    },
+    {
+      "command": "pwsh -NoProfile -File .evidence/rebase-audit-20261018/run-native-final-qualified.ps1",
+      "source": "4bcfb8c",
+      "helper_source": "4bcfb8c",
+      "exit_code": 1,
+      "evidence": "native-final/summary.json"
+    }
+  ],
+  "remaining_gates": [
+    "Final code/helper three native terminal L3 scenarios: native preparation failed before business input; Codex sandbox network qualification verified:false",
+    "Previous service-restart/kill-active original terminal.create unknown without recoverable native identity remains unresolved; fail closed, no resource-settled claim",
+    "Dedicated admin host unavailable; full L3 not qualified"
+  ],
+  "steerline": {
+    "path": "C:/Project/SteerLine",
+    "head": "bfe392447591137e6d762f19daf90cdc828aa428",
+    "porcelain": ""
+  },
+  "side_effects": {
+    "source_pr_merged": false,
+    "deployed": false,
+    "steerline_changed": false,
+    "task_service_cleanup": "cleanup-summary.json"
+  }
+}

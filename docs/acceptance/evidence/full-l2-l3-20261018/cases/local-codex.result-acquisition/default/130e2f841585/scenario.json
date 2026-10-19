@@ -1,0 +1,12 @@
+{
+  "scenario": "local-codex.result-acquisition",
+  "level": "L2",
+  "stage": "completed",
+  "run_id": "21e4463471f05d603131abb884c38986",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/479",
+  "original_head": "76709737639ce7ba5e0674787157e9de19494dc0",
+  "merge_commit": "eeba895cf46d4eb7faafa8ab76e85f691da01608",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true
+}

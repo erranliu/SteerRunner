@@ -1,0 +1,23 @@
+{
+  "id": "ecc9618a-1fd6-4739-946d-56855db9ce59",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_6d07fd0b-b53c-44ee-83f8-624a5f13b56f",
+      "status": "running",
+      "tail": [
+        "SR_NATIVE_CONTROL_READY:eyJiaW5kaW5nIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL0FkbWluaXN0cmF0b3Ivb3JjYS93b3Jrc3BhY2VzL1N0ZWVybGluZVRlc3Qvc3ItcnVudGltZS0xYzNjLWZ1bGwtMjAyNjEwMTgiLCJydW50aW1lX3NoYTI1NiI6IjZmMTdiNzczMDNlOTBjNGQzN2VhNzBhNGUzM2IyZDNhZjcxMDIzNGNjZDBmYTRkYWMzMzU0NjQ4MmViYmNhYjYifQ"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "steerrunner-test/v1",
+  "id": "84fc08bff39c",
+  "level": "L2",
+  "scenario": "local-codex.smoke",
+  "driver": "development-smoke",
+  "root": "C:\\srt\\84fc08bff39c",
+  "runner_exe": "C:\\srt\\84fc08bff39c\\bin\\steerrunner.exe",
+  "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+  "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+  "source_dirty": false,
+  "repository_path": "C:\\srt\\84fc08bff39c\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/84fc08bff39c/base",
+  "base_revision": "e2756c90187d3a7492014105f291bf7e7535ce48",
+  "spec_path": "C:\\srt\\84fc08bff39c\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\84fc08bff39c\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "target": {
+      "kind": "local"
+    },
+    "adapter": "codex-app-server",
+    "settings": {
+      "reasoning_effort": "medium",
+      "model": "gpt-6-luna",
+      "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+      "access_mode": "sandbox"
+    }
+  },
+  "publication": {
+    "settings": {
+      "query": {
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\84fc08bff39c\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ],
+        "executable": "powershell.exe"
+      },
+      "base_url": "https://github.com"
+    },
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/84fc08bff39c/base",
+    "provider": "command"
+  },
+  "created_at": "2026-10-18T23:29:23.4151879Z"
+}

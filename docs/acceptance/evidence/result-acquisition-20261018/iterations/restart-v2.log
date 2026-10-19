@@ -1,0 +1,8 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/parser-restart
+    audit_test.go:92: parser-restart: audit.code.parse originating adapter report policy unavailable
+--- FAIL: TestSRResultAcquisition (41.26s)
+    --- FAIL: TestSRResultAcquisition/parser-restart (41.26s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/tests/integration	81.266s
+FAIL

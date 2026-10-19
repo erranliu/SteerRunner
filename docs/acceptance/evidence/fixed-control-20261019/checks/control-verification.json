@@ -1,0 +1,93 @@
+{
+  "verified": true,
+  "source": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+  "cases": [
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "fixture": "C:\\srt\\7c0acf7390e4",
+      "control": {
+        "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+        "terminal": "term_dcd3f01d-69bd-4ba3-acc9-3f293f1af99d",
+        "incarnation": "84ca2af3-0085-4521-8b62-ae99a7ea09d6",
+        "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-55e01e35a9d2e75f9d19fdbece8664a3"
+      },
+      "native_create_index": 8,
+      "control_ready_index": 13,
+      "first_main_send_index": 16,
+      "identity_checks": 14,
+      "completed_receipt_observations": 15,
+      "authentication_proof_observations": 1,
+      "auxiliary_creations": 1,
+      "per_query_or_revocation_creations": 0,
+      "audit": {
+        "business_creations": 1,
+        "closed_inspections": 1,
+        "initial_terminal_creations": 0,
+        "inspections": 1,
+        "prompt_sends": 4,
+        "verified": true
+      },
+      "raw_native_calls_sha256": "7456b04bf19901fe8396d65a80a211e267b2be4fba83d62b494d8d9efb8105fc",
+      "raw_driver_faults_sha256": "38ef76c56a57506b08e13ee3ea7b48e995ba139542e36ce8432774d10c0f0c4c"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "fixture": "C:\\srt\\ffa62d9a9638",
+      "control": {
+        "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+        "terminal": "term_f6507049-a69c-47c5-9606-b74af0e78086",
+        "incarnation": "cf3c199d-642e-469e-abbc-45421951a880",
+        "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3358672b854a2e406cb2039e06d0c1a7"
+      },
+      "native_create_index": 8,
+      "control_ready_index": 13,
+      "first_main_send_index": 16,
+      "identity_checks": 13,
+      "completed_receipt_observations": 8,
+      "authentication_proof_observations": 1,
+      "auxiliary_creations": 1,
+      "per_query_or_revocation_creations": 0,
+      "audit": {
+        "business_creations": 1,
+        "closed_inspections": 1,
+        "initial_terminal_creations": 0,
+        "inspections": 1,
+        "prompt_sends": 3,
+        "verified": true
+      },
+      "raw_native_calls_sha256": "f6501a050b6e28d4626ddfd033209244df64f70a994b10520fbb7bd753c335f7",
+      "raw_driver_faults_sha256": "bec1cf332ce508e40c8cee32e2934ddb9b5b0b18a678d65927ad63ea62e6bbb2"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "fixture": "C:\\srt\\38fc48687e2b",
+      "control": {
+        "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+        "terminal": "term_e60f386e-83f8-4157-b42e-b3e26865a638",
+        "incarnation": "c34e172c-f368-4a16-9495-8a3a2621e252",
+        "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d7e5e51c7b855d0dc09e88cfbd828b44"
+      },
+      "native_create_index": 8,
+      "control_ready_index": 13,
+      "first_main_send_index": 16,
+      "identity_checks": 6,
+      "completed_receipt_observations": 0,
+      "authentication_proof_observations": 1,
+      "auxiliary_creations": 1,
+      "per_query_or_revocation_creations": 0,
+      "audit": {
+        "business_creations": 1,
+        "closed_inspections": 1,
+        "initial_terminal_creations": 0,
+        "inspections": 1,
+        "prompt_sends": 2,
+        "verified": true
+      },
+      "raw_native_calls_sha256": "20301c64370bc80da6abc0583227d84c8fdf1a35a62c5bbe5b2bb26c6c7ba8f2",
+      "raw_driver_faults_sha256": "aba650fb882047ae6684b06befb13d0adb4ee8e7ca4dd6b6fa19660cf291b9ee"
+    }
+  ]
+}

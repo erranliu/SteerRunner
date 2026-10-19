@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -26,8 +27,8 @@ func (o *observer) StopHandle() b.StopHandle        { return &observationHandle{
 func (o *observer) Close(context.Context) error { o.once.Do(o.cancel); return nil }
 
 // Passive cancellation stays nonblocking: the actor may be acknowledging an
-// event. Service shutdown can separately await the canceled goroutine, including
-// the original readonly inspector's background close, before its process exits.
+// event. Service shutdown separately awaits this caller-side goroutine; the
+// fixed execution-host control actor stays owned by the original execution.
 func (o *observer) awaitCleanup(ctx context.Context) error {
 	if o.finished == nil {
 		return nil
@@ -108,6 +109,16 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				l.feedMu.Unlock()
 			}
 			if err != nil {
+				if ctx.Err() == nil && native.IsCLIQueueError(err) {
+					// Retry only this read-only metadata observation. The callback
+					// never ran; no input or auxiliary actor can be duplicated.
+					select {
+					case <-ctx.Done():
+						return
+					case <-time.After(250 * time.Millisecond):
+						continue
+					}
+				}
 				if ctx.Err() == nil {
 					o.done <- err
 				}

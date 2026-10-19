@@ -1,0 +1,934 @@
+{
+  "prerequisites/summary.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\summary.json",
+    "sha256": "5547344792817c14ebded78220039b1c9e14310a0a66422893f0f348409c5b45"
+  },
+  "prerequisites/frozen-config.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\frozen-config.json",
+    "sha256": "3f3caaeafe9ee10f054e2e8fcd07a0b6d3f360d5d4b7902551be70a2730e1b54"
+  },
+  "prerequisites/frozen-catalog.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\frozen-catalog.json",
+    "sha256": "d5bdb89b6803f80f1d32703195686dba08d837401d0d7ef18abefefb1f87dfb0"
+  },
+  "prerequisites/bin/steerrunner.exe.build.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\bin\\steerrunner.exe.build.json",
+    "sha256": "6ae828ecd93798cac16622b998affd01250b434f3b971bd21c5449f3b34cd649"
+  },
+  "prerequisites/l1.jsonl": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\l1.jsonl",
+    "sha256": "1c06caba402c1e7f48593ac0cd333b62dc69b0bee6797a2c4b5189453c69fa98"
+  },
+  "prerequisites/l1-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\l1-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "prerequisites/terminal-extensions.tap": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\terminal-extensions.tap",
+    "sha256": "6ac71dad00dbbb16e03e9d9a0e917aa16a3cf29c3bc85bab24b649c46fb86bac"
+  },
+  "prerequisites/native-compile-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\native-compile-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "prerequisites/framework/result.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\framework\\result.json",
+    "sha256": "161e98546b4f0eba68d4e5ef9e60443fed9f99cf6e387943a072790ed5edcd00"
+  },
+  "prerequisites/controlled/result.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\result.json",
+    "sha256": "9d445b9f015672a3acb7c2aed89dbbadeed2c80caad2335cbe371fc6b46012db"
+  },
+  "prerequisites/controlled/source-identity.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\source-identity.json",
+    "sha256": "d4f063ccc6496dd031181131909610ec497a9ab125925c053ce8e9ceaad23f13"
+  },
+  "prerequisites/controlled/integration.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\integration.log",
+    "sha256": "c6f2b203b3a2f535810e7dab33341c9fa79f0cab617c04f499c22069b25c04df"
+  },
+  "prerequisites/controlled/steerrunner.exe.build.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\steerrunner.exe.build.json",
+    "sha256": "6ae828ecd93798cac16622b998affd01250b434f3b971bd21c5449f3b34cd649"
+  },
+  "prerequisites/controlled/unit-foundation.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\unit-foundation.log",
+    "sha256": "bdcb7ef4c4e27781a747a932254109ad1ef18f66f6cc3bd03d6a10cc0bdfc230"
+  },
+  "checks/component.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\component.log",
+    "sha256": "5b97ef03ce94b9c8e90e42edecec40017d43a920858c7e85563e8ac3eec31b2a"
+  },
+  "checks/component-r2.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\component-r2.log",
+    "sha256": "a3c00a639290d86d83b735c8d396c88da4d409d7231218983c40cac89edbd0dc"
+  },
+  "checks/stop-consumer.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\stop-consumer.log",
+    "sha256": "765dc08d9ce432d26d39f65f091fd4d808ed3bc17496cfe337407456e5f4301a"
+  },
+  "checks/helper-build-r1.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-build-r1.json",
+    "sha256": "1d30d2858e42cdb4b70fc79edbcb8abe7a9bbf6ba4dcd53593d3e4b862aa616a"
+  },
+  "checks/helper-build-r2.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-build-r2.json",
+    "sha256": "fa84b2c007a1b9d9f8029ddf42dcae42e472f13e6e464b5c42110951e1509a38"
+  },
+  "checks/helper-build-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-build-r3.json",
+    "sha256": "67b614709263304866ee6f3fad31b9e75ef8a105f9a57d1aebc8c8bb01810bf0"
+  },
+  "checks/helper-created-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-created-r3.json",
+    "sha256": "8c7d584c721ad3654d3f160ac09b889611ec32cc2044e6901c54f5d47c2c6a46"
+  },
+  "checks/helper-read-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-read-r3.json",
+    "sha256": "6134bdcc40759d6e21eb6801e77a37f779a20bc87bef0f4d5ded24ab673a550f"
+  },
+  "checks/helper-show-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-show-r3.json",
+    "sha256": "23f6d860e9613ca24ca1b8bfe33a752222ea0bfde9e1f204f38d7579fe6ab2f8"
+  },
+  "checks/helper-closed-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\helper-closed-r3.json",
+    "sha256": "b6e42fa8dccb2540d31e9ff71acc7e78229ab56d04dff4efc8320f832b2fbe3b"
+  },
+  "checks/stage-reuse-r3.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\stage-reuse-r3.log",
+    "sha256": "67b614709263304866ee6f3fad31b9e75ef8a105f9a57d1aebc8c8bb01810bf0"
+  },
+  "checks/upload-helper-r2.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\upload-helper-r2.log",
+    "sha256": "6c16edfa07365212c8c5ad3cb430329104f0837a94da93033029b26f76fb5e7e"
+  },
+  "checks/live-config-r2.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\live-config-r2.json",
+    "sha256": "ed3c2e535de7b075f16b97fda65d8fa9fadf38ac2fc58e003975c1eeee2f0a25"
+  },
+  "checks/test-config-r3.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\test-config-r3.json",
+    "sha256": "5e628b87cc3710f56f6c4956c08f3baf8185aa0982d22a3b0a9f3cda8ad18d88"
+  },
+  "checks/source-audit.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\source-audit.json",
+    "sha256": "25f3fafcd16778f129ea626ee0cab897e067f044fe929980a40c872428e6648f"
+  },
+  "checks/audit-source.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\audit-source.py",
+    "sha256": "6a10fb88d4784e1f1cd0a26268b42e8cf85fab2b3e657eaf6a0c1b2a4c6c1acd"
+  },
+  "checks/code-equivalence.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\code-equivalence.py",
+    "sha256": "c72b06d68676901166b0050faf632c5af58f8459d93403b1fe4b76525bddd036"
+  },
+  "checks/code-equivalence.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\code-equivalence.json",
+    "sha256": "0a49475fb7286f2b41ddf59574605c009cd44966709561acad9437829c8097a6"
+  },
+  "checks/capture-validation.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\capture-validation.json",
+    "sha256": "caefe545d381b3bbd832f9eaa28e9e1c208e1ded55f35b60982a9c0e91e0be2e"
+  },
+  "checks/capture-probe-regression-final.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\capture-probe-regression-final.log",
+    "sha256": "941dd8b77cb6884c99915d33b3640723ceea4f83e9655f5d5b614cae3b595663"
+  },
+  "checks/signature-archive-initial.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\signature-archive-initial.log",
+    "sha256": "39a6d641ad8463263db494bef880e0eae8db3715fa4f4a6cd993deaa167e21ce"
+  },
+  "checks/signature-exact-bytes.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\signature-exact-bytes.log",
+    "sha256": "8d8bf10c28dd037f806af461dd3ce5014a2fbf4fc679281bd95d43ec12278d23"
+  },
+  "checks/signature-third-export.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\signature-third-export.log",
+    "sha256": "4c52ce17b8169b7301b8c76e64ae9f6c49d5a186b2c6171d87c74ba85c2ce5d2"
+  },
+  "checks/export-exit/main.go": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\export-exit\\main.go",
+    "sha256": "d59a7f7a24210d818765aa657e5d80c0caf2f4144a63e99cb4e98c230055bd97"
+  },
+  "checks/newmain-components.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-components.log",
+    "sha256": "cb865af19f3162ccdafd9b0a935a2314330d34576f0dc6ff14fc09e94d7c3055"
+  },
+  "checks/newmain-components-r2.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-components-r2.log",
+    "sha256": "994779f8bfc2a52ef881a1c77e63f09d76583cf58739330362213b2b2b53a4ce"
+  },
+  "checks/newmain-framework.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks/newmain-framework-r2.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework-r2.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks/newmain-framework-r3.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework-r3.log",
+    "sha256": "189612d20a278f618194027ea6a5808352022834d0056a9e3153c8bf3164cdc4"
+  },
+  "checks/control-verification.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\control-verification.json",
+    "sha256": "ca407d8ba14b6946eeba610820c14e9c53e3af25bd430e0c7f6010e18ad540f5"
+  },
+  "checks/archive.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\archive.py",
+    "sha256": "9d4470165be1a5da10be72c292274a94e0138f149551f5fb5786fdb70daa78ea"
+  },
+  "checks/render-final.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\render-final.py",
+    "sha256": "fcc47caebee76e3bd6a6f068cbb8e9482d3d80df3c37bbc3e04a221aee95c23c"
+  },
+  "checks/validate-archive.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\validate-archive.py",
+    "sha256": "ab60eef6200d38d369285325ce51298b129ed415591ef617f5a2c3806f2ce993"
+  },
+  "checks/configure-latest.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\configure-latest.py",
+    "sha256": "7c340b2c0b24a3d059d38a03c3a6044d315182bac7bece2cf09009e7997eea22"
+  },
+  "checks/post-proofs.ps1": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\post-proofs.ps1",
+    "sha256": "b29bd9a352bad109df97ecdcb30ddd391c7a282941a92a151a03da0c53ff6f2d"
+  },
+  "checks/post-proofs.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\post-proofs.log",
+    "sha256": "356da45a33f7e50f52ac0fc479662b641f3822aedaa60de4c6d8cd3ad1ee55c2"
+  },
+  "checks/verify-control.py": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\verify-control.py",
+    "sha256": "b92523ea430b4d8fe5ee2bfe5fbd4d2cf07f78f8d8cc8a81af1a85966c63d3f8"
+  },
+  "checks/verify-proof/main.go": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\verify-proof\\main.go",
+    "sha256": "98fc925c1fa7a25d5978b1c3dfc5e908b80847b9f07428193a08f831fde31d23"
+  },
+  "checks/stage-helper.ps1": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\stage-helper.ps1",
+    "sha256": "598a8483ca227d776b0b831c2327ff038ef60dae15ae36ca5586619c2c47589e"
+  },
+  "checks/stage-reuse-helper.ps1": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\stage-reuse-helper.ps1",
+    "sha256": "abc06ff882f671b46d63705930c16360cf7c0b951aa978962481e73fcb848458"
+  },
+  "checks/upload-helper.cjs": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\upload-helper.cjs",
+    "sha256": "29c886af20c4cfea94dfc0c5b45fc5a3e163b73343fa1ce9638129a823a0d9d1"
+  },
+  "checks/probes.ps1": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probes.ps1",
+    "sha256": "72ae72960dc33cb6023a22f07c86fd846f9263f26b5bb53fedf811da64e7fb60"
+  },
+  "checks/after-final.ps1": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\after-final.ps1",
+    "sha256": "00beb6dc8b210f7bd1ad0cab5502ee2d1723bc87198e86aecf6496f5e4bcb451"
+  },
+  "checks/probe-local.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probe-local.log",
+    "sha256": "6f896de054b54f7c6d398ad1151a6c65c512571bc900b4c019ff527b6d069234"
+  },
+  "checks/probe-remote.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probe-remote.log",
+    "sha256": "6dc191f10910cc4cbf8287287ecd9a6bccc42445415cd4c6a469837d72c3059f"
+  },
+  "checks/probes.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probes.json",
+    "sha256": "2b9fd1ee40c50b3f0032c130c2880c5e7c0eecd126126c9edca5e68eeda76dc9"
+  },
+  "checks/capture-native-zero-match/result.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\capture-native-zero-match\\result.json",
+    "sha256": "1b59d3a7132cad5fe9177da05e584eb7fda9fb5a660c5949101ed96f10d6da24"
+  },
+  "checks/capture-native-zero-match/native.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\capture-native-zero-match\\native.log",
+    "sha256": "67e0437670b8d845fc8facd55b54a1d6a7af01b87ee3002018090d3f248b0dc7"
+  },
+  "historical/probes-initial-failed.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probes-initial-failed.json",
+    "sha256": "3c88fd449d37941ca0989e4ab11031d48d1bf4d5f4ea534481851907c7439568"
+  },
+  "historical/probe-local-initial-failed.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\probe-local-initial-failed.log",
+    "sha256": "70c91341ec9d53ecc73ef01863dae4ae30880b52eb606fe7904ab86388ef9c62"
+  },
+  "historical/failed-local-probe/orca-01.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-01.json",
+    "sha256": "56500577a61e4846d3a29f9d71b2f9cb23bf368d008f3b9cca5db978126810e3"
+  },
+  "historical/failed-local-probe/orca-02.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-02.json",
+    "sha256": "adb324e185d50f6de9e199836d0aa1e6c5d0e4045b9fe53a5e21033e84fcbbd3"
+  },
+  "historical/failed-local-probe/orca-03.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-03.json",
+    "sha256": "c46a3f40f2acae5672ea4a0768fd368ee975bb1bbcfbc6faa167dac8553a2e08"
+  },
+  "historical/failed-local-probe/orca-04.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-04.json",
+    "sha256": "df20de3895e077bcff2548fb2907ac7381fc5b783edf81aa8636fbf1beccdc82"
+  },
+  "historical/failed-local-probe/orca-05.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-05.json",
+    "sha256": "ddf95cb8b4b31e57ad422dce12e6c20ff3adb7e9c23b4e7555a95a418aa45e27"
+  },
+  "historical/failed-local-probe/orca-06.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\orca-06.json",
+    "sha256": "7e9d08557b13858b3a27e4d2a5281ca293aedf39ae40362202f6301f2af68d82"
+  },
+  "historical/failed-local-probe/result.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-bb84ea80\\result.json",
+    "sha256": "b9388aaf6f694450fae38887756f14062c8aa81e83177d430a53a7b2dde7870e"
+  },
+  "historical/l1-eight-minute/summary.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\l1\\summary.json",
+    "sha256": "28c09b41c7ef48c1f34d38f8f60a276a01c878c84b011de4d5162206000fdca4"
+  },
+  "historical/l1-eight-minute/l1.jsonl": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\l1\\l1.jsonl",
+    "sha256": "2ea6add49ca1d1dab5626a0749c65e34148dda9e6838a7c3eedc99daa2836746"
+  },
+  "historical/l1-eight-minute/l1-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\l1\\l1-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "historical/application12-result.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\application12-result.json",
+    "sha256": "ebf18a8e69319528003a5bc15c69f0741472164ec11b0ddc9fb472a9cc51445e"
+  },
+  "historical/application12.jsonl": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\application12.jsonl",
+    "sha256": "8d26af70e2cea64e867def7a9c9235f96e2dfd666146396dd0ec4e630c7c030d"
+  },
+  "historical/application12-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\application12-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "historical/interrupted-before-latest-main/summary.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\summary.json",
+    "sha256": "4ad257592e18c86201aab9c8d782e7945c783ab24e4ed8e6eb6e3daffa0602fe"
+  },
+  "historical/interrupted-before-latest-main/l1.jsonl": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\l1.jsonl",
+    "sha256": "130ca00adcb3e2541737036b8a53b4644b59c056275db53da11578c7dba32f25"
+  },
+  "historical/interrupted-before-latest-main/l1-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\l1-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "historical/interrupted-before-latest-main/terminal-extensions.tap": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\terminal-extensions.tap",
+    "sha256": "43029489da2bc4b616ed96bf0a4099329d22bd23d3f452c0c90cfbee15000fe8"
+  },
+  "historical/interrupted-before-latest-main/framework/result.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\framework\\result.json",
+    "sha256": "5a3245d7f3648963e816f1c5ff414d875c0e34a9a2a55c6ac01b24aae942990e"
+  },
+  "historical/interrupted-before-latest-main/controlled/source-identity.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\controlled\\source-identity.json",
+    "sha256": "417daf3380b68ddbb5685afe4ed3ce036b7b33f44c5afa96c3dea51ffe0b25e9"
+  },
+  "historical/interrupted-before-latest-main/controlled/integration.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\controlled\\integration.log",
+    "sha256": "3f522514f5345fd673bbc02c53ca934b1990ac60c2471aacda16991a0f17a30b"
+  },
+  "historical/interrupted-before-latest-main.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-before-latest-main.json",
+    "sha256": "7db4035a544ca9b03f7cb6f2894244dc2d76cf5802954e91f67940db96b8eb46"
+  },
+  "historical/interrupted-service-stop.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-stop.json",
+    "sha256": "a08f322b235b0ef1e93c8ed742b2f2e2428e82fa594c54a5e7de3fd4f4602b99"
+  },
+  "historical/interrupted-service-status.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-status.json",
+    "sha256": "0b5ba458feaf32e2973a97c71f8bcf8ca5ee946c4886fe84dc80f3812d75cb1d"
+  },
+  "historical/interrupted-service-residue-before.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-residue-before.json",
+    "sha256": "f09118938a9b52e119c6da20c2ae25096e7478612e02a948bf28cd100c0de713"
+  },
+  "historical/interrupted-service-residue-stop.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-residue-stop.json",
+    "sha256": "a08f322b235b0ef1e93c8ed742b2f2e2428e82fa594c54a5e7de3fd4f4602b99"
+  },
+  "historical/interrupted-service-residue-after.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-residue-after.json",
+    "sha256": "f09118938a9b52e119c6da20c2ae25096e7478612e02a948bf28cd100c0de713"
+  },
+  "historical/interrupted-service-residue-stop-bound.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-residue-stop-bound.json",
+    "sha256": "c70a0304842c821f137893dec64295e578cb9b2b003dce4ccb11b4a9176970f7"
+  },
+  "historical/interrupted-service-residue-after-bound.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-service-residue-after-bound.json",
+    "sha256": "f82b65a9a93a42b948deb07afb263d8d8f61b133c908e8de1d4bd13b69b24449"
+  },
+  "historical/interrupted-processes-final.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\interrupted-processes-final.json",
+    "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+  },
+  "historical/newmain-framework/configuration/boundary-isolation/local-codex.smoke-default-r1-case.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework\\configuration\\boundary-isolation\\local-codex.smoke-default-r1-case.json",
+    "sha256": "f726b4b31e8cde97d58cf16687f0994f6f354f6da2d15dd37d3425796dec00cf"
+  },
+  "historical/newmain-framework/configuration/boundary-isolation/local-codex.smoke-default-r1-worker-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework\\configuration\\boundary-isolation\\local-codex.smoke-default-r1-worker-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "historical/newmain-framework-r2/configuration/boundary-isolation/local-codex.smoke-default-r1-case.json": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework-r2\\configuration\\boundary-isolation\\local-codex.smoke-default-r1-case.json",
+    "sha256": "cf9b81d8662f07fef9ebcdde908b3251bc0abbe56685570e7e40df75712cb891"
+  },
+  "historical/newmain-framework-r2/configuration/boundary-isolation/local-codex.smoke-default-r1-worker-stderr.log": {
+    "original": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework-r2\\configuration\\boundary-isolation\\local-codex.smoke-default-r1-worker-stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/cleanup-run.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\cleanup-run.json",
+    "sha256": "23e8c94758de03ea62be91bd6c2873e2d7cc1a40d4731a1d8b607e038e11f05f"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/cleanup.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\cleanup.json",
+    "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/fixed-control-native-proof.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\fixed-control-native-proof.json",
+    "sha256": "12c279cc07e77d42c7fd0dfa14317565ab4a6b45f8e0201af5638ccece78df0a"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/latest-run.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\latest-run.json",
+    "sha256": "5cb5bd3cbb31ded1da860ef3a0113d403dd9c8f065084e48c0fe87e0811a4013"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/merged-run.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\merged-run.json",
+    "sha256": "81eaddcc8fa45ad205755ded19324e9fef0e5951ea411e9235e9cdf78c9e6128"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-completion-proof.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-completion-proof.json",
+    "sha256": "a65d45f7b0712de84948ddbe3e6b1647f1bab137cb85fff665770b9d117ca6ad"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-exit-export.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-exit-export.json",
+    "sha256": "064bd7e92d13520c84f34688fec1eaf376795cb7365e1688b531f13b14ba532b"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-exit.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-exit.json",
+    "sha256": "1ddb3265019ab89c23bcc9a5ab81513f9c3a52c70e58953af8d553942d5d314a"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-publication-audit.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-publication-audit.json",
+    "sha256": "6ae0738900991e77bf7b4bea392ca0439ccd05ab74081f24cf544ef69f011ea5"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-resource-audit.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-resource-audit.json",
+    "sha256": "6951dd846d09a13aada3be4c865c522cca364b4e94d46568bda7cb8edbe5e6cf"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native-signature-proof.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native-signature-proof.json",
+    "sha256": "1927d5065b17f888698c9c9a4585e7a6be8193c4132db3e33d0b8edd29c307fe"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/pr-list.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\pr-list.json",
+    "sha256": "b76c69ec21420812d0ef0929dff74d1a6fffc639c2feb83c727e8a17f1aca6c8"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/remote-authentication-cleanup.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "66f9787b8dfbca7f9dcc6e0e5f3e991e83e875f337f9d6babba5f72d114f297e"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/remote-worker-permission-audit.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\remote-worker-permission-audit.json",
+    "sha256": "40f7a72d9cc25a17c10d9512002268f2e58e8aa3baf4a1a01cb1fdc2b25ef14c"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/result.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\result.json",
+    "sha256": "987b716994a05d2634f70899f73b6e9d92acc549a4c30739d9c773bfed5b53c0"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/scenario.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\scenario.json",
+    "sha256": "4a42294bb7c6726a514763a8011371740a500887ca3f753fe554315f20da30b4"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/source-identity.json": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\source-identity.json",
+    "sha256": "05a25b30eb901b66dee06df07efb7467212c71f555568ffe11f88261458a9d7d"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/native.log": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\native.log",
+    "sha256": "8ffa3024c8886f713d915a486fe6de3dc781463005fec7521b9419613ac3f450"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/fixed-control-native-calls.jsonl": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\fixed-control-native-calls.jsonl",
+    "sha256": "2f5ff2fedf3e787d624a8a504c8b7dcd2d8a4bbad08dced8f043f30812c0b878"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/fixed-control-driver-events.jsonl": {
+    "original": "C:\\srt\\6231a2f36445\\evidence\\fixed-control-driver-events.jsonl",
+    "sha256": "7c9d45d810f27b651b8339d2355ab9948e10b4e2af26a1770d5ebb30a69a2fb1"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/manifest.json": {
+    "original": "C:\\srt\\6231a2f36445\\manifest.json",
+    "sha256": "1efc00a3647a0c20e1c2229506b1fc195cc8ffebfc5759211b972981273d7df6"
+  },
+  "native/orca-remote.service-restart/graceful-active/6231a2f36445/steerrunner.exe.build.json": {
+    "original": "C:\\srt\\6231a2f36445\\bin\\steerrunner.exe.build.json",
+    "sha256": "6ae828ecd93798cac16622b998affd01250b434f3b971bd21c5449f3b34cd649"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/cleanup-run.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\cleanup-run.json",
+    "sha256": "d2011a9f2964d9620943f43d660d29b5599c04e1536493598aeaea52b0e9d801"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/cleanup.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\cleanup.json",
+    "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/fixed-control-native-proof.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\fixed-control-native-proof.json",
+    "sha256": "aff37d1c848857b86c0b18d6abc38095be2cdbd46467630743d11fe6e8be7555"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/latest-run.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\latest-run.json",
+    "sha256": "a7ed83c08aa18aecee41fd74566525c9ca07d9b2afffbdff6ffe7d8d74ee590f"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/merged-run.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\merged-run.json",
+    "sha256": "cd1104129674f6063720cfd1b7e5c01e23035ed7c4d7363eb70999ae1fab1339"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-completion-proof.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-completion-proof.json",
+    "sha256": "70389e8f4182b2fc713ee5bd0734a841af17938daa6229ca08e669d8171c2aaa"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-exit-export.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-exit-export.json",
+    "sha256": "bf6a9e9181236c01ca533a491a2176661b8f78b664e162100e5df80be4a5185a"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-exit.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-exit.json",
+    "sha256": "e0ab50a2cc99d413df0329114a0d917475346e565c82b2a625d28762d717b83d"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-publication-audit.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-publication-audit.json",
+    "sha256": "9c0ec6576f34696c52ccdcec18045ec13c1ac31957426188badff43fb25aa2e8"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-resource-audit.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-resource-audit.json",
+    "sha256": "6951dd846d09a13aada3be4c865c522cca364b4e94d46568bda7cb8edbe5e6cf"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native-signature-proof.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native-signature-proof.json",
+    "sha256": "d711c6ee26186bf3476d6a93e3b8a0fcab9198a0e7cf1ce12ed1de26a17adde0"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/pr-list.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\pr-list.json",
+    "sha256": "a1576bebf32e5551f37e9f52ea4f6e085e8556f6323fa082b4c951b991fdad9d"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/remote-authentication-cleanup.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "334f0f797ce88b3027ee69c95a057eab56e323d3ac7852bb5040cd14ca2e0e00"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/remote-worker-permission-audit.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\remote-worker-permission-audit.json",
+    "sha256": "e38039619203f2143f8f6d072b23aff3e55792d0ff0a61569b083dc51e516cf9"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/result.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\result.json",
+    "sha256": "79f47350304d1600a2cb0517c723079b54e9c1b317455ed5d59464aed6ab5808"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/scenario.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\scenario.json",
+    "sha256": "7a6776bffcd6ffbdb9fc36d1410f7bb31aa241988c3257823835ae0dbf6a1caf"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/source-identity.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\source-identity.json",
+    "sha256": "049a484285a7c73ba381a50ed43e6e2aecc54d72cc0ca54eb84f487c1a60c32c"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/native.log": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\native.log",
+    "sha256": "41bb6b59c0263c9dc314491dab449377320a007fa4761a6eb12c744a153ce289"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/fixed-control-native-calls.jsonl": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\fixed-control-native-calls.jsonl",
+    "sha256": "ae4ffbc0665ef82a80ebb44b0a97129582b1825d249573663faecbaaac8437bb"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/fixed-control-driver-events.jsonl": {
+    "original": "C:\\srt\\5dabbee3c1d6\\evidence\\fixed-control-driver-events.jsonl",
+    "sha256": "b1ca8f0acc581a3cc3f2dba46cbefdbb976c27ec4f4ec4d66d648ff39d021986"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/manifest.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\manifest.json",
+    "sha256": "5a635fe6b4cb488a5cee9c5464e17bbbafc9207b60d939fc138357958949e558"
+  },
+  "native/orca-remote.service-restart/kill-active/5dabbee3c1d6/steerrunner.exe.build.json": {
+    "original": "C:\\srt\\5dabbee3c1d6\\bin\\steerrunner.exe.build.json",
+    "sha256": "6ae828ecd93798cac16622b998affd01250b434f3b971bd21c5449f3b34cd649"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/cleanup-run.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\cleanup-run.json",
+    "sha256": "6cc19c453477956d39660d4f87002fe1c2dbbca0ff0759e6af13aebcd255f753"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/cleanup.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\cleanup.json",
+    "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/fixed-control-native-proof.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\fixed-control-native-proof.json",
+    "sha256": "11a7a98620f8f505f0f77a3f41c714c0813044d8a5889f85151fa89eb472d126"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/latest-run.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\latest-run.json",
+    "sha256": "6cc19c453477956d39660d4f87002fe1c2dbbca0ff0759e6af13aebcd255f753"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/native-exit-export.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\native-exit-export.json",
+    "sha256": "5c7cf5b1d01476c482d95034519e8540388c586d7768a931b18b72e1869d193d"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/native-exit.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\native-exit.json",
+    "sha256": "6c6e920a89f5ce824992c81513851b32785774dd24ebf00a90f48b60e778f99f"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/native-resource-audit.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\native-resource-audit.json",
+    "sha256": "72c153b01af634aacee8b8658221d56cf4e6a8f662bce6fe9ccdc3cb0fdc9745"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/native-signature-proof.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\native-signature-proof.json",
+    "sha256": "680e94e37f02d9d9c8748899121f80e9524683e5af9bb4fca344fd38b3792768"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/pr-list.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\pr-list.json",
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/remote-authentication-cleanup.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "cfb8a14603e7eb8cd5d4a1a7e9ea4e1626e092d58dfe8018d479107fed074539"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/remote-worker-permission-audit.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\remote-worker-permission-audit.json",
+    "sha256": "b636a43dd15eda54b48baf0a4a3a4662b4edeed5197ff388efc92d1b52551317"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/result.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\result.json",
+    "sha256": "97e4cc16eac8a0c4f21eda6aff527dd52f5daeaa0998bd1d7e2f4900ceeeff08"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/scenario.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\scenario.json",
+    "sha256": "e1685eb09a478ff9914732c3f438ca58967ae3134aa163f424f00405806e1f5e"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/source-identity.json": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\source-identity.json",
+    "sha256": "759cda6658e815a83a2c0589d764c5772d9298bf13417d913f0160bb0fef2e71"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/native.log": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\native.log",
+    "sha256": "9303530fcef783d53658cbcdd2bd56b7516e33033d4e37cfdafc94e5d9131efb"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/fixed-control-native-calls.jsonl": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\fixed-control-native-calls.jsonl",
+    "sha256": "c17ef61e83a97bd9af400075ec91302860a113ef9b7575e7c1bc85241efa94d3"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/fixed-control-driver-events.jsonl": {
+    "original": "C:\\srt\\b489f4de9727\\evidence\\fixed-control-driver-events.jsonl",
+    "sha256": "16f2960160330bdb55cba22a8e83fea4835cc1dfb4152956452628280f1b8d16"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/manifest.json": {
+    "original": "C:\\srt\\b489f4de9727\\manifest.json",
+    "sha256": "8c068c56efe566366635879e8dac061b4a26d7f0bdf5109cba4914e79bccb24f"
+  },
+  "native/orca-remote.stop-revocation/active/b489f4de9727/steerrunner.exe.build.json": {
+    "original": "C:\\srt\\b489f4de9727\\bin\\steerrunner.exe.build.json",
+    "sha256": "6ae828ecd93798cac16622b998affd01250b434f3b971bd21c5449f3b34cd649"
+  },
+  "probes/local/active-rejected.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\active-rejected.json",
+    "sha256": "075e8f9e27a1e350daf278f1c3d5943225676eb499e8339c14b1bfd53d6a02df"
+  },
+  "probes/local/adapter-stop.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\adapter-stop.json",
+    "sha256": "bb32f7c82d0a944b865085250939b42e3094f11debd95f1e8a5b4a2c749afb55"
+  },
+  "probes/local/native-control-proof.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\native-control-proof.json",
+    "sha256": "db76dbb57f782662e46d41b75b1f8ef2706485680e10ea0029900c5eb6687297"
+  },
+  "probes/local/native-exit.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\native-exit.json",
+    "sha256": "c6a10eecad5cc024bae0a4cb9f9085e1c09d7da282aa9a0de24e040c4d41f79d"
+  },
+  "probes/local/native-readiness.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\native-readiness.json",
+    "sha256": "909cdb4d986b8c7f04ab88cdc7c37f58cb49f95d2adfa0f55f6991f8dd9cc3b6"
+  },
+  "probes/local/native-signature-proof.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\native-signature-proof.json",
+    "sha256": "08e5be46f59ba078d1ca2ae3b9f1e44675489d6196e0bd328c6d15e3d9f3da95"
+  },
+  "probes/local/orca-01.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-01.json",
+    "sha256": "d712d7715a248437f0df615ad58326f40870a3a139f688c98778da20dd6a4e16"
+  },
+  "probes/local/orca-02.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-02.json",
+    "sha256": "3e8421cf7d0f7d14b1d1f25c0e993743029d7a9311f6759981f27bffba847548"
+  },
+  "probes/local/orca-03.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-03.json",
+    "sha256": "af1b5ae3be2ada4f3d1534e09985c017cb1fbdfa97fa01a3037385c86b39eb6f"
+  },
+  "probes/local/orca-04.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-04.json",
+    "sha256": "e9992dade9c3733509027c2cbd2e43ce90190c0db0cccf838f389a91d2329edf"
+  },
+  "probes/local/orca-05.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-05.json",
+    "sha256": "a43a04cbaf5d1490aa91941a52fd18c3de99d3072c7403c4302d21ae4af69cf5"
+  },
+  "probes/local/orca-06.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-06.json",
+    "sha256": "d910b8d448cc57a6bc48d5a75be9ea6f5ebb44cc21205cd1d00da7699730f8fa"
+  },
+  "probes/local/orca-07.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-07.json",
+    "sha256": "45ffd74822f0b05d40975c7da44bb7b25d9c0a0b58329bf8ca2270183555bd40"
+  },
+  "probes/local/orca-08.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-08.json",
+    "sha256": "e860f252d404a04450e0cd7887ef77c022fd6dc68826283dd5a98f0dca848dfd"
+  },
+  "probes/local/orca-09.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-09.json",
+    "sha256": "e18cb93d941feae21a4273f87b0903789be175365e9d3cbbf8c6e1ca25a8b073"
+  },
+  "probes/local/orca-10.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-10.json",
+    "sha256": "aca3702689accce030a785a6cf285899a32c0622e93a92543588227b121ead2d"
+  },
+  "probes/local/orca-11.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-11.json",
+    "sha256": "ce9fc0a68dda3963bbd7538e731bb44b97f2b859f5f99148e24901de6af80bf8"
+  },
+  "probes/local/orca-12.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-12.json",
+    "sha256": "974fcc3ee2a3d1a587542f27aa4c64359a43bbeba67867fb18274c1d8c5f8cf3"
+  },
+  "probes/local/orca-13.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-13.json",
+    "sha256": "fced8cfd81f784ba5046ff569115b40bb7ec5db3b05883353cdb6c347c9f357a"
+  },
+  "probes/local/orca-14.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-14.json",
+    "sha256": "e6c85a34f855055273f9b2df37579ba7825fcd3b64eb91abc111a8b7a6222562"
+  },
+  "probes/local/orca-15.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-15.json",
+    "sha256": "57e9a08ad753bd7b9070b50e4e8444dcb72da12ea3b4482e27d5befe4374cd2a"
+  },
+  "probes/local/orca-16.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-16.json",
+    "sha256": "ecd072c7e2750b701a1515f7cd0e6a44c91014111bf272374d71d157bb884118"
+  },
+  "probes/local/orca-17.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-17.json",
+    "sha256": "4b06387388c689ae1a29deeb7808d97cea98dfdd077c74806fc40a7a5c83e4cc"
+  },
+  "probes/local/orca-18.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-18.json",
+    "sha256": "aaca30fcef93b238c377516d6aea91f63ce331db7214321739eddb50d9d317fb"
+  },
+  "probes/local/orca-19.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-19.json",
+    "sha256": "e197edbee9483b12b4106fe089f6630235829b9c82448d081d8c44060825e8ab"
+  },
+  "probes/local/orca-20.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-20.json",
+    "sha256": "af73fdc7ae8f0d1dfdb79ae572c23667e83b3b4ac569db692f830c29121e0bbe"
+  },
+  "probes/local/orca-21.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-21.json",
+    "sha256": "b0a116765491ede0660ce71d29a30b30757f7b1793d3f67842796c92d633c709"
+  },
+  "probes/local/orca-22.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-22.json",
+    "sha256": "8bfd687f840ace305aa1693d48d21c64e5cada3156a8801623e8e75c1c70ac86"
+  },
+  "probes/local/orca-23.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-23.json",
+    "sha256": "bbadf4b0d0708e882dfca2ff32985e1b35982c7b2840f79ca6f281d67a645cc6"
+  },
+  "probes/local/orca-24.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-24.json",
+    "sha256": "bd92a0f64415988ca1c0f341a4446eb900bb4ad92779083b6c31f9ca04312787"
+  },
+  "probes/local/orca-25.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-25.json",
+    "sha256": "28662e1eda787733ebe25c77bb7bcc7d54791952f66954f071899e9161de01a3"
+  },
+  "probes/local/orca-26.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-26.json",
+    "sha256": "a559a1175f4caa5a5364c0b048049d37415cd47279bf27b4a647de0f2b8b1035"
+  },
+  "probes/local/orca-27.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-27.json",
+    "sha256": "9f198bec749e8bacbd3606c83dc1254b10a0ff7e7734f8d7755002074c3ed0af"
+  },
+  "probes/local/orca-28.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-28.json",
+    "sha256": "74ebf2762a94a8ac03618f827e1988c53d21b3a1e0c17b0d06cff98826f5c15a"
+  },
+  "probes/local/orca-29.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-29.json",
+    "sha256": "ebbf423c6ed39d5b2e0eaef092c973cc9254de3ef260fb60f601d84909d84eec"
+  },
+  "probes/local/orca-30.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-30.json",
+    "sha256": "89d7b32581315d3334f73f739c9a69f5f1fcdcb1a71d3ae7ed1e67217af2f667"
+  },
+  "probes/local/orca-31.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-31.json",
+    "sha256": "4694be50858bb5db7327592873791982c8fe7da136ffb41be808a39bb16fe4b4"
+  },
+  "probes/local/orca-32.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-32.json",
+    "sha256": "f3ecdfaa77449a301282fe93a3ecc7e8a84021d727e7ae0552221e98fb502a3a"
+  },
+  "probes/local/orca-33.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-33.json",
+    "sha256": "7f78b3994279ae885c58d828c7912cf06f4991ac68aa4bf9c16f0a87225a4039"
+  },
+  "probes/local/orca-34.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\orca-34.json",
+    "sha256": "d5cac9832c26aa9f3455f5620c1c30ea1ad82617be3a5c7ffdb3b7f86459a8b7"
+  },
+  "probes/local/result.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\result.json",
+    "sha256": "7aa2a6f7514cc61033b86212c75e22380b8e1d695407e664a8c8ab9089bcc1a4"
+  },
+  "probes/local/stopped-verified.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-local-51792ee5\\stopped-verified.json",
+    "sha256": "bd8259bad9be7e67dd1ee3df4d3f998663f25f7db683ea81536aa6c5cb2765c0"
+  },
+  "probes/remote/active-rejected.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\active-rejected.json",
+    "sha256": "365221ded2af073f7613092ee37c3fafdd6708917069c83cf3acf02ef252b8b4"
+  },
+  "probes/remote/adapter-stop.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\adapter-stop.json",
+    "sha256": "edfe4d981140728658f60d364554d48cf93e7c82c383d79860cb02175fa1e66b"
+  },
+  "probes/remote/native-control-proof.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\native-control-proof.json",
+    "sha256": "ec1e5b6e909291b51810b3703af7c677380318477478e154ff32eb096cf56c63"
+  },
+  "probes/remote/native-exit.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\native-exit.json",
+    "sha256": "68a78930057c4766d767d1bb26ef5630034a7c736ec653f82018f85dcf810c2c"
+  },
+  "probes/remote/native-readiness.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\native-readiness.json",
+    "sha256": "e771c6ec608ee76f55150a6b4fdb4e127e100e4a5e8a20f943b4d9b9dea76d27"
+  },
+  "probes/remote/native-signature-proof.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\native-signature-proof.json",
+    "sha256": "fbb987c802c3e815b68f9af0dba160742c191862d4d9bff99afdb8ad2560ad0f"
+  },
+  "probes/remote/orca-01.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-01.json",
+    "sha256": "dbb99e766e0a94636812b96829c3568aacd89829dfeeb840b311b607bf0a1d52"
+  },
+  "probes/remote/orca-02.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-02.json",
+    "sha256": "38a0a07c236cfa2b8bca116b144d8cf927694aec9ae5c5f2c59327ea94f999cb"
+  },
+  "probes/remote/orca-03.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-03.json",
+    "sha256": "86b126fa759f7802edb80405fbd28c166d97afbb514a8e7181155217dbfc15f5"
+  },
+  "probes/remote/orca-04.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-04.json",
+    "sha256": "8fea9bea9f53c6e6dad0cdefeaa19d0d3b78b7db8bb317ab4986250554b6a21f"
+  },
+  "probes/remote/orca-05.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-05.json",
+    "sha256": "e6e527b282dfe3eb4836a4362f6316ce06d37b38e9bf4a4c4306048a4ab53ec8"
+  },
+  "probes/remote/orca-06.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-06.json",
+    "sha256": "bc94189a225ddcbcc752747a859fc4353818fa2a118cf8783e4a5b7ab6fd5013"
+  },
+  "probes/remote/orca-07.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-07.json",
+    "sha256": "7ed6e1d032299fd950b5ddcaaa9c02101404ae63ae786684a71a662e59b0dd58"
+  },
+  "probes/remote/orca-08.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-08.json",
+    "sha256": "efba61d777343ddf96b62575e12b9b9d15642b52a7b8eee78ba647fe03df553c"
+  },
+  "probes/remote/orca-09.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-09.json",
+    "sha256": "375854385790d6ac276426035bcfadca8b071e5f240ec846d0d946e6539d20c1"
+  },
+  "probes/remote/orca-10.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-10.json",
+    "sha256": "6b99b5d59ac37e1a02d01d5093136426df658aad178e43a62249d83399ed1773"
+  },
+  "probes/remote/orca-11.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-11.json",
+    "sha256": "ccfe34ec5ff066a098a016d96b0beaf6f3897106023d92180ed348214927d814"
+  },
+  "probes/remote/orca-12.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-12.json",
+    "sha256": "4c6005666a49d2c87f7d08f8893ed12e6bf807f607c5092369c4d00edae6baef"
+  },
+  "probes/remote/orca-13.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-13.json",
+    "sha256": "e42beb952f933f03afd0ce39ced7783ad70789a525aaccae37fe09246aaf5393"
+  },
+  "probes/remote/orca-14.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-14.json",
+    "sha256": "e2d2e3e11ad3d5cb88f7cdc9e4b19a4666bbd16939853579b43c36ffe12619f3"
+  },
+  "probes/remote/orca-15.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-15.json",
+    "sha256": "331122feae82bd3aa72d9bc8773d241ff478dba41b5f7c3e7b2a6a6472796c8a"
+  },
+  "probes/remote/orca-16.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-16.json",
+    "sha256": "e4594d34f3b87c884f0bae8648644d17a4c534a35648fed592d9a857acc8548f"
+  },
+  "probes/remote/orca-17.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-17.json",
+    "sha256": "f4b150c373d68e1773f4624b6257cd154cb7b29a1a184bcf1d85233157f60159"
+  },
+  "probes/remote/orca-18.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-18.json",
+    "sha256": "09cdfd85977b58306e235a7fde04ab4cca50c6b1c49036042b92dc5483b6fc76"
+  },
+  "probes/remote/orca-19.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-19.json",
+    "sha256": "d340992951d03c2c3896115a4c3ba5d731a02f09afd062a5e9dc9b7eb2d98e20"
+  },
+  "probes/remote/orca-20.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-20.json",
+    "sha256": "88febf2cf94f1eb358c4be44db817919d65af9136d4af7a8f88d495d386853d6"
+  },
+  "probes/remote/orca-21.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-21.json",
+    "sha256": "3d54db56748f38b69853dd74a809d4dc2dd0e942b69a62860fcbef5e593c6e58"
+  },
+  "probes/remote/orca-22.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-22.json",
+    "sha256": "022d0b6f44ac265e3c7a263af07a318b3551d7ee1c2e60220730d5521ace658d"
+  },
+  "probes/remote/orca-23.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\orca-23.json",
+    "sha256": "fe37fae29e5db7f5769f14e143371edd20d04973b1226d0679cd8b9c2d5599b6"
+  },
+  "probes/remote/result.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\result.json",
+    "sha256": "6a63d3c5cd8957cb816b46ba1a55583a7ef5e9da1812f0df9ab0a0dda6f9a771"
+  },
+  "probes/remote/stopped-verified.json": {
+    "original": "C:\\SteerlineDebug\\sr-rebase-control-20261019-remote-51792ee5\\stopped-verified.json",
+    "sha256": "d4fc3883ecbcca782df95d5c635d27632f1688ec652a53aa52f4219491d95ca9"
+  }
+}

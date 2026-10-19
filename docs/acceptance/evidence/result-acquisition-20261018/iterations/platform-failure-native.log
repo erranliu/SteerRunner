@@ -1,0 +1,10 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries
+    result_acquisition_test.go:136: native read-only negative probe unproven: attempt=true denied=false unchanged=true stopped=true
+--- FAIL: TestSRLiveScenario (49.78s)
+    --- FAIL: TestSRLiveScenario/local-codex.result-acquisition (49.75s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-default (16.61s)
+        --- FAIL: TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries (33.14s)
+FAIL

@@ -1,0 +1,90 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "workflow_version": 2,
+  "state_schema": "steerrunner-state/v3",
+  "sqlite_user_version": 3,
+  "resource_version": 2,
+  "resource_digest": "70115ad9daa49bb620c6e980730a3ef07d84a1d52665dfcc526014d903cd8883",
+  "assertions": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/resources",
+      "test": "TestRAPublicContract",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/home",
+      "elapsed": 0.01
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/unknown",
+      "elapsed": 0.01
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/null",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/duplicate",
+      "elapsed": 0.02
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/range",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig/alias",
+      "elapsed": 0.02
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAConfig",
+      "elapsed": 0.13
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/contracts",
+      "test": "TestRAPublicContract",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/storage",
+      "test": "TestRAVersion",
+      "elapsed": 0.09
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/user",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/system",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/cloud",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConfigRejectBeforeEffects",
+      "elapsed": 0.02
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAVersionRejectLegacy",
+      "elapsed": 0
+    }
+  ]
+}

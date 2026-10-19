@@ -21,6 +21,8 @@ type WorkspaceIntent struct {
 }
 
 type WorkspaceInspection struct {
+	Tree            string    `json:"tree,omitempty"`
+	Qualified       bool      `json:"qualified,omitempty"`
 	InspectionScope string    `json:"inspection_scope,omitempty"`
 	Repository      string    `json:"repository"`
 	Worktree        string    `json:"worktree"`

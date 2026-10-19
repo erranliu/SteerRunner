@@ -1,0 +1,4 @@
+=== RUN   TestOrcaStoppedNativeProbe
+--- PASS: TestOrcaStoppedNativeProbe (54.63s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	57.652s

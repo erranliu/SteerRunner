@@ -61,6 +61,16 @@ func (p *childProcess) Close() {
 }
 
 func StartManaged(cmd *exec.Cmd) (*childProcess, error) {
+	return startManagedBound(cmd, nil)
+}
+
+// StartManagedBound records the exact Job-bound root before its first instruction.
+// Failure of the caller's durable receipt aborts the still-suspended process.
+func StartManagedBound(cmd *exec.Cmd, ready func(executionbackend.ProcessIdentity) error) (executionbackend.StopHandle, error) {
+	return startManagedBound(cmd, ready)
+}
+
+func startManagedBound(cmd *exec.Cmd, ready func(executionbackend.ProcessIdentity) error) (*childProcess, error) {
 	job, e := windows.CreateJobObject(nil, nil)
 	if e != nil {
 		return nil, e
@@ -95,6 +105,11 @@ func StartManaged(cmd *exec.Cmd) (*childProcess, error) {
 	id, e := IdentityFromHandle(h, cmd.Process.Pid)
 	if e != nil {
 		return fail(e)
+	}
+	if ready != nil {
+		if e = ready(id); e != nil {
+			return fail(e)
+		}
 	}
 	snap, e := windows.CreateToolhelp32Snapshot(windows.TH32CS_SNAPTHREAD, 0)
 	if e != nil {

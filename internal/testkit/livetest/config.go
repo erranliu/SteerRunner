@@ -24,8 +24,7 @@ type TestFixture struct {
 	Publication *contracts.Publication `json:"publication,omitempty"`
 }
 type Harness struct {
-	AdminHost             string `json:"admin_host,omitempty"`
-	FeedbackQualification string `json:"feedback_qualification,omitempty"`
+	AdminHost string `json:"admin_host,omitempty"`
 }
 type TestConfig struct {
 	Schema         string                     `json:"schema"`
@@ -93,7 +92,7 @@ func ReadConfig(path string) (TestConfig, string, error) {
 		return empty, "", fmt.Errorf("Unsupported test config; migrate live-config/v1|v2 to %s.", ConfigSchema)
 	}
 	base := filepath.Dir(path)
-	for _, target := range []*string{&config.Harness.AdminHost, &config.Harness.FeedbackQualification} {
+	for _, target := range []*string{&config.Harness.AdminHost} {
 		if *target != "" && !filepath.IsAbs(*target) {
 			*target = filepath.Join(base, *target)
 		}
@@ -152,8 +151,8 @@ func (c TestConfig) BaselineIssues() []resources.Issue {
 	_ = json.Unmarshal(value.Execution.Settings, &settings)
 	file := strings.ToLower(filepath.Base(settings.Executable))
 	wrapper := slices.Contains([]string{"node.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "sh.exe", "bash.exe"}, file) || slices.Contains([]string{".cmd", ".ps1", ".bat", ".js"}, strings.ToLower(filepath.Ext(file)))
-	if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" || value.Workflow == nil || value.Workflow.ID != "development" || value.Workflow.Version != 1 || len(value.Workflow.PromptOverrides) != 0 || settings.AccessMode != "sandbox" || !filepath.IsAbs(settings.Executable) || wrapper {
-		issues = append(issues, resources.Issue{Path: "/configurations/local-codex", Code: "invalid_configuration", Message: "Baseline requires local development/1, explicit sandbox and an absolute native Codex executable."})
+	if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" || value.Workflow == nil || value.Workflow.ID != "development" || value.Workflow.Version != 2 || len(value.Workflow.PromptOverrides) != 0 || settings.AccessMode != "sandbox" || !filepath.IsAbs(settings.Executable) || wrapper {
+		issues = append(issues, resources.Issue{Path: "/configurations/local-codex", Code: "invalid_configuration", Message: "Baseline requires local development/2, explicit sandbox and an absolute native Codex executable."})
 	}
 	return issues
 }
@@ -237,7 +236,7 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 		var selection *contracts.Workflow
 		if requirements.Operation == "submit" {
 			selection = value.Workflow
-			if selection == nil || selection.ID != required.Workflow || selection.Version != 1 {
+			if selection == nil || selection.ID != required.Workflow || selection.Version != 2 {
 				add(path+"/workflow", "invalid_configuration", "The case requires its explicit registered workflow.")
 				continue
 			}

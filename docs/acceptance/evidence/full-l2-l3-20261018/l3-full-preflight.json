@@ -1,0 +1,28 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+  "source_dirty": true,
+  "started_at": "2026-10-18T08:05:55.6044275Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "selected_scenarios": [
+    "orca-remote.smoke",
+    "orca-remote.caller-exit",
+    "orca-remote.connection-reconnect",
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation",
+    "orca-remote.publication-unknown"
+  ],
+  "repeat": 1,
+  "planned_case_count": 12,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "Cannot find path 'C:\\srt-admin-1c3c-full-20261018\\ready.json' because it does not exist.",
+  "finished_at": "2026-10-18T08:05:55.8797928Z"
+}

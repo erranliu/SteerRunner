@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":null,"error":{"code":"invalid_arguments","message":"Write commands require --input -; other commands do not accept input."}}

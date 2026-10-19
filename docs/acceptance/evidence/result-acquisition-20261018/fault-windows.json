@@ -1,0 +1,96 @@
+{
+  "scope": "Original parser intent/root/receipt and aggregate commits, source/stop/CAS, restart zero-input and explicit resume, unknown retains slot",
+  "assertions": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+      "test": "TestRAVerificationConflictSurvivesResume",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRALateParserReceiptAndDuplicate",
+      "elapsed": 8.78
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityParserHistory",
+      "elapsed": 6.2
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAAtomicParserRecovery",
+      "elapsed": 11.55
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyParserStopResources",
+      "elapsed": 8.43
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityParserReferences",
+      "elapsed": 5.89
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAAtomicCompletion",
+      "elapsed": 6.13
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryMissingCheckpoint",
+      "elapsed": 0.58
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthority",
+      "elapsed": 0.57
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/stop",
+      "elapsed": 13.72
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/new-source",
+      "elapsed": 14.08
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/head-drift",
+      "elapsed": 13.88
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/wrong-pr-head",
+      "elapsed": 10.8
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication",
+      "elapsed": 52.47
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityQuestionSource",
+      "elapsed": 3.1
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryConsumedInput",
+      "elapsed": 0.53
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityMilestone",
+      "elapsed": 0.6
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryBusinessInput",
+      "elapsed": 5.59
+    }
+  ],
+  "real_restart": "supplemental/ra-parser-restart-controlled-v3.log"
+}

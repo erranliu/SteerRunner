@@ -12,7 +12,8 @@ import (
 
 func TestSRWorkflowDevelopment(t *testing.T) {
 	input := StageInput{StepID: StepImplement, MaterialFacts: []byte(`{"spec":{"path":"fixed/spec.md"},"plan":{"path":"fixed/plan.md"},"references":[{"path":"fixed/reference.md"}]}`)}
-	prompt, err := RenderInputWithBody(Snapshot{}, input, "Custom implementation instruction")
+	p, _ := Lookup("development", 2)
+	prompt, err := RenderInputWithBody(Snapshot{Config: &p}, input, "Custom implementation instruction")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -25,7 +26,7 @@ func TestSRWorkflowDevelopment(t *testing.T) {
 	if err != nil || !strings.Contains(prompt, ResultContract) || !strings.Contains(prompt, "original") {
 		t.Fatal("override removed machine/source contract")
 	}
-	if DevelopmentFlow != "development/1" || StepPRReady != "pr_ready" {
+	if DevelopmentFlow != "development/2" || StepPRReady != "pr_ready" {
 		t.Fatal("Runner did not own its standalone milestone")
 	}
 }
@@ -42,7 +43,7 @@ func forbidden(path, layer string) bool {
 	return false
 }
 func TestSRExecutionDependencyBoundary(t *testing.T) {
-	for _, layer := range []string{"workflow", "reliable", "backend", "adapters", "workspace", "publication", "process", "evidence", "conversation"} {
+	for _, layer := range []string{"workflow", "resultacquisition", "reliable", "backend", "adapters", "workspace", "publication", "process", "evidence", "conversation"} {
 		root := filepath.Join("..", layer)
 		err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
 			if err != nil {

@@ -1,0 +1,13 @@
+{
+  "source_commit": "67640c4365c6174e7aa7808a5b5b777c4bced1a5",
+  "source_dirty": false,
+  "sha256": "4C5892221AC260CC92D27702A040D210314F04CCF4FDC8BBB7DB9D8B66583B56",
+  "metadata": {
+    "version": 3,
+    "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+    "runtime_sha256": "4c5892221ac260cc92d27702a040d210314f04ccf4fdc8bbb7db9d8b66583b56",
+    "bundle_sha256": "5c1a177639529db5106e8dc1ae9016610fd0f2338d87cdc992b0b073331adb08",
+    "pi_sha256": "62a850310dc63403b76349d0f1774876837795d00b92f693983266fcfb11d2ef",
+    "dsh_sha256": "911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4"
+  }
+}

@@ -1,0 +1,12 @@
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+--- PASS: TestSRFreezeOrcaAgent (26.39s)
+    --- PASS: TestSRFreezeOrcaAgent/agent= (6.49s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=codex (6.36s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=pi (7.10s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=dsh (6.44s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	28.894s

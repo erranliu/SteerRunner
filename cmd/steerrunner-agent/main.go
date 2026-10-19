@@ -18,6 +18,21 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 3 && os.Args[1] == "--native-control" {
+		var setup codex.RemoteControlSetup
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &setup)
+		}
+		if err == nil {
+			err = codex.ServeRemoteControl(context.Background(), setup, os.Stdin, os.Stdout)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "native control unavailable")
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--terminal-metadata" {
 		metadata, err := orca.TerminalRuntimeMetadata()
 		if err != nil {
@@ -63,6 +78,26 @@ func main() {
 			os.Exit(2)
 		}
 		return
+	}
+	if len(os.Args) == 3 && os.Args[1] == "--authentication-stop" {
+		var query codex.RemoteAuthenticationQuery
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &query)
+		}
+		if err == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+			defer cancel()
+			proof, e := codex.RevokeRemoteAuthentication(ctx, query)
+			err = e
+			if err == nil {
+				body, _ := json.Marshal(proof)
+				fmt.Println(codex.RemoteAuthenticationPrefix + base64.RawURLEncoding.EncodeToString(body))
+				return
+			}
+		}
+		fmt.Fprintln(os.Stderr, "remote authentication stop unverified")
+		os.Exit(1)
 	}
 	if len(os.Args) == 3 && os.Args[1] == "--original-turn" {
 		var query codex.RemoteTurnQuery
@@ -140,7 +175,12 @@ func main() {
 		err = codex.RunRemoteAgent(context.Background(), c, os.Stdin, os.Stdout, os.Stderr)
 	}
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "remote agent preparation/execution failed:", err)
+		diagnostic := codex.EnvironmentDiagnostic(err)
+		if diagnostic == "preparation_unverified" {
+			diagnostic = "remote_agent_execution_failed"
+		}
+		fmt.Fprintln(os.Stdout, codex.RemoteFailurePrefix+diagnostic)
+		fmt.Fprintln(os.Stderr, "remote agent preparation/execution failed:", diagnostic)
 		os.Exit(1)
 	}
 }

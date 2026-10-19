@@ -1,0 +1,278 @@
+{
+  "schema": "steerrunner-full-validation/v1",
+  "status": "failed",
+  "at": "2026-10-18T08:26:32.554241+00:00",
+  "catalog_sha256": "4ca4800740adefe01e275f2a500edebcb898f5df36d3b987e8dbc9037804bf8b",
+  "l2": {
+    "planned": 2,
+    "passed": 2
+  },
+  "l3": {
+    "planned": 12,
+    "passed": 4,
+    "blocked": 7
+  },
+  "authorized_exclusion_count": 0,
+  "cases": [
+    {
+      "level": "L2",
+      "scenario": "local-codex.result-acquisition",
+      "case_id": "default",
+      "fixture": "130e2f841585",
+      "manifest": "C:\\srt\\130e2f841585\\manifest.json",
+      "manifest_sha256": "9e4097618b0c97a4222af41a034f8cb936e53f889fa0e2d4c4c958b47cacc62e",
+      "raw_evidence": "C:\\srt\\130e2f841585\\evidence",
+      "status": "passed",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/479",
+      "merge_commit": "eeba895cf46d4eb7faafa8ab76e85f691da01608",
+      "raw_files": {
+        "result.json": {
+          "sha256": "b9e18726222b46358e0043c51df79f1e1c551ec3bd90e75c5cc01abedf31bab1",
+          "copy": "cases/local-codex.result-acquisition/default/130e2f841585/result.json"
+        },
+        "scenario.json": {
+          "sha256": "97a8f86657e3a595a553e92fe486e3613572bb11e151d2a16c3b88910a0948ea",
+          "copy": "cases/local-codex.result-acquisition/default/130e2f841585/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "28a48aae24a0eb23b1a03700f32b1a73a4c9643fbd34f89783c5fca895be2238",
+          "copy": "cases/local-codex.result-acquisition/default/130e2f841585/source-identity.json"
+        },
+        "permission-probe.json": {
+          "sha256": "901cd02568e195949c9fa22e6846022f5d98034efa294f5b54ef10110d7966db",
+          "copy": "cases/local-codex.result-acquisition/default/130e2f841585/permission-probe.json"
+        },
+        "parser-cases.json": {
+          "sha256": "81a25e28530e1eb3acf47225d98dd7bfa38e135770da514106bd5082b10161c8",
+          "copy": "cases/local-codex.result-acquisition/default/130e2f841585/parser-cases.json"
+        }
+      }
+    },
+    {
+      "level": "L2",
+      "scenario": "local-codex.smoke",
+      "case_id": "default",
+      "fixture": "1077862978d8",
+      "manifest": "C:\\srt\\1077862978d8\\manifest.json",
+      "manifest_sha256": "2bae8b4de62a10c7eead24eb3e6fe8721028335aaadcb4ffdb82ee609f881675",
+      "raw_evidence": "C:\\srt\\1077862978d8\\evidence",
+      "status": "passed",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/480",
+      "merge_commit": "b11e1cc1f6a1c7f814796c99cf92a58179f1c007",
+      "raw_files": {
+        "result.json": {
+          "sha256": "393ea46d87d73ed1ccaa026e76e3ecbf69dba0cbcc03f13d5c32dd3b460a0c74",
+          "copy": "cases/local-codex.smoke/default/1077862978d8/result.json"
+        },
+        "scenario.json": {
+          "sha256": "138ec4032972389de1a262b3dcc3d67241dc6441b6e15570f00e2480f1ca4106",
+          "copy": "cases/local-codex.smoke/default/1077862978d8/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "be1602e5f667d751c9b09d3571ce16aed35daa3ea2097752143fce6223d0b1a5",
+          "copy": "cases/local-codex.smoke/default/1077862978d8/source-identity.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.smoke",
+      "case_id": "default",
+      "fixture": "7db0698e1e63",
+      "manifest": "C:\\srt\\7db0698e1e63\\manifest.json",
+      "manifest_sha256": "0addcf3ab5f4f0b4d3d9ec5771f52db40bfd6770685ac46e4a12d0f407e1dec4",
+      "raw_evidence": "C:\\srt\\7db0698e1e63\\evidence",
+      "status": "passed",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/498",
+      "merge_commit": "2db847074dfed6d3e4b92098ba57411d5baa6b56",
+      "raw_files": {
+        "result.json": {
+          "sha256": "11c18a256b1cd12f6755df09f98d583d7546de19519719488ce53200f8f119a1",
+          "copy": "cases/orca-remote.smoke/default/7db0698e1e63/result.json"
+        },
+        "scenario.json": {
+          "sha256": "7d84bc28f260aca5842ea91f470c1155ce81cbd64c54f8398c678aa02c8429d9",
+          "copy": "cases/orca-remote.smoke/default/7db0698e1e63/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "fa8729a548e7d0b2776bdffee7faafa2ba7ca0f63a89d62cf1992df888e0fb72",
+          "copy": "cases/orca-remote.smoke/default/7db0698e1e63/source-identity.json"
+        },
+        "remote-worker-permission-audit.json": {
+          "sha256": "8ff6b58f7967149d5f487ef8301ce9f030c09f4c6424e876e8107e47c8c13948",
+          "copy": "cases/orca-remote.smoke/default/7db0698e1e63/remote-worker-permission-audit.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "fixture": "7c060e67863f",
+      "manifest": "C:\\srt\\7c060e67863f\\manifest.json",
+      "manifest_sha256": "bb580a29faf1bfc4704e5e030b86a02edf17bc7ad56ee2c701d328b8842920a1",
+      "raw_evidence": "C:\\srt\\7c060e67863f\\evidence",
+      "status": "passed",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/477",
+      "merge_commit": "1b4c9eb7743c91c478abdb6843ba2484e591cd8c",
+      "raw_files": {
+        "result.json": {
+          "sha256": "3f6183829eaadd8c0106e3969c58811caeea14c733d9849519c2dc2092374af0",
+          "copy": "cases/orca-remote.caller-exit/accepted-response-lost/7c060e67863f/result.json"
+        },
+        "scenario.json": {
+          "sha256": "13a3092fe64e0f27eb64e7a9b0694fd606ebdf68f6e79354879cedd0fa14c547",
+          "copy": "cases/orca-remote.caller-exit/accepted-response-lost/7c060e67863f/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "578ffbc6d8053998e6e6803df2b4aebf08a9db01213514d4c0180bf2dd9b8c75",
+          "copy": "cases/orca-remote.caller-exit/accepted-response-lost/7c060e67863f/source-identity.json"
+        },
+        "cleanup.json": {
+          "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17",
+          "copy": "cases/orca-remote.caller-exit/accepted-response-lost/7c060e67863f/cleanup.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "fixture": "646c11159dbb",
+      "manifest": "C:\\srt\\646c11159dbb\\manifest.json",
+      "manifest_sha256": "f5428e96f31b7b1ef088c98a3b3c4e897effdc8956721ebe6971ca2e5ef7fe19",
+      "raw_evidence": "C:\\srt\\646c11159dbb\\evidence",
+      "status": "passed",
+      "pr_url": "https://github.com/erranliu/SteerlineTest/pull/483",
+      "merge_commit": "1cba142f407b12790427783848d6cee751b2d5c3",
+      "raw_files": {
+        "result.json": {
+          "sha256": "8b6a7685fb4f6208cd49743974f9a394036f0137c2150bfec21ec4d05d6b9404",
+          "copy": "cases/orca-remote.service-restart/graceful-active/646c11159dbb/result.json"
+        },
+        "scenario.json": {
+          "sha256": "edae0ceeed309eb0649fc362556534da18c878aa511b04fd2144590844f73cbd",
+          "copy": "cases/orca-remote.service-restart/graceful-active/646c11159dbb/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "639f1ce55b32aed08425ec1562b61c956c023068bc014f8b2b368ed0204cb8ce",
+          "copy": "cases/orca-remote.service-restart/graceful-active/646c11159dbb/source-identity.json"
+        },
+        "cleanup.json": {
+          "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17",
+          "copy": "cases/orca-remote.service-restart/graceful-active/646c11159dbb/cleanup.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "fixture": "20550476584f",
+      "manifest": "C:\\srt\\20550476584f\\manifest.json",
+      "manifest_sha256": "63235ecdb19e82d98c94c261c644f60e97a0f08ff084711929d35d72ec54c000",
+      "raw_evidence": "C:\\srt\\20550476584f\\evidence",
+      "status": "failed",
+      "reason": "unreconciled original readonly inspector terminal.create after exact service kill; native create lacks caller recovery identity; case outcome unchanged",
+      "pr_url": null,
+      "merge_commit": null,
+      "raw_files": {
+        "result.json": {
+          "sha256": "f2b8291b5d0b3b06db264941fa04032d383f8c35cd8d35aabe35d4a8119ede32",
+          "copy": "cases/orca-remote.service-restart/kill-active/20550476584f/result.json"
+        },
+        "scenario.json": {
+          "sha256": "099a66f2782343f80486d750aa99dc478daa70f664a9cc72a55fe2be08e55732",
+          "copy": "cases/orca-remote.service-restart/kill-active/20550476584f/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "654bf6fc2b4f444b8eab24dcc6dfb0e5b1e399b85573e889261a208b39df3d30",
+          "copy": "cases/orca-remote.service-restart/kill-active/20550476584f/source-identity.json"
+        },
+        "cleanup.json": {
+          "sha256": "32b00522ed0dbe71f4d045765868d8cc258119cdda691331d899495fa44d05a3",
+          "copy": "cases/orca-remote.service-restart/kill-active/20550476584f/cleanup.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "fixture": "b0a772b169f6",
+      "manifest": "C:\\srt\\b0a772b169f6\\manifest.json",
+      "manifest_sha256": "2ba47b47e0587ade93ab4f9982860e7a484a417ab452154e9fb4c443e5cb98db",
+      "raw_evidence": "C:\\srt\\b0a772b169f6\\evidence",
+      "status": "passed",
+      "pr_url": null,
+      "merge_commit": null,
+      "raw_files": {
+        "result.json": {
+          "sha256": "c6f30727b7d8fd28d3ddd232014f54dad67c054042a82329c6db0d0ca257f9c6",
+          "copy": "cases/orca-remote.stop-revocation/active/b0a772b169f6/result.json"
+        },
+        "scenario.json": {
+          "sha256": "6cdb87b66a3acf75dd5d103c77a193365a87cad3608f447da9ff5095732446b1",
+          "copy": "cases/orca-remote.stop-revocation/active/b0a772b169f6/scenario.json"
+        },
+        "source-identity.json": {
+          "sha256": "77df2ee3e6a35be3be083bda95bf9e3b069e4990c8ef5731d08ec8ad87c4dce6",
+          "copy": "cases/orca-remote.stop-revocation/active/b0a772b169f6/source-identity.json"
+        },
+        "cleanup.json": {
+          "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17",
+          "copy": "cases/orca-remote.stop-revocation/active/b0a772b169f6/cleanup.json"
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "status": "blocked",
+      "reason": "dedicated administrator network host ready.json absent; full preflight failed before native calls"
+    }
+  ]
+}

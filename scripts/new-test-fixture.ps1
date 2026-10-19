@@ -4,7 +4,6 @@ param(
     [string]$Catalog = '',
     [string]$FixtureParent = 'C:\srt',
     [string]$RecordPath = '',
-    [string]$FeedbackQualification = '',
     [string]$Case = 'default',
     [string]$RunnerExe = '',
     [string]$ConfigHelper = '',
@@ -17,6 +16,7 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'live-catalog.ps1')
+. (Join-Path $PSScriptRoot 'orca-cli-lock.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
 $taskCatalog = Get-Content -LiteralPath $Catalog -Raw | ConvertFrom-Json
@@ -64,7 +64,6 @@ function Invoke-Git([string[]]$Arguments) {
     if ($LASTEXITCODE -ne 0) { throw ('Fixture Git failed: ' + ($Arguments -join ' ') + ': ' + ($taskOutput | Out-String).Trim()) }
     return ($taskOutput | Out-String).Trim()
 }
-if (-not $FeedbackQualification -and $taskConfig.ContainsKey('harness') -and $taskConfig.harness.ContainsKey('feedback_qualification')) { $FeedbackQualification = $taskConfig.harness.feedback_qualification }
 if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -Scenario $Scenario -Case $Case -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
 & gh auth status --active --hostname github.com 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }
@@ -89,8 +88,9 @@ if ($taskStability) {
     $taskRuntimeFiles = & (Join-Path $PSScriptRoot 'prepare-test-orca-runtime.ps1') -OrcaExe $taskOrca -Destination $taskRuntime
     $taskNode = Join-Path $taskRuntime 'node.exe'
     $taskCLI = Join-Path $taskRuntime 'out/cli/index.js'
-    $taskProbe = & $taskNode $taskCLI repo list --environment $taskEnvironment --json | ConvertFrom-Json
-    if ($LASTEXITCODE -ne 0 -or -not $taskProbe.ok) { throw 'Private native Orca runtime failed preflight' }
+    $taskProbeCall = Invoke-SRLockedOrca -Executable $taskNode -Arguments @($taskCLI,'repo','list','--environment',$taskEnvironment,'--json')
+    $taskProbe = $taskProbeCall.output | ConvertFrom-Json
+    if ($taskProbeCall.exit_code -ne 0 -or -not $taskProbe.ok) { throw 'Private native Orca runtime failed preflight' }
     $taskExecution.settings.transport.executable = $taskHelper
     $taskExecution.settings.transport['args'] = @('audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'--')
 }
@@ -184,13 +184,6 @@ if ($Scenario -eq 'orca-local.mixed') {
     $taskPeer = $taskConfig.configurations[$taskPeerSlot].execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
     $taskPeer.settings.transport = $taskExecution.settings.transport
     $taskManifest['peer_execution'] = $taskPeer
-}
-if ($FeedbackQualification -and $Scenario -eq 'local-codex.smoke') {
-    $taskProofPath=[IO.Path]::GetFullPath($FeedbackQualification)
-    $taskProof=Get-Content -LiteralPath $taskProofPath -Raw | ConvertFrom-Json
-    if ($taskProof.scenario -ne 'local-codex.feedback' -or $taskProof.status -ne 'passed' -or $taskProof.identity.runner_sha256 -cne $taskManifest.runner_sha256) { throw 'Core smoke requires a passed feedback case for the exact Runner build' }
-    $taskManifest.driver='development-core'
-    $taskManifest['feedback_qualification']=@{path=$taskProofPath;sha256=(Get-FileHash -LiteralPath $taskProofPath -Algorithm SHA256).Hash.ToLowerInvariant()}
 }
 if ($taskStability) {
     function Frozen-Tool([string]$Path) { return @{path=$Path;sha256=(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()} }

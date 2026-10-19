@@ -50,7 +50,7 @@ try {
         foreach ($taskIdentity in @(@{field='configuration_sha256';parameter='ConfigurationSHA256'},@{field='runner_sha256';parameter='RunnerSHA256'},@{field='helper_sha256';parameter='HelperSHA256'},@{field='requirements_sha256';parameter='RequirementsSHA256'})) {
             if ($taskJob.PSObject.Properties[$taskIdentity.field]) { $taskExpectedIdentities[$taskIdentity.parameter]=[string]$taskJob.($taskIdentity.field) }
         }
-        $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -FeedbackQualification $taskJob.feedback_qualification -RunnerExe $taskJob.runner_exe -ConfigHelper $taskJob.config_helper @taskExpectedIdentities)
+        $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -RunnerExe $taskJob.runner_exe -ConfigHelper $taskJob.config_helper @taskExpectedIdentities)
         $taskRecord.evidence = Join-Path (Split-Path -Parent $taskRecord.manifest) 'evidence'
         $taskRecord.status = 'running'
         Save-Case

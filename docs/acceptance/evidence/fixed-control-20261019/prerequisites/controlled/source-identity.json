@@ -1,0 +1,12 @@
+{
+  "pid": 49924,
+  "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartRequiresResume|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI|TestSRResultAcquisition)$",
+  "source_commit": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+  "source_dirty": false,
+  "runner_sha256": "261D11D41EFCD1CBAD5040AA31C3253BC5C365CCC0BB93DA160FC60300F087C7",
+  "fixture_sha256": "56F08776F39C0FF92D5C583A3CE7944F61EC8A2E16971F3F02EC79888D8F362D",
+  "original_frozen_binary_source": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r5\\controlled\\source-identity.json",
+  "aggregate_timeout_minutes": 25,
+  "scenario_deadlines_unchanged": true,
+  "started_at": "2026-10-19T02:18:50.6183434Z"
+}

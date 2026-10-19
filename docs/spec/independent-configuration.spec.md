@@ -141,7 +141,7 @@ resource_digest 覆盖静态生产资源、schema、默认规则与公开能力�
 | `schema` | 固定 `steerrunner-test-config/v1`；未知版本拒绝 |
 | `configurations` | 测试配置项 ID 到 `{execution, workflow?}` 的映射。ID 由唯一 case 注册引用，例如 `local-codex`、`local-codex-audited`、`orca-local-pi`；execution 必需，workflow 对 Run 必需、检查不消费。不支持继承、表达式或自动 fallback |
 | `fixture` | 一份 `{repository, publication?}`，字段使用完整公开对象，声明本批测试源。源 commit／分支只读；真正测试写入使用每 case 独立命名空间。当前专属 GitHub 现场要求 command publication，其他合法产品 provider 不自动替换。缺字段／不符 case 要求仅影响依赖它的 case |
-| `harness` | 仅测试设置：admin_host 故障宿主、feedback_qualification 资格引用；字段由严格测试 schema 限定，不能携带自由 shell 或覆写生产参数。证据目录沿既有 -OutDir 管理，不重复配置 |
+| `harness` | 仅测试设置：admin_host 故障宿主；字段由严格测试 schema 限定，不能携带自由 shell 或覆写生产参数。证据目录沿既有 -OutDir 管理，不重复配置 |
 
 缺失 configurations 视为空；fixture／harness 可缺省以支持诊断。根 JSON 畸形、重复键、未知外层字段／版本、外层容器类型错误是整文件错误；可解析容器内单项配置／夹具无效，标记依赖它的 case，不隐藏其他独立配置的诊断。解析按“外层严格结构 → 单项公开字段 → case 约束”分层，不能先用整文件 schema 把单项错误变成全局拒绝。显式空配置不等于未配置；错误配置不能回落到其他项。
 
@@ -161,7 +161,7 @@ resource_digest 覆盖静态生产资源、schema、默认规则与公开能力�
 
 交付合格必须同时满足：
 
-1. `configurations.local-codex` 存在，对应 `codex-app-server + local + development/1`，显式 `access_mode:sandbox`，`execution.settings.executable` 为实际本机原生 Codex 文件的绝对路径；交付基线不接受空值、PATH 命令、npm shim 或 shell 包装器。
+1. `configurations.local-codex` 存在，对应 `codex-app-server + local + development/2`，显式 `access_mode:sandbox`，`execution.settings.executable` 为实际本机原生 Codex 文件的绝对路径；交付基线不接受空值、PATH 命令、npm shim 或 shell 包装器。
 2. 按生产原生资格规则核验格式、版本、实际权限、认证及所需发布依赖。调查基线当前固定验证 Codex `0.159.2`；未来调整由生产能力／资格规则和同版证据决定，不由本文件放宽。
 3. `local-codex.smoke/default` 的注册需求固定引用该配置项；L1、完整 Controlled 前置和 L2 真实闭环在明确构建下通过，原写者停止及资源收尾满足既有要求。driver 的 merge 属于测试断言，不新增 Runner 自动合并职能。
 

@@ -1,0 +1,7 @@
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+--- PASS: TestSRWorkflowDiscoveryAndSelection (5.72s)
+=== RUN   TestEnvironmentCheckCLI
+--- PASS: TestEnvironmentCheckCLI (6.83s)
+=== RUN   TestSRMultipleRunsIsolation
+--- PASS: TestSRMultipleRunsIsolation (29.62s)
+PASS

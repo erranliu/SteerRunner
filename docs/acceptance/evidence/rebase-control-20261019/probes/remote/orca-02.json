@@ -1,0 +1,21 @@
+{
+  "id": "7c33ddc7-9e5c-45c0-9ba2-f5abd31da67d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c229acf2-b9a8-4ec8-9e65-bbdae44039a6",
+      "tabId": "17b887d6-7b02-4896-9201-3b7106de7fd5",
+      "paneKey": "17b887d6-7b02-4896-9201-3b7106de7fd5:e4d9095b-b728-428b-8b22-2ec2750f4b7a",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b@@de1b4542",
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "title": "SteerRunner stop proof probe",
+      "executionHostId": "local",
+      "incarnationId": "e6a02654-8185-493c-8601-737161e90323",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

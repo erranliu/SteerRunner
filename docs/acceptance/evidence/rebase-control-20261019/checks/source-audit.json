@@ -1,0 +1,41 @@
+{
+  "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "latest_integrated_main": "2aa17cce7da6fd75e59db76e18f2521d9e9777db",
+  "native_proof_files": [
+    {
+      "path": "internal/execution/adapters/codex/remote_exit.go",
+      "identical_to_main": true,
+      "git_blob_sha256": "f62f8446aeebcbdc3a880649db36627d0a9e0ec7f0b53034fee307995c156dfb"
+    },
+    {
+      "path": "internal/execution/adapters/codex/remote_turn.go",
+      "identical_to_main": true,
+      "git_blob_sha256": "568fc1b7faa00f9a50f7646566b6ac7fdbf8d7300e8ec2d3169ce839fb226aab"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/artifact.go",
+      "identical_to_main": true,
+      "git_blob_sha256": "717b70f5bc92c79964e5b4a0229e5e27508a2eefb2b8eff920cd7cabcbf44bd6"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/stopped.go",
+      "identical_to_main": true,
+      "git_blob_sha256": "91eaa0c0785db69e94176eb07d9cc6cb7b2d24198eed7ee31ab6489d18f260a3"
+    }
+  ],
+  "execution_source_unchanged_by_independent_configuration_integration": true,
+  "manual_review": [
+    "Original helper Ed25519 private key remains memory-only; original readiness owner/public key bind the full native Job/TUI/authentication exit body.",
+    "Main history reader Job creation, cleanup and ReaderWritersAbsent semantics retained; history diff only adds NativeHome accessor.",
+    "A query failure may carry cleanup facts; validateRecordedTurn rejects InspectionFailed as business success.",
+    "Checkpoint replacement validates original input/readiness/reader settlement first; no unknown reader response is overwritten by query or revocation.",
+    "Stop revokes original authentication then requests and verifies original signed exit before closing original business PTY; unknown proof retains original route.",
+    "Passive shutdown and offline verification cannot promote PTY close into stopped, cannot recreate control/reader or send business input.",
+    "Record/Intents/Commit/CAS retains business state authority; caller checkpoint is bound transport evidence only, not a workflow queue.",
+    "Independent configuration keeps validate, capability identity, frozen configuration/catalog/build/requirements digests and per-case availability; workflow selections consistently use version 2.",
+    "UTF-8 is scoped to native JSON capture and restored; obsolete feedback qualification fields are removed rather than accepted as ignored configuration.",
+    "Initialization creation identity unknown remains blocking; no replacement-by-title or empty-inventory inference."
+  ],
+  "unresolved_findings": [],
+  "qualification": "Manual source review plus byte checks only; final tests and native proofs recorded separately."
+}

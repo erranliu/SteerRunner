@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.dsh
+    run_test.go:667: expected implementation and publication results
+    run_test.go:490: remote authentication cleanup unconfirmed remote cleanup inventory incomplete or foreign
+--- FAIL: TestSRLiveScenario (232.23s)
+    --- FAIL: TestSRLiveScenario/orca-local.dsh (232.20s)
+FAIL

@@ -1,0 +1,29 @@
+{
+  "id": "dd71f63c-e3f8-4a33-8980-84f95623d148",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_77eb6dc4-4e46-4dc7-86bc-02f570e74d33",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d@@4d7c7ef4",
+      "incarnationId": "0cc111bc-5fe0-494d-bf68-311acc40da8b",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "tabId": "e2f4b64e-f301-40f1-9603-aa47c67dca8c",
+      "leafId": "ba4be4a5-b910-427d-b1ed-cd1b17083ae3",
+      "title": "SteerRunner stop proof probe",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792383854369,
+      "preview": "",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "456f70a1-9c53-406c-a48a-72833d36abdb"
+  }
+}

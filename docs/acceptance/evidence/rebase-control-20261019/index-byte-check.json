@@ -1,0 +1,9 @@
+{
+  "matched_files": 248,
+  "method": "git cat-file --batch byte comparison against working files after -text attributes",
+  "excluded_generated_reports": [
+    "hashes.json",
+    "index-byte-check.json"
+  ],
+  "mismatches": []
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "steerrunner-test/v2",
+  "id": "6231a2f36445",
+  "level": "L3",
+  "scenario": "orca-remote.service-restart",
+  "driver": "execution-stability",
+  "root": "C:\\srt\\6231a2f36445",
+  "runner_exe": "C:\\srt\\6231a2f36445\\bin\\steerrunner.exe",
+  "runner_sha256": "c8bc14856e182efac905929e58182c1d32f96adfbe985f7685b03ac8683b5a2b",
+  "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "source_dirty": false,
+  "repository_path": "C:\\srt\\6231a2f36445\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/6231a2f36445/base",
+  "base_revision": "740ecd0db1feb7755bfd73c35e4b00feadefb3e5",
+  "spec_path": "C:\\srt\\6231a2f36445\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\6231a2f36445\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "adapter": "orca-terminal",
+    "target": {
+      "kind": "orca_environment",
+      "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    },
+    "settings": {
+      "access_mode": "sandbox",
+      "transport": {
+        "executable": "C:\\srt\\6231a2f36445\\bin\\stability.exe",
+        "args": [
+          "audit",
+          "-manifest",
+          "C:\\srt\\6231a2f36445\\manifest.json",
+          "--"
+        ]
+      },
+      "agent_launch": {
+        "executable": "C:/sr-runtime/2ba0/01/native/codex.exe",
+        "model": "gpt-6-luna",
+        "reasoning_effort": "high",
+        "args": [
+          "--no-daemon"
+        ],
+        "runtime_executable": "C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe",
+        "runtime_sha256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803"
+      }
+    }
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/6231a2f36445/base",
+    "settings": {
+      "query": {
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\6231a2f36445\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ],
+        "executable": "powershell.exe"
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "3f3caaeafe9ee10f054e2e8fcd07a0b6d3f360d5d4b7902551be70a2730e1b54",
+  "configuration_path": "C:\\srt\\6231a2f36445\\bin\\test-config.json",
+  "workflow": {
+    "id": "development",
+    "version": 2
+  },
+  "created_at": "2026-10-19T04:12:57.9674852Z",
+  "requirements_sha256": "2ad10fd06ac470c492a057abc95bedd3954438671941b4bbd7394cfff4bcb5db",
+  "case_id": "graceful-active",
+  "repeat_index": 1,
+  "stability": {
+    "timeout_minutes": 45,
+    "diagnostic_orca": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "native_orca": {
+      "sha256": "d14ba95cdce1ef7dc9ad3ac74949ca5db38b27378ee30f30a23cf26f9e875a11",
+      "path": "C:\\srt\\6231a2f36445\\bin\\orca-runtime\\node.exe"
+    },
+    "firewall": {
+      "sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+      "path": "C:\\srt\\6231a2f36445\\bin\\network.ps1"
+    },
+    "expected_outcome": "merged",
+    "helper": {
+      "sha256": "93ee57bea6fbdc1b2628f462a3aaed11cb26905f17135aded87060ec419f9831",
+      "path": "C:\\srt\\6231a2f36445\\bin\\stability.exe"
+    },
+    "runtime_files": {
+      "sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+      "path": "C:\\srt\\6231a2f36445\\bin\\runtime-files.json"
+    },
+    "cli_entry": {
+      "sha256": "322de9530150f8b4db0489880eceaf4ddfc1459c56013edd4350ca58828b9361",
+      "path": "C:\\srt\\6231a2f36445\\bin\\orca-runtime\\out\\cli\\index.js"
+    }
+  },
+  "remote_runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+}

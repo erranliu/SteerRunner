@@ -25,18 +25,17 @@ func TestRemoteAuthenticationCapabilityMissingBlocksBeforeBusiness(t *testing.T)
 }
 
 func TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts(t *testing.T) {
-	l, f, s := fixtureOn(t, "paired-remote")
+	l, f, s, control := fixtureFixedControl(t)
 	l.setup.AgentLaunchCommand = "opaque-start"
 	f.commandMode = true
-	receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+	state, _ := l.state(s)
+	controlIntent := l.controlIntent(s, state)
+	receipt, _, err := l.Execute(context.Background(), request(s, b.LifecycleCreateResource, b.LifecycleInput{Resource: &controlIntent}))
 	if err != nil {
 		t.Fatal(err)
 	}
 	bind(&s, receipt)
-	l.setup.RepositoryURL = "https://github.com/erranliu/SteerlineTest.git"
-	l.profile.RuntimeExecutable = "C:/runtime/steerrunner-agent.exe"
-	l.profile.RuntimeConfigurationDigest = strings.Repeat("a", 64)
-	ready := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: l.setup.RepositoryURL, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{PID: 123}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().Add(time.Hour)}
+	ready := control.ready
 	raw, _ := json.Marshal(ready)
 	f.lines = []string{codex.RemoteReadyPrefix + base64.RawURLEncoding.EncodeToString(raw)}
 	input := b.LifecycleInput{Resource: &b.ResourceIntent{Purpose: "agent-start", Name: "original-terminal", Objective: l.setup.AgentLaunchCommand}}
@@ -44,7 +43,7 @@ func TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts(t *tes
 	if err != nil {
 		t.Fatal(err)
 	}
-	state, err := decodeReceiptState(l, s, receipt)
+	state, err = decodeReceiptState(l, s, receipt)
 	if err != nil || state.RemoteReadiness == nil || state.AdmissionAttempted || f.nativeSends != 0 {
 		t.Fatal("preparation was not checkpointed before admission", state, err)
 	}
@@ -66,6 +65,11 @@ func TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts(t *tes
 	}
 	if f.nativeSends != 0 {
 		t.Fatal("bootstrap sent business input")
+	}
+	f.lines = append(f.lines, codex.RemoteFailurePrefix+"authentication_key_unavailable")
+	failed, failureErr := l.launchAgent(context.Background(), request(s, b.LifecycleCreateResource, input), true)
+	if failureErr == nil || !strings.Contains(failureErr.Error(), "authentication_key_unavailable") || failed.Disposition == b.OperationConfirmed || f.nativeSends != 0 {
+		t.Fatal("startup failure after saved readiness admitted business", failed, failureErr)
 	}
 }
 

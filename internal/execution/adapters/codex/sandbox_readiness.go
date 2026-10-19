@@ -50,7 +50,7 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
  $identity=($raw -join [char]10) | ConvertFrom-Json
  if ($identity.total_count -ne 1 -or $identity.repositories.Count -ne 1 -or $identity.repositories[0].full_name -ine ` + psLiteral(a.repository) + `) { throw 'scope mismatch' }`
 	transportProbe := ""
-	if a.broker != nil {
+	if a.broker != nil && !a.broker.installation {
 		identityProbe = `$ErrorActionPreference='Continue'; $raw=@(& gh api user 2>&1); $code=$LASTEXITCODE; $ErrorActionPreference='Stop'
  if ($code -ne 0) {
   $message=($raw -join [char]10)
@@ -61,6 +61,9 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
  }
  if ((($raw -join [char]10) | ConvertFrom-Json).login -cne ` + psLiteral(a.broker.login) + `) { throw 'broker identity mismatch' }`
 		transportProbe = `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + ` -or -not [IO.File]::Exists($env:SSL_CERT_FILE)) { throw 'transport filtered' }`
+	}
+	if a.broker != nil && a.broker.installation {
+		transportProbe = `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + `) { throw 'transport filtered' }`
 	}
 	containerValue := "1"
 	if len(modes) > 0 && modes[0] == "danger-full-access" {
@@ -93,9 +96,8 @@ try {
  $stage='git_transport_authentication'
  $helpers=@(& git config --get-all credential.helper 2>$null)
  if ($LASTEXITCODE -ne 0 -or $helpers.Count -eq 0 -or $helpers[-1] -ne '') { throw 'helper boundary' }
- $stage='network'
- $response=Invoke-WebRequest -UseBasicParsing -Uri 'https://api.github.com/meta' -TimeoutSec 12
- if ($response.StatusCode -ne 200) { throw 'network' }
+ # The authenticated native gh/Git operations below establish connectivity.
+ # An anonymous WebRequest to /meta adds an unrelated shared-IP quota gate.
  $stage='github_identity'
  ` + identityProbe + `
  $stage='github_repository'
@@ -166,7 +168,7 @@ func (b Backend) checkSandboxReadiness(ctx context.Context, h *SessionHandle, in
 		Verified bool   `json:"verified"`
 		Stage    string `json:"stage"`
 	}
-	allowed := map[string]bool{"sandbox_identity": true, "tool_environment": true, "git_admin_read": true, "git_admin_write": true, "remote_identity": true, "git_transport_authentication": true, "network": true, "github_identity": true, "github_repository": true, "remote_git": true, "ready": true}
+	allowed := map[string]bool{"sandbox_identity": true, "tool_environment": true, "git_admin_read": true, "git_admin_write": true, "remote_identity": true, "git_transport_authentication": true, "github_identity": true, "github_repository": true, "remote_git": true, "ready": true}
 	for _, stage := range []string{"github_identity_trust", "github_identity_transport", "github_identity_rejected", "remote_git_trust", "remote_git_transport", "remote_git_rejected"} {
 		allowed[stage] = true
 	}

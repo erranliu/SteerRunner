@@ -1,0 +1,8 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.service-restart
+    stability_test.go:463: original control request unresolved
+    stability_test.go:1086: original native stop not confirmed: <nil>
+    stability_test.go:463: original control request unresolved
+--- FAIL: TestSRLiveScenario (271.02s)
+    --- FAIL: TestSRLiveScenario/orca-remote.service-restart (270.89s)
+FAIL

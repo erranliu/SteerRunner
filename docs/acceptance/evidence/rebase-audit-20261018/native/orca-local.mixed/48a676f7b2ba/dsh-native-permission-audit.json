@@ -1,0 +1,55 @@
+{
+  "os_job_reattached": true,
+  "owner": {
+    "job": {
+      "owner": {
+        "kind": "os",
+        "pid": 52352,
+        "created": "01dd5f0a73da8156",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\rebase-audit-20261018\\steerrunner-agent.exe"
+      },
+      "worker": {
+        "kind": "os",
+        "pid": 25580,
+        "created": "01dd5f0a76e0506c",
+        "executable": "c:\\program files\\nodejs\\node.exe"
+      },
+      "handle": 1320
+    },
+    "runtime_sha256": "4c5892221ac260cc92d27702a040d210314f04ccf4fdc8bbb7db9d8b66583b56",
+    "extension_bundle_sha256": "5c1a177639529db5106e8dc1ae9016610fd0f2338d87cdc992b0b073331adb08",
+    "session_id": "594e8354-e3ef-e5e0-8e42-dfbda8601639",
+    "run_id": "f2ffd0936ed9c105548c6bcd7a77b783",
+    "configuration_digest": "6ec22193a464696f0fb15b4c3f6e48e393307d77f8b909ce1f902f412313e969",
+    "access_mode": "sandbox"
+  },
+  "qualified_turns": 2,
+  "readiness": {
+    "reasoning_effort": "low",
+    "active_command_id": "43720ef6351155ad68694bc80ba13285",
+    "native_session_id": "90a6a824-0ca8-48bd-af34-ebb624b671e6",
+    "version": 2,
+    "source": "dsh-plugin-v1",
+    "source_sha256": "911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4",
+    "run_id": "f2ffd0936ed9c105548c6bcd7a77b783",
+    "session_id": "594e8354-e3ef-e5e0-8e42-dfbda8601639",
+    "instance_id": "9afaa388-7543-45df-9c90-9f00be4438b4",
+    "pid": 25580,
+    "process_started_at": "2026-10-18T14:10:44.079Z",
+    "mode": "tui",
+    "tools": [
+      "powershell"
+    ],
+    "model": "deepseek-official/deepseek-flash",
+    "preparation": {
+      "inside_write_verified": true,
+      "provider_environment_absent": true,
+      "outside_write_denied": true,
+      "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+      "access_mode": "sandbox",
+      "authentication_expires_at": "2026-10-18T23:10:41.1901056+08:00",
+      "verified": true
+    },
+    "stage": "ready"
+  }
+}

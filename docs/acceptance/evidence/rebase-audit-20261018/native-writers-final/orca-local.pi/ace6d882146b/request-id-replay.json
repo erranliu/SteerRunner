@@ -1,0 +1,10 @@
+{
+  "original_request_id": "smoke-submit",
+  "recovered_run_id": "635ae556b0e8b6ffeb29d9e5fb79e8cd",
+  "same_request_replay": {
+    "action_status": "pending",
+    "command_id": "5288dcb1fba3d11caf8002d6e7a67b4d",
+    "receipt_status": "accepted",
+    "run_id": "635ae556b0e8b6ffeb29d9e5fb79e8cd"
+  }
+}

@@ -1,0 +1,5 @@
+Exception: C:\Users\lmas1\.codex\worktrees\1c3c\SteerRunner\.evidence\rebase-audit-20261018\run-native-reviewed.ps1:7
+Line |
+   7 |  … q 'failed'){throw 'Current full prerequisite failed; no native call p …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Current full prerequisite failed; no native call permitted

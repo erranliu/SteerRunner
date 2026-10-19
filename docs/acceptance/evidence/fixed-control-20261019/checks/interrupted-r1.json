@@ -1,0 +1,8 @@
+{
+  "reason": "Read-only code audit found path spelling binding defect; interrupt before model cases and refreeze",
+  "source": "4b3cd92c7dad7ac2622718b3e642cd31512b1bb0",
+  "pid": 38404,
+  "created": "2026-10-19T00:55:19.7201450Z",
+  "executed_cases": 0,
+  "at": "2026-10-19T00:56:58.5411062Z"
+}

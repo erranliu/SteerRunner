@@ -35,3 +35,10 @@ func TestStartTurnFailureRetainsOriginalSessionIdentity(t *testing.T) {
 		})
 	}
 }
+
+func TestRAReportPolicyDeclaration(t *testing.T) {
+	policy := (ExecutionLifecycle{}).PolicyCapabilities().ReportToolPolicy
+	if policy != "frozen_native_permissions; business_read_only_is_prompt_policy" {
+		t.Fatal("native report permission fact is missing or claims stronger isolation", policy)
+	}
+}

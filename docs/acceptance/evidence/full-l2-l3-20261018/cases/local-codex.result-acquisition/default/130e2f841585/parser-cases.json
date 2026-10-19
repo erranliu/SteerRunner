@@ -1,0 +1,39 @@
+{
+  "case_count": 3,
+  "cases": [
+    {
+      "case": "parser-default",
+      "observed_model": "",
+      "passed": true,
+      "requested_model": "native default under ignore-user-config",
+      "session": "01a14deb-5033-7fd2-811a-75ad529220d3",
+      "stopped": true,
+      "tool_events": 0
+    },
+    {
+      "active_cancel_stopped": true,
+      "canary_unchanged": true,
+      "case": "parser-boundaries",
+      "induced_output_status": "completed",
+      "observed_model": "",
+      "parser_calls": 2,
+      "passed": true,
+      "permission_probe_calls": 1,
+      "read_only_command_denied": true,
+      "requested_model": "gpt-6.1-sol",
+      "session": "01a14deb-8e53-77c3-b40c-1777a0103e11",
+      "tool_events": 0
+    },
+    {
+      "case": "workflow-smoke",
+      "evidence": "scenario.json",
+      "parser_calls": 0,
+      "passed": true
+    }
+  ],
+  "model_name_note": "exec JSONL may omit actual model name; blank means unavailable, never inferred",
+  "permission_probe_calls": 1,
+  "production_parser_calls": 3,
+  "profile": "codex-parser/v1:0.159.2:read-only:mxc:never:provided-text",
+  "runner_credential_copies": 0
+}

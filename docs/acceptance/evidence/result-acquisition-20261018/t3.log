@@ -1,0 +1,21 @@
+=== RUN   TestRAPublicContract
+--- PASS: TestRAPublicContract (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.074s
+=== RUN   TestRAPublicContract
+--- PASS: TestRAPublicContract (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.088s
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.01s)
+=== RUN   TestRAVersionRejectLegacy
+--- PASS: TestRAVersionRejectLegacy (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	2.977s
+=== RUN   TestRAVersion
+--- PASS: TestRAVersion (0.08s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.162s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/cli	2.933s [no tests to run]

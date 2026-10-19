@@ -25,6 +25,7 @@ func TestSRInputFreeze(t *testing.T) {
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
 	raw, _ := json.Marshal(request)
+	acceptedRaw := append([]byte(nil), raw...)
 	var responses [3]contracts.Response
 	var exits [3]int
 	var failures [3]error
@@ -73,6 +74,21 @@ func TestSRInputFreeze(t *testing.T) {
 	if countNative(t, "thread/start") != 1 || countNative(t, "turn/start") != 3 {
 		t.Fatal("concurrent submit replayed native work")
 	}
+	if err := os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), []byte(`{"bad":true}`), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if same := call(t, dir, []string{"submit", "--input", "-"}, string(acceptedRaw), 0); same.Data.(map[string]any)["run_id"] != id {
+		t.Fatal("config change re-froze duplicate request")
+	}
+	request.RequestID = "invalid-parser-config-new-request"
+	newRaw, _ := json.Marshal(request)
+	if rejected := call(t, dir, []string{"submit", "--input", "-"}, string(newRaw), 2); rejected.Error.Code != "invalid_input" {
+		t.Fatal(rejected)
+	}
+	if countNative(t, "turn/start") != 3 {
+		t.Fatal("bad new config dispatched work")
+	}
+
 }
 
 func TestSRPermissionQualification(t *testing.T) {
@@ -103,8 +119,11 @@ func git(t *testing.T, dir string, args ...string) string {
 	return strings.TrimSpace(string(output))
 }
 func waitRun(t *testing.T, dir, id string, match func(contracts.RunView) bool) contracts.RunView {
+	return waitRunFor(t, dir, id, match, 60*time.Second)
+}
+func waitRunFor(t *testing.T, dir, id string, match func(contracts.RunView) bool, budget time.Duration) contracts.RunView {
 	t.Helper()
-	until := time.Now().Add(60 * time.Second)
+	until := time.Now().Add(budget)
 	var current contracts.RunView
 	for time.Now().Before(until) {
 		response := call(t, dir, []string{"inspect", "--run-id", id}, "", 0)
@@ -168,7 +187,7 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 		}
 	})
 	spec, plan := "Inline Spec：固定材料", "Inline Plan：固定计划"
-	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
+	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
 	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{Executable: helperEXE})
 	request.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", provider}}})
 	raw, _ := json.Marshal(request)
@@ -230,16 +249,11 @@ func TestSRRunWorkflow(t *testing.T) {
 	}
 	feedback := contracts.Request{Protocol: contracts.Protocol, RequestID: "feedback-once", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d,"kind":"feedback","text":"Update the original result"}`, current.Revision))}
 	body, _ := json.Marshal(feedback)
-	call(t, dir, []string{"reply", "--run-id", id, "--input", "-"}, string(body), 0)
-	updated := waitRun(t, dir, id, func(r contracts.RunView) bool {
-		return r.Status == "pr_ready" && r.PR != nil && r.PR.HeadRevision != current.PR.HeadRevision
-	})
-	if updated.PR.URL != current.PR.URL || updated.Execution.Branch != current.Execution.Branch || updated.Execution.SessionID != current.Execution.SessionID {
-		t.Fatal("feedback replaced the original PR/branch/session")
+	response = call(t, dir, []string{"reply", "--run-id", id, "--input", "-"}, string(body), 5)
+	if response.Error.Code != "invalid_state" || countNative(t, "turn/start") != 3 {
+		t.Fatal("milestone acquired a feedback transition")
 	}
-	if countNative(t, "turn/start") != 6 || countNative(t, "thread/start") != 1 {
-		t.Fatal("unexpected native dispatch count")
-	}
+
 }
 
 func TestSRStorageLogsEvents(t *testing.T) {
@@ -316,14 +330,13 @@ func TestSRPublicationIdentity(t *testing.T) {
 func TestSRPublicationBeforeWorkflowReady(t *testing.T) {
 	testCount.Add(1)
 	dir, request := setupRun(t)
-	t.Setenv("STEERRUNNER_STAGE_PUBLISH_PLAIN", "1")
-	_ = os.WriteFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report"), []byte("hold original formatting turn"), 0600)
+	t.Setenv("STEERRUNNER_STAGE_PUBLISH_UNKNOWN", "1")
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
 	raw, _ := json.Marshal(request)
 	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
 	current := waitRun(t, dir, id, func(r contracts.RunView) bool {
-		return r.PR != nil && r.Step == "publish.report" && r.Execution.TurnStarted
+		return r.PR != nil && r.Step == "publish.execute" && r.Status == "reconciling"
 	})
 	if current.Status == "pr_ready" {
 		t.Fatal("fixture did not retain incomplete workflow")

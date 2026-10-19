@@ -14,12 +14,14 @@ func TestOrcaInputReadiness(t *testing.T) {
 	for _, scenario := range []string{"ready", "slow-start", "working", "waiting", "blocked", "missing", "wrong-pane", "query-failure"} {
 		t.Run(scenario, func(t *testing.T) {
 			l, f, s := fixture(t)
-			l.profile.WaitTimeout = "1ms"
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
 			if err != nil {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			// Bound only the readiness wait, not workspace setup or its CLI lock.
+			// The assertions concern native facts and zero input, not 1ms scheduling.
+			l.profile.WaitTimeout = "100ms"
 			base := fixtureState(10, "previous", "done")
 			current := base
 			switch scenario {

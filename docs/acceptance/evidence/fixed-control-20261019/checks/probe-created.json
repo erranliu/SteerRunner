@@ -1,0 +1,21 @@
+{
+  "id": "701bea4f-3789-4a8f-8927-646518f45227",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_6d07fd0b-b53c-44ee-83f8-624a5f13b56f",
+      "tabId": "453b8dad-ff78-4bea-895c-590bae45d102",
+      "paneKey": "453b8dad-ff78-4bea-895c-590bae45d102:931cea0c-3c94-4e52-8ff8-f68f7e12f44c",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018@@26a00297",
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018",
+      "title": "SteerRunner fixed control finite protocol probe",
+      "executionHostId": "local",
+      "incarnationId": "8da23ed2-384a-4cc5-a26f-2a846930d409",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

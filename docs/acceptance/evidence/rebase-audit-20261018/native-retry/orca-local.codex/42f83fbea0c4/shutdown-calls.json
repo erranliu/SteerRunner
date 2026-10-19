@@ -1,0 +1,84 @@
+[
+  {
+    "argv": [
+      "service",
+      "stop",
+      "--input",
+      "-",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:21:57.132249Z",
+    "request": "{\"protocol\":\"steerrunner-cli/v1\",\"request_id\":\"restart-original-service\",\"input\":{\"expected_instance_id\":\"970143fafa651c9c0d304b725c721792\"}}",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":\"restart-original-service\",\"data\":{\"action_status\":\"pending\",\"command_id\":\"c73ed14a6d85578b81099f65e354e197\",\"instance_id\":\"970143fafa651c9c0d304b725c721792\",\"receipt_status\":\"accepted\",\"run_id\":null},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:21:57.1538657Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"unavailable\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\"},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:21:58.1739925Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"not_running\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\",\"last_shutdown\":{\"instance_id\":\"970143fafa651c9c0d304b725c721792\",\"request_id\":\"restart-original-service\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"executable_sha256\":\"91b68fcab14f7a3507374dc710a249b53d013522cf7df70d7b8387ad6a291901\",\"resources_settled\":false,\"diagnostic\":\"Worker shutdown or native resource settlement remains unverified. run adccd93419c3a9c7884f4cc9f1446e2f: native stop status \\\"\\\"\"}},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "stop",
+      "--input",
+      "-",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:25:52.7498634Z",
+    "request": "{\"protocol\":\"steerrunner-cli/v1\",\"request_id\":\"cleanup-service\",\"input\":{\"expected_instance_id\":\"88982401f2ed239b0dead2783c15b687\"}}",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":\"cleanup-service\",\"data\":{\"action_status\":\"pending\",\"command_id\":\"b146b01c95bc0bcc6416594c132cea44\",\"instance_id\":\"88982401f2ed239b0dead2783c15b687\",\"receipt_status\":\"accepted\",\"run_id\":null},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:25:52.7720182Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"unavailable\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\"},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\42f83fbea0c4\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:25:53.7959692Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"not_running\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\",\"last_shutdown\":{\"instance_id\":\"88982401f2ed239b0dead2783c15b687\",\"request_id\":\"cleanup-service\",\"state_dir\":\"c:\\\\srt\\\\42f83fbea0c4\\\\s\",\"executable_sha256\":\"91b68fcab14f7a3507374dc710a249b53d013522cf7df70d7b8387ad6a291901\",\"resources_settled\":true}},\"error\":null}\n",
+    "stderr": ""
+  }
+]

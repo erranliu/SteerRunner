@@ -1,0 +1,7 @@
+=== RUN   TestOrcaStoppedNativeProbe
+    orca_native_test.go:173: original helper startup exit status 1
+        --retry-request must be the UUID Orca reported for the original request; pass it exactly as printed, or omit the flag to start a new request.
+--- FAIL: TestOrcaStoppedNativeProbe (13.06s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/host	15.948s
+FAIL

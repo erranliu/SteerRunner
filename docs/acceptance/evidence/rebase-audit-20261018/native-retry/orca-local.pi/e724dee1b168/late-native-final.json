@@ -1,0 +1,38 @@
+{
+  "reasoning_effort": "low",
+  "version": 2,
+  "source": "pi-extension-v1",
+  "source_sha256": "62a850310dc63403b76349d0f1774876837795d00b92f693983266fcfb11d2ef",
+  "run_id": "08e2831b87121084828d9d11cb28b212",
+  "session_id": "eda09c3d-6fae-082b-8a8f-021e64af2b66",
+  "instance_id": "8b406151-3b57-40bd-ae43-bbb30a3878c5",
+  "pid": 33388,
+  "process_started_at": "2026-10-18T14:19:27.321Z",
+  "mode": "tui",
+  "tools": [
+    "read",
+    "write",
+    "edit",
+    "powershell"
+  ],
+  "model": "deepseek/deepseek-flash",
+  "preparation": {
+    "inside_write_verified": true,
+    "provider_environment_absent": true,
+    "outside_write_denied": true,
+    "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+    "access_mode": "sandbox",
+    "authentication_expires_at": "2026-10-18T23:19:25.7932995+08:00",
+    "verified": true
+  },
+  "stage": "settled",
+  "command_id": "8c3a838897df52250058140d5571e7f6",
+  "input_sha256": "4ccc6a6bb4f17ce34970383427e6a8825f22fa96741b042e7f78e38127b7c17b",
+  "wire_sha256": "4f108597014060b73a7bf0f135de0c700ee5261978879a6b3a3bba8cabfe3b1c",
+  "outcome": "completed",
+  "native_input_id": "a92c7d7f",
+  "native_reply_id": "95c9b7c7",
+  "stop_reason": "stop",
+  "reply": "{\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}",
+  "reply_sha256": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+}

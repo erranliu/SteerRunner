@@ -1,0 +1,78 @@
+{
+  "recorded_at": "2026-10-18T23:35:30.105762+00:00",
+  "before_commit": "94fcafd62c2f23bd17ecb3da8c474b132f1931f9",
+  "code_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+  "main_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+  "scope": "Complete L1/Controlled plus three affected terminal L3 and both L2. Not complete L3 or admin fault matrix.",
+  "source_pr": "https://github.com/erranliu/SteerRunner/pull/25",
+  "source_pr_draft": true,
+  "findings": [
+    {
+      "issue": "Unrelated unauthenticated meta quota gates authenticated native tools",
+      "confirmed": "Actual public response limit60/hour + anonymous request in original generated script",
+      "old_failure_cause": "Old finite stage alone cannot establish HTTP status or exact transport cause",
+      "fix": "Remove anonymous request, retain native sandbox identity/environment/Git roots/remote and authenticated gh/Git"
+    },
+    {
+      "issue": "Rejected common tool initializer may leave TUI live without readiness",
+      "fix": "Atomic bounded failure evidence bound to original Run/session/bundle/owner worker PID; no readiness/business/stop authority or new state"
+    },
+    {
+      "issue": "Native invalid-canary test reused expectedly closed client",
+      "fix": "Extra Git calls only in qualified branch; invalid credential still rejects with zero thread/input"
+    }
+  ],
+  "commands": [
+    {
+      "command": "go test ./internal/execution/adapters/codex -run ^TestAuthenticationNativeToolBoundary$ -count=1 -timeout=3m -v -args -sandbox-auth-native <pinned-native> -sandbox-auth-host-broker",
+      "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+      "exit_code": 0,
+      "evidence": "checks/native-qualified-host-broker.log"
+    },
+    {
+      "command": "go test ./internal/execution/adapters/codex -run ^TestAuthenticationNativeToolBoundary$ -count=1 -timeout=3m -v -args -sandbox-auth-native <pinned-native>",
+      "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+      "exit_code": 0,
+      "evidence": "checks/native-qualified-invalid-canary.log"
+    },
+    {
+      "command": "scripts/test.ps1 -Level L3 -Scenario @('orca-local.codex','orca-local.pi','orca-local.dsh') -Config <frozen-config-qualified> -OutDir <live-qualified> -MaxParallel 2",
+      "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+      "exit_code": 0,
+      "result": "L1 360 Go roots/29 Node; Controlled16; three native cases passed",
+      "evidence": "live-qualified/summary.json"
+    },
+    {
+      "command": "go test -tags=live ./internal/execution/adapters/codex -run ^TestLinkedGitNativeCommit$ -count=1 -timeout=3m -v -args -sandbox-auth-native <pinned-native>",
+      "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+      "exit_code": 0,
+      "evidence": "live-l2/l2-git-boundary.log"
+    },
+    {
+      "command": "run-l2.ps1 (existing catalog/scheduler, requires same clean source and prior L1/Controlled; starts after terminal batch to keep global parallel<=2)",
+      "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+      "exit_code": 0,
+      "result": "two L2 cases passed",
+      "evidence": "live-l2/summary.json"
+    }
+  ],
+  "matching_prerequisites": {
+    "source_clean_at_all_builds": true,
+    "main": "live-qualified/summary.json",
+    "l2_reuse": "live-l2/summary.json",
+    "helper_sha256": "128695A6788848CCFA3F67708289D5F179876D4A1C5AAD8B73A0863716FFD62E"
+  },
+  "remaining_gate": {
+    "original_create_identity_window": "Prior service-restart/kill-active inspector create has no returned persisted handle; public native create exposes no caller request-ID recovery. Remains unknown, no title adoption/replacement/false settlement. Not fixed by this patch.",
+    "full_l3_not_claimed": true,
+    "admin_host_missing": true
+  },
+  "cleanup": "cleanup-summary.json",
+  "steerline": {
+    "head": "bfe392447591137e6d762f19daf90cdc828aa428",
+    "porcelain": "",
+    "modified_by_this_task": false
+  },
+  "deployed": false,
+  "source_pr_merged": false
+}

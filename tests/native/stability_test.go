@@ -151,7 +151,9 @@ func (s *stabilityRun) diagnostic(ctx context.Context, args ...string) ([]byte, 
 		if !hasJSON {
 			argv = append(argv, "--json")
 		}
-		out, err := exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		out, err := orca.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+			return exec.CommandContext(ctx, s.m.Stability.DiagnosticOrca, argv...).Output()
+		})
 		s.note("diagnostic-attempt", map[string]any{"args": args, "output": string(out), "error": fmt.Sprint(err)})
 		v, parseErr := orca.ParseEnvelope(out)
 		if v.OK && v.Meta.RuntimeID != s.m.RemoteRuntimeID {
@@ -371,7 +373,9 @@ func (s *stabilityRun) disconnect() {
 	s.check("direct-state-blocked", err != nil, "faults.jsonl: fixture helper direct native state request failed")
 	ctx2, cancel2 := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel2()
-	out, err = exec.CommandContext(ctx2, s.m.Stability.NativeOrca.Path, s.m.Stability.CLIEntry.Path, "terminal", "show", "--terminal", s.process.Terminal, "--environment", s.m.Execution.Target.Environment, "--json").CombinedOutput()
+	out, err = orca.SerializeCLI(ctx2, func(ctx context.Context) ([]byte, error) {
+		return exec.CommandContext(ctx, s.m.Stability.NativeOrca.Path, s.m.Stability.CLIEntry.Path, "terminal", "show", "--terminal", s.process.Terminal, "--environment", s.m.Execution.Target.Environment, "--json").CombinedOutput()
+	})
 	s.note("blocked-cli-probe", map[string]any{"error": fmt.Sprint(err), "output": string(out)})
 	s.check("native-cli-blocked", err != nil, "faults.jsonl: real private CLI request failed")
 	state, e := s.native()
@@ -510,8 +514,17 @@ func (s *stabilityRun) merge(v contracts.RunView) {
 
 func executionStability(t *testing.T, m livetest.Manifest) {
 	s := &stabilityRun{t: t, m: m, dir: filepath.Join(m.Root, "s"), started: time.Now().UTC(), r: livetest.StabilityResult{Scenario: m.Scenario, CaseID: m.CaseID, RepeatIndex: m.RepeatIndex, Stage: "preflight", TestOutcome: "failed"}}
+	var inputsBeforeCleanup []string
 	t.Cleanup(func() {
 		s.cleanup()
+		// The fixed control actor deliberately remains live through business
+		// completion. Require its actual closure only after Run stop/cleanup.
+		keys, _ := s.calls()
+		if inputsBeforeCleanup != nil {
+			s.check("no-input-during-cleanup", reflect.DeepEqual(keys, inputsBeforeCleanup), "original business forwarding intents unchanged by stop/authentication/control cleanup")
+		}
+		s.r.AuditComplete = s.completeNativeReceipts(keys)
+		s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts, fixed control identity, authentication revocation and confirmed closure")
 		if err := livetest.ValidateRuntime(m); err != nil {
 			t.Error(err)
 		}
@@ -536,7 +549,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 	spec, _ := os.ReadFile(m.SpecPath)
 	plan, _ := os.ReadFile(m.PlanPath)
 	a, z := string(spec), string(plan)
-	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
+	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
 	selectedWorkflow, workflowErr := m.RunWorkflow(nil)
 	if workflowErr != nil {
 		t.Fatal(workflowErr)
@@ -741,6 +754,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		s.r.BusinessOutcome = "merged"
 	}
 	keys, launches := s.calls()
+	inputsBeforeCleanup = append([]string{}, keys...)
 	seen := map[string]bool{}
 	unique := true
 	for _, k := range keys {
@@ -767,8 +781,6 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		}
 		s.check("single-native-publication", pubs == 1 && creates == 1, "native-publication-audit.json: publisher/create counts")
 	}
-	s.r.AuditComplete = s.completeNativeReceipts(keys)
-	s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json: original business receipts and every bound readonly inspector closed; no new business input")
 	if m.Stability.ExpectedOutcome != "merged" {
 		s.auditPermissions()
 	}
@@ -840,8 +852,8 @@ func (s *stabilityRun) auditPermissions() {
 }
 
 func (s *stabilityRun) completeNativeReceipts(expected []string) bool {
-	// Stop can cancel an in-flight readonly observation. Await its existing
-	// bounded close; this loop never creates, retries or closes a native resource.
+	// Run cleanup already stopped the original business/control resources.
+	// This loop only awaits their existing bound receipts, with no new effects.
 	until := time.Now().Add(30 * time.Second)
 	for {
 		raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
@@ -1042,6 +1054,12 @@ func (s *stabilityRun) cleanup() {
 					if err == nil && v.StopStatus == "stopped" && !v.NewInputsAllowed {
 						s.r.Cleanup.NativeStopped = true
 						save(s.t, "cleanup-run.json", v)
+						proof, proofErr := remoteStopEvidence(s.m, v)
+						if proofErr != nil {
+							s.t.Error("original authentication/control cleanup unverified", proofErr)
+						} else {
+							save(s.t, "remote-authentication-cleanup.json", proof)
+						}
 						break
 					}
 					time.Sleep(time.Second)

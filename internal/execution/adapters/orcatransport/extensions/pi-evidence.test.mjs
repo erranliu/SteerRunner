@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import { EventEmitter } from "node:events";
 import { PassThrough } from "node:stream";
-import { createTerminalToolOperations } from "./terminal-tools.mjs";
+import { createTerminalToolOperations, prepareTerminalTools } from "./terminal-tools.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -10,6 +10,30 @@ import { createHash, randomUUID } from "node:crypto";
 import { attachEvidence, writeReceipt } from "./pi-evidence.mjs";
 
 const hash = (value) => createHash("sha256").update(value).digest("hex");
+test("failed native initialization publishes a bounded failure for either terminal agent", async(t) => {
+  for (const stage of ["remote_git_transport", "raw-secret-that-must-not-be-persisted"]) {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "sr-preparation-failure-"));
+    t.after(() => fs.rmSync(directory, {recursive:true}));
+    let calls = 0;
+    const launch = () => {
+      calls++;
+      const child = new EventEmitter(); child.stdout = new PassThrough(); child.stderr = new PassThrough(); child.stdin = new PassThrough();
+      queueMicrotask(() => { child.stdout.end(JSON.stringify({verified:false,stage})); child.stderr.end("private-diagnostic"); child.emit("close", 1); });
+      return child;
+    };
+    const config = {directory, cwd:directory, run_id:"a".repeat(32), session_id:randomUUID(), extension_bundle_sha256:"b".repeat(64),
+      tool_host:path.join(directory,"host.exe"), tool_policy:{access_mode:"sandbox",workspace:directory}, auth_probe:"fixed probe", authentication_expires_at:new Date(Date.now()+60000).toISOString()};
+    await assert.rejects(prepareTerminalTools(config, {}, launch), /native_tool_preparation_failed/);
+    assert.equal(calls,1); // No audit canaries or business work after the failed probe.
+    const raw = fs.readFileSync(path.join(directory,"preparation-failure.json"),"utf8"), fact = JSON.parse(raw);
+    assert.equal(fact.pid,process.pid); assert.equal(fact.run_id,config.run_id); assert.equal(fact.session_id,config.session_id);
+    assert.equal(fact.extension_bundle_sha256,config.extension_bundle_sha256);
+    assert.equal(fact.failure,"native_tool_preparation_failed");
+    assert.equal(fact.probe_stage,stage === "remote_git_transport" ? stage : "unverified");
+    assert.ok(!raw.includes("raw-secret") && !raw.includes("private-diagnostic"));
+    assert.equal(fs.existsSync(path.join(directory,"readiness.json")),false);
+  }
+});
 function fixture(t, overrides = {}, options = {}) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "runner-pi-evidence-test-"));
   t.after(() => {

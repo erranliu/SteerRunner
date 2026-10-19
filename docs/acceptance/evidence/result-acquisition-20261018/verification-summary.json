@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "scope": "Required Plan checks plus final deltas; not a rewritten complete-entry test report",
+  "prerequisites": "test-summary.json",
+  "prerequisite_levels_passed": [
+    "L1",
+    "Controlled"
+  ],
+  "current_l1": "current-l1-summary.json",
+  "final_source_deltas": [
+    "supplemental/ra-parser-controlled-current.log",
+    "supplemental/ra-parser-platform-env.log",
+    "supplemental/ra-parser-final-components.log"
+  ],
+  "native": "native/result.json",
+  "native_internal_cases": 3,
+  "raw_batch_native_failure_retained": true,
+  "final_build": "build.json",
+  "native_tested_build": "native/build.json"
+}

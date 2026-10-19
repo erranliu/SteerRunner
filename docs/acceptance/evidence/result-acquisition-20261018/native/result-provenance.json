@@ -1,0 +1,165 @@
+{
+  "run_id": "51fdcefe74942a09d9e04c47784a57b5",
+  "revision": 20,
+  "status": "pr_ready",
+  "step": "pr_ready",
+  "phase": "pr_ready",
+  "result_acquisition": [
+    {
+      "id": "9ffeefda4121bac209d47d6ec7ea6aa679fd9ba98dccfd4079356ee13a2be4c7",
+      "contract": "implementation",
+      "source": {
+        "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+        "command_id": "bc8f1573143d98f6c7bb2ae109b08e7b",
+        "turn_id": "01a14d30-d668-79e2-94a5-f2a69dcb7f9d",
+        "attempt_id": "59749a07b0755043c26a7318834c58ac",
+        "input_version": 1,
+        "final_digest": "35e60b052e3f3cda68e8c57af8d307642f737cb04d417f2f292387c3c2a2d77a"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "bc8f1573143d98f6c7bb2ae109b08e7b",
+            "turn_id": "01a14d30-d668-79e2-94a5-f2a69dcb7f9d",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 1,
+            "final_digest": "35e60b052e3f3cda68e8c57af8d307642f737cb04d417f2f292387c3c2a2d77a"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "bc8f1573143d98f6c7bb2ae109b08e7b",
+            "turn_id": "01a14d30-d668-79e2-94a5-f2a69dcb7f9d",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 1,
+            "final_digest": "35e60b052e3f3cda68e8c57af8d307642f737cb04d417f2f292387c3c2a2d77a"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "bc8f1573143d98f6c7bb2ae109b08e7b",
+            "turn_id": "01a14d30-d668-79e2-94a5-f2a69dcb7f9d",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 1,
+            "final_digest": "35e60b052e3f3cda68e8c57af8d307642f737cb04d417f2f292387c3c2a2d77a"
+          },
+          "command_id": "bc8f1573143d98f6c7bb2ae109b08e7b",
+          "status": "satisfied"
+        }
+      ]
+    },
+    {
+      "id": "2f3b5db99a7050a93803f46dcd8ab93d8dab3cd4f0f86f2d1952dc3f836bf4f9",
+      "contract": "publication",
+      "source": {
+        "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+        "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+        "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+        "attempt_id": "59749a07b0755043c26a7318834c58ac",
+        "input_version": 2,
+        "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+            "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 2,
+            "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+          },
+          "locator": "native.final:pr_url_match/outcome",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+            "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 2,
+            "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+          },
+          "locator": "native.final:pr_url_match/summary",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+            "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 2,
+            "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+          },
+          "locator": "native.final:pr_url_match",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+            "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 2,
+            "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+          },
+          "locator": "provider.Query(https://github.com/erranliu/SteerlineTest/pull/441):verified_repository_base_head",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a14d30-a80e-76b3-8a54-804669f13c19",
+            "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+            "turn_id": "01a14d31-f1a1-7712-9cf1-cf25ce272366",
+            "attempt_id": "59749a07b0755043c26a7318834c58ac",
+            "input_version": 2,
+            "final_digest": "1991ad7855a727b14279963fad55510156a662577b51398e666719daf6efa6ae"
+          },
+          "command_id": "d9d2d62eb8075b604196f382a9c8ca67",
+          "status": "satisfied"
+        }
+      ]
+    }
+  ],
+  "pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/441",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 441,
+    "base_branch": "codex/srtest/780ef09fdcf1/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "codex/runner-51fdcefe74942a09d9e04c47784a57b5",
+    "head_revision": "eccdd6ecdbd615e170f2602ee5eb8f49156963a7",
+    "state": "open",
+    "merged": false,
+    "merge_commit": "ff57b5826eae6a46839b830f734c8f257563bf22",
+    "checked_at": "2026-10-18T04:08:26.8735097Z"
+  },
+  "new_inputs_allowed": true,
+  "resume_required": false
+}

@@ -4,7 +4,9 @@
 
 最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
-扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
+当前 Workflow 与结果获取以[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[两份 Workflow 定义](../workflows/README.md)为准；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工路径。CLI 生命周期、原子提交与 TaskDelivery 边界仍沿本文规则。
+
+历史扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
 
 ## 1. 目标、依据与首版范围
 
@@ -197,7 +199,7 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 | `correlation` | 可选对象，值为不透明字符串，如 caller/task_id/candidate_id；无 SteerLine 固定字段要求 |
 | `repository` | 必含 url、完整 base_revision、remote、base_branch；可选 local_path 作为本机已有仓库入口 |
 | `documents` | 必含独立 spec、plan；可选 references 数组；所有材料接受时固定 |
-| `workflow` | 必含 id/version；首版支持 development/1，可选 prompt_overrides |
+| `workflow` | 必含 id/version；当前支持 development/2、development-audited/2，可选 prompt_overrides；精确支持矩阵见 capabilities |
 | `execution` | 必含 adapter、target、settings；target.kind 为 local 或 orca_environment，后者必含 environment 标识；settings 按内嵌后端 schema 固定 |
 | `publication` | 必含 provider、repository、base_branch、settings；首版复用 command/gitea provider 配置及实际身份检查 |
 
@@ -236,7 +238,7 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
       "plan": {"kind": "inline", "path": "plan.md", "content": "# Plan\nImplement and run the specified checks.\n"},
       "references": []
     },
-    "workflow": {"id": "development", "version": 1, "prompt_overrides": {}},
+    "workflow": {"id": "development", "version": 2, "prompt_overrides": {}},
     "execution": {"adapter": "codex-app-server", "target": {"kind": "local"}, "settings": {}},
     "publication": {"provider": "gitea", "repository": "example/project", "base_branch": "main", "settings": {"base_url": "https://example.com"}}
   }
@@ -261,21 +263,11 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
 
 ### 7.1 Workflow
 
-对外默认流程为 `development/1`，保存其实际定义摘要；它继承 SteerLine development/v3 的当前行为，不沿用 Task/DAG 语义：
+当前内置定义为 `development/2` 和 `development-audited/2`，默认前者；保存冻结定义及摘要，不提供外部 workflow 装载。具体外层/内部状态、提示词和核验规则分别在[development](../workflows/development.md)、[development-audited](../workflows/development-audited.md)维护，统一结果契约、来源和预算见[结果获取 Spec](result-acquisition.spec.md)。本文不复制业务状态机。
 
-```text
-implement.execute → implement.report → publish → pr_ready
-                                       ↓ 必要时
-                                  publish.report
-```
+普通执行不统一要求 JSON；程序提取可信 final 末尾成功声明或完整机器结果，必要时依定义选取独立解析或一次原 agent 报告。development 不调用 parser；审计版仅代码审计结果允许 parser，实施与发布同普通开发。只做一次代码审计并直接修复 P0–P2、验证、报告数量及逐项内容，无 Spec 审计或自动返修循环。发布结果仍须实际 provider 及 PR 身份核验；审计版另绑定修复后提交，解析成功不代替业务完成。
 
-实施轮按固定 Spec/Plan 实现、测试及修复；检查和审查范围来自任务材料，不固定增加 verify/review 阶段。报告轮只格式化前一指定实施结果；发布轮推送并创建/复用 PR。发布正文无法解析时按现有规则补报，发布补报只格式化原发布结果，不再次发布。每个源结果最多一次报告格式修正；源失败或缺口不能由报告 done 覆盖。
-
-首版 `prompt_overrides` 只覆盖上述四个步骤的非空指令正文，未知步骤拒绝。固定材料引用、报告输入来源、publication 目标和机器结果格式由 Runner 附加并保存，不允许模板删除这些契约。覆盖内容是 UTF-8 文字，不执行脚本或任意模板表达式。override 不改变权限、步骤门槛、重试次数或 PR 归属。
-
-机器报告沿用 `outcome:done|needs_input|blocked`、summary、可选 question/blocker/outputs；发布 done 必含实际 pr_url。机器报告最大 128 KiB，超限明确记录格式/结果缺口。已知业务字段必须唯一且一致，接受一份可完整识别的 JSON 或完整 JSON 代码围栏，不从散文、工具输出或多个对象中猜选结果。额外解释字段不驱动业务；报告需绑定源输入、回合和来源，不能取另一次用户输入后的正文代替。
-
-正常流程共用本 Run 的原会话。模板中“不得修改/检查”的要求不是原生强只读证明；原生权限与可用性另由冻结 Profile 和能力核验表达。
+`prompt_overrides` 只覆盖 capabilities 公布的非空提示正文，不能改变冻结材料、来源绑定、结果契约、成功声明、权限、预算或 PR 归属。普通四键为 `implement.execute`、`implement.report`、`publish`、`publish.report`；审计版另有 `audit.code`、`audit.code.report`。未知键拒绝，`audit.spec` 不保留。执行/报告共用原会话；独立 parser 使用 Runner 自有配置及独立会话，未选择 parser 不做其原生环境探测。提示词的工具约束和实际原生权限保证分别维护，见结果获取 Spec §6。
 
 ### 7.2 RunView 与交互
 
@@ -288,14 +280,14 @@ inspect 至少返回 run_id、revision、correlation、固定输入/配置摘要
 | waiting_input | 有绑定的业务或原生问题，需要新回复 |
 | blocked | 已知环境、权限、前置或业务问题；给出原因与可用动作 |
 | reconciling | 原操作、活动或结果未知，正在只读核验；不是可以重发的许可 |
-| pr_ready | 本次 PR 已核验就绪，达到执行交付里程碑；仍可接受后续反馈 |
+| pr_ready | 本次 PR 已核验就绪，达到执行交付里程碑；当前两份定义不提供反馈返工边 |
 | stopping | 已接受停止意图，实际停止尚未全部确认 |
 | stopped | 已核实本 Run 的活动执行停止；现场与历史保留 |
 | failed | 本次执行明确失败，保留失败来源；是否可恢复由资格另行说明 |
 
 原生结局、完整 final 是否可取得和业务结果分别记录，不用单个 success 混合表示。缺失/截断/冲突的 final 明确标 gap，不能取屏幕、最后文本或模型自述填补。
 
-`reply.input.kind` 为 `answer` 或 `feedback`，均含 expected_revision 和 text。answer 必含当前 question_id，核验该问题的原 Run/Attempt/回合/call；保存答案不等于投递或新回合开始。feedback 适用于 pr_ready 或允许业务反馈的等待状态；活动回合仅在 adapter 声明并核实支持时发送，否则明确返回能力/状态冲突，不暗中排队成未来授权。
+`reply.input.kind` 为 `answer` 或 `feedback`，均含 expected_revision 和 text。answer 必含当前 question_id，核验该问题的原 Run/Attempt/回合/call；保存答案不等于投递或新回合开始。feedback 仅在当前定义允许的新实施入口及既有控制资格下接受；当前两份定义的 pr_ready 明确拒绝。原生问答继续绑定原请求，技术 resume 不授权重做已完成业务，不暗中排队未来授权。
 
 PR 就绪不会自动销毁会话/工作区。反馈在同一 Run、原会话、原分支和同一 PR 上进行；保留以前结果，创建新的输入/步骤记录。同一 Run 返回另一 PR URL 时拒绝替换绑定。原会话不能安全继续时保留现场，调用方可提交新 Run，不隐式改投后端。
 

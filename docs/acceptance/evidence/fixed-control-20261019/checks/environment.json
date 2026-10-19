@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-19T01:07:31.2399944Z",
+  "powershell": "7.6.5",
+  "go": "go version go1.26.4 windows/amd64",
+  "node": "v24.13.0",
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "codex_version": "codex-cli 0.159.2",
+  "codex_sha256": "52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a",
+  "orca_cli_sha256": "894700bc388af843b06628ded98dbdd1d9d25e3a94fea661dbf4dc16eeed5ae2",
+  "orca_runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "orca_app_version": "1.4.223",
+  "steerline_commit": "4cc772ea50cab2528af5e9561469ee401d39b938",
+  "steerline_clean": true,
+  "source": "11e5e2275ca3e916c5634405324cd6dc645ecb47"
+}

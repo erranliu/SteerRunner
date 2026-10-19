@@ -7,19 +7,21 @@
 以下清单于 **2026-10-19** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十二场景二十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 两 case、L3 二十二场景二十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
 缺配置项记 unavailable，完整请求不缩小，完整级别通过独立计算；规则及本轮证据见[独立配置验收](acceptance/independent-configuration.md)。
 新增项采用本机原生查询、远程订阅加补查；协议差异及实际结果见[专属验收](acceptance/orca-local-remote.md)；下文已有真机通过
 记录仍绑定原构建，不继承为新构建资格。
+workflow/2 不再保留反馈资格门，旧原生记录不作为本次构建通过。
 
 ## L2：最小核心 smoke
 
 | 场景 ID / Case ID | 独有验证目标与目标范围 | 当前入口、预期及缺口 | 并行条件 |
 | --- | --- | --- | --- |
-| `local-codex.smoke` / `default` | 最小开发交付：冻结 Spec/Plan → 接受任务 → 执行 → 发布并核验 `pr_ready` → driver 合入核验 → 停止及清理 | `-Level L2`；预期 `merged`。已实现 `-FeedbackQualification` 资格门，并正式通过无反馈核心模式 1/1；无资格仍执行原完整 smoke，构建或执行配置变化后重新取资格 | 每次独立现场/state-dir/Run/本机 worker/分支/PR/认证 capability；无共享可变构建输出；本轮 L2 串行验收，实际并行资格单独登记 |
+| `local-codex.result-acquisition` / `default` | 默认认证解析、显式模型/只读权限与取消、development 实际交付三个内部 case | `-Level L2 -Scenario local-codex.result-acquisition`；预期 `merged`，内部 case_count=3；本机 Codex 0.159.2。原生只读权限、行为约定及工具事后拒收分别取证 | 独立短路径现场、parser Job/会话、Canary 与本次测试 PR；不修改 SteerLine |
+| `local-codex.smoke` / `default` | 最小开发交付：冻结 Spec/Plan → 接受任务 → 执行 → 发布并核验 `pr_ready` → driver 合入核验 → 停止及清理 | `-Level L2`；预期 `merged`。workflow/2 只执行本列交付路径；不需要反馈资格文件。历史构建结果不自动转为当前构建通过 | 每次独立现场/state-dir/Run/本机 worker/分支/PR/认证 capability；无共享可变构建输出；本轮 L2 串行验收，实际并行资格单独登记 |
 
 前置为 L1、完整 Controlled、本机原生 Codex 资格、SteerlineTest 仓库及执行主机认证。
 L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无 stderr 错误，
@@ -29,9 +31,9 @@ L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无
 每次独立现场、Run、base/head 和 PR；执行步骤及收尾见[测试指南的完整 smoke 契约](testing.md#当前完整-smoke-契约)。
 目标 L2 不包含额外反馈轮、恢复或审计流程；driver 的真实合并可保留为交付核验手段，
 不把合并变成 Runner 的生产交付能力，保留 `merged` 预期和原 PR/分支/现场证据。
-独立 `local-codex.feedback` 正式通过后，向 L2 传该批次的
-`local-codex.feedback-default-r1-case.json` 路径，native driver 再校验原场景、资格文件摘要、
-同 Runner/driver 构建和反馈/合入/收尾事实。不能用旧构建资格或伪造缺项结果删除反馈覆盖。
+workflow/2 的 L2 直接使用无反馈交付路径，不再依赖反馈资格文件。独立
+`local-codex.feedback` 改为验证发布后反馈被拒绝、原 Turn/PR head 不变；
+不以该场景或历史 workflow/1 资格启用返工。
 本机当前认证版本的实际结果见[沙箱认证验收](acceptance/sandbox-authentication.md)，
 通过结论须绑定对应源码、构建和配置。
 
@@ -81,16 +83,16 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-remote.connection-reconnect` | `active-disconnect` | 原服务不换代的活动回合断连，恢复后自动重接原 Attempt/会话，无需 resume、零重发 | `merged` | 专属网络故障范围；验证本现场双通路中断且其它现场通信不受影响 |
 | `orca-remote.connection-reconnect` | `pre-send-disconnect` | 实施/报告结束，发布 `start_turn` 已提交但尚未发出；仅阻断 Runner 直连状态通道，原 CLI 身份读取仍成功；自动重试后保留原 operation/Attempt/session，无需 resume 且发布一次 | `merged` | 专属 helper 在原发布终端的首次发送前身份读取处设门；仅阻断现场 Runner EXE，保留 CLI/诊断通路。证据须含门前快照、阻断后返回的原读取、完整建连超时后的再次读取、阻断期零新输入/授权保留及单次 PR。已实现并注册，真机及并行资格尚未执行 |
 | `orca-remote.service-restart` | `graceful-active` | 活动回合正常停服换代，原结果可对账，显式 resume 前零新输入 | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
-| `orca-remote.service-restart` | `kill-active` | 活动回合异常终止服务后持久状态可恢复，旧写者失效，显式恢复原会话 | `merged` | 精确匹配本现场服务 PID/创建时间；验证异常退出及重启不影响其它服务 |
+| `orca-remote.service-restart` | `kill-active` | 活动回合异常终止服务后持久状态可恢复，旧写者失效，显式恢复原会话 | `merged` | 精确匹配本现场服务 PID/创建时间；Codex 固定控制终端须在首条业务输入前提交，强杀后同一 handle/incarnation 补读原回执，零临时查询/撤销终端创建及零重发业务；验证重启不影响其它服务 |
 | `orca-remote.service-restart` | `graceful-boundary` | 实施已完成但证据尚未交付时正常停服；迟到完成事实不得越过换代后的授权门槛 | `merged` | 专属网络/完成屏障，加本现场正常服务换代；验证屏障与网络恢复不会释放其它 case |
 | `orca-remote.service-restart` | `kill-boundary` | 同一切换点异常终止服务，完成事实与新实例对账后不丢失原结果、不重复阶段输入 | `merged` | 专属网络/完成屏障，加精确服务终止；验证旧/新写者和回执归属隔离 |
-| `orca-remote.stop-revocation` | `active` | 活动回合 stop 撤销后继输入授权，并确认原生执行真正停止 | `stopped`，无 PR | 只停止本现场原生资源；验证其它 Run 授权及执行不受影响 |
+| `orca-remote.stop-revocation` | `active` | 活动回合 stop 撤销后继输入授权，并确认原生执行真正停止 | `stopped`，无 PR | 只停止本现场原生资源；核验原认证 broker/socket、业务写者及固定控制终端关闭，撤销证明与关闭证明分开；验证其它 Run 授权及执行不受影响 |
 | `orca-remote.stop-revocation` | `boundary` | 完成事实尚未交付时 stop，随后交付迟到事实也不能触发报告或发布 | `stopped`，无 PR | 专属网络/完成屏障；验证迟到事实及释放动作仅关联本 Run |
 | `orca-remote.stop-revocation` | `unreachable` | 暂时不可达时先撤销授权，未知停止不假报 stopped；撤销跨重启保持，反馈/旧 revision 不能绕过，恢复后独立收尾 | `revoked-unverified`，无 PR | 专属网络故障与服务换代；验证整个故障窗、watchdog 和资源清理不会干扰其它 case |
 | `orca-remote.publication-unknown` | `completion-gap` | PR 已存在但 Runner 缺完成证据；找回原 final/PR/head，零重复发布 | `merged` | 专属发布屏障与网络范围；实际 PR 列表、发布调用计数仅按本现场分支核验 |
 | `orca-remote.publication-unknown` | `query-unavailable` | 原完成证据恢复后 PR 查询仍失败，不能用旧快照假报 ready；查询恢复后核验同一 PR | `merged` | 另隔离本现场查询故障开关及 provider journal；验证不阻断其它现场查询 |
-| `local-codex.feedback` | `default` | 明确发送一次反馈，取得更新的 UTC/new commit，复用原 session/Attempt/工作区/分支/PR，再验证合入及完整停止 | `merged` | 本机原生进程及 capability 按 Run 隔离；已与 audited 在上限 2 下共同通过，具体构建见验收 |
-| `local-codex.audited` | `default` | 两实际不同模型完成 Spec/代码两项审计并切回执行模型发布；同会话、同实施报告来源、真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
+| `local-codex.feedback` | `default` | 明确提交一次发布后反馈并验证 `invalid_state` 拒绝；原 revision、Turn、PR head 不变，再核验合入及完整停止 | `merged` | 本机原生进程及 capability 按 Run 隔离；已与 audited 在上限 2 下共同通过，具体构建见验收 |
+| `local-codex.audited` | `default` | 两实际不同模型完成实施与同轮代码审计修复并切回执行模型发布；仅代码审计，记录修复数量/内容和 pre_head/post_head 来源，真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个接受真实反馈并更新同一 PR，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
 | `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR；本轮串行真机通过，PR #556 关闭并收尾，见[独立配置验收](acceptance/independent-configuration.md)；并行资格另验 |
 | `environment-check.local-full-access` | `complete` | 显式 full_access 的实际权限与认证/工具/资源闭环，验证模式生效及其独立能力契约 | 同上；实际模式必须为 `full_access` | 独立 Check 资源；不能借 sandbox 结果代替本模式；本轮缺该模式配置，记 unavailable，历史结果见[环境检查验收](acceptance/environment-check.md) |
@@ -113,14 +115,14 @@ Runner/helper/Node；共享管理员宿主的队列回执归属、恢复动作�
 | --- | --- | --- | --- |
 | L3-P01 原会话反馈 | 初次 `pr_ready` 后接受反馈，产生新 commit，复用原 session/工作区/分支/PR；再次核验交付并完整停止 | 独立本机现场及 worker；输入、commit/PR 身份和认证 capability 均按本 Run 归属 | 已注册 `local-codex.feedback/default` 并复用严格反馈/合入 driver；正式通过后可为 L2 提供精确构建资格 |
 | L3-P02 两模型审计通过 | 实施后依次审计 Spec 和代码；审计模型正确，发布切回执行模型，实际 PR 核验后停止 | 独立本机现场；冻结执行/审计模型；模型切换不影响其它 session，容量满足两种模型 | 已注册 `local-codex.audited/default`，配置读取 `configurations.local-codex-audited.workflow.audit_model`，保留原定向诊断入口 |
-| L3-P03 审计修复与阻断的受控覆盖对账 | 确定性 findings 触发原会话修复及重审，旧 pass 失效；最多两次自动修复，预算耗尽为 `blocked/audit_repair_limit` 且不发布 | 使用隔离服务和原生协议夹具，固定 findings/turn 及调用计数；不要求真实模型稳定产生 finding | 已纳入默认 Controlled：`TestSRWorkflowDiscoveryAndSelection`、`TestSRAuditedWorkflow`；不新增必跑真机 finding case |
+| L3-P03 审计修复与阻断的受控覆盖对账 | 确定性 findings 触发原会话修复及重审，旧 pass 失效；最多两次自动修复，预算耗尽为 `blocked/audit_repair_limit` 且不发布 | 使用隔离服务和原生协议夹具，固定 findings/turn 及调用计数；不要求真实模型稳定产生 finding | 已纳入默认 Controlled：`TestSRWorkflowDiscoveryAndSelection`、`TestSRResultAcquisition`；不新增必跑真机 finding case |
 | L3-P04 同一服务内多个 Run 隔离 | 在同一服务内接受不同请求，核验 request/command/event/原生会话/工作区/PR 不串线；停止一个 Run 不撤销其它 Run 的授权 | case 内共享服务/state-dir，各 Run 独立工作区/会话/分支/PR；case 之间仍独立服务；冻结并发上限，允许契约内资源排队 | 已注册 `local-codex.multirun/default`，并将 `TestSRMultipleRunsIsolation` 纳入默认 Controlled；受控完成屏障和 PR provider 按原会话/工作区隔离 |
 
 L3-P03 的已有证据入口是[审计路由测试](../internal/execution/workflow/audit_test.go)、
 [审计生命周期测试](../internal/application/workflow_test.go)和
 [EXE 受控审计测试](../tests/integration/audit_test.go)。后者含
-`TestSRWorkflowDiscoveryAndSelection`、`TestSRAuditedWorkflow`，可通过
-`test-foundation.ps1 -Pattern '^(TestSRWorkflowDiscoveryAndSelection|TestSRAuditedWorkflow)$'`
+`TestSRWorkflowDiscoveryAndSelection`、`TestSRResultAcquisition`，可通过
+`test-foundation.ps1 -Pattern '^(TestSRWorkflowDiscoveryAndSelection|TestSRResultAcquisition)$'`
 定向运行；仍须等待证据目录的 `result.json` 并核对零退出、精确场景数、无 skip。
 [原审计 Spec](spec/workflow-selection-audit.spec.md) §8 明确由受控测试覆盖修复/故障分支，
 live 只要求两实际模型、同会话和最小真实 PR 闭环，不强迫真实模型制造 finding。

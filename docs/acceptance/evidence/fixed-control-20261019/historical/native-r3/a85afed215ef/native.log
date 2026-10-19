@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.service-restart
+    stability_test.go:99: stability assertion native-receipts-complete failed: native-calls.jsonl and native-resource-audit.json: original business receipts and every bound readonly inspector closed; no new business input
+--- FAIL: TestSRLiveScenario (372.39s)
+    --- FAIL: TestSRLiveScenario/orca-remote.service-restart (372.26s)
+FAIL

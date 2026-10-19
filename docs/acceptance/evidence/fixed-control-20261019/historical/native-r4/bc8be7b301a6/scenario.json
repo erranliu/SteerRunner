@@ -1,0 +1,44 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "repeat_index": 1,
+  "stage": "restart-resume-gate",
+  "run_id": "05dd51b33acc0c10e192ad8b7fcb6d5e",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 1,
+  "audit_complete": false,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": false,
+    "service_stopped": false,
+    "facilities_restored": false,
+    "driver_native_cleanup": false
+  }
+}

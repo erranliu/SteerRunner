@@ -1,0 +1,26 @@
+{
+  "id": "02dffb53-0ef8-453f-b239-3aaa0f1a587c",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c8f5e621-46e4-4386-bd66-a764761a5945",
+      "status": "running",
+      "tail": [
+        "Windows PowerShell",
+        "Copyright (C) Microsoft Corporation. All rights reserved.",
+        "",
+        "RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3Qu& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0I& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In& 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0> & 'C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvLmxvY2FsL2Jpbi9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC9ub2RlX21vZHVsZXMvQG9wZW5haS9jb2RleC13aW4zMi14NjQvdmVuZG9yL3g4Nl82NC1wYy13aW5kb3dzLW1zdmMvYmluL2NvZGV4LmV4ZSIsIm1vZGVsIjoiZ3B0LTYtbHVuYSIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'"
+      ],
+      "truncated": true,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "4",
+      "latestCursor": "4",
+      "returnedLineCount": 4,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "456f70a1-9c53-406c-a48a-72833d36abdb"
+  }
+}

@@ -6,6 +6,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"reflect"
 	"strings"
@@ -41,7 +42,7 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 		}
 	}
 	if receipt.TurnEvidence != nil {
-		return e.finish(id, *receipt.TurnEvidence)
+		return e.finishWithGate(id, *receipt.TurnEvidence, &w.gate)
 	}
 	return false
 }
@@ -51,7 +52,7 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		return e.acceptMessage(id, *event.PublicMessage)
 	}
 	f := event.Fact
-	if f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && len(event.Implementation) == 0 {
+	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && len(event.Implementation) == 0 {
 		return nil
 	}
 	e.mu.Lock()
@@ -80,6 +81,17 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	if len(event.Implementation) > 0 {
 		if err := merge(r, b.LifecycleReceipt{Implementation: event.Implementation}); err != nil {
 			return err
+		}
+	}
+	if f.Kind == b.EventWorkObserved {
+		input := workflow.Input(r.Workflow, r.Snapshot.Session.CurrentCommandID)
+		if input != nil {
+			if state, _ := r.Workflow.State(input.StepID); state.Kind == "report" {
+				if r.ReportWork == nil {
+					r.ReportWork = map[string]string{}
+				}
+				r.ReportWork[input.CommandID] = f.SourceEventID
+			}
 		}
 	}
 	if f.Kind == b.EventQuestion {

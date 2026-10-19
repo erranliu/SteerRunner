@@ -1,0 +1,56 @@
+{
+  "l1_top_level_passed": 247,
+  "l1_allowed_skips": [
+    "TestProcessHostCommandHelper",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestAuthenticationNativeToolBoundary",
+    "TestOrcaWorkspaceStartupLive",
+    "TestServiceStopWorkerHelper"
+  ],
+  "controlled_top_level_passed": 13,
+  "controlled_acquisition_cases": 8,
+  "catalog_case_count": 1,
+  "native_internal_case_count": 3,
+  "directed": [
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/execution/reliable ./internal/execution/workspace -run '^TestRA(Contract|Selection|Sources|Semantics|Budget|SuccessOutput|WorkspaceSource)' -count=1 -timeout=2m -v",
+      "top_level_passed": 8,
+      "group": "t1"
+    },
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/execution/workflow ./internal/application ./internal/execution/publication -run '^TestRA(Workflow|Audit|Feedback|Publication)' -count=1 -timeout=3m -v",
+      "top_level_passed": 7,
+      "group": "t2"
+    },
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/contracts ./internal/resources ./internal/application ./internal/storage ./internal/cli -run '^TestRA(Config|Freeze|PublicContract|Version)' -count=1 -timeout=3m -v",
+      "top_level_passed": 5,
+      "group": "t3"
+    },
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/execution/resultacquisition ./internal/execution/resultacquisition/codexexec ./internal/execution/adapters/codex ./internal/execution/process ./internal/application -run '^TestRA(Parser|Fallback|Process|Redaction)' -count=1 -timeout=4m -v",
+      "top_level_passed": 6,
+      "group": "t4"
+    },
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/storage ./internal/application ./internal/host -run '^TestRA(Atomic|Recovery|Stop|Shutdown|Late|Concurrency)' -count=1 -timeout=4m -v",
+      "top_level_passed": 8,
+      "group": "t5"
+    },
+    {
+      "exit_code": 0,
+      "command": "go test ./internal/execution/workflow ./internal/execution/resultacquisition ./internal/application -run '^TestRA(Definition|Transition|Verification|StateAuthority)' -count=1 -timeout=3m -v",
+      "top_level_passed": 8,
+      "group": "t8"
+    }
+  ],
+  "current_source_delta": "Side-effect gate added after main batch L1/Controlled build; current-l1-summary and supplemental/ra-parser-controlled-current.log verify final source. Final native fixture rebuilds source after Windows platform environment correction; owner/native-configuration tests rerun in supplemental/ra-parser-platform-env.log. Raw full batch remains failed, never rewritten. Final change only raises the bounded receipt read cap; supplemental/ra-parser-final-components.log covers the final source, including escape-heavy in-bound input recovery and oversize rejection. Final and native-tested builds are separately retained.",
+  "note": "Directed groups overlap L1 and each other; never sum as distinct tests",
+  "final_component_roots_passed": 5
+}

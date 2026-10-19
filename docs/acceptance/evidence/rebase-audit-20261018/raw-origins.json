@@ -1,0 +1,1446 @@
+{
+  "checks/before.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\before.json",
+    "sha256": "4415dc773a29b5f7240dd5a208bb8c9056ae00830453950a58c572b869766d97"
+  },
+  "checks/helper-build.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\helper-build.json",
+    "sha256": "6d43bb74bcacb05165ffe263d5d8ee82209d999a7d7626451d36b8249830031a"
+  },
+  "checks/helper-build-final.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\helper-build-final.json",
+    "sha256": "7a6bce1a46ce8ef680591fc4826fc7e572d368ac05537e630e4434c13a5877c0"
+  },
+  "checks/initial-targeted.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\initial-targeted.log",
+    "sha256": "0c8c840f98f8010ce82f441ebc0d4e346cb3051eda019b4425a2ebeb3602b842"
+  },
+  "checks/integration-fixes.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\integration-fixes.log",
+    "sha256": "6f31ee2bd53991399166d36709854ce5e22f06732d55110eda970b4a316e7c22"
+  },
+  "checks/readiness-repeat.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\readiness-repeat.log",
+    "sha256": "a0beacfac4fbebc2739c4d2c76fceefa10ab9ff3066a921293be9c63778f29dd"
+  },
+  "checks/unknown-outcome.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\unknown-outcome.log",
+    "sha256": "105d2aeb50e1a015245b0688c73006a4ebe585869985620adf53420ce10cadd0"
+  },
+  "checks/feedback-cleanup.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\feedback-cleanup.log",
+    "sha256": "6a9393459f76dc6131e7268b7256c7154d56c02fe2be96fa1b3a1c80d872d299"
+  },
+  "checks/schema-followup.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\schema-followup.log",
+    "sha256": "9b85bb67a5212e75ffa0b2834e772800071edaa03c4cefc96ddf9a96afceb1ac"
+  },
+  "checks/native-assertion-fixes.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-assertion-fixes.log",
+    "sha256": "06765e291f1016c4dbd40aa843727e6e8ecb8ed3c89f61c678e247d73581038a"
+  },
+  "checks/native-vet-final.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-vet-final.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks/vet-final.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\vet-final.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "checks/receipt-reader-regression.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\receipt-reader-regression.log",
+    "sha256": "dcd4ce0cac6887edf361f3415767b541f6fd3860cc21aba65d280ad644556692"
+  },
+  "checks/receipt-publication-regression.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\receipt-publication-regression.log",
+    "sha256": "ef852a479d747c6600b66814060f11dc845baced7b42cfa9df68b524bd12f119"
+  },
+  "checks/receipt-final-package.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\receipt-final-package.log",
+    "sha256": "126c609fc007cf5406d34f2a8645fc4707c693e447e5a8572ffe6ec0d5d3b536"
+  },
+  "checks/receipt-final-extensions.tap": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\receipt-final-extensions.tap",
+    "sha256": "7f02513526c1422a230ec94c68162385db19e5a8db0dbbba2e826d4e47797832"
+  },
+  "checks/receipt-final-freeze.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\receipt-final-freeze.log",
+    "sha256": "82a4be3821c1efa3292f4d5fb9295d8b071ab2df8fa68ad31ef55fac10ee6974"
+  },
+  "checks/markdown-pr-regression.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\markdown-pr-regression.log",
+    "sha256": "aaa62980cde50047ffc0ccfde831076bc318d7a65f2fd5af47e94bc456f86eb3"
+  },
+  "checks/local-cleanup-inventory.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\local-cleanup-inventory.json",
+    "sha256": "6ef16da197a2b7af779d30e655260b8868a30fb1b612f597a0774db54cd90dc1"
+  },
+  "full/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full\\summary.json",
+    "sha256": "365cfd549cc7703ba0eff0e948d026cefbd24f5b1362728c80a8604c6a46cb35"
+  },
+  "full-final/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\summary.json",
+    "sha256": "eb9f2c57378bd87e9baa48694f2831c7788d53103ec3ad93609c74a308067411"
+  },
+  "full-final/controlled/result.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled\\result.json",
+    "sha256": "b2466dba4c5cceaa787b06e659897bf3fc53c18aeec1b539d68171309152b439"
+  },
+  "full-final/controlled/source-identity.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled\\source-identity.json",
+    "sha256": "9e54753c242051b83f5ea002dc8a8587578c9ee864aef948093d60886080cf63"
+  },
+  "full-final/controlled/integration.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled\\integration.log",
+    "sha256": "3d11b2f55257b43ce1dd56ce6d64dc4a8823a966ec7ba235d6f954d6b8c0c67b"
+  },
+  "full-final/controlled/unit-foundation.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled\\unit-foundation.log",
+    "sha256": "567daf611a64ff1105f69350e7db29d2b6eda2aa1ed153d4cd3a5c3c94e245f5"
+  },
+  "full-final/controlled/steerrunner.exe.build.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full-final\\controlled\\steerrunner.exe.build.json",
+    "sha256": "785a7716716f964d86c5985d7784bca2a86930038d336fa9f795bac0655f0210"
+  },
+  "schema-controlled/result.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\schema-controlled\\result.json",
+    "sha256": "b9e61b975b90d40cd04f5e66fa09c1aa29a8c9130dd28e28e4de58edf3204821"
+  },
+  "schema-controlled/source-identity.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\schema-controlled\\source-identity.json",
+    "sha256": "555da8d3d349c93f8b035b4e1eacde6d0cb61c14e7f84e72dcf50204c2f091ec"
+  },
+  "schema-controlled/integration.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\schema-controlled\\integration.log",
+    "sha256": "39ee1f19703d637e1012c6fc1497f74fb4060b645e6bc8f9f4183cfa224629e5"
+  },
+  "framework-final/result.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\framework-final\\result.json",
+    "sha256": "b5f8eef46a5a9d0e7eb9602416e9d1e3f2b077cd16855bf76df457030dac6493"
+  },
+  "l1-latest/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\l1-latest\\summary.json",
+    "sha256": "eb89725ed6dddec3cb054a5c2d7e121b8613557dd9f647559c9a5081aab1eea3"
+  },
+  "l1-latest/l1.jsonl": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\l1-latest\\l1.jsonl",
+    "sha256": "a3180a3edb8daed8fd472ff0d7efc83211bd74dee59f373317eb45ef9ecef0ba"
+  },
+  "l1-latest/terminal-extensions.tap": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\l1-latest\\terminal-extensions.tap",
+    "sha256": "8684c927ae71c4a4ab06cb85e8ef229c32a8e8c9f408c7cd999bec70506929ab"
+  },
+  "l1-latest/framework/result.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\l1-latest\\framework\\result.json",
+    "sha256": "76b77e02922fc15e4ec34ad3987e2df3643ef34b74a33015004ed350e633ada4"
+  },
+  "native/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native\\summary.json",
+    "sha256": "45e2024f6624f29cae856be83e48b8e58a387552ae9440a1553ec97a47dd0bd1"
+  },
+  "native/l2-git-boundary.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native\\l2-git-boundary.log",
+    "sha256": "885bdbe37be85f799f5692905c28c8d20570e29586bbaa4302cc5eb5b6b8eefe"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/result.json": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\evidence\\result.json",
+    "sha256": "ce6c5a79aa31e8d8ba55b1e66772889d9b8faa2441d50594aa3e7d8027f57d5e"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/scenario.json": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\evidence\\scenario.json",
+    "sha256": "9529f991eee7d4d40e6398c4e944ecf370eedb84321795266b48c56d86295e86"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/source-identity.json": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\evidence\\source-identity.json",
+    "sha256": "a59dad6b1b7fc2ea53789a8540ddca0737e7393ebc7b491fe38af6365fbc72be"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/native.log": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\evidence\\native.log",
+    "sha256": "d1ddc4a84987dd8c8d77c58dd28c44b049476f71aee3d8c9bd3ce50fdac312f2"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\evidence\\driver-commands.jsonl",
+    "sha256": "4920dc6138ab9378dfb335db5135f9f4851586c3c1595b5673042bdd01d59fcc"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/manifest.json": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\manifest.json",
+    "sha256": "9097eede0dbf495a07a54a03a08432a48f9e4b0247c2a07e4a6c9779ec16fe4e"
+  },
+  "native/local-codex.smoke/dd6d81fe2581/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\dd6d81fe2581\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-cancel-intent.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-cancel-intent.json",
+    "sha256": "60e68ea690dd7a405b55876cd96f014d88a6d1c27dd788d183134bb05b89f317"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-cancel-receipt.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-cancel-receipt.json",
+    "sha256": "2ad573760fc43a6a6bc11b941c7acbf0f413b22a41616401d52134a4548f6606"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-cancel-root.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-cancel-root.json",
+    "sha256": "360a7b791410041256135f0d49ff28392ca3f04e73a748fa57251ea7896b919e"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-cases.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-cases.json",
+    "sha256": "b064fcb2dbfc459fcc9563f6959b7f4ae1250022ef9fb9a6bef5bc5ca28477a5"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-default-intent.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-default-intent.json",
+    "sha256": "093c7447bea46982367b9ecc0c50615c2f35ca958837151effbcbc2debdb5f46"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-default-receipt.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-default-receipt.json",
+    "sha256": "5de6d3e4132e32ec94eef5b05b6e62d049a732cd83ee083d92a42c676f72697e"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-default-root.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-default-root.json",
+    "sha256": "fd588bebe6ece2537fcac0aa1a0dd056e163c9a699a1bc155ad12b5bffd36491"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-explicit-intent.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-explicit-intent.json",
+    "sha256": "628730c5be160b05fcd1418194f54953246f74f4cb746b25292f2ac09b346c3f"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-explicit-receipt.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-explicit-receipt.json",
+    "sha256": "94f22b5a4fd48c098b7e65c4df39a148be758773cfb607cc4e408d7134f2e973"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/parser-explicit-root.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\parser-explicit-root.json",
+    "sha256": "9bc7dee93dc53d31263c32130ef84dfd9fbd0fc71719e981683bf399d0545b54"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/permission-probe-root.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\permission-probe-root.json",
+    "sha256": "143e0f83ac0c265384cd69b77b281943f9c9c989585fa5f51970a3cbd7acfda8"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/permission-probe.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\permission-probe.json",
+    "sha256": "901cd02568e195949c9fa22e6846022f5d98034efa294f5b54ef10110d7966db"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/result.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\result.json",
+    "sha256": "dc7db224cc6d9c9773b1224513d300164d61e1b37516e9e9adfe59cf4d682250"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/scenario.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\scenario.json",
+    "sha256": "28a6a6fd7a47dc84021f8cbcd3867ff5d1275aad469b0b99b4da8013e213d420"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/source-identity.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\source-identity.json",
+    "sha256": "c40c24a94e9d12ce70003aff0c0d964481cf952082cced6b417170ca3ad19763"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/native.log": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\native.log",
+    "sha256": "0415bce3b673797d5a253680b277fd28d99f895dfdaa2b3ccf4b100c7230189d"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\evidence\\driver-commands.jsonl",
+    "sha256": "c95c0c552f285099f2de16fd37c173e852110ec10935c35b0d412a56c7131a0e"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/manifest.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\manifest.json",
+    "sha256": "b6f2b2a7065f9e798c804b115b562e075937c31d240cfd5e9b867b7bfe8645c8"
+  },
+  "native/local-codex.result-acquisition/21d08f9e66c1/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\21d08f9e66c1\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/local-codex.audited/e448761ae7b3/audit-models.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\audit-models.json",
+    "sha256": "98b51dbb6d3fb33b7a5674128becbbe77ec07c580cbab34f64b16366f3159eed"
+  },
+  "native/local-codex.audited/e448761ae7b3/authentication-cleanup.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\authentication-cleanup.json",
+    "sha256": "c2587fff119507f8866120f0dd353e69dfa31ea5ba304c54626240f1dc1414bb"
+  },
+  "native/local-codex.audited/e448761ae7b3/cleanup-run.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\cleanup-run.json",
+    "sha256": "98376539c69e63a4afb84fc27796df6c5187d9e71cbdae86139024de8a068efc"
+  },
+  "native/local-codex.audited/e448761ae7b3/latest-run.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\latest-run.json",
+    "sha256": "87e55727db0d8204e1927a79d460d830b891ab1b6d05b4c5b2fe542232c5c294"
+  },
+  "native/local-codex.audited/e448761ae7b3/original-pr-ready.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\original-pr-ready.json",
+    "sha256": "87e55727db0d8204e1927a79d460d830b891ab1b6d05b4c5b2fe542232c5c294"
+  },
+  "native/local-codex.audited/e448761ae7b3/result.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\result.json",
+    "sha256": "dff0b39b7a122294f3fbdbd9152fd62b1d7ac9e0f2ed6f2d3e4ca2cc4bcd296b"
+  },
+  "native/local-codex.audited/e448761ae7b3/sandbox-readiness-audit.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\sandbox-readiness-audit.json",
+    "sha256": "1624f86794af8c496a7ce33d2c6659445d4509f787545cbff34ea25591e225e8"
+  },
+  "native/local-codex.audited/e448761ae7b3/scenario.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\scenario.json",
+    "sha256": "09e980ff473f00be51d48479285ab9526d6954e23a4050e6b54ef03477126646"
+  },
+  "native/local-codex.audited/e448761ae7b3/source-identity.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\source-identity.json",
+    "sha256": "68c9fde1a32d3742abd3dc2725845f8270528009df2c559e5e4878f7bcfb6211"
+  },
+  "native/local-codex.audited/e448761ae7b3/worker-sandbox-audit.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\worker-sandbox-audit.json",
+    "sha256": "b067fe19946dae00f067e5f4a3ae2d25625327537a381311e50d9dcbfdc9f63b"
+  },
+  "native/local-codex.audited/e448761ae7b3/native.log": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\native.log",
+    "sha256": "aa4e63924fdb8b3d47e5ee850d7db990fc74c469465d4d70730b9e7afb6048fd"
+  },
+  "native/local-codex.audited/e448761ae7b3/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\e448761ae7b3\\evidence\\driver-commands.jsonl",
+    "sha256": "d77b4ab5387dbdbc4d3f251c175736bfb0abccb28231361b3322187d04afda24"
+  },
+  "native/local-codex.audited/e448761ae7b3/manifest.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\manifest.json",
+    "sha256": "ee3e5d7cc78aba695487db4d7debb0bc74c2ed400a7a6763bb4145236b5b48e8"
+  },
+  "native/local-codex.audited/e448761ae7b3/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\e448761ae7b3\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/orca-local.codex/d5a0f8f74695/business-question.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\business-question.json",
+    "sha256": "eed5d456ef2b79c2710ae318ea7434598228409278225ed81959377780e9529a"
+  },
+  "native/orca-local.codex/d5a0f8f74695/cleanup-run.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\cleanup-run.json",
+    "sha256": "8ca4c0e13c7dc9e6a393a486ffa5c2e7dbcefa98fa59b1a26ddd6cb3451797b6"
+  },
+  "native/orca-local.codex/d5a0f8f74695/latest-run.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\latest-run.json",
+    "sha256": "4a6f83856f5f672070177fbf2f0d0c814ff52e05ede09ee477daac5d8c98fd72"
+  },
+  "native/orca-local.codex/d5a0f8f74695/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\lost-native-send-response.json",
+    "sha256": "6bf4a0afce0ff66579fece480d53f4f0259364ef2d000b4f7e50e60ea11ab2fe"
+  },
+  "native/orca-local.codex/d5a0f8f74695/orca-local-connection.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native/orca-local.codex/d5a0f8f74695/original-pr-ready.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\original-pr-ready.json",
+    "sha256": "4a6f83856f5f672070177fbf2f0d0c814ff52e05ede09ee477daac5d8c98fd72"
+  },
+  "native/orca-local.codex/d5a0f8f74695/original-terminal.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\original-terminal.json",
+    "sha256": "e519ec3443797e0286f138c9ecfb28ec59187ef96550c5e178a012765400c95c"
+  },
+  "native/orca-local.codex/d5a0f8f74695/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "1bd827e5ad98a25434891792d071aec992eaf0cbbab8d5d3353b1767b44ff2eb"
+  },
+  "native/orca-local.codex/d5a0f8f74695/request-id-replay.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\request-id-replay.json",
+    "sha256": "caf6e7d504e40916f01e8a898c1adeb91b7f447efd18a865628ba83a89548652"
+  },
+  "native/orca-local.codex/d5a0f8f74695/result.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\result.json",
+    "sha256": "8c6e1e682264bf91165d3e970b03ab0b014f9c5eb7b90dabbbc42824386f750e"
+  },
+  "native/orca-local.codex/d5a0f8f74695/scenario.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\scenario.json",
+    "sha256": "9ec0e5b58252617a74c2476273faacd8a2701f6f006c38ecf3e793b8eb3ee97b"
+  },
+  "native/orca-local.codex/d5a0f8f74695/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "0d6fd7e7a731b6d8bc0320d018675fa866c2253f894866c98939079adc110113"
+  },
+  "native/orca-local.codex/d5a0f8f74695/source-identity.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\source-identity.json",
+    "sha256": "3ecb8e35586850e745c24e268a9b7a9ee0570d885928b9708928f12a395bbef6"
+  },
+  "native/orca-local.codex/d5a0f8f74695/withheld-native-send.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\withheld-native-send.json",
+    "sha256": "0bb72bb4a7e7d8d71fa7c6202421ba4848c8c6daadcccf346b4c6883ea69bf87"
+  },
+  "native/orca-local.codex/d5a0f8f74695/native.log": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\native.log",
+    "sha256": "febfd2f2bc546dd7d208925335ecd3391fccf0967bc02dcba5e5a9e0ad5c41c2"
+  },
+  "native/orca-local.codex/d5a0f8f74695/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\evidence\\driver-commands.jsonl",
+    "sha256": "5f5404752f99180154bc5097cd4854733af22c3aa5c6f8cdec0f67a478731680"
+  },
+  "native/orca-local.codex/d5a0f8f74695/manifest.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\manifest.json",
+    "sha256": "15393dc250d8bf6e3dc4886c0c6f9154773de07554d50bf85a44f13293c0e8e0"
+  },
+  "native/orca-local.codex/d5a0f8f74695/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\d5a0f8f74695\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/orca-local.pi/caa1f672db8d/business-question.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\business-question.json",
+    "sha256": "4e1c34f44ba54804026e69cc83230506a95b833c12ce72a5fc76139f942e634a"
+  },
+  "native/orca-local.pi/caa1f672db8d/cleanup-run.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\cleanup-run.json",
+    "sha256": "d5b5205d83e8e082d934f432ede307a9a434130440f9f21b5eb502f865cca861"
+  },
+  "native/orca-local.pi/caa1f672db8d/late-native-final.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\late-native-final.json",
+    "sha256": "f3e79cd6cd02976e19cd8454f8716d23d1d6cd0ad177ba986788b63f27226fe7"
+  },
+  "native/orca-local.pi/caa1f672db8d/latest-run.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\latest-run.json",
+    "sha256": "fffd1964b91280c747fd31b3307903709cc3ccf44dfecaf3556a61dde37bf645"
+  },
+  "native/orca-local.pi/caa1f672db8d/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\lost-native-send-response.json",
+    "sha256": "38d61563589db6010d7b4ea7035732d6cf2335b265275d6afb87e76cc29ddb60"
+  },
+  "native/orca-local.pi/caa1f672db8d/orca-local-connection.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native/orca-local.pi/caa1f672db8d/original-pr-ready.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\original-pr-ready.json",
+    "sha256": "fffd1964b91280c747fd31b3307903709cc3ccf44dfecaf3556a61dde37bf645"
+  },
+  "native/orca-local.pi/caa1f672db8d/original-terminal.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\original-terminal.json",
+    "sha256": "c9291133e093f3b555297f8be74df21dc331fb0eac33722a8d7ec121483134a6"
+  },
+  "native/orca-local.pi/caa1f672db8d/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "7de69950b4aa47a987f6fb42ca60e22a4e42a64b5e81f9263898de97b5237fc9"
+  },
+  "native/orca-local.pi/caa1f672db8d/request-id-replay.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\request-id-replay.json",
+    "sha256": "2aa37f2cd41d3882ab8e8a1f3a3084b72ebfd8daec3067349f6aebc111a40228"
+  },
+  "native/orca-local.pi/caa1f672db8d/result.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\result.json",
+    "sha256": "3b80dbfe9d4d518581463072f42324c6ed462d6e8a46349d6e4aeda2e3dd8c6b"
+  },
+  "native/orca-local.pi/caa1f672db8d/scenario.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\scenario.json",
+    "sha256": "2c8528542d34286b15aa0e38845f19f58566209486ed46b6d8dc2a5fe8f83ea4"
+  },
+  "native/orca-local.pi/caa1f672db8d/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "27b15224fca117fd059f48de40512cc3ca7d50571930432868d29d8bf19dac1b"
+  },
+  "native/orca-local.pi/caa1f672db8d/source-identity.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\source-identity.json",
+    "sha256": "6b4ee9dad6b8530a78c2452c23d72138a60e46a96812e08909a9abf7c2d19ee9"
+  },
+  "native/orca-local.pi/caa1f672db8d/startup-failure.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\startup-failure.json",
+    "sha256": "44ab65e60044c60314fc174d0dbcf512c884c8db9d22174bbbc17aa4d88403a5"
+  },
+  "native/orca-local.pi/caa1f672db8d/withheld-native-send.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\withheld-native-send.json",
+    "sha256": "859c4caa70ea5c58642c81aecf86ec6331d15e93444da07da42ef20472410bb0"
+  },
+  "native/orca-local.pi/caa1f672db8d/native.log": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\native.log",
+    "sha256": "732bd7ccb10bae364d90b5390a057319b822b64b06ca54c5d12bb176f1034b9d"
+  },
+  "native/orca-local.pi/caa1f672db8d/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\caa1f672db8d\\evidence\\driver-commands.jsonl",
+    "sha256": "49a50e4853990124f522f9ea8d0beb8ecfcd68375dbed8028d419e06c8cbd221"
+  },
+  "native/orca-local.pi/caa1f672db8d/manifest.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\manifest.json",
+    "sha256": "69f0450f2aeb11e0584f25ec6319bafcf67248f58dcf8eef58cb00ebc44627a3"
+  },
+  "native/orca-local.pi/caa1f672db8d/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\caa1f672db8d\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/orca-local.dsh/4a81e6046cef/business-question.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\business-question.json",
+    "sha256": "bcc590c623a3fe2ccc362c2a927f43660a72b4c9673b61cdb11ab89a2fe0bb52"
+  },
+  "native/orca-local.dsh/4a81e6046cef/cleanup-run.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\cleanup-run.json",
+    "sha256": "eb49994ea254bd7c2898ff81e8f267469582d08d8a58ddf0503da49745ac4e47"
+  },
+  "native/orca-local.dsh/4a81e6046cef/late-native-final.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\late-native-final.json",
+    "sha256": "8578e7119773e8d27ebeaf132d92ae32d8f13dee2839dffd743873782a727c3d"
+  },
+  "native/orca-local.dsh/4a81e6046cef/latest-run.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\latest-run.json",
+    "sha256": "459b1a77e170a253e36a7daa3a639abf2a169de74e1b490228aeb9f2cae731d6"
+  },
+  "native/orca-local.dsh/4a81e6046cef/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\lost-native-send-response.json",
+    "sha256": "367a9c70ad71201255ede425e046f4402dc17b28a77e1a6fa9e7e295c10dfded"
+  },
+  "native/orca-local.dsh/4a81e6046cef/orca-local-connection.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native/orca-local.dsh/4a81e6046cef/original-pr-ready.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\original-pr-ready.json",
+    "sha256": "459b1a77e170a253e36a7daa3a639abf2a169de74e1b490228aeb9f2cae731d6"
+  },
+  "native/orca-local.dsh/4a81e6046cef/original-terminal.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\original-terminal.json",
+    "sha256": "aba1f2823ea3209d8f404328ec4de15e8366d690d4b9941fb8870b782e5da88d"
+  },
+  "native/orca-local.dsh/4a81e6046cef/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "9d71ecdbfd1eac8417cb91b0ff6484342e557d899067627808c77245c0c7a85b"
+  },
+  "native/orca-local.dsh/4a81e6046cef/request-id-replay.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\request-id-replay.json",
+    "sha256": "8f28111f06883fadddbc7b8e160e59b260c9cc89c657adc89ae727b142780ac1"
+  },
+  "native/orca-local.dsh/4a81e6046cef/result.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\result.json",
+    "sha256": "9cb7fd694fcb838c28ee810abcf43eb6a29b901f7eb4258238ec56194c1f1f10"
+  },
+  "native/orca-local.dsh/4a81e6046cef/scenario.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\scenario.json",
+    "sha256": "1f22c006f89375c796ba384c91b9ea1331cefe8e60eebcafcc35bddc29bce836"
+  },
+  "native/orca-local.dsh/4a81e6046cef/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "ef4a94d4f6c8154316bd4e7153266a957189ea167caab48762a1e17c49a021ea"
+  },
+  "native/orca-local.dsh/4a81e6046cef/source-identity.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\source-identity.json",
+    "sha256": "5d57f293625ab96f1136abccf2ec8f8fb73e60e5efe87b0b169f71116977d83f"
+  },
+  "native/orca-local.dsh/4a81e6046cef/startup-failure.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\startup-failure.json",
+    "sha256": "507028ea1b546e8d5223610380de5871210329aaa80b5298955a47260a6db8ad"
+  },
+  "native/orca-local.dsh/4a81e6046cef/withheld-native-send.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\withheld-native-send.json",
+    "sha256": "57bfe9eeb2e53cb2d45774b1e9afadffdb3924a1c44e3ae5482dd37ccbb708b3"
+  },
+  "native/orca-local.dsh/4a81e6046cef/native.log": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\native.log",
+    "sha256": "3bde583cab2785ee32919e5e1dcd6fd158c5e46150f502e912666bea7adc7ee2"
+  },
+  "native/orca-local.dsh/4a81e6046cef/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\4a81e6046cef\\evidence\\driver-commands.jsonl",
+    "sha256": "79c2b9f25033e608f0d58a0d8d8855726192428fc3830c50588585a864606c31"
+  },
+  "native/orca-local.dsh/4a81e6046cef/manifest.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\manifest.json",
+    "sha256": "d80a2280ee2c30b23717fc0160389a743940ff3da1586c3a1057806ddec28d09"
+  },
+  "native/orca-local.dsh/4a81e6046cef/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\4a81e6046cef\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/dsh-native-permission-audit.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\dsh-native-permission-audit.json",
+    "sha256": "9fb225d8ce2d1362d5839c000ac33cac31c1fa9cfbc4bacab5309795e9919acf"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/latest-run.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\latest-run.json",
+    "sha256": "6f8fbf369453c2228006ff7a1da97d51cc55a12627a2ba3aaa4540a526404cc0"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/multi-requests.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\multi-requests.json",
+    "sha256": "e7194eb8f00dce2c6febaa407905aa151f11dfc719d875dae0e59fc42288c4d6"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/orca-local-connection.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-0-last-message.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-0-last-message.json",
+    "sha256": "1a81d42d8b74cd0a2a624f989bdb24d540db7acbabd198145036f5bd57cff941"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-0-pi-native-permission-audit.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-0-pi-native-permission-audit.json",
+    "sha256": "2c71bade69f59071c735c9fff4ab384978f495782fa83144c724b8aaa0f4a1e8"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-1-dsh-native-permission-audit.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-1-dsh-native-permission-audit.json",
+    "sha256": "9fb225d8ce2d1362d5839c000ac33cac31c1fa9cfbc4bacab5309795e9919acf"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-1-last-message.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-1-last-message.json",
+    "sha256": "2af4ec0b0e3bb82b6310fea8063d45566cc44dd4f5a51543ec3794dc6c62385e"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-after-first-stop.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-after-first-stop.json",
+    "sha256": "c6a44c5b85d3d38352c09f69b753c1bd588faefbe82893e2dbff3f171cf7741f"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/peer-native-after-first-stop.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\peer-native-after-first-stop.json",
+    "sha256": "c6a44c5b85d3d38352c09f69b753c1bd588faefbe82893e2dbff3f171cf7741f"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/pi-native-permission-audit.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\pi-native-permission-audit.json",
+    "sha256": "2c71bade69f59071c735c9fff4ab384978f495782fa83144c724b8aaa0f4a1e8"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/result.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\result.json",
+    "sha256": "f3cb9506cddf2fe700dbe851a965b45d353bfe3d9f5cbccea55048f202444be0"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/scenario.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\scenario.json",
+    "sha256": "2a1ce5e3dfbe128988c9e5c8a8b820e7e4c7b3a721b0abe09698588c50fcc2e0"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/source-identity.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\source-identity.json",
+    "sha256": "f178846ca195bf9961c2e917e464af9a77e40107cc7601af07fb936efcf15776"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/native.log": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\native.log",
+    "sha256": "7424a56838593ae60cc21e37fd44dfc5898fc16d08a86d211229b3f09c93a78a"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\evidence\\driver-commands.jsonl",
+    "sha256": "9857d2645737e4ba57296216dbd436a15ce590deca58cb5d0cf8a31709c1a67e"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/manifest.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\manifest.json",
+    "sha256": "be82b9ec37ca788b97b565eddc942c35b7cf9150b1cf220af6dd07ef42a358da"
+  },
+  "native/orca-local.mixed/48a676f7b2ba/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\48a676f7b2ba\\bin\\steerrunner.exe.build.json",
+    "sha256": "f47a36a13b1daa2a72f660f2d0d6d289d702b1e6a556d9c672c4b5473fb41c4e"
+  },
+  "native-retry/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\summary.json",
+    "sha256": "af8495bfda79566c206866f80d9f5ffc3893855329a50290c5a704462c9f4aca"
+  },
+  "native-retry/l2-git-boundary.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\l2-git-boundary.log",
+    "sha256": "bd378c6136bdbbd37788dadb997270caf54aa999dd1ed398b5336bc8552bf1b4"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/authentication-cleanup.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\authentication-cleanup.json",
+    "sha256": "dc170508329cba545a286562cbcb5b53795b4ac6b059bb3f793f1456dcb94651"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/cleanup-run.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\cleanup-run.json",
+    "sha256": "62a22a767cb8eb76bfc49c3b78ddd31eb23ff2f97270b227f8f1d20cb5ce1616"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/latest-run.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\latest-run.json",
+    "sha256": "3d146ca7a2337da3c9124a2b517408649ac8e3e2e82a3088ebe2096955de775f"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/merged-run.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\merged-run.json",
+    "sha256": "f515820dcbb00a41594b0b883df357af03000d8f1440af1e80d432e226da41fe"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/original-pr-ready.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\original-pr-ready.json",
+    "sha256": "3d146ca7a2337da3c9124a2b517408649ac8e3e2e82a3088ebe2096955de775f"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/result.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\result.json",
+    "sha256": "1ebbc4e8cbc127c21a15da7250109438eb4bc444b3b9b5531ed770e4bc0f79bf"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/sandbox-readiness-audit.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\sandbox-readiness-audit.json",
+    "sha256": "7f66d4ebdd7d537b2bbed3a67c1689f00627a1a1ef61b9bac517b454d6806b27"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/scenario.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\scenario.json",
+    "sha256": "9ba86e691362f9896ebde0ae3f28ce960814d1a1a756492983a6441680999fd9"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/source-identity.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\source-identity.json",
+    "sha256": "d524231025b42c9982c4c12e6511e55b0f51645d64b36e55c55ca7e921a84b19"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/worker-command-audit.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\worker-command-audit.json",
+    "sha256": "032fe97f3d84ea2509fc9f3f5c89aa5de3bf5e6d09690688a21a83f564dd167c"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/worker-git-repository.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\worker-git-repository.json",
+    "sha256": "a5e38dcf7908676d908c77c3f0de873ff7c731a6afc63990e6ebc2f47aafb4e8"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/worker-sandbox-audit.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\worker-sandbox-audit.json",
+    "sha256": "669d97a4c106167017ddded8ab0895cee03e57a405e50b49eb5e8e5b911dd193"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/native.log": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\native.log",
+    "sha256": "7c06922e8250f8b2c671e7fb9e3d914b1544d82f211e125b12fe2f58a72f2356"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\evidence\\driver-commands.jsonl",
+    "sha256": "7827d8f70ed33a127af6e44ff94b590adc53ad036c76dce92260b79d0248296c"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/manifest.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\manifest.json",
+    "sha256": "b3d58fed5fcd08ee9168777f3f8958d71bc2791fee0927917f8556181ab3ff41"
+  },
+  "native-retry/local-codex.smoke/ade72e1e19f9/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\ade72e1e19f9\\bin\\steerrunner.exe.build.json",
+    "sha256": "cc0c1448581f3de94f87a3b29b4d8112982e491d9e791e6b6716351056c42968"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/authentication-cleanup.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\authentication-cleanup.json",
+    "sha256": "22fb1bac8316f82a452eff3563a9f25cf50559080062bfef4e06b02ba5bf9716"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/cleanup-run.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\cleanup-run.json",
+    "sha256": "20e28cc64ab483fb4f733af06df9240761d7bc76ff7afc35ee927637616a14f0"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/latest-run.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\latest-run.json",
+    "sha256": "a20aa5ef54b1e251c4f46a4a94fe7096206d31797b889f1b6bda8e1faa9c938a"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/merged-run.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\merged-run.json",
+    "sha256": "f0c305544d4fb8bcf0b34ddf9c332c933a6ae2843047717a6ed8210df4a13e1f"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/original-pr-ready.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\original-pr-ready.json",
+    "sha256": "a20aa5ef54b1e251c4f46a4a94fe7096206d31797b889f1b6bda8e1faa9c938a"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-cancel-intent.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-cancel-intent.json",
+    "sha256": "f046da6b8bc4a56a065161ccb070edddec3b8368962cea242446bf09053afe73"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-cancel-receipt.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-cancel-receipt.json",
+    "sha256": "988e39ed9c797c1adc8f3528b90be09b44203fa65ed9e749416ef28add39da82"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-cancel-root.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-cancel-root.json",
+    "sha256": "1eee8f806b6ca0c1ba7c1f22d9d137c8f1e6aa85c42e66d008d8b089a7a79931"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-cases.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-cases.json",
+    "sha256": "88a26f7fa6c4e1ef684200a70c2935aae3458f6afd95c5ed71c279d3dde1f742"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-default-intent.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-default-intent.json",
+    "sha256": "5951de05aca98fb405c520f773e775ea15469b9ef216dd6abea06079bd1d4b53"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-default-receipt.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-default-receipt.json",
+    "sha256": "d3a04f9c5df5899f4ed928b588170ad2df42c49fd9e5e699272093452bf742e3"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-default-root.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-default-root.json",
+    "sha256": "b6d90ab6d6b07486b5cf3767a0d40aa5bf38daee811160b89f8f43726b100bf2"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-explicit-intent.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-explicit-intent.json",
+    "sha256": "835d9ae679f436487327f6cda4b1a46cf4c1642adf1c05979999bd424fafcf1c"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-explicit-receipt.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-explicit-receipt.json",
+    "sha256": "d33d8286858c9d0acaa73c8aa8d237db2e5230d8bcc1dab582608a4f01429fa0"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/parser-explicit-root.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\parser-explicit-root.json",
+    "sha256": "594767d894acbebd638745815331460689628ef0579503e4d9ebd8e9c0213d9b"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/permission-probe-root.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\permission-probe-root.json",
+    "sha256": "f30b5573d895b889b82c729b467cebcb871f178dc02455072037f75dd289b073"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/permission-probe.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\permission-probe.json",
+    "sha256": "901cd02568e195949c9fa22e6846022f5d98034efa294f5b54ef10110d7966db"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/result.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\result.json",
+    "sha256": "d435e5b819d99a2a535705f53679671155eb1a4ce8d3e49e7e4403550dc6e6a0"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/sandbox-readiness-audit.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\sandbox-readiness-audit.json",
+    "sha256": "03a4c9b9a9f00fb003dec366d794b8962735ff3b3cd2628262e7e2f050df191b"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/scenario.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\scenario.json",
+    "sha256": "9923db53cec4b1d83ab4db144ae2b684ece4e90dada57ed1fa410c0a8d732ec7"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/source-identity.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\source-identity.json",
+    "sha256": "bfeb60c9164f9598f9d7fbd964f133def1d247ad1a6d932bc75b211c54f09aca"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/worker-command-audit.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\worker-command-audit.json",
+    "sha256": "3bd6218d364ebbc1e8e2c0fc86fc042a17330308eae6a6ced5fe3aa9965d21b5"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/worker-git-repository.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\worker-git-repository.json",
+    "sha256": "b51cf5b491c38758869f0438318c70f656db8084ab36d9c79addc89248ea0b07"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/worker-sandbox-audit.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\worker-sandbox-audit.json",
+    "sha256": "3c4e485139ce12432e6dec2f12286134a0437cb284f4000bf38d4a28ed2b81f3"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/native.log": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\native.log",
+    "sha256": "670432c0e522283c2baf389f480ddb091b227a3d65a5926da45c59ef605d0e55"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\aacc8741b341\\evidence\\driver-commands.jsonl",
+    "sha256": "c75792e452d9336fa4e47dd4ac2262a42f25fbec75d301dc49f0f84423c8f41f"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/manifest.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\manifest.json",
+    "sha256": "47eb22f8196ec203c932cb3bbeafcba85cf266e475c40b51da86240aaf1eeab6"
+  },
+  "native-retry/local-codex.result-acquisition/aacc8741b341/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\aacc8741b341\\bin\\steerrunner.exe.build.json",
+    "sha256": "cc0c1448581f3de94f87a3b29b4d8112982e491d9e791e6b6716351056c42968"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/business-question.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\business-question.json",
+    "sha256": "1c77f5f257d225b4f372ec85091cd4326d43a522edaea593b1ecf44f36ec9540"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/cleanup-run.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\cleanup-run.json",
+    "sha256": "44787c10be394deb65b28afc3ee95a281b133b2d682912dcef9e9c88530d8900"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/feedback-rejected.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\feedback-rejected.json",
+    "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/latest-run.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\latest-run.json",
+    "sha256": "9f47111e9624d67b470f3b74ad5e42f01688da9abb63db8e8a385907521627de"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\lost-native-send-response.json",
+    "sha256": "cfa44413b7b8669a5f213f3ebbd405731a2968554e0a876a03192a8f20350c7d"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/merged-run.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\merged-run.json",
+    "sha256": "bb0056b861a8da18673b2583b8fb47ad5b8c4972bd59d5f4a595fd3cf09a6600"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/orca-local-connection.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/original-pr-ready.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\original-pr-ready.json",
+    "sha256": "9f47111e9624d67b470f3b74ad5e42f01688da9abb63db8e8a385907521627de"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/original-terminal.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\original-terminal.json",
+    "sha256": "9566f4737a0b1d2533eb9087f0f2f006e4b4f92c666ac329213d3bcb0a20b270"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "e38c41b4af04000972eb29e10c4d6069dcdc0d318e7bcc2b9d616fd388481dbf"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "07790db28cbd9074385fc88bc9258f05643b5b9f1fd4cdbea05479b10ee3a7be"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/remote-worker-permission-audit.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\remote-worker-permission-audit.json",
+    "sha256": "f8be0bf67623d91288c96a969efe36bb1b7d8f2b402b284eadd0c3514f4c8033"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/request-id-replay.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\request-id-replay.json",
+    "sha256": "8d1240414372f4b39d1846d2067844e2b414866447dcba2523f86dbc4b32fd65"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/result.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\result.json",
+    "sha256": "135e479b8d489fdb6f9ee4608e7df26ac5f107370c27b8acdbff8980efd92cc1"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/scenario.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\scenario.json",
+    "sha256": "a1d25f0aca8877dd70813fb92571faeab4884916a868902e5d9d86a3cf5ddf50"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "43afc52ba92c195601ec9afe00c82858bffade97a1fbfe448f94712d840d86fa"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/source-identity.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\source-identity.json",
+    "sha256": "173441cc2c5bbd2c6ac4bb245a652268c64c55d67f6ad644328cfabbef105b17"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/withheld-native-send.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\withheld-native-send.json",
+    "sha256": "a612665d2d637662fca1283f9c01d7cad8e58a763eec20d2564895f6fcad2325"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/native.log": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\native.log",
+    "sha256": "31c6c8db5eed332a252291429c1e19354e1d0a8aee67cc2e8b56cf5678873c22"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\evidence\\driver-commands.jsonl",
+    "sha256": "31d169c2ef24f5561c6f26e67873f49f6135a673f43b9af8601c79daf031b5b0"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/manifest.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\manifest.json",
+    "sha256": "c7ad8a168d718f2359f66763c005b5c4109eb3e75270ca34202c2f3cdfe650c0"
+  },
+  "native-retry/orca-local.codex/42f83fbea0c4/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\42f83fbea0c4\\bin\\steerrunner.exe.build.json",
+    "sha256": "cc0c1448581f3de94f87a3b29b4d8112982e491d9e791e6b6716351056c42968"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/business-question.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\business-question.json",
+    "sha256": "d259db5aacb5e4378567f8ad5359bcdb8fc86fa997d60de82deff29a891f20cc"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/cleanup-run.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\cleanup-run.json",
+    "sha256": "1fc441eb2b8ac579b9d424a557686c90b0404b7b67bcadc3d832ecf40ae7c92c"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/feedback-rejected.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\feedback-rejected.json",
+    "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/late-native-final.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\late-native-final.json",
+    "sha256": "2324670f0fad6ee06862854c23a201a0cf8d11881bd78ca666363f1f2462d9d4"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/latest-run.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\latest-run.json",
+    "sha256": "607a476d7d8643a87e8a010b87ce7087fca31d4678a6ad24d7289122ae1c90d8"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\lost-native-send-response.json",
+    "sha256": "bd94c235d8ec6661c33176e1950ab8c57bccabf2a24a2055227eaa6ced10a72d"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/merged-run.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\merged-run.json",
+    "sha256": "c3e651ea79799d20cea7c9c9e4ae24899438431ff56b1016f4a340a81c886274"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/orca-local-connection.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/original-pr-ready.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\original-pr-ready.json",
+    "sha256": "607a476d7d8643a87e8a010b87ce7087fca31d4678a6ad24d7289122ae1c90d8"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/original-terminal.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\original-terminal.json",
+    "sha256": "9278ea85d14a2bb5719c47a29932d6011441811c7beb718388255942f74dc5fb"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/pi-native-permission-audit.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\pi-native-permission-audit.json",
+    "sha256": "50405fe9b3389a56d08bc3fc7397955a8e36887ca8e6a8fcc21f487396d4fafd"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "f686eb2bdf948dedb2d1e06afe1ddf90501402a5aef93c4c535b8d9e5e9fd90f"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "83b319874584e880f24d5e6111d48bffa3b833da0ea646edaa1ddb8fbc28ce08"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/request-id-replay.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\request-id-replay.json",
+    "sha256": "6ac43538678ed52eba73158db94b7fbe923640812fca5fa85ec69ab0dc83ca7f"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/result.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\result.json",
+    "sha256": "e708230d0107f412b6cf71c8cf7e4b28e61edb7096893a1bc602cb07e33f7fdd"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/scenario.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\scenario.json",
+    "sha256": "aff2c36fe5519582773e106add3ecb2c1785048d8917f0f6c59fb9f23e961a0d"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "fc4653eb4f65bf3ba7d061c3f2f2ad65b73eb54d7028fee8179202891bcce524"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/source-identity.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\source-identity.json",
+    "sha256": "eaa0abd2cc514eba99c0d3c43aed715a5638380f3cf21fa70163b5c017b6e5b2"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/startup-failure.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\startup-failure.json",
+    "sha256": "4b52d157b0a59365fdfba296ad274f0b96011d5d763fa6fde732e9d3f2e5319d"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/withheld-native-send.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\withheld-native-send.json",
+    "sha256": "a0daad143466b3dfcdd124f8c566327a56d0934113222a6fd6b96ea1096d1ca5"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/native.log": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\native.log",
+    "sha256": "6100831beaacae53c79aff2a9b85806c845a1cc234ecbbbec251f71c1c8f8347"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\e724dee1b168\\evidence\\driver-commands.jsonl",
+    "sha256": "42e11dad983bf561e1b337d7e77b713ccfdc2578e3ea8b2f1d8c833c3e70591e"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/manifest.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\manifest.json",
+    "sha256": "7a856510a35249b8dca22a63fcd95c265f9aa8fa582eec787a335daae36d4269"
+  },
+  "native-retry/orca-local.pi/e724dee1b168/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\e724dee1b168\\bin\\steerrunner.exe.build.json",
+    "sha256": "cc0c1448581f3de94f87a3b29b4d8112982e491d9e791e6b6716351056c42968"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/business-question.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\business-question.json",
+    "sha256": "a02ab8904978c0f3434ae48e71e0a2de2729e6b8d7996556778467cbefb80591"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/cleanup-run.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\cleanup-run.json",
+    "sha256": "cc1538a5825a30a9efecd74ec0bbe6d581ab181635a6376da54fd40d7612c76d"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/dsh-native-permission-audit.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\dsh-native-permission-audit.json",
+    "sha256": "a47d37fa4793425d26adfbd56dbca58df9278e52221fcd6cc4ec6eac7670101a"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/feedback-rejected.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\feedback-rejected.json",
+    "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/late-native-final.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\late-native-final.json",
+    "sha256": "09211558586d56dc80dcc46ae5aaba3f73c6097abe4ca923a797e432fc58cb75"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/latest-run.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\latest-run.json",
+    "sha256": "7485dba046c524603fbf992146267ce01a699528282deca49ba773ed76081e33"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\lost-native-send-response.json",
+    "sha256": "d97199e9fad171abd6be6ad1bf30a5993382073d59bcded7ada5695d04e0156b"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/merged-run.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\merged-run.json",
+    "sha256": "49a2a14648affb09e62b9bf1d8b0347af33443f733bcca415e7f21554c87549a"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/orca-local-connection.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/original-pr-ready.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\original-pr-ready.json",
+    "sha256": "7485dba046c524603fbf992146267ce01a699528282deca49ba773ed76081e33"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/original-terminal.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\original-terminal.json",
+    "sha256": "429a4408d4dc1e2f05bfd00c0aa1c976d39a42d68ab374256b68e1a8f0f39617"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "8dbe1786676b8570ada7da2e1dd30a089048e11df5db733047336ca57cbe265c"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "1dec934fb48148f481b06eba8cebc0040603406942f463931a2d528631d1e155"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/request-id-replay.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\request-id-replay.json",
+    "sha256": "61cea1cbca71f4c065f7ee031e76240dd20c2e4d0bdcebe39e80cf6753b78d9e"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/result.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\result.json",
+    "sha256": "eddd6f27b4f04308c048e67ad6c26d25fde84fe4200c00ea5295a922c11530d5"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/scenario.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\scenario.json",
+    "sha256": "80c779197089b7e1ad2d41b9234c28f345e8021e767681851c9ae56e791aa2ce"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "0aff13e2e4561888cd6cc9339b52463134d0a7023d8cd2074ee60c63bf823643"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/source-identity.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\source-identity.json",
+    "sha256": "2263df91090bb26888326005b5edb2cbeeefa7358dbb338916c65ad814255314"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/startup-failure.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\startup-failure.json",
+    "sha256": "ec80ca11165a605975d6cb8a0fe49414c15836456b9670dadcbdb4e0d2e3f9a0"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/withheld-native-send.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\withheld-native-send.json",
+    "sha256": "0da4d5e6522da22df8958a1cb62f4aeedb74bd62f4596b5f7948f98ea40fa59e"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/native.log": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\native.log",
+    "sha256": "6b6009eb748cbea41801385ea9f5abe0b1052ff1757db3a8e9534380b021b848"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\evidence\\driver-commands.jsonl",
+    "sha256": "36e9375332f242d96d2d71dab218cd6af2494bd87c2c153cfd44bcae3980a579"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/manifest.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\manifest.json",
+    "sha256": "2826b8ef2848f81f04f2409d5907ecdcbef3ef6d264a8efb7c6896d7f204f94a"
+  },
+  "native-retry/orca-local.dsh/baee7b1f8e27/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\baee7b1f8e27\\bin\\steerrunner.exe.build.json",
+    "sha256": "cc0c1448581f3de94f87a3b29b4d8112982e491d9e791e6b6716351056c42968"
+  },
+  "native-writers-final/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-writers-final\\summary.json",
+    "sha256": "291ef42c8327d50c2e759fdd06944f55b77ecbb53fc0b41ca323c421fd2bcabe"
+  },
+  "native-writers-final/l2-git-boundary.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-writers-final\\l2-git-boundary.log",
+    "sha256": "cda48dd67dbbeba1d1fc14958fb9c951b4f2d8113768fb7103c3b48ecfe27019"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/business-question.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\business-question.json",
+    "sha256": "bfd42aa824e7cbedfa6f330d33f67d37a4cc9ef183682a104369ce2eaf233699"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/cleanup-run.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\cleanup-run.json",
+    "sha256": "a479bcc8663c330426c4a017b9a1cf38f6402277421db5ee4a0c00cc148355d0"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/feedback-rejected.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\feedback-rejected.json",
+    "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/latest-run.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\latest-run.json",
+    "sha256": "f3681a9eadeda93cf120d835f3c9ad2390d3b7ec4084e65d775dd28535cae04d"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\lost-native-send-response.json",
+    "sha256": "8d9b727103096235facdc7ba6a437efaf7aa9fab49b9a2de2941ec0f7ac9e24d"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/merged-run.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\merged-run.json",
+    "sha256": "a0f49c257da2eaf5ae5d12306710e29a234c1708133016bf8ef46000c59add0f"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/orca-local-connection.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/original-pr-ready.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\original-pr-ready.json",
+    "sha256": "f3681a9eadeda93cf120d835f3c9ad2390d3b7ec4084e65d775dd28535cae04d"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/original-terminal.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\original-terminal.json",
+    "sha256": "dd4f1b064eda82bb906b610e7ae01ff3da3c35c260f4349561b237a9e8a49082"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "ad78efa6237206f197e1bded5d1aafabd57001be28df2413125e6e1ba657235f"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "011921190640569718c2f4c68769c4ee2b37bc3e2863f7313803420d52a3a0aa"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/remote-worker-permission-audit.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\remote-worker-permission-audit.json",
+    "sha256": "d44111a5776e4e686c8cf44303d9cc24de15b2b3a3b3329c9798910e748f6919"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/request-id-replay.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\request-id-replay.json",
+    "sha256": "b425bdf8bad5357d74373c637c9429380022ddedd61321be0ce5cd8092fc4c48"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/result.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\result.json",
+    "sha256": "7e17ff23569acbafe18fab7eab17b61820ed1c0221a5f88744a63208222dd048"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/scenario.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\scenario.json",
+    "sha256": "0931fbc9e5ef8918b886d52f1335113def3415d558e8d44e558f116260cadbb9"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/service-restart-explicit-resume.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\service-restart-explicit-resume.json",
+    "sha256": "48cb9bc72ecaa262fa9c68db30804bacb2dfcaf6e736bc1275982aa5c6c485db"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/source-identity.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\source-identity.json",
+    "sha256": "36d8f65b6d1233c27637bd2932b20208e0018700b4be2b26de133265d86b3f2a"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/withheld-native-send.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\withheld-native-send.json",
+    "sha256": "bd945f929cbf6aab6ae400c9aee76e69c85eaedc11cd28780cadbf6003e30af0"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/native.log": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\native.log",
+    "sha256": "a737db3c40e53285557fae013e62f2249ce7d6016b7f44783398cd9ae7b4233d"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\evidence\\driver-commands.jsonl",
+    "sha256": "fe4494458f65505d031acdf3039ffa5401395b8010ead2f9bab04a4a62fbd2f7"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/manifest.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\manifest.json",
+    "sha256": "db0807e0d55db1fbeb351c5a39d1529ed9f6ce83511615a1e91e6c12b7c45ed3"
+  },
+  "native-writers-final/orca-local.codex/5f31b004f5ff/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\5f31b004f5ff\\bin\\steerrunner.exe.build.json",
+    "sha256": "4baf8335d1d0420c0907fac8f3ea8377f873ce77886deec85747466a1b85f8f3"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/cleanup-run.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\cleanup-run.json",
+    "sha256": "6b7200d86f0264364f3b35b89c61368d351f33eb058079c634c924970d27bc5d"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/late-native-final.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\late-native-final.json",
+    "sha256": "4f99056261a9663ae90eb1acf7d0d2aad0e767192a70c033a3f4a9c4a92310e8"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\lost-native-send-response.json",
+    "sha256": "f84236ed3e801cd1418a194686ebbad9e615a5e78661fd654ddef1e9d805cf1e"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/orca-local-connection.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "ad4e47295aa6478afd4b34a42143693ae2a506335050eed935efd73f5e7df3ca"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "7ae50fc95b6b0d2c394b7caa6e2f34dcbe60026f6c53926bb0b1e3e076b5eb7c"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/request-id-replay.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\request-id-replay.json",
+    "sha256": "9326302344971379ec9c7c0072d4d12c398331542efc12e07273b3a04472648c"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/result.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\result.json",
+    "sha256": "cbd2b3c54a0ee575b42c91b375bd651d8427d71fc7815540757bceaee8ba3017"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/scenario.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\scenario.json",
+    "sha256": "3686f74c9aaf6d220bbdc9b9c59edffaa82efb2bce569c22a5f3f0cb5b1b3bcd"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/source-identity.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\source-identity.json",
+    "sha256": "c1fcb8118d0184cb7dff6b0d3711a104e18b8dd3f0d22b2ba7753fbdb35af7b3"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/startup-failure.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\startup-failure.json",
+    "sha256": "000ff273c03262d8db080d6b06887f08713b9cdc416d5c6ba1efa58b09def27d"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/withheld-native-send.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\withheld-native-send.json",
+    "sha256": "75429f1c81f65c3c653e41011dae4650f53876d6be2603576aa8ec90cfea964b"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/native.log": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\native.log",
+    "sha256": "fccd2dc4ee01f42fbefc74e864376fa5cef5a73caefca586d34d9b4f96885a12"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\ace6d882146b\\evidence\\driver-commands.jsonl",
+    "sha256": "6394e1a92d3e0ce385218db633faabd2f77088da3561c0c3823dda44ce1ce680"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/manifest.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\manifest.json",
+    "sha256": "188f7216f1f960a7288d77bb74e1c86b3e176be62c1bafb366de3e835ee63ebd"
+  },
+  "native-writers-final/orca-local.pi/ace6d882146b/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\bin\\steerrunner.exe.build.json",
+    "sha256": "4baf8335d1d0420c0907fac8f3ea8377f873ce77886deec85747466a1b85f8f3"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/business-question.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\business-question.json",
+    "sha256": "4dbb9aab3a3c93d2a3c46eecd6d351a34668b93faf31bc491b2007e2407bf4f2"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/cleanup-run.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\cleanup-run.json",
+    "sha256": "579c6d5fc663e1725e0bd4f95ae3b232d5378a6e48bcb12a347e090e0ccaef35"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/late-native-final.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\late-native-final.json",
+    "sha256": "d40a6b052aa03b51c7fc72cb2f5f610759aff97f3a07be02b262f69a6f2c7673"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/latest-run.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\latest-run.json",
+    "sha256": "84f5538424b20fe8aeb10129fc1a0e545175126904e1920f9a919220375cbaa0"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/lost-native-send-response.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\lost-native-send-response.json",
+    "sha256": "5c568a0ef2305f82491c4d3e567e4420e77cd1e88e010e8343c7fa2d5573e01d"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/orca-local-connection.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/remote-authentication-cleanup.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\remote-authentication-cleanup.json",
+    "sha256": "d7c2742a9c28d6b7293534ad152b22297220e2da496ef69a3d9c6acfe9b814ee"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/remote-terminal-before-stop.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\remote-terminal-before-stop.json",
+    "sha256": "b5370e93433cdf475bf61cd5732a88c2339eebe186417b6c836d335f65feec13"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/request-id-replay.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\request-id-replay.json",
+    "sha256": "575bc4b1c4c6e6e35379a42e76a83dd53c45370d1feda05a9de2f2b518d17f3e"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/result.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\result.json",
+    "sha256": "72d034f2d51bcc5f5db61721228800ad0de80a8624eabb62336d3395d9fb1235"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/scenario.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\scenario.json",
+    "sha256": "012ad35c63d73d9df9f41230950c93e98d2d8b6502d109ed1fbe16160907d0ae"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/source-identity.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\source-identity.json",
+    "sha256": "5ff4095c3da0a64eb5f714ae21bd6d4ea330954984c3029bd43139251370b83a"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/startup-failure.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\startup-failure.json",
+    "sha256": "bbfa542e8917d4870f66b0a79716c9849dedc5cf2874fb647300d9a589c0822f"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/withheld-native-send.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\withheld-native-send.json",
+    "sha256": "35a99b01fcf1fe9f9ac5d0e2d52d998a36c461f6354d04e6ccfe3d9d0e567fdb"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/native.log": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\native.log",
+    "sha256": "7e6ba8f335523fdf4639196636d3054914f1e2d37149ce898b14e8278cbeabf7"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\fe8e07936163\\evidence\\driver-commands.jsonl",
+    "sha256": "bdc32541dc12dba839c56549613a2bd77597014e0ae638fbffebb13f27cee9a5"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/manifest.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\manifest.json",
+    "sha256": "0b5d000e9034ec16d28e16a46e5447d493217e8eed24a5266aa246af9cfd8d65"
+  },
+  "native-writers-final/orca-local.dsh/fe8e07936163/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\fe8e07936163\\bin\\steerrunner.exe.build.json",
+    "sha256": "4baf8335d1d0420c0907fac8f3ea8377f873ce77886deec85747466a1b85f8f3"
+  },
+  "native-final/summary.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-final\\summary.json",
+    "sha256": "134538203b36cedb15213c08be384f3bcc333853b4a9d994150a4472e6c1164a"
+  },
+  "native-final/l2-git-boundary.log": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-final\\l2-git-boundary.log",
+    "sha256": "1b9d43fbf0e0581ef0374b0669728d9b1b08e36a3e452940a91e0ac5f9119ae4"
+  },
+  "native-final/orca-local.codex/138d8becafb6/lost-native-unverified.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\lost-native-unverified.json",
+    "sha256": "1bb532c65a93d060221f67c22b3e7789c661c8b4438bce0fe539dcf0a870a1ff"
+  },
+  "native-final/orca-local.codex/138d8becafb6/orca-local-connection.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-final/orca-local.codex/138d8becafb6/result.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\result.json",
+    "sha256": "432935770d8d64822a906fba750c703333647aaaf5a3bdc2d5c1113ed8bdd9a1"
+  },
+  "native-final/orca-local.codex/138d8becafb6/scenario.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\scenario.json",
+    "sha256": "ea7fd25723bb106853af4322015edca7f9e2efc036df50458440f1ec4051316d"
+  },
+  "native-final/orca-local.codex/138d8becafb6/source-identity.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\source-identity.json",
+    "sha256": "a9ab4858bfa458c3837f75a05de647d4eef640f9887754da5922590bf9ae4430"
+  },
+  "native-final/orca-local.codex/138d8becafb6/native.log": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\native.log",
+    "sha256": "1cd1b69cdcb9f6c48a098e03829092ed8f86475973a79c3ed69c24e8dec38891"
+  },
+  "native-final/orca-local.codex/138d8becafb6/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\138d8becafb6\\evidence\\driver-commands.jsonl",
+    "sha256": "eccb6fdc864a5aabe223117156466bb020eff7db26c65fc7569ae86ff48be3db"
+  },
+  "native-final/orca-local.codex/138d8becafb6/manifest.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\manifest.json",
+    "sha256": "770a680dc98a692d702c6f136220912bc2b4a403e4dd2593b82be234bc3c235c"
+  },
+  "native-final/orca-local.codex/138d8becafb6/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\138d8becafb6\\bin\\steerrunner.exe.build.json",
+    "sha256": "aac6fc6993793d3ca9441e1f79cb64e366d44cacd2e04d003998ef3d7fbb4284"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/lost-native-unverified.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\lost-native-unverified.json",
+    "sha256": "95251df44652cd5052682aa0d552a2ee5a4391b9012caebb3a26a9efcf98a699"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/orca-local-connection.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/result.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\result.json",
+    "sha256": "1c76665df9a1d42bc2e9baf7c7b0205b79e758902fc4d9709e47205d2b3de7e1"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/scenario.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\scenario.json",
+    "sha256": "83ed958b0697bb8aa106e6be6da0ac6f581f46843402a42f1d68785eb47126bd"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/source-identity.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\source-identity.json",
+    "sha256": "2075422eadc3453f4a321281856c9ae30659b2d2cbab23ce58136025c57700fd"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/startup-failure.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\startup-failure.json",
+    "sha256": "0435b57d51dc429d385bdabe407305181e51bf0336457dd75c07350aef661850"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/native.log": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\native.log",
+    "sha256": "7ddc9d112cc6178a7c301fcb835569f67524f89c2d83bd66b85b35e7b15c2568"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\evidence\\driver-commands.jsonl",
+    "sha256": "decf82162288ce45a4daac744f1f14c37c64f2a7eff94057c0b9e4f150f52d83"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/manifest.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\manifest.json",
+    "sha256": "fd2ca62071507c8de271559f91d70ce3c9c53f18df3fa6237b9c606b4a485b68"
+  },
+  "native-final/orca-local.pi/eaef08b5dc55/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\eaef08b5dc55\\bin\\steerrunner.exe.build.json",
+    "sha256": "aac6fc6993793d3ca9441e1f79cb64e366d44cacd2e04d003998ef3d7fbb4284"
+  },
+  "native-final/orca-local.dsh/c49521415387/lost-native-unverified.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\lost-native-unverified.json",
+    "sha256": "fe7bbb2966edb1f4256e97e77360173ba0cfaa08bceb54c784761c9553d4abe8"
+  },
+  "native-final/orca-local.dsh/c49521415387/orca-local-connection.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\orca-local-connection.json",
+    "sha256": "4b33c093eb2ebc70d1556fce4646d136330e20dd7877b0a14c50be753b53a588"
+  },
+  "native-final/orca-local.dsh/c49521415387/result.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\result.json",
+    "sha256": "ce4acd73f85585b711f8f8ce52c2dcf6cd3c0aff25da60316a2b9980eb39bb19"
+  },
+  "native-final/orca-local.dsh/c49521415387/scenario.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\scenario.json",
+    "sha256": "89ffa32813b28a477bde979f60ec18c85f1414cea7ce7225b7ff263f6120d95b"
+  },
+  "native-final/orca-local.dsh/c49521415387/source-identity.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\source-identity.json",
+    "sha256": "e3b9090579c5ee1fe0ca2a024053b5468710af4528f111ea12a946a4fcd5dc85"
+  },
+  "native-final/orca-local.dsh/c49521415387/startup-failure.json": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\startup-failure.json",
+    "sha256": "5dce1428d0b5a0e7f5871b54fc58f96e5349f826db6c4bfbeaee580e25fe9701"
+  },
+  "native-final/orca-local.dsh/c49521415387/native.log": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\native.log",
+    "sha256": "816e8a8d5ca0f6dfe8f49027112e5838f619bc2099ffbb2bf1d17e645dfbe86d"
+  },
+  "native-final/orca-local.dsh/c49521415387/driver-commands.jsonl": {
+    "original_path": "C:\\srt\\c49521415387\\evidence\\driver-commands.jsonl",
+    "sha256": "7e98feccf9f0d768efc479c9b739bee87f3adba867905d71accbe1170608acce"
+  },
+  "native-final/orca-local.dsh/c49521415387/manifest.json": {
+    "original_path": "C:\\srt\\c49521415387\\manifest.json",
+    "sha256": "37746decf48247823a6a2056e304dc0ca962beca6e3d104372319ecb86d86c0d"
+  },
+  "native-final/orca-local.dsh/c49521415387/steerrunner.exe.build.json": {
+    "original_path": "C:\\srt\\c49521415387\\bin\\steerrunner.exe.build.json",
+    "sha256": "aac6fc6993793d3ca9441e1f79cb64e366d44cacd2e04d003998ef3d7fbb4284"
+  },
+  "script-proof/proof.json": {
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\script-proof\\proof.json",
+    "sha256": "6de055508606d535012f104c20851fa62f370f61b7e8ce2944236ebc72806c3b"
+  },
+  "diagnostics/pi-atomic-publication/6c65f6ba50583a00f79ecdcbc5ad59c7.json": {
+    "original_path": "C:\\srt\\ace6d882146b\\s\\terminal-agents\\635ae556b0e8b6ffeb29d9e5fb79e8cd\\42a3a0394b559d23e53d23e64caf6b8b\\6c65f6ba50583a00f79ecdcbc5ad59c7.json",
+    "sha256": "8ab0ac5c93e4d02633f19c8adf9ec01e2aacd433011f1e3268e90f2a319fc80e"
+  },
+  "diagnostics/pi-atomic-publication/6c65f6ba50583a00f79ecdcbc5ad59c7.json.tmp": {
+    "original_path": "C:\\srt\\ace6d882146b\\s\\terminal-agents\\635ae556b0e8b6ffeb29d9e5fb79e8cd\\42a3a0394b559d23e53d23e64caf6b8b\\6c65f6ba50583a00f79ecdcbc5ad59c7.json.tmp",
+    "sha256": "2891ee001325481d48c1806a6e3b4b6c7ab47ee7d448fb8cfcc683b9de885e49"
+  },
+  "diagnostics/codex-sandbox-readiness.json": {
+    "original_path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\remote-runtime\\1ca3e0d02975f1c6cf8ecb64bac85538\\sandbox-readiness.json",
+    "sha256": "fbdf983cd9b203636cdbfb8bdc5a265cc4e61b12b91d4dbf86ed849b770326ea"
+  }
+}

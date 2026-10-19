@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "steerrunner-result-acquisition/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "steerrunner-result-acquisition/v1"
+    },
+    "codex_parser": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "executable": {
+          "type": "string",
+          "minLength": 1,
+          "default": "codex.exe"
+        },
+        "model": {
+          "type": "string",
+          "default": ""
+        },
+        "reasoning_effort": {
+          "enum": [
+            "",
+            "minimal",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max",
+            "ultra"
+          ]
+        },
+        "codex_home_env": {
+          "type": "string",
+          "default": ""
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 300,
+          "default": 120
+        },
+        "max_input_bytes": {
+          "type": "integer",
+          "minimum": 16384,
+          "maximum": 262144,
+          "default": 131072
+        },
+        "max_output_bytes": {
+          "type": "integer",
+          "minimum": 4096,
+          "maximum": 65536,
+          "default": 32768
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.646s [no tests to run]
+=== RUN   TestRALateParserReceiptAndDuplicate
+--- PASS: TestRALateParserReceiptAndDuplicate (9.67s)
+=== RUN   TestRAAtomicParserRecovery
+--- PASS: TestRAAtomicParserRecovery (11.85s)
+=== RUN   TestRAConcurrencyParserStopResources
+--- PASS: TestRAConcurrencyParserStopResources (8.69s)
+=== RUN   TestRAAtomicCompletion
+--- PASS: TestRAAtomicCompletion (6.51s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (0.56s)
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+=== RUN   TestRAConcurrencyPublication/new-source
+=== RUN   TestRAConcurrencyPublication/head-drift
+=== RUN   TestRAConcurrencyPublication/wrong-pr-head
+--- PASS: TestRAConcurrencyPublication (55.04s)
+    --- PASS: TestRAConcurrencyPublication/stop (14.62s)
+    --- PASS: TestRAConcurrencyPublication/new-source (14.73s)
+    --- PASS: TestRAConcurrencyPublication/head-drift (14.26s)
+    --- PASS: TestRAConcurrencyPublication/wrong-pr-head (11.43s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.71s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (6.08s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	102.029s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	1.300s [no tests to run]

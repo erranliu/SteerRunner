@@ -1,0 +1,30 @@
+{
+  "id": "f03b895b-3a7d-49b9-a8e3-5381fa71b2bd",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_16cfd318-99be-437f-ac27-8320c55f07c7",
+      "ptyId": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600@@3df9f2cb",
+      "incarnationId": "771eceaf-3c9a-4238-8ee0-5786f66acce7",
+      "orphaned": false,
+      "worktreeId": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600",
+      "branch": "refs/heads/erranliu/sl-8f295d86d37e1eb8907151b70d245600",
+      "tabId": "ec390750-e57a-46b4-8540-c4550adf466f",
+      "leafId": "153def9b-98ea-4367-a6b7-dcb43562df5d",
+      "title": "✦ 🐋 SteerRunner smoke evidence task",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792366001288,
+      "preview": "https://github.com/erranliu/SteerlineTest/pull/550,\"generated_at\":\"2026-10-18T23:25:55.0000000+00:00\"}.1k/1.0m)╯──",
+      "executionHostId": "local",
+      "agentIdentity": "dsh",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "456f70a1-9c53-406c-a48a-72833d36abdb"
+  }
+}

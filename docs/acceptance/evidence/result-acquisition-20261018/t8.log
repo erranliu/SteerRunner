@@ -1,0 +1,23 @@
+=== RUN   TestRADefinitionRename
+--- PASS: TestRADefinitionRename (0.00s)
+=== RUN   TestRAVerificationConflictSurvivesResume
+--- PASS: TestRAVerificationConflictSurvivesResume (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.088s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.959s [no tests to run]
+=== RUN   TestRAStateAuthorityParserHistory
+--- PASS: TestRAStateAuthorityParserHistory (6.15s)
+=== RUN   TestRAStateAuthorityParserReferences
+--- PASS: TestRAStateAuthorityParserReferences (5.74s)
+=== RUN   TestRAStateAuthority
+--- PASS: TestRAStateAuthority (0.63s)
+=== RUN   TestRATransitionUnknownNativeGate
+--- PASS: TestRATransitionUnknownNativeGate (0.87s)
+=== RUN   TestRAStateAuthorityQuestionSource
+--- PASS: TestRAStateAuthorityQuestionSource (3.34s)
+=== RUN   TestRAStateAuthorityMilestone
+--- PASS: TestRAStateAuthorityMilestone (0.56s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	20.092s

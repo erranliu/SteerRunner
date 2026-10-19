@@ -1,0 +1,50 @@
+{
+  "scope": "final-receipt-publication-and-short-writer-scripts",
+  "planned_case_count": 3,
+  "status": "failed",
+  "prerequisite": "../full-final/summary.json",
+  "finished_at": "2026-10-18T14:54:03.2846985Z",
+  "source_commit": "4bcfb8cc3bd669a1f6f79dc17c8e589b1f8394e4",
+  "max_parallel": 2,
+  "results": [
+    {
+      "level": "L3",
+      "evidence": "C:\\srt\\138d8becafb6\\evidence",
+      "repeat_index": 1,
+      "started_at": "2026-10-18T14:46:17.4920826Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-final\\orca-local.codex-default-r1-fixture.json",
+      "case_id": "default",
+      "finished_at": "2026-10-18T14:50:04.6767632Z",
+      "error": "Live scenario failed; inspect C:\\srt\\138d8becafb6\\evidence/native.log",
+      "manifest": "C:\\srt\\138d8becafb6\\manifest.json",
+      "scenario": "orca-local.codex",
+      "status": "failed"
+    },
+    {
+      "level": "L3",
+      "evidence": "C:\\srt\\eaef08b5dc55\\evidence",
+      "repeat_index": 1,
+      "started_at": "2026-10-18T14:46:17.5939516Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-final\\orca-local.pi-default-r1-fixture.json",
+      "case_id": "default",
+      "finished_at": "2026-10-18T14:50:27.8524656Z",
+      "error": "Live scenario failed; inspect C:\\srt\\eaef08b5dc55\\evidence/native.log",
+      "manifest": "C:\\srt\\eaef08b5dc55\\manifest.json",
+      "scenario": "orca-local.pi",
+      "status": "failed"
+    },
+    {
+      "level": "L3",
+      "evidence": "C:\\srt\\c49521415387\\evidence",
+      "repeat_index": 1,
+      "started_at": "2026-10-18T14:50:05.7270521Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-final\\orca-local.dsh-default-r1-fixture.json",
+      "case_id": "default",
+      "finished_at": "2026-10-18T14:54:03.2091224Z",
+      "error": "Live scenario failed; inspect C:\\srt\\c49521415387\\evidence/native.log",
+      "manifest": "C:\\srt\\c49521415387\\manifest.json",
+      "scenario": "orca-local.dsh",
+      "status": "failed"
+    }
+  ]
+}

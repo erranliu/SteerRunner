@@ -1,0 +1,18 @@
+[
+  {
+    "fixture": "6231a2f36445",
+    "headRefName": "erranliu/sl-35341509f938f73bb9fcd7e32fafb215",
+    "headRefOid": "c94c044827fbab075335b5aa2da0922c5b1f7ce3",
+    "mergedAt": "2026-10-19T04:18:18Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/583"
+  },
+  {
+    "fixture": "5dabbee3c1d6",
+    "headRefName": "erranliu/sl-d90244b0c996701d9cef08c9d887078c",
+    "headRefOid": "0db842da7bd7d606c2444e6c0145adb8e0f86664",
+    "mergedAt": "2026-10-19T04:18:25Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/584"
+  }
+]

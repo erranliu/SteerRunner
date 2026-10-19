@@ -1,0 +1,54 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "repeat_index": 1,
+  "stage": "resumed-original-workflow",
+  "run_id": "7f44b5a0ad692c8cb3cf065a7e387fc2",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 1,
+  "audit_complete": false,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "resume-required-before-authorization",
+      "passed": true,
+      "evidence": "latest-run.json and native-calls.jsonl after original completion"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": false,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

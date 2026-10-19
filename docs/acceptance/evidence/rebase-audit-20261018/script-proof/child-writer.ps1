@@ -1,0 +1,1 @@
+﻿$p=Get-Process -Id $PID;@{kind='os';pid=$PID;created=$p.StartTime.ToUniversalTime().ToFileTimeUtc().ToString('x16');executable=$p.Path.ToLowerInvariant()}|ConvertTo-Json -Compress | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'child.json') -Encoding UTF8;Start-Sleep -Seconds 45;Set-Content -LiteralPath (Join-Path $PSScriptRoot 'late.txt') -Value late

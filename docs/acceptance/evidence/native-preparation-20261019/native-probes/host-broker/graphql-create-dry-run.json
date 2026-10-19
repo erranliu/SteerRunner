@@ -1,0 +1,1 @@
+{"exit_code":0,"read_only":true,"stdout":"Would have created a Pull Request with:\ntitle:\tRead-only query compatibility\ndraft:\tfalse\nbase:\tmain\nhead:\tsandbox-readiness-nonexistent\nmaintainerCanModify:\ttrue\nbody:\nNo publication: explicit head and dry run\n"}

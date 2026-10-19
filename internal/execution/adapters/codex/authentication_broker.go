@@ -37,6 +37,7 @@ import (
 )
 
 type authenticationBroker struct {
+	installation                            bool
 	checkGate                               *checkWriteGate
 	mu                                      sync.Mutex
 	secret                                  []byte
@@ -91,6 +92,10 @@ func hostGitHubCredential(ctx context.Context) ([]byte, error) {
 }
 
 func prepareHostBroker(ctx context.Context, repository string, resolve func(context.Context) ([]byte, error), transport http.RoundTripper) (*authenticationBroker, error) {
+	return prepareRepositoryBroker(ctx, repository, resolve, transport, false, time.Time{}, "")
+}
+
+func prepareRepositoryBroker(ctx context.Context, repository string, resolve func(context.Context) ([]byte, error), transport http.RoundTripper, installation bool, expires time.Time, identity string) (*authenticationBroker, error) {
 	secret, err := resolve(ctx)
 	if err != nil {
 		return nil, err
@@ -102,6 +107,11 @@ func prepareHostBroker(ctx context.Context, repository string, resolve func(cont
 		}
 	}()
 	b := &authenticationBroker{secret: secret, repository: repository, expires: time.Now().Add(time.Hour), transport: transport, connections: map[net.Conn]bool{}}
+	b.installation = installation
+	if installation {
+		b.expires = expires
+		b.login = identity
+	}
 	// Bind both immutable repository ID and identity on the execution host. This
 	// is source qualification only; readiness still runs in the actual sandbox.
 	var repo struct {
@@ -118,13 +128,16 @@ func prepareHostBroker(ctx context.Context, repository string, resolve func(cont
 	var user struct {
 		Login string `json:"login"`
 	}
-	if err = b.qualify(ctx, "/user", &user); err != nil {
-		return nil, err
+	if !installation {
+		if err = b.qualify(ctx, "/user", &user); err != nil {
+			return nil, err
+		}
+		if user.Login == "" {
+			return nil, errors.New("authentication_host_identity_invalid")
+		}
+		b.login = user.Login
 	}
-	if user.Login == "" {
-		return nil, errors.New("authentication_host_identity_invalid")
-	}
-	b.repositoryID, b.login = repo.NodeID, user.Login
+	b.repositoryID = repo.NodeID
 	capBytes := make([]byte, 32)
 	if _, err = rand.Read(capBytes); err != nil {
 		return nil, errors.New("authentication_capability_generation_failed")
@@ -464,6 +477,9 @@ func (b *authenticationBroker) facts() map[string]any {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	facts := map[string]any{"mode": "host-gh-repository-broker", "repository": b.repository, "repository_id": b.repositoryID, "identity": b.login, "expires_at": b.expires, "closed": b.closed, "allowed_requests": b.allowed, "denied_requests": b.denied, "git_upload_pack": b.gitRead, "git_receive_pack": b.gitWrite, "pr_queries": b.prQueries, "pr_creates": b.prCreates}
+	if b.installation {
+		facts["mode"] = "github-app-repository-broker"
+	}
 	if b.socketLease != nil {
 		facts["authentication_transport"] = b.socketLease.plan
 		facts["socket_cleanup_confirmed"] = b.socketLease.cleaned
@@ -502,7 +518,7 @@ func (b *authenticationBroker) permit(r *http.Request) bool {
 	if host != "api.github.com" {
 		return false
 	}
-	if r.Method == "GET" && r.URL.RawQuery == "" && (path == "/meta" || path == "/user" || path == "/repos/"+b.repository) {
+	if r.Method == "GET" && r.URL.RawQuery == "" && (path == "/meta" || path == "/user" && !b.installation || path == "/installation/repositories" && b.installation || path == "/repos/"+b.repository) {
 		return true
 	}
 	if b.checkGate != nil && strings.HasPrefix(path, "/repos/"+b.repository+"/pulls") {

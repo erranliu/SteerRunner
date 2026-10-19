@@ -38,15 +38,13 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 		if err = l.verifyCodexExit(ctx, state, s.Workspace.Path); err != nil {
 			return err
 		}
-		return l.verifyInspectionsStopped(ctx, state)
+		return l.verifyControlStopped(ctx, state)
 	}
 	if state.RemoteReadiness != nil {
 		return errors.New("native terminal helper has incompatible Codex resource evidence")
 	}
-	for _, turn := range state.Turns {
-		if turn.Inspection != nil {
-			return errors.New("native terminal helper has unexpected readonly resources")
-		}
+	if state.Control != nil {
+		return errors.New("native terminal helper has unexpected control resource")
 	}
 	owner, e := l.readTerminalOwner()
 	if e != nil || state.TerminalOwner == nil || !reflect.DeepEqual(state.TerminalOwner, &owner) || !l.terminalExitVerified(owner) {
@@ -106,42 +104,29 @@ func (l *Lifecycle) stopCodexNative(ctx context.Context, state State, workspace 
 	}
 }
 
-// The caller's existing journal covers creations not yet copied into the Run
-// snapshot. Missing/unknown ownership cannot be repaired by starting a reader.
-func (l *Lifecycle) verifyInspectionsStopped(ctx context.Context, state State) error {
-	j, err := l.loadInspections(state)
+// The original checkpoint is transport evidence, never a replacement Run state.
+func (l *Lifecycle) verifyControlStopped(ctx context.Context, state State) error {
+	if err := l.validateControl(l.setup.Snapshot, state, true); err != nil {
+		return err
+	}
+	if err := l.client.VerifyTerminalStopped(ctx, state.Control.Process); err != nil {
+		return err
+	}
+	_, _, err := ReadAuthenticationStopEvidence(l.setup.RunDirectory, l.setup.Snapshot, state)
+	return err
+}
+
+func (l *Lifecycle) originalForStop(ctx context.Context, s b.LifecycleSnapshot) error {
+	if !l.usesControl() {
+		_, err := l.original(ctx, s)
+		return err
+	}
+	t, err := l.client.InspectBoundTerminal(ctx, l.profile.Target(), s.Ref.External)
 	if err != nil {
 		return err
 	}
-	check := func(a *NativeInspection) error {
-		if a == nil {
-			return nil
-		}
-		if !a.Attempted || a.Process == nil || !a.NativeSettled || a.At.IsZero() {
-			return errors.New("original readonly native tree settlement remains unverified")
-		}
-		p := a.Process
-		if p.Kind != "orca_original_turn_reader" || p.RuntimeID != state.Process.RuntimeID || p.WorktreeID != state.Process.WorktreeID || p.Terminal == state.Process.Terminal || p.Terminal == "" || p.Incarnation == "" {
-			return errors.New("original readonly resource identity differs")
-		}
-		return l.client.VerifyTerminalStopped(ctx, *a.Process)
+	if t.WorktreeID != s.Ref.External.WorktreeID || !strings.EqualFold(strings.ReplaceAll(t.WorktreePath, "\\", "/"), strings.ReplaceAll(s.Workspace.Path, "\\", "/")) || strings.TrimPrefix(t.Branch, "refs/heads/") != s.Workspace.Branch {
+		return errors.New("original Codex stop workspace or branch changed")
 	}
-	for _, entry := range j.Entries {
-		if err = check(&entry.Inspection); err != nil {
-			return err
-		}
-	}
-	for _, turn := range state.Turns {
-		a := turn.Inspection
-		for _, entry := range j.Entries {
-			if a != nil && a.Process != nil && entry.Inspection.Process != nil && *a.Process == *entry.Inspection.Process {
-				copy := entry.Inspection
-				a = &copy
-			}
-		}
-		if err = check(a); err != nil {
-			return err
-		}
-	}
-	return ctx.Err()
+	return nil
 }

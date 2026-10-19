@@ -75,7 +75,7 @@ func QualifyInput(input *b.TurnInput, caps b.LifecyclePolicyCapabilities) error 
 	if input == nil {
 		return errors.New("saved turn input is missing")
 	}
-	if input.ReportToolPolicy != "" && caps.ReportToolPolicy != "" && input.ReportToolPolicy != caps.ReportToolPolicy {
+	if input.ReportToolPolicy != "" && input.ReportToolPolicy != caps.ReportToolPolicy {
 		return errors.New("report native policy changed after its input was frozen")
 	}
 	return nil

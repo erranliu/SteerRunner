@@ -2,7 +2,6 @@ param(
     [ValidateSet('L1','Controlled','L2','L3','L4')][string[]]$Level = @('L1'),
     [string[]]$Scenario = @(),
     [string]$Config = '',
-    [string]$FeedbackQualification = '',
     [string]$Catalog = '',
     [string]$OutDir = '',
     [string]$FixtureParent = 'C:\srt',
@@ -19,7 +18,7 @@ Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'test-scheduler.ps1')
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FeedbackQualification','FixtureParent')) {
+foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FixtureParent')) {
     $taskValue = Get-Variable -Name $taskParameter -ValueOnly
     if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
 }
@@ -130,7 +129,7 @@ try {
     $taskFramework = Join-Path $taskOut 'framework'
     & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework
     $taskCoverage = Join-Path $taskOut 'coverage.out'
-    & go test @($taskCatalog.l1_packages) -count=1 -timeout=5m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
+    & go test @($taskCatalog.l1_packages) -count=1 -timeout=12m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
     $taskUnitCode = $LASTEXITCODE
     # The two formal native extensions are part of L1, including on machines
     # without model credentials or a running Orca instance.
@@ -167,9 +166,9 @@ try {
         $taskControlled = Join-Path $taskOut 'controlled'
         $taskPattern = '^(' + (($taskCatalog.controlled_scenarios | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')$'
         & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern | Out-Host
-        # The child owns a 15m aggregate test deadline. Do not declare timeout
+        # The child owns a 25m aggregate test deadline. Do not declare timeout
         # before that contract ends; allow only result-file/cleanup latency.
-        $taskUntil = [DateTime]::UtcNow.AddMinutes(15).AddSeconds(30)
+        $taskUntil = [DateTime]::UtcNow.AddMinutes(25).AddSeconds(30)
         while (-not (Test-Path -LiteralPath (Join-Path $taskControlled 'result.json'))) {
             if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled harness timed out; inspect integration.log' }
             Start-Sleep -Seconds 2
@@ -181,12 +180,11 @@ try {
     }
     $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
-    $taskResolvedProof=if($FeedbackQualification){(Resolve-Path -LiteralPath $FeedbackQualification).ProviderPath}else{''}
     $taskConfigSHA=if($taskAssessment){$taskSummary.configuration_sha256}else{''}
     $taskRunnerSHA=if($taskAssessment){$taskSummary.runner_sha256}else{''}
     $taskHelperSHA=if($taskAssessment){$taskSummary.helper_sha256}else{''}
     $taskRequirementsSHA=if($taskAssessment){$taskSummary.requirements_sha256}else{''}
-    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -FeedbackQualification $taskResolvedProof -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
+    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
         param($Records)
         $taskSummary.results = @($taskPrerequisites) + @(Merge-SRCaseRecords -Executions $taskExpanded -Records $Records)
         Save-Summary

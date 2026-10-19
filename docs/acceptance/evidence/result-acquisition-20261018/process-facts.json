@@ -1,0 +1,170 @@
+{
+  "assertions": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+      "test": "TestRAParserQualification",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/GOOD",
+      "elapsed": 1.6
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/BAD",
+      "elapsed": 0.78
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/TOOL",
+      "elapsed": 0.76
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/EXTERNAL",
+      "elapsed": 0.52
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/user",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/system",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection/cloud",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestRAParserConfigurationProjection",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/EXIT",
+      "elapsed": 0.7
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/MODEL",
+      "elapsed": 0.7
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/NOFINAL",
+      "elapsed": 0.65
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/HUGE",
+      "elapsed": 0.56
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess/HANG",
+      "elapsed": 0.52
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserProcess",
+      "elapsed": 6.8
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserIdentityCommitFailure",
+      "elapsed": 0.43
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+      "test": "TestRAParserPolicyAndEvents",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/completed",
+      "elapsed": 10.43
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/needs_input",
+      "elapsed": 10.3
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/conflict",
+      "elapsed": 9.84
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/failed",
+      "elapsed": 13.07
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/policy_violation",
+      "elapsed": 13.85
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/side_effect_unverified",
+      "elapsed": 10.41
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/stop",
+      "elapsed": 6.93
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/source-drift",
+      "elapsed": 9.48
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition/new-source",
+      "elapsed": 6.15
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAParserAcquisition",
+      "elapsed": 90.45
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRALateParserReceiptAndDuplicate",
+      "elapsed": 8.78
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityParserHistory",
+      "elapsed": 6.2
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAAtomicParserRecovery",
+      "elapsed": 11.55
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyParserStopResources",
+      "elapsed": 8.43
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityParserReferences",
+      "elapsed": 5.89
+    }
+  ],
+  "real_receipts": [
+    "native/parser-default-receipt.json",
+    "native/parser-explicit-receipt.json",
+    "native/parser-cancel-receipt.json"
+  ],
+  "permission_probe": "native/permission-probe.json"
+}

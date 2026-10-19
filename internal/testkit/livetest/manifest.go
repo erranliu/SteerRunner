@@ -22,40 +22,39 @@ const RemoteURL = "https://github.com/erranliu/SteerlineTest.git"
 const Artifact = "evidence/native-101.md"
 
 type Manifest struct {
-	RequirementsSHA256    string                  `json:"requirements_sha256,omitempty"`
-	ConfigurationSHA256   string                  `json:"configuration_sha256,omitempty"`
-	ConfigurationPath     string                  `json:"configuration_path,omitempty"`
-	Workflow              *contracts.Workflow     `json:"workflow,omitempty"`
-	FeedbackQualification *Tool                   `json:"feedback_qualification,omitempty"`
-	AuditModel            *workflow.ModelSettings `json:"audit_model,omitempty"`
-	Schema                string                  `json:"schema"`
-	ID                    string                  `json:"id"`
-	Level                 string                  `json:"level"`
-	Scenario              string                  `json:"scenario"`
-	Driver                string                  `json:"driver"`
-	Root                  string                  `json:"root"`
-	RunnerExe             string                  `json:"runner_exe"`
-	RunnerSHA256          string                  `json:"runner_sha256"`
-	SourceCommit          string                  `json:"source_commit"`
-	SourceDirty           bool                    `json:"source_dirty"`
-	RepositoryPath        string                  `json:"repository_path"`
-	SourceRevision        string                  `json:"source_revision"`
-	BaseBranch            string                  `json:"base_branch"`
-	BaseRevision          string                  `json:"base_revision"`
-	SpecPath              string                  `json:"spec_path"`
-	SpecSHA256            string                  `json:"spec_sha256"`
-	PlanPath              string                  `json:"plan_path"`
-	PlanSHA256            string                  `json:"plan_sha256"`
-	Execution             contracts.Execution     `json:"execution"`
-	PeerExecution         *contracts.Execution    `json:"peer_execution,omitempty"`
-	Publication           contracts.Publication   `json:"publication"`
-	RemoteRuntimeID       string                  `json:"remote_runtime_id,omitempty"`
-	LocalRuntimeID        string                  `json:"local_runtime_id,omitempty"`
-	LocalRepositoryPath   string                  `json:"local_repository_path,omitempty"`
-	CreatedAt             string                  `json:"created_at"`
-	CaseID                string                  `json:"case_id,omitempty"`
-	RepeatIndex           int                     `json:"repeat_index,omitempty"`
-	Stability             *StabilityConfig        `json:"stability,omitempty"`
+	RequirementsSHA256  string                  `json:"requirements_sha256,omitempty"`
+	ConfigurationSHA256 string                  `json:"configuration_sha256,omitempty"`
+	ConfigurationPath   string                  `json:"configuration_path,omitempty"`
+	Workflow            *contracts.Workflow     `json:"workflow,omitempty"`
+	AuditModel          *workflow.ModelSettings `json:"audit_model,omitempty"`
+	Schema              string                  `json:"schema"`
+	ID                  string                  `json:"id"`
+	Level               string                  `json:"level"`
+	Scenario            string                  `json:"scenario"`
+	Driver              string                  `json:"driver"`
+	Root                string                  `json:"root"`
+	RunnerExe           string                  `json:"runner_exe"`
+	RunnerSHA256        string                  `json:"runner_sha256"`
+	SourceCommit        string                  `json:"source_commit"`
+	SourceDirty         bool                    `json:"source_dirty"`
+	RepositoryPath      string                  `json:"repository_path"`
+	SourceRevision      string                  `json:"source_revision"`
+	BaseBranch          string                  `json:"base_branch"`
+	BaseRevision        string                  `json:"base_revision"`
+	SpecPath            string                  `json:"spec_path"`
+	SpecSHA256          string                  `json:"spec_sha256"`
+	PlanPath            string                  `json:"plan_path"`
+	PlanSHA256          string                  `json:"plan_sha256"`
+	Execution           contracts.Execution     `json:"execution"`
+	PeerExecution       *contracts.Execution    `json:"peer_execution,omitempty"`
+	Publication         contracts.Publication   `json:"publication"`
+	RemoteRuntimeID     string                  `json:"remote_runtime_id,omitempty"`
+	LocalRuntimeID      string                  `json:"local_runtime_id,omitempty"`
+	LocalRepositoryPath string                  `json:"local_repository_path,omitempty"`
+	CreatedAt           string                  `json:"created_at"`
+	CaseID              string                  `json:"case_id,omitempty"`
+	RepeatIndex         int                     `json:"repeat_index,omitempty"`
+	Stability           *StabilityConfig        `json:"stability,omitempty"`
 }
 
 type Tool struct {
@@ -81,7 +80,7 @@ var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 // Configured choices survive fixture generation. Test-owned prompt steps may
 // only be installed when they do not silently overwrite a caller override.
 func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, error) {
-	selection := contracts.Workflow{ID: "development", Version: 1}
+	selection := contracts.Workflow{ID: "development", Version: 2}
 	if m.Workflow != nil {
 		raw, _ := json.Marshal(m.Workflow)
 		if err := json.Unmarshal(raw, &selection); err != nil {
@@ -143,21 +142,8 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "development-core" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
 		return errors.New("v1 requires a development fixture without stability fields")
-	}
-	if m.Driver == "development-core" {
-		if m.Scenario != "local-codex.smoke" || m.Level != "L2" || m.FeedbackQualification == nil {
-			return errors.New("core smoke requires a qualified local feedback case")
-		}
-		if err := ValidateFeedbackQualification(*m.FeedbackQualification, m.RunnerSHA256); err != nil {
-			return err
-		}
-		if err := ValidateFeedbackExecution(*m.FeedbackQualification, m.Execution); err != nil {
-			return err
-		}
-	} else if m.FeedbackQualification != nil {
-		return errors.New("feedback qualification only applies to the core smoke")
 	}
 	if m.Schema == "steerrunner-test/v2" {
 		s, c, err := Lookup(m.Scenario, m.CaseID)

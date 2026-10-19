@@ -1,0 +1,8 @@
+=== RUN   TestNativeReceiptPublicationAcrossWindowsReaders
+=== RUN   TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers
+=== RUN   TestNativeReceiptPublicationAcrossWindowsReaders/held-reader-fails-closed
+--- PASS: TestNativeReceiptPublicationAcrossWindowsReaders (1.26s)
+    --- PASS: TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers (0.17s)
+    --- PASS: TestNativeReceiptPublicationAcrossWindowsReaders/held-reader-fails-closed (1.09s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	3.314s

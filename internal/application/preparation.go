@@ -19,7 +19,7 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			e.block(id, "materialization_failed", err, false)
 			return false
 		}
-		if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
+		if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.Config.Initial}, ""); err != nil {
 			e.block(id, "input_failed", err, false)
 			return false
 		}
@@ -51,6 +51,25 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 	if time.Now().After(r.PreparationDeadline) && candidate.Action != b.LifecycleStartTurn && candidate.Action != b.LifecycleSubmitInput {
 		e.block(id, "preparation_deadline", errors.New("The original preparation budget is exhausted"), false)
 		return false
+	}
+	if nativeInputAction(candidate.Action) && r.Snapshot.PendingTurn != nil {
+		input := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID)
+		if input == nil {
+			return false
+		}
+		w.gate.Unlock()
+		checkErr := e.checkDispatchSource(r, *input)
+		w.gate.Lock()
+		e.mu.Lock()
+		stale := e.runs[id].Revision != r.Revision || !e.runs[id].Allowed || e.runs[id].PendingStop != ""
+		e.mu.Unlock()
+		if stale {
+			return false
+		}
+		if checkErr != nil {
+			e.blockRevision(id, r.Revision, "source_unverified", checkErr, false)
+			return false
+		}
 	}
 	i, err := e.saveIntent(id, r, candidate)
 	if err != nil {

@@ -23,32 +23,35 @@ import (
 // RemoteAgentConfig is public configuration. Authentication is resolved only on
 // the machine that runs this helper, never transported by the Orca caller.
 type RemoteAgentConfig struct {
-	Executable      string   `json:"executable"`
-	Args            []string `json:"args,omitempty"`
-	Model           string   `json:"model,omitempty"`
-	ReasoningEffort string   `json:"reasoning_effort,omitempty"`
-	AccessMode      string   `json:"access_mode,omitempty"`
-	RepositoryURL   string   `json:"repository_url"`
+	GitHubAuth      *AuthenticationConfig `json:"github_auth,omitempty"`
+	Executable      string                `json:"executable"`
+	Args            []string              `json:"args,omitempty"`
+	Model           string                `json:"model,omitempty"`
+	ReasoningEffort string                `json:"reasoning_effort,omitempty"`
+	AccessMode      string                `json:"access_mode,omitempty"`
+	RepositoryURL   string                `json:"repository_url"`
 }
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
+const RemoteFailurePrefix = "SR_REMOTE_AGENT_FAILURE:"
 const RemoteNativeTransport = "codex-remote-inline-v3"
 
 type RemoteReadiness struct {
-	ExitPublicKey       []byte            `json:"exit_public_key,omitempty"`
-	Owner               b.ProcessIdentity `json:"owner"`
-	NativeTransport     string            `json:"native_transport"`
-	RuntimeSHA256       string            `json:"runtime_sha256"`
-	Verified            bool              `json:"verified"`
-	Contract            string            `json:"contract"`
-	Workspace           string            `json:"workspace"`
-	Repository          string            `json:"repository"`
-	SessionID           string            `json:"session_id"`
-	ConfigurationDigest string            `json:"configuration_digest"`
-	Process             b.ProcessIdentity `json:"process"`
-	CheckedAt           time.Time         `json:"checked_at"`
-	ExpiresAt           time.Time         `json:"expires_at"`
-	AccessMode          string            `json:"access_mode"`
+	AuthenticationControl bool              `json:"authentication_control,omitempty"`
+	ExitPublicKey         []byte            `json:"exit_public_key,omitempty"`
+	Owner                 b.ProcessIdentity `json:"owner"`
+	NativeTransport       string            `json:"native_transport"`
+	RuntimeSHA256         string            `json:"runtime_sha256"`
+	Verified              bool              `json:"verified"`
+	Contract              string            `json:"contract"`
+	Workspace             string            `json:"workspace"`
+	Repository            string            `json:"repository"`
+	SessionID             string            `json:"session_id"`
+	ConfigurationDigest   string            `json:"configuration_digest"`
+	Process               b.ProcessIdentity `json:"process"`
+	CheckedAt             time.Time         `json:"checked_at"`
+	ExpiresAt             time.Time         `json:"expires_at"`
+	AccessMode            string            `json:"access_mode"`
 }
 
 func RemoteConfigurationDigest(c RemoteAgentConfig) string {
@@ -107,11 +110,12 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth, err := newAuthentication(nil, c.RepositoryURL)
+	auth, err := newAuthentication(c.GitHubAuth, c.RepositoryURL)
 	if err != nil {
 		return err
 	}
 	defer auth.Close()
+	auth.repositoryBroker = true
 	if err = auth.prepare(ctx); err != nil {
 		return err
 	}
@@ -126,11 +130,13 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
-	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
-		return err
-	}
 	if _, err = os.Stat(filepath.Join(dir, "ready.json")); err == nil {
 		return errors.New("remote_runtime_already_exists; reconcile original session")
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
+		return err
 	}
 	plan, err := remoteAuthenticationTransport(c, wd)
 	if err != nil {
@@ -159,7 +165,10 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	auth.onClose = func(revoked bool) {
-		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"revocation_confirmed": revoked, "broker": auth.broker.facts()}))
+		var original RemoteReadiness
+		body, _ := os.ReadFile(filepath.Join(dir, "ready.json"))
+		_ = json.Unmarshal(body, &original)
+		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"session_id": original.SessionID, "configuration_digest": RemoteConfigurationDigest(c), "revocation_confirmed": revoked, "broker": auth.broker.facts()}))
 	}
 	owned, _, endpoint, err := LaunchServer(LaunchConfig{AuthenticationTransport: plan, Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
 		return lifecycleProcessEnvironment(env, "remote-runtime", "remote-runtime", nil)
@@ -261,6 +270,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		mode = "sandbox"
 	}
 	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
+	prepared.AuthenticationControl = true
 	prepared.RuntimeSHA256, err = RuntimeBinarySHA256()
 	if err != nil {
 		return err
@@ -269,6 +279,9 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	ready = &prepared
+	controlCtx, cancelControl := context.WithCancel(ctx)
+	defer cancelControl()
+	go watchRemoteAuthentication(controlCtx, dir, prepared, auth)
 	// The transport captures this finite receipt before any business input and
 	// binds it to the original PTY incarnation and native provider session.
 	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(ready)))
@@ -287,7 +300,11 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	tui.Stdin, tui.Stdout, tui.Stderr = input, output, diagnostics
 	// Only the app-server receives capability-bearing environment. Its frozen
 	// policy owns all tool execution; native --remote rejects client overrides.
-	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", []string{"GH_TOKEN", "GITHUB_TOKEN"})
+	blocked := []string{"GH_TOKEN", "GITHUB_TOKEN"}
+	if c.GitHubAuth != nil {
+		blocked = append(blocked, c.GitHubAuth.PrivateKeyEnv)
+	}
+	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", blocked)
 	started, err := host.StartManaged(tui)
 	if err != nil {
 		return err

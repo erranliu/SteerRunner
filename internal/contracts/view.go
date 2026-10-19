@@ -1,6 +1,7 @@
 package contracts
 
 import (
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"time"
 )
@@ -38,6 +39,7 @@ type QuestionOption struct {
 	Detail string `json:"detail,omitempty"`
 }
 type QuestionView struct {
+	Source          string           `json:"source,omitempty"`
 	ID              string           `json:"id"`
 	Text            string           `json:"text"`
 	Options         []QuestionOption `json:"options,omitempty"`
@@ -89,37 +91,50 @@ type OperationView struct {
 	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
 }
 type RunView struct {
-	Audit            *AuditView        `json:"audit,omitempty"`
-	Operations       []OperationView   `json:"operations"`
-	RunID            string            `json:"run_id"`
-	Revision         uint64            `json:"revision"`
-	Title            string            `json:"title"`
-	Correlation      map[string]string `json:"correlation,omitempty"`
-	InputDigest      string            `json:"input_digest"`
-	ResourceDigest   string            `json:"resource_digest"`
-	Workflow         Workflow          `json:"workflow"`
-	Step             string            `json:"step"`
-	Status           string            `json:"status"`
-	Phase            string            `json:"phase"`
-	Diagnostic       string            `json:"diagnostic,omitempty"`
-	NewInputsAllowed bool              `json:"new_inputs_allowed"`
-	ResumeRequired   bool              `json:"resume_required"`
-	StopStatus       string            `json:"stop_status,omitempty"`
-	Materials        []MaterialView    `json:"materials"`
-	Execution        ExecutionView     `json:"execution"`
-	Question         *QuestionView     `json:"question,omitempty"`
-	Controls         Controls          `json:"controls"`
-	PR               *PRFact           `json:"pr,omitempty"`
-	Summary          string            `json:"summary,omitempty"`
-	Final            *FinalView        `json:"final,omitempty"`
-	CreatedAt        time.Time         `json:"created_at"`
-	UpdatedAt        time.Time         `json:"updated_at"`
+	ResultAcquisition []AcquisitionView `json:"result_acquisition,omitempty"`
+	Audit             *AuditView        `json:"audit,omitempty"`
+	Operations        []OperationView   `json:"operations"`
+	RunID             string            `json:"run_id"`
+	Revision          uint64            `json:"revision"`
+	Title             string            `json:"title"`
+	Correlation       map[string]string `json:"correlation,omitempty"`
+	InputDigest       string            `json:"input_digest"`
+	ResourceDigest    string            `json:"resource_digest"`
+	Workflow          Workflow          `json:"workflow"`
+	Step              string            `json:"step"`
+	Status            string            `json:"status"`
+	Phase             string            `json:"phase"`
+	Diagnostic        string            `json:"diagnostic,omitempty"`
+	NewInputsAllowed  bool              `json:"new_inputs_allowed"`
+	ResumeRequired    bool              `json:"resume_required"`
+	StopStatus        string            `json:"stop_status,omitempty"`
+	Materials         []MaterialView    `json:"materials"`
+	Execution         ExecutionView     `json:"execution"`
+	Question          *QuestionView     `json:"question,omitempty"`
+	Controls          Controls          `json:"controls"`
+	PR                *PRFact           `json:"pr,omitempty"`
+	Summary           string            `json:"summary,omitempty"`
+	Final             *FinalView        `json:"final,omitempty"`
+	CreatedAt         time.Time         `json:"created_at"`
+	UpdatedAt         time.Time         `json:"updated_at"`
 }
 
+// AcquisitionView intentionally omits private raw candidate text. Native final
+// and audit business facts retain their existing redaction/projection owners.
+type AcquisitionView struct {
+	ID        string           `json:"id"`
+	Contract  string           `json:"contract"`
+	Source    ra.Source        `json:"source"`
+	Method    string           `json:"method"`
+	Status    string           `json:"status"`
+	Missing   []string         `json:"missing,omitempty"`
+	Conflicts []string         `json:"conflicts,omitempty"`
+	Fields    []ra.FieldSource `json:"fields,omitempty"`
+	Attempts  []ra.Attempt     `json:"attempts,omitempty"`
+}
 type AuditView struct {
 	Model           string                 `json:"model"`
 	ReasoningEffort string                 `json:"reasoning_effort"`
-	RepairCount     uint64                 `json:"repair_count"`
 	Results         []workflow.AuditRecord `json:"results"`
 }
 type Event struct {

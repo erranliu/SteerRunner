@@ -1,0 +1,21 @@
+{
+  "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "name": "local",
+  "evidence": "C:/SteerlineDebug/sr-rebase-control-20261019-local-bb84ea80",
+  "started_at": "2026-10-19T04:24:02.9621839Z",
+  "parameters": {
+    "REPOSITORY": "C:/Projects/SteerlineTest",
+    "RUNNER": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\steerrunner.exe",
+    "ENVIRONMENT": "",
+    "NATIVE": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+    "BASE": "849ed9b33de86920e4b582bd7513628421bbfa99",
+    "HELPER_SHA256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+    "REPO": "faae3ad4-da24-4d6d-9698-d8931b893789",
+    "CLI": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "ROOT": "C:/SteerlineDebug/sr-rebase-control-20261019-local-bb84ea80",
+    "HELPER": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe",
+    "MODEL": "gpt-6-luna"
+  },
+  "finished_at": "2026-10-19T04:24:22.0795310Z",
+  "exit_code": 1
+}

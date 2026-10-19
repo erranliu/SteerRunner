@@ -24,7 +24,7 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 	fixture, _ := json.Marshal(TestFixture{Repository: contracts.Repository{URL: RemoteURL, Remote: "origin", BaseBranch: "main", BaseRevision: strings.Repeat("1", 40)}, Publication: &contracts.Publication{Provider: "command", Repository: Repository, BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://github.com","query":{"executable":"gh","args":["api"]}}`)}})
 	native := filepath.Join(dir, "native-codex.exe")
 	settings, _ := json.Marshal(map[string]any{"executable": native, "access_mode": "sandbox"})
-	entry, _ := json.Marshal(map[string]any{"execution": contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: settings}, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+	entry, _ := json.Marshal(map[string]any{"execution": contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: settings}, "workflow": contracts.Workflow{ID: "development", Version: 2}})
 	config := TestConfig{Schema: ConfigSchema, Configurations: map[string]json.RawMessage{"local-codex": entry, "orca-local-pi": json.RawMessage(`{}`)}, Fixture: fixture, Harness: Harness{AdminHost: "relative-fault-host"}}
 	body, _ := json.Marshal(config)
 	_ = os.WriteFile(path, body, 0600)
@@ -95,7 +95,7 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 
 func TestSRBaselineConstraintsAndGateReasons(t *testing.T) {
 	for _, executable := range []string{"relative-codex.exe", filepath.Join(t.TempDir(), "codex.cmd"), filepath.Join(t.TempDir(), "node.exe")} {
-		raw, _ := json.Marshal(map[string]any{"execution": contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(map[string]any{"executable": executable, "access_mode": "sandbox"})}, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+		raw, _ := json.Marshal(map[string]any{"execution": contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(map[string]any{"executable": executable, "access_mode": "sandbox"})}, "workflow": contracts.Workflow{ID: "development", Version: 2}})
 		if len((TestConfig{Configurations: map[string]json.RawMessage{"local-codex": raw}}).BaselineIssues()) == 0 {
 			t.Fatal("non-native or relative baseline accepted", executable)
 		}
@@ -195,7 +195,7 @@ func TestSRNativePreparationReferencesAreStaticConstraints(t *testing.T) {
 			if fault := contracts.ValidateExecution(execution); fault != nil {
 				t.Fatal("test constraint leaked into the public gate", fault)
 			}
-			config.Configurations["orca-local-codex"] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+			config.Configurations["orca-local-codex"] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 2}})
 			scenario, c, err := Lookup("orca-local.codex", "default")
 			if err != nil {
 				t.Fatal(err)
@@ -213,7 +213,7 @@ func TestSRNativePreparationReferencesAreStaticConstraints(t *testing.T) {
 				helper = filepath.Join(dir, "other-helper.exe")
 			}
 			execution := contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: marshalConfig(contracts.OrcaSettings{Agent: agent, AccessMode: "sandbox", Transport: contracts.TransportSettings{Executable: filepath.Join(dir, "orca.cmd")}, AgentLaunch: contracts.AgentSettings{RuntimeExecutable: helper, RuntimeSHA256: strings.Repeat("a", 64)}})}
-			config.Configurations["orca-local-"+agent] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 1}})
+			config.Configurations["orca-local-"+agent] = marshalConfig(map[string]any{"execution": execution, "workflow": contracts.Workflow{ID: "development", Version: 2}})
 		}
 		scenario, c, _ := Lookup("orca-local.mixed", "default")
 		result := assessCase(config, scenario, c, resources.Catalog())

@@ -1,0 +1,78 @@
+{
+  "max_parallel": 2,
+  "finished_at": "2026-10-18T23:33:19.0717484Z",
+  "scope": "two-affected-l2",
+  "planned_case_count": 2,
+  "status": "passed",
+  "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+  "prerequisite": "../live-qualified/summary.json",
+  "source_dirty": false,
+  "results": [
+    {
+      "resources": [
+        "root:C:\\srt\\84fc08bff39c",
+        "base:codex/srtest/84fc08bff39c/base",
+        "run:d45f05126379c0713b5fa8cb913a7e09",
+        "workspace:c:\\srt\\84fc08bff39c\\s\\workspaces\\aqn2k6j3s4v2ux5nzcxrspy2ym",
+        "session:01a15159-c175-7971-adbc-cdc8553641ea",
+        "branch:codex/runner-d45f05126379c0713b5fa8cb913a7e09",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/552"
+      ],
+      "manifest": "C:\\srt\\84fc08bff39c\\manifest.json",
+      "expected_outcome": "merged",
+      "started_at": "2026-10-18T23:29:13.7245882Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-l2\\local-codex.smoke-default-r1-fixture.json",
+      "repeat_index": 1,
+      "finished_at": "2026-10-18T23:33:18.8884603Z",
+      "status": "passed",
+      "identity": {
+        "pid": 32968,
+        "manifest_sha256": "bab90b6f53e9e2e197089f669734b18b958b84ab554dd3eddb08a7fb50b2c5b9",
+        "driver_sha256": "b04b826b80d389cdebaaded1cfc14805348f52616e43df1578eb0c6c7206a416",
+        "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+        "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.smoke",
+        "level": "L2"
+      },
+      "evidence": "C:\\srt\\84fc08bff39c\\evidence",
+      "case_id": "default",
+      "level": "L2",
+      "scenario": "local-codex.smoke"
+    },
+    {
+      "resources": [
+        "root:C:\\srt\\448b2ef40ccb",
+        "base:codex/srtest/448b2ef40ccb/base",
+        "run:91cc3c7c8618b5d3d6a716b0124acacb",
+        "workspace:c:\\srt\\448b2ef40ccb\\s\\workspaces\\r47p6ksci2t3o2xhdg3m5b4zky",
+        "session:01a1515a-4c1a-7cb2-9753-544116275f94",
+        "branch:codex/runner-91cc3c7c8618b5d3d6a716b0124acacb",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/551"
+      ],
+      "manifest": "C:\\srt\\448b2ef40ccb\\manifest.json",
+      "expected_outcome": "merged",
+      "started_at": "2026-10-18T23:29:13.8582033Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\native-preparation-fix-20261019\\live-l2\\local-codex.result-acquisition-default-r1-fixture.json",
+      "repeat_index": 1,
+      "finished_at": "2026-10-18T23:33:16.7791587Z",
+      "status": "passed",
+      "identity": {
+        "pid": 17732,
+        "manifest_sha256": "b839f4418cbb50f6f84d9766355dc93838ef5bb58c29419566192737aa709aa8",
+        "driver_sha256": "b04b826b80d389cdebaaded1cfc14805348f52616e43df1578eb0c6c7206a416",
+        "runner_sha256": "bbd32ed352ba64a6520aedb2a6b7552a893ebeb21703dde0d77b777471f7ea8e",
+        "source_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.result-acquisition",
+        "level": "L2"
+      },
+      "evidence": "C:\\srt\\448b2ef40ccb\\evidence",
+      "case_id": "default",
+      "level": "L2",
+      "scenario": "local-codex.result-acquisition"
+    }
+  ]
+}

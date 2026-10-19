@@ -1,0 +1,38 @@
+{
+  "inspector": {
+    "terminal": "term_0fef20e4-2d91-4565-b08a-9a9cd95f80b8",
+    "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+    "incarnation": "47d11622-7d28-44be-8d9e-0676ff95ee58",
+    "worktree_id": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-60c9b3ccb9a44466955b86dbede1a616"
+  },
+  "inspector_closed": true,
+  "readiness": {
+    "authentication_control": true,
+    "native_transport": "codex-remote-inline-v2",
+    "runtime_sha256": "4c5892221ac260cc92d27702a040d210314f04ccf4fdc8bbb7db9d8b66583b56",
+    "verified": true,
+    "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sl-60c9b3ccb9a44466955b86dbede1a616",
+    "repository": "https://github.com/erranliu/SteerlineTest.git",
+    "session_id": "01a14f6c-0414-7221-b056-c7c162f3a4dc",
+    "configuration_digest": "26c7de46817cfd1b3938587887ada915fe5482dd1d4fba098baeffaf0d7dcf05",
+    "process": {
+      "kind": "os",
+      "pid": 55176,
+      "created": "01dd5f0d3acecc78",
+      "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+    },
+    "checked_at": "2026-10-18T14:30:51.2645012Z",
+    "expires_at": "2026-10-18T23:30:30.4186271+08:00",
+    "access_mode": "sandbox"
+  },
+  "native": {
+    "session": "01a14f6c-0414-7221-b056-c7c162f3a4dc",
+    "contexts": 5,
+    "tools": 10,
+    "escalations": 0,
+    "approvals": 0,
+    "bypasses": 0,
+    "native_sha256": "d82b655c622434653b67c4705cc295e936bc1a0c7e4a25e3d98105c191ab09d3"
+  }
+}

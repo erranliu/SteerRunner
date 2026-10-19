@@ -3,6 +3,7 @@ package codexworker
 import (
 	"encoding/json"
 	"errors"
+	"regexp"
 
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -77,6 +78,7 @@ func DecodeEvent(envelope codexapp.Envelope, fixed executionbackend.SessionConte
 			TurnID   string `json:"turnId"`
 			Item     struct {
 				ID           string `json:"id"`
+				Command      string `json:"command"`
 				Type         string `json:"type"`
 				Status       string `json:"status"`
 				Success      *bool  `json:"success"`
@@ -88,6 +90,12 @@ func DecodeEvent(envelope codexapp.Envelope, fixed executionbackend.SessionConte
 		}
 		if json.Unmarshal(envelope.Params, &params) != nil || params.ThreadID != threadID || params.TurnID != turnID {
 			return fact, errors.New("app-server tool completion changed native identity")
+		}
+		if params.Item.ID != "" && (params.Item.Type == "fileChange" || params.Item.Type == "commandExecution" && knownBusinessWork.MatchString(params.Item.Command)) {
+			fact.Kind = executionbackend.EventWorkObserved
+			fact.StartedTurnID = params.TurnID
+			fact.BusinessWork = params.Item.Type
+			return fact, nil
 		}
 		if params.Item.Type != "dynamicToolCall" {
 			return fact, nil
@@ -153,3 +161,7 @@ func DecodeQuestions(arguments json.RawMessage) ([]executionbackend.Question, er
 	}
 	return questions, err
 }
+
+// Only positive native observations count. This does not claim complete tool
+// isolation or infer work from assistant prose. Unknown commands remain unknown.
+var knownBusinessWork = regexp.MustCompile(`(?i)(?:\bgit\b[^\r\n;&|]*\b(?:commit|cherry-pick|rebase|reset)\b|\b(?:go|cargo|dotnet|npm|pnpm|yarn)\s+(?:run\s+)?test\b|\bpytest\b|\b(?:check|test)\.ps1\b)`)
