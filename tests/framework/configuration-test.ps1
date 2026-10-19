@@ -1,4 +1,4 @@
-锘縫aram([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
+﻿param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 . (Join-Path $Repository 'scripts/test-scheduler.ps1')
