@@ -53,6 +53,11 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 	if err != nil {
 		return receipt, err
 	}
+	if l.usesControl() {
+		if err := l.validateControl(r.Snapshot, state, true); err != nil {
+			return receipt, err
+		}
+	}
 	term, err := l.original(ctx, r.Snapshot)
 	if err != nil {
 		return receipt, err

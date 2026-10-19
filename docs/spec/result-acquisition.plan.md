@@ -1,5 +1,7 @@
 # Plan：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-19 确认增量：按 Spec §7.1 实施固定控制终端，解决执行期辅助 `terminal.create` 身份丢失窗口；初始化创建身份未知继续阻塞。下述 §5 为本增量的依赖、验证及证据安排，历史失败不改写。SteerLine、Orca 不改，不部署。
+
 > 2026-10-19 合入前复验：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[本轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。原 terminal.create 强杀窗口的原生恢复保证仍缺，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
 
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
@@ -168,3 +170,19 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 此前设计轮只写 Spec、Plan、专属验收、调查记录、两份具体 Workflow 确认稿/共用能力入口和 README 导航，并做文档静态检查；其只读 CLI 探针不是产品验收。本轮用户已授权实施和必要验证，实际非 parser 构建、服务、Controlled 与真实模型/测试 PR 结果见实施记录；不安装或部署产品，不修改 SteerLine。
 
 实施后每批结果填入 acceptance，附实际执行命令、证据、原生缺口处理和支持范围。后续 state/v3 与 workflow/2 的旧目录/旧包障碍按 Spec §8.1 处理；本 Plan 不含 SteerLine 改动或安装更新授权。若产品隔离能力受阻，报告准确阻断，不将未完成的 RA-A06 标成已交付。
+
+## 5. 固定控制终端增量实施与验收
+
+本节覆盖 Spec §7.1 / RA-A08。按依赖实施：①固定两操作 helper 协议，验证既有原生 terminal send 的请求关联、丢响应重读/去重及 helper 标准输入能力；②在 `orcatransport` 的原 CreateResource 准备链中先创建、核验并提交控制终端，再启动 agent，更新内部 implementation codec，旧版明确拒绝；③将 `remote_receipt`、`authentication_stop` 改为同一已绑定控制终端，复用现有 caller-owned 辅助检查点恢复传输请求，删除逐次 inspector/revoker 创建及其重复资源状态；④接入原恢复、Run stop/service shutdown/verify-stopped，区分业务写者、认证撤销、控制资源关闭证明；⑤更新 native audit/现有 driver 的来源核验、文档及验收。不得为测试豁免任意终端或扩大 agent 计数规则。
+
+控制身份以原 Record 的适配器 implementation 为准；检查点只保留同一资源下未决请求与回执，严格核对父绑定，不驱动工作流。初始化创建未知不重新创建、不按标题/空 inventory 结算；服务恢复不发送任何业务输入。辅助查询传输恢复不消耗 agent/report/parser 调用预算。关闭证明与撤销证明分开核验，旧失败不改写。
+
+环境为 Windows/amd64、当前 Go/PowerShell、固定 Codex/Orca/helper SHA，现有配对执行主机及隔离 Run/worktree/PR；不改原生应用。证据目录 `docs/acceptance/evidence/fixed-control-20261019/`（F），原始现场在 `.evidence/fixed-control-20261019/`。不得收录凭据。所有命令、非零匹配数、构建/配置/资源身份、失败迭代、最终业务与资源结算分别登记。
+
+| 级别/场景 | 命令与执行时点 | 通过条件与证据 |
+| --- | --- | --- |
+| L1/组件：有限方法、异源/坏载荷拒收、原回执不变、请求 ID 冲突、丢响应恢复、初始化未知/提交失败零业务输入、控制身份变化阻塞、重复撤销、停止/关闭失败及服务释放观察 | 实施后 `go test ./internal/execution/adapters/codex ./internal/execution/adapters/orcatransport ./internal/testkit/livetest -count=1 -timeout=5m -v`；随后完整 `./scripts/test.ps1 -Level L1 -OutDir .evidence/fixed-control-20261019/l1` | 新增控制协议/生命周期反例与既有受影响测试全部通过，无临时 inspector/revoker 创建；`F/component.log`、`F/l1/summary.json` |
+| Controlled：原 EXE/IPC/SQLite 的工作流与恢复接线 | L1 后 `./scripts/test.ps1 -Level Controlled -OutDir .evidence/fixed-control-20261019/controlled` | 完整现有 16 场景通过，零真实模型；`F/controlled/` |
+| L3：执行期强杀恢复、正常重启、停止及跨重启撤销；原生完整回执和控制资源归属 | 前置通过后用同源构建运行 `./scripts/test.ps1 -Level L3 -Scenario orca-remote.service-restart,orca-remote.stop-revocation -SkipAdminRequired -Config <冻结配置> -OutDir .evidence/fixed-control-20261019/native -MaxParallel 2`；实际运行 graceful-active、kill-active、active 三项，明确排除四项管理员网络/阶段边界用例，不另造“成功”预期 | 原控制终端在首条业务输入前已提交；kill-active 恢复仍为同一 handle/incarnation，原请求/final 可核验、零重发输入/零新建辅助终端；stop 证明原认证 broker/socket 清理、业务写者及控制终端关闭，无晚到写入，原 Run/service 结算完整；`F/native/`、`F/cleanup-summary.json` |
+
+上述入口保留注册 case 集并明确记录管理员变体排除，不将子集标为完整场景通过；不扩大为全 L2/L3 或管理员网络矩阵。辅助资源创建前置、初始化未知与身份变化用确定性 L1 覆盖；真实强杀只验证用户确认的执行期窗口。测试发现问题直接修复并对新源码重跑相关前置/场景，未经验证的分支保持明确未验。

@@ -57,6 +57,11 @@ func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAud
 		}
 		create := c.Args[1] == "create" && (c.Args[0] == "worktree" || c.Args[0] == "terminal")
 		send := c.Args[0] == "terminal" && c.Args[1] == "send"
+		// The finite fixed-control protocol has its own exact request/response
+		// proof above, including native sends whose CLI response was lost.
+		if send && aux[c.ID] {
+			continue
+		}
 		if !create && !send {
 			continue
 		}

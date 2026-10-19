@@ -257,6 +257,18 @@ Codex 自己登录、读取原生 credential store 并续期，Runner 只管理�
 
 共同 W/E/V 规则继续作为语义入口；下表为本功能的唯一差异维护，不修改 SteerLine 文档。
 
+### 7.1 固定原生控制终端（2026-10-19 确认增量）
+
+Codex 经 Orca 运行时，原生回执查询和认证撤销不再逐次 `terminal create`。沿现有资源准备操作，在启动执行 agent、发送任何业务输入之前创建每次执行独立的控制终端；原 runtime、worktree、terminal handle/incarnation、helper SHA、配置摘要及资源 generation 随适配器 implementation 同次提交到原 Record，确认固定 helper 就绪后才允许 agent 启动。Pi/DSH 的现有本机回执路径不增加此资源。
+
+控制 helper 只有查询原 session/输入的原生回执、请求并读取原认证 owner 撤销证明两种操作；请求关联 ID 和完整载荷绑定，禁止任意命令、模型输入和业务执行。原生完整 final、session/输入摘要、原进程/helper/config/workspace 及状态核验保持；控制响应不是新的业务结果权威，也不替换原 final。查询可重复读取已有事实；认证撤销复用原 protected request/cleanup 的幂等语义。
+
+执行期、服务恢复与停止不得新建控制终端。原身份可核验时，只观察原控制终端，按同一请求 ID 对账丢失响应；必要的终端发送恢复使用已核实的原生请求去重能力。普通 helper 的原生回执只保证 input_accepted/原 PTY incarnation 与去重；provider/turn-start 可为 unsupported，实际操作完成必须由有限协议的关联应答核验，不伪造 agent 轮次开始证明。沿现有 caller-owned 辅助检查点保存传输中的请求/回执，绑定原 Record/资源；它只能恢复原派发和事实读取，不能决定 Workflow 后继、重新授权输入或调度第二套任务。原 Record/Intents/CAS 仍为唯一状态权威。未知或冲突回执不推进；原控制终端丢失/换代后阻塞，不启动替代者。
+
+Run stop 先撤销原认证并核验 broker/socket 清理，仍须在有界预算内停止原业务写者，即使撤销暂时无法核实；再核验控制终端关闭。服务停机沿既有 continue-execution 规则仅释放观察，保留已绑定控制终端供原执行恢复。缺任一归属、撤销或关闭证明均不能声明资源结算。停止重入只读取原证明、关闭原资源，不创建临时撤销者。
+
+原生 `terminal create` 缺少创建请求对账保证仍是初始化边界：身份未知时保留原未决资源操作，不按标题/空 inventory 认领、不重试创建，零业务输入且阻塞；本增量不承诺初始化任意强杀自动恢复，也不改写旧失败现场。内部 `orca.terminal-state` codec 从 5 升为 6，旧版 Orca implementation 明确拒绝，不建设兼容迁移。公开 CLI/调用配置及业务阶段顺序不变，SteerLine 和 Orca 均不修改。执行期强杀恢复、实际回执读取、认证撤销及初始化反例的验收安排见 Plan §5。
+
 执行准备继续归原适配器管理。本期 GitHub 就绪探针由同一原生 sandbox 内实际使用的认证 `gh` 身份/仓库查询和 Git 远端访问核验连通性，不额外依赖匿名 `/meta` 的共享 IP 配额；权限、凭据摘要及 Git/remote 资格条件保持。
 
 Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `preparation-failure.json`，仅保留有限错误码及 Run/会话/bundle/worker PID 来源。只有初始化尚无原 readiness/owner/launch/turns、且 readiness 文件缺失时，原适配器才在核对原 owner 后将其作为失败诊断；它不构成就绪、业务结果或停止结算证明，不覆盖活动会话缺失的原生证据，不新增 Workflow 状态、操作权威或重试路径。公开 CLI、Run/Orca 持久格式版本不变；源码及复验见[执行准备修复记录](../acceptance/evidence/native-preparation-20261019/README.md)。
@@ -303,6 +315,7 @@ Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `pr
 | RA-A04 | Runner 本地配置/冻结/惰性资格/独立模型与原生认证引用；无 parser 的策略不被环境缺失阻断；不新增 SteerLine 请求义务，公开 v1 与版本拒绝可验证 |
 | RA-A05 | 原意图/原子提交/CAS、未知零重发、重启零自动输入、恢复仅获取、预算不重置、迟到无推进；Run/服务停止及 verify-stopped 包含所有 parser owned 资源 |
 | RA-A06 | 首个真实 Codex parser 在固定版本/profile 下完成结构输出、原生默认认证及指定已有 home 引用、独立模型/会话和真实停止；按 §6 分别验证原生命令只读权限、上下文收敛、行为约定及工具事后拒收，零凭据复制；不要求空工具表或零隐式上下文，不满足原生门槛时如实拒用 |
+| RA-A08 | 固定控制终端身份在业务输入前随原资源准备操作提交；执行期强杀仅对账原终端/原请求与完整原生 final，零新建辅助终端/零重发业务；撤销与关闭证明分开，未核实不结算；初始化未知零业务输入且阻塞，无第二状态权威，SteerLine/Orca 不改 |
 | RA-A07 | 两个内置定义共用运行机制，业务后继/提示/契约/模型/预算由定义冻结，无共享运行路径的 Workflow 特判；Workflow.StepID 为唯一业务游标，外层/status/phase 投影和待发送意图同次一致提交。首期无定制脚本端口/宿主/DSL/多层引擎；改名的测试定义复用同一能力，流程文档与定义一致 |
 
 RA-A01 的零模型机器报告是能力与选择该策略的定义的验收；development 用阶段声明实现零模型获取。覆盖末行匹配/原来源反例、缺 PR/原失败及冻结/恢复/停止幂等。RA-A03/A07 对 development 补充：外层 implement 与内部 execute/report/input 分开、无 D-PARSE 或独立解析转移，所有路径 parser 调用/探测为 0；无法判断直接 report，每源报告最多一次，无格式修正或报告重试；已明确未成功或报告未成功/已结算的获取失败均 input，零自动实施输入；只有明确用户输入及原会话资格满足才继续。development-audited 的实施/发布同样无 parse、无格式修正；仅代码审计修复结果获取可 parse，不补造修复或完成结论。每原审计最多一次 parse 和一次 report，获取失败已结算才可后备；核验 fixed_count/列表/遗留情况及 §3.1 提交前后绑定、干净工作区和 PR.HeadRevision 一致性。无 Spec 审计、A-REPAIR、两次自动返修计数或再审轮；未完成不发布。

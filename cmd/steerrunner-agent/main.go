@@ -18,6 +18,21 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 3 && os.Args[1] == "--native-control" {
+		var setup codex.RemoteControlSetup
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &setup)
+		}
+		if err == nil {
+			err = codex.ServeRemoteControl(context.Background(), setup, os.Stdin, os.Stdout)
+		}
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "native control unavailable")
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--terminal-metadata" {
 		metadata, err := orca.TerminalRuntimeMetadata()
 		if err != nil {
