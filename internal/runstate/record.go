@@ -28,6 +28,7 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
 	Closed              bool                           `json:"closed,omitempty"`
 	PendingInterrupt    string                         `json:"pending_interrupt,omitempty"`
 	ContentResult       *contracts.ContentResult       `json:"content_result,omitempty"`
@@ -81,6 +82,12 @@ type Record struct {
 	Summary             string                         `json:"summary,omitempty"`
 	CreatedAt           time.Time                      `json:"created_at"`
 	UpdatedAt           time.Time                      `json:"updated_at"`
+}
+
+// Immutable program bytes share the Run's existing atomic durable boundary.
+type Artifact struct {
+	contracts.Artifact
+	Content []byte `json:"content"`
 }
 
 func (r *Record) Clone() *Record {

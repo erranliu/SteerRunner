@@ -75,6 +75,12 @@ func ExitCode(response Response) int {
 		return 1
 	}
 	switch response.Error.Code {
+	case "artifact_path_invalid", "artifact_limit_exceeded":
+		return 2
+	case "workspace_unavailable", "artifact_unavailable":
+		return 4
+	case "workspace_source_unknown", "artifact_not_found", "artifact_changed", "artifact_integrity_failed":
+		return 5
 	case "invalid_arguments", "invalid_request", "invalid_input", "invalid_cursor":
 		return 2
 	case "unsupported_protocol", "unsupported_schema", "unsupported_capability", "unsupported_platform":

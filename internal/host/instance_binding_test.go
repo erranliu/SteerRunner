@@ -24,7 +24,7 @@ func TestSRExpectedInstanceFencesReplacement(t *testing.T) {
 	if err := writeEndpoint(dir, replacement); err != nil {
 		t.Fatal(err)
 	}
-	for _, command := range []string{"submit", "reply", "resume", "environment-check start", "inspect"} {
+	for _, command := range []string{"submit", "reply", "resume", "environment-check start", "inspect", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"} {
 		_, fault := Call(context.Background(), dir, Options{Command: command, ExpectedInstanceID: "A"}, nil)
 		if fault == nil || fault.Detail.Code != "stale_instance" {
 			t.Fatalf("%s reached replacement: %v", command, fault)
@@ -35,5 +35,11 @@ func TestSRExpectedInstanceFencesReplacement(t *testing.T) {
 	response, stop := service.dispatch(wireRequest{Protocol: contracts.Protocol, InstanceID: "B", StateDir: dir, Token: "B-token", Options: Options{Command: "submit", ExpectedInstanceID: "A"}})
 	if response.OK || response.Error == nil || response.Error.Code != "stale_instance" || stop {
 		t.Fatalf("server did not fence original binding: %+v", response)
+	}
+	for _, command := range []string{"artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"} {
+		response, stop := service.dispatch(wireRequest{Protocol: contracts.Protocol, InstanceID: "B", StateDir: dir, Token: "B-token", Options: Options{Command: command, ExpectedInstanceID: "A"}})
+		if response.OK || response.Error == nil || response.Error.Code != "stale_instance" || stop {
+			t.Fatalf("evidence reached replacement: %s %+v", command, response)
+		}
 	}
 }

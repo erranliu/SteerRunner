@@ -1,0 +1,282 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "steerrunner-cli/v1/run-evidence",
+  "$defs": {
+    "collect_input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_revision",
+        "relative_path"
+      ],
+      "properties": {
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "relative_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "description": "POSIX path relative to .steerrunner/artifacts; no dot segments, backslash, colon, controls, trailing dot/space or links."
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "artifact_id",
+        "relative_path",
+        "sha256",
+        "size_bytes",
+        "collected_at",
+        "read_command"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "artifact_id": {
+          "type": "string"
+        },
+        "relative_path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "read_command": {
+          "type": "string"
+        }
+      }
+    },
+    "read": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "artifact_id",
+        "relative_path",
+        "sha256",
+        "size_bytes",
+        "collected_at",
+        "read_command",
+        "encoding",
+        "content_base64"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "artifact_id": {
+          "type": "string"
+        },
+        "relative_path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        },
+        "collected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "read_command": {
+          "type": "string"
+        },
+        "encoding": {
+          "const": "base64"
+        },
+        "content_base64": {
+          "type": "string",
+          "contentEncoding": "base64"
+        }
+      }
+    },
+    "list": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "artifacts"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "artifacts": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_path",
+        "size_bytes"
+      ],
+      "properties": {
+        "relative_path": {
+          "type": "string"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1048576
+        }
+      }
+    },
+    "discover": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "directory",
+        "candidates"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "directory": {
+          "const": ".steerrunner/artifacts"
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/$defs/candidate"
+          }
+        }
+      }
+    },
+    "collect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "command_id",
+        "run_id",
+        "receipt_status",
+        "action_status",
+        "artifact"
+      ],
+      "properties": {
+        "command_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "receipt_status": {
+          "const": "accepted"
+        },
+        "action_status": {
+          "const": "completed"
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifact"
+        }
+      }
+    },
+    "workspace_git": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "commit",
+        "clean",
+        "observed_at",
+        "verified",
+        "diagnostic"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "clean": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verified": {
+          "type": "boolean"
+        },
+        "diagnostic": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "verified": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "commit": {
+                "type": "null"
+              },
+              "clean": {
+                "type": "null"
+              },
+              "diagnostic": {
+                "minLength": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "commit": {
+                "type": "string"
+              },
+              "clean": {
+                "type": "boolean"
+              },
+              "diagnostic": {
+                "const": ""
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

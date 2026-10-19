@@ -1,0 +1,6 @@
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.111s
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.430s
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.225s
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.444s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	30.722s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	0.840s

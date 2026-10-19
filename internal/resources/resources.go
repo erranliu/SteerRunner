@@ -15,7 +15,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
-var Version = "0.2.0-dev.2"
+var Version = "0.2.0-dev.3-r2"
 var SourceCommit = "development"
 
 //go:embed assets/*
@@ -73,6 +73,8 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
+		"run_evidence":               json.RawMessage(Read("run-evidence.capabilities.json")),
+		"run_evidence_schema":        json.RawMessage(Read("run-evidence.schema.json")),
 		"environment_check":          json.RawMessage(Read("environment-check.capabilities.json")),
 		"environment_check_fixtures": json.RawMessage(Read("environment-check.fixtures.json")),
 		"environment_check_schema":   json.RawMessage(Read("environment-check.schema.json")),
@@ -86,7 +88,7 @@ func Capabilities() any {
 		"configuration_schemas": ConfigurationSchemas(),
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
 	}

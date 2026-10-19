@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "commands": [
+    "artifacts discover",
+    "artifacts collect",
+    "artifacts list",
+    "artifacts read",
+    "workspace-git"
+  ],
+  "schema_ref": "/run_evidence_schema/$defs",
+  "workspace_support": {
+    "adapters": [
+      "codex-app-server",
+      "orca-terminal"
+    ],
+    "target_kind": "local",
+    "workflows": [
+      "development/2",
+      "development-audited/2"
+    ],
+    "orca_environment": "unsupported; no local fallback"
+  },
+  "collection": {
+    "directory": ".steerrunner/artifacts",
+    "path_base": "original_run_workspace",
+    "publication": "producer publishes a complete file (temp + rename), then caller explicitly collects",
+    "discovery": "recursive regular files; links rejected; directory must exist",
+    "max_file_bytes": 1048576,
+    "max_run_bytes": 16777216,
+    "max_run_artifacts": 64,
+    "max_discovery_entries": 256,
+    "request": "v1 write envelope with expected_revision and relative_path",
+    "identity": "new artifact_id per new collect request; same request_id replays original receipt",
+    "storage": "immutable bytes in original Run managed evidence record; retained after stop and workspace cleanup"
+  },
+  "read": {
+    "selector": "run_id + artifact_id",
+    "encoding": "base64",
+    "digest": "sha256 of exact bytes",
+    "retention": "requires retained state-dir and resident service; no workspace required"
+  },
+  "git": {
+    "command": "workspace-git --run-id R",
+    "read_only": true,
+    "agent_calls": 0,
+    "resume_calls": 0,
+    "includes_untracked": true,
+    "coherence": "two identical porcelain v2 branch/status samples bracketing original workspace identity checks; fsmonitor/untracked cache disabled; detected changes yield unverified; transient change-and-revert between samples cannot be proven absent",
+    "unavailable": {
+      "verified": false,
+      "commit": null,
+      "clean": null,
+      "diagnostic": "reason"
+    }
+  },
+  "errors": {
+    "artifact_path_invalid": 2,
+    "artifact_limit_exceeded": 2,
+    "unsupported_capability": 3,
+    "workspace_unavailable": 4,
+    "artifact_unavailable": 4,
+    "workspace_source_unknown": 5,
+    "artifact_not_found": 5,
+    "artifact_changed": 5,
+    "artifact_integrity_failed": 5,
+    "stale_revision": 5,
+    "request_conflict": 5,
+    "request_outcome_unknown": 6
+  },
+  "examples": {
+    "collect": {
+      "protocol": "steerrunner-cli/v1",
+      "request_id": "collect-report-001",
+      "input": {
+        "expected_revision": 7,
+        "relative_path": "execution-001/report.json"
+      }
+    },
+    "discover": "artifacts discover --run-id R --json",
+    "list": "artifacts list --run-id R --json",
+    "read": "artifacts read --run-id R --artifact-id A --json",
+    "git": "workspace-git --run-id R --json"
+  }
+}
