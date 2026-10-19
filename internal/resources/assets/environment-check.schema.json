@@ -66,6 +66,51 @@
         "adapter",
         "target",
         "settings"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "target": {
+                "properties": {
+                  "kind": {
+                    "const": "orca_environment"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              }
+            },
+            "required": [
+              "target"
+            ]
+          },
+          "then": {
+            "properties": {
+              "settings": {
+                "properties": {
+                  "agent_launch": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "runtime_executable"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "runtime_sha256"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "publication": {
@@ -346,10 +391,18 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "runtime_id": { "type": "string" },
-        "terminal": { "type": "string" },
-        "terminal_incarnation": { "type": "string" },
-        "worktree_id": { "type": "string" },
+        "runtime_id": {
+          "type": "string"
+        },
+        "terminal": {
+          "type": "string"
+        },
+        "terminal_incarnation": {
+          "type": "string"
+        },
+        "worktree_id": {
+          "type": "string"
+        },
         "attempt_id": {
           "type": "string"
         },

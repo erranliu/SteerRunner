@@ -1,5 +1,7 @@
 # 沙箱认证准备与发布验收
 
+2026-10-19 范围修订（已实施，验收见专项记录）：新远端 `orca_environment` Run 按[仅 Orca Spec](orca-remote-native.spec.md)使用执行主机已有登录及代理权限，不要求 Runner broker、helper readiness 或同 app-server 确定性预检；不得将本节旧保证记作新路径通过。旧冻结 Run 与本地受管路径保留原规则，历史验收不重写。
+
 本次独立验收见 [acceptance](../acceptance/sandbox-authentication.md)，实施与测试映射见
 [Plan](sandbox-authentication.plan.md)。沿用 SteerLine
 `docs/product-design/worker-lifecycle.md` 的 W05–W07、W16、W18 和 E/V 规则；不新增状态机。

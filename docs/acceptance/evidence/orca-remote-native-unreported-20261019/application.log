@@ -1,0 +1,20 @@
+=== RUN   TestRAFeedbackSupersedesUnsent
+--- PASS: TestRAFeedbackSupersedesUnsent (5.71s)
+=== RUN   TestRAAuditLifecycle
+--- PASS: TestRAAuditLifecycle (11.89s)
+=== RUN   TestRAUnreportedOutcomeBoundary
+=== RUN   TestRAUnreportedOutcomeBoundary/unreported
+    workflow_test.go:200: public native outcome was promoted {[{1c5a3054a9ab7f9afe8d0dc223d0ff27d92889fabdcd37640232f7bd35e6b8e2 implementation {session 1fe9b723a8ea1b0b5199e20b38d85a57 original-turn attempt 1 c13569c26b17e30b37249a31678ae604c0ce6dcada72a49495a09c0deb0c9325} program satisfied [] [] [{outcome {session 1fe9b723a8ea1b0b5199e20b38d85a57 original-turn attempt 1 c13569c26b17e30b37249a31678ae604c0ce6dcada72a49495a09c0deb0c9325} native.final:last_nonempty_body_line program} {summary {session 1fe9b723a8ea1b0b5199e20b38d85a57 original-turn attempt 1 c13569c26b17e30b37249a31678ae604c0ce6dcada72a49495a09c0deb0c9325} native.final:last_nonempty_body_line program}] [{program {session 1fe9b723a8ea1b0b5199e20b38d85a57 original-turn attempt 1 c13569c26b17e30b37249a31678ae604c0ce6dcada72a49495a09c0deb0c9325} 1fe9b723a8ea1b0b5199e20b38d85a57  satisfied }]}] 0x245504c982c0 [] run 2  map[]   {development-audited 2 map[] <nil>} audit.code.execute running input_queued  true false  [{ spec   spec } { plan   plan }] { reviewer high  false attempt    session original-turn  false  } <nil> {false false true } <nil> 实施及必要验证已完成。 0x245504b98820 0001-01-01 00:00:00 +0000 UTC 2026-10-19 06:40:29.7460143 +0000 UTC}
+=== RUN   TestRAUnreportedOutcomeBoundary/unknown
+=== RUN   TestRAUnreportedOutcomeBoundary/failed
+=== RUN   TestRAUnreportedOutcomeBoundary/cancelled
+=== RUN   TestRAUnreportedOutcomeBoundary/business-blocked
+--- FAIL: TestRAUnreportedOutcomeBoundary (21.31s)
+    --- FAIL: TestRAUnreportedOutcomeBoundary/unreported (4.50s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unknown (5.54s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/failed (3.74s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/cancelled (3.67s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/business-blocked (3.85s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	42.093s
+FAIL

@@ -16,6 +16,9 @@ type stopProgress struct {
 // authorize the first close during reconciliation. A crash with no receipt or
 // a lost close response remains unknown; neither permits repeating an effect.
 func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.profile.Environment != "" {
+		return l.reconcileRemoteStop(ctx, r)
+	}
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	receipt.Operation.Receipt = nil
 	var saved b.LifecycleReceipt

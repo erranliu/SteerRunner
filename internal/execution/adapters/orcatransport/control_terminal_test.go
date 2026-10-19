@@ -30,7 +30,7 @@ type fixedControlFixture struct {
 
 func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
 	t.Helper()
-	l, f, s := fixtureOn(t, "paired-remote")
+	l, f, s := fixture(t)
 	f.callerFileWriter = func(path string, raw []byte) error {
 		rel, err := filepath.Rel(l.setup.RunDirectory, path)
 		if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {

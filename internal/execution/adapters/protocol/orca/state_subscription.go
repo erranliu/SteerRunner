@@ -66,7 +66,8 @@ func QueryState(ctx context.Context, environment, runtime, worktree string) (jso
 
 // QueryWorktreeAgents reads the public hook-store projection. Callers must
 // select and validate the exact original worktree/pane; the worktree's overall
-// status is not a main-agent completion fact.
+// status is not a main-agent completion fact. worktree.ps has a row limit, not a
+// cursor: expand to its reported total and accept only a complete snapshot.
 func QueryWorktreeAgents(ctx context.Context, environment, runtime string) (json.RawMessage, error) {
 	if runtime == "" {
 		return nil, errors.New("missing original Orca runtime")
@@ -78,5 +79,27 @@ func QueryWorktreeAgents(ctx context.Context, environment, runtime string) (json
 		return nil, err
 	}
 	defer socket.close()
-	return callState(ctx, socket, "worktree.ps", map[string]int{"limit": 100})
+	limit := 100
+	for attempt := 0; attempt < 3; attempt++ {
+		raw, err := callState(ctx, socket, "worktree.ps", map[string]int{"limit": limit})
+		if err != nil {
+			return nil, err
+		}
+		var page struct {
+			Worktrees  []json.RawMessage `json:"worktrees"`
+			TotalCount *int              `json:"totalCount"`
+			Truncated  *bool             `json:"truncated"`
+		}
+		if json.Unmarshal(raw, &page) != nil || page.TotalCount == nil || page.Truncated == nil || *page.TotalCount < len(page.Worktrees) {
+			return nil, errors.New("Orca main-agent query completeness unavailable")
+		}
+		if !*page.Truncated && *page.TotalCount == len(page.Worktrees) {
+			return raw, nil
+		}
+		if !*page.Truncated || *page.TotalCount <= limit {
+			return nil, errors.New("Orca main-agent query remains incomplete at requested limit")
+		}
+		limit = *page.TotalCount
+	}
+	return nil, errors.New("Orca main-agent query completeness not established within query budget")
 }

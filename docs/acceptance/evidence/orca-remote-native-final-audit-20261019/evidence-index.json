@@ -1,0 +1,198 @@
+{
+  "captured_at": "2026-10-19T07:28:02.501140+00:00",
+  "source_head": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "runner_sha256": "819d2079231b8fdd33f96f1264b3279e40896b1facd3eee8b761417f85d0d639",
+  "overall": "passed; 25 application and 24 consumer tests, 2 Controlled scenarios and real full-access closed loop; first 180s application budget failure retained",
+  "files": [
+    {
+      "path": "application-retry.log",
+      "sha256": "8cdce7371271f41d8acc8cf7a0f562260b6ca41ba0dd62f3eba7fe4bad933158",
+      "bytes": 5269
+    },
+    {
+      "path": "application.log",
+      "sha256": "517d0e411d8498d6d1fa8394acb9c97b0cada943863c37eb0d10af09ead6f1a7",
+      "bytes": 12818
+    },
+    {
+      "path": "bound-plan.md.txt",
+      "sha256": "da827a9084687d80dd1d0dae54054a14faff32213dfa1a20bccb8f965c58c5cf",
+      "bytes": 26819
+    },
+    {
+      "path": "bound-spec.md.txt",
+      "sha256": "31e8cebfa852f93ce12785887eb62ec4acd917f5c62837765eeea35e92ca49b7",
+      "bytes": 20054
+    },
+    {
+      "path": "consumer-source.json",
+      "sha256": "2cf2cff78dea183ad4204c1ff9eb6ad80aec5da2d2593f5a2f98006e6a69261e",
+      "bytes": 175321
+    },
+    {
+      "path": "consumer.log",
+      "sha256": "4bea2fd1f0faf5d3e97ae5296e01a6d01ea6ba27e3cb93a6bf6bdcd7809c5d8f",
+      "bytes": 7511
+    },
+    {
+      "path": "controlled-integration.log",
+      "sha256": "18f3a942965ab21b6e1415be69f806b29ead5f75cf240c23209cc88c641fd158",
+      "bytes": 1044
+    },
+    {
+      "path": "controlled-result.json",
+      "sha256": "bd5372d08477f9f7c1008c114b28f6adf1586e4698a2d496ec03025c7aad85ba",
+      "bytes": 214
+    },
+    {
+      "path": "controlled-source-identity.json",
+      "sha256": "1dc45d7f2209b57f10f746bd8cf8b129d2cd01e09d6e55bc32f551eade280ed0",
+      "bytes": 496
+    },
+    {
+      "path": "controlled-unit-foundation.log",
+      "sha256": "69435917da0031bdea5ce6f7ddfdc1f2bef3cc3033f2c802d2be41c552f047a5",
+      "bytes": 3689
+    },
+    {
+      "path": "core.log",
+      "sha256": "699f334e01c6d27dc30397f661009a5a4695829bdf6784f656b792ab3b56adcd",
+      "bytes": 520
+    },
+    {
+      "path": "full-610/caller-commands.jsonl",
+      "sha256": "966e2d3a3b82f722ddbf627221cdff5c88ed0aa9ce42ea023cce13c01449867d",
+      "bytes": 836016
+    },
+    {
+      "path": "full-610/cleanup-run.json",
+      "sha256": "a0e5086ab2b86f400d80010217f7b9dd24385d21a576ab5fc9d6875239c6e7b3",
+      "bytes": 13247
+    },
+    {
+      "path": "full-610/driver-commands.jsonl",
+      "sha256": "79fc821fca19090acf6e9df9a42dba7520cef056df222b244f364ff7116f225a",
+      "bytes": 5490
+    },
+    {
+      "path": "full-610/feedback-boundary.json",
+      "sha256": "0f1d687ea6f579f5c0b0b4098690dba5ec3b261357577e6d8d0f00b86aa7dca7",
+      "bytes": 138
+    },
+    {
+      "path": "full-610/feedback-rejected.json",
+      "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c",
+      "bytes": 219
+    },
+    {
+      "path": "full-610/latest-run.json",
+      "sha256": "22d3672968a5a2766ced8f5191a367f6010d6c1a7f879c5b86a5f628424a691c",
+      "bytes": 12755
+    },
+    {
+      "path": "full-610/manifest.json",
+      "sha256": "64cde1b16983d279a2276a8b6e1db6554e5c3d3fb1cf3ef1ba7bafdc3cbbe4f7",
+      "bytes": 2799
+    },
+    {
+      "path": "full-610/merged-run.json",
+      "sha256": "744734be824a96287f12d6278849cc16f2ec5d01de89f6fcb4872a52b4a3c9d5",
+      "bytes": 12797
+    },
+    {
+      "path": "full-610/native-call-audit.json",
+      "sha256": "fd771e755f7e6ec5f0c498eb11c8027bd0162c176eda4c255ab5dfb1d128d22d",
+      "bytes": 8932
+    },
+    {
+      "path": "full-610/native-calls.jsonl",
+      "sha256": "256058b3ca6c461e5f0bc4e34d3294ee5c0f6c11a8f6441a3e22f3f7119b0b05",
+      "bytes": 148246
+    },
+    {
+      "path": "full-610/native-launch-contract.json",
+      "sha256": "074a40b1316f529e6ce5ae7c078a792ac0c2eee10291579990f8372a21f491fc",
+      "bytes": 182
+    },
+    {
+      "path": "full-610/native.log",
+      "sha256": "35b6117d7b3e5540c96328bb8b2fe874eee494550a4bda9f14d8861897adee7b",
+      "bytes": 379
+    },
+    {
+      "path": "full-610/offline-stopped.json",
+      "sha256": "9ce6d37693edb828eba914c5099f016962ad0bd79fd6041e806389ec7832d3ea",
+      "bytes": 339
+    },
+    {
+      "path": "full-610/original-pr-ready.json",
+      "sha256": "22d3672968a5a2766ced8f5191a367f6010d6c1a7f879c5b86a5f628424a691c",
+      "bytes": 12755
+    },
+    {
+      "path": "full-610/original-terminal.json",
+      "sha256": "7879f336d3e4d09172fbd4722993c7ed46e2164d812b5e0fecb2c971b29f2885",
+      "bytes": 1553
+    },
+    {
+      "path": "full-610/preparation-call-summary.json",
+      "sha256": "5befbc954db0ebd0729b9d1f420d1e9ae2fbbbdd41d7586edda440801286949c",
+      "bytes": 2298
+    },
+    {
+      "path": "full-610/remote-terminal-before-stop.json",
+      "sha256": "c6d87758fe2b607b2165c238bc2885d31b78b6c1ef6c150d0c19d69858257578",
+      "bytes": 1554
+    },
+    {
+      "path": "full-610/result.json",
+      "sha256": "e44400396d84bed2e2d614ec0585dbf800c850ad9892c69541984fc93c5f8bf5",
+      "bytes": 129
+    },
+    {
+      "path": "full-610/scenario.json",
+      "sha256": "ae9e4ff28252dd5695073c2df29f8962f2c16eb1c8a9d93168c65af68689558f",
+      "bytes": 420
+    },
+    {
+      "path": "full-610/source-identity.json",
+      "sha256": "6b83f3b8da8628e407ad5fe11b99cbbefc906b5a390c6216e1572e883a105784",
+      "bytes": 473
+    },
+    {
+      "path": "full-boundary-proof.json",
+      "sha256": "27efcfd5b4ecd3e31ae4944aa6c785b40f151b6a1687112d665d50c0319ba495",
+      "bytes": 698
+    },
+    {
+      "path": "pr-610.json",
+      "sha256": "bbcb06a870b90037ca64dfefe5daba2c303e71e5edb3ca08a9ce8f4978a6dbb5",
+      "bytes": 314
+    },
+    {
+      "path": "runner-capabilities.json",
+      "sha256": "0249857262f89e82c0d6ff27e61c6b519c099543f6888835f79f172235c96f58",
+      "bytes": 150837
+    },
+    {
+      "path": "runner-source.json",
+      "sha256": "753e9b686c9433c5c12ceba68e189c4cef6f406bcec431f333d8e4460a479963",
+      "bytes": 81468
+    },
+    {
+      "path": "runner-version.json",
+      "sha256": "029181d47661f57c2db164d94b5d79c426e6a770db5967f8e61a56fa1315e090",
+      "bytes": 413
+    },
+    {
+      "path": "steerrunner.exe.build.json",
+      "sha256": "358ab16c708952796bcf9499f1b959caa2af59366fd1425e9d6dd59935e97032",
+      "bytes": 271
+    },
+    {
+      "path": "workflow.log",
+      "sha256": "e8c473a8374e7e078d02648bfe414165670effd896158135b0b15abd86e29002",
+      "bytes": 2313
+    }
+  ]
+}

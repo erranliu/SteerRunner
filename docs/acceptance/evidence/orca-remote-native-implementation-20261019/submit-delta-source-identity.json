@@ -1,0 +1,11 @@
+{
+  "pid": 28128,
+  "pattern": "^(TestSRNativeUnknownAndStop|TestSRResultAcquisition)$",
+  "runner_sha256": "EB8AF1DEB2811BB951DE35231FC2B06E21C61C1AB3AE1EB74E339479EC9B96BF",
+  "fixture_sha256": "63FD28313210E14EC833B657BBD93CAE21C6254A7A7ADA46924362FE7C6147CA",
+  "source_commit": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

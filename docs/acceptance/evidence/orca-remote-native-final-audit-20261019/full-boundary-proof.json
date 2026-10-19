@@ -1,0 +1,18 @@
+{
+  "case": "orca-remote.full-access/default",
+  "run_id": "3c871871de142d9b0684a5bab9d8e4d3",
+  "native_outcome": "unreported",
+  "final_verified": true,
+  "business_pr_ready_verified": true,
+  "feedback_rejected": true,
+  "native_inputs_before": 4,
+  "native_inputs_after": 4,
+  "same_head_merged": "03da1ac74ee4eaed28a827a9f95a11c7c6872234",
+  "merge_commit": "d5596d4e4f713d53fb1f42f6b51ff41dfe026838",
+  "only_dedicated_test_base": "codex/srtest/c8446c20ecbc/base",
+  "one_business_resource": true,
+  "helper_inspections": 0,
+  "offline_resources_settled": true,
+  "stop_evidence_scope": "orca_terminal",
+  "runner_sha256": "819d2079231b8fdd33f96f1264b3279e40896b1facd3eee8b761417f85d0d639"
+}

@@ -1,0 +1,12 @@
+{
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "app_version": "1.4.223",
+  "codex_executable": "C:/sr-runtime/2ba0/01/native/codex.exe",
+  "native_version_at_P0": "0.159.2",
+  "native_version_probe_repeated": false,
+  "requested_model": "gpt-6-luna",
+  "requested_effort": "high",
+  "requested_access": "full_access",
+  "effective_parameters_verified": false
+}

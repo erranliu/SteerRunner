@@ -1,0 +1,20 @@
+=== RUN   TestDeploymentRechecksFailedReceiptWithoutRestartOrRewrite
+project one.json startup: load configuration
+project one.json startup: validate state ownership
+project one.json startup: execution preflight
+project one.json startup: initialize native storage
+--- PASS: TestDeploymentRechecksFailedReceiptWithoutRestartOrRewrite (27.39s)
+=== RUN   TestDeploymentCandidateVerificationKeepsOriginalBinding
+--- PASS: TestDeploymentCandidateVerificationKeepsOriginalBinding (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/app	30.060s
+=== RUN   TestCLIExecutionProfileFlagRejectsUnrelatedActions
+=== RUN   TestCLIExecutionProfileFlagRejectsUnrelatedActions/check_-execution-profile_orca
+=== RUN   TestCLIExecutionProfileFlagRejectsUnrelatedActions/control_-action_resume_dispatch_-execution-profile_orca
+=== RUN   TestCLIExecutionProfileFlagRejectsUnrelatedActions/control_-action_start_task_-request-id_receipt_-execution-profile_orca
+--- PASS: TestCLIExecutionProfileFlagRejectsUnrelatedActions (0.00s)
+    --- PASS: TestCLIExecutionProfileFlagRejectsUnrelatedActions/check_-execution-profile_orca (0.00s)
+    --- PASS: TestCLIExecutionProfileFlagRejectsUnrelatedActions/control_-action_resume_dispatch_-execution-profile_orca (0.00s)
+    --- PASS: TestCLIExecutionProfileFlagRejectsUnrelatedActions/control_-action_start_task_-request-id_receipt_-execution-profile_orca (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/cmd/steerline	2.603s

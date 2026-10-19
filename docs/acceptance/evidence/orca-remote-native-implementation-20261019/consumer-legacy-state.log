@@ -1,0 +1,22 @@
+=== RUN   TestOrcaNativePublishedConfiguration
+--- PASS: TestOrcaNativePublishedConfiguration (0.01s)
+=== RUN   TestStoppedVerificationKeepsRunDiagnosticsAndGate
+--- PASS: TestStoppedVerificationKeepsRunDiagnosticsAndGate (1.63s)
+=== RUN   TestEnvironmentCheckPublishedContract
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_check_id
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/unverified_original
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_start_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/preparation_failure
+=== RUN   TestEnvironmentCheckPublishedContract/rejection_without_check
+=== NAME  TestEnvironmentCheckPublishedContract
+    environment_check_test.go:145: public contract check using an isolated idle service: version=0.2.0-dev.2 SHA=87DBF4FC2622171C9E7C2F4E670665A7E331EF6D8F33938090CE65985CCBDAF2 resource=c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f; no native Agent or permission success implied
+--- PASS: TestEnvironmentCheckPublishedContract (3.67s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_check_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/unverified_original (0.01s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_start_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/preparation_failure (0.01s)
+    --- PASS: TestEnvironmentCheckPublishedContract/rejection_without_check (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	6.339s

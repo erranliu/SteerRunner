@@ -140,7 +140,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	startupCancel()
 	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: p.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), External: process}, Session: b.SessionContext{ProjectID: "native-probe", ExecutionID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), WorkflowRunID: strings.Repeat("a", 32), SessionID: SessionID(process)}, ConfigurationDigest: "native-probe", ResourceGeneration: "native-probe", Workspace: b.WorkspaceIntent{Path: terminal.WorktreePath, Branch: strings.TrimPrefix(terminal.Branch, "refs/heads/")}}
 	raw, _ := json.Marshal(p)
-	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: "native-probe", ProfileID: "native", AcceptedConfigVersion: "native"}, raw)
+	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: NativeRemoteProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: "native-probe", ProfileID: "native", AcceptedConfigVersion: "native"}, raw)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -233,7 +233,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 		}
 		observer.Close(context.Background())
 		r, _, err = l.ObserveLifecycle(ctx, s)
-		if err != nil || r.TurnEvidence == nil || r.TurnEvidence.NativeOutcome != "unknown" {
+		if err != nil || r.TurnEvidence == nil || r.TurnEvidence.NativeOutcome != "unreported" {
 			t.Fatalf("native completed result provenance unverified: %v", err)
 		}
 		bind(&s, r)

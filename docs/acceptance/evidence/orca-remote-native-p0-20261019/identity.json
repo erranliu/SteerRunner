@@ -1,0 +1,15 @@
+{
+  "id": "p0-orca-native-20261019T034947Z-b81a5322",
+  "source_commit": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "created_at": "2026-10-19T03:49:47.191394+00:00",
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "repo_id": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+  "repository": "erranliu/SteerlineTest",
+  "base": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "native": "C:/sr-runtime/2ba0/01/native/codex.exe",
+  "model": "gpt-6-luna",
+  "effort": "high",
+  "access_mode": "full_access",
+  "orca": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe"
+}

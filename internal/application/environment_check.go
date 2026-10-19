@@ -117,6 +117,9 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 		if runtime.GOOS != "windows" {
 			return reject(contracts.Fail(3, "unsupported_platform", "Environment checks require Windows native permission evidence."))
 		}
+		if value.Execution.Adapter == "orca-terminal" && value.Execution.Target.Kind == "orca_environment" {
+			return reject(contracts.Fail(3, "unsupported_capability", "Full remote environment checks are unsupported; ordinary Orca native Runs use execution-host authentication."))
+		}
 		remote := value.Execution.Adapter == "orca-terminal"
 		if !remote && (value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local") {
 			return reject(contracts.Fail(3, "unsupported_capability", "Unsupported environment-check execution target."))
@@ -213,6 +216,10 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 		e.mu.Unlock()
 		return reject(contracts.Fail(5, "check_not_found", "Original check was not found."))
 	}
+	if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
+		e.mu.Unlock()
+		return reject(contracts.Fail(3, "unsupported_capability", "Legacy remote checks are read-only; no helper actor is restarted. Settle original resources with the original build or manually."))
+	}
 	if r.View.Revision != stop.ExpectedRevision {
 		e.mu.Unlock()
 		return reject(contracts.Fail(5, "stale_revision", "Check revision changed; inspect before submitting a new stop."))
@@ -250,6 +257,9 @@ func checkUnknown(r *runstate.CheckRecord) bool {
 }
 
 func (e *Engine) launchCheckLocked(id string) {
+	if r := e.checks[id]; r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
+		return
+	}
 	ctx, cancel := context.WithDeadline(e.ctx, e.checks[id].View.ExecutionDeadline)
 	w := &checkWorker{cancel: cancel, done: make(chan struct{})}
 	e.checkWorkers[id] = w
@@ -590,7 +600,7 @@ func (e *Engine) prepareCheckWorkspace(ctx context.Context, id string, w *checkW
 		if err != nil {
 			return err
 		}
-		port, err := orca.NewRemoteEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
+		port, err := orca.NewLocalTerminalEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
 		if err != nil {
 			return err
 		}
@@ -685,7 +695,7 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 	defer w.gate.Unlock()
 	r := e.checkSnapshot(id)
 	if w.port == nil && r.View.Input.Execution.Adapter == "orca-terminal" && r.Endpoint != "" && !r.View.Resources.WriterStopped {
-		port, err := orca.NewRemoteEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
+		port, err := orca.NewLocalTerminalEnvironmentSession(codex.RemoteCheckSetup{CheckID: id, Nonce: r.Nonce, Input: r.View.Input, ExecutionDeadline: r.View.ExecutionDeadline, CleanupDeadline: r.View.CleanupDeadline}, r.Endpoint)
 		if err == nil {
 			w.port = port
 		}
@@ -751,7 +761,7 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 
 	stopped := r.View.Resources.WriterStopped || r.NativeRoot == nil && !checkUnknown(r)
 	if w.port != nil {
-		if remote, ok := w.port.(*orca.RemoteEnvironmentSession); ok {
+		if remote, ok := w.port.(*orca.LocalTerminalEnvironmentSession); ok {
 			remote.SetCleanupScope(externalSettled)
 		}
 		index, err := e.checkIntent(id, "stop_original_writer", "", map[string]any{"process": r.NativeRoot, "owner": r.NativeOwner, "session_id": r.View.Actual.SessionID})
@@ -790,7 +800,7 @@ func (e *Engine) finishCheck(id string, w *checkWorker) {
 		})
 	}
 	localRemoved := r.View.Resources.LocalRemoved || (!r.DirectoryOwned && !checkUnknown(r))
-	if remote, ok := w.port.(*orca.RemoteEnvironmentSession); ok {
+	if remote, ok := w.port.(*orca.LocalTerminalEnvironmentSession); ok {
 		localRemoved = remote.LocalRemoved()
 	}
 	if stopped && externalSettled && r.DirectoryOwned && !localRemoved {

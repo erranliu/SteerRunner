@@ -189,7 +189,8 @@ func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time) bool {
 	if p.EndedAt == 0 {
 		p.EndedAt = s.MainAgent.StateStartedAt
 		p.LastSignal = now
-		p.Outcome = "unknown"
+		// Do not reinterpret any already persisted outcome, including unknown.
+		p.Outcome = "unreported"
 		if s.MainAgent.Outcome != "" {
 			p.Outcome = s.MainAgent.Outcome
 		}

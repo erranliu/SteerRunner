@@ -2,6 +2,7 @@ package orcatransport
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"strings"
 	"testing"
@@ -82,7 +83,7 @@ func TestOrcaNativeStateGate(t *testing.T) {
 	end := fixtureState(12, turn.Prompt, "done")
 	end.Observation = nil
 	end.LastAssistantMessage = `{"summary":"本轮结果","url":"https://example.com/pull/1"}`
-	if !turn.Native.query(end, &turn, now.Add(63*time.Second)) || turn.Native.Outcome != "unknown" || turn.Native.ReplyDigest == "" {
+	if !turn.Native.query(end, &turn, now.Add(63*time.Second)) || turn.Native.Outcome != "unreported" || turn.Native.ReplyDigest == "" {
 		t.Fatal("fresh native root end was not accepted independently of outcome")
 	}
 	if turn.Native.ReplyDigest != digest([]byte(end.LastAssistantMessage)) {
@@ -194,7 +195,7 @@ func TestOrcaNativeStateLifecycle(t *testing.T) {
 			instant = instant.Add(30 * time.Second)
 			f.lines = nil
 			r, _, err = settled(t, l, s)
-			if err != nil || r.TurnEvidence == nil || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.TurnEvidence.NativeOutcome != "unknown" {
+			if err != nil || r.TurnEvidence == nil || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.TurnEvidence.NativeOutcome != "unreported" {
 				t.Fatal("current complete ordinary reply did not settle", err)
 			}
 		})
@@ -401,5 +402,28 @@ func TestOrcaObserverDeliversNativeFinalWithoutScreen(t *testing.T) {
 		case <-ctx.Done():
 			t.Fatal(ctx.Err())
 		}
+	}
+}
+
+func TestOrcaNativeHistoricalUnknownRemainsUnknown(t *testing.T) {
+	now := time.Unix(100, 0).UTC()
+	turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
+	end := fixtureState(12, turn.Prompt, "done")
+	end.LastAssistantMessage = "original complete final"
+	if !turn.Native.query(end, &turn, now) || turn.Native.Outcome != "unreported" {
+		t.Fatal("new absent outcome was not distinguished", turn.Native)
+	}
+	// This is the persisted shape written by the previous implementation.
+	turn.Native.Outcome = "unknown"
+	raw, err := json.Marshal(turn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var restored Turn
+	if err = json.Unmarshal(raw, &restored); err != nil {
+		t.Fatal(err)
+	}
+	if !restored.Native.query(end, &restored, now.Add(time.Minute)) || restored.Native.Outcome != "unknown" || restored.Native.ReplyBody != end.LastAssistantMessage {
+		t.Fatal("historical outcome was reclassified", restored.Native)
 	}
 }

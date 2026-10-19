@@ -1,0 +1,77 @@
+package main
+
+import (
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+func main() {
+	root := os.Args[1]
+	var baseline struct {
+		Meta struct {
+			RuntimeID string `json:"runtimeId"`
+		} `json:"_meta"`
+		Result struct {
+			Worktrees []struct {
+				WorktreeID string `json:"worktreeId"`
+			} `json:"worktrees"`
+			TotalCount int  `json:"totalCount"`
+			Truncated  bool `json:"truncated"`
+		} `json:"result"`
+	}
+	b, err := os.ReadFile(filepath.Join(root, "before-limit100.json"))
+	if err != nil {
+		panic(err)
+	}
+	if json.Unmarshal(b, &baseline) != nil || baseline.Meta.RuntimeID != "f8616747-34af-4543-8487-ec6b5d8de4ff" {
+		panic("baseline identity invalid")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+	defer cancel()
+	raw, err := native.QueryWorktreeAgents(ctx, "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8", baseline.Meta.RuntimeID)
+	if err != nil {
+		panic(err)
+	}
+	if err = os.WriteFile(filepath.Join(root, "complete-native-query.json"), raw, 0600); err != nil {
+		panic(err)
+	}
+	var page struct {
+		Worktrees []struct {
+			WorktreeID string            `json:"worktreeId"`
+			Agents     []json.RawMessage `json:"agents"`
+		} `json:"worktrees"`
+		TotalCount int  `json:"totalCount"`
+		Truncated  bool `json:"truncated"`
+	}
+	if json.Unmarshal(raw, &page) != nil || page.Truncated || len(page.Worktrees) != page.TotalCount {
+		panic("incomplete snapshot")
+	}
+	seen := map[string]bool{}
+	for _, r := range baseline.Result.Worktrees {
+		seen[r.WorktreeID] = true
+	}
+	added := []string{}
+	candidates := []int{}
+	for i, r := range page.Worktrees {
+		if !seen[r.WorktreeID] {
+			added = append(added, r.WorktreeID)
+			if len(r.Agents) > 0 {
+				candidates = append(candidates, i)
+			}
+		}
+	}
+	digest := sha256.Sum256(raw)
+	report := map[string]any{"at": time.Now().UTC(), "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8", "runtime": baseline.Meta.RuntimeID, "baseline_rows": len(baseline.Result.Worktrees), "baseline_total": baseline.Result.TotalCount, "baseline_truncated": baseline.Result.Truncated, "complete_rows": len(page.Worktrees), "complete_total": page.TotalCount, "complete_truncated": page.Truncated, "previously_omitted_count": len(added), "previously_omitted_worktrees": added, "omitted_rows_with_agents": candidates, "raw_sha256": hex.EncodeToString(digest[:]), "remote_mutations": 0, "helper_calls": 0}
+	out, _ := json.MarshalIndent(report, "", "  ")
+	if err = os.WriteFile(filepath.Join(root, "coverage-result.json"), out, 0600); err != nil {
+		panic(err)
+	}
+	fmt.Println(string(out))
+}

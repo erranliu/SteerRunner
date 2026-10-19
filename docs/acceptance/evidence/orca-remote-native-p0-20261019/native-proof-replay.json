@@ -1,0 +1,33 @@
+{
+  "first": {
+    "pane": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc",
+    "provider": "01a15248-d08f-7d01-a69e-4bead299af30",
+    "base_root_at": 1792381875437,
+    "authority": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+    "incarnation": 2,
+    "revision": 7760,
+    "working_at": 1792381901095,
+    "root_working_at": 1792381901095,
+    "ended_at": 1792381903234,
+    "outcome": "unknown",
+    "reply_digest": "9ba2dec5767de5efde970b7ddf8e76299c069d4bbcc6bac8d887c72a57c8bfe6",
+    "reply_body": "P0_FIRST_b81a5322",
+    "last_signal": "2026-10-19T03:57:30.2103434Z",
+    "last_query": "2026-10-19T03:57:30.2103434Z",
+    "hint": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc:done:1792381903234:1792381903234",
+    "hint_pending": true
+  },
+  "passed": true,
+  "second_query_only": {
+    "pane": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc",
+    "provider": "01a15248-d08f-7d01-a69e-4bead299af30",
+    "base_root_at": 1792381903234,
+    "ended_at": 1792381934499,
+    "outcome": "unknown",
+    "reply_digest": "558d01a607fe96e7dcd918486190f7d4a4eac05963f7b5cc0c59723d904c843f",
+    "reply_body": "P0_SECOND_b81a5322",
+    "last_signal": "2026-10-19T03:57:30.2103434Z",
+    "last_query": "2026-10-19T03:57:30.2103434Z",
+    "hint": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc:done:1792381903234:1792381903234"
+  }
+}

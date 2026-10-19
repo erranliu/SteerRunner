@@ -1,0 +1,13 @@
+{
+  "checks": [],
+  "state_dir": "c:\\srt\\72376a133a73\\s",
+  "resources_settled": true,
+  "runs": [
+    {
+      "stop_evidence_scope": "orca_terminal",
+      "run_id": "f145884cb4f4bc9e6f5cbea14ade73b4",
+      "input_digest": "8c517e5ab9934540b86ba19ce569bdf97200b499af79d6ab1f8aa6e10c438d0a",
+      "resources_settled": true
+    }
+  ]
+}

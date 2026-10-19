@@ -1,0 +1,393 @@
+{
+  "captured_at": "2026-10-19T06:53:31.369534+00:00",
+  "source_head": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "runner_sha256": "29D44DF0315190FDD533E7AB091C9450ABF868E766F0A46985DE2045DEBFEF3A",
+  "overall": "passed_with_workflow_v2_feedback_rejection_and_orca_terminal_stop_scope",
+  "files": [
+    {
+      "path": "application-final.log",
+      "sha256": "2b1278eae610de6fa4e908eff71a2787b5988df3e0fc07cc5a91f6815c007da3",
+      "bytes": 764
+    },
+    {
+      "path": "application.log",
+      "sha256": "dbe3d729eecb6d26c849199b0c0e2fab0c3381cc6ed2ffd28eb463fcc1c33d26",
+      "bytes": 2175
+    },
+    {
+      "path": "bound-plan.md.txt",
+      "sha256": "5e6f3dc48f84a859a3f7bd9a3bb6da09d9128a7a9235c39f8a745f89c12c0dc3",
+      "bytes": 25642
+    },
+    {
+      "path": "bound-spec.md.txt",
+      "sha256": "35bcface6acfa283b926405aa1d567da76dd91d2738eca7eb4fbf0099edba5b5",
+      "bytes": 19793
+    },
+    {
+      "path": "consumer-public.log",
+      "sha256": "8761f1e9e71ebe51a039574681517fd207b35a6542060c59313ae3381a5f6a06",
+      "bytes": 8552
+    },
+    {
+      "path": "consumer-source.json",
+      "sha256": "ce0db1944e189724937ecb62f84ac105b48b1655933880c79f463d8cf6823b71",
+      "bytes": 175278
+    },
+    {
+      "path": "consumer.log",
+      "sha256": "a56db74f352ff81b51bcbb9b685b992a6ce7de0a9e55678f3c61657af359b07d",
+      "bytes": 1120
+    },
+    {
+      "path": "controlled-integration.log",
+      "sha256": "e047f9029eb30c7a4df2b7eb57d2e0592631aad3de8062dbd11d89f9420441a1",
+      "bytes": 88
+    },
+    {
+      "path": "controlled-result.json",
+      "sha256": "0d1d9d78e04785ce1bf6b1057d43023d05ef512bf38c066de613c2b40f9a595d",
+      "bytes": 214
+    },
+    {
+      "path": "controlled-source-identity.json",
+      "sha256": "32c28a673a4ec84d862edc5d3e2a96c065053e8d1e133b2452837ba5f7fcb812",
+      "bytes": 470
+    },
+    {
+      "path": "controlled-unit-foundation.log",
+      "sha256": "2b06efc784af4ddce89ca9a04a7c85f4d808568a4aa7a53185efd0897b6eba69",
+      "bytes": 3689
+    },
+    {
+      "path": "core.log",
+      "sha256": "f00b02d8a24fc97ee4bdec0fbdd1a4a1aa1e966f4b18cbe2b5a5f6884f2f0156",
+      "bytes": 298
+    },
+    {
+      "path": "full-600/caller-commands.jsonl",
+      "sha256": "626ccd9eb10160628bd0d738ac6d869392c85b856c616678356214ba67dc9308",
+      "bytes": 475586
+    },
+    {
+      "path": "full-600/cleanup-run.json",
+      "sha256": "4bdab0a8124990c58dbf0ccf4c1a00146a33f13440ae652cab7f982da41383c2",
+      "bytes": 12437
+    },
+    {
+      "path": "full-600/driver-commands.jsonl",
+      "sha256": "a57fb20db0ee594cd3a73b7b7b50597f76249902f83e5027cba88b2b1cb7687d",
+      "bytes": 5491
+    },
+    {
+      "path": "full-600/latest-run.json",
+      "sha256": "a29cb246429948dfd8705b6aa09a375a4cf6ee0160d6b404197d57aa58dd01fd",
+      "bytes": 11946
+    },
+    {
+      "path": "full-600/manifest.json",
+      "sha256": "61df8eff1637ccfe6402101fe04873dd27d4cadd9bc9738671c7df7ec82ea205",
+      "bytes": 2799
+    },
+    {
+      "path": "full-600/merged-run.json",
+      "sha256": "babe1482e714eb60b87b5bd1e632dedea83f27f5ad731568a81c08a384461b01",
+      "bytes": 11986
+    },
+    {
+      "path": "full-600/native-call-audit.json",
+      "sha256": "620407b7a9c6acc21f7596901d64cd79a5e9211854077d046c8dd8c4b8ad5719",
+      "bytes": 6826
+    },
+    {
+      "path": "full-600/native-calls.jsonl",
+      "sha256": "35e75ec75961817e78b73f38c372678878740cdf3e994cd67380e2b024223c07",
+      "bytes": 214542
+    },
+    {
+      "path": "full-600/native-launch-contract.json",
+      "sha256": "074a40b1316f529e6ce5ae7c078a792ac0c2eee10291579990f8372a21f491fc",
+      "bytes": 182
+    },
+    {
+      "path": "full-600/native.log",
+      "sha256": "4acbe1dacd19723ce86583ddcd040edee3f6c26bd68ef63f8187be7436cb5741",
+      "bytes": 379
+    },
+    {
+      "path": "full-600/offline-stopped.json",
+      "sha256": "39e7ac719473eb380b0aaebd82a52662592f47dcda5a1853382933a92e55dd5d",
+      "bytes": 339
+    },
+    {
+      "path": "full-600/original-pr-ready.json",
+      "sha256": "a29cb246429948dfd8705b6aa09a375a4cf6ee0160d6b404197d57aa58dd01fd",
+      "bytes": 11946
+    },
+    {
+      "path": "full-600/original-terminal.json",
+      "sha256": "ebb864456076a2ced61c05449bfdea0f4a66f2b1699fa2b0a7ef6d1d90bc2c87",
+      "bytes": 1527
+    },
+    {
+      "path": "full-600/preparation-call-summary.json",
+      "sha256": "1966687e7a23a5df6b89cdd3fd901b1acd0bba9e0d1bf2e6fb43ed6c0e989ab0",
+      "bytes": 3029
+    },
+    {
+      "path": "full-600/remote-terminal-before-stop.json",
+      "sha256": "2501eabd71deb147456561ef32bdf07c7517a87a7d2a63d9dbb6506166506017",
+      "bytes": 1528
+    },
+    {
+      "path": "full-600/result.json",
+      "sha256": "3197e38de0640670c6a46205be965686f6e46ddff0162ccbb13ba8762e97fa4d",
+      "bytes": 129
+    },
+    {
+      "path": "full-600/scenario.json",
+      "sha256": "6cd6424f5bd118008b712aef325889d909725bb5412ea88b2f659efe64490d22",
+      "bytes": 391
+    },
+    {
+      "path": "full-600/source-identity.json",
+      "sha256": "d8e952aca36ab983bc48bd25305071de1139087dfa13322caa77fa2e059e2948",
+      "bytes": 473
+    },
+    {
+      "path": "full-601/caller-commands.jsonl",
+      "sha256": "c1ca0b09b73f866e230bcb66d3e03fd1be85686f64ab99b85406669937d43022",
+      "bytes": 438458
+    },
+    {
+      "path": "full-601/cleanup-run.json",
+      "sha256": "0cb9c8042bbeb2323f0ea9492fcb035ce277d5d81b0d2d25b311735b64c93db5",
+      "bytes": 12346
+    },
+    {
+      "path": "full-601/driver-commands.jsonl",
+      "sha256": "ba0d5c126dd600a276e11355804aa395bdff86670bc2032ddf7220eb5a842053",
+      "bytes": 5492
+    },
+    {
+      "path": "full-601/feedback-boundary.json",
+      "sha256": "a910a862a691cbbbc51977d52dbf8fd59fd84ef7fc73bd6ab4f79e267f60b461",
+      "bytes": 138
+    },
+    {
+      "path": "full-601/feedback-rejected.json",
+      "sha256": "d4b299555c750b194a9aa25e62ba1c01af1070f56bd5f034b2525b76e234da8c",
+      "bytes": 219
+    },
+    {
+      "path": "full-601/latest-run.json",
+      "sha256": "0f74d6c5cc8fa25766ae62d5bc0b027788c7073ae19e38cd2c5049f075cc536d",
+      "bytes": 11854
+    },
+    {
+      "path": "full-601/manifest.json",
+      "sha256": "affd9c6f905aaf824a1f7d22c1e5087dde698eadca2068965dfc3907f04c658c",
+      "bytes": 2799
+    },
+    {
+      "path": "full-601/merged-run.json",
+      "sha256": "76ab798f40d042857ca17029c60ca7ef5bb1fd8f569c8c00fccdfe24a7f136bb",
+      "bytes": 11896
+    },
+    {
+      "path": "full-601/native-call-audit.json",
+      "sha256": "6e816b575efff7f52b9f4f32bf02255b027dc75b1f06221af83feaf336c6fefb",
+      "bytes": 6826
+    },
+    {
+      "path": "full-601/native-calls.jsonl",
+      "sha256": "b54812ef27078c620f178fa0e72bba89ec7685df7bd706d1d93407a6f2a9fd28",
+      "bytes": 106627
+    },
+    {
+      "path": "full-601/native-launch-contract.json",
+      "sha256": "074a40b1316f529e6ce5ae7c078a792ac0c2eee10291579990f8372a21f491fc",
+      "bytes": 182
+    },
+    {
+      "path": "full-601/native.log",
+      "sha256": "26b8ac919043658741f5e03bfaca9076e40cfa55a0cdcf5684c1e164b4fd60ca",
+      "bytes": 379
+    },
+    {
+      "path": "full-601/offline-stopped.json",
+      "sha256": "1472283b4e3683b11b8e52b091eeca5f834e6a0d61234b602018a01dff3eaff6",
+      "bytes": 339
+    },
+    {
+      "path": "full-601/original-pr-ready.json",
+      "sha256": "0f74d6c5cc8fa25766ae62d5bc0b027788c7073ae19e38cd2c5049f075cc536d",
+      "bytes": 11854
+    },
+    {
+      "path": "full-601/original-terminal.json",
+      "sha256": "fc22c9746085fa3f193872495c2ce329d2fb4fd5b262d762247c637ea45e0b23",
+      "bytes": 1548
+    },
+    {
+      "path": "full-601/preparation-call-summary.json",
+      "sha256": "5abacb180ba3cba4b996ff88bd87ef2fe4f34d4f988a4af2b064db1a8044f432",
+      "bytes": 2663
+    },
+    {
+      "path": "full-601/remote-terminal-before-stop.json",
+      "sha256": "bfa8560aecbf8ecf4dcb550f45b3edecfbcf889460a7c8c5864f6379ddeb6995",
+      "bytes": 1549
+    },
+    {
+      "path": "full-601/result.json",
+      "sha256": "a315f7a8f2199d559f39444edad7dfa2a588117bacf14b5e88295afd1d5d257f",
+      "bytes": 129
+    },
+    {
+      "path": "full-601/scenario.json",
+      "sha256": "b8d1a1e44a8c222854126aa74eb9310523d8f2f01741ec0983ea8baba34d7dc5",
+      "bytes": 420
+    },
+    {
+      "path": "full-601/source-identity.json",
+      "sha256": "a4913ac973ce131a91085b77fd04b09b99e32cf7145aa991579c37321106ca4a",
+      "bytes": 473
+    },
+    {
+      "path": "full-boundary-proof.json",
+      "sha256": "ca2abd9897c36b0be78f2f38e1ece69d364d588557171f530ef5f8f7dfdb990b",
+      "bytes": 697
+    },
+    {
+      "path": "orca-identity.json",
+      "sha256": "7833fae0b4f12a0f7c1f634e9549390bec30438b811ee25c13fc3a060f5e439f",
+      "bytes": 430
+    },
+    {
+      "path": "pr-600.json",
+      "sha256": "1c0e7e1a53036b08dc4ffe9f7b1aed174193e24bac7df806d7642ee5ca56fefa",
+      "bytes": 341
+    },
+    {
+      "path": "pr-601.json",
+      "sha256": "e5355c3735845de40a652749a0d941133a8f16bbb1e92b3d1767eb0721b23adf",
+      "bytes": 341
+    },
+    {
+      "path": "reliable-final.log",
+      "sha256": "1b1c002f54fc9e97f1b1bcbd3c3d803f910e8f30f998b3fb1dede8b23f78b043",
+      "bytes": 4891
+    },
+    {
+      "path": "runner-capabilities.json",
+      "sha256": "4878a6981adafebd401e6de3c772c716c67e6fef7733cd2a68a066a443dcd760",
+      "bytes": 65838
+    },
+    {
+      "path": "runner-source.json",
+      "sha256": "3fd11cc825b5d8a479ba641b745f536d2558ce4c85a9f377053a925eecb01f91",
+      "bytes": 81427
+    },
+    {
+      "path": "runner-version.json",
+      "sha256": "f0841fd58ec322da96092063bd1ef0c111cf6fa5b8141adfc4d3b6ce8ee905f3",
+      "bytes": 341
+    },
+    {
+      "path": "steerrunner.exe.build.json",
+      "sha256": "810608d356e75656cc02a7a58dae934d8367ff9e6772f5c8bfbf680f8854c556",
+      "bytes": 271
+    },
+    {
+      "path": "stop-active/active-verification-refused.json",
+      "sha256": "5d0c678536958318871405c75d749a0bb90bc19e86de4a725d43cba95e1f6c01",
+      "bytes": 225
+    },
+    {
+      "path": "stop-active/caller-commands.jsonl",
+      "sha256": "d89fc5f8415498ac1b35d6f09cd7aeb25505097c25481a7a21af146aa40086b1",
+      "bytes": 97307
+    },
+    {
+      "path": "stop-active/cleanup-run.json",
+      "sha256": "2d9416997de17f2645a087ac4981e77d6c6b047f22b055e0e770f4037c15ad9a",
+      "bytes": 4052
+    },
+    {
+      "path": "stop-active/cleanup.json",
+      "sha256": "ceae63c442b34591e06795a26064da7139c568c2eb510986da7dddbb2a7a6b17",
+      "bytes": 120
+    },
+    {
+      "path": "stop-active/driver-commands.jsonl",
+      "sha256": "9b9f3e97ac3cc1885092468c6b0470cdff9897a57c10da5be6cb44887fec0ee1",
+      "bytes": 220
+    },
+    {
+      "path": "stop-active/faults.jsonl",
+      "sha256": "82f9a305879b58673756b4f3384614dc2197e30aee2ecc65b30e3af03d3066d2",
+      "bytes": 124468
+    },
+    {
+      "path": "stop-active/latest-run.json",
+      "sha256": "2d9416997de17f2645a087ac4981e77d6c6b047f22b055e0e770f4037c15ad9a",
+      "bytes": 4052
+    },
+    {
+      "path": "stop-active/manifest.json",
+      "sha256": "008c4fa39eae0ea2fa7d552d60cc56806c6b7847f80ce988a17e8a888f247d3d",
+      "bytes": 3816
+    },
+    {
+      "path": "stop-active/native-calls.jsonl",
+      "sha256": "492167bf94f7f5b7d9041dd33eaedb22c0757f2ddcb9eae1eb546ec8fd299e0a",
+      "bytes": 82837
+    },
+    {
+      "path": "stop-active/native-launch-contract.json",
+      "sha256": "d7dc2c6cf76782312264bd7e5884f3aade572ecc9509eea1e7e44c89799bb461",
+      "bytes": 161
+    },
+    {
+      "path": "stop-active/native-resource-audit.json",
+      "sha256": "53e0937425cd52475a9870c203e164c6ec6ce02a14208a38a59217adade30602",
+      "bytes": 152
+    },
+    {
+      "path": "stop-active/native.log",
+      "sha256": "947ce5a55e120a150810ff4509421cb817c0cae97f1b51b7f0237fe49df4bf41",
+      "bytes": 201
+    },
+    {
+      "path": "stop-active/offline-stopped.json",
+      "sha256": "020dc7e659ed93b55fe7c6bb7881099e3ff8048fe11b1145551790ed9db1f625",
+      "bytes": 339
+    },
+    {
+      "path": "stop-active/pr-list.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2
+    },
+    {
+      "path": "stop-active/preparation-call-summary.json",
+      "sha256": "44b53eae72d2d7cdb9a5aef39fa60fb603974299a5754fd39928703b6abb54ee",
+      "bytes": 2663
+    },
+    {
+      "path": "stop-active/result.json",
+      "sha256": "5c91e47e90136808fd0dd5f0048c25d2af0762fda01f8010eff5335c9d2612cd",
+      "bytes": 129
+    },
+    {
+      "path": "stop-active/scenario.json",
+      "sha256": "100cf9b4591c550fe7d20a6f5fa8c044851e1bc67dde4056a1535cd0a348231a",
+      "bytes": 2359
+    },
+    {
+      "path": "stop-active/source-identity.json",
+      "sha256": "4a1e3c58d72afc5c458ad0b595e2a0f2dbbe02644485a37495c2eae1974f5fe6",
+      "bytes": 789
+    }
+  ]
+}

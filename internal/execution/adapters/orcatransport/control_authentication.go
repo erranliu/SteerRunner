@@ -27,6 +27,9 @@ func validateAuthenticationStop(ready codex.RemoteReadiness, proof codex.RemoteA
 // ReadAuthenticationStopEvidence only reads bound original transport evidence.
 func ReadAuthenticationStopEvidence(directory string, snapshot b.LifecycleSnapshot, state State) (codex.RemoteAuthenticationCleanup, ControlClosure, error) {
 	var empty codex.RemoteAuthenticationCleanup
+	if snapshot.Ref.Target.ExternalRuntime != "" || snapshot.Ref.Target.ExecutionHost != "local" {
+		return empty, ControlClosure{}, errors.New("helper authentication proof is local only")
+	}
 	if state.RemoteReadiness == nil || state.Control == nil {
 		return empty, ControlClosure{}, errAuthenticationProofUnverified
 	}

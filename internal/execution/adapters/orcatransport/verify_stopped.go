@@ -34,6 +34,12 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 	if err = l.client.VerifyTerminalStopped(ctx, state.Process); err != nil {
 		return err
 	}
+	if l.profile.Environment != "" {
+		if l.StopEvidenceScope() == "" {
+			return errors.New("legacy remote helper settlement cannot be established by terminal absence")
+		}
+		return ctx.Err()
+	}
 	if l.profile.Terminal == nil {
 		if err = l.verifyCodexExit(ctx, state, s.Workspace.Path); err != nil {
 			return err
@@ -54,6 +60,9 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 }
 
 func (l *Lifecycle) codexReadiness(state State, workspace string) (codex.RemoteReadiness, error) {
+	if l.profile.Environment != "" {
+		return codex.RemoteReadiness{}, errors.New("helper writer-tree verification is local only")
+	}
 	r := state.RemoteReadiness
 	if r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.RuntimeSHA256 == "" || r.RuntimeSHA256 != l.profile.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || !codex.ValidNativeID(r.SessionID) || r.Workspace == "" || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) || r.Repository == "" || r.Repository != l.setup.RepositoryURL || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.Process.Executable == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Owner.Executable == "" || r.CheckedAt.IsZero() || state.TerminalOwner != nil || state.TerminalReadiness != nil {
 		return codex.RemoteReadiness{}, errors.New("original Codex native exit binding is incomplete; PTY exit is insufficient")

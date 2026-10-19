@@ -406,9 +406,9 @@
               "primary": {
                 "agent": "codex",
                 "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex",
+                "configuration": "orca-remote-codex-full-access",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -690,60 +690,6 @@
                 "agent": "codex",
                 "target_kind": "local",
                 "adapter": "codex-app-server"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "environment-check.orca-sandbox",
-      "level": "L3",
-      "driver": "environment-check",
-      "target": "orca-environment",
-      "timeout_minutes": 15,
-      "cases": [
-        {
-          "outcome": "checked",
-          "id": "complete",
-          "requirements": {
-            "operation": "environment-check start",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "access_mode": "sandbox",
-                "configuration": "orca-remote-codex",
-                "agent": "codex",
-                "target_kind": "orca_environment",
-                "adapter": "orca-terminal"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "environment-check.orca-full-access",
-      "level": "L3",
-      "driver": "environment-check",
-      "target": "orca-environment",
-      "timeout_minutes": 15,
-      "cases": [
-        {
-          "outcome": "checked",
-          "id": "complete",
-          "requirements": {
-            "operation": "environment-check start",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "access_mode": "full_access",
-                "configuration": "orca-remote-codex-full-access",
-                "agent": "codex",
-                "target_kind": "orca_environment",
-                "adapter": "orca-terminal"
               }
             },
             "admin": false

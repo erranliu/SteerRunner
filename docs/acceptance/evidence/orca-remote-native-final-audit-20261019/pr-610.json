@@ -1,0 +1,10 @@
+{
+  "baseRefName": "codex/srtest/c8446c20ecbc/base",
+  "headRefOid": "03da1ac74ee4eaed28a827a9f95a11c7c6872234",
+  "mergeCommit": {
+    "oid": "d5596d4e4f713d53fb1f42f6b51ff41dfe026838"
+  },
+  "mergedAt": "2026-10-19T07:19:17Z",
+  "state": "MERGED",
+  "url": "https://github.com/erranliu/SteerlineTest/pull/610"
+}

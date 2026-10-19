@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-19T04:10:25.096027Z",
+  "baseline_rows": 100,
+  "baseline_total": 272,
+  "baseline_truncated": true,
+  "complete_rows": 273,
+  "complete_total": 273,
+  "complete_truncated": false,
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "helper_calls": 0,
+  "omitted_rows_with_agents": [
+    167,
+    168,
+    272
+  ],
+  "previously_omitted_count": 173,
+  "raw_sha256": "18d27067881847b97c42c3eaf33f001f2dff8c5279ff4202bb5d3caed0bfc5c1",
+  "remote_mutations": 0,
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "example_previously_omitted_worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8b4b13ee4a905573a325a61b9f9ef31b",
+  "omitted_worktree_ids_sha256": "4e3648141778121f56e45b72292e1361ec7a989650c453d30e3d404a3ff5e79a",
+  "note": "Baseline and fixed reads are separate snapshots; concurrent external creation changed total from 272 to 273. No row bodies from unrelated workspaces are published."
+}

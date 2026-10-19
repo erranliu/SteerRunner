@@ -1,0 +1,27 @@
+{
+  "working_before_close": true,
+  "close": {
+    "close": {
+      "handle": "term_99c03428-89fe-4c75-aec4-cb635a205cd2",
+      "tabId": "fa7d55dd-fae4-4f41-a046-a37c71cab794",
+      "ptyKilled": true
+    }
+  },
+  "inventory": {
+    "terminals": [],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": []
+    },
+    "topologyRevisions": {},
+    "totalCount": 0,
+    "truncated": false
+  },
+  "scope": "orca_terminal",
+  "confirmed_absent": true,
+  "full_native_tree_verified": false,
+  "credentials_revoked": false,
+  "at": "2026-10-19T03:58:16.475858+00:00"
+}

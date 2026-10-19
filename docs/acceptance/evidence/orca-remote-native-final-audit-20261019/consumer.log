@@ -1,0 +1,110 @@
+=== RUN   TestOrcaNativePublishedConfiguration
+--- PASS: TestOrcaNativePublishedConfiguration (0.02s)
+=== RUN   TestRunnerPresetFreeze
+=== RUN   TestRunnerPresetFreeze/reject_replacement_between_status_and_dispatch
+--- PASS: TestRunnerPresetFreeze (0.96s)
+    --- PASS: TestRunnerPresetFreeze/reject_replacement_between_status_and_dispatch (0.96s)
+=== RUN   TestStoppedVerificationKeepsRunDiagnosticsAndGate
+--- PASS: TestStoppedVerificationKeepsRunDiagnosticsAndGate (1.37s)
+=== RUN   TestRunnerWorkflowContract
+=== RUN   TestRunnerWorkflowContract/ordinary
+=== RUN   TestRunnerWorkflowContract/audit_inherit_effort
+=== RUN   TestRunnerWorkflowContract/audit_explicit_effort
+=== RUN   TestRunnerWorkflowContract/missing_audit
+=== RUN   TestRunnerWorkflowContract/audit_on_plain
+=== RUN   TestRunnerWorkflowContract/unknown_version
+=== RUN   TestRunnerWorkflowContract/unknown_override
+=== RUN   TestRunnerWorkflowContract/explicit_null_audit
+=== RUN   TestRunnerWorkflowContract/explicit_null_effort
+=== RUN   TestRunnerWorkflowContract/explicit_null_overrides
+--- PASS: TestRunnerWorkflowContract (0.01s)
+    --- PASS: TestRunnerWorkflowContract/ordinary (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_inherit_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_explicit_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/missing_audit (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_on_plain (0.00s)
+    --- PASS: TestRunnerWorkflowContract/unknown_version (0.00s)
+    --- PASS: TestRunnerWorkflowContract/unknown_override (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_audit (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_overrides (0.00s)
+=== RUN   TestRunnerNativeOutcomeContract
+--- PASS: TestRunnerNativeOutcomeContract (0.00s)
+=== RUN   TestEnvironmentCheckCLIContract
+--- PASS: TestEnvironmentCheckCLIContract (0.31s)
+=== RUN   TestEnvironmentCheckPublishedContract
+=== RUN   TestEnvironmentCheckPublishedContract/unverified_original
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/rejection_without_check
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_check_id
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_start_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/preparation_failure
+=== NAME  TestEnvironmentCheckPublishedContract
+    environment_check_test.go:145: public contract check using an isolated idle service: version=0.2.0-dev.2 SHA=819D2079231B8FDD33F96F1264B3279E40896B1FACD3EEE8B761417F85D0D639 resource=c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f; no native Agent or permission success implied
+--- PASS: TestEnvironmentCheckPublishedContract (4.09s)
+    --- PASS: TestEnvironmentCheckPublishedContract/unverified_original (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/rejection_without_check (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_check_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_start_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/preparation_failure (0.00s)
+=== RUN   TestEnvironmentCheckPublishedSamples
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_stop_request_id
+=== RUN   TestEnvironmentCheckPublishedSamples/rejection_without_check
+=== RUN   TestEnvironmentCheckPublishedSamples/unverified_original
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_check_id
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_start_request_id
+=== RUN   TestEnvironmentCheckPublishedSamples/preparation_failure
+--- PASS: TestEnvironmentCheckPublishedSamples (0.02s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_stop_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/rejection_without_check (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/unverified_original (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_check_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_start_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/preparation_failure (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	8.352s
+=== RUN   TestEnvironmentCheckStoreCASAndIsolation
+--- PASS: TestEnvironmentCheckStoreCASAndIsolation (0.15s)
+=== RUN   TestRunnerActorUsesHostScheduler
+--- PASS: TestRunnerActorUsesHostScheduler (0.17s)
+=== RUN   TestRunnerActorBindsReceiptToOriginalHostFile
+=== RUN   TestRunnerActorBindsReceiptToOriginalHostFile/same
+=== RUN   TestRunnerActorBindsReceiptToOriginalHostFile/changed
+--- PASS: TestRunnerActorBindsReceiptToOriginalHostFile (0.19s)
+    --- PASS: TestRunnerActorBindsReceiptToOriginalHostFile/same (0.11s)
+    --- PASS: TestRunnerActorBindsReceiptToOriginalHostFile/changed (0.08s)
+=== RUN   TestRunnerCandidateReadErrors
+--- PASS: TestRunnerCandidateReadErrors (0.04s)
+=== RUN   TestRunnerCandidateReservationAndProjection
+--- PASS: TestRunnerCandidateReservationAndProjection (0.24s)
+=== RUN   TestRunnerControlRecoversCommittedStartAfterReceiptLoss
+--- PASS: TestRunnerControlRecoversCommittedStartAfterReceiptLoss (0.22s)
+=== RUN   TestRunnerDiscardRequiresCompleteFreshPRSetAndAtomicStops
+--- PASS: TestRunnerDiscardRequiresCompleteFreshPRSetAndAtomicStops (0.29s)
+=== RUN   TestRunnerDispatchReceiptAndAuthorityCommitTogether
+--- PASS: TestRunnerDispatchReceiptAndAuthorityCommitTogether (0.19s)
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/activity_stream_stays_pinned_and_releases_its_connection
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/cancelled_activity_stream_releases_its_transaction
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/readable_changes_survive_technical_event_noise
+--- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding (0.35s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/activity_stream_stays_pinned_and_releases_its_connection (0.05s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/cancelled_activity_stream_releases_its_transaction (0.00s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/readable_changes_survive_technical_event_noise (0.04s)
+=== RUN   TestRunnerTaskDeliveryWithoutWorkflowReady
+--- PASS: TestRunnerTaskDeliveryWithoutWorkflowReady (0.41s)
+=== RUN   TestRunnerPresetFreeze
+--- PASS: TestRunnerPresetFreeze (0.75s)
+=== RUN   TestRunnerApplicationSnapshotSharesTransactionAcrossWriterCommit
+--- PASS: TestRunnerApplicationSnapshotSharesTransactionAcrossWriterCommit (0.31s)
+=== RUN   TestRunnerCandidateStopAtomicityAndReplay
+--- PASS: TestRunnerCandidateStopAtomicityAndReplay (0.53s)
+=== RUN   TestRunnerCandidateStopConcurrentLastParticipant
+--- PASS: TestRunnerCandidateStopConcurrentLastParticipant (0.18s)
+=== RUN   TestRunnerCandidateStopDeliveryRace
+--- PASS: TestRunnerCandidateStopDeliveryRace (0.25s)
+=== RUN   TestRunnerControlStopRecoversOnlyOriginalWithdrawal
+--- PASS: TestRunnerControlStopRecoversOnlyOriginalWithdrawal (0.35s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/storage/sqlite	6.475s

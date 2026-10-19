@@ -33,8 +33,15 @@ func ConfigurationSchemas() json.RawMessage {
 		if adapter == "orca-terminal" {
 			target = map[string]any{"oneOf": []any{local, remote}}
 		}
-		choices = append(choices, map[string]any{"type": "object", "required": []string{"adapter", "target", "settings"}, "additionalProperties": false,
-			"properties": map[string]any{"adapter": map[string]any{"const": adapter}, "target": target, "settings": adapters[adapter]}})
+		choice := map[string]any{"type": "object", "required": []string{"adapter", "target", "settings"}, "additionalProperties": false,
+			"properties": map[string]any{"adapter": map[string]any{"const": adapter}, "target": target, "settings": adapters[adapter]}}
+		if adapter == "orca-terminal" {
+			choice["allOf"] = []any{map[string]any{
+				"if":   map[string]any{"properties": map[string]any{"target": remote}},
+				"then": map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"github_auth": map[string]any{"type": "null"}, "agent_launch": map[string]any{"not": map[string]any{"anyOf": []any{map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}}}}}}},
+			}}
+		}
+		choices = append(choices, choice)
 	}
 	rules := []any{}
 	for _, profile := range workflow.Catalog() {

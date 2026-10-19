@@ -211,7 +211,7 @@ func TestOrcaCompletionQuery(t *testing.T) {
 			}
 			if positive {
 				state, err := l.state(s)
-				if err != nil || turnFor(&state, input.CommandID).Native.WorkingAt != 0 || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.TurnEvidence.NativeOutcome != "unknown" {
+				if err != nil || turnFor(&state, input.CommandID).Native.WorkingAt != 0 || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.TurnEvidence.NativeOutcome != "unreported" {
 					t.Fatal("completion invented working, changed body or outcome", err)
 				}
 				queries := feed.queries

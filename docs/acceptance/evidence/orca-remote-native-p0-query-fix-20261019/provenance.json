@@ -1,0 +1,61 @@
+{
+  "base_commit": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "dirty": true,
+  "production_changes_since_first_p0": [
+    "internal/execution/adapters/protocol/orca/state_subscription.go",
+    "scripts/test.ps1"
+  ],
+  "source_sha256": {
+    "internal/execution/adapters/protocol/orca/state_subscription.go": "1f38bb2e42e692140a2eff6716d7193cde5cc8da20d06b26a0cc2c29c65b67c4",
+    "internal/execution/adapters/protocol/orca/state_query_coverage_windows_test.go": "e65010a586949d97ba11aced16c41d99e020df0ba369a1f4f3e8f41b13617a0a",
+    "internal/execution/adapters/protocol/orca/state_local_windows_test.go": "9103415350d15d68b0bf59d43d6ce1539a862d57a4acc4a5274742747182a583",
+    "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go": "60433f425f111de63626365d2c805fd6178af8dd997671d0038ae7bae55784b7",
+    "internal/execution/adapters/protocol/orca/state_stream_test.go": "6302666e7b8d669b9a67e46f1876b1d2dc76549a8705c9edb47ff985e730eae8",
+    "internal/execution/adapters/orcatransport/local_connection_windows_test.go": "173b8d3db94f55c8e6bce06a2d6975a96393302436966f2abadde0fd5484dffe",
+    "go.mod": "62589716fb240181a0084d2e6ac6531a770bd4c2bba5f0b84f7547bc3c92654a",
+    "go.sum": "83bc5c28e724fbd9ef507b94c86c807efc02867d57e50e37eb67528341bc3022",
+    "internal/testkit/livetest/diagnostic_test.go": "cd5b0f973ac6bf38f43d3fdc9021cc58ba8e31989bac4c70b29fe48374c12e32",
+    "scripts/test.ps1": "ad120793fcccdd4e0bb51c60ff0743f3363a6475ed45593d340d65880b749d02",
+    "internal/host/orca_native_test.go": "f6d7c23e1a6813bac075706a71ccf6119c226e5fc08397fc6b91ee067c28eec5"
+  },
+  "probe_binary_sha256": "69654b5c7538078f8b9f960b032b0d9bccd45137d1e3262ccb4b77b79cfd624d",
+  "raw_directory": "C:\\Users\\lmas1\\.codex\\worktrees\\ee21\\SteerRunner\\.evidence\\p0-query-fix-20261019T040820Z",
+  "raw_files_sha256": {
+    "before-limit100.json": "6046aeb4c8fb875fe4b586bb30e7d7b3e8c49fce56e67f0559737c2c065c09c6",
+    "complete-native-query.json": "18d27067881847b97c42c3eaf33f001f2dff8c5279ff4202bb5d3caed0bfc5c1",
+    "coverage-probe.go": "dec811499809002fd70cfc4ea8c30f08931cc0cbb20d96956848893ec42607ec",
+    "coverage-result.json": "d1778e6b7e7b35c4a40bf2f9fa9b4397a3bdd6bf326d93b3c6a0884ea1ab87fa",
+    "go-test-after-fixture.log": "c32b7df3c36bfc0b4e67683c5014f595eb900ddf5d2e2dcbab07466b747add42",
+    "go-test.log": "e4af66a3208a3cba1e3ee975dc83b74f957c4b0750f4c4fd3434e6bb24374d92",
+    "inventory-fixture-recheck.log": "6089a47d8b5a0110da7af2827bfa47acde004999f437e66ed306287afa46fa65",
+    "l1/summary.json": "1aad238441be058b9c6117aa4b3ae9e8174996228247b00b668960c6f811e3ac",
+    "l1/l1.jsonl": "739101193ecaf1d782123ebd1eb06ba62f406c859716286e9f4cf003aeffc29f",
+    "l1/terminal-extensions.tap": "d2e07c41dcff8d85177548db8a147394c63a728f8bc4a77ec541b886118f1a52",
+    "l1/native-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "l1/native-compile-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "l1-after-fixture/summary.json": "30e2bb6e5b8967a333a40453c7ec314301eaa3c12c53dc2c4f50ba7d16e3ebd7",
+    "l1-after-fixture/l1.jsonl": "5912234cf24d6a2b1ec50d6ee596a9174c0019813a2ee0dc19d9ac676d2c2330",
+    "l1-after-fixture/terminal-extensions.tap": "df19c2a3cd7af5683aa43411f4760b55fcd9d31d9f1e8277fccde95955024a01",
+    "l1-after-fixture/native-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "l1-after-fixture/native-compile-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "l1-final/summary.json": "219fa9e3c61950c617a92f966bb43ee7615b1da30cf4b1ff16ab0a37f941b9f8",
+    "l1-final/l1.jsonl": "98ed6cc1743165a1d0b51aac4362738c7cf0a8e1165c603f7f6c1ab6d98ef4c8",
+    "l1-final/terminal-extensions.tap": "d425b37484553b96c03997d9a28c8c42e4faf458eadbdef4be9a5c3ee8c80a27",
+    "l1-final/native-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "l1-final/native-compile-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runtime_code_changes": [
+    "internal/execution/adapters/protocol/orca/state_subscription.go"
+  ],
+  "test_launcher_changes": [
+    "scripts/test.ps1: add the existing explicitly opt-in stop probe to the exact allowed-skip list; no live execution enabled"
+  ],
+  "final_check": {
+    "status": "passed",
+    "top_level_go_tests": 310,
+    "extension_tests": 28,
+    "native_driver_compile_exit": 0,
+    "native_zero_match_guard": true,
+    "live_opt_in_skips_are_not_native_passes": true
+  }
+}

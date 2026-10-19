@@ -30,7 +30,21 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 		return
 	}
 	if m.Execution.Adapter != "codex-app-server" {
-		auditRemoteWorker(t, m, run)
+		if m.Execution.Target.Kind == "orca_environment" {
+			var settings contracts.OrcaSettings
+			if contracts.ValidateExecution(m.Execution) != nil || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable != "" || settings.AgentLaunch.RuntimeSHA256 != "" {
+				t.Fatal("native remote launch contract differs")
+			}
+			raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
+			facts, auditErr := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(m))
+			if readErr != nil || auditErr != nil || !facts.Complete || facts.Creations != 1 || facts.Inspections != 0 {
+				t.Fatal("native remote call audit failed", readErr, auditErr, facts)
+			}
+			save(t, "native-call-audit.json", facts)
+			save(t, "native-launch-contract.json", map[string]any{"requested_model": settings.AgentLaunch.Model, "requested_reasoning_effort": settings.AgentLaunch.ReasoningEffort, "requested_access_mode": settings.AccessMode, "effective_parameters_verified": false, "helper_calls": 0})
+		} else {
+			auditLocalCodexWorker(t, m, run)
+		}
 		return
 	}
 	var settings contracts.CodexSettings
@@ -186,7 +200,7 @@ func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunVie
 	save(t, settings.AgentName()+"-native-permission-audit.json", map[string]any{"readiness": ready, "owner": owner, "qualified_turns": qualified, "os_job_reattached": true})
 }
 
-func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
+func auditLocalCodexWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
 	t.Helper()
 	var settings contracts.OrcaSettings
 	if json.Unmarshal(m.Execution.Settings, &settings) != nil || settings.AgentLaunch.RuntimeExecutable == "" {
@@ -215,7 +229,7 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 	if err != nil {
 		t.Fatal(err)
 	}
-	original := b.ProcessIdentity{RuntimeID: runtime, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
+	original := b.ProcessIdentity{ExecutionHost: "local", RuntimeID: runtime, Terminal: parts[0], Incarnation: parts[1], WorktreeID: term.WorktreeID}
 	raw, err := orca.QueryState(ctx, m.Execution.Target.Environment, runtime, "id:"+original.WorktreeID)
 	if err != nil {
 		t.Fatal(err)
@@ -224,7 +238,7 @@ func auditRemoteWorker(t *testing.T, m livetest.Manifest, run contracts.RunView)
 	if err != nil {
 		t.Fatal(err)
 	}
-	audit, err := livetest.RemotePermissionAudit(ctx, client, original, settings.AgentLaunch.RuntimeExecutable, run.Execution.Workspace, state.ProviderSession.ID)
+	audit, err := livetest.LocalPermissionAudit(ctx, client, original, settings.AgentLaunch.RuntimeExecutable, run.Execution.Workspace, state.ProviderSession.ID)
 	save(t, "remote-worker-permission-audit.json", audit)
 	if err != nil {
 		t.Fatal(err)

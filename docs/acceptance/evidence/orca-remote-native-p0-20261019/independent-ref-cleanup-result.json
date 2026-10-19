@@ -1,0 +1,12 @@
+{
+  "base": {
+    "exit": 1,
+    "status": "404",
+    "absent": true
+  },
+  "head": {
+    "exit": 1,
+    "status": "404",
+    "absent": true
+  }
+}

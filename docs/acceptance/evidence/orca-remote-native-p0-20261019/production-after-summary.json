@@ -1,0 +1,7 @@
+{
+  "source_commit": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "tracked_production_files_checked": 263,
+  "changed": [],
+  "temporary_package_test_removed": true,
+  "scope": "tracked non-test files under cmd/, internal/, scripts/; documentation and ignored local probe evidence excluded"
+}

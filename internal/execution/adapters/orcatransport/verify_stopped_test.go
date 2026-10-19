@@ -14,12 +14,9 @@ import (
 )
 
 func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
-	for _, name := range []string{"live-root", "missing-root", "no-readiness", "remote-live-root"} {
+	for _, name := range []string{"live-root", "missing-root", "no-readiness"} {
 		t.Run(name, func(t *testing.T) {
 			environment := ""
-			if name == "remote-live-root" {
-				environment = "paired-host"
-			}
 			l, _, s := fixtureOn(t, environment)
 			receipt, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
 			if err != nil {

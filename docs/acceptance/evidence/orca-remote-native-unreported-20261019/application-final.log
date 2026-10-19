@@ -1,0 +1,14 @@
+=== RUN   TestRAUnreportedOutcomeBoundary
+=== RUN   TestRAUnreportedOutcomeBoundary/unreported
+=== RUN   TestRAUnreportedOutcomeBoundary/unknown
+=== RUN   TestRAUnreportedOutcomeBoundary/failed
+=== RUN   TestRAUnreportedOutcomeBoundary/cancelled
+=== RUN   TestRAUnreportedOutcomeBoundary/business-blocked
+--- PASS: TestRAUnreportedOutcomeBoundary (21.91s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unreported (5.29s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unknown (4.32s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/failed (3.99s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/cancelled (4.19s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/business-blocked (4.10s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	25.177s

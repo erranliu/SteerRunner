@@ -466,3 +466,5 @@ owned canary，证据目录保留。普通用户检查不重复执行沙箱安�
 driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对象/产物/时间与 checker、
 精确 head 合入及停止断言均不变。组件反例包含平台迟到的新 head、运行中不刷新、未绑定 PR、
 查询失败和替换 PR/Session；不得用反复读取旧快照来声称反馈未交付。
+
+2026-10-19：远端 helper 接线删除后的本次验收以 [原生方案](spec/orca-remote-native.plan.md)及[专属记录](acceptance/orca-remote-native.md)为准。当前远端完整 Check 返回 unsupported，不创建 actor；local Check 保持。原生参数仅核对冻结值与传递命令，离线停止输出的 scope 只描述原 Orca 终端，不证明全 OS 树或撤销登录。

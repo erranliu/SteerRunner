@@ -1,0 +1,7 @@
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	4.690s
+--- FAIL: TestLocalIPCQueryCapabilityBeforeCreation (0.02s)
+    local_connection_windows_test.go:77: local observation required a subscription Orca main-agent query completeness unavailable 0
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	19.435s
+ok  	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	0.817s
+FAIL
