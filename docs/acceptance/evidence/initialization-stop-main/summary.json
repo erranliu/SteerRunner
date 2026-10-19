@@ -1,0 +1,42 @@
+{
+  "schema": "steerrunner-initialization-stop-main-acceptance/v1",
+  "source_commit": "cf7b47a5eca1968de2e13997c3752f76a6caa0e6",
+  "integrated_main": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "source_dirty": false,
+  "status": "passed",
+  "cases": [
+    {
+      "case_id": "before-readiness",
+      "run_id": "df2537924e895669c58cd24fce3a9d05",
+      "status": "passed",
+      "original_evidence": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\dddbaf198def\\evidence",
+      "control_settled": true,
+      "business_sends": 0,
+      "control_requests": 0
+    },
+    {
+      "case_id": "restart-before-readiness",
+      "run_id": "e9a6df7d4a303595093603ba5f218f3d",
+      "status": "passed",
+      "original_evidence": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\cases\\42799287026e\\evidence",
+      "control_settled": true,
+      "business_sends": 0,
+      "control_requests": 0
+    }
+  ],
+  "runner_sha256": "18ebe2345c177f9a8b621694ec2e70ed1faa2864879b8c1e88a543a071935219",
+  "helper_sha256": "52a2261351290f49366a331119d2f72afa36b60d7ef7aff12063206053ae573a",
+  "parallel_overlap_verified": true,
+  "complete_l3_level_passed": false,
+  "prerequisites": {
+    "original_batch_status": "failed during metadata-only preparation; no Run",
+    "l1_go_top_level": 394,
+    "node_extension_tests": 29,
+    "controlled_scenarios": 16,
+    "exact_qualified_runner_reused": true
+  },
+  "original_batch_summary": "C:\\SteerlineDebug\\dev-20261019-130825-dc5dc4a5-dirty\\evidence\\l3-initialization-stop-retry-02\\summary.json",
+  "original_batch_summary_sha256": "9e2a93463247e582ae3fa125280d0abc342113cac25cf15ca732bf2b2e90b0f5",
+  "installed_environment_operated": false,
+  "historical_runs_rewritten": false
+}
