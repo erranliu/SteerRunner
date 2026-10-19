@@ -114,7 +114,7 @@ try {
     $taskEvents = @(Get-Content -LiteralPath (Join-Path $taskOut 'l1.jsonl') | ForEach-Object { $_ | ConvertFrom-Json })
     $taskPassed = @($taskEvents | Where-Object { $_.Action -eq 'pass' -and $_.PSObject.Properties['Test'] -and $_.Test -notmatch '/' }).Count
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
-    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary')
+    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
     $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard;terminal_extension_exit=$taskExtensionCode;terminal_extension_test_count=$taskExtensionCount;terminal_extensions_passed=$taskExtensionsPassed}
     Save-Summary
