@@ -3,18 +3,29 @@
   "$id": "steerrunner/test-config/v1",
   "description": "Test-only outer structure. Configuration entries and fixture contents are validated separately so invalid entries disable only dependent cases. Execution and workflow use the selected Runner production contracts.",
   "type": "object",
-  "required": ["schema"],
+  "required": [
+    "schema"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema": {"const": "steerrunner-test-config/v1"},
-    "configurations": {"type": "object", "additionalProperties": true},
-    "fixture": {"type": "object", "additionalProperties": true},
+    "schema": {
+      "const": "steerrunner-test-config/v1"
+    },
+    "configurations": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "harness": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "admin_host": {"type": "string"},
-        "feedback_qualification": {"type": "string"}
+        "admin_host": {
+          "type": "string"
+        }
       }
     }
   }

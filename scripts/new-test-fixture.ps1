@@ -4,7 +4,6 @@ param(
     [string]$Catalog = '',
     [string]$FixtureParent = 'C:\srt',
     [string]$RecordPath = '',
-    [string]$FeedbackQualification = '',
     [string]$Case = 'default',
     [string]$RunnerExe = '',
     [string]$ConfigHelper = '',
@@ -65,7 +64,6 @@ function Invoke-Git([string[]]$Arguments) {
     if ($LASTEXITCODE -ne 0) { throw ('Fixture Git failed: ' + ($Arguments -join ' ') + ': ' + ($taskOutput | Out-String).Trim()) }
     return ($taskOutput | Out-String).Trim()
 }
-if (-not $FeedbackQualification -and $taskConfig.ContainsKey('harness') -and $taskConfig.harness.ContainsKey('feedback_qualification')) { $FeedbackQualification = $taskConfig.harness.feedback_qualification }
 if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -Scenario $Scenario -Case $Case -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
 & gh auth status --active --hostname github.com 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }

@@ -1,26 +1,37 @@
 # Test-only configuration consumer. Production never imports this script.
 function Get-SRTestConfiguration {
     param([Parameter(Mandatory=$true)][string]$RunnerExe,[Parameter(Mandatory=$true)][string]$Helper,[string]$Config='')
-    foreach ($taskParameter in @('RunnerExe','Helper','Config')) {
-        $taskValue = Get-Variable -Name $taskParameter -ValueOnly
-        if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
+    # CLI JSON is UTF-8 even when a scheduler child inherits an OEM console.
+    # Preserve non-ASCII workflow prompts before passing the same bytes to the helper.
+    $taskPriorConsoleEncoding = [Console]::OutputEncoding
+    $taskPriorPipeEncoding = $OutputEncoding
+    try {
+        [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+        $OutputEncoding = [Text.UTF8Encoding]::new($false)
+        foreach ($taskParameter in @('RunnerExe','Helper','Config')) {
+            $taskValue = Get-Variable -Name $taskParameter -ValueOnly
+            if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
+        }
+        if (-not (Test-Path -LiteralPath $RunnerExe -PathType Leaf) -or -not (Test-Path -LiteralPath $Helper -PathType Leaf)) { throw 'Build the selected Runner and test configuration helper before querying availability.' }
+        $taskCapabilitiesJSON = (& $RunnerExe capabilities --offline --json | Out-String)
+        if ($LASTEXITCODE -ne 0) { throw 'Cannot query the selected Runner capability contract.' }
+        $taskCapabilities = $taskCapabilitiesJSON | ConvertFrom-Json -AsHashtable
+        $taskActualSHA = (Get-FileHash -LiteralPath $RunnerExe -Algorithm SHA256).Hash.ToLowerInvariant()
+        if (-not $taskCapabilities.ok -or $taskCapabilities.data.capability_source.kind -cne 'executable' -or $taskCapabilities.data.capability_source.executable_sha256 -cne $taskActualSHA) { throw 'Selected Runner capability identity changed.' }
+        $taskResolved = if ($Config) { [IO.Path]::GetFullPath($Config) } else { '' }
+        $taskAssessmentJSON = ($taskCapabilitiesJSON | & $Helper --test-config $taskResolved - | Out-String)
+        if ($LASTEXITCODE -ne 0) { throw 'Invalid strict test configuration or mismatched Runner/helper contract; migrate old live-config files.' }
+        $taskAssessment = $taskAssessmentJSON | ConvertFrom-Json -AsHashtable
+        $taskRegistrySHA = (Get-FileHash -LiteralPath (Join-Path $PSScriptRoot '../internal/testkit/livetest/cases.json') -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($taskAssessment.requirements_digest -cne $taskRegistrySHA) { throw 'Selected test helper and case requirements do not match.' }
+        $taskAssessment['runner_exe'] = [IO.Path]::GetFullPath($RunnerExe)
+        $taskAssessment['runner_sha256'] = $taskActualSHA
+        $taskAssessment['helper_sha256'] = (Get-FileHash -LiteralPath $Helper -Algorithm SHA256).Hash.ToLowerInvariant()
+        return $taskAssessment
+    } finally {
+        [Console]::OutputEncoding = $taskPriorConsoleEncoding
+        $OutputEncoding = $taskPriorPipeEncoding
     }
-    if (-not (Test-Path -LiteralPath $RunnerExe -PathType Leaf) -or -not (Test-Path -LiteralPath $Helper -PathType Leaf)) { throw 'Build the selected Runner and test configuration helper before querying availability.' }
-    $taskCapabilitiesJSON = (& $RunnerExe capabilities --offline --json | Out-String)
-    if ($LASTEXITCODE -ne 0) { throw 'Cannot query the selected Runner capability contract.' }
-    $taskCapabilities = $taskCapabilitiesJSON | ConvertFrom-Json -AsHashtable
-    $taskActualSHA = (Get-FileHash -LiteralPath $RunnerExe -Algorithm SHA256).Hash.ToLowerInvariant()
-    if (-not $taskCapabilities.ok -or $taskCapabilities.data.capability_source.kind -cne 'executable' -or $taskCapabilities.data.capability_source.executable_sha256 -cne $taskActualSHA) { throw 'Selected Runner capability identity changed.' }
-    $taskResolved = if ($Config) { [IO.Path]::GetFullPath($Config) } else { '' }
-    $taskAssessmentJSON = ($taskCapabilitiesJSON | & $Helper --test-config $taskResolved - | Out-String)
-    if ($LASTEXITCODE -ne 0) { throw 'Invalid strict test configuration or mismatched Runner/helper contract; migrate old live-config files.' }
-    $taskAssessment = $taskAssessmentJSON | ConvertFrom-Json -AsHashtable
-    $taskRegistrySHA = (Get-FileHash -LiteralPath (Join-Path $PSScriptRoot '../internal/testkit/livetest/cases.json') -Algorithm SHA256).Hash.ToLowerInvariant()
-    if ($taskAssessment.requirements_digest -cne $taskRegistrySHA) { throw 'Selected test helper and case requirements do not match.' }
-    $taskAssessment['runner_exe'] = [IO.Path]::GetFullPath($RunnerExe)
-    $taskAssessment['runner_sha256'] = $taskActualSHA
-    $taskAssessment['helper_sha256'] = (Get-FileHash -LiteralPath $Helper -Algorithm SHA256).Hash.ToLowerInvariant()
-    return $taskAssessment
 }
 
 function Merge-SRCaseRecords {

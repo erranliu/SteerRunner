@@ -18,7 +18,7 @@ Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'test-scheduler.ps1')
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FeedbackQualification','FixtureParent')) {
+foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FixtureParent')) {
     $taskValue = Get-Variable -Name $taskParameter -ValueOnly
     if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
 }
@@ -180,12 +180,11 @@ try {
     }
     $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
-    $taskResolvedProof=if($FeedbackQualification){(Resolve-Path -LiteralPath $FeedbackQualification).ProviderPath}else{''}
     $taskConfigSHA=if($taskAssessment){$taskSummary.configuration_sha256}else{''}
     $taskRunnerSHA=if($taskAssessment){$taskSummary.runner_sha256}else{''}
     $taskHelperSHA=if($taskAssessment){$taskSummary.helper_sha256}else{''}
     $taskRequirementsSHA=if($taskAssessment){$taskSummary.requirements_sha256}else{''}
-    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -FeedbackQualification $taskResolvedProof -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
+    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
         param($Records)
         $taskSummary.results = @($taskPrerequisites) + @(Merge-SRCaseRecords -Executions $taskExpanded -Records $Records)
         Save-Summary

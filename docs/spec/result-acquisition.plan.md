@@ -216,3 +216,5 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 | 既有无业务停止探针 | 前置通过后本机与已配对远端各一次 `go test ./internal/host -run '^TestOrcaStoppedNativeProbe$' -count=1 -timeout=8m`；显式 `STEERRUNNER_ORCA_STOP_PROBE_*` 固定新隔离目录、同源 EXE/helper/native/model/repo/base/原 host；与其他真机合计并行不超2 | 活动拒绝、原 helper 真实签名退出后公开 EXE 离线 verify 成功，原 DB/失败回执不变、不启动服务、零业务输入、原控制及自有 worktree 清理；`R/probes/`。Reader 真实结算由前一行实际业务查询覆盖，不再创建旧一次性 reader 终端 |
 
 RA-A08 与主线 OSV-A06/A08/A09 的本轮交叉覆盖沿上述有限场景维护。没有全量 L2/L3 或新增庞大矩阵；若生产改动发生在冻结后，重新冻结并重跑受影响前置，历史通过不改写为当前通过。
+
+主线追加接入（2026-10-19，`2aa17cc`）：保留独立配置的公开 validate/capability、配置冻结与 case 可用性边界；测试基线与 manifest 更新为 workflow/2，结果获取 case 补齐同一注册需求，删除已废弃的反馈资格参数。配置/CLI/manifest 组件与框架全量检查须通过，再由最终冻结源码重新执行本节正式 L1/Controlled/native 入口。`5861ded` 批次完整 L1 已通过，Controlled 因主线推进主动取消，未启动 native；保留中断记录，不能算最终验收。

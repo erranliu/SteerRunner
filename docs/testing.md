@@ -72,12 +72,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
 [脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／二十九 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
-未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
-只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
-当前 `-FeedbackQualification <case.json>` 可选择无反馈的 `development-core` driver：
-它要求正式反馈 case 为 passed、协调器批次通过、真实新 head/合入/清理完整、Runner 与
-native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest。也可在非秘密配置的
-`harness.feedback_qualification` 填写该 case 记录的绝对路径；未提供资格时保留原完整 smoke。
+新增场景须同步注册需求、manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
 文档规划不表示入口已经支持新 case、L4 或并行调度。
@@ -150,7 +145,7 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 不能以后台 PID 或启动成功作为通过。
 
 L2 当前原生资格固定 Codex 0.159.2；`configurations.local-codex` 必须提供本机
-codex-app-server、development/1、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
+codex-app-server、development/2、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
 未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
 每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
@@ -327,7 +322,7 @@ workflow 就必须合法，Run 需要 workflow，环境检查只消费 execution
 `fixture` 声明完整 repository／publication 测试源，继续只写专属 SteerlineTest；每 case
 生成独立分支／材料／查询取证工具。当前 fixture 使用 GitHub command publication；其他
 产品合法 provider 会明确标记不符合 case 要求，生成器不自动改选 provider。query 取证工具
-由 case 生成，配置中的认证引用等其余设置保留。`harness` 只含 admin_host 和 feedback_qualification；
+由 case 生成，配置中的认证引用等其余设置保留。`harness` 只含 admin_host；
 证据目录沿既有 `-OutDir` 管理。测试输入不进入生产 profile，也不影响外部 submit。
 
 文件只从显式 Config 读取，入口相对路径按调用 cwd，harness 相对路径按原文件目录解析。
