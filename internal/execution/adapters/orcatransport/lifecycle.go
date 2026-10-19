@@ -946,7 +946,10 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 	if err = l.cleanupInspections(ctx, &state); err != nil {
 		return b.LifecycleStateFacts{}, err
 	}
-	return b.LifecycleStateFacts{}, nil
+	if err = l.verifyStopped(ctx, s); err != nil {
+		return b.LifecycleStateFacts{}, err
+	}
+	return b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}, nil
 }
 func (l *Lifecycle) InspectLifecycleWorkspace(ctx context.Context, s b.LifecycleSnapshot) (b.WorkspaceInspection, error) {
 	return InspectWorkspace(ctx, l.client, s.Ref, s.Session.ProjectID)

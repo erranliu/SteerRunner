@@ -87,6 +87,14 @@ Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandb
 environment。执行主机 helper 安装在业务工作区外。本机 fixture 的 caller clone 与 Orca
 已注册项目分别记录，原 runtime 从准备证据核验，不复用 `remote_runtime_id`。
 本机通过原生 IPC 查询观察，远程保留订阅加补查；注册不代表已验通过，当前构建结果见[专属验收](acceptance/orca-local-remote.md)。
+停服取证的无模型原生契约探针为 `go test ./internal/host -run '^TestOrcaStoppedNativeProbe$' -count=1 -timeout 150s -v`。
+先用调用方 `scripts/new-debug-release.ps1` 生成独立 `C:/SteerlineDebug` 包；显式提供
+`STEERRUNNER_ORCA_STOP_PROBE_ROOT`（新的包内 evidence 子目录）、`_CLI`、`_RUNNER`（该包固定 EXE）、
+`_REPO`（Orca 注册的测试项目 ID）、`_BASE`（固定完整 commit）、`_REPOSITORY`（本包本机 clone）；
+变量名均以 `STEERRUNNER_ORCA_STOP_PROBE` 开头，远端另用 `_ENVIRONMENT` 固定路由。
+只创建/关闭/删除自己的无模型 PTY/worktree；当前格式 Run 为绑定真实 PTY 的隔离契约夹具，
+不代表业务执行或完整 L2/L3。验证真实 EXE 的活动拒绝、原停止证明、只读存储及历史失败不变，
+普通 L1 批次拒绝该 live opt-in。结果见 [本次专属验收](acceptance/orca-shutdown-verification.md)。
 无模型探针使用显式 `STEERRUNNER_ORCA_IPC_PROBE_ROOT/CLI/REPO/BASE` 环境变量，运行
 `go test ./internal/execution/adapters/protocol/orca -run '^TestOrcaLocalIPCNativeProbe$' -count=1 -timeout=2m -v`。
 ROOT 必须为新的绝对证据目录，CLI 是选定原生 Orca EXE，REPO 是真实已注册 repository ID，

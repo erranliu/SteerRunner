@@ -87,6 +87,9 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 			}
 			l.client = native.New(native.Config{CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
 				joined := strings.Join(args, " ")
+				if strings.HasPrefix(mode, "shutdown-") && len(args) > 1 && args[0] == "terminal" && args[1] == "list" {
+					return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": []any{map[string]any{"handle": s.Ref.External.Terminal, "incarnationId": s.Ref.External.Incarnation, "worktreeId": s.Ref.External.WorktreeID, "status": "running"}}, "totalCount": 1, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
+				}
 				aux := strings.Contains(joined, "inspector") || len(args) > 1 && args[0] == "terminal" && (args[1] == "create" || args[1] == "list" && strings.HasPrefix(mode, "restart-"))
 				if !aux {
 					return original.Raw(ctx, d, args...)
@@ -179,8 +182,8 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 					close(allowClose)
 					select {
 					case err := <-done:
-						if err != nil {
-							t.Fatal(err)
+						if err == nil || !strings.Contains(err.Error(), "still active") {
+							t.Fatal("active business terminal was not left unverified", err)
 						}
 					case <-time.After(time.Second):
 						t.Fatal("shutdown did not observe inspector close")
@@ -194,7 +197,7 @@ func TestManagedRemoteReceiptRecoversMissedStartWithoutResending(t *testing.T) {
 				ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 				defer cancel()
 				facts, err := l.ShutdownLifecycle(ctx, s, o.StopHandle())
-				if err != nil || facts.Stopped || f.nativeSends != 1 || creates != 1 || closes != 1 {
+				if err == nil || !strings.Contains(err.Error(), "still active") || facts.Stopped || f.nativeSends != 1 || creates != 1 || closes != 1 {
 					t.Fatal("shutdown changed business execution or retried a resource", facts, err, creates, closes, f.nativeSends)
 				}
 				return
