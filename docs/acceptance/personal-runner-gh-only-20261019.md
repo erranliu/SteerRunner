@@ -2,6 +2,12 @@
 
 日期：2026-10-19。用户要求按个人多机执行器边界移除 GitHub App 支持，保留 gh 单仓库 broker 和 Run 隔离，并更新产品定位、契约、文档和测试。
 
+## 当前基线与主分支冲突
+
+本文的 helper 链路验证基于 main `95ae8a7`，生产 helper 来源为 `7c6ea40`；不代表后续架构的资格。测试期间 main 合入 `0b55928` / [PR #31](https://github.com/erranliu/SteerRunner/pull/31)，明确改为无远端 helper 的 Orca 原生执行，并移除远端 Runner broker、同工具完整环境检查及相关原生历史/退出证明保证。该增量与本分支的远端安全/审计链存在实质契约冲突。
+
+用户已确认跟随最新 main：保留本机/Orca local 的 gh broker，远端使用 Orca 原生认证，不再保证远端单仓库 capability、helper 审计或完整环境检查。PR #28 继续按该边界整合并重新验证；不恢复被移除的 helper，也不把旧证明套用于新原生路径。下文保留原交付与全部测试来源，以便审查，不声明最新 main 已通过本专项。
+
 ## 交付范围
 
 - 在本人管理和信任的预配置主机上执行冻结 Spec/Plan；调用方/SteerLine 选择本机或 Orca environment，组织任务与 DAG。
@@ -61,3 +67,11 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 
 `7c6ea40` 的正式入口在 framework guard 阶段失败，Go L1/Controlled 和真机均未启动（0 执行）：上游独立配置守卫仍写死 29 个 L3 case，加入本 PR 两项登记后为 31。修正完整缺配置/前置失败范围断言为 31，缺配置数 26→28，并显式断言远端审计/多 Run 不得继承本机配置。独立框架守卫完成，verified.json 保留 incomplete、31 请求、零执行及 complete_level_passed=false。此变更仅测试与登记文档，生产源码不变，远端继续使用明确归属 7c6ea40 的已冻结 helper；新批次记录新的测试提交。
 冻结 helper 来源为 7c6ea40，SHA256 658e4b899c2947f60e529fa297fd165f210cc0221777131986c5d094b4f03bbe；部署于独立目录 gh-only-7c6ea40。后续框架断言/登记变更与该构建的 internal/cmd 生产源码完全相同，分开记录测试提交与 helper 来源，不覆盖旧 helper。
+
+`1700a95` 的整合批次 L1 Go 408、扩展 29、Controlled 16 及框架/编译/零匹配守卫通过。19 项选择中授权排除 8、实际执行 11、通过 9、失败 2；sandbox 完整闭环、两种权限环境检查（各 12/12）、同服务双 Run、调用方退出、服务 graceful/kill 恢复、活动停止和本机反馈边界均通过。原批次保持 failed，不写成一次全绿。
+
+远端审计原生 Go 用例通过，原 Run/服务已停止，远端 Git 来源实际 qualified=true；代码审计使用 gpt-6.1-sol/high，发布恢复 gpt-6-luna/high，均为同一原生会话。外层 PowerShell 仍要求 workflow/1 的三个原生上下文、两项审计、verdict 和 inspector_closed，故原批次失败。`917194a` 改为 workflow/2 的单项代码审计与发布，核验 source/result/pre/post-head、原 Command/Turn、不同 native turn 与 control request、reader_writers_absent 和模型/effort；新增缺失、重复、外来及旧 Spec 审计反例。只读复核旧事实通过新断言不补记旧测试成功，资格仍须新现场。
+
+另一失败为 full_access 启动时 Orca 报告执行主机未响应，原启动请求 `48b5037b-6bec-48b5-6540-dcac4f6e5644` 未核实，Runner 零重发、零业务输入。12 分钟后用例超时；因缺原 native readiness/退出绑定，停止继续保留 unknown，服务已停止。独立只读完整业务流仅含初始 PowerShell 提示符；按原 runtime/worktree/两组 terminal incarnation 关闭该现场遗留终端，新鲜完整清单为空。原控制 helper PID 23972/创建时间 2026-10-19T07:01:42.916671Z 及其子进程已核实不存在。物理清理不补造签名退出，也不把原 Run 的 stop_status=unknown 或原失败改成通过，另存有限物理结算记录。
+
+`917194a` 的审计补跑在 L1 停止，真机执行 0：407 项 Go 通过，模拟 CLI 的 IPC 夹具因与正在运行的真实 Orca 共享队列而耗尽 3 秒期限；扩展 29 和框架/编译守卫通过。`98e4e76` 保留真实 named-pipe 核验，但把夹具 CLI 固定到 fake host，不进入生产 CLI 队列；定向回归通过。生产代码未改动，helper 仍归属 7c6ea40；新正式批次以独立工作区的 98e4e76 为测试来源，不在原批次运行期间修改源码。
