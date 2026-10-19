@@ -1,0 +1,27 @@
+{
+  "authentication_closed": true,
+  "closed_at": "2026-10-19T04:27:49.8444635Z",
+  "helper_sha256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+  "mode": "offline-probe",
+  "native_process": {
+    "kind": "os",
+    "pid": 35184,
+    "created": "01dd5f82219b8057",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "native_transport": "codex-remote-inline-v3",
+  "owner": {
+    "kind": "os",
+    "pid": 39436,
+    "created": "01dd5f821e07b997",
+    "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe"
+  },
+  "signature_verified": true,
+  "tui": {
+    "kind": "os",
+    "pid": 46788,
+    "created": "01dd5f822eb08c00",
+    "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+  },
+  "writers_absent": true
+}

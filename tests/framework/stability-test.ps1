@@ -15,15 +15,9 @@ try{Get-SRLiveCases $taskEntry|Out-Null}catch{$taskRejected=$true}
 if(-not $taskRejected){throw 'Missing mandatory cases were accepted'}
 $taskRoot=Join-Path $Evidence 'stability-gate'
 New-Item -ItemType Directory -Force -Path $taskRoot|Out-Null
-$taskPreflightConfig=Get-Content -LiteralPath (Join-Path $Repository 'tests/live-stability-config.example.json') -Raw|ConvertFrom-Json
-$taskPreflightConfig.orca_executable=(Get-Process -Id $PID).Path
-$taskPreflightPath=Join-Path $taskRoot 'config.json'
-[IO.File]::WriteAllText($taskPreflightPath,($taskPreflightConfig|ConvertTo-Json -Depth 20))
-& (Join-Path $Repository 'scripts/stability-preflight.ps1') -Config $taskPreflightPath
-$taskPreflightConfig|Add-Member NoteProperty unknown_configuration $true
-[IO.File]::WriteAllText($taskPreflightPath,($taskPreflightConfig|ConvertTo-Json -Depth 20))
-$taskRejected=$false;try{& (Join-Path $Repository 'scripts/stability-preflight.ps1') -Config $taskPreflightPath}catch{$taskRejected=$_.Exception.Message -like 'Unknown stability config field:*'}
-if(-not $taskRejected){throw 'Unknown configuration was accepted by stability preflight'}
+# Strict configuration and legacy/unknown-field rejection are covered by the
+# configuration framework tests using the production contract. This suite keeps
+# its independent real bounded fault gate and network-scope assertions.
 New-Item -ItemType Directory -Force -Path (Join-Path $taskRoot 'sr-smoke'),(Join-Path $taskRoot 'evidence')|Out-Null
 & git -C $taskRoot init --quiet
 if($LASTEXITCODE -ne 0){throw 'Gate fixture git init failed'}

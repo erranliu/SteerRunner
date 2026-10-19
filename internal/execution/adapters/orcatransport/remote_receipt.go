@@ -2,17 +2,13 @@ package orcatransport
 
 import (
 	"context"
-	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/erranliu/SteerRunner/internal/contracts"
 	"strings"
 	"time"
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 const remoteWireCommand = "native-command-v1"
@@ -36,15 +32,6 @@ func wirePrompt(t *Turn) string {
 	return fmt.Sprintf("[SteerRunner command=%s input=%s]\n%s", t.Command, inputDigest, prompt)
 }
 
-type NativeInspection struct {
-	NativeSettled bool               `json:"native_settled,omitempty"`
-	Attempted     bool               `json:"attempted"`
-	Unknown       bool               `json:"unknown"`
-	Process       *b.ProcessIdentity `json:"process,omitempty"`
-	Closed        bool               `json:"closed"`
-	At            time.Time          `json:"at"`
-}
-
 func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Turn) string {
 	if !turn.Accepted {
 		return "Original input has no verified acceptance; no input was resent"
@@ -54,10 +41,7 @@ func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Tur
 		return gateErr.Error()
 	}
 	defer release()
-	if _, err := l.settleInspections(ctx, state); err != nil {
-		return "Original native history cleanup is unverified: " + err.Error()
-	}
-	if turn.Inspection == nil && l.clock().Before(turn.Native.LastQuery.Add(30*time.Second)) {
+	if turn.ReceiptQueriedAt.IsZero() && l.clock().Before(turn.Native.LastQuery.Add(30*time.Second)) {
 		// The accepted turn already has a bounded observation interval. Do not
 		// spawn a history client immediately while the original model is working.
 		// A stream notification is only a polling hint; history still establishes
@@ -78,7 +62,7 @@ func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Tur
 			return ""
 		}
 	}
-	if turn.Inspection != nil && !turn.Inspection.Unknown && turn.Inspection.Closed && l.clock().Before(turn.Inspection.At.Add(30*time.Second)) {
+	if !turn.ReceiptQueriedAt.IsZero() && l.clock().Before(turn.ReceiptQueriedAt.Add(30*time.Second)) {
 		return ""
 	}
 	inspectCtx, cancel := context.WithTimeout(ctx, 45*time.Second)
@@ -145,116 +129,22 @@ func ValidateRecordedTurn(state State, turn *Turn) error {
 	return validateRecordedTurn(state, turn, *turn.Recorded)
 }
 
-// This inspector starts only a read-only history client. It never resumes a
-// thread, sends a model prompt, or borrows the business terminal for commands.
-// An uncertain creation/closure is retained and blocks replacement inspectors.
+// The fixed original control actor reads native history without a model input.
 func (l *Lifecycle) recordedTurn(ctx context.Context, state *State, turn *Turn) (*codex.RemoteTurnReceipt, error) {
-	if turn.Inspection != nil && turn.Inspection.Unknown {
-		return nil, errors.New("original native inspector ownership is unverified; no replacement created")
+	turn.ReceiptQueriedAt = l.clock()
+	response, err := l.callControl(ctx, *state, "original-turn", digest([]byte(wirePrompt(turn))))
+	if err != nil {
+		return nil, err
 	}
-	if turn.Inspection != nil && !turn.Inspection.Closed {
-		return nil, errors.New("original native inspector is not settled")
+	if response.Error != "" {
+		return nil, errors.New(response.Error)
 	}
-	query := codex.RemoteTurnQuery{Workspace: state.RemoteReadiness.Workspace, Session: state.RemoteReadiness.SessionID, InputDigest: digest([]byte(wirePrompt(turn)))}
-	raw, _ := json.Marshal(query)
-	command := "& '" + strings.ReplaceAll(l.profile.RuntimeExecutable, "'", "''") + "' '--original-turn' '" + base64.RawURLEncoding.EncodeToString(raw) + "'"
-	attempt := &NativeInspection{Attempted: true, Unknown: true}
-	j, journalErr := l.loadInspections(*state)
-	if journalErr != nil {
-		return nil, journalErr
+	if response.Turn == nil {
+		return nil, errors.New("original native control receipt missing")
 	}
-	index := -1
-	checkpoint := func() error { j.Entries[index].Inspection = *attempt; return l.saveInspections(*state, j) }
-	// Persist immediately before invocation, while owning the CLI queue. A killed
-	// queued caller has not attempted creation and must not leave an unknown actor.
-	createCtx := native.WithDispatchCheckpoint(ctx, func() error {
-		attempt.At = l.clock()
-		turn.Inspection = attempt
-		j.Entries = append(j.Entries, inspectionEntry{ID: contracts.NewID(), Command: turn.Command, InputDigest: query.InputDigest, Inspection: *attempt})
-		index = len(j.Entries) - 1
-		return checkpoint()
-	})
-	result, err := l.client.MetaCall(createCtx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner original native receipt "+turn.Command, "--command", command, "--json")
-	if index < 0 {
-		return nil, errors.Join(err, errors.New("original native inspector command was not invoked"))
+	if err := validateRecordedTurn(*state, turn, *response.Turn); err != nil {
+		return nil, err
 	}
-	var created struct{ Terminal native.Terminal }
-	if err != nil || result.CallUncertain || json.Unmarshal(result.Payload, &created) != nil || result.RuntimeID != state.Process.RuntimeID || created.Terminal.Handle == "" || created.Terminal.IncarnationID == "" || created.Terminal.WorktreeID != state.Process.WorktreeID {
-		attempt.Unknown = true
-		_ = checkpoint()
-		return nil, errors.New("original native inspector creation unverified")
-	}
-	inspector := b.ProcessIdentity{Kind: "orca_original_turn_reader", RuntimeID: result.RuntimeID, Terminal: created.Terminal.Handle, Incarnation: created.Terminal.IncarnationID, WorktreeID: state.Process.WorktreeID}
-	attempt.Process = &inspector
-	attempt.Unknown = false
-	if err := checkpoint(); err != nil {
-		closeCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-		_, closeErr := l.client.CloseReadonlyTerminal(closeCtx, inspector)
-		attempt.Unknown = true
-		return nil, errors.Join(err, closeErr)
-	}
-	var value *codex.RemoteTurnReceipt
-	readErr := func() error {
-		for {
-			if _, e := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, inspector); e != nil {
-				return e
-			}
-			result, e := l.client.MetaCall(ctx, "terminal", "read", "--terminal", inspector.Terminal, "--limit", "150", "--json")
-			if e != nil {
-				return e
-			}
-			var output struct {
-				Terminal struct {
-					Handle string
-					Tail   []string
-				}
-			}
-			if json.Unmarshal(result.Payload, &output) != nil || result.RuntimeID != inspector.RuntimeID || output.Terminal.Handle != inspector.Terminal {
-				return errors.New("original native inspector read identity changed")
-			}
-			for _, line := range output.Terminal.Tail {
-				line = strings.TrimSpace(line)
-				if strings.HasPrefix(line, codex.RemoteTurnPrefix) {
-					body, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteTurnPrefix))
-					var candidate codex.RemoteTurnReceipt
-					if e != nil || json.Unmarshal(body, &candidate) != nil {
-						return errors.New("original native receipt is invalid")
-					}
-					if e = validateReaderExit(*state, turn, candidate); e != nil {
-						return e
-					}
-					attempt.NativeSettled = true
-					if e = checkpoint(); e != nil {
-						return e
-					}
-					if e = validateRecordedTurn(*state, turn, candidate); e != nil {
-						return e
-					}
-					value = &candidate
-					return nil
-				}
-				if strings.HasPrefix(line, "remote original turn inspection failed") {
-					return errors.New("original native history unavailable")
-				}
-			}
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			case <-time.After(200 * time.Millisecond):
-			}
-		}
-	}()
-	closeCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-	proof, closeErr := l.client.CloseReadonlyTerminal(closeCtx, inspector)
-	attempt.Closed = closeErr == nil && proof.Disposition == "confirmed"
-	attempt.Unknown = !attempt.Closed
-	if err := checkpoint(); err != nil {
-		return nil, errors.Join(readErr, closeErr, err)
-	}
-	if !attempt.Closed {
-		return nil, errors.Join(readErr, errors.New("original native inspector closure unverified"))
-	}
-	return value, readErr
+	turn.ReceiptRequest, turn.ReceiptQueriedAt = response.ID, l.clock()
+	return response.Turn, nil
 }

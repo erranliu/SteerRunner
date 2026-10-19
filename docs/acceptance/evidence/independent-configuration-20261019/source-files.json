@@ -1,0 +1,167 @@
+{
+  "schema": "steerrunner-implementation-source/v1",
+  "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+  "source_dirty": true,
+  "files": [
+    {
+      "path": "docs/acceptance/independent-configuration.md",
+      "sha256": "d494e24c233c549cfe124a56ba3f03887e8e5d4210640c1b35c16b9e4da2e168"
+    },
+    {
+      "path": "docs/spec/independent-configuration.plan.md",
+      "sha256": "a1bf2a35967ea69180f467f57aa43c8eaf33e8129c8e0886f57566d80231daaf"
+    },
+    {
+      "path": "docs/spec/independent-configuration.spec.md",
+      "sha256": "6dcadbd66c133ebedfeb03c38cb84b7bdc69fe6cb9ec5746a11bffe3f8f27e7b"
+    },
+    {
+      "path": "docs/test-catalog.md",
+      "sha256": "fd32cc9fe3deda8f9b30e59bd1b5d0002ab64daeba933ad47552db67f7b67e7f"
+    },
+    {
+      "path": "docs/testing.md",
+      "sha256": "f20dec63a996f516f593df102bde5dda2701495deb534886cf946958d03485f4"
+    },
+    {
+      "path": "internal/cli/cli.go",
+      "sha256": "340e251d4c7dc17ab825db234b90b93c59dcc1b19b6eb17c23aa3390dad4b725"
+    },
+    {
+      "path": "internal/cli/configuration_test.go",
+      "sha256": "fa8225a08f46742e6a460ab277c9aa720e216cd4a79b8df98f853878cab96d63"
+    },
+    {
+      "path": "internal/host/server.go",
+      "sha256": "dae23c57414eb571f8955a88cc4b320ed2af27df516167a51704e6a3d80985d4"
+    },
+    {
+      "path": "internal/resources/catalog.go",
+      "sha256": "fb6f56b00ee91b9d5009a209bb8100e54bb1f83dabb8adffe20be982e941f560"
+    },
+    {
+      "path": "internal/resources/configuration_test.go",
+      "sha256": "b49eeea40ffb11837b47907eff5a350ccfb218b4b96373632c2646d1be088fd0"
+    },
+    {
+      "path": "internal/resources/configuration.go",
+      "sha256": "4cec3bcd5f33ac1865eb2229e2348aeffbf36a1b0a5d466ab11a4b22147ca134"
+    },
+    {
+      "path": "internal/resources/input_schema.go",
+      "sha256": "b785cf1d06fa6e6878495107515a005f36a990b088d84856c01ebc7c00cadf53"
+    },
+    {
+      "path": "internal/resources/resources.go",
+      "sha256": "214f62a88fd90e31e2fc840600d40491b5864de400e0e7ea39da9bca2c5ffe24"
+    },
+    {
+      "path": "internal/resources/validation_test.go",
+      "sha256": "2fe721e29b9f0edbe033722a069587f72e52af281c10ffb13831674423fe8a57"
+    },
+    {
+      "path": "internal/resources/validation.go",
+      "sha256": "10e00529070d0db3a3f2368959571a80267b245970b1099bf51baf14ee7c9b98"
+    },
+    {
+      "path": "internal/testkit/livetest/cases.go",
+      "sha256": "7741dffeb51b4266c71682434290c8ef18ce448f9b80bfd7cab2ba89c47bc9a8"
+    },
+    {
+      "path": "internal/testkit/livetest/cases.json",
+      "sha256": "e312d68bf866a9c6cc696ff55b4bdf8730d6ea7447212a3d416fbd767912575a"
+    },
+    {
+      "path": "internal/testkit/livetest/config_test.go",
+      "sha256": "9a56ea8e9b5e8731ac55ac33fa57d43c23dd91d3438a42d3cf9293357cd52792"
+    },
+    {
+      "path": "internal/testkit/livetest/config.go",
+      "sha256": "1a23b046544b3882bb7278ce368edd4f09b0aa7747499898512fa47f62980596"
+    },
+    {
+      "path": "internal/testkit/livetest/manifest.go",
+      "sha256": "9b50625a8ad2dc7390a35fd8c0a7509641459d090d00f16b7a99a38836cbd4e6"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e8cd3067f3e36a04e53bcbfb1891afecba46d39421298bd8b7aa8c1718d079a2"
+    },
+    {
+      "path": "scripts/live-catalog.ps1",
+      "sha256": "0b6cad19ef318a7189a8d2a7f7e856dced65b6384d2ac2a794e45fd7a773afbb"
+    },
+    {
+      "path": "scripts/new-test-fixture.ps1",
+      "sha256": "02fe3516f49721e474c5b1b372707a24ee998a43d8ce94099189999eb3cd745a"
+    },
+    {
+      "path": "scripts/run-test-case.ps1",
+      "sha256": "e8565ae5db18c53316cda1c97e992e44bc728aef144cde33258978d69fd7f815"
+    },
+    {
+      "path": "scripts/stability-preflight.ps1",
+      "sha256": "1d6bccdc84329dc3adbbf185177a6e371772520144e40b51c5f0ddd3cecc85a7"
+    },
+    {
+      "path": "scripts/test-configuration.ps1",
+      "sha256": "43356bd665a79b2457baa08f3508e46acd7526d8d2e20023f3c575079c43893b"
+    },
+    {
+      "path": "scripts/test-framework.ps1",
+      "sha256": "73367419a1e087de6cff410ae44bb999fa00368f9e6543aa00c9ed49b745024d"
+    },
+    {
+      "path": "scripts/test-scheduler.ps1",
+      "sha256": "d50a48e329fa2df980142f3448f7a5eb8fe8ed7445453cf4b200c0559dc0c67f"
+    },
+    {
+      "path": "scripts/test.ps1",
+      "sha256": "fc07de4e64d30b1361b8440708d95af5702599b9c96dd4c102a60e35376849f6"
+    },
+    {
+      "path": "tests/framework/configuration-test.ps1",
+      "sha256": "e9bb0ee2d53d8e93b41ed563d09b2fbeaa8fa18493509e50ce698137659be205"
+    },
+    {
+      "path": "tests/framework/stability-test.ps1",
+      "sha256": "e523e4d414fc18ecdce7e13f684d751a3c2486ecbedae0348172b2bb9099bf25"
+    },
+    {
+      "path": "tests/helpers/native/main.go",
+      "sha256": "d7f5e7a292d4bae2b72d0709ca1b77ddc5f1ce83f0308ea9957925a61d30d674"
+    },
+    {
+      "path": "tests/integration/service_test.go",
+      "sha256": "7c713a599afa8560274c5c0864ebfa10ecf9088f3725af52bc05298b81828bb3"
+    },
+    {
+      "path": "tests/live-config.example.json",
+      "sha256": null
+    },
+    {
+      "path": "tests/live-stability-config.example.json",
+      "sha256": null
+    },
+    {
+      "path": "tests/native/multirun_test.go",
+      "sha256": "38581ee7973200157da9519a2917947987c635e066c71a25ef4012023f202b21"
+    },
+    {
+      "path": "tests/native/run_test.go",
+      "sha256": "8f0464e4d8fe8429b1bf6292418c43cbf44fbe55b81d4e99b6e54a7171953809"
+    },
+    {
+      "path": "tests/native/stability_test.go",
+      "sha256": "6090757af81ac0e4b976094808e17eb7a211a2e44c020b1ea5cc371883238570"
+    },
+    {
+      "path": "tests/test-config.example.json",
+      "sha256": "d9a7a28d38b855a7a971b0142bac297e43c7c62fd0bfd97597a29ae0b1bee6c6"
+    },
+    {
+      "path": "tests/test-config.schema.json",
+      "sha256": "bd03c92d1e1e033d46e7e4aac68bdd3f0fae677016c3f9d481d4a28c39d0117a"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "parent_pid": 54548,
+  "real_writers_started": true,
+  "writers": [
+    {
+      "created": "01dd5f0f1bebab47",
+      "pid": 54548,
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+      "kind": "os"
+    },
+    {
+      "created": "01dd5f0f1cb46589",
+      "pid": 21096,
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe",
+      "kind": "os"
+    }
+  ],
+  "passed": true
+}

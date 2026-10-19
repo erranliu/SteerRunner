@@ -17,9 +17,9 @@
     "TestSRStabilityLostSubmitResponse",
     "TestSRStabilityRevocationAcrossRestart",
     "TestSRWorkflowDiscoveryAndSelection",
-    "TestSRAuditedWorkflow",
     "TestSRMultipleRunsIsolation",
-    "TestEnvironmentCheckCLI"
+    "TestEnvironmentCheckCLI",
+    "TestSRResultAcquisition"
   ],
   "scenarios": [
     {
@@ -53,6 +53,16 @@
       "target": "orca-local",
       "agent": "dsh",
       "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.result-acquisition",
+      "level": "L2",
+      "driver": "result-acquisition",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
     },
     {
       "id": "local-codex.smoke",

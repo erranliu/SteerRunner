@@ -31,18 +31,8 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		return strings.TrimSpace(string(data)), nil
 	}
 	switch {
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan."):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan.") || strings.HasPrefix(prompt, "根据以下 Spec、Plan"):
 		content := "staged fixture result\n"
-		if strings.Contains(prompt, "Existing PR:") {
-			content += "updated after feedback\n"
-		}
-		if strings.Contains(prompt, "Repair the following verified audit findings") {
-			previous, err := os.ReadFile(filepath.Join(cwd, "stage-result.txt"))
-			if err != nil {
-				return "", err
-			}
-			content = string(previous) + "repaired after audit\n"
-		}
 		if err := os.WriteFile(filepath.Join(cwd, "stage-result.txt"), []byte(content), 0600); err != nil {
 			return "", err
 		}
@@ -52,10 +42,13 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		if _, err := git("-c", "user.name=Stage Fixture", "-c", "user.email=stage@example.invalid", "-c", "commit.gpgsign=false", "commit", "--quiet", "-m", "staged candidate"); err != nil {
 			return "", err
 		}
-		return "Implemented, verified the fixture result and committed the local candidate; no publication performed.", nil
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding implementation result as JSON."):
+		if os.Getenv("STEERRUNNER_SUCCESS_OUTPUT") == "1" {
+			return "Implemented and verified.\n实施及必要验证已完成。", nil
+		}
+		return "Implemented and verified.", nil
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding implementation result as JSON.") || strings.HasPrefix(prompt, "根据已有执行上下文整理指定实施结果"):
 		return `{"outcome":"done","summary":"source implementation completed"}`, nil
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding publication result as JSON."):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布"):
 		// Fixture model memory comes from the provider artifact of its preceding turn.
 		data, err := os.ReadFile(provider)
 		if err != nil {
@@ -74,7 +67,7 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 
 		body, err := json.Marshal(map[string]any{"outcome": "done", "outputs": map[string]string{"pr_url": url}, "summary": "original publication reported"})
 		return string(body), err
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Push and create or reuse a PR using the current checked-out branch."):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Push and create or reuse a PR using the current checked-out branch.") || strings.HasPrefix(prompt, "将当前分支 push"):
 		head, err := git("rev-parse", "HEAD")
 		if err != nil {
 			return "", err
@@ -90,8 +83,14 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		if err := os.WriteFile(provider, body, 0600); err != nil {
 			return "", err
 		}
+		if os.Getenv("STEERRUNNER_SUCCESS_OUTPUT") == "1" {
+			return "PR: https://controlled.invalid/owner/repo/pull/84\n本次发布已完成。", nil
+		}
+		if os.Getenv("STEERRUNNER_STAGE_PUBLISH_UNKNOWN") == "1" {
+			return `{"outcome":"blocked","summary":"publication uncertain","outputs":{"pr_url":"https://controlled.invalid/owner/repo/pull/84"},"blocker":{"category":"unknown_external","action":"publish","error":"response lost"}}`, nil
+		}
 		if os.Getenv("STEERRUNNER_STAGE_PUBLISH_PLAIN") == "1" {
-			return "Published PR: " + prURL, nil
+			return "Publication completed; URL needs reporting from existing context.", nil
 		}
 		result, _ := json.Marshal(map[string]any{"outcome": "done", "outputs": map[string]string{"pr_url": prURL}, "summary": "candidate pushed and PR created"})
 		return string(result), nil

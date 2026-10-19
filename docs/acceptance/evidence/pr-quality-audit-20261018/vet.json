@@ -1,0 +1,5 @@
+{
+  "source_commit": "e667a179139b90ec873a3d5d336dcbf1402d525d",
+  "command": "go vet ./internal/... ./cmd/...",
+  "exit_code": 0
+}

@@ -3,14 +3,14 @@
 package native
 
 import (
-	"encoding/base64"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
-	"unicode/utf16"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	terminal "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
@@ -102,33 +102,60 @@ func restartTerminalService(t *testing.T, m livetest.Manifest, dir string, insta
 	save(t, "service-restart-explicit-resume.json", map[string]any{"old_instance": old, "new_instance": next, "gated": gated, "resumed": resumed, "native_input_fingerprint_before": before, "native_input_fingerprint_after": terminalInputFingerprint(t, m, resumed)})
 }
 
-func psEncoded(script string) string {
-	units := utf16.Encode([]rune(script))
-	raw := make([]byte, len(units)*2)
-	for i, unit := range units {
-		raw[i*2], raw[i*2+1] = byte(unit), byte(unit>>8)
-	}
-	return base64.StdEncoding.EncodeToString(raw)
+func activeWriterScripts() (string, string) {
+	identity := "$p=Get-Process -Id $PID;@{kind='os';pid=$PID;created=$p.StartTime.ToUniversalTime().ToFileTimeUtc().ToString('x16');executable=$p.Path.ToLowerInvariant()}|ConvertTo-Json -Compress"
+	child := identity + " | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'child.json') -Encoding UTF8;Start-Sleep -Seconds 45;Set-Content -LiteralPath (Join-Path $PSScriptRoot 'late.txt') -Value late"
+	parent := "$ErrorActionPreference='Stop';$taskChild=Join-Path $PSScriptRoot 'child-writer.ps1';Start-Process -WindowStyle Hidden -WorkingDirectory $PSScriptRoot -FilePath (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('\"'+$taskChild+'\"')) | Out-Null;" + identity + " | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'parent.json') -Encoding UTF8;Start-Sleep -Seconds 55"
+	return parent, child
 }
 
 // Fault timing depends on positively observed OS writers, not a model promise
 // or elapsed startup delay. Both parent and detached child must belong to the
 // original native Job, including when the tool runs inside AppContainer.
-func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, original contracts.RunView) {
+func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, input contracts.RunRequest) {
 	t.Helper()
+	// A separate implementation Run supplies an active writer. workflow/2 has
+	// no feedback edge after publication; do not invent one for fault timing.
+	parent, child := activeWriterScripts()
+	parentBytes := append([]byte{0xef, 0xbb, 0xbf}, []byte(parent)...)
+	childBytes := append([]byte{0xef, 0xbb, 0xbf}, []byte(child)...)
+	specText := "This Run tests stopping owned native writers. Its only work is to run the driver-supplied parent script from Plan, which starts a child and records both OS identities under sr-owned-stop. Keep it running until the driver stops the Run. There is no implementation artifact or PR to produce. Do not recreate or edit the supplied scripts."
+	planText := fmt.Sprintf("The driver supplies sr-owned-stop/active-writer.ps1 (SHA256 %x) and child-writer.ps1 (SHA256 %x) after workspace creation. Wait for both files, verify their hashes, then run this short command exactly once and wait: powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-owned-stop/active-writer.ps1", sha256.Sum256(parentBytes), sha256.Sum256(childBytes))
+	input.Title = "SteerRunner owned native writer stop"
+	input.Documents = contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "active-stop.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "active-stop.plan.md", Content: &planText}}
+	input.Workflow.PromptOverrides = map[string]string{"implement.execute": "Execute the active-writer Spec and Plan now. Start the fixed native PowerShell command and wait while the test driver stops this Run."}
+	req := request("start-owned-native-writers", input)
+	response := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
+	id := response.Data.(map[string]any)["run_id"].(string)
+	defer cleanupTerminalFaultRun(t, m, dir, id, "active-writer-cleanup")
+	var original contracts.RunView
+	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
+		var err error
+		original, err = inspect(m, dir, id, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if info, err := os.Stat(original.Execution.Workspace); err == nil && info.IsDir() {
+			break
+		}
+	}
+	if original.Execution.Workspace == "" {
+		t.Fatal("active writer workspace unavailable")
+	}
+	real, err := filepath.EvalSymlinks(original.Execution.Workspace)
+	if err != nil || !strings.EqualFold(filepath.Clean(real), filepath.Clean(original.Execution.Workspace)) {
+		t.Fatal("active writer workspace redirected or unavailable", err)
+	}
 	root := filepath.Join(original.Execution.Workspace, "sr-owned-stop")
 	if err := os.Mkdir(root, 0700); err != nil {
 		t.Fatal(err)
 	}
-	identity := "$p=Get-Process -Id $PID;@{kind='os';pid=$PID;created=$p.StartTime.ToUniversalTime().ToFileTimeUtc().ToString('x16');executable=$p.Path.ToLowerInvariant()}|ConvertTo-Json -Compress"
-	child := identity + " | Set-Content -LiteralPath " + psquote(filepath.Join(root, "child.json")) + " -Encoding UTF8;Start-Sleep -Seconds 45;Set-Content -LiteralPath " + psquote(filepath.Join(root, "late.txt")) + " -Value late"
-	parent := "$ErrorActionPreference='Stop';Start-Process -WindowStyle Hidden -FilePath (Join-Path $env:SystemRoot 'System32/WindowsPowerShell/v1.0/powershell.exe') -ArgumentList @('-NoProfile','-EncodedCommand'," + psquote(psEncoded(child)) + ") | Out-Null;" + identity + " | Set-Content -LiteralPath " + psquote(filepath.Join(root, "parent.json")) + " -Encoding UTF8;Start-Sleep -Seconds 55"
-	script := filepath.Join(root, "active-writer.ps1")
-	if err := os.WriteFile(script, append([]byte{0xef, 0xbb, 0xbf}, []byte(parent)...), 0600); err != nil {
+	if err := os.WriteFile(filepath.Join(root, "active-writer.ps1"), parentBytes, 0600); err != nil {
 		t.Fatal(err)
 	}
-	feedback := request("start-owned-native-writers", contracts.ReplyInput{ExpectedRevision: original.Revision, Kind: "feedback", Text: "This is the final owned-process stop test. Immediately call your native PowerShell tool exactly once with this command: powershell.exe -NoProfile -ExecutionPolicy Bypass -File " + psquote(script) + " . Do not read, edit, commit or publish any other files; the test driver will stop this Run while that command is still running."})
-	invoke(t, m, dir, []string{"reply", "--run-id", original.RunID, "--input", "-"}, &feedback)
+	if err := os.WriteFile(filepath.Join(root, "child-writer.ps1"), childBytes, 0600); err != nil {
+		t.Fatal(err)
+	}
 	var writers [2]b.ProcessIdentity
 	for until := time.Now().Add(3 * time.Minute); time.Now().Before(until); time.Sleep(200 * time.Millisecond) {
 		complete := true

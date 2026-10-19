@@ -1,0 +1,13 @@
+{
+  "manifest": null,
+  "status": "failed",
+  "level": "L2",
+  "case_id": "default",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\newmain-framework\\configuration\\boundary-isolation\\local-codex.smoke-default-r1-fixture.json",
+  "started_at": "2026-10-19T03:44:54.8963587Z",
+  "scenario": "local-codex.smoke",
+  "finished_at": "2026-10-19T03:44:55.1125331Z",
+  "evidence": null,
+  "repeat_index": 1,
+  "error": "Conversion from JSON failed with error: After parsing a value an unexpected character was encountered: m. Path 'data.workflows[0].states['implement.execute'].prompt', line 1, position 58337."
+}

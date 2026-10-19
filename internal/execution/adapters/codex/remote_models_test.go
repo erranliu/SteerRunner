@@ -15,7 +15,7 @@ import (
 func TestRemoteAuditedModelRoutingAndRestoration(t *testing.T) {
 	cfg := RemoteAgentConfig{Model: "writer", ReasoningEffort: "high", AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "medium"}}
 	session := "original-thread"
-	for _, step := range []string{workflow.StepImplement, workflow.StepReport, workflow.StepAuditSpec, workflow.StepAuditCode, workflow.StepPublish, workflow.StepPublishReport} {
+	for _, step := range []string{workflow.StepImplement, workflow.StepReport, workflow.StepAuditReport, workflow.StepAuditCode, workflow.StepPublish, workflow.StepPublishReport} {
 		t.Run(step, func(t *testing.T) {
 			model, effort := cfg.Model, cfg.ReasoningEffort
 			if workflow.AuditStep(step) {

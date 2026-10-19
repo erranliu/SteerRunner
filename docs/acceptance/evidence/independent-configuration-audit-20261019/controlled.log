@@ -1,0 +1,65 @@
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+--- PASS: TestSRWorkflowDiscoveryAndSelection (5.52s)
+=== RUN   TestSRAuditedWorkflow
+=== RUN   TestSRAuditedWorkflow/repair_and_feedback
+=== RUN   TestSRAuditedWorkflow/budget
+=== RUN   TestSRAuditedWorkflow/bad_json
+=== RUN   TestSRAuditedWorkflow/unicode_alias
+=== RUN   TestSRAuditedWorkflow/unavailable
+=== RUN   TestSRAuditedWorkflow/question_restart
+=== RUN   TestSRAuditedWorkflow/unknown_audit
+--- PASS: TestSRAuditedWorkflow (166.68s)
+    --- PASS: TestSRAuditedWorkflow/repair_and_feedback (32.28s)
+    --- PASS: TestSRAuditedWorkflow/budget (24.22s)
+    --- PASS: TestSRAuditedWorkflow/bad_json (21.95s)
+    --- PASS: TestSRAuditedWorkflow/unicode_alias (20.14s)
+    --- PASS: TestSRAuditedWorkflow/unavailable (19.60s)
+    --- PASS: TestSRAuditedWorkflow/question_restart (28.02s)
+    --- PASS: TestSRAuditedWorkflow/unknown_audit (20.46s)
+=== RUN   TestEnvironmentCheckCLI
+--- PASS: TestEnvironmentCheckCLI (5.06s)
+=== RUN   TestSRMultipleRunsIsolation
+--- PASS: TestSRMultipleRunsIsolation (27.29s)
+=== RUN   TestSRStandalonePackage
+--- PASS: TestSRStandalonePackage (4.56s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (40.67s)
+    --- PASS: TestSRServiceOwnership/offline_verification (20.99s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.11s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (3.81s)
+    --- PASS: TestSRServiceOwnership/parent_job (3.92s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.97s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.95s)
+    --- PASS: TestSRServiceOwnership/different_release (3.93s)
+    --- PASS: TestSRServiceOwnership/stale_writer (3.75s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (4.15s)
+=== RUN   TestSRStabilityLostSubmitResponse
+--- PASS: TestSRStabilityLostSubmitResponse (19.73s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (21.76s)
+=== RUN   TestSRInputFreeze
+--- PASS: TestSRInputFreeze (19.47s)
+=== RUN   TestSRPermissionQualification
+--- PASS: TestSRPermissionQualification (14.22s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (21.39s)
+=== RUN   TestSRStorageLogsEvents
+--- PASS: TestSRStorageLogsEvents (18.53s)
+=== RUN   TestSRPublicationIdentity
+--- PASS: TestSRPublicationIdentity (18.77s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+--- PASS: TestSRPublicationBeforeWorkflowReady (21.07s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (21.40s)
+=== RUN   TestSRRestartRequiresResume
+--- PASS: TestSRRestartRequiresResume (20.26s)
+PASS

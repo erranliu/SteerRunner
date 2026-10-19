@@ -32,10 +32,10 @@ function Assert-SRAuditModels($Manifest,$View,[string]$History) {
             $taskContexts[$taskID]=$taskRow.payload
         }
     }} finally {$taskReader.Dispose()}
-    if(-not $taskBound -or @($View.audit.results).Count -ne 2){throw 'Audit model evidence lacks its bound session and two audits'}
+    if(-not $taskBound -or @($View.audit.results).Count -ne 1){throw 'Audit model evidence lacks its bound session and single code audit'}
     $taskRecords=@()
     foreach($taskAudit in $View.audit.results){
-        if($taskAudit.verdict -cne 'pass' -or -not $taskContexts.ContainsKey($taskAudit.turn_id)){throw 'Audit lacks its passing native turn'}
+        if($taskAudit.step -cne 'audit.code.execute' -or (Get-SRResultField $taskAudit 'failure') -or -not $taskAudit.source_result_id -or -not $taskAudit.result_id -or -not $taskAudit.pre_head -or $taskAudit.post_head -cne $View.pr.head_revision -or -not $taskContexts.ContainsKey($taskAudit.turn_id)){throw 'Audit lacks its source-bound native turn and verified post-head'}
         $taskContext=$taskContexts[$taskAudit.turn_id]
         if($taskContext.model -cne $Manifest.audit_model.model -or $taskContext.effort -cne $Manifest.audit_model.reasoning_effort){throw 'Native audit model/effort differs from the frozen selection'}
         $taskRecords+=@{step=$taskAudit.step;turn_id=$taskAudit.turn_id;model=$taskContext.model;effort=$taskContext.effort}
@@ -85,9 +85,10 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
             foreach($taskField in @('session_id','workspace','branch')){if(@($taskRuns|ForEach-Object {Get-SRResultField (Get-SRResultField $_ 'execution') $taskField}|Where-Object {$_}|Select-Object -Unique).Count -ne 2){throw 'Multi-Run native resources collide or are missing'}}
             if(@($taskRuns|ForEach-Object {Get-SRResultField (Get-SRResultField $_ 'pr') 'url'}|Where-Object {$_}|Select-Object -Unique).Count -ne 2 -or $taskMerge){throw 'Multi-Run PR identities collide or were unexpectedly merged'}
         }
-        {$_ -in @('development-core','development-smoke','development-feedback')} {
+        {$_ -in @('development-smoke','development-feedback','result-acquisition')} {
             if(-not $taskMerge){throw 'Live smoke lacks its verified merge'}
-            if($_ -ne 'development-core' -and -not (Get-SRResultField $Scenario 'feedback_head')){throw 'Full smoke/feedback case lacks its new feedback head'}
+            if($_ -eq 'development-feedback' -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
+            if(Get-SRResultField $Scenario 'feedback_head'){throw 'workflow/2 must not create a feedback revision'}
         }
         default {throw 'Unsupported development result driver'}
     }

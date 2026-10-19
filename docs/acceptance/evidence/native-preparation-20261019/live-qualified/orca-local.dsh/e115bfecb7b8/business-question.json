@@ -1,0 +1,177 @@
+{
+  "result_acquisition": [
+    {
+      "id": "8a8d66a8d4a64527805329e754a716ef8b383837f1867897dfc97137ae3a288b",
+      "contract": "implementation",
+      "source": {
+        "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+        "command_id": "f7db54bd394c344133c7d19a17619a96",
+        "turn_id": "f7db54bd394c344133c7d19a17619a96",
+        "attempt_id": "40a4e17c1354432f749751527e20132e",
+        "input_version": 1,
+        "final_digest": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+            "command_id": "f7db54bd394c344133c7d19a17619a96",
+            "turn_id": "f7db54bd394c344133c7d19a17619a96",
+            "attempt_id": "40a4e17c1354432f749751527e20132e",
+            "input_version": 1,
+            "final_digest": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+          },
+          "locator": "native.final:$/outcome",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+            "command_id": "f7db54bd394c344133c7d19a17619a96",
+            "turn_id": "f7db54bd394c344133c7d19a17619a96",
+            "attempt_id": "40a4e17c1354432f749751527e20132e",
+            "input_version": 1,
+            "final_digest": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+          },
+          "locator": "native.final:$/summary",
+          "method": "program"
+        },
+        {
+          "field": "question",
+          "source": {
+            "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+            "command_id": "f7db54bd394c344133c7d19a17619a96",
+            "turn_id": "f7db54bd394c344133c7d19a17619a96",
+            "attempt_id": "40a4e17c1354432f749751527e20132e",
+            "input_version": 1,
+            "final_digest": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+          },
+          "locator": "native.final:$/question",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+            "command_id": "f7db54bd394c344133c7d19a17619a96",
+            "turn_id": "f7db54bd394c344133c7d19a17619a96",
+            "attempt_id": "40a4e17c1354432f749751527e20132e",
+            "input_version": 1,
+            "final_digest": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+          },
+          "command_id": "f7db54bd394c344133c7d19a17619a96",
+          "status": "satisfied"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "fc2643f31ce81e68ff9fdfcb5f580255",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "581f53d1d13551148b66c264490bbc40",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Waiting for original dsh native preparation"
+    },
+    {
+      "operation_id": "7e1da6bee2e38f2a3c64cf2ec3d11d8f",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "6f2d9ae5c8e97f9c8192f05a273ef8f5",
+      "action": "start_turn",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "8f295d86d37e1eb8907151b70d245600",
+  "revision": 15,
+  "title": "SteerRunner L3 orca-local.dsh",
+  "correlation": {
+    "fixture_id": "e115bfecb7b8",
+    "scenario": "orca-local.dsh"
+  },
+  "input_digest": "ef52d3dbb04608c9f1afff3964cd4b2c74931af797e2d80a980855128261b31d",
+  "resource_digest": "f0cd4c4acf3296319aec9305999143f3c3739151f364c91a1b05df0d80ccbbdb",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage. For the FIRST implementation input, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}. Do not call tools on that first input. After receiving the caller's separate answer, or on later feedback in this same session, implement the task and do not repeat the question.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.input",
+  "status": "waiting_input",
+  "phase": "result_committed",
+  "diagnostic": "What validation phrase should authorize this artifact?",
+  "new_inputs_allowed": true,
+  "resume_required": false,
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "c:\\srt\\e115bfecb7b8\\s\\inputs\\8f295d86d37e1eb8907151b70d245600\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "c:\\srt\\e115bfecb7b8\\s\\inputs\\8f295d86d37e1eb8907151b70d245600\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "dsh",
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "40a4e17c1354432f749751527e20132e",
+    "generation": "5cf97d3d2b3bb47b81dd841b2145f1da",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+    "turn_id": "f7db54bd394c344133c7d19a17619a96",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600",
+    "branch": "erranliu/sl-8f295d86d37e1eb8907151b70d245600"
+  },
+  "question": {
+    "source": "program",
+    "id": "66a1a41f288947364db99f9c683deae2",
+    "text": "What validation phrase should authorize this artifact?",
+    "allow_free_text": true
+  },
+  "controls": {
+    "can_reply": true,
+    "can_resume": false,
+    "can_stop": true,
+    "reason": "What validation phrase should authorize this artifact?"
+  },
+  "summary": "Awaiting caller validation phrase",
+  "final": {
+    "command_id": "f7db54bd394c344133c7d19a17619a96",
+    "attempt_id": "40a4e17c1354432f749751527e20132e",
+    "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_16cfd318-99be-437f-ac27-8320c55f07c7:771eceaf-3c9a-4238-8ee0-5786f66acce7",
+    "turn_id": "f7db54bd394c344133c7d19a17619a96",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "dsh-plugin-v1",
+    "item_id": "80b7e912-a8ee-4ce7-bf62-c27528aeec88",
+    "text": "{\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}"
+  },
+  "created_at": "2026-10-18T23:24:56.1201105Z",
+  "updated_at": "2026-10-18T23:25:35.3749249Z"
+}

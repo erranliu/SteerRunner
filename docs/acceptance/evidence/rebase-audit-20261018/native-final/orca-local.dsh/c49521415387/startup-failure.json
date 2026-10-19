@@ -1,0 +1,107 @@
+{
+  "business_inputs": 0,
+  "failure": {
+    "version": 1,
+    "owner": {
+      "job": {
+        "owner": {
+          "kind": "os",
+          "pid": 25732,
+          "created": "01dd5f101051d082",
+          "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\rebase-audit-20261018\\steerrunner-agent-final.exe"
+        },
+        "worker": {},
+        "handle": 0
+      },
+      "runtime_sha256": "2ce2b2821b2938f51d92b51e4f147b6a2ac624c597f54a39f36108d04d9170a2",
+      "extension_bundle_sha256": "0c4ca6fbf278431762ff419ecd4bea6e9938079dedb70cebfbb06577e1b6589d",
+      "session_id": "19a5d5f0-74cc-e7c6-29a7-fec1ed5c4a45",
+      "run_id": "f63edbf161bb0247480303b725aed07e",
+      "configuration_digest": "61fbcd1cb654ee91fb2d73e80cceadf987885e55ddb230b367e40d5d071319e6",
+      "access_mode": "sandbox"
+    },
+    "no_worker_started": true,
+    "authentication_closed": true,
+    "closed_at": "2026-10-18T14:50:51.0524782Z"
+  },
+  "original_terminal_closed": true,
+  "run": {
+    "operations": [
+      {
+        "operation_id": "fe617329731479d670f3ac4ae987a8f2",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "17f329bf04463c635f34b34d59a606bb",
+        "action": "create_resource",
+        "status": "accepted",
+        "diagnostic": "Waiting for original dsh native preparation"
+      },
+      {
+        "operation_id": "5ca2b209745815c98abfa6fca1c5c90b",
+        "action": "stop_execution",
+        "status": "confirmed"
+      }
+    ],
+    "run_id": "f63edbf161bb0247480303b725aed07e",
+    "revision": 9,
+    "title": "SteerRunner L3 orca-local.dsh",
+    "correlation": {
+      "fixture_id": "c49521415387",
+      "scenario": "orca-local.dsh"
+    },
+    "input_digest": "61fbcd1cb654ee91fb2d73e80cceadf987885e55ddb230b367e40d5d071319e6",
+    "resource_digest": "f0cd4c4acf3296319aec9305999143f3c3739151f364c91a1b05df0d80ccbbdb",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage. For the FIRST implementation input, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}. Do not call tools on that first input. After receiving the caller's separate answer, or on later feedback in this same session, implement the task and do not repeat the question.",
+        "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+      }
+    },
+    "step": "implement.execute",
+    "status": "stopped",
+    "phase": "stopped",
+    "new_inputs_allowed": false,
+    "resume_required": true,
+    "stop_status": "stopped",
+    "materials": [
+      {
+        "kind": "inline",
+        "path": "smoke.spec.md",
+        "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+        "snapshot_path": "c:\\srt\\c49521415387\\s\\inputs\\f63edbf161bb0247480303b725aed07e\\smoke.spec.md",
+        "execution_location": "prompt:smoke.spec.md"
+      },
+      {
+        "kind": "inline",
+        "path": "smoke.plan.md",
+        "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+        "snapshot_path": "c:\\srt\\c49521415387\\s\\inputs\\f63edbf161bb0247480303b725aed07e\\smoke.plan.md",
+        "execution_location": "prompt:smoke.plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "dsh",
+      "workspace_scope": "revision",
+      "turn_started": false,
+      "attempt_id": "9a97d01fc8869788288c071bd9c7630b",
+      "generation": "6f31536303618b3fa89df7fb5798e28f",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_dc4c7621-72b8-48d0-b842-b1e24aa6b88e:0c13ebaf-05e9-483a-a9df-7cada2619b73",
+      "final_available": false,
+      "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-f63edbf161bb0247480303b725aed07e",
+      "branch": "erranliu/sl-f63edbf161bb0247480303b725aed07e"
+    },
+    "controls": {
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": false
+    },
+    "created_at": "2026-10-18T14:50:37.5715655Z",
+    "updated_at": "2026-10-18T14:50:54.0067461Z"
+  }
+}

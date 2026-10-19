@@ -8,7 +8,7 @@ import (
 func TestRemoteAuditedModelsRequireManagedRuntime(t *testing.T) {
 	var request map[string]any
 	_ = json.Unmarshal(validRun(), &request)
-	request["workflow"] = map[string]any{"id": "development-audited", "version": 1, "audit_model": map[string]any{"model": "reviewer", "reasoning_effort": "high"}}
+	request["workflow"] = map[string]any{"id": "development-audited", "version": 2, "audit_model": map[string]any{"model": "reviewer", "reasoning_effort": "high"}}
 	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "orca_environment", "environment": "paired"}, "settings": map[string]any{"agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
 	wire, _ := json.Marshal(request)
 	if fault := ValidateRun(wire); fault != nil {

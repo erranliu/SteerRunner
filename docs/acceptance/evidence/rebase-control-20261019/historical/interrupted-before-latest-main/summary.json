@@ -1,0 +1,46 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "5861ded54e0233633a521cc620441d46291e8cf9",
+  "source_dirty": false,
+  "started_at": "2026-10-19T03:31:40.7499544Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "running",
+  "results": [
+    {
+      "terminal_extensions_passed": true,
+      "test_count": 376,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final",
+      "native_zero_match_guard": true,
+      "terminal_extension_exit": 0,
+      "terminal_extension_test_count": 29,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final\\framework",
+      "level": "L1",
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 2,
+  "selected_scenarios": [
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation"
+  ],
+  "repeat": 1,
+  "planned_case_count": 7,
+  "authorized_exclusion_count": 4,
+  "scope": "admin-free-subset"
+}

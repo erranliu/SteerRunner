@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:399: L2 must exercise production publication without the scripted publisher <nil>
+--- FAIL: TestSRLiveScenario (0.14s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (0.12s)
+FAIL

@@ -1,0 +1,1491 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+  "source_dirty": true,
+  "started_at": "2026-10-19T02:03:31.3004729Z",
+  "requested_levels": [
+    "L2",
+    "L3"
+  ],
+  "status": "incomplete",
+  "results": [
+    {
+      "test_count": 305,
+      "terminal_extensions_passed": true,
+      "exit_code": 0,
+      "terminal_extension_test_count": 28,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2",
+      "level": "L1",
+      "native_driver_compile_exit": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\framework",
+      "terminal_extension_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "scenario_count": 16,
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\controlled"
+    },
+    {
+      "level": "L2-GitBoundary",
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\l2-git-boundary.log"
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.codex",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.codex-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.codex",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "environment-check.orca-local-sandbox",
+        "case_id": "complete",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.orca-local-sandbox-complete-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "complete",
+      "finished_at": null,
+      "scenario": "environment-check.orca-local-sandbox",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.smoke",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.smoke-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.smoke",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "environment-check.orca-full-access",
+        "case_id": "complete",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex-full-access",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.orca-full-access-complete-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "complete",
+      "finished_at": null,
+      "scenario": "environment-check.orca-full-access",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "environment-check.orca-sandbox",
+        "case_id": "complete",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.orca-sandbox-complete-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "complete",
+      "finished_at": null,
+      "scenario": "environment-check.orca-sandbox",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "environment-check.local-full-access",
+        "case_id": "complete",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/local-codex-full-access",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.local-full-access-complete-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "complete",
+      "finished_at": null,
+      "scenario": "environment-check.local-full-access",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "case_id": "complete",
+      "started_at": "2026-10-19T02:17:18.1820212Z",
+      "expected_outcome": "checked",
+      "identity": {
+        "pid": 39764,
+        "manifest_sha256": "62cfa1d3a0d9f8556a88b14a119ca259748cfafb5e4e1b8373f77732c7111240",
+        "driver_sha256": "9849b98a65a5ca048103a6afb0c21e45bd977dd5bfb71b616952760c978d2c48",
+        "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+        "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "environment-check.local-sandbox",
+        "level": "L3"
+      },
+      "repeat_index": 1,
+      "evidence": "C:\\srt\\1ffda9e22d29\\evidence",
+      "scenario": "environment-check.local-sandbox",
+      "finished_at": "2026-10-19T02:21:03.8410878Z",
+      "status": "passed",
+      "level": "L3",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.local-sandbox-complete-r1-fixture.json",
+      "manifest": "C:\\srt\\1ffda9e22d29\\manifest.json",
+      "resources": [
+        "root:C:\\srt\\1ffda9e22d29",
+        "base:codex/srtest/1ffda9e22d29/base",
+        "run:a46b6f429cac4895b9c427df47ee0207",
+        "workspace:c:\\srt\\1ffda9e22d29\\s\\c\\bbeis7f4qvszsqltfs4ap72eue\\w",
+        "session:01a151f3-a217-7c31-8b02-eb232a62b6c9",
+        "branch:refs/heads/steerline-check/a46b6f429cac4895b9c427df47ee0207/head",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/556"
+      ]
+    },
+    {
+      "case_id": "default",
+      "started_at": "2026-10-19T02:21:05.3584508Z",
+      "expected_outcome": "pr_ready",
+      "identity": {
+        "pid": 44128,
+        "manifest_sha256": "cbd7cfb11b10f009e07f1ca828fa56693e2c83bb13590467dbe41c38fc2d62be",
+        "driver_sha256": "9849b98a65a5ca048103a6afb0c21e45bd977dd5bfb71b616952760c978d2c48",
+        "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+        "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.multirun",
+        "level": "L3"
+      },
+      "repeat_index": 1,
+      "evidence": "C:\\srt\\0a2830bacb48\\evidence",
+      "scenario": "local-codex.multirun",
+      "finished_at": "2026-10-19T02:29:32.4526935Z",
+      "status": "passed",
+      "level": "L3",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\local-codex.multirun-default-r1-fixture.json",
+      "manifest": "C:\\srt\\0a2830bacb48\\manifest.json",
+      "resources": [
+        "root:C:\\srt\\0a2830bacb48",
+        "base:codex/srtest/0a2830bacb48/base",
+        "run:2410ac6b1fd06598ae87cf262e457cb8",
+        "workspace:c:\\srt\\0a2830bacb48\\s\\workspaces\\n4jootet6hs364lntu3pqvt6d4",
+        "session:01a151f7-e682-76f2-a874-548fd3a024e0",
+        "branch:codex/runner-2410ac6b1fd06598ae87cf262e457cb8",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/559",
+        "run:1013079180e5f16dc82c6614a4ff2d33",
+        "workspace:c:\\srt\\0a2830bacb48\\s\\workspaces\\xgmvuvskvb3562g3e55r6bbt4i",
+        "session:01a151f7-f8a8-75f2-9547-792f2b5f390e",
+        "branch:codex/runner-1013079180e5f16dc82c6614a4ff2d33",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/560"
+      ]
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "local-codex.audited",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/local-codex-audited",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\local-codex.audited-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "local-codex.audited",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "case_id": "default",
+      "started_at": "2026-10-19T02:29:33.7463385Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "pid": 15776,
+        "manifest_sha256": "1d1973a04ec576600cfea5016029a0ee4fb14e5cfdfd6324c52beb575c5124e3",
+        "driver_sha256": "9849b98a65a5ca048103a6afb0c21e45bd977dd5bfb71b616952760c978d2c48",
+        "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+        "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.feedback",
+        "level": "L3"
+      },
+      "repeat_index": 1,
+      "evidence": "C:\\srt\\f6814fe07f44\\evidence",
+      "scenario": "local-codex.feedback",
+      "finished_at": "2026-10-19T02:35:53.329717Z",
+      "status": "passed",
+      "level": "L3",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\local-codex.feedback-default-r1-fixture.json",
+      "manifest": "C:\\srt\\f6814fe07f44\\manifest.json",
+      "resources": [
+        "root:C:\\srt\\f6814fe07f44",
+        "base:codex/srtest/f6814fe07f44/base",
+        "run:ae974df4aaf7d7d17ba1b1e8efb1a801",
+        "workspace:c:\\srt\\f6814fe07f44\\s\\workspaces\\b3ki4uwacxvhdlrsy3b6tynh5a",
+        "session:01a151fe-fd2c-7fa1-b5ea-6dd50e3abacc",
+        "branch:codex/runner-ae974df4aaf7d7d17ba1b1e8efb1a801",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/561"
+      ]
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "environment-check.orca-local-full-access",
+        "case_id": "complete",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-codex-full-access",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\environment-check.orca-local-full-access-complete-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "complete",
+      "finished_at": null,
+      "scenario": "environment-check.orca-local-full-access",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.publication-unknown",
+        "case_id": "completion-gap",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.publication-unknown-completion-gap-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "completion-gap",
+      "finished_at": null,
+      "scenario": "orca-remote.publication-unknown",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.publication-unknown",
+        "case_id": "query-unavailable",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.publication-unknown-query-unavailable-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "query-unavailable",
+      "finished_at": null,
+      "scenario": "orca-remote.publication-unknown",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.service-restart",
+        "case_id": "graceful-active",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.service-restart-graceful-active-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "graceful-active",
+      "finished_at": null,
+      "scenario": "orca-remote.service-restart",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.service-restart",
+        "case_id": "kill-active",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.service-restart-kill-active-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "kill-active",
+      "finished_at": null,
+      "scenario": "orca-remote.service-restart",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.service-restart",
+        "case_id": "graceful-boundary",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.service-restart-graceful-boundary-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "graceful-boundary",
+      "finished_at": null,
+      "scenario": "orca-remote.service-restart",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.service-restart",
+        "case_id": "kill-boundary",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.service-restart-kill-boundary-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "kill-boundary",
+      "finished_at": null,
+      "scenario": "orca-remote.service-restart",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.connection-reconnect",
+        "case_id": "active-disconnect",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.connection-reconnect-active-disconnect-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "active-disconnect",
+      "finished_at": null,
+      "scenario": "orca-remote.connection-reconnect",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.connection-reconnect",
+        "case_id": "pre-send-disconnect",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.connection-reconnect-pre-send-disconnect-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "pre-send-disconnect",
+      "finished_at": null,
+      "scenario": "orca-remote.connection-reconnect",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.caller-exit",
+        "case_id": "accepted-response-lost",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.caller-exit-accepted-response-lost-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "accepted-response-lost",
+      "finished_at": null,
+      "scenario": "orca-remote.caller-exit",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.full-access",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex-full-access",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.full-access-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-remote.full-access",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.smoke",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.smoke-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-remote.smoke",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "case_id": "default",
+      "started_at": "2026-10-19T02:35:54.4292592Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "pid": 40196,
+        "manifest_sha256": "0238af40fd6ac2ff03e417b832d757f7100225623bd5e47282e9fea5476577fc",
+        "driver_sha256": "9849b98a65a5ca048103a6afb0c21e45bd977dd5bfb71b616952760c978d2c48",
+        "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+        "source_commit": "59c7597ac8056fc5c29ad622034e10e74e4395de",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.smoke",
+        "level": "L2"
+      },
+      "repeat_index": 1,
+      "evidence": "C:\\srt\\a923d80b9051\\evidence",
+      "scenario": "local-codex.smoke",
+      "finished_at": "2026-10-19T02:43:42.746927Z",
+      "status": "passed",
+      "level": "L2",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\local-codex.smoke-default-r1-fixture.json",
+      "manifest": "C:\\srt\\a923d80b9051\\manifest.json",
+      "resources": [
+        "root:C:\\srt\\a923d80b9051",
+        "base:codex/srtest/a923d80b9051/base",
+        "run:31f45aec4845b759efe46ddabc73cf2a",
+        "workspace:c:\\srt\\a923d80b9051\\s\\workspaces\\3p47oktvmflnvlnlyxgnwojpna",
+        "session:01a15204-be18-7273-9005-cf6aae92328a",
+        "branch:codex/runner-31f45aec4845b759efe46ddabc73cf2a",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/564"
+      ]
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.dsh",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-dsh",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.dsh-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.dsh",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.pi-full-access",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-pi-full-access",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.pi-full-access-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.pi-full-access",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.pi",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-pi",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.pi-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.pi",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.stop-revocation",
+        "case_id": "active",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.stop-revocation-active-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "active",
+      "finished_at": null,
+      "scenario": "orca-remote.stop-revocation",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.stop-revocation",
+        "case_id": "boundary",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.stop-revocation-boundary-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "boundary",
+      "finished_at": null,
+      "scenario": "orca-remote.stop-revocation",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-remote.stop-revocation",
+        "case_id": "unreachable",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/harness/admin_host",
+            "code": "missing_test_facility",
+            "message": "The case requires an explicitly configured isolated network fault host."
+          },
+          {
+            "path": "/configurations/orca-remote-codex",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-remote.stop-revocation-unreachable-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "unreachable",
+      "finished_at": null,
+      "scenario": "orca-remote.stop-revocation",
+      "status": "unavailable",
+      "repeat_index": 1
+    },
+    {
+      "manifest": null,
+      "availability": {
+        "scenario_id": "orca-local.mixed",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "unavailable",
+        "reasons": [
+          {
+            "path": "/configurations/orca-local-pi",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          },
+          {
+            "path": "/configurations/orca-local-dsh",
+            "code": "missing_configuration",
+            "message": "The required execution configuration is missing or invalid."
+          }
+        ]
+      },
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\orca-local.mixed-default-r1-fixture.json",
+      "evidence": null,
+      "level": "L3",
+      "started_at": null,
+      "case_id": "default",
+      "finished_at": null,
+      "scenario": "orca-local.mixed",
+      "status": "unavailable",
+      "repeat_index": 1
+    }
+  ],
+  "executed_case_count": 4,
+  "passed_case_count": 4,
+  "first_pass_rate": 1,
+  "max_parallel": 1,
+  "baseline": {
+    "l2_verified": true,
+    "configuration_issues": []
+  },
+  "availability": [
+    {
+      "scenario_id": "orca-local.codex",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.pi",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.pi-full-access",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-pi-full-access",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.dsh",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.full-access",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex-full-access",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "pre-send-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.feedback",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.audited",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/local-codex-audited",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "environment-check.local-sandbox",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "environment-check.local-full-access",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/local-codex-full-access",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "environment-check.orca-sandbox",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "environment-check.orca-full-access",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-remote-codex-full-access",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "environment-check.orca-local-sandbox",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "environment-check.orca-local-full-access",
+      "case_id": "complete",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex-full-access",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.mixed",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        },
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-20261019-014416\\acceptance-r2\\bin\\steerrunner.exe",
+  "runner_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+  "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee",
+  "source_config_digest": "69f7213d4844e582d826801b147ce9e72de359b0780a3d6b4facc2887d631a19",
+  "configuration_sha256": "69f7213d4844e582d826801b147ce9e72de359b0780a3d6b4facc2887d631a19",
+  "selected_scenarios": [
+    "orca-local.codex",
+    "orca-local.pi",
+    "orca-local.pi-full-access",
+    "orca-local.dsh",
+    "local-codex.smoke",
+    "orca-remote.smoke",
+    "orca-remote.full-access",
+    "orca-remote.caller-exit",
+    "orca-remote.connection-reconnect",
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation",
+    "orca-remote.publication-unknown",
+    "local-codex.feedback",
+    "local-codex.audited",
+    "local-codex.multirun",
+    "environment-check.local-sandbox",
+    "environment-check.local-full-access",
+    "environment-check.orca-sandbox",
+    "environment-check.orca-full-access",
+    "orca-local.smoke",
+    "environment-check.orca-local-sandbox",
+    "environment-check.orca-local-full-access",
+    "orca-local.mixed"
+  ],
+  "repeat": 1,
+  "planned_case_count": 30,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "levels": {
+    "L2": {
+      "passed": [
+        "local-codex.smoke/default"
+      ],
+      "unavailable": [],
+      "excluded": [],
+      "registered": [
+        "local-codex.smoke/default"
+      ],
+      "complete_level_passed": true,
+      "missing": [],
+      "executed": [
+        "local-codex.smoke/default"
+      ],
+      "requested": [
+        "local-codex.smoke/default"
+      ]
+    },
+    "L3": {
+      "passed": [
+        "environment-check.local-sandbox/complete",
+        "local-codex.multirun/default",
+        "local-codex.feedback/default"
+      ],
+      "unavailable": [
+        "orca-local.codex/default",
+        "environment-check.orca-local-sandbox/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "local-codex.audited/default",
+        "environment-check.orca-local-full-access/complete",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.full-access/default",
+        "orca-remote.smoke/default",
+        "orca-local.dsh/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.pi/default",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-local.mixed/default"
+      ],
+      "excluded": [],
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "complete_level_passed": false,
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.audited/default",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "executed": [
+        "environment-check.local-sandbox/complete",
+        "local-codex.multirun/default",
+        "local-codex.feedback/default"
+      ],
+      "requested": [
+        "orca-local.codex/default",
+        "environment-check.orca-local-sandbox/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.local-sandbox/complete",
+        "local-codex.multirun/default",
+        "local-codex.audited/default",
+        "local-codex.feedback/default",
+        "environment-check.orca-local-full-access/complete",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.full-access/default",
+        "orca-remote.smoke/default",
+        "orca-local.dsh/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.pi/default",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-local.mixed/default"
+      ]
+    }
+  },
+  "unavailable_case_count": 26,
+  "finished_at": "2026-10-19T02:43:43.1915857Z",
+  "coverage_derivation": {
+    "source_summary_sha256": "c642020798efa8195a303d85a335e07edf97a4dec19ffcde2c368650b1ef1bd1",
+    "note": "Explicit ID sets derived from original frozen case records by the final reporter; no outcomes reclassified."
+  },
+  "requirements_sha256": "e312d68bf866a9c6cc696ff55b4bdf8730d6ea7447212a3d416fbd767912575a"
+}

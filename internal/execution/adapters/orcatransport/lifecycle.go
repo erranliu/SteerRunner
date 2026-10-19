@@ -19,27 +19,29 @@ import (
 )
 
 type Turn struct {
-	Extension       *TerminalReceipt         `json:"extension,omitempty"`
-	Model           string                   `json:"model,omitempty"`
-	ReasoningEffort string                   `json:"reasoning_effort,omitempty"`
-	StepID          string                   `json:"step_id,omitempty"`
-	WireFormat      string                   `json:"wire_format,omitempty"`
-	Recorded        *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
-	Inspection      *NativeInspection        `json:"inspection,omitempty"`
-	Native          NativeProof              `json:"native"`
-	Command         string                   `json:"command"`
-	Request         string                   `json:"request,omitempty"`
-	InputDigest     string                   `json:"input_digest"`
-	Attempted       bool                     `json:"attempted"`
-	Rejected        bool                     `json:"rejected,omitempty"`
-	Accepted        bool                     `json:"accepted"`
-	Started         bool                     `json:"started"`
-	Settled         bool                     `json:"settled"`
-	Prompt          string                   `json:"prompt"`
-	Reply           string                   `json:"reply,omitempty"`
-	ReplyDigest     string                   `json:"reply_digest,omitempty"`
+	Model            string                   `json:"model,omitempty"`
+	ReasoningEffort  string                   `json:"reasoning_effort,omitempty"`
+	StepID           string                   `json:"step_id,omitempty"`
+	Extension        *TerminalReceipt         `json:"extension,omitempty"`
+	WireFormat       string                   `json:"wire_format,omitempty"`
+	Recorded         *codex.RemoteTurnReceipt `json:"recorded,omitempty"`
+	ReceiptRequest   string                   `json:"receipt_request,omitempty"`
+	ReceiptQueriedAt time.Time                `json:"receipt_queried_at,omitempty"`
+	Native           NativeProof              `json:"native"`
+	Command          string                   `json:"command"`
+	Request          string                   `json:"request,omitempty"`
+	InputDigest      string                   `json:"input_digest"`
+	Attempted        bool                     `json:"attempted"`
+	Rejected         bool                     `json:"rejected,omitempty"`
+	Accepted         bool                     `json:"accepted"`
+	Started          bool                     `json:"started"`
+	Settled          bool                     `json:"settled"`
+	Prompt           string                   `json:"prompt"`
+	Reply            string                   `json:"reply,omitempty"`
+	ReplyDigest      string                   `json:"reply_digest,omitempty"`
 }
 type State struct {
+	Control            *ControlTerminal       `json:"control,omitempty"`
 	TerminalReadiness  *TerminalReceipt       `json:"terminal_readiness,omitempty"`
 	TerminalOwner      *TerminalOwner         `json:"terminal_owner,omitempty"`
 	AdmissionAttempted bool                   `json:"admission_attempted,omitempty"`
@@ -188,6 +190,19 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	if state.AdmissionAttempted && state.RemoteReadiness == nil || state.AdmissionAccepted && !state.AdmissionAttempted {
 		return state, errors.New("remote admission lost its original preparation binding")
 	}
+	if state.Control != nil {
+		if !l.usesControl() {
+			return state, errors.New("unexpected native control resource")
+		}
+		if err := l.validateControl(s, state, false); err != nil {
+			return state, err
+		}
+	}
+	if l.usesControl() && (state.LaunchAttempted || len(state.Turns) != 0) {
+		if err := l.validateControl(s, state, true); err != nil {
+			return state, err
+		}
+	}
 	seen := map[string]bool{}
 	for _, turn := range state.Turns {
 		if turn.WireFormat != "" && turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand && turn.WireFormat != extensionWireCommand {
@@ -197,8 +212,8 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 			if err := validateRecordedTurn(state, &turn, *turn.Recorded); err != nil {
 				return state, err
 			}
-			if turn.Settled && (turn.Inspection == nil || !turn.Inspection.Closed || turn.Inspection.Unknown || turn.Inspection.Process == nil || turn.Inspection.Process.RuntimeID != state.Process.RuntimeID || turn.Inspection.Process.WorktreeID != state.Process.WorktreeID) {
-				return state, errors.New("original native inspector closure evidence missing")
+			if turn.ReceiptRequest == "" || turn.ReceiptQueriedAt.IsZero() || state.Control == nil {
+				return state, errors.New("original native control query evidence missing")
 			}
 		}
 		if !b.StableExecutionID(turn.Command) || seen[turn.Command] || len(turn.InputDigest) != 64 || turn.Request != "" && !b.StableExecutionID(strings.ReplaceAll(turn.Request, "-", "")) || turn.Started && !turn.Accepted || turn.Accepted && !turn.Attempted || turn.Settled && (turn.Reply == "" || turn.ReplyDigest != digest([]byte(turn.Reply))) {
@@ -218,7 +233,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 			return state, errors.New("original native proof agent differs from frozen execution")
 		}
 		if turn.WireFormat == extensionWireCommand {
-			if l.profile.Terminal == nil || state.TerminalReadiness == nil || state.TerminalOwner == nil || turn.Recorded != nil || turn.Inspection != nil {
+			if l.profile.Terminal == nil || state.TerminalReadiness == nil || state.TerminalOwner == nil || turn.Recorded != nil || turn.ReceiptRequest != "" {
 				return state, errors.New("native extension readiness/turn binding missing")
 			}
 			if err := l.validateTerminalReceipt(*state.TerminalReadiness); err != nil {
@@ -386,6 +401,10 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 		return b.PreparationFacts{}, err
 	}
 	if l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed {
+		if l.usesControl() && (state.Control == nil || state.Control.Ready == nil) {
+			intent := l.controlIntent(s, state)
+			return b.PreparationFacts{Workspace: b.GateReady, Resource: b.GateRequired, Session: b.GateUnverified, ResourceRequired: &intent}, nil
+		}
 		return b.PreparationFacts{Workspace: b.GateReady, Resource: b.GateRequired, Session: b.GateUnverified, ResourceRequired: &b.ResourceIntent{Purpose: "agent-start", Name: "original-terminal", Objective: l.setup.AgentLaunchCommand}}, nil
 	}
 	resource := b.GateNotApplicable
@@ -422,7 +441,11 @@ func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.Lifecy
 	case b.LifecyclePrepareWorkspace:
 		receipt, err = l.prepareWorkspace(ctx, r, false)
 	case b.LifecycleCreateResource:
-		receipt, err = l.launchAgent(ctx, r, false)
+		if r.Input.Resource != nil && r.Input.Resource.Purpose == controlPurpose {
+			receipt, err = l.prepareControl(ctx, r, false)
+		} else {
+			receipt, err = l.launchAgent(ctx, r, false)
+		}
 	case b.LifecyclePrepareSession:
 		receipt, err = l.prepareInput(ctx, r)
 	case b.LifecycleStartTurn, b.LifecycleSubmitInput:
@@ -793,6 +816,10 @@ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.Life
 		receipt, err := l.prepareWorkspace(ctx, r, true)
 		return receipt, nil, err
 	case b.LifecycleCreateResource:
+		if r.Input.Resource != nil && r.Input.Resource.Purpose == controlPurpose {
+			receipt, err := l.prepareControl(ctx, r, true)
+			return receipt, nil, err
+		}
 		receipt, err := l.launchAgent(ctx, r, true)
 		return receipt, nil, err
 	case b.LifecyclePrepareSession:
@@ -821,7 +848,7 @@ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.Life
 	}
 }
 
-func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b.StopHandle) (receipt b.LifecycleReceipt, err error) {
+func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, owned b.StopHandle) (receipt b.LifecycleReceipt, err error) {
 	receipt = b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	receipt.Operation.Receipt = nil
 	if err := r.Validate(); err != nil {
@@ -839,40 +866,17 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 	}
 	progress := stopProgress{Version: 1, Phase: "not-attempted"}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
-	if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
-		// A helper that has already settled may have returned to its original
-		// shell. Bind the exact PTY/worktree, then require the native proof below;
-		// an agent display label is not the identity of those owned resources.
-		if e := l.originalCodexStopTerminal(ctx, r.Snapshot); e != nil {
-			return receipt, e
+	if h, ok := owned.(*observationHandle); ok {
+		if h.Identity() != r.Snapshot.Ref.External {
+			return receipt, errors.New("stop changed original observation identity")
 		}
-		state, e := l.state(r.Snapshot)
-		if e != nil {
-			return receipt, e
-		}
-		if e = l.stopCodexNative(ctx, state, r.Snapshot.Workspace.Path); e != nil {
-			return receipt, e
-		}
-	} else if _, err := l.original(ctx, r.Snapshot); err != nil {
+		_ = h.owner.Close(ctx)
+		// Do not await an event acknowledgement from the actor performing stop.
+		// The control gate drains in-flight reads; its revocation checkpoint
+		// rejects later queries even before this goroutine has fully returned.
+	}
+	if err = l.originalForStop(ctx, r.Snapshot); err != nil {
 		return receipt, err
-	}
-	state, stateErr := l.state(r.Snapshot)
-	if stateErr != nil {
-		return receipt, stateErr
-	}
-	authErr := l.revokeAuthentication(ctx, state)
-	// Stop authorization is already durable. Credential uncertainty cannot keep
-	// the original worker running; finish its exact PTY closure within a bounded
-	// cleanup context even if the preceding credential observation timed out.
-	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
-	defer cancelStop()
-	if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
-		err = l.originalCodexStopTerminal(stopCtx, r.Snapshot)
-	} else {
-		_, err = l.original(stopCtx, r.Snapshot)
-	}
-	if err != nil {
-		return receipt, errors.Join(authErr, err)
 	}
 	var terminalOwner *TerminalOwner
 	if l.profile.Terminal != nil {
@@ -925,6 +929,31 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		}
 	}
 
+	state, stateErr := l.state(r.Snapshot)
+	if stateErr != nil {
+		return receipt, stateErr
+	}
+	var authErr error
+	if l.profile.Terminal == nil {
+		// An original pending read may have consumed the caller's stop budget.
+		// Finish that same actor/request within a separate bounded cleanup budget.
+		authCtx, cancelAuth := context.WithTimeout(context.WithoutCancel(ctx), 45*time.Second)
+		authErr = l.revokeAuthentication(authCtx, state)
+		cancelAuth()
+	}
+	// Stop authorization is already durable. Credential uncertainty cannot keep
+	// the original worker running; finish its exact PTY closure within a bounded
+	// cleanup context even if the preceding credential observation timed out.
+	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
+	defer cancelStop()
+	if err = l.originalForStop(stopCtx, r.Snapshot); err != nil {
+		return receipt, errors.Join(authErr, err)
+	}
+	if l.usesControl() {
+		if err = l.stopCodexNative(stopCtx, state, r.Snapshot.Workspace.Path); err != nil {
+			return receipt, errors.Join(authErr, err)
+		}
+	}
 	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
@@ -950,31 +979,28 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		if stateErr != nil {
 			return receipt, stateErr
 		}
-		cleanupErr := l.cleanupInspections(stopCtx, &state)
-		if errors.Is(authErr, errAuthenticationProofUnverified) {
-			cleanupErr = errors.Join(cleanupErr, l.closeFailedAuthenticationActor(stopCtx, state))
+		// Do not destroy the sole route to an uncommitted revocation proof.
+		// The known original control actor remains owned and blocks settlement.
+		if authErr != nil {
+			return receipt, authErr
 		}
-		if authErr != nil || cleanupErr != nil {
-			return receipt, errors.Join(authErr, cleanupErr)
+		if cleanupErr := l.closeControl(stopCtx, state); cleanupErr != nil {
+			return receipt, cleanupErr
 		}
 		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
 			// Orca's acknowledged PTY close can precede its published inventory.
 			// Poll only the same original identity; never repeat the close.
 			until := time.Now().Add(3 * time.Second)
 			for {
-				if err := l.verifyStopped(ctx, r.Snapshot); err == nil {
+				if err := l.verifyStopped(stopCtx, r.Snapshot); err == nil {
 					break
-				} else if time.Now().After(until) || ctx.Err() != nil {
+				} else if time.Now().After(until) || stopCtx.Err() != nil {
 					return receipt, err
 				}
 				time.Sleep(50 * time.Millisecond)
 			}
 		}
-		for _, turn := range state.Turns {
-			if turn.Inspection != nil && !turn.Inspection.Closed {
-				return receipt, errors.New("business terminal closed; original native inspector cleanup remains unverified")
-			}
-		}
+
 		progress.Phase = "confirmed"
 		receipt.Disposition = b.OperationConfirmed
 		receipt.State.Stopped = true
@@ -1012,11 +1038,8 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 		}
 	}
 	defer l.closeTerminalJob()
-	state, err := l.state(s)
+	_, err := l.state(s)
 	if err != nil {
-		return b.LifecycleStateFacts{}, err
-	}
-	if err = l.cleanupInspections(ctx, &state); err != nil {
 		return b.LifecycleStateFacts{}, err
 	}
 	if err = l.verifyStopped(ctx, s); err != nil {

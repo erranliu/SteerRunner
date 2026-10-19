@@ -87,7 +87,7 @@ func validRun() []byte {
 	value := RunRequest{
 		Title: "中文任务", Repository: Repository{URL: "https://example.com/repo.git", BaseRevision: strings.Repeat("a", 40), Remote: "origin", BaseBranch: "main"},
 		Documents:   Documents{Spec: Document{Kind: "inline", Path: "spec.md", Content: stringPointer("Spec")}, Plan: Document{Kind: "inline", Path: "plan.md", Content: stringPointer("Plan")}},
-		Workflow:    Workflow{ID: "development", Version: 1},
+		Workflow:    Workflow{ID: "development", Version: 2},
 		Execution:   Execution{Adapter: "codex-app-server", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{}`)},
 		Publication: Publication{Provider: "gitea", Repository: "owner/repo", BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://example.com"}`)},
 	}

@@ -149,3 +149,14 @@ func mustJSONTest(value any) []byte {
 	}
 	return data
 }
+
+func TestRAReportWorkObservation(t *testing.T) {
+	fixed := executionbackend.SessionContext{SessionID: "thread", CurrentTurnID: "turn"}
+	for _, item := range []map[string]any{{"id": "write", "type": "fileChange"}, {"id": "check", "type": "commandExecution", "command": "go test ./..."}, {"id": "commit", "type": "commandExecution", "command": "git -c x=y commit -m fix"}} {
+		envelope := codexapp.Envelope{Method: "item/completed", Params: mustJSONTest(map[string]any{"threadId": "thread", "turnId": "turn", "item": item})}
+		fact, err := DecodeEvent(envelope, fixed, true)
+		if err != nil || fact.Kind != executionbackend.EventWorkObserved {
+			t.Fatal(fact, err)
+		}
+	}
+}

@@ -1,0 +1,7 @@
+=== RUN   TestAuthenticationNativeToolBoundary
+    authentication_native_test.go:35: preserved native diagnostic: C:/srt\auth-boundary-3859299703
+    authentication_native_test.go:210: native Git commit boundary failed: exit=0 rpc=set tcp 127.0.0.1:56017: use of closed network connection stdout= stderr=
+--- FAIL: TestAuthenticationNativeToolBoundary (5.71s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	7.618s
+FAIL

@@ -1,0 +1,50 @@
+{
+  "authentication": {
+    "proof": {
+      "readiness": {
+        "authentication_control": true,
+        "native_transport": "codex-remote-inline-v2",
+        "runtime_sha256": "4c5892221ac260cc92d27702a040d210314f04ccf4fdc8bbb7db9d8b66583b56",
+        "verified": true,
+        "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+        "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sl-60c9b3ccb9a44466955b86dbede1a616",
+        "repository": "https://github.com/erranliu/SteerlineTest.git",
+        "session_id": "01a14f6c-0414-7221-b056-c7c162f3a4dc",
+        "configuration_digest": "26c7de46817cfd1b3938587887ada915fe5482dd1d4fba098baeffaf0d7dcf05",
+        "process": {
+          "kind": "os",
+          "pid": 55176,
+          "created": "01dd5f0d3acecc78",
+          "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+        },
+        "checked_at": "2026-10-18T14:30:51.2645012Z",
+        "expires_at": "2026-10-18T23:30:30.4186271+08:00",
+        "access_mode": "sandbox"
+      },
+      "revocation_confirmed": true,
+      "broker_closed": true,
+      "socket_cleanup_confirmed": true,
+      "mode": "host-gh-repository-broker"
+    },
+    "revoker": {
+      "attempted": true,
+      "unknown": false,
+      "process": {
+        "kind": "orca_authentication_revoker",
+        "terminal": "term_c0cb9517-e75a-4330-8dfa-d23eedf97564",
+        "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+        "incarnation": "1496573c-49b0-45fa-86d5-56ceaee3c161",
+        "worktree_id": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-60c9b3ccb9a44466955b86dbede1a616"
+      },
+      "closed": true,
+      "at": "2026-10-18T14:38:58.0155881Z"
+    }
+  },
+  "complete_inventory": true,
+  "inventory_checked_at": "2026-10-18T14:39:05.8796872Z",
+  "inventory_observations": 1,
+  "remaining_terminals": 0,
+  "run_id": "60c9b3ccb9a44466955b86dbede1a616",
+  "runtime": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "worktree": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-60c9b3ccb9a44466955b86dbede1a616"
+}

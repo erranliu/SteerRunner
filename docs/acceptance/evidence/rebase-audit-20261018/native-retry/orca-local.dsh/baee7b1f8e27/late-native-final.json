@@ -1,0 +1,40 @@
+{
+  "reasoning_effort": "low",
+  "native_session_id": "03d244b6-672f-4376-816b-f2b6bc81c382",
+  "native_input_seq": 8,
+  "native_reply_seq": 17,
+  "native_end_seq": 19,
+  "version": 2,
+  "source": "dsh-plugin-v1",
+  "source_sha256": "911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4",
+  "run_id": "44cb9e368545bdca93d7acc93f440e26",
+  "session_id": "89ce0e07-3c6e-b5ee-ff44-1d4fa40470f5",
+  "instance_id": "29e1e235-1500-4544-b024-c13de3ec631b",
+  "pid": 33264,
+  "process_started_at": "2026-10-18T14:26:54.328Z",
+  "mode": "tui",
+  "tools": [
+    "powershell"
+  ],
+  "model": "deepseek-official/deepseek-flash",
+  "preparation": {
+    "inside_write_verified": true,
+    "provider_environment_absent": true,
+    "outside_write_denied": true,
+    "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+    "access_mode": "sandbox",
+    "authentication_expires_at": "2026-10-18T23:26:51.4446516+08:00",
+    "verified": true
+  },
+  "stage": "settled",
+  "command_id": "87d20f8fc2f12e6eec315040b8c641e7",
+  "input_sha256": "4ccc6a6bb4f17ce34970383427e6a8825f22fa96741b042e7f78e38127b7c17b",
+  "wire_sha256": "d4d63fccc42cbff30964658b244e3f9813aeb8f41a65a6478b1f4a16f3c67e7f",
+  "native_turn_index": 1,
+  "outcome": "completed",
+  "native_input_id": "53b48112-46be-408f-97d8-7b65d9917363",
+  "native_reply_id": "0476cf53-9d14-4605-a9ce-96bbed071b3b",
+  "stop_reason": "stop",
+  "reply": "{\"outcome\":\"needs_input\",\"summary\":\"Awaiting caller validation phrase\",\"question\":\"What validation phrase should authorize this artifact?\"}",
+  "reply_sha256": "dc186048f007803e2108f357053db2158d60180691a430e23fa7bb2f3d684ff1"
+}

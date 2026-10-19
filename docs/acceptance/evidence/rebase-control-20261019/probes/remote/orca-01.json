@@ -1,0 +1,76 @@
+{
+  "id": "73a9e7f5-fc0c-4441-8ca2-3f1f7c596797",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "identity": {
+        "key": "wt2:local:7c6d41eb-66d8-4788-9554-81bea1791d1f",
+        "executionHostId": "local",
+        "instanceId": "7c6d41eb-66d8-4788-9554-81bea1791d1f"
+      },
+      "instanceId": "7c6d41eb-66d8-4788-9554-81bea1791d1f",
+      "repoId": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+      "creatorProvenance": {
+        "kind": "paired-device",
+        "deviceId": "5ab97b7a-13c0-4948-9b48-0f95c55dfe51"
+      },
+      "path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "head": "cebdd5ab552150c49743e40593c836689ecf789b",
+      "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": false,
+      "isPinned": false,
+      "sortOrder": 1792384086591,
+      "lastActivityAt": 1792384086591,
+      "createdAt": 1792384086591,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1792384084541
+      },
+      "baseRef": "cebdd5ab552150c49743e40593c836689ecf789b",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "workspaceLineage": null,
+      "git": {
+        "path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "head": "cebdd5ab552150c49743e40593c836689ecf789b",
+        "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    },
+    "lineage": null,
+    "workspaceLineage": null,
+    "warnings": [],
+    "catalogVersion": {
+      "epoch": "509adf68-7b5f-45cf-b253-d9cabb91f7c2",
+      "sequence": 2497
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "authentication": {
+    "readiness": {
+      "authentication_control": true,
+      "exit_public_key": "kG8Z9rlvCbep0I8Mzj6ivGaGZeQ7eWvNNfJVaQz+CdM=",
+      "owner": {
+        "kind": "os",
+        "pid": 24776,
+        "created": "01dd5f82417952aa",
+        "executable": "c:\\sr-runtime\\1c3c-fixed-control-20261019\\4de01c93e145da8c\\steerrunner-agent.exe"
+      },
+      "native_transport": "codex-remote-inline-v3",
+      "runtime_sha256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+      "verified": true,
+      "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+      "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "repository": "https://github.com/erranliu/SteerlineTest.git",
+      "session_id": "01a1526a-f649-7943-be59-8d947e355034",
+      "configuration_digest": "94c0e953f931118ff2964d45145f8435713bbb573cee1bd1be5099e64159ac79",
+      "process": {
+        "kind": "os",
+        "pid": 25016,
+        "created": "01dd5f8243220123",
+        "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+      },
+      "checked_at": "2026-10-19T04:28:33.5004279Z",
+      "expires_at": "2026-10-19T13:28:15.3596932+08:00",
+      "access_mode": "sandbox"
+    },
+    "revocation_confirmed": true,
+    "broker_closed": true,
+    "socket_cleanup_confirmed": true,
+    "mode": "host-gh-repository-broker"
+  },
+  "control": {
+    "process": {
+      "kind": "orca_native_control",
+      "terminal": "term_c8532ffc-b568-4e4b-91b9-766cf15c8999",
+      "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "incarnation": "9e88b624-a943-466d-8323-359abe71741e",
+      "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b"
+    },
+    "closed": true
+  },
+  "run_id": "10886ef695e0db9b169139881c01ae01",
+  "snapshot_ref": {
+    "version": 0,
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "target": {
+      "id": "orca-terminal:dfe44122964244186942223e",
+      "external_runtime": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+      "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    },
+    "agent": {
+      "name": "codex"
+    },
+    "run_id": "10886ef695e0db9b169139881c01ae01",
+    "attempt_id": "aa17a6d286404fcf46f9688703736ef8",
+    "external": {
+      "kind": "orca_terminal",
+      "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+      "terminal": "term_c229acf2-b9a8-4ec8-9e65-bbdae44039a6",
+      "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "incarnation": "e6a02654-8185-493c-8601-737161e90323",
+      "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+      "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b"
+    }
+  },
+  "zero_business_turns": true
+}

@@ -16,6 +16,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/publication"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -24,7 +25,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -118,9 +118,13 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if request.Execution.Adapter == "orca-terminal" && request.Repository.LocalPath == "" {
 		return nil, contracts.Fail(2, "invalid_input", "Orca execution requires repository.local_path for its registered project identity.")
 	}
+	acquisitionConfig, err := ra.LoadConfig(dir)
+	if err != nil {
+		return nil, contracts.Fail(2, "invalid_input", err.Error())
+	}
 	id, attempt, generation := contracts.NewID(), contracts.NewID(), contracts.NewID()
 	now := time.Now().UTC()
-	r := &runstate.Record{ID: id, Request: request, Allowed: true, Status: "queued", Phase: "accepted", CreatedAt: now, UpdatedAt: now, ResourceDigest: resources.Digest(), CommandStates: map[string]string{}}
+	r := &runstate.Record{AcquisitionConfig: acquisitionConfig, ID: id, Request: request, Allowed: true, Status: "queued", Phase: "accepted", CreatedAt: now, UpdatedAt: now, ResourceDigest: resources.Digest(), CommandStates: map[string]string{}}
 	if _, err := providerFor(r); err != nil {
 		return nil, contracts.Fail(2, "invalid_input", "Publication configuration does not match the fixed repository or non-secret schema.")
 	}
@@ -378,11 +382,11 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Commit: doc.Commit, Digest: reliable.Digest(content), SnapshotPath: path}, Content: string(content)})
 	}
-	_ = json.Unmarshal(resources.Read("prompts.json"), &r.PromptBodies)
 	flowProfile, _ := workflow.Lookup(request.Workflow.ID, request.Workflow.Version)
-	for step := range r.PromptBodies {
-		if !slices.Contains(flowProfile.PromptSteps, step) {
-			delete(r.PromptBodies, step)
+	r.PromptBodies = map[string]string{}
+	for _, state := range flowProfile.States {
+		if state.PromptKey != "" {
+			r.PromptBodies[state.PromptKey] = state.Prompt
 		}
 	}
 	for step, body := range request.Workflow.PromptOverrides {
@@ -402,7 +406,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	branch := "codex/runner-" + id
 	worktree := executionWorkspace(dir, id)
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: agent}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: agent}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
-	r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement}
+	r.Workflow = workflow.Snapshot{StepID: flowProfile.Initial, Config: &flowProfile}
+	if request.Execution.Adapter == "codex-app-server" {
+		var settings contracts.CodexSettings
+		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
+	}
 	if flowProfile.AuditModelRequired {
 		settings, modelErr := contracts.ExecutionModel(r.Request.Execution)
 		if modelErr != nil {
@@ -466,13 +475,14 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	if err := validateWorkflow(r); err != nil {
 		return err
 	}
-	if workflow.PublicationStep(input.StepID) && !workflow.AuditsPassed(r.Workflow) {
+	state, defined := r.Workflow.State(input.StepID)
+	if state.Contract == "publication" && !workflow.AuditsPassed(r.Workflow) {
 		return errors.New("publication requires current audits")
 	}
-	if !workflow.ModelStep(input.StepID) {
+	if !defined || state.Kind != "execute" && state.Kind != "report" {
 		return errors.New("no automatic input for this step")
 	}
-	if workflow.AuditStep(input.StepID) && !workflow.AuditSource(r.Workflow, input) {
+	if state.Contract == "audit" && state.Kind == "execute" && !workflow.AuditSource(r.Workflow, input) {
 		return errors.New("audit lacks its current successful implementation report")
 	}
 	// A restored, unsent input already contains its complete frozen prompt,
@@ -480,10 +490,34 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	if input.Prompt != "" && feedback != "" {
 		return errors.New("cannot append feedback to an already frozen input")
 	}
+	if err := workflow.VerifyPrerequisites(r.Workflow, input, state); err != nil {
+		return err
+	}
+	if state.Kind == "report" && input.ReportToolPolicy == "" {
+		return errors.New("originating adapter report policy unavailable")
+	}
+	if state.Kind == "report" && input.Prompt == "" {
+		original := workflow.Input(r.Workflow, input.SourceCommandID)
+		acquired := workflow.Acquired(r.Workflow, input.SourceResultID)
+		if original == nil || acquired == nil || acquired.Source.CommandID != input.SourceCommandID || acquired.Source.TurnID != input.SourceTurnID || acquired.Source.InputVersion != input.SourceVersion {
+			return errors.New("report lacks frozen original result binding")
+		}
+		originalState, _ := r.Workflow.State(original.StepID)
+		if originalState.Kind != "execute" || originalState.Report != input.StepID || originalState.ReportLimit != 1 {
+			return errors.New("report is not authorized by original state definition")
+		}
+
+		for _, prior := range r.Workflow.StageInputs {
+			ps, _ := r.Workflow.State(prior.StepID)
+			if ps.Kind == "report" && prior.SourceCommandID == input.SourceCommandID {
+				return errors.New("original source report budget exhausted")
+			}
+		}
+	}
 	if input.Prompt == "" {
-		if r.Workflow.Config != nil {
+		if r.Workflow.ExecutionModel != nil {
 			model := r.Workflow.ExecutionModel
-			if workflow.AuditStep(input.StepID) {
+			if state, _ := r.Workflow.State(input.StepID); state.ModelRole == "audit" {
 				model = r.Workflow.AuditModel
 			}
 			input.Model, input.ReasoningEffort = model.Model, model.ReasoningEffort
@@ -503,27 +537,29 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 		}
 		// Use explicit JSON names for the fixed material references consumed by Workflow.
 		input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
-		prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[input.StepID])
+		prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
 		if err != nil {
 			return err
 		}
 		if feedback != "" {
 			prompt += "\nUser feedback for the original session:\n" + feedback
 		}
-		if r.Request.Execution.Adapter == "orca-terminal" && input.StepID == workflow.StepImplement {
+		if r.Request.Execution.Adapter == "orca-terminal" && state.Kind == "execute" && state.Contract == "implementation" {
 			attached := []map[string]string{}
 			for _, m := range r.Materials {
 				attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
 			}
 			prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
 		}
-		prompt += workflow.PublicationInstruction(input.StepID, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
+		prompt += workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
 		input.Prompt = prompt
+		input.SuccessOutput = state.SuccessOutput
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
-	if input.StepID == workflow.StepImplement {
-		r.Workflow.ReportRetry = 0
-		r.Workflow.AuditReportCommandID = ""
+	if state.Kind == "execute" && state.Contract == "implementation" {
+		r.Workflow.ImplementationResultID = ""
+		r.Workflow.AuditResultID = ""
+		r.Workflow.PublicationResultID = ""
 		r.Workflow.Audits = nil
 	}
 	// A newly authorized stage gets its own preparation budget. Time spent in

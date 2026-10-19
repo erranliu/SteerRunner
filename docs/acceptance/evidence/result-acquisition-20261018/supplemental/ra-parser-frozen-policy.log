@@ -1,0 +1,6 @@
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/failed
+--- PASS: TestRAParserAcquisition (12.65s)
+    --- PASS: TestRAParserAcquisition/failed (12.65s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	15.604s

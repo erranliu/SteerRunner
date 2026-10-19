@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.codex
+    run_test.go:730: L3 orca-local.codex run=882a957d37149a0de345d32884e52f86 PR=https://github.com/erranliu/SteerlineTest/pull/549 merge=ab1d71c8923aa8116bc91e41da657600e3df1ff7
+--- PASS: TestSRLiveScenario (479.93s)
+    --- PASS: TestSRLiveScenario/orca-local.codex (479.90s)
+PASS

@@ -1,0 +1,61 @@
+=== RUN   TestRAParserQualification
+--- PASS: TestRAParserQualification (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.775s
+=== RUN   TestRAParserProcess
+=== RUN   TestRAParserProcess/GOOD
+=== RUN   TestRAParserProcess/BAD
+=== RUN   TestRAParserProcess/TOOL
+=== RUN   TestRAParserProcess/EXIT
+=== RUN   TestRAParserProcess/MODEL
+=== RUN   TestRAParserProcess/NOFINAL
+=== RUN   TestRAParserProcess/HUGE
+=== RUN   TestRAParserProcess/HANG
+--- PASS: TestRAParserProcess (3.60s)
+    --- PASS: TestRAParserProcess/GOOD (0.84s)
+    --- PASS: TestRAParserProcess/BAD (0.36s)
+    --- PASS: TestRAParserProcess/TOOL (0.32s)
+    --- PASS: TestRAParserProcess/EXIT (0.36s)
+    --- PASS: TestRAParserProcess/MODEL (0.38s)
+    --- PASS: TestRAParserProcess/NOFINAL (0.50s)
+    --- PASS: TestRAParserProcess/HUGE (0.42s)
+    --- PASS: TestRAParserProcess/HANG (0.42s)
+=== RUN   TestRAParserIdentityCommitFailure
+--- PASS: TestRAParserIdentityCommitFailure (0.28s)
+=== RUN   TestRAParserPolicyAndEvents
+--- PASS: TestRAParserPolicyAndEvents (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	5.338s
+=== RUN   TestRAParserConfigurationProjection
+=== RUN   TestRAParserConfigurationProjection/user
+=== RUN   TestRAParserConfigurationProjection/system
+=== RUN   TestRAParserConfigurationProjection/cloud
+--- PASS: TestRAParserConfigurationProjection (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/user (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/system (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/cloud (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	2.502s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/process	0.889s [no tests to run]
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+=== RUN   TestRAParserAcquisition/needs_input
+=== RUN   TestRAParserAcquisition/conflict
+=== RUN   TestRAParserAcquisition/failed
+=== RUN   TestRAParserAcquisition/policy_violation
+=== RUN   TestRAParserAcquisition/stop
+=== RUN   TestRAParserAcquisition/source-drift
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition (72.55s)
+    --- PASS: TestRAParserAcquisition/completed (8.52s)
+    --- PASS: TestRAParserAcquisition/needs_input (9.12s)
+    --- PASS: TestRAParserAcquisition/conflict (8.49s)
+    --- PASS: TestRAParserAcquisition/failed (12.99s)
+    --- PASS: TestRAParserAcquisition/policy_violation (11.67s)
+    --- PASS: TestRAParserAcquisition/stop (6.49s)
+    --- PASS: TestRAParserAcquisition/source-drift (9.06s)
+    --- PASS: TestRAParserAcquisition/new-source (6.22s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	75.518s

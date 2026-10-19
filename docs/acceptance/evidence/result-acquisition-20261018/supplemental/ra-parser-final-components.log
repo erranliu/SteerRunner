@@ -1,0 +1,38 @@
+=== RUN   TestRAParserProcess
+=== RUN   TestRAParserProcess/GOOD
+=== RUN   TestRAParserProcess/BAD
+=== RUN   TestRAParserProcess/TOOL
+=== RUN   TestRAParserProcess/EXTERNAL
+=== RUN   TestRAParserProcess/EXIT
+=== RUN   TestRAParserProcess/MODEL
+=== RUN   TestRAParserProcess/NOFINAL
+=== RUN   TestRAParserProcess/HUGE
+=== RUN   TestRAParserProcess/HANG
+--- PASS: TestRAParserProcess (3.27s)
+    --- PASS: TestRAParserProcess/GOOD (0.70s)
+    --- PASS: TestRAParserProcess/BAD (0.30s)
+    --- PASS: TestRAParserProcess/TOOL (0.28s)
+    --- PASS: TestRAParserProcess/EXTERNAL (0.38s)
+    --- PASS: TestRAParserProcess/EXIT (0.31s)
+    --- PASS: TestRAParserProcess/MODEL (0.31s)
+    --- PASS: TestRAParserProcess/NOFINAL (0.32s)
+    --- PASS: TestRAParserProcess/HUGE (0.37s)
+    --- PASS: TestRAParserProcess/HANG (0.30s)
+=== RUN   TestRAParserIdentityCommitFailure
+--- PASS: TestRAParserIdentityCommitFailure (0.21s)
+=== RUN   TestRAParserEncodedReceiptBound
+--- PASS: TestRAParserEncodedReceiptBound (0.05s)
+=== RUN   TestRAParserPolicyAndEvents
+--- PASS: TestRAParserPolicyAndEvents (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	4.877s
+=== RUN   TestRAParserConfigurationProjection
+=== RUN   TestRAParserConfigurationProjection/user
+=== RUN   TestRAParserConfigurationProjection/system
+=== RUN   TestRAParserConfigurationProjection/cloud
+--- PASS: TestRAParserConfigurationProjection (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/user (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/system (0.00s)
+    --- PASS: TestRAParserConfigurationProjection/cloud (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	2.096s

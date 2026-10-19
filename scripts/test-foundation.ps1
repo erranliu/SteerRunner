@@ -29,10 +29,10 @@ try {
 function Quote-WindowsArgument([string]$Argument) {
     '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
 }
-# Full controlled selection runs twelve isolated workflows sequentially. Their
-# measured successful duration exceeds 8m. This aggregate 15m budget does not
+# Full controlled selection runs the registered workflows sequentially. Its
+# measured successful duration exceeds 15m. This aggregate 25m budget does not
 # change any CLI, preparation, fault, or scenario polling deadline.
-$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=15m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
+$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=25m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
 if ($BaselineExe) { $taskArgs += @('-baseline-exe', $BaselineExe) }
 $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
 $taskStartup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }

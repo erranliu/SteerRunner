@@ -432,7 +432,8 @@ func cloneStringMap(v map[string]string) map[string]string {
 	return out
 }
 
-func (c *HistoryClient) UserAgent() string { return c.userAgent }
+func (c *HistoryClient) UserAgent() string  { return c.userAgent }
+func (c *HistoryClient) NativeHome() string { return c.serverHome }
 
 func (c *HistoryClient) BootstrapSession(ctx context.Context, cwd, sandbox, instruction string) (string, error) {
 	params := map[string]any{"cwd": cwd, "ephemeral": false}

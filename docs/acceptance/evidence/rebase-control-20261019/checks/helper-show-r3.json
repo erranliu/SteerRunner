@@ -1,0 +1,29 @@
+{
+  "id": "4d3d0cfa-2019-40cc-9f3b-d1a6a4ad0cf4",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_a8b5aae1-8377-49eb-b330-dc96c72de504",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018@@0c7bf5cb",
+      "incarnationId": "be08d6c8-2dd9-40e5-836f-26658570bb07",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018",
+      "branch": "refs/heads/erranliu/sr-runtime-1c3c-full-20261018",
+      "tabId": "6ce7f3bb-c0a3-4cd9-a507-2846b9b8fa8b",
+      "leafId": "4a0718c7-74a8-4508-81d6-8de5d8179071",
+      "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.7.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792381639992,
+      "preview": "76349d0f1774876837795d00b92f693983266fcfb11d2ef\",\"dsh_sha256\":\"911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4\"}\nSR_FIXED_HELPER_OK:4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803\nPS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-runtime-1c3c-full-20261018>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

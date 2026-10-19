@@ -1,0 +1,40 @@
+{
+  "original_job_membership_checked": true,
+  "owner": {
+    "job": {
+      "owner": {
+        "kind": "os",
+        "pid": 48020,
+        "created": "01dd5f583ab965e4",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\native-preparation-fix-20261019\\steerrunner-agent-qualified.exe"
+      },
+      "worker": {
+        "kind": "os",
+        "pid": 45752,
+        "created": "01dd5f583df08255",
+        "executable": "c:\\program files\\nodejs\\node.exe"
+      },
+      "handle": 1288
+    },
+    "runtime_sha256": "128695a6788848ccfa3f67708289d5f179876d4a1c5aad8b73a0863716ffd62e",
+    "extension_bundle_sha256": "0b2e7c5ea62a47dd52a9452281d61af6d29622d5548cc2d1643cea6ac457eb5c",
+    "session_id": "f11451ee-7959-253b-590a-e55f8cac8472",
+    "run_id": "c895a0961050485bcc27d9e722ee9dc9",
+    "configuration_digest": "c6f2dbd04ac6fcd61bcd3066e13c5344dca22c7a9aae1a1518ed99a6fb5f8b44",
+    "access_mode": "sandbox"
+  },
+  "writers": [
+    {
+      "kind": "os",
+      "pid": 33668,
+      "created": "01dd5f584f7e3bbb",
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe"
+    },
+    {
+      "kind": "os",
+      "pid": 44752,
+      "created": "01dd5f5850b40383",
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe"
+    }
+  ]
+}

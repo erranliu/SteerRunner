@@ -1,0 +1,116 @@
+{
+  "finished_at": "2026-10-18T14:33:55.6485280Z",
+  "max_parallel": 2,
+  "scope": "fresh-rerun-after-test-fixture-assertion-fixes",
+  "source_commit": "1c4b08088bb73516eb3cd8fb0b147c02cb199807",
+  "results": [
+    {
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\local-codex.smoke-default-r1-fixture.json",
+      "expected_outcome": "merged",
+      "case_id": "default",
+      "started_at": "2026-10-18T14:12:38.232986Z",
+      "scenario": "local-codex.smoke",
+      "manifest": "C:\\srt\\ade72e1e19f9\\manifest.json",
+      "finished_at": "2026-10-18T14:16:34.9012377Z",
+      "level": "L2",
+      "status": "passed",
+      "resources": [
+        "root:C:\\srt\\ade72e1e19f9",
+        "base:codex/srtest/ade72e1e19f9/base",
+        "run:7797429ccd2c3fe92520338e30abcbbb",
+        "workspace:c:\\srt\\ade72e1e19f9\\s\\workspaces\\krcl7qurhct2tbqecmm5dqd62u",
+        "session:01a14f5c-3b10-76b2-bc4b-2be4ce08688f",
+        "branch:codex/runner-7797429ccd2c3fe92520338e30abcbbb",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/539"
+      ],
+      "evidence": "C:\\srt\\ade72e1e19f9\\evidence",
+      "identity": {
+        "pid": 28392,
+        "manifest_sha256": "b3d58fed5fcd08ee9168777f3f8958d71bc2791fee0927917f8556181ab3ff41",
+        "driver_sha256": "a10e90e3e26fb55a7b628dd240db2032536ff0d5056d454be30648b3695f99bf",
+        "runner_sha256": "91b68fcab14f7a3507374dc710a249b53d013522cf7df70d7b8387ad6a291901",
+        "source_commit": "1c4b08088bb73516eb3cd8fb0b147c02cb199807",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.smoke",
+        "level": "L2"
+      }
+    },
+    {
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\local-codex.result-acquisition-default-r1-fixture.json",
+      "expected_outcome": "merged",
+      "case_id": "default",
+      "started_at": "2026-10-18T14:12:38.2684144Z",
+      "scenario": "local-codex.result-acquisition",
+      "manifest": "C:\\srt\\aacc8741b341\\manifest.json",
+      "finished_at": "2026-10-18T14:18:13.4087585Z",
+      "level": "L2",
+      "status": "passed",
+      "resources": [
+        "root:C:\\srt\\aacc8741b341",
+        "base:codex/srtest/aacc8741b341/base",
+        "run:2ab8677b4d2e273e6460a5d44d56363c",
+        "workspace:c:\\srt\\aacc8741b341\\s\\workspaces\\3pfq5hnqjbmm3okj2h4p7fyr24",
+        "session:01a14f5d-0bc2-7ba0-91e0-8d6cfa1c7bcb",
+        "branch:codex/runner-2ab8677b4d2e273e6460a5d44d56363c",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/540"
+      ],
+      "evidence": "C:\\srt\\aacc8741b341\\evidence",
+      "identity": {
+        "pid": 39980,
+        "manifest_sha256": "47eb22f8196ec203c932cb3bbeafcba85cf266e475c40b51da86240aaf1eeab6",
+        "driver_sha256": "a10e90e3e26fb55a7b628dd240db2032536ff0d5056d454be30648b3695f99bf",
+        "runner_sha256": "91b68fcab14f7a3507374dc710a249b53d013522cf7df70d7b8387ad6a291901",
+        "source_commit": "1c4b08088bb73516eb3cd8fb0b147c02cb199807",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.result-acquisition",
+        "level": "L2"
+      }
+    },
+    {
+      "evidence": "C:\\srt\\42f83fbea0c4\\evidence",
+      "case_id": "default",
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "orca-local.codex",
+      "manifest": "C:\\srt\\42f83fbea0c4\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\orca-local.codex-default-r1-fixture.json",
+      "finished_at": "2026-10-18T14:25:54.2912607Z",
+      "error": "Live scenario failed; inspect C:\\srt\\42f83fbea0c4\\evidence/native.log",
+      "started_at": "2026-10-18T14:16:35.8483643Z"
+    },
+    {
+      "evidence": "C:\\srt\\e724dee1b168\\evidence",
+      "case_id": "default",
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "orca-local.pi",
+      "manifest": "C:\\srt\\e724dee1b168\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\orca-local.pi-default-r1-fixture.json",
+      "finished_at": "2026-10-18T14:25:50.0603946Z",
+      "error": "Live scenario failed; inspect C:\\srt\\e724dee1b168\\evidence/native.log",
+      "started_at": "2026-10-18T14:18:14.4961062Z"
+    },
+    {
+      "evidence": "C:\\srt\\baee7b1f8e27\\evidence",
+      "case_id": "default",
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "orca-local.dsh",
+      "manifest": "C:\\srt\\baee7b1f8e27\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\native-retry\\orca-local.dsh-default-r1-fixture.json",
+      "finished_at": "2026-10-18T14:33:55.5003669Z",
+      "error": "Live scenario failed; inspect C:\\srt\\baee7b1f8e27\\evidence/native.log",
+      "started_at": "2026-10-18T14:25:51.1621344Z"
+    }
+  ],
+  "planned_case_count": 5,
+  "prerequisite": "../full-final/summary.json",
+  "status": "failed"
+}

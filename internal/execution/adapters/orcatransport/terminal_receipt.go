@@ -222,6 +222,11 @@ func (l *Lifecycle) readTerminalReadiness(state *State, requireLease bool) error
 	}
 	var ready TerminalReceipt
 	if err := readTerminalFile(c.StateDirectory, "readiness", &ready); err != nil {
+		if os.IsNotExist(err) && state.TerminalReadiness == nil && state.TerminalOwner == nil && !state.LaunchConfirmed && len(state.Turns) == 0 {
+			if failure := l.terminalPreparationFailure(); failure != nil && !os.IsNotExist(failure) {
+				return failure
+			}
+		}
 		return err
 	}
 	if err := l.validateTerminalReceipt(ready); err != nil {
@@ -253,6 +258,37 @@ func (l *Lifecycle) readTerminalReadiness(state *State, requireLease bool) error
 	state.TerminalReadiness = &ready
 	state.TerminalOwner = &owner
 	return l.pinTerminalJob(owner)
+}
+
+// This native fact explains a failed initializer before a readiness receipt
+// exists. It never establishes readiness, completion, or resource settlement.
+func (l *Lifecycle) terminalPreparationFailure() error {
+	c := l.profile.Terminal
+	var failure struct {
+		Version      int    `json:"version"`
+		RunID        string `json:"run_id"`
+		SessionID    string `json:"session_id"`
+		BundleSHA256 string `json:"extension_bundle_sha256"`
+		PID          int    `json:"pid"`
+		Failure      string `json:"failure"`
+		ProbeStage   string `json:"probe_stage"`
+	}
+	if err := readTerminalFile(c.StateDirectory, "preparation-failure", &failure); err != nil {
+		return err
+	}
+	owner, err := l.readTerminalOwner()
+	if err != nil {
+		return err
+	}
+	if failure.Version != 1 || failure.RunID != c.ExecutionID || failure.SessionID != c.SessionID || failure.BundleSHA256 != owner.ExtensionSHA256 || failure.PID != owner.Job.Worker.PID {
+		return errors.New("native terminal preparation failure binding changed")
+	}
+	switch failure.Failure {
+	case "native_preparation_failed", "native_authentication_preparation_missing", "native_tool_preparation_invalid", "native_tool_preparation_failed", "native_tool_environment_audit_failed", "native_write_boundary_audit_failed":
+		return fmt.Errorf("%s; original native initialization failed; no business input sent", failure.Failure)
+	default:
+		return errors.New("native terminal preparation failure code invalid")
+	}
 }
 
 // Defaults are pinned by the original readiness too. A receipt cannot change

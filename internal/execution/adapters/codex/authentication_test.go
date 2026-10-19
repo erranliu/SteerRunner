@@ -142,6 +142,22 @@ func TestAuthenticationEnvironmentAndArgumentsNeverExportSecrets(t *testing.T) {
 	}
 }
 
+func TestSandboxReadinessRequiresAuthenticatedNativeClients(t *testing.T) {
+	a := testAuthentication(t)
+	script, _, err := a.readinessScript([]string{t.TempDir()}, "origin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(script, "Invoke-WebRequest") || strings.Contains(script, "api.github.com/meta") || strings.Contains(script, "installation/repositories") {
+		t.Fatal("unrelated anonymous HTTP quota still gates authenticated tool readiness")
+	}
+	for _, required := range []string{"$env:GH_TOKEN", "gh api user", "gh api 'repos/", "git ls-remote --exit-code"} {
+		if !strings.Contains(script, required) {
+			t.Fatal("authenticated native qualification removed", required)
+		}
+	}
+}
+
 func TestSandboxReadinessUsesNativePolicyAndFiniteEvidence(t *testing.T) {
 	for _, stage := range []string{"ready", "tool_environment", "git_admin_write", "network", "github_identity", "remote_git", "untrusted-secret"} {
 		t.Run(stage, func(t *testing.T) {

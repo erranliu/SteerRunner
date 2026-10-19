@@ -1,0 +1,10 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": false,
+  "request_id": "smoke-feedback-rejected",
+  "data": null,
+  "error": {
+    "code": "invalid_state",
+    "message": "This milestone has no feedback transition."
+  }
+}

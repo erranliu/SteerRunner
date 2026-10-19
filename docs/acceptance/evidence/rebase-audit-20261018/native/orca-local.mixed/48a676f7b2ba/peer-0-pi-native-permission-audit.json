@@ -1,0 +1,57 @@
+{
+  "os_job_reattached": true,
+  "owner": {
+    "job": {
+      "owner": {
+        "kind": "os",
+        "pid": 31924,
+        "created": "01dd5f0a7204758b",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\rebase-audit-20261018\\steerrunner-agent.exe"
+      },
+      "worker": {
+        "kind": "os",
+        "pid": 46836,
+        "created": "01dd5f0a74292b46",
+        "executable": "c:\\program files\\nodejs\\node.exe"
+      },
+      "handle": 1268
+    },
+    "runtime_sha256": "4c5892221ac260cc92d27702a040d210314f04ccf4fdc8bbb7db9d8b66583b56",
+    "extension_bundle_sha256": "5c1a177639529db5106e8dc1ae9016610fd0f2338d87cdc992b0b073331adb08",
+    "session_id": "90583e98-6eda-546f-b5be-422838bcdea1",
+    "run_id": "79ad38385adec4765ccc43f535142d74",
+    "configuration_digest": "9b6047acea1aee3dfec6972fd0e3e62ff56477357783b0bffcf9a7d5d4127aed",
+    "access_mode": "sandbox"
+  },
+  "qualified_turns": 2,
+  "readiness": {
+    "reasoning_effort": "low",
+    "active_command_id": "7ceba9e6dc4e1f93a7ac8d95323acf21",
+    "version": 2,
+    "source": "pi-extension-v1",
+    "source_sha256": "62a850310dc63403b76349d0f1774876837795d00b92f693983266fcfb11d2ef",
+    "run_id": "79ad38385adec4765ccc43f535142d74",
+    "session_id": "90583e98-6eda-546f-b5be-422838bcdea1",
+    "instance_id": "d80f77bb-a6ab-44e6-8bef-b2581606ad70",
+    "pid": 46836,
+    "process_started_at": "2026-10-18T14:10:39.537Z",
+    "mode": "tui",
+    "tools": [
+      "read",
+      "write",
+      "edit",
+      "powershell"
+    ],
+    "model": "deepseek/deepseek-flash",
+    "preparation": {
+      "inside_write_verified": true,
+      "provider_environment_absent": true,
+      "outside_write_denied": true,
+      "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+      "access_mode": "sandbox",
+      "authentication_expires_at": "2026-10-18T23:10:38.1449523+08:00",
+      "verified": true
+    },
+    "stage": "ready"
+  }
+}

@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.mixed
+--- PASS: TestSRLiveScenario (162.82s)
+    --- PASS: TestSRLiveScenario/orca-local.mixed (162.79s)
+PASS

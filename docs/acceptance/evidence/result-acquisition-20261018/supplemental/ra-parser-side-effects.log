@@ -1,0 +1,44 @@
+=== RUN   TestRAParserProcess
+=== RUN   TestRAParserProcess/GOOD
+=== RUN   TestRAParserProcess/BAD
+=== RUN   TestRAParserProcess/TOOL
+=== RUN   TestRAParserProcess/EXIT
+=== RUN   TestRAParserProcess/MODEL
+=== RUN   TestRAParserProcess/NOFINAL
+=== RUN   TestRAParserProcess/HUGE
+=== RUN   TestRAParserProcess/HANG
+--- PASS: TestRAParserProcess (3.30s)
+    --- PASS: TestRAParserProcess/GOOD (0.74s)
+    --- PASS: TestRAParserProcess/BAD (0.36s)
+    --- PASS: TestRAParserProcess/TOOL (0.37s)
+    --- PASS: TestRAParserProcess/EXIT (0.36s)
+    --- PASS: TestRAParserProcess/MODEL (0.34s)
+    --- PASS: TestRAParserProcess/NOFINAL (0.42s)
+    --- PASS: TestRAParserProcess/HUGE (0.39s)
+    --- PASS: TestRAParserProcess/HANG (0.32s)
+=== RUN   TestRAParserPolicyAndEvents
+--- PASS: TestRAParserPolicyAndEvents (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	4.555s
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+=== RUN   TestRAParserAcquisition/needs_input
+=== RUN   TestRAParserAcquisition/conflict
+=== RUN   TestRAParserAcquisition/failed
+=== RUN   TestRAParserAcquisition/policy_violation
+=== RUN   TestRAParserAcquisition/side_effect_unverified
+=== RUN   TestRAParserAcquisition/stop
+=== RUN   TestRAParserAcquisition/source-drift
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition (90.77s)
+    --- PASS: TestRAParserAcquisition/completed (9.37s)
+    --- PASS: TestRAParserAcquisition/needs_input (8.90s)
+    --- PASS: TestRAParserAcquisition/conflict (8.74s)
+    --- PASS: TestRAParserAcquisition/failed (12.15s)
+    --- PASS: TestRAParserAcquisition/policy_violation (12.97s)
+    --- PASS: TestRAParserAcquisition/side_effect_unverified (10.45s)
+    --- PASS: TestRAParserAcquisition/stop (6.69s)
+    --- PASS: TestRAParserAcquisition/source-drift (11.23s)
+    --- PASS: TestRAParserAcquisition/new-source (10.28s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	93.728s

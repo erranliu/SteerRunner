@@ -1,0 +1,37 @@
+✔ DSH requires root quiescence and a real persistence checkpoint before settlement (42.0668ms)
+✔ child session events and unrelated native turn endings cannot complete the root (38.4639ms)
+✔ an empty or failed native flush never becomes a successful native receipt (37.6795ms)
+✔ a native failure without an assistant reply is a settled failure with no invented final (27.7049ms)
+✔ manual, altered and duplicate inputs fence later tools without rewriting a settled result (74.9951ms)
+✔ session replacement and replies over the UTF-8 bound cannot remain verified (99.0504ms)
+✔ DSH binds the native reasoning effort before tools and settlement (46.8344ms)
+✔ DSH maps frozen effort at the official request seam and verifies the durable header (100.1427ms)
+✔ failed native initialization publishes a bounded failure for either terminal agent (24.643ms)
+✔ an observed input or agent_end cannot certify start or completion (53.7011ms)
+✔ same prompt with distinct command IDs retains separate native inputs (63.3291ms)
+✔ duplicate, manual and altered input are fenced without a second execution (138.6592ms)
+✔ non-TUI or enabled tools cannot become ready (11.0668ms)
+✔ a changed expanded or committed input cannot settle successfully (106.842ms)
+✔ retry outcomes are observed until the real settled boundary (35.0969ms)
+✔ a provider error remains a settled failure, never a successful reply (52.9622ms)
+✔ missing native entries, pending continuations and oversized replies remain unverified (109.9999ms)
+✔ writer failures fence input and incomplete temporary files are never a final receipt (12.3795ms)
+✔ native shell shortcut is replaced even though no built-in tools are active (18.1087ms)
+✔ the fixed-text probe caps the native payload without changing the provider or model (10.4594ms)
+✔ shutdown or identity change cannot rewrite a frozen result or certify a new session (114.949ms)
+✔ reply boundaries count UTF-8 bytes and never truncate (63.3858ms)
+✔ a failed final receipt write fences later input even if Pi catches the callback error (34.8864ms)
+✔ non-text final content cannot masquerade as a complete text reply (32.7322ms)
+✔ reinitializing an extension on the same session changes its frozen load identity (18.9749ms)
+✔ managed tools revalidate the live model, tools, thinking and workspace before execution (187.1676ms)
+✔ managed thinking is read from Pi and an explicit clamped request blocks readiness (33.0544ms)
+✔ native selection changes fence the instance before a later tool or input (94.2663ms)
+✔ unknown native host outcomes fence later tools while ordinary command failures remain retryable (2.2009ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1349.4163

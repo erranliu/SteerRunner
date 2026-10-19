@@ -16,5 +16,16 @@ export function writeReceipt(directory, name, value) {
   } finally {
     fs.closeSync(fd);
   }
-  fs.renameSync(temporary, target);
+  // Windows readers (including the Runner) can briefly deny replacement.
+  // Retry only publication of these same fsynced bytes, never agent work/input.
+  const until = Date.now() + 1000;
+  for (;;) {
+    try {
+      fs.renameSync(temporary, target);
+      return;
+    } catch (error) {
+      if (process.platform !== "win32" || !["EPERM", "EACCES", "EBUSY"].includes(error.code) || Date.now() >= until) throw error;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10);
+    }
+  }
 }

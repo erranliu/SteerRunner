@@ -1,0 +1,11 @@
+{
+  "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+  "source_dirty": true,
+  "file_count": 351,
+  "source_manifest_sha256": "bd7ae3ad07cab8681ff654fa57b4145e31f1c476f32117abccc0e2905df02df8",
+  "build_sha256": "a178ceda48ddf11f3097e7e6ce24b00d29bc7e5a573c5c76b5ac85a870db387e",
+  "resource_digest": "1d82aa6517e3e661ee0ebb88b71fc858e14bea9a8a17453e1fbbbdf738924b91",
+  "command": "./scripts/test.ps1 -Level L2 -Scenario local-codex.smoke -Config .evidence/ra-live-config.json -OutDir .evidence/ra-live-workflow-verified-20261017",
+  "exit_code": 0,
+  "raw_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\ra-live-workflow-verified-20261017"
+}

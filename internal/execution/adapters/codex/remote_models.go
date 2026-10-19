@@ -148,7 +148,7 @@ func rewriteRemoteModelRequest(raw []byte, c RemoteAgentConfig, session string) 
 	}
 	expected := workflow.ModelSettings{Model: c.Model, ReasoningEffort: c.ReasoningEffort}
 	switch v.Step {
-	case workflow.StepAuditSpec, workflow.StepAuditCode:
+	case workflow.StepAuditReport, workflow.StepAuditCode:
 		if c.AuditModel == nil {
 			return nil, errors.New("remote_audit_model_missing")
 		}

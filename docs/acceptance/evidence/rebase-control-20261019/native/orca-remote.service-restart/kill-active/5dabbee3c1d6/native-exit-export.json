@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-19T04:29:12.9921677Z",
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "original_artifact_read": true,
+  "original_report_reformatted_signature_body": true,
+  "path": ".sr-runtime-stage/native-stop/aa039e73b8f3067bc4974bec2ccd1945a5c68533be0176c6477843a977f1ae9d/exit.json",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "sha256": "e0ab50a2cc99d413df0329114a0d917475346e565c82b2a625d28762d717b83d",
+  "signature_verified": true,
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d90244b0c996701d9cef08c9d887078c"
+}

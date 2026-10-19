@@ -1,0 +1,47 @@
+[
+  {
+    "fixture": "b0106f290a5e",
+    "scenario": "orca-local.codex",
+    "headRefName": "erranliu/sl-882a957d37149a0de345d32884e52f86",
+    "headRefOid": "3b8d3b9c0f21da15935bead6c877fa8d4bf8123f",
+    "mergedAt": "2026-10-18T23:21:38Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/549"
+  },
+  {
+    "fixture": "f09f72df0eb8",
+    "scenario": "orca-local.pi",
+    "headRefName": "erranliu/sl-de40abfbc9b2fea69d36eecc0d4bac87",
+    "headRefOid": "57c1770c28e2c298a824bb61f4b41a365862b466",
+    "mergedAt": "2026-10-18T23:19:28Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/548"
+  },
+  {
+    "fixture": "e115bfecb7b8",
+    "scenario": "orca-local.dsh",
+    "headRefName": "erranliu/sl-8f295d86d37e1eb8907151b70d245600",
+    "headRefOid": "ff99d14bd136089272a144b6d7f2350bf49673b1",
+    "mergedAt": "2026-10-18T23:27:04Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/550"
+  },
+  {
+    "fixture": "84fc08bff39c",
+    "scenario": "local-codex.smoke",
+    "headRefName": "codex/runner-d45f05126379c0713b5fa8cb913a7e09",
+    "headRefOid": "cfdf7a85fda7b955cc41087df503b0a704a9d951",
+    "mergedAt": "2026-10-18T23:33:06Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/552"
+  },
+  {
+    "fixture": "448b2ef40ccb",
+    "scenario": "local-codex.result-acquisition",
+    "headRefName": "codex/runner-91cc3c7c8618b5d3d6a716b0124acacb",
+    "headRefOid": "7234a86e9d3b4aa274fa38cc17bc7d322bbcfa38",
+    "mergedAt": "2026-10-18T23:33:05Z",
+    "state": "MERGED",
+    "url": "https://github.com/erranliu/SteerlineTest/pull/551"
+  }
+]

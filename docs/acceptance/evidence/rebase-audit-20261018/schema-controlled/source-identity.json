@@ -1,0 +1,11 @@
+{
+  "pid": 37476,
+  "pattern": "^TestSRWorkflowDiscoveryAndSelection$",
+  "runner_sha256": "CBC191C72C72DBD2F568AB2036BCB5494102329AE399027230D4BC6B02398273",
+  "fixture_sha256": "C354F12D48FBE9ECED9D23258ACB15D4CDF16A4ED86AC3C973853B037DF03FF5",
+  "source_commit": "67640c4365c6174e7aa7808a5b5b777c4bced1a5",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

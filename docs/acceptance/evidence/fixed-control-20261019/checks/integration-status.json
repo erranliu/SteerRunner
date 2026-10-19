@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-19T02:54:52.2693555Z",
+  "tested_source": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+  "pushed_evidence_head": "4d69205ca869718bd5ea799cb93ec4f098c44e06",
+  "origin_main": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "pr": "https://github.com/erranliu/SteerRunner/pull/25",
+  "mergeable": "CONFLICTING",
+  "preview_only": true,
+  "implementation_changed_after_tests": false,
+  "reason": "New main native Codex exit and history-reader settlement proof overlaps fixed control lifecycle/receipt paths. Integration and rerun are not performed in this acceptance batch.",
+  "conflicts": [
+    "internal/execution/adapters/codex/remote_agent.go",
+    "internal/execution/adapters/orcatransport/authentication_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/remote_receipt.go",
+    "internal/execution/adapters/orcatransport/remote_receipt_test.go"
+  ],
+  "required_preservation": [
+    "original Codex owner/exit public-key proof",
+    "native readonly-reader writers absence",
+    "fixed control identity and revocation/closure proofs"
+  ],
+  "validation_scope": "Current tested source only; no inherited pass for future rebase"
+}

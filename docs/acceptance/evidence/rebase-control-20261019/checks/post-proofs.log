@@ -1,0 +1,10 @@
+{"verified": true, "cases": 3}
+C:\srt\6231a2f36445\evidence: exact original signed bytes recovered and verified
+C:\srt\5dabbee3c1d6\evidence: exact original signed bytes recovered and verified
+C:\srt\b489f4de9727\evidence: exact original signed bytes recovered and verified
+C:\srt\6231a2f36445\evidence: original signature, native tree and authentication verified
+C:\srt\5dabbee3c1d6\evidence: original signature, native tree and authentication verified
+C:\srt\b489f4de9727\evidence: original signature, native tree and authentication verified
+C:\SteerlineDebug\sr-rebase-control-20261019-local-51792ee5: original signature, native tree and authentication verified
+C:\SteerlineDebug\sr-rebase-control-20261019-remote-51792ee5: original signature, native tree and authentication verified
+All five original signatures and fixed control facts verified

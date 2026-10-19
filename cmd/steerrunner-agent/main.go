@@ -18,26 +18,20 @@ import (
 )
 
 func main() {
-	if len(os.Args) == 3 && os.Args[1] == "--authentication-stop" {
-		var query codex.RemoteAuthenticationQuery
+	if len(os.Args) == 3 && os.Args[1] == "--native-control" {
+		var setup codex.RemoteControlSetup
 		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
 		if err == nil {
-			err = contracts.DecodeStrict(raw, &query)
+			err = contracts.DecodeStrict(raw, &setup)
 		}
 		if err == nil {
-			ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
-			defer cancel()
-			proof, e := codex.RevokeRemoteAuthentication(ctx, query)
-			err = e
-			if err == nil {
-				body, _ := json.Marshal(proof)
-				fmt.Println(codex.RemoteAuthenticationPrefix + base64.RawURLEncoding.EncodeToString(body))
-				return
-			}
+			err = codex.ServeRemoteControl(context.Background(), setup, os.Stdin, os.Stdout)
 		}
-		fmt.Fprintln(os.Stdout, codex.RemoteAuthenticationFailurePrefix+codex.RemoteAuthenticationDiagnostic(err))
-		fmt.Fprintln(os.Stderr, "remote authentication stop unverified")
-		os.Exit(1)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "native control unavailable")
+			os.Exit(1)
+		}
+		return
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--terminal-metadata" {
 		metadata, err := orca.TerminalRuntimeMetadata()
@@ -84,6 +78,26 @@ func main() {
 			os.Exit(2)
 		}
 		return
+	}
+	if len(os.Args) == 3 && os.Args[1] == "--authentication-stop" {
+		var query codex.RemoteAuthenticationQuery
+		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
+		if err == nil {
+			err = contracts.DecodeStrict(raw, &query)
+		}
+		if err == nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+			defer cancel()
+			proof, e := codex.RevokeRemoteAuthentication(ctx, query)
+			err = e
+			if err == nil {
+				body, _ := json.Marshal(proof)
+				fmt.Println(codex.RemoteAuthenticationPrefix + base64.RawURLEncoding.EncodeToString(body))
+				return
+			}
+		}
+		fmt.Fprintln(os.Stderr, "remote authentication stop unverified")
+		os.Exit(1)
 	}
 	if len(os.Args) == 3 && os.Args[1] == "--original-turn" {
 		var query codex.RemoteTurnQuery

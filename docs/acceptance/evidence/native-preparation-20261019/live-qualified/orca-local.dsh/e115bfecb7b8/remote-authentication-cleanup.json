@@ -1,0 +1,38 @@
+{
+  "authentication": {
+    "authentication_closed": true,
+    "version": 1,
+    "owner": {
+      "job": {
+        "owner": {
+          "kind": "os",
+          "pid": 16572,
+          "created": "01dd5f57e9048406",
+          "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\native-preparation-fix-20261019\\steerrunner-agent-qualified.exe"
+        },
+        "worker": {
+          "kind": "os",
+          "pid": 55432,
+          "created": "01dd5f57ebf23da7",
+          "executable": "c:\\program files\\nodejs\\node.exe"
+        },
+        "handle": 1352
+      },
+      "runtime_sha256": "128695a6788848ccfa3f67708289d5f179876d4a1c5aad8b73a0863716ffd62e",
+      "extension_bundle_sha256": "0b2e7c5ea62a47dd52a9452281d61af6d29622d5548cc2d1643cea6ac457eb5c",
+      "session_id": "7167f609-56bb-b5b3-6b3e-739fea543b81",
+      "run_id": "8f295d86d37e1eb8907151b70d245600",
+      "configuration_digest": "ef52d3dbb04608c9f1afff3964cd4b2c74931af797e2d80a980855128261b31d",
+      "access_mode": "sandbox"
+    },
+    "writers_absent": true,
+    "closed_at": "2026-10-18T23:28:54.024392Z"
+  },
+  "complete_inventory": true,
+  "inventory_checked_at": "2026-10-18T23:28:56.1167316Z",
+  "inventory_observations": 1,
+  "remaining_terminals": 0,
+  "run_id": "8f295d86d37e1eb8907151b70d245600",
+  "runtime": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "worktree": "f2cd7f2d-9211-4b4d-9e0f-d4f9c1fd43d8::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-8f295d86d37e1eb8907151b70d245600"
+}

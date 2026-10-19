@@ -1,0 +1,11 @@
+{
+  "pid": 17008,
+  "pattern": "^(TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI)$",
+  "runner_sha256": "06B3ECB441630E281A3391137EE1C96261D4F95CB569FA96C1E4EF7AAED99A91",
+  "fixture_sha256": "B76ADF9B8EB7B07DE33345663B258598464EC1A4D48D593A25DAC34805B0BC9C",
+  "source_commit": "e667a179139b90ec873a3d5d336dcbf1402d525d",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

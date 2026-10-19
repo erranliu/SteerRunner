@@ -1,0 +1,130 @@
+{
+  "status": "passed_with_native_release_gaps",
+  "review": "single-session source review; no delegated reviewer",
+  "implementation_commit": "e667a179139b90ec873a3d5d336dcbf1402d525d",
+  "integrated_main": "7c48969669f7027814f3f30c4e27241b1bb54d7e",
+  "commands": [
+    {
+      "command": "./scripts/test.ps1 -Level L1,Controlled -OutDir .evidence/pr-quality-audit-20261018/validation-final",
+      "status": "passed",
+      "l1_roots": 329,
+      "controlled_roots": 16,
+      "source": {
+        "pid": 54176,
+        "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartRequiresResume|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI|TestSRResultAcquisition)$",
+        "runner_sha256": "6E6C0A3645951F290085415C277E06D5DC46FC908A38AFDA71515B5AB72708B7",
+        "fixture_sha256": "B76ADF9B8EB7B07DE33345663B258598464EC1A4D48D593A25DAC34805B0BC9C",
+        "source_commit": "67109e66f7b53bb8932be65d6653c1ee610a84df",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    },
+    {
+      "command": "./scripts/test.ps1 -Level L1 -OutDir .evidence/pr-quality-audit-20261018/post-main-l1",
+      "status": "passed",
+      "l1_roots": 335,
+      "allowed_skips": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_driver_compile_exit": 0,
+      "zero_match_guard": true
+    },
+    {
+      "command": "./scripts/test-foundation.ps1 -OutDir .evidence/pr-quality-audit-20261018/post-main-controlled -Pattern '^(TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI)$'",
+      "status": "passed",
+      "controlled_roots": 3,
+      "source": {
+        "pid": 17008,
+        "pattern": "^(TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI)$",
+        "runner_sha256": "06B3ECB441630E281A3391137EE1C96261D4F95CB569FA96C1E4EF7AAED99A91",
+        "fixture_sha256": "B76ADF9B8EB7B07DE33345663B258598464EC1A4D48D593A25DAC34805B0BC9C",
+        "source_commit": "e667a179139b90ec873a3d5d336dcbf1402d525d",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    },
+    {
+      "command": "go vet ./internal/... ./cmd/...",
+      "status": "passed",
+      "evidence": "vet.json"
+    }
+  ],
+  "controlled_source_equivalence": {
+    "baseline_commit": "67109e66f7b53bb8932be65d6653c1ee610a84df",
+    "latest_commit": "e667a179139b90ec873a3d5d336dcbf1402d525d",
+    "paths": [
+      "internal/application",
+      "internal/execution/workflow",
+      "internal/execution/resultacquisition",
+      "internal/execution/backend",
+      "internal/execution/reliable",
+      "internal/execution/process",
+      "internal/execution/adapters/codex",
+      "internal/execution/adapters/protocol/codexapp",
+      "internal/execution/agentlaunch",
+      "internal/execution/workspace",
+      "internal/contracts",
+      "internal/runstate",
+      "internal/storage",
+      "internal/resources",
+      "internal/host",
+      "internal/cli",
+      "tests/integration",
+      "tests/helpers/native"
+    ],
+    "changed_files": [],
+    "same_fixture_binary": true,
+    "same_runner_binary": false
+  },
+  "native_current_build": {
+    "status": "not_requalified",
+    "current_L3_registered_cases": 24,
+    "historical_L2_passed": 2,
+    "historical_L3_scope": 12,
+    "historical_L3_passed": 4,
+    "historical_L3_failed": 1,
+    "historical_L3_environment_blocked": 7,
+    "blocking_gap": "Orca terminal.create has no caller idempotency/recovery identity; retain unknown after kill before receipt",
+    "evidence": "../full-l2-l3-20261018/README.md"
+  },
+  "steerline": {
+    "head": "bfe392447591137e6d762f19daf90cdc828aa428",
+    "status": "",
+    "modified": false
+  },
+  "source_file_count": 457,
+  "artifact_sha256": {
+    "initial-l1-summary.json": "900d3d92cac65c0dadcd0113234aedef267a97b0237a1fd8529953fecd75076d",
+    "l1-controlled-summary.json": "f9d07b9cd3d276f3d91591139e5212949d6bd2ea8af637ce6fa7427a878345ce",
+    "controlled-result.json": "1fc5a154c8597e8c746c256a4a061b01517e27fca75698bbc4a214660aa5f939",
+    "controlled-source-identity.json": "85fdd39ef5c80b80374dc562584754903043c76b0ea1783a136143dc1ea0c4a5",
+    "controlled-build.json": "82bf8654fae119e6891a2e846dddabffe98e2772ab6def402ddec756f0c5a2f6",
+    "controlled.log": "9b874bc6a2296e7ce1eff16ac0a0dddd878706bb2a3da9e96c1f29172b19437d",
+    "latest-l1-summary.json": "ab9bea2beca4c0bb16c93eae3b8f19257ab9a974a3529b5d5d63e08be050a324",
+    "framework-result.json": "a26f0279b6d8d331cec773f52e97d6d923e4c7a8f9303dbc72600b7253bd44b5",
+    "latest-controlled-result.json": "d5d5a35492b8f390ac5ca03d27fede00da9b123ad23050cc5a5d5056333a6e4f",
+    "latest-controlled-source-identity.json": "d9e289de9b71e00c9536644a89dc230af0119cc6ebf7d4478bcf6e5a1405683e",
+    "latest-controlled-build.json": "fdc5163c8dad100e482c0e0f88c2c25b60a200610b3b0c57080359f3979d2068",
+    "latest-controlled.log": "da26e4f4ce7c93af903145776e677654bdfe542de33aa10d5da25f2873ac1770",
+    "schema-provenance.log": "4251cc9ba31a54c4f933b6ed080f2e63d8309d8ad11cdb55bc7c6e6e8e67242b",
+    "native-failure-regression.log": "85ad2846a0c7bb7ce021c74309f6e5c955c566b621fdfe5dce40893dcc5c9668",
+    "vet.json": "7289cc0343ec1eb65b0f6ec624d5ba89df0b7a0fe4b4d5620042b77171df019d",
+    "initial-schema-failure.jsonl": "c7557fdf887ed1559c77fb35b576481a54876a5e46c0ddca3b39b7247fa9f02c",
+    "latest-l1-results.jsonl": "1263f80a8b4337f20da146c5d657cde34fc88bef74253c964d9fb131b305df17",
+    "source-files.json": "74a80e3d731b303e879b90b6b22a34081c734a6eba210e1a8f87dd7b1175f381",
+    "doc-check.json": "6238bc89ed29137ef89586e02499e51588d39dfdfc88fa5f2133027a2e6def37",
+    ".gitattributes": "308a40fa1d89ae5ea4390b4c9b46a0108b09f171f07898f25d451fa0c69c4e9f"
+  },
+  "raw_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\pr-quality-audit-20261018",
+  "hash_semantics": "source-files uses actual tested working-tree bytes; archived artifacts retain original bytes with folder -text attributes"
+}

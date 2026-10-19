@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.audited
+    run_test.go:650: audited native run=f649b760447a7daab2d1df1055cdc673 PR=https://github.com/erranliu/SteerlineTest/pull/533; leave test PR unmerged
+--- PASS: TestSRLiveScenario (248.23s)
+    --- PASS: TestSRLiveScenario/local-codex.audited (248.21s)
+PASS

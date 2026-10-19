@@ -1,0 +1,34 @@
+{
+  "before_commit": "94fcafd62c2f23bd17ecb3da8c474b132f1931f9",
+  "code_commit": "361589fdd890ed0bb1edb5cbc4be8cfea50e486a",
+  "files": [
+    {
+      "path": "internal/execution/adapters/codex/authentication_native_test.go",
+      "sha256": "0935523fbbc9b908d079b94fa7dbcacc02906e9c3e2d22ccd78015bb44fa1f93"
+    },
+    {
+      "path": "internal/execution/adapters/codex/authentication_test.go",
+      "sha256": "a5b5a94d2bc5c08cd6d542ccfd8e2b453cc8ab9592cbe61e8e12cf5ecd751116"
+    },
+    {
+      "path": "internal/execution/adapters/codex/sandbox_readiness.go",
+      "sha256": "7f0b86e1bb9f8143586dd02645f596f5a300fc6c7708f64240c07f8fb35e544d"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs",
+      "sha256": "db4184087baafaac4634121ee9cca86edfc4cdb9355783ac9e6a8fd5a0d01445"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/extensions/terminal-tools.mjs",
+      "sha256": "b92ce056febdc449bdea253469e036d718bebfeef258dbb9e68ef8fca0d1a409"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/preparation_failure_test.go",
+      "sha256": "73ed6c83bb7b77e2e0e98a8b0182966609ea1e6dc23a5cf82403a42fc9ea57c0"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_receipt.go",
+      "sha256": "35a3602d979a434e1541d28a7dbe1a18632cee892b676a461e056b3935be389a"
+    }
+  ]
+}

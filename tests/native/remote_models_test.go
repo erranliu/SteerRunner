@@ -57,17 +57,17 @@ func auditRemoteModels(t *testing.T, m livetest.Manifest, view contracts.RunView
 	var facts []any
 	verify := func(command, step string, want workflow.ModelSettings) {
 		turn := byCommand[command]
-		if turn == nil || !turn.Accepted || !turn.Started || !turn.Settled || turn.StepID != step || turn.Inspection == nil || !turn.Inspection.Closed || turn.Inspection.Unknown || orca.ValidateRecordedTurn(*state, turn) != nil {
+		if turn == nil || !turn.Accepted || !turn.Started || !turn.Settled || turn.StepID != step || state.Control == nil || state.Control.Ready == nil || turn.ReceiptRequest == "" || turn.ReceiptQueriedAt.IsZero() || orca.ValidateRecordedTurn(*state, turn) != nil {
 			t.Fatal("remote model proof lacks a settled original native turn", step)
 		}
 		r := turn.Recorded
 		if r.Model != want.Model || r.ReasoningEffort != want.ReasoningEffort || !r.Completed || r.Status != "completed" {
 			t.Fatal("actual native model differs from workflow", step)
 		}
-		facts = append(facts, map[string]any{"step": step, "command_id": turn.Command, "turn_id": turn.Command, "native_turn_id": r.NativeTurnID, "model": r.Model, "effort": r.ReasoningEffort, "source": r.Source, "session": r.Readiness.SessionID, "final_digest": r.FinalDigest, "inspector_closed": turn.Inspection.Closed})
+		facts = append(facts, map[string]any{"step": step, "command_id": turn.Command, "turn_id": turn.Command, "native_turn_id": r.NativeTurnID, "model": r.Model, "effort": r.ReasoningEffort, "source": r.Source, "session": r.Readiness.SessionID, "final_digest": r.FinalDigest, "reader_writers_absent": r.ReaderWritersAbsent, "control_request_id": turn.ReceiptRequest})
 	}
 	for _, audit := range view.Audit.Results {
-		if audit.Verdict != "pass" || audit.CommandID != audit.TurnID {
+		if audit.Failure != "" || audit.CommandID != audit.TurnID {
 			t.Fatal("audit outer turn binding changed")
 		}
 		verify(audit.CommandID, audit.StepID, *m.AuditModel)

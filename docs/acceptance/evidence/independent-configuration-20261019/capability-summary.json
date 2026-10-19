@@ -1,0 +1,418 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "version": "0.1.0-dev.1",
+  "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee",
+  "capability_source": {
+    "kind": "executable",
+    "version": "0.1.0-dev.1",
+    "protocol": "steerrunner-cli/v1",
+    "executable_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+    "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee"
+  },
+  "capability_catalog": {
+    "version": 1,
+    "combinations": [
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development-audited",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "explicit_execution_and_audit_models"
+        ]
+      },
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "sandbox",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      },
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development-audited",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "explicit_execution_and_audit_models"
+        ]
+      },
+      {
+        "adapter": "codex-app-server",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "full_access",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "sandbox",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "full_access",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "pi",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "pi",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "dsh",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "local",
+        "agent": "dsh",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "orca_environment",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "sandbox",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "orca_environment",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "sandbox",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "orca_environment",
+        "agent": "codex",
+        "workflow": {
+          "id": "development",
+          "version": 1
+        },
+        "access_mode": "full_access",
+        "operations": [
+          "submit",
+          "reply",
+          "resume",
+          "stop"
+        ],
+        "schema": "/configuration_schemas/run_configuration",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions"
+        ]
+      },
+      {
+        "adapter": "orca-terminal",
+        "target_kind": "orca_environment",
+        "agent": "codex",
+        "workflow": null,
+        "access_mode": "full_access",
+        "operations": [
+          "environment-check start",
+          "environment-check stop"
+        ],
+        "schema": "/environment_check_schema/$defs/input",
+        "requirements": [
+          "per_execution_native_verification",
+          "execution_host_authentication",
+          "native_codex_0.159.2_permissions",
+          "host-gh-repository-broker",
+          "github-app-check-write-gate-unsupported"
+        ]
+      }
+    ],
+    "validation_kinds": {
+      "environment-check": "/environment_check_schema/$defs/input",
+      "run": "/configuration_schemas/run_input",
+      "run-configuration": "/configuration_schemas/run_configuration"
+    }
+  },
+  "schema_keys": [
+    "adapters",
+    "providers",
+    "run_configuration",
+    "run_input",
+    "version",
+    "workflow"
+  ],
+  "online_source": {
+    "executable_sha256": "4e0f81af334701e19d619a00950fce8849c70c0e55987817ff94e5af5a537935",
+    "instance_id": "0441af6c0b4d79773890ec7198688b9c",
+    "kind": "service",
+    "protocol": "steerrunner-cli/v1",
+    "resource_digest": "e531871cbf62925de3678962fe00354a35360532596042c63f09b6cf2df980ee",
+    "version": "0.1.0-dev.1"
+  }
+}

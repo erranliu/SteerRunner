@@ -1,5 +1,7 @@
 # Spec：内置 Workflow 选择与审计模型
 
+> 本文记录 workflow/1 的历史设计与验收。当前 workflow/2 的阶段、单次代码审计修复、来源绑定与公开字段以[结果获取 Spec](result-acquisition.spec.md)和[具体 Workflow 定义](../workflows/README.md)为准；不继续执行本文的 Spec 审计或自动返修路径。
+
 日期：2026-10-15。状态：已按收敛方案实施，定向 unit/controlled 与本机最小真机验证通过；具体构建、配置与历史失败见 [Plan](workflow-selection-audit.plan.md)。
 
 本文扩展[首版契约](steerrunner.spec.md)。原有冻结输入、单写者、原会话、未知结果对账、停止授权和 PR 归属规则继续适用。2026-10-18 扩展：审计流程同时支持本机 Codex 与配置可信执行主机 runtime 的 Orca；各自保留独立真机验收记录。

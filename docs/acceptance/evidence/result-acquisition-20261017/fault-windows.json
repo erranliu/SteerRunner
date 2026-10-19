@@ -1,0 +1,85 @@
+{
+  "passed_assertions": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+      "test": "TestRAFeedback",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+      "test": "TestRAVerificationConflictSurvivesResume",
+      "elapsed": 0
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAAtomicCompletion",
+      "elapsed": 6.03
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryMissingCheckpoint",
+      "elapsed": 0.51
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthority",
+      "elapsed": 0.53
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRABudgetReportOnce",
+      "elapsed": 6.68
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/stop",
+      "elapsed": 13.7
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/new-source",
+      "elapsed": 12.74
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/head-drift",
+      "elapsed": 12.59
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication/wrong-pr-head",
+      "elapsed": 10.2
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAConcurrencyPublication",
+      "elapsed": 49.23
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityQuestionSource",
+      "elapsed": 3.01
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryConsumedInput",
+      "elapsed": 0.49
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAStateAuthorityMilestone",
+      "elapsed": 0.61
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRAFeedbackSupersedesUnsent",
+      "elapsed": 2.97
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/application",
+      "test": "TestRARecoveryBusinessInput",
+      "elapsed": 5.41
+    }
+  ],
+  "scope": "Only existing executor/program/agent branches; no parser process/restart/late-result coverage claimed"
+}

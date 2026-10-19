@@ -32,6 +32,7 @@ const (
 	LifecycleStopExecution    LifecycleAction = "stop_execution"
 	LifecycleCleanup          LifecycleAction = "cleanup_resources"
 	LifecycleHostAction       LifecycleAction = "host_action"
+	LifecycleParseResult      LifecycleAction = "parse_result"
 )
 
 // LifecycleInput is a closed value union. Exactly one member must match the
@@ -47,6 +48,34 @@ type LifecycleInput struct {
 	Stop       *StopInput        `json:"stop,omitempty"`
 	Cleanup    *CleanupInput     `json:"cleanup,omitempty"`
 	Host       *HostActionInput  `json:"host,omitempty"`
+	Parse      *ParseInput       `json:"parse,omitempty"`
+}
+
+// ParseInput freezes one independent acquisition operation, never an agent turn.
+// Payload is interpreted by the parser owner, not by native execution adapters.
+type ParseInput struct {
+	ResultID   string           `json:"result_id"`
+	Payload    string           `json:"payload"`
+	Generation string           `json:"generation"`
+	Deadline   time.Time        `json:"deadline"`
+	Owner      *ProcessIdentity `json:"owner,omitempty"`
+}
+
+type ParseEvidence struct {
+	DisabledMCPServers []string `json:"disabled_mcp_servers,omitempty"`
+	NativeArgsDigest   string   `json:"native_args_digest,omitempty"`
+	NativeHome         string   `json:"native_home,omitempty"`
+	WorkingDirectory   string   `json:"working_directory,omitempty"`
+	Status             string   `json:"status"`
+	Content            string   `json:"content,omitempty"`
+	ContentDigest      string   `json:"content_digest,omitempty"`
+	SessionID          string   `json:"session_id,omitempty"`
+	Model              string   `json:"model,omitempty"`
+	Executable         string   `json:"executable,omitempty"`
+	ExecutableDigest   string   `json:"executable_digest,omitempty"`
+	Version            string   `json:"version,omitempty"`
+	ToolEvents         int      `json:"tool_events"`
+	Diagnostic         string   `json:"diagnostic,omitempty"`
 }
 
 type FeedbackInput struct {
@@ -117,6 +146,9 @@ func (input LifecycleInput) Validate(action LifecycleAction) error {
 	if input.Host != nil {
 		count++
 	}
+	if input.Parse != nil {
+		count++
+	}
 	valid := false
 	switch action {
 	case LifecyclePrepareWorkspace:
@@ -137,6 +169,8 @@ func (input LifecycleInput) Validate(action LifecycleAction) error {
 		valid = input.Cleanup != nil
 	case LifecycleHostAction:
 		valid = input.Host != nil && input.Host.Validate() == nil
+	case LifecycleParseResult:
+		valid = input.Parse != nil && input.Parse.ResultID != "" && input.Parse.Payload != "" && input.Parse.Generation != "" && !input.Parse.Deadline.IsZero()
 	}
 	if count != 1 || !valid {
 		return errors.New("lifecycle input does not match exactly one action")
@@ -145,6 +179,14 @@ func (input LifecycleInput) Validate(action LifecycleAction) error {
 }
 
 func (input LifecycleInput) Clone() LifecycleInput {
+	if input.Parse != nil {
+		value := *input.Parse
+		if value.Owner != nil {
+			owner := *value.Owner
+			value.Owner = &owner
+		}
+		input.Parse = &value
+	}
 	if input.Workspace != nil {
 		value := *input.Workspace
 		input.Workspace = &value
@@ -297,7 +339,7 @@ func (candidate LifecycleCandidate) Validate() error {
 	switch candidate.Action {
 	case LifecyclePrepareWorkspace, LifecycleCreateResource, LifecyclePrepareSession, LifecycleStartTurn, LifecycleSubmitInput, LifecycleReportCompletion,
 		LifecycleDeliverFeedback, LifecycleAcknowledge, LifecycleStopObservation,
-		LifecycleStopExecution, LifecycleCleanup, LifecycleHostAction:
+		LifecycleStopExecution, LifecycleCleanup, LifecycleHostAction, LifecycleParseResult:
 		return candidate.Input.Validate(candidate.Action)
 	default:
 		return errors.New("unsupported lifecycle action")
@@ -313,6 +355,13 @@ type LifecycleRequest struct {
 func (request LifecycleRequest) Validate() error {
 	if request.Operation.ID == "" || request.Operation.PayloadDigest == "" || request.Operation.Action == "" {
 		return errors.New("lifecycle request has no durable operation identity")
+	}
+	if request.Operation.Action == string(LifecycleParseResult) {
+		wire, err := json.Marshal(request.Input.Parse)
+		digest := sha256.Sum256(wire)
+		if err != nil || !bytes.Equal(wire, request.Operation.Request) || hex.EncodeToString(digest[:]) != request.Operation.PayloadDigest {
+			return errors.New("parser input differs from frozen operation payload")
+		}
 	}
 	if identity := request.Operation.LifecycleIdentity; identity == nil {
 		return errors.New("lifecycle request has no original durable resource binding")
@@ -360,6 +409,7 @@ type LifecycleReceipt struct {
 	EventPath      string                       `json:"event_path,omitempty"`
 	State          LifecycleStateFacts          `json:"state,omitempty"`
 	TurnEvidence   *TurnEvidence                `json:"turn_evidence,omitempty"`
+	ParseEvidence  *ParseEvidence               `json:"parse_evidence,omitempty"`
 	Handle         StopHandle                   `json:"-"`
 }
 
@@ -387,6 +437,11 @@ type LifecycleStateFacts struct {
 }
 
 func (receipt LifecycleReceipt) Clone() LifecycleReceipt {
+	if receipt.ParseEvidence != nil {
+		value := *receipt.ParseEvidence
+		value.DisabledMCPServers = append([]string(nil), value.DisabledMCPServers...)
+		receipt.ParseEvidence = &value
+	}
 	if receipt.OriginalHost != nil {
 		original := *receipt.OriginalHost
 		receipt.OriginalHost = &original
@@ -437,7 +492,7 @@ func (receipt LifecycleReceipt) ValidateFor(request LifecycleRequest) error {
 	if receipt.Disposition != OperationAccepted && receipt.Disposition != OperationConfirmed && receipt.Disposition != OperationRejected && receipt.Disposition != OperationUnknown {
 		return errors.New("lifecycle receipt has no terminal or accepted disposition")
 	}
-	if receipt.State.ResourcePending && (receipt.Disposition != OperationAccepted || request.Operation.Action != string(LifecycleCreateResource) || receipt.State.ResourceID == "") {
+	if receipt.State.ResourcePending && (receipt.Disposition != OperationAccepted || request.Operation.Action != string(LifecycleCreateResource) && request.Operation.Action != string(LifecycleParseResult) || receipt.State.ResourceID == "") {
 		return errors.New("pending lifecycle resource lacks its accepted original resource identity")
 	}
 	return nil
@@ -480,6 +535,12 @@ func CandidateForOperation(operation Operation) (LifecycleCandidate, error) {
 		return nil
 	}
 	switch action {
+	case LifecycleParseResult:
+		var value ParseInput
+		if err := decode(&value); err != nil {
+			return LifecycleCandidate{}, err
+		}
+		input.Parse = &value
 	case LifecyclePrepareWorkspace:
 		var value WorkspaceIntent
 		if err := decode(&value); err != nil {
@@ -757,6 +818,11 @@ type LifecycleServicePort interface {
 
 type LifecycleWorkspacePort interface {
 	InspectLifecycleWorkspace(context.Context, LifecycleSnapshot) (WorkspaceInspection, error)
+}
+
+// Optional exact-owner audit inspection; revision-only metadata is insufficient.
+type LifecycleAuditWorkspacePort interface {
+	InspectLifecycleAuditWorkspace(context.Context, LifecycleSnapshot, string) (WorkspaceInspection, error)
 }
 
 type LifecycleRecoveryPort interface {

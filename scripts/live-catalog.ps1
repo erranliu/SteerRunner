@@ -18,5 +18,9 @@ function Get-SRLiveCases($Entry) {
     return $taskDefinition.cases
 }
 function Test-SRAdminCase([string]$Scenario,[string]$Case) {
-    return $Scenario -in @('orca-remote.connection-reconnect','orca-remote.publication-unknown') -or $Case -in @('graceful-boundary','kill-boundary','boundary','unreachable')
+    $taskDefinition = @(Get-SRCaseRegistry | Where-Object { $_.id -ceq $Scenario })
+    if ($taskDefinition.Count -ne 1) { throw 'Unknown scenario in requirements lookup' }
+    $taskCase = @($taskDefinition[0].cases | Where-Object { $_.id -ceq $Case })
+    if ($taskCase.Count -ne 1) { throw 'Unknown case in requirements lookup' }
+    return $null -ne $taskCase[0].PSObject.Properties['requirements'] -and [bool]$taskCase[0].requirements.admin
 }

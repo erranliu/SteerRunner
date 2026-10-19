@@ -16,7 +16,7 @@
 
 2026-10-19 产品边界：仅使用执行主机已有 gh 登录的单仓库 broker，移除 GitHub App 签发、私钥引用和 installation token。旧 `execution.settings.github_auth`（包括 null）在 Run/Check 受理前拒绝；旧 profile/helper 配置严格拒绝，不静默改用宿主身份。升级前须用原版本收尾已有 App Run/Check，历史证据不改写。
 
-Orca 原 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原辅助终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知辅助创建不补建，丢失读取/关闭只对账原辅助身份。宿主 gh 登录及其他 Run 的授权不受影响。
+Orca 原 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原固定控制终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知控制创建不补建，丢失读取/关闭只对账原控制身份。宿主 gh 登录及其他 Run 的授权不受影响。
 
 - SA01：可信执行主机准备认证。使用该主机已有 gh 登录，宿主凭据仅留在可信
   runtime 内存；worker 获得有限期、单仓库、限定操作的代理 capability。Git push 和

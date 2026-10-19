@@ -1,0 +1,6 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/parser-restart
+--- PASS: TestSRResultAcquisition (67.97s)
+    --- PASS: TestSRResultAcquisition/parser-restart (67.97s)
+PASS
+ok  	github.com/erranliu/SteerRunner/tests/integration	75.396s

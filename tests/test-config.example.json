@@ -1,0 +1,45 @@
+{
+  "schema": "steerrunner-test-config/v1",
+  "configurations": {
+    "local-codex": {
+      "workflow": {
+        "version": 2,
+        "id": "development"
+      },
+      "execution": {
+        "target": {
+          "kind": "local"
+        },
+        "adapter": "codex-app-server",
+        "settings": {
+          "access_mode": "sandbox",
+          "reasoning_effort": "medium",
+          "executable": "C:/path/to/native/codex.exe"
+        }
+      }
+    }
+  },
+  "fixture": {
+    "repository": {
+      "base_branch": "main",
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "remote": "origin",
+      "base_revision": "cebdd5ab552150c49743e40593c836689ecf789b"
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "main",
+      "settings": {
+        "query": {
+          "executable": "gh",
+          "args": [
+            "api"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  },
+  "harness": {}
+}

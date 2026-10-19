@@ -1,0 +1,73 @@
+{
+  "model_calls": 0,
+  "methods": [
+    "initialize",
+    "config/read"
+  ],
+  "layers": [
+    {
+      "name": {
+        "type": "sessionFlags"
+      },
+      "keys": [
+        "name",
+        "version",
+        "config"
+      ],
+      "config_keys": [
+        "features"
+      ],
+      "mcp_names": []
+    },
+    {
+      "name": {
+        "type": "user",
+        "file": "C:\\Users\\lmas1\\.codex\\config.toml",
+        "profile": null
+      },
+      "keys": [
+        "name",
+        "version",
+        "config"
+      ],
+      "config_keys": [
+        "personality",
+        "model",
+        "model_reasoning_effort",
+        "approval_policy",
+        "approvals_reviewer",
+        "sandbox_mode",
+        "service_tier",
+        "notify",
+        "windows",
+        "features",
+        "mcp_servers",
+        "plugins",
+        "marketplaces",
+        "projects",
+        "desktop",
+        "apps",
+        "shell_environment_policy",
+        "hooks",
+        "tui"
+      ],
+      "mcp_names": [
+        "figma",
+        "node_repl"
+      ]
+    },
+    {
+      "name": {
+        "type": "system",
+        "file": "C:\\ProgramData\\OpenAI\\Codex\\config.toml"
+      },
+      "keys": [
+        "name",
+        "version",
+        "config"
+      ],
+      "config_keys": [],
+      "mcp_names": []
+    }
+  ]
+}

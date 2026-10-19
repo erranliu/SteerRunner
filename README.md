@@ -4,12 +4,13 @@ SteerRunner 是个人多机执行器：在本人管理和信任、预先配置�
 
 用户负责每台执行机的工具安装和 gh 登录。Runner 负责环境检查、Run 隔离、有限期单仓库授权、执行与发布对账、显式恢复、停止及清理。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。
 
-当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、实现→报告→发布→核验 PR、原会话反馈、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke、L3 流程/核心可靠性测试和 L4 受控边界测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
+当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、按需报告→发布→核验 PR、原会话人工续执行、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
 - [通用 Orca Agent 接入 Spec](docs/spec/orca-generic-agent.spec.md) / [Plan](docs/spec/orca-generic-agent.plan.md)（不修改 Orca；本机 Pi/DSH 原 TUI 已接通，支持受管工具与实际权限；[当前构建验收](docs/acceptance/orca-generic-agent.md)）
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
+- [独立调用与内部测试配置 Spec](docs/spec/independent-configuration.spec.md) / [Plan](docs/spec/independent-configuration.plan.md) / [验收](docs/acceptance/independent-configuration.md)（调用方管理选择，Runner 发布契约；内部测试配置独立）
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
 - [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
@@ -32,7 +33,18 @@ SteerRunner 是个人多机执行器：在本人管理和信任、预先配置�
 .\bin\steerrunner.exe capabilities --state-dir C:\Temp\SteerRunnerDemo --json
 ```
 
-构建输出 `bin/steerrunner.exe` 及构建来源/摘要记录。运行只需 EXE；内置流程、六份步骤提示词及 schema 已内嵌，不需要 SteerLine、模板目录、Python 或 Node。CLI 启动成功后退出，常驻服务继续运行。CLI 与服务使用同一个 EXE 文件，但各自是独立进程。
+构建输出 `bin/steerrunner.exe` 及构建来源/摘要记录。运行只需 EXE；内置流程、内置步骤提示词及 schema 已内嵌，不需要 SteerLine、模板目录、Python 或 Node。CLI 启动成功后退出，常驻服务继续运行。CLI 与服务使用同一个 EXE 文件，但各自是独立进程。
+
+Runner 不维护部署清单或命名 profile。SteerLine／独立调用方选择后端、管理默认方案并提交完整请求；Runner 应用公开默认值、校验和冻结输入。离线能力查询与纯校验不启动服务、不检查工具或读取内部测试配置：
+
+```powershell
+.\bin\steerrunner.exe capabilities --offline --json
+Get-Content -Raw -Encoding utf8 .\run-configuration.json | .\bin\steerrunner.exe validate --kind run-configuration --input - --json
+Get-Content -Raw -Encoding utf8 .\run-input.json | .\bin\steerrunner.exe validate --kind run --input - --json
+Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe validate --kind environment-check --input - --json
+```
+
+三个文件直接保存对应对象，不含写信封。`validate` 返回 `request_id=null` 和字段诊断；成功只说明生产纯 gate 接受，不证明环境就绪。实际 `submit`／检查 start 仍使用原 v1 写信封和 request_id。能力目录列出实现组合、schema 引用和限制；离线来源标记 EXE，在线来源由响应服务附带其 instance_id。旧接口不要求先调用 validate。
 
 Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway 被明确禁止或创建后仍有 Job 关联时，使用系统自带 Windows PowerShell/CIM 挂起创建独立进程，核验用户、权限与 EXE 后才恢复执行，不请求提升权限。该系统能力不可用时返回明确错误。`startup_unverified` 表示原启动结果未核清，须核实 `service/bootstrap.json` 对应的原进程，不会自动重建另一份启动。`serve --state-dir <绝对路径>` 可从已有独立宿主前台运行，生命周期由该宿主负责。
 
@@ -103,10 +115,14 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 ## 选择 workflow 与审计模型
 
+当前开发格式为 state/v3、资源版本 2；workflow/1 和 state/v2 明确拒绝，不迁移旧运行。请使用新的空 state-dir。SteerLine 接入限制见[结果获取 Spec §8.1](docs/spec/result-acquisition.spec.md#81-steerline-不改的核查与具体限制)。
+
+独立解析采用显式开启的 Windows / Codex 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](docs/acceptance/result-acquisition.md)。
+
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 
-- `development/1`：原实现→报告→发布流程，原请求保持可用。
-- `development-audited/1`：报告后依次审计 Spec 和代码；有阻断问题时复用原实施/报告步骤修复，最多自动修复两次，每次重新审计。本期仅本机 `codex-app-server`。
+- `development/2`：实施→发布→pr_ready；可信成功行或完整机器结果可跳过补报，每个原源最多补报一次。未完成的实施等待输入。
+- `development-audited/2`：实施→一次代码审计及 P0–P2 修复→发布；审计记录修复数量、内容及提交前后来源。支持本机 `codex-app-server` 与配置可信 helper 的 Orca Codex；原生模型回执和远端 Git 来源均须核实。
 
 带审计请求的相关字段如下，其余 RunRequest 字段仍必填。模型标识请替换为账号实际可用型号：
 
@@ -114,9 +130,9 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 {
   "workflow": {
     "id": "development-audited",
-    "version": 1,
+    "version": 2,
     "audit_model": {"model": "review-model-id", "reasoning_effort": "high"},
-    "prompt_overrides": {"audit.spec": "核对冻结 Spec/Plan，报告有依据的偏差。"}
+    "prompt_overrides": {"audit.code": "审计代码、修复 P0–P2 并完成必要验证，提交改动并报告实际修复。"}
   },
   "execution": {
     "adapter": "codex-app-server",
@@ -126,11 +142,11 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 }
 ```
 
-审计与实施使用同一 agent、thread、工作区和分支。审计流程要求显式填写执行模型与审计模型，确保实施、修复和发布切回执行模型；省略审计 effort 时继承规范化执行 effort。模型不可用时明确阻断，不回退或换会话。
+审计与实施使用同一 agent、thread、工作区和分支。审计流程要求显式填写执行模型与审计模型，实施和发布使用执行模型，审计及同轮修复使用审计模型；省略审计 effort 时继承规范化执行 effort。模型不可用时明确阻断，不回退或换会话。
 
-`inspect.audit` 显示当前实施结果的审计与修复计数，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。P0–P2 findings 阻断发布，P3 为建议；坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
+`inspect.audit` 显示当前实施结果、原审计来源、实际修复数量与逐项内容，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。仍有 P0–P2 未解决或验证未完成时不发布；P3 建议不计修复数。补报最多一次，坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
 
-本次权限契约与独立检查使用存储 v3。v2 状态目录返回 `unsupported_schema`，请保留原目录并为新构建使用新目录；不迁移或静默改写旧执行的权限模式。
+存储使用 v3；旧目录、旧流程版本明确拒绝，保留原目录由原 EXE 收尾，不建立兼容和迁移路径。
 
 ## 停服及回执
 
@@ -173,7 +189,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 二十四场景三十一 case（远端十八、本机 Codex 五项、本机 Orca 八项）、
+当前已注册 L2 一 case、L3 二十二场景／二十九 case（含远端可靠性、本机反馈／审计／多 Run、六种环境检查及 Pi／DSH）、
 L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
 driver 需要同构建反馈通过资格。真实后端并行和剩余管理员验收分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
@@ -207,5 +223,11 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 ## 环境检查规划入口
 
 2026-10-16 仅规划、先不实现：[无人执行权限与 Git 环境检查 Spec](docs/spec/environment-check.spec.md) · [Plan](docs/spec/environment-check.plan.md) · [专属验收](docs/acceptance/environment-check.md)。本仓维护 Runner 公开契约与执行事实；SteerLine 独立维护调用与展示。沙箱认证工作保持原作用域，整合冲突及远端前置见 Spec。
+
+## 结构化结果获取与 Workflow 定义
+
+2026-10-17 已开始实施：[结构化结果获取 Spec](docs/spec/result-acquisition.spec.md) · [Plan](docs/spec/result-acquisition.plan.md) · [专属验收](docs/acceptance/result-acquisition.md) · [源码与 Codex 能力调查](docs/acceptance/evidence/result-acquisition-design-20261016.md)。按步骤组合程序提取、独立解析和原 agent 报告；保留业务顺序与 PR 核验，Runner 独立配置，SteerLine 不改。三种方式已按确认的最小 parser 边界实现，原生权限保证、行为约定和事后检测分别记录；workflow/state 版本影响见 Spec。当前验证与未通过项见专属验收；未部署，不启动 roadmap 调度。
+
+Workflow 能力/状态机定义：[统一能力与脚本边界](docs/workflows/README.md) · [普通开发流程](docs/workflows/development.md) · [带审计开发流程](docs/workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，定制脚本仅用于结果核验。两份内置定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
 
 绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](docs/spec/steerrunner.spec.md)。

@@ -59,7 +59,7 @@ func RemotePermissionAudit(ctx context.Context, client native.Client, process b.
 				if e != nil || json.Unmarshal(raw, &audit) != nil {
 					return audit, errors.New("invalid native audit receipt")
 				}
-				if audit.Native.Session != provider || audit.Readiness.SessionID != provider || !strings.EqualFold(strings.ReplaceAll(audit.Readiness.Workspace, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) {
+				if !audit.Readiness.Verified || audit.Native.Session != provider || audit.Readiness.SessionID != provider || !strings.EqualFold(strings.ReplaceAll(audit.Readiness.Workspace, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) {
 					return audit, errors.New("remote native audit identity changed")
 				}
 				return audit, nil

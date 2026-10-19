@@ -1,0 +1,26 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.395s [no tests to run]
+=== RUN   TestRAAtomicCompletion
+--- PASS: TestRAAtomicCompletion (5.79s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (0.49s)
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+=== RUN   TestRAConcurrencyPublication/new-source
+=== RUN   TestRAConcurrencyPublication/head-drift
+=== RUN   TestRAConcurrencyPublication/wrong-pr-head
+--- PASS: TestRAConcurrencyPublication (50.36s)
+    --- PASS: TestRAConcurrencyPublication/stop (13.87s)
+    --- PASS: TestRAConcurrencyPublication/new-source (13.51s)
+    --- PASS: TestRAConcurrencyPublication/head-drift (12.60s)
+    --- PASS: TestRAConcurrencyPublication/wrong-pr-head (10.38s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.52s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (5.43s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	65.178s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	1.416s [no tests to run]

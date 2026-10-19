@@ -50,6 +50,7 @@ func TestSRObservationAttachmentCommitsBeforePublishingObserver(t *testing.T) {
 			r.Snapshot.Session.SessionID = "session"
 			r.Snapshot.Session.CurrentTurnID = "original-turn"
 			r.Allowed, r.ResumeRequired = false, true
+			bindTestWorkflow(r)
 			if err := e.commitLocked(r, nil, "turn_started"); err != nil {
 				t.Fatal(err)
 			}
@@ -91,6 +92,7 @@ func TestSRObservationUnchangedProjectionStillCommitsIdentity(t *testing.T) {
 				r := e.runs["run"].Clone()
 				r.Snapshot.Session.Generation = "session-generation"
 				r.Snapshot.Session.CurrentTurnID = "turn"
+				bindTestWorkflow(r)
 				if err := e.commitLocked(r, nil, "turn_started"); err != nil {
 					t.Fatal(err)
 				}
@@ -137,6 +139,7 @@ func TestSRObservationCommitFailureKeepsEventReplayable(t *testing.T) {
 	r.Snapshot.Session.SessionID = "session"
 	r.Snapshot.Session.PendingCommandID = "command"
 	r.Snapshot.Session.PendingTurnID = "turn"
+	bindTestWorkflow(r)
 	if err := e.commitLocked(r, nil, "input_accepted"); err != nil {
 		t.Fatal(err)
 	}

@@ -1,0 +1,29 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "graceful-active",
+  "fixture": "C:\\srt\\7c0acf7390e4",
+  "control": {
+    "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "terminal": "term_dcd3f01d-69bd-4ba3-acc9-3f293f1af99d",
+    "incarnation": "84ca2af3-0085-4521-8b62-ae99a7ea09d6",
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-55e01e35a9d2e75f9d19fdbece8664a3"
+  },
+  "native_create_index": 8,
+  "control_ready_index": 13,
+  "first_main_send_index": 16,
+  "identity_checks": 14,
+  "completed_receipt_observations": 15,
+  "authentication_proof_observations": 1,
+  "auxiliary_creations": 1,
+  "per_query_or_revocation_creations": 0,
+  "audit": {
+    "business_creations": 1,
+    "closed_inspections": 1,
+    "initial_terminal_creations": 0,
+    "inspections": 1,
+    "prompt_sends": 4,
+    "verified": true
+  },
+  "raw_native_calls_sha256": "7456b04bf19901fe8396d65a80a211e267b2be4fba83d62b494d8d9efb8105fc",
+  "raw_driver_faults_sha256": "38ef76c56a57506b08e13ee3ea7b48e995ba139542e36ce8432774d10c0f0c4c"
+}

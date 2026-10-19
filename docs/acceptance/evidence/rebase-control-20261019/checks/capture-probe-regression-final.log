@@ -1,0 +1,349 @@
+=== RUN   TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights
+=== RUN   TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights/does-not-enable-child
+--- PASS: TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights (0.00s)
+    --- PASS: TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights/does-not-enable-child (0.00s)
+=== RUN   TestSRStartupIntent
+--- PASS: TestSRStartupIntent (0.01s)
+=== RUN   TestSRExpectedInstanceFencesReplacement
+--- PASS: TestSRExpectedInstanceFencesReplacement (0.02s)
+=== RUN   TestOrcaStoppedNativeProbe
+    orca_native_test.go:32: requires a new independent debug package probe directory
+--- SKIP: TestOrcaStoppedNativeProbe (0.00s)
+=== RUN   TestSRShutdownProofRequiresReleasedWriter
+--- PASS: TestSRShutdownProofRequiresReleasedWriter (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	3.335s
+=== RUN   TestDevelopmentAcquisitionNativeAssertions
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/exact_marker_no_extra_call
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/near_marker_single_report
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/complete_machine_report_no_extra_call
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/exact_marker_unnecessary_report
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/parser_forbidden
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/second_report_forbidden
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/wrong_report_original_turn
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/wrong_report_field_source
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/report_redid_work
+=== RUN   TestDevelopmentAcquisitionNativeAssertions/native_failure_cannot_be_overwritten
+--- PASS: TestDevelopmentAcquisitionNativeAssertions (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/exact_marker_no_extra_call (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/near_marker_single_report (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/complete_machine_report_no_extra_call (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/exact_marker_unnecessary_report (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/parser_forbidden (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/second_report_forbidden (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/wrong_report_original_turn (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/wrong_report_field_source (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/report_redid_work (0.00s)
+    --- PASS: TestDevelopmentAcquisitionNativeAssertions/native_failure_cannot_be_overwritten (0.00s)
+=== RUN   TestDevelopmentAcquisitionRetainsQuestionHistory
+--- PASS: TestDevelopmentAcquisitionRetainsQuestionHistory (0.00s)
+=== RUN   TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts
+--- PASS: TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts (0.00s)
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked
+=== RUN   TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker
+--- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/settled-without-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/hidden-refusal (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-counter (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-closed (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/socket-remains (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/not-revoked (0.00s)
+    --- PASS: TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts/missing-broker (0.00s)
+=== RUN   TestRegistryPreservesReliabilityAndBindsControlledEdges
+--- PASS: TestRegistryPreservesReliabilityAndBindsControlledEdges (0.00s)
+=== RUN   TestLiveRegistryHasCompleteL3Cases
+--- PASS: TestLiveRegistryHasCompleteL3Cases (0.05s)
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-merge
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/duplicate
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/missing-contract
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-fault
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-audit
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-case
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-repeat
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-native-stop
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-facility-restore
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/unproven
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/failed-assertion
+=== RUN   TestStabilityResultCannotPassMissingOrMismatchedEvidence/dynamic-outcome
+--- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence (0.02s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-merge (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/duplicate (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/missing-contract (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-fault (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-audit (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-case (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/wrong-repeat (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-native-stop (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/no-facility-restore (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/unproven (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/failed-assertion (0.00s)
+    --- PASS: TestStabilityResultCannotPassMissingOrMismatchedEvidence/dynamic-outcome (0.00s)
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial
+=== RUN   TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command
+--- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/successful-commit (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/windows-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/zero-exit-with-broker-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/expired-authentication (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/nonzero-exit-with-denial (0.00s)
+    --- PASS: TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit/commentary-is-not-command (0.00s)
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/no-body
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/title-only
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/working
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/wrong-prompt
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/cancelled
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/interrupted
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/boundary
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/stale
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/unknown-outcome
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/tool-output
+=== RUN   TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/restored
+--- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/no-body (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/title-only (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/working (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/wrong-prompt (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/cancelled (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/interrupted (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/boundary (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/stale (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/unknown-outcome (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/tool-output (0.00s)
+    --- PASS: TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts/restored (0.00s)
+=== RUN   TestSRIndependentTestConfiguration
+--- PASS: TestSRIndependentTestConfiguration (0.13s)
+=== RUN   TestSRBaselineConstraintsAndGateReasons
+--- PASS: TestSRBaselineConstraintsAndGateReasons (0.00s)
+=== RUN   TestSRAllLiveCasesHaveRequirements
+--- PASS: TestSRAllLiveCasesHaveRequirements (0.00s)
+=== RUN   TestSRCheckAuthenticationAvailability
+--- PASS: TestSRCheckAuthenticationAvailability (0.02s)
+=== RUN   TestSRNativePreparationReferencesAreStaticConstraints
+=== RUN   TestSRNativePreparationReferencesAreStaticConstraints/absolute-uninstalled
+=== RUN   TestSRNativePreparationReferencesAreStaticConstraints/relative-transport
+=== RUN   TestSRNativePreparationReferencesAreStaticConstraints/relative-local-helper
+--- PASS: TestSRNativePreparationReferencesAreStaticConstraints (0.03s)
+    --- PASS: TestSRNativePreparationReferencesAreStaticConstraints/absolute-uninstalled (0.01s)
+    --- PASS: TestSRNativePreparationReferencesAreStaticConstraints/relative-transport (0.01s)
+    --- PASS: TestSRNativePreparationReferencesAreStaticConstraints/relative-local-helper (0.01s)
+=== RUN   TestSRTestConfigOuterSchemaMatchesParser
+--- PASS: TestSRTestConfigOuterSchemaMatchesParser (0.03s)
+=== RUN   TestFailedObservationRequiresLaterOriginalRead
+--- PASS: TestFailedObservationRequiresLaterOriginalRead (0.00s)
+=== RUN   TestFixedControlNativeAudit
+=== RUN   TestFixedControlNativeAudit/valid
+=== RUN   TestFixedControlNativeAudit/reader-unverified
+=== RUN   TestFixedControlNativeAudit/query-failed
+=== RUN   TestFixedControlNativeAudit/failed-reader-unverified
+=== RUN   TestFixedControlNativeAudit/foreign-reader-owner
+=== RUN   TestFixedControlNativeAudit/lost-send-receipt
+=== RUN   TestFixedControlNativeAudit/lost-close-inventory
+=== RUN   TestFixedControlNativeAudit/wrong-helper
+=== RUN   TestFixedControlNativeAudit/title-only
+=== RUN   TestFixedControlNativeAudit/late-create
+=== RUN   TestFixedControlNativeAudit/extra-create-flag
+=== RUN   TestFixedControlNativeAudit/wrong-workspace
+=== RUN   TestFixedControlNativeAudit/wrong-ready
+=== RUN   TestFixedControlNativeAudit/wrong-incarnation
+=== RUN   TestFixedControlNativeAudit/wrong-session
+=== RUN   TestFixedControlNativeAudit/wrong-input
+=== RUN   TestFixedControlNativeAudit/wrong-response
+=== RUN   TestFixedControlNativeAudit/changed-final
+=== RUN   TestFixedControlNativeAudit/bad-auth
+=== RUN   TestFixedControlNativeAudit/missing-close
+=== RUN   TestFixedControlNativeAudit/unconfirmed-close
+=== RUN   TestFixedControlNativeAudit/unknown-create
+=== RUN   TestFixedControlNativeAudit/unresolved-send
+=== RUN   TestFixedControlNativeAudit/extra-send-flag
+=== RUN   TestFixedControlNativeAudit/initial-valid
+=== RUN   TestFixedControlNativeAudit/initial-no-empty
+=== RUN   TestFixedControlNativeAudit/initial-extra-command
+--- PASS: TestFixedControlNativeAudit (0.02s)
+    --- PASS: TestFixedControlNativeAudit/valid (0.00s)
+    --- PASS: TestFixedControlNativeAudit/reader-unverified (0.00s)
+    --- PASS: TestFixedControlNativeAudit/query-failed (0.00s)
+    --- PASS: TestFixedControlNativeAudit/failed-reader-unverified (0.00s)
+    --- PASS: TestFixedControlNativeAudit/foreign-reader-owner (0.00s)
+    --- PASS: TestFixedControlNativeAudit/lost-send-receipt (0.00s)
+    --- PASS: TestFixedControlNativeAudit/lost-close-inventory (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-helper (0.00s)
+    --- PASS: TestFixedControlNativeAudit/title-only (0.00s)
+    --- PASS: TestFixedControlNativeAudit/late-create (0.00s)
+    --- PASS: TestFixedControlNativeAudit/extra-create-flag (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-workspace (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-ready (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-incarnation (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-session (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-input (0.00s)
+    --- PASS: TestFixedControlNativeAudit/wrong-response (0.00s)
+    --- PASS: TestFixedControlNativeAudit/changed-final (0.00s)
+    --- PASS: TestFixedControlNativeAudit/bad-auth (0.00s)
+    --- PASS: TestFixedControlNativeAudit/missing-close (0.00s)
+    --- PASS: TestFixedControlNativeAudit/unconfirmed-close (0.00s)
+    --- PASS: TestFixedControlNativeAudit/unknown-create (0.00s)
+    --- PASS: TestFixedControlNativeAudit/unresolved-send (0.00s)
+    --- PASS: TestFixedControlNativeAudit/extra-send-flag (0.00s)
+    --- PASS: TestFixedControlNativeAudit/initial-valid (0.00s)
+    --- PASS: TestFixedControlNativeAudit/initial-no-empty (0.00s)
+    --- PASS: TestFixedControlNativeAudit/initial-extra-command (0.00s)
+=== RUN   TestDiagnosticReadNeverReplaysMutation
+--- PASS: TestDiagnosticReadNeverReplaysMutation (0.50s)
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure
+--- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure (0.00s)
+=== RUN   TestStabilityEvidenceRejectsFlagOnlySuccess
+--- PASS: TestStabilityEvidenceRejectsFlagOnlySuccess (0.01s)
+=== RUN   TestManifestRejectsChangedInputsAndUnsafeTargets
+--- PASS: TestManifestRejectsChangedInputsAndUnsafeTargets (0.09s)
+=== RUN   TestArtifactRejectsStaleAndForgedEvidence
+--- PASS: TestArtifactRejectsStaleAndForgedEvidence (0.00s)
+=== RUN   TestMergeGuardRejectsForeignAndUnverifiedPR
+--- PASS: TestMergeGuardRejectsForeignAndUnverifiedPR (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence
+=== RUN   TestPublicationPreSendRetryEvidence/prepare
+=== RUN   TestPublicationPreSendRetryEvidence/attempted
+=== RUN   TestPublicationPreSendRetryEvidence/identity
+=== RUN   TestPublicationPreSendRetryEvidence/unauthorized
+=== RUN   TestPublicationPreSendRetryEvidence/same-call
+=== RUN   TestPublicationPreSendRetryEvidence/too-early
+=== RUN   TestPublicationPreSendRetryEvidence/wrong-terminal
+=== RUN   TestPublicationPreSendRetryEvidence/no-receipt
+=== RUN   TestPublicationPreSendRetryEvidence/sent
+--- PASS: TestPublicationPreSendRetryEvidence (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/prepare (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/attempted (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/identity (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/unauthorized (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/same-call (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/too-early (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/wrong-terminal (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/no-receipt (0.00s)
+    --- PASS: TestPublicationPreSendRetryEvidence/sent (0.00s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation (0.12s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid (0.04s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope (0.01s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block (0.01s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement (0.02s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked (0.01s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit (0.01s)
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/late-head
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/already-fresh
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/still-running
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/initial
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/unbound
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/provider-error
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/foreign-pr
+=== RUN   TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/foreign-session
+--- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/late-head (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/already-fresh (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/still-running (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/initial (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/unbound (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/provider-error (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/foreign-pr (0.00s)
+    --- PASS: TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting/foreign-session (0.00s)
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/valid
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-session
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-workspace
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/unverified
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-read-runtime
+=== RUN   TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/invalid-receipt
+--- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/valid (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-session (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-workspace (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/unverified (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/foreign-read-runtime (0.00s)
+    --- PASS: TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector/invalid-receipt (0.00s)
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/settles
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/empty-first
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/nonempty-deadline
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/foreign-runtime
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/foreign-worktree
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/incomplete
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/wrong-total
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-other-host-omitted
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-owner-omitted
+=== RUN   TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-owner-missing
+--- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory (0.12s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/settles (0.10s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/empty-first (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/nonempty-deadline (0.02s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/foreign-runtime (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/foreign-worktree (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/incomplete (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/wrong-total (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-other-host-omitted (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-owner-omitted (0.00s)
+    --- PASS: TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory/local-owner-missing (0.00s)
+=== RUN   TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles
+--- PASS: TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles (0.03s)
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/good
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/missing
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-policy
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-session
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/keyword-is-not-request
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/escalation
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/bypass
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/approval
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode-escalation
+=== RUN   TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/unknown-custom-tool
+--- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/good (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/missing (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-policy (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/wrong-session (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/keyword-is-not-request (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/escalation (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/bypass (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/approval (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/code-mode-escalation (0.00s)
+    --- PASS: TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence/unknown-custom-tool (0.00s)
+=== RUN   TestSignedNativeExitSurvivesIndentedArchive
+--- PASS: TestSignedNativeExitSurvivesIndentedArchive (0.00s)
+=== RUN   TestNativeInputFingerprintRejectsEmptyAndTracksOriginalSends
+--- PASS: TestNativeInputFingerprintRejectsEmptyAndTracksOriginalSends (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	2.217s

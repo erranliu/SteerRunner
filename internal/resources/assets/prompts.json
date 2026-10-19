@@ -1,8 +1,8 @@
 {
-  "implement.execute": "Implement the following Spec and Plan.",
-  "implement.report": "Format the preceding implementation result as JSON. Do not change files, run checks or publish.",
-  "publish": "Push and create or reuse a PR using the current checked-out branch. Read its exact name with git branch --show-current and use that same name for the remote branch and PR head. Wait for the original publication command to exit and inspect its exit code and PR URL. If a shell tool returns a session_id or running status, poll that same session until it exits; polling observes the original command and must not start publication again.",
-  "publish.report": "Format the preceding publication result as JSON. Do not change files, run checks or publish.",
-  "audit.spec": "Audit the current implementation against the frozen Spec and Plan. Report only evidenced deviations. Do not repair, commit or publish.",
-  "audit.code": "Audit the current code for correctness, regressions, edge cases, tests and evidenced security issues. Do not repair, commit or publish."
+  "implement.execute": "根据以下 Spec、Plan 和参考材料完成实现及必要验证。",
+  "implement.report": "根据已有执行上下文整理指定实施结果；只报告，不补做工作。注明依据，保留失败、未知情况、缺失和冲突。",
+  "publish": "将当前分支 push 到发布目标并创建 PR。用 git branch --show-current 取得实际分支，作为远端分支和 PR head。结果未知时说明情况，不重复创建。成功后给出 PR URL。",
+  "publish.report": "根据已有上下文整理指定发布的结果和 PR URL；只报告，不重新发布。注明依据，保留失败、未知情况、缺失和冲突。",
+  "audit.code": "审计当前代码，直接修复发现的 P0–P2 问题并完成必要验证。验证后将最终代码改动追加提交到当前分支；无改动时沿用当前提交。报告实际修复的 P0–P2 总数及逐项问题、修复内容；未修复问题和未完成事项如实说明。",
+  "audit.code.report": "根据已有上下文整理指定审计修复结果；只报告，不重审、修代码或补检查。保留实际修复数量、逐项内容及遗留问题，缺失、歧义、冲突如实标注。"
 }

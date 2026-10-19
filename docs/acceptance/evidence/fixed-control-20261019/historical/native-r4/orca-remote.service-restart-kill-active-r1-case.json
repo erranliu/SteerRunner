@@ -1,0 +1,13 @@
+{
+  "level": "L3",
+  "scenario": "orca-remote.service-restart",
+  "manifest": "C:\\srt\\bc8be7b301a6\\manifest.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-19T01:44:44.3505755Z",
+  "started_at": "2026-10-19T01:39:22.1832982Z",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r4\\orca-remote.service-restart-kill-active-r1-fixture.json",
+  "evidence": "C:\\srt\\bc8be7b301a6\\evidence",
+  "status": "failed",
+  "case_id": "kill-active",
+  "error": "Live scenario failed; inspect C:\\srt\\bc8be7b301a6\\evidence/native.log"
+}

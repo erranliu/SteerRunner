@@ -1,0 +1,28 @@
+--- FAIL: TestSRValidationPreservesGateAndDiagnostics (0.04s)
+    validation_test.go:37: lost field diagnostic: [{Path:/workflow/version Code:invalid_value Message:The value does not satisfy the published field contract.}]
+--- FAIL: TestSRCapabilityCatalogIsStaticAndResolvable (0.07s)
+    validation_test.go:97: catalog became an admission whitelist
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/resources	1.615s
+--- FAIL: TestSRStaticConfigurationInterfaces (0.16s)
+    --- FAIL: TestSRStaticConfigurationInterfaces/valid (0.01s)
+        configuration_test.go:58: exit=3 response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":{"kind":"run-configuration","valid":false,"issues":[{"path":"/workflow/version","code":"invalid_value","message":"The value does not satisfy the published field contract."}],"version":"0.2.0-dev.2","resource_digest":"e6064e4d905a821d8dcd13652d147822b8d981a507edc9a6b134746c15bcc7d7"},"error":{"code":"unsupported_schema","message":"The selected workflow is not defined by this executable."}}
+             stderr=
+    --- FAIL: TestSRStaticConfigurationInterfaces/valid-run-no-readiness-probe (0.00s)
+        configuration_test.go:58: exit=3 response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":{"kind":"run","valid":false,"issues":[{"path":"/workflow/version","code":"invalid_value","message":"The value does not satisfy the published field contract."}],"version":"0.2.0-dev.2","resource_digest":"e6064e4d905a821d8dcd13652d147822b8d981a507edc9a6b134746c15bcc7d7"},"error":{"code":"unsupported_schema","message":"The selected workflow is not defined by this executable."}}
+             stderr=
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/cli	3.807s
+--- FAIL: TestSRIndependentTestConfiguration (0.12s)
+    config_test.go:37: [{/configurations/local-codex unsupported_schema The mandatory local Codex baseline is not configured correctly.}]
+--- FAIL: TestSRAllLiveCasesHaveRequirements (0.00s)
+    config_test.go:124: missing requirements local-codex.result-acquisition default
+--- FAIL: TestSRCheckAuthenticationAvailability (0.04s)
+    config_test.go:165: check limitation changed ordinary Run selection {local-codex.feedback default L3 unavailable [{/configurations/local-codex unsupported_schema The required execution configuration is missing or invalid.}]}
+--- FAIL: TestSRNativePreparationReferencesAreStaticConstraints (0.04s)
+    --- FAIL: TestSRNativePreparationReferencesAreStaticConstraints/absolute-uninstalled (0.01s)
+        config_test.go:205: availability disagrees with fixture path requirements {orca-local.codex default L3 unavailable [{/configurations/orca-local-codex unsupported_schema The required execution configuration is missing or invalid.}]}
+    config_test.go:221: mixed helper constraint was deferred to runtime {orca-local.mixed default L3 unavailable [{/configurations/orca-local-pi unsupported_schema The required execution configuration is missing or invalid.} {/configurations/orca-local-dsh unsupported_schema The required execution configuration is missing or invalid.}]}
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/testkit/livetest	2.507s
+FAIL

@@ -1,0 +1,39 @@
+{
+  "id": "8943f765-97e5-4812-9b2b-296be24ab398",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_856c29b8-e74a-47e7-8fd6-c5e3dcb53421",
+        "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b@@3d733995",
+        "incarnationId": "682f7839-2195-408e-92ee-4c91b39e53f2",
+        "orphaned": false,
+        "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "branch": "",
+        "tabId": "e422909b-08dd-44ce-a7bd-115a977ede8f",
+        "leafId": "36e74c44-5f66-419c-a474-d27dd8aafc11",
+        "title": "Terminal 1",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1792384087404,
+        "preview": "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b>",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": []
+    },
+    "topologyRevisions": {
+      "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b": 7710
+    },
+    "totalCount": 1,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

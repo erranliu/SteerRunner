@@ -1,0 +1,36 @@
+{
+  "native_exec_invocations": 3,
+  "negative_permission_probe_invocations": 1,
+  "api_request_count": "not exposed by exec JSONL; not inferred from invocation count",
+  "model_name": "missing native field means unavailable; never inferred from catalog or model self-report",
+  "usage": [
+    {
+      "case": "parser-default",
+      "turn_usage": [
+        {
+          "input_tokens": 10613,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 62,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "case": "parser-explicit",
+      "turn_usage": [
+        {
+          "input_tokens": 10653,
+          "cached_input_tokens": 0,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 61,
+          "reasoning_output_tokens": 0
+        }
+      ]
+    },
+    {
+      "case": "parser-cancel",
+      "turn_usage": []
+    }
+  ]
+}

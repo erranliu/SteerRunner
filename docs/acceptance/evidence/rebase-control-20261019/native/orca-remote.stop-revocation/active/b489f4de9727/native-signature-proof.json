@@ -1,0 +1,27 @@
+{
+  "authentication_closed": true,
+  "closed_at": "2026-10-19T04:23:40.5145174Z",
+  "helper_sha256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+  "mode": "workflow",
+  "native_process": {
+    "kind": "os",
+    "pid": 22988,
+    "created": "01dd5f816b749416",
+    "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+  },
+  "native_transport": "codex-remote-inline-v3",
+  "owner": {
+    "kind": "os",
+    "pid": 24420,
+    "created": "01dd5f81696a5b8d",
+    "executable": "c:\\sr-runtime\\1c3c-fixed-control-20261019\\4de01c93e145da8c\\steerrunner-agent.exe"
+  },
+  "signature_verified": true,
+  "tui": {
+    "kind": "os",
+    "pid": 15632,
+    "created": "01dd5f8175f3920e",
+    "executable": "c:\\sr-runtime\\2ba0\\01\\native\\codex.exe"
+  },
+  "writers_absent": true
+}

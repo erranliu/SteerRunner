@@ -1,0 +1,8 @@
+{
+  "source_commit": "584bd923825d5fcca96db043e4d1eb69a9d89885",
+  "source_dirty": false,
+  "exit_code": 0,
+  "aggregate_timeout_minutes": 12,
+  "scope": "full internal/application package; all test and product deadlines unchanged",
+  "finished_at": "2026-10-19T03:28:25.4016132Z"
+}

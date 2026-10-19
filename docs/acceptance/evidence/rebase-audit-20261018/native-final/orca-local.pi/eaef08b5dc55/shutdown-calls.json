@@ -1,0 +1,43 @@
+[
+  {
+    "argv": [
+      "service",
+      "stop",
+      "--input",
+      "-",
+      "--state-dir",
+      "C:\\srt\\eaef08b5dc55\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:50:25.8954276Z",
+    "request": "{\"protocol\":\"steerrunner-cli/v1\",\"request_id\":\"cleanup-service\",\"input\":{\"expected_instance_id\":\"fd55fd2ee1155cd9a61658196db2ad75\"}}",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":\"cleanup-service\",\"data\":{\"action_status\":\"pending\",\"command_id\":\"50fffb5873667933bcba9e9ff4b67145\",\"instance_id\":\"fd55fd2ee1155cd9a61658196db2ad75\",\"receipt_status\":\"accepted\",\"run_id\":null},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\eaef08b5dc55\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:50:25.9149004Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\eaef08b5dc55\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"unavailable\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\"},\"error\":null}\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "service",
+      "status",
+      "--state-dir",
+      "C:\\srt\\eaef08b5dc55\\s",
+      "--json"
+    ],
+    "at": "2026-10-18T14:50:26.9395428Z",
+    "request": "",
+    "response": "{\"protocol\":\"steerrunner-cli/v1\",\"ok\":true,\"request_id\":null,\"data\":{\"instance_id\":\"\",\"state_dir\":\"c:\\\\srt\\\\eaef08b5dc55\\\\s\",\"pid\":0,\"process_created\":\"\",\"status\":\"not_running\",\"detached\":false,\"version\":\"\",\"protocol\":\"steerrunner-cli/v1\",\"resource_digest\":\"\",\"executable_sha256\":\"\",\"last_shutdown\":{\"instance_id\":\"fd55fd2ee1155cd9a61658196db2ad75\",\"request_id\":\"cleanup-service\",\"state_dir\":\"c:\\\\srt\\\\eaef08b5dc55\\\\s\",\"executable_sha256\":\"185062bab098e8ad1029f030e6a5ef701e07d578419b701ce63e03d6ade99bce\",\"resources_settled\":true}},\"error\":null}\n",
+    "stderr": ""
+  }
+]

@@ -4,6 +4,7 @@ package cli
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
@@ -26,6 +27,8 @@ type arguments struct {
 	input     string
 	startupID string
 	help      bool
+	offline   bool
+	kind      string
 }
 
 func parse(argv []string) (arguments, *contracts.Fault) {
@@ -47,6 +50,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			value.help = true
 		case "--refresh-pr":
 			value.opts.RefreshPR = true
+		case "--offline":
+			value.offline = true
 		default:
 			if !strings.HasPrefix(arg, "-") {
 				positional = append(positional, arg)
@@ -61,6 +66,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				parameter = argv[i]
 			}
 			switch name {
+			case "--kind":
+				value.kind = parameter
 			case "--expected-instance-id":
 				if !contracts.ValidRequestID(parameter) {
 					return value, contracts.Fail(2, "invalid_arguments", "Expected instance identity must be nonempty plain text.")
@@ -118,12 +125,26 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		value.opts.Command = positional[0] + " " + positional[1]
 	}
 	switch value.opts.Command {
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
 	if value.protocol != contracts.Protocol {
 		return value, contracts.Fail(3, "unsupported_protocol", "This executable supports "+contracts.Protocol+".")
+	}
+	if value.offline && value.opts.Command != "capabilities" || value.opts.Command != "validate" && seen["--kind"] {
+		return value, contracts.Fail(2, "invalid_arguments", "This option does not apply to this command.")
+	}
+	if value.offline || value.opts.Command == "validate" {
+		for option := range seen {
+			if option != "--json" && option != "--protocol" && option != "--offline" && !(value.opts.Command == "validate" && (option == "--kind" || option == "--input")) {
+				return value, contracts.Fail(2, "invalid_arguments", "Static commands do not accept service or target options.")
+			}
+		}
+		if value.opts.Command == "validate" && (!resources.ValidationKind(value.kind) || value.input != "-") {
+			return value, contracts.Fail(2, "invalid_arguments", "validate requires a supported --kind and --input -.")
+		}
+		return value, nil
 	}
 	if value.startupID != "" {
 		decoded, err := hex.DecodeString(value.startupID)
@@ -210,7 +231,45 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object, without a request envelope.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+	}
+	if options.offline {
+		executable, err := os.Executable()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot identify this executable."))
+		}
+		file, err := os.Open(executable)
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot verify this executable."))
+		}
+		digest := sha256.New()
+		_, err = io.Copy(digest, file)
+		file.Close()
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot verify this executable."))
+		}
+		return finish(contracts.Success("", resources.CapabilitiesFrom(resources.CapabilitySource{Kind: "executable", Version: resources.Version, Protocol: contracts.Protocol, ExecutableSHA256: hex.EncodeToString(digest.Sum(nil)), ResourceDigest: resources.Digest()})), 0)
+	}
+	if options.opts.Command == "validate" {
+		data, err := io.ReadAll(io.LimitReader(input, contracts.MaxRequestBytes+1))
+		if err != nil {
+			return reject(contracts.Fail(1, "internal_error", "Cannot read the validation input."))
+		}
+		if len(data) > contracts.MaxRequestBytes {
+			result := resources.ValidationResult{Kind: options.kind, Valid: false, Issues: []resources.Issue{{Path: "", Code: "invalid_value", Message: "Input exceeds the public size limit."}}, Version: resources.Version, ResourceDigest: resources.Digest()}
+			response := contracts.Rejected("", contracts.Fail(2, "invalid_input", "Validation input exceeds the public size limit."))
+			response.Data = result
+			return finish(response, 2)
+		}
+		result, fault := resources.Validate(options.kind, data)
+		if fault != nil {
+			response := contracts.Rejected("", fault)
+			if fault.Exit == 2 || fault.Exit == 3 {
+				response.Data = result
+			}
+			return finish(response, fault.Exit)
+		}
+		return finish(contracts.Success("", result), 0)
 	}
 	var request *contracts.Request
 	if writes(options.opts.Command) {

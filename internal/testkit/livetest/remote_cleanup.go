@@ -6,6 +6,7 @@ import (
 	"errors"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"slices"
 	"time"
 )
 
@@ -56,7 +57,7 @@ func WaitRemoteWorkspaceEmpty(ctx context.Context, client native.Client, origina
 				Omitted []string `json:"omittedHostIds"`
 			} `json:"hostScope"`
 		}
-		if result.RuntimeID != original.RuntimeID || json.Unmarshal(result.Payload, &inventory) != nil || inventory.Terminals == nil || inventory.Total == nil || *inventory.Total != len(inventory.Terminals) || inventory.Truncated == nil || *inventory.Truncated || inventory.Hosts == nil || len(inventory.Hosts.IDs) == 0 || inventory.Hosts.Omitted == nil || len(inventory.Hosts.Omitted) > 0 {
+		if result.RuntimeID != original.RuntimeID || json.Unmarshal(result.Payload, &inventory) != nil || inventory.Terminals == nil || inventory.Total == nil || *inventory.Total != len(inventory.Terminals) || inventory.Truncated == nil || *inventory.Truncated || inventory.Hosts == nil || len(inventory.Hosts.IDs) == 0 || inventory.Hosts.Omitted == nil || len(inventory.Hosts.Omitted) > 0 && original.ExecutionHost != "local" {
 			return fact, errors.New("remote cleanup inventory incomplete or foreign")
 		}
 		hosts := map[string]bool{}
@@ -66,7 +67,7 @@ func WaitRemoteWorkspaceEmpty(ctx context.Context, client native.Client, origina
 			}
 			hosts[host] = true
 		}
-		if !hosts["local"] {
+		if !hosts["local"] || slices.Contains(inventory.Hosts.Omitted, "local") {
 			return fact, errors.New("remote cleanup original host missing")
 		}
 		seen := map[string]bool{}

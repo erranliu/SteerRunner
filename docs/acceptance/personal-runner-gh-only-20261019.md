@@ -51,3 +51,10 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 随后修复可独立复现的观察缺口：匹配原响应后遇到瞬时身份读取失败，保留该响应，只重查原 actor 身份；完整响应帧允许前置 PTY 输入回显片段；execute/verify 含排队与观察共用 40 秒上限，响应缺失、响应读取失败和身份读取失败保留有限诊断，未知操作仍不重发。旧源码覆盖新测试能复现响应丢弃和继承十分钟期限，修复后定向测试通过；这些证据不用于追认上述现场的唯一根因。
 
 独立清理测试只对明确的 runtime_unavailable 只读重查，保持原截止时间，并严格拒绝 null 清单、外来范围和替换 incarnation。测试提示允许已确认完成的普通内容校验失败修正后重跑，异步或未知命令仍只能读取原 session。四个相关组件包完整回归与新增有限诊断/零重发用例通过；新的源码提交和不可变 helper 将重新执行全批前置与 11 项现场，不继承上一构建的 8 项通过。
+
+`5b32b1a` 的干净源码前置全部通过：Go L1 335、扩展 28、Controlled 16。该批已启动的 6 项现场全部通过（sandbox/full_access 完整反馈闭环、caller-exit、服务 graceful/kill 恢复、活动停止）。期间主分支合入 `95ae8a7` 的 workflow/2、独立测试配置和固定控制通道，引发冲突。只停止未来调度，两个已启动 worker 均自然通过并退出；其余 5 项未启动。原 summary 保留，派生 drained-summary 明确为 interrupted；这些结果只归属 5b32b1a，不继承为整合构建通过。
+
+整合采用主分支的固定 control actor、原生签名退出字节及 workflow/2；不恢复已经移除的按回合 reader/独立 revoker 路径。gh-only 原始配置拒绝、每 Run broker、原响应只读观察与有限诊断保留；重新清除上游带入的 App 字段、installation broker 和正向用例。远端代码审计修复及必要补报在同一原生会话使用 audit 模型，发布恢复执行模型；配置 schema、能力目录与测试登记同时覆盖远端受管 Codex，保留 Pi/DSH 的非审计边界。最终以整合提交和独立 helper 的新批次为准。
+
+
+整合核实 workflow/2 的工作树来源原实现仅读取调用方本机 Git，不能支持远端审计资格。补齐原 adapter 的可选审计 owner 接口，以及固定控制通道内只读 workspace-audit；实际使用原执行主机 Git 完整检查，绑定原 session/helper/configuration/workspace intent 与 pre-head，核验各查询 Job 退出。未知 reader 不覆盖、缺 owner 不回退调用方 Git、成功查询不跨阶段复用。定向测试含真实临时 Git clean/dirty/隐藏索引/稀疏/外来仓库与分支/祖先、索引及 HEAD 不变、原进程不受影响，以及原请求失回执对账、模型不符与源证明拒绝。旧按回合 reader 与 revoker 测试由固定通道原归属/关闭测试替代，不恢复 App 正向资格。

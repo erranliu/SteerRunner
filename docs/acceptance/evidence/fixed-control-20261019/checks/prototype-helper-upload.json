@@ -1,0 +1,8 @@
+{
+  "sha256": "6f17b77303e90c4d37ea70a4e33b2d3af710234ccd0fa4dac33546482ebbcab6",
+  "bytes": 12334080,
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "source": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018/.sr-fixed-control-20261019-6f17b77303e90c4d/helper.exe",
+  "destination": "C:/sr-runtime/1c3c-fixed-control-20261019/6f17b77303e90c4d/steerrunner-agent.exe"
+}

@@ -9,11 +9,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/coder/websocket"
+	"github.com/erranliu/SteerRunner/internal/resources"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	protocol "github.com/erranliu/SteerRunner/internal/testkit/protocol"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -37,6 +41,35 @@ type server struct {
 }
 
 func main() {
+	if len(os.Args) == 4 && os.Args[1] == "--test-config" {
+		config, digest, err := livetest.ReadConfig(os.Args[2])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(2)
+		}
+		var response struct {
+			Data struct {
+				Catalog        resources.CapabilityCatalog `json:"capability_catalog"`
+				ResourceDigest string                      `json:"resource_digest"`
+			} `json:"data"`
+			OK bool `json:"ok"`
+		}
+		var raw []byte
+		if os.Args[3] == "-" {
+			raw, err = io.ReadAll(io.LimitReader(os.Stdin, 16<<20))
+		} else {
+			raw, err = os.ReadFile(os.Args[3])
+		}
+		if err != nil || json.Unmarshal(raw, &response) != nil || !response.OK || response.Data.ResourceDigest != resources.Digest() {
+			fmt.Fprintln(os.Stderr, "Test helper and selected Runner capability contract do not match.")
+			os.Exit(2)
+		}
+		result := livetest.AssessConfig(config, digest, response.Data.Catalog)
+		if json.NewEncoder(os.Stdout).Encode(result) != nil {
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) > 2 && os.Args[1] == "--query" {
 		if os.Getenv("STEERRUNNER_FIXTURE_STATE") != "" {
 			_ = appendCall(map[string]any{"method": "provider/query"})
@@ -71,6 +104,10 @@ func main() {
 	}
 	if strings.Contains(args, "--help") {
 		fmt.Println("app-server --listen ADDRESS --stdio")
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "--no-daemon" && strings.Contains(args, "exec") {
+		parserFixture()
 		return
 	}
 	s := &server{}
@@ -161,7 +198,17 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 	}
 	switch request.Method {
 	case "initialize":
-		response["result"] = map[string]any{"userAgent": "controlled-app-server", "codexHome": os.Getenv("STEERRUNNER_FIXTURE_STATE"), "platformOs": "windows"}
+		home := os.Getenv("STEERRUNNER_FIXTURE_STATE")
+		if home == "" {
+			home = os.Getenv("CODEX_HOME")
+		}
+		if home == "" {
+			base, _ := os.UserHomeDir()
+			home = filepath.Join(base, ".codex")
+		}
+		response["result"] = map[string]any{"userAgent": "controlled-app-server", "codexHome": home, "platformOs": "windows"}
+	case "config/read":
+		response["result"] = map[string]any{"config": map[string]any{"mcp_servers": map[string]any{"fixture_external": map[string]any{"enabled": true}}}, "layers": []any{map[string]any{"name": map[string]any{"type": "system"}, "config": map[string]any{"mcp_servers": map[string]any{"fixture_external": map[string]any{"url": "https://unused.invalid"}}}}}}
 	case "thread/start":
 		sum := sha256.Sum256([]byte(str("cwd")))
 		id := hex.EncodeToString(sum[:16])
@@ -198,7 +245,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		if err := appendCall(map[string]any{"method": "turn/start", "thread": s.thread.ID, "cwd": s.thread.Cwd, "prompt": prompt, "model": str("model"), "effort": str("effort")}); err != nil {
 			return fail(err)
 		}
-		audit := strings.HasPrefix(prompt, "Audit the current")
+		audit := (strings.HasPrefix(prompt, "Audit the current") || strings.HasPrefix(prompt, "审计当前代码") || strings.HasPrefix(prompt, "根据已有上下文整理指定审计"))
 		if os.Getenv("STEERRUNNER_AUDIT_EXPECT_MODELS") == "1" {
 			expectedModel, expectedEffort := "executor", "medium"
 			if audit {
@@ -211,7 +258,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		content := ""
 		var err error
 		if audit {
-			content, err = auditResult(prompt)
+			content, err = auditResult(s.thread.Cwd, prompt)
 		} else {
 			content, err = protocol.StagedBusiness(s.thread.Cwd, prompt, os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "origin")
 		}
@@ -233,7 +280,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			_ = os.Remove(marker)
 			return nil, nil
 		}
-		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
+		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || (strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布")) && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
 			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" {
 				if err := os.WriteFile(statePath(s.thread.ID)+".completed", encode(s.thread), 0600); err != nil {
 					return fail(err)
@@ -259,7 +306,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 	return response, nil
 }
 
-func auditResult(prompt string) (string, error) {
+func auditResult(cwd, prompt string) (string, error) {
 	root := os.Getenv("STEERRUNNER_FIXTURE_STATE")
 	if exists(filepath.Join(root, "audit-unavailable")) {
 		return "", fmt.Errorf("requested audit model unavailable")
@@ -270,23 +317,61 @@ func auditResult(prompt string) (string, error) {
 	if exists(filepath.Join(root, "audit-unicode-alias")) {
 		return `{"outcome":"done","summary":"ambiguous audit","verdict":"pass","findings":[{"severity":"P1","message":"blocking defect"}],"findingſ":[]}`, nil
 	}
-	if strings.HasPrefix(prompt, "Audit the current implementation") {
-		if marker := filepath.Join(root, "audit-question"); exists(marker) {
-			_ = os.Remove(marker)
-			return `{"outcome":"needs_input","summary":"clarify scope","question":"Is this required?"}`, nil
+	if strings.HasPrefix(prompt, "根据已有上下文整理指定审计") {
+		return `{"outcome":"done","summary":"original audit formatted","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`, nil
+	}
+	if exists(filepath.Join(root, "audit-question")) {
+		return `{"outcome":"needs_input","summary":"unfinished","question":"Is this required?"}`, nil
+	}
+	if os.Getenv("STEERRUNNER_AUDIT_FIX") == "1" {
+		if err := os.WriteFile(filepath.Join(cwd, "stage-result.txt"), []byte("repaired audited code\n"), 0600); err != nil {
+			return "", err
 		}
-		limit, _ := strconv.Atoi(os.Getenv("STEERRUNNER_AUDIT_FAILURES"))
-		usedPath := filepath.Join(root, "audit-failures-used")
-		raw, _ := os.ReadFile(usedPath)
-		used, _ := strconv.Atoi(string(raw))
-		if used < limit {
-			if err := os.WriteFile(usedPath, []byte(strconv.Itoa(used+1)), 0600); err != nil {
-				return "", err
+		for _, args := range [][]string{{"add", "--", "stage-result.txt"}, {"-c", "user.name=Audit Fixture", "-c", "user.email=audit@example.invalid", "-c", "commit.gpgsign=false", "commit", "-m", "audit repair"}} {
+			cmd := exec.Command("git", args...)
+			cmd.Dir = cwd
+			if out, err := cmd.CombinedOutput(); err != nil {
+				return "", fmt.Errorf("audit fixture: %v %s", err, out)
 			}
-			return `{"outcome":"done","summary":"repair required","verdict":"changes_requested","findings":[{"severity":"P1","message":"controlled defect requires a repair"}]}`, nil
+		}
+		return `{"outcome":"done","summary":"audited repaired validated","fixed_count":1,"fixed_issues":[{"severity":"P1","issue":"controlled bug","repair":"repaired code","evidence":"stage-result.txt"}],"remaining_issues":[]}`, nil
+	}
+	if os.Getenv("STEERRUNNER_AUDIT_PLAIN") == "1" {
+		return "Audited and validated. No P0-P2 issues remain; fixed zero. " + os.Getenv("STEERRUNNER_PARSER_CASE"), nil
+	}
+	return `{"outcome":"done","summary":"audited and validated","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`, nil
+}
+
+func parserFixture() {
+	if !strings.Contains(strings.Join(os.Args, " "), "mcp_servers.fixture_external.enabled=false") {
+		os.Exit(4)
+	}
+	input, _ := io.ReadAll(os.Stdin)
+	if strings.Contains(string(input), "PARSER_HANG") {
+		fmt.Println(`{"type":"thread.started","thread_id":"independent-parser-fixture"}`)
+		fmt.Println(`{"type":"turn.started"}`)
+		for {
+			time.Sleep(time.Second)
 		}
 	}
-	return `{"outcome":"done","summary":"checked","verdict":"pass","findings":[]}`, nil
+	fmt.Println(`{"type":"thread.started","thread_id":"independent-parser-fixture"}`)
+	fmt.Println(`{"type":"turn.started"}`)
+	if strings.Contains(string(input), "PARSER_TOOL") {
+		fmt.Println(`{"type":"item.started","item":{"id":"tool","type":"command_execution"}}`)
+		return
+	}
+	body := `{"outcome":"done","summary":"audited validated no repairs","question":null,"blocker":null,"fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`
+	if strings.Contains(string(input), "PARSER_BAD") {
+		body = `{"outcome":"done","summary":"missing details"}`
+	}
+	event, _ := json.Marshal(map[string]any{"type": "item.completed", "item": map[string]string{"type": "agent_message", "id": "final", "text": body}})
+	fmt.Println(string(event))
+	for i, arg := range os.Args {
+		if arg == "--output-last-message" && i+1 < len(os.Args) {
+			_ = os.WriteFile(os.Args[i+1], []byte(body), 0600)
+		}
+	}
+	fmt.Println(`{"type":"turn.completed","usage":{"input_tokens":1,"output_tokens":1}}`)
 }
 func exists(path string) bool { _, err := os.Stat(path); return err == nil }
 

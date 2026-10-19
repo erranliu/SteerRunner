@@ -1,0 +1,44 @@
+{
+  "source_commit": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+  "helper": {
+    "commit": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+    "dirty": false,
+    "sha256": "afb0822526f4632200bfeab2862c80c40ae2c4f434093c51eec231fcfcdf7235",
+    "at": "2026-10-19T01:49:33.5342519Z"
+  },
+  "scope": "admin-free-subset",
+  "actual_native_cases": 3,
+  "excluded_admin_cases": 4,
+  "control_verification": true,
+  "final_cleanup_verified": true,
+  "l1": {
+    "native_driver_compile_exit": 0,
+    "level": "L1",
+    "exit_code": 0,
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r5",
+    "terminal_extension_test_count": 29,
+    "skipped_tests": [
+      "TestProcessHostCommandHelper",
+      "TestAuthenticationNativeToolBoundary",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestServiceStopWorkerHelper",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "test_count": 366,
+    "terminal_extension_exit": 0,
+    "native_zero_match_guard": true,
+    "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r5\\framework",
+    "terminal_extensions_passed": true
+  },
+  "controlled": {
+    "exit_code": 0,
+    "frozen_binaries_from": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r5\\controlled",
+    "source_commit": "212ebee3abeae798c05fe53ede19f8b2a5e0f0f3",
+    "level": "Controlled",
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\controlled-r5-25",
+    "aggregate_timeout_minutes": 25,
+    "scenario_count": 16
+  }
+}

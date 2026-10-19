@@ -53,12 +53,10 @@ func TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation(t *te
 	}
 	wait, cancelWait := context.WithTimeout(ctx, 50*time.Millisecond)
 	defer cancelWait()
-	checkpoints := 0
-	wait = WithDispatchCheckpoint(wait, func() error { checkpoints++; return nil })
 	calls := 0
 	_, err = SerializeCLI(wait, func(context.Context) ([]byte, error) { calls++; return nil, nil })
-	if !errors.Is(err, context.DeadlineExceeded) || !IsCLIQueueError(err) || calls != 0 || checkpoints != 0 {
-		t.Fatal("canceled queued invocation dispatched or wrote an ambiguous intent", calls, checkpoints, err)
+	if !errors.Is(err, context.DeadlineExceeded) || !IsCLIQueueError(err) || calls != 0 {
+		t.Fatal("canceled queued invocation dispatched or retried", calls, err)
 	}
 	// A killed owner releases the kernel lock without deleting a shared path.
 	// Keep the named object alive so the next acquisition exercises abandoned
@@ -72,21 +70,9 @@ func TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation(t *te
 	defer windows.CloseHandle(ref)
 	_ = cmd.Process.Kill()
 	_ = cmd.Wait()
-	dispatch := WithDispatchCheckpoint(ctx, func() error { checkpoints++; return nil })
-	_, err = SerializeCLI(dispatch, func(context.Context) ([]byte, error) {
-		if checkpoints != 1 {
-			t.Fatal("invocation preceded its durable checkpoint")
-		}
-		calls++
-		return []byte("original-result"), nil
-	})
-	if err != nil || calls != 1 || checkpoints != 1 {
-		t.Fatal("abandoned owner blocked the next exact invocation", calls, checkpoints, err)
-	}
-	writeErr := errors.New("durable write unavailable")
-	_, err = SerializeCLI(WithDispatchCheckpoint(ctx, func() error { return writeErr }), func(context.Context) ([]byte, error) { calls++; return nil, nil })
-	if !errors.Is(err, writeErr) || calls != 1 {
-		t.Fatal("failed checkpoint allowed a command", calls, err)
+	_, err = SerializeCLI(ctx, func(context.Context) ([]byte, error) { calls++; return []byte("original-result"), nil })
+	if err != nil || calls != 1 {
+		t.Fatal("abandoned owner blocked the next exact invocation", calls, err)
 	}
 }
 

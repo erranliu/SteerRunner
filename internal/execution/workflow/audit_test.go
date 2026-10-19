@@ -2,107 +2,103 @@ package workflow
 
 import (
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
-	"strings"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"reflect"
 	"testing"
 )
 
-const auditPass = `{"outcome":"done","summary":"checked","verdict":"pass","findings":[]}`
-const auditFail = `{"outcome":"done","summary":"fix needed","verdict":"changes_requested","findings":[{"severity":"P1","message":"evidenced defect"},{"severity":"P3","message":"optional suggestion"}]}`
+const auditPass = `{"outcome":"done","summary":"audited and validated","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`
+const auditFixed = `{"outcome":"done","summary":"audited repaired and validated","fixed_count":1,"fixed_issues":[{"severity":"P1","issue":"bug","repair":"fixed branch","evidence":"code.go branch"}],"remaining_issues":[]}`
 
 func auditFixture() (Snapshot, StageInput) {
-	p, _ := Lookup(AuditedDevelopment, 1)
-	w := Snapshot{Config: &p, AuditReportCommandID: "report", StageInputs: []StageInput{{StepID: StepImplement, CommandID: "execute"}, {StepID: StepReport, CommandID: "report", SourceCommandID: "execute", SourceTurnID: "execution-turn"}}, StageResults: []StageResult{{StepID: StepImplement, CommandID: "execute", TurnID: "execution-turn", Succeeded: true, FinalVerified: true, Final: "implementation"}, {StepID: StepReport, CommandID: "report", TurnID: "report-turn", Succeeded: true, FinalVerified: true, Final: `{"outcome":"done","summary":"implemented"}`}}}
-	return w, StageInput{StepID: StepAuditSpec, CommandID: "audit", SourceCommandID: "report", SourceTurnID: "report-turn"}
+	p, _ := Lookup(AuditedDevelopment, 2)
+	pre := &WorkspaceSource{Qualified: true, Head: "pre", Tree: "pre-tree", Repository: "repo", Worktree: "tree", Branch: "branch", Base: "base"}
+	post := *pre
+	post.Head = "post"
+	post.Tree = "post-tree"
+	impl := StageResult{CommandID: "implement", AttemptID: "attempt", StepID: StepImplement, InputVersion: 1, TurnID: "implement-turn", Succeeded: true, FinalVerified: true, Final: "implemented", Workspace: pre}
+	value, _ := ra.DecodeReport(`{"outcome":"done","summary":"implemented"}`, "implementation")
+	acquired := ra.Result{ID: "implementation-result", Source: Source(impl), Status: "satisfied", Value: &value}
+	i := StageInput{StepID: StepAuditCode, CommandID: "audit", AttemptID: "attempt", Version: 2, SourceCommandID: impl.CommandID, SourceTurnID: impl.TurnID, SourceVersion: 1, ImplementationResultID: acquired.ID}
+	return Snapshot{Config: &p, StepID: i.StepID, ImplementationResultID: acquired.ID, Results: []ra.Result{acquired}, StageInputs: []StageInput{{CommandID: impl.CommandID, StepID: impl.StepID, Version: 1}, i}, StageResults: []StageResult{impl, {CommandID: i.CommandID, TurnID: "audit-turn", AttemptID: i.AttemptID, StepID: i.StepID, InputVersion: i.Version, Succeeded: true, FinalVerified: true, Final: auditFixed, Workspace: &post}}}, i
+}
+func TestRAAuditSources(t *testing.T) {
+	w, i := auditFixture()
+	r := reliable.Result{Succeeded: true, ContentVerified: true, TurnID: "audit-turn", Content: auditFixed}
+	n := Route(w, i, r, "")
+	if n.Next == nil || n.Next.StepID != StepPublish || n.Acquired.Source.CommandID != "audit" {
+		t.Fatal(n)
+	}
+	w.StageResults[1].Workspace.Tree = "pre-tree"
+	n = Route(w, i, r, "")
+	if n.Next != nil || n.Acquired.Status != "conflict" {
+		t.Fatal("empty commit supported positive repairs", n)
+	}
+	r.Content = auditPass
+	n = Route(w, i, r, "")
+	if n.Next == nil {
+		t.Fatal("zero repair requires changes", n)
+	}
+	w.ImplementationResultID = "new-result"
+	if n = Route(w, i, r, ""); n.Next != nil {
+		t.Fatal("stale audit passed", n)
+	}
+}
+func TestRAAuditPartialAndFallback(t *testing.T) {
+	w, i := auditFixture()
+	w.StageResults[1].Workspace.Qualified = false
+	r := reliable.Result{Succeeded: true, ContentVerified: true, TurnID: "audit-turn", Content: `{"outcome":"needs_input","summary":"unfinished","question":"clarify","fixed_count":1,"fixed_issues":[{"severity":"P2","issue":"a","repair":"b","evidence":"c"}],"remaining_issues":[{"severity":"P1","issue":"d","reason":"need input"}]}`}
+	n := Route(w, i, r, "")
+	if n.Status != "waiting_input" || n.Acquired.Value.FixedCount == nil || *n.Acquired.Value.FixedCount != 1 || n.Next != nil {
+		t.Fatal(n)
+	}
+	r.Content = "natural-language audit"
+	n = Route(w, i, r, "")
+	if n.Next == nil || n.Next.StepID != StepAuditReport || n.Next.SourceCommandID != "audit" {
+		t.Fatal(n)
+	}
+	w.Results = append(w.Results, *n.Acquired)
+	report := *n.Next
+	report.CommandID = "report"
+	report.Version = 3
+	w.StageInputs = append(w.StageInputs, report)
+	r.Content = "invalid"
+	if n = Route(w, report, r, ""); n.Next != nil || n.Cursor != StepAuditInput {
+		t.Fatal(n)
+	}
+	r.Content = auditPass
+	w.StageResults = append(w.StageResults, StageResult{CommandID: "report", Workspace: &WorkspaceSource{Qualified: true, Head: "new-clean"}})
+	if n = Route(w, report, r, ""); n.Next != nil || n.Acquired.Status != "unverified" {
+		t.Fatal("report manufactured checkpoint", n)
+	}
 }
 
-func TestSRAuditContractAndRouting(t *testing.T) {
-	if _, err := DecodeReport(`{"outcome":"done","summary":"ordinary report","verdict":{},"Verdict":true,"findings":"ignored metadata"}`, StepReport); err != nil {
-		t.Fatal("audit fields changed ordinary reports", err)
-	}
-	for name, body := range map[string]string{
-		"missing_findings": `{"outcome":"done","summary":"x","verdict":"pass"}`,
-		"null_findings":    `{"outcome":"done","summary":"x","verdict":"pass","findings":null}`,
-		"contradiction":    strings.Replace(auditFail, "changes_requested", "pass", 1),
-		"duplicate":        strings.Replace(auditPass, `"verdict":"pass"`, `"verdict":"pass","Verdict":"changes_requested"`, 1),
-		"nested_alias":     strings.Replace(auditFail, `"severity":"P1"`, `"severity":"P1","Severity":"P3"`, 1),
-		"unicode_findings": `{"outcome":"done","summary":"x","verdict":"pass","findings":[{"severity":"P1","message":"blocking defect"}],"findingſ":[]}`,
-		"unicode_reverse":  `{"outcome":"done","summary":"x","verdict":"pass","finding\u017f":[{"severity":"P1","message":"blocking defect"}],"findings":[]}`,
-		"unicode_nested":   `{"outcome":"done","summary":"x","verdict":"pass","findings":[{"severity":"P1","ſeverity":"P3","message":"blocking defect"}]}`,
-		"empty":            strings.Replace(auditFail, "evidenced defect", "  ", 1),
-		"path":             strings.Replace(auditFail, `"severity":"P1"`, `"path":"../outside","severity":"P1"`, 1),
-		"incomplete":       `{"outcome":"needs_input","summary":"x","question":"clarify","verdict":null}`,
-		"trailing":         auditPass + ` {}`,
+// Independent parsing must attribute a question or blocker to its own operation,
+// while retaining the immutable original audit as the business source.
+func TestRAParserFieldProvenance(t *testing.T) {
+	for _, tc := range []struct{ field, body string }{
+		{"question", `{"outcome":"needs_input","summary":"validation incomplete","question":"Provide validation evidence."}`},
+		{"blocker", `{"outcome":"blocked","summary":"validation incomplete","blocker":{"category":"prerequisite","action":"validate","error":"missing evidence"}}`},
 	} {
-		t.Run(name, func(t *testing.T) {
-			if _, err := DecodeReport(body, StepAuditSpec); err == nil {
-				t.Fatal("invalid audit accepted", body)
-			}
+		t.Run(tc.field, func(t *testing.T) {
 			w, input := auditFixture()
-			input.StepID = StepAuditCode
-			w.Audits = []AuditRecord{{StepID: StepAuditSpec, SourceCommandID: "report", Verdict: "pass"}}
-			if next := Route(w, input, reliable.Result{Succeeded: true, ContentVerified: true, Content: body}, ""); next.Next != nil || next.Publish || next.Status != "blocked" {
-				t.Fatal("invalid audit passed publication gate", next)
+			before := *Result(w, input.CommandID)
+			got := RouteParsed(w, input, tc.body, "parser-operation", "")
+			if got.Acquired == nil || got.Acquired.Source != Source(before) || got.Cursor != StepAuditInput || got.Next != nil {
+				t.Fatal(got)
+			}
+			found := false
+			for _, field := range got.Acquired.Fields {
+				if field.Field == tc.field {
+					found = true
+					if field.Method != "llm_parser" || field.Source != Source(before) || field.Locator != "parser:parser-operation:$/"+tc.field {
+						t.Fatal(field)
+					}
+				}
+			}
+			if !found || !reflect.DeepEqual(*Result(w, input.CommandID), before) {
+				t.Fatal("lost field provenance or replaced native source")
 			}
 		})
-	}
-	for _, body := range []string{auditPass, auditFail, strings.Replace(auditPass, `[]`, `[{"severity":"P3","message":"advisory"}]`, 1)} {
-		if _, err := DecodeReport(body, StepAuditCode); err != nil {
-			t.Fatal(err)
-		}
-	}
-	w, input := auditFixture()
-	result := reliable.Result{Succeeded: true, ContentVerified: true, Content: auditPass, TurnID: "audit-turn"}
-	next := Route(w, input, result, "")
-	if next.Next == nil || next.Next.StepID != StepAuditCode || next.Next.SourceCommandID != "report" {
-		t.Fatal(next)
-	}
-	input.StepID = StepAuditCode
-	if next := Route(w, input, result, ""); next.Next != nil || next.Status != "blocked" {
-		t.Fatal("skipped first audit", next)
-	}
-	w.Audits = []AuditRecord{{StepID: StepAuditSpec, SourceCommandID: "report", Verdict: "pass"}}
-	if next := Route(w, input, result, ""); next.Next == nil || next.Next.StepID != StepPublish {
-		t.Fatal(next)
-	}
-	input.StepID = StepAuditSpec
-	result.Content = auditFail
-	for count := uint64(0); count <= 2; count++ {
-		w.RepairCount = count
-		next := Route(w, input, result, "")
-		if count < 2 {
-			if !next.Repair || next.Next == nil || next.Next.StepID != StepImplement || len(next.Next.RepairFindings) != 1 {
-				t.Fatal(next)
-			}
-		} else if next.Next != nil || next.Reason != "audit_repair_limit" {
-			t.Fatal(next)
-		}
-	}
-	w.RepairCount = 0
-	input.SourceTurnID = "other"
-	if next := Route(w, input, result, ""); next.Status != "blocked" || next.Next != nil {
-		t.Fatal("foreign source passed", next)
-	}
-	input.SourceTurnID = "report-turn"
-	result.Content, result.ContentVerified = auditPass, false
-	if next := Route(w, input, result, ""); next.AcceptResult || next.Next != nil {
-		t.Fatal("unverified audit passed", next)
-	}
-	result.ContentVerified, result.Succeeded = true, false
-	if next := Route(w, input, result, ""); !next.RecoverOriginal || next.Next != nil {
-		t.Fatal("failed native audit passed", next)
-	}
-	input.StepID = StepPublish
-	if next := Route(w, input, result, ""); next.Next != nil || next.Publish {
-		t.Fatal("publication skipped audits", next)
-	}
-	w, input = auditFixture()
-	input.MaterialFacts = []byte(`{"spec":{"path":"frozen-spec"},"plan":{"path":"frozen-plan"}}`)
-	prompt, err := RenderInputWithBody(w, input, "custom audit")
-	if err != nil || !strings.Contains(prompt, "frozen-spec") || !strings.Contains(prompt, "report-turn") || !strings.Contains(prompt, "verdict") {
-		t.Fatal(err, prompt)
-	}
-	w.StepID, w.StageInputs = StepAuditSpec, append(w.StageInputs, input)
-	if continued := FeedbackInput(w); continued.SourceCommandID != input.SourceCommandID || continued.SourceTurnID != input.SourceTurnID {
-		t.Fatal("audit answer lost source")
 	}
 }

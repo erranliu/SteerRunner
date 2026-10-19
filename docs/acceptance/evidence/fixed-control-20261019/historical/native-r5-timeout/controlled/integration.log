@@ -1,0 +1,65 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+=== RUN   TestSRResultAcquisition/audit-positive
+=== RUN   TestSRResultAcquisition/audit-report
+=== RUN   TestSRResultAcquisition/parser-unsupported
+=== RUN   TestSRResultAcquisition/parser-complete
+=== RUN   TestSRResultAcquisition/parser-restart
+=== RUN   TestSRResultAcquisition/parser-tool
+--- PASS: TestSRResultAcquisition (571.76s)
+    --- PASS: TestSRResultAcquisition/plain-marker (22.36s)
+    --- PASS: TestSRResultAcquisition/audit-zero (53.64s)
+    --- PASS: TestSRResultAcquisition/audit-positive (56.46s)
+    --- PASS: TestSRResultAcquisition/audit-report (83.48s)
+    --- PASS: TestSRResultAcquisition/parser-unsupported (84.76s)
+    --- PASS: TestSRResultAcquisition/parser-complete (65.32s)
+    --- PASS: TestSRResultAcquisition/parser-restart (94.97s)
+    --- PASS: TestSRResultAcquisition/parser-tool (110.77s)
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+--- PASS: TestSRWorkflowDiscoveryAndSelection (4.09s)
+=== RUN   TestEnvironmentCheckCLI
+--- PASS: TestEnvironmentCheckCLI (6.26s)
+=== RUN   TestSRMultipleRunsIsolation
+--- PASS: TestSRMultipleRunsIsolation (34.21s)
+=== RUN   TestSRStandalonePackage
+--- PASS: TestSRStandalonePackage (5.34s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (56.46s)
+    --- PASS: TestSRServiceOwnership/offline_verification (28.50s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.26s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (5.47s)
+    --- PASS: TestSRServiceOwnership/parent_job (6.00s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (2.97s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (3.04s)
+    --- PASS: TestSRServiceOwnership/different_release (4.90s)
+    --- PASS: TestSRServiceOwnership/stale_writer (5.18s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (6.15s)
+=== RUN   TestSRStabilityLostSubmitResponse
+--- PASS: TestSRStabilityLostSubmitResponse (25.60s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (24.62s)
+=== RUN   TestSRInputFreeze
+--- PASS: TestSRInputFreeze (24.08s)
+=== RUN   TestSRPermissionQualification
+--- PASS: TestSRPermissionQualification (16.59s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (23.09s)
+=== RUN   TestSRStorageLogsEvents
+--- PASS: TestSRStorageLogsEvents (26.34s)
+=== RUN   TestSRPublicationIdentity
+--- PASS: TestSRPublicationIdentity (26.96s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+--- PASS: TestSRPublicationBeforeWorkflowReady (23.80s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (23.36s)
+=== RUN   TestSRRestartRequiresResume

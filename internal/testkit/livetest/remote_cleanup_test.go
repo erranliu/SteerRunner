@@ -10,9 +10,12 @@ import (
 )
 
 func TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory(t *testing.T) {
-	for _, mode := range []string{"settles", "empty-first", "nonempty-deadline", "foreign-runtime", "foreign-worktree", "incomplete", "wrong-total", "transient-read", "permanent-read", "foreign-error-runtime", "permission-denied", "null-inventory", "foreign-host", "changed-incarnation"} {
+	for _, mode := range []string{"settles", "empty-first", "nonempty-deadline", "foreign-runtime", "foreign-worktree", "incomplete", "wrong-total", "transient-read", "permanent-read", "foreign-error-runtime", "permission-denied", "null-inventory", "foreign-host", "changed-incarnation", "local-other-omitted", "local-owner-omitted", "remote-other-omitted"} {
 		t.Run(mode, func(t *testing.T) {
 			original := b.ProcessIdentity{RuntimeID: "original-runtime", WorktreeID: "repo::C:/worker", Terminal: "original-terminal", Incarnation: "original-inc"}
+			if mode == "local-other-omitted" || mode == "local-owner-omitted" {
+				original.ExecutionHost = "local"
+			}
 			calls := 0
 			client := native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
 				calls++
@@ -35,7 +38,7 @@ func TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory(t *testing.T)
 					runtime = "foreign"
 				}
 				terminals := []any{}
-				if mode != "empty-first" && mode != "transient-read" && (mode != "settles" || calls == 1) {
+				if mode != "local-other-omitted" && mode != "empty-first" && mode != "transient-read" && (mode != "settles" || calls == 1) {
 					worktree := original.WorktreeID
 					if mode == "foreign-worktree" {
 						worktree = "other"
@@ -53,6 +56,12 @@ func TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory(t *testing.T)
 					total++
 				}
 				result := map[string]any{"terminals": terminals, "totalCount": total, "truncated": mode == "incomplete", "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
+				if mode == "local-other-omitted" || mode == "remote-other-omitted" {
+					result["hostScope"] = map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{"paired"}}
+				}
+				if mode == "local-owner-omitted" {
+					result["hostScope"] = map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{"local"}}
+				}
 				if mode == "foreign-host" {
 					result["hostScope"] = map[string]any{"hostIds": []string{"other"}, "omittedHostIds": []string{}}
 				}
@@ -65,7 +74,7 @@ func TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory(t *testing.T)
 			ctx, cancel := context.WithTimeout(context.Background(), timeout)
 			defer cancel()
 			fact, err := WaitRemoteWorkspaceEmpty(ctx, client, original)
-			passing := mode == "settles" || mode == "empty-first" || mode == "transient-read"
+			passing := mode == "settles" || mode == "empty-first" || mode == "transient-read" || mode == "local-other-omitted"
 			if (err == nil) != passing || fact.Verified != passing {
 				t.Fatal("cleanup accepted nonempty, incomplete or foreign evidence", fact, err)
 			}

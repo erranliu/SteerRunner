@@ -1,0 +1,33 @@
+1d9fb363181616b149de4df61b5a5f20f321a912
+100644 9c5032d0478747725634aa1b7280c0f9fcddf0d0 1	internal/execution/adapters/codex/remote_agent.go
+100644 65a45144a2f3766254bbf54cf0aa49915d675243 2	internal/execution/adapters/codex/remote_agent.go
+100644 ef3e0062c0d8cfc23d8e1e2cc7cc79f9f6c4a70d 3	internal/execution/adapters/codex/remote_agent.go
+100644 c93089b37ec75fe2caba0b0ad39bc0851265c732 1	internal/execution/adapters/orcatransport/authentication_test.go
+100644 8caa94d2cb0171d4ce679102e3478506e0acd4d7 2	internal/execution/adapters/orcatransport/authentication_test.go
+100644 7d30fc10f876ce962a395551ad91878b7f906d77 3	internal/execution/adapters/orcatransport/authentication_test.go
+100644 4cec13abfa105c8c5115c7369467a6ac375505db 1	internal/execution/adapters/orcatransport/lifecycle.go
+100644 9bb89ad1c3e92798f381d2914867f09b67c0336c 2	internal/execution/adapters/orcatransport/lifecycle.go
+100644 dcb2ea7b56a71bd44e3bb611c883f1b664c07010 3	internal/execution/adapters/orcatransport/lifecycle.go
+100644 4fac28236ae649136602c4df7e201b8ed402712e 1	internal/execution/adapters/orcatransport/remote_receipt.go
+100644 0b2b3981010f5fbaa858619a00559ea820304309 2	internal/execution/adapters/orcatransport/remote_receipt.go
+100644 8ae10fc5b05bbb23798dac42264d47bb8c83df84 3	internal/execution/adapters/orcatransport/remote_receipt.go
+100644 61cf2df776ac86559cf53063c8d7ad4cc68087db 1	internal/execution/adapters/orcatransport/remote_receipt_test.go
+100644 de5e22ce5eb68738a29c8ee4a0c5691001c63ff4 3	internal/execution/adapters/orcatransport/remote_receipt_test.go
+
+Auto-merging cmd/steerrunner-agent/main.go
+Auto-merging docs/spec/steerrunner.spec.md
+Auto-merging docs/testing.md
+Auto-merging internal/application/verify_stopped.go
+Auto-merging internal/execution/adapters/codex/history.go
+Auto-merging internal/execution/adapters/codex/remote_agent.go
+CONFLICT (content): Merge conflict in internal/execution/adapters/codex/remote_agent.go
+Auto-merging internal/execution/adapters/orcatransport/authentication.go
+Auto-merging internal/execution/adapters/orcatransport/authentication_test.go
+CONFLICT (content): Merge conflict in internal/execution/adapters/orcatransport/authentication_test.go
+Auto-merging internal/execution/adapters/orcatransport/lifecycle.go
+CONFLICT (content): Merge conflict in internal/execution/adapters/orcatransport/lifecycle.go
+Auto-merging internal/execution/adapters/orcatransport/remote_receipt.go
+CONFLICT (content): Merge conflict in internal/execution/adapters/orcatransport/remote_receipt.go
+CONFLICT (modify/delete): internal/execution/adapters/orcatransport/remote_receipt_test.go deleted in HEAD and modified in origin/main.  Version origin/main of internal/execution/adapters/orcatransport/remote_receipt_test.go left in tree.
+Auto-merging internal/execution/adapters/orcatransport/stop.go
+Auto-merging scripts/test.ps1

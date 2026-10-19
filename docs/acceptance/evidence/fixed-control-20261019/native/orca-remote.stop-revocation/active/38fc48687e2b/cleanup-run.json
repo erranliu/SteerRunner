@@ -1,0 +1,97 @@
+{
+  "operations": [
+    {
+      "operation_id": "51636de11963dbda433d6ced63d0f183",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "8b6a6f9d68cb64abd583c8ea4425e9fd",
+      "action": "create_resource",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "e81c2ef0c03914f098fe43c82f775847",
+      "action": "create_resource",
+      "status": "confirmed",
+      "diagnostic": "Waiting for the original execution-host preparation receipt",
+      "original_diagnostic": "Original remote preparation verified; committing before first business input"
+    },
+    {
+      "operation_id": "637a58b686c5d742871c4a9c6254a892",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "a6c0b055163128a00cc5bf298acdeace",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "e0fee0739fddee1e7a4f18c8ea3b05b3",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "d7e5e51c7b855d0dc09e88cfbd828b44",
+  "revision": 18,
+  "title": "SteerRunner L3 orca-remote.stop-revocation/active",
+  "correlation": {
+    "case": "active",
+    "fixture_id": "38fc48687e2b",
+    "scenario": "orca-remote.stop-revocation"
+  },
+  "input_digest": "d598f7af9d00d0c700105a4f15523e122ab57448ebdd71deb47488a28f24a1b9",
+  "resource_digest": "f0cd4c4acf3296319aec9305999143f3c3739151f364c91a1b05df0d80ccbbdb",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "c:\\srt\\38fc48687e2b\\s\\inputs\\d7e5e51c7b855d0dc09e88cfbd828b44\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "c:\\srt\\38fc48687e2b\\s\\inputs\\d7e5e51c7b855d0dc09e88cfbd828b44\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "f1a84e0803e6624b3f4e347d741db04a",
+    "generation": "d45b73e16408291fe559e9d9050b5a4b",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_b74b886f-3824-4c98-b015-4e2b12f8fc67:3d2f561d-4a40-4d71-80dd-1c196c1089bf",
+    "turn_id": "473b0db6dc632503e7a6edb9fa33d189",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d7e5e51c7b855d0dc09e88cfbd828b44",
+    "branch": "erranliu/sl-d7e5e51c7b855d0dc09e88cfbd828b44"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "created_at": "2026-10-19T02:46:41.6473342Z",
+  "updated_at": "2026-10-19T02:48:49.8105209Z"
+}

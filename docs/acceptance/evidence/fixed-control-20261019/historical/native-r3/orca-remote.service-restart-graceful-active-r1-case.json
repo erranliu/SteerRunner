@@ -1,0 +1,13 @@
+{
+  "manifest": "C:\\srt\\522ed68bbeea\\manifest.json",
+  "level": "L3",
+  "repeat_index": 1,
+  "case_id": "graceful-active",
+  "scenario": "orca-remote.service-restart",
+  "evidence": "C:\\srt\\522ed68bbeea\\evidence",
+  "finished_at": "2026-10-19T01:34:23.5576263Z",
+  "started_at": "2026-10-19T01:24:13.3487610Z",
+  "status": "failed",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r3\\orca-remote.service-restart-graceful-active-r1-fixture.json",
+  "error": "Live scenario failed; inspect C:\\srt\\522ed68bbeea\\evidence/native.log"
+}

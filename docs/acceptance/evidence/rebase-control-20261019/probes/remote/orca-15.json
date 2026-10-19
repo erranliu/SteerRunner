@@ -1,0 +1,26 @@
+{
+  "id": "8de966c2-edc1-45cb-8549-27287e462833",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c229acf2-b9a8-4ec8-9e65-bbdae44039a6",
+      "status": "running",
+      "tail": [
+        "Windows PowerShell",
+        "Copyright (C) Microsoft Corporation. All rights reserved.",
+        "",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b>>&& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0L& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lm& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmd& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmdp& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmdpd& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdC& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ9>& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ9'"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "4",
+      "latestCursor": "4",
+      "returnedLineCount": 4,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

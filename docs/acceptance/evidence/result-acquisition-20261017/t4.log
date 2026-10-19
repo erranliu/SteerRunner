@@ -1,0 +1,10 @@
+=== RUN   TestRAParserQualification
+--- PASS: TestRAParserQualification (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.921s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/process	0.934s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	2.523s [no tests to run]

@@ -10,7 +10,6 @@ $taskBadCatalog = Join-Path $taskEvidence 'duplicate-catalog.json'
 [IO.File]::WriteAllText($taskBadCatalog,($taskCatalog|ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
 $taskCases = @(
     @{name='zero-match';args=@('-Level','L3','-Scenario','missing.scenario');error='No scenario matched|not selected'},
-    @{name='missing-config';args=@('-Level','L2');error='explicit non-secret config'},
     @{name='duplicate-catalog';args=@('-Level','L3','-Catalog',$taskBadCatalog);error='Invalid or duplicate'},
     @{name='repeat-zero';args=@('-Level','L3','-Repeat','0');error='Repeat must be'},
     @{name='repeat-non-live';args=@('-Level','L1','-Repeat','3');error='Repeat requires a live level'},
@@ -18,11 +17,13 @@ $taskCases = @(
     @{name='parallel-excess';args=@('-Level','L4','-MaxParallel','9');error='MaxParallel must be'}
 )
 $taskResults = @()
+& (Join-Path $taskRepo 'tests/framework/configuration-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
+$taskResults += @{name='independent-configuration';passed=$true}
 foreach ($taskCase in $taskCases) {
     $taskOut = Join-Path $taskEvidence $taskCase.name
     $taskArgs = @('-NoProfile','-File',(Join-Path $PSScriptRoot 'test.ps1'),'-OutDir',$taskOut) + $taskCase.args
     & $taskShell @taskArgs 2>&1 | Out-File -LiteralPath (Join-Path $taskEvidence ($taskCase.name + '.log')) -Encoding utf8
-    if ($LASTEXITCODE -ne 1) { throw "Framework guard did not fail: $($taskCase.name)" }
+    if ($LASTEXITCODE -ne 2) { throw "Framework guard did not reject invalid arguments: $($taskCase.name)" }
     $taskSummary = Get-Content -LiteralPath (Join-Path $taskOut 'summary.json') -Raw | ConvertFrom-Json
     if ($taskSummary.status -ne 'failed' -or @($taskSummary.results).Count -ne 0 -or $taskSummary.error -notmatch $taskCase.error) { throw "Guard performed work or failed for the wrong reason: $($taskCase.name)" }
     $taskResults += @{name=$taskCase.name;passed=$true}

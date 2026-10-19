@@ -17,9 +17,10 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
@@ -29,7 +30,7 @@ var scenarioCount int
 
 // New real-environment workflows register a driver; catalog entries choose
 // that driver and an execution target without changing the meaning of L3.
-var drivers = map[string]func(*testing.T, livetest.Manifest){"environment-check": environmentCheck, "development-core": developmentSmoke, "development-smoke": developmentSmoke, "development-feedback": developmentSmoke, "development-audited": developmentSmoke, "development-multirun": developmentMultipleRuns, "execution-stability": executionStability}
+var drivers = map[string]func(*testing.T, livetest.Manifest){"result-acquisition": resultAcquisition, "environment-check": environmentCheck, "development-smoke": developmentSmoke, "development-feedback": developmentSmoke, "development-audited": developmentSmoke, "development-multirun": developmentMultipleRuns, "execution-stability": executionStability}
 
 func TestMain(m *testing.M) {
 	flag.Parse()
@@ -104,18 +105,18 @@ func TestSRLiveScenario(t *testing.T) {
 }
 
 type scenarioResult struct {
-	Runs           []contracts.RunView `json:"runs,omitempty"`
-	Scenario       string              `json:"scenario"`
-	Level          string              `json:"level"`
-	Stage          string              `json:"stage"`
-	RunID          string              `json:"run_id,omitempty"`
-	PRURL          string              `json:"pr_url,omitempty"`
-	OriginalHead   string              `json:"original_head,omitempty"`
-	FeedbackHead   string              `json:"feedback_head,omitempty"`
-	MergeCommit    string              `json:"merge_commit,omitempty"`
-	RunStopped     bool                `json:"run_stopped"`
-	ServiceStopped bool                `json:"service_stopped"`
-	Passed         bool                `json:"passed"`
+	Runs             []contracts.RunView `json:"runs,omitempty"`
+	Scenario         string              `json:"scenario"`
+	Level            string              `json:"level"`
+	Stage            string              `json:"stage"`
+	RunID            string              `json:"run_id,omitempty"`
+	PRURL            string              `json:"pr_url,omitempty"`
+	OriginalHead     string              `json:"original_head,omitempty"`
+	FeedbackRejected bool                `json:"feedback_rejected,omitempty"`
+	MergeCommit      string              `json:"merge_commit,omitempty"`
+	RunStopped       bool                `json:"run_stopped"`
+	ServiceStopped   bool                `json:"service_stopped"`
+	Passed           bool                `json:"passed"`
 }
 
 func save(t *testing.T, name string, value any) {
@@ -483,12 +484,12 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus == "stopped" && !view.NewInputsAllowed {
 				r.RunStopped = true
 				save(t, "cleanup-run.json", view)
-				if m.Execution.Adapter == "orca-terminal" && view.Execution.Agent == "codex" {
+				if m.Execution.Adapter == "orca-terminal" {
 					proof, proofErr := remoteStopEvidence(m, view)
 					if proofErr != nil {
 						t.Error("remote authentication cleanup unconfirmed", proofErr)
 					} else {
-						save(t, "authentication-cleanup.json", proof)
+						save(t, "remote-authentication-cleanup.json", proof)
 					}
 				}
 				if m.Execution.Adapter == "codex-app-server" && view.Execution.SessionID != "" {
@@ -524,14 +525,18 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
-	if audited {
-		input.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 1, AuditModel: m.AuditModel}
+	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
+	input.Workflow, err = m.RunWorkflow(nil)
+	if err != nil {
+		t.Fatal(err)
 	}
 	// L2 exercises the production prompts and worker-owned Git/PR commands.
 	// L3 keeps its explicit publisher gates for feedback and fault injection.
 	if m.Level != "L2" {
-		input.Workflow.PromptOverrides = smokePromptOverrides()
+		input.Workflow, err = m.RunWorkflow(smokePromptOverrides())
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 	genericTerminal := m.Driver == "development-feedback" && m.Execution.Adapter == "orca-terminal"
 	if genericTerminal {
@@ -615,7 +620,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	r.PRURL = first.PR.URL
 	r.OriginalHead = first.PR.HeadRevision
 	checkpoint("verify-original-pr")
-	originalAt := verifyHead(t, m, first, startedAt)
+	verifyHead(t, m, first, startedAt)
 	save(t, "original-pr-ready.json", first)
 	if genericTerminal {
 		restartTerminalService(t, m, dir, &instance, first)
@@ -634,15 +639,12 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		if effort == "" {
 			effort = "medium"
 		}
-		if first.Audit == nil || len(first.Audit.Results) != 2 || first.Execution.RequestedModel != settings.Model || first.Execution.RequestedReasoningEffort != effort || first.Audit.Model != m.AuditModel.Model {
-			t.Fatal("audit passes or execution model restoration are missing")
+		if first.Audit == nil || len(first.Audit.Results) != 1 || first.Execution.RequestedModel != settings.Model || first.Execution.RequestedReasoningEffort != effort || first.Audit.Model != m.AuditModel.Model {
+			t.Fatal("audit or model restoration missing")
 		}
-		source := first.Audit.Results[0].SourceCommandID
-		for i, step := range []string{workflow.StepAuditSpec, workflow.StepAuditCode} {
-			a := first.Audit.Results[i]
-			if a.StepID != step || a.Verdict != "pass" || a.Failure != "" || a.CommandID == "" || a.TurnID == "" || source == "" || a.SourceCommandID != source {
-				t.Fatal("audit did not pass for one implementation report")
-			}
+		a := first.Audit.Results[0]
+		if a.SourceResultID == "" || a.CommandID == "" || a.TurnID == "" || a.PostHead != first.PR.HeadRevision || a.Failure != "" {
+			t.Fatal("audit revision provenance missing")
 		}
 		if m.Execution.Adapter == "orca-terminal" {
 			auditRemoteModels(t, m, first)
@@ -651,31 +653,43 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		t.Logf("audited native run=%s PR=%s; leave test PR unmerged", r.RunID, r.PRURL)
 		return
 	}
-	updated := first
-	if m.Driver != "development-core" {
-		feedback := "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan; run the checker and commit. Preserve the original branch, session and PR; publish through the original fixed publication command when authorized."
-		if m.Level == "L2" {
-			feedback = "Regenerate only evidence/native-101.md using a newer current UTC timestamp than " + originalAt.Format(time.RFC3339Nano) + ". Follow the original Spec and Plan and run the checker. Preserve the original branch, session and PR."
-		}
-		checkpoint("feedback")
-		req = request("smoke-feedback", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: feedback})
-		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
-		updated = waitReady(t, m, dir, r.RunID, first.PR.HeadRevision)
-		if m.Execution.Adapter == "orca-terminal" {
-			body, err := remoteDiagnostic(m, updated)
-			if err != nil {
-				t.Fatal("feedback agent terminal identity is unverified", err)
-			}
-			save(t, "feedback-terminal.json", json.RawMessage(body))
-		}
-		if updated.PR.URL != first.PR.URL || updated.Execution.Branch != first.Execution.Branch || updated.Execution.SessionID != first.Execution.SessionID || updated.Execution.AttemptID != first.Execution.AttemptID {
-			t.Fatal("feedback replaced original PR, branch, attempt or session")
-		}
-		r.FeedbackHead = updated.PR.HeadRevision
-		checkpoint("verify-feedback-pr")
-		verifyHead(t, m, updated, originalAt.Add(time.Nanosecond))
-		save(t, "feedback-pr-ready.json", updated)
+	store, err := storage.OpenReader(dir)
+	if err != nil {
+		t.Fatal(err)
 	}
+	records, err := store.Runs()
+	_ = store.Close()
+	if err != nil {
+		t.Fatal(err)
+	}
+	found := false
+	for _, record := range records {
+		if record.ID == r.RunID {
+			found = true
+			if err := livetest.CheckDevelopmentAcquisition(record.Workflow, first.ResultAcquisition); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("original Run missing from acquisition evidence")
+	}
+	// workflow/2 ends at pr_ready. The feedback scenario proves rejection,
+	// rather than mislabeling an ordinary successful delivery as feedback.
+	if m.Driver == "development-feedback" {
+		req := request("smoke-feedback-rejected", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: "Update the implementation."})
+		response, err := command(m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
+		if err == nil || response.Error == nil || response.Error.Code != "invalid_state" {
+			t.Fatalf("milestone feedback was not rejected: %+v %v", response.Error, err)
+		}
+		save(t, "feedback-rejected.json", response)
+		r.FeedbackRejected = true
+		after, err := inspect(m, dir, r.RunID, false)
+		if err != nil || after.Revision != first.Revision || after.PR == nil || after.PR.HeadRevision != first.PR.HeadRevision || after.Execution.TurnID != first.Execution.TurnID {
+			t.Fatal("rejected feedback changed original source", err)
+		}
+	}
+	updated := first
 	fresh, err := inspect(m, dir, r.RunID, true)
 	if err != nil {
 		t.Fatal(err)
@@ -714,7 +728,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	shell(t, checkout, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(checkout, "sr-smoke", "check.ps1"))
 	checkpoint("stop-and-cleanup")
 	if genericTerminal {
-		activeTerminalStop(t, m, dir, merged)
+		activeTerminalStop(t, m, dir, input)
 	}
 	t.Logf("%s %s run=%s PR=%s merge=%s", m.Level, m.Scenario, r.RunID, r.PRURL, r.MergeCommit)
 }

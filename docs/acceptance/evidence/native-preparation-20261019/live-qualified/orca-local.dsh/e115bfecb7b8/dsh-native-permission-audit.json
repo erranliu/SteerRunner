@@ -1,0 +1,55 @@
+{
+  "os_job_reattached": true,
+  "owner": {
+    "job": {
+      "owner": {
+        "kind": "os",
+        "pid": 16572,
+        "created": "01dd5f57e9048406",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1c3c\\steerrunner\\.evidence\\native-preparation-fix-20261019\\steerrunner-agent-qualified.exe"
+      },
+      "worker": {
+        "kind": "os",
+        "pid": 55432,
+        "created": "01dd5f57ebf23da7",
+        "executable": "c:\\program files\\nodejs\\node.exe"
+      },
+      "handle": 1352
+    },
+    "runtime_sha256": "128695a6788848ccfa3f67708289d5f179876d4a1c5aad8b73a0863716ffd62e",
+    "extension_bundle_sha256": "0b2e7c5ea62a47dd52a9452281d61af6d29622d5548cc2d1643cea6ac457eb5c",
+    "session_id": "7167f609-56bb-b5b3-6b3e-739fea543b81",
+    "run_id": "8f295d86d37e1eb8907151b70d245600",
+    "configuration_digest": "ef52d3dbb04608c9f1afff3964cd4b2c74931af797e2d80a980855128261b31d",
+    "access_mode": "sandbox"
+  },
+  "qualified_turns": 3,
+  "readiness": {
+    "reasoning_effort": "low",
+    "active_command_id": "a1a74a9851863d5fa4183a6c64b15b6d",
+    "native_session_id": "79efd421-acbc-4ccc-8fb3-b831915f7d07",
+    "version": 2,
+    "source": "dsh-plugin-v1",
+    "source_sha256": "911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4",
+    "run_id": "8f295d86d37e1eb8907151b70d245600",
+    "session_id": "7167f609-56bb-b5b3-6b3e-739fea543b81",
+    "instance_id": "ffa25539-fabf-4329-a196-71b7f4e0add1",
+    "pid": 55432,
+    "process_started_at": "2026-10-18T23:25:11.756Z",
+    "mode": "tui",
+    "tools": [
+      "powershell"
+    ],
+    "model": "deepseek-official/deepseek-flash",
+    "preparation": {
+      "inside_write_verified": true,
+      "provider_environment_absent": true,
+      "outside_write_denied": true,
+      "contract": "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never",
+      "access_mode": "sandbox",
+      "authentication_expires_at": "2026-10-19T08:25:09.1294235+08:00",
+      "verified": true
+    },
+    "stage": "ready"
+  }
+}

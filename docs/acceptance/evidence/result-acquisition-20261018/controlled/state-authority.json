@@ -1,0 +1,7 @@
+{
+  "assertions": "../state-authority.json",
+  "snapshots": "../definition-traces.json",
+  "log": "integration.log",
+  "acquisition_cases": 8,
+  "restart_case": "parser-restart"
+}

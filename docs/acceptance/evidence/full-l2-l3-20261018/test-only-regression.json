@@ -1,0 +1,11 @@
+{
+  "package": "internal/testkit/livetest",
+  "root_test_count": 18,
+  "failed_count": 0,
+  "all_package_passed": true,
+  "new_assertion_roots": [
+    "TestDevelopmentAcquisitionNativeAssertions",
+    "TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector"
+  ],
+  "evidence": ".evidence\\full-validation-20261018\\native-remote-audit-regression.jsonl"
+}

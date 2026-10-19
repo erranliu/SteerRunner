@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.pi
+    run_test.go:589: native needs_input was not reached
+--- FAIL: TestSRLiveScenario (404.00s)
+    --- FAIL: TestSRLiveScenario/orca-local.pi (403.95s)
+FAIL

@@ -1,0 +1,44 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "673fbfe2bfdcca8c0beffc5747583f5b66012966",
+  "source_dirty": false,
+  "started_at": "2026-10-18T13:37:42.2671512Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "exit_code": 1,
+      "test_count": 355,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full",
+      "level": "L1",
+      "terminal_extension_exit": 0,
+      "native_driver_compile_exit": 0,
+      "terminal_extension_test_count": 28,
+      "terminal_extensions_passed": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-audit-20261018\\full\\framework"
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+  "finished_at": "2026-10-18T13:44:32.3695836Z"
+}

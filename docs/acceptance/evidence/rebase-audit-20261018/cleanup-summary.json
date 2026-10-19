@@ -1,0 +1,146 @@
+[
+  {
+    "fixture": "dd6d81fe2581",
+    "scenario": "local-codex.smoke",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": null,
+    "evidence": "native/local-codex.smoke/dd6d81fe2581/service-status-final.json"
+  },
+  {
+    "fixture": "21d08f9e66c1",
+    "scenario": "local-codex.result-acquisition",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": null,
+    "evidence": "native/local-codex.result-acquisition/21d08f9e66c1/service-status-final.json"
+  },
+  {
+    "fixture": "e448761ae7b3",
+    "scenario": "local-codex.audited",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/local-codex.audited/e448761ae7b3/service-status-final.json"
+  },
+  {
+    "fixture": "d5a0f8f74695",
+    "scenario": "orca-local.codex",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-local.codex/d5a0f8f74695/service-status-final.json"
+  },
+  {
+    "fixture": "caa1f672db8d",
+    "scenario": "orca-local.pi",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-local.pi/caa1f672db8d/service-status-final.json"
+  },
+  {
+    "fixture": "4a81e6046cef",
+    "scenario": "orca-local.dsh",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-local.dsh/4a81e6046cef/service-status-final.json"
+  },
+  {
+    "fixture": "48a676f7b2ba",
+    "scenario": "orca-local.mixed",
+    "batch": "native",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-local.mixed/48a676f7b2ba/service-status-final.json"
+  },
+  {
+    "fixture": "ade72e1e19f9",
+    "scenario": "local-codex.smoke",
+    "batch": "native-retry",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-retry/local-codex.smoke/ade72e1e19f9/service-status-final.json"
+  },
+  {
+    "fixture": "aacc8741b341",
+    "scenario": "local-codex.result-acquisition",
+    "batch": "native-retry",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-retry/local-codex.result-acquisition/aacc8741b341/service-status-final.json"
+  },
+  {
+    "fixture": "42f83fbea0c4",
+    "scenario": "orca-local.codex",
+    "batch": "native-retry",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-retry/orca-local.codex/42f83fbea0c4/service-status-final.json"
+  },
+  {
+    "fixture": "e724dee1b168",
+    "scenario": "orca-local.pi",
+    "batch": "native-retry",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-retry/orca-local.pi/e724dee1b168/service-status-final.json"
+  },
+  {
+    "fixture": "baee7b1f8e27",
+    "scenario": "orca-local.dsh",
+    "batch": "native-retry",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-retry/orca-local.dsh/baee7b1f8e27/service-status-final.json"
+  },
+  {
+    "fixture": "5f31b004f5ff",
+    "scenario": "orca-local.codex",
+    "batch": "native-writers-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-writers-final/orca-local.codex/5f31b004f5ff/service-status-final.json"
+  },
+  {
+    "fixture": "ace6d882146b",
+    "scenario": "orca-local.pi",
+    "batch": "native-writers-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-writers-final/orca-local.pi/ace6d882146b/service-status-final.json"
+  },
+  {
+    "fixture": "fe8e07936163",
+    "scenario": "orca-local.dsh",
+    "batch": "native-writers-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-writers-final/orca-local.dsh/fe8e07936163/service-status-final.json"
+  },
+  {
+    "fixture": "138d8becafb6",
+    "scenario": "orca-local.codex",
+    "batch": "native-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-final/orca-local.codex/138d8becafb6/service-status-final.json"
+  },
+  {
+    "fixture": "eaef08b5dc55",
+    "scenario": "orca-local.pi",
+    "batch": "native-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-final/orca-local.pi/eaef08b5dc55/service-status-final.json"
+  },
+  {
+    "fixture": "c49521415387",
+    "scenario": "orca-local.dsh",
+    "batch": "native-final",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native-final/orca-local.dsh/c49521415387/service-status-final.json"
+  }
+]

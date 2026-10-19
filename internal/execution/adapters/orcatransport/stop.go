@@ -46,13 +46,10 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 		if err != nil {
 			return receipt, nil, err
 		}
-		if err = l.cleanupInspections(ctx, &state); err != nil {
+		if err = l.reconcileAuthenticationStop(ctx, state); err != nil {
 			return receipt, nil, err
 		}
-		if err = l.reconcileAuthenticationStop(ctx, state); err != nil {
-			if errors.Is(err, errAuthenticationProofUnverified) {
-				err = errors.Join(err, l.closeFailedAuthenticationActor(ctx, state))
-			}
+		if err = l.closeControl(ctx, state); err != nil {
 			return receipt, nil, err
 		}
 		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {

@@ -62,6 +62,13 @@ func (e *Engine) run(id string, w *worker) {
 	}
 }
 func (e *Engine) advance(id string, w *worker) bool {
+	e.mu.Lock()
+	snapshot := e.runs[id]
+	verify := snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
+	e.mu.Unlock()
+	if verify {
+		return e.verifyPublication(id)
+	}
 	w.gate.Lock()
 	defer w.gate.Unlock()
 	if e.ctx.Err() != nil {
@@ -70,6 +77,9 @@ func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if handled, progress := e.advanceParser(id, w, r); handled {
+		return progress
+	}
 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
 		return false
 	}
@@ -100,9 +110,6 @@ func (e *Engine) advance(id string, w *worker) bool {
 			return false
 		}
 		return e.resumeRun(id, w, p)
-	}
-	if r.PendingPRURL != "" && r.StopStatus == "" {
-		return e.verifyPublication(id)
 	}
 	if err := validateWorkflow(r); err != nil {
 		e.block(id, "workflow_configuration", err, false)
@@ -149,7 +156,7 @@ func (e *Engine) saveIntent(id string, r *runstate.Record, candidate b.Lifecycle
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	current := e.runs[id]
-	if current.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID || b.LifecycleBindingDigest(current.Snapshot) != b.LifecycleBindingDigest(r.Snapshot) {
+	if current.Revision != r.Revision || current.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID || b.LifecycleBindingDigest(current.Snapshot) != b.LifecycleBindingDigest(r.Snapshot) {
 		return 0, reliable.ErrStale
 	}
 	next := current.Clone()
@@ -193,6 +200,12 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		request.Snapshot = r.Snapshot.Clone()
 	}
 	ctx, cancel := context.WithTimeout(e.ctx, 90*time.Second)
+	if !reconcile && request.Input.Turn != nil {
+		if w.ownedInputs == nil {
+			w.ownedInputs = map[string]bool{}
+		}
+		w.ownedInputs[request.Input.Turn.CommandID] = true
+	}
 	result := operation.Invoke(ctx, p, p, request, mode)
 	cancel()
 	if result.Observer != nil {
@@ -269,7 +282,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		return false
 	}
 	if savedReceipt.TurnEvidence != nil {
-		return e.finish(id, *savedReceipt.TurnEvidence)
+		return e.finishWithGate(id, *savedReceipt.TurnEvidence, &w.gate)
 	}
 	return progress && !resourcePending
 }

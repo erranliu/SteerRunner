@@ -14,6 +14,12 @@ func ConfigurationSchemas() json.RawMessage {
 		panic(err)
 	}
 	adapters := schemas["adapters"].(map[string]any)
+	// An explicit empty mode retains the sandbox default. Retired App fields
+	// remain absent from the strict adapter schemas, including null values.
+	for _, name := range []string{"codex-app-server", "orca-terminal"} {
+		properties := adapters[name].(map[string]any)["properties"].(map[string]any)
+		properties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access"}
+	}
 	local := map[string]any{"type": "object", "required": []string{"kind"}, "additionalProperties": false,
 		"properties": map[string]any{"kind": map[string]any{"const": "local"}, "environment": map[string]any{"const": ""}}}
 	remote := map[string]any{"type": "object", "required": []string{"kind", "environment"}, "additionalProperties": false,
@@ -32,8 +38,11 @@ func ConfigurationSchemas() json.RawMessage {
 		selection := map[string]any{"properties": map[string]any{"workflow": map[string]any{"properties": map[string]any{"id": map[string]any{"const": profile.ID}, "version": map[string]any{"const": profile.Version}}}}}
 		execution := map[string]any{"properties": map[string]any{"adapter": map[string]any{"enum": profile.SupportedAdapters}}}
 		if profile.AuditModelRequired {
-			execution["properties"].(map[string]any)["target"] = local
-			execution["properties"].(map[string]any)["settings"] = map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}}}
+			model := map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}
+			execution["allOf"] = []any{
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "codex-app-server"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": model}}}}},
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": map[string]any{"required": []string{"model", "runtime_executable"}, "properties": map[string]any{"model": model, "runtime_executable": map[string]any{"type": "string", "minLength": 1}}}}}}}},
+			}
 		}
 		rules = append(rules, map[string]any{"if": selection, "then": map[string]any{"properties": map[string]any{
 			"execution": execution,
@@ -42,6 +51,7 @@ func ConfigurationSchemas() json.RawMessage {
 	}
 	schemas["run_configuration"] = map[string]any{"type": "object", "required": []string{"execution", "workflow"}, "additionalProperties": false,
 		"properties": map[string]any{"execution": map[string]any{"oneOf": choices}, "workflow": schemas["workflow"]}, "allOf": rules}
+	schemas["run_input"] = runInputSchema(schemas)
 	raw, err := json.Marshal(schemas)
 	if err != nil {
 		panic(err)

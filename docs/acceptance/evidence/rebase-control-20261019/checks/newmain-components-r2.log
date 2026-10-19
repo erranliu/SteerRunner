@@ -1,0 +1,3 @@
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.374s
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.138s
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	2.162s

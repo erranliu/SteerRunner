@@ -65,7 +65,7 @@
 | 4 | stop-revocation，3 case | active/boundary 真实停止、迟到结果；不可达 stop 跨重启撤销持久、恢复后原身份收尾 | A06 |
 | 5 | publication-unknown，2 case | 真实 PR 已创建、原完成证据缺口、查询失败、原 final/PR 对账和零重复发布 | A07 |
 
-所有成功交付 case 复用 CheckPR、固定材料/真实 final 校验、Git fetch 内容检查、精确 head merge 和 merged 事实校验。仅原 smoke 运行反馈轮。停止场景在实施阶段注入，独立查询专属 base/head 的 PR 列表确认没有意外发布。
+所有成功交付 case 复用 CheckPR、固定材料/真实 final 校验、Git fetch 内容检查、精确 head merge 和 merged 事实校验。2026-10-18 随已确认 workflow/2 同步 smoke，不添加定义中不存在的反馈返工边；仍要求真实合并及原资源收尾，不改变各 case 的预期业务结果。停止场景在实施阶段注入，独立查询专属 base/head 的 PR 列表确认没有意外发布。
 
 `boundary` 必须在下一阶段业务输入尚未发出时命中：使用阶段完成前的测试门及阻断观察安排顺序，并用原生输入审计核实；不能在外部包装器已经接到下一输入后，假装该输入仍未发送。stop 前已送出的输入列为在途事实，但无法满足本 case 屏障则仍判未命中失败。
 

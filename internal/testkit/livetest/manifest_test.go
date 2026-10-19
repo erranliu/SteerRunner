@@ -8,6 +8,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -58,6 +59,14 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	}
 	if err := local.Validate(); err != nil {
 		t.Fatal("valid local Orca fixture rejected", err)
+	}
+	defaultMode := local
+	defaultMode.Execution.Settings = json.RawMessage(strings.Replace(string(local.Execution.Settings), `"access_mode":"sandbox"`, `"access_mode":""`, 1))
+	if err := defaultMode.Validate(); err != nil {
+		t.Fatal("manifest rejected the original sandbox default", err)
+	}
+	if strings.Contains(string(defaultMode.Execution.Settings), `"access_mode":"sandbox"`) {
+		t.Fatal("default matching rewrote the frozen request")
 	}
 	if runtime, err := local.OrcaRuntimeID(); err != nil || runtime != "local-original" {
 		t.Fatal(runtime, err)

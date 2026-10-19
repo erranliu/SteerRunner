@@ -1,0 +1,8 @@
+{
+  "attempted": true,
+  "canary_unchanged": true,
+  "command_denied": true,
+  "native_exit_ok": true,
+  "profile_delta": "shell_tool=true for negative permission probe only; production false",
+  "tree_stopped": true
+}

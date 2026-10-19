@@ -15,7 +15,7 @@
         ]
       },
       "version": {
-        "const": 1
+        "const": 2
       },
       "audit_model": {
         "type": "object",
@@ -75,8 +75,8 @@
                   "implement.report",
                   "publish",
                   "publish.report",
-                  "audit.spec",
-                  "audit.code"
+                  "audit.code",
+                  "audit.code.report"
                 ]
               }
             }

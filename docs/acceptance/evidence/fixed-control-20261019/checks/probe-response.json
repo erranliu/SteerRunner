@@ -1,0 +1,25 @@
+{
+  "id": "850d1d1b-83bc-47f1-858a-b49da3b91657",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_6d07fd0b-b53c-44ee-83f8-624a5f13b56f",
+      "status": "running",
+      "tail": [
+        "SR_NATIVE_CONTROL_READY:eyJiaW5kaW5nIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL0FkbWluaXN0cmF0b3Ivb3JjYS93b3Jrc3BhY2VzL1N0ZWVybGluZVRlc3Qvc3ItcnVudGltZS0xYzNjLWZ1bGwtMjAyNjEwMTgiLCJydW50aW1lX3NoYTI1NiI6IjZmMTdiNzczMDNlOTBjNGQzN2VhNzBhNGUzM2IyZDNhZjcxMDIzNGNjZDBmYTRkYWMzMzU0NjQ4MmViYmNhYjYifQ",
+        "eyJpZCI6ImNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjIiwiYmluZGluZyI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJtZXRob2QiOiJvcmlnaW5hbC10dXJuIiwic2Vzc2lvbiI6IjAxYTE0MzNhLWM4NTctN2ZjMC1iZjhjLTAyYTc4NGFkMTE4ZSIsImlucHV0X2RpZ2VzdCI6ImRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQifQ",
+        "SR_NATIVE_CONTROL:eyJpZCI6ImNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjIiwiYmluZGluZyI6ImFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJyZXF1ZXN0X2RpZ2VzdCI6ImQ1MTc4MTVhM2Q1NTQzODMyOWM4YmMwYjEwYTJmYTZlNTRlZDk5MjZlZmM2MTZkNDA4MzY3NWRhYTJjOTFjZTYiLCJlcnJvciI6Im9yaWdpbmFsX3R1cm5fdW52ZXJpZmllZCJ9"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "3",
+      "latestCursor": "3",
+      "returnedLineCount": 3,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

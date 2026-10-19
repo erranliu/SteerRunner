@@ -1,0 +1,107 @@
+{
+  "late_write_absent": true,
+  "run": {
+    "operations": [
+      {
+        "operation_id": "1a1a80013742ab7d7ed7e4d1f7d3942e",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "b88ea84df0290e64f1c283e391a79075",
+        "action": "create_resource",
+        "status": "confirmed",
+        "diagnostic": "Waiting for the original execution-host preparation receipt",
+        "original_diagnostic": "Original remote preparation verified; committing before first business input"
+      },
+      {
+        "operation_id": "8873c03c87d3d556ef7a44b52a119b2e",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "6b2641a284c378f81c1f52c0e087460f",
+        "action": "start_turn",
+        "status": "accepted"
+      },
+      {
+        "operation_id": "9e44408caf893540755f9af85dd5f008",
+        "action": "stop_execution",
+        "status": "confirmed"
+      }
+    ],
+    "run_id": "903d6fea0670bf1c4f8872509213d686",
+    "revision": 15,
+    "title": "SteerRunner owned native writer stop",
+    "correlation": {
+      "fixture_id": "b0106f290a5e",
+      "scenario": "orca-local.codex"
+    },
+    "input_digest": "a699ae84b35f76bc7eca3903b7ffd7659197c6bd38b156ebf90b859bf650bd8e",
+    "resource_digest": "f0cd4c4acf3296319aec9305999143f3c3739151f364c91a1b05df0d80ccbbdb",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Execute the active-writer Spec and Plan now. Start the fixed native PowerShell command and wait while the test driver stops this Run."
+      }
+    },
+    "step": "implement.execute",
+    "status": "stopped",
+    "phase": "stopped",
+    "new_inputs_allowed": false,
+    "resume_required": true,
+    "stop_status": "stopped",
+    "materials": [
+      {
+        "kind": "inline",
+        "path": "active-stop.spec.md",
+        "digest": "e2c29b6c599f987b199833ca3277c2c7d4783dc4306ca8dc3a4de23fa539b764",
+        "snapshot_path": "c:\\srt\\b0106f290a5e\\s\\inputs\\903d6fea0670bf1c4f8872509213d686\\active-stop.spec.md",
+        "execution_location": "prompt:active-stop.spec.md"
+      },
+      {
+        "kind": "inline",
+        "path": "active-stop.plan.md",
+        "digest": "3b7fa5ffa309618baa27fe7a877734b7987842d23a3f025a262d5bb5b9fea6fc",
+        "snapshot_path": "c:\\srt\\b0106f290a5e\\s\\inputs\\903d6fea0670bf1c4f8872509213d686\\active-stop.plan.md",
+        "execution_location": "prompt:active-stop.plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "workspace_scope": "revision",
+      "turn_started": false,
+      "attempt_id": "dc8550db08cc1c74df94608c698fcf5d",
+      "generation": "5c08e98a8dcde4af295c248a01cc9c97",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:456f70a1-9c53-406c-a48a-72833d36abdb:term_c82b03e0-64e0-49f1-88f1-4f11b44120a1:58ca2816-ffb8-4fc3-b92b-a592f1c0c36a",
+      "final_available": false,
+      "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-903d6fea0670bf1c4f8872509213d686",
+      "branch": "erranliu/sl-903d6fea0670bf1c4f8872509213d686"
+    },
+    "controls": {
+      "can_reply": false,
+      "can_resume": true,
+      "can_stop": false
+    },
+    "created_at": "2026-10-18T23:21:46.9765082Z",
+    "updated_at": "2026-10-18T23:22:47.2114299Z"
+  },
+  "started_writers_absent": true,
+  "writers": [
+    {
+      "kind": "os",
+      "pid": 40580,
+      "created": "01dd5f578d40c1c3",
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe"
+    },
+    {
+      "kind": "os",
+      "pid": 55724,
+      "created": "01dd5f578e864040",
+      "executable": "c:\\windows\\system32\\windowspowershell\\v1.0\\powershell.exe"
+    }
+  ]
+}

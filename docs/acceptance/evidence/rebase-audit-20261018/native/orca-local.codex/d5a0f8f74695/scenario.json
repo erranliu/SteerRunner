@@ -1,0 +1,11 @@
+{
+  "scenario": "orca-local.codex",
+  "level": "L3",
+  "stage": "verify-original-pr",
+  "run_id": "386b9652b130b3ae32ee60b9c34a10dc",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/534",
+  "original_head": "53e2a2904412bf3b668f47552c9d26bb49512749",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

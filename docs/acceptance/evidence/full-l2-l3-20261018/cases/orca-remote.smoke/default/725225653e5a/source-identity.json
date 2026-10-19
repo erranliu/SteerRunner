@@ -1,0 +1,11 @@
+{
+  "pid": 27352,
+  "manifest_sha256": "039F33193CFA7CCF90D2E8ECE2C5780682C4A0B751B11DD050B8603015948F6A",
+  "driver_sha256": "AF5F5930701A9B0BBBF1DB4D8CA6E812032519C6111D1BD8471F1D5B0F577DB9",
+  "runner_sha256": "69c3f04a336eae6bcd55962d4e518757ca6e7ddf516e7213cd4142c31e847c93",
+  "source_commit": "f211e316b89e3b86527358f1bbd48eac9f58513a",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.smoke",
+  "level": "L3"
+}
