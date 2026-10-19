@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"strings"
 	"testing"
 )
@@ -12,10 +13,24 @@ import (
 func TestFixedControlFiniteProtocol(t *testing.T) {
 	setup := RemoteControlSetup{Binding: strings.Repeat("a", 64), Workspace: t.TempDir(), RuntimeSHA256: strings.Repeat("b", 64)}
 	q := RemoteControlRequest{ID: strings.Repeat("c", 32), Binding: setup.Binding, Method: "original-turn", Session: "01a1433a-c857-7fc0-bf8c-02a784ad118e", InputDigest: strings.Repeat("d", 64)}
-	for _, mode := range []string{"query", "revoke", "duplicate", "conflict", "method", "session", "binding", "input", "unknown-field"} {
+	for _, mode := range []string{"query", "revoke", "duplicate", "conflict", "method", "session", "binding", "input", "unknown-field", "workspace", "workspace-path", "workspace-prehead", "workspace-on-turn"} {
 		t.Run(mode, func(t *testing.T) {
 			request := q
 			switch mode {
+			case "workspace", "workspace-path", "workspace-prehead", "workspace-on-turn":
+				request.Method = "workspace-audit"
+				request.InputDigest = ""
+				request.Audit = &RemoteWorkspaceAuditQuery{Intent: b.WorkspaceIntent{Path: setup.Workspace, Branch: "main", BaseCommit: strings.Repeat("a", 40)}}
+				if mode == "workspace-path" {
+					request.Audit.Intent.Path = t.TempDir()
+				}
+				if mode == "workspace-prehead" {
+					request.Audit.PreHead = "HEAD~1"
+				}
+				if mode == "workspace-on-turn" {
+					request.Method = "original-turn"
+					request.InputDigest = q.InputDigest
+				}
 			case "revoke":
 				request.Method = "authentication-stop"
 				request.InputDigest = ""
@@ -54,7 +69,7 @@ func TestFixedControlFiniteProtocol(t *testing.T) {
 				}
 				return RemoteControlResponse{Error: "original_turn_unverified"}
 			})
-			valid := mode == "query" || mode == "revoke" || mode == "duplicate"
+			valid := mode == "query" || mode == "revoke" || mode == "duplicate" || mode == "workspace"
 			if (err == nil) != valid {
 				t.Fatal(mode, err)
 			}

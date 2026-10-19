@@ -27,11 +27,12 @@ type RemoteControlSetup struct {
 }
 
 type RemoteControlRequest struct {
-	ID          string `json:"id"`
-	Binding     string `json:"binding"`
-	Method      string `json:"method"`
-	Session     string `json:"session"`
-	InputDigest string `json:"input_digest,omitempty"`
+	ID          string                     `json:"id"`
+	Binding     string                     `json:"binding"`
+	Method      string                     `json:"method"`
+	Session     string                     `json:"session"`
+	InputDigest string                     `json:"input_digest,omitempty"`
+	Audit       *RemoteWorkspaceAuditQuery `json:"workspace_audit,omitempty"`
 }
 
 type RemoteControlResponse struct {
@@ -41,6 +42,7 @@ type RemoteControlResponse struct {
 	Error          string                       `json:"error,omitempty"`
 	Turn           *RemoteTurnReceipt           `json:"turn,omitempty"`
 	Authentication *RemoteAuthenticationCleanup `json:"authentication,omitempty"`
+	Workspace      *RemoteWorkspaceAudit        `json:"workspace_audit,omitempty"`
 }
 
 func RemoteControlDigest(request RemoteControlRequest) string {
@@ -54,11 +56,15 @@ func (q RemoteControlRequest) Validate(setup RemoteControlSetup) error {
 	}
 	switch q.Method {
 	case "original-turn":
-		if len(q.InputDigest) != 64 || strings.Trim(q.InputDigest, "0123456789abcdef") != "" {
+		if q.Audit != nil || len(q.InputDigest) != 64 || strings.Trim(q.InputDigest, "0123456789abcdef") != "" {
 			return errors.New("native_control_input_invalid")
 		}
 	case "authentication-stop":
-		if q.InputDigest != "" {
+		if q.InputDigest != "" || q.Audit != nil {
+			return errors.New("native_control_input_invalid")
+		}
+	case "workspace-audit":
+		if q.InputDigest != "" || q.Audit == nil || q.Audit.Validate(setup.Workspace) != nil {
 			return errors.New("native_control_input_invalid")
 		}
 	default:
@@ -67,7 +73,7 @@ func (q RemoteControlRequest) Validate(setup RemoteControlSetup) error {
 	return nil
 }
 
-// ServeRemoteControl has exactly two finite operations. Its one-response cache
+// ServeRemoteControl has only finite original-turn, workspace and stop queries. Its one-response cache
 // repairs transport loss while this same actor lives; it is not a task journal.
 func ServeRemoteControl(ctx context.Context, setup RemoteControlSetup, input io.Reader, output io.Writer) error {
 	self, err := RuntimeBinarySHA256()
@@ -82,6 +88,12 @@ func ServeRemoteControl(ctx context.Context, setup RemoteControlSetup, input io.
 			r.Turn = &value
 			if e != nil {
 				r.Error = "original_turn_unverified"
+			}
+		} else if q.Method == "workspace-audit" {
+			value, e := InspectRemoteWorkspaceAudit(ctx, setup, q.Session, *q.Audit)
+			r.Workspace = &value
+			if e != nil {
+				r.Error = "workspace_audit_unverified"
 			}
 		} else {
 			value, e := RevokeRemoteAuthentication(ctx, RemoteAuthenticationQuery{Workspace: setup.Workspace, Session: q.Session})

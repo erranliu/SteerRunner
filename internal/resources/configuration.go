@@ -16,16 +16,14 @@ func ConfigurationSchemas() json.RawMessage {
 	adapters := schemas["adapters"].(map[string]any)
 	schemas["message_input"] = map[string]any{"type": "object", "required": []string{"expected_revision", "text"}, "additionalProperties": false, "properties": map[string]any{"expected_revision": map[string]any{"type": "integer", "minimum": 1}, "text": map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}}}
 	schemas["revision_input"] = map[string]any{"type": "object", "required": []string{"expected_revision"}, "additionalProperties": false, "properties": map[string]any{"expected_revision": map[string]any{"type": "integer", "minimum": 1}}}
-	// Match existing admission: an explicit empty mode uses the original
-	// sandbox default, and a null optional App reference is equivalent to absent.
-	// This only corrects publication; it does not tighten legacy write gates.
+	// An explicit empty mode retains the sandbox default. Retired App fields
+	// remain absent from the strict adapter schemas, including null values.
 	for _, name := range []string{"codex-app-server", "orca-terminal"} {
 		properties := adapters[name].(map[string]any)["properties"].(map[string]any)
 		properties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access"}
 	}
 	nativeProperties := adapters["codex-app-server"].(map[string]any)["properties"].(map[string]any)
 	nativeProperties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access", "read_only"}
-	nativeProperties["github_auth"].(map[string]any)["type"] = []string{"object", "null"}
 	local := map[string]any{"type": "object", "required": []string{"kind"}, "additionalProperties": false,
 		"properties": map[string]any{"kind": map[string]any{"const": "local"}, "environment": map[string]any{"const": ""}}}
 	remote := map[string]any{"type": "object", "required": []string{"kind", "environment"}, "additionalProperties": false,
@@ -41,7 +39,7 @@ func ConfigurationSchemas() json.RawMessage {
 		if adapter == "orca-terminal" {
 			choice["allOf"] = []any{map[string]any{
 				"if":   map[string]any{"properties": map[string]any{"target": remote}},
-				"then": map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"github_auth": map[string]any{"type": "null"}, "agent_launch": map[string]any{"not": map[string]any{"anyOf": []any{map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}}}}}}},
+				"then": map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"agent_launch": map[string]any{"not": map[string]any{"anyOf": []any{map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}}}}}}},
 			}}
 		}
 		choices = append(choices, choice)
@@ -51,8 +49,11 @@ func ConfigurationSchemas() json.RawMessage {
 		selection := map[string]any{"properties": map[string]any{"workflow": map[string]any{"properties": map[string]any{"id": map[string]any{"const": profile.ID}, "version": map[string]any{"const": profile.Version}}}}}
 		execution := map[string]any{"properties": map[string]any{"adapter": map[string]any{"enum": profile.SupportedAdapters}}}
 		if profile.AuditModelRequired {
-			execution["properties"].(map[string]any)["target"] = local
-			execution["properties"].(map[string]any)["settings"] = map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}}}
+			model := map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}
+			execution["allOf"] = []any{
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "codex-app-server"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": model}}}}},
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"target": local, "settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": map[string]any{"required": []string{"model", "runtime_executable"}, "properties": map[string]any{"model": model, "runtime_executable": map[string]any{"type": "string", "minLength": 1}}}}}}}},
+			}
 		}
 		promptNames := any(map[string]any{"enum": profile.PromptSteps})
 		if len(profile.PromptSteps) == 0 {

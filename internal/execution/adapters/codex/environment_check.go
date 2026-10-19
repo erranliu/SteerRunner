@@ -33,7 +33,6 @@ type EnvironmentCall struct {
 }
 
 type EnvironmentSetup struct {
-	RepositoryBroker                     bool
 	CheckID, Nonce, Directory, Workspace string
 	AuthenticationStateDirectory         string
 	Input                                contracts.CheckInput
@@ -68,34 +67,28 @@ func NewEnvironmentSession(setup EnvironmentSetup) (*EnvironmentSession, error) 
 	if settings.ReasoningEffort == "" {
 		settings.ReasoningEffort = "medium"
 	}
-	var config *AuthenticationConfig
-	if settings.GitHubAuth != nil {
-		config = &AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
-	}
-	auth, err := newAuthentication(config, setup.Input.Repository.URL)
+	auth, err := newAuthentication(setup.Input.Repository.URL)
 	if err != nil {
 		return nil, err
 	}
 	gate := &checkWriteGate{base: "steerline-check/" + setup.CheckID + "/base", head: "steerline-check/" + setup.CheckID + "/head"}
 	auth.checkGate = gate
-	auth.repositoryBroker = setup.RepositoryBroker
 	host := process.New(30 * time.Second)
 	s := &EnvironmentSession{setup: setup, gate: gate}
 	s.backend = Backend{Config: Config{Executable: settings.Executable, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, Workspace: setup.Workspace, RunDir: setup.Directory, RunID: setup.CheckID, ServerDir: filepath.Join(setup.Directory, "app-server"), Environment: func(env []string) []string {
 		return lifecycleProcessEnvironment(env, setup.CheckID, setup.CheckID, nil)
 	}, WorkerRuntime: true, Authentication: auth, RemoteName: setup.Input.Repository.Remote, EnvironmentCheck: true}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: host.NewProcessGeneration, WriteAtomic: host.WriteExecutionFile}}
-	if config == nil || setup.RepositoryBroker {
-		state := setup.AuthenticationStateDirectory
-		if state == "" {
-			state = setup.Directory
-		}
-		raw, _ := json.Marshal(setup.Input)
-		digest := fmt.Sprintf("%x", sha256.Sum256(raw))
-		s.backend.Config.AuthenticationTransport, err = PlanAuthenticationTransport(state, setup.Workspace, setup.Input.Repository.URL, PolicyResourceIdentity{ProjectID: setup.Input.Repository.URL, ExecutionID: setup.CheckID, AttemptID: setup.Nonce, Generation: setup.Nonce, ConfigDigest: digest})
-		if err != nil {
-			return nil, err
-		}
+	state := setup.AuthenticationStateDirectory
+	if state == "" {
+		state = setup.Directory
 	}
+	raw, _ := json.Marshal(setup.Input)
+	digest := fmt.Sprintf("%x", sha256.Sum256(raw))
+	s.backend.Config.AuthenticationTransport, err = PlanAuthenticationTransport(state, setup.Workspace, setup.Input.Repository.URL, PolicyResourceIdentity{ProjectID: setup.Input.Repository.URL, ExecutionID: setup.CheckID, AttemptID: setup.Nonce, Generation: setup.Nonce, ConfigDigest: digest})
+	if err != nil {
+		return nil, err
+	}
+
 	actions := []string{}
 	for _, item := range contracts.CheckManifest(setup.Input.Publication != nil) {
 		if item.Required {
@@ -128,7 +121,7 @@ func (s *EnvironmentSession) Prepare(ctx context.Context) (Binding, error) {
 		return binding, err
 	}
 	// A check requires transport-level, one-use write authorization. This
-	// cannot silently fall back to an unrestricted installation credential.
+	// requires the original gh broker; no alternate credential is accepted.
 	if s.backend.Config.Authentication.broker == nil {
 		return binding, errors.New("environment_check_write_gate_unavailable_for_authentication_source")
 	}
@@ -151,16 +144,16 @@ func (s *EnvironmentSession) Prepare(ctx context.Context) (Binding, error) {
 
 func (s *EnvironmentSession) Start(ctx context.Context) (string, error) {
 	if s.handle == nil || s.handle.client == nil {
-		return "", errors.New("original_session_missing")
+		return "", rejectEnvironmentInput(errors.New("original_session_missing"))
 	}
 	if err := s.backend.verifySandboxReadiness(ctx, s.handle, s.input); err != nil {
-		return "", err
+		return "", rejectEnvironmentInput(err)
 	}
 	params, err := TurnParams(ctx, TurnParamsInput{Worktree: s.setup.Workspace, ThreadID: s.handle.Binding.SessionID, TurnInput: s.input, Sandbox: s.backend.Config.Sandbox, Model: s.backend.Config.Model, ReasoningEffort: s.backend.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) {
 		return s.backend.toolWriteArgs(s.setup.LinkedWriteArgs), nil
 	})
 	if err != nil {
-		return "", err
+		return "", rejectEnvironmentInput(err)
 	}
 	turnCtx, turnCancel := context.WithTimeout(ctx, 30*time.Second)
 	defer turnCancel()
@@ -441,12 +434,17 @@ func EnvironmentDiagnostic(err error) string {
 	if stage := RemoteCheckStartupDiagnostic(err); stage != "" {
 		return stage
 	}
+	for _, stage := range []string{"check_dispatch_revoked", "unexpected_check_action", "upstream_probe_unresolved", "original_native_connection_lost", "original_native_turn_unsettled", "native_tool_identity_mismatch", "native_tool_nonce_mismatch", "unexpected_native_approval_or_tool_request", "native_command_queue_unavailable", "native_cli_request_unverified"} {
+		if strings.Contains(err.Error(), stage) {
+			return stage
+		}
+	}
 	for _, stage := range []string{"clone_snapshot_failed", "clone_base_fetch_failed", "remote_check_ownership_failed", "remote_check_source_identity_failed", "remote_check_clone_failed", "remote_check_origin_failed", "remote_check_repository_failed", "remote_check_worktree_failed", "remote_check_git_roots_failed", "remote_check_configuration_failed", "remote_check_native_session_failed", "authentication_api_binding_invalid", "authentication_api_binding_missing", "authentication_api_binding_mismatch", "authentication_api_directory_unverified", "authentication_api_directory_redirected", "authentication_api_directory_unavailable", "authentication_api_directory_conflict", "authentication_api_directory_identity_changed", "authentication_api_socket_identity_changed", "authentication_api_socket_unverified", "authentication_api_socket_unavailable", "authentication_api_config_unavailable"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}
 	}
-	for _, stage := range []string{"native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "native_thread_identity_unverified", "native_thread_identity_mismatch", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_key_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "authentication_scope_or_expiry_invalid", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git", "repository_identity_mismatch"} {
+	for _, stage := range []string{"remote_check_response_missing", "remote_check_response_unverified", "remote_check_identity_unverified", "original_session_missing", "authentication_broker_unavailable", "sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "native_thread_identity_unverified", "native_thread_identity_mismatch", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git", "repository_identity_mismatch"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}

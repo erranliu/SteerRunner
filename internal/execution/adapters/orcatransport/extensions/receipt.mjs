@@ -29,4 +29,3 @@ export function writeReceipt(directory, name, value) {
     }
   }
 }
-

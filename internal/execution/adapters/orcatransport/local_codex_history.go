@@ -13,8 +13,12 @@ import (
 
 const remoteWireCommand = "native-command-v1"
 const extensionWireCommand = "terminal-extension-v1"
+const remoteModelWireCommand = "native-model-command-v1"
 
 func wirePrompt(t *Turn) string {
+	if t.WireFormat == remoteModelWireCommand {
+		return codex.RemoteModelPrompt(t.Command, t.InputDigest, t.StepID, t.Model, t.ReasoningEffort, t.Prompt)
+	}
 	if t.WireFormat != remoteWireCommand && t.WireFormat != extensionWireCommand {
 		return t.Prompt
 	}
@@ -91,10 +95,13 @@ func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Tur
 func validateReaderExit(state State, turn *Turn, value codex.RemoteTurnReceipt) error {
 	ready := state.RemoteReadiness
 	r := value.Readiness
-	if ready == nil || !value.ReaderWritersAbsent || turn.WireFormat != remoteWireCommand || !turn.Accepted || value.Source != codex.RemoteTurnSource || value.InputDigest != digest([]byte(wirePrompt(turn))) || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.SessionID != ready.SessionID || r.ConfigurationDigest != ready.ConfigurationDigest || r.RuntimeSHA256 != ready.RuntimeSHA256 || r.Repository != ready.Repository || r.Contract != ready.Contract || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(ready.Workspace, "\\", "/")) || r.Process.PID != ready.Process.PID || r.Process.Created != ready.Process.Created {
+	if ready == nil || !value.ReaderWritersAbsent || turn.WireFormat != remoteWireCommand && turn.WireFormat != remoteModelWireCommand || !turn.Accepted || value.Source != codex.RemoteTurnSource || value.InputDigest != digest([]byte(wirePrompt(turn))) || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.SessionID != ready.SessionID || r.ConfigurationDigest != ready.ConfigurationDigest || r.RuntimeSHA256 != ready.RuntimeSHA256 || r.Repository != ready.Repository || r.Contract != ready.Contract || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(ready.Workspace, "\\", "/")) || r.Process.PID != ready.Process.PID || r.Process.Created != ready.Process.Created {
 		return errors.New("original native receipt binding changed")
 	}
-	if r.AuthenticationControl != ready.AuthenticationControl || r.Process != ready.Process || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
+	if turn.Model != "" && value.Started && (value.Model != turn.Model || value.ReasoningEffort != turn.ReasoningEffort) {
+		return errors.New("original native model differs from the frozen workflow turn")
+	}
+	if r.AuthenticationControl != ready.AuthenticationControl || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.Process != ready.Process || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
 		return errors.New("original native readiness identity changed")
 	}
 	return nil

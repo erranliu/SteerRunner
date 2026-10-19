@@ -37,7 +37,11 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 			}
 			raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
 			facts, auditErr := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(m))
-			if readErr != nil || auditErr != nil || !facts.Complete || facts.Creations != 1 || facts.Inspections != 0 {
+			expectedCreations := 1
+			if m.Driver == "development-multirun" {
+				expectedCreations = 2
+			}
+			if readErr != nil || auditErr != nil || !facts.Complete || facts.Creations != expectedCreations || facts.Inspections != 0 {
 				t.Fatal("native remote call audit failed", readErr, auditErr, facts)
 			}
 			save(t, "native-call-audit.json", facts)

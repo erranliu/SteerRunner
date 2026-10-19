@@ -1,0 +1,62 @@
+{
+  "source_commit": "882f2b155fdf8e0364b296e9442d2088e3462b27",
+  "local_case_count": 5,
+  "product_app_capability_removed": false,
+  "remote_case_count": 18,
+  "source_dirty": false,
+  "l3_scenario_count": 16,
+  "l3_case_count": 23,
+  "live_rerun_after_removal": false,
+  "remaining_administrator_cases": [
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "administrator": true,
+      "case_id": "active-disconnect",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.connection-reconnect",
+      "administrator": true,
+      "case_id": "pre-send-disconnect",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "administrator": true,
+      "case_id": "graceful-boundary",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "administrator": true,
+      "case_id": "kill-boundary",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "administrator": true,
+      "case_id": "boundary",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "administrator": true,
+      "case_id": "unreachable",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "administrator": true,
+      "case_id": "completion-gap",
+      "target": "orca-environment"
+    },
+    {
+      "scenario": "orca-remote.publication-unknown",
+      "administrator": true,
+      "case_id": "query-unavailable",
+      "target": "orca-environment"
+    }
+  ],
+  "removed_scenario": "orca-remote.app-auth",
+  "original_live_source": "e492ec1167be4168f7a56bd14ece4355efab057d"
+}

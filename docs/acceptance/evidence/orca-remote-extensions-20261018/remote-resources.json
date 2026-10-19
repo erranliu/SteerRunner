@@ -1,0 +1,139 @@
+{
+  "all_owned_execution_resources_absent": true,
+  "verified_at": "2026-10-18T08:17:52.7692770Z",
+  "actor_scopes": 11,
+  "cases": [
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-077a1369bcc0a5cc9723136b03272cf4",
+      "run_or_check_id": "077a1369bcc0a5cc9723136b03272cf4",
+      "case_id": "active",
+      "scenario": "orca-remote.stop-revocation",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "8b96756e826918108e9678b8e001de3b3bc717a6636132e63b759bf014fca263",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "run_or_check_id": "22d4237d8c97c6cc891f1c8b419943a9",
+      "case_id": "complete",
+      "scenario": "environment-check.orca-sandbox",
+      "check_actor_only": true,
+      "inventory_complete": true,
+      "inventory_sha256": "c49eaa5c93fd704b0e4b7d5a4ac78cd06193e1e61641e68b4216b5a923977635",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 3
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-1a2f20c52745d447ff23a1ba7d5161bc",
+      "run_or_check_id": "1a2f20c52745d447ff23a1ba7d5161bc",
+      "case_id": "default",
+      "scenario": "orca-remote.smoke",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "ff01cdbdeedd346847c35c09b23d41784cf5a559334a1d991c22bf514435287c",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "run_or_check_id": "fb025d37ba29a69f8f5c98b7dda5b331",
+      "case_id": "complete",
+      "scenario": "environment-check.orca-full-access",
+      "check_actor_only": true,
+      "inventory_complete": true,
+      "inventory_sha256": "4f527b92e56dac9fd4ce7f22c5d893643a83da3438077d1fe61c3dc9da03ced4",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 3
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-9b8cd7545a749491ca23dfd4eb8a899e",
+      "run_or_check_id": "9b8cd7545a749491ca23dfd4eb8a899e",
+      "case_id": "default",
+      "scenario": "orca-remote.multirun",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "6ff30fb268dedf97143b1e46450923d2f38b55ee7ce3c394d2082a9b59c1fa34",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-a4b98d14503d27e0be4c0ced0e8657c0",
+      "run_or_check_id": "a4b98d14503d27e0be4c0ced0e8657c0",
+      "case_id": "default",
+      "scenario": "orca-remote.multirun",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "4ade68b09450c532656bd0674801afe925216acc7570f08469199626cd4b448f",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-02152b802c9c3183aa225bcca4563eae",
+      "run_or_check_id": "02152b802c9c3183aa225bcca4563eae",
+      "case_id": "default",
+      "scenario": "orca-remote.audited",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "0350e2e97582415be6f8c36674965cd934f18f474ea0f7149c9aa37f3a4fb257",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-2cfdaac118d60e4e7e467ad6f8e00d0a",
+      "run_or_check_id": "2cfdaac118d60e4e7e467ad6f8e00d0a",
+      "case_id": "default",
+      "scenario": "orca-remote.full-access",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "f94216634fd25ecd1620345d24f1bb15b0f699572e9c67d2ba4fbc5c2c26ad39",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-99ad53b5914504ac873363cdb7607cd1",
+      "run_or_check_id": "99ad53b5914504ac873363cdb7607cd1",
+      "case_id": "accepted-response-lost",
+      "scenario": "orca-remote.caller-exit",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "c2f797a86eaad10edb2657f50a4476c40612d8bb69142174cc1892a7f0d09d68",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-14784e8b367a590f488e2085b66396ea",
+      "run_or_check_id": "14784e8b367a590f488e2085b66396ea",
+      "case_id": "graceful-active",
+      "scenario": "orca-remote.service-restart",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "d56c6b5ede2ecbbd5b52d5d5c7769c94827dfd459f97551830c4dcbde42506c4",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    },
+    {
+      "owned_actor_present": false,
+      "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-ca1d43316bd68264e787c708eec253e9",
+      "run_or_check_id": "ca1d43316bd68264e787c708eec253e9",
+      "case_id": "kill-active",
+      "scenario": "orca-remote.service-restart",
+      "check_actor_only": false,
+      "inventory_complete": true,
+      "inventory_sha256": "dc067b73c456f7def95169184d79fc8f1e6fccde75a4fff71ea1f5de0d8dcbf2",
+      "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+      "terminal_count": 0
+    }
+  ]
+}

@@ -16,20 +16,22 @@
 
 ## 契约
 
-- SA01：可信执行主机准备认证。默认使用该主机已有 gh 登录，宿主凭据仅留在可信
+2026-10-19 产品边界：本机与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；新远端只使用已有 Orca 原生认证，不创建 Runner capability、不管理远端登录期限或撤销。全路径移除 GitHub App 签发、私钥引用和 installation token。旧 `execution.settings.github_auth`（包括 null）在 Run/Check 受理前拒绝；旧 profile/helper 配置严格拒绝，不静默改用宿主身份。升级前须用原版本收尾已有 App Run/Check，历史证据不改写。
+
+Orca local 的受管 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原固定控制终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知控制创建不补建，丢失读取/关闭只对账原控制身份。宿主 gh 登录及其他 Run 的授权不受影响。
+
+- SA01：可信执行主机准备认证。使用该主机已有 gh 登录，宿主凭据仅留在可信
   runtime 内存；worker 获得有限期、单仓库、限定操作的代理 capability。Git push 和
   gh PR 请求由沙箱内原工具发起，代理只验证范围并认证转发。拒绝跨仓库、管理接口、
-  未知操作和重定向，不由宿主执行发布命令。支持可选 GitHub App installation token，仅
-  contents/pull_requests write、metadata read。私钥仅通过所在主机环境变量引用解析，
-  不复制宿主 gh 配置/钥匙串，也不将宽权限 OAuth token 暴露给 worker。
+  未知操作和重定向，不由宿主执行发布命令。不复制宿主 gh 配置/钥匙串，也不将宿主凭据暴露给 worker。
 - SA02：首个业务输入前，使用实际 app-server 的 `command/exec`、相同 MXC、
   workspace-write、网络、工作区和 Git roots 验证工具环境、Git 管理目录读写、
-  Git remote 和 GitHub 身份/目标仓库访问（可选 App 校验 installation 范围）。检查不创建模型回合。
+  Git remote 和 GitHub 身份/目标仓库访问。检查不创建模型回合。
   准备失败具体阻断、零业务输入；准备结果绑定原进程/工作区/权限/输入与期限。
-- SA03：代理 capability（可选 App 模式为单仓库 token）只注入子进程环境；模型生成代码能够读取该环境，这是明确的信任边界。
+- SA03：代理 capability只注入子进程环境；模型生成代码能够读取该环境，这是明确的信任边界。
   不通过 argv/config set、文件、数据库、manifest 或输出传递秘密。限定继承，
-  不继承宿主 OAuth 或 App 私钥；到期阻断新输入，退出关闭代理或撤销 App token。
-  Runner 异常退出时代理随进程消失，capability 立即不可用；App token 最多剩余一小时。
+  不继承宿主凭据；到期阻断新输入，退出关闭该 Run 的代理。
+  Runner 异常退出时代理随进程消失，capability 立即不可用；不退出宿主 gh 登录，不影响其他 Run。
 - SA04：固定权限为 workspace-write/MXC/network enabled/approval never，禁止提权、
   auto_review 和全权限旁路。失败不放宽权限，不换工具版本、模型或后端。
 - SA05：W16 发布仍由原 worker 完成。只读预检不证明 push/PR create 权限；只有
@@ -62,14 +64,14 @@ Git 写根之外尝试创建共享 `.git/packed-refs.lock`；该清理写仍被�
 
 | 既有节点/分组 | 本次动作与正常出口 | 异常/恢复边界 | 最小验证 |
 | --- | --- | --- | --- |
-| W05/W06、V01/V02 | 执行主机解析 gh 登录、启动单仓库代理（或可选 App 签发）；原 endpoint/protocol 握手 | 缺登录、401、目标/权限/期限/传输能力不符具体阻断；不创建业务 thread/turn，不自动重试登录 | broker/issuer 受控反例、缺认证零 native start |
-| W07、V02/V03 | 相同 app-server `command/exec`、固定 workspace/Git roots/MXC/network，验证 AppContainer、工具环境、Git 管理目录、GitHub 身份/仓库及 remote | 任一工具事实缺失/过滤/拒写/网络/身份失败阻断；不是模型业务回合，不消费或刷新恢复授权 | 确定性 RPC 受控用例、MXC 无效 canary、默认 broker 真实正例及 L2；可选 App issuer 受控 |
+| W05/W06、V01/V02 | 执行主机解析 gh 登录、启动单仓库代理；原 endpoint/protocol 握手 | 缺登录、401、目标/权限/期限/传输能力不符具体阻断；不创建业务 thread/turn，不自动重试登录 | broker 受控反例、缺认证零 native start |
+| W07、V02/V03 | 相同 app-server `command/exec`、固定 workspace/Git roots/MXC/network，验证 AppContainer、工具环境、Git 管理目录、GitHub 身份/仓库及 remote | 任一工具事实缺失/过滤/拒写/网络/身份失败阻断；不是模型业务回合，不消费或刷新恢复授权 | 确定性 RPC 受控用例、MXC 无效 canary、默认 broker 真实正例及 L2 |
 | W16、V05/V08 | 原 worker 在 never 策略下执行原发布器，复用原 PR；provider 独立只读核验 | 过期或权限拒绝不放宽策略；未知结果沿原分支/PR 对账，不能重复发布 | publisher 固定身份与 query-failure 夹具、原生权限审计、L2 闭环 |
-| W18、V07 | 原 owned 树退出后关闭代理/所有连接并清空内存凭据，或撤销可选 App token；保存非秘密关闭/期限事实 | 清理未确认另记 blocker；保留工作区/历史/PR | broker 关闭、issuer 撤销、原进程停止及 native cleanup.json |
+| W18、V07 | 原 owned 树退出后关闭代理/所有连接并清空内存凭据；保存非秘密关闭/期限事实 | 清理未确认另记 blocker；保留工作区/历史/PR | broker 关闭、独立 Run 授权撤销、原进程停止及 native cleanup.json |
 | 服务换代、V06 | 原身份/Attempt/期限/显式 resume 规则保持 | 不从准备探针恢复旧业务输入，不从历史 ready/旧进程继承秘密；没有实际新准备证据不发送 | 既有重启/未知投递/撤销受控前置 |
 | 远端 W05–W07 | 指定执行主机上的可信 `steerrunner-agent`，复用认证 owner，在实际 app-server 上完成同权限无模型预检；inline TUI 保留准备回执，Runner 持久化后直接发送首个业务输入，无额外控制提示 | 未配置 helper 仍 unsupported；构建/配置/原会话/transport/期限不匹配阻断，零业务输入；未知启动不重发；只读对账/停止原资源仍可用 | 缺能力、身份/摘要/期限/旧 transport 反例及启动零重发；真实闭环和权限审计按新构建单独登记 |
 
 只读检查不承诺远端写权限、分支保护允许或 PR 创建权限。首次真实发布、反馈更新和完整
 收尾必须单独取证。关闭 shell snapshots，且从命令行 pin 中排除 token 和 Git HTTP header；
-capability（可选 App 为单仓库 token）与目标 URL 范围内的 header 仅在 worker 进程
+capability与目标 URL 范围内的 header 仅在 worker 进程
 及其工具子进程环境中存在；宿主 OAuth 始终留在可信认证代理内存中。

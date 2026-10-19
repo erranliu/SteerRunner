@@ -39,7 +39,7 @@ workflow/2 的 L2 直接使用无反馈交付路径，不再依赖反馈资格�
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的二十一场景、二十九 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
+以下为已注册的二十二场景、三十 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -60,9 +60,7 @@ Runner/driver 摘要及跨 case 的 Run/session/workspace/branch/PR 身份；后
 **通用当前缺口：** 已实现有界并行及 worker 结果、摘要与跨 case 身份校验；框架级测试
 验证 L3 重叠、L4 独占、worker 无结果及构建变化拒绝。本机反馈与两模型审计已在并发上限
 2 的正式批次共同通过；这只登记该构建、配置与后端组合。其它组合、远端共享 environment、
-更大模型/平台容量及跨批次真实收尾的并发资格仍待验证。当前认证版本
-的远端可信认证准备/同沙箱检查有能力缺口，见[沙箱认证验收](acceptance/sandbox-authentication.md)，
-因此不能沿用旧构建通过结果声明当前版本 L3 已通过。下表各项均适用这些缺口。
+更大模型/平台容量及跨批次真实收尾的并发资格按构建单列。新远端使用原生 Orca，参数生效、单仓库 capability、完整 Check 与实际双模型来源证明不属于其保证；不沿用旧 helper 通过记录。参见[原生边界](spec/orca-remote-native.spec.md)。
 
 宿主槽锁由协调器持有，只覆盖存活的正常调度批次。协调器异常退出后可能遗留后台
 worker/服务，须先对账原现场并收尾，再启动独占测试；当前没有孤儿资源自动接管资格。
@@ -78,6 +76,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-local.dsh` | `default` | DSH 的同一 terminal 开发与反馈闭环，排除 SessionStart/子事件假完成 | 同上 | A02 原 TUI 固定 profile、原生持久事实、业务 reply 及 H01 已接线；不改 Orca，结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.pi-full-access` | `default` | Pi 显式 full_access 的完整交付与同会话恢复、活动写者停止 | `merged`，Run/服务停止 | 独立双权限实测，不借 sandbox 结果 |
 | `orca-local.mixed` | `default` | 同一服务的 Pi/DSH：独立输入/原生会话/回执/PR，停止 Pi 后 DSH 继续反馈 | 两个原 PR、隔离验证及 Run/服务停止 | 冻结 peer_execution；只验证一个混合组合 |
+| `orca-remote.multirun` | `default` | 同服务接受两个请求，独立原终端/工作区/分支/事件/PR；停止一方后另一方原生 owner 保持可用 | 两个原 PR，Run/服务停止，离线核验两项 orca_terminal scope | `orca-remote-codex-full-access`；不部署 helper，不声明远端 broker 或完整 OS 树证明 |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话、一次原会话反馈与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；验证并发 worktree/会话及原 PR 反馈的隔离 |
 | `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、原会话反馈及冻结参数传递核对 | `merged`，Run 原终端及服务停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
@@ -113,9 +112,9 @@ Runner/helper/Node；共享管理员宿主的队列回执归属、恢复动作�
 | 文档编号 / 内容 | 独有验证目标与目标判据 | 并行条件 | 当前状态与缺口 |
 | --- | --- | --- | --- |
 | L3-P01 原会话反馈 | 初次 `pr_ready` 后接受反馈，产生新 commit，复用原 session/工作区/分支/PR；再次核验交付并完整停止 | 独立本机现场及 worker；输入、commit/PR 身份和认证 capability 均按本 Run 归属 | 已注册 `local-codex.feedback/default` 并复用严格反馈/合入 driver；正式通过后可为 L2 提供精确构建资格 |
-| L3-P02 两模型审计通过 | 实施后依次审计 Spec 和代码；审计模型正确，发布切回执行模型，实际 PR 核验后停止 | 独立本机现场；冻结执行/审计模型；模型切换不影响其它 session，容量满足两种模型 | 已注册 `local-codex.audited/default`，配置读取 `configurations.local-codex-audited.workflow.audit_model`，保留原定向诊断入口 |
+| L3-P02 两模型审计通过 | 实施后执行一次代码审计及 P0–P2 修复；核实审计模型及原工作树来源，发布切回执行模型，实际 PR 核验后停止 | 独立本机现场；冻结执行/审计模型；模型切换不影响其它 session，容量满足两种模型 | 已注册 `local-codex.audited/default`，读取 `local-codex-audited` 的 `workflow.audit_model`；原生远端因缺实际模型/工作树证明而明确 unsupported，保留原定向诊断入口 |
 | L3-P03 审计修复与阻断的受控覆盖对账 | 确定性 findings 触发原会话修复及重审，旧 pass 失效；最多两次自动修复，预算耗尽为 `blocked/audit_repair_limit` 且不发布 | 使用隔离服务和原生协议夹具，固定 findings/turn 及调用计数；不要求真实模型稳定产生 finding | 已纳入默认 Controlled：`TestSRWorkflowDiscoveryAndSelection`、`TestSRResultAcquisition`；不新增必跑真机 finding case |
-| L3-P04 同一服务内多个 Run 隔离 | 在同一服务内接受不同请求，核验 request/command/event/原生会话/工作区/PR 不串线；停止一个 Run 不撤销其它 Run 的授权 | case 内共享服务/state-dir，各 Run 独立工作区/会话/分支/PR；case 之间仍独立服务；冻结并发上限，允许契约内资源排队 | 已注册 `local-codex.multirun/default`，并将 `TestSRMultipleRunsIsolation` 纳入默认 Controlled；受控完成屏障和 PR provider 按原会话/工作区隔离 |
+| L3-P04 同一服务内多个 Run 隔离 | 在同一服务内接受不同请求，核验 request/command/event/原生会话/工作区/PR 不串线；停止一个 Run 不撤销其它 Run 的授权 | case 内共享服务/state-dir，各 Run 独立工作区/会话/分支/PR；case 之间仍独立服务；冻结并发上限，允许契约内资源排队 | 已注册 `local-codex.multirun/default` 与原生 `orca-remote.multirun/default`；远端不承诺 capability 撤销，并将 `TestSRMultipleRunsIsolation` 纳入默认 Controlled；受控完成屏障和 PR provider 按原会话/工作区隔离 |
 
 L3-P03 的已有证据入口是[审计路由测试](../internal/execution/workflow/audit_test.go)、
 [审计生命周期测试](../internal/application/workflow_test.go)和
@@ -146,7 +145,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共十九场景、二十六 case：L2 一项、L3 二十一项（含 12 项核心可靠性）、L4 四项。
+当前共二十九场景、三十六 case：L2 一项、L3 三十一项（含原 12 项核心可靠性）、L4 四项。
 Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 

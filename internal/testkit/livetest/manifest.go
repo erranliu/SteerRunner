@@ -161,9 +161,9 @@ func (m Manifest) Validate() error {
 		return errors.New("live publication is restricted to the dedicated SteerlineTest base")
 	}
 	if m.Driver == "development-audited" {
-		var settings contracts.CodexSettings
-		if m.AuditModel == nil || strings.TrimSpace(m.AuditModel.Model) == "" || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.Model == "" || settings.Model == m.AuditModel.Model || m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" {
-			return errors.New("audited live fixture requires local Codex and two explicit, different models")
+		settings, err := contracts.ExecutionModel(m.Execution)
+		if m.AuditModel == nil || strings.TrimSpace(m.AuditModel.Model) == "" || err != nil || settings.Model == "" || settings.Model == m.AuditModel.Model {
+			return errors.New("audited live fixture requires managed Codex and two explicit, different models")
 		}
 	} else if m.AuditModel != nil {
 		return errors.New("audit model requires the audited live driver")

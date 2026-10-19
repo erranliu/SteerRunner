@@ -184,7 +184,7 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 	}
 	if r.Auth != nil {
 		// Values are inherited from the process environment, never argv. The
-		// explicit allowlist prevents the App key and unrelated caller secrets
+		// explicit allowlist prevents unrelated caller secrets
 		// from reaching shell tools even when native defaults exclude *TOKEN*.
 		args = append(args, "--config", `shell_environment_policy.inherit="all"`, "--config", "shell_environment_policy.ignore_default_excludes=true", "--config", `shell_environment_policy.include_only=["PATH","PATHEXT","SystemRoot","SystemDrive","COMSPEC","WINDIR","TEMP","TMP","USERPROFILE","HOME","APPDATA","LOCALAPPDATA","ProgramFiles","ProgramFiles(x86)","ProgramData","GH_HOST","GH_TOKEN","GH_PROMPT_DISABLED","GH_CONFIG_DIR","GIT_TERMINAL_PROMPT","GIT_CONFIG_*","HTTPS_PROXY","HTTP_PROXY","NO_PROXY","SSL_CERT_FILE","GIT_SSL_CAINFO"]`)
 		if r.OrcaHooks {

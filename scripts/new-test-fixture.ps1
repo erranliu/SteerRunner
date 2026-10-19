@@ -27,6 +27,8 @@ $taskCases = @(Get-SRLiveCases $taskScenario)
 $taskCase = @($taskCases | Where-Object { $_.id -ceq $Case })
 if ($taskCase.Count -ne 1) { throw 'Select an exact registered case; multi-case scenarios require -Case' }
 $taskStability = $taskScenario.driver -eq 'execution-stability'
+$taskLegacyConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
+if ($taskLegacyConfig.PSObject.Properties['github_auth'] -or $taskLegacyConfig.PSObject.Properties['remote_github_auth']) { throw 'GitHub App authentication is unsupported; use gh login on the execution host' }
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
 if (-not $RunnerExe) { $RunnerExe = Join-Path $taskRepo 'bin/steerrunner.exe' }
 if (-not $ConfigHelper) { $ConfigHelper = Join-Path $taskRepo 'bin/test-config.exe' }

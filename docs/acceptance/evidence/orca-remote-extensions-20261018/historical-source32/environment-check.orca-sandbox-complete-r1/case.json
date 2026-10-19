@@ -1,0 +1,29 @@
+{
+  "scenario": "environment-check.orca-sandbox",
+  "case_id": "complete",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\510acc9124e7\\manifest.json",
+  "started_at": "2026-10-18T05:25:13.9981194Z",
+  "finished_at": "2026-10-18T05:31:35.6029022Z",
+  "identity": {
+    "pid": 35476,
+    "manifest_sha256": "e6763d2b85efcedc3c2e8b2501fcd91cc819466f36e7768f3e2db983fef68874",
+    "driver_sha256": "f291615f0f377362ce94cc686c8eafb46dad2f76f7be01442895fb1f714b04e4",
+    "runner_sha256": "004a52466f2764e17f99c73e6aa7b1cf9e0d03d4abca359971b8dd99d15656cb",
+    "source_commit": "371f91d41cd727690c62202da0807430d0ac2452",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "environment-check.orca-sandbox",
+    "level": "L3"
+  },
+  "resources": [
+    "root:C:\\srt\\510acc9124e7",
+    "base:codex/srtest/510acc9124e7/base",
+    "run:e93b9df0de485c8c733ddea145714576",
+    "workspace:C:\\sr-runtime\\2ba0\\31\\checks\\e93b9df0de48\\w",
+    "session:01a14d79-4b48-7080-867b-93d85f156441",
+    "branch:refs/heads/steerline-check/e93b9df0de485c8c733ddea145714576/head",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/456"
+  ]
+}

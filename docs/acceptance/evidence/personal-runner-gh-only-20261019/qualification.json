@@ -1,0 +1,104 @@
+{
+  "schema": "steerrunner-personal-native-gh-only-qualification/v3",
+  "status": "qualified_selected_personal_executor_scope",
+  "tested_code_source": "770223767ce17dd3d0aa9d8e4bd36b6ef3191746",
+  "formal_prerequisite_source": "c63d784bd5df4f13fe06602dcdec0e970a8f8f77",
+  "formal_prerequisite_batch": "live-16",
+  "native_boundary_driver_component_count": 34,
+  "native_boundary_driver_production_delta": [],
+  "main_baseline": "c65b1936a637e19368039ad09e125e4e8f6d96c1",
+  "qualified_cases": [
+    {
+      "scenario": "orca-remote.multirun",
+      "case_id": "default",
+      "batch": "live-13",
+      "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9"
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "batch": "live-13",
+      "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "batch": "live-13",
+      "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9"
+    },
+    {
+      "scenario": "local-codex.feedback",
+      "case_id": "default",
+      "batch": "live-13",
+      "source_commit": "aa02b6575cb852320494acf4b203bfe17a8a82e9"
+    },
+    {
+      "scenario": "orca-local.codex",
+      "case_id": "default",
+      "batch": "live-17",
+      "source_commit": "770223767ce17dd3d0aa9d8e4bd36b6ef3191746"
+    },
+    {
+      "scenario": "orca-remote.initialization-stop",
+      "case_id": "before-readiness",
+      "batch": "live-16",
+      "source_commit": "c63d784bd5df4f13fe06602dcdec0e970a8f8f77"
+    },
+    {
+      "scenario": "orca-remote.initialization-stop",
+      "case_id": "restart-before-readiness",
+      "batch": "live-16",
+      "source_commit": "c63d784bd5df4f13fe06602dcdec0e970a8f8f77"
+    }
+  ],
+  "qualified_case_count": 7,
+  "shipping_delta_from_delivery_batch": [
+    "internal/execution/adapters/orcatransport/native_stop.go"
+  ],
+  "initialization_delta_verified_by": "live-16",
+  "retained_failed_batches": [
+    "live-13",
+    "live-14",
+    "live-15"
+  ],
+  "orca_local_model_capacity_retry": "live-15",
+  "orca_local_final_driver_retry": "live-17",
+  "runtime_cache_parallel_fix_verified_by": "live-16",
+  "legacy_helper_results_inherited": false,
+  "whole_catalog_L3_passed": false,
+  "catalog_L3_cases": 30,
+  "all_admin_catalog_cases_unverified": 8,
+  "selected_admin_cases_excluded": 2,
+  "remote_sandbox_business_e2e_qualified": false,
+  "remote_runtime_helper_calls": 0,
+  "remote_effective_parameters_verified": false,
+  "remote_credential_capability_guaranteed": false,
+  "remote_stop_evidence_scope": "orca_terminal",
+  "remote_audited_supported": false,
+  "remote_complete_environment_check_supported": false,
+  "evidence_sha256": {
+    "builds.json": "792c90888da7d3f1742591cbfc703625ec4951cf27a03a06adc4fd50e42ff0a2",
+    "current-source-unknown-physical-settlement.json": "767a5e4dd3f1a737120da4b380606b1437806a438e7e28450c4e0d43dd50d981",
+    "legacy-helper-qualification.json": "4f31354504f9c57696b5d8990507486a4810d7e7f88582adf8453808858aa4c3",
+    "live-01.json": "91d11827f1beca894355393c715ebf1e671b1d9e225b133491553fd47249e7f0",
+    "live-05.json": "2b19759d6e11069437e2c4fdb1bca70b81d841573c420fddf076281bbe34bdf0",
+    "live-06.json": "7509f2eb1c413f7e0c81deb7bab04e0ba1a99e67341ecad7591b708da57c23ab",
+    "live-07.json": "03c3f717851d5a5af7b833dfe6bd6947497a3e61742ce4f64c0079fe9c2a3b2b",
+    "live-09.json": "0c2607583b85d440d51a84a284c3e76ab5302d56f536d56b9d034ef522ac82d4",
+    "live-11.json": "91f8794981e5d307c18982f067da9e7c62dbc09e1f109f2dc71aef927db06c2a",
+    "live-12.json": "9f4ff1d7764a2a9769872dd8d3c6a9d1632f0b84dbdba1d61b9c69bc88aa0f19",
+    "live-13.json": "0ff9a0fa2e6bb8b27ca5815cbd0f4037606e3587b55578e7495c8d9edfe3ef01",
+    "live-14.json": "7edf72bdd20943d1f37ed80e645dfb0f9d438bb1ecac2af74d2176cad41a4c6b",
+    "live-15.json": "3736854ff9766a9e2f1e639d0953318f5f2b455cdcd88c0896858eac8bad7e49",
+    "live-16.json": "cd61b13ce701748a03b7d687a6684d89b320304659ea46ad92ef867fadd50175",
+    "live-17.json": "4ac05f3d475f5ef83694ff94f46a78a9b3e65868520e5c57dd6c1860a307ac02",
+    "native-build.json": "aae206ff54cc85475e6ce8f35bab6160fb9b28c68040915f91c777e0e6e747f3",
+    "native-driver-components.json": "b0a9ee765c3e00cc849f3df43720567b80993d2c0415492c7b889dca7e8b7c77",
+    "native-local-bootstrap-failure.json": "7aa787a67680c9896273c9dde4ebbeb570678cfd05d75cead221b35c1cbfab46",
+    "native-local-bootstrap-physical-cleanup.json": "e6216ddc451b23f95d25931ac8a09b56c1a7bbe985042fa7c4c0eb3806399464",
+    "native-local-failed-pr-cleanup.json": "8120c2a28e6af980d43f5dd20df9df8b7473f6c464c10a610966b1c0b81d6764",
+    "old-source-readonly-settlement.json": "f88564cc5a690ddfcdd3f51a22bda50dc499866ce2ff498dc08594c29e5a91f1",
+    "owned-staging-cleanup.json": "cf918657eb8e744f25f936cf89dfe360d0f9634ca67689e4e88ae9fe5af755b0",
+    "prerequisite-stops.json": "98cd42fb8284253f40f5e7116fb9bf89955ad7085872c8c1ca521dee1644dfb3"
+  }
+}

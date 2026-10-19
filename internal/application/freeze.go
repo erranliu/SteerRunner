@@ -170,14 +170,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			r.Request.Workflow.AuditModel = &model
 		}
-		var auth *codex.AuthenticationConfig
-		if settings.GitHubAuth != nil {
-			auth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
-			if err := auth.Validate(); err != nil {
-				return nil, contracts.Fail(2, "invalid_input", err.Error())
-			}
-		}
-		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort, GitHubAuth: auth})
+		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
@@ -199,6 +192,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			return nil, contracts.Fail(4, "environment_unavailable", "The configured Orca executable is unavailable.")
 		}
 		settings.Transport.Executable = executable
+		if agent == "codex" && settings.AgentLaunch.Model != "" && settings.AgentLaunch.ReasoningEffort == "" {
+			settings.AgentLaunch.ReasoningEffort = "medium"
+		}
 		if (agent == "pi" || agent == "dsh") && settings.AgentLaunch.RuntimeExecutable != "" {
 			helper, helperErr := exec.LookPath(settings.AgentLaunch.RuntimeExecutable)
 			if helperErr == nil {
@@ -215,8 +211,13 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 		if request.Execution.Target.Kind == "local" {
 			launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
-			if settings.GitHubAuth != nil {
-				launch.GitHubAuth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
+			if request.Workflow.AuditModel != nil {
+				model := *request.Workflow.AuditModel
+				if model.ReasoningEffort == "" {
+					model.ReasoningEffort = settings.AgentLaunch.ReasoningEffort
+				}
+				r.Request.Workflow.AuditModel = &model
+				launch.AuditModel = &model
 			}
 			profile.RuntimeExecutable = launch.RuntimeExecutable
 			profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
@@ -431,8 +432,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
 	}
 	if flowProfile.AuditModelRequired {
-		var settings contracts.CodexSettings
-		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)
+		settings, modelErr := contracts.ExecutionModel(r.Request.Execution)
+		if modelErr != nil {
+			return nil, modelErr
+		}
+		r.Workflow.Config = &flowProfile
+		r.Workflow.ExecutionModel = &workflow.ModelSettings{Model: settings.Model, ReasoningEffort: settings.ReasoningEffort}
 		model := *r.Request.Workflow.AuditModel
 		r.Workflow.AuditModel = &model
 	}

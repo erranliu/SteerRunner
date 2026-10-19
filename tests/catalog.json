@@ -227,6 +227,16 @@
       ]
     },
     {
+      "id": "orca-remote.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "default"
+      ]
+    },
+    {
       "id": "orca-local.smoke",
       "level": "L3",
       "driver": "development-smoke",

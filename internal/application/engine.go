@@ -44,7 +44,8 @@ type worker struct {
 	parserTask  *parser.Task
 	ownedInputs map[string]bool
 	checkpoints map[string]*workflow.WorkspaceSource
-	gate        sync.Mutex // serializes new native dispatch with committed revocation
+	gate        sync.Mutex         // serializes new native dispatch with committed revocation
+	queryCancel context.CancelFunc // protected by gate; only a read-only preparation scope
 	wake        chan struct{}
 	port        b.LifecyclePort
 	observer    b.LifecycleObserver
@@ -341,6 +342,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if err := e.commitLocked(next, &receipt, command+"_accepted"); err != nil {
 			return reject(contracts.Fail(6, "request_outcome_unknown", "The command commit is unverified; inspect its original request_id."))
 		}
+		if (command == "stop" || command == "close") && w.queryCancel != nil {
+			w.queryCancel()
+		}
 		e.signal(w)
 		return receipt.Response
 	}
@@ -418,7 +422,9 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Repository.LocalPath != "" {
 		repository = r.Request.Repository.LocalPath
 	}
-	return b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
+	return b.LifecycleSetup{Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
+		return e.preparationQuery(r.ID, w, ctx, query)
+	}, Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
 		e.mu.Lock()
 		current := e.runs[r.ID].Clone()
 		e.mu.Unlock()

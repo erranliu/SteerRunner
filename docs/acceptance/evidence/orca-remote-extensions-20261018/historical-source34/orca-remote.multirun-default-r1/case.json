@@ -1,0 +1,10 @@
+{
+  "scenario": "orca-remote.multirun",
+  "case_id": "default",
+  "repeat_index": 1,
+  "status": "failed",
+  "manifest": "C:\\srt\\59ea7fa25de3\\manifest.json",
+  "started_at": "2026-10-18T06:40:18.8418586Z",
+  "finished_at": "2026-10-18T06:45:04.3402032Z",
+  "error": "Live scenario failed; inspect C:\\srt\\59ea7fa25de3\\evidence/native.log"
+}

@@ -1,0 +1,39 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "repeat_index": 1,
+  "stage": "restart-resume-gate",
+  "run_id": "1bfa3c18e0b653e4649c5168cd6950bc",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 1,
+  "audit_complete": false,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": false,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

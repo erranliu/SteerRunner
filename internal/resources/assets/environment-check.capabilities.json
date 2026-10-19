@@ -70,6 +70,6 @@
   ],
   "policy_contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
   "unsupported_authentication_sources": [
-    "github-app-installation-token: per-operation write gate not yet implemented"
+    "github-app-authentication: unsupported; use execution-host gh login"
   ]
 }

@@ -1,11 +1,16 @@
 package codexworker
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestEnvironmentCheckCompletionNotification(t *testing.T) {
@@ -103,5 +108,18 @@ func TestEnvironmentCheckPermissionModes(t *testing.T) {
 	}
 	if _, err := NativePermissions("windows", "local", "codex", "unknown"); err == nil {
 		t.Fatal("unknown mode accepted")
+	}
+}
+
+func TestEnvironmentExpiredPreflightRejectsBeforeNativeTurn(t *testing.T) {
+	auth := testAuthentication(t)
+	auth.expires = time.Now().Add(-time.Minute)
+	dir := t.TempDir()
+	// This client has no connection. No native RPC can be reached by preflight.
+	s := &EnvironmentSession{setup: EnvironmentSetup{Workspace: dir}, input: b.TurnInput{LinkedWorktreeArgs: []string{"--add-dir", dir + "/1", "--add-dir", dir + "/2", "--add-dir", dir + "/3", "--add-dir", dir + "/4"}}, backend: Backend{Config: Config{Authentication: auth, Workspace: dir}}, handle: &SessionHandle{client: new(codexapp.Client)}}
+	turn, err := s.Start(context.Background())
+	var rejected *EnvironmentInputRejectedError
+	if turn != "" || !errors.As(err, &rejected) || rejected.Reason != "authentication_expired_or_unavailable" {
+		t.Fatal("preflight was reported as uncertain native input", turn, err)
 	}
 }

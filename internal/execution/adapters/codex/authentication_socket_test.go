@@ -265,7 +265,7 @@ func TestAuthenticationSocketPolicyBinding(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	auth, _ := newAuthentication(nil, plan.Remote)
+	auth, _ := newAuthentication(plan.Remote)
 	lifecycle := &ExecutionLifecycle{Backend: Backend{Config: Config{RunDir: plan.StateDirectory, Workspace: plan.Workspace, Authentication: auth}}}
 	snapshot := b.LifecycleSnapshot{PolicyResources: &envelope, ConfigurationDigest: plan.Identity.ConfigDigest, ResourceGeneration: plan.Identity.Generation}
 	snapshot.Ref.WorkspacePath = plan.Workspace
@@ -340,7 +340,6 @@ func TestAuthenticationSocketNativeGrants(t *testing.T) {
 		t.Fatal(err)
 	}
 	auth := testAuthentication(t)
-	auth.config = nil
 	auth.broker = broker
 	auth.token = broker.capability
 	auth.expires = broker.expires

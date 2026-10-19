@@ -48,6 +48,9 @@ func Catalog() CapabilityCatalog {
 						continue
 					}
 					requirements := []string{"per_execution_native_verification", "execution_host_authentication", "native_codex_0.159.2_permissions"}
+					if target == "orca_environment" {
+						requirements = []string{"configured_orca_environment", "execution_host_native_login", "native_launch_parameters_requested_only"}
+					}
 					for _, profile := range workflow.Catalog() {
 						if !slices.Contains(profile.SupportedAdapters, adapter) {
 							continue
@@ -58,6 +61,9 @@ func Catalog() CapabilityCatalog {
 						if profile.AuditModelRequired {
 							selection.AuditModel = &workflow.ModelSettings{Model: "audit-model"}
 							values := map[string]any{"access_mode": mode, "model": "execution-model"}
+							if adapter == "orca-terminal" {
+								values = map[string]any{"agent": agent, "access_mode": mode, "agent_launch": map[string]any{"runtime_executable": "configured-helper.exe", "model": "execution-model"}}
+							}
 							candidate.Settings = marshal(values)
 							needed = append(needed, "explicit_execution_and_audit_models")
 						}
@@ -70,7 +76,7 @@ func Catalog() CapabilityCatalog {
 					}
 					check := contracts.CheckInput{Repository: contracts.Repository{URL: "https://github.com/example/repository.git", Remote: "origin", BaseBranch: "main", BaseRevision: "1111111111111111111111111111111111111111"}, Execution: execution}
 					if contracts.ValidateEnvironmentCheck(marshal(check)) == nil && checkMechanism(adapter, target, mode) {
-						needed := append(slices.Clone(requirements), "host-gh-repository-broker", "github-app-check-write-gate-unsupported")
+						needed := append(slices.Clone(requirements), "host-gh-repository-broker")
 						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, nil, mode, []string{"environment-check start", "environment-check stop"}, "/environment_check_schema/$defs/input", needed})
 					}
 				}

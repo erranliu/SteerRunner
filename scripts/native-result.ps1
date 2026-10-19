@@ -2,6 +2,21 @@ function Get-SRResultField($Value,[string]$Name) {
     if($null -ne $Value -and $Value.PSObject.Properties[$Name]) { return $Value.$Name }
     return $null
 }
+function Assert-SRManagedOrcaAuditModels($Manifest,$View,$Proof) {
+    if($Manifest.execution.target.kind -cne 'local'){throw 'Managed audit proof is local only; native remote auditing is unsupported'}
+    if($Proof.passed -isnot [bool] -or -not $Proof.passed -or $Proof.run_id -cne $View.run_id -or $Proof.session -cne $View.execution.session_id -or -not $Proof.provider_session -or $Proof.configuration_digest -cnotmatch '^[0-9a-f]{64}$' -or @($Proof.turns).Count -ne 2 -or @($View.audit.results).Count -ne 1){throw 'Remote audit proof lacks its frozen original execution, single code audit and publication'}
+    $taskSeen=@{}; $taskCommands=@{}; $taskRequests=@{}
+    foreach($taskFact in $Proof.turns){
+        if(-not $taskFact.command_id -or $taskFact.turn_id -cne $taskFact.command_id -or $taskCommands.ContainsKey($taskFact.command_id) -or -not $taskFact.native_turn_id -or $taskSeen.ContainsKey($taskFact.native_turn_id) -or $taskFact.source -cne 'codex.app-server.original-turn.v1' -or $taskFact.session -cne $Proof.provider_session -or -not $taskFact.final_digest -or $taskFact.reader_writers_absent -isnot [bool] -or -not $taskFact.reader_writers_absent -or -not $taskFact.control_request_id -or $taskRequests.ContainsKey($taskFact.control_request_id)){throw 'Remote native model context is incomplete, duplicated or foreign'}
+        $taskSeen[$taskFact.native_turn_id]=$true; $taskCommands[$taskFact.command_id]=$true; $taskRequests[$taskFact.control_request_id]=$true
+    }
+    $taskAudit=$View.audit.results[0]
+    if($taskAudit.step -cne 'audit.code.execute' -or (Get-SRResultField $taskAudit 'failure') -or -not $taskAudit.source_result_id -or -not $taskAudit.result_id -or -not $taskAudit.pre_head -or -not $taskAudit.post_head -or $taskAudit.post_head -cne $View.pr.head_revision){throw 'Remote code audit lacks its source-bound result and verified post-head'}
+    $taskFacts=@($Proof.turns|Where-Object {$_.command_id -ceq $taskAudit.command_id -and $_.turn_id -ceq $taskAudit.turn_id -and $_.step -ceq $taskAudit.step})
+    if($taskFacts.Count -ne 1 -or $taskFacts[0].model -cne $Manifest.audit_model.model -or $taskFacts[0].effort -cne $Manifest.audit_model.reasoning_effort){throw 'Remote native audit did not use the frozen audit model and effort'}
+    $taskPublication=@($Proof.turns|Where-Object {$_.command_id -ceq $View.execution.turn_id -and $_.step -in @('publish.execute','publish.report')})
+    if($taskPublication.Count -ne 1 -or $taskPublication[0].model -cne $Manifest.execution.settings.agent_launch.model -or $taskPublication[0].effort -cne $Manifest.execution.settings.agent_launch.reasoning_effort -or $taskPublication[0].model -ceq $Manifest.audit_model.model){throw 'Remote native publication did not restore the distinct execution model'}
+}
 function Assert-SRAuditModels($Manifest,$View,[string]$History) {
     $taskContexts=@{}
     $taskBound=$false

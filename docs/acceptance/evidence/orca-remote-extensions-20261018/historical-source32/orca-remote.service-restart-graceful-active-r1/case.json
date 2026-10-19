@@ -1,0 +1,34 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "graceful-active",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\9db1871ca552\\manifest.json",
+  "started_at": "2026-10-18T05:31:42.5681114Z",
+  "finished_at": "2026-10-18T05:37:16.9960036Z",
+  "identity": {
+    "pid": 47948,
+    "manifest_sha256": "5e94b87e1466c86b4111c0a0bb634a64cf9624b95024d6a2ffc740d2d7abefe8",
+    "driver_sha256": "f291615f0f377362ce94cc686c8eafb46dad2f76f7be01442895fb1f714b04e4",
+    "runner_sha256": "004a52466f2764e17f99c73e6aa7b1cf9e0d03d4abca359971b8dd99d15656cb",
+    "source_commit": "371f91d41cd727690c62202da0807430d0ac2452",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.service-restart",
+    "level": "L3",
+    "helper_sha256": "f31f5e7c310c5efa7ea5cc952a3833babd54f99cce718df3a84d16019db52868",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+    "case_id": "graceful-active",
+    "repeat_index": 1
+  },
+  "resources": [
+    "root:C:\\srt\\9db1871ca552",
+    "base:codex/srtest/9db1871ca552/base",
+    "run:ea4385c2a24f6ca5f67f1324524ffeee",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-ea4385c2a24f6ca5f67f1324524ffeee",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_8073c228-67cf-4958-8459-d0b4b4d13cf6:b026ec66-c696-4a60-be4a-83b6df268d7c",
+    "branch:erranliu/sl-ea4385c2a24f6ca5f67f1324524ffeee",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/458"
+  ]
+}

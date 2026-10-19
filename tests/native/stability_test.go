@@ -44,6 +44,7 @@ type stabilityRun struct {
 	disconnectedAt         time.Time
 	auxiliary              map[string]b.ProcessIdentity
 	auxiliaryCreatePending bool
+	auditedPrompts         []string
 }
 
 func (s *stabilityRun) note(kind string, value any) {
@@ -449,9 +450,23 @@ func (s *stabilityRun) restart(kill bool) {
 	s.wait("restart-resume-gate", 2*time.Minute, func(v contracts.RunView) bool { return v.ResumeRequired && !v.NewInputsAllowed })
 }
 func (s *stabilityRun) write(commandName string, v contracts.RunView) {
-	req := request(fmt.Sprintf("%s-%d", commandName, s.seq), contracts.RevisionInput{ExpectedRevision: v.Revision})
-	invoke(s.t, s.m, s.dir, []string{commandName, "--run-id", s.r.RunID, "--input", "-"}, &req)
-	s.note("explicit-driver-authorization", map[string]any{"command": commandName, "request": req})
+	for attempt := 0; attempt < 5; attempt++ {
+		req := request(fmt.Sprintf("%s-%d-revision-%d", commandName, s.seq, v.Revision), contracts.RevisionInput{ExpectedRevision: v.Revision})
+		response, err := command(s.m, s.dir, []string{commandName, "--run-id", s.r.RunID, "--input", "-"}, &req)
+		if err == nil {
+			s.note("explicit-driver-authorization", map[string]any{"command": commandName, "request": req})
+			return
+		}
+		// Only an explicit stale-revision rejection proves no control was
+		// accepted. Unknown/lost replies retain the original request identity.
+		if response.OK || response.Error == nil || response.Error.Code != "stale_revision" {
+			s.t.Fatal("original control outcome unverified; no retry", err)
+		}
+		s.note("explicit-stale-control-rejection", map[string]any{"request": req, "revision": v.Revision})
+		v = s.view()
+		s.originalIdentity(v)
+	}
+	s.t.Fatal("original control revision did not stabilize within five explicit rejections")
 }
 func (s *stabilityRun) calls() ([]string, int) {
 	raw, err := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))

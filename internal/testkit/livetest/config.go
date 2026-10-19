@@ -244,22 +244,14 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 		if !catalog.Declares(value.Execution, selection, requirements.Operation) {
 			add(path, "undeclared_capability", "The selected build does not declare this execution route.")
 		}
-		if requirements.Operation == "environment-check start" && value.Execution.Adapter == "codex-app-server" {
-			var native contracts.CodexSettings
-			_ = json.Unmarshal(value.Execution.Settings, &native)
-			if native.GitHubAuth != nil {
-				add(path+"/execution/settings/github_auth", "unsupported_capability", "Environment checks require the declared host-gh repository write gate; App authentication is not supported for checks.")
-			}
-		}
 		if required.Configuration == "local-codex" && len(config.BaselineIssues()) > 0 {
 			for _, issue := range config.BaselineIssues() {
 				add(issue.Path, issue.Code, issue.Message)
 			}
 		}
 		if required.DifferentModels {
-			var native contracts.CodexSettings
-			_ = json.Unmarshal(value.Execution.Settings, &native)
-			if selection == nil || selection.AuditModel == nil || native.Model == "" || native.Model == selection.AuditModel.Model {
+			native, modelErr := contracts.ExecutionModel(value.Execution)
+			if modelErr != nil || selection == nil || selection.AuditModel == nil || native.Model == "" || native.Model == selection.AuditModel.Model {
 				add(path+"/workflow/audit_model", "invalid_configuration", "The audit case needs two explicit different models.")
 			}
 		}

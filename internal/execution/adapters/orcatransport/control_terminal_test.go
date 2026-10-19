@@ -31,6 +31,7 @@ type fixedControlFixture struct {
 func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
 	t.Helper()
 	l, f, s := fixture(t)
+	f.nativePath = filepath.Join(t.TempDir(), "local-owned-workspace")
 	f.callerFileWriter = func(path string, raw []byte) error {
 		rel, err := filepath.Rel(l.setup.RunDirectory, path)
 		if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
@@ -123,7 +124,19 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 			}
 			c.requestIDs = append(c.requestIDs, arg("--retry-request"))
 			response := codex.RemoteControlResponse{ID: q.ID, Binding: q.Binding, RequestDigest: codex.RemoteControlDigest(q)}
-			if q.Method == "original-turn" {
+			if q.Method == "workspace-audit" {
+				response.Workspace = &codex.RemoteWorkspaceAudit{Readiness: c.ready, WritersAbsent: c.mode != "workspace-reader-live", Inspection: b.WorkspaceInspection{Repository: c.ready.Workspace, Worktree: q.Audit.Intent.Path, Branch: q.Audit.Intent.Branch, Base: q.Audit.Intent.BaseCommit, Head: strings.Repeat("a", 40), Tree: strings.Repeat("b", 40), Qualified: true, InspectionScope: "working_tree", CheckedAt: time.Now().UTC()}}
+				if c.mode == "workspace-reader-live" {
+					response.Error = "workspace_audit_unverified"
+					response.Workspace.Inspection.Qualified = false
+				}
+				if c.mode == "workspace-foreign-branch" {
+					response.Workspace.Inspection.Branch = "foreign"
+				}
+				if c.mode == "workspace-dirty" {
+					response.Workspace.Inspection.Dirty = true
+				}
+			} else if q.Method == "original-turn" {
 				value := codex.RemoteTurnReceipt{ReaderWritersAbsent: true, Source: codex.RemoteTurnSource, Readiness: c.ready, InputDigest: q.InputDigest, NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", Started: true, Completed: true, Status: "completed", FinalItemID: "final", FinalText: "exact native final", FinalDigest: digest([]byte("exact native final"))}
 				switch c.mode {
 				case "reader-unverified", "query-failed":
@@ -148,6 +161,9 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				response.Turn = &value
 			} else {
 				proof := codex.RemoteAuthenticationCleanup{Readiness: c.ready, Revoked: true, BrokerClosed: true, SocketCleaned: true, Mode: "host-gh-repository-broker"}
+				if c.mode == "retired-app-auth" {
+					proof.Mode = "github-app-repository-broker"
+				}
 				if c.mode == "bad-auth" {
 					proof.Revoked = false
 				}
@@ -270,7 +286,7 @@ func TestFixedControlReceiptRecovery(t *testing.T) {
 }
 
 func TestFixedControlAuthenticationAndClosure(t *testing.T) {
-	for _, mode := range []string{"success", "lost-send", "lost-close", "bad-auth"} {
+	for _, mode := range []string{"success", "lost-send", "lost-close", "bad-auth", "retired-app-auth"} {
 		t.Run(mode, func(t *testing.T) {
 			l, _, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
@@ -280,14 +296,14 @@ func TestFixedControlAuthenticationAndClosure(t *testing.T) {
 			if mode == "lost-send" {
 				err = l.reconcileAuthenticationStop(context.Background(), state)
 			}
-			if (err == nil) != (mode != "bad-auth") {
+			if (err == nil) != (mode != "bad-auth" && mode != "retired-app-auth") {
 				t.Fatal(err)
 			}
 			if err := l.closeControl(context.Background(), state); err != nil {
 				t.Fatal(err)
 			}
 			_, actor, proofErr := ReadAuthenticationStopEvidence(l.setup.RunDirectory, l.setup.Snapshot, state)
-			if mode == "bad-auth" {
+			if mode == "bad-auth" || mode == "retired-app-auth" {
 				if proofErr == nil {
 					t.Fatal("bad proof accepted")
 				}
