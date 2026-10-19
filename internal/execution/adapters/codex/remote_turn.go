@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"time"
@@ -25,21 +26,23 @@ type RemoteTurnQuery struct {
 }
 
 type RemoteTurnReceipt struct {
-	Source       string          `json:"source"`
-	Readiness    RemoteReadiness `json:"readiness"`
-	InputDigest  string          `json:"input_digest"`
-	NativeTurnID string          `json:"native_turn_id,omitempty"`
-	UserItemID   string          `json:"user_item_id,omitempty"`
-	Started      bool            `json:"started"`
-	Completed    bool            `json:"completed"`
-	Status       string          `json:"status,omitempty"`
-	FinalItemID  string          `json:"final_item_id,omitempty"`
-	FinalText    string          `json:"final_text,omitempty"`
-	FinalDigest  string          `json:"final_digest,omitempty"`
+	InspectionFailed    bool            `json:"inspection_failed,omitempty"`
+	ReaderWritersAbsent bool            `json:"reader_writers_absent"`
+	Source              string          `json:"source"`
+	Readiness           RemoteReadiness `json:"readiness"`
+	InputDigest         string          `json:"input_digest"`
+	NativeTurnID        string          `json:"native_turn_id,omitempty"`
+	UserItemID          string          `json:"user_item_id,omitempty"`
+	Started             bool            `json:"started"`
+	Completed           bool            `json:"completed"`
+	Status              string          `json:"status,omitempty"`
+	FinalItemID         string          `json:"final_item_id,omitempty"`
+	FinalText           string          `json:"final_text,omitempty"`
+	FinalDigest         string          `json:"final_digest,omitempty"`
 }
 
-func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (RemoteTurnReceipt, error) {
-	var out RemoteTurnReceipt
+func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (out RemoteTurnReceipt, result error) {
+	out.Source, out.InputDigest = RemoteTurnSource, q.InputDigest
 	if !filepath.IsAbs(q.Workspace) || !ValidNativeID(q.Session) || len(q.InputDigest) != 64 || strings.Trim(q.InputDigest, "0123456789abcdef") != "" {
 		return out, errors.New("original_turn_query_invalid")
 	}
@@ -52,12 +55,29 @@ func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (RemoteTurnReceip
 	if json.Unmarshal(raw, &ready) != nil || !ready.Verified || ready.NativeTransport != RemoteNativeTransport || !sameWorkspace(ready.Workspace, q.Workspace) || ready.SessionID != q.Session {
 		return out, errors.New("original_turn_preparation_mismatch")
 	}
-	if process.Probe(&ready.Process).State != "matches" {
-		return out, errors.New("original_turn_process_unverified")
-	}
 	self, err := RuntimeBinarySHA256()
 	if err != nil || self != ready.RuntimeSHA256 {
 		return out, errors.New("original_turn_runtime_mismatch")
+	}
+	out.Readiness = ready
+	var owned b.StopHandle
+	var reader *HistoryClient
+	// Failure to read history is separate from resource settlement. Preserve
+	// the latter even when the original business server exits during this query.
+	defer func() {
+		if reader != nil {
+			reader.Close()
+			out.ReaderWritersAbsent = reader.WritersAbsent()
+		} else {
+			out.ReaderWritersAbsent = settleRemoteTree(owned)
+		}
+		if !out.ReaderWritersAbsent {
+			result = errors.Join(result, errors.New("original_turn_reader_tree_unverified"))
+		}
+		out.InspectionFailed = result != nil
+	}()
+	if process.Probe(&ready.Process).State != "matches" {
+		return out, errors.New("original_turn_process_unverified")
 	}
 	raw, err = os.ReadFile(filepath.Join(dir, "configuration.json"))
 	var cfg RemoteAgentConfig
@@ -68,11 +88,16 @@ func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (RemoteTurnReceip
 	if err != nil {
 		return out, errors.New("original_turn_native_unavailable")
 	}
-	reader, err := OpenHistory(ctx, b.Command{Executable: exe}, q.Workspace, "", process.New(30*time.Second).StartManaged)
+	reader, err = OpenHistory(ctx, b.Command{Executable: exe}, q.Workspace, "", func(cmd *exec.Cmd) (b.StopHandle, error) {
+		handle, e := process.New(30 * time.Second).StartManaged(cmd)
+		if e == nil {
+			owned = handle
+		}
+		return handle, e
+	})
 	if err != nil {
 		return out, errors.New("original_turn_reader_unavailable")
 	}
-	defer reader.Close()
 	thread, err := reader.ReadThread(ctx, q.Session, q.Workspace)
 	if err != nil {
 		return out, errors.New("original_turn_history_unverified")

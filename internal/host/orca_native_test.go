@@ -3,6 +3,8 @@ package host
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -38,7 +40,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err := os.Mkdir(root, 0700); err != nil {
 		t.Fatal(err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 240*time.Second)
 	defer cancel()
 	calls := 0
 	c := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
@@ -61,7 +63,9 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		_ = os.WriteFile(filepath.Join(root, fmt.Sprintf("orca-%02d.json", calls)), raw, 0600)
 		return raw, err
 	}})
-	made, err := c.MetaCall(ctx, "worktree", "create", "--repo", "id:"+repo, "--name", "sr-stop-"+filepath.Base(root), "--base-branch", base, "--no-parent", "--setup", "skip", "--json")
+	// Evidence directories in different packages can share a basename. The
+	// original runtime forbids reusing a prior workspace's native identity.
+	made, err := c.MetaCall(ctx, "worktree", "create", "--repo", "id:"+repo, "--name", "sr-stop-"+filepath.Base(root)+"-"+contracts.NewID()[:8], "--base-branch", base, "--no-parent", "--setup", "skip", "--json")
 	var creation struct{ Worktree native.Worktree }
 	if err != nil || json.Unmarshal(made.Payload, &creation) != nil || creation.Worktree.ID == "" {
 		t.Fatal("native worktree creation", err)
@@ -70,7 +74,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	cleaned := false
 	t.Cleanup(func() {
 		defer func() {
-			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "model_inputs": 0, "fixture": "real PTY plus recorded live OS root; PTY exit must not prove native settlement"})
+			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "business_inputs": 0, "real_codex": os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER") != "", "fixture": "isolated current Run bound to real original native identities"})
 			_ = os.WriteFile(filepath.Join(root, "result.json"), raw, 0600)
 		}()
 		cleanup, stop := context.WithTimeout(context.Background(), 40*time.Second)
@@ -85,7 +89,20 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		}
 		cleaned = true
 	})
-	created, err := c.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+w.ID, "--title", "SteerRunner stop proof probe", "--json")
+	helper := os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER")
+	var config codex.RemoteAgentConfig
+	args := []string{"terminal", "create", "--worktree", "id:" + w.ID, "--title", "SteerRunner stop proof probe"}
+	if helper != "" {
+		config = codex.RemoteAgentConfig{Executable: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_NATIVE"), RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", AccessMode: "sandbox", Model: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_MODEL")}
+		if config.Executable == "" || len(os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256")) != 64 {
+			t.Fatal("real native helper identity missing")
+		}
+		raw, _ := json.Marshal(config)
+		command := "& '" + strings.ReplaceAll(helper, "'", "''") + "' '--configuration' '" + base64.RawURLEncoding.EncodeToString(raw) + "'"
+		args = append(args, "--command", command)
+	}
+	args = append(args, "--json")
+	created, err := c.MetaCall(ctx, args...)
 	var opened struct{ Terminal native.Terminal }
 	if err != nil || json.Unmarshal(created.Payload, &opened) != nil {
 		t.Fatal(err)
@@ -99,8 +116,41 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		p.ExecutionHost = environment
 	}
 	profile := orca.Profile{Executable: cli, Environment: environment, WaitTimeout: "10s"}
+	var ready *codex.RemoteReadiness
+	if helper != "" {
+		profile.RuntimeExecutable, profile.RuntimeSHA256, profile.RuntimeConfigurationDigest = helper, os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256"), codex.RemoteConfigurationDigest(config)
+		for until := time.Now().Add(150 * time.Second); ready == nil; {
+			read, e := c.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--limit", "1000", "--json")
+			var value struct{ Terminal struct{ Tail []string } }
+			if e != nil || json.Unmarshal(read.Payload, &value) != nil {
+				t.Fatal("real native readiness read", e)
+			}
+			for _, line := range value.Terminal.Tail {
+				line = strings.TrimSpace(line)
+				if strings.HasPrefix(line, codex.RemoteReadyPrefix) {
+					raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteReadyPrefix))
+					var r codex.RemoteReadiness
+					if e != nil || json.Unmarshal(raw, &r) != nil || r.RuntimeSHA256 != profile.RuntimeSHA256 || r.ConfigurationDigest != profile.RuntimeConfigurationDigest || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(w.Path, "\\", "/")) || !r.Verified || len(r.ExitPublicKey) != 32 {
+						t.Fatal("real native readiness binding invalid", e)
+					}
+					ready = &r
+					_ = os.WriteFile(filepath.Join(root, "native-readiness.json"), raw, 0600)
+				}
+				if strings.Contains(line, "preparation/execution failed:") {
+					t.Fatal("real native preparation failed", line)
+				}
+			}
+			if time.Now().After(until) {
+				t.Fatal("real Codex readiness timed out")
+			}
+			if ready == nil {
+				time.Sleep(500 * time.Millisecond)
+			}
+		}
+	}
 	id, attempt, digest := contracts.NewID(), contracts.NewID(), strings.Repeat("a", 64)
 	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: p}, Session: b.SessionContext{ProjectID: "stop-probe", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: digest, ResourceGeneration: "probe-generation"}
+	s.Workspace = b.WorkspaceIntent{Path: w.Path, Branch: strings.TrimPrefix(w.Branch, "refs/heads/"), BaseCommit: base}
 	profileRaw, _ := json.Marshal(profile)
 	profileData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: s.Session.ProjectID, ProfileID: id, AcceptedConfigVersion: digest}, profileRaw)
 	if err != nil {
@@ -110,7 +160,59 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	stateRaw, _ := json.Marshal(orca.State{Process: p, RemoteReadiness: &codex.RemoteReadiness{Process: *rootIdentity, SessionID: "probe-live-root"}})
+	if ready == nil {
+		ready = &codex.RemoteReadiness{Process: *rootIdentity, SessionID: "probe-live-root"}
+	}
+	state := orca.State{Process: p, RemoteReadiness: ready}
+	if helper != "" {
+		const prompt = "Initialize this agent session. Reply READY only. Do not use tools or change files."
+		inputDigest := fmt.Sprintf("%x", sha256.Sum256([]byte(prompt)))
+		query := codex.RemoteTurnQuery{Workspace: ready.Workspace, Session: ready.SessionID, InputDigest: inputDigest}
+		body, _ := json.Marshal(query)
+		command := "& '" + strings.ReplaceAll(helper, "'", "''") + "' '--original-turn' '" + base64.RawURLEncoding.EncodeToString(body) + "'"
+		created, e := c.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+w.ID, "--title", "SteerRunner original history exit probe", "--command", command, "--json")
+		var reader struct{ Terminal native.Terminal }
+		if e != nil || json.Unmarshal(created.Payload, &reader) != nil || reader.Terminal.Handle == "" || reader.Terminal.IncarnationID == "" {
+			t.Fatal("real reader creation", e)
+		}
+		identity := b.ProcessIdentity{Kind: "orca_original_turn_reader", RuntimeID: p.RuntimeID, WorktreeID: p.WorktreeID, Terminal: reader.Terminal.Handle, Incarnation: reader.Terminal.IncarnationID}
+		for until := time.Now().Add(45 * time.Second); ; {
+			result, e := c.MetaCall(ctx, "terminal", "read", "--terminal", identity.Terminal, "--limit", "200", "--json")
+			var output struct{ Terminal struct{ Tail []string } }
+			if e != nil || json.Unmarshal(result.Payload, &output) != nil {
+				t.Fatal("real reader output", e)
+			}
+			settled := false
+			for _, line := range output.Terminal.Tail {
+				line = strings.TrimSpace(line)
+				if strings.HasPrefix(line, codex.RemoteTurnPrefix) {
+					raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteTurnPrefix))
+					var receipt codex.RemoteTurnReceipt
+					if e != nil || json.Unmarshal(raw, &receipt) != nil || !receipt.ReaderWritersAbsent || receipt.Readiness.SessionID != ready.SessionID || receipt.Readiness.Process != ready.Process || receipt.InputDigest != inputDigest || !receipt.Completed {
+						t.Fatal("real reader native exit unverified", e)
+					}
+					_ = os.WriteFile(filepath.Join(root, "native-reader.json"), raw, 0600)
+					settled = true
+				}
+				if strings.Contains(line, "remote original turn inspection failed") {
+					t.Fatal("real reader failed")
+				}
+			}
+			if settled {
+				break
+			}
+			if time.Now().After(until) {
+				t.Fatal("real reader receipt timeout")
+			}
+			time.Sleep(200 * time.Millisecond)
+		}
+		proof, e := c.CloseReadonlyTerminal(ctx, identity)
+		if e != nil || proof.Disposition != "confirmed" {
+			t.Fatal("real reader PTY stop", e)
+		}
+		state.Turns = []orca.Turn{{Command: contracts.NewID(), WireFormat: "native-command-v1", Prompt: prompt, InputDigest: inputDigest, Native: orca.NativeProof{Pane: "bootstrap-reader-probe"}, Inspection: &orca.NativeInspection{Attempted: true, NativeSettled: true, Closed: true, Process: &identity, At: time.Now().UTC()}}}
+	}
+	stateRaw, _ := json.Marshal(state)
 	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
 	if err != nil {
 		t.Fatal(err)
@@ -127,7 +229,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := &runstate.Record{ID: id, InputDigest: digest, Revision: 1, Snapshot: s, Profile: []b.ImplementationDataEnvelope{profileData}, RepositoryPath: repository, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, Status: "blocked", Phase: "probe", CommandStates: map[string]string{}}
+	r := &runstate.Record{ID: id, InputDigest: digest, Revision: 1, Snapshot: s, Profile: []b.ImplementationDataEnvelope{profileData}, RepositoryPath: repository, Request: contracts.RunRequest{Repository: contracts.Repository{URL: config.RepositoryURL}, Execution: contracts.Execution{Adapter: "orca-terminal"}}, Status: "blocked", Phase: "probe", CommandStates: map[string]string{}}
 	if err = store.Commit(r, 0, nil); err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +273,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		}
 	}
 	verify("active-rejected", false)
-	port, err := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli}, RepositoryPath: repository, RunDirectory: dir})
+	port, err := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli}, RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -179,10 +281,32 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err == nil || facts.Stopped {
 		t.Fatal("passive shutdown claimed active PTY stopped", facts, err)
 	}
-	proof, err := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
-	if err != nil || proof.Disposition != "confirmed" {
-		t.Fatal("native original PTY close unverified", proof, err)
+	if helper != "" {
+		stopping, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli, allowStop: true}, RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir})
+		if e != nil {
+			t.Fatal(e)
+		}
+		ref := s.Ref
+		stop := b.LifecycleRequest{Snapshot: s, Input: b.LifecycleInput{Stop: &b.StopInput{}}, Operation: b.Operation{ID: contracts.NewID(), Action: string(b.LifecycleStopExecution), PayloadDigest: digest, Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: id, ConfigurationDigest: digest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}}
+		receipt, e := stopping.StopLifecycle(ctx, stop, nil)
+		raw, _ := json.Marshal(receipt)
+		_ = os.WriteFile(filepath.Join(root, "adapter-stop.json"), raw, 0600)
+		if e != nil || receipt.Disposition != b.OperationConfirmed || !receipt.State.Stopped || !receipt.State.WorkerAbsent {
+			t.Fatal("real adapter stop failed", receipt.Diagnostic, e)
+		}
+		path, _ := codex.RemoteExitPath(*ready)
+		raw, e = native.ReadStopArtifact(ctx, environment, p.RuntimeID, w.ID, path)
+		if e != nil || codex.VerifyRemoteExit(raw, *ready) != nil {
+			t.Fatal("real native exit unavailable", e)
+		}
+		_ = os.WriteFile(filepath.Join(root, "native-exit.json"), raw, 0600)
+	} else {
+		proof, e := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+		if e != nil || proof.Disposition != "confirmed" {
+			t.Fatal("native original PTY close unverified", proof, e)
+		}
 	}
+
 	// A close receipt precedes Orca's asynchronously published inventory. Keep
 	// the production query fail-closed; wait for the actual original-host fact
 	// here, without another close, alternate identity or input.
@@ -205,6 +329,14 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if process.Probe(rootIdentity).State != "matches" {
 		t.Fatal("recorded writer fixture is not live")
 	}
+	if helper != "" {
+		verify("stopped-verified", true)
+		facts, err = port.ShutdownLifecycle(ctx, s, nil)
+		if err != nil || !facts.Stopped || !facts.WorkerAbsent {
+			t.Fatal("real shutdown proof rejected", facts, err)
+		}
+		return
+	}
 	verify("closed-pty-native-unverified", false)
 	facts, err = port.ShutdownLifecycle(ctx, s, nil)
 	if err == nil || facts.Stopped || !strings.Contains(err.Error(), "PTY exit is insufficient") {
@@ -214,7 +346,10 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 
 // The production process host executes only the adapter's read-only query.
 // Its StartManaged/WriteExecutionFile paths must remain unreachable here.
-type probeProcessHost struct{ cli string }
+type probeProcessHost struct {
+	cli       string
+	allowStop bool
+}
 
 func (p probeProcessHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
 	return nil, fmt.Errorf("probe forbids process startup")
@@ -225,7 +360,7 @@ func (p probeProcessHost) WriteExecutionFile(string, []byte) error {
 	return fmt.Errorf("probe forbids evidence writes")
 }
 func (p probeProcessHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
-	if c.Executable != p.cli || len(c.Args) < 2 || c.Args[0] != "terminal" || c.Args[1] != "list" {
+	if c.Executable != p.cli || len(c.Args) < 2 || c.Args[0] != "terminal" || c.Args[1] != "list" && !(p.allowStop && (c.Args[1] == "show" || c.Args[1] == "close")) {
 		return nil, fmt.Errorf("probe forbids adapter effect: %v", c.Args)
 	}
 	ctx, cancel := context.WithTimeout(ctx, c.Timeout)

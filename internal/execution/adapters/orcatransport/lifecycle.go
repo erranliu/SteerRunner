@@ -64,6 +64,7 @@ type Lifecycle struct {
 	feedRetryAt      time.Time
 	clock            func() time.Time
 	nativeAccess     bool
+	readStopArtifact func(context.Context, string, string, string, string) ([]byte, error)
 	inspectionOnce   sync.Once
 	inspectionSerial chan struct{}
 }
@@ -112,7 +113,7 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
 		return nil, errors.New("terminal profile differs from frozen target")
 	}
-	l := &Lifecycle{setup: setup, profile: p, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
+	l := &Lifecycle{setup: setup, profile: p, stateFactory: factory, readStopArtifact: native.ReadStopArtifact, clock: func() time.Time { return time.Now().UTC() }}
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		all := append(append([]string(nil), p.Args...), args...)
 		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
@@ -815,7 +816,25 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 	}
 	progress := stopProgress{Version: 1, Phase: "not-attempted"}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
-	if _, err := l.original(ctx, r.Snapshot); err != nil {
+	if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
+		// A helper that has already settled may have returned to its original
+		// shell. Bind the exact PTY/worktree, then require the native proof below;
+		// an agent display label is not the identity of those owned resources.
+		t, e := l.client.InspectBoundTerminal(ctx, l.profile.Target(), r.Snapshot.Ref.External)
+		if e != nil {
+			return receipt, e
+		}
+		if t.WorktreeID != r.Snapshot.Ref.External.WorktreeID || t.WorktreePath != r.Snapshot.Workspace.Path || strings.TrimPrefix(t.Branch, "refs/heads/") != r.Snapshot.Workspace.Branch {
+			return receipt, errors.New("original Codex stop workspace or branch changed")
+		}
+		state, e := l.state(r.Snapshot)
+		if e != nil {
+			return receipt, e
+		}
+		if e = l.stopCodexNative(ctx, state, r.Snapshot.Workspace.Path); e != nil {
+			return receipt, e
+		}
+	} else if _, err := l.original(ctx, r.Snapshot); err != nil {
 		return receipt, err
 	}
 	var terminalOwner *TerminalOwner
@@ -896,6 +915,19 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b
 		}
 		if err := l.cleanupInspections(ctx, &state); err != nil {
 			return receipt, err
+		}
+		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
+			// Orca's acknowledged PTY close can precede its published inventory.
+			// Poll only the same original identity; never repeat the close.
+			until := time.Now().Add(3 * time.Second)
+			for {
+				if err := l.verifyStopped(ctx, r.Snapshot); err == nil {
+					break
+				} else if time.Now().After(until) || ctx.Err() != nil {
+					return receipt, err
+				}
+				time.Sleep(50 * time.Millisecond)
+			}
 		}
 		for _, turn := range state.Turns {
 			if turn.Inspection != nil && !turn.Inspection.Closed {

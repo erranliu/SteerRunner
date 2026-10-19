@@ -75,9 +75,11 @@ func main() {
 			defer cancel()
 			value, readErr := codex.InspectRemoteTurn(ctx, query)
 			err = readErr
-			if err == nil {
+			if value.ReaderWritersAbsent {
 				body, _ := json.Marshal(value)
 				fmt.Println(codex.RemoteTurnPrefix + base64.RawURLEncoding.EncodeToString(body))
+			}
+			if err == nil && value.ReaderWritersAbsent {
 				return
 			}
 		}

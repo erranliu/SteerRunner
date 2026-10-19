@@ -36,7 +36,7 @@ func TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts(t *tes
 	l.setup.RepositoryURL = "https://github.com/erranliu/SteerlineTest.git"
 	l.profile.RuntimeExecutable = "C:/runtime/steerrunner-agent.exe"
 	l.profile.RuntimeConfigurationDigest = strings.Repeat("a", 64)
-	ready := codex.RemoteReadiness{NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: l.setup.RepositoryURL, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{PID: 123}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().Add(time.Hour)}
+	ready := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: l.setup.RepositoryURL, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{PID: 123}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().Add(time.Hour)}
 	raw, _ := json.Marshal(ready)
 	f.lines = []string{codex.RemoteReadyPrefix + base64.RawURLEncoding.EncodeToString(raw)}
 	input := b.LifecycleInput{Resource: &b.ResourceIntent{Purpose: "agent-start", Name: "original-terminal", Objective: l.setup.AgentLaunchCommand}}
@@ -81,7 +81,7 @@ func TestRemoteReadinessRejectsMissingExpiredAndChangedBindings(t *testing.T) {
 	l.profile.RuntimeConfigurationDigest = strings.Repeat("a", 64)
 	now := time.Now().UTC()
 	l.clock = func() time.Time { return now }
-	good := codex.RemoteReadiness{NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Repository: l.setup.RepositoryURL, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", Process: b.ProcessIdentity{PID: 123}, CheckedAt: now, ExpiresAt: now.Add(time.Hour)}
+	good := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Repository: l.setup.RepositoryURL, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", Process: b.ProcessIdentity{PID: 123}, CheckedAt: now, ExpiresAt: now.Add(time.Hour)}
 	if err := l.checkRemoteReadiness(State{RemoteReadiness: &good}); err != nil {
 		t.Fatal(err)
 	}

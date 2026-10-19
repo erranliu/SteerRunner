@@ -29,7 +29,7 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record, che
 				repository = r.Request.Repository.LocalPath
 			}
 			probeCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
-			probeErr = orca.VerifyStopped(probeCtx, b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RunDirectory: dir})
+			probeErr = orca.VerifyStopped(probeCtx, b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: dir})
 			cancel()
 			settled = probeErr == nil
 		}

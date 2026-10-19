@@ -2,7 +2,7 @@
 
 普通开发，2026-10-19。对应 [停服契约](steerrunner.spec.md)和调用方的 worker-lifecycle W18/E04–E05/V06–V07。实现 worktree：`codex/orca-stop-proof`；不修改安装环境、不兼容或迁移旧格式。
 
-## 实施
+## 首轮实施（历史，Codex 正向链路由文末增量取代）
 
 1. 在原生协议层提供无副作用的原终端停止核验：仅查询原 runtime 的 terminal list，验证完整计数、未截断、执行主机 local 已纳入范围和原 worktree。原终端仍活动、同 handle 换 incarnation、原主机缺席、查询失败均拒绝；原终端已退出或完整范围内缺席才证明 PTY 已结束。其它配对主机的省略不替代或否定当前原 runtime 的 local 事实。
 2. 适配器复用冻结 profile/resource 身份核验。PTY 停止只是必要条件；通用原生 helper 复用既有 owner/exit/authentication 证明，并拒绝混入 Codex/readers 证据。Codex 当前没有与原 owner/tree/authentication 绑定的离线退出证明，包括已记录 root 已消失、缺 root、未收到 readiness 或远端情形都保持未核实；不以 PTY 或调用方本机 PID 替代原执行主机证明。历史已持久化 stopped 仍沿既有读取边界。本次不新增远端协议、回执格式、迁移、恢复或清理动作。
@@ -25,3 +25,22 @@
 | OSV-A07 | L1 `TestTerminalStoppedRequiresCompleteOriginalHost` + `TestManagedRemoteReceiptRecoversMissedStartWithoutResending/restart-absent-close` | 隔离协议夹具；改后 go test protocol/orca、orcatransport | 共用原 host 完整性校验；原 reader 缺席可结算，原 host 省略/重复/换身份不能结算，零重复发送；结果登记验收 |
 
 人工项：无本次必需人工门槛。用户原安装资源的实际停止/部署不在本次现场操作范围；本次验证不能替代它的原资源证明。
+
+## 正向退出证明补齐（2026-10-19）
+
+最小新增边界限定为现有 Codex helper、现有 Orca 文件通道和既有 inspection journal，不新增服务、验证终端、恢复状态机或兼容读取路径。
+
+1. helper 每次运行生成仅存内存的 Ed25519 密钥；公开 readiness 绑定公钥、helper 身份与原 app-server 身份。工作区导出文件只是可删除的公共证据，不作为信任根。ready 固定公钥，退出凭据签名覆盖完整 readiness、TUI 身份、进程树清空及认证关闭事实，防止 worker 伪造/改写/跨运行重放。
+2. 原 app-server 与 TUI 均由 helper 的非 breakaway Job 管理。正常 TUI 退出或原运行的显式停止请求后，先终止并实际查询两棵 Job 至零，再关闭认证，最后才签发退出凭据。证据文件在任何模型执行前独占打开，最终经原句柄写入；私钥不落盘或传给子进程。原 helper 返回后只能保留无业务能力的终端 shell。
+3. 显式 stop 经既有 artifact 上传通道写入绑定原 readiness 公钥的停止请求；只作用于原 helper 持有的两棵 Job，无模型/业务输入。离线 verify 只使用既有 files.readChunk 读取固定相对路径，并验证原 runtime/worktree、未截断与签名；不创建请求或新进程，不写 DB/失败回执。强杀而未取得完整凭据仍不能声称认证已关闭。
+4. readonly history helper 在返回正式 receipt 前核实自己的原 Job 树清空；即使业务查询失败或 reader 未创建，也单独保存可核实的结算事实，不晋升业务完成；既有 inspection journal 在关闭 PTY 前保存该原生事实。离线核验同时检查 journal 与快照中的全部原 reader 身份/退出事实，未知创建或缺证据拒绝。正常服务退出继续不停止业务执行。
+
+### 测试计划增量
+
+| 验收项 | 级别 / 场景与命令 | 环境 / 时点 | 通过条件 / 证据 |
+| --- | --- | --- | --- |
+| OSV-A08 | L1 `TestRemoteExit*`、`TestRemoteReader*`、`TestCodexStopped*`、`TestManagedRemoteReceipt*`、`TestOrcaLocalIPCReadsOnlyBoundStopArtifact`、`TestStopArtifact*` | 隔离夹具；实现后 go test codex/protocol/orca/orcatransport 定向组 | 正向签名与完整退出通过；活树/缺认证/改写/重放/缺 reader/截断/错 runtime 拒绝，重验零写入；登记本专属 acceptance |
+| OSV-A09 | 显式真实 Codex/Orca native stop probe，经发布 Runner service verify-stopped 重验 | 先 new-debug-release.ps1 新建 C:/SteerlineDebug；独立 SteerlineTest 原 worktree，真实 helper/native/bootstrap；构建后本机及远端各独立实例 | 活动期拒绝；真实显式停止后重验成功，原 DB/失败回执不变、零服务启动/零业务输入，原 Job/认证/reader 证据与清理事实保存在本包 evidence 并登记 acceptance |
+| OSV-A03/A05 | 既有最小服务/部署消费者定向回归 | 隔离夹具；最终构建前 | 锁、原身份与拒绝门槛不回退；两仓 acceptance 记录结果 |
+
+原安装现场不参与操作；已有旧 helper 缺少不可追溯的退出证据时不能通过补写/迁移伪造历史，本次须明确区分新能力实测与旧现场是否已获证。
