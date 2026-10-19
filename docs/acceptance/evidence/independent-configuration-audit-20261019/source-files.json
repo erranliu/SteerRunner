@@ -1,0 +1,138 @@
+[
+  {
+    "path": "internal/cli/cli.go",
+    "sha256": "340e251d4c7dc17ab825db234b90b93c59dcc1b19b6eb17c23aa3390dad4b725"
+  },
+  {
+    "path": "internal/cli/configuration_test.go",
+    "sha256": "fa8225a08f46742e6a460ab277c9aa720e216cd4a79b8df98f853878cab96d63"
+  },
+  {
+    "path": "internal/host/server.go",
+    "sha256": "dae23c57414eb571f8955a88cc4b320ed2af27df516167a51704e6a3d80985d4"
+  },
+  {
+    "path": "internal/resources/catalog.go",
+    "sha256": "fb6f56b00ee91b9d5009a209bb8100e54bb1f83dabb8adffe20be982e941f560"
+  },
+  {
+    "path": "internal/resources/configuration.go",
+    "sha256": "4cec3bcd5f33ac1865eb2229e2348aeffbf36a1b0a5d466ab11a4b22147ca134"
+  },
+  {
+    "path": "internal/resources/configuration_test.go",
+    "sha256": "b49eeea40ffb11837b47907eff5a350ccfb218b4b96373632c2646d1be088fd0"
+  },
+  {
+    "path": "internal/resources/input_schema.go",
+    "sha256": "b785cf1d06fa6e6878495107515a005f36a990b088d84856c01ebc7c00cadf53"
+  },
+  {
+    "path": "internal/resources/resources.go",
+    "sha256": "214f62a88fd90e31e2fc840600d40491b5864de400e0e7ea39da9bca2c5ffe24"
+  },
+  {
+    "path": "internal/resources/validation.go",
+    "sha256": "10e00529070d0db3a3f2368959571a80267b245970b1099bf51baf14ee7c9b98"
+  },
+  {
+    "path": "internal/resources/validation_test.go",
+    "sha256": "2fe721e29b9f0edbe033722a069587f72e52af281c10ffb13831674423fe8a57"
+  },
+  {
+    "path": "internal/testkit/livetest/cases.go",
+    "sha256": "7741dffeb51b4266c71682434290c8ef18ce448f9b80bfd7cab2ba89c47bc9a8"
+  },
+  {
+    "path": "internal/testkit/livetest/cases.json",
+    "sha256": "5df65beb6fceba0ff937320b0b62ea0c4201fa8484d1edb0bcb61dc9c25a2e20"
+  },
+  {
+    "path": "internal/testkit/livetest/config.go",
+    "sha256": "0460dbc0cad507666f599eca9cc3db3f47578f1af3a0fcce17de5a9a64d4de85"
+  },
+  {
+    "path": "internal/testkit/livetest/config_test.go",
+    "sha256": "772235bd29de1b7743766cb770d89e2a14e796d50524633f1b579bd7e390f94e"
+  },
+  {
+    "path": "internal/testkit/livetest/diagnostic_test.go",
+    "sha256": "cd5b0f973ac6bf38f43d3fdc9021cc58ba8e31989bac4c70b29fe48374c12e32"
+  },
+  {
+    "path": "internal/testkit/livetest/manifest.go",
+    "sha256": "acd6a5cb4d14bfe19f9f7ebbb143c4e021e02133b5b9940aa2d30c368cda9b7d"
+  },
+  {
+    "path": "internal/testkit/livetest/manifest_test.go",
+    "sha256": "bfd2ea122b5f9869c648b727ee88698d543e7a5a5add8249ee91935d23e8d232"
+  },
+  {
+    "path": "scripts/live-catalog.ps1",
+    "sha256": "0b6cad19ef318a7189a8d2a7f7e856dced65b6384d2ac2a794e45fd7a773afbb"
+  },
+  {
+    "path": "scripts/new-test-fixture.ps1",
+    "sha256": "a8f90528f9816fa42c78137336d1bda11d6b01c6eb6325eea5520a7ba0c80fa5"
+  },
+  {
+    "path": "scripts/run-test-case.ps1",
+    "sha256": "973198c00d752237f25f5a735025938119b563692dd9a0627336685fc7e1f515"
+  },
+  {
+    "path": "scripts/stability-preflight.ps1",
+    "sha256": "1d6bccdc84329dc3adbbf185177a6e371772520144e40b51c5f0ddd3cecc85a7"
+  },
+  {
+    "path": "scripts/test-configuration.ps1",
+    "sha256": "b4d10036f1811ba2c232f1b88181c323b0704175f02b9b4bba1bf083086f584e"
+  },
+  {
+    "path": "scripts/test-framework.ps1",
+    "sha256": "73367419a1e087de6cff410ae44bb999fa00368f9e6543aa00c9ed49b745024d"
+  },
+  {
+    "path": "scripts/test-scheduler.ps1",
+    "sha256": "52adc2359daa7fbea13d817df963f2f645f70ec1c30f54e4f8855e8c065e0e99"
+  },
+  {
+    "path": "scripts/test.ps1",
+    "sha256": "ba299b2b4e37e8334a30541f67404c80a381e6b093b24e1b9ee0c90fb9aa7cbe"
+  },
+  {
+    "path": "tests/framework/configuration-test.ps1",
+    "sha256": "fe23ea90282d7762ca2cadf1b05b0796d681c289c9577e03d0be54dc164f03bd"
+  },
+  {
+    "path": "tests/framework/stability-test.ps1",
+    "sha256": "c4c3af2e843f27ca4d7a9d7020d473d226ea45f0972b1ae003288c7ac28d816d"
+  },
+  {
+    "path": "tests/helpers/native/main.go",
+    "sha256": "d7f5e7a292d4bae2b72d0709ca1b77ddc5f1ce83f0308ea9957925a61d30d674"
+  },
+  {
+    "path": "tests/integration/service_test.go",
+    "sha256": "7c713a599afa8560274c5c0864ebfa10ecf9088f3725af52bc05298b81828bb3"
+  },
+  {
+    "path": "tests/native/multirun_test.go",
+    "sha256": "38581ee7973200157da9519a2917947987c635e066c71a25ef4012023f202b21"
+  },
+  {
+    "path": "tests/native/run_test.go",
+    "sha256": "8f0464e4d8fe8429b1bf6292418c43cbf44fbe55b81d4e99b6e54a7171953809"
+  },
+  {
+    "path": "tests/native/stability_test.go",
+    "sha256": "6090757af81ac0e4b976094808e17eb7a211a2e44c020b1ea5cc371883238570"
+  },
+  {
+    "path": "tests/test-config.example.json",
+    "sha256": "05884a3490a610b86cc08da02ddf480c5c9e4ad92d14e57832bcd6d30d3ed054"
+  },
+  {
+    "path": "tests/test-config.schema.json",
+    "sha256": "bd03c92d1e1e033d46e7e4aac68bdd3f0fae677016c3f9d481d4a28c39d0117a"
+  }
+]

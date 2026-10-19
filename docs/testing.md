@@ -6,6 +6,10 @@ checkout、EXE、数据库、配置或测试调度器。运行目标为 Windows/
 本文件说明分层定义、设计与维护规则、执行入口和结果判定。
 逐项测试内容、预期结果、并行条件及当前缺口见独立的[测试清单](test-catalog.md)。
 
+独立调用配置契约、本仓内部测试配置、本地 Codex 交付基线及按 case 判定 L3 可用性的增量
+见 [Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md)。
+当前使用 `steerrunner-test-config/v1`；本次构建的实际范围和缺配置项见[验收](acceptance/independent-configuration.md)。
+
 ## 分层定义
 
 按测试目的、流程和隔离条件分层，不以是否使用真机、模型或远端环境作为层级定义。
@@ -66,14 +70,14 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)固定 L3 的十七场景/二十四 case 数量；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／二十九 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 未来新增场景或收敛 L2 时须同步这些约束、manifest 校验和结果报告；L2 中的反馈验证
 只有在独立 L3 反馈 case 注册、批次可选择且有通过证据后才能移除，不能先删后补。
 当前 `-FeedbackQualification <case.json>` 可选择无反馈的 `development-core` driver：
 它要求正式反馈 case 为 passed、协调器批次通过、真实新 head/合入/清理完整、Runner 与
 native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest。也可在非秘密配置的
-`feedback_qualification` 填写该 case 记录的绝对路径；未提供资格时保留原完整 smoke。
+`harness.feedback_qualification` 填写该 case 记录的绝对路径；未提供资格时保留原完整 smoke。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
 文档规划不表示入口已经支持新 case、L4 或并行调度。
@@ -81,9 +85,10 @@ native driver 摘要及执行配置匹配，资格文件摘要冻结进 manifest
 ## 当前执行入口
 
 Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandbox` 和
-`environment-check.orca-local-full-access`，沿用现有 driver/schema，配置补充可选
-`orca_local_runtime_executable`；多个同名注册项目时另用可选 `orca_local_repository_path`
-明确选择真实项目，不能任选一个。本机 agent/model/effort 取已有本机字段，不需要远程
+`environment-check.orca-local-full-access`，沿用现有 driver/schema。对应配置项的
+`execution.settings.agent_launch.runtime_executable` 指向本机 helper，
+`fixture.repository.local_path` 明确选择真实注册项目，不能任选同名项目。
+本机 agent/model/effort 取该项 execution.settings 的公开字段，不需要远程
 environment。执行主机 helper 安装在业务工作区外。本机 fixture 的 caller clone 与 Orca
 已注册项目分别记录，原 runtime 从准备证据核验，不复用 `remote_runtime_id`。
 本机通过原生 IPC 查询观察，远程保留订阅加补查；注册不代表已验通过，当前构建结果见[专属验收](acceptance/orca-local-remote.md)。
@@ -114,22 +119,21 @@ L1 拒绝该 live opt-in，默认 skip 不计真机通过。
 .\scripts\test.ps1 -Level Controlled
 # 将 example 复制到本地非秘密配置，填写原生可执行文件与已配对 environment。
 New-Item -ItemType Directory -Force .evidence | Out-Null
-Copy-Item tests/live-config.example.json .evidence/live-config.json
-.\scripts\test.ps1 -Level L2 -Config .evidence/live-config.json
-.\scripts\test.ps1 -Level L3 -Scenario orca-remote.smoke -Config .evidence/live-config.json
-.\scripts\test.ps1 -Level L3 -Scenario local-codex.feedback,local-codex.audited,local-codex.multirun -MaxParallel 2 -Config .evidence/live-config.json
-# 全 L3 含稳定性 case，必须另备 v2 配置及管理员故障宿主，并填写两种不同模型。
-Copy-Item tests/live-stability-config.example.json .evidence/live-stability-config.json
-.\scripts\test.ps1 -Level L3 -Config .evidence/live-stability-config.json
-.\scripts\test.ps1 -Level L2,L3 -Config .evidence/live-stability-config.json
+Copy-Item tests/test-config.example.json .evidence/test-config.json
+.\scripts\test.ps1 -Level L2 -Config .evidence/test-config.json
+.\scripts\test.ps1 -Level L3 -Scenario orca-remote.smoke -Config .evidence/test-config.json
+.\scripts\test.ps1 -Level L3 -Scenario local-codex.feedback,local-codex.audited,local-codex.multirun -MaxParallel 2 -Config .evidence/test-config.json
+# 全 L3 保留全部注册 case；缺配置的项目不派发，报告 incomplete，退出 1。
+.\scripts\test.ps1 -Level L3 -Config .evidence/test-config.json
+.\scripts\test.ps1 -Level L2,L3 -Config .evidence/test-config.json
 .\scripts\test.ps1 -Level L4
 ```
 
 PowerShell 交互调用多个场景时可使用数组；外部命令行请传实际数组参数，不把逗号串作为
-单个场景 ID。审计场景配置须提供显式 `model`、不同的 `audit_model`，可配置
-`audit_reasoning_effort`。独立两模型场景仍保留原会话，不要求模型产生 finding。
+单个场景 ID。审计配置 `local-codex-audited` 的 settings.model 与 workflow.audit_model.model
+须显式且不同，effort 位于各自的 reasoning_effort。独立两模型场景仍保留原会话，不要求模型产生 finding。
 
-L2/L3/L4 自动先运行 L1 和完整受控前置。任何前置失败都不会启动模型。L4 不需要真机
+有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整受控前置；全缺配置时只报告不可用，不启动这些前置。共享前置失败阻止所依赖的 case；L2 专属原生 Git 检查归其 worker 准备，失败不阻止独立 L3。L4 不需要真机
 配置，执行真实 EXE/服务/Git/SQLite 和受控原生协议，不消耗模型 token 或创建真实 PR。
 `-MaxParallel` 默认为 1，范围 1–8；L2/L3 可并行，L4 先排空队列后独占执行。调度器还
 用当前用户宿主的八个 OS 文件锁槽协调不同批次的场景；L4 占全部槽，L2/L3 各占一槽。
@@ -142,10 +146,10 @@ L2/L3/L4 自动先运行 L1 和完整受控前置。任何前置失败都不会�
 不复用上次 Run、请求授权或已经执行过的 manifest。脚本等待完成后返回退出码；
 不能以后台 PID 或启动成功作为通过。
 
-L2 当前原生资格固定 Codex 0.159.2；配置 `codex_executable` 为实际 native EXE。
-本机 `model` 留空使用原生默认模型；可显式固定模型和 reasoning_effort。远端可单独设置
-`remote_model`、`remote_reasoning_effort`、`remote_args`；`remote_model` 显式留空表示采用
-远端 Codex 的原生默认模型和 effort，与手动运行 `codex` 一致。省略该字段才继承共用 model。
+L2 当前原生资格固定 Codex 0.159.2；`configurations.local-codex` 必须提供本机
+codex-app-server、development/1、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
+未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
+每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
 项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
 
@@ -156,9 +160,9 @@ L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名
 `orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个仍能反馈。
 例如 `./scripts/test.ps1 -Level L3 -Scenario orca-local.pi -Config <配置路径>`；真实结果见[通用接入验收](acceptance/orca-generic-agent.md)。
 
-配置使用 `orca_executable`、`orca_local_runtime_executable` 和已登记的 `orca_local_repository_path`；
+Orca 配置使用 execution.settings.transport.executable、agent_launch.runtime_executable／runtime_sha256 和 fixture.repository.local_path；
 运行期间不依赖 pairing/environment，manifest 冻结 `local_runtime_id` 与 `local_repository_path`。
-Pi/DSH 分别读取 `pi_executable/model/reasoning_effort`、`dsh_executable/model/reasoning_effort`，
+Pi/DSH 分别读取各自配置的 agent_launch.executable／model／reasoning_effort，
 不继承 Codex 参数。本机原 TUI 和 helper 均在所选执行主机运行。
 
 受管版本为 Pi 0.87.1、DSH 0.2.1-rc.2 + 社区 dsh-tui 0.16.1、Node 24；Windows 权限工具使用
@@ -169,7 +173,7 @@ Pi/DSH 要求原生依赖已安装，Run 不联网安装、不修改全局 profi
 
 ```powershell
 npm install --prefix C:/AgentTools/dsh @deepseek-ai/dsh@0.2.1-rc.2 @deepseek-harness-tui/dsh-tui@0.16.1
-# dsh_executable 指向 C:/AgentTools/dsh/node_modules/.bin/dsh.cmd
+# 对应配置的 agent_launch.executable 指向 C:/AgentTools/dsh/node_modules/.bin/dsh.cmd
 ```
 
 原 TUI 的正式扩展提供开始/完成事实，现有 Orca 只负责资源和投递；不修改 Orca。
@@ -196,8 +200,8 @@ App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 Ap
 宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
 参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
-权限模式由非秘密配置 `access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
-普通业务与环境检查复用生产权限编译。`remote_args` 只填写支持的启动参数（示例为
+权限模式由配置项的 `execution.settings.access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
+普通业务与环境检查复用生产权限编译。`execution.settings.agent_launch.args` 只填写支持的启动参数（示例为
 `["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
 合并为同一通过结果。Orca 的 `agent_launch.runtime_executable` 指向执行主机安装的
 `steerrunner-agent.exe`（本仓 `cmd/steerrunner-agent`）。辅助程序在该主机解析 gh 登录、
@@ -228,7 +232,7 @@ session、inline transport 和期限的回执，再发送首个业务输入，�
 
 L2 使用生产默认的实施/报告/发布提示词，不覆盖 `prompt_overrides`，也不把
 `publish.ps1` 发布器放入 L2 夹具；Git 提交、push 和 gh PR 创建由原 worker 完成。
-夹具显式保留 packed refs。L2 前置另通过实际 native `command/exec` 验证 loose/packed
+夹具显式保留 packed refs。L2 case 的准备另通过实际 native `command/exec` 验证 loose/packed
 head 提交的 stderr 为空，且另一个仓库仍不可写；不使用模型或远端写操作。
 worker 命令日志审计会拒绝权限错误，即使命令退出码为 0、提交及 PR 已成功。
 文件系统拒绝及 HTTP 401/403 均在审计范围内；默认 host broker 的可信收尾事实还须
@@ -262,6 +266,11 @@ Runner 生产契约的交付里程碑仍为 `pr_ready`。合并属于测试 driv
 ## 证据与失败
 
 批次 `.evidence/tests-*/summary.json` 包含来源、每级结果及现场路径。
+报告保存原请求范围、每 case 的 availability／原因，以及每级 registered／requested／excluded／unavailable／executed／passed／missing
+集合和 `complete_level_passed`；repeat 单独计数。缺配置的项为 unavailable，零派发，独立的
+已配项仍执行；只要请求范围有不可用项，批次为 incomplete、退出 1，实际失败优先记 failed。
+显式 Scenario 子集可通过，但不能代表全级通过。本机基线配置完整性与实际同构建 L2 通过分开报告。
+前置失败仍保留全部请求项和 unavailable 原因；尚未派发的可用项为 queued，不计执行。
 现场 manifest 记录冻结输入；`evidence/` 保存 `result.json`、`scenario.json`、CLI journal、
 driver 的 Git/GitHub/checker 调用、原始/反馈 PR、合并与停止快照。Runner 自身业务数据和
 原生协议日志在该现场 `s/` 中，模型 token 信息以原生记录可提供的真实数据为准。
@@ -297,14 +306,44 @@ success；它与“原操作结果未知”分别判断，沿用既有 Orca 完�
 验收使用 `test.ps1`，确保前置门槛和批次汇总完整。
 
 审计 workflow 的两模型定向诊断复用同一个 native driver。配置中先显式指定执行 `model`，
-再用下列命令选择不同的审计模型；省略审计 effort 时继承执行 effort。此诊断核验两项审计、
+并填写 local-codex-audited.workflow.audit_model；省略审计 effort 时继承执行 effort。此诊断核验两项审计、
 执行模型回切及实际 PR 后停止原 Run/服务，保留测试 PR 未合并，不计作普通 L2 完整 smoke。
 它不改变默认 L2/L3 场景选择或生产默认发布提示词；该新 Run 冻结测试用发布提示词覆盖。
 
 ```powershell
-$auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.smoke -Config .evidence/live-config.json -AuditModel '<审计模型>' -AuditReasoningEffort high
+$auditManifest = ./scripts/new-test-fixture.ps1 -Scenario local-codex.audited -Config .evidence/test-config.json
 ./scripts/test-native.ps1 -Manifest $auditManifest
 ```
+
+## 独立测试配置与迁移
+
+测试文件使用 [example](../tests/test-config.example.json) 和[外层 schema](../tests/test-config.schema.json)。
+`configurations` 中每项为 `{execution, workflow?}`，直接复用公开生产字段和纯 gate；提供
+workflow 就必须合法，Run 需要 workflow，环境检查只消费 execution。需求／角色／固定配置项
+引用由唯一 [case 注册](../internal/testkit/livetest/cases.json) 维护，用户无需再填写 case 绑定表。
+`fixture` 声明完整 repository／publication 测试源，继续只写专属 SteerlineTest；每 case
+生成独立分支／材料／查询取证工具。当前 fixture 使用 GitHub command publication；其他
+产品合法 provider 会明确标记不符合 case 要求，生成器不自动改选 provider。query 取证工具
+由 case 生成，配置中的认证引用等其余设置保留。`harness` 只含 admin_host 和 feedback_qualification；
+证据目录沿既有 `-OutDir` 管理。测试输入不进入生产 profile，也不影响外部 submit。
+
+文件只从显式 Config 读取，入口相对路径按调用 cwd，harness 相对路径按原文件目录解析。
+批次冻结规范化副本／摘要，worker 使用该副本及同一 Runner 构建；不重读原文件选择后端。
+根结构、版本、未知外层字段、重复键错误退出 2；单项无效只使依赖它的 case 不可用。
+旧 live-config/v1、v2 明确拒绝；按上述层次手动迁移，不自动继承扁平字段。旧冻结现场仍用原构建结算。
+
+静态列表只判配置是否足以尝试，不查询登录、程序存在、模型或连接。它要求预先产出的待测
+Runner 和匹配 helper，不触发构建、L1、服务、调度锁或现场：
+
+```powershell
+.\scripts\build.ps1
+go build -trimpath -o bin/test-config.exe ./tests/helpers/native
+.\scripts\test.ps1 -Level L3 -Config .evidence/test-config.json -ListAvailability
+```
+
+可用 `-RunnerExe`／`-ConfigHelper` 指向已有构建；实际测试使用相同参数可冻结选定产物，
+Runner 的 `.build.json` 须随包提供。列表成功退出 0 不代表已通过，缺产物／文件损坏退出 2。
+本机 Codex 是独立项目交付基线；缺基线不阻止无依赖的 L1、Controlled 或其他已配置 L3。
 
 ## 扩展场景与 L3 稳定性入口
 
@@ -329,12 +368,12 @@ L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
 原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
 
 完整稳定性套件需要管理员测试宿主、Node.js、已安装的 Windows Orca CLI 公开运行文件及
-已配对的真实 environment。使用 `tests/live-stability-config.example.json` 创建本地非秘密
-v2 配置；保持原生自身认证。完整资格入口：
+已配对的真实 environment。使用 `tests/test-config.example.json` 创建本地非秘密
+v1 测试配置并补全 registry 引用的配置项；保持原生自身认证。完整资格入口：
 
 主测试保持普通用户身份，管理员终端单独运行
-`./scripts/stability-admin-host.ps1 -Directory C:/srt-admin`，并将 v2 配置中的
-`admin_host` 设置为该目录的绝对路径。该宿主只接受固定现场的网络 block/block-state/restore，
+`./scripts/stability-admin-host.ps1 -Directory C:/srt-admin`，并将配置中的
+`harness.admin_host` 设置为该目录的绝对路径。该宿主只接受固定现场的网络 block/block-state/restore，
 核验宿主 PID/创建时间与原 manifest；每次操作有独立回执和恢复 watchdog。
 宿主最多运行十二小时，可在该目录写入 `stop` 文件结束；先确认本轮故障设施均已恢复。
 重复验收请使用新的空目录，避免上次的 `stop` 文件使宿主立即结束。
@@ -346,14 +385,14 @@ v2 配置；保持原生自身认证。完整资格入口：
 原会话/Attempt 的 `pr_ready` 并只发布一次。结果校验独立读取原门、原生调用日志、
 Runner-only 网络 scope 和阻断期快照，不接受仅凭 passed 标志的结论。
 L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗尽、认证/身份变化不可重试、
-恢复后原 provider 绑定及已尝试输入零重发。新 L3 case 仍需有效 v2 配置和管理员故障宿主
+恢复后原 provider 绑定及已尝试输入零重发。新 L3 case 仍需有效的对应配置项和管理员故障宿主
 做真机验收；注册和受控测试通过不代表该 case 的真机或并行资格通过。
 
 ```powershell
-.\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/live-stability-config.json
+.\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮十七场景二十四 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮二十二场景二十九 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
@@ -368,7 +407,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 
 ```powershell
 ./scripts/test.ps1 -Level Controlled
-./scripts/test.ps1 -Level L3 -Scenario @('environment-check.local-sandbox','environment-check.local-full-access') -Config .evidence/live-config.json
+./scripts/test.ps1 -Level L3 -Scenario @('environment-check.local-sandbox','environment-check.local-full-access') -Config .evidence/test-config.json
 ```
 
 两种原生场景沿正式分级入口，分别创建新 fixture 和 Check。driver 只准备

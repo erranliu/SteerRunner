@@ -20,7 +20,7 @@ function Open-SRTestLease([bool]$Exclusive,[string]$Directory = '') {
 }
 
 function Invoke-SRCaseBatch {
-    param([object[]]$Executions,[string]$Output,[string]$Config,[string]$Catalog,[string]$FixtureParent,[int]$MaxParallel,[string]$FeedbackQualification = '',[scriptblock]$Checkpoint,[string]$WorkerScript = (Join-Path $PSScriptRoot 'run-test-case.ps1'),[string]$LeaseDirectory = '')
+    param([object[]]$Executions,[string]$Output,[string]$Config,[string]$Catalog,[string]$FixtureParent,[int]$MaxParallel,[string]$FeedbackQualification = '',[string]$RunnerExe = '',[string]$ConfigHelper = '',[string]$ConfigurationSHA256 = '',[string]$RunnerSHA256 = '',[string]$HelperSHA256 = '',[string]$RequirementsSHA256 = '',[scriptblock]$Checkpoint,[string]$WorkerScript = (Join-Path $PSScriptRoot 'run-test-case.ps1'),[string]$LeaseDirectory = '')
     $taskPending = [Collections.Generic.Queue[object]]::new()
     foreach ($taskExecution in $Executions) { $taskPending.Enqueue($taskExecution) }
     $taskActive = [Collections.Generic.List[object]]::new()
@@ -33,7 +33,8 @@ function Invoke-SRCaseBatch {
             $taskNext = $taskPending.Peek()
             if (($taskNext.entry.level -eq 'L4' -and $taskActive.Count) -or @($taskActive | Where-Object { $_.record.level -eq 'L4' }).Count) { break }
             $taskLease=$null
-            if (-not $taskNext.excluded) {
+            $taskUnavailable = $taskNext.ContainsKey('unavailable') -and $taskNext.unavailable
+            if (-not $taskNext.excluded -and -not $taskUnavailable) {
                 $taskLease=Open-SRTestLease ($taskNext.entry.level -eq 'L4') -Directory $LeaseDirectory
                 if ($null -eq $taskLease) { break }
             }
@@ -41,6 +42,11 @@ function Invoke-SRCaseBatch {
             $taskStem = $taskNext.entry.id + '-' + $taskNext.case.id + '-r' + $taskNext.repeat_index
             $taskRecord = @{level=$taskNext.entry.level;scenario=$taskNext.entry.id;case_id=$taskNext.case.id;repeat_index=$taskNext.repeat_index;status='queued';manifest=$null;evidence=$null;fixture_record=(Join-Path $Output ($taskStem + '-fixture.json'));started_at=$null;finished_at=$null}
             $taskRecords.Add($taskRecord)
+            if ($taskUnavailable -and -not $taskNext.excluded) {
+                $taskRecord.status='unavailable'; $taskRecord['availability']=$taskNext.availability
+                & $Checkpoint $taskRecords.ToArray()
+                continue
+            }
             if ($taskNext.excluded) {
                 $taskRecord.status='excluded'; $taskRecord.reason='User explicitly excluded administrator-required tests; not executed or passed'
                 & $Checkpoint $taskRecords.ToArray()
@@ -48,7 +54,7 @@ function Invoke-SRCaseBatch {
             }
             $taskResult = Join-Path $Output ($taskStem + '-case.json')
             $taskRequest = Join-Path $Output ($taskStem + '-request.json')
-            $taskJob = @{entry=$taskNext.entry;case=$taskNext.case;repeat_index=$taskNext.repeat_index;config=$Config;catalog=$Catalog;fixture_parent=$FixtureParent;feedback_qualification=$FeedbackQualification;output=$Output;result_path=$taskResult;record=$taskRecord}
+            $taskJob = @{entry=$taskNext.entry;case=$taskNext.case;repeat_index=$taskNext.repeat_index;config=$Config;configuration_sha256=$ConfigurationSHA256;catalog=$Catalog;fixture_parent=$FixtureParent;feedback_qualification=$FeedbackQualification;runner_exe=$RunnerExe;runner_sha256=$RunnerSHA256;config_helper=$ConfigHelper;helper_sha256=$HelperSHA256;requirements_sha256=$RequirementsSHA256;output=$Output;result_path=$taskResult;record=$taskRecord}
             [IO.File]::WriteAllText($taskRequest,($taskJob | ConvertTo-Json -Depth 30),[Text.UTF8Encoding]::new($false))
             $taskRecord.status='preparing'
             $taskInfo = [Diagnostics.ProcessStartInfo]::new($taskShell)

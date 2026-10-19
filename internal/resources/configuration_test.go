@@ -31,6 +31,9 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		valid                     bool
 	}{
 		{"plain", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":1}`, true},
+		{"legacy_empty_mode", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":1}`, true},
+		{"legacy_null_app_reference", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"github_auth":null}}`, `{"id":"development","version":1}`, true},
+		{"orca_legacy_empty_mode", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":1}`, true},
 		{"orca_legacy", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":1}`, true},
 		{"orca_pi", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi"}}`, `{"id":"development","version":1}`, true},
 		{"orca_dsh", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","access_mode":"full_access"}}`, `{"id":"development","version":1}`, true},

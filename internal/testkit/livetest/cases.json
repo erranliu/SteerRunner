@@ -11,7 +11,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-codex",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -25,7 +40,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "pi",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-pi",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -39,7 +69,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "pi",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-pi-full-access",
+                "target_kind": "local",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -53,7 +98,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "dsh",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-dsh",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -66,7 +126,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "codex-app-server",
+                "configuration": "local-codex",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -79,7 +154,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -92,7 +182,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex-full-access",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -105,7 +210,22 @@
       "cases": [
         {
           "id": "accepted-response-lost",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -118,11 +238,41 @@
       "cases": [
         {
           "id": "active-disconnect",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         },
         {
           "id": "pre-send-disconnect",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         }
       ]
     },
@@ -135,19 +285,79 @@
       "cases": [
         {
           "id": "graceful-active",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         },
         {
           "id": "kill-active",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         },
         {
           "id": "graceful-boundary",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         },
         {
           "id": "kill-boundary",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         }
       ]
     },
@@ -160,15 +370,60 @@
       "cases": [
         {
           "id": "active",
-          "outcome": "stopped"
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         },
         {
           "id": "boundary",
-          "outcome": "stopped"
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         },
         {
           "id": "unreachable",
-          "outcome": "revoked-unverified"
+          "outcome": "revoked-unverified",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         }
       ]
     },
@@ -181,11 +436,41 @@
       "cases": [
         {
           "id": "completion-gap",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         },
         {
           "id": "query-unavailable",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": true
+          }
         }
       ]
     },
@@ -198,7 +483,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "merged"
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "codex-app-server",
+                "configuration": "local-codex",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -211,7 +511,23 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "pr_ready"
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "codex-app-server",
+                "configuration": "local-codex-audited",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development-audited",
+                "different_models": true
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -224,7 +540,22 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "pr_ready"
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "codex-app-server",
+                "configuration": "local-codex",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -293,7 +624,21 @@
       "cases": [
         {
           "id": "complete",
-          "outcome": "checked"
+          "outcome": "checked",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "sandbox",
+                "configuration": "local-codex",
+                "agent": "codex",
+                "target_kind": "local",
+                "adapter": "codex-app-server"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -306,7 +651,21 @@
       "cases": [
         {
           "id": "complete",
-          "outcome": "checked"
+          "outcome": "checked",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "full_access",
+                "configuration": "local-codex-full-access",
+                "agent": "codex",
+                "target_kind": "local",
+                "adapter": "codex-app-server"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -319,7 +678,21 @@
       "cases": [
         {
           "outcome": "checked",
-          "id": "complete"
+          "id": "complete",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "sandbox",
+                "configuration": "orca-remote-codex",
+                "agent": "codex",
+                "target_kind": "orca_environment",
+                "adapter": "orca-terminal"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -332,7 +705,21 @@
       "cases": [
         {
           "outcome": "checked",
-          "id": "complete"
+          "id": "complete",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "full_access",
+                "configuration": "orca-remote-codex-full-access",
+                "agent": "codex",
+                "target_kind": "orca_environment",
+                "adapter": "orca-terminal"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -345,7 +732,22 @@
       "cases": [
         {
           "outcome": "merged",
-          "id": "default"
+          "id": "default",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-codex",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -358,7 +760,21 @@
       "cases": [
         {
           "outcome": "checked",
-          "id": "complete"
+          "id": "complete",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "sandbox",
+                "configuration": "orca-local-codex",
+                "agent": "codex",
+                "target_kind": "local",
+                "adapter": "orca-terminal"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -371,7 +787,21 @@
       "cases": [
         {
           "outcome": "checked",
-          "id": "complete"
+          "id": "complete",
+          "requirements": {
+            "operation": "environment-check start",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "access_mode": "full_access",
+                "configuration": "orca-local-codex-full-access",
+                "agent": "codex",
+                "target_kind": "local",
+                "adapter": "orca-terminal"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     },
@@ -385,7 +815,30 @@
       "cases": [
         {
           "id": "default",
-          "outcome": "pr_ready"
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "secondary": {
+                "adapter": "orca-terminal",
+                "access_mode": "sandbox",
+                "configuration": "orca-local-dsh",
+                "target_kind": "local",
+                "agent": "dsh",
+                "workflow": "development"
+              },
+              "primary": {
+                "agent": "pi",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-pi",
+                "target_kind": "local",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
         }
       ]
     }

@@ -14,6 +14,15 @@ func ConfigurationSchemas() json.RawMessage {
 		panic(err)
 	}
 	adapters := schemas["adapters"].(map[string]any)
+	// Match existing admission: an explicit empty mode uses the original
+	// sandbox default, and a null optional App reference is equivalent to absent.
+	// This only corrects publication; it does not tighten legacy write gates.
+	for _, name := range []string{"codex-app-server", "orca-terminal"} {
+		properties := adapters[name].(map[string]any)["properties"].(map[string]any)
+		properties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access"}
+	}
+	nativeProperties := adapters["codex-app-server"].(map[string]any)["properties"].(map[string]any)
+	nativeProperties["github_auth"].(map[string]any)["type"] = []string{"object", "null"}
 	local := map[string]any{"type": "object", "required": []string{"kind"}, "additionalProperties": false,
 		"properties": map[string]any{"kind": map[string]any{"const": "local"}, "environment": map[string]any{"const": ""}}}
 	remote := map[string]any{"type": "object", "required": []string{"kind", "environment"}, "additionalProperties": false,
@@ -42,6 +51,7 @@ func ConfigurationSchemas() json.RawMessage {
 	}
 	schemas["run_configuration"] = map[string]any{"type": "object", "required": []string{"execution", "workflow"}, "additionalProperties": false,
 		"properties": map[string]any{"execution": map[string]any{"oneOf": choices}, "workflow": schemas["workflow"]}, "allOf": rules}
+	schemas["run_input"] = runInputSchema(schemas)
 	raw, err := json.Marshal(schemas)
 	if err != nil {
 		panic(err)

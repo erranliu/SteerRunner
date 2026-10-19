@@ -4,10 +4,14 @@ param(
     [string]$Catalog = '',
     [string]$FixtureParent = 'C:\srt',
     [string]$RecordPath = '',
-    [string]$AuditModel = '',
     [string]$FeedbackQualification = '',
-    [string]$AuditReasoningEffort = '',
     [string]$Case = 'default',
+    [string]$RunnerExe = '',
+    [string]$ConfigHelper = '',
+    [string]$ConfigurationSHA256 = '',
+    [string]$RunnerSHA256 = '',
+    [string]$HelperSHA256 = '',
+    [string]$RequirementsSHA256 = '',
     [ValidateRange(1,10)][int]$RepeatIndex = 1
 )
 $ErrorActionPreference = 'Stop'
@@ -23,86 +27,45 @@ $taskCases = @(Get-SRLiveCases $taskScenario)
 $taskCase = @($taskCases | Where-Object { $_.id -ceq $Case })
 if ($taskCase.Count -ne 1) { throw 'Select an exact registered case; multi-case scenarios require -Case' }
 $taskStability = $taskScenario.driver -eq 'execution-stability'
-if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
-$taskConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
-if ($taskConfig.schema -notin @('steerrunner-live-config/v1','steerrunner-live-config/v2')) { throw 'Unsupported live config' }
-function Read-Setting([string]$Name, [string]$Default = '') {
-    $taskProperty = $taskConfig.PSObject.Properties[$Name]
-    if ($null -eq $taskProperty -or -not $taskProperty.Value) { return $Default }
-    return [string]$taskProperty.Value
+. (Join-Path $PSScriptRoot 'test-configuration.ps1')
+if (-not $RunnerExe) { $RunnerExe = Join-Path $taskRepo 'bin/steerrunner.exe' }
+if (-not $ConfigHelper) { $ConfigHelper = Join-Path $taskRepo 'bin/test-config.exe' }
+$taskAssessment = Get-SRTestConfiguration -RunnerExe $RunnerExe -Helper $ConfigHelper -Config $Config
+foreach ($taskIdentity in @(@{expected=$ConfigurationSHA256;actual=$taskAssessment.source_digest;name='configuration'},@{expected=$RunnerSHA256;actual=$taskAssessment.runner_sha256;name='Runner'},@{expected=$HelperSHA256;actual=$taskAssessment.helper_sha256;name='helper'},@{expected=$RequirementsSHA256;actual=$taskAssessment.requirements_digest;name='requirements'})) {
+    if ($taskIdentity.expected -and $taskIdentity.expected -cne $taskIdentity.actual) { throw ('Frozen batch artifact changed during assessment: ' + $taskIdentity.name) }
 }
-function Write-JSON([string]$Path, $Value) { [IO.File]::WriteAllText($Path, ($Value | ConvertTo-Json -Depth 30), [Text.UTF8Encoding]::new($false)) }
-if (-not $FeedbackQualification -and $Scenario -eq 'local-codex.smoke') { $FeedbackQualification=Read-Setting 'feedback_qualification' }
+$taskAvailable = @($taskAssessment.cases | Where-Object {$_.scenario_id -ceq $Scenario -and $_.case_id -ceq $Case})
+if ($taskAvailable.Count -ne 1 -or $taskAvailable[0].availability -ne 'available') { throw 'Selected case is unavailable; query -ListAvailability for its configuration reasons' }
+$taskConfig = $taskAssessment.configuration
+$taskRequired = $taskCase[0].requirements
+$taskSelected = $taskConfig.configurations[$taskRequired.roles.primary.configuration]
+$taskExecution = $taskSelected.execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
+$taskFixture = $taskConfig.fixture
+if ($taskFixture.publication.provider -cne 'command' -or $taskFixture.publication.settings.base_url -cne 'https://github.com') { throw 'Dedicated live fixtures require the explicit GitHub command publication provider' }
+$taskAudit = if ($taskScenario.driver -eq 'development-audited') { $taskSelected.workflow.audit_model } else { $null }
+$taskOrca = ''; $taskEnvironment = ''; $taskLocalHelper = ''
+if ($taskExecution.adapter -eq 'codex-app-server') {
+    $taskCodex = $taskExecution.settings.executable
+    if (-not [IO.Path]::IsPathFullyQualified($taskCodex) -or -not (Test-Path -LiteralPath $taskCodex -PathType Leaf)) { throw 'Configured native Codex executable is unavailable' }
+    $taskVersion = (& $taskCodex --version | Out-String).Trim()
+    if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
+} else {
+    $taskOrca = $taskExecution.settings.transport.executable
+    $taskEnvironment = if ($taskExecution.target.ContainsKey('environment')) { $taskExecution.target.environment } else { '' }
+    if (-not [IO.Path]::IsPathFullyQualified($taskOrca) -or -not (Test-Path -LiteralPath $taskOrca -PathType Leaf)) { throw 'Configured Orca executable is unavailable' }
+    $taskLaunch = $taskExecution.settings.agent_launch
+    if ($taskExecution.target.kind -eq 'local') { $taskLocalHelper = $taskLaunch.runtime_executable }
+    # Source hash is verified, never silently replaced by an installed build.
+    if ($taskLocalHelper -and ((Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskLaunch.runtime_sha256)) { throw 'Configured helper source hash changed' }
+}
+function Write-JSON([string]$Path, $Value) { [IO.File]::WriteAllText($Path, ($Value | ConvertTo-Json -Depth 60), [Text.UTF8Encoding]::new($false)) }
 function Invoke-Git([string[]]$Arguments) {
     $taskOutput = & git -c core.longpaths=true @Arguments 2>&1
     if ($LASTEXITCODE -ne 0) { throw ('Fixture Git failed: ' + ($Arguments -join ' ') + ': ' + ($taskOutput | Out-String).Trim()) }
     return ($taskOutput | Out-String).Trim()
 }
-$taskExecution = $null
-if ($taskScenario.target -eq 'local-codex') {
-    $taskCodex = Read-Setting 'codex_executable'
-    if (-not [IO.Path]::IsPathRooted($taskCodex) -or -not (Test-Path -LiteralPath $taskCodex -PathType Leaf)) { throw 'Configure the absolute native Codex executable' }
-    $taskVersion = (& $taskCodex --version | Out-String).Trim()
-    if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
-    $taskExecution = @{adapter='codex-app-server'; target=@{kind='local'}; settings=@{executable=$taskCodex; model=(Read-Setting 'model'); reasoning_effort=(Read-Setting 'reasoning_effort' 'medium')}}
-    if ($taskConfig.PSObject.Properties['github_auth']) { $taskExecution.settings['github_auth'] = $taskConfig.github_auth }
-} elseif ($taskScenario.target -in @('orca-environment','orca-local')) {
-    $taskOrca = Read-Setting 'orca_executable'
-    $taskEnvironment = Read-Setting 'orca_environment'
-    if (-not [IO.Path]::IsPathRooted($taskOrca) -or -not (Test-Path -LiteralPath $taskOrca -PathType Leaf) -or ($taskScenario.target -eq 'orca-environment' -and -not $taskEnvironment)) { throw 'Configure a selected Orca executable and the selected target' }
-    $taskRemoteModel = Read-Setting 'model'
-    if ($taskConfig.PSObject.Properties['remote_model']) { $taskRemoteModel = [string]$taskConfig.remote_model }
-    $taskRemoteEffort = Read-Setting 'reasoning_effort' 'medium'
-    if ($taskConfig.PSObject.Properties['remote_reasoning_effort']) { $taskRemoteEffort = [string]$taskConfig.remote_reasoning_effort }
-    $taskLaunch = @{executable=(Read-Setting 'remote_agent' 'codex')}
-    if (Read-Setting 'remote_runtime_executable') { $taskLaunch['runtime_executable'] = Read-Setting 'remote_runtime_executable' }
-    if (Read-Setting 'remote_runtime_sha256') { $taskLaunch['runtime_sha256'] = Read-Setting 'remote_runtime_sha256' }
-    if ($taskRemoteModel) {
-        $taskLaunch['model'] = $taskRemoteModel
-        if ($taskRemoteEffort) { $taskLaunch['reasoning_effort'] = $taskRemoteEffort }
-    }
-    if ($taskConfig.PSObject.Properties['remote_args']) {
-        $taskRemoteArgs = @($taskConfig.remote_args)
-        foreach ($taskArg in $taskRemoteArgs) { if ($taskArg -isnot [string] -or $taskArg -match '[\x00\r\n]') { throw 'remote_args must be a string array' } }
-        $taskLaunch['args'] = $taskRemoteArgs
-    }
-    $taskExecution = @{adapter='orca-terminal';target=@{kind='orca_environment';environment=$taskEnvironment};settings=@{transport=@{executable=$taskOrca;wait_timeout='40s'};agent_launch=$taskLaunch}}
-    if ($taskScenario.target -eq 'orca-local') {
-        foreach ($taskRouteKey in @('ORCA_ENVIRONMENT','ORCA_PAIRING_CODE','ORCA_REMOTE_PAIRING')) { [Environment]::SetEnvironmentVariable($taskRouteKey,$null,'Process') }
-        $taskExecution.target = @{kind='local'}
-        $taskLocalHelper = Read-Setting 'orca_local_runtime_executable'
-        $taskLocalAgent = Read-Setting 'codex_executable'
-        if (-not [IO.Path]::IsPathFullyQualified($taskLocalHelper) -or -not (Test-Path -LiteralPath $taskLocalHelper -PathType Leaf) -or -not [IO.Path]::IsPathFullyQualified($taskLocalAgent) -or -not (Test-Path -LiteralPath $taskLocalAgent -PathType Leaf)) { throw 'Local Orca requires absolute native Codex and installed helper paths' }
-        $taskLaunch = @{executable=$taskLocalAgent;runtime_executable=$taskLocalHelper;runtime_sha256=(Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant();args=@('--no-daemon')}
-        if (Read-Setting 'model') { $taskLaunch['model']=Read-Setting 'model'; $taskLaunch['reasoning_effort']=Read-Setting 'reasoning_effort' 'medium' }
-        if ($taskScenario.PSObject.Properties['agent'] -and $taskScenario.agent -ne 'codex') {
-            $taskAgent=$taskScenario.agent
-            $taskExecution.settings['agent']=$taskAgent
-            $taskLaunch=@{executable=(Read-Setting ($taskAgent+'_executable') ($taskAgent+'.cmd'));runtime_executable=$taskLocalHelper;runtime_sha256=(Get-FileHash -LiteralPath $taskLocalHelper -Algorithm SHA256).Hash.ToLowerInvariant()}
-            if (Read-Setting ($taskAgent+'_model')) { $taskLaunch['model']=Read-Setting ($taskAgent+'_model') }
-            if (Read-Setting ($taskAgent+'_reasoning_effort')) { $taskLaunch['reasoning_effort']=Read-Setting ($taskAgent+'_reasoning_effort') }
-        }
-        $taskExecution.settings.agent_launch = $taskLaunch
-    }
-} else { throw 'Unregistered execution target' }
-if ($taskScenario.target -eq 'local-codex' -and -not (Read-Setting 'model')) { $taskExecution.settings.Remove('model') }
-$taskMode = Read-Setting 'access_mode' 'sandbox'
-if ($Scenario -in @('environment-check.local-full-access','environment-check.orca-full-access','environment-check.orca-local-full-access','orca-remote.full-access','orca-local.pi-full-access')) { $taskMode = 'full_access' }
-if ($Scenario -in @('environment-check.local-sandbox','environment-check.orca-sandbox','environment-check.orca-local-sandbox','orca-local.smoke','orca-local.codex','orca-local.pi','orca-local.dsh','orca-local.mixed')) { $taskMode = 'sandbox' }
-if ($taskMode -notin @('sandbox','full_access')) { throw 'Invalid access_mode' }
-$taskExecution.settings['access_mode'] = $taskMode
-$taskAudit = $null
-if ($taskScenario.driver -eq 'development-audited' -and -not $AuditModel) {
-    $AuditModel = Read-Setting 'audit_model'
-    $AuditReasoningEffort = Read-Setting 'audit_reasoning_effort'
-    if (-not $AuditModel) { throw 'Audited scenario requires audit_model and explicit execution model in the non-secret config' }
-}
-if ($AuditModel) {
-    if ($taskScenario.target -ne 'local-codex' -or -not (Read-Setting 'model') -or $AuditModel -eq (Read-Setting 'model') -or $AuditModel -ne $AuditModel.Trim() -or $AuditModel -match '[\x00-\x1f\x7f-\x9f]') { throw 'Audited fixture requires local Codex and two explicit, different models' }
-    if ($AuditReasoningEffort -and $AuditReasoningEffort -notin @('minimal','low','medium','high','xhigh','max','ultra')) { throw 'Invalid audit reasoning effort' }
-    $taskAudit = @{model=$AuditModel}
-    if ($AuditReasoningEffort) { $taskAudit['reasoning_effort'] = $AuditReasoningEffort }
-} elseif ($AuditReasoningEffort) { throw 'AuditReasoningEffort requires AuditModel' }
+if (-not $FeedbackQualification -and $taskConfig.ContainsKey('harness') -and $taskConfig.harness.ContainsKey('feedback_qualification')) { $FeedbackQualification = $taskConfig.harness.feedback_qualification }
+if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -Scenario $Scenario -Case $Case -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
 & gh auth status --active --hostname github.com 2>&1 | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }
 $taskID = [Guid]::NewGuid().ToString('N').Substring(0,12)
@@ -140,9 +103,9 @@ if ($taskScenario.target -eq 'orca-local') {
     $taskExecution.settings.transport.executable = $taskLocalAudit
     $taskExecution.settings.transport['args'] = @('local-audit','-manifest',(Join-Path $taskRoot 'manifest.json'),'-orca',$taskOrca,'--')
 }
-$taskSourceRevision = 'cebdd5ab552150c49743e40593c836689ecf789b'
+$taskSourceRevision = $taskFixture.repository.base_revision
 $taskRepository = Join-Path $taskRoot 'SteerlineTest'
-$null = Invoke-Git @('clone','--quiet','--no-hardlinks','https://github.com/erranliu/SteerlineTest.git',$taskRepository)
+$null = Invoke-Git @('clone','--quiet','--no-hardlinks',$taskFixture.repository.url,$taskRepository)
 $null = Invoke-Git @('-C',$taskRepository,'checkout','-b',$taskBase,$taskSourceRevision)
 $taskToolDir = Join-Path $taskRepository 'sr-smoke'
 New-Item -ItemType Directory -Path $taskToolDir | Out-Null
@@ -190,25 +153,37 @@ if ($taskScenario.level -eq 'L2') {
     if (-not (Test-Path -LiteralPath (Join-Path $taskRepository '.git/packed-refs') -PathType Leaf)) { throw 'L2 packed reference fixture is missing' }
 }
 $taskExe = Join-Path $taskRoot 'bin/steerrunner.exe'
-& (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskExe | Out-Host
+$taskFrozenConfig = Join-Path $taskRoot 'bin/test-config.json'
+Copy-Item -LiteralPath $Config -Destination $taskFrozenConfig
+if ((Get-FileHash -LiteralPath $taskFrozenConfig -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskAssessment.source_digest) { throw 'Frozen test configuration changed during preparation' }
+Copy-Item -LiteralPath $RunnerExe -Destination $taskExe
+Copy-Item -LiteralPath ($RunnerExe + '.build.json') -Destination ($taskExe + '.build.json')
+if ((Get-FileHash -LiteralPath $taskExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskAssessment.runner_sha256) { throw 'Selected Runner changed before fixture preparation' }
 $taskBuild = Get-Content -LiteralPath ($taskExe + '.build.json') -Raw | ConvertFrom-Json
 $taskSpec = Join-Path $taskToolDir 'spec.md'
 $taskPlan = Join-Path $taskToolDir 'plan.md'
+$taskPublication = $taskFixture.publication | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
+$taskPublication.base_branch = $taskBase
+# Only the test-owned query instrumentation is replaced. Preserve configured
+# provider, repository and authentication references in the public settings.
+$taskPublication.settings.query = @{executable='powershell.exe';args=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$taskQuery,'-URL','{pr_url}')}
 $taskManifest = [ordered]@{
     schema='steerrunner-test/v1';id=$taskID;level=$taskScenario.level;scenario=$Scenario;driver=$taskScenario.driver;root=$taskRoot
     runner_exe=$taskExe;runner_sha256=$taskBuild.sha256.ToLowerInvariant();source_commit=$taskBuild.source_commit;source_dirty=$taskBuild.source_dirty
     repository_path=$taskRepository;source_revision=$taskSourceRevision;base_branch=$taskBase;base_revision=$taskBaseRevision
     spec_path=$taskSpec;spec_sha256=(Get-FileHash -LiteralPath $taskSpec -Algorithm SHA256).Hash.ToLowerInvariant()
     plan_path=$taskPlan;plan_sha256=(Get-FileHash -LiteralPath $taskPlan -Algorithm SHA256).Hash.ToLowerInvariant()
-    execution=$taskExecution;publication=@{provider='command';repository='erranliu/SteerlineTest';base_branch=$taskBase;settings=@{base_url='https://github.com';query=@{executable='powershell.exe';args=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$taskQuery,'-URL','{pr_url}')}}}
+    execution=$taskExecution;publication=$taskPublication
+    configuration_sha256=(Get-FileHash -LiteralPath $taskFrozenConfig -Algorithm SHA256).Hash.ToLowerInvariant();configuration_path=$taskFrozenConfig;workflow=$(if ($taskRequired.operation -eq 'submit') { $taskSelected.workflow } else { $null })
     created_at=[DateTime]::UtcNow.ToString('o')
+    requirements_sha256=$taskAssessment.requirements_digest
 }
 if ($taskAudit) { $taskManifest.driver = 'development-audited'; $taskManifest['audit_model'] = $taskAudit }
 if ($Scenario -eq 'orca-local.mixed') {
-    $taskPeerLaunch=@{executable=(Read-Setting 'dsh_executable' 'dsh.cmd');runtime_executable=$taskLocalHelper;runtime_sha256=$taskLaunch.runtime_sha256}
-    if (Read-Setting 'dsh_model') { $taskPeerLaunch['model']=Read-Setting 'dsh_model' }
-    if (Read-Setting 'dsh_reasoning_effort') { $taskPeerLaunch['reasoning_effort']=Read-Setting 'dsh_reasoning_effort' }
-    $taskManifest['peer_execution']=@{adapter='orca-terminal';target=@{kind='local'};settings=@{agent='dsh';access_mode='sandbox';transport=$taskExecution.settings.transport;agent_launch=$taskPeerLaunch}}
+    $taskPeerSlot = $taskRequired.roles.secondary.configuration
+    $taskPeer = $taskConfig.configurations[$taskPeerSlot].execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
+    $taskPeer.settings.transport = $taskExecution.settings.transport
+    $taskManifest['peer_execution'] = $taskPeer
 }
 if ($FeedbackQualification -and $Scenario -eq 'local-codex.smoke') {
     $taskProofPath=[IO.Path]::GetFullPath($FeedbackQualification)
@@ -223,7 +198,7 @@ if ($taskStability) {
     $taskManifest['case_id'] = $Case
     $taskManifest['repeat_index'] = $RepeatIndex
     $taskManifest['stability'] = @{helper=(Frozen-Tool $taskHelper);firewall=(Frozen-Tool $taskNetwork);native_orca=(Frozen-Tool $taskNode);cli_entry=(Frozen-Tool $taskCLI);runtime_files=(Frozen-Tool $taskRuntimeFiles);diagnostic_orca=$taskOrca;expected_outcome=$taskCase[0].outcome;timeout_minutes=$taskScenario.timeout_minutes}
-    if ($taskConfig.PSObject.Properties['admin_host']) { $taskManifest.stability['admin_host'] = [IO.Path]::GetFullPath($taskConfig.admin_host) }
+    if ($taskConfig.harness.ContainsKey('admin_host')) { $taskManifest.stability['admin_host'] = $taskConfig.harness.admin_host }
 }
 # Persist the intended ref before its first external mutation; uncertain pushes
 # retain this identity and are never retried under a replacement fixture name.
@@ -236,7 +211,7 @@ if ($taskScenario.target -eq 'orca-environment') {
     $taskManifest['remote_runtime_id'] = [string]$taskRuntime
     Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 } elseif ($taskScenario.target -eq 'orca-local') {
-    $taskLocalPreparation = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Target local -RepositoryPath (Read-Setting 'orca_local_repository_path') | Select-Object -Last 1 | ConvertFrom-Json
+    $taskLocalPreparation = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Target local -RepositoryPath $taskFixture.repository.local_path | Select-Object -Last 1 | ConvertFrom-Json
     $taskPreparation['orca_runtime_id'] = $taskLocalPreparation.runtime_id
     $taskPreparation['orca_repository_path'] = $taskLocalPreparation.repository_path
     $taskManifest['local_runtime_id'] = [string]$taskLocalPreparation.runtime_id

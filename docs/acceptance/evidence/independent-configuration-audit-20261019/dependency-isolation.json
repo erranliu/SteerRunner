@@ -1,0 +1,9 @@
+{
+  "l2_error": "L2 native Git commit or repository isolation failed",
+  "l2_git_exit": 1,
+  "l3_native_qualification": false,
+  "l2_fixture_created": false,
+  "l2_status": "failed",
+  "independent_l3_status": "passed",
+  "kind": "controlled-framework-dependency-isolation"
+}

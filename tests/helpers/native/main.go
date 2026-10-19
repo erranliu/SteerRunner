@@ -9,7 +9,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/coder/websocket"
+	"github.com/erranliu/SteerRunner/internal/resources"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	protocol "github.com/erranliu/SteerRunner/internal/testkit/protocol"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -37,6 +40,35 @@ type server struct {
 }
 
 func main() {
+	if len(os.Args) == 4 && os.Args[1] == "--test-config" {
+		config, digest, err := livetest.ReadConfig(os.Args[2])
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(2)
+		}
+		var response struct {
+			Data struct {
+				Catalog        resources.CapabilityCatalog `json:"capability_catalog"`
+				ResourceDigest string                      `json:"resource_digest"`
+			} `json:"data"`
+			OK bool `json:"ok"`
+		}
+		var raw []byte
+		if os.Args[3] == "-" {
+			raw, err = io.ReadAll(io.LimitReader(os.Stdin, 16<<20))
+		} else {
+			raw, err = os.ReadFile(os.Args[3])
+		}
+		if err != nil || json.Unmarshal(raw, &response) != nil || !response.OK || response.Data.ResourceDigest != resources.Digest() {
+			fmt.Fprintln(os.Stderr, "Test helper and selected Runner capability contract do not match.")
+			os.Exit(2)
+		}
+		result := livetest.AssessConfig(config, digest, response.Data.Catalog)
+		if json.NewEncoder(os.Stdout).Encode(result) != nil {
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) > 2 && os.Args[1] == "--query" {
 		if os.Getenv("STEERRUNNER_FIXTURE_STATE") != "" {
 			_ = appendCall(map[string]any{"method": "provider/query"})

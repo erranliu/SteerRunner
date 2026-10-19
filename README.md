@@ -8,6 +8,7 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
 - [通用 Orca Agent 接入 Spec](docs/spec/orca-generic-agent.spec.md) / [Plan](docs/spec/orca-generic-agent.plan.md)（不修改 Orca；本机 Pi/DSH 原 TUI 已接通，支持受管工具与实际权限；[当前构建验收](docs/acceptance/orca-generic-agent.md)）
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
+- [独立调用与内部测试配置 Spec](docs/spec/independent-configuration.spec.md) / [Plan](docs/spec/independent-configuration.plan.md) / [验收](docs/acceptance/independent-configuration.md)（调用方管理选择，Runner 发布契约；内部测试配置独立）
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
 - [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
@@ -31,6 +32,17 @@ SteerRunner 的目标是接收固定 Spec / Plan，在本地或 Orca environment
 ```
 
 构建输出 `bin/steerrunner.exe` 及构建来源/摘要记录。运行只需 EXE；内置流程、六份步骤提示词及 schema 已内嵌，不需要 SteerLine、模板目录、Python 或 Node。CLI 启动成功后退出，常驻服务继续运行。CLI 与服务使用同一个 EXE 文件，但各自是独立进程。
+
+Runner 不维护部署清单或命名 profile。SteerLine／独立调用方选择后端、管理默认方案并提交完整请求；Runner 应用公开默认值、校验和冻结输入。离线能力查询与纯校验不启动服务、不检查工具或读取内部测试配置：
+
+```powershell
+.\bin\steerrunner.exe capabilities --offline --json
+Get-Content -Raw -Encoding utf8 .\run-configuration.json | .\bin\steerrunner.exe validate --kind run-configuration --input - --json
+Get-Content -Raw -Encoding utf8 .\run-input.json | .\bin\steerrunner.exe validate --kind run --input - --json
+Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe validate --kind environment-check --input - --json
+```
+
+三个文件直接保存对应对象，不含写信封。`validate` 返回 `request_id=null` 和字段诊断；成功只说明生产纯 gate 接受，不证明环境就绪。实际 `submit`／检查 start 仍使用原 v1 写信封和 request_id。能力目录列出实现组合、schema 引用和限制；离线来源标记 EXE，在线来源由响应服务附带其 instance_id。旧接口不要求先调用 validate。
 
 Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway 被明确禁止或创建后仍有 Job 关联时，使用系统自带 Windows PowerShell/CIM 挂起创建独立进程，核验用户、权限与 EXE 后才恢复执行，不请求提升权限。该系统能力不可用时返回明确错误。`startup_unverified` 表示原启动结果未核清，须核实 `service/bootstrap.json` 对应的原进程，不会自动重建另一份启动。`serve --state-dir <绝对路径>` 可从已有独立宿主前台运行，生命周期由该宿主负责。
 
@@ -166,7 +178,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 十七 case（含原远端十二项与本机反馈/两模型审计/多 Run/两种环境检查）、
+当前已注册 L2 一 case、L3 二十二场景／二十九 case（含远端可靠性、本机反馈／审计／多 Run、六种环境检查及 Pi／DSH）、
 L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
 driver 需要同构建反馈通过资格。真实后端并行及当前远端认证缺口分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，

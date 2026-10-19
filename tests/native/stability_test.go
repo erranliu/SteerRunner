@@ -537,6 +537,11 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 	plan, _ := os.ReadFile(m.PlanPath)
 	a, z := string(spec), string(plan)
 	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 1}, Execution: m.Execution, Publication: m.Publication}
+	selectedWorkflow, workflowErr := m.RunWorkflow(nil)
+	if workflowErr != nil {
+		t.Fatal(workflowErr)
+	}
+	input.Workflow = selectedWorkflow
 	input.Workflow.PromptOverrides = smokePromptOverrides()
 	req := request(m.ID+"-submit", input)
 	s.stage("submit")

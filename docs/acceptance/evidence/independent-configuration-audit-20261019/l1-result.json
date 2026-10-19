@@ -1,0 +1,22 @@
+{
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-audit-20261019\\acceptance-r2",
+  "terminal_extension_exit": 0,
+  "skipped_tests": [
+    "TestProcessHostCommandHelper",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestOrcaLocalIPCNativeProbe",
+    "TestAuthenticationNativeToolBoundary",
+    "TestOrcaStoppedNativeProbe",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestOrcaWorkspaceStartupLive",
+    "TestServiceStopWorkerHelper"
+  ],
+  "exit_code": 0,
+  "native_driver_compile_exit": 0,
+  "test_count": 318,
+  "level": "L1",
+  "terminal_extension_test_count": 28,
+  "native_zero_match_guard": true,
+  "terminal_extensions_passed": true,
+  "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\65cf\\SteerRunner\\.evidence\\ic-audit-20261019\\acceptance-r2\\framework"
+}

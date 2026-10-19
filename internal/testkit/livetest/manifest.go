@@ -4,6 +4,7 @@ package livetest
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -21,6 +22,10 @@ const RemoteURL = "https://github.com/erranliu/SteerlineTest.git"
 const Artifact = "evidence/native-101.md"
 
 type Manifest struct {
+	RequirementsSHA256    string                  `json:"requirements_sha256,omitempty"`
+	ConfigurationSHA256   string                  `json:"configuration_sha256,omitempty"`
+	ConfigurationPath     string                  `json:"configuration_path,omitempty"`
+	Workflow              *contracts.Workflow     `json:"workflow,omitempty"`
 	FeedbackQualification *Tool                   `json:"feedback_qualification,omitempty"`
 	AuditModel            *workflow.ModelSettings `json:"audit_model,omitempty"`
 	Schema                string                  `json:"schema"`
@@ -73,10 +78,59 @@ var idPattern = regexp.MustCompile(`^[a-f0-9]{12}$`)
 var scenarioPattern = regexp.MustCompile(`^[a-z][a-z0-9.-]+$`)
 var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 
+// Configured choices survive fixture generation. Test-owned prompt steps may
+// only be installed when they do not silently overwrite a caller override.
+func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, error) {
+	selection := contracts.Workflow{ID: "development", Version: 1}
+	if m.Workflow != nil {
+		raw, _ := json.Marshal(m.Workflow)
+		if err := json.Unmarshal(raw, &selection); err != nil {
+			return selection, err
+		}
+	} else if m.Driver == "development-audited" {
+		selection.ID = workflow.AuditedDevelopment
+		selection.AuditModel = m.AuditModel
+	}
+	if len(overrides) > 0 && selection.PromptOverrides == nil {
+		selection.PromptOverrides = map[string]string{}
+	}
+	for step, body := range overrides {
+		if configured, ok := selection.PromptOverrides[step]; ok && configured != body {
+			return selection, fmt.Errorf("configured prompt conflicts with the registered test step %s", step)
+		}
+		selection.PromptOverrides[step] = body
+	}
+	return selection, nil
+}
+
 func (m Manifest) Validate() error {
+	if m.RequirementsSHA256 != "" && m.RequirementsSHA256 != RegistryDigest() {
+		return errors.New("frozen requirements do not match the native driver registry")
+	}
+	if m.ConfigurationPath != "" || m.ConfigurationSHA256 != "" {
+		if !filepath.IsAbs(m.ConfigurationPath) || len(m.ConfigurationSHA256) != 64 {
+			return errors.New("missing frozen test configuration identity")
+		}
+		actual, err := filepath.EvalSymlinks(m.ConfigurationPath)
+		rel, relErr := filepath.Rel(m.Root, actual)
+		if err != nil || relErr != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || !strings.EqualFold(actual, m.ConfigurationPath) {
+			return errors.New("frozen configuration escapes its case root")
+		}
+		raw, err := os.ReadFile(actual)
+		sum := sha256.Sum256(raw)
+		if err != nil || hex.EncodeToString(sum[:]) != m.ConfigurationSHA256 {
+			return errors.New("frozen test configuration changed")
+		}
+	}
+	if m.Workflow != nil {
+		raw, _ := json.Marshal(contracts.RunConfiguration{Execution: m.Execution, Workflow: *m.Workflow})
+		if contracts.ValidateRunConfiguration(raw) != nil {
+			return errors.New("frozen workflow violates the public configuration contract")
+		}
+	}
 	if m.Scenario == "orca-local.mixed" {
 		var first, peer contracts.OrcaSettings
-		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || peer.AccessMode != "sandbox" || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
+		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || (peer.AccessMode != "" && peer.AccessMode != "sandbox") || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
 			return errors.New("mixed local fixture requires frozen Pi and DSH executions on the same helper")
 		}
 	} else if m.PeerExecution != nil {
@@ -159,7 +213,13 @@ func (m Manifest) Validate() error {
 				if m.Scenario == "environment-check.orca-local-full-access" || m.Scenario == "orca-local.pi-full-access" {
 					mode = "full_access"
 				}
-				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
+				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
+					return errors.New("invalid local Orca settings")
+				}
+				if settings.AccessMode == "" {
+					settings.AccessMode = "sandbox"
+				}
+				if settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
 					return errors.New("local Orca requires its frozen native runtime and case access mode")
 				}
 				if scenario.Agent != "" && settings.AgentName() != scenario.Agent {

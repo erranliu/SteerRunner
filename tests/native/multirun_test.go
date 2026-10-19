@@ -121,6 +121,10 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 	}
 	for i := range ids {
 		input := contracts.RunRequest{Title: fmt.Sprintf("SteerRunner multi-Run %d", i), Correlation: map[string]string{"fixture_id": m.ID, "peer": fmt.Sprint(i)}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 1, PromptOverrides: smokePromptOverrides()}, Execution: manifests[i].Execution, Publication: m.Publication}
+		input.Workflow, err = manifests[i].RunWorkflow(smokePromptOverrides())
+		if err != nil {
+			t.Fatal(err)
+		}
 		req := request(fmt.Sprintf("multi-submit-%d", i), input)
 		accepted := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
 		ids[i] = accepted.Data.(map[string]any)["run_id"].(string)
