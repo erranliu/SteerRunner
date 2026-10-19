@@ -1,0 +1,29 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "fixture": "C:\\srt\\ffa62d9a9638",
+  "control": {
+    "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "terminal": "term_f6507049-a69c-47c5-9606-b74af0e78086",
+    "incarnation": "cf3c199d-642e-469e-abbc-45421951a880",
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3358672b854a2e406cb2039e06d0c1a7"
+  },
+  "native_create_index": 8,
+  "control_ready_index": 13,
+  "first_main_send_index": 16,
+  "identity_checks": 13,
+  "completed_receipt_observations": 8,
+  "authentication_proof_observations": 1,
+  "auxiliary_creations": 1,
+  "per_query_or_revocation_creations": 0,
+  "audit": {
+    "business_creations": 1,
+    "closed_inspections": 1,
+    "initial_terminal_creations": 0,
+    "inspections": 1,
+    "prompt_sends": 3,
+    "verified": true
+  },
+  "raw_native_calls_sha256": "f6501a050b6e28d4626ddfd033209244df64f70a994b10520fbb7bd753c335f7",
+  "raw_driver_faults_sha256": "bec1cf332ce508e40c8cee32e2934ddb9b5b0b18a678d65927ad63ea62e6bbb2"
+}

@@ -1,5 +1,7 @@
 # Spec：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-19 固定控制终端已实施：同源完整 L1 366 Go/29 Node、Controlled 16，以及正常重启、执行期强杀恢复、活动执行撤销三项原生用例通过；原控制身份、完整 final、撤销和关闭分别核验。初始化创建身份未知仍阻塞，无第二状态权威，SteerLine/Orca 不改。内部 Orca state codec 升至 6；四项管理员变体未执行。见[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)及 §7.1。
+
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](result-acquisition.plan.md) · [专属验收](../acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
 
@@ -271,7 +273,7 @@ Run stop 先取消原观察器，控制通道在撤销请求之后拒绝新回�
 
 执行准备继续归原适配器管理。本期 GitHub 就绪探针由同一原生 sandbox 内实际使用的认证 `gh` 身份/仓库查询和 Git 远端访问核验连通性，不额外依赖匿名 `/meta` 的共享 IP 配额；权限、凭据摘要及 Git/remote 资格条件保持。
 
-Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `preparation-failure.json`，仅保留有限错误码及 Run/会话/bundle/worker PID 来源。只有初始化尚无原 readiness/owner/launch/turns、且 readiness 文件缺失时，原适配器才在核对原 owner 后将其作为失败诊断；它不构成就绪、业务结果或停止结算证明，不覆盖活动会话缺失的原生证据，不新增 Workflow 状态、操作权威或重试路径。公开 CLI、Run/Orca 持久格式版本不变；源码及复验见[执行准备修复记录](../acceptance/evidence/native-preparation-20261019/README.md)。
+Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `preparation-failure.json`，仅保留有限错误码及 Run/会话/bundle/worker PID 来源。只有初始化尚无原 readiness/owner/launch/turns、且 readiness 文件缺失时，原适配器才在核对原 owner 后将其作为失败诊断；它不构成就绪、业务结果或停止结算证明，不覆盖活动会话缺失的原生证据，不新增 Workflow 状态、操作权威或重试路径。该准备诊断不另增公开接口或持久权威；本轮固定控制终端的内部 codec 升级按本节前述规则。准备修复源码及复验见[执行准备修复记录](../acceptance/evidence/native-preparation-20261019/README.md)。
 
 | 位置 | 增量与保留规则 |
 | --- | --- |

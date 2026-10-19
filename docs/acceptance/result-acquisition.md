@@ -1,8 +1,10 @@
 # Workflow 能力解耦与结构化结果获取验收
 
-> 2026-10-19 后续定位与修复：移除无关的匿名 GitHub 配额门槛，补充绑定原 owner 的工具初始化失败事实。最终同源完整 L1 360 Go/29 Node、Controlled 16、三终端 L3 及两项 L2 全部通过，原 Run/服务已清理。见[修复与原始证据](evidence/native-preparation-20261019/README.md)。准备阻塞已解除；既有强杀创建身份缺口仍缺原生保证，源 PR 保持 Draft，不宣称全量 L3 已通过。
+> 2026-10-19 固定控制终端最终验收：同源完整 L1 **366 Go/29 Node**、完整 Controlled **16/16**、正常重启/执行期强杀恢复/活动执行撤销 **3/3** 通过。三份原生记录均核实首条业务输入前的控制身份、原回执/来源、认证撤销及实际关闭，最终服务均 not_running/resources_settled=true。初始化创建身份未知继续阻塞；未新增状态权威，SteerLine/Orca 未修改。内部 Orca codec 5→6、旧版拒绝，无兼容迁移。四项管理员变体未执行，不宣称完整 L3；失败迭代及同一冻结 EXE 的 Controlled 25 分钟总预算重跑见[本增量证据](evidence/fixed-control-20261019/README.md)。
 
-> 最新 rebase 与影响范围复验：已接入主线 `59c7597`，完整 L1 358 Go / 28 Node、Controlled 16、两项 L2 通过；最终三项 Orca L3 在原生准备阶段失败，强杀恢复缺口仍未闭环。**暂不建议合入，PR 保持 Draft**。见[本轮质量与证据](evidence/rebase-audit-20261018/README.md)。历史批次不替代最终构建验收。
+> 2026-10-19 此前准备修复批次（固定控制终端实施前）：移除无关的匿名 GitHub 配额门槛，补充绑定原 owner 的工具初始化失败事实。同源完整 L1 360 Go/29 Node、Controlled 16、三终端 L3 及两项 L2 全部通过，原 Run/服务已清理。见[修复与原始证据](evidence/native-preparation-20261019/README.md)。当时准备阻塞已解除、强杀创建身份缺口仍缺原生保证，源 PR 保持 Draft，不宣称全量 L3 已通过。
+
+> 此前 rebase 与影响范围复验：已接入主线 `59c7597`，完整 L1 358 Go / 28 Node、Controlled 16、两项 L2 通过；当时最终三项 Orca L3 在原生准备阶段失败，强杀恢复缺口未闭环。**该批次暂不建议合入，PR 保持 Draft**。见[该轮质量与证据](evidence/rebase-audit-20261018/README.md)。历史批次不替代最终构建验收。
 
 > PR 前接入最新主线后的质量审查、修正及验证范围见[质量记录](evidence/pr-quality-audit-20261018/README.md)。原生历史结果不自动继承为本次构建通过。
 > 2026-10-18 后续完整范围复验：L2 2/2 通过；L3 4 项通过、1 失败、7 项环境阻塞，未全通过。见[独立记录](evidence/full-l2-l3-20261018/README.md)。该记录维护后续修正及未通过项，不替换下述历史验收。
@@ -13,6 +15,12 @@
 [Spec](../spec/result-acquisition.spec.md) · [Plan](../spec/result-acquisition.plan.md) · [原调查](evidence/result-acquisition-design-20261016.md)。无 roadmap 调度、无部署、无 SteerLine 修改。2026-10-17 强隔离阻断的历史结论保留，不倒改成当时已支持。
 
 ## 自动项登记
+
+固定控制终端新增自动项：
+
+| ID | 验收边界 | 最终覆盖与证据 | 状态 |
+| --- | --- | --- | --- |
+| RA-A08 | 控制身份在首条业务输入前随原准备操作提交；执行期仅恢复原终端/原请求，零重发业务/零新建辅助终端；原生 final、撤销与关闭分别核验；初始化未知零输入并阻塞；无第二权威 | Plan §5；最终源码212ebee完整 L1/Controlled、三项真实 native cases、逐 ledger/服务状态复核；[证据](evidence/fixed-control-20261019/README.md) | 通过（确认边界内，四项管理员变体未执行） |
 
 下表保留初次最小 parser 实施批次的验收结论；后续 rebase、完整范围及最终构建的复验以顶部独立记录为准，不代表当前已满足合入门槛。
 

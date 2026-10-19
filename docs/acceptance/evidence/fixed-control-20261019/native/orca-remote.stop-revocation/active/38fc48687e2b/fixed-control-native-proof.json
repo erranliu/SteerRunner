@@ -1,0 +1,29 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "fixture": "C:\\srt\\38fc48687e2b",
+  "control": {
+    "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "terminal": "term_e60f386e-83f8-4157-b42e-b3e26865a638",
+    "incarnation": "c34e172c-f368-4a16-9495-8a3a2621e252",
+    "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d7e5e51c7b855d0dc09e88cfbd828b44"
+  },
+  "native_create_index": 8,
+  "control_ready_index": 13,
+  "first_main_send_index": 16,
+  "identity_checks": 6,
+  "completed_receipt_observations": 0,
+  "authentication_proof_observations": 1,
+  "auxiliary_creations": 1,
+  "per_query_or_revocation_creations": 0,
+  "audit": {
+    "business_creations": 1,
+    "closed_inspections": 1,
+    "initial_terminal_creations": 0,
+    "inspections": 1,
+    "prompt_sends": 2,
+    "verified": true
+  },
+  "raw_native_calls_sha256": "20301c64370bc80da6abc0583227d84c8fdf1a35a62c5bbe5b2bb26c6c7ba8f2",
+  "raw_driver_faults_sha256": "aba650fb882047ae6684b06befb13d0adb4ee8e7ca4dd6b6fa19660cf291b9ee"
+}

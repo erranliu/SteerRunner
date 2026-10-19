@@ -1,0 +1,21 @@
+{
+  "id": "954c7356-4f35-4bea-9324-df8bc5835368",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_046aac59-88be-40aa-b364-018570b9f20a",
+      "tabId": "2df75687-a13d-4d94-a47d-14fed5dc69fe",
+      "paneKey": "2df75687-a13d-4d94-a47d-14fed5dc69fe:b021f590-078b-473f-a50e-70068db89a0f",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018@@f6e5cda2",
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-runtime-1c3c-full-20261018",
+      "title": "SteerRunner fixed control r2 test helper verification",
+      "executionHostId": "local",
+      "incarnationId": "b8845e48-271a-461d-b7c0-20f25c69d5d1",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

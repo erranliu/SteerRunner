@@ -1,0 +1,7 @@
+{
+  "reason": "Code audit found observer/revocation checkpoint race and missing failed-query backoff; interrupt before models",
+  "source": "ad212e0930c4d1637b023ee5f8c15df2c2507ab5",
+  "pid": 12956,
+  "at": "2026-10-19T01:01:22.2539525Z",
+  "executed_cases": 0
+}

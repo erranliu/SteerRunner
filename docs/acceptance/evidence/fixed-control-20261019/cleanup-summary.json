@@ -1,0 +1,26 @@
+[
+  {
+    "scenario": "orca-remote.service-restart",
+    "case_id": "graceful-active",
+    "fixture": "7c0acf7390e4",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-remote.service-restart/graceful-active/7c0acf7390e4/service-status-final.json"
+  },
+  {
+    "scenario": "orca-remote.service-restart",
+    "case_id": "kill-active",
+    "fixture": "ffa62d9a9638",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-remote.service-restart/kill-active/ffa62d9a9638/service-status-final.json"
+  },
+  {
+    "scenario": "orca-remote.stop-revocation",
+    "case_id": "active",
+    "fixture": "38fc48687e2b",
+    "status": "not_running",
+    "resources_settled": true,
+    "evidence": "native/orca-remote.stop-revocation/active/38fc48687e2b/service-status-final.json"
+  }
+]

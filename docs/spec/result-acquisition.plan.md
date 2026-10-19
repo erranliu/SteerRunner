@@ -1,8 +1,8 @@
 # Plan：Workflow 能力解耦与结构化结果获取
 
-> 2026-10-19 确认增量：按 Spec §7.1 实施固定控制终端，解决执行期辅助 `terminal.create` 身份丢失窗口；初始化创建身份未知继续阻塞。下述 §5 为本增量的依赖、验证及证据安排，历史失败不改写。SteerLine、Orca 不改，不部署。
+> 2026-10-19 增量已完成：按 Spec §7.1 实施固定控制终端，执行期不再创建辅助查询/撤销终端；初始化创建身份未知继续阻塞。同源完整 L1 366 Go/29 Node、Controlled 16、三项原生用例通过；四项管理员变体未执行。下述 §5 及[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)维护依赖、实际命令与证据，历史失败不改写。SteerLine、Orca 不改，不部署。
 
-> 2026-10-19 合入前复验：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[本轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。原 terminal.create 强杀窗口的原生恢复保证仍缺，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
+> 2026-10-19 此前准备修复批次：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[该轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。当时原 terminal.create 强杀窗口的原生恢复保证仍缺；本轮执行期方案及初始化阻塞边界按 §5，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
 
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。按用户授权实施；本轮不部署、不创建 roadmap 调度。[Spec](result-acquisition.spec.md) · [验收登记](../acceptance/result-acquisition.md)。
@@ -181,8 +181,8 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 
 | 级别/场景 | 命令与执行时点 | 通过条件与证据 |
 | --- | --- | --- |
-| L1/组件：有限方法、异源/坏载荷拒收、原回执不变、请求 ID 冲突、丢响应恢复、初始化未知/提交失败零业务输入、控制身份变化阻塞、重复撤销、停止/关闭失败及服务释放观察 | 实施后 `go test ./internal/execution/adapters/codex ./internal/execution/adapters/orcatransport ./internal/testkit/livetest -count=1 -timeout=5m -v`；随后完整 `./scripts/test.ps1 -Level L1 -OutDir .evidence/fixed-control-20261019/l1` | 新增控制协议/生命周期反例与既有受影响测试全部通过，无临时 inspector/revoker 创建；`F/component.log`、`F/l1/summary.json` |
-| Controlled：原 EXE/IPC/SQLite 的工作流与恢复接线 | L1 后 `./scripts/test.ps1 -Level Controlled -OutDir .evidence/fixed-control-20261019/controlled` | 完整现有 16 场景通过，零真实模型；`F/controlled/` |
+| L1/组件：有限方法、异源/坏载荷拒收、原回执不变、请求 ID 冲突、丢响应恢复、初始化未知/提交失败零业务输入、控制身份变化阻塞、重复撤销、停止/关闭失败及服务释放观察 | 实施后 `go test ./internal/execution/adapters/codex ./internal/execution/adapters/orcatransport ./internal/testkit/livetest -count=1 -timeout=5m -v`；随后完整 `./scripts/test.ps1 -Level L1 -OutDir .evidence/fixed-control-20261019/l1`（也由下述 L3 入口先执行） | 新增控制协议/生命周期反例与既有受影响测试全部通过，无临时 inspector/revoker 创建；`F/checks/cleanup-budget-regression.log`、`F/prerequisites/summary.json`、`F/prerequisites/l1.jsonl` |
+| Controlled：原 EXE/IPC/SQLite 的工作流与恢复接线 | L1 后 `./scripts/test.ps1 -Level Controlled -OutDir .evidence/fixed-control-20261019/controlled`（也由 L3 入口先执行）；最终同源冻结 EXE 的完整重跑命令见本节末 | 完整现有 16 场景通过，零真实模型；`F/prerequisites/controlled/` |
 | L3：执行期强杀恢复、正常重启、停止及跨重启撤销；原生完整回执和控制资源归属 | 前置通过后用同源构建运行 `./scripts/test.ps1 -Level L3 -Scenario orca-remote.service-restart,orca-remote.stop-revocation -SkipAdminRequired -Config <冻结配置> -OutDir .evidence/fixed-control-20261019/native -MaxParallel 2`；实际运行 graceful-active、kill-active、active 三项，明确排除四项管理员网络/阶段边界用例，不另造“成功”预期 | 原控制终端在首条业务输入前已提交；kill-active 恢复仍为同一 handle/incarnation，原请求/final 可核验、零重发输入/零新建辅助终端；stop 证明原认证 broker/socket 清理、业务写者及控制终端关闭，无晚到写入，原 Run/service 结算完整；`F/native/`、`F/cleanup-summary.json` |
 
 上述入口保留注册 case 集并明确记录管理员变体排除，不将子集标为完整场景通过；不扩大为全 L2/L3 或管理员网络矩阵。辅助资源创建前置、初始化未知与身份变化用确定性 L1 覆盖；真实强杀只验证用户确认的执行期窗口。测试发现问题直接修复并对新源码重跑相关前置/场景，未经验证的分支保持明确未验。
@@ -190,3 +190,5 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 验收时点增量：固定控制终端在业务完成时仍应存活，关闭审计在 Run stop/cleanup 后执行，必须同时保存原认证撤销、完整 inventory 与控制关闭证明，不能把“仍归属本 Run”计成“已关闭”。原生批次若仅因旧 driver 的提前关闭断言失败，保留原失败；改正 driver 后用新现场重新运行，不将事后复核改写成原用例通过。仅测试代码/文档变化时，逐文件证明生产源码与已通过完整 L1/Controlled 的源码完全相同，记录 helper 原构建 SHA/源提交与新 driver 提交；可复用该同源生产前置，再执行审计包回归、完整 native driver 编译/零匹配保护/注册检查和受影响真实 cases。生产源码有变化则重新执行原前置。
 
 停止补充验收：覆盖挂起只读请求、调用方 stop 上下文取消后原撤销的独立 45 秒清理预算；撤销未核实必须保留同一控制终端、原业务写者仍停止，后续 business-confirmed 对账只补读原请求并关闭原控制终端，不重关业务终端。测试计数允许已验证身份/有限载荷的控制请求暂未完成而不误算为业务输入，但最终资源审计必须拒绝任何未决控制回执。此项为生产改动，重新冻结 helper、完整 L1/Controlled 后再执行三项真实用例，不沿用此前生产前置通过结论。
+
+最终执行记录：clean 源码 `212ebee3abeae798c05fe53ede19f8b2a5e0f0f3`、helper SHA `afb08225…df7235`。标准 L3 入口先完整 L1 366 Go/29 Node 通过，Controlled 的 15 分钟总预算耗尽，原批次失败且未启动 native cases；遗留服务仅经原实例公共 stop 清理并核实结算。随后 `run-controlled-25.ps1` 校验并复用同一组 EXE 的源提交/SHA，将 harness 总预算设为 25 分钟，单场景/产品预算及断言不变，16/16 无跳过通过（实际约 15 分 51 秒）。`run-final-native.ps1` 严格校验同源 L1/完整 Controlled 前置后，调用原 scheduler/driver 在新现场运行三项原生用例，3/3 通过，四项管理员变体明确排除。脚本、原超时/失败记录、实际配置/构建及每项原生证明见 `F/checks/`、`F/prerequisites/`、`F/historical/` 和 `F/native/`；汇总及精确命令以 `F/README.md` 为准。未复跑无关全量 L2 或管理员网络矩阵。

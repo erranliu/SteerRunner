@@ -1,0 +1,37 @@
+{
+  "level": "L3",
+  "scenario": "orca-remote.stop-revocation",
+  "manifest": "C:\\srt\\667c4874f684\\manifest.json",
+  "repeat_index": 1,
+  "finished_at": "2026-10-19T01:48:19.0634627Z",
+  "started_at": "2026-10-19T01:44:45.4155454Z",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\fixed-control-20261019\\native-r4\\orca-remote.stop-revocation-active-r1-fixture.json",
+  "evidence": "C:\\srt\\667c4874f684\\evidence",
+  "status": "passed",
+  "case_id": "active",
+  "resources": [
+    "root:C:\\srt\\667c4874f684",
+    "base:codex/srtest/667c4874f684/base",
+    "run:e2f6162166f9835c55126066c019197d",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-e2f6162166f9835c55126066c019197d",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_45019788-4cba-4fbc-a483-0a87775c5cc9:009302e7-054b-4b05-9ea6-a1c4bb341fd2",
+    "branch:erranliu/sl-e2f6162166f9835c55126066c019197d"
+  ],
+  "identity": {
+    "pid": 22060,
+    "manifest_sha256": "df062de94d7a0aea9e7c3fdd4930a2d3b448f14405aaa2d518cb6b688b575b77",
+    "driver_sha256": "9dcbf4e054da6ab009909300d1c24f017f4285bacd09b1a15b2bbe15def6b4a2",
+    "runner_sha256": "591fd67aee627261f28e63b6d477f438d10681b7183caa485ab92ef27e68146d",
+    "source_commit": "382656c5ec1955a1fea8228bf50d4b0cff4de052",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.stop-revocation",
+    "level": "L3",
+    "helper_sha256": "841bd453b79b7bd0d6e9835917955f0dc91aef976757d1ca48b747531c444e8f",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+    "case_id": "active",
+    "repeat_index": 1
+  },
+  "expected_outcome": "stopped"
+}
