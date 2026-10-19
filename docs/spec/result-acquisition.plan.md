@@ -1,5 +1,7 @@
 # Plan：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-19 主线接入：rebase 到 `a3dc15d` 后保留原生签名退出和固定控制边界，按 §6 审计并重验。旧批次源码/失败仍保留；最终记录见[本轮验收](../acceptance/evidence/rebase-control-20261019/README.md)。
+
 > 2026-10-19 增量已完成：按 Spec §7.1 实施固定控制终端，执行期不再创建辅助查询/撤销终端；初始化创建身份未知继续阻塞。同源完整 L1 366 Go/29 Node、Controlled 16、三项原生用例通过；四项管理员变体未执行。下述 §5 及[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)维护依赖、实际命令与证据，历史失败不改写。SteerLine、Orca 不改，不部署。
 
 > 2026-10-19 此前准备修复批次：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[该轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。当时原 terminal.create 强杀窗口的原生恢复保证仍缺；本轮执行期方案及初始化阻塞边界按 §5，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
@@ -194,3 +196,23 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 最终执行记录：clean 源码 `212ebee3abeae798c05fe53ede19f8b2a5e0f0f3`、helper SHA `afb08225…df7235`。标准 L3 入口先完整 L1 366 Go/29 Node 通过，Controlled 的 15 分钟总预算耗尽，原批次失败且未启动 native cases；遗留服务仅经原实例公共 stop 清理并核实结算。随后 `run-controlled-25.ps1` 校验并复用同一组 EXE 的源提交/SHA，将 harness 总预算设为 25 分钟，单场景/产品预算及断言不变，16/16 无跳过通过（实际约 15 分 51 秒）。`run-final-native.ps1` 严格校验同源 L1/完整 Controlled 前置后，调用原 scheduler/driver 在新现场运行三项原生用例，3/3 通过，四项管理员变体明确排除。脚本、原超时/失败记录、实际配置/构建及每项原生证明见 `F/checks/`、`F/prerequisites/`、`F/historical/` 和 `F/native/`；汇总及精确命令以 `F/README.md` 为准。未复跑无关全量 L2 或管理员网络矩阵。
 
 推送后主线已到 `a3dc15d`，原生退出/只读查询进程结算证明与本分支存在五处源码冲突；本批次未变基，PR 保持 Draft。后续集成必须保留原 Codex owner/退出公钥、查询进程 writers-absent、原控制身份及撤销/关闭证明，不能恢复临时 reader 创建或以 PTY/inventory 代替新原生退出证明。组合实现须重新冻结 helper/源码并验证受影响路径，本批次通过不自动继承。只读预检与差异见 `F/checks/integration-status.json`、`F/checks/main-merge-preview.txt`。
+
+## 6. 接入主线原生退出证明
+
+1. rebase 到最新主线，逐处保留 `remote_agent` 的 owner/公钥/Job/签名退出、`remote_turn/history` 的 reader Job 清理、原主机 artifact/inventory 和只读 verify-stopped；冲突中的旧逐次 reader 资源接线改接固定控制，不保留失效字段或第二套恢复机制。
+2. `remote_control` 在查询失败时保留资源回执；`control_checkpoint` 在替换查询回执前核验原 reader 已退出及完整父绑定。未知 reader 不得被后续查询/撤销覆盖；不新增协议方法或持久权威。
+3. `StopLifecycle/reconcileStop/verifyStopped/ShutdownLifecycle` 组合认证撤销、原签名退出、业务 PTY 和控制关闭证明。签名缺失不得提前销毁原 helper，认证未核实仍沿既有边界停止原业务树、保留控制对账；被动服务继续执行规则不变。
+4. 迁移主线单元/原生测试的资源夹具到真实固定控制准备，不构造旧 inspection 字段。测试同源 helper/Runner，真实原生 cleanup 归档并验签退出正文；零业务停止探针在 helper 前先准备控制，离线 probe 禁止服务启动、模型/业务输入和 DB/原失败回执修改。
+5. 审计后冻结源码与 helper，执行下表；归档最终与失败结果，更新 Spec/验收及 PR，再给出是否适合合入的结论。SteerLine/Orca 不改，不部署/合并。
+
+证据目录 `docs/acceptance/evidence/rebase-control-20261019/`（R），原现场 `.evidence/rebase-control-20261019/`。Windows/amd64、现有 Codex/Orca/认证、原有配对主机及隔离 SteerlineTest worktrees；无需新账号或管理员网络设施。
+
+| 级别/场景 | 环境、命令与时点 | 通过条件/证据 |
+| --- | --- | --- |
+| 组件 | 改后适配器/协议/审计包定向回归，application/host 的 `TestSROffline|TestSRShutdown|TestSRStopProgress|TestSRCLIContract` 定向；整包由下述完整 L1 的8分钟预算覆盖 | 原签名改写/重放/缺认证/活树/原主机等负例、失败查询但 reader 已退出/未知 reader 禁止覆盖、认证/控制/只读及现工作流回归通过；`R/checks/component-*.log`、`R/checks/stop-consumer.log`。早期扩大至 application 全包的5分钟总超时保留，不算通过 |
+| 完整 L1 | 冻结源码后 `./scripts/test.ps1 -Level L1 -OutDir .evidence/rebase-control-20261019/l1` | 全部本层测试通过，允许的 opt-in/helper 跳过逐项登记；native compile/零匹配守卫/框架通过；`R/prerequisites/l1/` |
+| 完整 Controlled16 | L1 后，以 `tests/catalog.json` 全部受控场景 pattern 构建/运行原 integration harness。只把其已确认总预算从15改为25分钟、保持原构建/独立进程启动/断言/单场景预算；实际命令和与原脚本的差异归档 | 16/16 顶层及8条获取子路径无跳过通过，EXE/SHA/源码一致；`R/prerequisites/controlled/` |
+| 原生 workflow 3 cases | 前置通过后，原 `Invoke-SRCaseBatch` 入口执行 `orca-remote.service-restart` 的 graceful-active/kill-active、`orca-remote.stop-revocation` 的 active，冻结配置，最大并行2，明确排除4管理员变体 | 原控制在业务前就绪、同身份恢复、原 complete final/reader 退出、零业务重发；原签名退出/认证/控制关闭/完整清单/服务结算均通过；`R/native/` |
+| 既有无业务停止探针 | 前置通过后本机与已配对远端各一次 `go test ./internal/host -run '^TestOrcaStoppedNativeProbe$' -count=1 -timeout=8m`；显式 `STEERRUNNER_ORCA_STOP_PROBE_*` 固定新隔离目录、同源 EXE/helper/native/model/repo/base/原 host；与其他真机合计并行不超2 | 活动拒绝、原 helper 真实签名退出后公开 EXE 离线 verify 成功，原 DB/失败回执不变、不启动服务、零业务输入、原控制及自有 worktree 清理；`R/probes/`。Reader 真实结算由前一行实际业务查询覆盖，不再创建旧一次性 reader 终端 |
+
+RA-A08 与主线 OSV-A06/A08/A09 的本轮交叉覆盖沿上述有限场景维护。没有全量 L2/L3 或新增庞大矩阵；若生产改动发生在冻结后，重新冻结并重跑受影响前置，历史通过不改写为当前通过。

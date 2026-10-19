@@ -2,6 +2,8 @@ package orcatransport
 
 import (
 	"context"
+	"crypto/ed25519"
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -45,9 +47,17 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 	}
 	bind(&s, r)
 	l.profile.RuntimeExecutable, l.profile.RuntimeSHA256, l.profile.RuntimeConfigurationDigest = "C:/runtime/helper.exe", strings.Repeat("b", 64), strings.Repeat("a", 64)
+	public, private, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
 	now := time.Now().UTC()
-	c := &fixedControlFixture{ready: codex.RemoteReadiness{NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: l.profile.RuntimeSHA256, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{PID: 123, Created: "native-process"}, CheckedAt: now, ExpiresAt: now.Add(time.Hour), AuthenticationControl: true}}
+	c := &fixedControlFixture{ready: codex.RemoteReadiness{ExitPublicKey: public, Owner: b.ProcessIdentity{Kind: "os", PID: 124, Created: "owner-creation", Executable: "helper"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: l.profile.RuntimeSHA256, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{Kind: "os", PID: 123, Created: "native-process", Executable: "codex"}, CheckedAt: now, ExpiresAt: now.Add(time.Hour), AuthenticationControl: true}}
 	l.setup.RepositoryURL = c.ready.Repository
+	l.readStopArtifact = func(context.Context, string, string, string, string) ([]byte, error) {
+		body, _ := json.Marshal(codex.RemoteExit{Readiness: c.ready, WritersAbsent: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()})
+		return json.Marshal(map[string]any{"body": json.RawMessage(body), "signature": ed25519.Sign(private, body)})
+	}
 	original := l.client
 	l.client = native.New(native.Config{CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
 		arg := func(name string) string {
@@ -114,8 +124,12 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 			c.requestIDs = append(c.requestIDs, arg("--retry-request"))
 			response := codex.RemoteControlResponse{ID: q.ID, Binding: q.Binding, RequestDigest: codex.RemoteControlDigest(q)}
 			if q.Method == "original-turn" {
-				value := codex.RemoteTurnReceipt{Source: codex.RemoteTurnSource, Readiness: c.ready, InputDigest: q.InputDigest, NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", Started: true, Completed: true, Status: "completed", FinalItemID: "final", FinalText: "exact native final", FinalDigest: digest([]byte("exact native final"))}
+				value := codex.RemoteTurnReceipt{ReaderWritersAbsent: true, Source: codex.RemoteTurnSource, Readiness: c.ready, InputDigest: q.InputDigest, NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", Started: true, Completed: true, Status: "completed", FinalItemID: "final", FinalText: "exact native final", FinalDigest: digest([]byte("exact native final"))}
 				switch c.mode {
+				case "reader-unverified", "query-failed":
+					value.ReaderWritersAbsent = c.mode == "query-failed"
+					value.InspectionFailed = true
+					response.Error = "original_turn_unverified"
 				case "wrong-session":
 					value.Readiness.SessionID = "foreign"
 				case "wrong-config":
@@ -156,7 +170,7 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 			}
 			result = map[string]any{"close": map[string]any{"handle": "control", "ptyKilled": true}}
 		case "list":
-			result = map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"host"}, "omittedHostIds": []string{}}}
+			result = map[string]any{"terminals": []any{}, "totalCount": 0, "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
 		default:
 			t.Fatal(args)
 		}
@@ -297,7 +311,7 @@ func TestFixedControlRunStopAndServiceRelease(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
-			if _, err := l.ShutdownLifecycle(context.Background(), s, nil); err != nil || c.closes != 0 || c.sends != 0 {
+			if facts, err := l.ShutdownLifecycle(context.Background(), s, nil); err == nil || facts.Stopped || c.closes != 0 || c.sends != 0 {
 				t.Fatal("service shutdown changed execution resources", err, c.closes, c.sends)
 			}
 			c.mode = mode
@@ -489,5 +503,43 @@ func TestFixedControlStopRetainsUnresolvedRevocationRoute(t *testing.T) {
 	}
 	if closes != 1 {
 		t.Fatal("business close repeated", closes)
+	}
+}
+
+func TestFixedControlQueryFailurePreservesNativeReaderSettlement(t *testing.T) {
+	for _, mode := range []string{"query-failed", "reader-unverified"} {
+		t.Run(mode, func(t *testing.T) {
+			l, f, s, c := fixtureFixedControl(t)
+			s = prepareFixedControl(t, l, s, c)
+			s, input := prepared(t, l, s, strings.Repeat("c", 32))
+			f.unstarted = true
+			r, err := l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bind(&s, r)
+			state, _ := l.state(s)
+			c.mode = mode
+			if _, err = l.recordedTurn(context.Background(), &state, &state.Turns[0]); err == nil {
+				t.Fatal("failed history became business success")
+			}
+			j, err := l.loadControlCheckpoint(state)
+			if err != nil || j.Response == nil || j.Response.Turn == nil || !j.Response.Turn.InspectionFailed {
+				t.Fatal("query failure discarded original resource proof", j, err)
+			}
+			before := c.sends
+			err = l.reconcileAuthenticationStop(context.Background(), state)
+			if mode == "reader-unverified" {
+				if err == nil || c.sends != before {
+					t.Fatal("unverified reader proof overwritten", err, c.sends)
+				}
+				after, _ := l.loadControlCheckpoint(state)
+				if after.Request.ID != j.Request.ID {
+					t.Fatal("original query lost")
+				}
+			} else if err != nil || c.sends != before+1 || c.creates != 1 {
+				t.Fatal("settled failed query blocked original revocation", err, c.sends, c.creates)
+			}
+		})
 	}
 }

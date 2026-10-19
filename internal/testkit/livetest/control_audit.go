@@ -218,8 +218,16 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 						return exempt, 0, 0, 0, errors.New("foreign control response")
 					}
 					if response.Error != "" {
-						if response.Turn != nil || response.Authentication != nil || response.Error != "original_turn_unverified" && response.Error != "authentication_stop_unverified" {
+						if response.Authentication != nil || response.Error != "original_turn_unverified" && response.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (response.Error == "original_turn_unverified") {
 							return exempt, 0, 0, 0, errors.New("invalid control error")
+						}
+						if q.Method == "original-turn" {
+							r := response.Turn
+							if r == nil || !r.InspectionFailed || !r.ReaderWritersAbsent || ready == nil || !sameReceiptReady(*ready, r.Readiness) || r.Source != codex.RemoteTurnSource || r.InputDigest != q.InputDigest {
+								return exempt, 0, 0, 0, errors.New("failed query reader settlement unverified")
+							}
+						} else if response.Turn != nil {
+							return exempt, 0, 0, 0, errors.New("invalid authentication error")
 						}
 					} else if q.Method == "authentication-stop" {
 						r := response.Authentication
@@ -229,7 +237,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 						authConfirmed = true
 					} else {
 						r := response.Turn
-						if r == nil || response.Authentication != nil || ready == nil || !sameReceiptReady(*ready, r.Readiness) || r.Source != codex.RemoteTurnSource || r.InputDigest != q.InputDigest || r.Completed && !r.Started || r.Started && (!codex.ValidNativeID(r.NativeTurnID) || r.UserItemID == "") || r.FinalText != "" && (r.FinalItemID == "" || r.FinalDigest != receiptHash(r.FinalText)) {
+						if r == nil || !r.ReaderWritersAbsent || r.InspectionFailed || response.Authentication != nil || ready == nil || !sameReceiptReady(*ready, r.Readiness) || r.Source != codex.RemoteTurnSource || r.InputDigest != q.InputDigest || r.Completed && !r.Started || r.Started && (!codex.ValidNativeID(r.NativeTurnID) || r.UserItemID == "") || r.FinalText != "" && (r.FinalItemID == "" || r.FinalDigest != receiptHash(r.FinalText)) {
 							return exempt, 0, 0, 0, errors.New("original turn proof mismatch")
 						}
 					}

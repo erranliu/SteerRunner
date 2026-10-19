@@ -11,7 +11,7 @@ import (
 )
 
 func TestFixedControlNativeAudit(t *testing.T) {
-	for _, mode := range []string{"valid", "lost-send-receipt", "lost-close-inventory", "wrong-helper", "title-only", "late-create", "extra-create-flag", "wrong-workspace", "wrong-ready", "wrong-incarnation", "wrong-session", "wrong-input", "wrong-response", "changed-final", "bad-auth", "missing-close", "unconfirmed-close", "unknown-create", "unresolved-send", "extra-send-flag", "initial-valid", "initial-no-empty", "initial-extra-command"} {
+	for _, mode := range []string{"valid", "reader-unverified", "query-failed", "failed-reader-unverified", "foreign-reader-owner", "lost-send-receipt", "lost-close-inventory", "wrong-helper", "title-only", "late-create", "extra-create-flag", "wrong-workspace", "wrong-ready", "wrong-incarnation", "wrong-session", "wrong-input", "wrong-response", "changed-final", "bad-auth", "missing-close", "unconfirmed-close", "unknown-create", "unresolved-send", "extra-send-flag", "initial-valid", "initial-no-empty", "initial-extra-command"} {
 		t.Run(mode, func(t *testing.T) {
 			p := NativeReceiptAuditPolicy{Executable: "C:/runtime/helper.exe", SHA256: strings.Repeat("b", 64), ConfigurationDigest: strings.Repeat("a", 64), AccessMode: "sandbox", Environment: "paired"}
 			ready := codex.RemoteReadiness{Verified: true, NativeTransport: codex.RemoteNativeTransport, Contract: codex.PolicyContract, Workspace: "C:/worker", Repository: RemoteURL, RuntimeSHA256: p.SHA256, ConfigurationDigest: p.ConfigurationDigest, AccessMode: p.AccessMode, SessionID: "01a1453f-0327-7f21-b0b9-ee79dad66108", Process: b.ProcessIdentity{PID: 7, Created: "native-creation"}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().UTC().Add(time.Hour), AuthenticationControl: true}
@@ -100,7 +100,17 @@ func TestFixedControlNativeAudit(t *testing.T) {
 				}
 				response := codex.RemoteControlResponse{ID: query.ID, Binding: setup.Binding, RequestDigest: codex.RemoteControlDigest(query)}
 				if method == "original-turn" {
-					response.Turn = &codex.RemoteTurnReceipt{Source: codex.RemoteTurnSource, Readiness: ready, InputDigest: query.InputDigest, Started: true, Completed: true, Status: "completed", NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", FinalItemID: "final", FinalText: "complete final", FinalDigest: receiptHash("complete final")}
+					response.Turn = &codex.RemoteTurnReceipt{ReaderWritersAbsent: true, Source: codex.RemoteTurnSource, Readiness: ready, InputDigest: query.InputDigest, Started: true, Completed: true, Status: "completed", NativeTurnID: "01a14502-5798-78f1-aaa3-2d7cd15594c8", UserItemID: "user", FinalItemID: "final", FinalText: "complete final", FinalDigest: receiptHash("complete final")}
+					if mode == "reader-unverified" || mode == "failed-reader-unverified" {
+						response.Turn.ReaderWritersAbsent = false
+					}
+					if mode == "query-failed" || mode == "failed-reader-unverified" {
+						response.Turn.InspectionFailed = true
+						response.Error = "original_turn_unverified"
+					}
+					if mode == "foreign-reader-owner" {
+						response.Turn.Readiness.Owner.Created = "foreign"
+					}
 					if mode == "changed-final" {
 						response.Turn.FinalDigest = "other"
 					}
@@ -133,7 +143,7 @@ func TestFixedControlNativeAudit(t *testing.T) {
 				t.Fatal("pending control input corrupted business fence or passed final audit", facts, err)
 			}
 			passed := err == nil && facts.Complete && facts.Creations == 1 && facts.Inspections == 1 && facts.ClosedInspections == 1 && len(facts.Prompts) == 2
-			want := mode == "valid" || mode == "lost-send-receipt" || mode == "lost-close-inventory" || mode == "initial-valid"
+			want := mode == "valid" || mode == "query-failed" || mode == "lost-send-receipt" || mode == "lost-close-inventory" || mode == "initial-valid"
 			if passed != want {
 				t.Fatalf("mode=%s facts=%+v err=%v want=%t", mode, facts, err, want)
 			}

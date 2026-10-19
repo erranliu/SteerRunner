@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orcatransport "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
@@ -80,7 +81,17 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 			if proof.Mode != expectedMode {
 				return nil, errors.New("remote cleanup authentication source changed")
 			}
-			evidence = map[string]any{"proof": proof, "control": actor}
+			path, pathErr := codex.RemoteExitPath(proof.Readiness)
+			if pathErr != nil {
+				return nil, pathErr
+			}
+			exitCtx, cancelExit := context.WithTimeout(context.Background(), 30*time.Second)
+			raw, readErr := orca.ReadStopArtifact(exitCtx, m.Execution.Target.Environment, state.Process.RuntimeID, state.Process.WorktreeID, path)
+			cancelExit()
+			if readErr != nil || codex.VerifyRemoteExit(raw, proof.Readiness) != nil {
+				return nil, errors.Join(readErr, errors.New("original signed native exit unverified"))
+			}
+			evidence = map[string]any{"proof": proof, "control": actor, "signed_native_exit": json.RawMessage(raw)}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()

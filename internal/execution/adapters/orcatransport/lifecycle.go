@@ -860,25 +860,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		// The control gate drains in-flight reads; its revocation checkpoint
 		// rejects later queries even before this goroutine has fully returned.
 	}
-	if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
-		// A helper that has already settled may have returned to its original
-		// shell. Bind the exact PTY/worktree, then require the native proof below;
-		// an agent display label is not the identity of those owned resources.
-		t, e := l.client.InspectBoundTerminal(ctx, l.profile.Target(), r.Snapshot.Ref.External)
-		if e != nil {
-			return receipt, e
-		}
-		if t.WorktreeID != r.Snapshot.Ref.External.WorktreeID || t.WorktreePath != r.Snapshot.Workspace.Path || strings.TrimPrefix(t.Branch, "refs/heads/") != r.Snapshot.Workspace.Branch {
-			return receipt, errors.New("original Codex stop workspace or branch changed")
-		}
-		state, e := l.state(r.Snapshot)
-		if e != nil {
-			return receipt, e
-		}
-		if e = l.stopCodexNative(ctx, state, r.Snapshot.Workspace.Path); e != nil {
-			return receipt, e
-		}
-	} else if _, err := l.original(ctx, r.Snapshot); err != nil {
+	if err = l.originalForStop(ctx, r.Snapshot); err != nil {
 		return receipt, err
 	}
 	var terminalOwner *TerminalOwner
@@ -949,8 +931,13 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	// cleanup context even if the preceding credential observation timed out.
 	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
 	defer cancelStop()
-	if _, err = l.original(stopCtx, r.Snapshot); err != nil {
+	if err = l.originalForStop(stopCtx, r.Snapshot); err != nil {
 		return receipt, errors.Join(authErr, err)
+	}
+	if l.usesControl() {
+		if err = l.stopCodexNative(stopCtx, state, r.Snapshot.Workspace.Path); err != nil {
+			return receipt, errors.Join(authErr, err)
+		}
 	}
 	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
@@ -990,9 +977,9 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 			// Poll only the same original identity; never repeat the close.
 			until := time.Now().Add(3 * time.Second)
 			for {
-				if err := l.verifyStopped(ctx, r.Snapshot); err == nil {
+				if err := l.verifyStopped(stopCtx, r.Snapshot); err == nil {
 					break
-				} else if time.Now().After(until) || ctx.Err() != nil {
+				} else if time.Now().After(until) || stopCtx.Err() != nil {
 					return receipt, err
 				}
 				time.Sleep(50 * time.Millisecond)

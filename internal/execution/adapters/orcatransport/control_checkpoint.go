@@ -89,7 +89,7 @@ func validateControlResponse(q codex.RemoteControlRequest, r codex.RemoteControl
 		return errors.New("original native control response binding changed")
 	}
 	if r.Error != "" {
-		if r.Turn != nil || r.Authentication != nil || r.Error != "original_turn_unverified" && r.Error != "authentication_stop_unverified" {
+		if r.Authentication != nil || r.Error != "original_turn_unverified" && r.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (r.Error == "original_turn_unverified") || r.Turn != nil && (q.Method != "original-turn" || !r.Turn.InspectionFailed) {
 			return errors.New("native control error invalid")
 		}
 		return nil
@@ -183,6 +183,20 @@ func (l *Lifecycle) callControl(ctx context.Context, state State, method, input 
 	}
 	if method == "authentication-stop" && j.Response != nil && j.Request.Method == method && j.Response.Error == "" {
 		return *j.Response, nil
+	}
+	// Never overwrite the only proof for a possibly live native reader.
+	// A known query failure may advance only after its original tree settled.
+	if j.Request.Method == "original-turn" && j.Response != nil {
+		var original *Turn
+		for i := range state.Turns {
+			if digest([]byte(wirePrompt(&state.Turns[i]))) == j.Request.InputDigest {
+				original = &state.Turns[i]
+				break
+			}
+		}
+		if original == nil || j.Response.Turn == nil || validateReaderExit(state, original, *j.Response.Turn) != nil {
+			return empty, errors.New("original native reader settlement unverified; control proof retained")
+		}
 	}
 	j.Request = codex.RemoteControlRequest{ID: contracts.NewID(), Binding: state.Control.Ready.Binding, Method: method, Session: state.RemoteReadiness.SessionID, InputDigest: input}
 	j.Response = nil

@@ -1,8 +1,10 @@
 # Spec：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-19 主线接入：已 rebase 到 `a3dc15d`，正在审计和验证签名原生退出/reader 结算与固定控制终端的组合实现。旧批次结论不自动继承，最终证据见[本轮记录](../acceptance/evidence/rebase-control-20261019/README.md)。SteerLine/Orca 不改。
+
 > 2026-10-19 固定控制终端已实施：同源完整 L1 366 Go/29 Node、Controlled 16，以及正常重启、执行期强杀恢复、活动执行撤销三项原生用例通过；原控制身份、完整 final、撤销和关闭分别核验。初始化创建身份未知仍阻塞，无第二状态权威，SteerLine/Orca 不改。内部 Orca state codec 升至 6；四项管理员变体未执行。见[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)及 §7.1。
 
-> 以上通过绑定212ebee；推送后发现新主线 `a3dc15d` 的原生退出/查询进程结算改动冲突，尚未集成或验证组合源码。当前 PR 保持 Draft，不适合直接合入；原停止证明不得在后续变基中弱化，见[集成状态](../acceptance/evidence/fixed-control-20261019/checks/integration-status.json)。
+> 上述旧批次通过绑定212ebee；当时推送后发现新主线的冲突，未验证组合源码。原冲突事实保留为[历史记录](../acceptance/evidence/fixed-control-20261019/checks/integration-status.json)，不代表本轮最终状态。
 
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](result-acquisition.plan.md) · [专属验收](../acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
@@ -262,6 +264,10 @@ Codex 自己登录、读取原生 credential store 并续期，Runner 只管理�
 共同 W/E/V 规则继续作为语义入口；下表为本功能的唯一差异维护，不修改 SteerLine 文档。
 
 ### 7.1 固定原生控制终端（2026-10-19 确认增量）
+
+主线签名退出增量沿 [Orca 停止取证 Plan](orca-shutdown-verification.plan.md#正向退出证明补齐2026-10-19) 维护，不复制其状态机。固定控制查询须完整保留主线原 reader 的 `reader_writers_absent`，失败查询的资源结算与业务结果分离；在原 readiness/owner/公钥/输入及 reader 退出核实前，不允许新请求覆盖该回执。原请求不确定时仍只对账原请求。原生准备沿主线 readiness v3，内部 Orca state codec6/profile3，无旧格式兼容迁移。
+
+停止认证对账后，必须先通过主线已有 artifact 通道取得并验签原 helper 的退出凭据，确认原 app-server/tools/TUI Job 与认证结算，才能关闭业务 PTY；缺该凭据时保留原 helper，不以 PTY 清单或认证报告替代。原控制认证/关闭仍独立核验；被动服务停止仅释放观察并读取已有证明，无法核实停止时不宣称 stopped。具体接线、测试与证据见 Plan §6。
 
 Codex 经 Orca 运行时，原生回执查询和认证撤销不再逐次 `terminal create`。沿现有资源准备操作，在启动执行 agent、发送任何业务输入之前创建每次执行独立的控制终端；原 runtime、worktree、terminal handle/incarnation、helper SHA、配置摘要及资源 generation 随适配器 implementation 同次提交到原 Record，确认固定 helper 就绪后才允许 agent 启动。Pi/DSH 的现有本机回执路径不增加此资源。
 

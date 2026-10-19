@@ -3,7 +3,6 @@ package host
 import (
 	"bytes"
 	"context"
-	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -91,15 +90,15 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	})
 	helper := os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER")
 	var config codex.RemoteAgentConfig
-	args := []string{"terminal", "create", "--worktree", "id:" + w.ID, "--title", "SteerRunner stop proof probe"}
+	var launchCommand string
+	args := []string{"terminal", "create", "--worktree", "id:" + w.ID, "--title", "SteerRunner stop proof probe", "--command", "powershell.exe -NoProfile"}
 	if helper != "" {
 		config = codex.RemoteAgentConfig{Executable: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_NATIVE"), RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", AccessMode: "sandbox", Model: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_MODEL")}
 		if config.Executable == "" || len(os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256")) != 64 {
 			t.Fatal("real native helper identity missing")
 		}
 		raw, _ := json.Marshal(config)
-		command := "& '" + strings.ReplaceAll(helper, "'", "''") + "' '--configuration' '" + base64.RawURLEncoding.EncodeToString(raw) + "'"
-		args = append(args, "--command", command)
+		launchCommand = "& '" + strings.ReplaceAll(helper, "'", "''") + "' '--configuration' '" + base64.RawURLEncoding.EncodeToString(raw) + "'"
 	}
 	args = append(args, "--json")
 	created, err := c.MetaCall(ctx, args...)
@@ -116,6 +115,64 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		p.ExecutionHost = environment
 	}
 	profile := orca.Profile{Executable: cli, Environment: environment, WaitTimeout: "10s"}
+	if helper != "" {
+		profile.RuntimeExecutable, profile.RuntimeSHA256, profile.RuntimeConfigurationDigest = helper, os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256"), codex.RemoteConfigurationDigest(config)
+	}
+	id, attempt, digest := contracts.NewID(), contracts.NewID(), strings.Repeat("a", 64)
+	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: p}, Session: b.SessionContext{ProjectID: "stop-probe", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: digest, ResourceGeneration: "probe-generation"}
+	s.Workspace = b.WorkspaceIntent{Path: w.Path, Branch: strings.TrimPrefix(w.Branch, "refs/heads/"), BaseCommit: base}
+	profileRaw, _ := json.Marshal(profile)
+	profileData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: s.Session.ProjectID, ProfileID: id, AcceptedConfigVersion: digest}, profileRaw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := filepath.Join(root, "state")
+	state := orca.State{Process: p}
+	freezeState := func() {
+		raw, _ := json.Marshal(state)
+		e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, raw)
+		if err != nil {
+			t.Fatal(err)
+		}
+		s.Implementation = []b.ImplementationDataEnvelope{e}
+	}
+	freezeState()
+	if helper != "" {
+		// Exercise the same preparation gate before starting the native helper.
+		owner, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: []b.ImplementationDataEnvelope{profileData}, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir, AgentLaunchCommand: launchCommand})
+		if e != nil {
+			t.Fatal(e)
+		}
+		facts, e := owner.PreparationFacts(ctx, s)
+		if e != nil || facts.ResourceRequired == nil || facts.ResourceRequired.Purpose != "native-control" {
+			t.Fatal("original control preparation unavailable", facts, e)
+		}
+		ref := s.Ref
+		operation := b.Operation{ID: contracts.NewID(), Action: string(b.LifecycleCreateResource), PayloadDigest: digest, Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: id, ConfigurationDigest: digest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}
+		q := b.LifecycleRequest{Snapshot: s, Input: b.LifecycleInput{Resource: facts.ResourceRequired}, Operation: operation}
+		receipt, _, e := owner.Execute(ctx, q)
+		for e == nil && receipt.Disposition == b.OperationAccepted {
+			s.Implementation = receipt.Implementation
+			q.Snapshot = s
+			time.Sleep(200 * time.Millisecond)
+			receipt, _, e = owner.Reconcile(ctx, q)
+		}
+		if e != nil || receipt.Disposition != b.OperationConfirmed {
+			t.Fatal("original control preparation failed", receipt, e)
+		}
+		s.Implementation = receipt.Implementation
+		for _, v := range s.Implementation {
+			if v.ImplementationKey == orca.StateKey {
+				if e = json.Unmarshal(v.Payload, &state); e != nil {
+					t.Fatal(e)
+				}
+			}
+		}
+		_, e = c.MetaCall(ctx, "terminal", "send", "--terminal", p.Terminal, "--text", launchCommand, "--enter", "--retry-request", contracts.NewID(), "--json")
+		if e != nil {
+			t.Fatal("original helper startup", e)
+		}
+	}
 	var ready *codex.RemoteReadiness
 	if helper != "" {
 		profile.RuntimeExecutable, profile.RuntimeSHA256, profile.RuntimeConfigurationDigest = helper, os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256"), codex.RemoteConfigurationDigest(config)
@@ -148,14 +205,6 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 			}
 		}
 	}
-	id, attempt, digest := contracts.NewID(), contracts.NewID(), strings.Repeat("a", 64)
-	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: p}, Session: b.SessionContext{ProjectID: "stop-probe", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: digest, ResourceGeneration: "probe-generation"}
-	s.Workspace = b.WorkspaceIntent{Path: w.Path, Branch: strings.TrimPrefix(w.Branch, "refs/heads/"), BaseCommit: base}
-	profileRaw, _ := json.Marshal(profile)
-	profileData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: s.Session.ProjectID, ProfileID: id, AcceptedConfigVersion: digest}, profileRaw)
-	if err != nil {
-		t.Fatal(err)
-	}
 	rootIdentity, err := process.CurrentIdentity()
 	if err != nil {
 		t.Fatal(err)
@@ -163,62 +212,15 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if ready == nil {
 		ready = &codex.RemoteReadiness{Process: *rootIdentity, SessionID: "probe-live-root"}
 	}
-	state := orca.State{Process: p, RemoteReadiness: ready}
-	if helper != "" {
-		const prompt = "Initialize this agent session. Reply READY only. Do not use tools or change files."
-		inputDigest := fmt.Sprintf("%x", sha256.Sum256([]byte(prompt)))
-		query := codex.RemoteTurnQuery{Workspace: ready.Workspace, Session: ready.SessionID, InputDigest: inputDigest}
-		body, _ := json.Marshal(query)
-		command := "& '" + strings.ReplaceAll(helper, "'", "''") + "' '--original-turn' '" + base64.RawURLEncoding.EncodeToString(body) + "'"
-		created, e := c.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+w.ID, "--title", "SteerRunner original history exit probe", "--command", command, "--json")
-		var reader struct{ Terminal native.Terminal }
-		if e != nil || json.Unmarshal(created.Payload, &reader) != nil || reader.Terminal.Handle == "" || reader.Terminal.IncarnationID == "" {
-			t.Fatal("real reader creation", e)
-		}
-		identity := b.ProcessIdentity{Kind: "orca_original_turn_reader", RuntimeID: p.RuntimeID, WorktreeID: p.WorktreeID, Terminal: reader.Terminal.Handle, Incarnation: reader.Terminal.IncarnationID}
-		for until := time.Now().Add(45 * time.Second); ; {
-			result, e := c.MetaCall(ctx, "terminal", "read", "--terminal", identity.Terminal, "--limit", "200", "--json")
-			var output struct{ Terminal struct{ Tail []string } }
-			if e != nil || json.Unmarshal(result.Payload, &output) != nil {
-				t.Fatal("real reader output", e)
-			}
-			settled := false
-			for _, line := range output.Terminal.Tail {
-				line = strings.TrimSpace(line)
-				if strings.HasPrefix(line, codex.RemoteTurnPrefix) {
-					raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteTurnPrefix))
-					var receipt codex.RemoteTurnReceipt
-					if e != nil || json.Unmarshal(raw, &receipt) != nil || !receipt.ReaderWritersAbsent || receipt.Readiness.SessionID != ready.SessionID || receipt.Readiness.Process != ready.Process || receipt.InputDigest != inputDigest || !receipt.Completed {
-						t.Fatal("real reader native exit unverified", e)
-					}
-					_ = os.WriteFile(filepath.Join(root, "native-reader.json"), raw, 0600)
-					settled = true
-				}
-				if strings.Contains(line, "remote original turn inspection failed") {
-					t.Fatal("real reader failed")
-				}
-			}
-			if settled {
-				break
-			}
-			if time.Now().After(until) {
-				t.Fatal("real reader receipt timeout")
-			}
-			time.Sleep(200 * time.Millisecond)
-		}
-		proof, e := c.CloseReadonlyTerminal(ctx, identity)
-		if e != nil || proof.Disposition != "confirmed" {
-			t.Fatal("real reader PTY stop", e)
-		}
-		state.Turns = []orca.Turn{{Command: contracts.NewID(), WireFormat: "native-command-v1", Prompt: prompt, InputDigest: inputDigest, Native: orca.NativeProof{Pane: "bootstrap-reader-probe"}, Inspection: &orca.NativeInspection{Attempted: true, NativeSettled: true, Closed: true, Process: &identity, At: time.Now().UTC()}}}
-	}
+	state.RemoteReadiness = ready
+	// Native reader settlement is covered through the fixed protocol in the
+	// workflow tests; this zero-business probe isolates offline signed exit.
 	stateRaw, _ := json.Marshal(state)
 	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
 	if err != nil {
 		t.Fatal(err)
 	}
 	s.Implementation = []b.ImplementationDataEnvelope{stateData}
-	dir := filepath.Join(root, "state")
 	if err = os.MkdirAll(filepath.Join(dir, "service"), 0700); err != nil {
 		t.Fatal(err)
 	}
@@ -282,7 +284,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal("passive shutdown claimed active PTY stopped", facts, err)
 	}
 	if helper != "" {
-		stopping, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli, allowStop: true}, RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir})
+		stopping, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli, allowStop: true, runDirectory: dir}, RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir})
 		if e != nil {
 			t.Fatal(e)
 		}
@@ -347,8 +349,9 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 // The production process host executes only the adapter's read-only query.
 // Its StartManaged/WriteExecutionFile paths must remain unreachable here.
 type probeProcessHost struct {
-	cli       string
-	allowStop bool
+	cli          string
+	allowStop    bool
+	runDirectory string
 }
 
 func (p probeProcessHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
@@ -356,11 +359,15 @@ func (p probeProcessHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
 }
 func (p probeProcessHost) InspectProcess(*b.ProcessIdentity) string { return "unknown" }
 func (p probeProcessHost) NewProcessGeneration() string             { return "probe" }
-func (p probeProcessHost) WriteExecutionFile(string, []byte) error {
-	return fmt.Errorf("probe forbids evidence writes")
+func (p probeProcessHost) WriteExecutionFile(path string, raw []byte) error {
+	root := filepath.Join(p.runDirectory, "orca-native-inspections") + string(filepath.Separator)
+	if !p.allowStop || !filepath.IsAbs(p.runDirectory) || !strings.HasPrefix(strings.ToLower(filepath.Clean(path)), strings.ToLower(root)) {
+		return fmt.Errorf("probe forbids evidence writes")
+	}
+	return process.New(30*time.Second).WriteExecutionFile(path, raw)
 }
 func (p probeProcessHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
-	if c.Executable != p.cli || len(c.Args) < 2 || c.Args[0] != "terminal" || c.Args[1] != "list" && !(p.allowStop && (c.Args[1] == "show" || c.Args[1] == "close")) {
+	if c.Executable != p.cli || len(c.Args) < 2 || c.Args[0] != "terminal" || c.Args[1] != "list" && !(p.allowStop && (c.Args[1] == "show" || c.Args[1] == "close" || c.Args[1] == "read" || c.Args[1] == "send")) {
 		return nil, fmt.Errorf("probe forbids adapter effect: %v", c.Args)
 	}
 	ctx, cancel := context.WithTimeout(ctx, c.Timeout)

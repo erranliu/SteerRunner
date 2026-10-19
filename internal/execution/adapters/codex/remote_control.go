@@ -78,10 +78,10 @@ func ServeRemoteControl(ctx context.Context, setup RemoteControlSetup, input io.
 		r := RemoteControlResponse{}
 		if q.Method == "original-turn" {
 			value, e := InspectRemoteTurn(ctx, RemoteTurnQuery{Workspace: setup.Workspace, Session: q.Session, InputDigest: q.InputDigest})
+			// Resource settlement remains evidence even when history failed.
+			r.Turn = &value
 			if e != nil {
 				r.Error = "original_turn_unverified"
-			} else {
-				r.Turn = &value
 			}
 		} else {
 			value, e := RevokeRemoteAuthentication(ctx, RemoteAuthenticationQuery{Workspace: setup.Workspace, Session: q.Session})
