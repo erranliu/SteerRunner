@@ -91,7 +91,7 @@ func remoteStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error
 			if readErr != nil || codex.VerifyRemoteExit(raw, proof.Readiness) != nil {
 				return nil, errors.Join(readErr, errors.New("original signed native exit unverified"))
 			}
-			evidence = map[string]any{"proof": proof, "control": actor, "signed_native_exit": json.RawMessage(raw)}
+			evidence = livetest.SignedNativeExitEvidence{Proof: proof, Control: actor, Bytes: raw}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()

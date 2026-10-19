@@ -218,3 +218,5 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 RA-A08 与主线 OSV-A06/A08/A09 的本轮交叉覆盖沿上述有限场景维护。没有全量 L2/L3 或新增庞大矩阵；若生产改动发生在冻结后，重新冻结并重跑受影响前置，历史通过不改写为当前通过。
 
 主线追加接入（2026-10-19，`2aa17cc`）：保留独立配置的公开 validate/capability、配置冻结与 case 可用性边界；测试基线与 manifest 更新为 workflow/2，结果获取 case 补齐同一注册需求，删除已废弃的反馈资格参数。配置/CLI/manifest 组件与框架全量检查须通过，再由最终冻结源码重新执行本节正式 L1/Controlled/native 入口。`5861ded` 批次完整 L1 已通过，Controlled 因主线推进主动取消，未启动 native；保留中断记录，不能算最终验收。
+
+测试接线补充：最终产品批次 bb84ea8 已完整通过 L1/Controlled/三项 native workflow。随后补充停止探针在 helper 启动前因把内部 ID 当 Orca UUID 重试身份而失败，删除首次发送中无原 UUID 的 retry 标志，不重发未知请求，在新现场重跑两项探针。另发现测试报告 MarshalIndent 会改写嵌入 RawMessage 的签名正文；证据改为原字节 base64 保存，新增实际签名经过缩进归档仍可验签/改写必拒绝的回归。原报告保留，从原 runtime/worktree artifact 重读原始退出字节并另存、验签，不重签或从格式化 JSON 猜测原文。上述只改测试/证据；以 checks/code-equivalence.json 证明生产、集成及脚本源码与 bb84ea8 相同，复用其冻结 EXE/模型批次，重跑 host/livetest、native driver 编译/零匹配守卫及本机/远端停止探针，不重跑无变化的真实业务模型。失败原记录、实际产品/测试提交和原始字节来源分别归档。

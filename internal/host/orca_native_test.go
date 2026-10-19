@@ -168,7 +168,9 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 				}
 			}
 		}
-		_, e = c.MetaCall(ctx, "terminal", "send", "--terminal", p.Terminal, "--text", launchCommand, "--enter", "--retry-request", contracts.NewID(), "--json")
+		// This is a first submission, not a retry of a native UUID. An uncertain
+		// response fails this owned probe rather than resending the startup.
+		_, e = c.MetaCall(ctx, "terminal", "send", "--terminal", p.Terminal, "--text", launchCommand, "--enter", "--json")
 		if e != nil {
 			t.Fatal("original helper startup", e)
 		}
