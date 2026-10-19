@@ -1,5 +1,7 @@
 # 沙箱认证准备与发布验收
 
+2026-10-19 范围修订（已实施，验收见专项记录）：新远端 `orca_environment` Run 按[仅 Orca Spec](orca-remote-native.spec.md)使用执行主机已有登录及代理权限，不要求 Runner broker、helper readiness 或同 app-server 确定性预检；不得将本节旧保证记作新路径通过。旧冻结 Run 与本地受管路径保留原规则，历史验收不重写。
+
 本次独立验收见 [acceptance](../acceptance/sandbox-authentication.md)，实施与测试映射见
 [Plan](sandbox-authentication.plan.md)。沿用 SteerLine
 `docs/product-design/worker-lifecycle.md` 的 W05–W07、W16、W18 和 E/V 规则；不新增状态机。
@@ -14,9 +16,9 @@
 
 ## 契约
 
-2026-10-19 产品边界：仅使用执行主机已有 gh 登录的单仓库 broker，移除 GitHub App 签发、私钥引用和 installation token。旧 `execution.settings.github_auth`（包括 null）在 Run/Check 受理前拒绝；旧 profile/helper 配置严格拒绝，不静默改用宿主身份。升级前须用原版本收尾已有 App Run/Check，历史证据不改写。
+2026-10-19 产品边界：本机与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；新远端只使用已有 Orca 原生认证，不创建 Runner capability、不管理远端登录期限或撤销。全路径移除 GitHub App 签发、私钥引用和 installation token。旧 `execution.settings.github_auth`（包括 null）在 Run/Check 受理前拒绝；旧 profile/helper 配置严格拒绝，不静默改用宿主身份。升级前须用原版本收尾已有 App Run/Check，历史证据不改写。
 
-Orca 原 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原固定控制终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知控制创建不补建，丢失读取/关闭只对账原控制身份。宿主 gh 登录及其他 Run 的授权不受影响。
+Orca local 的受管 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原固定控制终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知控制创建不补建，丢失读取/关闭只对账原控制身份。宿主 gh 登录及其他 Run 的授权不受影响。
 
 - SA01：可信执行主机准备认证。使用该主机已有 gh 登录，宿主凭据仅留在可信
   runtime 内存；worker 获得有限期、单仓库、限定操作的代理 capability。Git push 和

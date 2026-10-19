@@ -305,12 +305,12 @@
             "runtime_executable": {
               "type": "string",
               "minLength": 1,
-              "description": "Trusted steerrunner-agent executable installed on the execution host; owns host authentication and same-mode native preparation."
+              "description": "Local target only: trusted managed terminal helper. Forbidden for orca_environment, including empty values."
             },
             "runtime_sha256": {
               "type": "string",
               "pattern": "^[a-f0-9]{64}$",
-              "description": "Optional frozen SHA256 of the execution-host helper; required in qualification configs."
+              "description": "Local target only: frozen helper SHA256. Forbidden for orca_environment."
             },
             "executable": {
               "type": "string",

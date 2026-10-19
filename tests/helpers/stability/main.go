@@ -118,7 +118,7 @@ func main() {
 		args := fs.Args()
 		var cmd *exec.Cmd
 		if mode == "local-audit" {
-			if m.Execution.Target.Kind != "local" || !filepath.IsAbs(*nativeCLI) {
+			if m.Execution.Adapter != "orca-terminal" || !filepath.IsAbs(*nativeCLI) {
 				fatal(fmt.Errorf("local audit requires the frozen installed CLI"))
 			}
 			cmd = exec.Command(*nativeCLI, args...)

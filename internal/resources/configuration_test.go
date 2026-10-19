@@ -60,8 +60,10 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		{"missing_execution_model", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"remote", `{"adapter":"codex-app-server","target":{"kind":"orca_environment","environment":"remote"},"settings":{"model":"execute"}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"adapter", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent_launch":{"model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
-		{"orca_audited", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, true},
-		{"orca_audited_null_retired", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"github_auth":null,"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_audited", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, true},
+		{"orca_remote_audited_no_helper", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"agent_launch":{"model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_remote_audited_retired_helper", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"agent_launch":{"model":"execute","runtime_executable":"helper.exe"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_remote_audited_null_retired", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"github_auth":null,"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"override", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"prompt_overrides":{"audit.spec":"No"}}`, false},
 		{"unknown", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"other","version":2}`, false},
 		{"null_model", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"model":"execute"}}`, `{"id":"development-audited","version":2,"audit_model":null}`, false},
@@ -82,5 +84,27 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 				t.Fatalf("production accepted=%v want=%v: %v", accepted, tc.valid, contracts.ValidateRunConfiguration(raw))
 			}
 		})
+	}
+}
+
+func TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees(t *testing.T) {
+	if strings.Contains(string(ConfigurationSchemas()), `"github_auth"`) {
+		t.Fatal("retired App configuration is still advertised")
+	}
+	count := 0
+	for _, c := range Catalog().Combinations {
+		if c.TargetKind != "orca_environment" {
+			continue
+		}
+		count++
+		raw, _ := json.Marshal(c)
+		for _, retired := range []string{"host-gh-repository-broker", "native_codex_0.159.2_permissions", "development-audited", "environment-check start"} {
+			if strings.Contains(string(raw), retired) {
+				t.Fatal("native remote catalog promises retired guarantee", string(raw))
+			}
+		}
+	}
+	if count == 0 {
+		t.Fatal("native remote development disappeared")
 	}
 }

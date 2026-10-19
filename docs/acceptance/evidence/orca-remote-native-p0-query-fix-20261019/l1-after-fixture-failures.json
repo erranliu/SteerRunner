@@ -1,0 +1,16 @@
+[
+  {
+    "Time": "2026-10-19T12:16:30.1506139+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent\n"
+  },
+  {
+    "Time": "2026-10-19T12:16:30.1511565+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "--- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)\n"
+  }
+]

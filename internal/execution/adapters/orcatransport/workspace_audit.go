@@ -9,6 +9,9 @@ import (
 
 func (l *Lifecycle) InspectLifecycleAuditWorkspace(ctx context.Context, s b.LifecycleSnapshot, preHead string) (b.WorkspaceInspection, error) {
 	var empty b.WorkspaceInspection
+	if l.profile.Environment != "" {
+		return empty, errors.New("native remote Orca does not provide helper workspace audit")
+	}
 	if err := l.validate(s); err != nil {
 		return empty, err
 	}

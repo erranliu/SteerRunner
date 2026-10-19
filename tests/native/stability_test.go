@@ -539,7 +539,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 			s.check("no-input-during-cleanup", reflect.DeepEqual(keys, inputsBeforeCleanup), "original business forwarding intents unchanged by stop/authentication/control cleanup")
 		}
 		s.r.AuditComplete = s.completeNativeReceipts(keys)
-		s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts, fixed control identity, authentication revocation and confirmed closure")
+		s.check("native-receipts-complete", s.r.AuditComplete, "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof")
 		if err := livetest.ValidateRuntime(m); err != nil {
 			t.Error(err)
 		}
@@ -648,6 +648,11 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		s.originalIdentity(v)
 		s.merge(v)
 	case "orca-remote.stop-revocation":
+		if m.CaseID == "active" {
+			response, err := command(m, s.dir, []string{"service", "verify-stopped"}, nil)
+			save(t, "active-verification-refused.json", response)
+			s.check("active-verifier-refuses-writer-lease", err != nil && response.Error != nil && response.Error.Code == "directory_conflict", "active-verification-refused.json")
+		}
 		boundary := m.CaseID == "boundary"
 		unknown := m.CaseID == "unreachable"
 		if boundary || unknown {
@@ -847,23 +852,11 @@ func (s *stabilityRun) preSendDisconnect() {
 }
 
 func (s *stabilityRun) auditPermissions() {
-	// Stop cases can already have closed their original business terminal.
-	// Read the saved native provider using an isolated, fully settled inspector.
-	t, m := s.t, s.m
-	var permissionSettings contracts.OrcaSettings
-	_ = json.Unmarshal(m.Execution.Settings, &permissionSettings)
-	permissionCtx, permissionCancel := context.WithTimeout(context.Background(), 90*time.Second)
-	permissionClient := orca.New(orca.Config{CommandTimeout: "30s", Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
-		return s.diagnostic(ctx, args...)
-	}})
-	permissionAudit, permissionErr := livetest.RemotePermissionAudit(permissionCtx, permissionClient, s.process, permissionSettings.AgentLaunch.RuntimeExecutable, s.original.Workspace, s.provider)
-	permissionCancel()
-	save(t, "remote-worker-permission-audit.json", permissionAudit)
-	mode := permissionSettings.AccessMode
-	if mode == "" {
-		mode = "sandbox"
-	}
-	s.check("native-permissions", permissionErr == nil && permissionAudit.Readiness.Verified && permissionAudit.InspectorClosed && permissionAudit.Readiness.AccessMode == mode && permissionSettings.AgentLaunch.RuntimeSHA256 != "" && permissionAudit.Readiness.RuntimeSHA256 == permissionSettings.AgentLaunch.RuntimeSHA256, "remote-worker-permission-audit.json: original provider, frozen helper, access mode, never and no escape/approval")
+	var settings contracts.OrcaSettings
+	err := contracts.DecodeStrict(s.m.Execution.Settings, &settings)
+	valid := err == nil && contracts.ValidateExecution(s.m.Execution) == nil && settings.AgentLaunch.RuntimeExecutable == "" && settings.AgentLaunch.RuntimeSHA256 == ""
+	save(s.t, "native-launch-contract.json", map[string]any{"requested_model": settings.AgentLaunch.Model, "requested_reasoning_effort": settings.AgentLaunch.ReasoningEffort, "requested_access_mode": settings.AccessMode, "effective_parameters_verified": false})
+	s.check("native-launch-parameters", valid, "native-launch-contract.json: frozen requested parameters; no effective-parameter or helper audit")
 }
 
 func (s *stabilityRun) completeNativeReceipts(expected []string) bool {
@@ -1069,12 +1062,7 @@ func (s *stabilityRun) cleanup() {
 					if err == nil && v.StopStatus == "stopped" && !v.NewInputsAllowed {
 						s.r.Cleanup.NativeStopped = true
 						save(s.t, "cleanup-run.json", v)
-						proof, proofErr := remoteStopEvidence(s.m, v)
-						if proofErr != nil {
-							s.t.Error("original authentication/control cleanup unverified", proofErr)
-						} else {
-							save(s.t, "remote-authentication-cleanup.json", proof)
-						}
+
 						break
 					}
 					time.Sleep(time.Second)
@@ -1131,13 +1119,11 @@ func (s *stabilityRun) cleanup() {
 	if !s.r.Cleanup.ServiceStopped {
 		s.t.Error("current service exit unconfirmed")
 	}
-	if s.r.AuditComplete && s.r.Cleanup.NativeStopped && s.r.Cleanup.ServiceStopped {
-		// Stop adds the bound authentication revoker to the original raw journal.
-		// Recheck the final journal with the already-frozen business prompt list;
-		// never compare a pre-stop auxiliary count with post-stop receipts.
-		if !s.completeNativeReceipts(s.auditedPrompts) {
-			s.r.AuditComplete = false
-			s.t.Error("final original receipt audit changed or cleanup remains unverified")
+	if s.r.Cleanup.ServiceStopped && s.r.Cleanup.NativeStopped && !s.r.Cleanup.DriverNativeCleanup && s.r.RunID != "" {
+		proof, err := verifyNativeStoppedScope(s.m, s.dir, s.r.RunID)
+		save(s.t, "offline-stopped.json", proof)
+		if err != nil {
+			s.t.Error(err)
 		}
 	}
 	save(s.t, "cleanup.json", s.r.Cleanup)

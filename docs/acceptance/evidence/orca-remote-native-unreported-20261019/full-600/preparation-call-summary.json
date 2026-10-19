@@ -1,0 +1,88 @@
+[
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-001.json",
+    "source_sha256": "8f2ee31553e0f17e8710cdc047d99f7ff35cf35641724c7118448f46d370e1b5",
+    "arguments": [
+      "repo",
+      "list"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:37.8154378Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-002.json",
+    "source_sha256": "8c8ae0423172e86ffb3348fadb7ac94525e1603cd4f6bd1850727350044d753a",
+    "arguments": [
+      "worktree",
+      "list",
+      "--repo",
+      "id:903fb315-7d5e-4246-8913-816e1d3bdf03"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:39.2839707Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-003.json",
+    "source_sha256": "ad2c74555029f76c6004a4d0088f3316deabcb5112a0f2cc551b6e42d226445d",
+    "arguments": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "--title",
+      "SteerRunner native base preparation",
+      "--command",
+      "& git -C 'C:\\Projects\\SteerlineTest' fetch --no-tags origin +refs/heads/codex/srtest/005b2b1d831f/base:refs/remotes/origin/codex/srtest/005b2b1d831f/base; if ($LASTEXITCODE -eq 0) { & git -C 'C:\\Projects\\SteerlineTest' cat-file -e '97ac81aa85080c84e5441864b59c299a6d4eb386^{commit}'; if ($LASTEXITCODE -eq 0) { Write-Output ('SR_' + 'BASE_b47bdcb1e14a4debae1bf795ecf5ab19:' + '97ac81aa85080c84e5441864b59c299a6d4eb386') } }"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:41.2796721Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-004.json",
+    "source_sha256": "015f08b388c4f8766880b31591a74239f66bb720a89b950d3f3490ee010b0c2b",
+    "arguments": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_d28a6ede-0b22-41e1-8489-7693791a85da"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:42.3616532Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-005.json",
+    "source_sha256": "9a7180d543af164afbf21bd6adacd03a751e205ed35dda0c36a574cbcf770a8f",
+    "arguments": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_d28a6ede-0b22-41e1-8489-7693791a85da"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:44.1080734Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-006.json",
+    "source_sha256": "4366bfb6a64d2645299abe5ba2fdd9d0575445e02ea3a4c6e084cf3852756d03",
+    "arguments": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_d28a6ede-0b22-41e1-8489-7693791a85da"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:45.7242944Z"
+  },
+  {
+    "file": "orca-preparation-ef31ad585e094a2fae89829e47560d4c/call-007.json",
+    "source_sha256": "93e1bc0c99f14491af563597f50423f169701133622e78dea5611e0ef8c39751",
+    "arguments": [
+      "terminal",
+      "close",
+      "--terminal",
+      "term_d28a6ede-0b22-41e1-8489-7693791a85da"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T06:41:46.6631226Z"
+  }
+]

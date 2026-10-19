@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)][string]$Scenario,
     [Parameter(Mandatory=$true)][string]$Config,
     [string]$Catalog = '',
@@ -98,7 +98,7 @@ if ($taskStability) {
 }
 # A test-only forwarding CLI records actual local sends for all agents and can
 # withhold one real business-send receipt. It never replaces Orca execution.
-if ($taskScenario.target -eq 'orca-local') {
+if ($taskScenario.target -eq 'orca-local' -or ($taskScenario.target -eq 'orca-environment' -and -not $taskStability)) {
     $taskLocalAudit = Join-Path $taskRoot 'bin/local-audit.exe'
     Push-Location $taskRepo
     try { & go build -trimpath -o $taskLocalAudit ./tests/helpers/stability; if ($LASTEXITCODE -ne 0) { throw 'Local audit helper build failed' } } finally { Pop-Location }

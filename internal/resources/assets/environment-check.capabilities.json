@@ -39,12 +39,9 @@
         "sandbox",
         "full_access"
       ],
-      "mechanism": "implemented",
-      "authentication_sources": [
-        "host-gh-repository-broker"
-      ],
-      "native_version": "codex-cli 0.159.2",
-      "required_runtime": "agent_launch.runtime_executable (steerrunner-agent on execution host)"
+      "mechanism": "unsupported",
+      "authentication_sources": [],
+      "reason": "Remote Orca native Runs use existing host authentication; full permission/broker checks require a local managed target."
     },
     {
       "adapter": "orca-terminal",

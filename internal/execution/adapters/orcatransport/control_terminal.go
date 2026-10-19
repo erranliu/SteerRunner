@@ -20,7 +20,7 @@ type ControlTerminal struct {
 }
 
 func (l *Lifecycle) usesControl() bool {
-	return l.profile.Terminal == nil && l.profile.RuntimeExecutable != ""
+	return l.profile.Environment == "" && l.profile.Terminal == nil && l.profile.RuntimeExecutable != ""
 }
 
 func (l *Lifecycle) controlSetup(s b.LifecycleSnapshot, state State) codex.RemoteControlSetup {

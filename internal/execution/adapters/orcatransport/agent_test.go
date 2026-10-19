@@ -48,7 +48,7 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			base.AgentType, start.AgentType, end.AgentType = agent, agent, agent
 			end.MainAgent.Outcome, end.LastAssistantMessage = "success", `{"summary":"本轮结果"}`
 			now := time.Unix(100, 0).UTC()
-			for _, kind := range []string{"success", "agent-changed", "missing-agent", "provider-changed", "missing-root", "unknown-outcome", "failed", "session-start", "child-working", "tool-output", "restored", "truncated"} {
+			for _, kind := range []string{"success", "agent-changed", "missing-agent", "provider-changed", "missing-root", "unreported-outcome", "explicit-unknown", "failed", "cancelled", "session-start", "child-working", "tool-output", "restored", "truncated"} {
 				t.Run(kind, func(t *testing.T) {
 					turn := Turn{Accepted: true, Started: true, Prompt: "task", Native: nativeBaseline(base, now)}
 					turn.Native.signal(start, &turn, now)
@@ -64,8 +64,12 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 						current.ProviderSession.ID = "foreign"
 					case "missing-root":
 						current.MainAgent = nil
-					case "unknown-outcome":
+					case "unreported-outcome":
 						current.MainAgent.Outcome = ""
+					case "explicit-unknown":
+						current.MainAgent.Outcome = "unknown"
+					case "cancelled":
+						current.MainAgent.Outcome = "cancellation"
 					case "failed":
 						current.MainAgent.Outcome = "error"
 					case "session-start":
@@ -80,7 +84,7 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 						current.LastAssistantMessage = strings.Repeat("x", 8000)
 					}
 					completed := turn.Native.query(current, &turn, now.Add(time.Second))
-					want := kind == "success" || kind == "truncated" || kind == "unknown-outcome" && agent == "codex"
+					want := kind == "success" || kind == "truncated" || kind == "unreported-outcome" && agent == "codex"
 					if completed != want {
 						t.Fatal("wrong root completion decision", completed, turn.Native)
 					}

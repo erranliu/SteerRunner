@@ -2,12 +2,13 @@
 
 SteerRunner 是个人多机执行器：在本人管理和信任、预先配置好的执行主机上，接收冻结的 Spec / Plan，执行开发 workflow、处理反馈并产出可核验 PR。支持同一服务多个独立 Run；调用方显式选择本机或 Orca environment。SteerLine 保留任务、DAG、机器选择、候选关系和 TaskDelivery，通过 CLI 使用它。
 
-用户负责每台执行机的工具安装和 gh 登录。Runner 负责环境检查、Run 隔离、有限期单仓库授权、执行与发布对账、显式恢复、停止及清理。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。
+用户负责每台执行机的工具安装和 gh 登录。Runner 负责 Run 隔离、执行与发布对账、显式恢复、停止及清理；本机和 Orca local 受管执行另提供环境检查与有限期单仓库授权。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。
 
 当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、按需报告→发布→核验 PR、原会话人工续执行、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
+- [远端仅通过 Orca 执行 Spec](docs/spec/orca-remote-native.spec.md) / [Plan](docs/spec/orca-remote-native.plan.md) / [验收](docs/acceptance/orca-remote-native.md)（2026-10-19 原生链路修订；新远端 Run 不部署运行 SteerRunner helper）
 - [通用 Orca Agent 接入 Spec](docs/spec/orca-generic-agent.spec.md) / [Plan](docs/spec/orca-generic-agent.plan.md)（不修改 Orca；本机 Pi/DSH 原 TUI 已接通，支持受管工具与实际权限；[当前构建验收](docs/acceptance/orca-generic-agent.md)）
 - [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [独立调用与内部测试配置 Spec](docs/spec/independent-configuration.spec.md) / [Plan](docs/spec/independent-configuration.plan.md) / [验收](docs/acceptance/independent-configuration.md)（调用方管理选择，Runner 发布契约；内部测试配置独立）
@@ -51,15 +52,15 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 ## 提交与查看执行
 
 本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。
-GitHub worker 默认使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
+本机及 Orca local 受管 GitHub worker 使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
 Runner 在业务前准备各 Run 独立的有限期 capability，并执行与实际权限模式一致的原生工具检查。
 认证秘密不写进请求、持久化配置或材料；停止关闭该 Run 的 broker，不退出宿主 gh 登录，不影响其他 Run。
 GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null）明确拒绝，不能静默改用个人身份。
 升级前须用旧版本停止、核实并收尾已有 App Run/Check；新版本不迁移其身份或接管旧 App 凭据。
 固定 approval never，失败不会回退自动审核发布。
-Orca terminal 已接入执行主机可信 helper、同权限准备和认证撤销；须显式配置并核验 helper 路径与摘要。
+Orca local 受管执行使用可信 helper、同权限准备与认证撤销；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
 个人多机边界、App 移除和本次验证见[专项记录](docs/acceptance/personal-runner-gh-only-20261019.md)。
-远端双模型审计、同服务多 Run 已接线；历史构建真机范围与待验收项见
+同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计或完整环境检查；原 helper 构建的历史验证范围见
 [Orca 扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)。
 设置、外部前置及受控/真实验收边界见[测试指南](docs/testing.md)和[专属记录](docs/acceptance/sandbox-authentication.md)。
 
@@ -189,9 +190,9 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 一 case、L3 二十二场景／二十九 case（含远端可靠性、本机反馈／审计／多 Run、六种环境检查及 Pi／DSH）、
+当前已注册 L2 两 case、L3 二十一场景／二十八 case（含远端可靠性、本机反馈／审计／多 Run、四种本机环境检查及 Pi／DSH）、
 L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
-driver 需要同构建反馈通过资格。真实后端并行和剩余管理员验收分别登记，逐项内容见清单。
+driver 需要同构建反馈通过资格。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。
 历史[主线复测](docs/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](docs/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；

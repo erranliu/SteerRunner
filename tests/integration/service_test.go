@@ -29,6 +29,26 @@ var testCount atomic.Int32
 var evidenceMutex sync.Mutex
 
 func TestMain(m *testing.M) {
+	if len(os.Args) > 2 && os.Args[1] == "--native-inventory-fixture" {
+		path := os.Args[2]
+		args := os.Args[3:]
+		if len(args) < 2 || args[0] != "terminal" || args[1] != "list" {
+			os.Exit(2)
+		}
+		f, err := os.OpenFile(path+".calls", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+		if err != nil {
+			os.Exit(2)
+		}
+		raw, _ := json.Marshal(args)
+		_, _ = f.Write(append(raw, '\n'))
+		_ = f.Close()
+		raw, err = os.ReadFile(path)
+		if err != nil {
+			os.Exit(2)
+		}
+		_, _ = os.Stdout.Write(raw)
+		os.Exit(0)
+	}
 	if os.Getenv("STEERRUNNER_JOB_HELPER") != "" {
 		os.Exit(runJobHelper())
 	}
@@ -262,6 +282,7 @@ func TestSRStandalonePackage(t *testing.T) {
 func TestSRServiceOwnership(t *testing.T) {
 	testCount.Add(1)
 	t.Run("offline_verification", testOfflineVerificationAfterWriterExitWithoutShutdownReceipt)
+	t.Run("remote_offline_scope", testRemoteOfflineScope)
 	t.Run("queries_do_not_start", func(t *testing.T) {
 		dir := filepath.Join(t.TempDir(), "runner")
 		for _, args := range [][]string{{"capabilities"}, {"inspect", "--request-id", "missing"}, {"events", "--run-id", "missing"}} {

@@ -54,6 +54,27 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			res, err := command(m, dir, []string{"service", "status"}, nil)
 			if err == nil && res.Data.(map[string]any)["status"] == "not_running" {
 				r.ServiceStopped = true
+				if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "orca_environment" {
+					proof, err := verifyNativeStoppedScope(m, dir, ids[0])
+					save(t, "offline-stopped.json", proof)
+					if err != nil {
+						r.RunStopped = false
+						t.Error("offline multi-Run settlement unconfirmed", err)
+						return
+					}
+					for _, id := range ids {
+						found := false
+						for _, item := range proof.Runs {
+							if item.RunID == id && item.ResourcesSettled && item.StopEvidenceScope == "orca_terminal" {
+								found = true
+							}
+						}
+						if id == "" || !found {
+							r.RunStopped = false
+							t.Error("original native Run missing from settled scope", id)
+						}
+					}
+				}
 				return
 			}
 		}
@@ -90,8 +111,13 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus != "stopped" || view.NewInputsAllowed {
 				allStopped = false
 			}
+			if manifests[i].Execution.Adapter == "orca-terminal" && manifests[i].Execution.Target.Kind == "orca_environment" {
+				// Offline verification requires the service writer lease; the
+				// earlier registered service cleanup runs after both Run stops.
+				continue
+			}
 			if manifests[i].Execution.Adapter == "orca-terminal" && view.Execution.Agent == "codex" {
-				proof, err := remoteStopEvidence(manifests[i], view)
+				proof, err := localStopEvidence(manifests[i], view)
 				if err != nil {
 					allStopped = false
 					t.Error("remote multi-Run cleanup unconfirmed", err)
@@ -160,6 +186,9 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 		names := []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"}
 		if manifests[i].Execution.Adapter == "orca-terminal" {
 			names = []string{"remote-worker-permission-audit.json"}
+			if manifests[i].Execution.Target.Kind == "orca_environment" {
+				names = []string{"native-call-audit.json", "native-launch-contract.json"}
+			}
 			if runs[i].Execution.Agent == "pi" || runs[i].Execution.Agent == "dsh" {
 				names = []string{runs[i].Execution.Agent + "-native-permission-audit.json"}
 			}

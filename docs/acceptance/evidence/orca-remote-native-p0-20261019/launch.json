@@ -1,0 +1,9 @@
+{
+  "command": "& 'C:/sr-runtime/2ba0/01/native/codex.exe' '--version'; & 'C:/sr-runtime/2ba0/01/native/codex.exe' '--no-daemon' '--model' 'gpt-6-luna' '-c' 'model_reasoning_effort=\"high\"' '--config' 'sandbox_mode=danger-full-access' '--config' 'allow_login_shell=false' '--config' 'features.shell_snapshot=false' '--config' 'features.shell_snapshot_v2=false' '--config' 'approval_policy=never' '--config' 'approvals_reviewer=user' '--config' 'sandbox_workspace_write.writable_roots=[]' '--config' 'sandbox_workspace_write.exclude_tmpdir_env_var=true' '--config' 'sandbox_workspace_write.exclude_slash_tmp=true' '--config' 'sandbox_workspace_write.network_access=true' '-c' 'tui.animations=false' 'Initialize this agent session. Reply READY only. Do not use tools or change files.'",
+  "request_id": "fc0405c9-2cbc-4ddc-9cbd-7a8d185097bb",
+  "native": "C:/sr-runtime/2ba0/01/native/codex.exe",
+  "model": "gpt-6-luna",
+  "effort": "high",
+  "access_mode": "full_access",
+  "helper": false
+}

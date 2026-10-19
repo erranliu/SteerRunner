@@ -1,0 +1,46 @@
+=== RUN   TestRAAuditSources
+--- PASS: TestRAAuditSources (0.00s)
+=== RUN   TestRAAuditPartialAndFallback
+--- PASS: TestRAAuditPartialAndFallback (0.00s)
+=== RUN   TestRAParserFieldProvenance
+=== RUN   TestRAParserFieldProvenance/question
+=== RUN   TestRAParserFieldProvenance/blocker
+--- PASS: TestRAParserFieldProvenance (0.00s)
+    --- PASS: TestRAParserFieldProvenance/question (0.00s)
+    --- PASS: TestRAParserFieldProvenance/blocker (0.00s)
+=== RUN   TestSRWorkflowDevelopment
+--- PASS: TestSRWorkflowDevelopment (0.00s)
+=== RUN   TestSRExecutionDependencyBoundary
+--- PASS: TestSRExecutionDependencyBoundary (0.06s)
+=== RUN   TestRASuccessOutputRouting
+--- PASS: TestRASuccessOutputRouting (0.00s)
+=== RUN   TestRASemantics
+--- PASS: TestRASemantics (0.00s)
+=== RUN   TestRADefinitionRename
+--- PASS: TestRADefinitionRename (0.00s)
+=== RUN   TestRAFeedback
+--- PASS: TestRAFeedback (0.00s)
+=== RUN   TestRAPublicationProgramClue
+--- PASS: TestRAPublicationProgramClue (0.00s)
+=== RUN   TestRAVerificationConflictSurvivesResume
+--- PASS: TestRAVerificationConflictSurvivesResume (0.00s)
+=== RUN   TestRASuccessOutputLargeFinal
+--- PASS: TestRASuccessOutputLargeFinal (0.00s)
+=== RUN   TestRASourcesReportUsesOriginalContext
+--- PASS: TestRASourcesReportUsesOriginalContext (0.00s)
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/unknown
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/failed
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/cancelled
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/future-outcome
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/succeeded
+=== RUN   TestRAHistoricalOutcomeCannotBePromoted/unreported
+--- PASS: TestRAHistoricalOutcomeCannotBePromoted (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/unknown (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/failed (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/cancelled (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/future-outcome (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/succeeded (0.00s)
+    --- PASS: TestRAHistoricalOutcomeCannotBePromoted/unreported (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	0.975s

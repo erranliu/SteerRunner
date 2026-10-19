@@ -1,0 +1,135 @@
+[
+  {
+    "argv": [
+      "inspect",
+      "--run-id",
+      "e0e07cf8e3ad658bc812e728952b0898",
+      "--state-dir",
+      "C:\\srt\\1853355a3956\\s",
+      "--json"
+    ],
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": null,
+      "data": {
+        "command": null,
+        "run": {
+          "controls": {
+            "can_reply": false,
+            "can_resume": false,
+            "can_stop": true
+          },
+          "correlation": {
+            "fixture_id": "1853355a3956",
+            "scenario": "orca-remote.full-access"
+          },
+          "created_at": "2026-10-19T05:40:58.5759215Z",
+          "execution": {
+            "agent": "codex",
+            "attempt_id": "b8d14f48d29d9b01d1bdfd6d459de713",
+            "backend": "orca",
+            "branch": "erranliu/sl-e0e07cf8e3ad658bc812e728952b0898",
+            "final_available": false,
+            "generation": "f2bd4c20cf586b2a4eee94fc20b50583",
+            "protocol": "orca_terminal_v3",
+            "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_ceed4901-01a9-4f8e-9615-2fce78a2f76a:0d38216d-1639-498f-89cd-f8bd79ec8e86",
+            "turn_started": false,
+            "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-e0e07cf8e3ad658bc812e728952b0898",
+            "workspace_scope": "revision"
+          },
+          "input_digest": "726276504edcfad8307a4148f6fcfd92a71bafe0a2281ed91462d1637d6c5993",
+          "materials": [
+            {
+              "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+              "execution_location": "prompt:smoke.spec.md",
+              "kind": "inline",
+              "path": "smoke.spec.md",
+              "snapshot_path": "c:\\srt\\1853355a3956\\s\\inputs\\e0e07cf8e3ad658bc812e728952b0898\\smoke.spec.md"
+            },
+            {
+              "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+              "execution_location": "prompt:smoke.plan.md",
+              "kind": "inline",
+              "path": "smoke.plan.md",
+              "snapshot_path": "c:\\srt\\1853355a3956\\s\\inputs\\e0e07cf8e3ad658bc812e728952b0898\\smoke.plan.md"
+            }
+          ],
+          "new_inputs_allowed": true,
+          "operations": [
+            {
+              "action": "prepare_workspace",
+              "operation_id": "d3ac902bf7474ed76820c313cb4b15a0",
+              "status": "confirmed"
+            },
+            {
+              "action": "create_resource",
+              "operation_id": "36b5237f832b2356e159f2621c2564c7",
+              "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity",
+              "status": "confirmed"
+            },
+            {
+              "action": "prepare_session",
+              "operation_id": "2d251922a4dff52cd3088b5945386b1c",
+              "status": "confirmed"
+            },
+            {
+              "action": "start_turn",
+              "operation_id": "146f3cbda648f95fff8f97df44e8324c",
+              "status": "accepted"
+            }
+          ],
+          "phase": "input_accepted_waiting_start",
+          "resource_digest": "c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f",
+          "resume_required": false,
+          "revision": 34,
+          "run_id": "e0e07cf8e3ad658bc812e728952b0898",
+          "status": "running",
+          "step": "implement.execute",
+          "title": "SteerRunner L3 orca-remote.full-access",
+          "updated_at": "2026-10-19T05:47:18.7975317Z",
+          "workflow": {
+            "id": "development",
+            "prompt_overrides": {
+              "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+              "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+            },
+            "version": 2
+          }
+        }
+      },
+      "error": null
+    }
+  },
+  {
+    "argv": [
+      "stop",
+      "--run-id",
+      "e0e07cf8e3ad658bc812e728952b0898",
+      "--input",
+      "-",
+      "--state-dir",
+      "C:\\srt\\1853355a3956\\s",
+      "--json"
+    ],
+    "request": {
+      "protocol": "steerrunner-cli/v1",
+      "request_id": "diagnosed-start-gap-stop-0",
+      "input": {
+        "expected_revision": 34
+      }
+    },
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": "diagnosed-start-gap-stop-0",
+      "data": {
+        "action_status": "pending",
+        "command_id": "69b7126893defb5351a4c35cb6d9ed87",
+        "receipt_status": "accepted",
+        "run_id": "e0e07cf8e3ad658bc812e728952b0898"
+      },
+      "error": null
+    }
+  }
+]

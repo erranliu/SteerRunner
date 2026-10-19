@@ -1,5 +1,7 @@
 # Spec：无人执行权限与 Git 环境检查能力
 
+2026-10-19 后续设计修订（已实施，验收见专项记录）：[仅 Orca Spec](orca-remote-native.spec.md)收缩新远端 `orca_environment` 的完整 Check 为明确 unsupported、零执行资源，不影响普通远端 Run 准入。本文旧远端 helper 检查与验收不得作为新路径通过证明；旧 Check 查询/原资源结算及所有 local 路径仍保留原规则。
+
 日期：2026-10-16。状态：已于本会话获用户授权实施；实现与验收状态见专属验收记录。Runner 独立前置；[Plan](environment-check.plan.md) · [专属验收](../acceptance/environment-check.md)。本文件是 Runner 权限模式、检查输入/结果和执行行为的权威；SteerLine 只消费公开契约，不另行定义这些规则。
 
 ## 1. 范围与调查基线
@@ -16,7 +18,7 @@
 
 | 现有沙箱认证项 | 本功能的处理 |
 | --- | --- |
-| SA01/SA03：执行主机准备单仓库短期认证、隔离继承、到期/撤销 | 由原认证 owner 维护，检查与普通执行复用同一来源/策略。统一使用执行主机已有 gh 登录的单仓库 broker，缺登录阻断；旧 github_auth（含 null）拒绝，不静默切换身份。不把宿主凭据复制进沙箱 |
+| SA01/SA03：执行主机准备单仓库短期认证、隔离继承、到期/撤销 | 由原认证 owner 维护，检查与普通执行复用同一来源/策略。本机及 Orca local 使用宿主已有 gh 登录的单仓库 broker，缺登录阻断；原生远端不提供本完整 Check；旧 github_auth（含 null）拒绝，不静默切换身份。不把宿主凭据复制进沙箱 |
 | SA02：首个业务输入前，同 app-server / 权限 / 根目录的确定性 `command/exec` 预检 | 继续是不调用模型的准备门槛。主动环境检查在该门槛之后增加 Agent 实测；不把额外模型检查插入每次普通业务启动 |
 | SA04/SA08：workspace-write/MXC/never、零提权/审批/bypass | 保留为 sandbox 分支的规则与验收口径。显式 full_access 是新分支，不作为 sandbox 失败回退，不把其结果记为 SA04/SA08 通过 |
 | SA05：只读预检不证明 push/PR | 保持；本功能以本次专属引用/PR 实写补充能力证据，不借用历史业务发布通过 |

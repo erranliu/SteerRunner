@@ -10,6 +10,7 @@ import (
 
 const ProfileKey = "orca.terminal-profile"
 const ProfileVersion = 3
+const NativeRemoteProfileVersion = 4
 const StateKey = "orca.terminal-state"
 const StateVersion = 6
 const ServiceStopBehavior = b.ContinueExecutionOnServiceStop
@@ -58,6 +59,18 @@ func NormalizeProfile(data []byte) ([]byte, []string, error) {
 		return raw, []string{"Orca：终端通信 · " + target, "启动与权限：执行主机的 Runner 工具策略 · " + p.Terminal.AccessMode, "结果：原 TUI 正式扩展事实"}, err
 	}
 	return raw, []string{"Orca：终端通信 · " + target, "启动与权限：由执行主机的 Orca 原生设置管理", "结果：同一终端的普通回复"}, err
+}
+
+// Legacy remote records are snapshots only. This classification never grants
+// execution or settlement; original resource identity is still validated below.
+func LegacyRemoteProfile(data []b.ImplementationDataEnvelope) bool {
+	for _, e := range data {
+		if e.ImplementationKey == ProfileKey && e.CodecVersion == ProfileVersion {
+			p, err := DecodeProfile(e.Payload)
+			return err == nil && p.Environment != ""
+		}
+	}
+	return false
 }
 func (p Profile) Target() b.ExecutionTarget {
 	wire, _ := json.Marshal(struct {

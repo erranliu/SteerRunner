@@ -15,10 +15,12 @@ func (e *Engine) inspectSource(r *runstate.Record, preHead string) *workflow.Wor
 	defer cancel()
 	var f b.WorkspaceInspection
 	var err error
-	if r.Request.Execution.Adapter == "orca-terminal" {
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Execution.Target.Kind == "orca_environment" {
+		err = errors.New("native remote workspace provenance is unreported; no helper or caller Git fallback")
+	} else if r.Request.Execution.Adapter == "orca-terminal" {
 		w := e.workers[r.ID]
 		if w == nil {
-			err = errors.New("original remote workspace owner unavailable")
+			err = errors.New("original local Orca workspace owner unavailable")
 		} else {
 			var port b.LifecyclePort
 			port, err = e.port(r, w)
@@ -26,7 +28,7 @@ func (e *Engine) inspectSource(r *runstate.Record, preHead string) *workflow.Wor
 				if owner, ok := port.(b.LifecycleAuditWorkspacePort); ok {
 					f, err = owner.InspectLifecycleAuditWorkspace(ctx, r.Snapshot, preHead)
 				} else {
-					err = errors.New("original remote audit inspection unsupported")
+					err = errors.New("original local Orca audit inspection unsupported")
 				}
 			}
 		}

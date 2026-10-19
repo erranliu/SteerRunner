@@ -19,25 +19,37 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record, che
 	result := contracts.StoppedVerification{StateDir: dir, ResourcesSettled: true, Runs: []contracts.StoppedRun{}}
 	seen := map[string]bool{}
 	for _, r := range runs {
+		repository := r.RepositoryPath
+		if r.Request.Repository.LocalPath != "" {
+			repository = r.Request.Repository.LocalPath
+		}
+		setup := b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: dir}
+		scope := ""
+		var scopeErr error
+		if r.Request.Execution.Adapter == "orca-terminal" {
+			scope, scopeErr = orca.StopEvidenceScope(setup)
+		}
 		settled := stoppedRecord(r, func(id *b.ProcessIdentity) bool {
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
+		if scopeErr != nil || scope != "" && r.Snapshot.Ref.External.Kind != "" {
+			settled = false // Verify the original inventory, not a saved status label.
+		}
 		var probeErr error
 		if !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
-			repository := r.RepositoryPath
-			if r.Request.Repository.LocalPath != "" {
-				repository = r.Request.Repository.LocalPath
-			}
 			probeCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
-			probeErr = orca.VerifyStopped(probeCtx, b.LifecycleSetup{Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: dir})
+			probeErr = orca.VerifyStopped(probeCtx, setup)
 			cancel()
 			settled = probeErr == nil
 		}
 		settled = settled && !seen[r.ID]
 		seen[r.ID] = true
-		v := contracts.StoppedRun{RunID: r.ID, InputDigest: r.InputDigest, ResourcesSettled: settled}
+		v := contracts.StoppedRun{RunID: r.ID, InputDigest: r.InputDigest, ResourcesSettled: settled, StopEvidenceScope: scope}
 		if !settled {
 			v.Diagnostic = fmt.Sprintf("run %s: original native writer absence is unverified", r.ID)
+			if scope != "" {
+				v.Diagnostic = fmt.Sprintf("run %s: original Orca terminal absence is unverified", r.ID)
+			}
 			if probeErr != nil {
 				v.Diagnostic += ": " + probeErr.Error()
 			}
@@ -66,6 +78,14 @@ func stoppedRecord(r *runstate.Record, absent func(*b.ProcessIdentity) bool) boo
 		return false
 	}
 	if r.StopStatus == "stopped" {
+		if orca.LegacyRemoteProfile(r.Profile) {
+			for _, intent := range r.Intents {
+				if intent.Request.Operation.Action == string(b.LifecycleStopExecution) && intent.Request.Snapshot.Ref.External == r.Snapshot.Ref.External && intent.Receipt != nil && intent.Receipt.Disposition == b.OperationConfirmed && intent.Receipt.State.Stopped && intent.Receipt.State.WorkerAbsent && intent.Receipt.ValidateFor(intent.Request) == nil {
+					return true
+				}
+			}
+			return false
+		}
 		return true
 	}
 	return managedRecordWritersAbsent(r, r.Snapshot.Ref.External, absent)

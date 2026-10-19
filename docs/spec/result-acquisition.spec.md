@@ -273,7 +273,7 @@ Codex 经 Orca 运行时，原生回执查询和认证撤销不再逐次 `termin
 
 控制 helper 只接受三类有限操作：查询原 session/输入的原生回执、核验原工作树审计来源、请求并读取原认证 owner 撤销证明；工作区绑定按 Windows 等价路径规范化；失败查询也沿原 30 秒间隔退避。请求关联 ID 和完整载荷绑定，禁止任意命令、模型输入和业务执行。原生完整 final、session/输入摘要、原进程/helper/config/workspace 及状态核验保持；尚未完成的控制请求与业务发送计数分别核验：前者不构成业务输入，也不能通过最终完整性/关闭验收。控制响应不是新的业务结果权威，也不替换原 final。查询可重复读取已有事实；认证撤销复用原 protected request/cleanup 的幂等语义。
 
-远端审计沿同一固定通道的 `workspace-audit`，只接受原 workspace intent 与可选完整 pre-head；没有任意命令或新路径参数。原 helper 核验 readiness、session、二进制摘要、配置/仓库和原 native 进程，在原执行主机复用 Git `InspectAudit`：完整 HEAD/tree、clean、分支、固定 base 与 pre-head 祖先、隐藏索引/gitlink/稀疏配置检查。禁用 Git 可选锁和 fsmonitor；每个固定 Git 子进程在原受管 Job 退出核实后才形成 `writers_absent`，失败/未结算不得伪装来源合格或覆盖唯一原回执。请求/响应沿同一 ID 和完整载荷绑定；每次新阶段重新读取，成功旧查询不缓存成当前状态。调用方只经原 adapter owner 取得原事实，不读取远端路径对应的本机文件，也不把 revision 元数据晋升为 clean/tree 证明。代码审计修复和其补报使用冻结 audit 模型，实施/发布恢复 execution 模型，实际原生 model/effort 回执独立核对。资源、权限、Run 授权与 Workflow 后继仍归既有 owner。
+Orca local 受管审计沿同一固定通道的 `workspace-audit`，只接受原 workspace intent 与可选完整 pre-head；没有任意命令或新路径参数。原 helper 核验 readiness、session、二进制摘要、配置/仓库和原 native 进程，在原执行主机复用 Git `InspectAudit`：完整 HEAD/tree、clean、分支、固定 base 与 pre-head 祖先、隐藏索引/gitlink/稀疏配置检查。禁用 Git 可选锁和 fsmonitor；每个固定 Git 子进程在原受管 Job 退出核实后才形成 `writers_absent`，失败/未结算不得伪装来源合格或覆盖唯一原回执。请求/响应沿同一 ID 和完整载荷绑定；每次新阶段重新读取，成功旧查询不缓存成当前状态。调用方只经原 adapter owner 取得原事实，不读取远端路径对应的本机文件，也不把 revision 元数据晋升为 clean/tree 证明。代码审计修复和其补报使用冻结 audit 模型，实施/发布恢复 execution 模型，实际原生 model/effort 回执独立核对。资源、权限、Run 授权与 Workflow 后继仍归既有 owner。新远端遵循原生 Orca 契约：不调用 helper/workspace-audit，不读取调用方同名 Git；来源保持 unreported，development-audited 在接受前返回 unsupported_capability，不以启动参数冒充实际双模型或工作树来源证明。
 
 执行期、服务恢复与停止不得新建控制终端。原身份可核验时，只观察原控制终端，按同一请求 ID 对账丢失响应；必要的终端发送恢复使用已核实的原生请求去重能力。普通 helper 的原生回执只保证 input_accepted/原 PTY incarnation 与去重；provider/turn-start 可为 unsupported，实际操作完成必须由有限协议的关联应答核验，不伪造 agent 轮次开始证明。沿现有 caller-owned 辅助检查点保存传输中的请求/回执，绑定原 Record/资源；它只能恢复原派发和事实读取，不能决定 Workflow 后继、重新授权输入或调度第二套任务。原 Record/Intents/CAS 仍为唯一状态权威。未知或冲突回执不推进；原控制终端丢失/换代后阻塞，不启动替代者。
 
@@ -281,7 +281,7 @@ Run stop 先取消原观察器，控制通道在撤销请求之后拒绝新回�
 
 原生 `terminal create` 缺少创建请求对账保证仍是初始化边界：身份未知时保留原未决资源操作，不按标题/空 inventory 认领、不重试创建，零业务输入且阻塞；本增量不承诺初始化任意强杀自动恢复，也不改写旧失败现场。内部 `orca.terminal-state` codec 从 5 升为 6，旧版 Orca implementation 明确拒绝，不建设兼容迁移。公开 CLI/调用配置及业务阶段顺序不变，SteerLine 和 Orca 均不修改。执行期强杀恢复、实际回执读取、认证撤销及初始化反例的验收安排见 Plan §5。
 
-执行准备继续归原适配器管理。本期 GitHub 就绪探针由同一原生 sandbox 内实际使用的认证 `gh` 身份/仓库查询和 Git 远端访问核验连通性，不额外依赖匿名 `/meta` 的共享 IP 配额；权限、凭据摘要及 Git/remote 资格条件保持。
+执行准备继续归原适配器管理。本机受管 GitHub 就绪探针由同一原生 sandbox 内实际使用的认证 `gh` 身份/仓库查询和 Git 远端访问核验连通性，不额外依赖匿名 `/meta` 的共享 IP 配额；权限、凭据摘要及 Git/remote 资格条件保持。
 
 Pi/DSH 公共工具初始化失败可在原执行端证据目录写入内部 `preparation-failure.json`，仅保留有限错误码及 Run/会话/bundle/worker PID 来源。只有初始化尚无原 readiness/owner/launch/turns、且 readiness 文件缺失时，原适配器才在核对原 owner 后将其作为失败诊断；它不构成就绪、业务结果或停止结算证明，不覆盖活动会话缺失的原生证据，不新增 Workflow 状态、操作权威或重试路径。该准备诊断不另增公开接口或持久权威；本轮固定控制终端的内部 codec 升级按本节前述规则。准备修复源码及复验见[执行准备修复记录](../acceptance/evidence/native-preparation-20261019/README.md)。
 

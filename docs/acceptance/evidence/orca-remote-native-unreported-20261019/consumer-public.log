@@ -1,0 +1,128 @@
+=== RUN   TestSteerRunnerUsesPublishedSchema
+--- PASS: TestSteerRunnerUsesPublishedSchema (0.00s)
+=== RUN   TestOrcaNativePublishedConfiguration
+--- PASS: TestOrcaNativePublishedConfiguration (0.01s)
+=== RUN   TestSteerRunnerCLIContract
+=== RUN   TestSteerRunnerCLIContract/accepted
+=== RUN   TestSteerRunnerCLIContract/rejected
+=== RUN   TestSteerRunnerCLIContract/broken
+=== RUN   TestSteerRunnerCLIContract/wrong-id
+=== RUN   TestSteerRunnerCLIContract/timeout
+--- PASS: TestSteerRunnerCLIContract (0.88s)
+    --- PASS: TestSteerRunnerCLIContract/accepted (0.41s)
+    --- PASS: TestSteerRunnerCLIContract/rejected (0.10s)
+    --- PASS: TestSteerRunnerCLIContract/broken (0.03s)
+    --- PASS: TestSteerRunnerCLIContract/wrong-id (0.03s)
+    --- PASS: TestSteerRunnerCLIContract/timeout (0.21s)
+=== RUN   TestSteerRunnerAmbiguousEnvelope
+--- PASS: TestSteerRunnerAmbiguousEnvelope (0.00s)
+=== RUN   TestRunnerPresetFreeze
+=== RUN   TestRunnerPresetFreeze/reject_replacement_between_status_and_dispatch
+--- PASS: TestRunnerPresetFreeze (0.54s)
+    --- PASS: TestRunnerPresetFreeze/reject_replacement_between_status_and_dispatch (0.54s)
+=== RUN   TestNativeSessionViewerCLIOriginalTarget
+=== RUN   TestNativeSessionViewerCLIOriginalTarget/native
+=== RUN   TestNativeSessionViewerCLIOriginalTarget/native-wrong
+=== RUN   TestNativeSessionViewerCLIOriginalTarget/native-broken
+--- PASS: TestNativeSessionViewerCLIOriginalTarget (0.20s)
+    --- PASS: TestNativeSessionViewerCLIOriginalTarget/native (0.04s)
+    --- PASS: TestNativeSessionViewerCLIOriginalTarget/native-wrong (0.04s)
+    --- PASS: TestNativeSessionViewerCLIOriginalTarget/native-broken (0.11s)
+=== RUN   TestSteerRunnerReleasePinBlocksBeforeInvocation
+--- PASS: TestSteerRunnerReleasePinBlocksBeforeInvocation (0.02s)
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/final
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/missing
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/replacement
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/wrong_request
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/wrong_directory
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/wrong_executable
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/still_running
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/native_unknown
+=== RUN   TestServiceSettlementRequiresOriginalFinalProof/contradictory
+--- PASS: TestServiceSettlementRequiresOriginalFinalProof (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/final (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/missing (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/replacement (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/wrong_request (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/wrong_directory (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/wrong_executable (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/still_running (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/native_unknown (0.00s)
+    --- PASS: TestServiceSettlementRequiresOriginalFinalProof/contradictory (0.00s)
+=== RUN   TestSharedRunnerStoppedProofCoversChecks
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/all
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/absent_checks
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/empty_checks
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/duplicate
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/unsettled
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/missing_digest
+=== RUN   TestSharedRunnerStoppedProofCoversChecks/other_home
+--- PASS: TestSharedRunnerStoppedProofCoversChecks (0.26s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/all (0.06s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/absent_checks (0.02s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/empty_checks (0.02s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/duplicate (0.02s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/unsettled (0.02s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/missing_digest (0.08s)
+    --- PASS: TestSharedRunnerStoppedProofCoversChecks/other_home (0.03s)
+=== RUN   TestStoppedVerificationKeepsRunDiagnosticsAndGate
+--- PASS: TestStoppedVerificationKeepsRunDiagnosticsAndGate (1.59s)
+=== RUN   TestRunnerWorkflowContract
+=== RUN   TestRunnerWorkflowContract/ordinary
+=== RUN   TestRunnerWorkflowContract/audit_inherit_effort
+=== RUN   TestRunnerWorkflowContract/audit_explicit_effort
+=== RUN   TestRunnerWorkflowContract/missing_audit
+=== RUN   TestRunnerWorkflowContract/audit_on_plain
+=== RUN   TestRunnerWorkflowContract/unknown_version
+=== RUN   TestRunnerWorkflowContract/unknown_override
+=== RUN   TestRunnerWorkflowContract/explicit_null_audit
+=== RUN   TestRunnerWorkflowContract/explicit_null_effort
+=== RUN   TestRunnerWorkflowContract/explicit_null_overrides
+--- PASS: TestRunnerWorkflowContract (0.01s)
+    --- PASS: TestRunnerWorkflowContract/ordinary (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_inherit_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_explicit_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/missing_audit (0.00s)
+    --- PASS: TestRunnerWorkflowContract/audit_on_plain (0.00s)
+    --- PASS: TestRunnerWorkflowContract/unknown_version (0.00s)
+    --- PASS: TestRunnerWorkflowContract/unknown_override (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_audit (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_effort (0.00s)
+    --- PASS: TestRunnerWorkflowContract/explicit_null_overrides (0.00s)
+=== RUN   TestRunnerNativeOutcomeContract
+--- PASS: TestRunnerNativeOutcomeContract (0.00s)
+=== RUN   TestEnvironmentCheckCLIContract
+--- PASS: TestEnvironmentCheckCLIContract (0.43s)
+=== RUN   TestEnvironmentCheckPublishedContract
+=== RUN   TestEnvironmentCheckPublishedContract/unverified_original
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_check_id
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_start_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id
+=== RUN   TestEnvironmentCheckPublishedContract/preparation_failure
+=== RUN   TestEnvironmentCheckPublishedContract/rejection_without_check
+=== NAME  TestEnvironmentCheckPublishedContract
+    environment_check_test.go:145: public contract check using an isolated idle service: version=0.2.0-dev.2 SHA=29D44DF0315190FDD533E7AB091C9450ABF868E766F0A46985DE2045DEBFEF3A resource=c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f; no native Agent or permission success implied
+--- PASS: TestEnvironmentCheckPublishedContract (2.99s)
+    --- PASS: TestEnvironmentCheckPublishedContract/unverified_original (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_check_id (0.01s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_start_request_id (0.01s)
+    --- PASS: TestEnvironmentCheckPublishedContract/inspect_by_stop_request_id (0.01s)
+    --- PASS: TestEnvironmentCheckPublishedContract/preparation_failure (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedContract/rejection_without_check (0.00s)
+=== RUN   TestEnvironmentCheckPublishedSamples
+=== RUN   TestEnvironmentCheckPublishedSamples/preparation_failure
+=== RUN   TestEnvironmentCheckPublishedSamples/rejection_without_check
+=== RUN   TestEnvironmentCheckPublishedSamples/unverified_original
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_check_id
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_start_request_id
+=== RUN   TestEnvironmentCheckPublishedSamples/inspect_by_stop_request_id
+--- PASS: TestEnvironmentCheckPublishedSamples (0.02s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/preparation_failure (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/rejection_without_check (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/unverified_original (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_check_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_start_request_id (0.00s)
+    --- PASS: TestEnvironmentCheckPublishedSamples/inspect_by_stop_request_id (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	8.072s

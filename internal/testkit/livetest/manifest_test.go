@@ -129,8 +129,8 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	remoteAudited := audited
 	remoteAudited.Level, remoteAudited.Scenario, remoteAudited.RemoteRuntimeID = "L3", "orca-remote.audited", "paired-runtime"
 	remoteAudited.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"agent_launch":{"runtime_executable":"C:/trusted/helper.exe","model":"executor","reasoning_effort":"high"}}`)}
-	if err := remoteAudited.Validate(); err != nil {
-		t.Fatal("valid remote two-model fixture rejected", err)
+	if remoteAudited.Validate() == nil {
+		t.Fatal("native remote fixture accepted retired helper audit")
 	}
 	remoteAudited.Execution.Settings = json.RawMessage(`{"agent_launch":{"model":"executor"}}`)
 	if remoteAudited.Validate() == nil {

@@ -2,7 +2,8 @@ function Get-SRResultField($Value,[string]$Name) {
     if($null -ne $Value -and $Value.PSObject.Properties[$Name]) { return $Value.$Name }
     return $null
 }
-function Assert-SRRemoteAuditModels($Manifest,$View,$Proof) {
+function Assert-SRManagedOrcaAuditModels($Manifest,$View,$Proof) {
+    if($Manifest.execution.target.kind -cne 'local'){throw 'Managed audit proof is local only; native remote auditing is unsupported'}
     if($Proof.passed -isnot [bool] -or -not $Proof.passed -or $Proof.run_id -cne $View.run_id -or $Proof.session -cne $View.execution.session_id -or -not $Proof.provider_session -or $Proof.configuration_digest -cnotmatch '^[0-9a-f]{64}$' -or @($Proof.turns).Count -ne 2 -or @($View.audit.results).Count -ne 1){throw 'Remote audit proof lacks its frozen original execution, single code audit and publication'}
     $taskSeen=@{}; $taskCommands=@{}; $taskRequests=@{}
     foreach($taskFact in $Proof.turns){
@@ -87,7 +88,7 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
         }
         {$_ -in @('development-smoke','development-feedback','result-acquisition')} {
             if(-not $taskMerge){throw 'Live smoke lacks its verified merge'}
-            if($_ -eq 'development-feedback' -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
+            if(($_ -eq 'development-feedback' -or $Manifest.scenario -eq 'orca-remote.full-access') -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
             if(Get-SRResultField $Scenario 'feedback_head'){throw 'workflow/2 must not create a feedback revision'}
         }
         default {throw 'Unsupported development result driver'}

@@ -4,13 +4,19 @@ import (
 	"errors"
 )
 
+// Legacy empty outcomes keep their existing interpretation. Explicit native
+// non-success must not be overridden by a persisted coarse Succeeded flag.
+func nativeOutcomeAllowsAcquisition(outcome string) bool {
+	return outcome == "" || outcome == "succeeded" || outcome == "unreported"
+}
+
 func trustedDone(w Snapshot, id string) bool {
 	a := Acquired(w, id)
 	if a == nil || a.Status != "satisfied" || a.Value == nil || a.Value.Outcome != "done" {
 		return false
 	}
 	raw := Result(w, a.Source.CommandID)
-	return raw != nil && raw.Succeeded && raw.FinalVerified && raw.Failure == "" && Source(*raw) == a.Source
+	return raw != nil && raw.Succeeded && nativeOutcomeAllowsAcquisition(raw.Outcome) && raw.FinalVerified && raw.Failure == "" && Source(*raw) == a.Source
 }
 
 // Prerequisites are frozen result references, not whichever turn most recently

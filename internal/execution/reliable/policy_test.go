@@ -193,3 +193,45 @@ func TestRANativeFailureDominatesCompletion(t *testing.T) {
 		})
 	}
 }
+
+func TestRAUnreportedOutcomeBoundary(t *testing.T) {
+	session := b.SessionContext{CurrentCommandID: "command", CurrentTurnID: "turn", SessionID: "session"}
+	for _, mode := range []string{"complete", "missing-source", "missing-item", "unverified", "empty", "blank", "failure", "not-collected", "not-started", "not-completed", "other-session"} {
+		t.Run(mode, func(t *testing.T) {
+			e := b.TurnEvidence{CommandID: "command", TurnID: "turn", SessionID: "session", Started: true, Completed: true, Succeeded: true, NativeOutcome: "unreported", FinalVerified: true, FinalSource: "native", FinalItemID: "original", LastMessage: "original final"}
+			switch mode {
+			case "missing-source":
+				e.FinalSource = ""
+			case "missing-item":
+				e.FinalItemID = ""
+			case "unverified":
+				e.FinalVerified = false
+			case "empty":
+				e.LastMessage = ""
+			case "blank":
+				e.LastMessage = " \n "
+			case "failure":
+				e.Failure = "actual failure"
+			case "not-collected":
+				e.Succeeded = false
+			case "not-started":
+				e.Started = false
+			case "not-completed":
+				e.Completed = false
+			case "other-session":
+				e.SessionID = "other"
+			}
+			r, err := NormalizeResult(session, e)
+			stale := mode == "not-started" || mode == "not-completed" || mode == "other-session"
+			if stale {
+				if !errors.Is(err, ErrStale) {
+					t.Fatal("unbound result admitted", r, err)
+				}
+				return
+			}
+			if err != nil || r.NativeOutcome != "unreported" || r.Succeeded != (mode == "complete") {
+				t.Fatal("unreported boundary changed", r, err)
+			}
+		})
+	}
+}

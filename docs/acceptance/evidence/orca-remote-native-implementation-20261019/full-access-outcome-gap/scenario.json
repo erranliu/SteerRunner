@@ -1,0 +1,9 @@
+{
+  "scenario": "orca-remote.full-access",
+  "level": "L3",
+  "stage": "implementation",
+  "run_id": "d5dc433e95102faf347856ce33374112",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

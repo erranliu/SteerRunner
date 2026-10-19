@@ -1,0 +1,30 @@
+{
+  "schema": "steerrunner-original-unknown-physical-settlement/v1",
+  "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+  "run_id": "4a44d430af6911072f11c89eaea4717a",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-4a44d430af6911072f11c89eaea4717a",
+  "cli_launch_request": "48b5037b-6bec-48b5-6540-dcac4f6e5644",
+  "original_result": "failed",
+  "logical_stop_status": "unknown",
+  "service_stopped": true,
+  "business_stream_only_initial_shell": true,
+  "original_control_before": [
+    {
+      "pid": 23972,
+      "parent_pid": 21996,
+      "creation": "2026-10-19T07:01:42.916671Z",
+      "executable": "C:\\sr-runtime\\2ba0\\gh-only-7c6ea40\\steerrunner-agent.exe"
+    }
+  ],
+  "original_control_children_before": [],
+  "original_control_after": [],
+  "complete_inventory": true,
+  "remaining_terminals": [],
+  "closed_original_terminal_incarnations": {
+    "term_14578507-7c0f-4266-8d76-b35a3204315c": "29953e59-8397-444d-af77-5e6bc6a26a2c",
+    "term_25ddc13d-f9c9-4851-82f4-df2a2cf305b9": "b7b93643-6654-4b71-aafb-852cff74fbe7"
+  },
+  "checked_at": "2026-10-19T07:20:51.3405256Z",
+  "qualified_as_test_pass": false
+}

@@ -30,8 +30,15 @@ func ConfigurationSchemas() json.RawMessage {
 		if adapter == "orca-terminal" {
 			target = map[string]any{"oneOf": []any{local, remote}}
 		}
-		choices = append(choices, map[string]any{"type": "object", "required": []string{"adapter", "target", "settings"}, "additionalProperties": false,
-			"properties": map[string]any{"adapter": map[string]any{"const": adapter}, "target": target, "settings": adapters[adapter]}})
+		choice := map[string]any{"type": "object", "required": []string{"adapter", "target", "settings"}, "additionalProperties": false,
+			"properties": map[string]any{"adapter": map[string]any{"const": adapter}, "target": target, "settings": adapters[adapter]}}
+		if adapter == "orca-terminal" {
+			choice["allOf"] = []any{map[string]any{
+				"if":   map[string]any{"properties": map[string]any{"target": remote}},
+				"then": map[string]any{"properties": map[string]any{"settings": map[string]any{"properties": map[string]any{"agent_launch": map[string]any{"not": map[string]any{"anyOf": []any{map[string]any{"required": []string{"runtime_executable"}}, map[string]any{"required": []string{"runtime_sha256"}}}}}}}}},
+			}}
+		}
+		choices = append(choices, choice)
 	}
 	rules := []any{}
 	for _, profile := range workflow.Catalog() {
@@ -41,7 +48,7 @@ func ConfigurationSchemas() json.RawMessage {
 			model := map[string]any{"type": "string", "minLength": 1, "pattern": `^\S(?:.*\S)?$`, "not": map[string]any{"pattern": "[\u0000-\u001f\u007f-\u009f]"}}
 			execution["allOf"] = []any{
 				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "codex-app-server"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"model"}, "properties": map[string]any{"model": model}}}}},
-				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": map[string]any{"required": []string{"model", "runtime_executable"}, "properties": map[string]any{"model": model, "runtime_executable": map[string]any{"type": "string", "minLength": 1}}}}}}}},
+				map[string]any{"if": map[string]any{"properties": map[string]any{"adapter": map[string]any{"const": "orca-terminal"}}}, "then": map[string]any{"properties": map[string]any{"target": local, "settings": map[string]any{"required": []string{"agent_launch"}, "properties": map[string]any{"agent": map[string]any{"const": "codex"}, "agent_launch": map[string]any{"required": []string{"model", "runtime_executable"}, "properties": map[string]any{"model": model, "runtime_executable": map[string]any{"type": "string", "minLength": 1}}}}}}}},
 			}
 		}
 		rules = append(rules, map[string]any{"if": selection, "then": map[string]any{"properties": map[string]any{

@@ -1,0 +1,44 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "a3dc15dc2f90787ea6e38e78d4dbc8a275470646",
+  "source_dirty": true,
+  "started_at": "2026-10-19T04:20:14.1924449Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "exit_code": 0,
+      "native_driver_compile_exit": 0,
+      "terminal_extension_exit": 0,
+      "terminal_extension_test_count": 28,
+      "terminal_extensions_passed": true,
+      "native_zero_match_guard": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\ee21\\SteerRunner\\.evidence\\p0-query-fix-20261019T040820Z\\l1-final\\framework",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\ee21\\SteerRunner\\.evidence\\p0-query-fix-20261019T040820Z\\l1-final",
+      "test_count": 310,
+      "level": "L1"
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-19T04:23:44.3315838Z"
+}

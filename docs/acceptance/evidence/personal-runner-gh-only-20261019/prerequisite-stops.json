@@ -1,0 +1,107 @@
+[
+  {
+    "source_commit": "4a0aa59c6a9702fe1a84e29e348991f433550ffb",
+    "source_dirty": false,
+    "started_at": "2026-10-19T03:13:16.0419182Z",
+    "status": "interrupted",
+    "executed_case_count": 0,
+    "passed_case_count": 0,
+    "batch": "live-02",
+    "prerequisites": [
+      {
+        "level": "L1",
+        "exit_code": 0,
+        "test_count": 323,
+        "terminal_extension_test_count": 28,
+        "terminal_extension_exit": 0,
+        "native_driver_compile_exit": 0,
+        "native_zero_match_guard": true
+      }
+    ],
+    "interruption": {
+      "reason": "Upstream native shutdown proof merged during prerequisites; no live case started. L1 passed; allow original controlled process to finish, then qualify integrated source in a fresh batch.",
+      "interrupted_at": "2026-10-19T03:19:43.3935343Z",
+      "live_cases_started": 0,
+      "controlled_result": "passed",
+      "controlled_top_level_tests": 16
+    }
+  },
+  {
+    "source_commit": "f2d6ee3bc366ff3c9aeb2b1bf09e1620adeb6853",
+    "source_dirty": false,
+    "started_at": "2026-10-19T03:29:53.5626000Z",
+    "finished_at": "2026-10-19T03:33:55.5771762Z",
+    "status": "failed",
+    "executed_case_count": 0,
+    "passed_case_count": 0,
+    "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+    "batch": "live-03",
+    "prerequisites": [
+      {
+        "level": "L1",
+        "exit_code": 1,
+        "test_count": 331,
+        "terminal_extension_test_count": 28,
+        "terminal_extension_exit": 0,
+        "native_driver_compile_exit": 0,
+        "native_zero_match_guard": true
+      }
+    ]
+  },
+  {
+    "source_commit": "641d460470048a3a9881f516158d1fcb26be6272",
+    "source_dirty": false,
+    "started_at": "2026-10-19T03:35:38.6122062Z",
+    "finished_at": "2026-10-19T03:39:47.2765366Z",
+    "status": "failed",
+    "executed_case_count": 0,
+    "passed_case_count": 0,
+    "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+    "batch": "live-04",
+    "prerequisites": [
+      {
+        "level": "L1",
+        "exit_code": 0,
+        "test_count": 332,
+        "terminal_extension_test_count": 28,
+        "terminal_extension_exit": 0,
+        "native_driver_compile_exit": 0,
+        "native_zero_match_guard": true
+      }
+    ]
+  },
+  {
+    "source_commit": "7c6ea40e8dd052858a7ec80ff417f7172b516c97",
+    "source_dirty": false,
+    "started_at": "2026-10-19T06:19:18.1109863Z",
+    "finished_at": "2026-10-19T06:19:40.3860876Z",
+    "status": "failed",
+    "executed_case_count": 0,
+    "passed_case_count": 0,
+    "error": "Missing case coverage was silently reduced or counted as passed",
+    "batch": "live-08",
+    "prerequisites": []
+  },
+  {
+    "source_commit": "917194a7af5ab407358b01528c6b4d198d49e0e9",
+    "source_dirty": false,
+    "started_at": "2026-10-19T06:59:21.3041835Z",
+    "finished_at": "2026-10-19T07:09:15.2134284Z",
+    "status": "failed",
+    "executed_case_count": 0,
+    "passed_case_count": 0,
+    "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+    "batch": "live-10",
+    "prerequisites": [
+      {
+        "level": "L1",
+        "exit_code": 1,
+        "test_count": 407,
+        "terminal_extension_test_count": 29,
+        "terminal_extension_exit": 0,
+        "native_driver_compile_exit": 0,
+        "native_zero_match_guard": true
+      }
+    ]
+  }
+]

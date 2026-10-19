@@ -5,11 +5,11 @@ import (
 	"testing"
 )
 
-func TestRemoteAuditedModelsRequireManagedRuntime(t *testing.T) {
+func TestLocalOrcaAuditedModelsRequireManagedRuntime(t *testing.T) {
 	var request map[string]any
 	_ = json.Unmarshal(validRun(), &request)
 	request["workflow"] = map[string]any{"id": "development-audited", "version": 2, "audit_model": map[string]any{"model": "reviewer", "reasoning_effort": "high"}}
-	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "orca_environment", "environment": "paired"}, "settings": map[string]any{"agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
+	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
 	wire, _ := json.Marshal(request)
 	if fault := ValidateRun(wire); fault != nil {
 		t.Fatal("valid remote configuration rejected", fault)
@@ -52,11 +52,15 @@ func TestTerminalAgentsCannotUseCodexAuditModels(t *testing.T) {
 
 // Removed authentication settings must never silently choose a different actor.
 func TestGitHubAppConfigurationRejectedBeforeRunOrCheck(t *testing.T) {
-	for _, adapter := range []string{"codex-app-server", "orca-terminal"} {
+	for _, adapter := range []string{"codex-app-server", "orca-terminal", "orca-remote"} {
 		for _, legacy := range []string{`null`, `{}`, `{"app_id":3,"installation_id":7,"private_key_env":"OLD_APP_KEY"}`} {
 			t.Run(adapter+legacy, func(t *testing.T) {
 				settings := json.RawMessage(`{"github_auth":` + legacy + `}`)
 				execution := Execution{Adapter: adapter, Target: Target{Kind: "local"}, Settings: settings}
+				if adapter == "orca-remote" {
+					execution.Adapter = "orca-terminal"
+					execution.Target = Target{Kind: "orca_environment", Environment: "paired"}
+				}
 				var request map[string]any
 				_ = json.Unmarshal(validRun(), &request)
 				request["execution"] = execution
@@ -72,5 +76,35 @@ func TestGitHubAppConfigurationRejectedBeforeRunOrCheck(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestNativeRemoteAuditAndRetiredAppAreRejectedPurely(t *testing.T) {
+	for _, mode := range []string{"native", "helper", "app-null", "app-object"} {
+		t.Run(mode, func(t *testing.T) {
+			var request map[string]any
+			_ = json.Unmarshal(validRun(), &request)
+			settings := map[string]any{"agent_launch": map[string]any{"model": "writer", "reasoning_effort": "high"}}
+			if mode == "helper" {
+				settings["agent_launch"].(map[string]any)["runtime_executable"] = "C:/retired/helper.exe"
+			}
+			if mode == "app-null" {
+				settings["github_auth"] = nil
+			}
+			if mode == "app-object" {
+				settings["github_auth"] = map[string]any{"app_id": 1}
+			}
+			request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "orca_environment", "environment": "paired"}, "settings": settings}
+			request["workflow"] = map[string]any{"id": "development-audited", "version": 2, "audit_model": map[string]any{"model": "auditor", "reasoning_effort": "high"}}
+			raw, _ := json.Marshal(request)
+			fault := ValidateRun(raw)
+			want := "invalid_input"
+			if mode == "native" {
+				want = "unsupported_capability"
+			}
+			if fault == nil || fault.Detail.Code != want {
+				t.Fatal("native remote audit gained a helper guarantee", mode, fault)
+			}
+		})
 	}
 }

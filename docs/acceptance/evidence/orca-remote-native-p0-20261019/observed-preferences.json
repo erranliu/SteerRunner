@@ -1,0 +1,13 @@
+{
+  "source": "launch-state.jsonl: tabs[0].agentStatus",
+  "model": "gpt-6-luna",
+  "effort": "not authoritatively observed in tested projection",
+  "effective_os_permission": "not verified",
+  "requested": {
+    "model": "gpt-6-luna",
+    "effort": "high",
+    "access_mode": "full_access"
+  },
+  "orca_runtime_version": "1.4.223",
+  "codex_version": "0.159.2 (native --version/TUI trace in raw evidence)"
+}

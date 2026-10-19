@@ -5,6 +5,7 @@ package reliable
 import (
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strings"
 )
 
 var ErrStale = b.ErrTurnStale
@@ -47,11 +48,15 @@ func NormalizeResult(session b.SessionContext, evidence b.TurnEvidence) (Result,
 		}
 	}
 	switch outcome {
-	case "succeeded", "failed", "cancelled", "unknown":
+	case "succeeded", "failed", "cancelled", "unknown", "unreported":
 	default:
 		return Result{}, errors.New("invalid normalized native outcome")
 	}
-	return Result{CommandID: evidence.CommandID, TurnID: evidence.TurnID, SessionID: evidence.SessionID, Succeeded: evidence.Succeeded && outcome == "succeeded", NativeOutcome: outcome, Content: evidence.LastMessage, Failure: evidence.Failure, Diagnostic: evidence.FinalDiagnostic, ContentVerified: evidence.FinalVerified && evidence.FinalSource != "" && evidence.FinalItemID != ""}, nil
+	verified := VerifiedContent(evidence.FinalVerified, evidence.FinalSource, evidence.FinalItemID)
+	// A missing provider outcome can enter business acquisition only with a
+	// complete, normally collected original final. Explicit unknown stays blocked.
+	eligible := outcome == "succeeded" || outcome == "unreported" && verified && strings.TrimSpace(evidence.LastMessage) != "" && evidence.Failure == ""
+	return Result{CommandID: evidence.CommandID, TurnID: evidence.TurnID, SessionID: evidence.SessionID, Succeeded: evidence.Succeeded && eligible, NativeOutcome: outcome, Content: evidence.LastMessage, Failure: evidence.Failure, Diagnostic: evidence.FinalDiagnostic, ContentVerified: verified}, nil
 }
 
 type ContinuationConstraints struct {

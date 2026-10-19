@@ -1,0 +1,21 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+=== RUN   TestSRResultAcquisition/audit-positive
+=== RUN   TestSRResultAcquisition/audit-report
+=== RUN   TestSRResultAcquisition/parser-unsupported
+=== RUN   TestSRResultAcquisition/parser-complete
+=== RUN   TestSRResultAcquisition/parser-restart
+=== RUN   TestSRResultAcquisition/parser-tool
+--- PASS: TestSRResultAcquisition (474.54s)
+    --- PASS: TestSRResultAcquisition/plain-marker (22.09s)
+    --- PASS: TestSRResultAcquisition/audit-zero (53.07s)
+    --- PASS: TestSRResultAcquisition/audit-positive (52.49s)
+    --- PASS: TestSRResultAcquisition/audit-report (60.95s)
+    --- PASS: TestSRResultAcquisition/parser-unsupported (68.84s)
+    --- PASS: TestSRResultAcquisition/parser-complete (62.71s)
+    --- PASS: TestSRResultAcquisition/parser-restart (77.28s)
+    --- PASS: TestSRResultAcquisition/parser-tool (77.11s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (21.20s)
+PASS

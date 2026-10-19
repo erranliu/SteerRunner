@@ -75,3 +75,7 @@ sandbox 检查原 native PID/创建时间和工作目录已独立核实不存在
 另一失败为 full_access 启动时 Orca 报告执行主机未响应，原启动请求 `48b5037b-6bec-48b5-6540-dcac4f6e5644` 未核实，Runner 零重发、零业务输入。12 分钟后用例超时；因缺原 native readiness/退出绑定，停止继续保留 unknown，服务已停止。独立只读完整业务流仅含初始 PowerShell 提示符；按原 runtime/worktree/两组 terminal incarnation 关闭该现场遗留终端，新鲜完整清单为空。原控制 helper PID 23972/创建时间 2026-10-19T07:01:42.916671Z 及其子进程已核实不存在。物理清理不补造签名退出，也不把原 Run 的 stop_status=unknown 或原失败改成通过，另存有限物理结算记录。
 
 `917194a` 的审计补跑在 L1 停止，真机执行 0：407 项 Go 通过，模拟 CLI 的 IPC 夹具因与正在运行的真实 Orca 共享队列而耗尽 3 秒期限；扩展 29 和框架/编译守卫通过。`98e4e76` 保留真实 named-pipe 核验，但把夹具 CLI 固定到 fake host，不进入生产 CLI 队列；定向回归通过。生产代码未改动，helper 仍归属 7c6ea40；新正式批次以独立工作区的 98e4e76 为测试来源，不在原批次运行期间修改源码。
+
+`98e4e76` 的旧 helper 定向批次完成：Go L1 408、扩展 29、Controlled 16、两项现场均通过（远端 full_access 与实际双模型审计）。结合同生产代码 `1700a95` 的其余九项，旧 helper 范围的十一项各有明确通过记录；原批次九通过二失败仍保持 failed。额外 `917194a` full_access 的正式前置及一项现场也通过。有限 JSON 与 SHA 清单在 evidence/personal-runner-gh-only-20261019，legacy-helper-qualification.json 明记 latest_main_qualified=false。
+
+整合 #31 后的新验收范围：保留本机/Orca local 的 broker 与 Run 隔离，原生远端无 helper/capability。退役远端审计和完整 Check 正向登记，增加纯校验及 capability 的明确拒绝用例；同服务原生多 Run 固定 full_access、核实独立请求/命令/会话/事件/PR，服务停止后离线核验两个原终端 scope。新场景注册为 21 场景/28 case；Sandbox 远端参数与失败语义沿受控验证，不沿用旧 helper 的真机 sandbox 通过。当前原生验收等待新整合提交的正式前置及独立现场，不继承上面的旧资格。

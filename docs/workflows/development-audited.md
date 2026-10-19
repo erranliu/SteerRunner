@@ -230,6 +230,8 @@ stop、服务换代、未知操作优先于所有边，所有 executor/parser ow
 
 所有核验复用内置函数和原 owner，本期无定制脚本端口/宿主或通用快照设施。Runner 独立管理 parser 配置、认证引用和资源；执行/审计/parser 模型分别选择。SteerLine 不增加配置覆盖或调用义务。实际支持范围及验证结果见总 Spec §6 与专属验收，不宣称空工具面或零隐式上下文。
 
+原生远端 Orca 不提供该流程需要的实际模型与 Git 来源证明，接受前返回 unsupported_capability；本机 codex-app-server 与 Orca local 受管 Codex 继续沿原模型切换及原工作树 owner 核验，不调用远端 helper。
+
 ## 当前实现映射
 
 确定性 extract 采用 development 的同次提交映射。代码审计只有一个真正执行输入；完整机器结果直接核验，其余在 parser 开启且材料适用时进入持久化 parse 游标，否则选择一次原审计补报。parser 操作在原 Intents，attempt 只引用 operation_id；正常采纳或明确失败后备沿原 Commit，不新建执行 Turn。来源以真实审计 Command/Turn 和当前实施结果为主，解析、补报各列来源；原报告终态检查点缺失不能由 report 的新 HEAD 补成完成。新源/停止/冲突与恢复规则见总 Spec，实际结果见[本轮记录](../acceptance/evidence/result-acquisition-20261018/README.md)。

@@ -1,0 +1,78 @@
+=== RUN   TestSRCLIContract
+=== RUN   TestSRCLIContract/valid
+=== RUN   TestSRCLIContract/duplicate
+=== RUN   TestSRCLIContract/nested_duplicate
+=== RUN   TestSRCLIContract/field_alias
+=== RUN   TestSRCLIContract/unknown
+=== RUN   TestSRCLIContract/trailing
+=== RUN   TestSRCLIContract/unsupported
+=== RUN   TestSRCLIContract/missing_protocol
+=== RUN   TestSRCLIContract/null_protocol
+=== RUN   TestSRCLIContract/control_id
+=== RUN   TestSRCLIContract/invalid_utf8
+=== RUN   TestSRCLIContract/oversize
+=== RUN   TestSRCLIContract/response_channels
+=== RUN   TestSRCLIContract/settings_and_paths
+--- PASS: TestSRCLIContract (0.01s)
+    --- PASS: TestSRCLIContract/valid (0.00s)
+    --- PASS: TestSRCLIContract/duplicate (0.00s)
+    --- PASS: TestSRCLIContract/nested_duplicate (0.00s)
+    --- PASS: TestSRCLIContract/field_alias (0.00s)
+    --- PASS: TestSRCLIContract/unknown (0.00s)
+    --- PASS: TestSRCLIContract/trailing (0.00s)
+    --- PASS: TestSRCLIContract/unsupported (0.00s)
+    --- PASS: TestSRCLIContract/missing_protocol (0.00s)
+    --- PASS: TestSRCLIContract/null_protocol (0.00s)
+    --- PASS: TestSRCLIContract/control_id (0.00s)
+    --- PASS: TestSRCLIContract/invalid_utf8 (0.00s)
+    --- PASS: TestSRCLIContract/oversize (0.00s)
+    --- PASS: TestSRCLIContract/response_channels (0.00s)
+    --- PASS: TestSRCLIContract/settings_and_paths (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.058s
+=== RUN   TestSRCLIContract
+=== RUN   TestSRCLIContract/version
+=== RUN   TestSRCLIContract/unknown_command
+=== RUN   TestSRCLIContract/last_message_requires_run
+=== RUN   TestSRCLIContract/native_viewer_requires_identity
+=== RUN   TestSRCLIContract/native_viewer_no_input
+=== RUN   TestSRCLIContract/native_options_not_for_inspect
+=== RUN   TestSRCLIContract/last_message_no_write
+=== RUN   TestSRCLIContract/last_message_no_request_selector
+=== RUN   TestSRCLIContract/last_message_no_refresh_pr
+=== RUN   TestSRCLIContract/unknown_option
+=== RUN   TestSRCLIContract/duplicate_option
+=== RUN   TestSRCLIContract/protocol
+=== RUN   TestSRCLIContract/selector
+=== RUN   TestSRCLIContract/missing_input
+=== RUN   TestSRCLIContract/reply_schema
+=== RUN   TestSRCLIContract/invalid_utf8
+--- PASS: TestSRCLIContract (0.01s)
+    --- PASS: TestSRCLIContract/version (0.01s)
+    --- PASS: TestSRCLIContract/unknown_command (0.00s)
+    --- PASS: TestSRCLIContract/last_message_requires_run (0.00s)
+    --- PASS: TestSRCLIContract/native_viewer_requires_identity (0.00s)
+    --- PASS: TestSRCLIContract/native_viewer_no_input (0.00s)
+    --- PASS: TestSRCLIContract/native_options_not_for_inspect (0.00s)
+    --- PASS: TestSRCLIContract/last_message_no_write (0.00s)
+    --- PASS: TestSRCLIContract/last_message_no_request_selector (0.00s)
+    --- PASS: TestSRCLIContract/last_message_no_refresh_pr (0.00s)
+    --- PASS: TestSRCLIContract/unknown_option (0.00s)
+    --- PASS: TestSRCLIContract/duplicate_option (0.00s)
+    --- PASS: TestSRCLIContract/protocol (0.00s)
+    --- PASS: TestSRCLIContract/selector (0.00s)
+    --- PASS: TestSRCLIContract/missing_input (0.00s)
+    --- PASS: TestSRCLIContract/reply_schema (0.00s)
+    --- PASS: TestSRCLIContract/invalid_utf8 (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.242s
+=== RUN   TestSRShutdownReceipt
+--- PASS: TestSRShutdownReceipt (0.06s)
+=== RUN   TestSRUnsupportedStorage
+--- PASS: TestSRUnsupportedStorage (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.135s
+=== RUN   TestSRStartupIntent
+--- PASS: TestSRStartupIntent (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	3.289s

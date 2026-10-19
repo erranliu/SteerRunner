@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	"strings"
 )
 
@@ -13,6 +14,7 @@ import (
 // The frozen helper, exact readonly command, original ready receipt, full wire
 // input, terminal incarnation, any returned native receipt and close agree.
 type NativeReceiptAuditPolicy struct {
+	NativeLaunchCommand string
 	Executable          string
 	SHA256              string
 	ConfigurationDigest string
@@ -21,11 +23,19 @@ type NativeReceiptAuditPolicy struct {
 }
 
 func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
+
 	var s contracts.OrcaSettings
 	if contracts.DecodeStrict(m.Execution.Settings, &s) != nil {
 		return NativeReceiptAuditPolicy{}
 	}
 	a := s.AgentLaunch
+	if m.Execution.Target.Kind == "orca_environment" {
+		if a.Executable == "" {
+			a.Executable = "codex"
+		}
+		command, _ := (&agentlaunch.Config{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: s.AccessMode}).Command("codex")
+		return NativeReceiptAuditPolicy{Environment: m.Execution.Target.Environment, NativeLaunchCommand: command}
+	}
 	if a.Executable == "" && s.AgentName() == "codex" {
 		a.Executable = "codex"
 	}

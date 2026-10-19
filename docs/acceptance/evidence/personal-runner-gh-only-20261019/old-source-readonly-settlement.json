@@ -1,0 +1,41 @@
+{
+  "source_commit": "916b2069cce4ec9975c3a365d1bc68c79bd353cb",
+  "old_source_commit": "e70471ac10eb4cee95175256d4f67fe187ef45de",
+  "caller_sha256": "527c655c78616ca363edda777a174f5d8c9d4d9f65d6ca301cc0cc4a420d89c9",
+  "max_parallel": 2,
+  "cases": [
+    {
+      "fixture": "f96f7302a7a1",
+      "exit_code": 0,
+      "resources_settled": true,
+      "database_unchanged": true,
+      "database_digest": "02ae6fc047acb44bb311033b388157fd3af49911157e6cd62a1a754b59711a61",
+      "elapsed_seconds": 9.598
+    },
+    {
+      "fixture": "df0bfd3cd697",
+      "exit_code": 0,
+      "resources_settled": true,
+      "database_unchanged": true,
+      "database_digest": "12ad283aba89ab883e7e8981e039103b2b919aec9c97fd6179b7afc44fe407ba",
+      "elapsed_seconds": 8.811
+    },
+    {
+      "fixture": "5c7e10786f2a",
+      "exit_code": 0,
+      "resources_settled": true,
+      "database_unchanged": true,
+      "database_digest": "02685868df3cc83fcb489b9ddfd40ee4ad5d06666b8fe6b88b696f2a355f66d3",
+      "elapsed_seconds": 7.05
+    },
+    {
+      "fixture": "405666b4a858",
+      "exit_code": 0,
+      "resources_settled": true,
+      "database_unchanged": true,
+      "database_digest": "45da88866768344d8184a979ba5cfb30c485b83ad426ec7135e98e0d51eaefb4",
+      "elapsed_seconds": 7.18
+    }
+  ],
+  "passed": true
+}

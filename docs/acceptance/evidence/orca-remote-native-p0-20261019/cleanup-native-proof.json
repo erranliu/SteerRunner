@@ -1,0 +1,12 @@
+{
+  "pane": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc",
+  "provider": "01a15248-d08f-7d01-a69e-4bead299af30",
+  "base_root_at": 1792382072362,
+  "ended_at": 1792382188731,
+  "outcome": "unknown",
+  "reply_digest": "4d08e4927adcd98e8b3fb73d46e239001c63407774b49259ab5112dee45c076c",
+  "reply_body": "{\"pr_initial_query_exit_code\":0,\"pr_close_exit_code\":0,\"pr_closed_unmerged_query_exit_code\":0,\"ref_query_git_exit_code\":0,\"ref_validation_exit_code\":1,\"observed_refs\":\"Both refs were returned at the expected SHAs, but my validation command failed.\",\"atomic_delete_attempted\":false,\"refs_absent\":false,\"worktree_clean_checked\":false,\"blocker\":\"Stopped after the ref validation command failed; no refs were deleted.\"}",
+  "last_signal": "2026-10-19T03:57:30.2103434Z",
+  "last_query": "2026-10-19T03:57:30.2103434Z",
+  "hint": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc:done:1792382072362:1792382072362"
+}

@@ -3,11 +3,14 @@ package application
 import (
 	"bytes"
 	"context"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"io"
 	"log"
 	"os/exec"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
@@ -50,6 +53,69 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			}
 		})
 	}
+	t.Run("remote-native-and-legacy-readonly", func(t *testing.T) {
+		f := newBaseRefreshFixture(t, "origin", "main")
+		exe, err := exec.LookPath("git")
+		if err != nil {
+			t.Fatal(err)
+		}
+		settings := contracts.OrcaSettings{AccessMode: "full_access"}
+		settings.Transport.Executable = exe
+		settings.AgentLaunch.Executable = "codex"
+		settings.AgentLaunch.Model = "gpt-6-luna"
+		settings.AgentLaunch.ReasoningEffort = "high"
+		f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "original-remote"}, Settings: canonical(settings)}
+		f.input.Input = canonical(f.request)
+		r := f.freeze()
+		if len(r.Profile) != 1 || r.Profile[0].CodecVersion != orca.NativeRemoteProfileVersion || strings.Contains(r.LaunchCommand, "steerrunner-agent") || !strings.Contains(r.LaunchCommand, `model_reasoning_effort="high"`) {
+			t.Fatal("remote profile is not native", r.LaunchCommand, r.Profile)
+		}
+		profile, err := orca.DecodeProfile(r.Profile[0].Payload)
+		if err != nil || profile.RuntimeExecutable != "" || profile.RuntimeSHA256 != "" || profile.Terminal != nil {
+			t.Fatal(profile, err)
+		}
+		// An old remote profile without readiness is still legacy, never inferred native.
+		envelope := r.Profile[0]
+		envelope.CodecVersion = orca.ProfileVersion
+		envelope, err = b.NewImplementationDataEnvelope(envelope, envelope.Payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		r.Profile[0] = envelope
+		store, err := storage.Open(f.state)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer store.Close()
+		r.Revision = 1
+		if err = store.Commit(r, 0, nil, "legacy-fixture"); err != nil {
+			t.Fatal(err)
+		}
+		before, _ := store.Runs()
+		saved := canonical(before)
+		e, err := New(context.Background(), f.state, store, log.New(io.Discard, "", 0))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if e.advance(r.ID, e.workers[r.ID]) || e.workers[r.ID].port != nil {
+			t.Fatal("legacy Run entered adapter execution")
+		}
+		resume := contracts.Request{Protocol: contracts.Protocol, RequestID: "legacy-resume", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})}
+		response := e.Handle("resume", r.ID, "", "", "", 0, false, &resume)
+		if response.Error == nil || response.Error.Code != "unsupported_capability" {
+			t.Fatal(response)
+		}
+		e.Start()
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		if err = e.Shutdown(ctx); err != nil {
+			t.Fatal(err)
+		}
+		after, _ := store.Runs()
+		if !bytes.Equal(saved, canonical(after)) {
+			t.Fatal("service load/shutdown rewrote legacy evidence")
+		}
+	})
 }
 
 func assertOrcaAgentBlocked(t *testing.T, dir string, record *runstate.Record) {

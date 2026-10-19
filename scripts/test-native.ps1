@@ -78,7 +78,7 @@ if ($taskNative.schema -eq 'steerrunner-test/v2') {
     } elseif($taskNative.driver -eq 'development-audited'){
         $taskView=Get-Content -LiteralPath (Join-Path $taskEvidence 'latest-run.json') -Raw|ConvertFrom-Json
         if($taskNative.execution.adapter -eq 'orca-terminal'){
-            Assert-SRRemoteAuditModels $taskNative $taskView (Get-Content -LiteralPath (Join-Path $taskEvidence 'audit-models.json') -Raw|ConvertFrom-Json)
+            Assert-SRManagedOrcaAuditModels $taskNative $taskView (Get-Content -LiteralPath (Join-Path $taskEvidence 'audit-models.json') -Raw|ConvertFrom-Json)
         } else {
         $taskThread=Get-Content -LiteralPath (Join-Path $taskRoot ('s/runs/'+$taskScenario.run_id+'/app-server/thread.json')) -Raw|ConvertFrom-Json
         $taskModels=Assert-SRAuditModels $taskNative $taskView $taskThread.thread.path

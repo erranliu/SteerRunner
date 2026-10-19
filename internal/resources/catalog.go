@@ -48,6 +48,9 @@ func Catalog() CapabilityCatalog {
 						continue
 					}
 					requirements := []string{"per_execution_native_verification", "execution_host_authentication", "native_codex_0.159.2_permissions"}
+					if target == "orca_environment" {
+						requirements = []string{"configured_orca_environment", "execution_host_native_login", "native_launch_parameters_requested_only"}
+					}
 					for _, profile := range workflow.Catalog() {
 						if !slices.Contains(profile.SupportedAdapters, adapter) {
 							continue

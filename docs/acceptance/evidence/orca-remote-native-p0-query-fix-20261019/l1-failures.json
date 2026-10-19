@@ -1,0 +1,57 @@
+[
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent\n"
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "    diagnostic_test.go:78: unsafe or unresolved auxiliary cleanup 1 lost response\n"
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "        lost\n"
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "        original terminal stop inventory is incomplete or foreign\n"
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Output": "--- FAIL: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)\n"
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3030652+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-19T12:12:17.3034017+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-19T12:12:20.0465918+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Elapsed": 4.573
+  }
+]

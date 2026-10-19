@@ -7,6 +7,12 @@ import (
 )
 
 func TestOrcaAgentSettings(t *testing.T) {
+	for _, launch := range []string{`{"runtime_executable":""}`, `{"runtime_executable":"helper.exe"}`, `{"runtime_sha256":""}`, `{"runtime_sha256":"` + strings.Repeat("a", 64) + `"}`} {
+		execution := Execution{Adapter: "orca-terminal", Target: Target{Kind: "orca_environment", Environment: "original"}, Settings: json.RawMessage(`{"agent_launch":` + launch + `}`)}
+		if f := ValidateExecution(execution); f == nil || f.Detail.Code != "invalid_input" || !strings.Contains(f.Error(), "remove") {
+			t.Fatal("remote helper key was accepted", launch, f)
+		}
+	}
 	for _, tc := range []struct {
 		settings string
 		agent    string

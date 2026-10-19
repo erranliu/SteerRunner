@@ -1,0 +1,4 @@
+{
+  "prompt": "P0 active-stop probe b81a5322. Use your normal shell tool to run exactly one FOREGROUND Start-Sleep -Seconds 45, then reply P0_STOP_WAIT_b81a5322. Do not spawn background jobs, write files, access network, change settings, or use any helper. The caller will close this terminal during the wait.",
+  "request_id": "fdf48140-f225-49b1-8c4f-19617d8a97f6"
+}

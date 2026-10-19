@@ -1,0 +1,123 @@
+{
+  "schema": "steerrunner-gh-only-qualification/v2",
+  "qualified_test_source": "98e4e76a65a0aeb47a8eab09eae6093b3ce5eb14",
+  "status": "legacy_helper_scope_qualified",
+  "qualified_base": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "superseding_main": "0b55928bf0b2cc0df1d4737e75ce922adca37992",
+  "latest_main_qualified": false,
+  "pending_remote_boundary_decision": false,
+  "approved_remote_boundary": "native Orca; retain host and Orca local broker only",
+  "scope": "admin-free-subset",
+  "unique_qualified_cases": 11,
+  "cases": [
+    {
+      "scenario": "orca-remote.audited",
+      "case_id": "default",
+      "source_commit": "98e4e76a65a0aeb47a8eab09eae6093b3ce5eb14",
+      "batch": "live-12",
+      "status": "passed"
+    },
+    {
+      "scenario": "environment-check.orca-sandbox",
+      "case_id": "complete",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "environment-check.orca-full-access",
+      "case_id": "complete",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.multirun",
+      "case_id": "default",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.smoke",
+      "case_id": "default",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "source_commit": "98e4e76a65a0aeb47a8eab09eae6093b3ce5eb14",
+      "batch": "live-12",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    },
+    {
+      "scenario": "local-codex.feedback",
+      "case_id": "default",
+      "source_commit": "1700a9558de08b58f54299fee7908089b549c8a9",
+      "batch": "live-09",
+      "status": "passed"
+    }
+  ],
+  "production_source_equivalent": true,
+  "test_only_changes": [
+    "internal/execution/adapters/orcatransport/local_connection_windows_test.go",
+    "scripts/native-result.ps1",
+    "tests/framework/native-result-test.ps1"
+  ],
+  "original_batch": "live-09",
+  "targeted_batches": [
+    "live-12"
+  ],
+  "original_executed": 11,
+  "original_passed": 9,
+  "original_failed": 2,
+  "targeted_executed": 2,
+  "targeted_passed": 2,
+  "authorized_excluded_unverified": 8,
+  "whole_catalog_L3_passed": false,
+  "old_failures_preserved": true,
+  "historical_results_inherited": false,
+  "evidence_sha256": {
+    "builds.json": "792c90888da7d3f1742591cbfc703625ec4951cf27a03a06adc4fd50e42ff0a2",
+    "current-source-unknown-physical-settlement.json": "767a5e4dd3f1a737120da4b380606b1437806a438e7e28450c4e0d43dd50d981",
+    "live-01.json": "91d11827f1beca894355393c715ebf1e671b1d9e225b133491553fd47249e7f0",
+    "live-05.json": "2b19759d6e11069437e2c4fdb1bca70b81d841573c420fddf076281bbe34bdf0",
+    "live-06.json": "7509f2eb1c413f7e0c81deb7bab04e0ba1a99e67341ecad7591b708da57c23ab",
+    "live-07.json": "03c3f717851d5a5af7b833dfe6bd6947497a3e61742ce4f64c0079fe9c2a3b2b",
+    "live-09.json": "0c2607583b85d440d51a84a284c3e76ab5302d56f536d56b9d034ef522ac82d4",
+    "live-11.json": "91f8794981e5d307c18982f067da9e7c62dbc09e1f109f2dc71aef927db06c2a",
+    "live-12.json": "9f4ff1d7764a2a9769872dd8d3c6a9d1632f0b84dbdba1d61b9c69bc88aa0f19",
+    "old-source-readonly-settlement.json": "f88564cc5a690ddfcdd3f51a22bda50dc499866ce2ff498dc08594c29e5a91f1",
+    "prerequisite-stops.json": "98cd42fb8284253f40f5e7116fb9bf89955ad7085872c8c1ca521dee1644dfb3"
+  }
+}

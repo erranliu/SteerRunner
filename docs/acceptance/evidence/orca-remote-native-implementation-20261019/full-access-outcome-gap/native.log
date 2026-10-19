@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.full-access
+    run_test.go:629: original execution needs intervention: status=blocked phase=original_session_recovery diagnostic=Original turn failed or was interrupted; verify the original session: 
+--- FAIL: TestSRLiveScenario (120.92s)
+    --- FAIL: TestSRLiveScenario/orca-remote.full-access (120.89s)
+FAIL

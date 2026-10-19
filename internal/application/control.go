@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
@@ -185,6 +186,11 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 	}
 	next.Diagnostic = e.redact(next, diagnostic)
+	if err == nil && receipt.State.Stopped {
+		if terminal, ok := p.(*orca.Lifecycle); ok && terminal.StopEvidenceScope() != "" {
+			next.Diagnostic = orca.NativeStopDiagnostic
+		}
+	}
 	// Continue probing an unresolved stop, but only publish a new revision when
 	// its durable facts change. Otherwise slow callers can never pass CAS while
 	// the worker repeatedly observes the same unreachable original resource.

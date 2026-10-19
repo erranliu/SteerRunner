@@ -1,0 +1,201 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "917194a7af5ab407358b01528c6b4d198d49e0e9",
+  "source_dirty": false,
+  "started_at": "2026-10-19T07:03:43.3460270Z",
+  "finished_at": "2026-10-19T07:34:54.4243551Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "passed",
+  "scope": "admin-free-subset",
+  "max_parallel": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "executed_case_count": 1,
+  "passed_case_count": 1,
+  "first_pass_rate": 1,
+  "levels": {
+    "L3": {
+      "passed": [
+        "orca-remote.full-access/default"
+      ],
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-remote.audited/default",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "unavailable": [],
+      "complete_level_passed": false,
+      "executed": [
+        "orca-remote.full-access/default"
+      ],
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-remote.audited/default",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "excluded": [],
+      "requested": [
+        "orca-remote.full-access/default"
+      ]
+    }
+  },
+  "source_config_digest": "f36ea0313a08bf3fdbba548f153c99e0fc6dbbfb70ac97cd2b2ec4efc77bb11e",
+  "configuration_sha256": "db8ff96e8ae51b922ce9910073a2297a6a7fb687d9a74750f3c73c8e5375eaca",
+  "requirements_sha256": "de2c4df423e28dab7c1fbce8f31cfb8b85987f078fc10909bc96e2dd1522faff",
+  "resource_digest": "35152ba760687373cedf51c4fb091dab7ad1d78184ccf9a3149dfd24b7175acc",
+  "runner_sha256": "38befb657f372af780864abfd30d7382ea1750b8718e7c925d8e0d367a585c70",
+  "helper_sha256": "fa30405cc55de7c0593cd2b8f1e01060dc16f74695b1e45995aa8d3d556b3b2d",
+  "prerequisites": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 408,
+      "terminal_extension_test_count": 29,
+      "terminal_extension_exit": 0,
+      "terminal_extensions_passed": true,
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ],
+  "cases": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T07:30:03.5517733Z",
+      "finished_at": "2026-10-19T07:34:54.2613297Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "7848D0D782783643FFEFE9F82E522F639DB228C3ED9A6883AFADA1AA37115E59",
+        "driver_sha256": "096D6AA93E0148C8CC44A8B1D852B147678251B4160853E89FA1F914714B69C4",
+        "runner_sha256": "38befb657f372af780864abfd30d7382ea1750b8718e7c925d8e0d367a585c70",
+        "source_commit": "917194a7af5ab407358b01528c6b4d198d49e0e9",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.full-access",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "full_access",
+      "remote_helper_sha256": "658e4b899c2947f60e529fa297fd165f210cc0221777131986c5d094b4f03bbe",
+      "result": {
+        "stage": "completed",
+        "passed": true,
+        "run_id": "073e47e8ec250b91d30572f2dd3b42ce",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/613",
+        "merge_commit": "e48c2f212573babb75cca3ba6fdf182b2532e0e4"
+      },
+      "resources": [
+        "root:C:\\srt\\9622fe5d35be",
+        "base:codex/srtest/9622fe5d35be/base",
+        "run:073e47e8ec250b91d30572f2dd3b42ce",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-073e47e8ec250b91d30572f2dd3b42ce",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_c23f255d-7f6a-4680-b3cf-472a02b44144:07d0ab87-73e0-48e7-b129-71c6c64ced75",
+        "branch:erranliu/sl-073e47e8ec250b91d30572f2dd3b42ce",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/613"
+      ],
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-073e47e8ec250b91d30572f2dd3b42ce",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a15312-8379-71a0-8e6c-6cec200d7333",
+            "configuration_digest": "82a4fffc50b43be8b88b88ae4c90404d5eed72134a39ee4a71d668291c5b4c85",
+            "runtime_sha256": "658e4b899c2947f60e529fa297fd165f210cc0221777131986c5d094b4f03bbe",
+            "checked_at": "2026-10-19T07:31:37.3327332Z",
+            "expires_at": "2026-10-19T16:31:15.4317847+08:00",
+            "access_mode": "full_access"
+          },
+          "native": {
+            "session": "01a15312-8379-71a0-8e6c-6cec200d7333",
+            "contexts": 3,
+            "tools": 9,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "bc461e542fb60571d6285ad118a767ec6a3f7b475281877535a7f712888ce17d"
+          },
+          "inspector_closed": true
+        }
+      }
+    }
+  ]
+}

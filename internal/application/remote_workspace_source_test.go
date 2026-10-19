@@ -27,7 +27,7 @@ func (p *originalRemoteWorkspaceOwner) InspectLifecycleAuditWorkspace(_ context.
 	}
 	return f, nil
 }
-func TestRemoteWorkspaceSourceRequiresOriginalOwnerWithoutLocalFallback(t *testing.T) {
+func TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback(t *testing.T) {
 	for _, mode := range []string{"original", "missing-owner", "unsupported-owner", "owner-error"} {
 		t.Run(mode, func(t *testing.T) {
 			p := &originalRemoteWorkspaceOwner{fail: mode == "owner-error"}
@@ -38,7 +38,7 @@ func TestRemoteWorkspaceSourceRequiresOriginalOwnerWithoutLocalFallback(t *testi
 			if mode == "unsupported-owner" {
 				e.workers["run"].port = &readOnlyUnsupportedWorkspaceOwner{}
 			}
-			r := &runstate.Record{ID: "run", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired"}}}, RepositoryPath: "caller-cannot-open-remote-path", Snapshot: b.LifecycleSnapshot{Workspace: b.WorkspaceIntent{Path: "remote-original-workspace", Branch: "original", BaseCommit: strings.Repeat("c", 40)}}}
+			r := &runstate.Record{ID: "run", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}}}, RepositoryPath: "caller-cannot-open-remote-path", Snapshot: b.LifecycleSnapshot{Workspace: b.WorkspaceIntent{Path: "remote-original-workspace", Branch: "original", BaseCommit: strings.Repeat("c", 40)}}}
 			f := e.inspectSource(r, strings.Repeat("d", 40))
 			if f.Qualified != (mode == "original") {
 				t.Fatal(mode, f)
@@ -54,3 +54,13 @@ func TestRemoteWorkspaceSourceRequiresOriginalOwnerWithoutLocalFallback(t *testi
 }
 
 type readOnlyUnsupportedWorkspaceOwner struct{ b.LifecyclePort }
+
+func TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner(t *testing.T) {
+	p := &originalRemoteWorkspaceOwner{}
+	e := &Engine{ctx: context.Background(), workers: map[string]*worker{"run": {port: p}}}
+	r := &runstate.Record{ID: "run", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired"}}}, RepositoryPath: t.TempDir()}
+	got := e.inspectSource(r, "")
+	if got.Qualified || got.Diagnostic == "" || p.calls != 0 {
+		t.Fatal("native remote source gained helper or caller qualification", got, p.calls)
+	}
+}
