@@ -1,12 +1,14 @@
 package application
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"reflect"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
@@ -38,6 +40,10 @@ func (e *Engine) selectParser(r *runstate.Record, input workflow.StageInput, sta
 	}
 	at := time.Now().UTC()
 	p := &b.ParseInput{ResultID: transition.Acquired.ID, Payload: string(payload), Generation: contracts.NewID(), Deadline: at.Add(time.Duration(r.AcquisitionConfig.Config.CodexParser.TimeoutSeconds) * time.Second), Owner: e.identity}
+	if owner := codex.ExecutionOwner(r.Snapshot); owner != nil && owner.RetainsParser {
+		identity := owner.Process
+		p.Owner = &identity
+	}
 	intent, err := operation.New(r.ID, r.Snapshot, b.LifecycleCandidate{Action: b.LifecycleParseResult, Input: b.LifecycleInput{Parse: p}}, contracts.NewID(), contracts.NewID(), at)
 	if err != nil {
 		transition.Reason = "parser intent could not be frozen"
@@ -159,15 +165,38 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 		return true, e.acceptParserReceipt(id, w, index, *intent.Receipt)
 	}
 	if intent.Request.Operation.Status != b.OperationPending {
+		owner := codex.ExecutionOwner(intent.Request.Snapshot)
+		retained := owner != nil && intent.Request.Input.Parse.Owner != nil && owner.Process == *intent.Request.Input.Parse.Owner
+		if retained && r.PendingStop != "" {
+			if w.port == nil {
+				_, _ = e.port(r, w)
+			}
+			if port, ok := w.port.(interface {
+				CancelParser(context.Context, b.LifecycleRequest) (b.LifecycleReceipt, error)
+			}); ok {
+				w.gate.Unlock()
+				_, _ = port.CancelParser(e.ctx, intent.Request)
+				w.gate.Lock()
+			}
+		}
 		// Reconciliation is read-only, including after service restart. No stdin is
 		// resent and an absent root alone never proves its descendants are absent.
 		receipt, err := parser.ReadReceipt(e.dir, intent.Request)
-		if err == nil && receipt.State.Stopped && parserOriginalAbsent(receipt) {
+		if err == nil && receipt.State.Stopped && receipt.State.WritersAbsent && (parserOriginalAbsent(receipt) || retained && (receipt.Process == nil || process.InspectProcess(receipt.Process) == "process absent")) {
 			return true, e.acceptParserReceipt(id, w, index, receipt)
 		}
 		if intent.Receipt == nil {
 			if started, readErr := parser.ReadStartedReceipt(e.dir, intent.Request); readErr == nil {
 				intent.Receipt = &started
+				e.mu.Lock()
+				if current := e.runs[id]; current.Revision == r.Revision {
+					next := current.Clone()
+					next.Intents[index].Settle(next.Snapshot.Operations, started, operation.ReconcileOriginalIntent, b.OperationAccepted, "", time.Now().UTC())
+					next.Phase = "parser_running"
+					_ = e.commitLocked(next, nil, "parser_root_bound")
+				}
+				e.mu.Unlock()
+				return true, true
 			}
 		}
 		if intent.Receipt != nil && parserOriginalAbsent(*intent.Receipt) {
@@ -232,6 +261,14 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 	}
 	request := next.Intents[index].Request.Clone()
 	e.mu.Unlock()
+	if owner := codex.ExecutionOwner(request.Snapshot); owner != nil && request.Input.Parse.Owner != nil && owner.Process == *request.Input.Parse.Owner {
+		// The durable original operation precedes dispatch. A lost response is
+		// reconciled exclusively through its existing parser journals.
+		w.gate.Unlock()
+		_, _, _ = w.port.Execute(e.ctx, request)
+		w.gate.Lock()
+		return true, false
+	}
 	w.parserTask = parser.Start(e.ctx, e.dir, request, func(receipt b.LifecycleReceipt) error {
 		e.mu.Lock()
 		defer e.mu.Unlock()
@@ -382,7 +419,7 @@ func (e *Engine) acceptParserReceipt(id string, w *worker, index int, receipt b.
 				e.applyWorkflowTransition(next, *source, state, transition)
 			}
 		}
-	} else if currentSource && status == b.OperationConfirmed && next.PendingStop == "" {
+	} else if currentSource && status == b.OperationConfirmed && next.PendingStop == "" && next.Status != "blocked" && next.Status != "waiting_input" {
 		next.Phase = "parser_result_requires_resume"
 	}
 	// Complete native evidence can be committed after stop/revocation but never

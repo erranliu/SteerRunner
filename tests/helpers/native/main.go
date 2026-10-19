@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"context"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -19,6 +20,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -160,6 +162,11 @@ func main() {
 			if response == nil {
 				return
 			}
+			// The native creation has succeeded and is recorded before its RPC
+			// response reaches the owner. Used only by the protocol fixture.
+			for request.Method == "thread/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-thread-response")) {
+				time.Sleep(20 * time.Millisecond)
+			}
 			if connection.Write(context.Background(), websocket.MessageText, encode(response)) != nil {
 				return
 			}
@@ -168,7 +175,7 @@ func main() {
 					return
 				}
 			}
-			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" && request.Method == "turn/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
+			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" && request.Method == "turn/start" && exists(statePath(s.thread.ID)+".completed") {
 				go s.releaseHeld(connectionContext, connection)
 			}
 		}
@@ -280,7 +287,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			_ = os.Remove(marker)
 			return nil, nil
 		}
-		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || (strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布")) && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
+		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || audit && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")) || (strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布")) && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
 			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" {
 				if err := os.WriteFile(statePath(s.thread.ID)+".completed", encode(s.thread), 0600); err != nil {
 					return fail(err)
@@ -356,6 +363,21 @@ func parserFixture() {
 	}
 	fmt.Println(`{"type":"thread.started","thread_id":"independent-parser-fixture"}`)
 	fmt.Println(`{"type":"turn.started"}`)
+	if marker := regexp.MustCompile(`PARSER_WAIT\(([A-Za-z0-9_-]+)\)`).FindSubmatch(input); len(marker) == 2 {
+		path, err := base64.RawURLEncoding.DecodeString(string(marker[1]))
+		if err != nil {
+			os.Exit(5)
+		}
+		file, err := os.OpenFile(string(path)+".starts", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+		if err != nil {
+			os.Exit(6)
+		}
+		_, _ = file.WriteString("start\n")
+		_ = file.Close()
+		for exists(string(path)) {
+			time.Sleep(20 * time.Millisecond)
+		}
+	}
 	if strings.Contains(string(input), "PARSER_TOOL") {
 		fmt.Println(`{"type":"item.started","item":{"id":"tool","type":"command_execution"}}`)
 		return
@@ -376,7 +398,7 @@ func parserFixture() {
 func exists(path string) bool { _, err := os.Stat(path); return err == nil }
 
 func (s *server) releaseHeld(ctx context.Context, connection *websocket.Conn) {
-	for exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) {
+	for exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")) {
 		select {
 		case <-ctx.Done():
 			return

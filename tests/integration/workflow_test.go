@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -152,8 +155,19 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 			t.Error("refuse cleanup outside the fixture's temporary root")
 			return
 		}
-		if err := os.RemoveAll(root); err != nil {
-			t.Error(err)
+		// Windows can retain a just-exited image briefly (including scanning).
+		// Native owner exit is checked separately; never suppress a live owner.
+		until := time.Now().Add(3 * time.Second)
+		for {
+			err := os.RemoveAll(root)
+			if err == nil {
+				break
+			}
+			if time.Now().After(until) {
+				t.Error(err)
+				break
+			}
+			time.Sleep(50 * time.Millisecond)
 		}
 	})
 	config := filepath.Join(root, "gitconfig")
@@ -179,7 +193,7 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 	t.Setenv("CODEX_HOME", native)
 	t.Setenv("STEERRUNNER_FIXTURE_PROVIDER", provider)
 	t.Cleanup(func() {
-		if !t.Failed() || *evidenceFlag == "" {
+		if *evidenceFlag == "" {
 			return
 		}
 		if body, err := os.ReadFile(filepath.Join(native, "calls.jsonl")); err == nil {
@@ -427,36 +441,111 @@ func TestSRNativeUnknownAndStop(t *testing.T) {
 		t.Fatal("stop generated a later input")
 	}
 }
-func TestSRRestartRequiresResume(t *testing.T) {
+func TestSRRestartPreservesAuthorization(t *testing.T) {
 	testCount.Add(1)
-	dir, request := setupRun(t)
-	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
-	cleanupService(t, dir, info)
-	raw, _ := json.Marshal(request)
-	response := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
-	id := response.Data.(map[string]any)["run_id"].(string)
-	ready := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
-	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("service-stop", info.InstanceID), 0)
-	if err := waitOwnedService(info); err != nil {
-		t.Fatal(err)
+	originalRunner := runnerEXE
+	candidate := buildCompatibleCandidate(t)
+	for _, mode := range []string{"graceful", "kill"} {
+		t.Run(mode, func(t *testing.T) {
+			dir, request := setupRun(t)
+			t.Setenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER", "1")
+			var input contracts.RunRequest
+			json.Unmarshal(request.Input, &input)
+			input.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "{pr_url}"}}})
+			request.Input, _ = json.Marshal(input)
+			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")
+			if err := os.WriteFile(hold, []byte("complete while Runner is offline"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			cleanupService(t, dir, info)
+			raw, _ := json.Marshal(request)
+			id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
+			active := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Execution.TurnStarted && r.Execution.TurnID != "" })
+			var owner struct {
+				Identity struct{ Process b.ProcessIdentity }
+			}
+			body, err := os.ReadFile(filepath.Join(dir, "runs", id, "app-server", "owner", "owner-ready.json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if json.Unmarshal(body, &owner) != nil {
+				t.Fatal("invalid owner identity")
+			}
+			var native codex.ProcessReceipt
+			body, err = os.ReadFile(filepath.Join(dir, "runs", id, "app-server", "process.json"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			json.Unmarshal(body, &native)
+			if mode == "graceful" {
+				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("service-stop", info.InstanceID), 0)
+				err = waitOwnedService(info)
+			} else {
+				err = killOwnedService(info)
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if process.InspectProcess(&owner.Identity.Process) != "matching process still exists" || process.InspectProcess(&native.Identity) != "matching process still exists" {
+				t.Fatal("service exit ended the original owner/native tree")
+			}
+			if err = os.Remove(hold); err != nil {
+				t.Fatal(err)
+			}
+			deadline := time.Now().Add(12 * time.Second)
+			completed := false
+			for time.Now().Before(deadline) {
+				files, _ := filepath.Glob(filepath.Join(dir, "runs", id, "turns", "*", "appserver.jsonl"))
+				for _, file := range files {
+					outcome, e := codex.ReadAppServerOutcome(file, active.Execution.SessionID, active.Execution.TurnID)
+					if e == nil && outcome.Completed && outcome.FinalVerified {
+						completed = true
+					}
+				}
+				if completed {
+					break
+				}
+				time.Sleep(50 * time.Millisecond)
+			}
+			if !completed || countNative(t, "turn/start") != 1 {
+				t.Fatal("offline owner did not save the original result, or sent a successor without the service")
+			}
+			if mode == "graceful" {
+				runnerEXE = candidate
+				t.Cleanup(func() { runnerEXE = originalRunner })
+			}
+			preflight := call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 0)
+			body, _ = json.Marshal(preflight.Data)
+			var report contracts.TakeoverReport
+			json.Unmarshal(body, &report)
+			if !report.Compatible {
+				t.Fatalf("same-contract takeover rejected: %+v", report)
+			}
+			next := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			t.Logf("original=%+v candidate=%+v owner=%+v native=%+v", info, next, owner.Identity.Process, native.Identity)
+			if mode == "graceful" && (next.ExecutableSHA256 == info.ExecutableSHA256 || next.ResourceDigest == info.ResourceDigest || next.Version == info.Version) {
+				t.Fatal("candidate did not change build, resource digest and product version")
+			}
+			cleanupService(t, dir, next)
+			ready := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
+			if ready.ResumeRequired || !ready.NewInputsAllowed || ready.Execution.SessionID != active.Execution.SessionID || countNative(t, "turn/start") != 3 || countNative(t, "thread/start") != 1 {
+				t.Fatal("takeover required resume, replayed an input or replaced the original session")
+			}
+			revokeWithFreshRevision(t, dir, id, ready.Revision)
+			stopped := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+			call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("after-explicit-stop", next.InstanceID), 0)
+			if err = waitOwnedService(next); err != nil {
+				t.Fatal(err)
+			}
+			last := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			cleanupService(t, dir, last)
+			paused := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+			if paused.NewInputsAllowed || !paused.ResumeRequired || paused.Revision != stopped.Revision || countNative(t, "turn/start") != 3 {
+				t.Fatal("restart changed explicit stopped state or dispatched another input")
+			}
+		})
 	}
-	stoppedService := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
-	proof := stoppedService.LastShutdown
-	if stoppedService.Status != "not_running" || proof == nil || proof.InstanceID != info.InstanceID || proof.RequestID != "service-stop" || !proof.ResourcesSettled || proof.Diagnostic != "" {
-		t.Fatalf("native worker final settlement was not published: %+v", proof)
-	}
-	currentService := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
-	cleanupService(t, dir, currentService)
-	current := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.ResumeRequired })
-	if current.NewInputsAllowed {
-		t.Fatal("restart restored input authorization")
-	}
-	if countNative(t, "turn/start") != 3 || countNative(t, "thread/start") != 1 {
-		t.Fatal("restart dispatched native input or a replacement thread")
-	}
-	writeCommand(t, dir, "resume", id, "current-resume", current.Revision)
-	resumed := waitRun(t, dir, id, func(r contracts.RunView) bool { return !r.ResumeRequired && r.NewInputsAllowed })
-	if resumed.Execution.SessionID != ready.Execution.SessionID {
-		t.Fatal("resume replaced the original native session")
-	}
+	t.Run("creation_receipt", testGenerationCreationReceipt)
+	t.Run("pending_stop", testGenerationPendingStop)
 }

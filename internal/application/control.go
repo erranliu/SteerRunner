@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+func controlScope(r *runstate.Record, question string) string {
+	return "scope:" + reliable.Digest(canonical([]string{r.ID, r.Snapshot.Session.AttemptID, r.Snapshot.ResourceGeneration, r.Snapshot.Session.Generation, r.Snapshot.Session.SessionID, r.Snapshot.Session.CurrentCommandID, r.Snapshot.Session.CurrentTurnID, r.Workflow.StepID, question, reliable.Digest(canonical(r.Snapshot.QuestionRoute)), reliable.Digest(canonical(r.Question)), r.Workflow.ImplementationResultID, r.Workflow.AuditResultID}))
+}
+
 func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
@@ -22,7 +26,7 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 	if saved == nil {
 		return false
 	}
-	if saved.Epoch != e.epoch {
+	if saved.Epoch != e.epoch && saved.Epoch != controlScope(r, saved.QuestionID) {
 		e.block(id, "fresh_reply_required", errors.New("Saved answers from a prior service require a fresh reply to the current question"), false)
 		return false
 	}
@@ -146,7 +150,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		} else {
 			receipt, _, err = p.Reconcile(ctx, request.Clone())
 		}
-	} else if r.Request.Execution.Adapter == "codex-app-server" {
+	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil {
 		if w.handle == nil {
 			err = errors.New("The original owned writer handle is unavailable; only identity reconciliation is allowed")
 			receipt.Disposition = b.OperationUnknown
@@ -272,16 +276,20 @@ func (e *Engine) closeWorker(id string, w *worker) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	next := e.runs[id].Clone()
-	next.Allowed = false
-	next.ResumeRequired = true
 	if err == nil && facts.Stopped && parserResourcesSettled(next) {
 		next.StopStatus = "stopped"
 	} else if err != nil {
-		next.Diagnostic = e.redact(next, err.Error())
+		e.logger.Printf("service observation detach remains unverified run=%s diagnostic=%s", id, e.redact(next, err.Error()))
+	}
+	if reflect.DeepEqual(next, e.runs[id]) {
+		return
 	}
 	_ = e.commitLocked(next, nil, "service_observation_detached")
 }
 func (e *Engine) writersAbsent(r *runstate.Record, w *worker, identity b.ProcessIdentity) bool {
+	if identity == r.Snapshot.Ref.External && codexOwnerStopped(r) {
+		return true
+	}
 	if w.handle != nil && w.handle.Identity() == identity {
 		if tree, ok := w.handle.(b.ProcessTreeHandle); ok {
 			return tree.WritersAbsent()

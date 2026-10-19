@@ -84,7 +84,7 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 			return "", err
 		}
 		if os.Getenv("STEERRUNNER_SUCCESS_OUTPUT") == "1" {
-			return "PR: https://controlled.invalid/owner/repo/pull/84\n本次发布已完成。", nil
+			return "PR: " + prURL + "\n本次发布已完成。", nil
 		}
 		if os.Getenv("STEERRUNNER_STAGE_PUBLISH_UNKNOWN") == "1" {
 			return `{"outcome":"blocked","summary":"publication uncertain","outputs":{"pr_url":"https://controlled.invalid/owner/repo/pull/84"},"blocker":{"category":"unknown_external","action":"publish","error":"response lost"}}`, nil

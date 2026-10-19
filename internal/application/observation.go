@@ -26,7 +26,11 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 		if observer != nil {
 			_ = observer.Close(context.Background())
 		}
-		e.block(id, "observation_unverified", err, true)
+		if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
+			e.logger.Printf("original observation unavailable run=%s diagnostic=%s", id, e.redact(r, err.Error()))
+		} else {
+			e.block(id, "observation_unverified", err, true)
+		}
 		return false
 	}
 	if !e.applyObservation(id, r, receipt) {
@@ -151,6 +155,9 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 	}
 	if merge(next, receipt) != nil {
 		return false
+	}
+	if reflect.DeepEqual(next, e.runs[id]) {
+		return true
 	}
 	return e.commitLocked(next, nil, "observation_attached") == nil
 }

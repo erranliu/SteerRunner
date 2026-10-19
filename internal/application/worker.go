@@ -81,6 +81,12 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if orca.LegacyRemoteProfile(r.Profile) && r.PendingStop == "" {
 		return false
 	}
+	if r.PendingStop == "" {
+		if err := validateOperationVersions(r); err != nil {
+			e.block(id, "recovery_contract_unsupported", err, true)
+			return false
+		}
+	}
 	if handled, progress := e.advanceParser(id, w, r); handled {
 		return progress
 	}

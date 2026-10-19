@@ -295,7 +295,7 @@ func fixtureOn(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.Lifec
 }
 func request(s b.LifecycleSnapshot, action b.LifecycleAction, input b.LifecycleInput) b.LifecycleRequest {
 	ref := s.Ref
-	return b.LifecycleRequest{Snapshot: s, Input: input, Operation: b.Operation{ID: "original-operation-" + string(action), Action: string(action), PayloadDigest: "digest", Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, ConfigurationDigest: s.ConfigurationDigest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}}
+	return b.LifecycleRequest{Snapshot: s, Input: input, Operation: b.Operation{Version: 1, ID: "original-operation-" + string(action), Action: string(action), PayloadDigest: "digest", Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, ConfigurationDigest: s.ConfigurationDigest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}}
 }
 func bind(s *b.LifecycleSnapshot, r b.LifecycleReceipt) {
 	if r.Workspace != nil {

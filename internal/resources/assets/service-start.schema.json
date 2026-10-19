@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "steerrunner-cli/v1/service-start-input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pending_stops"],
+  "properties": {
+    "pending_stops": {
+      "type": "array", "maxItems": 500,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["run_id", "request"],
+        "properties": {
+          "run_id": {"type": "string", "minLength": 1},
+          "request": {
+            "type": "object", "additionalProperties": false,
+            "required": ["protocol", "request_id", "input"],
+            "properties": {
+              "protocol": {"const": "steerrunner-cli/v1"},
+              "request_id": {"type": "string", "minLength": 1},
+              "input": {
+                "type": "object", "additionalProperties": false,
+                "required": ["expected_revision"],
+                "properties": {"expected_revision": {"type": "integer", "minimum": 1}}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
 var runnerEXE string
@@ -27,6 +28,7 @@ var evidenceFlag = flag.String("evidence-dir", "", "Owned directory for test evi
 var baselineFlag = flag.String("baseline-exe", "", "Previous Runner EXE for v2 compatibility checks")
 var testCount atomic.Int32
 var evidenceMutex sync.Mutex
+var submittedRuns sync.Map // state-dir -> *sync.Map, exact accepted fixture Runs
 
 func TestMain(m *testing.M) {
 	if len(os.Args) > 2 && os.Args[1] == "--native-inventory-fixture" {
@@ -148,6 +150,18 @@ func invoke(executable string, argv []string, input string) (contracts.Response,
 	if decodeErr := contracts.DecodeStrict(output.Bytes(), &response); decodeErr != nil {
 		return response, exit, diagnostics.String(), fmt.Errorf("invalid response: %s", output.Bytes())
 	}
+	if len(argv) > 0 && argv[0] == "submit" && response.OK {
+		if data, ok := response.Data.(map[string]any); ok {
+			if id, ok := data["run_id"].(string); ok {
+				for i, arg := range argv {
+					if arg == "--state-dir" && i+1 < len(argv) {
+						entry, _ := submittedRuns.LoadOrStore(argv[i+1], &sync.Map{})
+						entry.(*sync.Map).Store(id, true)
+					}
+				}
+			}
+		}
+	}
 	return response, exit, diagnostics.String(), nil
 }
 
@@ -180,6 +194,86 @@ func stopRequest(id, instance string) string {
 func cleanupService(t *testing.T, dir string, info contracts.ServiceInfo) {
 	t.Helper()
 	t.Cleanup(func() {
+		status, _, _, _ := invoke(runnerEXE, []string{"service", "status", "--state-dir", dir, "--json"}, "")
+		statusBody, _ := json.Marshal(status.Data)
+		var currentInfo contracts.ServiceInfo
+		json.Unmarshal(statusBody, &currentInfo)
+		if currentInfo.Status == "not_running" {
+			// A failed offline assertion can leave its native owner alive. Reopen
+			// only with original fixture stop obligations admitted before dispatch.
+			if reader, err := storage.OpenRecoveryReader(dir); err == nil {
+				runs, readErr := reader.Runs()
+				reader.Close()
+				pending := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{}}
+				if readErr == nil {
+					for _, r := range runs {
+						if r.StopStatus != "stopped" {
+							pending.PendingStops = append(pending.PendingStops, contracts.PendingStop{RunID: r.ID, Request: contracts.Request{Protocol: contracts.Protocol, RequestID: "cleanup-offline-" + r.ID, Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, r.Revision))}})
+						}
+					}
+				}
+				if len(pending.PendingStops) > 0 {
+					response, exit, _, err := invoke(runnerEXE, []string{"service", "start", "--state-dir", dir, "--input", "-", "--json"}, string(pending.JSON()))
+					if err == nil && exit == 0 {
+						body, _ := json.Marshal(response.Data)
+						json.Unmarshal(body, &info)
+					} else {
+						t.Errorf("offline fixture stop admission failed: %v %+v", err, response)
+					}
+				}
+			}
+		}
+		// Service shutdown now detaches native execution. Settle this fixture's
+		// explicitly accepted Runs first; never infer a stop from service exit.
+		if entry, ok := submittedRuns.Load(dir); ok {
+			entry.(*sync.Map).Range(func(key, value any) bool {
+				id := key.(string)
+				query, exit, _, err := invoke(runnerEXE, []string{"inspect", "--state-dir", dir, "--run-id", id, "--json"}, "")
+				if err != nil || exit != 0 {
+					return true
+				}
+				body, _ := json.Marshal(query.Data)
+				var view struct {
+					Run contracts.RunView `json:"run"`
+				}
+				json.Unmarshal(body, &view)
+				if view.Run.StopStatus != "stopped" {
+					for retry := 0; retry < 5; retry++ {
+						input, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: fmt.Sprintf("cleanup-run-%s-%s-%d", info.InstanceID, id, view.Run.Revision), Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, view.Run.Revision))})
+						response, _, _, err := invoke(runnerEXE, []string{"stop", "--state-dir", dir, "--run-id", id, "--input", "-", "--json"}, string(input))
+						if err != nil || response.OK || response.Error == nil || response.Error.Code != "stale_revision" {
+							break
+						}
+						query, _, _, err = invoke(runnerEXE, []string{"inspect", "--state-dir", dir, "--run-id", id, "--json"}, "")
+						if err != nil {
+							break
+						}
+						body, _ = json.Marshal(query.Data)
+						json.Unmarshal(body, &view)
+					}
+					until := time.Now().Add(20 * time.Second)
+					for time.Now().Before(until) {
+						q, _, _, e := invoke(runnerEXE, []string{"inspect", "--state-dir", dir, "--run-id", id, "--json"}, "")
+						if e != nil {
+							break
+						}
+						body, _ := json.Marshal(q.Data)
+						json.Unmarshal(body, &view)
+						if view.Run.StopStatus == "stopped" {
+							break
+						}
+						time.Sleep(50 * time.Millisecond)
+					}
+					if view.Run.StopStatus != "stopped" {
+						t.Errorf("fixture Run %s resources remain unverified: %s", id, view.Run.Diagnostic)
+					}
+				}
+				if view.Run.StopStatus == "stopped" {
+					waitFixtureOwnerExit(t, dir, id)
+				}
+				return true
+			})
+		}
 		response, _, _, _ := invoke(runnerEXE, []string{"service", "stop", "--state-dir", dir, "--input", "-", "--json"}, stopRequest("cleanup-"+info.InstanceID, info.InstanceID))
 		_ = response
 		deadline := time.Now().Add(5 * time.Second)
@@ -347,8 +441,8 @@ func TestSRServiceOwnership(t *testing.T) {
 			t.Fatal(err)
 		}
 		response, exit, _, err := invoke(other, []string{"service", "start", "--state-dir", dir, "--json"}, "")
-		if err != nil || exit != 5 || response.Error == nil || response.Error.Code != "directory_conflict" {
-			t.Fatal("different release connected", exit, response, err)
+		if err != nil || exit != 0 || !response.OK || serviceInfo(t, response).InstanceID != original.InstanceID {
+			t.Fatal("compatible client could not select original protocol instance", exit, response, err)
 		}
 		if current := serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0)); current.InstanceID != original.InstanceID {
 			t.Fatal("release conflict replaced original writer")

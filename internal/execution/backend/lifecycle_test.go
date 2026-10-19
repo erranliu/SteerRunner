@@ -67,11 +67,18 @@ func TestLifecycleCandidateRequiresOneMatchingInput(t *testing.T) {
 
 func TestLifecycleRequestRequiresOriginalDurableOperation(t *testing.T) {
 	request := LifecycleRequest{
-		Operation: Operation{ID: "operation", Action: string(LifecycleStartTurn), PayloadDigest: "digest", Ref: &ExecutionRef{}, LifecycleIdentity: &LifecycleOperationIdentity{InputBindingDigest: "binding-digest"}},
+		Operation: Operation{Version: 1, ID: "operation", Action: string(LifecycleStartTurn), PayloadDigest: "digest", Ref: &ExecutionRef{}, LifecycleIdentity: &LifecycleOperationIdentity{InputBindingDigest: "binding-digest"}},
 		Input:     LifecycleInput{Turn: &TurnInput{CommandID: "command", Prompt: "prompt"}},
 	}
 	if err := request.Validate(); err != nil {
 		t.Fatal(err)
+	}
+	for _, version := range []int{0, 2} {
+		other := request.Clone()
+		other.Operation.Version = version
+		if other.Validate() == nil {
+			t.Fatal("unknown operation version accepted")
+		}
 	}
 	request.Operation.ID = ""
 	if err := request.Validate(); err == nil {

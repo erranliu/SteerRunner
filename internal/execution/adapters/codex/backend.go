@@ -26,6 +26,7 @@ type ProcessPort struct {
 }
 
 type Binding struct {
+	Owner      *ExecutionOwnerIdentity
 	Workspace  string
 	Process    *executionbackend.ProcessIdentity
 	Endpoint   string
@@ -265,11 +266,15 @@ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executio
 	if err = b.Process.WriteAtomic(filepath.Join(h.Paths.TurnDir, "turn-start.json"), encode(turn)); err != nil {
 		return nil, turn.Turn.ID, err
 	}
-	journal, err := os.OpenFile(h.Paths.JournalPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	journal, err := os.OpenFile(h.Paths.JournalPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY|os.O_APPEND, 0600)
 	if err != nil {
 		return nil, turn.Turn.ID, err
 	}
-	observer := newObservation(h.process, h.client, journal, h.Binding.SessionID, turn.Turn.ID, nil)
+	var terminal func() error
+	if checkpoint := b.Config.TerminalCheckpoint; checkpoint != nil {
+		terminal = func() error { return checkpoint(input.CommandID, h.Binding.SessionID, turn.Turn.ID) }
+	}
+	observer := newObservation(h.process, h.client, journal, h.Binding.SessionID, turn.Turn.ID, nil, terminal)
 	h.client = nil
 	h.owned = false
 	return observer, turn.Turn.ID, nil
@@ -351,7 +356,7 @@ type Observation struct {
 
 func (o *Observation) Cancel() { o.once.Do(o.cancel) }
 
-func newObservation(process executionbackend.StopHandle, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope) *Observation {
+func newObservation(process executionbackend.StopHandle, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, terminal ...func() error) *Observation {
 	ctx, cancel := context.WithCancel(context.Background())
 	o := &Observation{Process: process, Events: make(chan ObservationEvent, 64), Done: make(chan error, 1), Finished: make(chan struct{}), cancel: cancel}
 	go func() {
@@ -373,7 +378,7 @@ func newObservation(process executionbackend.StopHandle, client *codexapp.Client
 			case <-ctx.Done():
 				return false
 			}
-		})
+		}, terminal...)
 		if completed || err != nil {
 			o.Done <- err
 		}

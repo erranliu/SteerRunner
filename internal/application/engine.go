@@ -23,6 +23,7 @@ import (
 )
 
 type Engine struct {
+	launchOwner       func(context.Context, string) error
 	openNativeConsole func(context.Context, b.LaunchCommand) error
 	lastMessages      map[string]contracts.LastMessage
 	epoch             string
@@ -52,9 +53,12 @@ type worker struct {
 	handle      b.StopHandle
 }
 
-func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger) (*Engine, error) {
+func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger, launchOwner ...func(context.Context, string) error) (*Engine, error) {
 	ctx, cancel := context.WithCancel(ctx)
 	e := &Engine{dir: dir, store: store, ctx: ctx, cancel: cancel, logger: logger, runs: map[string]*runstate.Record{}, workers: map[string]*worker{}}
+	if len(launchOwner) > 0 {
+		e.launchOwner = launchOwner[0]
+	}
 	e.checks = map[string]*runstate.CheckRecord{}
 	e.checkWorkers = map[string]*checkWorker{}
 	checks, checkErr := store.Checks()
@@ -95,21 +99,8 @@ func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logg
 			e.runs[r.ID] = view
 			continue
 		}
-		next := r.Clone()
-		if next.PendingResume != "" {
-			next.CommandStates[next.PendingResume] = "failed"
-			next.PendingResume = ""
-		}
-		next.Allowed = false
-		next.ResumeRequired = true
-		if next.Status != "pr_ready" && next.StopStatus != "stopped" {
-			next.Status = "reconciling"
-			next.Phase = "service_restarted"
-		}
-		if err := e.commitLocked(next, nil, "service_restarted"); err != nil {
-			cancel()
-			return nil, err
-		}
+		// A service instance owns observation, not the durable authorization.
+		// Preserve pending controls, business waits and the original cursor.
 	}
 	return e, nil
 }
@@ -265,14 +256,14 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				if r.Question == nil || reply.QuestionID != r.Question.ID {
 					return reject(contracts.Fail(5, "stale_question", "Question is no longer current."))
 				}
-				if r.PendingAnswer != nil && r.PendingAnswer.Epoch == e.epoch {
+				if r.PendingAnswer != nil && (r.PendingAnswer.Epoch == e.epoch || r.PendingAnswer.Epoch == controlScope(r, r.PendingAnswer.QuestionID)) {
 					return reject(contracts.Fail(5, "answer_pending", "An original answer still awaits its delivery outcome."))
 				}
 				if r.PendingAnswer != nil {
 					next.AnswerHistory = append(next.AnswerHistory, *r.PendingAnswer)
 					next.CommandStates[r.PendingAnswer.CommandID] = "failed"
 				}
-				next.PendingAnswer = &runstate.Answer{CommandID: receipt.ID, QuestionID: reply.QuestionID, Text: reply.Text, Epoch: e.epoch}
+				next.PendingAnswer = &runstate.Answer{CommandID: receipt.ID, QuestionID: reply.QuestionID, Text: reply.Text, Epoch: controlScope(r, reply.QuestionID)}
 				next.Phase = "answer_saved"
 			} else {
 				state, _ := r.Workflow.CurrentState()
@@ -286,7 +277,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 					next.AnswerHistory = append(next.AnswerHistory, *r.PendingFeedback)
 					next.CommandStates[r.PendingFeedback.CommandID] = "failed"
 				}
-				next.PendingFeedback = &runstate.Answer{CommandID: receipt.ID, Text: reply.Text, Epoch: e.epoch}
+				next.PendingFeedback = &runstate.Answer{CommandID: receipt.ID, Text: reply.Text, Epoch: controlScope(r, "")}
 				next.Phase = "feedback_saved"
 			}
 		default:
@@ -369,7 +360,7 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Repository.LocalPath != "" {
 		repository = r.Request.Repository.LocalPath
 	}
-	return b.LifecycleSetup{Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
+	return b.LifecycleSetup{LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
 		return e.preparationQuery(r.ID, w, ctx, query)
 	}, Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
 		e.mu.Lock()
@@ -435,20 +426,8 @@ func (e *Engine) refreshPR(id string) error {
 
 func (e *Engine) Shutdown(ctx context.Context) error {
 	e.cancel()
-	e.mu.Lock()
-	for _, r := range e.runs {
-		if orca.LegacyRemoteProfile(r.Profile) {
-			continue
-		}
-		next := r.Clone()
-		next.Allowed = false
-		next.ResumeRequired = true
-		if err := e.commitLocked(next, nil, "service_stopping"); err != nil {
-			e.mu.Unlock()
-			return err
-		}
-	}
-	e.mu.Unlock()
+	// Cancel observation/dispatch by this writer. Durable Run authorization is
+	// revoked only by accepted task controls, never by replacing the service.
 	done := make(chan struct{})
 	go func() { e.wait.Wait(); close(done) }()
 	select {

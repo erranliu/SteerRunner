@@ -3,10 +3,13 @@
 package integration
 
 import (
+	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
+	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/storage"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,12 +19,24 @@ import (
 
 func TestSRResultAcquisition(t *testing.T) {
 	testCount.Add(1)
-	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-report", "parser-unsupported", "parser-complete", "parser-restart", "parser-tool"} {
+	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "audit-report", "parser-unsupported", "parser-complete", "parser-restart", "parser-kill", "parser-stop", "parser-tool"} {
 		t.Run(scenario, func(t *testing.T) {
 			dir, envelope := setupRun(t)
+			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-parser")
+			if scenario == "audit-offline" {
+				t.Setenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER", "1")
+				hold = filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")
+				if err := os.WriteFile(hold, nil, 0600); err != nil {
+					t.Fatal(err)
+				}
+				t.Cleanup(func() { _ = os.Remove(hold) })
+			}
 			t.Setenv("STEERRUNNER_SUCCESS_OUTPUT", "1")
 			var req contracts.RunRequest
 			_ = json.Unmarshal(envelope.Input, &req)
+			if scenario == "audit-offline" {
+				req.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", os.Getenv("STEERRUNNER_FIXTURE_PROVIDER"), "{pr_url}"}}})
+			}
 			audited := scenario != "plain-marker"
 			if audited {
 				req.Workflow = contracts.Workflow{ID: workflow.AuditedDevelopment, Version: 2, AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}}
@@ -52,8 +67,12 @@ func TestSRResultAcquisition(t *testing.T) {
 				if err := os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), config, 0600); err != nil {
 					t.Fatal(err)
 				}
-				if scenario == "parser-restart" {
-					t.Setenv("STEERRUNNER_PARSER_CASE", "PARSER_HANG")
+				if scenario == "parser-restart" || scenario == "parser-kill" || scenario == "parser-stop" {
+					if err := os.WriteFile(hold, nil, 0600); err != nil {
+						t.Fatal(err)
+					}
+					t.Cleanup(func() { _ = os.Remove(hold) })
+					t.Setenv("STEERRUNNER_PARSER_CASE", "PARSER_WAIT("+base64.RawURLEncoding.EncodeToString([]byte(hold))+")")
 				}
 				if scenario == "parser-tool" {
 					t.Setenv("STEERRUNNER_PARSER_CASE", "PARSER_TOOL")
@@ -65,25 +84,108 @@ func TestSRResultAcquisition(t *testing.T) {
 			raw, _ := json.Marshal(envelope)
 			accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 			id := accepted.Data.(map[string]any)["run_id"].(string)
-			if scenario == "parser-restart" {
+			if scenario == "audit-offline" {
+				active := waitRun(t, dir, id, func(r contracts.RunView) bool {
+					return r.Step == workflow.StepAuditCode && r.Execution.TurnStarted && countNative(t, "turn/start") == 2
+				})
+				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("audit-offline", info.InstanceID), 0)
+				if err := waitOwnedService(info); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.Remove(hold); err != nil {
+					t.Fatal(err)
+				}
+				until := time.Now().Add(15 * time.Second)
+				for {
+					files, _ := filepath.Glob(filepath.Join(dir, "runs", id, "app-server", "owner", "checkpoints", "*.json"))
+					if len(files) >= 2 {
+						break
+					}
+					if time.Now().After(until) {
+						t.Fatalf("offline audit checkpoint not collected: %+v", active)
+					}
+					time.Sleep(20 * time.Millisecond)
+				}
+				if countNative(t, "turn/start") != 2 {
+					t.Fatal("successor sent while service offline")
+				}
+				info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+				cleanupService(t, dir, info)
+			}
+			if scenario == "parser-restart" || scenario == "parser-kill" || scenario == "parser-stop" {
 				active := waitRun(t, dir, id, func(r contracts.RunView) bool {
 					return r.Step == workflow.StepAuditParse && r.Phase == "parser_running"
 				})
 				if len(active.ResultAcquisition) < 2 || countNative(t, "turn/start") != 2 {
 					t.Fatal("parser did not start from the completed original audit")
 				}
-				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("parser-restart-stop", info.InstanceID), 0)
+				reader, err := storage.OpenRecoveryReader(dir)
+				if err != nil {
+					t.Fatal(err)
+				}
+				runs, err := reader.Runs()
+				reader.Close()
+				if err != nil || len(runs) != 1 {
+					t.Fatal(err)
+				}
+				var requestFound bool
+				for _, intent := range runs[0].Intents {
+					if intent.Request.Input.Parse == nil {
+						continue
+					}
+					requestFound = true
+					started, err := parser.ReadStartedReceipt(dir, intent.Request)
+					if err != nil || started.Process == nil {
+						t.Fatalf("original parser identity: %v", err)
+					}
+					if scenario == "parser-stop" {
+						current := waitRun(t, dir, id, func(r contracts.RunView) bool { return true })
+						writeCommand(t, dir, "stop", id, "explicit-parser-stop", current.Revision)
+						waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+						if process.InspectProcess(started.Process) != "process absent" || countNative(t, "turn/start") != 2 {
+							t.Fatal("explicit stop retained parser or sent successor")
+						}
+						return
+					}
+					if scenario == "parser-kill" {
+						if err := killOwnedService(info); err != nil {
+							t.Fatal(err)
+						}
+					} else {
+						call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("parser-restart-stop", info.InstanceID), 0)
+					}
+					if err := waitOwnedService(info); err != nil {
+						t.Fatal(err)
+					}
+					if process.InspectProcess(started.Process) != "matching process still exists" {
+						t.Fatal("service exit killed original parser")
+					}
+					if err := os.Remove(hold); err != nil {
+						t.Fatal(err)
+					}
+					until := time.Now().Add(15 * time.Second)
+					for {
+						if receipt, err := parser.ReadReceipt(dir, intent.Request); err == nil && receipt.State.Stopped {
+							break
+						}
+						if time.Now().After(until) {
+							t.Fatal("original parser did not finish offline")
+						}
+						time.Sleep(20 * time.Millisecond)
+					}
+				}
+				if !requestFound {
+					t.Fatal("original parser intent missing")
+				}
 				if err := waitOwnedService(info); err != nil {
 					t.Fatal(err)
 				}
 				info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 				cleanupService(t, dir, info)
-				recovered := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.ResumeRequired })
-				if recovered.Step != workflow.StepAuditParse || countNative(t, "turn/start") != 2 {
-					t.Fatal("restart replayed parser or business input")
+				starts, err := os.ReadFile(hold + ".starts")
+				if err != nil || string(starts) != "start\n" {
+					t.Fatal("original parser was replayed", err)
 				}
-				body, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "parser-restart-resume", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, recovered.Revision))})
-				call(t, dir, []string{"resume", "--run-id", id, "--input", "-"}, string(body), 0)
 			}
 			ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
 				return r.Status == "pr_ready" || r.Status == "blocked" || r.Status == "waiting_input"
@@ -95,7 +197,7 @@ func TestSRResultAcquisition(t *testing.T) {
 			if audited {
 				wantTurns = 3
 			}
-			if scenario == "audit-report" || strings.HasPrefix(scenario, "parser-") && scenario != "parser-complete" {
+			if scenario == "audit-report" || scenario == "parser-unsupported" || scenario == "parser-tool" {
 				wantTurns = 4
 			}
 			if countNative(t, "turn/start") != wantTurns || countNative(t, "thread/start") != 1 {

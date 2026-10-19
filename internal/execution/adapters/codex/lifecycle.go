@@ -31,7 +31,11 @@ type ExecutionLifecycle struct {
 }
 
 func (l ExecutionLifecycle) PolicyCapabilities() executionbackend.LifecyclePolicyCapabilities {
-	return executionbackend.LifecyclePolicyCapabilities{Preparation: executionbackend.PreparationCapabilities{Workspace: executionbackend.MechanismApplicable, Resource: executionbackend.MechanismNotApplicable, Session: executionbackend.MechanismApplicable}, ServiceStopBehavior: ServiceStopBehavior, StructuredFinalEvidence: true, ReportToolPolicy: "frozen_native_permissions; business_read_only_is_prompt_policy", LinkedWorkspaceWriteRoots: true}
+	behavior := ServiceStopBehavior
+	if l.setup.LaunchExecutionOwner != nil {
+		behavior = executionbackend.ContinueExecutionOnServiceStop
+	}
+	return executionbackend.LifecyclePolicyCapabilities{Preparation: executionbackend.PreparationCapabilities{Workspace: executionbackend.MechanismApplicable, Resource: executionbackend.MechanismNotApplicable, Session: executionbackend.MechanismApplicable}, ServiceStopBehavior: behavior, StructuredFinalEvidence: true, ReportToolPolicy: "frozen_native_permissions; business_read_only_is_prompt_policy", LinkedWorkspaceWriteRoots: true}
 }
 
 func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionbackend.LifecyclePort, error) {
@@ -189,6 +193,18 @@ func (l *ExecutionLifecycle) Execute(ctx context.Context, request executionbacke
 	if err := l.validateIdentity(request.Snapshot); err != nil {
 		return executionbackend.LifecycleReceipt{Operation: request.Operation, Disposition: executionbackend.OperationUnknown, Diagnostic: err.Error()}, nil, err
 	}
+	if l.setup.LaunchExecutionOwner != nil && request.Operation.Action != string(executionbackend.LifecyclePrepareWorkspace) {
+		if request.Operation.Action == string(executionbackend.LifecyclePrepareSession) {
+			if err := l.ensureOwner(ctx, request); err != nil {
+				return executionbackend.LifecycleReceipt{Operation: request.Operation, Disposition: executionbackend.OperationUnknown}, nil, err
+			}
+		}
+		receipt, err := l.ownerCall(ctx, request, false)
+		if err != nil {
+			return receipt, nil, err
+		}
+		return l.observeOwnerReceipt(ctx, request, receipt)
+	}
 	snapshot := request.Snapshot.Clone()
 	var receipt executionbackend.LifecycleReceipt
 	var observer executionbackend.LifecycleObserver
@@ -265,6 +281,13 @@ func (l ExecutionLifecycle) Reconcile(ctx context.Context, request executionback
 	if err := l.validateIdentity(request.Snapshot); err != nil {
 		return executionbackend.LifecycleReceipt{Operation: request.Operation, Disposition: executionbackend.OperationUnknown, Diagnostic: err.Error()}, nil, err
 	}
+	if l.setup.LaunchExecutionOwner != nil && (request.Operation.Action == string(executionbackend.LifecyclePrepareSession) || request.Operation.Action == string(executionbackend.LifecycleStartTurn) || request.Operation.Action == string(executionbackend.LifecycleDeliverFeedback) || request.Operation.Action == string(executionbackend.LifecycleStopExecution)) {
+		receipt, err := l.ownerCall(ctx, request, true)
+		if err != nil {
+			return receipt, nil, err
+		}
+		return l.observeOwnerReceipt(ctx, request, receipt)
+	}
 	snapshot := request.Snapshot.Clone()
 	if executionbackend.LifecycleAction(request.Operation.Action) == executionbackend.LifecycleStopObservation {
 		return l.reconcileStoppedObservation(ctx, request)
@@ -332,6 +355,11 @@ func (l ExecutionLifecycle) ObserveLifecycle(ctx context.Context, snapshot execu
 		commandID, turnID = snapshot.Session.PendingCommandID, snapshot.Session.PendingTurnID
 	}
 	recovered, err := l.Backend.Recover(ctx, binding, commandID, turnID, snapshot.KnownQuestionIDs)
+	defer func() {
+		if recovered.Observer != nil {
+			recovered.Observer.Cancel()
+		}
+	}()
 	receipt := l.bindingReceipt(snapshot, recovered.Binding)
 	receipt.State.SessionID, receipt.State.TurnID = recovered.Binding.SessionID, recovered.TurnID
 	receipt.State.SessionGeneration = recovered.Binding.Generation
@@ -370,7 +398,12 @@ func (l ExecutionLifecycle) ObserveLifecycle(ctx context.Context, snapshot execu
 		receipt.Disposition = executionbackend.OperationAccepted
 		receipt.Handle = recovered.Observer.Process
 		fixed := lifecycleSession(snapshot, recovered.Binding.SessionID, recovered.TurnID)
-		return receipt, newLifecycleObserver(recovered.Observer, fixed), nil
+		observer := newLifecycleObserver(recovered.Observer, fixed)
+		if l.setup.LaunchExecutionOwner != nil {
+			l.watchOwnerJournal(snapshot, fixed, recovered.Observer)
+		}
+		recovered.Observer = nil // published; the caller now owns this observation
+		return receipt, observer, nil
 	}
 	receipt.Disposition = executionbackend.OperationUnknown
 	return receipt, nil, nil
@@ -479,6 +512,9 @@ func (l ExecutionLifecycle) reconcileFeedback(ctx context.Context, request execu
 func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request executionbackend.LifecycleRequest, handle executionbackend.StopHandle) (executionbackend.LifecycleReceipt, error) {
 	if err := request.Validate(); err != nil {
 		return executionbackend.LifecycleReceipt{}, err
+	}
+	if l.setup.LaunchExecutionOwner != nil {
+		return l.ownerCall(ctx, request, false)
 	}
 	ref := request.Snapshot.Ref
 	result := executionbackend.LifecycleReceipt{Operation: request.Operation, RequestID: request.Operation.ID}
@@ -836,7 +872,7 @@ func (l ExecutionLifecycle) readBinding(snapshot executionbackend.LifecycleSnaps
 	if err != nil {
 		return Binding{}, false, err
 	}
-	binding := Binding{Process: optionalProcess(snapshot.Ref.External), Endpoint: decoded.Endpoint, Generation: decoded.Generation, SessionID: decoded.SessionID}
+	binding := Binding{Owner: decoded.Owner, Process: optionalProcess(snapshot.Ref.External), Endpoint: decoded.Endpoint, Generation: decoded.Generation, SessionID: decoded.SessionID}
 	return binding, true, nil
 }
 
@@ -847,7 +883,7 @@ func (l ExecutionLifecycle) bindingReceipt(snapshot executionbackend.LifecycleSn
 		receipt.Process = &process
 	}
 	if binding.Endpoint != "" || binding.SessionID != "" || binding.Generation != "" {
-		if envelope, err := NewAppServerBindingEnvelope(l.identity(snapshot), AppServerBinding{Endpoint: binding.Endpoint, SessionID: binding.SessionID, Generation: binding.Generation}); err == nil {
+		if envelope, err := NewAppServerBindingEnvelope(l.identity(snapshot), AppServerBinding{Owner: binding.Owner, Endpoint: binding.Endpoint, SessionID: binding.SessionID, Generation: binding.Generation}); err == nil {
 			receipt.Implementation = []executionbackend.ImplementationDataEnvelope{envelope}
 		}
 	}

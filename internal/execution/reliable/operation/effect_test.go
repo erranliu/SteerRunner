@@ -50,7 +50,7 @@ func originalRequest() b.LifecycleRequest {
 	s.Session = b.SessionContext{ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt", WorkflowRunID: "association"}
 	s.Ref = b.ExecutionRef{RunID: "association", AttemptID: "attempt"}
 	s.ConfigurationDigest, s.ResourceGeneration = "config", "generation"
-	op := b.Operation{ID: "original", PayloadDigest: "digest", Action: string(b.LifecycleStartTurn), Status: b.OperationInFlight, Ref: &s.Ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: "project", ExecutionID: "execution", ConfigurationDigest: "config", ResourceGeneration: "generation", InputBindingDigest: b.LifecycleBindingDigest(s), Ref: s.Ref}}
+	op := b.Operation{Version: 1, ID: "original", PayloadDigest: "digest", Action: string(b.LifecycleStartTurn), Status: b.OperationInFlight, Ref: &s.Ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: "project", ExecutionID: "execution", ConfigurationDigest: "config", ResourceGeneration: "generation", InputBindingDigest: b.LifecycleBindingDigest(s), Ref: s.Ref}}
 	return b.LifecycleRequest{Snapshot: s, Operation: op, Input: b.LifecycleInput{Turn: s.PendingTurn}}
 }
 func TestReliableUnknownEffectAndGateCannotResubmit(t *testing.T) {

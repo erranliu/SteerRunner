@@ -20,13 +20,13 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 	if answer == nil {
 		return false
 	}
-	if answer.Epoch != e.epoch {
-		e.block(id, "fresh_feedback_required", errors.New("Saved feedback from a prior service requires a fresh user request"), false)
-		return false
-	}
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if answer.Epoch != e.epoch && answer.Epoch != controlScope(r, answer.QuestionID) {
+		e.block(id, "fresh_feedback_required", errors.New("Saved feedback does not match the original execution and business source"), false)
+		return false
+	}
 	if state, _ := r.Workflow.CurrentState(); businessAnswer && state.Kind == "input" && state.Continue == "" {
 		// Additional material is retained as user evidence, never an authorization
 		// to repeat the completed audit or to continue an ended native request.
