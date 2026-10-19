@@ -1,0 +1,28 @@
+{
+  "source_commit": "60c805861c0ae26626716b21d71b5f68aa9d4eef",
+  "source_dirty": false,
+  "integrated_main": "0b55928bf0b2cc0df1d4737e75ce922adca37992",
+  "runner_sha256": "777b69f0db1887edf079138e8d1c561fd5876eca74db5ee528e3e1d5a9d3858f",
+  "files": {
+    "internal/execution/adapters/orcatransport/native_stop.go": "4dde7d0f617dc969da43dd0ad9fdfbda004a15637cc0fb8cdabdf477bac60748",
+    "internal/execution/adapters/orcatransport/stop_test.go": "0e5b459d37ede4fd18cd962996ca0b708cfb7200d026806e0c3d0e7751fc5e48",
+    "internal/testkit/livetest/cases.json": "7279c3c37cf2961d96e2aca6118d17bed3e8eb7bf21421a4edf4e6a7a27e0200",
+    "internal/testkit/livetest/cases_test.go": "08171ee1debeaa931818e9d45a3830b79c72905df394fa95801eb4d40e14b757",
+    "internal/testkit/livetest/evidence.go": "97672b75bcbd99d76a5ea5a4df5ecc14f097c1c1df69f914a7f3906d7fb950b6",
+    "internal/testkit/livetest/initialization.go": "7ae30c611b54b6d253ba80578671c05dc5e28091073ceb22151042d13b7f017b",
+    "internal/testkit/livetest/initialization_test.go": "730bf06f7a86dcaaac79f52ec34aa42b8d87498f0ed2c2b3cadf0be70bcf86c2",
+    "scripts/prepare-test-orca-runtime.ps1": "71b75f7b745daccea23bca83892ec129cfb55695ec951830ba4174bc1cc9940c",
+    "scripts/test-framework.ps1": "bf504aadf7f044bceb1af116cbd94cd07059d75dfb21a5c3426c9619fe80ec94",
+    "tests/catalog.json": "4862b220541175ce84334e0736709f711756346e65900036685b2b0662351d4c",
+    "tests/framework/configuration-test.ps1": "a446f63f654127968d05ccd2eb59ccdf4732d6597909974acfefcafe6881a290",
+    "tests/framework/runtime-cache-test.ps1": "c0052c71cba64a5855e71a13d212875a15777641936182a9f62632c2b09c30d0",
+    "tests/framework/stability-test.ps1": "14521835d6f940e63c0161b4d1d8073c811479d44769e85361398d5e5ca7f2b2",
+    "tests/helpers/stability/main.go": "7ff4f8353d07b50de6ec6cac1c344e2c5c1b55327888feeff385ee4fe0bc352f",
+    "tests/native/initialization_stop_test.go": "d50a758fbd3683f4f9206aebfd40d6dd188071832268ecb1e1bf78d44cabe670",
+    "tests/native/stability_test.go": "ff7c59732d3db2bbab9c916f28e551447600ed6b94e00fd1bed2cff863ae2ae7"
+  },
+  "caller_source_commit": "60c805861c0ae26626716b21d71b5f68aa9d4eef",
+  "caller_source_dirty": false,
+  "test_source_commit": "735d8a293808f9ab2dc62e54ae579e4251007868",
+  "test_source_dirty": false
+}

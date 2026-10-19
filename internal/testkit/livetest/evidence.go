@@ -91,6 +91,14 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 	}
 	required := []string{}
 	switch m.Scenario {
+	case "orca-remote.initialization-stop":
+		required = []string{"initialization-without-readiness", "zero-business-input", "offline-settlement"}
+		if m.CaseID == "restart-before-readiness" {
+			required = append(required, "initialization-restart-zero-input")
+		}
+		if err := validateInitializationEvidence(m); err != nil {
+			return err
+		}
 	case "orca-remote.caller-exit":
 		required = []string{"submit-replay-original", "single-native-publication"}
 	case "orca-remote.connection-reconnect":

@@ -1,0 +1,101 @@
+{
+  "schema": "steerrunner-test/v2",
+  "id": "3ee15abdd90f",
+  "level": "L3",
+  "scenario": "orca-remote.initialization-stop",
+  "driver": "execution-stability",
+  "root": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f",
+  "runner_exe": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\steerrunner.exe",
+  "runner_sha256": "777b69f0db1887edf079138e8d1c561fd5876eca74db5ee528e3e1d5a9d3858f",
+  "source_commit": "60c805861c0ae26626716b21d71b5f68aa9d4eef",
+  "source_dirty": false,
+  "repository_path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/3ee15abdd90f/base",
+  "base_revision": "2507dee972b1f53c86400175bc60f8111f01b989",
+  "spec_path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "target": {
+      "kind": "orca_environment",
+      "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    },
+    "settings": {
+      "agent_launch": {
+        "model": "gpt-6-luna",
+        "reasoning_effort": "high",
+        "executable": "C:/sr-runtime/2ba0/01/native/codex.exe"
+      },
+      "transport": {
+        "executable": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\stability.exe",
+        "wait_timeout": "40s",
+        "args": [
+          "audit",
+          "-manifest",
+          "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\manifest.json",
+          "--"
+        ]
+      },
+      "access_mode": "sandbox"
+    },
+    "adapter": "orca-terminal"
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/3ee15abdd90f/base",
+    "settings": {
+      "query": {
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ],
+        "executable": "powershell.exe"
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "224708442f6ee4a420cb123f46472fe89f147bf39e066eb8f7c2f60df5b81d1a",
+  "configuration_path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\test-config.json",
+  "workflow": {
+    "version": 2,
+    "id": "development"
+  },
+  "created_at": "2026-10-19T07:51:34.4845528Z",
+  "requirements_sha256": "7279c3c37cf2961d96e2aca6118d17bed3e8eb7bf21421a4edf4e6a7a27e0200",
+  "case_id": "restart-before-readiness",
+  "repeat_index": 1,
+  "stability": {
+    "helper": {
+      "path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\stability.exe",
+      "sha256": "440bf5dba8fe229916ea87c8dccf5594329d3072a60c1b13ee94ae262aa49077"
+    },
+    "firewall": {
+      "path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\network.ps1",
+      "sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765"
+    },
+    "expected_outcome": "stopped",
+    "native_orca": {
+      "path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\orca-runtime\\node.exe",
+      "sha256": "d14ba95cdce1ef7dc9ad3ac74949ca5db38b27378ee30f30a23cf26f9e875a11"
+    },
+    "cli_entry": {
+      "path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\orca-runtime\\out\\cli\\index.js",
+      "sha256": "322de9530150f8b4db0489880eceaf4ddfc1459c56013edd4350ca58828b9361"
+    },
+    "runtime_files": {
+      "path": "C:\\SteerlineDebug\\dev-20261019-154407-be8f3b54\\cases\\3ee15abdd90f\\bin\\runtime-files.json",
+      "sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df"
+    },
+    "diagnostic_orca": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "timeout_minutes": 15
+  },
+  "remote_runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+}

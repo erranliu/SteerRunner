@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"strings"
 	"time"
 
-	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -58,7 +58,12 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 		if inspectErr != nil {
 			return receipt, inspectErr
 		}
-		if t.WorktreeID != p.WorktreeID || native.ValidateWorkspaceTerminal(t, r.Snapshot.Workspace.Path, r.Snapshot.Workspace.Branch) != nil {
+		// Original startup can be accepted before Orca publishes branch metadata.
+		// This never authorizes input: only an initializing, zero-turn terminal
+		// may omit branch, while its exact bound worktree/path still must match.
+		initializing := !state.LaunchConfirmed && len(state.Turns) == 0
+		branchMatches := strings.TrimPrefix(t.Branch, "refs/heads/") == r.Snapshot.Workspace.Branch
+		if t.WorktreeID != p.WorktreeID || t.WorktreePath != r.Snapshot.Workspace.Path || !branchMatches && !(initializing && t.Branch == "") {
 			return receipt, errors.New("original remote Orca stop workspace changed")
 		}
 		progress.Phase = "attempted"

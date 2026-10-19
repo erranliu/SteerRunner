@@ -1,0 +1,74 @@
+{
+  "scenario": "orca-remote.initialization-stop",
+  "case_id": "restart-before-readiness",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "e9a6df7d4a303595093603ba5f218f3d",
+  "test_outcome": "passed",
+  "business_outcome": "stopped",
+  "faults_hit": 2,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "initialization-without-readiness",
+      "passed": true,
+      "evidence": "initialization-window.json: real native started; fixed original control and early ownership, no business readiness"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "readiness-withheld.json: real readiness exists, only caller response hides it"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "zero-business-input",
+      "passed": true,
+      "evidence": "native-calls.jsonl: original helper launch only; zero business sends"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "initialization-restart-zero-input",
+      "passed": true,
+      "evidence": "initialization-restart.json and native-calls.jsonl: replacement service retains original resources and zero input"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: one original workspace/helper launch, zero business input across stop/restart"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-resource-audit.json: original business terminal and all owned resources accounted"
+    },
+    {
+      "name": "offline-settlement",
+      "passed": true,
+      "evidence": "offline-settlement.json: public verifier confirms original native resources"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

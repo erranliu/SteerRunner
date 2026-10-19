@@ -1,0 +1,41 @@
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (38.63s)
+    --- PASS: TestSRServiceOwnership/offline_verification (19.20s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (1.06s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.19s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.17s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.19s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.26s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.10s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.08s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.08s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.08s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (3.58s)
+    --- PASS: TestSRServiceOwnership/parent_job (3.78s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.89s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.89s)
+    --- PASS: TestSRServiceOwnership/different_release (3.66s)
+    --- PASS: TestSRServiceOwnership/stale_writer (3.61s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (3.66s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (22.34s)
+=== RUN   TestSRRestartRequiresResume
+--- PASS: TestSRRestartRequiresResume (20.19s)
+PASS

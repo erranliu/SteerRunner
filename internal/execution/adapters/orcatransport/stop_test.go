@@ -92,7 +92,7 @@ func TestTerminalStopProgressCannotCrossIncarnation(t *testing.T) {
 }
 
 func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
-	for _, mode := range []string{"live", "already-absent", "lost-close", "lost-close-still-live", "truncated", "missing-host", "wrong-incarnation", "wrong-close-handle", "accepted-close", "mixed-control", "legacy", "legacy-state-v5", "legacy-state-v4", "native-state-v5"} {
+	for _, mode := range []string{"initializing-branch-late", "initializing-restart-branch-late", "started-branch-late", "initializing-foreign-branch", "initializing-foreign-worktree", "initializing-foreign-path", "live", "already-absent", "lost-close", "lost-close-still-live", "truncated", "missing-host", "wrong-incarnation", "wrong-close-handle", "accepted-close", "mixed-control", "legacy", "legacy-state-v5", "legacy-state-v4", "native-state-v5"} {
 		t.Run(mode, func(t *testing.T) {
 			l, _, s := fixtureOn(t, "paired-host")
 			created, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -100,6 +100,28 @@ func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, created)
+			if strings.HasPrefix(mode, "initializing-") || mode == "started-branch-late" {
+				state, e := l.state(s)
+				if e != nil {
+					t.Fatal(e)
+				}
+				l.setup.AgentLaunchCommand = "codex-frozen-start"
+				state.LaunchAttempted = true
+				state.LaunchAccepted = true
+				state.LaunchRequest = nativeRequest("0123456789abcdef0123456789abcdef")
+				state.LaunchDigest = digest([]byte(l.setup.AgentLaunchCommand))
+				state.LaunchConfirmed = mode == "started-branch-late"
+				s.Implementation, _ = l.envelope(s, state)
+				if mode == "initializing-restart-branch-late" {
+					setup := l.setup
+					setup.Snapshot = s
+					reloaded, e := NewLifecycleWithStateFactory(setup, l.stateFactory)
+					if e != nil {
+						t.Fatal(e)
+					}
+					l = reloaded.(*Lifecycle)
+				}
+			}
 			if strings.HasPrefix(mode, "legacy") {
 				l.profileVersion = ProfileVersion
 				// Old state v5 may contain retired per-turn reader fields.
@@ -140,6 +162,18 @@ func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 			closes := 0
 			l.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
 				row := map[string]any{"handle": s.Ref.External.Terminal, "incarnationId": s.Ref.External.Incarnation, "worktreeId": s.Ref.External.WorktreeID, "worktreePath": s.Workspace.Path, "branch": "refs/heads/" + s.Workspace.Branch, "connected": true}
+				if strings.Contains(mode, "branch-late") {
+					row["branch"] = ""
+				}
+				if mode == "initializing-foreign-branch" {
+					row["branch"] = "refs/heads/foreign"
+				}
+				if mode == "initializing-foreign-worktree" {
+					row["worktreeId"] = "foreign"
+				}
+				if mode == "initializing-foreign-path" {
+					row["worktreePath"] = "C:/foreign"
+				}
 				var result any
 				switch args[0] + " " + args[1] {
 				case "terminal list":
@@ -181,7 +215,7 @@ func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 			defer cancel()
 			receipt, err := l.StopLifecycle(ctx, r, nil)
-			success := mode == "live" || mode == "already-absent" || mode == "lost-close"
+			success := mode == "initializing-branch-late" || mode == "initializing-restart-branch-late" || mode == "live" || mode == "already-absent" || mode == "lost-close"
 			if (err == nil) != success || receipt.State.Stopped != success || receipt.State.WritersAbsent {
 				t.Fatal("stop scope changed", receipt, err)
 			}
@@ -192,7 +226,7 @@ func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 				t.Fatal("scope missing")
 			}
 			want := 1
-			if mode == "already-absent" || mode == "wrong-incarnation" || mode == "mixed-control" || mode == "legacy-state-v4" || mode == "native-state-v5" {
+			if mode == "started-branch-late" || mode == "initializing-foreign-branch" || mode == "initializing-foreign-worktree" || mode == "initializing-foreign-path" || mode == "already-absent" || mode == "wrong-incarnation" || mode == "mixed-control" || mode == "legacy-state-v4" || mode == "native-state-v5" {
 				want = 0
 			}
 			if closes != want {

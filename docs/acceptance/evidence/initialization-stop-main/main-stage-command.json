@@ -1,0 +1,21 @@
+{
+  "id": "ba48a060-8946-47cb-b3ee-90da9116ea9c",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_ecc639a6-44a9-4442-91d0-312b86752c5d",
+      "tabId": "e8aa506e-c321-4ad5-8d56-4ab3137db495",
+      "paneKey": "e8aa506e-c321-4ad5-8d56-4ab3137db495:63f10012-0b75-4ab0-9dfd-6b0c849d5443",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-init-stop-main-20261019-1308@@a05e2c6b",
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-init-stop-main-20261019-1308",
+      "title": "Initialization stop helper staging",
+      "executionHostId": "local",
+      "incarnationId": "4619cfc9-3001-4900-9c37-2eb19e648006",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

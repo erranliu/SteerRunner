@@ -70,7 +70,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／二十九 case；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十三场景／三十一 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 新增场景须同步注册需求、manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
@@ -78,6 +78,8 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 文档规划不表示入口已经支持新 case、L4 或并行调度。
 
 ## 当前执行入口
+
+初始化资源停止新增 L3 `orca-remote.initialization-stop/before-readiness` 与 `restart-before-readiness`。公开 submit 直接启动原生 Codex，测试转发器仅隐藏 caller 的原生 agentIdentity，保留原响应与调用 ID；第二项在该窗口停服换代，验证原终端绑定和零自动输入后显式停止。两者均要求完整原 Orca 清单、`orca_terminal` 离线 scope，零业务输入、额外终端或文件部署，不要求远端 helper/Job/签名/认证撤销。独立现场可并行，无管理员故障设施；新增结果与历史记录见[初始化停止验收](acceptance/initialization-stop.md)。
 
 Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandbox` 和
 `environment-check.orca-local-full-access`，沿用现有 driver/schema。对应配置项的
@@ -390,7 +392,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮二十二场景二十九 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮二十三场景三十一 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。

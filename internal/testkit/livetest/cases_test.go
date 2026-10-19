@@ -33,7 +33,7 @@ func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
 			}
 		}
 	}
-	if reliability != 12 || edges != 4 {
+	if reliability != 14 || edges != 4 {
 		t.Fatalf("core/edge coverage changed: reliability=%d edges=%d", reliability, edges)
 	}
 }
@@ -57,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 20 || cases != 27 {
-		t.Fatalf("expected twenty scenarios/twenty-seven cases, got %d/%d", scenarios, cases)
+	if scenarios != 21 || cases != 29 {
+		t.Fatalf("expected twenty-one scenarios/twenty-nine cases, got %d/%d", scenarios, cases)
 	}
 	for _, agent := range []string{"codex", "pi", "dsh"} {
 		scenario, _, err := Lookup("orca-local."+agent, "default")
