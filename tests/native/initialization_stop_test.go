@@ -3,16 +3,12 @@
 package native
 
 import (
-	"context"
-	"encoding/base64"
 	"encoding/json"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -45,48 +41,39 @@ func (s *stabilityRun) initializationStop() {
 	for until := time.Now().Add(150 * time.Second); time.Now().Before(until); time.Sleep(time.Second) {
 		window = livetest.InitializationWindow{RunID: s.r.RunID, Snapshot: s.initializationSnapshot()}
 		state, err := livetest.InitializationResources(window.Snapshot)
-		if err != nil || state.RemoteOwnership == nil {
+		if err != nil || !state.LaunchAccepted || state.LaunchConfirmed {
 			continue
 		}
 		var witness struct{ Original json.RawMessage }
-		raw, e := os.ReadFile(filepath.Join(s.m.Root, "evidence", "readiness-withheld.json"))
+		raw, e := os.ReadFile(filepath.Join(s.m.Root, "evidence", "agent-identity-withheld.json"))
 		if e != nil || json.Unmarshal(raw, &witness) != nil {
 			continue
 		}
 		var response struct {
-			Result struct{ Terminal struct{ Tail []string } }
+			Result struct{ Terminal native.Terminal }
 		}
 		if json.Unmarshal(witness.Original, &response) != nil {
-			t.Fatal("original native readiness response malformed")
+			t.Fatal("original native identity response malformed")
 		}
-		for _, line := range response.Result.Terminal.Tail {
-			if strings.HasPrefix(strings.TrimSpace(line), codex.RemoteReadyPrefix) {
-				raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(strings.TrimSpace(line), codex.RemoteReadyPrefix))
-				if e != nil || json.Unmarshal(raw, &window.NativeReadiness) != nil {
-					t.Fatal("original native readiness malformed")
-				}
-			}
-		}
-		if window.NativeReadiness.Process.PID > 0 {
+		window.NativeTerminal = response.Result.Terminal
+		if window.NativeTerminal.AgentIdentity == "codex" {
 			break
 		}
 	}
 	state, err := livetest.InitializationResources(window.Snapshot)
-	s.check("initialization-without-readiness", err == nil && state.RemoteOwnership != nil && state.RemoteReadiness == nil && !state.LaunchConfirmed && len(state.Turns) == 0 && window.NativeReadiness.Process.PID > 0, "initialization-window.json: real native started; original Runner has early ownership but no business readiness")
+	s.check("initialization-without-readiness", err == nil && state.NativeOnly() && state.LaunchAccepted && !state.LaunchConfirmed && len(state.Turns) == 0 && window.NativeTerminal.AgentIdentity == "codex", "initialization-window.json: actual original native agent exists; caller launch remains pending, zero helper resources")
 	save(t, "initialization-window.json", window)
 	s.r.FaultsHit++
-	s.check("fault-hit", true, "readiness-withheld.json: real readiness exists, only caller response hides it")
+	s.check("fault-hit", true, "agent-identity-withheld.json: only caller agentIdentity withheld; actual native receipt retained")
 	v := s.view()
 	s.bind(v)
 	s.process.Kind = "orca_terminal"
 	s.process.ExecutionHost = s.m.Execution.Target.Environment
 	keys, creates := s.calls()
-	s.check("zero-business-input", len(keys) == 1 && creates == 1 && !v.Execution.TurnStarted && v.PR == nil, "native-calls.jsonl: original helper launch only; zero business sends")
+	s.check("zero-business-input", len(keys) == 1 && creates == 1 && !v.Execution.TurnStarted && v.PR == nil, "native-calls.jsonl: one direct native startup, zero business sends and zero helper/control resources")
 	if s.m.CaseID == "restart-before-readiness" {
 		before := s.instance
 		s.restart(false)
-		// Allow several normal polling rounds; a replacement must not initialize
-		// or send anything until explicitly authorized. Stop requires no resume.
 		for i := 0; i < 3; i++ {
 			s.noMoreInputs(1)
 			time.Sleep(time.Second)
@@ -94,7 +81,7 @@ func (s *stabilityRun) initializationStop() {
 		after := s.initializationSnapshot()
 		v = s.view()
 		save(t, "initialization-restart.json", map[string]any{"before": before, "after": s.instance, "snapshot": after, "view": v})
-		s.check("initialization-restart-zero-input", before.InstanceID != s.instance.InstanceID && v.ResumeRequired && !v.NewInputsAllowed && after.Ref.External == window.Snapshot.Ref.External, "initialization-restart.json and native-calls.jsonl: replacement service retains original resources and zero input")
+		s.check("initialization-restart-zero-input", before.InstanceID != s.instance.InstanceID && v.ResumeRequired && !v.NewInputsAllowed && after.Ref.External == window.Snapshot.Ref.External, "initialization-restart.json: replacement retains original native terminal, zero automatic input")
 	}
 	if err = revokeOriginalRun(s.m, s.dir, s.r.RunID, "stop-original-initialization"); err != nil {
 		t.Fatal(err)
@@ -103,20 +90,9 @@ func (s *stabilityRun) initializationStop() {
 	s.r.Cleanup.NativeStopped = true
 	s.originalIdentity(final)
 	s.noMoreInputs(1)
-	s.check("no-duplicate-inputs", true, "native-calls.jsonl: one original workspace/helper launch, zero business input across stop/restart")
-	path, _ := codex.RemoteExitPath(codex.RemoteReadiness{ExitPublicKey: state.RemoteOwnership.ExitPublicKey})
-	exit, err := native.ReadStopArtifact(context.Background(), s.m.Execution.Target.Environment, s.process.RuntimeID, s.process.WorktreeID, path)
-	if err != nil {
-		t.Fatal("original signed initialization exit unavailable", err)
-	}
-	if err = codex.VerifyRemoteOwnershipExit(exit, *state.RemoteOwnership); err != nil {
-		t.Fatal(err)
-	}
-	if err = os.WriteFile(filepath.Join(*evidenceFlag, "initialization-exit.json"), exit, 0600); err != nil {
-		t.Fatal(err)
-	}
+	s.check("no-duplicate-inputs", true, "native-calls.jsonl: one original workspace/direct startup, zero business input across stop/restart")
 	s.r.AuditComplete = s.completeNativeReceipts(keys)
-	s.check("native-receipts-complete", s.r.AuditComplete, "native-resource-audit.json: original business terminal and all owned resources accounted")
+	s.check("native-receipts-complete", s.r.AuditComplete, "native-resource-audit.json: original native terminal accounted; zero helper/extra terminal/file calls")
 	s.r.BusinessOutcome = "stopped"
 	s.stopService(false)
 	s.r.Cleanup.ServiceStopped = true
@@ -128,7 +104,7 @@ func (s *stabilityRun) initializationStop() {
 	if json.Unmarshal(raw, &verified) != nil {
 		t.Fatal("invalid stopped resource proof")
 	}
-	s.check("offline-settlement", verified.ResourcesSettled && len(verified.Runs) == 1 && verified.Runs[0].RunID == s.r.RunID && verified.Runs[0].ResourcesSettled, "offline-settlement.json: public verifier confirms original native resources")
+	s.check("offline-settlement", verified.ResourcesSettled && len(verified.Runs) == 1 && verified.Runs[0].RunID == s.r.RunID && verified.Runs[0].ResourcesSettled && verified.Runs[0].StopEvidenceScope == "orca_terminal", "offline-settlement.json: original Orca terminal scope only; no Job/authentication claim")
 	save(t, "pr-list.json", []any{})
 	s.stage("cleanup")
 }

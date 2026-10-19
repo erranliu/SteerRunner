@@ -1,17 +1,23 @@
-# Codex 初始化期间停止验收
+# Orca 原生初始化期间停止验收
 
 归属：[实施 Plan](../spec/initialization-stop.plan.md)。2026-10-19，普通开发。只使用新建独立调试包和隔离夹具，不操作安装环境，不修写历史 Run。
 
 | ID | 自动验收内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
-| IS-A01 | 早期资源归属、准备取消、原签名/Job/认证清理及身份反例 | 通过 | 新构建 L1 394 项；控制缺失/错身份/存活、原签名与重复对账反例通过 |
-| IS-A02 | before-readiness：真实原生已启动、readiness 未保存时显式停止并离线重验 | 通过 | Run `df2537924e895669c58cd24fce3a9d05`；原签名、控制 PTY 和离线结算通过 |
-| IS-A03 | restart-before-readiness：初始化中服务换代，零自动输入/重建，显式停止并重验 | 通过 | Run `e9a6df7d4a303595093603ba5f218f3d`；原控制身份、零自动输入及结算通过 |
-| IS-A04 | 注册/证据校验、并发不可变缓存、既有停服与公开 CLI 回归 | 通过 | 新构建 framework、Node 29 项、Controlled 16/16；两个注册 L3 case 并行通过 |
+| IS-A01 | 原生初始化/换代停止、原身份与 scope 反例、local 回归 | 原生 rebase 待验 | 旧 helper 证明仅保留历史；新主干组件结果待登记 |
+| IS-A02 | before-readiness：原生已启动，caller 未确认时显式停止并离线重验 | 原生 rebase 待验 | 新独立 native case 待登记 |
+| IS-A03 | restart-before-readiness：初始化中服务换代，零自动输入/重建 | 原生 rebase 待验 | 新独立 native case 待登记 |
+| IS-A04 | 注册/审计、并发缓存、停止/离线 scope/恢复前置 | 原生 rebase 待验 | 本轮最小组件、framework 与三个 Controlled 项待登记 |
 
 无人工验收项。当前记录不表示完整 L3 或安装现场已通过。
 
-## 主干集成后最终验收
+## 原生主干 rebase（当前）
+
+Runner 最新主干 `0b55928` 已合入 #31（`3a053ea`），远端不再使用 helper 或固定控制终端。rebase 处理 10 处文本冲突后，还需移除旧方案的语义冲突：当前生产差异仅为 native stop 的初始化空分支元数据处理；两个 L3 case 改为隐藏 caller 原生 agentIdentity 并保留真实响应。local helper 代码保持主干原样，旧 helper/Job/认证/签名的通过记录不继承为 native 资格。
+
+当前 native scope 只证明原 Orca 终端结束，不证明脱离终端的后台进程或执行主机登录撤销。新的源码/构建与最小验证结果在本节登记；通过前不将旧 394/29/16 与两个 helper L3 的结果当作新组合通过。
+
+## 历史 helper 方案最终验收（已退役）
 
 2026-10-19，代码提交 `cf7b47a5eca1968de2e13997c3752f76a6caa0e6`，已合入主干 `95ae8a72792d2b11cc59b938257165b472b5b4de`，源码工作区在构建/执行时为 clean。五处冲突均已解决：保留主干固定控制终端、认证参数及观察关闭行为；初始化无已提交 readiness/业务 turn 时，仅按原 helper 签名的 Job/认证清理与原固定控制 PTY 的关闭结算。已就绪路径保留 authentication-stop 和关闭 checkpoint，未恢复旧 reader journal。证据 DTO 解除对适配器的依赖，消除新主干测试导入循环。
 

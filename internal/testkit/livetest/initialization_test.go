@@ -4,37 +4,38 @@ import (
 	"encoding/json"
 	"strings"
 	"testing"
-
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 )
 
-func TestInitializationReadinessFaultPreservesOriginalOwnerAndEnvelope(t *testing.T) {
-	raw := []byte(`{"ok":true,"result":{"terminal":{"handle":"original","tail":["SR_REMOTE_OWNER:original-key","SR_REMOTE_READY:original-ready","unchanged"],"incarnationId":"original-incarnation"}},"_meta":{"runtimeId":"original-runtime"}}`)
-	delivered, hidden, err := WithholdReadiness(raw)
-	if err != nil || !hidden || strings.Contains(string(delivered), codex.RemoteReadyPrefix) || !strings.Contains(string(delivered), codex.RemoteOwnerPrefix) {
-		t.Fatal("fault did not isolate readiness", string(delivered), err)
+func TestInitializationAgentFaultPreservesOriginalEnvelope(t *testing.T) {
+	raw := []byte(`{"ok":true,"result":{"terminal":{"handle":"original","incarnationId":"original-inc","worktreeId":"original-worktree","agentIdentity":"codex","connected":true,"status":"running","agentWait":{"phase":"running"}}},"_meta":{"runtimeId":"original-runtime"}}`)
+	delivered, hidden, err := WithholdNativeAgentIdentity(raw)
+	if err != nil || !hidden {
+		t.Fatal(string(delivered), err)
 	}
-	var response struct {
-		OK     bool
-		Result struct {
-			Terminal struct {
-				Handle, IncarnationID string
-				Tail                  []string
-			}
+	var original, actual map[string]any
+	_ = json.Unmarshal(raw, &original)
+	_ = json.Unmarshal(delivered, &actual)
+	original["result"].(map[string]any)["terminal"].(map[string]any)["agentIdentity"] = ""
+	expected, _ := json.Marshal(original)
+	got, _ := json.Marshal(actual)
+	if string(got) != string(expected) {
+		t.Fatal("fault changed original identities", string(got))
+	}
+	for _, old := range []string{"powershell", "pi"} {
+		source := []byte(strings.ReplaceAll(string(raw), `"codex"`, `"`+old+`"`))
+		got, hidden, err := WithholdNativeAgentIdentity(source)
+		if err != nil || hidden || string(got) != string(source) {
+			t.Fatal("foreign native identity was changed")
 		}
-		Meta struct {
-			RuntimeID string `json:"runtimeId"`
-		} `json:"_meta"`
 	}
-	if json.Unmarshal(delivered, &response) != nil || !response.OK || response.Meta.RuntimeID != "original-runtime" || response.Result.Terminal.Handle != "original" || response.Result.Terminal.IncarnationID != "original-incarnation" || len(response.Result.Terminal.Tail) != 2 {
-		t.Fatal("fault changed original identities")
+	for _, bad := range []string{`{}`, `{"result":42}`, `{"result":{"terminal":42}}`} {
+		if _, _, err := WithholdNativeAgentIdentity([]byte(bad)); err == nil {
+			t.Fatal("malformed source accepted", bad)
+		}
 	}
-	if !strings.Contains(string(raw), codex.RemoteReadyPrefix) {
-		t.Fatal("fault destroyed original source evidence")
-	}
-	for _, invalid := range []string{`{}`, `{"result":{"terminal":{"tail":null}}`, `{"result":{"terminal":{"tail":42}}}`} {
-		if _, _, e := WithholdReadiness([]byte(invalid)); e == nil {
-			t.Fatal("invalid fault source accepted", invalid)
+	for _, change := range []string{strings.ReplaceAll(string(raw), `"connected":true`, `"connected":false`), strings.ReplaceAll(string(raw), `"status":"running"`, `"status":"exited"`)} {
+		if _, hidden, _ := WithholdNativeAgentIdentity([]byte(change)); hidden {
+			t.Fatal("inactive terminal became readiness witness")
 		}
 	}
 }

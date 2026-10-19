@@ -1,24 +1,23 @@
 package livetest
 
 import (
+	"bytes"
 	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-// Only the test caller's read response changes. The original helper and native
-// resources keep running, and the audit retains both original/delivered bytes.
-func WithholdReadiness(raw []byte) ([]byte, bool, error) {
+// Hide only the caller's native agent identity. The original terminal keeps
+// running; retain both actual and delivered envelopes for independent auditing.
+func WithholdNativeAgentIdentity(raw []byte) ([]byte, bool, error) {
 	var envelope map[string]json.RawMessage
 	if err := json.Unmarshal(raw, &envelope); err != nil {
 		return nil, false, err
@@ -31,23 +30,17 @@ func WithholdReadiness(raw []byte) ([]byte, bool, error) {
 	if err := json.Unmarshal(result["terminal"], &terminal); err != nil {
 		return nil, false, err
 	}
-	var tail []string
-	if err := json.Unmarshal(terminal["tail"], &tail); err != nil {
-		return nil, false, err
-	}
-	kept := []string{}
-	hidden := false
-	for _, line := range tail {
-		if strings.HasPrefix(strings.TrimSpace(line), codex.RemoteReadyPrefix) {
-			hidden = true
-			continue
-		}
-		kept = append(kept, line)
-	}
-	if !hidden {
+	var identity, status string
+	var connected bool
+	if err := json.Unmarshal(terminal["agentIdentity"], &identity); err != nil {
 		return raw, false, nil
 	}
-	terminal["tail"], _ = json.Marshal(kept)
+	_ = json.Unmarshal(terminal["status"], &status)
+	_ = json.Unmarshal(terminal["connected"], &connected)
+	if identity != "codex" || !connected || status == "exited" {
+		return raw, false, nil
+	}
+	terminal["agentIdentity"] = json.RawMessage(`""`)
 	result["terminal"], _ = json.Marshal(terminal)
 	envelope["result"], _ = json.Marshal(result)
 	filtered, err := json.Marshal(envelope)
@@ -55,16 +48,28 @@ func WithholdReadiness(raw []byte) ([]byte, bool, error) {
 }
 
 type InitializationState struct {
-	LaunchDigest    string                 `json:"launch_digest"`
-	RemoteOwnership *codex.RemoteOwnership `json:"remote_ownership"`
-	RemoteReadiness *codex.RemoteReadiness `json:"remote_readiness"`
-	Turns           []json.RawMessage      `json:"turns"`
-	LaunchConfirmed bool                   `json:"launch_confirmed"`
+	Process           b.ProcessIdentity `json:"process"`
+	LaunchDigest      string            `json:"launch_digest"`
+	LaunchRequest     string            `json:"launch_request"`
+	LaunchAttempted   bool              `json:"launch_attempted"`
+	LaunchAccepted    bool              `json:"launch_accepted"`
+	LaunchConfirmed   bool              `json:"launch_confirmed"`
+	Turns             []json.RawMessage `json:"turns"`
+	Control           *json.RawMessage  `json:"control"`
+	RemoteReadiness   *json.RawMessage  `json:"remote_readiness"`
+	RemoteOwnership   *json.RawMessage  `json:"remote_ownership"`
+	TerminalOwner     *json.RawMessage  `json:"terminal_owner"`
+	TerminalReadiness *json.RawMessage  `json:"terminal_readiness"`
 }
+
+func (s InitializationState) NativeOnly() bool {
+	return s.Control == nil && s.RemoteReadiness == nil && s.RemoteOwnership == nil && s.TerminalOwner == nil && s.TerminalReadiness == nil
+}
+
 type InitializationWindow struct {
-	RunID           string                `json:"run_id"`
-	Snapshot        b.LifecycleSnapshot   `json:"snapshot"`
-	NativeReadiness codex.RemoteReadiness `json:"native_readiness"`
+	RunID          string              `json:"run_id"`
+	Snapshot       b.LifecycleSnapshot `json:"snapshot"`
+	NativeTerminal native.Terminal     `json:"native_terminal"`
 }
 
 func InitializationResources(s b.LifecycleSnapshot) (InitializationState, error) {
@@ -77,7 +82,6 @@ func InitializationResources(s b.LifecycleSnapshot) (InitializationState, error)
 	}
 	return InitializationState{}, errors.New("original initialization resource snapshot missing")
 }
-
 func validateInitializationEvidence(m Manifest) error {
 	root := filepath.Join(m.Root, "evidence")
 	raw, err := os.ReadFile(filepath.Join(root, "initialization-window.json"))
@@ -86,64 +90,65 @@ func validateInitializationEvidence(m Manifest) error {
 		return errors.New("initialization window evidence missing")
 	}
 	state, err := InitializationResources(window.Snapshot)
-	policy := ReceiptAuditPolicy(m)
-	owner := state.RemoteOwnership
-	ready := window.NativeReadiness
-	if err != nil || owner == nil || state.RemoteReadiness != nil || state.LaunchConfirmed || len(state.Turns) != 0 || window.RunID == "" || window.Snapshot.Ref.RunID != window.RunID ||
-		owner.RuntimeSHA256 != policy.SHA256 || owner.ConfigurationDigest != policy.ConfigurationDigest || ready.Ownership == nil || !reflect.DeepEqual(ready.Ownership, owner) || !ready.Verified || !codex.ValidNativeID(ready.SessionID) || ready.Process.PID <= 0 || ready.Process.Created == "" {
-		return errors.New("native resources did not exist in the frozen pre-readiness window")
+	t := window.NativeTerminal
+	p := window.Snapshot.Ref.External
+	if err != nil || !state.NativeOnly() || state.Process != p || !state.LaunchAttempted || !state.LaunchAccepted || state.LaunchConfirmed || len(state.Turns) != 0 || window.RunID == "" || window.Snapshot.Ref.RunID != window.RunID || t.AgentIdentity != "codex" || !t.Connected || t.Exited() || t.Handle != p.Terminal || t.IncarnationID != p.Incarnation || t.WorktreeID != p.WorktreeID || t.WorktreePath != window.Snapshot.Workspace.Path {
+		return errors.New("original native agent did not exist in the frozen pre-ready window")
 	}
-	var witness struct{ Original, Delivered json.RawMessage }
-	raw, err = os.ReadFile(filepath.Join(root, "readiness-withheld.json"))
+	var witness struct {
+		CallID              string `json:"call_id"`
+		Original, Delivered json.RawMessage
+	}
+	raw, err = os.ReadFile(filepath.Join(root, "agent-identity-withheld.json"))
 	if err != nil || json.Unmarshal(raw, &witness) != nil {
-		return errors.New("readiness fault was not physically observed")
+		return errors.New("native identity fault missing")
 	}
-	filtered, hidden, err := WithholdReadiness(witness.Original)
+	filtered, hidden, err := WithholdNativeAgentIdentity(witness.Original)
 	var actual, expected any
 	if err != nil || !hidden || json.Unmarshal(witness.Delivered, &actual) != nil || json.Unmarshal(filtered, &expected) != nil || !reflect.DeepEqual(actual, expected) {
-		return errors.New("readiness response fault changed unrelated evidence")
+		return errors.New("native identity fault changed unrelated evidence")
 	}
-	// The native ready proof must actually come from the original response.
 	var response struct {
-		Result struct{ Terminal struct{ Tail []string } }
+		Result struct{ Terminal native.Terminal }
 		Meta   struct {
 			RuntimeID string `json:"runtimeId"`
 		} `json:"_meta"`
 	}
-	if json.Unmarshal(witness.Original, &response) != nil || response.Meta.RuntimeID != m.RemoteRuntimeID {
-		return errors.New("readiness witness runtime differs")
+	if json.Unmarshal(witness.Original, &response) != nil || response.Meta.RuntimeID != m.RemoteRuntimeID || !reflect.DeepEqual(response.Result.Terminal, t) {
+		return errors.New("native identity witness differs from original source")
+	}
+	audit, err := os.ReadFile(filepath.Join(root, "native-calls.jsonl"))
+	if err != nil {
+		return err
 	}
 	found := false
-	for _, line := range response.Result.Terminal.Tail {
-		if strings.HasPrefix(strings.TrimSpace(line), codex.RemoteReadyPrefix) {
-			body, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(strings.TrimSpace(line), codex.RemoteReadyPrefix))
-			var r codex.RemoteReadiness
-			if e == nil && json.Unmarshal(body, &r) == nil && reflect.DeepEqual(r, ready) {
-				found = true
-			}
+	for _, line := range bytes.Split(bytes.TrimSpace(audit), []byte("\n")) {
+		var call nativeAuditCall
+		if json.Unmarshal(line, &call) != nil || call.Kind != "receipt" || call.ID != witness.CallID || len(call.Args) < 2 || call.Args[0] != "terminal" || call.Args[1] != "show" || auditArg(call.Args, "--terminal") != p.Terminal {
+			continue
+		}
+		var observed, source any
+		if json.Unmarshal(call.Response, &observed) == nil && json.Unmarshal(witness.Original, &source) == nil && reflect.DeepEqual(observed, source) {
+			found = true
 		}
 	}
 	if !found {
-		return errors.New("initialization native readiness lacks original source")
+		return errors.New("native initialization witness is not an original audited response")
 	}
-	raw, err = os.ReadFile(filepath.Join(root, "initialization-exit.json"))
-	if err != nil || codex.VerifyRemoteOwnershipExit(raw, *owner) != nil {
-		return errors.New("original initialization native exit unverified")
+	policy := ReceiptAuditPolicy(m)
+	facts, err := AnalyzeNativeAudit(audit, m.RemoteRuntimeID, policy)
+	if err != nil || policy.NativeLaunchCommand == "" || !facts.Complete || facts.Creations != 1 || facts.Inspections != 0 || len(facts.Prompts) != 1 || facts.Prompts[0] != policy.NativeLaunchCommand || fmt.Sprintf("%x", sha256.Sum256([]byte(facts.Prompts[0]))) != state.LaunchDigest {
+		return errors.New("initialization sent business input or accessed helper resources")
 	}
 	raw, err = os.ReadFile(filepath.Join(root, "offline-settlement.json"))
 	var proof contracts.Response
 	if err != nil || json.Unmarshal(raw, &proof) != nil || !proof.OK {
-		return errors.New("initialization offline resource settlement missing")
+		return errors.New("initialization offline settlement missing")
 	}
 	body, _ := json.Marshal(proof.Data)
 	var settled contracts.StoppedVerification
-	if json.Unmarshal(body, &settled) != nil || !settled.ResourcesSettled || len(settled.Runs) != 1 || settled.Runs[0].RunID != window.RunID || !settled.Runs[0].ResourcesSettled {
-		return errors.New("initialization offline proof differs")
-	}
-	audit, _ := os.ReadFile(filepath.Join(root, "native-calls.jsonl"))
-	facts, e := AnalyzeNativeAudit(audit, m.RemoteRuntimeID, policy)
-	if e != nil || !facts.Complete || len(facts.Prompts) != 1 || facts.Creations != 1 || fmt.Sprintf("%x", sha256.Sum256([]byte(facts.Prompts[0]))) != state.LaunchDigest || !strings.HasPrefix(facts.Prompts[0], "& '"+strings.ReplaceAll(policy.Executable, "'", "''")+"' '--configuration' '") {
-		return errors.New("initialization sent business input or created replacement resources")
+	if json.Unmarshal(body, &settled) != nil || !settled.ResourcesSettled || len(settled.Runs) != 1 || settled.Runs[0].RunID != window.RunID || !settled.Runs[0].ResourcesSettled || settled.Runs[0].StopEvidenceScope != "orca_terminal" {
+		return errors.New("initialization offline terminal proof differs")
 	}
 	if m.CaseID == "restart-before-readiness" {
 		raw, err = os.ReadFile(filepath.Join(root, "initialization-restart.json"))
@@ -153,7 +158,7 @@ func validateInitializationEvidence(m Manifest) error {
 			View          contracts.RunView
 		}
 		if err != nil || json.Unmarshal(raw, &restart) != nil || restart.Before.InstanceID == "" || restart.After.InstanceID == "" || restart.Before.InstanceID == restart.After.InstanceID || restart.Snapshot.Ref != window.Snapshot.Ref || !restart.View.ResumeRequired || restart.View.NewInputsAllowed {
-			return errors.New("initialization service replacement/authority evidence missing")
+			return errors.New("initialization replacement/authority evidence missing")
 		}
 		after, e := InitializationResources(restart.Snapshot)
 		if e != nil || !reflect.DeepEqual(after, state) {

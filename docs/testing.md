@@ -79,7 +79,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 
 ## 当前执行入口
 
-初始化资源停止新增 L3 `orca-remote.initialization-stop/before-readiness` 与 `restart-before-readiness`。前者通过真实公开 submit 启动原 helper/native，在测试转发器隐藏 readiness 后显式停止；后者在同一窗口正常停服换代，核验零自动输入/替换会话后显式停止。两项都要求原 Job/认证/PTY 完整结算和公开离线重验；仅执行 READY bootstrap，不产生业务输入或 PR，独立现场可并行，无管理员故障设施。`./scripts/test.ps1 -Level L3 -Scenario orca-remote.initialization-stop -Config <配置> -MaxParallel 2`；当前构建结果和失败记录见[初始化停止验收](acceptance/initialization-stop.md)。
+初始化资源停止新增 L3 `orca-remote.initialization-stop/before-readiness` 与 `restart-before-readiness`。公开 submit 直接启动原生 Codex，测试转发器仅隐藏 caller 的原生 agentIdentity，保留原响应与调用 ID；第二项在该窗口停服换代，验证原终端绑定和零自动输入后显式停止。两者均要求完整原 Orca 清单、`orca_terminal` 离线 scope，零业务输入、额外终端或文件部署，不要求远端 helper/Job/签名/认证撤销。独立现场可并行，无管理员故障设施；新增结果与历史记录见[初始化停止验收](acceptance/initialization-stop.md)。
 
 Orca 本机接入新增 `orca-local.smoke`、`environment-check.orca-local-sandbox` 和
 `environment-check.orca-local-full-access`，沿用现有 driver/schema。对应配置项的
