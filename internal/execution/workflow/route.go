@@ -23,7 +23,7 @@ func sourceFor(w Snapshot, input StageInput, result reliable.Result) (StageInput
 		return StageInput{}, StageResult{}, false
 	}
 	if s.Kind != "report" {
-		r := StageResult{CommandID: input.CommandID, AttemptID: input.AttemptID, StepID: input.StepID, InputVersion: input.Version, TurnID: result.TurnID, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure}
+		r := StageResult{CommandID: input.CommandID, AttemptID: input.AttemptID, StepID: input.StepID, InputVersion: input.Version, TurnID: result.TurnID, Outcome: result.NativeOutcome, Succeeded: result.Succeeded, FinalVerified: result.ContentVerified, Final: result.Content, Failure: result.Failure}
 		if actual := Result(w, input.CommandID); actual != nil {
 			r = *actual
 		}
@@ -58,7 +58,7 @@ func RouteParsed(w Snapshot, input StageInput, body, operationID, reportPolicy s
 	if source == nil {
 		return Transition{Status: "blocked", Reason: "original parser source missing"}
 	}
-	result := reliable.Result{Succeeded: source.Succeeded, ContentVerified: source.FinalVerified, Content: source.Final, TurnID: source.TurnID, Failure: source.Failure}
+	result := reliable.Result{NativeOutcome: source.Outcome, Succeeded: source.Succeeded, ContentVerified: source.FinalVerified, Content: source.Final, TurnID: source.TurnID, Failure: source.Failure}
 	return route(w, input, result, reportPolicy, &body, operationID)
 }
 
@@ -69,7 +69,7 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 		t.Status, t.Reason = "blocked", "state absent from frozen definition"
 		return t
 	}
-	if !result.Succeeded {
+	if !result.Succeeded || !nativeOutcomeAllowsAcquisition(result.NativeOutcome) {
 		t.RecoverOriginal = true
 		t.Outcome = "blocked"
 		t.Reason = "Original turn failed or was interrupted; verify the original session: " + result.Failure
@@ -85,7 +85,7 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 		return t
 	}
 	original, source, ok := sourceFor(w, input, result)
-	if !ok || !source.Succeeded || !source.FinalVerified || source.Failure != "" {
+	if !ok || !source.Succeeded || !nativeOutcomeAllowsAcquisition(source.Outcome) || !source.FinalVerified || source.Failure != "" {
 		t.Status, t.Reason = "reconciling", "original business source is incomplete or failed"
 		return t
 	}

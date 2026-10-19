@@ -1,0 +1,16 @@
+{
+  "state": "working",
+  "paneKey": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc",
+  "agentType": "codex",
+  "prompt": "P0 active-stop probe b81a5322. Use your normal shell tool to run exactly one FOREGROUND Start-Sleep -Seconds 45, then reply P0_STOP_WAIT_b81a5322. Do not spawn background jobs, write files, access net",
+  "updatedAt": 1792382292977,
+  "stateStartedAt": 1792382292977,
+  "turnStartedAt": 0,
+  "mainAgent": {
+    "state": "working",
+    "stateStartedAt": 1792382292977
+  },
+  "providerSession": {
+    "id": "01a15248-d08f-7d01-a69e-4bead299af30"
+  }
+}

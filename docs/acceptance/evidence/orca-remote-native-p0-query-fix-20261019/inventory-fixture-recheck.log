@@ -1,0 +1,18 @@
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness
+=== RUN   TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure
+--- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/still-live (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-incarnation (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/foreign-runtime (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/truncated (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/missing-completeness (0.00s)
+    --- PASS: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/persistent-failure (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.106s

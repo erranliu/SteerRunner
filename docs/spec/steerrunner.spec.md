@@ -1,5 +1,7 @@
 # Spec：SteerRunner 首版产品与 CLI 契约
 
+2026-10-19 远端设计修订：用户要求新 `orca_environment` Run 仅通过 Orca 执行，删除远端 SteerRunner helper 接线。认证、完成、停止证据、旧记录隔离及完整 Check 收缩以[专项 Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)为准；实现与验收结果见专项记录。新远端采用现有 profile envelope 的 v4，不加模式字段；旧远端 v3 仅查询/精确处理原终端，不保留 helper 兼容引擎、不降级放行缺证据记录。本地受管及历史证明保持原范围。
+
 日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
 最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
@@ -360,3 +362,8 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 `last-message` 返回的 `observed_at` 为现有观察流收到原生通知时的 UTC 时间，不是查询时间；同一摘要重复读取时间不变。只采样本地 Codex completed agentMessage 或固定工具标签，不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，Orca 无样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。
 
 客户端按当前显示的执行按需查询；SteerLine 在页面可见且在线时每 3 秒读取，后台/切换/离开时停止。具体边界与最小验证见[增量 Plan](execution-observability.plan.md)和[验收](../acceptance/execution-observability.md)。
+
+
+### Orca 原生缺失 outcome 的结果契约
+
+按 [远端原生 Spec](orca-remote-native.spec.md) 的用户确认增量，native_outcome 现有字符串扩展 unreported（接口未提供）。仅原请求正常结束、完整来源成立且无 Failure 时可进入既有业务核验；它不等于原生 succeeded。显式 unknown/failed/cancelled 和未知输入继续阻断，历史 unknown 不重新解释、不自动推进。CLI v1 结构、工作流/审计/PR 与停止部署门不变。

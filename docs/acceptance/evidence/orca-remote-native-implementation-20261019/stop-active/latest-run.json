@@ -1,0 +1,93 @@
+{
+  "operations": [
+    {
+      "operation_id": "1cef707d955564ca0b6430a12a2e2da1",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "e4f6e092461cd084d70b6114aa6c045c",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "78aa50196dc5d3e07f44bfb69cb35dd8",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "25e56803ad79ebb26718ba8d45c5f17a",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "336e98d7cc41c9fdbf06c188dcd31ca2",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "f35c318008f56127c49fbd14d0d96145",
+  "revision": 18,
+  "title": "SteerRunner L3 orca-remote.stop-revocation/active",
+  "correlation": {
+    "case": "active",
+    "fixture_id": "54121a91fd31",
+    "scenario": "orca-remote.stop-revocation"
+  },
+  "input_digest": "2b4f6965dd1f1c61ffecfa9c5536296798f27d7c8c6467e6295d9dc309b84319",
+  "resource_digest": "c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "diagnostic": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked.",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "c:\\srt\\54121a91fd31\\s\\inputs\\f35c318008f56127c49fbd14d0d96145\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "c:\\srt\\54121a91fd31\\s\\inputs\\f35c318008f56127c49fbd14d0d96145\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "222f4d79c5a9110c2d835c7e5d9631e6",
+    "generation": "d3937ecdbce50c553296ac943cb7213e",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_1a6a11b2-6d96-4870-b193-fcc132d722a5:c4890181-16e3-4d34-9bdc-1f11b53bbf90",
+    "turn_id": "ec68920190bc38871bd5f4c6e3a61b3e",
+    "final_available": false,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-f35c318008f56127c49fbd14d0d96145",
+    "branch": "erranliu/sl-f35c318008f56127c49fbd14d0d96145"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false,
+    "reason": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked."
+  },
+  "created_at": "2026-10-19T05:49:52.1645469Z",
+  "updated_at": "2026-10-19T05:51:55.1815956Z"
+}

@@ -202,12 +202,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
-		launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
-		if settings.GitHubAuth != nil {
-			launch.GitHubAuth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
+		if request.Execution.Target.Kind == "local" {
+			launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
+			if settings.GitHubAuth != nil {
+				launch.GitHubAuth = &codex.AuthenticationConfig{AppID: settings.GitHubAuth.AppID, InstallationID: settings.GitHubAuth.InstallationID, PrivateKeyEnv: settings.GitHubAuth.PrivateKeyEnv}
+			}
+			profile.RuntimeExecutable = launch.RuntimeExecutable
+			profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
 		}
-		profile.RuntimeExecutable = launch.RuntimeExecutable
-		profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
 		if launch.RuntimeExecutable != "" && agent == "codex" {
 			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
 		}
@@ -219,6 +221,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		r.Request.Execution.Settings = canonical(settings)
 		key, codec, payload = orca.ProfileKey, orca.ProfileVersion, canonical(profile)
+		if profile.Environment != "" {
+			codec = orca.NativeRemoteProfileVersion
+		}
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
 	git := gitHost()

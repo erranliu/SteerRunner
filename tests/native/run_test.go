@@ -163,6 +163,29 @@ func command(m livetest.Manifest, dir string, args []string, input *contracts.Re
 	return response, nil
 }
 
+// The offline verifier acquires the writer lease and reads the persisted original
+// identity. Scope is a description, never permission to send or resume input.
+func verifyNativeStoppedScope(m livetest.Manifest, dir, runID string) (contracts.StoppedVerification, error) {
+	response, err := command(m, dir, []string{"service", "verify-stopped"}, nil)
+	var proof contracts.StoppedVerification
+	raw, _ := json.Marshal(response.Data)
+	if err != nil {
+		return proof, err
+	}
+	if err = json.Unmarshal(raw, &proof); err != nil {
+		return proof, err
+	}
+	if !proof.ResourcesSettled {
+		return proof, errors.New("offline original resource settlement is unverified")
+	}
+	for _, run := range proof.Runs {
+		if run.RunID == runID && run.StopEvidenceScope == "orca_terminal" {
+			return proof, nil
+		}
+	}
+	return proof, errors.New("original remote Run is missing Orca terminal evidence scope")
+}
+
 func invoke(t *testing.T, m livetest.Manifest, dir string, args []string, input *contracts.Request) contracts.Response {
 	t.Helper()
 	response, err := command(m, dir, args, input)
@@ -427,6 +450,13 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 				_ = json.Unmarshal(raw, &status)
 				if status.Status == "not_running" {
 					r.ServiceStopped = true
+					if m.Execution.Target.Kind == "orca_environment" && r.RunStopped {
+						proof, err := verifyNativeStoppedScope(m, dir, r.RunID)
+						save(t, "offline-stopped.json", proof)
+						if err != nil {
+							t.Error(err)
+						}
+					}
 					return
 				}
 			}
@@ -484,8 +514,8 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus == "stopped" && !view.NewInputsAllowed {
 				r.RunStopped = true
 				save(t, "cleanup-run.json", view)
-				if m.Execution.Adapter == "orca-terminal" {
-					proof, proofErr := remoteStopEvidence(m, view)
+				if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
+					proof, proofErr := localStopEvidence(m, view)
 					if proofErr != nil {
 						t.Error("remote authentication cleanup unconfirmed", proofErr)
 					} else {
@@ -677,7 +707,22 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	}
 	// workflow/2 ends at pr_ready. The feedback scenario proves rejection,
 	// rather than mislabeling an ordinary successful delivery as feedback.
-	if m.Driver == "development-feedback" {
+	if m.Driver == "development-feedback" || m.Scenario == "orca-remote.full-access" {
+		inputCount := func() int {
+			if m.Execution.Adapter != "orca-terminal" {
+				return 0
+			}
+			raw, err := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			audit, err := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(m))
+			if err != nil {
+				t.Fatal(err)
+			}
+			return len(audit.Prompts)
+		}
+		before := inputCount()
 		req := request("smoke-feedback-rejected", contracts.ReplyInput{ExpectedRevision: first.Revision, Kind: "feedback", Text: "Update the implementation."})
 		response, err := command(m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &req)
 		if err == nil || response.Error == nil || response.Error.Code != "invalid_state" {
@@ -689,6 +734,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		if err != nil || after.Revision != first.Revision || after.PR == nil || after.PR.HeadRevision != first.PR.HeadRevision || after.Execution.TurnID != first.Execution.TurnID {
 			t.Fatal("rejected feedback changed original source", err)
 		}
+		afterCount := inputCount()
+		if afterCount != before {
+			t.Fatal("rejected feedback sent native input")
+		}
+		save(t, "feedback-boundary.json", map[string]any{"rejected": true, "native_inputs_before": before, "native_inputs_after": afterCount, "revision_unchanged": true, "pr_head_unchanged": true})
 	}
 	updated := first
 	fresh, err := inspect(m, dir, r.RunID, true)

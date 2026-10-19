@@ -1,0 +1,14 @@
+{
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+    "runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "terminal": "term_99c03428-89fe-4c75-aec4-cb635a205cd2",
+    "incarnation": "dc11df4d-a616-4353-bb50-f5ac1166cf29",
+    "worktree_id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/p0-native-b81a5322",
+    "execution_host": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+  },
+  "worktree": "C:/Users/Administrator/orca/workspaces/SteerlineTest/p0-native-b81a5322",
+  "branch": "refs/heads/erranliu/p0-native-b81a5322"
+}

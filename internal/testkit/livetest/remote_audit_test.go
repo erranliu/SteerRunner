@@ -16,7 +16,7 @@ import (
 func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
 	for _, mode := range []string{"valid", "foreign-session", "foreign-workspace", "unverified", "foreign-read-runtime", "invalid-receipt"} {
 		t.Run(mode, func(t *testing.T) {
-			original := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "repo::C:/worker", Terminal: "main", Incarnation: "main-inc"}
+			original := b.ProcessIdentity{ExecutionHost: "local", RuntimeID: "runtime", WorktreeID: "repo::C:/worker", Terminal: "main", Incarnation: "main-inc"}
 			receipt := codex.RemoteAudit{Readiness: codex.RemoteReadiness{Verified: mode != "unverified", Workspace: "C:/worker", SessionID: "provider"}}
 			receipt.Native.Session = "provider"
 			if mode == "foreign-session" {
@@ -59,7 +59,7 @@ func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
 				}
 				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]any{"runtimeId": runtime}})
 			}})
-			audit, err := RemotePermissionAudit(context.Background(), client, original, "C:/frozen/helper.exe", "C:/worker", "provider")
+			audit, err := LocalPermissionAudit(context.Background(), client, original, "C:/frozen/helper.exe", "C:/worker", "provider")
 			if (err == nil) != (mode == "valid") || creates != 1 || closes != 1 || !audit.InspectorClosed || audit.Inspector == nil || audit.Inspector.Terminal != "inspector" {
 				t.Fatal("receipt accepted or inspector cleanup unconfirmed", audit, err, creates, closes)
 			}

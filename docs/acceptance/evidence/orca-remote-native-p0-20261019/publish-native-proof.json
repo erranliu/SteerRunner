@@ -1,0 +1,12 @@
+{
+  "pane": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc",
+  "provider": "01a15248-d08f-7d01-a69e-4bead299af30",
+  "base_root_at": 1792381934499,
+  "ended_at": 1792382072362,
+  "outcome": "unknown",
+  "reply_digest": "a0d00302045f72de0011a9ee49279a4c0a16693df11af3c16bbfdb9aefb37f0a",
+  "reply_body": "{\n  \"checks\": {\n    \"repository_url\": \"https://github.com/erranliu/SteerlineTest.git\",\n    \"initial_head\": \"cebdd5ab552150c49743e40593c836689ecf789b\",\n    \"initial_branch\": \"erranliu/p0-native-b81a5322\",\n    \"initial_tree_clean\": true,\n    \"base_ref_push_exit_code\": 0,\n    \"evidence\": \"evidence/p0-native-b81a5322.md\",\n    \"generated_at_utc\": \"2026-10-19T03:53:45Z\",\n    \"content_and_scope_verified\": true,\n    \"commit_exit_code\": 0,\n    \"branch_push_exit_code\": 0,\n    \"pr_create_exit_code\": 0,\n    \"pr_query_exit_code\": 0\n  },\n  \"commit_sha\": \"74afbe9a201d20f0e8d0f5ae15acce215f080d68\",\n  \"pull_request\": {\n    \"number\": 578,\n    \"url\": \"https://github.com/erranliu/SteerlineTest/pull/578\",\n    \"state\": \"OPEN\",\n    \"draft\": true,\n    \"base\": \"codex/p0-native-b81a5322/base\",\n    \"head\": \"erranliu/p0-native-b81a5322\",\n    \"head_sha\": \"74afbe9a201d20f0e8d0f5ae15acce215f080d68\"\n  },\n  \"blocker\": null\n}",
+  "last_signal": "2026-10-19T03:57:30.2103434Z",
+  "last_query": "2026-10-19T03:57:30.2103434Z",
+  "hint": "fa7d55dd-fae4-4f41-a046-a37c71cab794:586ec357-e2f9-4a01-9c0d-08e0dd50ecbc:done:1792381934499:1792381934499"
+}

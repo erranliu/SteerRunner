@@ -63,6 +63,9 @@ func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logg
 	}
 	for _, r := range checks {
 		e.checks[r.View.CheckID] = r
+		if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
+			continue
+		}
 		if next := reconcileCheckOwnership(r); next != nil {
 			if err := e.commitCheckLocked(next, nil); err != nil {
 				cancel()
@@ -84,6 +87,13 @@ func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logg
 	for _, r := range runs {
 		e.runs[r.ID] = r
 		e.workers[r.ID] = &worker{wake: make(chan struct{}, 1)}
+		if orca.LegacyRemoteProfile(r.Profile) {
+			view := r.Clone()
+			view.Allowed, view.ResumeRequired = false, true
+			view.Diagnostic = "Legacy remote helper Run is read-only; only exact original terminal stop is supported."
+			e.runs[r.ID] = view
+			continue
+		}
 		next := r.Clone()
 		if next.PendingResume != "" {
 			next.CommandStates[next.PendingResume] = "failed"
@@ -109,6 +119,9 @@ func (e *Engine) Start() {
 		e.launch(id, w)
 	}
 	for id, r := range e.checks {
+		if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
+			continue
+		}
 		if r.View.CleanupStatus != "completed" || r.Allowed {
 			next := r.Clone()
 			next.Allowed = false
@@ -211,6 +224,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; command was not accepted."))
 		}
 		r := e.runs[runID]
+		if command != "stop" && orca.LegacyRemoteProfile(r.Profile) {
+			return reject(contracts.Fail(3, "unsupported_capability", "Legacy remote helper Runs are read-only; only exact original terminal stop is supported."))
+		}
 		next := r.Clone()
 		var revision contracts.RevisionInput
 		_ = json.Unmarshal(input.Input, &revision)
@@ -385,6 +401,9 @@ func (e *Engine) refreshPR(id string) error {
 	if r.PR == nil {
 		return nil
 	}
+	if orca.LegacyRemoteProfile(r.Profile) {
+		return contracts.Fail(3, "unsupported_capability", "Legacy remote Run exposes its persisted PR snapshot only.")
+	}
 	provider, err := providerFor(r)
 	if err != nil {
 		return err
@@ -412,6 +431,9 @@ func (e *Engine) Shutdown(ctx context.Context) error {
 	e.cancel()
 	e.mu.Lock()
 	for _, r := range e.runs {
+		if orca.LegacyRemoteProfile(r.Profile) {
+			continue
+		}
 		next := r.Clone()
 		next.Allowed = false
 		next.ResumeRequired = true

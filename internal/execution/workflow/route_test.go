@@ -1,6 +1,7 @@
 package workflow
 
 import (
+	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"strings"
@@ -187,5 +188,62 @@ func TestRASourcesReportUsesOriginalContext(t *testing.T) {
 	}
 	if w.StageResults[0].Final != r.Content {
 		t.Fatal("source final was rewritten")
+	}
+}
+
+func TestRAHistoricalOutcomeCannotBePromoted(t *testing.T) {
+	for _, outcome := range []string{"unknown", "failed", "cancelled", "future-outcome", "succeeded", "unreported"} {
+		t.Run(outcome, func(t *testing.T) {
+			w, input, result := plainFixture()
+			result.NativeOutcome = outcome
+			w.StageResults = []StageResult{{CommandID: input.CommandID, AttemptID: input.AttemptID, StepID: input.StepID, InputVersion: input.Version, TurnID: result.TurnID, Succeeded: true, Outcome: outcome, FinalVerified: true, Final: result.Content}}
+			// A previous version could persist both Succeeded=true and unknown.
+			raw, err := json.Marshal(w)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err = json.Unmarshal(raw, &w); err != nil {
+				t.Fatal(err)
+			}
+			allowed := outcome == "succeeded" || outcome == "unreported"
+			parsed := `{"outcome":"done","summary":"parser claims completed"}`
+			for _, next := range []Transition{Route(w, input, result, ""), RouteParsed(w, input, parsed, "original-parser", "")} {
+				if (next.Next != nil) != allowed || !allowed && (next.Publish || next.Acquired != nil && next.Acquired.Status == "satisfied") {
+					t.Fatal("historical native outcome was promoted", outcome, next)
+				}
+			}
+			// A successful report may not launder the original execution outcome.
+			clean := result
+			clean.NativeOutcome = "succeeded"
+			clean.Content = "no completion declaration"
+			w.StageResults[0].Final = clean.Content
+			fallback := Route(Snapshot{Config: w.Config, StepID: input.StepID, StageInputs: []StageInput{input}}, input, clean, "policy")
+			if fallback.Next == nil {
+				t.Fatal(fallback)
+			}
+			report := *fallback.Next
+			report.CommandID = "report"
+			report.Version = 2
+			w.Results = append(w.Results, *fallback.Acquired)
+			w.StageInputs = append(w.StageInputs, report)
+			clean.Content = parsed
+			clean.TurnID = "report-turn"
+			next := Route(w, report, clean, "policy")
+			if (next.Next != nil) != allowed {
+				t.Fatal("report changed original native outcome", outcome, next)
+			}
+			// Neither a prior satisfied business record nor renewed authorization
+			// can make a non-success original eligible as a publication prerequisite.
+			original := w.StageResults[0]
+			acquired := ra.Result{ID: "historical-result", Status: "satisfied", Source: Source(original)}
+			value := ra.Completion("claimed completed")
+			acquired.Value = &value
+			w.Results = []ra.Result{acquired}
+			w.ImplementationResultID = acquired.ID
+			pub := StageInput{StepID: StepPublish, ImplementationResultID: acquired.ID}
+			if err := VerifyPrerequisites(w, pub, w.Config.States[StepPublish]); (err == nil) != allowed {
+				t.Fatal("historical prerequisite changed", outcome, err)
+			}
+		})
 	}
 }

@@ -279,7 +279,11 @@ func fixtureOn(t *testing.T, environment string) (*Lifecycle, *fakeHost, b.Lifec
 	p := Profile{Executable: "orca.exe", WaitTimeout: "1s", Environment: environment}
 	raw, _ := json.Marshal(p)
 	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: p.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: strings.Repeat("d", 32), AttemptID: strings.Repeat("b", 32)}, Session: b.SessionContext{ProjectID: "project", ExecutionID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), WorkflowRunID: strings.Repeat("d", 32), CorrelationID: "1"}, ConfigurationDigest: "config", ResourceGeneration: "generation", WorkspacePlan: b.WorkspaceIntent{BaseCommit: strings.Repeat("e", 40)}}
-	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "accepted"}, raw)
+	version := ProfileVersion
+	if environment != "" {
+		version = NativeRemoteProfileVersion
+	}
+	data, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: version, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: "project", ProfileID: "profile", AcceptedConfigVersion: "accepted"}, raw)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -650,5 +654,48 @@ func TestTerminalNativeFinalRecoveryNeverReplaysInput(t *testing.T) {
 	}
 	if sends != 1 {
 		t.Fatal("recovery repeated input", sends)
+	}
+}
+
+func TestNativeRemoteSubmissionWaitsForOriginalStart(t *testing.T) {
+	for _, unstarted := range []bool{false, true} {
+		l, f, s := fixtureOn(t, "paired-worker")
+		r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+		if err != nil {
+			t.Fatal(err)
+		}
+		bind(&s, r)
+		s, input := prepared(t, l, s, strings.Repeat("c", 32))
+		f.unstarted = unstarted
+		r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+		if err != nil || !r.State.InputAccepted || r.State.TurnStarted == unstarted {
+			t.Fatal("start must come from the original receipt", r, err)
+		}
+		bind(&s, r)
+		state, err := l.state(s)
+		if err != nil {
+			t.Fatal(err)
+		}
+		turn := turnFor(&state, input.CommandID)
+		found := 0
+		for _, call := range f.calls {
+			if len(call) < 2 || call[0] != "terminal" || call[1] != "send" {
+				continue
+			}
+			found++
+			joined := strings.Join(call, "\x00")
+			if !strings.Contains(joined, "--wait-submit\x0020") || !strings.Contains(joined, "--retry-request\x00"+turn.Request) {
+				t.Fatal("missing bounded original-request wait", call)
+			}
+		}
+		if found != 1 || f.nativeSends != 1 {
+			t.Fatal("submission was retried", found, f.nativeSends)
+		}
+		if unstarted {
+			_, _, err = l.observeOnce(context.Background(), s)
+			if err != nil || f.nativeSends != 1 {
+				t.Fatal("observation resent an unstarted input", err)
+			}
+		}
 	}
 }

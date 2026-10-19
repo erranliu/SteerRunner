@@ -32,7 +32,10 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Skip("requires a new independent debug package probe directory")
 	}
 	cli, runner, repo, base, repository := os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_CLI"), os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_RUNNER"), os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_REPO"), os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_BASE"), os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_REPOSITORY")
-	environment := os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_ENVIRONMENT")
+	if os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_ENVIRONMENT") != "" {
+		t.Fatal("managed helper exit probe is local only; remote uses native terminal scope")
+	}
+	environment := ""
 	if !filepath.IsAbs(root) || !strings.HasPrefix(strings.ToLower(filepath.Clean(root)), `c:\steerlinedebug\`) || !filepath.IsAbs(cli) || !filepath.IsAbs(runner) || repo == "" || len(base) != 40 || !filepath.IsAbs(repository) {
 		t.Fatal("explicit independent probe identity missing")
 	}
@@ -43,9 +46,6 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	defer cancel()
 	calls := 0
 	c := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
-		if environment != "" {
-			args = append(args, "--environment", environment)
-		}
 		callCtx, stop := context.WithTimeout(ctx, timeout)
 		defer stop()
 		cmd := exec.CommandContext(callCtx, cli, args...)

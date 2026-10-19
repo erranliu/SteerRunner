@@ -36,7 +36,7 @@ func TestOrcaLocalQueryFeed(t *testing.T) {
 				_, _ = conn.Read(one[:])
 				return
 			}
-			ipcReply(conn, req, "runtime", map[string]any{"worktrees": []any{map[string]any{"worktreeId": "worktree", "agents": []any{map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "providerSession": map[string]string{"id": "provider"}, "prompt": "short turn", "mainAgent": map[string]any{"state": "done", "stateStartedAt": 20}, "updatedAt": 20, "lastAssistantMessage": "complete"}}}}})
+			ipcReply(conn, req, "runtime", map[string]any{"totalCount": 1, "truncated": false, "worktrees": []any{map[string]any{"worktreeId": "worktree", "agents": []any{map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "providerSession": map[string]string{"id": "provider"}, "prompt": "short turn", "mainAgent": map[string]any{"state": "done", "stateStartedAt": 20}, "updatedAt": 20, "lastAssistantMessage": "complete"}}}}})
 		}
 	})
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

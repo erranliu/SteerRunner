@@ -1,0 +1,74 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "f35c318008f56127c49fbd14d0d96145",
+  "test_outcome": "passed",
+  "business_outcome": "stopped",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "active-verifier-refuses-writer-lease",
+      "passed": true,
+      "evidence": "active-verification-refused.json"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: active checker stopped by original resource close"
+    },
+    {
+      "name": "no-unexpected-publication",
+      "passed": true,
+      "evidence": "driver-commands.jsonl: no PR for dedicated stop fixture"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately"
+    },
+    {
+      "name": "native-launch-parameters",
+      "passed": true,
+      "evidence": "native-launch-contract.json: frozen requested parameters; no effective-parameter or helper audit"
+    },
+    {
+      "name": "no-input-during-cleanup",
+      "passed": true,
+      "evidence": "original business forwarding intents unchanged by stop/authentication/control cleanup"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

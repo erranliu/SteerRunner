@@ -27,10 +27,11 @@ type ExecutionView struct {
 	Protocol                 string `json:"protocol"`
 	SessionID                string `json:"session_id,omitempty"`
 	TurnID                   string `json:"turn_id,omitempty"`
-	NativeOutcome            string `json:"native_outcome,omitempty"`
-	FinalAvailable           bool   `json:"final_available"`
-	Workspace                string `json:"workspace"`
-	Branch                   string `json:"branch"`
+	// NativeOutcome includes unreported when the provider omitted its outcome; it is not native success.
+	NativeOutcome  string `json:"native_outcome,omitempty"`
+	FinalAvailable bool   `json:"final_available"`
+	Workspace      string `json:"workspace"`
+	Branch         string `json:"branch"`
 }
 
 type QuestionOption struct {

@@ -2,3 +2,9 @@
 *.bat text eol=crlf
 *.exe binary
 *.syso binary
+# Preserve raw acceptance evidence bytes and diagnostics covered by SHA manifests.
+docs/acceptance/evidence/orca-remote-native-p0-20261019/** -text -whitespace
+docs/acceptance/evidence/orca-remote-native-p0-query-fix-20261019/** -text -whitespace
+docs/acceptance/evidence/orca-remote-native-implementation-20261019/** -text -whitespace
+docs/acceptance/evidence/orca-remote-native-unreported-20261019/** -text -whitespace
+docs/acceptance/evidence/orca-remote-native-final-audit-20261019/** -text -whitespace

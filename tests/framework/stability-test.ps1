@@ -1,13 +1,13 @@
-param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
+﻿param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/live-catalog.ps1')
 $taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 29){throw 'L3 registry must include the four local agent cases and mixed-agent case'}
+if($taskCount -ne 27){throw 'L3 registry must retain local agent cases and exclude retired remote checks'}
 $taskEnvironmentCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.driver -eq 'environment-check'})){$taskEnvironmentCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskEnvironmentCount -ne 6){throw 'Environment check registry must include Codex, local Orca and remote Orca access modes'}
+if($taskEnvironmentCount -ne 4){throw 'Environment check registry must include only Codex and local Orca access modes'}
 $taskEntry=$taskCatalog.scenarios|Where-Object {$_.id -eq 'orca-remote.service-restart'}
 $taskEntry.cases=@('graceful-active')
 $taskRejected=$false

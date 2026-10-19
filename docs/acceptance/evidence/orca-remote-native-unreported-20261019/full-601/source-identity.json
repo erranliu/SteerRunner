@@ -1,0 +1,11 @@
+{
+  "pid": 23684,
+  "manifest_sha256": "AFFD9C6F905AAF824A1F7D22C1E5087DDE698EADCA2068965DFC3907F04C658C",
+  "driver_sha256": "F01737BEC507FC0FCC4EDEC3DC04D8F57FFD92F9E3B7750D7DFEC4073C4BC496",
+  "runner_sha256": "29d44df0315190fdd533e7ab091c9450abf868e766f0a46985de2045debfef3a",
+  "source_commit": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.full-access",
+  "level": "L3"
+}

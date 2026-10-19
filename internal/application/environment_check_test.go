@@ -1,6 +1,7 @@
 package application
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -464,5 +465,41 @@ func TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup(t *testing.T) 
 	result := e.checkSnapshot("original")
 	if result.View.CleanupStatus != "completed" || !result.View.Resources.WriterStopped || !result.View.Resources.LocalRemoved || len(result.Operations) != 0 {
 		t.Fatalf("confirmed cleanup regressed after stopping a completed remote check: %+v", result)
+	}
+}
+
+func TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources(t *testing.T) {
+	e := environmentEngine(t)
+	req := environmentRequest(t, "native-remote-check")
+	var input contracts.CheckInput
+	_ = json.Unmarshal(req.Input, &input)
+	input.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "original-remote"}, Settings: json.RawMessage(`{"transport":{"executable":"missing-orca.exe"},"agent_launch":{"executable":"codex"}}`)}
+	req.Input, _ = json.Marshal(input)
+	result := e.HandleEnvironmentCheck("environment-check start", "", "", &req)
+	if result.OK || result.Error == nil || result.Error.Code != "unsupported_capability" || len(e.checks) != 0 || len(e.checkWorkers) != 0 {
+		t.Fatal("unsupported remote Check created resources", result)
+	}
+	inspection := e.HandleEnvironmentCheck("environment-check inspect", "", req.RequestID, nil)
+	if !inspection.OK {
+		t.Fatal(inspection)
+	}
+	got := inspection.Data.(contracts.CheckInspection)
+	if got.Check != nil || got.Command == nil || got.Command.Error.Code != "unsupported_capability" {
+		t.Fatal("original refusal not queryable", got)
+	}
+}
+
+func TestEnvironmentCheckLegacyRemoteDoesNotStartActor(t *testing.T) {
+	for _, kind := range []string{"environment", "orca_environment"} {
+		t.Run(kind, func(t *testing.T) {
+			e := environmentEngine(t)
+			r := &runstate.CheckRecord{View: contracts.EnvironmentCheck{CheckID: "legacy-check", Input: contracts.CheckInput{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: kind, Environment: "original"}}}, CleanupStatus: "unknown"}}
+			e.checks[r.View.CheckID] = r
+			before := canonical(r)
+			e.launchCheckLocked(r.View.CheckID)
+			if len(e.checkWorkers) != 0 || !bytes.Equal(before, canonical(r)) {
+				t.Fatal("legacy remote check entered actor or changed evidence")
+			}
+		})
 	}
 }

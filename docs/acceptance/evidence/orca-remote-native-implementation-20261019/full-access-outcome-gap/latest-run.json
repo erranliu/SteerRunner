@@ -1,0 +1,98 @@
+{
+  "operations": [
+    {
+      "operation_id": "47254ec3a3851bf35866be6a100abbcf",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "fb7a2805797e9cb0bede42cc6d16fe61",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "6b5a62bde7c640a12179ebaaf144febf",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "14b69150a0c9fe76c499daf64bf4ff70",
+      "action": "start_turn",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "d5dc433e95102faf347856ce33374112",
+  "revision": 18,
+  "title": "SteerRunner L3 orca-remote.full-access",
+  "correlation": {
+    "fixture_id": "09c40b6b369f",
+    "scenario": "orca-remote.full-access"
+  },
+  "input_digest": "b76d13cfd722a1f90138f51d1c79cc719da02c151efd0eb22fd7e522641ca06d",
+  "resource_digest": "c7b197e382299922599ae31faf1f69f54db447dee949035a8181332780ac411f",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker once and wait for its completion. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.execute",
+  "status": "blocked",
+  "phase": "original_session_recovery",
+  "diagnostic": "Original turn failed or was interrupted; verify the original session: ",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "materials": [
+    {
+      "kind": "inline",
+      "path": "smoke.spec.md",
+      "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+      "snapshot_path": "c:\\srt\\09c40b6b369f\\s\\inputs\\d5dc433e95102faf347856ce33374112\\smoke.spec.md",
+      "execution_location": "prompt:smoke.spec.md"
+    },
+    {
+      "kind": "inline",
+      "path": "smoke.plan.md",
+      "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+      "snapshot_path": "c:\\srt\\09c40b6b369f\\s\\inputs\\d5dc433e95102faf347856ce33374112\\smoke.plan.md",
+      "execution_location": "prompt:smoke.plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "465ba9f68b6f5add832b18fc3575a7c3",
+    "generation": "4f9a754e340389c2ab812bf86faa39e3",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_0f290e73-8ef0-4a26-b49f-8543c9500a74:918fd662-9cc6-4eda-b9d6-41a1baf294b9",
+    "turn_id": "519a6329b8aade84b0d78e46b53d2712",
+    "native_outcome": "unknown",
+    "final_available": true,
+    "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d5dc433e95102faf347856ce33374112",
+    "branch": "erranliu/sl-d5dc433e95102faf347856ce33374112"
+  },
+  "controls": {
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": true,
+    "reason": "Original turn failed or was interrupted; verify the original session: "
+  },
+  "final": {
+    "command_id": "519a6329b8aade84b0d78e46b53d2712",
+    "attempt_id": "465ba9f68b6f5add832b18fc3575a7c3",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_0f290e73-8ef0-4a26-b49f-8543c9500a74:918fd662-9cc6-4eda-b9d6-41a1baf294b9",
+    "turn_id": "519a6329b8aade84b0d78e46b53d2712",
+    "native_outcome": "unknown",
+    "verified": true,
+    "source": "orca.terminal.native-state-reply.v1",
+    "item_id": "a48dc9b59bf9c181a027d7c14d547bf03dac12138b58f0dfbba642fa55731675",
+    "text": "已更新 `evidence/native-101.md` 的生成时间为 `2026-10-19T05:49:52Z`。回读确认文件为 UTF-8 无 BOM，包含五行内容及末尾换行；变更范围仅此文件。\n\n指定检查器运行一次并成功，退出码为 `0`，输出：`{\"passed\":true,\"artifact\":\"evidence/native-101.md\",\"generated_at\":\"2026-10-19T05:49:52.0000000+00:00\"}`。提交为 `9a6f3c8`（`Add native 101 smoke evidence`）；提交后工作区状态干净。\n\n实施及必要验证已完成。"
+  },
+  "created_at": "2026-10-19T05:48:57.506577Z",
+  "updated_at": "2026-10-19T05:50:21.5725583Z"
+}

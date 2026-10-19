@@ -45,6 +45,9 @@ func TestLocalIPCQueryCapabilityBeforeCreation(t *testing.T) {
 						return
 					}
 					reply := map[string]any{"id": req.ID, "ok": true, "result": map[string]any{}, "_meta": map[string]string{"runtimeId": "runtime"}}
+					if req.Method == "worktree.ps" {
+						reply["result"] = map[string]any{"worktrees": []any{}, "totalCount": 0, "truncated": false}
+					}
 					if req.Method == "session.tabs.subscribe" {
 						subscriptions.Add(1)
 						reply["ok"] = false

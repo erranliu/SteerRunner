@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
@@ -77,6 +78,9 @@ func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if orca.LegacyRemoteProfile(r.Profile) && r.PendingStop == "" {
+		return false
+	}
 	if handled, progress := e.advanceParser(id, w, r); handled {
 		return progress
 	}

@@ -182,7 +182,7 @@ func (c Client) CloseTerminalChecked(ctx context.Context, handle, runtime string
 		} `json:"close"`
 	}
 	if json.Unmarshal(r.Payload, &value) != nil || r.RuntimeID != runtime || value.Close.Handle != handle {
-		return b.StopReceipt{}, errors.New("original terminal close is unverified")
+		return b.StopReceipt{}, &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original terminal close is unverified"}
 	}
 	if value.Close.PtyKilled {
 		return b.StopReceipt{Disposition: "confirmed"}, nil

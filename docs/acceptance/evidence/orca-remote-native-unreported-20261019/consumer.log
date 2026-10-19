@@ -1,0 +1,14 @@
+=== RUN   TestRunnerNativeOutcomeContract
+--- PASS: TestRunnerNativeOutcomeContract (0.00s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/runnerclient	1.470s
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/activity_stream_stays_pinned_and_releases_its_connection
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/cancelled_activity_stream_releases_its_transaction
+=== RUN   TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/readable_changes_survive_technical_event_noise
+--- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding (0.26s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/activity_stream_stays_pinned_and_releases_its_connection (0.03s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/cancelled_activity_stream_releases_its_transaction (0.01s)
+    --- PASS: TestRunnerPublicReadsKeepOriginalFinalAndCallerBinding/readable_changes_survive_technical_event_noise (0.03s)
+PASS
+ok  	github.com/erranliu/SteerLine/internal/storage/sqlite	1.552s

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"strings"
 )
 
 type AuditFacts struct {
@@ -35,6 +36,29 @@ func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAud
 			return facts, errors.New("invalid native call journal")
 		}
 		calls = append(calls, c)
+	}
+	if len(policies) == 1 && policies[0].NativeLaunchCommand != "" {
+		first := true
+		for _, c := range calls {
+			if c.Kind != "intent" || len(c.Args) < 2 {
+				continue
+			}
+			if c.Args[0] == "file" || c.Args[0] == "files" || strings.HasPrefix(c.Args[0], "files.") {
+				return facts, errors.New("native remote audit contains a file deployment")
+			}
+			if c.Args[0] == "terminal" && c.Args[1] == "create" {
+				return facts, errors.New("native remote audit contains an extra terminal")
+			}
+			if c.Args[0] == "terminal" && c.Args[1] == "send" && first {
+				if auditArg(c.Args, "--text") != policies[0].NativeLaunchCommand {
+					return facts, errors.New("native remote startup differs from frozen parameters")
+				}
+				first = false
+			}
+		}
+		if first {
+			return facts, errors.New("native remote startup evidence missing")
+		}
 	}
 	aux := map[string]bool{}
 	if len(policies) > 1 {

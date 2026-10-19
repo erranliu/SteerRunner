@@ -1,0 +1,16 @@
+{
+  "pid": 36068,
+  "manifest_sha256": "008C4FA39EAE0EA2FA7D552D60CC56806C6B7847F80CE988A17E8A888F247D3D",
+  "driver_sha256": "6206E706C7C925F64E51A081A1271AD21CCF20EF5658230279117B849FFB53D9",
+  "runner_sha256": "29d44df0315190fdd533e7ab091c9450abf868e766f0a46985de2045debfef3a",
+  "source_commit": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.stop-revocation",
+  "level": "L3",
+  "helper_sha256": "ad3ad71e11a8698b9a31c8f3a5459214336015a5486c35fac20a1150d35cb8c7",
+  "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+  "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+  "case_id": "active",
+  "repeat_index": 1
+}

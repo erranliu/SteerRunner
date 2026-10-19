@@ -80,7 +80,7 @@ func TestOrcaNativeStateStream(t *testing.T) {
 						if string(request.Params["limit"]) != "100" {
 							return
 						}
-						result = map[string]any{"worktrees": []any{}}
+						result = map[string]any{"worktrees": []any{}, "totalCount": 0, "truncated": false}
 					} else if request.Method != "status.get" {
 						if string(request.Params["worktree"]) != `"id:worktree"` {
 							return

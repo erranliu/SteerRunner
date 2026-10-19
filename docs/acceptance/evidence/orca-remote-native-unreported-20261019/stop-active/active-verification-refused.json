@@ -1,0 +1,10 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": false,
+  "request_id": null,
+  "data": null,
+  "error": {
+    "code": "directory_conflict",
+    "message": "A writer still owns this directory; resources were not verified."
+  }
+}

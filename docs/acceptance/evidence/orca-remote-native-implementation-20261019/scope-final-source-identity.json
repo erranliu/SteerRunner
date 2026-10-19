@@ -1,0 +1,11 @@
+{
+  "pid": 55176,
+  "pattern": "^(TestSRServiceOwnership|TestEnvironmentCheckCLI)$",
+  "runner_sha256": "A1BF1A2C46E887532BB11FB627452C99DFEF44C0A58A0AC02CF24F0641063EA4",
+  "fixture_sha256": "429920481745ADE9FA172F4B084799EE3329494F651D31032D836F576CDAC277",
+  "source_commit": "95ae8a72792d2b11cc59b938257165b472b5b4de",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

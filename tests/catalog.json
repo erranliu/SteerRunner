@@ -224,26 +224,6 @@
       ]
     },
     {
-      "id": "environment-check.orca-sandbox",
-      "level": "L3",
-      "driver": "environment-check",
-      "target": "orca-environment",
-      "timeout_minutes": 15,
-      "cases": [
-        "complete"
-      ]
-    },
-    {
-      "id": "environment-check.orca-full-access",
-      "level": "L3",
-      "driver": "environment-check",
-      "target": "orca-environment",
-      "timeout_minutes": 15,
-      "cases": [
-        "complete"
-      ]
-    },
-    {
       "id": "orca-local.smoke",
       "level": "L3",
       "driver": "development-smoke",

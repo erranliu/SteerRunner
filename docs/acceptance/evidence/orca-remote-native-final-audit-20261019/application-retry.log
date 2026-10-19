@@ -1,0 +1,102 @@
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment
+--- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor (0.06s)
+    --- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment (0.03s)
+    --- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment (0.03s)
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+=== RUN   TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly
+--- PASS: TestSRFreezeOrcaAgent (52.75s)
+    --- PASS: TestSRFreezeOrcaAgent/agent= (13.00s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=codex (11.41s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=pi (10.00s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=dsh (8.93s)
+    --- PASS: TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly (9.41s)
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+=== RUN   TestRAParserAcquisition/needs_input
+=== RUN   TestRAParserAcquisition/conflict
+=== RUN   TestRAParserAcquisition/failed
+=== RUN   TestRAParserAcquisition/policy_violation
+=== RUN   TestRAParserAcquisition/side_effect_unverified
+=== RUN   TestRAParserAcquisition/stop
+=== RUN   TestRAParserAcquisition/source-drift
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition (131.04s)
+    --- PASS: TestRAParserAcquisition/completed (12.75s)
+    --- PASS: TestRAParserAcquisition/needs_input (13.99s)
+    --- PASS: TestRAParserAcquisition/conflict (14.04s)
+    --- PASS: TestRAParserAcquisition/failed (17.34s)
+    --- PASS: TestRAParserAcquisition/policy_violation (19.36s)
+    --- PASS: TestRAParserAcquisition/side_effect_unverified (16.22s)
+    --- PASS: TestRAParserAcquisition/stop (11.52s)
+    --- PASS: TestRAParserAcquisition/source-drift (14.83s)
+    --- PASS: TestRAParserAcquisition/new-source (10.98s)
+=== RUN   TestRALateParserReceiptAndDuplicate
+--- PASS: TestRALateParserReceiptAndDuplicate (19.00s)
+=== RUN   TestRAStateAuthorityParserHistory
+--- PASS: TestRAStateAuthorityParserHistory (11.55s)
+=== RUN   TestRAAtomicParserRecovery
+--- PASS: TestRAAtomicParserRecovery (20.84s)
+=== RUN   TestRAConcurrencyParserStopResources
+--- PASS: TestRAConcurrencyParserStopResources (18.02s)
+=== RUN   TestRAStateAuthorityParserReferences
+--- PASS: TestRAStateAuthorityParserReferences (12.61s)
+=== RUN   TestRAAtomicCompletion
+--- PASS: TestRAAtomicCompletion (13.73s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (2.21s)
+=== RUN   TestRAStateAuthority
+--- PASS: TestRAStateAuthority (1.15s)
+=== RUN   TestRABudgetReportOnce
+--- PASS: TestRABudgetReportOnce (11.79s)
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+=== RUN   TestRAConcurrencyPublication/new-source
+=== RUN   TestRAConcurrencyPublication/head-drift
+=== RUN   TestRAConcurrencyPublication/wrong-pr-head
+--- PASS: TestRAConcurrencyPublication (110.45s)
+    --- PASS: TestRAConcurrencyPublication/stop (27.30s)
+    --- PASS: TestRAConcurrencyPublication/new-source (32.88s)
+    --- PASS: TestRAConcurrencyPublication/head-drift (29.80s)
+    --- PASS: TestRAConcurrencyPublication/wrong-pr-head (20.47s)
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.01s)
+=== RUN   TestRAAuditObservedReportWork
+--- PASS: TestRAAuditObservedReportWork (15.73s)
+=== RUN   TestRATransitionUnknownNativeGate
+--- PASS: TestRATransitionUnknownNativeGate (1.07s)
+=== RUN   TestRAStateAuthorityQuestionSource
+--- PASS: TestRAStateAuthorityQuestionSource (5.06s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.89s)
+=== RUN   TestRAStateAuthorityMilestone
+--- PASS: TestRAStateAuthorityMilestone (1.04s)
+=== RUN   TestRAFeedbackSupersedesUnsent
+--- PASS: TestRAFeedbackSupersedesUnsent (6.13s)
+=== RUN   TestRAResumeConsumedActiveInputWaitsForOriginalEvidence
+--- PASS: TestRAResumeConsumedActiveInputWaitsForOriginalEvidence (1.26s)
+=== RUN   TestRAAuditLifecycle
+--- PASS: TestRAAuditLifecycle (15.97s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (9.99s)
+=== RUN   TestRAVersionRejectLegacy
+--- PASS: TestRAVersionRejectLegacy (0.00s)
+=== RUN   TestRAUnreportedOutcomeBoundary
+=== RUN   TestRAUnreportedOutcomeBoundary/unreported
+=== RUN   TestRAUnreportedOutcomeBoundary/unknown
+=== RUN   TestRAUnreportedOutcomeBoundary/failed
+=== RUN   TestRAUnreportedOutcomeBoundary/cancelled
+=== RUN   TestRAUnreportedOutcomeBoundary/business-blocked
+--- PASS: TestRAUnreportedOutcomeBoundary (27.17s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unreported (5.82s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/unknown (5.46s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/failed (5.94s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/cancelled (5.10s)
+    --- PASS: TestRAUnreportedOutcomeBoundary/business-blocked (4.85s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	493.415s

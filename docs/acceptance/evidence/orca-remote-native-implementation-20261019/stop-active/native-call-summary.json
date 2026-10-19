@@ -1,0 +1,22 @@
+{
+  "captured_at": "2026-10-19T05:55:13.108094+00:00",
+  "source": "native-calls.jsonl",
+  "receipts": 31,
+  "command_counts": {
+    "repo list": 1,
+    "worktree create": 1,
+    "terminal list": 4,
+    "terminal show": 22,
+    "terminal send": 2,
+    "terminal close": 1
+  },
+  "terminal_send_count": 2,
+  "receipt_replays": [
+    false,
+    false
+  ],
+  "business_path_only": true,
+  "remote_preparation_log_is_separate": true,
+  "native_launch_command": "& 'C:/sr-runtime/2ba0/01/native/codex.exe' '--no-daemon' '--config' 'sandbox_mode=danger-full-access' '--config' 'allow_login_shell=false' '--config' 'features.shell_snapshot=false' '--config' 'features.shell_snapshot_v2=false' '--config' 'approval_policy=never' '--config' 'approvals_reviewer=user' '--config' 'sandbox_workspace_write.writable_roots=[]' '--config' 'sandbox_workspace_write.exclude_tmpdir_env_var=true' '--config' 'sandbox_workspace_write.exclude_slash_tmp=true' '--config' 'sandbox_workspace_write.network_access=true' '--model' 'gpt-6-luna' '-c' 'model_reasoning_effort=\"high\"' '-c' 'tui.animations=false' 'Initialize this agent session. Reply READY only. Do not use tools or change files.'",
+  "not_an_effective_parameter_audit": true
+}

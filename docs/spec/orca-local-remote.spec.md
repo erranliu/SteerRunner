@@ -1,5 +1,7 @@
 # Spec：Orca 本机与远程连接统一
 
+2026-10-19 后续范围修订（已实施，验收见专项记录）：新远端 Run 的执行主机准备、helper 依赖、停止与完整 Check 规则由[仅 Orca Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)取代；本文件连接、路由和原生身份规则继续适用。这里的两 adapter 修改白名单属于历史连接专项，不限制后续去 helper 所必需的配置/投影/调用方改动。本机受管和旧记录边界保持。
+
 日期：2026-10-18。状态：本机原生查询、远程订阅加补查已实施，三项结构审计发现已修复并整合主分支连接恢复。最终构建验证与历史四项 L3 分开登记；远程 reconnect 前置阻断，V04 新子变体未验，尚未完成全部验收。未修改 Orca，生产改动限两个 adapter。配套 [Plan](orca-local-remote.plan.md)，证据见[专属验收](../acceptance/orca-local-remote.md)。
 
 调查基线：SteerRunner `9f9eca0`。执行语义继续遵守 [Runner Spec](steerrunner.spec.md)和[沙箱认证 Spec](sandbox-authentication.spec.md)；测试按[测试指南](../testing.md)分层。原 [L3 稳定性 Spec](l3-execution-stability.spec.md)的既有 case、三轮资格及历史结果保持原范围，本次不复制或重取整个稳定性矩阵的资格。

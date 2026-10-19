@@ -1,0 +1,30 @@
+{
+  "id": "06bb4ccc-5807-4b7c-81e6-30d0b0344c23",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_fc97a928-b524-49a0-9b7d-4f7f13660b4e",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3c871871de142d9b0684a5bab9d8e4d3@@f4546a91",
+      "incarnationId": "c7e9a030-5ded-471d-836d-e7a2982bacfc",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3c871871de142d9b0684a5bab9d8e4d3",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-3c871871de142d9b0684a5bab9d8e4d3",
+      "branch": "refs/heads/erranliu/sl-3c871871de142d9b0684a5bab9d8e4d3",
+      "tabId": "4577b488-f6b1-430c-94e5-59f57ab226e2",
+      "leafId": "e2e504c5-7b8d-49d7-b86e-81e5c77564fb",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792394331894,
+      "preview": "• 发布命令已完成，退出码为 0。实际 PR URL：https://github.com/erranliu/SteerlineTest/pull/610\n本次发布已完成.\nWorked for 25s • 15:18\n› Ask Codex to do anything\nGPT-6-Luna high fast · ~\\orca\\workspaces\\SteerlineTest\\sl-3c871871de142d9b0684a5bab9d8e4d3 · Initialize agent session\n? for shortcuts",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

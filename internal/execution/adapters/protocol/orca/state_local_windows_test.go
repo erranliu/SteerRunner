@@ -105,7 +105,7 @@ func TestOrcaLocalIPCQueryAndUpload(t *testing.T) {
 			ipcReply(conn, req, "runtime", map[string]any{})
 		case "session.tabs.list", "worktree.ps":
 			_, _ = conn.Write([]byte("\n{\"_keepalive\":true}\n"))
-			ipcReply(conn, req, "runtime", map[string]any{"queried": req.Method})
+			ipcReply(conn, req, "runtime", map[string]any{"queried": req.Method, "worktrees": []any{}, "totalCount": 0, "truncated": false})
 		case "files.writeBase64Chunk":
 			var p struct {
 				ContentBase64, RelativePath, ExpectedExecutionHostID string
@@ -222,7 +222,7 @@ func TestOrcaLocalIPCFrameFailuresAndCancellation(t *testing.T) {
 					_ = conn.Close()
 				case "cancelled": // Let the client's deadline interrupt the blocked read.
 				case "legacy":
-					ipcReply(conn, req, "runtime", map[string]any{"legacy": true})
+					ipcReply(conn, req, "runtime", map[string]any{"legacy": true, "worktrees": []any{}, "totalCount": 0, "truncated": false})
 				}
 			})
 			if scenario == "unauthorized" {

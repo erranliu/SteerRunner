@@ -1,0 +1,64 @@
+[
+  {
+    "file": "orca-preparation-e0638c727f0046b5aba93d58848f8a71/call-001.json",
+    "source_sha256": "efac3589ad2a8da92b9909ff4f73ed1338603adce456c565f247d1ae90cacf21",
+    "arguments": [
+      "repo",
+      "list"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T07:14:04.9656919Z"
+  },
+  {
+    "file": "orca-preparation-e0638c727f0046b5aba93d58848f8a71/call-002.json",
+    "source_sha256": "b2c79c7c0350616cd8c1dec4b0052d13ac3154c2c79a9ba84ef5f1490d8689e7",
+    "arguments": [
+      "worktree",
+      "list",
+      "--repo",
+      "id:903fb315-7d5e-4246-8913-816e1d3bdf03"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T07:14:09.8595036Z"
+  },
+  {
+    "file": "orca-preparation-e0638c727f0046b5aba93d58848f8a71/call-003.json",
+    "source_sha256": "1a50e4eb554e06467034a6414992ebd9deb63a83403a3db04314c602d3c58cda",
+    "arguments": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Projects/SteerlineTest",
+      "--title",
+      "SteerRunner native base preparation",
+      "--command",
+      "& git -C 'C:\\Projects\\SteerlineTest' fetch --no-tags origin +refs/heads/codex/srtest/c8446c20ecbc/base:refs/remotes/origin/codex/srtest/c8446c20ecbc/base; if ($LASTEXITCODE -eq 0) { & git -C 'C:\\Projects\\SteerlineTest' cat-file -e '63cd6735e9c4aad11867e433efd850cc30dad15c^{commit}'; if ($LASTEXITCODE -eq 0) { Write-Output ('SR_' + 'BASE_2f15c3cc40da40659f4b6134ea133e90:' + '63cd6735e9c4aad11867e433efd850cc30dad15c') } }"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T07:14:15.3112661Z"
+  },
+  {
+    "file": "orca-preparation-e0638c727f0046b5aba93d58848f8a71/call-004.json",
+    "source_sha256": "38f608dc0d147f7891899a670698de218495e8c977902f2be1d76b40fe0cb676",
+    "arguments": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_915b324f-42ae-4599-a655-9d40e6cbf9ee"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T07:14:20.1882146Z"
+  },
+  {
+    "file": "orca-preparation-e0638c727f0046b5aba93d58848f8a71/call-005.json",
+    "source_sha256": "7ce2ff8f1554855cd56c34b207852b6cbd9c045ccf1ae7201fc82c91a75075f7",
+    "arguments": [
+      "terminal",
+      "close",
+      "--terminal",
+      "term_915b324f-42ae-4599-a655-9d40e6cbf9ee"
+    ],
+    "exit_code": 0,
+    "at": "2026-10-19T07:14:26.1883296Z"
+  }
+]

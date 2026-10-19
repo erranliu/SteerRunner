@@ -303,6 +303,17 @@ func ValidateExecution(value Execution) *Fault {
 		if DecodeStrict(value.Settings, &settings) != nil || !validAccessMode(settings.AccessMode) || !optionalStrings(value.Settings, "agent") {
 			return invalid
 		}
+		var fields map[string]json.RawMessage
+		_ = json.Unmarshal(value.Settings, &fields)
+		if value.Target.Kind == "orca_environment" {
+			var launch map[string]json.RawMessage
+			_ = json.Unmarshal(fields["agent_launch"], &launch)
+			_, executable := launch["runtime_executable"]
+			_, sha := launch["runtime_sha256"]
+			if executable || sha {
+				return Fail(2, "invalid_input", "Remote Orca uses the native agent; remove agent_launch.runtime_executable and runtime_sha256.")
+			}
+		}
 		if !regexp.MustCompile(`^[A-Za-z][A-Za-z0-9_-]{0,63}$`).MatchString(settings.AgentName()) {
 			return invalid
 		}
@@ -321,8 +332,6 @@ func ValidateExecution(value Execution) *Fault {
 		if settings.GitHubAuth != nil && (settings.AgentName() != "codex" || settings.AgentLaunch.RuntimeExecutable == "" || settings.GitHubAuth.AppID <= 0 || settings.GitHubAuth.InstallationID <= 0 || !regexp.MustCompile(`^[A-Z][A-Z0-9_]{0,127}$`).MatchString(settings.GitHubAuth.PrivateKeyEnv)) {
 			return invalid
 		}
-		var fields map[string]json.RawMessage
-		_ = json.Unmarshal(value.Settings, &fields)
 		if raw, ok := fields["transport"]; ok && !optionalStrings(raw, "executable", "wait_timeout") {
 			return invalid
 		}

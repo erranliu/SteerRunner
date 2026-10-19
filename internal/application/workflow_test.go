@@ -179,3 +179,33 @@ func bindTestWorkflow(r *runstate.Record) {
 		r.Workflow.StepID = r.Workflow.Config.Initial
 	}
 }
+
+func TestRAUnreportedOutcomeBoundary(t *testing.T) {
+	for _, outcome := range []string{"unreported", "unknown", "failed", "cancelled", "business-blocked"} {
+		t.Run(outcome, func(t *testing.T) {
+			e, w := auditEngine(t)
+			r := e.runs["run"].Clone()
+			input := r.Snapshot.PendingTurn
+			r.Snapshot.Session.CurrentCommandID, r.Snapshot.Session.CurrentTurnID = input.CommandID, "original-turn"
+			e.runs["run"] = r
+			w.ownedInputs = map[string]bool{input.CommandID: true}
+			body, nativeOutcome := "实施及必要验证已完成。", outcome
+			if outcome == "business-blocked" {
+				nativeOutcome = "unreported"
+				body = `{"outcome":"blocked","summary":"uncertain publication","blocker":{"category":"unknown_external","action":"publish","error":"lost response"}}`
+			}
+			e.finish("run", b.TurnEvidence{CommandID: input.CommandID, SessionID: "session", TurnID: "original-turn", NativeOutcome: nativeOutcome, Started: true, Completed: true, Succeeded: true, FinalVerified: true, FinalSource: "native", FinalItemID: "original-final", LastMessage: body})
+			r = e.runs["run"]
+			if original := workflow.Result(r.Workflow, input.CommandID); original == nil || original.Outcome != nativeOutcome || r.View().Final == nil || r.View().Final.NativeOutcome != nativeOutcome {
+				t.Fatal("public native outcome was promoted", r.View())
+			}
+			if outcome == "unreported" {
+				if r.Workflow.StepID != workflow.StepAuditCode || len(r.Workflow.StageInputs) != 2 {
+					t.Fatal("verified result did not enter existing business routing", r.View())
+				}
+			} else if len(r.Workflow.StageInputs) != 1 || outcome != "business-blocked" && (!r.ResumeRequired || r.Phase != "original_session_recovery") || outcome == "business-blocked" && r.Status != "reconciling" {
+				t.Fatal("blocked result authorized a successor", r.View())
+			}
+		})
+	}
+}
