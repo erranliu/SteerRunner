@@ -1,0 +1,17 @@
+{
+  "test_source_commit": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+  "unit_packages": [
+    "internal/host",
+    "internal/testkit/livetest"
+  ],
+  "unit_passed": true,
+  "signed_archive_regression_passed": true,
+  "native_driver_compiled": true,
+  "native_driver_sha256": "78898ab7b68c25ce0511a2f86da974cd035f219df734c9b3dfa060e55d8c8a5d",
+  "native_zero_match_guard": {
+    "exit_code": 1,
+    "finished_at": "2026-10-19T04:26:58.8470124Z",
+    "pattern": "^NoSuchScenario$",
+    "scenario_count": 0
+  }
+}

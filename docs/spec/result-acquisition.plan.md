@@ -157,7 +157,7 @@ T2/T6/T8 同步 development 的外层/内部图及提示词：内部只含 execu
 
 ### 3.2 真实本机最小三 cases（T7）
 
-使用已有 `tests/live-config.example.json` 的配置/现场构造支持；用户本地 `.evidence/ra-live-config.json` 使用现已有 Codex 登录和实际原生 EXE，以及既有 SteerlineTest 发布配置，不含凭据值。不增 SteerLine checkout/EXE/数据库依赖。
+当前使用主线独立配置入口 `tests/test-config.example.json` 的配置/现场构造支持（原扁平 live-config 示例已删除，不恢复旧格式）；用户本地 `.evidence/ra-live-config.json` 使用现已有 Codex 登录和实际原生 EXE，以及既有 SteerlineTest 发布配置，不含凭据值。不增 SteerLine checkout/EXE/数据库依赖。
 
 - `parser-default`：通过实际 owner 对短审计材料夹具整理契约，不指定认证 home 或模型。记录冻结包、原生 session/JSONL/final、退出/归属/回执；实际模型名未报告则记不可得，不由 catalog 或模型自述推定。原生默认认证只在此次调用成功后算通过。不创建 PR。
 - `parser-boundaries`：非秘密环境名引用同一已有 home，显式选择候选模型，以真实成功证明可用性，不复制凭据或回退模型。污染材料诱导写 canary，核验仅接受正常整理或明确工具违规拒收、canary 不变。另一次测试专用 shell 开启反例，在同一 read-only/mxc/never 下要求实际尝试写入并遭拒；生产 shell 继续关闭，反例不作为获取成功。真实 turn.started 后取消另一解析，核实 owned 树停止。原生 Code Mode 运行时可按模型要求保留，实际工具事件仍事后拒收；不以自然未调用工具证明空工具面或零隐式上下文。
@@ -210,7 +210,7 @@ T7 首轮入口先 L1/完整 Controlled。仅修正 owner 原生环境/资格且
 | 级别/场景 | 环境、命令与时点 | 通过条件/证据 |
 | --- | --- | --- |
 | 组件 | 改后适配器/协议/审计包定向回归，application/host 的 `TestSROffline|TestSRShutdown|TestSRStopProgress|TestSRCLIContract` 定向；整包由下述完整 L1 的12分钟预算覆盖 | 原签名改写/重放/缺认证/活树/原主机等负例、失败查询但 reader 已退出/未知 reader 禁止覆盖、认证/控制/只读及现工作流回归通过；`R/checks/component-*.log`、`R/checks/stop-consumer.log`。早期扩大至 application 全包的5分钟总超时保留，不算通过 |
-| 完整 L1 | 冻结源码后 `./scripts/test.ps1 -Level L1 -OutDir .evidence/rebase-control-20261019/l1` | 全部本层测试通过，允许的 opt-in/helper 跳过逐项登记；native compile/零匹配守卫/框架通过；`R/prerequisites/l1/` |
+| 完整 L1 | 冻结源码后 `./scripts/test.ps1 -Level L1 -OutDir .evidence/rebase-control-20261019/l1` | 全部本层测试通过，允许的 opt-in/helper 跳过逐项登记；native compile/零匹配守卫/框架通过；`R/prerequisites/l1.jsonl` / `summary.json` |
 | 完整 Controlled16 | L1 后，以 `tests/catalog.json` 全部受控场景 pattern 经正式入口构建/运行 integration harness，总预算25分钟、保持原构建/独立进程启动/断言/单场景预算 | 16/16 顶层及8条获取子路径无跳过通过，EXE/SHA/源码一致；`R/prerequisites/controlled/` |
 | 原生 workflow 3 cases | 前置通过后，原 `Invoke-SRCaseBatch` 入口执行 `orca-remote.service-restart` 的 graceful-active/kill-active、`orca-remote.stop-revocation` 的 active，冻结配置，最大并行2，明确排除4管理员变体 | 原控制在业务前就绪、同身份恢复、原 complete final/reader 退出、零业务重发；原签名退出/认证/控制关闭/完整清单/服务结算均通过；`R/native/` |
 | 既有无业务停止探针 | 前置通过后本机与已配对远端各一次 `go test ./internal/host -run '^TestOrcaStoppedNativeProbe$' -count=1 -timeout=8m`；显式 `STEERRUNNER_ORCA_STOP_PROBE_*` 固定新隔离目录、同源 EXE/helper/native/model/repo/base/原 host；与其他真机合计并行不超2 | 活动拒绝、原 helper 真实签名退出后公开 EXE 离线 verify 成功，原 DB/失败回执不变、不启动服务、零业务输入、原控制及自有 worktree 清理；`R/probes/`。Reader 真实结算由前一行实际业务查询覆盖，不再创建旧一次性 reader 终端 |
@@ -220,3 +220,5 @@ RA-A08 与主线 OSV-A06/A08/A09 的本轮交叉覆盖沿上述有限场景维�
 主线追加接入（2026-10-19，`2aa17cc`）：保留独立配置的公开 validate/capability、配置冻结与 case 可用性边界；测试基线与 manifest 更新为 workflow/2，结果获取 case 补齐同一注册需求，删除已废弃的反馈资格参数。配置/CLI/manifest 组件与框架全量检查须通过，再由最终冻结源码重新执行本节正式 L1/Controlled/native 入口。`5861ded` 批次完整 L1 已通过，Controlled 因主线推进主动取消，未启动 native；保留中断记录，不能算最终验收。
 
 测试接线补充：最终产品批次 bb84ea8 已完整通过 L1/Controlled/三项 native workflow。随后补充停止探针在 helper 启动前因把内部 ID 当 Orca UUID 重试身份而失败，删除首次发送中无原 UUID 的 retry 标志，不重发未知请求，在新现场重跑两项探针。另发现测试报告 MarshalIndent 会改写嵌入 RawMessage 的签名正文；证据改为原字节 base64 保存，新增实际签名经过缩进归档仍可验签/改写必拒绝的回归。原报告保留，从原 runtime/worktree artifact 重读原始退出字节并另存、验签，不重签或从格式化 JSON 猜测原文。上述只改测试/证据；以 checks/code-equivalence.json 证明生产、集成及脚本源码与 bb84ea8 相同，复用其冻结 EXE/模型批次，重跑 host/livetest、native driver 编译/零匹配守卫及本机/远端停止探针，不重跑无变化的真实业务模型。失败原记录、实际产品/测试提交和原始字节来源分别归档。
+
+最终组合执行：以 `bb84ea80cab2e37c2c7d184fcd82765dde2b1d32` 为冻结源码、主线 `2aa17cce7da6fd75e59db76e18f2521d9e9777db`，正式入口整体通过完整 L1 385 Go/29 Node、Controlled16、三项所选原生 workflow；其后本机/远端停止探针各一次通过，五份原签名退出逐份验签。原始失败/主动中断及配置冻结、原控制身份/reader 结算/清单/服务证据均归档到 R；以 [R/README](../acceptance/evidence/rebase-control-20261019/README.md) 的命令及范围为准。产品批次与随后测试取证修正的关系见 code-equivalence.json；生产源码未变，实际产品/测试提交分别登记。

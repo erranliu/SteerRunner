@@ -1,0 +1,49 @@
+{
+  "id": "74f417b4-4e71-458e-95a2-62df04e8164d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c229acf2-b9a8-4ec8-9e65-bbdae44039a6",
+      "status": "running",
+      "tail": [
+        "Windows PowerShell",
+        "Copyright (C) Microsoft Corporation. All rights reserved.",
+        "",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b>>&& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0L& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lm& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmd& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmdp& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0Lmdpd& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdC& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ9>& 'C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovc3ItcnVudGltZS8yYmEwLzAxL25hdGl2ZS9jb2RleC5leGUiLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ9'",
+        "SR_REMOTE_READY:eyJhdXRoZW50aWNhdGlvbl9jb250cm9sIjp0cnVlLCJleGl0X3B1YmxpY19rZXkiOiJrRzhaOXJsdkNiZXAwSThNemo2aXZHYUdaZVE3ZVd2Tk5mSlZhUXorQ2RNPSIsIm93bmVyIjp7ImtpbmQiOiJvcyIsInBpZCI6MjQ3NzYsImNyZWF0ZWQiOiIwMWRkNWY4MjQxNzk1MmFhIiwiZXhlY3V0YWJsZSI6ImM6XFxzci1ydW50aW1lXFwxYzNjLWZpeGVkLWNvbnRyb2wtMjAyNjEwMTlcXDRkZTAxYzkzZTE0NWRhOGNcXHN0ZWVycnVubmVyLWFnZW50LmV4ZSJ9LCJuYXRpdmVfdHJhbnNwb3J0IjoiY29kZXgtcmVtb3RlLWlubGluZS12MyIsInJ1bnRpbWVfc2hhMjU2IjoiNGRlMDFjOTNlMTQ1ZGE4YzJkNWM1MTczZWZmNWI0NDU2NzdmYTA3MzQzMzNlYTc0NjVhODQzYWQ3OWQ4NzgwMyIsInZlcmlmaWVkIjp0cnVlLCJjb250cmFjdCI6ImNvZGV4LXBvbGljeS12MTA6MC4xNTkuMjpleHBsaWNpdC1hY2Nlc3MtbW9kZTpyZXBvc2l0b3J5LWF1dGgtYnJva2VyOm5ldmVyIiwid29ya3NwYWNlIjoiQzpcXFVzZXJzXFxBZG1pbmlzdHJhdG9yXFxvcmNhXFx3b3Jrc3BhY2VzXFxTdGVlcmxpbmVUZXN0XFxzci1zdG9wLXNyLXJlYmFzZS1jb250cm9sLTIwMjYxMDE5LXJlbW90ZS01MTc5MmVlNS1hY2Q3NDAxYiIsInJlcG9zaXRvcnkiOiJodHRwczovL2dpdGh1Yi5jb20vZXJyYW5saXUvU3RlZXJsaW5lVGVzdC5naXQiLCJzZXNzaW9uX2lkIjoiMDFhMTUyNmEtZjY0OS03OTQzLWJlNTktOGQ5NDdlMzU1MDM0IiwiY29uZmlndXJhdGlvbl9kaWdlc3QiOiI5NGMwZTk1M2Y5MzExMThmZjI5NjRkNDUxNDVmODQzNTcxM2JiYjU3M2NlZTFiZDFiZTUwOTllNjQxNTlhYzc5IiwicHJvY2VzcyI6eyJraW5kIjoib3MiLCJwaWQiOjI1MDE2LCJjcmVhdGVkIjoiMDFkZDVmODI0MzIyMDEyMyIsImV4ZWN1dGFibGUiOiJjOlxcc3ItcnVudGltZVxcMmJhMFxcMDFcXG5hdGl2ZVxcY29kZXguZXhlIn0sImNoZWNrZWRfYXQiOiIyMDI2LTEwLTE5VDA0OjI4OjMzLjUwMDQyNzlaIiwiZXhwaXJlc19hdCI6IjIwMjYtMTAtMTlUMTM6Mjg6MTUuMzU5NjkzMiswODowMCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCJ9Cg",
+        "   >_ OpenAI Codex (v0.159.2)     loading  Resuming session… › Ask Codex to do anything   ~\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b  › Ask Codex to do anything   GPT-6-Luna high fast · ~\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "╭───────────────────────────────────────────────────────────────╮",
+        "│ ✨ Update available! 0.159.2 -> 0.163.0                       │",
+        "│ See https://github.com/openai/codex for installation options. │",
+        "│                                                               │",
+        "│ See full release notes:                                       │",
+        "│ https://github.com/openai/codex/releases/latest               │",
+        "╰───────────────────────────────────────────────────────────────╯",
+        "",
+        "",
+        "  >_ OpenAI Codex (v0.159.2)",
+        "     ~\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+        "",
+        "  Tip: Use /status to see the current model, approvals, and token usage.",
+        "",
+        "",
+        "› Initialize this agent session. Reply READY only. Do not use tools or change files.",
+        "",
+        "",
+        "• READY",
+        "",
+        "  Worked for 9s • 12:28 › Ask Codex to do anything  GPT-6-Luna high fast · ~\\orca\\workspaces\\SteerlineTest\\sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "26",
+      "latestCursor": "26",
+      "returnedLineCount": 27,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

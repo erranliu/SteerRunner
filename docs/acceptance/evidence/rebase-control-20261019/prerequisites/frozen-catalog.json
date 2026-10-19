@@ -1,0 +1,282 @@
+{
+  "schema": "steerrunner-tests/v1",
+  "l1_packages": [
+    "./internal/..."
+  ],
+  "controlled_scenarios": [
+    "TestSRStandalonePackage",
+    "TestSRServiceOwnership",
+    "TestSRInputFreeze",
+    "TestSRPermissionQualification",
+    "TestSRRunWorkflow",
+    "TestSRStorageLogsEvents",
+    "TestSRPublicationIdentity",
+    "TestSRPublicationBeforeWorkflowReady",
+    "TestSRNativeUnknownAndStop",
+    "TestSRRestartRequiresResume",
+    "TestSRStabilityLostSubmitResponse",
+    "TestSRStabilityRevocationAcrossRestart",
+    "TestSRWorkflowDiscoveryAndSelection",
+    "TestSRMultipleRunsIsolation",
+    "TestEnvironmentCheckCLI",
+    "TestSRResultAcquisition"
+  ],
+  "scenarios": [
+    {
+      "id": "orca-local.codex",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.pi",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.pi-full-access",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-local.dsh",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "dsh",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.result-acquisition",
+      "level": "L2",
+      "driver": "result-acquisition",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.smoke",
+      "level": "L2",
+      "driver": "development-smoke",
+      "target": "local-codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-remote.smoke",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-remote.full-access",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "orca-remote.caller-exit",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "accepted-response-lost"
+      ]
+    },
+    {
+      "id": "orca-remote.connection-reconnect",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "active-disconnect",
+        "pre-send-disconnect"
+      ]
+    },
+    {
+      "id": "orca-remote.service-restart",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "graceful-active",
+        "kill-active",
+        "graceful-boundary",
+        "kill-boundary"
+      ]
+    },
+    {
+      "id": "orca-remote.stop-revocation",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "active",
+        "boundary",
+        "unreachable"
+      ]
+    },
+    {
+      "id": "orca-remote.publication-unknown",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "completion-gap",
+        "query-unavailable"
+      ]
+    },
+    {
+      "id": "local-codex.feedback",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "local-codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "local-codex",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "local-codex.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "local-codex",
+      "timeout_minutes": 45
+    },
+    {
+      "id": "controlled.permanent-evidence-loss",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.stop-commit-race",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.storage-failure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.resource-pressure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "environment-check.local-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.local-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.orca-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.orca-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "orca-local.smoke",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-local",
+      "timeout_minutes": 30
+    },
+    {
+      "id": "environment-check.orca-local-sandbox",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-local",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "environment-check.orca-local-full-access",
+      "level": "L3",
+      "driver": "environment-check",
+      "target": "orca-local",
+      "timeout_minutes": 15,
+      "cases": [
+        "complete"
+      ]
+    },
+    {
+      "id": "orca-local.mixed",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30
+    }
+  ]
+}

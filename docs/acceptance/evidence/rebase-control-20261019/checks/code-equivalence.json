@@ -1,0 +1,28 @@
+{
+  "test_execution_source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "capture_test_source_commit": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+  "production_and_controlled_sources_identical": true,
+  "changed_files": [
+    {
+      "path": "docs/spec/result-acquisition.plan.md",
+      "sha256": "fadb4e150a3c0312edbdf109179cdaf7b01ea25d9e4cc9b11d67e8ef97152150"
+    },
+    {
+      "path": "internal/host/orca_native_test.go",
+      "sha256": "59d8ee4080c62a7e73b955fa668c79163b72163bbe85adfbaddd97fe0144e4bc"
+    },
+    {
+      "path": "internal/testkit/livetest/signed_exit_evidence.go",
+      "sha256": "1a1b2cf51710839225321d6ed725516bb17f560a595f7498312cbca44ec89bf7"
+    },
+    {
+      "path": "internal/testkit/livetest/signed_exit_evidence_test.go",
+      "sha256": "8877865bff6f5bdc44d2420c05bc8a3bf021ddcb06284002850d4d9ff93d6ad4"
+    },
+    {
+      "path": "tests/native/remote_cleanup_test.go",
+      "sha256": "fc61c4842fc12cb4400c7d4e22d9bbca1eb5546bc7dcf6a4e3599ac9a29fe37c"
+    }
+  ],
+  "scope": "Only probe first-submit retry argument and test evidence encoding/regression plus Plan. Frozen Runner/helper/native workflow sources and assertions unchanged; original EXE/model evidence retained with actual source identity."
+}

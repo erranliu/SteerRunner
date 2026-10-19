@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-19T04:29:55.0833222Z",
+  "test_execution_source": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "capture_test_source": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+  "go": "go version go1.26.4 windows/amd64",
+  "codex_version": "codex-cli 0.159.2",
+  "codex_sha256": "52f75c649bebb8001102a1dd129c1ea6d02b0940321e6d7e82ee0526753bd58a",
+  "orca_cli_sha256": "894700bc388af843b06628ded98dbdd1d9d25e3a94fea661dbf4dc16eeed5ae2",
+  "steerline_head": "26ff639673fcbfcc47ab375bb9bd34ceb60dd243",
+  "steerline_status": [],
+  "steerline_task_access": "read-only; external HEAD or edits may advance independently of this task",
+  "orca_task_access": "native test resources only; no source/settings writes",
+  "deployment": false
+}

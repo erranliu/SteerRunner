@@ -1,0 +1,29 @@
+{
+  "id": "b3b5454a-836f-466b-a47c-348c8e3a230d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c229acf2-b9a8-4ec8-9e65-bbdae44039a6",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b@@de1b4542",
+      "incarnationId": "e6a02654-8185-493c-8601-737161e90323",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-remote-51792ee5-acd7401b",
+      "tabId": "17b887d6-7b02-4896-9201-3b7106de7fd5",
+      "leafId": "e4d9095b-b728-428b-8b22-2ec2750f4b7a",
+      "title": "SteerRunner stop proof probe",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792384088356,
+      "preview": "Windows PowerShell\nCopyright (C) Microsoft Corporation. All rights reserved.",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

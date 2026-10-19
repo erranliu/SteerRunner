@@ -1,6 +1,6 @@
 # Spec：Workflow 能力解耦与结构化结果获取
 
-> 2026-10-19 主线接入：已 rebase 到 `a3dc15d`，正在审计和验证签名原生退出/reader 结算与固定控制终端的组合实现。旧批次结论不自动继承，最终证据见[本轮记录](../acceptance/evidence/rebase-control-20261019/README.md)。SteerLine/Orca 不改。
+> 2026-10-19 主线接入已完成：rebase 到 `2aa17cc`，干净源码 `bb84ea8` 完整 L1 385 Go/29 Node、Controlled16、原生 workflow3 通过；测试修正 `51792ee` 后，复用相同生产源码/冻结 EXE 的停止探针2通过；签名原生退出、reader 结算与固定控制边界已组合核验。初始化创建身份未知仍阻塞，四项管理员变体未执行；不继承历史构建资格。见[最终证据](../acceptance/evidence/rebase-control-20261019/README.md)。SteerLine/Orca 不改。
 
 > 2026-10-19 固定控制终端已实施：同源完整 L1 366 Go/29 Node、Controlled 16，以及正常重启、执行期强杀恢复、活动执行撤销三项原生用例通过；原控制身份、完整 final、撤销和关闭分别核验。初始化创建身份未知仍阻塞，无第二状态权威，SteerLine/Orca 不改。内部 Orca state codec 升至 6；四项管理员变体未执行。见[本增量验收](../acceptance/evidence/fixed-control-20261019/README.md)及 §7.1。
 

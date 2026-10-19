@@ -1,0 +1,25 @@
+{
+  "id": "ba8abc3a-d1e9-4ed9-9681-7d0f4dab243f",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_a8b5aae1-8377-49eb-b330-dc96c72de504",
+      "status": "running",
+      "tail": [
+        "{\"version\":3,\"contract\":\"windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never\",\"runtime_sha256\":\"4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803\",\"bundle_sha256\":\"0b2e7c5ea62a47dd52a9452281d61af6d29622d5548cc2d1643cea6ac457eb5c\",\"pi_sha256\":\"62a850310dc63403b76349d0f1774876837795d00b92f693983266fcfb11d2ef\",\"dsh_sha256\":\"911336fbc43001ba822201fe399bb0f5c378cc1fa81e080c172fef01006bdcc4\"}",
+        "SR_FIXED_HELPER_OK:4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+        "PS C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-runtime-1c3c-full-20261018>"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "2",
+      "latestCursor": "2",
+      "returnedLineCount": 3,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

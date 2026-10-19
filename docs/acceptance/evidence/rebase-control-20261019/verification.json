@@ -1,0 +1,45 @@
+{
+  "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "main": "2aa17cce7da6fd75e59db76e18f2521d9e9777db",
+  "helper": {
+    "commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+    "dirty": false,
+    "sha256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+    "at": "2026-10-19T03:47:19.0700228Z"
+  },
+  "l1": {
+    "terminal_extension_test_count": 29,
+    "test_count": 385,
+    "terminal_extensions_passed": true,
+    "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\framework",
+    "native_zero_match_guard": true,
+    "terminal_extension_exit": 0,
+    "level": "L1",
+    "exit_code": 0,
+    "skipped_tests": [
+      "TestProcessHostCommandHelper",
+      "TestAuthenticationNativeToolBoundary",
+      "TestOrcaStoppedNativeProbe",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestServiceStopWorkerHelper",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "native_driver_compile_exit": 0,
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest"
+  },
+  "controlled": {
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled",
+    "exit_code": 0,
+    "scenario_count": 16,
+    "level": "Controlled"
+  },
+  "native_cases_passed": 3,
+  "excluded_admin_cases": 4,
+  "native_stop_probes_passed": 2,
+  "capture_test_source_commit": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+  "production_and_controlled_sources_identical": true,
+  "all_signatures_and_cleanup_verified": true,
+  "prior_failed_batches_preserved": true
+}

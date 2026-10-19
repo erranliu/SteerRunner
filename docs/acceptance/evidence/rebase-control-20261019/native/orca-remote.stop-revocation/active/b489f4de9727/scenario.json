@@ -1,0 +1,69 @@
+{
+  "scenario": "orca-remote.stop-revocation",
+  "case_id": "active",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "98a3fe068f260427f5521fb4f9692b5b",
+  "test_outcome": "passed",
+  "business_outcome": "stopped",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "faults.jsonl: active checker stopped by original resource close"
+    },
+    {
+      "name": "no-unexpected-publication",
+      "passed": true,
+      "evidence": "driver-commands.jsonl: no PR for dedicated stop fixture"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately"
+    },
+    {
+      "name": "native-permissions",
+      "passed": true,
+      "evidence": "remote-worker-permission-audit.json: original provider, frozen helper, access mode, never and no escape/approval"
+    },
+    {
+      "name": "no-input-during-cleanup",
+      "passed": true,
+      "evidence": "original business forwarding intents unchanged by stop/authentication/control cleanup"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts, fixed control identity, authentication revocation and confirmed closure"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

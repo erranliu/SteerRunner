@@ -1,0 +1,395 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+  "source_dirty": false,
+  "started_at": "2026-10-19T03:47:29.6830102Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "passed_with_exclusions",
+  "results": [
+    {
+      "terminal_extension_test_count": 29,
+      "test_count": 385,
+      "terminal_extensions_passed": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\framework",
+      "native_zero_match_guard": true,
+      "terminal_extension_exit": 0,
+      "level": "L1",
+      "exit_code": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "native_driver_compile_exit": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest"
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled",
+      "exit_code": 0,
+      "scenario_count": 16,
+      "level": "Controlled"
+    },
+    {
+      "evidence": "C:\\srt\\6231a2f36445\\evidence",
+      "manifest": "C:\\srt\\6231a2f36445\\manifest.json",
+      "level": "L3",
+      "identity": {
+        "pid": 32488,
+        "manifest_sha256": "1efc00a3647a0c20e1c2229506b1fc195cc8ffebfc5759211b972981273d7df6",
+        "driver_sha256": "4221fb85352ea9b0d49dc8da06fd46add92f9edb61c91e88bc3f77a85bec9f01",
+        "runner_sha256": "c8bc14856e182efac905929e58182c1d32f96adfbe985f7685b03ac8683b5a2b",
+        "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "93ee57bea6fbdc1b2628f462a3aaed11cb26905f17135aded87060ec419f9831",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "graceful-active",
+        "repeat_index": 1
+      },
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.service-restart-graceful-active-r1-fixture.json",
+      "resources": [
+        "root:C:\\srt\\6231a2f36445",
+        "base:codex/srtest/6231a2f36445/base",
+        "run:35341509f938f73bb9fcd7e32fafb215",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-35341509f938f73bb9fcd7e32fafb215",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_2ba84441-4a2b-4afd-bec4-4cc51981bcc5:e6482a3b-8415-4f4e-b3e1-c307c35739ad",
+        "branch:erranliu/sl-35341509f938f73bb9fcd7e32fafb215",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/583"
+      ],
+      "finished_at": "2026-10-19T04:19:27.8285653Z",
+      "expected_outcome": "merged",
+      "repeat_index": 1,
+      "case_id": "graceful-active",
+      "scenario": "orca-remote.service-restart",
+      "started_at": "2026-10-19T04:10:34.0636833Z"
+    },
+    {
+      "evidence": "C:\\srt\\5dabbee3c1d6\\evidence",
+      "manifest": "C:\\srt\\5dabbee3c1d6\\manifest.json",
+      "level": "L3",
+      "identity": {
+        "pid": 50400,
+        "manifest_sha256": "5a635fe6b4cb488a5cee9c5464e17bbbafc9207b60d939fc138357958949e558",
+        "driver_sha256": "4221fb85352ea9b0d49dc8da06fd46add92f9edb61c91e88bc3f77a85bec9f01",
+        "runner_sha256": "c8bc14856e182efac905929e58182c1d32f96adfbe985f7685b03ac8683b5a2b",
+        "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "93ee57bea6fbdc1b2628f462a3aaed11cb26905f17135aded87060ec419f9831",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "kill-active",
+        "repeat_index": 1
+      },
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.service-restart-kill-active-r1-fixture.json",
+      "resources": [
+        "root:C:\\srt\\5dabbee3c1d6",
+        "base:codex/srtest/5dabbee3c1d6/base",
+        "run:d90244b0c996701d9cef08c9d887078c",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d90244b0c996701d9cef08c9d887078c",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_4e9a4fd1-18aa-4c72-bc77-c4f3c71bafa0:45603b7b-4598-4933-b0ff-45c3b05a32ec",
+        "branch:erranliu/sl-d90244b0c996701d9cef08c9d887078c",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/584"
+      ],
+      "finished_at": "2026-10-19T04:19:30.7199667Z",
+      "expected_outcome": "merged",
+      "repeat_index": 1,
+      "case_id": "kill-active",
+      "scenario": "orca-remote.service-restart",
+      "started_at": "2026-10-19T04:10:34.1349897Z"
+    },
+    {
+      "started_at": null,
+      "case_id": "graceful-boundary",
+      "scenario": "orca-remote.service-restart",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.service-restart-graceful-boundary-r1-fixture.json",
+      "reason": "User explicitly excluded administrator-required tests; not executed or passed",
+      "finished_at": null,
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "excluded",
+      "manifest": null,
+      "evidence": null
+    },
+    {
+      "started_at": null,
+      "case_id": "kill-boundary",
+      "scenario": "orca-remote.service-restart",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.service-restart-kill-boundary-r1-fixture.json",
+      "reason": "User explicitly excluded administrator-required tests; not executed or passed",
+      "finished_at": null,
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "excluded",
+      "manifest": null,
+      "evidence": null
+    },
+    {
+      "evidence": "C:\\srt\\b489f4de9727\\evidence",
+      "manifest": "C:\\srt\\b489f4de9727\\manifest.json",
+      "level": "L3",
+      "identity": {
+        "pid": 42464,
+        "manifest_sha256": "8c068c56efe566366635879e8dac061b4a26d7f0bdf5109cba4914e79bccb24f",
+        "driver_sha256": "4221fb85352ea9b0d49dc8da06fd46add92f9edb61c91e88bc3f77a85bec9f01",
+        "runner_sha256": "c8bc14856e182efac905929e58182c1d32f96adfbe985f7685b03ac8683b5a2b",
+        "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.stop-revocation",
+        "level": "L3",
+        "helper_sha256": "93ee57bea6fbdc1b2628f462a3aaed11cb26905f17135aded87060ec419f9831",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "active",
+        "repeat_index": 1
+      },
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.stop-revocation-active-r1-fixture.json",
+      "resources": [
+        "root:C:\\srt\\b489f4de9727",
+        "base:codex/srtest/b489f4de9727/base",
+        "run:98a3fe068f260427f5521fb4f9692b5b",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-98a3fe068f260427f5521fb4f9692b5b",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_f4f3f4fb-8216-453f-ac3b-fb095be3fc4a:78e574aa-a260-408e-96de-342de763b635",
+        "branch:erranliu/sl-98a3fe068f260427f5521fb4f9692b5b"
+      ],
+      "finished_at": "2026-10-19T04:24:01.5619576Z",
+      "expected_outcome": "stopped",
+      "repeat_index": 1,
+      "case_id": "active",
+      "scenario": "orca-remote.stop-revocation",
+      "started_at": "2026-10-19T04:19:29.1417054Z"
+    },
+    {
+      "started_at": null,
+      "case_id": "boundary",
+      "scenario": "orca-remote.stop-revocation",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.stop-revocation-boundary-r1-fixture.json",
+      "reason": "User explicitly excluded administrator-required tests; not executed or passed",
+      "finished_at": null,
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "excluded",
+      "manifest": null,
+      "evidence": null
+    },
+    {
+      "started_at": null,
+      "case_id": "unreachable",
+      "scenario": "orca-remote.stop-revocation",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\orca-remote.stop-revocation-unreachable-r1-fixture.json",
+      "reason": "User explicitly excluded administrator-required tests; not executed or passed",
+      "finished_at": null,
+      "level": "L3",
+      "repeat_index": 1,
+      "status": "excluded",
+      "manifest": null,
+      "evidence": null
+    }
+  ],
+  "executed_case_count": 3,
+  "passed_case_count": 3,
+  "first_pass_rate": 1,
+  "max_parallel": 2,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": []
+  },
+  "availability": [
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\bin\\steerrunner.exe",
+  "runner_sha256": "c8bc14856e182efac905929e58182c1d32f96adfbe985f7685b03ac8683b5a2b",
+  "resource_digest": "e6064e4d905a821d8dcd13652d147822b8d981a507edc9a6b134746c15bcc7d7",
+  "source_config_digest": "5e628b87cc3710f56f6c4956c08f3baf8185aa0982d22a3b0a9f3cda8ad18d88",
+  "requirements_sha256": "2ad10fd06ac470c492a057abc95bedd3954438671941b4bbd7394cfff4bcb5db",
+  "helper_sha256": "3ae97ae8befeed580930c5949fc395fbffba908856b548422a9b10908d3db576",
+  "configuration_sha256": "3f3caaeafe9ee10f054e2e8fcd07a0b6d3f360d5d4b7902551be70a2730e1b54",
+  "selected_scenarios": [
+    "orca-remote.service-restart",
+    "orca-remote.stop-revocation"
+  ],
+  "repeat": 1,
+  "planned_case_count": 7,
+  "authorized_exclusion_count": 4,
+  "scope": "admin-free-subset",
+  "unavailable_case_count": 0,
+  "levels": {
+    "L3": {
+      "complete_level_passed": false,
+      "excluded": [
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable"
+      ],
+      "requested": [
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable"
+      ],
+      "passed": [
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.stop-revocation/active"
+      ],
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "executed": [
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.stop-revocation/active"
+      ],
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "environment-check.orca-sandbox/complete",
+        "environment-check.orca-full-access/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default"
+      ],
+      "unavailable": []
+    }
+  },
+  "finished_at": "2026-10-19T04:24:01.6976533Z"
+}

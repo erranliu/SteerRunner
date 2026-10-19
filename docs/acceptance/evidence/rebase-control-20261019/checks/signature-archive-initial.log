@@ -1,0 +1,5 @@
+panic: original Codex signed exit is invalid
+
+goroutine 1 [running]:
+main.main()
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/.evidence/rebase-control-20261019/verify-proof/main.go:87 +0xaa7

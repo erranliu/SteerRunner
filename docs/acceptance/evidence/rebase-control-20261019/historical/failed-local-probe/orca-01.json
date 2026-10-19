@@ -1,0 +1,75 @@
+{
+  "id": "855d617c-74e8-4f26-823e-01770bf8f55c",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "identity": {
+        "key": "wt2:local:73c472dc-af1f-4741-9724-6ba4a8ebd319",
+        "executionHostId": "local",
+        "instanceId": "73c472dc-af1f-4741-9724-6ba4a8ebd319"
+      },
+      "instanceId": "73c472dc-af1f-4741-9724-6ba4a8ebd319",
+      "repoId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "creatorProvenance": {
+        "kind": "host"
+      },
+      "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "head": "849ed9b33de86920e4b582bd7513628421bbfa99",
+      "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": false,
+      "isPinned": false,
+      "sortOrder": 1792383852685,
+      "lastActivityAt": 1792383852685,
+      "createdAt": 1792383852685,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1792383849405
+      },
+      "baseRef": "849ed9b33de86920e4b582bd7513628421bbfa99",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "workspaceLineage": null,
+      "git": {
+        "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+        "head": "849ed9b33de86920e4b582bd7513628421bbfa99",
+        "branch": "refs/heads/erranliu/sr-stop-sr-rebase-control-20261019-local-bb84ea80-f0543c5d",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    },
+    "lineage": null,
+    "workspaceLineage": null,
+    "warnings": [],
+    "catalogVersion": {
+      "epoch": "99faf124-3c15-4376-80ac-d449df0c014f",
+      "sequence": 1150
+    }
+  },
+  "_meta": {
+    "runtimeId": "456f70a1-9c53-406c-a48a-72833d36abdb"
+  }
+}

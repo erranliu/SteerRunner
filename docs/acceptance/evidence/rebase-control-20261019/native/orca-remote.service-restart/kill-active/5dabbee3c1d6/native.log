@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.service-restart
+--- PASS: TestSRLiveScenario (362.60s)
+    --- PASS: TestSRLiveScenario/orca-remote.service-restart (362.45s)
+PASS

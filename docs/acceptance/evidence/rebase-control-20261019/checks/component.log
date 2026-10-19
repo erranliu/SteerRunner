@@ -1,0 +1,75 @@
+# github.com/erranliu/SteerRunner/internal/host [github.com/erranliu/SteerRunner/internal/host.test]
+internal\host\orca_native_test.go:213:191: unknown field Inspection in struct literal of type orcatransport.Turn
+internal\host\orca_native_test.go:213:209: undefined: orca.NativeInspection
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	27.015s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	22.281s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	6.194s
+--- FAIL: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory (0.00s)
+    --- FAIL: TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory/already-absent (0.00s)
+        diagnostic_test.go:78: unsafe or unresolved auxiliary cleanup 1 lost response
+            lost
+            original terminal stop inventory is incomplete or foreign
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.941s
+panic: test timed out after 5m0s
+	running tests:
+		TestPrivateRunGitGrantDoesNotExpandLegacyCache (4s)
+
+goroutine 3839 [running]:
+testing.(*M).startAlarm.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2802 +0x354
+created by time.goFunc
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/time/sleep.go:215 +0x2d
+
+goroutine 1 [chan receive]:
+testing.(*T).Run(0x2f8c2bacd200, {0x7ff6437eee73?, 0x7ff64309fcee?}, 0x7ff64382c948)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+testing.runTests.func1(0x2f8c2bacd200)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2585 +0x3e
+testing.tRunner(0x2f8c2bacd200, 0x2f8c2bd5fc58)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+testing.runTests({0x7ff6437e08cb, 0x1f}, {0x7ff6437f3c20, 0x34}, 0x2f8c2bad4288, {0x7ff643dd36c0, 0x3a, 0x3a}, {0xc2ad804944052acc, 0x45d9c12d89, ...})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2583 +0x4f0
+testing.(*M).Run(0x2f8c2bb117c0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2443 +0x6ac
+main.main()
+	_testmain.go:160 +0x9b
+
+goroutine 4260 [syscall]:
+syscall.syscalln(0x0?, 0x0?, {0x2f8c2bff4000?, 0x2fae?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x7ff64300570d?, {0x2f8c2bff4000?, 0x21?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+syscall.CreateProcess(0x0?, 0x20002?, 0x20?, 0x18?, 0x1, 0x80604, 0xf?, 0x7ff642fe48f3?, 0x2f8c2bf7e808?, 0x2f8c2bff41c0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/zsyscall_windows.go:545 +0x148
+syscall.StartProcess({0x2f8c2bbbf060?, 0x7ff643707e40?}, {0x2f8c2bfa0050, 0x5, 0x5}, 0x2f8c2beaf650?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/exec_windows.go:441 +0xbd7
+os.startProcess({0x2f8c2bbbf060, 0x20}, {0x2f8c2bfa0050, 0x5, 0x5}, 0x2f8c2bff44a8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec_posix.go:55 +0x2fa
+os.StartProcess({0x2f8c2bbbf060, 0x20}, {0x2f8c2bfa0050, 0x5, 0x5}, 0x2f8c2bff44a8)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec.go:272 +0x54
+os/exec.(*Cmd).Start(0x2f8c2be7a000)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/os/exec/exec.go:733 +0x5ce
+github.com/erranliu/SteerRunner/internal/execution/process.startManagedBound(0x2f8c2be7a000, 0x0)
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/execution/process/facts_windows.go:87 +0x105
+github.com/erranliu/SteerRunner/internal/execution/process.StartManaged(...)
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/execution/process/facts_windows.go:64
+github.com/erranliu/SteerRunner/internal/execution/process.Host.StartManaged({0x7ff64375b860?}, 0x1?)
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/execution/process/host.go:26 +0x18
+github.com/erranliu/SteerRunner/internal/execution/workspace.Git.Output({{{0x7ff6437ca996, 0x3}, {0x2f8c2bf06440, 0x2, 0x2}, {0x0, 0x0}, {0x0, 0x0, 0x0}, ...}, ...}, ...)
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/execution/workspace/git.go:55 +0x493
+github.com/erranliu/SteerRunner/internal/application.(*baseRefreshFixture).git(0x2f8c2bdad188, {0x2f8c2bf54300, 0x65}, {0x2f8c2bf06420, 0x2, 0x2})
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/application/base_refresh_test.go:66 +0x1c5
+github.com/erranliu/SteerRunner/internal/application.(*baseRefreshFixture).commit(0x2f8c2bdad188, {0x7ff6437cb4ab, 0x6})
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/application/base_refresh_test.go:80 +0x1f1
+github.com/erranliu/SteerRunner/internal/application.newBaseRefreshFixture(0x2f8c2bacc200, {0x7ff6437cb4b1, 0x6}, {0x7ff6437cacab, 0x4})
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/application/base_refresh_test.go:41 +0xa5e
+github.com/erranliu/SteerRunner/internal/application.TestPrivateRunGitGrantDoesNotExpandLegacyCache(0x2f8c2bacc200)
+	C:/Users/lmas1/.codex/worktrees/1c3c/SteerRunner/internal/application/private_repository_test.go:12 +0x45
+testing.tRunner(0x2f8c2bacc200, 0x7ff64382c948)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+FAIL	github.com/erranliu/SteerRunner/internal/application	303.320s
+FAIL	github.com/erranliu/SteerRunner/internal/host [build failed]
+FAIL

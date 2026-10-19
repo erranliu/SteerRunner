@@ -1,0 +1,46 @@
+[
+  {
+    "evidence": "C:/SteerlineDebug/sr-rebase-control-20261019-local-51792ee5",
+    "exit_code": 0,
+    "parameters": {
+      "ROOT": "C:/SteerlineDebug/sr-rebase-control-20261019-local-51792ee5",
+      "CLI": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+      "REPO": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "NATIVE": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+      "REPOSITORY": "C:/Projects/SteerlineTest",
+      "HELPER_SHA256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+      "MODEL": "gpt-6-luna",
+      "BASE": "849ed9b33de86920e4b582bd7513628421bbfa99",
+      "RUNNER": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\steerrunner.exe",
+      "HELPER": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\steerrunner-agent.exe",
+      "ENVIRONMENT": ""
+    },
+    "test_source_commit": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+    "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+    "name": "local",
+    "finished_at": "2026-10-19T04:27:59.2844779Z",
+    "started_at": "2026-10-19T04:26:59.1793954Z"
+  },
+  {
+    "evidence": "C:/SteerlineDebug/sr-rebase-control-20261019-remote-51792ee5",
+    "exit_code": 0,
+    "parameters": {
+      "ROOT": "C:/SteerlineDebug/sr-rebase-control-20261019-remote-51792ee5",
+      "CLI": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+      "REPO": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+      "NATIVE": "C:/sr-runtime/2ba0/01/native/codex.exe",
+      "REPOSITORY": "C:/Projects/SteerlineTest",
+      "HELPER_SHA256": "4de01c93e145da8c2d5c5173eff5b445677fa0734333ea7465a843ad79d87803",
+      "MODEL": "gpt-6-luna",
+      "BASE": "cebdd5ab552150c49743e40593c836689ecf789b",
+      "RUNNER": "C:\\Users\\lmas1\\.codex\\worktrees\\1c3c\\SteerRunner\\.evidence\\rebase-control-20261019\\final-latest\\controlled\\steerrunner.exe",
+      "HELPER": "C:/sr-runtime/1c3c-fixed-control-20261019/4de01c93e145da8c/steerrunner-agent.exe",
+      "ENVIRONMENT": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    },
+    "test_source_commit": "51792ee5cc3882d2a5127606e411fed1b801fc4d",
+    "source_commit": "bb84ea80cab2e37c2c7d184fcd82765dde2b1d32",
+    "name": "remote",
+    "finished_at": "2026-10-19T04:28:55.5542949Z",
+    "started_at": "2026-10-19T04:27:59.3224860Z"
+  }
+]

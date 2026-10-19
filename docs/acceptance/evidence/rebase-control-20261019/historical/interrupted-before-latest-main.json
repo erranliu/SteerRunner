@@ -1,0 +1,5 @@
+{
+  "source": "5861ded54e0233633a521cc620441d46291e8cf9",
+  "reason": "Main advanced to 2aa17cc while Controlled prerequisites were running; deliberately interrupted owned batch before any native cases or probes. Original running summary remains unmodified; not a pass. Public stop/status of owned service captured separately.",
+  "final_source_qualification": false
+}

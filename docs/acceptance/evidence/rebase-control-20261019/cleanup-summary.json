@@ -1,0 +1,43 @@
+[
+  {
+    "scenario": "orca-remote.service-restart",
+    "case_id": "graceful-active",
+    "fixture": "6231a2f36445",
+    "evidence": "native/orca-remote.service-restart/graceful-active/6231a2f36445",
+    "service_stopped": true,
+    "resources_settled": true,
+    "signature_verified": true
+  },
+  {
+    "scenario": "orca-remote.service-restart",
+    "case_id": "kill-active",
+    "fixture": "5dabbee3c1d6",
+    "evidence": "native/orca-remote.service-restart/kill-active/5dabbee3c1d6",
+    "service_stopped": true,
+    "resources_settled": true,
+    "signature_verified": true
+  },
+  {
+    "scenario": "orca-remote.stop-revocation",
+    "case_id": "active",
+    "fixture": "b489f4de9727",
+    "evidence": "native/orca-remote.stop-revocation/active/b489f4de9727",
+    "service_stopped": true,
+    "resources_settled": true,
+    "signature_verified": true
+  },
+  {
+    "probe": "local",
+    "evidence": "probes/local",
+    "resources_cleaned": true,
+    "signature_verified": true,
+    "zero_business_turns": true
+  },
+  {
+    "probe": "remote",
+    "evidence": "probes/remote",
+    "resources_cleaned": true,
+    "signature_verified": true,
+    "zero_business_turns": true
+  }
+]
