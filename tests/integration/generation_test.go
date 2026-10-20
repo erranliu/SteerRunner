@@ -93,7 +93,8 @@ func testGenerationCreationReceipt(t *testing.T) {
 	cleanupService(t, dir, info)
 	raw, _ := json.Marshal(request)
 	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
-	until := time.Now().Add(20 * time.Second)
+	// Workspace preparation precedes this native creation fault barrier.
+	until := time.Now().Add(5 * time.Minute)
 	for {
 		calls, _ := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
 		if strings.Contains(string(calls), `"method":"thread/start"`) {
@@ -121,7 +122,7 @@ func testGenerationCreationReceipt(t *testing.T) {
 	}
 	current := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, current)
-	ready := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
+	ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" }, 5*time.Minute)
 	if ready.ResumeRequired || countNative(t, "thread/start") != 1 || countNative(t, "turn/start") != 3 {
 		t.Fatal("lost create receipt replaced original session or replayed input")
 	}
@@ -138,7 +139,7 @@ func testGenerationPendingStop(t *testing.T) {
 	cleanupService(t, dir, info)
 	raw, _ := json.Marshal(request)
 	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
-	waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Execution.TurnStarted })
+	waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.Execution.TurnStarted }, 5*time.Minute)
 	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("offline-for-stop", info.InstanceID), 0)
 	if err := waitOwnedService(info); err != nil {
 		t.Fatal(err)
@@ -159,7 +160,7 @@ func testGenerationPendingStop(t *testing.T) {
 	}
 	current := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(input.JSON()), 0))
 	cleanupService(t, dir, current)
-	waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+	waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)
 	if countNative(t, "turn/start") != 1 {
 		t.Fatal("successor overtook startup cancellation")
 	}
