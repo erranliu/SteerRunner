@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.publication-unknown
+--- PASS: TestSRLiveScenario (393.78s)
+    --- PASS: TestSRLiveScenario/orca-remote.publication-unknown (393.66s)
+PASS

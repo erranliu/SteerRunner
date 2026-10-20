@@ -1,0 +1,52 @@
+{
+  "host_id": "798dd2952d9648a1bd931b70f73a1d76",
+  "pid": 58604,
+  "created": "134369520803401988",
+  "stop_requested_at": "2026-10-20T07:19:00.3144303Z",
+  "network_actions": 30,
+  "failed_actions": 0,
+  "pending_requests": 0,
+  "restores": [
+    {
+      "case": "active-disconnect",
+      "manifest": "C:\\srg-fix-20261020\\f18067f1c164\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:31.0900413Z"
+    },
+    {
+      "case": "pre-send-disconnect",
+      "manifest": "C:\\srg-fix-20261020\\b26924c0e33f\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:36.651965Z"
+    },
+    {
+      "case": "graceful-boundary",
+      "manifest": "C:\\srg-fix-20261020\\86c0ba4d6cec\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:42.1875465Z"
+    },
+    {
+      "case": "kill-boundary",
+      "manifest": "C:\\srg-fix-20261020\\8d5052ed4393\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:47.6262703Z"
+    },
+    {
+      "case": "completion-gap",
+      "manifest": "C:\\srg-fix-20261020\\b24c8c5e2d38\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:53.2219044Z"
+    },
+    {
+      "case": "query-unavailable",
+      "manifest": "C:\\srg-fix-20261020\\16769b1b462a\\manifest.json",
+      "restored": true,
+      "at": "2026-10-20T07:18:58.9496433Z"
+    }
+  ],
+  "remaining_owned_local_processes": 0,
+  "scope": "exact final six fixture executable roots; native closure limited to original Orca terminal receipts",
+  "finished_verified": true,
+  "finished_at": "2026-10-20T07:19:00.4603698Z",
+  "verified_at": "2026-10-20T07:19:20.3503144Z"
+}

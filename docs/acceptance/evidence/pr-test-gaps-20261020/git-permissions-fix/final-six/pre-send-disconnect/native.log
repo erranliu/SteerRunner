@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.connection-reconnect
+--- PASS: TestSRLiveScenario (404.98s)
+    --- PASS: TestSRLiveScenario/orca-remote.connection-reconnect (404.81s)
+PASS

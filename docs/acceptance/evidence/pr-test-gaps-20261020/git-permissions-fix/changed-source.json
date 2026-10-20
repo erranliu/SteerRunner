@@ -1,0 +1,26 @@
+{
+  "commit": "385a6579d9e0772fc0e541d2ca920813d0e46857",
+  "files": [
+    {
+      "sha256": "279b1bdb82153edfe7bfebe5314c0012d5a19d0de082a6a9bbcd658083f74f65",
+      "path": "internal/application/freeze.go"
+    },
+    {
+      "sha256": "7bc8e2163171b1be72d7187a3b0e82888f76e7c2beda418c0a9ec0dbe856494f",
+      "path": "internal/execution/agentlaunch/config.go"
+    },
+    {
+      "sha256": "c2582930436cebc67bf303f679dd98333a15aac9d847d492ab921bd9275b112e",
+      "path": "internal/execution/agentlaunch/linked_git_windows_test.go"
+    },
+    {
+      "sha256": "fe90d6a28c14c047d55ecec07f4f55862edd02e188ff67301f3328a1dee73941",
+      "path": "internal/execution/agentlaunch/linked_git.go"
+    },
+    {
+      "sha256": "edd964a981de9e89dd333c51cdc2e1f3374b3223ed820fcc55aed3440cfac856",
+      "path": "internal/testkit/livetest/receipt_audit.go"
+    }
+  ],
+  "captured_at": "2026-10-20T06:16:48.3405336Z"
+}

@@ -1,0 +1,55 @@
+{
+    "base_commit":  "385a6579d9e0772fc0e541d2ca920813d0e46857",
+    "source_dirty":  true,
+    "captured_at":  "2026-10-20T07:22:27.6368040Z",
+    "post_matrix_changed_files":  [
+                                      "internal/execution/agentlaunch/github_auth.go",
+                                      "internal/execution/agentlaunch/linked_git_windows_test.go"
+                                  ],
+    "files":  [
+                  {
+                      "path":  "internal/application/freeze.go",
+                      "sha256":  "279b1bdb82153edfe7bfebe5314c0012d5a19d0de082a6a9bbcd658083f74f65"
+                  },
+                  {
+                      "path":  "internal/execution/adapters/orcatransport/input_reconnect_test.go",
+                      "sha256":  "c2b5447c080086a6ebd0e065387e0aff536d8182b66051db441ad4e29101f99e"
+                  },
+                  {
+                      "path":  "internal/execution/adapters/orcatransport/lifecycle.go",
+                      "sha256":  "a4cfbd6baa2c7d4bb71319d59afba14727f80e0504b3f249a3659f322f8eb5c9"
+                  },
+                  {
+                      "path":  "internal/execution/adapters/protocol/orca/state_feed.go",
+                      "sha256":  "08d2d9a78c5a99b443154a9537fe4d3d2077f965bbe15147f26ad6c8dd4a62d2"
+                  },
+                  {
+                      "path":  "internal/execution/agentlaunch/config.go",
+                      "sha256":  "5d15ec1a98d1346e6c24bd7120792c4745dda0f6dd705a35c608b16ce325fb8e"
+                  },
+                  {
+                      "path":  "internal/execution/agentlaunch/github_auth_test.go",
+                      "sha256":  "2a36e8212aae50b4d4010b575a5b2083f185eba985bbacc279c2f769bbc37e00"
+                  },
+                  {
+                      "path":  "internal/execution/agentlaunch/github_auth.go",
+                      "sha256":  "5c628cc7eccbcb55b395bedbd3d4d4766739b3d7c8604fed340db3ee9e270d9e"
+                  },
+                  {
+                      "path":  "internal/execution/agentlaunch/linked_git_windows_test.go",
+                      "sha256":  "9d5d289471d6ef9dd70030dbf5dd0081dbb8832becf64e9d9f481a44c01b0af1"
+                  },
+                  {
+                      "path":  "internal/execution/agentlaunch/linked_git.go",
+                      "sha256":  "fe90d6a28c14c047d55ecec07f4f55862edd02e188ff67301f3328a1dee73941"
+                  },
+                  {
+                      "path":  "internal/testkit/livetest/receipt_audit.go",
+                      "sha256":  "edd964a981de9e89dd333c51cdc2e1f3374b3223ed820fcc55aed3440cfac856"
+                  },
+                  {
+                      "path":  "scripts/prepare-test-orca-runtime.ps1",
+                      "sha256":  "f35d4d5571eb3b4f4ea08559f0c62ba2049bf2bfa78b72b3efdf4c96afd50627"
+                  }
+              ]
+}

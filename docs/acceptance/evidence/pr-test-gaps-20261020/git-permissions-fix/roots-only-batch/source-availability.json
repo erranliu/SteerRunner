@@ -1,0 +1,44 @@
+[
+  {
+    "native_log_present": false,
+    "scenario_present": false,
+    "case": "active-disconnect",
+    "manifest_present": false,
+    "evidence": "C:\\srt\\ba468a9a2ce1\\evidence"
+  },
+  {
+    "native_log_present": false,
+    "scenario_present": false,
+    "case": "pre-send-disconnect",
+    "manifest_present": false,
+    "evidence": "C:\\srt\\a1e85f2f859f\\evidence"
+  },
+  {
+    "native_log_present": false,
+    "scenario_present": false,
+    "case": "graceful-boundary",
+    "manifest_present": false,
+    "evidence": "C:\\srt\\d392d3a8133a\\evidence"
+  },
+  {
+    "native_log_present": false,
+    "scenario_present": false,
+    "case": "kill-boundary",
+    "manifest_present": false,
+    "evidence": "C:\\srt\\251bc77abd10\\evidence"
+  },
+  {
+    "native_log_present": true,
+    "scenario_present": true,
+    "case": "completion-gap",
+    "manifest_present": true,
+    "evidence": "C:\\srt\\f09cec347ad9\\evidence"
+  },
+  {
+    "native_log_present": true,
+    "scenario_present": true,
+    "case": "query-unavailable",
+    "manifest_present": true,
+    "evidence": "C:\\srt\\de2a2ab0b12a\\evidence"
+  }
+]

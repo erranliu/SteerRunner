@@ -1,0 +1,16 @@
+{
+  "pid": 58284,
+  "manifest_sha256": "D0AE8078EB18FABB23E7929631C2BB1AFB1A629643F236ADE6791BFF7E41107F",
+  "driver_sha256": "CB38829EEACB99B900E3F3E7D88C992BCF55868E36225BC56A45958EDF83CA7A",
+  "runner_sha256": "67ecc899c33fe48baa087842f5a03e585a5b317d9e4ab0ebcc5b8b1da30685ff",
+  "source_commit": "385a6579d9e0772fc0e541d2ca920813d0e46857",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.publication-unknown",
+  "level": "L3",
+  "helper_sha256": "f6ce5c94f3c14aa52ed2b7f1e5f98c414c2983ba53a8f4735bde81e5bc6aca3b",
+  "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+  "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+  "case_id": "query-unavailable",
+  "repeat_index": 1
+}

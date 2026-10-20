@@ -101,6 +101,8 @@ func DecodeOriginalState(raw json.RawMessage, p b.ProcessIdentity) (AgentState, 
 	return AgentState{}, stateIdentityError("original terminal missing")
 }
 
+var ErrOriginalMainAgentUnavailable = errors.New("Orca query original main agent currently unavailable")
+
 func DecodeOriginalAgent(raw json.RawMessage, worktree, pane string) (AgentState, error) {
 	var listing struct {
 		Worktrees []struct {
@@ -127,7 +129,7 @@ func DecodeOriginalAgent(raw json.RawMessage, worktree, pane string) (AgentState
 			}
 			return agent.AgentState, nil
 		}
-		return AgentState{}, errors.New("Orca query original main agent currently unavailable")
+		return AgentState{}, ErrOriginalMainAgentUnavailable
 	}
 	return AgentState{}, errors.New("Orca query original worktree absent from current page")
 }

@@ -1,0 +1,241 @@
+{
+    "schema":  "steerrunner-remote-git-fix/v1",
+    "status":  "fixed_and_requested_six_passed",
+    "base_commit":  "385a6579d9e0772fc0e541d2ca920813d0e46857",
+    "source_dirty":  true,
+    "finished_at":  "2026-10-20T07:22:27.6524650Z",
+    "execution_host":  {
+                           "git":  "2.55.0.windows.2",
+                           "orca":  "1.4.224",
+                           "runtime_id":  "f8616747-34af-4543-8487-ec6b5d8de4ff",
+                           "os":  "Windows",
+                           "codex":  "0.162.1"
+                       },
+    "root_causes":  [
+                        "linked worktree admin and shared objects/refs/logs outside native sandbox cwd",
+                        "MSYS credential shell AppContainer object namespace access denied; protected gh login unavailable inside native tools"
+                    ],
+    "implementation":  {
+                           "git_roots":  "validate execution-host Git identities, URL, backlinks and no reparse paths; grant objects/refs/logs/current admin only",
+                           "test_runtime":  "independent per-fixture physical module copies instead of cache hardlinks",
+                           "readiness":  "retry typed original main-agent absence within original deadline, without new actor or business input",
+                           "authentication":  "resolve execution-host existing gh login in memory; task process GH_TOKEN and exact-URL Git extraHeader; fixed native tool environment; no-daemon; restore environment"
+                       },
+    "diagnostics":  {
+                        "diagnostic_commit_pushed":  false,
+                        "actual_commit":  "c2d242ff324432a9b53703f5ccfbd6c33549ac6b",
+                        "authentication":  "authentication-diagnostic-facts.json",
+                        "git_roots":  "diagnostic-facts.json",
+                        "auth_probe_push":  "dry-run only",
+                        "diagnostic_native_terminals_remaining":  0
+                    },
+    "final_matrix":  {
+                         "selected":  6,
+                         "excluded":  0,
+                         "summary":  "final-six/summary.json",
+                         "passed":  6,
+                         "skipped":  0,
+                         "source_snapshot":  "complete-build-source.json",
+                         "main_elevated":  false,
+                         "cases":  [
+                                       {
+                                           "scenario":  "orca-remote.connection-reconnect",
+                                           "case_id":  "active-disconnect",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "4dce2e18ae39f99d91ef7b0ab5149e78",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/635",
+                                           "merge_commit":  "eb13d89bb52e64af9bbe66df2497e7cdd235dc64",
+                                           "faults_hit":  1,
+                                           "assertions":  21,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/active-disconnect",
+                                           "original":  "C:\\srg-fix-20261020\\f18067f1c164\\evidence"
+                                       },
+                                       {
+                                           "scenario":  "orca-remote.connection-reconnect",
+                                           "case_id":  "pre-send-disconnect",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "bb852f843fe034da59b1628f4d696ee0",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/634",
+                                           "merge_commit":  "76fed6cc9c5821925912de333ffc650f7da3438d",
+                                           "faults_hit":  1,
+                                           "assertions":  19,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/pre-send-disconnect",
+                                           "original":  "C:\\srg-fix-20261020\\b26924c0e33f\\evidence"
+                                       },
+                                       {
+                                           "scenario":  "orca-remote.service-restart",
+                                           "case_id":  "graceful-boundary",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "003ac2e60754ce17bcb4b7a78f3bb843",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/637",
+                                           "merge_commit":  "883dbae6a2d42f4fd7827613eaa7d58287fd5615",
+                                           "faults_hit":  2,
+                                           "assertions":  23,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/graceful-boundary",
+                                           "original":  "C:\\srg-fix-20261020\\86c0ba4d6cec\\evidence"
+                                       },
+                                       {
+                                           "scenario":  "orca-remote.service-restart",
+                                           "case_id":  "kill-boundary",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "a1d085156bd73244fae2fd5b43488efb",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/636",
+                                           "merge_commit":  "daa18203dab776c7bdf77125b887423fa703d48a",
+                                           "faults_hit":  2,
+                                           "assertions":  23,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/kill-boundary",
+                                           "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence"
+                                       },
+                                       {
+                                           "scenario":  "orca-remote.publication-unknown",
+                                           "case_id":  "completion-gap",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "a9ac11bd788e8befc75ccd7f5c72e556",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/638",
+                                           "merge_commit":  "d492836d8f3d95d9473e6fc48721bda9241f81d2",
+                                           "faults_hit":  1,
+                                           "assertions":  21,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/completion-gap",
+                                           "original":  "C:\\srg-fix-20261020\\b24c8c5e2d38\\evidence"
+                                       },
+                                       {
+                                           "scenario":  "orca-remote.publication-unknown",
+                                           "case_id":  "query-unavailable",
+                                           "status":  "passed",
+                                           "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+                                           "driver_sha256":  "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+                                           "helper_sha256":  "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+                                           "runtime_sha256":  "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+                                           "network_sha256":  "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+                                           "run_id":  "64bf3c346e6908a0f8334c754142ebb3",
+                                           "pr":  "https://github.com/erranliu/SteerlineTest/pull/639",
+                                           "merge_commit":  "3a8178a0881c4082c9231465989aded76855be89",
+                                           "faults_hit":  2,
+                                           "assertions":  22,
+                                           "cleanup":  {
+                                                           "native_stopped":  true,
+                                                           "service_stopped":  true,
+                                                           "facilities_restored":  true,
+                                                           "driver_native_cleanup":  false
+                                                       },
+                                           "evidence":  "final-six/query-unavailable",
+                                           "original":  "C:\\srg-fix-20261020\\16769b1b462a\\evidence"
+                                       }
+                                   ],
+                         "status":  "passed",
+                         "batch_exit_code":  0,
+                         "runner_sha256":  "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5"
+                     },
+    "automated_checks":  {
+                             "vet":  "five relevant packages passed",
+                             "adapter_and_fixture_packages":  [
+                                                                  "orcatransport full package passed",
+                                                                  "protocol/orca full package passed",
+                                                                  "livetest full package passed"
+                                                              ],
+                             "full_l3_claimed":  false,
+                             "diff_check":  "passed",
+                             "application":  "four targeted top-level tests passed",
+                             "agentlaunch":  "full package, five top-level tests and seven Windows linked-repository subcases passed",
+                             "full_l1_rerun":  false
+                         },
+    "post_matrix_hardening":  {
+                                  "log":  "host-pin-agentlaunch.log",
+                                  "changed_files":  [
+                                                        "internal/execution/agentlaunch/github_auth.go",
+                                                        "internal/execution/agentlaunch/linked_git_windows_test.go"
+                                                    ],
+                                  "change":  "pin GH_HOST=github.com for task tools and restore inherited host after exit",
+                                  "current_source":  "current-source.json",
+                                  "regression":  "real Windows PowerShell linked-Git fixture inherits enterprise.invalid, captures github.com in launched tool, and verifies original host restored",
+                                  "agentlaunch_full_package":  "passed",
+                                  "native_matrix_rerun":  false,
+                                  "qualification":  "six native results bind the frozen 3E5300 runner; the later host-only change is separately regression-tested"
+                              },
+    "cleanup":  {
+                    "raw_journal_backup":  ".evidence/pr-gap-gitfix-admin6-backup",
+                    "pending_requests":  0,
+                    "failed_actions":  0,
+                    "remaining_owned_local_processes":  0,
+                    "admin_host_finished":  true,
+                    "scope":  "exact final six fixture executable roots; native closure limited to original Orca terminal receipts",
+                    "report":  "final-cleanup.json",
+                    "network_actions":  30
+                },
+    "history":  {
+                    "roots_only_batch":  "failed, all six; never reclassified",
+                    "known_original_terminal_reads":  "ignored .evidence/pr-gap-gitfix-old-known-terminal-reads.json: orphaned/disconnected/unwritable; not complete original-resource cleanup proof",
+                    "missing_original_fixtures":  4,
+                    "missing_evidence_policy":  "first four original fixture directories disappeared; retain observed facts/failed summary, never fabricate original logs or cleanup success",
+                    "original_firewall_cleanup":  "pr-gap-gitfix-original-network-cleanup.json: six exact groups checked, zero remaining",
+                    "evidence":  "roots-only-batch"
+                },
+    "limits":  [
+                   "task tools can read their own authentication environment; existing execution-host account privileges remain; no repo-scoped broker or timed revocation claim",
+                   "frozen existing Runs are not recompiled or granted new authentication",
+                   "six real sandbox cases only; earlier smoke/caller-exit/graceful-active/kill-active failures not requalified by this matrix",
+                   "original remote Orca terminal receipts do not prove entire remote OS process tree stopped",
+                   "matrix uses actual remote Codex 0.162.1; earlier local 0.159.2 results remain independent"
+               ],
+    "user_commands_required":  [
+
+                               ],
+    "manual_actions":  [
+                           "SteerLine same-install UpdateRunner UI acceptance remains outside this repository automation"
+                       ]
+}

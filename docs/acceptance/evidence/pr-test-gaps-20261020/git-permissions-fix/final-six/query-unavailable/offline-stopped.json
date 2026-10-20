@@ -1,0 +1,13 @@
+{
+  "checks": [],
+  "state_dir": "c:\\srg-fix-20261020\\16769b1b462a\\s",
+  "resources_settled": true,
+  "runs": [
+    {
+      "stop_evidence_scope": "orca_terminal",
+      "run_id": "64bf3c346e6908a0f8334c754142ebb3",
+      "input_digest": "bc0b8c9afca769d8787cfac78390231cb9121f975f7de7ab1c5e445331fa452a",
+      "resources_settled": true
+    }
+  ]
+}

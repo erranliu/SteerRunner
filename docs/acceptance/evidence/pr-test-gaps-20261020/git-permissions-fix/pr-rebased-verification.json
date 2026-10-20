@@ -1,0 +1,72 @@
+{
+  "schema": "steerrunner-git-fix-pr-verification/v1",
+  "status": "passed",
+  "source_commit": "14f9e4a6e5fa47ed07b0eedfad5a019186188059",
+  "source_dirty": false,
+  "upstream_main": "50b89d885799ba08a318c70f267e143845f91ebf",
+  "at": "2026-10-20T09:12:52.4804556Z",
+  "suites": [
+    {
+      "log": ".evidence/pr-gap-gitfix-pr-rebased-packages.jsonl",
+      "sha256": "19B5F4D2DEE3D09C3EB4B4959DB4739FF1C2583CCF9A1E53835BF9BE5206F49C",
+      "packages": [
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+          "Action": "pass",
+          "Elapsed": 2.6550000000000002
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+          "Action": "pass",
+          "Elapsed": 5.936
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+          "Action": "pass",
+          "Elapsed": 16.922
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Action": "pass",
+          "Elapsed": 43.565
+        }
+      ],
+      "top_level_passed": 150,
+      "conditional_skips": [
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+          "Test": "TestOrcaLocalPipeNativeEvidence"
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+          "Test": "TestOrcaLocalIPCNativeProbe"
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Test": "TestOrcaNativeStateLiveLifecycle"
+        },
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Test": "TestOrcaWorkspaceStartupLive"
+        }
+      ]
+    },
+    {
+      "log": ".evidence/pr-gap-gitfix-pr-rebased-application.jsonl",
+      "sha256": "2CE9699DAF1821D1CE11C5553E16A0F654F0DC955A27954BC38725166AE92093",
+      "packages": [
+        {
+          "Package": "github.com/erranliu/SteerRunner/internal/application",
+          "Action": "pass",
+          "Elapsed": 49.579
+        }
+      ],
+      "top_level_passed": 4,
+      "conditional_skips": []
+    }
+  ],
+  "vet": "five relevant packages passed",
+  "vet_log_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "diff_check": "passed",
+  "qualification": "directed post-rebase regression; historical six native results remain tied to original 3E5300 runner; no full L1 or new full L3 claim"
+}

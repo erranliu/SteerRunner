@@ -213,6 +213,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+		if request.Execution.Target.Kind == "orca_environment" {
+			launch.RepositoryURL, launch.RepositoryRemote = request.Repository.URL, request.Repository.Remote
+		}
 		if request.Execution.Target.Kind == "local" {
 			launch.RuntimeExecutable, launch.RepositoryURL = settings.AgentLaunch.RuntimeExecutable, request.Repository.URL
 			if request.Workflow.AuditModel != nil {

@@ -1,0 +1,16 @@
+{
+  "pid": 37380,
+  "manifest_sha256": "1DDAC8006D5C17D66424A132F98005CD5179F47CB03921104706049ED7A49041",
+  "driver_sha256": "29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA",
+  "runner_sha256": "3e5300afdbff10fe7c0cbbc9877daf07ff8efbe2d622d159e38b3065b8178ec5",
+  "source_commit": "385a6579d9e0772fc0e541d2ca920813d0e46857",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.publication-unknown",
+  "level": "L3",
+  "helper_sha256": "33dc6efdd819a30a6e750a8ca6b8fd8b06a14b4194d64f662aca30a899d03eef",
+  "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+  "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+  "case_id": "completion-gap",
+  "repeat_index": 1
+}

@@ -1,0 +1,18 @@
+{
+  "scenario": "orca-remote.publication-unknown",
+  "case_id": "query-unavailable",
+  "repeat_index": 1,
+  "stage": "dual-path-network-preflight",
+  "run_id": "",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 0,
+  "audit_complete": false,
+  "assertions": null,
+  "cleanup": {
+    "native_stopped": false,
+    "service_stopped": false,
+    "facilities_restored": false,
+    "driver_native_cleanup": false
+  }
+}

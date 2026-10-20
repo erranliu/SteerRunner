@@ -1,0 +1,26 @@
+=== RUN   TestAgentLaunchCompilesAndProtectsPreferences
+--- PASS: TestAgentLaunchCompilesAndProtectsPreferences (0.00s)
+=== RUN   TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration
+--- PASS: TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration (0.00s)
+=== RUN   TestNativeGitHubAuthenticationRejectsForeignCredentialTargets
+--- PASS: TestNativeGitHubAuthenticationRejectsForeignCredentialTargets (0.00s)
+=== RUN   TestNativeGitHubAuthenticationNeverCompilesCallerCredentials
+--- PASS: TestNativeGitHubAuthenticationNeverCompilesCallerCredentials (0.00s)
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/tracing-rejected
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/foreign-repository
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/main-checkout
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/environment-override
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/redirected-root
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/full_access
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/content
+--- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots (29.31s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/tracing-rejected (4.96s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/foreign-repository (4.39s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/main-checkout (3.89s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/environment-override (2.20s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/redirected-root (5.33s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/full_access (0.00s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/content (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	31.102s
