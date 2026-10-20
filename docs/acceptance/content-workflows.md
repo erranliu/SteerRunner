@@ -1,6 +1,8 @@
 # conversation/1、generate/1 专属验收
 
 2026-10-20 的同构建 takeover 冻结配置问题单独记录在[内容接管修复验收](content-takeover.md)。
+
+交付复核：本轮已接上 #37（`73cec27d`），完整保留其 workflow 能力/parser 意图判定、freeze、恢复要求与新增回归。本 PR 对主干不再修改生产代码，仅补 queued/result、codec、材料及真实 admission 回归和本轮跨仓证据。接上主干后四包定向 101 项通过、零失败/skip，[原始日志与汇总](evidence/content-closeout-20261020/README.md)随仓库保存。下文 A/B 实测基于 `c122d641` 加当时修复，原构建身份不变，不将它记为 #37 或最终提交的真机资格。用户已授权提交、提 PR 并检查后合并；未执行安装部署。
 ## 2026-10-20 生成对象接管缺口修复
 
 用户授权继续自动补验。基线 `c122d641677593d4b694e2eda7502001510d4e8b` 加本轮未提交修复；没有部署安装环境。生产 freeze 对内容流程不加载开发 parser 配置，接管却无条件校验该空配置；内容单元夹具误填默认 parser 配置，掩盖了真实问题。修正夹具后 generate/conversation 及真实 admission 两项在原代码上均复现 unsupported；修复仅将该校验限制到使用它的开发流程，保留材料/执行语义/codec/原生身份与原 Record 字节校验。
