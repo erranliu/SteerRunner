@@ -131,10 +131,21 @@ func TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope(t *testing.T
 	for _, id := range []string{"conversation", "generate"} {
 		t.Run(id, func(t *testing.T) {
 			e, _ := contentEngine(t, id)
-			before := string(canonical(e.runs["run"]))
-			items := TakeoverFacts([]*runstate.Record{e.runs["run"]}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
-			if len(items) != 1 || items[0].Status != "compatible" || string(canonical(e.runs["run"])) != before {
-				t.Fatal("content contract rejected or rewritten", items)
+			for _, phase := range []string{"queued", "result"} {
+				if phase == "result" && !e.finish("run", contentEvidence(e, "original result", "succeeded", true)) {
+					t.Fatal("original content result not accepted")
+				}
+				r := e.runs["run"]
+				before := string(canonical(r))
+				items := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+				if len(items) != 1 || items[0].Status != "compatible" || string(canonical(r)) != before {
+					t.Fatal("content contract rejected or rewritten", phase, items)
+				}
+				changed := r.Clone()
+				changed.Profile[0].CodecVersion = 99
+				if item := TakeoverFacts([]*runstate.Record{changed}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+					t.Fatal("content bypassed codec validation", phase, item)
+				}
 			}
 		})
 	}
@@ -154,6 +165,43 @@ func TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope(t *testing.T
 			e.runs["run"] = r
 			if e.feedback("run", w, w.port) || len(e.runs["run"].Workflow.StageInputs) != 1 || e.runs["run"].Phase != "fresh_feedback_required" {
 				t.Fatal("changed or unbound original message reached content input")
+			}
+		})
+	}
+}
+
+func TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser(t *testing.T) {
+	for _, id := range []string{"generate", "conversation"} {
+		t.Run(id, func(t *testing.T) {
+			dir := t.TempDir()
+			if err := os.MkdirAll(filepath.Join(dir, "service"), 0700); err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), []byte("invalid development parser configuration"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			material := "frozen content material"
+			docs := []contracts.Document{{Kind: "inline", Path: "source.txt", Content: &material}}
+			request := contracts.RunRequest{Title: "content takeover", Workflow: contracts.Workflow{ID: id, Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.CodexSettings{Executable: os.Args[0], AccessMode: "read_only"})}}
+			if id == "generate" {
+				request.Generate = &contracts.GenerateInput{Instruction: "Generate from source", Materials: docs}
+			} else {
+				request.Conversation = &contracts.ConversationInput{Instruction: "Discuss source", Materials: docs, Directory: contracts.DirectoryAccess{Path: t.TempDir(), Access: "read_only"}}
+			}
+			r, err := freeze(context.Background(), dir, contracts.Request{Protocol: contracts.Protocol, RequestID: contracts.NewID(), Input: canonical(request)})
+			if err != nil {
+				t.Fatal(err)
+			}
+			before := string(canonical(r))
+			items := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+			if len(items) != 1 || items[0].Status != "compatible" || string(canonical(r)) != before {
+				t.Fatal("production content admission cannot be taken over unchanged", items)
+			}
+			if err := os.WriteFile(r.Materials[0].SnapshotPath, []byte("replaced material"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			if item := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+				t.Fatal("content bypassed frozen material verification", item)
 			}
 		})
 	}
