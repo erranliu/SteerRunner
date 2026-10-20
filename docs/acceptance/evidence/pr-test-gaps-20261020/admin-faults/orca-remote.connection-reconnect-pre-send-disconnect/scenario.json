@@ -1,0 +1,44 @@
+{
+  "scenario": "orca-remote.connection-reconnect",
+  "case_id": "pre-send-disconnect",
+  "repeat_index": 1,
+  "stage": "await-publication-pre-send",
+  "run_id": "d12b82e3ca9133f248825f25daa1f289",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 0,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "publication-pre-send-gate",
+      "passed": false,
+      "evidence": "pre-send-gate.json: committed publish input before direct state connect"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": false,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

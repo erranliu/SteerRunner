@@ -1,0 +1,16 @@
+{
+  "pid": 28696,
+  "manifest_sha256": "0FA9CE2C8D657489E857FDEAE1B17F12713472133A8AB48B5FC6AC36EB40CC4F",
+  "driver_sha256": "FCCB07C58981B22AFD72F49528C933808683EC5CC0FE8C2BFA93D63504358C6F",
+  "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+  "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.service-restart",
+  "level": "L3",
+  "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+  "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+  "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+  "case_id": "graceful-boundary",
+  "repeat_index": 1
+}

@@ -67,8 +67,33 @@ Controlled 的通过记录是同构建分组结果，不宣称原先单进程全
 
 追补 L1 初始全量为 21 包通过、livetest 包失败（旧步骤名两项反例）；修复后完整 livetest 包通过，并追加创建独占登记测试通过。按包与新增项合计覆盖 485 个顶层通过、8 个条件/辅助跳过，不将最初全量 exit 1 改写为 exit 0。19 组框架检查通过。定向回归的内容恢复、授权撤销、原生 unknown/stop、正常/强杀及兼容新 EXE 接管四个顶层测试通过；该五项聚合批次因旧夹具的 owner-crash 取证失败仍为 failed。随后五个创建窗口在两次独立同 Runner 构建批次通过，最终批次使用公开 inspect 取证且零跳过。默认 Controlled 已注册 22 项，本次没有重新执行完整 22 项资格。只核对本节独立测试现场，残留所属进程为 0；未操作其它任务或安装服务。
 
+## 管理员故障补验（2026-10-20）
+
+用户启动独立管理员宿主后，普通用户主测试已执行全部八项正式 sandbox 故障 case：停止撤销的 `boundary`、`unreachable` 两项通过；初次批次其余六项失败，批次结果保留为 failed。`unreachable` 实际维持 240 秒断网并重启服务，验证撤销跨代保持、当前反馈和旧 revision 写入被拒绝、零新增业务输入。
+
+| 用例 | 实际结果 |
+| --- | --- |
+| connection-reconnect / active-disconnect | 断网、原只读观察重试、身份/授权保持及恢复断言通过；最终发布被未提交工作阻断 |
+| connection-reconnect / pre-send-disconnect | 初次因夹具使用旧 `publish` 步骤名未命中屏障；改用 `workflow.StepPublish`，新增旧名/报告/实现步骤拒绝反例，全新现场重跑已命中 Runner-only 断网、原操作连接重试和授权保持，最终发布仍被 Git 权限阻断 |
+| service-restart / graceful-boundary、kill-boundary | 均命中断网和服务换代两个故障，自动延续断言通过；最终发布被未提交工作阻断 |
+| stop-revocation / boundary、unreachable | 两项正式 case 通过，原终端、服务和网络清理通过 |
+| publication-unknown / completion-gap、query-unavailable | 发布前即因 Git 权限失败，未命中真实发布成功后的目标窗口；不能据网络预检宣称该恢复路径通过 |
+
+初次五项业务失败及修复后的 pre-send 重跑均明确遇到 `Publication requires committed work`，原现场存在 `index.lock` Permission denied 证据。以上共六个 sandbox case 仍需在具备受信任 Git roots 准备/授权能力的远端环境复验；没有扩大 sandbox 权限来取得通过结果。
+
+本节实际 Runner 固定为 `653F316936A9A42A6A4B71757C69ACA38BF2BE2118E9B16C3EA9E1C159FD5D6A`，与上一节创建恢复的 A415 构建分别登记。各 case 的真实 native driver/source 摘要逐项保留，不声称整个初次批次使用同一 native driver 构建。步骤名修复后完整 `livetest` 包通过、相关 `go vet` 及 live native 编译通过，不另算一次完整 L1。
+
+九次执行的原终端和服务均已确认停止、对应防火墙规则均已恢复。初次 pre-send 的原生停止最初未确认，后以原 runtime/terminal/incarnation/workspace 精确关闭并由原服务补读停止事实，离线 `resources_settled=true`；原测试失败与原 cleanup 字段未改写。管理员宿主共处理 39 个网络动作，零失败、零待处理请求，原 host_id 的 finished 回执和原 PID 退出均已确认。本批九个现场的本机可执行文件根下残留进程为零；远端停止证明限原 Orca terminal scope。
+
+汇总及有限证据见 [admin-faults/report.json](evidence/pr-test-gaps-20261020/admin-faults/report.json)，原始大日志保留在各现场及 `.evidence/pr-gap-admin-*`。没有复制私有测试配置或 owner 认证数据。
+
+## 合并最新主分支后的复验
+
+已合入 `c122d641677593d4b694e2eda7502001510d4e8b`（#36），保留其执行边界重构；R2 冲突同时保留源文件删除后的回执重放及跨构建/重复重启断言。实测代码提交 `f5bd14b31ceb5215d3c03f911806f46fcbf641bf`，Runner SHA256 `A06094E7DB71B856F29767809CEE485ED195911AF2ADE7920A4B6A5AD7254380`。构建 dirty=true，包含当时尚未提交的独立管理员证据，未将后续证据提交号伪写为实测构建来源。
+
+全部 internal 包编译通过；11 个定向包共 59 个 Go 顶层测试通过、零跳过。同一新构建的内容恢复、创建恢复、R2 三个受控顶层测试通过；R2 另以 A415 旧构建接受原任务，再由 A060 接管并重复重启通过。五个创建窗口各保持一次创建、零业务重发。当前新构建未重跑完整 22 项 Controlled 或真实原生矩阵，旧原生结果仍绑定原构建；详见 [pr-merge/report.json](evidence/pr-test-gaps-20261020/pr-merge/report.json)。
+
 ## 需要人工或环境处理的项目
 
 1. SteerLine 同现场 UpdateRunner 界面联调：保持活动任务或等待回答，点击更新 Runner；核验界面仍绑定原任务、回答与报告，原会话继续。该仓库自动测试覆盖 Runner 公开契约，不替代消费者 UI 联调。
-2. 八项管理员故障 case：当前 token 非管理员且没有 `harness.admin_host`。管理员 PowerShell 启动 `./scripts/stability-admin-host.ps1 -Directory C:/srt-admin-<新后缀>`，将该目录填入本地测试配置后再执行相应正式场景。主测试仍保持普通用户身份。具体 case 为 connection-reconnect 的 active-disconnect/pre-send-disconnect，service-restart 的 graceful-boundary/kill-boundary，stop-revocation 的 boundary/unreachable，publication-unknown 的 completion-gap/query-unavailable。宿主仅操作本批独立现场，并有恢复 watchdog。
-3. 远端 sandbox Git 写入阻塞：smoke、调用方响应丢失，以及更新断言后的正常/强杀活动换代均因未完成提交而阻断发布；原始 smoke 明确记录 `index.lock` 权限不足。需要执行主机具备受信任的精确 Git roots 准备/授权能力后再补验四项业务交付。完整权限有独立 case 和证据，原 sandbox 权限要求保留。
+2. 远端 sandbox Git 写入阻塞：原 smoke、调用方响应丢失、正常/强杀活动换代四项，以及本节六个管理员 case，合计十个独立 case 尚未通过。需要执行主机具备受信任的精确 Git roots 准备/授权能力后复验；其中发布 unknown 两项必须实际进入发布成功后的故障窗口。完整权限有独立 case 和证据，原 sandbox 权限要求保留。管理员八项已执行，宿主已退出，当前无需再启动管理员窗口。

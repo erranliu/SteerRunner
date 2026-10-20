@@ -1,0 +1,23 @@
+{
+  "schema": "steerrunner-pr-gap-admin-presend/v1",
+  "status": "failed",
+  "started_at": "2026-10-20T05:17:53.5893880Z",
+  "finished_at": "2026-10-20T05:21:51.1110052Z",
+  "scope": "original sandbox pre-send-disconnect after current workflow step fix",
+  "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+  "results": [
+    {
+      "started_at": "2026-10-20T05:17:54.4905361Z",
+      "case_id": "pre-send-disconnect",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-admin-presend-fixed-r2\\orca-remote.connection-reconnect-pre-send-disconnect-r1-fixture.json",
+      "repeat_index": 1,
+      "level": "L3",
+      "manifest": "C:\\srt\\a6ffb1181b6a\\manifest.json",
+      "scenario": "orca-remote.connection-reconnect",
+      "evidence": "C:\\srt\\a6ffb1181b6a\\evidence",
+      "finished_at": "2026-10-20T05:21:51.0325141Z",
+      "status": "failed",
+      "error": "Live scenario failed; inspect C:\\srt\\a6ffb1181b6a\\evidence/native.log"
+    }
+  ]
+}

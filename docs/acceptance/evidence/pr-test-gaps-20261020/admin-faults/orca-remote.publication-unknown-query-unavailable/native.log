@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.publication-unknown
+    stability_test.go:333: native gate blocked: 依据已有命令输出：指定发布命令仅运行一次，已结束，退出码为 1；内容检查 passed=true，但发布报错 Publication requires committed work，未返回 PR URL。此前 git add 因无法创建 index.lock（Permission denied）失败。所给 Source facts 标记 final_verified=true、native_succeeded=true，与实际发布失败输出存在冲突，不能据此确认发布成功。未重新发布。
+--- FAIL: TestSRLiveScenario (149.26s)
+    --- FAIL: TestSRLiveScenario/orca-remote.publication-unknown (149.13s)
+FAIL

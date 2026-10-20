@@ -1,0 +1,58 @@
+[
+  {
+    "proof": "C:\\srt\\be1444ca0538\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.connection-reconnect",
+    "manifest": "C:\\srt\\be1444ca0538\\manifest.json",
+    "case_id": "active-disconnect"
+  },
+  {
+    "proof": "C:\\srt\\cd573a9db6d6\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.connection-reconnect",
+    "manifest": "C:\\srt\\cd573a9db6d6\\manifest.json",
+    "case_id": "pre-send-disconnect"
+  },
+  {
+    "proof": "C:\\srt\\fa3e9781534e\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.service-restart",
+    "manifest": "C:\\srt\\fa3e9781534e\\manifest.json",
+    "case_id": "graceful-boundary"
+  },
+  {
+    "proof": "C:\\srt\\419cd5226432\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.service-restart",
+    "manifest": "C:\\srt\\419cd5226432\\manifest.json",
+    "case_id": "kill-boundary"
+  },
+  {
+    "proof": "C:\\srt\\8575f5110bae\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.stop-revocation",
+    "manifest": "C:\\srt\\8575f5110bae\\manifest.json",
+    "case_id": "boundary"
+  },
+  {
+    "proof": "C:\\srt\\cfe67b3c84b5\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.stop-revocation",
+    "manifest": "C:\\srt\\cfe67b3c84b5\\manifest.json",
+    "case_id": "unreachable"
+  },
+  {
+    "proof": "C:\\srt\\4d3271c3a511\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.publication-unknown",
+    "manifest": "C:\\srt\\4d3271c3a511\\manifest.json",
+    "case_id": "completion-gap"
+  },
+  {
+    "proof": "C:\\srt\\51aeb3547dc4\\evidence\\network-restored.json",
+    "restored": true,
+    "scenario": "orca-remote.publication-unknown",
+    "manifest": "C:\\srt\\51aeb3547dc4\\manifest.json",
+    "case_id": "query-unavailable"
+  }
+]

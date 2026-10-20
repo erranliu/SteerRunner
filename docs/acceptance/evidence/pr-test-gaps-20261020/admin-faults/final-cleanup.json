@@ -1,0 +1,83 @@
+[
+  {
+    "network_restored": true,
+    "case_id": "active-disconnect",
+    "fixture": "C:\\srt\\be1444ca0538\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.connection-reconnect",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "pre-send-disconnect",
+    "fixture": "C:\\srt\\cd573a9db6d6\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.connection-reconnect",
+    "separate_original_terminal_cleanup": true,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "graceful-boundary",
+    "fixture": "C:\\srt\\fa3e9781534e\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.service-restart",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "kill-boundary",
+    "fixture": "C:\\srt\\419cd5226432\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.service-restart",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "boundary",
+    "fixture": "C:\\srt\\8575f5110bae\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.stop-revocation",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "unreachable",
+    "fixture": "C:\\srt\\cfe67b3c84b5\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.stop-revocation",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "completion-gap",
+    "fixture": "C:\\srt\\4d3271c3a511\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.publication-unknown",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "query-unavailable",
+    "fixture": "C:\\srt\\51aeb3547dc4\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.publication-unknown",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  },
+  {
+    "network_restored": true,
+    "case_id": "pre-send-disconnect",
+    "fixture": "C:\\srt\\a6ffb1181b6a\\manifest.json",
+    "native_stopped": true,
+    "scenario": "orca-remote.connection-reconnect",
+    "separate_original_terminal_cleanup": false,
+    "service_stopped": true
+  }
+]

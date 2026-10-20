@@ -1,0 +1,21 @@
+{
+    "at":  "2026-10-20T05:03:06.2396956Z",
+    "watchdog_pid":  41192,
+    "rules":  "SteerRunner-L3-419cd5226432",
+    "closed":  [
+                   {
+                       "elevated":  true,
+                       "creation_time":  "\/Date(1792472474613)\/",
+                       "api_called":  true,
+                       "exact_connection_remaining":  false,
+                       "local":  "198.18.0.1",
+                       "remote":  "192.168.0.56",
+                       "at":  "2026-10-20T05:03:04.9137634Z",
+                       "remote_port":  6768,
+                       "local_port":  50361,
+                       "pid":  55168,
+                       "exit_code":  317,
+                       "program":  "C:\\srt\\419cd5226432\\bin\\steerrunner.exe"
+                   }
+               ]
+}

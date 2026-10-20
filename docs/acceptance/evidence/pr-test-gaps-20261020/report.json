@@ -24,17 +24,22 @@
   "other_independent_remote_passed": 4,
   "remote_generation_followup_passed": 3,
   "remote_sandbox_blocked_cases": [
-    "orca-remote.smoke/default",
     "orca-remote.caller-exit/accepted-response-lost",
+    "orca-remote.connection-reconnect/active-disconnect",
+    "orca-remote.connection-reconnect/pre-send-disconnect",
+    "orca-remote.publication-unknown/completion-gap",
+    "orca-remote.publication-unknown/query-unavailable",
     "orca-remote.service-restart/graceful-active",
-    "orca-remote.service-restart/kill-active"
+    "orca-remote.service-restart/graceful-boundary",
+    "orca-remote.service-restart/kill-active",
+    "orca-remote.service-restart/kill-boundary",
+    "orca-remote.smoke/default"
   ],
   "complete_l2_or_l3_level_claimed": false,
   "script_success_exit_code": 0,
   "remaining_owned_local_runner_or_test_processes": 0,
   "manual_actions": [
-    "SteerLine same-install UpdateRunner UI acceptance",
-    "eight administrator fault cases using isolated admin host"
+    "SteerLine same-install UpdateRunner UI acceptance"
   ],
   "external_blockers": [
     "remote sandbox trusted Git roots preparation/authorization"
@@ -57,5 +62,14 @@
     "scope": "SteerRunner only; original evidence required; unknown never repeats create",
     "report": "creation-recovery/report.json"
   },
-  "creation_recovery_completed_at": "2026-10-20T05:11:02.9741196Z"
+  "creation_recovery_completed_at": "2026-10-20T05:11:02.9741196Z",
+  "admin_faults": {
+    "blocked_after_followup": 6,
+    "admin_host_stopped": true,
+    "selected": 8,
+    "status": "completed_with_environment_blockers",
+    "report": "admin-faults/report.json",
+    "passed": 2
+  },
+  "admin_faults_completed_at": "2026-10-20T05:23:08.7352962Z"
 }
