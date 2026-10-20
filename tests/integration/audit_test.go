@@ -100,7 +100,8 @@ func TestSRResultAcquisition(t *testing.T) {
 				if err := os.Remove(hold); err != nil {
 					t.Fatal(err)
 				}
-				until := time.Now().Add(15 * time.Second)
+				// The original owner's Git checkpoint alone allows 30 seconds.
+				until := time.Now().Add(time.Minute)
 				for {
 					files, _ := filepath.Glob(filepath.Join(dir, "runs", id, "app-server", "owner", "checkpoints", "*.json"))
 					if len(files) >= 2 {
@@ -171,7 +172,7 @@ func TestSRResultAcquisition(t *testing.T) {
 					if err := os.Remove(hold); err != nil {
 						t.Fatal(err)
 					}
-					until := time.Now().Add(15 * time.Second)
+					until := time.Now().Add(time.Minute)
 					for {
 						if receipt, err := parser.ReadReceipt(dir, intent.Request); err == nil && receipt.State.Stopped {
 							break
