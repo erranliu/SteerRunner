@@ -24,7 +24,7 @@ type ObservationEvent struct {
 
 // Observe journals native notifications before reporting them to the service.
 // The deliver callback must not return true until the event is durable.
-func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, validateAsk func(codexapp.Envelope) error, deliver func(ObservationEvent) bool) (completed bool, err error) {
+func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, validateAsk func(codexapp.Envelope) error, deliver func(ObservationEvent) bool, terminal ...func() error) (completed bool, err error) {
 	for _, envelope := range replay {
 		if !deliver(ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true, Kind: "question", Status: "pending", Title: "Codex needs a decision"}) {
 			return false, nil
@@ -37,6 +37,20 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 		case envelope, ok := <-client.Notifications():
 			if !ok {
 				return false, errors.New("app-server observation ended before native turn completion")
+			}
+			if envelope.Method == "turn/completed" && len(terminal) > 0 && terminal[0] != nil {
+				var params struct {
+					ThreadID string `json:"threadId"`
+					Turn     struct {
+						ID string `json:"id"`
+					} `json:"turn"`
+				}
+				if json.Unmarshal(envelope.Params, &params) != nil || params.ThreadID != threadID || params.Turn.ID != turnID {
+					return false, errors.New("terminal checkpoint notification identity mismatch")
+				}
+				if err := terminal[0](); err != nil {
+					return false, err
+				}
 			}
 			line, err := json.Marshal(envelope)
 			if err != nil {

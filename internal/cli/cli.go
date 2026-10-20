@@ -29,6 +29,7 @@ type arguments struct {
 	help      bool
 	offline   bool
 	kind      string
+	candidate string
 }
 
 func parse(argv []string) (arguments, *contracts.Fault) {
@@ -66,6 +67,8 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				parameter = argv[i]
 			}
 			switch name {
+			case "--candidate":
+				value.candidate = parameter
 			case "--kind":
 				value.kind = parameter
 			case "--expected-instance-id":
@@ -128,7 +131,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	}
 	switch value.opts.Command {
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -157,12 +160,15 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	}
 	if value.opts.ExpectedInstanceID != "" {
 		switch value.opts.Command {
-		case "version", "serve", "service start", "service status", "service stop", "service verify-stopped":
+		case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover":
 			return value, contracts.Fail(2, "invalid_arguments", "Expected instance identity applies to resident business/query commands.")
 		}
 	}
 	mutating := writes(value.opts.Command)
-	if mutating && value.input != "-" || !mutating && value.input != "" {
+	if value.opts.Command == "service verify-takeover" && value.candidate == "" || value.opts.Command != "service verify-takeover" && value.candidate != "" {
+		return value, contracts.Fail(2, "invalid_arguments", "verify-takeover requires --candidate and no other command accepts it.")
+	}
+	if mutating && value.input != "-" || !mutating && value.input != "" && !(value.opts.Command == "service start" && value.input == "-") {
 		return value, contracts.Fail(2, "invalid_arguments", "Write commands require --input -; other commands do not accept input.")
 	}
 	selectors := 0
@@ -243,7 +249,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object, without a request envelope.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline {
 		executable, err := os.Executable()
@@ -284,6 +290,18 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", result), 0)
 	}
 	var request *contracts.Request
+	var startupInput *contracts.ServiceStartInput
+	if options.opts.Command == "service start" && options.input == "-" {
+		raw, err := io.ReadAll(io.LimitReader(input, contracts.MaxRequestBytes+1))
+		if err != nil {
+			return reject(contracts.Fail(2, "invalid_request", "Cannot read startup input."))
+		}
+		var failure *contracts.Fault
+		startupInput, failure = contracts.ReadServiceStartInput(raw)
+		if failure != nil {
+			return reject(failure)
+		}
+	}
 	if writes(options.opts.Command) {
 		value, requestErr := contracts.ReadRequest(input)
 		id = value.RequestID
@@ -317,7 +335,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		if err != nil {
 			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))
 		}
-		service, startErr := host.Ensure(ctx, dir, executable)
+		service, startErr := host.Ensure(ctx, dir, executable, startupInput)
 		if startErr != nil {
 			return reject(startErr)
 		}
@@ -336,6 +354,13 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		result, verifyErr := host.VerifyStopped(ctx, dir)
 		if verifyErr != nil {
 			return reject(verifyErr)
+		}
+		return finish(contracts.Success("", result), 0)
+	}
+	if options.opts.Command == "service verify-takeover" {
+		result, failure := host.VerifyTakeover(ctx, dir, options.candidate)
+		if failure != nil {
+			return reject(failure)
 		}
 		return finish(contracts.Success("", result), 0)
 	}

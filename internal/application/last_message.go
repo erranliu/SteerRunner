@@ -42,6 +42,9 @@ func (e *Engine) acceptMessage(id string, m b.PublicMessage) error {
 	if old, ok := e.lastMessages[id]; ok && !m.ObservedAt.After(old.ObservedAt) {
 		return nil
 	}
+	if old, ok := e.lastMessages[id]; ok && old.AttemptID == m.AttemptID && old.TurnID == m.TurnID && old.Kind == m.Kind && old.Text == text {
+		return nil
+	}
 	e.lastMessages[id] = contracts.LastMessage{RunID: id, AttemptID: m.AttemptID, SessionID: m.SessionID, TurnID: m.TurnID, Kind: m.Kind, Text: text, ObservedAt: m.ObservedAt}
 	return nil
 }

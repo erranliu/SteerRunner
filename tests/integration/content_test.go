@@ -5,6 +5,8 @@ package integration
 import (
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"path/filepath"
 	"testing"
@@ -45,6 +47,17 @@ func contentFixture(t *testing.T, workflow string, schema json.RawMessage) (stri
 	return dir, id, service
 }
 func existsTest(path string) bool { _, err := os.Stat(path); return err == nil }
+
+func contentProcess(t *testing.T, dir, id string) codex.ProcessReceipt {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join(dir, "runs", id, "app-server", "process.json"))
+	var receipt codex.ProcessReceipt
+	if err != nil || json.Unmarshal(raw, &receipt) != nil || process.InspectProcess(&receipt.Identity) != "matching process still exists" {
+		t.Fatal("original content process is not verifiably live", err, receipt)
+	}
+	return receipt
+}
+
 func contentCommand(t *testing.T, dir, id, command, request string, body map[string]any, exit int) string {
 	t.Helper()
 	v := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
@@ -116,14 +129,13 @@ func TestSRContentConversation(t *testing.T) {
 	_ = os.Remove(filepath.Join(state, "hold-turn"))
 	contentCommand(t, dir, id, "message", "message-after-interrupt", map[string]any{"text": "continue"}, 0)
 	idle := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Controls.CanMessage })
+	originalProcess := contentProcess(t, dir, id)
 	service = restartEdgeService(t, dir, service, 41)
-	restarted := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ResumeRequired })
-	if countNative(t, "turn/start") != 4 || restarted.Execution.SessionID != idle.Execution.SessionID {
+	restarted := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Controls.CanMessage })
+	if restarted.ResumeRequired || countNative(t, "turn/start") != 4 || restarted.Execution.SessionID != idle.Execution.SessionID || contentProcess(t, dir, id) != originalProcess {
 		t.Fatal("restart replayed input")
 	}
-	contentCommand(t, dir, id, "message", "without-resume", map[string]any{"text": "no"}, 5)
-	contentCommand(t, dir, id, "resume", "resume-original", map[string]any{}, 0)
-	waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Controls.CanMessage })
+	contentCommand(t, dir, id, "resume", "unneeded-resume", map[string]any{}, 5)
 	contentCommand(t, dir, id, "message", "after-restart", map[string]any{"text": "continue same session"}, 0)
 	continued := waitRun(t, dir, id, func(v contracts.RunView) bool {
 		return v.Controls.CanMessage && v.Execution.TurnID != idle.Execution.TurnID

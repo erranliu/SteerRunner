@@ -14,6 +14,7 @@ func TestSRResumeWorkflowRetainsOriginalReportSource(t *testing.T) {
 	input := workflow.StageInput{CommandID: "old-report", AttemptID: "old-attempt", StepID: workflow.StepReport, Prompt: "old frozen prompt", SourceCommandID: "implementation", SourceTurnID: "implementation-turn", ReportToolPolicy: "original-policy"}
 	r := &runstate.Record{Allowed: true, PromptBodies: map[string]string{workflow.StepReport: "Report the original result."}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{SnapshotPath: "spec.md"}}, {MaterialView: contracts.MaterialView{SnapshotPath: "plan.md"}}}}
 	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
+	r.Request.Execution.Adapter = "codex-app-server"
 	r.Workflow = workflow.Snapshot{StepID: workflow.StepReport, StageInputs: []workflow.StageInput{{CommandID: "implementation", StepID: workflow.StepImplement}, input}, StageResults: []workflow.StageResult{{CommandID: "implementation", StepID: workflow.StepImplement, TurnID: "implementation-turn", Succeeded: true, FinalVerified: true, Final: "verified original result"}}}
 	r.Snapshot.PendingTurn = &b.TurnInput{CommandID: "old-report"}
 	preservePendingStage(r)

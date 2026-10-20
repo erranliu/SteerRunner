@@ -8,14 +8,34 @@ import (
 	"slices"
 )
 
+func validateOperationVersions(r *runstate.Record) error {
+	if r.Snapshot.Ref.Version != 1 {
+		return errors.New("original execution record version is unsupported; preserve it without dispatch")
+	}
+	for _, intent := range r.Intents {
+		if intent.Request.Operation.Version != 1 {
+			return errors.New("original lifecycle operation version is unsupported; preserve it without dispatch")
+		}
+	}
+	for _, op := range r.Snapshot.Operations {
+		if op.Version != 1 {
+			return errors.New("original execution operation version is unsupported; preserve it without dispatch")
+		}
+	}
+	return nil
+}
+
 func validateWorkflow(r *runstate.Record) error {
+	if err := validateOperationVersions(r); err != nil {
+		return err
+	}
 	for _, intent := range r.Intents {
 		if receipt := intent.Receipt; receipt != nil && receipt.ParseEvidence != nil && receipt.ParseEvidence.Status == "side_effect_unverified" {
 			return errors.New("original parser tool side effects require reconciliation; resume cannot authorize a successor")
 		}
 	}
 	p, ok := workflow.Lookup(r.Request.Workflow.ID, r.Request.Workflow.Version)
-	if !ok || r.Workflow.Config == nil || !reflect.DeepEqual(p, *r.Workflow.Config) {
+	if !ok || r.Workflow.Config == nil || !compatibleWorkflow(p, *r.Workflow.Config, r.Request.Execution.Adapter) {
 		return errors.New("unsupported or inconsistent frozen workflow definition")
 	}
 	if _, ok := r.Workflow.CurrentState(); !ok {
@@ -43,4 +63,25 @@ func validateWorkflow(r *runstate.Record) error {
 	}
 
 	return nil
+}
+
+// Descriptions and admission defaults govern new Runs. Existing Runs keep
+// their original execution definition, prompts, models and adapter.
+func compatibleWorkflow(current, frozen workflow.Profile, adapter string) bool {
+	if current.ID != frozen.ID || current.Version != frozen.Version || current.Initial != frozen.Initial || current.AuditModelRequired != frozen.AuditModelRequired || !slices.Contains(current.SupportedAdapters, adapter) || !slices.Contains(frozen.SupportedAdapters, adapter) || len(current.States) != len(frozen.States) {
+		return false
+	}
+	for id, original := range frozen.States {
+		candidate, found := current.States[id]
+		if !found {
+			return false
+		}
+		// Default text is already frozen in the original definition/PromptBodies.
+		// Keep routing, contracts, permissions, model roles and budgets exact.
+		candidate.Prompt, original.Prompt = "", ""
+		if !reflect.DeepEqual(candidate, original) {
+			return false
+		}
+	}
+	return true
 }

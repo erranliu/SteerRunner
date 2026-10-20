@@ -8,7 +8,9 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"io"
@@ -36,7 +38,7 @@ func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 	} else {
 		request.Conversation = &contracts.ConversationInput{Instruction: "Discuss", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: t.TempDir(), Access: "read_only"}}
 	}
-	r := &runstate.Record{ID: "run", Request: request, Allowed: true, Status: "queued", InputDigest: "digest", CommandStates: map[string]string{}}
+	r := &runstate.Record{ID: "run", Request: request, Allowed: true, Status: "queued", InputDigest: "digest", CommandStates: map[string]string{}, AcquisitionConfig: ra.FrozenConfig{Config: ra.DefaultConfig()}}
 	r, err = freezeContent(dir, r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
 	if err != nil {
 		t.Fatal(err)
@@ -70,7 +72,7 @@ func TestContentMaterialSnapshot(t *testing.T) {
 }
 
 func TestContentConcurrentMessages(t *testing.T) {
-	e, _ := contentEngine(t, "conversation")
+	e, w := contentEngine(t, "conversation")
 	e.finish("run", contentEvidence(e, "done", "succeeded", true))
 	revision := e.runs["run"].Revision
 	var responses [2]contracts.Response
@@ -95,18 +97,66 @@ func TestContentConcurrentMessages(t *testing.T) {
 		t.Fatal("concurrent input crossed serial boundary")
 	}
 	prior := e.runs["run"].PendingFeedback.CommandID
+	before := string(canonical(e.runs["run"]))
 	restarted, err := New(context.Background(), e.dir, e.store, log.New(io.Discard, "", 0))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if r := restarted.runs["run"]; r.PendingFeedback != nil || r.CommandStates[prior] != "failed" || !r.ResumeRequired || r.Allowed || len(r.Workflow.StageInputs) != 1 {
-		t.Fatal("unsent prior message replayable", r.View())
+	if string(canonical(restarted.runs["run"])) != before {
+		t.Fatal("restart changed the original accepted message or authorization")
 	}
 	t.Cleanup(restarted.cancel)
-	r := e.runs["run"].Clone()
+	if !restarted.feedback("run", w, w.port) {
+		t.Fatal("original authorized message did not freeze after restart")
+	}
+	r := restarted.runs["run"]
+	if r.PendingFeedback != nil || r.CommandStates[prior] != "running" || len(r.Workflow.StageInputs) != 2 || r.Snapshot.Session.SessionID != "original-session" || r.Workflow.StageInputs[1].FeedbackDecisionID != prior {
+		t.Fatal("message lost its original identity or was duplicated")
+	}
+	second, err := New(context.Background(), e.dir, e.store, log.New(io.Discard, "", 0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(second.cancel)
+	if second.feedback("run", w, w.port) || len(second.runs["run"].Workflow.StageInputs) != 2 || string(canonical(second.runs["run"])) != string(canonical(r)) {
+		t.Fatal("second restart recreated an already frozen message")
+	}
+	r = e.runs["run"].Clone()
 	closeContent(r, "close-pending")
 	if r.PendingFeedback != nil || r.CommandStates[prior] != "failed" {
 		t.Fatal("closing left an unsent message pending")
+	}
+}
+
+func TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope(t *testing.T) {
+	for _, id := range []string{"conversation", "generate"} {
+		t.Run(id, func(t *testing.T) {
+			e, _ := contentEngine(t, id)
+			before := string(canonical(e.runs["run"]))
+			items := TakeoverFacts([]*runstate.Record{e.runs["run"]}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+			if len(items) != 1 || items[0].Status != "compatible" || string(canonical(e.runs["run"])) != before {
+				t.Fatal("content contract rejected or rewritten", items)
+			}
+		})
+	}
+	for _, changed := range []string{"session", "legacy_epoch"} {
+		t.Run(changed, func(t *testing.T) {
+			e, w := contentEngine(t, "conversation")
+			e.finish("run", contentEvidence(e, "done", "succeeded", true))
+			if !contentControl(e, "message", "saved", contracts.MessageInput{ExpectedRevision: e.runs["run"].Revision, Text: "original body"}).OK {
+				t.Fatal("message was not accepted")
+			}
+			r := e.runs["run"].Clone()
+			if changed == "session" {
+				r.Snapshot.Session.SessionID = "foreign-session"
+			} else {
+				r.PendingFeedback.Epoch = "previous-service-epoch"
+			}
+			e.runs["run"] = r
+			if e.feedback("run", w, w.port) || len(e.runs["run"].Workflow.StageInputs) != 1 || e.runs["run"].Phase != "fresh_feedback_required" {
+				t.Fatal("changed or unbound original message reached content input")
+			}
+		})
 	}
 }
 
@@ -311,12 +361,11 @@ func TestContentDirectoryAndUnknownResult(t *testing.T) {
 	if verifyContentDirectory(r) == nil {
 		t.Fatal("replaced directory accepted")
 	}
-	// A restored service must renew authorization, and never replay accepted
-	// message or answer intents. The existing aggregate persists this gate.
+	// A prior explicit authorization gate survives service generations.
 	r = e.runs["run"].Clone()
 	r.Allowed = false
 	r.ResumeRequired = true
-	if err := e.commitLocked(r, nil, "restart"); err != nil {
+	if err := e.commitLocked(r, nil, "authorization_revoked"); err != nil {
 		t.Fatal(err)
 	}
 	if response := contentControl(e, "message", "without-resume", contracts.MessageInput{ExpectedRevision: r.Revision, Text: "no"}); response.OK {

@@ -15,7 +15,7 @@
 | CW03–07 会话可靠性 | application/Codex 单元及 CLI 夹具，独立 state-dir | 同一专项入口自动选 `TestSRContentGenerate|TestSRContentConversation|TestSRContentQuestionAndUnknown`；收尾追加 owner 包回归 | 同 thread、问答身份、互斥、interrupt/close、未知发送/中断零重发、恢复身份和独立结算 | `controlled-integration.log`、`owner-tests.log`、`content-tests.log` |
 | CW08 真实结构化生成 | 新 `C:/srt/cw-*`、非 Git 空目录，Codex 0.159.2 | `scripts/test-content-workflows.ps1 -NativeExecutable <原生EXE> -Model gpt-6.1-sol`；受控通过、同源码构建后 | 原生 account/read 和只读目录探针、本次线程初始化、单个业务 turn、JSON 校验成功、资源 stopped | `native-generation.json`、`native-integration.log`、`build-manifest.json` |
 | CW09 真实两轮与中断 | 同一 driver，两个 Run 身份独立 | 与 CW08 同一命令，在初始/第二轮后执行 interrupt 和显式继续 | 原 thread 五轮中的一轮明确 cancelled，随后上下文继续 | `native-interrupted.json`、`native-after-interrupt.json`、`native-history-final.json` |
-| CW10 真实重启 | 同上，独立服务换代 | 与 CW08 同一命令；空闲时停服重启、resume、message、close，收尾另调用公开 `service verify-stopped` | 重启零自动输入、同 thread/context、关闭拒绝新消息、全部资源结算 | `native-restarted.json`、`native-after-restart.json`、`native-closed.json`、`verify-stopped.json` |
+| CW10 真实重启 | 同上，独立服务换代 | 与 CW08 同一命令；空闲时停服重启、message、close，收尾另调用公开 `service verify-stopped` | 保留原授权、root/thread/context，空闲无新输入；无需因重启 resume，关闭拒绝新消息、全部资源结算 | `native-restarted.json`、`native-after-restart.json`、`native-closed.json`、`verify-stopped.json` |
 
 不默认运行 full。相关包回归与 build 在定向测试后执行；真实失败保留现场与诊断，不能由受控通过代替。
 
@@ -25,3 +25,5 @@
 最终 `content-final-receipts` 专项通过，当前生产源码重新构建的 SHA256 与真实受测 EXE 相同。
 
 PR 阶段在隔离检出合入最新 main，按同一测试计划复验；源码、受测 EXE、公开能力与逐项结果见[PR 复验登记](../acceptance/evidence/content-workflows-pr-20261019/README.md)。
+
+2026-10-20 服务换代合并修订：上述历史证据仍对应原构建及其显式 resume 行为。当前 CW10 driver 已按共同恢复契约调整；新增受控与规则验证、真实原生待验边界另登记于[服务换代验收](../acceptance/service-generation-recovery.md)，不把历史结果改记为新行为通过。

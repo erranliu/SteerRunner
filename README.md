@@ -24,6 +24,7 @@ SteerRunner 是个人多机执行器：在本人管理和信任、预先配置�
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
 - [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
+- [服务重启、更新与重新部署接管 Spec](docs/spec/service-generation-recovery.spec.md) / [Plan](docs/spec/service-generation-recovery.plan.md) / [验收](docs/acceptance/service-generation-recovery.md)（已实施核心、parser 保留、离线审计与 SteerLine 接线；Orca 创建关联接口和完整原生资格仍待收口）
 - [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
 - [来源清单及 P2 交接门槛](docs/extraction/source-map.md)
 
@@ -84,7 +85,7 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
-accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。服务重启只读取原执行事实；继续执行需要当前 revision 的新 resume，旧答案和反馈不会随重启自动发送。
+accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
 
 同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
 
@@ -162,6 +163,8 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 ## 停服及回执
 
+服务退出只脱离原生执行；显式 `stop --run-id` 才撤销该 Run 授权并停止原树。独立 owner 的固定版本文件保存在 state-dir/runtimes，执行结算前不得清理。`resources_settled=false` 不能作为删除目录的证明；兼容接管资格由 `service verify-takeover` 单独报告。离线重开可用 `service start --input -` 提交裸 `pending_stops` 对象，在启动 worker 前受理原 stop 信封，具体结构由 `capabilities.service_start_schema` 公布。
+
 PowerShell 7 示例（stdin 为 UTF-8 JSON）：
 
 ```powershell
@@ -193,7 +196,7 @@ worker 的 common Git 目录只属于该 Run。sandbox 模式只为这个私有�
 
 认证关闭、进程退出或准备失败时，仅删除原 socket 和已核验的空目录；目录重定向、身份替换、外来文件或崩溃遗留目录不会被递归删除或自动接管，未完成清理会如实报告。旧 codec v3 权限资源仍可读取，但不能静默增加认证目录授权；需要使用新资源创建执行。
 
-不兼容旧 SteerLine 数据或其他数据库，不提供旧格式迁移。替换构建前先停服；构建脚本不会结束或替换正在运行的服务。
+支持调查基线 state/v3 到 state/v4 的一致性备份与原子语义升级；不导入 SteerLine 数据。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](docs/spec/service-generation-recovery.spec.md)及[验收状态](docs/acceptance/service-generation-recovery.md)。
 
 ## 定向验证
 

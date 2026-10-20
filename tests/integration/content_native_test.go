@@ -98,17 +98,16 @@ func TestSRContentNative(t *testing.T) {
 	}
 	beforeHistory := call(t, dir, []string{"history", "--run-id", conversation}, "", 0)
 	saveNative("native-history-before-restart", beforeHistory.Data)
+	originalProcess := contentProcess(t, dir, conversation)
 	service = restartEdgeService(t, dir, service, 71)
-	restarted := waitRunFor(t, dir, conversation, func(v contracts.RunView) bool { return v.ResumeRequired }, time.Minute)
+	restarted := waitRunFor(t, dir, conversation, func(v contracts.RunView) bool { return v.Controls.CanMessage }, time.Minute)
 	saveNative("native-restarted", restarted)
 	afterHistory := call(t, dir, []string{"history", "--run-id", conversation}, "", 0)
 	beforeJSON, _ := json.Marshal(beforeHistory.Data)
 	afterJSON, _ := json.Marshal(afterHistory.Data)
-	if string(beforeJSON) != string(afterJSON) || restarted.Execution.SessionID != original || restarted.Controls.CanMessage {
-		t.Fatal("restart changed history or auto-authorized input")
+	if string(beforeJSON) != string(afterJSON) || restarted.Execution.SessionID != original || restarted.ResumeRequired || contentProcess(t, dir, conversation) != originalProcess {
+		t.Fatal("restart changed history, process or original authorization")
 	}
-	contentCommand(t, dir, conversation, "resume", "native-resume", map[string]any{}, 0)
-	waitRunFor(t, dir, conversation, func(v contracts.RunView) bool { return v.Controls.CanMessage || v.Phase == "control_rejected" }, time.Minute)
 	continued := next("native-after-restart", "Repeat the token from my first message exactly. Do not use tools.")
 	if !strings.Contains(continued.ContentResult.Text, nonce) {
 		t.Fatal("context lost across restart")

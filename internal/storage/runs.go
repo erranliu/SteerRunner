@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"strconv"
 	"strings"
@@ -149,7 +150,7 @@ func (s *Store) Runs() ([]*runstate.Record, error) {
 			return nil, err
 		}
 		var r runstate.Record
-		if err := json.Unmarshal(raw, &r); err != nil {
+		if err := b.DecodeStrictJSON(raw, &r, "trailing durable Run data"); err != nil {
 			return nil, err
 		}
 		result = append(result, &r)

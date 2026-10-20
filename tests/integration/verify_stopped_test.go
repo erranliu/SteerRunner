@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 )
@@ -41,21 +40,17 @@ func testOfflineVerificationAfterWriterExitWithoutShutdownReceipt(t *testing.T) 
 		t.Fatal(err)
 	}
 	var proof contracts.StoppedVerification
-	for until := time.Now().Add(5 * time.Second); ; {
+	for i := 0; i < 2; i++ {
 		response = call(t, dir, []string{"service", "verify-stopped"}, "", 0)
 		raw, _ = json.Marshal(response.Data)
 		if err = json.Unmarshal(raw, &proof); err != nil {
 			t.Fatal(err)
 		}
 		if proof.ResourcesSettled {
-			break
+			t.Fatal("service exit was misreported as native tree settlement", proof)
 		}
-		if time.Now().After(until) {
-			t.Fatal("exact original managed writers did not settle", proof)
-		}
-		time.Sleep(30 * time.Millisecond)
 	}
-	if len(proof.Runs) != 1 || proof.Runs[0].RunID != id || !proof.Runs[0].ResourcesSettled {
+	if len(proof.Runs) != 1 || proof.Runs[0].RunID != id || proof.Runs[0].ResourcesSettled {
 		t.Fatal(proof)
 	}
 	after, err := os.ReadFile(filepath.Join(dir, "runner.db"))

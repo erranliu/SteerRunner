@@ -24,7 +24,7 @@ read_only 是原生只读文件权限，不承诺限制读取到单一目录；�
 
 inspect 提供结果、轮次和操作可用性；history 提供真实提交消息、交互、原生 final 及来源。
 message（expected_revision、text）只在 conversation 空闲且资格有效时接受；reply answer
-复用原问题 ID 和 epoch 门槛。interrupt 只中断当前轮，stop 继续关闭整个 Run；close 为显式
+复用原问题 ID 和原执行范围绑定；无范围绑定的旧 epoch 输入仍需人工确认。interrupt 只中断当前轮，stop 继续关闭整个 Run；close 为显式
 会话关闭操作。所有写操作沿 request_id 去重/CAS/持久意图，未知只查原对象。
 
 ## 流程与完成
@@ -38,10 +38,11 @@ generate：固定输入 → 单一 execute → 完整原生 final → 程序格�
 conversation：execute → input，显式 message → 同一原生 thread execute；无自动开发阶段。
 失败/取消仍保留轮次事实，确认原轮终止后才可继续；interrupt 不关闭会话。close/stop 一经接受
 永久拒绝后续消息。一个 Run 至多一个活动轮，原问答只答原轮。
-重启撤销输入授权；空闲会话显式 resume 经原会话/目录/旧 writer 核验，后续 message 可恢复
-原 thread；不创建替代 thread 或重放历史。活动或未知输入继续现有观察/对账，无法核实即未核实。
-旧服务尚未冻结为原生输入的 message 标为失败并保留历史，需要新的显式输入；
-关闭也结算尚未派发的请求。历史同时关联调用命令与实际原生 command/turn，避免混淆接受和发送。
+兼容服务换代沿[共同恢复契约](service-generation-recovery.spec.md)保留原授权与原 owner/native，
+空闲仍等待显式 message；已接受但尚未冻结的 message 绑定原执行范围，核验原会话/目录后仅冻结一次。
+已建立副作用意图的输入只对账，不创建替代 thread 或重放历史；无法核实即未核实。
+原暂停/撤销门槛保持，适用的显式 resume 仍须核验原会话及旧 writer。close/stop 结算尚未派发的请求。
+历史同时关联调用命令与实际原生 command/turn，避免混淆接受和发送。
 
 ## 数据职责
 

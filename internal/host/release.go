@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/resources"
 )
 
 func executableDigest(path string) (string, error) {
@@ -24,12 +23,12 @@ func executableDigest(path string) (string, error) {
 }
 
 func selectedService(info contracts.ServiceInfo, executable string) (contracts.ServiceInfo, *contracts.Fault) {
-	digest, err := executableDigest(executable)
+	_, err := executableDigest(executable)
 	if err != nil {
 		return contracts.ServiceInfo{}, contracts.Fail(4, "service_unavailable", "Cannot verify the selected service executable.")
 	}
-	if info.ExecutableSHA256 != digest || info.Version != resources.Version || info.Protocol != contracts.Protocol || info.ResourceDigest != resources.Digest() {
-		return contracts.ServiceInfo{}, contracts.Fail(5, "directory_conflict", "The original service uses a different executable release; stop it with its original CLI before selecting another release.")
+	if info.Protocol != contracts.Protocol || info.ExecutableSHA256 == "" || info.InstanceID == "" || info.ResourceDigest == "" {
+		return contracts.ServiceInfo{}, contracts.Fail(5, "directory_conflict", "The original service protocol or identity is unverified.")
 	}
 	return info, nil
 }

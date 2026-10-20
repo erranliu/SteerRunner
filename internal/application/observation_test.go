@@ -39,7 +39,7 @@ type observationAttachmentPort struct {
 
 func (p *observationAttachmentPort) ObserveLifecycle(context.Context, b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	p.calls++
-	return b.LifecycleReceipt{State: b.LifecycleStateFacts{SessionID: "session"}}, p.observer, p.err
+	return b.LifecycleReceipt{State: b.LifecycleStateFacts{SessionID: "session", SessionGeneration: "observed-generation"}}, p.observer, p.err
 }
 
 func TestSRObservationAttachmentCommitsBeforePublishingObserver(t *testing.T) {

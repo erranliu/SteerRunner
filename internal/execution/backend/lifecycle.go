@@ -353,6 +353,9 @@ type LifecycleRequest struct {
 }
 
 func (request LifecycleRequest) Validate() error {
+	if request.Operation.Version != 1 {
+		return errors.New("unsupported lifecycle operation version")
+	}
 	if request.Operation.ID == "" || request.Operation.PayloadDigest == "" || request.Operation.Action == "" {
 		return errors.New("lifecycle request has no durable operation identity")
 	}
@@ -874,7 +877,10 @@ type LifecycleSetup struct {
 	// dispatch gate held. Only the supplied read-only query may run with that
 	// gate released. The scope restores the gate and rechecks authorization
 	// before returning; creation and input must remain outside the query.
-	ReadOnlyPreparation   func(context.Context, func(context.Context) error) error
+	ReadOnlyPreparation func(context.Context, func(context.Context) error) error
+	// LaunchExecutionOwner starts the local native host independently of the
+	// service. It is an injected host operation, never persisted in snapshots.
+	LaunchExecutionOwner  func(context.Context, string) error
 	Logf                  func(string, ...any)
 	AgentLaunchCommand    string
 	Snapshot              LifecycleSnapshot

@@ -42,6 +42,12 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 	if !ok {
 		return false
 	}
+	if result.ContentVerified {
+		// A fast/offline turn can finish before this service subscribes to its
+		// notifications. Sampling its verified native final is observation too;
+		// keep the existing bounded, redacted, memory-only activity projection.
+		_ = e.acceptMessage(id, b.PublicMessage{AttemptID: r.Snapshot.Session.AttemptID, Generation: r.Snapshot.Session.Generation, SessionID: value.SessionID, TurnID: value.TurnID, Kind: "assistant", Text: result.Content, ObservedAt: time.Now().UTC()})
+	}
 	value.NativeOutcome = result.NativeOutcome
 	value.FinalDiagnostic = e.redact(r, value.FinalDiagnostic)
 	if unknown(r) {
@@ -84,6 +90,17 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 		checkpoint = e.originalCheckpoint(r, owner, inputCopy)
 		if gate != nil {
 			gate.Lock()
+		}
+		if checkpoint == nil {
+			e.mu.Lock()
+			defer e.mu.Unlock()
+			current := e.runs[id]
+			if current.Revision == r.Revision && r.Allowed && !r.ResumeRequired && r.PendingStop == "" && r.Status != "blocked" && r.Status != "waiting_input" && r.Phase != "completion_checkpoint_unavailable" {
+				next := r.Clone()
+				next.Status, next.Phase, next.Diagnostic = "reconciling", "completion_checkpoint_unavailable", "Original owner completion checkpoint is unavailable; only original fact reads are allowed"
+				_ = e.commitLocked(next, nil, "completion_checkpoint_unavailable")
+			}
+			return false
 		}
 	}
 	e.mu.Lock()

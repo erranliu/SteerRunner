@@ -67,19 +67,28 @@ func LoadConfig(stateDir string) (FrozenConfig, error) {
 	if err := dec.Decode(&c); err != nil {
 		return FrozenConfig{}, errors.New("invalid result acquisition configuration")
 	}
+	if err := c.Validate(); err != nil {
+		return FrozenConfig{}, err
+	}
+	return FrozenConfig{c, Digest(data)}, nil
+}
+
+// Validate checks the persisted contract without rereading mutable service
+// configuration, credentials, provider availability or model defaults.
+func (c Config) Validate() error {
 	p := c.CodexParser
 	if c.Schema != ConfigSchema || p.Executable == "" || strings.ContainsAny(p.Executable+p.Model+p.ReasoningEffort, "\x00\r\n") || strings.TrimSpace(p.Model) != p.Model || p.TimeoutSeconds < 10 || p.TimeoutSeconds > 300 || p.MaxInputBytes < 16384 || p.MaxInputBytes > 262144 || p.MaxOutputBytes < 4096 || p.MaxOutputBytes > 65536 {
-		return FrozenConfig{}, errors.New("unsupported or out of range result acquisition configuration")
+		return errors.New("unsupported or out of range result acquisition configuration")
 	}
 	if p.CodexHomeEnv != "" && !regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]{0,127}$`).MatchString(p.CodexHomeEnv) {
-		return FrozenConfig{}, errors.New("invalid native home environment reference")
+		return errors.New("invalid native home environment reference")
 	}
 	switch p.ReasoningEffort {
 	case "", "minimal", "low", "medium", "high", "xhigh", "max", "ultra":
 	default:
-		return FrozenConfig{}, errors.New("unsupported parser effort")
+		return errors.New("unsupported parser effort")
 	}
-	return FrozenConfig{c, Digest(data)}, nil
+	return nil
 }
 func exactConfigKeys(data []byte, fields resultFields) bool {
 	var object map[string]json.RawMessage

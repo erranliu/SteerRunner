@@ -47,3 +47,25 @@ func TestServiceStopWorkerFacts(t *testing.T) {
 		t.Fatal("local worker did not declare explicit stop behavior")
 	}
 }
+
+func TestIndependentOwnerServiceDetachPreservesOriginalTree(t *testing.T) {
+	cmd := exec.Command(os.Args[0], "-test.run=^TestServiceStopWorkerHelper$")
+	cmd.Env = append(os.Environ(), "STEERRUNNER_TEST_STOP_HELPER=1")
+	owned, err := resourceprocess.StartManaged(cmd)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer cmd.Wait()
+	defer owned.Close()
+	defer owned.Kill()
+	id := owned.Identity()
+	s := executionbackend.LifecycleSnapshot{Ref: executionbackend.ExecutionRef{External: id}, Session: executionbackend.SessionContext{ProjectID: "p", WorkflowRunID: "w", ExecutionID: "e", AttemptID: "a"}, ConfigurationDigest: "c", ResourceGeneration: "g"}
+	l := ExecutionLifecycle{setup: executionbackend.LifecycleSetup{LaunchExecutionOwner: func(context.Context, string) error { return nil }}, Backend: Backend{Process: ProcessPort{Inspect: resourceprocess.InspectProcess}}}
+	facts, err := l.ShutdownLifecycle(context.Background(), s, owned)
+	if err != nil || facts.Stopped || owned.WritersAbsent() || resourceprocess.InspectProcess(&id) != "matching process still exists" {
+		t.Fatalf("service detach ended original native tree: %+v %v", facts, err)
+	}
+	if l.PolicyCapabilities().ServiceStopBehavior != executionbackend.ContinueExecutionOnServiceStop {
+		t.Fatal("independent host did not declare continue execution")
+	}
+}

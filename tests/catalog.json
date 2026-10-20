@@ -13,7 +13,7 @@
     "TestSRPublicationIdentity",
     "TestSRPublicationBeforeWorkflowReady",
     "TestSRNativeUnknownAndStop",
-    "TestSRRestartRequiresResume",
+    "TestSRRestartPreservesAuthorization",
     "TestSRStabilityLostSubmitResponse",
     "TestSRStabilityRevocationAcrossRestart",
     "TestSRWorkflowDiscoveryAndSelection",

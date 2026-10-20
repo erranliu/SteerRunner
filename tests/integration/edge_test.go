@@ -33,7 +33,7 @@ func restartEdgeService(t *testing.T, dir string, old contracts.ServiceInfo, ind
 
 // Original final evidence is lost in the protocol fixture, never in a real
 // user's native history. Two independent service generations must preserve the
-// missing result and require authorization without recreating business input.
+// missing result and its original input guard without recreating business input.
 func TestSREdgePermanentEvidenceLoss(t *testing.T) {
 	testCount.Add(1)
 	dir, envelope := setupRun(t)
@@ -59,15 +59,15 @@ func TestSREdgePermanentEvidenceLoss(t *testing.T) {
 	}
 	for i := 1; i <= 2; i++ {
 		service = restartEdgeService(t, dir, service, i)
-		view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ResumeRequired })
-		if view.NewInputsAllowed || view.PR != nil || view.Execution.FinalAvailable || view.Execution.SessionID != original.Execution.SessionID || view.InputDigest != original.InputDigest {
+		view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Phase == "final_unavailable" })
+		if view.NewInputsAllowed != original.NewInputsAllowed || view.ResumeRequired != original.ResumeRequired || view.PR != nil || view.Execution.FinalAvailable || view.Execution.SessionID != original.Execution.SessionID || view.InputDigest != original.InputDigest {
 			t.Fatal("missing original source became a new result or authority")
 		}
 		if countNative(t, "turn/start") != starts || countNative(t, "thread/start") != 1 {
 			t.Fatal("service generations replayed unknown business input")
 		}
 	}
-	current := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ResumeRequired })
+	current := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Phase == "final_unavailable" })
 	if current.Controls.CanResume {
 		// Explicit authorization must also verify the original source, not just
 		// leave the Run safe because no caller ever attempted to continue it.
@@ -77,14 +77,14 @@ func TestSREdgePermanentEvidenceLoss(t *testing.T) {
 		input, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: current.Revision})
 		raw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "edge-evidence-resume", Input: input})
 		response := call(t, dir, []string{"resume", "--run-id", id, "--input", "-"}, string(raw), 5)
-		if response.Error == nil || response.Error.Code != "operation_unverified" {
-			t.Fatal("unresolved original operation did not reject resume")
+		if response.Error == nil || response.Error.Code != "invalid_state" {
+			t.Fatal("missing original source gained a new resume authorization")
 		}
 	}
-	if current.NewInputsAllowed || !current.ResumeRequired || current.PR != nil || current.Execution.SessionID != original.Execution.SessionID || countNative(t, "turn/start") != starts || countNative(t, "thread/start") != 1 {
+	if current.NewInputsAllowed != original.NewInputsAllowed || current.ResumeRequired != original.ResumeRequired || current.PR != nil || current.Execution.SessionID != original.Execution.SessionID || countNative(t, "turn/start") != starts || countNative(t, "thread/start") != 1 {
 		t.Fatal("explicit resume replaced unavailable original source")
 	}
-	t.Logf("outcome=resume_required original=%s starts=%d; native history remains unavailable", id, starts)
+	t.Logf("outcome=original_evidence_unverified original=%s starts=%d; native history remains unavailable", id, starts)
 }
 
 // The real managed worker is stopped, but its receipt transaction is rejected.

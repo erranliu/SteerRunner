@@ -14,6 +14,9 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/application"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -32,6 +35,12 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	created, detached, err := launchFacts(dir, startupID)
 	if err != nil {
 		return err
+	}
+	if executionOwnerDirectory(dir) {
+		completeBootstrap(dir, startupID)
+		return codex.ServeExecutionOwner(ctx, dir, func(ctx context.Context, root string, request b.LifecycleRequest) codex.OwnedParser {
+			return parser.Start(ctx, root, request, func(b.LifecycleReceipt) error { return nil })
+		})
 	}
 	for _, name := range []string{"service", "logs"} {
 		if err := os.MkdirAll(filepath.Join(dir, name), 0700); err != nil {
@@ -56,17 +65,45 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	}
 	defer output.Close()
 	logger := log.New(output, "", log.Ldate|log.Ltime|log.LUTC)
+	if err := qualifyLegacyRecovery(dir); err != nil {
+		logger.Print("recovery source rejected: ", err)
+		return err
+	}
 	store, err := storage.Open(dir)
 	if err != nil {
 		logger.Print("startup rejected: ", err)
 		return err
 	}
 	defer store.Close()
-	engine, err := application.New(ctx, dir, store, logger)
+	engine, err := application.New(ctx, dir, store, logger, func(ctx context.Context, ownerDir string) error { return launchExecutionOwner(ctx, dir, ownerDir) })
 	if err != nil {
 		return err
 	}
 	var service contracts.ServiceInfo
+	pending, err := loadPendingStart(dir)
+	if err != nil {
+		return err
+	}
+	if pending != nil {
+		for _, stop := range pending.PendingStops {
+			response := engine.Handle("stop", stop.RunID, "", "", "", 0, false, &stop.Request)
+			if !response.OK {
+				// An explicit rejection is not an unresolved acceptance. Preserve
+				// accepted controls in commands/Run, and let the caller form a
+				// fresh request after inspecting the rejection. Unknown commits
+				// retain the exact startup intent for reconciliation.
+				if response.Error.Code != "request_outcome_unknown" {
+					if err = os.Remove(pendingStartPath(dir)); err != nil {
+						return err
+					}
+				}
+				return contracts.Fail(contracts.ExitCode(response), response.Error.Code, response.Error.Message)
+			}
+		}
+		if err = os.Remove(pendingStartPath(dir)); err != nil {
+			return err
+		}
+	}
 	stopID := ""
 	defer func() {
 		shutdown, cancel := context.WithTimeout(context.Background(), 25*time.Second)
@@ -214,6 +251,13 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
+	case "service verify-takeover":
+		caps, sha, failure := candidateCapabilities(context.Background(), wire.Options.Candidate)
+		if failure != nil {
+			return reject(failure)
+		}
+		items := s.engine.Takeover(caps.Recovery, caps.Workflows)
+		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
 	case "environment-check start", "environment-check stop", "environment-check inspect":

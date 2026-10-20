@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"reflect"
 )
@@ -22,7 +23,7 @@ func (s *Store) Checks() ([]*runstate.CheckRecord, error) {
 			return nil, err
 		}
 		var r runstate.CheckRecord
-		if err := json.Unmarshal(raw, &r); err != nil {
+		if err := b.DecodeStrictJSON(raw, &r, "trailing durable Check data"); err != nil {
 			return nil, err
 		}
 		result = append(result, &r)

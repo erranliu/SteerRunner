@@ -37,6 +37,11 @@ func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot exec
 	if err := l.validateIdentity(snapshot); err != nil {
 		return executionbackend.LifecycleStateFacts{}, err
 	}
+	if l.setup.LaunchExecutionOwner != nil {
+		// The independent owner retains the native connection, Job and broker.
+		// Closing this service's observation is not an execution stop.
+		return executionbackend.LifecycleStateFacts{}, nil
+	}
 	if owned == nil {
 		return executionbackend.LifecycleStateFacts{}, nil
 	}

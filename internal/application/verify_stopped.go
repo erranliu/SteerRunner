@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
@@ -92,12 +93,19 @@ func stoppedRecord(r *runstate.Record, absent func(*b.ProcessIdentity) bool) boo
 }
 
 func managedRecordWritersAbsent(r *runstate.Record, root b.ProcessIdentity, absent func(*b.ProcessIdentity) bool) bool {
+	if root == r.Snapshot.Ref.External && codexOwnerStopped(r) {
+		return true
+	}
 	// This is the same kill-on-close Job proof used by managed recovery:
 	// both the sole owner and exact native root must have exited.
 	return r.Request.Execution.Adapter == "codex-app-server" && r.NativeManaged &&
 		r.NativeOwner != nil && r.NativeOwner.Kind == "os" && root.Kind == "os" &&
 		validStoppedIdentity(r.NativeOwner) && validStoppedIdentity(&root) &&
 		absent(r.NativeOwner) && absent(&root)
+}
+
+func codexOwnerStopped(r *runstate.Record) bool {
+	return r.Request.Execution.Adapter == "codex-app-server" && codex.VerifyExecutionOwnerStopped(r.Snapshot)
 }
 
 func validStoppedIdentity(id *b.ProcessIdentity) bool {

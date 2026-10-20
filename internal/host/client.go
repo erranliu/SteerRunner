@@ -113,9 +113,19 @@ func Status(ctx context.Context, dir string) (contracts.ServiceInfo, *contracts.
 	return info, nil
 }
 
-func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo, *contracts.Fault) {
-	if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
+func Ensure(ctx context.Context, dir, executable string, pending ...*contracts.ServiceStartInput) (contracts.ServiceInfo, *contracts.Fault) {
+	var startupInput *contracts.ServiceStartInput
+	if len(pending) > 0 {
+		startupInput = pending[0]
+	}
+	selectService := func(info contracts.ServiceInfo) (contracts.ServiceInfo, *contracts.Fault) {
+		if startupInput != nil && len(startupInput.PendingStops) > 0 {
+			return contracts.ServiceInfo{}, contracts.Fail(5, "invalid_state", "Service is already running; reconcile original stop requests against this instance.")
+		}
 		return selectedService(info, executable)
+	}
+	if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
+		return selectService(info)
 	}
 	for _, name := range []string{"service", "logs"} {
 		if err := os.MkdirAll(filepath.Join(dir, name), 0700); err != nil {
@@ -133,7 +143,7 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 			break
 		}
 		if info, err := Status(ctx, dir); err == nil && info.Status == "ready" {
-			return selectedService(info, executable)
+			return selectService(info)
 		}
 		if !pause(ctx) {
 			break
@@ -148,7 +158,7 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 		return contracts.ServiceInfo{}, statusErr
 	}
 	if info.Status == "ready" {
-		return selectedService(info, executable)
+		return selectService(info)
 	}
 	if info.Status == "unavailable" {
 		return contracts.ServiceInfo{}, contracts.Fail(5, "directory_conflict", "The original writer still owns this directory; do not replace it.")
@@ -157,6 +167,9 @@ func Ensure(ctx context.Context, dir, executable string) (contracts.ServiceInfo,
 		return contracts.ServiceInfo{}, contracts.Fail(4, "startup_unverified", "The original independent startup is unresolved; inspect bootstrap.json and owned processes before starting again.")
 	}
 	startupID := contracts.NewID()
+	if err := savePendingStart(dir, startupInput); err != nil {
+		return contracts.ServiceInfo{}, fault(err, contracts.Fail(4, "service_start_failed", "Cannot preserve original pending stops."))
+	}
 	startupPath := filepath.Join(dir, "service", "startup-"+startupID+".json")
 	defer os.Remove(startupPath)
 	if err := startDetached(ctx, executable, dir, startupID); err != nil {
