@@ -51,6 +51,10 @@ v4 只适用于远端，禁止 helper 配置及 readiness/owner/inspection/recor
 
 沿用 sandbox 默认、显式 full_access 和 never 审批参数。启动参数表达请求模式，不冒充实际 OS token/同沙箱 `command/exec` 审计通过。sandbox 凭据不可见可以如实失败；不自动切 full_access、不改变冻结 Run。两个模式真实通过范围分别登记；本次取消 helper 专属保证，不伪造其通过。
 
+2026-10-20 Git 发布修复：新建 sandbox 开发任务的既有原生启动命令先在执行主机读取 Git 身份，校验仓库 URL、当前工作区、`.git`/`commondir`/`gitdir` 对应关系及路径无重定向，再传递 shared objects/refs/logs 和当前 worktree admin 四个精确写根。共享 `.git` 根及其它 worktree admin 不因该准备而获准写入。已有冻结启动命令不重新编译。
+
+对 HTTPS GitHub 仓库，有限启动命令在执行主机解析其已有活动 gh 登录，将 `GH_TOKEN` 及 URL 精确匹配的 Git HTTP header 放入该原生进程环境，固定 `GH_HOST=github.com`；使用固定工具环境白名单，保留原 pane 的 Orca hook 字段，拒绝继承认证跟踪及冲突 Git 进程配置，退出时恢复原环境。原生进程独立启动，不复用其它环境的 daemon。凭据不进入本机请求、启动参数或配置文件，不新增 helper、broker、登录操作或机器级权限改动。工具代码可以读取自己的环境，gh 仍具有原远端账号权限；URL header 不是对该账号的限仓库安全边界，不提供限时或退出撤销保证。原登录不可用、实际认证失败或发布未知仍阻断，不能重复提交证明成功。
+
 ## 4. 原输入、完成与成果
 
 复用 `NativeProof`、`observeNative`、`StateFeed`、订阅加独立查询，不增加原生历史解析器或结果服务。`worktree.ps` 无分页游标；独立查询从 limit=100 起按返回 totalCount 扩展，在同一原 runtime 连接及 40 秒预算内最多查询三次，仅接受计数一致且未截断的单份快照，不拼接多次列表。缺完整性元数据、持续截断或持续增长时保留未核实，不能据当前页缺席判断原资源消失。

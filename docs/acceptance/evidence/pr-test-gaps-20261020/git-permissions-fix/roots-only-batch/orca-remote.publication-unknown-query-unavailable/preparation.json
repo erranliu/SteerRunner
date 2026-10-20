@@ -1,0 +1,8 @@
+{
+  "schema": "steerrunner-test-preparation/v1",
+  "root": "C:\\srt\\de2a2ab0b12a",
+  "base_branch": "codex/srtest/de2a2ab0b12a/base",
+  "fixture_id": "de2a2ab0b12a",
+  "scenario": "orca-remote.publication-unknown",
+  "status": "ready"
+}

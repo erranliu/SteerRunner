@@ -1,0 +1,20 @@
+=== RUN   TestAgentLaunchCompilesAndProtectsPreferences
+--- PASS: TestAgentLaunchCompilesAndProtectsPreferences (0.00s)
+=== RUN   TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration
+--- PASS: TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration (0.00s)
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/foreign-repository
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/main-checkout
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/environment-override
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/redirected-root
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/full_access
+=== RUN   TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/content
+--- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots (12.27s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/foreign-repository (2.04s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/main-checkout (1.44s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/environment-override (1.23s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/redirected-root (3.08s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/full_access (0.00s)
+    --- PASS: TestLinkedGitLaunchUsesVerifiedExecutionHostRoots/content (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	13.531s

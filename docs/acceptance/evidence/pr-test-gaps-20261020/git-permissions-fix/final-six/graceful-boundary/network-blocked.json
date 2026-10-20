@@ -1,0 +1,21 @@
+{
+    "at":  "2026-10-20T07:05:13.5687507Z",
+    "watchdog_pid":  46564,
+    "rules":  "SteerRunner-L3-86c0ba4d6cec",
+    "closed":  [
+                   {
+                       "elevated":  true,
+                       "creation_time":  "\/Date(1792479817762)\/",
+                       "api_called":  true,
+                       "exact_connection_remaining":  false,
+                       "local":  "198.18.0.1",
+                       "remote":  "192.168.0.56",
+                       "at":  "2026-10-20T07:05:10.8112165Z",
+                       "remote_port":  6768,
+                       "local_port":  51732,
+                       "pid":  58064,
+                       "exit_code":  317,
+                       "program":  "C:\\srg-fix-20261020\\86c0ba4d6cec\\bin\\steerrunner.exe"
+                   }
+               ]
+}

@@ -232,6 +232,8 @@ Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_U
 
 远端只使用既有 Orca/Codex/Git/gh 和用户登录，不上传、探测或调用 Runner helper，不转发本机 token、OAuth 或 gh 配置。远端 runtime_executable/runtime_sha256 键（包括空值）在接受前拒绝。model/effort/access_mode 仅核验冻结参数及传递命令；native-launch-contract 明记 effective_parameters_verified=false，native-call-audit 要求零 helper/query terminal，不冒充 OS token、权限审计或实际模型回读。完整远端 Check 和有来源证明的双模型审计明确不支持。
 
+新建远端 GitHub sandbox 任务通过有限启动命令校验 linked worktree 的四个 Git 写根，并在执行主机将已有 gh 登录供给该原生进程的工具环境。Git 的 URL header 和 gh token 仅经进程环境传递；沿用原账号权限，未恢复历史 broker 或撤销保证。专项真实沙箱命令和六个管理员故障窗口的结果分别记录；只读身份查询或 push dry-run 不能代替真实 PR 交付。运行时模块为每个故障现场复制独立文件，避免跨现场硬链接与缓存校验争用。参见本轮 [Git 权限修复证据](acceptance/evidence/pr-test-gaps-20261020/git-permissions-fix/)。
+
 原生停止按原 runtime/worktree/terminal/incarnation 的新鲜完整查询判断，缺少执行内结果时保留 unreported/unknown。offline verify-stopped 的 scope 只描述该原终端，不证明全部 OS 后代或远端登录撤销；历史签名/Job 证明不继承到新路径。登录或权限失败按实际操作结果保留，不自动换登录、后端或 full_access。
 
 ## 当前完整 smoke 契约

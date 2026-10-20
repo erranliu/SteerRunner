@@ -12,7 +12,7 @@ import (
 )
 
 func TestOrcaPreSendReconnect(t *testing.T) {
-	for _, scenario := range []string{"open", "repeated-open", "query", "identity", "authentication", "provider-changed", "terminal-changed", "exhausted", "cancelled"} {
+	for _, scenario := range []string{"open", "repeated-open", "query", "agent-query", "agent-query-exhausted", "identity", "authentication", "provider-changed", "terminal-changed", "exhausted", "cancelled"} {
 		t.Run(scenario, func(t *testing.T) {
 			l, host, s := fixture(t)
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -28,7 +28,7 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 			transient := &native.StateConnectionError{Cause: errors.New("dial failed")}
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
-			if scenario == "exhausted" {
+			if scenario == "exhausted" || scenario == "agent-query-exhausted" {
 				l.profile.WaitTimeout = "20ms"
 			}
 			opens := 0
@@ -51,6 +51,9 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 				case "query":
 					first.err = transient
 					return first, nil
+				case "agent-query", "agent-query-exhausted":
+					first.err = native.ErrOriginalMainAgentUnavailable
+					return first, nil
 				case "provider-changed":
 					restored.initial.ProviderSession.ID = "foreign"
 					restored.current = restored.initial
@@ -61,7 +64,7 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 			}
 			r, err = l.submit(ctx, request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
 			defer l.closeStateFeed()
-			if scenario == "open" || scenario == "query" || scenario == "repeated-open" {
+			if scenario == "open" || scenario == "query" || scenario == "agent-query" || scenario == "repeated-open" {
 				wantOpens := 2
 				if scenario == "repeated-open" {
 					wantOpens = 3
@@ -69,7 +72,7 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 				if err != nil || r.Disposition != b.OperationAccepted || host.nativeSends != 1 || opens != wantOpens {
 					t.Fatalf("recovery did not send exactly once: %+v, %v, opens=%d sends=%d", r, err, opens, host.nativeSends)
 				}
-				if scenario == "query" && first.closes != 1 {
+				if (scenario == "query" || scenario == "agent-query") && first.closes != 1 {
 					t.Fatal("failed subscription was retained")
 				}
 				// Re-execution of an attempted send remains reconciliation-only.
@@ -81,7 +84,7 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 				if err == nil || r.Disposition != b.OperationRejected || host.nativeSends != 0 {
 					t.Fatalf("unverified readiness sent input: %+v, %v", r, err)
 				}
-				if (scenario == "identity" || scenario == "authentication" || scenario == "cancelled" || scenario == "exhausted") && opens != 1 {
+				if (scenario == "identity" || scenario == "authentication" || scenario == "cancelled" || scenario == "exhausted" || scenario == "agent-query-exhausted") && opens != 1 {
 					t.Fatal("terminal failure retried", opens)
 				}
 			}

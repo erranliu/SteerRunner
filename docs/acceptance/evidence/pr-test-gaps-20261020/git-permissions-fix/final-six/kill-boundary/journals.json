@@ -1,0 +1,38 @@
+[
+    {
+        "file":  "native-calls.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\native-calls.jsonl",
+        "bytes":  167882,
+        "sha256":  "9782927E7A79A8ED8C5239AB386E550DE8EE667E8C7E35D53BA9BECC460B4908"
+    },
+    {
+        "file":  "caller-commands.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\caller-commands.jsonl",
+        "bytes":  496551,
+        "sha256":  "116285F45918425339641DC0E016CE8F803BDF82644A872866AA19B0001B8284"
+    },
+    {
+        "file":  "driver-commands.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\driver-commands.jsonl",
+        "bytes":  4779,
+        "sha256":  "6C9B2840A24C6F010E6BEF1C7DC059E8F69A1F4BEA507865A764CB59C16F0A80"
+    },
+    {
+        "file":  "faults.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\faults.jsonl",
+        "bytes":  952047,
+        "sha256":  "6B6FB3C8401A8AEFD34AD870450213E37B06262F16CDE09C5A03FF07EAC1892B"
+    },
+    {
+        "file":  "provider-queries.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\provider-queries.jsonl",
+        "bytes":  342,
+        "sha256":  "10009AF0208CC642628982B7A0B31182C8E2AD35EBB1B2461B31194E1CF2E337"
+    },
+    {
+        "file":  "network-close-attempts.jsonl",
+        "original":  "C:\\srg-fix-20261020\\8d5052ed4393\\evidence\\network-close-attempts.jsonl",
+        "bytes":  653,
+        "sha256":  "3B46BA5C77D780FFF8BB3D75FC41C62D12A09657DB2AEDE9F0C8A91D3005C501"
+    }
+]

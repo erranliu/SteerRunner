@@ -9,6 +9,7 @@ import (
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"slices"
 	"strings"
 )
 
@@ -17,6 +18,7 @@ type Config struct {
 	AuditModel        *workflow.ModelSettings `json:"audit_model,omitempty"`
 	RuntimeExecutable string                  `json:"runtime_executable,omitempty"`
 	RepositoryURL     string                  `json:"repository_url,omitempty"`
+	RepositoryRemote  string                  `json:"-"`
 	AccessMode        string                  `json:"access_mode,omitempty"`
 	Executable        string                  `json:"executable"`
 	Args              []string                `json:"args,omitempty"`
@@ -104,10 +106,29 @@ func (c *Config) Command(agent string) (string, error) {
 		args = append(args, "Initialize this agent session. Reply READY only. Do not use tools or change files.")
 	}
 	parts := []string{"&", quote(c.Executable)}
+	linked := agent == "codex" && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox")
+	authentication := linked && gitHubRepository(c.RepositoryURL)
+	if authentication {
+		args[len(args)-1] += " Runtime authentication is already configured. Do not print environment variables, credential/config values, or authentication headers. Do not run login, change authentication, or repeat uncertain publication."
+		if !slices.Contains(args, "--no-daemon") {
+			parts = append(parts, quote("--no-daemon"))
+		}
+		parts = append(parts, "@srNativeAuthenticationArgs")
+	}
+	if linked {
+		parts = append(parts, "@srGitWriteArgs")
+	}
 	for _, arg := range args {
 		parts = append(parts, quote(arg))
 	}
-	return strings.Join(parts, " "), nil
+	command := strings.Join(parts, " ")
+	if authentication {
+		command = gitHubAuthenticationLaunch(c.RepositoryURL, command)
+	}
+	if linked {
+		command = linkedGitLaunch(c.RepositoryURL, c.RepositoryRemote, command)
+	}
+	return command, nil
 }
 
 func (c *Config) RemoteConfig() codex.RemoteAgentConfig {

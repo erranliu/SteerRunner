@@ -42,8 +42,9 @@ foreach($taskFile in $taskSources){
  }
  if((Get-FileHash -LiteralPath $taskCached -Algorithm SHA256).Hash -ine $taskFile.sha256){throw 'Immutable test runtime cache changed'}
  New-Item -ItemType Directory -Force -Path (Split-Path -Parent $taskTarget)|Out-Null
- if($taskFile.path -eq 'node.exe'){Copy-Item -LiteralPath $taskCached -Destination $taskTarget}
- else{try{New-Item -ItemType HardLink -Path $taskTarget -Target $taskCached -ErrorAction Stop|Out-Null}catch{Copy-Item -LiteralPath $taskCached -Destination $taskTarget}}
+ # A running fixture must not share file locks with another fixture's cache
+ # verification/link publication. Keep the immutable cache, copy each runtime.
+ Copy-Item -LiteralPath $taskCached -Destination $taskTarget
 }
 $taskIndexPath=Join-Path (Split-Path -Parent $Destination) 'runtime-files.json'
 [IO.File]::WriteAllText($taskIndexPath,$taskIndexJSON,[Text.UTF8Encoding]::new($false))

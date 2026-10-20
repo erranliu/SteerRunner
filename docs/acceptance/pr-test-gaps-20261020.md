@@ -97,7 +97,30 @@ Controlled 的通过记录是同构建分组结果，不宣称原先单进程全
 
 后续原创建期限、迟到回执停止和终端身份恢复修复，以及新构建的完整 L1、Controlled 分组覆盖与失败历史，见 [PR #38 审查与修复验收](pr38-review-20261020.md)。下列历史构建和环境阻断仍按各自原证据保留。
 
+## 远端 sandbox Git 修复与六项重跑（2026-10-20）
+
+执行主机实际为 Windows Git 2.55.0、Codex 0.162.1、Orca 1.4.224。本轮在 `385a6579d9e0772fc0e541d2ca920813d0e46857` 的未提交工作树修复，不改写前述旧构建结果。根因有两层：linked worktree 的 Git admin/data 位于 sandbox 工作区外；补足精确写根后，Git credential-manager 所需的 MSYS shell 在 AppContainer 中仍报 `NtCreateDirectoryObject ... 0xC0000022`，原生 gh 读取既有登录也返回 401。
+
+新建远端 sandbox 开发任务的有限启动命令在执行主机验证原仓库和 Git backlinks，仅增加 objects、refs、logs、当前 worktree admin 四个写根；共享 `.git` 根保持不可写。启动时读取执行主机既有 gh 登录，只放入该任务进程的环境和精确 URL HTTP header，退出时恢复原环境，固定工具环境白名单并保留原 Orca pane hooks；没有部署远端 helper、修改机器权限或更换账号。实际探针验证 commit 成功且工作区干净，gh 身份查询及 push dry-run 成功；随后六项完成真实推送、唯一 PR 和测试 base 合入。既有账号权限仍然有效，进程环境不是凭据不可读或限仓库 broker 边界。
+
+同时修复原 main agent 暂不可见时的只读 readiness 查询：沿原期限重试，身份不符和授权错误仍拒绝，不再创建或发送业务；每个测试现场复制独立 Orca 运行文件，避免共享 hardlink 的 Node 模块 EBUSY。
+
+| 正式 sandbox case | 故障命中 | 结果 / 测试 PR |
+| --- | --- | --- |
+| connection-reconnect / active-disconnect | 1 | passed / #635 |
+| connection-reconnect / pre-send-disconnect | 1 | passed / #634 |
+| service-restart / graceful-boundary | 2 | passed / #637 |
+| service-restart / kill-boundary | 2 | passed / #636 |
+| publication-unknown / completion-gap | 1 | passed / #638 |
+| publication-unknown / query-unavailable | 2 | passed / #639 |
+
+六项零排除、零跳过，每项实际 driver 退出码 0、审计完整、全部断言通过；发布未知两项实际命中真实发布成功后的窗口，其中查询失败也核验零错误就绪。所有 PR 均按验证过的原 head 合入独立测试 base，并验证合入内容。主测试不提权，管理员宿主仅承担精确网络故障。原终端、服务及网络清理全部通过；管理员宿主处理 30 个动作，零失败、零待处理请求，原 host_id 的 finished 回执与原 PID 退出已确认，六个现场可执行文件根下残留本地进程为 0。远端停止证明仍限原 Orca terminal scope。
+
+本轮六项统一 Runner SHA256 `3E5300AFDBFF10FE7C0CBBC9877DAF07FF8EFBE2D622D159E38B3065B8178EC5`、native driver SHA256 `29836964AF25AF28DA46C6BF2455DD42B8CF9F2FAE69352611CD0496856656BA`。另通过 agentlaunch 全包、orcatransport/protocol-orca/livetest 全包、application 四个定向顶层测试与相关 vet，不另算一次完整 L1 或 L3。矩阵后仅补充 `GH_HOST=github.com` 的固定/恢复及继承 enterprise host 反例，agentlaunch 全包复验；该窄修补与六项冻结实测构建分别登记。
+
+最初仅补 Git 写根的六项仍全为 failed；其中前四个旧现场目录后来丢失，仅保留实际观察和批次摘要，不重建原日志或将清理记为通过。后以管理员逐一核验六组原网络规则均为 0；已知原终端只读记录显示 orphaned/不可写，这不构成丢失现场全部原生资源停止证明。最终六项使用独立新父目录，原证据和有限副本齐全。详情、源摘要、历史与清理见 [git-permissions-fix/report.json](evidence/pr-test-gaps-20261020/git-permissions-fix/report.json)。
+
 ## 需要人工或环境处理的项目
 
 1. SteerLine 同现场 UpdateRunner 界面联调：保持活动任务或等待回答，点击更新 Runner；核验界面仍绑定原任务、回答与报告，原会话继续。该仓库自动测试覆盖 Runner 公开契约，不替代消费者 UI 联调。
-2. 远端 sandbox Git 写入阻塞：原 smoke、调用方响应丢失、正常/强杀活动换代四项，以及本节六个管理员 case，合计十个独立 case 尚未通过。需要执行主机具备受信任的精确 Git roots 准备/授权能力后复验；其中发布 unknown 两项必须实际进入发布成功后的故障窗口。完整权限有独立 case 和证据，原 sandbox 权限要求保留。管理员八项已执行，宿主已退出，当前无需再启动管理员窗口。
+2. 原 smoke、调用方响应丢失、正常/强杀活动换代四个 sandbox case 的历史失败尚未在本轮新构建重新取得资格；本轮按请求重跑的是六项管理员 case，不能外推为完整远端矩阵通过。Git 根和认证阻塞已自动修复，当前没有需要用户执行的 Git/管理员命令，管理员宿主已退出。

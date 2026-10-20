@@ -1,0 +1,116 @@
+{
+  "scenario": "orca-remote.connection-reconnect",
+  "case_id": "pre-send-disconnect",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "bb852f843fe034da59b1628f4d696ee0",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/634",
+  "merge_commit": "76fed6cc9c5821925912de333ffc650f7da3438d",
+  "test_outcome": "passed",
+  "business_outcome": "merged",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "publication-pre-send-gate",
+      "passed": true,
+      "evidence": "pre-send-gate.json: committed publish input before direct state connect"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "pre-send-connection-retried",
+      "passed": true,
+      "evidence": "pre-send-returned.json and native-calls.jsonl: original readiness retried after a full failed direct dial; zero new sends"
+    },
+    {
+      "name": "pre-send-authority-retained",
+      "passed": true,
+      "evidence": "pre-send-blocked-run.json: original operation/authority retained"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "Runner-only direct connection blocked after original publish identity read"
+    },
+    {
+      "name": "original-service-unchanged",
+      "passed": true,
+      "evidence": "caller-commands.jsonl: public service status retains original instance, PID and creation time"
+    },
+    {
+      "name": "normal-reconnect-no-resume",
+      "passed": true,
+      "evidence": "latest-run.json: original Attempt/generation retained without driver resume"
+    },
+    {
+      "name": "single-actual-pr",
+      "passed": true,
+      "evidence": "pr-list.json: exactly one PR on this fixture base"
+    },
+    {
+      "name": "merge-head-stable",
+      "passed": true,
+      "evidence": "original PR verified before exact-head merge"
+    },
+    {
+      "name": "native-launch-parameters",
+      "passed": true,
+      "evidence": "native-launch-contract.json: frozen requested parameters; no effective-parameter or helper audit"
+    },
+    {
+      "name": "merged-base",
+      "passed": true,
+      "evidence": "actual base fetch matches merge commit"
+    },
+    {
+      "name": "merged-content",
+      "passed": true,
+      "evidence": "merged Git object equals verified head"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately"
+    },
+    {
+      "name": "single-native-publication",
+      "passed": true,
+      "evidence": "native-publication-audit.json: publisher/create counts"
+    },
+    {
+      "name": "no-input-during-cleanup",
+      "passed": true,
+      "evidence": "original business forwarding intents unchanged by stop/authentication/control cleanup"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

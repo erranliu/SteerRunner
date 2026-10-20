@@ -1,0 +1,100 @@
+{
+  "schema": "steerrunner-pr-gap-admin/v1",
+  "status": "failed",
+  "started_at": "2026-10-20T06:13:01.7804823Z",
+  "finished_at": "2026-10-20T06:35:58.1308309Z",
+  "scope": "six previously Git-blocked original sandbox fault cases; new verified linked Git write roots; main unelevated",
+  "planned_case_count": 6,
+  "admin_host": {
+    "at": "2026-10-20T06:12:13.0407888Z",
+    "elevated": true,
+    "host_id": "bbd4737b1bdf4acaab8342c0bfae59e5",
+    "created": "134369503307273407",
+    "fixture_parent": "C:\\srt",
+    "pid": 33720
+  },
+  "main_is_administrator": false,
+  "runner_sha256": "67ecc899c33fe48baa087842f5a03e585a5b317d9e4ab0ebcc5b8b1da30685ff",
+  "helper_sha256": "03e90ebe2fc324d557812a92cc3e963ae7a91a09a8edcd77e0ba11e483a1c70f",
+  "requirements_sha256": "6c8101fb0e54f63a4f0425f869726d8e7051236bbc3082826229b63c10735d18",
+  "results": [
+    {
+      "evidence": "C:\\srt\\ba468a9a2ce1\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:13:03.0944403Z",
+      "scenario": "orca-remote.connection-reconnect",
+      "error": "Live scenario failed; inspect C:\\srt\\ba468a9a2ce1\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\ba468a9a2ce1\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.connection-reconnect-active-disconnect-r1-fixture.json",
+      "finished_at": "2026-10-20T06:22:32.1269015Z",
+      "case_id": "active-disconnect"
+    },
+    {
+      "evidence": "C:\\srt\\a1e85f2f859f\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:13:03.1329461Z",
+      "scenario": "orca-remote.connection-reconnect",
+      "error": "Live scenario failed; inspect C:\\srt\\a1e85f2f859f\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\a1e85f2f859f\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.connection-reconnect-pre-send-disconnect-r1-fixture.json",
+      "finished_at": "2026-10-20T06:19:11.5447823Z",
+      "case_id": "pre-send-disconnect"
+    },
+    {
+      "evidence": "C:\\srt\\d392d3a8133a\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:19:12.9079494Z",
+      "scenario": "orca-remote.service-restart",
+      "error": "Live scenario failed; inspect C:\\srt\\d392d3a8133a\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\d392d3a8133a\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.service-restart-graceful-boundary-r1-fixture.json",
+      "finished_at": "2026-10-20T06:29:13.0016312Z",
+      "case_id": "graceful-boundary"
+    },
+    {
+      "evidence": "C:\\srt\\251bc77abd10\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:22:33.6680345Z",
+      "scenario": "orca-remote.service-restart",
+      "error": "Live scenario failed; inspect C:\\srt\\251bc77abd10\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\251bc77abd10\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.service-restart-kill-boundary-r1-fixture.json",
+      "finished_at": "2026-10-20T06:30:59.4030985Z",
+      "case_id": "kill-boundary"
+    },
+    {
+      "evidence": "C:\\srt\\f09cec347ad9\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:29:14.6730556Z",
+      "scenario": "orca-remote.publication-unknown",
+      "error": "Live scenario failed; inspect C:\\srt\\f09cec347ad9\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\f09cec347ad9\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.publication-unknown-completion-gap-r1-fixture.json",
+      "finished_at": "2026-10-20T06:35:57.9422385Z",
+      "case_id": "completion-gap"
+    },
+    {
+      "evidence": "C:\\srt\\de2a2ab0b12a\\evidence",
+      "status": "failed",
+      "repeat_index": 1,
+      "started_at": "2026-10-20T06:31:00.9645541Z",
+      "scenario": "orca-remote.publication-unknown",
+      "error": "Live scenario failed; inspect C:\\srt\\de2a2ab0b12a\\evidence/native.log",
+      "level": "L3",
+      "manifest": "C:\\srt\\de2a2ab0b12a\\manifest.json",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-gitfix-admin6-r1\\orca-remote.publication-unknown-query-unavailable-r1-fixture.json",
+      "finished_at": "2026-10-20T06:33:40.2709536Z",
+      "case_id": "query-unavailable"
+    }
+  ]
+}

@@ -488,13 +488,14 @@ func (l *Lifecycle) ready(ctx context.Context, s b.LifecycleSnapshot) (native.Ag
 	defer cancel()
 	backoff := 250 * time.Millisecond
 	for {
-		// Only failed read-only connections qualify. The protocol bounds each
-		// dial so a stalled connection leaves room in this readiness budget.
+		// Retry read-only connection failures and transient absence of the original
+		// main-agent query. Every attempt validates the same original resource;
+		// neither the readiness deadline nor any business input is recreated.
 		current, err := l.readyOnce(readyCtx, s)
 		if err == nil {
 			return current, nil
 		}
-		if !native.IsStateConnectionError(err) {
+		if !native.IsStateConnectionError(err) && !errors.Is(err, native.ErrOriginalMainAgentUnavailable) {
 			return current, err
 		}
 		l.closeStateFeed()

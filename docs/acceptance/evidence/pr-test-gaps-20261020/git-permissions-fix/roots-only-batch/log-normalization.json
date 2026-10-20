@@ -1,0 +1,7 @@
+{
+  "file": "orca-remote.publication-unknown-query-unavailable/native.log",
+  "normalization": "trim trailing horizontal whitespace in finite archive; original failure text/result unchanged",
+  "original_sha256": "0F276F1B9352C40D80608DE2D08C409C28AC612861C1CC685EA651E750A00340",
+  "archived_sha256": "BDA3371D3C8235C36FAA18E2E12D16E3FA3644F1511F994BD461F1F179697EBB",
+  "original_retained": ".evidence/pr-gap-gitfix-roots-query-native-original.log"
+}

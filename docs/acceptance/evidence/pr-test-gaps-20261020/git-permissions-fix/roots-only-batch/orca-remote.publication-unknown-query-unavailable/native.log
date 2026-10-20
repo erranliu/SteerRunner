@@ -1,0 +1,29 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.publication-unknown
+    stability_test.go:1009: network preflight path did not recover exit status 1 node:fs:439
+            return binding.readFileUtf8(path, stringToFlags(options.flag));
+                           ^
+
+        Error: EBUSY: resource busy or locked, open 'C:\srt\de2a2ab0b12a\bin\orca-runtime\out\shared\wsl-paths.js'
+            at Object.readFileSync (node:fs:439:20)
+            at defaultLoadImpl (node:internal/modules/cjs/loader:1139:17)
+            at loadSource (node:internal/modules/cjs/loader:1788:20)
+            at Object..js (node:internal/modules/cjs/loader:1886:44)
+            at Module.load (node:internal/modules/cjs/loader:1481:32)
+            at Module._load (node:internal/modules/cjs/loader:1300:12)
+            at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+            at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+            at Module.require (node:internal/modules/cjs/loader:1504:12)
+            at require (node:internal/modules/helpers:152:16) {
+          errno: -4082,
+          code: 'EBUSY',
+          syscall: 'open',
+          path: 'C:\\srt\\de2a2ab0b12a\\bin\\orca-runtime\\out\\shared\\wsl-paths.js'
+        }
+
+        Node.js v24.13.0
+
+    stability_test.go:483: native remote startup evidence missing
+--- FAIL: TestSRLiveScenario (46.59s)
+    --- FAIL: TestSRLiveScenario/orca-remote.publication-unknown (46.39s)
+FAIL

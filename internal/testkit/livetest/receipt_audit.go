@@ -33,7 +33,7 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 		if a.Executable == "" {
 			a.Executable = "codex"
 		}
-		command, _ := (&agentlaunch.Config{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: s.AccessMode}).Command("codex")
+		command, _ := (&agentlaunch.Config{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: s.AccessMode, RepositoryURL: RemoteURL, RepositoryRemote: "origin"}).Command("codex")
 		return NativeReceiptAuditPolicy{Environment: m.Execution.Target.Environment, NativeLaunchCommand: command}
 	}
 	if a.Executable == "" && s.AgentName() == "codex" {

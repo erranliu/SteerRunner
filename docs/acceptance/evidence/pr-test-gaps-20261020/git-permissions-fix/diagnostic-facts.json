@@ -1,0 +1,98 @@
+[
+  {
+    "kind": "HOST",
+    "facts": {
+      "host_can_write": [
+        {
+          "written": true,
+          "path": "C:\\Projects\\SteerlineTest\\.git\\objects"
+        },
+        {
+          "written": true,
+          "path": "C:\\Projects\\SteerlineTest\\.git\\refs"
+        },
+        {
+          "written": true,
+          "path": "C:\\Projects\\SteerlineTest\\.git\\logs"
+        },
+        {
+          "written": true,
+          "path": "C:/Projects/SteerlineTest/.git/worktrees/sr-git-permissions-20261020-1340"
+        }
+      ],
+      "codex_version": "codex-cli 0.162.1",
+      "common": "C:/Projects/SteerlineTest/.git",
+      "admin": "C:/Projects/SteerlineTest/.git/worktrees/sr-git-permissions-20261020-1340",
+      "git_version": "git version 2.55.0.windows.2",
+      "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sr-git-permissions-20261020-1340",
+      "roots": [
+        "C:\\Projects\\SteerlineTest\\.git\\objects",
+        "C:\\Projects\\SteerlineTest\\.git\\refs",
+        "C:\\Projects\\SteerlineTest\\.git\\logs",
+        "C:/Projects/SteerlineTest/.git/worktrees/sr-git-permissions-20261020-1340"
+      ]
+    }
+  },
+  {
+    "kind": "SANDBOX",
+    "facts": [
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\objects",
+        "error": "Exception calling \"WriteAllText\" with \"2\" argument(s): \"Access to the path 'C:\\Projects\\SteerlineTest\\.git\\objects\\.sr-git-diagnostic-a653c9a8d23741d99473c5c563273bb1.lock' is denied.\"",
+        "written": false
+      },
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\refs",
+        "error": "Exception calling \"WriteAllText\" with \"2\" argument(s): \"Access to the path 'C:\\Projects\\SteerlineTest\\.git\\refs\\.sr-git-diagnostic-ab7412ccac244e17800b42284ae7540e.lock' is denied.\"",
+        "written": false
+      },
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\logs",
+        "error": "Exception calling \"WriteAllText\" with \"2\" argument(s): \"Access to the path 'C:\\Projects\\SteerlineTest\\.git\\logs\\.sr-git-diagnostic-38540c932d3a44aa8a66e0bab1bec225.lock' is denied.\"",
+        "written": false
+      },
+      {
+        "path": "C:/Projects/SteerlineTest/.git/worktrees/sr-git-permissions-20261020-1340",
+        "error": "Exception calling \"WriteAllText\" with \"2\" argument(s): \"Access to the path 'C:\\Projects\\SteerlineTest\\.git\\worktrees\\sr-git-permissions-20261020-1340\\.sr-git-diagnostic-ed178567c0174252a8dc589e5b7e7eed.lock' is denied.\"",
+        "written": false
+      }
+    ]
+  },
+  {
+    "kind": "SANDBOX",
+    "facts": [
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\objects",
+        "error": null,
+        "written": true
+      },
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\refs",
+        "error": null,
+        "written": true
+      },
+      {
+        "path": "C:\\Projects\\SteerlineTest\\.git\\logs",
+        "error": null,
+        "written": true
+      },
+      {
+        "path": "C:/Projects/SteerlineTest/.git/worktrees/sr-git-permissions-20261020-1340",
+        "error": null,
+        "written": true
+      }
+    ]
+  },
+  {
+    "kind": "COMMIT",
+    "facts": {
+      "status": "",
+      "commit_output": "error: Unable to create 'C:/Projects/SteerlineTest/.git/packed-refs.lock': Permission denied\n[erranliu/sr-git-permissions-20261020-1340 c2d242f] test: isolated sandbox Git permission probe\n 1 file changed, 1 insertion(+)\n create mode 100644 sr-git-permission-probe.txt",
+      "common_root_writable": false,
+      "commit_exit": 0,
+      "head": "c2d242ff324432a9b53703f5ccfbd6c33549ac6b",
+      "add_exit": 0,
+      "add_output": ""
+    }
+  }
+]

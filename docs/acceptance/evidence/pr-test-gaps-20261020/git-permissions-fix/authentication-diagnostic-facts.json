@@ -1,0 +1,39 @@
+[
+  {
+    "kind": "HOST",
+    "facts": {
+      "git": "C:\\Program Files\\Git\\cmd\\git.exe",
+      "helpers": [
+        {
+          "is_gh": false,
+          "uses_shell": false,
+          "sha256": "6ee4a469cd4e91053847f5d3fcb61dbcc91e8f0ef10be7748da4c4a1ba382d17",
+          "is_manager": true
+        }
+      ],
+      "shell": "C:\\Program Files\\Git\\usr\\bin\\sh.exe"
+    }
+  },
+  {
+    "kind": "SANDBOX",
+    "facts": {
+      "git_push_dry_run_exit": 128,
+      "git_push_dry_run_output": "      0 [main] sh (21268) C:\\Program Files\\Git\\usr\\bin\\sh.exe: *** fatal error - NtCreateDirectoryObject(\\BaseNamedObjects\\msys-2.0S5-1888ae32e00d56aa): 0xC0000022\nerror: waitpid for git credential-manager get failed: No child processes\n      0 [main] bash (18940) C:\\Program Files\\Git\\usr\\bin\\bash.exe: *** fatal error - NtCreateDirectoryObject(\\BaseNamedObjects\\msys-2.0S5-1888ae32e00d56aa): 0xC0000022\nerror: waitpid for bash failed: No child processes\nerror: failed to execute prompt script (exit code -1)\nfatal: could not read Username for 'https://github.com': No such file or directory",
+      "gh_identity_exit": 1,
+      "gh_identity_output": "gh: Requires authentication (HTTP 401)\n{\n  \"message\": \"Requires authentication\",\n  \"documentation_url\": \"https://docs.github.com/rest\",\n  \"status\": \"401\"\n}",
+      "shell_output": "      0 [main] sh (10140) C:\\Program Files\\Git\\usr\\bin\\sh.exe: *** fatal error - NtCreateDirectoryObject(\\BaseNamedObjects\\msys-2.0S5-1888ae32e00d56aa): 0xC0000022",
+      "shell_exit": -1073741502
+    }
+  },
+  {
+    "kind": "ENV_SANDBOX",
+    "facts": {
+      "token_in_command_arguments": false,
+      "git_push_dry_run_exit": 0,
+      "git_push_dry_run_output": "To https://github.com/erranliu/SteerlineTest.git\n * [new branch]      HEAD -> erranliu/sr-git-permissions-20261020-1340",
+      "gh_identity_exit": 0,
+      "gh_identity_output": "erranliu",
+      "token_configured": true
+    }
+  }
+]
