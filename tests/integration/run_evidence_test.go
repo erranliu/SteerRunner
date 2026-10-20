@@ -18,6 +18,11 @@ import (
 
 func TestSRRunEvidenceR2(t *testing.T) {
 	testCount.Add(1)
+	selectedRunner := runnerEXE
+	defer func() { runnerEXE = selectedRunner }()
+	if *baselineFlag != "" {
+		runnerEXE = *baselineFlag
+	}
 	dir, request := setupRun(t)
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
@@ -154,6 +159,26 @@ func TestSRRunEvidenceR2(t *testing.T) {
 	after, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
 	if err != nil || !bytes.Equal(before, after) {
 		t.Fatal("evidence operations invoked Agent or resumed/replayed native work", err)
+	}
+	if *baselineFlag != "" {
+		for generation := 0; generation < 2; generation++ {
+			info = serviceInfo(t, call(t, dir, []string{"service", "status"}, "", 0))
+			call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest(fmt.Sprintf("r2-generation-%d", generation), info.InstanceID), 0)
+			if err := waitOwnedService(info); err != nil {
+				t.Fatal(err)
+			}
+			runnerEXE = selectedRunner
+			call(t, dir, []string{"service", "verify-takeover", "--candidate", selectedRunner}, "", 0)
+			info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			cleanupService(t, dir, info)
+			if !reflect.DeepEqual(original, read(artifactID, report)) {
+				t.Fatal("cross-build/repeated restart changed original artifact")
+			}
+			current := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+			if current.InputDigest != v.InputDigest || current.ResourceDigest != v.ResourceDigest || current.Status != "pr_ready" || current.Execution.SessionID != v.Execution.SessionID || countNative(t, "turn/start") != 6 {
+				t.Fatal("stored original Run changed or resumed after takeover")
+			}
+		}
 	}
 	view := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
 	writeCommand(t, dir, "stop", id, "r2-stop", view.Revision)

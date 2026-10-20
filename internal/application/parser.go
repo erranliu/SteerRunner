@@ -1,16 +1,13 @@
 package application
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"reflect"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
@@ -40,16 +37,14 @@ func (e *Engine) selectParser(r *runstate.Record, input workflow.StageInput, sta
 	}
 	at := time.Now().UTC()
 	p := &b.ParseInput{ResultID: transition.Acquired.ID, Payload: string(payload), Generation: contracts.NewID(), Deadline: at.Add(time.Duration(r.AcquisitionConfig.Config.CodexParser.TimeoutSeconds) * time.Second), Owner: e.identity}
-	if owner := codex.ExecutionOwner(r.Snapshot); owner != nil && owner.RetainsParser {
-		identity := owner.Process
-		p.Owner = &identity
+	if owner := parser.RetainedOwner(r.Snapshot); owner != nil {
+		p.Owner = owner
 	}
-	intent, err := operation.New(r.ID, r.Snapshot, b.LifecycleCandidate{Action: b.LifecycleParseResult, Input: b.LifecycleInput{Parse: p}}, contracts.NewID(), contracts.NewID(), at)
+	intent, err := operation.NewParser(r.ID, r.Snapshot, *p, contracts.NewID(), contracts.NewID(), at)
 	if err != nil {
 		transition.Reason = "parser intent could not be frozen"
 		return
 	}
-	intent.Request.Operation.Status = b.OperationPending
 	r.Intents = append(r.Intents, intent)
 	r.Snapshot.Operations = append(r.Snapshot.Operations, intent.Request.Operation)
 	transition.Acquired.Attempts = append(transition.Acquired.Attempts, ra.Attempt{Method: "llm_parser", Source: pack.Source, OperationID: intent.Request.Operation.ID, Status: "pending"})
@@ -59,7 +54,7 @@ func (e *Engine) selectParser(r *runstate.Record, input workflow.StageInput, sta
 }
 
 func parserUnsettled(intent operation.Intent) bool {
-	return intent.Request.Input.Parse != nil && intent.Request.Operation.Status != b.OperationPending && (intent.Receipt == nil || !intent.Receipt.State.Stopped || !intent.Receipt.State.WritersAbsent)
+	return intent.ParserUnsettled()
 }
 func parserResourcesSettled(r *runstate.Record) bool {
 	for _, intent := range r.Intents {
@@ -165,46 +160,35 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 		return true, e.acceptParserReceipt(id, w, index, *intent.Receipt)
 	}
 	if intent.Request.Operation.Status != b.OperationPending {
-		owner := codex.ExecutionOwner(intent.Request.Snapshot)
-		retained := owner != nil && intent.Request.Input.Parse.Owner != nil && owner.Process == *intent.Request.Input.Parse.Owner
-		if retained && r.PendingStop != "" {
+
+		if parser.Retained(intent.Request) && r.PendingStop != "" {
 			if w.port == nil {
 				_, _ = e.port(r, w)
 			}
-			if port, ok := w.port.(interface {
-				CancelParser(context.Context, b.LifecycleRequest) (b.LifecycleReceipt, error)
-			}); ok {
+			if port, ok := w.port.(b.ParserOwnerPort); ok {
 				w.gate.Unlock()
 				_, _ = port.CancelParser(e.ctx, intent.Request)
 				w.gate.Lock()
 			}
 		}
-		// Reconciliation is read-only, including after service restart. No stdin is
-		// resent and an absent root alone never proves its descendants are absent.
-		receipt, err := parser.ReadReceipt(e.dir, intent.Request)
-		if err == nil && receipt.State.Stopped && receipt.State.WritersAbsent && (parserOriginalAbsent(receipt) || retained && (receipt.Process == nil || process.InspectProcess(receipt.Process) == "process absent")) {
-			return true, e.acceptParserReceipt(id, w, index, receipt)
-		}
-		if intent.Receipt == nil {
-			if started, readErr := parser.ReadStartedReceipt(e.dir, intent.Request); readErr == nil {
-				intent.Receipt = &started
+		resources := &parser.Resources{Root: e.dir, Prior: intent.Receipt}
+		result := operation.InvokeParser(e.ctx, resources, resources, intent.Request, operation.ReconcileOriginalIntent)
+		if result.Err == nil {
+			receipt := result.Receipt
+			if resources.RootObserved && intent.Receipt == nil {
 				e.mu.Lock()
 				if current := e.runs[id]; current.Revision == r.Revision {
 					next := current.Clone()
-					next.Intents[index].Settle(next.Snapshot.Operations, started, operation.ReconcileOriginalIntent, b.OperationAccepted, "", time.Now().UTC())
+					next.Intents[index].Settle(next.Snapshot.Operations, receipt, operation.ReconcileOriginalIntent, b.OperationAccepted, "", time.Now().UTC())
 					next.Phase = "parser_running"
 					_ = e.commitLocked(next, nil, "parser_root_bound")
 				}
 				e.mu.Unlock()
 				return true, true
 			}
-		}
-		if intent.Receipt != nil && parserOriginalAbsent(*intent.Receipt) {
-			receipt = intent.Receipt.Clone()
-			receipt.Disposition = b.OperationConfirmed
-			receipt.State = b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true, WritersAbsent: true}
-			receipt.ParseEvidence = &b.ParseEvidence{Status: "failed", Diagnostic: "original parser ended without a complete final; no replay"}
-			return true, e.acceptParserReceipt(id, w, index, receipt)
+			if receipt.ParseEvidence != nil {
+				return true, e.acceptParserReceipt(id, w, index, receipt)
+			}
 		}
 		return true, false
 	}
@@ -241,17 +225,15 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 		}
 	}
 	next := current.Clone()
-	next.Intents[index].Request.Operation.Status = b.OperationInFlight
+	if err := next.Intents[index].MarkParserDispatch(next.Snapshot.Operations); err != nil {
+		e.mu.Unlock()
+		return true, false
+	}
 	if a := workflow.Acquired(next.Workflow, intent.Request.Input.Parse.ResultID); a != nil {
 		for j := range a.Attempts {
 			if a.Attempts[j].OperationID == intent.Request.Operation.ID {
 				a.Attempts[j].Status = "running"
 			}
-		}
-	}
-	for i := range next.Snapshot.Operations {
-		if next.Snapshot.Operations[i].ID == intent.Request.Operation.ID {
-			next.Snapshot.Operations[i].Status = b.OperationInFlight
 		}
 	}
 	next.Phase = "parser_starting"
@@ -261,15 +243,7 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 	}
 	request := next.Intents[index].Request.Clone()
 	e.mu.Unlock()
-	if owner := codex.ExecutionOwner(request.Snapshot); owner != nil && request.Input.Parse.Owner != nil && owner.Process == *request.Input.Parse.Owner {
-		// The durable original operation precedes dispatch. A lost response is
-		// reconciled exclusively through its existing parser journals.
-		w.gate.Unlock()
-		_, _, _ = w.port.Execute(e.ctx, request)
-		w.gate.Lock()
-		return true, false
-	}
-	w.parserTask = parser.Start(e.ctx, e.dir, request, func(receipt b.LifecycleReceipt) error {
+	resources := &parser.Resources{Root: e.dir, Started: func(receipt b.LifecycleReceipt) error {
 		e.mu.Lock()
 		defer e.mu.Unlock()
 		current := e.runs[id]
@@ -280,15 +254,17 @@ func (e *Engine) advanceParser(id string, w *worker, r *runstate.Record) (bool, 
 		next.Intents[index].Settle(next.Snapshot.Operations, receipt, operation.ExecuteNewIntent, b.OperationAccepted, "", time.Now().UTC())
 		next.Phase = "parser_running"
 		return e.commitLocked(next, nil, "parser_root_bound")
-	})
-	return true, false
-}
-
-func parserOriginalAbsent(receipt b.LifecycleReceipt) bool {
-	absent := func(p *b.ProcessIdentity) bool {
-		return validStoppedIdentity(p) && process.NewServiceFacts().Probe(p).State == "absent"
+	}}
+	if parser.Retained(request) {
+		resources.Owner, _ = w.port.(b.ParserOwnerPort)
+		w.gate.Unlock()
+		_ = operation.InvokeParser(e.ctx, resources, resources, request, operation.ExecuteNewIntent)
+		w.gate.Lock()
+	} else {
+		_ = operation.InvokeParser(e.ctx, resources, resources, request, operation.ExecuteNewIntent)
+		w.parserTask = resources.Task
 	}
-	return absent(receipt.OriginalHost) && absent(receipt.Process)
+	return true, false
 }
 
 func (e *Engine) checkParserSource(r *runstate.Record, intent operation.Intent) error {
@@ -325,9 +301,8 @@ func (e *Engine) acceptParserReceipt(id string, w *worker, index int, receipt b.
 	}
 	currentSource := currentParser(r, intent)
 	eligible := currentSource && r.Allowed && !r.ResumeRequired && r.PendingStop == "" && r.StopStatus == "" && e.ctx.Err() == nil
-	priorFinal := intent.Request.Operation.Status == b.OperationConfirmed && intent.Receipt != nil && intent.Receipt.State.Stopped
+	priorFinal, same := intent.ParserReceipt(receipt)
 	if priorFinal {
-		same := reflect.DeepEqual(intent.Receipt.ParseEvidence, receipt.ParseEvidence) && reflect.DeepEqual(intent.Receipt.Process, receipt.Process) && reflect.DeepEqual(intent.Receipt.OriginalHost, receipt.OriginalHost) && reflect.DeepEqual(intent.Receipt.State, receipt.State)
 		if !same {
 			e.mu.Lock()
 			defer e.mu.Unlock()

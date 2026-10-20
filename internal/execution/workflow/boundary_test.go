@@ -37,13 +37,22 @@ func forbidden(path, layer string) bool {
 	if layer == "reliable" && (strings.Contains(path, "/workflow") || strings.Contains(path, "/publication") || strings.Contains(path, "/adapters")) {
 		return true
 	}
+	if layer == "backend" && (strings.Contains(path, "/reliable") || strings.Contains(path, "/adapters") || strings.Contains(path, "/publication") || strings.Contains(path, "/resultacquisition")) {
+		return true
+	}
+	if layer == "model" && strings.Contains(path, "/internal/") {
+		return true
+	}
+	if (layer == "adapters" || layer == "backend" || layer == "model") && strings.Contains(path, "/workflow") {
+		return true
+	}
 	if layer == "workflow" && (strings.Contains(path, "/adapters") || strings.Contains(path, "/backend") || strings.Contains(path, "/reliable/operation")) {
 		return true
 	}
 	return false
 }
 func TestSRExecutionDependencyBoundary(t *testing.T) {
-	for _, layer := range []string{"workflow", "resultacquisition", "reliable", "backend", "adapters", "workspace", "publication", "process", "evidence", "conversation"} {
+	for _, layer := range []string{"model", "workflow", "resultacquisition", "reliable", "backend", "adapters", "workspace", "publication", "process", "evidence", "conversation"} {
 		root := filepath.Join("..", layer)
 		err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
 			if err != nil {
@@ -71,7 +80,7 @@ func TestSRExecutionDependencyBoundary(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, negative := range []struct{ layer, path string }{{"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/reliable/operation"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
+	for _, negative := range []struct{ layer, path string }{{"backend", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"model", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"adapters", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"backend", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/reliable/operation"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
 		if !forbidden(negative.path, negative.layer) {
 			t.Fatal("guard did not catch a forbidden dependency")
 		}

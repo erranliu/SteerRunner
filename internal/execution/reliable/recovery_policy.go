@@ -9,6 +9,23 @@ import (
 func CanContinueOriginal(e b.LifecycleRecoveryEvidence) bool {
 	return e.SessionAvailable && e.SessionIdle && (e.ResourceAvailable && !e.ProcessAbsent || e.SessionRebindable && e.ProcessAbsent && e.WritersAbsent && !e.ResourceAvailable)
 }
+
+var ErrContinuationUnavailable = errors.New("original session continuation is unverified")
+
+// PlanContinuation describes resource restoration only; it does not grant input
+// authority or select business work. An active original resource stays attached.
+func PlanContinuation(e b.LifecycleRecoveryEvidence, session string, unknown, needsInput bool) (bool, error) {
+	if !CanContinueOriginal(e) {
+		return false, ErrContinuationUnavailable
+	}
+	if !e.ProcessAbsent || !needsInput {
+		return false, nil
+	}
+	if err := ValidateRestoration(e, session, unknown); err != nil {
+		return false, err
+	}
+	return true, nil
+}
 func ValidateRestoration(e b.LifecycleRecoveryEvidence, session string, unknown bool) error {
 	if !e.SessionRebindable || !e.ProcessAbsent || !e.WritersAbsent || !e.SessionIdle {
 		return errors.New("the original resource and writers are not proven stopped for same-session restoration")

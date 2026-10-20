@@ -3,6 +3,7 @@ package application
 import (
 	"database/sql"
 	"encoding/json"
+	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -224,6 +225,26 @@ func TestRAAtomicParserRecovery(t *testing.T) {
 	}
 }
 
+func TestRAParserDispatchCommitFailureDoesNotStartResource(t *testing.T) {
+	e, w, index := parserEngine(t)
+	db, err := sql.Open("sqlite", filepath.Join(e.dir, "runner.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	failOperationCommit(t, db)
+	before := e.runs["run"].Clone()
+	w.gate.Lock()
+	handled, progress := e.advanceParser("run", w, before)
+	w.gate.Unlock()
+	if !handled || progress || w.parserTask != nil || e.runs["run"].Intents[index].Request.Operation.Status != b.OperationPending || e.runs["run"].Revision != before.Revision {
+		t.Fatal("uncommitted parser reached a native resource")
+	}
+	if _, err = os.Stat(parser.Directory(e.dir, before.Intents[index].Request)); !os.IsNotExist(err) {
+		t.Fatal("uncommitted parser created its resource directory", err)
+	}
+}
+
 func TestRAConcurrencyParserStopResources(t *testing.T) {
 	e, w, index := parserEngine(t)
 	r := e.runs["run"].Clone()
@@ -279,5 +300,31 @@ func TestRAStateAuthorityParserReferences(t *testing.T) {
 	r.Intents[index].Request.Input.Parse.Payload += " "
 	if validateWorkflow(r) == nil {
 		t.Fatal("mutable parser operation input accepted")
+	}
+}
+
+func TestRARecoveredParserStartedReceiptStaysRunning(t *testing.T) {
+	e, w, index := parserEngine(t)
+	r := e.runs["run"].Clone()
+	if err := r.Intents[index].MarkParserDispatch(r.Snapshot.Operations); err != nil {
+		t.Fatal(err)
+	}
+	receipt := parserReceipt(r, index, "running")
+	receipt.Disposition = b.OperationAccepted
+	receipt.State = b.LifecycleStateFacts{ResourcePending: true, ResourceID: r.Intents[index].Request.Input.Parse.Generation}
+	dir := parser.Directory(e.dir, r.Intents[index].Request)
+	if err := os.MkdirAll(dir, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "started.json"), canonical(receipt), 0600); err != nil {
+		t.Fatal(err)
+	}
+	e.runs["run"] = r
+	w.gate.Lock()
+	handled, progress := e.advanceParser("run", w, r)
+	w.gate.Unlock()
+	current := e.runs["run"]
+	if !handled || !progress || current.Phase != "parser_running" || current.Intents[index].Request.Operation.Status != b.OperationAccepted || current.Workflow.StepID != workflow.StepAuditParse || len(current.Workflow.StageInputs) != 2 {
+		t.Fatal("started journal was consumed as a final acquisition", current.Phase)
 	}
 }

@@ -18,11 +18,11 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"github.com/erranliu/SteerRunner/internal/execution/model"
 )
 
-func RemoteTurnModel(source io.Reader, turnID string) (workflow.ModelSettings, error) {
-	var choice workflow.ModelSettings
+func RemoteTurnModel(source io.Reader, turnID string) (model.Settings, error) {
+	var choice model.Settings
 	found := false
 	scanner := bufio.NewScanner(source)
 	scanner.Buffer(make([]byte, 64<<10), 16<<20)
@@ -41,7 +41,7 @@ func RemoteTurnModel(source io.Reader, turnID string) (workflow.ModelSettings, e
 		if row.Type != "turn_context" || row.Payload.Turn != turnID {
 			continue
 		}
-		next := workflow.ModelSettings{Model: row.Payload.Model, ReasoningEffort: row.Payload.Effort}
+		next := model.Settings{Model: row.Payload.Model, ReasoningEffort: row.Payload.Effort}
 		if next.Model == "" || !ValidReasoningEffort(next.ReasoningEffort) || found && next != choice {
 			return choice, errors.New("native_model_history_mismatch")
 		}
@@ -146,16 +146,12 @@ func rewriteRemoteModelRequest(raw []byte, c RemoteAgentConfig, session string) 
 	if err != nil {
 		return nil, err
 	}
-	expected := workflow.ModelSettings{Model: c.Model, ReasoningEffort: c.ReasoningEffort}
-	switch v.Step {
-	case workflow.StepAuditReport, workflow.StepAuditCode:
-		if c.AuditModel == nil {
-			return nil, errors.New("remote_audit_model_missing")
-		}
-		expected = *c.AuditModel
-	case workflow.StepImplement, workflow.StepReport, workflow.StepPublish, workflow.StepPublishReport:
-	default:
+	expected, known := c.models[v.Step]
+	if !known {
 		return nil, errors.New("remote_model_step_invalid")
+	}
+	if expected == nil {
+		return nil, errors.New("remote_audit_model_missing")
 	}
 	if v.Model != expected.Model || v.ReasoningEffort != expected.ReasoningEffort {
 		return nil, errors.New("remote_model_choice_not_frozen")
@@ -189,6 +185,7 @@ func remoteModelToken() (string, error) {
 }
 
 func startRemoteModelBridge(ctx context.Context, c RemoteAgentConfig, upstream, session, token string) (string, func(), error) {
+	c.models = c.models.Clone()
 	if err := c.validateModels(); err != nil {
 		return "", nil, err
 	}

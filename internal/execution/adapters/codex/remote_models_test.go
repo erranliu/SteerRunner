@@ -2,7 +2,9 @@ package codexworker
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"github.com/coder/websocket"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"net/http"
@@ -14,6 +16,7 @@ import (
 
 func TestRemoteAuditedModelRoutingAndRestoration(t *testing.T) {
 	cfg := RemoteAgentConfig{Model: "writer", ReasoningEffort: "high", AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "medium"}}
+	cfg.models = workflow.RemoteModelBindings(workflow.ModelSettings{Model: cfg.Model, ReasoningEffort: cfg.ReasoningEffort}, cfg.AuditModel)
 	session := "original-thread"
 	for _, step := range []string{workflow.StepImplement, workflow.StepReport, workflow.StepAuditReport, workflow.StepAuditCode, workflow.StepPublish, workflow.StepPublishReport} {
 		t.Run(step, func(t *testing.T) {
@@ -76,6 +79,7 @@ func TestRemoteAuditedModelRoutingAndRestoration(t *testing.T) {
 
 func TestRemoteModelBridgeUsesOriginalNativeConnection(t *testing.T) {
 	cfg := RemoteAgentConfig{Model: "writer", ReasoningEffort: "high", AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}}
+	cfg.models = workflow.RemoteModelBindings(workflow.ModelSettings{Model: cfg.Model, ReasoningEffort: cfg.ReasoningEffort}, cfg.AuditModel)
 	received := make(chan []byte, 1)
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := websocket.Accept(w, r, nil)
@@ -99,6 +103,7 @@ func TestRemoteModelBridgeUsesOriginalNativeConnection(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer closeBridge()
+	cfg.models[workflow.StepAuditCode].Model = "caller-mutated-after-bridge-start"
 	if bad, reply, e := websocket.Dial(ctx, endpoint, nil); e == nil || reply == nil || reply.StatusCode != http.StatusForbidden {
 		if bad != nil {
 			bad.CloseNow()
@@ -141,5 +146,24 @@ func TestRemoteNativeModelProofRejectsMissingAndChangedContexts(t *testing.T) {
 		if _, err := RemoteTurnModel(strings.NewReader(bad), "original"); err == nil {
 			t.Fatal("invalid native model proof accepted")
 		}
+	}
+}
+
+func TestRemoteModelAssemblyPreservesConfigurationAndPromptEncoding(t *testing.T) {
+	cfg := RemoteAgentConfig{AuditModel: &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "medium"}, Executable: "codex.exe", Model: "writer", ReasoningEffort: "high", RepositoryURL: "https://example.test/a/b.git"}
+	const wire = `{"audit_model":{"model":"reviewer","reasoning_effort":"medium"},"executable":"codex.exe","model":"writer","reasoning_effort":"high","repository_url":"https://example.test/a/b.git"}`
+	cfg.models = workflow.RemoteModelBindings(workflow.ModelSettings{Model: cfg.Model, ReasoningEffort: cfg.ReasoningEffort}, cfg.AuditModel)
+	raw, err := json.Marshal(cfg)
+	if err != nil || string(raw) != wire || RemoteConfigurationDigest(cfg) != fmt.Sprintf("%x", sha256.Sum256([]byte(wire))) {
+		t.Fatal("frozen configuration encoding/digest changed", string(raw), err)
+	}
+	text := RemoteModelPrompt(strings.Repeat("a", 32), strings.Repeat("b", 64), workflow.StepAuditCode, "reviewer", "medium", "business\r\n")
+	v, err := ParseRemoteModelPrompt(text)
+	if err != nil || v.Step != workflow.StepAuditCode || v.BodyDigest != fmt.Sprintf("%x", sha256.Sum256([]byte("business"))) {
+		t.Fatal("original prompt binding changed", v, err)
+	}
+	cfg.AuditModel.Model = "later-default"
+	if cfg.models[workflow.StepAuditCode].Model != "reviewer" {
+		t.Fatal("assembled model binding aliases mutable configuration")
 	}
 }

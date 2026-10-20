@@ -28,6 +28,12 @@ func Invoke(ctx context.Context, port interface {
 	b.LifecyclePreparationPort
 	b.LifecycleExecutePort
 }, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode) EffectResult {
+	return invoke(ctx, port, reconciler, request, mode, func(ctx context.Context, request b.LifecycleRequest) error {
+		return reliable.QualifyAction(ctx, port, request)
+	})
+}
+
+func invoke(ctx context.Context, port b.LifecycleExecutePort, reconciler b.LifecycleReconcilePort, request b.LifecycleRequest, mode InvocationMode, qualify func(context.Context, b.LifecycleRequest) error) EffectResult {
 	if err := request.Validate(); err != nil {
 		return EffectResult{Request: request.Clone(), Receipt: b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationRejected}, Err: err}
 	}
@@ -45,10 +51,10 @@ func Invoke(ctx context.Context, port interface {
 	}
 	reconcile := mode == ReconcileOriginalIntent
 	result := EffectResult{Request: request.Clone()}
-	if !reconcile {
+	if !reconcile && qualify != nil {
 		err := ctx.Err()
 		if err == nil {
-			err = reliable.QualifyAction(ctx, port, request)
+			err = qualify(ctx, request)
 		}
 		if err == nil {
 			err = ctx.Err() // Read-only qualification may have consumed the deadline.
