@@ -350,6 +350,44 @@
           }
         },
         {
+          "id": "graceful-active-full-access",
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex-full-access",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        },
+        {
+          "id": "kill-active-full-access",
+          "outcome": "merged",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex-full-access",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        },
+        {
           "id": "graceful-boundary",
           "outcome": "merged",
           "requirements": {

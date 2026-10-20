@@ -441,13 +441,18 @@ func (s *stabilityRun) stopService(kill bool) {
 	s.t.Fatal("old service exit not confirmed")
 }
 func (s *stabilityRun) restart(kill bool) {
+	authority := s.view()
 	old := s.instance.InstanceID
 	s.stopService(kill)
 	s.startService()
 	s.check("service-replaced", old != s.instance.InstanceID, "faults.jsonl: old service ended and new instance started")
 	s.r.FaultsHit++
 	s.check("fault-hit", true, "faults.jsonl: original service ended and replacement instance confirmed")
-	s.wait("restart-resume-gate", 2*time.Minute, func(v contracts.RunView) bool { return v.ResumeRequired && !v.NewInputsAllowed })
+	v := s.wait("restart-original-authority", 2*time.Minute, func(v contracts.RunView) bool {
+		return v.ResumeRequired == authority.ResumeRequired && v.NewInputsAllowed == authority.NewInputsAllowed && v.Execution.AttemptID == authority.Execution.AttemptID && v.Execution.Generation == authority.Execution.Generation
+	})
+	s.originalIdentity(v)
+	s.check("restart-preserves-authorization", v.ResumeRequired == authority.ResumeRequired && v.NewInputsAllowed == authority.NewInputsAllowed, "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation")
 }
 func (s *stabilityRun) write(commandName string, v contracts.RunView) {
 	for attempt := 0; attempt < 5; attempt++ {
@@ -626,29 +631,26 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 			s.nativeDone()
 		}
 		s.restart(strings.HasPrefix(m.CaseID, "kill"))
+		s.noMoreInputs(len(before))
 		if boundary {
 			s.network("restore")
 		} else {
 			s.control("release", "implementation")
 		}
-		s.nativeDone()
-		for i := 0; i < 2; i++ {
-			time.Sleep(5 * time.Second)
-			_, err := s.native()
-			if err != nil {
-				t.Fatal(err)
+		v := s.wait("continued-original-workflow", 14*time.Minute, func(v contracts.RunView) bool { return v.Status == "pr_ready" })
+		s.check("restart-continues-without-resume", !v.ResumeRequired && v.NewInputsAllowed && v.Execution.AttemptID == s.original.AttemptID && v.Execution.Generation == s.original.Generation, "latest-run.json: original Attempt/generation continues without a resume command")
+		after, _ := s.calls()
+		once := true
+		for _, prompt := range before {
+			count := 0
+			for _, observed := range after {
+				if observed == prompt {
+					count++
+				}
 			}
-			s.note("pre-resume-reconciliation-window", s.view())
-			s.noMoreInputs(len(before))
+			once = once && count == 1
 		}
-		v := s.view()
-		s.noMoreInputs(len(before))
-		s.originalIdentity(v)
-		s.check("resume-required-before-authorization", v.ResumeRequired && !v.NewInputsAllowed, "latest-run.json and native-calls.jsonl after original completion")
-		v = s.wait("await-original-resume-qualification", 2*time.Minute, func(v contracts.RunView) bool { return v.ResumeRequired && !v.NewInputsAllowed && v.Controls.CanResume })
-		s.noMoreInputs(len(before))
-		s.write("resume", v)
-		v = s.wait("resumed-original-workflow", 14*time.Minute, func(v contracts.RunView) bool { return v.Status == "pr_ready" })
+		s.check("original-input-once", once, "native-calls.jsonl: each original pre-restart business input occurred exactly once")
 		s.originalIdentity(v)
 		s.merge(v)
 	case "orca-remote.stop-revocation":

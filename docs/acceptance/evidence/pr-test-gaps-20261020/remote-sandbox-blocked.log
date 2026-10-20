@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.smoke
+    run_test.go:633: original execution needs intervention: status=blocked phase=result_committed diagnostic=依据原发布命令的实际输出：命令已执行一次并结束，退出码为 1，报错 Publication requires committed work only，未返回 PR URL。此前 git add 因 index.lock 权限不足失败，提交未完成。Source facts 的 native_succeeded=true、final_verified=true、failure 为空与实际发布失败记录存在冲突，不能据此认定发布成功。本次仅整理报告，未重新发布。
+--- FAIL: TestSRLiveScenario (109.46s)
+    --- FAIL: TestSRLiveScenario/orca-remote.smoke (109.44s)
+FAIL

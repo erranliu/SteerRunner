@@ -3,7 +3,8 @@ param(
     [string]$Pattern = '^(TestSRStandalonePackage|TestSRServiceOwnership)$',
     [string]$BaselineExe = '',
     [string]$ContentNativeExecutable = '',
-    [string]$ContentNativeModel = ''
+    [string]$ContentNativeModel = '',
+    [ValidateRange(1,60)][int]$TimeoutMinutes = 25
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -35,10 +36,9 @@ try {
 function Quote-WindowsArgument([string]$Argument) {
     '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
 }
-# Full controlled selection runs the registered workflows sequentially. Its
-# measured successful duration exceeds 15m. This aggregate 25m budget does not
-# change any CLI, preparation, fault, or scenario polling deadline.
-$taskArgs = @("-test.run=$Pattern", '-test.v', '-test.timeout=25m', '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
+# The caller selects the aggregate harness budget. Individual CLI, preparation,
+# fault and scenario polling deadlines are unchanged.
+$taskArgs = @("-test.run=$Pattern", '-test.v', "-test.timeout=$($TimeoutMinutes)m", '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
 if ($BaselineExe) { $taskArgs += @('-baseline-exe', $BaselineExe) }
 if ($ContentNativeExecutable) { $taskArgs += @('-content-native-exe', (Resolve-Path -LiteralPath $ContentNativeExecutable).Path) }
 if ($ContentNativeModel) { $taskArgs += @('-content-native-model', $ContentNativeModel) }

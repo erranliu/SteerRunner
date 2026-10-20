@@ -72,10 +72,9 @@ func (l *Lifecycle) prepareControl(ctx context.Context, r b.LifecycleRequest, re
 		return receipt, errors.New("native control preparation differs from original resource intent")
 	}
 	if state.Control == nil {
-		if reconcile {
-			return receipt, errors.New("original native control creation outcome unknown; zero business input and no replacement")
-		}
-		result, e := l.client.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+state.Process.WorktreeID, "--title", "SteerRunner native control", "--command", intent.Objective, "--json")
+		key := l.creationKey(r.Snapshot, r.Operation.ID, r.Operation.PayloadDigest, "native-control")
+		args := []string{"terminal", "create", "--worktree", "id:" + state.Process.WorktreeID, "--title", "SteerRunner native control", "--command", intent.Objective, "--json"}
+		result, e := l.creationCall(ctx, key, args, state.Process.RuntimeID, state.Process.WorktreeID, l.creationTimeout(), reconcile)
 		var value struct{ Terminal native.Terminal }
 		if e != nil || result.CallUncertain || result.RuntimeID != state.Process.RuntimeID || json.Unmarshal(result.Payload, &value) != nil || value.Terminal.Handle == "" || value.Terminal.Handle == state.Process.Terminal || value.Terminal.IncarnationID == "" || value.Terminal.WorktreeID != state.Process.WorktreeID {
 			return receipt, errors.New("original native control creation unverified; zero business input and no replacement")

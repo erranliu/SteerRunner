@@ -1,0 +1,95 @@
+{
+  "results": [
+    {
+      "scenario": "controlled.permanent-evidence-loss",
+      "status": "passed",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.permanent-evidence-loss-r1\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T03:54:36.1590918Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 24908,
+        "pattern": "^TestSREdgePermanentEvidenceLoss$",
+        "runner_sha256": "653F316936A9A42A6A4B71757C69ACA38BF2BE2118E9B16C3EA9E1C159FD5D6A",
+        "fixture_sha256": "5A1900579553385CA9934EEF02A5CEF8C8A39D3FFC899D4812ABEC82EA0A521D",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.permanent-evidence-loss-r1"
+    },
+    {
+      "scenario": "controlled.stop-commit-race",
+      "status": "passed",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.stop-commit-race-r1\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T03:55:20.6898498Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 31232,
+        "pattern": "^TestSREdgeStopCommitRace$",
+        "runner_sha256": "653F316936A9A42A6A4B71757C69ACA38BF2BE2118E9B16C3EA9E1C159FD5D6A",
+        "fixture_sha256": "5A1900579553385CA9934EEF02A5CEF8C8A39D3FFC899D4812ABEC82EA0A521D",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.stop-commit-race-r1"
+    },
+    {
+      "scenario": "controlled.storage-failure",
+      "status": "passed",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.storage-failure-r1\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T03:56:03.1251087Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 41428,
+        "pattern": "^TestSREdgeStorageFailure$",
+        "runner_sha256": "653F316936A9A42A6A4B71757C69ACA38BF2BE2118E9B16C3EA9E1C159FD5D6A",
+        "fixture_sha256": "5A1900579553385CA9934EEF02A5CEF8C8A39D3FFC899D4812ABEC82EA0A521D",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.storage-failure-r1"
+    },
+    {
+      "scenario": "controlled.resource-pressure",
+      "status": "passed",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.resource-pressure-r1\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:01:50.0936284Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 58084,
+        "pattern": "^TestSREdgeResourcePressure$",
+        "runner_sha256": "653F316936A9A42A6A4B71757C69ACA38BF2BE2118E9B16C3EA9E1C159FD5D6A",
+        "fixture_sha256": "5A1900579553385CA9934EEF02A5CEF8C8A39D3FFC899D4812ABEC82EA0A521D",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-live\\controlled.resource-pressure-r1"
+    }
+  ],
+  "scope": "four standalone cases on identical followup Runner and integration fixture; parent mixed-build batch remains failed",
+  "status": "passed",
+  "schema": "steerrunner-independent-l4/v1"
+}

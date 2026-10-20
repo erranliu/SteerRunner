@@ -155,6 +155,13 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 			t.Error("refuse cleanup outside the fixture's temporary root")
 			return
 		}
+		if t.Failed() {
+			// Keep original journals and resource identities when settlement or
+			// an assertion failed. Removing them can strand a still-live owner
+			// and destroys the evidence needed for exact original cleanup.
+			t.Logf("preserved failed fixture: %s", root)
+			return
+		}
 		// Windows can retain a just-exited image briefly (including scanning).
 		// Native owner exit is checked separately; never suppress a live owner.
 		until := time.Now().Add(3 * time.Second)

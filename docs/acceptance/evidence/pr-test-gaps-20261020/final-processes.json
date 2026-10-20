@@ -1,0 +1,24 @@
+{
+  "checked_at": "2026-10-20T04:20:25.1246756Z",
+  "schema": "steerrunner-final-owned-process-snapshot/v1",
+  "matching_local_runner_or_test_processes": [],
+  "scope": "local Runner and test executables only; remote settlement comes from original terminal receipts",
+  "fixture_roots": [
+    "C:\\srt\\c8a716fe3927",
+    "C:\\srt\\3494a0738ae1",
+    "C:\\srt\\cb06af0b0a53",
+    "C:\\srt\\e87089b6368b",
+    "C:\\srt\\0f3d6de73f78",
+    "C:\\srt\\45ce5896bedf",
+    "C:\\srt\\3155afa2d19d",
+    "C:\\srt\\e46d6b6102fe",
+    "C:\\srt\\1e95b51af2cb",
+    "C:\\srt\\880b4a3346b7",
+    "C:\\srt\\de7d2dc91ff9",
+    "C:\\srt\\4d292d6f05ab",
+    "C:\\srt\\3e5941872853",
+    "C:\\srt\\3af98ab85c84",
+    "C:\\srt\\528786d0c0c1",
+    "C:\\srt\\d45ed4e95205"
+  ]
+}

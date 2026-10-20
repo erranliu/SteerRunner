@@ -1,0 +1,21 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+=== RUN   TestSRResourceCreationRecovery/kill
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    service_test.go:268: fixture Run 9fcd56cc22ddd23b3f96a9f74a0200fc resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    service_test.go:268: fixture Run 9fcd56cc22ddd23b3f96a9f74a0200fc resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2632571593
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    service_test.go:268: fixture Run aeef64314ad3cff3668a942b83064475 resources remain unverified: original creation owner exited without a completed receipt; outcome unknown
+    service_test.go:268: fixture Run aeef64314ad3cff3668a942b83064475 resources remain unverified: original creation owner exited without a completed receipt; outcome unknown
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3379768307
+--- FAIL: TestSRResourceCreationRecovery (175.98s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (19.60s)
+    --- PASS: TestSRResourceCreationRecovery/kill (17.89s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (18.00s)
+    --- FAIL: TestSRResourceCreationRecovery/wire-loss (58.31s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (62.17s)
+FAIL

@@ -7,7 +7,7 @@
 以下清单于 **2026-10-19** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 两 case、L3 二十一场景二十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 两 case、L3 二十二场景三十二 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
@@ -19,6 +19,18 @@ workflow/2 不再保留反馈资格门，旧原生记录不作为本次构建通
 ## R2 定向受控增量
 
 `TestSRRunEvidenceR2` 已登记到 controlled_scenarios；隔离 state-dir、两个原开发 Run、Git 工作区和 native fixture。验证程序报告/原始日志、追加/幂等/跨 Run 隔离、缺失/越界/超限、实际 Git 干净/修改/未跟踪/新 commit，以及零新 Agent 调用、停止并移除工作区后仍读旧报告。workspace/application 定向反例另验证 junction 越界、来源不明及观察中变化。此为 R2 专属最小验证，不增加真机矩阵。
+
+## 服务换代与近期 PR 回归增量（2026-10-20）
+
+Controlled 新增 `TestSRContentGenerationRecovery`，独立 state-dir/原生夹具验证活动生成正常停服、活动对话强杀、原问题跨代回答及启动前原 stop；固定原进程、session/turn、历史及零重发断言。R2 原场景增加删除 producer 文件后实际服务重启、原 collect 回执重放及不可变读取。两项都不创建真实 PR，不依赖其它场景的 Run。
+
+L1 补充报告 64 条/16 MiB 总量、单文件 1 MiB 和发现 256 项的包含式临界值；真实 SQLite 事务失败回滚及重开数据库后的原请求去重；确定性采集中增长、文件替换、读取失败；Check 退役认证/未知 operation 接管拒绝及 v3 原字节/格式保留；只读准备查询取消后授权与锁恢复。
+
+专属入口 `scripts/test-generation-recovery.ps1` 先定向规则、再完整四项恢复/R2受控场景。提供 `-NativeExecutable <现有 Codex 0.159.2 EXE> -Model <可用模型>` 时追加两个 focused native 场景：`local-codex.generation-recovery` 用真实 Codex 验证活动期 graceful/kill/兼容新 EXE/启动 stop，保留原进程/session/turn，关闭后离线 verify-stopped；`local-codex.parser-generation-recovery` 用真实 parser、受控 business/provider 验证 parser 正常/强杀离线完成与显式 stop。后者不是全真实开发交付资格。注册见 `tests/catalog.json.focused_native_scenarios`，不改变通用 manifest driver。两个原生场景串行消费模型；各 subcase 独立现场，不操作用户安装或真实 PR。
+
+当前通过与阻断按 [本轮验收](acceptance/pr-test-gaps-20261020.md) 登记，未运行项不计作通过。
+
+`TestSRResourceCreationRecovery` 使用实际独立 Runner 创建执行器和受控 Orca 公开协议夹具，覆盖创建响应返回前正常停服/强杀、响应已落盘但尚未提交服务数据库、上游响应丢失、原执行器崩溃五个窗口。成功恢复必须保留原 worktree、terminal handle/incarnation；后两项保持 unknown。所有窗口固定创建一次、零替换终端、零业务发送，不按名称认领资源。单元测试另覆盖远端路由、初始终端及 native-control 创建、异源/损坏/丢失回执和写入失败。它不替代真实 Orca 后端资格。
 
 ## L2：最小核心 smoke
 
@@ -43,7 +55,7 @@ workflow/2 的 L2 直接使用无反馈交付路径，不再依赖反馈资格�
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的二十二场景、三十 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
+以下为已注册的二十二场景、三十二 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -75,7 +87,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-local.smoke` | `default` | 无 pair 的真实本机 IPC 查询、原请求开始回执/新主代理 done、原生 final、原会话一次反馈及真实 PR 交付/停止 | `merged` | 独立现场/工作区/会话；当前查询式实现的真机结果单列，不要求修改 Orca |
 | `environment-check.orca-local-sandbox` | `complete` | 本机 Orca helper、MXC、认证与既有十二项工具检查 | `checked`，owned PR 关闭不合入、引用/工作区删除、writer 停止 | 独立 Check 资源；已接线，真机结果单列于专属验收 |
 | `environment-check.orca-local-full-access` | `complete` | 本机 Orca 的显式 full_access 准备及工具/资源闭环 | 同上，实际 full_access | 不借用 sandbox 通过；已接线，真机结果单列 |
-| `orca-local.codex` | `default` | 本机 Orca terminal 的开发、原会话反馈、原终端/agent 身份、真实 PR 与清理 | `merged`，权限审计及 Run/服务停止 | 复用 development-feedback；含业务 reply、丢 submit 响应对账、换代显式 resume 和活动 stop；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
+| `orca-local.codex` | `default` | 本机 Orca terminal 的开发、原会话反馈、原终端/agent 身份、真实 PR 与清理 | `merged`，权限审计及 Run/服务停止 | 复用 development-feedback；含业务 reply、丢 submit 响应对账、兼容换代保留授权和活动 stop；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.pi` | `default` | Pi 的同一 terminal 开发与反馈闭环，不能继承 Codex 原生证据 | 同上 | A01 扩展、双权限工具及原生权限审计已接线；包含业务 reply、换代和活动写者停止；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.dsh` | `default` | DSH 的同一 terminal 开发与反馈闭环，排除 SessionStart/子事件假完成 | 同上 | A02 原 TUI 固定 profile、原生持久事实、业务 reply 及 H01 已接线；不改 Orca，结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.pi-full-access` | `default` | Pi 显式 full_access 的完整交付与同会话恢复、活动写者停止 | `merged`，Run/服务停止 | 独立双权限实测，不借 sandbox 结果 |
@@ -86,9 +98,10 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
 | `orca-remote.connection-reconnect` | `active-disconnect` | 原服务不换代的活动回合断连，恢复后自动重接原 Attempt/会话，无需 resume、零重发 | `merged` | 专属网络故障范围；验证本现场双通路中断且其它现场通信不受影响 |
 | `orca-remote.connection-reconnect` | `pre-send-disconnect` | 实施/报告结束，发布 `start_turn` 已提交但尚未发出；仅阻断 Runner 直连状态通道，原 CLI 身份读取仍成功；自动重试后保留原 operation/Attempt/session，无需 resume 且发布一次 | `merged` | 本机测试 CLI 转发器在原发布终端的首次发送前身份读取处设门；仅阻断现场 Runner EXE，保留 CLI/诊断通路。证据须含门前快照、阻断后返回的原读取、完整建连超时后的再次读取、阻断期零新输入/授权保留及单次 PR。已实现并注册，真机及并行资格尚未执行 |
-| `orca-remote.service-restart` | `graceful-active` | 活动回合正常停服换代，原结果可对账，显式 resume 前零新输入 | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
-| `orca-remote.service-restart` | `kill-active` | 活动回合异常终止服务后持久状态可恢复，旧写者失效，显式恢复原会话 | `merged` | 精确匹配本现场服务 PID/创建时间；Codex 固定控制终端须在首条业务输入前提交，强杀后同一 handle/incarnation 补读原回执，零临时查询/撤销终端创建及零重发业务；验证重启不影响其它服务 |
-| `orca-remote.service-restart` | `graceful-boundary` | 实施已完成但证据尚未交付时正常停服；迟到完成事实不得越过换代后的授权门槛 | `merged` | 专属网络/完成屏障，加本现场正常服务换代；验证屏障与网络恢复不会释放其它 case |
+| `orca-remote.service-restart` | `graceful-active` | sandbox 活动回合正常停服换代，原授权保持，原结果自动对账、零重发，无需 resume | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
+| `orca-remote.service-restart` | `kill-active` | sandbox 活动回合异常终止服务后，原授权和会话保持，旧写者失效，自动继续 | `merged` | 精确匹配本现场服务 PID/创建时间；同一 handle/incarnation 补读原回执，零重发业务；验证重启不影响其它服务 |
+| `orca-remote.service-restart` | `graceful-active-full-access` / `kill-active-full-access` | full_access 分别验证正常/强杀换代后的原授权、Attempt/generation、零原输入重发和自动完成交付 | `merged` | 独立固定完整权限配置；不能代替 sandbox case 的资格 |
+| `orca-remote.service-restart` | `graceful-boundary` | 实施已完成但证据尚未交付时正常停服；迟到完成事实按原授权继续对账和后继阶段 | `merged` | 专属网络/完成屏障，加本现场正常服务换代；验证屏障与网络恢复不会释放其它 case |
 | `orca-remote.service-restart` | `kill-boundary` | 同一切换点异常终止服务，完成事实与新实例对账后不丢失原结果、不重复阶段输入 | `merged` | 专属网络/完成屏障，加精确服务终止；验证旧/新写者和回执归属隔离 |
 | `orca-remote.stop-revocation` | `active` | 活动回合 stop 撤销后继输入授权，并确认原生执行真正停止 | `stopped`，无 PR | 只停止本现场原生资源；核验原认证 broker/socket、业务写者及固定控制终端关闭，撤销证明与关闭证明分开；验证其它 Run 授权及执行不受影响 |
 | `orca-remote.stop-revocation` | `boundary` | 完成事实尚未交付时 stop，随后交付迟到事实也不能触发报告或发布 | `stopped`，无 PR | 专属网络/完成屏障；验证迟到事实及释放动作仅关联本 Run |
@@ -149,8 +162,8 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共二十九场景、三十六 case：L2 一项、L3 三十一项（含原 12 项核心可靠性）、L4 四项。
-Controlled 默认前置十六个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
+当前共二十八场景、三十八 case：L2 两项、L3 三十二项（含原 12 项核心可靠性）、L4 四项。
+Controlled 默认前置二十二个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
 实现与资格分别登记：调度器检查可以证明队列上限、L4 互斥、worker 失联及构建变化拒绝，

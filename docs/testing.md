@@ -73,9 +73,9 @@ Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 20 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 22 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
-丢响应找回、停止授权跨重启保持、审计发现/修复/预算及同服务多 Run 隔离。
+丢响应找回、停止授权跨重启保持、审计发现/修复/预算、同服务多 Run 隔离及资源创建回执恢复。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
 是否纳入快速 L1 应按耗时和依赖评估。
 
@@ -93,7 +93,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十三场景／三十一 case；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／三十二 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 新增场景须同步注册需求、manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
@@ -150,8 +150,8 @@ Copy-Item tests/test-config.example.json .evidence/test-config.json
 ```
 
 L2/L3 自动先运行 L1 和完整受控前置。任何前置失败都不会启动模型。
-L1 每个 package 上限为 8 分钟：独立仓库冻结回归含多次真实 Git clone/fetch，完整应用 package 本轮耗时约 346 秒，已超过旧 5 分钟上限。
-Controlled 独立 Go 宿主上限为 15 分钟，入口额外等待 30 秒以覆盖结果落盘；前置必须完整执行并通过。
+L1 每个 package 上限为 12 分钟：独立仓库冻结回归含多次真实 Git clone/fetch，application 包还包含 owner/parser/checkpoint 受控回归。聚合预算不延长各单次调用期限，实际耗时以当前批次日志为准。
+完整 Controlled 独立 Go 宿主聚合上限为 45 分钟，入口额外等待 30 秒以覆盖结果落盘；前置必须完整执行并通过。单场景/定向入口保持原预算，CLI、原生准备、故障和业务轮次期限不随聚合预算延长。
 PowerShell 交互调用多个场景时可使用数组；外部命令行请传实际数组参数，不把逗号串作为
 单个场景 ID。审计配置 `local-codex-audited` 的 settings.model 与 workflow.audit_model.model
 须显式且不同，effort 位于各自的 reasoning_effort。独立两模型场景仍保留原会话，不要求模型产生 finding。
@@ -180,7 +180,7 @@ L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名
 
 本机 Orca 的 `orca-local.codex`、`orca-local.pi`、`orca-local.pi-full-access`、`orca-local.dsh`
 使用 L3 development-feedback driver，覆盖业务 needs_input/reply、发布后反馈拒绝且原来源不变、独立 PR/head/合入，
-每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放和服务换代后的显式 resume；独立实现 Run 验证实际活动写者停止。
+每个核心现场还用独立短 Run 验证受管 agent 的启动失败收尾，以及真实扣留一次 Orca business-send 接受响应后的 unknown、零重发和原写者停止。正常 Run 另验 request_id 查询/幂等重放和兼容服务换代后的原授权保持、原会话继续；独立实现 Run 验证实际活动写者停止。
 本机 fixture 使用 test-only CLI 转发器记录真实原终端 send；重启零输入指纹必须有非零基线，Codex 不再读取不存在的扩展目录。原 Orca CLI 和 TUI 仍是真实执行来源。
 `orca-local.mixed` 复用 multirun driver，在同一服务运行 Pi/DSH，并检查停止一个 Run 后另一个的原生资源、权限及完成来源保持有效。
 例如 `./scripts/test.ps1 -Level L3 -Scenario orca-local.pi -Config <配置路径>`；真实结果见[通用接入验收](acceptance/orca-generic-agent.md)。
@@ -406,14 +406,14 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮二十二场景三十 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮二十二场景三十二 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
 
 ## 结果获取重构的当前验证边界
 
-结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，八项内部 case 覆盖成功行、零/正数审计修复、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式恢复；不创建真实 PR。单项获取链等待上限 120 秒，其余既有场景仍 60 秒，Controlled 独立宿主既有聚合预算 15 分钟。
+结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，十一项内部 case 覆盖成功行、零/正数审计修复、离线审计、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式停止；不创建真实 PR。单项获取链等待上限 120 秒，其余既有场景仍 60 秒，完整 Controlled 按上文 45 分钟聚合预算执行。
 
 `local-codex.result-acquisition` 已注册为 L2 专属 driver；入口先 L1 和完整 Controlled，再运行默认原生认证解析、已有 home/显式模型与权限反例/取消、development 真实 PR 闭环三项内部 case。原生只读权限、行为约定和工具事后检测分别取证，不宣称空工具表、零隐式上下文或工具执行前拦截。2026-10-17 原强隔离阻断记录保持历史原样。实际命令、失败修正及最新通过状态以验收证据为准。
 ## 环境检查定向验收

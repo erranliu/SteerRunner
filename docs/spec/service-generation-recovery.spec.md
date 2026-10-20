@@ -1,6 +1,6 @@
 # Spec：服务重启、更新与重新部署后的原执行接管
 
-日期：2026-10-19。状态：Runner 核心、parser 保留、离线审计和 SteerLine 接线已实施并有定向受控证据；Orca 创建关联接口、真实原生及跨仓现场资格未完成。实际证据和限制见[验收记录](../acceptance/service-generation-recovery.md)。[实施 Plan](service-generation-recovery.plan.md)。
+日期：2026-10-19，2026-10-20 补充创建恢复职责。状态：Runner 核心、parser 保留、离线审计和 SteerLine 接线已有定向证据；Orca 资源创建由 Runner 独立执行器保留原回执，只使用现有公开接口。当前源码的验证范围见[追补验收](../acceptance/pr-test-gaps-20261020.md)，历史证据和跨仓限制见[验收记录](../acceptance/service-generation-recovery.md)。[实施 Plan](service-generation-recovery.plan.md)。
 
 ## 1. 目标与适用范围
 
@@ -131,7 +131,9 @@ parser 复用同一独立 owner：只允许 `parse_result` 这一具体动作，
 
 此处保证的是 Runner 服务崩溃而独立执行宿主/Orca 仍存活的窗口；独立 owner 同时崩溃、原生服务丢失自己的创建回执，仍按身份/原生事实不足处理，不承诺任意多组件崩溃下的通用恰好一次。该范围与 §1 一致。不能把 Runner 所持连接随停服消失造成的丢回执也归入例外。
 
-Orca 需提供跨连接、可持久查询的创建请求关联/回执，覆盖 worktree create 的自动 agent terminal 以及显式 terminal create。当前 CLI 包装层未提供这一保证；需在 P0 验证原生按原创建请求查询的具体接口，缺失时明确为必要外部接口缺口。Runner 单独落回执只能覆盖“响应已收到、DB 未提交”，不能覆盖“Orca 已成功、响应未到达”。不得通过改名或列表唯一性绕过；缺接口的路径保持 unsupported/unverified，不能宣称五项目标全部实现，也不能重建远端 helper 规避缺失。
+Orca 资源创建恢复由 SteerRunner 实现，不能依赖修改 Orca 代码或新增上游接口。Runner 在调用现有公开 `worktree create` / `terminal create` 前可靠保存原 operation、Attempt、generation、配置、路由、完整命令和原期限，并独占登记唯一创建执行器。执行器与服务进程分离，持有原 CLI 子进程和响应连接；服务退出只取消服务的等待，原执行器继续接收并可靠保存原始响应。新服务只读原执行器的结果，经绑定和内容摘要校验后按原 worktree ID、terminal handle/incarnation 核实资源，再回填原 intent。覆盖 worktree 的自动终端、初始终端和 native-control 创建，不派发替代执行器或重试 create。
+
+该机制覆盖“Orca 已成功、原响应尚未到达 Runner 服务”和“原响应已保存、服务 DB 未提交”两种服务退出窗口。如果原执行器也崩溃、原 CLI 未返回资源身份、回执丢失/损坏/异源，或旧记录没有原创建日志，则保持 unknown。不得凭名称、标题、列表唯一性或空清单认领/重建资源；原期限不因换代重置。创建日志只保存有限原生动作的事实，不拥有业务授权、队列或第二份 Run 状态。真实后端资格按实际运行证据登记。
 
 PR/引用沿冻结仓库、base/head、执行关联和既有 provider 查询找回原对象；同分支多个不确定对象、错误仓库/身份或无完整创建关联保持冲突。按名称找到一个 PR 不足以覆盖原 PR 绑定。成功后只补写事实，绝不重做 push/create/release。对 agent 内部任意未知外部副作用不承诺通用恰好一次；本契约保证 Runner 不重发该业务轮次。
 
@@ -190,7 +192,7 @@ SteerLine 的安装 pin 仍校验所选文件确是选中的构建；把“pin �
 | SGR-A01 | A/B SHA、路径或总资源摘要不同，相关契约相同，原目录/Run/冻结材料/操作/PR 可接管；不支持契约明确拒绝/隔离，源事实不变 |
 | SGR-A02 | 本机 Codex 在正常停服和服务强杀期间保留原 owner/原生进程树/session/活动 turn/权限；新服务接回；显式 stop 仍精确收尾且有证明 |
 | SGR-A03 | 原活动授权自动接续；原暂停/等待/业务阻断/stop/pr_ready 保持；保存答案与 pending resume 按原状态处理，未知零重发 |
-| SGR-A04 | 外部创建成功→回执落库前（含回执尚未到达）崩溃可按原创建请求找回；原生缺接口者明确未验，不猜选、不二次创建 |
+| SGR-A04 | 外部创建成功→回执落库前（含回执尚未到达）服务崩溃后，按 Runner 原创建日志找回；缺原资源证据保持 unknown，不猜选、不二次创建，不依赖 Orca 修改 |
 | SGR-A05 | 离线完成补收原结果；已存结果、获取结果和后继未发/可能已发各窗口接续正确，重复重启不增加业务调用或消耗预算 |
 | SGR-A06 | 未知 publish/input/reply 只读对账，原 PR/head/merged/结果保留；stop/旧观察/CAS 竞争不恢复授权或生成重复后继 |
 | SGR-A07 | SteerLine 同构建重启、兼容 UpdateRunner 和项目/Web 重新部署均保留 Task/Candidate/Run/投影/Delivery；不要求资源退出、不自动重投或批量 resume |

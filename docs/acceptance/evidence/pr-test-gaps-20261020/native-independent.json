@@ -1,0 +1,105 @@
+{
+  "status": "passed",
+  "schema": "steerrunner-independent-native/v1",
+  "scope": "four independent native cases; parent mixed-build batch remains failed",
+  "results": [
+    {
+      "name": "remote-full-access",
+      "status": "passed",
+      "source": {
+        "pid": 27768,
+        "manifest_sha256": "2833A1D387C773BFFBEED4B7357CDCBC4F8D857C32CDC986A0CDBBECF13C9B9A",
+        "driver_sha256": "1001AF164B9347466E88572DB68CE47AC22E79FFCC9E42DAE6CD39888BDA0C64",
+        "runner_sha256": "b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.full-access",
+        "level": "L3"
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T03:43:32.4500077Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "evidence": "C:\\srt\\cb06af0b0a53\\evidence"
+    },
+    {
+      "name": "remote-stop-active",
+      "status": "passed",
+      "source": {
+        "pid": 30860,
+        "manifest_sha256": "A7A2BD659A83EE46EE0AB5CC9A641D50EC77D8461A5B368DB1317A19D13A1E07",
+        "driver_sha256": "0AA4DEAAE686EC5B057FFD6D351C9BA215EC271D8DE2B4333B3471FEBB42AEB1",
+        "runner_sha256": "b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.stop-revocation",
+        "level": "L3",
+        "helper_sha256": "d66d0225a362f5b6347f873e3e21df70ae1492a5bc8747fb2d0fd96002436e28",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "active",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T03:53:30.1680746Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "evidence": "C:\\srt\\880b4a3346b7\\evidence"
+    },
+    {
+      "name": "remote-multirun",
+      "status": "passed",
+      "source": {
+        "pid": 23756,
+        "manifest_sha256": "10459A49B7D12D5E62D18D9A0AC68C0EC368F3C00D9F60F291DC68794E722D9B",
+        "driver_sha256": "0AA4DEAAE686EC5B057FFD6D351C9BA215EC271D8DE2B4333B3471FEBB42AEB1",
+        "runner_sha256": "b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.multirun",
+        "level": "L3"
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:04:46.5976869Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "evidence": "C:\\srt\\45ce5896bedf\\evidence"
+    },
+    {
+      "name": "remote-initial-stop",
+      "status": "passed",
+      "source": {
+        "pid": 56672,
+        "manifest_sha256": "CF6F2E230FD92792F32425E2D982B51CAF4854408A98DE7760E9142D8B226D0D",
+        "driver_sha256": "0AA4DEAAE686EC5B057FFD6D351C9BA215EC271D8DE2B4333B3471FEBB42AEB1",
+        "runner_sha256": "b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.initialization-stop",
+        "level": "L3",
+        "helper_sha256": "d66d0225a362f5b6347f873e3e21df70ae1492a5bc8747fb2d0fd96002436e28",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "before-readiness",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:04:09.3125366Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "evidence": "C:\\srt\\e87089b6368b\\evidence"
+    }
+  ]
+}

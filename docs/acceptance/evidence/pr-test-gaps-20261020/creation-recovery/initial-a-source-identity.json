@@ -1,0 +1,11 @@
+{
+  "pid": 14264,
+  "pattern": "^TestSRResourceCreationRecovery$",
+  "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+  "fixture_sha256": "A423DFAF271F099A933F6DAD4EBCF5A8E946E6948D7A62CFCE18AD45CF0A2B04",
+  "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

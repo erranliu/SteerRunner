@@ -22,8 +22,12 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 	for _, r := range runs {
 		item := contracts.TakeoverItem{ID: r.ID, Kind: "run", Revision: r.Revision, InputDigest: r.InputDigest, Status: "compatible"}
 		var err error
-		if e := r.AcquisitionConfig.Config.Validate(); e != nil {
-			err = e
+		// Content workflows have no result-acquisition/parser contract. Their
+		// accepted records deliberately retain an empty acquisition config.
+		if !workflow.Content(r.Request.Workflow.ID) {
+			if e := r.AcquisitionConfig.Config.Validate(); e != nil {
+				err = e
+			}
 		}
 		if e := verifyFrozenMaterials(r); e != nil {
 			err = e
@@ -119,6 +123,19 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 		if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
 			item.Status = "read_only"
 			item.Diagnostic = "remote Check actors are unsupported; original facts remain queryable"
+		} else {
+			// Checks retain raw execution settings rather than a Run profile
+			// envelope. Qualify them too, before reporting that a new writer can
+			// adopt the state. In particular retired App authentication must not
+			// silently become the current host's gh identity.
+			if err := contracts.ValidateExecution(r.View.Input.Execution); err != nil {
+				item.Status, item.Diagnostic = "unsupported", "frozen Check execution configuration unsupported"
+			}
+			for _, op := range r.Operations {
+				if !slices.Contains(support.OperationVersions, op.Version) {
+					item.Status, item.Diagnostic = "unsupported", "Check operation version unsupported"
+				}
+			}
 		}
 		items = append(items, item)
 	}

@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.full-access
+    run_test.go:806: L3 orca-remote.full-access run=7f1f2a2a27be3677f22a21002d4046c2 PR=https://github.com/erranliu/SteerlineTest/pull/627 merge=59297bf228eab2d7c32de36c35f1eaf4126854d5
+--- PASS: TestSRLiveScenario (120.13s)
+    --- PASS: TestSRLiveScenario/orca-remote.full-access (120.10s)
+PASS

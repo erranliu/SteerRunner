@@ -1,0 +1,45 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": false,
+  "started_at": "2026-10-20T02:12:53.6526461Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-baseline",
+      "terminal_extension_exit": 0,
+      "level": "L1",
+      "native_zero_match_guard": true,
+      "exit_code": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "test_count": 469,
+      "terminal_extension_test_count": 29,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-baseline\\framework",
+      "native_driver_compile_exit": 0,
+      "terminal_extensions_passed": true
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "Controlled harness timed out; inspect integration.log",
+  "finished_at": "2026-10-20T02:48:24.7349652Z"
+}

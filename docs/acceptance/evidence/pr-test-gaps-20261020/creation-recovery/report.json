@@ -1,0 +1,108 @@
+{
+  "schema": "steerrunner-resource-creation-recovery/v1",
+  "implementation_scope": "SteerRunner only; existing public Orca interfaces",
+  "base_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+  "owner_unit_top_level": 5,
+  "owner_unit_cases": 18,
+  "unit_exit_code": 0,
+  "framework_passed": 19,
+  "controlled_registered": 22,
+  "controlled_batches": [
+    {
+      "name": "initial-a",
+      "exit_code": 1,
+      "scenario_count": 1,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "A423DFAF271F099A933F6DAD4EBCF5A8E946E6948D7A62CFCE18AD45CF0A2B04",
+      "passed_top_level": [],
+      "skipped": false
+    },
+    {
+      "name": "initial-b",
+      "exit_code": 1,
+      "scenario_count": 1,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "57CC8EEE8B2E0B32747957194367A124D925A1775363C60540DF80BF23756C41",
+      "passed_top_level": [],
+      "skipped": false
+    },
+    {
+      "name": "isolated-c",
+      "exit_code": 1,
+      "scenario_count": 1,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "9C6597AF53B76C5285614329FCB4704D19D865B6369E110ACC93C69E4471F2B8",
+      "passed_top_level": [],
+      "skipped": false
+    },
+    {
+      "name": "regression",
+      "exit_code": 1,
+      "scenario_count": 5,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "91A7E9E59937703621CAEB3E5089023651CE6862E6DA8078CF3FD839DA746447",
+      "passed_top_level": [
+        "TestSRContentGenerationRecovery",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization"
+      ],
+      "skipped": false
+    },
+    {
+      "name": "windows-final",
+      "exit_code": 0,
+      "scenario_count": 1,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "B8C7360883F0F206B5579F230565BB42DC797758BA7B5D4D2785536C01432FF7",
+      "passed_top_level": [
+        "TestSRResourceCreationRecovery"
+      ],
+      "skipped": false
+    },
+    {
+      "name": "public-final",
+      "exit_code": 0,
+      "scenario_count": 1,
+      "runner_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2",
+      "harness_sha256": "C96411C8B3B7796A6BFB18D565DE89379639192EE04F30082DF0FAD61E9AD53B",
+      "passed_top_level": [
+        "TestSRResourceCreationRecovery"
+      ],
+      "skipped": false
+    }
+  ],
+  "l1_original_failed_packages": [
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+      "Action": "fail",
+      "Elapsed": 13.067
+    }
+  ],
+  "l1_fix_verification": "entire internal/testkit/livetest package passed after replacing legacy publish with workflow.StepPublish",
+  "l1_current_coverage": "21 unchanged packages from initial run; corrected livetest package rerun in full; additional creation-owner unit added and passed; original whole-run failure retained",
+  "l1_current_top_level_passed": 485,
+  "l1_current_conditional_or_helper_skips": 8,
+  "l1_initial_top_level_passed": 482,
+  "l1_initial_top_level_skipped": 8,
+  "native": {
+    "scenario": "orca-remote.initialization-stop",
+    "case": "restart-before-readiness",
+    "orca_version": "1.4.224",
+    "exit_code": 0,
+    "cleanup": {
+      "native_stopped": true,
+      "service_stopped": true,
+      "facilities_restored": true,
+      "driver_native_cleanup": false
+    },
+    "scope": "real original terminal retention, zero business input and exact terminal stop; precise create-response fault gates are controlled fixtures"
+  },
+  "unknown_policy": "no original resource identity evidence => unknown; no repeated create, replacement owner, name adoption, deadline reset or fabricated stopped",
+  "new_administrator_actions": [],
+  "remaining_owned_processes": 0,
+  "full_l2_or_l3_level_claimed": false,
+  "finished_at": "2026-10-20T05:11:02.9536473Z"
+}

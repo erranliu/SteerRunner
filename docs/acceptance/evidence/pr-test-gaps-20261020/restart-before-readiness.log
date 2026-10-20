@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.initialization-stop
+--- PASS: TestSRLiveScenario (48.48s)
+    --- PASS: TestSRLiveScenario/orca-remote.initialization-stop (48.35s)
+PASS

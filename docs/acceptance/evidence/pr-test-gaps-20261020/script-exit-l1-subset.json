@@ -1,0 +1,35 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "started_at": "2026-10-20T04:15:48.2397484Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "terminal_extension_test_count": 29,
+      "native_zero_match_guard": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-exit-contract\\framework",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-exit-contract",
+      "terminal_extension_exit": 0,
+      "exit_code": 0,
+      "skipped_tests": [],
+      "test_count": 34,
+      "terminal_extensions_passed": true
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-20T04:17:39.8538120Z"
+}

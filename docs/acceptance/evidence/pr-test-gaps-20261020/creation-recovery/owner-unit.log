@@ -1,0 +1,46 @@
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker
+--- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss (0.23s)
+    --- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00 (0.12s)
+    --- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker (0.11s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch (4.26s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss (0.16s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result (0.21s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result (0.14s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result (0.15s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output (0.14s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation (0.13s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command (0.13s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan (0.11s)
+    --- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed (3.08s)
+=== RUN   TestCreationOwnerControlReceiptSurvivesServiceLoss
+--- PASS: TestCreationOwnerControlReceiptSurvivesServiceLoss (0.14s)
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/plan-write-failed
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries (3.46s)
+    --- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/plan-write-failed (0.09s)
+    --- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed (3.06s)
+    --- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost (0.15s)
+    --- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed (0.15s)
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/reconcile-empty
+--- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery (4.20s)
+    --- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint (2.19s)
+    --- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/reconcile-empty (2.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	14.758s

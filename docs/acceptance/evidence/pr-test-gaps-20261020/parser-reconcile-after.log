@@ -1,0 +1,10 @@
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing
+--- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser (0.11s)
+    --- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed (0.05s)
+    --- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending (0.03s)
+    --- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing (0.03s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	3.334s

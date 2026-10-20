@@ -1,0 +1,14 @@
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed
+    parser_owner_recovery_test.go:71: original parser receipt not recovered original app-server process receipt is missing or unreadable {{1 parse run attempt   {      } parse_result parse-key [123 34 114 101 115 117 108 116 95 105 100 34 58 34 114 101 115 117 108 116 34 44 34 112 97 121 108 111 97 100 34 58 34 123 125 34 44 34 103 101 110 101 114 97 116 105 111 110 34 58 34 112 97 114 115 101 114 34 44 34 100 101 97 100 108 105 110 101 34 58 34 50 48 50 54 45 49 48 45 50 48 84 48 50 58 52 50 58 49 53 46 48 50 57 53 50 56 54 90 34 125] [] 3555a05e2ba83e71e7697c7c04fa3bf7b1afad0d0b66bf450e6ea7734c55f913 in_flight 2026-10-20 02:41:15.0295286 +0000 UTC 2026-10-20 02:41:15.0295286 +0000 UTC  [] 0x2cabe2477380 0x2cabe2109a00} outcome_unknown  original app-server process receipt is missing or unreadable <nil> 0x2cabe248a090 <nil> <nil> [] []   {false false    false false false false false false false  false   } <nil> <nil> <nil>}
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending
+    parser_owner_recovery_test.go:82: original owner was not queried
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing
+    parser_owner_recovery_test.go:74: unknown parser became a successful business turn original app-server process receipt is missing or unreadable {{1 parse run attempt   {      } parse_result parse-key [123 34 114 101 115 117 108 116 95 105 100 34 58 34 114 101 115 117 108 116 34 44 34 112 97 121 108 111 97 100 34 58 34 123 125 34 44 34 103 101 110 101 114 97 116 105 111 110 34 58 34 112 97 114 115 101 114 34 44 34 100 101 97 100 108 105 110 101 34 58 34 50 48 50 54 45 49 48 45 50 48 84 48 50 58 52 50 58 49 56 46 48 53 51 50 48 55 56 90 34 125] [] a610431f8060a8c9dde86dee167a8564e4a2a17b5feb49dc0ba18bbeb0099b4a in_flight 2026-10-20 02:41:18.0532078 +0000 UTC 2026-10-20 02:41:18.0532078 +0000 UTC  [] 0x2cabe2222680 0x2cabe2108600} outcome_unknown  original app-server process receipt is missing or unreadable <nil> 0x2cabe2444090 <nil> <nil> [] []   {false false    false false false false false false false  false   } <nil> <nil> <nil>}
+--- FAIL: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser (3.03s)
+    --- FAIL: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed (0.01s)
+    --- FAIL: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending (3.01s)
+    --- FAIL: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing (0.01s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	6.079s
+FAIL

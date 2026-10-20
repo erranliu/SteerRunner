@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.service-restart
+    stability_test.go:128: timed out at restart-resume-gate; original fixture retained
+--- FAIL: TestSRLiveScenario (230.65s)
+    --- FAIL: TestSRLiveScenario/orca-remote.service-restart (230.51s)
+FAIL

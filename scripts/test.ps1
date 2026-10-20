@@ -165,10 +165,11 @@ try {
         Write-Host 'Running controlled integration prerequisite'
         $taskControlled = Join-Path $taskOut 'controlled'
         $taskPattern = '^(' + (($taskCatalog.controlled_scenarios | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')$'
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern | Out-Host
-        # The child owns a 25m aggregate test deadline. Do not declare timeout
+        $taskControlledMinutes = 45
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern -TimeoutMinutes $taskControlledMinutes | Out-Host
+        # The child owns the aggregate test deadline. Do not declare timeout
         # before that contract ends; allow only result-file/cleanup latency.
-        $taskUntil = [DateTime]::UtcNow.AddMinutes(25).AddSeconds(30)
+        $taskUntil = [DateTime]::UtcNow.AddMinutes($taskControlledMinutes).AddSeconds(30)
         while (-not (Test-Path -LiteralPath (Join-Path $taskControlled 'result.json'))) {
             if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled harness timed out; inspect integration.log' }
             Start-Sleep -Seconds 2
@@ -210,3 +211,4 @@ try {
     if ($taskOut -and -not $ListAvailability) { Write-Host "Test report: $taskOut/summary.json" }
 }
 if ($taskSummary.status -notin @('passed','passed_with_exclusions')) { exit $taskExitCode }
+exit 0

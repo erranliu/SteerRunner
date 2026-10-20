@@ -132,6 +132,31 @@ func TestAuthenticationSocketRejectsRedirectedDirectories(t *testing.T) {
 	}
 }
 
+func TestAuthenticationSocketPreservesForeignScratchOnClose(t *testing.T) {
+	plan, broker := socketFixture(t)
+	if err := broker.installAPITransport(t.TempDir(), plan); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(plan.Directory, "pr-body.md")
+	body := []byte("foreign PR body must not be recursively removed")
+	if err := os.WriteFile(path, body, 0600); err != nil {
+		t.Fatal(err)
+	}
+	if broker.close() || broker.close() {
+		t.Fatal("nonempty transport directory falsely reported as cleaned")
+	}
+	got, err := os.ReadFile(path)
+	if err != nil || string(got) != string(body) {
+		t.Fatal("foreign scratch changed during authentication cleanup", err)
+	}
+	if _, err := os.Lstat(filepath.Join(plan.Directory, "s")); !os.IsNotExist(err) {
+		t.Fatal("original socket was not removed", err)
+	}
+	if !broker.closed || broker.capability != "" || len(broker.secret) != 0 {
+		t.Fatal("cleanup uncertainty retained authentication authority")
+	}
+}
+
 func TestAuthenticationSocketRejectsReplacementDirectory(t *testing.T) {
 	plan, broker := socketFixture(t)
 	if err := broker.installAPITransport(t.TempDir(), plan); err != nil {

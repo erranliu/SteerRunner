@@ -118,6 +118,23 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	// An independently dispatched creation may finish after task revocation.
+	// Recover only its original receipt so stop can address the exact resource.
+	// Reconciliation cannot dispatch another create or restore input authority.
+	for index, intent := range r.Intents {
+		if intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
+			if e.invoke(id, w, p, index, true) {
+				return true
+			}
+			e.mu.Lock()
+			r = e.runs[id].Clone()
+			e.mu.Unlock()
+			if r.Snapshot.Ref.External.Kind == "" {
+				return false
+			}
+			break
+		}
+	}
 	command := r.PendingStop
 	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) {
 		e.mu.Lock()

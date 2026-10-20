@@ -797,6 +797,9 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	git(t, m, "worktree", "add", "--detach", checkout, r.MergeCommit)
 	shell(t, checkout, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(checkout, "sr-smoke", "check.ps1"))
 	checkpoint("stop-and-cleanup")
+	if m.Level == "L2" && m.Execution.Adapter == "codex-app-server" {
+		verifyNativeRunEvidence(t, m, dir, r.RunID)
+	}
 	if genericTerminal {
 		activeTerminalStop(t, m, dir, input)
 	}

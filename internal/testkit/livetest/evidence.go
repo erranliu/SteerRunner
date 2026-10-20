@@ -110,7 +110,7 @@ func ValidateEvidence(m Manifest, r StabilityResult) error {
 			}
 		}
 	case "orca-remote.service-restart":
-		required = []string{"service-replaced", "resume-required-before-authorization", "no-input-after-revocation-or-before-resume", "single-native-publication"}
+		required = []string{"service-replaced", "restart-preserves-authorization", "restart-continues-without-resume", "original-input-once", "no-input-after-revocation-or-before-resume", "single-native-publication"}
 	case "orca-remote.stop-revocation":
 		required = []string{"no-unexpected-publication", "no-input-after-revocation-or-before-resume"}
 		if m.CaseID == "unreachable" {

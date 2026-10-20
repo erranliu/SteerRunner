@@ -1,0 +1,43 @@
+{
+  "schema": "steerrunner-pr-gap-scratch-followup/v1",
+  "status": "passed",
+  "scope": "local L2 followup after scratch instruction change",
+  "prior_qualification": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-qualified\\summary.json",
+  "targeted_package": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-scratch-runtime.log",
+  "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+  "results": [
+    {
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-scratch-live\\local-codex.result-acquisition-default-r1-fixture.json",
+      "evidence": "C:\\srt\\de7d2dc91ff9\\evidence",
+      "expected_outcome": "merged",
+      "level": "L2",
+      "manifest": "C:\\srt\\de7d2dc91ff9\\manifest.json",
+      "identity": {
+        "pid": 55728,
+        "manifest_sha256": "85799c75035665dedfe6a86f79f84a4ad2279eb597b3f36d04cef890266c5175",
+        "driver_sha256": "0aa4deaae686ec5b057ffd6d351c9ba215ec271d8de2b4333b3471febb42aeb1",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.result-acquisition",
+        "level": "L2"
+      },
+      "finished_at": "2026-10-20T03:53:26.806622Z",
+      "status": "passed",
+      "started_at": "2026-10-20T03:48:36.6357435Z",
+      "scenario": "local-codex.result-acquisition",
+      "case_id": "default",
+      "resources": [
+        "root:C:\\srt\\de7d2dc91ff9",
+        "base:codex/srtest/de7d2dc91ff9/base",
+        "run:a6d95fc9174f1c3cff81fb304be21ffc",
+        "workspace:c:\\srt\\de7d2dc91ff9\\s\\workspaces\\iblswnlwi2ker5qhrvoqz55mfy",
+        "session:01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+        "branch:codex/runner-a6d95fc9174f1c3cff81fb304be21ffc",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/628"
+      ]
+    }
+  ]
+}

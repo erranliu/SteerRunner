@@ -1,0 +1,30 @@
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/0
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/1048576
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/1048577
+--- PASS: TestR2ArtifactDiscoveryAndFileLimits (0.22s)
+    --- PASS: TestR2ArtifactDiscoveryAndFileLimits/0 (0.00s)
+    --- PASS: TestR2ArtifactDiscoveryAndFileLimits/1048576 (0.01s)
+    --- PASS: TestR2ArtifactDiscoveryAndFileLimits/1048577 (0.01s)
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/grow
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/replace
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/read-error
+--- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes (0.05s)
+    --- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/grow (0.03s)
+    --- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/replace (0.01s)
+    --- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/read-error (0.01s)
+=== RUN   TestR2ArtifactContainment
+--- PASS: TestR2ArtifactContainment (0.09s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	1.611s
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal
+--- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade (0.16s)
+    --- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server (0.08s)
+    --- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal (0.08s)
+=== RUN   TestLegacyRecoveryQualifiesContractsBeforeChangingFormat
+--- PASS: TestLegacyRecoveryQualifiesContractsBeforeChangingFormat (0.10s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	3.255s

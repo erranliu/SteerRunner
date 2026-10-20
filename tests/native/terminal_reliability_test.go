@@ -41,7 +41,7 @@ func terminalInputFingerprint(t *testing.T, m livetest.Manifest, run contracts.R
 }
 
 // The old TUI and its native owner must survive a normal service replacement.
-// Only an explicit public resume may restore input authority.
+// Compatible replacement preserves the original authorization without resume.
 func restartTerminalService(t *testing.T, m livetest.Manifest, dir string, instance *string, original contracts.RunView) {
 	t.Helper()
 	before := terminalInputFingerprint(t, m, original)
@@ -65,41 +65,27 @@ func restartTerminalService(t *testing.T, m livetest.Manifest, dir string, insta
 	if next == "" || next == old {
 		t.Fatal("service generation did not change")
 	}
-	var gated contracts.RunView
+	var recovered contracts.RunView
 	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 		var err error
-		gated, err = inspect(m, dir, original.RunID, false)
+		recovered, err = inspect(m, dir, original.RunID, false)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if gated.ResumeRequired && !gated.NewInputsAllowed {
+		if !recovered.ResumeRequired && recovered.NewInputsAllowed {
 			break
 		}
 	}
-	if !gated.ResumeRequired || gated.NewInputsAllowed {
-		t.Fatal("replacement service bypassed explicit resume")
+	if recovered.ResumeRequired || !recovered.NewInputsAllowed {
+		t.Fatal("compatible replacement did not preserve original authorization")
 	}
 	time.Sleep(3 * time.Second)
-	if terminalInputFingerprint(t, m, original) != before || gated.Execution.SessionID != original.Execution.SessionID || gated.Execution.AttemptID != original.Execution.AttemptID || gated.Execution.Workspace != original.Execution.Workspace {
-		t.Fatal("service replacement wrote native input or replaced original resources")
+	var err error
+	recovered, err = inspect(m, dir, original.RunID, false)
+	if err != nil || recovered.ResumeRequired || !recovered.NewInputsAllowed || terminalInputFingerprint(t, m, original) != before || recovered.Execution.SessionID != original.Execution.SessionID || recovered.Execution.AttemptID != original.Execution.AttemptID || recovered.Execution.Generation != original.Execution.Generation || recovered.Execution.Workspace != original.Execution.Workspace || recovered.PR == nil || recovered.PR.URL != original.PR.URL || recovered.PR.HeadRevision != original.PR.HeadRevision {
+		t.Fatal("service replacement changed original resources, authorization, input history or PR", err)
 	}
-	resume := request("explicit-original-resume", contracts.RevisionInput{ExpectedRevision: gated.Revision})
-	invoke(t, m, dir, []string{"resume", "--run-id", original.RunID, "--input", "-"}, &resume)
-	var resumed contracts.RunView
-	for until := time.Now().Add(time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
-		var err error
-		resumed, err = inspect(m, dir, original.RunID, false)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !resumed.ResumeRequired && resumed.NewInputsAllowed {
-			break
-		}
-	}
-	if resumed.ResumeRequired || !resumed.NewInputsAllowed || resumed.Execution.SessionID != original.Execution.SessionID || resumed.Execution.AttemptID != original.Execution.AttemptID || resumed.PR == nil || resumed.PR.URL != original.PR.URL || resumed.PR.HeadRevision != original.PR.HeadRevision {
-		t.Fatal("explicit resume changed original session or PR")
-	}
-	save(t, "service-restart-explicit-resume.json", map[string]any{"old_instance": old, "new_instance": next, "gated": gated, "resumed": resumed, "native_input_fingerprint_before": before, "native_input_fingerprint_after": terminalInputFingerprint(t, m, resumed)})
+	save(t, "service-generation-recovery.json", map[string]any{"old_instance": old, "new_instance": next, "recovered": recovered, "native_input_fingerprint_before": before, "native_input_fingerprint_after": terminalInputFingerprint(t, m, recovered)})
 }
 
 func activeWriterScripts() (string, string) {

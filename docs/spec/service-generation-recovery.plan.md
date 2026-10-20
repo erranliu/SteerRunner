@@ -10,12 +10,12 @@
 
 1. 固定 Spec §2 的 Runner/SteerLine 来源，复用现能力目录、record/envelope 版本及 decoder，列出精确支持范围。区分包 SHA、原 owner SHA 和契约版本；同 workflow version 不允许修改语义后强行放行。不新增 per-Run 兼容 manifest、恢复语义版本或兼容策略注册器。
 2. 通过隔离无业务资源探针确认本机 owner 由现 Windows 独立启动机制创建后，服务正常退出与强杀均不杀 owner/Job/原生连接；确认当前 Codex 请求跨观察断连仍能完成且结果可读。所有权移交前不删除旧 Job 保护，不以杀树后同 thread 重建算通过。
-3. 对 Orca 现原生接口验证创建关联：worktree create、自动创建 agent terminal、显式 terminal create，分别覆盖响应未到达与收到未提交。只允许同请求精确查询并返回 runtime/worktree/terminal/incarnation。Runner 包装层、名称查找和 `CallUncertain` 不算创建登记。当前源码未证实此能力，必须登记为待验的接口前置；需要 Orca 增补时写明接口/版本，不静默缩小 SGR-A04。本机原生响应由服务外 owner 继续接收；不将 owner 同时崩溃也消除任意创建窗口扩入本轮目标。
+3. Orca 创建恢复由 Runner 独立创建执行器实现，仅调用现有 worktree create / terminal create；不能依赖 Orca 源码修改。调用前固定原 operation/配置/路由/命令/期限，独占登记后只执行一次；执行器持有原 CLI，在服务退出后继续接收和可靠保存原回执。新服务只读原日志并核实 runtime/worktree/terminal/incarnation，不按名称认领。覆盖响应未到服务、回执未提交 DB；执行器也丢失或没有原资源身份时保持 unknown。
 4. 核对原生结果持久性与审计 checkpoint 的离线窗口。缺原生来源/必要 checkpoint 的情况保持 unverified，不引入重跑源步骤或补报修代码来通过验收。
 5. 完成旧本机活动树的首次升级可行性判定。原服务没有协作移交能力时，部署须在停服前拒绝破坏性切换并保留原执行；这只是存量保护，不能登记成无中断升级成功。P0 不以所有存量自然完成为后续新契约验收前提；明确新保证生效起点及无法追溯恢复的旧现场。
 6. 固定 `service start` 可选 `pending_stops` 的最小 schema 和启动时序：复用原 stop 信封、commands 幂等、revision 校验及启动意图保存；在 worker/ready 前受理撤销，失败返回逐项事实而不派发业务。不增加全局持久 hold/release 接口，不等待 stop 的物理退出或未知操作结算才允许无关 Run 接续。
 
-交付物：精确版本矩阵、原生能力/失败事实与小型受控探针证据。P0 未取得 Orca 原创建查询或本机存活证明时，允许推进无依赖的文档/只读部分；对应功能不宣布完成，不先移除旧保护。
+交付物：精确版本矩阵、Runner 独立创建执行器及原生能力/失败事实与小型探针证据。未取得某机制的本机存活或真实后端证明时，对应资格不宣布完成，不先移除旧保护。
 
 ### P1 契约与持久化
 
@@ -35,7 +35,7 @@
 2. owner 不读写 runner.db、不运行 workflow、不复制授权状态，仅承载原 Codex 调用、身份/回执读取和精确 stop；现 application gate/revision/授权规则继续决定业务派发。用现 writer.lock、原实例/进程身份和唯一临时控制连接隔离旧写者，不建持久派发租约或通用 Operation 执行器。已经在途的操作只对账；认证策略/期限不因换代改变。
 3. 将普通停服脱离与显式 Run stop 分为不同 port 语义。更新 `ShutdownLifecycle` 的调用方和本机 `stopRun`，显式停止不再借停服方法或旧内存 handle 执行；可通过原 owner 精确停止原 Job 并核验树/认证。保留 Orca 原停止证据 scope、未知结果及 reader 收尾规则。
 4. 本机复用 process.json/thread.json/turn-start/原生 journal 与 implementation receipt，owner 持有必要原生连接，在 Runner 离线时继续接收并可靠保存原回执/结果。进程 root 绑定复用 `StartManagedBound`，服务重接按原 intent/source 去重导入。不得增加通用 receipt spool、消费确认协议或导入游标；owner 同时丢失回执的情况仍保留未知，不把多组件故障透明恢复作为本轮前置。
-5. Orca 按 P0 已证明的创建查询接口导入原 worktree/terminal/control 身份；保留部分成功 checkpoint。PR/引用沿原 provider 查询；同名、多目标、关联键冲突拒绝认领，所有未知输入/发布恒零重发。
+5. Orca 适配器按原 Runner 创建日志导入原 worktree/terminal/control 身份；保留部分成功 checkpoint。工作区、初始终端、native-control 共用有限独立创建执行器；未知/异源/损坏日志拒绝认领，恢复从不再派发 create。PR/引用沿原 provider 查询；所有未知输入/发布恒零重发。
 
 ### P3 接管与自动接续
 
@@ -74,7 +74,7 @@
 | T05 / A04 | L1 协议夹具 + Controlled 创建屏障：原输入已存无副作用意图、in_flight 已提交但未调用、外部已创建响应未到、响应到达 DB 未提交、部分 checkpoint | 无意图者合法首次执行；已存意图者只对账，按原键找回同一资源。完整调用审计证明创建只一次；无登记/多目标/错 runtime/incarnation/同键异正文拒绝。不能用正确阻断替代丢回执正例通过 |
 | T06 / A05 | L1 + Controlled 结果屏障：离线完成、原 final 已保存、分阶段获取未结算、合法后继已存但未建立意图/已有 in_flight、PR 已创建未存；另造非法缺失后继反例 | 原结果只结算一次、已存后继首次派发一次；已有意图仅对账，非法中间态不重建。重复导入/重启无新增实施/审计/报告/发布，预算不重置；必要 checkpoint 缺失保持 unverified |
 | T07 / A06 | 复用现操作/结果/stop 竞争测试，补 stop 与原结果导入、旧观察迟到、CAS 失败、unknown input/reply/publish、同 turn 冲突 final | stop 已接受后零新派发；在途事实保留，错误来源不推进；原 PR/head/merged 不丢失、不替换，零重复 push/create/模型输入 |
-| T08 / A02,A04,A05 | Orca 原生最小探针：每个不同创建机制的原请求查询/丢响应；本机保留管理路径与远端 native 各一个服务换代样本，复用 T06 屏障 | 原 runtime/worktree/terminal/incarnation/provider 及原输入回合不变；远端零 helper。管理路径仍保留原认证/reader/退出证明，远端只承诺原 scope；缺接口者原样登记未验，不能以另一机制通过替代 |
+| T08 / A02,A04,A05 | Orca 原生最小探针：Runner 原创建执行器跨服务保留及原回执读取；本机保留管理路径与远端 native 各一个服务换代样本，复用 T06 屏障 | 原 runtime/worktree/terminal/incarnation/provider 及原输入回合不变；远端零 helper。管理路径保留原认证/reader/退出证明，远端只承诺原 scope；无原身份保持 unknown，真实未跑项原样登记未验 |
 | T09 / A07 | SteerLine 定向单测 + 脚本受控测试：同构建重启、兼容 UpdateRunner、Web/项目重建；错目录/实例/契约、本地锁未关闭；启动 pending_stops 接受/回执未知/revision 拒绝 | Task/Candidate/Run/PR/投影游标/既有唯一 Delivery 不变；启动前撤销生效，接受后不等物理收尾便允许无关 Run 接续；零重复 submit/reply/resume，项目隔离。兼容更新允许 resources_settled=false，破坏性清理仍拒绝 |
 | T10 / A01–A03,A05,A07 | 复用 T03 正常换代的同一真实本机样本，由 SteerLine 发起 A→不同构建 B 更新并恢复原投影；不额外创建一轮开发任务 | 原 Task/Candidate/Run/session/turn/结果与后继对应，零人工 resume/重复提交；真实 PR 事实（若该样本产生）与独立 provider 查询一致。Delivery/merge 规则未变，沿 T09 受控验证已存事实，不额外要求创建/合并 PR 才算服务接管成功 |
 
@@ -114,12 +114,12 @@ Controlled/原生沿 [测试指南](../testing.md)的独立现场入口、实际
 | Q01 / P1 | 单独再加 not_dispatched/dispatching、Operation v2、消费标记和导入游标，把现流程拆成更多提交点与可矛盾状态 | `operation.New` 已先存 in_flight，StageInputs/NextStage 与完整 Intents 可区分尚未建立副作用意图；finish 已原子提交结果/转移。删除平行状态/标记，保留已有意图只对账的保守窗口 |
 | Q02 / P1 | 全局持久 hold + release-dispatch 形成另一个授权生命周期；调用方退出会遗留服务级闭锁，并可能等待无关未知资源 | 现 Run 已有 Allowed/PendingStop，Engine.Start 是明确调度边界。改成仅原 pending stop 信封的启动排序输入，worker 启动前保存撤销；无需全局持久 hold、release 或等待物理结算 |
 | Q03 / P1 | owner 既核授权又建通用操作 spool/消费确认，逐步成为第二执行权威 | 现 Run Record 是唯一聚合，Codex 已有 process/thread/turn-start/journal。owner 仅负责原生存活/连接/回执/停止，授权仍归 application；复用原文件和操作/结果身份去重，无通用队列、确认游标或授权副本 |
-| Q04 / P1 | 要求各类 native create 在 owner/原生端同时崩溃后也统一精确 lookup，把 Runner 恢复扩成多系统任意故障恰好一次，P0 无法收口 | 本轮故障主体是 Runner 服务，独立宿主/Orca 自身消失在 Spec §1 另有边界。保留服务断开时原响应必须继续接收/保存的正例；多组件丢失证明保持未知。Orca 缺创建请求查询仍是必须补齐的外部能力，不能删需求或冒充通过 |
+| Q04 / P1 | 要求各类 native create 在 owner/原生端同时崩溃后也统一精确 lookup，把 Runner 恢复扩成多系统任意故障恰好一次，P0 无法收口 | 故障主体是 Runner 服务，独立宿主/Orca 同时消失另有边界。服务断开时由 Runner 独立创建执行器继续接收/保存原响应；多组件丢失证据保持 unknown，不依赖新增 Orca 查询接口 |
 | Q05 / P1 | 沿用 Workflow.Config 全结构相等仍会被 Description/能力目录变化阻断，“删 SHA 门槛”后目标仍不成立 | `workflow.Profile` 含 Description/SupportedAdapters 等非原执行语义字段。改为两个具体 workflow 的冻结执行语义校验，保留真实同号语义变更拒绝；不另建通用兼容引擎 |
 | Q06 / P2 | 每 Run 保存兼容 manifest，再叠 recovery 语义版和 Operation v2，形成重复版本权威 | 用已有 record/envelope 版本及能力目录；删除额外 manifest/语义版/Operation 升版。仅保留 state/v4 防旧写者、owner 协议 v1 和确实增加 owner 绑定的 resource codec2，各自有明确边界 |
 | Q07 / P2 | 为接管再跑一轮跨仓开发、真实合并/Delivery，重复既有测试且把未改交付语义变成本轮门槛 | T10 改为 T03 正常换代同一现场的消费者断言；已存 PR/merged/Delivery 的保存用 T07/T09 受控验证。创建缺回执、正常/强杀本机存活等关键正例仍保留，不能仅以反例正确阻断替代 |
 
-保留的必要结构：独立本机 owner 解决服务持有 kill-on-close Job/认证/连接的实际生命期耦合；state/v4 阻止旧服务重入执行旧停服语义；原创建查询补齐 Orca 已成功但无回执的实际缺口。现有旧本机活动树无法事后无损移交、Orca 原创建查询未证实两项限制仍在，不以删架构绕过。
+保留的必要结构：独立本机 owner 解决服务持有 kill-on-close Job/认证/连接的生命期耦合；state/v4 阻止旧服务重入执行旧停服语义；有限创建执行器补齐 Orca 已成功但服务未保存回执的窗口。旧本机活动树无法事后无损移交、原执行器也缺证据时不可找回两项边界仍在。
 
 审计后仍是可实施的设计稿，P0 的原生能力验证和启动输入具体 schema 尚待实现阶段固定；不能把文档修订计为 SGR-A01–A07 通过。
 
@@ -135,7 +135,7 @@ Controlled/原生沿 [测试指南](../testing.md)的独立现场入口、实际
 
 `service start --input -` 接受裸 `{ "pending_stops": [{ "run_id": "...", "request": { "protocol": "steerrunner-cli/v1", "request_id": "原 stop ID", "input": { "expected_revision": 1 } } }] }`，最多 500 项、8 MiB。省略 input 保留已有未决启动撤销；不能用空数组删除未决原请求。worker/ready 前顺序受理，原 commands 幂等先于 revision 校验。已受理请求留在原 Run/commands；任一确定拒绝即返回原故障且不开 worker，启动文件可移除，调用方查询各原 request_id 并修订明确被拒绝的项。提交结果未知保留原文件，禁止换 ID 猜重做。服务已 ready 时拒绝非空启动撤销，调用方应对当前实例提交原 stop。此接口只表达原撤销义务，不是持久全局调度闸门。
 
-P4 已在 `C:/Project/SteerLine` 的基线工作树实施公开 CLI 消费者、application/project 当前 pin、启动撤销收集及兼容部署路径。规则与最小验证见该仓 `docs/spec/service-generation-recovery.spec.md`、`docs/plans/service-generation-recovery.plan.md` 和共同 worker-lifecycle。候选/Check 的原 pin、原信封和 PR 不改，只有当前服务 checkpoint/home pin 经预检更新。无安装环境操作。Orca 原创建查询仍不由 Runner 包装层伪造；外部缺口与未验原生资格保持未完成。
+P4 已在 `C:/Project/SteerLine` 的基线工作树实施公开 CLI 消费者、application/project 当前 pin、启动撤销收集及兼容部署路径。规则与最小验证见该仓 `docs/spec/service-generation-recovery.spec.md`、`docs/plans/service-generation-recovery.plan.md` 和共同 worker-lifecycle。候选/Check 的原 pin、原信封和 PR 不改，只有当前服务 checkpoint/home pin 经预检更新。无安装环境操作。2026-10-20 创建恢复限定 Runner 实现；有限执行器不伪造上游能力，真实未跑资格仍按实际证据登记。
 
 已补入 parser 的具体 owner 动作/原 started、final receipt 对账，以及原生完成事件发布前的签名 workspace checkpoint；复用原 Deadline、源码检查和结果路由，无新执行状态机。接管预检同时校验 result-acquisition/v1 配置与冻结 parser profile/schema，并只读核对原 Material.Content/digest、快照原字节、普通文件与非重定向路径；新 native 输入派发前沿既有 source 检查再次核验，不重写缺失/改动文件。T01 补 `TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal` 的替换/缺失和零修复反例，受控 A/B 和审计/parser 正例验证正常文件接续。真实 Codex/认证/工具树和 Orca 创建查询仍需按原要求收口，不以受控协议通过替代。
 

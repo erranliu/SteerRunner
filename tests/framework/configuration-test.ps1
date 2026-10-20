@@ -1,4 +1,4 @@
-﻿param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
+param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 . (Join-Path $Repository 'scripts/test-scheduler.ps1')
@@ -30,7 +30,7 @@ $taskMissingOut=Join-Path $taskRoot 'missing-batch'
 & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -OutDir $taskMissingOut *> (Join-Path $taskRoot 'missing.log')
 if($LASTEXITCODE -ne 1){throw 'Missing requested L3 configurations were not incomplete'}
 $taskSummary=Get-Content -LiteralPath (Join-Path $taskMissingOut 'summary.json') -Raw|ConvertFrom-Json
-if($taskSummary.status -ne 'incomplete' -or $taskSummary.executed_case_count -ne 0 -or $taskSummary.results.Count -ne 30 -or $taskSummary.levels.L3.requested.Count -ne 30 -or $taskSummary.levels.L3.executed.Count -ne 0 -or $taskSummary.levels.L3.complete_level_passed){throw 'Missing case coverage was silently reduced or counted as passed'}
+if($taskSummary.status -ne 'incomplete' -or $taskSummary.executed_case_count -ne 0 -or $taskSummary.results.Count -ne 32 -or $taskSummary.levels.L3.requested.Count -ne 32 -or $taskSummary.levels.L3.executed.Count -ne 0 -or $taskSummary.levels.L3.complete_level_passed){throw 'Missing case coverage was silently reduced or counted as passed'}
 if(Test-Path -LiteralPath (Join-Path $taskMissingOut 'framework')){throw 'Unconfigured batch started execution prerequisites'}
 $taskList=& $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -ListAvailability
 if($LASTEXITCODE -ne 0 -or ($taskList|Out-String|ConvertFrom-Json).status -ne 'availability'){throw 'Missing configuration inventory failed or mixed stdout'}
@@ -106,7 +106,7 @@ try {
     $taskPrerequisiteExit=$LASTEXITCODE
 } finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_ORCA_STATE_PROBE_ROOT',$taskPreviousOptIn) }
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
-if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 30 -or $taskPrerequisite.levels.L3.requested.Count -ne 30 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 27 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
+if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 32 -or $taskPrerequisite.levels.L3.requested.Count -ne 32 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 29 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
 if(-not (Test-Path -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json'))){throw 'Batch catalog was not frozen'}
 # L2's native preparation is a case dependency, never a global L3 prerequisite.
 $taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'

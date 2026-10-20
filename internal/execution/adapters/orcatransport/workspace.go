@@ -36,12 +36,21 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	var created workspaceCreation
 	if reconcile {
 		var saved b.LifecycleReceipt
-		if json.Unmarshal(r.Operation.Receipt, &saved) != nil || saved.ValidateFor(r) != nil ||
-			json.Unmarshal(saved.Operation.Receipt, &created) != nil {
-			return receipt, errors.New("original workspace creation has no exact saved creation receipt; no worktree/agent was recreated")
+		if len(r.Operation.Receipt) != 0 && (json.Unmarshal(r.Operation.Receipt, &saved) != nil || saved.ValidateFor(r) != nil) {
+			return receipt, errors.New("original workspace operation receipt invalid or foreign")
 		}
-		// Keep the checkpoint even when this reconciliation cannot query Orca.
-		receipt.Operation.Receipt = append([]byte(nil), saved.Operation.Receipt...)
+		if len(saved.Operation.Receipt) == 0 {
+			created, err = l.workspaceCreation(ctx, r, true)
+			if err != nil {
+				return receipt, err
+			}
+		} else {
+			if json.Unmarshal(saved.Operation.Receipt, &created) != nil {
+				return receipt, errors.New("original workspace creation checkpoint invalid")
+			}
+			// Keep the checkpoint even when this reconciliation cannot query Orca.
+			receipt.Operation.Receipt = append([]byte(nil), saved.Operation.Receipt...)
+		}
 	} else {
 		selector, runtimeID, resolveErr := l.workspaceRepository(ctx)
 		if resolveErr != nil {
@@ -49,15 +58,9 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 			receipt.Disposition = b.OperationRejected
 			return receipt, resolveErr
 		}
-		args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--json"}
-		if l.setup.AgentLaunchCommand == "" {
-			args = append(args, "--agent", s.Ref.Agent.Name)
-		}
-		creationTimeout := l.setup.CommandTimeout
-		if creationTimeout <= 0 {
-			creationTimeout = 40 * time.Second
-		}
-		result, callErr := l.client.MetaCallWithTimeout(ctx, creationTimeout, args...)
+		args := l.workspaceCreationArgs(r, selector)
+		key := l.creationKey(r.Snapshot, r.Operation.ID, r.Operation.PayloadDigest, "workspace")
+		result, callErr := l.creationCall(ctx, key, args, runtimeID, selector, l.creationTimeout(), false)
 		if callErr != nil {
 			return receipt, callErr
 		}
@@ -108,7 +111,7 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		var sole native.Terminal
 		var inventoryErr error
 		if created.Terminal.Handle == "" && handle == "" {
-			sole, inventoryErr = l.initialWorkspaceTerminal(ctx, s, created)
+			sole, inventoryErr = l.initialWorkspaceTerminalRecovery(ctx, s, created, reconcile)
 		} else {
 			sole, inventoryErr = l.soleWorkspaceTerminal(ctx, worktree.ID, created.RuntimeID)
 		}
@@ -166,6 +169,48 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		receipt.Disposition = b.OperationConfirmed
 	}
 	return receipt, err
+}
+
+func (l *Lifecycle) creationTimeout() time.Duration {
+	if l.setup.CommandTimeout > 0 {
+		return l.setup.CommandTimeout
+	}
+	return 40 * time.Second
+}
+
+func (l *Lifecycle) workspaceCreationArgs(r b.LifecycleRequest, selector string) []string {
+	name := "sl-" + r.Snapshot.Session.CorrelationID + "-" + r.Snapshot.Session.WorkflowRunID
+	args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--json"}
+	if l.setup.AgentLaunchCommand == "" {
+		args = append(args, "--agent", r.Snapshot.Ref.Agent.Name)
+	}
+	return args
+}
+
+// Repository resolution is an Execute-only preparation query. Recovery uses
+// the original resolved selector/runtime from the Runner's immutable plan.
+func (l *Lifecycle) workspaceCreation(ctx context.Context, r b.LifecycleRequest, reconcile bool) (workspaceCreation, error) {
+	var created workspaceCreation
+	key := l.creationKey(r.Snapshot, r.Operation.ID, r.Operation.PayloadDigest, "workspace")
+	plan, err := l.originalCreationPlan(key)
+	if err != nil {
+		return created, errors.Join(err, errors.New("original workspace creation has no exact receipt; no worktree/agent was recreated"))
+	}
+	if plan.Runtime == "" || l.profile.Environment == "" && plan.Selector != "path:"+l.setup.RepositoryPath || l.profile.Environment != "" && !strings.HasPrefix(plan.Selector, "id:") {
+		return created, errors.New("original resolved repository binding changed")
+	}
+	result, err := l.creationCall(ctx, key, l.workspaceCreationArgs(r, plan.Selector), plan.Runtime, plan.Selector, plan.Command.Timeout, reconcile)
+	if err != nil {
+		return created, err
+	}
+	if err = json.Unmarshal(result.Payload, &created); err != nil {
+		return created, err
+	}
+	created.RuntimeID, created.ResolvedRuntimeID = result.RuntimeID, plan.Runtime
+	if strings.HasPrefix(plan.Selector, "id:") {
+		created.ResolvedRepositoryID = strings.TrimPrefix(plan.Selector, "id:")
+	}
+	return created, nil
 }
 
 // Repository selection belongs to the project, not a reusable execution profile.

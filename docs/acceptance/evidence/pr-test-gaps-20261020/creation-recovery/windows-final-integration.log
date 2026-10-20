@@ -1,0 +1,18 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:244: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-2339891303\native\original-worktree runtime=creation-runtime-sr-2339891303 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:244: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1934043415\native\original-worktree runtime=creation-runtime-sr-1934043415 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:244: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1045263983\native\original-worktree runtime=creation-runtime-sr-1045263983 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:244: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-4058580249\native\original-worktree runtime=creation-runtime-sr-4058580249 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:244: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-652300748\native\original-worktree runtime=creation-runtime-sr-652300748 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (110.92s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (23.67s)
+    --- PASS: TestSRResourceCreationRecovery/kill (19.52s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (22.60s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (22.53s)
+    --- PASS: TestSRResourceCreationRecovery/owner-crash (22.59s)
+PASS
