@@ -265,6 +265,35 @@ func TestCreationOwnerIncompleteLaunchClaimNeverRetries(t *testing.T) {
 	}
 }
 
+func TestCreationOwnerStartupUsesOriginalDeadline(t *testing.T) {
+	l, f, s, _ := ownedCreationFixture(t, "")
+	l.setup.CommandTimeout = 80 * time.Millisecond
+	launches := 0
+	l.setup.LaunchExecutionOwner = func(ctx context.Context, dir string) error {
+		launches++
+		plan, err := readCreationPlan(dir)
+		if err != nil {
+			return err
+		}
+		deadline, ok := ctx.Deadline()
+		if !ok || deadline.After(plan.Deadline) {
+			return errors.New("startup is not bounded by the original creation deadline")
+		}
+		<-ctx.Done()
+		return ctx.Err()
+	}
+	r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
+	receipt, _, err := l.Execute(context.Background(), r)
+	if !errors.Is(err, context.DeadlineExceeded) || receipt.Disposition != b.OperationUnknown {
+		t.Fatal("owner startup escaped original creation deadline", receipt.Disposition, err)
+	}
+	_, _, _ = l.Reconcile(context.Background(), r)
+	_, _, _ = l.Execute(context.Background(), r)
+	if launches != 1 || creationCount(f, "worktree create") != 0 {
+		t.Fatal("timed out original startup was relaunched", launches)
+	}
+}
+
 func TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery(t *testing.T) {
 	for _, mode := range []string{"receipt-before-checkpoint", "reconcile-empty"} {
 		t.Run(mode, func(t *testing.T) {

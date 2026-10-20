@@ -151,7 +151,10 @@ func (l *Lifecycle) creationCall(ctx context.Context, key creationKey, arguments
 		if err = l.setup.ProcessHost.WriteExecutionFile(filepath.Join(dir, CreationOwnerConfigFile), raw); err != nil {
 			return native.Result{}, err
 		}
-		if err = l.setup.LaunchExecutionOwner(ctx, dir); err != nil {
+		launchCtx, cancelLaunch := context.WithDeadline(ctx, plan.Deadline)
+		err = l.setup.LaunchExecutionOwner(launchCtx, dir)
+		cancelLaunch()
+		if err != nil {
 			return native.Result{}, fmt.Errorf("original creation owner launch unverified; no replacement: %w", err)
 		}
 	} else if err != nil {
