@@ -198,9 +198,12 @@ func TestSRResultAcquisition(t *testing.T) {
 					t.Fatal("original parser was replayed", err)
 				}
 			}
+				// This is the whole multi-turn flow, including original owner Git
+				// checkpoints and optional parsing. Keep the per-operation deadlines;
+				// allow the complete sequence to finish on a busy Windows test host.
 			ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
 				return r.Status == "pr_ready" || r.Status == "blocked" || r.Status == "waiting_input"
-			}, 120*time.Second)
+			}, 5*time.Minute)
 			if ready.Status != "pr_ready" {
 				t.Fatalf("%s: %s %s", scenario, ready.Step, ready.Diagnostic)
 			}
