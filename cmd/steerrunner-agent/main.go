@@ -12,6 +12,7 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"os"
 	"os/exec"
 	"time"
@@ -172,7 +173,7 @@ func main() {
 		err = contracts.DecodeStrict(raw, &c)
 	}
 	if err == nil {
-		err = codex.RunRemoteAgent(context.Background(), c, os.Stdin, os.Stdout, os.Stderr)
+		err = codex.RunRemoteAgent(context.Background(), c, os.Stdin, os.Stdout, os.Stderr, workflow.RemoteModelBindings(workflow.ModelSettings{Model: c.Model, ReasoningEffort: c.ReasoningEffort}, c.AuditModel))
 	}
 	if err != nil {
 		diagnostic := codex.EnvironmentDiagnostic(err)

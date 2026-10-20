@@ -94,44 +94,12 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		return nil, errors.New("missing Orca native state source")
 	}
 	setup = setup.Clone()
-	if setup.ProcessHost == nil || setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 {
+	if setup.ProcessHost == nil {
 		return nil, errors.New("unsupported Orca terminal lifecycle")
 	}
-	var p Profile
-	version := 0
-	found := false
-	for _, data := range setup.ProfileData {
-		if data.ImplementationKey != ProfileKey {
-			continue
-		}
-		if found || data.CodecVersion != ProfileVersion && data.CodecVersion != NativeRemoteProfileVersion {
-			return nil, errors.New("invalid terminal profile codec")
-		}
-		found = true
-		version = data.CodecVersion
-		if err := data.ValidateProfileIdentity(setup.Snapshot.Session.ProjectID, setup.ProfileID, setup.AcceptedConfigVersion); err != nil {
-			return nil, err
-		}
-		var err error
-		p, err = DecodeProfile(data.Payload)
-		if err != nil {
-			return nil, err
-		}
-		if version == NativeRemoteProfileVersion {
-			var fields map[string]json.RawMessage
-			_ = json.Unmarshal(data.Payload, &fields)
-			for _, key := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
-				if _, present := fields[key]; present {
-					return nil, errors.New("native remote profile contains a helper field")
-				}
-			}
-		}
-	}
-	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
-		return nil, errors.New("terminal profile differs from frozen target")
-	}
-	if version == NativeRemoteProfileVersion && (p.Environment == "" || p.Terminal != nil || p.RuntimeExecutable != "" || p.RuntimeSHA256 != "" || p.RuntimeConfigurationDigest != "") {
-		return nil, errors.New("native remote profile has incompatible local/helper configuration")
+	p, version, err := decodeLifecycleProfile(setup)
+	if err != nil {
+		return nil, err
 	}
 	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, readStopArtifact: native.ReadStopArtifact, clock: func() time.Time { return time.Now().UTC() }}
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {

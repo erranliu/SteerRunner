@@ -450,6 +450,11 @@ func TestSRNativeUnknownAndStop(t *testing.T) {
 }
 func TestSRRestartPreservesAuthorization(t *testing.T) {
 	testCount.Add(1)
+	selectedRunner := runnerEXE
+	defer func() { runnerEXE = selectedRunner }()
+	if *baselineFlag != "" {
+		runnerEXE = *baselineFlag
+	}
 	originalRunner := runnerEXE
 	candidate := buildCompatibleCandidate(t)
 	for _, mode := range []string{"graceful", "kill"} {

@@ -1,7 +1,6 @@
 package application
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"os"
@@ -237,22 +236,12 @@ func (e *Engine) contentMessage(id string, w *worker, p b.LifecyclePort, r *runs
 		e.failControl(id, answer.CommandID, err)
 		return false
 	}
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
-	facts, err := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
-	cancel()
-	if err != nil || !reliable.CanContinueOriginal(facts) {
-		e.failControl(id, answer.CommandID, errors.New("original content session is not verifiably idle"))
+
+	if err := e.qualifyContinuation(r, w, p, true, func(b.LifecycleRecoveryEvidence, error) error {
+		return errors.New("original content session is not verifiably idle")
+	}); err != nil {
+		e.failControl(id, answer.CommandID, err)
 		return false
-	}
-	if facts.ProcessAbsent {
-		if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, unknown(r)); err != nil {
-			e.failControl(id, answer.CommandID, err)
-			return false
-		}
-		if err := e.restoreOriginalAttempt(r, w, p); err != nil {
-			e.failControl(id, answer.CommandID, err)
-			return false
-		}
 	}
 	if err := queueInput(r, workflow.StageInput{StepID: "execute", FeedbackDecisionID: answer.CommandID}, answer.Text); err != nil {
 		e.failControl(id, answer.CommandID, err)

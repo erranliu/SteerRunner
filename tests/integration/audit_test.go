@@ -21,6 +21,11 @@ func TestSRResultAcquisition(t *testing.T) {
 	testCount.Add(1)
 	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "audit-report", "parser-unsupported", "parser-complete", "parser-restart", "parser-kill", "parser-stop", "parser-tool"} {
 		t.Run(scenario, func(t *testing.T) {
+			selectedRunner := runnerEXE
+			t.Cleanup(func() { runnerEXE = selectedRunner })
+			if *baselineFlag != "" && (scenario == "parser-restart" || scenario == "parser-kill") {
+				runnerEXE = *baselineFlag
+			}
 			dir, envelope := setupRun(t)
 			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-parser")
 			if scenario == "audit-offline" {
@@ -160,6 +165,9 @@ func TestSRResultAcquisition(t *testing.T) {
 					if process.InspectProcess(started.Process) != "matching process still exists" {
 						t.Fatal("service exit killed original parser")
 					}
+					if *baselineFlag != "" {
+						retainCompatibilityDB(t, dir, "ebr-"+scenario+"-original-v4.db")
+					}
 					if err := os.Remove(hold); err != nil {
 						t.Fatal(err)
 					}
@@ -179,6 +187,9 @@ func TestSRResultAcquisition(t *testing.T) {
 				}
 				if err := waitOwnedService(info); err != nil {
 					t.Fatal(err)
+				}
+				if *baselineFlag != "" {
+					runnerEXE = selectedRunner
 				}
 				info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 				cleanupService(t, dir, info)

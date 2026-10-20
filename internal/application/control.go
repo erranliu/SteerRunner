@@ -68,31 +68,18 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 		return false
 	}
 	if r.Snapshot.Session.SessionID != "" {
-		ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
-		facts, err := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
-		cancel()
-		if err != nil || !reliable.CanContinueOriginal(facts) {
-			e.failControl(id, command, errors.Join(err, errors.New("The original session or prior writers cannot be verified for resume: "+facts.Diagnostic)))
-			return false
-		}
-		// Wait for an actual input before replacing an idle attempt. A question
-		// answer must still be qualified against the original process/history.
+
+		// Idle restoration is deferred until input is needed; parse completion
+		// may select an existing fallback after resume qualification.
 		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil
-		// A completed acquisition can select report/publication only AFTER resume
-		// qualification. Restore its original idle session now, without a model
-		// input, so that the later fallback cannot target the stopped old process.
 		if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
 			needsInput = true
 		}
-		if facts.ProcessAbsent && needsInput {
-			if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, false); err != nil {
-				e.failControl(id, command, err)
-				return false
-			}
-			if err := e.restoreOriginalAttempt(r, w, p); err != nil {
-				e.failControl(id, command, err)
-				return false
-			}
+		if err := e.qualifyContinuation(r, w, p, needsInput, func(facts b.LifecycleRecoveryEvidence, err error) error {
+			return errors.Join(err, errors.New("The original session or prior writers cannot be verified for resume: "+facts.Diagnostic))
+		}); err != nil {
+			e.failControl(id, command, err)
+			return false
 		}
 	}
 	r.Allowed = true

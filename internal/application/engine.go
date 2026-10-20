@@ -12,7 +12,6 @@ import (
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
-	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -42,7 +41,7 @@ type Engine struct {
 	wait              sync.WaitGroup
 }
 type worker struct {
-	parserTask  *parser.Task
+	parserTask  b.ParserTask
 	ownedInputs map[string]bool
 	checkpoints map[string]*workflow.WorkspaceSource
 	gate        sync.Mutex         // serializes new native dispatch with committed revocation

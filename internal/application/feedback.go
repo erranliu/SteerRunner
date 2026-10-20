@@ -1,13 +1,10 @@
 package application
 
 import (
-	"context"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
-	"time"
 )
 
 func (e *Engine) feedback(id string, w *worker, p b.LifecyclePort) bool {
@@ -45,22 +42,12 @@ func (e *Engine) feedbackValue(id string, w *worker, p b.LifecyclePort, answer *
 		_ = e.commitLocked(r, nil, "business_material_retained")
 		return false
 	}
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
-	facts, err := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
-	cancel()
-	if err != nil || !reliable.CanContinueOriginal(facts) {
-		e.failControl(id, answer.CommandID, errors.New("The original session is not verifiably idle and available for feedback"))
+
+	if err := e.qualifyContinuation(r, w, p, true, func(b.LifecycleRecoveryEvidence, error) error {
+		return errors.New("The original session is not verifiably idle and available for feedback")
+	}); err != nil {
+		e.failControl(id, answer.CommandID, err)
 		return false
-	}
-	if facts.ProcessAbsent {
-		if err := reliable.ValidateRestoration(facts, r.Snapshot.Session.SessionID, unknown(r)); err != nil {
-			e.failControl(id, answer.CommandID, err)
-			return false
-		}
-		if err := e.restoreOriginalAttempt(r, w, p); err != nil {
-			e.failControl(id, answer.CommandID, err)
-			return false
-		}
 	}
 	step, err := workflow.FeedbackStep(r.Workflow, "implement")
 	if err != nil {

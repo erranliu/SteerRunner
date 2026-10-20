@@ -24,6 +24,7 @@ SteerRunner 是个人多机执行器：在本人管理和信任、预先配置�
 - [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
 - [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
 - [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
+- [执行与可靠性边界收敛 Spec](docs/spec/execution-boundary-refactor.spec.md) / [Plan](docs/spec/execution-boundary-refactor.plan.md)（已实施并验收；收敛 R2 锁、parser、续执行及 adapter/接管边界，保持现有执行与恢复语义；[验收记录](docs/acceptance/execution-boundary-refactor.md)）
 - [服务重启、更新与重新部署接管 Spec](docs/spec/service-generation-recovery.spec.md) / [Plan](docs/spec/service-generation-recovery.plan.md) / [验收](docs/acceptance/service-generation-recovery.md)（已实施核心、parser 保留、离线审计与 SteerLine 接线；Orca 创建关联接口和完整原生资格仍待收口）
 - [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
 - [来源清单及 P2 交接门槛](docs/extraction/source-map.md)

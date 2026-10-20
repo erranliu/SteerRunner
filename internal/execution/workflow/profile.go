@@ -1,6 +1,9 @@
 package workflow
 
-import ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+import (
+	"github.com/erranliu/SteerRunner/internal/execution/model"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+)
 
 type Profile struct {
 	ID                 string           `json:"id"`
@@ -13,10 +16,7 @@ type Profile struct {
 	States             map[string]State `json:"states"`
 	Initial            string           `json:"initial"`
 }
-type ModelSettings struct {
-	Model           string `json:"model"`
-	ReasoningEffort string `json:"reasoning_effort,omitempty"`
-}
+type ModelSettings = model.Settings
 
 const AuditedDevelopment = "development-audited"
 
