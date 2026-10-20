@@ -171,6 +171,10 @@ PR/引用沿冻结仓库、base/head、执行关联和既有 provider 查询找�
 
 最小公开增量：`version/capabilities/service status` 的版本化恢复描述；一个只读 `service verify-takeover --candidate <新EXE绝对路径> --json` 预检入口，在线通过当前服务、离线在既有 writer.lock 下只读检查。输出 `contract=steerrunner-takeover/v1`、目录和旧 writer 身份、候选 EXE SHA/契约、逐 Run/Check 的 revision/input_digest、compatible/read_only/unsupported/conflict 及原因；附原创建 command 的 request_id/request_digest，供丢失 submit 回执的调用方在 worker 启动前精确关联。request_digest 沿现 commands 定义：对保留 JSON number 的输入对象及 Protocol/Command/Target 字段做 canonical JSON SHA-256；不是另一份 Run manifest。它不停止、迁移、启动服务或授权输入；预检通过不代表接管已完成。
 
+冻结配置资格与创建共用 workflow 能力判断：开发结果解释及 report/parse 依赖 result-acquisition
+配置，final-only 内容流程允许其原有零值。实际 parser 操作独立保留冻结配置和解析契约校验，
+活动原 owner 仍须具备所需恢复能力。不读取当前配置、补默认值或修改旧记录来取得兼容资格。
+
 新服务实际取得 writer.lock 后重新核验候选和状态变化，在线提供绑定新 instance_id 的接管结果（原 Run ID、当前 revision、观察/继续/等待/仅对账/阻断原因）。报告为现有事实的只读投影，不保存第二份执行结论。预检失效或旧 writer 未退出不能抢锁；崩溃无干净 shutdown receipt 时，可凭精确旧 writer 退出与排他锁接管，不能伪造旧停服成功。新 CLI 可以按兼容 CLI 契约调用旧活动服务进行查询/停止，但必须保留 expected_instance_id、token、目录和原服务身份检查，不能无声切到另一实例。
 
 旧服务尚无恢复描述/预检接口时，只能按本 Spec 固定的已知基线执行只读能力核查；不能臆造在线预检通过。若不能在停服前证明原活动执行可保留，更新提前失败并保留原服务；离线格式升级不补造这份存活证明。

@@ -101,6 +101,11 @@ func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *te
 		}
 	}
 	copy := r.Clone()
+	copy.AcquisitionConfig = ra.FrozenConfig{}
+	if item := TakeoverFacts([]*runstate.Record{copy}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+		t.Fatal("missing development result-acquisition configuration accepted")
+	}
+	copy = r.Clone()
 	copy.AcquisitionConfig.Config.Schema = "steerrunner-result-acquisition/v99"
 	if item := TakeoverFacts([]*runstate.Record{copy}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
 		t.Fatal("unknown result-acquisition contract accepted")

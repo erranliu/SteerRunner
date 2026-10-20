@@ -8,7 +8,6 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -38,7 +37,7 @@ func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 	} else {
 		request.Conversation = &contracts.ConversationInput{Instruction: "Discuss", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: t.TempDir(), Access: "read_only"}}
 	}
-	r := &runstate.Record{ID: "run", Request: request, Allowed: true, Status: "queued", InputDigest: "digest", CommandStates: map[string]string{}, AcquisitionConfig: ra.FrozenConfig{Config: ra.DefaultConfig()}}
+	r := &runstate.Record{ID: "run", Request: request, Allowed: true, Status: "queued", InputDigest: "digest", CommandStates: map[string]string{}}
 	r, err = freezeContent(dir, r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
 	if err != nil {
 		t.Fatal(err)

@@ -286,6 +286,15 @@
   ],
   "focused_native_scenarios": [
     {
+      "id": "local-codex.content-generate-takeover",
+      "level": "L3",
+      "test": "TestSRContentGenerateTakeoverNative",
+      "entry": "scripts/test-foundation.ps1",
+      "scope": "new C:/srt/gt-* state; one real native generate; no Git, PR or development config",
+      "requires": ["explicit native executable", "controlled content prerequisites"],
+      "expected": ["original content_result", "explicit stop and verify-stopped settlement", "same EXE offline compatible with original Run/input/request bindings", "unchanged original database"]
+    },
+    {
       "id": "local-codex.content-workflows",
       "level": "L3",
       "test": "TestSRContentNative",

@@ -44,6 +44,13 @@ conversation：execute → input，显式 message → 同一原生 thread execut
 原暂停/撤销门槛保持，适用的显式 resume 仍须核验原会话及旧 writer。close/stop 结算尚未派发的请求。
 历史同时关联调用命令与实际原生 command/turn，避免混淆接受和发送。
 
+2026-10-20 接管校正：创建与接管按冻结 workflow 的实际能力决定开发结果获取配置是否必需。
+final-only 的 generate/1、conversation/1 不消费开发结果解析器，合法零值 AcquisitionConfig
+必须可接管；不读取当前可变配置、不补默认值、不改写原记录。含开发结果解释、report 或 parse
+能力的流程仍严格校验冻结配置；任何已存在的 parser 意图仍校验配置、解析契约和原 owner
+恢复能力。workflow/version、执行记录、codec、冻结材料、原 Run/input/request 绑定检查不变。
+verify-takeover 是只读资格判断，不启动 Agent、不发送输入；compatible 不是恢复完成或资源结算证明。
+
 ## 数据职责
 
 Runner 保存固定输入、实际指令、请求/轮次身份、问答与结果、诊断和资源事实。
