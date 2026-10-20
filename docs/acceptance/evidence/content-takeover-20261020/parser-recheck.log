@@ -1,0 +1,6 @@
+=== RUN   TestTakeoverActualParserContractStillRequired
+--- PASS: TestTakeoverActualParserContractStillRequired (9.06s)
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	11.654s

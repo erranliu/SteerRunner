@@ -1,5 +1,7 @@
 # conversation/1、generate/1 专属验收
 
+2026-10-20 的同构建 takeover 冻结配置问题单独记录在[内容接管修复验收](content-takeover.md)。
+
 日期：2026-10-19。本次要求的专项验收通过。以下分别记录受控、单元和真实 Codex 证据，
 不沿用历史开发流程的真机资格。本次未修改 SteerLine、未部署或安装环境、未加入 roadmap。
 

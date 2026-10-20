@@ -1,5 +1,8 @@
 # 服务换代恢复验收
 
+2026-10-20 内容流程同构建 takeover 修复的定向与真实验收见[专属记录](content-takeover.md)，
+不以该专项结果替代本文其余恢复/SteerLine 验收条件。
+
 日期：2026-10-19。对应 [Spec](../spec/service-generation-recovery.spec.md) 和 [Plan](../spec/service-generation-recovery.plan.md)。整体状态：**未完成**。Runner 与 `C:/Project/SteerLine` 工作树均有实现，未提交、未部署；不将受控协议夹具算作真实 Codex、Orca 或 SteerLine UpdateRunner 资格。
 
 2026-10-20 责任纠正及追补：下文“Orca 外部阻塞/需要上游接口”的归因不再成立，保留为当时调查和测试历史。创建恢复由 SteerRunner 的有限独立执行器实现，只调用现有公开接口；服务退出后继续保存原响应，新服务按原日志核实原资源，缺证据保持 unknown、零重复创建。本轮实现及实际构建、失败和复验统一见[近期 PR 追补验收](pr-test-gaps-20261020.md)，不将历史未验项自动改写为通过。

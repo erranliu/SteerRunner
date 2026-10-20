@@ -68,6 +68,27 @@ func contentCommand(t *testing.T, dir, id, command, request string, body map[str
 	return string(raw)
 }
 
+func verifyContentTakeover(t *testing.T, dir, id string) {
+	t.Helper()
+	before := call(t, dir, []string{"inspect", "--run-id", id}, "", 0)
+	starts := countNative(t, "turn/start")
+	response := call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 0)
+	raw, _ := json.Marshal(response.Data)
+	var report contracts.TakeoverReport
+	if err := json.Unmarshal(raw, &report); err != nil {
+		t.Fatal(err)
+	}
+	if !report.Compatible || len(report.Items) != 1 || report.Items[0].ID != id || report.Items[0].RequestID != "content-submit" || report.Items[0].RequestDigest == "" || report.Items[0].Status != "compatible" {
+		t.Fatal("original content takeover rejected or unbound", report)
+	}
+	after := call(t, dir, []string{"inspect", "--run-id", id}, "", 0)
+	beforeRaw, _ := json.Marshal(before.Data)
+	afterRaw, _ := json.Marshal(after.Data)
+	if string(beforeRaw) != string(afterRaw) || starts != countNative(t, "turn/start") {
+		t.Fatal("takeover changed original content or sent input")
+	}
+}
+
 func TestSRContentGenerate(t *testing.T) {
 	testCount.Add(1)
 	for _, tc := range []struct {
@@ -96,6 +117,9 @@ func TestSRContentGenerate(t *testing.T) {
 			if tc.name == "question" && view.ContentResult.Diagnostic != "human_input_required" {
 				t.Fatal(view.ContentResult)
 			}
+			if tc.name == "text" || tc.name == "json" {
+				verifyContentTakeover(t, dir, id)
+			}
 			page := call(t, dir, []string{"history", "--run-id", id}, "", 0)
 			if !page.OK {
 				t.Fatal(page)
@@ -108,6 +132,7 @@ func TestSRContentConversation(t *testing.T) {
 	testCount.Add(1)
 	dir, id, service := contentFixture(t, "conversation", nil)
 	first := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Controls.CanMessage })
+	verifyContentTakeover(t, dir, id)
 	raw := contentCommand(t, dir, id, "message", "message-two", map[string]any{"text": "second"}, 0)
 	call(t, dir, []string{"message", "--run-id", id, "--input", "-"}, raw, 0)
 	second := waitRun(t, dir, id, func(v contracts.RunView) bool {

@@ -1,0 +1,6 @@
+{
+  "model": "gpt-6.1-sol",
+  "native": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+  "root": "C:/srt\\gt-2587794173",
+  "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\21ce\\SteerRunner\\.evidence\\content-takeover-20261020\\controlled\\steerrunner.exe"
+}

@@ -18,6 +18,19 @@ type Profile struct {
 }
 type ModelSettings = model.Settings
 
+// RequiresResultAcquisition identifies workflows that interpret development
+// results or can dispatch a report/parser fallback. Native final-only content
+// workflows do not consume the service's result acquisition configuration.
+func (p Profile) RequiresResultAcquisition() bool {
+	for _, state := range p.States {
+		if state.Kind == "report" || state.Kind == "parse" ||
+			(state.Kind == "execute" && state.Contract != "" && state.Contract != "final") {
+			return true
+		}
+	}
+	return false
+}
+
 const AuditedDevelopment = "development-audited"
 
 func Lookup(id string, version int) (Profile, bool) {

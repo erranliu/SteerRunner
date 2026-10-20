@@ -1,0 +1,11 @@
+{
+  "pid": 6816,
+  "pattern": "^TestSRContent(Generate|Conversation)$",
+  "runner_sha256": "BB4E189DB25D730050D5BD3B5DBF1E93EBA4872B923687FF8B2E00C96DEC35E2",
+  "fixture_sha256": "FFAA70F5612DAB8E95668E05A1F401ED22141DA51EE466B59EEB3F105D6393E4",
+  "source_commit": "4ad8cd8c368b13e141e62bedfad05ddea6a4c33b",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

@@ -3,9 +3,13 @@
 package integration
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"github.com/erranliu/SteerRunner/internal/storage"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,6 +19,93 @@ import (
 
 var contentNativeExe = flag.String("content-native-exe", "", "Explicit existing native Codex 0.159.2; never installed by this driver")
 var contentNativeModel = flag.String("content-native-model", "", "Optional model available to the existing native account")
+
+// Focused public-CLI proof for final-only takeover, independent of development
+// configuration and of the multi-turn native acceptance scenario below.
+func TestSRContentGenerateTakeoverNative(t *testing.T) {
+	if *contentNativeExe == "" {
+		t.Skip("explicit native opt-in required")
+	}
+	testCount.Add(1)
+	if !filepath.IsAbs(*contentNativeExe) || *evidenceFlag == "" {
+		t.Fatal("explicit executable/evidence identity required")
+	}
+	if err := os.MkdirAll("C:/srt", 0700); err != nil {
+		t.Fatal(err)
+	}
+	root, err := os.MkdirTemp("C:/srt", "gt-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := filepath.Join(root, "state")
+	save := func(name string, value any) {
+		raw, err := json.MarshalIndent(value, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err = os.WriteFile(filepath.Join(*evidenceFlag, name+".json"), raw, 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	save("isolation", map[string]string{"root": root, "runner": runnerEXE, "native": *contentNativeExe, "model": *contentNativeModel})
+	service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, service)
+	settings := contracts.CodexSettings{Executable: *contentNativeExe, Model: *contentNativeModel, ReasoningEffort: "low", AccessMode: "read_only"}
+	settingsRaw, _ := json.Marshal(settings)
+	material := "fixed-takeover-20261020"
+	request := contracts.RunRequest{Title: "Generate takeover proof", Workflow: contracts.Workflow{ID: "generate", Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: settingsRaw}, Generate: &contracts.GenerateInput{Instruction: `Return exactly {"ok":true,"token":"fixed-takeover-20261020"}. Do not use tools.`, Materials: []contracts.Document{{Kind: "inline", Path: "token.txt", Content: &material}}, OutputSchema: json.RawMessage(`{"type":"object","required":["ok","token"],"properties":{"ok":{"const":true},"token":{"const":"fixed-takeover-20261020"}},"additionalProperties":false}`)}}
+	input, _ := json.Marshal(request)
+	envelope := contracts.Request{Protocol: contracts.Protocol, RequestID: "native-generate-takeover", Input: input}
+	save("submit-request", envelope)
+	raw, _ := json.Marshal(envelope)
+	submitted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
+	save("submit-response", submitted)
+	id := submitted.Data.(map[string]any)["run_id"].(string)
+	generated := waitRunFor(t, dir, id, func(v contracts.RunView) bool { return v.ContentResult != nil && v.StopStatus == "stopped" }, 3*time.Minute)
+	if generated.Status != "completed" || generated.ContentResult.Status != "succeeded" || !generated.ContentResult.Source.Verified || len(generated.ContentResult.JSON) == 0 {
+		t.Fatal("real generation failed", generated)
+	}
+	save("content-result-response", call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+	stopRaw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "native-generate-explicit-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, generated.Revision))})
+	save("explicit-stop-response", call(t, dir, []string{"stop", "--run-id", id, "--input", "-"}, string(stopRaw), 0))
+	stopped := waitRunFor(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" }, time.Minute)
+	if stopped.ContentResult == nil || !bytes.Equal(mustJSON(generated.ContentResult), mustJSON(stopped.ContentResult)) {
+		t.Fatal("stop replaced original content result")
+	}
+	save("stopped-inspect-response", call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+	save("service-stop-response", call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("native-generate-service-stop", service.InstanceID), 0))
+	if err := waitOwnedService(service); err != nil {
+		t.Fatal(err)
+	}
+	proof := call(t, dir, []string{"service", "verify-stopped"}, "", 0)
+	save("verify-stopped-response", proof)
+	var settlement contracts.StoppedVerification
+	proofRaw, _ := json.Marshal(proof.Data)
+	if err := json.Unmarshal(proofRaw, &settlement); err != nil || !settlement.ResourcesSettled {
+		t.Fatal("resource settlement unverified", proof)
+	}
+	before, err := os.ReadFile(filepath.Join(dir, "runner.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	response := call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 0)
+	save("verify-takeover-response", response)
+	var report contracts.TakeoverReport
+	reportRaw, _ := json.Marshal(response.Data)
+	if err := json.Unmarshal(reportRaw, &report); err != nil || !report.Compatible || len(report.Items) != 1 {
+		t.Fatal(response)
+	}
+	item := report.Items[0]
+	if item.ID != id || item.InputDigest != generated.InputDigest || item.RequestID != envelope.RequestID || item.RequestDigest != storage.RequestDigest("submit", "", envelope) || item.Status != "compatible" || item.Revision != stopped.Revision {
+		t.Fatal("original bindings changed", item)
+	}
+	after, err := os.ReadFile(filepath.Join(dir, "runner.db"))
+	if err != nil || !bytes.Equal(before, after) {
+		t.Fatal("offline takeover changed original database", err)
+	}
+	save("database-unchanged", map[string]any{"unchanged": true, "sha256": resultacquisition.Digest(before), "run_id": id, "input_digest": generated.InputDigest})
+	t.Logf("native=true root=%s run=%s result=passed settlement=passed takeover=compatible original_database=unchanged", root, id)
+}
 
 func TestSRContentNative(t *testing.T) {
 	if *contentNativeExe == "" {
