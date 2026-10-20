@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -21,25 +22,25 @@ import (
 // whereas Record.RepositoryCommon is the material cache's logical project ID.
 // Resolve that original checkout and require the actual worktree to share its
 // Git common directory. Never resolve an Orca environment path on this host.
-func evidenceRepository(ctx context.Context, r *runstate.Record) (workspace.Repository, error) {
+func evidenceRepository(ctx context.Context, git workspace.Git, r *runstate.Record) (workspace.Repository, error) {
 	if r.Request.Execution.Adapter != "orca-terminal" {
 		return workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, nil
 	}
 	if r.Request.Execution.Target.Kind != "local" {
 		return workspace.Repository{}, contracts.Fail(3, "unsupported_capability", "Remote workspace evidence is unsupported.")
 	}
-	repo, err := workspace.ResolveRepository(ctx, gitHost(), r.Request.Repository.LocalPath)
+	repo, err := workspace.ResolveRepository(ctx, git, r.Request.Repository.LocalPath)
 	if err != nil || !workspace.SamePath(repo.Path, r.Request.Repository.LocalPath) {
 		return workspace.Repository{}, contracts.Fail(4, "workspace_unavailable", "Original registered local checkout is unavailable or redirected.")
 	}
-	remote, err := gitHost().Output(ctx, repo.Path, "config", "--get", "remote."+r.Request.Repository.Remote+".url")
+	remote, err := git.Output(ctx, repo.Path, "config", "--get", "remote."+r.Request.Repository.Remote+".url")
 	if err != nil || strings.TrimSpace(string(remote)) != r.Request.Repository.URL {
 		return workspace.Repository{}, contracts.Fail(5, "workspace_source_unknown", "Original local Orca repository source differs from the frozen Run.")
 	}
 	return repo, nil
 }
 
-func verifyEvidenceWorkspace(ctx context.Context, r *runstate.Record) error {
+func verifyEvidenceWorkspace(ctx context.Context, git workspace.Git, r *runstate.Record) error {
 	if workflow.Content(r.Request.Workflow.ID) || r.Request.Execution.Target.Kind != "local" || (r.Request.Execution.Adapter != "codex-app-server" && r.Request.Execution.Adapter != "orca-terminal") {
 		return contracts.Fail(3, "unsupported_capability", "R2 workspace evidence supports host-local development workspaces only; remote paths are never read locally.")
 	}
@@ -49,11 +50,11 @@ func verifyEvidenceWorkspace(ctx context.Context, r *runstate.Record) error {
 	if s.Ref.Incomplete || s.Ref.RunID != r.ID || s.Session.WorkflowRunID != r.ID || s.Session.ExecutionID != r.ID || !workspace.SamePath(s.Session.ProjectID, r.RepositoryCommon) || !workspace.SamePath(s.Ref.WorkspacePath, s.Workspace.Path) || s.Ref.WorkspaceBranch != s.Workspace.Branch || s.Ref.BaseCommit != s.Workspace.BaseCommit || s.Ref.BaseCommit != s.WorkspacePlan.BaseCommit || f == nil || !workspace.SamePath(f.Worktree, s.Ref.WorkspacePath) || f.Branch != s.Ref.WorkspaceBranch || f.Base != s.Ref.BaseCommit || !repositoryMatches {
 		return contracts.Fail(5, "workspace_source_unknown", "Original Run workspace provenance is missing or inconsistent.")
 	}
-	repo, err := evidenceRepository(ctx, r)
+	repo, err := evidenceRepository(ctx, git, r)
 	if err != nil {
 		return err
 	}
-	if err := workspace.Verify(ctx, gitHost(), repo, &s.Workspace, false); err != nil {
+	if err := workspace.Verify(ctx, git, repo, &s.Workspace, false); err != nil {
 		return contracts.Fail(4, "workspace_unavailable", "Original Run workspace cannot be verified: "+redactDiagnostic(r, err.Error()))
 	}
 	return nil
@@ -62,6 +63,10 @@ func verifyEvidenceWorkspace(ctx context.Context, r *runstate.Record) error {
 // Evidence collection has no worker wake, native port, resume or business input.
 // The existing gate/Commit/request lock provide stop ordering, CAS and replay.
 func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contracts.Request) contracts.Response {
+	return e.handleEvidence(command, runID, artifactID, input, gitHost())
+}
+
+func (e *Engine) handleEvidence(command, runID, artifactID string, input *contracts.Request, git workspace.Git) contracts.Response {
 	id := ""
 	if input != nil {
 		id = input.RequestID
@@ -96,8 +101,11 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 		return reject(contracts.Fail(2, "invalid_input", "Evidence queries do not accept input."))
 	}
 	e.mu.Lock()
-	defer e.mu.Unlock()
-	r := e.runs[runID]
+	var r *runstate.Record
+	if current := e.runs[runID]; current != nil {
+		r = current.Clone()
+	}
+	e.mu.Unlock()
 	if r == nil {
 		return reject(contracts.Fail(5, "run_not_found", "Run was not found."))
 	}
@@ -123,14 +131,14 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 	defer cancel()
 	if command == "workspace-git" {
 		out := contracts.WorkspaceGit{RunID: runID}
-		err := verifyEvidenceWorkspace(ctx, r)
+		err := verifyEvidenceWorkspace(ctx, git, r)
 		if err == nil {
 			var commit string
 			var clean bool
 			var repo workspace.Repository
-			repo, err = evidenceRepository(ctx, r)
+			repo, err = evidenceRepository(ctx, git, r)
 			if err == nil {
-				commit, clean, err = workspace.CurrentGit(ctx, gitHost(), repo, &r.Snapshot.Workspace)
+				commit, clean, err = workspace.CurrentGit(ctx, git, repo, &r.Snapshot.Workspace)
 			}
 			if err == nil {
 				out.Commit = &commit
@@ -138,13 +146,19 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 				out.Verified = true
 			}
 		}
+		if err == nil {
+			err = e.checkEvidenceIdentity(r)
+		}
+		if err != nil {
+			out.Verified, out.Commit, out.Clean = false, nil, nil
+		}
 		out.ObservedAt = time.Now().UTC()
 		if err != nil {
 			out.Diagnostic = redactDiagnostic(r, err.Error())
 		}
 		return contracts.Success("", out)
 	}
-	if err := verifyEvidenceWorkspace(ctx, r); err != nil {
+	if err := verifyEvidenceWorkspace(ctx, git, r); err != nil {
 		return reject(err)
 	}
 	switch command {
@@ -153,7 +167,10 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 		if err != nil {
 			return reject(err)
 		}
-		if err := verifyEvidenceWorkspace(ctx, r); err != nil {
+		if err := verifyEvidenceWorkspace(ctx, git, r); err != nil {
+			return reject(err)
+		}
+		if err := e.checkEvidenceIdentity(r); err != nil {
 			return reject(err)
 		}
 		return contracts.Success("", contracts.ArtifactDiscovery{RunID: runID, Directory: contracts.ArtifactDirectory, Candidates: candidates})
@@ -180,9 +197,22 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 		if total+len(data) > contracts.MaxRunArtifactBytes {
 			return reject(contracts.Fail(2, "artifact_limit_exceeded", "Run artifacts exceed 16 MiB."))
 		}
-		if err := verifyEvidenceWorkspace(ctx, r); err != nil {
+		if err := verifyEvidenceWorkspace(ctx, git, r); err != nil {
 			return reject(err)
 		}
+		e.mu.Lock()
+		defer e.mu.Unlock()
+		current := e.runs[runID]
+		if current == nil || current.Revision != r.Revision {
+			return reject(contracts.Fail(5, "stale_revision", "Run revision changed; inspect before a new collection request."))
+		}
+		if err := evidenceIdentity(current, r); err != nil {
+			return reject(err)
+		}
+		if e.ctx.Err() != nil {
+			return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; collection was not accepted."))
+		}
+		// Revision equality preserves the artifact count/byte limits sampled above.
 		receipt := storage.NewCommand(command, runID, *input)
 		a := contracts.Artifact{RunID: runID, ArtifactID: contracts.NewID(), RelativePath: value.RelativePath, SHA256: reliable.Digest(data), SizeBytes: len(data), CollectedAt: time.Now().UTC()}
 		a.ReadCommand = fmt.Sprintf("artifacts read --run-id %s --artifact-id %s", runID, a.ArtifactID)
@@ -198,4 +228,25 @@ func (e *Engine) HandleEvidence(command, runID, artifactID string, input *contra
 	default:
 		return reject(contracts.Fail(2, "invalid_arguments", "Unknown evidence command."))
 	}
+}
+
+// Evidence is scoped to the original workspace, independently of input authority
+// or a current native turn. Slow reads may overlap stop and native observations.
+func evidenceIdentity(current, original *runstate.Record) error {
+	if current == nil || current.ID != original.ID || current.RepositoryPath != original.RepositoryPath || current.RepositoryCommon != original.RepositoryCommon || (current.Request.Workflow.ID != original.Request.Workflow.ID || current.Request.Workflow.Version != original.Request.Workflow.Version) || current.Request.Repository != original.Request.Repository || (current.InputDigest != original.InputDigest || current.Request.Execution.Adapter != original.Request.Execution.Adapter || current.Request.Execution.Target != original.Request.Execution.Target) || current.Snapshot.Ref != original.Snapshot.Ref || current.Snapshot.Workspace != original.Snapshot.Workspace || current.Snapshot.WorkspacePlan != original.Snapshot.WorkspacePlan || current.Snapshot.Session.ProjectID != original.Snapshot.Session.ProjectID || current.Snapshot.Session.WorkflowRunID != original.Snapshot.Session.WorkflowRunID || current.Snapshot.Session.ExecutionID != original.Snapshot.Session.ExecutionID || !sameEvidenceWorkspace(current.WorkspaceFact, original.WorkspaceFact) {
+		return contracts.Fail(5, "workspace_source_unknown", "Original Run workspace provenance changed during observation.")
+	}
+	return nil
+}
+func (e *Engine) checkEvidenceIdentity(original *runstate.Record) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	return evidenceIdentity(e.runs[original.ID], original)
+}
+
+func sameEvidenceWorkspace(a, z *b.WorkspaceInspection) bool {
+	if a == nil || z == nil {
+		return a == nil && z == nil
+	}
+	return a.Repository == z.Repository && a.Worktree == z.Worktree && a.Branch == z.Branch && a.Base == z.Base && a.InspectionScope == z.InspectionScope
 }

@@ -8,8 +8,6 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -56,8 +54,7 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 				err = fmt.Errorf("operation version unsupported")
 			}
 			if p := intent.Request.Input.Parse; p != nil {
-				var pack parser.Package
-				if intent.Request.Validate() != nil || b.DecodeStrictJSON([]byte(p.Payload), &pack, "invalid frozen parser package") != nil || pack.Profile != parser.Profile || pack.Schema != string(ra.ParserSchema()) || pack.Config.Config.Validate() != nil {
+				if parser.ValidateRecovery(intent.Request) != nil {
 					err = fmt.Errorf("frozen parser/result acquisition contract unsupported")
 				}
 			}
@@ -73,35 +70,15 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 			}
 		}
 		if r.Request.Execution.Adapter == "codex-app-server" {
-			if _, e := codex.DecodeProfileConfigEnvelope(r.Profile, codex.ProfileConfigIdentity{ProjectID: r.Snapshot.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}); e != nil {
+
+			setup := b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}
+			active := r.StopStatus != "stopped" && r.Status != "pr_ready"
+			needs := b.RecoveryRequirements{Stopped: r.StopStatus == "stopped", Parser: active && r.AcquisitionConfig.Config.CodexParser.Enabled, WorkspaceCheckpoints: active && r.Workflow.RequiresWorkspace()}
+			if e := codex.ValidateRecovery(setup, support.ImplementationCodecs, support.OwnerProtocol, needs); e != nil {
 				err = e
 			}
-			for _, envelope := range r.Snapshot.Implementation {
-				if envelope.ImplementationKey == codex.ExecutionBindingCodecKey {
-					binding, e := codex.DecodeAppServerBindingEnvelope(envelope, codex.AppServerBindingIdentity{ProjectID: r.Snapshot.Session.ProjectID, ExecutionID: r.Snapshot.Session.ExecutionID, AttemptID: r.Snapshot.Session.AttemptID, Generation: r.Snapshot.ResourceGeneration, ConfigDigest: r.Snapshot.ConfigurationDigest})
-					if e != nil {
-						err = e
-					} else if binding.Owner == nil && r.StopStatus != "stopped" && process.InspectProcess(&r.Snapshot.Ref.External) != "process absent" {
-						err = fmt.Errorf("legacy service owns the live native Job; independent transfer is unavailable")
-					} else if binding.Owner != nil && binding.Owner.Protocol != support.OwnerProtocol {
-						err = fmt.Errorf("original execution owner protocol unsupported")
-					} else if binding.Owner != nil && r.StopStatus != "stopped" && r.Status != "pr_ready" && ((!binding.Owner.RetainsParser && r.AcquisitionConfig.Config.CodexParser.Enabled) || !binding.Owner.WorkspaceCheckpoints && r.Workflow.RequiresWorkspace()) {
-						err = fmt.Errorf("original owner lacks required parser/completion-checkpoint capability; no live owner replaced")
-					}
-				}
-			}
-			if r.Snapshot.PolicyResources != nil {
-				p := r.Snapshot.PolicyResources
-				if !slices.Contains(support.ImplementationCodecs[p.ImplementationKey], p.CodecVersion) {
-					err = fmt.Errorf("permission resource codec unsupported")
-				}
-				s := r.Snapshot
-				if _, e := codex.DecodePolicyResourceEnvelope(*p, codex.PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}); e != nil {
-					err = e
-				}
-			}
 		} else if r.Request.Execution.Adapter == "orca-terminal" {
-			_, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, ProcessHost: process.New(0)})
+			e := orca.ValidateRecovery(b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest})
 			if e != nil {
 				err = e
 			}

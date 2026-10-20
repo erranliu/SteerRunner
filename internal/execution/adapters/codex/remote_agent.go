@@ -15,22 +15,23 @@ import (
 	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/nativeaudit"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
 // RemoteAgentConfig is public configuration. Authentication is resolved only on
 // the machine that runs this helper, never transported by the Orca caller.
 type RemoteAgentConfig struct {
-	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
-	Executable      string                  `json:"executable"`
-	Args            []string                `json:"args,omitempty"`
-	Model           string                  `json:"model,omitempty"`
-	ReasoningEffort string                  `json:"reasoning_effort,omitempty"`
-	AccessMode      string                  `json:"access_mode,omitempty"`
-	RepositoryURL   string                  `json:"repository_url"`
+	models          model.Bindings  // transient assembly only; original configuration encoding is unchanged
+	AuditModel      *model.Settings `json:"audit_model,omitempty"`
+	Executable      string          `json:"executable"`
+	Args            []string        `json:"args,omitempty"`
+	Model           string          `json:"model,omitempty"`
+	ReasoningEffort string          `json:"reasoning_effort,omitempty"`
+	AccessMode      string          `json:"access_mode,omitempty"`
+	RepositoryURL   string          `json:"repository_url"`
 }
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
@@ -68,7 +69,8 @@ func RemoteRuntimeDirectory(worktree string) string {
 // RunRemoteAgent owns the credential broker and the original app-server tree.
 // The TUI resumes that same server/thread only after its deterministic native
 // command/exec probe passes. It never executes Git or publication on the host.
-func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
+func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer, bindings model.Bindings) (result error) {
+	c.models = bindings.Clone()
 	if err := c.validateModels(); err != nil {
 		return err
 	}
