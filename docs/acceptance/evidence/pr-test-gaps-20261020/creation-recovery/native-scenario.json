@@ -1,0 +1,79 @@
+{
+  "scenario": "orca-remote.initialization-stop",
+  "case_id": "restart-before-readiness",
+  "repeat_index": 1,
+  "stage": "completed",
+  "run_id": "b588d43bcf20e86ba688c1d2b71beed4",
+  "test_outcome": "passed",
+  "business_outcome": "stopped",
+  "faults_hit": 2,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "initialization-without-readiness",
+      "passed": true,
+      "evidence": "initialization-window.json: actual original native agent exists; caller launch remains pending, zero helper resources"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "agent-identity-withheld.json: only caller agentIdentity withheld; actual native receipt retained"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "zero-business-input",
+      "passed": true,
+      "evidence": "native-calls.jsonl: one direct native startup, zero business sends and zero helper/control resources"
+    },
+    {
+      "name": "service-replaced",
+      "passed": true,
+      "evidence": "faults.jsonl: old service ended and new instance started"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "restart-preserves-authorization",
+      "passed": true,
+      "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+    },
+    {
+      "name": "no-input-after-revocation-or-before-resume",
+      "passed": true,
+      "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+    },
+    {
+      "name": "initialization-restart-zero-input",
+      "passed": true,
+      "evidence": "initialization-restart.json: replacement retains original authorization/native terminal; pending readiness still permits zero business input"
+    },
+    {
+      "name": "no-duplicate-inputs",
+      "passed": true,
+      "evidence": "native-calls.jsonl: one original workspace/direct startup, zero business input across stop/restart"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-resource-audit.json: original native terminal accounted; zero helper/extra terminal/file calls"
+    },
+    {
+      "name": "offline-settlement",
+      "passed": true,
+      "evidence": "offline-settlement.json: original Orca terminal scope only; no Job/authentication claim"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

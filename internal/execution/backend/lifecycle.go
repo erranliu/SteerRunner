@@ -878,8 +878,8 @@ type LifecycleSetup struct {
 	// gate released. The scope restores the gate and rechecks authorization
 	// before returning; creation and input must remain outside the query.
 	ReadOnlyPreparation func(context.Context, func(context.Context) error) error
-	// LaunchExecutionOwner starts the local native host independently of the
-	// service. It is an injected host operation, never persisted in snapshots.
+	// LaunchExecutionOwner starts a local execution or finite creation owner
+	// independently of the service. This host operation is never persisted in snapshots.
 	LaunchExecutionOwner  func(context.Context, string) error
 	Logf                  func(string, ...any)
 	AgentLaunchCommand    string

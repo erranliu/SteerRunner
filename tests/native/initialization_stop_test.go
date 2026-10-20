@@ -72,6 +72,7 @@ func (s *stabilityRun) initializationStop() {
 	keys, creates := s.calls()
 	s.check("zero-business-input", len(keys) == 1 && creates == 1 && !v.Execution.TurnStarted && v.PR == nil, "native-calls.jsonl: one direct native startup, zero business sends and zero helper/control resources")
 	if s.m.CaseID == "restart-before-readiness" {
+		beforeView := v
 		before := s.instance
 		s.restart(false)
 		for i := 0; i < 3; i++ {
@@ -80,8 +81,8 @@ func (s *stabilityRun) initializationStop() {
 		}
 		after := s.initializationSnapshot()
 		v = s.view()
-		save(t, "initialization-restart.json", map[string]any{"before": before, "after": s.instance, "snapshot": after, "view": v})
-		s.check("initialization-restart-zero-input", before.InstanceID != s.instance.InstanceID && v.ResumeRequired && !v.NewInputsAllowed && after.Ref.External == window.Snapshot.Ref.External, "initialization-restart.json: replacement retains original native terminal, zero automatic input")
+		save(t, "initialization-restart.json", map[string]any{"before": before, "before_view": beforeView, "after": s.instance, "snapshot": after, "view": v})
+		s.check("initialization-restart-zero-input", before.InstanceID != s.instance.InstanceID && v.ResumeRequired == beforeView.ResumeRequired && v.NewInputsAllowed == beforeView.NewInputsAllowed && after.Ref.External == window.Snapshot.Ref.External, "initialization-restart.json: replacement retains original authorization/native terminal; pending readiness still permits zero business input")
 	}
 	if err = revokeOriginalRun(s.m, s.dir, s.r.RunID, "stop-original-initialization"); err != nil {
 		t.Fatal(err)

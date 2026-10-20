@@ -191,3 +191,44 @@ func TestSRPreparationQueryRejectsRevokedOrChangedState(t *testing.T) {
 		})
 	}
 }
+
+func TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	before := string(canonical(e.runs["run"]))
+	entered := make(chan struct{})
+	done := make(chan error, 1)
+	go func() {
+		w.gate.Lock()
+		defer w.gate.Unlock()
+		done <- e.preparationQuery("run", w, ctx, func(queryCtx context.Context) error {
+			close(entered)
+			<-queryCtx.Done()
+			return queryCtx.Err()
+		})
+	}()
+	select {
+	case <-entered:
+	case <-time.After(3 * time.Second):
+		t.Fatal("query did not start")
+	}
+	cancel() // Service detaches observation; this does not revoke the Run.
+	select {
+	case err := <-done:
+		if !errors.Is(err, context.Canceled) {
+			t.Fatal(err)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("old service query did not terminate")
+	}
+	w.gate.Lock()
+	defer w.gate.Unlock()
+	if w.queryCancel != nil || before != string(canonical(e.runs["run"])) {
+		t.Fatal("service cancellation changed durable authorization or left query registration")
+	}
+	calls := 0
+	if err := e.preparationQuery("run", w, context.Background(), func(context.Context) error { calls++; return nil }); err != nil || calls != 1 {
+		t.Fatal("next generation cannot query original authorized run", calls, err)
+	}
+}

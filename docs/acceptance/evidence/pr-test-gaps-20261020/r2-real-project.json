@@ -1,0 +1,312 @@
+{
+  "after": {
+    "result_acquisition": [
+      {
+        "id": "b804e8d71edc87ff792d91523040188435ed9b7c103394ef9e049a656adbf5ee",
+        "contract": "implementation",
+        "source": {
+          "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+          "command_id": "69c3cce69c0bd9928ba5f926100579f9",
+          "turn_id": "01a1576e-cc6e-73b1-897d-f7fbd9c42d8d",
+          "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+          "input_version": 1,
+          "final_digest": "bd3053dffef07284a6281941474b6252fa1d4aebe90c913960a5a38ab98ccded"
+        },
+        "method": "program",
+        "status": "satisfied",
+        "fields": [
+          {
+            "field": "outcome",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "69c3cce69c0bd9928ba5f926100579f9",
+              "turn_id": "01a1576e-cc6e-73b1-897d-f7fbd9c42d8d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 1,
+              "final_digest": "bd3053dffef07284a6281941474b6252fa1d4aebe90c913960a5a38ab98ccded"
+            },
+            "locator": "native.final:last_nonempty_body_line",
+            "method": "program"
+          },
+          {
+            "field": "summary",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "69c3cce69c0bd9928ba5f926100579f9",
+              "turn_id": "01a1576e-cc6e-73b1-897d-f7fbd9c42d8d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 1,
+              "final_digest": "bd3053dffef07284a6281941474b6252fa1d4aebe90c913960a5a38ab98ccded"
+            },
+            "locator": "native.final:last_nonempty_body_line",
+            "method": "program"
+          }
+        ],
+        "attempts": [
+          {
+            "method": "program",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "69c3cce69c0bd9928ba5f926100579f9",
+              "turn_id": "01a1576e-cc6e-73b1-897d-f7fbd9c42d8d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 1,
+              "final_digest": "bd3053dffef07284a6281941474b6252fa1d4aebe90c913960a5a38ab98ccded"
+            },
+            "command_id": "69c3cce69c0bd9928ba5f926100579f9",
+            "status": "satisfied"
+          }
+        ]
+      },
+      {
+        "id": "69687bb6d5af5740a41d1fd643e602144b9b279e1a7cc5526f2aa42794f7dd10",
+        "contract": "publication",
+        "source": {
+          "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+          "command_id": "e77e804f46213ecd9ecc2debb3939235",
+          "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+          "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+          "input_version": 2,
+          "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+        },
+        "method": "program",
+        "status": "satisfied",
+        "fields": [
+          {
+            "field": "outcome",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "e77e804f46213ecd9ecc2debb3939235",
+              "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 2,
+              "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+            },
+            "locator": "native.final:pr_url_match/outcome",
+            "method": "program"
+          },
+          {
+            "field": "summary",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "e77e804f46213ecd9ecc2debb3939235",
+              "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 2,
+              "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+            },
+            "locator": "native.final:pr_url_match/summary",
+            "method": "program"
+          },
+          {
+            "field": "outputs.pr_url",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "e77e804f46213ecd9ecc2debb3939235",
+              "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 2,
+              "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+            },
+            "locator": "native.final:pr_url_match",
+            "method": "program"
+          },
+          {
+            "field": "outputs.pr_url",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "e77e804f46213ecd9ecc2debb3939235",
+              "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 2,
+              "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+            },
+            "locator": "provider.Query(https://github.com/erranliu/SteerlineTest/pull/628):verified_repository_base_head",
+            "method": "program"
+          }
+        ],
+        "attempts": [
+          {
+            "method": "program",
+            "source": {
+              "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+              "command_id": "e77e804f46213ecd9ecc2debb3939235",
+              "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+              "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+              "input_version": 2,
+              "final_digest": "e6a9d23502f39ea5c5b5721e2f5cde578e429a6664550e144c2f02f77794ec35"
+            },
+            "command_id": "e77e804f46213ecd9ecc2debb3939235",
+            "status": "satisfied"
+          }
+        ]
+      }
+    ],
+    "operations": [
+      {
+        "operation_id": "a439d6b91c4549ee0b2d130f68630955",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "4cfbc2b6dc651312b079edebbaae5225",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "ec9ace34c16d60d63b8b27a3ff7b0fc6",
+        "action": "start_turn",
+        "status": "accepted"
+      },
+      {
+        "operation_id": "c39974f5ae88cb2464bfcab10a1123de",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "a6d95fc9174f1c3cff81fb304be21ffc",
+    "revision": 20,
+    "title": "SteerRunner L2 local-codex.result-acquisition",
+    "correlation": {
+      "fixture_id": "de7d2dc91ff9",
+      "scenario": "local-codex.result-acquisition"
+    },
+    "input_digest": "faa08e5f33b19527b4f97556c41d3b421a54bb6ea86c27331ec7bf9006051563",
+    "resource_digest": "a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91",
+    "workflow": {
+      "id": "development",
+      "version": 2
+    },
+    "step": "pr_ready",
+    "status": "pr_ready",
+    "phase": "pr_ready",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "inline",
+        "path": "smoke.spec.md",
+        "digest": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+        "snapshot_path": "C:\\srt\\de7d2dc91ff9\\s\\r\\tfkgfs4tfbbrgnphxnvee5twu4\\.git\\worktrees\\iblswnlwi2ker5qhrvoqz55mfy\\steerrunner-inputs\\smoke.spec.md",
+        "execution_location": "C:\\srt\\de7d2dc91ff9\\s\\r\\tfkgfs4tfbbrgnphxnvee5twu4\\.git\\worktrees\\iblswnlwi2ker5qhrvoqz55mfy\\steerrunner-inputs\\smoke.spec.md"
+      },
+      {
+        "kind": "inline",
+        "path": "smoke.plan.md",
+        "digest": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+        "snapshot_path": "C:\\srt\\de7d2dc91ff9\\s\\r\\tfkgfs4tfbbrgnphxnvee5twu4\\.git\\worktrees\\iblswnlwi2ker5qhrvoqz55mfy\\steerrunner-inputs\\smoke.plan.md",
+        "execution_location": "C:\\srt\\de7d2dc91ff9\\s\\r\\tfkgfs4tfbbrgnphxnvee5twu4\\.git\\worktrees\\iblswnlwi2ker5qhrvoqz55mfy\\steerrunner-inputs\\smoke.plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "requested_model": "gpt-6.1-sol",
+      "requested_reasoning_effort": "medium",
+      "workspace_scope": "working_tree",
+      "turn_started": true,
+      "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+      "generation": "c50a4b8a2994fe907c4f478575311ef6",
+      "backend": "local",
+      "protocol": "local_codex_app_server_v1",
+      "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+      "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+      "native_outcome": "succeeded",
+      "final_available": true,
+      "workspace": "c:\\srt\\de7d2dc91ff9\\s\\workspaces\\iblswnlwi2ker5qhrvoqz55mfy",
+      "branch": "codex/runner-a6d95fc9174f1c3cff81fb304be21ffc"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": true,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "pr": {
+      "url": "https://github.com/erranliu/SteerlineTest/pull/628",
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "number": 628,
+      "base_branch": "codex/srtest/de7d2dc91ff9/base",
+      "head_repository": "erranliu/SteerlineTest",
+      "head_branch": "codex/runner-a6d95fc9174f1c3cff81fb304be21ffc",
+      "head_revision": "6450f83919106f223388237b0fd8d3e5e718dfcd",
+      "state": "merged",
+      "merged": true,
+      "merged_at": "2026-10-20T03:52:52Z",
+      "merge_commit": "890982e9742220117f0dfb22af572a5ea7993122",
+      "checked_at": "2026-10-20T03:52:56.0684098Z"
+    },
+    "summary": "PR verification pending: https://github.com/erranliu/SteerlineTest/pull/628",
+    "final": {
+      "command_id": "e77e804f46213ecd9ecc2debb3939235",
+      "attempt_id": "b9c3bcdf2e5023ac74765aeca3ee6f7d",
+      "session_id": "01a1576e-ac0e-7d71-a052-2894db0a9ddf",
+      "turn_id": "01a1576f-9545-7450-a80f-c7671f12199d",
+      "native_outcome": "succeeded",
+      "verified": true,
+      "source": "codex.agentMessage.final_answer",
+      "item_id": "msg_0f954caf8897e149016ad6e582873c8191887cec9a2b9d559c",
+      "text": "已提交并推送当前分支，PR 已创建并核验 head、目标分支及提交一致。\n\nPR：https://github.com/erranliu/SteerlineTest/pull/628\n\n本次发布已完成。"
+    },
+    "created_at": "2026-10-20T03:50:04.1176501Z",
+    "updated_at": "2026-10-20T03:53:17.1998761Z"
+  },
+  "collect": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": "native-r2-collect-de7d2dc91ff9",
+    "data": {
+      "action_status": "completed",
+      "artifact": {
+        "artifact_id": "8440eec92b8602c9ec795cbd9b82afd5",
+        "collected_at": "2026-10-20T03:53:17.1942682Z",
+        "read_command": "artifacts read --run-id a6d95fc9174f1c3cff81fb304be21ffc --artifact-id 8440eec92b8602c9ec795cbd9b82afd5",
+        "relative_path": "actual-check.json",
+        "run_id": "a6d95fc9174f1c3cff81fb304be21ffc",
+        "sha256": "e92b8cdd434918f4677dc24b6db0492fad8121a1f700b6e76d9b2813b1a67c4f",
+        "size_bytes": 104
+      },
+      "command_id": "d796a58edccb9727de59aa367e76aee0",
+      "receipt_status": "accepted",
+      "run_id": "a6d95fc9174f1c3cff81fb304be21ffc"
+    },
+    "error": null
+  },
+  "discover": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "candidates": [
+        {
+          "relative_path": "actual-check.json",
+          "size_bytes": 104
+        }
+      ],
+      "directory": ".steerrunner/artifacts",
+      "run_id": "a6d95fc9174f1c3cff81fb304be21ffc"
+    },
+    "error": null
+  },
+  "producer": "original workspace sr-smoke/check.ps1",
+  "read": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "artifact_id": "8440eec92b8602c9ec795cbd9b82afd5",
+      "collected_at": "2026-10-20T03:53:17.1942682Z",
+      "content_base64": "eyJwYXNzZWQiOnRydWUsImFydGlmYWN0IjoiZXZpZGVuY2UvbmF0aXZlLTEwMS5tZCIsImdlbmVyYXRlZF9hdCI6IjIwMjYtMTAtMjBUMDM6NTE6MTguNTQ2MDk0NSswMDowMCJ9DQo=",
+      "encoding": "base64",
+      "read_command": "artifacts read --run-id a6d95fc9174f1c3cff81fb304be21ffc --artifact-id 8440eec92b8602c9ec795cbd9b82afd5",
+      "relative_path": "actual-check.json",
+      "run_id": "a6d95fc9174f1c3cff81fb304be21ffc",
+      "sha256": "e92b8cdd434918f4677dc24b6db0492fad8121a1f700b6e76d9b2813b1a67c4f",
+      "size_bytes": 104
+    },
+    "error": null
+  },
+  "source_deleted_replay": true
+}

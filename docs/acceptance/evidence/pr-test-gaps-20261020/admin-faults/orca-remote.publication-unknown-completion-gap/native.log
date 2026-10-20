@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.publication-unknown
+    stability_test.go:333: native gate blocked: 指定发布命令仅运行一次，已结束，退出码为 1；输出为 Publication requires committed work。未返回 PR URL，未重新发布。依据为原命令实际输出。所附 source facts 标记 final_verified=true、native_succeeded=true、failure为空，与观察到的发布失败冲突，不能据此确认发布成功。
+--- FAIL: TestSRLiveScenario (165.47s)
+    --- FAIL: TestSRLiveScenario/orca-remote.publication-unknown (165.32s)
+FAIL

@@ -1,0 +1,43 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:111: original creation fixture window not reached C:\Users\lmas1\AppData\Local\Temp\sr-3496263736\native\worktree-created.json
+    service_test.go:268: fixture Run 3464bc466d9c3b72a030db165b497238 resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3496263736
+=== RUN   TestSRResourceCreationRecovery/kill
+    workflow_test.go:125: Run did not reach expected state: {Closed:false ContentResult:<nil> ResultAcquisition:[] Audit:<nil> Operations:[{ID:ea784d63d513e7916fbea1ba96cd80d8 Action:prepare_workspace Status:outcome_unknown Diagnostic:C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-a\native-fixture.exe failed: exit status 2 (unexpected creation fixture command
+        )
+        unexpected end of JSON input OriginalDiagnostic:}] RunID:e6f411595884036ae1dd683f20bbd0bc Revision:4 Title:独立Runner controlled Correlation:map[] InputDigest:eeacde2571cc3ba4697dd99153ea6531bcc43b22b9ded1d7d6892d947fbb7608 ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 Workflow:{ID:development Version:2 PromptOverrides:map[] AuditModel:<nil>} Step:implement.execute Status:reconciling Phase:operation_outcome_unknown Diagnostic:C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-a\native-fixture.exe failed: exit status 2 (unexpected creation fixture command
+        )
+        unexpected end of JSON input NewInputsAllowed:false ResumeRequired:true StopStatus:pending Materials:[{Kind:inline Path:input/spec.md Commit: Digest:91495885b7ee99722f1c59618be01ae2de03fcaf1ada749f4d277c78d051d85d SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2902879163\runner\inputs\e6f411595884036ae1dd683f20bbd0bc\input\spec.md ExecutionLocation:} {Kind:inline Path:input/plan.md Commit: Digest:03ea3bf245ea1e1502555cf0326a6b25ad30b5289d6d22e883ecca3bc6c1c346 SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2902879163\runner\inputs\e6f411595884036ae1dd683f20bbd0bc\input\plan.md ExecutionLocation:}] Execution:{Agent:codex RequestedModel: RequestedReasoningEffort: WorkspaceScope: TurnStarted:false AttemptID:34c14168d3cc6970f81aa84feeef4692 Generation:6712796a00eebdb1a791d1297cae5571 Backend:orca Protocol:orca_terminal_v3 SessionID: TurnID: NativeOutcome: FinalAvailable:false Workspace: Branch:} Question:<nil> Controls:{CanMessage:false CanInterrupt:false CanClose:false CanReply:false CanResume:false CanStop:true Reason:C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-a\native-fixture.exe failed: exit status 2 (unexpected creation fixture command
+        )
+        unexpected end of JSON input} PR:<nil> Summary: Final:<nil> CreatedAt:2026-10-20 04:56:59.7613109 +0000 UTC UpdatedAt:2026-10-20 04:57:16.0006726 +0000 UTC}
+    service_test.go:268: fixture Run e6f411595884036ae1dd683f20bbd0bc resources remain unverified: C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-a\native-fixture.exe failed: exit status 2 (unexpected creation fixture command
+        )
+        unexpected end of JSON input
+    service_test.go:268: fixture Run e6f411595884036ae1dd683f20bbd0bc resources remain unverified: C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-a\native-fixture.exe failed: exit status 2 (unexpected creation fixture command
+        )
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2902879163
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:123: original creation fixture window not reached C:\Users\lmas1\AppData\Local\Temp\sr-180968646\native\show-entered
+    service_test.go:268: fixture Run 7c857ee55a9af402d2ebe617ea24e9ba resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-180968646
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    service_test.go:268: fixture Run 76dc94850a168a9cdf2f999402c5e574 resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    service_test.go:268: fixture Run 76dc94850a168a9cdf2f999402c5e574 resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3283778149
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:160: State directory contains an unsupported storage format; preserve it and use a new directory.
+    service_test.go:268: fixture Run 82d4df600a00f33a095cc50e0b6bd09d resources remain unverified: original creation owner exited without a completed receipt; outcome unknown
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2204710021
+--- FAIL: TestSRResourceCreationRecovery (392.26s)
+    --- FAIL: TestSRResourceCreationRecovery/graceful (85.60s)
+    --- FAIL: TestSRResourceCreationRecovery/kill (128.67s)
+    --- FAIL: TestSRResourceCreationRecovery/receipt-before-commit (68.12s)
+    --- FAIL: TestSRResourceCreationRecovery/wire-loss (66.22s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (43.65s)
+FAIL

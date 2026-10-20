@@ -1,0 +1,16 @@
+{
+  "original_native_writers_absent": true,
+  "exact_owner_terminated": true,
+  "fixture": "C:/srt/c8a716fe3927",
+  "run_id": "fcf0c447566ea8617954c449bc0bd491",
+  "original_test_result_unchanged": true,
+  "schema": "steerrunner-owned-owner-cleanup/v1",
+  "identity": {
+    "kind": "os",
+    "pid": 56604,
+    "created": "01dd6044a55de14a",
+    "executable": "c:\\srt\\c8a716fe3927\\s\\runtimes\\b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836\\steerrunner.exe"
+  },
+  "runtime_sha256": "b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836",
+  "original_cleanup_receipt_unchanged": true
+}

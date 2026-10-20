@@ -1,0 +1,104 @@
+{
+  "observed_at": "2026-10-20T06:53:58.1003162Z",
+  "scope": "Only exact fixture roots derived from this review caller-command logs and recorded harness directories",
+  "batch_count": 14,
+  "batches": [
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-controlled",
+      "pid": 30272,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-21",
+      "pid": 31852,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-ra",
+      "pid": 33104,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-audit-zero-retry",
+      "pid": 48500,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-ra-a",
+      "pid": 6396,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-ra-b",
+      "pid": 37868,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-phase-a",
+      "pid": 44344,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-phase-b",
+      "pid": 36652,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-offline-final",
+      "pid": 57164,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-authorization",
+      "pid": 56060,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-generation",
+      "pid": 35412,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-gen-active",
+      "pid": 59180,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr38-review-controlled",
+      "pid": 58196,
+      "finished": true
+    },
+    {
+      "directory": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-merge\\SteerRunner\\.evidence\\pr38-review-controlled",
+      "pid": 60372,
+      "finished": true
+    }
+  ],
+  "active_count": 4,
+  "active": [
+    {
+      "pid": 59692,
+      "created": "2026-10-20T06:46:47.7596980Z",
+      "executable": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-3903496663\\runner\\runtimes\\affe38fa331af8b937b90298a0b590a5425cd7dced5563c5dd4382ecd9980dca\\steerrunner.exe",
+      "owned_root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-3903496663\\"
+    },
+    {
+      "pid": 61348,
+      "created": "2026-10-20T06:46:48.1158160Z",
+      "executable": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-21\\native-fixture.exe",
+      "owned_root": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-21\\"
+    },
+    {
+      "pid": 28888,
+      "created": "2026-10-20T06:50:04.4979710Z",
+      "executable": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-885095020\\runner\\runtimes\\be4884a665ec224a2e07b69ae9688c84dc3068ed908ed0be36795bd83ea2c5ac\\steerrunner.exe",
+      "owned_root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-885095020\\"
+    },
+    {
+      "pid": 41612,
+      "created": "2026-10-20T06:50:04.8656070Z",
+      "executable": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr38-review-controlled\\native-fixture.exe",
+      "owned_root": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr38-review-controlled\\"
+    }
+  ]
+}

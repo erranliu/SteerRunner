@@ -1,0 +1,504 @@
+{
+  "scope": "both full_access restart cases and initialization restart passed; both sandbox restarts reached automatic continuation and blocked on business publication",
+  "status": "partial_external_blockers",
+  "failed": [
+    {
+      "case_id": "graceful-active",
+      "scenario": "orca-remote.service-restart",
+      "assertions": [
+        {
+          "name": "terminal-binding",
+          "passed": true,
+          "evidence": "faults.jsonl: diagnostic terminal identity"
+        },
+        {
+          "name": "gate-native-working",
+          "passed": true,
+          "evidence": "faults.jsonl: checker gate and original main agent working"
+        },
+        {
+          "name": "service-replaced",
+          "passed": true,
+          "evidence": "faults.jsonl: old service ended and new instance started"
+        },
+        {
+          "name": "fault-hit",
+          "passed": true,
+          "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+        },
+        {
+          "name": "original-identity",
+          "passed": true,
+          "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+        },
+        {
+          "name": "restart-preserves-authorization",
+          "passed": true,
+          "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+        },
+        {
+          "name": "no-input-after-revocation-or-before-resume",
+          "passed": true,
+          "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+        },
+        {
+          "name": "native-receipts-complete",
+          "passed": true,
+          "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+        }
+      ],
+      "cleanup": {
+        "native_stopped": true,
+        "service_stopped": true,
+        "facilities_restored": true,
+        "driver_native_cleanup": false
+      },
+      "status": "failed",
+      "source": {
+        "pid": 29712,
+        "manifest_sha256": "379B9937EE77195AB8E23F810238DDD68C33C4FE23399B484C6995B33701DBAD",
+        "driver_sha256": "F40737735E41B9A508F680F881B9B6890CA96F8EE811201511C38A532F862E65",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "graceful-active",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 1,
+        "finished_at": "2026-10-20T04:12:58.4688483Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      }
+    },
+    {
+      "case_id": "kill-active",
+      "scenario": "orca-remote.service-restart",
+      "assertions": [
+        {
+          "name": "terminal-binding",
+          "passed": true,
+          "evidence": "faults.jsonl: diagnostic terminal identity"
+        },
+        {
+          "name": "gate-native-working",
+          "passed": true,
+          "evidence": "faults.jsonl: checker gate and original main agent working"
+        },
+        {
+          "name": "service-replaced",
+          "passed": true,
+          "evidence": "faults.jsonl: old service ended and new instance started"
+        },
+        {
+          "name": "fault-hit",
+          "passed": true,
+          "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+        },
+        {
+          "name": "original-identity",
+          "passed": true,
+          "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+        },
+        {
+          "name": "restart-preserves-authorization",
+          "passed": true,
+          "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+        },
+        {
+          "name": "no-input-after-revocation-or-before-resume",
+          "passed": true,
+          "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+        },
+        {
+          "name": "native-receipts-complete",
+          "passed": true,
+          "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+        }
+      ],
+      "cleanup": {
+        "native_stopped": true,
+        "service_stopped": true,
+        "facilities_restored": true,
+        "driver_native_cleanup": false
+      },
+      "status": "failed",
+      "source": {
+        "pid": 48688,
+        "manifest_sha256": "36AAAAE7A7749C4EA5B2CDBEC72B661963071A37B283FAC796BDECD082236A4B",
+        "driver_sha256": "F40737735E41B9A508F680F881B9B6890CA96F8EE811201511C38A532F862E65",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "kill-active",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 1,
+        "finished_at": "2026-10-20T04:12:52.1770401Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      }
+    }
+  ],
+  "passed": [
+    {
+      "case_id": "graceful-active-full-access",
+      "scenario": "orca-remote.service-restart",
+      "assertions": [
+        {
+          "name": "terminal-binding",
+          "passed": true,
+          "evidence": "faults.jsonl: diagnostic terminal identity"
+        },
+        {
+          "name": "gate-native-working",
+          "passed": true,
+          "evidence": "faults.jsonl: checker gate and original main agent working"
+        },
+        {
+          "name": "service-replaced",
+          "passed": true,
+          "evidence": "faults.jsonl: old service ended and new instance started"
+        },
+        {
+          "name": "fault-hit",
+          "passed": true,
+          "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+        },
+        {
+          "name": "original-identity",
+          "passed": true,
+          "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+        },
+        {
+          "name": "restart-preserves-authorization",
+          "passed": true,
+          "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+        },
+        {
+          "name": "no-input-after-revocation-or-before-resume",
+          "passed": true,
+          "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+        },
+        {
+          "name": "restart-continues-without-resume",
+          "passed": true,
+          "evidence": "latest-run.json: original Attempt/generation continues without a resume command"
+        },
+        {
+          "name": "original-input-once",
+          "passed": true,
+          "evidence": "native-calls.jsonl: each original pre-restart business input occurred exactly once"
+        },
+        {
+          "name": "single-actual-pr",
+          "passed": true,
+          "evidence": "pr-list.json: exactly one PR on this fixture base"
+        },
+        {
+          "name": "merge-head-stable",
+          "passed": true,
+          "evidence": "original PR verified before exact-head merge"
+        },
+        {
+          "name": "native-launch-parameters",
+          "passed": true,
+          "evidence": "native-launch-contract.json: frozen requested parameters; no effective-parameter or helper audit"
+        },
+        {
+          "name": "merged-base",
+          "passed": true,
+          "evidence": "actual base fetch matches merge commit"
+        },
+        {
+          "name": "merged-content",
+          "passed": true,
+          "evidence": "merged Git object equals verified head"
+        },
+        {
+          "name": "no-duplicate-inputs",
+          "passed": true,
+          "evidence": "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately"
+        },
+        {
+          "name": "single-native-publication",
+          "passed": true,
+          "evidence": "native-publication-audit.json: publisher/create counts"
+        },
+        {
+          "name": "no-input-during-cleanup",
+          "passed": true,
+          "evidence": "original business forwarding intents unchanged by stop/authentication/control cleanup"
+        },
+        {
+          "name": "native-receipts-complete",
+          "passed": true,
+          "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+        }
+      ],
+      "cleanup": {
+        "native_stopped": true,
+        "service_stopped": true,
+        "facilities_restored": true,
+        "driver_native_cleanup": false
+      },
+      "status": "passed",
+      "source": {
+        "pid": 44252,
+        "manifest_sha256": "675BD476B7A1F66DC9AEF2E4FB058C96260635CD300C88FC9AAA50C66D394AE2",
+        "driver_sha256": "F40737735E41B9A508F680F881B9B6890CA96F8EE811201511C38A532F862E65",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "graceful-active-full-access",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:16:55.045507Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      }
+    },
+    {
+      "case_id": "kill-active-full-access",
+      "scenario": "orca-remote.service-restart",
+      "assertions": [
+        {
+          "name": "terminal-binding",
+          "passed": true,
+          "evidence": "faults.jsonl: diagnostic terminal identity"
+        },
+        {
+          "name": "gate-native-working",
+          "passed": true,
+          "evidence": "faults.jsonl: checker gate and original main agent working"
+        },
+        {
+          "name": "service-replaced",
+          "passed": true,
+          "evidence": "faults.jsonl: old service ended and new instance started"
+        },
+        {
+          "name": "fault-hit",
+          "passed": true,
+          "evidence": "faults.jsonl: original service ended and replacement instance confirmed"
+        },
+        {
+          "name": "original-identity",
+          "passed": true,
+          "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+        },
+        {
+          "name": "restart-preserves-authorization",
+          "passed": true,
+          "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+        },
+        {
+          "name": "no-input-after-revocation-or-before-resume",
+          "passed": true,
+          "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+        },
+        {
+          "name": "restart-continues-without-resume",
+          "passed": true,
+          "evidence": "latest-run.json: original Attempt/generation continues without a resume command"
+        },
+        {
+          "name": "original-input-once",
+          "passed": true,
+          "evidence": "native-calls.jsonl: each original pre-restart business input occurred exactly once"
+        },
+        {
+          "name": "single-actual-pr",
+          "passed": true,
+          "evidence": "pr-list.json: exactly one PR on this fixture base"
+        },
+        {
+          "name": "merge-head-stable",
+          "passed": true,
+          "evidence": "original PR verified before exact-head merge"
+        },
+        {
+          "name": "native-launch-parameters",
+          "passed": true,
+          "evidence": "native-launch-contract.json: frozen requested parameters; no effective-parameter or helper audit"
+        },
+        {
+          "name": "merged-base",
+          "passed": true,
+          "evidence": "actual base fetch matches merge commit"
+        },
+        {
+          "name": "merged-content",
+          "passed": true,
+          "evidence": "merged Git object equals verified head"
+        },
+        {
+          "name": "no-duplicate-inputs",
+          "passed": true,
+          "evidence": "native-calls.jsonl: unique business sends and one business worktree/terminal; exact original readonly inspectors counted separately"
+        },
+        {
+          "name": "single-native-publication",
+          "passed": true,
+          "evidence": "native-publication-audit.json: publisher/create counts"
+        },
+        {
+          "name": "no-input-during-cleanup",
+          "passed": true,
+          "evidence": "original business forwarding intents unchanged by stop/authentication/control cleanup"
+        },
+        {
+          "name": "native-receipts-complete",
+          "passed": true,
+          "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+        }
+      ],
+      "cleanup": {
+        "native_stopped": true,
+        "service_stopped": true,
+        "facilities_restored": true,
+        "driver_native_cleanup": false
+      },
+      "status": "passed",
+      "source": {
+        "pid": 43500,
+        "manifest_sha256": "9068AE8EA6960A62D2657CA43698798F3DCA337A6DBB0959C0034E8314CAD82D",
+        "driver_sha256": "F40737735E41B9A508F680F881B9B6890CA96F8EE811201511C38A532F862E65",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3",
+        "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "kill-active-full-access",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:17:30.7524303Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      }
+    },
+    {
+      "case_id": "restart-before-readiness",
+      "scenario": "orca-remote.initialization-stop",
+      "assertions": [
+        {
+          "name": "initialization-without-readiness",
+          "passed": true,
+          "evidence": "initialization-window.json: actual original native agent exists; caller launch remains pending, zero helper resources"
+        },
+        {
+          "name": "fault-hit",
+          "passed": true,
+          "evidence": "agent-identity-withheld.json: only caller agentIdentity withheld; actual native receipt retained"
+        },
+        {
+          "name": "terminal-binding",
+          "passed": true,
+          "evidence": "faults.jsonl: diagnostic terminal identity"
+        },
+        {
+          "name": "zero-business-input",
+          "passed": true,
+          "evidence": "native-calls.jsonl: one direct native startup, zero business sends and zero helper/control resources"
+        },
+        {
+          "name": "service-replaced",
+          "passed": true,
+          "evidence": "faults.jsonl: old service ended and new instance started"
+        },
+        {
+          "name": "original-identity",
+          "passed": true,
+          "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+        },
+        {
+          "name": "restart-preserves-authorization",
+          "passed": true,
+          "evidence": "faults.jsonl: service generation replacement preserves the original authorization, including explicit stop revocation"
+        },
+        {
+          "name": "no-input-after-revocation-or-before-resume",
+          "passed": true,
+          "evidence": "native-calls.jsonl: native send count unchanged during fenced window"
+        },
+        {
+          "name": "initialization-restart-zero-input",
+          "passed": true,
+          "evidence": "initialization-restart.json: replacement retains original authorization/native terminal; pending readiness still permits zero business input"
+        },
+        {
+          "name": "no-duplicate-inputs",
+          "passed": true,
+          "evidence": "native-calls.jsonl: one original workspace/direct startup, zero business input across stop/restart"
+        },
+        {
+          "name": "native-receipts-complete",
+          "passed": true,
+          "evidence": "native-resource-audit.json: original native terminal accounted; zero helper/extra terminal/file calls"
+        },
+        {
+          "name": "offline-settlement",
+          "passed": true,
+          "evidence": "offline-settlement.json: original Orca terminal scope only; no Job/authentication claim"
+        }
+      ],
+      "cleanup": {
+        "native_stopped": true,
+        "service_stopped": true,
+        "facilities_restored": true,
+        "driver_native_cleanup": false
+      },
+      "status": "passed",
+      "source": {
+        "pid": 55476,
+        "manifest_sha256": "2BD728398CFB087BFA779D147313D46FCA000382C7CDB67E04449A5B923BE82F",
+        "driver_sha256": "F40737735E41B9A508F680F881B9B6890CA96F8EE811201511C38A532F862E65",
+        "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+        "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.initialization-stop",
+        "level": "L3",
+        "helper_sha256": "95237bfb0bf8ccf7e94cc3aa29bec1a19332431b02a9ff3be0b57e0be583c5fe",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "restart-before-readiness",
+        "repeat_index": 1
+      },
+      "result": {
+        "exit_code": 0,
+        "finished_at": "2026-10-20T04:18:42.0103185Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      }
+    }
+  ],
+  "schema": "steerrunner-native-generation-followup/v1"
+}

@@ -155,6 +155,13 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 			t.Error("refuse cleanup outside the fixture's temporary root")
 			return
 		}
+		if t.Failed() {
+			// Keep original journals and resource identities when settlement or
+			// an assertion failed. Removing them can strand a still-live owner
+			// and destroys the evidence needed for exact original cleanup.
+			t.Logf("preserved failed fixture: %s", root)
+			return
+		}
 		// Windows can retain a just-exited image briefly (including scanning).
 		// Native owner exit is checked separately; never suppress a live owner.
 		until := time.Now().Add(3 * time.Second)
@@ -466,7 +473,7 @@ func TestSRRestartPreservesAuthorization(t *testing.T) {
 			cleanupService(t, dir, info)
 			raw, _ := json.Marshal(request)
 			id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
-			active := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Execution.TurnStarted && r.Execution.TurnID != "" })
+			active := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.Execution.TurnStarted && r.Execution.TurnID != "" }, 5*time.Minute)
 			var owner struct {
 				Identity struct{ Process b.ProcessIdentity }
 			}
@@ -498,7 +505,9 @@ func TestSRRestartPreservesAuthorization(t *testing.T) {
 			if err = os.Remove(hold); err != nil {
 				t.Fatal(err)
 			}
-			deadline := time.Now().Add(12 * time.Second)
+			// Completion publication follows the original owner's bounded Git
+			// checkpoint, which may take 30 seconds before the journal is final.
+			deadline := time.Now().Add(time.Minute)
 			completed := false
 			for time.Now().Before(deadline) {
 				files, _ := filepath.Glob(filepath.Join(dir, "runs", id, "turns", "*", "appserver.jsonl"))
@@ -533,19 +542,19 @@ func TestSRRestartPreservesAuthorization(t *testing.T) {
 				t.Fatal("candidate did not change build, resource digest and product version")
 			}
 			cleanupService(t, dir, next)
-			ready := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
+			ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" }, 5*time.Minute)
 			if ready.ResumeRequired || !ready.NewInputsAllowed || ready.Execution.SessionID != active.Execution.SessionID || countNative(t, "turn/start") != 3 || countNative(t, "thread/start") != 1 {
 				t.Fatal("takeover required resume, replayed an input or replaced the original session")
 			}
 			revokeWithFreshRevision(t, dir, id, ready.Revision)
-			stopped := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+			stopped := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)
 			call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("after-explicit-stop", next.InstanceID), 0)
 			if err = waitOwnedService(next); err != nil {
 				t.Fatal(err)
 			}
 			last := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 			cleanupService(t, dir, last)
-			paused := waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+			paused := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)
 			if paused.NewInputsAllowed || !paused.ResumeRequired || paused.Revision != stopped.Revision || countNative(t, "turn/start") != 3 {
 				t.Fatal("restart changed explicit stopped state or dispatched another input")
 			}

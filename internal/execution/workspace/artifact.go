@@ -86,6 +86,12 @@ func DiscoverArtifacts(worktree string) ([]contracts.ArtifactCandidate, error) {
 	return out, err
 }
 func ReadArtifactSource(worktree, relative string) ([]byte, error) {
+	return readArtifactSource(worktree, relative, io.ReadAll)
+}
+
+// Keep the bounded reader inside the identity/stat checks. Passing the read
+// operation explicitly also permits deterministic filesystem-change tests.
+func readArtifactSource(worktree, relative string, readAll func(io.Reader) ([]byte, error)) ([]byte, error) {
 	if !contracts.ValidArtifactPath(relative) {
 		return nil, contracts.Fail(2, "artifact_path_invalid", "Expected a portable relative artifact path.")
 	}
@@ -109,7 +115,7 @@ func ReadArtifactSource(worktree, relative string) ([]byte, error) {
 	if before.Size() > contracts.MaxArtifactBytes {
 		return nil, contracts.Fail(2, "artifact_limit_exceeded", "Artifact file exceeds 1 MiB.")
 	}
-	data, err := io.ReadAll(io.LimitReader(file, contracts.MaxArtifactBytes+1))
+	data, err := readAll(io.LimitReader(file, contracts.MaxArtifactBytes+1))
 	if err != nil {
 		return nil, contracts.Fail(4, "artifact_unavailable", "Cannot read complete artifact.")
 	}

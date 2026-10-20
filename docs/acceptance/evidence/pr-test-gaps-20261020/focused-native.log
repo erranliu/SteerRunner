@@ -1,0 +1,19 @@
+=== RUN   TestSRContentNativeGenerationRecovery
+=== RUN   TestSRContentNativeGenerationRecovery/graceful
+=== RUN   TestSRContentNativeGenerationRecovery/kill
+=== RUN   TestSRContentNativeGenerationRecovery/compatible-image
+=== RUN   TestSRContentNativeGenerationRecovery/startup-stop
+--- PASS: TestSRContentNativeGenerationRecovery (166.17s)
+    --- PASS: TestSRContentNativeGenerationRecovery/graceful (46.47s)
+    --- PASS: TestSRContentNativeGenerationRecovery/kill (47.69s)
+    --- PASS: TestSRContentNativeGenerationRecovery/compatible-image (44.84s)
+    --- PASS: TestSRContentNativeGenerationRecovery/startup-stop (24.48s)
+=== RUN   TestSRNativeParserGenerationRecovery
+=== RUN   TestSRNativeParserGenerationRecovery/graceful
+=== RUN   TestSRNativeParserGenerationRecovery/kill
+=== RUN   TestSRNativeParserGenerationRecovery/stop
+--- PASS: TestSRNativeParserGenerationRecovery (216.42s)
+    --- PASS: TestSRNativeParserGenerationRecovery/graceful (84.69s)
+    --- PASS: TestSRNativeParserGenerationRecovery/kill (87.03s)
+    --- PASS: TestSRNativeParserGenerationRecovery/stop (44.71s)
+PASS

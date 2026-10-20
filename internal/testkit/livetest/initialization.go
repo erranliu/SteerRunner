@@ -154,10 +154,11 @@ func validateInitializationEvidence(m Manifest) error {
 		raw, err = os.ReadFile(filepath.Join(root, "initialization-restart.json"))
 		var restart struct {
 			Before, After contracts.ServiceInfo
+			BeforeView    contracts.RunView `json:"before_view"`
 			Snapshot      b.LifecycleSnapshot
 			View          contracts.RunView
 		}
-		if err != nil || json.Unmarshal(raw, &restart) != nil || restart.Before.InstanceID == "" || restart.After.InstanceID == "" || restart.Before.InstanceID == restart.After.InstanceID || restart.Snapshot.Ref != window.Snapshot.Ref || !restart.View.ResumeRequired || restart.View.NewInputsAllowed {
+		if err != nil || json.Unmarshal(raw, &restart) != nil || restart.Before.InstanceID == "" || restart.After.InstanceID == "" || restart.Before.InstanceID == restart.After.InstanceID || restart.Snapshot.Ref != window.Snapshot.Ref || restart.BeforeView.RunID != window.RunID || restart.BeforeView.ResumeRequired || !restart.BeforeView.NewInputsAllowed || restart.View.ResumeRequired != restart.BeforeView.ResumeRequired || restart.View.NewInputsAllowed != restart.BeforeView.NewInputsAllowed {
 			return errors.New("initialization replacement/authority evidence missing")
 		}
 		after, e := InitializationResources(restart.Snapshot)

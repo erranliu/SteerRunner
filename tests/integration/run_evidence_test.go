@@ -85,11 +85,13 @@ func TestSRRunEvidenceR2(t *testing.T) {
 	if len(discovery.Candidates) != 2 || discovery.RunID != id {
 		t.Fatal(discovered)
 	}
+	collectionInputs := map[string]string{}
 	collect := func(requestID, path string, exit int) contracts.Response {
 		t.Helper()
 		view := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
 		input, _ := json.Marshal(contracts.CollectArtifactInput{ExpectedRevision: view.Revision, RelativePath: path})
 		raw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: requestID, Input: input})
+		collectionInputs[requestID] = string(raw)
 		response := call(t, dir, []string{"artifacts", "collect", "--run-id", id, "--input", "-"}, string(raw), exit)
 		if exit == 0 {
 			replay := call(t, dir, []string{"artifacts", "collect", "--run-id", id, "--input", "-"}, string(raw), 0)
@@ -159,6 +161,25 @@ func TestSRRunEvidenceR2(t *testing.T) {
 	after, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
 	if err != nil || !bytes.Equal(before, after) {
 		t.Fatal("evidence operations invoked Agent or resumed/replayed native work", err)
+	}
+	// Cross the actual CLI/IPC/service boundary after the producer file is
+	// gone. The original accepted collection must replay from durable bytes.
+	if err := os.Remove(filepath.Join(reportDir, "report.json")); err != nil {
+		t.Fatal(err)
+	}
+	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("r2-service-detach", info.InstanceID), 0)
+	if err := waitOwnedService(info); err != nil {
+		t.Fatal(err)
+	}
+	info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, info)
+	replayed := call(t, dir, []string{"artifacts", "collect", "--run-id", id, "--input", "-"}, collectionInputs["r2-report"], 0)
+	if !reflect.DeepEqual(a, replayed) || !reflect.DeepEqual(original, read(artifactID, report)) {
+		t.Fatal("service generation changed original immutable report or collection receipt")
+	}
+	after, err = os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
+	if err != nil || !bytes.Equal(before, after) {
+		t.Fatal("report recovery dispatched new native work", err)
 	}
 	if *baselineFlag != "" {
 		for generation := 0; generation < 2; generation++ {

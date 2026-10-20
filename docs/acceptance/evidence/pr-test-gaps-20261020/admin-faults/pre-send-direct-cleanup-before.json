@@ -1,0 +1,31 @@
+{
+  "id": "6adf5b9a-c5e4-43b5-8a8a-bda21458954e",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_8d640079-261a-463e-90ad-ffd926a8c77c",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d12b82e3ca9133f248825f25daa1f289@@8ac2c122",
+      "incarnationId": "2ff90245-0118-4a5c-a4e3-e4bddfee82e6",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d12b82e3ca9133f248825f25daa1f289",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-d12b82e3ca9133f248825f25daa1f289",
+      "branch": "refs/heads/erranliu/sl-d12b82e3ca9133f248825f25daa1f289",
+      "tabId": "187c0ff0-0175-4bad-bb2b-5c72e0298ca1",
+      "leafId": "ff61c593-0d5c-4fc4-b741-1f6356b45669",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792471900177,
+      "preview": "work\",\"known\":\"此前 git add 因无法创建工作区外的 index.lock 而失败；发布命令退出码为 1。\",\"unknown\":\"缺少实际 PR URL，\n无法确认存在对应 PR。\"}}\nWorked for 4s • 12:51\n› Ask Codex to do anything\nGPT-6.1-Sol low fast · ~\\orca\\workspaces\\SteerlineTest\\sl-d12b82e3ca9133f248825f25daa1f289 · Initialize agent session\n? for shortcuts",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}
+

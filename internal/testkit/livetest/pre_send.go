@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
 type PreSendGate struct {
@@ -43,7 +44,7 @@ func validatePreSendEvidence(m Manifest) error {
 // Select only the first identity read in a committed publication send. A
 // preparation read, readonly inspector or already-attempted send is ineligible.
 func PublicationPreSend(v contracts.RunView, terminal string) bool {
-	if v.RunID == "" || v.Execution.AttemptID == "" || v.Execution.Generation == "" || v.Step != "publish" || v.Status != "running" || v.Execution.TurnStarted || v.ResumeRequired || !v.NewInputsAllowed || len(v.Operations) == 0 || terminal == "" {
+	if v.RunID == "" || v.Execution.AttemptID == "" || v.Execution.Generation == "" || v.Step != workflow.StepPublish || v.Status != "running" || v.Execution.TurnStarted || v.ResumeRequired || !v.NewInputsAllowed || len(v.Operations) == 0 || terminal == "" {
 		return false
 	}
 	op := v.Operations[len(v.Operations)-1]

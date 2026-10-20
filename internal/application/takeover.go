@@ -103,6 +103,19 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 		if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
 			item.Status = "read_only"
 			item.Diagnostic = "remote Check actors are unsupported; original facts remain queryable"
+		} else {
+			// Checks retain raw execution settings rather than a Run profile
+			// envelope. Qualify them too, before reporting that a new writer can
+			// adopt the state. In particular retired App authentication must not
+			// silently become the current host's gh identity.
+			if err := contracts.ValidateExecution(r.View.Input.Execution); err != nil {
+				item.Status, item.Diagnostic = "unsupported", "frozen Check execution configuration unsupported"
+			}
+			for _, op := range r.Operations {
+				if !slices.Contains(support.OperationVersions, op.Version) {
+					item.Status, item.Diagnostic = "unsupported", "Check operation version unsupported"
+				}
+			}
 		}
 		items = append(items, item)
 	}

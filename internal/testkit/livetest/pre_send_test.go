@@ -8,11 +8,12 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
 func preSendFixture() (PreSendGate, []byte) {
 	at := time.Unix(100, 0).UTC()
-	gate := PreSendGate{CallID: "original-call", Terminal: "original", ReturnedAt: at, View: contracts.RunView{RunID: "run", Step: "publish", Status: "running", NewInputsAllowed: true, Execution: contracts.ExecutionView{SessionID: "orca-terminal:runtime:original:incarnation", AttemptID: "attempt", Generation: "generation"}, Operations: []contracts.OperationView{{ID: "operation", Action: "start_turn", Status: "in_flight"}}}}
+	gate := PreSendGate{CallID: "original-call", Terminal: "original", ReturnedAt: at, View: contracts.RunView{RunID: "run", Step: workflow.StepPublish, Status: "running", NewInputsAllowed: true, Execution: contracts.ExecutionView{SessionID: "orca-terminal:runtime:original:incarnation", AttemptID: "attempt", Generation: "generation"}, Operations: []contracts.OperationView{{ID: "operation", Action: "start_turn", Status: "in_flight"}}}}
 	receipt, _ := json.Marshal(map[string]any{"kind": "receipt", "call_id": gate.CallID, "args": []string{"terminal", "show", "--terminal", gate.Terminal}, "ended_at": at.Add(time.Millisecond)})
 	intent, _ := json.Marshal(map[string]any{"kind": "intent", "call_id": "retry", "args": []string{"terminal", "show", "--terminal", gate.Terminal}, "at": at.Add(6 * time.Second)})
 	return gate, append(append(receipt, '\n'), intent...)
@@ -23,10 +24,16 @@ func TestPublicationPreSendRetryEvidence(t *testing.T) {
 	if !PreSendReadRetried(audit, gate) {
 		t.Fatal("valid retry rejected")
 	}
-	for _, scenario := range []string{"prepare", "attempted", "identity", "unauthorized", "same-call", "too-early", "wrong-terminal", "no-receipt", "sent"} {
+	for _, scenario := range []string{"legacy-step", "report-step", "implementation-step", "prepare", "attempted", "identity", "unauthorized", "same-call", "too-early", "wrong-terminal", "no-receipt", "sent"} {
 		t.Run(scenario, func(t *testing.T) {
 			gate, audit := preSendFixture()
 			switch scenario {
+			case "legacy-step":
+				gate.View.Step = "publish"
+			case "report-step":
+				gate.View.Step = workflow.StepPublishReport
+			case "implementation-step":
+				gate.View.Step = workflow.StepImplement
 			case "prepare":
 				gate.View.Operations[0].Action = "prepare_session"
 			case "attempted":

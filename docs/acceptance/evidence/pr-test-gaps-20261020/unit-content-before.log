@@ -1,0 +1,11 @@
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation
+    takeover_regression_test.go:55: content takeover required unused parser defaults or rewrote frozen config [{  run run 1 digest unsupported unsupported or out of range result acquisition configuration}]
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate
+    takeover_regression_test.go:55: content takeover required unused parser defaults or rewrote frozen config [{  run run 1 digest unsupported unsupported or out of range result acquisition configuration}]
+--- FAIL: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration (0.50s)
+    --- FAIL: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation (0.39s)
+    --- FAIL: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate (0.11s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	4.198s
+FAIL

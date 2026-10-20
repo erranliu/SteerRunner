@@ -15,6 +15,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/application"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/resources"
@@ -35,6 +36,10 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	created, detached, err := launchFacts(dir, startupID)
 	if err != nil {
 		return err
+	}
+	if _, err := os.Stat(filepath.Join(dir, orca.CreationOwnerConfigFile)); err == nil {
+		completeBootstrap(dir, startupID)
+		return orca.ServeCreationOwner(ctx, dir)
 	}
 	if executionOwnerDirectory(dir) {
 		completeBootstrap(dir, startupID)

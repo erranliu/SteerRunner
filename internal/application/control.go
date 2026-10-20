@@ -105,6 +105,23 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	// An independently dispatched creation may finish after task revocation.
+	// Recover only its original receipt so stop can address the exact resource.
+	// Reconciliation cannot dispatch another create or restore input authority.
+	for index, intent := range r.Intents {
+		if intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
+			if e.invoke(id, w, p, index, true) {
+				return true
+			}
+			e.mu.Lock()
+			r = e.runs[id].Clone()
+			e.mu.Unlock()
+			if r.Snapshot.Ref.External.Kind == "" {
+				return false
+			}
+			break
+		}
+	}
 	command := r.PendingStop
 	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) {
 		e.mu.Lock()
@@ -133,7 +150,15 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	e.mu.Lock()
 	r = e.runs[id].Clone()
 	e.mu.Unlock()
-	request := r.Intents[index].Request
+	request := r.Intents[index].Request.Clone()
+	// Auxiliary creation receipts can arrive after this stop intent was saved.
+	// Import only committed opaque facts of the exact original resource; keep
+	// the persisted stop request, payload and target unchanged.
+	if request.Snapshot.Ref != r.Snapshot.Ref || request.Snapshot.Session.AttemptID != r.Snapshot.Session.AttemptID ||
+		request.Snapshot.ResourceGeneration != r.Snapshot.ResourceGeneration || request.Snapshot.ConfigurationDigest != r.Snapshot.ConfigurationDigest {
+		return false
+	}
+	request.Snapshot.Implementation = r.Snapshot.Clone().Implementation
 	ctx, cancel := context.WithTimeout(e.ctx, 15*time.Second)
 	defer cancel()
 	var receipt b.LifecycleReceipt

@@ -1,0 +1,45 @@
+=== RUN   TestSRContentGenerationRecovery
+=== RUN   TestSRContentGenerationRecovery/generate-graceful
+=== RUN   TestSRContentGenerationRecovery/conversation-kill
+=== RUN   TestSRContentGenerationRecovery/question-reply
+=== RUN   TestSRContentGenerationRecovery/startup-stop
+--- PASS: TestSRContentGenerationRecovery (46.79s)
+    --- PASS: TestSRContentGenerationRecovery/generate-graceful (14.48s)
+    --- PASS: TestSRContentGenerationRecovery/conversation-kill (11.10s)
+    --- PASS: TestSRContentGenerationRecovery/question-reply (10.66s)
+    --- PASS: TestSRContentGenerationRecovery/startup-stop (10.54s)
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:227: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1615129372\native\original-worktree runtime=creation-runtime-sr-1615129372 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:227: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1126158503\native\original-worktree runtime=creation-runtime-sr-1126158503 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:227: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-2840578931\native\original-worktree runtime=creation-runtime-sr-2840578931 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:227: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-4267342386\native\original-worktree runtime=creation-runtime-sr-4267342386 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:207: State directory contains an unsupported storage format; preserve it and use a new directory.
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3657263468
+--- FAIL: TestSRResourceCreationRecovery (90.32s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (18.84s)
+    --- PASS: TestSRResourceCreationRecovery/kill (17.93s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (19.42s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (19.42s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (14.70s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (43.60s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (41.96s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:533: original={InstanceID:10976a0d1192683cd4879f2c6caba505 StateDir:c:\users\lmas1\appdata\local\temp\sr-635701855\runner PID:33364 ProcessCreated:134369464021116261 Status:ready Detached:true Version:0.2.0-dev.3-r2 Protocol:steerrunner-cli/v1 ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 ExecutableSHA256:a415d3a11d327e89913ac666c7ef62f2bc9744285501ba27eeeb343826738fb2 LastShutdown:<nil>} candidate={InstanceID:91324f0e396394de9df52587d764bd90 StateDir:c:\users\lmas1\appdata\local\temp\sr-635701855\runner PID:35600 ProcessCreated:134369464426627599 Status:ready Detached:true Version:takeover-compatible Protocol:steerrunner-cli/v1 ResourceDigest:c6aa3836294bb4a2d3bf0c6529768b86c743bd6b736ea1eae6f1782ae9ddff62 ExecutableSHA256:a1c14faeac227ccefcb839385ad3a88407f2461eb3adb020f073e90109e7b7b2 LastShutdown:<nil>} owner={Kind:os PID:30592 Created:01dd6050da9266f2 Executable:c:\users\lmas1\appdata\local\temp\sr-635701855\runner\runtimes\a415d3a11d327e89913ac666c7ef62f2bc9744285501ba27eeeb343826738fb2\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:57960 Created:01dd6050dac97ab7 Executable:c:\users\lmas1\.codex\worktrees\b7d2\steerrunner\.evidence\creation-regression-final-20261020\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:533: original={InstanceID:da3b4395cc436cc72fed8dc41d387166 StateDir:c:\users\lmas1\appdata\local\temp\sr-2798313585\runner PID:38156 ProcessCreated:134369464534475424 Status:ready Detached:true Version:0.2.0-dev.3-r2 Protocol:steerrunner-cli/v1 ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 ExecutableSHA256:a415d3a11d327e89913ac666c7ef62f2bc9744285501ba27eeeb343826738fb2 LastShutdown:<nil>} candidate={InstanceID:9e2f7bf53b7f8e8c535e503e19866c64 StateDir:c:\users\lmas1\appdata\local\temp\sr-2798313585\runner PID:39356 ProcessCreated:134369464963986161 Status:ready Detached:true Version:0.2.0-dev.3-r2 Protocol:steerrunner-cli/v1 ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 ExecutableSHA256:a415d3a11d327e89913ac666c7ef62f2bc9744285501ba27eeeb343826738fb2 LastShutdown:<nil>} owner={Kind:os PID:49884 Created:01dd6050fcaa9157 Executable:c:\users\lmas1\appdata\local\temp\sr-2798313585\runner\runtimes\a415d3a11d327e89913ac666c7ef62f2bc9744285501ba27eeeb343826738fb2\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:41020 Created:01dd6050fcf70b26 Executable:c:\users\lmas1\.codex\worktrees\b7d2\steerrunner\.evidence\creation-regression-final-20261020\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- PASS: TestSRRestartPreservesAuthorization (176.47s)
+    --- PASS: TestSRRestartPreservesAuthorization/graceful (50.92s)
+    --- PASS: TestSRRestartPreservesAuthorization/kill (54.09s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (31.72s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (33.76s)
+FAIL

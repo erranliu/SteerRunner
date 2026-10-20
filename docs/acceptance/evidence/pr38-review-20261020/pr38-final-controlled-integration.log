@@ -1,0 +1,37 @@
+=== RUN   TestSRContentGenerationRecovery
+=== RUN   TestSRContentGenerationRecovery/generate-graceful
+=== RUN   TestSRContentGenerationRecovery/conversation-kill
+=== RUN   TestSRContentGenerationRecovery/question-reply
+=== RUN   TestSRContentGenerationRecovery/startup-stop
+--- PASS: TestSRContentGenerationRecovery (52.13s)
+    --- PASS: TestSRContentGenerationRecovery/generate-graceful (13.73s)
+    --- PASS: TestSRContentGenerationRecovery/conversation-kill (12.28s)
+    --- PASS: TestSRContentGenerationRecovery/question-reply (12.79s)
+    --- PASS: TestSRContentGenerationRecovery/startup-stop (13.33s)
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-430582796\native\original-worktree runtime=creation-runtime-sr-430582796 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-2623291860\native\original-worktree runtime=creation-runtime-sr-2623291860 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1229571346\native\original-worktree runtime=creation-runtime-sr-1229571346 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1128187135\native\original-worktree runtime=creation-runtime-sr-1128187135 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1875840104\native\original-worktree runtime=creation-runtime-sr-1875840104 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/missing-terminal-receipt
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1803000043\native\original-worktree runtime=creation-runtime-sr-1803000043 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (141.02s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (20.12s)
+    --- PASS: TestSRResourceCreationRecovery/kill (22.14s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (20.21s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (18.06s)
+    --- PASS: TestSRResourceCreationRecovery/owner-crash (26.07s)
+    --- PASS: TestSRResourceCreationRecovery/missing-terminal-receipt (34.42s)
+=== RUN   TestSRRunEvidenceR2
+--- PASS: TestSRRunEvidenceR2 (204.22s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (50.40s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (44.16s)
+PASS

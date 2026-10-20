@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-10-20T04:19:23.2303717Z",
+  "schema": "steerrunner-final-owned-process-snapshot/v1",
+  "matching_local_runner_or_test_processes": [
+    {
+      "pid": 56604,
+      "executable": "c:\\srt\\c8a716fe3927\\s\\runtimes\\b77e2188e8e5faa6ac663f6c29d3d174361b968a473e24341ef44f07a7069836\\steerrunner.exe",
+      "created": "2026-10-20T11:39:43.941869+08:00"
+    }
+  ],
+  "scope": "local Runner and test executables only; remote settlement comes from original terminal receipts",
+  "fixture_roots": [
+    "C:\\srt\\c8a716fe3927",
+    "C:\\srt\\3494a0738ae1",
+    "C:\\srt\\cb06af0b0a53",
+    "C:\\srt\\e87089b6368b",
+    "C:\\srt\\0f3d6de73f78",
+    "C:\\srt\\45ce5896bedf",
+    "C:\\srt\\3155afa2d19d",
+    "C:\\srt\\e46d6b6102fe",
+    "C:\\srt\\1e95b51af2cb",
+    "C:\\srt\\880b4a3346b7",
+    "C:\\srt\\de7d2dc91ff9",
+    "C:\\srt\\4d292d6f05ab",
+    "C:\\srt\\3e5941872853",
+    "C:\\srt\\3af98ab85c84",
+    "C:\\srt\\528786d0c0c1",
+    "C:\\srt\\d45ed4e95205"
+  ]
+}

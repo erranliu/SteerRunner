@@ -90,9 +90,9 @@ func TestSRResultAcquisition(t *testing.T) {
 			accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 			id := accepted.Data.(map[string]any)["run_id"].(string)
 			if scenario == "audit-offline" {
-				active := waitRun(t, dir, id, func(r contracts.RunView) bool {
+				active := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
 					return r.Step == workflow.StepAuditCode && r.Execution.TurnStarted && countNative(t, "turn/start") == 2
-				})
+				}, 5*time.Minute)
 				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("audit-offline", info.InstanceID), 0)
 				if err := waitOwnedService(info); err != nil {
 					t.Fatal(err)
@@ -100,7 +100,8 @@ func TestSRResultAcquisition(t *testing.T) {
 				if err := os.Remove(hold); err != nil {
 					t.Fatal(err)
 				}
-				until := time.Now().Add(15 * time.Second)
+				// The original owner's Git checkpoint alone allows 30 seconds.
+				until := time.Now().Add(time.Minute)
 				for {
 					files, _ := filepath.Glob(filepath.Join(dir, "runs", id, "app-server", "owner", "checkpoints", "*.json"))
 					if len(files) >= 2 {
@@ -118,9 +119,9 @@ func TestSRResultAcquisition(t *testing.T) {
 				cleanupService(t, dir, info)
 			}
 			if scenario == "parser-restart" || scenario == "parser-kill" || scenario == "parser-stop" {
-				active := waitRun(t, dir, id, func(r contracts.RunView) bool {
+				active := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
 					return r.Step == workflow.StepAuditParse && r.Phase == "parser_running"
-				})
+				}, 5*time.Minute)
 				if len(active.ResultAcquisition) < 2 || countNative(t, "turn/start") != 2 {
 					t.Fatal("parser did not start from the completed original audit")
 				}
@@ -146,7 +147,7 @@ func TestSRResultAcquisition(t *testing.T) {
 					if scenario == "parser-stop" {
 						current := waitRun(t, dir, id, func(r contracts.RunView) bool { return true })
 						writeCommand(t, dir, "stop", id, "explicit-parser-stop", current.Revision)
-						waitRun(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" })
+						waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)
 						if process.InspectProcess(started.Process) != "process absent" || countNative(t, "turn/start") != 2 {
 							t.Fatal("explicit stop retained parser or sent successor")
 						}
@@ -171,7 +172,7 @@ func TestSRResultAcquisition(t *testing.T) {
 					if err := os.Remove(hold); err != nil {
 						t.Fatal(err)
 					}
-					until := time.Now().Add(15 * time.Second)
+					until := time.Now().Add(time.Minute)
 					for {
 						if receipt, err := parser.ReadReceipt(dir, intent.Request); err == nil && receipt.State.Stopped {
 							break
@@ -198,9 +199,12 @@ func TestSRResultAcquisition(t *testing.T) {
 					t.Fatal("original parser was replayed", err)
 				}
 			}
+			// This is the whole multi-turn flow, including original owner Git
+			// checkpoints and optional parsing. Keep the per-operation deadlines;
+			// allow the complete sequence to finish on a busy Windows test host.
 			ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
 				return r.Status == "pr_ready" || r.Status == "blocked" || r.Status == "waiting_input"
-			}, 120*time.Second)
+			}, 5*time.Minute)
 			if ready.Status != "pr_ready" {
 				t.Fatalf("%s: %s %s", scenario, ready.Step, ready.Diagnostic)
 			}
@@ -305,8 +309,22 @@ func TestSRWorkflowDiscoveryAndSelection(t *testing.T) {
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
 	capabilities := call(t, dir, []string{"capabilities"}, "", 0).Data.(map[string]any)
-	if len(capabilities["workflows"].([]any)) != 2 || capabilities["workflow"].(map[string]any)["id"] != "development" {
+	expected := map[string]int{"development": 2, "development-audited": 2, "conversation": 1, "generate": 1}
+	profiles := capabilities["workflows"].([]any)
+	if len(profiles) != len(expected) || capabilities["workflow"].(map[string]any)["id"] != "development" {
 		t.Fatal("workflow catalog missing")
+	}
+	for _, profile := range profiles {
+		item := profile.(map[string]any)
+		id, _ := item["id"].(string)
+		version, _ := item["version"].(float64)
+		if want, found := expected[id]; !found || version != float64(want) {
+			t.Fatal("missing, duplicate or unsupported workflow", item)
+		}
+		delete(expected, id)
+	}
+	if len(expected) != 0 {
+		t.Fatal("workflow catalog omitted an expected workflow", expected)
 	}
 	var request contracts.RunRequest
 	_ = json.Unmarshal(envelope.Input, &request)

@@ -1,0 +1,190 @@
+[
+  {
+    "path": "internal/application/artifact_regression_test.go",
+    "sha256": "00c48d2a9cce99981e82998c0a059fda7124add586d22ed9639476bac54bbe09"
+  },
+  {
+    "path": "internal/application/control.go",
+    "sha256": "ed21c3b01d7d6514c0b938502390209938233c2c450ae86429ffb6e0e6aee39b"
+  },
+  {
+    "path": "internal/application/preparation_query_test.go",
+    "sha256": "e7e2f40072b841d93db4feba564bd6a149672e2b31d0c75e85b97694330985ac"
+  },
+  {
+    "path": "internal/application/takeover_regression_test.go",
+    "sha256": "8128dd69916b219712a3056d0982a5d3f23c29f37741476dc5c041ae45bd04c8"
+  },
+  {
+    "path": "internal/application/takeover.go",
+    "sha256": "5d65eeeacadd61e3705ce240888b506c0a80e48cf0517b4eb13c639eab21389b"
+  },
+  {
+    "path": "internal/execution/adapters/codex/authentication_socket_test.go",
+    "sha256": "b7b6d9b113f99ff1be6a622d1228f39aefe9408ea40db1b3478c68e11c910a23"
+  },
+  {
+    "path": "internal/execution/adapters/codex/lifecycle.go",
+    "sha256": "d0ef885f0c92f1e662d867573723319120f8d02fb4f60682786b9750a8944e15"
+  },
+  {
+    "path": "internal/execution/adapters/codex/parser_owner_recovery_test.go",
+    "sha256": "5e2f0239372ca6c6844882f7433f9c00cd00f0f6cc06c0f6692089819f8b6e00"
+  },
+  {
+    "path": "internal/execution/adapters/codex/worker_runtime.go",
+    "sha256": "ccaa76cc42b689f261c2355e9ce0751b270796190eacf5c033542816d544a86a"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/control_terminal.go",
+    "sha256": "525eae180905dec8204296080d7a2f01c7ae08234fd22316d833f5bfb7c88377"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/creation_owner_test.go",
+    "sha256": "ed0221bc5aac27bf22b503335b48071ca734351ebbce9d0b276fb0f3407efad8"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/creation_owner.go",
+    "sha256": "4895e3f36dfe45b8c88ed4e292ea823b2f0c6ca5ef3d0150ec40f49e82242b7a"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/workspace_initial_terminal.go",
+    "sha256": "71678193cbd1810bfa79f3c40fb22db8c3dbe3be486025da8b592ee695a6b73c"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/workspace.go",
+    "sha256": "f7059e1b3a6346d8b42b56c56cd9d505871bd17da10d3fcc9d638f569233cb8d"
+  },
+  {
+    "path": "internal/execution/backend/lifecycle.go",
+    "sha256": "b67d87f88830dd044e9f0efd3977bce6919748bfbd61bcb4cdd333c01f4ec6d9"
+  },
+  {
+    "path": "internal/execution/workspace/artifact_limits_test.go",
+    "sha256": "aa3dff30c342c9c3f9d9c4f9f6ff5a31f7d5058d2640d3bdbd992da8e8168054"
+  },
+  {
+    "path": "internal/execution/workspace/artifact.go",
+    "sha256": "a7925a46493e30f995065b6a600469a99d47d060194c14aed6f7ee8a1a5491a7"
+  },
+  {
+    "path": "internal/host/server.go",
+    "sha256": "b5f314b10bbb85da82763ab70b3eecf1f2d1020ef8d28fce79fe19792fee2ca0"
+  },
+  {
+    "path": "internal/host/startup_input_test.go",
+    "sha256": "3b0025a7d0af2b683e7ff3ca1aedc13e65ee2815ca25ed2b96a97c6bbbfa1cec"
+  },
+  {
+    "path": "internal/testkit/livetest/cases_test.go",
+    "sha256": "2a4fd66f7815fdf0c193be590972bf35a0c1e5ba93b97fd4f46e8beea5b55571"
+  },
+  {
+    "path": "internal/testkit/livetest/cases.json",
+    "sha256": "6c8101fb0e54f63a4f0425f869726d8e7051236bbc3082826229b63c10735d18"
+  },
+  {
+    "path": "internal/testkit/livetest/evidence.go",
+    "sha256": "e6d6435268fb5fdaee5bdffe86920bb124632d89185c2569a3da92bd413cd778"
+  },
+  {
+    "path": "internal/testkit/livetest/initialization.go",
+    "sha256": "19fce493e3c01c2edb4ef9e1b44074bbf68f5275bc23cfe6ec34498c9b9b3c93"
+  },
+  {
+    "path": "internal/testkit/livetest/pre_send_test.go",
+    "sha256": "8f390620b24f705b22bd87ef2746a40ead9b44a25aad58c5d87a2afb9db7806e"
+  },
+  {
+    "path": "internal/testkit/livetest/pre_send.go",
+    "sha256": "0f57531ddcf6efd18c1e0304f5430a904791a1714d6db3735d54ae3d892c5c63"
+  },
+  {
+    "path": "scripts/run-test-case.ps1",
+    "sha256": "e8534f3c6ba73c56de3410d6cee0dd3d4cb00566fd7a8ed4125f852c59ec4e02"
+  },
+  {
+    "path": "scripts/test-foundation.ps1",
+    "sha256": "c88d91598e40415bdcfa833439aea959dbcdc8dac9e45b199a4bcb148a79133a"
+  },
+  {
+    "path": "scripts/test-generation-recovery.ps1",
+    "sha256": "8d20d20462b31d3c80c52f1d2688509ce59c3fdecbe91c9c9a69e4426f1084f7"
+  },
+  {
+    "path": "scripts/test.ps1",
+    "sha256": "f86a35e3b8f3dc29d5b8ed67d9f6198d4a79654a4726e6b8beeb73af24fe08d9"
+  },
+  {
+    "path": "tests/catalog.json",
+    "sha256": "a51e2a98d6d5f284435e8c93e85cf38fcdaa4b2c9871e9cfd05901bccdf21053"
+  },
+  {
+    "path": "tests/framework/configuration-test.ps1",
+    "sha256": "bc55d5cbfcbfcdedb61d1faddcbecb10ba0be8262d9e9a7b2b211b994cd53016"
+  },
+  {
+    "path": "tests/framework/stability-test.ps1",
+    "sha256": "96ddb526d0d1e42ace9fc1d9f272ed65dadad782fcab3505b2fbd7338622876c"
+  },
+  {
+    "path": "tests/helpers/native/main.go",
+    "sha256": "d30a0a3cab49b71c377f022bd5bbc233d56b9cb7e3bfa89d94888db94a80a889"
+  },
+  {
+    "path": "tests/helpers/native/orca_creation.go",
+    "sha256": "595c32f883d26c7b6df32328075b50af16c7b8877bdf815cbdad07aa8b3021d3"
+  },
+  {
+    "path": "tests/integration/audit_test.go",
+    "sha256": "acb89adb7f55252d4126d1f65aabe94ac7c01fb8f43183ae401dd094e35291eb"
+  },
+  {
+    "path": "tests/integration/content_recovery_native_test.go",
+    "sha256": "772b8dbf33d9b97c65e75e43b0d4300a87c76458c0cadd78f061e2657e70175d"
+  },
+  {
+    "path": "tests/integration/content_recovery_test.go",
+    "sha256": "918a9c3596d999234ff2ba0596fdae735f1985f3b57b8eb259efdbe8d338ba15"
+  },
+  {
+    "path": "tests/integration/creation_recovery_test.go",
+    "sha256": "a7d9a002542016ea0dc8e290b59f09c9eea7d7a724e7e374814033165ba19d94"
+  },
+  {
+    "path": "tests/integration/native_tool_recovery_test.go",
+    "sha256": "33843db30398950767abbfd7f98a8c39a96aafc73667389a5be9632f49bc27cc"
+  },
+  {
+    "path": "tests/integration/parser_recovery_native_test.go",
+    "sha256": "3948c5eeb62f0318f26de0920e7df363c9c932655bb896670db3f8ab778c1ac7"
+  },
+  {
+    "path": "tests/integration/run_evidence_test.go",
+    "sha256": "4f2b68bf32945faee5cc0e39939fda2fc1bd9d2340cab512098fd5f7b23f2755"
+  },
+  {
+    "path": "tests/integration/workflow_test.go",
+    "sha256": "d904fb53e21d80cd487c73843ffea1a59e12ea804064f1e8861da28c56b4a874"
+  },
+  {
+    "path": "tests/native/initialization_stop_test.go",
+    "sha256": "9cfa5a6695522faad1c1f1234471a5453883e7421eb59f9b1facd5747de75101"
+  },
+  {
+    "path": "tests/native/run_evidence_test.go",
+    "sha256": "d680640430dc2c6d8ae6b4ab0aa04cb6e9709979aa570a5fd12242730be5e7fc"
+  },
+  {
+    "path": "tests/native/run_test.go",
+    "sha256": "2ea4538e8e9661bd099a3ab4b8bfe4ecd4d8cf235e09f1fedadd4cf672fd601e"
+  },
+  {
+    "path": "tests/native/stability_test.go",
+    "sha256": "40c1ac0b544c55c0ebea6cc419b94d707a5546ea6d859425dbf388ea8c2d4883"
+  },
+  {
+    "path": "tests/native/terminal_reliability_test.go",
+    "sha256": "acd4b7b542db92c877d5be1cdd264f05ab92ddc364930026c071ac0e77d87cb0"
+  }
+]

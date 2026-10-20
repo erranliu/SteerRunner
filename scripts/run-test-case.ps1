@@ -15,8 +15,8 @@ try {
     if ($taskJob.entry.driver -eq 'controlled-integration') {
         $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-r' + $taskJob.repeat_index)
         $taskPattern = '^' + [regex]::Escape($taskJob.case.test) + '$'
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern | Out-Host
-        $taskUntil = [DateTime]::UtcNow.AddMinutes(15).AddSeconds(30)
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern -TimeoutMinutes $taskJob.entry.timeout_minutes | Out-Host
+        $taskUntil = [DateTime]::UtcNow.AddMinutes($taskJob.entry.timeout_minutes).AddSeconds(30)
         $taskResultPath = Join-Path $taskRecord.evidence 'result.json'
         while (-not (Test-Path -LiteralPath $taskResultPath)) {
             if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled case timed out; preserve original evidence' }

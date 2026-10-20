@@ -1,0 +1,64 @@
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope (0.61s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation (0.07s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate (0.10s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session (0.24s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch (0.20s)
+=== RUN   TestServiceGenerationPreservesDurableAuthorizationAndBusinessState
+--- PASS: TestServiceGenerationPreservesDurableAuthorizationAndBusinessState (0.10s)
+=== RUN   TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation
+--- PASS: TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation (0.08s)
+=== RUN   TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts
+--- PASS: TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts (0.00s)
+=== RUN   TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource
+--- PASS: TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource (0.00s)
+=== RUN   TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata
+--- PASS: TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation (0.00s)
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration (0.13s)
+    --- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation (0.07s)
+    --- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate (0.06s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{}
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"}
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts (0.22s)
+    --- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null (0.07s)
+    --- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{} (0.06s)
+    --- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"} (0.09s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	4.259s
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal
+--- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade (0.23s)
+    --- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server (0.12s)
+    --- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal (0.11s)
+=== RUN   TestLegacyRecoveryQualifiesContractsBeforeChangingFormat
+--- PASS: TestLegacyRecoveryQualifiesContractsBeforeChangingFormat (0.15s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	4.518s

@@ -1,0 +1,618 @@
+{
+  "pull_request": "https://github.com/erranliu/SteerRunner/pull/38",
+  "tested_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+  "source_dirty": false,
+  "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+  "l1": {
+    "exit_code": 0,
+    "package_pass": 22,
+    "top_level_pass": 502,
+    "top_level_skip": 8,
+    "raw_sha256": "5AAD8221C669A1B062C2D782ADEB89E87994624609E5B5F070FA790B206029F2"
+  },
+  "vet": {
+    "command": "go vet ./internal/... ./tests/integration (plus final test-only changes)",
+    "exit_code": 0
+  },
+  "framework": {
+    "tests": [
+      {
+        "name": "independent-configuration",
+        "passed": true
+      },
+      {
+        "name": "parallel-runtime-cache",
+        "passed": true
+      },
+      {
+        "name": "zero-match",
+        "passed": true
+      },
+      {
+        "name": "duplicate-catalog",
+        "passed": true
+      },
+      {
+        "name": "repeat-zero",
+        "passed": true
+      },
+      {
+        "name": "repeat-non-live",
+        "passed": true
+      },
+      {
+        "name": "parallel-zero",
+        "passed": true
+      },
+      {
+        "name": "parallel-excess",
+        "passed": true
+      },
+      {
+        "name": "retired-auth-github_auth",
+        "passed": true
+      },
+      {
+        "name": "retired-auth-remote_github_auth",
+        "passed": true
+      },
+      {
+        "name": "checker-positive-negative",
+        "passed": true
+      },
+      {
+        "name": "pr-list-zero-one-many",
+        "passed": true
+      },
+      {
+        "name": "publisher-empty",
+        "passed": true
+      },
+      {
+        "name": "publisher-existing",
+        "passed": true
+      },
+      {
+        "name": "publisher-conflict",
+        "passed": true
+      },
+      {
+        "name": "publisher-query-failure",
+        "passed": true
+      },
+      {
+        "name": "stability-registry-gate-scope",
+        "passed": true
+      },
+      {
+        "name": "parallel-scheduler-isolation",
+        "passed": true
+      },
+      {
+        "name": "native-result-contracts",
+        "passed": true
+      }
+    ],
+    "exit_code": 0,
+    "test_count": 19
+  },
+  "controlled_batches": [
+    {
+      "name": "pr38-final-controlled",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-controlled\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:25:05.4930503Z",
+        "scenario_count": 5
+      },
+      "source": {
+        "pid": 30272,
+        "pattern": "^(TestSRResourceCreationRecovery|TestSRContentGenerationRecovery|TestSRRunEvidenceR2|TestSRNativeUnknownAndStop|TestSRStabilityRevocationAcrossRestart)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "5B47B602243EC12CC43406E393969A4C0ED0AB00ECAC537D96D953041593346B",
+        "source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "passed": [
+        "--- PASS: TestSRContentGenerationRecovery (52.13s)",
+        "    --- PASS: TestSRContentGenerationRecovery/generate-graceful (13.73s)",
+        "    --- PASS: TestSRContentGenerationRecovery/conversation-kill (12.28s)",
+        "    --- PASS: TestSRContentGenerationRecovery/question-reply (12.79s)",
+        "    --- PASS: TestSRContentGenerationRecovery/startup-stop (13.33s)",
+        "--- PASS: TestSRResourceCreationRecovery (141.02s)",
+        "    --- PASS: TestSRResourceCreationRecovery/graceful (20.12s)",
+        "    --- PASS: TestSRResourceCreationRecovery/kill (22.14s)",
+        "    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (20.21s)",
+        "    --- PASS: TestSRResourceCreationRecovery/wire-loss (18.06s)",
+        "    --- PASS: TestSRResourceCreationRecovery/owner-crash (26.07s)",
+        "    --- PASS: TestSRResourceCreationRecovery/missing-terminal-receipt (34.42s)",
+        "--- PASS: TestSRRunEvidenceR2 (204.22s)",
+        "--- PASS: TestSRStabilityRevocationAcrossRestart (50.40s)",
+        "--- PASS: TestSRNativeUnknownAndStop (44.16s)"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    {
+      "name": "pr38-final-all-21",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-21\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:48:15.7783331Z",
+        "scenario_count": 21
+      },
+      "source": {
+        "pid": 31852,
+        "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI|TestSRContentGenerate|TestSRContentConversation|TestSRContentQuestionAndUnknown|TestSRContentGenerationRecovery|TestSRRunEvidenceR2|TestSRResourceCreationRecovery)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "5B47B602243EC12CC43406E393969A4C0ED0AB00ECAC537D96D953041593346B",
+        "source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "passed": [
+        "--- PASS: TestSRWorkflowDiscoveryAndSelection (10.01s)",
+        "--- PASS: TestSRContentGenerationRecovery (64.29s)",
+        "    --- PASS: TestSRContentGenerationRecovery/generate-graceful (18.37s)",
+        "    --- PASS: TestSRContentGenerationRecovery/conversation-kill (14.37s)",
+        "    --- PASS: TestSRContentGenerationRecovery/question-reply (17.67s)",
+        "    --- PASS: TestSRContentGenerationRecovery/startup-stop (13.87s)",
+        "--- PASS: TestSRContentGenerate (131.76s)",
+        "    --- PASS: TestSRContentGenerate/text (14.28s)",
+        "    --- PASS: TestSRContentGenerate/json (13.03s)",
+        "    --- PASS: TestSRContentGenerate/schema_mismatch (11.89s)",
+        "    --- PASS: TestSRContentGenerate/bad_json (11.99s)",
+        "    --- PASS: TestSRContentGenerate/failed (11.44s)",
+        "    --- PASS: TestSRContentGenerate/cancelled (15.51s)",
+        "    --- PASS: TestSRContentGenerate/no_final (16.26s)",
+        "    --- PASS: TestSRContentGenerate/question (13.57s)",
+        "    --- PASS: TestSRContentGenerate/no_auth (11.52s)",
+        "    --- PASS: TestSRContentGenerate/no_directory (12.26s)",
+        "--- PASS: TestSRContentConversation (22.83s)",
+        "--- PASS: TestSRContentQuestionAndUnknown (42.11s)",
+        "    --- PASS: TestSRContentQuestionAndUnknown/unknown-interrupt (14.06s)",
+        "    --- PASS: TestSRContentQuestionAndUnknown/question (12.28s)",
+        "    --- PASS: TestSRContentQuestionAndUnknown/unknown (15.76s)",
+        "--- PASS: TestSRResourceCreationRecovery (129.17s)",
+        "    --- PASS: TestSRResourceCreationRecovery/graceful (24.16s)",
+        "    --- PASS: TestSRResourceCreationRecovery/kill (22.85s)",
+        "    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (25.05s)",
+        "    --- PASS: TestSRResourceCreationRecovery/wire-loss (20.54s)",
+        "    --- PASS: TestSRResourceCreationRecovery/owner-crash (19.65s)",
+        "    --- PASS: TestSRResourceCreationRecovery/missing-terminal-receipt (16.92s)",
+        "--- PASS: TestEnvironmentCheckCLI (7.80s)",
+        "--- PASS: TestSRMultipleRunsIsolation (54.32s)",
+        "--- PASS: TestSRRunEvidenceR2 (178.00s)",
+        "--- PASS: TestSRStandalonePackage (7.86s)",
+        "--- PASS: TestSRServiceOwnership (118.87s)",
+        "    --- PASS: TestSRServiceOwnership/offline_verification (66.52s)",
+        "    --- PASS: TestSRServiceOwnership/remote_offline_scope (3.07s)",
+        "    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.16s)",
+        "    --- PASS: TestSRServiceOwnership/concurrent_alias (7.80s)",
+        "    --- PASS: TestSRServiceOwnership/parent_job (9.71s)",
+        "    --- PASS: TestSRServiceOwnership/different_release (11.34s)",
+        "    --- PASS: TestSRServiceOwnership/stale_writer (11.41s)",
+        "    --- PASS: TestSRServiceOwnership/shutdown_receipt (8.86s)",
+        "--- PASS: TestSRStabilityLostSubmitResponse (74.05s)",
+        "--- PASS: TestSRStabilityRevocationAcrossRestart (60.57s)",
+        "--- PASS: TestSRInputFreeze (54.54s)",
+        "--- PASS: TestSRPermissionQualification (41.40s)",
+        "--- PASS: TestSRRunWorkflow (68.16s)",
+        "--- PASS: TestSRStorageLogsEvents (65.97s)",
+        "--- PASS: TestSRPublicationIdentity (81.07s)",
+        "--- PASS: TestSRPublicationBeforeWorkflowReady (77.87s)",
+        "--- PASS: TestSRNativeUnknownAndStop (75.96s)",
+        "    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (40.11s)"
+      ],
+      "failed": [
+        "--- FAIL: TestSRRestartPreservesAuthorization (312.92s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/graceful (83.26s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/kill (78.61s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/creation_receipt (93.18s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-final-all-ra",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-all-ra\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:40:41.8550853Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 33104,
+        "pattern": "^TestSRResultAcquisition$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "5B47B602243EC12CC43406E393969A4C0ED0AB00ECAC537D96D953041593346B",
+        "source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "passed": [
+        "    --- PASS: TestSRResultAcquisition/plain-marker (58.90s)",
+        "    --- PASS: TestSRResultAcquisition/audit-positive (111.80s)",
+        "    --- PASS: TestSRResultAcquisition/audit-offline (97.62s)",
+        "    --- PASS: TestSRResultAcquisition/audit-report (126.37s)"
+      ],
+      "failed": [
+        "--- FAIL: TestSRResultAcquisition (1226.24s)",
+        "    --- FAIL: TestSRResultAcquisition/audit-zero (145.19s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-unsupported (148.10s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-complete (147.51s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-restart (79.64s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-kill (81.35s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-stop (90.18s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-tool (139.57s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-final-audit-zero-retry",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-final-review\\SteerRunner\\.evidence\\pr38-final-audit-zero-retry\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:31:27.8155892Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 48500,
+        "pattern": "^TestSRResultAcquisition$/^audit-zero$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "5B47B602243EC12CC43406E393969A4C0ED0AB00ECAC537D96D953041593346B",
+        "source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      },
+      "passed": [
+        "--- PASS: TestSRResultAcquisition (138.07s)",
+        "    --- PASS: TestSRResultAcquisition/audit-zero (138.07s)"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-ra-a",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-ra-a\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:49:27.6448169Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 6396,
+        "pattern": "^TestSRResultAcquisition$/(plain-marker|audit-zero|audit-positive|parser-unsupported|parser-restart|parser-stop)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "1BFC60C454ACDA8B49B6D52C0DE98F1B69AD952023CCD765B78A8ADB1621A2BB",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "58649292625bdcf10bae627ece24c434222dae99",
+        "source_dirty": false,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "    --- PASS: TestSRResultAcquisition/plain-marker (63.68s)",
+        "    --- PASS: TestSRResultAcquisition/audit-zero (184.57s)",
+        "    --- PASS: TestSRResultAcquisition/audit-positive (195.69s)",
+        "    --- PASS: TestSRResultAcquisition/parser-unsupported (213.17s)"
+      ],
+      "failed": [
+        "--- FAIL: TestSRResultAcquisition (804.53s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-restart (73.62s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-stop (73.79s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-ra-b",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-ra-b\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:48:53.179081Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 37868,
+        "pattern": "^TestSRResultAcquisition$/(audit-offline|audit-report|parser-complete|parser-kill|parser-tool)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "1BFC60C454ACDA8B49B6D52C0DE98F1B69AD952023CCD765B78A8ADB1621A2BB",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "58649292625bdcf10bae627ece24c434222dae99",
+        "source_dirty": false,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "    --- PASS: TestSRResultAcquisition/audit-report (218.12s)",
+        "    --- PASS: TestSRResultAcquisition/parser-complete (229.57s)",
+        "    --- PASS: TestSRResultAcquisition/parser-tool (141.12s)"
+      ],
+      "failed": [
+        "--- FAIL: TestSRResultAcquisition (765.39s)",
+        "    --- FAIL: TestSRResultAcquisition/audit-offline (87.67s)",
+        "    --- FAIL: TestSRResultAcquisition/parser-kill (88.91s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-phase-a",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-phase-a\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:46:15.6333893Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 44344,
+        "pattern": "^TestSRResultAcquisition$/(audit-offline|parser-restart)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "417A3BAE276A8329C5995B6C8347661E107E4FEE15E6CD12235B304E22D52287",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "5a25d9cb15b2fe8c49c64e9fe0ecf87e02d5f6e0",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "    --- PASS: TestSRResultAcquisition/parser-restart (210.25s)"
+      ],
+      "failed": [
+        "--- FAIL: TestSRResultAcquisition (343.18s)",
+        "    --- FAIL: TestSRResultAcquisition/audit-offline (132.93s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-phase-b",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-phase-b\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:46:31.9807625Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 36652,
+        "pattern": "^TestSRResultAcquisition$/(parser-kill|parser-stop)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "417A3BAE276A8329C5995B6C8347661E107E4FEE15E6CD12235B304E22D52287",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "5a25d9cb15b2fe8c49c64e9fe0ecf87e02d5f6e0",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "--- PASS: TestSRResultAcquisition (355.30s)",
+        "    --- PASS: TestSRResultAcquisition/parser-kill (232.14s)",
+        "    --- PASS: TestSRResultAcquisition/parser-stop (123.16s)"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-offline-final",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-offline-final\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:47:19.9497705Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 57164,
+        "pattern": "^TestSRResultAcquisition$/(audit-offline)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "A50F3AA8139D709C44B0936F1AB2A8743C69EA5270268A012F0AF51C72B53C64",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "8e3a060b4d16eb764e808d42aed529109182607d",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "--- PASS: TestSRResultAcquisition (144.58s)",
+        "    --- PASS: TestSRResultAcquisition/audit-offline (144.58s)"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-authorization",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-authorization\\steerrunner.exe",
+        "exit_code": 1,
+        "finished_at": "2026-10-20T06:47:31.1941292Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 56060,
+        "pattern": "^TestSRRestartPreservesAuthorization$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "BA5B6473FA63611013775B0BCF2F150495463B0B6DFA1D2B67B2180F5F2816E8",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "dccf029170d5584baf8d758aa913c70339bd508f",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [],
+      "failed": [
+        "--- FAIL: TestSRRestartPreservesAuthorization (26.90s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/graceful (7.20s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/kill (5.39s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/creation_receipt (5.26s)",
+        "    --- FAIL: TestSRRestartPreservesAuthorization/pending_stop (4.95s)"
+      ],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-generation",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-generation\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:49:27.8252814Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 35412,
+        "pattern": "^TestSRRestartPreservesAuthorization$/(creation_receipt|pending_stop)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "BDB0059E53883C6D96FCA28285C10C9135E81A2C72E157EDF797972F2ED7554C",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "80bca376f1b7a970533c343d47b9845c639be2df",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "--- PASS: TestSRRestartPreservesAuthorization (86.99s)",
+        "    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (43.20s)",
+        "    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (40.09s)"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    {
+      "name": "pr38-closeout-gen-active",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\pr38-review-closeout\\SteerRunner\\.evidence\\pr38-closeout-gen-active\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-20T06:50:33.3911503Z",
+        "scenario_count": 1
+      },
+      "source": {
+        "pid": 59180,
+        "pattern": "^TestSRRestartPreservesAuthorization$/(graceful|kill)$",
+        "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+        "fixture_sha256": "BDB0059E53883C6D96FCA28285C10C9135E81A2C72E157EDF797972F2ED7554C",
+        "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+        "source_commit": "80bca376f1b7a970533c343d47b9845c639be2df",
+        "source_dirty": true,
+        "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+        "runner_source_dirty": false,
+        "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+      },
+      "passed": [
+        "--- PASS: TestSRRestartPreservesAuthorization (95.19s)",
+        "    --- PASS: TestSRRestartPreservesAuthorization/graceful (49.75s)",
+        "    --- PASS: TestSRRestartPreservesAuthorization/kill (41.49s)"
+      ],
+      "failed": [],
+      "skipped": []
+    }
+  ],
+  "controlled_qualification": {
+    "registered_scenarios": 22,
+    "complete_top_level_pass": 20,
+    "result_acquisition_subcases_pass": 11,
+    "result_acquisition_passed_leaf_union": [
+      "audit-offline",
+      "audit-positive",
+      "audit-report",
+      "audit-zero",
+      "parser-complete",
+      "parser-kill",
+      "parser-restart",
+      "parser-stop",
+      "parser-tool",
+      "parser-unsupported",
+      "plain-marker"
+    ],
+    "authorization_subcases_pass": 4,
+    "authorization_passed_leaf_union": [
+      "creation_receipt",
+      "graceful",
+      "kill",
+      "pending_stop"
+    ],
+    "covered_scenarios": [
+      "TestEnvironmentCheckCLI",
+      "TestSRContentConversation",
+      "TestSRContentGenerate",
+      "TestSRContentGenerationRecovery",
+      "TestSRContentQuestionAndUnknown",
+      "TestSRInputFreeze",
+      "TestSRMultipleRunsIsolation",
+      "TestSRNativeUnknownAndStop",
+      "TestSRPermissionQualification",
+      "TestSRPublicationBeforeWorkflowReady",
+      "TestSRPublicationIdentity",
+      "TestSRResourceCreationRecovery",
+      "TestSRRestartPreservesAuthorization",
+      "TestSRResultAcquisition",
+      "TestSRRunEvidenceR2",
+      "TestSRRunWorkflow",
+      "TestSRServiceOwnership",
+      "TestSRStabilityLostSubmitResponse",
+      "TestSRStabilityRevocationAcrossRestart",
+      "TestSRStandalonePackage",
+      "TestSRStorageLogsEvents",
+      "TestSRWorkflowDiscoveryAndSelection"
+    ],
+    "skipped": 0,
+    "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+    "note": "All 22 registered scenarios are covered using the same Runner. Qualification is twenty passing complete scenarios plus the unions of eleven passing RA and four passing authorization subcases from corrected-budget harnesses. This is not a claim that failed aggregate batches passed. Original and intermediate timing failures remain failed."
+  },
+  "closeout_test_source_commits": [
+    "58649292625bdcf10bae627ece24c434222dae99",
+    "5a25d9cb15b2fe8c49c64e9fe0ecf87e02d5f6e0",
+    "8e3a060b4d16eb764e808d42aed529109182607d",
+    "80bca376f1b7a970533c343d47b9845c639be2df"
+  ],
+  "changed_paths_since_tested_production": [
+    "docs/acceptance/content-workflows.md",
+    "docs/acceptance/evidence/content-closeout-20261020/README.md",
+    "docs/acceptance/evidence/content-closeout-20261020/generation-takeover.json",
+    "docs/acceptance/evidence/content-closeout-20261020/qualification.json",
+    "docs/acceptance/evidence/content-closeout-20261020/rebased-directed.json",
+    "docs/acceptance/evidence/content-closeout-20261020/rebased-directed.jsonl",
+    "docs/acceptance/service-generation-recovery.md",
+    "docs/spec/content-workflows.plan.md",
+    "docs/spec/content-workflows.spec.md",
+    "internal/application/content_test.go",
+    "tests/integration/audit_test.go",
+    "tests/integration/generation_test.go",
+    "tests/integration/workflow_test.go"
+  ],
+  "harness_setup_failure": {
+    "batch": "pr38-closeout-authorization",
+    "reason": "Evidence directory name contains authorization and is rejected by existing non-secret publication policy before task admission.",
+    "disposition": "Failed batch retained; rerun in pr38-closeout-gen-active with the same Runner."
+  },
+  "excluded_earlier_batches": [
+    "b7d2/pr38-review-* mixed-source concurrent edits",
+    "pr38-review-merge/pr38-review-* superseded two-fix baseline"
+  ],
+  "limitations": [
+    "Controlled tests use isolated public-protocol fixtures, not new real Orca backend qualification.",
+    "Historical native/admin results remain bound to their original builds.",
+    "Earlier failed batches are preserved; no result is rewritten."
+  ],
+  "final_test_source_commit": "80bca376f1b7a970533c343d47b9845c639be2df",
+  "recorded_at": "2026-10-20T06:51:59.4771127Z",
+  "production_unchanged_since_tested_commit": true,
+  "owned_cleanup": {
+    "retained_failed_sites_cleaned": 2,
+    "receipt": "original-cleanup-receipts.json",
+    "harness_count": 14,
+    "remaining_processes": 0,
+    "original_failures_preserved": true,
+    "new_business_inputs": 0,
+    "audit": "process-audit-final.json"
+  }
+}

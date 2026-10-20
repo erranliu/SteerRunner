@@ -1,0 +1,48 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    workflow_test.go:125: Run did not reach expected state: {Closed:false ContentResult:<nil> ResultAcquisition:[] Audit:<nil> Operations:[{ID:bef4ba43c817e63a316b3570866ec29d Action:prepare_workspace Status:outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input OriginalDiagnostic:C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-b\native-fixture.exe failed: context deadline exceeded ()
+        unexpected end of JSON input}] RunID:e4df71d6d054dd0145f03eabbb1aadbe Revision:10 Title:独立Runner controlled Correlation:map[] InputDigest:b83f57c646fc353c58ad24aa9efd64505b74a1188be1ebaf2f09e8b80eeb897f ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 Workflow:{ID:development Version:2 PromptOverrides:map[] AuditModel:<nil>} Step:implement.execute Status:reconciling Phase:operation_outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input NewInputsAllowed:false ResumeRequired:true StopStatus:pending Materials:[{Kind:inline Path:input/spec.md Commit: Digest:91495885b7ee99722f1c59618be01ae2de03fcaf1ada749f4d277c78d051d85d SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-1073493488\runner\inputs\e4df71d6d054dd0145f03eabbb1aadbe\input\spec.md ExecutionLocation:} {Kind:inline Path:input/plan.md Commit: Digest:03ea3bf245ea1e1502555cf0326a6b25ad30b5289d6d22e883ecca3bc6c1c346 SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-1073493488\runner\inputs\e4df71d6d054dd0145f03eabbb1aadbe\input\plan.md ExecutionLocation:}] Execution:{Agent:codex RequestedModel: RequestedReasoningEffort: WorkspaceScope: TurnStarted:false AttemptID:b09805d9ffb4e57e8ef96226285d91ae Generation:40a3cdff4055555ebe95815ff5dae877 Backend:orca Protocol:orca_terminal_v3 SessionID: TurnID: NativeOutcome: FinalAvailable:false Workspace: Branch:} Question:<nil> Controls:{CanMessage:false CanInterrupt:false CanClose:false CanReply:false CanResume:false CanStop:true Reason:Orca CLI queue ended before command invocation
+        unexpected end of JSON input} PR:<nil> Summary: Final:<nil> CreatedAt:2026-10-20 04:59:18.8936959 +0000 UTC UpdatedAt:2026-10-20 05:00:08.8217212 +0000 UTC}
+    service_test.go:268: fixture Run e4df71d6d054dd0145f03eabbb1aadbe resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    service_test.go:268: fixture Run e4df71d6d054dd0145f03eabbb1aadbe resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1073493488
+=== RUN   TestSRResourceCreationRecovery/kill
+    workflow_test.go:125: Run did not reach expected state: {Closed:false ContentResult:<nil> ResultAcquisition:[] Audit:<nil> Operations:[{ID:be074b228ed9d88b5b5a819d4e6512f1 Action:prepare_workspace Status:outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input OriginalDiagnostic:}] RunID:0566d2f25deb059a9df99f7232617680 Revision:4 Title:独立Runner controlled Correlation:map[] InputDigest:5cf0de8e474d75d314c6e00ad7417ee88b6045989a6e9b0e19dd9973c6affb60 ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 Workflow:{ID:development Version:2 PromptOverrides:map[] AuditModel:<nil>} Step:implement.execute Status:reconciling Phase:operation_outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input NewInputsAllowed:false ResumeRequired:true StopStatus:pending Materials:[{Kind:inline Path:input/spec.md Commit: Digest:91495885b7ee99722f1c59618be01ae2de03fcaf1ada749f4d277c78d051d85d SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2178182625\runner\inputs\0566d2f25deb059a9df99f7232617680\input\spec.md ExecutionLocation:} {Kind:inline Path:input/plan.md Commit: Digest:03ea3bf245ea1e1502555cf0326a6b25ad30b5289d6d22e883ecca3bc6c1c346 SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2178182625\runner\inputs\0566d2f25deb059a9df99f7232617680\input\plan.md ExecutionLocation:}] Execution:{Agent:codex RequestedModel: RequestedReasoningEffort: WorkspaceScope: TurnStarted:false AttemptID:0cb27077b7f457247d6322f71144a059 Generation:a3c78444129b9ea7e4d38349d8579d9b Backend:orca Protocol:orca_terminal_v3 SessionID: TurnID: NativeOutcome: FinalAvailable:false Workspace: Branch:} Question:<nil> Controls:{CanMessage:false CanInterrupt:false CanClose:false CanReply:false CanResume:false CanStop:true Reason:Orca CLI queue ended before command invocation
+        unexpected end of JSON input} PR:<nil> Summary: Final:<nil> CreatedAt:2026-10-20 05:01:32.3946972 +0000 UTC UpdatedAt:2026-10-20 05:01:53.089779 +0000 UTC}
+    service_test.go:268: fixture Run 0566d2f25deb059a9df99f7232617680 resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    service_test.go:268: fixture Run 0566d2f25deb059a9df99f7232617680 resources remain unverified: C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-b\native-fixture.exe failed: context deadline exceeded ()
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2178182625
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    workflow_test.go:125: Run did not reach expected state: {Closed:false ContentResult:<nil> ResultAcquisition:[] Audit:<nil> Operations:[{ID:0e890f25ae222590f496b156f509e837 Action:prepare_workspace Status:outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input OriginalDiagnostic:C:\Users\lmas1\.codex\worktrees\b7d2\SteerRunner\.evidence\creation-controlled-20261020-b\native-fixture.exe failed: context deadline exceeded ()
+        unexpected end of JSON input}] RunID:240fa717a1384a3ed829cc39df7d22ec Revision:12 Title:独立Runner controlled Correlation:map[] InputDigest:0c15b86acdc807fb588925e9081cbed609be590589c79e6a2b9b0a1937c434fa ResourceDigest:a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91 Workflow:{ID:development Version:2 PromptOverrides:map[] AuditModel:<nil>} Step:implement.execute Status:reconciling Phase:operation_outcome_unknown Diagnostic:Orca CLI queue ended before command invocation
+        unexpected end of JSON input NewInputsAllowed:false ResumeRequired:true StopStatus:pending Materials:[{Kind:inline Path:input/spec.md Commit: Digest:91495885b7ee99722f1c59618be01ae2de03fcaf1ada749f4d277c78d051d85d SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2957270081\runner\inputs\240fa717a1384a3ed829cc39df7d22ec\input\spec.md ExecutionLocation:} {Kind:inline Path:input/plan.md Commit: Digest:03ea3bf245ea1e1502555cf0326a6b25ad30b5289d6d22e883ecca3bc6c1c346 SnapshotPath:c:\users\lmas1\appdata\local\temp\sr-2957270081\runner\inputs\240fa717a1384a3ed829cc39df7d22ec\input\plan.md ExecutionLocation:}] Execution:{Agent:codex RequestedModel: RequestedReasoningEffort: WorkspaceScope: TurnStarted:false AttemptID:a7d0e38127feb0d322d395df1745f982 Generation:c981b67145da30617f276737d0501e6f Backend:orca Protocol:orca_terminal_v3 SessionID: TurnID: NativeOutcome: FinalAvailable:false Workspace: Branch:} Question:<nil> Controls:{CanMessage:false CanInterrupt:false CanClose:false CanReply:false CanResume:false CanStop:true Reason:Orca CLI queue ended before command invocation
+        unexpected end of JSON input} PR:<nil> Summary: Final:<nil> CreatedAt:2026-10-20 05:04:03.0974767 +0000 UTC UpdatedAt:2026-10-20 05:05:09.5726513 +0000 UTC}
+    service_test.go:268: fixture Run 240fa717a1384a3ed829cc39df7d22ec resources remain unverified: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2957270081
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    service_test.go:268: fixture Run 58a4b4cfbca3587b31daa01c3ddbb246 resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    service_test.go:268: fixture Run 58a4b4cfbca3587b31daa01c3ddbb246 resources remain unverified: unexpected end of JSON input
+        original creation CLI failed; no create was repeated
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-414486431
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:163: State directory contains an unsupported storage format; preserve it and use a new directory.
+    service_test.go:268: fixture Run 63d0f2384b289154b6b4060c18349b58 resources remain unverified: original creation owner exited without a completed receipt; outcome unknown
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2627838302
+--- FAIL: TestSRResourceCreationRecovery (542.17s)
+    --- FAIL: TestSRResourceCreationRecovery/graceful (137.47s)
+    --- FAIL: TestSRResourceCreationRecovery/kill (149.30s)
+    --- FAIL: TestSRResourceCreationRecovery/receipt-before-commit (143.71s)
+    --- FAIL: TestSRResourceCreationRecovery/wire-loss (69.04s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (42.66s)
+FAIL

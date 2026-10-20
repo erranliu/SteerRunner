@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.connection-reconnect
+    stability_test.go:100: stability assertion publication-pre-send-gate failed: pre-send-gate.json: committed publish input before direct state connect
+    stability_test.go:1100: original native stop not confirmed: <nil>
+--- FAIL: TestSRLiveScenario (601.76s)
+    --- FAIL: TestSRLiveScenario/orca-remote.connection-reconnect (601.62s)
+FAIL

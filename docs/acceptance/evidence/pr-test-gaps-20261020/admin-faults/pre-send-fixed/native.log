@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.connection-reconnect
+    stability_test.go:124: unexpected execution failure: blocked 依据原发布命令的实际输出：命令已结束，退出码为 1；内容检查 passed=true，但发布报错 Publication requires committed work，未返回 PR URL。此前提交因 index.lock 权限不足失败。提供的 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与实际发布失败存在冲突，不能据此认定发布成功。本次仅整理已有结果，未重新发布。
+--- FAIL: TestSRLiveScenario (192.67s)
+    --- FAIL: TestSRLiveScenario/orca-remote.connection-reconnect (192.53s)
+FAIL

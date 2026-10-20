@@ -1,0 +1,2954 @@
+[
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestProcessHostCommandHelper",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRASuccessOutput",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRAContract",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestSRTurnModelBinding",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliablePreparationFacts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliablePreparationApplicability",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliableInputOutcomeBoundaries",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliableRecoveryAndAuthorization",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliableLateFacts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestRAReportPolicyUnknown",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableUnknownEffectAndGateCannotResubmit",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableFreshActionKeepsOriginalIntent",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableUnverifiedReceiptRequiresOriginalReconciliation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableReconciliationRejectsForeignIntent",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableOutcomeCannotTreatMissingReceiptAsSuccess",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestReliableExpiredIntentCannotExecute",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestSRTurnModelOperation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Test": "TestStopSettlementPreservesExistingSnapshotRepresentation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestExecutionRecordsKeepWireIdentity",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestAdapterAndBackendErrorsPreserveCause",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestPRCluesKeepOrderAndDeduplicate",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestPRCluesSeparateMarkdownLinks",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestCD63CodecIdentityAndVersion",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestRANativeFailureDominatesCompletion",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestImplementationDataEnvelopeBindsScopeAndCopiesPayload",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestImplementationDataEnvelopeRejectsBadIdentityVersionAndSize",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestRAUnreportedOutcomeBoundary",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestClassifyRecovery",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestSessionReceiptSeparatesAcceptedInputFromTurnStart",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestSessionReceiptRejectsForeignBindingWithoutPartialChanges",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliableRecoveredNativeStartRequiresOriginalIntent",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Test": "TestReliableTurnIdentityAndNotifications",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestDecodeStrictJSON",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+    "Test": "TestAgentLaunchCompilesAndProtectsPreferences",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+    "Test": "TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestHostMutationRequiresOneFixedOriginalTarget",
+    "Action": "pass",
+    "Elapsed": 0.17
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestLifecycleCandidateRequiresOneMatchingInput",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestLifecycleRequestRequiresOriginalDurableOperation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestLifecycleReceiptCloneOwnsImplementationPayloadAndFacts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Test": "TestQuestionRouteVersionIdentityDigestAndLimit",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestProcessHostBlocksAmbientRoutingOnly",
+    "Action": "pass",
+    "Elapsed": 1.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRAConfig",
+    "Action": "pass",
+    "Elapsed": 0.83
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRAParserQualification",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRASelectionPRClues",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestRAPRCluesRespectMarkdownBoundaries",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Test": "TestContentOutputFormat",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestProcessHostOperationBudget",
+    "Action": "pass",
+    "Elapsed": 1.32
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestR2ArtifactDiscoveryAndFileLimits",
+    "Action": "pass",
+    "Elapsed": 2.59
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAAuditSources",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAAuditPartialAndFallback",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAParserFieldProvenance",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestSRWorkflowDevelopment",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestR2ArtifactChangesDuringReadNeverReturnBytes",
+    "Action": "pass",
+    "Elapsed": 0.32
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestR2ArtifactContainment",
+    "Action": "pass",
+    "Elapsed": 0.53
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestSRExecutionDependencyBoundary",
+    "Action": "pass",
+    "Elapsed": 1.79
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRASuccessOutputRouting",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRASemantics",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRADefinitionRename",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAFeedback",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAPublicationProgramClue",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAVerificationConflictSurvivesResume",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRASuccessOutputLargeFinal",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRASourcesReportUsesOriginalContext",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Test": "TestRAHistoricalOutcomeCannotBePromoted",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestOwnedJobReconnectAndStopIncludesStartedDescendant",
+    "Action": "pass",
+    "Elapsed": 6.44
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestNativeConsoleHasInteractiveHandlesAndLiteralArguments",
+    "Action": "pass",
+    "Elapsed": 0.58
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestNativeConsoleProcessHelper",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnqualifiedAgentPreflightHasNoSideEffects",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQueryRecoveryClosesFailedRead",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestDualPermissionCommandsKeepSandboxAndFullAccessDistinct",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolInputCannotExposeProviderSecrets",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery",
+    "Action": "pass",
+    "Elapsed": 0.42
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlInitializationUnknownBlocksWithoutReplacement",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestDevelopmentAcquisitionNativeAssertions",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestDevelopmentAcquisitionRetainsQuestionHistory",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestNativeAuditStoppedProbeBoundary",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestNativeAuditCountsImplicitTerminalCreationAndFencesReceipts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestBrokerCleanupRejectsHiddenRefusalsAndMissingFacts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestRegistryPreservesReliabilityAndBindsControlledEdges",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestLiveRegistryHasCompleteL3Cases",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestStabilityResultCannotPassMissingOrMismatchedEvidence",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestCommandAuditRejectsPermissionFailureWithSuccessfulCommit",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestOriginalCompletionAllowsUnreportedOutcomeButRejectsStaleOrInterruptedFacts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestSRPublishedRunConfiguration",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAsyncQuestionNativeIdentityOptionsReplayAndFinal",
+    "Action": "pass",
+    "Elapsed": 0.17
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAsyncQuestionObserverUsesNewInputCommand",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery",
+    "Action": "pass",
+    "Elapsed": 0.47
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationBrokerScopeAndSecretBoundary",
+    "Action": "pass",
+    "Elapsed": 0.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationBrokerMissingAndWrongTarget",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionHostGHCreateWireRetainsRepositoryBoundary",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestPublicationPolicyValidatesProviderValues",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestPublicationSecretsRejectedBeforeFreeze",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestContentPublishedSchemas",
+    "Action": "pass",
+    "Elapsed": 0.29
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestPRRequiresExactIdentityAndMergeEvidence",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestPRURLsAndRemotes",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestWorkerPRIdentityRequiresExecutionBranch",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestWorkerPRIdentityReportsAllMismatchedFields",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestGiteaQueryReadsPRHeadIdentity",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestCommandProviderErrorsRedactReferencedCredential",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Test": "TestUnsupportedProviderDoesNoNetworkOperation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestRAPublicContract",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestR2PublishedEvidenceContract",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+    "Test": "TestAskToolResponseUsesNativeAnswerEnvelope",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+    "Test": "TestCodexAppCallCancellationInterruptsBlockedWrite",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+    "Test": "TestCodexSocketHandshakeHonorsCancellationWithoutDeadline",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+    "Test": "TestCodexSocketLoopbackHandshakeAndMaskedJSON",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestGHBrokerRunIsolationAndIndependentCleanup",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationNativeToolBoundary",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRIndependentTestConfiguration",
+    "Action": "pass",
+    "Elapsed": 0.62
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestEnvironmentCheckAtomicRevisionAndRejection",
+    "Action": "pass",
+    "Elapsed": 0.19
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestSRCLIContract",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestContentAdmission",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestSRCLIContract",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestEnvironmentCheckDoesNotAssumeCodexPolicyForOtherAgents",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestSRValidationPreservesGateAndDiagnostics",
+    "Action": "pass",
+    "Elapsed": 0.3
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestEnvironmentCheckInputAndManifest",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestEnvironmentCheckEvidenceAndRevisionGuards",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestStrictJSONNativeDeadline",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRBaselineConstraintsAndGateReasons",
+    "Action": "pass",
+    "Elapsed": 0.18
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestOrcaAgentSettings",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestPendingStopsStrictOriginalEnvelope",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestLocalOrcaAuditedModelsRequireManagedRuntime",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestStopArtifactRequiresCompleteBoundedBytes",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRAllLiveCasesHaveRequirements",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestTerminalAgentsCannotUseCodexAuditModels",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestGitHubAppConfigurationRejectedBeforeRunOrCheck",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestNativeRemoteAuditAndRetiredAppAreRejectedPurely",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestRAPublicContract",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Test": "TestSRWorkflowSelection",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestSRExpectedInstanceDoesNotStartService",
+    "Action": "pass",
+    "Elapsed": 0.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestSRStartupIntent",
+    "Action": "pass",
+    "Elapsed": 0.27
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRCheckAuthenticationAvailability",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRNativePreparationReferencesAreStaticConstraints",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestSROfflineReaderDoesNotCreateOrWrite",
+    "Action": "pass",
+    "Elapsed": 0.35
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestSRCapabilityCatalogIsStaticAndResolvable",
+    "Action": "pass",
+    "Elapsed": 0.21
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure",
+    "Action": "pass",
+    "Elapsed": 0.8
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Test": "TestSRWorkflowSelection",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestSRExpectedInstanceFencesReplacement",
+    "Action": "pass",
+    "Elapsed": 0.22
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestOrcaStoppedNativeProbe",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSRTestConfigOuterSchemaMatchesParser",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestFailedObservationRequiresLaterOriginalRead",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketLayoutAndIdentity",
+    "Action": "pass",
+    "Elapsed": 0.62
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestSRStaticConfigurationInterfaces",
+    "Action": "pass",
+    "Elapsed": 0.28
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestEnvironmentCheckArguments",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestFixedControlNativeAudit",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestNativeViewerDoesNotStartService",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Test": "TestR2CLIShape",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestSRShutdownProofRequiresReleasedWriter",
+    "Action": "pass",
+    "Elapsed": 0.22
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestRecoveryUpgradePreservesWALAndOriginalRecords",
+    "Action": "pass",
+    "Elapsed": 0.33
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRunStopAndServiceRelease",
+    "Action": "pass",
+    "Elapsed": 0.34
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketRejectsRedirectedDirectories",
+    "Action": "pass",
+    "Elapsed": 0.25
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlWindowsPathSpellings",
+    "Action": "pass",
+    "Elapsed": 0.07
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestPendingStopsRetainOriginalRequestsAcrossUnknownStartup",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestRecoveryUpgradeFailureKeepsOriginalFormat",
+    "Action": "pass",
+    "Elapsed": 0.22
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketPreservesForeignScratchOnClose",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRevocationPreventsLateQuery",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketRejectsReplacementDirectory",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestRecoveryUpgradeRejectsUnknownDurableFieldsBeforeMarkerChange",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation",
+    "Action": "pass",
+    "Elapsed": 0.88
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestDiagnosticReadNeverReplaysMutation",
+    "Action": "pass",
+    "Elapsed": 0.5
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestAuxiliaryCloseReconcilesExactIdentityAndCompleteInventory",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestStabilityEvidenceRejectsFlagOnlySuccess",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestInitializationAgentFaultPreservesOriginalEnvelope",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCancelsOnlyOriginalObserver",
+    "Action": "pass",
+    "Elapsed": 0.14
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketPreservesReplacementSocket",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolFullAccessUsesOwnedJobAndCleansStaging",
+    "Action": "pass",
+    "Elapsed": 2.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRNativeAnswerRejectsAmbiguityBeforeIntent",
+    "Action": "pass",
+    "Elapsed": 1.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestRAVersion",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlUnverifiedReceiptBackoff",
+    "Action": "pass",
+    "Elapsed": 0.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade",
+    "Action": "pass",
+    "Elapsed": 0.38
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlTransportCheckpointFailure",
+    "Action": "pass",
+    "Elapsed": 0.21
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCleanupBudgetSurvivesCallerCancellation",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketIsolationAndFailedSetup",
+    "Action": "pass",
+    "Elapsed": 0.39
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopRetainsUnresolvedRevocationRoute",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketPreservesForeignFiles",
+    "Action": "pass",
+    "Elapsed": 0.14
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketPolicyBinding",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestManifestRejectsChangedInputsAndUnsafeTargets",
+    "Action": "pass",
+    "Elapsed": 0.61
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestArtifactRejectsStaleAndForgedEvidence",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestMergeGuardRejectsForeignAndUnverifiedPR",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestPublicationPreSendRetryEvidence",
+    "Action": "fail",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketBuildsFrozenResource",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlQueryFailurePreservesNativeReaderSettlement",
+    "Action": "pass",
+    "Elapsed": 0.17
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationSocketNativeGrants",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationMissingBlocksBeforeNativeStartAndBusinessInput",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestSRRunAtomicCommit",
+    "Action": "pass",
+    "Elapsed": 0.88
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestLegacyRecoveryQualifiesContractsBeforeChangingFormat",
+    "Action": "pass",
+    "Elapsed": 0.87
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession",
+    "Action": "pass",
+    "Elapsed": 0.18
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationEnvironmentAndArgumentsNeverExportSecrets",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestSandboxReadinessRequiresAuthenticatedNativeClients",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestSRShutdownReceipt",
+    "Action": "pass",
+    "Elapsed": 0.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestSRUnsupportedStorage",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation",
+    "Action": "fail",
+    "Elapsed": 0.66
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestFeedbackReadyRefreshesLateProviderHeadWithoutReexecuting",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestTakeoverRequestFactsUseOriginalAcceptedCommands",
+    "Action": "pass",
+    "Elapsed": 0.14
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerRetainsWorkspaceAcrossCallerLoss",
+    "Action": "pass",
+    "Elapsed": 0.69
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestSandboxReadinessUsesNativePolicyAndFiniteEvidence",
+    "Action": "pass",
+    "Elapsed": 0.37
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPrepareSessionRetainsPartialProcessReceiptOnWriteFailure",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPrepareSessionRejectsInvalidSettingsBeforeAnySideEffect",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestProbeRejectsVersionMismatchBeforeManagedStart",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestProbePreservesHistoryFailureBeforeManagedStart",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestManagedCommandIndependentEffortAndOrderedPermissionArgs",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestContentReadOnlyPermissions",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestContentInterruptRejectsChangedProcess",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestConversationHistoryProtocolHelper",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Test": "TestWorkflowTransitionsAreAtomicHistoricalFacts",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryDiscoveryRejectsWorkspaceReplacementAndKeepsSourceAttempts",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestRemoteWorkspaceCleanupRequiresAuthoritativeEmptyInventory",
+    "Action": "pass",
+    "Elapsed": 0.35
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolCancellationRevokesOwnedChildren",
+    "Action": "pass",
+    "Elapsed": 1.56
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolStateCannotBeGrantedToTheChild",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner",
+    "Action": "pass",
+    "Elapsed": 1.69
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestBoundTerminalRejectsRuntimeAndIncarnationReplacement",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestDispatchCheckpointRequiresSuccessfulSingleDurableWrite",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalPipeNativeEvidence",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaInputLocalRuntime",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestStateConnectionFailureClassification",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestStateConnectionRejectionIsNotRetryable",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaNativeStateIdentity",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCNativeProbe",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestFrozenNativeRuntimeRejectsChangedMissingAndEscapingFiles",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestSignedNativeExitSurvivesIndentedArchive",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Test": "TestNativeInputFingerprintRejectsEmptyAndTracksOriginalSends",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCQueryAndUpload",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCReadsOnlyBoundStopArtifact",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCFrameFailuresAndCancellation",
+    "Action": "pass",
+    "Elapsed": 0.54
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCConcurrentClose",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOriginalAgentQueryCoversLimitedSnapshot",
+    "Action": "pass",
+    "Elapsed": 0.3
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryAdapterRejectsOversizedNativeCursor",
+    "Action": "pass",
+    "Elapsed": 1.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalQueryFeed",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryPageCandidateIsRecreatedAfterDiscardAndLateFinalKeepsTurnIdentity",
+    "Action": "pass",
+    "Elapsed": 0.24
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryPositionCannotCrossItsOriginalBinding",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryReadRejectsReplacedProjectBeforeOpeningClient",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestEnvironmentCheckCompletionNotification",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestEnvironmentCheckWriteGate",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestEnvironmentCheckPermissionModes",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestEnvironmentExpiredPreflightRejectsBeforeNativeTurn",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaNativeStateStream",
+    "Action": "pass",
+    "Elapsed": 2.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestTerminalStoppedRequiresCompleteOriginalHost",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestTerminalsStoppedUseOneCompleteOriginalInventory",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+    "Action": "pass",
+    "Elapsed": 5.19
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerControlReceiptSurvivesServiceLoss",
+    "Action": "pass",
+    "Elapsed": 0.46
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery",
+    "Action": "pass",
+    "Elapsed": 4.7
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness",
+    "Action": "pass",
+    "Elapsed": 0.45
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputRejectedReceipt",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect",
+    "Action": "pass",
+    "Elapsed": 1.86
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPrepareSessionReconnect",
+    "Action": "pass",
+    "Elapsed": 0.26
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnectCancellationDuringBackoff",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestAgentLaunchSingleTerminalAndReadonlyReconciliation",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnknownAgentLaunchNeverResendsOrAcceptsBusinessInput",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLifecycleReplyReuseAndExactStop",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalRecoveryQualificationIsIndependentOfManagedProcess",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalUnknownSubmissionOnlyObservesOriginal",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLocalAndRemoteUseIdenticalReturnAndNativePorts",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalClippedScreenDoesNotBlockNativeFinal",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestScreenReplyDoesNotRequireOffscreenHistory",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationAndSubmissionNeverReadScreen",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReplyRequiresOriginalStartedAndEnded",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalPreviousReplyCannotCompleteNewTurn",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalChangedIncarnationCannotComplete",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalNativeFinalRecoveryNeverReplaysInput",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeRemoteSubmissionWaitsForOriginalStart",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteAuthenticationCapabilityMissingBlocksBeforeBusiness",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestLocalIPCQueryCapabilityBeforeCreation",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity",
+    "Action": "pass",
+    "Elapsed": 1.21
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentCheckWrongRuntimeBlocksBeforeDispatch",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentCleanupKeepsOriginalResourcesOnLostResponse",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartupFailureReturnsWithoutDispatchAndClosesOriginalActor",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteCheckFixedProbeHasBoundedControlDeadline",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLiveLifecycle",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLifecycle",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateBinding",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalRetriesMissingBodyAndQueryFailure",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaObserverDeliversNativeFinalWithoutScreen",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeHistoricalUnknownRemainsUnknown",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestObserverQueueCancellationKeepsOriginalObservationWithoutResend",
+    "Action": "pass",
+    "Elapsed": 0.27
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationApplicabilityOriginalTerminal",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestRAWorkspaceSource",
+    "Action": "pass",
+    "Elapsed": 25.25
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolNativeStderrUTF8AndExitStatus",
+    "Action": "pass",
+    "Elapsed": 15.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativePreparationFailureIsBoundAndNeverReady",
+    "Action": "pass",
+    "Elapsed": 0.4
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeReceiptPublicationAcrossWindowsReaders",
+    "Action": "pass",
+    "Elapsed": 1.81
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsProviderReplacementInsideOriginalTerminal",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestOriginalPRVerificationSurvivesMissingListIndexAndRejectsChangedObjects",
+    "Action": "pass",
+    "Elapsed": 17.53
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestDecodeQuestionsKeepsCenterActionsOutOfNativeContent",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestCD62NativeFactsAndQuestionRoute",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRAReportWorkObservation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAppServerLaunchBindsNativeExecutable",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast",
+    "Action": "pass",
+    "Elapsed": 0.48
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerServiceCancellationClosesOnlyClientConnection",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerRejectsInputOutsideOriginalPayload",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerRejectsForeignRunConfigurationAndWorkspace",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestHistoryMixedTurnRetainsOnlyCompleteFinal",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPrepareTurnNeverOverwritesOriginalJournal",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestLaunchServerFixesWindowsSandboxBeforeStarting",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestStartTurnFailureRetainsOriginalSessionIdentity",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRAReportPolicyDeclaration",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAppServerLaunchPreservesConfiguredArgs",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestTurnStartParamsKeepApprovalAndWritableRoots",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestCloneIsolatedTransfersObjectsWithoutRuntimeFilesAndKeepsFrozenBase",
+    "Action": "pass",
+    "Elapsed": 4.99
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestNativeViewerAttachesWithoutPromptOrPolicyOverrides",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestWorkerTurnFindsPRBeforeFinalMessage",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature",
+    "Action": "pass",
+    "Elapsed": 0.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestTurnParamsRejectsUnboundCommandBeforeWorkspaceProbe",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestSRTurnModelBinding",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRAParserConfigurationProjection",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic",
+    "Action": "pass",
+    "Elapsed": 21.81
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser",
+    "Action": "pass",
+    "Elapsed": 0.22
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestGitPermissionLinkedWorktreeWriteArgsCompilesOnlyResolvedDirectories",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPrivateGitRootsRejectForeignCommonDirectory",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPreparationApplicabilitySkipsTerminalLaunch",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestCD63CodecIdentityAndVersion",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestLegacyAppProfilesRejectWithoutHostFallback",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPS2RejectsAllRetiredCodexOverrides",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPS2NativeResourceRejectsApprovalChanges",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPS2NativeLaunchAndInputForbidEscalation",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPublicMessageWhitelistAndIdentity",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRecoveryProcessIdentityRequiresPositiveNativeProof",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead",
+    "Action": "pass",
+    "Elapsed": 0.76
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRecoveryHistoryIdleRequiresOriginalStoppedTurn",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteAuthenticationStopUsesOnlyOriginalProtectedOwner",
+    "Action": "pass",
+    "Elapsed": 0.48
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteCheckActorReplaysOriginalRequestAndRejectsConflict",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteRuntimeMustStayOutsideWorkspaceAndGitWriteRoots",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteCheckSetupWireRoundTripKeepsDeadlines",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteCheckStartBeforePreparationReportsNoInput",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestFixedControlFiniteProtocol",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteAuthenticationFailureDiagnosticsRemainFinite",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestEnvironmentObservationDiagnosticsPreserveFiniteOriginalFailure",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget",
+    "Action": "pass",
+    "Elapsed": 4.84
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteExitRequiresOriginalSignedCompleteSettlement",
+    "Action": "pass",
+    "Elapsed": 1.19
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteExitAccountsForOriginalOwnedTree",
+    "Action": "pass",
+    "Elapsed": 0.26
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteExitSleepingChild",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteReaderFailedStartStillProvesNoNativeReader",
+    "Action": "pass",
+    "Elapsed": 0.23
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteAuthenticationSocketBindsWorkspaceAndConfiguration",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteServerGrantsOnlyBoundAuthenticationChild",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteNativeHookPolicyPreservesOnlyScopedTransport",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteTUIUsesServerOwnedPermissionsAndRoots",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteAuditedModelRoutingAndRestoration",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteModelBridgeUsesOriginalNativeConnection",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteNativeModelProofRejectsMissingAndChangedContexts",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteTurnMatchesCompleteOriginalInputAndNativeFinal",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations",
+    "Action": "pass",
+    "Elapsed": 4.51
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryScopeRevocationPreventsCreation",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceRepositoryFollowsProject",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryCreationRetainsReceiptOnMismatch",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopReconcilesOnlyProvenUnattemptedClose",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopProgressCannotCrossIncarnation",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope",
+    "Action": "pass",
+    "Elapsed": 1.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestExtensionStateKeepsPreparationSeparateFromCodexProof",
+    "Action": "pass",
+    "Elapsed": 0.18
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedReadinessRequiresEffectiveThinkingForNewSources",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStartupFailureCanStopWithoutInventingWorker",
+    "Action": "pass",
+    "Elapsed": 0.61
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts",
+    "Action": "pass",
+    "Elapsed": 1.83
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup",
+    "Action": "pass",
+    "Elapsed": 0.62
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresNativeExitProofBeyondPTY",
+    "Action": "pass",
+    "Elapsed": 0.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Test": "TestTerminalToolFinalStatusDoesNotBorrowEarlierNativeExit",
+    "Action": "pass",
+    "Elapsed": 16.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl",
+    "Action": "pass",
+    "Elapsed": 0.45
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead",
+    "Action": "pass",
+    "Elapsed": 0.31
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestR2CollectCommitFailureAndRestartReplay",
+    "Action": "pass",
+    "Elapsed": 13.47
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestR2GitRejectsConcurrentChange",
+    "Action": "pass",
+    "Elapsed": 15.72
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "Test": "TestRAParserProcess",
+    "Action": "pass",
+    "Elapsed": 38.93
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "Test": "TestRAParserIdentityCommitFailure",
+    "Action": "pass",
+    "Elapsed": 4.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "Test": "TestRAParserEncodedReceiptBound",
+    "Action": "pass",
+    "Elapsed": 0.41
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "Test": "TestRAParserPolicyAndEvents",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart",
+    "Action": "pass",
+    "Elapsed": 10.85
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaWorkspaceStartupLive",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationUsesConfiguredTimeout",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness",
+    "Action": "pass",
+    "Elapsed": 0.97
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationReceiptRecovery",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity",
+    "Action": "pass",
+    "Elapsed": 0.8
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestR2UnknownSourceAndReadOnlyQueries",
+    "Action": "pass",
+    "Elapsed": 23.81
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestLocalWorkspacePrepareInspectResourcesAndCleanup",
+    "Action": "pass",
+    "Elapsed": 22.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Test": "TestPrepareRejectsHeadChangedByCheckoutHook",
+    "Action": "pass",
+    "Elapsed": 6.94
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner",
+    "Action": "pass",
+    "Elapsed": 62
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestRemoteWorkspaceEvidenceCannotPromoteRevisionOnlyOrForeignFacts",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestServiceStopWorkerHelper",
+    "Action": "skip",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestServiceStopWorkerFacts",
+    "Action": "pass",
+    "Elapsed": 0.24
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestIndependentOwnerServiceDetachPreservesOriginalTree",
+    "Action": "pass",
+    "Elapsed": 0.31
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestWorkerRuntimeTempUsesFixedAdmin",
+    "Action": "pass",
+    "Elapsed": 0.4
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestWorkerRuntimeEnvironmentPreservesGitConfigAndRejectsAlias",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestWorkspaceLifecyclePrecedesSessionAndRejectsRetargeting",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAsyncQuestionObserveSteerAndReconcile",
+    "Action": "pass",
+    "Elapsed": 0.53
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestCD63BindingCodecIsolation",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestCodexLinkedWorktreeWriteArgsOnlyGrantsFixedGitPaths",
+    "Action": "pass",
+    "Elapsed": 17.05
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestWorkerFlowMockCodexHelper",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAppServerOutcomeUsesNativeTurnAndEarlierPRItem",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestMockAppServerThreadAndTurnContract",
+    "Action": "pass",
+    "Elapsed": 0.25
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRFreezeBaseBranchRefresh",
+    "Action": "pass",
+    "Elapsed": 146.67
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentMaterialSnapshot",
+    "Action": "pass",
+    "Elapsed": 0.04
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentConcurrentMessages",
+    "Action": "pass",
+    "Elapsed": 0.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope",
+    "Action": "pass",
+    "Elapsed": 0.47
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentInterruptRequestStatus",
+    "Action": "pass",
+    "Elapsed": 0.25
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentCleanupFailureIndependent",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentGenerateResults",
+    "Action": "pass",
+    "Elapsed": 2.35
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentConversationControls",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestContentDirectoryAndUnknownResult",
+    "Action": "pass",
+    "Elapsed": 0.36
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckPublicFixtures",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckAcceptedFailureOriginalCommandsAndRestart",
+    "Action": "pass",
+    "Elapsed": 0.59
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckUnsupportedIsQueryableWithoutCheck",
+    "Action": "pass",
+    "Elapsed": 0.07
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckExternalFailureCannotHideObservedObject",
+    "Action": "pass",
+    "Elapsed": 0.23
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckLocalOwnershipAndRecreatedPath",
+    "Action": "pass",
+    "Elapsed": 0.3
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckFreshSettlementPreservesCompletedCapability",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckDuplicateAndUnknownNativeTools",
+    "Action": "pass",
+    "Elapsed": 0.18
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckSettlementKeepsCapabilityAndOriginalIdentity",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckRestartReconcilesWithoutNewInput",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckOperationUsesFrozenExecutionHost",
+    "Action": "pass",
+    "Elapsed": 0.23
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes",
+    "Action": "pass",
+    "Elapsed": 0.36
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestCheckReplyFailurePersistsUnknownWithoutRepeatingProbe",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestCheckProbeFailureKeepsFiniteObservationStage",
+    "Action": "pass",
+    "Elapsed": 0.36
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources",
+    "Action": "pass",
+    "Elapsed": 0.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestEnvironmentCheckLegacyRemoteDoesNotStartActor",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRResumeWorkflowRetainsOriginalReportSource",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal",
+    "Action": "pass",
+    "Elapsed": 0.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+    "Action": "pass",
+    "Elapsed": 1.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRRepositoryCacheWithLongBranchPath",
+    "Action": "pass",
+    "Elapsed": 2.4
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRCompactCacheCanPublishLinkedWorktree",
+    "Action": "pass",
+    "Elapsed": 6.58
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLastMessageIsBoundedReadOnlyTelemetry",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROrcaFrozenMaterials",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution",
+    "Action": "pass",
+    "Elapsed": 0.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRObservationAttachmentCommitsBeforePublishingObserver",
+    "Action": "pass",
+    "Elapsed": 0.27
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRObservationUnchangedProjectionStillCommitsIdentity",
+    "Action": "pass",
+    "Elapsed": 0.27
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRObservationCommitFailureKeepsEventReplayable",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationReconciliationKeepsPartialBinding",
+    "Action": "pass",
+    "Elapsed": 0.07
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopSerializesWithNativeDispatch",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationIntentCommitFailureDoesNotDispatch",
+    "Action": "pass",
+    "Elapsed": 0.09
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationReceiptCommitFailureReconcilesOriginal",
+    "Action": "pass",
+    "Elapsed": 0.61
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopBindingCommitFailureDoesNotDispatch",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRFreezeOrcaAgent",
+    "Action": "pass",
+    "Elapsed": 67.64
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAParserAcquisition",
+    "Action": "pass",
+    "Elapsed": 148.41
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRALateParserReceiptAndDuplicate",
+    "Action": "pass",
+    "Elapsed": 17.18
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityParserHistory",
+    "Action": "pass",
+    "Elapsed": 12.01
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAtomicParserRecovery",
+    "Action": "pass",
+    "Elapsed": 21.88
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyParserStopResources",
+    "Action": "pass",
+    "Elapsed": 16.9
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityParserReferences",
+    "Action": "pass",
+    "Elapsed": 13.66
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationQueryStopAuthorization",
+    "Action": "pass",
+    "Elapsed": 0.77
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationQueryStopSettlesOriginalOperation",
+    "Action": "pass",
+    "Elapsed": 0.07
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationQueryRejectsRevokedOrChangedState",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization",
+    "Action": "pass",
+    "Elapsed": 0.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestPrivateRunGitGrantDoesNotExpandLegacyCache",
+    "Action": "pass",
+    "Elapsed": 35
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRReportFreezesOriginatingNativePolicy",
+    "Action": "pass",
+    "Elapsed": 0.13
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRLongTurnCanPrepareNextStage",
+    "Action": "pass",
+    "Elapsed": 0.07
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRAcceptedResourceUsesOriginalOperation",
+    "Action": "pass",
+    "Elapsed": 0.16
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAtomicCompletion",
+    "Action": "pass",
+    "Elapsed": 15.03
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryMissingCheckpoint",
+    "Action": "pass",
+    "Elapsed": 1.06
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthority",
+    "Action": "pass",
+    "Elapsed": 1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRABudgetReportOnce",
+    "Action": "pass",
+    "Elapsed": 13.08
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication",
+    "Action": "pass",
+    "Elapsed": 120.19
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConfigRejectBeforeEffects",
+    "Action": "pass",
+    "Elapsed": 0.02
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAuditObservedReportWork",
+    "Action": "pass",
+    "Elapsed": 18.23
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRATransitionUnknownNativeGate",
+    "Action": "pass",
+    "Elapsed": 1.76
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityQuestionSource",
+    "Action": "pass",
+    "Elapsed": 5.97
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryConsumedInput",
+    "Action": "pass",
+    "Elapsed": 1.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityMilestone",
+    "Action": "pass",
+    "Elapsed": 0.8
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAFeedbackSupersedesUnsent",
+    "Action": "pass",
+    "Elapsed": 5.69
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+    "Action": "pass",
+    "Elapsed": 0.99
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence",
+    "Action": "pass",
+    "Elapsed": 0.11
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress",
+    "Action": "pass",
+    "Elapsed": 0.1
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation",
+    "Action": "pass",
+    "Elapsed": 0.15
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration",
+    "Action": "pass",
+    "Elapsed": 0.12
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts",
+    "Action": "pass",
+    "Elapsed": 0.2
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAuditLifecycle",
+    "Action": "pass",
+    "Elapsed": 15.39
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryBusinessInput",
+    "Action": "pass",
+    "Elapsed": 11.22
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAVersionRejectLegacy",
+    "Action": "pass",
+    "Elapsed": 0
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary",
+    "Action": "pass",
+    "Elapsed": 28.17
+  }
+]

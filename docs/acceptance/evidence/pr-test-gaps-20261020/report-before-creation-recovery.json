@@ -1,0 +1,62 @@
+{
+  "schema": "steerrunner-pr-test-gaps/v1",
+  "status": "partial_with_runner_recovery_gap_and_environment_blockers",
+  "base_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "reviewed_prs": [
+    35,
+    34,
+    33,
+    28,
+    32
+  ],
+  "core_runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+  "followup_runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+  "l1_go_passed": 480,
+  "l1_conditional_or_helper_skips": 8,
+  "framework_passed": 19,
+  "extension_tests_passed": 29,
+  "controlled_passed": 21,
+  "controlled_mode": "two disjoint identical-build partitions",
+  "focused_native_windows_passed": 7,
+  "local_l2": "passed with actual project report R2 and authentication cleanup",
+  "l4_independent_passed": 4,
+  "other_independent_remote_passed": 4,
+  "remote_generation_followup_passed": 3,
+  "remote_sandbox_blocked_cases": [
+    "orca-remote.smoke/default",
+    "orca-remote.caller-exit/accepted-response-lost",
+    "orca-remote.service-restart/graceful-active",
+    "orca-remote.service-restart/kill-active"
+  ],
+  "complete_l2_or_l3_level_claimed": false,
+  "script_success_exit_code": 0,
+  "remaining_owned_local_runner_or_test_processes": 0,
+  "manual_actions": [
+    "SteerLine same-install UpdateRunner UI acceptance",
+    "eight administrator fault cases using isolated admin host"
+  ],
+  "external_blockers": [
+    "remote sandbox trusted Git roots preparation/authorization"
+  ],
+  "test_pr_urls": [
+    "https://github.com/erranliu/SteerlineTest/pull/626",
+    "https://github.com/erranliu/SteerlineTest/pull/627",
+    "https://github.com/erranliu/SteerlineTest/pull/628",
+    "https://github.com/erranliu/SteerlineTest/pull/629",
+    "https://github.com/erranliu/SteerlineTest/pull/630",
+    "https://github.com/erranliu/SteerlineTest/pull/631",
+    "https://github.com/erranliu/SteerlineTest/pull/632"
+  ],
+  "finished_at": "2026-10-20T04:20:56.3932691Z",
+  "runner_capability_gaps": [
+    {
+      "current_verified": "unknown does not repeat creation or claim a resource by name",
+      "unprovable_outcome": "retain unknown if no original resource identity evidence exists",
+      "pending": "Runner-owned durable create executor/receipt and original-operation reconciliation across service or caller loss",
+      "capability": "original resource creation receipt recovery",
+      "implementation_scope": "SteerRunner only, using existing public Orca interfaces"
+    }
+  ],
+  "responsibility_correction_at": "2026-10-20T04:32:42.7993295Z"
+}

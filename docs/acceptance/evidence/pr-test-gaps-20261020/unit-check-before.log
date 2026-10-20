@@ -1,0 +1,27 @@
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation
+    takeover_regression_test.go:38: takeover accepted an unsupported Check or changed original facts [{  original-check check 7 original-input compatible }]
+--- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation (0.00s)
+    --- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth (0.00s)
+    --- FAIL: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation (0.00s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	2.655s
+FAIL

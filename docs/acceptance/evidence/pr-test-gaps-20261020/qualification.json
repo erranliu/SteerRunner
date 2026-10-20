@@ -1,0 +1,112 @@
+{
+  "schema": "steerrunner-pr-gap-qualification/v1",
+  "status": "passed",
+  "mode": "fresh disjoint controlled partitions, identical Runner and test fixture",
+  "results": [
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-verified",
+      "native_zero_match_guard": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-verified\\framework",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaStoppedNativeProbe",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_driver_compile_exit": 0,
+      "terminal_extensions_passed": true,
+      "level": "L1",
+      "exit_code": 0,
+      "terminal_extension_test_count": 29,
+      "terminal_extension_exit": 0,
+      "test_count": 479
+    },
+    {
+      "test_count": 19,
+      "level": "framework",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-framework-final",
+      "exit_code": 0
+    },
+    {
+      "level": "Controlled",
+      "runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+      "partitions": [
+        {
+          "name": "pr-gap-controlled-remaining",
+          "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-controlled-remaining",
+          "result": {
+            "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-controlled-remaining\\steerrunner.exe",
+            "exit_code": 0,
+            "finished_at": "2026-10-20T03:30:01.4551291Z",
+            "scenario_count": 20
+          },
+          "tests": [
+            "TestSRWorkflowDiscoveryAndSelection",
+            "TestSRContentGenerationRecovery",
+            "TestSRContentGenerate",
+            "TestSRContentConversation",
+            "TestSRContentQuestionAndUnknown",
+            "TestEnvironmentCheckCLI",
+            "TestSRMultipleRunsIsolation",
+            "TestSRRunEvidenceR2",
+            "TestSRStandalonePackage",
+            "TestSRServiceOwnership",
+            "TestSRStabilityLostSubmitResponse",
+            "TestSRStabilityRevocationAcrossRestart",
+            "TestSRInputFreeze",
+            "TestSRPermissionQualification",
+            "TestSRRunWorkflow",
+            "TestSRStorageLogsEvents",
+            "TestSRPublicationIdentity",
+            "TestSRPublicationBeforeWorkflowReady",
+            "TestSRNativeUnknownAndStop",
+            "TestSRRestartPreservesAuthorization"
+          ],
+          "source": {
+            "pid": 26428,
+            "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI|TestSRContentGenerate|TestSRContentConversation|TestSRContentQuestionAndUnknown|TestSRContentGenerationRecovery|TestSRRunEvidenceR2)$",
+            "runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+            "fixture_sha256": "05FFFE26A20E6B85C1807704BA68891C927422D446DA1E38987FA557673DCACB",
+            "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+            "source_dirty": true,
+            "go_version": "go version go1.26.4 windows/amd64",
+            "os_version": "Microsoft Windows NT 10.0.26200.0",
+            "machine": "LIUMING-ASUS"
+          }
+        },
+        {
+          "name": "pr-gap-controlled-acquisition",
+          "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-controlled-acquisition",
+          "result": {
+            "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-controlled-acquisition\\steerrunner.exe",
+            "exit_code": 0,
+            "finished_at": "2026-10-20T03:31:17.5593208Z",
+            "scenario_count": 1
+          },
+          "tests": [
+            "TestSRResultAcquisition"
+          ],
+          "source": {
+            "pid": 16092,
+            "pattern": "^TestSRResultAcquisition$",
+            "runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+            "fixture_sha256": "05FFFE26A20E6B85C1807704BA68891C927422D446DA1E38987FA557673DCACB",
+            "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+            "source_dirty": true,
+            "go_version": "go version go1.26.4 windows/amd64",
+            "os_version": "Microsoft Windows NT 10.0.26200.0",
+            "machine": "LIUMING-ASUS"
+          }
+        }
+      ],
+      "exit_code": 0,
+      "scenario_count": 21
+    }
+  ],
+  "runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+  "historical_failed_batch": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\pr-gap-verified\\summary.json"
+}

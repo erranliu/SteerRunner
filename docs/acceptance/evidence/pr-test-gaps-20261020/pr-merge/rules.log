@@ -1,0 +1,421 @@
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable	0.760s [no tests to run]
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable/operation	0.965s [no tests to run]
+=== RUN   TestRAParserFieldProvenance
+=== RUN   TestRAParserFieldProvenance/question
+--- PASS: TestRAParserFieldProvenance/question (0.00s)
+=== RUN   TestRAParserFieldProvenance/blocker
+--- PASS: TestRAParserFieldProvenance/blocker (0.00s)
+--- PASS: TestRAParserFieldProvenance (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.150s
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits
+=== RUN   TestRAParserProcess
+=== RUN   TestRAParserProcess/GOOD
+=== RUN   TestArtifactRejectsStaleAndForgedEvidence
+--- PASS: TestArtifactRejectsStaleAndForgedEvidence (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence
+=== RUN   TestPublicationPreSendRetryEvidence/legacy-step
+--- PASS: TestPublicationPreSendRetryEvidence/legacy-step (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/report-step
+--- PASS: TestPublicationPreSendRetryEvidence/report-step (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/implementation-step
+--- PASS: TestPublicationPreSendRetryEvidence/implementation-step (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/prepare
+--- PASS: TestPublicationPreSendRetryEvidence/prepare (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/attempted
+--- PASS: TestPublicationPreSendRetryEvidence/attempted (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/identity
+--- PASS: TestPublicationPreSendRetryEvidence/identity (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/unauthorized
+--- PASS: TestPublicationPreSendRetryEvidence/unauthorized (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/same-call
+--- PASS: TestPublicationPreSendRetryEvidence/same-call (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/too-early
+--- PASS: TestPublicationPreSendRetryEvidence/too-early (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/wrong-terminal
+--- PASS: TestPublicationPreSendRetryEvidence/wrong-terminal (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/no-receipt
+--- PASS: TestPublicationPreSendRetryEvidence/no-receipt (0.00s)
+=== RUN   TestPublicationPreSendRetryEvidence/sent
+--- PASS: TestPublicationPreSendRetryEvidence/sent (0.00s)
+--- PASS: TestPublicationPreSendRetryEvidence (0.00s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/0
+--- PASS: TestR2ArtifactDiscoveryAndFileLimits/0 (0.00s)
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/1048576
+--- PASS: TestR2ArtifactDiscoveryAndFileLimits/1048576 (0.01s)
+=== RUN   TestR2ArtifactDiscoveryAndFileLimits/1048577
+--- PASS: TestR2ArtifactDiscoveryAndFileLimits/1048577 (0.01s)
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid (0.06s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope (0.04s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block
+=== RUN   TestRecoveryUpgradePreservesWALAndOriginalRecords
+--- PASS: TestR2ArtifactDiscoveryAndFileLimits (0.45s)
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/grow
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block (0.11s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement
+--- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/grow (0.03s)
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/replace
+--- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/replace (0.02s)
+=== RUN   TestR2ArtifactChangesDuringReadNeverReturnBytes/read-error
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement (0.04s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked
+--- PASS: TestRecoveryUpgradePreservesWALAndOriginalRecords (0.12s)
+=== RUN   TestRecoveryUpgradeFailureKeepsOriginalFormat
+--- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes/read-error (0.02s)
+--- PASS: TestR2ArtifactChangesDuringReadNeverReturnBytes (0.07s)
+=== RUN   TestR2ArtifactContainment
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked (0.05s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit (0.02s)
+--- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation (0.33s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.792s
+--- PASS: TestRecoveryUpgradeFailureKeepsOriginalFormat (0.10s)
+=== RUN   TestRecoveryUpgradeRejectsUnknownDurableFieldsBeforeMarkerChange
+--- PASS: TestRecoveryUpgradeRejectsUnknownDurableFieldsBeforeMarkerChange (0.06s)
+=== RUN   TestTakeoverRequestFactsUseOriginalAcceptedCommands
+--- PASS: TestTakeoverRequestFactsUseOriginalAcceptedCommands (0.04s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.920s
+--- PASS: TestR2ArtifactContainment (0.26s)
+=== RUN   TestR2GitRejectsConcurrentChange
+=== RUN   TestR2GitRejectsConcurrentChange/dirty
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00
+=== RUN   TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast
+=== RUN   TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast/completion
+--- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00 (0.12s)
+=== RUN   TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker
+--- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker (0.11s)
+--- PASS: TestCreationOwnerRetainsWorkspaceAcrossCallerLoss (0.23s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss
+--- PASS: TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast/completion (0.22s)
+=== RUN   TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast/question
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss (0.14s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result
+--- PASS: TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast/question (0.21s)
+--- PASS: TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast (0.43s)
+=== RUN   TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread
+--- PASS: TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread (0.05s)
+=== RUN   TestExecutionOwnerServiceCancellationClosesOnlyClientConnection
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result (0.19s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result
+--- PASS: TestExecutionOwnerServiceCancellationClosesOnlyClientConnection (0.09s)
+=== RUN   TestExecutionOwnerRejectsInputOutsideOriginalPayload
+--- PASS: TestExecutionOwnerRejectsInputOutsideOriginalPayload (0.00s)
+=== RUN   TestExecutionOwnerRejectsForeignRunConfigurationAndWorkspace
+--- PASS: TestExecutionOwnerRejectsForeignRunConfigurationAndWorkspace (0.00s)
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/project
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/project (0.00s)
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/config
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/config (0.00s)
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/generation
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/generation (0.00s)
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/root
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/root (0.00s)
+=== RUN   TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/action
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding/action (0.00s)
+--- PASS: TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding (0.03s)
+=== RUN   TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint
+--- PASS: TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint (0.01s)
+=== RUN   TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature
+--- PASS: TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature (0.06s)
+=== RUN   TestRAParserConfigurationProjection
+=== RUN   TestRAParserConfigurationProjection/user
+--- PASS: TestRAParserConfigurationProjection/user (0.00s)
+=== RUN   TestRAParserConfigurationProjection/system
+--- PASS: TestRAParserConfigurationProjection/system (0.00s)
+=== RUN   TestRAParserConfigurationProjection/cloud
+--- PASS: TestRAParserConfigurationProjection/cloud (0.00s)
+--- PASS: TestRAParserConfigurationProjection (0.00s)
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed
+--- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/completed (0.04s)
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result (0.21s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result
+--- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/pending (0.05s)
+=== RUN   TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing
+--- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser/missing (0.04s)
+--- PASS: TestExecutionOwnerParserReconciliationReadsOnlyOriginalParser (0.13s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	3.340s
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result (0.20s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output (0.15s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation (0.15s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command (0.14s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan (0.12s)
+=== RUN   TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed
+=== RUN   TestPendingStopsRetainOriginalRequestsAcrossUnknownStartup
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/count
+--- PASS: TestPendingStopsRetainOriginalRequestsAcrossUnknownStartup (0.04s)
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server
+--- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/codex-app-server (0.08s)
+=== RUN   TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal
+--- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade/orca-terminal (0.08s)
+--- PASS: TestLegacyRecoveryRejectsRetiredCheckBeforeFormatUpgrade (0.16s)
+=== RUN   TestLegacyRecoveryQualifiesContractsBeforeChangingFormat
+--- PASS: TestLegacyRecoveryQualifiesContractsBeforeChangingFormat (0.12s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	4.559s
+--- PASS: TestR2GitRejectsConcurrentChange/dirty (3.27s)
+=== RUN   TestR2GitRejectsConcurrentChange/commit
+--- PASS: TestRAParserProcess/GOOD (4.59s)
+=== RUN   TestRAParserProcess/BAD
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed (3.08s)
+--- PASS: TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch (4.37s)
+=== RUN   TestCreationOwnerControlReceiptSurvivesServiceLoss
+--- PASS: TestCreationOwnerControlReceiptSurvivesServiceLoss (0.15s)
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/plan-write-failed
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/plan-write-failed (0.10s)
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed
+--- PASS: TestR2GitRejectsConcurrentChange/commit (3.29s)
+=== RUN   TestR2GitRejectsConcurrentChange/header_like_rename
+--- PASS: TestRAParserProcess/BAD (3.61s)
+=== RUN   TestRAParserProcess/TOOL
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed (3.06s)
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/count (6.51s)
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/bytes
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost (0.55s)
+=== RUN   TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed (0.14s)
+--- PASS: TestCreationOwnerIncompleteLaunchClaimNeverRetries (3.85s)
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint
+--- PASS: TestR2GitRejectsConcurrentChange/header_like_rename (3.57s)
+--- PASS: TestR2GitRejectsConcurrentChange (10.13s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	12.119s
+--- PASS: TestRAParserProcess/TOOL (3.56s)
+=== RUN   TestRAParserProcess/EXTERNAL
+--- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint (2.16s)
+=== RUN   TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/reconcile-empty
+--- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/reconcile-empty (2.01s)
+--- PASS: TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery (4.17s)
+=== RUN   TestRepositoryCacheConflictClassification
+=== RUN   TestRepositoryCacheConflictClassification/observed
+--- PASS: TestRepositoryCacheConflictClassification/observed (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/wrapped-stderr
+--- PASS: TestRepositoryCacheConflictClassification/wrapped-stderr (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/access
+--- PASS: TestRepositoryCacheConflictClassification/access (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/busy
+--- PASS: TestRepositoryCacheConflictClassification/busy (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/forward-slashes
+--- PASS: TestRepositoryCacheConflictClassification/forward-slashes (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/permission
+--- PASS: TestRepositoryCacheConflictClassification/permission (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/open-cache
+--- PASS: TestRepositoryCacheConflictClassification/open-cache (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/other-file
+--- PASS: TestRepositoryCacheConflictClassification/other-file (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/other-directory
+--- PASS: TestRepositoryCacheConflictClassification/other-directory (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/foreign-temp
+--- PASS: TestRepositoryCacheConflictClassification/foreign-temp (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/nested-temp
+--- PASS: TestRepositoryCacheConflictClassification/nested-temp (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/not-temporary
+--- PASS: TestRepositoryCacheConflictClassification/not-temporary (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/missing
+--- PASS: TestRepositoryCacheConflictClassification/missing (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/authentication
+--- PASS: TestRepositoryCacheConflictClassification/authentication (0.00s)
+=== RUN   TestRepositoryCacheConflictClassification/identity
+--- PASS: TestRepositoryCacheConflictClassification/identity (0.00s)
+--- PASS: TestRepositoryCacheConflictClassification (0.00s)
+=== RUN   TestRepositoryQueryRetryBudget
+=== RUN   TestRepositoryQueryRetryBudget/attempt-limit
+--- PASS: TestRAParserProcess/EXTERNAL (3.81s)
+=== RUN   TestRAParserProcess/EXIT
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/bytes (7.15s)
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic (13.67s)
+=== RUN   TestR2CollectCommitFailureAndRestartReplay
+--- PASS: TestRepositoryQueryRetryBudget/attempt-limit (3.63s)
+=== RUN   TestRepositoryQueryRetryBudget/permanent-after-conflict
+--- PASS: TestRepositoryQueryRetryBudget/permanent-after-conflict (0.25s)
+=== RUN   TestRepositoryQueryRetryBudget/cancel-backoff
+--- PASS: TestRepositoryQueryRetryBudget/cancel-backoff (0.02s)
+=== RUN   TestRepositoryQueryRetryBudget/caller-deadline
+--- PASS: TestRepositoryQueryRetryBudget/caller-deadline (0.06s)
+=== RUN   TestRepositoryQueryRetryBudget/slow-call
+--- PASS: TestRepositoryQueryRetryBudget/slow-call (0.07s)
+=== RUN   TestRepositoryQueryRetryBudget/shared-deadline
+--- PASS: TestRepositoryQueryRetryBudget/shared-deadline (0.51s)
+=== RUN   TestRepositoryQueryRetryBudget/already-canceled
+--- PASS: TestRepositoryQueryRetryBudget/already-canceled (0.01s)
+--- PASS: TestRepositoryQueryRetryBudget (4.55s)
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations/recovers
+2026/10/20 13:19:46 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=2/5 delay=268.657348ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations/recovers (0.35s)
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations/inventory-denied
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations/inventory-denied (0.00s)
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations/inventory-exhausted
+2026/10/20 13:19:46 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=2/5 delay=260.918975ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+2026/10/20 13:19:46 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=3/5 delay=454.585466ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+--- PASS: TestRAParserProcess/EXIT (3.84s)
+=== RUN   TestRAParserProcess/MODEL
+2026/10/20 13:19:47 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=4/5 delay=952.859407ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+2026/10/20 13:19:48 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=5/5 delay=1.982950774s budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations/inventory-exhausted (3.67s)
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations/creation-unknown
+2026/10/20 13:19:50 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=2/5 delay=250.918161ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations/creation-unknown (0.26s)
+=== RUN   TestRepositoryCacheRetryNeverReplaysMutations/send-unknown
+2026/10/20 13:19:50 Orca repository cache conflict run=dddddddddddddddddddddddddddddddd attempt=bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb retry=2/5 delay=270.427172ms budget=15s first_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'" last_error="EPERM: operation not permitted, rename 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json.29180.1792398040614.bcdf4d32.tmp' -> 'C:\\Users\\worker\\AppData\\Roaming\\orca\\orca-environments.json'"
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations/send-unknown (0.28s)
+--- PASS: TestRepositoryCacheRetryNeverReplaysMutations (4.56s)
+=== RUN   TestRepositoryQueryScopeRevocationPreventsCreation
+--- PASS: TestRepositoryQueryScopeRevocationPreventsCreation (0.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	24.382s
+--- PASS: TestRAParserProcess/MODEL (3.73s)
+=== RUN   TestRAParserProcess/NOFINAL
+--- PASS: TestR2CollectCommitFailureAndRestartReplay (7.88s)
+=== RUN   TestR2UnknownSourceAndReadOnlyQueries
+--- PASS: TestRAParserProcess/NOFINAL (4.11s)
+=== RUN   TestRAParserProcess/HUGE
+--- PASS: TestRAParserProcess/HUGE (4.76s)
+=== RUN   TestRAParserProcess/HANG
+--- PASS: TestRAParserProcess/HANG (4.14s)
+--- PASS: TestRAParserProcess (36.14s)
+=== RUN   TestRAParserIdentityCommitFailure
+--- PASS: TestRAParserIdentityCommitFailure (3.86s)
+=== RUN   TestRAParserEncodedReceiptBound
+--- PASS: TestRAParserEncodedReceiptBound (0.05s)
+=== RUN   TestRAParserPolicyAndEvents
+--- PASS: TestRAParserPolicyAndEvents (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	41.411s
+--- PASS: TestR2UnknownSourceAndReadOnlyQueries (18.65s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/workspace-git
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/workspace-git (5.21s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_discover
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_discover (4.27s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_collect
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_collect (3.82s)
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl (13.30s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/stop
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/stop (6.42s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/revision
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/revision (3.76s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/identity
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/identity (4.17s)
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision (14.34s)
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop/stop
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop/stop (7.53s)
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop/identity
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop/identity (7.08s)
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop (14.61s)
+=== RUN   TestR2CollectionCommitFailureReplaysOriginalRequest
+--- PASS: TestR2CollectionCommitFailureReplaysOriginalRequest (7.02s)
+=== RUN   TestServiceGenerationPreservesDurableAuthorizationAndBusinessState
+--- PASS: TestServiceGenerationPreservesDurableAuthorizationAndBusinessState (0.10s)
+=== RUN   TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation
+--- PASS: TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation (0.06s)
+=== RUN   TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts
+--- PASS: TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts (0.00s)
+=== RUN   TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource
+--- PASS: TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource (0.00s)
+=== RUN   TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata
+--- PASS: TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata (0.00s)
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+--- PASS: TestRAParserAcquisition/completed (15.68s)
+=== RUN   TestRAParserAcquisition/needs_input
+--- PASS: TestRAParserAcquisition/needs_input (14.50s)
+=== RUN   TestRAParserAcquisition/conflict
+--- PASS: TestRAParserAcquisition/conflict (14.61s)
+=== RUN   TestRAParserAcquisition/failed
+--- PASS: TestRAParserAcquisition/failed (16.69s)
+=== RUN   TestRAParserAcquisition/policy_violation
+--- PASS: TestRAParserAcquisition/policy_violation (15.70s)
+=== RUN   TestRAParserAcquisition/side_effect_unverified
+--- PASS: TestRAParserAcquisition/side_effect_unverified (12.72s)
+=== RUN   TestRAParserAcquisition/stop
+--- PASS: TestRAParserAcquisition/stop (8.70s)
+=== RUN   TestRAParserAcquisition/source-drift
+--- PASS: TestRAParserAcquisition/source-drift (11.78s)
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition/new-source (8.28s)
+--- PASS: TestRAParserAcquisition (118.65s)
+=== RUN   TestRAParserDispatchCommitFailureDoesNotStartResource
+--- PASS: TestRAParserDispatchCommitFailureDoesNotStartResource (11.13s)
+=== RUN   TestSRPreparationQueryStopAuthorization
+=== RUN   TestSRPreparationQueryStopAuthorization/cancel-blocked-query
+--- PASS: TestSRPreparationQueryStopAuthorization/cancel-blocked-query (0.04s)
+=== RUN   TestSRPreparationQueryStopAuthorization/successful-query-races-stop
+--- PASS: TestSRPreparationQueryStopAuthorization/successful-query-races-stop (0.04s)
+=== RUN   TestSRPreparationQueryStopAuthorization/failed-stop-commit
+--- PASS: TestSRPreparationQueryStopAuthorization/failed-stop-commit (0.07s)
+=== RUN   TestSRPreparationQueryStopAuthorization/stale-stop
+--- PASS: TestSRPreparationQueryStopAuthorization/stale-stop (0.05s)
+=== RUN   TestSRPreparationQueryStopAuthorization/normal-query
+--- PASS: TestSRPreparationQueryStopAuthorization/normal-query (0.04s)
+--- PASS: TestSRPreparationQueryStopAuthorization (0.25s)
+=== RUN   TestSRPreparationQueryStopSettlesOriginalOperation
+--- PASS: TestSRPreparationQueryStopSettlesOriginalOperation (0.07s)
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked (0.04s)
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed (0.05s)
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState (0.09s)
+=== RUN   TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization
+--- PASS: TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization (0.05s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation (0.00s)
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations (0.00s)
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation (0.04s)
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate (0.04s)
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration (0.08s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null (0.05s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{}
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{} (0.05s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"}
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"} (0.05s)
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts (0.14s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	224.361s

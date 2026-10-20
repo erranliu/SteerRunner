@@ -1,0 +1,12 @@
+{
+  "run_id": "fcf0c447566ea8617954c449bc0bd491",
+  "original_native_pid": 40844,
+  "fixture": "C:\\srt\\c8a716fe3927",
+  "original_cleanup_receipt_unchanged": true,
+  "removed_exact_scratch": "C:\\srt\\c8a716fe3927\\s\\a\\fakucoknkfqbdgmyvaccegcm7y\\smoke-pr-body.md",
+  "original_writers_absent": true,
+  "removed_empty_directory": "C:\\srt\\c8a716fe3927\\s\\a\\fakucoknkfqbdgmyvaccegcm7y",
+  "schema": "steerrunner-test-cleanup/v1",
+  "original_test_result_unchanged": true,
+  "scratch_sha256": "B1F9BB4D1FC29248E9C340646E3B1A59E2C755ADF56E4CE90962FF90A2722E98"
+}

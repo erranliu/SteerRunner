@@ -1,0 +1,12 @@
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource
+--- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent (0.15s)
+    --- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original (0.09s)
+    --- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource (0.07s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	2.931s
+=== RUN   TestCreationOwnerStartupUsesOriginalDeadline
+--- PASS: TestCreationOwnerStartupUsesOriginalDeadline (0.11s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	1.828s

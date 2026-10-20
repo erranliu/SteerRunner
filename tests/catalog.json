@@ -23,7 +23,9 @@
     "TestSRContentGenerate",
     "TestSRContentConversation",
     "TestSRContentQuestionAndUnknown",
-    "TestSRRunEvidenceR2"
+    "TestSRContentGenerationRecovery",
+    "TestSRRunEvidenceR2",
+    "TestSRResourceCreationRecovery"
   ],
   "scenarios": [
     {
@@ -119,6 +121,8 @@
       "cases": [
         "graceful-active",
         "kill-active",
+        "graceful-active-full-access",
+        "kill-active-full-access",
         "graceful-boundary",
         "kill-boundary"
       ]
@@ -285,6 +289,24 @@
     }
   ],
   "focused_native_scenarios": [
+    {
+      "id": "local-codex.generation-recovery",
+      "level": "L3",
+      "test": "TestSRContentNativeGenerationRecovery",
+      "entry": "scripts/test-generation-recovery.ps1",
+      "scope": "new C:/srt/cw-recovery-* state; real native Codex, no Git or PR",
+      "requires": ["explicit native executable", "controlled recovery prerequisites"],
+      "expected": ["active graceful restart", "active kill", "compatible binary takeover", "startup stop", "same original process/session/turn", "offline resource settlement"]
+    },
+    {
+      "id": "local-codex.parser-generation-recovery",
+      "level": "L3",
+      "test": "TestSRNativeParserGenerationRecovery",
+      "entry": "scripts/test-generation-recovery.ps1",
+      "scope": "isolated controlled business/provider; real native parser and original owner; no real PR",
+      "requires": ["explicit native executable", "controlled recovery prerequisites"],
+      "expected": ["original parser survives graceful/kill", "offline completion adopted once", "explicit stop cancels original parser"]
+    },
     {
       "id": "local-codex.content-generate-takeover",
       "level": "L3",

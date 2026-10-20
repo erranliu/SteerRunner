@@ -1,0 +1,60 @@
+{
+  "schema": "steerrunner-admin-faults/v1",
+  "status": "completed_with_environment_blockers",
+  "finished_at": "2026-10-20T05:23:08.6633385Z",
+  "runner_sha256": "653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a",
+  "main_is_administrator": false,
+  "formal_cases_selected": 8,
+  "initial_batch_status": "failed",
+  "initial_passed": 2,
+  "initial_failed": 6,
+  "initial_excluded": 0,
+  "passed_cases": [
+    "orca-remote.stop-revocation/boundary",
+    "orca-remote.stop-revocation/unreachable"
+  ],
+  "blocked_cases": [
+    "orca-remote.connection-reconnect/active-disconnect",
+    "orca-remote.connection-reconnect/pre-send-disconnect",
+    "orca-remote.service-restart/graceful-boundary",
+    "orca-remote.service-restart/kill-boundary",
+    "orca-remote.publication-unknown/completion-gap",
+    "orca-remote.publication-unknown/query-unavailable"
+  ],
+  "pre_send_followup": {
+    "original_operation_connection_retry": true,
+    "authority_retained": true,
+    "business_blocker": "index.lock Permission denied / Publication requires committed work",
+    "status": "failed",
+    "fresh_fixture": "C:\\srt\\a6ffb1181b6a\\manifest.json",
+    "full_case_pass_claimed": false,
+    "physical_fault_hit": true
+  },
+  "publication_success_fault_windows_hit": false,
+  "test_fix": {
+    "livetest_package_after": "pre-send-step-after.log",
+    "file": "internal/testkit/livetest/pre_send.go",
+    "vet_live_native": "passed",
+    "live_native_compile": "passed",
+    "vet_livetest": "passed",
+    "regression_before": "pre-send-step-before.log",
+    "change": "Use workflow.StepPublish instead of obsolete publish literal"
+  },
+  "cleanup": {
+    "pre_send_initial_failure_preserved": true,
+    "admin_action_failures": 0,
+    "service_stop_confirmed": 9,
+    "admin_actions": 39,
+    "network_restore_confirmed": 9,
+    "scope": "Original Orca terminal and exact local fixture roots only",
+    "original_terminal_cleanup_confirmed": 9,
+    "remaining_owned_local_fixture_processes": 0,
+    "admin_pending_requests": 0,
+    "fixture_executions": 9,
+    "original_admin_host_exited": true
+  },
+  "initial_batch": "initial-batch.json",
+  "followup_batch": "pre-send-fixed-batch.json",
+  "all_l3_pass_claimed": false,
+  "creation_recovery_runner_qualified_by_this_batch": false
+}

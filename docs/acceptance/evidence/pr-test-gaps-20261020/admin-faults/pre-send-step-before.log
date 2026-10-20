@@ -1,0 +1,21 @@
+=== RUN   TestPublicationPreSendRetryEvidence
+    pre_send_test.go:25: valid retry rejected
+--- FAIL: TestPublicationPreSendRetryEvidence (0.00s)
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid
+    pre_send_test.go:102: invalid evidence verdict publication pre-send retry lacks original operation/network evidence
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked
+=== RUN   TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit
+--- FAIL: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation (0.25s)
+    --- FAIL: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/valid (0.08s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/scope (0.04s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/late-block (0.03s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/replacement (0.03s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/revoked (0.04s)
+    --- PASS: TestPreSendEvidenceRequiresPhysicalBlockAndOriginalOperation/missing-audit (0.02s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.905s
+FAIL

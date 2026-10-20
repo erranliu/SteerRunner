@@ -1,0 +1,2 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":null,"data":{"instance_id":"82eff2983542cfa249ba95794dfd4d47","state_dir":"c:\\srt\\cd573a9db6d6\\s","pid":60740,"process_created":"134369460036426848","status":"ready","detached":true,"version":"0.2.0-dev.3-r2","protocol":"steerrunner-cli/v1","resource_digest":"a48bfb1aa7250009b21b4170532d877be01c23375ac386cb39e269794263ef91","executable_sha256":"653f316936a9a42a6a4b71757c69aca38bf2be2118e9b16c3ea9e1c159fd5d6a"},"error":null}
+

@@ -1,0 +1,34 @@
+[
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Test": "TestProcessHostCommandHelper"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestAuthenticationNativeToolBoundary"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalPipeNativeEvidence"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Test": "TestOrcaLocalIPCNativeProbe"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Test": "TestOrcaStoppedNativeProbe"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLiveLifecycle"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaWorkspaceStartupLive"
+  },
+  {
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestServiceStopWorkerHelper"
+  }
+]

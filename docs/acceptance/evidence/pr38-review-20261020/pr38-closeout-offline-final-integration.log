@@ -1,0 +1,5 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/audit-offline
+--- PASS: TestSRResultAcquisition (144.58s)
+    --- PASS: TestSRResultAcquisition/audit-offline (144.58s)
+PASS

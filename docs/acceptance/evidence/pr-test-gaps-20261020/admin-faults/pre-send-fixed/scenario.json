@@ -1,0 +1,64 @@
+{
+  "scenario": "orca-remote.connection-reconnect",
+  "case_id": "pre-send-disconnect",
+  "repeat_index": 1,
+  "stage": "reconnected-original-workflow",
+  "run_id": "c80baba55b944aa6824dbad2f2a255ba",
+  "test_outcome": "failed",
+  "business_outcome": "",
+  "faults_hit": 1,
+  "audit_complete": true,
+  "assertions": [
+    {
+      "name": "network-preflight",
+      "passed": true,
+      "evidence": "probe-subscription-disconnected and faults.jsonl: existing stream cut, both paths blocked/restored before model startup"
+    },
+    {
+      "name": "terminal-binding",
+      "passed": true,
+      "evidence": "faults.jsonl: diagnostic terminal identity"
+    },
+    {
+      "name": "gate-native-working",
+      "passed": true,
+      "evidence": "faults.jsonl: checker gate and original main agent working"
+    },
+    {
+      "name": "publication-pre-send-gate",
+      "passed": true,
+      "evidence": "pre-send-gate.json: committed publish input before direct state connect"
+    },
+    {
+      "name": "original-identity",
+      "passed": true,
+      "evidence": "latest-run.json and faults.jsonl: original session/workspace/branch"
+    },
+    {
+      "name": "pre-send-connection-retried",
+      "passed": true,
+      "evidence": "pre-send-returned.json and native-calls.jsonl: original readiness retried after a full failed direct dial; zero new sends"
+    },
+    {
+      "name": "pre-send-authority-retained",
+      "passed": true,
+      "evidence": "pre-send-blocked-run.json: original operation/authority retained"
+    },
+    {
+      "name": "fault-hit",
+      "passed": true,
+      "evidence": "Runner-only direct connection blocked after original publish identity read"
+    },
+    {
+      "name": "native-receipts-complete",
+      "passed": true,
+      "evidence": "native-calls.jsonl and native-resource-audit.json after cleanup: original business receipts and original Orca terminal closure; no helper authentication proof"
+    }
+  ],
+  "cleanup": {
+    "native_stopped": true,
+    "service_stopped": true,
+    "facilities_restored": true,
+    "driver_native_cleanup": false
+  }
+}

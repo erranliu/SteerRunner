@@ -1,0 +1,5 @@
+{
+  "schema": "steerrunner-script-exit-contract/v1",
+  "exit_code": 0,
+  "scope": "focused L1 package plus full framework, compile, zero-match guard and extensions; not a complete L1 rerun"
+}

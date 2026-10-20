@@ -1,0 +1,13 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke
+    run_test.go:806: L2 local-codex.result-acquisition run=fcf0c447566ea8617954c449bc0bd491 PR=https://github.com/erranliu/SteerlineTest/pull/626 merge=27050ab12ee6749cb66918a5f684691e4f3fa4ae
+    run_test.go:550: original run stop not confirmed: unknown authentication_cleanup_unverified: Run capability closed; original broker resources could not be confirmed removed
+--- FAIL: TestSRLiveScenario (347.21s)
+    --- FAIL: TestSRLiveScenario/local-codex.result-acquisition (347.19s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-default (15.51s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries (46.84s)
+        --- FAIL: TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke (284.83s)
+FAIL

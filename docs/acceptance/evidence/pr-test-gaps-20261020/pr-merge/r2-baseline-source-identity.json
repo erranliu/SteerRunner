@@ -1,0 +1,13 @@
+{
+  "pid": 43456,
+  "pattern": "^TestSRRunEvidenceR2$",
+  "runner_sha256": "A06094E7DB71B856F29767809CEE485ED195911AF2ADE7920A4B6A5AD7254380",
+  "fixture_sha256": "4EA33834386BF6EE2BDAB6AA644D74E6516B7E6B190DF2DE87B1A7BB26F503E2",
+  "source_commit": "f5bd14b31ceb5215d3c03f911806f46fcbf641bf",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS",
+  "baseline_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b7d2\\SteerRunner\\.evidence\\creation-public-final-20261020\\steerrunner.exe",
+  "baseline_sha256": "A415D3A11D327E89913AC666C7EF62F2BC9744285501BA27EEEB343826738FB2"
+}

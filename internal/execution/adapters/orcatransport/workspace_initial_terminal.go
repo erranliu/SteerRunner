@@ -23,6 +23,10 @@ type initialTerminalCheckpoint struct {
 // inventory can acquire its first terminal. Persist its single creation intent
 // before the effect. Unknown creation never permits a replacement.
 func (l *Lifecycle) initialWorkspaceTerminal(ctx context.Context, s b.LifecycleSnapshot, c workspaceCreation) (native.Terminal, error) {
+	return l.initialWorkspaceTerminalRecovery(ctx, s, c, false)
+}
+
+func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.LifecycleSnapshot, c workspaceCreation, reconcile bool) (native.Terminal, error) {
 	if !filepath.IsAbs(l.setup.RunDirectory) {
 		return native.Terminal{}, errors.New("caller initial-terminal checkpoint directory missing")
 	}
@@ -48,9 +52,25 @@ func (l *Lifecycle) initialWorkspaceTerminal(ctx context.Context, s b.LifecycleS
 	if e == nil && (len(data) > 1<<20 || b.DecodeStrictJSON(data, &saved, "trailing initial terminal checkpoint") != nil || saved.Version != 1 || saved.Binding != binding || !saved.Attempted) {
 		return native.Terminal{}, errors.New("initial terminal checkpoint invalid or foreign")
 	}
+	write := func() error { raw, _ := json.Marshal(saved); return l.setup.ProcessHost.WriteExecutionFile(path, raw) }
+	create := func(readOnly bool) (native.Terminal, error) {
+		key := l.creationKey(s, binding, binding, "initial-terminal")
+		args := []string{"terminal", "create", "--worktree", "id:" + c.Worktree.ID, "--title", "SteerRunner initial execution " + c.Worktree.DisplayName, "--json"}
+		r, e := l.creationCall(ctx, key, args, c.RuntimeID, c.Worktree.ID, l.creationTimeout(), readOnly)
+		var made struct{ Terminal native.Terminal }
+		if e != nil || r.CallUncertain || r.RuntimeID != c.RuntimeID || json.Unmarshal(r.Payload, &made) != nil || made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != c.Worktree.ID {
+			return native.Terminal{}, errors.Join(e, errors.New("original initial terminal creation unverified; no replacement created"))
+		}
+		p := b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: r.RuntimeID, Terminal: made.Terminal.Handle, Incarnation: made.Terminal.IncarnationID, WorktreeID: c.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
+		saved.Process = &p
+		if e = write(); e != nil {
+			return native.Terminal{}, e
+		}
+		return confirm(p)
+	}
 	if saved.Attempted {
 		if saved.Process == nil {
-			return native.Terminal{}, errors.New("original initial terminal creation outcome unknown; no replacement created")
+			return create(true)
 		}
 		p := *saved.Process
 		if p.Kind != "orca_terminal" || p.RuntimeID != c.RuntimeID || p.WorktreeID != c.Worktree.ID || p.Terminal == "" || p.Incarnation == "" {
@@ -61,6 +81,9 @@ func (l *Lifecycle) initialWorkspaceTerminal(ctx context.Context, s b.LifecycleS
 			return t, errors.Join(e, errors.New("original initial terminal unavailable"))
 		}
 		return confirm(p)
+	}
+	if reconcile {
+		return native.Terminal{}, errors.New("original initial terminal creation receipt missing; inventory alone cannot prove its identity")
 	}
 	emptySince := time.Now()
 	for {
@@ -93,21 +116,10 @@ func (l *Lifecycle) initialWorkspaceTerminal(ctx context.Context, s b.LifecycleS
 		complete := v.Truncated != nil && !*v.Truncated && v.Total != nil && *v.Total == 0 && v.Hosts != nil && len(v.Hosts.IDs) > 0 && len(v.Hosts.Omitted) == 0
 		if complete && time.Since(emptySince) >= 2*time.Second {
 			saved.Attempted = true
-			write := func() error { raw, _ := json.Marshal(saved); return l.setup.ProcessHost.WriteExecutionFile(path, raw) }
 			if e = write(); e != nil {
 				return native.Terminal{}, e
 			}
-			r, e = l.client.MetaCall(ctx, "terminal", "create", "--worktree", "id:"+c.Worktree.ID, "--title", "SteerRunner initial execution "+c.Worktree.DisplayName, "--json")
-			var made struct{ Terminal native.Terminal }
-			if e != nil || r.CallUncertain || r.RuntimeID != c.RuntimeID || json.Unmarshal(r.Payload, &made) != nil || made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != c.Worktree.ID {
-				return native.Terminal{}, errors.New("original initial terminal creation unverified; no replacement created")
-			}
-			p := b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: r.RuntimeID, Terminal: made.Terminal.Handle, Incarnation: made.Terminal.IncarnationID, WorktreeID: c.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
-			saved.Process = &p
-			if e = write(); e != nil {
-				return native.Terminal{}, e
-			}
-			return confirm(p)
+			return create(false)
 		}
 		if e = waitWorkspaceTerminal(ctx); e != nil {
 			return native.Terminal{}, e

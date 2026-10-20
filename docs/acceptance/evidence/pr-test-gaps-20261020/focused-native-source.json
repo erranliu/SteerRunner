@@ -1,0 +1,11 @@
+{
+  "pid": 10284,
+  "pattern": "^TestSR(ContentNativeGenerationRecovery|NativeParserGenerationRecovery)$",
+  "runner_sha256": "B77E2188E8E5FAA6AC663F6C29D3D174361B968A473E24341EF44F07A7069836",
+  "fixture_sha256": "2BF1F1A21F98451A305A1B719283FC496E1DFE63436D0A5A928F9E1F884EE72E",
+  "source_commit": "bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}
