@@ -38,6 +38,8 @@ generate：固定输入 → 单一 execute → 完整原生 final → 程序格�
 conversation：execute → input，显式 message → 同一原生 thread execute；无自动开发阶段。
 失败/取消仍保留轮次事实，确认原轮终止后才可继续；interrupt 不关闭会话。close/stop 一经接受
 永久拒绝后续消息。一个 Run 至多一个活动轮，原问答只答原轮。
+内容流程不冻结或使用开发结果 parser 配置，接管不要求该不适用的配置；原材料、workflow 执行语义、implementation codec 和原生身份校验继续适用。开发流程仍要求有效的原结果获取配置。
+
 兼容服务换代沿[共同恢复契约](service-generation-recovery.spec.md)保留原授权与原 owner/native，
 空闲仍等待显式 message；已接受但尚未冻结的 message 绑定原执行范围，核验原会话/目录后仅冻结一次。
 已建立副作用意图的输入只对账，不创建替代 thread 或重放历史；无法核实即未核实。

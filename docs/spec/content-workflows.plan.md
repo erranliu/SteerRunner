@@ -17,6 +17,12 @@
 | CW09 真实两轮与中断 | 同一 driver，两个 Run 身份独立 | 与 CW08 同一命令，在初始/第二轮后执行 interrupt 和显式继续 | 原 thread 五轮中的一轮明确 cancelled，随后上下文继续 | `native-interrupted.json`、`native-after-interrupt.json`、`native-history-final.json` |
 | CW10 真实重启 | 同上，独立服务换代 | 与 CW08 同一命令；空闲时停服重启、message、close，收尾另调用公开 `service verify-stopped` | 保留原授权、root/thread/context，空闲无新输入；无需因重启 resume，关闭拒绝新消息、全部资源结算 | `native-restarted.json`、`native-after-restart.json`、`native-closed.json`、`verify-stopped.json` |
 
+## 补充测试计划：内容接管配置适用性
+
+2026-10-20，CW07/CW10：修正内容测试夹具，保持与生产 freeze 一致的不含开发 parser 配置。Windows 隔离目录执行 `go test ./internal/application ./internal/execution/resultacquisition ./internal/execution/workflow ./internal/execution/adapters/codex -run 'TestContent|TestServiceGeneration|TestWorkflowRecovery|Test.*Recovery|Test.*Config' -json -count=1 -timeout=180s`；修复前先用内容接管两项复现失败，修复后再核验 queued/result 的 generate/conversation、实际 admission、原材料和 codec 反例及开发配置缺失拒绝。原 Record 不改写。
+
+随后由 `scripts/test-foundation.ps1 -Pattern '^TestSRContent(Generate|Conversation|QuestionAndUnknown)$' -OutDir <新目录>` 验证三个真实 EXE/受控流程并核对 result.json 非零命中/退出零。跨仓真机使用 SteerLine `scripts/test-test-management.ps1 -SteerRunnerExe <A> -RunnerCandidate <B> -Out <新目录>`，A/B 为同源码不同版本/SHA，在其统一生成的独立调试包验证原生成 Run 跨构建接管后继续报告/API/浏览器及结算；原生成材料、模型和权限保持，只有传输 pin 更新。证据与失败/补测分别登记在[专属验收](../acceptance/content-workflows.md)，不要求完整 L2、全原生矩阵或 Full。
+
 不默认运行 full。相关包回归与 build 在定向测试后执行；真实失败保留现场与诊断，不能由受控通过代替。
 
 实施完成。表中证据均在

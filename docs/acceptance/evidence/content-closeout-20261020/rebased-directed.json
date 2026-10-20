@@ -1,0 +1,15 @@
+{
+  "source_commit": "5b500fc904a8db5f1c1f1c8a793aa4dc82d661b3",
+  "upstream_commit": "73cec27d9ea4d675bba7e7de659c4a98f99f5c8b",
+  "command": "go test ./internal/application ./internal/execution/resultacquisition ./internal/execution/workflow ./internal/execution/adapters/codex -run 'TestContent|TestServiceGeneration|TestTakeover|TestWorkflowRecovery|TestRAConfigRejectBeforeEffects|Test.*Recovery|Test.*Config' -json -count=1 -timeout=180s",
+  "passed": 101,
+  "failed": 0,
+  "skipped": 0,
+  "packages": [
+    "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "github.com/erranliu/SteerRunner/internal/application"
+  ],
+  "production_diff": ""
+}

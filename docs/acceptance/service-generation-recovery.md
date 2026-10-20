@@ -58,7 +58,7 @@ go test ./tests/integration -run '^TestSRRestartPreservesAuthorization$' -count=
 
 ## 实施后回归登记
 
-实际完整输出留在本工作区忽略目录 [证据目录](../../.evidence/service-generation-recovery/)，包 SHA/资源摘要/实例/owner/root 的原记录在各组 caller-commands.jsonl 与 integration.log；[运行索引](../../.evidence/service-generation-recovery/run-summary.json)不覆盖各次原始结果。测试临时 EXE/现场已按夹具收尾，不把不同构建拼为同构建全部通过。
+当时完整输出写入本工作区忽略目录 `.evidence/service-generation-recovery/`，包 SHA/资源摘要/实例/owner/root 的原记录在各组 caller-commands.jsonl 与 integration.log；当时运行索引为该目录的 `run-summary.json`。2026-10-20 文档核对发现这两个临时路径不在当前检出中，故保留文字来源，不再提供失效的仓内导航，也不将其算作本轮已复核证据。下文历史结果与限制保持；本轮内容接管的新证据另见[内容流程验收](content-workflows.md)。测试临时 EXE/现场按原记录收尾，不把不同构建拼为同构建全部通过。
 
 | 执行 | 结果 | 边界 |
 | --- | --- | --- |
