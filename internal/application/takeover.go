@@ -20,8 +20,15 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 	for _, r := range runs {
 		item := contracts.TakeoverItem{ID: r.ID, Kind: "run", Revision: r.Revision, InputDigest: r.InputDigest, Status: "compatible"}
 		var err error
-		if e := r.AcquisitionConfig.Config.Validate(); e != nil {
-			err = e
+		requiresAcquisition := r.Workflow.Config != nil && r.Workflow.Config.RequiresResultAcquisition()
+		hasParser := false
+		for _, intent := range r.Intents {
+			hasParser = hasParser || intent.Request.Input.Parse != nil
+		}
+		if requiresAcquisition || hasParser {
+			if e := r.AcquisitionConfig.Config.Validate(); e != nil {
+				err = e
+			}
 		}
 		if e := verifyFrozenMaterials(r); e != nil {
 			err = e
@@ -73,7 +80,7 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 
 			setup := b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}
 			active := r.StopStatus != "stopped" && r.Status != "pr_ready"
-			needs := b.RecoveryRequirements{Stopped: r.StopStatus == "stopped", Parser: active && r.AcquisitionConfig.Config.CodexParser.Enabled, WorkspaceCheckpoints: active && r.Workflow.RequiresWorkspace()}
+			needs := b.RecoveryRequirements{Stopped: r.StopStatus == "stopped", Parser: active && (hasParser || requiresAcquisition && r.AcquisitionConfig.Config.CodexParser.Enabled), WorkspaceCheckpoints: active && r.Workflow.RequiresWorkspace()}
 			if e := codex.ValidateRecovery(setup, support.ImplementationCodecs, support.OwnerProtocol, needs); e != nil {
 				err = e
 			}

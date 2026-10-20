@@ -1,0 +1,175 @@
+=== RUN   TestContentFrozenTakeoverContracts
+=== RUN   TestContentFrozenTakeoverContracts/generate
+=== RUN   TestContentFrozenTakeoverContracts/generate/codec
+=== RUN   TestContentFrozenTakeoverContracts/generate/workflow
+=== RUN   TestContentFrozenTakeoverContracts/generate/workflow-version
+=== RUN   TestContentFrozenTakeoverContracts/generate/semantics
+=== RUN   TestContentFrozenTakeoverContracts/generate/execution-record
+=== RUN   TestContentFrozenTakeoverContracts/generate/material
+=== RUN   TestContentFrozenTakeoverContracts/generate/parser
+=== RUN   TestContentFrozenTakeoverContracts/conversation
+=== RUN   TestContentFrozenTakeoverContracts/conversation/codec
+=== RUN   TestContentFrozenTakeoverContracts/conversation/workflow
+=== RUN   TestContentFrozenTakeoverContracts/conversation/workflow-version
+=== RUN   TestContentFrozenTakeoverContracts/conversation/semantics
+=== RUN   TestContentFrozenTakeoverContracts/conversation/execution-record
+=== RUN   TestContentFrozenTakeoverContracts/conversation/material
+=== RUN   TestContentFrozenTakeoverContracts/conversation/parser
+--- PASS: TestContentFrozenTakeoverContracts (0.24s)
+    --- PASS: TestContentFrozenTakeoverContracts/generate (0.19s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/codec (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/workflow (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/workflow-version (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/semantics (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/execution-record (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/material (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/generate/parser (0.00s)
+    --- PASS: TestContentFrozenTakeoverContracts/conversation (0.05s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/codec (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/workflow (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/workflow-version (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/semantics (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/execution-record (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/material (0.00s)
+        --- PASS: TestContentFrozenTakeoverContracts/conversation/parser (0.00s)
+=== RUN   TestTakeoverActualParserContractStillRequired
+    content_takeover_test.go:122: implementation data has an unsupported version or incomplete owner identity
+--- FAIL: TestTakeoverActualParserContractStillRequired (8.24s)
+=== RUN   TestContentMaterialSnapshot
+--- PASS: TestContentMaterialSnapshot (0.02s)
+=== RUN   TestContentConcurrentMessages
+--- PASS: TestContentConcurrentMessages (0.05s)
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope (0.15s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation (0.03s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate (0.04s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session (0.04s)
+    --- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch (0.04s)
+=== RUN   TestContentInterruptRequestStatus
+=== RUN   TestContentInterruptRequestStatus/failed
+=== RUN   TestContentInterruptRequestStatus/unknown
+--- PASS: TestContentInterruptRequestStatus (0.09s)
+    --- PASS: TestContentInterruptRequestStatus/failed (0.04s)
+    --- PASS: TestContentInterruptRequestStatus/unknown (0.04s)
+=== RUN   TestContentCleanupFailureIndependent
+--- PASS: TestContentCleanupFailureIndependent (0.05s)
+=== RUN   TestContentGenerateResults
+=== RUN   TestContentGenerateResults/text
+=== RUN   TestContentGenerateResults/json
+=== RUN   TestContentGenerateResults/invalid_json
+=== RUN   TestContentGenerateResults/schema
+=== RUN   TestContentGenerateResults/failed
+=== RUN   TestContentGenerateResults/cancelled
+=== RUN   TestContentGenerateResults/no_final
+=== RUN   TestContentGenerateResults/unknown
+--- PASS: TestContentGenerateResults (0.33s)
+    --- PASS: TestContentGenerateResults/text (0.05s)
+    --- PASS: TestContentGenerateResults/json (0.04s)
+    --- PASS: TestContentGenerateResults/invalid_json (0.04s)
+    --- PASS: TestContentGenerateResults/schema (0.04s)
+    --- PASS: TestContentGenerateResults/failed (0.04s)
+    --- PASS: TestContentGenerateResults/cancelled (0.04s)
+    --- PASS: TestContentGenerateResults/no_final (0.04s)
+    --- PASS: TestContentGenerateResults/unknown (0.04s)
+=== RUN   TestContentConversationControls
+--- PASS: TestContentConversationControls (0.06s)
+=== RUN   TestContentDirectoryAndUnknownResult
+--- PASS: TestContentDirectoryAndUnknownResult (0.16s)
+=== RUN   TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal
+--- PASS: TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal (0.01s)
+=== RUN   TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts
+--- PASS: TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts (0.00s)
+=== RUN   TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata
+--- PASS: TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata (0.00s)
+=== RUN   TestRAAtomicParserRecovery
+--- PASS: TestRAAtomicParserRecovery (19.60s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (0.66s)
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.00s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.65s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (9.50s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	42.877s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	0.941s [no tests to run]
+=== RUN   TestContentReadOnlyPermissions
+--- PASS: TestContentReadOnlyPermissions (0.00s)
+=== RUN   TestContentInterruptRejectsChangedProcess
+--- PASS: TestContentInterruptRejectsChangedProcess (0.00s)
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/compatible
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/missing-parser
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/missing-checkpoint
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/settled
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/owner-protocol
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/legacy-live
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/unknown-codec
+=== RUN   TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/retired-authentication
+--- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/compatible (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/missing-parser (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/missing-checkpoint (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/settled (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/owner-protocol (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/legacy-live (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/unknown-codec (0.00s)
+    --- PASS: TestRecoveryCompatibilityPreservesOriginalOwnerRequirements/retired-authentication (0.00s)
+=== RUN   TestRecoveryProcessIdentityRequiresPositiveNativeProof
+=== RUN   TestRecoveryProcessIdentityRequiresPositiveNativeProof/matching_process_still_exists
+=== RUN   TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_absent
+=== RUN   TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_identity_mismatch
+=== RUN   TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_inspection_unavailable
+--- PASS: TestRecoveryProcessIdentityRequiresPositiveNativeProof (0.01s)
+    --- PASS: TestRecoveryProcessIdentityRequiresPositiveNativeProof/matching_process_still_exists (0.00s)
+    --- PASS: TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_absent (0.00s)
+    --- PASS: TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_identity_mismatch (0.00s)
+    --- PASS: TestRecoveryProcessIdentityRequiresPositiveNativeProof/process_inspection_unavailable (0.00s)
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/project
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/execution
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/attempt
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/workflow
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/thread
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/workspace
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/home
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/executable
+=== RUN   TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/arguments
+--- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead (0.15s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/project (0.02s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/execution (0.02s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/attempt (0.02s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/workflow (0.01s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/thread (0.02s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/workspace (0.01s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/home (0.02s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/executable (0.01s)
+    --- PASS: TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead/arguments (0.02s)
+=== RUN   TestRecoveryHistoryIdleRequiresOriginalStoppedTurn
+--- PASS: TestRecoveryHistoryIdleRequiresOriginalStoppedTurn (0.00s)
+=== RUN   TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt
+=== RUN   TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt/receipt_saved
+=== RUN   TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt/receipt_lost
+--- PASS: TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt (0.06s)
+    --- PASS: TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt/receipt_saved (0.04s)
+    --- PASS: TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt/receipt_lost (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	1.834s
+=== RUN   TestRecoveryUpgradePreservesWALAndOriginalRecords
+--- PASS: TestRecoveryUpgradePreservesWALAndOriginalRecords (0.07s)
+=== RUN   TestRecoveryUpgradeFailureKeepsOriginalFormat
+--- PASS: TestRecoveryUpgradeFailureKeepsOriginalFormat (0.04s)
+=== RUN   TestRecoveryUpgradeRejectsUnknownDurableFieldsBeforeMarkerChange
+--- PASS: TestRecoveryUpgradeRejectsUnknownDurableFieldsBeforeMarkerChange (0.03s)
+=== RUN   TestTakeoverRequestFactsUseOriginalAcceptedCommands
+--- PASS: TestTakeoverRequestFactsUseOriginalAcceptedCommands (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.329s
+FAIL

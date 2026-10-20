@@ -181,6 +181,16 @@ L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控�
 `TestSRContentConversation`、`TestSRContentQuestionAndUnknown`，分别覆盖单轮结果十个分支、
 原会话多轮/中断/重启/关闭，以及原生问答和未知发送。无真实模型/Git/PR，独立 state-dir。
 
+2026-10-20：Generate 的已完成 text/JSON 与 Conversation 空闲态追加同 EXE 的公开
+verify-takeover，断言原 inspect 不变、零额外 turn/start、原 submit 绑定完整。
+L1 `TestContentFrozenTakeoverContracts` 从正式 freeze 产生零值配置记录，覆盖两种内容流程、
+可变配置不参与接管、记录不变及未知 codec/workflow/version/材料/parser 反例；
+`TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts` 保留 development 配置严格检查。
+L3 专项 `TestSRContentGenerateTakeoverNative` 由现有 foundation live 入口显式选择，
+使用新 C:/srt/gt-*、真实 Codex、一个生成回合、原 content_result、显式 stop、verify-stopped
+和离线同 EXE verify-takeover，核对原 Run/input/request 与数据库字节不变。与多轮用例独立，
+不需要开发专用配置。结果见[本次验收](acceptance/content-takeover.md)。
+
 真实 L3 专属入口为 `scripts/test-content-workflows.ps1 -NativeExecutable <原生0.159.2 EXE>`，
 注册在 `focused_native_scenarios`，不混入 development 的 Git/PR manifest driver。入口先运行
 定向规则与三个受控场景，再以 `-tags live` 的 `TestSRContentNative` 在新 `C:/srt/cw-*` 现场

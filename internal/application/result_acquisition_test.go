@@ -170,7 +170,7 @@ func TestRAConfigRejectBeforeEffects(t *testing.T) {
 	dir := t.TempDir()
 	_ = os.MkdirAll(filepath.Join(dir, "service"), 0700)
 	_ = os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), []byte(`{"codex_parser":{"enabled":true,"unknown":true}}`), 0600)
-	_, err := freeze(context.Background(), dir, contracts.Request{Input: json.RawMessage(`{}`)})
+	_, err := freeze(context.Background(), dir, contracts.Request{Input: json.RawMessage(`{"workflow":{"id":"development","version":2}}`)})
 	if err == nil {
 		t.Fatal("invalid local config accepted")
 	}

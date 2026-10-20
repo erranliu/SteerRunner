@@ -125,7 +125,11 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	var acquisitionConfig ra.FrozenConfig
 	var err error
-	if !workflow.Content(request.Workflow.ID) {
+	flowProfile, supported := workflow.Lookup(request.Workflow.ID, request.Workflow.Version)
+	if !supported {
+		return nil, contracts.Fail(3, "unsupported_capability", "Workflow interpreter unavailable.")
+	}
+	if flowProfile.RequiresResultAcquisition() {
 		acquisitionConfig, err = ra.LoadConfig(dir)
 		if err != nil {
 			return nil, contracts.Fail(2, "invalid_input", err.Error())
@@ -401,7 +405,6 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Commit: doc.Commit, Digest: reliable.Digest(content), SnapshotPath: path}, Content: string(content)})
 	}
-	flowProfile, _ := workflow.Lookup(request.Workflow.ID, request.Workflow.Version)
 	r.PromptBodies = map[string]string{}
 	for _, state := range flowProfile.States {
 		if state.PromptKey != "" {

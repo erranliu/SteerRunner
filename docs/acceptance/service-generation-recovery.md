@@ -1,5 +1,8 @@
 # 服务换代恢复验收
 
+2026-10-20 内容流程同构建 takeover 修复的定向与真实验收见[专属记录](content-takeover.md)，
+不以该专项结果替代本文其余恢复/SteerLine 验收条件。
+
 日期：2026-10-19。对应 [Spec](../spec/service-generation-recovery.spec.md) 和 [Plan](../spec/service-generation-recovery.plan.md)。整体状态：**未完成**。Runner 与 `C:/Project/SteerLine` 工作树均有实现，未提交、未部署；不将受控协议夹具算作真实 Codex、Orca 或 SteerLine UpdateRunner 资格。
 
 ## 来源与实现范围
