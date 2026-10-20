@@ -1,0 +1,14 @@
+[
+  {
+    "id": "8402cc9208fbecdd4164d59e0fedc47d",
+    "original_status": "compatible",
+    "current_status": "compatible",
+    "bindings_unchanged": true
+  },
+  {
+    "id": "f6942435176c8f5d5430b15591e9ee8f",
+    "original_status": "unsupported",
+    "current_status": "compatible",
+    "bindings_unchanged": true
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": "native-generate-takeover",
+  "data": {
+    "action_status": "pending",
+    "command_id": "398496718431705ec8279ee55a24bac6",
+    "receipt_status": "accepted",
+    "run_id": "811b0985c597a8b8f8d97caee5000a26"
+  },
+  "error": null
+}
