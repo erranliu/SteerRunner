@@ -120,6 +120,8 @@ Controlled 的通过记录是同构建分组结果，不宣称原先单进程全
 
 最初仅补 Git 写根的六项仍全为 failed；其中前四个旧现场目录后来丢失，仅保留实际观察和批次摘要，不重建原日志或将清理记为通过。后以管理员逐一核验六组原网络规则均为 0；已知原终端只读记录显示 orphaned/不可写，这不构成丢失现场全部原生资源停止证明。最终六项使用独立新父目录，原证据和有限副本齐全。详情、源摘要、历史与清理见 [git-permissions-fix/report.json](evidence/pr-test-gaps-20261020/git-permissions-fix/report.json)。
 
+提交 PR 前已同步包含 #38 的主分支 `50b89d885799ba08a318c70f267e143845f91ebf`。四个相关完整包通过 150 个顶层测试，4 个依赖条件跳过单独登记；application 四个定向顶层测试通过，相关 vet 和 diff 检查通过。该合并后复验与原生六项冻结构建分别登记，见 [pr-rebased-verification.json](evidence/pr-test-gaps-20261020/git-permissions-fix/pr-rebased-verification.json)。
+
 ## 需要人工或环境处理的项目
 
 1. SteerLine 同现场 UpdateRunner 界面联调：保持活动任务或等待回答，点击更新 Runner；核验界面仍绑定原任务、回答与报告，原会话继续。该仓库自动测试覆盖 Runner 公开契约，不替代消费者 UI 联调。
