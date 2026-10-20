@@ -1,0 +1,26 @@
+[
+  {
+    "state_dir": "C:/Users/lmas1/AppData/Local/Temp/sr-3903496663/runner",
+    "run_id": "03234ed9e78d30384890f2302e674032",
+    "original_revision": 6,
+    "startup_pending_stop": true,
+    "service_instance": "256ca80b3d0db8ee499ac69cc8daa87d",
+    "stop_status": "stopped",
+    "new_inputs_allowed": false,
+    "turn_starts_before": 0,
+    "turn_starts_after": 0,
+    "service_stop_ok": true
+  },
+  {
+    "state_dir": "C:/Users/lmas1/AppData/Local/Temp/sr-885095020/runner",
+    "run_id": "624c6c5c5ded9dbcbf7efe3723d4df66",
+    "original_revision": 6,
+    "startup_pending_stop": true,
+    "service_instance": "574222547bda8b6b39a616eba019449a",
+    "stop_status": "stopped",
+    "new_inputs_allowed": false,
+    "turn_starts_before": 0,
+    "turn_starts_after": 0,
+    "service_stop_ok": true
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "pid": 56060,
+  "pattern": "^TestSRRestartPreservesAuthorization$",
+  "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+  "fixture_sha256": "BA5B6473FA63611013775B0BCF2F150495463B0B6DFA1D2B67B2180F5F2816E8",
+  "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+  "source_commit": "dccf029170d5584baf8d758aa913c70339bd508f",
+  "source_dirty": true,
+  "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+  "runner_source_dirty": false,
+  "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+}

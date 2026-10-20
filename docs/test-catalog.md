@@ -30,7 +30,7 @@ L1 补充报告 64 条/16 MiB 总量、单文件 1 MiB 和发现 256 项的包�
 
 当前通过与阻断按 [本轮验收](acceptance/pr-test-gaps-20261020.md) 登记，未运行项不计作通过。
 
-`TestSRResourceCreationRecovery` 使用实际独立 Runner 创建执行器和受控 Orca 公开协议夹具，覆盖创建响应返回前正常停服/强杀、响应已落盘但尚未提交服务数据库、上游响应丢失、原执行器崩溃五个窗口。成功恢复必须保留原 worktree、terminal handle/incarnation；后两项保持 unknown。所有窗口固定创建一次、零替换终端、零业务发送，不按名称认领资源。单元测试另覆盖远端路由、初始终端及 native-control 创建、异源/损坏/丢失回执和写入失败。它不替代真实 Orca 后端资格。
+`TestSRResourceCreationRecovery` 使用实际独立 Runner 创建执行器和受控 Orca 公开协议夹具，覆盖创建响应返回前正常停服/强杀、响应已落盘但尚未提交服务数据库、上游响应丢失、原执行器崩溃、原终端身份回执缺失六个窗口。成功恢复必须保留原 worktree、terminal handle/incarnation；后三项保持 unknown。所有窗口固定创建一次、零替换终端、零业务发送，不按名称认领资源，也不凭唯一 inventory 猜测原终端。单元测试另覆盖远端路由、初始终端及 native-control 创建、异源/损坏/丢失回执、写入失败、原创建启动期限和迟到回执后的原意图停止。它不替代真实 Orca 后端资格；本轮审查结果见 [PR #38 复验](acceptance/pr38-review-20261020.md)。
 
 ## L2：最小核心 smoke
 

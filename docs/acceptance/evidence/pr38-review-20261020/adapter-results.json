@@ -1,0 +1,2914 @@
+[
+  {
+    "Time": "2026-10-20T14:15:42.8602984+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnqualifiedAgentPreflightHasNoSideEffects/pi",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8625858+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnqualifiedAgentPreflightHasNoSideEffects/dsh",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8643133+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnqualifiedAgentPreflightHasNoSideEffects/future-agent",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8643133+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnqualifiedAgentPreflightHasNoSideEffects",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/success",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/agent-changed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/missing-agent",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/provider-changed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/missing-root",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/unreported-outcome",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/explicit-unknown",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.86488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/failed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/cancelled",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/session-start",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/child-working",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/tool-output",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/restored",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex/truncated",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation/codex",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8654925+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexNativeEvidenceIsolation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8741665+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQueryRecoveryClosesFailedRead",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8798993+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/quiet-done",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.885812+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/old-done",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8886145+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/missing-baseline",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8941887+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/stale-snapshot",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.8993637+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/accepted-only",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9052102+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/wrong-prompt",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9153943+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/pane",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9223036+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/provider",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9274997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/session-boundary",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9339833+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/restored",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9379934+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/tool-output",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9419956+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/interrupted",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9461894+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/failed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9537229+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/truncated",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9690538+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/missing-body",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9794722+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/query-failure",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9886085+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/missing-agent",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:42.9950004+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/missing-provider",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0001411+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/query-other-input",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0062583+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/query-session-boundary",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.012033+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/subscription-failure",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0164223+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/open-failure",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.020349+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/identity-conflict",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0244704+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/open-identity-conflict",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0278806+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/other-input",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0323916+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/other-input-then-waiting",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0381407+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/other-input-without-working",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0435991+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/session-boundary-working",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0492121+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery/restore",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0492121+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCompletionQuery",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0560881+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlInitializationUnknownBlocksWithoutReplacement/unknown-create",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0605884+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlInitializationUnknownBlocksWithoutReplacement/wrong-ready",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0605884+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlInitializationUnknownBlocksWithoutReplacement",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0715049+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/success",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.0963201+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/lost-send",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1080139+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/wrong-session",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1205277+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/wrong-config",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1332795+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/wrong-input",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1469953+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/wrong-response",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1548844+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/wrong-incarnation",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1656152+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/failed",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1776823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery/in-progress",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.1776823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptRecovery",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-10-20T14:15:43.2201989+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure/success",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.2736831+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure/lost-send",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:15:43.3111133+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure/lost-close",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.3500693+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure/bad-auth",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.3890509+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure/retired-app-auth",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.3890509+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlAuthenticationAndClosure",
+    "Elapsed": 0.21
+  },
+  {
+    "Time": "2026-10-20T14:15:43.4245672+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRunStopAndServiceRelease/success",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.4318917+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRunStopAndServiceRelease/bad-auth",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.4318917+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRunStopAndServiceRelease",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.4370885+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlWindowsPathSpellings",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.4608017+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlRevocationPreventsLateQuery",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5003049+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCancelsOnlyOriginalObserver/original",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5047958+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCancelsOnlyOriginalObserver/foreign",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5047958+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCancelsOnlyOriginalObserver",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5178228+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlUnverifiedReceiptBackoff",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5228473+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlTransportCheckpointFailure/intent",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5416782+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlTransportCheckpointFailure/response",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5416782+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlTransportCheckpointFailure",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:43.5738173+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopCleanupBudgetSurvivesCallerCancellation",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:15:43.617499+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlStopRetainsUnresolvedRevocationRoute",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:15:43.6500888+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlQueryFailurePreservesNativeReaderSettlement/query-failed",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:15:43.6811063+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlQueryFailurePreservesNativeReaderSettlement/reader-unverified",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:15:43.6811063+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlQueryFailurePreservesNativeReaderSettlement",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:15:43.8203248+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/#00",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:43.9589841+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerRetainsWorkspaceAcrossCallerLoss/paired-worker",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:43.9589841+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerRetainsWorkspaceAcrossCallerLoss",
+    "Elapsed": 0.28
+  },
+  {
+    "Time": "2026-10-20T14:15:44.113102+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/wire-loss",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-10-20T14:15:44.2779662+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-result",
+    "Elapsed": 0.16
+  },
+  {
+    "Time": "2026-10-20T14:15:44.4395042+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/corrupt-result",
+    "Elapsed": 0.16
+  },
+  {
+    "Time": "2026-10-20T14:15:44.6116105+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-result",
+    "Elapsed": 0.17
+  },
+  {
+    "Time": "2026-10-20T14:15:44.7829729+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-output",
+    "Elapsed": 0.17
+  },
+  {
+    "Time": "2026-10-20T14:15:44.9218136+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/foreign-operation",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:45.0659449+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/changed-command",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:45.1839371+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/missing-plan",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-10-20T14:15:48.2466798+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch/write-failed",
+    "Elapsed": 3.06
+  },
+  {
+    "Time": "2026-10-20T14:15:48.2466798+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+    "Elapsed": 4.29
+  },
+  {
+    "Time": "2026-10-20T14:15:48.405471+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerControlReceiptSurvivesServiceLoss",
+    "Elapsed": 0.16
+  },
+  {
+    "Time": "2026-10-20T14:15:48.4855409+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerIncompleteLaunchClaimNeverRetries/plan-write-failed",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-10-20T14:15:51.539775+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-failed",
+    "Elapsed": 3.05
+  },
+  {
+    "Time": "2026-10-20T14:15:51.7014517+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerIncompleteLaunchClaimNeverRetries/launch-response-lost",
+    "Elapsed": 0.16
+  },
+  {
+    "Time": "2026-10-20T14:15:51.8372161+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerIncompleteLaunchClaimNeverRetries/completed",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:51.8377488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+    "Elapsed": 3.43
+  },
+  {
+    "Time": "2026-10-20T14:15:51.9639802+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerStartupUsesOriginalDeadline",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-10-20T14:15:52.1031964+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-10-20T14:15:54.2647322+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/receipt-before-checkpoint",
+    "Elapsed": 2.16
+  },
+  {
+    "Time": "2026-10-20T14:15:54.2703358+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery/reconcile-empty",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:54.2703358+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery",
+    "Elapsed": 2.17
+  },
+  {
+    "Time": "2026-10-20T14:15:54.2742654+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/ready",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:54.4790201+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/slow-start",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:15:54.5845963+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/working",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-10-20T14:15:54.5876243+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/waiting",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:54.5921495+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/blocked",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:54.6966256+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/missing",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7018125+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/wrong-pane",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7053849+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness/query-failure",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7053849+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputReadiness",
+    "Elapsed": 0.44
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7098443+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputRejectedReceipt/bound",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7160429+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputRejectedReceipt/wrong-request",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7218353+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputRejectedReceipt/generic-error",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:54.7218353+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaInputRejectedReceipt",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:54.9775211+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/open",
+    "Elapsed": 0.26
+  },
+  {
+    "Time": "2026-10-20T14:15:55.732192+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/repeated-open",
+    "Elapsed": 0.75
+  },
+  {
+    "Time": "2026-10-20T14:15:55.9875316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/query",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:15:55.9930729+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/identity",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.0002136+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/authentication",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.2557069+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/provider-changed",
+    "Elapsed": 0.26
+  },
+  {
+    "Time": "2026-10-20T14:15:56.5103671+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/terminal-changed",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:15:56.5352707+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/exhausted",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:56.5433477+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect/cancelled",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.5433477+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnect",
+    "Elapsed": 1.82
+  },
+  {
+    "Time": "2026-10-20T14:15:56.7988499+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPrepareSessionReconnect",
+    "Elapsed": 0.26
+  },
+  {
+    "Time": "2026-10-20T14:15:56.823075+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaPreSendReconnectCancellationDuringBackoff",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8298791+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestAgentLaunchSingleTerminalAndReadonlyReconciliation/#00",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8343454+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestAgentLaunchSingleTerminalAndReadonlyReconciliation/paired-worker",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8343454+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestAgentLaunchSingleTerminalAndReadonlyReconciliation",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8388088+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestUnknownAgentLaunchNeverResendsOrAcceptsBusinessInput",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8482125+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLifecycleReplyReuseAndExactStop",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8515508+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalRecoveryQualificationIsIndependentOfManagedProcess/#00",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8565414+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalRecoveryQualificationIsIndependentOfManagedProcess/owned-environment",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8565414+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalRecoveryQualificationIsIndependentOfManagedProcess",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8637488+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalUnknownSubmissionOnlyObservesOriginal",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8711828+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLocalAndRemoteUseIdenticalReturnAndNativePorts/#00",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8771821+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLocalAndRemoteUseIdenticalReturnAndNativePorts/paired-worker",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8771821+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalLocalAndRemoteUseIdenticalReturnAndNativePorts",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8810895+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalClippedScreenDoesNotBlockNativeFinal",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8856461+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestScreenReplyDoesNotRequireOffscreenHistory",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8897307+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationAndSubmissionNeverReadScreen",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8937591+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReplyRequiresOriginalStartedAndEnded/unstarted",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8978024+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReplyRequiresOriginalStartedAndEnded/busy",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.8978024+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReplyRequiresOriginalStartedAndEnded",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9017859+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalPreviousReplyCannotCompleteNewTurn",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9082733+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalChangedIncarnationCannotComplete",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9137567+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalNativeFinalRecoveryNeverReplaysInput",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9224802+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeRemoteSubmissionWaitsForOriginalStart",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9253077+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteAuthenticationCapabilityMissingBlocksBeforeBusiness",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9330697+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteBootstrapCommitsPreparationWithoutAdditionalControlPrompts",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/missing",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/expired",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/wrong-repo",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/wrong-config",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/wrong-contract",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/missing-process",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/future",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/unverified",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.935997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings/legacy-transport",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9377059+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteReadinessRejectsMissingExpiredAndChangedBindings",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9591604+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestLocalIPCQueryCapabilityBeforeCreation",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9596908+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection/local-selected",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9596908+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection/local-missing",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9596908+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection/local-duplicate",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9596908+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection/remote-ambiguous",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9596908+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaCheckRepositoryUsesLocalPathWithoutChangingRemoteSelection",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9602444+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/normal",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9602444+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/changed-incarnation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9602444+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/wrong-runtime",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9607995+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/partial-write",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:56.9607995+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/lost-response",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:57.0608838+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/lost-response-no-record",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-10-20T14:15:57.261408+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/read-failure-once",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:15:57.4621384+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/show-failure-once",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:15:57.462707+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/prefixed-frame",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:57.6628682+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/identity-read-once",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:15:57.8634248+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/identity-changed-after-retry",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:15:57.9639265+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/identity-unavailable",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-10-20T14:15:58.064358+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/permanent-read-failure",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1645258+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity/wrong-response-id",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1645258+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteActorControlRequiresFullLineAndOriginalResponseIdentity",
+    "Elapsed": 1.2
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1645258+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentCheckWrongRuntimeBlocksBeforeDispatch",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1650823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence/rejected",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1650823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence/legacy-unknown",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1650823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence/contradictory-turn",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1650823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartRequiresPositiveNoInputEvidence",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentCleanupKeepsOriginalResourcesOnLostResponse",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteEnvironmentStartupFailureReturnsWithoutDispatchAndClosesOriginalActor",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteCheckFixedProbeHasBoundedControlDeadline/execute",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteCheckFixedProbeHasBoundedControlDeadline/verify",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteCheckFixedProbeHasBoundedControlDeadline",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1656389+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLiveLifecycle",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1661977+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate/waiting",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1661977+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate/child",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1661977+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate/cancelled",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1661977+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate/other-provider",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1661977+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate/other-pane",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1667553+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateGate",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1717424+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLifecycle/#00",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1777764+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLifecycle/paired-worker",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1777764+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateLifecycle",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1777764+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateBinding/preserve-native-markdown",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1777764+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateBinding/native-original-is-immutable",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1826324+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeStateBinding",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1871398+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen//shortened-link",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1909997+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen//missing-boundaries",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.1959675+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen//later-draft",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2003686+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen//changed-screen",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2042078+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen/paired-worker/shortened-link",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2068995+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen/paired-worker/missing-boundaries",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2096491+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen/paired-worker/later-draft",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2129143+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen/paired-worker/changed-screen",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2129143+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalIgnoresScreen",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2191506+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalRetriesMissingBodyAndQueryFailure/missing-body",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2240646+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalRetriesMissingBodyAndQueryFailure/query-failure",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2240646+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeFinalRetriesMissingBodyAndQueryFailure",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.227332+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaObserverDeliversNativeFinalWithoutScreen",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.2278756+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaNativeHistoricalUnknownRemainsUnknown",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.4821714+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestObserverQueueCancellationKeepsOriginalObservationWithoutResend",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:15:58.4849345+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationApplicabilityOriginalTerminal/#00",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.4887911+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationApplicabilityOriginalTerminal/saved-environment",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:15:58.4887911+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestPreparationApplicabilityOriginalTerminal",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:15:58.6011263+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativePreparationFailureIsBoundAndNeverReady/pi",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-10-20T14:15:58.6649403+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativePreparationFailureIsBoundAndNeverReady/dsh",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:15:58.6649403+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativePreparationFailureIsBoundAndNeverReady",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-10-20T14:15:58.8876253+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers",
+    "Elapsed": 0.22
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2480092+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeReceiptPublicationAcrossWindowsReaders/held-reader-fails-closed",
+    "Elapsed": 1.36
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2480092+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestNativeReceiptPublicationAcrossWindowsReaders",
+    "Elapsed": 1.58
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2501846+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00/valid",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2501846+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00/version",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2501846+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00/identity",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2501846+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00/target",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2507588+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00/retired-authentication",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2524307+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/#00",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2540682+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote/valid",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2546305+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote/version",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2546305+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote/identity",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2546305+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote/target",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2546305+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote/retired-authentication",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2557465+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities/remote",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2557465+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2585205+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsProviderReplacementInsideOriginalTerminal",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2619119+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/working",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.264658+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/waiting",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2673964+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/invalid_outcome",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2784615+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/cancellation",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.2846286+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/interrupted",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.294952+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/missing_agent",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3018176+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/pane",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.308163+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/provider",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3126803+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/stale_time",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3160207+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/stale_done",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3210158+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent/query_error",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3210158+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRecoveryRejectsStaleScreenIdleAgainstNativeMainAgent",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3251226+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/original",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3251226+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/writer-model",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3256639+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/changed-effort",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3256639+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/reader-live",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3262268+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/foreign-owner",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3262268+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel/foreign-input",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedControlReceiptBindsFrozenTurnModel",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/observed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/wrapped-stderr",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/access",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/busy",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/forward-slashes",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/permission",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/open-cache",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/other-file",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3347316+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/other-directory",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/foreign-temp",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/nested-temp",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/not-temporary",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/missing",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/authentication",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification/identity",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:00.3353127+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheConflictClassification",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:04.0421553+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/attempt-limit",
+    "Elapsed": 3.71
+  },
+  {
+    "Time": "2026-10-20T14:16:04.2948138+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/permanent-after-conflict",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:16:04.3197343+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/cancel-backoff",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:04.3844015+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/caller-deadline",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:16:04.515042+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/slow-call",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-10-20T14:16:05.0195294+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/shared-deadline",
+    "Elapsed": 0.5
+  },
+  {
+    "Time": "2026-10-20T14:16:05.0233542+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget/already-canceled",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:05.0233542+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryRetryBudget",
+    "Elapsed": 4.69
+  },
+  {
+    "Time": "2026-10-20T14:16:05.2805919+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations/recovers",
+    "Elapsed": 0.26
+  },
+  {
+    "Time": "2026-10-20T14:16:05.2827569+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations/inventory-denied",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.1059178+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations/inventory-exhausted",
+    "Elapsed": 3.82
+  },
+  {
+    "Time": "2026-10-20T14:16:09.3781312+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations/creation-unknown",
+    "Elapsed": 0.27
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6290834+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations/send-unknown",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6290834+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryCacheRetryNeverReplaysMutations",
+    "Elapsed": 4.61
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6331661+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRepositoryQueryScopeRevocationPreventsCreation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.638159+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceRepositoryFollowsProject/local",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6432455+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceRepositoryFollowsProject/remote-windows",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:09.646613+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceRepositoryFollowsProject/remote-unix",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.646613+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceRepositoryFollowsProject",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6511731+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/missing",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6545363+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/ambiguous",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6590114+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/folder-only",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6661994+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/truncated",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6706877+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/malformed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6746696+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation/missing-id",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6746696+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryDiscoveryRejectsBeforeCreation",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6785389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestRemoteRepositoryCreationRetainsReceiptOnMismatch",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6823756+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopReconcilesOnlyProvenUnattemptedClose/offline-before-close",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.685147+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopReconcilesOnlyProvenUnattemptedClose/lost-close-response",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.685147+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopReconcilesOnlyProvenUnattemptedClose",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6886015+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStopProgressCannotCrossIncarnation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.692473+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/initializing-branch-late",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6957693+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/initializing-restart-branch-late",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.6990821+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/started-branch-late",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.7036599+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/initializing-foreign-branch",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.7081949+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/initializing-foreign-worktree",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.7115935+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/initializing-foreign-path",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.7150056+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/live",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.719042+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/already-absent",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.7235586+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/lost-close",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:09.9280073+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/lost-close-still-live",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:16:10.1333136+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/truncated",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3381048+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/missing-host",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3416681+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/wrong-incarnation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3444706+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/wrong-close-handle",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3472958+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/accepted-close",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3494691+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/mixed-control",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.352257+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/legacy",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3544847+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/legacy-state-v5",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3567035+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/legacy-state-v4",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3589404+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope/native-state-v5",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3589404+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStoppedNativeRemoteScope",
+    "Elapsed": 0.67
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3645237+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestExtensionStateKeepsPreparationSeparateFromCodexProof/pi",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3695058+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestExtensionStateKeepsPreparationSeparateFromCodexProof/dsh",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3695058+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestExtensionStateKeepsPreparationSeparateFromCodexProof",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3863394+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalReceiptRejectsMissingUnboundedAndUnknownFields",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:10.3924272+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedReadinessRequiresEffectiveThinkingForNewSources",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:11.4810993+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestTerminalStartupFailureCanStopWithoutInventingWorker",
+    "Elapsed": 1.09
+  },
+  {
+    "Time": "2026-10-20T14:16:11.7509216+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/missing",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:11.7978025+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/oversized",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:11.8398784+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-source",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:11.8831371+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-session",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:11.9278405+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-native-session",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:11.9787193+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/changed-preparation",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:12.0198751+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-command",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:12.0595098+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-instance",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:12.1057304+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-input",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:12.149792+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-wire",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:12.2034214+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-model",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:12.2508258+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/wrong-effort",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:12.3075025+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/bad-final-hash",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:16:12.3491191+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/bad-failure",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:12.3865159+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/pending",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:12.4484748+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts/valid",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-10-20T14:16:12.4709433+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedNativeChannelRejectsMissingChangedAndLateFacts",
+    "Elapsed": 0.99
+  },
+  {
+    "Time": "2026-10-20T14:16:13.430743+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup",
+    "Elapsed": 0.96
+  },
+  {
+    "Time": "2026-10-20T14:16:13.437371+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresNativeExitProofBeyondPTY/live-root",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:13.4428155+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresNativeExitProofBeyondPTY/missing-root",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:13.4479733+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresNativeExitProofBeyondPTY/no-readiness",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:13.4479733+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresNativeExitProofBeyondPTY",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:13.4881933+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/complete",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.526765+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/live-business",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.5668242+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/live-control",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.6080498+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/changed-signature",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.64741+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/missing-control",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.6957238+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl/pending-control",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:13.6957238+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestCodexStoppedRequiresSignedExitAndFixedControl",
+    "Elapsed": 0.25
+  },
+  {
+    "Time": "2026-10-20T14:16:13.7178478+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead/fresh",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:13.7565437+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead/lost-send",
+    "Elapsed": 0.04
+  },
+  {
+    "Time": "2026-10-20T14:16:13.766182+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead/workspace-foreign-branch",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:13.7748831+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead/workspace-dirty",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:13.8012573+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead/workspace-reader-live",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:13.8012573+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-10-20T14:16:15.830962+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/success",
+    "Elapsed": 2.03
+  },
+  {
+    "Time": "2026-10-20T14:16:17.8550847+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/unknown-create",
+    "Elapsed": 2.02
+  },
+  {
+    "Time": "2026-10-20T14:16:17.8605973+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/foreign-runtime",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:17.8950067+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/incomplete",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:19.9280715+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/changed-incarnation",
+    "Elapsed": 2.03
+  },
+  {
+    "Time": "2026-10-20T14:16:21.9663682+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/corrupt-checkpoint",
+    "Elapsed": 2.04
+  },
+  {
+    "Time": "2026-10-20T14:16:23.9926508+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart/multiple-after-create",
+    "Elapsed": 2.03
+  },
+  {
+    "Time": "2026-10-20T14:16:23.9926508+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart",
+    "Elapsed": 10.19
+  },
+  {
+    "Time": "2026-10-20T14:16:23.9926508+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestOrcaWorkspaceStartupLive",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:23.9977175+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationUsesConfiguredTimeout/#00",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:24.0021078+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationUsesConfiguredTimeout/paired-worker",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:24.0021078+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationUsesConfiguredTimeout",
+    "Elapsed": 0.01
+  },
+  {
+    "Time": "2026-10-20T14:16:24.2073933+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/list",
+    "Elapsed": 0.21
+  },
+  {
+    "Time": "2026-10-20T14:16:24.4142755+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/show",
+    "Elapsed": 0.21
+  },
+  {
+    "Time": "2026-10-20T14:16:24.6221084+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/empty-list",
+    "Elapsed": 0.21
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9289465+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/shared-deadline",
+    "Elapsed": 0.31
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9338742+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/other-error",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9376306+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness/create-error",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9376306+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceTerminalSurfaceReadiness",
+    "Elapsed": 0.94
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9617649+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationReceiptRecovery/#00",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9857784+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationReceiptRecovery/paired-worker",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:24.9857784+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationReceiptRecovery",
+    "Elapsed": 0.05
+  },
+  {
+    "Time": "2026-10-20T14:16:25.0107975+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/runtime",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.0387196+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/instanceId",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:25.0696881+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/path",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:25.0970145+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/branch",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:25.124244+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/head",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:25.1492998+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/baseRef",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.1734186+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/handle",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.1979476+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/incarnation",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.2230938+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/orphan",
+    "Elapsed": 0.03
+  },
+  {
+    "Time": "2026-10-20T14:16:25.2471841+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/multiple",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.272321+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/missing-receipt",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.296672+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity/foreign-operation",
+    "Elapsed": 0.02
+  },
+  {
+    "Time": "2026-10-20T14:16:25.296672+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": "TestWorkspaceCreationRecoveryRejectsChangedIdentity",
+    "Elapsed": 0.31
+  },
+  {
+    "Time": "2026-10-20T14:16:25.3053933+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Test": null,
+    "Elapsed": 44.821
+  }
+]

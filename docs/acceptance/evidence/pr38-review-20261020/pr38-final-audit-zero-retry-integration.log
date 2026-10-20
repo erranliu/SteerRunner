@@ -1,0 +1,5 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/audit-zero
+--- PASS: TestSRResultAcquisition (138.07s)
+    --- PASS: TestSRResultAcquisition/audit-zero (138.07s)
+PASS

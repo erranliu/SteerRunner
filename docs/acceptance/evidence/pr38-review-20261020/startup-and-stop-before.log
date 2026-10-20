@@ -1,0 +1,15 @@
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original
+    stop_creation_recovery_test.go:86: late creation could not settle original stop or retargeted it unknown 1 0
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource
+--- FAIL: TestSRStopRecoversLateCreationFactsUnderOriginalIntent (0.16s)
+    --- FAIL: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original (0.08s)
+    --- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource (0.07s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	2.850s
+=== RUN   TestCreationOwnerStartupUsesOriginalDeadline
+    creation_owner_test.go:288: owner startup escaped original creation deadline outcome_unknown original creation owner launch unverified; no replacement: startup is not bounded by the original creation deadline
+--- FAIL: TestCreationOwnerStartupUsesOriginalDeadline (0.15s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.139s
+FAIL

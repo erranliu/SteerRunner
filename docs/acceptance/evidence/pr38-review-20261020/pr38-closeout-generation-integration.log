@@ -1,0 +1,7 @@
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- PASS: TestSRRestartPreservesAuthorization (86.99s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (43.20s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (40.09s)
+PASS

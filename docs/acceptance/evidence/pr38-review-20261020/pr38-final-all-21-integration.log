@@ -1,0 +1,144 @@
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+--- PASS: TestSRWorkflowDiscoveryAndSelection (10.01s)
+=== RUN   TestSRContentGenerationRecovery
+=== RUN   TestSRContentGenerationRecovery/generate-graceful
+=== RUN   TestSRContentGenerationRecovery/conversation-kill
+=== RUN   TestSRContentGenerationRecovery/question-reply
+=== RUN   TestSRContentGenerationRecovery/startup-stop
+--- PASS: TestSRContentGenerationRecovery (64.29s)
+    --- PASS: TestSRContentGenerationRecovery/generate-graceful (18.37s)
+    --- PASS: TestSRContentGenerationRecovery/conversation-kill (14.37s)
+    --- PASS: TestSRContentGenerationRecovery/question-reply (17.67s)
+    --- PASS: TestSRContentGenerationRecovery/startup-stop (13.87s)
+=== RUN   TestSRContentGenerate
+=== RUN   TestSRContentGenerate/text
+=== RUN   TestSRContentGenerate/json
+=== RUN   TestSRContentGenerate/schema_mismatch
+=== RUN   TestSRContentGenerate/bad_json
+=== RUN   TestSRContentGenerate/failed
+=== RUN   TestSRContentGenerate/cancelled
+=== RUN   TestSRContentGenerate/no_final
+=== RUN   TestSRContentGenerate/question
+=== RUN   TestSRContentGenerate/no_auth
+=== RUN   TestSRContentGenerate/no_directory
+--- PASS: TestSRContentGenerate (131.76s)
+    --- PASS: TestSRContentGenerate/text (14.28s)
+    --- PASS: TestSRContentGenerate/json (13.03s)
+    --- PASS: TestSRContentGenerate/schema_mismatch (11.89s)
+    --- PASS: TestSRContentGenerate/bad_json (11.99s)
+    --- PASS: TestSRContentGenerate/failed (11.44s)
+    --- PASS: TestSRContentGenerate/cancelled (15.51s)
+    --- PASS: TestSRContentGenerate/no_final (16.26s)
+    --- PASS: TestSRContentGenerate/question (13.57s)
+    --- PASS: TestSRContentGenerate/no_auth (11.52s)
+    --- PASS: TestSRContentGenerate/no_directory (12.26s)
+=== RUN   TestSRContentConversation
+--- PASS: TestSRContentConversation (22.83s)
+=== RUN   TestSRContentQuestionAndUnknown
+=== RUN   TestSRContentQuestionAndUnknown/unknown-interrupt
+=== RUN   TestSRContentQuestionAndUnknown/question
+=== RUN   TestSRContentQuestionAndUnknown/unknown
+--- PASS: TestSRContentQuestionAndUnknown (42.11s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown-interrupt (14.06s)
+    --- PASS: TestSRContentQuestionAndUnknown/question (12.28s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown (15.76s)
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-3777874706\native\original-worktree runtime=creation-runtime-sr-3777874706 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1703408397\native\original-worktree runtime=creation-runtime-sr-1703408397 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-3756128267\native\original-worktree runtime=creation-runtime-sr-3756128267 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-3700133231\native\original-worktree runtime=creation-runtime-sr-3700133231 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-3122625350\native\original-worktree runtime=creation-runtime-sr-3122625350 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/missing-terminal-receipt
+    creation_recovery_test.go:245: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-4081292761\native\original-worktree runtime=creation-runtime-sr-4081292761 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (129.17s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (24.16s)
+    --- PASS: TestSRResourceCreationRecovery/kill (22.85s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (25.05s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (20.54s)
+    --- PASS: TestSRResourceCreationRecovery/owner-crash (19.65s)
+    --- PASS: TestSRResourceCreationRecovery/missing-terminal-receipt (16.92s)
+=== RUN   TestEnvironmentCheckCLI
+--- PASS: TestEnvironmentCheckCLI (7.80s)
+=== RUN   TestSRMultipleRunsIsolation
+--- PASS: TestSRMultipleRunsIsolation (54.32s)
+=== RUN   TestSRRunEvidenceR2
+--- PASS: TestSRRunEvidenceR2 (178.00s)
+=== RUN   TestSRStandalonePackage
+--- PASS: TestSRStandalonePackage (7.86s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (118.87s)
+    --- PASS: TestSRServiceOwnership/offline_verification (66.52s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (3.07s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.75s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.51s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.50s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.50s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.15s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.15s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.51s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.16s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (7.80s)
+    --- PASS: TestSRServiceOwnership/parent_job (9.71s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (4.93s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (4.78s)
+    --- PASS: TestSRServiceOwnership/different_release (11.34s)
+    --- PASS: TestSRServiceOwnership/stale_writer (11.41s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (8.86s)
+=== RUN   TestSRStabilityLostSubmitResponse
+--- PASS: TestSRStabilityLostSubmitResponse (74.05s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (60.57s)
+=== RUN   TestSRInputFreeze
+--- PASS: TestSRInputFreeze (54.54s)
+=== RUN   TestSRPermissionQualification
+--- PASS: TestSRPermissionQualification (41.40s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (68.16s)
+=== RUN   TestSRStorageLogsEvents
+--- PASS: TestSRStorageLogsEvents (65.97s)
+=== RUN   TestSRPublicationIdentity
+--- PASS: TestSRPublicationIdentity (81.07s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+--- PASS: TestSRPublicationBeforeWorkflowReady (77.87s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (75.96s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:524: offline owner did not save the original result, or sent a successor without the service
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3812326093
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:524: offline owner did not save the original result, or sent a successor without the service
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4223103278
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+    generation_test.go:103: native creation barrier not reached
+    service_test.go:268: fixture Run 03234ed9e78d30384890f2302e674032 resources remain unverified: 
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3903496663
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- FAIL: TestSRRestartPreservesAuthorization (312.92s)
+    --- FAIL: TestSRRestartPreservesAuthorization/graceful (83.26s)
+    --- FAIL: TestSRRestartPreservesAuthorization/kill (78.61s)
+    --- FAIL: TestSRRestartPreservesAuthorization/creation_receipt (93.18s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (40.11s)
+FAIL

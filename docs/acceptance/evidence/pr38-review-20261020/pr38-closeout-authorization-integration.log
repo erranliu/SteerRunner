@@ -1,0 +1,19 @@
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:475: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-548131883\runner --json] exit=2 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":"original-submit","data":null,"error":{"code":"invalid_input","message":"Publication configuration does not match the fixed repository or non-secret schema."}} stderr=
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-548131883
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:475: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1124471253\runner --json] exit=2 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":"original-submit","data":null,"error":{"code":"invalid_input","message":"Publication configuration does not match the fixed repository or non-secret schema."}} stderr=
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1124471253
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+    generation_test.go:95: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3479888881\runner --json] exit=2 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":"original-submit","data":null,"error":{"code":"invalid_input","message":"Publication configuration does not match the fixed repository or non-secret schema."}} stderr=
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3479888881
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+    generation_test.go:140: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2374792762\runner --json] exit=2 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":"original-submit","data":null,"error":{"code":"invalid_input","message":"Publication configuration does not match the fixed repository or non-secret schema."}} stderr=
+    workflow_test.go:162: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2374792762
+--- FAIL: TestSRRestartPreservesAuthorization (26.90s)
+    --- FAIL: TestSRRestartPreservesAuthorization/graceful (7.20s)
+    --- FAIL: TestSRRestartPreservesAuthorization/kill (5.39s)
+    --- FAIL: TestSRRestartPreservesAuthorization/creation_receipt (5.26s)
+    --- FAIL: TestSRRestartPreservesAuthorization/pending_stop (4.95s)
+FAIL

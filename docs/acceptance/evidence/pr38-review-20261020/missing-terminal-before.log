@@ -1,0 +1,6 @@
+=== RUN   TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory
+    creation_owner_test.go:331: inventory uniqueness was treated as an original terminal receipt: disposition=confirmed process=&{Kind:orca_terminal PID:0 Created: Executable:C:\Users\lmas1\AppData\Local\Temp\go-build756077407\b001\orcatransport.test.exe Terminal:terminal RuntimeID:runtime Incarnation:foreign-shell-incarnation ExecutionHost:local WorktreeID:repo::C:\Users\lmas1\AppData\Local\Temp\TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory3769621338\001} err=<nil>
+--- FAIL: TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory (0.13s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.840s
+FAIL

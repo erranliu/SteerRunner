@@ -1,0 +1,7 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/parser-kill
+=== RUN   TestSRResultAcquisition/parser-stop
+--- PASS: TestSRResultAcquisition (355.30s)
+    --- PASS: TestSRResultAcquisition/parser-kill (232.14s)
+    --- PASS: TestSRResultAcquisition/parser-stop (123.16s)
+PASS

@@ -1,0 +1,8 @@
+{
+  "observed_at": "2026-10-20T06:55:59.5128192Z",
+  "scope": "All 14 recorded harnesses finished. Full fixture-root audit found four retained original processes in two failed sites; after startup pending-stop cleanup, rechecked those exact roots, all harness directories, and recorded harness PIDs.",
+  "active_process_count": 0,
+  "active_processes": [],
+  "active_harness_count": 0,
+  "active_harnesses": []
+}

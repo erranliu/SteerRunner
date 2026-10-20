@@ -1,0 +1,170 @@
+[
+  {
+    "Time": "2026-10-20T14:19:38.8898688+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/contracts",
+    "Elapsed": 0.891
+  },
+  {
+    "Time": "2026-10-20T14:19:39.1043584+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+    "Elapsed": 1.092
+  },
+  {
+    "Time": "2026-10-20T14:19:39.1804762+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/conversation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:39.1804762+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/evidence",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:39.1804762+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/model",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:39.1804762+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/nativeaudit",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:39.848055+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+    "Elapsed": 0.665
+  },
+  {
+    "Time": "2026-10-20T14:19:39.9309358+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+    "Elapsed": 0.75
+  },
+  {
+    "Time": "2026-10-20T14:19:39.9465029+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+    "Elapsed": 0.767
+  },
+  {
+    "Time": "2026-10-20T14:19:40.2885435+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+    "Elapsed": 1.106
+  },
+  {
+    "Time": "2026-10-20T14:19:41.1318924+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+    "Elapsed": 1.952
+  },
+  {
+    "Time": "2026-10-20T14:19:41.2404354+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+    "Elapsed": 2.059
+  },
+  {
+    "Time": "2026-10-20T14:19:41.5283+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/cli",
+    "Elapsed": 3.5300000000000002
+  },
+  {
+    "Time": "2026-10-20T14:19:46.2643912+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/runstate",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:46.2649598+08:00",
+    "Action": "skip",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/protocol",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-10-20T14:19:48.3950651+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+    "Elapsed": 3.068
+  },
+  {
+    "Time": "2026-10-20T14:19:48.5191466+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "Elapsed": 10.505
+  },
+  {
+    "Time": "2026-10-20T14:19:49.2113838+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/process",
+    "Elapsed": 10.031
+  },
+  {
+    "Time": "2026-10-20T14:19:50.9243189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/resources",
+    "Elapsed": 4.66
+  },
+  {
+    "Time": "2026-10-20T14:19:52.6672208+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/storage",
+    "Elapsed": 6.4030000000000005
+  },
+  {
+    "Time": "2026-10-20T14:19:53.6111224+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/host",
+    "Elapsed": 7.348
+  },
+  {
+    "Time": "2026-10-20T14:19:54.3684781+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/testkit/livetest",
+    "Elapsed": 8.104
+  },
+  {
+    "Time": "2026-10-20T14:20:30.0866296+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec",
+    "Elapsed": 44.76
+  },
+  {
+    "Time": "2026-10-20T14:20:30.6722603+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+    "Elapsed": 45.346
+  },
+  {
+    "Time": "2026-10-20T14:20:34.3873566+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "Elapsed": 56.38
+  },
+  {
+    "Time": "2026-10-20T14:21:18.4458604+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+    "Elapsed": 93.12
+  },
+  {
+    "Time": "2026-10-20T14:21:49.8981817+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Elapsed": 131.903
+  },
+  {
+    "Time": "2026-10-20T14:39:49.676418+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Elapsed": 1211.893
+  }
+]

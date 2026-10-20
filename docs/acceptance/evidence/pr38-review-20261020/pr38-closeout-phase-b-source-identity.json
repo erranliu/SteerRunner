@@ -1,0 +1,12 @@
+{
+  "pid": 36652,
+  "pattern": "^TestSRResultAcquisition$/(parser-kill|parser-stop)$",
+  "runner_sha256": "AFFE38FA331AF8B937B90298A0B590A5425CD7DCED5563C5DD4382ECD9980DCA",
+  "fixture_sha256": "417A3BAE276A8329C5995B6C8347661E107E4FEE15E6CD12235B304E22D52287",
+  "helper_sha256": "BE52AE850A6F14761F7AB88A12B2639B63B66BB41C4FFA799A2744ADE6186E31",
+  "source_commit": "5a25d9cb15b2fe8c49c64e9fe0ecf87e02d5f6e0",
+  "source_dirty": true,
+  "runner_source_commit": "fe2f35826515542d33946ba2ce26caea55ef3275",
+  "runner_source_dirty": false,
+  "note": "Reuses the exact qualified Runner and helper; fixture includes test-only scenario-budget change and main #39 tests/docs. Production source is unchanged from fe2f358."
+}
