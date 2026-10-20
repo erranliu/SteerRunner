@@ -1,0 +1,155 @@
+[
+  {
+    "batch": "l3-extension27-targeted",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.audited",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\8fb441215091\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension27-targeted",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.multirun",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\c8f37b61d4dd\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension30-active-cases-2",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.service-restart",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\9a2fa6378bda\\s",
+    "case_id": "graceful-active"
+  },
+  {
+    "batch": "l3-extension30-active-cases-2",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.service-restart",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\e7d842fa558a\\s",
+    "case_id": "kill-active"
+  },
+  {
+    "batch": "l3-extension30-regression",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.smoke",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\87298a28f1cc\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension30-regression",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.full-access",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\f4648cd42ad0\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension30-targeted",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.audited",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\2e0d45771590\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension30-targeted",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.multirun",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\a7e1737b9f39\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension31-active-cases",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.service-restart",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\d6d506f68ceb\\s",
+    "case_id": "graceful-active"
+  },
+  {
+    "batch": "l3-extension31-active-cases",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.service-restart",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\d3ccbce2ae6d\\s",
+    "case_id": "kill-active"
+  },
+  {
+    "batch": "l3-extension31-active-cases",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.stop-revocation",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\e3a0cc318c48\\s",
+    "case_id": "active"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.smoke",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\218c849dd40d\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.full-access",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\3c52eeb8281c\\s",
+    "case_id": "default"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.caller-exit",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\2343396191b0\\s",
+    "case_id": "accepted-response-lost"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "environment-check.orca-sandbox",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\438dd76062a4\\s",
+    "case_id": "complete"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "environment-check.orca-full-access",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\4d84857de391\\s",
+    "case_id": "complete"
+  },
+  {
+    "batch": "l3-extension31-main",
+    "status": "not_running",
+    "pid": 0,
+    "scenario": "orca-remote.audited",
+    "instance_id": "",
+    "state_dir": "c:\\srt\\ed282956d985\\s",
+    "case_id": "default"
+  }
+]

@@ -147,7 +147,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	defer func() {
 		receipt = h.Binding
 		if err != nil {
-			if b.Config.EnvironmentCheck && h.process != nil {
+			if (b.Config.EnvironmentCheck || b.Config.Sandbox == "read-only") && h.process != nil {
 				// Preserve partial/late owned launch handles for explicit tree
 				// settlement, including handshake and thread-create failures.
 				h.owned = false
@@ -208,6 +208,14 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		if workerSetup != nil {
 			params["developerInstructions"] = workerSetup.instructions()
 		}
+		if b.Config.Sandbox == "read-only" {
+			config, configErr := contentConfiguration(ctx, h.client, b.Config.Workspace)
+			if configErr != nil {
+				return nil, receipt, configErr
+			}
+			params["config"] = config
+			params["developerInstructions"] = "Read-only content session. Work within the submitted directory and frozen materials. Return content to the caller. Do not commit, push, create PRs or change files. Use steerrunner_ask for necessary human questions."
+		}
 		if b.Config.EnvironmentCheck {
 			// All check tools route through a closed native probe port. The
 			// credential broker additionally gates each external write once.
@@ -225,8 +233,11 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			return nil, receipt, startErr
 		}
 		h.Binding.SessionID = response.Thread.ID
-		if b.Config.EnvironmentCheck {
+		if b.Config.EnvironmentCheck || b.Config.Sandbox == "read-only" {
 			want := "workspaceWrite"
+			if b.Config.Sandbox == "read-only" {
+				want = "readOnly"
+			}
 			if b.Config.Sandbox == "danger-full-access" {
 				want = "dangerFullAccess"
 			}
@@ -239,7 +250,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			return nil, receipt, err
 		}
 	} else {
-		if err = ResumeThread(ctx, h.client, fixed.SessionID, b.Config.Workspace); err != nil {
+		if err = resumeThread(ctx, h.client, fixed.SessionID, b.Config.Workspace, b.Config.Sandbox); err != nil {
 			return nil, receipt, err
 		}
 	}

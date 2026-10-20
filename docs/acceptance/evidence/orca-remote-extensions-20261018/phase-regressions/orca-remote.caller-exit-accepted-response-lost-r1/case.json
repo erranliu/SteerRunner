@@ -1,0 +1,34 @@
+{
+  "scenario": "orca-remote.caller-exit",
+  "case_id": "accepted-response-lost",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\7008c08b1969\\manifest.json",
+  "started_at": "2026-10-18T08:04:38.6742645Z",
+  "finished_at": "2026-10-18T08:10:45.7538418Z",
+  "identity": {
+    "pid": 39876,
+    "manifest_sha256": "d2f09ec0787cb57331a3bec3eb7e208786bbb8236b0314b89fec74aac0193ae1",
+    "driver_sha256": "4f0ab768151c14aac424765cf69944856f40df7b0e45abdba35cc302d38e2d4a",
+    "runner_sha256": "78d505133234de21ce9e52eab9abe5f1980aec886c3386fe09835837f1b2af89",
+    "source_commit": "e492ec1167be4168f7a56bd14ece4355efab057d",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.caller-exit",
+    "level": "L3",
+    "helper_sha256": "03822b29ff009593899ca9a2a8fe6962f4465f5a4ccc96e751bdc46ce58087cf",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+    "case_id": "accepted-response-lost",
+    "repeat_index": 1
+  },
+  "resources": [
+    "root:C:\\srt\\7008c08b1969",
+    "base:codex/srtest/7008c08b1969/base",
+    "run:99ad53b5914504ac873363cdb7607cd1",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-99ad53b5914504ac873363cdb7607cd1",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_a39ce1b6-bc67-46aa-87d7-2175747d8c52:da5379c3-19b7-4097-b85e-4b391b7a84ec",
+    "branch:erranliu/sl-99ad53b5914504ac873363cdb7607cd1",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/492"
+  ]
+}

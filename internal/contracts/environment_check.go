@@ -162,6 +162,13 @@ func ValidateEnvironmentCheck(data []byte) *Fault {
 	if err := ValidateExecution(value.Execution); err != nil {
 		return err
 	}
+	var mode struct {
+		AccessMode string `json:"access_mode"`
+	}
+	_ = json.Unmarshal(value.Execution.Settings, &mode)
+	if mode.AccessMode == "read_only" {
+		return invalid
+	}
 	if value.Execution.Adapter == "orca-terminal" {
 		var settings OrcaSettings
 		_ = json.Unmarshal(value.Execution.Settings, &settings)

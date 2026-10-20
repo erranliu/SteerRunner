@@ -164,9 +164,6 @@ func (e *Engine) HandleEnvironmentCheck(command, checkID, requestID string, inpu
 		} else {
 			_ = json.Unmarshal(value.Execution.Settings, &settings)
 		}
-		if settings.GitHubAuth != nil {
-			return reject(contracts.Fail(3, "unsupported_capability", "Check write gating currently supports host-gh-repository-broker; installation-token checks require an equivalent native write gate."))
-		}
 		if settings.AccessMode == "" {
 			settings.AccessMode = "sandbox"
 		}
@@ -435,13 +432,7 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 		return
 	}
 	if startErr != nil {
-		_ = e.settleCheckOperation(id, start, b.OperationUnknown)
-		_ = e.updateCheck(id, func(r *runstate.CheckRecord) {
-			r.Allowed = false
-			r.View.Status = "unverified"
-			r.View.Diagnostic = "native_input_unverified"
-			r.CommandStates[r.StartCommand] = "unknown"
-		})
+		e.failCheckStart(id, start, turn, startErr)
 		return
 	}
 	if err = e.settleCheckOperation(id, start, b.OperationConfirmed); err != nil {
@@ -453,7 +444,10 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 			_ = e.updateCheck(id, func(r *runstate.CheckRecord) {
 				r.Allowed = false
 				r.View.Status = "unverified"
-				r.View.Diagnostic = "original_turn_unsettled"
+				r.View.Diagnostic = codex.EnvironmentDiagnostic(nextErr)
+				if r.View.Diagnostic == "preparation_unverified" {
+					r.View.Diagnostic = "original_turn_unsettled"
+				}
 			})
 			return
 		}
@@ -468,6 +462,14 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 			return
 		}
 		if err = e.executeCheckProbe(ctx, id, w, call); err != nil {
+			_ = e.updateCheck(id, func(next *runstate.CheckRecord) {
+				if next.Allowed {
+					next.Allowed = false
+					next.View.Status = "unverified"
+					next.View.Diagnostic = "native_probe_dispatch_unverified: " + codex.EnvironmentDiagnostic(err)
+					next.CommandStates[next.StartCommand] = "unknown"
+				}
+			})
 			return
 		}
 	}
@@ -478,7 +480,7 @@ func (e *Engine) executeCheckProbe(ctx context.Context, id string, w *checkWorke
 	defer w.gate.Unlock()
 	r := e.checkSnapshot(id)
 	if !r.Allowed || ctx.Err() != nil || call.Nonce != r.Nonce {
-		return errors.New("check dispatch revoked")
+		return errors.New("check_dispatch_revoked")
 	}
 	itemIndex := -1
 	for i, item := range r.View.Items {
@@ -488,7 +490,7 @@ func (e *Engine) executeCheckProbe(ctx context.Context, id string, w *checkWorke
 		}
 	}
 	if itemIndex < 0 {
-		return errors.New("unexpected check action")
+		return errors.New("unexpected_check_action")
 	}
 	// Deduplicate by action as well as native call identity, including a second
 	// call ID in the same model turn. Unknown originals are never re-executed.
@@ -503,7 +505,7 @@ func (e *Engine) executeCheckProbe(ctx context.Context, id string, w *checkWorke
 	}
 	for i := 0; i < itemIndex; i++ {
 		if r.View.Items[i].Required && r.View.Items[i].Status != "passed" {
-			return errors.New("upstream probe is unresolved")
+			return errors.New("upstream_probe_unresolved")
 		}
 	}
 	index, err := e.checkIntent(id, call.Action, call.CallID, r.View.Resources)
@@ -574,12 +576,27 @@ func (e *Engine) executeCheckProbe(ctx context.Context, id string, w *checkWorke
 			next.Allowed = false
 			next.View.Status = itemStatus
 			next.View.Diagnostic = call.Action + "_" + itemStatus
+			failure := probeErr
+			if failure == nil {
+				failure = verifyErr
+			}
+			if category := codex.EnvironmentDiagnostic(failure); category != "" && category != "preparation_unverified" {
+				next.View.Diagnostic += ": " + category
+			}
 		}
 	})
 	if err != nil {
 		return err
 	}
 	if err = w.port.Reply(call, itemStatus); err != nil {
+		_ = e.updateCheck(id, func(next *runstate.CheckRecord) {
+			next.Allowed = false
+			if itemStatus == "passed" {
+				next.View.Status = "unverified"
+				next.View.Diagnostic = "native_reply_unverified: " + codex.EnvironmentDiagnostic(err)
+				next.CommandStates[next.StartCommand] = "unknown"
+			}
+		})
 		return err
 	}
 	if itemStatus != "passed" {
@@ -879,4 +896,25 @@ func reconcileCheckOwnership(r *runstate.CheckRecord) *runstate.CheckRecord {
 		}
 	}
 	return next
+}
+
+func (e *Engine) failCheckStart(id string, start int, turn string, startErr error) {
+	var rejected *codex.EnvironmentInputRejectedError
+	inputNotSent := turn == "" && errors.As(startErr, &rejected)
+	disposition := b.OperationUnknown
+	if inputNotSent {
+		disposition = b.OperationRejected
+	}
+	_ = e.settleCheckOperation(id, start, disposition)
+	_ = e.updateCheck(id, func(r *runstate.CheckRecord) {
+		r.Allowed = false
+		r.View.Status = "unverified"
+		r.View.Diagnostic = "native_input_unverified: " + codex.EnvironmentDiagnostic(startErr)
+		r.CommandStates[r.StartCommand] = "unknown"
+		if inputNotSent {
+			r.View.Status = "failed"
+			r.View.Diagnostic = "native_input_rejected: " + codex.EnvironmentDiagnostic(startErr)
+			r.CommandStates[r.StartCommand] = "failed"
+		}
+	})
 }

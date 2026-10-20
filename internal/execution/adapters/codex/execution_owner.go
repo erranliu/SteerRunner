@@ -247,7 +247,7 @@ func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwned
 				return
 			}
 			action := b.LifecycleAction(q.Request.Operation.Action)
-			allowed := action == b.LifecyclePrepareSession || action == b.LifecycleStartTurn || action == b.LifecycleDeliverFeedback || action == b.LifecycleStopExecution || action == b.LifecycleParseResult
+			allowed := action == b.LifecyclePrepareSession || action == b.LifecycleStartTurn || action == b.LifecycleDeliverFeedback || action == b.LifecycleStopObservation || action == b.LifecycleStopExecution || action == b.LifecycleParseResult
 			if !allowed || (q.Method != "native" && q.Method != "receipt" && !(action == b.LifecycleParseResult && q.Method == "cancel_parser")) {
 				respond(ownerResponse{Error: "unsupported local native action"})
 				return

@@ -61,7 +61,13 @@ func TestNativeConsoleProcessHelper(t *testing.T) {
 	if err != nil {
 		os.Exit(2)
 	}
-	if err := os.WriteFile(os.Args[len(os.Args)-2], data, 0600); err != nil {
+	// Publish complete evidence atomically; the parent polls for its presence
+	// and must never observe WriteFile's newly created, still-empty file.
+	path := os.Args[len(os.Args)-2]
+	if err := os.WriteFile(path+".tmp", data, 0600); err != nil {
+		os.Exit(2)
+	}
+	if err := os.Rename(path+".tmp", path); err != nil {
 		os.Exit(2)
 	}
 	os.Exit(0)

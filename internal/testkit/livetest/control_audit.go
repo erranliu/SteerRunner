@@ -25,6 +25,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 	shown := false
 	lastShow, lastRead := -1, -1
 	wire := map[string]bool{}
+	modelWire := map[string]codex.RemoteModelInput{}
 	requests := map[string]codex.RemoteControlRequest{}
 	sends := map[string]string{}
 	responses := map[string]bool{}
@@ -69,7 +70,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 					if q.Method == "original-turn" && !wire[q.InputDigest] {
 						return exempt, 0, 0, 0, errors.New("control query has no original business input")
 					}
-					if old, ok := requests[q.ID]; ok && old != q {
+					if old, ok := requests[q.ID]; ok && codex.RemoteControlDigest(old) != codex.RemoteControlDigest(q) {
 						return exempt, 0, 0, 0, errors.New("control request ID conflict")
 					}
 					requests[q.ID] = q
@@ -89,6 +90,14 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 							return exempt, 0, 0, 0, errors.New("business input before original readiness")
 						}
 						wire[receiptHash(text)] = true
+					}
+					if strings.HasPrefix(text, "[SteerRunner model=") {
+						model, err := codex.ParseRemoteModelPrompt(text)
+						if err != nil || ready == nil {
+							return exempt, 0, 0, 0, errors.New("invalid original model input")
+						}
+						wire[receiptHash(text)] = true
+						modelWire[receiptHash(text)] = model
 					}
 				}
 			}
@@ -217,29 +226,11 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 					if !ok || response.Binding != q.Binding || response.RequestDigest != codex.RemoteControlDigest(q) {
 						return exempt, 0, 0, 0, errors.New("foreign control response")
 					}
-					if response.Error != "" {
-						if response.Authentication != nil || response.Error != "original_turn_unverified" && response.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (response.Error == "original_turn_unverified") {
-							return exempt, 0, 0, 0, errors.New("invalid control error")
-						}
-						if q.Method == "original-turn" {
-							r := response.Turn
-							if r == nil || !r.InspectionFailed || !r.ReaderWritersAbsent || ready == nil || !sameReceiptReady(*ready, r.Readiness) || r.Source != codex.RemoteTurnSource || r.InputDigest != q.InputDigest {
-								return exempt, 0, 0, 0, errors.New("failed query reader settlement unverified")
-							}
-						} else if response.Turn != nil {
-							return exempt, 0, 0, 0, errors.New("invalid authentication error")
-						}
-					} else if q.Method == "authentication-stop" {
-						r := response.Authentication
-						if r == nil || response.Turn != nil || ready == nil || !sameReceiptReady(*ready, r.Readiness) || !r.Revoked || !r.BrokerClosed || !r.SocketCleaned || r.Mode != "host-gh-repository-broker" && r.Mode != "github-app-repository-broker" {
-							return exempt, 0, 0, 0, errors.New("authentication proof mismatch")
-						}
+					if err := validateAuditControlResponse(q, response, ready, modelWire); err != nil {
+						return exempt, 0, 0, 0, err
+					}
+					if q.Method == "authentication-stop" && response.Error == "" {
 						authConfirmed = true
-					} else {
-						r := response.Turn
-						if r == nil || !r.ReaderWritersAbsent || r.InspectionFailed || response.Authentication != nil || ready == nil || !sameReceiptReady(*ready, r.Readiness) || r.Source != codex.RemoteTurnSource || r.InputDigest != q.InputDigest || r.Completed && !r.Started || r.Started && (!codex.ValidNativeID(r.NativeTurnID) || r.UserItemID == "") || r.FinalText != "" && (r.FinalItemID == "" || r.FinalDigest != receiptHash(r.FinalText)) {
-							return exempt, 0, 0, 0, errors.New("original turn proof mismatch")
-						}
 					}
 					responses[q.ID] = true
 				}
@@ -348,4 +339,56 @@ func controlSendFlags(args []string, p NativeReceiptAuditPolicy) bool {
 		}
 	}
 	return seen["--json"] && seen["--enter"] && seen["--terminal"] && seen["--text"] && seen["--retry-request"] && auditArg(args, "--environment") == p.Environment && b.StableExecutionID(strings.ReplaceAll(auditArg(args, "--retry-request"), "-", ""))
+}
+
+func validateAuditControlResponse(q codex.RemoteControlRequest, r codex.RemoteControlResponse, ready *codex.RemoteReadiness, models map[string]codex.RemoteModelInput) error {
+	if ready == nil {
+		return errors.New("original readiness missing")
+	}
+	if r.Error != "" {
+		expected := map[string]string{"workspace-audit": "workspace_audit_unverified", "original-turn": "original_turn_unverified", "authentication-stop": "authentication_stop_unverified"}[q.Method]
+		if r.Error != expected || r.Authentication != nil {
+			return errors.New("invalid finite control error")
+		}
+		switch q.Method {
+		case "workspace-audit":
+			if r.Turn != nil || r.Workspace == nil || !r.Workspace.WritersAbsent {
+				return errors.New("workspace reader settlement unverified")
+			}
+		case "original-turn":
+			v := r.Turn
+			if r.Workspace != nil || v == nil || !v.InspectionFailed || !v.ReaderWritersAbsent || !sameReceiptReady(*ready, v.Readiness) || v.Source != codex.RemoteTurnSource || v.InputDigest != q.InputDigest {
+				return errors.New("failed query reader settlement unverified")
+			}
+		case "authentication-stop":
+			if r.Turn != nil || r.Workspace != nil {
+				return errors.New("invalid authentication error")
+			}
+		default:
+			return errors.New("unknown control method")
+		}
+		return nil
+	}
+	switch q.Method {
+	case "workspace-audit":
+		if q.Audit == nil || r.Workspace == nil || r.Turn != nil || r.Authentication != nil || codex.ValidateRemoteWorkspaceAudit(*ready, *q.Audit, *r.Workspace) != nil {
+			return errors.New("original workspace proof mismatch")
+		}
+	case "authentication-stop":
+		v := r.Authentication
+		if v == nil || r.Workspace != nil || r.Turn != nil || !sameReceiptReady(*ready, v.Readiness) || !v.Revoked || !v.BrokerClosed || !v.SocketCleaned || v.Mode != "host-gh-repository-broker" {
+			return errors.New("authentication proof mismatch")
+		}
+	case "original-turn":
+		v := r.Turn
+		if v == nil || r.Workspace != nil || r.Authentication != nil || !v.ReaderWritersAbsent || v.InspectionFailed || !sameReceiptReady(*ready, v.Readiness) || v.Source != codex.RemoteTurnSource || v.InputDigest != q.InputDigest || v.Completed && !v.Started || v.Started && (!codex.ValidNativeID(v.NativeTurnID) || v.UserItemID == "") || v.FinalText != "" && (v.FinalItemID == "" || v.FinalDigest != receiptHash(v.FinalText)) {
+			return errors.New("original turn proof mismatch")
+		}
+		if model, ok := models[q.InputDigest]; ok && v.Started && (v.Model != model.Model || v.ReasoningEffort != model.ReasoningEffort) {
+			return errors.New("original native model proof mismatch")
+		}
+	default:
+		return errors.New("unknown finite control method")
+	}
+	return nil
 }

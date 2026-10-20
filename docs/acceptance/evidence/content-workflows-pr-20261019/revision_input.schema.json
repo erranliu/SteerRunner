@@ -1,0 +1,13 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "expected_revision": {
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "expected_revision"
+  ],
+  "type": "object"
+}

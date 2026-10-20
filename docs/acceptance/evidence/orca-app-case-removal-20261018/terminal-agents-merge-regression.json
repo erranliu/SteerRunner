@@ -1,0 +1,38 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "1585a61ef7bd125a4c856cd092d49e573b58f61c",
+  "source_dirty": false,
+  "started_at": "2026-10-18T13:39:34.6201691Z",
+  "finished_at": "2026-10-18T13:48:58.5743552Z",
+  "requested_levels": [
+    "L1",
+    "Controlled"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "terminal_extensions_passed": true,
+      "terminal_extension_test_count": 28,
+      "level": "L1",
+      "terminal_extension_exit": 0,
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "native_zero_match_guard": true,
+      "test_count": 317,
+      "exit_code": 0
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ]
+}

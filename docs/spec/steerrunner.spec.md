@@ -4,11 +4,21 @@
 
 日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
-最新用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
+历史用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
 当前 Workflow 与结果获取以[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[两份 Workflow 定义](../workflows/README.md)为准；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工路径。CLI 生命周期、原子提交与 TaskDelivery 边界仍沿本文规则。
 
 历史扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
+
+## 当前产品边界（2026-10-19）
+
+SteerRunner 面向个人，在本人管理和信任的多台执行主机上运行冻结的 Spec/Plan。调用方指定本机或已配对 Orca environment；SteerLine 负责任务规划、DAG、目标选择和最终交付组织。Runner 负责独立 Run、环境检查、执行事实、反馈、显式恢复、停止和可核验 PR。
+
+每台执行机由用户安装工具、登录 gh 并准备固定仓库/base；Runner 不复制调用方凭据，也不自动安装、修复登录、提升 OS 权限或迁移正在执行的 Run。当前平台和 agent 支持仍以 capabilities 与对应验收矩阵为准，个人多机定位不代表所有 OS/agent 已通过验证。
+
+本机 codex-app-server 与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；各 Run/Check 独立 capability、期限、操作边界、socket 与清理证明。远端遵循 Orca 原生链路，使用执行主机已有认证，不创建 Runner broker/capability，不承诺远端凭据单仓库、限时或退出失效。多 Run 的工作区/会话/事件/PR/停止仍隔离；停止不退出宿主登录。双模型来源核验仅支持本机受管 Codex，原生远端审计和完整环境检查明确 unsupported，零相关资源；保留显式 sandbox/full_access 和未知结果零重发。
+
+本阶段不提供 GitHub App 签发/私钥管理、团队/多租户账号系统、集中密钥托管或自动跨机故障迁移。移除 `execution.settings.github_auth`，所有形态（含 null）在 Run/Check 接受前返回 invalid_input；内部 profile/helper 配置同样严格拒绝，不能静默切换身份。旧 App 执行必须用原版本完成停止和认证收尾后升级；历史请求/报告保留，不转换为新身份或本构建资格。
 
 ## 1. 目标、依据与首版范围
 
@@ -83,7 +93,7 @@ CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次
 
 服务在所有 worker 退出并读取持久化停止事实后、释放写锁前发布最终结算。`service status` 仅在写锁空闲且无未核实启动时公开 `last_shutdown`，绑定 `instance_id/request_id/state_dir/executable_sha256`，分别返回 `resources_settled` 和诊断；不读取或推导私有执行库。只有全部 Run 已持久化 stopped 且关闭无错误才标为 true；未知、unsupported、观察脱离、缺失证据不等于已停止。新写者获得写锁后首先移除旧结算，防止启动失败或异常退出后继续使用上一代证明。无记录不伪造成功。
 
-显式 `service verify-stopped` 为停机后的独立只读取证入口，不能隐式进入启动或恢复：取得既有 writer.lock、拒绝未核实启动后，只读当前格式数据库，逐 Run 返回原 ID、input_digest 和资源结论。已持久化 stopped 可作为原证据；未保存 stopped 的本地 managed Codex 仅在记录完整、原 Job 唯一 owner 和精确 root 都已退出时核实资源消失，复用现有 managed 恢复证明。Orca 另按冻结 profile/resource 查询原 runtime 的完整 worktree 终端清单：要求计数一致、未截断、该 runtime 自身的 local host 纳入且未省略；同 handle 必须保留原 incarnation 并已退出，或原终端在完整范围中缺席。无关配对 host 的省略不能冒充原 host 取证。PTY 清单不是 native writer-tree 证明；通用原生 helper 还须既有原 owner/exit/authentication 结算，且不能混入 Codex/readers 证据。Codex inline-v3 helper 在 readiness 中固定原 helper 身份和仅存内存的退出签名公钥；app-server/tools 与 TUI 分别由原非 breakaway Job 管理。显式 stop 只经既有原 runtime 文件通道提交与该 readiness 绑定的公开请求，先实际查询两棵 Job 至空并关闭认证，再由原 helper 签发完整 readiness 绑定的退出凭据，最后关闭原 PTY。helper 已返回原 shell 时也按原 PTY/worktree 和原生凭据核对，不依赖 agent 展示标签。公共凭据可放在工作区，但只有原 helper 持有私钥；文件改写、跨运行重放或缺签名不能放行。离线重验通过既有 files.readChunk 有界读取原 runtime/worktree 的固定相对路径并验签，不新建验证终端或执行。全部原 readonly reader 还须原 Job 清空事实以及原终端停止，快照和既有调用端 journal 均纳入；查询失败可单独返回已结算的 reader 事实，不能晋升业务完成。缺 readiness/key/认证/树证明、未知创建或旧 helper 无证据仍未核实，不能用调用方本机 PID 代替原执行主机事实，也不迁移或补写历史证据。普通停服完成既有观察清理后可以使用同一读取规则提交最终 stopped，但不能因此自动关闭业务终端或输入。缺记录、身份/权限未知、仍活动、清单不完整或仅观察脱离均不能成功。缺目录、锁、库或不支持格式直接失败，不创建/迁移现场，不保存 stopped、不重写历史回执。调用方只消费该公开 CLI，不读取 Runner 私有库。实施和验证范围见 [Orca 停服核验 Plan](orca-shutdown-verification.plan.md)。
+显式 `service verify-stopped` 为停机后的独立只读取证入口，不能隐式进入启动或恢复：取得既有 writer.lock、拒绝未核实启动后，只读当前格式数据库，逐 Run 返回原 ID、input_digest 和资源结论。已持久化 stopped 可作为原证据；未保存 stopped 的本地 managed Codex 仅在记录完整、原 Job 唯一 owner 和精确 root 都已退出时核实资源消失，复用现有 managed 恢复证明。Orca 另按冻结 profile/resource 查询原 runtime 的完整 worktree 终端清单：要求计数一致、未截断、该 runtime 自身的 local host 纳入且未省略；同 handle 必须保留原 incarnation 并已退出，或原终端在完整范围中缺席。无关配对 host 的省略不能冒充原 host 取证。PTY 清单不是 native writer-tree 证明；通用原生 helper 还须既有原 owner/exit/authentication 结算，且不能混入 Codex/readers 证据。Codex inline-v3 helper 在 readiness 中固定原 helper 身份和仅存内存的退出签名公钥；app-server/tools 与 TUI 分别由原非 breakaway Job 管理。显式 stop 只经既有原 runtime 文件通道提交与该 readiness 绑定的公开请求，先实际查询两棵 Job 至空并关闭认证，再由原 helper 签发完整 readiness 绑定的退出凭据，最后关闭原 PTY。helper 已返回原 shell 时也按原 PTY/worktree 和原生凭据核对，不依赖 agent 展示标签。公共凭据可放在工作区，但只有原 helper 持有私钥；文件改写、跨运行重放或缺签名不能放行。离线重验通过既有 files.readChunk 有界读取原 runtime/worktree 的固定相对路径并验签，不新建验证终端或执行。固定 control actor 及调用端检查点纳入原资源结算，每次只读 history/Git 查询须有原子进程树退出事实；最终原控制终端也须停止。查询失败可单独返回已结算的 reader 事实，不能晋升业务完成。缺 readiness/key/认证/树证明、未知创建或旧 helper 无证据仍未核实，不能用调用方本机 PID 代替原执行主机事实，也不迁移或补写历史证据。普通停服完成既有观察清理后可以使用同一读取规则提交最终 stopped，但不能因此自动关闭业务终端或输入。缺记录、身份/权限未知、仍活动、清单不完整或仅观察脱离均不能成功。缺目录、锁、库或不支持格式直接失败，不创建/迁移现场，不保存 stopped、不重写历史回执。调用方只消费该公开 CLI，不读取 Runner 私有库。实施和验证范围见 [Orca 停服核验 Plan](orca-shutdown-verification.plan.md)。
 
 ## 4. 状态目录、内嵌资源与环境依赖
 
@@ -253,9 +263,10 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
 
 | 配置 | 字段及默认值 |
 | --- | --- |
-| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra。GitHub worker 默认使用执行主机 gh 登录的单仓库代理；可选 `github_auth` 包含正整数 `app_id`/`installation_id` 和环境变量名 `private_key_env`。无权限覆盖字段，固定 workspace-write/MXC/network enabled/never |
+| Codex settings | `executable` 默认 `codex.exe`；可选 `model`，省略继承工具配置；`reasoning_effort` 默认 `medium`，枚举 minimal/low/medium/high/xhigh/max/ultra；`access_mode` 默认 `sandbox`，可显式选 `full_access`。两种模式均为 approval never，不接受额外权限覆盖参数。GitHub worker 使用执行主机 gh 单仓库代理；`github_auth` 含 null 均返回 invalid_input |
+| Orca settings | `agent` 默认 `codex`，本期受管 agent 包括 `codex`/`pi`/`dsh`；`access_mode` 默认 `sandbox`，可显式选 `full_access`，冻结后按对应模式准备和核验，不作失败回退。未知 agent/模式组合以 capabilities 和实际准备资格为准 |
 | Orca settings.transport | `executable` 默认 `orca.exe`；`args` 默认空数组；`wait_timeout` 默认 `30s`，Go duration，须大于 0 且不超过 1 分钟。args 不得覆盖 environment/pairing-code，路由来自冻结 target |
-| Orca settings.agent_launch | `executable` 默认 `codex`；`args` 默认空数组；可选 `model`、`reasoning_effort`（同枚举，省略继承工具）。transport 与 agent_launch 不混用 |
+| Orca settings.agent_launch | 原生 `executable` 按 agent 默认 `codex`/`pi.cmd`/`dsh.cmd`；`args` 默认空数组；可选 `model`、`reasoning_effort`。可信执行主机 helper 使用 `runtime_executable`；`runtime_sha256` 为 64 位小写十六进制，schema 允许省略，但正式验收及本期可核验的远端闭环/停止配置须冻结其摘要。transport 与 agent_launch 不混用 |
 | command provider settings | 必填 `base_url`、`query.executable`、非空 `query.args`；可选 `authentication_refs`（环境认证的引用名称数组，不是凭据值）。实际查询协议/身份沿用提取的 provider |
 | gitea provider settings | 必填 `base_url`；可选 `authentication_refs`。不接收内嵌 token/password 字段 |
 
@@ -299,11 +310,11 @@ PR 就绪不会自动销毁会话/工作区。反馈在同一 Run、原会话、
 
 request_id、Run、Attempt、操作、会话/原生回合和原生资源身份分别绑定。连接丢失、超时或进程退出不能直接认定原操作失败或原轮次成功。对 unknown 原操作只读对账；不能换 ID 再发、重新建会话/工作区或自动发布另一个 PR。
 
-服务重启先恢复观察和原操作/结果对账。受重启影响的既有 Run 建立持久的人工继续门槛：服务启动及轮询不自动发送 prompt、答案、下一步骤或重建执行资源，重启前未送达输入仅保留为事实。原执行可能在服务离线时继续运行，界面按实际状态显示；已完成结果可以只读接受与保存。
+兼容服务重启先恢复观察和原操作/结果对账，保留已持久化的流程授权、暂停、人工等待、业务阻断和停止状态。原执行可以在服务离线时继续并保存结果；新服务补收原事实后，只能接续原授权范围内尚未派发的输入/后继。已有副作用意图只对账，不重复发送或重建执行资源；旧 epoch 且无原执行范围绑定的答案/反馈仍需人工确认。
 
 `resume` 是当前恢复状态下的新显式授权，不是盲重放。仅在原身份/操作状态核验到足以安全继续后执行；原会话可核实时允许新 Attempt/进程恢复同一原 thread。旧写者及其可能继续写入的活动必须先确认结束。原会话、准备中的原目标或未知副作用不可核实时阻断，不新增替代会话。兼容服务换代保留已接受的继续授权；服务退出不制造新的人工恢复门槛。原撤销、暂停、人工等待和业务阻断仍保留，未知动作只对账。
 
-连接重接与服务重启分别表达：服务实例仍有效时可以自动重接原观察并继续既定正常流程，不因此增加一次业务输入；服务换代执行上述人工门槛。其他新 Run 的合法 submit 不被一个旧目标的不可达阻断。
+连接重接与兼容服务换代都只能接续原身份、原授权和原流程，不因此增加一次业务输入。既有人工门槛跨换代保留；服务换代本身不新增门槛。其他新 Run 的合法 submit 不被一个旧目标的不可达阻断。
 
 `stop.input` 含 expected_revision。接受 stop 的同一事务先保存 `new_inputs_allowed:false`，使未发送的准备、步骤、答案和恢复意图失去投递资格；随后才按后端真实能力停止原执行。已经发送的动作不能撤回，不宣称所有原生工具立即停止。迟到结果可核验和保存，但不得自动产生或发送下一输入。
 
@@ -315,11 +326,11 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 ## 9. PR 成果与 SteerLine 协作
 
-本地 Windows 使用固定 MXC 权限资源契约。app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
+Windows 的默认 `sandbox` 使用固定 MXC 权限资源契约；显式 `full_access` 核验对应的原生完整访问权限。sandbox 下 app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。sandbox 验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
 
-GitHub worker 的 W05–W07 新增可信执行主机认证准备与确定性原生沙箱检查，
-固定权限改为 workspace-write/MXC/network enabled/approval never，关闭 shell snapshot。
-不再申请自动审核发布。单仓库认证代理、可选 App 引用、进程环境、期限、失败零业务输入及远端能力
+GitHub worker 的 W05–W07 使用可信执行主机认证准备与确定性同权限工具检查：
+默认 sandbox 为 workspace-write/MXC/network enabled/approval never；显式 full_access 为 danger-full-access/approval never，不能用作准备失败的回退。关闭 shell snapshot。
+不再申请自动审核发布。单仓库认证代理、进程环境、期限、失败零业务输入及远端能力
 边界见[认证契约](sandbox-authentication.spec.md)；W16 原发布责任和未知结果对账保持。
 本机可执行此准备；Orca terminal 缺同沙箱确定性能力时在业务前阻断，不接受模型检查声明。
 

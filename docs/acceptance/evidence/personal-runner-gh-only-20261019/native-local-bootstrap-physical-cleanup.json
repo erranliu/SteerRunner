@@ -1,0 +1,18 @@
+{
+  "schema": "steerrunner-independent-physical-cleanup/v1",
+  "run_id": "29d93cca2e8ff57bec67ac66c257aaf4",
+  "at": "2026-10-19T08:37:08.6629431Z",
+  "runtime_id": "456f70a1-9c53-406c-a48a-72833d36abdb",
+  "worktree": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sl-29d93cca2e8ff57bec67ac66c257aaf4",
+  "original_terminal_incarnations": {
+    "term_bfb7ba4e-9e68-473a-a637-fd5db53e6aab": "f718ee20-8eeb-4ba3-b980-33de1b7233f7",
+    "term_79ebf3e4-8b1c-453b-a1a9-73724142cec2": "81b0c1aa-2a0b-4608-b5d0-dff5d01b2a5f"
+  },
+  "remaining_original_workspace_terminals": 0,
+  "native_pid_50192_absent": true,
+  "broker_revocation_confirmed": true,
+  "logical_stop_confirmed": false,
+  "original_test_outcome": "failed",
+  "business_input_sent": false,
+  "scope": "independent physical cleanup; no signed native exit or logical Run stop promotion"
+}

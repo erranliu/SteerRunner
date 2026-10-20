@@ -18,7 +18,7 @@ var errAuthenticationProofUnverified = errors.New("original authentication revoc
 func validateAuthenticationStop(ready codex.RemoteReadiness, proof codex.RemoteAuthenticationCleanup) error {
 	a, _ := json.Marshal(ready)
 	b, _ := json.Marshal(proof.Readiness)
-	if string(a) != string(b) || !proof.Revoked || !proof.BrokerClosed || !proof.SocketCleaned || proof.Mode != "host-gh-repository-broker" && proof.Mode != "github-app-repository-broker" {
+	if string(a) != string(b) || !proof.Revoked || !proof.BrokerClosed || !proof.SocketCleaned || proof.Mode != "host-gh-repository-broker" {
 		return errAuthenticationProofUnverified
 	}
 	return nil

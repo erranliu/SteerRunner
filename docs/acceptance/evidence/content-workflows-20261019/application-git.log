@@ -1,0 +1,20 @@
+=== RUN   TestSRFreezeBaseBranchRefresh
+=== RUN   TestSRFreezeBaseBranchRefresh/local-branch-behind
+=== RUN   TestSRFreezeBaseBranchRefresh/warm-cache-custom-target
+=== RUN   TestSRFreezeBaseBranchRefresh/off-branch
+=== RUN   TestSRFreezeBaseBranchRefresh/rewound
+=== RUN   TestSRFreezeBaseBranchRefresh/deleted
+=== RUN   TestSRFreezeBaseBranchRefresh/offline
+--- PASS: TestSRFreezeBaseBranchRefresh (116.87s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/local-branch-behind (14.84s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/warm-cache-custom-target (24.29s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/off-branch (24.07s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/rewound (22.39s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/deleted (17.08s)
+    --- PASS: TestSRFreezeBaseBranchRefresh/offline (14.19s)
+=== RUN   TestSRRepositoryCacheWithLongBranchPath
+--- PASS: TestSRRepositoryCacheWithLongBranchPath (1.62s)
+=== RUN   TestSRCompactCacheCanPublishLinkedWorktree
+--- PASS: TestSRCompactCacheCanPublishLinkedWorktree (3.82s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	126.254s

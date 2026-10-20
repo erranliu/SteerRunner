@@ -19,7 +19,11 @@
     "TestSRWorkflowDiscoveryAndSelection",
     "TestSRMultipleRunsIsolation",
     "TestEnvironmentCheckCLI",
-    "TestSRResultAcquisition"
+    "TestSRResultAcquisition",
+    "TestSRContentGenerate",
+    "TestSRContentConversation",
+    "TestSRContentQuestionAndUnknown",
+    "TestSRRunEvidenceR2"
   ],
   "scenarios": [
     {
@@ -224,6 +228,16 @@
       ]
     },
     {
+      "id": "orca-remote.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "default"
+      ]
+    },
+    {
       "id": "orca-local.smoke",
       "level": "L3",
       "driver": "development-smoke",
@@ -267,6 +281,26 @@
       "cases": [
         "before-readiness",
         "restart-before-readiness"
+      ]
+    }
+  ],
+  "focused_native_scenarios": [
+    {
+      "id": "local-codex.content-workflows",
+      "level": "L3",
+      "test": "TestSRContentNative",
+      "entry": "scripts/test-content-workflows.ps1",
+      "scope": "new C:/srt/cw-* state, original native Codex 0.159.2, no Git or PR",
+      "requires": [
+        "explicit native executable",
+        "controlled content prerequisites"
+      ],
+      "expected": [
+        "one structured generation",
+        "same-thread multiple turns",
+        "interrupt then continue",
+        "idle service restart then original-thread continue",
+        "resource settlement"
       ]
     }
   ]

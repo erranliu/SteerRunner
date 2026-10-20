@@ -258,6 +258,8 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		items := s.engine.Takeover(caps.Recovery, caps.Workflows)
 		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
+	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
+		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
 	case "environment-check start", "environment-check stop", "environment-check inspect":
 		return s.engine.HandleEnvironmentCheck(wire.Options.Command, wire.Options.CheckID, wire.Options.RequestID, wire.Request), false
 	case "open-native-session":
@@ -267,7 +269,7 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))
 		}
 		return s.engine.OpenNativeSession(*wire.Options.NativeSession), false
-	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop":
+	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
 	}
 	s.mutex.Lock()

@@ -1,0 +1,9 @@
+{
+  "scenario": "environment-check.orca-sandbox",
+  "level": "L3",
+  "stage": "stopped:completed",
+  "run_id": "63505f43a6c4cc6082e72eafa9c90c37",
+  "run_stopped": false,
+  "service_stopped": true,
+  "passed": false
+}

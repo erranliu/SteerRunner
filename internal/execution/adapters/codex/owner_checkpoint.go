@@ -36,6 +36,11 @@ func writeOwnerCheckpoint(setup b.LifecycleSetup, identity ExecutionOwnerIdentit
 	if request.Input.Turn == nil || request.Input.Turn.CommandID != commandID || request.Operation.LifecycleIdentity == nil {
 		return errors.New("terminal checkpoint lacks original input")
 	}
+	// Content Runs have no frozen Git workspace plan. Their final is retained
+	// in the original native journal, without a Git audit or synthetic checkpoint.
+	if request.Snapshot.WorkspacePlan.Path == "" {
+		return nil
+	}
 	path, err := checkpointPath(identity, commandID)
 	if err != nil {
 		return err

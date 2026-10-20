@@ -17,19 +17,20 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/nativeaudit"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
 // RemoteAgentConfig is public configuration. Authentication is resolved only on
 // the machine that runs this helper, never transported by the Orca caller.
 type RemoteAgentConfig struct {
-	GitHubAuth      *AuthenticationConfig `json:"github_auth,omitempty"`
-	Executable      string                `json:"executable"`
-	Args            []string              `json:"args,omitempty"`
-	Model           string                `json:"model,omitempty"`
-	ReasoningEffort string                `json:"reasoning_effort,omitempty"`
-	AccessMode      string                `json:"access_mode,omitempty"`
-	RepositoryURL   string                `json:"repository_url"`
+	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	Executable      string                  `json:"executable"`
+	Args            []string                `json:"args,omitempty"`
+	Model           string                  `json:"model,omitempty"`
+	ReasoningEffort string                  `json:"reasoning_effort,omitempty"`
+	AccessMode      string                  `json:"access_mode,omitempty"`
+	RepositoryURL   string                  `json:"repository_url"`
 }
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
@@ -68,6 +69,9 @@ func RemoteRuntimeDirectory(worktree string) string {
 // The TUI resumes that same server/thread only after its deterministic native
 // command/exec probe passes. It never executes Git or publication on the host.
 func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
+	if err := c.validateModels(); err != nil {
+		return err
+	}
 	if err := ValidateManagedArgs(c.Args); err != nil {
 		return err
 	}
@@ -110,12 +114,11 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth, err := newAuthentication(c.GitHubAuth, c.RepositoryURL)
+	auth, err := newAuthentication(c.RepositoryURL)
 	if err != nil {
 		return err
 	}
 	defer auth.Close()
-	auth.repositoryBroker = true
 	if err = auth.prepare(ctx); err != nil {
 		return err
 	}
@@ -294,17 +297,30 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 			}
 		}
 	}()
+	bridgeToken := ""
+	if c.AuditModel != nil {
+		bridgeToken, err = remoteModelToken()
+		if err != nil {
+			return err
+		}
+		bridge, closeBridge, bridgeErr := startRemoteModelBridge(ctx, c, endpoint, thread.Thread.ID, bridgeToken)
+		if bridgeErr != nil {
+			return bridgeErr
+		}
+		defer closeBridge()
+		endpoint = bridge
+	}
 	args := remoteTUIArgs(c, endpoint, thread.Thread.ID)
 	tui := exec.Command(native, args...)
 	tui.Dir = wd
 	tui.Stdin, tui.Stdout, tui.Stderr = input, output, diagnostics
 	// Only the app-server receives capability-bearing environment. Its frozen
 	// policy owns all tool execution; native --remote rejects client overrides.
-	blocked := []string{"GH_TOKEN", "GITHUB_TOKEN"}
-	if c.GitHubAuth != nil {
-		blocked = append(blocked, c.GitHubAuth.PrivateKeyEnv)
-	}
+	blocked := []string{"GH_TOKEN", "GITHUB_TOKEN", remoteModelTokenEnv}
 	tui.Env = lifecycleProcessEnvironment(os.Environ(), "remote-runtime", "remote-runtime", blocked)
+	if bridgeToken != "" {
+		tui.Env = setEnvironmentValues(tui.Env, map[string]string{remoteModelTokenEnv: bridgeToken})
+	}
 	started, err := host.StartManaged(tui)
 	if err != nil {
 		return err
@@ -346,6 +362,9 @@ func remoteTUIArgs(c RemoteAgentConfig, endpoint, session string) []string {
 	// Inline mode preserves the preparation receipt. A second tracked Orca
 	// prompt for helper admission would consume the next native input boundary.
 	args := []string{"--remote", endpoint, "--strict-config", "--no-alt-screen"}
+	if c.AuditModel != nil {
+		args = append(args, "--remote-auth-token-env", remoteModelTokenEnv)
+	}
 	for _, arg := range c.Args {
 		if arg != "--no-daemon" && arg != "--no-alt-screen" {
 			args = append(args, arg)
@@ -407,7 +426,7 @@ func AuditRemoteAgent(ctx context.Context, wd, session string) (RemoteAudit, err
 	}
 	var c RemoteAgentConfig
 	raw, err = os.ReadFile(filepath.Join(dir, "configuration.json"))
-	if err != nil || json.Unmarshal(raw, &c) != nil {
+	if err != nil || b.DecodeStrictJSON(raw, &c, "remote audit configuration has trailing JSON") != nil {
 		return audit, errors.New("remote audit configuration unavailable")
 	}
 	if RemoteConfigurationDigest(c) != audit.Readiness.ConfigurationDigest {

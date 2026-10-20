@@ -144,7 +144,7 @@ func TestSRCheckAuthenticationAvailability(t *testing.T) {
 		Workflow  contracts.Workflow  `json:"workflow"`
 	}
 	_ = json.Unmarshal(config.Configurations["local-codex"], &entry)
-	entry.Execution.Settings = marshalConfig(map[string]any{"executable": filepath.Join(t.TempDir(), "codex.exe"), "access_mode": "sandbox", "github_auth": contracts.GitHubAppReference{AppID: 1, InstallationID: 2, PrivateKeyEnv: "TEST_APP_KEY"}})
+	entry.Execution.Settings = marshalConfig(map[string]any{"executable": filepath.Join(t.TempDir(), "codex.exe"), "access_mode": "sandbox", "github_auth": map[string]any{"app_id": 1, "installation_id": 2, "private_key_env": "TEST_APP_KEY"}})
 	config.Configurations["local-codex"] = marshalConfig(entry)
 	report := AssessConfig(config, "source", resources.Catalog())
 	if report.RequirementsDigest != RegistryDigest() {
@@ -152,17 +152,13 @@ func TestSRCheckAuthenticationAvailability(t *testing.T) {
 	}
 	for _, test := range report.Cases {
 		switch test.ScenarioID {
-		case "environment-check.local-sandbox":
+		case "environment-check.local-sandbox", "local-codex.feedback":
 			found := false
 			for _, reason := range test.Reasons {
-				found = found || reason.Code == "unsupported_capability"
+				found = found || reason.Code == "invalid_configuration"
 			}
 			if test.Availability != "unavailable" || !found {
 				t.Fatal("known unsupported check authentication became available", test)
-			}
-		case "local-codex.feedback":
-			if test.Availability != "available" {
-				t.Fatal("check limitation changed ordinary Run selection", test)
 			}
 		}
 	}

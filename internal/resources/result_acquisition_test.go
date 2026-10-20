@@ -13,7 +13,7 @@ func TestRAPublicContract(t *testing.T) {
 		t.Fatal(c)
 	}
 	for _, p := range workflow.Catalog() {
-		if p.Version != 2 {
+		if p.Version != 2 && !(workflow.Content(p.ID) && p.Version == 1) {
 			t.Fatal(p)
 		}
 	}

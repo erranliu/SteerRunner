@@ -47,8 +47,15 @@ func waitFixtureOwnerExit(t *testing.T, dir, id string) {
 // The JSON whitespace overlay changes no workflow, permission or result contract.
 func buildCompatibleCandidate(t *testing.T) string {
 	t.Helper()
-	root, err := filepath.Abs(filepath.Join("..", ".."))
+	// go test starts in tests/integration; the independent foundation harness
+	// starts in the repository root with explicit Runner/helper image paths.
+	root, err := os.Getwd()
 	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "go.mod")); os.IsNotExist(err) {
+		root = filepath.Clean(filepath.Join(root, "..", ".."))
+	} else if err != nil {
 		t.Fatal(err)
 	}
 	dir := t.TempDir()

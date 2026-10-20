@@ -12,6 +12,22 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
+func TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint(t *testing.T) {
+	const command = "0123456789abcdef0123456789abcdef"
+	request := ownerTestRequest(t)
+	request.Input = b.LifecycleInput{Turn: &b.TurnInput{CommandID: command}}
+	owner := ExecutionOwnerIdentity{Directory: t.TempDir()}
+	// No Git executable, process host or signing key: a non-Git completion
+	// must not need any of them, even when the original directory is a repo.
+	if err := writeOwnerCheckpoint(b.LifecycleSetup{}, owner, nil, request, command, "session", "turn"); err != nil {
+		t.Fatal(err)
+	}
+	entries, err := os.ReadDir(owner.Directory)
+	if err != nil || len(entries) != 0 {
+		t.Fatal("content completion fabricated a Git checkpoint", err, entries)
+	}
+}
+
 func TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature(t *testing.T) {
 	const originalCommand = "0123456789abcdef0123456789abcdef"
 	r := ownerTestRequest(t)

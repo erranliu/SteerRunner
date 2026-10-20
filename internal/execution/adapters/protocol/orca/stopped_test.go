@@ -83,3 +83,58 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 		})
 	}
 }
+
+func TestTerminalsStoppedUseOneCompleteOriginalInventory(t *testing.T) {
+	for _, mode := range []string{"absent", "exited", "active-reader", "changed-incarnation", "foreign-runtime", "foreign-worktree", "missing-identity", "truncated", "omitted-local", "empty-identities"} {
+		t.Run(mode, func(t *testing.T) {
+			originals := []b.ProcessIdentity{}
+			for _, id := range []string{"business", "reader-one", "reader-two"} {
+				originals = append(originals, b.ProcessIdentity{RuntimeID: "original", WorktreeID: "worktree", Terminal: id, Incarnation: id + "-inc"})
+			}
+			switch mode {
+			case "foreign-runtime":
+				originals[2].RuntimeID = "other"
+			case "foreign-worktree":
+				originals[2].WorktreeID = "other"
+			case "missing-identity":
+				originals[2].Incarnation = ""
+			case "empty-identities":
+				originals = nil
+			}
+			calls := 0
+			c := New(Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				calls++
+				if len(args) != 5 || args[0] != "terminal" || args[1] != "list" || args[3] != "id:worktree" {
+					t.Fatal("unexpected effect", args)
+				}
+				terms := []Terminal{}
+				if mode == "exited" || mode == "active-reader" || mode == "changed-incarnation" {
+					term := Terminal{Handle: "reader-two", IncarnationID: "reader-two-inc", WorktreeID: "worktree", Status: "exited"}
+					if mode == "active-reader" {
+						term.Status = "running"
+					}
+					if mode == "changed-incarnation" {
+						term.IncarnationID = "replacement"
+					}
+					terms = append(terms, term)
+				}
+				hosts := []string{"local"}
+				omitted := []string{}
+				if mode == "omitted-local" {
+					hosts = []string{"other"}
+					omitted = []string{"local"}
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": terms, "totalCount": len(terms), "truncated": mode == "truncated", "hostScope": map[string]any{"hostIds": hosts, "omittedHostIds": omitted}}, "_meta": map[string]string{"runtimeId": "original"}})
+			}})
+			err := c.VerifyTerminalsStopped(context.Background(), originals)
+			want := mode == "absent" || mode == "exited"
+			wantCalls := 1
+			if mode == "foreign-runtime" || mode == "foreign-worktree" || mode == "missing-identity" || mode == "empty-identities" {
+				wantCalls = 0
+			}
+			if (err == nil) != want || calls != wantCalls {
+				t.Fatal("batch proof changed identity or repeated inventory", mode, err, calls)
+			}
+		})
+	}
+}

@@ -45,13 +45,15 @@ SHA/资源摘要继续用于校验选中的二进制、冻结资源和原运行�
 | --- | --- |
 | CLI `steerrunner-cli/v1` | 保留写信封、request_id 幂等、expected_revision、expected_instance_id；新增兼容查询和有待处理 stop 时的启动输入，见 §9。协议不兼容即拒绝该调用 |
 | state 格式及字段语义 | 同受支持格式可接管；缺版本、未知必需字段/枚举或不支持格式不能推断为当前。首期格式决策见 §3.2 |
-| Workflow | 保留 `development/2`、`development-audited/2` 的原 Config、游标、源与已冻结提示词。新构建须支持原初始状态、状态 kind/contract、转移和模型要求等执行语义；同号改变这些语义判冲突。Description、目录新增其它 adapter 或新请求默认提示词变化不应单独拒绝原 Run；仍须支持该 Run 原 adapter。沿两个具体 workflow 的校验函数核对，不造通用“语义兼容引擎”，不以新定义重路由 |
+| Workflow | 保留 `development/2`、`development-audited/2`、`conversation/1`、`generate/1` 的原 Config、游标、源与已冻结提示词。新构建须支持原初始状态、状态 kind/contract、转移和模型要求等执行语义；同号改变这些语义判冲突。Description、目录新增其它 adapter 或新请求默认提示词变化不应单独拒绝原 Run；仍须支持该 Run 原 adapter。沿具体 workflow Profile 的校验函数核对，不造通用“语义兼容引擎”，不以新定义重路由 |
 | 输入、结果获取与 operation | 保留原 schema/语义版本、原操作 ID/key/digest/状态、来源和预算。解码/完成含义变化须显式升对应契约，不因总资源摘要相同便假定兼容 |
 | Adapter profile/implementation | 按实现 key、purpose、codec 和冻结身份声明精确支持，不接受“所有版本≤当前”。当前 local Codex profile3、Orca local profile3/state6、远端 native profile4/state6 分开判断；权限资源等 envelope 也逐项校验 |
 | 本机 execution owner | 新服务协议兼容才可绑定原 owner；原 owner、worker/tool/helper 的冻结 SHA 继续按原值验证。新 Runner 的 SHA 不要求等于旧 owner SHA，不替换正在运行的 owner。新所有权语义使用新的 local resource codec，不能将旧服务独占 Job 的记录解释为独立 owner |
 | resource_digest / Version / EXE SHA | 作为来源和安装 pin 保留。仅新默认提示词、其他 workflow/schema、文档或打包变动导致总摘要变化时，不能拒绝兼容 Run。已有 Run 使用原内容；新增 Run 才用新默认 |
 
 原 Request/Materials/PromptBodies/Profile/Workflow.Config、模型/effort、base/分支/仓库、沙箱和写根、认证策略/期限、AcquisitionConfig、input_digest/resource_digest 均冻结。接管不能重读移动材料或当前配置重新冻结，不能刷新预算、默认值或权限，也不能把认证过期当作服务换代后自动续权的理由。
+
+主干 gh-only 认证边界同样适用：含已退役 `github_auth` 字段的旧冻结 profile 不能按相同 codec 号冒充兼容，预检须拒绝，不删除原字段或改用当前 gh 身份继续。这类旧认证路径不属于本次“相关契约兼容”的接管资格；保留原构建和事实处理，不恢复已移除的 GitHub App 能力。
 
 材料资格沿现 Material.Content/digest 与 SnapshotPath 直接只读核对：原摘要、文件原字节、普通文件及非重定向绝对路径必须一致。新 native 输入派发前沿既有 source 校验再次核对，文件缺失/替换保持阻断，不从当前 checkout 或新默认重建；既有结果和未知输入仍可只读对账。此检查不增加每 Run 兼容 manifest。
 

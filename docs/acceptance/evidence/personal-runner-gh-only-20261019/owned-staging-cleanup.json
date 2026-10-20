@@ -1,0 +1,12 @@
+{
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "worktree": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-gh-only-staging-20261019",
+  "instance": "2a583741-0fcf-4ec8-844f-89e39e595c0e",
+  "terminal": "term_a12fc413-a766-43b0-9717-34f17fc318b7",
+  "incarnation": "f913a4d4-17e1-4996-b596-f96434aac169",
+  "terminal_closed": true,
+  "worktree_removed": true,
+  "other_worktrees_modified": false,
+  "runtime_installations_removed": false,
+  "checked_at": "2026-10-19T08:00:33.7010247Z"
+}

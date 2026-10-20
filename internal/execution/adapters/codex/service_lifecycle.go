@@ -26,10 +26,7 @@ func (l ExecutionLifecycle) writersAbsent(binding Binding) bool {
 
 func (l ExecutionLifecycle) closeAuthentication() error {
 	if auth := l.Backend.Config.Authentication; auth != nil && !auth.Close() {
-		if auth.broker != nil {
-			return errors.New("authentication_cleanup_unverified: credential revoked; original socket resources could not be confirmed removed")
-		}
-		return errors.New("authentication_revocation_unverified: process exited; installation token remains bounded by its recorded expiry")
+		return errors.New("authentication_cleanup_unverified: Run capability closed; original broker resources could not be confirmed removed")
 	}
 	return nil
 }
@@ -76,6 +73,11 @@ func (l ExecutionLifecycle) reconcileStoppedObservation(ctx context.Context, req
 	}
 	if err := ctx.Err(); err != nil {
 		return receipt, nil, err
+	}
+	if outcome, err := l.readRecoveryOutcome(ctx, request.Snapshot, binding, request.Input.Stop.TurnID); err == nil && outcome.Completed {
+		receipt.Disposition = executionbackend.OperationConfirmed
+		receipt.State.TurnCompleted = true
+		return receipt, nil, nil
 	}
 	if l.writersAbsent(binding) {
 		receipt.Disposition = executionbackend.OperationConfirmed

@@ -1,0 +1,38 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "conversation-001",
+  "input": {
+    "title": "规划讨论",
+    "correlation": {
+      "planning_session": "caller-owned-id"
+    },
+    "workflow": {
+      "id": "conversation",
+      "version": 1
+    },
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "read_only",
+        "executable": "C:/Tools/codex.exe"
+      }
+    },
+    "conversation": {
+      "instruction": "根据材料讨论测试范围，先列出待澄清问题。",
+      "materials": [
+        {
+          "kind": "inline",
+          "path": "context.txt",
+          "content": "需要覆盖创建、轮次中断和关闭。"
+        }
+      ],
+      "directory": {
+        "path": "C:/Projects/PlanningMaterials",
+        "access": "read_only"
+      }
+    }
+  }
+}

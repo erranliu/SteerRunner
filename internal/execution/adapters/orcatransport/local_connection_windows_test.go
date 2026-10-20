@@ -74,6 +74,11 @@ func TestLocalIPCQueryCapabilityBeforeCreation(t *testing.T) {
 	}
 	l, host, s := fixture(t)
 	l.nativeAccess = true
+	// Only named-pipe observation is native here. Keep the fixture CLI on its
+	// fake host, outside the shared queue used by real Orca invocations.
+	l.client = native.New(native.Config{CommandTimeout: "40s", Target: l.profile.Target(), Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+		return host.OutputCommand(ctx, b.LaunchCommand{Executable: l.profile.Executable, Args: args, WorkingDirectory: l.setup.RepositoryPath, Timeout: timeout})
+	}})
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	if err := l.verifyLocalObservation(ctx, "runtime"); err != nil || subscriptions.Load() != 0 {

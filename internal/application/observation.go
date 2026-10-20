@@ -133,6 +133,14 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		r.Snapshot.QuestionRoute = &route
 		r.Snapshot.PendingQuestions = f.Questions
 		r.Status, r.Phase = "waiting_input", "question"
+		if workflow.Content(r.Request.Workflow.ID) {
+			r.History = append(r.History, contracts.HistoryEntry{CommandID: r.Snapshot.Session.CurrentCommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Role: "question", Question: question})
+			if r.Request.Workflow.ID == "generate" {
+				r.ContentResult = &contracts.ContentResult{Status: "failed", Diagnostic: "human_input_required", Source: contracts.FinalView{CommandID: r.Snapshot.Session.CurrentCommandID, AttemptID: r.Snapshot.Session.AttemptID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID}}
+				r.Diagnostic = "human_input_required"
+				closeContent(r, "generate:question:"+route.QuestionID)
+			}
+		}
 	} else if f.Kind == b.EventGap {
 		r.Diagnostic = "Original observation reported a result gap"
 		r.Status = "reconciling"

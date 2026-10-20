@@ -1,0 +1,15 @@
+{
+  "generation_run_id": "daf3b335be365ec417ebf546da3ac237",
+  "generation_turn_count": 1,
+  "generation_result": "succeeded",
+  "generation_cleanup": "stopped",
+  "conversation_run_id": "bf21091e74bcdb3fe3683d0e6e68d3c0",
+  "original_native_session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+  "continued_native_session_id": "01a1538d-b077-7861-8608-a546694a3c53",
+  "conversation_turn_count": 5,
+  "conversation_closed": true,
+  "conversation_cleanup": "stopped",
+  "native_backend": "codex-app-server",
+  "native_version": "0.159.2",
+  "verification": "real native; controlled counterexamples reported separately"
+}

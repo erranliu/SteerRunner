@@ -26,6 +26,8 @@ type RemoteTurnQuery struct {
 }
 
 type RemoteTurnReceipt struct {
+	Model               string          `json:"model,omitempty"`
+	ReasoningEffort     string          `json:"reasoning_effort,omitempty"`
 	InspectionFailed    bool            `json:"inspection_failed,omitempty"`
 	ReaderWritersAbsent bool            `json:"reader_writers_absent"`
 	Source              string          `json:"source"`
@@ -106,6 +108,18 @@ func InspectRemoteTurn(ctx context.Context, q RemoteTurnQuery) (out RemoteTurnRe
 		return out, errors.New("original_turn_process_unverified")
 	}
 	out, err = MatchRemoteTurn(thread, q.InputDigest)
+	if err == nil && out.Started && cfg.AuditModel != nil {
+		file, openErr := os.Open(thread.Path)
+		if openErr != nil {
+			return out, errors.New("native_model_history_unavailable")
+		}
+		choice, modelErr := RemoteTurnModel(file, out.NativeTurnID)
+		_ = file.Close()
+		if modelErr != nil {
+			return out, modelErr
+		}
+		out.Model, out.ReasoningEffort = choice.Model, choice.ReasoningEffort
+	}
 	out.Readiness = ready
 	return out, err
 }

@@ -20,6 +20,7 @@ const maxWireBytes = 2*contracts.MaxRequestBytes + 1024*1024
 
 type Options struct {
 	Candidate          string                         `json:"candidate,omitempty"`
+	ArtifactID         string                         `json:"artifact_id,omitempty"`
 	ExpectedInstanceID string                         `json:"expected_instance_id,omitempty"`
 	CheckID            string                         `json:"check_id,omitempty"`
 	NativeSession      *contracts.NativeSessionTarget `json:"native_session,omitempty"`

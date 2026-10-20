@@ -1,0 +1,62 @@
+[
+  {
+    "case_id": "active",
+    "scenario": "orca-remote.stop-revocation",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\8df0b5bf78ef\\s"
+  },
+  {
+    "case_id": "complete",
+    "scenario": "environment-check.orca-sandbox",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\6cae57f49934\\s"
+  },
+  {
+    "case_id": "default",
+    "scenario": "orca-remote.smoke",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\e528f6c1cf61\\s"
+  },
+  {
+    "case_id": "complete",
+    "scenario": "environment-check.orca-full-access",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\8f26984072e2\\s"
+  },
+  {
+    "case_id": "default",
+    "scenario": "orca-remote.multirun",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\1fe8993395bc\\s"
+  },
+  {
+    "case_id": "default",
+    "scenario": "orca-remote.audited",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\44159a904d43\\s"
+  },
+  {
+    "case_id": "default",
+    "scenario": "orca-remote.full-access",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\1042d8e08a86\\s"
+  },
+  {
+    "case_id": "accepted-response-lost",
+    "scenario": "orca-remote.caller-exit",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\7008c08b1969\\s"
+  },
+  {
+    "case_id": "graceful-active",
+    "scenario": "orca-remote.service-restart",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\aed52d549c17\\s"
+  },
+  {
+    "case_id": "kill-active",
+    "scenario": "orca-remote.service-restart",
+    "status": "not_running",
+    "state_dir": "C:\\srt\\80ffc6e64b07\\s"
+  }
+]

@@ -14,9 +14,31 @@ import (
 func (e *Engine) inspectSource(r *runstate.Record, preHead string) *workflow.WorkspaceSource {
 	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
 	defer cancel()
-	f, err := workspace.InspectAudit(ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.WorkspacePlan, preHead)
+	var f b.WorkspaceInspection
+	var err error
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Execution.Target.Kind == "orca_environment" {
+		err = errors.New("native remote workspace provenance is unreported; no helper or caller Git fallback")
+	} else if r.Request.Execution.Adapter == "orca-terminal" {
+		w := e.workers[r.ID]
+		if w == nil {
+			err = errors.New("original local Orca workspace owner unavailable")
+		} else {
+			var port b.LifecyclePort
+			port, err = e.port(r, w)
+			if err == nil {
+				if owner, ok := port.(b.LifecycleAuditWorkspacePort); ok {
+					f, err = owner.InspectLifecycleAuditWorkspace(ctx, r.Snapshot, preHead)
+				} else {
+					err = errors.New("original local Orca audit inspection unsupported")
+				}
+			}
+		}
+	} else {
+		f, err = workspace.InspectAudit(ctx, gitHost(), workspace.Repository{Path: r.RepositoryPath, CommonDir: r.RepositoryCommon}, &r.Snapshot.WorkspacePlan, preHead)
+	}
 	result := &workflow.WorkspaceSource{Repository: f.Repository, Worktree: f.Worktree, Branch: f.Branch, Base: f.Base, Head: f.Head, Tree: f.Tree, Dirty: f.Dirty, Qualified: f.Qualified}
 	if err != nil {
+		result.Qualified = false
 		result.Diagnostic = e.redact(r, err.Error())
 	}
 	return result
@@ -98,6 +120,9 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	}
 	if err := workflow.VerifyPrerequisites(r.Workflow, input, state); err != nil {
 		return err
+	}
+	if state.Contract == "final" {
+		return verifyContentDirectory(r)
 	}
 	if state.Workspace == "" {
 		return nil

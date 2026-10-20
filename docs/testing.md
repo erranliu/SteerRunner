@@ -1,5 +1,11 @@
 # SteerRunner L1–L4 测试指南
 
+内容流程的最小定向入口为 `./scripts/test-content-workflows.ps1`；附加
+`-NativeExecutable <已有原生 Codex 0.159.2 EXE> -Model <可用模型>` 后，在三个内容受控场景
+通过后运行真实生成/多轮/中断/重启与结算。原生测试创建新的 `C:/srt/cw-*`，不使用
+SteerLine 安装环境、Git 或 PR。此专属 L3 入口独立登记在 `tests/catalog.json.focused_native_scenarios`，
+不改变现有开发 manifest driver；命令、构建摘要与实际结果见[专属验收](acceptance/content-workflows.md)。
+
 测试源码、夹具、现场生成、执行和结果判定全部归属本仓；不要求 SteerLine
 checkout、EXE、数据库、配置或测试调度器。运行目标为 Windows/amd64。
 
@@ -48,9 +54,26 @@ L3 的正交性按主要验证目标判断：新增 workflow、交互路径、�
 会话、分支和 PR 独立。该 case 仍须与其它 case 隔离。独立服务的测试并行通过，不能替代
 同一服务的多 Run 隔离验证；产品允许的资源排队也不能误判为要求所有 Run 同时执行。
 
+Windows 的 Orca CLI 会刷新同一用户的环境配置文件，多个进程同时调用会产生
+`orca-environments.json` 的 `EPERM rename`。Runner、真机诊断和 fixture 准备共用
+规范化的 `%LOCALAPPDATA%/SteerRunner/orca-cli.lock` 路径摘要构成的 Windows 命名互斥，只串行 CLI 进程，远端
+Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启动命令，不重试未知发送。
+业务 send 立即捕获受理回执，实际开始/完成继续由原 native history/state 证明，
+不在持锁的 CLI 内等待模型回合。原始失败批次保留，不能用重跑改写首轮结果。
+命名互斥按拥有线程持有，Go 调用期间固定该 OS 线程；取消通过独立事件结束等待。
+持锁进程被杀后按 abandoned-owner 语义取得互斥，但必须重新核验原资源身份。
+只有明确未调用 CLI 的排队错误才可重新观察原对象；未核实的创建/发送不据此重试。
+只读回执查询在取得 CLI 互斥后、调用前持久化创建意图；排队中被杀不会留下模糊创建。
+撤销 journal 先保存原停止意图，取得互斥后再标记实际创建尝试；恢复可执行尚未调用的
+原意图。实际尝试已落盘但缺返回身份时仍保持未知，不补建辅助终端。
+撤销失败只导出有限错误类别并持久保留；环境检查保留连接、原回合和 CLI 排队的
+有限失败类别，不以统一未核实状态吞掉原因，也不发布原始输出、路径或凭据。
+真机控制请求只有收到明确 `stale_revision` 拒绝后，才刷新原 Run 并用新请求 ID 提交；
+未知或丢失回执仍保留原身份，不能重复授权。
+
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 16 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 20 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
 丢响应找回、停止授权跨重启保持、审计发现/修复/预算及同服务多 Run 隔离。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
@@ -150,6 +173,8 @@ L2 当前原生资格固定 Codex 0.159.2；`configurations.local-codex` 必须�
 codex-app-server、development/2、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
 未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
 每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。
+原生远端不注册有来源证明的审计或完整环境检查正向用例；纯校验、capabilities 和零副作用拒绝由 L1/Controlled 覆盖，不计为真机成功。`orca-remote.multirun` 使用完整的 `configurations.orca-remote-codex-full-access`，同服务两个 Run 独立发布，核验 request/command、会话、工作区、分支、分页事件、last-message 和 PR 不串线；停止一项后另一项原生 owner 保持可用，最后逐一核实原终端停止。远端不校验或伪造 Runner broker/capability 关闭。
+
 L3 远端 Orca 使用指定 CLI、已配对 environment 和远端已有的同名 SteerlineTest Git
 项目。两端分别在实际执行主机准备认证，不从调用方复制认证，也不修改全局权限配置。
 
@@ -195,34 +220,23 @@ runtime 内存中，worker 只继承随机单仓库 capability，一小时到期
 Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_UNIX 接口；原工具
 仍在 MXC 内执行，原 GitHub URL 保持。socket 位于已有 Git 写入根，证书不安装到系统。
 代理仅允许目标仓库的 Git 上传/下载、身份/仓库只读查询和 PR 查询/创建；禁止其它
-仓库、管理接口、未知 GraphQL 及重定向。可选 `execution.settings.github_auth` 使用
-App 的非秘密 `app_id`、`installation_id`、`private_key_env`，不要求 App 才能测试。
+仓库、管理接口、未知 GraphQL 及重定向。GitHub App 支持已移除：`execution.settings.github_auth`（含 null）严格拒绝；fixture 的旧
+`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。本机/Orca local 受管认证使用宿主 gh 单仓库 broker；远端使用已有 Orca 原生认证，不承诺相同 capability 或撤销保证。
 宿主登录成功不能证明就绪；实际沙箱门槛失败仍零业务输入，不回退审批发布。
 参见[本次认证验收](acceptance/sandbox-authentication.md)。
 
 权限模式由配置项的 `execution.settings.access_mode` 冻结，默认 `sandbox`；`full_access` 为显式选择。
 普通业务与环境检查复用生产权限编译。`execution.settings.agent_launch.args` 只填写支持的启动参数（示例为
 `["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
-合并为同一通过结果。Orca 的 `agent_launch.runtime_executable` 指向执行主机安装的
-`steerrunner-agent.exe`（本仓 `cmd/steerrunner-agent`）。辅助程序在该主机解析 gh 登录、
-启动同一受限认证代理和固定权限 app-server，执行无模型 `command/exec` 预检，然后完成
-READY 初始化。TUI 通过 `--remote --no-alt-screen` 恢复同一个 app-server/thread，保留
-准备回执的滚动历史。Runner 先核验并提交绑定原工作区、配置摘要、helper SHA、native
-session、inline transport 和期限的回执，再发送首个业务输入，不额外发送控制提示。
-权限与四个固定 Git roots 在服务端冻结，不由 TUI 放宽。启动结果未知不重发，过期不再接受输入。
-缺辅助程序或缺可信回执仍阻断；`full_access` 是显式模式，不能作为准备失败的回退。
+合并为同一通过结果。Orca local 的 `agent_launch.runtime_executable` 指向用户安装的受管 helper，核验摘要后沿同权限准备、原控制回执、broker 与停止证明；这些保证不适用于原生远端。
 
-辅助程序由可信执行主机安装，目录必须在任务工作区和 Git 写入根之外；不把调用方的
-认证配置、OAuth 或 App 私钥传到远端。版本化测试目录可以与日常 Codex/Orca 并存。
-固定 native Codex 仍为 0.159.2，`remote_agent` 指向该执行主机实际 native EXE。
-远端 smoke 与全部可靠性 case 均审计原 provider 的原生历史，验证实际模式、never、
-零提权/审批/bypass，并独立确认审计终端关闭；不接受模型的成功声明作为权限证据。
-出现交互权限确认、原生拒绝或 shell 初始化失败时保留失败；手动诊断中的单次确认
-必须另记介入证据，不能记作无人值守通过。
+远端只使用既有 Orca/Codex/Git/gh 和用户登录，不上传、探测或调用 Runner helper，不转发本机 token、OAuth 或 gh 配置。远端 runtime_executable/runtime_sha256 键（包括空值）在接受前拒绝。model/effort/access_mode 仅核验冻结参数及传递命令；native-launch-contract 明记 effective_parameters_verified=false，native-call-audit 要求零 helper/query terminal，不冒充 OS token、权限审计或实际模型回读。完整远端 Check 和有来源证明的双模型审计明确不支持。
+
+原生停止按原 runtime/worktree/terminal/incarnation 的新鲜完整查询判断，缺少执行内结果时保留 unreported/unknown。offline verify-stopped 的 scope 只描述该原终端，不证明全部 OS 后代或远端登录撤销；历史签名/Job 证明不继承到新路径。登录或权限失败按实际操作结果保留，不自动换登录、后端或 full_access。
 
 ## 当前完整 smoke 契约
 
-本节记录当前 driver 的必跑契约，仍含一次反馈和真实合并；[测试清单](test-catalog.md)
+本节以 workflow/2 的 driver 为准，包含实现、发布核验、真实合并与停止；发布后反馈返工已移除，独立 feedback case 验证该输入明确拒绝，不创建新实施轮或更新 PR；[测试清单](test-catalog.md)
 中的 L2 最小化为后续调整目标，当前执行步骤或结果判定尚未改变。
 
 固定任务改编自 SteerlineTest 的 native-101 Spec/Plan，源 commit 为
@@ -306,7 +320,7 @@ success；它与“原操作结果未知”分别判断，沿用既有 Orca 完�
 验收使用 `test.ps1`，确保前置门槛和批次汇总完整。
 
 审计 workflow 的两模型定向诊断复用同一个 native driver。配置中先显式指定执行 `model`，
-并填写 local-codex-audited.workflow.audit_model；省略审计 effort 时继承执行 effort。此诊断核验两项审计、
+并填写 local-codex-audited.workflow.audit_model；省略审计 effort 时继承执行 effort。此诊断核验代码审计修复、
 执行模型回切及实际 PR 后停止原 Run/服务，保留测试 PR 未合并，不计作普通 L2 完整 smoke。
 它不改变默认 L2/L3 场景选择或生产默认发布提示词；该新 Run 冻结测试用发布提示词覆盖。
 
@@ -392,7 +406,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮二十三场景三十一 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮二十二场景三十 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
@@ -419,11 +433,15 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 `codex/srtest/<fixture>/base`、独立源仓库及只读取证；Worker 通过已保存意图的固定原生工具创建
 `steerline-check/<check_id>/base|head`、commit/push 和 PR，driver 不代做这些动作、不合并 PR。
 每种模式必须独立核实权限、实际工具、Git/PR 及原对象收尾，不能用 L1/Controlled 或另一模式替代。
-远端两种模式另注册 `environment-check.orca-sandbox/complete` 与
+历史 helper 构建曾注册远端两种模式 `environment-check.orca-sandbox/complete` 与
 `environment-check.orca-full-access/complete`。它们通过原 Orca runtime/terminal incarnation
 绑定执行主机的有限检查会话；复用相同的无模型预检、实际 Agent/工具、一次性外部写门、
 owner 核验及精确资源收尾。重启只允许结算原会话，不创建替代检查。调用端不探测远端 PID。
 登记与实现不等于真机通过；各受测构建、模式和清理结果按本轮证据独立判断。
+
+### 历史 helper 验收说明（不适用于新远端）
+
+下述 inline/独立查询终端描述保留给旧构建记录；当前 local 受管路径以固定 control actor 实现为准，原生远端不使用该历史查询链。
 
 受控 Orca helper 的 inline-v2 输入包含唯一 command ID 和完整原输入摘要。普通开发回合通过
 执行主机的只读 Codex `thread/read` 核对原工作区/会话、完整实际输入摘要、native turn/user item

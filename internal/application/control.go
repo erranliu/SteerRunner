@@ -53,6 +53,12 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
 	command := r.PendingResume
+	if r.Request.Conversation != nil || r.Request.Generate != nil {
+		if err := verifyContentDirectory(r); err != nil {
+			e.failControl(id, command, err)
+			return false
+		}
+	}
 	if unknown(r) {
 		e.failControl(id, command, errors.New("Original operations require reconciliation before any resume"))
 		return false
@@ -117,6 +123,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		e.mu.Lock()
 		next := e.runs[id].Clone()
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
+		settleContentStatus(next)
 		next.PendingStop = ""
 		next.CommandStates[command] = "completed"
 		_ = e.commitLocked(next, nil, "run_stopped")
@@ -176,6 +183,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	next.Intents[index].SettleStop(next.Snapshot.Operations, receipt, b.OperationStatus(status))
 	if err == nil && receipt.State.Stopped {
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
+		settleContentStatus(next)
 		next.PendingStop = ""
 		next.CommandStates[command] = "completed"
 	} else {

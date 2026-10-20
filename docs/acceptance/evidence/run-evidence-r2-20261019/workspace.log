@@ -1,0 +1,12 @@
+=== RUN   TestR2ArtifactContainment
+--- PASS: TestR2ArtifactContainment (0.09s)
+=== RUN   TestR2GitRejectsConcurrentChange
+=== RUN   TestR2GitRejectsConcurrentChange/dirty
+=== RUN   TestR2GitRejectsConcurrentChange/commit
+=== RUN   TestR2GitRejectsConcurrentChange/header_like_rename
+--- PASS: TestR2GitRejectsConcurrentChange (6.34s)
+    --- PASS: TestR2GitRejectsConcurrentChange/dirty (1.89s)
+    --- PASS: TestR2GitRejectsConcurrentChange/commit (2.08s)
+    --- PASS: TestR2GitRejectsConcurrentChange/header_like_rename (2.37s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	7.606s

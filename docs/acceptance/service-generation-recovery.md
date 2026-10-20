@@ -107,3 +107,25 @@ Orca 外部阻塞：2026-10-19 实际 CLI **1.4.224**，`orca worktree create --
 最后补齐冻结材料资格：`material-qualified/steerrunner.exe` SHA=`03bcc58120b391ee15da3ec1e57c344c30236a0bb138d2e468d435db092876b6` 的 `material-qualified-smoke` exit 0，166.974s，离线审计/parser 强杀/正常 A/B 三项通过。`go test ./internal/application ./internal/host -run 'TestRecoveryFrozen|TestRA|TestServiceGeneration|TestWorkflowRecovery|TestLegacyRecovery' -count=1 -timeout=6m` 通过，268.593s / 2.575s；含真实原材料文件、替换/缺失拒绝及零修复反例。审计 unit fixture 原用虚构 Spec/Plan 路径，已改为真实冻结字节/文件，未放宽生产校验。
 
 收尾发现兼容比较仍含 State.Prompt 的默认文本，会与“保留原提示词、同契约新默认可更新”相冲突；已只排除默认 Prompt 文本，kind/contract/转移/模型角色/权限/预算和成功标记仍精确比较，保留原 frozen States/PromptBodies。相应 `TestWorkflowRecovery` 加入旧默认文本差异，连同冻结材料和 generation 定向测试通过，2.648s。最终 EXE `final/steerrunner.exe` SHA=`1ca788946183b7e29927c5f1ac25d57c952a224b5ea9450bddfbda9d90e8d36a` 的 A/B 精确构建重验 `final-compatible` exit 0，40.499s，命中正常 A/B 接管，原 owner/native 存活、离线结果补收、原 thread=1/turn=3、显式 stopped 和收尾通过。本轮其它已验/未验边界不变；两仓文档链接、diff 空白与部署脚本语法检查通过。最终能力文件为 `final/capabilities.json`，最终源码与结果索引为 `final-source-manifest.json` / `final-run-summary.json`。
+
+## PR #35 主干合并复验（2026-10-20）
+
+从 `b0e66b284e8f2ab3c5dbfe294ba7ace8f9989bd0` 合入 `origin/main` 的 `a259c3ad4723c09f6fc5d3b1cf40b6a4cf028092`，解决六个文件的文本冲突并核对自动合并边界。保留主干 conversation/1、generate/1、run-evidence 查询及 gh-only 认证退役边界；不恢复已移除的 GitHub App 配置。当前支持的内容流程沿同一 Run、原执行范围和 owner 恢复，不新增队列/授权状态机。
+
+已接受但未冻结的 message 绑定原执行范围，换代后核验并只冻结一次；已冻结后的第二次重启不重建输入。旧 epoch 或错会话仍阻断。内容流程没有原 WorkspacePlan 时不采 Git checkpoint，结果仍沿原 native journal；开发/审计的签名 checkpoint 保持。独立 owner 补齐主干 interrupt 所用 stop_observation 分发；未知 interrupt 沿原结果只读对账，不再次发送。
+
+| 命令 / 本地证据目录 | 结果 | 证据边界 |
+| --- | --- | --- |
+| `go test ./internal/application -run '^TestContent|TestServiceGeneration|TestWorkflowRecovery|TestRecoveryFrozen' -count=1 -timeout=3m`；`merge-content-rules.log` | 通过，4.033s | 内容原消息跨代/仅冻结一次、旧 scope 拒绝、内容 workflow 只读兼容、原冻结材料反例 |
+| `go test ./internal/... -count=1 -timeout=12m`；`merge-internal.log` | 全部通过，application 407.790s | 合并后共同回归；启动该组后又补无 Git checkpoint 和 interrupt 白名单，最后两项另按下列全包/受控重验，不能把本行称作最终源码全量重新通过 |
+| 首次 `merge-controlled` | 编译失败，未启动受控场景 | 新增取证断言误用不存在的 ExecutionView.Process；改读原 process.json 并用 OS 身份核验存活，不改公共 DTO |
+| `merge-controlled-recheck`，六个顶层场景 | exit 1 | 全部 11 个获取子场景及 R2 取证通过；会话和 unknown-interrupt 暴露 owner 白名单缺 stop_observation，A/B 又暴露独立 harness 当前目录假设。失败保留，不记整组通过 |
+| `merge-final-controlled`，五个顶层场景 | exit 1 | 无 Git checkpoint 修订后，离线审计/parser-kill/parser-stop 三项通过（158.40s）、生成十分支通过；中断白名单和 A/B 夹具目录故障仍在。此构建 SHA=`4f150f5ac6b983ef601240976ef728aee90c8cf571ac16cca5329d73d623873d` |
+| `go test ./internal/execution/adapters/codex -count=1 -timeout=3m`；`merge-interrupt-codex.log` | 通过，48.223s | 最后生产源码，含无 Git 完成依赖测试及全部原 owner/绑定/签名/停止等单元规则 |
+| `merge-interrupt-recheck`，四个顶层场景 | exit 1；三个内容顶层均通过 | Generate 十分支 65.02s、Conversation 10.07s、QuestionAndUnknown 24.20s（含丢 interrupt 回执、原问题、未知 start 零重发）；原进程回执/存活及原 session 保留、无需重启 resume。唯一剩余失败是 A/B helper 固定相对目录，下面单独修复重验 |
+| `merge-candidate-recheck`；`scripts/test-foundation.ps1 -Pattern '^TestSRRestartPreservesAuthorization$'` | exit 0，112.09s，命中 1 个顶层/4 个子场景 | 修复 test helper 同时支持 go test 的 tests/integration cwd 和独立 harness 的仓库根 cwd。graceful、kill、creation_receipt、pending_stop 全部通过；无生产恢复逻辑变更 |
+| `go test -tags live -c -o <merge-interrupt-live-compile.test.exe> ./tests/integration` | 编译通过 | 只验证已同步的真实 driver 可编译，没有运行真实 Codex |
+
+以上目录均在 `.evidence/service-generation-recovery/`，保留原 integration.log、caller-commands、source-identity 和 result.json。最终生产 A SHA=`bb155e89240f19f784e244704ab447cc96cf9551a2ceb158b795a7d62aea2939`，在 `merge-interrupt-recheck` 与 `merge-candidate-recheck` 两轮构建逐字节相同；A/B 的 B SHA=`d40e8e9bb25e4b81e2d91508bd9827730c0259817ee8311102e38f402ee632c9`。最终源码/夹具/脚本身份登记为 `merge-interrupt-source-manifest.json`；此前 checkpoint 阶段的 `merge-final-source-manifest.json` 保留原内容。构建发生于合并未提交工作树，SourceCommit 为原分支基线且 dirty=true，不能将后续提交号假写成实测包 metadata，也不承诺提交后任意重建字节相同。
+
+未运行最终源码的完整 Controlled catalog，不把失败组拼成“全部通过”。真实 Codex/认证/工具树、SteerLine 同现场 UpdateRunner、Orca 原创建查询的外部缺口仍按原记录待验。SteerLine PR #360 源码本轮未改；此次未部署或合并 PR。

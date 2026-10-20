@@ -823,6 +823,11 @@ type LifecycleWorkspacePort interface {
 	InspectLifecycleWorkspace(context.Context, LifecycleSnapshot) (WorkspaceInspection, error)
 }
 
+// Optional exact-owner audit inspection; revision-only metadata is insufficient.
+type LifecycleAuditWorkspacePort interface {
+	InspectLifecycleAuditWorkspace(context.Context, LifecycleSnapshot, string) (WorkspaceInspection, error)
+}
+
 type LifecycleRecoveryPort interface {
 	VerifyManualRecovery(context.Context, LifecycleSnapshot) (LifecycleRecoveryEvidence, error)
 	BindRecovery(context.Context, LifecycleSnapshot, LifecycleSnapshot) (ImplementationDataEnvelope, error)

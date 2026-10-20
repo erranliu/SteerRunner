@@ -1,0 +1,14 @@
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.144s
+--- FAIL: TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees (0.00s)
+    configuration_test.go:92: retired App configuration is still advertised
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/resources	1.503s
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.609s
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.553s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	0.901s
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable	0.819s
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable/operation	0.800s
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	54.529s
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition	0.903s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	23.784s
+FAIL

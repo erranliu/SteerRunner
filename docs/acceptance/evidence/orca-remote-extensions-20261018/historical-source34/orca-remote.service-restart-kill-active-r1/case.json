@@ -1,0 +1,34 @@
+{
+  "scenario": "orca-remote.service-restart",
+  "case_id": "kill-active",
+  "repeat_index": 1,
+  "status": "passed",
+  "manifest": "C:\\srt\\37e76a4c3fb2\\manifest.json",
+  "started_at": "2026-10-18T06:32:19.9162578Z",
+  "finished_at": "2026-10-18T06:40:17.7886884Z",
+  "identity": {
+    "pid": 33464,
+    "manifest_sha256": "be5923d197a19ffb69de8ae825b7a010e2fdd16735e4e77f5ef782d192aa1e76",
+    "driver_sha256": "b7da7fa4d26da4a2c7cd585c19b0e6728113a5a6ee26ba2d2c3cb511a6cfe0f6",
+    "runner_sha256": "ef1cfa9eebbd64a0a46ee3a1e6ab89680880d06948566c0cc8f774bc0fed36af",
+    "source_commit": "8b9a98ad65885390caa64fda536b3e6cdea56890",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.service-restart",
+    "level": "L3",
+    "helper_sha256": "dc6eb8422122a5c8bfd9fab93a9618addf53bacc8b053e35f425effbe7e9a80e",
+    "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+    "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+    "case_id": "kill-active",
+    "repeat_index": 1
+  },
+  "resources": [
+    "root:C:\\srt\\37e76a4c3fb2",
+    "base:codex/srtest/37e76a4c3fb2/base",
+    "run:fa1aecf243c20ee87b78448eb38f2858",
+    "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-fa1aecf243c20ee87b78448eb38f2858",
+    "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_5b16e7f2-5326-4bd8-b5ce-64bcb974f0e0:695768a0-9a40-4fa5-8a27-0dfec0bd8852",
+    "branch:erranliu/sl-fa1aecf243c20ee87b78448eb38f2858",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/463"
+  ]
+}

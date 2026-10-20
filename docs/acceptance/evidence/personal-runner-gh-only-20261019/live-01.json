@@ -1,0 +1,1006 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+  "source_dirty": false,
+  "started_at": "2026-10-19T02:05:19.5997732Z",
+  "finished_at": "2026-10-19T03:00:02.8836046Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "scope": "admin-free-subset",
+  "max_parallel": 2,
+  "planned_case_count": 19,
+  "authorized_exclusion_count": 8,
+  "executed_case_count": 11,
+  "passed_case_count": 8,
+  "first_pass_rate": 0.7272727272727273,
+  "prerequisites": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 318,
+      "terminal_extension_test_count": 28,
+      "terminal_extension_exit": 0,
+      "terminal_extensions_passed": true,
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ]
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 0,
+      "scenario_count": 16
+    }
+  ],
+  "cases": [
+    {
+      "level": "L3",
+      "scenario": "orca-remote.smoke",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:18:14.4374288Z",
+      "finished_at": "2026-10-19T02:28:26.3881113Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "698D1A878CC1F3D129D768608A6EFA09FF4B6206D52936EC7541E48BBDCC3AD2",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.smoke",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "passed": true,
+        "run_id": "fb97c7cb1d493a7ea9f6da803833fb38",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/557",
+        "merge_commit": "5ab847faed85c9db33cbc8628cd03100ade7571b"
+      },
+      "resources": [
+        "root:C:\\srt\\a44d781ff565",
+        "base:codex/srtest/a44d781ff565/base",
+        "run:fb97c7cb1d493a7ea9f6da803833fb38",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-fb97c7cb1d493a7ea9f6da803833fb38",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_1c86cbf9-cdc0-4708-b094-4e17c0672839:5ff52ce9-3cc7-4d38-83ed-a99176b02414",
+        "branch:erranliu/sl-fb97c7cb1d493a7ea9f6da803833fb38",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/557"
+      ],
+      "authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-fb97c7cb1d493a7ea9f6da803833fb38",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a151f4-f630-78f2-a078-25677eaeb81d",
+            "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:19:41.2655781Z",
+            "expires_at": "2026-10-19T11:19:22.8365796+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a151f4-f630-78f2-a078-25677eaeb81d",
+            "contexts": 7,
+            "tools": 19,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "6c6a6afe89e4765501c9a3acec9ae0bb8011c3aec0156b8c15654a6dd1f201f6"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.full-access",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:18:14.5411836Z",
+      "finished_at": "2026-10-19T02:28:21.808159Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "61EC6336E6DB0E72817F977540086D25BC709A9B32BB4D197A39F912BB5A66A6",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.full-access",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "full_access",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "passed": true,
+        "run_id": "f6fcdf16d5c90f9d682ad77b6d0ae19b",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/558",
+        "merge_commit": "7db5da97d1135a95e1924b8a42b00a0e4dd0e976"
+      },
+      "resources": [
+        "root:C:\\srt\\79587bf54160",
+        "base:codex/srtest/79587bf54160/base",
+        "run:f6fcdf16d5c90f9d682ad77b6d0ae19b",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-f6fcdf16d5c90f9d682ad77b6d0ae19b",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_17671dbd-02a9-4f69-b3ab-5eed7d12ec3b:f5315b39-0ed8-40c2-9e90-af539c4adebf",
+        "branch:erranliu/sl-f6fcdf16d5c90f9d682ad77b6d0ae19b",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/558"
+      ],
+      "authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-f6fcdf16d5c90f9d682ad77b6d0ae19b",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a151f4-e973-7970-85ed-5be5ef00d67d",
+            "configuration_digest": "82a4fffc50b43be8b88b88ae4c90404d5eed72134a39ee4a71d668291c5b4c85",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:19:35.6409314Z",
+            "expires_at": "2026-10-19T11:19:20.4421668+08:00",
+            "access_mode": "full_access"
+          },
+          "native": {
+            "session": "01a151f4-e973-7970-85ed-5be5ef00d67d",
+            "contexts": 7,
+            "tools": 17,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "bb9f969bf7a34853bf8ce292bfc8346b8410f61bc81bc07bd2c365456b5da003"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:28:23.1795357Z",
+      "finished_at": "2026-10-19T02:40:45.3463861Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "22221633D7C1C2F175AEDCDF13DE36FDA3D2393FD763E800A0D4CDFF5BCE393D",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.caller-exit",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "test_outcome": "passed",
+        "business_outcome": "merged",
+        "faults_hit": 1,
+        "audit_complete": true,
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "run_id": "afe731684d31f2d23f69e21e9a65de39",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/562",
+        "merge_commit": "7a6bbdcf67a80e59c55b5cd5abe7318f638e1c20"
+      },
+      "resources": [
+        "root:C:\\srt\\fadfb6578a4d",
+        "base:codex/srtest/fadfb6578a4d/base",
+        "run:afe731684d31f2d23f69e21e9a65de39",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-afe731684d31f2d23f69e21e9a65de39",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_98dc7c69-3628-441f-8459-939749baca29:4d9224a3-d02f-4510-aa00-792bd242d953",
+        "branch:erranliu/sl-afe731684d31f2d23f69e21e9a65de39",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/562"
+      ],
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-afe731684d31f2d23f69e21e9a65de39",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a15201-9fc4-7bf1-8abc-52f3089cc808",
+            "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:33:29.8925897Z",
+            "expires_at": "2026-10-19T11:33:08.8944416+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a15201-9fc4-7bf1-8abc-52f3089cc808",
+            "contexts": 4,
+            "tools": 8,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "19668f29be0a0b0aca76e527e03605574e09adf18204e2ba447ab25977465f63"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.connection-reconnect",
+      "case_id": "pre-send-disconnect",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:28:27.6944329Z",
+      "finished_at": "2026-10-19T02:40:46.6768512Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "F8003799EC94362A7473C0C0E40820B0D880A9432E7E77657F330448B6B072BE",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "test_outcome": "passed",
+        "business_outcome": "merged",
+        "faults_hit": 1,
+        "audit_complete": true,
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "run_id": "891d99485846c2a25b7c088c7a4b6482",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/563",
+        "merge_commit": "a60c8fc9900b7ecfcfeb172e7823e3708bc36bf4"
+      },
+      "resources": [
+        "root:C:\\srt\\41254225f850",
+        "base:codex/srtest/41254225f850/base",
+        "run:891d99485846c2a25b7c088c7a4b6482",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-891d99485846c2a25b7c088c7a4b6482",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_6d8903e4-5729-4dfe-af27-a22267b144b0:1e8fce1c-d98d-499f-8bf9-6178a8587119",
+        "branch:erranliu/sl-891d99485846c2a25b7c088c7a4b6482",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/563"
+      ],
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-891d99485846c2a25b7c088c7a4b6482",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a15201-8dd1-7f42-9e44-cf75af78f3e3",
+            "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:33:25.6914102Z",
+            "expires_at": "2026-10-19T11:33:07.4827693+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a15201-8dd1-7f42-9e44-cf75af78f3e3",
+            "contexts": 4,
+            "tools": 17,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "06c6c82926085275c35a5cff3c1f00f17acbb16b3b21bc65d8b02298822ecd54"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:40:46.44252Z",
+      "finished_at": "2026-10-19T02:48:25.8487619Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "D850E0DB318E8E69BCEFBA5AA100BD6AB026765A087A9B25E5A970920C23DD55",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.service-restart",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "test_outcome": "passed",
+        "business_outcome": "merged",
+        "faults_hit": 1,
+        "audit_complete": true,
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "run_id": "2d2d9458087856af8f9b71dc618883dc",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/567",
+        "merge_commit": "a44d0d992b6fea99d51331c0bc5f28d41a37ec3e"
+      },
+      "resources": [
+        "root:C:\\srt\\78c7e4ef75a2",
+        "base:codex/srtest/78c7e4ef75a2/base",
+        "run:2d2d9458087856af8f9b71dc618883dc",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-2d2d9458087856af8f9b71dc618883dc",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_a6d67bbe-ecdc-4510-ba18-92ae7a14d3f0:5accec3e-611f-449d-8d42-5b0aab550372",
+        "branch:erranliu/sl-2d2d9458087856af8f9b71dc618883dc",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/567"
+      ],
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-2d2d9458087856af8f9b71dc618883dc",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a1520a-ccdd-7de2-af39-ef11c1f3971b",
+            "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:43:32.4293686Z",
+            "expires_at": "2026-10-19T11:43:12.1670434+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a1520a-ccdd-7de2-af39-ef11c1f3971b",
+            "contexts": 4,
+            "tools": 9,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "80c1009f9d174cad2b5ae0d12e21cd4653b04053e6574a5a56b348fe11749be0"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:40:47.8101637Z",
+      "finished_at": "2026-10-19T02:46:07.8152154Z",
+      "expected_outcome": "stopped",
+      "identity": {
+        "manifest_sha256": "19059381A1257698E6B33FCA4787D546AC740E506449AE1B00CFAA33CE8DF411",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.stop-revocation",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "test_outcome": "passed",
+        "business_outcome": "stopped",
+        "faults_hit": 1,
+        "audit_complete": true,
+        "cleanup": {
+          "native_stopped": true,
+          "service_stopped": true,
+          "facilities_restored": true,
+          "driver_native_cleanup": false
+        },
+        "run_id": "8b672e7c42c65c31f9f83527fabb720a"
+      },
+      "resources": [
+        "root:C:\\srt\\a8c9b49cd7bd",
+        "base:codex/srtest/a8c9b49cd7bd/base",
+        "run:8b672e7c42c65c31f9f83527fabb720a",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-8b672e7c42c65c31f9f83527fabb720a",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_2f8053f4-7560-4ef4-bf09-1e3d33e74b8e:0ae96d28-c9a1-4b44-b5aa-56f39ac466a0",
+        "branch:erranliu/sl-8b672e7c42c65c31f9f83527fabb720a"
+      ],
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-8b672e7c42c65c31f9f83527fabb720a",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a1520a-c2db-7ca3-8c15-891b097d984c",
+            "configuration_digest": "d60a73a502bc9c8c96304946c3de479384f2aa3ec7e777ab62785d70f2e6608d",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:43:30.3152579Z",
+            "expires_at": "2026-10-19T11:43:09.7251462+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a1520a-c2db-7ca3-8c15-891b097d984c",
+            "contexts": 2,
+            "tools": 5,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "f5e0cd9d8173477b9afc954a3ef844b60d2905df4e87f505f2a8fd7f3bc0d41d"
+          },
+          "inspector_closed": true
+        }
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "repeat_index": 1,
+      "status": "excluded",
+      "started_at": null,
+      "finished_at": null,
+      "reason": "Administrator fault host unavailable; excluded and unverified, not passed."
+    },
+    {
+      "level": "L3",
+      "scenario": "local-codex.feedback",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:46:08.7651432Z",
+      "finished_at": "2026-10-19T02:52:03.6268445Z",
+      "expected_outcome": "merged",
+      "identity": {
+        "manifest_sha256": "85E8EFDE3E6E05E3ED3D0F39CF7CA3B6351ACA17D11DCCB2582C0DCEDC8DFCA9",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.feedback",
+        "level": "L3"
+      },
+      "adapter": "codex-app-server",
+      "access_mode": "sandbox",
+      "result": {
+        "stage": "completed",
+        "passed": true,
+        "run_id": "51026e1db292f7d0a59e043ea00a57cb",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/568",
+        "merge_commit": "f10b2e9aefd1ec2261b07a4f1ae4b31f8351f5b9"
+      },
+      "resources": [
+        "root:C:\\srt\\4958654950db",
+        "base:codex/srtest/4958654950db/base",
+        "run:51026e1db292f7d0a59e043ea00a57cb",
+        "workspace:c:\\srt\\4958654950db\\s\\workspaces\\lopwwkq4nosxmbg6mbzgefju6y",
+        "session:01a1520e-1611-7211-a015-23810d0733ac",
+        "branch:codex/runner-51026e1db292f7d0a59e043ea00a57cb",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/568"
+      ],
+      "authentication-cleanup": {
+        "revocation_confirmed": true
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "environment-check.orca-sandbox",
+      "case_id": "complete",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-19T02:48:26.7509729Z",
+      "finished_at": "2026-10-19T02:49:42.7913822Z",
+      "error": "Live scenario failed; inspect C:\\srt\\9261216a3557\\evidence/native.log",
+      "identity": {
+        "manifest_sha256": "BDDEFDC482104BD0C00400F1658A9895CF40022B246C1C1E8D54B604395E06F7",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "environment-check.orca-sandbox",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "unverified:residual",
+        "passed": false,
+        "run_id": "4b5a7e627d081628c21a78b8054d28a6",
+        "run_stopped": false,
+        "service_stopped": true
+      },
+      "check": {
+        "check_id": "4b5a7e627d081628c21a78b8054d28a6",
+        "status": "unverified",
+        "result": "unverified",
+        "diagnostic": "native_input_unverified",
+        "cleanup_status": "residual",
+        "resources": {
+          "base_deleted": false,
+          "base_owned": false,
+          "base_ref": "refs/heads/steerline-check/4b5a7e627d081628c21a78b8054d28a6/base",
+          "base_sha": "c846b02d9f8dfff9c72823bc4b2bc17556320f3f",
+          "head_deleted": false,
+          "head_owned": false,
+          "head_ref": "refs/heads/steerline-check/4b5a7e627d081628c21a78b8054d28a6/head",
+          "local_removed": true,
+          "pr_closed": false,
+          "writer_stopped": true
+        },
+        "items": [
+          {
+            "id": "permissions",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "workspace",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "temporary",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "git_admin",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "remote_read",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "fetch",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "base_push",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "commit",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "head_push",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "pr_create",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "pr_query",
+            "required": true,
+            "status": "unverified"
+          },
+          {
+            "id": "pr_close",
+            "required": true,
+            "status": "unverified"
+          }
+        ]
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "environment-check.orca-full-access",
+      "case_id": "complete",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-19T02:49:43.7888503Z",
+      "finished_at": "2026-10-19T02:54:53.2255772Z",
+      "error": "Live scenario failed; inspect C:\\srt\\967c03748750\\evidence/native.log",
+      "identity": {
+        "manifest_sha256": "04AF4FCFC5774C73056673A27DAC6F2D663F0D2372BD641B3D0487554EBC3431",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "environment-check.orca-full-access",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "full_access",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "stopped:completed",
+        "passed": false,
+        "run_id": "6e8e62e3f48edfa1761dc818d503760c",
+        "run_stopped": false,
+        "service_stopped": true
+      },
+      "check": {
+        "check_id": "6e8e62e3f48edfa1761dc818d503760c",
+        "status": "stopped",
+        "result": "unverified",
+        "cleanup_status": "completed",
+        "resources": {
+          "base_deleted": true,
+          "base_owned": true,
+          "base_ref": "refs/heads/steerline-check/6e8e62e3f48edfa1761dc818d503760c/base",
+          "base_sha": "5a50b2a1788a8b14560088c5c094a25565bef9b2",
+          "head_deleted": true,
+          "head_owned": true,
+          "head_ref": "refs/heads/steerline-check/6e8e62e3f48edfa1761dc818d503760c/head",
+          "head_sha": "5113f86ee83c0080697c8d61466fb91d10d7bf4c",
+          "local_removed": true,
+          "pr_closed": true,
+          "pr_number": 569,
+          "pr_url": "https://github.com/erranliu/SteerlineTest/pull/569",
+          "writer_stopped": true
+        },
+        "items": [
+          {
+            "id": "permissions",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "workspace",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "temporary",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "git_admin",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "remote_read",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "fetch",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "base_push",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "commit",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "head_push",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "pr_create",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "pr_query",
+            "required": true,
+            "status": "passed"
+          },
+          {
+            "id": "pr_close",
+            "required": true,
+            "status": "unverified"
+          }
+        ]
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.audited",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "passed",
+      "started_at": "2026-10-19T02:52:04.7089633Z",
+      "finished_at": "2026-10-19T02:59:43.8643916Z",
+      "expected_outcome": "pr_ready",
+      "identity": {
+        "manifest_sha256": "506F012429CA651C1B574DF9572F7E16BAD9B979042F3A7BAF6AE2521D399938",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.audited",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "completed",
+        "passed": true,
+        "run_id": "b5c8cb809fb44ea56d62841bf0faba22",
+        "run_stopped": true,
+        "service_stopped": true,
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/570"
+      },
+      "resources": [
+        "root:C:\\srt\\2d7e7d4d351f",
+        "base:codex/srtest/2d7e7d4d351f/base",
+        "run:b5c8cb809fb44ea56d62841bf0faba22",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sl-b5c8cb809fb44ea56d62841bf0faba22",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_9ed4fff3-4ad3-40e4-b1a0-2d53a95372c3:67ccb7f2-c1b8-4d1e-b73d-1d5a8a7dcaef",
+        "branch:erranliu/sl-b5c8cb809fb44ea56d62841bf0faba22",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/570"
+      ],
+      "authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "permission_audits": {
+        "remote-worker-permission-audit": {
+          "readiness": {
+            "verified": true,
+            "contract": "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never",
+            "workspace": "C:\\Users\\Administrator\\orca\\workspaces\\SteerlineTest\\sl-b5c8cb809fb44ea56d62841bf0faba22",
+            "repository": "https://github.com/erranliu/SteerlineTest.git",
+            "session_id": "01a15213-ca22-7be3-9b9a-62379708f79b",
+            "configuration_digest": "418233cf46f05a09f7b0ca9591e441feb39a725ed6ded1a58026baba42a9a3ff",
+            "runtime_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+            "checked_at": "2026-10-19T02:53:21.0408091Z",
+            "expires_at": "2026-10-19T11:53:01.3264379+08:00",
+            "access_mode": "sandbox"
+          },
+          "native": {
+            "session": "01a15213-ca22-7be3-9b9a-62379708f79b",
+            "contexts": 6,
+            "tools": 9,
+            "escalations": 0,
+            "approvals": 0,
+            "bypasses": 0,
+            "native_sha256": "825dfd6cc9158c050bcbd020a2f8988ce31d5f4e52986ae05811578d977e30e7"
+          },
+          "inspector_closed": true
+        }
+      },
+      "audit_models": {
+        "configuration_digest": "418233cf46f05a09f7b0ca9591e441feb39a725ed6ded1a58026baba42a9a3ff",
+        "passed": true,
+        "provider_session": "01a15213-ca22-7be3-9b9a-62379708f79b",
+        "run_id": "b5c8cb809fb44ea56d62841bf0faba22",
+        "session": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_9ed4fff3-4ad3-40e4-b1a0-2d53a95372c3:67ccb7f2-c1b8-4d1e-b73d-1d5a8a7dcaef",
+        "turns": [
+          {
+            "command_id": "2a636c84f57ddc447610161349178ceb",
+            "effort": "high",
+            "final_digest": "9b38a8c0f222cfb2aedbd630c4a21bc7172e77e3985c097f1f06ccb0dec9b9d8",
+            "inspector_closed": true,
+            "model": "gpt-6.1-sol",
+            "native_turn_id": "01a15216-7628-7130-a596-7073889d5862",
+            "session": "01a15213-ca22-7be3-9b9a-62379708f79b",
+            "source": "codex.app-server.original-turn.v1",
+            "step": "audit.spec",
+            "turn_id": "2a636c84f57ddc447610161349178ceb"
+          },
+          {
+            "command_id": "51b72435b3a4aa21389abd53232cb81b",
+            "effort": "high",
+            "final_digest": "bcf764c4fa1627a1842a634992b3d2e9d206fea99980c3c651fe55f310bd33cf",
+            "inspector_closed": true,
+            "model": "gpt-6.1-sol",
+            "native_turn_id": "01a15217-609a-7492-8c88-51ce85c647c3",
+            "session": "01a15213-ca22-7be3-9b9a-62379708f79b",
+            "source": "codex.app-server.original-turn.v1",
+            "step": "audit.code",
+            "turn_id": "51b72435b3a4aa21389abd53232cb81b"
+          },
+          {
+            "command_id": "a2a12e4d190981b9b1444704908c4b30",
+            "effort": "high",
+            "final_digest": "5cb3e9bd7b47bbcc71a308b30cfdbe0b2b687380b28636f70f8fc03ce999aae5",
+            "inspector_closed": true,
+            "model": "gpt-6-luna",
+            "native_turn_id": "01a15218-33ba-7ef3-b876-c3170ab00714",
+            "session": "01a15213-ca22-7be3-9b9a-62379708f79b",
+            "source": "codex.app-server.original-turn.v1",
+            "step": "publish",
+            "turn_id": "a2a12e4d190981b9b1444704908c4b30"
+          }
+        ]
+      }
+    },
+    {
+      "level": "L3",
+      "scenario": "orca-remote.multirun",
+      "case_id": "default",
+      "repeat_index": 1,
+      "status": "failed",
+      "started_at": "2026-10-19T02:54:54.1387996Z",
+      "finished_at": "2026-10-19T03:00:02.6186232Z",
+      "error": "Live scenario failed; inspect C:\\srt\\2aecd494bd8f\\evidence/native.log",
+      "identity": {
+        "manifest_sha256": "2C66CF0E823BFF2F7572DA9AC5572D6155F914623D3FA341E93ED5F470B02C36",
+        "driver_sha256": "7B1CFADDDF821FBC1761D8EE7A2B2E3E0C382484F0D1353C29AB732CAF57CC93",
+        "runner_sha256": "f0821be6b333daf11729f0c20d07cbe1f2132a258f83696285d4478b8f67f65a",
+        "source_commit": "424826d13d5af12fbcd4a0ee8f1a64ad5e3acb8f",
+        "source_dirty": false,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.multirun",
+        "level": "L3"
+      },
+      "adapter": "orca-terminal",
+      "access_mode": "sandbox",
+      "remote_helper_sha256": "748552b850af98f1c8c675a975b231e93552db8bb99d179ead4e08ca271ca178",
+      "result": {
+        "stage": "submit-two-runs",
+        "passed": false,
+        "run_id": "e6badf69173b4ccd7d5d5ed94371a24a",
+        "run_stopped": true,
+        "service_stopped": true
+      },
+      "peer-0-authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "peer-1-authentication-cleanup": {
+        "revocation_confirmed": true,
+        "broker_closed": true,
+        "socket_cleanup_confirmed": true,
+        "mode": "host-gh-repository-broker",
+        "inventory_observations": 1,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      }
+    }
+  ]
+}

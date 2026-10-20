@@ -1,0 +1,47 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "09e8fd43f0440d9acbde1d6e64f45a3d894b0537",
+  "source_dirty": false,
+  "started_at": "2026-10-18T09:56:16.9755997Z",
+  "requested_levels": [
+    "L1",
+    "Controlled"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "level": "L1",
+      "native_driver_compile_exit": 0,
+      "native_zero_match_guard": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\app-case-removal-main-regression\\framework",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "test_count": 295,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\app-case-removal-main-regression",
+      "exit_code": 0
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\2ba0\\SteerRunner\\.evidence\\orca-remote\\app-case-removal-main-regression\\controlled",
+      "scenario_count": 16,
+      "level": "Controlled",
+      "exit_code": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-18T10:04:57.9904967Z"
+}

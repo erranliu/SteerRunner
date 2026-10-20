@@ -51,9 +51,16 @@ func NewLocalTerminalEnvironmentSession(setup codex.RemoteCheckSetup, endpoint s
 		all := append(append([]string(nil), settings.Transport.Args...), args...)
 		callCtx, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()
-		return native.SerializeCLI(callCtx, func(ctx context.Context) ([]byte, error) {
+		out, err := native.SerializeCLI(callCtx, func(ctx context.Context) ([]byte, error) {
 			return host.OutputCommand(ctx, b.LaunchCommand{Executable: settings.Transport.Executable, Args: all, Timeout: timeout, BlockedEnvironment: []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}})
 		})
+		if native.IsCLIQueueError(err) {
+			return nil, fmt.Errorf("native_command_queue_unavailable: %w", err)
+		}
+		if err != nil {
+			return nil, errors.New("native_cli_request_unverified")
+		}
+		return out, nil
 	}})
 	return s, nil
 }
@@ -173,6 +180,14 @@ func (s *LocalTerminalEnvironmentSession) readOutput(ctx context.Context) ([]str
 
 func (s *LocalTerminalEnvironmentSession) call(ctx context.Context, request codex.RemoteCheckRequest) (codex.RemoteCheckResponse, error) {
 	var response codex.RemoteCheckResponse
+	// Fixed execute/owner-query controls include a native RPC capped at 30s.
+	// Queue and observation consume one bounded 40s budget, never the entire
+	// model execution deadline. A timeout remains unknown and never resends.
+	if request.Method == "execute" || request.Method == "verify" {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, 40*time.Second)
+		defer cancel()
+	}
 	if s.startupFailure != "" {
 		return response, errors.New(s.startupFailure)
 	}
@@ -188,6 +203,9 @@ func (s *LocalTerminalEnvironmentSession) call(ctx context.Context, request code
 	for !s.actorReady {
 		lines, err := s.read(ctx)
 		if err != nil {
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
 			return response, err
 		}
 		ready := false
@@ -214,8 +232,14 @@ func (s *LocalTerminalEnvironmentSession) call(ctx context.Context, request code
 		case <-time.After(200 * time.Millisecond):
 		}
 	}
-	if _, err := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); err != nil {
-		return response, err
+	for {
+		if _, err := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); err != nil {
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
+			return response, err
+		}
+		break
 	}
 	raw, _ := json.Marshal(request)
 	// This terminal hosts a machine actor, not a model TUI. Send its complete
@@ -231,24 +255,47 @@ func (s *LocalTerminalEnvironmentSession) call(ctx context.Context, request code
 			BytesWritten int
 		}
 	}
-	if err != nil || r.CallUncertain || json.Unmarshal(r.Payload, &sent) != nil || r.RuntimeID != s.original.RuntimeID || sent.Send.Handle != s.original.Terminal || !sent.Send.Accepted || sent.Send.BytesWritten != len(payload) {
+	decoded := json.Unmarshal(r.Payload, &sent) == nil
+	if r.RuntimeID != "" && r.RuntimeID != s.original.RuntimeID || decoded && sent.Send.Handle != "" && sent.Send.Handle != s.original.Terminal {
+		return response, errors.New("remote check dispatch identity mismatch")
+	}
+	if err == nil && !r.CallUncertain && (!decoded || r.RuntimeID == "" || sent.Send.Handle != s.original.Terminal || !sent.Send.Accepted || sent.Send.BytesWritten != len(payload)) {
 		return response, errors.New("remote check dispatch outcome unknown")
 	}
+	// A lost receipt is not a reason to send the machine request again. Only
+	// the original actor's cached response can settle that exact request ID.
 	for {
 		lines, err := s.readOutput(ctx)
 		if err != nil {
-			return response, err
+			if retryCheckObservation(ctx, err) {
+				continue
+			}
+			return response, fmt.Errorf("remote_check_response_unverified: %w", err)
 		}
 		for _, line := range lines {
 			line = strings.TrimSpace(line)
+			// Retained PTY stream rows can include an earlier input echo. Only
+			// a complete frame for this request and the original actor is used.
+			if marker := strings.Index(line, codex.RemoteCheckPrefix); marker >= 0 {
+				line = line[marker:]
+			}
 			if !strings.HasPrefix(line, codex.RemoteCheckPrefix) {
 				continue
 			}
 			raw, e := base64.RawURLEncoding.DecodeString(strings.TrimPrefix(line, codex.RemoteCheckPrefix))
 			var value codex.RemoteCheckResponse
 			if e == nil && json.Unmarshal(raw, &value) == nil && value.ID == request.ID {
-				if _, identityErr := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); identityErr != nil {
-					return response, identityErr
+				// Retain the original matching response while retrying only
+				// its original identity observation. A stream need not repeat
+				// an already observed frame after a transient show failure.
+				for {
+					if _, identityErr := s.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, s.original); identityErr != nil {
+						if retryCheckObservation(ctx, identityErr) {
+							continue
+						}
+						return response, fmt.Errorf("remote_check_identity_unverified: %w", identityErr)
+					}
+					break
 				}
 				if value.Error != "" {
 					return value, errors.New(value.Error)
@@ -258,7 +305,7 @@ func (s *LocalTerminalEnvironmentSession) call(ctx context.Context, request code
 		}
 		select {
 		case <-ctx.Done():
-			return response, ctx.Err()
+			return response, fmt.Errorf("remote_check_response_missing: %w", ctx.Err())
 		case <-time.After(200 * time.Millisecond):
 		}
 	}
@@ -281,6 +328,9 @@ func (s *LocalTerminalEnvironmentSession) Prepare(ctx context.Context) (codex.Bi
 }
 func (s *LocalTerminalEnvironmentSession) Start(ctx context.Context) (string, error) {
 	r, e := s.call(ctx, codex.RemoteCheckRequest{Method: "start"})
+	if e != nil && r.InputNotSent && r.Turn == "" {
+		e = &codex.EnvironmentInputRejectedError{Reason: codex.EnvironmentDiagnostic(e)}
+	}
 	return r.Turn, e
 }
 func (s *LocalTerminalEnvironmentSession) Next(ctx context.Context) (codex.EnvironmentCall, error) {
@@ -331,4 +381,16 @@ func (s *LocalTerminalEnvironmentSession) Stop(ctx context.Context) bool {
 	}
 	receipt, e := s.client.CloseTerminalChecked(ctx, s.original.Terminal, s.original.RuntimeID)
 	return e == nil && receipt.Disposition == "confirmed"
+}
+
+func retryCheckObservation(ctx context.Context, err error) bool {
+	if ctx.Err() != nil || !(strings.Contains(err.Error(), "native_cli_request_unverified") || strings.Contains(err.Error(), "native_command_queue_unavailable")) {
+		return false
+	}
+	select {
+	case <-ctx.Done():
+		return false
+	case <-time.After(200 * time.Millisecond):
+		return true
+	}
 }

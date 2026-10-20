@@ -121,7 +121,7 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 		return BoundPolicyResources{}, err
 	}
 	payload := PolicyResourcePayload{NativeVersion: version, Contract: permissions.Contract, Settings: command}
-	if request.Host == "local" && settings.GitHubAuth == nil && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
+	if request.Host == "local" && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
 		payload.AuthenticationTransport, err = PlanAuthenticationTransport(request.RunDirectory, request.Workspace, request.RepositoryURL, request.ResourceIdentity)
 		if err != nil {
 			return BoundPolicyResources{}, err
@@ -191,6 +191,9 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 func validateNativeLaunchArgs(args []string) error {
 	mode := "sandbox"
 	for _, arg := range args {
+		if arg == "sandbox_mode=read-only" {
+			mode = "read_only"
+		}
 		if arg == "sandbox_mode=danger-full-access" {
 			mode = "full_access"
 		}

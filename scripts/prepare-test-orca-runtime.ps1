@@ -15,6 +15,15 @@ $taskIndex=@($taskSources|ForEach-Object{[ordered]@{path=$_.path;sha256=$_.sha25
 $taskIndexJSON=([ordered]@{schema='steerrunner-native-runtime/v1';files=$taskIndex}|ConvertTo-Json -Depth 6)
 $taskDigest=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($taskIndexJSON))).ToLowerInvariant()
 $taskCache=Join-Path $PSScriptRoot ('../.evidence/native-runtime/'+$taskDigest)
+# Windows cache readers, hard-link creation and Copy-Item can conflict even
+# after atomic publication. Serialize all cache access, including warm entries.
+$taskCacheRoot=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../.evidence/native-runtime')).ToLowerInvariant()
+$taskLockDigest=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($taskCacheRoot))).ToLowerInvariant()
+$taskCacheMutex=[Threading.Mutex]::new($false,('Global\SteerRunner.NativeRuntimeCache.'+$taskLockDigest))
+$taskCacheOwned=$false
+try {
+ try {$taskCacheOwned=$taskCacheMutex.WaitOne([TimeSpan]::FromMinutes(5))} catch [Threading.AbandonedMutexException] {$taskCacheOwned=$true}
+ if(-not $taskCacheOwned){throw 'Native runtime cache queue deadline exhausted'}
 New-Item -ItemType Directory -Force -Path $Destination|Out-Null
 foreach($taskFile in $taskSources){
  $taskCached=Join-Path $taskCache $taskFile.path
@@ -39,3 +48,8 @@ foreach($taskFile in $taskSources){
 $taskIndexPath=Join-Path (Split-Path -Parent $Destination) 'runtime-files.json'
 [IO.File]::WriteAllText($taskIndexPath,$taskIndexJSON,[Text.UTF8Encoding]::new($false))
 Write-Output $taskIndexPath
+
+} finally {
+ if($taskCacheOwned){$taskCacheMutex.ReleaseMutex()}
+ $taskCacheMutex.Dispose()
+}

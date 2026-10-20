@@ -23,6 +23,19 @@ type Outcome struct {
 	PRCandidates  []string
 }
 
+func (o Outcome) nativeOutcome() string {
+	switch o.NativeStatus {
+	case "completed":
+		return "succeeded"
+	case "interrupted", "cancelled", "canceled":
+		return "cancelled"
+	case "failed":
+		return "failed"
+	default:
+		return "unknown"
+	}
+}
+
 func ReadAppServerOutcome(path, threadID, turnID string) (Outcome, error) {
 	var outcome Outcome
 	seenPR := map[string]bool{}

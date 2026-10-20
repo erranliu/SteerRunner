@@ -1,5 +1,10 @@
 # Workflow 定义与统一能力（确认稿）
 
+2026-10-19 新增内容流程：[conversation/1](conversation.md)、[generate/1](generate.md)。
+它们复用现有可靠执行与本机 Codex owner，使用独立输入契约，不进入下述开发流程的
+Spec/Plan、Git、补报、审计或发布路径。[Spec](../spec/content-workflows.spec.md) ·
+[Plan](../spec/content-workflows.plan.md) · [专属验收](../acceptance/content-workflows.md)。
+
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-17（首次设计 2026-10-16）。状态：两份内置定义已实现；本目录是可读说明，Runner 使用编译定义，不加载 Markdown。两份示例以现有流程为业务基线，展示解耦后的定义：[普通开发](development.md) · [带审计的开发](development-audited.md)。[总 Spec](../spec/result-acquisition.spec.md) · [Plan](../spec/result-acquisition.plan.md)。
 

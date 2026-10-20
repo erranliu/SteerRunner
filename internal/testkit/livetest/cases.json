@@ -698,6 +698,34 @@
       ]
     },
     {
+      "id": "orca-remote.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-codex-full-access",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
+    },
+    {
       "id": "orca-local.smoke",
       "level": "L3",
       "driver": "development-smoke",

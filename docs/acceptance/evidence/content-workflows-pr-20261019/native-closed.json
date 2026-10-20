@@ -1,0 +1,119 @@
+{
+  "closed": true,
+  "content_result": {
+    "status": "succeeded",
+    "text": "cw-18f21624902382d846b8583e4426558b",
+    "source": {
+      "command_id": "1b864fb77b1687ae5d1ac165696abbf4",
+      "attempt_id": "bf879f5c37315f7ce5a74afdf89b1611",
+      "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+      "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b",
+      "native_outcome": "succeeded",
+      "verified": true,
+      "source": "codex.agentMessage.final_answer",
+      "item_id": "msg_0ab50fc1417eba8b016ad5f68ae2448191a0f9d92acf8b0989",
+      "text": "cw-18f21624902382d846b8583e4426558b"
+    }
+  },
+  "operations": [
+    {
+      "operation_id": "31dd1b7deeb498c9c4622a2bc06f94bc",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "142d13dcc33bb04abe3acdceecf49255",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "a032fe52c1d348acf4c156ec0fbaebba",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "b2a63c8a59624e3b610e0dce46bde728",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "93990681c59291a41ce99b2b4a7a9ed4",
+      "action": "stop_observation",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "85bf37515edca1df21cf623594bc7514",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "cbb8bc5922f8786a064ab32685886b1f",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "4a5a6897401e8fa4f23ad4632ed46196",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "dc06e9865a7021ec8fe5c227b64f3489",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "fc5471f052d1ef29873de9f21cde005b",
+  "revision": 57,
+  "title": "Native continued conversation",
+  "input_digest": "02d88bb794b0571b1b8ff37bf659b983a2cddab6783d366f6be52941aa6acd60",
+  "resource_digest": "536edcaf2ed199109a1b42875f61fbb27af048a6441c5494d8afe36f4ca1bf56",
+  "workflow": {
+    "id": "conversation",
+    "version": 1
+  },
+  "step": "closed",
+  "status": "closed",
+  "phase": "closed",
+  "new_inputs_allowed": false,
+  "resume_required": false,
+  "stop_status": "stopped",
+  "materials": [],
+  "execution": {
+    "agent": "codex",
+    "requested_model": "gpt-6.1-sol",
+    "requested_reasoning_effort": "low",
+    "workspace_scope": "read_only_directory",
+    "turn_started": true,
+    "attempt_id": "bf879f5c37315f7ce5a74afdf89b1611",
+    "generation": "5da66790d03621e366650d9aaf5fa8e5",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+    "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "C:\\srt\\cw-3996079217\\materials",
+    "branch": ""
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": false,
+    "can_close": false,
+    "can_reply": false,
+    "can_resume": false,
+    "can_stop": false
+  },
+  "final": {
+    "command_id": "1b864fb77b1687ae5d1ac165696abbf4",
+    "attempt_id": "bf879f5c37315f7ce5a74afdf89b1611",
+    "session_id": "01a153ca-73ef-7921-94b3-87f62c988691",
+    "turn_id": "01a153cb-007f-7933-925c-ef3d6574c09b",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_0ab50fc1417eba8b016ad5f68ae2448191a0f9d92acf8b0989",
+    "text": "cw-18f21624902382d846b8583e4426558b"
+  },
+  "created_at": "2026-10-19T10:52:13.1564688Z",
+  "updated_at": "2026-10-19T10:53:00.2145729Z"
+}

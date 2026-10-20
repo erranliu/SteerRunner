@@ -171,7 +171,7 @@ func (b Backend) toolWriteArgs(linked []string) []string {
 
 func (l *ExecutionLifecycle) bindAuthenticationTransport(snapshot executionbackend.LifecycleSnapshot) error {
 	auth := l.Backend.Config.Authentication
-	if auth == nil || auth.config != nil {
+	if auth == nil {
 		return nil
 	}
 	s := snapshot.Session

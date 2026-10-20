@@ -186,6 +186,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			receipt := storage.NewCommand(command, r.ID, *input)
 			receipt.Digest = digest
 			r.SubmitCommandID = receipt.ID
+			if workflow.Content(r.Request.Workflow.ID) && len(r.History) > 0 {
+				r.History[0].RequestCommandID = receipt.ID
+			}
 			r.CommandStates[receipt.ID] = "pending"
 			e.mu.Lock()
 			defer e.mu.Unlock()
@@ -216,6 +219,13 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(contracts.Fail(4, "service_unavailable", "Service is stopping; command was not accepted."))
 		}
 		r := e.runs[runID]
+		isContent := workflow.Content(r.Request.Workflow.ID)
+		if (command == "message" || command == "interrupt" || command == "close" || command == "history") && r.Request.Workflow.ID != "conversation" {
+			return reject(contracts.Fail(3, "unsupported_capability", "This operation requires conversation/1."))
+		}
+		if isContent && r.Closed && command != "stop" {
+			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
+		}
 		if command != "stop" && orca.LegacyRemoteProfile(r.Profile) {
 			return reject(contracts.Fail(3, "unsupported_capability", "Legacy remote helper Runs are read-only; only exact original terminal stop is supported."))
 		}
@@ -228,7 +238,11 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		receipt := storage.NewCommand(command, runID, *input)
 		next.CommandStates[receipt.ID] = "pending"
 		switch command {
-		case "stop":
+		case "stop", "close":
+			if isContent {
+				closeContent(next, receipt.ID)
+				break
+			}
 			next.Allowed = false
 			next.ResumeRequired = true
 			next.PendingStop = receipt.ID
@@ -253,6 +267,12 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				return reject(contracts.Fail(5, "operation_unverified", "The original input outcome is unresolved."))
 			}
 			if reply.Kind == "answer" {
+				if isContent && r.PendingInterrupt != "" {
+					return reject(contracts.Fail(5, "invalid_state", "The current turn is being interrupted."))
+				}
+				if isContent && r.Request.Workflow.ID != "conversation" {
+					return reject(contracts.Fail(5, "invalid_state", "Generation cannot wait for human answers."))
+				}
 				if r.Question == nil || reply.QuestionID != r.Question.ID {
 					return reject(contracts.Fail(5, "stale_question", "Question is no longer current."))
 				}
@@ -264,8 +284,14 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 					next.CommandStates[r.PendingAnswer.CommandID] = "failed"
 				}
 				next.PendingAnswer = &runstate.Answer{CommandID: receipt.ID, QuestionID: reply.QuestionID, Text: reply.Text, Epoch: controlScope(r, reply.QuestionID)}
+				if isContent {
+					next.History = append(next.History, contracts.HistoryEntry{RequestCommandID: receipt.ID, CommandID: r.Snapshot.Session.CurrentCommandID, SessionID: r.Snapshot.Session.SessionID, TurnID: r.Snapshot.Session.CurrentTurnID, Role: "answer", Text: reply.Text, Question: r.Question})
+				}
 				next.Phase = "answer_saved"
 			} else {
+				if isContent {
+					return reject(contracts.Fail(5, "invalid_state", "Use message for the next conversation turn."))
+				}
 				state, _ := r.Workflow.CurrentState()
 				if state.Kind == "milestone" {
 					return reject(contracts.Fail(5, "invalid_state", "This milestone has no feedback transition."))
@@ -280,13 +306,27 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				next.PendingFeedback = &runstate.Answer{CommandID: receipt.ID, Text: reply.Text, Epoch: controlScope(r, "")}
 				next.Phase = "feedback_saved"
 			}
+		case "message":
+			if !r.View().Controls.CanMessage {
+				return reject(contracts.Fail(5, "invalid_state", "The original conversation must be idle, authorized and reconciled."))
+			}
+			var message contracts.MessageInput
+			_ = json.Unmarshal(input.Input, &message)
+			next.PendingFeedback = &runstate.Answer{CommandID: receipt.ID, Text: message.Text, Epoch: controlScope(r, "")}
+			next.History = append(next.History, contracts.HistoryEntry{RequestCommandID: receipt.ID, Role: "user", Text: message.Text})
+			next.Phase = "message_saved"
+		case "interrupt":
+			if !r.View().Controls.CanInterrupt || r.PendingAnswer != nil {
+				return reject(contracts.Fail(5, "invalid_state", "No qualified current turn is available for interruption."))
+			}
+			next.PendingInterrupt, next.Phase = receipt.ID, "interrupt_saved"
 		default:
 			return reject(contracts.Fail(2, "invalid_arguments", "Unknown Run command."))
 		}
 		if err := e.commitLocked(next, &receipt, command+"_accepted"); err != nil {
 			return reject(contracts.Fail(6, "request_outcome_unknown", "The command commit is unverified; inspect its original request_id."))
 		}
-		if command == "stop" && w.queryCancel != nil {
+		if (command == "stop" || command == "close") && w.queryCancel != nil {
 			w.queryCancel()
 		}
 		e.signal(w)
@@ -344,6 +384,12 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(err)
 		}
 		return contracts.Success("", page)
+	}
+	if command == "history" {
+		if !workflow.Content(r.Request.Workflow.ID) {
+			return reject(contracts.Fail(3, "unsupported_capability", "Message history is available for content workflows."))
+		}
+		return contentHistory(r, after, limit)
 	}
 	return contracts.Success("", map[string]any{"command": nil, "run": r.View()})
 }

@@ -139,4 +139,6 @@ P4 已在 `C:/Project/SteerLine` 的基线工作树实施公开 CLI 消费者、
 
 已补入 parser 的具体 owner 动作/原 started、final receipt 对账，以及原生完成事件发布前的签名 workspace checkpoint；复用原 Deadline、源码检查和结果路由，无新执行状态机。接管预检同时校验 result-acquisition/v1 配置与冻结 parser profile/schema，并只读核对原 Material.Content/digest、快照原字节、普通文件与非重定向路径；新 native 输入派发前沿既有 source 检查再次核验，不重写缺失/改动文件。T01 补 `TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal` 的替换/缺失和零修复反例，受控 A/B 和审计/parser 正例验证正常文件接续。真实 Codex/认证/工具树和 Orca 创建查询仍需按原要求收口，不以受控协议通过替代。
 
+2026-10-20 主干合并补充：conversation/1、generate/1 复用同一 Run/owner/控制范围，不另建恢复机制。T04 补已接受未冻结 message 跨代仅冻结一次、已冻结后二次重启零重建及旧 epoch/错会话拒绝；T01 补两种内容 workflow 的只读兼容核验。T03 复用内容会话受控重启，核对原进程回执/存活、原 thread/轮次数和无新增 resume 门槛。合并后的新证据与历史原生资格分开登记，保留主干 gh-only 认证退役边界和新增 run-evidence 查询。
+
 补充最小测试计划（T03/T06、A02/A05）：沿 `TestSRResultAcquisition` 的 `audit-offline|parser-restart|parser-kill|parser-stop|parser-unsupported` 子场景，Windows 隔离 Git/真实 Runner EXE/受控 native。parser 以文件屏障停在原进程；正常/强杀 Runner 后核对原 root/owner 存活，离线放行同一 parser，再启动 Runner，原启动计数 1、无额外报告/业务预算；显式 stop 必须结算原树且零后继。审计在第二 turn 完成前停服务，离线取得原签名 checkpoint，发布前 native turn 数保持 2，重开到原 PR ready。签名/错身份拒绝用 `TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature`；请求投影用 `TestTakeoverRequestFactsUseOriginalAcceptedCommands`。每轮固定 EXE/hash、命令、caller/native calls 和结果到专属验收证据目录；失败和修复重验分别登记。T09/T10 的消费者最小命令由 SteerLine Plan 承接，真实现场未执行则保留待验。

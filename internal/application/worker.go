@@ -131,6 +131,17 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.PendingAnswer != nil && r.Allowed && !r.ResumeRequired {
 		return e.answer(id, w, p)
 	}
+	if r.PendingInterrupt != "" && r.Allowed && !r.ResumeRequired {
+		found := false
+		for _, intent := range r.Intents {
+			if intent.Request.Operation.IdempotencyKey == r.PendingInterrupt {
+				found = true
+			}
+		}
+		if !found {
+			return e.interruptContent(id, w, p, r)
+		}
+	}
 	if r.Snapshot.Session.PendingTurnID != "" || r.Snapshot.Session.CurrentTurnID != "" && r.Snapshot.Session.CurrentTurnID != r.Snapshot.Session.LastStoppedTurnID {
 		return e.attachObservation(id, w, p, r)
 	}
@@ -180,6 +191,9 @@ func (e *Engine) saveIntent(id string, r *runstate.Record, candidate b.Lifecycle
 		events = append(events, "stop_intent_bound")
 	}
 	next.Intents = append(next.Intents, intent)
+	if candidate.Action == b.LifecycleStopObservation && current.PendingInterrupt != "" {
+		next.Intents[len(next.Intents)-1].Request.Operation.IdempotencyKey = current.PendingInterrupt
+	}
 	next.Snapshot.Operations = append(next.Snapshot.Operations, snapshotOperation)
 	next.Phase = string(candidate.Action)
 	if err := e.commitLocked(next, nil, events...); err != nil {
@@ -260,11 +274,27 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		return false
 	}
 	progress := status == "confirmed" || status == "accepted"
+	if intent.Request.Operation.Action == string(b.LifecycleStopObservation) && next.PendingInterrupt != "" && intent.Request.Operation.IdempotencyKey == next.PendingInterrupt {
+		command := next.PendingInterrupt
+		switch status {
+		case "rejected":
+			next.CommandStates[command] = "failed"
+			next.PendingInterrupt = ""
+		case "confirmed", "accepted":
+			next.CommandStates[command] = "running"
+		default:
+			next.CommandStates[command] = "unknown"
+		}
+	}
 	if !progress {
 		next.Status = "reconciling"
 		if status == "rejected" {
 			next.Status = "blocked"
 			next.Allowed, next.ResumeRequired = false, true
+		}
+		if status == "rejected" && next.Request.Generate != nil {
+			next.ContentResult = &contracts.ContentResult{Status: "failed", Diagnostic: next.Diagnostic}
+			closeContent(next, "generate:rejected:"+op.ID)
 		}
 		next.Phase = "operation_" + status
 	}
@@ -330,6 +360,10 @@ func (e *Engine) block(id, phase string, err error, uncertain bool) {
 		r.Status = "reconciling"
 	} else if phase != "fresh_reply_required" && phase != "fresh_feedback_required" {
 		r.Allowed, r.ResumeRequired = false, true
+	}
+	if r.Request.Generate != nil && !uncertain && !unknown(r) && !r.Closed {
+		r.ContentResult = &contracts.ContentResult{Status: "failed", Diagnostic: message}
+		closeContent(r, "generate:blocked:"+phase)
 	}
 	if commitErr := e.commitLocked(r, nil, "execution_blocked"); commitErr != nil {
 		e.logger.Printf("cannot commit blocker run=%s", id)

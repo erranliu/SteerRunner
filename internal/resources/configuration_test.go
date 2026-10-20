@@ -32,7 +32,7 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 	}{
 		{"plain", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2}`, true},
 		{"legacy_empty_mode", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":2}`, true},
-		{"legacy_null_app_reference", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"github_auth":null}}`, `{"id":"development","version":2}`, true},
+		{"legacy_null_app_reference", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"github_auth":null}}`, `{"id":"development","version":2}`, false},
 		{"orca_legacy_empty_mode", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":2}`, true},
 		{"orca_legacy", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2}`, true},
 		{"orca_pi", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi"}}`, `{"id":"development","version":2}`, true},
@@ -44,7 +44,7 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		{"orca_dsh_args", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","agent_launch":{"args":["--no-daemon"]}}}`, `{"id":"development","version":2}`, false},
 		{"orca_app_auth_without_helper", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
 		{"orca_app_auth_launch_without_helper", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent_launch":{"executable":"codex.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
-		{"orca_codex_app_auth", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"codex","agent_launch":{"runtime_executable":"helper.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, true},
+		{"orca_codex_app_auth", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"codex","agent_launch":{"runtime_executable":"helper.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
 		{"orca_pi_app_auth", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"pi","agent_launch":{"runtime_executable":"helper.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
 		{"orca_dsh_app_auth", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"dsh","agent_launch":{"runtime_executable":"helper.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
 		{"orca_custom_app_auth", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"custom","agent_launch":{"runtime_executable":"helper.exe"},"github_auth":{"app_id":1,"installation_id":2,"private_key_env":"SR_GH_KEY"}}}`, `{"id":"development","version":2}`, false},
@@ -60,6 +60,10 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		{"missing_execution_model", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"remote", `{"adapter":"codex-app-server","target":{"kind":"orca_environment","environment":"remote"},"settings":{"model":"execute"}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"adapter", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent_launch":{"model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_audited", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, true},
+		{"orca_remote_audited_no_helper", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"agent_launch":{"model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_remote_audited_retired_helper", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"agent_launch":{"model":"execute","runtime_executable":"helper.exe"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
+		{"orca_remote_audited_null_retired", `{"adapter":"orca-terminal","target":{"kind":"orca_environment","environment":"paired"},"settings":{"github_auth":null,"agent_launch":{"runtime_executable":"helper.exe","model":"execute"}}}`, `{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}`, false},
 		{"override", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"prompt_overrides":{"audit.spec":"No"}}`, false},
 		{"unknown", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"other","version":2}`, false},
 		{"null_model", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"model":"execute"}}`, `{"id":"development-audited","version":2,"audit_model":null}`, false},
@@ -80,5 +84,27 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 				t.Fatalf("production accepted=%v want=%v: %v", accepted, tc.valid, contracts.ValidateRunConfiguration(raw))
 			}
 		})
+	}
+}
+
+func TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees(t *testing.T) {
+	if strings.Contains(string(ConfigurationSchemas()), `"github_auth"`) {
+		t.Fatal("retired App configuration is still advertised")
+	}
+	count := 0
+	for _, c := range Catalog().Combinations {
+		if c.TargetKind != "orca_environment" {
+			continue
+		}
+		count++
+		raw, _ := json.Marshal(c)
+		for _, retired := range []string{"host-gh-repository-broker", "native_codex_0.159.2_permissions", "development-audited", "environment-check start"} {
+			if strings.Contains(string(raw), retired) {
+				t.Fatal("native remote catalog promises retired guarantee", string(raw))
+			}
+		}
+	}
+	if count == 0 {
+		t.Fatal("native remote development disappeared")
 	}
 }
