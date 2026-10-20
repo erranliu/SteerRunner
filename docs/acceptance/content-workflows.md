@@ -2,6 +2,22 @@
 
 2026-10-20 的同构建 takeover 冻结配置问题单独记录在[内容接管修复验收](content-takeover.md)。
 
+交付复核：本轮已接上 #37（`73cec27d`），完整保留其 workflow 能力/parser 意图判定、freeze、恢复要求与新增回归。本 PR 对主干不再修改生产代码，仅补 queued/result、codec、材料及真实 admission 回归和本轮跨仓证据。接上主干后四包定向 101 项通过、零失败/skip，[原始日志与汇总](evidence/content-closeout-20261020/README.md)随仓库保存。下文 A/B 实测基于 `c122d641` 加当时修复，原构建身份不变，不将它记为 #37 或最终提交的真机资格。用户已授权提交、提 PR 并检查后合并；未执行安装部署。
+## 2026-10-20 生成对象接管缺口修复
+
+用户授权继续自动补验。基线 `c122d641677593d4b694e2eda7502001510d4e8b` 加本轮未提交修复；没有部署安装环境。生产 freeze 对内容流程不加载开发 parser 配置，接管却无条件校验该空配置；内容单元夹具误填默认 parser 配置，掩盖了真实问题。修正夹具后 generate/conversation 及真实 admission 两项在原代码上均复现 unsupported；修复仅将该校验限制到使用它的开发流程，保留材料/执行语义/codec/原生身份与原 Record 字节校验。
+
+证据根目录 `C:/Users/lmas1/AppData/Local/Temp/steerline-auto-closeout-20261020-131948/`：
+
+- `runner-before.jsonl`、`runner-regression-before.jsonl` 保留修复前真实失败；`runner-after.jsonl` 中四包定向测试通过，包含 queued/result 两状态、实际 admission、材料/codec 反例与开发配置拒绝；最后将开发空配置和未知 schema 反例独立初始化，`runner-development-guards-final.jsonl` 复验通过。
+- `runner-controlled/result.json`：exit_code=0、scenario_count=3；Generate / Conversation / QuestionAndUnknown 三个实际 EXE/IPC/SQLite 受控场景通过，详情 `integration.log`。没有运行全量 Controlled 或原生矩阵。
+- 同源码构建 A/B 到该临时目录，version=`0.2.0-content-takeover-a/b`，SHA 分别 `066a182f452ba0e80e51f5091bb5ab6baf31a6cf9085ed7e4cf7ff520234346a` / `ea8ad087931f55fed5da086503b76d01944fe3cbc88c191caae3e481bf901d6d`，source_dirty=true；build.json 和 `runner-final-source.patch` 保留实际来源。只读核对原 SteerLine k 包，原生成/开发两个 Run 现在均 compatible，见 `tm-k-takeover-fixed.json`。
+- 原 SteerLine i/j 两失败包已通过 B 接管预检；在 service start 的 pending_stops 中先受理各自原开发 Run 的唯一持久停止请求，随后仅查询原请求，均核实 stop_status=stopped。新服务沿同一停止 ID 退出，公开 verify-stopped 和精确 last_shutdown 均确认 resources_settled=true；原失败 caller shutdown/proof 文件不改写，专属 base 在核验原 commit/lease、无 PR 后删除。两个 `dev-20261020-11*/summary.json`、逐步公开回执及清理日志保留。恢复完成不将原失败测试改记通过。
+
+最终跨构建真机生成子范围通过：SteerLine 新包 `C:/SteerlineDebug/dev-20261020-133842-5612f97d-dirty`，A 生成原 Run `784ed608d78a7e5784c98685e52c7a70` 后经正式预检/verify-restart，由 B 接管，原 request/Run/input/final/content_result 和 saved API 保持；在 B 上原开发 Run `5334c89977c5109cfbee470bf60e9c86` 完成真实程序通过/失败→原报告/API/两轮浏览器，再正式停止，两个原 Run 全部 resources_settled=true。同一包的 base/head 在无 PR、原 commit/lease 核对后均清理。根证据 `qualification.json` passed=true；包内 `evidence/test-management/generation-takeover.json`、`generation-after-takeover.json`、`proof.json`、`verify-stop.log` 和 `evidence/test-management-owned-cleanup/` 保存实况。没有新 generate、替代 Run 或改写原输入；SteerLine 的副作用与 Task 事实由其专属验收维护。
+
+补验中驱动的参数环境丢失、编译变量名冲突、过早检查 ready 和 Windows 回执文件写入失败均分别留失败记录；修正后使用新包。已接受控制仅查询原 ID，零重发。主场景已通过后，收尾发现“无 PR 但已推送 head”的遗漏，补清理并以独立同包后验核实，不改历史 proof。验证脚本的 PowerShell 5.1 编码错误只修只读 UTF-8 解析后复验，不重跑业务。当前两仓修改未提交、未部署。本结果只覆盖本次生成对象及消费者闭环，conversation 的其他原生恢复组合、Orca 和权限/停止 scope 不扩大；本轮与历史 2026-10-19 结果分别记录。
+
 日期：2026-10-19。本次要求的专项验收通过。以下分别记录受控、单元和真实 Codex 证据，
 不沿用历史开发流程的真机资格。本次未修改 SteerLine、未部署或安装环境、未加入 roadmap。
 
