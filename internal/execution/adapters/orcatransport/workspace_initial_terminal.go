@@ -82,6 +82,9 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		}
 		return confirm(p)
 	}
+	if reconcile {
+		return native.Terminal{}, errors.New("original initial terminal creation receipt missing; inventory alone cannot prove its identity")
+	}
 	emptySince := time.Now()
 	for {
 		r, e := l.workspaceTerminalQuery(ctx, "terminal", "list", "--worktree", "id:"+c.Worktree.ID, "--json")
@@ -112,9 +115,6 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		}
 		complete := v.Truncated != nil && !*v.Truncated && v.Total != nil && *v.Total == 0 && v.Hosts != nil && len(v.Hosts.IDs) > 0 && len(v.Hosts.Omitted) == 0
 		if complete && time.Since(emptySince) >= 2*time.Second {
-			if reconcile {
-				return native.Terminal{}, errors.New("original workspace has no initial terminal creation receipt; no terminal was created during reconciliation")
-			}
 			saved.Attempted = true
 			if e = write(); e != nil {
 				return native.Terminal{}, e

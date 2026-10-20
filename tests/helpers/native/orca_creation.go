@@ -74,6 +74,9 @@ func orcaCreationFixture(args []string) int {
 			fmt.Fprintln(os.Stderr, "creation completed; response lost before any resource identity returned")
 			return 1
 		}
+		if exists(filepath.Join(root, "omit-create-terminal-identity")) {
+			return respond(map[string]any{"worktree": value.Worktree})
+		}
 		return respond(map[string]any{"worktree": value.Worktree, "agentTerminalHandle": value.Terminal.Handle})
 	}
 	raw, err := os.ReadFile(path)

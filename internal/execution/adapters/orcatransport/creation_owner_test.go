@@ -294,6 +294,48 @@ func TestCreationOwnerStartupUsesOriginalDeadline(t *testing.T) {
 	}
 }
 
+func TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory(t *testing.T) {
+	l, f, s, host := ownedCreationFixture(t, "")
+	l.setup.AgentLaunchCommand, f.commandMode = "opaque-start", true
+	host.output = func(ctx context.Context, command b.LaunchCommand) ([]byte, error) {
+		raw, err := f.OutputCommand(ctx, command)
+		if len(command.Args) > 1 && command.Args[0] == "worktree" && command.Args[1] == "create" && err == nil {
+			var envelope map[string]json.RawMessage
+			var result map[string]json.RawMessage
+			_ = json.Unmarshal(raw, &envelope)
+			_ = json.Unmarshal(envelope["result"], &result)
+			delete(result, "agentTerminalHandle")
+			delete(result, "startupTerminal")
+			envelope["result"], _ = json.Marshal(result)
+			return json.Marshal(envelope)
+		}
+		return raw, err
+	}
+	launches := 0
+	l.setup.LaunchExecutionOwner = func(_ context.Context, dir string) error {
+		launches++
+		return serveCreationOwner(context.Background(), dir, host, false)
+	}
+	r := request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan})
+	first, _, err := l.Execute(context.Background(), r)
+	if err != nil || first.Disposition != b.OperationConfirmed {
+		t.Fatal("fixture did not reach caller-only terminal selection", err)
+	}
+	// Lose the service's selected-terminal checkpoint, then present a different
+	// sole shell inside the exact same original worktree. The durable create
+	// response proves that worktree, but contains no original terminal handle.
+	f.incarnation = "foreign-shell-incarnation"
+	for n := 0; n < 2; n++ {
+		receipt, _, err := l.Reconcile(context.Background(), r)
+		if err == nil || receipt.Disposition != b.OperationUnknown || receipt.Process != nil {
+			t.Fatalf("inventory uniqueness was treated as an original terminal receipt: disposition=%s process=%+v err=%v", receipt.Disposition, receipt.Process, err)
+		}
+	}
+	if launches != 1 || creationCount(f, "worktree create") != 1 || creationCount(f, "terminal create") != 0 || creationCount(f, "terminal send") != 0 {
+		t.Fatal("missing terminal receipt repeated creation or business input")
+	}
+}
+
 func TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery(t *testing.T) {
 	for _, mode := range []string{"receipt-before-checkpoint", "reconcile-empty"} {
 		t.Run(mode, func(t *testing.T) {

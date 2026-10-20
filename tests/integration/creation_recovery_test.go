@@ -119,7 +119,7 @@ func cleanupCreationService(t *testing.T, dir string, info contracts.ServiceInfo
 
 func TestSRResourceCreationRecovery(t *testing.T) {
 	testCount.Add(1)
-	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash"} {
+	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash", "missing-terminal-receipt"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, request := setupRun(t)
 			state := os.Getenv("STEERRUNNER_FIXTURE_STATE")
@@ -135,6 +135,9 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			}
 			if mode == "wire-loss" {
 				_ = os.WriteFile(filepath.Join(state, "lose-create-response"), nil, 0600)
+			}
+			if mode == "missing-terminal-receipt" {
+				_ = os.WriteFile(filepath.Join(state, "omit-create-terminal-identity"), nil, 0600)
 			}
 			var input contracts.RunRequest
 			_ = json.Unmarshal(request.Input, &input)
@@ -223,7 +226,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			start := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{{RunID: id, Request: stop}}}
 			next := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(start.JSON()), 0))
 			cleanupCreationService(t, dir, next)
-			if mode == "wire-loss" || mode == "owner-crash" {
+			if mode == "wire-loss" || mode == "owner-crash" || mode == "missing-terminal-receipt" {
 				view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Status == "reconciling" && !v.NewInputsAllowed })
 				time.Sleep(1200 * time.Millisecond)
 				view = waitRun(t, dir, id, func(v contracts.RunView) bool { return !v.NewInputsAllowed })
