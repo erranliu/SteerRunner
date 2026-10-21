@@ -4,11 +4,9 @@
 
 后续安装期 Windows broker 权限修复单独记录在 [Windows 启动验收](windows-broker-install.md)；空闲服务的通过不改变本页产品真机/R1 的既有失败边界。
 
-> 当前建设范围已恢复远端 Orca，采用 [独立三级测试契约](../testing.md)。L2/L3 均从冻结
-> Spec/Plan 开始，经过真实模型实施、检查、PR、反馈、合入、合并事实核验及停止收尾。
-> L3 是持续扩展的真机场景集。以下为历史验收原始记录；旧通过与旧取消结论不替代新套件结果。
+> 当前建设范围已恢复远端 Orca，采用[测试指南](../testing.md)与[测试清单](../test-catalog.md)。开发交付按 workflow/2 执行实施、发布与 PR 核验；driver 的合入、停止及故障断言按各场景定义，发布后反馈拒绝另有专项。以下为历史验收原始记录；旧通过与旧取消结论不替代新套件结果。
 
-日期：2026-10-15。[Spec](../spec/steerrunner.spec.md)是产品行为依据，[Plan](../spec/steerrunner.plan.md)保留首版拆分与跨仓切换映射。当前本仓独立测试结果见 §10；§1–9 保留历史版本、当时的范围调整和失败证据，不作为新套件的通过依据。来源见 [source-map](../extraction/source-map.md)。
+日期：2026-10-15。[Spec](../spec/steerrunner.spec.md)是产品行为依据，[Plan](../archive/2026-10/spec/steerrunner.plan.md)保留首版拆分与跨仓切换映射。当前本仓独立测试结果见 §10；§1–9 保留历史版本、当时的范围调整和失败证据，不作为新套件的通过依据。来源见 [source-map](../archive/2026-10/extraction/source-map.md)。
 
 ## 1. 最小验证范围与环境
 

@@ -1,6 +1,6 @@
 # 验收：远端仅通过 Orca 执行
 
-日期：2026-10-19。归属 [Spec](../spec/orca-remote-native.spec.md) / [Plan](../spec/orca-remote-native.plan.md)。已完成 P0 原生探针、查询修复、helper 删除及 unreported 最小修正；完整闭环、活动停止、结果阻断和上层契约验收通过（按当前 workflow v2 边界）。最终审计另修复持久结果回放的原 outcome 丢失，最新构建及补验见文末；以下历史阶段记录保留。详见首轮 [P0 实测报告](orca-remote-native-p0-20261019.md)及[补验报告](orca-remote-native-p0-query-fix-20261019.md)。
+日期：2026-10-19。归属 [Spec](../spec/orca-remote-native.spec.md) / [Plan](../spec/orca-remote-native.plan.md)。已完成 P0 原生探针、查询修复、helper 删除及 unreported 最小修正；完整闭环、活动停止、结果阻断和上层契约验收通过（按当前 workflow v2 边界）。最终审计另修复持久结果回放的原 outcome 丢失，最新构建及补验见文末；以下历史阶段记录保留。详见首轮 [P0 实测报告](../archive/2026-10/acceptance/orca-remote-native-p0-20261019.md)及[补验报告](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)。
 
 ## P0 删除前能力核验
 
@@ -60,7 +60,7 @@
 
 ## 查询补验与参数收敛（2026-10-19）
 
-按用户指示，参数只承诺按冻结配置传递，不新增实际生效核验。已修复原生查询前 100 条漏项，真实远端取得 273/273 条完整快照；六个协议场景覆盖目标越界、增长和不完整拒绝。统一 L1 最终通过：310 项 Go 测试、28 项扩展测试、编译及零匹配保护。首次失败和预期 skip 均保留，详见[补验报告](orca-remote-native-p0-query-fix-20261019.md)。P0 可行性门槛满足；helper 删除及最终 Runner 验收未执行。
+按用户指示，参数只承诺按冻结配置传递，不新增实际生效核验。已修复原生查询前 100 条漏项，真实远端取得 273/273 条完整快照；六个协议场景覆盖目标越界、增长和不完整拒绝。统一 L1 最终通过：310 项 Go 测试、28 项扩展测试、编译及零匹配保护。首次失败和预期 skip 均保留，详见[补验报告](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)。P0 可行性门槛满足；helper 删除及最终 Runner 验收未执行。
 
 ## 删除实现与最终验收（2026-10-19，进行中）
 

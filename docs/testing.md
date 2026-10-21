@@ -383,8 +383,8 @@ L3 扩展须说明独有流程/可靠性覆盖和并行隔离；同一流程的�
 
 L3 执行稳定性契约见 [Spec](spec/l3-execution-stability.spec.md)、
 [Plan](spec/l3-execution-stability.plan.md) 和[实际验收登记](acceptance/l3-execution-stability.md)。
-主线 rebase 后的一轮复测及未通过项另见[复测记录](acceptance/l3-rebase-20261016.md)。
-连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](acceptance/l3-revocation-fix-20261016.md)；历史远端认证阻断未计为通过。本轮完整范围复验、后续修正与未通过项见[2026-10-18 记录](acceptance/evidence/full-l2-l3-20261018/README.md)。
+主线 rebase 后的一轮复测及未通过项另见[复测记录](archive/2026-10/acceptance/l3-rebase-20261016.md)。
+连续版本冲突的修复与后续来源验证见[不可达撤销修复复测](archive/2026-10/acceptance/l3-revocation-fix-20261016.md)；历史远端认证阻断未计为通过。本轮完整范围复验、后续修正与未通过项见[2026-10-18 记录](acceptance/evidence/full-l2-l3-20261018/README.md)。
 选择场景即执行其全部变体，每个 case/repeat 独立建现场。稳定性通过还要求故障命中、
 原生调用审计、原身份和完整收尾；预期停止/撤销未知不要求 PR 合入，也不能记成业务交付。
 
@@ -420,7 +420,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 
 ## 结果获取重构的当前验证边界
 
-结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，十一项内部 case 覆盖成功行、零/正数审计修复、离线审计、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式停止；不创建真实 PR。单项获取链等待上限 120 秒，其余既有场景仍 60 秒，完整 Controlled 按上文 45 分钟聚合预算执行。
+结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，十一项内部 case 覆盖成功行、零/正数审计修复、离线审计、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式停止；不创建真实 PR。该场景的终态、阶段准备及停止观察等待已统一为 5 分钟，离线回执观察为 1 分钟；这些是测试等待预算，不改变生产单次操作期限，修正记录见[PR #38 复验](acceptance/pr38-review-20261020.md)。完整 Controlled 按上文 45 分钟聚合预算执行。
 
 `local-codex.result-acquisition` 已注册为 L2 专属 driver；入口先 L1 和完整 Controlled，再运行默认原生认证解析、已有 home/显式模型与权限反例/取消、development 真实 PR 闭环三项内部 case。原生只读权限、行为约定和工具事后检测分别取证，不宣称空工具表、零隐式上下文或工具执行前拦截。2026-10-17 原强隔离阻断记录保持历史原样。实际命令、失败修正及最新通过状态以验收证据为准。
 ## 环境检查定向验收
@@ -487,7 +487,11 @@ owned canary，证据目录保留。普通用户检查不重复执行沙箱安�
 该路径核对原 manifest/Runner/driver SHA、完整 Check、上下文/分项与资源结算，拒绝失败或未核实结果；
 不重新启动 Agent、服务或 Git/PR 操作，也不重写原批次记录。正常首次执行仍自动调用相同结果校验逻辑。
 
-反馈闭环的 driver 等待原 PR 更新时，默认 inspect 只是持久快照。若工作流已回到 pr_ready，
+### PR 只读刷新与历史反馈证据
+
+当前 inspect 默认返回持久快照；`inspect --refresh-pr` 查询原绑定 provider，不派发 Agent 输入。workflow/2 在 `pr_ready` 后拒绝业务反馈。下列更新 head 的等待规则保留给 workflow/1 的历史 driver 和对应组件回归，不是当前流程的返工入口。
+
+历史反馈闭环的 driver 等待原 PR 更新时，默认 inspect 只是持久快照。若工作流已回到 pr_ready，
 快照仍是反馈前的 head，则通过现有 inspect --refresh-pr 只读刷新原绑定 provider。刷新后仍须
 保持原 Run、PR/仓库/base/head 分支、Attempt、Session 和工作区；查询失败或身份变化不能通过。
 driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对象/产物/时间与 checker、

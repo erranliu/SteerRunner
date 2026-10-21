@@ -1,6 +1,6 @@
 # Plan：无人执行权限与 Git 环境检查能力
 
-日期：2026-10-16。已获用户授权实施；执行记录见专属验收。[Spec](environment-check.spec.md) · [本仓专属验收](../acceptance/environment-check.md)。本 Plan 只安排 Runner 改动；SteerLine UI/HTTP/caller 测试归其自身 Plan，不共享验收项。
+日期：2026-10-16。已实施；以下保留实施顺序和原前置，当前实际组合、构建及结果见专属验收，远端范围按 Spec 的后续修订。[Spec](environment-check.spec.md) · [本仓专属验收](../acceptance/environment-check.md)。本 Plan 只安排 Runner 改动；SteerLine UI/HTTP/caller 测试归其自身 Plan，不共享验收项。
 
 ## 1. 前置与整合
 

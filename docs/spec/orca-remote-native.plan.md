@@ -1,6 +1,6 @@
 # Plan：远端仅通过 Orca 执行
 
-日期：2026-10-19。状态：P0 通过，P1–P4 已实施；L1 通过，Controlled/P5 验收进行中，最终结果以专属验收为准。依据 [Spec](orca-remote-native.spec.md)，调查基线 `a3dc15dc2f90787ea6e38e78d4dbc8a275470646`。结果登记在[专属验收](../acceptance/orca-remote-native.md)。
+日期：2026-10-19，状态于 2026-10-21 核对：P0、helper 删除、unreported 最小契约和后续 outcome 回放修正已实施；完整闭环、活动停止及上层契约验收按 workflow/2 范围通过，具体构建与复用边界见专属记录。依据 [Spec](orca-remote-native.spec.md)，调查基线 `a3dc15dc2f90787ea6e38e78d4dbc8a275470646`。结果登记在[专属验收](../acceptance/orca-remote-native.md)，下文早期阶段记录保留原时点。
 
 ## 1. 最小改动范围
 
@@ -30,7 +30,7 @@
 
 ## 2. P0：先核验真实 Orca 能力，再删除生产接线
 
-首轮 [P0 实测](../acceptance/orca-remote-native-p0-20261019.md)证明核心链路并发现查询漏项；[本轮补验](../acceptance/orca-remote-native-p0-query-fix-20261019.md)已修复并取得完整远端快照。参数按用户指示仅承诺按配置传递，不新增实际生效核验；P0 按此范围通过。必须先确认没有 helper 的实际通路足以支撑本 Spec 承诺的功能；源码存在函数、历史 helper L3 或当前只读连接成功都不能代替此门槛。
+首轮 [P0 实测](../archive/2026-10/acceptance/orca-remote-native-p0-20261019.md)证明核心链路并发现查询漏项；[本轮补验](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)已修复并取得完整远端快照。参数按用户指示仅承诺按配置传递，不新增实际生效核验；P0 按此范围通过。必须先确认没有 helper 的实际通路足以支撑本 Spec 承诺的功能；源码存在函数、历史 helper L3 或当前只读连接成功都不能代替此门槛。
 
 复用 `TestOrcaWorkspaceStartupLive`、`TestOrcaNativeStateLiveLifecycle` 及现有 Orca 协议调用，必要时只调整探针/fixture 去掉 helper 准备依赖；不新增后端、模式开关、长期 harness 服务或生产绕过。使用新的独立测试工作区/终端，直接启动原生 Codex；不调用当前普通 submit 中尚未删除的 helper 门，不把绕过该门的测试冒充完整 Run 通过。
 

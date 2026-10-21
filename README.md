@@ -1,5 +1,7 @@
 # SteerRunner
 
+文档入口见[项目文档索引](docs/README.md)：按当前契约、操作指南、验收与历史归档查阅。
+
 全链路的恢复、回执、校验和停止边界，以及可减少的调用与人工步骤，见
 [可靠性交付链路与简化分析](docs/reliable-delivery.md)。
 
@@ -22,15 +24,12 @@ SteerRunner 是个人多机执行器：在本人管理和信任、预先配置�
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
 - [远端仅通过 Orca 执行 Spec](docs/spec/orca-remote-native.spec.md) / [Plan](docs/spec/orca-remote-native.plan.md) / [验收](docs/acceptance/orca-remote-native.md)（2026-10-19 原生链路修订；新远端 Run 不部署运行 SteerRunner helper）
 - [通用 Orca Agent 接入 Spec](docs/spec/orca-generic-agent.spec.md) / [Plan](docs/spec/orca-generic-agent.plan.md)（不修改 Orca；本机 Pi/DSH 原 TUI 已接通，支持受管工具与实际权限；[当前构建验收](docs/acceptance/orca-generic-agent.md)）
-- [首版产品与 CLI 契约](docs/spec/steerrunner.spec.md)
+- [产品与 CLI 契约](docs/spec/steerrunner.spec.md)
 - [独立调用与内部测试配置 Spec](docs/spec/independent-configuration.spec.md) / [Plan](docs/spec/independent-configuration.plan.md) / [验收](docs/acceptance/independent-configuration.md)（调用方管理选择，Runner 发布契约；内部测试配置独立）
-- [跨仓拆分实施计划与最小测试安排](docs/spec/steerrunner.plan.md)
-- [内置 Workflow 选择与审计模型 Spec](docs/spec/workflow-selection-audit.spec.md) / [Plan 与验证记录](docs/spec/workflow-selection-audit.plan.md)
-- [可靠执行中间层模块化重构 Spec](docs/spec/reliable-modularization.spec.md)与 [Plan](docs/spec/reliable-modularization.plan.md)（operation 及 RM-P2 职责整理已完成，收尾验收通过）
+- [当前 Workflow 定义与结果获取](docs/workflows/README.md) / [Spec](docs/spec/result-acquisition.spec.md)（development/2、development-audited/2；审计在一次正式执行中修复，无自动返修循环）
 - [执行与可靠性边界收敛 Spec](docs/spec/execution-boundary-refactor.spec.md) / [Plan](docs/spec/execution-boundary-refactor.plan.md)（已实施并验收；收敛 R2 锁、parser、续执行及 adapter/接管边界，保持现有执行与恢复语义；[验收记录](docs/acceptance/execution-boundary-refactor.md)）
-- [服务重启、更新与重新部署接管 Spec](docs/spec/service-generation-recovery.spec.md) / [Plan](docs/spec/service-generation-recovery.plan.md) / [验收](docs/acceptance/service-generation-recovery.md)（已实施核心、parser 保留、离线审计与 SteerLine 接线；Orca 创建关联接口和完整原生资格仍待收口）
-- [专属验收要求与结果登记](docs/acceptance/steerrunner.md)
-- [来源清单及 P2 交接门槛](docs/extraction/source-map.md)
+- [服务重启、更新与重新部署接管 Spec](docs/spec/service-generation-recovery.spec.md) / [Plan](docs/spec/service-generation-recovery.plan.md) / [验收](docs/acceptance/service-generation-recovery.md)（核心、parser、离线审计与调用方接线已有证据；Orca 有限创建执行器已实现并受控验证，真实后端资格仍按[追补记录](docs/acceptance/pr-test-gaps-20261020.md)逐项判断）
+- [验收记录索引](docs/acceptance/README.md) / [历史设计、拆分与复测归档](docs/archive/README.md)
 
 首版衔接 SteerLine 的执行三层重构，提取 Workflow、ReliableExecution、ExecutionAdapter 及独立宿主。SteerLine 保留任务规划、DAG、候选关系和最终 TaskDelivery，通过 CLI 消费 SteerRunner 的运行事实。
 
@@ -75,7 +74,7 @@ GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null�
 Orca local 受管执行使用可信 helper、同权限准备与认证撤销；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
 个人多机边界、App 移除和本次验证见[专项记录](docs/acceptance/personal-runner-gh-only-20261019.md)。
 同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计或完整环境检查；原 helper 构建的历史验证范围见
-[Orca 扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)。
+[Orca 扩展验收](docs/archive/2026-10/acceptance/orca-remote-extensions-20261018.md)。
 设置、外部前置及受控/真实验收边界见[测试指南](docs/testing.md)和[专属记录](docs/acceptance/sandbox-authentication.md)。
 
 把[契约示例](docs/spec/steerrunner.spec.md)中的仓库、完整 commit、材料、adapter 和 publication 改为自己的环境，保存为 UTF-8 `request.json`：
@@ -111,7 +110,7 @@ accepted 表示文档路径及原请求已持久化，不表示文档存在性�
 本机 codex-app-server 及 Orca local 受管路径已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
 上述本机路径的普通执行与环境检查统一使用执行主机 gh 单仓库 broker；原生远端完整环境检查明确 unsupported，普通远端 Run 使用已有 Orca 原生认证。不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
 已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
-[环境检查记录](docs/acceptance/environment-check.md)和[Orca 扩展记录](docs/acceptance/orca-remote-extensions-20261018.md)。
+[环境检查记录](docs/acceptance/environment-check.md)和[当前 Orca 路径验收](docs/acceptance/orca-local-remote.md)。
 
 `check-request.json` 使用 v1 信封，input 含 `repository`、`execution`，可含 `correlation`、
 `publication`、`execution_timeout`（默认 `10m`）和 `cleanup_timeout`（默认 `2m`）。Repository 和
@@ -210,14 +209,13 @@ L1–L4 定义、维护规则和执行入口见[测试指南](docs/testing.md)�
 [测试清单](docs/test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 两 case、L3 二十二场景／三十 case（含远端可靠性、本机反馈／审计／多 Run、四种本机环境检查及 Pi／DSH）、
-L4 四个受控边界场景。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 最小
-driver 需要同构建反馈通过资格。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
+当前已注册 L2 两 case、L3 二十二场景／三十二 case（含远端可靠性、本机反馈拒绝／审计／多 Run、本机 Codex 与 Orca local 的双权限环境检查及 Pi／DSH），
+L4 四个受控边界场景，共二十八场景／三十八 case；默认 Controlled 二十二个顶层测试。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 直接执行最小交付路径，不读取反馈资格文件。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](docs/acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。
-历史[主线复测](docs/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](docs/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；
-原构建 Orca 十项通过记录见[扩展验收](docs/acceptance/orca-remote-extensions-20261018.md)，
-当前清单移除 App 专项后仍有八项管理员故障未验收，见[变更记录](docs/acceptance/orca-remote-app-case-removal-20261018.md)。
+历史[主线复测](docs/archive/2026-10/acceptance/l3-rebase-20261016.md)及[不可达撤销修复复测](docs/archive/2026-10/acceptance/l3-revocation-fix-20261016.md)保留当时构建结果与认证阻断；
+原构建 Orca 十项通过记录见[扩展验收](docs/archive/2026-10/acceptance/orca-remote-extensions-20261018.md)，
+该旧构建移除 App 专项时仍有八项管理员故障未验收，见[历史变更记录](docs/archive/2026-10/acceptance/orca-remote-app-case-removal-20261018.md)；当前构建的资格与缺口按[测试清单](docs/test-catalog.md)及对应验收判断。
 统一运行 `./scripts/test.ps1 -Level L1`，真机级别需显式配置，详见测试说明。
 
 接受前仓库分支刷新回归使用真实隔离 Git，不调用模型或真实 PR：
@@ -241,14 +239,10 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 支持声明以对应版本的实际测试结果为准，分层规范见[测试指南](docs/testing.md)，
 当前覆盖与缺口见[测试清单](docs/test-catalog.md)。
 
-## 环境检查规划入口
-
-2026-10-16 仅规划、先不实现：[无人执行权限与 Git 环境检查 Spec](docs/spec/environment-check.spec.md) · [Plan](docs/spec/environment-check.plan.md) · [专属验收](docs/acceptance/environment-check.md)。本仓维护 Runner 公开契约与执行事实；SteerLine 独立维护调用与展示。沙箱认证工作保持原作用域，整合冲突及远端前置见 Spec。
-
 ## 结构化结果获取与 Workflow 定义
 
-2026-10-17 已开始实施：[结构化结果获取 Spec](docs/spec/result-acquisition.spec.md) · [Plan](docs/spec/result-acquisition.plan.md) · [专属验收](docs/acceptance/result-acquisition.md) · [源码与 Codex 能力调查](docs/acceptance/evidence/result-acquisition-design-20261016.md)。按步骤组合程序提取、独立解析和原 agent 报告；保留业务顺序与 PR 核验，Runner 独立配置，SteerLine 不改。三种方式已按确认的最小 parser 边界实现，原生权限保证、行为约定和事后检测分别记录；workflow/state 版本影响见 Spec。当前验证与未通过项见专属验收；未部署，不启动 roadmap 调度。
+已实现：[结构化结果获取 Spec](docs/spec/result-acquisition.spec.md) · [Plan](docs/spec/result-acquisition.plan.md) · [专属验收](docs/acceptance/result-acquisition.md)。按步骤组合程序提取、独立解析和原 agent 报告；保留业务顺序与 PR 核验，Runner 独立配置。原生权限保证、行为约定和事后检测分别记录，当前构建的实际资格及未通过项见专属验收。
 
-Workflow 能力/状态机定义：[统一能力与脚本边界](docs/workflows/README.md) · [普通开发流程](docs/workflows/development.md) · [带审计开发流程](docs/workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，定制脚本仅用于结果核验。两份内置定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
+Workflow 能力/状态机定义：[统一能力与边界](docs/workflows/README.md) · [普通开发流程](docs/workflows/development.md) · [带审计开发流程](docs/workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，结果由现有内置函数核验，当前不提供定制脚本端口或宿主。两份开发定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
 
 绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](docs/spec/steerrunner.spec.md)。
