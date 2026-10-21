@@ -1,6 +1,8 @@
 # Plan：服务换代后的原执行接管
 
-日期：2026-10-19。对应 [Spec](service-generation-recovery.spec.md)。状态：文档审计修订后已开始 Runner 实施。用户已追加“修复文档，然后实施”；原文档轮限制不再适用于后续代码与隔离测试。进展、失败及待验项统一登记到[专属验收记录](../acceptance/service-generation-recovery.md)，不部署或改动现有安装环境。
+日期：2026-10-19，状态于 2026-10-21 核对：核心接管、parser 保留、离线审计和调用方接线已实施并有定向证据；Orca 有限创建执行器已实现并受控验证，只调用现有公开接口。对应 [Spec](service-generation-recovery.spec.md)。当前构建、追补及未验范围见[近期 PR 补测](../acceptance/pr-test-gaps-20261020.md)与[创建恢复复验](../acceptance/pr38-review-20261020.md)；历史阶段、失败及跨仓限制保留在[专属验收记录](../acceptance/service-generation-recovery.md)，不因整理文档改记通过或部署。
+
+2026-10-21 材料边界补充：下文实施时的 Material.Content/digest、原文件快照核验只在实际使用该类冻结材料的契约中适用。当前开发材料是固定基线 worktree 内的仓库相对路径，恢复和新阶段不再检查独立文档快照；conversation/generate 的 inline 材料与 parser 已冻结输入仍沿原来源规则。
 
 ## 1. 实施顺序与责任
 
@@ -97,7 +99,7 @@ Controlled/原生沿 [测试指南](../testing.md)的独立现场入口、实际
 | 证据类别 | 当前可采用的内容 | 不得外推的结论 |
 | --- | --- | --- |
 | 本轮源码调查 | Spec §2 的文件/符号、v3 格式检查、统一 resume、stop_execution、创建缺回执阻断、结果/NextStage/CAS 现入口；SteerLine 同 SHA 部署门槛 | 仅静态调查，不证明新 owner、契约预检、迁移、自动接续和 UpdateRunner 已运行 |
-| [可靠模块化既有记录](reliable-modularization.spec.md) | 原操作身份、两种操作表示的边界、受控结算/重启样本 | 不证明任意历史格式兼容；不能作为跨构建原生树保留证据 |
+| [可靠模块化既有记录](../archive/2026-10/spec/reliable-modularization.spec.md) | 原操作身份、两种操作表示的边界、受控结算/重启样本 | 不证明任意历史格式兼容；不能作为跨构建原生树保留证据 |
 | [固定控制证据](../acceptance/evidence/fixed-control-20261019/README.md) | 对应旧构建/旧远端机制的执行期原身份、原 final/停止取证、显式恢复样本 | 不证明初始化创建未知可找回；不用于当前远端 native 或自动接续资格 |
 | [远端原生验收](../acceptance/orca-remote-native.md) | 原生身份、完整 final/unknown 边界、停止 scope 与消费者受控记录 | ORN-A05 仍是显式恢复，不证明本次五个窗口/兼容换构建 |
 | 原文档轮所读的旧测试定义 | 显式 resume、操作未知零重发、结果来源/预算/CAS、原精确 stop 等可复用反例 | 文档轮未执行；后续实施运行结果见专属验收，源码存在不算通过 |
@@ -121,7 +123,7 @@ Controlled/原生沿 [测试指南](../testing.md)的独立现场入口、实际
 
 保留的必要结构：独立本机 owner 解决服务持有 kill-on-close Job/认证/连接的生命期耦合；state/v4 阻止旧服务重入执行旧停服语义；有限创建执行器补齐 Orca 已成功但服务未保存回执的窗口。旧本机活动树无法事后无损移交、原执行器也缺证据时不可找回两项边界仍在。
 
-审计后仍是可实施的设计稿，P0 的原生能力验证和启动输入具体 schema 尚待实现阶段固定；不能把文档修订计为 SGR-A01–A07 通过。
+上述为首次文档审计时的结论：当时 P0 原生能力验证和启动输入 schema 尚待固定。后续实现及接口固定见 §6，实际资格看专属验收；不把这轮文档审计计为 SGR-A01–A07 通过。
 
 ## 5. 首次文档轮检查（历史）
 

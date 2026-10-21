@@ -10,7 +10,7 @@ SteerRunner 是可靠的开发执行器：接收确定的材料、执行参数�
 
 调查基线为本工作树提交 `59c7597ac8056fc5c29ad622034e10e74e4395de`。当前已有 `capabilities.configuration_schemas.run_configuration`、`contracts.ValidateRunConfiguration`、`ValidateRun`、`ValidateEnvironmentCheck`、接受时冻结、CLI 幂等与实例绑定。本仓测试不依赖 SteerLine checkout；`live-config/v1|v2` 的扁平字段由脚本装配为生产请求，场景需求、默认值及环境前置部分散布于脚本。公开 CLI 尚无本文的离线能力查询、纯校验及测试可用性入口；完整 Run 输入 schema 也不能由现有通用信封 schema 替代。
 
-相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../acceptance/run-configuration-publication.md)、[workflow 选择](workflow-selection-audit.spec.md)、[环境检查](environment-check.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
+相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../acceptance/run-configuration-publication.md)、[workflow 选择](../archive/2026-10/spec/workflow-selection-audit.spec.md)、[环境检查](environment-check.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
 
 ## 2. 职责与非目标
 

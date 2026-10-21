@@ -1,14 +1,16 @@
-# Spec：SteerRunner 首版产品与 CLI 契约
+# Spec：SteerRunner 产品与 CLI 契约
+
+2026-10-21 文档整理：本文继续维护当前产品与 CLI 契约；首版调查和历史范围按各节日期阅读。当前 state/v4、workflow/2、内容流程、恢复及材料规则由本文和下列专项共同维护；完整导航见[文档索引](../README.md)，旧计划与已取代设计见[历史归档](../archive/README.md)。
 
 2026-10-19 远端设计修订：用户要求新 `orca_environment` Run 仅通过 Orca 执行，删除远端 SteerRunner helper 接线。认证、完成、停止证据、旧记录隔离及完整 Check 收缩以[专项 Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)为准；实现与验收结果见专项记录。新远端采用现有 profile envelope 的 v4，不加模式字段；旧远端 v3 仅查询/精确处理原终端，不保留 helper 兼容引擎、不降级放行缺证据记录。本地受管及历史证明保持原范围。
 
-日期：2026-10-14。用户已授权按[实施 Plan](steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
+日期：2026-10-14。用户已授权按[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
 历史用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
 
 当前 Workflow 与结果获取以[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[两份 Workflow 定义](../workflows/README.md)为准；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工路径。CLI 生命周期、原子提交与 TaskDelivery 边界仍沿本文规则。
 
-历史扩展契约：[内置 Workflow 选择与审计模型 Spec](workflow-selection-audit.spec.md) / [Plan 与验证记录](workflow-selection-audit.plan.md)。多内置流程发现/选择、调用方指定审计模型和原链路审计修复的实际交付范围以扩展文档为准；暂不提供外部 workflow 装载。本文保留首版契约和历史范围。
+历史扩展契约：[workflow/1 审计设计](../archive/2026-10/spec/workflow-selection-audit.spec.md) / [原 Plan 与验证记录](../archive/2026-10/spec/workflow-selection-audit.plan.md)已归档。当前多流程发现/选择、审计模型与一次代码审计修复以[结果获取 Spec](result-acquisition.spec.md)和[Workflow 定义](../workflows/README.md)为准；暂不提供外部 workflow 装载。
 
 ## 当前产品边界（2026-10-19）
 

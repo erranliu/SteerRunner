@@ -73,7 +73,7 @@ Operation.Version 保持 1，复用既有 in_flight/accepted/confirmed/rejected/
 
 ## 4. 状态权威与生命周期规则复用（SGR-C02）
 
-Run Record、Snapshot、Intents、Workflow 的既有归属不变，由 application actor 经 Store/CAS 一次提交；见 [模块化 Spec](reliable-modularization.spec.md)。不另增可写 recovery status/恢复数据库。新增事实放回原聚合，现有 journal 与 Snapshot.Operations 保持各自语义和原身份，不趁升级做结构全等归一。
+Run Record、Snapshot、Intents、Workflow 的既有归属不变，由 application actor 经 Store/CAS 一次提交；见 [模块化 Spec](../archive/2026-10/spec/reliable-modularization.spec.md)。不另增可写 recovery status/恢复数据库。新增事实放回原聚合，现有 journal 与 Snapshot.Operations 保持各自语义和原身份，不趁升级做结构全等归一。
 
 | 共同规则 | 本增量差异及保持内容 |
 | --- | --- |

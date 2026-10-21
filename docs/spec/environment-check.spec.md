@@ -2,7 +2,7 @@
 
 2026-10-19 后续设计修订（已实施，验收见专项记录）：[仅 Orca Spec](orca-remote-native.spec.md)收缩新远端 `orca_environment` 的完整 Check 为明确 unsupported、零执行资源，不影响普通远端 Run 准入。本文旧远端 helper 检查与验收不得作为新路径通过证明；旧 Check 查询/原资源结算及所有 local 路径仍保留原规则。
 
-日期：2026-10-16。状态：已于本会话获用户授权实施；实现与验收状态见专属验收记录。Runner 独立前置；[Plan](environment-check.plan.md) · [专属验收](../acceptance/environment-check.md)。本文件是 Runner 权限模式、检查输入/结果和执行行为的权威；SteerLine 只消费公开契约，不另行定义这些规则。
+日期：2026-10-16，状态于 2026-10-21 核对：已实施；实际组合及构建资格见专属验收，原生远端完整 Check 为 unsupported。Runner 独立前置；[Plan](environment-check.plan.md) · [专属验收](../acceptance/environment-check.md)。本文件是 Runner 权限模式、检查输入/结果和执行行为的权威；SteerLine 只消费公开契约，不另行定义这些规则。
 
 ## 1. 范围与调查基线
 
