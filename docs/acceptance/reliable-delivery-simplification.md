@@ -28,7 +28,7 @@
 | Runner 可靠规则 | 通过 | workflow、reliable、reliable/operation 三包通过；仅现有规则回归，无生产执行代码变更 |
 | RD-BOUNDARY | API 边界通过，HTTP 基线失败保留 | 初版 API 直接引用 runnercontract 被拒绝，已改独立 DTO 并通过 API 闭包守卫。HTTPConsumerBoundary 仍因 projectconnection→processwindow 失败；原 HEAD 有相同 import，未放宽守卫或改无关实现。含该项的聚合命令保持 failed |
 
-SteerLine 的独立[实施计划](C:/Project/SteerLine/docs/plans/reliable-delivery-simplification.plan.md)与[验收记录](C:/Project/SteerLine/docs/acceptance/reliable-delivery-simplification.md)登记调用方范围。内容生成/对话状态已由摘要投影和组件反例验证；本轮接入的是现有候选详情，不新增尚未接入的 conversation 产品入口。
+SteerLine 的独立[实施计划](https://github.com/erranliu/SteerLine/blob/ffc6665315b312b7c70e32d3f03815e44de8553c/docs/plans/reliable-delivery-simplification.plan.md)与[验收记录](https://github.com/erranliu/SteerLine/blob/ffc6665315b312b7c70e32d3f03815e44de8553c/docs/acceptance/reliable-delivery-simplification.md)登记调用方范围。内容生成/对话状态已由摘要投影和组件反例验证；本轮接入的是现有候选详情，不新增尚未接入的 conversation 产品入口。
 
 ## 审计输出试验
 
@@ -73,3 +73,13 @@ V2 原生 schema、V3 parser 策略、V4 静态校验缓存与 V5 通用退避�
 ## 可复核证据
 
 归档保留[结果索引](evidence/reliable-delivery-20261021/report.json)、[源码摘要](evidence/reliable-delivery-20261021/source-manifest.json)、[原生样本对比](evidence/reliable-delivery-20261021/native-comparison.json)、[跨构建验证](evidence/reliable-delivery-20261021/prompt-upgrade-result.json)、[默认提升判定](evidence/reliable-delivery-20261021/promotion.json)、[定向回归日志](evidence/reliable-delivery-20261021/runner-focused.log)和[清理检查](evidence/reliable-delivery-20261021/cleanup.json)。[组件截图](evidence/reliable-delivery-20261021/delivery-summary.png)只证明隔离组件展示，不替代产品服务验收。完整运行日志保留在上述工作树证据目录。
+
+## 提交 PR 前的主干整合复验
+
+两仓另行合入最新主干：Runner `757d12456010d8c36c498410a7186c65c28b9e7a`，SteerLine `9cf844639c21f841eb743e7b4f9680b23c7db0af`。保留其完整受理绑定、同事务 Run/事件观察及部署改动；本摘要继续消费已有投影。上述原始源码摘要和模型对比固定原实施轮，不冒充本次整合构建重新做过原生模型试验。
+
+整合后 workflow、reliable、reliable/operation、resources 四包通过；应用层同一组 16 个顶层测试通过（109.588s）；SteerLine 投影、API 边界、原子观察、服务受理绑定、Outbox 和 quick 登记的定向测试五包通过。带 live 标签的实验夹具及提示资源 vet 通过。前端源码未因整合改变，复用前述 15 项及构建证据。HTTP 依赖边界的既有 import 在最新主干仍存在，历史聚合失败保持。
+
+使用同一旧 Runner EXE 对整合构建重跑 `TestSRAuditPromptDefaultUpgrade`：两个子分支通过、零跳过，exit 0、160.11s；整合构建 SHA256=`108691919aff75d4f51263722d87c0339bf8eaf4553f1e9526485ddb03497406`。本轮仍是正式 CLI/IPC/SQLite 加受控业务/provider，不声称新增真实模型或 PR 交付资格。
+
+整合复验的[源码与结果](evidence/reliable-delivery-20261021/pr-integration.json)、[受控场景来源](evidence/reliable-delivery-20261021/pr-prompt-upgrade-source.json)、[受控场景结果](evidence/reliable-delivery-20261021/pr-prompt-upgrade-result.json)、[场景日志](evidence/reliable-delivery-20261021/pr-prompt-upgrade.log)、[Runner 定向回归](evidence/reliable-delivery-20261021/pr-runner-focused.log)及[调用方定向回归](evidence/reliable-delivery-20261021/pr-steerline-rules.log)单独保留。调用方 PR 为 [SteerLine #374](https://github.com/erranliu/SteerLine/pull/374)。
