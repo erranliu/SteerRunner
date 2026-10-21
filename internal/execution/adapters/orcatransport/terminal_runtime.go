@@ -140,7 +140,17 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	// never proves no worker. The reader also requires this exact helper to exit.
 	defer func() {
 		if !workerStarted {
-			raw, _ := json.Marshal(TerminalStartupFailure{Version: 1, Owner: startupOwner, NoWorkerStarted: true, AuthenticationClosed: authenticationClosed, ClosedAt: time.Now().UTC()})
+			failure := "native terminal preparation returned without starting a worker"
+			if result != nil {
+				failure = result.Error()
+			}
+			for _, name := range []string{"GH_TOKEN", "GITHUB_TOKEN", "GITEA_TOKEN"} {
+				if secret := os.Getenv(name); secret != "" {
+					failure = strings.ReplaceAll(failure, secret, "[REDACTED]")
+				}
+			}
+			failure = fmt.Sprintf("%.2048s", failure)
+			raw, _ := json.Marshal(TerminalStartupFailure{Version: 1, Failure: failure, Owner: startupOwner, NoWorkerStarted: true, AuthenticationClosed: authenticationClosed, ClosedAt: time.Now().UTC()})
 			result = errors.Join(result, host.WriteExecutionFile(filepath.Join(c.StateDirectory, "startup-exit.json"), raw))
 		}
 	}()

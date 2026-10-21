@@ -363,7 +363,10 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			if e != nil {
 				return nil, contracts.Fail(4, "environment_unavailable", "Pi native Windows sandbox executable is unavailable.")
 			}
-			c := orca.TerminalConfig{ReceiptVersion: 2, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, SandboxExecutable: sandbox, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: filepath.Join(dir, "terminal-auth", id), RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+			// The transport adds a short digest directory bound to the full Run,
+			// attempt and generation. Repeating the Run ID here can exceed the
+			// native socket path limit even with a short state directory.
+			c := orca.TerminalConfig{ReceiptVersion: 2, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, SandboxExecutable: sandbox, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: dir, RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			c.BundleSHA256 = metadata.BundleSHA256
 			c.EvidenceSHA256 = metadata.PiSHA256
 			if agent == "dsh" {

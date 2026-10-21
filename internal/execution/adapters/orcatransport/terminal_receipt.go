@@ -31,6 +31,7 @@ type TerminalPreparation struct {
 // before starting the native agent. It cannot qualify a missing/changed owner.
 type TerminalStartupFailure struct {
 	Version              int           `json:"version"`
+	Failure              string        `json:"failure,omitempty"`
 	Owner                TerminalOwner `json:"owner"`
 	NoWorkerStarted      bool          `json:"no_worker_started"`
 	AuthenticationClosed bool          `json:"authentication_closed"`
@@ -174,14 +175,38 @@ func (l *Lifecycle) terminalOwnerBinding(owner TerminalOwner) bool {
 }
 
 func (l *Lifecycle) startupFailureOwner() (TerminalOwner, error) {
+	fact, err := l.readStartupFailure()
+	return fact.Owner, err
+}
+
+var errTerminalStartupExiting = errors.New("original native terminal helper is still exiting")
+
+func (l *Lifecycle) readStartupFailure() (TerminalStartupFailure, error) {
 	var fact TerminalStartupFailure
 	if err := readTerminalFile(l.profile.Terminal.StateDirectory, "startup-exit", &fact); err != nil {
-		return fact.Owner, err
+		return fact, err
 	}
-	if fact.Version != 1 || !fact.NoWorkerStarted || !fact.AuthenticationClosed || fact.ClosedAt.IsZero() || fact.Owner.Job.Handle != 0 || fact.Owner.Job.Worker != (b.ProcessIdentity{}) || !l.terminalOwnerBinding(fact.Owner) || process.Probe(&fact.Owner.Job.Owner).State != "absent" {
-		return fact.Owner, errors.New("native terminal startup exit remains unverified")
+	if fact.Version != 1 || !fact.NoWorkerStarted || !fact.AuthenticationClosed || fact.ClosedAt.IsZero() || fact.Owner.Job.Handle != 0 || fact.Owner.Job.Worker != (b.ProcessIdentity{}) || !l.terminalOwnerBinding(fact.Owner) {
+		return fact, errors.New("native terminal startup exit remains unverified")
 	}
-	return fact.Owner, nil
+	switch process.Probe(&fact.Owner.Job.Owner).State {
+	case "matches":
+		// The helper writes this record just before returning. Keep observing
+		// the accepted launch until that exact process has actually exited.
+		return fact, errTerminalStartupExiting
+	case "absent":
+		return fact, nil
+	default:
+		return fact, errors.New("native terminal startup exit remains unverified")
+	}
+}
+
+// Only the bound helper's verified pre-worker exit can reject an accepted
+// launch. Missing receipts and live/changed processes remain unverified.
+type terminalStartupError struct{ reason string }
+
+func (e *terminalStartupError) Error() string {
+	return "Native terminal startup failed: " + e.reason + "; no business input sent"
 }
 
 func (l *Lifecycle) terminalExitVerified(owner TerminalOwner) bool {
@@ -223,6 +248,15 @@ func (l *Lifecycle) readTerminalReadiness(state *State, requireLease bool) error
 	var ready TerminalReceipt
 	if err := readTerminalFile(c.StateDirectory, "readiness", &ready); err != nil {
 		if os.IsNotExist(err) && state.TerminalReadiness == nil && state.TerminalOwner == nil && !state.LaunchConfirmed && len(state.Turns) == 0 {
+			if fact, failureErr := l.readStartupFailure(); failureErr == nil {
+				reason := strings.TrimSpace(fact.Failure)
+				if reason == "" {
+					reason = "original helper exited before starting the native worker"
+				}
+				return &terminalStartupError{reason: reason}
+			} else if !os.IsNotExist(failureErr) && !errors.Is(failureErr, errTerminalStartupExiting) {
+				return failureErr
+			}
 			if failure := l.terminalPreparationFailure(); failure != nil && !os.IsNotExist(failure) {
 				return failure
 			}

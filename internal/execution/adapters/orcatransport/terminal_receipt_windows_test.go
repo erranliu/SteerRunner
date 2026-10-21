@@ -5,6 +5,7 @@ package orcatransport
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
@@ -23,8 +24,13 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 		if json.Unmarshal([]byte(raw), &c) != nil {
 			t.Fatal("invalid child config")
 		}
-		if err := RunTerminalAgent(context.Background(), c, strings.NewReader(""), os.Stdout, os.Stderr); err == nil {
+		err := RunTerminalAgent(context.Background(), c, strings.NewReader(""), os.Stdout, os.Stderr)
+		if err == nil {
 			t.Fatal("invalid preparation succeeded")
+		}
+		var fact TerminalStartupFailure
+		if readErr := readTerminalFile(c.StateDirectory, "startup-exit", &fact); readErr != nil || fact.Failure != err.Error() {
+			t.Fatal("helper did not persist its original startup error", fact.Failure, err, readErr)
 		}
 		return
 	}
@@ -51,9 +57,35 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 		t.Fatal(e)
 	}
 	bind(&s, r)
+	launch := request(s, b.LifecycleCreateResource, b.LifecycleInput{Resource: &b.ResourceIntent{Purpose: "agent-start", Objective: l.setup.AgentLaunchCommand}})
+	r, _, e = l.Execute(context.Background(), launch)
+	if e != nil || r.Disposition != b.OperationAccepted || !r.State.ResourcePending {
+		t.Fatal("missing startup facts did not leave the original launch pending", r, e)
+	}
+	bind(&s, r)
+	launch.Snapshot = s
 	stop := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
 	if r, e := l.StopLifecycle(context.Background(), stop, nil); e == nil || r.State.Stopped {
 		t.Fatal("missing owner/receipt proved absence")
+	}
+	// A helper can still be alive for a short interval after writing its exit
+	// receipt. That observation must stay pending, not reject or lose the launch.
+	identity, e := process.CurrentIdentity()
+	if e != nil {
+		t.Fatal(e)
+	}
+	live := TerminalStartupFailure{Version: 1, Failure: "authentication_api_socket_path_too_long", Owner: TerminalOwner{RuntimeSHA256: meta.RuntimeSHA256, ExtensionSHA256: meta.BundleSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}, NoWorkerStarted: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()}
+	live.Owner.Job.Owner = *identity
+	liveBody, _ := json.Marshal(live)
+	if e := os.WriteFile(filepath.Join(c.StateDirectory, "startup-exit.json"), liveBody, 0600); e != nil {
+		t.Fatal(e)
+	}
+	r, _, e = l.Reconcile(context.Background(), launch)
+	if e != nil || r.Disposition != b.OperationAccepted || !r.State.ResourcePending {
+		t.Fatal("still-exiting helper lost its pending original launch", r, e)
+	}
+	if e := os.Remove(filepath.Join(c.StateDirectory, "startup-exit.json")); e != nil {
+		t.Fatal(e)
 	}
 	raw, _ := json.Marshal(c)
 	cmd := exec.Command(self, "-test.run=^TestTerminalStartupFailureCanStopWithoutInventingWorker$")
@@ -69,8 +101,17 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 	if process.Probe(&fact.Owner.Job.Owner).State != "absent" {
 		t.Fatal("helper remains live")
 	}
+	if fact.Failure == "" {
+		t.Fatal("helper lost its original preparation error")
+	}
+	// Exercise the actual reconciliation route: no retry, replacement terminal,
+	// readiness, or business turn may be inferred from the failed helper.
+	r, observer, e := l.Reconcile(context.Background(), launch)
+	if e != nil || observer != nil || r.Disposition != b.OperationRejected || r.State.ResourcePending || r.State.WorkerLive || r.State.SessionAvailable || !strings.Contains(r.Diagnostic, fact.Failure) || r.ValidateFor(launch) != nil {
+		t.Fatal("verified startup failure remained pending or lost its cause", r, e)
+	}
 	original := fact
-	for _, change := range []func(*TerminalStartupFailure){func(f *TerminalStartupFailure) { f.NoWorkerStarted = false }, func(f *TerminalStartupFailure) { f.AuthenticationClosed = false }, func(f *TerminalStartupFailure) { f.Owner.RuntimeSHA256 = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Owner.Created = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Handle = 1 }} {
+	for _, change := range []func(*TerminalStartupFailure){func(f *TerminalStartupFailure) { f.NoWorkerStarted = false }, func(f *TerminalStartupFailure) { f.AuthenticationClosed = false }, func(f *TerminalStartupFailure) { f.Owner.RuntimeSHA256 = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Owner.Created = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Handle = 1 }, func(f *TerminalStartupFailure) { f.Owner.RunID = "foreign" }, func(f *TerminalStartupFailure) { f.Owner.SessionID = "foreign" }, func(f *TerminalStartupFailure) { f.ClosedAt = time.Time{} }} {
 		fact = original
 		change(&fact)
 		body, _ := json.Marshal(fact)
@@ -78,6 +119,37 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 		if _, e := l.startupFailureOwner(); e == nil {
 			t.Fatal("changed/incomplete startup exit accepted")
 		}
+		var startup *terminalStartupError
+		if e := l.readTerminalReadiness(&State{}, true); e == nil || errors.As(e, &startup) {
+			t.Fatal("unverified startup exit became an authoritative rejection", e)
+		}
+	}
+	for _, cause := range []string{"authentication_api_socket_path_too_long", ""} {
+		fact = original
+		fact.Failure = cause
+		body, _ := json.Marshal(fact)
+		os.WriteFile(filepath.Join(c.StateDirectory, "startup-exit.json"), body, 0600)
+		r, _, e = l.Reconcile(context.Background(), launch)
+		if e != nil || r.Disposition != b.OperationRejected || r.State.ResourcePending || r.Diagnostic == "" || cause != "" && !strings.Contains(r.Diagnostic, cause) {
+			t.Fatal("current/legacy startup exit did not reject promptly", r, e)
+		}
+	}
+	for _, state := range []State{{LaunchConfirmed: true}, {TerminalOwner: &TerminalOwner{}}, {Turns: []Turn{{}}}} {
+		if e := l.readTerminalReadiness(&state, true); !os.IsNotExist(e) {
+			t.Fatal("old startup exit replaced missing active-session evidence", e)
+		}
+	}
+	if f.nativeSends != 0 {
+		t.Fatal("startup failure sent business input")
+	}
+	sends := 0
+	for _, call := range f.calls {
+		if len(call) > 1 && call[0] == "terminal" && call[1] == "send" {
+			sends++
+		}
+	}
+	if sends != 1 {
+		t.Fatal("reconciliation replayed the original helper launch", sends)
 	}
 	raw, _ = json.Marshal(original)
 	os.WriteFile(filepath.Join(c.StateDirectory, "startup-exit.json"), raw, 0600)
