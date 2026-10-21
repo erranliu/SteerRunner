@@ -23,6 +23,8 @@ func TestSRInputFreeze(t *testing.T) {
 	dir, request := setupRun(t)
 	var spec contracts.RunRequest
 	_ = json.Unmarshal(request.Input, &spec)
+	legacySpec := "Legacy inline content must not be sent to the agent."
+	spec.Documents.Spec = contracts.Document{Kind: "inline", Path: "spec.md", Content: &legacySpec}
 	spec.Documents.Plan = contracts.Document{Kind: "git", Path: "plan.md", Commit: spec.Repository.BaseRevision}
 	request.Input, _ = json.Marshal(spec)
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
@@ -57,15 +59,34 @@ func TestSRInputFreeze(t *testing.T) {
 	if current.Materials[1].Commit != spec.Repository.BaseRevision {
 		t.Fatal("pinned source commit was lost")
 	}
-	for i, material := range current.Materials {
-		body, err := os.ReadFile(material.SnapshotPath)
-		want := *spec.Documents.Spec.Content
-		if i == 1 {
-			want = "Plan: controlled task"
+	for _, material := range current.Materials {
+		if material.Kind != "worktree" || material.ExecutionLocation != material.Path || material.SnapshotPath != "" || material.Digest != "" {
+			t.Fatalf("development material was copied or snapshotted: %+v", material)
 		}
-		if err != nil || string(body) != want {
-			t.Fatalf("material %d changed: %v %q", i, err, body)
+	}
+	calls, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	implementationSeen := false
+	for _, line := range strings.Split(string(calls), "\n") {
+		var call struct{ Method, Prompt string }
+		if strings.TrimSpace(line) == "" {
+			continue
 		}
+		if err := json.Unmarshal([]byte(line), &call); err != nil {
+			t.Fatal(err)
+		}
+		if call.Method != "turn/start" {
+			continue
+		}
+		if strings.Contains(call.Prompt, legacySpec) || strings.Contains(call.Prompt, "steerrunner-inputs") || strings.Contains(call.Prompt, "prompt:spec.md") {
+			t.Fatal("native input contains a document body or material snapshot", call.Prompt)
+		}
+		implementationSeen = implementationSeen || strings.Contains(call.Prompt, "\nSpec: spec.md\nPlan: plan.md")
+	}
+	if !implementationSeen {
+		t.Fatal("native implementation input lost its worktree document paths")
 	}
 	spec.Title = "changed request"
 	request.Input, _ = json.Marshal(spec)
@@ -207,8 +228,7 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 			_ = os.WriteFile(filepath.Join(*evidenceFlag, strings.ReplaceAll(t.Name(), "/", "-")+"-native-calls.jsonl"), body, 0600)
 		}
 	})
-	spec, plan := "Inline Spec：固定材料", "Inline Plan：固定计划"
-	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "input/spec.md", Content: &spec}, Plan: contracts.Document{Kind: "inline", Path: "input/plan.md", Content: &plan}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
+	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "spec.md"}, Plan: contracts.Document{Path: "plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
 	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{Executable: helperEXE})
 	request.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", provider}}})
 	raw, _ := json.Marshal(request)

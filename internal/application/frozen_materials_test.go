@@ -18,6 +18,7 @@ func TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal(t *tes
 		t.Fatal(err)
 	}
 	r := &runstate.Record{Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec.md", SnapshotPath: path, Digest: ra.Digest([]byte(original))}, Content: original}}}
+	r.Request.Workflow.ID = "generate"
 	before := canonical(r)
 	if err := verifyFrozenMaterials(r); err != nil {
 		t.Fatal(err)

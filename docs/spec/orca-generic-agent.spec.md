@@ -94,7 +94,7 @@ agent_launch 仍是 executable/args/model/reasoning_effort 的唯一位置。映
 
 绑定 Orca runtime/执行主机、worktree、terminal handle/incarnation/pane，及扩展提供的原 agent、native session、原请求/输入摘要与原生回合。Pi 的 session/file 关联由原实例正式扩展和宿主核验，DSH 必须区分 root/child；私有路径不进公开投影。
 
-受管扩展装载是已登记的准备操作，初始化不授权业务工作。工作区仍跳过仓库默认 setup；冻结材料/实际 base 和 owned 清理保持。原材料总限额为 12000 UTF-16 单元。
+受管扩展装载是已登记的准备操作，初始化不授权业务工作。工作区仍跳过仓库默认 setup；文档路径/实际 base 和 owned 清理保持。开发文档由代理直接按仓库相对路径读取，Runner 不准备或校验正文；12000 UTF-16 单元限制仅用于实际发送的单份提示词，遵循[总 Spec 的文档契约](steerrunner.spec.md)。
 
 P0 可先在独立临时工作区做无工具、无发布且无需仓库认证的固定文本探针，不向探针注入仓库凭据；须通过所选 agent 的正式机制确认工具已禁用、实际启动模式明确，做不到就不发送探针。该探针只验证输入/事件/回执与停止通道，工具禁用不算 OS sandbox 或生产权限/认证通过。任何 development、Git/PR 等业务输入仍须先通过完整准备门槛。
 

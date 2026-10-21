@@ -9,14 +9,15 @@ import (
 	"strings"
 
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
-// The Record retains the original bytes and digest. Qualification never
-// rebuilds material from the current checkout or edits a frozen snapshot.
+// Only content workflows own uploaded material snapshots. Development reads
+// caller-supplied paths in its worktree and has no material qualification gate.
 func verifyFrozenMaterials(r *runstate.Record) error {
-	if r.Request.Documents.Spec.Path != "" && len(r.Materials) < 2 {
-		return errors.New("original frozen Spec/Plan materials are missing")
+	if !workflow.Content(r.Request.Workflow.ID) {
+		return nil
 	}
 	for _, material := range r.Materials {
 		if material.Digest != ra.Digest([]byte(material.Content)) || !filepath.IsAbs(material.SnapshotPath) {

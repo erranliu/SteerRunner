@@ -566,10 +566,7 @@ func executionStability(t *testing.T, m livetest.Manifest) {
 		s.networkPreflight()
 	}
 	s.startService()
-	spec, _ := os.ReadFile(m.SpecPath)
-	plan, _ := os.ReadFile(m.PlanPath)
-	a, z := string(spec), string(plan)
-	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &a}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &z}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
+	input := contracts.RunRequest{Title: "SteerRunner L3 " + m.Scenario + "/" + m.CaseID, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario, "case": m.CaseID}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: m.RepositoryPath, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "sr-smoke/spec.md"}, Plan: contracts.Document{Path: "sr-smoke/plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
 	selectedWorkflow, workflowErr := m.RunWorkflow(nil)
 	if workflowErr != nil {
 		t.Fatal(workflowErr)

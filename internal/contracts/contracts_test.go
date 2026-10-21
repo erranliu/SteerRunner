@@ -66,6 +66,18 @@ func TestSRCLIContract(t *testing.T) {
 		if safeDocument(Document{Kind: "inline", Path: "../outside.md", Content: stringPointer("text")}) {
 			t.Fatal("material traversal allowed")
 		}
+		var pathsOnly RunRequest
+		_ = json.Unmarshal(body, &pathsOnly)
+		pathsOnly.Documents = Documents{Spec: Document{Path: "docs/spec.md"}, Plan: Document{Path: "docs/plan.md"}, References: []Document{{Path: "docs/reference.md"}}}
+		pathInput, _ := json.Marshal(pathsOnly)
+		if failure := ValidateRun(pathInput); failure != nil {
+			t.Fatal("worktree document paths require no content or independent commit", failure)
+		}
+		for _, name := range []string{"../outside.md", "/absolute.md", `C:\outside.md`, "docs/../spec.md"} {
+			if safeDocument(Document{Path: name}) {
+				t.Fatal("unsafe worktree document path accepted", name)
+			}
+		}
 		if !safeURL("ssh://git@example.com/project.git") || safeURL("https://user:secret@example.com/project.git") {
 			t.Fatal("SSH identity or secret URL handling incorrect")
 		}

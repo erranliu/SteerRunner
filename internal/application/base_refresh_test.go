@@ -95,8 +95,8 @@ func (f *baseRefreshFixture) freeze() *runstate.Record {
 		f.t.Fatal("frozen Spec/Plan were lost")
 	}
 	for _, m := range r.Materials {
-		if m.Commit != f.initial || m.Content != "initial "+m.Path {
-			f.t.Fatal("refresh changed frozen document provenance", m)
+		if m.Commit != f.pinned || m.Kind != "worktree" || m.ExecutionLocation != m.Path || m.Content != "" || m.SnapshotPath != "" || m.Digest != "" {
+			f.t.Fatal("development documents must reference the execution worktree", m)
 		}
 	}
 	if f.git(f.source, "rev-parse", "refs/heads/"+f.branch) != f.initial {

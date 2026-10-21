@@ -10,8 +10,8 @@ type MaterialView struct {
 	Kind              string `json:"kind"`
 	Path              string `json:"path"`
 	Commit            string `json:"commit,omitempty"`
-	Digest            string `json:"digest"`
-	SnapshotPath      string `json:"snapshot_path"`
+	Digest            string `json:"digest,omitempty"`
+	SnapshotPath      string `json:"snapshot_path,omitempty"`
 	ExecutionLocation string `json:"execution_location,omitempty"`
 }
 

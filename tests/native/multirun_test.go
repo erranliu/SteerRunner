@@ -141,22 +141,13 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 		}
 		r.RunStopped = allStopped
 	})
-	spec, err := os.ReadFile(m.SpecPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	plan, err := os.ReadFile(m.PlanPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	specText, planText := string(spec), string(plan)
 	started := time.Now().UTC().Add(-time.Minute)
 	source, err := m.ExecutionRepositoryPath()
 	if err != nil {
 		t.Fatal(err)
 	}
 	for i := range ids {
-		input := contracts.RunRequest{Title: fmt.Sprintf("SteerRunner multi-Run %d", i), Correlation: map[string]string{"fixture_id": m.ID, "peer": fmt.Sprint(i)}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 2, PromptOverrides: smokePromptOverrides()}, Execution: manifests[i].Execution, Publication: m.Publication}
+		input := contracts.RunRequest{Title: fmt.Sprintf("SteerRunner multi-Run %d", i), Correlation: map[string]string{"fixture_id": m.ID, "peer": fmt.Sprint(i)}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "sr-smoke/spec.md"}, Plan: contracts.Document{Path: "sr-smoke/plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2, PromptOverrides: smokePromptOverrides()}, Execution: manifests[i].Execution, Publication: m.Publication}
 		input.Workflow, err = manifests[i].RunWorkflow(smokePromptOverrides())
 		if err != nil {
 			t.Fatal(err)
