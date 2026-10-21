@@ -108,8 +108,8 @@ func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, input con
 	specText := "This Run tests stopping owned native writers. Its only work is to run the driver-supplied parent script from Plan, which starts a child and records both OS identities under sr-owned-stop. Keep it running until the driver stops the Run. There is no implementation artifact or PR to produce. Do not recreate or edit the supplied scripts."
 	planText := fmt.Sprintf("The driver supplies sr-owned-stop/active-writer.ps1 (SHA256 %x) and child-writer.ps1 (SHA256 %x) after workspace creation. Wait for both files, verify their hashes, then run this short command exactly once and wait: powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-owned-stop/active-writer.ps1", sha256.Sum256(parentBytes), sha256.Sum256(childBytes))
 	input.Title = "SteerRunner owned native writer stop"
-	input.Documents = contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "active-stop.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "active-stop.plan.md", Content: &planText}}
-	input.Workflow.PromptOverrides = map[string]string{"implement.execute": "Execute the active-writer Spec and Plan now. Start the fixed native PowerShell command and wait while the test driver stops this Run."}
+	input.Documents = contracts.Documents{Spec: contracts.Document{Path: "sr-owned-stop/spec.md"}, Plan: contracts.Document{Path: "sr-owned-stop/plan.md"}}
+	input.Workflow.PromptOverrides = map[string]string{"implement.execute": "Wait for the test driver to supply sr-owned-stop/spec.md and sr-owned-stop/plan.md in the worktree, then execute that Spec and Plan. Start the fixed native PowerShell command and wait while the test driver stops this Run."}
 	req := request("start-owned-native-writers", input)
 	response := invoke(t, m, dir, []string{"submit", "--input", "-"}, &req)
 	id := response.Data.(map[string]any)["run_id"].(string)
@@ -135,6 +135,11 @@ func activeTerminalStop(t *testing.T, m livetest.Manifest, dir string, input con
 	root := filepath.Join(original.Execution.Workspace, "sr-owned-stop")
 	if err := os.Mkdir(root, 0700); err != nil {
 		t.Fatal(err)
+	}
+	for name, body := range map[string]string{"spec.md": specText, "plan.md": planText} {
+		if err := os.WriteFile(filepath.Join(root, name), []byte(body), 0600); err != nil {
+			t.Fatal(err)
+		}
 	}
 	if err := os.WriteFile(filepath.Join(root, "active-writer.ps1"), parentBytes, 0600); err != nil {
 		t.Fatal(err)

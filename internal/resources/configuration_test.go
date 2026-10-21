@@ -87,6 +87,49 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 	}
 }
 
+func TestPublishedDevelopmentDocumentPaths(t *testing.T) {
+	var schemas map[string]json.RawMessage
+	if err := json.Unmarshal(ConfigurationSchemas(), &schemas); err != nil {
+		t.Fatal(err)
+	}
+	doc, err := jsonschema.UnmarshalJSON(strings.NewReader(string(schemas["run_input"])))
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := jsonschema.NewCompiler()
+	if err := c.AddResource("https://runner.invalid/run", doc); err != nil {
+		t.Fatal(err)
+	}
+	schema, err := c.Compile("https://runner.invalid/run")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, tc := range []struct {
+		name, spec string
+		valid      bool
+	}{
+		{"path", `{"path":"docs/spec.md"}`, true},
+		{"legacy_inline", `{"kind":"inline","path":"docs/spec.md","content":"caller text"}`, true},
+		{"legacy_git", `{"kind":"git","path":"docs/spec.md","commit":"` + strings.Repeat("f", 40) + `"}`, true},
+		{"untyped_content", `{"path":"docs/spec.md","content":"caller text"}`, false},
+		{"missing_path", `{}`, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw := []byte(`{"title":"Path references","repository":{"url":"https://example.com/repo.git","base_revision":"` + strings.Repeat("a", 40) + `","remote":"origin","base_branch":"main"},"documents":{"spec":` + tc.spec + `,"plan":{"path":"docs/plan.md"},"references":[{"path":"docs/reference.md"}]},"workflow":{"id":"development","version":2},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}},"publication":{"provider":"gitea","repository":"owner/repo","base_branch":"main","settings":{"base_url":"https://example.com"}}}`)
+			var value any
+			if err := json.Unmarshal(raw, &value); err != nil {
+				t.Fatal(err)
+			}
+			if accepted := schema.Validate(value) == nil; accepted != tc.valid {
+				t.Fatalf("schema accepted=%v want=%v: %v", accepted, tc.valid, schema.Validate(value))
+			}
+			if accepted := contracts.ValidateRun(raw) == nil; accepted != tc.valid {
+				t.Fatalf("admission accepted=%v want=%v", accepted, tc.valid)
+			}
+		})
+	}
+}
+
 func TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees(t *testing.T) {
 	if strings.Contains(string(ConfigurationSchemas()), `"github_auth"`) {
 		t.Fatal("retired App configuration is still advertised")

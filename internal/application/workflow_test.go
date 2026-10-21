@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -43,15 +42,7 @@ func auditEngine(t *testing.T) (*Engine, *worker) {
 	e := &Engine{dir: dir, ctx: context.Background(), epoch: "epoch", store: s, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
 	p, _ := workflow.Lookup(workflow.AuditedDevelopment, 2)
 	r := &runstate.Record{ID: "run", Allowed: true, CommandStates: map[string]string{}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}}}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec", SnapshotPath: "spec"}}, {MaterialView: contracts.MaterialView{Path: "plan", SnapshotPath: "plan"}}}}
-	for i := range r.Materials {
-		m := &r.Materials[i]
-		m.Content = "original fixture material"
-		m.Digest = ra.Digest([]byte(m.Content))
-		m.SnapshotPath = filepath.Join(dir, m.Path)
-		if err := os.WriteFile(m.SnapshotPath, []byte(m.Content), 0600); err != nil {
-			t.Fatal(err)
-		}
-	}
+	r.Request.Documents = contracts.Documents{Spec: contracts.Document{Path: "spec"}, Plan: contracts.Document{Path: "plan"}}
 	repo := t.TempDir()
 	gitTest(t, repo, "init", "-b", "main")
 	gitTest(t, repo, "config", "user.email", "fixture@example.test")

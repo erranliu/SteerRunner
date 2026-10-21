@@ -149,8 +149,8 @@ PR 查询失败继续按原目标对账，不触发新的实施或发布。外�
 ### D-IMPLEMENT → implement 进入 / 内部 execute
 
 ```text
-根据以下 Spec、Plan 和参考材料完成实现及必要验证。
-材料：{{material_refs}}
+读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。
+材料（worktree 内的仓库相对路径）：{{material_refs}}
 用户补充（如有）：{{authorized_feedback}}
 完成实施及必要验证后，在最终回复末尾单独写一行：实施及必要验证已完成。
 ```

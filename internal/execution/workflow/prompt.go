@@ -9,7 +9,7 @@ type FileReference struct {
 	Path string `json:"path"`
 }
 
-const ImplementPrompt = "根据以下 Spec、Plan 和参考材料完成实现及必要验证。"
+const ImplementPrompt = "读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。"
 const reportPrompt = "根据已有执行上下文整理指定实施结果；只报告，不补做工作。注明依据，保留失败、未知情况、缺失和冲突。"
 const publishPrompt = "将当前分支 push 到发布目标并创建 PR。用 git branch --show-current 取得实际分支，作为远端分支和 PR head。结果未知时说明情况，不重复创建。成功后给出 PR URL。"
 const PublishReportPrompt = "根据已有上下文整理指定发布的结果和 PR URL；只报告，不重新发布。注明依据，保留失败、未知情况、缺失和冲突。"

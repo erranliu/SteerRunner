@@ -6,7 +6,6 @@ import (
 	"encoding/base32"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
@@ -29,14 +28,13 @@ import (
 	"sync"
 	"time"
 	"unicode/utf16"
-	"unicode/utf8"
 )
 
 var repositoryLocks sync.Map
 
 // Keep linked-worktree Git administration paths comfortably below native Git's
 // Windows buffer limits. The full request identities remain in accepted input;
-// a cache hit still verifies the exact remote and every frozen commit.
+// a cache hit still verifies the exact remote and frozen base commit.
 func repositoryCache(dir string, repository contracts.Repository) string {
 	return filepath.Join(dir, "r", compactDirectoryKey(repository.URL+"\x00"+repository.BaseRevision+"\x00"+repository.LocalPath))
 }
@@ -300,17 +298,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if _, err := git.Output(ctx, cache, "fetch", "--no-tags", "--no-write-fetch-head", "--", request.Repository.Remote, "+refs/heads/"+request.Repository.BaseBranch+":"+baseRef); err != nil {
 		return nil, contracts.Fail(4, "environment_unavailable", "Cannot refresh the configured base branch; no run was accepted. "+redactDiagnostic(r, err.Error()))
 	}
-	commits := []string{request.Repository.BaseRevision}
-	for _, doc := range append([]contracts.Document{request.Documents.Spec, request.Documents.Plan}, request.Documents.References...) {
-		if doc.Kind == "git" {
-			commits = append(commits, doc.Commit)
-		}
-	}
-	for _, revision := range commits {
-		if _, err := git.Output(ctx, cache, "cat-file", "-e", revision+"^{commit}"); err != nil {
-			if _, err := git.Output(ctx, cache, "fetch", "--no-tags", request.Repository.Remote, revision); err != nil {
-				return nil, contracts.Fail(2, "invalid_input", "A pinned material/base commit is unavailable.")
-			}
+	if _, err := git.Output(ctx, cache, "cat-file", "-e", request.Repository.BaseRevision+"^{commit}"); err != nil {
+		if _, err := git.Output(ctx, cache, "fetch", "--no-tags", request.Repository.Remote, request.Repository.BaseRevision); err != nil {
+			return nil, contracts.Fail(2, "invalid_input", "The pinned base commit is unavailable.")
 		}
 	}
 	if _, err := git.Output(ctx, cache, "merge-base", "--is-ancestor", request.Repository.BaseRevision, baseRef); err != nil {
@@ -393,23 +383,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			return nil, contracts.Fail(2, "invalid_input", "Material paths must be distinct.")
 		}
 		seen[strings.ToLower(doc.Path)] = true
-		var content []byte
-		if doc.Kind == "inline" {
-			content = []byte(*doc.Content)
-		} else {
-			content, err = git.Output(ctx, cache, "show", doc.Commit+":"+doc.Path)
-			if err != nil {
-				return nil, contracts.Fail(2, "invalid_input", "A pinned material path is missing.")
-			}
-		}
-		if !utf8.Valid(content) || len(content) > contracts.MaxRequestBytes {
-			return nil, contracts.Fail(2, "invalid_input", "Material must be bounded UTF-8 text.")
-		}
-		path := filepath.Join(dir, "inputs", id, filepath.FromSlash(doc.Path))
-		if err := writeFixed(path, content); err != nil {
-			return nil, err
-		}
-		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Commit: doc.Commit, Digest: reliable.Digest(content), SnapshotPath: path}, Content: string(content)})
+		// Development documents belong to the execution worktree. The caller
+		// supplies their paths; admission does not read or prepare their files.
+		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: "worktree", Path: doc.Path, Commit: request.Repository.BaseRevision, ExecutionLocation: doc.Path}})
 	}
 	r.PromptBodies = map[string]string{}
 	for _, state := range flowProfile.States {
@@ -419,17 +395,6 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	for step, body := range request.Workflow.PromptOverrides {
 		r.PromptBodies[step] = body
-	}
-	if request.Execution.Adapter == "orca-terminal" {
-		// The current Windows Orca CLI accepts prompt text in argv. Reserve
-		// space for escaping, source result and fixed protocol instructions.
-		units := len(utf16.Encode([]rune(string(canonical(r.Materials)))))
-		for _, body := range r.PromptBodies {
-			units += len(utf16.Encode([]rune(body)))
-		}
-		if units > 12000 {
-			return nil, contracts.Fail(3, "unsupported_capability", "Frozen Orca materials and prompt bodies exceed the current CLI transport limit (12000 UTF-16 units).")
-		}
 	}
 	branch := "codex/runner-" + id
 	worktree := executionWorkspace(dir, id)
@@ -476,32 +441,6 @@ func writeFixed(path string, content []byte) error {
 		err = file.Sync()
 	}
 	return errors.Join(err, file.Close())
-}
-func materialize(r *runstate.Record) error {
-	if r.Request.Execution.Adapter == "orca-terminal" {
-		for i := range r.Materials {
-			r.Materials[i].ExecutionLocation = "prompt:" + r.Materials[i].Path
-		}
-		return nil
-	}
-	gitfile, err := os.ReadFile(filepath.Join(r.Snapshot.Ref.WorkspacePath, ".git"))
-	if err != nil {
-		return err
-	}
-	admin, ok := strings.CutPrefix(strings.TrimSpace(string(gitfile)), "gitdir: ")
-	if !ok || !filepath.IsAbs(admin) {
-		return errors.New("prepared worktree lacks its owned Git admin directory")
-	}
-	for i := range r.Materials {
-		m := &r.Materials[i]
-		path := filepath.Join(admin, "steerrunner-inputs", filepath.FromSlash(m.Path))
-		if err := writeFixed(path, []byte(m.Content)); err != nil {
-			return err
-		}
-		m.SnapshotPath = path
-		m.ExecutionLocation = path
-	}
-	return nil
 }
 func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) error {
 	if err := validateWorkflow(r); err != nil {
@@ -561,21 +500,12 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			}
 			input.Prompt = prompt
 		} else {
-			if len(r.Materials) < 2 {
-				return fmt.Errorf("frozen material manifest incomplete")
-			}
 			refs := []workflow.FileReference{}
-			location := func(m runstate.Material) string {
-				if m.ExecutionLocation != "" {
-					return m.ExecutionLocation
-				}
-				return m.SnapshotPath
-			}
-			for _, m := range r.Materials[2:] {
-				refs = append(refs, workflow.FileReference{Path: location(m)})
+			for _, doc := range r.Request.Documents.References {
+				refs = append(refs, workflow.FileReference{Path: doc.Path})
 			}
 			// Use explicit JSON names for the fixed material references consumed by Workflow.
-			input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": location(r.Materials[0])}, "plan": map[string]string{"path": location(r.Materials[1])}, "references": refs})
+			input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": r.Request.Documents.Spec.Path}, "plan": map[string]string{"path": r.Request.Documents.Plan.Path}, "references": refs})
 			prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
 			if err != nil {
 				return err
@@ -583,17 +513,13 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			if feedback != "" {
 				prompt += "\nUser feedback for the original session:\n" + feedback
 			}
-			if r.Request.Execution.Adapter == "orca-terminal" && state.Kind == "execute" && state.Contract == "implementation" {
-				attached := []map[string]string{}
-				for _, m := range r.Materials {
-					attached = append(attached, map[string]string{"location": location(m), "path": m.Path, "commit": m.Commit, "sha256": m.Digest, "content": m.Content})
-				}
-				prompt += "\nFrozen Spec, Plan and references are attached in this input. Read the exact content below; prompt: locations identify these attached documents.\n" + string(canonical(attached))
-			}
 			prompt += workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
 			input.Prompt = prompt
 			input.SuccessOutput = state.SuccessOutput
 		}
+	}
+	if r.Request.Execution.Adapter == "orca-terminal" && len(utf16.Encode([]rune(input.Prompt))) > 12000 {
+		return contracts.Fail(3, "unsupported_capability", "The rendered Orca prompt exceeds the current CLI transport limit (12000 UTF-16 units).")
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
 	if state.Kind == "execute" && state.Contract == "implementation" {

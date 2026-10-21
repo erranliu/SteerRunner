@@ -155,8 +155,8 @@ stateDiagram-v2
 ### A-IMPLEMENT → implement 内部 execute
 
 ```text
-根据以下 Spec、Plan 和参考材料完成实现及必要验证。
-材料：{{material_refs}}
+读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。
+材料（worktree 内的仓库相对路径）：{{material_refs}}
 用户补充（如有）：{{authorized_feedback}}
 将完成的代码改动提交到当前分支。
 完成实施及必要验证后，在最终回复末尾单独写一行：实施及必要验证已完成。
@@ -176,7 +176,7 @@ stateDiagram-v2
 ```text
 审计当前代码，直接修复发现的 P0–P2 问题并完成必要验证。
 实施及工作区来源：{{implementation_binding}}；实施结果：{{verified_implementation_result}}
-材料：{{material_refs}}
+材料（worktree 内的仓库相对路径）：{{material_refs}}
 验证后将最终代码改动追加提交到当前分支；无改动时沿用当前提交。
 报告实际修复的 P0–P2 总数及逐项问题、修复内容；未修复问题和未完成事项如实说明。
 最终回复必须为单一 JSON 对象，不添加代码围栏或额外正文。
