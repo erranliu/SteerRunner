@@ -74,6 +74,7 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
+		"run_observation":            map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
 		"recovery":                   RecoveryCapabilities(),
 		"service_start_schema":       json.RawMessage(Read("service-start.schema.json")),
 		"run_evidence":               json.RawMessage(Read("run-evidence.capabilities.json")),
@@ -82,8 +83,10 @@ func Capabilities() any {
 		"environment_check_fixtures": json.RawMessage(Read("environment-check.fixtures.json")),
 		"environment_check_schema":   json.RawMessage(Read("environment-check.schema.json")),
 		"native_session_viewer":      map[string]any{"adapters": viewerAdapters},
-		"instance_binding":           map[string]bool{"expected_instance_id": true},
-		"protocol":                   contracts.Protocol, "version": Version,
+		"instance_binding": map[string]any{"expected_instance_id": true, "full_binding": map[string]any{
+			"contract": contracts.ServiceBindingContract, "before_effects": true, "no_implicit_start": true, "commands": contracts.ServiceBindingCommands(),
+		}},
+		"protocol": contracts.Protocol, "version": Version,
 		"resource_version": 2, "resource_digest": Digest(),
 		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
@@ -91,7 +94,7 @@ func Capabilities() any {
 		"configuration_schemas": ConfigurationSchemas(),
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+		"commands":              []string{"version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "observe", "submit", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
 	}
