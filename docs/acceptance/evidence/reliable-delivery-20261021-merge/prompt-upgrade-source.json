@@ -1,0 +1,13 @@
+{
+  "pid": 46740,
+  "pattern": "^TestSRAuditPromptDefaultUpgrade$",
+  "runner_sha256": "9F27A9F5FEB5AD556DFBB2293D8CBAC787661E6EE845194EE01A43F56393A366",
+  "fixture_sha256": "8CA2709822B9A2175AAAFC3DDAD8CEA4628FF87C7819CECB9B43CA30C32D42DB",
+  "source_commit": "d4215729e474c964910e811e2be07a4d47bdbae8",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS",
+  "baseline_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner\\.evidence\\pr-merge-20261021\\baseline-main.exe",
+  "baseline_sha256": "C38AED2A2BEA1847D7E814DA883D4399DED86EEC5D1DCCC6B5F28657EB7B8CDB"
+}

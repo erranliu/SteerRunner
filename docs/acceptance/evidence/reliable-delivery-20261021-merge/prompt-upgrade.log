@@ -1,0 +1,7 @@
+=== RUN   TestSRAuditPromptDefaultUpgrade
+=== RUN   TestSRAuditPromptDefaultUpgrade/original-frozen
+=== RUN   TestSRAuditPromptDefaultUpgrade/new-default
+--- PASS: TestSRAuditPromptDefaultUpgrade (121.59s)
+    --- PASS: TestSRAuditPromptDefaultUpgrade/original-frozen (62.04s)
+    --- PASS: TestSRAuditPromptDefaultUpgrade/new-default (59.55s)
+PASS

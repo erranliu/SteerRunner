@@ -83,3 +83,13 @@ V2 原生 schema、V3 parser 策略、V4 静态校验缓存与 V5 通用退避�
 使用同一旧 Runner EXE 对整合构建重跑 `TestSRAuditPromptDefaultUpgrade`：两个子分支通过、零跳过，exit 0、160.11s；整合构建 SHA256=`108691919aff75d4f51263722d87c0339bf8eaf4553f1e9526485ddb03497406`。本轮仍是正式 CLI/IPC/SQLite 加受控业务/provider，不声称新增真实模型或 PR 交付资格。
 
 整合复验的[源码与结果](evidence/reliable-delivery-20261021/pr-integration.json)、[受控场景来源](evidence/reliable-delivery-20261021/pr-prompt-upgrade-source.json)、[受控场景结果](evidence/reliable-delivery-20261021/pr-prompt-upgrade-result.json)、[场景日志](evidence/reliable-delivery-20261021/pr-prompt-upgrade.log)、[Runner 定向回归](evidence/reliable-delivery-20261021/pr-runner-focused.log)及[调用方定向回归](evidence/reliable-delivery-20261021/pr-steerline-rules.log)单独保留。调用方 PR 为 [SteerLine #374](https://github.com/erranliu/SteerLine/pull/374)。
+
+## 授权合并前的最终复验
+
+同步 Runner 主干 `966fcef`（#45 的 worktree 文档路径）及 SteerLine 主干 `534ea902`（#373 的项目维护）。主干语义保留，链路文档区分开发路径与内容上传材料；调用方 quick 列表冲突保留双方用例。PR 缓存时间的显示、缺失和查询失败、纯投影副本隔离均在调用方实现，不改变 `observe`、完整受理 binding、PR 交付刷新或恢复预算。
+
+Runner 的 host、cli、storage、resources、workflow、reliable、reliable/operation 七包全部通过（各包 90s 上限）。使用最新主干的旧默认 EXE（SHA256 `c38aed2a2bea1847d7e814da883d4399ded86eec5d1dccc6b5f28657eb7b8cdb`）复验旧提示接管与新默认冻结：两个受控子分支通过、零跳过、exit 0、121.59s；候选构建 SHA256 `9f27a9f5feb5ad556dfbb2293d8cbac787661e6ee845194ee01a43f56393a366`。原实施轮和此前整合轮的证据仍固定原构建，不被本轮覆盖；本轮没有重跑原生模型。
+
+调用方最终前端两文件 18 项及生产构建通过；摘要/时间、原子观察、受理 binding、Outbox、API/HTTP 边界、quick 和新主干项目维护相关定向选择通过。原 HTTP 边界失败已由 #373 对无 backend owner 的 processwindow 归类修正；本 PR 未放宽 guard，本次 HTTP 复验通过。完整固定矩阵、实际安装与真实 OS 重启仍不在本轮范围。
+
+本轮[七包日志](evidence/reliable-delivery-20261021-merge/runner-tests.log)、[受控来源](evidence/reliable-delivery-20261021-merge/prompt-upgrade-source.json)、[受控结果](evidence/reliable-delivery-20261021-merge/prompt-upgrade-result.json)、[受控日志](evidence/reliable-delivery-20261021-merge/prompt-upgrade.log)及[旧主干构建来源](evidence/reliable-delivery-20261021-merge/baseline-main.exe.build.json)分别归档。用户已授权验证通过后合并两个 PR；部署安装环境不在本轮操作范围。
