@@ -52,6 +52,7 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	result["required"] = []string{"title", "repository", "documents", "execution", "workflow", "publication"}
 	properties := result["properties"].(map[string]any)
 	properties["title"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
+	properties["name_prefix"] = namePrefixSchema()
 	properties["execution"] = schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"]
 	properties["workflow"] = schemas["workflow"]
 	result["allOf"] = schemas["run_configuration"].(map[string]any)["allOf"]
@@ -78,4 +79,8 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	}
 	publication["oneOf"] = choices
 	return result
+}
+
+func namePrefixSchema() map[string]any {
+	return map[string]any{"type": "string", "minLength": 1, "maxLength": contracts.MaxNamePrefixLength, "pattern": contracts.NamePrefixPattern}
 }

@@ -41,6 +41,7 @@ type QuestionRouteIdentity struct {
 type SessionContext struct {
 	ProjectID         string
 	CorrelationID     string
+	NamePrefix        string
 	WorkflowRunID     string
 	ExecutionID       string
 	AttemptID         string

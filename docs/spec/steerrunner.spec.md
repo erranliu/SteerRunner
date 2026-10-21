@@ -209,6 +209,7 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 | --- | --- |
 | `title` | 非空任务标题，不参与资格推导 |
 | `correlation` | 可选对象，值为不透明字符串，如 caller/task_id/candidate_id；无 SteerLine 固定字段要求 |
+| `name_prefix` | 可选通用资源命名前缀，1–48 位小写 ASCII 字母/数字，以单个内部连字符分隔；拒绝显式空值/null。与 correlation 独立，Runner 不解析业务编号。缺省有效值为 sr；Orca worktree 使用 `<有效前缀>-<完整 Run ID>`，创建与回执核验共用冻结值，分支规则不变 |
 | `repository` | 必含 url、完整 base_revision、remote、base_branch；可选 local_path 作为本机已有仓库入口 |
 | `documents` | 必含独立 spec、plan；可选 references 数组；所有材料接受时固定 |
 | `workflow` | 必含 id/version；当前支持 development/2、development-audited/2，可选 prompt_overrides；精确支持矩阵见 capabilities |

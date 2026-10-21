@@ -21,7 +21,8 @@ func contentInputSchema(schemas map[string]any, id string) map[string]any {
 	p["materials"] = map[string]any{"type": "array", "items": map[string]any{"type": "object", "required": []string{"kind", "path", "content"}, "additionalProperties": false, "properties": map[string]any{"kind": map[string]any{"const": "inline"}, "path": map[string]any{"type": "string", "minLength": 1}, "content": map[string]any{"type": "string"}, "commit": map[string]any{"const": ""}}}}
 	return map[string]any{"type": "object", "required": []string{"title", "workflow", "execution", id}, "additionalProperties": false, "allOf": schemas["run_configuration"].(map[string]any)["allOf"], "properties": map[string]any{
 		"title": map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}, "correlation": shapeSchema(reflect.TypeFor[map[string]string]()), id: input,
-		"workflow":  map[string]any{"type": "object", "required": []string{"id", "version"}, "additionalProperties": false, "properties": map[string]any{"id": map[string]any{"const": id}, "version": map[string]any{"const": 1}}},
-		"execution": schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"],
+		"name_prefix": namePrefixSchema(),
+		"workflow":    map[string]any{"type": "object", "required": []string{"id", "version"}, "additionalProperties": false, "properties": map[string]any{"id": map[string]any{"const": id}, "version": map[string]any{"const": 1}}},
+		"execution":   schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"],
 	}}
 }
