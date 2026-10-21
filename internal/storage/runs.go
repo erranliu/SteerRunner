@@ -158,7 +158,19 @@ func (s *Store) Runs() ([]*runstate.Record, error) {
 	return result, rows.Err()
 }
 func (s *Store) Events(run, after string, limit int) (contracts.EventPage, error) {
+	return eventsFrom(s.db, run, after, limit)
+}
+
+type eventReader interface {
+	QueryRow(string, ...any) *sql.Row
+	Query(string, ...any) (*sql.Rows, error)
+}
+
+func eventsFrom(reader eventReader, run, after string, limit int) (contracts.EventPage, error) {
 	page := contracts.EventPage{Events: []contracts.Event{}}
+	if limit < 1 || limit > 500 {
+		return page, contracts.Fail(2, "invalid_arguments", "Event limit must be between 1 and 500.")
+	}
 	var sequence int64
 	if after != "" {
 		raw, err := base64.RawURLEncoding.DecodeString(after)
@@ -172,12 +184,12 @@ func (s *Store) Events(run, after string, limit int) (contracts.EventPage, error
 		}
 		if sequence > 0 {
 			var owner string
-			if s.db.QueryRow(`SELECT run_id FROM events WHERE seq=?`, sequence).Scan(&owner) != nil || owner != run {
+			if reader.QueryRow(`SELECT run_id FROM events WHERE seq=?`, sequence).Scan(&owner) != nil || owner != run {
 				return page, contracts.Fail(2, "invalid_cursor", "Unknown event cursor.")
 			}
 		}
 	}
-	rows, err := s.db.Query(`SELECT seq,body FROM events WHERE run_id=? AND seq>? ORDER BY seq LIMIT ?`, run, sequence, limit+1)
+	rows, err := reader.Query(`SELECT seq,body FROM events WHERE run_id=? AND seq>? ORDER BY seq LIMIT ?`, run, sequence, limit+1)
 	if err != nil {
 		return page, err
 	}

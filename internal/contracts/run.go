@@ -62,6 +62,7 @@ type RunRequest struct {
 	Conversation *ConversationInput `json:"conversation,omitempty"`
 	Generate     *GenerateInput     `json:"generate,omitempty"`
 	Title        string             `json:"title"`
+	NamePrefix   string             `json:"name_prefix,omitempty"`
 	Correlation  map[string]string  `json:"correlation,omitempty"`
 	Repository   Repository         `json:"repository,omitzero"`
 	Documents    Documents          `json:"documents,omitzero"`
@@ -206,6 +207,11 @@ func ValidateRun(data []byte) *Fault {
 	if DecodeStrict(data, &value) != nil || !plain(value.Title) {
 		return invalid
 	}
+	var fields map[string]json.RawMessage
+	_ = json.Unmarshal(data, &fields)
+	if _, present := fields["name_prefix"]; present && (len(value.NamePrefix) > MaxNamePrefixLength || !namePrefixPattern.MatchString(value.NamePrefix)) {
+		return invalid
+	}
 	if workflow.Content(value.Workflow.ID) {
 		return validateContentRun(data, value)
 	}
@@ -220,8 +226,6 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
-	var fields map[string]json.RawMessage
-	_ = json.Unmarshal(data, &fields)
 	configuration, _ := json.Marshal(map[string]json.RawMessage{"execution": fields["execution"], "workflow": fields["workflow"]})
 	if err := ValidateRunConfiguration(configuration); err != nil {
 		return err

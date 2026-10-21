@@ -32,7 +32,7 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	if r.Input.Workspace == nil || *r.Input.Workspace != s.WorkspacePlan || !b.StableExecutionID(s.Session.WorkflowRunID) {
 		return receipt, errors.New("workspace differs from original plan")
 	}
-	name := "sl-" + s.Session.CorrelationID + "-" + s.Session.WorkflowRunID
+	name := workspaceName(s)
 	var created workspaceCreation
 	if reconcile {
 		var saved b.LifecycleReceipt
@@ -179,12 +179,16 @@ func (l *Lifecycle) creationTimeout() time.Duration {
 }
 
 func (l *Lifecycle) workspaceCreationArgs(r b.LifecycleRequest, selector string) []string {
-	name := "sl-" + r.Snapshot.Session.CorrelationID + "-" + r.Snapshot.Session.WorkflowRunID
+	name := workspaceName(r.Snapshot)
 	args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--json"}
 	if l.setup.AgentLaunchCommand == "" {
 		args = append(args, "--agent", r.Snapshot.Ref.Agent.Name)
 	}
 	return args
+}
+
+func workspaceName(s b.LifecycleSnapshot) string {
+	return s.Session.NamePrefix + "-" + s.Session.WorkflowRunID
 }
 
 // Repository resolution is an Execute-only preparation query. Recovery uses

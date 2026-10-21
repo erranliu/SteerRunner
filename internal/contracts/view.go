@@ -187,3 +187,11 @@ type EventPage struct {
 	NextCursor string  `json:"next_cursor"`
 	HasMore    bool    `json:"has_more"`
 }
+
+const RunObservationContract = "steerrunner-run-observation/v1"
+
+type RunObservation struct {
+	Contract  string    `json:"contract"`
+	Run       RunView   `json:"run"`
+	EventPage EventPage `json:"event_page"`
+}

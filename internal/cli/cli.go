@@ -67,6 +67,12 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				parameter = argv[i]
 			}
 			switch name {
+			case "--expected-binding":
+				var binding contracts.ExpectedServiceBinding
+				if contracts.DecodeStrict([]byte(parameter), &binding) != nil || !binding.Valid() {
+					return value, contracts.Fail(2, "invalid_arguments", "Expected binding requires the complete published service identity.")
+				}
+				value.opts.ExpectedBinding = &binding
 			case "--candidate":
 				value.candidate = parameter
 			case "--kind":
@@ -131,7 +137,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	}
 	switch value.opts.Command {
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -157,6 +163,12 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if value.opts.Command != "serve" || err != nil || len(decoded) != 16 {
 			return value, contracts.Fail(2, "invalid_arguments", "Invalid internal startup identity.")
 		}
+	}
+	if value.opts.ExpectedBinding != nil {
+		if !contracts.ServiceBindingCommand(value.opts.Command) || value.opts.ExpectedInstanceID != "" && value.opts.ExpectedInstanceID != value.opts.ExpectedBinding.InstanceID {
+			return value, contracts.Fail(2, "invalid_arguments", "Expected binding applies only to its published resident commands and cannot conflict with expected instance.")
+		}
+		value.opts.ExpectedInstanceID = value.opts.ExpectedBinding.InstanceID
 	}
 	if value.opts.ExpectedInstanceID != "" {
 		switch value.opts.Command {
@@ -186,7 +198,7 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		if selectors != 1 || value.opts.CheckID != "" || value.opts.RefreshPR && value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
 		}
-	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
+	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		if selectors != 1 || value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "This command requires only run-id.")
 		}
@@ -195,10 +207,10 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			return value, contracts.Fail(2, "invalid_arguments", "This command does not accept a target identifier.")
 		}
 	}
-	if value.opts.Command != "events" && value.opts.Command != "history" && (value.opts.After != "" || value.opts.Limit != 0) || value.opts.Command != "inspect" && value.opts.RefreshPR {
+	if value.opts.Command != "events" && value.opts.Command != "history" && value.opts.Command != "observe" && (value.opts.After != "" || value.opts.Limit != 0) || value.opts.Command != "inspect" && value.opts.RefreshPR {
 		return value, contracts.Fail(2, "invalid_arguments", "An option does not apply to this command.")
 	}
-	if (value.opts.Command == "events" || value.opts.Command == "history") && value.opts.Limit == 0 {
+	if (value.opts.Command == "events" || value.opts.Command == "history" || value.opts.Command == "observe") && value.opts.Limit == 0 {
 		value.opts.Limit = 200
 	}
 	if value.opts.Command == "artifacts read" {
@@ -249,7 +261,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline {
 		executable, err := os.Executable()
@@ -330,7 +342,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
 	defer cancel()
-	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && (options.opts.Command == "submit" || options.opts.Command == "environment-check start") {
+	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && options.opts.ExpectedBinding == nil && (options.opts.Command == "submit" || options.opts.Command == "environment-check start") {
 		executable, err := os.Executable()
 		if err != nil {
 			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))
