@@ -21,6 +21,7 @@ type pendingResourcePort struct {
 	executes      int
 	observed      []string
 	originalInput string
+	failure       string
 }
 
 type stagePreparationPort struct {
@@ -78,11 +79,63 @@ func (p *pendingResourcePort) Reconcile(_ context.Context, r b.LifecycleRequest)
 	}
 	p.observed = append(p.observed, r.Operation.ID)
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationAccepted, State: b.LifecycleStateFacts{ResourceID: "original-terminal", ResourcePending: true}}
+	if p.failure != "" {
+		receipt.Disposition = b.OperationRejected
+		receipt.State.ResourcePending = false
+		receipt.Diagnostic = p.failure
+		return receipt, nil, nil
+	}
 	if p.confirm {
 		receipt.Disposition = b.OperationConfirmed
 		receipt.State.ResourcePending = false
 	}
 	return receipt, nil, nil
+}
+
+func TestSRStartupFailureBlocksBeforePreparationDeadline(t *testing.T) {
+	e, w, _ := operationEngine(t)
+	i, err := e.saveIntent("run", e.runs["run"].Clone(), b.LifecycleCandidate{Action: b.LifecycleCreateResource, Input: b.LifecycleInput{Resource: &b.ResourceIntent{Purpose: "agent-start", Objective: "fixed original launch"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := e.runs["run"].Clone()
+	r.Intents[i].Request.Operation.Status = b.OperationAccepted
+	r.Intents[i].Receipt = &b.LifecycleReceipt{Operation: r.Intents[i].Request.Operation, Disposition: b.OperationAccepted, State: b.LifecycleStateFacts{ResourceID: "original-terminal", ResourcePending: true}}
+	r.Snapshot.Operations[i].Status = b.OperationAccepted
+	r.Snapshot.Session.SessionID = "original-session"
+	r.PreparationDeadline = time.Now().Add(3 * time.Minute)
+	if err := e.commitLocked(r, nil, "resource_accepted"); err != nil {
+		t.Fatal(err)
+	}
+	port := &pendingResourcePort{originalInput: r.Intents[i].Request.Operation.LifecycleIdentity.InputBindingDigest, failure: "Native terminal startup failed: authentication_api_socket_path_too_long; no business input sent"}
+	w.port = port
+	if e.advance("run", w) {
+		t.Fatal("failed startup advanced to business execution")
+	}
+	for _, expired := range []bool{false, true} {
+		current := e.runs["run"]
+		view := current.View()
+		if view.Status != "blocked" || view.Diagnostic != port.failure || current.Phase != "operation_rejected" || current.Allowed || !current.ResumeRequired || current.NativeStarted || current.Intents[i].NeedsReconciliation() {
+			t.Fatal("Run did not immediately expose the original startup error", view)
+		}
+		saved, err := e.store.Runs()
+		if err != nil || len(saved) != 1 || saved[0].View().Diagnostic != port.failure || saved[0].Status != "blocked" {
+			t.Fatal("startup failure was not persisted", err)
+		}
+		if expired {
+			next := current.Clone()
+			next.PreparationDeadline = time.Now().Add(-time.Second)
+			if err := e.commitLocked(next, nil, "test_deadline_passed"); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if e.advance("run", w) || e.runs["run"].Diagnostic != port.failure {
+			t.Fatal("startup failure was replayed or replaced by a timeout")
+		}
+	}
+	if port.executes != 0 || len(port.observed) != 1 || len(e.runs["run"].Intents) != 1 {
+		t.Fatal("rejected launch was retried or recreated", port.executes, port.observed)
+	}
 }
 
 func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {

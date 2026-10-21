@@ -101,6 +101,13 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 		receipt.Disposition = b.OperationAccepted
 		if e := l.readTerminalReadiness(&state, true); e != nil {
 			receipt.Implementation, _ = l.envelope(r.Snapshot, state)
+			var startup *terminalStartupError
+			if errors.As(e, &startup) {
+				receipt.Disposition = b.OperationRejected
+				receipt.State.ResourcePending = false
+				receipt.Diagnostic = startup.Error()
+				return receipt, nil
+			}
 			if errors.Is(e, os.ErrNotExist) {
 				receipt.Diagnostic = "Waiting for original " + l.profile.Terminal.Agent + " native preparation"
 				return receipt, nil

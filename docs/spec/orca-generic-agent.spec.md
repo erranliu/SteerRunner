@@ -130,6 +130,8 @@ stop 先撤销后继授权；受管路径撤销原 Job、证明写者退出，�
 
 启动尚未产生 agent owner 时，不能以文件缺失证明退出。helper 在同步准备失败后可导出同一私有目录中的正向 startup-exit 事实：冻结构建/Run/配置、原 helper 进程身份、未启动 agent、认证关闭及退出时刻；只有该原进程确已退出，且原状态从未确认 readiness/输入，才允许沿原 close 收尾。准备仍在进行或事实缺失/冲突时保持未核实，不另建实例。
 
+新 helper 的 startup-exit 同时保留有长度上限、已遮蔽认证环境秘密的具体启动错误。Runner 核验上述事实后立即拒绝原启动操作，将 Run 置为 blocked 并显示该原因，不继续等待 preparation deadline，也不重发启动或业务输入。旧记录缺少具体错误时显示原 helper 在 worker 启动前退出；记录已写出但原 helper 尚存活时仍等待原进程退出。
+
 三对象必须通过业务 needs_input 后的 reply 和原会话反馈。原生工具问题是独立可选能力，支持时精确绑定 session/turn/question；不支持时明确阻断，不能猜 TUI 输入位置。旧/重复答案、stop 后输入不得发送。
 
 ## 6. 权限、认证与装载边界
@@ -137,6 +139,8 @@ stop 先撤销后继授权；受管路径撤销原 Job、证明写者退出，�
 维持 sandbox 默认、显式 full_access、始终 never。正式扩展、tool hook 拦截或 Orca 代答审批都不证明原生 OS 沙箱。每对象先验证一个明确权限/认证组合；只有 full_access 通过时只声明该范围，不能自动升级 sandbox 或借旧 Codex 报告通过。
 
 Runner 冻结策略并管理已有单仓库、限时、可撤销认证资源；执行主机落实各 agent 实际工具绑定、写根、模式及 owned 子进程检查。Codex helper 保持专属，Pi/DSH 复用以真实绑定为依据；不强制重构整套 broker/helper，也不继承宿主广域登录验收。
+
+新 Pi/DSH Run 的认证 transport 以服务 state-dir 为根，生成 `a/<身份摘要>/s`，避免在 socket 路径重复嵌入完整 Run ID；摘要仍绑定 Run、attempt、generation、配置和工作区。仅将该摘要目录授予原工具，不扩大写权限到 state-dir。已有冻结配置保留原路径。
 
 扩展按 Run/原 session 隔离，不能吞掉用户原有 hooks、修改全局 profile、默认联网安装依赖或影响其它 Run。首期只验一个明确的受管扩展集合及装载顺序，不承诺任意第三方扩展兼容；无法在该实例按正式配置隔离，或运行中出现未声明扩展/装载变化时，明确拒绝或保持未核实，不为此建设扩展冲突管理系统。所选集合内部合法的重试/压缩/续跑仍须等到真正 settled；用定向反例检查未知改写、重载和异常，不展开生态组合矩阵。不能仅凭扩展文件存在或配置 enabled 就发送业务。凭据、launch token、私有路径和非本 Run 原文不进入公开投影。
 
