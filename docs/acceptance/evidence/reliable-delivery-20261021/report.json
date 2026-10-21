@@ -1,0 +1,56 @@
+{
+  "scope": "reliable delivery simplification",
+  "date": "2026-10-21",
+  "baseline_check": "passed",
+  "D1": "implemented_and_checked",
+  "D2": "implemented_read_only_projection_and_component",
+  "D3": "existing_async_path_retained_pending_stop_regression_passed",
+  "V1": {
+    "native_cases_passed": 4,
+    "extra_reports_before": 2,
+    "parser_default": "disabled",
+    "sample_ms_before": 111360,
+    "old_frozen_prompt": "preserved",
+    "extra_reports_after": 0,
+    "native_schema": "unchanged",
+    "new_audit_prompt_default": "promoted",
+    "sample_ms_after": 76170,
+    "native_trial": "native-trial-09",
+    "controlled_upgrade": "2 subcases passed"
+  },
+  "V2": "not_selected_no_native_schema_change",
+  "V3": "not_selected_default_already_disabled",
+  "V4": "no_cache_no_demonstrated_gain",
+  "V5": "retained_distinct_retry_policies",
+  "tests": {
+    "runner_application_focused_top_tests": 16,
+    "vet": "passed",
+    "web_cases": 15,
+    "projection": "passed",
+    "api_boundary": "passed",
+    "web_build": "passed",
+    "runner_reliable_packages": "passed",
+    "runner_application_focused_seconds": 104.834,
+    "quick_selection": "passed",
+    "bridge_taskrunner_packages": "passed",
+    "web_files": 2
+  },
+  "known_failures": [
+    "SteerLine HTTPConsumerBoundary: pre-existing projectconnection -> processwindow dependency",
+    "Runner broad application selector: 6-minute aggregate timeout; original run remains failed; focused affected cases passed",
+    "native-trial-01..08 infrastructure/fixture failures and interruptions preserved"
+  ],
+  "deployment": "not_performed",
+  "cleanup": {
+    "remaining_original_native": 0,
+    "native_receipts_checked": 29
+  },
+  "evidence": [
+    "native-comparison.json",
+    "prompt-upgrade-result.json",
+    "promotion.json",
+    "source-manifest.json",
+    "runner-versions.json",
+    "cleanup.json"
+  ]
+}

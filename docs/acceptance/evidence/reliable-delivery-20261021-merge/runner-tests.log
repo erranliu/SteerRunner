@@ -1,0 +1,7 @@
+ok  	github.com/erranliu/SteerRunner/internal/host	4.197s
+ok  	github.com/erranliu/SteerRunner/internal/cli	3.485s
+ok  	github.com/erranliu/SteerRunner/internal/storage	2.435s
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.492s
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.223s
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable	0.786s
+ok  	github.com/erranliu/SteerRunner/internal/execution/reliable/operation	0.900s

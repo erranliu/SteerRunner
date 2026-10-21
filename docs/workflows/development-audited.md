@@ -1,6 +1,8 @@
 # Workflow：development-audited（确认稿）
 
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+
+2026-10-21 默认提示优化：原审计结束优先给出现有审计 JSON 契约，减少额外结果获取。仅修改新 Run 的默认提示文本，原冻结提示、流程边、预算、模型与来源核验不变；没有原生 schema 强约束，非 JSON 仍沿既有后备。原生小样本和跨构建旧提示保留/新默认验证见[本轮验收](../acceptance/reliable-delivery-simplification.md)。
 日期：2026-10-17（首次设计 2026-10-16）。实施前业务基线 `development-audited/1`；下文为 `development-audited/2` 定义，独立解析按总 Spec §6 的最小边界实施和验收。[统一能力与边界](README.md) · [普通开发版本](development.md) · [总 Spec](../spec/result-acquisition.spec.md)。本定义与普通开发共用统一能力，仅通过状态、边、提示词和核验加入“代码审计并修复”。
 
 ## 1. 实施前基线与本定义
@@ -84,7 +86,7 @@ stateDiagram-v2
 
 | 内部动作 / 结果 | 规则 |
 | --- | --- |
-| execute | PromptExecutionAgent 在原会话以审计模型审计当前代码，直接修复发现的 P0–P2 并完成必要验证，随后自然语言报告实际修复数量和内容。修复是本次正式执行的业务，非解析/补报行为；不强制 JSON |
+| execute | PromptExecutionAgent 在原会话以审计模型审计当前代码，直接修复发现的 P0–P2 并完成必要验证；默认提示要求最终给出已有审计 JSON 契约。修复是本次正式执行的业务，非解析/补报行为；不增加原生 schema 强约束，格式不足仍沿原后备 |
 | 程序提取 | 原审计已经给出完整、可信、契约有效的机器结构时直接核验，无需 parse/report；这不是从自然语言猜结论 |
 | parse | ParseResult / A-AUDIT-PARSE，每原审计最多一次；仅整理真实审计 final 和必要既有 artifact。parser 开启且材料满足总 Spec 大小/完整性门槛时才选择；否则直接 report。明确环境不可用也仅在已结算后后备；unknown、来源冲突或已知业务副作用不自动后备；固定命令权限内的本地 command/todo 违规在确认停止且原源仍适用后可单次补报；MCP/文件修改/未知工具事件阻断 |
 | report | PromptExecutionAgent / A-AUDIT-REPORT，原会话/审计模型，每原审计最多一次；只整理指定审计修复，不重审、不修代码、不补检查。格式错误、缺结论或仍不足且已结算时阻断获取，无报告修正或再审输入 |
@@ -177,7 +179,10 @@ stateDiagram-v2
 材料（worktree 内的仓库相对路径）：{{material_refs}}
 验证后将最终代码改动追加提交到当前分支；无改动时沿用当前提交。
 报告实际修复的 P0–P2 总数及逐项问题、修复内容；未修复问题和未完成事项如实说明。
+最终回复必须为单一 JSON 对象，不添加代码围栏或额外正文。
 ```
+
+默认文本随后附现有 `ResultInstruction("audit")` 的完整契约：outcome/summary、实际 fixed_count/fixed_issues/remaining_issues、未完成时的问题或 blocker。只有明确知道零修复时才写 0 和空列表；JSON 合法不替代原生、Git、业务与 PR 核验。自定义 audit.code 覆盖和旧 Run 的冻结文本仍按原值使用。
 
 ### A-AUDIT-PARSE → audit.code 内部 parse（仅独立解析会话）
 
@@ -224,7 +229,7 @@ Runner 对当前源只发一次正式审计修复输入，工作在这次 execut
 
 每原实施（含明确人工续执行）最多 1 次实施 report；每原审计最多 1 次独立 parse 和 1 次原 agent report；每次原发布最多 1 次发布 report。全部无格式修正或报告重试。完整可信机器审计结果直接核验；普通实施/发布命中成功行且核验通过也零额外获取模型调用。只有审计获取可探测/启动 parser；其他阶段即使 parser 已开启也不依赖其环境。解析关闭、不适用或明确不可用时采用预算内审计补报，不能绕过真正审计或放宽结论核验。
 
-原执行、审计及补报 final 原样保留，解析候选单列并绑定真实审计和当前实施源。新实施原子失效旧获取资格及审计完成资格；迟到解析不能推进新源。原外层/内部进度、操作意图和预算均在现 Run/Record/Commit 管理，不建立第二套权威。重启、resume、补读不重置次数、不自动重发提示词或重启 parser；显式恢复只续未发送意图/已授权且可结算的获取，不默认实施或重审。
+原执行、审计及补报 final 原样保留，解析候选单列并绑定真实审计和当前实施源。新实施原子失效旧获取资格及审计完成资格；迟到解析不能推进新源。原外层/内部进度、操作意图和预算均在现 Run/Record/Commit 管理，不建立第二套权威。兼容服务重启保留原授权和等待状态，补收原 owner/parser 事实后，可自动接续已证明未发送的后继及具备资格的获取意图；原 in_flight/未知动作仅对账。重启、resume、补读不重置次数、不重发已尝试提示词或重启未知 parser。需要显式恢复时，只续原授权范围，不默认实施或重审。详见[当前换代契约](../spec/service-generation-recovery.spec.md)。
 
 stop、服务换代、未知操作优先于所有边，所有 executor/parser owned 资源纳入原停止核验。可信 final 缺失先原来源补读，原生失败/冲突不通过解析或补报解除。实施 input 的用户输入不能越过原会话/原操作资格；审计原生问答仍承接原请求。本次发布产生的 PR 可独立绑定、核验、刷新 merged，不因此越过当前审计或提交 TaskDelivery。
 

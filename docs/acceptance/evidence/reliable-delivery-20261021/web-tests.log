@@ -1,0 +1,12 @@
+
+> steerline-web@0.1.0 test
+> vitest run src/features/runs/delivery-summary.test.tsx src/features/runs/runs.test.tsx
+
+
+ RUN  v5.0.4 C:/Project/SteerLine/web
+
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  10:39:21
+   Duration  4.22s (environment 50%, tests 29%, setup 10%, import 7%, transform 4%)

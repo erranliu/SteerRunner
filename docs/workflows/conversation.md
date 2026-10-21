@@ -54,7 +54,10 @@ close 的资源结算与原轮结果分别返回，不把接收关闭命令当�
 分页返回原指令、后续输入、问题、回答和各轮完整 final/诊断。每个结果有 command/attempt/session/
 turn、原生 outcome、final item/source 和 verified。历史不收集完整工具正文。
 
-重启只观察/对账原执行，撤销新输入授权。空闲会话显式 resume 核验原 thread、目录和原 writer，
-再显式 message；必要时创建新的 owned app-server 进程并 resume 原 thread，不新建 thread 或
-重放历史。活动轮、未知发送/回答/中断不能靠 resume 解除未知；无证据明确未核实。
+兼容服务重启保留原授权、会话和业务等待，接回原执行并补收原轮结果；空闲会话在原授权与
+资格仍有效时可直接显式 message，无需因重启额外 resume。仅原执行资源丢失或原状态要求
+人工恢复时，才显式 resume，核验原 thread、目录、旧 writer 缺席及未知操作已解决；必要时
+创建新的 owned app-server 进程并 resume 原 thread，不新建 thread 或重放历史。活动轮、未知
+发送/回答/中断不能靠 resume 解除未知；旧 epoch 答案仍需人工确认。详见
+[服务换代恢复](../spec/service-generation-recovery.spec.md)和[可靠性交付链路](../reliable-delivery.md)。
 目录及原生只读权限边界沿 [generate](generate.md)。正式规划文档由调用方保存。

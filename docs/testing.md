@@ -1,5 +1,10 @@
 # SteerRunner L1–L4 测试指南
 
+审计默认提示简化的定向入口与结果见[本轮验收](acceptance/reliable-delivery-simplification.md)。
+原生能力对比使用显式选择的[隔离试验](../tests/experiments/README.md)；跨构建冻结验证使用
+`scripts/test-foundation.ps1 -Pattern '^TestSRAuditPromptDefaultUpgrade$' -BaselineExe <变更前EXE> -OutDir <新目录>`。
+后者是需原 EXE 的补充受控场景，不改默认 22 项目录或以编译/跳过代替资格。
+
 内容流程的最小定向入口为 `./scripts/test-content-workflows.ps1`；附加
 `-NativeExecutable <已有原生 Codex 0.159.2 EXE> -Model <可用模型>` 后，在三个内容受控场景
 通过后运行真实生成/多轮/中断/重启与结算。原生测试创建新的 `C:/srt/cw-*`，不使用

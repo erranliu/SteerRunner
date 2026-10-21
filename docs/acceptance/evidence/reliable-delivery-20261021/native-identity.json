@@ -1,0 +1,8 @@
+{
+  "pid": 49496,
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner\\.evidence\\reliable-delivery-20261021\\native-trial-09",
+  "native_shell": "C:\\Users\\lmas1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+  "shell_sha256": "362A356CE7F0940EC74F73A8FC2C990A2CC24A38A11C90BBD8ECA947110AD139",
+  "native_sha256": "52F75C649BEBB8001102A1DD129C1EA6D02B0940321E6D7E82EE0526753BD58A",
+  "fixture_sha256": "89C32E8D616104E133F77824C4BB36CFAFD461041E139BA670A1EE50DC6DFF85"
+}

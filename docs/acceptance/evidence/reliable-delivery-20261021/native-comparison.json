@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "sample": "zero",
+      "variant": "baseline",
+      "model": "gpt-6.1-sol",
+      "session": "01a15c5f-a88f-7a23-83bc-d231ad8606bc",
+      "final": "{\"outcome\":\"done\",\"summary\":\"原审计已完成：sum.cjs 符合给定规格，未发现 P0–P2 问题。已使用指定 Node 执行未修改的 check.cjs，输出 checks passed，退出码为 0。无代码改动，工作区干净，沿用 audit 分支当前提交 750a45fd4353b1db91512997c18326bbcb1e3844，未追加提交。无未完成事项。本次仅整理已有结果，未重新审计或执行检查。\",\"fixed_count\":0,\"fixed_issues\":[],\"remaining_issues\":[]}",
+      "extra_reports": 1,
+      "elapsed_ms": 40914,
+      "fixed_count": 0,
+      "pre_head": "750a45fd4353b1db91512997c18326bbcb1e3844",
+      "post_head": "750a45fd4353b1db91512997c18326bbcb1e3844",
+      "clean": true
+    },
+    {
+      "sample": "zero",
+      "variant": "json-override",
+      "model": "gpt-6.1-sol",
+      "session": "01a15c60-4af7-7980-9413-14bf5aeb2d1f",
+      "final": "{\"outcome\":\"done\",\"summary\":\"已完成代码审计：sum.cjs 仅累加严格正整数，空数组和全负数数组返回 0，符合规格。使用绝对路径 Node 执行未修改的 check.cjs，验证通过。未发现 P0–P2 问题，无代码改动，沿用当前提交 a050f33aa185a5400af04a51ba9ad9cd90c38ba7。\",\"fixed_count\":0,\"fixed_issues\":[],\"remaining_issues\":[]}",
+      "extra_reports": 0,
+      "elapsed_ms": 29284,
+      "fixed_count": 0,
+      "pre_head": "a050f33aa185a5400af04a51ba9ad9cd90c38ba7",
+      "post_head": "a050f33aa185a5400af04a51ba9ad9cd90c38ba7",
+      "clean": true
+    },
+    {
+      "sample": "repair",
+      "variant": "baseline",
+      "model": "gpt-6.1-sol",
+      "session": "01a15c60-c052-7a31-9f52-4e1759098dcc",
+      "final": "{\"outcome\":\"done\",\"summary\":\"已完成规格审计，修复1个P2问题。未修改的check.cjs验证通过，git diff --check通过。改动已提交到audit分支，提交为6a758a55bf9e490ced206fc8574a0d2c547b6e0f，父提交为8e761d44875a2aff1b4d9c40cf1c3ccee000fa88。工作区干净，无待处理操作状态。提交时出现共享.git/packed-refs.lock权限警告，但提交退出码为0，后续核验确认提交成功。无未完成事项。\",\"fixed_count\":1,\"fixed_issues\":[{\"severity\":\"P2\",\"issue\":\"sum.cjs将负数也计入总和，导致混合正负数及全负数输入不符合只累加严格正整数的规格。\",\"repair\":\"reduce仅在当前值大于0时累加，否则保留累计值，初始值仍为0。\",\"evidence\":\"sum.cjs第1行由values.reduce((a, b) =\u003e a + b, 0)改为values.reduce((a, b) =\u003e b \u003e 0 ? a + b : a, 0)。修复前原有check.cjs在混合输入断言失败（0 !== 5），修复后及提交后均输出checks passed；提交仅修改sum.cjs。\"}],\"remaining_issues\":[]}",
+      "extra_reports": 1,
+      "elapsed_ms": 70446,
+      "fixed_count": 1,
+      "pre_head": "8e761d44875a2aff1b4d9c40cf1c3ccee000fa88",
+      "post_head": "6a758a55bf9e490ced206fc8574a0d2c547b6e0f",
+      "clean": true
+    },
+    {
+      "sample": "repair",
+      "variant": "json-override",
+      "model": "gpt-6.1-sol",
+      "session": "01a15c61-d636-7423-81ba-0b3e8e0d302a",
+      "final": "{\"outcome\":\"done\",\"summary\":\"审计完成，修复 1 项 P2 问题。未修改的 check.cjs 验证通过，git diff --check 通过。已追加提交 5c6de7896664a0f2a274567a7d67d4289d9056bb 到当前 audit 分支，父提交与 pre_head 一致，仅修改 sum.cjs，工作区干净，无待完成合并等状态。提交返回码为 0；出现共享 .git/packed-refs.lock 权限警告，经核验提交成功且无 AUTO_MERGE 残留。无未完成事项。\",\"fixed_count\":1,\"fixed_issues\":[{\"severity\":\"P2\",\"issue\":\"求和函数错误地累加负整数，违反仅累加严格正整数的规格。\",\"repair\":\"累加时仅在元素大于零时加入总和，保留零初始值。\",\"evidence\":\"sum.cjs:1；修复前 check.cjs 在 [3,-5,2,0] 用例得到 0 而非 5；修复后原有全部检查通过。\"}],\"remaining_issues\":[]}",
+      "extra_reports": 0,
+      "elapsed_ms": 46886,
+      "fixed_count": 1,
+      "pre_head": "33a5e6605463c2969c3ecd0182cc8ba220a8723a",
+      "post_head": "5c6de7896664a0f2a274567a7d67d4289d9056bb",
+      "clean": true
+    }
+  ],
+  "default_changed": false,
+  "failed": false,
+  "scope": "native adapter/prompt trial; not full Run or takeover acceptance"
+}
