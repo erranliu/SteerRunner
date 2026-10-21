@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -26,7 +27,7 @@ type server struct {
 	engine   *application.Engine
 	endpoint endpoint
 	store    *storage.Store
-	mutex    sync.Mutex // command acceptance and service state are serialized
+	mutex    sync.RWMutex // admission spans handlers; stop waits for admitted calls
 	stopping bool
 	stop     chan string
 	logger   *log.Logger
@@ -247,6 +248,29 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	if wire.Options.ExpectedInstanceID != "" && wire.Options.ExpectedInstanceID != s.endpoint.Service.InstanceID {
 		return reject(contracts.Fail(5, "stale_instance", "Original Runner instance changed; restart SteerLine explicitly."))
 	}
+	if wire.Options.Command == "service stop" {
+		s.mutex.Lock()
+		defer s.mutex.Unlock()
+	} else {
+		s.mutex.RLock()
+		defer s.mutex.RUnlock()
+	}
+	if expected := wire.Options.ExpectedBinding; expected != nil {
+		if !expected.Valid() || !contracts.ServiceBindingCommand(wire.Options.Command) {
+			return reject(contracts.Fail(2, "invalid_arguments", "Incomplete binding or uncovered command."))
+		}
+		dir, err := Normalize(expected.StateDir)
+		actual := s.endpoint.Service
+		if err != nil || expected.Protocol != actual.Protocol || expected.InstanceID != actual.InstanceID || dir != actual.StateDir || !strings.EqualFold(expected.ExecutableSHA256, actual.ExecutableSHA256) || expected.Version != actual.Version || !strings.EqualFold(expected.ResourceDigest, actual.ResourceDigest) {
+			return reject(contracts.Fail(5, "binding_mismatch", "Original Runner service binding differs; restart SteerLine explicitly."))
+		}
+		if s.stopping || actual.Status != "ready" {
+			return reject(contracts.Fail(5, "invalid_state", "Original Runner is not ready; no new action was admitted."))
+		}
+	}
+	if s.stopping && contracts.ServiceBindingCommand(wire.Options.Command) {
+		return reject(contracts.Fail(5, "invalid_state", "Runner is stopping; no new action was admitted."))
+	}
 	if wire.Request != nil {
 		if wire.Request.Protocol != contracts.Protocol || !contracts.ValidRequestID(id) {
 			return reject(contracts.Fail(2, "invalid_request", "Invalid request envelope."))
@@ -256,6 +280,8 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 	}
 	switch wire.Options.Command {
+	case "observe":
+		return s.engine.Observe(wire.Options.RunID, wire.Options.After, wire.Options.Limit), false
 	case "service verify-takeover":
 		caps, sha, failure := candidateCapabilities(context.Background(), wire.Options.Candidate)
 		if failure != nil {
@@ -268,8 +294,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	case "environment-check start", "environment-check stop", "environment-check inspect":
 		return s.engine.HandleEnvironmentCheck(wire.Options.Command, wire.Options.CheckID, wire.Options.RequestID, wire.Request), false
 	case "open-native-session":
-		s.mutex.Lock()
-		defer s.mutex.Unlock()
 		if s.stopping || wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))
 		}
@@ -277,8 +301,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	case "submit", "inspect", "last-message", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
 		return s.engine.Handle(wire.Options.Command, wire.Options.RunID, wire.Options.RequestID, wire.Options.CommandID, wire.Options.After, wire.Options.Limit, wire.Options.RefreshPR, wire.Request), false
 	}
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
 	switch wire.Options.Command {
 	case "service status":
 		info := s.endpoint.Service
