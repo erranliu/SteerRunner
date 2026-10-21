@@ -1,0 +1,19 @@
+
+> steerline-web@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 2161 modules transformed.
+rendering chunks...
+computing gzip size...
+server/dist/index.html                               0.41 kB │ gzip:   0.31 kB
+server/dist/assets/dag-DLioOiRN.css                 15.41 kB │ gzip:   2.56 kB
+server/dist/assets/index-CDMGPw3x.css               24.26 kB │ gzip:   6.47 kB
+server/dist/assets/task-detail-Cip9RQ3c.js           5.17 kB │ gzip:   2.33 kB
+server/dist/assets/environment-checks-BhCveFE1.js   11.64 kB │ gzip:   4.59 kB
+server/dist/assets/runs-I34mYnl-.js                 30.59 kB │ gzip:  10.19 kB
+server/dist/assets/dag-UWKlXs3S.js                 183.15 kB │ gzip:  59.29 kB
+server/dist/assets/index-DUskNSZt.js               368.95 kB │ gzip: 117.22 kB
+
+✓ built in 1.86s

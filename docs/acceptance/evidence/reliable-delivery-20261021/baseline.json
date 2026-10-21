@@ -1,0 +1,30 @@
+{
+  "captured_at_utc": "2026-10-21T02:29:15.0699435Z",
+  "runner_commit": "8261310d5f2d1edb6fa0c81ba05fa4119b561386",
+  "runner_status": [
+    " M README.md",
+    " M docs/workflows/conversation.md",
+    "?? docs/reliable-delivery.md"
+  ],
+  "steerline_commit": "36d4f5967e9ecc2a9e02b0f124e8bbf3aff77d50",
+  "steerline_status": [],
+  "codex_executable": "C:\\Users\\lmas1\\AppData\\Local\\OpenAI\\Codex\\bin\\896a0166b774037a\\codex.exe",
+  "codex_version": "codex-cli 0.159.2",
+  "source_hashes": {
+    "C:\\Project\\SteerLine\\internal\\runnerbridge\\bridge.go": "4CBF568E0FE6996E74D15683503F53CEC70B2313A37A1F652D7D0E5820C9F76E",
+    "internal/execution/workflow/definition.go": "AE4CF2C8CFB2DEF4F62B124FBF969BBDEFC9433E00D32F816634E564F004CE79",
+    "internal/execution/workflow/prompt.go": "FA7726E31290A906D76FD260B0313E8AE13053989D20425200113BAE03EAF69B",
+    "C:\\Project\\SteerLine\\web\\src\\features\\runs\\runs.tsx": "C2963D62D4D37B993D2CA8DA68F7061C164EB0CDEA4600D9934129F255824B4E",
+    "internal/execution/workflow/route.go": "85FDF4E18B1BD9ABA33F6C3FA8DA228C1DD9AB031ACB2E0B1E00FD3F0589C48A",
+    "internal/execution/resultacquisition/config.go": "E988B259D8E37424B89A353CFF9BFFA09AFA69A1AFCFBBBDC5CEF820428C6CCF",
+    "C:\\Project\\SteerLine\\internal\\taskrunner\\projection.go": "373B204A2BAE35CFD03E27121544CFB6B5133BD0AB8243B1F598C08C66192686"
+  },
+  "observations": {
+    "audited_business_inputs": 3,
+    "command_reconciliation": "existing Bridge.Step/deliver",
+    "baseline_native_comparison": "pending isolated experiment",
+    "parser_default_enabled": false,
+    "development_business_inputs": 2,
+    "latency": "not inferred from code"
+  }
+}

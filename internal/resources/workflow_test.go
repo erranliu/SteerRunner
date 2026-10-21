@@ -38,5 +38,10 @@ func TestSRWorkflowSelection(t *testing.T) {
 				t.Fatal("missing prompt", step)
 			}
 		}
+		for _, state := range p.States {
+			if state.PromptKey != "" && prompts[state.PromptKey] != state.Prompt {
+				t.Fatal("published prompt differs from the frozen execution default", state.PromptKey)
+			}
+		}
 	}
 }

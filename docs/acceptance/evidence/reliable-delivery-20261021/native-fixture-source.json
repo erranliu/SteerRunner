@@ -1,0 +1,5 @@
+{
+  "source_sha256": "3D1F8E02BE3AA519EFE9B97685C80A1F82E1439EFFB96A603DFE28B383199D52",
+  "binary": "89C32E8D616104E133F77824C4BB36CFAFD461041E139BA670A1EE50DC6DFF85",
+  "source_note": "Fixture source used for native-trial-09; production workflow/prompt defaults were the pre-change baseline at compilation"
+}

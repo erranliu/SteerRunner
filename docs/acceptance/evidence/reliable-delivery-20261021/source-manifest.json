@@ -1,0 +1,116 @@
+{
+  "sources": [
+    {
+      "repo": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner",
+      "sha256": "AD85EC281C8B8267E0DC348DD891991E1C88AF4A56FEFF08C93D8412332B798A",
+      "path": "internal/execution/workflow/definition.go"
+    },
+    {
+      "repo": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner",
+      "sha256": "3833AA640DAE2ABF331B2F3B57008D06279A1FF8969FC02BA9DB172C54FB6265",
+      "path": "internal/resources/assets/prompts.json"
+    },
+    {
+      "repo": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner",
+      "sha256": "2015DE58E8C959FD2815477360A5CC81D67503494C93299DAE1DC23A1EE9DC98",
+      "path": "internal/resources/workflow_test.go"
+    },
+    {
+      "repo": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner",
+      "sha256": "024BDA662A50E89C74A2C946E0D6A33ADA784809AA99E91B7C66F584B76411FE",
+      "path": "tests/experiments/audit_output_test.go"
+    },
+    {
+      "repo": "C:\\Users\\lmas1\\.codex\\worktrees\\e108\\SteerRunner",
+      "sha256": "F7C5CAD21A9341B692B92871E821376A07C22E3872F42D2E01BCBB71A31A144D",
+      "path": "tests/integration/audit_prompt_upgrade_test.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "046E24459F4C06624C4CCD71B13176143EBCDF17C0FD7E7E59A56BCA116CAEB4",
+      "path": "cmd/test-feedback/scoped.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "E2F94CCF08452E380A0E371BB15BE90A80CC5A4012DEA3229EA1D200F7451A85",
+      "path": "internal/app/client.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "B2938CB6AD6ACFB79831F17FCAE7E11F94BF8BCB7EC524A5D21F96E0203E176E",
+      "path": "internal/app/runner_delivery_reads_test.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "D2B2D5B6574AF250AB8D20B813D40B135A4D809FC6A7BBDCDE20DDD6956181BB",
+      "path": "internal/execution/reconstruction/runtime_types.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "605E149E54B2DF5547D1BAED7A28474E4639C64C18BC8724C599FCCD896DA286",
+      "path": "internal/product/api/pages.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "E25114F4DC1E0D3077965BA10078F433128E32FE6951F515776774DA82D36DFE",
+      "path": "internal/product/api/runner_delivery.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "A9B6C03C8F0BD4FF468D96BEAC5BF04BA1BF899AC810FFA6B7A1A4A4EF79879E",
+      "path": "internal/product/query/pages.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "E91FFABABE097FFF9EA99C451B2110ED32E09191CD534286CE663E7F631E7A52",
+      "path": "internal/product/query/runner_delivery.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "50E646BEEB72FC5C71A25BFC245C9BE186EF91D40D33D430F1A150D700E62582",
+      "path": "internal/runnerbridge/bridge_test.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "8C4827CFA0E59DF8F4ED218ED4B25B1516530CF849535AD86F98E4AA577D4BB3",
+      "path": "internal/runnercontract/delivery.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "4BCC71DD2FE34E850F1B7C0523C2DDC77940A1A3932476E6C6F2AF1B5CB8B0F1",
+      "path": "internal/runnercontract/views.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "77676D326A1CD1CFD250330D0351697747DB0BC05E7A348936FA53E81C410645",
+      "path": "internal/taskrunner/delivery.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "126FF72B25B828FB9E3AEFA6BDCBA7279B3D4B699612595A105B9F10A93FA41E",
+      "path": "internal/taskrunner/projection.go"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "E5217F14A76B865493BD3B545CC96FE9539B6E2A863B7B021839919E70942C7A",
+      "path": "web/src/features/runs/delivery-summary.test.tsx"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "06CEE7397C188566D6239061EC0E0F46AD5485786B84C6529F71CAC02A745CD5",
+      "path": "web/src/features/runs/delivery-summary.tsx"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "70F88D74809FC399CDB075E861740477450E5FB734C9897ECF0F7CA8BEDF0174",
+      "path": "web/src/features/runs/runs.tsx"
+    },
+    {
+      "repo": "C:\\Project\\SteerLine",
+      "sha256": "88E2038495DA5DFFFB199850350B32AC00933885E65B54609FA48CDEEE4E41DA",
+      "path": "web/src/shared/api/types.ts"
+    }
+  ],
+  "steerline_base": "36d4f5967e9ecc2a9e02b0f124e8bbf3aff77d50",
+  "runner_base": "8261310d5f2d1edb6fa0c81ba05fa4119b561386"
+}

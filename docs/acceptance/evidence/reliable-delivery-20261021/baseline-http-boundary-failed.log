@@ -1,0 +1,8 @@
+--- FAIL: TestHTTPConsumerBoundary (2.63s)
+    http_consumer_boundary_test.go:26: HTTP consumer reaches backend owner: github.com/erranliu/SteerLine/internal/processwindow
+FAIL
+FAIL	github.com/erranliu/SteerLine/internal/app	7.710s
+ok  	github.com/erranliu/SteerLine/internal/taskrunner	0.906s
+ok  	github.com/erranliu/SteerLine/internal/product/query	0.723s [no tests to run]
+ok  	github.com/erranliu/SteerLine/internal/runnerbridge	0.846s
+FAIL

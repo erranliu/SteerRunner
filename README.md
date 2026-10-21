@@ -1,5 +1,8 @@
 # SteerRunner
 
+全链路的恢复、回执、校验和停止边界，以及可减少的调用与人工步骤，见
+[可靠性交付链路与简化分析](docs/reliable-delivery.md)。
+
 开发 Run 的 [R2 报告/日志收集、不可变读取与当前 Git 查询](docs/run-evidence-r2.md)
 使用公开 `artifacts discover/collect/list/read` 和 `workspace-git`，契约随 capabilities/schema 发布。
 
@@ -129,7 +132,7 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 ## 选择 workflow 与审计模型
 
-当前开发格式为 state/v3、资源版本 2；workflow/1 和 state/v2 明确拒绝，不迁移旧运行。请使用新的空 state-dir。SteerLine 接入限制见[结果获取 Spec §8.1](docs/spec/result-acquisition.spec.md#81-steerline-不改的核查与具体限制)。
+当前持久格式为 state/v4、资源版本 2；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。支持经源记录资格核验和一致性备份的 state/v3→v4 受控升级；不支持任意历史格式或退役执行栈的迁移。兼容性与存量资源限制见[服务换代恢复 Spec](docs/spec/service-generation-recovery.spec.md)，不能把新空目录、重新 submit 当作已有 Run 的恢复方案。
 
 独立解析采用显式开启的 Windows / Codex 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](docs/acceptance/result-acquisition.md)。
 
@@ -160,7 +163,9 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 `inspect.audit` 显示当前实施结果、原审计来源、实际修复数量与逐项内容，`execution.requested_model/requested_reasoning_effort` 表示冻结的轮次请求参数。仍有 P0–P2 未解决或验证未完成时不发布；P3 建议不计修复数。补报最多一次，坏 JSON 不当作通过。提示词和模型接受后冻结，修改需新 Run。暂不支持外部 workflow 装载。
 
-存储使用 v3；旧目录、旧流程版本明确拒绝，保留原目录由原 EXE 收尾，不建立兼容和迁移路径。
+新 Run 的默认 audit.code 提示优先要求最终输出已有审计 JSON 契约，以减少 parse/补报；这只是提示文本，不增加原生 schema 强约束。旧 Run 和显式提示覆盖保持原文，格式不足继续沿原有界后备；[原生对比及旧提示接管验证](docs/acceptance/reliable-delivery-simplification.md)已登记。
+
+已有 Run 保留原冻结输入、流程语义和资源身份；兼容构建接管不要求 EXE SHA 或资源总摘要相同。不支持的 workflow、codec 或退役认证按具体资格拒绝或只读隔离；不能用升级自动恢复已丢失的授权或进程所有权。
 
 ## 停服及回执
 

@@ -1,0 +1,9 @@
+{
+  "candidate_exactly_matches_native_trial": true,
+  "default_promotion": "prompt text only for new Runs",
+  "old_freeze_controlled": "passed",
+  "native_comparison": "4 passed, 2 reports to 0",
+  "workflow_version": 2,
+  "state_format": "steerrunner-state/v4",
+  "parser_default_enabled": false
+}
