@@ -1,5 +1,7 @@
 # SteerRunner 首版独立化专属验收
 
+2026-10-21 文档引用契约修订：开发流程只绑定 worktree 内的 Spec/Plan/参考文档路径，不再准备、校验或内嵌正文。下文旧版 inline/git 快照和材料缺失拒绝记录仅表示当时行为；当前契约以[总 Spec](../spec/steerrunner.spec.md)为准，`conversation`、`generate` 的 inline 材料机制保持。
+
 后续安装期 Windows broker 权限修复单独记录在 [Windows 启动验收](windows-broker-install.md)；空闲服务的通过不改变本页产品真机/R1 的既有失败边界。
 
 > 当前建设范围已恢复远端 Orca，采用 [独立三级测试契约](../testing.md)。L2/L3 均从冻结

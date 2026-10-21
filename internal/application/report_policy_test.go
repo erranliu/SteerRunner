@@ -29,7 +29,7 @@ func TestSRReportFreezesOriginatingNativePolicy(t *testing.T) {
 			defer store.Close()
 			w := &worker{port: reportPolicyPort{policy: policy}, wake: make(chan struct{}, 1)}
 			e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
-			r := &runstate.Record{ID: "run", Allowed: true, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, PromptBodies: map[string]string{workflow.StepReport: "Format the original result as JSON."}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec.md", SnapshotPath: "spec.md"}}, {MaterialView: contracts.MaterialView{Path: "plan.md", SnapshotPath: "plan.md"}}}}
+			r := &runstate.Record{ID: "run", Allowed: true, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}, Documents: contracts.Documents{Spec: contracts.Document{Path: "spec.md"}, Plan: contracts.Document{Path: "plan.md"}}}, PromptBodies: map[string]string{workflow.StepReport: "Format the original result as JSON."}}
 			r.Snapshot.Session = b.SessionContext{SessionID: "original-session", AttemptID: "attempt", CurrentCommandID: "command", CurrentTurnID: "turn"}
 			r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
 			r.Workflow = workflow.Snapshot{StepID: workflow.StepImplement, StageInputs: []workflow.StageInput{{CommandID: "command", AttemptID: "attempt", StepID: workflow.StepImplement, Version: 1}}}

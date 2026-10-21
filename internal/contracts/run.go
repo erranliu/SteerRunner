@@ -21,7 +21,9 @@ type Repository struct {
 }
 
 type Document struct {
-	Kind    string  `json:"kind"`
+	// Development uses only Path. Kind/Content/Commit retain the existing wire
+	// shape for callers and for content workflows' inline uploaded materials.
+	Kind    string  `json:"kind,omitempty"`
 	Path    string  `json:"path"`
 	Content *string `json:"content,omitempty"`
 	Commit  string  `json:"commit,omitempty"`
@@ -165,6 +167,8 @@ func safeDocument(document Document) bool {
 		return false
 	}
 	switch document.Kind {
+	case "":
+		return document.Content == nil && document.Commit == ""
 	case "inline":
 		return document.Content != nil && document.Commit == ""
 	case "git":

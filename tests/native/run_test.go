@@ -362,17 +362,17 @@ func verifyHead(t *testing.T, m livetest.Manifest, view contracts.RunView, earli
 		t.Fatal(err)
 	}
 	if len(view.Materials) != 2 {
-		t.Fatal("Runner did not preserve both frozen documents")
+		t.Fatal("Runner did not preserve both document paths")
 	}
-	wantMaterials := map[string]string{"smoke.spec.md": m.SpecSHA256, "smoke.plan.md": m.PlanSHA256}
+	wantMaterials := map[string]bool{"sr-smoke/spec.md": true, "sr-smoke/plan.md": true}
 	for _, material := range view.Materials {
-		if wantMaterials[material.Path] != material.Digest {
-			t.Fatal("Runner's frozen material differs from fixture", material.Path)
+		if !wantMaterials[material.Path] || material.Kind != "worktree" || material.ExecutionLocation != material.Path || material.Commit != m.BaseRevision || material.Digest != "" || material.SnapshotPath != "" {
+			t.Fatal("Runner document reference differs from fixture", material.Path)
 		}
 		delete(wantMaterials, material.Path)
 	}
 	if len(wantMaterials) != 0 {
-		t.Fatal("Runner's frozen material set is incomplete")
+		t.Fatal("Runner's document reference set is incomplete")
 	}
 	// Fetch server-side objects for both local and remote execution.
 	git(t, m, "fetch", "--no-tags", "origin", fmt.Sprintf("+refs/pull/%d/head:refs/srtest/pr", view.PR.Number))
@@ -549,14 +549,11 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		save(t, "cleanup-run.json", view)
 		t.Errorf("original run stop not confirmed: %s %s", view.StopStatus, view.Diagnostic)
 	})
-	spec, _ := os.ReadFile(m.SpecPath)
-	plan, _ := os.ReadFile(m.PlanPath)
-	specText, planText := string(spec), string(plan)
 	source, err := m.ExecutionRepositoryPath()
 	if err != nil {
 		t.Fatal(err)
 	}
-	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "smoke.spec.md", Content: &specText}, Plan: contracts.Document{Kind: "inline", Path: "smoke.plan.md", Content: &planText}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
+	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "sr-smoke/spec.md"}, Plan: contracts.Document{Path: "sr-smoke/plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
 	input.Workflow, err = m.RunWorkflow(nil)
 	if err != nil {
 		t.Fatal(err)

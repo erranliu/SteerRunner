@@ -211,7 +211,7 @@ request_id 是调用方生成的非空不透明字符串，以规范化状态目
 | `correlation` | 可选对象，值为不透明字符串，如 caller/task_id/candidate_id；无 SteerLine 固定字段要求 |
 | `name_prefix` | 可选通用资源命名前缀，1–48 位小写 ASCII 字母/数字，以单个内部连字符分隔；拒绝显式空值/null。与 correlation 独立，Runner 不解析业务编号。缺省有效值为 sr；Orca worktree 使用 `<有效前缀>-<完整 Run ID>`，创建与回执核验共用冻结值，分支规则不变 |
 | `repository` | 必含 url、完整 base_revision、remote、base_branch；可选 local_path 作为本机已有仓库入口 |
-| `documents` | 必含独立 spec、plan；可选 references 数组；所有材料接受时固定 |
+| `documents` | 必含 spec、plan 的仓库相对 path；可选 references 数组；接受时固定路径 |
 | `workflow` | 必含 id/version；当前支持 development/2、development-audited/2，可选 prompt_overrides；精确支持矩阵见 capabilities |
 | `execution` | 必含 adapter、target、settings；target.kind 为 local 或 orca_environment，后者必含 environment 标识；settings 按内嵌后端 schema 固定 |
 | `publication` | 必含 provider、repository、base_branch、settings；首版复用 command/gitea provider 配置及实际身份检查 |
@@ -220,16 +220,13 @@ base_revision 为完整 40 或 64 位 Git commit ID，不能仅保存可移动�
 
 接受新提交前，Runner 在私有缓存中从固定 remote 显式刷新 base_branch，再验证原 base_revision 属于该目标分支；local_path 的本地分支和已有缓存引用不作为最新远端事实。刷新失败则在接受前报告环境不可用，不能使用旧引用放行；远端前进不改变冻结基线，远端回退排除该基线时仍拒绝。此规则不重新解析已接受 Run 的固定输入，验证见[分支刷新 Plan](repository-base-refresh.plan.md)。
 
-每份文档为下列来源之一，并含用于展示与物化的安全相对 path：
+开发流程的每份文档只需提供安全的仓库相对 `path`，例如 `{"path":"docs/spec/task.spec.md"}`。spec/plan 的 path 必须不同；references 可引用验收或公共约束，不要求固定命名或目录。拒绝绝对路径及越界路径，此为输入形状校验，不检查实际文件或链接目标。
 
-- `kind:inline`：含 UTF-8 content，接受时保存正文与 SHA256。
-- `kind:git`：含完整 commit；从上述仓库该 commit/path 读取并保存正文及 SHA256。
+Runner 在指定 `repository.base_revision` 上创建实施 worktree 后，即认为所引用文档存在。文档是否已经提交、推送及是否在该 commit 中可读由调用方负责；Runner 不读取文档、不检查存在性、摘要或独立文档 commit，不获取或传输文档，也不提供缺失时的复制、内嵌或其他补救机制。代理遇到缺失文档时按实际执行情况反馈。
 
-spec/plan 的 path 必须不同。references 可以包含验收或公共约束，但不要求固定命名、目录或单独验收文档。拒绝绝对/越界路径和会逃出材料目录的链接目标。文档 commit 可以不同于代码 base_revision，分别记录，不在恢复时重新读取移动分支或原提交文件。
+服务在返回 accepted 前持久化规范化请求、文档路径、实际流程/模板/配置及版本摘要；文档正文不形成开发流程的独立文件快照。为兼容既有请求形状，仍接受合法的 `kind:inline/content`、`kind:git/commit` 字段，但仅作为原请求数据保留，不作为执行材料来源，也不解析或获取对应 commit。新调用方应只提交 path。`conversation`、`generate` 的 inline 用户材料及快照机制保持不变。
 
-服务必须在返回 accepted 前，持久化完整材料快照、规范化请求、实际流程/模板/配置内容及版本摘要；任何尚未完成的准备动作保存为原操作意图。输入无法完整取得则拒绝本次 submit，不启动业务代理。读取 Git 材料所需的缓存/fetch 可在接受前进行，但缓存副作用不代表 Run 已接受；并发同 ID 只能提交一个 Run。
-
-执行时向代理提供本 Run 冻结文档的实际可读位置，并保持其来源与摘要；准备方式由 adapter 实现，不能悄悄退回调用方文件。本地 Codex 使用独立工作区 Git admin 下的固定文件；Orca 使用实施输入中附带的固定正文、来源 commit 与 SHA256，`prompt:<path>` 标识该输入内的文档，反馈实施再次附带同一正文。调用方仍可在 snapshot_path 找到本机持久快照，execution_location 表示代理实际读取位置。Orca 当前 CLI 以参数传输文本，首版固定材料的 JSON 表示与四份提示词正文合计最多 12000 UTF-16 单元，超过时在接受前明确拒绝。Orca 必须提供已注册项目的 local_path，environment 中按原适配器的同名项目规则解析并核验固定 base。运行过程中修改调用方文档、全局配置或模板不影响已接受 Run。反馈沿用固定材料；更换 Spec/Plan、workflow 或后端应提交新 Run。
+本地 Codex、Orca 本机和 environment 的执行提示词均只引用 worktree 内的仓库相对路径；实施反馈、审计和报告沿用这些路径。公开 materials 使用 `kind:worktree`，commit 为执行基线，execution_location 为仓库相对路径，不提供独立 digest/snapshot_path；这些字段不表示文档存在性已核验。恢复和新阶段派发不依赖文档快照文件；已冻结的旧阶段输入保持原样，不在恢复时重渲染。Orca 只对实际渲染的单份提示词应用 12000 UTF-16 单元限制，正文大小不再计入独立材料额度。Orca 仍要求已注册项目的 local_path，environment 按原适配器规则解析项目并核验固定 base。更换文档路径、workflow 或后端应提交新 Run。
 
 RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状示例，adapter/provider settings 的完整 schema 由内嵌能力提供）：
 
@@ -247,8 +244,8 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
       "base_branch": "main"
     },
     "documents": {
-      "spec": {"kind": "inline", "path": "spec.md", "content": "# Spec\nImplement the requested change.\n"},
-      "plan": {"kind": "inline", "path": "plan.md", "content": "# Plan\nImplement and run the specified checks.\n"},
+      "spec": {"path": "docs/spec/task.spec.md"},
+      "plan": {"path": "docs/spec/task.plan.md"},
       "references": []
     },
     "workflow": {"id": "development", "version": 2, "prompt_overrides": {}},
@@ -281,7 +278,7 @@ RunRequest 示例（占位 commit 应替换为实际完整 commit；这是形状
 
 普通执行不统一要求 JSON；程序提取可信 final 末尾成功声明或完整机器结果，必要时依定义选取独立解析或一次原 agent 报告。development 不调用 parser；审计版仅代码审计结果允许 parser，实施与发布同普通开发。只做一次代码审计并直接修复 P0–P2、验证、报告数量及逐项内容，无 Spec 审计或自动返修循环。发布结果仍须实际 provider 及 PR 身份核验；审计版另绑定修复后提交，解析成功不代替业务完成。
 
-`prompt_overrides` 只覆盖 capabilities 公布的非空提示正文，不能改变冻结材料、来源绑定、结果契约、成功声明、权限、预算或 PR 归属。普通四键为 `implement.execute`、`implement.report`、`publish`、`publish.report`；审计版另有 `audit.code`、`audit.code.report`。未知键拒绝，`audit.spec` 不保留。执行/报告共用原会话；独立 parser 使用 Runner 自有配置及独立会话，未选择 parser 不做其原生环境探测。提示词的工具约束和实际原生权限保证分别维护，见结果获取 Spec §6。
+`prompt_overrides` 只覆盖 capabilities 公布的非空提示正文，不能改变绑定的文档路径、来源绑定、结果契约、成功声明、权限、预算或 PR 归属。普通四键为 `implement.execute`、`implement.report`、`publish`、`publish.report`；审计版另有 `audit.code`、`audit.code.report`。未知键拒绝，`audit.spec` 不保留。执行/报告共用原会话；独立 parser 使用 Runner 自有配置及独立会话，未选择 parser 不做其原生环境探测。提示词的工具约束和实际原生权限保证分别维护，见结果获取 Spec §6。
 
 ### 7.2 RunView 与交互
 

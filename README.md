@@ -9,11 +9,11 @@
 问答/恢复与资源结算；通过 `message / interrupt / close / history` 操作原会话。
 实现范围与真实 Codex 证据见[专属验收](docs/acceptance/content-workflows.md)。
 
-SteerRunner 是个人多机执行器：在本人管理和信任、预先配置好的执行主机上，接收冻结的 Spec / Plan，执行开发 workflow、处理反馈并产出可核验 PR。支持同一服务多个独立 Run；调用方显式选择本机或 Orca environment。SteerLine 保留任务、DAG、机器选择、候选关系和 TaskDelivery，通过 CLI 使用它。
+SteerRunner 是个人多机执行器：在本人管理和信任、预先配置好的执行主机上，接收固定执行基线和 Spec / Plan 路径，执行开发 workflow、处理反馈并产出可核验 PR。支持同一服务多个独立 Run；调用方显式选择本机或 Orca environment。SteerLine 保留任务、DAG、机器选择、候选关系和 TaskDelivery，通过 CLI 使用它。
 
 用户负责每台执行机的工具安装和 gh 登录。Runner 负责 Run 隔离、执行与发布对账、显式恢复、停止及清理；本机和 Orca local 受管执行另提供环境检查与有限期单仓库授权。当前不提供团队/多租户账号管理、GitHub App 签发、集中密钥托管、自动跨机迁移或额外远端 daemon。各 agent、权限模式和平台的实际支持以能力声明及验收为准。
 
-当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定 Spec/Plan、按需报告→发布→核验 PR、原会话人工续执行、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
+当前已接通独立 Run 执行：一个 Windows/amd64 EXE 同时提供常驻服务和 CLI；固定执行基线与 Spec/Plan 路径、按需报告→发布→核验 PR、原会话人工续执行、显式恢复、停止授权及事件查询均由 Runner 持久化。本仓自有 L1、受控集成前置、L2 本机 Codex 真仓 smoke 和可扩展 L3 真机环境测试；现场生成与验收不依赖 SteerLine 项目。各层实际通过情况及失败现场见验收登记。
 
 - [执行可见性：状态变化与最近消息](docs/spec/execution-observability.plan.md) / [验收](docs/acceptance/execution-observability.md)
 - [Orca 本机/远程连接 Spec](docs/spec/orca-local-remote.spec.md) / [Plan](docs/spec/orca-local-remote.plan.md) / [当前验收与原生能力缺口](docs/acceptance/orca-local-remote.md)
@@ -86,13 +86,13 @@ Get-Content -Raw -Encoding utf8 .\request.json | .\bin\steerrunner.exe submit --
 .\bin\steerrunner.exe last-message --state-dir C:\Temp\SteerRunnerDemo --run-id <run_id> --json
 ```
 
-accepted 表示材料及原请求已提交，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
+accepted 表示文档路径及原请求已持久化，不表示文档存在性已核验，执行结果以 Run 和命令 action_status 为准。丢失响应时查询原 request_id；同 ID 的重试必须保留原正文。兼容服务重启保留原流程授权，自动补收原事实并接续尚未派发的后继；原暂停、人工等待、业务阻断和显式 stop 保留。未知输入只对账，旧 epoch 答案仍需人工确认；新保存答案绑定原执行范围。
 
 同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
 
 远端 Orca 创建工作区前的 `repo list` 查询，遇到 `orca-environments.json` 同目录临时文件替换的 `EPERM`／`EACCES`／`EBUSY` rename 冲突时，最多尝试 5 次，所有调用与退避共享 15 秒总期限（调用方期限更短时从其期限）。退避从 250 毫秒开始指数增长，增加少量随机抖动，单次等待最多 2 秒；停止会中断等待和当前查询。服务日志记录 Run、attempt、重试次数和原因，耗尽后保留首次和最后一次错误并阻断。普通权限、认证、仓库缺失或身份错误不进入此重试；工作区／终端创建和任务发送不适用此机制，结果未知时仍按原操作对账。
 
-本地 Codex 读取本 Run 的冻结文件。Orca 在实施输入内读取附带的冻结文档；本机和远端都不读取调用方的移动文件。当前 Orca CLI 通过参数传文本，材料 JSON 与四份正文总计上限为 12000 UTF-16 单元，超过在接受前拒绝；远端真机闭环及执行稳定性的已验收范围见[专属记录](docs/acceptance/l3-execution-stability.md)。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的同名 Git 仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
+开发流程的 Spec、Plan 和参考材料只需提供仓库相对路径，例如 `"spec":{"path":"docs/spec/task.spec.md"}`。本地 Codex 与 Orca 均直接读取固定 commit 创建的 worktree 内文档；Runner 不检查文档提交、推送、存在性或正文，不复制/传输/内嵌材料。调用方负责文档可用性；缺失由代理按实际执行情况反馈。旧 kind/content/commit 字段可按原形状提交，但不再决定开发材料来源。Orca 的 12000 UTF-16 单元限制仅适用于实际提示词。`conversation`、`generate` 仍支持独立 inline 材料。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
 ## 主动环境检查
 

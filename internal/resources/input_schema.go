@@ -62,10 +62,12 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	docs := properties["documents"].(map[string]any)
 	docs["required"] = []string{"spec", "plan"}
 	doc := shapeSchema(reflect.TypeFor[contracts.Document]())
-	doc["required"] = []string{"kind", "path"}
+	doc["required"] = []string{"path"}
+	doc["description"] = "Repository-relative path in the execution worktree. The caller owns document availability; Runner does not read, copy or validate its contents. Legacy kind/content/commit fields do not select an execution material source."
 	doc["oneOf"] = []any{
-		map[string]any{"properties": map[string]any{"kind": map[string]any{"const": "inline"}, "content": map[string]any{"type": "string"}}, "required": []string{"content"}},
-		map[string]any{"properties": map[string]any{"kind": map[string]any{"const": "git"}, "commit": map[string]any{"type": "string", "pattern": `^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$`}}, "required": []string{"commit"}},
+		map[string]any{"properties": map[string]any{"kind": map[string]any{"const": ""}, "content": map[string]any{"type": "null"}, "commit": map[string]any{"const": ""}}},
+		map[string]any{"properties": map[string]any{"kind": map[string]any{"const": "inline"}, "content": map[string]any{"type": "string"}, "commit": map[string]any{"const": ""}}, "required": []string{"kind", "content"}},
+		map[string]any{"properties": map[string]any{"kind": map[string]any{"const": "git"}, "content": map[string]any{"type": "null"}, "commit": map[string]any{"type": "string", "pattern": `^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$`}}, "required": []string{"kind", "commit"}},
 	}
 	dp := docs["properties"].(map[string]any)
 	dp["spec"] = doc
