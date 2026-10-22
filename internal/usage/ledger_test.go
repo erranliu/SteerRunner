@@ -16,9 +16,24 @@ func TestUsagePartialFieldsStillValidateKnownRelations(t *testing.T) {
 		{InputTotal: api.Number(3), CacheRead: api.Number(2), CacheWrite: api.Number(2)},
 		{InputUncached: api.Number(math.MaxInt64), CacheRead: api.Number(1)},
 		{InputUncached: api.Number(math.MaxInt64), CacheRead: api.Number(1), CacheWrite: api.Number(0)},
+		{Total: api.Number(1), InputTotal: api.Number(2)},
+		{Total: api.Number(1), Output: api.Number(2)},
+		{Total: api.Number(1), Reasoning: api.Number(2)},
+		{Total: api.Number(3), CacheRead: api.Number(2), Output: api.Number(2)},
+		{Total: api.Number(3), InputUncached: api.Number(2), CacheRead: api.Number(2)},
+		{InputTotal: api.Number(math.MaxInt64), Output: api.Number(1)},
+		{InputUncached: api.Number(math.MaxInt64), Reasoning: api.Number(1)},
 	} {
 		if Validate(tokens) == nil {
 			t.Fatal("invalid known counters accepted", tokens)
+		}
+	}
+	for _, tokens := range []api.Tokens{
+		{Total: api.Number(5), CacheRead: api.Number(2), Output: api.Number(2)},
+		{Total: api.Number(5), Reasoning: api.Number(2)},
+	} {
+		if err := Validate(tokens); err != nil {
+			t.Fatal("consistent nullable counters rejected", tokens, err)
 		}
 	}
 }

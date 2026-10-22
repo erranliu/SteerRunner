@@ -339,3 +339,27 @@ Pi 原文件 72,625 字节，SHA-256 `1024076e06f9d521610629d2ebf86c327443c84ec7
 最终远端 group `c0d60d04-1e04-4795-9985-e8609f91eca2`、folder `e7b3db09-c7c0-4af9-be9e-c27f8ce31f94` 已撤销。累计 15 个本轮隔离状态均 permit inactive，全部既有 lease/epoch revoked、无未结算创建/删除；副本业务 revision 均为 1。再次复核原 Pi/DSH/远端 Codex terminal incarnation 不变且 connected，自建 Runner 进程为 0。原客户端安装没有重新部署，其版本未在本轮重新观测；本轮资格基于原冻结 Run 身份/回执和已验格式、来源摘要，不泛化到所有客户端版本/包装/恢复窗口。
 
 提交可审阅的[脱敏机器摘要](evidence/run-usage-and-cost-20261022/final-summary.json)记录上述事实及残余边界；私有现场目录改用 `C:\srt\usage-final-audit-{pi,dsh,codex,remote-codex}-qualified-20261022`。最终受影响包日志为 `usage-final-audit-final-affected-policy-20261022.jsonl`，收尾/源码证明分别为 `usage-final-audit-storage-proof-qualified-20261022.json`、`usage-final-audit-native-proof-qualified-20261022.json`、`usage-final-audit-source-manifest-qualified-20261022.json`。当前二进制离线 capability 实测恰为六行、四组合 collection/production_run_binding=true；cost 依赖检查只含 usage/api，usage 传递依赖不含 cost。
+
+## PR #47 合并前复审（2026-10-22）
+
+本轮用户授权复审、修复并回归后合并。没有修改 Orca、部署 helper、改变原生产服务或追加模型输入。远端 Pi/DSH 仍为 PRODUCTION_BINDING_UNSUPPORTED，其余未交付边界不变。以下结果属于新的合并资格，前文各次源码和 EXE 摘要继续保留历史含义。
+
+确认并修复两项问题，均先通过新增反例复现：
+
+1. 跨 Run 认领的响应在全局事件表中保持原归属，后认领方没有事件行；其下一次缓存观察原先丢失 USAGE_CONFLICT，可能恢复 available/finalized 并输出总费用。计量事务现持久保留已有冲突原因，使用认领方 source_ref；同键不自动解除隔离。`TestUsageCrossRunConflictSurvivesCachedObservation` 验证缓存发布仍为 partial、revision 幂等、旧完整版本不被改写、独立费用只返回 covered/partial。
+2. nullable 字段原先可掩盖输入或输出超过 total、已知输入输出合计溢出的关系。校验现比较已知分类/输入和输出/reasoning 的下界，拒绝 USAGE_INVALID，仍不填补任何未知字段。`TestUsagePartialFieldsStillValidateKnownRelations` 增加七个反例和两个 nullable 正例；parser 版本为 native-usage/4，旧观察缓存重新核验。
+
+上述两项修复后的 `go test ./internal/... -count=1 -timeout=25m` 全部 28 包通过，application 为 629.370 秒；四项专项集成全部通过，193.462 秒。此前并行启动的修复前审查基线也全部通过（application 700.899 秒），只作基线保留，不代替最终代码结果。本轮没有测试超时。`go vet ./...`、测试脚本语法、六行 capability（四组合支持、两组合明确拒绝）、依赖方向、凭据模式与 `git diff --check` 检查通过。
+
+同一最终 EXE（SHA-256 `d7645808b6b175b9d29e546f879165a61a2b1f87e790be1b3fcb6055e38158bb`）再次复用四个原 Run，无新增模型输入：
+
+| 组合 | 响应 / token | 合成估价 USD | 现场秒数 / 快照版本 |
+| --- | --- | --- | --- |
+| 本机 Pi | 18 / 200,432 | 0.04292800 | 31.60 / 2 |
+| 本机 DSH | 21 / 318,722 | 0.07843400 | 28.07 / 2 |
+| 本机 Codex | 2 / 39,667 | 0.03226300 | 32.41 / 2 |
+| 远端 Codex | 11 / 225,453 | 0.05327400 | 18.96 / 4 |
+
+三个本机现场均通过正常停启、强制实际重读、逐响应/快照去重和独立费用一致；DSH reasoning 仍为 null。远端通过自动临时授权、原日志读取、公开用量/费用、撤回策略和原 selector 失效断言，group/folder 恢复清单基线。四个隔离 state-dir 的 permit 均 inactive，三个本机 lease=0，远端一个 lease 已 revoked、无未结算创建/删除，所有副本业务 revision=1；验收 Runner 进程为 0。原 Pi/DSH/远端 Codex terminal handle/incarnation 未变且 connected；原业务服务自行刷新 PR 引起的 revision 推进没有改变来源身份/输入。
+
+本轮源码摘要为 `211d1e0db3a49061e4cd075ce2ca97c043beb35a1079445da6e93d2b7a6c2b05`；新增[合并前脱敏机器摘要](evidence/run-usage-and-cost-20261022/pr47-review.json)，不覆盖上一轮 final-summary。私有现场目录为 `C:\srt\usage-pr47-review-{pi,dsh,codex,remote-codex}-20261022`；最终整包/集成日志为 `usage-pr47-review-final-internal-20261022.jsonl`、`usage-pr47-review-integration-20261022.jsonl`，收尾/来源清单为 `usage-pr47-review-storage-proof-20261022.json`、`usage-pr47-review-native-proof-20261022.json`、`usage-pr47-review-source-manifest-20261022.json`。费用仍只验证显式合成价表算术，不是实际账单或供应商现价。未部署原客户端、Orca 或任何 helper，也未泛化原 agent 的全部恢复窗口。

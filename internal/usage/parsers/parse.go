@@ -22,7 +22,7 @@ import (
 const MaxSource = 64 << 20
 const MaxDecoded = 256 << 20
 const MaxRecord = 4 << 20
-const Version = "native-usage/3"
+const Version = "native-usage/4"
 
 var errRecordLimit = errors.New("record budget exceeded")
 

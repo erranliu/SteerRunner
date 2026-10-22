@@ -199,6 +199,7 @@ func (s *Store) commitUsageWithPermit(ctx context.Context, next api.Snapshot, in
 	}
 	affected := map[string]bool{next.RunID: true}
 	for _, e := range incoming {
+		claimedSource := e.SourceRef
 		if e.ID == "" || e.RunID != next.RunID || e.SourceRef == "" || e.SessionID == "" || e.ResponseID == "" || usage.Validate(e.Tokens) != nil {
 			return next, errors.New("invalid usage event")
 		}
@@ -237,7 +238,7 @@ func (s *Store) commitUsageWithPermit(ctx context.Context, next api.Snapshot, in
 			return next, err
 		}
 		if e.RunID != next.RunID {
-			next.Issues = append(next.Issues, api.Issue{Category: "usage", Code: "USAGE_CONFLICT", SourceRef: e.SourceRef})
+			next.Issues = append(next.Issues, api.Issue{Category: "usage", Code: "USAGE_CONFLICT", SourceRef: claimedSource})
 		}
 	}
 	for run := range affected {
@@ -252,6 +253,16 @@ func (s *Store) commitUsageWithPermit(ctx context.Context, next api.Snapshot, in
 			return next, err
 		}
 		projection := next
+		// Quarantine is permanent. A rejected cross-Run claim has no event row
+		// under the claimant, so a cached source observation must retain its
+		// persisted conflict rather than infer complete coverage from that absence.
+		if run == next.RunID {
+			for _, issue := range prior.Issues {
+				if issue.Category == "usage" && issue.Code == "USAGE_CONFLICT" {
+					projection.Issues = append(projection.Issues, issue)
+				}
+			}
+		}
 		if run != next.RunID {
 			projection = prior
 			if projection.RunID == "" {

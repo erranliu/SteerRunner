@@ -201,7 +201,7 @@ Runner session 与 native session 分开；DSH 不套用 Codex UUID 规则。Win
 
 逻辑事件键至少为稳定主机身份、原账号/profile 的 source namespace、agent、原生 session 和原响应标识；provider 按来源元数据保存和核对，不因其缺失、补齐或冲突制造另一个事件。source namespace 在首次核验来源时持久建立，已证明同源的路径移动可保留映射，不能仅因当前路径相同/不同就合并/拆分。同一主机的 Orca runtime 重启、文件移动、副本和 Runner generation 不产生新计费身份。不同 session 的 fork 前缀按 §5 排除；短消息 ID 不跨 session 全局去重。相同 prompt 的真实新响应仍是新事件。
 
-同键、同 token 载荷重读幂等；同键 token 冲突时在私有 event-conflict journal 中同事务保留原有及新观察的规范化载荷/来源摘要，标记 USAGE_CONFLICT，将该事件排除出可信聚合并提升快照版本，不静默覆盖或相加。来源主机/session/归属本身矛盾时重新核验绑定，不能继续当作同源。最后一条事件被隔离后的状态按 §4.3 推导。
+同键、同 token 载荷重读幂等；同键 token 冲突时在私有 event-conflict journal 中同事务保留原有及新观察的规范化载荷/来源摘要，标记 USAGE_CONFLICT，将该事件排除出可信聚合并提升快照版本，不静默覆盖或相加。跨 Run 认领冲突必须在双方持久保留，分别指向各自 source_ref；即使后认领方没有该事件行，缓存观察或服务重启也不能清除其冲突原因、恢复 finalized 或允许完整总费用。来源主机/session/归属本身矛盾时重新核验绑定，不能继续当作同源。最后一条事件被隔离后的状态按 §4.3 推导。
 
 provider/model/服务档位/时间等观察元数据矛盾，不等于 token 载荷冲突：原生事件身份和 token 仍可信时保留计数，单独标记 SOURCE_METADATA_CONFLICT，相关字段保持未知/冲突，交由费用模块决定不可计价。冲突裁定持久保留，重读某一旧值不能自动解除。null→有同源证据的确定值是合法补齐，产生新元数据/快照版本；两个已知值相互矛盾不能伪装成补齐。不能因价格需要模型就从基础聚合中删除事件。单个事件不允许同时分配给两个 Run/command，去重 ID 缺失或复用不能用 prompt/hash/文件偏移临时造出可信响应身份。已提交快照可复核，后续裁定不改写其历史事实。
 

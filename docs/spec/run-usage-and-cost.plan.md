@@ -197,3 +197,11 @@ L1 入口同时拒绝既有日志 opt-in `SR_USAGE_EXISTING_STATE` 与远端 Run
 
 
 `TestCostPolicyOptionalNullCannotErasePredicates` 补齐价表读取与 schema 对齐：tier/min/max context 的显式 null 不得被 Go 当作省略而消除计价条件；省略与显式零正例保持可用。修复只在费用装配入口，最后 13 包及四组合现场按冻结代码再次复验。
+
+### 2026-10-22 PR #47 合并前复审
+
+用户本轮授权复审、修复、回归后合并 PR #47；仍不修改 Orca、不部署 helper、不部署分支，不向原 agent 新增模型输入。此前“未授权合并”是提交前阶段的历史记录。
+
+- P1/T03/T13：`TestUsageCrossRunConflictSurvivesCachedObservation` 先复现后认领 Run 在无事件重读时丢失冲突、恢复 available/finalized 的错误；计量事务现保留该 Run 已持久化的 USAGE_CONFLICT，并使用认领方 source_ref。测试同时断言幂等 revision、旧版本不变、独立费用只能 partial/covered，不能给总费用。
+- P2/T02：`TestUsagePartialFieldsStillValidateKnownRelations` 补齐已知输入/输出（含 reasoning 下界）不能超过 total、跨输入输出的下界合计不能溢出；字段未知仍保留 null，不推算值。parser 推进至 native-usage/4，旧收敛缓存重新核验。
+- 本轮最终代码的整包回归、四组合公开 EXE 和授权撤销结果单列于验收增补，不复用前次源码/EXE 摘要冒充新资格。

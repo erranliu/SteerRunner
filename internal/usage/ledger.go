@@ -53,6 +53,22 @@ func Validate(t api.Tokens) error {
 	if t.InputTotal != nil && (knownInput > *t.InputTotal || allInputKnown && knownInput != *t.InputTotal) {
 		return errors.New("USAGE_INVALID")
 	}
+	// Nullable fields cannot hide impossible known lower bounds. Reasoning is
+	// part of output, and known input categories are part of input_total; neither
+	// becomes an additional category or an inferred value in the public event.
+	inputFloor, outputFloor := knownInput, int64(0)
+	if t.InputTotal != nil {
+		inputFloor = *t.InputTotal
+	}
+	if t.Reasoning != nil {
+		outputFloor = *t.Reasoning
+	}
+	if t.Output != nil {
+		outputFloor = *t.Output
+	}
+	if inputFloor > math.MaxInt64-outputFloor || t.Total != nil && inputFloor+outputFloor > *t.Total {
+		return errors.New("USAGE_INVALID")
+	}
 	if reflect.DeepEqual(t, api.Tokens{}) {
 		return errors.New("USAGE_NOT_RECORDED")
 	}

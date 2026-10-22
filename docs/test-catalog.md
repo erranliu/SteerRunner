@@ -10,6 +10,8 @@
 
 2026-10-22 提交前一致性复审增加 `TestUsageFinalReplyBelongsToCommand`、`TestUsageConflictEvidenceIsAtomicAndDurable`、`TestCostTokenOnlyScopeAndCompletionAreExplicit`；扩展 epoch 创建意图、四类清单完整性和三查询完整实例绑定/停止围栏断言。整合 main 后重新执行的包、集成和现场结果在专项验收中单列，不继承旧构建资格。
 
+PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation`，覆盖后认领 Run 在缓存发布后仍保留冲突、旧快照不变及费用无完整总额；`TestUsagePartialFieldsStillValidateKnownRelations` 补齐 nullable 总量下界与跨输入输出溢出反例。native-usage/4 的最终全包、四项集成及四组合现场资格另记于同一专项验收。
+
 本文件维护各项测试的独有验证目标、固定预期、并行条件、实现状态和当前缺口。
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/cost"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/usage"
 	"github.com/erranliu/SteerRunner/internal/usage/api"
@@ -243,6 +244,56 @@ func TestUsageConflictEvidenceIsAtomicAndDurable(t *testing.T) {
 		t.Fatal("historical evidence was rewritten", old, err)
 	}
 }
+
+func TestUsageCrossRunConflictSurvivesCachedObservation(t *testing.T) {
+	s := usageStore(t)
+	ctx := context.Background()
+	first := event("shared")
+	if _, err := s.CommitUsage(ctx, summary(), []api.Event{first}); err != nil {
+		t.Fatal(err)
+	}
+	other := summary()
+	other.RunID = "other"
+	valid := event("independent")
+	valid.RunID, valid.SourceRef = "other", "other-source"
+	provider, model := "fixture-provider", "fixture-model"
+	now := time.Now().UTC()
+	valid.Provider, valid.Model, valid.CallTime, valid.TimeBasis = &provider, &model, &now, "request"
+	before, err := s.CommitUsage(ctx, other, []api.Event{valid})
+	if err != nil {
+		t.Fatal(err)
+	}
+	claim := first
+	claim.RunID, claim.SourceRef = "other", "other-source"
+	conflicted, err := s.CommitUsage(ctx, other, []api.Event{claim})
+	if err != nil || conflicted.Status != "partial" || conflicted.Coverage.Finalized {
+		t.Fatal(conflicted, err)
+	}
+	// A finalized collector checkpoint can publish coverage without re-reading
+	// events, including after a service restart. The rejected claimant has no
+	// row in usage_events; its durable conflict must still qualify this Run.
+	again, err := s.CommitUsage(ctx, other, nil)
+	if err != nil || again.Status != "partial" || again.Coverage.Finalized || again.Revision != conflicted.Revision {
+		t.Fatal("cached observation erased the ownership conflict", again, err)
+	}
+	found := false
+	for _, issue := range again.Issues {
+		found = found || issue.Code == "USAGE_CONFLICT" && issue.SourceRef == claim.SourceRef
+	}
+	if !found {
+		t.Fatal("claimant source lost its conflict reason", again.Issues)
+	}
+	policy := cost.Policy{Schema: "run-pricing-policy/v1", ID: "fixture", Version: "1", Source: "synthetic", Currency: "USD", Enabled: true, Rules: []cost.Rule{{Provider: provider, Model: model, From: now.Add(-time.Hour), Until: now.Add(time.Hour), Rates: cost.Rates{Input: "1", CacheRead: "0", CacheWrite: "0", Output: "2"}}}}
+	estimate, err := cost.EstimateRun(ctx, s, "other", again.Revision, policy)
+	if err != nil || estimate.Status != "partial" || estimate.Total != nil || estimate.Covered == nil {
+		t.Fatal("ownership conflict allowed a complete cost estimate", estimate, err)
+	}
+	old, err := s.GetRunUsage(ctx, "other", before.Revision)
+	if err != nil || old.Status != "available" || !old.Coverage.Finalized {
+		t.Fatal("conflict rewrote historical coverage", old, err)
+	}
+}
+
 func TestUsageTransactionRollback(t *testing.T) {
 	s := usageStore(t)
 	ctx := context.Background()
