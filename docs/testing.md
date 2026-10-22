@@ -110,11 +110,11 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 
 执行目录为 [tests/catalog.json](../tests/catalog.json)，唯一 case 定义为
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
-[目录校验](../scripts/live-catalog.ps1)核对两者的层级、driver、target、超时和完整 case 集，
+[目录读取](../scripts/live-catalog.ps1)将场景 ID 展开为注册元数据；旧格式自定义目录继续核对层级、driver、target、超时和完整 case 集，批次冻结展开后的完整目录。
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
 [脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十二场景／三十二 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
-新增场景须同步注册需求、manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
+新增场景须注册需求并将 ID 加入执行目录，同步 manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
 文档规划不表示入口已经支持新 case、L4 或并行调度。

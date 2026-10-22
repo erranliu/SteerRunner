@@ -1,7 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/live-catalog.ps1')
-$taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
+$taskCatalog=Get-SRTestCatalog (Join-Path $Repository 'tests/catalog.json')
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
 if($taskCount -ne 32){throw 'L3 registry must retain local agent cases, both restart access modes and exclude retired remote checks'}

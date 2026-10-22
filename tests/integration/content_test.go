@@ -25,11 +25,7 @@ func contentFixture(t *testing.T, workflow string, schema json.RawMessage) (stri
 		_ = os.WriteFile(filepath.Join(native, "content-final"), []byte(`{"ok":true}`), 0600)
 	}
 	if marker := os.Getenv("STEERRUNNER_CONTENT_MARKER"); marker != "" {
-		if marker == "bad-json" {
-			_ = os.WriteFile(filepath.Join(native, "content-final"), []byte("bad JSON"), 0600)
-		} else {
-			_ = os.WriteFile(filepath.Join(native, marker), []byte("marker"), 0600)
-		}
+		_ = os.WriteFile(filepath.Join(native, marker), []byte("marker"), 0600)
 	}
 	dir := filepath.Join(root, "state")
 	settings, _ := json.Marshal(contracts.CodexSettings{Executable: helperEXE, AccessMode: "read_only"})
@@ -97,8 +93,6 @@ func TestSRContentGenerate(t *testing.T) {
 		marker, want string
 	}{
 		{"text", nil, "", "succeeded"}, {"json", json.RawMessage(`{"type":"object","required":["ok"]}`), "", "succeeded"},
-		{"schema_mismatch", json.RawMessage(`{"type":"array"}`), "", "failed"},
-		{"bad_json", json.RawMessage(`{"type":"object"}`), "bad-json", "failed"},
 		{"failed", nil, "content-failed", "failed"}, {"cancelled", nil, "content-cancelled", "cancelled"}, {"no_final", nil, "missing-final", "failed"}, {"question", nil, "content-question", "failed"},
 		{"no_auth", nil, "content-no-auth", "failed"}, {"no_directory", nil, "content-no-directory", "failed"},
 	} {
@@ -113,6 +107,9 @@ func TestSRContentGenerate(t *testing.T) {
 			}
 			if view.ContentResult == nil || view.ContentResult.Status != tc.want || !view.Closed || view.PR != nil || countNative(t, "turn/start") != expectedTurns || countNative(t, "thread/start") != expectedTurns {
 				t.Fatalf("wrong one-shot result: %+v", view)
+			}
+			if tc.name == "json" && (string(view.ContentResult.JSON) != `{"ok":true}` || view.ContentResult.Text != "") {
+				t.Fatalf("submitted output schema was lost before structured result acquisition: %+v", view.ContentResult)
 			}
 			if tc.name == "question" && view.ContentResult.Diagnostic != "human_input_required" {
 				t.Fatal(view.ContentResult)

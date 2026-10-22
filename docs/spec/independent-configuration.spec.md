@@ -175,7 +175,7 @@ L1、Controlled 和无真机依赖的 L4 仍可在未配置本地 Codex 的开�
 
 ### 6.1 需求权威与计算
 
-case 的配置项引用、角色、组合、模式、模型约束、夹具及故障设施要求归 `internal/testkit/livetest/cases.json` 的测试需求扩展维护。需求限于少量类型明确的字段／已知 case 断言，不新增通用表达式求值器。`tests/catalog.json` 不新增这些需求的镜像副本；PowerShell 和 Go 消费唯一注册，现有重复元数据继续核对。配置文件只填写环境值，不能修改 case 预期、删掉注册 case 或声明自己已通过。
+case 的配置项引用、角色、组合、模式、模型约束、夹具及故障设施要求归 `internal/testkit/livetest/cases.json` 的测试需求扩展维护。需求限于少量类型明确的字段／已知 case 断言，不新增通用表达式求值器。`tests/catalog.json.scenarios` 仅列所选场景 ID，由共享读取函数从唯一注册展开层级、driver、target、agent、超时和完整 case 集，不手写元数据镜像。已有自定义 catalog 的完整对象格式继续接受并核对元数据；批次冻结展开后的完整对象，worker 不重新解释 ID 选择。完整层级仍拒绝缺少注册场景。配置文件只填写环境值，不能修改 case 预期、删掉注册 case 或声明自己已通过。
 
 | 场景族 | 最小需求示意；具体以每个已注册 case 为准 |
 | --- | --- |
