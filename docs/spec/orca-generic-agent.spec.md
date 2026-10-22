@@ -4,6 +4,8 @@
 
 本 Spec 扩展 [SteerRunner 产品契约](steerrunner.spec.md)：继续使用 `orca-terminal`，由 Orca 管理工作区和终端，由 Runner 对接 agent 的原生事实。目标是**已适配的 agent 只改配置，新 agent 补少量适配**，不承诺所有 Orca 可启动的 TUI 自动具备可靠执行能力。
 
+拟议的[统一用量与独立费用模块](run-usage-and-cost.spec.md)仅允许在本机为计量解析原生日志，不将其作为执行完成、正文、恢复或发布证据；本文有关执行事实的 transcript/正式扩展边界保持。该增量目前仅为设计，不扩展远端 Pi/DSH 生产执行支持。
+
 ## 1. 范围与硬约束
 
 1. 执行仍为 Runner → 现有 Orca terminal → agent TUI。验证 Codex、Pi（`pi`）、DeepSeek Harness（`dsh`）的 `development/1`、业务 needs_input/reply、同会话反馈、发布和独立 PR 核验。

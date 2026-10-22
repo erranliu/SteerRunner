@@ -1,0 +1,14 @@
+[
+  {
+    "ID": "command-0",
+    "WireSHA256": "5b20762029266d4f4d47e48d3b54404e201378c6ca2ace5a8a8c01e71292268d"
+  },
+  {
+    "ID": "command-1",
+    "WireSHA256": "4cda477527673aba7262de44d44e50023bdbc3ca1f5b0f3bffb8e320f3f2d50e"
+  },
+  {
+    "ID": "command-2",
+    "WireSHA256": "85ee3d3625988aa5b26d263a9777aee2fc953f69d3b6488aad5728f82102985d"
+  }
+]

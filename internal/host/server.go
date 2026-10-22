@@ -21,16 +21,19 @@ import (
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/storage"
+	"github.com/erranliu/SteerRunner/internal/usage/api"
+	"github.com/erranliu/SteerRunner/internal/usage/collect"
 )
 
 type server struct {
-	engine   *application.Engine
-	endpoint endpoint
-	store    *storage.Store
-	mutex    sync.RWMutex // admission spans handlers; stop waits for admitted calls
-	stopping bool
-	stop     chan string
-	logger   *log.Logger
+	engine      *application.Engine
+	endpoint    endpoint
+	store       *storage.Store
+	mutex       sync.RWMutex // admission spans handlers; stop waits for admitted calls
+	stopping    bool
+	stop        chan string
+	logger      *log.Logger
+	usageCancel context.CancelFunc
 }
 
 func Serve(ctx context.Context, dir, startupID string) error {
@@ -110,6 +113,13 @@ func Serve(ctx context.Context, dir, startupID string) error {
 			return err
 		}
 	}
+	usagePolicy := api.DefaultPolicy()
+	if pending != nil && pending.UsagePolicy != nil {
+		usagePolicy = *pending.UsagePolicy
+	}
+	if err = store.InitUsage(); err != nil {
+		return err
+	}
 	stopID := ""
 	defer func() {
 		shutdown, cancel := context.WithTimeout(context.Background(), 25*time.Second)
@@ -149,6 +159,42 @@ func Serve(ctx context.Context, dir, startupID string) error {
 		return err
 	}
 	service = contracts.ServiceInfo{InstanceID: contracts.NewID(), StateDir: dir, PID: os.Getpid(), ProcessCreated: created, Status: "ready", Detached: detached, Version: resources.Version, Protocol: contracts.Protocol, ResourceDigest: resources.Digest(), ExecutableSHA256: executableSHA}
+	service.UsagePolicyDigest = usagePolicy.Digest()
+	service.UsagePolicyRevision = service.InstanceID
+	service.UsagePolicy = &usagePolicy
+	if err = store.PutUsageJournal(ctx, "effective-policy", map[string]any{"instance_id": service.InstanceID, "policy": usagePolicy, "digest": usagePolicy.Digest()}); err != nil {
+		return err
+	}
+	if err = store.SetUsagePermit(ctx, api.CollectionPermit{Instance: service.InstanceID, PolicyDigest: usagePolicy.Digest(), Active: true}); err != nil {
+		return err
+	}
+	defer func() {
+		bounded, done := context.WithTimeout(context.Background(), 5*time.Second)
+		defer done()
+		_ = store.RevokeUsagePermit(bounded, service.InstanceID)
+	}()
+	usageCtx, usageCancel := context.WithCancel(ctx)
+	defer usageCancel()
+	usageDone := make(chan struct{})
+	collector := &collect.Collector{Store: store, Policy: usagePolicy, Instance: service.InstanceID}
+	// Publish existing targets before advertising a ready query endpoint.
+	existingRuns, readErr := store.Runs()
+	if readErr != nil {
+		return readErr
+	}
+	for _, run := range existingRuns {
+		if err = store.EnsureUsage(ctx, run.ID, run.CreatedAt); err != nil {
+			return err
+		}
+	}
+	go func() { defer close(usageDone); collector.Run(usageCtx) }()
+	defer func() {
+		bounded, done := context.WithTimeout(context.Background(), 5*time.Second)
+		_ = store.RevokeUsagePermit(bounded, service.InstanceID)
+		done()
+		usageCancel()
+		<-usageDone
+	}()
 	if err := store.ReconcileStops(service.InstanceID); err != nil {
 		return err
 	}
@@ -158,6 +204,7 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	}
 	defer listener.Close()
 	s := &server{endpoint: endpoint{Service: service, Pipe: pipe, Token: contracts.NewID()}, store: store, stop: make(chan string, 1), logger: logger, engine: engine}
+	s.usageCancel = usageCancel
 	if err := writeEndpoint(dir, s.endpoint); err != nil {
 		return err
 	}
@@ -282,6 +329,11 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 	switch wire.Options.Command {
 	case "observe":
 		return s.engine.Observe(wire.Options.RunID, wire.Options.After, wire.Options.Limit), false
+	case "run-usage", "run-usage-events", "estimate-run-cost":
+		if wire.Request != nil {
+			return reject(contracts.Fail(2, "invalid_request", "Usage queries do not accept input."))
+		}
+		return s.usageQuery(wire.Options), false
 	case "service verify-takeover":
 		caps, sha, failure := candidateCapabilities(context.Background(), wire.Options.Candidate)
 		if failure != nil {
@@ -321,6 +373,10 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		if stop {
 			s.stopping = true
+			s.engine.StopObserving()
+			if s.usageCancel != nil {
+				s.usageCancel()
+			}
 		}
 		return response, stop
 	default:

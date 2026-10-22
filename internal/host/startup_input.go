@@ -12,7 +12,21 @@ func pendingStartPath(dir string) string { return filepath.Join(dir, "service", 
 
 func savePendingStart(dir string, input *contracts.ServiceStartInput) error {
 	if input == nil {
-		return nil
+		raw, err := os.ReadFile(pendingStartPath(dir))
+		if os.IsNotExist(err) {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		prior, fault := contracts.ReadServiceStartInput(raw)
+		if fault != nil {
+			return fault
+		}
+		// Preserve original stop controls, but a new start without a policy must
+		// never inherit remote grants from a failed previous startup attempt.
+		prior.UsagePolicy = nil
+		input = prior
 	}
 	// Never silently remove a previously saved cancellation during a retry.
 	if raw, err := os.ReadFile(pendingStartPath(dir)); err == nil {

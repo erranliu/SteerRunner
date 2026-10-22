@@ -209,6 +209,9 @@ func (s *Store) AcceptStop(input contracts.Request, instance string) (contracts.
 	if _, err := tx.Exec(`INSERT INTO commands(request_id,command_id,command,instance_id,digest,response,action_status) VALUES (?,?,?,?,?,?,?)`, input.RequestID, commandID, "service stop", instance, digest, body, "pending"); err != nil {
 		return contracts.Response{}, false, err
 	}
+	if err := revokeUsagePermit(tx, instance); err != nil {
+		return contracts.Response{}, false, err
+	}
 	if err := tx.Commit(); err != nil {
 		return contracts.Response{}, false, err
 	}

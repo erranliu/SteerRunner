@@ -8,6 +8,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/erranliu/SteerRunner/internal/usage/api"
 )
 
 const Protocol = "steerrunner-cli/v1"
@@ -87,7 +89,7 @@ func ExitCode(response Response) int {
 		return 3
 	case "service_unavailable", "service_start_failed", "detach_unsupported", "startup_unverified", "environment_unavailable":
 		return 4
-	case "request_conflict", "request_not_found", "command_not_found", "run_not_found", "check_not_found", "stale_instance", "directory_conflict", "stale_revision", "invalid_state", "stale_question", "resume_required", "operation_unverified", "answer_pending", "repository_conflict":
+	case "snapshot_not_found", "snapshot_expired", "invalid_usage_cursor", "usage_policy_conflict", "usage_observation_stale", "request_conflict", "request_not_found", "command_not_found", "run_not_found", "check_not_found", "stale_instance", "directory_conflict", "stale_revision", "invalid_state", "stale_question", "resume_required", "operation_unverified", "answer_pending", "repository_conflict":
 		return 5
 	case "request_outcome_unknown":
 		return 6
@@ -116,17 +118,20 @@ func ValidRequestID(value string) bool {
 }
 
 type ServiceInfo struct {
-	InstanceID       string           `json:"instance_id"`
-	StateDir         string           `json:"state_dir"`
-	PID              int              `json:"pid"`
-	ProcessCreated   string           `json:"process_created"`
-	Status           string           `json:"status"`
-	Detached         bool             `json:"detached"`
-	Version          string           `json:"version"`
-	Protocol         string           `json:"protocol"`
-	ResourceDigest   string           `json:"resource_digest"`
-	ExecutableSHA256 string           `json:"executable_sha256"`
-	LastShutdown     *ServiceShutdown `json:"last_shutdown,omitempty"`
+	InstanceID          string           `json:"instance_id"`
+	StateDir            string           `json:"state_dir"`
+	PID                 int              `json:"pid"`
+	ProcessCreated      string           `json:"process_created"`
+	Status              string           `json:"status"`
+	Detached            bool             `json:"detached"`
+	Version             string           `json:"version"`
+	Protocol            string           `json:"protocol"`
+	ResourceDigest      string           `json:"resource_digest"`
+	ExecutableSHA256    string           `json:"executable_sha256"`
+	LastShutdown        *ServiceShutdown `json:"last_shutdown,omitempty"`
+	UsagePolicyDigest   string           `json:"usage_policy_digest,omitempty"`
+	UsagePolicyRevision string           `json:"usage_policy_revision,omitempty"`
+	UsagePolicy         *api.Policy      `json:"usage_policy,omitempty"`
 }
 
 // ServiceShutdown is published after worker shutdown, before releasing the

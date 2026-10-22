@@ -5,6 +5,18 @@
 `scripts/test-foundation.ps1 -Pattern '^TestSRAuditPromptDefaultUpgrade$' -BaselineExe <变更前EXE> -OutDir <新目录>`。
 后者是需原 EXE 的补充受控场景，不改默认 22 项目录或以编译/跳过代替资格。
 
+Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/cost/... ./internal/storage ./internal/host ./internal/cli ./internal/contracts ./internal/resources -count=1`。真实 EXE 的用量查询使用隔离合成投影；三 agent 格式夹具均脱敏。原生产日志只读复算为显式 opt-in `TestUsageExistingNativeEvidence`，默认跳过，不启动业务 worker。实际范围、六组合缺口及首次整仓失败记录见[实施验收](acceptance/run-usage-and-cost.md)；这些测试随现有 L1 `./internal/...` 入口运行，不增加模型或 PR case。
+
+授权回收规则的定向回归还需包含 `./internal/execution/adapters/protocol/orca`：验证原有 repo/group/folder 清单的完整性与引用、读取 selector 撤销证明。远端公开验收在正常停服后同时检查持久 collection permit 已 inactive，不能只以 token 已取得或服务退出代替撤权证据。
+
+本机 Codex 只读现场入口为 `TestRunUsageLocalCodexPublicLive`，显式设置 `SR_USAGE_LOCAL_LIVE=1`、`SR_USAGE_LOCAL_STATE`、`SR_USAGE_LOCAL_RUN`、全新绝对 `SR_USAGE_LOCAL_EVIDENCE`；只接受当前可解码且已停止/完成的原 Run，并拒绝仍有业务授权的来源。测试不会创建模型输入，只复制已冻结、已撤权记录到隔离服务；原日志保持只读。普通 L1 入口拒绝上述遗留 opt-in；独立 seed 清理入口的 `SR_USAGE_LOCAL_REPO_CLEANUP`/`SR_USAGE_LOCAL_CLEANUP_ROOT` 同样被拒绝。
+
+本机 Pi/DSH 入口为 `TestRunUsageLocalPiPublicLive` / `TestRunUsageLocalDSHPublicLive`，复用同组 `SR_USAGE_LOCAL_*` 变量，以精确 `-run` 选择与原 Run agent 相符的测试。仅接受现存 pr_ready 主会话，以只读 `UsageRuns` 投影历史状态；隔离副本无业务授权/待执行意图。验证原生日志逐响应 command 归属、公开 EXE 自动统计、独立估价、采集服务停启/强制重读去重；不创建模型输入或目录登记，不停止原生产服务/终端。实际 token、合成价表及清理证据见同一验收记录。
+
+远端已完成 Codex Run 的显式现场入口为 `TestUsageRemoteCodexLive` / `TestRunUsageRemotePublicLive`，所需变量及撤回/清理证明见同一验收记录，默认 skip，标准 L1 拒绝远端 opt-in 遗留。手工整仓 Go 入口应使用 `go test ./... -count=1 -timeout 45m -json`：2026-10-21 实测 application 全包 625.267 秒、`TestSRResultAcquisition` 串行整组 738.65 秒，均可能超过 Go 默认 package 10 分钟上限。该聚合预算不延长产品调用或场景内期限；完整受控入口本已采用 45 分钟预算。
+
+裸 `go test ./...` 还会包含 L4 的 `TestSREdgeResourcePressure`（20 轮完整提交/发布/停止及进程退出/句柄检查），并非 L1 入口。常规分层运行使用下文脚本和 catalog；全仓审计保留此测试，不为缩短耗时削减轮数。
+
 内容流程的最小定向入口为 `./scripts/test-content-workflows.ps1`；附加
 `-NativeExecutable <已有原生 Codex 0.159.2 EXE> -Model <可用模型>` 后，在三个内容受控场景
 通过后运行真实生成/多轮/中断/重启与结算。原生测试创建新的 `C:/srt/cw-*`，不使用

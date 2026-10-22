@@ -1,0 +1,23 @@
+{
+  "origin": "2026-10-21 existing native read-only investigation; synthetic identities and input text; no transcript content retained",
+  "sources": {
+    "codex": {
+      "source_sha256": "850e6b03b0786f69f0e82e7de594c211e04772bcbaab87dc878b4fe558cbd989",
+      "format": "token_usage_record",
+      "retained": "header, input placeholders, identity relationships, timestamps, observed model/provider and token fields; cumulative/nested duplicates kept as negative controls",
+      "native_client_version": "0.162.1"
+    },
+    "pi": {
+      "source_sha256": "1c7ea1dd9e922e520a36ee41a601e399a8d3e7fe311431ca20db425531c33002",
+      "format": "v3",
+      "retained": "header, input placeholders, identity relationships, timestamps, observed model/provider and token fields; cumulative/nested duplicates kept as negative controls",
+      "native_client_version": "0.87.1"
+    },
+    "dsh": {
+      "source_sha256": "992e88a8a5e7f304a588f9a318369a47151d5a71fceccef07b6a36f0a2d1d8a0",
+      "format": "v4 decoded from zstd concatenated frames",
+      "retained": "header, input placeholders, identity relationships, timestamps, observed model/provider and token fields; cumulative/nested duplicates kept as negative controls",
+      "native_client_version": "0.2.1-rc.2"
+    }
+  }
+}

@@ -32,6 +32,8 @@ type Options struct {
 	After              string                            `json:"after,omitempty"`
 	Limit              int                               `json:"limit,omitempty"`
 	RefreshPR          bool                              `json:"refresh_pr,omitempty"`
+	UsageRevision      uint64                            `json:"usage_revision,omitempty"`
+	PricingPolicy      string                            `json:"pricing_policy,omitempty"`
 }
 
 type wireRequest struct {
