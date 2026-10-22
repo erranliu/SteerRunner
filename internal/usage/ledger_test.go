@@ -11,6 +11,10 @@ import (
 func TestUsagePartialFieldsStillValidateKnownRelations(t *testing.T) {
 	for _, tokens := range []api.Tokens{
 		{InputTotal: api.Number(1), CacheRead: api.Number(2)},
+		{InputTotal: api.Number(1), CacheWrite: api.Number(2)},
+		{InputTotal: api.Number(1), InputUncached: api.Number(2)},
+		{InputTotal: api.Number(3), CacheRead: api.Number(2), CacheWrite: api.Number(2)},
+		{InputUncached: api.Number(math.MaxInt64), CacheRead: api.Number(1)},
 		{InputUncached: api.Number(math.MaxInt64), CacheRead: api.Number(1), CacheWrite: api.Number(0)},
 	} {
 		if Validate(tokens) == nil {

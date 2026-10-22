@@ -8,6 +8,8 @@
 
 本机 Pi/DSH 增补：`TestRunUsageLocalPiPublicLive`、`TestRunUsageLocalDSHPublicLive` 默认 skip，复用原 pr_ready Run 的只读证据；隔离服务逐响应核对 Run/attempt/generation/command/native session 及 token。独立控制和为 18 响应/200,432、21 响应/318,722；合成估价、坏/关闭价表不影响用量、采集服务停启/强制重读去重、关闭后的历史及 lease=0/许可撤销均有具体断言。原业务服务/终端不动，不增加模型调用或扩大远端 gate。
 
+2026-10-22 提交前一致性复审增加 `TestUsageFinalReplyBelongsToCommand`、`TestUsageConflictEvidenceIsAtomicAndDurable`、`TestCostTokenOnlyScopeAndCompletionAreExplicit`；扩展 epoch 创建意图、四类清单完整性和三查询完整实例绑定/停止围栏断言。整合 main 后重新执行的包、集成和现场结果在专项验收中单列，不继承旧构建资格。
+
 本文件维护各项测试的独有验证目标、固定预期、并行条件、实现状态和当前缺口。
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。

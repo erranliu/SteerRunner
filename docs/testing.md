@@ -9,6 +9,8 @@ Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/co
 
 授权回收规则的定向回归还需包含 `./internal/execution/adapters/protocol/orca`：验证原有 repo/group/folder 清单的完整性与引用、读取 selector 撤销证明。远端公开验收在正常停服后同时检查持久 collection permit 已 inactive，不能只以 token 已取得或服务退出代替撤权证据。
 
+2026-10-22 提交前复审新增最终回复 command 归属、冲突双方证据同事务/幂等、新 epoch 空资源意图、分页清单完整性及费用排除项反例；三个用量/费用查询沿最新 main 的完整实例绑定和停止准入围栏。实际 EXE 正例带完整绑定；六组合当前边界与重跑结果见同一验收记录。
+
 本机 Codex 只读现场入口为 `TestRunUsageLocalCodexPublicLive`，显式设置 `SR_USAGE_LOCAL_LIVE=1`、`SR_USAGE_LOCAL_STATE`、`SR_USAGE_LOCAL_RUN`、全新绝对 `SR_USAGE_LOCAL_EVIDENCE`；只接受当前可解码且已停止/完成的原 Run，并拒绝仍有业务授权的来源。测试不会创建模型输入，只复制已冻结、已撤权记录到隔离服务；原日志保持只读。普通 L1 入口拒绝上述遗留 opt-in；独立 seed 清理入口的 `SR_USAGE_LOCAL_REPO_CLEANUP`/`SR_USAGE_LOCAL_CLEANUP_ROOT` 同样被拒绝。
 
 本机 Pi/DSH 入口为 `TestRunUsageLocalPiPublicLive` / `TestRunUsageLocalDSHPublicLive`，复用同组 `SR_USAGE_LOCAL_*` 变量，以精确 `-run` 选择与原 Run agent 相符的测试。仅接受现存 pr_ready 主会话，以只读 `UsageRuns` 投影历史状态；隔离副本无业务授权/待执行意图。验证原生日志逐响应 command 归属、公开 EXE 自动统计、独立估价、采集服务停启/强制重读去重；不创建模型输入或目录登记，不停止原生产服务/终端。实际 token、合成价表及清理证据见同一验收记录。

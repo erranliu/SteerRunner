@@ -18,6 +18,17 @@ func TestSRFullBindingCLI(t *testing.T) {
 	if fault != nil || parsed.opts.ExpectedBinding == nil || *parsed.opts.ExpectedBinding != binding || parsed.opts.ExpectedInstanceID != binding.InstanceID {
 		t.Fatal(parsed, fault)
 	}
+	for _, args := range [][]string{
+		{"run-usage", "--run-id", "run"},
+		{"run-usage-events", "--run-id", "run", "--snapshot-revision", "1"},
+		{"estimate-run-cost", "--run-id", "run", "--usage-revision", "1", "--pricing-policy", "unused.json"},
+	} {
+		args = append(args, "--expected-binding", string(body))
+		parsed, fault := parse(args)
+		if fault != nil || parsed.opts.ExpectedBinding == nil || *parsed.opts.ExpectedBinding != binding || parsed.opts.ExpectedInstanceID != binding.InstanceID {
+			t.Fatal("usage query lost full instance binding", args, parsed, fault)
+		}
+	}
 	for _, argv := range [][]string{
 		{"service", "start", "--expected-binding", string(body)},
 		{"inspect", "--run-id", "run", "--expected-binding", "{}"},

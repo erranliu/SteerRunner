@@ -52,10 +52,14 @@ func TestRunUsagePublicExecutable(t *testing.T) {
 		t.Fatal(err)
 	}
 	s.Close()
+	bound := ""
 	call := func(input string, args ...string) (contracts.Response, int) {
 		t.Helper()
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()
+		if bound != "" && contracts.ServiceBindingCommand(args[0]) {
+			args = append(args, "--expected-binding", bound)
+		}
 		cmd := exec.CommandContext(ctx, exe, append(args, "--state-dir", state, "--json")...)
 		cmd.Stdin = bytes.NewBufferString(input)
 		raw, err := cmd.Output()
@@ -81,6 +85,8 @@ func TestRunUsagePublicExecutable(t *testing.T) {
 	raw, _ := json.Marshal(started.Data)
 	var info contracts.ServiceInfo
 	_ = json.Unmarshal(raw, &info)
+	fullBinding, _ := json.Marshal(contracts.ExpectedServiceBinding{Contract: contracts.ServiceBindingContract, Protocol: info.Protocol, InstanceID: info.InstanceID, StateDir: info.StateDir, ExecutableSHA256: info.ExecutableSHA256, Version: info.Version, ResourceDigest: info.ResourceDigest})
+	bound = string(fullBinding)
 	t.Cleanup(func() {
 		body, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "stop-usage-test", Input: json.RawMessage(`{"expected_instance_id":"` + info.InstanceID + `"}`)})
 		_, _ = call(string(body), "service", "stop", "--input", "-")

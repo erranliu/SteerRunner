@@ -39,20 +39,19 @@ func Validate(t api.Tokens) error {
 			return errors.New("USAGE_INVALID")
 		}
 	}
-	if t.InputTotal != nil && t.CacheRead != nil && *t.CacheRead > *t.InputTotal {
-		return errors.New("USAGE_INVALID")
-	}
-	if t.InputUncached != nil && t.CacheRead != nil && t.CacheWrite != nil {
-		n := *t.InputUncached
-		for _, v := range []int64{*t.CacheRead, *t.CacheWrite} {
-			if n > math.MaxInt64-v {
-				return errors.New("USAGE_INVALID")
-			}
-			n += v
+	knownInput, allInputKnown := int64(0), true
+	for _, count := range []*int64{t.InputUncached, t.CacheRead, t.CacheWrite} {
+		if count == nil {
+			allInputKnown = false
+			continue
 		}
-		if t.InputTotal != nil && n != *t.InputTotal {
+		if knownInput > math.MaxInt64-*count {
 			return errors.New("USAGE_INVALID")
 		}
+		knownInput += *count
+	}
+	if t.InputTotal != nil && (knownInput > *t.InputTotal || allInputKnown && knownInput != *t.InputTotal) {
+		return errors.New("USAGE_INVALID")
 	}
 	if reflect.DeepEqual(t, api.Tokens{}) {
 		return errors.New("USAGE_NOT_RECORDED")

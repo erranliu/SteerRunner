@@ -1,6 +1,7 @@
 package host
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -94,6 +95,19 @@ func readPricingPolicy(file string) (cost.Policy, error) {
 	for _, name := range []string{"schema", "id", "version", "source", "currency", "enabled", "allow_completion_time", "rules"} {
 		if fields[name] == nil || string(fields[name]) == "null" {
 			return policy, errors.New("missing pricing policy field")
+		}
+	}
+	// Optional predicates may be omitted, but explicit null is invalid in the
+	// published policy schema and must not silently erase a pricing condition.
+	var rules []map[string]json.RawMessage
+	if err = json.Unmarshal(fields["rules"], &rules); err != nil {
+		return policy, err
+	}
+	for _, rule := range rules {
+		for _, name := range []string{"tier", "min_context_tokens", "max_context_tokens"} {
+			if value, present := rule[name]; present && bytes.Equal(bytes.TrimSpace(value), []byte("null")) {
+				return policy, errors.New("null pricing predicate")
+			}
 		}
 	}
 	return policy, policy.Validate()

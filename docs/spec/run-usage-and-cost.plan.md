@@ -185,3 +185,15 @@
 - P5：`TestCostTokenOnlyScopeAndCompletionAreExplicit` 验证 API 等价 token 范围、订阅/工具等排除项及 completion time 假设同时公开；基础用量 DTO/价格依赖仍不混合。
 
 本轮实际回归、现场复验和撤销证明见验收记录；未实现的 fork/子会话、零调用证明生产源和过期/tombstone 机制保持缺口，不以 PR 交付掩盖。
+
+
+提交前已整合 main `4d11148` 的 14 个上游提交。三个新增查询加入完整 ServiceBindingCommands/CLI，沿原 RWMutex 准入围栏；`TestSRFullBindingCLI`、`TestSRFullBindingRejectsBeforeEffects` 及带完整绑定的 `TestRunUsagePublicExecutable` 验证与新契约一致。保留原子 observe、命名和材料语义。整合前的通过批次不代替整合后 internal 全包、专项集成及四组合现场结果。
+
+
+末次归一化复核补齐 nullable 输入分类约束：即使部分分类未知，已知 uncached/cacheRead/cacheWrite 合计也不能超过 input_total，且已知合计自身不能溢出；保留 null 而非填零。`TestUsagePartialFieldsStillValidateKnownRelations` 增加 cacheWrite/uncached 单项、两个已知缓存项合计越界和部分计数溢出反例。此修改后相关 13 包与四组合现场另行复验，应用层/执行链整组不冒充在最后归一化补充之后重新完整运行。
+
+
+L1 入口同时拒绝既有日志 opt-in `SR_USAGE_EXISTING_STATE` 与远端 Run/evidence 残留；子进程负例确认 guard 在读取日志前拒绝，测试脚本语法通过。普通 Go 测试默认仍跳过现场，不能将 skip 当现场资格。
+
+
+`TestCostPolicyOptionalNullCannotErasePredicates` 补齐价表读取与 schema 对齐：tier/min/max context 的显式 null 不得被 Go 当作省略而消除计价条件；省略与显式零正例保持可用。修复只在费用装配入口，最后 13 包及四组合现场按冻结代码再次复验。

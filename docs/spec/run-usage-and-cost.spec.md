@@ -269,7 +269,7 @@ DSH 首期本机按完整快照流式解压所有串接 zstd frame，再用响�
 
 价目表由费用模块独立装配，包含 policy ID、版本、摘要、来源、有效时间、币种、provider/model 映射、时段/节假日规则、上下文及服务档位规则。查询不临时联网查价格，单价更新不重写 token 事实或旧估价。相同用量快照和价格摘要应得到相同结果。
 
-若同一模型/时间段存在可能适用的 tier/context 条件规则，而事件缺少该判别字段，报告 PRICING_CONTEXT_UNKNOWN，不能绕过该规则选择通用价。只有显式允许时才使用原生 completion time 代理 request time；unknown 时间来源不能因该开关而变成可计价。DSH v4 原生 time 为毫秒时间戳，按其格式解码为 completion time，不使用采集时间补齐。
+价表可选 tier/min_context_tokens/max_context_tokens 可以省略，显式 null 按公开 schema 拒绝，不能静默消除计价条件。若同一模型/时间段存在可能适用的 tier/context 条件规则，而事件缺少该判别字段，报告 PRICING_CONTEXT_UNKNOWN，不能绕过该规则选择通用价。只有显式允许时才使用原生 completion time 代理 request time；unknown 时间来源不能因该开关而变成可计价。DSH v4 原生 time 为毫秒时间戳，按其格式解码为 completion time，不使用采集时间补齐。
 
 按逐响应互斥类别计算 `(未缓存输入×输入价 + 缓存读取×读取价 + 已知缓存写入×写入价 + 输出×输出价) / 1,000,000`，再聚合。reasoning 不重复收费；缓存 TTL/档位不明时不能套用已知零缓存样本的规则。使用十进制/有理精度，明细聚合后才显示舍入，不能逐响应按美分或整数微美元过早舍入。
 

@@ -373,7 +373,9 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		if stop {
 			s.stopping = true
-			s.engine.StopObserving()
+			if s.engine != nil {
+				s.engine.StopObserving()
+			}
 			if s.usageCancel != nil {
 				s.usageCancel()
 			}

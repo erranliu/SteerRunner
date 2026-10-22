@@ -1,6 +1,6 @@
 # Run token 用量与独立费用估算实施记录
 
-日期：2026-10-21。基线：`8261310d5f2d1edb6fa0c81ba05fa4119b561386` 加本工作区未提交增量；Windows/amd64、Go 1.26.4。对应 [Spec](../spec/run-usage-and-cost.spec.md) / [Plan](../spec/run-usage-and-cost.plan.md)。本记录区分已交付代码、受控验证和生产现场资格。
+原验收日期：2026-10-21；提交前一致性复审：2026-10-22。原基线为 `8261310d5f2d1edb6fa0c81ba05fa4119b561386` 加当时工作区增量；本轮已整合 main `4d11148`，新结果单列于末节，不把历史构建结果改写为新构建资格。平台 Windows/amd64、Go 1.26.4。对应 [Spec](../spec/run-usage-and-cost.spec.md) / [Plan](../spec/run-usage-and-cost.plan.md)。本记录区分已交付代码、受控验证和生产现场资格。
 
 ## 已交付
 
@@ -247,7 +247,7 @@ fork/子会话完整谱系、零调用证明生产源及明细过期/tombstone �
 
 直接复用 `C:\slr\beret3eg7x3tdkzggckgqkuhmy` 中两个 pr_ready 真实 Run。没有创建新 Run、追加模型输入、使用 API 凭据或启动/部署 helper；原生产服务、业务终端和原生日志保持原状，Orca 源码、安装与设置未改。本轮只增补测试及文档，没有修改生产代码或暂存、提交、推送。
 
-历史 Run 含现行严格业务 codec 不识别的字段，因此以 `OpenReader/UsageRuns` 只读提取原 Profile、Snapshot、Attempts、LaunchCommand、CreatedAt 等已提交证据；没有迁移历史请求。保留原 Run ID 的隔离副本不包含原业务授权、待执行 intent 或请求，业务 revision 固定为 1。真实服务后台采集器仅从原冻结事实自动关联日志；独立预检获得的路径、token 和 response ID 均未传给采集器。此资格覆盖现存已结算主会话的公开计量、费用及**隔离采集服务**停止/重启，没有重启原 Pi/DSH 业务，也不代表全部 G01/G02 恢复窗口。
+调查时历史 Run 含当时严格业务 codec 不识别的字段；验收不依赖历史业务请求能否重新解码，以 `OpenReader/UsageRuns` 只读提取原 Profile、Snapshot、Attempts、LaunchCommand、CreatedAt 等已提交证据；没有迁移历史请求。保留原 Run ID 的隔离副本不包含原业务授权、待执行 intent 或请求，业务 revision 固定为 1。真实服务后台采集器仅从原冻结事实自动关联日志；独立预检获得的路径、token 和 response ID 均未传给采集器。此资格覆盖现存已结算主会话的公开计量、费用及**隔离采集服务**停止/重启，没有重启原 Pi/DSH 业务，也不代表全部 G01/G02 恢复窗口。
 
 | 项目 | Pi | DSH |
 | --- | --- | --- |
@@ -287,3 +287,55 @@ Pi 原文件 72,625 字节，SHA-256 `1024076e06f9d521610629d2ebf86c327443c84ec7
 
 
 收尾只读核验覆盖本轮 5 个原/最终隔离状态目录：全部 collection permit inactive、lease=0，验收 Runner 进程数为 0；原 Pi/DSH terminal handle/incarnation 未变且仍 connected。两组最终 EXE SHA-256 均为 `842fd4914d5db1b80cfa325adf01d0c4c332de0c182a66704f1d024e0a24abbb`，与本轮前 Codex 现场构建相同，印证本轮无生产代码变化。附加清理证明为 `C:\srt\usage-local-pi-dsh-final-storage-proof-20261021.json`、`C:\srt\usage-local-pi-dsh-final-native-proof-20261021.json`；13 包回归 JSONL 为 `C:\srt\usage-local-pi-dsh-regression-20261021.jsonl`。`git diff --check` 通过，HEAD 仍为 `8261310d5f2d1edb6fa0c81ba05fa4119b561386`，无暂存或提交。
+
+
+## 提交前实现、Spec、Plan 与现场记录一致性复审（2026-10-22）
+
+本轮已授权修复、回归、提交和创建 PR，未授权合并或部署。仍不修改 Orca、不部署 helper、不改变原生产服务或追加模型输入。旧调查表、已取得主会话资格、未交付能力分别登记；Spec 增加当前六组合矩阵，Plan 中“先不提交”等历史限制已按新授权更新。文档索引纳入本专项，保留此前失败、未执行和未交付记录。
+
+| 确认的问题 | 修复和回归 |
+| --- | --- |
+| Pi/DSH 只确认最终 reply ID 在会话中存在，交换两个 command 的 reply 仍可能误报完整 | 最终 response 必须归属原 command；已验证 token 保留为 partial、finalized=false。`TestUsageFinalReplyBelongsToCommand` 两个 agent 均先失败后通过，parser 版本更新为 native-usage/3，原收敛缓存重新核验 |
+| token/归属冲突隔离时丢失新观察的来源摘要 | 私有 event-conflict journal 与隔离/快照同事务保存原有及新观察的规范化事件；重放按忽略 observed_at 的证据键幂等，原始日志不入库。`TestUsageConflictEvidenceIsAtomicAndDurable` 验证失败全回滚、双方摘要保留、重放不增快照或证据、历史页不改写 |
+| 同实例的新租用 epoch 复用旧 marker，传入 revoked lease 时旧 ID 残留于新创建意图 | marker 包含 epoch；新 epoch 清空 group/folder ID 和未结算标记。`TestUsageLeaseReferencesAndEpoch` 验证新意图、共享释放及旧 epoch 拒绝删除新登记 |
+| group/folder/repo 仅识别 truncated，其他明确不完整信号可能被忽略 | 与 session 一致拒绝 hasMore、nextCursor、totalCount 矛盾；完整清单正例保留。`TestUsageIncompleteInventoriesFailClosed` 覆盖四种清单，未知不当撤权证明 |
+| 某些输入分类为 null 时，只校验 cacheRead 单项，未覆盖已知分类合计越界 | 对已知 uncached/cacheRead/cacheWrite 合计作下界和溢出检查；任一未知仍保留 null。`TestUsagePartialFieldsStillValidateKnownRelations` 增加单项、已知合计及部分字段溢出反例；最后重新执行相关 13 包及四组合现场 |
+| 费用只有 api_equivalent 字段，未在结果明确列出排除收费范围 | assumptions 固定说明 token-only、排除订阅/credits 结算及工具/外部 API 费用，并保留 completion-time 代理假设；`TestCostTokenOnlyScopeAndCompletionAreExplicit` 通过。没有增加基础用量费用字段或供应商现价 |
+| 价表可选档位/上下文条件显式 null 被 Go 当作省略，与 schema 不一致 | loader 拒绝三个可选条件的显式 null；`TestCostPolicyOptionalNullCannotErasePredicates` 覆盖 null、省略和显式零，价表错误仅影响费用 |
+| 新 main 的完整实例绑定/停止准入需要覆盖新增查询 | 三个查询加入 ServiceBindingCommands，保留 RWMutex 的 handler 准入围栏和 observe 行为；公开 EXE 正例携带完整绑定，原全字段失配/停止/非 ready 反例自动覆盖三查询，`TestSRFullBindingCLI` 增加三查询正例 |
+
+准备 PR 时发现 main 已从原基线前进 14 个提交，整合到 `4d11148` 后人工解决五处重叠：CLI 参数/observe、host 绑定字段、RWMutex 及查询 dispatch、capability 命令集和测试说明。保留上游工作树名称前缀、原子 observe、材料语义与文档归档；新计量不替换这些行为。
+
+整合前的 13 包通过、application 532.657 秒、四项集成 168.772 秒及三个本机复验，只记录为整合前结果。后续全部 internal、专项集成与四组合现场在整合后的固定代码上另行执行；实际结果及收尾证明续记如下，不能拿整合前结果替代。
+
+
+归一化修复批次（价表 null 校验修复前）的四组合现场再次通过，使用完全相同的 EXE（SHA-256 `3900ea65973d35c181033848a585d499ef4e57081231b035012e62be1d3d146d`）：
+
+| 原 Run 组合 | 响应 / token | 合成估价 USD | 最终测试耗时 / 快照版本 |
+| --- | --- | --- | --- |
+| 本机 Pi | 18 / 200,432 | 0.04292800 | 21.40 秒 / 2 |
+| 本机 DSH | 21 / 318,722 | 0.07843400 | 21.02 秒 / 2 |
+| 本机 Codex | 2 / 39,667 | 0.03226300 | 26.71 秒 / 2 |
+| 远端 Codex | 11 / 225,453 | 0.05327400 | 17.18 秒 / 4 |
+
+所有费用仍为显式合成价表的 API 等价 token 算术验证，非实际账单。DSH reasoning 保持 null。三个本机现场覆盖正常停启、强制实际重读、关闭后历史及独立费用一致；远端再次覆盖自动临时授权、原日志读取、固定版本费用及撤回策略后的历史。最后一个远端 group `8a6c83a7-c04e-41fa-8d48-1739713603c1`、folder `849d245c-fad6-4072-8602-b203bae1bb1c` 均已验证撤销；前一轮远端登记也已撤销。原独立服务的业务 revision 2744→2745 为 PR 状态观察推进，原身份/输入/日志计量不变，未把 revision 本身当串账或新调用。
+
+本轮累计 11 个隔离 state-dir 另经只读 SQLite 复核：permit 全部 inactive、全部已有 lease/epoch 为 revoked，无 CreateUnresolved/MutationUnresolved，所有副本业务 revision=1。自建 Runner 进程为 0；原 Pi、DSH 和远端 Codex terminal handle/incarnation 保持不变且 connected。本机未新增目录登记，远端 group/folder 恢复原清单，同一 selector 返回明确撤销错误；不称为文件全局不可访问或远端 TTL。
+
+最后补齐 L1 对 `SR_USAGE_EXISTING_STATE`、远端 Run/evidence 等遗留变量的拒绝。以仅设置 `SR_USAGE_EXISTING_STATE=guard-test-only` 的子进程实际运行 L1 入口，确认在日志读取/Go 测试启动前报 `Unexpected live opt-in`，作为预期拒绝通过；没有把这次负例说成完整 L1 执行成功。证据为 `C:\srt\usage-final-audit-l1-guard-20261022.log`。
+
+最终代码另重跑 13 个受影响包全部通过（`usage-final-audit-final-affected-20261022.jsonl`），包含完整绑定 EXE 正例和所有新增反例。`go vet ./...`、测试脚本语法、相对链接与凭据模式检查及 `git diff --check` 通过。源码清单摘要为 `c7c5b80aee8a07fa82eedf2c0d56e58b71f7a8e8e298e89ef5e441928ac3a55b`（按 git 跟踪 Go、go.mod/go.sum、内嵌资源文件的 SHA-256 映射生成），与 EXE 摘要分别保存，不用提交元数据变化冒充源码变化。
+
+现场目录为 `C:\srt\usage-final-audit-{pi,dsh,codex,remote-codex}-final-20261022`；本轮汇总收尾证明为 `C:\srt\usage-final-audit-storage-proof-20261022.json`、`usage-final-audit-native-proof-20261022.json`，源码清单为 `usage-final-audit-source-manifest-final-20261022.json`。不提交原始日志、凭据、原状态库或测试二进制。
+
+
+整合 main 后 `go test ./internal/... -count=1 -timeout=25m` 的 28 个包全部通过，其中 application 450.360 秒；四项专项 `TestSRInputFreeze`、`TestSRStorageLogsEvents`、`TestSRNativeUnknownAndStop`、`TestSRResourceCreationRecovery` 共 186.080 秒通过。该整包批次在最后的 nullable 输入分类校验和价表显式 null 修复前编译；这些后续修复的 13 个受影响包及四组合现场另行重跑，不冒充最终源码上重跑了整个长时测试全集。
+
+价表加载与公开 schema 的末次核对发现，Go 会将可选 tier/min_context_tokens/max_context_tokens 的显式 null 当作省略，可能消除计价条件；现按 schema 拒绝该价表，不将 null 变成通用条件。`TestCostPolicyOptionalNullCannotErasePredicates` 覆盖三个 null 反例、省略和显式零正例，价格加载错误仍只影响费用。基础 DTO/采集没有引入价格依赖。
+
+
+代码冻结后的提交资格批次（包含价表 null 修复）已完成：最终 13 包全部通过，四组合公开 EXE 现场也再次通过，Pi/DSH/本机 Codex/远端 Codex 分别 22.66、22.59、30.85、16.75 秒。响应数、token、快照版本与合成金额均保持上表值。四份 EXE SHA-256 均为 `b6326d8aad44189e534519d0260c4cd9839db1920e1fd3ca8ae1a70cf4d7443f`；最终源码摘要 `4c5dcd9733a95df47fb7b4b04659db87b5c9f7efe351c4d65822c7fcb470d008`。
+
+最终远端 group `c0d60d04-1e04-4795-9985-e8609f91eca2`、folder `e7b3db09-c7c0-4af9-be9e-c27f8ce31f94` 已撤销。累计 15 个本轮隔离状态均 permit inactive，全部既有 lease/epoch revoked、无未结算创建/删除；副本业务 revision 均为 1。再次复核原 Pi/DSH/远端 Codex terminal incarnation 不变且 connected，自建 Runner 进程为 0。原客户端安装没有重新部署，其版本未在本轮重新观测；本轮资格基于原冻结 Run 身份/回执和已验格式、来源摘要，不泛化到所有客户端版本/包装/恢复窗口。
+
+提交可审阅的[脱敏机器摘要](evidence/run-usage-and-cost-20261022/final-summary.json)记录上述事实及残余边界；私有现场目录改用 `C:\srt\usage-final-audit-{pi,dsh,codex,remote-codex}-qualified-20261022`。最终受影响包日志为 `usage-final-audit-final-affected-policy-20261022.jsonl`，收尾/源码证明分别为 `usage-final-audit-storage-proof-qualified-20261022.json`、`usage-final-audit-native-proof-qualified-20261022.json`、`usage-final-audit-source-manifest-qualified-20261022.json`。当前二进制离线 capability 实测恰为六行、四组合 collection/production_run_binding=true；cost 依赖检查只含 usage/api，usage 传递依赖不含 cost。
