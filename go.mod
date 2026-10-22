@@ -4,6 +4,7 @@ go 1.24.2
 
 require (
 	github.com/Microsoft/go-winio v0.6.2
+	github.com/klauspost/compress v1.18.6
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	golang.org/x/sys v0.38.0
 	modernc.org/sqlite v1.38.2

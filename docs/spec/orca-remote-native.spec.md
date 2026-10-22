@@ -2,6 +2,8 @@
 
 日期：2026-10-19。状态：P0 已按收敛契约通过，原生查询漏项已修复；远端 helper 删除已实施；已实施 unreported/显式 unknown 最小契约，并通过最新基线的完整闭环与活动停止验收（workflow v2）。调查基线：`a3dc15dc2f90787ea6e38e78d4dbc8a275470646`。配套 [Plan](orca-remote-native.plan.md)，结果登记在[专属验收](../acceptance/orca-remote-native.md)。实现与实际验证范围以专属验收记录为准。
 
+拟议的[统一用量与独立费用模块](run-usage-and-cost.spec.md)只经已有 Orca 文件接口取得原始字节，在本机做计量解析；不新增远端 helper、reader 终端、原生结果服务或完成判定来源。该增量目前仅为设计，不改变本文的执行、停止范围及远端 Pi/DSH 不扩展边界。
+
 ## 1. 目标与适用范围
 
 用户明确的边界：远端只通过 Orca 链路，不部署、启动或运行 SteerRunner helper。workflow、可靠执行和状态权威留在本机；远端只使用已有 Orca、Codex、Git、gh 及用户已配置的登录。

@@ -1,0 +1,4 @@
+{"type":"session","id":"fixture-session","cwd":"C:\\fixture\\work","version":3,"isSeeded":false}
+{"type":"message","timestamp":"2026-10-21T03:45:11.915Z","id":"642fbb6dcca43345","parentId":"b49bc1d6f1909671","message":{"role":"system","content":[]}}
+{"type":"message","timestamp":"2026-10-21T03:45:11.915Z","id":"35134446073f2bad","parentId":"642fbb6dcca43345","message":{"role":"user","content":[{"type":"text","text":"fixture input 0"}]}}
+{"type":"message","timestamp":"2026-10-21T03:45:12.978Z","id":"dc48e059e7fb20ea","parentId":"35134446073f2bad","message":{"role":"assistant","provider":"deepseek","model":"deepseek-flash","stopReason":"stop","content":[],"usage":{"input":75,"output":10,"cacheRead":0,"cacheWrite":0,"reasoning":0,"totalTokens":85}}}

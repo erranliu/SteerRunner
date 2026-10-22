@@ -1,0 +1,220 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "run_id",
+    "snapshot_revision",
+    "status",
+    "scope",
+    "tokens",
+    "coverage",
+    "issues",
+    "access_cleanup_status",
+    "observed_at"
+  ],
+  "properties": {
+    "schema": {
+      "const": "run-usage/v1"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "snapshot_revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "available",
+        "partial",
+        "unavailable"
+      ]
+    },
+    "scope": {
+      "const": "main_session"
+    },
+    "tokens": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "input_total",
+            "input_uncached",
+            "cache_read",
+            "cache_write",
+            "output",
+            "reasoning",
+            "total"
+          ],
+          "properties": {
+            "input_total": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "input_uncached": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "cache_read": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "cache_write": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "output": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "reasoning": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "total": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "expected_sources",
+        "verified_sources",
+        "counted_responses",
+        "missing_usage_responses",
+        "through_event_id",
+        "finalized",
+        "source_summaries"
+      ],
+      "properties": {
+        "expected_sources": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "verified_sources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counted_responses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_usage_responses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "through_event_id": {
+          "type": "string"
+        },
+        "finalized": {
+          "type": "boolean"
+        },
+        "source_summaries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "source_ref",
+              "status",
+              "finalized",
+              "watermark"
+            ],
+            "properties": {
+              "source_ref": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "finalized": {
+                "type": "boolean"
+              },
+              "watermark": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "category",
+          "code",
+          "retryable"
+        ],
+        "properties": {
+          "category": {
+            "enum": [
+              "usage",
+              "metadata",
+              "access_cleanup"
+            ]
+          },
+          "code": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "source_ref": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "access_cleanup_status": {
+      "enum": [
+        "not_required",
+        "active",
+        "pending",
+        "revoked"
+      ]
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

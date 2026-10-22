@@ -1,0 +1,231 @@
+{
+  "schema": "run-usage-pr-review/v1",
+  "date": "2026-10-22",
+  "pr": 47,
+  "reviewed_head_before_fixes": "d29b29093926db2b1de44c0569db5f94c43cc8bb",
+  "base_commit": "4d11148165ca36e4400df46e6bdadc30812fee25",
+  "platform": "windows/amd64",
+  "parser_version": "native-usage/4",
+  "source_tree_sha256": "211d1e0db3a49061e4cd075ce2ca97c043beb35a1079445da6e93d2b7a6c2b05",
+  "source_digest_basis": "Same tracked-source digest algorithm as final-summary.json; Git build metadata excluded.",
+  "fixes": [
+    "Persist rejected cross-Run ownership conflicts through cached observations; keep claimant source_ref; never restore complete cost from a missing claimant event row.",
+    "Reject impossible known total/input/output/reasoning lower bounds and overflow while preserving nullable values."
+  ],
+  "cases": [
+    {
+      "agent": "pi",
+      "target": "local",
+      "run_id": "691dc23163d59c560b734458a1bff3d5",
+      "native_session_id": "dd82d24b-60d8-4f7c-4e29-33a96fbe4114",
+      "snapshot_revision": 2,
+      "status": "available",
+      "finalized": true,
+      "scope": "main_session",
+      "tokens": {
+        "input_total": 195504,
+        "input_uncached": 15024,
+        "cache_read": 180480,
+        "cache_write": 0,
+        "output": 4928,
+        "reasoning": 955,
+        "total": 200432
+      },
+      "responses": 18,
+      "phase_responses": {
+        "command": 18
+      },
+      "synthetic_price_estimate_usd": "0.04292800",
+      "exe_sha256": "d7645808b6b175b9d29e546f879165a61a2b1f87e790be1b3fcb6055e38158bb",
+      "access_cleanup_status": "not_required",
+      "test_elapsed_seconds": 31.6,
+      "source_sha256": "1024076e06f9d521610629d2ebf86c327443c84ec70b7269a09d638152eced87",
+      "source_bytes": 72625,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "dsh",
+      "target": "local",
+      "run_id": "6dd9e9102f2d197bc419f08881d098c2",
+      "native_session_id": "ae44dbaa-ee74-4f78-a227-5694f306f869",
+      "snapshot_revision": 2,
+      "status": "available",
+      "finalized": true,
+      "scope": "main_session",
+      "tokens": {
+        "input_total": 299810,
+        "input_uncached": 11810,
+        "cache_read": 288000,
+        "cache_write": 0,
+        "output": 18912,
+        "reasoning": null,
+        "total": 318722
+      },
+      "responses": 21,
+      "phase_responses": {
+        "command": 21
+      },
+      "synthetic_price_estimate_usd": "0.07843400",
+      "exe_sha256": "d7645808b6b175b9d29e546f879165a61a2b1f87e790be1b3fcb6055e38158bb",
+      "access_cleanup_status": "not_required",
+      "test_elapsed_seconds": 28.07,
+      "source_sha256": "474a3aee1839f5ac3d66291d72c91b300303419aaea7ab695790ed855dd9e22d",
+      "source_bytes": 128057,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "codex",
+      "target": "local",
+      "run_id": "85ac625c0c1f6b6b043985cadcc334b9",
+      "native_session_id": "01a15db7-b18e-74e1-b815-efe52ca131d5",
+      "snapshot_revision": 2,
+      "status": "available",
+      "finalized": true,
+      "scope": "main_session",
+      "tokens": {
+        "input_total": 39583,
+        "input_uncached": 31263,
+        "cache_read": 8320,
+        "cache_write": 0,
+        "output": 84,
+        "reasoning": 35,
+        "total": 39667
+      },
+      "responses": 2,
+      "phase_responses": {
+        "command": 1,
+        "initialization": 1
+      },
+      "synthetic_price_estimate_usd": "0.03226300",
+      "exe_sha256": "d7645808b6b175b9d29e546f879165a61a2b1f87e790be1b3fcb6055e38158bb",
+      "access_cleanup_status": "not_required",
+      "test_elapsed_seconds": 32.41,
+      "source_sha256": "0d184075bcff2c9db2cf7e702e0b3b5694292fff68051cff65d57938d6a999cd",
+      "source_bytes": 137129,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "codex",
+      "target": "orca_environment",
+      "run_id": "71215281655ecccdc4c5be1b6b91d62d",
+      "native_session_id": "01a15c3d-d905-7ef1-9299-562123990385",
+      "snapshot_revision": 4,
+      "status": "available",
+      "finalized": true,
+      "scope": "main_session",
+      "tokens": {
+        "input_total": 221376,
+        "input_uncached": 25536,
+        "cache_read": 195840,
+        "cache_write": 0,
+        "output": 4077,
+        "reasoning": 1895,
+        "total": 225453
+      },
+      "responses": 11,
+      "phase_responses": {
+        "command": 10,
+        "initialization": 1
+      },
+      "synthetic_price_estimate_usd": "0.05327400",
+      "exe_sha256": "d7645808b6b175b9d29e546f879165a61a2b1f87e790be1b3fcb6055e38158bb",
+      "access_cleanup_status": "revoked",
+      "test_elapsed_seconds": 18.96,
+      "automatic_authorization_read_and_revocation": true,
+      "source_sha256": "72bb61fdcbdd8393be28f2bf253fca855c3507ed6b4273a7db2d73655183f38c",
+      "source_bytes": 212211
+    }
+  ],
+  "pricing_note": "Synthetic USD per million: uncached 1, cache read 0.1, cache write 0, output 2. Explicit completion-time proxy; token API-equivalent arithmetic, not actual charges.",
+  "cleanup": [
+    {
+      "case": "pi",
+      "permit_active": false,
+      "leases": 0,
+      "all_leases_revoked": true,
+      "business_revision": 1,
+      "unresolved_mutations": false
+    },
+    {
+      "case": "dsh",
+      "permit_active": false,
+      "leases": 0,
+      "all_leases_revoked": true,
+      "business_revision": 1,
+      "unresolved_mutations": false
+    },
+    {
+      "case": "codex",
+      "permit_active": false,
+      "leases": 0,
+      "all_leases_revoked": true,
+      "business_revision": 1,
+      "unresolved_mutations": false
+    },
+    {
+      "case": "remote-codex",
+      "permit_active": false,
+      "leases": 1,
+      "all_leases_revoked": true,
+      "business_revision": 1,
+      "unresolved_mutations": false
+    }
+  ],
+  "regression": [
+    {
+      "batch": "final-internal",
+      "all_passed": true,
+      "packages": 28,
+      "elapsed_by_package": {
+        "github.com/erranliu/SteerRunner/internal/execution/reliable": 0.979,
+        "github.com/erranliu/SteerRunner/internal/execution/backend": 1.065,
+        "github.com/erranliu/SteerRunner/internal/execution/reliable/operation": 1.089,
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp": 1.297,
+        "github.com/erranliu/SteerRunner/internal/contracts": 1.329,
+        "github.com/erranliu/SteerRunner/internal/cost": 1.334,
+        "github.com/erranliu/SteerRunner/internal/execution/resultacquisition": 1.4929999999999999,
+        "github.com/erranliu/SteerRunner/internal/execution/workflow": 1.4889999999999999,
+        "github.com/erranliu/SteerRunner/internal/execution/publication": 1.655,
+        "github.com/erranliu/SteerRunner/internal/usage": 1.01,
+        "github.com/erranliu/SteerRunner/internal/usage/api": 1.102,
+        "github.com/erranliu/SteerRunner/internal/usage/parsers": 1,
+        "github.com/erranliu/SteerRunner/internal/usage/access": 1.272,
+        "github.com/erranliu/SteerRunner/internal/resources": 3.102,
+        "github.com/erranliu/SteerRunner/internal/testkit/livetest": 4.572,
+        "github.com/erranliu/SteerRunner/internal/storage": 5.77,
+        "github.com/erranliu/SteerRunner/internal/host": 6.895,
+        "github.com/erranliu/SteerRunner/internal/execution/process": 7.157,
+        "github.com/erranliu/SteerRunner/internal/usage/collect": 6.034,
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": 8.21,
+        "github.com/erranliu/SteerRunner/internal/cli": 20.263,
+        "github.com/erranliu/SteerRunner/internal/execution/agentlaunch": 24.336,
+        "github.com/erranliu/SteerRunner/internal/execution/terminaltools": 31.221,
+        "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec": 41.579,
+        "github.com/erranliu/SteerRunner/internal/execution/workspace": 42.653,
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": 52.912,
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/codex": 70.946,
+        "github.com/erranliu/SteerRunner/internal/application": 629.37
+      }
+    },
+    {
+      "batch": "integration",
+      "all_passed": true,
+      "packages": 1,
+      "elapsed_by_package": {
+        "github.com/erranliu/SteerRunner/tests/integration": 193.462
+      }
+    }
+  ],
+  "unchanged_boundaries": [
+    "Remote Pi/DSH production binding unsupported",
+    "No full fork/child lineage, production zero-call proof, or expiry/tombstone",
+    "Isolated collection service restart does not qualify every original agent recovery window"
+  ],
+  "constraints": {
+    "orca_modified": false,
+    "helper_deployed": false,
+    "original_service_modified": false,
+    "new_model_inputs": 0
+  },
+  "original_terminals_unchanged_and_connected": true
+}

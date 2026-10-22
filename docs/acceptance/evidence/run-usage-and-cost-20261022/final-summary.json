@@ -1,0 +1,174 @@
+{
+  "schema": "run-usage-acceptance/v1",
+  "date": "2026-10-22",
+  "platform": "windows/amd64",
+  "base_commit": "4d11148165ca36e4400df46e6bdadc30812fee25",
+  "source_tree_sha256": "4c5dcd9733a95df47fb7b4b04659db87b5c9f7efe351c4d65822c7fcb470d008",
+  "source_digest_basis": "SHA-256 of sorted compact JSON mapping git-tracked Go, go.mod/go.sum and embedded resource paths to SHA-256; excludes Git commit/build metadata",
+  "parser_version": "native-usage/3",
+  "cases": [
+    {
+      "agent": "pi",
+      "target": "local",
+      "run_id": "691dc23163d59c560b734458a1bff3d5",
+      "native_session_id": "dd82d24b-60d8-4f7c-4e29-33a96fbe4114",
+      "snapshot_revision": 2,
+      "status": "available",
+      "scope": "main_session",
+      "finalized": true,
+      "responses": 18,
+      "phase_responses": {
+        "command": 18
+      },
+      "tokens": {
+        "input_total": 195504,
+        "input_uncached": 15024,
+        "cache_read": 180480,
+        "cache_write": 0,
+        "output": 4928,
+        "reasoning": 955,
+        "total": 200432
+      },
+      "synthetic_price_estimate_usd": "0.04292800",
+      "price_note": "Synthetic USD per million: uncached 1, cache read 0.1, cache write 0, output 2; explicit completion-time proxy. Not provider prices or actual charges.",
+      "exe_sha256": "b6326d8aad44189e534519d0260c4cd9839db1920e1fd3ca8ae1a70cf4d7443f",
+      "access_cleanup_status": "not_required",
+      "source_sha256": "1024076e06f9d521610629d2ebf86c327443c84ec70b7269a09d638152eced87",
+      "source_bytes": 72625,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "dsh",
+      "target": "local",
+      "run_id": "6dd9e9102f2d197bc419f08881d098c2",
+      "native_session_id": "ae44dbaa-ee74-4f78-a227-5694f306f869",
+      "snapshot_revision": 2,
+      "status": "available",
+      "scope": "main_session",
+      "finalized": true,
+      "responses": 21,
+      "phase_responses": {
+        "command": 21
+      },
+      "tokens": {
+        "input_total": 299810,
+        "input_uncached": 11810,
+        "cache_read": 288000,
+        "cache_write": 0,
+        "output": 18912,
+        "reasoning": null,
+        "total": 318722
+      },
+      "synthetic_price_estimate_usd": "0.07843400",
+      "price_note": "Synthetic USD per million: uncached 1, cache read 0.1, cache write 0, output 2; explicit completion-time proxy. Not provider prices or actual charges.",
+      "exe_sha256": "b6326d8aad44189e534519d0260c4cd9839db1920e1fd3ca8ae1a70cf4d7443f",
+      "access_cleanup_status": "not_required",
+      "source_sha256": "474a3aee1839f5ac3d66291d72c91b300303419aaea7ab695790ed855dd9e22d",
+      "source_bytes": 128057,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "codex",
+      "target": "local",
+      "run_id": "85ac625c0c1f6b6b043985cadcc334b9",
+      "native_session_id": "01a15db7-b18e-74e1-b815-efe52ca131d5",
+      "snapshot_revision": 2,
+      "status": "available",
+      "scope": "main_session",
+      "finalized": true,
+      "responses": 2,
+      "phase_responses": {
+        "initialization": 1,
+        "command": 1
+      },
+      "tokens": {
+        "input_total": 39583,
+        "input_uncached": 31263,
+        "cache_read": 8320,
+        "cache_write": 0,
+        "output": 84,
+        "reasoning": 35,
+        "total": 39667
+      },
+      "synthetic_price_estimate_usd": "0.03226300",
+      "price_note": "Synthetic USD per million: uncached 1, cache read 0.1, cache write 0, output 2; explicit completion-time proxy. Not provider prices or actual charges.",
+      "exe_sha256": "b6326d8aad44189e534519d0260c4cd9839db1920e1fd3ca8ae1a70cf4d7443f",
+      "access_cleanup_status": "not_required",
+      "source_sha256": "0d184075bcff2c9db2cf7e702e0b3b5694292fff68051cff65d57938d6a999cd",
+      "source_bytes": 137129,
+      "service_restart_and_forced_reread_dedup": true
+    },
+    {
+      "agent": "codex",
+      "target": "orca_environment",
+      "run_id": "71215281655ecccdc4c5be1b6b91d62d",
+      "native_session_id": "01a15c3d-d905-7ef1-9299-562123990385",
+      "snapshot_revision": 4,
+      "status": "available",
+      "scope": "main_session",
+      "finalized": true,
+      "responses": 11,
+      "phase_responses": {
+        "initialization": 1,
+        "command": 10
+      },
+      "tokens": {
+        "input_total": 221376,
+        "input_uncached": 25536,
+        "cache_read": 195840,
+        "cache_write": 0,
+        "output": 4077,
+        "reasoning": 1895,
+        "total": 225453
+      },
+      "synthetic_price_estimate_usd": "0.05327400",
+      "price_note": "Synthetic USD per million: uncached 1, cache read 0.1, cache write 0, output 2; explicit completion-time proxy. Not provider prices or actual charges.",
+      "exe_sha256": "b6326d8aad44189e534519d0260c4cd9839db1920e1fd3ca8ae1a70cf4d7443f",
+      "access_cleanup_status": "revoked",
+      "revoked_leases": [
+        {
+          "epoch": 1,
+          "group_id": "c0d60d04-1e04-4795-9985-e8609f91eca2",
+          "folder_id": "e7b3db09-c7c0-4af9-be9e-c27f8ce31f94",
+          "phase": "revoked",
+          "create_unresolved": false,
+          "mutation_unresolved": false
+        }
+      ]
+    }
+  ],
+  "regression": {
+    "merged_internal_packages": 28,
+    "application_seconds": 450.36,
+    "execution_integration_seconds": 186.08,
+    "execution_integration_scenarios": [
+      "TestSRInputFreeze",
+      "TestSRStorageLogsEvents",
+      "TestSRNativeUnknownAndStop",
+      "TestSRResourceCreationRecovery"
+    ],
+    "final_affected_packages_after_nullable_and_policy_fixes": 13,
+    "scope_note": "Full internal/integration batch preceded final nullable-counter and explicit-null pricing predicate fixes; affected packages and all four live cases were rerun after those fixes.",
+    "go_vet": "passed",
+    "powershell_syntax": "passed",
+    "l1_inherited_live_opt_in_rejection": "passed"
+  },
+  "cleanup": {
+    "isolated_states": 15,
+    "all_permits_inactive": true,
+    "all_existing_lease_epochs_revoked": true,
+    "source_business_terminals_preserved": true,
+    "isolated_runner_processes": 0
+  },
+  "limits": {
+    "remote_pi_dsh_production_binding": false,
+    "complete_fork_child_lineage": false,
+    "zero_call_production_proof": false,
+    "expiry_tombstone_retention": false,
+    "api_equivalent_not_actual_billing": true,
+    "no_orca_changes": true,
+    "no_helper_deployment": true,
+    "no_new_model_input": true,
+    "live_qualification_scope": "Previously committed native Run/session evidence and verified log formats; client installations were not replaced or newly exercised. No general qualification for every client version, wrapper or recovery window."
+  }
+}

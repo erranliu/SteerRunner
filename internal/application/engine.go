@@ -151,6 +151,9 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		return err
 	}
 	e.runs[next.ID] = next
+	if prior == nil && e.ctx != nil {
+		_ = e.store.EnsureUsage(e.ctx, next.ID, next.CreatedAt)
+	}
 	return nil
 }
 func fault(err error) *contracts.Fault {

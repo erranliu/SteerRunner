@@ -1,0 +1,108 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "version",
+    "source",
+    "currency",
+    "enabled",
+    "allow_completion_time",
+    "rules"
+  ],
+  "properties": {
+    "schema": {
+      "const": "run-pricing-policy/v1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "allow_completion_time": {
+      "type": "boolean"
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "provider",
+          "model",
+          "effective_from",
+          "effective_until",
+          "rates"
+        ],
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "effective_from": {
+            "type": "string"
+          },
+          "effective_until": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "min_context_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_context_tokens": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "rates": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "input_uncached_per_million",
+              "cache_read_per_million",
+              "cache_write_per_million",
+              "output_per_million"
+            ],
+            "properties": {
+              "input_uncached_per_million": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)?$"
+              },
+              "cache_read_per_million": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)?$"
+              },
+              "cache_write_per_million": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)?$"
+              },
+              "output_per_million": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)?$"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

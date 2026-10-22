@@ -1,10 +1,11 @@
 # 验收记录索引
 
-核对日期：2026-10-21。每份报告只证明其固定源码、EXE、配置和场景；阅读报告开头的范围修订及最终记录。归档不改变原通过、失败、取消或未验结论。
+核对日期：2026-10-22。每份报告只证明其固定源码、EXE、配置和场景；阅读报告开头的范围修订及最终记录。归档不改变原通过、失败、取消或未验结论。
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
 | 当前公开读取与受理边界 | [完整绑定及原子 observe](reliability-simplification.md) |
+| Run token 与独立费用 | [用量、归属去重及授权撤销](run-usage-and-cost.md)；本机三组合、远端 Codex 的主会话现场单列，远端 Pi/DSH 生产绑定仍不支持 |
 | 默认审计提示与交付简化 | [默认提示及跨构建冻结](reliable-delivery-simplification.md) |
 | 内部执行职责整理 | [执行边界收敛](execution-boundary-refactor.md) |
 | 服务换代与原执行接管 | [恢复专项](service-generation-recovery.md)、[近期 PR 补测](pr-test-gaps-20261020.md)、[创建执行器修复复验](pr38-review-20261020.md)；后两项补充原历史矩阵，真实后端及调用方资格仍独立判断 |

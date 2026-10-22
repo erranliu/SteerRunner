@@ -1,5 +1,17 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-21 用量/费用增量：L1 自动包含 `TestUsage*`、`TestCost*`、`TestRunUsage*`，覆盖三格式、去重/快照事务、授权引用/epoch/未知回收、费用解耦和真实 EXE 查询。`TestUsageExistingNativeEvidence` 需要显式旧 state-dir，默认跳过；已核对本机 Pi 200,432、DSH 318,722 token。远端现场 opt-in `TestUsageRemoteCodexLive`、`TestUsageRemoteCodexCleanupLive`、`TestRunUsageRemotePublicLive` 默认跳过，不成为默认模型/PR case；后者用真实 EXE 和隔离 state-dir 验证原 Codex Run 的自动授权、11 响应/225,453 token、分页/冻结算术价表和撤销。没有远端 helper 或新增模型调用，远端 Pi/DSH 生产绑定仍不支持，见[专属记录](acceptance/run-usage-and-cost.md)。
+
+同日一致性复审增加：首次未观察/预算耗尽状态、缺字段与溢出、持久元数据冲突、新输入重开观察窗口、稳定本机身份/损坏 checkpoint、stop 事务许可隔离、取消时保存已知结果、子 group/repo 级联保护、按 Run/epoch 清理归属、六组合 capability 与费用节点分离、DSH 毫秒时间/seq 下界和缺计价判别字段反例。精确测试名称见 [Plan 的复审映射](spec/run-usage-and-cost.plan.md)。
+
+本机 Codex 增补：`TestRunUsageLocalCodexPublicLive` 默认 skip，显式读取已停止的真实 orca-terminal Run，验证完整启动/业务来源、独立原始记录控制和、公开 EXE 汇总/分页/费用、正常停启与强制重读去重及关闭后的历史查询；新现场为 2 响应/39,667 token。`TestUsageLocalCodexHomeRequiresKnownRoot`、`TestUsagePreparedLocalCodexInitialization`、`TestUsageRecordedCodexIDsUseOriginalTurnAndWireDigest` 的确定性正反例进入 L1。`TestUsageLocalAcceptanceRepoCleanupLive` 也默认 skip，仅凭原登记回执撤销本批未使用 seed 项目，不是生产功能或通用删除工具。
+
+本机 Pi/DSH 增补：`TestRunUsageLocalPiPublicLive`、`TestRunUsageLocalDSHPublicLive` 默认 skip，复用原 pr_ready Run 的只读证据；隔离服务逐响应核对 Run/attempt/generation/command/native session 及 token。独立控制和为 18 响应/200,432、21 响应/318,722；合成估价、坏/关闭价表不影响用量、采集服务停启/强制重读去重、关闭后的历史及 lease=0/许可撤销均有具体断言。原业务服务/终端不动，不增加模型调用或扩大远端 gate。
+
+2026-10-22 提交前一致性复审增加 `TestUsageFinalReplyBelongsToCommand`、`TestUsageConflictEvidenceIsAtomicAndDurable`、`TestCostTokenOnlyScopeAndCompletionAreExplicit`；扩展 epoch 创建意图、四类清单完整性和三查询完整实例绑定/停止围栏断言。整合 main 后重新执行的包、集成和现场结果在专项验收中单列，不继承旧构建资格。
+
+PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation`，覆盖后认领 Run 在缓存发布后仍保留冲突、旧快照不变及费用无完整总额；`TestUsagePartialFieldsStillValidateKnownRelations` 补齐 nullable 总量下界与跨输入输出溢出反例。native-usage/4 的最终全包、四项集成及四组合现场资格另记于同一专项验收。
+
 本文件维护各项测试的独有验证目标、固定预期、并行条件、实现状态和当前缺口。
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。

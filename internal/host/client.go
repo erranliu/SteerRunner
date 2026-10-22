@@ -119,6 +119,9 @@ func Ensure(ctx context.Context, dir, executable string, pending ...*contracts.S
 		startupInput = pending[0]
 	}
 	selectService := func(info contracts.ServiceInfo) (contracts.ServiceInfo, *contracts.Fault) {
+		if startupInput != nil && startupInput.UsagePolicy != nil && startupInput.UsagePolicy.Digest() != info.UsagePolicyDigest {
+			return contracts.ServiceInfo{}, contracts.Fail(5, "usage_policy_conflict", "Running service has a different usage policy; stop/start explicitly.")
+		}
 		if startupInput != nil && len(startupInput.PendingStops) > 0 {
 			return contracts.ServiceInfo{}, contracts.Fail(5, "invalid_state", "Service is already running; reconcile original stop requests against this instance.")
 		}
