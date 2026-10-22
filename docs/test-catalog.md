@@ -203,8 +203,10 @@ L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控�
 ## 内容流程专项（2026-10-19）
 
 `tests/catalog.json.controlled_scenarios` 新增 `TestSRContentGenerate`、
-`TestSRContentConversation`、`TestSRContentQuestionAndUnknown`，分别覆盖单轮结果十个分支、
+`TestSRContentConversation`、`TestSRContentQuestionAndUnknown`，分别覆盖单轮结果八个集成分支、
 原会话多轮/中断/重启/关闭，以及原生问答和未知发送。无真实模型/Git/PR，独立 state-dir。
+
+2026-10-22：坏 JSON 与 Schema 不匹配保留在 L1 `TestContentGenerateResults`，移除这两个重复的完整集成现场；其余原生结果、准备失败和资源结算断言保留。
 
 2026-10-20：Generate 的已完成 text/JSON 与 Conversation 空闲态追加同 EXE 的公开
 verify-takeover，断言原 inspect 不变、零额外 turn/start、原 submit 绑定完整。

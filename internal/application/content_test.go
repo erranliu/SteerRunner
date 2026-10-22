@@ -324,6 +324,19 @@ func TestContentGenerateResults(t *testing.T) {
 			if r.ContentResult.Status != tc.want || !r.Closed || r.StopStatus != "pending" || r.Status != "settling" || len(r.Workflow.StageInputs) != 1 || r.NextStage != nil || r.Snapshot.PendingTurn != nil || r.PR != nil {
 				t.Fatalf("wrong result/settlement: %+v", r.View())
 			}
+			if tc.name == "invalid_json" || tc.name == "schema" {
+				prefix := "invalid_json:"
+				if tc.name == "schema" {
+					prefix = "schema_mismatch:"
+				}
+				if !strings.HasPrefix(r.ContentResult.Diagnostic, prefix) || r.ContentResult.Text != "" || len(r.ContentResult.JSON) != 0 {
+					t.Fatalf("invalid structured output was retained or failed for the wrong reason: %+v", r.ContentResult)
+				}
+				stored, err := e.store.Runs()
+				if err != nil || len(stored) != 1 || string(canonical(stored[0].ContentResult)) != string(canonical(r.ContentResult)) {
+					t.Fatal("structured output rejection was not persisted", err)
+				}
+			}
 			if e.finish("run", value) {
 				t.Fatal("duplicate completion advanced")
 			}

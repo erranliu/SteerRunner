@@ -19,7 +19,7 @@ Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'orca-cli-lock.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
-$taskCatalog = Get-Content -LiteralPath $Catalog -Raw | ConvertFrom-Json
+$taskCatalog = Get-SRTestCatalog $Catalog
 $taskScenarios = @($taskCatalog.scenarios | Where-Object { $_.id -eq $Scenario })
 if ($taskScenarios.Count -ne 1 -or $taskScenarios[0].level -notin @('L2','L3')) { throw 'Select exactly one registered live scenario' }
 $taskScenario = $taskScenarios[0]

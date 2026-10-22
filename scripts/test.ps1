@@ -43,15 +43,13 @@ try {
     $taskSummary['max_parallel'] = $MaxParallel
     if ($Repeat -lt 1 -or $Repeat -gt 10) { throw 'Repeat must be between 1 and 10' }
     if ($Repeat -ne 1 -and 'L2' -notin $Level -and 'L3' -notin $Level -and 'L4' -notin $Level) { throw 'Repeat requires a live level' }
-    $taskCatalog = Get-Content -LiteralPath $Catalog -Raw | ConvertFrom-Json
-    if ($taskCatalog.schema -ne 'steerrunner-tests/v1') { throw 'Unsupported catalog' }
+    $taskCatalog = Get-SRTestCatalog $Catalog
     $taskIDs = @{}
     foreach ($taskEntry in $taskCatalog.scenarios) {
         if ($taskEntry.id -notmatch '^[a-z][a-z0-9.-]+$' -or $taskIDs.ContainsKey($taskEntry.id) -or $taskEntry.level -notin @('L2','L3','L4') -or $taskEntry.timeout_minutes -lt 1 -or $taskEntry.timeout_minutes -gt 60) { throw 'Invalid or duplicate live catalog entry' }
         if (($taskEntry.level -eq 'L2' -and $taskEntry.target -ne 'local-codex') -or ($taskEntry.target -in @('orca-environment','orca-local') -and $taskEntry.level -ne 'L3')) { throw 'Catalog execution target conflicts with test level' }
         if (($taskEntry.level -eq 'L4') -ne ($taskEntry.driver -eq 'controlled-integration') -or ($taskEntry.level -eq 'L4' -and $taskEntry.target -ne 'controlled')) { throw 'Controlled edge scenarios require L4 and the controlled target' }
         $taskIDs[$taskEntry.id] = $true
-        $null = @(Get-SRLiveCases $taskEntry)
         foreach ($taskCase in @(Get-SRLiveCases $taskEntry)) { if ($taskEntry.level -eq 'L4' -and $taskCase.test -notmatch '^TestSREdge[A-Za-z]+$') { throw 'L4 must bind an exact registered controlled test' } }
     }
     $taskSelected = @($taskCatalog.scenarios | Where-Object { $_.level -in $Level -and ($Scenario.Count -eq 0 -or $_.id -in $Scenario) })

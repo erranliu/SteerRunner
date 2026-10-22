@@ -4,20 +4,28 @@ $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $taskEvidence = [IO.Path]::GetFullPath($Evidence)
 New-Item -ItemType Directory -Path $taskEvidence -ErrorAction Stop | Out-Null
 $taskShell = (Get-Process -Id $PID).Path
-$taskCatalog = Get-Content -LiteralPath (Join-Path $taskRepo 'tests/catalog.json') -Raw | ConvertFrom-Json
+. (Join-Path $PSScriptRoot 'live-catalog.ps1')
+$taskCatalog = Get-SRTestCatalog (Join-Path $taskRepo 'tests/catalog.json')
 $taskCatalog.scenarios[1].id = $taskCatalog.scenarios[0].id
 $taskBadCatalog = Join-Path $taskEvidence 'duplicate-catalog.json'
 [IO.File]::WriteAllText($taskBadCatalog,($taskCatalog|ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
+$taskMissingCatalog = Join-Path $taskEvidence 'missing-level-catalog.json'
+$taskMissing = Get-SRTestCatalog (Join-Path $taskRepo 'tests/catalog.json')
+$taskMissing.scenarios = @($taskMissing.scenarios | Where-Object { $_.id -cne 'orca-local.codex' })
+[IO.File]::WriteAllText($taskMissingCatalog,($taskMissing|ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
 $taskCases = @(
     @{name='zero-match';args=@('-Level','L3','-Scenario','missing.scenario');error='No scenario matched|not selected'},
     @{name='duplicate-catalog';args=@('-Level','L3','-Catalog',$taskBadCatalog);error='Invalid or duplicate'},
+    @{name='missing-level-catalog';args=@('-Level','L3','-Catalog',$taskMissingCatalog);error='Complete level catalog is missing registered scenario'},
     @{name='repeat-zero';args=@('-Level','L3','-Repeat','0');error='Repeat must be'},
     @{name='repeat-non-live';args=@('-Level','L1','-Repeat','3');error='Repeat requires a live level'},
     @{name='parallel-zero';args=@('-Level','L3','-MaxParallel','0');error='MaxParallel must be'},
     @{name='parallel-excess';args=@('-Level','L4','-MaxParallel','9');error='MaxParallel must be'}
 )
 $taskResults = @()
-& (Join-Path $taskRepo 'tests/framework/configuration-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
+& (Join-Path $taskRepo 'tests/framework/catalog-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
+$taskResults += @{name='catalog-expansion-compatibility';passed=$true}
+& (Join-Path $taskRepo 'tests/framework/configuration-test.ps1') -Repository $taskRepo -Evidence $taskEvidence -CatalogPaths @((Join-Path $taskEvidence 'catalog/legacy-catalog.json'),(Join-Path $taskEvidence 'catalog/frozen-catalog.json'))
 $taskResults += @{name='independent-configuration';passed=$true}
 & (Join-Path $taskRepo 'tests/framework/runtime-cache-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
 $taskResults += @{name='parallel-runtime-cache';passed=$true}

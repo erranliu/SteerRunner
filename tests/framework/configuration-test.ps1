@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
+param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence,[string[]]$CatalogPaths = @())
 $ErrorActionPreference='Stop'
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 . (Join-Path $Repository 'scripts/test-scheduler.ps1')
@@ -34,6 +34,11 @@ if($taskSummary.status -ne 'incomplete' -or $taskSummary.executed_case_count -ne
 if(Test-Path -LiteralPath (Join-Path $taskMissingOut 'framework')){throw 'Unconfigured batch started execution prerequisites'}
 $taskList=& $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -ListAvailability
 if($LASTEXITCODE -ne 0 -or ($taskList|Out-String|ConvertFrom-Json).status -ne 'availability'){throw 'Missing configuration inventory failed or mixed stdout'}
+foreach ($taskCatalogPath in $CatalogPaths) {
+    $taskList = & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Scenario 'orca-local.codex' -Catalog $taskCatalogPath -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -ListAvailability
+    $taskListed = $taskList | Out-String | ConvertFrom-Json
+    if ($LASTEXITCODE -ne 0 -or $taskListed.status -ne 'availability' -or $taskListed.availability.Count -ne 1 -or $taskListed.availability[0].scenario_id -cne 'orca-local.codex') { throw 'Original availability entry point cannot consume the legacy or frozen catalog selection' }
+}
 $taskOld=Join-Path $taskRoot 'old.json'
 [IO.File]::WriteAllText($taskOld,'{"schema":"steerrunner-live-config/v1"}')
 & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskOld -RunnerExe $taskRunner -ConfigHelper $taskHelper -ListAvailability *> (Join-Path $taskRoot 'old.log')
@@ -107,7 +112,8 @@ try {
 } finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_ORCA_STATE_PROBE_ROOT',$taskPreviousOptIn) }
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
 if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 32 -or $taskPrerequisite.levels.L3.requested.Count -ne 32 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 29 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
-if(-not (Test-Path -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json'))){throw 'Batch catalog was not frozen'}
+$taskFrozenCatalog = Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json') -Raw | ConvertFrom-Json
+if ($taskFrozenCatalog.scenarios.Count -ne 28 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 38) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
 # L2's native preparation is a case dependency, never a global L3 prerequisite.
 $taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'
 $taskBoundaryBody=@'

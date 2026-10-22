@@ -17,6 +17,34 @@ function Get-SRLiveCases($Entry) {
     } elseif ($taskCaseIDs.Count -ne 1 -or $taskCaseIDs[0] -cne 'default') { throw "Scenario requires all registered cases: $($Entry.id)" }
     return $taskDefinition.cases
 }
+function Get-SRTestCatalog([string]$Path) {
+    $taskCatalog = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    if ($taskCatalog.schema -ne 'steerrunner-tests/v1') { throw 'Unsupported catalog' }
+    $taskRegistry = @(Get-SRCaseRegistry)
+    $taskIDs = @{}
+    $taskCatalog.scenarios = @(foreach ($taskEntry in $taskCatalog.scenarios) {
+        $taskID = if ($taskEntry -is [string]) { $taskEntry } else { $taskEntry.id }
+        if ($taskID -notmatch '^[a-z][a-z0-9.-]+$' -or $taskIDs.ContainsKey($taskID)) { throw 'Invalid or duplicate live catalog entry' }
+        $taskIDs[$taskID] = $true
+        if ($taskEntry -is [string]) {
+            $taskDefinition = @($taskRegistry | Where-Object { $_.id -ceq $taskID })
+            if ($taskDefinition.Count -ne 1) { throw "Unregistered live scenario: $taskID" }
+            $taskDefinition = $taskDefinition[0]
+            $taskExpanded = [ordered]@{}
+            foreach ($taskField in @('id','level','driver','target','agent','timeout_minutes')) {
+                if ($taskDefinition.PSObject.Properties[$taskField]) { $taskExpanded[$taskField] = $taskDefinition.$taskField }
+            }
+            $taskExpanded['cases'] = @($taskDefinition.cases | ForEach-Object { $_.id })
+            [pscustomobject]$taskExpanded
+        } else {
+            # Existing custom and frozen catalogs retain their metadata and
+            # must still match the registry before any execution is prepared.
+            $null = @(Get-SRLiveCases $taskEntry)
+            $taskEntry
+        }
+    })
+    return $taskCatalog
+}
 function Test-SRAdminCase([string]$Scenario,[string]$Case) {
     $taskDefinition = @(Get-SRCaseRegistry | Where-Object { $_.id -ceq $Scenario })
     if ($taskDefinition.Count -ne 1) { throw 'Unknown scenario in requirements lookup' }
