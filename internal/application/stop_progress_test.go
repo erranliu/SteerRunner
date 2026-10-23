@@ -75,6 +75,7 @@ type unavailableStopPort struct {
 	stopped            bool
 	starts, reconciles int
 	original           string
+	budgets            []time.Duration
 }
 
 func (p *unavailableStopPort) result(q b.LifecycleRequest) (b.LifecycleReceipt, error) {
@@ -93,13 +94,17 @@ func (p *unavailableStopPort) result(q b.LifecycleRequest) (b.LifecycleReceipt, 
 	return r, errors.New(diagnostic)
 }
 
-func (p *unavailableStopPort) StopLifecycle(_ context.Context, q b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
+func (p *unavailableStopPort) StopLifecycle(ctx context.Context, q b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
+	deadline, _ := ctx.Deadline()
+	p.budgets = append(p.budgets, time.Until(deadline))
 	p.starts++
 	p.original = q.Operation.ID
 	return p.result(q)
 }
 
-func (p *unavailableStopPort) Reconcile(_ context.Context, q b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+func (p *unavailableStopPort) Reconcile(ctx context.Context, q b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	deadline, _ := ctx.Deadline()
+	p.budgets = append(p.budgets, time.Until(deadline))
 	p.reconciles++
 	var saved b.LifecycleReceipt
 	if q.Operation.ID != p.original || json.Unmarshal(q.Operation.Receipt, &saved) != nil || saved.ValidateFor(q) != nil {
@@ -107,6 +112,38 @@ func (p *unavailableStopPort) Reconcile(_ context.Context, q b.LifecycleRequest)
 	}
 	r, err := p.result(q)
 	return r, nil, err
+}
+
+func TestRemoteStopBudgetCanCompleteAnOriginalCLICall(t *testing.T) {
+	for _, remote := range []bool{false, true} {
+		store, err := storage.Open(t.TempDir())
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer store.Close()
+		p := &unavailableStopPort{phase: "not-attempted"}
+		w := &worker{port: p, wake: make(chan struct{}, 1)}
+		e := &Engine{ctx: context.Background(), store: store, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}, logger: log.New(io.Discard, "", 0)}
+		r := &runstate.Record{ID: "run", Allowed: false, ResumeRequired: true, Status: "reconciling", PendingStop: "stop-command", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal"}}, CommandStates: map[string]string{}}
+		if remote {
+			r.Request.Execution.Target.Kind = "orca_environment"
+		}
+		r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", External: b.ProcessIdentity{Kind: "terminal", Terminal: "original"}}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "run", ExecutionID: "run", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
+		bindTestWorkflow(r)
+		if err := e.commitLocked(r, nil, "accepted"); err != nil {
+			t.Fatal(err)
+		}
+		e.advance("run", w)
+		e.advance("run", w)
+		if p.starts != 1 || p.reconciles != 1 || len(p.budgets) != 2 {
+			t.Fatal("did not retain the original stop operation", p.starts, p.reconciles)
+		}
+		for _, budget := range p.budgets {
+			if remote && (budget <= 40*time.Second || budget > 90*time.Second) || !remote && (budget <= 0 || budget > 15*time.Second) {
+				t.Fatal("stop deadline cannot cover its CLI contract or lost its bound", remote, budget)
+			}
+		}
+	}
 }
 
 func TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress(t *testing.T) {
