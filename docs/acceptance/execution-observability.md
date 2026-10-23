@@ -74,3 +74,7 @@
 整合自审补正：工具输出属于可恢复缺证，但不能掩盖同时出现的非空外来输入预览；归属分类先检查明确输入冲突，并增加组合反例。冻结运行源码为 `b008f4d990bfc279356335a2e0d2e75538f26a83`。完整低并发复跑使用 `GOFLAGS=-p=2`，L1 为 **609 项顶层 / 2111 项含子测试 / 33 个包通过**，无失败；16 项既定 opt-in skip 不算现场资格。29 项终端扩展、native driver 编译与零匹配保护、`go vet -tags=live` 通过。
 
 首轮整合 L1 真实结果保留：608 项顶层通过、1 项失败；既有 `TestOwnedJobReconnectAndStopIncludesStartedDescendant` 在 10 秒内未看到子进程启动标记，不能据此确定原因。该包独立复跑与后续完整复跑通过，未修改测试、跳过失败或放宽门槛。另一次早期 ad hoc 全 application 命令选取的 6 分钟总时限不足，正式 12 分钟门槛下全包已通过；两者分开记录。
+
+整合后 **Controlled 22/22 通过**，正式报告整体 passed。实际受测 EXE SHA256 为 `3C1F95319EA4C8029540789FFD974A1F59123BD66645E391F9CF7433752AA338`，版本 0.2.0-dev.3-r2；运行源码保持上述 `b008f4d`，测试期间新增内容仅为文档和证据。L1 起点 clean，后续构建的 dirty 标记来自这些新增材料，运行目录树和 28 个变更源码文件哈希另行核验。整合前 36 个源码文件的历史索引也与提交 `e5aeddc` 全部吻合，原始 87 份证据字节校验通过。
+
+最终结果与失败记录统一见 [PR 整合资格索引](evidence/orca-last-message-20261023/pr-integration/qualification.json)，对应 [PR #50](https://github.com/erranliu/SteerRunner/pull/50)。当前构建未重新执行上述远端真机四项资格；不把前一构建的真机结果改写为本构建结果。未部署生产。

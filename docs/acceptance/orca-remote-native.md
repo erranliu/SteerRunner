@@ -210,3 +210,5 @@ Orca runtime f8616747-34af-4543-8487-ec6b5d8de4ff、appVersion 1.4.223，本轮�
 最终资格现场：smoke `08cb8fae5e48` 200.81s / PR #650；活动断线 `b2b0990dc19e` 548.42s / #646；发送前断线 `d3e7db32713f` 451.98s / #647；multirun `bbc3990ab2a0` 197.17s / #648、#649。四项均使用上述冻结 EXE；双通道故障真实命中、原服务与输入授权保持、无原输入重发，并确认原资源/服务及网络设施收尾。multirun 的两个 PR 在隔离验证后关闭，其它 PR 仅合入对应测试 base。首次失败 #645 的资源已另行原身份对账并离线结算，不计首次通过。
 
 [资格索引](evidence/orca-last-message-20261023/qualification.json)、原始结果和 provider 最终状态只保存于该唯一归档。用户启动的管理员代理已正常结束；测试 state-dir/业务工作区保留复核，生产安装、原业务记录与共享登录未操作。实际空 prompt 及原生 working 期间字段发布的现场缺口保持明确，不把受控或匹配 prompt 的成功冒充这些资格。
+
+后续 [PR #50](https://github.com/erranliu/SteerRunner/pull/50) 已整合主线 #49，复用 state v7 与唯一 v6 解码边界；远端空预览继续保持专项 Spec 的连续观察要求，本机沿主线输入绑定行为。整合构建 `3C1F9531…2AA338` 的 L1 609 项顶层 / 2111 项含子测试、29 项扩展及 Controlled 22/22 通过；其身份和完整结果见[整合资格索引](evidence/orca-last-message-20261023/pr-integration/qualification.json)。该构建未重跑远端真机资格，上述 `61C8B891…B38DE4` 结果仍属于原冻结构建；未部署生产。

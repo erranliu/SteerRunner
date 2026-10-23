@@ -2,13 +2,6 @@
   "code_commit": "b008f4d990bfc279356335a2e0d2e75538f26a83",
   "integrated_main": "1cfe2f9",
   "runtime_worktree_unchanged_from_code_commit": true,
-  "runtime_tree_ids": {
-    "internal": "658c251499bd90a5d94a3d22bcbd49ccb312aced",
-    "scripts": "e58a235df7f4d1ab31d06e0859df2667eb25b3bb",
-    "tests": "6e6d2538ac9a59252ddea0257eef5346ef2da48a",
-    "go.mod": "a058ee3bd3d6865a1ce86870b9d4d10c9025dcbd",
-    "go.sum": "2cd4de518f9cb508dacb5e934f8115b8b14ffaf4"
-  },
   "changed_runtime_files": [
     {
       "path": "internal/application/observation.go",
@@ -150,5 +143,12 @@
       "sha256": "992aeae74af0d1b3648f7625f97696020d6d8f28369e388f4bf3d5fa25921421",
       "bytes": 49321
     }
-  ]
+  ],
+  "git_object_ids": {
+    "internal": "658c251499bd90a5d94a3d22bcbd49ccb312aced",
+    "scripts": "e58a235df7f4d1ab31d06e0859df2667eb25b3bb",
+    "tests": "6e6d2538ac9a59252ddea0257eef5346ef2da48a",
+    "go.mod": "a058ee3bd3d6865a1ce86870b9d4d10c9025dcbd",
+    "go.sum": "2cd4de518f9cb508dacb5e934f8115b8b14ffaf4"
+  }
 }
