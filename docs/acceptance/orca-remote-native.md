@@ -6,6 +6,8 @@
 
 同轮独立 `worktree.ps` 有原主代理结束及 READY，`session.tabs.list` 的 provider 仍匹配，但本轮所需 `mainAgent`/`turnStartedAt` 缺失且状态起点仍是初始化结束；Runner 正确保留 `observation_unverified`，不借屏幕或 rollout 升级为可信 final。rollout 仅作故障调查，不接入结果路径。普通 Git 查询出现的 61 个删除在单次 `git -c core.longpaths=true status` 中全部消失，真实文件未删除，不能批量恢复或带入 PR。Runner stop 首次未确认、后续原终端仍活跃；人工对精确原 handle 清理返回 ptyKilled=true，此人工收尾不计为 Runner 停止通过。详细原始证据保留在本聊天工作区 `.evidence/n308-19-remote-l4/`；连续稳定交付计数仍为 0，30 分钟 heartbeat 继续检查。历史短场景结果不能替代本次长任务资格。
 
+按后续指示 rebase 到 `9740bed` 后复验，复用该主线的 SessionStart 原输入只读补证，不把本轮旧构建的结果归属问题当作其新实现失败。源码审查另修正远端 stop：验证并取消原观察 handle 后再开始关闭；本机 `CLIQueueError` 证明命令未调用时保存 not-attempted，实际调用未知仍禁止重复；保留实际关闭错误。新增两项 stop 回归覆盖队列未调用后的首次关闭、丢回执零重发、观察取消顺序和异源 handle 拒绝。两处修正均待 rebase 后最终构建的真实链路复验，不能以受控回归替代两轮 PR 与自动停止资格。
+
 ## P0 删除前能力核验
 
 本轮已修复查询漏项并补验；用户明确参数只承诺按配置传递，不新增实际生效核验。结合首轮原生证据，当时 P0 按收敛契约通过，helper 删除尚未实施。源码调查和本文存在不构成通过。
