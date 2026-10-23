@@ -164,3 +164,11 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 在 protocol/orca 为完全缺失 main/observation/turn 字段的旧版投影增加瞬时 query 输入证明；用公开 terminal.show 前后围栏和不变独立原生 done 记录代替缺失的 hook 元数据证明。NativeProof 仅在已有可信原 start、完整唯一原输入、相同结束记录时使用该证明；Lifecycle 再核验原进程及工作区。无需修改 Orca、codec 或持久字段。
 
 回归包含原终端替换、runtime/provider/path/工作区/分支变化、相同文本重复输入、assistant 历史、部分冲突投影、子 agent、正文变化与 JSON 伪造；完整 Lifecycle 验证 final/last-message 来自独立主记录且业务发送仍为一次。通过后独立构建 Runner，从同一业务基线开新运行；真实两轮 PR 门槛继续记录未完成。
+
+### 2026-10-24 真实第四轮后续发现
+
+`c74f80d` 的新独立远端运行已经取得可核验原生 final，原薄投影仍可见，实施结果进入发布阶段，last-message 与独立原生正文逐字一致；该轮因目标仓库发布技能将两个 tea 应用路径当成单一路径而 blocked，未产生 PR，不计连续成功。
+
+后续 Runner 启动适配仅在非 GitHub 仓库的原生 Codex 子进程中，消除同一 tea 二进制的重复 PATH 暴露：保留首个路径及 SHA256；只移除内容相同、且没有其他可执行工具的后续目录；不同版本、混合工具目录和解析变化均拒绝。退出或失败恢复原 PATH；不修改机器配置、仓库技能、原 Spec/Plan、原业务提示、模型或 Orca。PowerShell5.1/7 均须验证真实进程启动、失败恢复及拒绝反例。
+
+第四轮原 stop 发生 CLI 队列/命令期限耗尽，15秒外层预算短于40秒单次 CLI，关闭结果未知后不得自动重发；该轮已通过精确 incarnation 核验人工清理，不计自动 stop 通过。Runner 对远端 Orca 整个 stop 操作使用90秒有界预算，包含清单、身份、关闭与核验；本机15秒预算保持。既有未知关闭只查原清单，不因预算变更重发。需要两轮全新真实交付及自动 stop 重新证明最终构建，当前0/2。

@@ -166,6 +166,13 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		// close. This remains finite and is cancelled by service shutdown.
 		stopBudget = 60 * time.Second
 	}
+	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Execution.Target.Kind == "orca_environment" {
+		// Remote stop includes serialized CLI inventory, original-identity
+		// inspection, close and confirmation. The former 15s outer deadline
+		// could cancel a 40s CLI call after dispatch and manufacture an unknown
+		// close outcome. Keep one bounded operation budget across those calls.
+		stopBudget = 90 * time.Second
+	}
 	ctx, cancel := context.WithTimeout(e.ctx, stopBudget)
 	defer cancel()
 	var receipt b.LifecycleReceipt

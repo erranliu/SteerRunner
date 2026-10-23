@@ -128,6 +128,9 @@ func (c *Config) Command(agent string) (string, error) {
 	if linked {
 		command = linkedGitLaunch(c.RepositoryURL, c.RepositoryRemote, command)
 	}
+	if agent == "codex" && c.RepositoryURL != "" && !gitHubRepository(c.RepositoryURL) {
+		command = teaPathLaunch(command)
+	}
 	return command, nil
 }
 
