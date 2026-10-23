@@ -43,7 +43,11 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 	if !state.LaunchAccepted || !state.LaunchConfirmed || proof.CreatedAt.IsZero() || digest([]byte(proof.LaunchCommand)) != state.LaunchDigest {
 		return nil
 	}
-	plain := usagePlainLaunch.MatchString(proof.LaunchCommand) && strings.HasSuffix(proof.LaunchCommand, " '"+usageReadyPrompt+"'")
+	prompt := usageReadyPrompt
+	plain := usagePlainLaunch.MatchString(proof.LaunchCommand) && strings.HasSuffix(proof.LaunchCommand, " '"+prompt+"'")
+	if !plain && usagePlainLaunch.MatchString(proof.LaunchCommand) && strings.HasSuffix(proof.LaunchCommand, " '"+codex.NativeReadinessPrompt+"'") {
+		prompt, plain = codex.NativeReadinessPrompt, true
+	}
 	if !plain && (len(profiles) != 1 || !usagePreparedInitialization(state, proof, profiles[0])) {
 		return nil
 	}
@@ -57,7 +61,7 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 	if until == 0 || !end.After(proof.CreatedAt) {
 		return nil
 	}
-	return &parsers.Command{ID: "$initialization", Phase: "initialization", WireSHA256: parsers.TextHash(usageReadyPrompt), NotBefore: &proof.CreatedAt, NotAfter: &end}
+	return &parsers.Command{ID: "$initialization", Phase: "initialization", WireSHA256: parsers.TextHash(prompt), NotBefore: &proof.CreatedAt, NotAfter: &end}
 }
 
 // Existing local execution runtime: only its fixed, configuration-bound native

@@ -4,6 +4,7 @@ package agentlaunch
 
 import (
 	"encoding/json"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -85,7 +86,7 @@ func TestLinkedGitLaunchUsesVerifiedExecutionHostRoots(t *testing.T) {
 		}
 	}
 	want := []string{filepath.Join(common, "objects"), filepath.Join(common, "refs"), filepath.Join(common, "logs"), filepath.Clean(admin)}
-	if !reflect.DeepEqual(roots, want) || !strings.HasPrefix(args[len(args)-1], "Initialize this agent session. Reply READY only. Do not use tools or change files.") || !strings.Contains(args[len(args)-1], "Do not print environment") {
+	if !reflect.DeepEqual(roots, want) || !strings.HasPrefix(args[len(args)-1], codex.NativeReadinessPrompt) || !strings.Contains(args[len(args)-1], "Do not print environment") {
 		t.Fatal("linked roots or initialization input changed", args)
 	}
 	var auth struct {
