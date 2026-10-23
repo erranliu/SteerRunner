@@ -9,7 +9,7 @@
 1. 使用现有 StateFeed、后台查询、observer 队列与 `PublicMessage`，没有第二个采样器或消息持久库。
 2. 样本收到时间在协议源固定；initial / notification / query 不混淆。`updatedAt` 不等于消息时间，正文不变不等于新消息。
 3. `orcatransport` 私有瞬时上下文只记录基线、去重与连接覆盖；`NativeProof` 仍是唯一持久执行证明。公共 backend receipt 不增加消息字段。
-4. 空 prompt 的正向修复只允许当前 feed 从可信 working 起点连续观察到可信结束。query-only、断连/重启后的空 prompt 保持不可核实；不伪造上游不存在的 turn ID。
+4. 空 prompt 可由当前 feed 的连续可信链确认；2026-10-23 断线恢复补正另允许独立查询按 Spec §5.2 核验 `turnStartedAt == RootWorkingAt`，恢复原持久 working 起点归属。无原可信 start 或无匹配保留标记的 query-only、断连/重启仍不可核实；不伪造 turn ID，不重发输入。
 5. 旧冲突记录不重新解释；新出现的缺失证据不写成永久冲突。源归属与缺失/冲突分类在 adapter 内集中实现，不再添加英文诊断字符串分支。
 6. 可见诊断复用现有生命周期事件与 Run phase，和纯消息缓存分开计数；不改变成功、恢复、授权、PR 或 stop 规则。
 
@@ -27,7 +27,7 @@
 | `internal/application/last_message.go`、`results.go` | 原缓存与可信 final 补采样原则上复用；必要改动仅限发现的共同契约缺陷 | 不复制脱敏/UTF-8 截断函数、不在 last-message Handle 里做 I/O、不做历史回填 |
 | 现有测试、文档、catalog | 在原测试族扩展正交断言；新增文档入口及真实资格登记 | 不新增同义 native harness、生产模拟开关或第二份 cases 来源 |
 
-PR 整合以主线 PR #49 的 state v7 与唯一 v6 解码兼容边界为基线，本专项不新增持久字段或版本；复用其 Conflict/Waiting 分类及诊断事务。profile、公共 CLI/schema/request digest 不变。空 prompt 仍须本专项的连续观察及同一保留回合标记，不能仅凭持久 WorkingAt 放宽重连/恢复资格。
+PR 整合以主线 PR #49 的 state v7 与唯一 v6 解码兼容边界为基线，本专项不新增持久字段或版本；复用其 Conflict/Waiting 分类及诊断事务。profile、公共 CLI/schema/request digest 不变。空 prompt 须有连续观察及同一保留回合标记，或由独立查询交叉核验原持久 working 起点标记；不能仅凭 WorkingAt 放宽重连/恢复资格。
 
 ## 3. 实施顺序
 
@@ -47,6 +47,7 @@ PR 整合以主线 PR #49 的 state v7 与唯一 v6 解码兼容边界为基线�
 3. 将身份、输入边界、prompt 判定集中为单一规则入口。开始必须严格匹配；结束按 Spec 区分匹配、空缺和冲突，signal/query 不另写近似规则。
 4. 连续性须由当前 feed 实际消费的匹配 working 起点建立，连接报错、缓冲溢出、重连、身份/输入边界立即撤销。前后核验失败时先丢弃该批消息，再沿原执行错误路径返回。
 5. 不清除已保存的泛化冲突；新“缺证据”仅通过瞬时结果返回，保留同来源后续读取。匹配 prompt 的现有查询完成路径不增加连续性要求。
+6. 断线恢复补正：只在 `NativeProof.query` 使用严格的原 working 起点标记核验，不把 initial 或重连通知升级为连续证据。协议层先清空未核验标记，仅在独立主记录与 session 元数据一致时保留；无 marker、不同记录和冲突 marker 都不借用。回归包括断线、重建 adapter、延迟正文、完成事件及诊断解除，始终核验业务发送次数为 1。
 
 退出条件：OLM-06/07 的 Controlled 正反例通过；持久 JSON 与版本无新增字段；没有将仅有会话级快照包装为本轮连续通知。
 
@@ -120,7 +121,7 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 | 时间与去重 | 通知入队后延迟消费时间不变；只变工具状态或 updatedAt 不刷新；同轮同文合并；不同轮同文可信 final 可显示；脱敏后同文遵守原缓存去重 |
 | 残留与恢复 | 发送前旧消息、working 起点残留、重连 initial、服务重启已 done 均不自动成为本轮样本；旧轮样本保留真实 TurnID；新 Attempt 不泄漏 |
 | 身份 | 分别替换 runtime、worktree、terminal incarnation、pane、provider、agent、Session.Generation；RunView 其它 generation 恰好相同也不能放行 |
-| 来源竞争 | drain 内先消息后输入冲突使候选作废；查询途中有新输入/更晚通知不能覆盖；报缺口后空 prompt 不能完成；来源 revision 倒退丢弃 |
+| 来源竞争 | drain 内先消息后输入冲突使候选作废；查询途中有新输入/更晚通知不能覆盖；报缺口后只有独立查询核验原 working 起点标记才能恢复空 prompt；来源 revision 倒退丢弃 |
 | final | 无 accepted/start、缺 baseline、空/截断正文、显式 unknown/failure/cancel、首份正文变更均拒绝正常完成；展示可存在且业务仍未核实；source 无输入边界覆盖保证时，即使连接不断且 revision 递增也不接受空 prompt 完成 |
 | 永久与暂缺 | 旧泛化 provenance 冲突不清除；新 query 暂不可用/缺 prompt 不成为永久冲突；匹配 prompt 补证仍沿原资格恢复 |
 | 诊断 | A→解除→A、A→B→解除使用不同事件 ID；同事件重放与事务失败可重试，冲突重复拒绝；解除不清掉 stop/问答/未知操作诊断；merge 重附着不重置未解除 phase |
@@ -138,7 +139,7 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 | 在业务 receipt 增加消息字段，污染持久回执 | 仅使用 adapter 私有 observeOnce 返回结果及现有事件 | Spec §4.3；P2 |
 | 消息与事实混发被 acceptEvent 提前返回吞掉 | 强制独立事件，保留全部事实确认 | Spec §4.3；T1/T3 |
 | 首次同步读取/Reconcile 消费去重但没投递 | 首读移交原 observer；纯 Reconcile 不提交消息水位 | Spec §4.3；P2/反例 |
-| 简单放行空 prompt、只看持久 WorkingAt 或以不断线推导边界完整会伪造恢复证明 | 仅经源语义核验的同 feed 连续可信链可替代；查询/重启/覆盖未知源不具备资格 | Spec §5.2；P0/T1/T4 |
+| 简单放行空 prompt、只看持久 WorkingAt 或以不断线推导边界完整会伪造恢复证明 | 连续可信链或独立查询严格核验原 working 起点标记；缺 start/标记及未知源仍无资格 | Spec §5.2；P0/T1/T4；断线回归 `TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect` |
 | 清除旧泛化冲突会重解释历史输入 | 历史冲突不清理、不迁移；本期不承诺原 Run 自动恢复 | Spec §1/5.3；T1 |
 | 永久错误字符串阻止继续补证 | 缺失/冲突分类集中，暂缺用瞬时诊断返回 | Spec §5.1；P1 |
 | 一次性 waiting 和固定事件键丢失解除/再次出现 | 复用主线诊断原子事件，不同变化各有 ID，同一事件幂等 | Spec §6；P3/T2 |

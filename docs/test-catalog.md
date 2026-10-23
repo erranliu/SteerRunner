@@ -2,6 +2,8 @@
 
 2026-10-23 薄壳专项：`scripts/test-client.ps1` 覆盖两个 skill 的共享 helper、生产纯校验与受控调用；`scripts/test-client-package.ps1` 验证隔离安装/定位/冲突/摘要；`scripts/test-viewer.ps1` 验证独立 EXE 的原生四列窗口及文件故障。`tests/integration/display_test.go` 的两个 `TestSRDisplaySnapshot*` 使用显式同版 EXE 验证非薄壳提交、心跳、多来源及服务换代；Viewer 自身在独立 module 内测试。以上为 focused 专项，不改变通用 L2–L4 场景计数，也不自动调用真实模型。固定构建、真实本机/远端闭环及未验范围见[薄壳验收](acceptance/skill-shell.md)。
 
+2026-10-23 Orca 断线空预览补正：现有 L1 包入口自动包含 `TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect`、`TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence`、`TestOrcaCompletionQueryReconnectObserverCommitsFinal` 和扩展的 `TestOriginalAgentQueryRetainedStampRequiresSameMainRecord`。验证原可信 working 起点与独立查询保留标记一致时恢复，正文延迟/adapter 重建可收尾，完成事件及诊断解除完整，发送次数固定为 1；缺证据、异源/历史冲突、截断正文不成为 final。此为确定性受控回归，不新增模型/PR case；当前结果见[执行可见性验收](acceptance/execution-observability.md#断线后空输入预览恢复2026-10-23)。
+
 2026-10-21 用量/费用增量：L1 自动包含 `TestUsage*`、`TestCost*`、`TestRunUsage*`，覆盖三格式、去重/快照事务、授权引用/epoch/未知回收、费用解耦和真实 EXE 查询。`TestUsageExistingNativeEvidence` 需要显式旧 state-dir，默认跳过；已核对本机 Pi 200,432、DSH 318,722 token。远端现场 opt-in `TestUsageRemoteCodexLive`、`TestUsageRemoteCodexCleanupLive`、`TestRunUsageRemotePublicLive` 默认跳过，不成为默认模型/PR case；后者用真实 EXE 和隔离 state-dir 验证原 Codex Run 的自动授权、11 响应/225,453 token、分页/冻结算术价表和撤销。没有远端 helper 或新增模型调用，远端 Pi/DSH 生产绑定仍不支持，见[专属记录](acceptance/run-usage-and-cost.md)。
 
 同日一致性复审增加：首次未观察/预算耗尽状态、缺字段与溢出、持久元数据冲突、新输入重开观察窗口、稳定本机身份/损坏 checkpoint、stop 事务许可隔离、取消时保存已知结果、子 group/repo 级联保护、按 Run/epoch 清理归属、六组合 capability 与费用节点分离、DSH 毫秒时间/seq 下界和缺计价判别字段反例。精确测试名称见 [Plan 的复审映射](spec/run-usage-and-cost.plan.md)。

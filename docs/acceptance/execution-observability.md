@@ -78,3 +78,17 @@
 整合后 **Controlled 22/22 通过**，正式报告整体 passed。实际受测 EXE SHA256 为 `3C1F95319EA4C8029540789FFD974A1F59123BD66645E391F9CF7433752AA338`，版本 0.2.0-dev.3-r2；运行源码保持上述 `b008f4d`，测试期间新增内容仅为文档和证据。L1 起点 clean，后续构建的 dirty 标记来自这些新增材料，运行目录树和 28 个变更源码文件哈希另行核验。整合前 36 个源码文件的历史索引也与提交 `e5aeddc` 全部吻合，原始 87 份证据字节校验通过。
 
 最终结果与失败记录统一见 [PR 整合资格索引](evidence/orca-last-message-20261023/pr-integration/qualification.json)，对应 [PR #50](https://github.com/erranliu/SteerRunner/pull/50)。当前构建未重新执行上述远端真机四项资格；不把前一构建的真机结果改写为本构建结果。未部署生产。
+
+## 断线后空输入预览恢复（2026-10-23）
+
+调查 Run `a325256f7747f9e9a6d1e93b3d970c32` / Attempt `757625f7548a705531ebfa6810dabadd`：原远端终端已为 done，最后消息 `READY`，prompt 为空；Runner 因断线丢失通知连续性，保持 `observation_unverified`。终端同时存在 `bd` 缺失的 Hook 错误，不能据此认定实施任务已完成。本次源码基线 `54019142685b3a1d6d54e818c954acc0dfa9f4fc`，未修改生产 EXE、数据库、原输入或原终端。
+
+补充只读核验（独立原生查询及 SQLite `mode=ro`）：原 proof 的 `WorkingAt/RootWorkingAt=1792742346088`，当前元数据保留的 `turnStartedAt=1792743032957`，已是不同边界。provider 相同、无 session boundary/restored 标记也不能消除这一差异。因此本修复不承诺该原 Run 自动结算；标记变化的反例须继续拒收 `READY` 为原任务 final，不能以缺 prompt 为由忽略更强的边界证据。
+
+修复在既有 `NativeProof.query` 中使用独立查询的原起点标记核验：必须有原持久可信 working 起点，且交叉核验后的 `turnStartedAt == RootWorkingAt`；原身份、时间、冲突、outcome 和正文门槛继续执行。initial/重连通知不获得连续性资格。协议层清空未经交叉核验的 marker，防止不同主记录或冲突标记被组合使用。无新增持久字段、codec、业务输入或查询循环，业务结果继续由原 workflow 判断。
+
+回归先在未修复实现运行 `TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect`，reconnect/restored/missing-body 三个子例均复现原 `Native original input preview is missing`。修复后，两受影响包的完整测试通过（orcatransport 46.785 秒，protocol/orca 6.666 秒），对应 `go vet` 通过。新增观察器测试核验诊断解除、原 command 的一次完成事件及持久 proof；反例覆盖缺接受/开始证明、缺失/变化标记、替换身份、历史冲突、中断/失败、过期记录和截断正文，原业务输入总数固定为 1。
+
+正式 L1 使用 `GOFLAGS=-p=2`、`./scripts/test.ps1 -Level L1 -OutDir .evidence/orca-empty-prompt-reconnect-l1`：**33 包、614 项顶层 / 2171 项含子测试通过，0 失败**；16 项既定 opt-in skip 不计入通过。29 项终端扩展、native driver 编译及零匹配守卫通过，正式报告整体 passed。[报告](evidence/orca-last-message-20261023/reconnect-empty-prompt/summary.json)、[逐项汇总](evidence/orca-last-message-20261023/reconnect-empty-prompt/validation.json)、[原始 Go 事件压缩归档](evidence/orca-last-message-20261023/reconnect-empty-prompt/l1.jsonl.gz)和[源码/构建摘要](evidence/orca-last-message-20261023/reconnect-empty-prompt/source-index.json)保存于同一新增子目录。修复版 Windows/amd64 EXE 已构建并通过静态 `version --json` 检查，SHA256 为 `7C519C461F1EED43BAABFE67460245F6F93EFB6A3FB27CEA9C114DBC89DE3F19`。本轮是受控协议/adapter 和共享回归，不创建远端模型任务、PR 或新的真机资格；安装版和现场原 Run 未部署/恢复。
+
+PR 前同步主线 `7634ee1`：保留主线手写 README，恢复说明随主线结构放入 CLI 指南，测试清单保留两项增量。六个运行/测试源码哈希仍与上述正式 L1 受测源码一致。重放两受影响包全包（56.061 / 9.713 秒）、application 观察诊断与 runview 导出定向检查（5.846 / 0.926 秒）、host 编译及对应 go vet 均通过；未将无匹配 host 用例计为测试通过。新主线检查单独登记在 [PR 同步证据](evidence/orca-last-message-20261023/reconnect-empty-prompt/pr-rebase-7634ee1/result.json)，不改写原 L1 构建记录。压缩、Hook 失败、回合标记变化与 READY 的完整因果调查及新增远端真机验证尚未完成，不属于本 PR 已完成资格；未部署生产。

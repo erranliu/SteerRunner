@@ -56,9 +56,8 @@ func (p NativeProof) hasFinal() bool {
 }
 
 func (p *NativeProof) incomplete(s native.AgentState, turn *Turn, linked bool) bool {
-	// Missing display fields remain recoverable. A retained start alone cannot
-	// cover coalesced or disconnected boundaries; empty end previews need the
-	// current observer continuity proof.
+	// Missing display fields remain recoverable. Empty end previews need either
+	// current observer coverage or an independently queried retained input stamp.
 	if s.PaneKey == "" || s.AgentType == "" || s.ProviderSession.ID == "" || s.MainAgent == nil {
 		// Missing display metadata cannot revoke an already verified final.
 		// Positive conflicts are checked independently before availability.
@@ -273,7 +272,7 @@ func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time, link
 		return false
 	}
 	if s.MainAgent.State == "done" {
-		return p.end(s, turn, now, linked)
+		return p.end(s, turn, now, linked || p.retainsOriginalInput(s))
 	}
 	if p.hasFinal() {
 		return false
@@ -287,6 +286,25 @@ func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time, link
 		p.Waiting = ""
 	}
 	return false
+}
+
+// A reconnect loses notification coverage, but not the persisted, prompt-matched
+// working root. Orca's positive turnStartedAt stamp is set by the original input
+// hook, retained through tools/done, and reset by another input. The independent
+// query cross-checks this stamp against the same main-agent state/time in session
+// metadata. It may therefore rebind that exact root without claiming continuity.
+// Initial snapshots and notifications never acquire this query-only permission.
+func (p NativeProof) retainsOriginalInput(s native.AgentState) bool {
+	if p.agentName() != "codex" || p.Authority == "" || p.WorkingAt <= 0 || p.RootWorkingAt <= p.BaseRootAt ||
+		p.RootWorkingAt <= 0 || s.TurnStartedAt != p.RootWorkingAt || s.PaneKey != p.Pane ||
+		s.AgentType != p.agentName() || p.Provider == "" || s.ProviderSession.ID != p.Provider ||
+		s.MainAgent == nil || s.MainAgent.State != "done" || s.MainAgent.StateStartedAt <= p.RootWorkingAt {
+		return false
+	}
+	// Older hook-store projections omit observation metadata. When present, it
+	// must corroborate the persisted authority rather than mask a replacement.
+	return s.Observation == nil || trustedState(s) && s.Observation.AuthorityID == p.Authority &&
+		s.Observation.Incarnation == p.Incarnation && s.Observation.Revision >= p.Revision && s.Observation.Revision > p.BaseRevision
 }
 func (p NativeProof) wantsQuery(now time.Time) bool {
 	return (p.EndedAt == 0 || p.ReplyDigest == "") && (p.HintPending || !now.Before(p.LastQuery.Add(30*time.Second)))

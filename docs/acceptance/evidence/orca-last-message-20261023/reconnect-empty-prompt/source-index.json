@@ -1,0 +1,28 @@
+{
+  "source_commit": "54019142685b3a1d6d54e818c954acc0dfa9f4fc",
+  "source_dirty": true,
+  "files": {
+    "internal/execution/adapters/orcatransport/native_state.go": "55cfa9fe0a0e9ab1135662211a53f076313014e06872728d076695bcadd2aa1b",
+    "internal/execution/adapters/orcatransport/native_observation.go": "8066fde285a6ca358b6144187fe2ba19f3847a7f16967baef1df2a99a64c7fd9",
+    "internal/execution/adapters/orcatransport/native_reconnect_test.go": "55d004c615bf0285ff04656b0038ab6284d43e260e37f7d143b57f7042f97764",
+    "internal/execution/adapters/orcatransport/public_message_test.go": "e44779cf1f9deec223678d7e6d5d1436cd8dc257e457185474453bc1f688995e",
+    "internal/execution/adapters/protocol/orca/state_feed.go": "29087bd7222a19ee9ff1160376701d9940472e401e84687fd6771cf9e5ff1fc0",
+    "internal/execution/adapters/protocol/orca/state_query_coverage_windows_test.go": "f88c0b644a0219a0725012b24b9d12336e95f1ea67e46b42d9440d93e66022ac"
+  },
+  "build": {
+    "version": "0.2.0-dev.3-r2",
+    "source_commit": "54019142685b3a1d6d54e818c954acc0dfa9f4fc",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "7C519C461F1EED43BAABFE67460245F6F93EFB6A3FB27CEA9C114DBC89DE3F19"
+  },
+  "scope": "Controlled adapter/protocol and shared L1 regression; no production deployment or new model/PR run",
+  "original_read_only_observation": {
+    "run_id": "a325256f7747f9e9a6d1e93b3d970c32",
+    "attempt_id": "757625f7548a705531ebfa6810dabadd",
+    "root_working_at": 1792742346088,
+    "retained_turn_started_at": 1792743032957,
+    "verdict": "Changed input boundary; must remain unverified"
+  }
+}

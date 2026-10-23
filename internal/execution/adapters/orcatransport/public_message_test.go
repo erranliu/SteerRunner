@@ -231,7 +231,7 @@ func (f gappedMessageFeed) Drain() ([]native.StateSample, error) {
 	return samples, errors.New("native observation gap")
 }
 
-func TestOrcaCompletionQueryEmptyPromptRequiresCurrentStartAndRetainedBoundary(t *testing.T) {
+func TestOrcaCompletionQueryEmptyPromptRequiresVerifiedStartAndRetainedBoundary(t *testing.T) {
 	for _, mode := range []string{"linked", "no-marker", "changed-marker", "gap", "query-only", "restart", "conflict", "legacy-conflict"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, feed, s, input := publicMessageFixture(t)
@@ -269,15 +269,16 @@ func TestOrcaCompletionQueryEmptyPromptRequiresCurrentStartAndRetainedBoundary(t
 				feed.events = []native.AgentState{end}
 			}
 			r, _, err = l.observeOnce(context.Background(), s)
-			if err != nil || (r.TurnEvidence != nil) != (mode == "linked") || host.nativeSends != 1 {
-				t.Fatal("wrong empty-prompt verdict", mode, r, err)
+			completed := mode == "linked" || mode == "query-only"
+			if err != nil || (r.TurnEvidence != nil) != completed || host.nativeSends != 1 {
+				t.Fatal("wrong empty-prompt verdict", mode, r.Diagnostic, r.TurnEvidence, err)
 			}
 			state, err := l.state(b.LifecycleSnapshot{Ref: s.Ref, Session: s.Session, Implementation: r.Implementation, ConfigurationDigest: s.ConfigurationDigest, ResourceGeneration: s.ResourceGeneration, PendingTurn: s.PendingTurn})
 			if err != nil {
 				t.Fatal(err)
 			}
 			proof := turnFor(&state, input.CommandID).Native
-			if mode == "linked" {
+			if completed {
 				if r.TurnEvidence.NativeOutcome != "unreported" || r.TurnEvidence.LastMessage != end.LastAssistantMessage {
 					t.Fatal(r.TurnEvidence)
 				}
@@ -288,7 +289,7 @@ func TestOrcaCompletionQueryEmptyPromptRequiresCurrentStartAndRetainedBoundary(t
 	}
 }
 
-func TestOrcaCompletionQuerySupplementsOnlyAlreadyProvenEmptyPromptEnd(t *testing.T) {
+func TestOrcaCompletionQuerySupplementsSameRetainedEmptyPromptEnd(t *testing.T) {
 	for _, mode := range []string{"same-end", "changed-marker", "changed-end", "restart"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, feed, s, input := publicMessageFixture(t)
@@ -312,7 +313,7 @@ func TestOrcaCompletionQuerySupplementsOnlyAlreadyProvenEmptyPromptEnd(t *testin
 			feed.current = end
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
 			r, _, err = l.observeOnce(context.Background(), s)
-			if err != nil || (r.TurnEvidence != nil) != (mode == "same-end") || host.nativeSends != 1 {
+			if err != nil || (r.TurnEvidence != nil) != (mode == "same-end" || mode == "restart") || host.nativeSends != 1 {
 				t.Fatal("wrong body supplementation", mode, r.TurnEvidence, err)
 			}
 		})

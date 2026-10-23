@@ -1,0 +1,3 @@
+ok  	github.com/erranliu/SteerRunner/internal/application	5.846s
+ok  	github.com/erranliu/SteerRunner/internal/runview	0.926s
+ok  	github.com/erranliu/SteerRunner/internal/host	3.114s [no tests to run]
