@@ -236,7 +236,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 					s.Implementation = event.Implementation
 				}
 				if event.PublicMessage != nil {
-					if event.Fact.Completed || len(event.Implementation) > 0 || event.InputWait || event.PublicMessage.TurnID != command || event.PublicMessage.ObservedAt.IsZero() {
+					if event.Fact.Completed || len(event.Implementation) > 0 || event.Observation != nil || event.PublicMessage.TurnID != command || event.PublicMessage.ObservedAt.IsZero() {
 						t.Fatal("native message mixed facts or changed identity")
 					}
 					publicMessages = append(publicMessages, *event.PublicMessage)
@@ -244,7 +244,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 				completed = event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 				event.Persisted <- nil
 				event.Processed <- nil
-				if queryOnly && event.InputWait && event.Diagnostic == nativePromptMissing {
+				if queryOnly && event.Observation != nil && event.Observation.Diagnostic == nativePromptMissing {
 					if len(queries) == 0 || queries[len(queries)-1].Prompt != "" || queries[len(queries)-1].MainAgent == nil || queries[len(queries)-1].MainAgent.State != "done" {
 						t.Fatal("missing-prompt diagnostic has no original query")
 					}

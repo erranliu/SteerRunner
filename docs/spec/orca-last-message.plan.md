@@ -23,11 +23,11 @@
 | `orcatransport/native_state.go`，必要的同包小文件 | 集中基础归属判定、缺失/冲突分类；原 proof 消费判定；唯一瞬时上下文处理消息基线与连续性 | 删除 signal/end 中重复 prompt 判定；不新增另一套 NativeProof、持久消息水位或恢复证明 |
 | `orcatransport/lifecycle.go` | 维护每 command 唯一上下文；observeOnce 返回私有观察结果；前后原资源核验；首读候选交给原 observer | 替换内部无实际用途的 observer 返回位；不往 LifecycleReceipt/Operation/runstate 加展示字段，不更改公开 LifecyclePort 签名 |
 | `orcatransport/observer.go` | 独立消息投递；原事实确认保留；诊断内容变化/解除事件；取消与 close 释放上下文 | 替换一次性 waiting 布尔量及固定 reply-missing 去重 ID；不增加投递后台协程或无限队列 |
-| `internal/application/observation.go`、`worker.go` 的原 merge | 明确消费已有 InputWait/Diagnostic 当前值更新；以观察专属 phase 控制诊断归属和清除；merge 不覆盖未解除的观察问题 | 不识别 Orca 字符串/私有 state、不新增缓存、不把摘要当作完成事件 |
+| `internal/application/observation.go`、`worker.go` 的原 merge | 复用主线 ObservationStatus 及原 Session/Turn/event 原子事务；以既有 observation_unverified phase 控制诊断归属和清除；merge 不覆盖未解除问题 | 删除 InputWait/Diagnostic 并行消费方案；不识别 Orca 字符串/私有 state、不新增缓存、不把摘要当作完成事件 |
 | `internal/application/last_message.go`、`results.go` | 原缓存与可信 final 补采样原则上复用；必要改动仅限发现的共同契约缺陷 | 不复制脱敏/UTF-8 截断函数、不在 last-message Handle 里做 I/O、不做历史回填 |
 | 现有测试、文档、catalog | 在原测试族扩展正交断言；新增文档入口及真实资格登记 | 不新增同义 native harness、生产模拟开关或第二份 cases 来源 |
 
-状态格式、profile 版本、公共 CLI/schema/request digest 不变。若实施发现必须新增持久字段，先修订本 Spec/Plan、版本和迁移设计；不能边实现边以 optional 字段隐式改变 v6 的恢复含义。
+PR 整合以主线 PR #49 的 state v7 与唯一 v6 解码兼容边界为基线，本专项不新增持久字段或版本；复用其 Conflict/Waiting 分类及诊断事务。profile、公共 CLI/schema/request digest 不变。空 prompt 仍须本专项的连续观察及同一保留回合标记，不能仅凭持久 WorkingAt 放宽重连/恢复资格。
 
 ## 3. 实施顺序
 
@@ -63,11 +63,11 @@
 
 ### P3：接通诊断可见性
 
-1. 明确已有 InputWait 更新语义：非空 diagnostic 是原观察问题，空 diagnostic 是解除。不要与 PublicMessage 合并，也不改变人类问答分支。
-2. observer 在诊断内容转变、观察重附着或 envelope 原观察水位变化时发独立当前值更新，修复只发一次的 waiting 行为。它不是只消费一次的原生事实，不使用固定 SourceEventID 加 SeenNative 永久去重；原生事实事件仍保留原去重机制。
-3. application 在通用分支校验原 Session/Turn，然后原子比较投影，仅真实变化才提交；重复及被高优先级问题遮挡时不写 SeenNative/revision/event。覆盖 A→解除→A、A→B→解除；旧 observer 关闭后不能再消费它的排队更新。
-4. 只有 `native_observation_unverified` 允许由解除事件清空；更高优先级的 blocked/reconciling/waiting_input/stop/未知操作不被覆盖。同步检查 `worker.go:merge` 重附着时的 status/phase 重置逻辑，保留未解除的观察专属 phase，不出现每次查询重置又重建的事件抖动。
-5. 更高优先级阶段解除后，通过原正式观察首读或下个原 envelope 水位更新重发当前值；不能由于 adapter 已记住相同诊断而永远不显示。重复同一投影不提交 revision/event，不增加高频轮询。
+1. 复用主线 ObservationStatus：非空 diagnostic 是原观察问题，空 diagnostic 是解除。PublicMessage 单独投递，人类问答分支不变。
+2. observer 在诊断变化、重附着或 envelope 变化时发送独立更新，使用新事件 ID，诊断与 Implementation 同事务提交；删除重复的证据状态投递路径。
+3. application 沿原 Session/Turn/event 校验、SeenNative 和事务处理；同事件重放不增加 revision，冲突重复拒绝、失败不吞事件。覆盖 A→解除→A、A→B→解除；旧 observer 关闭后不能再消费其排队更新。
+4. 只有主线 `observation_unverified` 允许由解除事件清空；更高优先级的 blocked/reconciling/waiting_input/stop/未知操作不被覆盖。在唯一 `worker.go:merge` 入口保留未解除 phase，删除 applyObservation 中重复保存/恢复逻辑。
+5. 更高优先级阶段解除后，通过原正式观察首读或下个原 envelope 水位更新重发当前值；相同诊断的新变化使用新 ID，不被历史键吞掉，不增加高频轮询。
 
 退出条件：OLM-08 的反复进入、解除、优先级和重启用例通过；控制资格不受观察 phase 影响，真实诊断变化可见，消息读取保持纯读。
 
@@ -123,7 +123,7 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 | 来源竞争 | drain 内先消息后输入冲突使候选作废；查询途中有新输入/更晚通知不能覆盖；报缺口后空 prompt 不能完成；来源 revision 倒退丢弃 |
 | final | 无 accepted/start、缺 baseline、空/截断正文、显式 unknown/failure/cancel、首份正文变更均拒绝正常完成；展示可存在且业务仍未核实；source 无输入边界覆盖保证时，即使连接不断且 revision 递增也不接受空 prompt 完成 |
 | 永久与暂缺 | 旧泛化 provenance 冲突不清除；新 query 暂不可用/缺 prompt 不成为永久冲突；匹配 prompt 补证仍沿原资格恢复 |
-| 诊断 | A→解除→A、A→B→解除均可见且不被 SeenNative 吞掉；问题在 blocked 中出现、回 observing 后仍可见；解除不清掉 stop/问答/未知操作诊断；merge 重附着不重置未解除 phase，重复投影不写空转 revision/SeenNative |
+| 诊断 | A→解除→A、A→B→解除使用不同事件 ID；同事件重放与事务失败可重试，冲突重复拒绝；解除不清掉 stop/问答/未知操作诊断；merge 重附着不重置未解除 phase |
 | 生命周期 | 初读候选不丢、Reconcile 不吞候选、可信 final 无多余 observer；消息等待确认时 stop/关闭可结束；源和上下文只释放一次 |
 
 ## 5. 文档结构审计记录
@@ -141,7 +141,7 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 | 简单放行空 prompt、只看持久 WorkingAt 或以不断线推导边界完整会伪造恢复证明 | 仅经源语义核验的同 feed 连续可信链可替代；查询/重启/覆盖未知源不具备资格 | Spec §5.2；P0/T1/T4 |
 | 清除旧泛化冲突会重解释历史输入 | 历史冲突不清理、不迁移；本期不承诺原 Run 自动恢复 | Spec §1/5.3；T1 |
 | 永久错误字符串阻止继续补证 | 缺失/冲突分类集中，暂缺用瞬时诊断返回 | Spec §5.1；P1 |
-| 一次性 waiting 和永久 SeenNative 键丢失解除/再次出现 | 独立当前值更新走原子投影比较，原生事实的去重仍保留 | Spec §6；P3/T2 |
+| 一次性 waiting 和固定事件键丢失解除/再次出现 | 复用主线诊断原子事件，不同变化各有 ID，同一事件幂等 | Spec §6；P3/T2 |
 | 清诊断会覆盖人类问答/stop/未知操作 | phase 明确所有权及优先级，解除只清自身问题 | Spec §6；T2/T3 |
 | Shared StateFeed 改造暗中改变本机支持范围 | 全调用方迁移与本机夹具回归，生产扩展仅远端 Codex | Spec §1；P0/T6 |
 | merge 重附着覆盖观察 phase，使诊断反复消失或抖动 | 投影与 merge 一起收敛，只有明确解除可清自身问题 | Spec §6；P3/T2 |

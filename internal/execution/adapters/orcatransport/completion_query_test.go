@@ -63,7 +63,7 @@ func TestOrcaCompletionQueryRecoveryClosesFailedRead(t *testing.T) {
 }
 
 func TestOrcaCompletionQuery(t *testing.T) {
-	for _, scenario := range []string{"quiet-done", "old-done", "missing-baseline", "stale-snapshot", "accepted-only", "wrong-prompt", "pane", "provider", "session-boundary", "restored", "tool-output", "interrupted", "failed", "truncated", "missing-body", "query-failure", "missing-agent", "missing-provider", "query-other-input", "query-session-boundary", "subscription-failure", "open-failure", "identity-conflict", "open-identity-conflict", "other-input", "other-input-then-waiting", "other-input-without-working", "session-boundary-working", "restore"} {
+	for _, scenario := range []string{"quiet-done", "old-done", "missing-baseline", "stale-snapshot", "accepted-only", "wrong-prompt", "pane", "provider", "session-boundary", "restored", "tool-output", "interrupted", "failed", "truncated", "missing-body", "query-failure", "missing-agent", "missing-provider", "missing-prompt", "query-other-input", "query-session-boundary", "subscription-failure", "open-failure", "identity-conflict", "open-identity-conflict", "other-input", "other-input-then-waiting", "other-input-without-working", "session-boundary-working", "restore"} {
 		t.Run(scenario, func(t *testing.T) {
 			l, host, s := fixture(t)
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -125,6 +125,8 @@ func TestOrcaCompletionQuery(t *testing.T) {
 				_, feed.err = native.DecodeOriginalAgent([]byte(`{"worktrees":[]}`), s.Ref.External.WorktreeID, end.PaneKey)
 			case "missing-provider":
 				feed.current.ProviderSession.ID = ""
+			case "missing-prompt":
+				feed.current.Prompt = ""
 			case "query-other-input", "query-session-boundary":
 				feed.current = fixtureState(11, "unrelated", "working")
 				feed.current.Observation = nil
@@ -199,7 +201,7 @@ func TestOrcaCompletionQuery(t *testing.T) {
 			if (r.TurnEvidence != nil) != positive {
 				t.Fatalf("completion verdict %s: %+v", scenario, r)
 			}
-			if scenario == "missing-body" || scenario == "query-failure" || scenario == "old-done" || scenario == "missing-agent" || scenario == "missing-provider" {
+			if scenario == "missing-body" || scenario == "query-failure" || scenario == "old-done" || scenario == "missing-agent" || scenario == "missing-provider" || scenario == "missing-prompt" || scenario == "tool-output" {
 				if poll().TurnEvidence != nil || feed.queries != 1 {
 					t.Fatal("unavailable result caused a tight query loop")
 				}

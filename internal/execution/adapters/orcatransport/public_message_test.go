@@ -113,7 +113,7 @@ func TestOrcaPublicMessageFirstReadAndCancellation(t *testing.T) {
 	}
 	select {
 	case e := <-obs.Events():
-		if e.PublicMessage == nil || e.PublicMessage.Text != "first read" || len(e.Implementation) > 0 || e.Fact.Completed || e.InputWait {
+		if e.PublicMessage == nil || e.PublicMessage.Text != "first read" || len(e.Implementation) > 0 || e.Fact.Completed || e.Observation != nil {
 			t.Fatal("first read lost or mixed with durable facts", e)
 		}
 		// Deliberately do not acknowledge; close must interrupt both waits.
@@ -195,7 +195,7 @@ func TestOrcaPublicMessageObserverKeepsStartedAndCompletedFacts(t *testing.T) {
 			}
 			if event.PublicMessage != nil {
 				messages++
-				if event.Fact.Kind != "" || len(event.Implementation) != 0 || event.InputWait {
+				if event.Fact.Kind != "" || len(event.Implementation) != 0 || event.Observation != nil {
 					t.Fatal("mixed public message", event)
 				}
 			}
@@ -255,7 +255,7 @@ func TestOrcaCompletionQueryEmptyPromptRequiresCurrentStartAndRetainedBoundary(t
 				end.Prompt = "unrelated input"
 			case "legacy-conflict":
 				state, _ := l.state(s)
-				turnFor(&state, input.CommandID).Native.Diagnostic = "Native original completion/input provenance is unverified"
+				turnFor(&state, input.CommandID).Native.Conflict = "Native original completion/input provenance is unverified"
 				s.Implementation, _ = l.envelope(s, state)
 			case "restart":
 				l.clearObservation(l.nativeObservation)
@@ -281,8 +281,8 @@ func TestOrcaCompletionQueryEmptyPromptRequiresCurrentStartAndRetainedBoundary(t
 				if r.TurnEvidence.NativeOutcome != "unreported" || r.TurnEvidence.LastMessage != end.LastAssistantMessage {
 					t.Fatal(r.TurnEvidence)
 				}
-			} else if mode != "conflict" && mode != "legacy-conflict" && proof.Diagnostic != "" {
-				t.Fatal("missing evidence became permanent", proof.Diagnostic)
+			} else if mode != "conflict" && mode != "legacy-conflict" && proof.Conflict != "" {
+				t.Fatal("missing evidence became permanent", proof.Conflict)
 			}
 		})
 	}

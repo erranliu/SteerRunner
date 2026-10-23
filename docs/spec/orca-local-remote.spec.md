@@ -8,7 +8,9 @@
 
 ## 1. 目标与范围
 
-调查基线的公开契约和 CLI 已区分 Orca `local / orca_environment`，但 `SubscribeState / QueryState / QueryWorktreeAgents / UploadWorkspaceArtifact` 都要求 pair，生命周期又把配对查询当成本机 CLI 前置。本次补齐 Windows/amd64 本机原生 IPC；连接按同一目标选择 IPC 或现有远程配对通路，观察策略按实际原生能力选择查询或订阅加补查。
+调查基线的公开契约和 CLI 已区分 Orca `local / orca_environment`，2026-10-23 观察恢复修订将字段暂缺保持为可重试，不记成永久输入冲突。本机查询沿主线规则保留已匹配原 prompt 的受信开始绑定；远端空预览结束须进一步满足[最后消息专项 Spec](orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)的连续观察及同一保留回合标记。未采到开始时仍要求当前 prompt 匹配；完整 final、当前身份及明确输入反证的要求保持。当前 state v7、v6 解码边界及公开诊断规则以[远端原生 Spec §4](orca-remote-native.spec.md#4-原输入完成与成果)为准。
+
+`SubscribeState / QueryState / QueryWorktreeAgents / UploadWorkspaceArtifact` 都要求 pair，生命周期又把配对查询当成本机 CLI 前置。本次补齐 Windows/amd64 本机原生 IPC；连接按同一目标选择 IPC 或现有远程配对通路，观察策略按实际原生能力选择查询或订阅加补查。
 
 保留一个 `orca-terminal` 后端，共用 `StateFeed`、工作区、原生回合证明、最终回复、执行主机准备、停止和恢复逻辑。CLI 继续执行工作区/终端/输入操作，不整体改为 RPC。
 
@@ -41,7 +43,7 @@
 
 观察策略不强求相同：本机 `StateFeed` 初始化用 `session.tabs.list` 绑定原终端/pane，之后用现有 `QueryOriginalAgent`（`worktree.ps` 加 tabs 元数据核验）查询；不调用本机订阅，不伪造 snapshot/delta 或 working 事件。远程继续使用订阅加独立补查。复用现有发送前基线、原请求接受/开始回执及 `NativeProof.query` 判定，保留 30 秒补查间隔与每次 40 秒有界查询；本机 feed 不新增轮询线程、定时器、队列或配置，Close 取消在途查询。结束发现可能延迟约一个补查周期。
 
-短回合可以未采到 working；只有原请求明确已开始、原主代理新 done 的时间晚于发送前基线，且 prompt、原 pane/provider、完整原文及排除标志均符合现有规则，才能结算。不要求为了取得一次 working 而加快采样；缺失基线、旧 done、初始化/恢复/工具输出、中断或错误身份仍不通过。该查询模式不承诺捕获每个瞬时状态或检测采样间隔内任意外部并发输入。
+短回合可以未采到 working；只有原请求明确已开始、原主代理新 done 的时间晚于发送前基线，且当前 prompt、原 pane/provider、完整原文及排除标志均符合现有规则，才能结算。不要求为了取得一次 working 而加快采样；缺失基线、旧 done、初始化/恢复/工具输出、中断或错误身份仍不通过。该查询模式不承诺捕获每个瞬时状态或检测采样间隔内任意外部并发输入。
 
 `SubscribeState / QueryState / QueryWorktreeAgents / UploadWorkspaceArtifact` 复用既有调用形状；连接分支由 adapter 内部消化。公开请求/配置、LifecyclePort、回执和错误契约保持，上层不感知 IPC/配对握手，也不新增执行步骤。
 

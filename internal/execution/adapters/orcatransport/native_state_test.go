@@ -66,7 +66,7 @@ func TestOrcaNativeStateGate(t *testing.T) {
 		t.Fatal("missing silence query")
 	}
 	turn.Native.LastQuery = now.Add(30 * time.Second)
-	if turn.Native.query(start, &turn, now.Add(30*time.Second)) || turn.Native.wantsQuery(now.Add(59*time.Second)) || !turn.Native.wantsQuery(now.Add(60*time.Second)) {
+	if turn.Native.query(start, &turn, now.Add(30*time.Second), false) || turn.Native.wantsQuery(now.Add(59*time.Second)) || !turn.Native.wantsQuery(now.Add(60*time.Second)) {
 		t.Fatal("working query completed or bounded retry was lost")
 	}
 	hint := fixtureState(12, turn.Prompt, "done")
@@ -83,13 +83,13 @@ func TestOrcaNativeStateGate(t *testing.T) {
 		t.Fatal("duplicate hint repeated query")
 	}
 	old := base
-	if turn.Native.query(old, &turn, now.Add(62*time.Second)) {
+	if turn.Native.query(old, &turn, now.Add(62*time.Second), false) {
 		t.Fatal("old done completed the new turn")
 	}
 	end := fixtureState(12, turn.Prompt, "done")
 	end.Observation = nil
 	end.LastAssistantMessage = `{"summary":"本轮结果","url":"https://example.com/pull/1"}`
-	if !turn.Native.query(end, &turn, now.Add(63*time.Second)) || turn.Native.Outcome != "unreported" || turn.Native.ReplyDigest == "" {
+	if !turn.Native.query(end, &turn, now.Add(63*time.Second), false) || turn.Native.Outcome != "unreported" || turn.Native.ReplyDigest == "" {
 		t.Fatal("fresh native root end was not accepted independently of outcome")
 	}
 	if turn.Native.ReplyDigest != digest([]byte(end.LastAssistantMessage)) {
@@ -114,7 +114,7 @@ func TestOrcaNativeStateGate(t *testing.T) {
 			case "other-pane":
 				s.PaneKey = "other"
 			}
-			if p.query(s, &turn, now.Add(time.Minute)) || p.EndedAt != 0 {
+			if p.query(s, &turn, now.Add(time.Minute), false) || p.EndedAt != 0 {
 				t.Fatal("unverified main-agent end accepted")
 			}
 		})
@@ -123,7 +123,7 @@ func TestOrcaNativeStateGate(t *testing.T) {
 	cut.signal(start, &turn, now, false)
 	cutEnd := end
 	cutEnd.LastAssistantMessage = strings.Repeat("x", 8000)
-	if !cut.query(cutEnd, &turn, now.Add(time.Minute)) || cut.ReplyDigest != "" {
+	if !cut.query(cutEnd, &turn, now.Add(time.Minute), false) || cut.ReplyDigest != "" {
 		t.Fatal("clipped native message treated as complete")
 	}
 }
@@ -221,7 +221,7 @@ func TestOrcaNativeStateBinding(t *testing.T) {
 		p := NativeProof{}
 		p.body(`{"summary":"a b"}`)
 		p.body(`{"summary":"ab"}`)
-		if p.Diagnostic == "" || p.ReplyBody != `{"summary":"a b"}` {
+		if p.Conflict == "" || p.ReplyBody != `{"summary":"a b"}` {
 			t.Fatal("display association allowed a changed native original")
 		}
 	})
@@ -416,7 +416,7 @@ func TestOrcaNativeHistoricalUnknownRemainsUnknown(t *testing.T) {
 	turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
 	end := fixtureState(12, turn.Prompt, "done")
 	end.LastAssistantMessage = "original complete final"
-	if !turn.Native.query(end, &turn, now) || turn.Native.Outcome != "unreported" {
+	if !turn.Native.query(end, &turn, now, false) || turn.Native.Outcome != "unreported" {
 		t.Fatal("new absent outcome was not distinguished", turn.Native)
 	}
 	// This is the persisted shape written by the previous implementation.
@@ -429,7 +429,7 @@ func TestOrcaNativeHistoricalUnknownRemainsUnknown(t *testing.T) {
 	if err = json.Unmarshal(raw, &restored); err != nil {
 		t.Fatal(err)
 	}
-	if !restored.Native.query(end, &restored, now.Add(time.Minute)) || restored.Native.Outcome != "unknown" || restored.Native.ReplyBody != end.LastAssistantMessage {
+	if !restored.Native.query(end, &restored, now.Add(time.Minute), false) || restored.Native.Outcome != "unknown" || restored.Native.ReplyBody != end.LastAssistantMessage {
 		t.Fatal("historical outcome was reclassified", restored.Native)
 	}
 }

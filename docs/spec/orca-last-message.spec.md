@@ -97,7 +97,7 @@ Orca 既有状态订阅 / 既有有界原始查询
 
 ### 4.3 事件投递与首轮读取
 
-PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、InputWait 或业务 Candidate；`acceptEvent` 的消息分支会提前返回，禁止依赖混合事件完成持久事实提交。
+PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、Observation 或业务 Candidate；`acceptEvent` 的消息分支会提前返回，禁止依赖混合事件完成持久事实提交。
 
 内部 `observeOnce` 返回一个 adapter 私有的瞬时观察结果，包含原 LifecycleReceipt 及至多一条消息候选；替换当前内部永远为空的 observer 返回位。不得为了传递此候选向公共 `LifecycleReceipt`、Operation 回执或持久 runstate 增加消息字段。
 
@@ -111,7 +111,7 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 在 `orcatransport` 内集中原身份、输入边界及 prompt 判定，让 signal、query 和消息选择消费同一组基础归属结论；保留 final 更严格的完整性与 outcome 门槛。判定结果在内部分为可核验、暂缺证据、明确冲突，不以英文诊断字符串比较驱动新分支，也不扩展成通用诊断框架。
 
-现有 `NativeProof.Diagnostic` 中已持久的冲突继续保留。查询暂不可用、结束快照缺 prompt 且证据不足属于瞬时观察诊断，通过原 receipt/event 返回，不写成不可重试的冲突，不能因此停止后续同源有界查询。
+沿主线 PR #49 的 state v7 分类复用 `NativeProof.Conflict/Waiting`；v6 旧 Diagnostic 只在原解码边界转换，模糊历史冲突继续保留。查询暂不可用、结束快照缺 prompt 且证据不足属于可恢复观察诊断，通过原 receipt/event 返回，不写成不可重试的冲突，不能因此停止后续同源有界查询。
 
 ### 5.2 允许空结束 prompt 的充分条件
 
@@ -136,7 +136,7 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 ### 5.3 历史记录、结果与恢复
 
-不改变 `NativeProof` 持久字段、state codec v6、profile v3/v4、state 数据库版本或请求摘要。历史泛化 provenance 诊断不能被证明仅由 prompt 缺失引起，必须保留；不清库、不清诊断、不重解释已保存 unknown/outcome，也不补造 start/end。
+整合已合入主线的 PR #49：复用其 `NativeProof.Conflict/Waiting`、state codec v7 及唯一 v6 解码兼容边界，本专项不另增持久字段或版本。profile v3/v4、state 数据库版本及请求摘要不变。历史泛化 provenance 诊断不能被证明仅由 prompt 缺失引起，必须保留；不清库、不清诊断、不重解释已保存 unknown/outcome，也不补造 start/end。
 
 本次现场原 Run 因此**不承诺升级后自动结算或自动补出最后消息**。对其只能按原授权、原身份与原证明继续只读对账；证据不足由公开诊断明确说明，另行处理不能借本文实施隐式执行。
 
@@ -144,13 +144,13 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 ## 6. 诊断可见性
 
-复用现有 `LifecycleReceipt.Diagnostic`、`LifecycleEvent.InputWait/Diagnostic`、RunView.phase/diagnostic 和原事件事务，不新增诊断查询或第二份存储。将 InputWait 明确定义为当前原观察可用性的更新：非空 Diagnostic 表示不可核实，空 Diagnostic 表示原观察问题已解除；它不表示向用户提问。
+复用主线现有 `LifecycleReceipt.Diagnostic`、`LifecycleEvent.Observation`、RunView.phase/diagnostic 和原事件事务，不新增诊断查询或第二份存储。Observation 的非空 Diagnostic 表示不可核实，空 Diagnostic 表示原观察问题已解除；它不表示向用户提问。删除原 InputWait/Diagnostic 并行消费方案，只保留这一条链路。
 
-adapter 用当前诊断值替代只报一次的 waiting 布尔量，在内容变化、解除、正式观察重附着或原 envelope 观察水位变化时投递独立的当前值更新。事件绑定原 Session/Turn；不能继续使用固定 `<command>:reply-missing` 作为永远只消费一次的键。该事件只携带当前诊断投影及身份，不混入 Implementation 或完成 Fact，也不新增持久诊断计数器。
+adapter 用当前诊断值替代只报一次的 waiting 布尔量，在内容变化、解除、正式观察重附着或原 envelope 观察水位变化时投递独立更新。事件绑定原 Session/Turn 和新的原事件 ID；不能继续使用固定 `<command>:reply-missing` 作为永远只消费一次的键。沿主线约定，诊断与对应 Implementation 同事务提交，完成 Fact、PublicMessage 分别投递；不新增持久诊断计数器。
 
-application 在通用观察更新分支先核验原 Session/Turn，再原子比较当前投影；这类独立更新不通过 `SeenNative` 的永久消费键去重。只有投影真实变化才提交，重复或暂被更高优先级阶段遮挡的更新返回正常确认而不写 revision/event/去重账目。observer 的串行投递与旧 observer 关闭保证更新次序，不能接收已撤销观察者的延迟更新。
+application 沿原事件分支核验原 Session/Turn/event，并原子合并诊断和实现证据；同一事件重放由既有 `SeenNative` 去重，内容冲突拒绝，事务失败保持可重放。相同诊断在解除后再次出现使用新事件 ID，不被历史键吞掉。observer 的串行投递与旧 observer 关闭保证更新次序，不能接收已撤销观察者的延迟更新。
 
-同一原 Session/Turn 且仍处于正常 observing 时，将观察问题投影为 `phase=native_observation_unverified` 与脱敏 diagnostic，status 仍为 running，controls/授权不变。解除仅在该 phase 下清除本模块拥有的 diagnostic 并恢复 observing。blocked、reconciling、waiting_input、stop、未知操作及其它阶段的诊断优先，不覆盖或清除它们；原 `merge`/`applyObservation` 也不能在尚无解除更新时把观察专属 phase 重置成 observing。回到正常观察后，由首读当前值或下个原观察水位更新重新投影现存问题；不为等待重新显示而另建轮询器。
+同一原 Session/Turn 且仍处于正常 observing 时，将观察问题投影为主线已有 `phase=observation_unverified` 与脱敏 diagnostic，status 仍为 running，controls/授权不变。解除仅在该 phase 下清除本模块拥有的 diagnostic 并恢复原开始阶段。blocked、reconciling、waiting_input、stop、未知操作及其它阶段的诊断优先，不覆盖或清除它们；原 `merge`/`applyObservation` 也不能在尚无解除更新时把观察专属 phase 重置成 observing。回到正常观察后，由首读当前值或下个原观察水位更新重新投影现存问题；不为等待重新显示而另建轮询器。
 
 诊断变化是实际生命周期可见性变化，可提交既有业务 revision/event；最后消息变化和重复读取不提交。query 失败原因、空 prompt 证据不足、正文截断及明确冲突应可区分，但不暴露提示词、凭据或私有路径正文。
 

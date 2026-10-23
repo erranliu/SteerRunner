@@ -22,7 +22,7 @@
 
 ## Orca 最后消息实施与自审（2026-10-23）
 
-按 [Spec](../spec/orca-last-message.spec.md) / [Plan](../spec/orca-last-message.plan.md) 实施远端原生 Codex 的直接观察接入。用户明确要求先不部署生产；原生产 EXE、state-dir、Run/Attempt、原输入和持久冲突均未改动。没有创建功能 PR 或合并产品变更。
+按 [Spec](../spec/orca-last-message.spec.md) / [Plan](../spec/orca-last-message.plan.md) 实施远端原生 Codex 的直接观察接入。用户明确要求先不部署生产；原生产 EXE、state-dir、Run/Attempt、原输入和持久冲突均未改动。以下记录为 PR 整合前的冻结构建验收；后续用户授权提交 PR 的主线整合见文末。
 
 复用原 StateFeed，在源收到时固定样本种类和 UTC 时间；adapter 仅保留每原 command 一个有界瞬时候选，经过原资源前后核验后单独交给原 observer。消息投递成功才提交内存去重水位；业务 started、Implementation、completed 仍分别确认。application 的原摘要缓存、身份围栏、脱敏、UTF-8 限长及只读 CLI 保持。原观察诊断改为同一事务中的当前值比较，A→解除→A 不再被永久事件键吞掉；消息读取仍不推进 revision。
 
@@ -61,4 +61,12 @@
 
 公开 CLI 在前序 inspect 为 running 的观察期间和 pr_ready 时均实际返回消息，重复读取时间稳定；实际中文缓存无替换字符。直接来源事件与业务完成事件分开已由原生定向测试验证；CLI 响应本身不暴露采样路径，不能据它区分直接采样或 final 补采样。OLM-02/03/04/05/07/08/09 的受控及对应真机范围通过。**OLM-01 的原生 working 期间新字段发布、OLM-06 的真实空结束 prompt 正反向仍未触发，保留未验证**；实现边界由确定性正反例通过，不为此增加模型提示、模拟生产参数或上游改动。
 
-本次管理员代理已按同一 host_id 正常结束，两个网络故障现场设施 restored；测试 PR #645/#646/#647/#650 仅合入各自 codex/srtest 专属 base，#648/#649 已关闭。短 state-dir、业务测试工作区和证据文件保留供复核；这不扩大原生停止的 orca_terminal 范围。归档配置是历史冻结输入，其中 admin_host 已结束，未来故障验证须提供新的在运行测试宿主。代码未提交/推送、未创建功能 PR、未部署生产；原生产 Run 的冲突和 outcome 未改动。
+本次管理员代理已按同一 host_id 正常结束，两个网络故障现场设施 restored；测试 PR #645/#646/#647/#650 仅合入各自 codex/srtest 专属 base，#648/#649 已关闭。短 state-dir、业务测试工作区和证据文件保留供复核；这不扩大原生停止的 orca_terminal 范围。归档配置是历史冻结输入，其中 admin_host 已结束，未来故障验证须提供新的在运行测试宿主。该冻结阶段尚未提交产品变更；未部署生产，原生产 Run 的冲突和 outcome 未改动。
+
+### PR 主线整合（2026-10-23）
+
+用户随后授权提交 PR。主线已合入 [#49](https://github.com/erranliu/SteerRunner/pull/49)，本分支整合 `1cfe2f9`：复用其 state v7、唯一 v6 解码兼容边界和 `ObservationStatus` 原子事件，删除 InputWait 并行诊断投影、重复的 envelope 状态投递及 applyObservation 重复 phase 保存逻辑。诊断变化通过原 Session/Turn/event 事务提交，PublicMessage 仍单独确认；同一事件幂等、冲突拒绝、失败可重放。
+
+本机查询沿主线的已核实输入绑定规则；远端空预览结束继续要求本专项的连续可信通知和相同正值 turnStartedAt。已有本机恢复测试及新增远端 query-only、重连、重启、标记变化、补正文反例共同约束该差异。消息表、额外查询器、迁移分支或远端 helper 均未增加。
+
+上面的四项真机资格只对应归档的 `61C8B891…B38DE4` 构建，不能移记为主线整合后构建的真机验收。原 `source-index.json` 是该冻结阶段的历史清单；整合后的检查与源码身份另行记录，生产环境保持未部署。

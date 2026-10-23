@@ -32,7 +32,55 @@ type NativeProof struct {
 	LastQuery     time.Time `json:"last_query,omitempty"`
 	Hint          string    `json:"hint,omitempty"`
 	HintPending   bool      `json:"hint_pending,omitempty"`
-	Diagnostic    string    `json:"diagnostic,omitempty"`
+	// Conflict is durable contrary evidence; Waiting is a recoverable evidence gap.
+	Conflict string `json:"conflict,omitempty"`
+	Waiting  string `json:"waiting,omitempty"`
+}
+
+func (p NativeProof) diagnostic() string {
+	if p.Conflict != "" {
+		return p.Conflict
+	}
+	return p.Waiting
+}
+
+func (p *NativeProof) reject(message string) {
+	if p.Conflict == "" {
+		p.Conflict = message
+	}
+	p.Waiting = ""
+}
+
+func (p NativeProof) hasFinal() bool {
+	return p.EndedAt > 0 && p.ReplyDigest != ""
+}
+
+func (p *NativeProof) incomplete(s native.AgentState, turn *Turn, linked bool) bool {
+	// Missing display fields remain recoverable. A retained start alone cannot
+	// cover coalesced or disconnected boundaries; empty end previews need the
+	// current observer continuity proof.
+	if s.PaneKey == "" || s.AgentType == "" || s.ProviderSession.ID == "" || s.MainAgent == nil {
+		// Missing display metadata cannot revoke an already verified final.
+		// Positive conflicts are checked independently before availability.
+		if !p.hasFinal() {
+			p.Waiting = "Native original input metadata is incomplete; awaiting original evidence"
+		}
+		return true
+	}
+	issue := p.attribution(s, turn, linked)
+	if issue.kind == provenanceMissing && !p.hasFinal() {
+		p.Waiting = issue.diagnostic
+		return true
+	}
+	return false
+}
+
+func (p *NativeProof) rejectIdentity(s native.AgentState) bool {
+	if s.PaneKey != "" && s.PaneKey != p.Pane || s.AgentType != "" && s.AgentType != p.agentName() || p.Provider != "" && s.ProviderSession.ID != "" && s.ProviderSession.ID != p.Provider {
+		p.reject("Native original agent/pane/provider changed")
+		return true
+	}
+	return false
 }
 
 func stateHint(s native.AgentState) string {
@@ -90,27 +138,18 @@ func (p *NativeProof) body(message string) {
 	hash := digest([]byte(body))
 	// The first complete native original is immutable; no display normalization.
 	if p.ReplyDigest != "" && (p.ReplyDigest != hash || p.ReplyBody != body) {
-		p.Diagnostic = "Native ended reply changed; current result is unverified"
+		p.reject("Native ended reply changed; current result is unverified")
 		return
 	}
 	p.ReplyDigest = hash
 	p.ReplyBody = body
 }
-func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time, linked bool) string {
-	if p.Diagnostic != "" && p.Diagnostic != nativeWaiting {
-		return p.Diagnostic
+func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time, linked bool) {
+	if p.Conflict != "" {
+		return
 	}
-	if s.PaneKey != p.Pane {
-		p.Diagnostic = "Native original pane changed"
-		return p.Diagnostic
-	}
-	if s.AgentType != "" && s.AgentType != p.agentName() {
-		p.Diagnostic = "Native original agent changed"
-		return p.Diagnostic
-	}
-	if p.Provider != "" && s.ProviderSession.ID != "" && s.ProviderSession.ID != p.Provider {
-		p.Diagnostic = "Native original provider session changed"
-		return p.Diagnostic
+	if p.rejectIdentity(s) {
+		return
 	}
 	if stateHint(s) != p.Hint {
 		p.Hint = stateHint(s)
@@ -119,72 +158,88 @@ func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time, lin
 		}
 	} // hint only; require a main-agent query
 	if !trustedState(s) || !turn.Accepted {
-		return p.Diagnostic
+		if turn.Accepted {
+			p.incomplete(s, turn, linked)
+		}
+		return
 	}
 	o := s.Observation
 	if p.Authority != "" && (o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation) {
-		p.Diagnostic = "Native main-agent authority changed"
-		return p.Diagnostic
+		p.reject("Native main-agent authority changed")
+		return
 	}
 	if p.BaseAuthority != "" && o.AuthorityID != p.BaseAuthority {
-		p.Diagnostic = "Native baseline authority changed"
-		return p.Diagnostic
+		p.reject("Native baseline authority changed")
+		return
 	}
 	if o.Revision <= p.BaseRevision || o.Revision <= p.Revision {
-		return p.Diagnostic
+		return
 	}
-	if s.MainAgent.StateStartedAt > p.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") {
-		issue := p.attribution(s, turn, linked)
-		if issue.kind != provenanceMatched {
-			if issue.kind == provenanceConflict {
-				p.Diagnostic = issue.diagnostic
-			}
-			return issue.diagnostic
-		}
+	if p.rejectProvenance(s, turn) {
+		return
+	}
+	if p.WorkingAt > 0 && o.Boundary && s.MainAgent.State == "working" && s.MainAgent.StateStartedAt != p.RootWorkingAt {
+		p.reject("Another native input boundary makes the original turn unverified")
+		return
+	}
+	if p.hasFinal() && s.MainAgent.State != "done" {
+		return // Later display availability cannot revoke the committed body.
+	}
+	if p.incomplete(s, turn, linked) {
+		return
 	}
 	if p.WorkingAt == 0 {
 		if s.MainAgent.State == "done" {
 			// Without a streamed start, confirm the retained main-agent record
 			// through the independent query; never promote a tab snapshot alone.
-			return p.Diagnostic
+			return
 		}
 		if s.MainAgent.State != "working" || s.MainAgent.StateStartedAt <= p.BaseRootAt || !turn.Started || s.ProviderSession.ID == "" || s.Prompt != preview(turn.Prompt) {
-			return p.Diagnostic
+			return
 		}
 		p.Authority, p.Incarnation, p.Provider = o.AuthorityID, o.Incarnation, s.ProviderSession.ID
 		p.WorkingAt = o.ObservedAt
 		p.RootWorkingAt = s.MainAgent.StateStartedAt
-	} else if o.Boundary && s.MainAgent.State == "working" && s.MainAgent.StateStartedAt != p.RootWorkingAt {
-		p.Diagnostic = "Another native input boundary makes the original turn unverified"
-		return p.Diagnostic
 	}
 	p.Revision, p.LastSignal = o.Revision, now
 	if s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.WorkingAt {
 		p.end(s, turn, now, linked)
 	} else if s.MainAgent.State == "waiting" || s.MainAgent.State == "blocked" {
 		// Waiting remains in the current turn; it is not a completion.
-		p.Diagnostic = nativeWaiting
-	} else if p.Diagnostic == nativeWaiting {
-		p.Diagnostic = ""
+		p.Waiting = "Native main agent is waiting; no next input was sent"
+	} else {
+		p.Waiting = ""
 	}
-	return p.Diagnostic
+}
+func (p *NativeProof) rejectProvenance(s native.AgentState, turn *Turn) bool {
+	if s.MainAgent != nil && s.MainAgent.StateStartedAt > p.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") &&
+		p.attribution(s, turn, false).kind == provenanceConflict {
+		p.reject("Native original completion/input provenance is unverified")
+		return true
+	}
+	if s.MainAgent != nil && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.BaseRootAt &&
+		(s.Interrupted || s.MainAgent.Outcome != "" && s.MainAgent.Outcome != "success" || p.agentName() != "codex" && s.MainAgent.Outcome != "success") {
+		p.reject("Native interruption/outcome cannot verify ordinary completion")
+		return true
+	}
+	return false
 }
 func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time, linked bool) bool {
-	if !turn.Accepted || !turn.Started || p.Provider == "" || s.MainAgent == nil || s.MainAgent.State != "done" || s.AgentType != p.agentName() || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider || s.MainAgent.StateStartedAt <= p.WorkingAt || s.MainAgent.StateStartedAt <= p.BaseRootAt || p.WorkingAt == 0 && p.BaseRootAt <= 0 {
+	if !turn.Accepted || !turn.Started || p.Provider == "" || s.MainAgent == nil || s.MainAgent.State != "done" || s.MainAgent.StateStartedAt <= p.WorkingAt || s.MainAgent.StateStartedAt <= p.BaseRootAt || p.WorkingAt == 0 && p.BaseRootAt <= 0 {
 		return false
 	}
-	if issue := p.attribution(s, turn, linked); issue.kind != provenanceMatched {
-		if issue.kind == provenanceConflict {
-			p.Diagnostic = issue.diagnostic
-		}
+	if p.rejectIdentity(s) || p.rejectProvenance(s, turn) {
 		return false
 	}
-	if s.Interrupted || s.MainAgent.Outcome != "" && s.MainAgent.Outcome != "success" || p.agentName() != "codex" && s.MainAgent.Outcome != "success" {
-		p.Diagnostic = "Native interruption/outcome cannot verify ordinary completion"
+	if p.incomplete(s, turn, linked) {
+		return false
+	}
+	if s.ToolOutput {
+		p.Waiting = "Native original final body is tool output; awaiting original assistant evidence"
 		return false
 	}
 	if p.EndedAt != 0 && p.EndedAt != s.MainAgent.StateStartedAt {
-		p.Diagnostic = "Native original completion record changed"
+		p.reject("Native original completion record changed")
 		return false
 	}
 	if p.EndedAt == 0 {
@@ -196,35 +251,42 @@ func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time, linked
 			p.Outcome = s.MainAgent.Outcome
 		}
 	}
-	if p.Diagnostic == nativeWaiting {
-		p.Diagnostic = ""
-	}
+	p.Waiting = ""
 	p.body(s.LastAssistantMessage)
 	return true
 }
-func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time) bool {
-	if p.Diagnostic != "" && p.Diagnostic != nativeWaiting {
+func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time, linked bool) bool {
+	if p.Conflict != "" {
 		return false
 	}
-	if s.MainAgent == nil || s.UpdatedAt < s.MainAgent.StateStartedAt {
+	if s.MainAgent != nil && s.UpdatedAt < s.MainAgent.StateStartedAt {
 		return false
 	}
-	if s.AgentType == "" || s.ProviderSession.ID == "" {
-		return false // Missing metadata is unavailable evidence, not replacement.
-	}
-	if s.AgentType != p.agentName() || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider {
-		p.Diagnostic = "Native original queried agent/pane/provider changed"
+	if p.rejectIdentity(s) {
 		return false
 	}
-	if s.MainAgent.StateStartedAt > p.BaseRootAt {
-		if issue := p.attribution(s, turn, false); issue.kind != provenanceMatched {
-			if issue.kind == provenanceConflict {
-				p.Diagnostic = issue.diagnostic
-			}
-			return false
-		}
+	if p.rejectProvenance(s, turn) {
+		return false
 	}
-	return p.end(s, turn, now, false)
+	if s.MainAgent == nil {
+		p.incomplete(s, turn, linked)
+		return false
+	}
+	if s.MainAgent.State == "done" {
+		return p.end(s, turn, now, linked)
+	}
+	if p.hasFinal() {
+		return false
+	}
+	if p.incomplete(s, turn, linked) {
+		return false
+	}
+	if s.MainAgent.State == "waiting" || s.MainAgent.State == "blocked" {
+		p.Waiting = "Native main agent is waiting; no next input was sent"
+	} else {
+		p.Waiting = ""
+	}
+	return false
 }
 func (p NativeProof) wantsQuery(now time.Time) bool {
 	return (p.EndedAt == 0 || p.ReplyDigest == "") && (p.HintPending || !now.Before(p.LastQuery.Add(30*time.Second)))
@@ -279,7 +341,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		if streamErr != nil {
 			l.feedRetryAt = l.clock().Add(30 * time.Second)
 			if errors.Is(streamErr, native.ErrStateIdentityChanged) {
-				turn.Native.Diagnostic = streamErr.Error()
+				turn.Native.reject(streamErr.Error())
 			}
 		} else {
 			initial := feed.Initial().AgentState
@@ -316,8 +378,9 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			}
 			prior := turn.Native.Revision
 			hadStart := turn.Native.WorkingAt > 0
-			linked := err == nil && observation.linked(sample, turn.Native)
-			issue := turn.Native.signal(s, turn, received(sample, l.clock()), linked)
+			linked := l.profile.Environment == "" && turn.Native.WorkingAt > 0 || err == nil && observation.linked(sample, turn.Native)
+			turn.Native.signal(s, turn, received(sample, l.clock()), linked)
+			issue := turn.Native.diagnostic()
 			if issue != "" {
 				diagnostic = issue
 			} else if turn.Native.Revision > prior {
@@ -329,7 +392,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 				observation.lastDigest = digest([]byte(s.LastAssistantMessage))
 				observation.pending = nil
 			}
-			if s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted ||
+			if s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Interrupted ||
 				s.TurnStartedAt > 0 && observation.turnStartedAt > 0 && s.TurnStartedAt != observation.turnStartedAt {
 				observation.invalidate()
 			}
@@ -338,13 +401,13 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			}
 		}
 		if errors.Is(err, native.ErrStateIdentityChanged) {
-			turn.Native.Diagnostic = err.Error()
+			turn.Native.reject(err.Error())
 		}
 	}
 	drain()
-	if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != nativeWaiting {
+	if turn.Native.Conflict != "" {
 		observation.invalidate()
-		return turn.Native.Diagnostic
+		return turn.Native.diagnostic()
 	}
 	if turn.Native.wantsQuery(l.clock()) {
 		turn.Native.LastQuery, turn.Native.HintPending = l.clock(), false
@@ -365,15 +428,15 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		if err != nil {
 			if errors.Is(err, native.ErrStateIdentityChanged) {
-				turn.Native.Diagnostic = err.Error()
+				turn.Native.reject(err.Error())
 				observation.invalidate()
 			}
 			return "Native main-agent query is unverified: " + err.Error()
 		}
 		drain()
-		if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != nativeWaiting {
+		if turn.Native.Conflict != "" {
 			observation.invalidate()
-			return turn.Native.Diagnostic
+			return turn.Native.diagnostic()
 		}
 		if _, err := l.original(ctx, snapshot); err != nil {
 			observation.invalidate()
@@ -381,10 +444,13 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		s := sample.AgentState
 		verified := false
-		if observation.supplements(sample, turn.Native) && turn.Native.Diagnostic == "" {
+		if observation.supplements(sample, turn.Native) && turn.Native.Conflict == "" {
 			verified = turn.Native.end(s, turn, received(sample, l.clock()), true)
 		} else {
-			verified = turn.Native.query(s, turn, received(sample, l.clock()))
+			verified = turn.Native.query(s, turn, received(sample, l.clock()), l.profile.Environment == "" && turn.Native.WorkingAt > 0)
+		}
+		if turn.Native.Waiting != "" {
+			diagnostic = turn.Native.Waiting
 		}
 		if verified || s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && turn.Native.attribution(s, turn, false).kind == provenanceMatched {
 			diagnostic = ""
@@ -396,8 +462,8 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		observation.offer(sample, turn.Native, turn, false)
 	}
-	if turn.Native.Diagnostic != "" {
-		return turn.Native.Diagnostic
+	if turn.Native.diagnostic() != "" {
+		return turn.Native.diagnostic()
 	}
 	if turn.Native.EndedAt == 0 && streamErr != nil {
 		return "Native state subscription is unverified; original query remains available: " + streamErr.Error()

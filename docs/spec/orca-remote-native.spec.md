@@ -31,7 +31,7 @@ PR [#13](https://github.com/erranliu/SteerRunner/pull/13) 增加认证准备要�
 
 新远端请求显式包含 `agent_launch.runtime_executable` 或 `runtime_sha256` 的键（包括空字符串）时，在创建 Run/远端资源前以退出码 2、`invalid_input` 拒绝，说明应删除远端 helper 配置。schema、纯校验、capabilities 与调用方一致，不静默忽略或尝试执行。local 所需同名字段继续合法。
 
-使用既有 profile envelope 的 `codec_version` 区分改变后的语义：新远端 profile 为 v4，仅含 transport/路由配置；local 继续 v3。新远端唯一执行路径为 Orca 原生路径，不新增 `execution_mode` 或第二个用户/私有模式字段。保留现有 payload 摘要校验、state v6（最新主线既有版本）、target ID、公共 input digest 算法和数据库表；旧程序遇到 v4 拒绝，不承诺向前兼容。
+使用既有 profile envelope 的 `codec_version` 区分改变后的语义：新远端 profile 为 v4，仅含 transport/路由配置；local 继续 v3。新远端唯一执行路径为 Orca 原生路径，不新增 `execution_mode` 或第二个用户/私有模式字段。保留现有 payload 摘要校验、target ID、公共 input digest 算法和数据库表。2026-10-23 观察恢复修复将 state 写入版本升为 v7，并在 adapter 解码边界精确支持 v6；旧程序拒绝未知 v7，不承诺向前兼容。
 
 v4 只适用于远端，禁止 helper 配置及 readiness/owner/inspection/recorded receipt 混存；未知版本或目标冲突拒绝。远端 v3 仅按 §6 作为旧记录处理，不根据 runtime/readiness 缺失推断 v4。版本判断只放在配置冻结和 adapter 入口，不把版本分支散布到 workflow/reliable。
 
@@ -68,6 +68,12 @@ v4 只适用于远端，禁止 helper 配置及 readiness/owner/inspection/recor
 3. 完成须为原输入后的原主代理结束、同一 pane/provider、匹配输入预览及完整原生 final；缺结束预览时，仅允许上述专项 Spec 的连续可信链窄化规则。保留既有多重绑定；200 UTF-16 预览不等于完整输入摘要，也不声称逐字历史已核验。
 4. 排除旧 done、工具/子代理输出、恢复/会话边界、外部新输入、身份变化和中断。首份已核实 final/摘要不可被后续显示覆盖。
 5. Orca 当前正文字段上限为 8000 UTF-16 单元；保留达到 7999 时的保守截断拒绝，包括 surrogate 边界。空正文、截断、冲突保持未核实；不读屏、不通过补报提示替代原文、不创建 helper reader。
+
+2026-10-23 观察证据分类修订：`NativeProof` 分别保存可恢复的 `waiting` 与持久的 `conflict`，运行时不按诊断文本判断是否继续查询。prompt/agent/provider/主代理状态暂缺、工具正文不是输入冲突；保持原有 30 秒补查节奏，证据补齐后继续核验原回合。已用匹配 prompt 核实主代理开始时，后续 prompt 显示字段缺失是可恢复等待；空预览结束须满足专项 Spec 的同一连续观察链与保留回合标记，重连、查询和恢复不能仅凭持久开始证明空预览结束归属。其它必需身份字段暂缺仍等待，不用历史值补造当前身份。缺失字段也不能撤销已保存的完整原 final。非空输入不匹配、身份/权威变化、明确新输入/会话边界、中断及显式非成功 outcome 仍持久阻断；字段同时暂缺不能掩盖这些反证。
+
+v6 的混合 `diagnostic` 仅在解码边界转换：明确的旧 waiting 文案转换为 `waiting`，其余非空诊断保留为 `conflict`，包括历史上可能由空 prompt 误触发的模糊 provenance 诊断。旧记录没有保存触发帧，不能自动清除、猜测来源或重发输入。v7 不接受旧字段，执行和用量读取共用版本边界；不增加工作流分支或兼容执行引擎。
+
+观察可用性变化沿同一个生命周期事件流提交，绑定原 session/turn/event；首次缺证、原因变化及恢复都更新公开 `Run.phase/diagnostic` 和历史事件。缺证时 `running / observation_unverified`，恢复后回到原开始阶段；不创建人工问题、不改变输入授权、不覆盖已有停止或其它阻断。诊断与实现证据同事务落库，失败可重放，冲突重复不得覆盖。
 
 原生结束结果区分 `succeeded | failed | cancelled | unknown | unreported`。只有新核实的 Codex 普通回合在原生接口未提供 outcome 时记为 `unreported`；它不是底层明确成功。既有原请求开始、主代理结束、身份/输入绑定、完整原文和无中断条件全部保留。显式 unknown、失败、取消以及原操作/输入结果未知继续阻断。
 

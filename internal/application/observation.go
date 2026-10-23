@@ -55,11 +55,8 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	if event.PublicMessage != nil {
 		return e.acceptMessage(id, *event.PublicMessage)
 	}
-	if event.InputWait {
-		return e.acceptObservationDiagnostic(id, event)
-	}
 	f := event.Fact
-	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && len(event.Implementation) == 0 {
+	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && event.Observation == nil && len(event.Implementation) == 0 {
 		return nil
 	}
 	e.mu.Lock()
@@ -71,11 +68,20 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	if f.StartedTurnID != "" && f.StartedTurnID != r.Snapshot.Session.CurrentTurnID && f.StartedTurnID != r.Snapshot.Session.PendingTurnID {
 		return reliable.ErrStale
 	}
+	if event.Observation != nil && (f.Kind != b.EventStatus || f.SessionID == "" || f.StartedTurnID == "" || f.Source == "" || f.SourceEventID == "") {
+		return errors.New("observation status lacks its original session/turn/event binding")
+	}
 	if r.SeenNative == nil {
 		r.SeenNative = map[string]string{}
 	}
 	key := r.Snapshot.Session.AttemptID + ":" + f.Source + ":" + f.SourceEventID
 	digest := reliable.Digest(canonical(event.Fact))
+	if event.Observation != nil {
+		digest = reliable.Digest(canonical(struct {
+			Fact        b.EventFact
+			Observation b.ObservationStatus
+		}{f, *event.Observation}))
+	}
 	if f.SourceEventID != "" {
 		if prior, ok := r.SeenNative[key]; ok {
 			if prior != digest {
@@ -89,6 +95,9 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		if err := merge(r, b.LifecycleReceipt{Implementation: event.Implementation}); err != nil {
 			return err
 		}
+	}
+	if event.Observation != nil {
+		e.applyObservationDiagnostic(r, event.Observation.Diagnostic)
 	}
 	if f.Kind == b.EventWorkObserved {
 		input := workflow.Input(r.Workflow, r.Snapshot.Session.CurrentCommandID)
@@ -150,48 +159,13 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	} else if f.Kind == b.EventStarted && r.Snapshot.Session.PendingCommandID != "" {
 		r.Snapshot.Session = reliable.RecordTurnStart(r.Snapshot.Session, f.StartedTurnID)
 		r.NativeStarted = true
-		r.Phase = "observing"
+		if r.Phase != "observation_unverified" {
+			r.Phase = "observing"
+		}
 	} else if len(event.Implementation) == 0 && f.SourceEventID == "" {
 		return nil
 	}
 	return e.commitLocked(r, nil, string(f.Kind))
-}
-
-const observationUnverified = "native_observation_unverified"
-
-// Observation availability is an idempotent current-value projection, not a
-// once-consumed native fact. In particular A -> clear -> A must remain visible.
-func (e *Engine) acceptObservationDiagnostic(id string, event b.LifecycleEvent) error {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	r := e.runs[id]
-	if r == nil {
-		return nil
-	}
-	s := r.Snapshot.Session
-	f := event.Fact
-	if f.SessionID == "" || f.SessionID != s.SessionID || f.StartedTurnID == "" ||
-		(f.StartedTurnID != s.CurrentTurnID && f.StartedTurnID != s.PendingTurnID) {
-		return reliable.ErrStale
-	}
-	if r.Status != "running" || (r.Phase != "observing" && r.Phase != observationUnverified) ||
-		r.PendingStop != "" || r.PendingInterrupt != "" || r.ResumeRequired || !r.Allowed || unknown(r) || r.Question != nil {
-		return nil
-	}
-	diagnostic := e.redact(r, event.Diagnostic)
-	phase := observationUnverified
-	if diagnostic == "" {
-		if r.Phase != observationUnverified {
-			return nil
-		}
-		phase = "observing"
-	}
-	if r.Phase == phase && r.Diagnostic == diagnostic {
-		return nil
-	}
-	next := r.Clone()
-	next.Phase, next.Diagnostic = phase, diagnostic
-	return e.commitLocked(next, nil, "observation_changed")
 }
 
 func (e *Engine) applyObservation(id string, original *runstate.Record, receipt b.LifecycleReceipt) bool {
@@ -204,10 +178,27 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 	if merge(next, receipt) != nil {
 		return false
 	}
+	e.applyObservationDiagnostic(next, receipt.Diagnostic)
 	if reflect.DeepEqual(next, e.runs[id]) {
 		return true
 	}
 	return e.commitLocked(next, nil, "observation_attached") == nil
+}
+
+const observationUnverified = "observation_unverified"
+
+func (e *Engine) applyObservationDiagnostic(r *runstate.Record, diagnostic string) {
+	if r.Status != "running" {
+		return
+	}
+	if diagnostic != "" && (r.Phase == "observing" || r.Phase == "input_accepted_waiting_start" || r.Phase == "observation_unverified") {
+		r.Phase, r.Diagnostic = "observation_unverified", e.redact(r, diagnostic)
+	} else if diagnostic == "" && r.Phase == "observation_unverified" {
+		r.Phase, r.Diagnostic = "observing", ""
+		if !r.NativeStarted {
+			r.Phase = "input_accepted_waiting_start"
+		}
+	}
 }
 
 // Validate the complete native question set before persisting any input intent.

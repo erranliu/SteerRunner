@@ -161,7 +161,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		if e.ImplementationKey == StateKey {
 			// The retired remote v5 payload is read only to fence an explicit
 			// stop to its original Process; no helper state is restored.
-			if found || e.CodecVersion != StateVersion && (!legacyRemote || e.CodecVersion != 5) {
+			if found || !readableStateVersion(e.CodecVersion) && (!legacyRemote || e.CodecVersion != 5) {
 				return state, errors.New("unsupported terminal state")
 			}
 			found = true
@@ -180,7 +180,9 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 				state.Process = original.Process
 				continue
 			}
-			if err := b.DecodeStrictJSON(e.Payload, &state, "trailing terminal state"); err != nil {
+			var err error
+			state, err = decodeState(e.Payload, e.CodecVersion)
+			if err != nil {
 				return state, err
 			}
 		}

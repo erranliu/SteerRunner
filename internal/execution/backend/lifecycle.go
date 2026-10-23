@@ -679,11 +679,8 @@ func cloneAnswers(values map[string][]string) map[string][]string {
 
 type LifecycleEvent struct {
 	// PublicMessage is an optional bounded native activity hint, not a fact.
-	PublicMessage *PublicMessage
-	// InputWait updates current observation availability; an empty Diagnostic
-	// clears only the observation-owned projection. It is not a human question.
-	InputWait      bool
-	Diagnostic     string
+	PublicMessage  *PublicMessage
+	Observation    *ObservationStatus
 	Fact           EventFact
 	Implementation []ImplementationDataEnvelope
 	Candidate      *LifecycleCandidate
@@ -697,12 +694,23 @@ type LifecycleEvent struct {
 	Processed      chan error
 }
 
+// ObservationStatus describes availability of original execution evidence.
+// An empty diagnostic explicitly clears a previous observation gap. It never
+// authorizes input, changes worker identity, or proves business completion.
+type ObservationStatus struct {
+	Diagnostic string
+}
+
 type PublicMessage struct {
 	AttemptID, Generation, SessionID, TurnID, Kind, Text string
 	ObservedAt                                           time.Time
 }
 
 func (event LifecycleEvent) Clone() LifecycleEvent {
+	if event.Observation != nil {
+		status := *event.Observation
+		event.Observation = &status
+	}
 	if event.PublicMessage != nil {
 		message := *event.PublicMessage
 		event.PublicMessage = &message

@@ -27,14 +27,17 @@ type provenance struct {
 // attribution is shared by notifications, independent queries and public
 // sampling. Missing fields are not durable contradictions.
 func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) provenance {
-	if s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput {
+	if s.SessionBoundary || s.RestoredUnconfirmed {
 		return provenance{provenanceConflict, "Native original completion/input provenance is unverified"}
+	}
+	if s.ToolOutput {
+		return provenance{provenanceMissing, "Native original final body is tool output; awaiting original assistant evidence"}
 	}
 	if s.Prompt == preview(turn.Prompt) {
 		return provenance{}
 	}
 	if s.Prompt == "" {
-		if linked && s.MainAgent != nil && s.MainAgent.State == "done" {
+		if linked {
 			return provenance{}
 		}
 		return provenance{provenanceMissing, nativePromptMissing}
@@ -94,7 +97,7 @@ func (o *nativeObservation) reattach(s native.AgentState, p NativeProof, turn *T
 // the observed original start; absent stamps never grant empty-prompt proof.
 func (o *nativeObservation) linked(sample native.StateSample, p NativeProof) bool {
 	s := sample.AgentState
-	return o.continuous && o.turnStartedAt > 0 && s.TurnStartedAt == o.turnStartedAt &&
+	return s.MainAgent != nil && s.MainAgent.State == "done" && o.continuous && o.turnStartedAt > 0 && s.TurnStartedAt == o.turnStartedAt &&
 		sample.Kind == native.SampleNotification && trustedState(s) &&
 		s.Observation.AuthorityID == p.Authority && s.Observation.Incarnation == p.Incarnation &&
 		s.Observation.Revision > p.Revision
@@ -114,7 +117,7 @@ func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn
 		o.invalidate()
 		return
 	}
-	if p.Diagnostic != "" && p.Diagnostic != nativeWaiting {
+	if p.Conflict != "" {
 		o.invalidate()
 		return
 	}

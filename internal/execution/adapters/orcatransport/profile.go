@@ -12,7 +12,7 @@ const ProfileKey = "orca.terminal-profile"
 const ProfileVersion = 3
 const NativeRemoteProfileVersion = 4
 const StateKey = "orca.terminal-state"
-const StateVersion = 6
+const StateVersion = 7
 const ServiceStopBehavior = b.ContinueExecutionOnServiceStop
 
 // Environment is routing only; local and paired execution have the same ports.
