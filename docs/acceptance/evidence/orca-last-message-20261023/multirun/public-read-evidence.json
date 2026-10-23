@@ -1,0 +1,74 @@
+{
+  "source_journal": "C:\\srt\\bbc3990ab2a0\\evidence\\caller-commands.jsonl",
+  "source_journal_sha256": "7c66d92759c5856e448cb4bb073121661b5d6513a0906ab4504cb750b3d7c801",
+  "null_read_count": 86,
+  "samples": [
+    {
+      "run_id": "5dfd231961d10dababe5f59b43fbd50a",
+      "attempt_id": "f890b30eab0979eef7b7c8d451ac0c76",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_ab3df375-9872-4193-84ed-04b50852b70f:4be416c1-feda-4a63-9297-f76f31a0636c",
+      "turn_id": "20411d9d18f5717fae7d868ca2114e26",
+      "kind": "assistant",
+      "observed_at": "2026-10-23T05:19:49.8078998Z",
+      "text_sha256": "b7b6ff93ff44679728e882b71cf6adbfa62b7dd1afe01d6e931d615b40616d87",
+      "text_utf8_bytes": 309,
+      "startup_ready": false,
+      "first_read_at": "2026-10-23T05:19:57.8255341Z",
+      "preceding_inspect": {
+        "status": "running",
+        "phase": "prepare_session",
+        "step": "publish.execute",
+        "revision": 17,
+        "turn_id": "20411d9d18f5717fae7d868ca2114e26",
+        "inspect_at": "2026-10-23T05:19:57.7930975Z"
+      },
+      "repeat_reads": 48,
+      "last_read_at": "2026-10-23T05:20:47.0704614Z"
+    },
+    {
+      "run_id": "5dfd231961d10dababe5f59b43fbd50a",
+      "attempt_id": "f890b30eab0979eef7b7c8d451ac0c76",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_ab3df375-9872-4193-84ed-04b50852b70f:4be416c1-feda-4a63-9297-f76f31a0636c",
+      "turn_id": "6afe44daa614ea767d3e631321347920",
+      "kind": "assistant",
+      "observed_at": "2026-10-23T05:20:39.7392058Z",
+      "text_sha256": "fdd70a8359cf4b8f78fa5fc5929e855936d0ec26c8b06ea22fb41d01f16da041",
+      "text_utf8_bytes": 169,
+      "startup_ready": false,
+      "first_read_at": "2026-10-23T05:20:49.1834912Z",
+      "preceding_inspect": {
+        "status": "reconciling",
+        "phase": "pr_verification",
+        "step": "publish.verify",
+        "revision": 23,
+        "turn_id": "6afe44daa614ea767d3e631321347920",
+        "inspect_at": "2026-10-23T05:20:49.1322446Z"
+      },
+      "repeat_reads": 7,
+      "last_read_at": "2026-10-23T05:20:55.9148303Z"
+    },
+    {
+      "run_id": "4590563a1600576b5b1c25191bb8a47c",
+      "attempt_id": "53a60189674967af6e1bc6fc6662c6db",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_af0cccf7-5ffb-4224-8ce2-02489bbebe6c:4d526098-e187-4021-997e-5db47aabfd2a",
+      "turn_id": "f1092d900deaa780d4218bb77726df0f",
+      "kind": "assistant",
+      "observed_at": "2026-10-23T05:20:44.8204453Z",
+      "text_sha256": "b3a6c820e3e05000c9e61567ce671e7e2b4764a9c8acc50e5b42ef8df7a98ea0",
+      "text_utf8_bytes": 126,
+      "startup_ready": false,
+      "first_read_at": "2026-10-23T05:20:56.0065675Z",
+      "preceding_inspect": {
+        "status": "pr_ready",
+        "phase": "pr_ready",
+        "step": "pr_ready",
+        "revision": 25,
+        "turn_id": "f1092d900deaa780d4218bb77726df0f",
+        "inspect_at": "2026-10-23T05:20:55.9676792Z"
+      },
+      "repeat_reads": 5,
+      "last_read_at": "2026-10-23T05:21:00.2703775Z"
+    }
+  ],
+  "scope": "Observed CLI responses and preceding inspect snapshots; these do not identify whether a response used direct observation or final supplementation, nor prove native working-time field publication."
+}

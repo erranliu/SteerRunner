@@ -2,6 +2,7 @@ package orcatransport
 
 import (
 	"context"
+	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -25,8 +26,13 @@ func (f *fakeHost) stateFactory(_ context.Context, _ string, _ b.ProcessIdentity
 	s := fixtureState(f.nativeSends*2, "", "done")
 	return &hostStateFeed{host: f, initial: s}, nil
 }
-func (f *hostStateFeed) Initial() native.AgentState { return f.initial }
-func (f *hostStateFeed) Drain() ([]native.AgentState, error) {
+func fixtureSample(s native.AgentState, kind native.SampleKind) native.StateSample {
+	return native.StateSample{AgentState: s, ReceivedAt: time.UnixMilli(s.UpdatedAt).UTC(), Kind: kind}
+}
+func (f *hostStateFeed) Initial() native.StateSample {
+	return fixtureSample(f.initial, native.SampleInitial)
+}
+func (f *hostStateFeed) Drain() ([]native.StateSample, error) {
 	f.host.mu.Lock()
 	defer f.host.mu.Unlock()
 	h := f.host
@@ -43,14 +49,18 @@ func (f *hostStateFeed) Drain() ([]native.AgentState, error) {
 		states = append(states, s)
 		f.hinted = true
 	}
-	return states, nil
+	samples := make([]native.StateSample, len(states))
+	for i, s := range states {
+		samples[i] = fixtureSample(s, native.SampleNotification)
+	}
+	return samples, nil
 }
-func (f *hostStateFeed) Query(context.Context) (native.AgentState, error) {
+func (f *hostStateFeed) Query(context.Context) (native.StateSample, error) {
 	f.host.mu.Lock()
 	defer f.host.mu.Unlock()
 	h := f.host
 	if h.nativeSends == 0 {
-		return fixtureState(0, "", "done"), nil
+		return fixtureSample(fixtureState(0, "", "done"), native.SampleQuery), nil
 	}
 	state := "working"
 	seq := h.nativeSends*2 - 1
@@ -63,6 +73,6 @@ func (f *hostStateFeed) Query(context.Context) (native.AgentState, error) {
 		s.MainAgent.Outcome = "success"
 		s.LastAssistantMessage = h.nativeReply
 	}
-	return s, nil
+	return fixtureSample(s, native.SampleQuery), nil
 }
 func (*hostStateFeed) Close() {}

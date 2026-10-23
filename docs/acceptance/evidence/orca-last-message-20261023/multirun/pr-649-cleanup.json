@@ -1,0 +1,10 @@
+{
+  "number": 649,
+  "url": "https://github.com/erranliu/SteerlineTest/pull/649",
+  "state": "closed",
+  "merged": false,
+  "base": "codex/srtest/bbc3990ab2a0/base",
+  "head": "09d0c4fae67bc53de74ff37b5505db2d2d17d177",
+  "cleanup": "Closed owned test PR after completed multirun isolation qualification; no merge.",
+  "checked_at": "2026-10-23T05:29:00.370230+00:00"
+}

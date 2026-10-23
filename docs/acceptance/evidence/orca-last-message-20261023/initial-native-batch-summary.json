@@ -1,0 +1,326 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+  "source_dirty": true,
+  "started_at": "2026-10-23T04:28:02.1339579Z",
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "test_count": 598,
+      "terminal_extension_test_count": 29,
+      "native_driver_compile_exit": 0,
+      "exit_code": 0,
+      "level": "L1",
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\framework",
+      "terminal_extensions_passed": true,
+      "native_zero_match_guard": true,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "terminal_extension_exit": 0
+    },
+    {
+      "level": "Controlled",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\controlled",
+      "scenario_count": 22,
+      "exit_code": 0
+    },
+    {
+      "finished_at": "2026-10-23T05:08:50.4068685Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\orca-remote.smoke-default-r1-fixture.json",
+      "repeat_index": 1,
+      "case_id": "default",
+      "level": "L3",
+      "error": "Live scenario failed; inspect C:\\srt\\0588bad84334\\evidence/native.log",
+      "manifest": "C:\\srt\\0588bad84334\\manifest.json",
+      "scenario": "orca-remote.smoke",
+      "evidence": "C:\\srt\\0588bad84334\\evidence",
+      "started_at": "2026-10-23T05:04:07.2252908Z",
+      "status": "failed"
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\b2b0990dc19e\\manifest.json",
+      "identity": {
+        "pid": 29876,
+        "manifest_sha256": "2f62093d3cb3d0c33a6291a7cc7ee73309ddfe6417bc76af854571e5449ea9b3",
+        "driver_sha256": "92ed4f0f0e7cbba5b32bddeab71583eb90012527333a4d4588922dd7d4c583c3",
+        "runner_sha256": "61c8b89110dab644d03b5ae74a77304cf98fca0859709d92ca9afbb7d9b38de4",
+        "source_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.connection-reconnect",
+        "level": "L3",
+        "helper_sha256": "3525f1abe884a74efdb881862ef881d587d14f06921faac8ad972785cfb2d78c",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "active-disconnect",
+        "repeat_index": 1
+      },
+      "repeat_index": 1,
+      "expected_outcome": "merged",
+      "scenario": "orca-remote.connection-reconnect",
+      "resources": [
+        "root:C:\\srt\\b2b0990dc19e",
+        "base:codex/srtest/b2b0990dc19e/base",
+        "run:3150b1eb58d30a1c8e375c2e8d945d76",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-3150b1eb58d30a1c8e375c2e8d945d76",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_7ca2b2ff-ce90-4053-bdc8-4da2802ba717:0da96ab3-d574-4876-a489-2c2c1eeb3570",
+        "branch:erranliu/sr-3150b1eb58d30a1c8e375c2e8d945d76",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/646"
+      ],
+      "status": "passed",
+      "finished_at": "2026-10-23T05:17:40.4646569Z",
+      "started_at": "2026-10-23T05:04:07.2253032Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\orca-remote.connection-reconnect-active-disconnect-r1-fixture.json",
+      "case_id": "active-disconnect",
+      "evidence": "C:\\srt\\b2b0990dc19e\\evidence"
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\d3e7db32713f\\manifest.json",
+      "identity": {
+        "pid": 52912,
+        "manifest_sha256": "636947b93cb096b674678a794ec97888646e50dd5edf6962205ed8b25e448051",
+        "driver_sha256": "92ed4f0f0e7cbba5b32bddeab71583eb90012527333a4d4588922dd7d4c583c3",
+        "runner_sha256": "61c8b89110dab644d03b5ae74a77304cf98fca0859709d92ca9afbb7d9b38de4",
+        "source_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.connection-reconnect",
+        "level": "L3",
+        "helper_sha256": "3525f1abe884a74efdb881862ef881d587d14f06921faac8ad972785cfb2d78c",
+        "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+        "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+        "case_id": "pre-send-disconnect",
+        "repeat_index": 1
+      },
+      "repeat_index": 1,
+      "expected_outcome": "merged",
+      "scenario": "orca-remote.connection-reconnect",
+      "resources": [
+        "root:C:\\srt\\d3e7db32713f",
+        "base:codex/srtest/d3e7db32713f/base",
+        "run:1a8a121df8d5c602d97019ffddb60806",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-1a8a121df8d5c602d97019ffddb60806",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_480ed7f5-bc2f-445d-9f3f-5fb9a43f3a38:6a6ad054-dcd9-4b90-af90-146ceadcda6d",
+        "branch:erranliu/sr-1a8a121df8d5c602d97019ffddb60806",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/647"
+      ],
+      "status": "passed",
+      "finished_at": "2026-10-23T05:18:20.9084764Z",
+      "started_at": "2026-10-23T05:08:52.810402Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\orca-remote.connection-reconnect-pre-send-disconnect-r1-fixture.json",
+      "case_id": "pre-send-disconnect",
+      "evidence": "C:\\srt\\d3e7db32713f\\evidence"
+    },
+    {
+      "level": "L3",
+      "manifest": "C:\\srt\\bbc3990ab2a0\\manifest.json",
+      "identity": {
+        "pid": 53176,
+        "manifest_sha256": "77d0d8a9561b5e19c8e6bd1ae315f962ba936f912d96eb34e305319bcec33dec",
+        "driver_sha256": "92ed4f0f0e7cbba5b32bddeab71583eb90012527333a4d4588922dd7d4c583c3",
+        "runner_sha256": "61c8b89110dab644d03b5ae74a77304cf98fca0859709d92ca9afbb7d9b38de4",
+        "source_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "orca-remote.multirun",
+        "level": "L3"
+      },
+      "repeat_index": 1,
+      "expected_outcome": "pr_ready",
+      "scenario": "orca-remote.multirun",
+      "resources": [
+        "root:C:\\srt\\bbc3990ab2a0",
+        "base:codex/srtest/bbc3990ab2a0/base",
+        "run:5dfd231961d10dababe5f59b43fbd50a",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-5dfd231961d10dababe5f59b43fbd50a",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_ab3df375-9872-4193-84ed-04b50852b70f:4be416c1-feda-4a63-9297-f76f31a0636c",
+        "branch:erranliu/sr-5dfd231961d10dababe5f59b43fbd50a",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/648",
+        "run:4590563a1600576b5b1c25191bb8a47c",
+        "workspace:C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4590563a1600576b5b1c25191bb8a47c",
+        "session:orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_af0cccf7-5ffb-4224-8ce2-02489bbebe6c:4d526098-e187-4021-997e-5db47aabfd2a",
+        "branch:erranliu/sr-4590563a1600576b5b1c25191bb8a47c",
+        "pr:https://github.com/erranliu/SteerlineTest/pull/649"
+      ],
+      "status": "passed",
+      "finished_at": "2026-10-23T05:21:35.379008Z",
+      "started_at": "2026-10-23T05:17:41.437572Z",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2-public\\orca-remote.multirun-default-r1-fixture.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\bbc3990ab2a0\\evidence"
+    }
+  ],
+  "executed_case_count": 4,
+  "passed_case_count": 3,
+  "first_pass_rate": 0.75,
+  "max_parallel": 2,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": [
+      {
+        "path": "/configurations/local-codex",
+        "code": "missing_configuration",
+        "message": "The mandatory local Codex baseline is not configured correctly."
+      }
+    ]
+  },
+  "availability": [
+    {
+      "scenario_id": "orca-remote.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "pre-send-disconnect",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\b474\\SteerRunner\\.evidence\\orca-last-message-20261023\\final2\\steerrunner.exe",
+  "runner_sha256": "61c8b89110dab644d03b5ae74a77304cf98fca0859709d92ca9afbb7d9b38de4",
+  "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+  "source_config_digest": "e6641b5c97ea8f4877072c54cdc6e05eeee564c83d2f3f722461ce4ecc6a5c73",
+  "requirements_sha256": "6c8101fb0e54f63a4f0425f869726d8e7051236bbc3082826229b63c10735d18",
+  "helper_sha256": "f94aa343915c8cf2a44159cc4e7110075a8ff136fb70b9327487e9831e791be8",
+  "configuration_sha256": "e6641b5c97ea8f4877072c54cdc6e05eeee564c83d2f3f722461ce4ecc6a5c73",
+  "selected_scenarios": [
+    "orca-remote.smoke",
+    "orca-remote.connection-reconnect",
+    "orca-remote.multirun"
+  ],
+  "repeat": 1,
+  "planned_case_count": 4,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "unavailable_case_count": 0,
+  "levels": {
+    "L3": {
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-active-full-access",
+        "orca-remote.service-restart/kill-active-full-access",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ],
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-active-full-access",
+        "orca-remote.service-restart/kill-active-full-access",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness"
+      ],
+      "excluded": [],
+      "unavailable": [],
+      "passed": [
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.multirun/default"
+      ],
+      "executed": [
+        "orca-remote.smoke/default",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.multirun/default"
+      ],
+      "complete_level_passed": false,
+      "requested": [
+        "orca-remote.smoke/default",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.multirun/default"
+      ]
+    }
+  },
+  "finished_at": "2026-10-23T05:21:35.6657960Z"
+}

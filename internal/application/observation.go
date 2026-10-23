@@ -175,12 +175,8 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 	if reliable.ValidateResultBinding(next.Snapshot, original.Snapshot) != nil {
 		return false
 	}
-	hadObservationGap := next.Phase == "observation_unverified"
 	if merge(next, receipt) != nil {
 		return false
-	}
-	if hadObservationGap && (next.Phase == "observing" || next.Phase == "input_accepted_waiting_start") {
-		next.Phase = "observation_unverified"
 	}
 	e.applyObservationDiagnostic(next, receipt.Diagnostic)
 	if reflect.DeepEqual(next, e.runs[id]) {
@@ -188,6 +184,8 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 	}
 	return e.commitLocked(next, nil, "observation_attached") == nil
 }
+
+const observationUnverified = "observation_unverified"
 
 func (e *Engine) applyObservationDiagnostic(r *runstate.Record, diagnostic string) {
 	if r.Status != "running" {

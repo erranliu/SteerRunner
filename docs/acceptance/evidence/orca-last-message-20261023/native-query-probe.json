@@ -1,0 +1,275 @@
+{
+  "baselines": [
+    {
+      "pane": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "provider": "01a166fe-cd92-7371-8dcd-43b43d68f386",
+      "base_root_at": 1792729346533,
+      "last_signal": "2026-10-23T04:22:34.066533Z",
+      "last_query": "2026-10-23T04:22:34.066533Z",
+      "hint": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865:done:1792729346533"
+    },
+    {
+      "pane": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "provider": "01a166fe-cd92-7371-8dcd-43b43d68f386",
+      "base_root_at": 1792729364874,
+      "last_signal": "2026-10-23T04:23:20.381761Z",
+      "last_query": "2026-10-23T04:23:20.381761Z",
+      "hint": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865:done:1792729364875"
+    }
+  ],
+  "cleaned_up": true,
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "inputs": 2,
+  "proofs": [
+    {
+      "pane": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "provider": "01a166fe-cd92-7371-8dcd-43b43d68f386",
+      "base_root_at": 1792729346533,
+      "ended_at": 1792729364874,
+      "outcome": "unreported",
+      "reply_digest": "88ae10d38f45d5cff4dfae06bed84b2eca45f4eea1051b3d75b4232bdc4d0ba0",
+      "last_signal": "2026-10-23T04:23:10.6630773Z",
+      "last_query": "2026-10-23T04:23:10.5058606Z",
+      "hint": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865:done:1792729346533"
+    },
+    {
+      "pane": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "provider": "01a166fe-cd92-7371-8dcd-43b43d68f386",
+      "base_root_at": 1792729364874,
+      "ended_at": 1792729410047,
+      "outcome": "unreported",
+      "reply_digest": "88ae10d38f45d5cff4dfae06bed84b2eca45f4eea1051b3d75b4232bdc4d0ba0",
+      "last_signal": "2026-10-23T04:23:59.4101632Z",
+      "last_query": "2026-10-23T04:23:59.2553946Z",
+      "hint": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865:done:1792729364875"
+    }
+  ],
+  "public_messages": [
+    {
+      "AttemptID": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "Generation": "cbee1cdf-8f48-4cab-a3b4-ad02c2a9bac3",
+      "SessionID": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_8b85f8cd-89fb-4089-9306-1633f5ece836:cbee1cdf-8f48-4cab-a3b4-ad02c2a9bac3",
+      "TurnID": "cccccccccccccccccccccccccccccccc",
+      "Kind": "assistant",
+      "Text": "{\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}",
+      "ObservedAt": "2026-10-23T04:23:10.6630773Z"
+    }
+  ],
+  "queries": [
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729364875,
+      "stateStartedAt": 1792729364875,
+      "turnStartedAt": 1792729362266,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729364874
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      },
+      "lastAssistantMessage": "{\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}"
+    },
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729410047,
+      "stateStartedAt": 1792729410047,
+      "turnStartedAt": 0,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729410047
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      },
+      "lastAssistantMessage": "{\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}"
+    }
+  ],
+  "query_only": true,
+  "receipts": [
+    {
+      "send": {
+        "handle": "term_8b85f8cd-89fb-4089-9306-1633f5ece836",
+        "accepted": true,
+        "bytesWritten": 131,
+        "prompt": {
+          "requestId": "95f54ab9-7f37-8355-f2e8-2198b1238514",
+          "stages": [
+            "input_accepted",
+            "turn_started"
+          ],
+          "provider": "codex",
+          "observation": "supported",
+          "processIncarnation": "cbee1cdf-8f48-4cab-a3b4-ad02c2a9bac3",
+          "generation": 8526,
+          "baselineWorkingSequence": 1,
+          "baselineExplicitWorkingStartedAt": null,
+          "baselinePermissionSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "95f54ab9-7f37-8355-f2e8-2198b1238514",
+        "replayed": false
+      }
+    },
+    {
+      "send": {
+        "handle": "term_8b85f8cd-89fb-4089-9306-1633f5ece836",
+        "accepted": true,
+        "bytesWritten": 131,
+        "prompt": {
+          "requestId": "4a1134c8-780b-adc8-c199-1309841ca41c",
+          "stages": [
+            "input_accepted",
+            "turn_started"
+          ],
+          "provider": "codex",
+          "observation": "supported",
+          "processIncarnation": "cbee1cdf-8f48-4cab-a3b4-ad02c2a9bac3",
+          "generation": 8526,
+          "baselineWorkingSequence": 1,
+          "baselineExplicitWorkingStartedAt": null,
+          "baselinePermissionSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "4a1134c8-780b-adc8-c199-1309841ca41c",
+        "replayed": false
+      }
+    }
+  ],
+  "results": 2,
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "samples": [
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "",
+      "updatedAt": 1792729349704,
+      "stateStartedAt": 1792729349704,
+      "turnStartedAt": 0,
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      }
+    },
+    {
+      "state": "working",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729362266,
+      "stateStartedAt": 1792729362266,
+      "turnStartedAt": 1792729362266,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729362266
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11947,
+        "observedAt": 1792729362266,
+        "boundary": true
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      }
+    },
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729364875,
+      "stateStartedAt": 1792729364875,
+      "turnStartedAt": 1792729362266,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729364874
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11948,
+        "observedAt": 1792729364875
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      },
+      "lastAssistantMessage": "{\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}"
+    },
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729364875,
+      "stateStartedAt": 1792729364875,
+      "turnStartedAt": 1792729362266,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729364874
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11948,
+        "observedAt": 1792729364875
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      },
+      "lastAssistantMessage": "{\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}"
+    },
+    {
+      "state": "working",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "Reply with the JSON object {\"outcome\":\"done\",\"summary\":\"ordinary completion probe\"}. Do not use tools or change files.",
+      "updatedAt": 1792729407325,
+      "stateStartedAt": 1792729407325,
+      "turnStartedAt": 1792729407325,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729407325
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11949,
+        "observedAt": 1792729407325,
+        "boundary": true
+      },
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      }
+    },
+    {
+      "state": "done",
+      "paneKey": "66d14766-4684-4626-98cd-5f82e7490f3a:944a7cda-c358-43ec-b2b5-2e55ff693865",
+      "agentType": "codex",
+      "prompt": "",
+      "updatedAt": 1792729410048,
+      "stateStartedAt": 1792729349704,
+      "turnStartedAt": 0,
+      "providerSession": {
+        "id": "01a166fe-cd92-7371-8dcd-43b43d68f386"
+      }
+    }
+  ]
+}

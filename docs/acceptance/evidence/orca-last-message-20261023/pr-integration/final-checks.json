@@ -1,0 +1,10 @@
+{
+  "checked_at": "2026-10-23T06:32:11.398010+00:00",
+  "missing_modified_document_links": [],
+  "credential_pattern_hits": [],
+  "original_evidence_files_checked": 87,
+  "original_evidence_hash_mismatches": [],
+  "git_diff_check_exit_code": 0,
+  "runtime_code_unchanged_from_b008f4d": true,
+  "production_deployed": false
+}

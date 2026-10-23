@@ -13,7 +13,7 @@ import (
 
 type disconnectedStateFeed struct{ *controlledStateFeed }
 
-func (f *disconnectedStateFeed) Drain() ([]native.AgentState, error) {
+func (f *disconnectedStateFeed) Drain() ([]native.StateSample, error) {
 	return nil, errors.New("notification connection closed")
 }
 
@@ -45,13 +45,13 @@ func TestOrcaCompletionQueryRecoveryClosesFailedRead(t *testing.T) {
 	l.closeStateFeed()
 	feed.closes = 0
 	now = now.Add(30 * time.Second)
-	l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.AgentState, error) {
+	l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
 		// Identity changes between opening the restored feed and the final CLI
 		// check. No observer is returned to own and release that new feed.
 		host.incarnation = "replacement"
 		end := fixtureState(12, input.Prompt, "done")
 		end.LastAssistantMessage = "complete reply"
-		return end, nil
+		return native.StateSample{AgentState: end, ReceivedAt: time.Now().UTC(), Kind: native.SampleQuery}, nil
 	}
 	_, observer, err := l.ObserveLifecycle(context.Background(), s)
 	if err == nil || observer != nil || feed.closes != 1 || l.feed != nil {
@@ -142,20 +142,22 @@ func TestOrcaCompletionQuery(t *testing.T) {
 				l.stateFactory = func(context.Context, string, b.ProcessIdentity) (native.StateFeed, error) {
 					return nil, errors.New("subscription unavailable")
 				}
-				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.AgentState, error) {
+				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
 					feed.queries++
-					return feed.current, nil
+					return fixtureSample(feed.current, native.SampleQuery), nil
 				}
 			case "identity-conflict":
-				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.AgentState, error) {
-					return native.AgentState{}, native.ErrStateIdentityChanged
+				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
+					return native.StateSample{}, native.ErrStateIdentityChanged
 				}
 			case "open-identity-conflict":
 				l.closeStateFeed()
 				l.stateFactory = func(context.Context, string, b.ProcessIdentity) (native.StateFeed, error) {
 					return nil, native.ErrStateIdentityChanged
 				}
-				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.AgentState, error) { return end, nil }
+				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
+					return native.StateSample{AgentState: end, ReceivedAt: time.Now().UTC(), Kind: native.SampleQuery}, nil
+				}
 			case "other-input", "other-input-then-waiting":
 				start := fixtureState(11, input.Prompt, "working")
 				other := fixtureState(12, "unrelated", "working")
@@ -231,7 +233,9 @@ func TestOrcaCompletionQuery(t *testing.T) {
 				}
 				l = port.(*Lifecycle)
 				l.clock = func() time.Time { return now }
-				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.AgentState, error) { return end, nil }
+				l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
+					return native.StateSample{AgentState: end, ReceivedAt: time.Now().UTC(), Kind: native.SampleQuery}, nil
+				}
 				now = now.Add(30 * time.Second)
 				if poll().TurnEvidence != nil {
 					t.Fatal("retry erased original identity conflict")

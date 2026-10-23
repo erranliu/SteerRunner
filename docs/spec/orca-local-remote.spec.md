@@ -8,7 +8,7 @@
 
 ## 1. 目标与范围
 
-调查基线的公开契约和 CLI 已区分 Orca `local / orca_environment`，但 2026-10-23 观察恢复修订适用于本机查询与远端订阅：字段暂缺保持可重试，不记成永久输入冲突；已匹配原 prompt 的受信开始可保留输入绑定，后续 prompt 显示字段缺失不抹除它，未采到开始时仍要求当前 prompt 匹配；完整 final、当前身份及明确输入反证的要求保持。当前 state v7、v6 解码边界及公开诊断规则以[远端原生 Spec §4](orca-remote-native.spec.md#4-原输入完成与成果)为准。
+调查基线的公开契约和 CLI 已区分 Orca `local / orca_environment`，2026-10-23 观察恢复修订将字段暂缺保持为可重试，不记成永久输入冲突。本机查询沿主线规则保留已匹配原 prompt 的受信开始绑定；远端空预览结束须进一步满足[最后消息专项 Spec](orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)的连续观察及同一保留回合标记。未采到开始时仍要求当前 prompt 匹配；完整 final、当前身份及明确输入反证的要求保持。当前 state v7、v6 解码边界及公开诊断规则以[远端原生 Spec §4](orca-remote-native.spec.md#4-原输入完成与成果)为准。
 
 `SubscribeState / QueryState / QueryWorktreeAgents / UploadWorkspaceArtifact` 都要求 pair，生命周期又把配对查询当成本机 CLI 前置。本次补齐 Windows/amd64 本机原生 IPC；连接按同一目标选择 IPC 或现有远程配对通路，观察策略按实际原生能力选择查询或订阅加补查。
 

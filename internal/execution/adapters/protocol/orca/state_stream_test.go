@@ -15,11 +15,12 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"golang.org/x/crypto/nacl/box"
 )
 
 func TestOrcaNativeStateStream(t *testing.T) {
-	for _, scenario := range []string{"subscription-query", "wrong-runtime", "wrong-request", "cancelled"} {
+	for _, scenario := range []string{"subscription-query", "sample-feed", "wrong-runtime", "wrong-request", "cancelled"} {
 		t.Run(scenario, func(t *testing.T) {
 			pub, private, err := box.GenerateKey(rand.Reader)
 			if err != nil {
@@ -91,8 +92,17 @@ func TestOrcaNativeStateStream(t *testing.T) {
 						}
 						result = map[string]any{"type": "snapshot", "worktree": "worktree", "tabs": []any{}}
 					}
+					if scenario == "sample-feed" && request.Method == "session.tabs.subscribe" {
+						result = map[string]any{"type": "snapshot", "worktree": "worktree", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": "leaf", "agentStatus": map[string]any{"state": "working", "lastAssistantMessage": "old"}}}}
+					}
 					if socket.write(ctx, map[string]any{"id": id, "ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtime}}) != nil {
 						return
+					}
+					if scenario == "sample-feed" && request.Method == "session.tabs.subscribe" {
+						update := map[string]any{"type": "updated", "worktree": "worktree", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": "leaf", "agentStatus": map[string]any{"state": "working", "lastAssistantMessage": "public"}}}}
+						if socket.write(ctx, map[string]any{"id": id, "ok": true, "result": update, "_meta": map[string]string{"runtimeId": runtime}}) != nil {
+							return
+						}
 					}
 				}
 			}))
@@ -105,6 +115,36 @@ func TestOrcaNativeStateStream(t *testing.T) {
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancel()
+			if scenario == "sample-feed" {
+				feed, err := OpenStateFeed(ctx, "test-remote", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"})
+				if err != nil {
+					t.Fatal(err)
+				}
+				defer feed.Close()
+				f := feed.(*nativeStateFeed)
+				for {
+					f.mu.Lock()
+					ready := len(f.updates) == 2
+					f.mu.Unlock()
+					if ready {
+						break
+					}
+					select {
+					case <-ctx.Done():
+						t.Fatal("notification not buffered")
+					case <-time.After(time.Millisecond):
+					}
+				}
+				consumedAt := time.Now().UTC()
+				samples, err := feed.Drain()
+				if err != nil || len(samples) != 2 || samples[0].Kind != SampleInitial || samples[1].Kind != SampleNotification || samples[1].LastAssistantMessage != "public" || samples[1].ReceivedAt.IsZero() || !samples[1].ReceivedAt.Before(consumedAt) || !samples[0].ReceivedAt.Equal(feed.Initial().ReceivedAt) {
+					t.Fatal("receive metadata was lost or stamped at drain", samples, err)
+				}
+				if samples, err = feed.Drain(); err != nil || len(samples) != 0 {
+					t.Fatal(samples, err)
+				}
+				return
+			}
 			sub, _, err := SubscribeState(ctx, "test-remote", "runtime", "id:worktree")
 			if sub != nil {
 				defer sub.Close()

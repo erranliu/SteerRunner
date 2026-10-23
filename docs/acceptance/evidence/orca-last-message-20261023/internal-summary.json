@@ -1,0 +1,74 @@
+{
+  "command": "go test ./internal/... -count=1 -timeout=45m -json",
+  "exit_code": 0,
+  "packages_passed": 28,
+  "tests_and_subtests_passed": 2052,
+  "failed": [],
+  "skipped_tests": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/process",
+      "test": "TestProcessHostCommandHelper"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestAuthenticationNativeToolBoundary"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "test": "TestOrcaLocalPipeNativeEvidence"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/host",
+      "test": "TestOrcaStoppedNativeProbe"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "test": "TestOrcaLocalIPCNativeProbe"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "test": "TestUsageLocalAcceptanceRepoCleanupLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/usage/collect",
+      "test": "TestUsageExistingNativeEvidence"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/usage/collect",
+      "test": "TestUsageRemoteCodexCleanupLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/usage/collect",
+      "test": "TestUsageRemoteCodexLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/cli",
+      "test": "TestRunUsageLocalCodexPublicLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/cli",
+      "test": "TestRunUsageLocalPiPublicLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/cli",
+      "test": "TestRunUsageLocalDSHPublicLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/cli",
+      "test": "TestRunUsageRemotePublicLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+      "test": "TestOrcaNativeStateLiveLifecycle"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+      "test": "TestOrcaWorkspaceStartupLive"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "test": "TestServiceStopWorkerHelper"
+    }
+  ],
+  "qualification": "Earlier complete internal regression; final adapter audit fixes additionally covered by final-restart-audit.log and the final formal batch."
+}

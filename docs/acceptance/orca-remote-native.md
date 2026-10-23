@@ -198,3 +198,17 @@ Orca runtime f8616747-34af-4543-8487-ec6b5d8de4ff、appVersion 1.4.223，本轮�
 活动停止沿用审计前 29D4 构建的 active 123.06s 真实通过记录，本次停止实现未改；819D 构建另通过完整闭环停止和 Controlled unknown/stop。原生参数仍仅按配置传递，未新增实际生效核验；不声明 sandbox 真机闭环或全进程树/凭据撤销保证。
 
 最终归档 `docs/acceptance/evidence/orca-remote-native-final-audit-20261019/`，保存首次超时/完成重跑、Controlled、消费者、真实调用及 provider/离线证明、两仓源码和逐文件索引。准备阶段只保存命令及原文件 SHA，避免收入无关工作区清单；提交前敏感信息扫描无命中。消费者分支从 origin/main d12779733a21cfe4397baf1d51e73881a1ba15ee 建立；其原本机 main 的额外合并历史文件树与远端相同，未带入无关提交。未部署产品或远端 helper，未改原故障记录和安装环境。
+
+
+## 最后消息与原生归属增量（2026-10-23，未部署生产）
+
+本次增量的实现、自审及共享契约结果统一登记在[执行可见性验收](execution-observability.md#orca-最后消息实施与自审2026-10-23)，原始证据唯一归档到 [orca-last-message-20261023](evidence/orca-last-message-20261023/)；不新增同义账本。仍只扩展远端原生 Codex，未新增远端 helper、完整环境 Check、远端 Pi/DSH 或参数实际生效保证。原生产 Run 的泛化冲突、unknown/outcome 和冻结输入均未重写。
+
+主线整合前的真机冻结构建为 0.2.0-dev.3-r2，SHA256 `61C8B89110DAB644D03B5AE74A77304CF98FCA0859709D92CA9AFBB7D9B38DE4`。原生定向通知及 query-only 各两个真实回合通过，均为独立 SteerlineTest fixture，工作区和测试终端已清理；本次实际结束 prompt 保留。真实空 prompt 和 working 期间字段发布仍不具备现场资格，不能用模拟或结算后的消息替代。正式 L1 与22项 Controlled 已通过；四个远端 case 最新现场均通过，详见同一可见性记录的最终结果。首次 smoke 的停止 unknown 失败保留，经原身份收尾后在新 fixture 串行复验通过；首批 batch 仍记录 failed，未覆盖。
+
+
+最终资格现场：smoke `08cb8fae5e48` 200.81s / PR #650；活动断线 `b2b0990dc19e` 548.42s / #646；发送前断线 `d3e7db32713f` 451.98s / #647；multirun `bbc3990ab2a0` 197.17s / #648、#649。四项均使用上述冻结 EXE；双通道故障真实命中、原服务与输入授权保持、无原输入重发，并确认原资源/服务及网络设施收尾。multirun 的两个 PR 在隔离验证后关闭，其它 PR 仅合入对应测试 base。首次失败 #645 的资源已另行原身份对账并离线结算，不计首次通过。
+
+[资格索引](evidence/orca-last-message-20261023/qualification.json)、原始结果和 provider 最终状态只保存于该唯一归档。用户启动的管理员代理已正常结束；测试 state-dir/业务工作区保留复核，生产安装、原业务记录与共享登录未操作。实际空 prompt 及原生 working 期间字段发布的现场缺口保持明确，不把受控或匹配 prompt 的成功冒充这些资格。
+
+后续 [PR #50](https://github.com/erranliu/SteerRunner/pull/50) 已整合主线 #49，复用 state v7 与唯一 v6 解码边界；远端空预览继续保持专项 Spec 的连续观察要求，本机沿主线输入绑定行为。整合构建 `3C1F9531…2AA338` 的 L1 609 项顶层 / 2111 项含子测试、29 项扩展及 Controlled 22/22 通过；其身份和完整结果见[整合资格索引](evidence/orca-last-message-20261023/pr-integration/qualification.json)。该构建未重跑远端真机资格，上述 `61C8B891…B38DE4` 结果仍属于原冻结构建；未部署生产。

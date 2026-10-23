@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-10-23T06:31:39.883417+00:00",
+  "code_commit": "b008f4d990bfc279356335a2e0d2e75538f26a83",
+  "integrated_main": "1cfe2f9",
+  "runtime_code_unchanged_since_freeze": true,
+  "go_flags": "-p=2",
+  "l1_top_level_passed": 609,
+  "l1_tests_and_subtests_passed": 2111,
+  "l1_package_passes": 33,
+  "l1_failures": 0,
+  "terminal_extension_tests_passed": 29,
+  "controlled_scenarios_passed": 22,
+  "vet_exit_code": 0,
+  "build": {
+    "version": "0.2.0-dev.3-r2",
+    "source_commit": "b008f4d990bfc279356335a2e0d2e75538f26a83",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "3C1F95319EA4C8029540789FFD974A1F59123BD66645E391F9CF7433752AA338"
+  },
+  "initial_l1_result": "failed: 608 top-level passes and one process-child startup-marker timeout; see initial-l1.json and initial-summary.json",
+  "process_package_retry": "passed; process-retry.log",
+  "earlier_ad_hoc_timeout": "early-timeout.json; superseded by formal full application pass",
+  "preintegration_evidence": "../qualification.json; applies to the earlier frozen native-tested binary only",
+  "preintegration_source_snapshot": "e5aeddc218cb3702b679f38a223acac118069b29; 36 source hashes matched",
+  "source_dirty_note": "L1 started clean; later binary build had only documentation/evidence additions; runtime code trees unchanged",
+  "native_cases_rerun_after_integration": false,
+  "limits": [
+    "Real native empty-prompt positive/negative and native working-time field publication remain untriggered; controlled boundaries passed."
+  ],
+  "production_deployed": false
+}

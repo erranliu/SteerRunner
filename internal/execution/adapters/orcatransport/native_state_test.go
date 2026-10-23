@@ -20,18 +20,24 @@ type controlledStateFeed struct {
 	err              error
 }
 
-func (f *controlledStateFeed) Initial() native.AgentState { return f.initial }
-func (f *controlledStateFeed) Drain() ([]native.AgentState, error) {
+func (f *controlledStateFeed) Initial() native.StateSample {
+	return native.StateSample{AgentState: f.initial, ReceivedAt: time.Unix(1, 0).UTC(), Kind: native.SampleInitial}
+}
+func (f *controlledStateFeed) Drain() ([]native.StateSample, error) {
 	events := f.events
 	f.events = nil
-	return events, nil
+	samples := make([]native.StateSample, len(events))
+	for i, event := range events {
+		samples[i] = native.StateSample{AgentState: event, ReceivedAt: time.UnixMilli(event.UpdatedAt).UTC(), Kind: native.SampleNotification}
+	}
+	return samples, nil
 }
-func (f *controlledStateFeed) Query(context.Context) (native.AgentState, error) {
+func (f *controlledStateFeed) Query(context.Context) (native.StateSample, error) {
 	f.queries++
 	if len(f.queryStates) > 0 {
 		f.current, f.queryStates = f.queryStates[0], f.queryStates[1:]
 	}
-	return f.current, f.err
+	return native.StateSample{AgentState: f.current, ReceivedAt: time.UnixMilli(f.current.UpdatedAt).UTC(), Kind: native.SampleQuery}, f.err
 }
 func (*controlledStateFeed) Close() {}
 
@@ -45,11 +51,11 @@ func TestOrcaNativeStateGate(t *testing.T) {
 	root := *start.MainAgent
 	root.StateStartedAt = base.MainAgent.StateStartedAt
 	staleRoot.MainAgent = &root
-	turn.Native.signal(staleRoot, &turn, now)
+	turn.Native.signal(staleRoot, &turn, now, false)
 	if turn.Native.WorkingAt != 0 {
 		t.Fatal("a new observation revision accepted the baseline root working clock")
 	}
-	turn.Native.signal(start, &turn, now)
+	turn.Native.signal(start, &turn, now, false)
 	if turn.Native.WorkingAt == 0 || turn.Native.EndedAt != 0 {
 		t.Fatal("long input was not bound to its native start")
 	}
@@ -60,30 +66,30 @@ func TestOrcaNativeStateGate(t *testing.T) {
 		t.Fatal("missing silence query")
 	}
 	turn.Native.LastQuery = now.Add(30 * time.Second)
-	if turn.Native.query(start, &turn, now.Add(30*time.Second)) || turn.Native.wantsQuery(now.Add(59*time.Second)) || !turn.Native.wantsQuery(now.Add(60*time.Second)) {
+	if turn.Native.query(start, &turn, now.Add(30*time.Second), false) || turn.Native.wantsQuery(now.Add(59*time.Second)) || !turn.Native.wantsQuery(now.Add(60*time.Second)) {
 		t.Fatal("working query completed or bounded retry was lost")
 	}
 	hint := fixtureState(12, turn.Prompt, "done")
 	hint.Observation = nil
 	hint.MainAgent = nil
-	turn.Native.signal(hint, &turn, now.Add(61*time.Second))
+	turn.Native.signal(hint, &turn, now.Add(61*time.Second), false)
 	if turn.Native.EndedAt != 0 || !turn.Native.wantsQuery(now.Add(61*time.Second)) {
 		t.Fatal("new title done did not trigger confirmation only")
 	}
 	turn.Native.HintPending = false
 	turn.Native.LastQuery = now.Add(61 * time.Second)
-	turn.Native.signal(hint, &turn, now.Add(62*time.Second))
+	turn.Native.signal(hint, &turn, now.Add(62*time.Second), false)
 	if turn.Native.wantsQuery(now.Add(62 * time.Second)) {
 		t.Fatal("duplicate hint repeated query")
 	}
 	old := base
-	if turn.Native.query(old, &turn, now.Add(62*time.Second)) {
+	if turn.Native.query(old, &turn, now.Add(62*time.Second), false) {
 		t.Fatal("old done completed the new turn")
 	}
 	end := fixtureState(12, turn.Prompt, "done")
 	end.Observation = nil
 	end.LastAssistantMessage = `{"summary":"本轮结果","url":"https://example.com/pull/1"}`
-	if !turn.Native.query(end, &turn, now.Add(63*time.Second)) || turn.Native.Outcome != "unreported" || turn.Native.ReplyDigest == "" {
+	if !turn.Native.query(end, &turn, now.Add(63*time.Second), false) || turn.Native.Outcome != "unreported" || turn.Native.ReplyDigest == "" {
 		t.Fatal("fresh native root end was not accepted independently of outcome")
 	}
 	if turn.Native.ReplyDigest != digest([]byte(end.LastAssistantMessage)) {
@@ -92,7 +98,7 @@ func TestOrcaNativeStateGate(t *testing.T) {
 	for _, kind := range []string{"waiting", "child", "cancelled", "other-provider", "other-pane"} {
 		t.Run(kind, func(t *testing.T) {
 			p := nativeBaseline(base, now)
-			p.signal(start, &turn, now)
+			p.signal(start, &turn, now, false)
 			s := end
 			root := *end.MainAgent
 			s.MainAgent = &root
@@ -108,16 +114,16 @@ func TestOrcaNativeStateGate(t *testing.T) {
 			case "other-pane":
 				s.PaneKey = "other"
 			}
-			if p.query(s, &turn, now.Add(time.Minute)) || p.EndedAt != 0 {
+			if p.query(s, &turn, now.Add(time.Minute), false) || p.EndedAt != 0 {
 				t.Fatal("unverified main-agent end accepted")
 			}
 		})
 	}
 	cut := nativeBaseline(base, now)
-	cut.signal(start, &turn, now)
+	cut.signal(start, &turn, now, false)
 	cutEnd := end
 	cutEnd.LastAssistantMessage = strings.Repeat("x", 8000)
-	if !cut.query(cutEnd, &turn, now.Add(time.Minute)) || cut.ReplyDigest != "" {
+	if !cut.query(cutEnd, &turn, now.Add(time.Minute), false) || cut.ReplyDigest != "" {
 		t.Fatal("clipped native message treated as complete")
 	}
 }
@@ -410,7 +416,7 @@ func TestOrcaNativeHistoricalUnknownRemainsUnknown(t *testing.T) {
 	turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
 	end := fixtureState(12, turn.Prompt, "done")
 	end.LastAssistantMessage = "original complete final"
-	if !turn.Native.query(end, &turn, now) || turn.Native.Outcome != "unreported" {
+	if !turn.Native.query(end, &turn, now, false) || turn.Native.Outcome != "unreported" {
 		t.Fatal("new absent outcome was not distinguished", turn.Native)
 	}
 	// This is the persisted shape written by the previous implementation.
@@ -423,7 +429,7 @@ func TestOrcaNativeHistoricalUnknownRemainsUnknown(t *testing.T) {
 	if err = json.Unmarshal(raw, &restored); err != nil {
 		t.Fatal(err)
 	}
-	if !restored.Native.query(end, &restored, now.Add(time.Minute)) || restored.Native.Outcome != "unknown" || restored.Native.ReplyBody != end.LastAssistantMessage {
+	if !restored.Native.query(end, &restored, now.Add(time.Minute), false) || restored.Native.Outcome != "unknown" || restored.Native.ReplyBody != end.LastAssistantMessage {
 		t.Fatal("historical outcome was reclassified", restored.Native)
 	}
 }

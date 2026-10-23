@@ -1,0 +1,186 @@
+{
+  "base_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+  "dirty": true,
+  "files": [
+    {
+      "path": "docs/README.md",
+      "sha256": "4db4bb2eb6330868ac5bafb8716b229ad7fef21a8c6539d5ca342bae8cdd9d53",
+      "bytes": 5255
+    },
+    {
+      "path": "docs/acceptance/execution-observability.md",
+      "sha256": "5921164ca2f57adc5e7944b948427cff09826108d5f6fa3237e13032cab84d98",
+      "bytes": 11333
+    },
+    {
+      "path": "docs/acceptance/orca-remote-native.md",
+      "sha256": "126698a5c6be61dac285d0f643ed192a10498470d9ad09f19d7986e22b73acaf",
+      "bytes": 33981
+    },
+    {
+      "path": "docs/spec/execution-observability.plan.md",
+      "sha256": "ea6f9bd7c5899dd903012371f8f65558566c3e67b069726a6a5260d6d7d3e9f9",
+      "bytes": 3293
+    },
+    {
+      "path": "docs/spec/orca-last-message.plan.md",
+      "sha256": "b5f55c9c37fc3321ceb83da84cd52dc332f3645e5a7ba347eef329589e949f34",
+      "bytes": 20625
+    },
+    {
+      "path": "docs/spec/orca-last-message.spec.md",
+      "sha256": "df48a2ebb24581b341119c21edcddca234a41715f8281735e66aca96912f4e09",
+      "bytes": 19548
+    },
+    {
+      "path": "docs/spec/orca-remote-native.spec.md",
+      "sha256": "1cce775df53a56ecd495018702a9c707e1544b1b7ca2ab7c80c14a44d650ace0",
+      "bytes": 22229
+    },
+    {
+      "path": "docs/spec/steerrunner.spec.md",
+      "sha256": "263a9ca057f6e457e95b1ad359e617e78a16b010dd89582c53d481bd4b5b44f2",
+      "bytes": 50430
+    },
+    {
+      "path": "docs/testing.md",
+      "sha256": "1f3c142fb6153e566e6ee7f1af045edc02891ad9d44dbd8331fb3bd3f1ce6088",
+      "bytes": 52563
+    },
+    {
+      "path": "internal/application/observation.go",
+      "sha256": "055f5a2cb845c54731c9a9919a818567c8bd9f34f60e5f97471732da5ba3923e",
+      "bytes": 9488
+    },
+    {
+      "path": "internal/application/observation_diagnostic_test.go",
+      "sha256": "87734022fa821f261d5d8daa7291457414b2a4b799f8db5a25107c54384d2334",
+      "bytes": 6766
+    },
+    {
+      "path": "internal/application/worker.go",
+      "sha256": "167ecc646ea05094af975c88b3fe810e1d358debf8885816fde9629a6f779191",
+      "bytes": 13256
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/agent_test.go",
+      "sha256": "59207f4a032d5ed91ecf48ef9ea00081b2ebe5cdb268952403ffec7e4f0c254e",
+      "bytes": 5449
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/completion_query_test.go",
+      "sha256": "b3cd8733fcdcf31de5891e4384ab208ff0525e5e5dd669ea94bd61e5cd82dc4c",
+      "bytes": 10308
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "sha256": "ecff2ee9afbccadf0da98c787f2226bc22cf2a98d92ac2aec9ece2d98f95e756",
+      "bytes": 53707
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle_test.go",
+      "sha256": "3fd6f2d5c5b3a0d0ab9bddf685b24d27e62d5f49d17141ac5e5e316c7cf637d1",
+      "bytes": 27307
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/local_codex_history.go",
+      "sha256": "4a4aa9e7d6dad031506c4214532241df5b71d19eb6a2ff8a286cd3f6678e2b7b",
+      "bytes": 7173
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_fixture_test.go",
+      "sha256": "6e4a2a9cbe6587938bf7758eb922345bd21dec95fcdd61e34ae7d42f44954c8c",
+      "bytes": 2643
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_live_test.go",
+      "sha256": "4fe410b610342831240db0c8fbe2d3e0d2ca6548c40cf82a75fb74f25be7ce35",
+      "bytes": 12460
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_observation.go",
+      "sha256": "be1dbc123c12b5d8d727c943ccb5af8d40bad40d123587e371bae1a4974468ae",
+      "bytes": 7219
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_state.go",
+      "sha256": "cf73d7513d14a24d350cafa5a596589c04ae1cf1b138065fd8c1d416020be5a7",
+      "bytes": 14177
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_state_test.go",
+      "sha256": "b1925378b4d521261ad10470ed0b96850964d0bd637bdd7177eab16eafc5407c",
+      "bytes": 16668
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer.go",
+      "sha256": "6898f694b510e3ef7b8451281d60ff73cf02a45026e4ea3d7ce0877d49075f85",
+      "bytes": 7802
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer_queue_test.go",
+      "sha256": "d3f6ad40d4e9af0586b398f8a9a2a03522325b906a19eb35d848419501dc16bd",
+      "bytes": 2447
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/public_message_test.go",
+      "sha256": "fe840a252572c8f8495c07b35deeac7e74dfb94f72f567a1fac6f7caf4564355",
+      "bytes": 13059
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/recovery_state_test.go",
+      "sha256": "4c1fcbe4bb44a18110f3f7d702ba7efb6326156b001f081bc85cb66d8cdb8eab",
+      "bytes": 4224
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_feed.go",
+      "sha256": "df30e83c0e4c0914b34c8106a5bc2a51be0d75a439b913636e7f6ddbe3f4614e",
+      "bytes": 9123
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_coverage_windows_test.go",
+      "sha256": "901ee183727a19cfd350caf7023f3cd771c3dfb86b04737e49f94edd7d48afde",
+      "bytes": 5063
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+      "sha256": "b3a785df4fbbeaaa6b8575d93897862621ba222b5ab40871536ead83fead70b6",
+      "bytes": 1470
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+      "sha256": "d463e0fc49945090ba5afe6d55dabe52e218df6538c27a469b473b118edd2c6c",
+      "bytes": 3699
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+      "sha256": "9d2a0d15eb829f1f100edbe6dd239fea83d670483d9420729ed5333e1911ba22",
+      "bytes": 6436
+    },
+    {
+      "path": "internal/execution/backend/lifecycle.go",
+      "sha256": "dbe02d0d26758db3a945a2fd20b5d3a6e6f99a7489ad584b3d44c6e0daf05496",
+      "bytes": 32850
+    },
+    {
+      "path": "scripts/test.ps1",
+      "sha256": "395cb6c699f55a8c1131f9f5e1c76dcbf26fc5220df9a3c9630350ab7cecc3c4",
+      "bytes": 18528
+    },
+    {
+      "path": "tests/native/multirun_test.go",
+      "sha256": "ed6ebf54a65152a7c0be964325580cdaa945f4d1a5987203c6758477a0a110fd",
+      "bytes": 11192
+    },
+    {
+      "path": "tests/native/run_test.go",
+      "sha256": "90982e9f71bb8bb023d230265f0df31e5476d811d6c1b9f525427003582e11ff",
+      "bytes": 33608
+    },
+    {
+      "path": "tests/native/stability_test.go",
+      "sha256": "992aeae74af0d1b3648f7625f97696020d6d8f28369e388f4bf3d5fa25921421",
+      "bytes": 49321
+    }
+  ]
+}
