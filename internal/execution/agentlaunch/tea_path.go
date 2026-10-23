@@ -2,6 +2,19 @@ package agentlaunch
 
 import "strings"
 
+// UnwrapTeaPathLaunch recognizes only this compiler's exact fixed wrapper.
+// Callers must still validate the inner command's grammar and the full launch
+// digest. A readiness prompt appearing in arbitrary PowerShell proves nothing.
+func UnwrapTeaPathLaunch(command string) (string, bool) {
+	const marker = "\x00steerrunner-native-command\x00"
+	prefix, suffix, _ := strings.Cut(teaPathLaunch(marker), marker)
+	if !strings.HasPrefix(command, prefix) || !strings.HasSuffix(command, suffix) || len(command) < len(prefix)+len(suffix) {
+		return "", false
+	}
+	inner := command[len(prefix) : len(command)-len(suffix)]
+	return inner, teaPathLaunch(inner) == command
+}
+
 // Some Windows package managers expose the same tea binary through both Links
 // and its package directory. PowerShell can return both for Get-Command tea;
 // repository publication wrappers expecting a scalar then cannot start it.

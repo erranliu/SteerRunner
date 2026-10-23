@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/usage/parsers"
 	"strings"
@@ -138,5 +139,37 @@ func TestUsageScopedReadinessUsesItsOwnWireDigest(t *testing.T) {
 		if got := usageInitialization(state, proof); got != nil {
 			t.Fatal("arbitrary command qualified as initialization", got)
 		}
+	}
+}
+
+func TestUsageTeaWrappedCodexInitialization(t *testing.T) {
+	start := time.Date(2026, 10, 24, 0, 0, 0, 0, time.UTC)
+	c := &agentlaunch.Config{Executable: "C:/native/codex.exe", Model: "chosen", AccessMode: "full_access", RepositoryURL: "http://gitea/owner/repo.git"}
+	launch, err := c.Command("codex")
+	if err != nil {
+		t.Fatal(err)
+	}
+	proof := UsageInitialization{LaunchCommand: launch, CreatedAt: start}
+	state := State{LaunchAccepted: true, LaunchConfirmed: true, LaunchDigest: digest([]byte(launch)), Turns: []Turn{{Accepted: true, Native: NativeProof{BaseRootAt: start.Add(time.Minute).UnixMilli()}}}}
+	got := usageInitialization(state, proof)
+	if got == nil || got.WireSHA256 != parsers.TextHash(codex.NativeReadinessPrompt) || got.Phase != "initialization" {
+		t.Fatal("Runner's own publication PATH wrapper lost initialization usage", got)
+	}
+	for _, bad := range []string{
+		launch + "; Write-Output 'other'",
+		"Write-Output 'other'; " + launch,
+		strings.Replace(launch, "$env:PATH=$srTeaEntries -join ';'", "$env:PATH='other'", 1),
+		strings.Replace(launch, "& 'C:/native/codex.exe'", "Write-Output 'not an agent'; & 'C:/native/codex.exe'", 1),
+		strings.Replace(launch, codex.NativeReadinessPrompt, usageReadyPrompt+" other", 1),
+	} {
+		p, s := proof, state
+		p.LaunchCommand, s.LaunchDigest = bad, digest([]byte(bad))
+		if usageInitialization(s, p) != nil {
+			t.Fatal("modified or arbitrary wrapper attributed")
+		}
+	}
+	state.LaunchDigest = "different"
+	if usageInitialization(state, proof) != nil {
+		t.Fatal("unverified full wrapper digest attributed")
 	}
 }
