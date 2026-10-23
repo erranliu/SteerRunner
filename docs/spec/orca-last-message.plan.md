@@ -154,3 +154,7 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 
 
 实施收尾：改动、审计修复及实际门槛统一见[执行可见性验收](../acceptance/execution-observability.md)，远端资格引用[原生验收](../acceptance/orca-remote-native.md)。正式 L1/Controlled 通过；T5 四 case 的最新资格通过，首次 smoke 停止未确认及串行重验均保留。P5 未新增旁路账本、持久字段、来源服务或生产开关；已确认的实现问题均修复并验证。T4 未触发的真实空 prompt 与原生 working 字段发布不记为通过，不列为隐藏实现 TODO。
+
+2026-10-23 SessionStart 增量：仅修改 Runner，复用原 bounded query，调用已有 `nativeChat.readSession` 补证输入归属。实现位于 protocol/orca 的分页/原身份后置核验和 orcatransport 的统一归属判定；不新增最终结果来源或状态格式。测试覆盖压缩后 working/adapter 重建/最终收尾、运行中缓存的边界失效、再次发送同文、完整正文匹配、历史冲突、分页完整性/游标/期限及读取途中资源变化。生产 Run 只读快照在独立评估中验证，不替换 EXE、不重启服务、不提交原 Run 状态或新输入。新增实际结果单列在验收文档，不继承以前的完整 Controlled/远端发布资格。
+
+提交前质量审计先新增失败用例，复现两路记录混用、分页校验短路、缓存的旧样本/换 feed 行为及确定冲突被补查失败吞掉；随后修复并复验。原生元数据必须属于同一完整 main 记录，游标在任何成功返回前检查；缓存水位和 feed 所有权独立处理；补证前后沿原新鲜度及冲突分类准入，不清除历史冲突。最终回归和精确源码摘要见同一验收新增审计小节。

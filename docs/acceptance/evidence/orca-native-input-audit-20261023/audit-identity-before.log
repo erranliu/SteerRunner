@@ -1,0 +1,5 @@
+--- FAIL: TestOrcaNativeInputIdentityErrorRemainsDurable (0.01s)
+    native_input_test.go:199: input query identity conflict was not persisted Native original input query is unverified: Orca native state identity changed: original pane changed
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.748s
+FAIL

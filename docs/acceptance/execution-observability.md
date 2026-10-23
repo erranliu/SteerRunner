@@ -92,3 +92,37 @@
 正式 L1 使用 `GOFLAGS=-p=2`、`./scripts/test.ps1 -Level L1 -OutDir .evidence/orca-empty-prompt-reconnect-l1`：**33 包、614 项顶层 / 2171 项含子测试通过，0 失败**；16 项既定 opt-in skip 不计入通过。29 项终端扩展、native driver 编译及零匹配守卫通过，正式报告整体 passed。[报告](evidence/orca-last-message-20261023/reconnect-empty-prompt/summary.json)、[逐项汇总](evidence/orca-last-message-20261023/reconnect-empty-prompt/validation.json)、[原始 Go 事件压缩归档](evidence/orca-last-message-20261023/reconnect-empty-prompt/l1.jsonl.gz)和[源码/构建摘要](evidence/orca-last-message-20261023/reconnect-empty-prompt/source-index.json)保存于同一新增子目录。修复版 Windows/amd64 EXE 已构建并通过静态 `version --json` 检查，SHA256 为 `7C519C461F1EED43BAABFE67460245F6F93EFB6A3FB27CEA9C114DBC89DE3F19`。本轮是受控协议/adapter 和共享回归，不创建远端模型任务、PR 或新的真机资格；安装版和现场原 Run 未部署/恢复。
 
 PR 前同步主线 `7634ee1`：保留主线手写 README，恢复说明随主线结构放入 CLI 指南，测试清单保留两项增量。六个运行/测试源码哈希仍与上述正式 L1 受测源码一致。重放两受影响包全包（56.061 / 9.713 秒）、application 观察诊断与 runview 导出定向检查（5.846 / 0.926 秒）、host 编译及对应 go vet 均通过；未将无匹配 host 用例计为测试通过。新主线检查单独登记在 [PR 同步证据](evidence/orca-last-message-20261023/reconnect-empty-prompt/pr-rebase-7634ee1/result.json)，不改写原 L1 构建记录。压缩、Hook 失败、回合标记变化与 READY 的完整因果调查及新增远端真机验证尚未完成，不属于本 PR 已完成资格；未部署生产。
+
+## SessionStart 清空输入预览的 Runner 修复（2026-10-23）
+
+调查用户指定 Run `65f8102fe2825ca1f49b1b3a8026313b` / Attempt `7f1136f6c0e42ae7dbf0dab771877f56`。原主 agent 仍为 working，持续修改 DragonDice；北京时间 18:26:07 起 Runner 因缺预览进入 observation_unverified。安装版 Orca 1.4.224 的相关实现与公开仓库 `stablyai/orca` 的 `d9dc87b2fb08ba52930378941ff470b69d23523d` 对照：Codex SessionStart 清空 cached prompt，输入边界分类同时含 SessionStart/UserPromptSubmit；主 agent 同为 working 时其状态起点不变，显示 turnStartedAt 却会重置。旧 Runner 把该显示标记当作只随业务输入变化的标记，故原修复的“相同标记”路径不足。没有修改 Orca 源码或安装文件。
+
+只读原始状态证明：持久 RootWorkingAt/WorkingAt 为 `1792750467839`，BaseRootAt 为 `1792750428584`；原 provider、authority/incarnation 和 working 根仍相同，显示标记先为 `1792751898223`，后为 `1792752708891`，prompt 为空。现有 nativeChat.readSession 接口向前分页后，baseline 之后恰好只有一条真实用户输入；其 ID 为 `01a16841-3cef-7532-b9ae-8b4f6e934073`，时间为 `1792750468345`，完整正文与原冻结输入匹配。由此不能将显示标记重置解读为另一条真实用户输入；压缩触发的 SessionStart 与该机制相容，未把未保留的历史 hook 原报文冒充已取证事实。
+
+Runner 增量仅在原查询预算内调用已有只读 RPC 补输入归属：核验 baseline 后唯一完整用户输入（新的同文输入也拒绝），再核验原资源/主记录/显示标记和 hook authority。working 缓存只在原 working 根、相同显示标记和可信通知下有效，边界、缺口或重附着使其失效；读取途中更晚的来源 revision 优先，不能用较早补证掩盖新输入。输入证明只在内存中流转且不接受 wire JSON 注入；不增加数据库字段、codec、远端文件部署、模型输入、发布调用或最终结果来源。原完成/outcome/正文完整性门槛保持。
+
+现场 probe 用 SQLite `mode=ro` 复制原 Turn 到忽略的隔离证据目录，读取原公开会话并只在内存中执行新 NativeProof.query。2026-10-23 19:00 附近的实际结果为 `state=working / input_rows_after_baseline=1 / full_input_match=true`，诊断从原 missing preview 解除为为空。没有把该结果写回原数据库、重发任务或推进原 workflow；该验证也不代表原任务已完成。临时 probe 测试已删除，生产接口未增加现场参数。最小日志保留于 `.evidence/orca-active-state-binding/live-read-only.log`，原输入与 locator 不提交入仓。
+
+新增六项确定性回归覆盖 working/adapter 重建/final、完整输入/唯一性、再次发送同文、缓存边界、分页完整性/游标/预算以及读取中身份/输入变化。两受影响包全包初验通过（orcatransport 46.759 秒，protocol/orca 7.311 秒）；最终源码全包复验通过（47.184 / 7.805 秒），对应 go vet 通过。完整 L1 使用 `GOFLAGS=-p=2`，624 项顶层 / 2235 项含子测试通过，0 失败；16 项既定 opt-in skip 不计通过，29 项终端扩展、native driver 编译和零匹配守卫通过，正式 summary 为 passed。L1 已含前五项新增入口；执行期间自审再补“较晚通知不能被先前查询覆盖”的第六项测试与来源水位守卫，随后对最终源码执行上述两包全包及静态复验。该增量未重复整套共享 L1，不移记为旧运行的冻结构建资格；也不继承以前的完整 Controlled/远端 PR 资格。
+
+最终候选为 Windows/amd64 `0.2.0-dev.3-r2`，source `ca1a8a36bbaacaa83f4a14817766cf4f04a0f07f-dirty`，SHA256 `B6DA4193AA5893DF18768C832A549EBBB5F4CE7BE996B539A417A044D1977BE2`；静态 version 查询通过，resource digest / state codec 保持。最终七个运行/测试源文件摘要、正式 L1 报告和最终两包日志位于 `.evidence/orca-active-state-binding/source-index.json`、`l1/summary.json`、`final-packages.log`。19:13 的原服务只读复核仍为同一 PID/启动时间，原 Run 为 running / observation_unverified，符合尚未部署的事实。
+
+生产保护：原 Runner PID `45284` 自北京时间 17:48:46 起保持；安装 EXE SHA256 为 `D6688642410E9E30FF5672896CFD9992BA81E5F348C6E5F29F160973DDB87474`。本轮候选只构建到当前 worktree 的 `.evidence/orca-active-state-binding/steerrunner.exe`，未替换安装 EXE、重启服务或改写原 Run。部署需在运行任务可安全换代时由后续操作执行；不把“代码已修复”表述为“生产现场已恢复”。
+
+### 提交前质量审计
+
+用户随后授权审计修复、创建 PR、直接合入主线及通知既有 L4 聊天。本轮为主会话自审，没有委派审计 agent；没有修改 Orca 或部署生产。上面的候选摘要属于审计前阶段，提交源码以本节的精确文件摘要为准。
+
+| 复现的问题 | 修复及约束 |
+| --- | --- |
+| 独立主记录与 session 元数据不同，冲突 marker 清为零后仍携带元数据观察证明 | 只有 agent、完整 main（含 outcome）和标记相符才附带元数据证明；补证读前后均要求该证明，观察时间不早于主记录起点 |
+| 找到输入/baseline 后提前返回，跳过游标检查 | 在检查正文前验证每页游标；负值、非前进游标即使携带匹配输入也拒收 |
+| 过期通知撤销较新的有效缓存 | 旧于持久 proof 或输入查询水位的通知直接丢弃，不获得证明，也不撤销当前绑定 |
+| 更换 feed 时沿用上一个 feed 的输入绑定 | 更换 feed 立即清除输入缓存，原已选公开消息的确认协议保持 |
+| 新补查的身份错误/读前后确定冲突被一般读取失败吞掉 | 补证前后沿用原新鲜度与身份/归属/outcome 冲突规则；后置读取返回其实际新事实，已确认冲突持久保存，过期记录仍不能制造冲突 |
+
+修复前先运行新增用例：首轮 9 个子例实际失败（两项分页、五项异源主记录、两项缓存），随后独立身份错误子例失败；原始失败日志完整保留，未改写为通过。修复后定向回归通过。新增 `TestOrcaNativeInputCannotCombineDifferentMainRecords`、`TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples`、`TestOrcaNativeInputIdentityErrorRemainsDurable` 并扩展现有反例，覆盖补证前的 failure、读取后失败/边界、新鲜度与错误分类。
+
+重新执行正式 L1：**627 项顶层 / 2253 项含子测试通过，0 失败**；16 项既定 opt-in skip 不计通过。29 项终端扩展、native driver 编译与零匹配守卫通过，正式报告 passed。L1 已包含八项原输入测试；执行期间最后补全确定冲突/观察时钟守卫、第九项用例及读前后 authority 围栏，随后最终源码两受影响包全量复验通过（protocol/orca 5.950 秒，orcatransport 44.164 秒），对应 go vet 通过。该最终增量未再次重复整个 application 长回归，不将前次测试二进制移记为最终冻结构建。
+
+最小可审计材料归档于 [验证索引](evidence/orca-native-input-audit-20261023/validation.json)、[最终运行/测试源码摘要](evidence/orca-native-input-audit-20261023/audit-source-index.json)、[修复前失败](evidence/orca-native-input-audit-20261023/audit-before.log)、[身份冲突修复前失败](evidence/orca-native-input-audit-20261023/audit-identity-before.log)、[最终两包日志](evidence/orca-native-input-audit-20261023/audit-final-packages3.log) 和 [正式 L1 原始事件压缩归档](evidence/orca-native-input-audit-20261023/l1.jsonl.gz)。这些受控检查不新增模型输入或真实业务 PR；原 Run 的只读证明仍属于前节现场范围，后续独立 L4 交付资格由对应聊天继续执行。

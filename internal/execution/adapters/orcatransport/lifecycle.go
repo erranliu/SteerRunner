@@ -66,6 +66,7 @@ type Lifecycle struct {
 	client            native.Client
 	stateFactory      native.StateFeedFactory
 	queryNative       func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
+	queryInput        func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
 	feed              native.StateFeed
 	feedProcess       b.ProcessIdentity
 	feedMu            sync.Mutex
@@ -84,6 +85,11 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 		l := port.(*Lifecycle)
 		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
 			return native.QueryOriginalSample(ctx, l.profile.Environment, process, pane)
+		}
+		if l.profile.Environment != "" {
+			l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
+				return native.QueryOriginalInput(ctx, l.profile.Environment, process, pane, baseline, before)
+			}
 		}
 	}
 	return port, err

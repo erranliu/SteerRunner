@@ -27,8 +27,9 @@ type StateObservation struct {
 	Boundary    bool   `json:"boundary,omitempty"`
 }
 
-// AgentState carries only public original-pane facts, never private transcript
-// paths, credentials, other agents' history or business outcomes.
+// AgentState carries public original-pane facts. The provider's own transcript
+// locator is used only with Orca's existing read-only RPC; Runner never opens a
+// remote private file. Derived input proof cannot be supplied over the wire.
 type AgentState struct {
 	State           string            `json:"state"`
 	PaneKey         string            `json:"paneKey"`
@@ -40,13 +41,16 @@ type AgentState struct {
 	MainAgent       *MainAgentState   `json:"mainAgent,omitempty"`
 	Observation     *StateObservation `json:"observation,omitempty"`
 	ProviderSession struct {
-		ID string `json:"id"`
+		ID             string `json:"id"`
+		TranscriptPath string `json:"transcriptPath,omitempty"`
 	} `json:"providerSession"`
-	LastAssistantMessage string `json:"lastAssistantMessage,omitempty"`
-	Interrupted          bool   `json:"interrupted,omitempty"`
-	SessionBoundary      bool   `json:"sessionBoundary,omitempty"`
-	RestoredUnconfirmed  bool   `json:"restoredUnconfirmed,omitempty"`
-	ToolOutput           bool   `json:"lastAssistantMessageIsToolOutput,omitempty"`
+	NativeInput          *NativeInput      `json:"-"`
+	MetadataObservation  *StateObservation `json:"-"`
+	LastAssistantMessage string            `json:"lastAssistantMessage,omitempty"`
+	Interrupted          bool              `json:"interrupted,omitempty"`
+	SessionBoundary      bool              `json:"sessionBoundary,omitempty"`
+	RestoredUnconfirmed  bool              `json:"restoredUnconfirmed,omitempty"`
+	ToolOutput           bool              `json:"lastAssistantMessageIsToolOutput,omitempty"`
 }
 
 var ErrStateIdentityChanged = errors.New("Orca native state identity changed")
@@ -264,6 +268,11 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 	if current.MainAgent != nil && s.MainAgent != nil && current.MainAgent.State == s.MainAgent.State && current.MainAgent.StateStartedAt == s.MainAgent.StateStartedAt &&
 		(queryStamp == 0 || queryStamp == current.TurnStartedAt) {
 		s.TurnStartedAt = current.TurnStartedAt
+		// A display marker cleared for disagreement must not be used as if
+		// two independently queried records corroborated the native input.
+		if current.AgentType == s.AgentType && *current.MainAgent == *s.MainAgent {
+			s.MetadataObservation = current.Observation
+		}
 	}
 	return s, nil
 }
