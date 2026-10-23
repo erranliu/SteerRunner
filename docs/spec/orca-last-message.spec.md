@@ -19,7 +19,7 @@
 交付目标有两个，分别验收：
 
 1. 原生远端 Orca Codex 执行中或结束后，已有公开 assistant 消息可经现有 `last-message` 展示；不依赖业务结算成功。
-2. 原生结束不再因为**连续可信观察链中仅结束快照缺 prompt**而永久拒绝；真正归属缺失或冲突继续保留未核实，且原因可见。
+2. 原生结束不再因为**连续可信观察链中仅结束快照缺 prompt**而永久拒绝；断线后也可通过 §5.2 的独立查询与原 working 起点标记核验恢复。真正归属缺失或冲突继续保留未核实，且原因可见。
 
 本期生产适用范围固定为 `orca-terminal / orca_environment / codex`，Windows/amd64。共享状态源的改造覆盖本机端口编译与行为回归；本机受管 Codex/Pi/DSH 和 codex-app-server 的已有结果、消息语义不扩展。远端 Pi/DSH gate 保持原样。
 
@@ -124,15 +124,26 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 连续性只是当前连接的观察覆盖事实，保存在瞬时上下文，不写成可跨重启复用的布尔证明。不能只凭已经持久的 `WorkingAt>0` 声称连续性，也不能把未报告缺口的任意快照推导成连续链。
 
+2026-10-23 断线恢复补正：以上连续通知路径之外，远端 Codex 的**独立原主 agent 查询**可以恢复空 prompt 结束归属，须同时满足：
+
+- 原 command 已 accepted、started，已持久保存 prompt 匹配的可信 working 起点；`Authority` 非空，`WorkingAt>0`，`RootWorkingAt>0` 且晚于 baseline。
+- 查询保留的正值 `turnStartedAt` **等于原 `RootWorkingAt`**，而非任意曾经出现的时间戳。原生输入 hook 在起点设置该标记，工具/结束沿用，新主输入重置；不从结束时间、标题或正文反推标记。
+- `worktree.ps` 的独立主记录与 `session.tabs.list` 元数据为同一 state/stateStartedAt，且 pane/provider 一致；只有交叉核验后的标记可以使用。元数据缺标记、记录不一致或两来源非零标记冲突时不保留任何标记。
+- 原 runtime、terminal/incarnation、worktree、pane、agent、provider 前后核验通过；查询若带 observation，须匹配原 authority/incarnation，revision 不早于已保存水位且晚于 baseline。
+- done 时间晚于原 working 起点与已保存观察起点，`updatedAt` 不早于 done；原冲突、中断、恢复未确认、session boundary、工具输出、outcome 和完整正文门槛继续适用。
+
+该路径只由既有有界独立查询调用，不使 initial/重连首快照或通知获得连续性资格，不补造 start、不重发输入，也不增加持久字段或 codec 版本。观察器或服务重建后仍可使用原 proof；已有结束但正文暂缺时可按同一标记补收。缺少原可信 working 起点的 query-only 来源继续未核实。
+
 | 结束来源 | prompt | 行为 |
 | --- | --- | --- |
 | 上述连续可信链 | 为空 | 可使用该链已有输入关联，再检查原 final 门槛 |
+| 独立查询与原持久 working 起点标记核验一致 | 为空 | 可恢复原结束归属，再检查原 final 门槛；不恢复通知连续性 |
 | 既有有效结束来源 | 非空且匹配 | 保持原完成资格；不要求新增连续性前置 |
 | 任意来源 | 非空且不匹配 | 明确冲突，不被下一份空/匹配 prompt 清除 |
-| 查询、重连、重启或漏 start | 为空且无连续链 | 暂缺归属证据；继续有界原来源读取，保持未核实 |
+| 查询、重连、重启或漏 start | 为空且既无连续链也无原起点标记核验 | 暂缺归属证据；继续有界原来源读取，保持未核实 |
 | 任意来源 | session/输入/身份边界冲突 | 保留冲突、拒绝完成及错误归属的消息 |
 
-如果原生公开字段不足以支持某条正向承诺，必须登记现场缺口；不得增加 TUI/日志回退或降低归属门槛。本期不修改 Orca，也不承诺 query-only 空 prompt 的自动完成；需要上游稳定原生 input/turn ID 的扩展属于另一个经过明确设计的任务，不作为本期暗藏依赖。
+如果原生公开字段不足以支持某条正向承诺，必须登记现场缺口；不得增加 TUI/日志回退。本期不修改 Orca，也不承诺无原可信 working 起点或无同源保留标记的 query-only 空 prompt 自动完成。
 
 ### 5.3 历史记录、结果与恢复
 
@@ -163,7 +174,7 @@ application 沿原事件分支核验原 Session/Turn/event，并原子合并诊�
 | OLM-03 | 多 Run、Attempt、Session、Generation、Turn 及子 agent、旧 provider/pane/终端替换隔离，旧轮残留不冒充新轮 |
 | OLM-04 | 脱敏、非法 UTF-8、多字节截断和内存上限满足原契约；无消息表、额外查询器、日志正文读取或模型输入 |
 | OLM-05 | 消息与 started/completed/Implementation/诊断分开发送，事实不丢失；首轮同步读、observer 取消、队列压力和 stop 不死锁 |
-| OLM-06 | 连续可信链空结束 prompt 可以完成；非空冲突、空 prompt query-only/重连/重启、缺口和另一输入均不错误完成；旧匹配 prompt 路径仍通过 |
+| OLM-06 | 连续可信链或独立查询核验原 working 起点标记的空结束 prompt 可以完成；断连/重建及延迟正文零重发恢复；无原 start、标记缺失/变化、非空冲突、另一输入及身份冲突不错误完成；旧匹配 prompt 路径仍通过 |
 | OLM-07 | 旧持久冲突与结果不被清除或重分类；已核实正文、原 outcome、业务获取、PR 和停止门槛保持 |
 | OLM-08 | 原观察诊断出现、变化、解除可见，重复不刷事件；其它诊断和人类问答不被覆盖，消息读取不推进 revision |
 | OLM-09 | 服务重启摘要为空，之后仅由正常合法观察产生新样本；无恢复缓存或伪连续链，恢复全过程零业务重发 |

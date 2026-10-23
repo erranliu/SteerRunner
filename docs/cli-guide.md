@@ -133,6 +133,8 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 已有 Run 保留原冻结输入、流程语义和资源身份；兼容构建接管不要求 EXE SHA 或资源总摘要相同。不支持的 workflow、codec 或退役认证按具体资格拒绝或只读隔离；不能用升级自动恢复已丢失的授权或进程所有权。
 
+远端 Orca Codex 断线后若结束快照的输入预览为空，Runner 可通过独立查询核验保留的 `turnStartedAt` 与原可信 working 起点一致，再沿原结果路径收尾，过程不重发输入。缺失/变化的回合标记或已有归属冲突继续显示未核实；原生 done 不代表业务任务完成。规则与验证见[原生结束归属](spec/orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)。
+
 ## 停服及回执
 
 服务退出只脱离原生执行；显式 `stop --run-id` 才撤销该 Run 授权并停止原树。独立 owner 的固定版本文件保存在 state-dir/runtimes，执行结算前不得清理。`resources_settled=false` 不能作为删除目录的证明；兼容接管资格由 `service verify-takeover` 单独报告。离线重开可用 `service start --input -` 提交裸 `pending_stops` 对象，在启动 worker 前受理原 stop 信封，具体结构由 `capabilities.service_start_schema` 公布。

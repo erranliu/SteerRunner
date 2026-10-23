@@ -259,7 +259,10 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 	s.ToolOutput = s.ToolOutput || current.ToolOutput
 	// This stamp is corroborating metadata only. Never combine it with a
 	// different main-agent record observed by the independent query.
-	if current.MainAgent != nil && s.MainAgent != nil && current.MainAgent.State == s.MainAgent.State && current.MainAgent.StateStartedAt == s.MainAgent.StateStartedAt {
+	queryStamp := s.TurnStartedAt
+	s.TurnStartedAt = 0
+	if current.MainAgent != nil && s.MainAgent != nil && current.MainAgent.State == s.MainAgent.State && current.MainAgent.StateStartedAt == s.MainAgent.StateStartedAt &&
+		(queryStamp == 0 || queryStamp == current.TurnStartedAt) {
 		s.TurnStartedAt = current.TurnStartedAt
 	}
 	return s, nil

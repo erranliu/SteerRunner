@@ -103,8 +103,9 @@ func (o *nativeObservation) linked(sample native.StateSample, p NativeProof) boo
 		s.Observation.Revision > p.Revision
 }
 
-// A query may fill a missing body for an already proved end. It cannot
-// establish an empty-prompt end or restore coverage lost on reconnect.
+// A query may fill a missing body under current observer coverage. A separate
+// retained-input check in NativeProof.query can recover after reconnect without
+// restoring this transient coverage or treating a snapshot as a notification.
 func (o *nativeObservation) supplements(sample native.StateSample, p NativeProof) bool {
 	s := sample.AgentState
 	return sample.Kind == native.SampleQuery && o.continuous && o.turnStartedAt > 0 && s.TurnStartedAt == o.turnStartedAt &&
