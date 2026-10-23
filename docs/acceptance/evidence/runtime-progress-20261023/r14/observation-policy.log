@@ -1,0 +1,10 @@
+=== RUN   TestProgressObservationRecoversRetainedSnapshot
+--- PASS: TestProgressObservationRecoversRetainedSnapshot (0.00s)
+=== RUN   TestProgressObservationRejectsPersistentOrLateRecovery
+--- PASS: TestProgressObservationRejectsPersistentOrLateRecovery (0.00s)
+=== RUN   TestProgressObservationRejectsChangedSnapshotDuringGap
+--- PASS: TestProgressObservationRejectsChangedSnapshotDuringGap (0.00s)
+=== RUN   TestProgressObservationRejectsBindingAndTerminalFailures
+--- PASS: TestProgressObservationRejectsBindingAndTerminalFailures (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/testkit/livetest	1.424s

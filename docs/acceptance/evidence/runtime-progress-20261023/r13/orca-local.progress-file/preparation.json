@@ -1,0 +1,10 @@
+{
+  "schema": "steerrunner-test-preparation/v1",
+  "root": "C:\\srt\\85a780471ac7",
+  "fixture_id": "85a780471ac7",
+  "orca_runtime_id": "28da9fea-ca77-48de-8319-decb62914563",
+  "base_branch": "codex/srtest/85a780471ac7/base",
+  "scenario": "orca-local.progress-file",
+  "status": "ready",
+  "orca_repository_path": "C:\\Projects\\SteerlineTest"
+}

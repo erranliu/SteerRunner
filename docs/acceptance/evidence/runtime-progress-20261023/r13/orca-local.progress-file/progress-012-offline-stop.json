@@ -1,0 +1,18 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "checks": [],
+    "resources_settled": true,
+    "runs": [
+      {
+        "input_digest": "de34fb981ba24a395fb750ad8c9b50dd8375333050909cd0a89014e4b949709f",
+        "resources_settled": true,
+        "run_id": "f964951ec33256566ae6a5f72688d9da"
+      }
+    ],
+    "state_dir": "c:\\srt\\85a780471ac7\\s"
+  },
+  "error": null
+}

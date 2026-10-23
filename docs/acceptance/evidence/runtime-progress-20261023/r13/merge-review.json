@@ -1,0 +1,34 @@
+{
+  "common_base": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "main_head": "9740bed6478809922a237b06988d483853250100",
+  "main_only_changed_files": 249,
+  "main_only_preserved": true,
+  "main_only_issues": [],
+  "shared_changed_files": [
+    ".gitattributes",
+    "README.md",
+    "docs/README.md",
+    "docs/acceptance/README.md",
+    "docs/test-catalog.md",
+    "docs/testing.md",
+    "internal/application/worker.go",
+    "internal/execution/adapters/orcatransport/lifecycle_test.go",
+    "internal/execution/adapters/orcatransport/native_live_test.go",
+    "internal/host/server.go",
+    "scripts/new-test-fixture.ps1",
+    "scripts/test.ps1",
+    "tests/framework/configuration-test.ps1",
+    "tests/native/run_test.go"
+  ],
+  "explicit_conflicts_resolved": [
+    ".gitattributes: union of all raw evidence byte rules",
+    "README.md: current main structure and wording plus runtime progress docs link",
+    "docs/testing.md: both progress and native message sections",
+    "scripts/test.ps1: same opt-in skip set, main formatting and progress explanation"
+  ],
+  "main_features": [
+    "Codex >= 0.159.2 minimum-version checks",
+    "Orca public last messages and empty-prompt/SessionStart observation recovery",
+    "thin client skills, viewer snapshots and standalone Windows viewer"
+  ]
+}

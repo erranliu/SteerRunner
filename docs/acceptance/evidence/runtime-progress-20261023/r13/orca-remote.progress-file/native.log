@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.progress-file
+    progress_test.go:308: waiting producer observation changed {steerrunner-progress-file/v1 49347b012f074fc399e6ad2841c353b6 2 2026-10-23 21:58:02.1876755 +0000 UTC base64 0x2ab747c472b0 166 7ea22472eaa9154e83592a64e8b2032a2880f72505dfe6de868d91bb1327315c unavailable transport_unavailable}
+--- FAIL: TestSRLiveScenario (248.66s)
+    --- FAIL: TestSRLiveScenario/orca-remote.progress-file (248.41s)
+FAIL

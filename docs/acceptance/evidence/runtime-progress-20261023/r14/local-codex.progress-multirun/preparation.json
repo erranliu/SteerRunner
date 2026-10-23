@@ -1,0 +1,8 @@
+{
+  "scenario": "local-codex.progress-multirun",
+  "root": "C:\\srt\\902bf618a9dc",
+  "fixture_id": "902bf618a9dc",
+  "schema": "steerrunner-test-preparation/v1",
+  "status": "ready",
+  "base_branch": "codex/srtest/902bf618a9dc/base"
+}
