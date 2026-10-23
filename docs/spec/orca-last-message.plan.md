@@ -158,3 +158,9 @@ T5 在 PowerShell 中沿现有入口选择：`& ./scripts/test.ps1 -Level L3 -Sc
 2026-10-23 SessionStart 增量：仅修改 Runner，复用原 bounded query，调用已有 `nativeChat.readSession` 补证输入归属。实现位于 protocol/orca 的分页/原身份后置核验和 orcatransport 的统一归属判定；不新增最终结果来源或状态格式。测试覆盖压缩后 working/adapter 重建/最终收尾、运行中缓存的边界失效、再次发送同文、完整正文匹配、历史冲突、分页完整性/游标/期限及读取途中资源变化。生产 Run 只读快照在独立评估中验证，不替换 EXE、不重启服务、不提交原 Run 状态或新输入。新增实际结果单列在验收文档，不继承以前的完整 Controlled/远端发布资格。
 
 提交前质量审计先新增失败用例，复现两路记录混用、分页校验短路、缓存的旧样本/换 feed 行为及确定冲突被补查失败吞掉；随后修复并复验。原生元数据必须属于同一完整 main 记录，游标在任何成功返回前检查；缓存水位和 feed 所有权独立处理；补证前后沿原新鲜度及冲突分类准入，不清除历史冲突。最终回归和精确源码摘要见同一验收新增审计小节。
+
+## 2026-10-24 既有远端薄投影兼容
+
+在 protocol/orca 为完全缺失 main/observation/turn 字段的旧版投影增加瞬时 query 输入证明；用公开 terminal.show 前后围栏和不变独立原生 done 记录代替缺失的 hook 元数据证明。NativeProof 仅在已有可信原 start、完整唯一原输入、相同结束记录时使用该证明；Lifecycle 再核验原进程及工作区。无需修改 Orca、codec 或持久字段。
+
+回归包含原终端替换、runtime/provider/path/工作区/分支变化、相同文本重复输入、assistant 历史、部分冲突投影、子 agent、正文变化与 JSON 伪造；完整 Lifecycle 验证 final/last-message 来自独立主记录且业务发送仍为一次。通过后独立构建 Runner，从同一业务基线开新运行；真实两轮 PR 门槛继续记录未完成。
