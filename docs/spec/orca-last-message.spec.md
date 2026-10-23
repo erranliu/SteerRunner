@@ -154,6 +154,15 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 不新增持久字段、codec 或生产开关，不修改 Orca。原可信 working 起点缺失、原输入无法完整核验、API 不可用的来源仍保持未核实，沿既有预算补查；不以宽松接受空 prompt 掩盖缺证。
 
+2026-10-24 旧版远端薄投影补正：部分 Orca 版本在原生结束后，`session.tabs.list` 同时丢失完整 mainAgent、observation 和 turnStartedAt，而独立 `worktree.ps` 仍保留原主 agent 的 done 与正文。Runner 可在上述唯一原输入核验中使用另一个瞬时证明路径：
+
+- 仅适用于已保留可信原 working 起点的 Codex、空预览、独立主记录 done。session 元数据必须是三项字段全部缺失的薄投影，agent/state 与独立记录一致。部分元数据、冲突字段、显式边界、恢复未确认、取消、工具正文仍拒绝。
+- 在读取唯一原用户输入前后，通过现有公开 `terminal.show` 核对原 runtime、terminal、incarnation、worktree、agent、连接状态和不变工作区/分支；Lifecycle 还在接受补证后再次核验原绑定工作区。RPC 回执 runtime 必须匹配原身份。
+- 读取后的独立主记录须与读前相同：pane、provider/path、main state/起点/outcome、updatedAt 和完整 assistant 正文均不变。用户输入必须满足既有有界分页、唯一条目、原全文及时间范围规则。assistant 历史条目不提供结束或正文。
+- 使用不可从 JSON 构造的瞬时 query 证明，绑定精确原进程、主记录及用户条目；不补造 hook authority/revision/turnStartedAt，不授权 working 或后续通知，不缓存给另一个结束记录。已有持久冲突、原生结果截断和 outcome 门槛继续生效。
+
+此兼容修复只修改 Runner，不修改、构建或部署 Orca。真实远端两轮交付验收仍待新运行证明，协议回归不计 PR 成功。
+
 ### 5.3 历史记录、结果与恢复
 
 整合已合入主线的 PR #49：复用其 `NativeProof.Conflict/Waiting`、state codec v7 及唯一 v6 解码兼容边界，本专项不另增持久字段或版本。profile v3/v4、state 数据库版本及请求摘要不变。历史泛化 provenance 诊断不能被证明仅由 prompt 缺失引起，必须保留；不清库、不清诊断、不重解释已保存 unknown/outcome，也不补造 start/end。

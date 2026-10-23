@@ -317,6 +317,12 @@ func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool 
 		return false
 	}
 	o := i.Observation
+	if i.MatchesOriginalQuery(s) {
+		// The legacy projection has no hook envelope. A separate terminal-
+		// fenced, unique-input query corroborates this exact canonical done
+		// record instead; it cannot authorize starts, streams, or another end.
+		return s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.RootWorkingAt && i.Timestamp <= s.MainAgent.StateStartedAt
+	}
 	if o == nil || o.Origin != "hook" || o.Kind != "transition" || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
 		return false
 	}
@@ -512,6 +518,17 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 				return "Native original input query is unverified: " + inputErr.Error()
 			}
 			sample.AgentState = s
+			if s.NativeInput.MatchesOriginalQuery(s) {
+				if !s.NativeInput.MatchesOriginalProcess(state.Process) {
+					turn.Native.reject("Native original input query belongs to another process")
+					observation.invalidate()
+					return turn.Native.diagnostic()
+				}
+				if _, err := l.original(ctx, snapshot); err != nil {
+					observation.invalidate()
+					return err.Error()
+				}
+			}
 			// The extra read can span more notifications. A later contradictory
 			// input/identity must win over the earlier query just as in the
 			// ordinary independent-query path.

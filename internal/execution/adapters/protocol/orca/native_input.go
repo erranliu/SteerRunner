@@ -18,6 +18,7 @@ type NativeInput struct {
 	Timestamp   int64
 	Baseline    int64
 	Observation *StateObservation
+	query       *originalInputQuery
 }
 
 // QueryNativeInput walks backwards to the frozen baseline and requires exactly
@@ -99,7 +100,7 @@ func QueryOriginalInput(ctx context.Context, environment string, process b.Proce
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
 	if before.MetadataObservation == nil {
-		return before, errors.New("Orca original main-agent metadata does not corroborate native input")
+		return queryThinOriginalInput(ctx, environment, process, pane, baseline, before)
 	}
 	input, err := QueryNativeInput(ctx, environment, process.RuntimeID, before.ProviderSession.ID, before.ProviderSession.TranscriptPath, baseline)
 	if err != nil {

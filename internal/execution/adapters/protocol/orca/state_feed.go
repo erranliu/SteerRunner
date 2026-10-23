@@ -46,6 +46,7 @@ type AgentState struct {
 	} `json:"providerSession"`
 	NativeInput          *NativeInput      `json:"-"`
 	MetadataObservation  *StateObservation `json:"-"`
+	ThinMetadata         bool              `json:"-"`
 	LastAssistantMessage string            `json:"lastAssistantMessage,omitempty"`
 	Interrupted          bool              `json:"interrupted,omitempty"`
 	SessionBoundary      bool              `json:"sessionBoundary,omitempty"`
@@ -257,6 +258,11 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 		return s, errors.New("Orca queried original provider metadata currently unavailable")
 	}
 	s.ProviderSession = current.ProviderSession
+	// Legacy tab projections can lose the entire main-agent envelope. Keep that
+	// absence distinct from partial or contradictory metadata; only the former
+	// is eligible for the separately fenced original-input query.
+	s.ThinMetadata = current.MainAgent == nil && current.Observation == nil && current.TurnStartedAt == 0 &&
+		current.AgentType == s.AgentType && current.State == s.State
 	s.SessionBoundary = s.SessionBoundary || current.SessionBoundary
 	s.RestoredUnconfirmed = s.RestoredUnconfirmed || current.RestoredUnconfirmed
 	s.Interrupted = s.Interrupted || current.Interrupted
