@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/erranliu/SteerRunner/internal/contracts"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -60,7 +61,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 		defer close(o.done)
 		send := func(event b.LifecycleEvent) bool {
 			event.Kind = "turn"
-			if event.InputWait {
+			if event.Observation != nil && event.Observation.Diagnostic != "" {
 				event.Kind, event.Status, event.Title = "execution", "waiting", "Worker reply unavailable"
 			} else if event.Fact.Kind == b.EventStarted {
 				event.Status, event.Title = "started", "Worker input started"
@@ -96,7 +97,8 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			}
 			return true
 		}
-		started, waiting, ended := s.Session.CurrentCommandID == command(s) && s.Session.CurrentTurnID == command(s), false, false
+		started, ended := s.Session.CurrentCommandID == command(s) && s.Session.CurrentTurnID == command(s), false
+		lastDiagnostic := ""
 		for {
 			before, _ := json.Marshal(s.Implementation)
 			receipt, _, err := l.observeOnce(ctx, s)
@@ -128,11 +130,14 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				s.Implementation = receipt.Implementation
 			}
 			committed := false
-			if receipt.Diagnostic != "" && !waiting {
-				if !send(b.LifecycleEvent{InputWait: true, Diagnostic: receipt.Diagnostic, Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.terminal.wait", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":reply-missing", SessionID: SessionID(s.Ref.External)}, Implementation: receipt.Implementation}) {
+			after, _ := json.Marshal(receipt.Implementation)
+			if receipt.Diagnostic != lastDiagnostic {
+				// Availability may recur with identical evidence bytes. Each new
+				// transition has its own identity, retained through both acknowledgements.
+				if !send(b.LifecycleEvent{Observation: &b.ObservationStatus{Diagnostic: receipt.Diagnostic}, Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.terminal.observation", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":observation:" + contracts.NewID(), SessionID: SessionID(s.Ref.External), StartedTurnID: command(s)}, Implementation: receipt.Implementation}) {
 					return
 				}
-				waiting = true
+				lastDiagnostic = receipt.Diagnostic
 				committed = true
 			}
 			if receipt.State.TurnStarted && !started {
@@ -170,7 +175,6 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				o.done <- nil
 				return
 			}
-			after, _ := json.Marshal(receipt.Implementation)
 			if !committed && string(before) != string(after) {
 				state, stateErr := l.state(s)
 				if stateErr != nil {

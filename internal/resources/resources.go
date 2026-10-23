@@ -108,5 +108,5 @@ func Capabilities() any {
 
 func RecoveryCapabilities() contracts.RecoverySupport {
 	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v3", "steerrunner-state/v4"}, WritableStateFormat: "steerrunner-state/v4", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
-		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {3, 4}, "orca.terminal-profile": {3, 4}, "orca.terminal-state": {6}}}
+		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {3, 4}, "orca.terminal-profile": {3, 4}, "orca.terminal-state": {6, 7}}}
 }

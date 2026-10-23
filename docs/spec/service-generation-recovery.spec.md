@@ -47,7 +47,7 @@ SHA/资源摘要继续用于校验选中的二进制、冻结资源和原运行�
 | state 格式及字段语义 | 同受支持格式可接管；缺版本、未知必需字段/枚举或不支持格式不能推断为当前。首期格式决策见 §3.2 |
 | Workflow | 保留 `development/2`、`development-audited/2`、`conversation/1`、`generate/1` 的原 Config、游标、源与已冻结提示词。新构建须支持原初始状态、状态 kind/contract、转移和模型要求等执行语义；同号改变这些语义判冲突。Description、目录新增其它 adapter 或新请求默认提示词变化不应单独拒绝原 Run；仍须支持该 Run 原 adapter。沿具体 workflow Profile 的校验函数核对，不造通用“语义兼容引擎”，不以新定义重路由 |
 | 输入、结果获取与 operation | 保留原 schema/语义版本、原操作 ID/key/digest/状态、来源和预算。解码/完成含义变化须显式升对应契约，不因总资源摘要相同便假定兼容 |
-| Adapter profile/implementation | 按实现 key、purpose、codec 和冻结身份声明精确支持，不接受“所有版本≤当前”。当前 local Codex profile3、Orca local profile3/state6、远端 native profile4/state6 分开判断；权限资源等 envelope 也逐项校验 |
+| Adapter profile/implementation | 按实现 key、purpose、codec 和冻结身份声明精确支持，不接受“所有版本≤当前”。当前 local Codex profile3、Orca local profile3、远端 native profile4 分开判断；Orca state 写入 v7，读取明确支持 v6/v7，v6 的诊断仅在 adapter 边界保守转换（见远端原生 Spec §4）；权限资源等 envelope 也逐项校验 |
 | 本机 execution owner | 新服务协议兼容才可绑定原 owner；原 owner、worker/tool/helper 的冻结 SHA 继续按原值验证。新 Runner 的 SHA 不要求等于旧 owner SHA，不替换正在运行的 owner。新所有权语义使用新的 local resource codec，不能将旧服务独占 Job 的记录解释为独立 owner |
 | resource_digest / Version / EXE SHA | 作为来源和安装 pin 保留。仅新默认提示词、其他 workflow/schema、文档或打包变动导致总摘要变化时，不能拒绝兼容 Run。已有 Run 使用原内容；新增 Run 才用新默认 |
 
