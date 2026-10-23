@@ -6,10 +6,12 @@
 
 | 需要了解 | 入口 |
 | --- | --- |
+| 详细 CLI 用法、服务维护与状态目录 | [CLI 与运维指南](cli-guide.md) |
 | 产品职责、请求与 CLI 生命周期 | [产品契约](spec/steerrunner.spec.md) |
 | 请求、执行、回执、恢复与交付的全链路 | [可靠性交付链路](reliable-delivery.md) |
 | 四种内置流程、阶段及结果获取 | [Workflow 总览](workflows/README.md)、[普通开发](workflows/development.md)、[带审计开发](workflows/development-audited.md)、[持续对话](workflows/conversation.md)、[一次生成](workflows/generate.md) |
 | 配置发现、离线校验及内部测试配置 | [独立配置 Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md) |
+| 独立使用的双 skill、共享 helper、只读快照及独立 Viewer | [薄壳 Spec](spec/skill-shell.spec.md) / [Plan](spec/skill-shell.plan.md) / [实现与验收](acceptance/skill-shell.md) |
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
 | 无仓库的对话与生成输入 | [内容流程 Spec](spec/content-workflows.spec.md) / [Plan](spec/content-workflows.plan.md) |
 | 权限、单仓库认证与环境检查 | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md)、[环境检查 Spec](spec/environment-check.spec.md) / [Plan](spec/environment-check.plan.md) |

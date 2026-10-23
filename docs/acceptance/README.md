@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 双 skill 薄壳与独立 Viewer | [专项验收](skill-shell.md)：原 ID 调用、只读 JSON、刷新/过期、独立安装、本机 / 一个 Orca environment 的真实 PR 与停止范围 |
 | 当前公开读取与受理边界 | [完整绑定及原子 observe](reliability-simplification.md) |
 | Run token 与独立费用 | [用量、归属去重及授权撤销](run-usage-and-cost.md)；本机三组合、远端 Codex 的主会话现场单列，远端 Pi/DSH 生产绑定仍不支持 |
 | 默认审计提示与交付简化 | [默认提示及跨构建冻结](reliable-delivery-simplification.md) |

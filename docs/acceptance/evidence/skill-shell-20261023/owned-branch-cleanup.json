@@ -1,0 +1,22 @@
+[
+  {
+    "branch": "erranliu/sr-cef6e9d2f895de2da3d7122c9e3d7163",
+    "expected_sha": "f03b004073ea3366fb730550f843a95df590b8c6",
+    "deleted": true
+  },
+  {
+    "branch": "codex/runner-250d9b17e5d0c631ae6c1a6ee12529d7",
+    "expected_sha": "fda725481765e08f0c7da2918012f177082e000f",
+    "deleted": true
+  },
+  {
+    "branch": "sr-shell-20261023-8fab91d1",
+    "expected_sha": "cda7b09ccfe0d4feaabeb088c22dbf7baec63fd3",
+    "deleted": true
+  },
+  {
+    "branch": "sr-shell-local2-20261023-ee143d",
+    "expected_sha": "4f0fecbb84438efecfca4c38d3225c3b3659cf9e",
+    "deleted": true
+  }
+]

@@ -1,0 +1,18 @@
+---
+name: steerrunner-configure
+description: Configure SteerRunner execution routes and project publication bindings. Invoke directly without arguments to discover local and existing Orca routes. Use for SteerRunner setup or changing its execution defaults, not for ordinary coding or executing a Spec and Plan.
+---
+
+Read `assets/client-location.json` in this installed skill and use its absolute `helper_path`. Run the shared helper with Windows PowerShell:
+
+```powershell
+powershell.exe -NoProfile -File <helper_path>
+```
+
+No arguments or preparatory questions are needed for the default configure action. The helper discovers routes, preserves existing choices, and saves what it can determine. Present its candidates, missing dependencies, project binding and remaining choices; discovery does not prove execution or publication readiness.
+
+When the user supplies choices, write a UTF-8 JSON object to a temporary input file and rerun with `-InputFile <path>`. Its optional fields are `runner_executable`, absolute `state_dir`, `default_profile`, `profiles`, and `project`. Profiles use Runner's existing `{execution,workflow}` objects. `project` accepts `profile`, `repository` and `publication`; preserve its existing values when making a narrow change. Read the current configuration returned by the helper to construct the complete object being replaced. Pass `-ProjectPath` only when the intended project differs from the current directory. Never add secrets or pairing codes.
+
+Only ask about gaps the helper cannot determine, such as multiple targets, missing remote project path, publication target, or an explicitly selected audit model. A missing Orca prompts installation for remote execution; installed-but-stopped, no remote environment, and connection failures require their respective remedies. Do not install, launch, pair or register anything just to complete discovery.
+
+For a specifically requested full environment check, explain its push/test-PR scope. Reuse existing user authorization when it already covers those actions. The helper's `-Action Check` accepts `operation` (`start`, `inspect`, `stop`), original `operation_id` for writes, public `input`, optional `state_dir`, and `check_id` for inspection. Set `acknowledge_side_effects:true` only when the user's request covers the explained check; it is not required for discovery. The public check input is the Runner schema, not a second configuration format. Inspect results and resource cleanup separately.

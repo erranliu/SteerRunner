@@ -1,0 +1,52 @@
+{
+  "commands": [
+    {
+      "command": "go test ./internal/runview ./internal/application ./internal/host ./internal/cli ./internal/storage ./internal/resources ./internal/contracts -count=1",
+      "scope": "affected production packages; application 578.812s",
+      "exit_code": 0
+    },
+    {
+      "command": "go test ./internal/application -run ^TestDisplayRuns -count=1",
+      "scope": "whitelist, independent copies and real transaction rollback",
+      "exit_code": 0
+    },
+    {
+      "command": "go test ./internal/runview -count=1",
+      "scope": "heartbeat, failure backoff, unknown replace sequence, Windows reader sharing, cancellation and original publisher settlement",
+      "exit_code": 0
+    },
+    {
+      "command": "go test ./... -count=1 -timeout=30s (cwd viewer)",
+      "scope": "four tests, including real blocked ReadFile cancellation and independent source",
+      "exit_code": 0
+    },
+    {
+      "command": "go vet ./... (cwd viewer)",
+      "exit_code": 0
+    },
+    {
+      "command": "go vet ./internal/runview ./internal/application ./internal/host",
+      "exit_code": 0
+    },
+    {
+      "command": "quick_validate.py skills/steerrunner-configure and skills/steerrunner-run",
+      "scope": "skill format only",
+      "exit_code": 0
+    }
+  ],
+  "record_kind": "observed command-result summary, not raw process log",
+  "components": [
+    {
+      "sha256": "1824CFBFC55EC9737745E0A3D46A884331120DA40770848460332A18A17890CE",
+      "path": "steerrunner.exe"
+    },
+    {
+      "sha256": "10F785F272773FB2EDD714E5EDDBA59D61DB9CC4A267C937ADCBF6D394943692",
+      "path": "steerrunner-viewer.exe"
+    },
+    {
+      "sha256": "5358F2487337622CA48941B2D7DCB5C6573C9D4A169BC6ECA11988BB7A0F0465",
+      "path": "client/steerrunner-client.ps1"
+    }
+  ]
+}

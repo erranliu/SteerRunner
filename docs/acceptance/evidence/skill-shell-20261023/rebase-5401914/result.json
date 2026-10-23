@@ -1,0 +1,20 @@
+{
+  "viewer_unit_and_vet": "passed",
+  "installation_checks": 6,
+  "display_scenarios": 2,
+  "source_commit": "17b7d9639a48d9ce865b15e599f043bf9a26bb36",
+  "archive": "SteerRunner-client-rebased.zip",
+  "viewer_checks": 9,
+  "notes": [
+    "Initial version test found a real global fallback native Codex; final test isolates APPDATA as well as PATH.",
+    "Assertions and report completion verified directly; LASTEXITCODE from an expected failing native fixture is not the status of an invoked PowerShell script.",
+    "Original 2026-10-23 native PR and package evidence retains its original source/build identity."
+  ],
+  "targeted_packages": "application display/last-message and codex minimum-version/probe passed",
+  "client_checks": 32,
+  "production_packages": "cli/resources/runview/contracts/storage/host passed",
+  "native_pr_repeated": false,
+  "source_dirty": true,
+  "base_commit": "5401914",
+  "archive_sha256": "32877624636B2CC03F3C8A1F88113CFC523517F8D1FDB31AB9529F8F50E8B97D"
+}
