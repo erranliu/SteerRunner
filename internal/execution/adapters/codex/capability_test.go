@@ -43,7 +43,7 @@ func TestProbePreservesHistoryFailureBeforeManagedStart(t *testing.T) {
 	err = ProbeCapabilities(context.Background(), ProbeConfig{Executable: executable}, ProbePort{
 		Output: func(_ context.Context, _ string, args []string) ([]byte, error) {
 			if args[len(args)-1] == "--version" {
-				return []byte("codex-cli 0.159.2"), nil
+				return []byte("codex-cli 0.163.0-alpha.10.2"), nil
 			}
 			return []byte("app-server --listen"), nil
 		},

@@ -47,7 +47,7 @@ func Catalog() CapabilityCatalog {
 					if contracts.ValidateExecution(execution) != nil {
 						continue
 					}
-					requirements := []string{"per_execution_native_verification", "execution_host_authentication", "native_codex_0.159.2_permissions"}
+					requirements := []string{"per_execution_native_verification", "execution_host_authentication", "native_codex_0.159.2_or_newer_permissions"}
 					if target == "orca_environment" {
 						requirements = []string{"configured_orca_environment", "execution_host_native_login", "native_launch_parameters_requested_only"}
 					}
@@ -89,7 +89,7 @@ func Catalog() CapabilityCatalog {
 		if id == "conversation" {
 			operations = append(operations, "message", "reply", "interrupt", "close")
 		}
-		result.Combinations = append(result.Combinations, Combination{"codex-app-server", "local", "codex", selection, "read_only", operations, "/configuration_schemas/" + id + "_input", []string{"per_execution_native_verification", "native_codex_0.159.2_permissions", "self_contained_schema_only"}})
+		result.Combinations = append(result.Combinations, Combination{"codex-app-server", "local", "codex", selection, "read_only", operations, "/configuration_schemas/" + id + "_input", []string{"per_execution_native_verification", "native_codex_0.159.2_or_newer_permissions", "self_contained_schema_only"}})
 	}
 	return result
 }

@@ -64,7 +64,7 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 
 ## 提交与查看执行
 
-本机执行当前固定验证原生 Codex `0.159.2`，其他版本会在权限资格核验时拒绝。
+本机执行支持原生 Codex `>= 0.159.2`，按语义版本比较，无版本上限；更新版本的预发布版也可通过最低版本检查（如 `0.163.0-alpha.10.2`），但 `0.159.2` 自身的预发布版低于基线。各版本仍须通过原有协议与权限资格核验。
 本机及 Orca local 受管 GitHub worker 使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
 Runner 在业务前准备各 Run 独立的有限期 capability，并执行与实际权限模式一致的原生工具检查。
 认证秘密不写进请求、持久化配置或材料；停止关闭该 Run 的 broker，不退出宿主 gh 登录，不影响其他 Run。
@@ -107,7 +107,7 @@ accepted 表示文档路径及原请求已持久化，不表示文档存在性�
 专属 base/head 间的测试 PR。PR 不合并，清理按原 SHA 删除 owned 引用。无 Publication 时 PR 项为
 `not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
 
-本机 codex-app-server 及 Orca local 受管路径已实现 Windows Codex 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
+本机 codex-app-server 及 Orca local 受管路径已实现 Windows Codex >= 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
 上述本机路径的普通执行与环境检查统一使用执行主机 gh 单仓库 broker；原生远端完整环境检查明确 unsupported，普通远端 Run 使用已有 Orca 原生认证。不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
 已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
 [环境检查记录](docs/acceptance/environment-check.md)和[当前 Orca 路径验收](docs/acceptance/orca-local-remote.md)。
@@ -133,7 +133,7 @@ start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID
 
 当前持久格式为 state/v4、资源版本 2；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。支持经源记录资格核验和一致性备份的 state/v3→v4 受控升级；不支持任意历史格式或退役执行栈的迁移。兼容性与存量资源限制见[服务换代恢复 Spec](docs/spec/service-generation-recovery.spec.md)，不能把新空目录、重新 submit 当作已有 Run 的恢复方案。
 
-独立解析采用显式开启的 Windows / Codex 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](docs/acceptance/result-acquisition.md)。
+独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](docs/acceptance/result-acquisition.md)。
 
 服务启动后，`capabilities` 的 `workflows` 返回可选流程、允许覆盖的提示词步骤及模型要求。submit 继续通过 RunRequest 的 `workflow.id/version` 选择：
 

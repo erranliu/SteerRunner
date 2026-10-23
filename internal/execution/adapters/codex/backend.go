@@ -26,12 +26,13 @@ type ProcessPort struct {
 }
 
 type Binding struct {
-	Owner      *ExecutionOwnerIdentity
-	Workspace  string
-	Process    *executionbackend.ProcessIdentity
-	Endpoint   string
-	Generation string
-	SessionID  string
+	NativeVersion string `json:",omitempty"`
+	Owner         *ExecutionOwnerIdentity
+	Workspace     string
+	Process       *executionbackend.ProcessIdentity
+	Endpoint      string
+	Generation    string
+	SessionID     string
 }
 
 type ProcessReceipt struct {

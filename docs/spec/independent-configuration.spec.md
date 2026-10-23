@@ -162,7 +162,7 @@ resource_digest 覆盖静态生产资源、schema、默认规则与公开能力�
 交付合格必须同时满足：
 
 1. `configurations.local-codex` 存在，对应 `codex-app-server + local + development/2`，显式 `access_mode:sandbox`，`execution.settings.executable` 为实际本机原生 Codex 文件的绝对路径；交付基线不接受空值、PATH 命令、npm shim 或 shell 包装器。
-2. 按生产原生资格规则核验格式、版本、实际权限、认证及所需发布依赖。调查基线当前固定验证 Codex `0.159.2`；未来调整由生产能力／资格规则和同版证据决定，不由本文件放宽。
+2. 按生产原生资格规则核验格式、版本、实际权限、认证及所需发布依赖。最低版本为 Codex `0.159.2`，更新版本共用生产语义版本下限检查；历史调查证据仅证明其记录的具体版本。
 3. `local-codex.smoke/default` 的注册需求固定引用该配置项；L1、完整 Controlled 前置和 L2 真实闭环在明确构建下通过，原写者停止及资源收尾满足既有要求。driver 的 merge 属于测试断言，不新增 Runner 自动合并职能。
 
 本地路径是配置要求；路径存在／`--version` 成功只是前置，不等于闭环通过。模型允许沿公开缺省，但资格证据必须保留请求及可取得的实际模型，不能声称验证了任意模型。构建／配置变化按既有资格规则重新核验，历史通过不自动继承。

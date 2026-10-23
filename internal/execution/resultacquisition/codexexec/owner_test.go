@@ -25,7 +25,7 @@ func TestMain(m *testing.M) {
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "--version":
-			fmt.Println("codex-cli 0.159.2")
+			fmt.Println("codex-cli 0.163.0-alpha.10.2")
 			os.Exit(0)
 		case "--parser-child":
 			for {
@@ -178,6 +178,9 @@ func TestRAParserProcess(t *testing.T) {
 			}
 			if scenario == "GOOD" && (receipt.ParseEvidence.Status != "completed" || receipt.ParseEvidence.SessionID != "parser-session") {
 				t.Fatal(receipt.ParseEvidence)
+			}
+			if receipt.ParseEvidence.Version != "codex-cli 0.163.0-alpha.10.2" {
+				t.Fatal("parser did not preserve the observed native version", receipt.ParseEvidence)
 			}
 			if scenario == "TOOL" && (receipt.ParseEvidence.Status != "policy_violation" || receipt.ParseEvidence.ToolEvents != 1) {
 				t.Fatal(receipt.ParseEvidence)

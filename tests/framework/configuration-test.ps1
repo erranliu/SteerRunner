@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence,[string[]]$CatalogPaths = @())
 $ErrorActionPreference='Stop'
+& (Join-Path $Repository 'tests/framework/codex-version-test.ps1') -Repository $Repository
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 . (Join-Path $Repository 'scripts/test-scheduler.ps1')
 $taskRoot=Join-Path $Evidence 'configuration'

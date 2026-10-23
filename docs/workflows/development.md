@@ -1,6 +1,6 @@
 # Workflow：development（确认稿）
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-17（首次设计 2026-10-16）。实施前业务基线 `development/1`；下文为已接线的 `development/2` 状态机定义。[统一能力与边界](README.md) · [带审计版本](development-audited.md) · [总 Spec](../spec/result-acquisition.spec.md)。本文件是独立流程说明，业务条件与提示词属于本定义，执行机制全部使用统一能力。
 
 ## 1. 实施前基线与本定义
