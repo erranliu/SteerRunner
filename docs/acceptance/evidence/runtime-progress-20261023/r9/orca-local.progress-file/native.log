@@ -1,0 +1,9 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.progress-file
+    progress_test.go:283: native producer did not publish 843211dc045a57f1a03b73bff896d1d5 violet
+    progress_test.go:66: original native stop unverified 843211dc045a57f1a03b73bff896d1d5
+    progress_test.go:102: resource settlement unverified <nil>
+    progress_test.go:113: original Run missing from settled resources 843211dc045a57f1a03b73bff896d1d5
+--- FAIL: TestSRLiveScenario (630.82s)
+    --- FAIL: TestSRLiveScenario/orca-local.progress-file (630.78s)
+FAIL

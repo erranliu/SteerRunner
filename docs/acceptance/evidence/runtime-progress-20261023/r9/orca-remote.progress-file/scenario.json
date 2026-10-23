@@ -1,0 +1,100 @@
+{
+  "runs": [
+    {
+      "operations": [
+        {
+          "operation_id": "99e8f8ac1e5b6c9fde86a47a89268b09",
+          "action": "prepare_workspace",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "52086d64c2f76b719d58351929b94454",
+          "action": "create_resource",
+          "status": "confirmed",
+          "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+        },
+        {
+          "operation_id": "59168e8a0867f5ece4601b593fc5b82f",
+          "action": "prepare_session",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "8c7a5fc6d33e2de7015f164687c110e1",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "15b886a361b2d005d1de290ea6dc4ad4",
+          "action": "stop_execution",
+          "status": "confirmed"
+        }
+      ],
+      "run_id": "71b1a8f04b187e4e742d8767fb161558",
+      "revision": 17,
+      "title": "Progress byte channel d08eb2d8f5d6 0",
+      "input_digest": "84a2bb2d856daa6e3a6f9230ce81d6d9a3188c817524311aa208b13ac171b84f",
+      "resource_digest": "8171b167b01ce7e498a49460ff2e2390512411d282d7bd08c6f04bf325cc0340",
+      "workflow": {
+        "id": "development",
+        "version": 2,
+        "prompt_overrides": {
+          "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+        }
+      },
+      "step": "implement.execute",
+      "status": "stopped",
+      "phase": "stopped",
+      "diagnostic": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked.",
+      "new_inputs_allowed": false,
+      "resume_required": true,
+      "stop_status": "stopped",
+      "materials": [
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/spec.md",
+          "commit": "d45e139ec52cf71afd14c00902a9674a2dc570e6",
+          "execution_location": "sr-smoke/spec.md"
+        },
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/plan.md",
+          "commit": "d45e139ec52cf71afd14c00902a9674a2dc570e6",
+          "execution_location": "sr-smoke/plan.md"
+        }
+      ],
+      "execution": {
+        "agent": "codex",
+        "workspace_scope": "revision",
+        "turn_started": true,
+        "attempt_id": "f61a888a91b50f2fa2837320125f63fd",
+        "generation": "1855259df0a88ea02ce04e497c904d9f",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_24317503-ab2f-497b-bb2e-b36d866531c6:b2e2fe6e-dde8-4b09-a019-2cdb7134cb85",
+        "turn_id": "bd4b8e390f4120646cd821320ffcb15e",
+        "final_available": false,
+        "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-71b1a8f04b187e4e742d8767fb161558",
+        "branch": "erranliu/sr-71b1a8f04b187e4e742d8767fb161558"
+      },
+      "controls": {
+        "can_message": false,
+        "can_interrupt": false,
+        "can_close": false,
+        "can_reply": false,
+        "can_resume": true,
+        "can_stop": false,
+        "reason": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked."
+      },
+      "created_at": "2026-10-23T12:01:33.3359305Z",
+      "updated_at": "2026-10-23T12:05:59.9177362Z"
+    }
+  ],
+  "scenario": "orca-remote.progress-file",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "71b1a8f04b187e4e742d8767fb161558",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true,
+  "progress_verified": true
+}

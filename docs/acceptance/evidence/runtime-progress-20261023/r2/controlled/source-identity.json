@@ -1,0 +1,11 @@
+{
+  "pid": 41784,
+  "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestEnvironmentCheckCLI|TestSRResultAcquisition|TestSRContentGenerate|TestSRContentConversation|TestSRContentQuestionAndUnknown|TestSRContentGenerationRecovery|TestSRRunEvidenceR2|TestSRResourceCreationRecovery|TestSRProgressFile)$",
+  "runner_sha256": "1629794C9B1122BF8A3A3A5900A95EF466E4C47ED2ECDEA86C0A0C3DAB732EEF",
+  "fixture_sha256": "356B1E56746D88CBD2FF5E8809B015666BCF0A0DA167DA648209DEC3481A6B48",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

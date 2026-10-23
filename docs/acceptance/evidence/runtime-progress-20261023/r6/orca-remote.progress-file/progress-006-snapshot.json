@@ -1,0 +1,96 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "1de09ba3790a24aec3d97ddfbdcf80f9",
+    "version": 3,
+    "observed_at": "2026-10-23T09:47:23.5353969Z",
+    "encoding": "base64",
+    "content_base64": "Y29wcGVyfEM6XFVzZXJzXEFkbWluaXN0cmF0b3Jcb3JjYVx3b3Jrc3BhY2VzXFN0ZWVybGluZVRlc3Rcc3ItMWRlMDliYTM3OTBhMjRhZWMzZDk3ZGRmYmRjZjgwZjlcLnN0ZWVycnVubmVyXHByb2dyZXNzXDFkZTA5YmEzNzkwYTI0YWVjM2Q5N2RkZmJkY2Y4MGY5XHByb2dyZXNzLmJpbgD/EQ==",
+    "size_bytes": 166,
+    "sha256": "d95d420dc9b5a4a215727e16e7b64a2e59a5ac9fcf371eeabd26a4e0cc65fc64",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "9b219e49ceff1e951fb7ac1d87bae9d2",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "c3623ae28ed08bfbe94a43cdf7b5b4d2",
+        "action": "create_resource",
+        "status": "confirmed",
+        "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+      },
+      {
+        "operation_id": "858151216e4814d1e17c40096dfb8d36",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "004767fc741399a69092f728b1089aae",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "1de09ba3790a24aec3d97ddfbdcf80f9",
+    "revision": 16,
+    "title": "Progress byte channel 695d369caf4e 0",
+    "input_digest": "11a3044b968a35f3c7876620197859cef25c3c71af34a1eb5cc56067c4cfae63",
+    "resource_digest": "60dcd956b215814cc173f10aa1e118220e6d0ff72b57dbf1cbce21cf6435012c",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observation_unverified",
+    "diagnostic": "Native state subscription is unverified; original query remains available: Orca state streaming connection failed: transport unavailable",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "28e5160e04726d1d018cfa8412437e61f0e26d76",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "28e5160e04726d1d018cfa8412437e61f0e26d76",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "workspace_scope": "revision",
+      "turn_started": true,
+      "attempt_id": "20eee80c34137e7d28f3fc5cae83f088",
+      "generation": "0c635983466b277cc095741575c5569d",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_940eb915-345b-4986-b569-8544c853925c:1d24828b-f985-44cb-b352-8ad3022c1a1f",
+      "turn_id": "7b93c8242449dd5dc9025c07cdd89cb4",
+      "final_available": false,
+      "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-1de09ba3790a24aec3d97ddfbdcf80f9",
+      "branch": "erranliu/sr-1de09ba3790a24aec3d97ddfbdcf80f9"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true,
+      "reason": "Native state subscription is unverified; original query remains available: Orca state streaming connection failed: transport unavailable"
+    },
+    "created_at": "2026-10-23T09:43:38.2515393Z",
+    "updated_at": "2026-10-23T09:47:14.6635722Z"
+  }
+}

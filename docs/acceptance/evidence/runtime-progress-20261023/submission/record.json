@@ -1,0 +1,23 @@
+{
+  "prepared_at": "2026-10-23T20:47:34.814898+00:00",
+  "implementation_commit": "9d654e2fd7382bf0e70cccb0706ea5f0492a9d1b",
+  "acceptance_source_base": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "acceptance_run": "r12",
+  "acceptance_production_test_files_unchanged": 68,
+  "acceptance_source_document_files_unchanged": 80,
+  "archive_files_preserved": 1162,
+  "archive_bytes_preserved": 68329959,
+  "original_failure_files_rechecked": 4333,
+  "raw_evidence_git_attributes": "-text -whitespace",
+  "upstream_main_at_submission": "9740bed6478809922a237b06988d483853250100",
+  "upstream_commits_after_acceptance_base": 17,
+  "upstream_merged": false,
+  "upstream_conflicts": [
+    ".gitattributes",
+    "README.md",
+    "docs/testing.md",
+    "scripts/test.ps1"
+  ],
+  "qualification": "r12 native and controlled results apply to the preserved acceptance source. Mainline integration is pending and is not qualified by these results.",
+  "originals": "All archived original failure and success files are unchanged. Ignored .evidence originals and retained C:/srt fixtures remain local. No binaries or live state directories are added."
+}

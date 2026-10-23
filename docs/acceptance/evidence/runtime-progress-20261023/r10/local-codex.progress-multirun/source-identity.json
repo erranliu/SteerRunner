@@ -1,0 +1,11 @@
+{
+  "pid": 55428,
+  "manifest_sha256": "40319ACAD8F3EE81A0B3C2775B89BAAD3A2A3A7F429261F52AF4DB5B3C5E95B7",
+  "driver_sha256": "657AC6B7B105ABC8C2636748E8F1B685D3C744A1CC3181080C208C352553D138",
+  "runner_sha256": "cb41e5ca5d496be98c220dd8ce4df068c78724e136cc816162326a6717964a42",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "local-codex.progress-multirun",
+  "level": "L3"
+}

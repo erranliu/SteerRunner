@@ -1,0 +1,8 @@
+{
+  "status": "aborted_controller_controlled_completed",
+  "controlled_exit": 0,
+  "controlled_scenarios": 23,
+  "live_cases": 0,
+  "qualification": false,
+  "note": "Original summary left intact; interruption prevents obsolete native dispatch; independent child finished its own cleanup."
+}

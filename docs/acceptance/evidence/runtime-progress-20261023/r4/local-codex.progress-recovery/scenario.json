@@ -1,0 +1,94 @@
+{
+  "runs": [
+    {
+      "operations": [
+        {
+          "operation_id": "4140f3088ae5b5abc40f97b23ab278f1",
+          "action": "prepare_workspace",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "9e160d268f359b0592e8c8119dc739a3",
+          "action": "prepare_session",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "8f79f4e40b44742856781d2829dd32f5",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "0d33ba0e87bf587b1d40b8d0c93c117e",
+          "action": "stop_execution",
+          "status": "confirmed"
+        }
+      ],
+      "run_id": "89bc74d0929c612da9f40bc7932dfd20",
+      "revision": 14,
+      "title": "Progress byte channel 4b7a2fecd027 0",
+      "input_digest": "c0129a80d32538ebcaaad379af0b8094da65cadba529bd1ac378b08b138c52a3",
+      "resource_digest": "f2d3b154771bc1928a5e2e9b535fffc74e1e4d66e3bd2024f99a3a497d088d00",
+      "workflow": {
+        "id": "development",
+        "version": 2,
+        "prompt_overrides": {
+          "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+        }
+      },
+      "step": "implement.execute",
+      "status": "stopped",
+      "phase": "stopped",
+      "new_inputs_allowed": false,
+      "resume_required": true,
+      "stop_status": "stopped",
+      "materials": [
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/spec.md",
+          "commit": "fc6381bf6423ce1af21b66a59c42c36dbd59985b",
+          "execution_location": "sr-smoke/spec.md"
+        },
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/plan.md",
+          "commit": "fc6381bf6423ce1af21b66a59c42c36dbd59985b",
+          "execution_location": "sr-smoke/plan.md"
+        }
+      ],
+      "execution": {
+        "agent": "codex",
+        "requested_model": "gpt-6.1-sol",
+        "requested_reasoning_effort": "low",
+        "workspace_scope": "working_tree",
+        "turn_started": true,
+        "attempt_id": "7d185eff13eeb0f7fe7b409be5d948ee",
+        "generation": "efad76509ff1aefd15a381412778070f",
+        "backend": "local",
+        "protocol": "local_codex_app_server_v1",
+        "session_id": "01a167ec-927c-79b1-9101-fd66c5d3a82b",
+        "turn_id": "01a167ec-b6b4-7d03-aaa8-d3df24a2f236",
+        "final_available": false,
+        "workspace": "c:\\srt\\4b7a2fecd027\\s\\workspaces\\a4k45ksnmxm4vqjb4ohdxc27we",
+        "branch": "codex/runner-89bc74d0929c612da9f40bc7932dfd20"
+      },
+      "controls": {
+        "can_message": false,
+        "can_interrupt": false,
+        "can_close": false,
+        "can_reply": false,
+        "can_resume": true,
+        "can_stop": false
+      },
+      "created_at": "2026-10-23T08:41:21.1564441Z",
+      "updated_at": "2026-10-23T08:44:40.6328081Z"
+    }
+  ],
+  "scenario": "local-codex.progress-recovery",
+  "level": "L3",
+  "stage": "completed",
+  "run_id": "89bc74d0929c612da9f40bc7932dfd20",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": true,
+  "progress_verified": true
+}

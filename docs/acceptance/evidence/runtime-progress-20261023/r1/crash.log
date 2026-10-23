@@ -1,0 +1,16 @@
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xc0000005 code=0x0 addr=0x60 pc=0x7ff6c59a9035]
+
+goroutine 55 [running]:
+github.com/erranliu/SteerRunner/internal/application.(*Engine).setup(_, _, _)
+	github.com/erranliu/SteerRunner/internal/application/engine.go:426 +0x495
+github.com/erranliu/SteerRunner/internal/application.(*Engine).prepareProgress(0x3905cdf18410, 0x3905cdc7aa88)
+	github.com/erranliu/SteerRunner/internal/application/progress.go:66 +0x298
+github.com/erranliu/SteerRunner/internal/application.(*Engine).advance(0x3905cdf18410, {0x3905ce15c2c0, 0x20}, 0x3905cdc0c3f0)
+	github.com/erranliu/SteerRunner/internal/application/worker.go:97 +0x454
+github.com/erranliu/SteerRunner/internal/application.(*Engine).run(0x3905cdf18410, {0x3905ce15c2c0, 0x20}, 0x3905cdc0c3f0)
+	github.com/erranliu/SteerRunner/internal/application/worker.go:56 +0x5ea
+github.com/erranliu/SteerRunner/internal/application.(*Engine).launch.func1()
+	github.com/erranliu/SteerRunner/internal/application/engine.go:137 +0x58
+created by github.com/erranliu/SteerRunner/internal/application.(*Engine).launch in goroutine 1
+	github.com/erranliu/SteerRunner/internal/application/engine.go:137 +0xf0

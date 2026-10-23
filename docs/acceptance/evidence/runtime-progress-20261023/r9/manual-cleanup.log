@@ -1,0 +1,16 @@
+{
+  "run_id": "843211dc045a57f1a03b73bff896d1d5",
+  "role": "business",
+  "original_terminal": "term_97dc0303-44d3-470c-9454-0e003fb6ce1d",
+  "runtime": "28da9fea-ca77-48de-8319-decb62914563",
+  "pty_killed": true,
+  "original_absent": true
+}
+{
+  "run_id": "843211dc045a57f1a03b73bff896d1d5",
+  "role": "control",
+  "original_terminal": "term_ff0a7835-ee5c-41c9-b073-b06f60ca12ad",
+  "runtime": "28da9fea-ca77-48de-8319-decb62914563",
+  "pty_killed": true,
+  "original_absent": true
+}

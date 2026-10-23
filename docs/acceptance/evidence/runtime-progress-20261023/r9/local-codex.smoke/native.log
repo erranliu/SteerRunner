@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:803: L2 local-codex.smoke run=72c3649d23156f7f00f5f5d666255d15 PR=https://github.com/erranliu/SteerlineTest/pull/659 merge=c73c090e305191cff87077f343d5bfbf547c6ef3
+--- PASS: TestSRLiveScenario (256.64s)
+    --- PASS: TestSRLiveScenario/local-codex.smoke (256.61s)
+PASS

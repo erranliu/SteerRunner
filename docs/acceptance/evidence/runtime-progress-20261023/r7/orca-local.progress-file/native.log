@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.progress-file
+    progress_test.go:279: native producer did not publish 9f8f6bb78b864b7d5c4db5bd5974b4b9 violet
+    progress_test.go:66: original native stop unverified 9f8f6bb78b864b7d5c4db5bd5974b4b9
+--- FAIL: TestSRLiveScenario (445.94s)
+    --- FAIL: TestSRLiveScenario/orca-local.progress-file (445.84s)
+FAIL

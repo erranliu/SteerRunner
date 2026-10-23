@@ -1,0 +1,11 @@
+{
+  "pid": 36964,
+  "manifest_sha256": "A835A593410A5F36F5E12E50D4FFF3C6463E1B4A73BDB74D71F414B8E21D15F3",
+  "driver_sha256": "657AC6B7B105ABC8C2636748E8F1B685D3C744A1CC3181080C208C352553D138",
+  "runner_sha256": "cb41e5ca5d496be98c220dd8ce4df068c78724e136cc816162326a6717964a42",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "local-codex.progress-recovery",
+  "level": "L3"
+}

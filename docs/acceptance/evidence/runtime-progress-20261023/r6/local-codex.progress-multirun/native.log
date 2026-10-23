@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.progress-multirun
+    progress_test.go:279: native producer did not publish 66898f98e7a1c6fb979d747636da6c1c violet
+--- FAIL: TestSRLiveScenario (383.43s)
+    --- FAIL: TestSRLiveScenario/local-codex.progress-multirun (383.40s)
+FAIL

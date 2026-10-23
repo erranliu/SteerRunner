@@ -1,0 +1,9 @@
+{
+  "scenario": "local-codex.smoke",
+  "level": "L2",
+  "stage": "implementation",
+  "run_id": "41236f40b49ff3f57a68dd775e96ae80",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

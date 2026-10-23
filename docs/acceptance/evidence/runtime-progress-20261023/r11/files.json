@@ -1,0 +1,82 @@
+[
+  {
+    "path": "build-source-files.json",
+    "bytes": 12096,
+    "sha256": "6da052c59d320839f2cb1aa89a39660a3242be3561f5f98e949946a9dc8d815d"
+  },
+  {
+    "path": "cleanup-proof.json",
+    "bytes": 306,
+    "sha256": "a73730e11325d41bb33a9896e8c2e3dbd315262969ef8966fbc8f3c40d060a14"
+  },
+  {
+    "path": "framework-result.json",
+    "bytes": 1673,
+    "sha256": "af6c71e2d015bead23389d98897ccb07bab84dab85a22fa5b3f634d331bbf01b"
+  },
+  {
+    "path": "frozen-catalog.json",
+    "bytes": 11461,
+    "sha256": "27e08906f2edbecff151cff255a7c5db97ec7158c457c6ae64ef4390cd514ba2"
+  },
+  {
+    "path": "frozen-config.json",
+    "bytes": 2960,
+    "sha256": "c756f6733efbe3dc686d9bcfbd43ea6495a367772749886db27efc1d64930aa2"
+  },
+  {
+    "path": "interruption.json",
+    "bytes": 502,
+    "sha256": "dfc7e9c1941516827a09a7cdd19dcaa29750dad6145cae7222d66594786bc469"
+  },
+  {
+    "path": "l1-stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "l1.jsonl",
+    "bytes": 2091570,
+    "sha256": "5062649cee27274b4e6ffa76350172af42532971e80d8735eca998b3187d85a4"
+  },
+  {
+    "path": "qualification.json",
+    "bytes": 300,
+    "sha256": "5c4e6ee18f7feb3b6dc6b0eccc392026330bc79782b7eefaf985f40153a8c420"
+  },
+  {
+    "path": "runner-build.json",
+    "bytes": 274,
+    "sha256": "728d2d47f9192e348c4364b6a5274c26e35312506863ff8dfaaf97680eaa7de8"
+  },
+  {
+    "path": "summary.json",
+    "bytes": 6670,
+    "sha256": "1a79fb6924ec1051a2123690e4c750286db6440fd99cb2372ec914ef1bc07395"
+  },
+  {
+    "path": "terminal-extensions.tap",
+    "bytes": 6535,
+    "sha256": "f2d7542596e9bce61119873d75186df280e7243ac73ef446bf9c174379c8835a"
+  },
+  {
+    "path": "controlled/integration.log",
+    "bytes": 13637,
+    "sha256": "f0c62b4cb5e8c995186c4d8cc3065fe4406489af8f213c1086c1ea591a1ffe47"
+  },
+  {
+    "path": "controlled/progress-public-evidence.json",
+    "bytes": 11225,
+    "sha256": "b1d98024bf5996263a79e3110a65a5a7a0e8a93233f7386eaf8acfa0ba4c9e9c"
+  },
+  {
+    "path": "controlled/result.json",
+    "bytes": 208,
+    "sha256": "e88c5058935845a11dd3efebc76da40fcbde4d8bb8b7e199b4e118cef6d0fc1a"
+  },
+  {
+    "path": "controlled/source-identity.json",
+    "bytes": 1075,
+    "sha256": "a398ad496bc62718dd900d04abfa17e42ffc1dbc0502e629dc62269ea00d23cd"
+  }
+]

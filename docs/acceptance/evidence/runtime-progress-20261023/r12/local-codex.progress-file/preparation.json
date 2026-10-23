@@ -1,0 +1,8 @@
+{
+  "fixture_id": "1b241e91d91a",
+  "schema": "steerrunner-test-preparation/v1",
+  "root": "C:\\srt\\1b241e91d91a",
+  "status": "ready",
+  "base_branch": "codex/srtest/1b241e91d91a/base",
+  "scenario": "local-codex.progress-file"
+}

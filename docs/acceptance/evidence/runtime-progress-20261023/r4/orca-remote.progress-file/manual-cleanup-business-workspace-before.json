@@ -1,0 +1,68 @@
+{
+  "id": "bd002e1c-70c6-4731-b7a2-068b9f5a0e18",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "identity": {
+        "key": "wt2:local:9fb67c59-40e6-4324-9fe2-02f1e3c38427",
+        "executionHostId": "local",
+        "instanceId": "9fb67c59-40e6-4324-9fe2-02f1e3c38427"
+      },
+      "instanceId": "9fb67c59-40e6-4324-9fe2-02f1e3c38427",
+      "repoId": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+      "creatorProvenance": {
+        "kind": "paired-device",
+        "deviceId": "5ab97b7a-13c0-4948-9b48-0f95c55dfe51"
+      },
+      "path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "head": "3dd6caef4b36b919dd6f33ce416bb2fcb2789f95",
+      "branch": "refs/heads/erranliu/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": true,
+      "isPinned": false,
+      "sortOrder": 1792746055612,
+      "lastActivityAt": 1792744694661,
+      "createdAt": 1792744645452,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1792744643567
+      },
+      "baseRef": "3dd6caef4b36b919dd6f33ce416bb2fcb2789f95",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "git": {
+        "path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+        "head": "3dd6caef4b36b919dd6f33ce416bb2fcb2789f95",
+        "branch": "refs/heads/erranliu/sr-4dc0dd91ce753d2559e7004cafed85ac",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

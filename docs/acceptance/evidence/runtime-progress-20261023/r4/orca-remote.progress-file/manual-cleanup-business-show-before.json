@@ -1,0 +1,30 @@
+{
+  "id": "fc4dcce5-a66b-48f0-b73b-f016bd497976",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_0d98af80-7d7a-4e90-a8db-fbf7f7878aa5",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac@@c5527073",
+      "incarnationId": "fe6b2421-91e2-4c0f-9b53-499098f31fac",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "branch": "refs/heads/erranliu/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "tabId": "9564ccfe-5044-4ad7-91f7-f90e33572754",
+      "leafId": "70b05c14-1c25-4dbc-b3f6-74dd3dab1e65",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792745349034,
+      "preview": "• 脚本仅启动一次，并已等待至结束。退出码为 1，错误：Progress gate expired。工具不支持设置 600000 毫秒执行超时。\n实施及必要验证已完成。\nWorked for 10m 19s • 16:49\n› Ask Codex to do anything\nGPT-6.1-Sol low fast · ~\\orca\\workspaces\\SteerlineTest\\sr-4dc0dd91ce753d2559e7004cafed85ac · Initialize agent session\n? for shortcuts",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

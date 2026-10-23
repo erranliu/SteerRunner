@@ -1,0 +1,20 @@
+[
+  {
+    "baseline": "progress-failures-r3-before.json",
+    "file_count": 780,
+    "issues": [],
+    "unchanged": true
+  },
+  {
+    "baseline": "progress-r10-failures-before.json",
+    "file_count": 3574,
+    "issues": [],
+    "unchanged": true
+  },
+  {
+    "baseline": "progress-r12-failures-before.json",
+    "file_count": 4333,
+    "issues": [],
+    "unchanged": true
+  }
+]

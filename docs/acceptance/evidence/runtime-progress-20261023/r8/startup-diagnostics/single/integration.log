@@ -1,0 +1,6 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:260: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1787392467\native\original-worktree runtime=creation-runtime-sr-1787392467 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (17.86s)
+    --- PASS: TestSRResourceCreationRecovery/kill (17.86s)
+PASS

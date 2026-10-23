@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.progress-multirun
+--- PASS: TestSRLiveScenario (199.34s)
+    --- PASS: TestSRLiveScenario/local-codex.progress-multirun (199.31s)
+PASS

@@ -1,0 +1,77 @@
+{
+  "operations": [
+    {
+      "operation_id": "0f57d8b2f051ae325569a8ae2684e667",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "a0833534a725604816bf0a2a584341e9",
+      "action": "create_resource",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "62b7a9a524870d8924be1c0bcf4826da",
+      "action": "create_resource",
+      "status": "confirmed",
+      "diagnostic": "Waiting for the original execution-host preparation receipt",
+      "original_diagnostic": "Original remote preparation verified; committing before first business input"
+    }
+  ],
+  "run_id": "9f8f6bb78b864b7d5c4db5bd5974b4b9",
+  "revision": 11,
+  "title": "Progress byte channel 8a66a995a3ae 0",
+  "input_digest": "79f2fb6659ebf3b4861b4e47b878dd0df92667757fcd856ca66d0127688dab6a",
+  "resource_digest": "8171b167b01ce7e498a49460ff2e2390512411d282d7bd08c6f04bf325cc0340",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+    }
+  },
+  "step": "implement.execute",
+  "status": "blocked",
+  "phase": "preparation_deadline",
+  "diagnostic": "The original preparation budget is exhausted",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "materials": [
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/spec.md",
+      "commit": "167e4b5ab1b4c3c62ad3d10cf0f61d8f26de64b4",
+      "execution_location": "sr-smoke/spec.md"
+    },
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/plan.md",
+      "commit": "167e4b5ab1b4c3c62ad3d10cf0f61d8f26de64b4",
+      "execution_location": "sr-smoke/plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": false,
+    "attempt_id": "57de07788581f811e89f3c087f6f634c",
+    "generation": "92cfed457b4da179ecae578e1923fa6d",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:28da9fea-ca77-48de-8319-decb62914563:term_c9f0c8aa-780d-43c8-8bcb-05ad424a0883:fbc02a73-237f-4dc6-bcbc-bef56cc8e2b4",
+    "final_available": false,
+    "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-9f8f6bb78b864b7d5c4db5bd5974b4b9",
+    "branch": "erranliu/sr-9f8f6bb78b864b7d5c4db5bd5974b4b9"
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": false,
+    "can_close": false,
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": true,
+    "reason": "The original preparation budget is exhausted"
+  },
+  "created_at": "2026-10-23T10:42:40.6328251Z",
+  "updated_at": "2026-10-23T10:45:51.0340453Z"
+}

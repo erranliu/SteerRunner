@@ -1,0 +1,61 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v2",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r10",
+  "max_parallel": 5,
+  "cases": 5,
+  "runner_sha256": [
+    "cb41e5ca5d496be98c220dd8ce4df068c78724e136cc816162326a6717964a42"
+  ],
+  "driver_sha256": [
+    "657ac6b7b105abc8c2636748e8f1b685d3c744a1cc3181080c208c352553d138"
+  ],
+  "resource_conflicts": [],
+  "windows": [
+    {
+      "end": "2026-10-23T12:39:07.294733+00:00",
+      "run_ids": [
+        "85371ab1df4a24c78a354848f33141e6"
+      ],
+      "scenario": "local-codex.progress-file",
+      "start": "2026-10-23T12:37:06.971163+00:00",
+      "evidence": "C:\\srt\\83fe22c00005\\evidence\\progress-004-observation-window.json"
+    },
+    {
+      "end": "2026-10-23T12:39:26.7573331+00:00",
+      "run_ids": [
+        "93cbcba275d25f4fca4ba242682c3f6b",
+        "964b7ef22bb1854b8f32b7beb426e92d"
+      ],
+      "scenario": "local-codex.progress-multirun",
+      "start": "2026-10-23T12:37:26.3678791+00:00",
+      "evidence": "C:\\srt\\f0aab0a37faf\\evidence\\progress-007-observation-window.json"
+    },
+    {
+      "end": "2026-10-23T12:42:33.8652148+00:00",
+      "run_ids": [
+        "e3e7faea81da87b0e0d19b16aad80d76"
+      ],
+      "scenario": "local-codex.progress-recovery",
+      "start": "2026-10-23T12:40:33.0178133+00:00",
+      "evidence": "C:\\srt\\3db084155fa7\\evidence\\progress-004-observation-window.json"
+    }
+  ],
+  "native_observation_overlaps": [
+    {
+      "seconds": 100.9268539,
+      "first": "local-codex.progress-file",
+      "second": "local-codex.progress-multirun",
+      "from": "2026-10-23T12:37:26.3678791+00:00",
+      "until": "2026-10-23T12:39:07.2947330+00:00"
+    }
+  ],
+  "issues": [
+    "Official batch did not pass with parallel scheduling",
+    "Required case did not pass exactly once: orca-local.progress-file",
+    "Required case did not pass exactly once: orca-remote.progress-file",
+    "No actual native observation overlap with another passing case: orca-local.progress-file",
+    "No actual native observation overlap with another passing case: orca-remote.progress-file",
+    "No actual native observation overlap with another passing case: local-codex.progress-recovery"
+  ],
+  "passed": false
+}

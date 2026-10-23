@@ -1,0 +1,5 @@
+{
+  "pid": 27572,
+  "purpose": "Repeat original controlled kill fault window twenty times with startup error logging; not live qualification",
+  "runner_sha256": "B68C44A462DDCB8DC2BA3985DB85BA4A0013F48418455272C7FE89A3397C644B"
+}

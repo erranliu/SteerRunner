@@ -1,0 +1,32 @@
+{
+  "output": [
+    "{",
+    "  \"id\": \"2bd05454-8b07-48c0-a25a-f22f58fa25b7\",",
+    "  \"ok\": true,",
+    "  \"result\": {",
+    "    \"terminals\": [],",
+    "    \"hostScope\": {",
+    "      \"hostIds\": [",
+    "        \"local\"",
+    "      ],",
+    "      \"omittedHostIds\": [",
+    "        \"runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8\"",
+    "      ],",
+    "      \"omittedHostSelectors\": [",
+    "        {",
+    "          \"hostId\": \"runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8\",",
+    "          \"selector\": \"--environment 台式机64G\"",
+    "        }",
+    "      ]",
+    "    },",
+    "    \"topologyRevisions\": {},",
+    "    \"totalCount\": 0,",
+    "    \"truncated\": false",
+    "  },",
+    "  \"_meta\": {",
+    "    \"runtimeId\": \"28da9fea-ca77-48de-8319-decb62914563\"",
+    "  }",
+    "}"
+  ],
+  "exit_code": 0
+}

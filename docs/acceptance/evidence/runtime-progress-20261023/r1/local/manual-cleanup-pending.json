@@ -1,0 +1,1 @@
+{"pending_stops":[{"run_id":"d5efc039d735fe7399a067122978e02b","request":{"protocol":"steerrunner-cli/v1","request_id":"manual-failed-progress-cleanup-d5efc039d735fe7399a067122978e02b","input":{"expected_revision":4}}}]}

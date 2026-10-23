@@ -1,0 +1,243 @@
+{
+  "result_acquisition": [
+    {
+      "id": "1877c6269b2349c18a5b1420cbe3bb7cfe5eb70f4d2a5945df3ca8f2dc6c8808",
+      "contract": "implementation",
+      "source": {
+        "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+        "command_id": "2bdb81fef47f7d0463edbbcd665a90bb",
+        "turn_id": "01a16828-ad73-79e0-9cf4-9d474faf56c9",
+        "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+        "input_version": 1,
+        "final_digest": "ab681c7a2aa14b72ac387533a98a5736d252b73f90fbe6c510768b4899f86526"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "2bdb81fef47f7d0463edbbcd665a90bb",
+            "turn_id": "01a16828-ad73-79e0-9cf4-9d474faf56c9",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 1,
+            "final_digest": "ab681c7a2aa14b72ac387533a98a5736d252b73f90fbe6c510768b4899f86526"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "2bdb81fef47f7d0463edbbcd665a90bb",
+            "turn_id": "01a16828-ad73-79e0-9cf4-9d474faf56c9",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 1,
+            "final_digest": "ab681c7a2aa14b72ac387533a98a5736d252b73f90fbe6c510768b4899f86526"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "2bdb81fef47f7d0463edbbcd665a90bb",
+            "turn_id": "01a16828-ad73-79e0-9cf4-9d474faf56c9",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 1,
+            "final_digest": "ab681c7a2aa14b72ac387533a98a5736d252b73f90fbe6c510768b4899f86526"
+          },
+          "command_id": "2bdb81fef47f7d0463edbbcd665a90bb",
+          "status": "satisfied"
+        }
+      ]
+    },
+    {
+      "id": "7038e8ac56478ed4ad6740d3221c050e449a2188375d7b1beb043fabd54f4e97",
+      "contract": "publication",
+      "source": {
+        "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+        "command_id": "c4ed73c6f01bcfc3b9eaaa2bd0fe0269",
+        "turn_id": "01a16829-41fe-77b2-914b-3eb1c3dabf22",
+        "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+        "input_version": 2,
+        "final_digest": "4090608fe86f18b73740e94fdb239691e1085ee1b8adec5441d6fb834196bea4"
+      },
+      "method": "agent_report",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "7bf73357b5696beb26e5d65ddf2bc4e9",
+            "turn_id": "01a1682a-4000-7381-ba9c-1a1dda05735d",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 3,
+            "final_digest": "21f0ec0cdcb272c10b5f1e2cbeae87da78917f7967ea84bda8075ef4ed6ac361"
+          },
+          "locator": "native.final:$/outcome",
+          "method": "agent_report"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "7bf73357b5696beb26e5d65ddf2bc4e9",
+            "turn_id": "01a1682a-4000-7381-ba9c-1a1dda05735d",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 3,
+            "final_digest": "21f0ec0cdcb272c10b5f1e2cbeae87da78917f7967ea84bda8075ef4ed6ac361"
+          },
+          "locator": "native.final:$/summary",
+          "method": "agent_report"
+        },
+        {
+          "field": "blocker",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "7bf73357b5696beb26e5d65ddf2bc4e9",
+            "turn_id": "01a1682a-4000-7381-ba9c-1a1dda05735d",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 3,
+            "final_digest": "21f0ec0cdcb272c10b5f1e2cbeae87da78917f7967ea84bda8075ef4ed6ac361"
+          },
+          "locator": "native.final:$/blocker",
+          "method": "agent_report"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "c4ed73c6f01bcfc3b9eaaa2bd0fe0269",
+            "turn_id": "01a16829-41fe-77b2-914b-3eb1c3dabf22",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 2,
+            "final_digest": "4090608fe86f18b73740e94fdb239691e1085ee1b8adec5441d6fb834196bea4"
+          },
+          "command_id": "c4ed73c6f01bcfc3b9eaaa2bd0fe0269",
+          "status": "insufficient"
+        },
+        {
+          "method": "agent_report",
+          "source": {
+            "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+            "command_id": "c4ed73c6f01bcfc3b9eaaa2bd0fe0269",
+            "turn_id": "01a16829-41fe-77b2-914b-3eb1c3dabf22",
+            "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+            "input_version": 2,
+            "final_digest": "4090608fe86f18b73740e94fdb239691e1085ee1b8adec5441d6fb834196bea4"
+          },
+          "command_id": "7bf73357b5696beb26e5d65ddf2bc4e9",
+          "status": "satisfied"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "99c012c4668471f53ccd24e4b92b16de",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "6f2713f45dabb113ea877c101e4de5af",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "fc7e2e03d5463dd9bfdd3b108bf4a009",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "6f1309caf166bc6a5dff1ed02c1371a7",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "b7a18fde4e0ea55527415c5899b21ee8",
+      "action": "start_turn",
+      "status": "accepted"
+    }
+  ],
+  "run_id": "66898f98e7a1c6fb979d747636da6c1c",
+  "revision": 22,
+  "title": "Progress byte channel f908d9944416 1",
+  "input_digest": "ada7454062478bbc6842fad0ab26d3a18d3d40d818ea8013aa0e1ec7a164d343",
+  "resource_digest": "60dcd956b215814cc173f10aa1e118220e6d0ff72b57dbf1cbce21cf6435012c",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+    }
+  },
+  "step": "publish.report",
+  "status": "blocked",
+  "phase": "result_committed",
+  "diagnostic": "依据已有工具输出，分支 codex/runner-66898f98e7a1c6fb979d747636da6c1c 已成功 push 到 origin（退出码 0）；PR 查询失败（退出码 1），未执行创建，缺少可核验的 PR URL。提供的 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与实际 PR 查询失败及发布未完成的记录存在冲突；此前末行“本次发布已完成”不能作为成功依据。本次仅报告，未重新发布。",
+  "new_inputs_allowed": true,
+  "resume_required": false,
+  "materials": [
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/spec.md",
+      "commit": "da33f458cab8d36eb9f4672e1e3570923efcbd1e",
+      "execution_location": "sr-smoke/spec.md"
+    },
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/plan.md",
+      "commit": "da33f458cab8d36eb9f4672e1e3570923efcbd1e",
+      "execution_location": "sr-smoke/plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "requested_model": "gpt-6.1-sol",
+    "requested_reasoning_effort": "low",
+    "workspace_scope": "working_tree",
+    "turn_started": true,
+    "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+    "generation": "879861f1ee967677cda3611b9ddaa615",
+    "backend": "local",
+    "protocol": "local_codex_app_server_v1",
+    "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+    "turn_id": "01a1682a-4000-7381-ba9c-1a1dda05735d",
+    "native_outcome": "succeeded",
+    "final_available": true,
+    "workspace": "c:\\srt\\f908d9944416\\s\\workspaces\\tqxyigxd3am4dk6mtplhpocevq",
+    "branch": "codex/runner-66898f98e7a1c6fb979d747636da6c1c"
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": false,
+    "can_close": false,
+    "can_reply": true,
+    "can_resume": false,
+    "can_stop": true,
+    "reason": "依据已有工具输出，分支 codex/runner-66898f98e7a1c6fb979d747636da6c1c 已成功 push 到 origin（退出码 0）；PR 查询失败（退出码 1），未执行创建，缺少可核验的 PR URL。提供的 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与实际 PR 查询失败及发布未完成的记录存在冲突；此前末行“本次发布已完成”不能作为成功依据。本次仅报告，未重新发布。"
+  },
+  "summary": "依据已有工具输出，分支 codex/runner-66898f98e7a1c6fb979d747636da6c1c 已成功 push 到 origin（退出码 0）；PR 查询失败（退出码 1），未执行创建，缺少可核验的 PR URL。提供的 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与实际 PR 查询失败及发布未完成的记录存在冲突；此前末行“本次发布已完成”不能作为成功依据。本次仅报告，未重新发布。",
+  "final": {
+    "command_id": "7bf73357b5696beb26e5d65ddf2bc4e9",
+    "attempt_id": "605b08bb8112d9540aa0ce36f0be37ad",
+    "session_id": "01a16828-8b10-7b02-bf81-27819e72700e",
+    "turn_id": "01a1682a-4000-7381-ba9c-1a1dda05735d",
+    "native_outcome": "succeeded",
+    "verified": true,
+    "source": "codex.agentMessage.final_answer",
+    "item_id": "msg_0d8d5b9d81cbb2b5016adb2da2a37881919d12a98727f2cd9c",
+    "text": "{\"outcome\":\"blocked\",\"summary\":\"依据已有工具输出，分支 codex/runner-66898f98e7a1c6fb979d747636da6c1c 已成功 push 到 origin（退出码 0）；PR 查询失败（退出码 1），未执行创建，缺少可核验的 PR URL。提供的 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与实际 PR 查询失败及发布未完成的记录存在冲突；此前末行“本次发布已完成”不能作为成功依据。本次仅报告，未重新发布。\",\"blocker\":{\"category\":\"permission\",\"action\":\"查询指定分支到 codex/srtest/f908d9944416/base 的 PR\",\"error\":\"HTTP 403: execution repository or operation denied\",\"known\":\"push 成功；PR 查询被拒绝；未执行 PR 创建。\",\"unknown\":\"远端是否已有对应 PR，以及实际 PR URL。\"}}"
+  },
+  "created_at": "2026-10-23T09:46:44.1729688Z",
+  "updated_at": "2026-10-23T09:49:31.1094855Z"
+}

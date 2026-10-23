@@ -1,0 +1,230 @@
+{
+  "native_turns_after_restart": 2,
+  "native_turns_before_restart": 2,
+  "paths": [
+    "c:\\users\\lmas1\\appdata\\local\\temp\\sr-92416477\\runner\\workspaces\\wkfibuioibyhlugmpylwuiyqmm\\.steerrunner\\progress\\63e55de4cb1dfa99379412da8ac836a1\\progress.bin",
+    "c:\\users\\lmas1\\appdata\\local\\temp\\sr-92416477\\runner\\workspaces\\u6dhqvldpnflpn5jlslh4tqsv4\\.steerrunner\\progress\\4ac028cd5b91fb4315d1d35d172abe13\\progress.bin"
+  ],
+  "raw_execution_calls": "{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\wkfibuioibyhlugmpylwuiyqmm\",\"method\":\"thread/start\",\"thread\":\"817b45bb-b1fe-6eaa-05ee-d71d98a0813e\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\wkfibuioibyhlugmpylwuiyqmm\",\"method\":\"progress/environment\",\"path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\wkfibuioibyhlugmpylwuiyqmm\\\\.steerrunner\\\\progress\\\\63e55de4cb1dfa99379412da8ac836a1\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\wkfibuioibyhlugmpylwuiyqmm\",\"effort\":\"medium\",\"method\":\"turn/start\",\"model\":\"\",\"prompt\":\"读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。\\nSpec: spec.md\\nPlan: plan.md\\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.\\n\",\"thread\":\"817b45bb-b1fe-6eaa-05ee-d71d98a0813e\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\u6dhqvldpnflpn5jlslh4tqsv4\",\"method\":\"thread/start\",\"thread\":\"bbd514e5-23ec-967b-d191-f844f2bcfdf9\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\u6dhqvldpnflpn5jlslh4tqsv4\",\"method\":\"progress/environment\",\"path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\u6dhqvldpnflpn5jlslh4tqsv4\\\\.steerrunner\\\\progress\\\\4ac028cd5b91fb4315d1d35d172abe13\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-92416477\\\\runner\\\\workspaces\\\\u6dhqvldpnflpn5jlslh4tqsv4\",\"effort\":\"medium\",\"method\":\"turn/start\",\"model\":\"\",\"prompt\":\"读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。\\nSpec: spec.md\\nPlan: plan.md\\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.\\n\",\"thread\":\"bbd514e5-23ec-967b-d191-f844f2bcfdf9\"}\n",
+  "revision_after": 9,
+  "revision_before": 9,
+  "run_ids": [
+    "63e55de4cb1dfa99379412da8ac836a1",
+    "4ac028cd5b91fb4315d1d35d172abe13"
+  ],
+  "snapshots": [
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "pending"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "initializing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 1,
+      "observed_at": "2026-10-23T11:53:00.652426Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0w",
+      "size_bytes": 6,
+      "sha256": "8efd6168a055d1e45863c237eb3feab2be94f10b7ccdc5bf8bb54305c8b19f7f",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "pending"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 1,
+      "observed_at": "2026-10-23T11:53:17.8386527Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0x",
+      "size_bytes": 6,
+      "sha256": "0eb026731d9ea3f870511f8c18daeb814eaa2c9e276082b204f2a962212fb5bd",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 1,
+      "observed_at": "2026-10-23T11:53:00.652426Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0w",
+      "size_bytes": 6,
+      "sha256": "8efd6168a055d1e45863c237eb3feab2be94f10b7ccdc5bf8bb54305c8b19f7f",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 2,
+      "observed_at": "2026-10-23T11:53:24.9569437Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 1,
+      "observed_at": "2026-10-23T11:53:17.8386527Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0x",
+      "size_bytes": 6,
+      "sha256": "0eb026731d9ea3f870511f8c18daeb814eaa2c9e276082b204f2a962212fb5bd",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 2,
+      "observed_at": "2026-10-23T11:53:25.3441969Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQB",
+      "size_bytes": 9,
+      "sha256": "9e162d4854f7d9428eff4b31bd303dc862f07354c6d0a54d50d34d880140b767",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 2,
+      "observed_at": "2026-10-23T11:53:24.9569437Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 2,
+      "observed_at": "2026-10-23T11:53:24.9569437Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "unavailable",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:26.5433836Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1zdGlsbC1saXZl",
+      "size_bytes": 15,
+      "sha256": "aa33efc346284e221269428d6944c734318e3818cb418996ecc0aa1e94371bc4",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 2,
+      "observed_at": "2026-10-23T11:53:24.9569437Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "detached",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:28.8004726Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:28.8004726Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "unavailable",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:28.8004726Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "closed",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:26.5433836Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1zdGlsbC1saXZl",
+      "size_bytes": 15,
+      "sha256": "aa33efc346284e221269428d6944c734318e3818cb418996ecc0aa1e94371bc4",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "4ac028cd5b91fb4315d1d35d172abe13",
+      "version": 4,
+      "observed_at": "2026-10-23T11:53:29.6998036Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1hZnRlci1zdG9w",
+      "size_bytes": 15,
+      "sha256": "a60db26440882a5ee65eac2c11b610f6054f02856b2676ac06ad0fec599a856b",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "63e55de4cb1dfa99379412da8ac836a1",
+      "version": 3,
+      "observed_at": "2026-10-23T11:53:28.8004726Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "closed",
+      "diagnostic": "file_missing"
+    }
+  ]
+}

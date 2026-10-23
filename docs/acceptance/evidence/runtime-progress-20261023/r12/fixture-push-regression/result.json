@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "absent-retry",
+    "pushes": 2,
+    "expected_failure": false,
+    "passed": true
+  },
+  {
+    "mode": "accepted-wire-loss",
+    "pushes": 1,
+    "expected_failure": false,
+    "passed": true
+  },
+  {
+    "mode": "foreign-ref",
+    "pushes": 1,
+    "expected_failure": true,
+    "passed": true
+  },
+  {
+    "mode": "query-failure",
+    "pushes": 1,
+    "expected_failure": true,
+    "passed": true
+  }
+]

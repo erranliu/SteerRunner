@@ -1,0 +1,7 @@
+{
+  "revision": "d570230bd87e90e004983eb87d2a6472f415d1f5",
+  "attempt": 1,
+  "outcome": "confirmed-by-query",
+  "error": "Injected lost original push response",
+  "ref": "refs/heads/codex/srtest/012345abcde2/base"
+}

@@ -1,0 +1,106 @@
+{
+  "runs": [
+    {
+      "operations": [
+        {
+          "operation_id": "0b3df3f6990ec6fd923049c379a693c4",
+          "action": "prepare_workspace",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "ef839d98347decf40122cb38e1345502",
+          "action": "create_resource",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "513d9ccf8dc3314db3ddd821f489b36d",
+          "action": "create_resource",
+          "status": "confirmed",
+          "diagnostic": "Waiting for the original execution-host preparation receipt",
+          "original_diagnostic": "Original remote preparation verified; committing before first business input"
+        },
+        {
+          "operation_id": "57ec27b9767777024bac995cd938a55e",
+          "action": "prepare_session",
+          "status": "confirmed"
+        },
+        {
+          "operation_id": "f60b944cb4f9cf81a7850e0cfb7a4801",
+          "action": "start_turn",
+          "status": "accepted"
+        },
+        {
+          "operation_id": "a221e39ff688b4291c7cd1ef32b37d5e",
+          "action": "stop_execution",
+          "status": "outcome_unknown"
+        }
+      ],
+      "run_id": "001ee3a278f57d400196f5b500a20bfd",
+      "revision": 21,
+      "title": "Progress byte channel 13486f5f4b91 0",
+      "input_digest": "5db31df0721866a781b2fa66a2d1434642df1e809c84cb97075aa46d10b47931",
+      "resource_digest": "8171b167b01ce7e498a49460ff2e2390512411d282d7bd08c6f04bf325cc0340",
+      "workflow": {
+        "id": "development",
+        "version": 2,
+        "prompt_overrides": {
+          "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+        }
+      },
+      "step": "implement.execute",
+      "status": "reconciling",
+      "phase": "stop_execution",
+      "diagnostic": "readonly original terminal is not verifiably live\noriginal native control closure unverified",
+      "new_inputs_allowed": false,
+      "resume_required": true,
+      "stop_status": "unknown",
+      "materials": [
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/spec.md",
+          "commit": "965e3fc78a3232b3686ef6d18ed583622da41ced",
+          "execution_location": "sr-smoke/spec.md"
+        },
+        {
+          "kind": "worktree",
+          "path": "sr-smoke/plan.md",
+          "commit": "965e3fc78a3232b3686ef6d18ed583622da41ced",
+          "execution_location": "sr-smoke/plan.md"
+        }
+      ],
+      "execution": {
+        "agent": "codex",
+        "workspace_scope": "revision",
+        "turn_started": true,
+        "attempt_id": "dddd22b51b886be89922b87a95fb438a",
+        "generation": "5cccbf34a97244a4e546506559fe369d",
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "session_id": "orca-terminal:28da9fea-ca77-48de-8319-decb62914563:term_345d8570-e41a-435c-89be-8cc99c59ace9:f1330c7a-6372-4d81-9b03-57c05420c123",
+        "turn_id": "c0a4c578853338be74316c8a09c34774",
+        "final_available": false,
+        "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-001ee3a278f57d400196f5b500a20bfd",
+        "branch": "erranliu/sr-001ee3a278f57d400196f5b500a20bfd"
+      },
+      "controls": {
+        "can_message": false,
+        "can_interrupt": false,
+        "can_close": false,
+        "can_reply": false,
+        "can_resume": false,
+        "can_stop": true,
+        "reason": "readonly original terminal is not verifiably live\noriginal native control closure unverified"
+      },
+      "created_at": "2026-10-23T12:36:29.2654796Z",
+      "updated_at": "2026-10-23T12:42:39.7088363Z"
+    }
+  ],
+  "scenario": "orca-local.progress-file",
+  "level": "L3",
+  "stage": "verified",
+  "run_id": "001ee3a278f57d400196f5b500a20bfd",
+  "run_stopped": false,
+  "service_stopped": true,
+  "passed": false,
+  "progress_verified": true
+}

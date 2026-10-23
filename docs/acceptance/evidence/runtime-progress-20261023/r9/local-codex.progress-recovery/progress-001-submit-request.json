@@ -1,0 +1,64 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "progress-submit-0",
+  "input": {
+    "progress_file": {
+      "initial_content_base64": "c2VlZHwxNzRiNzYxMWU5MWI="
+    },
+    "title": "Progress byte channel 174b7611e91b 0",
+    "repository": {
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "base_revision": "e41b4aefd3734567e51babbf551df1e710b9cedc",
+      "remote": "origin",
+      "base_branch": "codex/srtest/174b7611e91b/base",
+      "local_path": "C:\\srt\\174b7611e91b\\SteerlineTest"
+    },
+    "documents": {
+      "spec": {
+        "path": "sr-smoke/spec.md"
+      },
+      "plan": {
+        "path": "sr-smoke/plan.md"
+      }
+    },
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+      }
+    },
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "sandbox",
+        "reasoning_effort": "low",
+        "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+        "model": "gpt-6.1-sol"
+      }
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "codex/srtest/174b7611e91b/base",
+      "settings": {
+        "query": {
+          "executable": "powershell.exe",
+          "args": [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:\\srt\\174b7611e91b\\bin\\query-pr.ps1",
+            "-URL",
+            "{pr_url}"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  }
+}

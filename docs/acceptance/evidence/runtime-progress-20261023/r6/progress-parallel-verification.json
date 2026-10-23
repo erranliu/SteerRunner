@@ -1,0 +1,74 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v2",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r6",
+  "max_parallel": 5,
+  "cases": 5,
+  "runner_sha256": [
+    "cf10a98cde5ac852674e6a4084fe6c2c6a9e531dae2943ad12afcc6804c6abc5"
+  ],
+  "driver_sha256": [
+    "5443668ba498b60c4dafe193f3971943f7db511638b63c958bab79a591d71141"
+  ],
+  "resource_conflicts": [],
+  "windows": [
+    {
+      "start": "2026-10-23T09:44:08.6480836+00:00",
+      "end": "2026-10-23T09:46:09.3802305+00:00",
+      "evidence": "C:\\srt\\314f0e88ee87\\evidence\\progress-004-observation-window.json",
+      "run_ids": [
+        "6d3ade1819ad726f4c02c404844630c7"
+      ],
+      "scenario": "local-codex.progress-file"
+    },
+    {
+      "start": "2026-10-23T09:46:55.3142776+00:00",
+      "end": "2026-10-23T09:48:56.8187555+00:00",
+      "evidence": "C:\\srt\\c9f21f9d064f\\evidence\\progress-004-observation-window.json",
+      "run_ids": [
+        "b2bfe6b92acb88bd4e8c43968eda3495"
+      ],
+      "scenario": "orca-local.progress-file"
+    },
+    {
+      "start": "2026-10-23T09:45:22.0753293+00:00",
+      "end": "2026-10-23T09:47:22.7023518+00:00",
+      "evidence": "C:\\srt\\695d369caf4e\\evidence\\progress-004-observation-window.json",
+      "run_ids": [
+        "1de09ba3790a24aec3d97ddfbdcf80f9"
+      ],
+      "scenario": "orca-remote.progress-file"
+    },
+    {
+      "start": "2026-10-23T09:49:01.3125738+00:00",
+      "end": "2026-10-23T09:51:01.4856433+00:00",
+      "evidence": "C:\\srt\\b9c1c1baf3af\\evidence\\progress-004-observation-window.json",
+      "run_ids": [
+        "e6afc18fbb746ba2f80e4ba5754c7ba2"
+      ],
+      "scenario": "local-codex.progress-recovery"
+    }
+  ],
+  "native_observation_overlaps": [
+    {
+      "seconds": 47.3049012,
+      "second": "orca-remote.progress-file",
+      "until": "2026-10-23T09:46:09.3802305+00:00",
+      "from": "2026-10-23T09:45:22.0753293+00:00",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "seconds": 27.3880742,
+      "second": "orca-remote.progress-file",
+      "until": "2026-10-23T09:47:22.7023518+00:00",
+      "from": "2026-10-23T09:46:55.3142776+00:00",
+      "first": "orca-local.progress-file"
+    }
+  ],
+  "issues": [
+    "Official batch did not pass with parallel scheduling",
+    "Required case did not pass exactly once: local-codex.progress-multirun",
+    "No actual native observation overlap with another passing case: local-codex.progress-multirun",
+    "No actual native observation overlap with another passing case: local-codex.progress-recovery"
+  ],
+  "passed": false
+}

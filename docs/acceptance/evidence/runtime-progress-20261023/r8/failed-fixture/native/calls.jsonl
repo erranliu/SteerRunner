@@ -1,0 +1,2 @@
+{"args":["status","--json"],"method":"orca/status/--json"}
+{"args":["worktree","create","--repo","path:C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-3343931466\\source","--name","sr-a11ae7113fc15cf5aef7a8ddcc3a040e","--base-branch","86d9f38fc9357bd86d40ff41ce3a0c3aeb2380d0","--no-parent","--setup","skip","--json"],"method":"orca/worktree/create"}
