@@ -122,3 +122,21 @@ func TestUsageHistoricalCodexWireAndInitialization(t *testing.T) {
 		}
 	}
 }
+
+func TestUsageScopedReadinessUsesItsOwnWireDigest(t *testing.T) {
+	start := time.Date(2026, 10, 23, 0, 0, 0, 0, time.UTC)
+	for _, prompt := range []string{usageReadyPrompt, codex.NativeReadinessPrompt} {
+		launch := "& 'codex.exe' '--model' 'chosen' '" + prompt + "'"
+		proof := UsageInitialization{LaunchCommand: launch, CreatedAt: start}
+		state := State{LaunchAccepted: true, LaunchConfirmed: true, LaunchDigest: digest([]byte(launch)), Turns: []Turn{{Accepted: true, Native: NativeProof{BaseRootAt: start.Add(time.Minute).UnixMilli()}}}}
+		got := usageInitialization(state, proof)
+		if got == nil || got.WireSHA256 != parsers.TextHash(prompt) {
+			t.Fatal("initialization attributed to a different wire input", got)
+		}
+		proof.LaunchCommand += "; Write-Output 'READY'"
+		state.LaunchDigest = digest([]byte(proof.LaunchCommand))
+		if got := usageInitialization(state, proof); got != nil {
+			t.Fatal("arbitrary command qualified as initialization", got)
+		}
+	}
+}

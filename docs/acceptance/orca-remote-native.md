@@ -2,6 +2,10 @@
 
 日期：2026-10-19。归属 [Spec](../spec/orca-remote-native.spec.md) / [Plan](../spec/orca-remote-native.plan.md)。已完成 P0 原生探针、查询修复、helper 删除及 unreported 最小修正；完整闭环、活动停止、结果阻断和上层契约验收通过（按当前 workflow v2 边界）。最终审计另修复持久结果回放的原 outcome 丢失，最新构建及补验见文末；以下历史阶段记录保留。详见首轮 [P0 实测报告](../archive/2026-10/acceptance/orca-remote-native-p0-20261019.md)及[补验报告](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)。
 
+2026-10-23 长任务复跑尚未通过：固定 `n308-19` Spec+Plan 的首轮 Run `3d7eb7c6c611f46a3940a4b621698e52`，源码 `ca1a8a3` / EXE SHA256 `d6688642410e9e30ff5672896cfd9992ba81e5f348c6e5f29f160973ddb87474`，远端 Orca 1.4.223、Codex gpt-6-luna xhigh/full_access。原输入仅发送一次；代理在压缩后以 READY 结束，只有未提交的部分实现，没有 PR。压缩后的历史仍含初始化输入和业务输入，不能据此断言业务输入被丢弃；新启动提示明确初始化指令在首个回复后失效，属于待真机复验的修正，不能仅凭提示文本和单测宣称模型问题已解决。
+
+同轮独立 `worktree.ps` 有原主代理结束及 READY，`session.tabs.list` 的 provider 仍匹配，但本轮所需 `mainAgent`/`turnStartedAt` 缺失且状态起点仍是初始化结束；Runner 正确保留 `observation_unverified`，不借屏幕或 rollout 升级为可信 final。rollout 仅作故障调查，不接入结果路径。普通 Git 查询出现的 61 个删除在单次 `git -c core.longpaths=true status` 中全部消失，真实文件未删除，不能批量恢复或带入 PR。Runner stop 首次未确认、后续原终端仍活跃；人工对精确原 handle 清理返回 ptyKilled=true，此人工收尾不计为 Runner 停止通过。详细原始证据保留在本聊天工作区 `.evidence/n308-19-remote-l4/`；连续稳定交付计数仍为 0，30 分钟 heartbeat 继续检查。历史短场景结果不能替代本次长任务资格。
+
 ## P0 删除前能力核验
 
 本轮已修复查询漏项并补验；用户明确参数只承诺按配置传递，不新增实际生效核验。结合首轮原生证据，当时 P0 按收敛契约通过，helper 删除尚未实施。源码调查和本文存在不构成通过。

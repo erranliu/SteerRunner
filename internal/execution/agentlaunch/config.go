@@ -103,7 +103,7 @@ func (c *Config) Command(agent string) (string, error) {
 		args = append(args, "-c", "tui.animations=false")
 		// Establish the native session before transport waits for its identity.
 		// This readiness input authorizes no business work, tools or file changes.
-		args = append(args, "Initialize this agent session. Reply READY only. Do not use tools or change files.")
+		args = append(args, codex.NativeReadinessPrompt)
 	}
 	parts := []string{"&", quote(c.Executable)}
 	linked := agent == "codex" && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox")
