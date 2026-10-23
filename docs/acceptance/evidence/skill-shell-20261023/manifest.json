@@ -1,0 +1,68 @@
+{
+  "files": [
+    {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "path": "LICENSE"
+    },
+    {
+      "sha256": "6e1c34cd3c03a98f25dc48fcfba5c3d070e31a64fbb7005c928104f8c4cc7f0f",
+      "path": "NOTICE"
+    },
+    {
+      "sha256": "10f785f272773fb2edd714e5eddba59d61db9cc4a267c937adcbf6d394943692",
+      "path": "steerrunner-viewer.exe"
+    },
+    {
+      "sha256": "1824cfbfc55ec9737745e0a3d46a884331120da40770848460332a18a17890ce",
+      "path": "steerrunner.exe"
+    },
+    {
+      "sha256": "7be26035434faf10b4e6ed87c57e947a0083eefad666a338861351a3c7b28f0a",
+      "path": "THIRD_PARTY_NOTICES.txt"
+    },
+    {
+      "sha256": "eb791439c7c06ce646f164d4363f21783e09121b146e87c1921880b01b08aca9",
+      "path": "client/README.md"
+    },
+    {
+      "sha256": "5358f2487337622ca48941b2d7dcb5c6573c9d4a169bc6eca11988bb7a0f0465",
+      "path": "client/steerrunner-client.ps1"
+    },
+    {
+      "sha256": "e74136a37a9ddbb695d75275fa6aa28bb2852e67881577d0cc82a9e7a39a0a18",
+      "path": "scripts/install-client.ps1"
+    },
+    {
+      "sha256": "006c07a9d51ddc803163fe4d1260ebab303ff2d73f33798822e855160a694c44",
+      "path": "skills/steerrunner-configure/SKILL.md"
+    },
+    {
+      "sha256": "853bb08abd6594c4fc0ce93f40107a2b5d495c614c7f973395d9ad2bbd21fe98",
+      "path": "skills/steerrunner-configure/agents/openai.yaml"
+    },
+    {
+      "sha256": "71ace264f310916539bce924e9385beee842f05b57aa2d19ecea909ff856ed17",
+      "path": "skills/steerrunner-run/SKILL.md"
+    },
+    {
+      "sha256": "419463a4065344ab7332475ba15597472f7fb5942f95ecc222d7fc8ccffae6d3",
+      "path": "skills/steerrunner-run/agents/openai.yaml"
+    }
+  ],
+  "snapshot_schema_version": 1,
+  "components": {
+    "client_contract_version": 1,
+    "runner": {
+      "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+      "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56-dirty",
+      "version": "0.2.0-dev.3-r2",
+      "resource_version": 2,
+      "protocols": [
+        "steerrunner-cli/v1"
+      ],
+      "platform": "windows/amd64"
+    },
+    "viewer_snapshot_schema_version": 1
+  },
+  "version": 1
+}

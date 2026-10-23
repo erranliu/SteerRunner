@@ -1,0 +1,20 @@
+---
+name: steerrunner-run
+description: Execute a repository Spec and Plan using SteerRunner, inspect or manage an existing SteerRunner Run, and open its read-only Run viewer. Use when the user selects SteerRunner or continues its existing Run; discussing specifications or ordinary coding does not authorize a new execution.
+---
+
+Read this installed skill's `assets/client-location.json` and call its absolute `helper_path` with `powershell.exe -NoProfile -File`. All actions share this helper. Save action inputs as UTF-8 JSON files and pass `-Action <action> -InputFile <path>`; use `-ProjectPath` when needed.
+
+For a new execution, obtain the intended Spec/Plan paths and title from the request/context. Generate one opaque `submission_id` (a UUID is suitable) **in the input file before invoking the helper**, and keep that input for any retry. Submit fields: `submission_id`, `title`, `spec`, `plan`, optional full `base_revision`, optional bound `profile`. Call `-Action Submit`. The helper checks the selected branch/materials, validates via the public CLI, saves the request, and submits. If the project lacks configuration, call the same helper's default Configure action; only ask about unresolved choices. Do not commit/push missing materials, replace a configured target, or reinterpret uncommitted files as the execution baseline.
+
+For progress use `Observe` (same-snapshot Run/events) or `Inspect`, with `submission_id`; alternatively an explicit `state_dir` and `run_id` locate a Run without a local submission record. `List` lists local command handles, not a complete authoritative Run list. Multiple matching projects/Runs require selecting the intended identity. Preserve returned event cursors when continuing an event page. For the complete minimal Run list call `-Action Viewer`, or directly open the separately installed Viewer EXE. Opening a window grants no execution control.
+
+Reply/Resume/Stop inputs use the same target plus a new stable `operation_id` created before each distinct write. Reply also needs `text`; pass the displayed `expected_revision` and, for answers, `question_id`. The helper checks fresh controls/revision/question before saving and sending. Only answer with the user's supplied content or resume when the user's instruction authorizes continuation. An old question/revision requires reviewing the new facts, not automatically resubmitting an answer. Stop addresses the original Run; service stop is different.
+
+When `question.native_questions` contains several questions, `text` must itself be a JSON string mapping each original native question ID to its array of answers, for example `{"q1":["provided answer"],"q2":["offered option"]}`. Cover the exact displayed questions; a single native question accepts plain text. Preserve the outer parent question_id in the helper input.
+
+After a timeout, missing/malformed response, or interrupted client, call `-Action Reconcile` with the **original** `operation_id` (for Submit it is the submission_id). By default this only queries the saved request. If retry is appropriate, `retry_same_request:true` resends only the original saved ID/body through Runner idempotency. Never create a new ID or rebuild its body to recover an unknown operation. If the handle was lost, use List to locate the original record before doing anything else.
+
+For evidence use `-Action Evidence` with the target and `evidence_command`: `artifacts discover`, `artifacts list`, `artifacts read` (plus `artifact_id`), or `workspace-git`. `artifacts collect` is a write: additionally provide `operation_id`, `relative_path`, and the displayed `expected_revision`.
+
+Report accepted, workflow/status, waiting question, verified PR and stopped/unknown resources as separate facts. Viewer freshness only describes the exported projection. `pr_ready` does not imply resources stopped, and current controls may reject further development feedback. Do not auto-merge, auto-stop on chat exit, install monitoring, or read Runner's private files. Return the submission/run handle when leaving an active run so it can be found later.

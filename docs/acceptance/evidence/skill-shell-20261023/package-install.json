@@ -1,0 +1,13 @@
+{
+  "passed": [
+    "exactly two skills locate one installed helper",
+    "default configure runs outside checkout and locates bundled Runner",
+    "existing installation rejected and caller configuration preserved",
+    "colliding skill rejected before any install mutation",
+    "manifest digest mismatch rejected before installation",
+    "relocation leaves an explicit broken locator and preserves caller records"
+  ],
+  "installed_configure": true,
+  "isolated": true,
+  "manifest_sha256": "B4C71B52919BC150B8DB99D3F35618C044C44C96487EAD249A690DCAF46405AD"
+}

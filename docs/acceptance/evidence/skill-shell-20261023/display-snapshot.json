@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_id": "d9d6badc5699915ff3e9261510994ee723f1ad659abbf08d964a945aeec342be",
+  "instance_id": "232af27a35aa2a1ae69fda07b14eefa4",
+  "sequence": 10,
+  "generated_at": "2026-10-23T07:11:12.4848926Z",
+  "runs": [
+    {
+      "run_id": "b3d25ccf2fdc3996bef21ac4801359fc",
+      "title": "独立Runner controlled",
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "step": "pr_ready",
+      "status": "pr_ready",
+      "pr": {
+        "url": "https://controlled.invalid/owner/repo/pull/84",
+        "number": 84
+      }
+    }
+  ]
+}

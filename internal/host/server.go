@@ -20,6 +20,7 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/resources"
+	"github.com/erranliu/SteerRunner/internal/runview"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"github.com/erranliu/SteerRunner/internal/usage/collect"
@@ -212,6 +213,30 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	completeBootstrap(dir, startupID)
 	logger.Printf("service ready instance=%s pid=%d detached=%t", service.InstanceID, service.PID, service.Detached)
 	engine.Start()
+	// Display is a best-effort projection. It owns no execution authorization.
+	viewCtx, viewCancel := context.WithCancel(ctx)
+	viewDone := make(chan struct{})
+	go func() {
+		defer close(viewDone)
+		directory, viewErr := runview.Directory()
+		if viewErr != nil {
+			logger.Print("display export unavailable: ", viewErr)
+			return
+		}
+		exporter := &runview.Exporter{Directory: directory, Source: runview.Source(dir), Instance: service.InstanceID, Read: engine.DisplayRuns}
+		exporter.Run(viewCtx, func(err error) { logger.Print("display export unavailable: ", err) })
+	}()
+	defer func() {
+		viewCancel()
+		// A cancellation request is not proof of I/O completion. Keep the
+		// original writer lease until even an unresponsive rename returns.
+		select {
+		case <-viewDone:
+		case <-time.After(25 * time.Second):
+			logger.Print("display export shutdown unverified; retaining writer lease until original I/O settles")
+			<-viewDone
+		}
+	}()
 	var activeMu sync.Mutex
 	active := map[net.Conn]bool{}
 	var handlers sync.WaitGroup

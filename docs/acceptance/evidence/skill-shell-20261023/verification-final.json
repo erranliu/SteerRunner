@@ -1,0 +1,21 @@
+{
+  "package_passed": 6,
+  "viewer_passed": 9,
+  "runner_production_changed_since_live": false,
+  "record_kind": "final artifact identity",
+  "components": [
+    {
+      "path": "steerrunner.exe",
+      "sha256": "1824CFBFC55EC9737745E0A3D46A884331120DA40770848460332A18A17890CE"
+    },
+    {
+      "path": "steerrunner-viewer.exe",
+      "sha256": "10F785F272773FB2EDD714E5EDDBA59D61DB9CC4A267C937ADCBF6D394943692"
+    },
+    {
+      "path": "client/steerrunner-client.ps1",
+      "sha256": "B8E786D2E26D7791A63DFA00749A287391903CD47A4EB2AC0C6D76F496A44C45"
+    }
+  ],
+  "client_passed": 23
+}
