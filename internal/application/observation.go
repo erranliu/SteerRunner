@@ -55,6 +55,9 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 	if event.PublicMessage != nil {
 		return e.acceptMessage(id, *event.PublicMessage)
 	}
+	if event.InputWait {
+		return e.acceptObservationDiagnostic(id, event)
+	}
 	f := event.Fact
 	if f.Kind != b.EventWorkObserved && f.Kind != b.EventQuestion && f.Kind != b.EventCompleted && f.Kind != b.EventStarted && f.Kind != b.EventGap && len(event.Implementation) == 0 {
 		return nil
@@ -152,6 +155,43 @@ func (e *Engine) acceptEvent(id string, event b.LifecycleEvent) error {
 		return nil
 	}
 	return e.commitLocked(r, nil, string(f.Kind))
+}
+
+const observationUnverified = "native_observation_unverified"
+
+// Observation availability is an idempotent current-value projection, not a
+// once-consumed native fact. In particular A -> clear -> A must remain visible.
+func (e *Engine) acceptObservationDiagnostic(id string, event b.LifecycleEvent) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	r := e.runs[id]
+	if r == nil {
+		return nil
+	}
+	s := r.Snapshot.Session
+	f := event.Fact
+	if f.SessionID == "" || f.SessionID != s.SessionID || f.StartedTurnID == "" ||
+		(f.StartedTurnID != s.CurrentTurnID && f.StartedTurnID != s.PendingTurnID) {
+		return reliable.ErrStale
+	}
+	if r.Status != "running" || (r.Phase != "observing" && r.Phase != observationUnverified) ||
+		r.PendingStop != "" || r.PendingInterrupt != "" || r.ResumeRequired || !r.Allowed || unknown(r) || r.Question != nil {
+		return nil
+	}
+	diagnostic := e.redact(r, event.Diagnostic)
+	phase := observationUnverified
+	if diagnostic == "" {
+		if r.Phase != observationUnverified {
+			return nil
+		}
+		phase = "observing"
+	}
+	if r.Phase == phase && r.Diagnostic == diagnostic {
+		return nil
+	}
+	next := r.Clone()
+	next.Phase, next.Diagnostic = phase, diagnostic
+	return e.commitLocked(next, nil, "observation_changed")
 }
 
 func (e *Engine) applyObservation(id string, original *runstate.Record, receipt b.LifecycleReceipt) bool {

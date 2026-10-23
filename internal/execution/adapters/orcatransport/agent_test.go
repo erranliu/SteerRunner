@@ -51,7 +51,7 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			for _, kind := range []string{"success", "agent-changed", "missing-agent", "provider-changed", "missing-root", "unreported-outcome", "explicit-unknown", "failed", "cancelled", "session-start", "child-working", "tool-output", "restored", "truncated"} {
 				t.Run(kind, func(t *testing.T) {
 					turn := Turn{Accepted: true, Started: true, Prompt: "task", Native: nativeBaseline(base, now)}
-					turn.Native.signal(start, &turn, now)
+					turn.Native.signal(start, &turn, now, false)
 					current := end
 					root := *end.MainAgent
 					current.MainAgent = &root
@@ -111,13 +111,13 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			turn := Turn{Accepted: true, Started: true, Prompt: "task", Native: restored}
 			missing := start
 			missing.AgentType = ""
-			turn.Native.signal(missing, &turn, now)
+			turn.Native.signal(missing, &turn, now, false)
 			if turn.Native.WorkingAt != 0 || turn.Native.Diagnostic != "" {
 				t.Fatal("missing agent metadata started or permanently failed the turn")
 			}
 			foreign := start
 			foreign.AgentType = "foreign"
-			turn.Native.signal(foreign, &turn, now)
+			turn.Native.signal(foreign, &turn, now, false)
 			if turn.Native.WorkingAt != 0 || turn.Native.Diagnostic == "" {
 				t.Fatal("foreign agent hook started the original turn")
 			}

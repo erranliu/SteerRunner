@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.multirun
+--- PASS: TestSRLiveScenario (197.17s)
+    --- PASS: TestSRLiveScenario/orca-remote.multirun (197.14s)
+PASS

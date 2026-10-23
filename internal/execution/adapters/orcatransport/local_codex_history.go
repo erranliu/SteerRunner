@@ -54,7 +54,7 @@ func (l *Lifecycle) observeRecorded(ctx context.Context, state *State, turn *Tur
 			signals, _ := feed.Drain()
 			signals = append(signals, feed.Initial())
 			for _, s := range signals {
-				if s.PaneKey == turn.Native.Pane && s.ProviderSession.ID == state.RemoteReadiness.SessionID && trustedState(s) && s.Observation.Revision > turn.Native.BaseRevision && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && s.Prompt == preview(wirePrompt(turn)) && !s.SessionBoundary && !s.RestoredUnconfirmed {
+				if s.PaneKey == turn.Native.Pane && s.ProviderSession.ID == state.RemoteReadiness.SessionID && trustedState(s.AgentState) && s.Observation.Revision > turn.Native.BaseRevision && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && s.Prompt == preview(wirePrompt(turn)) && !s.SessionBoundary && !s.RestoredUnconfirmed {
 					due = true
 				}
 			}

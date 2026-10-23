@@ -231,6 +231,9 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 			t.Fatal("last-message crossed native Run identity")
 		}
 		save(t, fmt.Sprintf("peer-%d-last-message.json", i), latest)
+		if m.Execution.Target.Kind == "orca_environment" {
+			assertNativeLastMessage(t, m, dir, runs[i], true)
+		}
 	}
 	if runs[0].Execution.SessionID == runs[1].Execution.SessionID || runs[0].Execution.Workspace == runs[1].Execution.Workspace || runs[0].Execution.Branch == runs[1].Execution.Branch || runs[0].PR.URL == runs[1].PR.URL {
 		t.Fatal("multi-Run session/workspace/branch/PR collision")

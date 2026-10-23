@@ -1,0 +1,20 @@
+=== RUN   TestLastMessageIsBoundedReadOnlyTelemetry
+--- PASS: TestLastMessageIsBoundedReadOnlyTelemetry (0.00s)
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority/blocked
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority/reconciling
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority/waiting_input
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority/stopped
+=== RUN   TestOrcaObservationProjectionTransitionsAndPriority/pr_ready
+--- PASS: TestOrcaObservationProjectionTransitionsAndPriority (0.09s)
+    --- PASS: TestOrcaObservationProjectionTransitionsAndPriority/blocked (0.00s)
+    --- PASS: TestOrcaObservationProjectionTransitionsAndPriority/reconciling (0.00s)
+    --- PASS: TestOrcaObservationProjectionTransitionsAndPriority/waiting_input (0.00s)
+    --- PASS: TestOrcaObservationProjectionTransitionsAndPriority/stopped (0.00s)
+    --- PASS: TestOrcaObservationProjectionTransitionsAndPriority/pr_ready (0.00s)
+=== RUN   TestOrcaObservationProjectionAndPublicMessageRemainSeparate
+--- PASS: TestOrcaObservationProjectionAndPublicMessageRemainSeparate (0.06s)
+=== RUN   TestLastMessageSameTextFromNewTurnRetainsOriginalIdentities
+--- PASS: TestLastMessageSameTextFromNewTurnRetainsOriginalIdentities (0.05s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	3.867s

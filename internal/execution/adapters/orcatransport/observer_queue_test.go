@@ -38,7 +38,7 @@ func TestObserverQueueCancellationKeepsOriginalObservationWithoutResend(t *testi
 		}
 		return json.Marshal(map[string]any{"ok": true, "result": json.RawMessage(result.Payload), "_meta": map[string]any{"runtimeId": result.RuntimeID}})
 	}})
-	observer := l.observe(snapshot)
+	observer := l.observe(snapshot, nil)
 	defer observer.Close(context.Background())
 	completed := false
 	timeout := time.NewTimer(5 * time.Second)

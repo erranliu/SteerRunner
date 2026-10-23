@@ -679,7 +679,9 @@ func cloneAnswers(values map[string][]string) map[string][]string {
 
 type LifecycleEvent struct {
 	// PublicMessage is an optional bounded native activity hint, not a fact.
-	PublicMessage  *PublicMessage
+	PublicMessage *PublicMessage
+	// InputWait updates current observation availability; an empty Diagnostic
+	// clears only the observation-owned projection. It is not a human question.
 	InputWait      bool
 	Diagnostic     string
 	Fact           EventFact

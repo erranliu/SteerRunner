@@ -36,7 +36,7 @@ type NativeProof struct {
 }
 
 func stateHint(s native.AgentState) string {
-	return s.PaneKey + ":" + s.State + ":" + strconv.FormatInt(s.StateStartedAt, 10) + ":" + strconv.FormatInt(s.UpdatedAt, 10)
+	return s.PaneKey + ":" + s.State + ":" + strconv.FormatInt(s.StateStartedAt, 10)
 }
 func nativeBaseline(s native.AgentState, now time.Time) NativeProof {
 	p := NativeProof{Pane: s.PaneKey, Provider: s.ProviderSession.ID, LastSignal: now, LastQuery: now, Hint: stateHint(s)}
@@ -96,21 +96,21 @@ func (p *NativeProof) body(message string) {
 	p.ReplyDigest = hash
 	p.ReplyBody = body
 }
-func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time) {
-	if p.Diagnostic != "" && p.Diagnostic != "Native main agent is waiting; no next input was sent" {
-		return
+func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time, linked bool) string {
+	if p.Diagnostic != "" && p.Diagnostic != nativeWaiting {
+		return p.Diagnostic
 	}
 	if s.PaneKey != p.Pane {
 		p.Diagnostic = "Native original pane changed"
-		return
+		return p.Diagnostic
 	}
 	if s.AgentType != "" && s.AgentType != p.agentName() {
 		p.Diagnostic = "Native original agent changed"
-		return
+		return p.Diagnostic
 	}
 	if p.Provider != "" && s.ProviderSession.ID != "" && s.ProviderSession.ID != p.Provider {
 		p.Diagnostic = "Native original provider session changed"
-		return
+		return p.Diagnostic
 	}
 	if stateHint(s) != p.Hint {
 		p.Hint = stateHint(s)
@@ -119,63 +119,64 @@ func (p *NativeProof) signal(s native.AgentState, turn *Turn, now time.Time) {
 		}
 	} // hint only; require a main-agent query
 	if !trustedState(s) || !turn.Accepted {
-		return
+		return p.Diagnostic
 	}
 	o := s.Observation
 	if p.Authority != "" && (o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation) {
 		p.Diagnostic = "Native main-agent authority changed"
-		return
+		return p.Diagnostic
 	}
 	if p.BaseAuthority != "" && o.AuthorityID != p.BaseAuthority {
 		p.Diagnostic = "Native baseline authority changed"
-		return
+		return p.Diagnostic
 	}
 	if o.Revision <= p.BaseRevision || o.Revision <= p.Revision {
-		return
+		return p.Diagnostic
 	}
-	if p.rejectProvenance(s, turn) {
-		return
+	if s.MainAgent.StateStartedAt > p.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") {
+		issue := p.attribution(s, turn, linked)
+		if issue.kind != provenanceMatched {
+			if issue.kind == provenanceConflict {
+				p.Diagnostic = issue.diagnostic
+			}
+			return issue.diagnostic
+		}
 	}
 	if p.WorkingAt == 0 {
 		if s.MainAgent.State == "done" {
 			// Without a streamed start, confirm the retained main-agent record
 			// through the independent query; never promote a tab snapshot alone.
-			return
+			return p.Diagnostic
 		}
 		if s.MainAgent.State != "working" || s.MainAgent.StateStartedAt <= p.BaseRootAt || !turn.Started || s.ProviderSession.ID == "" || s.Prompt != preview(turn.Prompt) {
-			return
+			return p.Diagnostic
 		}
 		p.Authority, p.Incarnation, p.Provider = o.AuthorityID, o.Incarnation, s.ProviderSession.ID
 		p.WorkingAt = o.ObservedAt
 		p.RootWorkingAt = s.MainAgent.StateStartedAt
 	} else if o.Boundary && s.MainAgent.State == "working" && s.MainAgent.StateStartedAt != p.RootWorkingAt {
 		p.Diagnostic = "Another native input boundary makes the original turn unverified"
-		return
+		return p.Diagnostic
 	}
 	p.Revision, p.LastSignal = o.Revision, now
 	if s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.WorkingAt {
-		p.end(s, turn, now)
+		p.end(s, turn, now, linked)
 	} else if s.MainAgent.State == "waiting" || s.MainAgent.State == "blocked" {
 		// Waiting remains in the current turn; it is not a completion.
-		p.Diagnostic = "Native main agent is waiting; no next input was sent"
-	} else if p.Diagnostic == "Native main agent is waiting; no next input was sent" {
+		p.Diagnostic = nativeWaiting
+	} else if p.Diagnostic == nativeWaiting {
 		p.Diagnostic = ""
 	}
+	return p.Diagnostic
 }
-func (p *NativeProof) rejectProvenance(s native.AgentState, turn *Turn) bool {
-	if s.MainAgent != nil && s.MainAgent.StateStartedAt > p.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") &&
-		(s.SessionBoundary || s.RestoredUnconfirmed || s.Prompt != preview(turn.Prompt)) {
-		p.Diagnostic = "Native original completion/input provenance is unverified"
-		return true
-	}
-	return false
-}
-func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time) bool {
+func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time, linked bool) bool {
 	if !turn.Accepted || !turn.Started || p.Provider == "" || s.MainAgent == nil || s.MainAgent.State != "done" || s.AgentType != p.agentName() || s.PaneKey != p.Pane || s.ProviderSession.ID != p.Provider || s.MainAgent.StateStartedAt <= p.WorkingAt || s.MainAgent.StateStartedAt <= p.BaseRootAt || p.WorkingAt == 0 && p.BaseRootAt <= 0 {
 		return false
 	}
-	if s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Prompt != preview(turn.Prompt) {
-		p.Diagnostic = "Native original completion/input provenance is unverified"
+	if issue := p.attribution(s, turn, linked); issue.kind != provenanceMatched {
+		if issue.kind == provenanceConflict {
+			p.Diagnostic = issue.diagnostic
+		}
 		return false
 	}
 	if s.Interrupted || s.MainAgent.Outcome != "" && s.MainAgent.Outcome != "success" || p.agentName() != "codex" && s.MainAgent.Outcome != "success" {
@@ -195,14 +196,14 @@ func (p *NativeProof) end(s native.AgentState, turn *Turn, now time.Time) bool {
 			p.Outcome = s.MainAgent.Outcome
 		}
 	}
-	if p.Diagnostic == "Native main agent is waiting; no next input was sent" {
+	if p.Diagnostic == nativeWaiting {
 		p.Diagnostic = ""
 	}
 	p.body(s.LastAssistantMessage)
 	return true
 }
 func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time) bool {
-	if p.Diagnostic != "" && p.Diagnostic != "Native main agent is waiting; no next input was sent" {
+	if p.Diagnostic != "" && p.Diagnostic != nativeWaiting {
 		return false
 	}
 	if s.MainAgent == nil || s.UpdatedAt < s.MainAgent.StateStartedAt {
@@ -215,10 +216,15 @@ func (p *NativeProof) query(s native.AgentState, turn *Turn, now time.Time) bool
 		p.Diagnostic = "Native original queried agent/pane/provider changed"
 		return false
 	}
-	if p.rejectProvenance(s, turn) {
-		return false
+	if s.MainAgent.StateStartedAt > p.BaseRootAt {
+		if issue := p.attribution(s, turn, false); issue.kind != provenanceMatched {
+			if issue.kind == provenanceConflict {
+				p.Diagnostic = issue.diagnostic
+			}
+			return false
+		}
 	}
-	return p.end(s, turn, now)
+	return p.end(s, turn, now, false)
 }
 func (p NativeProof) wantsQuery(now time.Time) bool {
 	return (p.EndedAt == 0 || p.ReplyDigest == "") && (p.HintPending || !now.Before(p.LastQuery.Add(30*time.Second)))
@@ -261,10 +267,9 @@ func (l *Lifecycle) releaseStateFeed(feed native.StateFeed) {
 	feed.Close()
 }
 
-func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnapshot, state *State, turn *Turn) string {
-	// Subscription is a notification source, not a prerequisite for a bounded
-	// authoritative read. Opening a failed stream is retried only on the query
-	// interval, so an offline host cannot create a tight reconnect loop.
+func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnapshot, state *State, turn *Turn) (diagnostic string) {
+	l.observationMu.Lock()
+	defer l.observationMu.Unlock()
 	l.feedMu.Lock()
 	feed := l.feed
 	l.feedMu.Unlock()
@@ -277,43 +282,81 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 				turn.Native.Diagnostic = streamErr.Error()
 			}
 		} else {
-			// A reattached stream's initial snapshot can already be done. It
-			// triggers confirmation, not direct completion or a fake working.
-			initial := feed.Initial()
+			initial := feed.Initial().AgentState
 			if stateHint(initial) != turn.Native.Hint && initial.State == "done" {
 				turn.Native.Hint, turn.Native.HintPending = stateHint(initial), true
 			}
 		}
 	}
+	observation := l.observation(snapshot, feed)
+	diagnostic = observation.diagnostic
+	defer func() { observation.diagnostic = diagnostic }()
 	drain := func() {
 		if feed == nil {
 			return
 		}
-		states, err := feed.Drain()
+		samples, err := feed.Drain()
 		streamErr = err
-		for _, s := range states {
-			turn.Native.signal(s, turn, l.clock())
+		if err != nil {
+			observation.invalidate()
+		}
+		for _, sample := range samples {
+			s := sample.AgentState
+			if sample.Kind == native.SampleInitial {
+				observation.reattach(s, turn.Native, turn)
+				if s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") {
+					if issue := turn.Native.attribution(s, turn, false); issue.kind != provenanceMatched {
+						diagnostic = issue.diagnostic
+					}
+				}
+				if stateHint(s) != turn.Native.Hint && s.State == "done" {
+					turn.Native.Hint, turn.Native.HintPending = stateHint(s), true
+				}
+				continue
+			}
+			prior := turn.Native.Revision
+			hadStart := turn.Native.WorkingAt > 0
+			linked := err == nil && observation.linked(sample, turn.Native)
+			issue := turn.Native.signal(s, turn, received(sample, l.clock()), linked)
+			if issue != "" {
+				diagnostic = issue
+			} else if turn.Native.Revision > prior {
+				diagnostic = ""
+			}
+			if sample.Kind == native.SampleNotification && trustedState(s) && !hadStart && turn.Native.WorkingAt > 0 && err == nil {
+				observation.continuous = true
+				observation.turnStartedAt = s.TurnStartedAt
+				observation.lastDigest = digest([]byte(s.LastAssistantMessage))
+				observation.pending = nil
+			}
+			if s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted ||
+				s.TurnStartedAt > 0 && observation.turnStartedAt > 0 && s.TurnStartedAt != observation.turnStartedAt {
+				observation.invalidate()
+			}
+			if err == nil && (observation.continuous || turn.Native.EndedAt > 0) {
+				observation.offer(sample, turn.Native, turn, turn.Native.Revision > prior && hadStart)
+			}
 		}
 		if errors.Is(err, native.ErrStateIdentityChanged) {
 			turn.Native.Diagnostic = err.Error()
 		}
 	}
 	drain()
-	if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != "Native main agent is waiting; no next input was sent" {
+	if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != nativeWaiting {
+		observation.invalidate()
 		return turn.Native.Diagnostic
 	}
 	if turn.Native.wantsQuery(l.clock()) {
-		turn.Native.LastQuery = l.clock()
-		turn.Native.HintPending = false
+		turn.Native.LastQuery, turn.Native.HintPending = l.clock(), false
 		if !turn.Accepted || !turn.Started {
 			return "Original input has no verified start receipt; no input was resent"
 		}
-		var s native.AgentState
+		var sample native.StateSample
 		var err error
 		if l.queryNative != nil {
-			s, err = l.queryNative(ctx, state.Process, turn.Native.Pane)
+			sample, err = l.queryNative(ctx, state.Process, turn.Native.Pane)
 		} else if feed != nil {
-			s, err = feed.Query(ctx)
+			sample, err = feed.Query(ctx)
 		} else {
 			err = streamErr
 			if err == nil {
@@ -323,21 +366,44 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		if err != nil {
 			if errors.Is(err, native.ErrStateIdentityChanged) {
 				turn.Native.Diagnostic = err.Error()
+				observation.invalidate()
 			}
 			return "Native main-agent query is unverified: " + err.Error()
 		}
-		// Drain notifications received while the single synchronous query ran.
 		drain()
-		if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != "Native main agent is waiting; no next input was sent" {
+		if turn.Native.Diagnostic != "" && turn.Native.Diagnostic != nativeWaiting {
+			observation.invalidate()
 			return turn.Native.Diagnostic
 		}
 		if _, err := l.original(ctx, snapshot); err != nil {
+			observation.invalidate()
 			return err.Error()
 		}
-		turn.Native.query(s, turn, l.clock())
+		s := sample.AgentState
+		verified := false
+		if observation.supplements(sample, turn.Native) && turn.Native.Diagnostic == "" {
+			verified = turn.Native.end(s, turn, received(sample, l.clock()), true)
+		} else {
+			verified = turn.Native.query(s, turn, received(sample, l.clock()))
+		}
+		if verified || s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && turn.Native.attribution(s, turn, false).kind == provenanceMatched {
+			diagnostic = ""
+		}
+		if s.MainAgent != nil && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt {
+			if issue := turn.Native.attribution(s, turn, false); issue.kind == provenanceMissing && turn.Native.EndedAt == 0 {
+				diagnostic = issue.diagnostic
+			}
+		}
+		observation.offer(sample, turn.Native, turn, false)
+	}
+	if turn.Native.Diagnostic != "" {
+		return turn.Native.Diagnostic
 	}
 	if turn.Native.EndedAt == 0 && streamErr != nil {
 		return "Native state subscription is unverified; original query remains available: " + streamErr.Error()
 	}
-	return turn.Native.Diagnostic
+	if turn.Native.EndedAt > 0 {
+		return ""
+	}
+	return diagnostic
 }

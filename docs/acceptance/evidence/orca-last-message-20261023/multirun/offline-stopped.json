@@ -1,0 +1,19 @@
+{
+  "checks": [],
+  "state_dir": "c:\\srt\\bbc3990ab2a0\\s",
+  "resources_settled": true,
+  "runs": [
+    {
+      "stop_evidence_scope": "orca_terminal",
+      "run_id": "4590563a1600576b5b1c25191bb8a47c",
+      "input_digest": "4a227519f9eeaae3d999a692483287aaababa26962c1436d00908865244a7427",
+      "resources_settled": true
+    },
+    {
+      "stop_evidence_scope": "orca_terminal",
+      "run_id": "5dfd231961d10dababe5f59b43fbd50a",
+      "input_digest": "0e72e17cc74b370007bbd4b6d1f1105b3c3f63fb49fa008699b865ff61ec5896",
+      "resources_settled": true
+    }
+  ]
+}

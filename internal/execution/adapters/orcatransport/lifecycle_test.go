@@ -310,7 +310,9 @@ func bind(s *b.LifecycleSnapshot, r b.LifecycleReceipt) {
 	if r.Process != nil {
 		s.Ref.External = *r.Process
 		s.Session.SessionID = r.State.SessionID
-		s.Session.Generation = r.State.SessionGeneration
+		if r.State.SessionGeneration != "" {
+			s.Session.Generation = r.State.SessionGeneration
+		}
 	}
 	if len(r.Implementation) > 0 {
 		s.Implementation = r.Implementation
@@ -531,7 +533,7 @@ func TestPreparationAndSubmissionNeverReadScreen(t *testing.T) {
 	}
 }
 
-func settled(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+func settled(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot) (b.LifecycleReceipt, *b.PublicMessage, error) {
 	t.Helper()
 	return l.observeOnce(context.Background(), s)
 }

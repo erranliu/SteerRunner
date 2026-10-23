@@ -314,8 +314,7 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许明确列出的两个 subprocess helper、三个显式 Orca 取证入口及一个
-显式 MXC 工具环境诊断 skip；这些 skip 不计真机通过。后者用
+禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、MXC 工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。MXC 入口用
 `go test ./internal/execution/adapters/codex -run '^TestAuthenticationNativeToolBoundary$' -v -count=1 -args -sandbox-auth-native=<Codex绝对路径>`
 单独执行，使用无效受控 canary，不运行模型、不证明真实认证/发布。
 同一命令增加 `-sandbox-auth-host-broker=true` 可在全新诊断现场使用宿主登录的受限代理，
@@ -513,3 +512,6 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 查询失败和替换 PR/Session；不得用反复读取旧快照来声称反馈未交付。
 
 2026-10-19：远端 helper 接线删除后的本次验收以 [原生方案](spec/orca-remote-native.plan.md)及[专属记录](acceptance/orca-remote-native.md)为准。当前远端完整 Check 返回 unsupported，不创建 actor；local Check 保持。原生参数仅核对冻结值与传递命令，离线停止输出的 scope 只描述原 Orca 终端，不证明全 OS 树或撤销登录。
+
+
+2026-10-23：远端 Orca Codex 最后消息沿现有 smoke、multirun、connection-reconnect drivers 核验公开 CLI 身份、摘要边界及重复读取时间；不新建 catalog case。`TestOrcaNativeStateLiveLifecycle` 的原 opt-in 入口记录普通通知和 query-only 的实际样本、独立消息/完成事件及原资源关闭。缺 prompt 的查询场景若真实出现，应保持未核实且零重发；若来源保留 prompt，只登记匹配路径通过。Controlled 覆盖空 prompt 连续链、标记变化、断线/重启和诊断重附着。详见[Spec](spec/orca-last-message.spec.md)、[Plan](spec/orca-last-message.plan.md)及[原验收](acceptance/execution-observability.md)。

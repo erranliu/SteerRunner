@@ -47,21 +47,34 @@ func (h *observationHandle) Identity() b.ProcessIdentity { return h.owner.proces
 func (h *observationHandle) Kill()                       { _ = h.owner.Close(context.Background()) }
 func (h *observationHandle) Close()                      { _ = h.owner.Close(context.Background()) }
 
-func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
+func (l *Lifecycle) observe(s b.LifecycleSnapshot, first *b.PublicMessage) b.LifecycleObserver {
 	ctx, cancel := context.WithCancel(context.Background())
 	o := &observer{events: make(chan b.LifecycleEvent, 4), done: make(chan error, 1), finished: make(chan struct{}), cancel: cancel, process: s.Ref.External}
 	l.feedMu.Lock()
 	ownedFeed := l.feed
 	l.feedMu.Unlock()
+	l.observationMu.Lock()
+	ownedObservation := l.nativeObservation
+	l.observationMu.Unlock()
 	go func() {
-		defer close(o.finished)
-		defer func() { l.releaseStateFeed(ownedFeed) }()
-		defer close(o.events)
-		defer close(o.done)
+		var observerErr error
+		defer func() {
+			l.releaseStateFeed(ownedFeed)
+			l.clearObservation(ownedObservation)
+			close(o.events)
+			if ctx.Err() == nil {
+				o.done <- observerErr
+			}
+			close(o.done)
+			close(o.finished)
+		}()
 		send := func(event b.LifecycleEvent) bool {
 			event.Kind = "turn"
 			if event.InputWait {
-				event.Kind, event.Status, event.Title = "execution", "waiting", "Worker reply unavailable"
+				event.Kind, event.Status, event.Title = "execution", "observing", "Worker observation available"
+				if event.Diagnostic != "" {
+					event.Status, event.Title = "waiting", "Worker reply unavailable"
+				}
 			} else if event.Fact.Kind == b.EventStarted {
 				event.Status, event.Title = "started", "Worker input started"
 			} else if event.Fact.Kind == b.EventCompleted {
@@ -79,7 +92,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			select {
 			case err := <-event.Persisted:
 				if err != nil {
-					o.done <- err
+					observerErr = err
 					return false
 				}
 			case <-ctx.Done():
@@ -88,7 +101,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			select {
 			case err := <-event.Processed:
 				if err != nil {
-					o.done <- err
+					observerErr = err
 					return false
 				}
 			case <-ctx.Done():
@@ -96,10 +109,17 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			}
 			return true
 		}
-		started, waiting, ended := s.Session.CurrentCommandID == command(s) && s.Session.CurrentTurnID == command(s), false, false
+		if first != nil {
+			if !send(b.LifecycleEvent{PublicMessage: first}) {
+				return
+			}
+			l.acknowledgeMessage(first)
+		}
+		started, ended := s.Session.CurrentCommandID == command(s) && s.Session.CurrentTurnID == command(s), false
+		lastDiagnostic, diagnosticSet := "", false
 		for {
 			before, _ := json.Marshal(s.Implementation)
-			receipt, _, err := l.observeOnce(ctx, s)
+			receipt, message, err := l.observeOnce(ctx, s)
 			// A restored observer may acquire its subscription on a later retry.
 			if ownedFeed == nil {
 				l.feedMu.Lock()
@@ -120,7 +140,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 					}
 				}
 				if ctx.Err() == nil {
-					o.done <- err
+					observerErr = err
 				}
 				return
 			}
@@ -128,12 +148,18 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				s.Implementation = receipt.Implementation
 			}
 			committed := false
-			if receipt.Diagnostic != "" && !waiting {
-				if !send(b.LifecycleEvent{InputWait: true, Diagnostic: receipt.Diagnostic, Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.terminal.wait", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":reply-missing", SessionID: SessionID(s.Ref.External)}, Implementation: receipt.Implementation}) {
+			if message != nil {
+				if !send(b.LifecycleEvent{PublicMessage: message}) {
 					return
 				}
-				waiting = true
-				committed = true
+				l.acknowledgeMessage(message)
+			}
+			afterDiagnostic, _ := json.Marshal(receipt.Implementation)
+			if !diagnosticSet || receipt.Diagnostic != lastDiagnostic || string(before) != string(afterDiagnostic) {
+				if !send(b.LifecycleEvent{InputWait: true, Diagnostic: receipt.Diagnostic, Fact: b.EventFact{Kind: b.EventStatus, SessionID: SessionID(s.Ref.External), StartedTurnID: command(s)}}) {
+					return
+				}
+				lastDiagnostic, diagnosticSet = receipt.Diagnostic, true
 			}
 			if receipt.State.TurnStarted && !started {
 				source := NativeReplySource
@@ -167,14 +193,13 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventCompleted, Source: evidence.FinalSource, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: evidence.FinalItemID, SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), Completed: true, Matched: true, Outcome: outcome, LastMessage: evidence.LastMessage}, Implementation: receipt.Implementation}) {
 					return
 				}
-				o.done <- nil
 				return
 			}
 			after, _ := json.Marshal(receipt.Implementation)
 			if !committed && string(before) != string(after) {
 				state, stateErr := l.state(s)
 				if stateErr != nil {
-					o.done <- stateErr
+					observerErr = stateErr
 					return
 				}
 				turn := turnFor(&state, command(s))

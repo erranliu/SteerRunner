@@ -1,0 +1,16 @@
+{
+  "pid": 29876,
+  "manifest_sha256": "2F62093D3CB3D0C33A6291A7CC7EE73309DDFE6417BC76AF854571E5449EA9B3",
+  "driver_sha256": "92ED4F0F0E7CBBA5B32BDDEAB71583EB90012527333A4D4588922DD7D4C583C3",
+  "runner_sha256": "61c8b89110dab644d03b5ae74a77304cf98fca0859709d92ca9afbb7d9b38de4",
+  "source_commit": "b2a05f0684fa670e7ce84e8e9e97dd1c1a3bcb86",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "orca-remote.connection-reconnect",
+  "level": "L3",
+  "helper_sha256": "3525f1abe884a74efdb881862ef881d587d14f06921faac8ad972785cfb2d78c",
+  "runtime_sha256": "9c7646a8ab3fee1a61606a22dddc0f5bfe85a878dc49ff43a2a60a46e05797df",
+  "network_sha256": "271a4e184758b2c360b28e33fea99736733a4d1648f3ebb27e567b5acb347765",
+  "case_id": "active-disconnect",
+  "repeat_index": 1
+}

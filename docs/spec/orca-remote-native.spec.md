@@ -59,11 +59,13 @@ v4 只适用于远端，禁止 helper 配置及 readiness/owner/inspection/recor
 
 ## 4. 原输入、完成与成果
 
+2026-10-23 已接入[最后消息与原生结束归属增量](orca-last-message.spec.md) / [Plan](orca-last-message.plan.md)：复用原观察流提供有界公开摘要，并仅对已观察可信起点、同一连续 feed 及相同正值原生 turnStartedAt 的可信结束通知允许缺 prompt。查询、重连 initial、重启或变更标记不能建立空 prompt 完成；旧冲突保持。实现与实际真机资格分别登记在原验收记录，未部署生产。
+
 复用 `NativeProof`、`observeNative`、`StateFeed`、订阅加独立查询，不增加原生历史解析器或结果服务。`worktree.ps` 无分页游标；独立查询从 limit=100 起按返回 totalCount 扩展，在同一原 runtime 连接及 40 秒预算内最多查询三次，仅接受计数一致且未截断的单份快照，不拼接多次列表。缺完整性元数据、持续截断或持续增长时保留未核实，不能据当前页缺席判断原资源消失。
 
 1. 发送前保存原 runtime/worktree/terminal/incarnation、pane/provider、主代理时间/版本基线、输入摘要与原 operation 请求。
 2. `terminal send` accepted 只证明接受；首次业务提交用 Orca 原生 `--wait-submit 20` 有界等待同一请求的开始回执，不重发输入。超时缺开始仍为未核实，原请求开始回执及原生事实按既有规则证明开始。未知输入只对账，不自动重发或换终端。
-3. 完成须为原输入后的原主代理结束、同一 pane/provider、匹配输入预览及完整原生 final。保留既有多重绑定；200 UTF-16 预览不等于完整输入摘要，也不声称逐字历史已核验。
+3. 完成须为原输入后的原主代理结束、同一 pane/provider、匹配输入预览及完整原生 final；缺结束预览时，仅允许上述专项 Spec 的连续可信链窄化规则。保留既有多重绑定；200 UTF-16 预览不等于完整输入摘要，也不声称逐字历史已核验。
 4. 排除旧 done、工具/子代理输出、恢复/会话边界、外部新输入、身份变化和中断。首份已核实 final/摘要不可被后续显示覆盖。
 5. Orca 当前正文字段上限为 8000 UTF-16 单元；保留达到 7999 时的保守截断拒绝，包括 surrogate 边界。空正文、截断、冲突保持未核实；不读屏、不通过补报提示替代原文、不创建 helper reader。
 

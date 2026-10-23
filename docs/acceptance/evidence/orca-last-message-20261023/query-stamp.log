@@ -1,0 +1,24 @@
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/beyond-first-100
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/growing-snapshot
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/server-still-truncates
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/inconsistent-count
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/missing-completeness
+=== RUN   TestOriginalAgentQueryCoversLimitedSnapshot/keeps-growing
+--- PASS: TestOriginalAgentQueryCoversLimitedSnapshot (0.16s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/beyond-first-100 (0.03s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/growing-snapshot (0.03s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/server-still-truncates (0.03s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/inconsistent-count (0.02s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/missing-completeness (0.03s)
+    --- PASS: TestOriginalAgentQueryCoversLimitedSnapshot/keeps-growing (0.02s)
+=== RUN   TestOriginalAgentQueryRetainedStampRequiresSameMainRecord
+=== RUN   TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/same
+=== RUN   TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/different-state
+=== RUN   TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/different-time
+--- PASS: TestOriginalAgentQueryRetainedStampRequiresSameMainRecord (0.06s)
+    --- PASS: TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/same (0.02s)
+    --- PASS: TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/different-state (0.02s)
+    --- PASS: TestOriginalAgentQueryRetainedStampRequiresSameMainRecord/different-time (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.329s

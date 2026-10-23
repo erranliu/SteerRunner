@@ -328,6 +328,8 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 }
 
 func merge(r *runstate.Record, receipt b.LifecycleReceipt) error {
+	preserveObservation := r.Status == "running" && r.Phase == observationUnverified &&
+		receipt.State.TurnID == r.Snapshot.Session.CurrentTurnID
 	snapshot, started, err := reliable.ApplySessionReceipt(r.Snapshot, r.WorkspaceFact, receipt, r.NativeStarted)
 	if err != nil {
 		return err
@@ -337,7 +339,7 @@ func merge(r *runstate.Record, receipt b.LifecycleReceipt) error {
 		f := *receipt.Workspace
 		r.WorkspaceFact = &f
 	}
-	if receipt.State.TurnID != "" && receipt.State.InputAccepted {
+	if receipt.State.TurnID != "" && receipt.State.InputAccepted && !preserveObservation {
 		r.Status = "running"
 		r.Phase = "observing"
 		if !r.NativeStarted {
