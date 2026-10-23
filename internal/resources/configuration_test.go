@@ -141,7 +141,7 @@ func TestNativeRemoteCatalogDoesNotAdvertiseManagedGuarantees(t *testing.T) {
 		}
 		count++
 		raw, _ := json.Marshal(c)
-		for _, retired := range []string{"host-gh-repository-broker", "native_codex_0.159.2_permissions", "development-audited", "environment-check start"} {
+		for _, retired := range []string{"host-gh-repository-broker", "native_codex_", "development-audited", "environment-check start"} {
 			if strings.Contains(string(raw), retired) {
 				t.Fatal("native remote catalog promises retired guarantee", string(raw))
 			}

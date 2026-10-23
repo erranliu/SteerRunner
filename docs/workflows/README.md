@@ -7,7 +7,7 @@
 Spec/Plan、Git、补报、审计或发布路径。[Spec](../spec/content-workflows.spec.md) ·
 [Plan](../spec/content-workflows.plan.md) · [专属验收](../acceptance/content-workflows.md)。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-17（首次设计 2026-10-16）。状态：两份内置定义已实现；本目录是可读说明，Runner 使用编译定义，不加载 Markdown。两份示例以现有流程为业务基线，展示解耦后的定义：[普通开发](development.md) · [带审计的开发](development-audited.md)。[总 Spec](../spec/result-acquisition.spec.md) · [Plan](../spec/result-acquisition.plan.md)。
 
 用户已确认：具体 Workflow 是状态机；执行 agent 的阶段切换统一通过 Workflow 约定的提示词；状态也可以通过程序取得结果后转移；执行 agent 报告本身属于状态切换。首期只覆盖两个内置定义、三种获取方式和必要恢复/来源接线，不实现定制脚本端口或宿主；未来脚本能力若单独设计，也只能核验结果。共同 worktree 初始化、原生执行可靠性与资源管理沿现有基础设施。

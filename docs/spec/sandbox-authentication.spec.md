@@ -16,6 +16,8 @@
 
 ## 契约
 
+2026-10-23 版本范围修订：本机及 Orca local 受管路径的原生 Codex 最低版本为 `0.159.2`，按语义版本比较，无上限；高于基线的预发布版本可进入资格核验。既有协议、权限、认证与进程检查继续执行。契约标识中的 `0.159.2` 保留为最低版本基线，不代表实际运行版本；实际版本按原生探针记录。历史真机验收仍只证明各记录中的具体版本。
+
 2026-10-19 产品边界：本机与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；新远端只使用已有 Orca 原生认证，不创建 Runner capability、不管理远端登录期限或撤销。全路径移除 GitHub App 签发、私钥引用和 installation token。旧 `execution.settings.github_auth`（包括 null）在 Run/Check 受理前拒绝；旧 profile/helper 配置严格拒绝，不静默改用宿主身份。升级前须用原版本收尾已有 App Run/Check，历史证据不改写。
 
 Orca local 的受管 helper 在受保护目录接受绑定原 session/configuration 的停止请求，关闭该 Run 的 broker 并写出有限证明；调用端核验原固定控制终端及原业务 PTY。证明失败仍须终止原 worker，并保留认证收尾未验证；原 worker 停止不能替代 broker/socket 清理证明。未知控制创建不补建，丢失读取/关闭只对账原控制身份。宿主 gh 登录及其他 Run 的授权不受影响。

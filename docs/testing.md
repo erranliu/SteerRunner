@@ -190,7 +190,7 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 不复用上次 Run、请求授权或已经执行过的 manifest。脚本等待完成后返回退出码；
 不能以后台 PID 或启动成功作为通过。
 
-L2 当前原生资格固定 Codex 0.159.2；`configurations.local-codex` 必须提供本机
+L2 原生资格要求 Codex >= 0.159.2，并保留生产协议与权限检查；`configurations.local-codex` 必须提供本机
 codex-app-server、development/2、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
 未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
 每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。

@@ -70,3 +70,20 @@ function Get-SRBatchOutcome {
     if ($AuthorizedExclusions) { return 'passed_with_exclusions' }
     return 'passed'
 }
+function Test-SRCodexVersion {
+    param([string]$Version)
+    $taskMatch = [regex]::Match($Version.Trim(), '^codex-cli (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$')
+    if (-not $taskMatch.Success) { return $false }
+    foreach ($taskIdentifier in $taskMatch.Groups[4].Value.Split('.')) {
+        if ($taskIdentifier -cmatch '^0[0-9]+$') { return $false }
+    }
+    $taskMinimum = @('0', '159', '2')
+    for ($taskIndex = 0; $taskIndex -lt 3; $taskIndex++) {
+        $taskActual = $taskMatch.Groups[$taskIndex + 1].Value
+        $taskExpected = $taskMinimum[$taskIndex]
+        $taskOrder = [string]::CompareOrdinal($taskActual, $taskExpected)
+        if ($taskActual.Length -gt $taskExpected.Length -or ($taskActual.Length -eq $taskExpected.Length -and $taskOrder -gt 0)) { return $true }
+        if ($taskActual.Length -lt $taskExpected.Length -or $taskOrder -lt 0) { return $false }
+    }
+    return $taskMatch.Groups[4].Value -eq ''
+}

@@ -219,7 +219,7 @@ func run(ctx context.Context, root string, request b.LifecycleRequest, started f
 	}
 	vh.Close()
 	evidence.Version = strings.TrimSpace(version.String())
-	if err != nil || evidence.Version != "codex-cli 0.159.2" {
+	if err != nil || codex.VerifyPolicyVersion(evidence.Version) != nil {
 		return finish("parser native version unsupported")
 	}
 	if err = ctx.Err(); err != nil {

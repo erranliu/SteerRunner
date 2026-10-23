@@ -394,7 +394,7 @@ func (e *Engine) runCheck(ctx context.Context, id string, w *checkWorker) {
 			r.View.Actual.WorktreeID = binding.Process.WorktreeID
 		}
 		if binding.Process != nil && binding.Process.PID > 0 {
-			r.View.Actual.RuntimeVersion = codex.PolicyCodexVersion
+			r.View.Actual.RuntimeVersion = binding.NativeVersion
 			r.View.Actual.AuthenticationSource = "host-gh-repository-broker"
 			var settings struct {
 				AccessMode string `json:"access_mode"`

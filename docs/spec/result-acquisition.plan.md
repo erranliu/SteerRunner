@@ -8,7 +8,7 @@
 
 > 2026-10-19 此前准备修复批次：修复原生准备中的匿名配额依赖和有来源的工具初始化失败诊断，并修正原生负例对已关闭 client 的后续调用。按依赖执行实际 sandbox 正反例 → 完整 L1 360 Go/29 Node → Controlled 16 → 三终端 L3 → 两项 L2（复用同源前置、真机并行上限 2），均通过。源码身份、环境、命令、时点、通过条件、停止及证据索引见[该轮记录](../acceptance/evidence/native-preparation-20261019/README.md)。当时原 terminal.create 强杀窗口的原生恢复保证仍缺；本轮执行期方案及初始化阻塞边界按 §5，不扩大为新的状态/恢复平台，不宣称完整 L3 通过。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。按用户授权实施；本轮不部署、不创建 roadmap 调度。[Spec](result-acquisition.spec.md) · [验收登记](../acceptance/result-acquisition.md)。
 
 首期按用户要求收敛为两个内置 Workflow、三种获取方式、一个结果模型及必要来源/恢复接线；不实现定制脚本端口/宿主、DSL、插件、多层引擎或通用快照/字段编排平台。具体定义先以[普通开发](../workflows/development.md)、[带审计开发](../workflows/development-audited.md)和[统一能力](../workflows/README.md)交付审阅；实施遵循已确认定义；独立 parser 的支持声明仍受 P0 门槛限制。
