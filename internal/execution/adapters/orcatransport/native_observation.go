@@ -27,7 +27,7 @@ type provenance struct {
 // attribution is shared by notifications, independent queries and public
 // sampling. Missing fields are not durable contradictions.
 func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) provenance {
-	if s.SessionBoundary || s.RestoredUnconfirmed {
+	if s.SessionBoundary || s.RestoredUnconfirmed || s.Prompt != "" && s.Prompt != preview(turn.Prompt) {
 		return provenance{provenanceConflict, "Native original completion/input provenance is unverified"}
 	}
 	if s.ToolOutput {

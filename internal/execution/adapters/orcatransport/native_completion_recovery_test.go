@@ -102,7 +102,7 @@ func TestOrcaNativeIncompleteMetadataRecovers(t *testing.T) {
 }
 
 func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
-	for _, kind := range []string{"provider", "pane", "agent", "session", "restored", "boundary", "outcome", "interrupted"} {
+	for _, kind := range []string{"provider", "pane", "agent", "session", "restored", "boundary", "outcome", "interrupted", "tool-and-prompt"} {
 		t.Run(kind, func(t *testing.T) {
 			now := time.Unix(100, 0).UTC()
 			turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
@@ -127,6 +127,8 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 				changed.MainAgent.Outcome = "unknown"
 			case "interrupted":
 				changed.Interrupted = true
+			case "tool-and-prompt":
+				changed.ToolOutput, changed.Prompt = true, "foreign input"
 			}
 			if kind == "boundary" {
 				turn.Native.signal(changed, &turn, now, false)
