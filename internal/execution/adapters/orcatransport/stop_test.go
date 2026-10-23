@@ -91,6 +91,92 @@ func TestTerminalStopProgressCannotCrossIncarnation(t *testing.T) {
 	}
 }
 
+func TestRemoteStopPreservesUninvokedCloseAndCancelsObservation(t *testing.T) {
+	for _, queue := range []bool{true, false} {
+		t.Run(map[bool]string{true: "queue-before-invocation", false: "lost-close-response"}[queue], func(t *testing.T) {
+			l, _, s := fixtureOn(t, "paired-host")
+			created, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bind(&s, created)
+			observationCtx, cancelObservation := context.WithCancel(context.Background())
+			defer cancelObservation()
+			owned := &observationHandle{owner: &observer{process: s.Ref.External, cancel: cancelObservation}}
+			closed, closeCalls := false, 0
+			l.client = native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				if observationCtx.Err() == nil {
+					t.Fatal("remote stop competed with its still-active observer")
+				}
+				row := map[string]any{"handle": s.Ref.External.Terminal, "incarnationId": s.Ref.External.Incarnation, "worktreeId": s.Ref.External.WorktreeID, "worktreePath": s.Workspace.Path, "branch": "refs/heads/" + s.Workspace.Branch, "connected": true}
+				var result any
+				switch args[0] + " " + args[1] {
+				case "terminal list":
+					rows := []any{}
+					if !closed {
+						rows = append(rows, row)
+					}
+					result = map[string]any{"terminals": rows, "totalCount": len(rows), "truncated": false, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
+				case "terminal show":
+					result = map[string]any{"terminal": row}
+				case "terminal close":
+					closeCalls++
+					if closeCalls == 1 {
+						if queue {
+							return nil, &native.CLIQueueError{Cause: context.DeadlineExceeded}
+						}
+						return nil, errors.New("lost close response sentinel")
+					}
+					closed = true
+					result = map[string]any{"close": map[string]any{"handle": s.Ref.External.Terminal, "ptyKilled": true}}
+				default:
+					t.Fatal("unexpected stop operation", args)
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
+			}})
+			r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
+			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+			defer cancel()
+			receipt, err := l.StopLifecycle(ctx, r, owned)
+			if err == nil || receipt.State.Stopped || closeCalls != 1 {
+				t.Fatal("failed stop was overstated", receipt, err, closeCalls)
+			}
+			if queue && !native.IsCLIQueueError(err) || !queue && !strings.Contains(err.Error(), "lost close response sentinel") {
+				t.Fatal("original close failure was discarded", err)
+			}
+			r.Operation.Receipt, _ = json.Marshal(receipt)
+			probe, cancelProbe := context.WithTimeout(context.Background(), 50*time.Millisecond)
+			defer cancelProbe()
+			again, _, err := l.Reconcile(probe, r)
+			if queue {
+				if err != nil || !again.State.Stopped || closeCalls != 2 {
+					t.Fatal("proven uninvoked close did not finish exactly once", again, err, closeCalls)
+				}
+			} else if again.State.Stopped || closeCalls != 1 {
+				t.Fatal("unknown remote close was repeated", again, err, closeCalls)
+			}
+		})
+	}
+}
+
+func TestRemoteStopRejectsForeignObservationHandleBeforeClosing(t *testing.T) {
+	l, host, s := fixtureOn(t, "paired-host")
+	created, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	bind(&s, created)
+	foreign := s.Ref.External
+	foreign.Incarnation = "replacement"
+	cancelled := false
+	owned := &observationHandle{owner: &observer{process: foreign, cancel: func() { cancelled = true }}}
+	before := len(host.calls)
+	_, err = l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), owned)
+	if err == nil || cancelled || len(host.calls) != before {
+		t.Fatal("foreign observation handle changed remote resources", err, cancelled)
+	}
+}
+
 func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 	for _, mode := range []string{"initializing-branch-late", "initializing-restart-branch-late", "started-branch-late", "initializing-foreign-branch", "initializing-foreign-worktree", "initializing-foreign-path", "live", "already-absent", "lost-close", "lost-close-still-live", "truncated", "missing-host", "wrong-incarnation", "wrong-close-handle", "accepted-close", "mixed-control", "legacy", "legacy-state-v5", "legacy-state-v4", "native-state-v5"} {
 		t.Run(mode, func(t *testing.T) {

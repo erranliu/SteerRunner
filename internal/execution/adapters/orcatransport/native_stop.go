@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -52,6 +53,7 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 	if state.Process != p || p.Kind != "orca_terminal" || p.Executable != l.profile.Executable || p.ExecutionHost != l.profile.Target().ExecutionHost {
 		return receipt, errors.New("original remote Orca resource binding is incomplete")
 	}
+	var closeFailure error
 	if l.client.VerifyTerminalStopped(ctx, p) != nil && closeOriginal {
 		progress.Phase = "not-attempted"
 		t, inspectErr := l.client.InspectBoundTerminal(ctx, l.profile.Target(), p)
@@ -70,6 +72,14 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 		// A lost close response is reconciled only through the same inventory.
 		// This function never repeats close; absence does not invent a receipt.
 		proof, closeErr := l.client.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+		if native.IsCLIQueueError(closeErr) {
+			// The shared CLI queue proves no command process was invoked. Keep
+			// the existing first-close authorization instead of making a safe
+			// retry indistinguishable from a lost remote close response.
+			progress.Phase = "not-attempted"
+			return receipt, closeErr
+		}
+		closeFailure = closeErr
 		var identity *b.BackendError
 		if errors.As(closeErr, &identity) && identity.Code == b.BackendIdentityMismatch {
 			return receipt, closeErr
@@ -86,7 +96,7 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 			break
 		}
 		if ctx.Err() != nil || time.Now().After(until) {
-			return receipt, err
+			return receipt, errors.Join(closeFailure, err)
 		}
 		select {
 		case <-ctx.Done():

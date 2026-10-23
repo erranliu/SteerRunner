@@ -923,11 +923,6 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	if b.LifecycleAction(r.Operation.Action) != b.LifecycleStopExecution {
 		return receipt, errors.New("unsupported terminal stop")
 	}
-	if l.profile.Environment != "" {
-		return l.remoteStopResult(ctx, r, true)
-	}
-	progress := stopProgress{Version: 1, Phase: "not-attempted"}
-	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
 	if h, ok := owned.(*observationHandle); ok {
 		if h.Identity() != r.Snapshot.Ref.External {
 			return receipt, errors.New("stop changed original observation identity")
@@ -937,6 +932,11 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		// The control gate drains in-flight reads; its revocation checkpoint
 		// rejects later queries even before this goroutine has fully returned.
 	}
+	if l.profile.Environment != "" {
+		return l.remoteStopResult(ctx, r, true)
+	}
+	progress := stopProgress{Version: 1, Phase: "not-attempted"}
+	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
 	if err = l.originalForStop(ctx, r.Snapshot); err != nil {
 		return receipt, err
 	}
