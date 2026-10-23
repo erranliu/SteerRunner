@@ -1,0 +1,8 @@
+{
+  "scope": "Ad hoc full adapter/application/protocol run before final integration checks",
+  "timeout_minutes": 6,
+  "result": "application package exceeded the selected total timeout while TestPrivateRunGitGrantDoesNotExpandLegacyCache was running; adapter and protocol packages passed",
+  "application_elapsed_seconds": 363.599,
+  "later_formal_initial_application_passed": true,
+  "not_a_formal_qualification": true
+}

@@ -1,0 +1,154 @@
+{
+  "code_commit": "b008f4d990bfc279356335a2e0d2e75538f26a83",
+  "integrated_main": "1cfe2f9",
+  "runtime_worktree_unchanged_from_code_commit": true,
+  "runtime_tree_ids": {
+    "internal": "658c251499bd90a5d94a3d22bcbd49ccb312aced",
+    "scripts": "e58a235df7f4d1ab31d06e0859df2667eb25b3bb",
+    "tests": "6e6d2538ac9a59252ddea0257eef5346ef2da48a",
+    "go.mod": "a058ee3bd3d6865a1ce86870b9d4d10c9025dcbd",
+    "go.sum": "2cd4de518f9cb508dacb5e934f8115b8b14ffaf4"
+  },
+  "changed_runtime_files": [
+    {
+      "path": "internal/application/observation.go",
+      "sha256": "4f6e7898fca17ab7e2ecd66e1cb679e73913b9338e5814a706deb62f2ba3fd8c",
+      "bytes": 9403
+    },
+    {
+      "path": "internal/application/observation_diagnostic_test.go",
+      "sha256": "5896b49ef655f47b3d80a7d1b2861a41c32765f7dca4464edbd96827ca7a559a",
+      "bytes": 3551
+    },
+    {
+      "path": "internal/application/worker.go",
+      "sha256": "167ecc646ea05094af975c88b3fe810e1d358debf8885816fde9629a6f779191",
+      "bytes": 13256
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/agent_test.go",
+      "sha256": "bb63ecd689880d6fc5f5528fccd7b845696949fd5294a6e73cc3a3aee428f473",
+      "bytes": 5462
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/completion_query_test.go",
+      "sha256": "7aeb57523db80a51839757efd33a83f572981fcef56f075a24cd34babf8ee62c",
+      "bytes": 10442
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "sha256": "9a4ee82bc666fcf6688f28718070c5439ca20e71fbe03eadb416d16cee8a0022",
+      "bytes": 53713
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle_test.go",
+      "sha256": "3fd6f2d5c5b3a0d0ab9bddf685b24d27e62d5f49d17141ac5e5e316c7cf637d1",
+      "bytes": 27307
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/local_codex_history.go",
+      "sha256": "4a4aa9e7d6dad031506c4214532241df5b71d19eb6a2ff8a286cd3f6678e2b7b",
+      "bytes": 7173
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_completion_recovery_test.go",
+      "sha256": "79d6aecf8898790da4ddabbae7e9a8bb13fb101ef7871ed6ed92679f266d25a3",
+      "bytes": 11471
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_fixture_test.go",
+      "sha256": "6e4a2a9cbe6587938bf7758eb922345bd21dec95fcdd61e34ae7d42f44954c8c",
+      "bytes": 2643
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_live_test.go",
+      "sha256": "964a99cd10e3cefed107b44cb02aca7cef1fe312bed394989135b5fbae94162e",
+      "bytes": 12490
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_observation.go",
+      "sha256": "34d5e075f4950819add397bf338700bd77d70547719b293f0eb3c49b171ab141",
+      "bytes": 7366
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_state.go",
+      "sha256": "04ca82ab9e16de2adb33e55276b247e6fc9402738b61c32bf058930992f85c94",
+      "bytes": 15657
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_state_test.go",
+      "sha256": "f23b7090dc3fe15acb754f211fd9e606dd2abf782e817a714d68e4fac2137840",
+      "bytes": 16715
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer.go",
+      "sha256": "1275d5dab7355267716bf0f0a0c0211508f2a174f52d78e389ab6356d528e13b",
+      "bytes": 7454
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer_queue_test.go",
+      "sha256": "d3f6ad40d4e9af0586b398f8a9a2a03522325b906a19eb35d848419501dc16bd",
+      "bytes": 2447
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/public_message_test.go",
+      "sha256": "25f50b2698628ca31578a2a1dd069e5240768789744de1b8b81b7ad7036a13f7",
+      "bytes": 13071
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/recovery_state_test.go",
+      "sha256": "4c1fcbe4bb44a18110f3f7d702ba7efb6326156b001f081bc85cb66d8cdb8eab",
+      "bytes": 4224
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/state_codec_test.go",
+      "sha256": "82245c9e83629eb27042dc4a4aa205475a83f98a6518d325a6b76bb5d86c2c11",
+      "bytes": 4097
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_feed.go",
+      "sha256": "df30e83c0e4c0914b34c8106a5bc2a51be0d75a439b913636e7f6ddbe3f4614e",
+      "bytes": 9123
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_coverage_windows_test.go",
+      "sha256": "901ee183727a19cfd350caf7023f3cd771c3dfb86b04737e49f94edd7d48afde",
+      "bytes": 5063
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_feed.go",
+      "sha256": "b3a785df4fbbeaaa6b8575d93897862621ba222b5ab40871536ead83fead70b6",
+      "bytes": 1470
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+      "sha256": "d463e0fc49945090ba5afe6d55dabe52e218df6538c27a469b473b118edd2c6c",
+      "bytes": 3699
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/state_stream_test.go",
+      "sha256": "9d2a0d15eb829f1f100edbe6dd239fea83d670483d9420729ed5333e1911ba22",
+      "bytes": 6436
+    },
+    {
+      "path": "scripts/test.ps1",
+      "sha256": "395cb6c699f55a8c1131f9f5e1c76dcbf26fc5220df9a3c9630350ab7cecc3c4",
+      "bytes": 18528
+    },
+    {
+      "path": "tests/native/multirun_test.go",
+      "sha256": "ed6ebf54a65152a7c0be964325580cdaa945f4d1a5987203c6758477a0a110fd",
+      "bytes": 11192
+    },
+    {
+      "path": "tests/native/run_test.go",
+      "sha256": "90982e9f71bb8bb023d230265f0df31e5476d811d6c1b9f525427003582e11ff",
+      "bytes": 33608
+    },
+    {
+      "path": "tests/native/stability_test.go",
+      "sha256": "992aeae74af0d1b3648f7625f97696020d6d8f28369e388f4bf3d5fa25921421",
+      "bytes": 49321
+    }
+  ]
+}
