@@ -11,6 +11,7 @@ import (
 	"time"
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/usage/parsers"
 )
@@ -44,8 +45,12 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 		return nil
 	}
 	prompt := usageReadyPrompt
-	plain := usagePlainLaunch.MatchString(proof.LaunchCommand) && strings.HasSuffix(proof.LaunchCommand, " '"+prompt+"'")
-	if !plain && usagePlainLaunch.MatchString(proof.LaunchCommand) && strings.HasSuffix(proof.LaunchCommand, " '"+codex.NativeReadinessPrompt+"'") {
+	launch := proof.LaunchCommand
+	if inner, ok := agentlaunch.UnwrapTeaPathLaunch(launch); ok {
+		launch = inner
+	}
+	plain := usagePlainLaunch.MatchString(launch) && strings.HasSuffix(launch, " '"+prompt+"'")
+	if !plain && usagePlainLaunch.MatchString(launch) && strings.HasSuffix(launch, " '"+codex.NativeReadinessPrompt+"'") {
 		prompt, plain = codex.NativeReadinessPrompt, true
 	}
 	if !plain && (len(profiles) != 1 || !usagePreparedInitialization(state, proof, profiles[0])) {
