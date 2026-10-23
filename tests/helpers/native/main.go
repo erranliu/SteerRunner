@@ -296,6 +296,9 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		response["result"] = map[string]any{"turnId": id}
 		return response, nil
 	case "turn/start":
+		if path := os.Getenv("STEERLINE_PROGRESS_FILE"); path != "" {
+			_ = appendCall(map[string]any{"method": "progress/environment", "path": path, "cwd": s.thread.Cwd})
+		}
 		if str("threadId") != s.thread.ID {
 			return fail(fmt.Errorf("wrong original thread"))
 		}

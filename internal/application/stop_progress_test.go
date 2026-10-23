@@ -12,7 +12,61 @@ import (
 	"io"
 	"log"
 	"testing"
+	"time"
 )
+
+type cancellableStopBudgetPort struct {
+	b.LifecyclePort
+	entered chan context.Context
+}
+
+func (p *cancellableStopBudgetPort) StopLifecycle(ctx context.Context, q b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
+	p.entered <- ctx
+	<-ctx.Done()
+	return b.LifecycleReceipt{Operation: q.Operation, Disposition: b.OperationUnknown}, ctx.Err()
+}
+
+func TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable(t *testing.T) {
+	for _, adapter := range []string{"orca-terminal", "codex-app-server"} {
+		t.Run(adapter, func(t *testing.T) {
+			store, err := storage.Open(t.TempDir())
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer store.Close()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			e := &Engine{ctx: ctx, store: store, runs: map[string]*runstate.Record{}, logger: log.New(io.Discard, "", 0), launchOwner: func(context.Context, string) error { return nil }}
+			r := &runstate.Record{ID: "run", Allowed: false, ResumeRequired: true, Status: "reconciling", PendingStop: "original-stop", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: adapter}}, CommandStates: map[string]string{}}
+			r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", External: b.ProcessIdentity{Kind: "terminal", Terminal: "original"}}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "run", ExecutionID: "run", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
+			if err = e.commitLocked(r, nil, "accepted"); err != nil {
+				t.Fatal(err)
+			}
+			port := &cancellableStopBudgetPort{entered: make(chan context.Context, 1)}
+			done := make(chan struct{})
+			go func() { defer close(done); e.stopRun(r.ID, &worker{port: port}, port) }()
+			select {
+			case attempt := <-port.entered:
+				deadline, ok := attempt.Deadline()
+				remaining := time.Until(deadline)
+				if !ok || remaining <= 0 || remaining > 61*time.Second || adapter == "orca-terminal" && remaining < 45*time.Second || adapter != "orca-terminal" && remaining > 16*time.Second {
+					t.Error("invalid bounded stop transport budget", remaining)
+				}
+			case <-time.After(2 * time.Second):
+				t.Fatal("original stop was not dispatched")
+			}
+			cancel()
+			select {
+			case <-done:
+			case <-time.After(2 * time.Second):
+				t.Fatal("service cancellation did not release stop")
+			}
+			if e.runs[r.ID].Allowed || !e.runs[r.ID].ResumeRequired || e.runs[r.ID].StopStatus == "stopped" || len(e.runs[r.ID].Intents) != 1 {
+				t.Fatal("cancellation changed authorization or fabricated stop")
+			}
+		})
+	}
+}
 
 type unavailableStopPort struct {
 	b.LifecyclePort

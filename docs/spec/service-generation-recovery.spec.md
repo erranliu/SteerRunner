@@ -99,6 +99,8 @@ owner 保存原 endpoint、generation、PID/creation、session/turn、操作绑�
 
 保留 `resources_settled` 和 `service verify-stopped` 的原含义：仍有业务执行时不为 true，原未知/失败回执不改写。兼容重启/更新改用单独的接管资格，资源可继续存活。清除 state-dir、卸载执行宿主或破坏性迁移仍须按原范围逐项停止/结算。Orca remote 的 `orca_terminal` scope 不升级为全 OS 树/登录撤销证明。
 
+Orca 关闭后的辅助控制终端可能仍有同 incarnation 的 disconnected 展示卡片。该卡片不单独证明活动或退出；沿原 runtime/worktree 的完整清单核实同身份缺席后，可继续原关闭对账并保存原认证收尾证明，不重复关闭、不创建资源、不发送业务输入。原主机缺失、清单不完整、身份变化或仍列出均不得伪造缺席。
+
 parser 复用同一独立 owner：只允许 `parse_result` 这一具体动作，依赖从 host 注入既有 codexexec 启动器，避免包循环。冻结 ParseInput.Owner 指向原 owner 的精确进程；原 Payload、Generation、Deadline 和 Operation v1 不变。owner 内存只保留原任务句柄与请求 digest，根身份仍在挂起放行前写入原 started.json，最终树结算和结果写入原 receipt.json；不新增获取队列或回执账本。Runner 停服只断开调用，重启只读原文件；显式 Run stop 才按原请求取消 parser，原树结算前禁止后继。owner 的 `retains_parser` 和 `workspace_checkpoints` 是原绑定能力事实；旧 owner 缺所需能力时预检拒绝，不能替换它补能力。当前 audited workflow/2 只支持本机 codex-app-server，因此没有为 Orca 引入本机 parser helper。
 
 ## 6. 原授权自动接续（SGR-C04）
@@ -134,6 +136,8 @@ parser 复用同一独立 owner：只允许 `parse_result` 这一具体动作，
 Orca 资源创建恢复由 SteerRunner 实现，不能依赖修改 Orca 代码或新增上游接口。Runner 在调用现有公开 `worktree create` / `terminal create` 前可靠保存原 operation、Attempt、generation、配置、路由、完整命令和原期限，并独占登记唯一创建执行器。执行器与服务进程分离，持有原 CLI 子进程和响应连接；服务退出只取消服务的等待，原执行器继续接收并可靠保存原始响应。新服务只读原执行器的结果，经绑定和内容摘要校验后按原 worktree ID、terminal handle/incarnation 核实资源，再回填原 intent。覆盖 worktree 的自动终端、初始终端和 native-control 创建，不派发替代执行器或重试 create。
 
 该机制覆盖“Orca 已成功、原响应尚未到达 Runner 服务”和“原响应已保存、服务 DB 未提交”两种服务退出窗口。如果原执行器也崩溃、原 CLI 未返回资源身份、回执丢失/损坏/异源，或旧记录没有原创建日志，则保持 unknown。不得凭名称、标题、列表唯一性或空清单认领/重建资源；原期限不因换代重置。创建日志只保存有限原生动作的事实，不拥有业务授权、队列或第二份 Run 状态。真实后端资格按实际运行证据登记。
+
+2026-10-23 初始终端补充：工作区创建前另存终端准备计划，固定 Run/Execution/Attempt/generation/config/工作区计划；原工作区回执核实后一次绑定 runtime/worktree/instance/path。计划明确尚未尝试终端创建时，即使工作区外层操作正在对账，也可完成该终端阶段的首次准备：选择原工作区唯一未启动 shell 并先保存 handle/incarnation，或在完整空清单持续稳定后先保存 attempted 再调用有限创建执行器。已有 attempted 无结果只读取原执行器，已有 Process 只验证原身份，不能再次选择或创建。计划缺失/损坏/绑定变化仍拒绝，不迁移旧开发记录。精确本机 worktree 查询省略其它配对 runtime 不妨碍本机范围完整；本机/原 runtime 被省略、清单截断仍不能授权首次创建。
 
 PR/引用沿冻结仓库、base/head、执行关联和既有 provider 查询找回原对象；同分支多个不确定对象、错误仓库/身份或无完整创建关联保持冲突。按名称找到一个 PR 不足以覆盖原 PR 绑定。成功后只补写事实，绝不重做 push/create/release。对 agent 内部任意未知外部副作用不承诺通用恰好一次；本契约保证 Runner 不重发该业务轮次。
 

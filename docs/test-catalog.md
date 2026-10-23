@@ -19,7 +19,7 @@ PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation
 以下清单于 **2026-10-21** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 两 case、L3 二十二场景三十二 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 两 case、L3 二十七场景三十七 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
@@ -67,7 +67,7 @@ workflow/2 的 L2 直接使用无反馈交付路径，不再依赖反馈资格�
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的二十二场景、三十二 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
+以下为已注册的二十七场景、三十七 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
@@ -174,8 +174,8 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共二十八场景、三十八 case：L2 两项、L3 三十二项（含原 12 项核心可靠性）、L4 四项。
-Controlled 默认前置二十二个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
+当前共三十三场景、四十三 case：L2 两项、L3 三十七项（含原 12 项核心可靠性）、L4 四项。
+Controlled 默认前置二十三个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
 实现与资格分别登记：调度器检查可以证明队列上限、L4 互斥、worker 失联及构建变化拒绝，
@@ -225,3 +225,33 @@ L3 专项 `TestSRContentGenerateTakeoverNative` 由现有 foundation live 入口
 模型可通过 `-Model` 显式选择；省略 `-NativeExecutable` 仅运行受控测试，不声称真实通过。
 原生 opt-in 仅编译 live 时存在；默认不执行真实会话。证据及本构建结论见
 [内容流程专属验收](acceptance/content-workflows.md)。
+
+
+## 运行时单文件汇报专项（2026-10-23）
+
+沿用户收敛边界：固定原执行主机/worktree/文件，不以防恶意链接替换作为前置。五项均已在 tests/catalog.json 与唯一 cases.json 注册，case=default、L3、driver=progress-file、预期业务 stopped（不创建 PR）。当前总计 33 场景/43 case，其中 L3 27 场景/37 case；明确标记日期的历史计数保留当时基线。
+
+| 场景 ID | 独有断言 | 前置与隔离 |
+| --- | --- | --- |
+| local-codex.progress-file | 公开 EXE 提交；真实工具读取注入环境；violet/copper 任意非 JSON 字节完整回传、原子替换、重复内容不增版本 | local-codex 配置；全新 state/workspace/native owner；执行脚本由原 native 工具运行 |
+| orca-local.progress-file | Orca 本地真实 IPC 文件接线、原终端启动环境、同原生准备及退出证明 | orca-local-codex 配置及本次构建 helper；独立 worktree/terminal，不改共享 runtime |
+| orca-remote.progress-file | 原配对远端真实写入/读取；本机不存在源文件；原子替换后继续采集，native final 仍未核实 | orca-remote-codex、已有远端登录及固定仓库；独立远端 worktree/terminal，无新增远端 helper |
+| local-codex.progress-multirun | 同一服务两 Run 交错更新，路径/内容/版本/身份隔离；停第一项后第二项原 session/turn 保持并继续写，业务 revision 不因汇报改变 | case 内共享 state/service，各 Run 独立工作区/owner；与其它 case 独立服务 |
+| local-codex.progress-recovery | 原生工具仍等待期间读取故障保留最后快照；有限不可读恢复；停服期间原工具继续写，新服务保留文件/版本、原 session/turn/operation 数且零额外输入；终态仍可查询 | 只对本 case 文件短暂 rename/restore，原脚本 gate 有绝对期限；只换代本 case 服务 |
+
+所有 case 独立 root/base/state/Run/native 资源，允许并行；marker 仅在本 case 原工作区 .sr-runtime-stage 下。每次 CLI、采集、gate、轮询、收尾均有界。保存公开 submit/快照/故障/恢复/收尾响应及原持久执行记录；explicit stop + offline verify-stopped 证明实际资源结算，保留 owned 工作区/分支/原记录便于审计。实际并行资格与当前通过结果见[验收](acceptance/runtime-progress.md)，注册不代表通过。
+
+Controlled 新增 TestSRProgressFile，默认顶层数从 22 增至 23，覆盖真实 EXE 的结果等待、读取失败、多 Run、停止、服务换代、公开终态查询及零业务重发。L1 覆盖 64KiB、非 JSON/非 UTF-8、缺失、错误绑定、路径/schema、旧业务 clone 不覆盖新快照及精确远端 wire 长度/EOF。受控通过不能代替三条真实后端。
+
+准确入口（自动 L1 + 完整 Controlled 前置）：
+
+```powershell
+./scripts/test.ps1 -Level L3 -Scenario local-codex.progress-file,orca-local.progress-file,orca-remote.progress-file,local-codex.progress-multirun,local-codex.progress-recovery -Config .evidence/progress-test-config.json -MaxParallel 5 -OutDir .evidence/progress-l3-new
+./scripts/verify-progress-parallel.ps1 -Report .evidence/progress-l3-new
+```
+
+配置复用已有三项配置键；不增加调用方项目测试入口、不解析 Plan、不解释测试字段/历史。真实链路由测试自有 foreground producer 驱动并在其结束前停止原 Run。
+
+每项首次真实写入后持续 120 秒，通过公开接口确认快照稳定、原 native 会话仍等待且无 final；窗口独立，不依赖其它场景的就绪或结果。并行核验脚本要求五项全部通过且 Runner/driver 构建一致、原生资源不冲突，并要求每一项窗口与至少另一通过项实际重叠。只设置 MaxParallel 或借用旧构建窗口不能通过。
+
+有界预算：本机 Codex 首份内容最多 5 分钟，Orca 最多 8 分钟（含冷工作区、控制/执行 helper、原 TUI 准备及共享 CLI 排队）；产品 Orca 阶段准备期限为持久 6 分钟，不因重试/服务重启续期，其它 adapter 为 3 分钟。后续内容不超过相应等待；原 Run 停止最多 Orca 180 秒／Codex 120 秒（含下一次原身份只读对账）、服务退出最多 60 秒，受独立 case 的既有 15 分钟总预算约束。产品文件采集的 2 秒预算不变，不把测试放宽当作实际通过；原 3 分钟/45 秒及整阶段准备超时的失败记录保留。

@@ -1,3 +1,5 @@
 /bin/
 /.evidence/
 *.test.exe
+
+/.steerrunner/progress/

@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+	"time"
 	"unsafe"
 
 	"github.com/Microsoft/go-winio"
@@ -111,7 +112,17 @@ func replaceFile(source, target string) error {
 	if err != nil {
 		return err
 	}
-	return windows.MoveFileEx(from, to, windows.MOVEFILE_REPLACE_EXISTING|windows.MOVEFILE_WRITE_THROUGH)
+	// Status polling may still have the previous discovery file open without
+	// FILE_SHARE_DELETE. Retry only that transient Windows sharing collision;
+	// keep publication atomic and never remove the old endpoint first.
+	for attempt := 0; attempt < 100; attempt++ {
+		err = windows.MoveFileEx(from, to, windows.MOVEFILE_REPLACE_EXISTING|windows.MOVEFILE_WRITE_THROUGH)
+		if err != windows.ERROR_SHARING_VIOLATION && err != windows.ERROR_ACCESS_DENIED {
+			return err
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	return err
 }
 
 func processFacts() (string, bool, error) {

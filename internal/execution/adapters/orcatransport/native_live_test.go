@@ -16,6 +16,7 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
 type liveProbeHost struct{}
@@ -31,8 +32,12 @@ func (liveProbeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
 }
 func (liveProbeHost) InspectProcess(*b.ProcessIdentity) string { return "unknown" }
 func (liveProbeHost) NewProcessGeneration() string             { return "native-probe" }
-func (liveProbeHost) WriteExecutionFile(string, []byte) error {
-	return errors.New("native probe has no file channel")
+func (liveProbeHost) WriteExecutionFile(path string, raw []byte) error {
+	// Local Runner journal only; this does not provide workspace file transport.
+	if filepath.Base(filepath.Dir(path)) == "orca-initial-terminals" {
+		return process.New(time.Second).WriteExecutionFile(path, raw)
+	}
+	return errors.New("native probe has no workspace file channel")
 }
 func (liveProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(ctx, c.Timeout)

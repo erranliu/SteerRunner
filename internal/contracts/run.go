@@ -61,6 +61,7 @@ type Publication struct {
 }
 
 type RunRequest struct {
+	ProgressFile *ProgressFileInput `json:"progress_file,omitempty"`
 	Conversation *ConversationInput `json:"conversation,omitempty"`
 	Generate     *GenerateInput     `json:"generate,omitempty"`
 	Title        string             `json:"title"`
@@ -210,6 +211,21 @@ func ValidateRun(data []byte) *Fault {
 	var value RunRequest
 	if DecodeStrict(data, &value) != nil || !plain(value.Title) {
 		return invalid
+	}
+	if raw := map[string]json.RawMessage{}; json.Unmarshal(data, &raw) == nil {
+		if v, ok := raw["progress_file"]; ok && string(v) == "null" {
+			return invalid
+		}
+		if value.ProgressFile != nil {
+			var p map[string]json.RawMessage
+			_ = json.Unmarshal(raw["progress_file"], &p)
+			if v, ok := p["initial_content_base64"]; !ok || string(v) == "null" {
+				return invalid
+			}
+		}
+	}
+	if err := ValidateProgress(value); err != nil {
+		return err
 	}
 	var fields map[string]json.RawMessage
 	_ = json.Unmarshal(data, &fields)

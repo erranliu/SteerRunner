@@ -12,7 +12,7 @@ import (
 )
 
 func TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart(t *testing.T) {
-	for _, mode := range []string{"success", "unknown-create", "foreign-runtime", "incomplete", "changed-incarnation", "corrupt-checkpoint", "multiple-after-create"} {
+	for _, mode := range []string{"success", "unknown-create", "foreign-runtime", "incomplete", "changed-incarnation", "corrupt-checkpoint", "multiple-after-create", "planned-recovery", "local-omits-remote", "omits-local", "omits-original-runtime", "wrong-worktree"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s := fixture(t)
 			l.setup.AgentLaunchCommand, f.commandMode = "opaque-start", true
@@ -53,6 +53,16 @@ func TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart(t *testin
 					if mode == "incomplete" {
 						delete(value, "hostScope")
 					}
+					if mode == "local-omits-remote" || mode == "omits-local" || mode == "omits-original-runtime" {
+						omitted := "runtime:another-paired-runtime"
+						if mode == "omits-local" {
+							omitted = "local"
+						}
+						if mode == "omits-original-runtime" {
+							omitted = "runtime:" + c.RuntimeID
+						}
+						value["hostScope"] = map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{omitted}}
+					}
 					if created {
 						value["terminals"] = []any{map[string]any{"handle": "terminal"}, map[string]any{"handle": "other"}}
 						value["totalCount"] = 2
@@ -62,20 +72,25 @@ func TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart(t *testin
 				return original.Raw(ctx, d, args...)
 			}})
 			budget := 3 * time.Second
-			if mode == "incomplete" || mode == "foreign-runtime" {
+			if mode == "incomplete" || mode == "foreign-runtime" || mode == "omits-local" || mode == "omits-original-runtime" {
 				budget = 30 * time.Millisecond
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), budget)
-			got, e := l.initialWorkspaceTerminal(ctx, s, c)
+			if mode == "planned-recovery" {
+				if _, _, err := l.initialTerminalPlan(s, true); err != nil {
+					t.Fatal(err)
+				}
+			}
+			got, e := l.initialWorkspaceTerminalRecovery(ctx, s, c, mode == "planned-recovery")
 			cancel()
-			successful := mode == "success" || mode == "changed-incarnation" || mode == "corrupt-checkpoint"
+			successful := mode == "success" || mode == "changed-incarnation" || mode == "corrupt-checkpoint" || mode == "planned-recovery" || mode == "local-omits-remote" || mode == "wrong-worktree"
 			if successful && (e != nil || got.Handle != "terminal" || creates != 1) {
 				t.Fatal("initial terminal not bound", got, e, creates)
 			}
 			if !successful && e == nil {
 				t.Fatal("unverified initial terminal admitted")
 			}
-			if mode == "incomplete" || mode == "foreign-runtime" {
+			if mode == "incomplete" || mode == "foreign-runtime" || mode == "omits-local" || mode == "omits-original-runtime" {
 				if creates != 0 {
 					t.Fatal("incomplete or foreign inventory authorized create")
 				}
@@ -83,6 +98,9 @@ func TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart(t *testin
 			}
 			if mode == "changed-incarnation" {
 				f.incarnation = "replacement"
+			}
+			if mode == "wrong-worktree" {
+				c.Worktree.InstanceID = "replacement-worktree"
 			}
 			if mode == "corrupt-checkpoint" {
 				files, _ := filepath.Glob(filepath.Join(l.setup.RunDirectory, "orca-initial-terminals", "*.json"))
@@ -101,7 +119,8 @@ func TestInitialTerminalRequiresEmptyInventoryAndSurvivesCallerRestart(t *testin
 			restored.client = l.client
 			before := len(f.calls)
 			_, e = restored.initialWorkspaceTerminal(context.Background(), s, c)
-			if creates != 1 || mode == "success" && e != nil || mode != "success" && e == nil {
+			wantSuccess := mode == "success" || mode == "planned-recovery" || mode == "local-omits-remote"
+			if creates != 1 || wantSuccess && e != nil || !wantSuccess && e == nil {
 				t.Fatal("caller restart recreated or changed original terminal", e, creates)
 			}
 			for _, call := range f.calls[before:] {

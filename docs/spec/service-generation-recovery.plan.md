@@ -41,6 +41,10 @@
 
 ### P3 接管与自动接续
 
+2026-10-23 终端准备续作：在原 worktree create 前落盘 version=2 初始终端计划，区分尚未尝试与未知创建；持久化首次选择的原 shell 身份。确定性回归延迟原工作区响应、取消调用方、重建 Lifecycle 且响应无 terminal handle 的本机/配对路径；另外覆盖完整空清单首次准备、原创建未知零重发、原终端 incarnation/工作区 instance 改变拒绝，以及本机清单仅省略其它配对 runtime 的范围。
+
+对应公开 EXE Controlled 同步区分 planned-initial-terminal 正例与 missing-initial-plan 反例，保留 wire-loss/owner-crash 的拒绝断言。receipt-before-commit 的 show 门采用 15 秒有界查询预算，杀服务后等待已核验原 PID/创建时间的退出，再启动替代服务；避免故障设施本身提前超时或旧 listener 尚未关闭。初次完整批次的两项失败保留，不把后续定向通过改写成原批次通过。
+
 涉及 `application/{engine,control,worker,observation,results,parser,workflow}.go`、可靠性/结果规则与既有 Store Commit。
 
 1. 移除 New/closeWorker 对所有 Run 统一撤销授权和重写状态的策略；保留旧格式原门槛及真实业务阻断。授权复用 Allowed/ResumeRequired/PendingStop、原问题/来源及 gate/revision；service epoch 只管理临时连接和旧观察隔离，PendingResume 保留原命令状态。

@@ -92,6 +92,36 @@ func (p *pendingResourcePort) Reconcile(_ context.Context, r b.LifecycleRequest)
 	return receipt, nil, nil
 }
 
+func TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload(t *testing.T) {
+	for _, adapter := range []string{"orca-terminal", "codex-app-server"} {
+		t.Run(adapter, func(t *testing.T) {
+			e, _, _ := operationEngine(t)
+			r := e.runs["run"].Clone()
+			r.Request.Execution.Adapter = adapter
+			r.PreparationDeadline = time.Time{}
+			now := time.Now().UTC()
+			ensurePreparationDeadline(r, now)
+			limit := r.PreparationDeadline
+			if !limit.After(now) || limit.After(now.Add(6*time.Minute)) || adapter == "orca-terminal" && !limit.After(now.Add(4*time.Minute)) || adapter != "orca-terminal" && !limit.Before(now.Add(4*time.Minute)) {
+				t.Fatal("invalid original preparation budget", limit.Sub(now))
+			}
+			if err := e.commitLocked(r, nil, "original_preparation_deadline"); err != nil {
+				t.Fatal(err)
+			}
+			rows, err := e.store.Runs()
+			if err != nil || len(rows) != 1 {
+				t.Fatal("deadline not persisted", err)
+			}
+			for _, later := range []time.Time{now.Add(4 * time.Minute), now.Add(7 * time.Minute)} {
+				ensurePreparationDeadline(rows[0], later)
+				if !rows[0].PreparationDeadline.Equal(limit) {
+					t.Fatal("reload or expired retry renewed original deadline")
+				}
+			}
+		})
+	}
+}
+
 func TestSRStartupFailureBlocksBeforePreparationDeadline(t *testing.T) {
 	e, w, _ := operationEngine(t)
 	i, err := e.saveIntent("run", e.runs["run"].Clone(), b.LifecycleCandidate{Action: b.LifecycleCreateResource, Input: b.LifecycleInput{Resource: &b.ResourceIntent{Purpose: "agent-start", Objective: "fixed original launch"}}})

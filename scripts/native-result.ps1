@@ -73,6 +73,16 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
         $taskValue=Get-SRResultField $Scenario $taskField
         if ($taskValue -isnot [bool] -or -not $taskValue) { throw "Live result lacks confirmed $taskField" }
     }
+    if ($Manifest.driver -eq 'progress-file') {
+        $taskRuns=@(Get-SRResultField $Scenario 'runs')
+        $taskExpected=if($Manifest.scenario -eq 'local-codex.progress-multirun'){2}else{1}
+        if($taskRuns.Count -ne $taskExpected -or (Get-SRResultField $Scenario 'progress_verified') -cne $true -or (Get-SRResultField $Scenario 'pr_url') -or (Get-SRResultField $Scenario 'merge_commit')){throw 'Progress proof is incomplete or published unexpectedly'}
+        foreach($taskRun in $taskRuns){if($taskRun.stop_status -cne 'stopped' -or $taskRun.new_inputs_allowed){throw 'Progress native resource is not stopped/revoked'}}
+        if(@($taskRuns|ForEach-Object {$_.run_id}|Select-Object -Unique).Count -ne $taskExpected){throw 'Progress Run identities collide'}
+        if((Get-SRResultField $Scenario 'run_id') -cne $taskRuns[0].run_id){throw 'Progress result Run identity conflicts'}
+        foreach($taskField in @('session_id','workspace','branch')){if(@($taskRuns|ForEach-Object {Get-SRResultField (Get-SRResultField $_ 'execution') $taskField}|Where-Object {$_}|Select-Object -Unique).Count -ne $taskExpected){throw 'Progress native resources collide or are missing'}}
+        return
+    }
     foreach($taskField in @('run_id','pr_url','original_head')) { if ([string]::IsNullOrWhiteSpace([string](Get-SRResultField $Scenario $taskField))) { throw "Live result lacks $taskField" } }
     $taskMerge=Get-SRResultField $Scenario 'merge_commit'
     switch($Manifest.driver) {

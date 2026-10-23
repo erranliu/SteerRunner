@@ -59,7 +59,11 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 		serverDir = filepath.Join(setup.RunDirectory, "runs", snapshot.Session.WorkflowRunID, "attempts", snapshot.Session.AttemptID, "app-server")
 	}
 	processEnv := func(base []string) []string {
-		return lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, setup.BlockedEnvironment)
+		env := lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, append(append([]string{}, setup.BlockedEnvironment...), "STEERLINE_PROGRESS_FILE"))
+		if setup.ProgressFile != "" {
+			env = setEnvironmentValues(env, map[string]string{"STEERLINE_PROGRESS_FILE": setup.ProgressFile})
+		}
+		return env
 	}
 	var authentication *AuthenticationRuntime
 	if strings.Contains(strings.ToLower(setup.RepositoryURL), "github.com") {

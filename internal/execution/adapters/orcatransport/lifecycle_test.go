@@ -6,7 +6,9 @@ import (
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -50,6 +52,14 @@ func (f *fakeHost) NewProcessGeneration() string             { return "generatio
 func (f *fakeHost) WriteExecutionFile(path string, data []byte) error {
 	if f.callerFileWriter != nil {
 		return f.callerFileWriter(path, data)
+	}
+	// Runner-owned local journals are independent of a terminal's workspace
+	// file channel (which remains unavailable in this protocol fixture).
+	if filepath.Base(filepath.Dir(path)) == "orca-initial-terminals" {
+		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
+			return err
+		}
+		return os.WriteFile(path, data, 0600)
 	}
 	return errors.New("terminal path has no file channel")
 }

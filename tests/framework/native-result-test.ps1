@@ -143,3 +143,19 @@ foreach($taskMutation in @('source_result_id','result_id','pre_head','post_head'
     if(-not $taskRejected){throw "Remote audit accepted invalid source binding: $taskMutation"}
 }
 Write-Output 'Optional merge field, required cleanup/feedback, independent multi-Run and remote native model evidence checks passed'
+
+$taskProgressManifest=Convert-ResultObject @{scenario='local-codex.progress-file';level='L3';driver='progress-file'}
+$taskProgress=@{scenario='local-codex.progress-file';level='L3';passed=$true;run_stopped=$true;service_stopped=$true;progress_verified=$true;run_id='a';runs=@(@{run_id='a';stop_status='stopped';new_inputs_allowed=$false;execution=@{session_id='s';workspace='w';branch='b'}})}
+Assert-SRNativeScenario $taskProgressManifest $taskResult (Convert-ResultObject $taskProgress)
+foreach($taskMutation in @('progress_verified','run_id','session_id','workspace','unexpected-pr')){
+ $taskBad=$taskProgress|ConvertTo-Json -Depth 20|ConvertFrom-Json
+ switch($taskMutation){
+  'progress_verified'{$taskBad.progress_verified=$false}
+  'run_id'{$taskBad.run_id='foreign'}
+  'unexpected-pr'{$taskBad|Add-Member -NotePropertyName pr_url -NotePropertyValue 'unexpected'}
+  default{$taskBad.runs[0].execution.$taskMutation=''}
+ }
+ $taskRejected=$false;try{Assert-SRNativeScenario $taskProgressManifest $taskResult $taskBad}catch{$taskRejected=$true}
+ if(-not $taskRejected){throw "Progress result accepted invalid proof: $taskMutation"}
+}
+Write-Output 'Progress result proof, exact Run identity, native resources and no-publication guards passed'

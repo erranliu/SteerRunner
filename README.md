@@ -246,3 +246,6 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 Workflow 能力/状态机定义：[统一能力与边界](docs/workflows/README.md) · [普通开发流程](docs/workflows/development.md) · [带审计开发流程](docs/workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，结果由现有内置函数核验，当前不提供定制脚本端口或宿主。两份开发定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
 
 绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](docs/spec/steerrunner.spec.md)。
+
+
+运行时单文件汇报：可选 submit.progress_file 提供初始 base64 字节，执行工具通过 STEERLINE_PROGRESS_FILE 获取原执行工作区文件路径；progress-file --run-id R 查询独立持久化的最新完整快照。支持本机 Codex 与 Orca 本地/远端，原始字节上限 64 KiB，不解释内容。配置、故障与生命周期边界见 [接入说明](docs/runtime-progress.md)，当前实际资格见 [验收](docs/acceptance/runtime-progress.md)。
