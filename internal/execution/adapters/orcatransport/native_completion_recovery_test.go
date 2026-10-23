@@ -102,11 +102,11 @@ func TestOrcaNativeIncompleteMetadataRecovers(t *testing.T) {
 }
 
 func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
-	for _, kind := range []string{"provider", "pane", "agent", "session", "restored", "boundary", "outcome", "interrupted"} {
+	for _, kind := range []string{"provider", "pane", "agent", "session", "restored", "boundary", "outcome", "interrupted", "tool-and-prompt"} {
 		t.Run(kind, func(t *testing.T) {
 			now := time.Unix(100, 0).UTC()
 			turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
-			turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now)
+			turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false)
 			changed := fixtureState(12, "", "done")
 			changed.LastAssistantMessage = "must not accept"
 			switch kind {
@@ -127,11 +127,13 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 				changed.MainAgent.Outcome = "unknown"
 			case "interrupted":
 				changed.Interrupted = true
+			case "tool-and-prompt":
+				changed.ToolOutput, changed.Prompt = true, "foreign input"
 			}
 			if kind == "boundary" {
-				turn.Native.signal(changed, &turn, now)
+				turn.Native.signal(changed, &turn, now, false)
 			} else {
-				turn.Native.query(changed, &turn, now)
+				turn.Native.query(changed, &turn, now, false)
 			}
 			if turn.Native.Conflict == "" || turn.Native.Waiting != "" {
 				t.Fatal("missing prompt hid positive conflict", turn.Native)
@@ -142,7 +144,7 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 			}
 			end := fixtureState(13, turn.Prompt, "done")
 			end.LastAssistantMessage = "later valid-looking final"
-			if turn.Native.query(end, &turn, now.Add(time.Minute)) {
+			if turn.Native.query(end, &turn, now.Add(time.Minute), false) {
 				t.Fatal("restore or later query erased conflict")
 			}
 		})
@@ -212,23 +214,23 @@ func TestOrcaNativeFinalRetainsVerifiedInputBinding(t *testing.T) {
 func TestOrcaNativeVerifiedFinalSurvivesWaitingDisplay(t *testing.T) {
 	now := time.Unix(100, 0).UTC()
 	turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
-	turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now)
+	turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false)
 	end := fixtureState(12, turn.Prompt, "done")
 	end.LastAssistantMessage = "Complete original final"
-	turn.Native.signal(end, &turn, now)
+	turn.Native.signal(end, &turn, now, false)
 	if !turn.Native.hasFinal() {
 		t.Fatal("original final missing")
 	}
 	waiting := fixtureState(13, turn.Prompt, "waiting")
-	turn.Native.signal(waiting, &turn, now)
-	turn.Native.query(waiting, &turn, now)
+	turn.Native.signal(waiting, &turn, now, false)
+	turn.Native.query(waiting, &turn, now, false)
 	if turn.Native.diagnostic() != "" || turn.Native.ReplyBody != end.LastAssistantMessage {
 		t.Fatal("later display state revoked original final", turn.Native)
 	}
 	// A subsequent positively identified input boundary is still a conflict.
 	other := fixtureState(14, "", "working")
 	other.Observation.Boundary = true
-	turn.Native.signal(other, &turn, now)
+	turn.Native.signal(other, &turn, now, false)
 	if turn.Native.Conflict == "" {
 		t.Fatal("saved final hid an observed foreign input")
 	}
@@ -257,7 +259,7 @@ func TestOrcaObserverReportsChangingGapAndRecovery(t *testing.T) {
 	partial.MainAgent.StateStartedAt = start.MainAgent.StateStartedAt
 	partial.ProviderSession.ID = ""
 	feed.events, feed.current = []native.AgentState{start, partial}, partial
-	observer := l.observe(s)
+	observer := l.observe(s, nil)
 	defer observer.Close(context.Background())
 	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
 	defer cancel()

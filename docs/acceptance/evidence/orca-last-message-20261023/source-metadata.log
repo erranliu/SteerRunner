@@ -1,0 +1,16 @@
+=== RUN   TestOrcaLocalQueryFeed
+--- PASS: TestOrcaLocalQueryFeed (0.02s)
+=== RUN   TestOrcaNativeStateStream
+=== RUN   TestOrcaNativeStateStream/subscription-query
+=== RUN   TestOrcaNativeStateStream/sample-feed
+=== RUN   TestOrcaNativeStateStream/wrong-runtime
+=== RUN   TestOrcaNativeStateStream/wrong-request
+=== RUN   TestOrcaNativeStateStream/cancelled
+--- PASS: TestOrcaNativeStateStream (2.10s)
+    --- PASS: TestOrcaNativeStateStream/subscription-query (0.03s)
+    --- PASS: TestOrcaNativeStateStream/sample-feed (0.02s)
+    --- PASS: TestOrcaNativeStateStream/wrong-runtime (0.02s)
+    --- PASS: TestOrcaNativeStateStream/wrong-request (0.02s)
+    --- PASS: TestOrcaNativeStateStream/cancelled (2.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	4.475s

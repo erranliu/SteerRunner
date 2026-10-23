@@ -6,10 +6,12 @@
 
 | 需要了解 | 入口 |
 | --- | --- |
+| 详细 CLI 用法、服务维护与状态目录 | [CLI 与运维指南](cli-guide.md) |
 | 产品职责、请求与 CLI 生命周期 | [产品契约](spec/steerrunner.spec.md) |
 | 请求、执行、回执、恢复与交付的全链路 | [可靠性交付链路](reliable-delivery.md) |
 | 四种内置流程、阶段及结果获取 | [Workflow 总览](workflows/README.md)、[普通开发](workflows/development.md)、[带审计开发](workflows/development-audited.md)、[持续对话](workflows/conversation.md)、[一次生成](workflows/generate.md) |
 | 配置发现、离线校验及内部测试配置 | [独立配置 Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md) |
+| 独立使用的双 skill、共享 helper、只读快照及独立 Viewer | [薄壳 Spec](spec/skill-shell.spec.md) / [Plan](spec/skill-shell.plan.md) / [实现与验收](acceptance/skill-shell.md) |
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
 | 无仓库的对话与生成输入 | [内容流程 Spec](spec/content-workflows.spec.md) / [Plan](spec/content-workflows.plan.md) |
 | 权限、单仓库认证与环境检查 | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md)、[环境检查 Spec](spec/environment-check.spec.md) / [Plan](spec/environment-check.plan.md) |
@@ -17,10 +19,10 @@
 | 服务换代、原执行接管与创建回执 | [换代恢复 Spec](spec/service-generation-recovery.spec.md) / [Plan](spec/service-generation-recovery.plan.md) |
 | 停止、初始化与停止证据范围 | [初始化停止 Plan](spec/initialization-stop.plan.md)、[Orca 停止取证 Plan](spec/orca-shutdown-verification.plan.md) |
 | 报告、日志及工作区 Git 查询 | [R2 操作指南](run-evidence-r2.md)、[Spec](spec/run-evidence-r2.spec.md) / [Plan](spec/run-evidence-r2.plan.md) |
-| 运行时单文件汇报、原始字节快照 | [接入指南](runtime-progress.md)、[Spec](spec/runtime-progress.spec.md) / [Plan](spec/runtime-progress.plan.md)、[专项验收](acceptance/runtime-progress.md) |
+| 运行时单文件汇报、原始字节快照 | [接入指南](runtime-progress.md)、[Spec](spec/runtime-progress.spec.md) / [Plan](spec/runtime-progress.plan.md)、[主线整合验收](acceptance/runtime-progress-integration.md) / [专项历史](acceptance/runtime-progress.md) |
 | Run token、独立估价及日志授权 | [用量与费用 Spec](spec/run-usage-and-cost.spec.md) / [Plan](spec/run-usage-and-cost.plan.md)、[实现及现场验收](acceptance/run-usage-and-cost.md) |
 | 实例绑定与同快照 observe | [公开读取与受理边界 Plan](spec/reliability-simplification.plan.md) |
-| 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md) |
+| 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md)、[测试清单](test-catalog.md)、[验收记录索引](acceptance/README.md) |

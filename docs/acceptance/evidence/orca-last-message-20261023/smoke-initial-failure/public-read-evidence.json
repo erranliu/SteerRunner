@@ -1,0 +1,52 @@
+{
+  "source_journal": "C:\\srt\\0588bad84334\\evidence\\caller-commands.jsonl",
+  "source_journal_sha256": "fb694aeca5a47c7e19fa8fcff6da8759a2d920590d55f3fccc0cf6c68853c5e5",
+  "null_read_count": 98,
+  "samples": [
+    {
+      "run_id": "8493ad6a6da7463f6c9c1c4670a4d568",
+      "attempt_id": "7192c95d8bc8da94404a1dbee45345de",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_27b2b4e5-8cf1-44e7-afbc-c1b1eb445698:b7ec2cc3-1ad3-42e1-94dc-f9fa3b17509d",
+      "turn_id": "c5d42945ed9867f580d401eccf4c3916",
+      "kind": "assistant",
+      "observed_at": "2026-10-23T05:06:26.2668604Z",
+      "text_sha256": "e8920090b3339eb26abaee1254f1aa54695811a3851484dce560507d37e2d8f1",
+      "text_utf8_bytes": 302,
+      "startup_ready": false,
+      "first_read_at": "2026-10-23T05:06:32.0966705Z",
+      "preceding_inspect": {
+        "status": "running",
+        "phase": "prepare_session",
+        "step": "publish.execute",
+        "revision": 22,
+        "turn_id": "c5d42945ed9867f580d401eccf4c3916",
+        "inspect_at": "2026-10-23T05:06:32.0603547Z"
+      },
+      "repeat_reads": 46,
+      "last_read_at": "2026-10-23T05:07:19.2375082Z"
+    },
+    {
+      "run_id": "8493ad6a6da7463f6c9c1c4670a4d568",
+      "attempt_id": "7192c95d8bc8da94404a1dbee45345de",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_27b2b4e5-8cf1-44e7-afbc-c1b1eb445698:b7ec2cc3-1ad3-42e1-94dc-f9fa3b17509d",
+      "turn_id": "9eb9410917ba6bffcba7a12dc46ac1a4",
+      "kind": "assistant",
+      "observed_at": "2026-10-23T05:07:16.1934409Z",
+      "text_sha256": "d6b8dc1c0ff143edecbfc6f7fc1e25e5b70a7f33eb365c56dce5c04f668c07d7",
+      "text_utf8_bytes": 161,
+      "startup_ready": false,
+      "first_read_at": "2026-10-23T05:07:21.3326386Z",
+      "preceding_inspect": {
+        "status": "reconciling",
+        "phase": "pr_verification",
+        "step": "publish.verify",
+        "revision": 28,
+        "turn_id": "9eb9410917ba6bffcba7a12dc46ac1a4",
+        "inspect_at": "2026-10-23T05:07:21.2916101Z"
+      },
+      "repeat_reads": 6,
+      "last_read_at": "2026-10-23T05:07:25.6005305Z"
+    }
+  ],
+  "scope": "Observed CLI responses and preceding inspect snapshots; these do not identify whether a response used direct observation or final supplementation, nor prove native working-time field publication."
+}

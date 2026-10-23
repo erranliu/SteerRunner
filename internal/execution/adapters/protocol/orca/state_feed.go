@@ -27,8 +27,9 @@ type StateObservation struct {
 	Boundary    bool   `json:"boundary,omitempty"`
 }
 
-// AgentState carries only public original-pane facts, never private transcript
-// paths, credentials, other agents' history or business outcomes.
+// AgentState carries public original-pane facts. The provider's own transcript
+// locator is used only with Orca's existing read-only RPC; Runner never opens a
+// remote private file. Derived input proof cannot be supplied over the wire.
 type AgentState struct {
 	State           string            `json:"state"`
 	PaneKey         string            `json:"paneKey"`
@@ -40,13 +41,16 @@ type AgentState struct {
 	MainAgent       *MainAgentState   `json:"mainAgent,omitempty"`
 	Observation     *StateObservation `json:"observation,omitempty"`
 	ProviderSession struct {
-		ID string `json:"id"`
+		ID             string `json:"id"`
+		TranscriptPath string `json:"transcriptPath,omitempty"`
 	} `json:"providerSession"`
-	LastAssistantMessage string `json:"lastAssistantMessage,omitempty"`
-	Interrupted          bool   `json:"interrupted,omitempty"`
-	SessionBoundary      bool   `json:"sessionBoundary,omitempty"`
-	RestoredUnconfirmed  bool   `json:"restoredUnconfirmed,omitempty"`
-	ToolOutput           bool   `json:"lastAssistantMessageIsToolOutput,omitempty"`
+	NativeInput          *NativeInput      `json:"-"`
+	MetadataObservation  *StateObservation `json:"-"`
+	LastAssistantMessage string            `json:"lastAssistantMessage,omitempty"`
+	Interrupted          bool              `json:"interrupted,omitempty"`
+	SessionBoundary      bool              `json:"sessionBoundary,omitempty"`
+	RestoredUnconfirmed  bool              `json:"restoredUnconfirmed,omitempty"`
+	ToolOutput           bool              `json:"lastAssistantMessageIsToolOutput,omitempty"`
 }
 
 var ErrStateIdentityChanged = errors.New("Orca native state identity changed")
@@ -55,10 +59,26 @@ func stateIdentityError(message string) error {
 	return fmt.Errorf("%w: %s", ErrStateIdentityChanged, message)
 }
 
+type SampleKind string
+
+const (
+	SampleInitial      SampleKind = "initial"
+	SampleNotification SampleKind = "notification"
+	SampleQuery        SampleKind = "query"
+)
+
+// StateSample is transient receive metadata, never part of the native wire or
+// persisted execution proof. Receive time is fixed before buffering.
+type StateSample struct {
+	AgentState
+	ReceivedAt time.Time  `json:"-"`
+	Kind       SampleKind `json:"-"`
+}
+
 type StateFeed interface {
-	Initial() AgentState
-	Drain() ([]AgentState, error)
-	Query(context.Context) (AgentState, error)
+	Initial() StateSample
+	Drain() ([]StateSample, error)
+	Query(context.Context) (StateSample, error)
 	Close()
 }
 type StateFeedFactory func(context.Context, string, b.ProcessIdentity) (StateFeed, error)
@@ -137,12 +157,12 @@ func DecodeOriginalAgent(raw json.RawMessage, worktree, pane string) (AgentState
 type nativeStateFeed struct {
 	environment string
 	process     b.ProcessIdentity
-	initial     AgentState
+	initial     StateSample
 	sub         *StateSubscription
 	cancel      context.CancelFunc
 	once        sync.Once
 	mu          sync.Mutex
-	updates     []AgentState
+	updates     []StateSample
 	err         error
 }
 
@@ -160,7 +180,8 @@ func OpenStateFeed(ctx context.Context, environment string, p b.ProcessIdentity)
 		return nil, err
 	}
 	watch, cancel := context.WithCancel(context.Background())
-	f := &nativeStateFeed{environment: environment, process: p, initial: initial, sub: sub, cancel: cancel, updates: []AgentState{initial}}
+	sample := StateSample{AgentState: initial, ReceivedAt: time.Now().UTC(), Kind: SampleInitial}
+	f := &nativeStateFeed{environment: environment, process: p, initial: sample, sub: sub, cancel: cancel, updates: []StateSample{sample}}
 	go func() {
 		defer sub.Close()
 		for {
@@ -169,6 +190,7 @@ func OpenStateFeed(ctx context.Context, environment string, p b.ProcessIdentity)
 			if err == nil {
 				s, err = DecodeOriginalState(raw, p)
 			}
+			sample := StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleNotification}
 			f.mu.Lock()
 			if err != nil {
 				if watch.Err() == nil {
@@ -182,22 +204,27 @@ func OpenStateFeed(ctx context.Context, environment string, p b.ProcessIdentity)
 				f.mu.Unlock()
 				return
 			}
-			f.updates = append(f.updates, s)
+			f.updates = append(f.updates, sample)
 			f.mu.Unlock()
 		}
 	}()
 	return f, nil
 }
-func (f *nativeStateFeed) Initial() AgentState { return f.initial }
-func (f *nativeStateFeed) Drain() ([]AgentState, error) {
+func (f *nativeStateFeed) Initial() StateSample { return f.initial }
+func (f *nativeStateFeed) Drain() ([]StateSample, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	updates := f.updates
 	f.updates = nil
 	return updates, f.err
 }
-func (f *nativeStateFeed) Query(ctx context.Context) (AgentState, error) {
-	return QueryOriginalAgent(ctx, f.environment, f.process, f.initial.PaneKey)
+func (f *nativeStateFeed) Query(ctx context.Context) (StateSample, error) {
+	return QueryOriginalSample(ctx, f.environment, f.process, f.initial.PaneKey)
+}
+
+func QueryOriginalSample(ctx context.Context, environment string, process b.ProcessIdentity, pane string) (StateSample, error) {
+	s, err := QueryOriginalAgent(ctx, environment, process, pane)
+	return StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleQuery}, err
 }
 
 // A bounded independent read remains available when the notification stream is
@@ -234,6 +261,19 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 	s.RestoredUnconfirmed = s.RestoredUnconfirmed || current.RestoredUnconfirmed
 	s.Interrupted = s.Interrupted || current.Interrupted
 	s.ToolOutput = s.ToolOutput || current.ToolOutput
+	// This stamp is corroborating metadata only. Never combine it with a
+	// different main-agent record observed by the independent query.
+	queryStamp := s.TurnStartedAt
+	s.TurnStartedAt = 0
+	if current.MainAgent != nil && s.MainAgent != nil && current.MainAgent.State == s.MainAgent.State && current.MainAgent.StateStartedAt == s.MainAgent.StateStartedAt &&
+		(queryStamp == 0 || queryStamp == current.TurnStartedAt) {
+		s.TurnStartedAt = current.TurnStartedAt
+		// A display marker cleared for disagreement must not be used as if
+		// two independently queried records corroborated the native input.
+		if current.AgentType == s.AgentType && *current.MainAgent == *s.MainAgent {
+			s.MetadataObservation = current.Observation
+		}
+	}
 	return s, nil
 }
 func (f *nativeStateFeed) Close() { f.once.Do(func() { f.cancel(); f.sub.Close() }) }

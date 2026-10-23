@@ -1,0 +1,363 @@
+{
+  "baselines": [
+    {
+      "pane": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "provider": "01a166fd-4978-75a1-bf7d-889208198d48",
+      "base_root_at": 1792729245380,
+      "last_signal": "2026-10-23T04:20:52.4674464Z",
+      "last_query": "2026-10-23T04:20:52.4674464Z",
+      "hint": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c:done:1792729245380"
+    },
+    {
+      "pane": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "provider": "01a166fd-4978-75a1-bf7d-889208198d48",
+      "base_root_at": 1792729269026,
+      "last_signal": "2026-10-23T04:21:23.0909142Z",
+      "last_query": "2026-10-23T04:21:23.0909142Z",
+      "hint": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c:done:1792729269026"
+    }
+  ],
+  "cleaned_up": true,
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "inputs": 2,
+  "proofs": [
+    {
+      "pane": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "provider": "01a166fd-4978-75a1-bf7d-889208198d48",
+      "base_root_at": 1792729245380,
+      "authority": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+      "incarnation": 8,
+      "revision": 11939,
+      "working_at": 1792729260799,
+      "root_working_at": 1792729260799,
+      "ended_at": 1792729269026,
+      "outcome": "unreported",
+      "reply_digest": "5f29398f6fd1ede43f3e36866a28a35c0261534eefa6d4220812d5fb2bc90e65",
+      "last_signal": "2026-10-23T04:21:11.1889915Z",
+      "last_query": "2026-10-23T04:21:06.1717594Z",
+      "hint": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c:done:1792729269026",
+      "hint_pending": true
+    },
+    {
+      "pane": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "provider": "01a166fd-4978-75a1-bf7d-889208198d48",
+      "base_root_at": 1792729269026,
+      "authority": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+      "incarnation": 8,
+      "revision": 11943,
+      "working_at": 1792729290113,
+      "root_working_at": 1792729290113,
+      "ended_at": 1792729297706,
+      "outcome": "unreported",
+      "reply_digest": "600d2cf16c32f3067dd50f1ae36491cb744d272dff20b0911b42b3c27f7ea781",
+      "last_signal": "2026-10-23T04:21:39.8790209Z",
+      "last_query": "2026-10-23T04:21:27.5835426Z",
+      "hint": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c:done:1792729297706",
+      "hint_pending": true
+    }
+  ],
+  "public_messages": [
+    {
+      "AttemptID": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "Generation": "cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+      "SessionID": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_3994382f-f13c-49e4-bfbf-011e22e1f24b:cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+      "TurnID": "cccccccccccccccccccccccccccccccc",
+      "Kind": "assistant",
+      "Text": "SteerlineTest provides five one-file documentation tasks for generating and validating evidence records, with external integration support for testing task dependencies and execution workflows.",
+      "ObservedAt": "2026-10-23T04:21:11.1889915Z"
+    },
+    {
+      "AttemptID": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "Generation": "cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+      "SessionID": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_3994382f-f13c-49e4-bfbf-011e22e1f24b:cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+      "TurnID": "dddddddddddddddddddddddddddddddd",
+      "Kind": "assistant",
+      "Text": "SteerlineTest provides five small evidence-generation tasks for validating documentation records and supporting external tests of task dependencies and execution workflows.",
+      "ObservedAt": "2026-10-23T04:21:39.8790209Z"
+    }
+  ],
+  "queries": [
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729263960,
+      "stateStartedAt": 1792729260799,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729260799
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    }
+  ],
+  "query_only": false,
+  "receipts": [
+    {
+      "send": {
+        "handle": "term_3994382f-f13c-49e4-bfbf-011e22e1f24b",
+        "accepted": true,
+        "bytesWritten": 254,
+        "prompt": {
+          "requestId": "e36d9bec-3383-4343-1bb9-6fead545ce72",
+          "stages": [
+            "input_accepted",
+            "turn_started"
+          ],
+          "provider": "codex",
+          "observation": "supported",
+          "processIncarnation": "cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+          "generation": 8523,
+          "baselineWorkingSequence": 1,
+          "baselineExplicitWorkingStartedAt": null,
+          "baselinePermissionSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "e36d9bec-3383-4343-1bb9-6fead545ce72",
+        "replayed": false
+      }
+    },
+    {
+      "send": {
+        "handle": "term_3994382f-f13c-49e4-bfbf-011e22e1f24b",
+        "accepted": true,
+        "bytesWritten": 254,
+        "prompt": {
+          "requestId": "edeef55e-3c60-09b1-eed5-205dd1324778",
+          "stages": [
+            "input_accepted",
+            "turn_started"
+          ],
+          "provider": "codex",
+          "observation": "supported",
+          "processIncarnation": "cfa7ff43-81c0-4354-8d16-3816869ea3e8",
+          "generation": 8523,
+          "baselineWorkingSequence": 1,
+          "baselineExplicitWorkingStartedAt": null,
+          "baselinePermissionSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "edeef55e-3c60-09b1-eed5-205dd1324778",
+        "replayed": false
+      }
+    }
+  ],
+  "results": 2,
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "samples": [
+    {
+      "state": "done",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "",
+      "updatedAt": 1792729248536,
+      "stateStartedAt": 1792729248535,
+      "turnStartedAt": 0,
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729260799,
+      "stateStartedAt": 1792729260799,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729260799
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11936,
+        "observedAt": 1792729260799,
+        "boundary": true
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729263960,
+      "stateStartedAt": 1792729260799,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729260799
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11937,
+        "observedAt": 1792729263960
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729263960,
+      "stateStartedAt": 1792729260799,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729260799
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11937,
+        "observedAt": 1792729263960
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "done",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729269026,
+      "stateStartedAt": 1792729269026,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729269026
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11939,
+        "observedAt": 1792729269026
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      },
+      "lastAssistantMessage": "SteerlineTest provides five one-file documentation tasks for generating and validating evidence records, with external integration support for testing task dependencies and execution workflows."
+    },
+    {
+      "state": "done",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729269026,
+      "stateStartedAt": 1792729269026,
+      "turnStartedAt": 1792729260799,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729269026
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11939,
+        "observedAt": 1792729269026
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      },
+      "lastAssistantMessage": "SteerlineTest provides five one-file documentation tasks for generating and validating evidence records, with external integration support for testing task dependencies and execution workflows."
+    },
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729290113,
+      "stateStartedAt": 1792729290113,
+      "turnStartedAt": 1792729290113,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729290113
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11940,
+        "observedAt": 1792729290113,
+        "boundary": true
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "working",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729293014,
+      "stateStartedAt": 1792729290113,
+      "turnStartedAt": 1792729290113,
+      "mainAgent": {
+        "state": "working",
+        "stateStartedAt": 1792729290113
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11941,
+        "observedAt": 1792729293014
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      }
+    },
+    {
+      "state": "done",
+      "paneKey": "5b15c48d-348a-4042-b187-0d88e74d4fbe:a1b8df07-40ab-4617-8bfb-1a7b648e9d2c",
+      "agentType": "codex",
+      "prompt": "Read README.md and summarize its purpose in one sentence. Do not change any files, do not create commits, do not publish anything, and do not run project checks. Treat this as a read-only description ",
+      "updatedAt": 1792729297706,
+      "stateStartedAt": 1792729297706,
+      "turnStartedAt": 1792729290113,
+      "mainAgent": {
+        "state": "done",
+        "stateStartedAt": 1792729297706
+      },
+      "observation": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:db7b5487-f530-441a-8eb6-24cfcb028cb5",
+        "incarnation": 8,
+        "revision": 11943,
+        "observedAt": 1792729297706
+      },
+      "providerSession": {
+        "id": "01a166fd-4978-75a1-bf7d-889208198d48"
+      },
+      "lastAssistantMessage": "SteerlineTest provides five small evidence-generation tasks for validating documentation records and supporting external tests of task dependencies and execution workflows."
+    }
+  ]
+}

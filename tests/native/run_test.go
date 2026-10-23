@@ -282,6 +282,9 @@ func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contr
 			t.Fatal(err)
 		}
 		save(t, "latest-run.json", view)
+		if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "orca_environment" {
+			assertNativeLastMessage(t, m, dir, view, view.Status == "pr_ready")
+		}
 		if view.Status == "pr_ready" && view.PR != nil && view.PR.HeadRevision != oldHead {
 			return view
 		}
@@ -299,6 +302,34 @@ func waitReady(t *testing.T, m livetest.Manifest, dir, id, oldHead string) contr
 	}
 	t.Fatal("original execution timed out; no replacement or resend was attempted")
 	return contracts.RunView{}
+}
+
+func assertNativeLastMessage(t *testing.T, m livetest.Manifest, dir string, run contracts.RunView, required bool) {
+	t.Helper()
+	var previous *contracts.LastMessage
+	for i := 0; i < 2; i++ {
+		response := invoke(t, m, dir, []string{"last-message", "--run-id", run.RunID}, nil)
+		body, _ := json.Marshal(response.Data)
+		var v contracts.LastMessageView
+		if json.Unmarshal(body, &v) != nil || v.RunID != run.RunID || v.AttemptID != run.Execution.AttemptID {
+			t.Fatal("last-message target changed")
+		}
+		if v.Message == nil {
+			if required {
+				t.Fatal("settled remote Run has no native public message")
+			}
+			continue
+		}
+		msg := v.Message
+		if msg.RunID != run.RunID || msg.AttemptID != run.Execution.AttemptID || msg.SessionID != run.Execution.SessionID || msg.TurnID == "" || msg.Kind != "assistant" || strings.TrimSpace(msg.Text) == "" || len(msg.Text) > 1203 || msg.ObservedAt.IsZero() {
+			t.Fatal("invalid native public message", v)
+		}
+		if previous != nil && previous.TurnID == msg.TurnID && previous.Text == msg.Text && !previous.ObservedAt.Equal(msg.ObservedAt) {
+			t.Fatal("reading unchanged native message refreshed its timestamp")
+		}
+		previous = msg
+		save(t, "last-message-"+run.RunID+".json", v)
+	}
 }
 
 func request(id string, value any) contracts.Request {

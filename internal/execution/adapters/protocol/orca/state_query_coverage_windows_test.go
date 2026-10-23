@@ -91,3 +91,43 @@ func TestOriginalAgentQueryCoversLimitedSnapshot(t *testing.T) {
 		})
 	}
 }
+
+func TestOriginalAgentQueryRetainedStampRequiresSameMainRecord(t *testing.T) {
+	for _, mode := range []string{"same", "matching-query-marker", "conflicting-query-marker", "missing-metadata-marker", "different-state", "different-time"} {
+		t.Run(mode, func(t *testing.T) {
+			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
+				main := map[string]any{"state": "done", "stateStartedAt": 20}
+				switch req.Method {
+				case "status.get":
+					ipcReply(conn, req, "runtime", map[string]any{})
+				case "session.tabs.list":
+					stamp := 10
+					if mode == "missing-metadata-marker" {
+						stamp = 0
+					}
+					if mode == "different-state" {
+						main["state"] = "working"
+					}
+					if mode == "different-time" {
+						main["stateStartedAt"] = 21
+					}
+					ipcReply(conn, req, "runtime", map[string]any{"worktree": "original", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": "leaf", "agentStatus": map[string]any{"mainAgent": main, "turnStartedAt": stamp, "providerSession": map[string]string{"id": "provider"}, "lastAssistantMessage": "metadata must not replace body"}}}})
+				case "worktree.ps":
+					stamp := 10
+					if mode == "same" {
+						stamp = 0 // Current hook-store projections omit the marker.
+					} else if mode == "conflicting-query-marker" {
+						stamp++
+					}
+					ipcReply(conn, req, "runtime", map[string]any{"totalCount": 1, "truncated": false, "worktrees": []any{map[string]any{"worktreeId": "original", "agents": []any{map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "mainAgent": main, "turnStartedAt": stamp, "lastAssistantMessage": "original"}}}}})
+				}
+			})
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+			s, err := QueryOriginalAgent(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "original", Terminal: "terminal", Incarnation: "incarnation"}, "tab:leaf")
+			if err != nil || (s.TurnStartedAt == 10) != (mode == "same" || mode == "matching-query-marker") || s.LastAssistantMessage != "original" {
+				t.Fatal("query mixed independent records", s, err)
+			}
+		})
+	}
+}

@@ -56,23 +56,26 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
-	terminalMu       sync.Mutex
-	terminalJob      b.ProcessTreeHandle
-	setup            b.LifecycleSetup
-	profile          Profile
-	profileVersion   int
-	client           native.Client
-	stateFactory     native.StateFeedFactory
-	queryNative      func(context.Context, b.ProcessIdentity, string) (native.AgentState, error)
-	feed             native.StateFeed
-	feedProcess      b.ProcessIdentity
-	feedMu           sync.Mutex
-	feedRetryAt      time.Time
-	clock            func() time.Time
-	nativeAccess     bool
-	readStopArtifact func(context.Context, string, string, string, string) ([]byte, error)
-	inspectionOnce   sync.Once
-	inspectionSerial chan struct{}
+	observationMu     sync.Mutex
+	nativeObservation *nativeObservation
+	terminalMu        sync.Mutex
+	terminalJob       b.ProcessTreeHandle
+	setup             b.LifecycleSetup
+	profile           Profile
+	profileVersion    int
+	client            native.Client
+	stateFactory      native.StateFeedFactory
+	queryNative       func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
+	queryInput        func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
+	feed              native.StateFeed
+	feedProcess       b.ProcessIdentity
+	feedMu            sync.Mutex
+	feedRetryAt       time.Time
+	clock             func() time.Time
+	nativeAccess      bool
+	readStopArtifact  func(context.Context, string, string, string, string) ([]byte, error)
+	inspectionOnce    sync.Once
+	inspectionSerial  chan struct{}
 }
 
 func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
@@ -80,8 +83,13 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 	if err == nil {
 		port.(*Lifecycle).nativeAccess = true
 		l := port.(*Lifecycle)
-		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.AgentState, error) {
-			return native.QueryOriginalAgent(ctx, l.profile.Environment, process, pane)
+		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
+			return native.QueryOriginalSample(ctx, l.profile.Environment, process, pane)
+		}
+		if l.profile.Environment != "" {
+			l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
+				return native.QueryOriginalInput(ctx, l.profile.Environment, process, pane, baseline, before)
+			}
 		}
 	}
 	return port, err
@@ -477,7 +485,7 @@ func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.Lifecy
 		snapshot := r.Snapshot.Clone()
 		snapshot.Implementation = receipt.Implementation
 		snapshot.PendingTurn = r.Input.Turn
-		return receipt, l.observe(snapshot), nil
+		return receipt, l.observe(snapshot, nil), nil
 	}
 	return receipt, nil, err
 }
@@ -528,25 +536,25 @@ func (l *Lifecycle) readyOnce(readyCtx context.Context, s b.LifecycleSnapshot) (
 	for {
 		current, err := feed.Query(readyCtx)
 		if err != nil {
-			return current, fmt.Errorf("original native readiness unavailable; no input was sent: %w", err)
+			return current.AgentState, fmt.Errorf("original native readiness unavailable; no input was sent: %w", err)
 		}
 		if _, err := l.original(readyCtx, s); err != nil {
-			return current, err
+			return current.AgentState, err
 		}
 		if current.PaneKey != feed.Initial().PaneKey || current.AgentType != s.Ref.Agent.Name {
-			return current, errors.New("original native main-agent identity changed; no input was sent")
+			return current.AgentState, errors.New("original native main-agent identity changed; no input was sent")
 		}
 		if current.MainAgent != nil && current.ProviderSession.ID != "" {
 			switch current.MainAgent.State {
 			case "done", "idle":
-				return current, nil
+				return current.AgentState, nil
 			case "waiting", "blocked":
-				return current, fmt.Errorf("original native main agent is %s; no input was sent", current.MainAgent.State)
+				return current.AgentState, fmt.Errorf("original native main agent is %s; no input was sent", current.MainAgent.State)
 			}
 		}
 		select {
 		case <-readyCtx.Done():
-			return current, fmt.Errorf("original native main-agent readiness timed out; no input was sent: %w", readyCtx.Err())
+			return current.AgentState, fmt.Errorf("original native main-agent readiness timed out; no input was sent: %w", readyCtx.Err())
 		case <-time.After(200 * time.Millisecond):
 		}
 	}
@@ -668,6 +676,12 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 			return receipt, errors.New("native original session changed before submission")
 		}
 		turn.Native = nativeBaseline(initial, l.clock())
+		l.feedMu.Lock()
+		feed := l.feed
+		l.feedMu.Unlock()
+		l.observationMu.Lock()
+		l.observation(s, feed)
+		l.observationMu.Unlock()
 	}
 	turn.Request = nativeRequest(r.Operation.ID)
 	turn.Attempted = true
@@ -736,7 +750,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	}
 	return receipt, err
 }
-func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleReceipt, *b.PublicMessage, error) {
 	receipt := b.LifecycleReceipt{Disposition: b.OperationUnknown}
 	state, err := l.state(s)
 	if err != nil {
@@ -763,6 +777,11 @@ func (l *Lifecycle) observeOnce(ctx context.Context, s b.LifecycleSnapshot) (b.L
 		// ended-without-body facts. Never infer identity from an omitted field.
 		if _, err = l.original(ctx, s); err != nil {
 			receipt.Implementation, _ = l.envelope(s, state)
+			l.observationMu.Lock()
+			if l.nativeObservation != nil {
+				l.nativeObservation.invalidate()
+			}
+			l.observationMu.Unlock()
 			return receipt, nil, err
 		}
 		if turn.WireFormat == remoteWireCommand || turn.WireFormat == remoteModelWireCommand || turn.WireFormat == extensionWireCommand {
@@ -793,10 +812,10 @@ observed:
 		receipt.TurnEvidence = failure
 		receipt.State.TurnCompleted, receipt.State.WorkerLive = true, false
 		receipt.Disposition = b.OperationConfirmed
-		return receipt, nil, nil
+		return receipt, l.publicCandidate(), nil
 	}
 	if !turn.Settled {
-		return receipt, nil, nil
+		return receipt, l.publicCandidate(), nil
 	}
 	receipt.Disposition = b.OperationConfirmed
 	l.closeStateFeed()
@@ -817,7 +836,7 @@ observed:
 		receipt.TurnEvidence.FinalNativeSessionID = state.RemoteReadiness.SessionID
 		receipt.TurnEvidence.FinalNativeTurnID = turn.Recorded.NativeTurnID
 	}
-	return receipt, nil, nil
+	return receipt, l.publicCandidate(), nil
 }
 
 // Recovery resumes observation of the same resource and saved input/baseline only.
@@ -825,7 +844,7 @@ func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot)
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {
 		return b.LifecycleReceipt{}, nil, err
 	}
-	receipt, _, err := l.observeOnce(ctx, s)
+	receipt, message, err := l.observeOnce(ctx, s)
 	if err != nil {
 		l.closeStateFeed()
 		return receipt, nil, err
@@ -835,7 +854,7 @@ func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot)
 	}
 	snapshot := s.Clone()
 	snapshot.Implementation = receipt.Implementation
-	return receipt, l.observe(snapshot), nil
+	return receipt, l.observe(snapshot, message), nil
 }
 
 func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {

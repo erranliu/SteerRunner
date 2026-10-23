@@ -1,0 +1,13 @@
+{
+  "run_id": "4590563a1600576b5b1c25191bb8a47c",
+  "attempt_id": "53a60189674967af6e1bc6fc6662c6db",
+  "message": {
+    "run_id": "4590563a1600576b5b1c25191bb8a47c",
+    "attempt_id": "53a60189674967af6e1bc6fc6662c6db",
+    "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_af0cccf7-5ffb-4224-8ce2-02489bbebe6c:4d526098-e187-4021-997e-5db47aabfd2a",
+    "turn_id": "f1092d900deaa780d4218bb77726df0f",
+    "kind": "assistant",
+    "text": "发布命令已完成，退出码为 `0`。PR：\u003chttps://github.com/erranliu/SteerlineTest/pull/649\u003e\n\n本次发布已完成。",
+    "observed_at": "2026-10-23T05:20:44.8204453Z"
+  }
+}

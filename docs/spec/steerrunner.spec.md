@@ -370,7 +370,7 @@ SteerRunner 内部分工为公共 CLI/DTO、服务与存储、Workflow、Reliabl
 
 `workflow_changed` 事件在 Run 提交事务内比较前后值，仅 workflow stage/status/diagnostic 发生变化时追加。`transition.from/to` 各含 `workflow_stage`、`workflow_status`、可选 `diagnostic`；外层保留原 event_id、Run/Attempt、revision、created_at。初次提交 from 为空。不用当前 Run 重画缺少 transition 的历史。
 
-`last-message` 返回的 `observed_at` 为现有观察流收到原生通知时的 UTC 时间，不是查询时间；同一摘要重复读取时间不变。只采样本地 Codex completed agentMessage 或固定工具标签，不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，Orca 无样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。
+`last-message` 返回的 `observed_at` 为原生样本被本机观察源收到的 UTC 时间，不是调用该 CLI 的时间；同一摘要重复读取时间不变。采样本地 Codex completed agentMessage、固定工具标签，以及远端原生 Orca Codex 的可归属公开 assistant 字段；Orca 后台查询样本使用本机收到时间，不冒充远端消息创建时间。不暴露 reasoning、工具参数/命令/输出或用户输入。Run/Attempt/Session.Generation/Session/Turn 验证与脱敏后，每 Run 只保存一条 1200 UTF-8 字节加省略号的摘要。乱序/过期样本丢弃，不推进 revision/events。服务重启缓存清空，仅由之后的正常合法观察产生新样本；空值与读取错误都不能用来判断失败、卡死或恢复资格。Orca 字段发布时机属于最佳努力，不保证中途或逐 token 消息，具体来源及空结束 prompt 约束见[专项 Spec](orca-last-message.spec.md)。
 
 客户端按当前显示的执行按需查询；SteerLine 在页面可见且在线时每 3 秒读取，后台/切换/离开时停止。具体边界与最小验证见[增量 Plan](execution-observability.plan.md)和[验收](../acceptance/execution-observability.md)。
 

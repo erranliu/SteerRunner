@@ -47,6 +47,10 @@ func TestOrcaLocalQueryFeed(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer feed.Close()
+	initial := feed.Initial()
+	if initial.Kind != SampleInitial || initial.ReceivedAt.IsZero() || !feed.Initial().ReceivedAt.Equal(initial.ReceivedAt) {
+		t.Fatal("initial receive metadata missing or unstable", initial)
+	}
 	if feed.Initial().PaneKey != "tab:leaf" || feed.Initial().ProviderSession.ID != "provider" {
 		t.Fatal(feed.Initial())
 	}
@@ -56,9 +60,13 @@ func TestOrcaLocalQueryFeed(t *testing.T) {
 	if queries.Load() != 0 || subscriptions.Load() != 0 {
 		t.Fatal("unexpected background observation")
 	}
+	queryStarted := time.Now().UTC()
 	state, err := feed.Query(context.Background())
 	if err != nil || state.LastAssistantMessage != "complete" || state.MainAgent.State != "done" || state.Observation != nil {
 		t.Fatal(state, err)
+	}
+	if state.Kind != SampleQuery || state.ReceivedAt.Before(queryStarted) || state.ReceivedAt.After(time.Now().UTC()) {
+		t.Fatal("query receive time is not fixed at its source", state)
 	}
 	replacement.Store(true)
 	if _, err := feed.Query(context.Background()); !errors.Is(err, ErrStateIdentityChanged) {

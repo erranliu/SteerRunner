@@ -8,7 +8,7 @@
 
 > 上述旧批次通过绑定212ebee；当时推送后发现新主线的冲突，未验证组合源码。原冲突事实保留为[历史记录](../acceptance/evidence/fixed-control-20261019/checks/integration-status.json)，不代表本轮最终状态。
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 日期：2026-10-18（首次调查 2026-10-16）。状态：三方式及本期两定义已实现，必要验收通过。普通需求，不创建 Task/roadmap 调度项。[Plan](result-acquisition.plan.md) · [专属验收](../acceptance/result-acquisition.md) · [调查与原生能力记录](../acceptance/evidence/result-acquisition-design-20261016.md)。
 
 本轮收敛：只实现两个内置 Workflow、三种结果获取方式、同一结果模型及必要的来源/恢复接线。统一机制与具体定义分开，agent 阶段动作统一发送定义中的提示词。首期只用内置核验函数，不建设定制脚本端口或执行宿主。可读定义先交付确认稿：[统一能力](../workflows/README.md) · [development](../workflows/development.md) · [development-audited](../workflows/development-audited.md)。下文原生解析设计继续适用；具体定义文档已按本轮选择更新，本期三方式与两定义已实现；支持范围以本页实施状态和 §6 为准。
@@ -223,7 +223,7 @@ Runner 独立配置如下；启用后仍按需核验原生环境：
 
 `enabled=false` 或本步骤策略未选择 parser 时，不发现、启动、检查其 EXE/登录/模型。已启用也在真正需要 parser 的边界才惰性资格核验；明确不可用进入可后备的获取失败，不让普通 Run 的 submit 因无关 parser 缺失被拒。配置文件本身语法无效属于 Runner 配置错误，须明确拒绝新 submit、保留已有 Run 控制/停止能力，不能静默采用不同配置。
 
-显式 executable 优先，否则 Runner 用现有 NativeExecutable 解析规则发现 PATH 上的原生 EXE，拒绝不透明 wrapper/共享 daemon，保存绝对路径/版本/文件摘要。首个资格候选固定 Codex `0.159.2`，其 parser 权限 profile 与执行 profile 独立；版本相同不代表解析隔离已通过。
+显式 executable 优先，否则 Runner 用现有 NativeExecutable 解析规则发现 PATH 上的原生 EXE，拒绝不透明 wrapper/共享 daemon，保存绝对路径/版本/文件摘要。最低版本为 Codex `0.159.2`，与执行链路共用语义版本下限判断，无版本上限；高于基线的预发布版也可进入资格核验。其 parser 权限 profile 与执行 profile 独立；版本相同不代表解析隔离已通过。
 
 `codex_home_env` 是一个非秘密环境变量名，指向服务主机上已有 Codex home；非空但未定义/路径无效为明确环境错误，不回退其他登录。空值不设置新 CODEX_HOME，继承 Runner 服务启动环境，由 Codex 按其原生默认环境发现认证。使用环境名及解析后的非秘密路径作为引用；不保存 auth.json、OAuth/token、API key 或账户凭据摘要，不复制 home 来创建解析身份。
 
@@ -251,7 +251,7 @@ Codex 自己登录、读取原生 credential store 并续期，Runner 只管理�
 
 ### 6.2 原生资格和支持范围
 
-当前 profile 固定 Windows / Codex 0.159.2，原生版本与 EXE 摘要随实际获取记录；主机或显式模型不可用只使该次获取明确失败，不改变业务执行策略。先用已有公共 app-server 的 initialize + config/read（不创建 thread/turn）读取连接名称与配置来源，逐项追加 mcp_servers.<name>.enabled=false；空表会深度合并，不能用 mcp_servers={} 冒充清空。配置值不返回、不记录；有已声明的非用户层动作 hooks、不可安全禁用的连接名称、缺少配置来源或未核实配置读取进程树退出时不启动模型。原生插件/apps/hooks 等同时关闭。受信任主机配置须在本次资格核验与启动间保持稳定；不建设与恶意管理员竞态的防御平台。
+当前 profile 要求 Windows / Codex >= 0.159.2，profile 标识中的版本保留为最低基线，原生实际版本与 EXE 摘要随实际获取记录；主机或显式模型不可用只使该次获取明确失败，不改变业务执行策略。先用已有公共 app-server 的 initialize + config/read（不创建 thread/turn）读取连接名称与配置来源，逐项追加 mcp_servers.<name>.enabled=false；空表会深度合并，不能用 mcp_servers={} 冒充清空。配置值不返回、不记录；有已声明的非用户层动作 hooks、不可安全禁用的连接名称、缺少配置来源或未核实配置读取进程树退出时不启动模型。原生插件/apps/hooks 等同时关闭。受信任主机配置须在本次资格核验与启动间保持稳定；不建设与恶意管理员竞态的防御平台。
 
 模型进程采用新的 exec、冻结 stdin/schema、独立空临时目录（不得位于 Git 仓库内），原生 read-only/mxc/never，并显式选择同名只读 permission profile，避免受管主机默认选成可写；schema/final/JSONL/回执存原 state-dir 的 owned acquisition 目录，不占执行上下文。未指定 model 时采用跳过用户配置后的原生默认，exec JSONL 未报告实际模型名时记不可得，不从 catalog 或模型自述补造。显式模型调用成功才证明本次账号可用。
 

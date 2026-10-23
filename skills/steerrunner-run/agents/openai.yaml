@@ -1,0 +1,4 @@
+interface:
+  display_name: "Run with SteerRunner"
+  short_description: "Execute a Spec and Plan, manage its Run, or open the Run viewer"
+  default_prompt: "Use $steerrunner-run to execute this Spec and Plan and show the original Run's progress."

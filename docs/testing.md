@@ -39,6 +39,10 @@ Orca 观察恢复定向回归：`go test ./internal/execution/adapters/orcatrans
 
 ## 分层定义
 
+SessionStart 空预览补证定向入口：`go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -run 'TestOrcaNativeInput' -count=1 -timeout=3m`。默认只使用隔离原生响应和 IPC 夹具，核验原输入全文/唯一性、旧 proof、分页、读取竞争及零重发；无需生产状态或远端模型。只读现场探针独立记录于执行可见性验收，不作为默认测试入口。
+
+断线后空预览定向回归：`go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -run 'TestOrcaCompletionQuery|TestOrcaObservationDiagnostic|TestOriginalAgentQueryRetainedStamp' -count=1 -timeout=3m`。覆盖原 working 起点持久化后断线/重建的独立查询收尾、延迟正文、观察器完成事件及诊断解除；缺 start/marker、不同 marker、身份/历史冲突、截断正文继续拒收。协议反例防止不同主记录或冲突来源借用 marker。受控夹具固定一次原输入、零重发，不读取生产状态或启动模型；实际范围见[执行可见性验收](acceptance/execution-observability.md#断线后空输入预览恢复2026-10-23)。
+
 按测试目的、流程和隔离条件分层，不以是否使用真机、模型或远端环境作为层级定义。
 
 | 层级 | 定义 | 设计要求 |
@@ -190,7 +194,7 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 不复用上次 Run、请求授权或已经执行过的 manifest。脚本等待完成后返回退出码；
 不能以后台 PID 或启动成功作为通过。
 
-L2 当前原生资格固定 Codex 0.159.2；`configurations.local-codex` 必须提供本机
+L2 原生资格要求 Codex >= 0.159.2，并保留生产协议与权限检查；`configurations.local-codex` 必须提供本机
 codex-app-server、development/2、显式 sandbox 和绝对 native EXE 路径；不接受脚本包装器或提示词覆盖。
 未指定模型沿生产契约使用原生默认，可显式固定 model 和 reasoning_effort。
 每个远端、Pi、DSH 或审计配置项均填写完整 execution，不继承本机配置。
@@ -316,8 +320,7 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许明确列出的两个 subprocess helper、三个显式 Orca 取证入口及一个
-显式 MXC 工具环境诊断 skip；这些 skip 不计真机通过。后者用
+禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、MXC 工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。MXC 入口用
 `go test ./internal/execution/adapters/codex -run '^TestAuthenticationNativeToolBoundary$' -v -count=1 -args -sandbox-auth-native=<Codex绝对路径>`
 单独执行，使用无效受控 canary，不运行模型、不证明真实认证/发布。
 同一命令增加 `-sandbox-auth-host-broker=true` 可在全新诊断现场使用宿主登录的受限代理，
@@ -520,3 +523,5 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 ## 运行时单文件汇报增量
 
 新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 27 场景/37 case，总 33 场景/43 case；Controlled 23 顶层（新增 TestSRProgressFile），原有项全部保留。正式脚本自动执行 L1、完整 Controlled；建议 -MaxParallel 7 同时调度两项 L2 与五项 L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
+
+2026-10-23：远端 Orca Codex 最后消息沿现有 smoke、multirun、connection-reconnect drivers 核验公开 CLI 身份、摘要边界及重复读取时间；不新建 catalog case。`TestOrcaNativeStateLiveLifecycle` 的原 opt-in 入口记录普通通知和 query-only 的实际样本、独立消息/完成事件及原资源关闭。缺 prompt 的查询场景若真实出现，应保持未核实且零重发；若来源保留 prompt，只登记匹配路径通过。Controlled 覆盖空 prompt 连续链、标记变化、断线/重启和诊断重附着。详见[Spec](spec/orca-last-message.spec.md)、[Plan](spec/orca-last-message.plan.md)及[原验收](acceptance/execution-observability.md)。

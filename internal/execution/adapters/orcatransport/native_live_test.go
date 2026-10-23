@@ -23,9 +23,20 @@ type liveProbeHost struct{}
 
 // Keep readiness and independent queries real while deliberately dropping
 // every notification. No production simulation/profile option is introduced.
-type queryOnlyProbeFeed struct{ native.StateFeed }
+type recordingProbeFeed struct {
+	native.StateFeed
+	samples   *[]native.StateSample
+	queryOnly bool
+}
 
-func (queryOnlyProbeFeed) Drain() ([]native.AgentState, error) { return nil, nil }
+func (f recordingProbeFeed) Drain() ([]native.StateSample, error) {
+	samples, err := f.StateFeed.Drain()
+	*f.samples = append(*f.samples, samples...)
+	if f.queryOnly {
+		return nil, err
+	}
+	return samples, err
+}
 
 func (liveProbeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
 	return nil, errors.New("native probe owns an ordinary Orca terminal")
@@ -158,25 +169,25 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	var queries []native.AgentState
 	var baselines []NativeProof
 	var receipts []json.RawMessage
-	if queryOnly {
-		l.stateFactory = func(ctx context.Context, environment string, p b.ProcessIdentity) (native.StateFeed, error) {
-			feed, err := native.OpenStateFeed(ctx, environment, p)
-			if err != nil {
-				return nil, err
-			}
-			return queryOnlyProbeFeed{feed}, nil
+	var publicMessages []b.PublicMessage
+	var samples []native.StateSample
+	l.stateFactory = func(ctx context.Context, environment string, p b.ProcessIdentity) (native.StateFeed, error) {
+		feed, err := native.OpenStateFeed(ctx, environment, p)
+		if err != nil {
+			return nil, err
 		}
-		query := l.queryNative
-		l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.AgentState, error) {
-			state, err := query(ctx, p, pane)
-			if err == nil {
-				queries = append(queries, state)
-			}
-			return state, err
+		return recordingProbeFeed{StateFeed: feed, samples: &samples, queryOnly: queryOnly}, nil
+	}
+	query := l.queryNative
+	l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.StateSample, error) {
+		state, err := query(ctx, p, pane)
+		if err == nil {
+			queries = append(queries, state.AgentState)
 		}
+		return state, err
 	}
 	defer func() {
-		record["queries"], record["baselines"], record["receipts"] = queries, baselines, receipts
+		record["queries"], record["baselines"], record["receipts"], record["public_messages"], record["samples"] = queries, baselines, receipts, publicMessages, samples
 	}()
 	s.Implementation, err = l.envelope(s, State{Process: process})
 	if err != nil {
@@ -204,27 +215,56 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 		baselines = append(baselines, turnFor(&preparedState, command).Native)
 		req = request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input})
 		req.Operation.ID += "-" + process.Terminal + "-" + command
-		r, observer, err := l.Execute(ctx, req)
-		if err != nil || observer == nil {
+		r, obs, err := l.Execute(ctx, req)
+		if err != nil || obs == nil {
 			t.Fatalf("native original submission unverified: %v", err)
 		}
+		defer func() {
+			obs.Close(context.Background())
+			cleanup, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			if err := obs.(*observer).awaitCleanup(cleanup); err != nil {
+				t.Error(err)
+			}
+		}()
 		bind(&s, r)
 		receipts = append(receipts, append(json.RawMessage(nil), r.Operation.Receipt...))
 		record["inputs"] = i + 1
 		completed := false
 		for !completed {
 			select {
-			case event, ok := <-observer.Events():
+			case event, ok := <-obs.Events():
 				if !ok {
 					t.Fatal("native observation ended before complete reply")
 				}
 				if len(event.Implementation) > 0 {
 					s.Implementation = event.Implementation
 				}
+				if event.PublicMessage != nil {
+					if event.Fact.Completed || len(event.Implementation) > 0 || event.Observation != nil || event.PublicMessage.TurnID != command || event.PublicMessage.ObservedAt.IsZero() {
+						t.Fatal("native message mixed facts or changed identity")
+					}
+					publicMessages = append(publicMessages, *event.PublicMessage)
+				}
 				completed = event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 				event.Persisted <- nil
 				event.Processed <- nil
-			case err := <-observer.Done():
+				if queryOnly && event.Observation != nil && event.Observation.Diagnostic == nativePromptMissing {
+					if len(queries) == 0 || queries[len(queries)-1].Prompt != "" || queries[len(queries)-1].MainAgent == nil || queries[len(queries)-1].MainAgent.State != "done" {
+						t.Fatal("missing-prompt diagnostic has no original query")
+					}
+					state, err := l.state(s)
+					if err != nil || turnFor(&state, command).Native.EndedAt != 0 || turnFor(&state, command).Native.WorkingAt != 0 {
+						t.Fatal("query-only observation invented start/end", err)
+					}
+					obs.Close(context.Background())
+					if err := obs.(*observer).awaitCleanup(ctx); err != nil {
+						t.Fatal(err)
+					}
+					record["empty_prompt_query_only_unverified"] = true
+					return
+				}
+			case err := <-obs.Done():
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -232,11 +272,14 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 					t.Fatal("native original result unavailable")
 				}
 			case <-ctx.Done():
-				observer.Close(context.Background())
+				obs.Close(context.Background())
 				t.Fatal(ctx.Err())
 			}
 		}
-		observer.Close(context.Background())
+		obs.Close(context.Background())
+		if err := obs.(*observer).awaitCleanup(ctx); err != nil {
+			t.Fatal(err)
+		}
 		r, _, err = l.ObserveLifecycle(ctx, s)
 		if err != nil || r.TurnEvidence == nil || r.TurnEvidence.NativeOutcome != "unreported" {
 			t.Fatalf("native completed result provenance unverified: %v", err)

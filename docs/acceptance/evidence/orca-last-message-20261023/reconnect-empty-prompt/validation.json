@@ -1,0 +1,32 @@
+{
+  "counts": {
+    "packages_passed": 33,
+    "top_level_passed": 614,
+    "tests_and_subtests_passed": 2171,
+    "skipped": 16,
+    "failed": 0
+  },
+  "targeted_top_level_passed": [
+    "TestOrcaCompletionQueryRecoveryClosesFailedRead",
+    "TestOrcaCompletionQuery",
+    "TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect",
+    "TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence",
+    "TestOrcaCompletionQueryReconnectObserverCommitsFinal",
+    "TestOrcaCompletionQueryEmptyPromptRequiresVerifiedStartAndRetainedBoundary",
+    "TestOrcaCompletionQuerySupplementsSameRetainedEmptyPromptEnd",
+    "TestOriginalAgentQueryRetainedStampRequiresSameMainRecord"
+  ],
+  "affected_packages": {
+    "orcatransport": {
+      "exit_code": 0,
+      "elapsed_seconds": 46.785
+    },
+    "protocol/orca": {
+      "exit_code": 0,
+      "elapsed_seconds": 6.666
+    }
+  },
+  "go_vet_affected_packages_exit_code": 0,
+  "formal_report": "summary.json",
+  "raw_l1_events": "l1.jsonl.gz"
+}

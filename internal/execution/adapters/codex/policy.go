@@ -2,11 +2,16 @@ package codexworker
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
+// Contract identity retains the minimum version baseline for frozen resources.
 const PolicyContract = "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never"
-const PolicyCodexVersion = "codex-cli 0.159.2"
+const PolicyMinimumCodexVersion = "0.159.2"
+const PolicyCodexVersion = "codex-cli " + PolicyMinimumCodexVersion
+
+var nativeVersionPattern = regexp.MustCompile(`^codex-cli (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$`)
 
 type Permissions struct {
 	Sandbox           string `json:"sandbox"`
@@ -46,8 +51,32 @@ func NativePermissions(goos, host, agent string, modes ...string) (Permissions, 
 	return p, nil
 }
 func VerifyPolicyVersion(version string) error {
-	if strings.TrimSpace(version) != PolicyCodexVersion {
-		return fmt.Errorf("native Codex launch requires %s; observed %s", PolicyCodexVersion, strings.TrimSpace(version))
+	version = strings.TrimSpace(version)
+	parts := nativeVersionPattern.FindStringSubmatch(version)
+	unsupported := func() error {
+		return fmt.Errorf("native Codex launch requires codex-cli >= %s; observed %s", PolicyMinimumCodexVersion, version)
+	}
+	if parts == nil {
+		return unsupported()
+	}
+	for _, identifier := range strings.Split(parts[4], ".") {
+		if len(identifier) > 1 && identifier[0] == '0' && strings.Trim(identifier, "0123456789") == "" {
+			return unsupported()
+		}
+	}
+	for i, minimum := range strings.Split(PolicyMinimumCodexVersion, ".") {
+		actual := parts[i+1]
+		// Compare numeric components without overflowing on an untrusted version.
+		if len(actual) > len(minimum) || len(actual) == len(minimum) && actual > minimum {
+			return nil
+		}
+		if len(actual) < len(minimum) || actual < minimum {
+			return unsupported()
+		}
+	}
+	// A prerelease of the minimum version sorts before its stable release.
+	if parts[4] != "" {
+		return unsupported()
 	}
 	return nil
 }

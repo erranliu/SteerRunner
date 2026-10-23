@@ -107,6 +107,7 @@ func (s *stabilityRun) view() contracts.RunView {
 	}
 	save(s.t, "latest-run.json", v)
 	s.note("run-snapshot", v)
+	assertNativeLastMessage(s.t, s.m, s.dir, v, v.Status == "pr_ready")
 	return v
 }
 func (s *stabilityRun) wait(label string, timeout time.Duration, predicate func(contracts.RunView) bool) contracts.RunView {

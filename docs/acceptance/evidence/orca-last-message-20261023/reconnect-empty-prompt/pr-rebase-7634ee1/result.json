@@ -1,0 +1,28 @@
+{
+  "base_commit": "7634ee1e0085e845fd6a3d14af94bb51f4489d6f",
+  "tested_commit": "bb5e39cf2fe8a636d7fe746c08ec78d3fafbb153",
+  "runtime_and_test_hashes_match_original_l1": true,
+  "checks": [
+    {
+      "command": "go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -count=1 -timeout=5m",
+      "exit_code": 0,
+      "log": "pr-rebase-adapters.log"
+    },
+    {
+      "command": "go test ./internal/application ./internal/runview ./internal/host -run '^(TestSRObservation|TestOrcaObservationProjection|TestRunList|TestExport)' -count=1 -timeout=4m",
+      "exit_code": 0,
+      "log": "pr-rebase-observation.log",
+      "scope": "application observation and runview export tests; host compilation only, no matching host tests"
+    },
+    {
+      "command": "go vet ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff origin/main --check",
+      "exit_code": 0
+    }
+  ],
+  "production_deployed": false,
+  "remote_native_revalidation_completed": false
+}

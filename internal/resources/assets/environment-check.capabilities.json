@@ -30,7 +30,7 @@
       "authentication_sources": [
         "host-gh-repository-broker"
       ],
-      "native_version": "codex-cli 0.159.2"
+      "native_version": "codex-cli >=0.159.2"
     },
     {
       "adapter": "orca-terminal",
@@ -54,7 +54,7 @@
       "authentication_sources": [
         "host-gh-repository-broker"
       ],
-      "native_version": "codex-cli 0.159.2",
+      "native_version": "codex-cli >=0.159.2",
       "required_runtime": "agent_launch.runtime_executable (steerrunner-agent on execution host)"
     }
   ],

@@ -1,0 +1,7 @@
+Running L1
+Catalog expansion, frozen reload, legacy compatibility and conflict guards passed
+Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed
+Parallel cold-cache publication waits for the shared lock and preserves complete immutable bytes.
+Framework guards and Windows PowerShell checker passed
+L1 failed, had unexpected skips, or native extension/driver guards failed
+Test report: C:\Users\lmas1\.codex\worktrees\b474\SteerRunner\.evidence\orca-last-message-pr-integration/summary.json

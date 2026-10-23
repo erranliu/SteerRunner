@@ -1,5 +1,7 @@
 # 运行时单文件汇报验收（2026-10-23）
 
+**最新主线整合验收（2026-10-24）见 [PR #55 整合记录](runtime-progress-integration.md)**：r14 L1 646、Controlled 23/23、真实 L2 2/2、五项真实 L3 5/5 和严格实际并行全部通过；原六个 Run 资源结算完成。r13 暂态采集断言失败及随后修正、双方功能保留和全部原始证据分别记录。以下 r12 与更早章节保留当时的构建和结论，不代表合入最新 main 后的构建身份。
+
 **r12 全部通过**：同一冻结构建完成 L1 611、完整 Controlled 23/23、两项真实 L2、五项新增真实 L3，实际并行验证通过。正式批次于北京时间 20:53–21:36 执行，MaxParallel=7，零授权排除、零缺配置；没有用受控、旧构建或部分通过替代本轮。本次只修改 Runner，SteerLine 接线、项目生产测试入口和 Plan 自动接入留在范围之外，原 R2 artifacts 保留。
 
 [Spec](../spec/runtime-progress.spec.md)、[Plan](../spec/runtime-progress.plan.md)、[调用方配置与完整返回示例](../runtime-progress.md)。可选 `progress_file.initial_content_base64` 提供最多 65536 原始字节；工具读取绝对路径环境变量 `STEERLINE_PROGRESS_FILE`，调用方使用 `progress-file --run-id R --json` 读取独立持久化 version、时间、原始 base64、长度/摘要及采集状态。内容解释归调用方。

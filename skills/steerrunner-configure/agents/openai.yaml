@@ -1,0 +1,4 @@
+interface:
+  display_name: "Configure SteerRunner"
+  short_description: "Discover execution routes and bind this project to SteerRunner"
+  default_prompt: "Use $steerrunner-configure to discover and configure available execution routes."

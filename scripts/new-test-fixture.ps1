@@ -50,7 +50,7 @@ if ($taskExecution.adapter -eq 'codex-app-server') {
     $taskCodex = $taskExecution.settings.executable
     if (-not [IO.Path]::IsPathFullyQualified($taskCodex) -or -not (Test-Path -LiteralPath $taskCodex -PathType Leaf)) { throw 'Configured native Codex executable is unavailable' }
     $taskVersion = (& $taskCodex --version | Out-String).Trim()
-    if ($LASTEXITCODE -ne 0 -or $taskVersion -ne 'codex-cli 0.159.2') { throw 'Local native qualification requires Codex 0.159.2' }
+    if ($LASTEXITCODE -ne 0 -or -not (Test-SRCodexVersion $taskVersion)) { throw 'Local native qualification requires Codex >= 0.159.2' }
 } else {
     $taskOrca = $taskExecution.settings.transport.executable
     $taskEnvironment = if ($taskExecution.target.ContainsKey('environment')) { $taskExecution.target.environment } else { '' }

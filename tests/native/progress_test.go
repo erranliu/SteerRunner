@@ -301,13 +301,36 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 	// native producer waits. No barrier or resource is shared with other cases.
 	// Actual parallel qualification is derived from these recorded intervals.
 	windowStart := time.Now().UTC()
-	for until := windowStart.Add(120 * time.Second); time.Now().Before(until); time.Sleep(2 * time.Second) {
+	const collectionGapBudget = 20 * time.Second
+	observers := map[string]*livetest.ProgressObservation{}
+	for _, id := range ids {
+		observers[id] = livetest.NewProgressObservation(samples[id], collectionGapBudget)
+	}
+	gapSamples := 0
+	for {
+		if time.Now().After(windowStart.Add(120*time.Second + collectionGapBudget)) {
+			t.Fatal("waiting producer observation did not finish healthy within its budget")
+		}
+		allHealthy := true
 		for _, id := range ids {
 			current := read(id)
-			if current.Version != samples[id].Version || current.ContentBase64 == nil || *current.ContentBase64 != *samples[id].ContentBase64 || current.CollectionStatus != "observing" {
-				t.Fatal("waiting producer observation changed", current)
+			wasHealthy := observers[id].Healthy()
+			if current.CollectionStatus != "observing" {
+				gapSamples++
+				record("collection-gap", map[string]any{"at": time.Now().UTC(), "response": current})
 			}
+			if err := observers[id].Sample(time.Now(), current); err != nil {
+				t.Fatal(err, current)
+			}
+			if !wasHealthy && observers[id].Healthy() {
+				record("collection-healthy", map[string]any{"at": time.Now().UTC(), "response": current})
+			}
+			allHealthy = allHealthy && observers[id].Healthy()
 		}
+		if !time.Now().Before(windowStart.Add(120*time.Second)) && allHealthy {
+			break
+		}
+		time.Sleep(2 * time.Second)
 	}
 	for _, id := range ids {
 		current, err := inspect(m, dir, id, false)
@@ -315,7 +338,7 @@ func progressFiles(t *testing.T, m livetest.Manifest) {
 			t.Fatal("waiting native execution changed", current, err)
 		}
 	}
-	record("observation-window", map[string]any{"run_ids": ids, "start": windowStart, "end": time.Now().UTC(), "duration_seconds": time.Since(windowStart).Seconds()})
+	record("observation-window", map[string]any{"contract": "steerrunner-progress-observation-window/v2", "run_ids": ids, "start": windowStart, "end": time.Now().UTC(), "duration_seconds": time.Since(windowStart).Seconds(), "collection_healthy_at_end": true, "collection_gap_budget_seconds": collectionGapBudget.Seconds(), "collection_gap_samples": gapSamples})
 	for _, id := range ids {
 		marker(id, 1)
 		before := samples[id]

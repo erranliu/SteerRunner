@@ -1,0 +1,9 @@
+{
+  "number": 647,
+  "url": "https://github.com/erranliu/SteerlineTest/pull/647",
+  "state": "closed",
+  "merged": true,
+  "base": "codex/srtest/d3e7db32713f/base",
+  "head": "8a6e8f264f1c607f99a6b5bf5b05d8940b5515ef",
+  "merge_commit": "902638c830a39384f4ed9383f0479dce160bfce9"
+}

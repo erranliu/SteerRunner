@@ -1,6 +1,6 @@
 # Workflow：development-audited（确认稿）
 
-> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
+> 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 
 2026-10-21 默认提示优化：原审计结束优先给出现有审计 JSON 契约，减少额外结果获取。仅修改新 Run 的默认提示文本，原冻结提示、流程边、预算、模型与来源核验不变；没有原生 schema 强约束，非 JSON 仍沿既有后备。原生小样本和跨构建旧提示保留/新默认验证见[本轮验收](../acceptance/reliable-delivery-simplification.md)。
 日期：2026-10-17（首次设计 2026-10-16）。实施前业务基线 `development-audited/1`；下文为 `development-audited/2` 定义，独立解析按总 Spec §6 的最小边界实施和验收。[统一能力与边界](README.md) · [普通开发版本](development.md) · [总 Spec](../spec/result-acquisition.spec.md)。本定义与普通开发共用统一能力，仅通过状态、边、提示词和核验加入“代码审计并修复”。

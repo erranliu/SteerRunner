@@ -156,7 +156,9 @@ try {
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
     # Existing usage acceptance/cleanup probes are explicit native opt-ins;
     # default skips are not native passes. Their live environment guards above remain mandatory.
-    $taskAllowedSkips = @('TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive','TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe')
+    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe',
+        'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive',
+        'TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
     $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard;terminal_extension_exit=$taskExtensionCode;terminal_extension_test_count=$taskExtensionCount;terminal_extensions_passed=$taskExtensionsPassed}
     Save-Summary

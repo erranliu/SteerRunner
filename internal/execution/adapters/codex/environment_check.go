@@ -116,6 +116,7 @@ func (s *EnvironmentSession) Prepare(ctx context.Context) (Binding, error) {
 		return Binding{}, err
 	}
 	h, binding, err := s.backend.PrepareSession(ctx, Binding{}, s.input)
+	binding.NativeVersion = strings.TrimSpace(string(out))
 	s.handle = h
 	if err != nil {
 		return binding, err

@@ -1,0 +1,30 @@
+{
+  "id": "1f425153-e735-4b79-8133-86504146f87a",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_27b2b4e5-8cf1-44e7-afbc-c1b1eb445698",
+      "ptyId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-8493ad6a6da7463f6c9c1c4670a4d568@@e87e9418",
+      "incarnationId": "b7ec2cc3-1ad3-42e1-94dc-f9fa3b17509d",
+      "orphaned": false,
+      "worktreeId": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-8493ad6a6da7463f6c9c1c4670a4d568",
+      "worktreePath": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-8493ad6a6da7463f6c9c1c4670a4d568",
+      "branch": "refs/heads/erranliu/sr-8493ad6a6da7463f6c9c1c4670a4d568",
+      "tabId": "083d88c1-f05a-4f42-9528-b59471557ea1",
+      "leafId": "d4e4751f-778b-45d1-a0ac-014999cf2a68",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792732034060,
+      "preview": "本次发布已完成。\n└ Tip: When goals are enabled, use /goal to set or inspect the objective for a long-running task.\nWorked for 15s • 13:07\n› Ask Codex to do anything\nGPT-6-Luna high fast · ~\\orca\\workspaces\\SteerlineTest\\sr-8493ad6a6da7463f6c9c1c4670a4d568 · Initialize agent session\n? for shortcuts",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+  }
+}

@@ -1,5 +1,13 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-23 SessionStart 空预览增量：既有 L1 包入口自动包含 `TestOrcaNativeInputQueryRecoversCompactedWorkingAndFinal`、`TestOrcaNativeInputProofRejectsUnboundHistory`、`TestOrcaNativeInputCachedBindingCannotCrossBoundary`、`TestOrcaNativeInputQueryCannotHideLaterNotification`、`TestOrcaNativeInputPagesRequireExactlyOneOriginalUser`、`TestOrcaNativeInputQueryRejectsIdentityChangeDuringRead`。覆盖原输入完整核验、重复同文拒收、working/重建/final、缓存边界、分页与读取竞争；不新增模型或 PR case。现场验证仅为原 Run 的只读补证，不冒充生产部署或新远端发布资格。
+
+提交前审计补充 `TestOrcaNativeInputCannotCombineDifferentMainRecords`、`TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples`、`TestOrcaNativeInputIdentityErrorRemainsDurable`，并扩展原分页和 proof 反例。覆盖两路 main/agent/outcome/marker 不一致、找到正文后仍须验证游标、旧样本不撤销新绑定、更换 feed 立即失效，以及读取前后确定冲突不会因补查失败丢失。均使用隔离协议夹具，随原 L1 入口自动执行。
+
+2026-10-23 薄壳专项：`scripts/test-client.ps1` 覆盖两个 skill 的共享 helper、生产纯校验与受控调用；`scripts/test-client-package.ps1` 验证隔离安装/定位/冲突/摘要；`scripts/test-viewer.ps1` 验证独立 EXE 的原生四列窗口及文件故障。`tests/integration/display_test.go` 的两个 `TestSRDisplaySnapshot*` 使用显式同版 EXE 验证非薄壳提交、心跳、多来源及服务换代；Viewer 自身在独立 module 内测试。以上为 focused 专项，不改变通用 L2–L4 场景计数，也不自动调用真实模型。固定构建、真实本机/远端闭环及未验范围见[薄壳验收](acceptance/skill-shell.md)。
+
+2026-10-23 Orca 断线空预览补正：现有 L1 包入口自动包含 `TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect`、`TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence`、`TestOrcaCompletionQueryReconnectObserverCommitsFinal` 和扩展的 `TestOriginalAgentQueryRetainedStampRequiresSameMainRecord`。验证原可信 working 起点与独立查询保留标记一致时恢复，正文延迟/adapter 重建可收尾，完成事件及诊断解除完整，发送次数固定为 1；缺证据、异源/历史冲突、截断正文不成为 final。此为确定性受控回归，不新增模型/PR case；当前结果见[执行可见性验收](acceptance/execution-observability.md#断线后空输入预览恢复2026-10-23)。
+
 2026-10-21 用量/费用增量：L1 自动包含 `TestUsage*`、`TestCost*`、`TestRunUsage*`，覆盖三格式、去重/快照事务、授权引用/epoch/未知回收、费用解耦和真实 EXE 查询。`TestUsageExistingNativeEvidence` 需要显式旧 state-dir，默认跳过；已核对本机 Pi 200,432、DSH 318,722 token。远端现场 opt-in `TestUsageRemoteCodexLive`、`TestUsageRemoteCodexCleanupLive`、`TestRunUsageRemotePublicLive` 默认跳过，不成为默认模型/PR case；后者用真实 EXE 和隔离 state-dir 验证原 Codex Run 的自动授权、11 响应/225,453 token、分页/冻结算术价表和撤销。没有远端 helper 或新增模型调用，远端 Pi/DSH 生产绑定仍不支持，见[专属记录](acceptance/run-usage-and-cost.md)。
 
 同日一致性复审增加：首次未观察/预算耗尽状态、缺字段与溢出、持久元数据冲突、新输入重开观察窗口、稳定本机身份/损坏 checkpoint、stop 事务许可隔离、取消时保存已知结果、子 group/repo 级联保护、按 Run/epoch 清理归属、六组合 capability 与费用节点分离、DSH 毫秒时间/seq 下界和缺计价判别字段反例。精确测试名称见 [Plan 的复审映射](spec/run-usage-and-cost.plan.md)。
@@ -253,5 +261,7 @@ Controlled 新增 TestSRProgressFile，默认顶层数从 22 增至 23，覆盖�
 配置复用已有三项配置键；不增加调用方项目测试入口、不解析 Plan、不解释测试字段/历史。真实链路由测试自有 foreground producer 驱动并在其结束前停止原 Run。
 
 每项首次真实写入后持续 120 秒，通过公开接口确认快照稳定、原 native 会话仍等待且无 final；窗口独立，不依赖其它场景的就绪或结果。并行核验脚本要求五项全部通过且 Runner/driver 构建一致、原生资源不冲突，并要求每一项窗口与至少另一通过项实际重叠。只设置 MaxParallel 或借用旧构建窗口不能通过。
+
+稳定快照不要求传输永不出错。观察窗口只允许 `transport_unavailable` / `read_failed` 暂态，逐次保存原始诊断并核对身份、版本、内容、时间、长度及摘要完全保留；同一次异常须在 20 秒内恢复，窗口末尾必须恢复 `observing`，总窗口最多 140 秒。绑定异常、终态、内容变化、持续不可达或超时恢复仍失败。窗口记录包含异常采样数、恢复预算及末尾健康证明，v3 并行验证同时核对这些字段；原 r13 瞬时异常失败和旧版本并行报告原值保留。
 
 有界预算：本机 Codex 首份内容最多 5 分钟，Orca 最多 8 分钟（含冷工作区、控制/执行 helper、原 TUI 准备及共享 CLI 排队）；产品 Orca 阶段准备期限为持久 6 分钟，不因重试/服务重启续期，其它 adapter 为 3 分钟。后续内容不超过相应等待；原 Run 停止最多 Orca 180 秒／Codex 120 秒（含下一次原身份只读对账）、服务退出最多 60 秒，受独立 case 的既有 15 分钟总预算约束。产品文件采集的 2 秒预算不变，不把测试放宽当作实际通过；原 3 分钟/45 秒及整阶段准备超时的失败记录保留。

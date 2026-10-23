@@ -1,0 +1,212 @@
+{
+  "pr_cleanup": "both PRs closed without merge; owned remote refs deleted with expected-SHA leases",
+  "remote_stop_scope": "original Orca terminal only; detached processes/host credentials unverified",
+  "runs": [
+    {
+      "observed_step": "implement.execute",
+      "observed_status": "blocked",
+      "observed_diagnostic": "authentication_api_socket_path_too_long",
+      "repository": {
+        "url": "https://github.com/erranliu/SteerlineTest.git",
+        "base_branch": "sr-shell-20261023-8fab91d1",
+        "remote": "origin",
+        "local_path": "C:/Users/lmas1/.codex/worktrees/55d4/SteerRunner/.evidence/skill-shell/live/source",
+        "base_revision": "cda7b09ccfe0d4feaabeb088c22dbf7baec63fd3"
+      },
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "submission_id": "native-local-original",
+      "execution_target": {
+        "kind": "local"
+      },
+      "initial_binding": {
+        "version": "0.2.0-dev.3-r2",
+        "instance_id": "55adebb8c9d0bbd63fff6121f492e1a0",
+        "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+        "contract": "steerrunner-service-binding/v1",
+        "executable_sha256": "1824cfbfc55ec9737745e0a3d46a884331120da40770848460332a18a17890ce",
+        "state_dir": "c:\\users\\lmas1\\.codex\\worktrees\\55d4\\steerrunner\\.evidence\\skill-shell\\live\\local-state",
+        "protocol": "steerrunner-cli/v1"
+      },
+      "execution_adapter": "codex-app-server",
+      "run_id": "251ddbac4f91b099c9055430296bbcb5",
+      "request_digest": "dbf56b3d12d4390fa039a1eac0c9c54e8ce1ca40fdcd2a67270435c88456558d",
+      "stop_evidence": [
+        {
+          "run_id": "251ddbac4f91b099c9055430296bbcb5",
+          "input_digest": "0a501d915120e69fa808f88c78f47a102b5cdd85f0eb597afe106708acf823e1",
+          "resources_settled": true
+        }
+      ],
+      "state_dir": "c:\\users\\lmas1\\.codex\\worktrees\\55d4\\steerrunner\\.evidence\\skill-shell\\live\\local-state",
+      "outcome": "blocked: authentication_api_socket_path_too_long",
+      "final_resources_settled": true
+    },
+    {
+      "observed_step": "publish.report",
+      "observed_status": "blocked",
+      "observed_diagnostic": "business continuation requires an explicit implementation instruction",
+      "repository": {
+        "url": "https://github.com/erranliu/SteerlineTest.git",
+        "base_branch": "sr-shell-20261023-8fab91d1",
+        "remote": "origin",
+        "local_path": "C:/Users/lmas1/.codex/worktrees/55d4/SteerRunner/.evidence/skill-shell/live/source",
+        "base_revision": "cda7b09ccfe0d4feaabeb088c22dbf7baec63fd3"
+      },
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "submission_id": "native-local-short",
+      "execution_target": {
+        "kind": "local"
+      },
+      "initial_binding": {
+        "version": "0.2.0-dev.3-r2",
+        "instance_id": "847ef0672c47b673dbaafd178d7809b2",
+        "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+        "contract": "steerrunner-service-binding/v1",
+        "executable_sha256": "1824cfbfc55ec9737745e0a3d46a884331120da40770848460332a18a17890ce",
+        "state_dir": "c:\\sr-shell-local-0c1221b1",
+        "protocol": "steerrunner-cli/v1"
+      },
+      "execution_adapter": "codex-app-server",
+      "run_id": "47d2f408076ea79d5e283c240dd87669",
+      "request_digest": "255d19c51e019d6cc4b3a0d7e578c952d1d55a0f18da77a9023845ba4e60e136",
+      "stop_evidence": [
+        {
+          "run_id": "47d2f408076ea79d5e283c240dd87669",
+          "input_digest": "0a501d915120e69fa808f88c78f47a102b5cdd85f0eb597afe106708acf823e1",
+          "resources_settled": true
+        }
+      ],
+      "state_dir": "c:\\sr-shell-local-0c1221b1",
+      "outcome": "blocked: publication broker rejected REST PR-list query",
+      "final_resources_settled": true
+    },
+    {
+      "observed_step": "pr_ready",
+      "observed_status": "pr_ready",
+      "pr": {
+        "baseRefName": "sr-shell-20261023-8fab91d1",
+        "files": [
+          {
+            "path": "shell-proof.txt",
+            "additions": 1,
+            "deletions": 0,
+            "changeType": "ADDED"
+          }
+        ],
+        "headRefName": "erranliu/sr-cef6e9d2f895de2da3d7122c9e3d7163",
+        "headRefOid": "f03b004073ea3366fb730550f843a95df590b8c6",
+        "number": 655,
+        "state": "CLOSED",
+        "url": "https://github.com/erranliu/SteerlineTest/pull/655"
+      },
+      "observed_diagnostic": null,
+      "repository": {
+        "base_branch": "sr-shell-20261023-8fab91d1",
+        "remote": "origin",
+        "local_path": "C:\\Projects\\SteerlineTest",
+        "url": "https://github.com/erranliu/SteerlineTest.git",
+        "base_revision": "cda7b09ccfe0d4feaabeb088c22dbf7baec63fd3"
+      },
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "submission_id": "native-remote-original",
+      "execution_target": {
+        "kind": "orca_environment",
+        "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      },
+      "initial_binding": {
+        "version": "0.2.0-dev.3-r2",
+        "instance_id": "febb99f79dced7d349046e5c4355a199",
+        "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+        "contract": "steerrunner-service-binding/v1",
+        "executable_sha256": "1824cfbfc55ec9737745e0a3d46a884331120da40770848460332a18a17890ce",
+        "state_dir": "c:\\sr-shell-remote-bec27e16",
+        "protocol": "steerrunner-cli/v1"
+      },
+      "execution_adapter": "orca-terminal",
+      "run_id": "cef6e9d2f895de2da3d7122c9e3d7163",
+      "request_digest": "7e4fe08259d0fe06187b27c82e1100bc10217f3f788a7c6bea2cbca47e805458",
+      "stop_evidence": [
+        {
+          "stop_evidence_scope": "orca_terminal",
+          "run_id": "cef6e9d2f895de2da3d7122c9e3d7163",
+          "input_digest": "fba111b8abe2a9b75f3387732379ace418321b8031cad462d26297e7a83ea727",
+          "resources_settled": true
+        }
+      ],
+      "state_dir": "c:\\sr-shell-remote-bec27e16",
+      "outcome": "verified PR",
+      "final_resources_settled": true
+    },
+    {
+      "observed_step": "pr_ready",
+      "observed_status": "pr_ready",
+      "pr": {
+        "baseRefName": "sr-shell-local2-20261023-ee143d",
+        "files": [
+          {
+            "path": "shell-proof.txt",
+            "additions": 1,
+            "deletions": 0,
+            "changeType": "ADDED"
+          }
+        ],
+        "headRefName": "codex/runner-250d9b17e5d0c631ae6c1a6ee12529d7",
+        "headRefOid": "fda725481765e08f0c7da2918012f177082e000f",
+        "number": 656,
+        "state": "CLOSED",
+        "url": "https://github.com/erranliu/SteerlineTest/pull/656"
+      },
+      "observed_diagnostic": null,
+      "repository": {
+        "base_branch": "sr-shell-local2-20261023-ee143d",
+        "remote": "origin",
+        "url": "https://github.com/erranliu/SteerlineTest.git",
+        "local_path": "C:\\Users\\lmas1\\.codex\\worktrees\\55d4\\SteerRunner\\.evidence\\skill-shell\\live\\source-local2",
+        "base_revision": "4f0fecbb84438efecfca4c38d3225c3b3659cf9e"
+      },
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "submission_id": "native-local2-original",
+      "execution_target": {
+        "kind": "local"
+      },
+      "initial_binding": {
+        "version": "0.2.0-dev.3-r2",
+        "instance_id": "c5368f1b04040875dbadaeec95d4fd0b",
+        "resource_digest": "84d57119b0163f88c84519b921fe97db2bd194f3d9a06ffad7bf27c4287fa3d8",
+        "contract": "steerrunner-service-binding/v1",
+        "executable_sha256": "1824cfbfc55ec9737745e0a3d46a884331120da40770848460332a18a17890ce",
+        "state_dir": "c:\\sr-shell-local2-412e1b25",
+        "protocol": "steerrunner-cli/v1"
+      },
+      "execution_adapter": "codex-app-server",
+      "run_id": "250d9b17e5d0c631ae6c1a6ee12529d7",
+      "request_digest": "f173e9f5aa7ec1ba890ace6b011552a238a6f5577dcf4b1a2cac896b8d029819",
+      "stop_evidence": [
+        {
+          "run_id": "250d9b17e5d0c631ae6c1a6ee12529d7",
+          "input_digest": "b2c31f5bb3fc75741feec9e8fbffd1a88e85225d7c582bd98284f22c8733dad6",
+          "resources_settled": true
+        }
+      ],
+      "state_dir": "c:\\sr-shell-local2-412e1b25",
+      "outcome": "verified PR",
+      "final_resources_settled": true
+    }
+  ],
+  "platform": "Windows/amd64",
+  "source": "allowlisted projection from saved public CLI responses; full local evidence remains in .evidence/skill-shell/live",
+  "pr_changes": "shell-proof.txt contains exactly shell-client-ok",
+  "native_codex": "0.159.2"
+}

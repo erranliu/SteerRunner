@@ -7,7 +7,7 @@
 1. 在 aggregate/event 的同一事务比较真实 workflow stage、status、diagnostic，仅变化时追加 `workflow_changed`，携带 `transition.from/to`。不从操作名推断状态，不为旧事件补历史。
 2. 复用本地 Codex 的 app-server 观察流，允许 completed agentMessage 和固定工具活动标签。排除 reasoning、用户输入、命令、工具参数和输出。时间使用通知到达的 UTC `observed_at`。
 3. 按 Run/Attempt/Generation/Session/Turn 核验后保存每 Run 一条进程内摘要。脱敏后上限 1200 UTF-8 字节及省略号；过期、乱序或不支持的消息直接丢弃，不中断执行、不写业务 revision/event。
-4. 新增只读 `last-message --run-id` CLI。读取缓存，不启动服务、不读私有会话文件、不启动原生查询进程、不发送输入。服务重启缓存为空；无样本返回 `message:null`，正常执行观察后可产生新样本。Orca 当前不采集该摘要。
+4. 新增只读 `last-message --run-id` CLI。读取缓存，不启动服务、不读私有会话文件、不启动原生查询进程、不发送输入。服务重启缓存为空；无样本返回 `message:null`，正常执行观察后可产生新样本。首版未接入 Orca 观察摘要；2026-10-23 已实现远端原生 Codex 观察接入，见 [Orca 最后消息 Spec](orca-last-message.spec.md) / [Plan](orca-last-message.plan.md)；实际验证及来源限制追加到原验收记录，未部署生产。
 
 ## 测试计划
 

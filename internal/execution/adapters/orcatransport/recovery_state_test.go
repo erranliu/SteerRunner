@@ -51,10 +51,12 @@ func TestRecoveryRejectsProviderReplacementInsideOriginalTerminal(t *testing.T) 
 	}
 }
 
-func (f *recoveryStateFeed) Initial() native.AgentState          { return f.initial }
-func (f *recoveryStateFeed) Drain() ([]native.AgentState, error) { return nil, nil }
-func (f *recoveryStateFeed) Query(context.Context) (native.AgentState, error) {
-	return f.current, f.err
+func (f *recoveryStateFeed) Initial() native.StateSample {
+	return fixtureSample(f.initial, native.SampleInitial)
+}
+func (f *recoveryStateFeed) Drain() ([]native.StateSample, error) { return nil, nil }
+func (f *recoveryStateFeed) Query(context.Context) (native.StateSample, error) {
+	return fixtureSample(f.current, native.SampleQuery), f.err
 }
 func (f *recoveryStateFeed) Close() { f.closed = true }
 

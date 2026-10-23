@@ -48,21 +48,34 @@ func (h *observationHandle) Identity() b.ProcessIdentity { return h.owner.proces
 func (h *observationHandle) Kill()                       { _ = h.owner.Close(context.Background()) }
 func (h *observationHandle) Close()                      { _ = h.owner.Close(context.Background()) }
 
-func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
+func (l *Lifecycle) observe(s b.LifecycleSnapshot, first *b.PublicMessage) b.LifecycleObserver {
 	ctx, cancel := context.WithCancel(context.Background())
 	o := &observer{events: make(chan b.LifecycleEvent, 4), done: make(chan error, 1), finished: make(chan struct{}), cancel: cancel, process: s.Ref.External}
 	l.feedMu.Lock()
 	ownedFeed := l.feed
 	l.feedMu.Unlock()
+	l.observationMu.Lock()
+	ownedObservation := l.nativeObservation
+	l.observationMu.Unlock()
 	go func() {
-		defer close(o.finished)
-		defer func() { l.releaseStateFeed(ownedFeed) }()
-		defer close(o.events)
-		defer close(o.done)
+		var observerErr error
+		defer func() {
+			l.releaseStateFeed(ownedFeed)
+			l.clearObservation(ownedObservation)
+			close(o.events)
+			if ctx.Err() == nil {
+				o.done <- observerErr
+			}
+			close(o.done)
+			close(o.finished)
+		}()
 		send := func(event b.LifecycleEvent) bool {
 			event.Kind = "turn"
-			if event.Observation != nil && event.Observation.Diagnostic != "" {
-				event.Kind, event.Status, event.Title = "execution", "waiting", "Worker reply unavailable"
+			if event.Observation != nil {
+				event.Kind, event.Status, event.Title = "execution", "observing", "Worker observation available"
+				if event.Observation.Diagnostic != "" {
+					event.Status, event.Title = "waiting", "Worker reply unavailable"
+				}
 			} else if event.Fact.Kind == b.EventStarted {
 				event.Status, event.Title = "started", "Worker input started"
 			} else if event.Fact.Kind == b.EventCompleted {
@@ -80,7 +93,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			select {
 			case err := <-event.Persisted:
 				if err != nil {
-					o.done <- err
+					observerErr = err
 					return false
 				}
 			case <-ctx.Done():
@@ -89,7 +102,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			select {
 			case err := <-event.Processed:
 				if err != nil {
-					o.done <- err
+					observerErr = err
 					return false
 				}
 			case <-ctx.Done():
@@ -97,11 +110,17 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 			}
 			return true
 		}
+		if first != nil {
+			if !send(b.LifecycleEvent{PublicMessage: first}) {
+				return
+			}
+			l.acknowledgeMessage(first)
+		}
 		started, ended := s.Session.CurrentCommandID == command(s) && s.Session.CurrentTurnID == command(s), false
-		lastDiagnostic := ""
+		lastDiagnostic, diagnosticSet := "", false
 		for {
 			before, _ := json.Marshal(s.Implementation)
-			receipt, _, err := l.observeOnce(ctx, s)
+			receipt, message, err := l.observeOnce(ctx, s)
 			// A restored observer may acquire its subscription on a later retry.
 			if ownedFeed == nil {
 				l.feedMu.Lock()
@@ -122,23 +141,25 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 					}
 				}
 				if ctx.Err() == nil {
-					o.done <- err
+					observerErr = err
 				}
 				return
 			}
 			if len(receipt.Implementation) > 0 {
 				s.Implementation = receipt.Implementation
 			}
-			committed := false
-			after, _ := json.Marshal(receipt.Implementation)
-			if receipt.Diagnostic != lastDiagnostic {
-				// Availability may recur with identical evidence bytes. Each new
-				// transition has its own identity, retained through both acknowledgements.
+			if message != nil {
+				if !send(b.LifecycleEvent{PublicMessage: message}) {
+					return
+				}
+				l.acknowledgeMessage(message)
+			}
+			afterDiagnostic, _ := json.Marshal(receipt.Implementation)
+			if !diagnosticSet || receipt.Diagnostic != lastDiagnostic || string(before) != string(afterDiagnostic) {
 				if !send(b.LifecycleEvent{Observation: &b.ObservationStatus{Diagnostic: receipt.Diagnostic}, Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.terminal.observation", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":observation:" + contracts.NewID(), SessionID: SessionID(s.Ref.External), StartedTurnID: command(s)}, Implementation: receipt.Implementation}) {
 					return
 				}
-				lastDiagnostic = receipt.Diagnostic
-				committed = true
+				lastDiagnostic, diagnosticSet = receipt.Diagnostic, true
 			}
 			if receipt.State.TurnStarted && !started {
 				source := NativeReplySource
@@ -153,13 +174,12 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 					return
 				}
 				started = true
-				committed = true
 			}
 			if receipt.State.TurnCompleted && receipt.TurnEvidence == nil && !ended {
 				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.native-main-agent", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":native-ended", SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), Completed: true, Matched: true, Outcome: "unknown"}, Implementation: receipt.Implementation}) {
 					return
 				}
-				ended, committed = true, true
+				ended = true
 			}
 			if evidence := receipt.TurnEvidence; evidence != nil && evidence.Completed {
 				outcome := "failed"
@@ -172,19 +192,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot) b.LifecycleObserver {
 				if !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventCompleted, Source: evidence.FinalSource, SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: evidence.FinalItemID, SessionID: SessionID(s.Ref.External), StartedTurnID: command(s), Completed: true, Matched: true, Outcome: outcome, LastMessage: evidence.LastMessage}, Implementation: receipt.Implementation}) {
 					return
 				}
-				o.done <- nil
 				return
-			}
-			if !committed && string(before) != string(after) {
-				state, stateErr := l.state(s)
-				if stateErr != nil {
-					o.done <- stateErr
-					return
-				}
-				turn := turnFor(&state, command(s))
-				if turn != nil && !send(b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventStatus, Source: "orca.native-main-agent", SourceIdentity: SessionID(s.Ref.External), SourceSegment: command(s), SourceEventID: command(s) + ":" + digest(after), SessionID: SessionID(s.Ref.External)}, Implementation: receipt.Implementation}) {
-					return
-				}
 			}
 			select {
 			case <-ctx.Done():

@@ -1,6 +1,6 @@
 # 运行时单文件汇报通道 Spec
 
-2026-10-23；实现与注册已完成，实际构建资格见[专属验收](../acceptance/runtime-progress.md)。本次只修改 Runner，Orca 本地及远端均为必需范围。调用方拥有内容与解释，执行工具拥有写入；Runner 只传原始字节。无 Plan、测试语义或 SteerLine 接线。
+2026-10-24；实现与注册已完成，最新主线构建资格见[整合验收](../acceptance/runtime-progress-integration.md)，原始历史见[专属验收](../acceptance/runtime-progress.md)。本次只修改 Runner，Orca 本地及远端均为必需范围。调用方拥有内容与解释，执行工具拥有写入；Runner 只传原始字节。无 Plan、测试语义或 SteerLine 接线。
 
 - 可选 submit `progress_file: {initial_content_base64: "..."}`，严格 base64，最大 65536 字节。未配置无文件、无观察 goroutine。支持具有工作区写资格的 codex-app-server 本机开发流程与 Orca local / orca_environment 开发流程；read_only 内容流程不扩大权限。
 - Runner 在原实际工作区的 `.steerrunner/progress/<run_id>/progress.bin` 分配固定文件。执行前准备目录及 Git info/exclude，O_EXCL 初始化一次，持久化主机/workspace/资源绑定，本机路径额外保存目录身份。重启、请求重放和重连不覆写；初始化崩溃窗口已有文件只读接续，不清空。
@@ -14,4 +14,4 @@
 
 L3：`local-codex.progress-file`（实际注入/任意字节与替换/去重）、`orca-remote.progress-file`（原远端主机读写）与 `orca-local.progress-file`（本机 Orca 接线）、`local-codex.progress-multirun`（同服务隔离/独立 revision/停止一方）、`local-codex.progress-recovery`（原生结果等待、读取故障/恢复、服务换代零重发、收尾保留）。场景之间独立服务/state/worktree/native owner，可并行；快速反例放 L1/Controlled。真实及并行资格按当前执行记录，不以注册或受控通过代替。
 
-Orca 执行准备沿服务恢复契约：工作区创建前保存原初始终端准备计划，首次尚未尝试可继续准备，创建结果未知只读原 owner 回执。辅助控制终端关闭后可能保留 disconnected 展示卡片；卡片不单独证明停止，完整原 runtime/worktree 清单核实同一身份缺席后才完成对账，不重复关闭或输入。当前 r12 同构建五项真实 L3 与实际并行资格全部通过，证据见专属验收。
+Orca 执行准备沿服务恢复契约：工作区创建前保存原初始终端准备计划，首次尚未尝试可继续准备，创建结果未知只读原 owner 回执。辅助控制终端关闭后可能保留 disconnected 展示卡片；卡片不单独证明停止，完整原 runtime/worktree 清单核实同一身份缺席后才完成对账，不重复关闭或输入。主线的原生消息、SessionStart 恢复、版本兼容及客户端/Viewer 功能保留；通道不依赖这些展示结果。r14 整合构建五项真实 L3 和实际并行全部通过；暂态传输异常保留快照且恢复后继续，不能把测试的零异常假设升级为产品保证。
