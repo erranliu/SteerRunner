@@ -2,6 +2,8 @@
 
 日期：2026-10-23。状态：P1–P6 已实施，本次验证与实际资格见[验收记录](../acceptance/skill-shell.md)；下文保留实施分解和验收目标，未执行的完整矩阵不视为通过。依据：[Spec](skill-shell.spec.md)，源码调查基线 `1cfe2f9a065830ab62d540d3de4c0011ed603b56`。
 
+同日集成更新：已 rebase 到 `origin/main` 的 `5401914`，保留主线 Orca 最后消息及 Codex 最低版本支持。共享 helper 的版本发现同步消费固定版本/最低版本声明，补充预发布版、数值比较及坏版本反例；原真机与发行包证据保持原字节，新构建的受控验证另登验收。
+
 ## 1. 实施原则与产物
 
 先完成调用方脚本与公开 CLI 的确定性接线，再加入 Runner 的最小展示导出、独立 Viewer、简短 skill 和打包。Runner 仅增加 Spec §7 的非权威 JSON 投影，不改变执行内核、业务状态机或 CLI。外壳与 Viewer 不直接 import internal 包或读取 Runner/Orca 私有存储；Runner 自己从既有 Run 投影取数。测试可以使用本仓受控设施，发行物不能依赖它们。

@@ -2,6 +2,18 @@
 
 日期：2026-10-23。对应 [Spec](../spec/skill-shell.spec.md) / [Plan](../spec/skill-shell.plan.md)。实现完成；本机 Codex 和一个既有 Orca environment 的 Spec+Plan → 问答 → 经 Runner 核验 PR → 原 Run 停止 / 停服核验均取得真实证据。本报告只覆盖以下构建与场景，不宣称全部后端组合或干净 Windows 虚拟机均已验证。
 
+## 同日 Rebase 集成复验
+
+已 rebase 到 `origin/main` 的 `5401914`，保留主线 Orca 最后消息及 Codex `>= 0.159.2` 支持。README 和 CLI 指南已更新；共享 helper 不再把 `0.159.2_or_newer` 当作固定版本字面值，按所选 Runner 的能力声明筛选版本，正式协议与权限核验仍属于 Runner。
+
+本次重新构建 Runner SHA-256 为 `185802B37291EEB0162415A2A92BD53C72FCE1055E72D9CE774F1F14EEFDFAC8`，来源为 `17b7d96-dirty`，见[构建记录](evidence/skill-shell-20261023/rebase-5401914/runner-build.json)。[复验汇总](evidence/skill-shell-20261023/rebase-5401914/result.json)及[新包清单](evidence/skill-shell-20261023/rebase-5401914/manifest.json)对应本节；后文原始真机 PR / 发行包证据仍对应当时旧构建，不改写为本次真机通过。
+
+- [客户端 32 项](evidence/skill-shell-20261023/rebase-5401914/client-controlled.json)通过，新增 9 个版本反例/正例，包括 `0.159.10` 数值比较、较新 `0.163.0-alpha.10.2`、基线预发布版、坏版本等。首次测试受到本机备用原生 EXE 影响；最终矩阵同时隔离 PATH 与 APPDATA，零真实模型或 PR。
+- 六个[生产包回归](evidence/skill-shell-20261023/rebase-5401914/production-tests.log)及 application/codex 的[投影、最后消息、版本/权限探测定向测试](evidence/skill-shell-20261023/rebase-5401914/compatibility-tests.log)通过；未重复整包 application 长回归或 L2–L4 全集。
+- 同版新 EXE 的[两个服务展示集成用例](evidence/skill-shell-20261023/rebase-5401914/display-result.json)、[Viewer 原生窗口 9 项](evidence/skill-shell-20261023/rebase-5401914/viewer-native.json)、[安装包 6 项](evidence/skill-shell-20261023/rebase-5401914/package-install.json)通过。Viewer 自身模块测试和 vet 通过，EXE SHA 与原 Viewer 相同，文件契约保持 schema v1。
+
+历史快照/PR/停止回执保持原字节；本次只增加本节与新证据目录，不重新发起真实执行。
+
 ## 构建与实现边界
 
 Runner 基线 `1cfe2f9a065830ab62d540d3de4c0011ed603b56-dirty`，版本 `0.2.0-dev.3-r2`，Windows/amd64，使用 Go 1.26.4。受测 Runner SHA-256：

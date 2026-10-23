@@ -132,6 +132,25 @@ function GitHub-Publication([string]$hostName,[string]$repository,[string]$branc
     $jq='{url:.html_url,repository:.base.repo.full_name,base_branch:.base.ref,head_repository:.head.repo.full_name,head_branch:.head.ref,head_revision:.head.sha,state:(if .merged then "merged" elif .state=="closed" then "closed_unmerged" else "open" end),merged:.merged,merged_at:.merged_at,merge_commit:.merge_commit_sha}'
     return @{provider='command';repository=$repository;base_branch=$branch;settings=@{base_url=('https://'+$hostName);query=@{executable=$gh;args=@('api','--hostname',$hostName,'repos/{repository}/pulls/{number}','--jq',$jq)}}}
 }
+function Native-Matches([string]$text,[string[]]$requirements) {
+    # Interpret the selected Runner's declaration, never pin a client version.
+    $actual=[regex]::Match($text,'\Acodex-cli ((?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*))(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?\z')
+    if (-not $actual.Success -or $requirements.Count -eq 0) { return $false }
+    foreach ($identifier in $actual.Groups[2].Value.Split('.')) { if ($identifier -match '^0[0-9]+$') { return $false } }
+    foreach ($requirement in $requirements) {
+        $rule=[regex]::Match($requirement,'\Anative_codex_([0-9]+\.[0-9]+\.[0-9]+)(_or_newer)?_permissions\z')
+        if (-not $rule.Success) { return $false }
+        if (-not $rule.Groups[2].Success) { if ($text -cne ('codex-cli '+$rule.Groups[1].Value)) { return $false }; continue }
+        $parts=$actual.Groups[1].Value.Split('.');$minimum=$rule.Groups[1].Value.Split('.');$comparison=0
+        for ($index=0;$index -lt 3;$index++) {
+            $comparison=$parts[$index].Length.CompareTo($minimum[$index].Length)
+            if ($comparison -eq 0) { $comparison=[String]::CompareOrdinal($parts[$index],$minimum[$index]) }
+            if ($comparison -ne 0) { break }
+        }
+        if ($comparison -lt 0 -or ($comparison -eq 0 -and $actual.Groups[2].Success)) { return $false }
+    }
+    return $true
+}
 function Discover($config) {
     $report=@{generated_at=[DateTime]::UtcNow.ToString('o');candidates=@();gaps=@();orca=@{installed=$false;environments=@()};project=$null}
     $exe=Resolve-Runner $config
@@ -142,8 +161,7 @@ function Discover($config) {
         if (-not $caps -or [DateTime]::UtcNow -ge $script:deadline) { break }
         $version=Process $native @('--version') '' 5 -Discovery
         $required=@($caps.capability_catalog.combinations | Where-Object { $_.adapter -eq 'codex-app-server' -and $_.workflow -and $_.workflow.id -eq 'development' } | ForEach-Object { $_.requirements } | Where-Object { $_ -match '^native_codex_(.+)_permissions$' } | Select-Object -Unique)
-        $supported=$version.exit_code -eq 0
-        foreach ($requirement in $required) { if ($requirement -match '^native_codex_(.+)_permissions$' -and $version.text -notmatch [regex]::Escape($Matches[1])) { $supported=$false } }
+        $supported=$version.exit_code -eq 0 -and (Native-Matches $version.text $required)
         if ($supported) { $profile=@{execution=@{adapter='codex-app-server';target=@{kind='local'};settings=@{executable=$native;access_mode='sandbox'}};workflow=@{id='development';version=2}}; try { Validate $config 'run-configuration' $profile; $report.candidates+=@{id='local-codex';profile=$profile;connected=$true;facts=@('native_entry_found','static_configuration_valid','execution_readiness_unverified')};$nativeSupported=$true;break } catch { $report.gaps+='native_configuration_unsupported' } }
     }
     if (-not $nativeSupported) { $report.gaps+='native_codex_missing_or_version_unverified' }

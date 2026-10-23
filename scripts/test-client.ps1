@@ -28,7 +28,7 @@ $taskURL='https://github.com/example/fixture.git'
 & $taskGit -C $taskProject push -u origin main | Out-Null
 $taskRoot=Join-Path $taskOut 'client'
 $taskHelper=Join-Path $taskRepo 'client/steerrunner-client.ps1'
-$taskEnvironment=@{};foreach ($taskKey in @('PATH','SRCLI_TEST_ROOT','SRCLI_REAL_RUNNER','SRCLI_TEST_URL','SRCLI_TEST_LOST_RESPONSE','SRCLI_TEST_INSTANCE','SRCLI_TEST_SCENARIO','ORCA_CLI_COMMAND','ORCA_DEV_REPO_ROOT')) { $taskEnvironment[$taskKey]=[Environment]::GetEnvironmentVariable($taskKey) }
+$taskEnvironment=@{};foreach ($taskKey in @('PATH','APPDATA','SRCLI_TEST_ROOT','SRCLI_REAL_RUNNER','SRCLI_TEST_URL','SRCLI_TEST_LOST_RESPONSE','SRCLI_TEST_INSTANCE','SRCLI_TEST_SCENARIO','SRCLI_TEST_NATIVE_VERSION','ORCA_CLI_COMMAND','ORCA_DEV_REPO_ROOT')) { $taskEnvironment[$taskKey]=[Environment]::GetEnvironmentVariable($taskKey) }
 $taskPassed=New-Object Collections.Generic.List[string]
 function Invoke-Client([string]$Action,$InputValue,[int]$Expected=0,[switch]$NonGit) {
     $taskInput=Join-Path $taskOut ('input-'+[Guid]::NewGuid().ToString('N')+'.json')
@@ -43,12 +43,22 @@ function Invoke-Client([string]$Action,$InputValue,[int]$Expected=0,[switch]$Non
 }
 function Assert([bool]$Condition,[string]$Name) { if (-not $Condition) { throw "Assertion failed: $Name" };$taskPassed.Add($Name) }
 try {
+    $env:APPDATA=Join-Path $taskOut 'appdata';[IO.Directory]::CreateDirectory($env:APPDATA) | Out-Null
     $env:PATH=$taskTools+';'+(Split-Path -Parent $taskGit)+';'+$env:SystemRoot+'\System32;'+$env:SystemRoot+'\System32\WindowsPowerShell\v1.0'
     $env:SRCLI_TEST_ROOT=$taskOut;$env:SRCLI_REAL_RUNNER=$taskRunner;$env:SRCLI_TEST_URL=$taskURL;$env:ORCA_CLI_COMMAND=Join-Path $taskTools 'orca.exe';$env:ORCA_DEV_REPO_ROOT=$null
     $r=Invoke-Client Configure @{runner_executable=$taskFake;state_dir=(Join-Path $taskOut 'state')}
     Assert ($r.data.configuration.default_profile -eq 'local-codex') 'native default and production run-configuration validation'
     Assert ($r.data.discovery.project_binding.repository.url -eq $taskURL) 'project binding and publication template discovery'
     Assert (-not (Test-Path -LiteralPath (Join-Path $taskOut 'writes.log'))) 'configure sends zero business writes'
+    foreach ($taskCase in @(
+        @{version='0.159.2+build.7';eligible=$true},@{version='0.159.10';eligible=$true},@{version='0.163.0-alpha.10.2';eligible=$true},@{version='1.0.0';eligible=$true},
+        @{version='0.159.1';eligible=$false},@{version='0.159.2-rc.1';eligible=$false},@{version='0.160.0-alpha.01';eligible=$false},@{version='0.0160.0';eligible=$false},@{version='0.160.0.1';eligible=$false}
+    )) {
+        $env:SRCLI_TEST_NATIVE_VERSION='codex-cli '+$taskCase.version;$r=Invoke-Client Discover $null
+        $taskEligible=@($r.data.discovery.candidates | Where-Object { $_.id -eq 'local-codex' }).Count -eq 1
+        Assert ($taskEligible -eq $taskCase.eligible) ('Runner-declared native minimum: '+$taskCase.version)
+    }
+    $env:SRCLI_TEST_NATIVE_VERSION=$null
     $r=Invoke-Client Configure @{default_profile='orca-local'}
     $r=Invoke-Client Configure $null
     Assert ($r.data.configuration.default_profile -eq 'orca-local') 'repeat discovery preserves explicit choice'

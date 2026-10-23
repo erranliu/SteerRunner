@@ -17,7 +17,7 @@ Runner 还提供持续会话与一次性内容生成流程，详见 [Workflow �
 
 当前交付目标为 **Windows/amd64**。运行 Runner 和 Viewer 无需安装 Go；skill 的共享 helper 使用系统自带 Windows PowerShell 5.1。
 
-开发执行需要 Git、执行主机上的代理工具，以及访问目标仓库和发布 PR 的权限。本机受管 Codex 路径当前要求原生 **Codex 0.159.2**，GitHub 发布使用执行主机已有的 `gh` 登录。远程执行另需安装 Orca，并预先配置 environment、远端项目、工具与登录。
+开发执行需要 Git、执行主机上的代理工具，以及访问目标仓库和发布 PR 的权限。本机受管 Codex 路径支持原生 **Codex >= 0.159.2**；更新版本的预发布版也可通过最低版本检查，例如 `0.163.0-alpha.10.2`，各版本仍须通过协议与权限核验。GitHub 发布使用执行主机已有的 `gh` 登录。远程执行另需安装 Orca，并预先配置 environment、远端项目、工具与登录。
 
 Spec 和 Plan 应已提交到执行基线，并能由执行主机取得。Runner 使用固定 commit 创建工作区；提交执行前应确认材料与目标分支正确。
 
@@ -68,7 +68,7 @@ skill 使用已有配置和 Runner CLI 提交执行，并返回可追踪的 Run 
 & "$env:LOCALAPPDATA\Programs\SteerRunner\steerrunner-viewer.exe"
 ```
 
-Viewer 只读取 `%LOCALAPPDATA%\SteerRunnerView\snapshots` 中的 JSON 快照，每 2 秒刷新。超过 15 秒未更新时会标记过期并保留上次内容；过期不表示任务已停止。关闭 Viewer 或聊天窗口不会停止 Run。
+Runner 每秒采样，变化时导出，无变化时每 5 秒发送心跳。Viewer 只读取 `%LOCALAPPDATA%\SteerRunnerView\snapshots` 中的 JSON 快照，每 2 秒刷新；从快照采样时间起超过 15 秒会标记过期并保留上次内容，反复读取旧文件不会续期。过期不表示任务已停止。Viewer EXE 可单独复制运行，关闭 Viewer 或聊天窗口不会停止 Run。
 
 ## 直接使用 CLI
 
@@ -100,6 +100,7 @@ Runner 和 Viewer 输出到 `bin`，完整交付包输出到指定的新目录�
 - [文档索引](docs/README.md)：全部使用说明、设计契约与验收入口。
 - [CLI 与运维指南](docs/cli-guide.md)：详细命令、权限、恢复、状态目录和服务维护。
 - [Workflow 指南](docs/workflows/README.md)：开发、带审计开发、持续会话和一次生成。
+- [双 skill 与独立 Viewer 验收](docs/acceptance/skill-shell.md)：配置、文件契约、刷新/过期、本机与 Orca 闭环及已知限制。
 - [测试与支持范围](docs/testing.md) · [验收记录](docs/acceptance/README.md)：按具体构建与执行路径查阅验证结果。
 
 项目面向本人管理和信任的执行主机；工具安装、仓库权限和登录由使用者维护。具体后端与 Workflow 组合以当前构建的 `capabilities` 和对应验收记录为准。

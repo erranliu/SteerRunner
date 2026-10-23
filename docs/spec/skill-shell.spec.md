@@ -31,6 +31,8 @@
 
 1. 读取安装定位信息及已有调用方配置。Runner 选择顺序为已配置绝对路径、同发行包 EXE、PATH；未配置时若前一候选不可用可继续列出后续候选，已保存的显式路径失效则报告，不静默换构建。以 `version --json` 和 `capabilities --offline --json` 确认程序、协议和支持组合；没有 Runner 时仍报告其它发现与安装缺口，不能声称配置完成。
 2. 发现 Git、原生 Codex、gh 和 Orca。只在 PATH、发行包及明确的现有配置/安装位置查找，不递归扫描全盘。分别记录入口、原生可执行文件、版本和查询错误；不能把 `codex.ps1`/shim 当作已满足 Runner 原生 EXE 要求。版本适用性按当前能力声明判断，不在 skill 中永久写死当前版本。
+
+   发现侧解释当前能力声明中的固定版本或最低版本要求，不维护另一份版本支持表。最低版本按数值组件比较，同一基线的预发布版低于稳定版，较新版本的预发布版可满足最低版本；未知/坏版本保留未核实。这里只筛候选，协议和权限资格仍由 Runner 实际核验。
 3. 有项目上下文时，使用 Git 公开只读命令发现仓库根、remote URL、目标分支线索；gh 只查询对应 host 的登录/仓库身份，不取得 token。origin 优先仅用于新项目的候选发现；多发布目标、无明确默认分支或身份不一致时保留待补字段，禁止猜测发布目的地。
 4. Orca 使用选定且固定的 CLI，通过公开只读接口发现。当前已核对的命令为 `environment list --json`、`status --json`、`repo list --json` 和 `repo show --repo <selector> --json`；对已保存 environment 的后三项显式加 `--environment <selector>`。repo list 的 id/path 只用于定位，仓库 URL 等身份需从公开详情核对；该版本缺所需详情时保留待确认项，不按同名路径自动匹配。按所用版本 help/机器接口核对能力，不依赖另装 orca-cli skill，不读 `orca-environments.json`、令牌或内部数据库。
 5. Orca CLI 的显式选择、开发/安装版本区分沿其公开入口约定；同一次发现固定入口，不在失败后切换另一个 Orca。查询子进程屏蔽 `ORCA_ENVIRONMENT`、`ORCA_PAIRING_CODE`、`ORCA_REMOTE_PAIRING` 等隐式路由，保持本机与明确 environment 分离。枚举 environment 时不传目标选择器。

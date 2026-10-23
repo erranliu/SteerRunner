@@ -33,7 +33,11 @@ func main() {
 	name := strings.ToLower(filepath.Base(os.Args[0]))
 	root := os.Getenv("SRCLI_TEST_ROOT")
 	if strings.HasPrefix(name, "codex") {
-		fmt.Println("codex-cli 0.159.2")
+		version := os.Getenv("SRCLI_TEST_NATIVE_VERSION")
+		if version == "" {
+			version = "codex-cli 0.159.2"
+		}
+		fmt.Println(version)
 		return
 	}
 	if strings.HasPrefix(name, "gh") {
