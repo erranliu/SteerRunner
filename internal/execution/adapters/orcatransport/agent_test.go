@@ -88,10 +88,10 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 					if completed != want {
 						t.Fatal("wrong root completion decision", completed, turn.Native)
 					}
-					if kind == "agent-changed" && (turn.Native.Diagnostic == "" || turn.Native.query(end, &turn, now.Add(2*time.Second))) {
+					if kind == "agent-changed" && (turn.Native.Conflict == "" || turn.Native.query(end, &turn, now.Add(2*time.Second))) {
 						t.Fatal("a queried agent replacement was forgotten", turn.Native)
 					}
-					if kind == "missing-agent" && (turn.Native.Diagnostic != "" || !turn.Native.query(end, &turn, now.Add(2*time.Second))) {
+					if kind == "missing-agent" && (turn.Native.Conflict != "" || !turn.Native.query(end, &turn, now.Add(2*time.Second))) {
 						t.Fatal("temporarily missing metadata was treated as an agent replacement", turn.Native)
 					}
 					if kind == "success" && turn.Native.ReplyBody != end.LastAssistantMessage || kind == "truncated" && turn.Native.ReplyDigest != "" {
@@ -112,13 +112,13 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			missing := start
 			missing.AgentType = ""
 			turn.Native.signal(missing, &turn, now)
-			if turn.Native.WorkingAt != 0 || turn.Native.Diagnostic != "" {
+			if turn.Native.WorkingAt != 0 || turn.Native.Conflict != "" {
 				t.Fatal("missing agent metadata started or permanently failed the turn")
 			}
 			foreign := start
 			foreign.AgentType = "foreign"
 			turn.Native.signal(foreign, &turn, now)
-			if turn.Native.WorkingAt != 0 || turn.Native.Diagnostic == "" {
+			if turn.Native.WorkingAt != 0 || turn.Native.Conflict == "" {
 				t.Fatal("foreign agent hook started the original turn")
 			}
 		})

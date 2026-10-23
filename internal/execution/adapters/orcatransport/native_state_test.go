@@ -215,7 +215,7 @@ func TestOrcaNativeStateBinding(t *testing.T) {
 		p := NativeProof{}
 		p.body(`{"summary":"a b"}`)
 		p.body(`{"summary":"ab"}`)
-		if p.Diagnostic == "" || p.ReplyBody != `{"summary":"a b"}` {
+		if p.Conflict == "" || p.ReplyBody != `{"summary":"a b"}` {
 			t.Fatal("display association allowed a changed native original")
 		}
 	})

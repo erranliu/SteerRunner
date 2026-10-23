@@ -35,6 +35,8 @@ checkout、EXE、数据库、配置或测试调度器。运行目标为 Windows/
 见 [Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md)。
 当前使用 `steerrunner-test-config/v1`；本次构建的实际范围和缺配置项见[验收](acceptance/independent-configuration.md)。
 
+Orca 观察恢复定向回归：`go test ./internal/execution/adapters/orcatransport ./internal/application -run 'TestOrcaNativeIncompleteMetadataRecovers|TestOrcaNativeMissingPromptCannotHideConflict|TestOrcaNativeFinalRetainsVerifiedInputBinding|TestOrcaObserverReportsChangingGapAndRecovery|TestOrcaCompletionQuery|TestOrcaStateCodec|TestTerminalNativeFinalRecoveryNeverReplaysInput|TestSRObservation' -count=1 -timeout 5m`。覆盖工具执行后 prompt 持续缺失仍保留已核实输入绑定、其它最终状态字段补齐、观察器重建、短回合无 working、冲突不可抹除、旧 codec 保守转换、诊断事务/幂等与恢复。使用受控原生响应及真实 SQLite 事务，不创建模型输入或真实 PR；通过不等于该现场历史锁死记录已经修复或新版已部署。
+
 ## 分层定义
 
 按测试目的、流程和隔离条件分层，不以是否使用真机、模型或远端环境作为层级定义。

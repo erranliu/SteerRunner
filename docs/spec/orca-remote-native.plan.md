@@ -53,7 +53,7 @@ P0 不重跑稳定性矩阵：一套原生探针资源、一个临时 PR，结�
 依赖 P0 通过；该可行性门槛现已满足。当前按用户授权实施 P1–P4；删除及最终验证事实登记专属验收。
 
 1. schema 按 adapter/target 禁止新远端 runtime 路径/SHA 键（含空值）；纯配置校验、submit、capabilities 一致，`invalid_input` 必须先于 Run/Git fetch/Orca 创建副作用。
-2. 新远端 freeze 使用原 envelope 的 profile codec v4，payload 只有 transport/路由；local 仍 v3，state v6（最新主线既有版本）、target ID 和 input digest 定义不变。不加 execution_mode。旧程序拒绝 v4 是预期。
+2. 新远端 freeze 使用原 envelope 的 profile codec v4，payload 只有 transport/路由；local 仍 v3，target ID 和 input digest 定义不变。观察恢复修复后的 state 写入 v7、精确读取 v6/v7，保守转换规则见 Spec §4。不加 execution_mode。旧程序拒绝 v4 是预期。
 3. adapter 入口一次区分 v4 远端、v3 local 和只读旧 v3 远端；前两类复用正常生命周期。服务加载旧远端 Run/Check 时先阻止自动观察/调度，不因此使服务整体加载失败；其查询及未结算资源事实保留。拒绝未知版本、目标冲突、helper 配置/资源混存；不把版本判断扩散到 workflow/reliable。
 4. 复用 agentlaunch 编译直接 Codex/model/effort/access-mode 命令；沿原启动 intent/接受回执，未知启动只对账，不重复发送。
 5. 不探测/安装/上传远端 runtime，不新增诊断终端或替代脚本；无工具 READY 只绑定会话。

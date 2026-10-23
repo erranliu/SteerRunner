@@ -169,10 +169,12 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 	found = false
 	for _, e := range s.Implementation {
 		if e.ImplementationKey == StateKey {
-			if e.CodecVersion != StateVersion || e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest) != nil {
+			if !readableStateVersion(e.CodecVersion) || e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest) != nil {
 				return binding, p, state, errors.New("IDENTITY_UNVERIFIED")
 			}
-			if json.Unmarshal(e.Payload, &state) != nil {
+			var err error
+			state, err = decodeState(e.Payload, e.CodecVersion)
+			if err != nil {
 				return binding, p, state, errors.New("FORMAT_UNSUPPORTED")
 			}
 			found = true
