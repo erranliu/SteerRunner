@@ -1,0 +1,12 @@
+{
+  "base_commit": "ca1a8a36bbaacaa83f4a14817766cf4f04a0f07f",
+  "files": {
+    "internal/execution/adapters/orcatransport/lifecycle.go": "161356b65dc834d7950fb872301974ef35a3f7e074605df8670d505f20da2cb2",
+    "internal/execution/adapters/orcatransport/native_observation.go": "d95639b21d6754884745971c88289ecd9dcb219f022acafadcb629cb06826337",
+    "internal/execution/adapters/orcatransport/native_state.go": "c31fb96da5b5f73661b214863a1146a8b3896b035cbb74250e1b73e0f8b09705",
+    "internal/execution/adapters/orcatransport/native_input_test.go": "cc44de1672f4d86c95e1175652916a7ec9d70b37c4c18db5efd167d3d106e7a3",
+    "internal/execution/adapters/protocol/orca/state_feed.go": "908e0d0c8070ced04b6373879b000db2bf37234b26310b0884198301a5b1f63b",
+    "internal/execution/adapters/protocol/orca/native_input.go": "3582b250e3b569aef5ba9172b295b782bf3aca05678eeda59db991a11de12393",
+    "internal/execution/adapters/protocol/orca/native_input_windows_test.go": "126786e1c7ff3d3dcdabd79ce7372224f6e8708685e0d9b9787128a79e606748"
+  }
+}

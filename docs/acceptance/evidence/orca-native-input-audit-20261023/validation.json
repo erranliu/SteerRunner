@@ -1,0 +1,56 @@
+{
+  "schema": "steerrunner-native-input-audit/v1",
+  "base_commit": "ca1a8a36bbaacaa83f4a14817766cf4f04a0f07f",
+  "audit": "self-review; no subagents",
+  "confirmed_findings": [
+    "mixed independent/session main records",
+    "pagination checks bypassed by early input match",
+    "stale notifications revoke current binding",
+    "feed replacement retains prior input binding",
+    "supplemental read hides durable native contradictions"
+  ],
+  "before_fix_evidence": [
+    "audit-before.log",
+    "audit-identity-before.log"
+  ],
+  "l1": {
+    "status": "passed",
+    "test_count": 627,
+    "all_passed": 2253,
+    "failed": 0,
+    "known_opt_in_skipped": [
+      "TestRunUsageLocalCodexPublicLive",
+      "TestRunUsageLocalPiPublicLive",
+      "TestRunUsageLocalDSHPublicLive",
+      "TestRunUsageRemotePublicLive",
+      "TestAuthenticationNativeToolBoundary",
+      "TestServiceStopWorkerHelper",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaWorkspaceStartupLive",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestProcessHostCommandHelper",
+      "TestOrcaStoppedNativeProbe",
+      "TestUsageExistingNativeEvidence",
+      "TestUsageRemoteCodexCleanupLive",
+      "TestUsageRemoteCodexLive"
+    ],
+    "terminal_extension_test_count": 29,
+    "native_driver_compile_exit": 0,
+    "native_zero_match_guard": true,
+    "started_at": "2026-10-23T11:20:28.6737226Z",
+    "finished_at": "2026-10-23T11:30:50.9119620Z"
+  },
+  "final_packages": {
+    "status": "passed",
+    "protocol_orca_seconds": 5.95,
+    "orcatransport_seconds": 44.164,
+    "vet": "passed",
+    "includes_later_contradiction_and_clock_guards": true,
+    "log": "audit-final-packages3.log"
+  },
+  "production_deployed": false,
+  "orca_modified": false,
+  "scope_note": "L1 includes the first eight native-input tests. Final source adds durable contradiction/clock checks, before/after authority fencing and the ninth test; both affected packages and vet were rerun afterwards."
+}

@@ -37,7 +37,7 @@ func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) p
 		return provenance{}
 	}
 	if s.Prompt == "" {
-		if linked {
+		if linked || p.recordedInputMatches(s, turn) {
 			return provenance{}
 		}
 		return provenance{provenanceMissing, nativePromptMissing}
@@ -48,15 +48,18 @@ func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) p
 // nativeObservation owns only transient observation coverage and one bounded
 // public candidate. NativeProof remains the sole durable execution authority.
 type nativeObservation struct {
-	identity      b.PublicMessage
-	feed          native.StateFeed
-	continuous    bool
-	turnStartedAt int64
-	lastDigest    string
-	lastReceived  time.Time
-	lastSourceAt  int64
-	pending       *b.PublicMessage
-	diagnostic    string
+	identity         b.PublicMessage
+	feed             native.StateFeed
+	continuous       bool
+	turnStartedAt    int64
+	lastDigest       string
+	lastReceived     time.Time
+	lastSourceAt     int64
+	pending          *b.PublicMessage
+	diagnostic       string
+	input            *native.NativeInput
+	inputStamp       int64
+	observedRevision int64
 }
 
 func (l *Lifecycle) observation(s b.LifecycleSnapshot, feed native.StateFeed) *nativeObservation {
@@ -70,12 +73,36 @@ func (l *Lifecycle) observation(s b.LifecycleSnapshot, feed native.StateFeed) *n
 		l.nativeObservation = o
 	} else if o.feed != feed {
 		o.feed, o.continuous = feed, false
+		o.input, o.inputStamp = nil, 0
 	}
 	return o
 }
 
 func (o *nativeObservation) invalidate() {
 	o.continuous, o.turnStartedAt, o.pending = false, 0, nil
+	o.input, o.inputStamp = nil, 0
+}
+
+// A queried input binding is transient and scoped to this exact display stamp.
+// Another boundary or reconnect requires a new independent read.
+func (o *nativeObservation) bindInput(s *native.AgentState, p NativeProof) {
+	// Old notifications cannot acquire a proof, but also cannot revoke the
+	// current binding before NativeProof.signal discards their stale revision.
+	if trustedState(*s) && s.Observation.AuthorityID == p.Authority && s.Observation.Incarnation == p.Incarnation &&
+		(s.Observation.Revision <= p.Revision || o.input != nil && o.input.Observation != nil && s.Observation.Revision < o.input.Observation.Revision) {
+		return
+	}
+	if o.input == nil || s.TurnStartedAt <= 0 || s.TurnStartedAt != o.inputStamp || !trustedState(*s) ||
+		s.MainAgent.State != "working" || s.MainAgent.StateStartedAt != p.RootWorkingAt ||
+		s.Observation.AuthorityID != p.Authority || s.Observation.Incarnation != p.Incarnation ||
+		s.Observation.Revision < p.Revision || s.Observation.Boundary || s.ProviderSession.ID != p.Provider || s.PaneKey != p.Pane ||
+		s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted || s.ToolOutput {
+		o.input, o.inputStamp = nil, 0
+		return
+	}
+	input := *o.input
+	input.Observation = s.Observation
+	s.NativeInput = &input
 }
 
 func (o *nativeObservation) reattach(s native.AgentState, p NativeProof, turn *Turn) {
@@ -90,6 +117,7 @@ func (o *nativeObservation) reattach(s native.AgentState, p NativeProof, turn *T
 	// A previously selected, undelivered public sample remains valid. A new
 	// initial snapshot cannot establish coverage or replace that sample.
 	o.continuous, o.turnStartedAt = false, 0
+	o.input, o.inputStamp = nil, 0
 }
 
 // Orca coalesces tab snapshots. A live connection alone is not boundary

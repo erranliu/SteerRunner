@@ -1,0 +1,26 @@
+--- FAIL: TestOrcaNativeInputPagesRequireExactlyOneOriginalUser (0.26s)
+    --- FAIL: TestOrcaNativeInputPagesRequireExactlyOneOriginalUser/negative-cursor-with-input (0.02s)
+        native_input_windows_test.go:88: negative-cursor-with-input &{original original full prompt 12 10 <nil>} <nil>
+    --- FAIL: TestOrcaNativeInputPagesRequireExactlyOneOriginalUser/nonadvancing-cursor-with-input (0.02s)
+        native_input_windows_test.go:88: nonadvancing-cursor-with-input &{original original full prompt 12 10 <nil>} <nil>
+--- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords (0.13s)
+    --- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords/state (0.02s)
+        native_input_windows_test.go:137: mixed source acquired input proof state &{original original 12 10 0xadedc2acf50} <nil>
+    --- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords/time (0.02s)
+        native_input_windows_test.go:137: mixed source acquired input proof time &{original original 12 10 0xadedc308550} <nil>
+    --- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords/outcome (0.02s)
+        native_input_windows_test.go:137: mixed source acquired input proof outcome &{original original 12 10 0xadedc4268c0} <nil>
+    --- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords/agent (0.02s)
+        native_input_windows_test.go:137: mixed source acquired input proof agent &{original original 12 10 0xadedc38ea00} <nil>
+    --- FAIL: TestOrcaNativeInputCannotCombineDifferentMainRecords/marker (0.02s)
+        native_input_windows_test.go:137: mixed source acquired input proof marker &{original original 12 10 0xadedc38f590} <nil>
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.520s
+--- FAIL: TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples (0.01s)
+    --- FAIL: TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples/stale-notification (0.01s)
+        native_input_test.go:228: stale sample revoked valid input binding Native original input preview is missing; awaiting original attribution evidence <nil>
+    --- FAIL: TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples/feed-replacement (0.00s)
+        native_input_test.go:231: new feed inherited input binding  &{bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb original-incarnation orca-terminal:runtime:terminal:original-incarnation cccccccccccccccccccccccccccccccc assistant next progress 1970-01-01 00:00:14 +0000 UTC}
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.703s
+FAIL

@@ -59,6 +59,8 @@ accepted 表示文档路径及原请求已持久化，不表示文档存在性�
 
 同一服务内，Orca 下一轮发送前的状态连接失败会在冻结的 `transport.wait_timeout` 内退避重试，每次 WebSocket 建连最多等待 5 秒。恢复后重新核验原终端、工作区和 provider session，再发送一次原输入；认证拒绝、身份变化和等待/阻塞状态不重试。超过期限仍明确阻断。已经尝试发送但结果未知的操作继续只对账原请求，不自动重发。
 
+Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合标记，原任务仍在工作。Runner 在原有界补查中可调用现有只读 `nativeChat.readSession`：固定 baseline 后必须只有一条真实用户输入且完整匹配原请求，读取前后原会话、主记录与标记保持一致。新的同文输入也拒绝；缺页、截断、API 不可用或读取中状态变化仍保持未核实。该读取只补输入归属，完成仍由原主 agent done 和原完整结果核验决定；不重发输入、不修改 Orca。
+
 远端 Orca 创建工作区前的 `repo list` 查询，遇到 `orca-environments.json` 同目录临时文件替换的 `EPERM`／`EACCES`／`EBUSY` rename 冲突时，最多尝试 5 次，所有调用与退避共享 15 秒总期限（调用方期限更短时从其期限）。退避从 250 毫秒开始指数增长，增加少量随机抖动，单次等待最多 2 秒；停止会中断等待和当前查询。服务日志记录 Run、attempt、重试次数和原因，耗尽后保留首次和最后一次错误并阻断。普通权限、认证、仓库缺失或身份错误不进入此重试；工作区／终端创建和任务发送不适用此机制，结果未知时仍按原操作对账。
 
 开发流程的 Spec、Plan 和参考材料只需提供仓库相对路径，例如 `"spec":{"path":"docs/spec/task.spec.md"}`。本地 Codex 与 Orca 均直接读取固定 commit 创建的 worktree 内文档；Runner 不检查文档提交、推送、存在性或正文，不复制/传输/内嵌材料。调用方负责文档可用性；缺失由代理按实际执行情况反馈。旧 kind/content/commit 字段可按原形状提交，但不再决定开发材料来源。Orca 的 12000 UTF-16 单元限制仅适用于实际提示词。`conversation`、`generate` 仍支持独立 inline 材料。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。

@@ -39,6 +39,8 @@ Orca 观察恢复定向回归：`go test ./internal/execution/adapters/orcatrans
 
 ## 分层定义
 
+SessionStart 空预览补证定向入口：`go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -run 'TestOrcaNativeInput' -count=1 -timeout=3m`。默认只使用隔离原生响应和 IPC 夹具，核验原输入全文/唯一性、旧 proof、分页、读取竞争及零重发；无需生产状态或远端模型。只读现场探针独立记录于执行可见性验收，不作为默认测试入口。
+
 断线后空预览定向回归：`go test ./internal/execution/adapters/orcatransport ./internal/execution/adapters/protocol/orca -run 'TestOrcaCompletionQuery|TestOrcaObservationDiagnostic|TestOriginalAgentQueryRetainedStamp' -count=1 -timeout=3m`。覆盖原 working 起点持久化后断线/重建的独立查询收尾、延迟正文、观察器完成事件及诊断解除；缺 start/marker、不同 marker、身份/历史冲突、截断正文继续拒收。协议反例防止不同主记录或冲突来源借用 marker。受控夹具固定一次原输入、零重发，不读取生产状态或启动模型；实际范围见[执行可见性验收](acceptance/execution-observability.md#断线后空输入预览恢复2026-10-23)。
 
 按测试目的、流程和隔离条件分层，不以是否使用真机、模型或远端环境作为层级定义。

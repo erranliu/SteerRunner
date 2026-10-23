@@ -306,6 +306,24 @@ func (p NativeProof) retainsOriginalInput(s native.AgentState) bool {
 	return s.Observation == nil || trustedState(s) && s.Observation.AuthorityID == p.Authority &&
 		s.Observation.Incarnation == p.Incarnation && s.Observation.Revision >= p.Revision && s.Observation.Revision > p.BaseRevision
 }
+func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool {
+	i := s.NativeInput
+	if i == nil || !turn.Accepted || !turn.Started || p.agentName() != "codex" || p.Authority == "" ||
+		p.WorkingAt <= 0 || p.BaseRootAt <= 0 || p.RootWorkingAt <= p.BaseRootAt ||
+		i.Baseline != p.BaseRootAt || i.ID == "" || i.Timestamp <= p.BaseRootAt || i.Timestamp > s.UpdatedAt ||
+		i.Text != strings.TrimRight(strings.ReplaceAll(turn.Prompt, "\r\n", "\n"), "\r\n") ||
+		s.PaneKey != p.Pane || s.ProviderSession.ID == "" || s.ProviderSession.ID != p.Provider || s.AgentType != p.agentName() ||
+		s.MainAgent == nil || s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted || s.ToolOutput || p.Conflict != "" {
+		return false
+	}
+	o := i.Observation
+	if o == nil || o.Origin != "hook" || o.Kind != "transition" || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
+		return false
+	}
+	return s.MainAgent.State == "working" && s.MainAgent.StateStartedAt == p.RootWorkingAt ||
+		s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.RootWorkingAt
+}
+
 func (p NativeProof) wantsQuery(now time.Time) bool {
 	return (p.EndedAt == 0 || p.ReplyDigest == "") && (p.HintPending || !now.Before(p.LastQuery.Add(30*time.Second)))
 }
@@ -382,6 +400,9 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		for _, sample := range samples {
 			s := sample.AgentState
+			if trustedState(s) && s.Observation.AuthorityID == turn.Native.Authority && s.Observation.Incarnation == turn.Native.Incarnation && s.Observation.Revision > observation.observedRevision {
+				observation.observedRevision = s.Observation.Revision
+			}
 			if sample.Kind == native.SampleInitial {
 				observation.reattach(s, turn.Native, turn)
 				if s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && (s.MainAgent.State == "working" || s.MainAgent.State == "done") {
@@ -396,6 +417,8 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			}
 			prior := turn.Native.Revision
 			hadStart := turn.Native.WorkingAt > 0
+			observation.bindInput(&s, turn.Native)
+			sample.AgentState = s
 			linked := l.profile.Environment == "" && turn.Native.WorkingAt > 0 || err == nil && observation.linked(sample, turn.Native)
 			turn.Native.signal(s, turn, received(sample, l.clock()), linked)
 			issue := turn.Native.diagnostic()
@@ -414,7 +437,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 				s.TurnStartedAt > 0 && observation.turnStartedAt > 0 && s.TurnStartedAt != observation.turnStartedAt {
 				observation.invalidate()
 			}
-			if err == nil && (observation.continuous || turn.Native.EndedAt > 0) {
+			if err == nil && (observation.continuous || observation.input != nil || turn.Native.EndedAt > 0) {
 				observation.offer(sample, turn.Native, turn, turn.Native.Revision > prior && hadStart)
 			}
 		}
@@ -461,6 +484,46 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			return err.Error()
 		}
 		s := sample.AgentState
+		// Preserve the ordinary query's contrary-evidence checks before an
+		// optional supplemental read can fail or make these facts unavailable.
+		if (s.MainAgent == nil || s.UpdatedAt >= s.MainAgent.StateStartedAt) && (turn.Native.rejectIdentity(s) || turn.Native.rejectProvenance(s, turn)) {
+			observation.invalidate()
+			return turn.Native.diagnostic()
+		}
+		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&
+			s.MainAgent != nil && s.UpdatedAt >= s.MainAgent.StateStartedAt &&
+			turn.Native.BaseRootAt > 0 && turn.Native.WorkingAt > 0 && turn.Native.Conflict == "" &&
+			turn.Native.attribution(s, turn, false).kind == provenanceMissing && !turn.Native.retainsOriginalInput(s) {
+			var inputErr error
+			s, inputErr = l.queryInput(ctx, state.Process, turn.Native.Pane, turn.Native.BaseRootAt, s)
+			if inputErr != nil {
+				if errors.Is(inputErr, native.ErrStateIdentityChanged) {
+					turn.Native.reject(inputErr.Error())
+				} else if s.MainAgent == nil || s.UpdatedAt >= s.MainAgent.StateStartedAt {
+					// A failed post-read cross-check may still carry positive
+					// contradictory facts; retain them just like an ordinary query.
+					turn.Native.rejectIdentity(s)
+					turn.Native.rejectProvenance(s, turn)
+				}
+				if turn.Native.Conflict != "" {
+					observation.invalidate()
+					return turn.Native.diagnostic()
+				}
+				return "Native original input query is unverified: " + inputErr.Error()
+			}
+			sample.AgentState = s
+			// The extra read can span more notifications. A later contradictory
+			// input/identity must win over the earlier query just as in the
+			// ordinary independent-query path.
+			drain()
+			if turn.Native.Conflict != "" {
+				observation.invalidate()
+				return turn.Native.diagnostic()
+			}
+			if s.NativeInput != nil && s.NativeInput.Observation != nil && s.NativeInput.Observation.Revision < observation.observedRevision {
+				return "Native original input changed during native transcript query; awaiting current original evidence"
+			}
+		}
 		verified := false
 		if observation.supplements(sample, turn.Native) && turn.Native.Conflict == "" {
 			verified = turn.Native.end(s, turn, received(sample, l.clock()), true)
@@ -472,6 +535,10 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		if verified || s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && turn.Native.attribution(s, turn, false).kind == provenanceMatched {
 			diagnostic = ""
+		}
+		if turn.Native.recordedInputMatches(s, turn) && s.TurnStartedAt > 0 {
+			observation.input, observation.inputStamp = s.NativeInput, s.TurnStartedAt
+			observation.continuous, observation.turnStartedAt = false, 0
 		}
 		if s.MainAgent != nil && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt {
 			if issue := turn.Native.attribution(s, turn, false); issue.kind == provenanceMissing && turn.Native.EndedAt == 0 {

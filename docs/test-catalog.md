@@ -1,5 +1,9 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-23 SessionStart 空预览增量：既有 L1 包入口自动包含 `TestOrcaNativeInputQueryRecoversCompactedWorkingAndFinal`、`TestOrcaNativeInputProofRejectsUnboundHistory`、`TestOrcaNativeInputCachedBindingCannotCrossBoundary`、`TestOrcaNativeInputQueryCannotHideLaterNotification`、`TestOrcaNativeInputPagesRequireExactlyOneOriginalUser`、`TestOrcaNativeInputQueryRejectsIdentityChangeDuringRead`。覆盖原输入完整核验、重复同文拒收、working/重建/final、缓存边界、分页与读取竞争；不新增模型或 PR case。现场验证仅为原 Run 的只读补证，不冒充生产部署或新远端发布资格。
+
+提交前审计补充 `TestOrcaNativeInputCannotCombineDifferentMainRecords`、`TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples`、`TestOrcaNativeInputIdentityErrorRemainsDurable`，并扩展原分页和 proof 反例。覆盖两路 main/agent/outcome/marker 不一致、找到正文后仍须验证游标、旧样本不撤销新绑定、更换 feed 立即失效，以及读取前后确定冲突不会因补查失败丢失。均使用隔离协议夹具，随原 L1 入口自动执行。
+
 2026-10-23 薄壳专项：`scripts/test-client.ps1` 覆盖两个 skill 的共享 helper、生产纯校验与受控调用；`scripts/test-client-package.ps1` 验证隔离安装/定位/冲突/摘要；`scripts/test-viewer.ps1` 验证独立 EXE 的原生四列窗口及文件故障。`tests/integration/display_test.go` 的两个 `TestSRDisplaySnapshot*` 使用显式同版 EXE 验证非薄壳提交、心跳、多来源及服务换代；Viewer 自身在独立 module 内测试。以上为 focused 专项，不改变通用 L2–L4 场景计数，也不自动调用真实模型。固定构建、真实本机/远端闭环及未验范围见[薄壳验收](acceptance/skill-shell.md)。
 
 2026-10-23 Orca 断线空预览补正：现有 L1 包入口自动包含 `TestOrcaCompletionQueryRecoversEmptyPromptAfterDisconnect`、`TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence`、`TestOrcaCompletionQueryReconnectObserverCommitsFinal` 和扩展的 `TestOriginalAgentQueryRetainedStampRequiresSameMainRecord`。验证原可信 working 起点与独立查询保留标记一致时恢复，正文延迟/adapter 重建可收尾，完成事件及诊断解除完整，发送次数固定为 1；缺证据、异源/历史冲突、截断正文不成为 final。此为确定性受控回归，不新增模型/PR case；当前结果见[执行可见性验收](acceptance/execution-observability.md#断线后空输入预览恢复2026-10-23)。

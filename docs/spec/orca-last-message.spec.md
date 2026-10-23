@@ -143,7 +143,16 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 | 查询、重连、重启或漏 start | 为空且既无连续链也无原起点标记核验 | 暂缺归属证据；继续有界原来源读取，保持未核实 |
 | 任意来源 | session/输入/身份边界冲突 | 保留冲突、拒绝完成及错误归属的消息 |
 
-如果原生公开字段不足以支持某条正向承诺，必须登记现场缺口；不得增加 TUI/日志回退。本期不修改 Orca，也不承诺无原可信 working 起点或无同源保留标记的 query-only 空 prompt 自动完成。
+2026-10-23 SessionStart 补正：Orca 的 Codex `SessionStart`（包括压缩后的会话事件）也会清空预览、重置 `turnStartedAt`，但主 agent working 起点可以保持不变。因此该标记变化本身不能证明新用户输入。以上原路径保持；另允许 Runner 在既有 30 秒独立查询中，使用现有 `nativeChat.readSession` 核验原输入，条件如下：
+
+- 只用于远端 Codex，已有 accepted、started 和持久的 prompt 匹配可信 working 起点；历史冲突仍不清除。
+- 通过原 providerSession 的 ID 和其公开 transcriptPath 请求 Orca 的只读接口；Runner 不打开执行主机的私有文件，不部署 reader/helper，不读屏。
+- 从当前尾部向前分页到固定 baseline，必须恰好只有一条 baseline 之后的真实用户输入，完整文本与原输入逐字匹配。再次发送同文也算第二条输入，不能只找最近的匹配文本。缺时间、截断、非 transcript 来源、不完整分页、重复游标或预算耗尽均未核实。单次最多 16 页，每页 100 条，读取与后置核验共享 40 秒期限。
+- 读前和读后独立主记录的 pane/provider/path、main state/stateStartedAt/outcome、交叉核验的 turnStartedAt 必须一致；每次独立记录还须与该次 session 元数据的 agent/完整 main 记录及非冲突标记一致，不能把冲突标记清零后冒充一致。原 terminal/incarnation 前后核验继续执行。两次 session 元数据的 hook authority/incarnation 保持一致，revision 不回退；当前值还须与原持久 proof 相符，观察时间不得早于主记录起点。
+- 该证据只补输入归属。working 必须仍为原 working 起点；final 仍要求独立主记录 done、原结束时间、完整且不可变正文及原 outcome 门槛。会话历史中的 assistant、READY、工具正文或标题均不作为 final。
+- 运行中可在瞬时观察器内保留该输入与当前显示标记的绑定；只用于同标记、同原 working 根的可信后续通知。标记变化、显式边界、身份变化、缺口或更换 feed/重附着立即失效，必须重新独立读取；旧于持久/查询水位的通知不能撤销有效绑定。完成通知不继承该缓存的完成资格。补证前后已取得的明确身份、输入或原生 outcome 冲突按原规则保留，不能被补查失败隐藏。
+
+不新增持久字段、codec 或生产开关，不修改 Orca。原可信 working 起点缺失、原输入无法完整核验、API 不可用的来源仍保持未核实，沿既有预算补查；不以宽松接受空 prompt 掩盖缺证。
 
 ### 5.3 历史记录、结果与恢复
 
@@ -172,9 +181,9 @@ application 沿原事件分支核验原 Session/Turn/event，并原子合并诊�
 | OLM-01 | 新远端原轮可归属公开消息经过真实 EXE/服务返回；运行中与结束后分别有样本，不只依赖 final 补采样 |
 | OLM-02 | 去重、乱序、工具状态变化、查询/通知交错和重连 initial 均不制造新 observed_at；真实来源收到时间不被消费时间替代 |
 | OLM-03 | 多 Run、Attempt、Session、Generation、Turn 及子 agent、旧 provider/pane/终端替换隔离，旧轮残留不冒充新轮 |
-| OLM-04 | 脱敏、非法 UTF-8、多字节截断和内存上限满足原契约；无消息表、额外查询器、日志正文读取或模型输入 |
+| OLM-04 | 脱敏、非法 UTF-8、多字节截断和内存上限满足原契约；无消息表、额外查询器、直接日志文件读取或模型输入；§5.2 只读 RPC 用户输入补证不成为展示/结果正文 |
 | OLM-05 | 消息与 started/completed/Implementation/诊断分开发送，事实不丢失；首轮同步读、observer 取消、队列压力和 stop 不死锁 |
-| OLM-06 | 连续可信链或独立查询核验原 working 起点标记的空结束 prompt 可以完成；断连/重建及延迟正文零重发恢复；无原 start、标记缺失/变化、非空冲突、另一输入及身份冲突不错误完成；旧匹配 prompt 路径仍通过 |
+| OLM-06 | 连续可信链、独立原起点标记或 §5.2 唯一真实输入补证的空结束 prompt 可以完成；断连/重建及延迟正文零重发恢复；无原 start、标记缺失/变化且无独立输入补证、非空冲突、另一输入及身份冲突不错误完成；旧匹配 prompt 路径仍通过 |
 | OLM-07 | 旧持久冲突与结果不被清除或重分类；已核实正文、原 outcome、业务获取、PR 和停止门槛保持 |
 | OLM-08 | 原观察诊断出现、变化、解除可见，重复不刷事件；其它诊断和人类问答不被覆盖，消息读取不推进 revision |
 | OLM-09 | 服务重启摘要为空，之后仅由正常合法观察产生新样本；无恢复缓存或伪连续链，恢复全过程零业务重发 |
