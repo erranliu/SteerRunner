@@ -139,7 +139,14 @@ func TestRemoteStopBudgetCanCompleteAnOriginalCLICall(t *testing.T) {
 			t.Fatal("did not retain the original stop operation", p.starts, p.reconciles)
 		}
 		for _, budget := range p.budgets {
-			if remote && (budget <= 40*time.Second || budget > 90*time.Second) || !remote && (budget <= 0 || budget > 15*time.Second) {
+			// Upstream now grants local Orca's serialized CLI queue 60s;
+			// remote inventory/identity/close confirmation needs 90s. The
+			// separate codex-app-server cancellation test retains its 15s cap.
+			limit := 60 * time.Second
+			if remote {
+				limit = 90 * time.Second
+			}
+			if budget <= 40*time.Second || budget > limit {
 				t.Fatal("stop deadline cannot cover its CLI contract or lost its bound", remote, budget)
 			}
 		}

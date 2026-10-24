@@ -135,7 +135,11 @@ func TestRemoteStopPreservesUninvokedCloseAndCancelsObservation(t *testing.T) {
 				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]string{"runtimeId": s.Ref.External.RuntimeID}})
 			}})
 			r := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
-			ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+			// The transport fixture injects the queue/lost-response failure.
+			// Do not let a busy Windows scheduler expire an unrelated 50ms
+			// caller deadline and replace that intended failure before the
+			// reconciliation assertions can examine it.
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 			receipt, err := l.StopLifecycle(ctx, r, owned)
 			if err == nil || receipt.State.Stopped || closeCalls != 1 {
@@ -145,7 +149,7 @@ func TestRemoteStopPreservesUninvokedCloseAndCancelsObservation(t *testing.T) {
 				t.Fatal("original close failure was discarded", err)
 			}
 			r.Operation.Receipt, _ = json.Marshal(receipt)
-			probe, cancelProbe := context.WithTimeout(context.Background(), 50*time.Millisecond)
+			probe, cancelProbe := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancelProbe()
 			again, _, err := l.Reconcile(probe, r)
 			if queue {

@@ -11,7 +11,7 @@ type FileReference struct {
 
 const ImplementPrompt = "读取当前 worktree 中以下路径的 Spec、Plan 和参考材料，完成实现及必要验证。"
 const reportPrompt = "根据已有执行上下文整理指定实施结果；只报告，不补做工作。注明依据，保留失败、未知情况、缺失和冲突。"
-const publishPrompt = "将当前分支 push 到发布目标并创建 PR。用 git branch --show-current 取得实际分支，作为远端分支和 PR head。分别执行并检查 push、PR 查询和创建。使用当前执行凭据允许的提供方 CLI；GitHub 使用 gh pr list 查询和 gh pr create 创建，其受限 GraphQL 流程已获准，不改用 REST PR 列表或创建接口。需要多行正文时，先将 Markdown 正文写入当前工作区的运行时目录，再用单独的创建命令及 --body-file 提交该文件；不要将远端创建与文件清理组合在同一条 shell 命令中，保留正文供核验。遵循原有权限及审批规则。结果未知或操作被拒绝时说明情况，不重复创建。成功后给出 PR URL。"
+const publishPrompt = "将当前分支 push 到发布目标并创建 PR。用 git branch --show-current 取得实际分支，作为远端分支和 PR head。结果未知时说明情况，不重复创建。成功后给出 PR URL。"
 const PublishReportPrompt = "根据已有上下文整理指定发布的结果和 PR URL；只报告，不重新发布。注明依据，保留失败、未知情况、缺失和冲突。"
 
 func RenderPrompt(step string, facts any) (string, error) {
