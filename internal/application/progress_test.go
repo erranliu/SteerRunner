@@ -6,11 +6,110 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
+
+func TestProgressClosedObservationIsNotReopened(t *testing.T) {
+	e, w := auditEngine(t)
+	e.ctx, e.cancel = context.WithCancel(context.Background())
+	r := e.runs["run"].Clone()
+	r.Request.ProgressFile = &contracts.ProgressFileInput{}
+	r.Status, r.StopStatus = "stopped", "stopped"
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	if err := e.saveProgressLocked(e.runs[r.ID], &runstate.Progress{View: contracts.ProgressFileView{Contract: contracts.ProgressContract, RunID: r.ID, CollectionStatus: "closed"}}); err != nil {
+		t.Fatal(err)
+	}
+	w.progressEnabled = true
+	e.mu.Lock()
+	e.startProgressLocked(r.ID, w)
+	started := w.progressWatching
+	e.mu.Unlock()
+	e.cancel()
+	e.wait.Wait()
+	if started {
+		t.Fatal("service restart reopened an already finalized observation")
+	}
+}
+
+func TestProgressTerminalShutdownFinishesClosed(t *testing.T) {
+	e, _ := auditEngine(t)
+	r := e.runs["run"].Clone()
+	r.Request.ProgressFile = &contracts.ProgressFileInput{}
+	r.Status, r.StopStatus = "stopped", "stopped"
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	e.finishProgress(r.ID, "detached")
+	if e.runs[r.ID].Progress.View.CollectionStatus != "closed" {
+		t.Fatal("passive shutdown relabeled a terminal Run as detached")
+	}
+}
+
+func TestProgressActiveAndResumedObserversDetachOnShutdown(t *testing.T) {
+	for _, status := range []string{"observing", "closed"} {
+		t.Run(status, func(t *testing.T) {
+			e, w := auditEngine(t)
+			e.ctx, e.cancel = context.WithCancel(context.Background())
+			r := e.runs["run"].Clone()
+			r.Request.ProgressFile = &contracts.ProgressFileInput{}
+			r.Status, r.StopStatus = "running", ""
+			if err := e.commitLocked(r, nil); err != nil {
+				t.Fatal(err)
+			}
+			if err := e.saveProgressLocked(e.runs[r.ID], &runstate.Progress{View: contracts.ProgressFileView{RunID: r.ID, CollectionStatus: status}}); err != nil {
+				t.Fatal(err)
+			}
+			w.progressEnabled = true
+			e.mu.Lock()
+			e.startProgressLocked(r.ID, w)
+			started := w.progressWatching
+			e.mu.Unlock()
+			e.cancel()
+			e.wait.Wait()
+			if !started || e.runs[r.ID].Progress.View.CollectionStatus != "detached" {
+				t.Fatal("active/resumed observation was closed or suppressed")
+			}
+		})
+	}
+}
+
+func TestProgressTerminalPendingFinalizationStillStarts(t *testing.T) {
+	e, w := auditEngine(t)
+	e.ctx, e.cancel = context.WithCancel(context.Background())
+	r := e.runs["run"].Clone()
+	r.Request.ProgressFile = &contracts.ProgressFileInput{}
+	r.Status, r.StopStatus = "stopped", "stopped"
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	w.progressEnabled = true
+	e.mu.Lock()
+	e.startProgressLocked(r.ID, w)
+	started := w.progressWatching
+	e.mu.Unlock()
+	if !started {
+		t.Fatal("lost finalization was suppressed")
+	}
+	for until := time.Now().Add(3 * time.Second); time.Now().Before(until); time.Sleep(10 * time.Millisecond) {
+		e.mu.Lock()
+		closed := e.runs[r.ID].Progress != nil && e.runs[r.ID].Progress.View.CollectionStatus == "closed"
+		e.mu.Unlock()
+		if closed {
+			e.cancel()
+			e.wait.Wait()
+			return
+		}
+	}
+	e.cancel()
+	e.wait.Wait()
+	t.Fatal("terminal observation did not finalize")
+}
 
 func TestProgressIndependentVersionSurvivesBusinessCloneAndRestart(t *testing.T) {
 	e, w := auditEngine(t)

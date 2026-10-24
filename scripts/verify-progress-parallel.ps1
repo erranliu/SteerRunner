@@ -25,7 +25,7 @@ foreach ($id in $required) {
     if ($record.Count -ne 1) { $issues += "Missing independent native observation window: $id"; continue }
     $window = Get-Content -LiteralPath $record[0].FullName -Raw | ConvertFrom-Json
     $missingWindowFields = @(@('contract','collection_healthy_at_end','collection_gap_budget_seconds','collection_gap_samples') | Where-Object { -not $window.PSObject.Properties[$_] })
-    if ($missingWindowFields.Count -or $window.contract -ne 'steerrunner-progress-observation-window/v2' -or -not $window.collection_healthy_at_end -or $window.collection_gap_budget_seconds -ne 20 -or $window.collection_gap_samples -lt 0) { $issues += "Native observation did not prove bounded collection recovery: $id" }
+    if ($missingWindowFields.Count -or $window.contract -ne 'steerrunner-progress-observation-window/v2' -or -not $window.collection_healthy_at_end -or $window.collection_gap_budget_seconds -ne 20 -or $window.collection_gap_samples -lt 0) { $issues += "Native observation did not prove bounded collection recovery: $id"; continue }
     $start = [datetimeoffset]$window.start
     $end = [datetimeoffset]$window.end
     if (($end-$start).TotalSeconds -lt 120 -or $window.run_ids.Count -lt 1) { $issues += "Invalid observation window: $id" }
@@ -50,7 +50,7 @@ for ($i=0; $i -lt $windows.Count; $i++) {
 }
 foreach ($id in $required) { if (-not $covered.ContainsKey($id)) { $issues += "No actual native observation overlap with another passing case: $id" } }
 if ($conflicts.Count) { $issues += 'Native fixture resources collided' }
-$result = [ordered]@{schema='steerrunner-progress-parallel-evidence/v3';report=$reportPath;max_parallel=$summary.max_parallel;cases=$cases.Count;runner_sha256=@($identities.runner_sha256 | Select-Object -Unique);driver_sha256=@($identities.driver_sha256 | Select-Object -Unique);resource_conflicts=$conflicts;windows=$windows;native_observation_overlaps=$overlaps;issues=$issues;passed=($issues.Count -eq 0)}
+$result = [ordered]@{schema='steerrunner-progress-parallel-evidence/v3';report=$reportPath;max_parallel=$summary.max_parallel;cases=$cases.Count;runner_sha256=@($identities | ForEach-Object { $_.runner_sha256 } | Select-Object -Unique);driver_sha256=@($identities | ForEach-Object { $_.driver_sha256 } | Select-Object -Unique);resource_conflicts=$conflicts;windows=$windows;native_observation_overlaps=$overlaps;issues=$issues;passed=($issues.Count -eq 0)}
 $result | ConvertTo-Json -Depth 15 | Set-Content (Join-Path $reportPath 'progress-parallel-verification.json') -Encoding utf8
 $result | ConvertTo-Json -Depth 15
 if (-not $result.passed) { throw 'Current build real parallel qualification failed; inspect progress-parallel-verification.json' }

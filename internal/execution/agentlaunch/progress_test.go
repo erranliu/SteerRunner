@@ -11,6 +11,27 @@ import (
 	"time"
 )
 
+func TestProgressDisabledLaunchDoesNotInheritAnotherRunPath(t *testing.T) {
+	if runtime.GOOS != "windows" {
+		return
+	}
+	root := t.TempDir()
+	command := ProgressCommand(`if($env:STEERLINE_PROGRESS_FILE) { throw 'foreign progress path' }; [Console]::Write('unset')`, "")
+	command += `; [Console]::Write('|' + $env:STEERLINE_PROGRESS_FILE)`
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "powershell.exe", "-NoProfile", "-NonInteractive", "-Command", command)
+	cmd.Dir = root
+	cmd.Env = append(os.Environ(), "STEERLINE_PROGRESS_FILE=C:/another-run/progress.bin")
+	raw, err := cmd.CombinedOutput()
+	if err != nil || string(raw) != "unset|C:/another-run/progress.bin" {
+		t.Fatal("disabled launch leaked or failed to restore inherited path", err, string(raw))
+	}
+	if _, err := os.Stat(filepath.Join(root, ".steerrunner")); !os.IsNotExist(err) {
+		t.Fatal("disabled channel prepared a runtime directory", err)
+	}
+}
+
 func TestProgressLaunchUsesActualExecutionDirectory(t *testing.T) {
 	if runtime.GOOS != "windows" {
 		return

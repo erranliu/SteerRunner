@@ -210,7 +210,7 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 				if p == nil {
 					p = &runstate.Progress{Workspace: current.Snapshot.Workspace.Path, Binding: progressBinding(current), View: contracts.ProgressFileView{Contract: contracts.ProgressContract, RunID: id, Encoding: "base64"}}
 				}
-				p.View.CollectionStatus = final
+				p.View.CollectionStatus = progressFinalStatus(current, final)
 				_ = e.saveProgressLocked(current, p)
 			}
 			e.mu.Unlock()
@@ -232,7 +232,7 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 		diagnostic = progressDiagnostic(err)
 	}
 	if final != "" {
-		status = final
+		status = progressFinalStatus(current, final)
 	}
 	changed := false
 	if err == nil {
@@ -316,9 +316,23 @@ func (e *Engine) startProgressLocked(id string, w *worker) {
 	if !w.progressEnabled || w.progressWatching || e.ctx.Err() != nil {
 		return
 	}
+	// A completed final sample belongs to that terminal Run. Service reloads
+	// must not reopen its source; a terminal Run missing that sample still gets
+	// one bounded finalization, and an explicitly resumed Run can observe again.
+	r := e.runs[id]
+	if progressTerminal(r) && r.Progress != nil && r.Progress.View.CollectionStatus == "closed" {
+		return
+	}
 	w.progressWatching = true
 	e.wait.Add(1)
 	go func() { defer e.wait.Done(); e.observeProgress(id) }()
+}
+
+func progressFinalStatus(r *runstate.Record, requested string) string {
+	if progressTerminal(r) {
+		return "closed"
+	}
+	return requested
 }
 func progressPath(r *runstate.Record) string {
 	if r.Request.ProgressFile == nil {

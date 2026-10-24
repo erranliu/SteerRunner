@@ -524,4 +524,6 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 
 新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 27 场景/37 case，总 33 场景/43 case；Controlled 23 顶层（新增 TestSRProgressFile），原有项全部保留。正式脚本自动执行 L1、完整 Controlled；建议 -MaxParallel 7 同时调度两项 L2 与五项 L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
 
+PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修改其源文件，再次换代服务；必须保持原终态快照逐字段不变，活动同伴继续更新且零额外原生输入。快速回归同时核对已收尾不重开、待收尾仍采样、停服终态 closed、活动/恢复 detached，以及未启用 Orca 通道的环境隔离。`tests/framework/progress-parallel-test.ps1` 纳入正式框架入口，验证有效窗口及四种不合格报告；合成窗口只证明核验器行为，不授予 L3 或实际并行资格。
+
 2026-10-23：远端 Orca Codex 最后消息沿现有 smoke、multirun、connection-reconnect drivers 核验公开 CLI 身份、摘要边界及重复读取时间；不新建 catalog case。`TestOrcaNativeStateLiveLifecycle` 的原 opt-in 入口记录普通通知和 query-only 的实际样本、独立消息/完成事件及原资源关闭。缺 prompt 的查询场景若真实出现，应保持未核实且零重发；若来源保留 prompt，只登记匹配路径通过。Controlled 覆盖空 prompt 连续链、标记变化、断线/重启和诊断重附着。详见[Spec](spec/orca-last-message.spec.md)、[Plan](spec/orca-last-message.plan.md)及[原验收](acceptance/execution-observability.md)。

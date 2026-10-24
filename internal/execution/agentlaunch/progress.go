@@ -6,6 +6,9 @@ import "strings"
 // belongs to the file channel; this prefix only ignores its managed directory
 // and exports the path on the execution host before launching the original agent.
 func ProgressCommand(command, run string) string {
+	if run == "" {
+		return "& { $srProgressBefore=[Environment]::GetEnvironmentVariable('STEERLINE_PROGRESS_FILE'); try { [Environment]::SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null); " + command + " } finally { [Environment]::SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$srProgressBefore) } }"
+	}
 	relative := ".steerrunner/progress/" + run + "/progress.bin"
 	lines := []string{
 		`$srProgressBefore=[Environment]::GetEnvironmentVariable('STEERLINE_PROGRESS_FILE')`,

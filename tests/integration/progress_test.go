@@ -10,6 +10,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -139,6 +140,30 @@ func TestSRProgressFile(t *testing.T) {
 	wait(ids[1], func(v contracts.ProgressFileView) bool { return v.Version == 4 })
 	if read(ids[0]).Version != 3 {
 		t.Fatal("terminal snapshot lost")
+	}
+	closed := read(ids[0])
+	if err := os.WriteFile(paths[0], []byte("written-after-finalization"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("progress-closed-restart", service.InstanceID), 0)
+	if err := waitOwnedService(service); err != nil {
+		t.Fatal(err)
+	}
+	service = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, service)
+	if err := os.WriteFile(paths[1], []byte("peer-after-closed-restart"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	wait(ids[1], func(v contracts.ProgressFileView) bool { return v.Version == 5 })
+	// The active peer proves that this replacement observer has actually run.
+	// Continue sampling beyond its first tick to reject a late terminal restart.
+	for until := time.Now().Add(time.Second); time.Now().Before(until); time.Sleep(100 * time.Millisecond) {
+		if got := read(ids[0]); !reflect.DeepEqual(got, closed) {
+			t.Fatal("service restart recollected a finalized source", closed, got)
+		}
+	}
+	if countNative(t, "turn/start") != nativeBefore {
+		t.Fatal("closed observation restart dispatched another business input")
 	}
 	calls, _ := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
 	for _, p := range paths {

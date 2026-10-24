@@ -375,8 +375,12 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		payload = canonical(p)
 	}
-	if r.Request.ProgressFile != nil && r.Request.Execution.Adapter == "orca-terminal" {
-		r.LaunchCommand = agentlaunch.ProgressCommand(r.LaunchCommand, r.ID)
+	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.ProgressFile != nil || r.LaunchCommand != "") {
+		progressRun := ""
+		if r.Request.ProgressFile != nil {
+			progressRun = r.ID
+		}
+		r.LaunchCommand = agentlaunch.ProgressCommand(r.LaunchCommand, progressRun)
 	}
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: key, CodecVersion: codec, Purpose: b.ImplementationConfigPurpose, ProjectID: repo.CommonDir, ProfileID: id, AcceptedConfigVersion: r.InputDigest}, payload)
 	if err != nil {
