@@ -2,6 +2,29 @@
 
 日期：2026-10-19。归属 [Spec](../spec/orca-remote-native.spec.md) / [Plan](../spec/orca-remote-native.plan.md)。已完成 P0 原生探针、查询修复、helper 删除及 unreported 最小修正；完整闭环、活动停止、结果阻断和上层契约验收通过（按当前 workflow v2 边界）。最终审计另修复持久结果回放的原 outcome 丢失，最新构建及补验见文末；以下历史阶段记录保留。详见首轮 [P0 实测报告](../archive/2026-10/acceptance/orca-remote-native-p0-20261019.md)及[补验报告](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)。
 
+## 2026-10-24 n308-19 真实远端 L4 最终结果
+
+最终运行时代码 `4e7efd80662fbd4d5996cfe0472450a01b76dff5` 已 rebase 到主线 `aea8abed904c1100b43efc3d5b7ce62584cedd07`。第九、十轮使用同一个 EXE，SHA256 为 `4b1a978e25364e4c1ed948c36f7c3d60c4fb707da4ad8e97390419cc9a1fce1e`，连续两轮完成下述限定范围验收。本文后续出现的 0/2、待复验及失败记录均为历史阶段，不能覆盖本节的最终结果；也不能据本节追认旧构建的失败轮次。
+
+固定材料为 `merge-h-308-code` 的 `SteerlineFlow/spec/n308-19.spec.md` 与 `SteerlineFlow/plans/n308-19.plan.md`，两轮均从 `afe67b539e787fe05ce58876d612a6edb45e25f7` 独立创建工作区、分支和原生会话，PR 目标均为 `AIRefactor`。使用原远端 Orca 1.4.223、原生 Codex、gpt-6-luna xhigh/full_access、development/2 及原业务提示；未修改、构建或部署 Orca。为保持该复跑条件，运行时及资源中的发布提示保留参考运行的原文本，与 rebase 主线新增的详细发布指引存在有意差异。
+
+| 轮次 | Run / request | Runner 核验及独立 Gitea 核验 | 最终用量 |
+| --- | --- | --- | --- |
+| 9 | `1cbe100a473cd6e23fe93adcd3bc27bd` / `l4-n30819-20261024-r9-submit` | `pr_ready`；[PR415](http://192.168.0.66:3000/zymobile/merge-h-308-code/pulls/415)，head `7fe8804471b256ff7b382017478a0bffd622cca2`，46 文件 | snapshot365，222 响应，33,535,318 tokens |
+| 10 | `11d84e6236ee7c7cac8a15371d4ccfed` / `l4-n30819-20261024-r10-submit` | `pr_ready`；[PR416](http://192.168.0.66:3000/zymobile/merge-h-308-code/pulls/416)，head `11dff4b806e2439d369cebe6c8b3a383cc84a154`，52 文件 | snapshot381，239 响应，36,654,946 tokens |
+
+两轮分别具有一个非空实现提交，父节点均为固定基线，原 Spec/Plan 与四项测试定义未改。PR 分支与对应 Run 精确匹配，均保持 open/unmerged。两个原生业务回合（implement、publish）各发送一次，唯一原 request、attempt、provider/pane 和启动摘要均核验；公开最新消息与原生正文一致，长正文按既有 1200-byte UTF8 摘要约定展示，没有替换字符。结束和最终正文由独立原 `worktree.ps`、持久原生回执及公开结果交叉核验，不以屏幕或 rollout 日志作为 final。
+
+测试来源需区分：两轮代理报告均产生于实现提交前，原报告和早期失败记录保留，未计作提交候选的当前通过。随后在各自实际远端 PR 提交头，通过原 `tools/run-managed-check.ps1` 独立复跑原四项检查 `structure.asmdef-governance`、`structure.asmdef-source`、`structure.resource-contract`、`structure.diff-check`。实际报告均为 before/after=head、clean=true、Passed/exit0，报告文件 SHA/字节数和原定义逐项核验；固定 base/head 的独立 `git diff --check` 也通过。新证据位于原工作区被忽略的 `.steerrunner/artifacts/l4-r9-postcommit-*`、`l4-r10-postcommit-*`。未手工实现、提交、push 或创建交付 PR，未手写测试通过报告。Windows 长路径设置仅限测试子进程，不改共享 Git 配置。这四项是结构检查，不证明 Unity 编译、玩法或 T92 行为。
+
+用量均 available/finalized，各含初始化 1 响应；分别 6 页和 7 页的唯一事件、求和及同版本不可变复查通过。基于真实快照、已核对官方价格及明确声明的 Standard/no-region token-only API 等价场景，独立 Decimal 复算分别为 USD0.53510436、USD0.57097996，合计 USD1.10608432；合计 tokens 为 70,190,264。实际 native tier 未知，严格策略保留 `PRICING_CONTEXT_UNKNOWN`，坏价表隔离通过。此场景不代表实际订阅、credits、工具费用或账户扣费。
+
+两轮原 Runner stop 均自动精确完成，没有人工关闭兜底；独立核验终端显式关闭，服务 not_running，原 shutdown 与离线 `verify-stopped` 均确认 resources_settled:true，范围为 orca_terminal。临时日志采集许可 inactive，自建 lease 全部 revoked。完成报告后，30 分钟 heartbeat 已 PAUSED；未归档聊天，未关闭或合并交付 PR。
+
+原始回执、原生归属、测试报告、用量分页、费用复算和停止证据保留在测试聊天工作区 `.evidence/n308-19-remote-l4/` 的 `round-9-qualification.json`、`round-10-qualification.json`、`final-report.json` 及关联文件；该目录被忽略，本文不声称原始日志已随 Git 提交。受控回归包括初始化包装的修复前 FAIL/修复后 PASS、PS5/7、停止相关回归，35 个登记 internal 包的实际成功输出及 vet exit0。过宽的完整 `go test ./...` 执行曾取消，不能记为整套通过；其自有夹具均已精确收尾。
+
+## 2026-10-23 起的历史长任务调查
+
 2026-10-23 长任务复跑尚未通过：固定 `n308-19` Spec+Plan 的首轮 Run `3d7eb7c6c611f46a3940a4b621698e52`，源码 `ca1a8a3` / EXE SHA256 `d6688642410e9e30ff5672896cfd9992ba81e5f348c6e5f29f160973ddb87474`，远端 Orca 1.4.223、Codex gpt-6-luna xhigh/full_access。原输入仅发送一次；代理在压缩后以 READY 结束，只有未提交的部分实现，没有 PR。压缩后的历史仍含初始化输入和业务输入，不能据此断言业务输入被丢弃；新启动提示明确初始化指令在首个回复后失效，属于待真机复验的修正，不能仅凭提示文本和单测宣称模型问题已解决。
 
 同轮独立 `worktree.ps` 有原主代理结束及 READY，`session.tabs.list` 的 provider 仍匹配，但本轮所需 `mainAgent`/`turnStartedAt` 缺失且状态起点仍是初始化结束；Runner 正确保留 `observation_unverified`，不借屏幕或 rollout 升级为可信 final。rollout 仅作故障调查，不接入结果路径。普通 Git 查询出现的 61 个删除在单次 `git -c core.longpaths=true status` 中全部消失，真实文件未删除，不能批量恢复或带入 PR。Runner stop 首次未确认、后续原终端仍活跃；人工对精确原 handle 清理返回 ptyKilled=true，此人工收尾不计为 Runner 停止通过。详细原始证据保留在本聊天工作区 `.evidence/n308-19-remote-l4/`；连续稳定交付计数仍为 0，30 分钟 heartbeat 继续检查。历史短场景结果不能替代本次长任务资格。
