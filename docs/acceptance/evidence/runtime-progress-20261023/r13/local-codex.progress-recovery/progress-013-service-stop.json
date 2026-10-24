@@ -1,0 +1,13 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": "progress-service-stop",
+  "data": {
+    "action_status": "pending",
+    "command_id": "8751ccf691c2640bf46b1a0a22ca5975",
+    "instance_id": "ce720ffa81dd7d01170c611a2f1e87d1",
+    "receipt_status": "accepted",
+    "run_id": null
+  },
+  "error": null
+}

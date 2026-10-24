@@ -1,0 +1,37 @@
+{
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-final",
+  "cases": 5,
+  "passed": false,
+  "windows": [
+    {
+      "scenario": "local-codex.progress-file",
+      "evidence": "C:\\srt\\b65034646261\\evidence",
+      "end": "2026-10-23T06:02:03.0651004+00:00",
+      "start": "2026-10-23T06:02:01.2759196+00:00"
+    },
+    {
+      "scenario": "local-codex.progress-multirun",
+      "evidence": "C:\\srt\\775ce2464e52\\evidence",
+      "end": "2026-10-23T06:05:05.849286+00:00",
+      "start": "2026-10-23T06:04:55.3904625+00:00"
+    },
+    {
+      "scenario": "local-codex.progress-recovery",
+      "evidence": "C:\\srt\\04886d29fac1\\evidence",
+      "end": "2026-10-23T06:05:10.7649503+00:00",
+      "start": "2026-10-23T06:05:04.0885421+00:00"
+    }
+  ],
+  "schema": "steerrunner-progress-parallel-evidence/v1",
+  "max_parallel": 2,
+  "native_writer_overlaps": [
+    {
+      "second": "local-codex.progress-recovery",
+      "seconds": 1.7607439,
+      "from": "2026-10-23T06:05:04.0885421+00:00",
+      "first": "local-codex.progress-multirun",
+      "until": "2026-10-23T06:05:05.8492860+00:00"
+    }
+  ],
+  "resource_conflicts": []
+}

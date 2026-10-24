@@ -1,0 +1,17 @@
+{
+  "checked_at": "2026-10-23T13:42:48.3523399Z",
+  "status": "complete",
+  "official_case_count": 7,
+  "l3_passed": 5,
+  "l2_passed": 2,
+  "controlled_passed": 23,
+  "l1_top_passed": 611,
+  "frozen_implementation_files": 68,
+  "changed_implementation_files": 0,
+  "native_progress_runs_settled": 6,
+  "parallel_passed": true,
+  "parallel_overlaps": 7,
+  "resource_conflicts": 0,
+  "diff_check_passed": true,
+  "historical_evidence_preserved": true
+}

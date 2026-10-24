@@ -1,0 +1,10 @@
+{
+  "archived_at": "2026-10-23T23:36:42.606505+00:00",
+  "source_commit": "5020187b50990d39d69550c830de317abf93dbc6",
+  "live_execution": false,
+  "purpose": "Controlled audit before/after; no L3 qualification",
+  "fixture_setup_panic": "pr55-audit-before.log is a new-test setup error, not the product reproduction",
+  "product_reproduction": "pr55-audit-before-corrected-fixture.log and pr55-audit-public-before/integration.log",
+  "qualification": "r16 official report is separate",
+  "manual_read_diagnostic": "capabilities-service-unavailable is an initial read without --offline; rerun with --offline succeeded; not a test case or native failure"
+}

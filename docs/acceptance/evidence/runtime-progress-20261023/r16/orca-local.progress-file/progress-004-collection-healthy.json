@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-24T00:08:12.2292684Z",
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "86bc1974ce004470f63885c7ac7deaa4",
+    "version": 2,
+    "observed_at": "2026-10-24T00:08:11.8995771Z",
+    "encoding": "base64",
+    "content_base64": "dmlvbGV0fEM6XFVzZXJzXGxtYXMxXG9yY2Fcd29ya3NwYWNlc1xTdGVlcmxpbmVUZXN0XHNyLTg2YmMxOTc0Y2UwMDQ0NzBmNjM4ODVjN2FjN2RlYWE0XC5zdGVlcnJ1bm5lclxwcm9ncmVzc1w4NmJjMTk3NGNlMDA0NDcwZjYzODg1YzdhYzdkZWFhNFxwcm9ncmVzcy5iaW4A/xE=",
+    "size_bytes": 158,
+    "sha256": "05e6a3a40212074e0354200a61f40bcba51aa0d340a2bda9a06479ccc72f6751",
+    "collection_status": "observing"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "contract": "steerrunner-progress-file/v1",
+  "run_id": "9f8f6bb78b864b7d5c4db5bd5974b4b9",
+  "version": 1,
+  "observed_at": "2026-10-23T10:43:43.6693515Z",
+  "encoding": "base64",
+  "content_base64": "c2VlZHw4YTY2YTk5NWEzYWU=",
+  "size_bytes": 17,
+  "sha256": "7fede5b1a919ff3b9ef434e9cc2281e6809f8eee7a70f3a7b283643517d8b540",
+  "collection_status": "observing"
+}

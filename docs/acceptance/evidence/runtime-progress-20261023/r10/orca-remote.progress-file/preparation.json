@@ -1,0 +1,8 @@
+{
+  "base_branch": "codex/srtest/e63e606194d4/base",
+  "root": "C:\\srt\\e63e606194d4",
+  "schema": "steerrunner-test-preparation/v1",
+  "status": "pushing-base",
+  "fixture_id": "e63e606194d4",
+  "scenario": "orca-remote.progress-file"
+}

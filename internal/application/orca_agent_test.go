@@ -38,6 +38,9 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			if (want == "codex") != (r.LaunchCommand != "") {
 				t.Fatal("Codex launch defaults leaked into another agent", r.LaunchCommand)
 			}
+			if want == "codex" && !strings.Contains(r.LaunchCommand, "SetEnvironmentVariable('STEERLINE_PROGRESS_FILE',$null)") {
+				t.Fatal("disabled progress channel inherited another Run's environment")
+			}
 			if r.InputDigest != reliable.Digest(canonical(r.Request)) {
 				t.Fatal("frozen request digest is inconsistent")
 			}

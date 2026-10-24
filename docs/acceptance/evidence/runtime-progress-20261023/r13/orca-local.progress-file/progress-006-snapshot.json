@@ -1,0 +1,100 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "f964951ec33256566ae6a5f72688d9da",
+    "version": 3,
+    "observed_at": "2026-10-23T22:01:28.5681022Z",
+    "encoding": "base64",
+    "content_base64": "Y29wcGVyfEM6XFVzZXJzXGxtYXMxXG9yY2Fcd29ya3NwYWNlc1xTdGVlcmxpbmVUZXN0XHNyLWY5NjQ5NTFlYzMzMjU2NTY2YWU2YTVmNzI2ODhkOWRhXC5zdGVlcnJ1bm5lclxwcm9ncmVzc1xmOTY0OTUxZWMzMzI1NjU2NmFlNmE1ZjcyNjg4ZDlkYVxwcm9ncmVzcy5iaW4A/xE=",
+    "size_bytes": 158,
+    "sha256": "57ce1d2bd2e8aa10fe3b89e30cf50937efc40518f2ebe662b4ff0fffdc25263d",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "b1e194aa3f6c78ddd71a18bea41c0ae3",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "27108c36e85f0ee14a09fd3438148632",
+        "action": "create_resource",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "fa1a6e3cf0a1084ad82087ac90888860",
+        "action": "create_resource",
+        "status": "confirmed",
+        "diagnostic": "Waiting for the original execution-host preparation receipt",
+        "original_diagnostic": "Original remote preparation verified; committing before first business input"
+      },
+      {
+        "operation_id": "69cf50cc34d5f7664c365a7f3b913978",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "fae853eb92d3f118ceaefc56371fe1d2",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "f964951ec33256566ae6a5f72688d9da",
+    "revision": 17,
+    "title": "Progress byte channel 85a780471ac7 0",
+    "input_digest": "de34fb981ba24a395fb750ad8c9b50dd8375333050909cd0a89014e4b949709f",
+    "resource_digest": "4c2e1395f863775023a1c0e83791cfb7d7e9c54ce2d0fd77f6cf8f893dfb7ebb",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observing",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "6f44efccc8d43d2bc13873d0c0c2a2f2fbb16e17",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "6f44efccc8d43d2bc13873d0c0c2a2f2fbb16e17",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "workspace_scope": "revision",
+      "turn_started": true,
+      "attempt_id": "91d4add4a13e80aa87ea2d59c0d22cce",
+      "generation": "e45261707f3eace43dc09af7648c38e5",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:28da9fea-ca77-48de-8319-decb62914563:term_49b10bd6-0381-4702-bec9-fb1fd87ac349:16e26517-7819-4051-8178-620a8a282c8e",
+      "turn_id": "94d2e6b22e250d9ef6c422e182695610",
+      "final_available": false,
+      "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-f964951ec33256566ae6a5f72688d9da",
+      "branch": "erranliu/sr-f964951ec33256566ae6a5f72688d9da"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-23T21:56:01.6032665Z",
+    "updated_at": "2026-10-23T22:01:25.9412128Z"
+  }
+}

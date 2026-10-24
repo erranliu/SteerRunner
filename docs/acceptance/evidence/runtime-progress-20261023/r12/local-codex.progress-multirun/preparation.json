@@ -1,0 +1,8 @@
+{
+  "fixture_id": "f2be0e63b98f",
+  "base_branch": "codex/srtest/f2be0e63b98f/base",
+  "schema": "steerrunner-test-preparation/v1",
+  "status": "ready",
+  "scenario": "local-codex.progress-multirun",
+  "root": "C:\\srt\\f2be0e63b98f"
+}

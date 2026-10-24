@@ -1,0 +1,64 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "progress-submit-1",
+  "input": {
+    "progress_file": {
+      "initial_content_base64": "c2VlZHxmODNkZTg2MTMzMzA="
+    },
+    "title": "Progress byte channel f83de8613330 1",
+    "repository": {
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "base_revision": "633ae818272605e833b47bfcfd4ae7f1d070b492",
+      "remote": "origin",
+      "base_branch": "codex/srtest/f83de8613330/base",
+      "local_path": "C:\\srt\\f83de8613330\\SteerlineTest"
+    },
+    "documents": {
+      "spec": {
+        "path": "sr-smoke/spec.md"
+      },
+      "plan": {
+        "path": "sr-smoke/plan.md"
+      }
+    },
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+      }
+    },
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "sandbox",
+        "reasoning_effort": "low",
+        "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+        "model": "gpt-6.1-sol"
+      }
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "codex/srtest/f83de8613330/base",
+      "settings": {
+        "query": {
+          "args": [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:\\srt\\f83de8613330\\bin\\query-pr.ps1",
+            "-URL",
+            "{pr_url}"
+          ],
+          "executable": "powershell.exe"
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  }
+}

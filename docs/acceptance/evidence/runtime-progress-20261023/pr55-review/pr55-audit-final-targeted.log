@@ -1,0 +1,40 @@
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+=== RUN   TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly
+--- PASS: TestSRFreezeOrcaAgent (27.57s)
+    --- PASS: TestSRFreezeOrcaAgent/agent= (6.55s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=codex (5.25s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=pi (5.15s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=dsh (5.31s)
+    --- PASS: TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly (5.31s)
+=== RUN   TestProgressClosedObservationIsNotReopened
+--- PASS: TestProgressClosedObservationIsNotReopened (0.89s)
+=== RUN   TestProgressTerminalShutdownFinishesClosed
+--- PASS: TestProgressTerminalShutdownFinishesClosed (0.83s)
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown/observing
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown/closed
+--- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown (1.62s)
+    --- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown/observing (0.84s)
+    --- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown/closed (0.78s)
+=== RUN   TestProgressTerminalPendingFinalizationStillStarts
+--- PASS: TestProgressTerminalPendingFinalizationStillStarts (1.04s)
+=== RUN   TestProgressIndependentVersionSurvivesBusinessCloneAndRestart
+--- PASS: TestProgressIndependentVersionSurvivesBusinessCloneAndRestart (0.70s)
+=== RUN   TestProgressStopBeforeInitializationHasNoInventedSnapshot
+--- PASS: TestProgressStopBeforeInitializationHasNoInventedSnapshot (0.76s)
+=== RUN   TestProgressInitializationRecoveryRetainsUnverifiedSeed
+--- PASS: TestProgressInitializationRecoveryRetainsUnverifiedSeed (0.54s)
+=== RUN   TestProgressOrcaRoutingDoesNotRequireBusinessWorker
+--- PASS: TestProgressOrcaRoutingDoesNotRequireBusinessWorker (0.56s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	37.769s
+=== RUN   TestProgressDisabledLaunchDoesNotInheritAnotherRunPath
+--- PASS: TestProgressDisabledLaunchDoesNotInheritAnotherRunPath (0.98s)
+=== RUN   TestProgressLaunchUsesActualExecutionDirectory
+--- PASS: TestProgressLaunchUsesActualExecutionDirectory (1.53s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	3.057s

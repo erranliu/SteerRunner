@@ -1,0 +1,8 @@
+{
+  "fixture_id": "628ea40f2f6b",
+  "status": "ready",
+  "scenario": "orca-remote.progress-file",
+  "base_branch": "codex/srtest/628ea40f2f6b/base",
+  "schema": "steerrunner-test-preparation/v1",
+  "root": "C:\\srt\\628ea40f2f6b"
+}

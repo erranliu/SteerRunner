@@ -1,0 +1,17 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "collection_status": "observing",
+    "content_base64": "c2lsdmVyfGM6XHNydFxjMWIwMzZkNmUyNGJcc1x3b3Jrc3BhY2VzXHZmeXVrYW5haGJyc2hvNmZ5Z2gyZWFoaDI0XC5zdGVlcnJ1bm5lclxwcm9ncmVzc1w2ZTM5ZTEzZmI5NzFiYTViM2EwN2ZjZTE3MTNjODE1N1xwcm9ncmVzcy5iaW4A/xE=",
+    "contract": "steerrunner-progress-file/v1",
+    "encoding": "base64",
+    "observed_at": "2026-10-23T21:58:36.2045643Z",
+    "run_id": "6e39e13fb971ba5b3a07fce1713c8157",
+    "sha256": "b41cf2259eb8646eedeca9d2afb8e885df810301ec36cb9ea5940be3a84f103e",
+    "size_bytes": 137,
+    "version": 4
+  },
+  "error": null
+}

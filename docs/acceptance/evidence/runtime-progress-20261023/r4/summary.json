@@ -1,0 +1,411 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "started_at": "2026-10-23T07:55:11.7029486Z",
+  "requested_levels": [
+    "L1",
+    "Controlled",
+    "L2",
+    "L3"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "terminal_extension_test_count": 29,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_driver_compile_exit": 0,
+      "terminal_extensions_passed": true,
+      "test_count": 607,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4",
+      "level": "L1",
+      "native_zero_match_guard": true,
+      "exit_code": 0,
+      "terminal_extension_exit": 0,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\framework"
+    },
+    {
+      "scenario_count": 23,
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\controlled",
+      "level": "Controlled"
+    },
+    {
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "local-codex.result-acquisition",
+      "finished_at": "2026-10-23T08:41:28.263713Z",
+      "evidence": "C:\\srt\\02b2e5d359fc\\evidence",
+      "level": "L2",
+      "manifest": "C:\\srt\\02b2e5d359fc\\manifest.json",
+      "started_at": "2026-10-23T08:35:58.280689Z",
+      "case_id": "default",
+      "error": "Live scenario failed; inspect C:\\srt\\02b2e5d359fc\\evidence/native.log",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex.result-acquisition-default-r1-fixture.json"
+    },
+    {
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "local-codex.smoke",
+      "finished_at": "2026-10-23T08:40:54.0463457Z",
+      "evidence": "C:\\srt\\4668599d2a79\\evidence",
+      "level": "L2",
+      "manifest": "C:\\srt\\4668599d2a79\\manifest.json",
+      "started_at": "2026-10-23T08:35:58.3767212Z",
+      "git_boundary": {
+        "exit_code": 0,
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex-smoke-r1-git-boundary.log"
+      },
+      "case_id": "default",
+      "error": "Live scenario failed; inspect C:\\srt\\4668599d2a79\\evidence/native.log",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex.smoke-default-r1-fixture.json"
+    },
+    {
+      "started_at": "2026-10-23T08:35:58.4323798Z",
+      "level": "L3",
+      "identity": {
+        "pid": 43696,
+        "manifest_sha256": "27b07b12084b0699a82709466470a51a88acae3896a7c860859029c4f7ba5a11",
+        "driver_sha256": "ed36a1df817baf6638dc764174c2464ffa582e3223d579cb2922304adae7d0f5",
+        "runner_sha256": "6ba0f59d7eeb01cca5edd7d73365216b9d7b46608e54a88fae7c9d00dfdcbcd9",
+        "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.progress-file",
+        "level": "L3"
+      },
+      "manifest": "C:\\srt\\08dc265f1a12\\manifest.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\08dc265f1a12\\evidence",
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex.progress-file-default-r1-fixture.json",
+      "scenario": "local-codex.progress-file",
+      "finished_at": "2026-10-23T08:39:47.4560107Z",
+      "expected_outcome": "stopped",
+      "repeat_index": 1,
+      "resources": [
+        "root:C:\\srt\\08dc265f1a12",
+        "base:codex/srtest/08dc265f1a12/base",
+        "run:12df085c6c569d7b35f464ac1fe25a9c",
+        "workspace:c:\\srt\\08dc265f1a12\\s\\workspaces\\4jmhuikgu6sl56aypm3xo4kc6e",
+        "session:01a167e8-2845-7db3-9368-b1fd279f0f0e",
+        "branch:codex/runner-12df085c6c569d7b35f464ac1fe25a9c"
+      ]
+    },
+    {
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "orca-local.progress-file",
+      "finished_at": "2026-10-23T08:41:36.8923052Z",
+      "evidence": "C:\\srt\\8ffc6693c3cc\\evidence",
+      "level": "L3",
+      "manifest": "C:\\srt\\8ffc6693c3cc\\manifest.json",
+      "started_at": "2026-10-23T08:35:58.4399896Z",
+      "case_id": "default",
+      "error": "Live scenario failed; inspect C:\\srt\\8ffc6693c3cc\\evidence/native.log",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\orca-local.progress-file-default-r1-fixture.json"
+    },
+    {
+      "repeat_index": 1,
+      "status": "failed",
+      "scenario": "orca-remote.progress-file",
+      "finished_at": "2026-10-23T08:41:59.8907436Z",
+      "evidence": "C:\\srt\\e0efde8aa705\\evidence",
+      "level": "L3",
+      "manifest": "C:\\srt\\e0efde8aa705\\manifest.json",
+      "started_at": "2026-10-23T08:35:58.5294277Z",
+      "case_id": "default",
+      "error": "Live scenario failed; inspect C:\\srt\\e0efde8aa705\\evidence/native.log",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\orca-remote.progress-file-default-r1-fixture.json"
+    },
+    {
+      "started_at": "2026-10-23T08:39:48.8272363Z",
+      "level": "L3",
+      "identity": {
+        "pid": 43636,
+        "manifest_sha256": "5815982acce0fbbcf9064faf02ac07ebe6ecb7e1f0e3b15d0e1aa08b6e1951f8",
+        "driver_sha256": "ed36a1df817baf6638dc764174c2464ffa582e3223d579cb2922304adae7d0f5",
+        "runner_sha256": "6ba0f59d7eeb01cca5edd7d73365216b9d7b46608e54a88fae7c9d00dfdcbcd9",
+        "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.progress-multirun",
+        "level": "L3"
+      },
+      "manifest": "C:\\srt\\a9eb39805fd8\\manifest.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\a9eb39805fd8\\evidence",
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex.progress-multirun-default-r1-fixture.json",
+      "scenario": "local-codex.progress-multirun",
+      "finished_at": "2026-10-23T08:43:44.7847176Z",
+      "expected_outcome": "stopped",
+      "repeat_index": 1,
+      "resources": [
+        "root:C:\\srt\\a9eb39805fd8",
+        "base:codex/srtest/a9eb39805fd8/base",
+        "run:6f37d9e84cc7eb610af5aabd53d04279",
+        "workspace:c:\\srt\\a9eb39805fd8\\s\\workspaces\\sseo6vhyvwfeoxx6oxgo4cc464",
+        "session:01a167eb-a3e5-7d52-be1d-38bca100fd59",
+        "branch:codex/runner-6f37d9e84cc7eb610af5aabd53d04279",
+        "run:d383a3a68966466cd1eee879231b992e",
+        "workspace:c:\\srt\\a9eb39805fd8\\s\\workspaces\\wyc7uhvt2fhmdr35mp4w3h6n6i",
+        "session:01a167eb-b965-7893-923b-2dc3e4860f0e",
+        "branch:codex/runner-d383a3a68966466cd1eee879231b992e"
+      ]
+    },
+    {
+      "started_at": "2026-10-23T08:40:55.4911964Z",
+      "level": "L3",
+      "identity": {
+        "pid": 50052,
+        "manifest_sha256": "6033348a00be88103e28077f43dd3d002ee0a6f0684d57c29c8356bb7d4e97e1",
+        "driver_sha256": "ed36a1df817baf6638dc764174c2464ffa582e3223d579cb2922304adae7d0f5",
+        "runner_sha256": "6ba0f59d7eeb01cca5edd7d73365216b9d7b46608e54a88fae7c9d00dfdcbcd9",
+        "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+        "source_dirty": true,
+        "pattern": "^TestSRLiveScenario$",
+        "scenario": "local-codex.progress-recovery",
+        "level": "L3"
+      },
+      "manifest": "C:\\srt\\4b7a2fecd027\\manifest.json",
+      "case_id": "default",
+      "evidence": "C:\\srt\\4b7a2fecd027\\evidence",
+      "status": "passed",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\local-codex.progress-recovery-default-r1-fixture.json",
+      "scenario": "local-codex.progress-recovery",
+      "finished_at": "2026-10-23T08:44:42.211004Z",
+      "expected_outcome": "stopped",
+      "repeat_index": 1,
+      "resources": [
+        "root:C:\\srt\\4b7a2fecd027",
+        "base:codex/srtest/4b7a2fecd027/base",
+        "run:89bc74d0929c612da9f40bc7932dfd20",
+        "workspace:c:\\srt\\4b7a2fecd027\\s\\workspaces\\a4k45ksnmxm4vqjb4ohdxc27we",
+        "session:01a167ec-927c-79b1-9101-fd66c5d3a82b",
+        "branch:codex/runner-89bc74d0929c612da9f40bc7932dfd20"
+      ]
+    }
+  ],
+  "executed_case_count": 7,
+  "passed_case_count": 3,
+  "first_pass_rate": 0.42857142857142855,
+  "max_parallel": 5,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": []
+  },
+  "availability": [
+    {
+      "scenario_id": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-recovery",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r4\\bin\\steerrunner.exe",
+  "runner_sha256": "6ba0f59d7eeb01cca5edd7d73365216b9d7b46608e54a88fae7c9d00dfdcbcd9",
+  "resource_digest": "f2d3b154771bc1928a5e2e9b535fffc74e1e4d66e3bd2024f99a3a497d088d00",
+  "source_config_digest": "566b6a727749c853efe33fe5a392cd106a48cbc993f729939586f429fd8426c5",
+  "requirements_sha256": "f610e8ebb6a462184ef55509537c335adedcacad7c02fa3da70597eb7757e60b",
+  "helper_sha256": "2205d7f1d71a2596207f6bc0b81be83ef94fde8ef0b6243811cdf9a07fce4953",
+  "configuration_sha256": "fd9c5d42c7f4d35ab44adb5321da4ca3b0c4fad66d373db8b1c715d8e8968ee8",
+  "selected_scenarios": [
+    "local-codex.result-acquisition",
+    "local-codex.smoke",
+    "local-codex.progress-file",
+    "orca-local.progress-file",
+    "orca-remote.progress-file",
+    "local-codex.progress-multirun",
+    "local-codex.progress-recovery"
+  ],
+  "repeat": 1,
+  "planned_case_count": 7,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "unavailable_case_count": 0,
+  "levels": {
+    "L2": {
+      "registered": [
+        "local-codex.result-acquisition/default",
+        "local-codex.smoke/default"
+      ],
+      "unavailable": [],
+      "requested": [
+        "local-codex.result-acquisition/default",
+        "local-codex.smoke/default"
+      ],
+      "passed": [],
+      "missing": [
+        "local-codex.result-acquisition/default",
+        "local-codex.smoke/default"
+      ],
+      "excluded": [],
+      "complete_level_passed": false,
+      "executed": [
+        "local-codex.result-acquisition/default",
+        "local-codex.smoke/default"
+      ]
+    },
+    "L3": {
+      "registered": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-active-full-access",
+        "orca-remote.service-restart/kill-active-full-access",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness",
+        "local-codex.progress-file/default",
+        "orca-local.progress-file/default",
+        "orca-remote.progress-file/default",
+        "local-codex.progress-multirun/default",
+        "local-codex.progress-recovery/default"
+      ],
+      "unavailable": [],
+      "requested": [
+        "local-codex.progress-file/default",
+        "orca-local.progress-file/default",
+        "orca-remote.progress-file/default",
+        "local-codex.progress-multirun/default",
+        "local-codex.progress-recovery/default"
+      ],
+      "passed": [
+        "local-codex.progress-file/default",
+        "local-codex.progress-multirun/default",
+        "local-codex.progress-recovery/default"
+      ],
+      "missing": [
+        "orca-local.codex/default",
+        "orca-local.pi/default",
+        "orca-local.pi-full-access/default",
+        "orca-local.dsh/default",
+        "orca-remote.smoke/default",
+        "orca-remote.full-access/default",
+        "orca-remote.caller-exit/accepted-response-lost",
+        "orca-remote.connection-reconnect/active-disconnect",
+        "orca-remote.connection-reconnect/pre-send-disconnect",
+        "orca-remote.service-restart/graceful-active",
+        "orca-remote.service-restart/kill-active",
+        "orca-remote.service-restart/graceful-active-full-access",
+        "orca-remote.service-restart/kill-active-full-access",
+        "orca-remote.service-restart/graceful-boundary",
+        "orca-remote.service-restart/kill-boundary",
+        "orca-remote.stop-revocation/active",
+        "orca-remote.stop-revocation/boundary",
+        "orca-remote.stop-revocation/unreachable",
+        "orca-remote.publication-unknown/completion-gap",
+        "orca-remote.publication-unknown/query-unavailable",
+        "local-codex.feedback/default",
+        "local-codex.audited/default",
+        "local-codex.multirun/default",
+        "environment-check.local-sandbox/complete",
+        "environment-check.local-full-access/complete",
+        "orca-remote.multirun/default",
+        "orca-local.smoke/default",
+        "environment-check.orca-local-sandbox/complete",
+        "environment-check.orca-local-full-access/complete",
+        "orca-local.mixed/default",
+        "orca-remote.initialization-stop/before-readiness",
+        "orca-remote.initialization-stop/restart-before-readiness",
+        "orca-local.progress-file/default",
+        "orca-remote.progress-file/default"
+      ],
+      "excluded": [],
+      "complete_level_passed": false,
+      "executed": [
+        "local-codex.progress-file/default",
+        "orca-local.progress-file/default",
+        "orca-remote.progress-file/default",
+        "local-codex.progress-multirun/default",
+        "local-codex.progress-recovery/default"
+      ]
+    }
+  },
+  "finished_at": "2026-10-23T08:44:42.4559435Z"
+}

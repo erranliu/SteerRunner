@@ -13,6 +13,7 @@
 | 内容工作流与接管 | [生成/对话](content-workflows.md)、[内容接管](content-takeover.md) |
 | 结果提取与 parser | [结果获取](result-acquisition.md) |
 | R2 证据与 Git 查询 | [R2 专项](run-evidence-r2.md) |
+| 运行时单文件汇报 | [PR #55 审计及当前构建验收](runtime-progress-pr55-review.md) / [主线整合验收](runtime-progress-integration.md) / [原始专项与失败历史](runtime-progress.md)；本地、Orca 本地/远端、恢复、多 Run 与实际并行分别登记 |
 | 独立配置及测试体系 | [配置](independent-configuration.md)、[测试分层](test-levels.md)、[首批稳定性](l3-execution-stability.md)；旧整轮结果不代替当前全集资格 |
 | 本机认证与环境检查 | [沙箱认证](sandbox-authentication.md)、[环境检查](environment-check.md)、[个人多机与 gh-only](personal-runner-gh-only-20261019.md) |
 | Orca 当前路径 | [连接统一](orca-local-remote.md)、[远端原生](orca-remote-native.md)、[通用 Agent](orca-generic-agent.md)；旧 helper 结果不证明新远端能力 |

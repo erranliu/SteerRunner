@@ -1,0 +1,20 @@
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/absent
+    readonly_close_test.go:55: stale card reconciliation { } readonly original terminal is not verifiably live 0 0
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/still-listed
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/truncated
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/missing-local
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/foreign-runtime
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/replacement
+=== RUN   TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/foreign-worktree
+--- FAIL: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory (0.00s)
+    --- FAIL: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/absent (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/still-listed (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/truncated (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/missing-local (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/foreign-runtime (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/replacement (0.00s)
+    --- PASS: TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory/foreign-worktree (0.00s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.048s
+FAIL

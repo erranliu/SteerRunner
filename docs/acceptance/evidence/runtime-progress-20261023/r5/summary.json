@@ -1,0 +1,192 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "started_at": "2026-10-23T08:54:48.2095940Z",
+  "requested_levels": [
+    "L1",
+    "Controlled",
+    "L2",
+    "L3"
+  ],
+  "status": "running",
+  "results": [
+    {
+      "scenario": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L2",
+      "availability": {
+        "scenario_id": "local-codex.result-acquisition",
+        "case_id": "default",
+        "level": "L2",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": {
+        "scenario_id": "local-codex.smoke",
+        "case_id": "default",
+        "level": "L2",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "local-codex.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": {
+        "scenario_id": "local-codex.progress-file",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "orca-local.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": {
+        "scenario_id": "orca-local.progress-file",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "orca-remote.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": {
+        "scenario_id": "orca-remote.progress-file",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "local-codex.progress-multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": {
+        "scenario_id": "local-codex.progress-multirun",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    },
+    {
+      "scenario": "local-codex.progress-recovery",
+      "case_id": "default",
+      "level": "L3",
+      "availability": {
+        "scenario_id": "local-codex.progress-recovery",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      },
+      "status": "queued",
+      "repeat_index": 1
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 5,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": []
+  },
+  "availability": [
+    {
+      "scenario_id": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-recovery",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r5\\bin\\steerrunner.exe",
+  "runner_sha256": "a30fa65bb5e9d00e963b8233aba4b884f5d31e01fdbfeeea066914931c43d268",
+  "resource_digest": "60dcd956b215814cc173f10aa1e118220e6d0ff72b57dbf1cbce21cf6435012c",
+  "source_config_digest": "8bc4a2f9df18df4382992f9f1d3b22dddbc36299592c5e305c824e3bda507d75",
+  "requirements_sha256": "f610e8ebb6a462184ef55509537c335adedcacad7c02fa3da70597eb7757e60b",
+  "helper_sha256": "0404c29d9a07cf5dcd7d75e581bc76318458b68bead72ef8fee989185dfa305d",
+  "configuration_sha256": "db3010a7a7b622c75b3927421f59c45847902f131f2a758ba5e885ee234b714a",
+  "selected_scenarios": [
+    "local-codex.result-acquisition",
+    "local-codex.smoke",
+    "local-codex.progress-file",
+    "orca-local.progress-file",
+    "orca-remote.progress-file",
+    "local-codex.progress-multirun",
+    "local-codex.progress-recovery"
+  ],
+  "repeat": 1,
+  "planned_case_count": 7,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete"
+}

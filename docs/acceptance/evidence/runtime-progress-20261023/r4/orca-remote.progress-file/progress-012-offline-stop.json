@@ -1,0 +1,20 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "checks": [],
+    "resources_settled": false,
+    "runs": [
+      {
+        "diagnostic": "run 4dc0dd91ce753d2559e7004cafed85ac: original Orca terminal absence is unverified: original terminal is still active",
+        "input_digest": "d9ee3e4ef098d3079dbbb39966c293b93594f13cb12543e4c57f7c6eaa145da1",
+        "resources_settled": false,
+        "run_id": "4dc0dd91ce753d2559e7004cafed85ac",
+        "stop_evidence_scope": "orca_terminal"
+      }
+    ],
+    "state_dir": "c:\\srt\\e0efde8aa705\\s"
+  },
+  "error": null
+}

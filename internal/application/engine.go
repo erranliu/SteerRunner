@@ -41,15 +41,17 @@ type Engine struct {
 	wait              sync.WaitGroup
 }
 type worker struct {
-	parserTask  b.ParserTask
-	ownedInputs map[string]bool
-	checkpoints map[string]*workflow.WorkspaceSource
-	gate        sync.Mutex         // serializes new native dispatch with committed revocation
-	queryCancel context.CancelFunc // protected by gate; only a read-only preparation scope
-	wake        chan struct{}
-	port        b.LifecyclePort
-	observer    b.LifecycleObserver
-	handle      b.StopHandle
+	progressEnabled  bool
+	progressWatching bool // guarded by Engine.mu
+	parserTask       b.ParserTask
+	ownedInputs      map[string]bool
+	checkpoints      map[string]*workflow.WorkspaceSource
+	gate             sync.Mutex         // serializes new native dispatch with committed revocation
+	queryCancel      context.CancelFunc // protected by gate; only a read-only preparation scope
+	wake             chan struct{}
+	port             b.LifecyclePort
+	observer         b.LifecycleObserver
+	handle           b.StopHandle
 }
 
 func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger, launchOwner ...func(context.Context, string) error) (*Engine, error) {
@@ -129,6 +131,8 @@ func (e *Engine) Start() {
 	}
 }
 func (e *Engine) launch(id string, w *worker) {
+	w.progressEnabled = e.runs[id].Request.ProgressFile != nil
+	e.startProgressLocked(id, w)
 	e.wait.Add(1)
 	go func() { defer e.wait.Done(); e.run(id, w) }()
 	e.signal(w)
@@ -141,6 +145,12 @@ func (e *Engine) signal(w *worker) {
 }
 func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, events ...string) error {
 	prior := e.runs[next.ID]
+	// A business operation may hold an older clone while file collection commits.
+	if prior != nil {
+		// Published progress values are immutable; the collector/preparer commits
+		// new copies. Avoid cloning the whole execution record for this field.
+		next.Progress = prior.Progress
+	}
 	var expected uint64
 	if prior != nil {
 		expected = prior.Revision
@@ -151,6 +161,9 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		return err
 	}
 	e.runs[next.ID] = next
+	if w := e.workers[next.ID]; w != nil && !progressTerminal(next) {
+		e.startProgressLocked(next.ID, w)
+	}
 	if prior == nil && e.ctx != nil {
 		_ = e.store.EnsureUsage(e.ctx, next.ID, next.CreatedAt)
 	}
@@ -408,7 +421,7 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Repository.LocalPath != "" {
 		repository = r.Request.Repository.LocalPath
 	}
-	return b.LifecycleSetup{LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
+	return b.LifecycleSetup{ProgressFile: progressPath(r), LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
 		return e.preparationQuery(r.ID, w, ctx, query)
 	}, Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
 		e.mu.Lock()

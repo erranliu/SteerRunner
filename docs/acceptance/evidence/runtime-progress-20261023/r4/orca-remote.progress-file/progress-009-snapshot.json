@@ -1,0 +1,94 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "4dc0dd91ce753d2559e7004cafed85ac",
+    "version": 4,
+    "observed_at": "2026-10-23T08:41:07.5094819Z",
+    "encoding": "base64",
+    "content_base64": "c2lsdmVyfEM6XFVzZXJzXEFkbWluaXN0cmF0b3Jcb3JjYVx3b3Jrc3BhY2VzXFN0ZWVybGluZVRlc3Rcc3ItNGRjMGRkOTFjZTc1M2QyNTU5ZTcwMDRjYWZlZDg1YWNcLnN0ZWVycnVubmVyXHByb2dyZXNzXDRkYzBkZDkxY2U3NTNkMjU1OWU3MDA0Y2FmZWQ4NWFjXHByb2dyZXNzLmJpbgD/EQ==",
+    "size_bytes": 166,
+    "sha256": "5c9ef491c61d033abbafe86f433f3ff1cce2d6bf44eb0498e517f86bf393d572",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "ff0dbe3f8e4445d71bf44e8a6fd66f7d",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "ed0e9ac7770cf9ba22d910c2ff05efd9",
+        "action": "create_resource",
+        "status": "confirmed",
+        "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+      },
+      {
+        "operation_id": "32ddcf314d8b92d6af8ccabbf676fdf4",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "acabf9d3f287919ed46bf8d686eda438",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "4dc0dd91ce753d2559e7004cafed85ac",
+    "revision": 14,
+    "title": "Progress byte channel e0efde8aa705 0",
+    "input_digest": "d9ee3e4ef098d3079dbbb39966c293b93594f13cb12543e4c57f7c6eaa145da1",
+    "resource_digest": "f2d3b154771bc1928a5e2e9b535fffc74e1e4d66e3bd2024f99a3a497d088d00",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observing",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "3dd6caef4b36b919dd6f33ce416bb2fcb2789f95",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "3dd6caef4b36b919dd6f33ce416bb2fcb2789f95",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "workspace_scope": "revision",
+      "turn_started": true,
+      "attempt_id": "768e528c58d5e2437d98d54f0296cc73",
+      "generation": "fb978a28e0253040c991dc951060ebc1",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_0d98af80-7d7a-4e90-a8db-fbf7f7878aa5:fe6b2421-91e2-4c0f-9b53-499098f31fac",
+      "turn_id": "6e91b1159fbec68d97c47b5aa51ef428",
+      "final_available": false,
+      "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-4dc0dd91ce753d2559e7004cafed85ac",
+      "branch": "erranliu/sr-4dc0dd91ce753d2559e7004cafed85ac"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-23T08:37:02.9694022Z",
+    "updated_at": "2026-10-23T08:40:38.3613554Z"
+  }
+}

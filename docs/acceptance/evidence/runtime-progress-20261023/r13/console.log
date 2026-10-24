@@ -1,0 +1,8 @@
+Running L1
+Catalog expansion, frozen reload, legacy compatibility and conflict guards passed
+Codex minimum-version checks passed (21 cases).
+Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed
+Parallel cold-cache publication waits for the shared lock and preserves complete immutable bytes.
+Framework guards and Windows PowerShell checker passed
+Running controlled integration prerequisite
+Test report: C:\Users\lmas1\.codex\worktrees\e60a\SteerRunner\.evidence\progress-acceptance-r13/summary.json

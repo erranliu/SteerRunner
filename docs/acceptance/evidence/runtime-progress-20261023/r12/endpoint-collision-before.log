@@ -1,0 +1,11 @@
+=== RUN   TestSREndpointPublicationWithDiscoveryReader
+=== RUN   TestSREndpointPublicationWithDiscoveryReader/transient-reader
+    endpoint_publication_windows_test.go:50: publication did not wait for transient discovery reader: Access is denied.
+=== RUN   TestSREndpointPublicationWithDiscoveryReader/persistent-reader
+    endpoint_publication_windows_test.go:50: publication did not wait for transient discovery reader: Access is denied.
+--- FAIL: TestSREndpointPublicationWithDiscoveryReader (0.08s)
+    --- FAIL: TestSREndpointPublicationWithDiscoveryReader/transient-reader (0.04s)
+    --- FAIL: TestSREndpointPublicationWithDiscoveryReader/persistent-reader (0.04s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/host	3.525s
+FAIL

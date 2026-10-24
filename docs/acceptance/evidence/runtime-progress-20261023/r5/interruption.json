@@ -1,0 +1,10 @@
+{
+  "schema": "steerrunner-test-interruption/v1",
+  "status": "aborted_before_controlled_and_live",
+  "reason": "Superseded Runner build lacks the confirmed Orca stop queue budget fix; L1 processes finished and cleaned before controller cancellation",
+  "controller_pid": 11984,
+  "controller_created": 134372192873232757,
+  "l1_application_passed": true,
+  "live_cases_started": 0,
+  "at": "2026-10-23T09:07:31.6288049Z"
+}

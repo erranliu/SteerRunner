@@ -1,0 +1,12 @@
+{
+  "contract": "steerrunner-progress-file/v1",
+  "run_id": "89bc74d0929c612da9f40bc7932dfd20",
+  "version": 3,
+  "observed_at": "2026-10-23T08:44:35.5033881Z",
+  "encoding": "base64",
+  "content_base64": "Y29wcGVyfGM6XHNydFw0YjdhMmZlY2QwMjdcc1x3b3Jrc3BhY2VzXGE0azQ1a3NubXhtNHZxamI0b2hkeGMyN3dlXC5zdGVlcnJ1bm5lclxwcm9ncmVzc1w4OWJjNzRkMDkyOWM2MTJkYTlmNDBiYzc5MzJkZmQyMFxwcm9ncmVzcy5iaW4A/xE=",
+  "size_bytes": 137,
+  "sha256": "f0a2e772b85189259f5ccc4381d7c1abcbdf6644148f83394438d770de39e3a7",
+  "collection_status": "unavailable",
+  "diagnostic": "file_missing"
+}

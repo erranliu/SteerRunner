@@ -1,0 +1,12 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": "progress-submit-0",
+  "data": {
+    "action_status": "pending",
+    "command_id": "098459ac49c1ba4ff1ad090160640042",
+    "receipt_status": "accepted",
+    "run_id": "c5f825b40b6f472d72b13bb02a72e94e"
+  },
+  "error": null
+}

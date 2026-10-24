@@ -1,0 +1,12 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke
+    run_test.go:803: L2 local-codex.result-acquisition run=a36e83ae74795364035894f45cf32da7 PR=https://github.com/erranliu/SteerlineTest/pull/654 merge=c595d97c5986763d8c4459d41ed233d49abf24d3
+--- PASS: TestSRLiveScenario (399.13s)
+    --- PASS: TestSRLiveScenario/local-codex.result-acquisition (399.09s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-default (22.44s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries (95.84s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke (280.79s)
+PASS

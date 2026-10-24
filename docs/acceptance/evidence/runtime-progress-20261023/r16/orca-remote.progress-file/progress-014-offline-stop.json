@@ -1,0 +1,19 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "checks": [],
+    "resources_settled": true,
+    "runs": [
+      {
+        "input_digest": "89b087c6d49a8205863d68c6d6fc7da26f4881e428fc716a0aaf20f9a3dfa096",
+        "resources_settled": true,
+        "run_id": "82ed012eff170bac14fc334e861c98e8",
+        "stop_evidence_scope": "orca_terminal"
+      }
+    ],
+    "state_dir": "c:\\srt\\5c8297bc851b\\s"
+  },
+  "error": null
+}

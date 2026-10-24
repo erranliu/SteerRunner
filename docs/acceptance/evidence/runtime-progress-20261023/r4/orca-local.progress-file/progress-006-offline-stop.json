@@ -1,0 +1,19 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "checks": [],
+    "resources_settled": false,
+    "runs": [
+      {
+        "diagnostic": "run 864900d1a3c60c9ae4ad80b1a02f10ba: original native writer absence is unverified: original terminal is still active",
+        "input_digest": "89d3c8e7489ec3ef537e6403dc07cb87a0fd07b02fdfb505388c5ab7478a75a5",
+        "resources_settled": false,
+        "run_id": "864900d1a3c60c9ae4ad80b1a02f10ba"
+      }
+    ],
+    "state_dir": "c:\\srt\\8ffc6693c3cc\\s"
+  },
+  "error": null
+}

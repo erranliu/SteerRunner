@@ -113,6 +113,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if err := contracts.DecodeStrict(input.Input, &request); err != nil {
 		return nil, err
 	}
+	if err := contracts.ValidateProgress(request); err != nil {
+		return nil, err
+	}
 	if workflow.Content(request.Workflow.ID) {
 		if err := contracts.ValidateRun(input.Input); err != nil {
 			return nil, err
@@ -372,6 +375,13 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		payload = canonical(p)
 	}
+	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.ProgressFile != nil || r.LaunchCommand != "") {
+		progressRun := ""
+		if r.Request.ProgressFile != nil {
+			progressRun = r.ID
+		}
+		r.LaunchCommand = agentlaunch.ProgressCommand(r.LaunchCommand, progressRun)
+	}
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: key, CodecVersion: codec, Purpose: b.ImplementationConfigPurpose, ProjectID: repo.CommonDir, ProfileID: id, AcceptedConfigVersion: r.InputDigest}, payload)
 	if err != nil {
 		return nil, err
@@ -520,6 +530,9 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	}
 	if r.Request.Execution.Adapter == "orca-terminal" && len(utf16.Encode([]rune(input.Prompt))) > 12000 {
 		return contracts.Fail(3, "unsupported_capability", "The rendered Orca prompt exceeds the current CLI transport limit (12000 UTF-16 units).")
+	}
+	if r.Request.ProgressFile != nil {
+		input.Prompt += "\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.\n"
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
 	if state.Kind == "execute" && state.Contract == "implementation" {

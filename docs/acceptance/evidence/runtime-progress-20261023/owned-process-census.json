@@ -1,0 +1,6 @@
+{
+  "checked_at": "2026-10-23T07:06:27.1658165Z",
+  "scope": "Read-only census of non-shell processes whose command lines contain exact r2 fixture roots; not a replacement for native stopped verification.",
+  "matched_count": 0,
+  "matches": []
+}

@@ -1,0 +1,33 @@
+=== RUN   TestProgressClosedObservationIsNotReopened
+--- FAIL: TestProgressClosedObservationIsNotReopened (0.67s)
+panic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]
+[signal 0xc0000005 code=0x0 addr=0x0 pc=0x7ff7b54dbd32]
+
+goroutine 7 [running]:
+testing.tRunner.func1.2({0x7ff7b55f9180, 0x7ff7b5d38780})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:1974 +0x239
+testing.tRunner.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:1977 +0x349
+panic({0x7ff7b55f9180?, 0x7ff7b5d38780?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/panic.go:860 +0x13a
+github.com/erranliu/SteerRunner/internal/application.TestProgressClosedObservationIsNotReopened(0x549b50fc400)
+	C:/Users/lmas1/.codex/worktrees/e60a/SteerRunner/internal/application/progress_test.go:32 +0x2b2
+testing.tRunner(0x549b50fc400, 0x7ff7b572e230)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+FAIL	github.com/erranliu/SteerRunner/internal/application	3.892s
+=== RUN   TestProgressDisabledLaunchDoesNotInheritAnotherRunPath
+    progress_test.go:28: disabled launch leaked or failed to restore inherited path exit status 1 fatal: not a git repository (or any of the parent directories): .git
+        Progress ignore unavailable
+        At line:1 char:374
+        + ... essExclude.Count -ne 1) { throw 'Progress ignore unavailable' }; [IO. ...
+        +                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            + CategoryInfo          : OperationStopped: (Progress ignore unavailable:String) [], RuntimeException
+            + FullyQualifiedErrorId : Progress ignore unavailable
+         
+        
+--- FAIL: TestProgressDisabledLaunchDoesNotInheritAnotherRunPath (1.91s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	2.788s
+FAIL

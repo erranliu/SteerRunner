@@ -1,0 +1,12 @@
+=== RUN   TestSREndpointPublicationWithDiscoveryReader
+=== RUN   TestSREndpointPublicationWithDiscoveryReader/transient-reader
+=== RUN   TestSREndpointPublicationWithDiscoveryReader/persistent-reader
+--- PASS: TestSREndpointPublicationWithDiscoveryReader (0.79s)
+    --- PASS: TestSREndpointPublicationWithDiscoveryReader/transient-reader (0.09s)
+    --- PASS: TestSREndpointPublicationWithDiscoveryReader/persistent-reader (0.70s)
+=== RUN   TestSRStartupIntent
+--- PASS: TestSRStartupIntent (0.01s)
+=== RUN   TestSRExpectedInstanceFencesReplacement
+--- PASS: TestSRExpectedInstanceFencesReplacement (0.04s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/host	4.154s

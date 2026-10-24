@@ -25,7 +25,8 @@
     "TestSRContentQuestionAndUnknown",
     "TestSRContentGenerationRecovery",
     "TestSRRunEvidenceR2",
-    "TestSRResourceCreationRecovery"
+    "TestSRResourceCreationRecovery",
+    "TestSRProgressFile"
   ],
   "scenarios": [
     "orca-local.codex",
@@ -55,7 +56,12 @@
     "environment-check.orca-local-sandbox",
     "environment-check.orca-local-full-access",
     "orca-local.mixed",
-    "orca-remote.initialization-stop"
+    "orca-remote.initialization-stop",
+    "local-codex.progress-file",
+    "orca-local.progress-file",
+    "orca-remote.progress-file",
+    "local-codex.progress-multirun",
+    "local-codex.progress-recovery"
   ],
   "focused_native_scenarios": [
     {
@@ -64,8 +70,18 @@
       "test": "TestSRContentNativeGenerationRecovery",
       "entry": "scripts/test-generation-recovery.ps1",
       "scope": "new C:/srt/cw-recovery-* state; real native Codex, no Git or PR",
-      "requires": ["explicit native executable", "controlled recovery prerequisites"],
-      "expected": ["active graceful restart", "active kill", "compatible binary takeover", "startup stop", "same original process/session/turn", "offline resource settlement"]
+      "requires": [
+        "explicit native executable",
+        "controlled recovery prerequisites"
+      ],
+      "expected": [
+        "active graceful restart",
+        "active kill",
+        "compatible binary takeover",
+        "startup stop",
+        "same original process/session/turn",
+        "offline resource settlement"
+      ]
     },
     {
       "id": "local-codex.parser-generation-recovery",
@@ -73,8 +89,15 @@
       "test": "TestSRNativeParserGenerationRecovery",
       "entry": "scripts/test-generation-recovery.ps1",
       "scope": "isolated controlled business/provider; real native parser and original owner; no real PR",
-      "requires": ["explicit native executable", "controlled recovery prerequisites"],
-      "expected": ["original parser survives graceful/kill", "offline completion adopted once", "explicit stop cancels original parser"]
+      "requires": [
+        "explicit native executable",
+        "controlled recovery prerequisites"
+      ],
+      "expected": [
+        "original parser survives graceful/kill",
+        "offline completion adopted once",
+        "explicit stop cancels original parser"
+      ]
     },
     {
       "id": "local-codex.content-generate-takeover",
@@ -82,8 +105,16 @@
       "test": "TestSRContentGenerateTakeoverNative",
       "entry": "scripts/test-foundation.ps1",
       "scope": "new C:/srt/gt-* state; one real native generate; no Git, PR or development config",
-      "requires": ["explicit native executable", "controlled content prerequisites"],
-      "expected": ["original content_result", "explicit stop and verify-stopped settlement", "same EXE offline compatible with original Run/input/request bindings", "unchanged original database"]
+      "requires": [
+        "explicit native executable",
+        "controlled content prerequisites"
+      ],
+      "expected": [
+        "original content_result",
+        "explicit stop and verify-stopped settlement",
+        "same EXE offline compatible with original Run/input/request bindings",
+        "unchanged original database"
+      ]
     },
     {
       "id": "local-codex.content-workflows",

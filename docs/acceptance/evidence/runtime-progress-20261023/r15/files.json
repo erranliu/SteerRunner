@@ -1,0 +1,77 @@
+[
+  {
+    "path": "agent-build-info.txt",
+    "bytes": 1198,
+    "sha256": "a9173b824bdb3f58ba3dcf1ff56c6e2bb246590960c9f4a6593d7d0414a96619"
+  },
+  {
+    "path": "build-source.json",
+    "bytes": 139186,
+    "sha256": "ff98d28e1803fc39d3151cf6f27664306dbbb40e440ef4acb41f4d5182f15c73"
+  },
+  {
+    "path": "console.log",
+    "bytes": 403,
+    "sha256": "5837b5049b9da5ddb451c4f2792856efa91a1c3f71cd896210de5ee0256cf18a"
+  },
+  {
+    "path": "framework-result.json",
+    "bytes": 1763,
+    "sha256": "129b0e118a6356d10acd8cdb1e878920a534a98cab52c716cf611ecb195350ae"
+  },
+  {
+    "path": "frozen-catalog.json",
+    "bytes": 11461,
+    "sha256": "27e08906f2edbecff151cff255a7c5db97ec7158c457c6ae64ef4390cd514ba2"
+  },
+  {
+    "path": "frozen-config.json",
+    "bytes": 2952,
+    "sha256": "61f6f757e6134889920f7d7db56514288b3bf728087321da6a6a4bad69ab3fdf"
+  },
+  {
+    "path": "l1-stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "l1.jsonl",
+    "bytes": 2060288,
+    "sha256": "633c2dcab65b78f17e3a79e1edd00268755da7fda4c853077dc0d79c57ef51ac"
+  },
+  {
+    "path": "original-blobs.json",
+    "bytes": 1470702,
+    "sha256": "ba5706bf92e2c866aa6f3c2753fbdf35dd1836a24eb2603a8b18d91e6fd65d88"
+  },
+  {
+    "path": "original-failures-preserved.json",
+    "bytes": 132,
+    "sha256": "2d851a2457921dec0a6979a67dd1208584c3de91c9b6633b8fc1ca0fd576a081"
+  },
+  {
+    "path": "pr55-r15-exit-proof.json",
+    "bytes": 362,
+    "sha256": "c561eb31f5b3fcec1df02371512b513c5cbbf164c3b411bd13d7da53bf5fd737"
+  },
+  {
+    "path": "pr55-r15-interruption.json",
+    "bytes": 1191,
+    "sha256": "98a1f4851bda5c49642fe44457cf635c46c394e22794618197e6018dfbf9f15b"
+  },
+  {
+    "path": "preserved-evidence.json",
+    "bytes": 346,
+    "sha256": "29eb3ad48f531d0afb6ba2a91fdd94b27c4f22b59e1007fa783019f4f1ed142d"
+  },
+  {
+    "path": "runner-build.json",
+    "bytes": 274,
+    "sha256": "a981bb8e1689e9cdae94fb392628020ee71c44e84fe43759e8028885c9e92f15"
+  },
+  {
+    "path": "summary.json",
+    "bytes": 5412,
+    "sha256": "cb175faa5c37df02ae990d0691b8903a4487b3b45733cd17d6c6e7850ba75d00"
+  }
+]

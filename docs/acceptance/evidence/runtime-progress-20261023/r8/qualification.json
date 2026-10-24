@@ -1,0 +1,5 @@
+{
+  "status": "failed_controlled_prerequisite",
+  "live_case_count": 0,
+  "note": "Diagnostic repeats are Controlled only; no L2/L3 execution in r8."
+}

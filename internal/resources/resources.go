@@ -83,6 +83,8 @@ func Capabilities() any {
 		"run_cost_estimate_schema":   json.RawMessage(Read("run-cost-estimate.schema.json")),
 		"run_pricing_policy_schema":  json.RawMessage(Read("run-pricing-policy.schema.json")),
 		"service_start_schema":       json.RawMessage(Read("service-start.schema.json")),
+		"progress_file":              ProgressCapabilities(),
+		"progress_file_schema":       json.RawMessage(Read("progress-file.schema.json")),
 		"run_evidence":               json.RawMessage(Read("run-evidence.capabilities.json")),
 		"run_evidence_schema":        json.RawMessage(Read("run-evidence.schema.json")),
 		"environment_check":          json.RawMessage(Read("environment-check.capabilities.json")),
@@ -100,7 +102,7 @@ func Capabilities() any {
 		"configuration_schemas": ConfigurationSchemas(),
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+		"commands":              []string{"progress-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
 	}

@@ -1,0 +1,8 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.progress-file
+    progress_test.go:176: CLI [progress-file --run-id e0bc31ce456df8ed6d8f09dce3aab75e]: exit status 4: &{Code:service_unavailable Message:The service query response is unavailable.}
+    progress_test.go:50: CLI [inspect --run-id e0bc31ce456df8ed6d8f09dce3aab75e]: exit status 4: &{Code:service_unavailable Message:Cannot connect to this directory's service.}
+    progress_test.go:94: service exit unverified CLI [service stop --input -]: exit status 4: &{Code:service_unavailable Message:Cannot connect to this directory's service.}
+--- FAIL: TestSRLiveScenario (32.48s)
+    --- FAIL: TestSRLiveScenario/orca-remote.progress-file (32.44s)
+FAIL

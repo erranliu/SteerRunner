@@ -1,0 +1,71 @@
+{
+  "max_parallel": 5,
+  "results": [
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\missing-field\\local-codex.progress-file",
+      "identity": {
+        "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "runner_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "driver_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "scenario": "local-codex.progress-file",
+      "resources": [
+        "local-codex.progress-file-resource"
+      ],
+      "status": "passed"
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\missing-field\\orca-local.progress-file",
+      "identity": {
+        "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "runner_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "driver_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "scenario": "orca-local.progress-file",
+      "resources": [
+        "orca-local.progress-file-resource"
+      ],
+      "status": "passed"
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\missing-field\\orca-remote.progress-file",
+      "identity": {
+        "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "runner_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "driver_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "scenario": "orca-remote.progress-file",
+      "resources": [
+        "orca-remote.progress-file-resource"
+      ],
+      "status": "passed"
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\missing-field\\local-codex.progress-multirun",
+      "identity": {
+        "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "runner_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "driver_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "scenario": "local-codex.progress-multirun",
+      "resources": [
+        "local-codex.progress-multirun-resource"
+      ],
+      "status": "passed"
+    },
+    {
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\missing-field\\local-codex.progress-recovery",
+      "identity": {
+        "source_commit": "cccccccccccccccccccccccccccccccccccccccc",
+        "runner_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "driver_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "scenario": "local-codex.progress-recovery",
+      "resources": [
+        "local-codex.progress-recovery-resource"
+      ],
+      "status": "passed"
+    }
+  ],
+  "status": "passed"
+}

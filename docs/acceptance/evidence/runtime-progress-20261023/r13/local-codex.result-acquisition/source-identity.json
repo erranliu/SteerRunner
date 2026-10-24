@@ -1,0 +1,11 @@
+{
+  "pid": 32632,
+  "manifest_sha256": "0B34E8AF84526C6BC191A8FE55889F374AEACDF5413BDD429F069C6E4F71A34B",
+  "driver_sha256": "D8C48171C4E731A32762737098B250CBFFFAC300AFD635B7CFA6E034626C1EB2",
+  "runner_sha256": "1014c868c4e6865ec7412aae3151586ecea322cb7332e2ca217fd89895b15f3a",
+  "source_commit": "93c6cc358f0ab13422f9de43a457d6171f290c77",
+  "source_dirty": true,
+  "pattern": "^TestSRLiveScenario$",
+  "scenario": "local-codex.result-acquisition",
+  "level": "L2"
+}

@@ -1,0 +1,24 @@
+=== RUN   TestProgressClosedObservationIsNotReopened
+    progress_test.go:36: service restart reopened an already finalized observation
+--- FAIL: TestProgressClosedObservationIsNotReopened (1.14s)
+=== RUN   TestProgressTerminalShutdownFinishesClosed
+    progress_test.go:50: passive shutdown relabeled a terminal Run as detached
+--- FAIL: TestProgressTerminalShutdownFinishesClosed (0.83s)
+=== RUN   TestProgressTerminalPendingFinalizationStillStarts
+--- PASS: TestProgressTerminalPendingFinalizationStillStarts (1.24s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	5.382s
+=== RUN   TestProgressDisabledLaunchDoesNotInheritAnotherRunPath
+    progress_test.go:28: disabled launch leaked or failed to restore inherited path exit status 1 fatal: not a git repository (or any of the parent directories): .git
+        Progress ignore unavailable
+        At line:1 char:374
+        + ... essExclude.Count -ne 1) { throw 'Progress ignore unavailable' }; [IO. ...
+        +                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            + CategoryInfo          : OperationStopped: (Progress ignore unavailable:String) [], RuntimeException
+            + FullyQualifiedErrorId : Progress ignore unavailable
+         
+        
+--- FAIL: TestProgressDisabledLaunchDoesNotInheritAnotherRunPath (1.39s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	1.913s
+FAIL

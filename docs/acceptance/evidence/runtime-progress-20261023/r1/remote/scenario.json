@@ -1,0 +1,50 @@
+{
+  "runs": [
+    {
+      "operations": null,
+      "run_id": "",
+      "revision": 0,
+      "title": "",
+      "input_digest": "",
+      "resource_digest": "",
+      "workflow": {
+        "id": "",
+        "version": 0
+      },
+      "step": "",
+      "status": "",
+      "phase": "",
+      "new_inputs_allowed": false,
+      "resume_required": false,
+      "materials": null,
+      "execution": {
+        "turn_started": false,
+        "attempt_id": "",
+        "generation": "",
+        "backend": "",
+        "protocol": "",
+        "final_available": false,
+        "workspace": "",
+        "branch": ""
+      },
+      "controls": {
+        "can_message": false,
+        "can_interrupt": false,
+        "can_close": false,
+        "can_reply": false,
+        "can_resume": false,
+        "can_stop": false
+      },
+      "created_at": "0001-01-01T00:00:00Z",
+      "updated_at": "0001-01-01T00:00:00Z"
+    }
+  ],
+  "scenario": "orca-remote.progress-file",
+  "level": "L3",
+  "stage": "submit",
+  "run_id": "e0bc31ce456df8ed6d8f09dce3aab75e",
+  "run_stopped": false,
+  "service_stopped": false,
+  "passed": false,
+  "progress_verified": false
+}

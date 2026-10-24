@@ -41,9 +41,7 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 	if candidate.Done {
 		return false
 	}
-	if r.PreparationDeadline.IsZero() {
-		r.PreparationDeadline = time.Now().UTC().Add(3 * time.Minute)
-	}
+	ensurePreparationDeadline(r, time.Now().UTC())
 	if time.Now().After(r.PreparationDeadline) && candidate.Action != b.LifecycleStartTurn && candidate.Action != b.LifecycleSubmitInput {
 		e.block(id, "preparation_deadline", errors.New("The original preparation budget is exhausted"), false)
 		return false
@@ -72,4 +70,17 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 		return false
 	}
 	return e.invoke(id, w, p, i, false)
+}
+
+// The original stage deadline includes cold workspace/control/helper setup and
+// shared CLI queueing. Never renew it during polling, replay or service reload.
+func ensurePreparationDeadline(r *runstate.Record, now time.Time) {
+	if !r.PreparationDeadline.IsZero() {
+		return
+	}
+	budget := 3 * time.Minute
+	if r.Request.Execution.Adapter == "orca-terminal" {
+		budget = 6 * time.Minute
+	}
+	r.PreparationDeadline = now.Add(budget)
 }

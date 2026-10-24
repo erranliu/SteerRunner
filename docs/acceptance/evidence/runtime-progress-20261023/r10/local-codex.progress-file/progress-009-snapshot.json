@@ -1,0 +1,90 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "85371ab1df4a24c78a354848f33141e6",
+    "version": 4,
+    "observed_at": "2026-10-23T12:39:09.1209962Z",
+    "encoding": "base64",
+    "content_base64": "c2lsdmVyfGM6XHNydFw4M2ZlMjJjMDAwMDVcc1x3b3Jrc3BhY2VzXDdrd2V4cmRqbG5tcXh1aXhyNGd6N2U3d3B5XC5zdGVlcnJ1bm5lclxwcm9ncmVzc1w4NTM3MWFiMWRmNGEyNGM3OGEzNTQ4NDhmMzMxNDFlNlxwcm9ncmVzcy5iaW4A/xE=",
+    "size_bytes": 137,
+    "sha256": "60c42231cc394e906864b7c20111f6103cb5b5fb67fb4e46d13e1331646f9a24",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "a00849fbe92980e6e1e2c3f380ec6914",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "918e74bc41c7cdf4e97d63754392886f",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "0c010b2133bddce2c070978d21859a14",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "85371ab1df4a24c78a354848f33141e6",
+    "revision": 11,
+    "title": "Progress byte channel 83fe22c00005 0",
+    "input_digest": "a7b7d7228f52d597f9e9108dafafe333f8ff700d101edffdda125e7bdf37449e",
+    "resource_digest": "8171b167b01ce7e498a49460ff2e2390512411d282d7bd08c6f04bf325cc0340",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observing",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "33d4976becbd34ab84ef767f0592570de526fad6",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "33d4976becbd34ab84ef767f0592570de526fad6",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "requested_model": "gpt-6.1-sol",
+      "requested_reasoning_effort": "low",
+      "workspace_scope": "working_tree",
+      "turn_started": true,
+      "attempt_id": "eb7a8ff423e879efe0f96df350515826",
+      "generation": "92d8762a872f73665f8661d1842bbc4b",
+      "backend": "local",
+      "protocol": "local_codex_app_server_v1",
+      "session_id": "01a168c3-5047-7980-ae68-3602f58d740d",
+      "turn_id": "01a168c3-6e14-7642-bdcb-3aa4381510b4",
+      "final_available": false,
+      "workspace": "c:\\srt\\83fe22c00005\\s\\workspaces\\7kwexrdjlnmqxuixr4gz7e7wpy",
+      "branch": "codex/runner-85371ab1df4a24c78a354848f33141e6"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-23T12:36:01.6758805Z",
+    "updated_at": "2026-10-23T12:36:41.1275392Z"
+  }
+}

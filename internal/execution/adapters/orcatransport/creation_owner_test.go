@@ -65,6 +65,16 @@ func creationCount(f *fakeHost, name string) int {
 }
 
 func TestCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T) {
+	testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t, false)
+}
+
+// Reproduces a real Orca bare-worktree response without a startup handle:
+// the owner finishes after its caller detached, before terminal preparation.
+func TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt(t *testing.T) {
+	testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t, true)
+}
+
+func testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T, missingHandle bool) {
 	for _, environment := range []string{"", "paired-worker"} {
 		t.Run(environment, func(t *testing.T) {
 			l, f, s, host := ownedCreationFixture(t, environment)
@@ -73,6 +83,16 @@ func TestCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T) {
 			host.output = func(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
 				raw, err := f.OutputCommand(ctx, c)
 				if c.Args[0] == "worktree" && c.Args[1] == "create" {
+					if missingHandle {
+						var envelope map[string]json.RawMessage
+						var result map[string]json.RawMessage
+						_ = json.Unmarshal(raw, &envelope)
+						_ = json.Unmarshal(envelope["result"], &result)
+						delete(result, "agentTerminalHandle")
+						delete(result, "startupTerminal")
+						envelope["result"], _ = json.Marshal(result)
+						raw, _ = json.Marshal(envelope)
+					}
 					close(entered) // The effect happened before its response was delivered.
 					select {
 					case <-release:

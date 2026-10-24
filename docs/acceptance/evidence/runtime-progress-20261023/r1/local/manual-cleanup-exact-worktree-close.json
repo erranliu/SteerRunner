@@ -1,0 +1,17 @@
+{
+  "output": [
+    "{",
+    "  \"id\": \"f8c4ea40-810a-415a-a20b-0a78e344f219\",",
+    "  \"ok\": true,",
+    "  \"result\": {",
+    "    \"closed\": 1,",
+    "    \"stopped\": 1,",
+    "    \"retiredSurfaces\": true",
+    "  },",
+    "  \"_meta\": {",
+    "    \"runtimeId\": \"28da9fea-ca77-48de-8319-decb62914563\"",
+    "  }",
+    "}"
+  ],
+  "exit_code": 0
+}

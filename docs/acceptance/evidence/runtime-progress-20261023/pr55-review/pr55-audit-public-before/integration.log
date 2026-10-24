@@ -1,0 +1,5 @@
+=== RUN   TestSRProgressFile
+    progress_test.go:162: service restart recollected a finalized source {steerrunner-progress-file/v1 c4ba7e75a07e88fff2b96537ac3d0a2f 3 2026-10-23 23:27:28.6317967 +0000 UTC base64 0x3a2fa447eba0 14 1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8 closed file_missing} {steerrunner-progress-file/v1 c4ba7e75a07e88fff2b96537ac3d0a2f 4 2026-10-23 23:27:33.2552304 +0000 UTC base64 0x3a2fa470d730 26 ed8cd2dc2bcfc9e25b0961603b526e284ca0c05b91140791787a38786519a0cd observing }
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3652039838
+--- FAIL: TestSRProgressFile (60.07s)
+FAIL

@@ -1,0 +1,42 @@
+[
+  {
+    "path": "frozen-catalog.json",
+    "bytes": 11461,
+    "sha256": "27e08906f2edbecff151cff255a7c5db97ec7158c457c6ae64ef4390cd514ba2"
+  },
+  {
+    "path": "frozen-config.json",
+    "bytes": 2959,
+    "sha256": "db3010a7a7b622c75b3927421f59c45847902f131f2a758ba5e885ee234b714a"
+  },
+  {
+    "path": "interruption.json",
+    "bytes": 434,
+    "sha256": "5ad38291e61e9dbfc620da42dde8f53b81dd961e567f6229a5f12cb47dc74860"
+  },
+  {
+    "path": "l1-stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "l1.jsonl",
+    "bytes": 2082849,
+    "sha256": "07e95022d5f455c58d5edc53babf4ef6272dfa8266cbb2d3d39c6296a3311791"
+  },
+  {
+    "path": "progress-stop-obsolete-r5.log",
+    "bytes": 88,
+    "sha256": "c4c95d5cacc4393b728f0fd8f9c078baf4409a26fb7ba4c5f2fd84e92ce28771"
+  },
+  {
+    "path": "runner-build.json",
+    "bytes": 274,
+    "sha256": "1140f1c0842867d22c036f03cbf550f3937cbe88c9d5a180a60960ca15363e7f"
+  },
+  {
+    "path": "summary.json",
+    "bytes": 5411,
+    "sha256": "5478750e2e5168b78d698e7233a746880f27421b9cf2c666064691979951fc6a"
+  }
+]

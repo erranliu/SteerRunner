@@ -1,0 +1,12 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-default
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries
+=== RUN   TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke
+    run_test.go:630: original execution needs intervention: status=blocked phase=result_committed diagnostic=依据此前工具输出，提交 8b84ce0b7775f2bc0d171e3b42e197280f734be4 已推送至 origin/codex/runner-633adaeaec5f7ef5fe0c2d5b5cff7478，push 退出码为 0；目标 base 为 codex/srtest/02b2e5d359fc/base。创建前 PR 查询为空，随后创建 PR 的命令被策略拒绝，未执行且未重试，因此缺少实际 PR URL。新提供的 source facts 标记 native_succeeded=true、final_verified=true、failure 为空，与此前创建失败记录存在冲突，且未提供 PR URL 或创建成功证据。本次仅整理已有结果，未重新发布。
+--- FAIL: TestSRLiveScenario (307.66s)
+    --- FAIL: TestSRLiveScenario/local-codex.result-acquisition (307.62s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-default (22.58s)
+        --- PASS: TestSRLiveScenario/local-codex.result-acquisition/parser-boundaries (54.76s)
+        --- FAIL: TestSRLiveScenario/local-codex.result-acquisition/workflow-smoke (230.27s)
+FAIL

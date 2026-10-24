@@ -1,0 +1,117 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v3",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\missing-field",
+  "max_parallel": 5,
+  "cases": 5,
+  "runner_sha256": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "driver_sha256": [
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ],
+  "resource_conflicts": [],
+  "windows": [
+    {
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "scenario": "orca-local.progress-file",
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_samples": 0,
+      "collection_healthy_at_end": true,
+      "run_ids": [
+        "orca-local.progress-file"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\missing-field\\orca-local.progress-file\\progress-001-observation-window.json"
+    },
+    {
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "scenario": "orca-remote.progress-file",
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_samples": 0,
+      "collection_healthy_at_end": true,
+      "run_ids": [
+        "orca-remote.progress-file"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\missing-field\\orca-remote.progress-file\\progress-001-observation-window.json"
+    },
+    {
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "scenario": "local-codex.progress-multirun",
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_samples": 0,
+      "collection_healthy_at_end": true,
+      "run_ids": [
+        "local-codex.progress-multirun"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\missing-field\\local-codex.progress-multirun\\progress-001-observation-window.json"
+    },
+    {
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "scenario": "local-codex.progress-recovery",
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_samples": 0,
+      "collection_healthy_at_end": true,
+      "run_ids": [
+        "local-codex.progress-recovery"
+      ],
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\missing-field\\local-codex.progress-recovery\\progress-001-observation-window.json"
+    }
+  ],
+  "native_observation_overlaps": [
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "orca-local.progress-file",
+      "second": "orca-remote.progress-file",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    },
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "orca-local.progress-file",
+      "second": "local-codex.progress-multirun",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    },
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "orca-local.progress-file",
+      "second": "local-codex.progress-recovery",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    },
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "orca-remote.progress-file",
+      "second": "local-codex.progress-multirun",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    },
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "orca-remote.progress-file",
+      "second": "local-codex.progress-recovery",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    },
+    {
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "first": "local-codex.progress-multirun",
+      "second": "local-codex.progress-recovery",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "seconds": 125.0125541
+    }
+  ],
+  "issues": [
+    "Native observation did not prove bounded collection recovery: local-codex.progress-file",
+    "No actual native observation overlap with another passing case: local-codex.progress-file"
+  ],
+  "passed": false
+}
+Exception: C:\Users\lmas1\.codex\worktrees\e60a\SteerRunner\scripts\verify-progress-parallel.ps1:56
+Line |
+  56 |  … t.passed) { throw 'Current build real parallel qualification failed;  …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Current build real parallel qualification failed; inspect progress-parallel-verification.json

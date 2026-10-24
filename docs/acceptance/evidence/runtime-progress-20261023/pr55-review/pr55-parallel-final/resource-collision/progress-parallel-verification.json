@@ -1,0 +1,172 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v3",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision",
+  "max_parallel": 5,
+  "cases": 5,
+  "runner_sha256": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "driver_sha256": [
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  ],
+  "resource_conflicts": [
+    {
+      "resource": "shared-resource",
+      "second": "orca-local.progress-file",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "resource": "shared-resource",
+      "second": "orca-remote.progress-file",
+      "first": "orca-local.progress-file"
+    },
+    {
+      "resource": "shared-resource",
+      "second": "local-codex.progress-multirun",
+      "first": "orca-remote.progress-file"
+    },
+    {
+      "resource": "shared-resource",
+      "second": "local-codex.progress-recovery",
+      "first": "local-codex.progress-multirun"
+    }
+  ],
+  "windows": [
+    {
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "collection_gap_samples": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision\\local-codex.progress-file\\progress-001-observation-window.json",
+      "scenario": "local-codex.progress-file",
+      "run_ids": [
+        "local-codex.progress-file"
+      ],
+      "collection_healthy_at_end": true
+    },
+    {
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "collection_gap_samples": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision\\orca-local.progress-file\\progress-001-observation-window.json",
+      "scenario": "orca-local.progress-file",
+      "run_ids": [
+        "orca-local.progress-file"
+      ],
+      "collection_healthy_at_end": true
+    },
+    {
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "collection_gap_samples": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision\\orca-remote.progress-file\\progress-001-observation-window.json",
+      "scenario": "orca-remote.progress-file",
+      "run_ids": [
+        "orca-remote.progress-file"
+      ],
+      "collection_healthy_at_end": true
+    },
+    {
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "collection_gap_samples": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision\\local-codex.progress-multirun\\progress-001-observation-window.json",
+      "scenario": "local-codex.progress-multirun",
+      "run_ids": [
+        "local-codex.progress-multirun"
+      ],
+      "collection_healthy_at_end": true
+    },
+    {
+      "end": "2026-10-24T07:23:51.5662131+08:00",
+      "collection_gap_budget_seconds": 20,
+      "start": "2026-10-24T07:21:46.553659+08:00",
+      "collection_gap_samples": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\pr55-parallel-final\\resource-collision\\local-codex.progress-recovery\\progress-001-observation-window.json",
+      "scenario": "local-codex.progress-recovery",
+      "run_ids": [
+        "local-codex.progress-recovery"
+      ],
+      "collection_healthy_at_end": true
+    }
+  ],
+  "native_observation_overlaps": [
+    {
+      "seconds": 125.0125541,
+      "second": "orca-local.progress-file",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "orca-remote.progress-file",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-multirun",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-recovery",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "local-codex.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "orca-remote.progress-file",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "orca-local.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-multirun",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "orca-local.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-recovery",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "orca-local.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-multirun",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "orca-remote.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-recovery",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "orca-remote.progress-file"
+    },
+    {
+      "seconds": 125.0125541,
+      "second": "local-codex.progress-recovery",
+      "until": "2026-10-23T23:23:51.5662131+00:00",
+      "from": "2026-10-23T23:21:46.5536590+00:00",
+      "first": "local-codex.progress-multirun"
+    }
+  ],
+  "issues": [
+    "Native fixture resources collided"
+  ],
+  "passed": false
+}

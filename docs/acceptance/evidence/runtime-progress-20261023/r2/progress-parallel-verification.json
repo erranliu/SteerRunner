@@ -1,0 +1,35 @@
+{
+  "resource_conflicts": [],
+  "windows": [
+    {
+      "end": "2026-10-23T06:51:51.0681768+00:00",
+      "start": "2026-10-23T06:51:48.7069798+00:00",
+      "evidence": "C:\\srt\\68faf4c4bd4d\\evidence",
+      "scenario": "local-codex.progress-file"
+    },
+    {
+      "end": "2026-10-23T06:54:12.9131+00:00",
+      "start": "2026-10-23T06:54:10.1930431+00:00",
+      "evidence": "C:\\srt\\0eac72c69462\\evidence",
+      "scenario": "orca-remote.progress-file"
+    },
+    {
+      "end": "2026-10-23T06:56:13.1481396+00:00",
+      "start": "2026-10-23T06:56:00.8949703+00:00",
+      "evidence": "C:\\srt\\f83de8613330\\evidence",
+      "scenario": "local-codex.progress-multirun"
+    },
+    {
+      "end": "2026-10-23T06:57:38.2493729+00:00",
+      "start": "2026-10-23T06:57:31.6348022+00:00",
+      "evidence": "C:\\srt\\0852bf5b2739\\evidence",
+      "scenario": "local-codex.progress-recovery"
+    }
+  ],
+  "passed": false,
+  "max_parallel": 2,
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r2",
+  "schema": "steerrunner-progress-parallel-evidence/v1",
+  "native_writer_overlaps": [],
+  "cases": 6
+}

@@ -1,0 +1,34 @@
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+=== RUN   TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly
+--- PASS: TestSRFreezeOrcaAgent (28.15s)
+    --- PASS: TestSRFreezeOrcaAgent/agent= (6.46s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=codex (5.11s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=pi (5.09s)
+    --- PASS: TestSRFreezeOrcaAgent/agent=dsh (5.50s)
+    --- PASS: TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly (5.99s)
+=== RUN   TestProgressClosedObservationIsNotReopened
+--- PASS: TestProgressClosedObservationIsNotReopened (0.53s)
+=== RUN   TestProgressTerminalShutdownFinishesClosed
+--- PASS: TestProgressTerminalShutdownFinishesClosed (0.71s)
+=== RUN   TestProgressTerminalPendingFinalizationStillStarts
+--- PASS: TestProgressTerminalPendingFinalizationStillStarts (1.33s)
+=== RUN   TestProgressIndependentVersionSurvivesBusinessCloneAndRestart
+--- PASS: TestProgressIndependentVersionSurvivesBusinessCloneAndRestart (0.56s)
+=== RUN   TestProgressStopBeforeInitializationHasNoInventedSnapshot
+--- PASS: TestProgressStopBeforeInitializationHasNoInventedSnapshot (0.51s)
+=== RUN   TestProgressInitializationRecoveryRetainsUnverifiedSeed
+--- PASS: TestProgressInitializationRecoveryRetainsUnverifiedSeed (0.60s)
+=== RUN   TestProgressOrcaRoutingDoesNotRequireBusinessWorker
+--- PASS: TestProgressOrcaRoutingDoesNotRequireBusinessWorker (0.53s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	36.268s
+=== RUN   TestProgressDisabledLaunchDoesNotInheritAnotherRunPath
+--- PASS: TestProgressDisabledLaunchDoesNotInheritAnotherRunPath (1.12s)
+=== RUN   TestProgressLaunchUsesActualExecutionDirectory
+--- PASS: TestProgressLaunchUsesActualExecutionDirectory (1.72s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/agentlaunch	3.761s
