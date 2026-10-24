@@ -173,3 +173,39 @@ func TestUsageTeaWrappedCodexInitialization(t *testing.T) {
 		t.Fatal("unverified full wrapper digest attributed")
 	}
 }
+
+func TestUsageProgressAndShellWrappedInitialization(t *testing.T) {
+	start := time.Date(2026, 10, 24, 0, 0, 0, 0, time.UTC)
+	run := strings.Repeat("a", 32)
+	c := &agentlaunch.Config{Executable: "C:/native/codex.exe", Model: "chosen", AccessMode: "full_access", RepositoryURL: "http://gitea/owner/repo.git"}
+	inner, err := c.Command("codex")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, progressRun := range []string{"", run} {
+		launch := agentlaunch.ProgressCommand(inner, progressRun)
+		proof := UsageInitialization{LaunchCommand: launch, CreatedAt: start, RunID: run}
+		state := State{LaunchAccepted: true, LaunchConfirmed: true, LaunchDigest: digest([]byte(launch)), Turns: []Turn{{Accepted: true, Native: NativeProof{BaseRootAt: start.Add(time.Minute).UnixMilli()}}}}
+		if got := usageInitialization(state, proof); got == nil || got.WireSHA256 != parsers.TextHash(codex.NativeReadinessPrompt) {
+			t.Fatal("progress launch lost initialization", progressRun, got)
+		}
+		for _, bad := range []string{launch + "; other", strings.Replace(launch, "$srProgressBefore", "$other", 1)} {
+			p, s := proof, state
+			p.LaunchCommand, s.LaunchDigest = bad, digest([]byte(bad))
+			if usageInitialization(s, p) != nil {
+				t.Fatal("modified progress wrapper accepted")
+			}
+		}
+		if progressRun != "" {
+			proof.RunID = strings.Repeat("b", 32)
+			if usageInitialization(state, proof) != nil {
+				t.Fatal("foreign run initialized")
+			}
+		}
+		proof.RunID = run
+		state.LaunchDigest = "different"
+		if usageInitialization(state, proof) != nil {
+			t.Fatal("full digest bypassed")
+		}
+	}
+}

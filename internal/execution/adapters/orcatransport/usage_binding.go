@@ -28,6 +28,7 @@ const usageReadyPrompt = "Initialize this agent session. Reply READY only. Do no
 type UsageInitialization struct {
 	LaunchCommand string
 	CreatedAt     time.Time
+	RunID         string
 }
 
 func usageWirePrompt(turn *Turn, agent string) string {
@@ -46,6 +47,9 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 	}
 	prompt := usageReadyPrompt
 	launch := proof.LaunchCommand
+	if inner, ok := agentlaunch.UnwrapProgressCommand(launch, proof.RunID); ok {
+		launch = inner
+	}
 	if inner, ok := agentlaunch.UnwrapTeaPathLaunch(launch); ok {
 		launch = inner
 	}
@@ -53,7 +57,9 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 	if !plain && usagePlainLaunch.MatchString(launch) && strings.HasSuffix(launch, " '"+codex.NativeReadinessPrompt+"'") {
 		prompt, plain = codex.NativeReadinessPrompt, true
 	}
-	if !plain && (len(profiles) != 1 || !usagePreparedInitialization(state, proof, profiles[0])) {
+	preparedProof := proof
+	preparedProof.LaunchCommand = launch
+	if !plain && (len(profiles) != 1 || !usagePreparedInitialization(state, preparedProof, profiles[0])) {
 		return nil
 	}
 	var until int64
@@ -252,7 +258,9 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 		binding.Commands = append(binding.Commands, c)
 	}
 	if binding.Agent == "codex" && len(initialization) == 1 {
-		if command := usageInitialization(state, initialization[0], p); command != nil {
+		proof := initialization[0]
+		proof.RunID = binding.RunID
+		if command := usageInitialization(state, proof, p); command != nil {
 			binding.Commands = append(binding.Commands, *command)
 		}
 	}

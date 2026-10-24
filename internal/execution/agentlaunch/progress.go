@@ -19,3 +19,19 @@ func ProgressCommand(command, run string) string {
 	}
 	return "& { " + strings.Join(lines, "; ") + " }"
 }
+
+// UnwrapProgressCommand recognizes only the compiler's complete fixed wrapper
+// for this run, or the disabled wrapper. The caller verifies the full launch
+// digest before interpreting the original command inside it.
+func UnwrapProgressCommand(command, run string) (string, bool) {
+	const marker = "\x00steerrunner-progress-command\x00"
+	for _, candidate := range []string{run, ""} {
+		prefix, suffix, _ := strings.Cut(ProgressCommand(marker, candidate), marker)
+		if !strings.HasPrefix(command, prefix) || !strings.HasSuffix(command, suffix) || len(command) < len(prefix)+len(suffix) {
+			continue
+		}
+		inner := command[len(prefix) : len(command)-len(suffix)]
+		return inner, ProgressCommand(inner, candidate) == command
+	}
+	return "", false
+}
