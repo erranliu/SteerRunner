@@ -1,0 +1,11 @@
+{
+  "collection_gap_budget_seconds": 20,
+  "collection_gap_samples": 0,
+  "run_ids": [
+    "orca-remote.progress-file"
+  ],
+  "collection_healthy_at_end": true,
+  "start": "2026-10-23T23:25:17.8168805+00:00",
+  "contract": "steerrunner-progress-observation-window/v2",
+  "end": "2026-10-23T23:27:22.8288884+00:00"
+}

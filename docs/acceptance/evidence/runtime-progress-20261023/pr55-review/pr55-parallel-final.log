@@ -1,0 +1,1 @@
+Progress parallel verifier preserves missing-field failures and rejects resource collisions.

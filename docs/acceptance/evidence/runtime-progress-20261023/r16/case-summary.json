@@ -1,0 +1,76 @@
+[
+  {
+    "scenario": "local-codex.result-acquisition",
+    "level": "L2",
+    "status": "passed",
+    "fixture": "C:\\srt\\51953062360f",
+    "duration_seconds": 338.756169,
+    "run_id": "0818d1bc549b3389951ef83e8e0e5cf3",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/670"
+  },
+  {
+    "scenario": "local-codex.smoke",
+    "level": "L2",
+    "status": "passed",
+    "fixture": "C:\\srt\\62b48019d10b",
+    "duration_seconds": 316.136577,
+    "run_id": "f3c8112f63d7dc11786043c19e7f1167",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/669"
+  },
+  {
+    "scenario": "local-codex.progress-file",
+    "level": "L3",
+    "status": "passed",
+    "fixture": "C:\\srt\\a9706dd57842",
+    "duration_seconds": 233.302409,
+    "run_id": "18cba1242f6f966b82417398e9d13398",
+    "run_ids": [
+      "18cba1242f6f966b82417398e9d13398"
+    ]
+  },
+  {
+    "scenario": "orca-local.progress-file",
+    "level": "L3",
+    "status": "passed",
+    "fixture": "C:\\srt\\9e970fbbb65a",
+    "duration_seconds": 583.407309,
+    "run_id": "86bc1974ce004470f63885c7ac7deaa4",
+    "run_ids": [
+      "86bc1974ce004470f63885c7ac7deaa4"
+    ]
+  },
+  {
+    "scenario": "orca-remote.progress-file",
+    "level": "L3",
+    "status": "passed",
+    "fixture": "C:\\srt\\5c8297bc851b",
+    "duration_seconds": 426.659901,
+    "run_id": "82ed012eff170bac14fc334e861c98e8",
+    "run_ids": [
+      "82ed012eff170bac14fc334e861c98e8"
+    ]
+  },
+  {
+    "scenario": "local-codex.progress-multirun",
+    "level": "L3",
+    "status": "passed",
+    "fixture": "C:\\srt\\ad68e93dd130",
+    "duration_seconds": 245.855272,
+    "run_id": "b3a293c299120b964313b1c417c1cdaa",
+    "run_ids": [
+      "b3a293c299120b964313b1c417c1cdaa",
+      "ae6bbe02727e27eb2ae4c9551fc04713"
+    ]
+  },
+  {
+    "scenario": "local-codex.progress-recovery",
+    "level": "L3",
+    "status": "passed",
+    "fixture": "C:\\srt\\15ad2eab933f",
+    "duration_seconds": 243.669905,
+    "run_id": "87cd3cb834e586f638e26f3971f32e22",
+    "run_ids": [
+      "87cd3cb834e586f638e26f3971f32e22"
+    ]
+  }
+]

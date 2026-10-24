@@ -1,0 +1,362 @@
+[
+  {
+    "path": "archive-scope.json",
+    "bytes": 665,
+    "sha256": "9603b80dd236a64e7b99389d9e8863ecae300102661f437d58322a97ccfa634a"
+  },
+  {
+    "path": "pr55-audit-after.log",
+    "bytes": 1968,
+    "sha256": "3f9d3ceb1609d51ec80e8c4bc24ea25c6ee37e4eb33a21d813146ee85b3b7e30"
+  },
+  {
+    "path": "pr55-audit-before-corrected-fixture.log",
+    "bytes": 1430,
+    "sha256": "48fb6f7c152ea13f8a5ea368514ce71ede563300caa2927f6f2919949f87071d"
+  },
+  {
+    "path": "pr55-audit-before.log",
+    "bytes": 2018,
+    "sha256": "c1437f0e8a1ab79cc048af2da2ec722c52df861c30104c5c08684a7cfaa222b8"
+  },
+  {
+    "path": "pr55-audit-final-targeted.log",
+    "bytes": 2424,
+    "sha256": "e2e9276e689da7b206022785c2fcb87b913f7a63073fbbb629ce815e8bc0ece1"
+  },
+  {
+    "path": "pr55-audit-public-before/caller-commands.jsonl",
+    "bytes": 398735,
+    "sha256": "44fb83e75c0c4f2a1219dd0137895d6ed8400d37378f49d3ee975135d8fc76da"
+  },
+  {
+    "path": "pr55-audit-public-before/cleanup-proof.json",
+    "bytes": 876,
+    "sha256": "358e6eaa44119d1e546bb275c34ebec1fb713aee475f877795391a8d00ecba6a"
+  },
+  {
+    "path": "pr55-audit-public-before/integration.log",
+    "bytes": 664,
+    "sha256": "39c82fd1409c1213809c0edb198370e7074c3b98180b4f982279b754c82e6bda"
+  },
+  {
+    "path": "pr55-audit-public-before/result.json",
+    "bytes": 200,
+    "sha256": "0b21b9eb8c107dfdd40e1b3af6a9bd2c5e0f83d0278c590b7bd851efa650e956"
+  },
+  {
+    "path": "pr55-audit-public-before/retained-run-records.json",
+    "bytes": 434392,
+    "sha256": "6794ffff801731b600d4862b1b29f1a2807d99973f68095e0641475c05446797"
+  },
+  {
+    "path": "pr55-audit-public-before/source-identity.json",
+    "bytes": 506,
+    "sha256": "aa45dab241437b7542911e086d306862fb6e8b2eae16be1b8e8664abb46104da"
+  },
+  {
+    "path": "pr55-audit-public-before/TestSRProgressFile-native-calls.jsonl",
+    "bytes": 2586,
+    "sha256": "7b21be004ce3a997227dc22e992c46d642bc3392230f57edd5a0f6e07c382663"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 293,
+    "sha256": "ade711f0aebd997fbdc73b276dee00873d6690659e8e2008a37e7e38d5e3e392"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "acff1cb3805763ef158da5c0a5417ecb1530ba535ea46627dcf7474798e15ac6"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "6ff16891607bb01b51246d445ce0be6d43902ef0064bfaf45a7defbb0ff68def"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "40bb4038a4497718f1f2fde308b799acf53bbc238e2e6c17307ab4cc9280a0d7"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "0cf7a8b622c0949186452a9924e2e5ac0e8750459dd67a27eea7ac87da5dd06d"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/summary.json",
+    "bytes": 2845,
+    "sha256": "752266d46a847f0c4bd279eee1befcbaa29ff39834b948faf732db49fd4ec43b"
+  },
+  {
+    "path": "pr55-parallel-before/missing-field/verification.log",
+    "bytes": 130,
+    "sha256": "f9067239a759f1ea620022f0c0a9432d54db26b1576122ca096940f232ccce4a"
+  },
+  {
+    "path": "pr55-parallel-before/valid/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "d055e70b6a951cac51376a7787295b5ea5a3810bf18e0d3d7a198b1411aa68b7"
+  },
+  {
+    "path": "pr55-parallel-before/valid/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "acff1cb3805763ef158da5c0a5417ecb1530ba535ea46627dcf7474798e15ac6"
+  },
+  {
+    "path": "pr55-parallel-before/valid/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "6ff16891607bb01b51246d445ce0be6d43902ef0064bfaf45a7defbb0ff68def"
+  },
+  {
+    "path": "pr55-parallel-before/valid/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "40bb4038a4497718f1f2fde308b799acf53bbc238e2e6c17307ab4cc9280a0d7"
+  },
+  {
+    "path": "pr55-parallel-before/valid/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "0cf7a8b622c0949186452a9924e2e5ac0e8750459dd67a27eea7ac87da5dd06d"
+  },
+  {
+    "path": "pr55-parallel-before/valid/progress-parallel-verification.json",
+    "bytes": 5682,
+    "sha256": "169d10620301d6440f6dc5d2edce155fc9577f9ffa0f32468bd65eb79a0b9c72"
+  },
+  {
+    "path": "pr55-parallel-before/valid/summary.json",
+    "bytes": 2805,
+    "sha256": "8cea44fa7ccf2e4caaf398300cc1745c3a04a61e092e4d0cbb0cd9ca4b14bffe"
+  },
+  {
+    "path": "pr55-parallel-before/valid/verification.log",
+    "bytes": 5682,
+    "sha256": "169d10620301d6440f6dc5d2edce155fc9577f9ffa0f32468bd65eb79a0b9c72"
+  },
+  {
+    "path": "pr55-parallel-before.log",
+    "bytes": 335,
+    "sha256": "bec6c4f414e83c8ac79b4b38bf2ddd6b6e6312371e82afb7bb88d1b557d2c7a0"
+  },
+  {
+    "path": "pr55-parallel-before.ps1",
+    "bytes": 4373,
+    "sha256": "27a4417c2a1a1e2e81adb8e3027e58457fdfed137cbe7135d1fb43c572862459"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 293,
+    "sha256": "6c2513681ab6a8e9520095c22e9029187b5f713f3d6cd89577fad86eb96809ed"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "2244be130175e22ec9554b516cbabd6efe687f26c50593c69b77eb0ebda63a60"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "3bfcf7184f0c9223362fcd48e8aab5fd3a36cc4e51b1fb3a593293836faa9f7d"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "d5af14d5b451fc5a21bca1d3d7a365e29b5b6990cf1ce16168f63f6af33da1c6"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "cd484550a96dc7f454c6fce491f746853deaca4d784f0bf45b6485c09b558eae"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/progress-parallel-verification.json",
+    "bytes": 4403,
+    "sha256": "cbe9332a6b14a5b8d019f6f20c218217f8fdafc218dd925d27748db6bce37e0b"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/summary.json",
+    "bytes": 2840,
+    "sha256": "708475fc1f0d2453e3788bace826c7e8aea5f7871d4bcc3539151c7055aceb3e"
+  },
+  {
+    "path": "pr55-parallel-final/missing-field/verification.log",
+    "bytes": 4782,
+    "sha256": "cf30a20a911ba844936f07c657997775d5bb0df64d1d8dbda6bc571a8e677374"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "ecea6129251d6e42151d7f4dbc2aed30dcee69f22152a44521838ae2bbaa24a1"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "2244be130175e22ec9554b516cbabd6efe687f26c50593c69b77eb0ebda63a60"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "3bfcf7184f0c9223362fcd48e8aab5fd3a36cc4e51b1fb3a593293836faa9f7d"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "d5af14d5b451fc5a21bca1d3d7a365e29b5b6990cf1ce16168f63f6af33da1c6"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "cd484550a96dc7f454c6fce491f746853deaca4d784f0bf45b6485c09b558eae"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/progress-parallel-verification.json",
+    "bytes": 1438,
+    "sha256": "2fbf49c78e7ec19cc1d7ed67070a526840a104b5d266578c84eb0e9a7c54831b"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/summary.json",
+    "bytes": 2855,
+    "sha256": "43ed19b137232b0ce05e0ec3a6dd4329c0f4bc06b007b9e8e90dea3804cd02da"
+  },
+  {
+    "path": "pr55-parallel-final/no-passing-cases/verification.log",
+    "bytes": 1817,
+    "sha256": "101090244f7b776d04aee6c5c98d030af356e7b7c0d973ea7ddc8425f039f6f7"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "ecea6129251d6e42151d7f4dbc2aed30dcee69f22152a44521838ae2bbaa24a1"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "2244be130175e22ec9554b516cbabd6efe687f26c50593c69b77eb0ebda63a60"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "3bfcf7184f0c9223362fcd48e8aab5fd3a36cc4e51b1fb3a593293836faa9f7d"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "d5af14d5b451fc5a21bca1d3d7a365e29b5b6990cf1ce16168f63f6af33da1c6"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "cd484550a96dc7f454c6fce491f746853deaca4d784f0bf45b6485c09b558eae"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/progress-parallel-verification.json",
+    "bytes": 6380,
+    "sha256": "874cac8f47393118f920954b76de8b737d933b7a3966e797c9c6ed1d78634c65"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/summary.json",
+    "bytes": 2763,
+    "sha256": "c8097a35806d4995a5ecafdba249aef2fbcf70b5cefdd3c39fd62972a63ec180"
+  },
+  {
+    "path": "pr55-parallel-final/resource-collision/verification.log",
+    "bytes": 6759,
+    "sha256": "42431ccae9191694b071baf2f7b7075da75ed013614b64b249ad09867dfec819"
+  },
+  {
+    "path": "pr55-parallel-final/result.json",
+    "bytes": 185,
+    "sha256": "25a0b32fcce476ff07df1ce3332ff7925364a1a1e302d322565cb93414a86df4"
+  },
+  {
+    "path": "pr55-parallel-final/valid/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "ecea6129251d6e42151d7f4dbc2aed30dcee69f22152a44521838ae2bbaa24a1"
+  },
+  {
+    "path": "pr55-parallel-final/valid/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "2244be130175e22ec9554b516cbabd6efe687f26c50593c69b77eb0ebda63a60"
+  },
+  {
+    "path": "pr55-parallel-final/valid/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "3bfcf7184f0c9223362fcd48e8aab5fd3a36cc4e51b1fb3a593293836faa9f7d"
+  },
+  {
+    "path": "pr55-parallel-final/valid/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "d5af14d5b451fc5a21bca1d3d7a365e29b5b6990cf1ce16168f63f6af33da1c6"
+  },
+  {
+    "path": "pr55-parallel-final/valid/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "cd484550a96dc7f454c6fce491f746853deaca4d784f0bf45b6485c09b558eae"
+  },
+  {
+    "path": "pr55-parallel-final/valid/progress-parallel-verification.json",
+    "bytes": 5671,
+    "sha256": "63676dae866bfd4bf8c66e82d06ce994a72c58e8d8f9731cef2b899e49d4706e"
+  },
+  {
+    "path": "pr55-parallel-final/valid/summary.json",
+    "bytes": 2800,
+    "sha256": "b7836b52e9ac43fda6b5753310a8d8347cbfb6b320ff069de5b33675d4478600"
+  },
+  {
+    "path": "pr55-parallel-final/valid/verification.log",
+    "bytes": 5671,
+    "sha256": "63676dae866bfd4bf8c66e82d06ce994a72c58e8d8f9731cef2b899e49d4706e"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/local-codex.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "ecea6129251d6e42151d7f4dbc2aed30dcee69f22152a44521838ae2bbaa24a1"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/local-codex.progress-multirun/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "2244be130175e22ec9554b516cbabd6efe687f26c50593c69b77eb0ebda63a60"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/local-codex.progress-recovery/progress-001-observation-window.json",
+    "bytes": 329,
+    "sha256": "3bfcf7184f0c9223362fcd48e8aab5fd3a36cc4e51b1fb3a593293836faa9f7d"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/orca-local.progress-file/progress-001-observation-window.json",
+    "bytes": 324,
+    "sha256": "d5af14d5b451fc5a21bca1d3d7a365e29b5b6990cf1ce16168f63f6af33da1c6"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/orca-remote.progress-file/progress-001-observation-window.json",
+    "bytes": 325,
+    "sha256": "cd484550a96dc7f454c6fce491f746853deaca4d784f0bf45b6485c09b558eae"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/progress-parallel-verification.json",
+    "bytes": 1436,
+    "sha256": "308e3ba2b330f3f002b237c6052e7777269809d7924722f468621363d97f07ca"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/summary.json",
+    "bytes": 66,
+    "sha256": "059e9be44ed2c64c8725c8bbf3ba2a9514d826ee102c462e2cdafaaa1ac16464"
+  },
+  {
+    "path": "pr55-parallel-final/zero-selection/verification.log",
+    "bytes": 1815,
+    "sha256": "72b9fc82fc8c93e539ea117ccbe1598d05c7ee2ef8a5ce9589c982a0860b6bfc"
+  },
+  {
+    "path": "pr55-parallel-final.log",
+    "bytes": 94,
+    "sha256": "11250e914d16ec3f9c4ceecd134751c5edc84f6ba173ed0944fe87b52df61bdd"
+  },
+  {
+    "path": "progress-integration-r16-capabilities-service-unavailable.json",
+    "bytes": 190,
+    "sha256": "0dd648db47ce70e8bd82a44ef17b02e6e22170ff66d7c46c9ac2ecf6f505d092"
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v3",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16\\framework\\progress-parallel\\zero-selection",
+  "max_parallel": 5,
+  "cases": 0,
+  "runner_sha256": [],
+  "driver_sha256": [],
+  "resource_conflicts": [],
+  "windows": [],
+  "native_observation_overlaps": [],
+  "issues": [
+    "Required case did not pass exactly once: local-codex.progress-file",
+    "Required case did not pass exactly once: orca-local.progress-file",
+    "Required case did not pass exactly once: orca-remote.progress-file",
+    "Required case did not pass exactly once: local-codex.progress-multirun",
+    "Required case did not pass exactly once: local-codex.progress-recovery",
+    "Mixed or missing build identity: runner_sha256",
+    "Mixed or missing build identity: driver_sha256",
+    "Mixed or missing build identity: source_commit",
+    "No actual native observation overlap with another passing case: local-codex.progress-file",
+    "No actual native observation overlap with another passing case: orca-local.progress-file",
+    "No actual native observation overlap with another passing case: orca-remote.progress-file",
+    "No actual native observation overlap with another passing case: local-codex.progress-multirun",
+    "No actual native observation overlap with another passing case: local-codex.progress-recovery"
+  ],
+  "passed": false
+}
+Exception: C:\Users\lmas1\.codex\worktrees\e60a\SteerRunner\scripts\verify-progress-parallel.ps1:56
+Line |
+  56 |  … t.passed) { throw 'Current build real parallel qualification failed;  …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Current build real parallel qualification failed; inspect progress-parallel-verification.json

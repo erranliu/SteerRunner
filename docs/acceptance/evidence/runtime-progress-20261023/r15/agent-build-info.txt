@@ -1,0 +1,19 @@
+C:\Users\lmas1\.codex\worktrees\e60a\SteerRunner\.evidence\progress-agent-r15.exe: go1.26.4
+	path	github.com/erranliu/SteerRunner/cmd/steerrunner-agent
+	mod	github.com/erranliu/SteerRunner	(devel)	
+	dep	github.com/Microsoft/go-winio	v0.6.2	h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
+	dep	github.com/coder/websocket	v1.8.14	h1:9L0p0iKiNOibykf283eHkKUHHrpG7f65OE3BhhO7v9g=
+	dep	github.com/klauspost/compress	v1.18.6	h1:2jupLlAwFm95+YDR+NwD2MEfFO9d4z4Prjl1XXDjuao=
+	dep	github.com/santhosh-tekuri/jsonschema/v6	v6.0.3	h1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=
+	dep	github.com/vektah/gqlparser/v2	v2.5.30	h1:EqLwGAFLIzt1wpx1IPpY67DwUujF1OfzgEyDsLrN6kE=
+	dep	golang.org/x/crypto	v0.44.0	h1:A97SsFvM3AIwEEmTBiaxPPTYpDC47w720rdiiUvgoAU=
+	dep	golang.org/x/sys	v0.38.0	h1:3yZWxaJjBmCWXqhN1qh02AkOnCQ1poK6oF+a7xWL6Gc=
+	dep	golang.org/x/text	v0.31.0	h1:aC8ghyu4JhP8VojJ2lEHBnochRno1sgL6nEi9WGFGMM=
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-trimpath=true
+	build	DefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,tlssecpmlkem=0,tlssha1=1,updatemaxprocs=0,urlstrictcolons=0,x509sha256skid=0
+	build	CGO_ENABLED=0
+	build	GOARCH=amd64
+	build	GOOS=windows
+	build	GOAMD64=v1

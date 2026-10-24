@@ -1,0 +1,11 @@
+{
+  "collection_gap_samples": 0,
+  "collection_healthy_at_end": true,
+  "run_ids": [
+    "local-codex.progress-file"
+  ],
+  "collection_gap_budget_seconds": 20,
+  "start": "2026-10-23T23:15:25.5390473+00:00",
+  "end": "2026-10-23T23:17:30.5472672+00:00",
+  "contract": "steerrunner-progress-observation-window/v2"
+}

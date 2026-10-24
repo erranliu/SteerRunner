@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-23T23:23:47.0045788Z",
+  "kind": "audit_superseded_before_native",
+  "controller": {
+    "ProcessId": 44384,
+    "ExecutablePath": "C:\\Users\\lmas1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+    "CreationDate": "2026-10-24T07:19:57.959503+08:00",
+    "CommandLine": "\"C:\\Users\\lmas1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe\" -NoProfile -File .evidence/run-progress-integration-r15.ps1"
+  },
+  "children_left_to_finish": [
+    {
+      "ProcessId": 15936,
+      "ExecutablePath": "C:\\Users\\lmas1\\.codex\\tools\\go\\go1.26.4\\go\\bin\\go.exe",
+      "CreationDate": "2026-10-24T07:21:59.739456+08:00",
+      "CommandLine": "\"C:\\Users\\lmas1\\.codex\\tools\\go\\go1.26.4\\go\\bin\\go.exe\" test ./internal/... -count=1 -timeout=12m -json -coverprofile=C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r15\\coverage.out"
+    }
+  ],
+  "native_case_count": 0,
+  "reason": "Additional empty-evidence verifier defect confirmed during audit; preserve the original report and rerun the complete corrected entry."
+}

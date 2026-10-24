@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-10-23T23:32:28.8236405+00:00",
+  "original_controller_pid": 44384,
+  "controller_absent": true,
+  "l1_child_pid": 15936,
+  "l1_child_absent": true,
+  "qualified": false,
+  "reason": "Controller superseded before native dispatch; child allowed to finish; original partial output and running summary retained, no pass inferred."
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "controlled-public-regression",
+  "live_execution": false,
+  "pid": 4048,
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r14\\bin\\steerrunner.exe",
+  "runner_sha256": "1014C868C4E6865EC7412AAE3151586ECEA322CB7332E2CA217FD89895B15F3A",
+  "driver_sha256": "61AB2CC0AD076736240E08A9198FC2027CF320ED2BBBD95B0E8CEBFCF8D5E229",
+  "source_commit": "5020187b50990d39d69550c830de317abf93dbc6",
+  "at": "2026-10-23T23:26:35.1126718Z"
+}
