@@ -161,7 +161,7 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 - 读取后的独立主记录须与读前相同：pane、provider/path、main state/起点/outcome、updatedAt 和完整 assistant 正文均不变。用户输入必须满足既有有界分页、唯一条目、原全文及时间范围规则。assistant 历史条目不提供结束或正文。
 - 使用不可从 JSON 构造的瞬时 query 证明，绑定精确原进程、主记录及用户条目；不补造 hook authority/revision/turnStartedAt，不授权 working 或后续通知，不缓存给另一个结束记录。已有持久冲突、原生结果截断和 outcome 门槛继续生效。
 
-此兼容修复只修改 Runner，不修改、构建或部署 Orca。真实远端两轮交付验收仍待新运行证明，协议回归不计 PR 成功。
+此兼容修复只修改 Runner，不修改、构建或部署 Orca。2026-10-24 最终构建的两轮真实交付及限定验证范围见[原生验收](../acceptance/orca-remote-native.md#2026-10-24-n308-19-真实远端-l4-最终结果)；协议回归自身不计 PR 成功。
 
 ### 5.3 历史记录、结果与恢复
 
