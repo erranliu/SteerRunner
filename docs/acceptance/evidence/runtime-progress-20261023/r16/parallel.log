@@ -1,0 +1,108 @@
+{
+  "schema": "steerrunner-progress-parallel-evidence/v3",
+  "report": "C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-acceptance-r16",
+  "max_parallel": 7,
+  "cases": 5,
+  "runner_sha256": [
+    "14bd2f0c4dedd1863bb08cf2cd84b1c355c73985c17ccc1bc868517c6c8135a2"
+  ],
+  "driver_sha256": [
+    "cb45f2cd2744c322049d347d2e929db5595dbfaf0674ceb45751ea2a08061b65"
+  ],
+  "resource_conflicts": [],
+  "windows": [
+    {
+      "collection_healthy_at_end": true,
+      "collection_gap_budget_seconds": 20,
+      "run_ids": [
+        "18cba1242f6f966b82417398e9d13398"
+      ],
+      "collection_gap_samples": 0,
+      "evidence": "C:\\srt\\a9706dd57842\\evidence\\progress-005-observation-window.json",
+      "start": "2026-10-24T00:04:04.9327689+00:00",
+      "scenario": "local-codex.progress-file",
+      "end": "2026-10-24T00:06:06.1408804+00:00"
+    },
+    {
+      "collection_healthy_at_end": true,
+      "collection_gap_budget_seconds": 20,
+      "run_ids": [
+        "86bc1974ce004470f63885c7ac7deaa4"
+      ],
+      "collection_gap_samples": 0,
+      "evidence": "C:\\srt\\9e970fbbb65a\\evidence\\progress-005-observation-window.json",
+      "start": "2026-10-24T00:08:12.1733972+00:00",
+      "scenario": "orca-local.progress-file",
+      "end": "2026-10-24T00:10:13.135277+00:00"
+    },
+    {
+      "collection_healthy_at_end": true,
+      "collection_gap_budget_seconds": 20,
+      "run_ids": [
+        "82ed012eff170bac14fc334e861c98e8"
+      ],
+      "collection_gap_samples": 0,
+      "evidence": "C:\\srt\\5c8297bc851b\\evidence\\progress-005-observation-window.json",
+      "start": "2026-10-24T00:06:29.1551221+00:00",
+      "scenario": "orca-remote.progress-file",
+      "end": "2026-10-24T00:08:30.3876056+00:00"
+    },
+    {
+      "collection_healthy_at_end": true,
+      "collection_gap_budget_seconds": 20,
+      "run_ids": [
+        "b3a293c299120b964313b1c417c1cdaa",
+        "ae6bbe02727e27eb2ae4c9551fc04713"
+      ],
+      "collection_gap_samples": 0,
+      "evidence": "C:\\srt\\ad68e93dd130\\evidence\\progress-009-observation-window.json",
+      "start": "2026-10-24T00:04:15.1103606+00:00",
+      "scenario": "local-codex.progress-multirun",
+      "end": "2026-10-24T00:06:17.1147791+00:00"
+    },
+    {
+      "collection_healthy_at_end": true,
+      "collection_gap_budget_seconds": 20,
+      "run_ids": [
+        "87cd3cb834e586f638e26f3971f32e22"
+      ],
+      "collection_gap_samples": 0,
+      "evidence": "C:\\srt\\15ad2eab933f\\evidence\\progress-005-observation-window.json",
+      "start": "2026-10-24T00:04:11.0756318+00:00",
+      "scenario": "local-codex.progress-recovery",
+      "end": "2026-10-24T00:06:12.6403781+00:00"
+    }
+  ],
+  "native_observation_overlaps": [
+    {
+      "from": "2026-10-24T00:04:15.1103606+00:00",
+      "first": "local-codex.progress-file",
+      "second": "local-codex.progress-multirun",
+      "seconds": 111.0305198,
+      "until": "2026-10-24T00:06:06.1408804+00:00"
+    },
+    {
+      "from": "2026-10-24T00:04:11.0756318+00:00",
+      "first": "local-codex.progress-file",
+      "second": "local-codex.progress-recovery",
+      "seconds": 115.0652486,
+      "until": "2026-10-24T00:06:06.1408804+00:00"
+    },
+    {
+      "from": "2026-10-24T00:08:12.1733972+00:00",
+      "first": "orca-local.progress-file",
+      "second": "orca-remote.progress-file",
+      "seconds": 18.2142084,
+      "until": "2026-10-24T00:08:30.3876056+00:00"
+    },
+    {
+      "from": "2026-10-24T00:04:15.1103606+00:00",
+      "first": "local-codex.progress-multirun",
+      "second": "local-codex.progress-recovery",
+      "seconds": 117.5300175,
+      "until": "2026-10-24T00:06:12.6403781+00:00"
+    }
+  ],
+  "issues": [],
+  "passed": true
+}

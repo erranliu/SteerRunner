@@ -45,7 +45,20 @@ func (c Client) CloseReadonlyTerminal(ctx context.Context, p b.ProcessIdentity) 
 			}
 			continue
 		}
-		if t.WorktreeID != p.WorktreeID || !t.Connected || t.Exited() {
+		if t.WorktreeID != p.WorktreeID {
+			return b.StopReceipt{}, errors.New("readonly original terminal is not verifiably live")
+		}
+		if !t.Connected || t.Exited() {
+			// Orca retains disconnected display cards after a PTY close. The
+			// card alone proves neither liveness nor absence; reconcile the
+			// same identity against the complete original worktree inventory.
+			absent, ie := inventory()
+			if ie != nil {
+				return b.StopReceipt{}, ie
+			}
+			if absent {
+				return b.StopReceipt{Disposition: "confirmed"}, nil
+			}
 			return b.StopReceipt{}, errors.New("readonly original terminal is not verifiably live")
 		}
 		proof, ce := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)

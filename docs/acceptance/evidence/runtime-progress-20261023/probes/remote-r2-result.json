@@ -1,0 +1,18 @@
+{
+  "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "native_stopped": true,
+  "passed": true,
+  "probe": "file transport only, no model or L3 qualification",
+  "runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "worktree": {
+    "id": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-progress-probe-1090e788d3c8",
+    "instanceId": "8dbea7b0-d0b1-4688-aeb9-96715a154cd9",
+    "repoId": "903fb315-7d5e-4246-8913-816e1d3bdf03",
+    "path": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-progress-probe-1090e788d3c8",
+    "head": "983121be8732447121d165eba45c65622faddcbb",
+    "branch": "refs/heads/erranliu/sr-progress-probe-1090e788d3c8",
+    "baseRef": "main",
+    "displayName": "sr-progress-probe-1090e788d3c8"
+  },
+  "worktree_removed": true
+}

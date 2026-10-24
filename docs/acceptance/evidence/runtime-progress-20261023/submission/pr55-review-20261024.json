@@ -1,0 +1,42 @@
+{
+  "checked_at": "2026-10-24T00:14:37.829771+00:00",
+  "source_commit": "5020187b50990d39d69550c830de317abf93dbc6",
+  "dirty": true,
+  "main": "9740bed6478809922a237b06988d483853250100",
+  "reviewed_original_evidence_files": 4544,
+  "original_evidence_unchanged": true,
+  "original_failure_proof": {
+    "checked_at": "2026-10-24T00:14:29.787225+00:00",
+    "original_failure_files": 4333,
+    "issues": [],
+    "unchanged": true
+  },
+  "archive_proof": {
+    "checked_at": "2026-10-24T00:13:52.088906+00:00",
+    "indexed_entries_verified": 1782,
+    "issues": [],
+    "new_archive_credential_hits": 0
+  },
+  "frozen_files": 754,
+  "frozen_files_changed": 0,
+  "relative_document_links_verified": 191,
+  "completion": {
+    "checked_at": "2026-10-24T00:12:24.508367+00:00",
+    "status": "complete",
+    "runner_sha256": "14bd2f0c4dedd1863bb08cf2cd84b1c355c73985c17ccc1bc868517c6c8135a2",
+    "resource_digest": "4c2e1395f863775023a1c0e83791cfb7d7e9c54ce2d0fd77f6cf8f893dfb7ebb",
+    "source_commit": "5020187b50990d39d69550c830de317abf93dbc6",
+    "merge_head": "9740bed6478809922a237b06988d483853250100",
+    "l1_top_passed": 651,
+    "controlled_passed": 23,
+    "l2_passed": 2,
+    "l3_passed": 5,
+    "frozen_files": 754,
+    "changed_files": 0,
+    "native_progress_runs_settled": 6,
+    "parallel_passed": true,
+    "parallel_overlaps": 4,
+    "resource_conflicts": 0
+  },
+  "qualification": "r16 only; r15 interrupted/unqualified; controlled audit reproductions are not native passes"
+}

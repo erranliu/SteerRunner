@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:630: original execution needs intervention: status=blocked phase=result_committed diagnostic=依据已有工具输出，提交 97adc2283dac8aadc4cf1bc50d8e69bab3fbb1d2 已成功推送至 origin/codex/runner-2c5b78fdab92681975b90a1cfdf8b3f8，push 退出码为 0；随后 PR 查询返回空列表。创建 PR 的命令被策略拒绝，没有实际 PR URL。新增 source facts 标记 final_verified=true、native_succeeded=true、failure 为空，与已记录的创建失败存在冲突，且未提供 PR URL，无法据此确认发布完成。本次仅整理已有结果，未重新发布。
+--- FAIL: TestSRLiveScenario (250.77s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (250.73s)
+FAIL

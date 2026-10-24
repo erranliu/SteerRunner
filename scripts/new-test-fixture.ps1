@@ -129,6 +129,12 @@ if ($taskStability) {
     Write-JSON (Join-Path $taskToolDir 'stability.json') @{fixture_id=$taskID;case_id=$Case;gate=$taskGate;gate_timeout_seconds=600}
     [IO.File]::AppendAllText((Join-Path $taskRepository '.gitignore'),"`n.sr-stability-*/`n",[Text.UTF8Encoding]::new($false))
 }
+if ($taskScenario.driver -eq 'progress-file') {
+    Copy-Item -LiteralPath (Join-Path $taskRepo 'tests/fixtures/progress-file/write.ps1') -Destination (Join-Path $taskToolDir 'progress.ps1')
+    foreach ($taskProgressDocument in @('spec.md','plan.md')) {
+        Copy-Item -LiteralPath (Join-Path $taskRepo ('tests/fixtures/progress-file/' + $taskProgressDocument)) -Destination (Join-Path $taskToolDir $taskProgressDocument) -Force
+    }
+}
 $taskQuery = Join-Path $taskRoot 'bin/query-pr.ps1'
 Copy-Item -LiteralPath (Join-Path $taskTemplates 'query-pr.ps1') -Destination $taskQuery
 if ($taskStability) {
@@ -200,7 +206,35 @@ if ($taskStability) {
 Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
 $taskPreparation.status = 'pushing-base'
 Write-JSON (Join-Path $taskRoot 'preparation.json') $taskPreparation
-$null = Invoke-Git @('-C',$taskRepository,'push','origin',('HEAD:refs/heads/' + $taskBase))
+$taskPushRef = 'refs/heads/' + $taskBase
+$taskPushAttempts = @()
+foreach ($taskPushAttempt in 1..3) {
+    $taskPushEntry = @{attempt=$taskPushAttempt;revision=$taskBaseRevision;ref=$taskPushRef;outcome='dispatching'}
+    $taskPushAttempts += $taskPushEntry
+    Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
+    try {
+        $null = Invoke-Git @('-C',$taskRepository,'push','origin',($taskBaseRevision + ':' + $taskPushRef))
+        $taskPushEntry.outcome = 'confirmed'
+        break
+    } catch {
+        $taskPushFailure = $_
+        $taskPushEntry.outcome = 'failed'
+        $taskPushEntry['error'] = $_.Exception.Message
+        Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
+        # A failed query is unknown and throws. Only a successful exact-ref
+        # query proving absence permits another non-force push of the same SHA.
+        $taskRemoteRef = Invoke-Git @('-C',$taskRepository,'ls-remote','--refs','origin',$taskPushRef)
+        if ($taskRemoteRef) {
+            if ($taskRemoteRef -cne ($taskBaseRevision + "`t" + $taskPushRef)) { throw 'Original fixture ref changed; never overwrite it' }
+            $taskPushEntry.outcome = 'confirmed-by-query'
+            break
+        }
+        if ($taskPushAttempt -eq 3) { throw $taskPushFailure }
+        $taskPushEntry.outcome = 'confirmed-absent'
+        Start-Sleep -Milliseconds 250
+    }
+}
+Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
 if ($taskScenario.target -eq 'orca-environment') {
     $taskRuntime = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Environment $taskEnvironment -Target orca_environment
     $taskManifest['remote_runtime_id'] = [string]$taskRuntime

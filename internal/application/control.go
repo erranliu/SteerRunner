@@ -159,7 +159,14 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		return false
 	}
 	request.Snapshot.Implementation = r.Snapshot.Clone().Implementation
-	ctx, cancel := context.WithTimeout(e.ctx, 15*time.Second)
+	stopBudget := 15 * time.Second
+	if r.Request.Execution.Adapter == "orca-terminal" {
+		// One original stop needs multiple serialized CLI identity/closure
+		// queries. Allow the shared queue without timing out before its first
+		// close. This remains finite and is cancelled by service shutdown.
+		stopBudget = 60 * time.Second
+	}
+	ctx, cancel := context.WithTimeout(e.ctx, stopBudget)
 	defer cancel()
 	var receipt b.LifecycleReceipt
 	var err error

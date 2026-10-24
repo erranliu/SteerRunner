@@ -1,0 +1,23 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "checks": [],
+    "resources_settled": true,
+    "runs": [
+      {
+        "input_digest": "bdd20ba1aa49985520c151055a8bd0eb131eb2263aaf561ea796795c31fece94",
+        "resources_settled": true,
+        "run_id": "59340d4a05bc61760194ebafca4866b6"
+      },
+      {
+        "input_digest": "98f272460022275fa525e9fe5c426d8a1ca2f6664c052e497a62445fb2da03a0",
+        "resources_settled": true,
+        "run_id": "a4960b84063b7a231b9348be64d94313"
+      }
+    ],
+    "state_dir": "c:\\srt\\902bf618a9dc\\s"
+  },
+  "error": null
+}

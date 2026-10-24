@@ -1,0 +1,79 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "progress-submit-0",
+  "input": {
+    "progress_file": {
+      "initial_content_base64": "c2VlZHw2MjhlYTQwZjJmNmI="
+    },
+    "title": "Progress byte channel 628ea40f2f6b 0",
+    "repository": {
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "base_revision": "0caf9189210a99d31a7709907757c793983383b3",
+      "remote": "origin",
+      "base_branch": "codex/srtest/628ea40f2f6b/base",
+      "local_path": "C:\\srt\\628ea40f2f6b\\SteerlineTest"
+    },
+    "documents": {
+      "spec": {
+        "path": "sr-smoke/spec.md"
+      },
+      "plan": {
+        "path": "sr-smoke/plan.md"
+      }
+    },
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+      }
+    },
+    "execution": {
+      "adapter": "orca-terminal",
+      "target": {
+        "kind": "orca_environment",
+        "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      },
+      "settings": {
+        "agent": "codex",
+        "access_mode": "sandbox",
+        "transport": {
+          "executable": "C:\\srt\\628ea40f2f6b\\bin\\local-audit.exe",
+          "args": [
+            "local-audit",
+            "-manifest",
+            "C:\\srt\\628ea40f2f6b\\manifest.json",
+            "-orca",
+            "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+            "--"
+          ]
+        },
+        "agent_launch": {
+          "executable": "codex.exe",
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "low"
+        }
+      }
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "codex/srtest/628ea40f2f6b/base",
+      "settings": {
+        "query": {
+          "executable": "powershell.exe",
+          "args": [
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:\\srt\\628ea40f2f6b\\bin\\query-pr.ps1",
+            "-URL",
+            "{pr_url}"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  }
+}

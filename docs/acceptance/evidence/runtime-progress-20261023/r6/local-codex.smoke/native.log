@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:630: original execution needs intervention: status=blocked phase=result_committed diagnostic=依据已有命令输出，提交 6b8862536ccb4c719745694c090472f52f4bc7e5 已推送至 origin 的 codex/runner-41236f40b49ff3f57a68dd775e96ae80，push 退出码为 0。随后 PR 查询返回 HTTP 403，退出码为 1，未执行 PR 创建，无实际 PR URL。提供的 source facts 标记 final_verified=true、native_succeeded=true 且 failure 为空，但未提供 PR 证据，不能据此覆盖已观察到的查询失败。本次仅报告，未重新发布。
+    run_test.go:538: L2 requires settled authentication with zero broker refusals
+--- FAIL: TestSRLiveScenario (246.29s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (246.26s)
+FAIL

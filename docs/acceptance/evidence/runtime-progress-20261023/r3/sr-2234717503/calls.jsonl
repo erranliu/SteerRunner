@@ -1,0 +1,9 @@
+{"args":["status","--json"],"method":"orca/status/--json"}
+{"args":["worktree","create","--repo","path:C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2234717503\\source","--name","sr-0fc139eede7ef85131ad5d483b646292","--base-branch","dda2ad6007c1acc818f8b77d37ddd990a1967eda","--no-parent","--setup","skip","--json"],"method":"orca/worktree/create"}
+{"args":["worktree","show","--worktree","id:creation-repo::C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2234717503\\native\\original-worktree","--json"],"method":"orca/worktree/show"}
+{"args":["terminal","list","--worktree","id:creation-repo::C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2234717503\\native\\original-worktree","--json"],"method":"orca/terminal/list"}
+{"args":["terminal","show","--terminal","original-terminal","--json"],"method":"orca/terminal/show"}
+{"args":["terminal","show","--terminal","original-terminal","--json"],"method":"orca/terminal/show"}
+{"args":["terminal","show","--terminal","original-terminal","--json"],"method":"orca/terminal/show"}
+{"args":["terminal","close","--terminal","original-terminal","--json"],"method":"orca/terminal/close"}
+{"args":["terminal","list","--worktree","id:creation-repo::C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2234717503\\native\\original-worktree","--json"],"method":"orca/terminal/list"}

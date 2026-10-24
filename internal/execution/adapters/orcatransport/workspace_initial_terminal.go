@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -13,10 +14,37 @@ import (
 )
 
 type initialTerminalCheckpoint struct {
-	Version   int                `json:"version"`
-	Binding   string             `json:"binding"`
-	Attempted bool               `json:"attempted"`
-	Process   *b.ProcessIdentity `json:"process,omitempty"`
+	Version         int                `json:"version"`
+	Binding         string             `json:"binding"`
+	WorktreeBinding string             `json:"worktree_binding,omitempty"`
+	Attempted       bool               `json:"attempted"`
+	Process         *b.ProcessIdentity `json:"process,omitempty"`
+}
+
+// This plan precedes workspace creation, so caller loss while that original
+// creation owner is running does not turn an unstarted terminal phase into an
+// unknown terminal creation. No legacy journal is inferred or migrated.
+func (l *Lifecycle) initialTerminalPlan(s b.LifecycleSnapshot, prepare bool) (initialTerminalCheckpoint, string, error) {
+	if !filepath.IsAbs(l.setup.RunDirectory) {
+		return initialTerminalCheckpoint{}, "", errors.New("caller initial-terminal checkpoint directory missing")
+	}
+	raw, _ := json.Marshal(struct {
+		Key       creationKey
+		Workspace b.WorkspaceIntent
+	}{l.creationKey(s, "initial-terminal-plan", "initial-terminal-plan", "initial-terminal-plan"), s.WorkspacePlan})
+	binding := digest(raw)
+	path := filepath.Join(l.setup.RunDirectory, "orca-initial-terminals", binding+".json")
+	saved := initialTerminalCheckpoint{Version: 2, Binding: binding}
+	data, err := os.ReadFile(path)
+	if os.IsNotExist(err) && prepare {
+		raw, _ := json.Marshal(saved)
+		err = l.setup.ProcessHost.WriteExecutionFile(path, raw)
+	} else if err == nil {
+		if len(data) > 1<<20 || b.DecodeStrictJSON(data, &saved, "trailing initial terminal checkpoint") != nil || saved.Version != 2 || saved.Binding != binding || saved.Attempted && saved.WorktreeBinding == "" || saved.Process != nil && saved.WorktreeBinding == "" {
+			err = errors.New("initial terminal checkpoint invalid or foreign")
+		}
+	}
+	return saved, path, err
 }
 
 // Only a confirmed newly-created workspace with a complete empty terminal
@@ -27,8 +55,9 @@ func (l *Lifecycle) initialWorkspaceTerminal(ctx context.Context, s b.LifecycleS
 }
 
 func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.LifecycleSnapshot, c workspaceCreation, reconcile bool) (native.Terminal, error) {
-	if !filepath.IsAbs(l.setup.RunDirectory) {
-		return native.Terminal{}, errors.New("caller initial-terminal checkpoint directory missing")
+	saved, path, e := l.initialTerminalPlan(s, !reconcile)
+	if e != nil {
+		return native.Terminal{}, errors.Join(e, errors.New("original initial terminal preparation plan unavailable"))
 	}
 	raw, _ := json.Marshal(struct {
 		Snapshot b.LifecycleSnapshot
@@ -36,7 +65,14 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		Worktree native.Worktree
 	}{Snapshot: b.LifecycleSnapshot{Session: s.Session, ResourceGeneration: s.ResourceGeneration, ConfigurationDigest: s.ConfigurationDigest}, Runtime: c.RuntimeID, Worktree: c.Worktree})
 	binding := digest(raw)
-	path := filepath.Join(l.setup.RunDirectory, "orca-initial-terminals", binding+".json")
+	if saved.WorktreeBinding != "" && saved.WorktreeBinding != binding {
+		return native.Terminal{}, errors.New("initial terminal original worktree binding changed")
+	}
+	saved.WorktreeBinding = binding
+	write := func() error { raw, _ := json.Marshal(saved); return l.setup.ProcessHost.WriteExecutionFile(path, raw) }
+	if e = write(); e != nil {
+		return native.Terminal{}, e
+	}
 	confirm := func(p b.ProcessIdentity) (native.Terminal, error) {
 		t, e := l.soleWorkspaceTerminal(ctx, c.Worktree.ID, c.RuntimeID)
 		if e != nil || t.Handle != p.Terminal || t.IncarnationID != p.Incarnation {
@@ -44,15 +80,6 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		}
 		return t, nil
 	}
-	saved := initialTerminalCheckpoint{Version: 1, Binding: binding}
-	data, e := os.ReadFile(path)
-	if e != nil && !os.IsNotExist(e) {
-		return native.Terminal{}, e
-	}
-	if e == nil && (len(data) > 1<<20 || b.DecodeStrictJSON(data, &saved, "trailing initial terminal checkpoint") != nil || saved.Version != 1 || saved.Binding != binding || !saved.Attempted) {
-		return native.Terminal{}, errors.New("initial terminal checkpoint invalid or foreign")
-	}
-	write := func() error { raw, _ := json.Marshal(saved); return l.setup.ProcessHost.WriteExecutionFile(path, raw) }
 	create := func(readOnly bool) (native.Terminal, error) {
 		key := l.creationKey(s, binding, binding, "initial-terminal")
 		args := []string{"terminal", "create", "--worktree", "id:" + c.Worktree.ID, "--title", "SteerRunner initial execution " + c.Worktree.DisplayName, "--json"}
@@ -68,10 +95,7 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		}
 		return confirm(p)
 	}
-	if saved.Attempted {
-		if saved.Process == nil {
-			return create(true)
-		}
+	if saved.Process != nil {
 		p := *saved.Process
 		if p.Kind != "orca_terminal" || p.RuntimeID != c.RuntimeID || p.WorktreeID != c.Worktree.ID || p.Terminal == "" || p.Incarnation == "" {
 			return native.Terminal{}, errors.New("initial terminal checkpoint identity changed")
@@ -82,8 +106,8 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		}
 		return confirm(p)
 	}
-	if reconcile {
-		return native.Terminal{}, errors.New("original initial terminal creation receipt missing; inventory alone cannot prove its identity")
+	if saved.Attempted {
+		return create(true)
 	}
 	emptySince := time.Now()
 	for {
@@ -111,9 +135,24 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 			if t.Handle == "" || t.IncarnationID == "" || t.WorktreeID != c.Worktree.ID || t.Orphaned {
 				return t, errors.New("original initial terminal identity changed")
 			}
+			saved.Process = &b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: c.RuntimeID, Terminal: t.Handle, Incarnation: t.IncarnationID, WorktreeID: c.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}
+			if e = write(); e != nil {
+				return native.Terminal{}, e
+			}
 			return t, nil
 		}
-		complete := v.Truncated != nil && !*v.Truncated && v.Total != nil && *v.Total == 0 && v.Hosts != nil && len(v.Hosts.IDs) > 0 && len(v.Hosts.Omitted) == 0
+		scoped := v.Hosts != nil && len(v.Hosts.IDs) > 0 && len(v.Hosts.Omitted) == 0
+		// Exact local worktree queries may omit unrelated paired runtimes. Those
+		// hosts are outside this fixed binding; omission of local still fails.
+		if !scoped && l.profile.Environment == "" && v.Hosts != nil && len(v.Hosts.IDs) == 1 && v.Hosts.IDs[0] == "local" {
+			scoped = true
+			for _, host := range v.Hosts.Omitted {
+				if !strings.HasPrefix(host, "runtime:") || strings.TrimPrefix(host, "runtime:") == "" || host == "runtime:"+c.RuntimeID {
+					scoped = false
+				}
+			}
+		}
+		complete := v.Truncated != nil && !*v.Truncated && v.Total != nil && *v.Total == 0 && scoped
 		if complete && time.Since(emptySince) >= 2*time.Second {
 			saved.Attempted = true
 			if e = write(); e != nil {

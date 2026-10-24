@@ -1,0 +1,5 @@
+=== RUN   TestSRDisplaySnapshotPublicService
+--- PASS: TestSRDisplaySnapshotPublicService (33.00s)
+=== RUN   TestSRDisplaySnapshotSourceIsolationAndRestart
+--- PASS: TestSRDisplaySnapshotSourceIsolationAndRestart (6.18s)
+PASS

@@ -119,7 +119,7 @@ func cleanupCreationService(t *testing.T, dir string, info contracts.ServiceInfo
 
 func TestSRResourceCreationRecovery(t *testing.T) {
 	testCount.Add(1)
-	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash", "missing-terminal-receipt"} {
+	for _, mode := range []string{"graceful", "kill", "receipt-before-commit", "wire-loss", "owner-crash", "planned-initial-terminal", "missing-initial-plan"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, request := setupRun(t)
 			state := os.Getenv("STEERRUNNER_FIXTURE_STATE")
@@ -136,12 +136,15 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			if mode == "wire-loss" {
 				_ = os.WriteFile(filepath.Join(state, "lose-create-response"), nil, 0600)
 			}
-			if mode == "missing-terminal-receipt" {
+			if mode == "planned-initial-terminal" || mode == "missing-initial-plan" {
 				_ = os.WriteFile(filepath.Join(state, "omit-create-terminal-identity"), nil, 0600)
 			}
 			var input contracts.RunRequest
 			_ = json.Unmarshal(request.Input, &input)
-			settings, _ := json.Marshal(map[string]any{"transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "2s"}})
+			// Hold the original show until the service is killed; a two-second
+			// query timeout could commit an unknown receipt between inspect and kill,
+			// invalidating the fault window's captured revision under disk load.
+			settings, _ := json.Marshal(map[string]any{"transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
 			input.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: settings}
 			request.Input, _ = json.Marshal(input)
 			service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
@@ -190,6 +193,18 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			} else if err := killOwnedService(service); err != nil {
 				t.Fatal(err)
 			}
+			if err := waitOwnedService(service); err != nil {
+				t.Fatal("original service did not exit at the creation gate", err)
+			}
+			if mode == "missing-initial-plan" {
+				plans, _ := filepath.Glob(filepath.Join(dir, "orca-initial-terminals", "*.json"))
+				if len(plans) != 1 {
+					t.Fatal("original terminal preparation plan missing", plans)
+				}
+				if err := os.Remove(plans[0]); err != nil {
+					t.Fatal(err)
+				}
+			}
 			if mode != "receipt-before-commit" && (process.InspectProcess(&owner.Process) != "matching process still exists" || process.InspectProcess(&effect.CLI) != "matching process still exists") {
 				t.Fatal("service exit killed or replaced the independent original CLI")
 			}
@@ -226,7 +241,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			start := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{{RunID: id, Request: stop}}}
 			next := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(start.JSON()), 0))
 			cleanupCreationService(t, dir, next)
-			if mode == "wire-loss" || mode == "owner-crash" || mode == "missing-terminal-receipt" {
+			if mode == "wire-loss" || mode == "owner-crash" || mode == "missing-initial-plan" {
 				view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Status == "reconciling" && !v.NewInputsAllowed })
 				time.Sleep(1200 * time.Millisecond)
 				view = waitRun(t, dir, id, func(v contracts.RunView) bool { return !v.NewInputsAllowed })

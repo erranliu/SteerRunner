@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":null,"data":{"checks":[],"state_dir":"c:\\srt\\e0efde8aa705\\s","resources_settled":true,"runs":[{"stop_evidence_scope":"orca_terminal","run_id":"4dc0dd91ce753d2559e7004cafed85ac","input_digest":"d9ee3e4ef098d3079dbbb39966c293b93594f13cb12543e4c57f7c6eaa145da1","resources_settled":true}]},"error":null}

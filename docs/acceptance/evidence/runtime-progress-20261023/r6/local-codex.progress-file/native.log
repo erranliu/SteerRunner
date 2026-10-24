@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.progress-file
+--- PASS: TestSRLiveScenario (192.86s)
+    --- PASS: TestSRLiveScenario/local-codex.progress-file (192.83s)
+PASS

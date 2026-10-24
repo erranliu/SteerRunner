@@ -1,0 +1,4 @@
+{"args":["status","--json"],"method":"orca/status/--json"}
+{"args":["worktree","create","--repo","path:C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-1520278930\\source","--name","sr-35290869b614c8d09631a555b276b642","--base-branch","a4074703a74dc8ab620c000f5bc7473aedf9e478","--no-parent","--setup","skip","--json"],"method":"orca/worktree/create"}
+{"args":["terminal","list","--worktree","id:creation-repo::C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-1520278930\\native\\original-worktree","--json"],"method":"orca/terminal/list"}
+{"args":["terminal","show","--terminal","original-terminal","--json"],"method":"orca/terminal/show"}

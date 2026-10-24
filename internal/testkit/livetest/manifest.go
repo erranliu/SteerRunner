@@ -103,6 +103,19 @@ func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, 
 }
 
 func (m Manifest) Validate() error {
+	if m.Driver == "progress-file" || strings.Contains(m.Scenario, ".progress") {
+		s, _, err := Lookup(m.Scenario, "default")
+		target := "local-codex"
+		if m.Execution.Adapter == "orca-terminal" {
+			target = "orca-environment"
+			if m.Execution.Target.Kind == "local" {
+				target = "orca-local"
+			}
+		}
+		if err != nil || s.Driver != "progress-file" || m.Driver != s.Driver || m.Level != "L3" || s.Target != target {
+			return errors.New("progress fixture differs from its registered driver/target")
+		}
+	}
 	if m.RequirementsSHA256 != "" && m.RequirementsSHA256 != RegistryDigest() {
 		return errors.New("frozen requirements do not match the native driver registry")
 	}
@@ -142,7 +155,7 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "environment-check" && m.Driver != "progress-file") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
 		return errors.New("v1 requires a development fixture without stability fields")
 	}
 	if m.Schema == "steerrunner-test/v2" {

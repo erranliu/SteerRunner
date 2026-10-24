@@ -1,0 +1,53 @@
+[
+  {
+    "scenario": "local-codex.progress-file",
+    "run_ids": [
+      "18cba1242f6f966b82417398e9d13398"
+    ],
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "offline_evidence": "C:\\srt\\a9706dd57842\\evidence\\progress-013-offline-stop.json"
+  },
+  {
+    "scenario": "orca-local.progress-file",
+    "run_ids": [
+      "86bc1974ce004470f63885c7ac7deaa4"
+    ],
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "offline_evidence": "C:\\srt\\9e970fbbb65a\\evidence\\progress-013-offline-stop.json"
+  },
+  {
+    "scenario": "orca-remote.progress-file",
+    "run_ids": [
+      "82ed012eff170bac14fc334e861c98e8"
+    ],
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "offline_evidence": "C:\\srt\\5c8297bc851b\\evidence\\progress-014-offline-stop.json"
+  },
+  {
+    "scenario": "local-codex.progress-multirun",
+    "run_ids": [
+      "b3a293c299120b964313b1c417c1cdaa",
+      "ae6bbe02727e27eb2ae4c9551fc04713"
+    ],
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "offline_evidence": "C:\\srt\\ad68e93dd130\\evidence\\progress-023-offline-stop.json"
+  },
+  {
+    "scenario": "local-codex.progress-recovery",
+    "run_ids": [
+      "87cd3cb834e586f638e26f3971f32e22"
+    ],
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "offline_evidence": "C:\\srt\\15ad2eab933f\\evidence\\progress-015-offline-stop.json"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "client_passed": 32,
+  "viewer_passed": 9,
+  "package_passed": 6,
+  "viewer_unit_exit": 0,
+  "client_exit": 0,
+  "package_exit": 0,
+  "runner_sha256": "1014C868C4E6865EC7412AAE3151586ECEA322CB7332E2CA217FD89895B15F3A",
+  "viewer_sha256": "10F785F272773FB2EDD714E5EDDBA59D61DB9CC4A267C937ADCBF6D394943692"
+}

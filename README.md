@@ -42,7 +42,7 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 
 - 获得傻瓜式的远端执行能力。本地执行也比直接在Agent里自己操作要方便。
 - 当你并行需求日益强烈时，你自然会有远端执行的需求，
-- 
+-
 
 ## 使用前准备
 
@@ -128,6 +128,7 @@ Runner 和 Viewer 输出到 `bin`，完整交付包输出到指定的新目录�
 
 ## 更多文档
 
+- [运行时单文件汇报通道](docs/runtime-progress.md)：可选原始字节、独立快照版本、执行环境路径及本机/Orca 远端采集；[Spec](docs/spec/runtime-progress.spec.md) / [Plan](docs/spec/runtime-progress.plan.md) / [验收](docs/acceptance/runtime-progress.md)。
 - [文档索引](docs/README.md)：全部使用说明、设计契约与验收入口。
 - [CLI 与运维指南](docs/cli-guide.md)：详细命令、权限、恢复、状态目录和服务维护。
 - [Workflow 指南](docs/workflows/README.md)：开发、带审计开发、持续会话和一次生成。

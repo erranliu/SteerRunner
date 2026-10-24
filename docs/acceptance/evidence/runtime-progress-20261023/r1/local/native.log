@@ -1,0 +1,8 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.progress-file
+    progress_test.go:176: CLI [progress-file --run-id d5efc039d735fe7399a067122978e02b]: exit status 4: &{Code:service_unavailable Message:Cannot connect to this directory's service.}
+    progress_test.go:50: CLI [inspect --run-id d5efc039d735fe7399a067122978e02b]: exit status 4: &{Code:service_unavailable Message:Cannot connect to this directory's service.}
+    progress_test.go:94: service exit unverified CLI [service stop --input -]: exit status 4: &{Code:service_unavailable Message:Cannot connect to this directory's service.}
+--- FAIL: TestSRLiveScenario (37.89s)
+    --- FAIL: TestSRLiveScenario/orca-local.progress-file (37.81s)
+FAIL

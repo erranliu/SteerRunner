@@ -1,0 +1,26 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "ok": true,
+  "request_id": null,
+  "data": {
+    "detached": false,
+    "executable_sha256": "",
+    "instance_id": "",
+    "last_shutdown": {
+      "diagnostic": "Worker shutdown or native resource settlement remains unverified. run c83b8dcb8379acde71a4dd5ac9093659: native stop status \"\"",
+      "executable_sha256": "3f7db530528954bb888729e32349013256e72a2f26f38eceab56a8404ac54f4e",
+      "instance_id": "b5295435d18a935c5d8d22cbeb69cdc2",
+      "request_id": "progress-restart",
+      "resources_settled": false,
+      "state_dir": "c:\\srt\\18aa665faac6\\s"
+    },
+    "pid": 0,
+    "process_created": "",
+    "protocol": "steerrunner-cli/v1",
+    "resource_digest": "",
+    "state_dir": "c:\\srt\\18aa665faac6\\s",
+    "status": "not_running",
+    "version": ""
+  },
+  "error": null
+}

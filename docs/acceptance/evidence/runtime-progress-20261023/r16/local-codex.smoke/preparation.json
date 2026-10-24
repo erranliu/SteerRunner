@@ -1,0 +1,8 @@
+{
+  "schema": "steerrunner-test-preparation/v1",
+  "scenario": "local-codex.smoke",
+  "base_branch": "codex/srtest/62b48019d10b/base",
+  "fixture_id": "62b48019d10b",
+  "status": "ready",
+  "root": "C:\\srt\\62b48019d10b"
+}

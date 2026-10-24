@@ -1,0 +1,29 @@
+{
+  "id": "89dec43c-a2d5-428d-8200-83252a82dafc",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_97dc0303-44d3-470c-9454-0e003fb6ce1d",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-843211dc045a57f1a03b73bff896d1d5@@1d055fa3",
+      "incarnationId": "ba7f8a08-ea2d-4c67-844f-7e5de515070b",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-843211dc045a57f1a03b73bff896d1d5",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-843211dc045a57f1a03b73bff896d1d5",
+      "branch": "refs/heads/erranliu/sr-843211dc045a57f1a03b73bff896d1d5",
+      "tabId": "7f66ace4-e498-4f29-aa1d-11f5d1810ca1",
+      "leafId": "5d3efa91-2e0c-479b-a953-f31a87117003",
+      "title": "Terminal 1",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792756915107,
+      "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-843211dc045a57f1a03b73bff896d1d5>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "28da9fea-ca77-48de-8319-decb62914563"
+  }
+}

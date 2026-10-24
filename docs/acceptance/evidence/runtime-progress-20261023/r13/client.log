@@ -1,0 +1,56 @@
+warning: in the working copy of 'spec.md', LF will be replaced by CRLF the next time Git touches it
+To C:/Users/lmas1/.codex/worktrees/e60a/SteerRunner/.evidence/progress-integration-r13-client/remote.git
+ * [new branch]      main -> main
+{
+  "live_execution": false,
+  "runner_sha256": "1014C868C4E6865EC7412AAE3151586ECEA322CB7332E2CA217FD89895B15F3A",
+  "controlled": true,
+  "passed": [
+    "native default and production run-configuration validation",
+    "project binding and publication template discovery",
+    "configure sends zero business writes",
+    "Runner-declared native minimum: 0.159.2+build.7",
+    "Runner-declared native minimum: 0.159.10",
+    "Runner-declared native minimum: 0.163.0-alpha.10.2",
+    "Runner-declared native minimum: 1.0.0",
+    "Runner-declared native minimum: 0.159.1",
+    "Runner-declared native minimum: 0.159.2-rc.1",
+    "Runner-declared native minimum: 0.160.0-alpha.01",
+    "Runner-declared native minimum: 0.0160.0",
+    "Runner-declared native minimum: 0.160.0.1",
+    "repeat discovery preserves explicit choice",
+    "lost response preserves original command handle",
+    "UTF-8 and quoted argv with an absolute CRLF material path",
+    "service replacement reconciles original request",
+    "same submission never creates a second run",
+    "same-snapshot observe cursor",
+    "old question sends zero input",
+    "reply lost response reconciles without new answer",
+    "submit reply resume stop each dispatched once",
+    "feedback handles an omitted optional question field",
+    "non-Git invocation still discovers machine routes",
+    "empty remote environment list is distinct from missing Orca",
+    "failed authentication is not treated as an empty environment list",
+    "offline Orca preserves environment and does not claim missing installation",
+    "missing Orca proactively explains remote installation requirement",
+    "concurrent helpers serialize one original command",
+    "damaged request never rerenders or resends",
+    "working material mismatch blocks before submit",
+    "explicit missing Runner has no fallback",
+    "duplicate configuration key rejected without overwrite"
+  ]
+}
+{
+  "viewer_sha256": "10F785F272773FB2EDD714E5EDDBA59D61DB9CC4A267C937ADCBF6D394943692",
+  "passed": [
+    "native window",
+    "four columns",
+    "copied standalone EXE and snapshot row",
+    "expired old snapshot",
+    "last good row retained after parse failure",
+    "independent sources with the same Run ID",
+    "complete snapshot removes only its missing Run",
+    "deleted source retains last good row",
+    "close settles reads and exits"
+  ]
+}

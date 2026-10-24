@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-10-23T23:34:55.8300146+00:00",
+  "kind": "controlled-regression-cleanup",
+  "live_execution": false,
+  "service_status": "not_running",
+  "run_statuses": [
+    "stopped",
+    "stopped"
+  ],
+  "native_original_identities": [
+    {
+      "kind": "os",
+      "pid": 3364,
+      "created": "01dd63460e449302",
+      "executable": "c:\\users\\lmas1\\.codex\\worktrees\\e60a\\steerrunner\\.evidence\\progress-acceptance-r14\\controlled\\native-fixture.exe"
+    },
+    {
+      "kind": "os",
+      "pid": 55904,
+      "created": "01dd634602cf14f3",
+      "executable": "c:\\users\\lmas1\\.codex\\worktrees\\e60a\\steerrunner\\.evidence\\progress-acceptance-r14\\controlled\\native-fixture.exe"
+    }
+  ],
+  "original_pids_absent": [
+    true,
+    true
+  ],
+  "retained_fixture": "C:/Users/lmas1/AppData/Local/Temp/sr-3652039838"
+}

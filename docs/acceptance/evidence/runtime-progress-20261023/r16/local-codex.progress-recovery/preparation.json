@@ -1,0 +1,8 @@
+{
+  "status": "ready",
+  "schema": "steerrunner-test-preparation/v1",
+  "scenario": "local-codex.progress-recovery",
+  "root": "C:\\srt\\15ad2eab933f",
+  "base_branch": "codex/srtest/15ad2eab933f/base",
+  "fixture_id": "15ad2eab933f"
+}

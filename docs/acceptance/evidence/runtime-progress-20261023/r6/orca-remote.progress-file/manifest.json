@@ -1,0 +1,76 @@
+{
+  "schema": "steerrunner-test/v1",
+  "id": "695d369caf4e",
+  "level": "L3",
+  "scenario": "orca-remote.progress-file",
+  "driver": "progress-file",
+  "root": "C:\\srt\\695d369caf4e",
+  "runner_exe": "C:\\srt\\695d369caf4e\\bin\\steerrunner.exe",
+  "runner_sha256": "cf10a98cde5ac852674e6a4084fe6c2c6a9e531dae2943ad12afcc6804c6abc5",
+  "source_commit": "1cfe2f9a065830ab62d540d3de4c0011ed603b56",
+  "source_dirty": true,
+  "repository_path": "C:\\srt\\695d369caf4e\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/695d369caf4e/base",
+  "base_revision": "28e5160e04726d1d018cfa8412437e61f0e26d76",
+  "spec_path": "C:\\srt\\695d369caf4e\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\695d369caf4e\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "adapter": "orca-terminal",
+    "target": {
+      "kind": "orca_environment",
+      "environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    },
+    "settings": {
+      "agent": "codex",
+      "access_mode": "sandbox",
+      "transport": {
+        "executable": "C:\\srt\\695d369caf4e\\bin\\local-audit.exe",
+        "args": [
+          "local-audit",
+          "-manifest",
+          "C:\\srt\\695d369caf4e\\manifest.json",
+          "-orca",
+          "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "--"
+        ]
+      },
+      "agent_launch": {
+        "executable": "codex.exe",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "low"
+      }
+    }
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/695d369caf4e/base",
+    "settings": {
+      "query": {
+        "executable": "powershell.exe",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\695d369caf4e\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ]
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "5aaba0283fb4040fb76849af6e85baae7f2b324526c7e4895dd564150445655c",
+  "configuration_path": "C:\\srt\\695d369caf4e\\bin\\test-config.json",
+  "workflow": {
+    "id": "development",
+    "version": 2
+  },
+  "created_at": "2026-10-23T09:42:52.0166934Z",
+  "requirements_sha256": "f610e8ebb6a462184ef55509537c335adedcacad7c02fa3da70597eb7757e60b",
+  "remote_runtime_id": "f8616747-34af-4543-8487-ec6b5d8de4ff"
+}

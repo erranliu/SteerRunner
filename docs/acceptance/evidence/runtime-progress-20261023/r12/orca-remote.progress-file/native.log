@@ -1,0 +1,5 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-remote.progress-file
+--- PASS: TestSRLiveScenario (288.23s)
+    --- PASS: TestSRLiveScenario/orca-remote.progress-file (288.18s)
+PASS

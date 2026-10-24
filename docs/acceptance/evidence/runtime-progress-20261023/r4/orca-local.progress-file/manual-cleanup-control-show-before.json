@@ -1,0 +1,29 @@
+{
+  "id": "5f0bca2b-0c1f-4cfe-9f40-dca2d1a7dcb7",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_ae9ca18f-8525-4594-9ebf-978807615206",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-864900d1a3c60c9ae4ad80b1a02f10ba@@8e702e49",
+      "incarnationId": "1e883cff-1b15-4b8f-b0f5-37251c9d6b9e",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-864900d1a3c60c9ae4ad80b1a02f10ba",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-864900d1a3c60c9ae4ad80b1a02f10ba",
+      "branch": "refs/heads/erranliu/sr-864900d1a3c60c9ae4ad80b1a02f10ba",
+      "tabId": "c43bf19f-1f8a-4715-a820-269223a4b190",
+      "leafId": "f5879d4a-35b3-49fd-8224-5762724e3faa",
+      "title": "SteerRunner native control",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1792744847064,
+      "preview": "dCI6IjIwMjYtMTAtMjNUMDg6Mzk6MDMuMDQ4ODQ2OVoiLCJleHBpcmVzX2F0IjoiMjAyNi0xMC0yM1QxNzozODozNS45NDYzMzM5KzA4OjAwIiwiYWNjZXNzX21vZGUiOiJzYW5kYm94In0sInJldm9jYXRpb25fY29uZmlybWVkIjp0cnVlLCJicm9rZXJfY2xvc2VkIjp0cnVlLCJzb2NrZXRfY2xlYW51cF9jb25maXJtZWQiOnRydWUsIm1vZGUiOiJob3N0LWdoLXJlcG9zaXRvcnktYnJva2VyIn19",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "28da9fea-ca77-48de-8319-decb62914563"
+  }
+}

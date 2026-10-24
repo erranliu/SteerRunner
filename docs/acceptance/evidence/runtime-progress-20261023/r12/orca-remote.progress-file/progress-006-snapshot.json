@@ -1,0 +1,94 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "67ad39a3de0c93d1a9ce840391347f7b",
+    "version": 3,
+    "observed_at": "2026-10-23T13:33:15.7721839Z",
+    "encoding": "base64",
+    "content_base64": "Y29wcGVyfEM6XFVzZXJzXEFkbWluaXN0cmF0b3Jcb3JjYVx3b3Jrc3BhY2VzXFN0ZWVybGluZVRlc3Rcc3ItNjdhZDM5YTNkZTBjOTNkMWE5Y2U4NDAzOTEzNDdmN2JcLnN0ZWVycnVubmVyXHByb2dyZXNzXDY3YWQzOWEzZGUwYzkzZDFhOWNlODQwMzkxMzQ3ZjdiXHByb2dyZXNzLmJpbgD/EQ==",
+    "size_bytes": 166,
+    "sha256": "82bdcad92f9ce747d561e74562099f0956d38b472efe392396245b1cdb226fdc",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "392392ac364dc0e33dc16e6c30d6a5d0",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "0700ad9f2140f1641f5163f4a9bc9566",
+        "action": "create_resource",
+        "status": "confirmed",
+        "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+      },
+      {
+        "operation_id": "1d0ef3d8bbdacb5056a1bb682b065dc9",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "1f5a12f89982109edc6296c59251626e",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "67ad39a3de0c93d1a9ce840391347f7b",
+    "revision": 16,
+    "title": "Progress byte channel 628ea40f2f6b 0",
+    "input_digest": "dd2876f5ccaa72431483e254b97881bf617f2273ed8d5361a5879e3080d72008",
+    "resource_digest": "8171b167b01ce7e498a49460ff2e2390512411d282d7bd08c6f04bf325cc0340",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Use the execution environment's native shell execution tool (exec_command or the provided powershell shell tool) to run powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Do not use node_repl, child_process, GUI tools or another host's process API: those are not this execution environment. Keep waiting for this foreground process; it deliberately waits for external gates. Set the shell tool execution timeout to 600000 milliseconds if supported. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. The frozen Spec and Plan describe this same producer-only task; there is no implementation, checker or publication task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observing",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "0caf9189210a99d31a7709907757c793983383b3",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "0caf9189210a99d31a7709907757c793983383b3",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "workspace_scope": "revision",
+      "turn_started": true,
+      "attempt_id": "ec3e43bfeb6131a8e744fee7637d42d6",
+      "generation": "1def31b49b7d00235928f7e365e537f5",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "session_id": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_e85ae41d-9cb1-42d9-8203-0965535c1280:e15d0a07-7895-478e-9e3a-1597cc50a6f5",
+      "turn_id": "0059f151d20b061ac99d15cfad3b5f11",
+      "final_available": false,
+      "workspace": "C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-67ad39a3de0c93d1a9ce840391347f7b",
+      "branch": "erranliu/sr-67ad39a3de0c93d1a9ce840391347f7b"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-23T13:29:10.2527748Z",
+    "updated_at": "2026-10-23T13:33:13.7858597Z"
+  }
+}

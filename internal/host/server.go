@@ -37,7 +37,7 @@ type server struct {
 	usageCancel context.CancelFunc
 }
 
-func Serve(ctx context.Context, dir, startupID string) error {
+func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 	created, detached, err := launchFacts(dir, startupID)
 	if err != nil {
 		return err
@@ -75,6 +75,11 @@ func Serve(ctx context.Context, dir, startupID string) error {
 	}
 	defer output.Close()
 	logger := log.New(output, "", log.Ldate|log.Ltime|log.LUTC)
+	defer func() {
+		if outErr != nil {
+			logger.Print("service failed: ", outErr)
+		}
+	}()
 	if err := qualifyLegacyRecovery(dir); err != nil {
 		logger.Print("recovery source rejected: ", err)
 		return err
@@ -366,6 +371,11 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		}
 		items := s.engine.Takeover(caps.Recovery, caps.Workflows)
 		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
+	case "progress-file":
+		if wire.Request != nil {
+			return reject(contracts.Fail(2, "invalid_request", "Progress queries do not accept input."))
+		}
+		return s.engine.HandleProgress(wire.Options.RunID), false
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
 	case "environment-check start", "environment-check stop", "environment-check inspect":

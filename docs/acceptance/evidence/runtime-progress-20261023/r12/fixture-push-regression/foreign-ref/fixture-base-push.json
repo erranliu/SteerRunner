@@ -1,0 +1,7 @@
+{
+  "revision": "d570230bd87e90e004983eb87d2a6472f415d1f5",
+  "error": "To C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-fixture-push-check/origin.git\n ! [rejected]        d570230bd87e90e004983eb87d2a6472f415d1f5 -> codex/srtest/012345abcde3/base (non-fast-forward)\nerror: failed to push some refs to 'C:\\Users\\lmas1\\.codex\\worktrees\\e60a\\SteerRunner\\.evidence\\progress-fixture-push-check/origin.git'\nhint: Updates were rejected because a pushed branch tip is behind its remote\nhint: counterpart. If you want to integrate the remote changes, use 'git pull'\nhint: before pushing again.\nhint: See the 'Note about fast-forwards' in 'git push --help' for details.",
+  "ref": "refs/heads/codex/srtest/012345abcde3/base",
+  "outcome": "failed",
+  "attempt": 1
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "steerrunner-test-interruption/v1",
+  "status": "controller_aborted_controlled_child_retained",
+  "at": "2026-10-23T12:49:27.2435651Z",
+  "reason": "Superseded after r10 evidence confirmed stale disconnected control card prevents stop reconciliation. Independent Controlled child retained to finish its own cleanup; prevent obsolete native dispatch.",
+  "controller_pid": 21836,
+  "controller_created": 134372327589374780,
+  "controlled_pid": 27108,
+  "live_cases_started": 0
+}

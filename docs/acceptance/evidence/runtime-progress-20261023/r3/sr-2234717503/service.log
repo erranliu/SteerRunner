@@ -1,0 +1,4 @@
+2026/10/23 07:48:41 service ready instance=75cf5427eb2cab86247176730d6ce825 pid=41604 detached=true
+2026/10/23 07:48:52 service ready instance=442760e0251c373c98e3935d85ef7ecf pid=47184 detached=true
+2026/10/23 07:49:52 service observation detach remains unverified run=0fc139eede7ef85131ad5d483b646292 diagnostic=original terminal host was not observed
+2026/10/23 07:49:52 service stopped instance=442760e0251c373c98e3935d85ef7ecf resources_settled=true

@@ -1,0 +1,13 @@
+warning: in the working copy of '.gitignore', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'README.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'docs/test-catalog.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'docs/testing.md', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'internal/testkit/livetest/cases.json', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'internal/testkit/livetest/cases_test.go', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'scripts/native-result.ps1', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'scripts/new-test-fixture.ps1', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'scripts/test.ps1', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/catalog.json', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/framework/configuration-test.ps1', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/framework/native-result-test.ps1', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tests/framework/stability-test.ps1', CRLF will be replaced by LF the next time Git touches it

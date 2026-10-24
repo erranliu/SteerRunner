@@ -1,0 +1,58 @@
+[
+  {
+    "scenario": "local-codex.progress-file",
+    "root": "C:\\srt\\1b241e91d91a",
+    "run_count": 1,
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "run_ids": [
+      "6f48839fe5986f8c176996652103dad5"
+    ]
+  },
+  {
+    "scenario": "orca-local.progress-file",
+    "root": "C:\\srt\\452815a00fe2",
+    "run_count": 1,
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "run_ids": [
+      "ad235fd7df0d811f65f97b7ca97dd0e4"
+    ]
+  },
+  {
+    "scenario": "orca-remote.progress-file",
+    "root": "C:\\srt\\628ea40f2f6b",
+    "run_count": 1,
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "run_ids": [
+      "67ad39a3de0c93d1a9ce840391347f7b"
+    ]
+  },
+  {
+    "scenario": "local-codex.progress-multirun",
+    "root": "C:\\srt\\f2be0e63b98f",
+    "run_count": 2,
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "run_ids": [
+      "1a4329d73e14e05d46ac4eb88799db6c",
+      "5c5176a359772019a26fc3906931d520"
+    ]
+  },
+  {
+    "scenario": "local-codex.progress-recovery",
+    "root": "C:\\srt\\18aa665faac6",
+    "run_count": 1,
+    "run_stopped": true,
+    "service_stopped": true,
+    "resources_settled": true,
+    "run_ids": [
+      "c83b8dcb8379acde71a4dd5ac9093659"
+    ]
+  }
+]

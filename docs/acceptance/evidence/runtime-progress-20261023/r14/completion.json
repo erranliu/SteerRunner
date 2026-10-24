@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-23T22:47:13.006082+00:00",
+  "status": "complete",
+  "runner_sha256": "1014c868c4e6865ec7412aae3151586ecea322cb7332e2ca217fd89895b15f3a",
+  "resource_digest": "4c2e1395f863775023a1c0e83791cfb7d7e9c54ce2d0fd77f6cf8f893dfb7ebb",
+  "source_commit": "93c6cc358f0ab13422f9de43a457d6171f290c77",
+  "merge_head": "9740bed6478809922a237b06988d483853250100",
+  "l1_top_passed": 646,
+  "controlled_passed": 23,
+  "l2_passed": 2,
+  "l3_passed": 5,
+  "frozen_files": 753,
+  "changed_files": 0,
+  "native_progress_runs_settled": 6,
+  "parallel_passed": true,
+  "parallel_overlaps": 7,
+  "resource_conflicts": 0
+}

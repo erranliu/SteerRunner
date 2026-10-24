@@ -1,0 +1,90 @@
+{
+  "native_final_available": false,
+  "response": {
+    "contract": "steerrunner-progress-file/v1",
+    "run_id": "6d3ade1819ad726f4c02c404844630c7",
+    "version": 2,
+    "observed_at": "2026-10-23T09:44:08.4510393Z",
+    "encoding": "base64",
+    "content_base64": "dmlvbGV0fGM6XHNydFwzMTRmMGU4OGVlODdcc1x3b3Jrc3BhY2VzXG9ldnhmNWx2b3JiZXhtbXMydDV1NGhuaWg0XC5zdGVlcnJ1bm5lclxwcm9ncmVzc1w2ZDNhZGUxODE5YWQ3MjZmNGMwMmM0MDQ4NDQ2MzBjN1xwcm9ncmVzcy5iaW4A/xE=",
+    "size_bytes": 137,
+    "sha256": "99f0f1fd8e5c8273db736e3f3b35b18d5f031e8939b0afd681009140c8fe6e7c",
+    "collection_status": "observing"
+  },
+  "run": {
+    "operations": [
+      {
+        "operation_id": "5722eb26caa95db751eb0fc8f8fad543",
+        "action": "prepare_workspace",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "0591c4d0bec04be365d5091fcba2ec7c",
+        "action": "prepare_session",
+        "status": "confirmed"
+      },
+      {
+        "operation_id": "d02d0f4b6eb5aefeab8c369af6eae2d2",
+        "action": "start_turn",
+        "status": "accepted"
+      }
+    ],
+    "run_id": "6d3ade1819ad726f4c02c404844630c7",
+    "revision": 11,
+    "title": "Progress byte channel 314f0e88ee87 0",
+    "input_digest": "d9f8c5d1a628c4b5ff10bd9c108ef5271746d16d20fbf516249a576b64433377",
+    "resource_digest": "60dcd956b215814cc173f10aa1e118220e6d0ff72b57dbf1cbce21cf6435012c",
+    "workflow": {
+      "id": "development",
+      "version": 2,
+      "prompt_overrides": {
+        "implement.execute": "Execute powershell.exe -NoProfile -ExecutionPolicy Bypass -File sr-smoke/progress.ps1 exactly once in the current workspace. Keep waiting for this foreground process; it deliberately waits for external gates. Set the tool execution timeout to 600000 milliseconds. If the tool returns a running session ID, poll that same session until it ends; never restart the script. Do not detach it or start it twice. Do not modify other files or publish Git/PR. Use the injected environment as-is. Do not inspect or print credentials. This instruction is the entire task; do not implement the example spec/plan task."
+      }
+    },
+    "step": "implement.execute",
+    "status": "running",
+    "phase": "observing",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/spec.md",
+        "commit": "af23b84908f33236a730757bdf216bb3f959e49c",
+        "execution_location": "sr-smoke/spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "sr-smoke/plan.md",
+        "commit": "af23b84908f33236a730757bdf216bb3f959e49c",
+        "execution_location": "sr-smoke/plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "requested_model": "gpt-6.1-sol",
+      "requested_reasoning_effort": "low",
+      "workspace_scope": "working_tree",
+      "turn_started": true,
+      "attempt_id": "c13267ff928c63232fc291a92286182f",
+      "generation": "4f6ea9dd2b1784b34dfef10c7946b6d4",
+      "backend": "local",
+      "protocol": "local_codex_app_server_v1",
+      "session_id": "01a16825-04cd-7451-bfc6-8a3f1847208d",
+      "turn_id": "01a16825-29ee-7223-832f-a12267068478",
+      "final_available": false,
+      "workspace": "c:\\srt\\314f0e88ee87\\s\\workspaces\\oevxf5lvorbexmms2t5u4hnih4",
+      "branch": "codex/runner-6d3ade1819ad726f4c02c404844630c7"
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-23T09:43:03.4901226Z",
+    "updated_at": "2026-10-23T09:43:50.4199371Z"
+  }
+}

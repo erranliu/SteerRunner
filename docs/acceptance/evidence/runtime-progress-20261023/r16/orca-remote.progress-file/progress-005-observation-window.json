@@ -1,0 +1,12 @@
+{
+  "collection_gap_budget_seconds": 20,
+  "collection_gap_samples": 0,
+  "collection_healthy_at_end": true,
+  "contract": "steerrunner-progress-observation-window/v2",
+  "duration_seconds": 121.2324835,
+  "end": "2026-10-24T00:08:30.3876056Z",
+  "run_ids": [
+    "82ed012eff170bac14fc334e861c98e8"
+  ],
+  "start": "2026-10-24T00:06:29.1551221Z"
+}

@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":null,"error":{"code":"service_unavailable","message":"Service discovery is unavailable; start the service explicitly."}}

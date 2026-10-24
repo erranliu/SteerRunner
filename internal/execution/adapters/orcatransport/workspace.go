@@ -59,6 +59,12 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 			return receipt, resolveErr
 		}
 		args := l.workspaceCreationArgs(r, selector)
+		if l.setup.AgentLaunchCommand != "" {
+			if _, _, planErr := l.initialTerminalPlan(s, true); planErr != nil {
+				receipt.Disposition = b.OperationRejected
+				return receipt, planErr
+			}
+		}
 		key := l.creationKey(r.Snapshot, r.Operation.ID, r.Operation.PayloadDigest, "workspace")
 		result, callErr := l.creationCall(ctx, key, args, runtimeID, selector, l.creationTimeout(), false)
 		if callErr != nil {

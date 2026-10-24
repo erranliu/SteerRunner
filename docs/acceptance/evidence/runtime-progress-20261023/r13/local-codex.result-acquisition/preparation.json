@@ -1,0 +1,8 @@
+{
+  "status": "ready",
+  "root": "C:\\srt\\c8a749f11c20",
+  "base_branch": "codex/srtest/c8a749f11c20/base",
+  "scenario": "local-codex.result-acquisition",
+  "schema": "steerrunner-test-preparation/v1",
+  "fixture_id": "c8a749f11c20"
+}

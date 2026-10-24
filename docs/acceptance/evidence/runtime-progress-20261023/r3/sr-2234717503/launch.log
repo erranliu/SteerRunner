@@ -1,0 +1,4 @@
+launcher job flags=0x1800 query=<nil>
+job isolation rejected: in_job=true error=<nil>
+launcher job flags=0x1800 query=<nil>
+job isolation rejected: in_job=true error=<nil>

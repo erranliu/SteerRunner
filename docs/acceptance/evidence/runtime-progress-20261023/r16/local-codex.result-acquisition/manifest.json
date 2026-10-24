@@ -1,0 +1,60 @@
+{
+  "schema": "steerrunner-test/v1",
+  "id": "51953062360f",
+  "level": "L2",
+  "scenario": "local-codex.result-acquisition",
+  "driver": "result-acquisition",
+  "root": "C:\\srt\\51953062360f",
+  "runner_exe": "C:\\srt\\51953062360f\\bin\\steerrunner.exe",
+  "runner_sha256": "14bd2f0c4dedd1863bb08cf2cd84b1c355c73985c17ccc1bc868517c6c8135a2",
+  "source_commit": "5020187b50990d39d69550c830de317abf93dbc6",
+  "source_dirty": true,
+  "repository_path": "C:\\srt\\51953062360f\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/51953062360f/base",
+  "base_revision": "d3f381172b3cf2c7b6ba4ee2ee10043a35eea9d6",
+  "spec_path": "C:\\srt\\51953062360f\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\51953062360f\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "target": {
+      "kind": "local"
+    },
+    "adapter": "codex-app-server",
+    "settings": {
+      "access_mode": "sandbox",
+      "reasoning_effort": "low",
+      "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+      "model": "gpt-6.1-sol"
+    }
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/51953062360f/base",
+    "settings": {
+      "query": {
+        "executable": "powershell.exe",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\51953062360f\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ]
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "47955389028583898788b11b74452a30bf60b4aa3d671b261451193c680dd8ca",
+  "configuration_path": "C:\\srt\\51953062360f\\bin\\test-config.json",
+  "workflow": {
+    "version": 2,
+    "id": "development"
+  },
+  "created_at": "2026-10-24T00:02:27.4093037Z",
+  "requirements_sha256": "f610e8ebb6a462184ef55509537c335adedcacad7c02fa3da70597eb7757e60b"
+}

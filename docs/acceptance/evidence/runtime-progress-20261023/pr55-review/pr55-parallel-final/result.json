@@ -1,0 +1,11 @@
+{
+  "live_execution": false,
+  "passed": [
+    "valid",
+    "missing-field",
+    "resource-collision",
+    "no-passing-cases",
+    "zero-selection"
+  ],
+  "controlled": true
+}

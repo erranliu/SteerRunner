@@ -1,0 +1,29 @@
+{
+  "submitted_at": "2026-10-23T22:51:56.396105+00:00",
+  "implementation_merge_commit": "601a55aba1c27cfab594d0963df5b9311af3b460",
+  "merged_main": "9740bed6478809922a237b06988d483853250100",
+  "conflicts_resolved": [
+    ".gitattributes",
+    "README.md",
+    "docs/testing.md",
+    "scripts/test.ps1"
+  ],
+  "acceptance_round": "r14",
+  "status": "passed",
+  "l1": 646,
+  "controlled": 23,
+  "native_l2": 2,
+  "native_l3": 5,
+  "parallel_passed": true,
+  "parallel_overlap_pairs": 7,
+  "native_runs_settled": 6,
+  "frozen_files": 753,
+  "changed_frozen_files": 0,
+  "r13_failure_preserved": true,
+  "earlier_failure_files_rechecked": 4333,
+  "archive_manifests": {
+    "r13": "a6a3a5bb3c6a4958cc8b22d56b253a888d9b495685f672f6bfcf94693eccea48",
+    "r14": "b9673fe9f5cc60a4182b3a709e8762f572ad57fd42a5173f0a440e45f1622d3d"
+  },
+  "qualification": "Native results were collected before the merge commit from the exact frozen source; original dirty build identities remain unchanged."
+}
