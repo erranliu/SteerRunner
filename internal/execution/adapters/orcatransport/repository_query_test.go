@@ -78,13 +78,13 @@ func TestRepositoryQueryRetryBudget(t *testing.T) {
 					t.Fatal("retry escaped inventory query", args)
 				}
 				deadline, ok := callCtx.Deadline()
-				if !ok || time.Until(deadline) > repositoryQueryBudget {
-					t.Fatal("CLI call has no shared 15s deadline")
+				if !ok || time.Until(deadline) > 15*time.Second {
+					t.Fatal("CLI call has no bounded execution deadline")
 				}
 				if originalDeadline.IsZero() {
 					originalDeadline = deadline
-				} else if !deadline.Equal(originalDeadline) {
-					t.Fatal("retry reset the shared deadline")
+				} else if deadline.Before(originalDeadline) && scenario == "attempt-limit" {
+					t.Fatal("execution clock moved backwards")
 				}
 				if scenario == "slow-call" || scenario == "shared-deadline" && calls > 1 {
 					<-callCtx.Done()
@@ -111,7 +111,7 @@ func TestRepositoryQueryRetryBudget(t *testing.T) {
 			case "permanent-after-conflict":
 				wantCalls = 2
 			case "shared-deadline":
-				wantCalls = 2
+				wantCalls = 1
 			case "already-canceled":
 				wantCalls = 0
 			}
@@ -122,6 +122,13 @@ func TestRepositoryQueryRetryBudget(t *testing.T) {
 			case "attempt-limit", "permanent-after-conflict":
 				if !errors.Is(err, first) || !errors.Is(err, last) || !strings.Contains(err.Error(), "first failure") || !strings.Contains(err.Error(), "last ") {
 					t.Fatal("first/last failure lost", err)
+				}
+				if scenario == "attempt-limit" {
+					for i, delay := range []string{"1s", "2s", "4s", "8s"} {
+						if len(logs) <= i || !strings.Contains(logs[i], "delay="+delay+" ") {
+							t.Fatal("fixed single-layer backoff changed", logs)
+						}
+					}
 				}
 				if scenario == "attempt-limit" && time.Since(started) < 3*time.Second {
 					t.Fatal("retry did not back off")
@@ -186,7 +193,9 @@ func TestRepositoryCacheRetryNeverReplaysMutations(t *testing.T) {
 				}
 				req.Operation.Receipt, _ = json.Marshal(receipt)
 				before := len(*calls)
-				_, _, _ = l.Reconcile(context.Background(), req)
+				// A direct transport has no durable owner plan. Even query
+				// continuation authorization cannot prove its create was uninvoked.
+				_, _, _ = l.Reconcile(b.WithPreparationRecovery(context.Background(), true), req)
 				if len(*calls) != before {
 					t.Fatal("unknown creation without receipt rediscovered/recreated resources")
 				}

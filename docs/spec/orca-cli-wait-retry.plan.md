@@ -1,6 +1,6 @@
 # Plan：Orca CLI 等待、读取重试与公开状态
 
-日期：2026-10-25。状态：设计审计后待实施；本轮只提交文档。依据 [Spec](orca-cli-wait-retry.spec.md)，结果归[验收记录](../acceptance/orca-cli-wait-retry.md)。源码调查基线 `af5e244ddae05d4c19069852d56c5a74a68ab1ce`。
+日期：2026-10-25。状态：P0–P2 已实施；L1/定向受控通过，P3 完整验收被 Windows Defender 拦截。依据 [Spec](orca-cli-wait-retry.spec.md)，结果归[验收记录](../acceptance/orca-cli-wait-retry.md)。源码调查基线 `af5e244ddae05d4c19069852d56c5a74a68ab1ce`。
 
 ## 1. 独立交付与结构约束
 
@@ -66,4 +66,13 @@ Runner 自身完成竞争下自动准备恢复、有界读取及可解释查询�
 
 独立输出 `C:/SteerlineDebug/runner-cli-wait-retry/<唯一执行ID>/`，native scratch 沿框架在 `C:/srt` 分配；失败与补测分开。不以受控或另一目标的通过替代缺失原生资格。
 
-本轮仅文档链接、范围/契约和空白检查，无代码变更，不运行功能测试。后续只在本仓按 Spec 实施验收，不部署、不修改 SteerLine、不恢复生产现场；调用方联验另行安排。
+实现与功能测试仅在本仓独立现场运行，不部署、不修改 SteerLine、不恢复生产现场；调用方联验另行安排。原设计轮次的文档检查不作为本次功能资格。
+
+## 5. 实施定位（2026-10-25）
+
+- P0/P1：SerializeCLI 统一进程内 FIFO 和原跨进程命名互斥；PreparationCall 仅接受 repo list/status，在取得通道后提交计数并启动 15 秒执行期限。旧 repository_query 私有循环已被同一 90 秒/5 次/1、2、4、8 秒策略替换。
+- P2：预算放在原 operation.Intent.PreparationQuery，ReadOnlyPreparation 的 context 进度接缝负责提交；未建立新操作、表、revision 或恢复服务。自有提交推进局部预期 revision，其它变化仍拒绝派发。invoke 在当前聚合结算，stop 受理与清除同事务；迟到的取消读取不能覆盖 stop 状态/诊断。
+- 恢复只在原绑定/授权有效且创建目录尚未声明时继续原读取；已有目录只读原创建计划与回执，目录不完整仍保持未知。成功隐藏投影后原预算仍保留；停机取消读取不把 Run 授权变成人工恢复。
+- P3：已注册 Controlled TestSROrcaCLIWaitRetry 与 L3 orca-local.cli-wait-retry / orca-remote.cli-wait-retry。沿原原生 fixture、转发 journal、停止和离线结算驱动；测试调度器为这两个共享 CLI cache 的 case 取得独占测试 lease，故障互斥使用新 fixture 的私有 cache key，不持生产 key。
+
+执行目录、准确命令、实际结果和清理持续登记到[验收记录](../acceptance/orca-cli-wait-retry.md)。

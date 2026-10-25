@@ -103,6 +103,17 @@ func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, 
 }
 
 func (m Manifest) Validate() error {
+	if m.Driver == "cli-wait-retry" || strings.HasSuffix(m.Scenario, ".cli-wait-retry") {
+		scenario, _, err := Lookup(m.Scenario, "default")
+		target := "orca-environment"
+		if m.Execution.Target.Kind == "local" {
+			target = "orca-local"
+		}
+		if err != nil || scenario.Driver != "cli-wait-retry" || m.Driver != scenario.Driver || m.Level != "L3" || scenario.Target != target || m.Execution.Adapter != "orca-terminal" {
+			return errors.New("CLI wait fixture differs from registered driver/target")
+		}
+	}
+
 	if m.Driver == "progress-file" || strings.Contains(m.Scenario, ".progress") {
 		s, _, err := Lookup(m.Scenario, "default")
 		target := "local-codex"

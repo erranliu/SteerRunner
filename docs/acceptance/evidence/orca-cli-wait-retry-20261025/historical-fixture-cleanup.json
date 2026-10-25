@@ -1,0 +1,86 @@
+{
+  "kind": "physical-test-resource-audit",
+  "database_records_preserved": true,
+  "fixtures": [
+    {
+      "batch": "final-02",
+      "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2291629170",
+      "service_status": "not_running",
+      "runs": [
+        {
+          "run_id": "19c358cd74ba172aff8abb79c9ea4975",
+          "new_inputs_allowed": false,
+          "database_stop_status": "pending",
+          "workspace": null,
+          "query_calls": [
+            0
+          ]
+        }
+      ],
+      "creation_directories": [],
+      "fake_worktree_markers": []
+    },
+    {
+      "batch": "final-02",
+      "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-238110417",
+      "service_status": "not_running",
+      "runs": [
+        {
+          "run_id": "02815f2534dd052f36e70e7ab86e734b",
+          "new_inputs_allowed": false,
+          "database_stop_status": "pending",
+          "workspace": null,
+          "query_calls": [
+            1
+          ]
+        }
+      ],
+      "creation_directories": [
+        "96287883470386e4e24bf15a49c69c81abdaa56592e14954e5d8a48d73812b52"
+      ],
+      "fake_worktree_markers": [
+        "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-238110417\\native\\worktree-created.json"
+      ]
+    },
+    {
+      "batch": "final-02",
+      "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-3921430657",
+      "service_status": "not_running",
+      "runs": [
+        {
+          "run_id": "22958e646a8ba4061063094464e7a5ae",
+          "new_inputs_allowed": false,
+          "database_stop_status": "pending",
+          "workspace": null,
+          "query_calls": [
+            0
+          ]
+        }
+      ],
+      "creation_directories": [],
+      "fake_worktree_markers": []
+    },
+    {
+      "batch": "final-02",
+      "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-727675180",
+      "service_status": "not_running",
+      "runs": [
+        {
+          "run_id": "8d305ba9dc16f328e9f4f8153d54c074",
+          "new_inputs_allowed": false,
+          "database_stop_status": "pending",
+          "workspace": null,
+          "query_calls": [
+            1
+          ]
+        }
+      ],
+      "creation_directories": [
+        "a092f0a363d0bb8b7c76252dc26469e77b96968ad153e143fa6d3bd0b8a686cb"
+      ],
+      "fake_worktree_markers": [
+        "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-727675180\\native\\worktree-created.json"
+      ]
+    }
+  ]
+}

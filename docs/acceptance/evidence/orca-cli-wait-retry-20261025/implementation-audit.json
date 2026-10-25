@@ -1,0 +1,40 @@
+{
+  "audited_at": "2026-10-25T01:02:45.9517585Z",
+  "kind": "single implementation audit",
+  "reviewer": "primary coding agent",
+  "scope": [
+    "FIFO cancellation and original cross-process mutex",
+    "approved reads only: classification, deadlines, attempts and backoff",
+    "durable original operation and authorization recovery",
+    "unknown creation guards, stop priority and resource obligations",
+    "own revision commits and current aggregate merge",
+    "public schema, snapshot and transactional events",
+    "test cache isolation and native journal assertions"
+  ],
+  "confirmed_new_findings": [],
+  "source_files_checked": 755,
+  "source_files_changed": [],
+  "implementation_changed_during_audit": false,
+  "checks": [
+    {
+      "exit_code": 0,
+      "command": "go vet ./internal/... ./tests/helpers/stability"
+    },
+    {
+      "exit_code": 0,
+      "command": "go vet -tags live ./tests/native"
+    },
+    {
+      "exit_code": 0,
+      "command": "git diff --check"
+    }
+  ],
+  "outstanding_qualification": [
+    "full Controlled blocked by Windows Defender",
+    "L2 not executed",
+    "orca-local.cli-wait-retry not executed",
+    "orca-remote.cli-wait-retry not executed"
+  ],
+  "security_alert_reviewed_by_user": false,
+  "runner_executed_during_audit": false
+}

@@ -107,6 +107,15 @@ func (r *Record) View() contracts.RunView {
 	for _, a := range r.Workflow.Results {
 		v.ResultAcquisition = append(v.ResultAcquisition, contracts.AcquisitionView{ID: a.ID, Contract: a.Contract, Source: a.Source, Method: a.Method, Status: a.Status, Missing: a.Missing, Conflicts: a.Conflicts, Attempts: a.Attempts, Fields: a.Fields})
 	}
+	for _, intent := range r.Intents {
+		if q := intent.PreparationQuery; q != nil {
+			v.ExecutionWait = nil
+			if q.Visible {
+				value := q.Wait
+				v.ExecutionWait = &value
+			}
+		}
+	}
 	s := r.Snapshot
 	v.Final = r.LastFinal
 	v.Execution = contracts.ExecutionView{AttemptID: s.Session.AttemptID, TurnStarted: r.NativeStarted, Generation: s.ResourceGeneration, Backend: string(s.Ref.Backend), Protocol: string(s.Ref.Protocol), SessionID: s.Session.SessionID, TurnID: s.Session.CurrentTurnID}

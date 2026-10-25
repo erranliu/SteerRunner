@@ -131,7 +131,21 @@ func main() {
 		started := time.Now().UTC()
 		callID := contracts.NewID()
 		appendCall(m, map[string]any{"kind": "intent", "call_id": callID, "at": started, "args": args})
-		err = cmd.Run()
+		if m.Driver == "cli-wait-retry" {
+			// The fault gate is private to this fixture. Real Orca still uses the
+			// original user's shared-cache mutex, so production cache access is
+			// never bypassed and the injected hold cannot block a production key.
+			cache := os.Getenv("SR_CLI_WAIT_SHARED_CACHE")
+			if !filepath.IsAbs(cache) {
+				fatal(fmt.Errorf("CLI wait forwarding requires the original shared cache key"))
+			}
+			if err = os.Setenv("LOCALAPPDATA", cache); err != nil {
+				fatal(err)
+			}
+			_, err = native.SerializeCLI(context.Background(), func(context.Context) ([]byte, error) { return nil, cmd.Run() })
+		} else {
+			err = cmd.Run()
+		}
 		if err == nil && m.Scenario == "orca-remote.connection-reconnect" && m.CaseID == "pre-send-disconnect" {
 			if gateErr := preSendBarrier(m, args, out.Bytes(), callID); gateErr != nil {
 				fatal(gateErr)

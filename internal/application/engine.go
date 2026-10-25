@@ -145,6 +145,15 @@ func (e *Engine) signal(w *worker) {
 }
 func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, events ...string) error {
 	prior := e.runs[next.ID]
+	// Controls and terminal facts clear the projection in their own transaction.
+	if next.PendingStop != "" || next.PendingResume != "" || next.StopStatus == "stopped" || next.Closed || next.Question != nil || next.Status == "pr_ready" {
+		for i := range next.Intents {
+			if q := next.Intents[i].PreparationQuery; q != nil && q.Visible {
+				q.Visible = false
+				events = append(events, "execution_wait_changed")
+			}
+		}
+	}
 	// A business operation may hold an older clone while file collection commits.
 	if prior != nil {
 		// Published progress values are immutable; the collector/preparer commits

@@ -1,0 +1,9 @@
+{
+  "kind": "superseded_before_native",
+  "at": "2026-10-25T00:10:10.5448245Z",
+  "coordinator_pid": 39980,
+  "controlled_pid": 47596,
+  "reason": "Final resume/exhaustion projection correction is qualified in final-03. Stop only this obsolete coordinator before native dispatch; its detached controlled harness continues normal cleanup.",
+  "native_dispatched": false,
+  "original_summary_preserved": true
+}

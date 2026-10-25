@@ -1,6 +1,6 @@
 # Spec：Orca CLI 等待、读取重试与公开状态
 
-日期：2026-10-25。状态：已完成设计审计，功能未实施。配套 [Plan](orca-cli-wait-retry.plan.md) 与[验收规划](../acceptance/orca-cli-wait-retry.md)。本次只提交文档，不部署、不恢复生产 Run。
+日期：2026-10-25。状态：已实施；L1/定向受控通过，完整验收因系统安全拦截未完成，实际资格见验收记录。配套 [Plan](orca-cli-wait-retry.plan.md) 与[验收规划](../acceptance/orca-cli-wait-retry.md)。本次在 Runner 独立实施与验收，不部署、不恢复生产 Run。
 
 ## 1. 目标与独立收益
 
@@ -117,4 +117,4 @@ queue 对应 orca_cli_busy，calling 对应 orca_query_running，backoff 对应 
 | OCW-A06 | 原创建/发送/停止期限和 unknown 核验不变，stop 后零新增输入；资源义务不被等待解除 |
 | OCW-A07 | 独立 Runner CLI/服务和 Orca local / remote 验证真实竞争、自动恢复、取消及清理，分别记录目标资格 |
 
-全部证据由本仓生成、核验和登记。SteerLine 或其它 UI 接线另验，不阻碍满足上述条件的 Runner 独立交付。当前仅文档，不宣称功能通过。
+全部证据由本仓生成、核验和登记。SteerLine 或其它 UI 接线另验，不阻碍满足上述条件的 Runner 独立交付。实际构建、失败历史及分目标资格见验收记录，不继承历史通过结果。

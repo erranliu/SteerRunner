@@ -54,6 +54,10 @@ function Get-SRNativeResources($Manifest,$Scenario,$View) {
         if(-not (Get-SRResultField $taskRun 'run_id')){throw 'Native resource snapshot lacks Run identity'}
         if(-not $Scenario.PSObject.Properties['runs'] -and $taskRun.run_id -cne $Scenario.run_id){throw 'Native resource snapshot belongs to another Run'}
         $taskResources+='run:'+$taskRun.run_id
+        if((Get-SRResultField $Manifest 'driver') -eq 'cli-wait-retry' -and -not (Get-SRResultField (Get-SRResultField $taskRun 'execution') 'workspace')) {
+            if($taskRun.stop_status -cne 'stopped' -or $taskRun.new_inputs_allowed -or $taskRun.execution.turn_started){throw 'Canceled CLI wait retained dispatch authority'}
+            continue
+        }
         foreach($taskField in @('workspace','session_id','branch')){
             $taskValue=Get-SRResultField (Get-SRResultField $taskRun 'execution') $taskField
             if([string]::IsNullOrWhiteSpace([string]$taskValue)){throw "Native resource snapshot lacks $taskField"}
@@ -72,6 +76,22 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
     foreach($taskField in @('passed','run_stopped','service_stopped')) {
         $taskValue=Get-SRResultField $Scenario $taskField
         if ($taskValue -isnot [bool] -or -not $taskValue) { throw "Live result lacks confirmed $taskField" }
+    }
+    if ($Manifest.driver -eq 'cli-wait-retry') {
+        $taskRuns=@(Get-SRResultField $Scenario 'runs')
+        foreach($taskField in @('wait_verified','cancel_verified','native_audit')) {if((Get-SRResultField $Scenario $taskField) -cne $true){throw 'CLI wait native proof is incomplete'}}
+        if($taskRuns.Count -ne 2 -or $taskRuns[0].run_id -cne $Scenario.run_id -or $taskRuns[0].run_id -ceq $taskRuns[1].run_id -or -not $taskRuns[0].execution.workspace -or $taskRuns[1].execution.workspace){throw 'CLI wait Run resources differ from original recovery/cancellation'}
+        foreach($taskRun in $taskRuns){if($taskRun.stop_status -cne 'stopped' -or $taskRun.new_inputs_allowed -or $taskRun.execution_wait){throw 'CLI wait resources remain active'}}
+        $taskEvidence=Join-Path $Manifest.root 'evidence'
+        $taskQueue=Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-queue-0.json') -Raw|ConvertFrom-Json
+        $taskLater=Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-after-old-limit.json') -Raw|ConvertFrom-Json
+        $taskRecovered=Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-recovered.json') -Raw|ConvertFrom-Json
+        $taskCanceled=Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-canceled.json') -Raw|ConvertFrom-Json
+        $taskAudit=Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-native-audit.json') -Raw|ConvertFrom-Json
+        $taskOffline=(Get-Content -LiteralPath (Join-Path $taskEvidence 'wait-offline-stop.json') -Raw|ConvertFrom-Json).data
+        if($taskQueue.execution_wait.calls_started -ne 0 -or $taskLater.execution_wait.calls_started -ne 0 -or $taskLater.execution_wait.stage -cne 'queue' -or $taskQueue.revision -ne $taskLater.revision -or $taskRecovered.operations[0].operation_id -cne $taskQueue.execution_wait.operation_id -or $taskRecovered.execution.attempt_id -cne $taskQueue.execution.attempt_id -or $taskRecovered.execution_wait){throw 'CLI wait did not retain original operation and zero-call queue'}
+        if($taskCanceled.run_id -cne $taskRuns[1].run_id -or $taskCanceled.stop_status -cne 'stopped' -or $taskCanceled.execution.turn_started -or $taskCanceled.execution.workspace -or $taskAudit.workspace_creations -ne 1 -or $taskAudit.preparation_queries -ne 1 -or $taskAudit.mutation_intents -ne $taskAudit.mutation_receipts -or $taskAudit.passed -cne $true -or $taskOffline.resources_settled -cne $true){throw 'CLI wait cancellation, independent native journal or resource settlement failed'}
+        return
     }
     if ($Manifest.driver -eq 'progress-file') {
         $taskRuns=@(Get-SRResultField $Scenario 'runs')

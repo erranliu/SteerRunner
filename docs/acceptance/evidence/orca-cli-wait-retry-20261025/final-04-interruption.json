@@ -1,0 +1,9 @@
+{
+  "kind": "superseded_before_native",
+  "at": "2026-10-25T00:30:08.0036600Z",
+  "coordinator_pid": 17000,
+  "controlled_pid": 38388,
+  "reason": "Controlled restart exposed nil/empty implementation-list representation in the binding guard. Final normalized comparison, receipt guard and revoked-before-owner settlement are requalified after directed tests.",
+  "native_dispatched": false,
+  "original_summary_preserved": true
+}

@@ -124,6 +124,9 @@ func (s *Store) Commit(r *runstate.Record, expected uint64, command *Command, ev
 		if kind == "workflow_changed" {
 			event.Transition = &contracts.WorkflowTransition{From: from, To: to}
 		}
+		if kind == "execution_wait_changed" {
+			event.ExecutionWait, _ = json.Marshal(r.View().ExecutionWait)
+		}
 		if kind == "result_committed" || kind == "final_unavailable" {
 			event.Final = r.View().Final
 		}

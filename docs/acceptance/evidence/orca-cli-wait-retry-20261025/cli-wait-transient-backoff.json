@@ -1,0 +1,468 @@
+{
+  "final_observation": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "contract": "steerrunner-run-observation/v1",
+      "event_page": {
+        "events": [
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "command_id": "71b5cb1649dfe8c46c9ca65d0b1426f0",
+            "created_at": "2026-10-25T00:31:23.6404743Z",
+            "event_id": "ec119f8d74f4f6f331285c17ac4953b1",
+            "revision": 1,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "run_accepted"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "command_id": "71b5cb1649dfe8c46c9ca65d0b1426f0",
+            "created_at": "2026-10-25T00:31:23.6410395Z",
+            "event_id": "8433f6fcf2c449371da65837abd6ecd1",
+            "revision": 1,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "transition": {
+              "from": {
+                "workflow_stage": "",
+                "workflow_status": ""
+              },
+              "to": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "queued"
+              }
+            },
+            "type": "workflow_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:23.6500399Z",
+            "event_id": "d8dfe67dabab37e84ed1d8dcb32f1a19",
+            "revision": 2,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_committed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:23.6580737Z",
+            "event_id": "d0e38ff6295cbb7911d6469f6141b025",
+            "execution_wait": {
+              "calls_started": 0,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:53.6559293Z",
+              "diagnostic": "Orca CLI channel is busy.",
+              "max_calls": 5,
+              "next_attempt_at": null,
+              "operation_id": "950ee7e82673f768493287924c506cf6",
+              "query": "runtime_status",
+              "reason_code": "orca_cli_busy",
+              "stage": "queue",
+              "started_at": "2026-10-25T00:31:23.6564623Z",
+              "updated_at": "2026-10-25T00:31:23.6564623Z"
+            },
+            "revision": 3,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:23.7489675Z",
+            "event_id": "c1269ed3d24898170beaf0fc2618b198",
+            "execution_wait": {
+              "calls_started": 1,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:53.6559293Z",
+              "diagnostic": "Orca preparation query is running.",
+              "max_calls": 5,
+              "next_attempt_at": null,
+              "operation_id": "950ee7e82673f768493287924c506cf6",
+              "query": "runtime_status",
+              "reason_code": "orca_query_running",
+              "stage": "calling",
+              "started_at": "2026-10-25T00:31:23.6564623Z",
+              "updated_at": "2026-10-25T00:31:23.7478667Z"
+            },
+            "revision": 4,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:24.1196673Z",
+            "event_id": "c5d977c861ac299d2dc9078ae035f2e6",
+            "execution_wait": {
+              "calls_started": 1,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:53.6559293Z",
+              "diagnostic": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-normalized-final\\native-fixture.exe failed: exit status 1 ()\nisolated query transport unavailable",
+              "max_calls": 5,
+              "next_attempt_at": "2026-10-25T00:31:25.1181603Z",
+              "operation_id": "950ee7e82673f768493287924c506cf6",
+              "query": "runtime_status",
+              "reason_code": "orca_query_transient",
+              "stage": "backoff",
+              "started_at": "2026-10-25T00:31:23.6564623Z",
+              "updated_at": "2026-10-25T00:31:24.1191612Z"
+            },
+            "revision": 5,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:25.1206311Z",
+            "event_id": "cfe8a90e6c387a5490f434f53ca384e1",
+            "execution_wait": {
+              "calls_started": 1,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:53.6559293Z",
+              "diagnostic": "Orca CLI channel is busy.",
+              "max_calls": 5,
+              "next_attempt_at": null,
+              "operation_id": "950ee7e82673f768493287924c506cf6",
+              "query": "runtime_status",
+              "reason_code": "orca_cli_busy",
+              "stage": "queue",
+              "started_at": "2026-10-25T00:31:23.6564623Z",
+              "updated_at": "2026-10-25T00:31:25.1190109Z"
+            },
+            "revision": 6,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:25.1276903Z",
+            "event_id": "d32d4fdac51377b1b2fcd39d08479e35",
+            "execution_wait": {
+              "calls_started": 2,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:53.6559293Z",
+              "diagnostic": "Orca preparation query is running.",
+              "max_calls": 5,
+              "next_attempt_at": null,
+              "operation_id": "950ee7e82673f768493287924c506cf6",
+              "query": "runtime_status",
+              "reason_code": "orca_query_running",
+              "stage": "calling",
+              "started_at": "2026-10-25T00:31:23.6564623Z",
+              "updated_at": "2026-10-25T00:31:25.1265786Z"
+            },
+            "revision": 7,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:25.3118266Z",
+            "event_id": "ec46960da80c3778044bfe4deb6eb9dd",
+            "execution_wait": null,
+            "revision": 8,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.2646681Z",
+            "event_id": "0b2883d003ec4956efa427f3e778fa19",
+            "revision": 9,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_confirmed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.2711257Z",
+            "event_id": "4dbd9b32fb3617cf11938b4f6764c376",
+            "revision": 10,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "input_frozen"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.2711257Z",
+            "event_id": "fe3d4202122398a4db511c00e0bd65de",
+            "revision": 10,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "transition": {
+              "from": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "queued"
+              },
+              "to": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "running"
+              }
+            },
+            "type": "workflow_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.279346Z",
+            "event_id": "7c322fa95136d47ae32eba30380ed3d8",
+            "revision": 11,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_committed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.8016003Z",
+            "event_id": "5396e575142fd829accb32b92fa49e31",
+            "revision": 12,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_outcome_unknown"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:30.8016003Z",
+            "event_id": "fb91d5a0283df96c214013171e25ccc7",
+            "revision": 12,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "transition": {
+              "from": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "running"
+              },
+              "to": {
+                "diagnostic": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-normalized-final\\native-fixture.exe failed: exit status 2 (unexpected creation fixture command\n)\nunexpected end of JSON input\noriginal agent launch outcome is unknown; do not resend\npending lifecycle resource lacks its accepted original resource identity",
+                "workflow_stage": "implement.execute",
+                "workflow_status": "reconciling"
+              }
+            },
+            "type": "workflow_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:31.1834913Z",
+            "event_id": "30774cbdc09b31f348a1168fff341450",
+            "revision": 13,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_outcome_unknown"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:31.1834913Z",
+            "event_id": "4940d20e2a24f450381d6591bf6232ac",
+            "revision": 13,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "transition": {
+              "from": {
+                "diagnostic": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-normalized-final\\native-fixture.exe failed: exit status 2 (unexpected creation fixture command\n)\nunexpected end of JSON input\noriginal agent launch outcome is unknown; do not resend\npending lifecycle resource lacks its accepted original resource identity",
+                "workflow_stage": "implement.execute",
+                "workflow_status": "reconciling"
+              },
+              "to": {
+                "diagnostic": "pending lifecycle resource lacks its accepted original resource identity",
+                "workflow_stage": "implement.execute",
+                "workflow_status": "reconciling"
+              }
+            },
+            "type": "workflow_changed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "command_id": "d762b99f2227ce3057d2825d75b0a8b2",
+            "created_at": "2026-10-25T00:31:31.2541109Z",
+            "event_id": "edd4d98547a98d72b2a3a26383254add",
+            "revision": 14,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "stop_accepted"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:31.6250739Z",
+            "event_id": "935d914f21e5252450e193d9a5ee2185",
+            "revision": 15,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "operation_committed"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:31.6250739Z",
+            "event_id": "04da74f82eefcaa6cc5cae6d4cce5f63",
+            "revision": 15,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "stop_intent_bound"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:32.7302092Z",
+            "event_id": "53fc0a44764f0c483a300664f53689e4",
+            "revision": 16,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "type": "stop_stopped"
+          },
+          {
+            "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+            "created_at": "2026-10-25T00:31:32.7302092Z",
+            "event_id": "4d24d29f4b3569822af47860ef5ce745",
+            "revision": 16,
+            "run_id": "27219993cad3d6743128f0a266dc094d",
+            "transition": {
+              "from": {
+                "diagnostic": "pending lifecycle resource lacks its accepted original resource identity",
+                "workflow_stage": "implement.execute",
+                "workflow_status": "reconciling"
+              },
+              "to": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "stopped"
+              }
+            },
+            "type": "workflow_changed"
+          }
+        ],
+        "has_more": false,
+        "next_cursor": "djE6MjcyMTk5OTNjYWQzZDY3NDMxMjhmMGEyNjZkYzA5NGQ6MjI"
+      },
+      "run": {
+        "controls": {
+          "can_close": false,
+          "can_interrupt": false,
+          "can_message": false,
+          "can_reply": false,
+          "can_resume": false,
+          "can_stop": false
+        },
+        "created_at": "2026-10-25T00:31:18.5950977Z",
+        "execution": {
+          "agent": "codex",
+          "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+          "backend": "orca",
+          "branch": "original-branch",
+          "final_available": false,
+          "generation": "54b94c7c10614322d5e4b511348c9e7d",
+          "protocol": "orca_terminal_v3",
+          "session_id": "orca-terminal:wait-runtime-native:original-terminal:original-terminal-incarnation",
+          "turn_started": false,
+          "workspace": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-4162476034\\native\\original-worktree",
+          "workspace_scope": "revision"
+        },
+        "execution_wait": null,
+        "input_digest": "06b4acf10dd43f7c69751b410b31e3bc1d02585d258951472612a43e40d1c02c",
+        "materials": [
+          {
+            "commit": "20dc4206592276ad53a05a5c32d7efd5011a7020",
+            "execution_location": "spec.md",
+            "kind": "worktree",
+            "path": "spec.md"
+          },
+          {
+            "commit": "20dc4206592276ad53a05a5c32d7efd5011a7020",
+            "execution_location": "plan.md",
+            "kind": "worktree",
+            "path": "plan.md"
+          }
+        ],
+        "new_inputs_allowed": false,
+        "operations": [
+          {
+            "action": "prepare_workspace",
+            "operation_id": "950ee7e82673f768493287924c506cf6",
+            "status": "confirmed"
+          },
+          {
+            "action": "create_resource",
+            "diagnostic": "pending lifecycle resource lacks its accepted original resource identity",
+            "operation_id": "228699fd8789dcfe4a16cc5124bd07c4",
+            "original_diagnostic": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-normalized-final\\native-fixture.exe failed: exit status 2 (unexpected creation fixture command\n)\nunexpected end of JSON input\noriginal agent launch outcome is unknown; do not resend\npending lifecycle resource lacks its accepted original resource identity",
+            "status": "outcome_unknown"
+          },
+          {
+            "action": "stop_execution",
+            "operation_id": "30eecbfcdbcb07bcbec4e02c8ac5d523",
+            "status": "confirmed"
+          }
+        ],
+        "phase": "stopped",
+        "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+        "resume_required": true,
+        "revision": 16,
+        "run_id": "27219993cad3d6743128f0a266dc094d",
+        "status": "stopped",
+        "step": "implement.execute",
+        "stop_status": "stopped",
+        "title": "独立Runner controlled",
+        "updated_at": "2026-10-25T00:31:32.7258475Z",
+        "workflow": {
+          "id": "development",
+          "version": 2
+        }
+      }
+    },
+    "error": null
+  },
+  "mode": "transient-backoff",
+  "queue": {
+    "execution_wait": {
+      "contract": "steerrunner-execution-wait/v1",
+      "operation_id": "950ee7e82673f768493287924c506cf6",
+      "query": "runtime_status",
+      "stage": "queue",
+      "reason_code": "orca_cli_busy",
+      "started_at": "2026-10-25T00:31:23.6564623Z",
+      "updated_at": "2026-10-25T00:31:23.6564623Z",
+      "deadline_at": "2026-10-25T00:32:53.6559293Z",
+      "calls_started": 0,
+      "max_calls": 5,
+      "next_attempt_at": null,
+      "diagnostic": "Orca CLI channel is busy."
+    },
+    "operations": [
+      {
+        "operation_id": "950ee7e82673f768493287924c506cf6",
+        "action": "prepare_workspace",
+        "status": "in_flight"
+      }
+    ],
+    "run_id": "27219993cad3d6743128f0a266dc094d",
+    "revision": 3,
+    "title": "独立Runner controlled",
+    "input_digest": "06b4acf10dd43f7c69751b410b31e3bc1d02585d258951472612a43e40d1c02c",
+    "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+    "workflow": {
+      "id": "development",
+      "version": 2
+    },
+    "step": "implement.execute",
+    "status": "queued",
+    "phase": "execution_wait",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "spec.md",
+        "commit": "20dc4206592276ad53a05a5c32d7efd5011a7020",
+        "execution_location": "spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "plan.md",
+        "commit": "20dc4206592276ad53a05a5c32d7efd5011a7020",
+        "execution_location": "plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "turn_started": false,
+      "attempt_id": "278e58fc9483e72a866d9eaceb55eb40",
+      "generation": "54b94c7c10614322d5e4b511348c9e7d",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "final_available": false,
+      "workspace": "",
+      "branch": ""
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-25T00:31:18.5950977Z",
+    "updated_at": "2026-10-25T00:31:23.6564623Z"
+  }
+}

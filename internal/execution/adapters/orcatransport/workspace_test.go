@@ -53,6 +53,9 @@ func TestWorkspaceCreationUsesConfiguredTimeout(t *testing.T) {
 			creations := 0
 			l.client = native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 				want := 40 * time.Second
+				if args[0] == "status" || args[0] == "repo" && args[1] == "list" {
+					want = 15 * time.Second
+				}
 				if args[0] == "worktree" && args[1] == "create" {
 					for _, arg := range args {
 						if arg == "--activate" {

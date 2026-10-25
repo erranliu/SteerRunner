@@ -13,6 +13,11 @@ func validateOperationVersions(r *runstate.Record) error {
 		return errors.New("original execution record version is unsupported; preserve it without dispatch")
 	}
 	for _, intent := range r.Intents {
+		if q := intent.PreparationQuery; q != nil {
+			if err := q.Validate(intent.Request.Operation); err != nil {
+				return err
+			}
+		}
 		if intent.Request.Operation.Version != 1 {
 			return errors.New("original lifecycle operation version is unsupported; preserve it without dispatch")
 		}

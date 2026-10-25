@@ -1,0 +1,283 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-423103379\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-423103379
+=== RUN   TestSRResultAcquisition/audit-positive
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-888067912\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-888067912
+=== RUN   TestSRResultAcquisition/audit-offline
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3049803097\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3049803097
+=== RUN   TestSRResultAcquisition/audit-report
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-651254955\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-651254955
+=== RUN   TestSRResultAcquisition/parser-unsupported
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3684933949\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3684933949
+=== RUN   TestSRResultAcquisition/parser-complete
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2022272383\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2022272383
+=== RUN   TestSRResultAcquisition/parser-restart
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4224837784\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4224837784
+=== RUN   TestSRResultAcquisition/parser-kill
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3997819355\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3997819355
+=== RUN   TestSRResultAcquisition/parser-stop
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-402124356\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-402124356
+=== RUN   TestSRResultAcquisition/parser-tool
+    audit_test.go:87: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3918295318\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3918295318
+--- FAIL: TestSRResultAcquisition (40.88s)
+    --- PASS: TestSRResultAcquisition/plain-marker (26.44s)
+    --- FAIL: TestSRResultAcquisition/audit-zero (2.60s)
+    --- FAIL: TestSRResultAcquisition/audit-positive (1.37s)
+    --- FAIL: TestSRResultAcquisition/audit-offline (1.17s)
+    --- FAIL: TestSRResultAcquisition/audit-report (0.98s)
+    --- FAIL: TestSRResultAcquisition/parser-unsupported (1.04s)
+    --- FAIL: TestSRResultAcquisition/parser-complete (2.72s)
+    --- FAIL: TestSRResultAcquisition/parser-restart (1.07s)
+    --- FAIL: TestSRResultAcquisition/parser-kill (1.12s)
+    --- FAIL: TestSRResultAcquisition/parser-stop (1.13s)
+    --- FAIL: TestSRResultAcquisition/parser-tool (1.25s)
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+    audit_test.go:309: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-731161561\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-731161561
+--- FAIL: TestSRWorkflowDiscoveryAndSelection (2.52s)
+=== RUN   TestSROrcaCLIWaitRetry
+=== RUN   TestSROrcaCLIWaitRetry/release-after-15s
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3503420590\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3503420590
+=== RUN   TestSROrcaCLIWaitRetry/graceful-restart
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2002945351\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2002945351
+=== RUN   TestSROrcaCLIWaitRetry/kill-restart
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1542012759\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1542012759
+=== RUN   TestSROrcaCLIWaitRetry/stop-queued
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1367489208\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1367489208
+=== RUN   TestSROrcaCLIWaitRetry/transient-backoff
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4009683058\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4009683058
+=== RUN   TestSROrcaCLIWaitRetry/restart-stop-queued
+    cli_wait_retry_test.go:35: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-373723299\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-373723299
+--- FAIL: TestSROrcaCLIWaitRetry (8.57s)
+    --- FAIL: TestSROrcaCLIWaitRetry/release-after-15s (1.31s)
+    --- FAIL: TestSROrcaCLIWaitRetry/graceful-restart (1.05s)
+    --- FAIL: TestSROrcaCLIWaitRetry/kill-restart (1.09s)
+    --- FAIL: TestSROrcaCLIWaitRetry/stop-queued (1.09s)
+    --- FAIL: TestSROrcaCLIWaitRetry/transient-backoff (2.45s)
+    --- FAIL: TestSROrcaCLIWaitRetry/restart-stop-queued (1.57s)
+=== RUN   TestSRContentGenerationRecovery
+=== RUN   TestSRContentGenerationRecovery/generate-graceful
+    content_recovery_test.go:31: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerationRecoverygenerate-graceful519373240\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerationRecovery/conversation-kill
+    content_recovery_test.go:31: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerationRecoveryconversation-kill1920317281\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerationRecovery/question-reply
+    content_recovery_test.go:31: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerationRecoveryquestion-reply4177482700\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerationRecovery/startup-stop
+    content_recovery_test.go:31: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerationRecoverystartup-stop1734655280\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestSRContentGenerationRecovery (0.03s)
+    --- FAIL: TestSRContentGenerationRecovery/generate-graceful (0.01s)
+    --- FAIL: TestSRContentGenerationRecovery/conversation-kill (0.01s)
+    --- FAIL: TestSRContentGenerationRecovery/question-reply (0.01s)
+    --- FAIL: TestSRContentGenerationRecovery/startup-stop (0.01s)
+=== RUN   TestSRContentGenerate
+=== RUN   TestSRContentGenerate/text
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGeneratetext4163063809\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/json
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGeneratejson2767401682\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/failed
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGeneratefailed1045165172\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/cancelled
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGeneratecancelled771632543\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/no_final
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerateno_final3555972924\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/question
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGeneratequestion1557835906\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/no_auth
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerateno_auth137409817\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentGenerate/no_directory
+    content_test.go:102: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentGenerateno_directory2023777608\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestSRContentGenerate (0.05s)
+    --- FAIL: TestSRContentGenerate/text (0.01s)
+    --- FAIL: TestSRContentGenerate/json (0.01s)
+    --- FAIL: TestSRContentGenerate/failed (0.01s)
+    --- FAIL: TestSRContentGenerate/cancelled (0.01s)
+    --- FAIL: TestSRContentGenerate/no_final (0.01s)
+    --- FAIL: TestSRContentGenerate/question (0.01s)
+    --- FAIL: TestSRContentGenerate/no_auth (0.01s)
+    --- FAIL: TestSRContentGenerate/no_directory (0.01s)
+=== RUN   TestSRContentConversation
+    content_test.go:130: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentConversation433341848\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestSRContentConversation (0.01s)
+=== RUN   TestSRContentQuestionAndUnknown
+=== RUN   TestSRContentQuestionAndUnknown/unknown-interrupt
+    content_test.go:178: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentQuestionAndUnknownunknown-interrupt1925187971\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentQuestionAndUnknown/question
+    content_test.go:192: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentQuestionAndUnknownquestion798603033\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRContentQuestionAndUnknown/unknown
+    content_test.go:205: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRContentQuestionAndUnknownunknown4249038840\001\state --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestSRContentQuestionAndUnknown (0.02s)
+    --- FAIL: TestSRContentQuestionAndUnknown/unknown-interrupt (0.01s)
+    --- FAIL: TestSRContentQuestionAndUnknown/question (0.01s)
+    --- FAIL: TestSRContentQuestionAndUnknown/unknown (0.01s)
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4062633873\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4062633873
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2946033409\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2946033409
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2966676351\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2966676351
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3524187952\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3524187952
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3180137964\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3180137964
+=== RUN   TestSRResourceCreationRecovery/planned-initial-terminal
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2654756552\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2654756552
+=== RUN   TestSRResourceCreationRecovery/missing-initial-plan
+    creation_recovery_test.go:150: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-836289249\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-836289249
+--- FAIL: TestSRResourceCreationRecovery (9.13s)
+    --- FAIL: TestSRResourceCreationRecovery/graceful (1.34s)
+    --- FAIL: TestSRResourceCreationRecovery/kill (1.23s)
+    --- FAIL: TestSRResourceCreationRecovery/receipt-before-commit (2.30s)
+    --- FAIL: TestSRResourceCreationRecovery/wire-loss (1.15s)
+    --- FAIL: TestSRResourceCreationRecovery/owner-crash (0.95s)
+    --- FAIL: TestSRResourceCreationRecovery/planned-initial-terminal (1.08s)
+    --- FAIL: TestSRResourceCreationRecovery/missing-initial-plan (1.07s)
+=== RUN   TestEnvironmentCheckCLI
+    environment_check_test.go:29: [environment-check inspect --request-id unknown --state-dir C:\Users\lmas1\AppData\Local\Temp\TestEnvironmentCheckCLI3109473478\001\state --json] exit=-1 expected=4 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestEnvironmentCheckCLI (0.00s)
+=== RUN   TestSRMultipleRunsIsolation
+    multirun_test.go:24: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2045366178\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2045366178
+--- FAIL: TestSRMultipleRunsIsolation (2.39s)
+=== RUN   TestSRProgressFile
+    progress_test.go:25: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3705569053\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3705569053
+--- FAIL: TestSRProgressFile (1.10s)
+=== RUN   TestSRRunEvidenceR2
+    run_evidence_test.go:27: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3420806976\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3420806976
+--- FAIL: TestSRRunEvidenceR2 (1.18s)
+=== RUN   TestSRStandalonePackage
+    service_test.go:307: open C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software.
+--- FAIL: TestSRStandalonePackage (0.00s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/offline_verification
+    verify_stopped_test.go:22: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-713531874\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-713531874
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopeabsent3682644949\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopeactive2595157254\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopetruncated3758391379\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopelegacy2105479367\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopeuncreated3481039380\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopeuncreated-mixed1999076394\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+    verify_stopped_test.go:139: [service verify-stopped --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipremote_offline_scopeinvalid-profile2671666863\001 --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+    service_test.go:383: [capabilities --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipqueries_do_not_start3461518262\001\runner --json] exit=-1 expected=4 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/concurrent_alias
+    service_test.go:409: concurrent start 0: exit=-1 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={Protocol: OK:false RequestID:<nil> Data:<nil> Error:<nil>}
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+    job_windows_test.go:102: job helper failed: exit status 92
+=== RUN   TestSRServiceOwnership/parent_job/deny
+    job_windows_test.go:102: job helper failed: exit status 92
+=== RUN   TestSRServiceOwnership/different_release
+    service_test.go:429: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipdifferent_release4130423270\001\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/stale_writer
+    service_test.go:453: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipstale_writer70792756\001\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+    service_test.go:482: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\TestSRServiceOwnershipshutdown_receipt4075537981\001\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: Operation did not complete successfully because the file contains a virus or potentially unwanted software. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+--- FAIL: TestSRServiceOwnership (5.19s)
+    --- FAIL: TestSRServiceOwnership/offline_verification (1.37s)
+    --- FAIL: TestSRServiceOwnership/remote_offline_scope (0.84s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/absent (0.31s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/active (0.24s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/truncated (0.06s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/legacy (0.05s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/uncreated (0.05s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.05s)
+        --- FAIL: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.06s)
+    --- FAIL: TestSRServiceOwnership/queries_do_not_start (0.00s)
+    --- FAIL: TestSRServiceOwnership/concurrent_alias (0.01s)
+    --- FAIL: TestSRServiceOwnership/parent_job (2.95s)
+        --- FAIL: TestSRServiceOwnership/parent_job/allow (2.91s)
+        --- FAIL: TestSRServiceOwnership/parent_job/deny (0.04s)
+    --- FAIL: TestSRServiceOwnership/different_release (0.00s)
+    --- FAIL: TestSRServiceOwnership/stale_writer (0.00s)
+    --- FAIL: TestSRServiceOwnership/shutdown_receipt (0.00s)
+=== RUN   TestSRStabilityLostSubmitResponse
+    stability_test.go:18: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2233449025\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2233449025
+--- FAIL: TestSRStabilityLostSubmitResponse (1.14s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+    stability_test.go:45: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2494350363\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2494350363
+--- FAIL: TestSRStabilityRevocationAcrossRestart (1.32s)
+=== RUN   TestSRInputFreeze
+    workflow_test.go:30: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-2742180428\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-2742180428
+--- FAIL: TestSRInputFreeze (1.01s)
+=== RUN   TestSRPermissionQualification
+    workflow_test.go:125: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3087990509\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3087990509
+--- FAIL: TestSRPermissionQualification (1.32s)
+=== RUN   TestSRRunWorkflow
+    workflow_test.go:240: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1999959481\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1999959481
+--- FAIL: TestSRRunWorkflow (1.06s)
+=== RUN   TestSRStorageLogsEvents
+    workflow_test.go:304: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4265632424\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4265632424
+--- FAIL: TestSRStorageLogsEvents (1.08s)
+=== RUN   TestSRPublicationIdentity
+    workflow_test.go:334: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1717231078\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1717231078
+--- FAIL: TestSRPublicationIdentity (1.11s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+    workflow_test.go:375: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-315111931\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-315111931
+--- FAIL: TestSRPublicationBeforeWorkflowReady (1.07s)
+=== RUN   TestSRNativeUnknownAndStop
+    workflow_test.go:444: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3991617206\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3991617206
+--- FAIL: TestSRNativeUnknownAndStop (1.04s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:492: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4169068836\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4169068836
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:492: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1629848514\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1629848514
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+    generation_test.go:92: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-4287582718\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-4287582718
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+    generation_test.go:138: [service start --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-1696768249\runner --json] exit=-1 expected=0 error=fork/exec C:\SteerlineDebug\runner-cli-wait-retry\final-05\controlled\steerrunner.exe: The system cannot find the file specified. response={"protocol":"","ok":false,"request_id":null,"data":null,"error":null} stderr=
+    workflow_test.go:183: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-1696768249
+--- FAIL: TestSRRestartPreservesAuthorization (28.64s)
+    --- FAIL: TestSRRestartPreservesAuthorization/graceful (1.14s)
+    --- FAIL: TestSRRestartPreservesAuthorization/kill (1.37s)
+    --- FAIL: TestSRRestartPreservesAuthorization/creation_receipt (1.25s)
+    --- FAIL: TestSRRestartPreservesAuthorization/pending_stop (1.43s)
+FAIL

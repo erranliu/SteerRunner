@@ -1,0 +1,22 @@
+package orcatransport
+import (
+ "context"
+ "errors"
+ "strings"
+ "testing"
+ "time"
+ native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+)
+func TestBaselineQueueTimesOutBeforeInvocation(t *testing.T){
+ t.Setenv("LOCALAPPDATA",t.TempDir())
+ locked,release,done:=make(chan struct{}),make(chan struct{}),make(chan error,1)
+ go func(){_,err:=native.SerializeCLI(context.Background(),func(context.Context)([]byte,error){close(locked);<-release;return nil,nil});done<-err}()
+ <-locked
+ defer func(){close(release);<-done}()
+ actual:=0
+ l:=&Lifecycle{client:native.New(native.Config{Output:func(ctx context.Context,_ time.Duration,_ ...string)([]byte,error){return native.SerializeCLI(ctx,func(context.Context)([]byte,error){actual++;return nil,nil})}})}
+ started:=time.Now()
+ _,err:=l.queryRepositoryInventory(context.Background())
+ if actual!=0||!errors.Is(err,context.DeadlineExceeded)||!native.IsCLIQueueError(err)||!strings.Contains(err.Error(),"unexpected end of JSON input"){t.Fatal("baseline did not reproduce pre-invocation cutoff/empty JSON",actual,err)}
+ t.Logf("baseline reproduced: actual_cli_calls=%d elapsed=%s error=%v",actual,time.Since(started),err)
+}

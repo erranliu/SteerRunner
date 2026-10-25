@@ -1068,6 +1068,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "orca-local.cli-wait-retry",
+      "level": "L3",
+      "driver": "cli-wait-retry",
+      "target": "orca-local",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": false,
+            "admin": false,
+            "roles": {
+              "primary": {
+                "configuration": "orca-local-codex",
+                "adapter": "orca-terminal",
+                "target_kind": "local",
+                "agent": "codex",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.cli-wait-retry",
+      "level": "L3",
+      "driver": "cli-wait-retry",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": false,
+            "admin": false,
+            "roles": {
+              "primary": {
+                "configuration": "orca-remote-codex",
+                "adapter": "orca-terminal",
+                "target_kind": "orca_environment",
+                "agent": "codex",
+                "access_mode": "sandbox",
+                "workflow": "development"
+              }
+            }
+          }
+        }
+      ]
     }
   ]
 }

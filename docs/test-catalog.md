@@ -24,10 +24,10 @@ PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-21** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-25** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 两 case、L3 二十七场景三十七 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 两 case、L3 二十九场景三十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
@@ -237,7 +237,7 @@ L3 专项 `TestSRContentGenerateTakeoverNative` 由现有 foundation live 入口
 
 ## 运行时单文件汇报专项（2026-10-23）
 
-沿用户收敛边界：固定原执行主机/worktree/文件，不以防恶意链接替换作为前置。五项均已在 tests/catalog.json 与唯一 cases.json 注册，case=default、L3、driver=progress-file、预期业务 stopped（不创建 PR）。当前总计 33 场景/43 case，其中 L3 27 场景/37 case；明确标记日期的历史计数保留当时基线。
+沿用户收敛边界：固定原执行主机/worktree/文件，不以防恶意链接替换作为前置。五项均已在 tests/catalog.json 与唯一 cases.json 注册，case=default、L3、driver=progress-file、预期业务 stopped（不创建 PR）。本专项 2026-10-23 登记时总计 33 场景/43 case，其中 L3 27 场景/37 case；当前全集见 2026-10-25 等待重试增量。
 
 | 场景 ID | 独有断言 | 前置与隔离 |
 | --- | --- | --- |
@@ -265,3 +265,13 @@ Controlled 新增 TestSRProgressFile，默认顶层数从 22 增至 23，覆盖�
 稳定快照不要求传输永不出错。观察窗口只允许 `transport_unavailable` / `read_failed` 暂态，逐次保存原始诊断并核对身份、版本、内容、时间、长度及摘要完全保留；同一次异常须在 20 秒内恢复，窗口末尾必须恢复 `observing`，总窗口最多 140 秒。绑定异常、终态、内容变化、持续不可达或超时恢复仍失败。窗口记录包含异常采样数、恢复预算及末尾健康证明，v3 并行验证同时核对这些字段；原 r13 瞬时异常失败和旧版本并行报告原值保留。
 
 有界预算：本机 Codex 首份内容最多 5 分钟，Orca 最多 8 分钟（含冷工作区、控制/执行 helper、原 TUI 准备及共享 CLI 排队）；产品 Orca 阶段准备期限为持久 6 分钟，不因重试/服务重启续期，其它 adapter 为 3 分钟。后续内容不超过相应等待；原 Run 停止最多 Orca 180 秒／Codex 120 秒（含下一次原身份只读对账）、服务退出最多 60 秒，受独立 case 的既有 15 分钟总预算约束。产品文件采集的 2 秒预算不变，不把测试放宽当作实际通过；原 3 分钟/45 秒及整阶段准备超时的失败记录保留。
+
+## Orca CLI 等待与读取重试（2026-10-25）
+
+| ID / Case | 层级 / 入口 | 独有目标与固定预期 | 隔离 / 串行要求 | 实现与资格 |
+| --- | --- | --- | --- | --- |
+| TestSROrcaCLIWaitRetry | Controlled / test-foundation.ps1 精确 Pattern | 真服务/CLI/SQLite；>15 秒排队仍 queue/0 calls，释放后原 operation 自动继续；正常/强杀重启保留 deadline/身份；stop 后零查询/创建；暂态 backoff 自动继续 | 独立 fixture/cache key，无真实 Orca 文件、模型或 PR；六个内部变体 | 已实现；当前证据见专项验收 |
+| orca-local.cli-wait-retry/default | L3 / cli-wait-retry driver | 原生本机 status 真实竞争后原 Run 创建一次；另一原排队 Run stop 后零新查询/资源/输入；转发 journal 无重复业务输入，精确停止与离线结算 | 新 C:/srt fixture；共享用户 CLI cache，独占测试 lease；故障 key 私有，不注入生产锁 | 已注册/实现；本机资格单列 |
+| orca-remote.cli-wait-retry/default | L3 / 同一 driver | 原生远端 repo list 在固定 environment/runtime 中恢复，保留原 operation/Attempt；同样验证取消、唯一创建/输入及资源结算 | 同上；原环境目标单独冻结，不以本机结果替代 | 已注册/实现；远端资格单列 |
+
+L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读取分类和有界策略、UTC 预算/次数/next time 恢复、时间倒退、持久失败、真实并发变化与 stop 优先、公开 schema/事件对象和 null。创建/发送/停止没有新增重试；完整前置和原生通过不能互相替代。[Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [验收](acceptance/orca-cli-wait-retry.md)。当前全集 35 场景/45 case，其中 L3 29 场景/39 case；Controlled 24 个顶层。
