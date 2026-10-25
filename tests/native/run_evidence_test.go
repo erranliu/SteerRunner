@@ -32,14 +32,26 @@ func verifyNativeRunEvidence(t *testing.T, m livetest.Manifest, dir, id string) 
 		}
 	}
 	observe(true)
-	root := filepath.Join(before.Execution.Workspace, filepath.FromSlash(contracts.ArtifactDirectory))
-	if _, err := os.Stat(root); !os.IsNotExist(err) {
-		t.Fatal("native evidence producer directory must be new", err)
-	}
-	if err := os.MkdirAll(root, 0700); err != nil {
+	base := filepath.Join(before.Execution.Workspace, filepath.FromSlash(contracts.ArtifactDirectory))
+	if err := os.MkdirAll(base, 0700); err != nil {
 		t.Fatal(err)
 	}
+	relativeRoot := "native-r2-" + m.ID
+	root := filepath.Join(base, relativeRoot)
+	if err := os.Mkdir(root, 0700); err != nil {
+		t.Fatal("native evidence producer directory must be new", err)
+	}
 	path := filepath.Join(root, "actual-check.json")
+	t.Cleanup(func() { _ = os.Remove(path); _ = os.Remove(root) })
+	// The project may already own ignored reports under the shared artifact
+	// root. Use a separate exclusive scratch file to prove Git dirt, retaining
+	// every original report and the real checker bytes used for collection.
+	dirtyPath := filepath.Join(before.Execution.Workspace, ".sr-native-git-"+m.ID+".json")
+	dirty, err := os.OpenFile(dirtyPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = dirty.Close(); _ = os.Remove(dirtyPath) })
 	data := shell(t, before.Execution.Workspace, "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", filepath.Join(before.Execution.Workspace, "sr-smoke", "check.ps1"))
 	var report struct {
 		Passed bool `json:"passed"`
@@ -50,10 +62,14 @@ func verifyNativeRunEvidence(t *testing.T, m livetest.Manifest, dir, id string) 
 	if err := os.WriteFile(path, data, 0600); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { _ = os.Remove(path); _ = os.Remove(root) })
+	_, writeErr := dirty.Write(data)
+	closeErr := dirty.Close()
+	if writeErr != nil || closeErr != nil {
+		t.Fatal(writeErr, closeErr)
+	}
 	observe(false)
 	discovered := invoke(t, m, dir, []string{"artifacts", "discover", "--run-id", id}, nil)
-	input := request("native-r2-collect-"+m.ID, contracts.CollectArtifactInput{ExpectedRevision: before.Revision, RelativePath: "actual-check.json"})
+	input := request("native-r2-collect-"+m.ID, contracts.CollectArtifactInput{ExpectedRevision: before.Revision, RelativePath: relativeRoot + "/actual-check.json"})
 	collected := invoke(t, m, dir, []string{"artifacts", "collect", "--run-id", id, "--input", "-"}, &input)
 	artifact := collected.Data.(map[string]any)["artifact"].(map[string]any)["artifact_id"].(string)
 	read := func() contracts.Response {
@@ -71,6 +87,9 @@ func verifyNativeRunEvidence(t *testing.T, m livetest.Manifest, dir, id string) 
 	}
 	original := read()
 	if err := os.Remove(path); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(dirtyPath); err != nil {
 		t.Fatal(err)
 	}
 	replay := invoke(t, m, dir, []string{"artifacts", "collect", "--run-id", id, "--input", "-"}, &input)
