@@ -1,0 +1,21 @@
+{
+  "security_settings_changed": false,
+  "stopped": [
+    {
+      "reason": "Contain superseded task-owned controlled fixtures after Defender blocked final build",
+      "pid": 38388,
+      "path": "C:\\SteerlineDebug\\runner-cli-wait-retry\\final-04\\controlled\\integration.test.exe",
+      "created": "2026-10-25T08:24:59.490583+08:00"
+    },
+    {
+      "reason": "Contain superseded task-owned controlled fixtures after Defender blocked final build",
+      "pid": 25924,
+      "path": "C:\\SteerlineDebug\\runner-cli-wait-retry\\final-04\\controlled\\steerrunner.exe",
+      "created": "2026-10-25T08:52:30.569417+08:00"
+    }
+  ],
+  "native_cases_dispatched": false,
+  "at": "2026-10-25T00:52:32.3207410Z",
+  "remaining": [],
+  "scope": "C:\\SteerlineDebug\\runner-cli-wait-retry\\"
+}

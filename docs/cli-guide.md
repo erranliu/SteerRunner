@@ -217,3 +217,13 @@ go test ./internal/contracts ./internal/cli ./internal/storage -run '^(TestSRCLI
 Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) · [普通开发流程](workflows/development.md) · [带审计开发流程](workflows/development-audited.md)。每份定义列出状态、转移核验、提示词和预算；执行 agent 切阶段统一执行定义提示词，结果由现有内置函数核验，当前不提供定制脚本端口或宿主。两份开发定义共用状态与结果机制；development 不调用 parser，审计流程仅审计结果可解析。完整验证及未完项以专属验收记录为准。
 
 绑定某次服务实例时，对业务/查询追加 `--expected-instance-id <instance_id>`；Runner 在实际请求受理前拒绝替代实例，且不隐式启动新服务。支持标志为 `capabilities.instance_binding.expected_instance_id: true`。`service status` 仍只供诊断，`service stop` 使用其输入正文的原 expected_instance_id。详见 [CLI 契约](spec/steerrunner.spec.md)。
+
+## Orca 准备查询等待与恢复
+
+`capabilities.execution_wait` 发布 `steerrunner-execution-wait/v1`、`same_snapshot: true`、`run_property: execution_wait` 与自包含 schema。`inspect`、`observe.run` 和 `history.run` 的完整 RunView 始终含 `execution_wait`，当前没有等待时为显式 null；读取不会调用 Orca 或刷新预算。`execution_wait_changed` 沿原事件页返回同事务的对象或清除 null，其它事件不附带该属性。
+
+只有远端仓库清单、本机 runtime status 使用这项读取策略。`queue` 表示等待原 CLI 通道，未调用不计次数；`calling` 从持久调用边界计数；`backoff` 的 `next_attempt_at` 是实际下次读取时间；`exhausted` 保留预算/次数耗尽原因。总窗口最多 90 秒，单次执行最多 15 秒、最多 5 次，失败后退避 1、2、4、8 秒；实际 `deadline_at` 同时受原准备与调用方更早期限限制。
+
+正常排队/退避期间保持原授权，不需要人工 resume。服务重启继续原 operation、目标、deadline 和次数；已有精确创建计划时只核验该计划。窗口耗尽或确定错误仍沿原 blocked/resume 契约处理；重复控制请求沿原 request_id 幂等，不能新开同一窗口。stop 及时取消排队/退避并撤销后继派发；等待消失不证明既有资源已经停止，仍查询原 stop/verify-stopped 证据。创建、启动、发送、停止的期限及未知结果核验规则保持原契约。
+
+`calls_started` 是本查询提交到调用边界的保守次数，不能证明子进程实际创建，也不是业务 Attempt/模型启动数。状态、controls、operation、unknown 和资源事实继续作为授权依据。构建资格及 local/remote 独立结果见[专项验收](acceptance/orca-cli-wait-retry.md)。

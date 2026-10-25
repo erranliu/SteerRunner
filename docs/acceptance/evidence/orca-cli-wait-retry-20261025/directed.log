@@ -1,0 +1,15 @@
+=== RUN   TestSROrcaCLIWaitRetry
+=== RUN   TestSROrcaCLIWaitRetry/release-after-15s
+=== RUN   TestSROrcaCLIWaitRetry/graceful-restart
+=== RUN   TestSROrcaCLIWaitRetry/kill-restart
+=== RUN   TestSROrcaCLIWaitRetry/stop-queued
+=== RUN   TestSROrcaCLIWaitRetry/transient-backoff
+=== RUN   TestSROrcaCLIWaitRetry/restart-stop-queued
+--- PASS: TestSROrcaCLIWaitRetry (100.40s)
+    --- PASS: TestSROrcaCLIWaitRetry/release-after-15s (33.57s)
+    --- PASS: TestSROrcaCLIWaitRetry/graceful-restart (16.29s)
+    --- PASS: TestSROrcaCLIWaitRetry/kill-restart (15.39s)
+    --- PASS: TestSROrcaCLIWaitRetry/stop-queued (7.35s)
+    --- PASS: TestSROrcaCLIWaitRetry/transient-backoff (17.90s)
+    --- PASS: TestSROrcaCLIWaitRetry/restart-stop-queued (9.90s)
+PASS

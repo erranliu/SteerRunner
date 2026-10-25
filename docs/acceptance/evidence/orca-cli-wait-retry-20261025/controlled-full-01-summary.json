@@ -1,0 +1,53 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "d95bbc1ba207033e8fed7fb03d351d6e5190ed0d",
+  "source_dirty": true,
+  "started_at": "2026-10-24T23:43:50.1232704Z",
+  "requested_levels": [
+    "Controlled"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "terminal_extensions_passed": true,
+      "test_count": 668,
+      "terminal_extension_test_count": 29,
+      "native_zero_match_guard": true,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaStoppedNativeProbe",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "level": "L1",
+      "evidence": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-full-01",
+      "framework_evidence": "C:\\SteerlineDebug\\runner-cli-wait-retry\\controlled-full-01\\framework",
+      "native_driver_compile_exit": 0,
+      "exit_code": 1,
+      "terminal_extension_exit": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+  "finished_at": "2026-10-24T23:57:48.1177457Z"
+}

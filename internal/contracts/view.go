@@ -1,6 +1,8 @@
 package contracts
 
 import (
+	"encoding/json"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"time"
@@ -95,6 +97,7 @@ type OperationView struct {
 	OriginalDiagnostic string `json:"original_diagnostic,omitempty"`
 }
 type RunView struct {
+	ExecutionWait     *b.ExecutionWait  `json:"execution_wait"`
 	Closed            bool              `json:"closed,omitempty"`
 	ContentResult     *ContentResult    `json:"content_result,omitempty"`
 	ResultAcquisition []AcquisitionView `json:"result_acquisition,omitempty"`
@@ -144,15 +147,16 @@ type AuditView struct {
 	Results         []workflow.AuditRecord `json:"results"`
 }
 type Event struct {
-	Transition *WorkflowTransition `json:"transition,omitempty"`
-	EventID    string              `json:"event_id"`
-	RunID      string              `json:"run_id"`
-	Revision   uint64              `json:"revision"`
-	Type       string              `json:"type"`
-	CommandID  string              `json:"command_id,omitempty"`
-	AttemptID  string              `json:"attempt_id,omitempty"`
-	Final      *FinalView          `json:"final,omitempty"`
-	CreatedAt  time.Time           `json:"created_at"`
+	ExecutionWait json.RawMessage     `json:"execution_wait,omitempty"`
+	Transition    *WorkflowTransition `json:"transition,omitempty"`
+	EventID       string              `json:"event_id"`
+	RunID         string              `json:"run_id"`
+	Revision      uint64              `json:"revision"`
+	Type          string              `json:"type"`
+	CommandID     string              `json:"command_id,omitempty"`
+	AttemptID     string              `json:"attempt_id,omitempty"`
+	Final         *FinalView          `json:"final,omitempty"`
+	CreatedAt     time.Time           `json:"created_at"`
 }
 
 // WorkflowTransition is captured in the same transaction as the aggregate.

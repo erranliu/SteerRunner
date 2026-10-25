@@ -1,5 +1,10 @@
 # SteerRunner L1–L4 测试指南
 
+2026-10-25 Orca CLI 等待增量：Controlled 新增 `TestSROrcaCLIWaitRetry`（现在 24 个顶层）；L3 新增 `orca-local.cli-wait-retry/default`、`orca-remote.cli-wait-retry/default`，现在 L3 为 29 场景/39 case，全目录 35 场景/45 case。两项原生 case 复用原 fixture 和转发 journal，以独占测试 lease 与同 cache 的其它 case 串行；独立 state-dir 不是 CLI cache 隔离证明。持锁故障只作用于 fixture 私有互斥 key，真实 CLI 转发器仍取得原用户共享 cache 的互斥；不会绕过生产入口。
+
+最小受控入口为 `./scripts/test-foundation.ps1 -Pattern '^TestSROrcaCLIWaitRetry$' -OutDir <新绝对目录>`，覆盖真实跨进程 >15 秒排队、原服务正常/强杀重启、stop、换代前撤销与暂态退避（六个变体）；组件/公开 schema/持久事务反例纳入原 L1。正式原生入口为 `./scripts/test.ps1 -Level L3 -Scenario orca-local.cli-wait-retry,orca-remote.cli-wait-retry -Config <独立配置> -MaxParallel 1 -OutDir <新目录>`；该入口仍运行完整 L1/Controlled 前置。案例实现不代表目标通过，实际构建、原生资格及清理见[专项验收](acceptance/orca-cli-wait-retry.md)。
+
+
 审计默认提示简化的定向入口与结果见[本轮验收](acceptance/reliable-delivery-simplification.md)。
 原生能力对比使用显式选择的[隔离试验](../tests/experiments/README.md)；跨构建冻结验证使用
 `scripts/test-foundation.ps1 -Pattern '^TestSRAuditPromptDefaultUpgrade$' -BaselineExe <变更前EXE> -OutDir <新目录>`。
@@ -98,7 +103,7 @@ Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 23 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 24 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
 丢响应找回、停止授权跨重启保持、审计发现/修复/预算、同服务多 Run 隔离及资源创建回执恢复。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
@@ -118,7 +123,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录读取](../scripts/live-catalog.ps1)将场景 ID 展开为注册元数据；旧格式自定义目录继续核对层级、driver、target、超时和完整 case 集，批次冻结展开后的完整目录。
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十七场景／三十七 case；原 12 个
+[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十九场景／三十九 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 新增场景须注册需求并将 ID 加入执行目录，同步 manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
@@ -432,7 +437,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮二十七场景三十七 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+当前全 L3 每轮二十九场景三十九 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
@@ -522,7 +527,7 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 
 ## 运行时单文件汇报增量
 
-新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 27 场景/37 case，总 33 场景/43 case；Controlled 23 顶层（新增 TestSRProgressFile），原有项全部保留。正式脚本自动执行 L1、完整 Controlled；建议 -MaxParallel 7 同时调度两项 L2 与五项 L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
+新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 29 场景/39 case，总 35 场景/45 case；Controlled 24 顶层（新增 TestSRProgressFile），原有项全部保留。正式脚本自动执行 L1、完整 Controlled；建议 -MaxParallel 7 同时调度两项 L2 与五项 L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
 
 PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修改其源文件，再次换代服务；必须保持原终态快照逐字段不变，活动同伴继续更新且零额外原生输入。快速回归同时核对已收尾不重开、待收尾仍采样、停服终态 closed、活动/恢复 detached，以及未启用 Orca 通道的环境隔离。`tests/framework/progress-parallel-test.ps1` 纳入正式框架入口，验证有效窗口及四种不合格报告；合成窗口只证明核验器行为，不授予 L3 或实际并行资格。
 

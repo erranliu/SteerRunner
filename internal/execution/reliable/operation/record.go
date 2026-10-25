@@ -11,9 +11,10 @@ import (
 )
 
 type Intent struct {
-	Request b.LifecycleRequest  `json:"request"`
-	Receipt *b.LifecycleReceipt `json:"receipt,omitempty"`
-	Mode    string              `json:"mode"`
+	PreparationQuery *b.PreparationQuery `json:"preparation_query,omitempty"`
+	Request          b.LifecycleRequest  `json:"request"`
+	Receipt          *b.LifecycleReceipt `json:"receipt,omitempty"`
+	Mode             string              `json:"mode"`
 }
 
 func (i Intent) NeedsReconciliation() bool {

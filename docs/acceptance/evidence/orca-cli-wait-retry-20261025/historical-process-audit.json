@@ -1,0 +1,25 @@
+{
+  "live_owned_processes": 0,
+  "processes": [
+    {
+      "pid": 45604,
+      "source": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-238110417\\runner\\orca-creations\\96287883470386e4e24bf15a49c69c81abdaa56592e14954e5d8a48d73812b52\\owner-ready.json",
+      "status": "process absent"
+    },
+    {
+      "pid": 8128,
+      "source": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-238110417\\native\\worktree-created.json",
+      "status": "process absent"
+    },
+    {
+      "pid": 9604,
+      "source": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-727675180\\runner\\orca-creations\\a092f0a363d0bb8b7c76252dc26469e77b96968ad153e143fa6d3bd0b8a686cb\\owner-ready.json",
+      "status": "process absent"
+    },
+    {
+      "pid": 21376,
+      "source": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-727675180\\native\\worktree-created.json",
+      "status": "process absent"
+    }
+  ]
+}

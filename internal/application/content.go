@@ -213,7 +213,7 @@ func contentHistory(r *runstate.Record, after string, limit int) contracts.Respo
 		limit = 200
 	}
 	end := min(start+limit, len(r.History))
-	return contracts.Success("", map[string]any{"run_id": r.ID, "entries": r.History[start:end], "next_cursor": r.ID + ":" + strconv.Itoa(end), "has_more": end < len(r.History)})
+	return contracts.Success("", map[string]any{"run": r.View(), "run_id": r.ID, "entries": r.History[start:end], "next_cursor": r.ID + ":" + strconv.Itoa(end), "has_more": end < len(r.History)})
 }
 
 // The interrupt intent uses the existing stop_observation native action, whose

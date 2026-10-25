@@ -60,6 +60,11 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 			if !slices.Contains(support.OperationVersions, intent.Request.Operation.Version) {
 				err = fmt.Errorf("operation version unsupported")
 			}
+			if q := intent.PreparationQuery; q != nil {
+				if e := q.Validate(intent.Request.Operation); e != nil {
+					err = e
+				}
+			}
 			if p := intent.Request.Input.Parse; p != nil {
 				if parser.ValidateRecovery(intent.Request) != nil {
 					err = fmt.Errorf("frozen parser/result acquisition contract unsupported")

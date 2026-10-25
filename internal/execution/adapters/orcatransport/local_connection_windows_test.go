@@ -68,14 +68,17 @@ func TestLocalIPCQueryCapabilityBeforeCreation(t *testing.T) {
 	t.Cleanup(func() { _ = listener.Close(); <-done })
 	dir := t.TempDir()
 	t.Setenv("ORCA_USER_DATA_PATH", dir)
+	// Preparation now always enters the shared CLI gate. This wire-only fixture
+	// owns no real Orca cache and must use its own mutex key as well.
+	t.Setenv("LOCALAPPDATA", dir)
 	raw, _ := json.Marshal(map[string]any{"runtimeId": "runtime", "authToken": "test-token", "transports": []any{map[string]string{"kind": "named-pipe", "endpoint": endpoint}}})
 	if err := os.WriteFile(filepath.Join(dir, "orca-runtime.json"), raw, 0600); err != nil {
 		t.Fatal(err)
 	}
 	l, host, s := fixture(t)
 	l.nativeAccess = true
-	// Only named-pipe observation is native here. Keep the fixture CLI on its
-	// fake host, outside the shared queue used by real Orca invocations.
+	// Only named-pipe observation is native here; command output stays on the
+	// fake host while preparation exercises its isolated CLI gate.
 	l.client = native.New(native.Config{CommandTimeout: "40s", Target: l.profile.Target(), Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		return host.OutputCommand(ctx, b.LaunchCommand{Executable: l.profile.Executable, Args: args, WorkingDirectory: l.setup.RepositoryPath, Timeout: timeout})
 	}})

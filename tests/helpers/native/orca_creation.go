@@ -39,6 +39,10 @@ func orcaCreationFixture(args []string) int {
 		return 2
 	}
 	if args[0] == "status" {
+		if exists(filepath.Join(root, "query-transient")) {
+			_ = json.NewEncoder(os.Stdout).Encode(map[string]any{"ok": false, "error": map[string]string{"code": "transport_unavailable", "message": "isolated query transport unavailable"}})
+			return 1
+		}
 		return respond(map[string]any{"runtime": map[string]any{"state": "ready", "appVersion": "1.4.224", "capabilities": []string{"terminal.prompt-delivery.v1"}}})
 	}
 	type created struct {

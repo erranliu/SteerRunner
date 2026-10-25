@@ -35,14 +35,15 @@ if($job.entry.id -like 'workspace-*'){$record.resources=@(('run:'+$job.entry.id)
 function New-SchedulerCase([string]$ID,[string]$Level='L3') {
     return @{entry=@{id=$ID;level=$Level;driver='controlled-integration';timeout_minutes=1};case=@{id='default'};repeat_index=1;excluded=$false}
 }
-$taskExecutions=@((New-SchedulerCase 'first'),(New-SchedulerCase 'second'),(New-SchedulerCase 'exclusive' 'L4'),(New-SchedulerCase 'last'))
+$taskWaitCase=New-SchedulerCase 'cli-wait'; $taskWaitCase.entry.driver='cli-wait-retry'
+$taskExecutions=@((New-SchedulerCase 'first'),(New-SchedulerCase 'second'),(New-SchedulerCase 'exclusive' 'L4'),$taskWaitCase,(New-SchedulerCase 'last'))
 $script:taskSchedulerResults=@()
 Invoke-SRCaseBatch -Executions $taskExecutions -Output $taskRoot -MaxParallel 2 -WorkerScript $taskWorker -LeaseDirectory $taskLeaseDirectory -Checkpoint {param($Records) $script:taskSchedulerResults=@($Records)}
-if($script:taskSchedulerResults.Count -ne 4 -or @($script:taskSchedulerResults | Where-Object {$_.status -ne 'passed'}).Count){throw 'Scheduler lost or failed a case'}
+if($script:taskSchedulerResults.Count -ne 5 -or @($script:taskSchedulerResults | Where-Object {$_.status -ne 'passed'}).Count){throw 'Scheduler lost or failed a case'}
 $taskRecords=$script:taskSchedulerResults
 $taskOverlap={param($Left,$Right) ([DateTime]$Left.started_at -lt [DateTime]$Right.finished_at -and [DateTime]$Right.started_at -lt [DateTime]$Left.finished_at)}
 if(-not (& $taskOverlap $taskRecords[0] $taskRecords[1])){throw 'Independent L3 workers did not overlap'}
-foreach($taskRecord in @($taskRecords[0],$taskRecords[1],$taskRecords[3])){if(& $taskOverlap $taskRecord $taskRecords[2]){throw 'Exclusive L4 worker overlapped another case'}}
+foreach($taskExclusiveIndex in @(2,3)){foreach($taskIndex in @(0..4)){if($taskIndex -ne $taskExclusiveIndex -and (& $taskOverlap $taskRecords[$taskIndex] $taskRecords[$taskExclusiveIndex])){throw 'Exclusive L4/CLI-cache worker overlapped another case'}}}
 $taskFailures=Join-Path $taskRoot 'failures';New-Item -ItemType Directory -Path $taskFailures | Out-Null
 Invoke-SRCaseBatch -Executions @((New-SchedulerCase 'good'),(New-SchedulerCase 'missing-result'),(New-SchedulerCase 'changed-build')) -Output $taskFailures -MaxParallel 2 -WorkerScript $taskWorker -LeaseDirectory $taskLeaseDirectory -Checkpoint {param($Records) $script:taskSchedulerResults=@($Records)}
 if(@($script:taskSchedulerResults | Where-Object {$_.status -eq 'failed'}).Count -ne 2 -or @($script:taskSchedulerResults | Where-Object {$_.status -eq 'passed'}).Count -ne 1){throw 'Worker loss or changed build was accepted'}
@@ -54,5 +55,5 @@ foreach($taskKind in @('session','workspace')){
     Invoke-SRCaseBatch -Executions @((New-SchedulerCase ($taskKind+'-a')),(New-SchedulerCase ($taskKind+'-b'))) -Output $taskCollisionRoot -MaxParallel 2 -WorkerScript $taskWorker -LeaseDirectory $taskLeaseDirectory -Checkpoint {param($Records) $script:taskSchedulerResults=@($Records)}
     if(@($script:taskSchedulerResults | Where-Object {$_.status -eq 'failed' -and $_.error -like '*resources collide*'}).Count -ne 1){throw "Shared native $taskKind was accepted across cases"}
 }
-[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{parallel_case_count=2;exclusive_case_count=1;worker_loss_rejected=$true;changed_build_rejected=$true;resource_collision_rejected=$true;records=$taskRecords}|ConvertTo-Json -Depth 30))
+[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{parallel_case_count=2;exclusive_case_count=2;worker_loss_rejected=$true;changed_build_rejected=$true;resource_collision_rejected=$true;records=$taskRecords}|ConvertTo-Json -Depth 30))
 Write-Output 'Bounded L3 overlap, exclusive L4, worker loss and frozen build checks passed'

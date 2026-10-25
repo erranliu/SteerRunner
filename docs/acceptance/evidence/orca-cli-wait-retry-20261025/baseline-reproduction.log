@@ -1,0 +1,11 @@
+=== RUN   TestBaselineQueueTimesOutBeforeInvocation
+    queue_baseline_test.go:21: baseline reproduced: actual_cli_calls=0 elapsed=15.0008838s error=Orca repository inventory query failed after 1/5 attempts (budget 15s): first error: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+        context deadline exceeded
+        last error: Orca CLI queue ended before command invocation
+        unexpected end of JSON input
+        context deadline exceeded
+        context deadline exceeded
+--- PASS: TestBaselineQueueTimesOutBeforeInvocation (15.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	17.461s

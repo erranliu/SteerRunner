@@ -119,6 +119,9 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		invoke := func(ctx context.Context) ([]byte, error) {
 			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
 		}
+		if native.PreparationOwnsCLI(ctx) {
+			return invoke(ctx)
+		}
 		if l.nativeAccess {
 			callCtx, cancel := context.WithTimeout(ctx, timeout)
 			defer cancel()

@@ -31,11 +31,11 @@ function Invoke-SRCaseBatch {
     while ($taskPending.Count -or $taskActive.Count) {
         while ($taskPending.Count -and $taskActive.Count -lt $MaxParallel) {
             $taskNext = $taskPending.Peek()
-            if (($taskNext.entry.level -eq 'L4' -and $taskActive.Count) -or @($taskActive | Where-Object { $_.record.level -eq 'L4' }).Count) { break }
+            if ((($taskNext.entry.level -eq 'L4' -or $taskNext.entry.driver -eq 'cli-wait-retry') -and $taskActive.Count) -or @($taskActive | Where-Object { $_.record.level -eq 'L4' -or $_.driver -eq 'cli-wait-retry' }).Count) { break }
             $taskLease=$null
             $taskUnavailable = $taskNext.ContainsKey('unavailable') -and $taskNext.unavailable
             if (-not $taskNext.excluded -and -not $taskUnavailable) {
-                $taskLease=Open-SRTestLease ($taskNext.entry.level -eq 'L4') -Directory $LeaseDirectory
+                $taskLease=Open-SRTestLease ($taskNext.entry.level -eq 'L4' -or $taskNext.entry.driver -eq 'cli-wait-retry') -Directory $LeaseDirectory
                 if ($null -eq $taskLease) { break }
             }
             $taskNext = $taskPending.Dequeue()

@@ -233,6 +233,11 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		request.Snapshot = r.Snapshot.Clone()
 	}
 	ctx, cancel := context.WithTimeout(e.ctx, 90*time.Second)
+	// Clone normalizes nil/empty implementation lists on both sides. Storage
+	// round trips may change that representation without changing any identity.
+	if intent.PreparationQuery != nil && intent.Receipt == nil && len(intent.Request.Operation.Receipt) == 0 && r.WorkspaceFact == nil && r.Snapshot.Workspace.Path == "" && b.LifecycleBindingDigest(r.Snapshot.Clone()) == b.LifecycleBindingDigest(intent.Request.Snapshot.Clone()) {
+		ctx = b.WithPreparationRecovery(ctx, r.Allowed && !r.ResumeRequired && r.PendingStop == "")
+	}
 	if !reconcile && request.Input.Turn != nil {
 		if w.ownedInputs == nil {
 			w.ownedInputs = map[string]bool{}
@@ -241,6 +246,16 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	}
 	result := operation.Invoke(ctx, p, p, request, mode)
 	cancel()
+	// Shutdown cancels this read, not the durable Run authorization. Keep the
+	// original in-flight operation so the next eligible generation can continue.
+	if e.ctx.Err() != nil && errors.Is(result.Err, e.ctx.Err()) && result.Receipt.Disposition == b.OperationRejected {
+		e.mu.Lock()
+		query := e.runs[id].Intents[index].PreparationQuery
+		e.mu.Unlock()
+		if query != nil {
+			return false
+		}
+	}
 	if result.Observer != nil {
 		if w.observer != nil {
 			_ = w.observer.Close(context.Background())
@@ -276,7 +291,10 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	next.Intents[index].Settle(next.Snapshot.Operations, savedReceipt, mode, b.OperationStatus(status), e.redact(next, diagnostic), time.Now().UTC())
 	savedReceipt = *next.Intents[index].Receipt
 	op := next.Intents[index].Request.Operation
-	next.Diagnostic = op.Diagnostic
+	preparationStopped := next.PendingStop != "" && next.Intents[index].PreparationQuery != nil
+	if !preparationStopped {
+		next.Diagnostic = op.Diagnostic
+	}
 	resourcePending := status == string(b.OperationAccepted) && savedReceipt.State.ResourcePending
 	if reconcile && (status == string(b.OperationUnknown) || resourcePending) && intent.Request.Operation.Status == b.OperationStatus(status) && intent.Request.Operation.Diagnostic == op.Diagnostic && b.LifecycleBindingDigest(next.Snapshot) == b.LifecycleBindingDigest(r.Snapshot) {
 		e.mu.Unlock()
@@ -295,7 +313,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 			next.CommandStates[command] = "unknown"
 		}
 	}
-	if !progress {
+	if !progress && !preparationStopped {
 		next.Status = "reconciling"
 		if status == "rejected" {
 			next.Status = "blocked"

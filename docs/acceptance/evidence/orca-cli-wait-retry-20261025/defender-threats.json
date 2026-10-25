@@ -1,0 +1,8 @@
+{
+  "ThreatID": 2147731250,
+  "ThreatName": "Trojan:Win32/Bearfoos.A!ml",
+  "SeverityID": 5,
+  "CategoryID": 8,
+  "IsActive": false,
+  "DidThreatExecute": true
+}

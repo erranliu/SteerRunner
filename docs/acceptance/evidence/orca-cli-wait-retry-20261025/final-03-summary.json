@@ -1,0 +1,155 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "d95bbc1ba207033e8fed7fb03d351d6e5190ed0d",
+  "source_dirty": true,
+  "started_at": "2026-10-25T00:06:47.0866523Z",
+  "requested_levels": [
+    "Controlled",
+    "L2",
+    "L3"
+  ],
+  "status": "running",
+  "results": [
+    {
+      "scenario": "local-codex.result-acquisition",
+      "repeat_index": 1,
+      "level": "L2",
+      "status": "queued",
+      "case_id": "default",
+      "availability": {
+        "scenario_id": "local-codex.result-acquisition",
+        "case_id": "default",
+        "level": "L2",
+        "availability": "available",
+        "reasons": []
+      }
+    },
+    {
+      "scenario": "local-codex.smoke",
+      "repeat_index": 1,
+      "level": "L2",
+      "status": "queued",
+      "case_id": "default",
+      "availability": {
+        "scenario_id": "local-codex.smoke",
+        "case_id": "default",
+        "level": "L2",
+        "availability": "available",
+        "reasons": []
+      }
+    },
+    {
+      "scenario": "orca-local.cli-wait-retry",
+      "repeat_index": 1,
+      "level": "L3",
+      "status": "queued",
+      "case_id": "default",
+      "availability": {
+        "scenario_id": "orca-local.cli-wait-retry",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      }
+    },
+    {
+      "scenario": "orca-remote.cli-wait-retry",
+      "repeat_index": 1,
+      "level": "L3",
+      "status": "queued",
+      "case_id": "default",
+      "availability": {
+        "scenario_id": "orca-remote.cli-wait-retry",
+        "case_id": "default",
+        "level": "L3",
+        "availability": "available",
+        "reasons": []
+      }
+    },
+    {
+      "exit_code": 0,
+      "native_driver_compile_exit": 0,
+      "level": "L1",
+      "test_count": 671,
+      "native_zero_match_guard": true,
+      "terminal_extension_exit": 0,
+      "framework_evidence": "C:\\SteerlineDebug\\runner-cli-wait-retry\\final-03\\framework",
+      "terminal_extensions_passed": true,
+      "evidence": "C:\\SteerlineDebug\\runner-cli-wait-retry\\final-03",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaStoppedNativeProbe",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "terminal_extension_test_count": 29
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "baseline": {
+    "configuration_issues": [],
+    "l2_verified": false
+  },
+  "availability": [
+    {
+      "scenario_id": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "runner_exe": "C:\\SteerlineDebug\\runner-cli-wait-retry\\final-03\\bin\\steerrunner.exe",
+  "runner_sha256": "a4d105541c347e3421510d2d37cf032a8c984357df61edc4873acd2f416aba30",
+  "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+  "source_config_digest": "a883365d2cc245f4c1422edfc5bcb15b665284fafbfe550099ca8e5b6d32c4ca",
+  "requirements_sha256": "75835c78a15664703760b978ad2bc5acd754edaa277f37a7ebddd2ca0a5cbeb7",
+  "helper_sha256": "93bb94167f8fd05cd74efff13d700f63ad965efa929517ad0db32d07a612239d",
+  "configuration_sha256": "35e45c47e1f430219993e1a5f46c71ab35ebb6035435a237ae1e8ff35ca7b648",
+  "selected_scenarios": [
+    "local-codex.result-acquisition",
+    "local-codex.smoke",
+    "orca-local.cli-wait-retry",
+    "orca-remote.cli-wait-retry"
+  ],
+  "repeat": 1,
+  "planned_case_count": 4,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete"
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "superseded_before_native",
+  "at": "2026-10-25T00:19:48.7891596Z",
+  "coordinator_pid": 52384,
+  "controlled_pid": 31132,
+  "reason": "Final direct-transport unknown-create guard is qualified in final-04. Stop only this obsolete coordinator before native dispatch; detached controlled harness continues normal cleanup.",
+  "native_dispatched": false,
+  "original_summary_preserved": true
+}

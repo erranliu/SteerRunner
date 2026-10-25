@@ -96,6 +96,9 @@ func (c Client) MetaCall(ctx context.Context, args ...string) (Result, error) {
 
 func (c Client) MetaCallWithTimeout(ctx context.Context, timeout time.Duration, args ...string) (Result, error) {
 	raw, callErr := c.Raw(ctx, timeout, args...)
+	if len(bytes.TrimSpace(raw)) == 0 && IsCLIQueueError(callErr) {
+		return Result{}, callErr
+	}
 	envelope, parseErr := ParseEnvelope(raw)
 	var exit *exec.ExitError
 	uncertain := callErr != nil && (!errors.As(callErr, &exit) || !exit.Exited())

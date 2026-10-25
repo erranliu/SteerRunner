@@ -1,0 +1,24 @@
+[
+  {
+    "ThreatID": 2147731250,
+    "InitialDetectionTime": "2026-10-25T08:45:07.89+08:00",
+    "LastThreatStatusChangeTime": "2026-10-25T08:45:50.131+08:00",
+    "ActionSuccess": true,
+    "CurrentThreatExecutionStatusID": 1,
+    "ThreatStatusID": 3,
+    "Resources": [
+      "file:_C:\\SteerlineDebug\\runner-cli-wait-retry\\final-05\\controlled\\steerrunner.exe"
+    ]
+  },
+  {
+    "ThreatID": 2147731250,
+    "InitialDetectionTime": "2026-10-25T08:45:15.171+08:00",
+    "LastThreatStatusChangeTime": "2026-10-25T08:45:50.239+08:00",
+    "ActionSuccess": true,
+    "CurrentThreatExecutionStatusID": 1,
+    "ThreatStatusID": 3,
+    "Resources": [
+      "file:_C:\\SteerlineDebug\\runner-cli-wait-retry\\final-05\\controlled\\steerrunner.exe"
+    ]
+  }
+]

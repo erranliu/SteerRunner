@@ -26,7 +26,8 @@
     "TestSRContentGenerationRecovery",
     "TestSRRunEvidenceR2",
     "TestSRResourceCreationRecovery",
-    "TestSRProgressFile"
+    "TestSRProgressFile",
+    "TestSROrcaCLIWaitRetry"
   ],
   "scenarios": [
     "orca-local.codex",
@@ -61,7 +62,9 @@
     "orca-local.progress-file",
     "orca-remote.progress-file",
     "local-codex.progress-multirun",
-    "local-codex.progress-recovery"
+    "local-codex.progress-recovery",
+    "orca-local.cli-wait-retry",
+    "orca-remote.cli-wait-retry"
   ],
   "focused_native_scenarios": [
     {

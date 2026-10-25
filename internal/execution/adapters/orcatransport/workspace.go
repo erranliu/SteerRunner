@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -34,6 +35,22 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	}
 	name := workspaceName(s)
 	var created workspaceCreation
+	// A durable preparation query proves this operation reached only discovery.
+	// Any claimed creation directory wins: recover that exact plan, never select
+	// another repository or relaunch an owner with an unknown result.
+	key := l.creationKey(s, r.Operation.ID, r.Operation.PayloadDigest, "workspace")
+	if _, statErr := os.Stat(creationDirectory(l.setup.RunDirectory, key)); statErr == nil {
+		reconcile = true
+	} else if reconcile && os.IsNotExist(statErr) && l.setup.LaunchExecutionOwner != nil && b.PreparationQueryRecorded(ctx) {
+		if !b.PreparationRecovery(ctx) {
+			// This owner creates its durable directory before any launch. The
+			// original query plus absent directory proves creation never began;
+			// revoked authorization permits settlement, never a query or create.
+			receipt.Disposition = b.OperationRejected
+			return receipt, nil
+		}
+		reconcile = false
+	}
 	if reconcile {
 		var saved b.LifecycleReceipt
 		if len(r.Operation.Receipt) != 0 && (json.Unmarshal(r.Operation.Receipt, &saved) != nil || saved.ValidateFor(r) != nil) {
@@ -231,7 +248,7 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 		return "", "", errors.New("missing project repository path")
 	}
 	if l.profile.Environment == "" {
-		result, err := l.client.MetaCall(ctx, "status", "--json")
+		result, err := l.queryPreparation(ctx, "runtime_status", "status", "--json")
 		if err != nil || result.RuntimeID == "" {
 			return "", "", errors.Join(err, errors.New("local Orca runtime identity is unavailable"))
 		}
@@ -246,16 +263,7 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 	if name == "." || name == "/" || name == "" || strings.HasSuffix(name, ":") {
 		return "", "", errors.New("project repository has no directory name")
 	}
-	var result native.Result
-	query := func(ctx context.Context) (err error) {
-		result, err = l.queryRepositoryInventory(ctx)
-		return err
-	}
-	if l.setup.ReadOnlyPreparation != nil {
-		err = l.setup.ReadOnlyPreparation(ctx, query)
-	} else {
-		err = query(ctx)
-	}
+	result, err := l.queryRepositoryInventory(ctx)
 	if err != nil {
 		return "", "", fmt.Errorf("cannot query Orca repository inventory for directory %q: %w", name, err)
 	}

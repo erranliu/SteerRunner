@@ -11,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
@@ -74,6 +75,7 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
+		"execution_wait":             map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
 		"run_observation":            map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
 		"recovery":                   RecoveryCapabilities(),
 		"run_usage":                  UsageCapabilities(),

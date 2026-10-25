@@ -1,0 +1,85 @@
+{
+  "final_observation": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": false,
+    "request_id": null,
+    "data": null,
+    "error": {
+      "code": "service_unavailable",
+      "message": "Service discovery is unavailable; start the service explicitly."
+    }
+  },
+  "mode": "restart-stop-queued",
+  "queue": {
+    "execution_wait": {
+      "contract": "steerrunner-execution-wait/v1",
+      "operation_id": "99523b5bc0a61122b0461482ddf3d5cd",
+      "query": "runtime_status",
+      "stage": "queue",
+      "reason_code": "orca_cli_busy",
+      "started_at": "2026-10-25T00:31:39.5905523Z",
+      "updated_at": "2026-10-25T00:31:39.5905523Z",
+      "deadline_at": "2026-10-25T00:33:09.5893763Z",
+      "calls_started": 0,
+      "max_calls": 5,
+      "next_attempt_at": null,
+      "diagnostic": "Orca CLI channel is busy."
+    },
+    "operations": [
+      {
+        "operation_id": "99523b5bc0a61122b0461482ddf3d5cd",
+        "action": "prepare_workspace",
+        "status": "in_flight"
+      }
+    ],
+    "run_id": "c25aaf2bc060eb1d6391ff85c2a855ff",
+    "revision": 3,
+    "title": "独立Runner controlled",
+    "input_digest": "28736f5a0181d280539bd1412002709588417708b67b264f3f7878ceca0ceb86",
+    "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+    "workflow": {
+      "id": "development",
+      "version": 2
+    },
+    "step": "implement.execute",
+    "status": "queued",
+    "phase": "execution_wait",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "spec.md",
+        "commit": "aae2b70d5bce187fa12b1e3a0674184bcf97c48f",
+        "execution_location": "spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "plan.md",
+        "commit": "aae2b70d5bce187fa12b1e3a0674184bcf97c48f",
+        "execution_location": "plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "turn_started": false,
+      "attempt_id": "5a7f0d776fe9a1eda5c1be62a0f49aba",
+      "generation": "0f01076f5c988b704411b3bbd2929925",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "final_available": false,
+      "workspace": "",
+      "branch": ""
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-25T00:31:36.3430302Z",
+    "updated_at": "2026-10-25T00:31:39.5905523Z"
+  }
+}

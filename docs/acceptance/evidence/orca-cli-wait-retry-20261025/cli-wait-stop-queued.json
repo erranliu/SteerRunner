@@ -1,0 +1,262 @@
+{
+  "final_observation": {
+    "protocol": "steerrunner-cli/v1",
+    "ok": true,
+    "request_id": null,
+    "data": {
+      "contract": "steerrunner-run-observation/v1",
+      "event_page": {
+        "events": [
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "command_id": "2bf6927ff705a46f275003238afbefb2",
+            "created_at": "2026-10-25T00:31:14.4808877Z",
+            "event_id": "89956c42b7f5b5192e86f7cbd5dc39f9",
+            "revision": 1,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "run_accepted"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "command_id": "2bf6927ff705a46f275003238afbefb2",
+            "created_at": "2026-10-25T00:31:14.4808877Z",
+            "event_id": "8d17a6780ea81c6b9eca255144fa3352",
+            "revision": 1,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "transition": {
+              "from": {
+                "workflow_stage": "",
+                "workflow_status": ""
+              },
+              "to": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "queued"
+              }
+            },
+            "type": "workflow_changed"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "created_at": "2026-10-25T00:31:14.5741998Z",
+            "event_id": "f317194e1ecc261747a5f2b8f0659729",
+            "revision": 2,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "operation_committed"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "created_at": "2026-10-25T00:31:14.7042477Z",
+            "event_id": "431aeadf265c22155f1a2e91fd52f5a6",
+            "execution_wait": {
+              "calls_started": 0,
+              "contract": "steerrunner-execution-wait/v1",
+              "deadline_at": "2026-10-25T00:32:44.7010176Z",
+              "diagnostic": "Orca CLI channel is busy.",
+              "max_calls": 5,
+              "next_attempt_at": null,
+              "operation_id": "1b0761d5dfbcb5e986a4c5816fc1c217",
+              "query": "runtime_status",
+              "reason_code": "orca_cli_busy",
+              "stage": "queue",
+              "started_at": "2026-10-25T00:31:14.7030963Z",
+              "updated_at": "2026-10-25T00:31:14.7030963Z"
+            },
+            "revision": 3,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "command_id": "d8d3b2568b07b3562e1040c6510e17f6",
+            "created_at": "2026-10-25T00:31:14.9717772Z",
+            "event_id": "84eefe4b13b90cdf2edf14f36021de34",
+            "revision": 4,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "stop_accepted"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "command_id": "d8d3b2568b07b3562e1040c6510e17f6",
+            "created_at": "2026-10-25T00:31:14.9717772Z",
+            "event_id": "1e0d9c9d26f4bd0b621f5f1290e812e9",
+            "execution_wait": null,
+            "revision": 4,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "execution_wait_changed"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "created_at": "2026-10-25T00:31:14.9772682Z",
+            "event_id": "dd2cfe83f79f25c231e02fc31c44c072",
+            "revision": 5,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "operation_rejected"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "created_at": "2026-10-25T00:31:14.9847608Z",
+            "event_id": "ed288d2180cd35d0c21daaf343f81434",
+            "revision": 6,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "type": "run_stopped"
+          },
+          {
+            "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+            "created_at": "2026-10-25T00:31:14.9847608Z",
+            "event_id": "704d3e4bf07c90342ddaa1c7382a53c9",
+            "revision": 6,
+            "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+            "transition": {
+              "from": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "queued"
+              },
+              "to": {
+                "workflow_stage": "implement.execute",
+                "workflow_status": "stopped"
+              }
+            },
+            "type": "workflow_changed"
+          }
+        ],
+        "has_more": false,
+        "next_cursor": "djE6YzgxYWRmYTJkN2YxMTRiMTRjNmZhMTEwMWQyYzNiODg6OQ"
+      },
+      "run": {
+        "controls": {
+          "can_close": false,
+          "can_interrupt": false,
+          "can_message": false,
+          "can_reply": false,
+          "can_resume": true,
+          "can_stop": false
+        },
+        "created_at": "2026-10-25T00:31:11.3139611Z",
+        "execution": {
+          "agent": "codex",
+          "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+          "backend": "orca",
+          "branch": "",
+          "final_available": false,
+          "generation": "4f976353df4bf05b8c5eb4b0b18f27b9",
+          "protocol": "orca_terminal_v3",
+          "turn_started": false,
+          "workspace": ""
+        },
+        "execution_wait": null,
+        "input_digest": "8205c9b945fd66e1e8e99eac2e4da994e4b981ca08487d3551697fb1b890674e",
+        "materials": [
+          {
+            "commit": "cb81ada72b58712acb7164a6bfeb49ef7c421bed",
+            "execution_location": "spec.md",
+            "kind": "worktree",
+            "path": "spec.md"
+          },
+          {
+            "commit": "cb81ada72b58712acb7164a6bfeb49ef7c421bed",
+            "execution_location": "plan.md",
+            "kind": "worktree",
+            "path": "plan.md"
+          }
+        ],
+        "new_inputs_allowed": false,
+        "operations": [
+          {
+            "action": "prepare_workspace",
+            "diagnostic": "context canceled\ncontext canceled\nlocal Orca runtime identity is unavailable",
+            "operation_id": "1b0761d5dfbcb5e986a4c5816fc1c217",
+            "status": "rejected"
+          }
+        ],
+        "phase": "stopped",
+        "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+        "resume_required": true,
+        "revision": 6,
+        "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+        "status": "stopped",
+        "step": "implement.execute",
+        "stop_status": "stopped",
+        "title": "独立Runner controlled",
+        "updated_at": "2026-10-25T00:31:14.9823402Z",
+        "workflow": {
+          "id": "development",
+          "version": 2
+        }
+      }
+    },
+    "error": null
+  },
+  "mode": "stop-queued",
+  "queue": {
+    "execution_wait": {
+      "contract": "steerrunner-execution-wait/v1",
+      "operation_id": "1b0761d5dfbcb5e986a4c5816fc1c217",
+      "query": "runtime_status",
+      "stage": "queue",
+      "reason_code": "orca_cli_busy",
+      "started_at": "2026-10-25T00:31:14.7030963Z",
+      "updated_at": "2026-10-25T00:31:14.7030963Z",
+      "deadline_at": "2026-10-25T00:32:44.7010176Z",
+      "calls_started": 0,
+      "max_calls": 5,
+      "next_attempt_at": null,
+      "diagnostic": "Orca CLI channel is busy."
+    },
+    "operations": [
+      {
+        "operation_id": "1b0761d5dfbcb5e986a4c5816fc1c217",
+        "action": "prepare_workspace",
+        "status": "in_flight"
+      }
+    ],
+    "run_id": "c81adfa2d7f114b14c6fa1101d2c3b88",
+    "revision": 3,
+    "title": "独立Runner controlled",
+    "input_digest": "8205c9b945fd66e1e8e99eac2e4da994e4b981ca08487d3551697fb1b890674e",
+    "resource_digest": "5909e7a962f5b50fd13ae4f4c93a445cad4d157b60d569a57fe7a0ff5ab4c166",
+    "workflow": {
+      "id": "development",
+      "version": 2
+    },
+    "step": "implement.execute",
+    "status": "queued",
+    "phase": "execution_wait",
+    "new_inputs_allowed": true,
+    "resume_required": false,
+    "materials": [
+      {
+        "kind": "worktree",
+        "path": "spec.md",
+        "commit": "cb81ada72b58712acb7164a6bfeb49ef7c421bed",
+        "execution_location": "spec.md"
+      },
+      {
+        "kind": "worktree",
+        "path": "plan.md",
+        "commit": "cb81ada72b58712acb7164a6bfeb49ef7c421bed",
+        "execution_location": "plan.md"
+      }
+    ],
+    "execution": {
+      "agent": "codex",
+      "turn_started": false,
+      "attempt_id": "287d346cf09c649e4549d276cdef80c4",
+      "generation": "4f976353df4bf05b8c5eb4b0b18f27b9",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "final_available": false,
+      "workspace": "",
+      "branch": ""
+    },
+    "controls": {
+      "can_message": false,
+      "can_interrupt": false,
+      "can_close": false,
+      "can_reply": false,
+      "can_resume": false,
+      "can_stop": true
+    },
+    "created_at": "2026-10-25T00:31:11.3139611Z",
+    "updated_at": "2026-10-25T00:31:14.7030963Z"
+  }
+}

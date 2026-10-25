@@ -16,6 +16,7 @@
 | 运行时单文件汇报 | [PR #55 审计及当前构建验收](runtime-progress-pr55-review.md) / [主线整合验收](runtime-progress-integration.md) / [原始专项与失败历史](runtime-progress.md)；本地、Orca 本地/远端、恢复、多 Run 与实际并行分别登记 |
 | 独立配置及测试体系 | [配置](independent-configuration.md)、[测试分层](test-levels.md)、[首批稳定性](l3-execution-stability.md)；旧整轮结果不代替当前全集资格 |
 | 本机认证与环境检查 | [沙箱认证](sandbox-authentication.md)、[环境检查](environment-check.md)、[个人多机与 gh-only](personal-runner-gh-only-20261019.md) |
+| Orca CLI 等待/读取重试 | [专项实施与独立验收](orca-cli-wait-retry.md)；local/remote 分目标、保留失败与清理证据 |
 | Orca 当前路径 | [连接统一](orca-local-remote.md)、[远端原生](orca-remote-native.md)、[通用 Agent](orca-generic-agent.md)；旧 helper 结果不证明新远端能力 |
 | 停止及资源范围 | [初始化停止](initialization-stop.md)、[Orca 停止取证](orca-shutdown-verification.md)、[停止验证](shutdown-verification.md) |
 | 原会话与进度查看 | [原会话查看](native-session-viewer.md)、[执行可见性](execution-observability.md) |
