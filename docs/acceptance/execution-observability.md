@@ -14,6 +14,10 @@ Task18 原配置第二轮 Run `27761aaae314c4bbcd00a7d7fae688d1` 已产生 Gitea
 
 `l2-final-03` 的 Controlled 随后发现原 `TestSRContentGenerationRecovery/generate-graceful` 比较了整个 history 响应，其中包含实时 Run revision/updated_at。旧 Runner `5df57b6` 对同一原用例三次均失败；独立日志对照旧版和 f3 均证明只有 revision/updated_at 变化，会话、回合、原进程、控制资格、正文、命令归属和分页全部相同。验收测试因此只排除这两个可变元数据，继续精确比较其余整个响应，并保留原零重发、停止和身份断言；不改变产品代码或持久状态。原失败、两版对照及补测分别保留在上述诊断根的 `generation-baseline-01`、`generation-probe-{baseline,fixed}-01`、`generation-corrected-{baseline,fixed}-01`，后续正式 L2 必须重新执行，不能把原失败报告改记成功。
 
+同一完整 Controlled 最终执行 24 场景，另有 `TestSRResourceCreationRecovery/owner-crash` 和 `missing-initial-plan` 失败。补测启动器据此拒绝运行 `l2-final-04`，该次只有启动检查失败，未执行原生 L2。两项原测试在旧 `5df57b6` 与 f3 均复现：原创建 operation 已是 `outcome_unknown`，停止已撤销授权，`phase=stop_requested/stop_status=pending` 保持权威，测试却仅等待 coarse status=reconciling。该停止优先级是等待契约的既有要求，不能为了通过测试改写产品状态。修正断言要求同一原 `prepare_workspace` operation ID 仍为 unknown、ResumeRequired=true、禁止新输入，同时接受原 reconciling 或明确的 pending stop 投影；延迟后的复核仍用完整相同谓词，原零重新创建/发送/认领/关闭和不能伪造 stopped 的断言保留。
+
+两处原失败现场通过公开 service status 确认为 not_running；公开 verify-stopped 正确保留 resources_settled=false，原因是故意丢失的模拟创建身份，不冒充已结算。原目录继续保留，未读取或修改 Runner 私有数据库。旧/新原用例与修正后全部七变体补测分别位于同一诊断根的 `creation-original-{baseline,fixed}-01`、`creation-corrected-{baseline,fixed}-01`；公开收尾查询位于 `creation-original-inspection-01`。
+
 范围及命令见 [Plan](../spec/execution-observability.plan.md)。2026-10-15，Windows / Go 1.26.4；独立临时目录和受控原生协议，无真实模型、GitHub PR 或安装环境变更。
 
 | 项 | 验收要求 | 结果 |
