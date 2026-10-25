@@ -163,6 +163,8 @@ PublicMessage 使用独立 `LifecycleEvent`，不混入 Fact、Implementation、
 
 此兼容修复只修改 Runner，不修改、构建或部署 Orca。2026-10-24 最终构建的两轮真实交付及限定验证范围见[原生验收](../acceptance/orca-remote-native.md#2026-10-24-n308-19-真实远端-l4-最终结果)；协议回归自身不计 PR 成功。
 
+2026-10-25 缺失 working 通知补正：仅对上段定义的薄 Codex done 投影，允许没有持久 working 起点时执行同一只读原输入核验。必须已有原输入 accepted/started、正值冻结主记录 baseline 和原 provider/pane；done 必须晚于 baseline。补查仍须以原 terminal/incarnation/worktree 前后核验、唯一完整原用户条目、原全文及时间界限、前后不变的独立 done/正文构造不可反序列化且绑定精确进程的瞬时 query 证明，Lifecycle 再核验原资源。没有 working 起点只解除这一路证明对 working 的依赖，不能以普通历史条目、tab snapshot、通知或文本相似度接受结束。已有 working 起点仍须满足原结束晚于该起点；已有冲突、重复输入、错身份、截断/工具正文、失败 outcome 和不完整分页均拒绝。没有正值 baseline 的历史记录继续未核实。本增量不补造 working/authority/revision，不改持久状态、codec、观察节奏或 SteerLine。
+
 ### 5.3 历史记录、结果与恢复
 
 整合已合入主线的 PR #49：复用其 `NativeProof.Conflict/Waiting`、state codec v7 及唯一 v6 解码兼容边界，本专项不另增持久字段或版本。profile v3/v4、state 数据库版本及请求摘要不变。历史泛化 provenance 诊断不能被证明仅由 prompt 缺失引起，必须保留；不清库、不清诊断、不重解释已保存 unknown/outcome，也不补造 start/end。

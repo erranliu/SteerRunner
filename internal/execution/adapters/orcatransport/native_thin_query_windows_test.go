@@ -74,40 +74,54 @@ func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prom
 }
 
 func TestThinOriginalQueryCompletesThroughNativeLifecycle(t *testing.T) {
-	for _, duplicate := range []bool{false, true} {
-		t.Run(map[bool]string{false: "original", true: "duplicate-rejected"}[duplicate], func(t *testing.T) {
-			l, host, feed, s, input := publicMessageFixture(t)
-			feed.events = []native.AgentState{messageStart(input)}
-			r, _, err := l.observeOnce(context.Background(), s)
-			if err != nil {
-				t.Fatal(err)
-			}
-			bind(&s, r)
-			state, _ := l.state(s)
-			end := fixtureState(12, "", "done")
-			end.TurnStartedAt, end.Observation = 0, nil
-			end.ProviderSession.TranscriptPath = "original.jsonl"
-			end.LastAssistantMessage = "canonical native completion"
-			thinInputRPC(t, state.Process, end, input.Prompt, duplicate)
-			l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
-				return native.QueryOriginalSample(ctx, "", process, pane)
-			}
-			l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
-				return native.QueryOriginalInput(ctx, "", process, pane, baseline, before)
-			}
-			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
-			r, message, err := l.observeOnce(context.Background(), s)
-			if err != nil || host.nativeSends != 1 {
-				t.Fatal("observation resent input or failed", host.nativeSends, err)
-			}
-			if duplicate {
-				if r.TurnEvidence != nil || message != nil || r.Diagnostic == "" {
-					t.Fatal("duplicate input produced a final", r, message)
-				}
-				return
-			}
-			if r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.Diagnostic != "" || message == nil || message.Text != end.LastAssistantMessage {
-				t.Fatal("canonical result/message did not pass the full native chain", r, message)
+	for _, start := range []string{"observed", "missed", "missed-restored"} {
+		t.Run(start, func(t *testing.T) {
+			for _, duplicate := range []bool{false, true} {
+				t.Run(map[bool]string{false: "original", true: "duplicate-rejected"}[duplicate], func(t *testing.T) {
+					l, host, feed, s, input := publicMessageFixture(t)
+					if start == "observed" {
+						feed.events = []native.AgentState{messageStart(input)}
+						r, _, err := l.observeOnce(context.Background(), s)
+						if err != nil {
+							t.Fatal(err)
+						}
+						bind(&s, r)
+					} else if start == "missed-restored" {
+						l.closeStateFeed()
+						port, err := NewLifecycleWithStateFactory(l.setup, l.stateFactory)
+						if err != nil {
+							t.Fatal(err)
+						}
+						l = port.(*Lifecycle)
+						t.Cleanup(l.closeStateFeed)
+					}
+					state, _ := l.state(s)
+					end := fixtureState(12, "", "done")
+					end.TurnStartedAt, end.Observation = 0, nil
+					end.ProviderSession.TranscriptPath = "original.jsonl"
+					end.LastAssistantMessage = "canonical native completion"
+					thinInputRPC(t, state.Process, end, input.Prompt, duplicate)
+					l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
+						return native.QueryOriginalSample(ctx, "", process, pane)
+					}
+					l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
+						return native.QueryOriginalInput(ctx, "", process, pane, baseline, before)
+					}
+					l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
+					r, message, err := l.observeOnce(context.Background(), s)
+					if err != nil || host.nativeSends != 1 {
+						t.Fatal("observation resent input or failed", host.nativeSends, err)
+					}
+					if duplicate {
+						if r.TurnEvidence != nil || message != nil || r.Diagnostic == "" {
+							t.Fatal("duplicate input produced a final", r, message)
+						}
+						return
+					}
+					if r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || r.TurnEvidence.LastMessage != end.LastAssistantMessage || r.Diagnostic != "" || message == nil || message.Text != end.LastAssistantMessage {
+						t.Fatal("canonical result/message did not pass the full native chain", r, message)
+					}
+				})
 			}
 		})
 	}
