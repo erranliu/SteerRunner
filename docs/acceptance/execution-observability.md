@@ -6,6 +6,14 @@ Task18 原配置第二轮 Run `27761aaae314c4bbcd00a7d7fae688d1` 已产生 Gitea
 
 冻结源码 `5df57b6` 的复现、原始探针和失败日志：`C:/SteerlineDebug/wt-507e-task18-retest/diagnostics/attribution-20261025T0943/`。扩展原薄投影 IPC 回归后，原代码中 `missed/original` 与 `missed-restored/original` 失败，已观察开始及重复输入拒绝保持通过；最小修正后六个变体通过。缺失开始仍只允许独立、精确进程绑定的唯一输入 query，不接受普通未绑定历史，不补造开始。owner/L1/L2 与新构建真机复验尚待登记；此项不宣称两轮真机成功，不代表 Task18 Unity/业务验收。
 
+### 2026-10-25 前置门禁核查
+
+独立固定 Runner 为干净 `f3dd4ec020134e1eb56625ddd670641a33229151`，EXE SHA256 `4a822c99fec734f296890b8d71a4a4013dfef46e3ab4c1395573130025a4e16e`。`l2-final-03/summary.json` 中干净源码 L1 的 673 项顶层、29 项扩展及编译/零匹配守卫通过。L2 仍未通过，Task18 连续成功数为零，第三轮尚未启动。
+
+前次 `l2-final-02` 因 WMI 调用令牌的全部权限启用而跳过 broker 权限用例，严格门禁正确拒绝。新独立 launcher 仅将自己的四项权限降回普通调用方原本的禁用状态，原 broker 用例实际通过；没有放宽测试、启用额外权限或修改防护。
+
+`l2-final-03` 的 Controlled 随后发现原 `TestSRContentGenerationRecovery/generate-graceful` 比较了整个 history 响应，其中包含实时 Run revision/updated_at。旧 Runner `5df57b6` 对同一原用例三次均失败；独立日志对照旧版和 f3 均证明只有 revision/updated_at 变化，会话、回合、原进程、控制资格、正文、命令归属和分页全部相同。验收测试因此只排除这两个可变元数据，继续精确比较其余整个响应，并保留原零重发、停止和身份断言；不改变产品代码或持久状态。原失败、两版对照及补测分别保留在上述诊断根的 `generation-baseline-01`、`generation-probe-{baseline,fixed}-01`、`generation-corrected-{baseline,fixed}-01`，后续正式 L2 必须重新执行，不能把原失败报告改记成功。
+
 范围及命令见 [Plan](../spec/execution-observability.plan.md)。2026-10-15，Windows / Go 1.26.4；独立临时目录和受控原生协议，无真实模型、GitHub PR 或安装环境变更。
 
 | 项 | 验收要求 | 结果 |

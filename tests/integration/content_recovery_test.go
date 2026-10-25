@@ -75,7 +75,7 @@ func TestSRContentGenerationRecovery(t *testing.T) {
 				}
 				return (flow == "generate" || v.Controls.CanInterrupt) && v.Execution.TurnID != ""
 			})
-			if restored.Execution.SessionID != original.Execution.SessionID || restored.Execution.TurnID != original.Execution.TurnID || restored.ResumeRequired || contentProcess(t, dir, id) != owner || !bytes.Equal(marshalEvidence(t, history.Data), marshalEvidence(t, call(t, dir, []string{"history", "--run-id", id}, "", 0).Data)) {
+			if restored.Execution.SessionID != original.Execution.SessionID || restored.Execution.TurnID != original.Execution.TurnID || restored.ResumeRequired || contentProcess(t, dir, id) != owner || !bytes.Equal(historyRecoveryEvidence(t, history.Data), historyRecoveryEvidence(t, call(t, dir, []string{"history", "--run-id", id}, "", 0).Data)) {
 				t.Fatal("generation changed original session, turn, process, history or authorization", restored)
 			}
 			if mode == "question-reply" {
@@ -133,4 +133,21 @@ func marshalEvidence(t *testing.T, value any) []byte {
 		t.Fatal(err)
 	}
 	return raw
+}
+
+func historyRecoveryEvidence(t *testing.T, value any) []byte {
+	t.Helper()
+	var page map[string]any
+	if err := json.Unmarshal(marshalEvidence(t, value), &page); err != nil {
+		t.Fatal(err)
+	}
+	run, ok := page["run"].(map[string]any)
+	if !ok {
+		t.Fatal("history response is missing its Run")
+	}
+	// History includes a live Run projection. Reattachment can advance these
+	// metadata fields without changing history, identity or authorization.
+	delete(run, "revision")
+	delete(run, "updated_at")
+	return marshalEvidence(t, page)
 }
