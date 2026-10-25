@@ -242,9 +242,17 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			next := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(start.JSON()), 0))
 			cleanupCreationService(t, dir, next)
 			if mode == "wire-loss" || mode == "owner-crash" || mode == "missing-initial-plan" {
-				view := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Status == "reconciling" && !v.NewInputsAllowed })
+				unprovenOriginal := func(v contracts.RunView) bool {
+					// A pending stop has priority over preparation diagnostics. The
+					// original creation must still be unknown and unauthorized; its
+					// coarse status need not overwrite the durable stop projection.
+					return !v.NewInputsAllowed && v.ResumeRequired && len(v.Operations) == 1 &&
+						v.Operations[0].ID == before.Run.Operations[0].ID && v.Operations[0].Action == "prepare_workspace" && v.Operations[0].Status == "outcome_unknown" &&
+						(v.Status == "reconciling" || v.Phase == "stop_requested" && v.StopStatus == "pending")
+				}
+				view := waitRun(t, dir, id, unprovenOriginal)
 				time.Sleep(1200 * time.Millisecond)
-				view = waitRun(t, dir, id, func(v contracts.RunView) bool { return !v.NewInputsAllowed })
+				view = waitRun(t, dir, id, unprovenOriginal)
 				if view.StopStatus == "stopped" || view.Execution.SessionID != "" || countNative(t, "orca/terminal/close") != 0 || countNative(t, "orca/worktree/list") != 0 {
 					t.Fatal("unproven external creation was adopted, closed or settled", view)
 				}
