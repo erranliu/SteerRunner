@@ -1,5 +1,11 @@
 # 执行可见性验收
 
+## 2026-10-25 缺失 working 通知的薄结束补证（验证中）
+
+Task18 原配置第二轮 Run `27761aaae314c4bbcd00a7d7fae688d1` 已产生 Gitea PR419 / head `e51362e701f788295b3ec41ebf20258b87828ecd`，Runner 仍为 `publish.execute / observation_unverified`，不能计成功。独立只读现有协议探针核实原 terminal/incarnation/worktree/pane/provider、唯一原发布输入及不变 done/273 字符完整正文；探针仅用公开上一 final 观察时间作为诊断估计 baseline，不冒充该 Run 的持久证明。
+
+冻结源码 `5df57b6` 的复现、原始探针和失败日志：`C:/SteerlineDebug/wt-507e-task18-retest/diagnostics/attribution-20261025T0943/`。扩展原薄投影 IPC 回归后，原代码中 `missed/original` 与 `missed-restored/original` 失败，已观察开始及重复输入拒绝保持通过；最小修正后六个变体通过。缺失开始仍只允许独立、精确进程绑定的唯一输入 query，不接受普通未绑定历史，不补造开始。owner/L1/L2 与新构建真机复验尚待登记；此项不宣称两轮真机成功，不代表 Task18 Unity/业务验收。
+
 范围及命令见 [Plan](../spec/execution-observability.plan.md)。2026-10-15，Windows / Go 1.26.4；独立临时目录和受控原生协议，无真实模型、GitHub PR 或安装环境变更。
 
 | 项 | 验收要求 | 结果 |

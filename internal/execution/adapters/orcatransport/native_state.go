@@ -308,8 +308,7 @@ func (p NativeProof) retainsOriginalInput(s native.AgentState) bool {
 }
 func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool {
 	i := s.NativeInput
-	if i == nil || !turn.Accepted || !turn.Started || p.agentName() != "codex" || p.Authority == "" ||
-		p.WorkingAt <= 0 || p.BaseRootAt <= 0 || p.RootWorkingAt <= p.BaseRootAt ||
+	if i == nil || !turn.Accepted || !turn.Started || p.agentName() != "codex" || p.BaseRootAt <= 0 ||
 		i.Baseline != p.BaseRootAt || i.ID == "" || i.Timestamp <= p.BaseRootAt || i.Timestamp > s.UpdatedAt ||
 		i.Text != strings.TrimRight(strings.ReplaceAll(turn.Prompt, "\r\n", "\n"), "\r\n") ||
 		s.PaneKey != p.Pane || s.ProviderSession.ID == "" || s.ProviderSession.ID != p.Provider || s.AgentType != p.agentName() ||
@@ -321,9 +320,13 @@ func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool 
 		// The legacy projection has no hook envelope. A separate terminal-
 		// fenced, unique-input query corroborates this exact canonical done
 		// record instead; it cannot authorize starts, streams, or another end.
-		return s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.RootWorkingAt && i.Timestamp <= s.MainAgent.StateStartedAt
+		// The independently fenced original-input read can also corroborate a
+		// done record whose streamed working notification was never received.
+		return s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.BaseRootAt && i.Timestamp <= s.MainAgent.StateStartedAt &&
+			(p.WorkingAt == 0 || p.RootWorkingAt > p.BaseRootAt && s.MainAgent.StateStartedAt > p.RootWorkingAt)
 	}
-	if o == nil || o.Origin != "hook" || o.Kind != "transition" || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
+	if p.Authority == "" || p.WorkingAt <= 0 || p.RootWorkingAt <= p.BaseRootAt ||
+		o == nil || o.Origin != "hook" || o.Kind != "transition" || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
 		return false
 	}
 	return s.MainAgent.State == "working" && s.MainAgent.StateStartedAt == p.RootWorkingAt ||
@@ -498,7 +501,8 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		}
 		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&
 			s.MainAgent != nil && s.UpdatedAt >= s.MainAgent.StateStartedAt &&
-			turn.Native.BaseRootAt > 0 && turn.Native.WorkingAt > 0 && turn.Native.Conflict == "" &&
+			turn.Native.BaseRootAt > 0 && turn.Native.Conflict == "" &&
+			(turn.Native.WorkingAt > 0 || s.ThinMetadata && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt) &&
 			turn.Native.attribution(s, turn, false).kind == provenanceMissing && !turn.Native.retainsOriginalInput(s) {
 			var inputErr error
 			s, inputErr = l.queryInput(ctx, state.Process, turn.Native.Pane, turn.Native.BaseRootAt, s)

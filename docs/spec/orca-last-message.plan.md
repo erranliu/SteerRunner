@@ -4,6 +4,12 @@
 
 按用户授权实施 Spec/Plan，测试仅使用独立 fixture、测试仓库与原生终端；不部署生产、不重启生产服务、不恢复现场原 Run。生产现场只读调查不是测试现场。
 
+## 2026-10-25 缺失 working 通知增量（验证中）
+
+Task18 第二轮已发布 PR419，但 Runner 缺少发布输入归属；独立只读补查能核实唯一原输入与同一 done。受控复现确认缺失流式 working 后，原补查门槛不可达。只扩展 Spec 新定义的薄 done 路径：有冻结 baseline、accepted/started 时允许补查；只有现有不可反序列化、精确进程绑定的独立 query 证明可以在没有 working 起点时核实该结束，普通 history/metadata 不获得资格。不新增模块、持久字段、codec 或调用方逻辑。
+
+扩展原 `TestThinOriginalQueryCompletesThroughNativeLifecycle` 为已观察开始、丢失开始、丢失开始后观察器重建，各含唯一原输入成功与重复输入拒绝。保留原未绑定历史、跨进程/会话、结果变更、分页和 outcome 反例。定向运行 Orca 两 owner 包后按 `docs/testing.md` 执行 L1/L2。真实连续两轮须在新固定构建和新独立现场重做；失败轮不复写、不通过重发原输入修复。实时结果记于[执行可见性验收](../acceptance/execution-observability.md)，原 Task18 Unity/业务未验状态不变。下文历史的 working 起点限制仅在本增量的独立薄 done 证明成立时由上述规则取代。
+
 ## 1. 已定决策与完成边界
 
 1. 使用现有 StateFeed、后台查询、observer 队列与 `PublicMessage`，没有第二个采样器或消息持久库。
