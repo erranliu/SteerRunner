@@ -18,6 +18,10 @@ Task18 原配置第二轮 Run `27761aaae314c4bbcd00a7d7fae688d1` 已产生 Gitea
 
 两处原失败现场通过公开 service status 确认为 not_running；公开 verify-stopped 正确保留 resources_settled=false，原因是故意丢失的模拟创建身份，不冒充已结算。原目录继续保留，未读取或修改 Runner 私有数据库。旧/新原用例与修正后全部七变体补测分别位于同一诊断根的 `creation-original-{baseline,fixed}-01`、`creation-corrected-{baseline,fixed}-01`；公开收尾查询位于 `creation-original-inspection-01`。
 
+`l2-final-05` 的干净 ebcda55 harness 完成 L1（673 顶层、29 扩展及全部守卫）和完整 24 项 Controlled，均通过。两个真实本机 L2 都完成原执行、结果采集、发布、provider 核验、测试 PR 合入和原 Run/服务停止，但末端 R2 验证器因共享 `.steerrunner/artifacts/` 已存在而失败；05 仍是 failed，不能改记成功。真实项目规则要求报告写入该忽略目录，工作器此前按规则产生了自己的报告；验证器不应要求共享根不存在，也不应将忽略文件当作 Git dirt。
+
+仅修正 native 测试：在共享根下独占创建 `native-r2-<fixture-id>`，不覆盖或删除已有报告；使用 O_EXCL 创建、只含实际 checker 输出的独立临时文件验证 Git dirty/clean，采集路径仍是自有子目录下的真实报告。保留字节相等、Run/PR 不变、源删除后幂等重放与停止清理断言。两处已停止的原 fixture（`8f14a70183cb`、`302b091968cc`）经独立诊断实际通过全部 R2 断言及 offline resources_settled=true，零 submit/reply/resume、零新模型/PR；诊断不替代正式 L2 新现场。证据为上述诊断根 `r2-corrected-<fixture-id>-01`，原失败报告仍位于 `C:/srt/<fixture-id>/evidence`。最终正式补测待完成；Task18 仍为零次连续成功。
+
 范围及命令见 [Plan](../spec/execution-observability.plan.md)。2026-10-15，Windows / Go 1.26.4；独立临时目录和受控原生协议，无真实模型、GitHub PR 或安装环境变更。
 
 | 项 | 验收要求 | 结果 |
