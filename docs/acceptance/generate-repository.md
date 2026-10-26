@@ -31,8 +31,22 @@
 额外整包回归中，contracts/resources/workspace/Codex/reliable/resultacquisition/host/storage/CLI
 均通过；application 整包累计耗尽 5 分钟预算，当时 `TestRAConcurrencyParserStopResources`
 运行 7 秒，无断言失败。该用例随后单独复验通过（8.90 秒）；定向内容/恢复测试通过。
-不宣称 application 整包通过，未扩展到完整仓库全集。原始超时日志保留在
+当时未取得 application 整包通过结论。原始超时日志保留在
 `.evidence/generate-repository-regression.log`；[独立复验](evidence/generate-repository-20261027/budget-recheck.log)。
+
+2026-10-27 补充整包复验：`go test ./internal/application -count=1 -timeout=30m -json`
+在干净源码 `8fc1b0bc79dd89b00ee118de95b649855aa9a27f` 上完整通过，退出码 0。
+141 个顶层测试、含子用例共 333 项通过，0 失败、0 跳过；包内耗时 451.112 秒，
+完整命令耗时 453.758 秒（上海时间 05:52:33–06:00:07）。上次预算耗尽时正在运行的
+`TestRAConcurrencyParserStopResources` 在本轮整包中通过，耗时 9.38 秒。
+结论更新为 application 整包通过；未扩展到完整仓库全集。
+
+证据：[汇总与源码/EXE 身份](evidence/generate-repository-20261027/application-full-summary.json)、
+[完整测试日志](evidence/generate-repository-20261027/application-full.log)、
+[原始 Go JSON 事件](evidence/generate-repository-20261027/application-full.events.jsonl)。
+本次没有真实失败，无需修改实现或测试代码；仅补充验证记录。交付 EXE 继续使用下述
+`0.2.0-dev.3-r3`，源码仍为 `8fc1b0bc79dd89b00ee118de95b649855aa9a27f`，
+SHA-256 为 `F45830F3DE8780EF049F56FA56CA941B426C018FB0826CE33A4142B4D8689A02`。
 
 ## 真实 Codex 验证
 

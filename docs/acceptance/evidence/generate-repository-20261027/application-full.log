@@ -1,0 +1,668 @@
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["note"],"extra":["unexpected"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["note"],"extra":["unexpected"]} (0.07s)
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes","unexpected"],"note":["note"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes","unexpected"],"note":["note"]} (0.04s)
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"choice":["yes"],"note":["note"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"choice":["yes"],"note":["note"]} (0.04s)
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"]} (0.04s)
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["unknown"],"note":["note"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["unknown"],"note":["note"]} (0.05s)
+=== RUN   TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["_"]}
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent/{"choice":["yes"],"note":["_"]} (0.05s)
+--- PASS: TestSRNativeAnswerRejectsAmbiguityBeforeIntent (0.30s)
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/count
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/count (2.73s)
+=== RUN   TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/bytes
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic/bytes (3.98s)
+--- PASS: TestR2RunArtifactLimitsAreInclusiveAndRefusalsAreAtomic (6.71s)
+=== RUN   TestR2CollectCommitFailureAndRestartReplay
+--- PASS: TestR2CollectCommitFailureAndRestartReplay (4.13s)
+=== RUN   TestR2UnknownSourceAndReadOnlyQueries
+--- PASS: TestR2UnknownSourceAndReadOnlyQueries (8.98s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/workspace-git
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/workspace-git (3.16s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_discover
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_discover (2.03s)
+=== RUN   TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_collect
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl/artifacts_collect (2.08s)
+--- PASS: TestR2SlowEvidenceDoesNotBlockOtherRunControl (7.27s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/stop
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/stop (2.22s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/revision
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/revision (2.06s)
+=== RUN   TestR2CollectionSerializesStopAndRejectsConcurrentRevision/identity
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision/identity (1.82s)
+--- PASS: TestR2CollectionSerializesStopAndRejectsConcurrentRevision (6.09s)
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop/stop
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop/stop (3.18s)
+=== RUN   TestR2QueryRejectsChangedWorkspaceButAllowsStop/identity
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop/identity (2.93s)
+--- PASS: TestR2QueryRejectsChangedWorkspaceButAllowsStop (6.11s)
+=== RUN   TestR2CollectionCommitFailureReplaysOriginalRequest
+--- PASS: TestR2CollectionCommitFailureReplaysOriginalRequest (3.39s)
+=== RUN   TestSRFreezeBaseBranchRefresh
+=== RUN   TestSRFreezeBaseBranchRefresh/local-branch-behind
+--- PASS: TestSRFreezeBaseBranchRefresh/local-branch-behind (5.67s)
+=== RUN   TestSRFreezeBaseBranchRefresh/warm-cache-custom-target
+--- PASS: TestSRFreezeBaseBranchRefresh/warm-cache-custom-target (9.30s)
+=== RUN   TestSRFreezeBaseBranchRefresh/off-branch
+--- PASS: TestSRFreezeBaseBranchRefresh/off-branch (7.23s)
+=== RUN   TestSRFreezeBaseBranchRefresh/rewound
+--- PASS: TestSRFreezeBaseBranchRefresh/rewound (7.69s)
+=== RUN   TestSRFreezeBaseBranchRefresh/deleted
+--- PASS: TestSRFreezeBaseBranchRefresh/deleted (6.22s)
+=== RUN   TestSRFreezeBaseBranchRefresh/offline
+--- PASS: TestSRFreezeBaseBranchRefresh/offline (6.00s)
+--- PASS: TestSRFreezeBaseBranchRefresh (42.11s)
+=== RUN   TestContentRepositoryFixedObjectsAndRecovery
+--- PASS: TestContentRepositoryFixedObjectsAndRecovery (1.73s)
+=== RUN   TestContentGenerateDocumentLimits
+=== RUN   TestContentGenerateDocumentLimits/complete
+--- PASS: TestContentGenerateDocumentLimits/complete (0.06s)
+=== RUN   TestContentGenerateDocumentLimits/missing-document
+--- PASS: TestContentGenerateDocumentLimits/missing-document (0.06s)
+=== RUN   TestContentGenerateDocumentLimits/bad-json
+--- PASS: TestContentGenerateDocumentLimits/bad-json (0.06s)
+=== RUN   TestContentGenerateDocumentLimits/bad-schema
+--- PASS: TestContentGenerateDocumentLimits/bad-schema (0.07s)
+=== RUN   TestContentGenerateDocumentLimits/missing-final
+--- PASS: TestContentGenerateDocumentLimits/missing-final (0.07s)
+=== RUN   TestContentGenerateDocumentLimits/oversize
+--- PASS: TestContentGenerateDocumentLimits/oversize (0.06s)
+--- PASS: TestContentGenerateDocumentLimits (0.68s)
+=== RUN   TestContentRepositoryResultRejectsDrift
+--- PASS: TestContentRepositoryResultRejectsDrift (0.06s)
+=== RUN   TestContentFrozenTakeoverContracts
+=== RUN   TestContentFrozenTakeoverContracts/generate
+=== RUN   TestContentFrozenTakeoverContracts/generate/codec
+--- PASS: TestContentFrozenTakeoverContracts/generate/codec (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/workflow
+--- PASS: TestContentFrozenTakeoverContracts/generate/workflow (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/workflow-version
+--- PASS: TestContentFrozenTakeoverContracts/generate/workflow-version (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/semantics
+--- PASS: TestContentFrozenTakeoverContracts/generate/semantics (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/execution-record
+--- PASS: TestContentFrozenTakeoverContracts/generate/execution-record (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/material
+--- PASS: TestContentFrozenTakeoverContracts/generate/material (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/generate/parser
+--- PASS: TestContentFrozenTakeoverContracts/generate/parser (0.00s)
+--- PASS: TestContentFrozenTakeoverContracts/generate (0.10s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation
+=== RUN   TestContentFrozenTakeoverContracts/conversation/codec
+--- PASS: TestContentFrozenTakeoverContracts/conversation/codec (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/workflow
+--- PASS: TestContentFrozenTakeoverContracts/conversation/workflow (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/workflow-version
+--- PASS: TestContentFrozenTakeoverContracts/conversation/workflow-version (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/semantics
+--- PASS: TestContentFrozenTakeoverContracts/conversation/semantics (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/execution-record
+--- PASS: TestContentFrozenTakeoverContracts/conversation/execution-record (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/material
+--- PASS: TestContentFrozenTakeoverContracts/conversation/material (0.00s)
+=== RUN   TestContentFrozenTakeoverContracts/conversation/parser
+--- PASS: TestContentFrozenTakeoverContracts/conversation/parser (0.00s)
+--- PASS: TestContentFrozenTakeoverContracts/conversation (0.91s)
+--- PASS: TestContentFrozenTakeoverContracts (1.00s)
+=== RUN   TestTakeoverActualParserContractStillRequired
+--- PASS: TestTakeoverActualParserContractStillRequired (5.98s)
+=== RUN   TestContentMaterialSnapshot
+--- PASS: TestContentMaterialSnapshot (0.03s)
+=== RUN   TestContentConcurrentMessages
+--- PASS: TestContentConcurrentMessages (0.07s)
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/conversation (0.06s)
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/generate (0.08s)
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/session (0.07s)
+=== RUN   TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope/legacy_epoch (0.07s)
+--- PASS: TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope (0.27s)
+=== RUN   TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser
+=== RUN   TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser/generate
+--- PASS: TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser/generate (0.03s)
+=== RUN   TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser/conversation
+--- PASS: TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser/conversation (0.03s)
+--- PASS: TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser (0.06s)
+=== RUN   TestContentInterruptRequestStatus
+=== RUN   TestContentInterruptRequestStatus/failed
+--- PASS: TestContentInterruptRequestStatus/failed (0.10s)
+=== RUN   TestContentInterruptRequestStatus/unknown
+--- PASS: TestContentInterruptRequestStatus/unknown (0.07s)
+--- PASS: TestContentInterruptRequestStatus (0.17s)
+=== RUN   TestContentCleanupFailureIndependent
+--- PASS: TestContentCleanupFailureIndependent (0.09s)
+=== RUN   TestContentGenerateResults
+=== RUN   TestContentGenerateResults/text
+--- PASS: TestContentGenerateResults/text (0.08s)
+=== RUN   TestContentGenerateResults/json
+--- PASS: TestContentGenerateResults/json (0.06s)
+=== RUN   TestContentGenerateResults/invalid_json
+--- PASS: TestContentGenerateResults/invalid_json (0.05s)
+=== RUN   TestContentGenerateResults/schema
+--- PASS: TestContentGenerateResults/schema (0.06s)
+=== RUN   TestContentGenerateResults/failed
+--- PASS: TestContentGenerateResults/failed (0.06s)
+=== RUN   TestContentGenerateResults/cancelled
+--- PASS: TestContentGenerateResults/cancelled (0.06s)
+=== RUN   TestContentGenerateResults/no_final
+--- PASS: TestContentGenerateResults/no_final (0.06s)
+=== RUN   TestContentGenerateResults/unknown
+--- PASS: TestContentGenerateResults/unknown (0.06s)
+--- PASS: TestContentGenerateResults (0.49s)
+=== RUN   TestContentConversationControls
+--- PASS: TestContentConversationControls (0.09s)
+=== RUN   TestContentDirectoryAndUnknownResult
+--- PASS: TestContentDirectoryAndUnknownResult (0.28s)
+=== RUN   TestEnvironmentCheckPublicFixtures
+--- PASS: TestEnvironmentCheckPublicFixtures (0.08s)
+=== RUN   TestEnvironmentCheckAcceptedFailureOriginalCommandsAndRestart
+--- PASS: TestEnvironmentCheckAcceptedFailureOriginalCommandsAndRestart (0.28s)
+=== RUN   TestEnvironmentCheckUnsupportedIsQueryableWithoutCheck
+--- PASS: TestEnvironmentCheckUnsupportedIsQueryableWithoutCheck (0.05s)
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject/uncertain_exit
+--- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject/uncertain_exit (0.08s)
+=== RUN   TestEnvironmentCheckExternalFailureCannotHideObservedObject/authorization_denied
+--- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject/authorization_denied (0.05s)
+--- PASS: TestEnvironmentCheckExternalFailureCannotHideObservedObject (0.13s)
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/owned
+--- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/owned (0.08s)
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/foreign_marker
+--- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/foreign_marker (0.09s)
+=== RUN   TestEnvironmentCheckLocalOwnershipAndRecreatedPath/already_removed
+--- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath/already_removed (0.07s)
+--- PASS: TestEnvironmentCheckLocalOwnershipAndRecreatedPath (0.23s)
+=== RUN   TestEnvironmentCheckFreshSettlementPreservesCompletedCapability
+--- PASS: TestEnvironmentCheckFreshSettlementPreservesCompletedCapability (0.07s)
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools/confirmed
+--- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools/confirmed (0.06s)
+=== RUN   TestEnvironmentCheckDuplicateAndUnknownNativeTools/lost_response
+--- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools/lost_response (0.06s)
+--- PASS: TestEnvironmentCheckDuplicateAndUnknownNativeTools (0.12s)
+=== RUN   TestEnvironmentCheckSettlementKeepsCapabilityAndOriginalIdentity
+--- PASS: TestEnvironmentCheckSettlementKeepsCapabilityAndOriginalIdentity (0.10s)
+=== RUN   TestEnvironmentCheckRestartReconcilesWithoutNewInput
+--- PASS: TestEnvironmentCheckRestartReconcilesWithoutNewInput (0.09s)
+=== RUN   TestEnvironmentCheckOperationUsesFrozenExecutionHost
+--- PASS: TestEnvironmentCheckOperationUsesFrozenExecutionHost (0.11s)
+=== RUN   TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup
+--- PASS: TestEnvironmentCheckCompletedRemoteStopKeepsConfirmedCleanup (0.05s)
+=== RUN   TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes
+=== RUN   TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/preflight-rejected
+--- PASS: TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/preflight-rejected (0.05s)
+=== RUN   TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/legacy-error
+--- PASS: TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/legacy-error (0.06s)
+=== RUN   TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/uncertain-rpc
+--- PASS: TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/uncertain-rpc (0.05s)
+=== RUN   TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/contradictory-turn
+--- PASS: TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes/contradictory-turn (0.06s)
+--- PASS: TestCheckStartRejectionAndUnknownKeepDistinctDurableOutcomes (0.23s)
+=== RUN   TestCheckReplyFailurePersistsUnknownWithoutRepeatingProbe
+--- PASS: TestCheckReplyFailurePersistsUnknownWithoutRepeatingProbe (0.07s)
+=== RUN   TestCheckProbeFailureKeepsFiniteObservationStage
+=== RUN   TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_response_missing
+--- PASS: TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_response_missing (0.07s)
+=== RUN   TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_response_unverified
+--- PASS: TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_response_unverified (0.05s)
+=== RUN   TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_identity_unverified
+--- PASS: TestCheckProbeFailureKeepsFiniteObservationStage/remote_check_identity_unverified (0.05s)
+--- PASS: TestCheckProbeFailureKeepsFiniteObservationStage (0.17s)
+=== RUN   TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources
+--- PASS: TestEnvironmentCheckRemoteNativeUnsupportedBeforeResources (0.06s)
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment
+--- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/environment (0.03s)
+=== RUN   TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment
+--- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor/orca_environment (0.03s)
+--- PASS: TestEnvironmentCheckLegacyRemoteDoesNotStartActor (0.06s)
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision/success
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision/success (0.07s)
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision/concurrent
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision/concurrent (0.07s)
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision/stop
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision/stop (0.06s)
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision/failed-commit
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision/failed-commit (0.11s)
+=== RUN   TestSRExecutionWaitDurableProgressAndRealRevision/exhausted
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision/exhausted (0.07s)
+--- PASS: TestSRExecutionWaitDurableProgressAndRealRevision (0.38s)
+=== RUN   TestSRExecutionWaitStopKeepsControlPriority
+--- PASS: TestSRExecutionWaitStopKeepsControlPriority (0.07s)
+=== RUN   TestSRExecutionWaitResumeClearsExhaustionWithoutResettingBudget
+--- PASS: TestSRExecutionWaitResumeClearsExhaustionWithoutResettingBudget (0.07s)
+=== RUN   TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity
+=== RUN   TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/nil-empty
+--- PASS: TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/nil-empty (0.07s)
+=== RUN   TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/target-change
+--- PASS: TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/target-change (0.06s)
+=== RUN   TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/revoked
+--- PASS: TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/revoked (0.06s)
+=== RUN   TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/receipt-present
+--- PASS: TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity/receipt-present (0.08s)
+--- PASS: TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity (0.26s)
+=== RUN   TestSRResumeWorkflowRetainsOriginalReportSource
+--- PASS: TestSRResumeWorkflowRetainsOriginalReportSource (0.00s)
+=== RUN   TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal
+--- PASS: TestRecoveryFrozenMaterialsRejectReplacementWithoutRepairingOriginal (0.01s)
+=== RUN   TestServiceGenerationPreservesDurableAuthorizationAndBusinessState
+--- PASS: TestServiceGenerationPreservesDurableAuthorizationAndBusinessState (0.07s)
+=== RUN   TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation
+--- PASS: TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation (0.06s)
+=== RUN   TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts
+--- PASS: TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts (0.00s)
+=== RUN   TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource
+--- PASS: TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource (0.00s)
+=== RUN   TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata
+--- PASS: TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata (0.00s)
+=== RUN   TestSRRepositoryCacheWithLongBranchPath
+--- PASS: TestSRRepositoryCacheWithLongBranchPath (1.64s)
+=== RUN   TestSRCompactCacheCanPublishLinkedWorktree
+--- PASS: TestSRCompactCacheCanPublishLinkedWorktree (1.99s)
+=== RUN   TestLastMessageIsBoundedReadOnlyTelemetry
+--- PASS: TestLastMessageIsBoundedReadOnlyTelemetry (0.00s)
+=== RUN   TestDevelopmentPromptsReferenceWorktreeDocuments
+=== RUN   TestDevelopmentPromptsReferenceWorktreeDocuments/codex-app-server
+--- PASS: TestDevelopmentPromptsReferenceWorktreeDocuments/codex-app-server (0.00s)
+=== RUN   TestDevelopmentPromptsReferenceWorktreeDocuments/orca-terminal
+--- PASS: TestDevelopmentPromptsReferenceWorktreeDocuments/orca-terminal (0.00s)
+--- PASS: TestDevelopmentPromptsReferenceWorktreeDocuments (0.00s)
+=== RUN   TestDevelopmentAdmissionDoesNotResolveDocumentFilesOrCommits
+--- PASS: TestDevelopmentAdmissionDoesNotResolveDocumentFilesOrCommits (5.93s)
+=== RUN   TestOrcaPromptLimitAppliesToRenderedPrompt
+--- PASS: TestOrcaPromptLimitAppliesToRenderedPrompt (0.00s)
+=== RUN   TestRunNamePrefixFreeze
+--- PASS: TestRunNamePrefixFreeze (9.41s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/ready
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/ready (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/attempt
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/attempt (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/generation
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/generation (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/session
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/session (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/missing
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/missing (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/unverified
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/unverified (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/stopping
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/stopping (0.00s)
+=== RUN   TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed (0.00s)
+--- PASS: TestNativeViewerUsesOriginalTargetWithoutExecution (0.00s)
+=== RUN   TestOrcaObservationProjectionAndPublicMessageRemainSeparate
+--- PASS: TestOrcaObservationProjectionAndPublicMessageRemainSeparate (0.06s)
+=== RUN   TestLastMessageSameTextFromNewTurnRetainsOriginalIdentities
+--- PASS: TestLastMessageSameTextFromNewTurnRetainsOriginalIdentities (0.04s)
+=== RUN   TestSRObservationDiagnosticIsDurableAndRecoverable
+--- PASS: TestSRObservationDiagnosticIsDurableAndRecoverable (0.08s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/missing-session
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/missing-session (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/foreign-session
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/foreign-session (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/missing-turn
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/missing-turn (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/foreign-turn
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/foreign-turn (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/blocked
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/blocked (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/stopped
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/stopped (0.05s)
+=== RUN   TestSRObservationDiagnosticBindingAndControlIsolation/unrelated-phase
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation/unrelated-phase (0.05s)
+--- PASS: TestSRObservationDiagnosticBindingAndControlIsolation (0.35s)
+=== RUN   TestSRObservationAttachmentUpdatesDiagnostic
+--- PASS: TestSRObservationAttachmentUpdatesDiagnostic (0.05s)
+=== RUN   TestSRObservationGapSurvivesStartAcknowledgement
+--- PASS: TestSRObservationGapSurvivesStartAcknowledgement (0.06s)
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/native_error
+--- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/native_error (0.04s)
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/commit_failure
+--- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/commit_failure (0.07s)
+=== RUN   TestSRObservationAttachmentCommitsBeforePublishingObserver/success
+--- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver/success (0.05s)
+--- PASS: TestSRObservationAttachmentCommitsBeforePublishingObserver (0.17s)
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity/completed
+--- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity/completed (0.08s)
+=== RUN   TestSRObservationUnchangedProjectionStillCommitsIdentity/question
+--- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity/question (0.07s)
+--- PASS: TestSRObservationUnchangedProjectionStillCommitsIdentity (0.15s)
+=== RUN   TestSRObservationCommitFailureKeepsEventReplayable
+--- PASS: TestSRObservationCommitFailureKeepsEventReplayable (0.07s)
+=== RUN   TestSROperationReconciliationKeepsPartialBinding
+--- PASS: TestSROperationReconciliationKeepsPartialBinding (0.05s)
+=== RUN   TestSRStopSerializesWithNativeDispatch
+--- PASS: TestSRStopSerializesWithNativeDispatch (0.06s)
+=== RUN   TestSROperationIntentCommitFailureDoesNotDispatch
+--- PASS: TestSROperationIntentCommitFailureDoesNotDispatch (0.08s)
+=== RUN   TestSROperationReceiptCommitFailureReconcilesOriginal
+--- PASS: TestSROperationReceiptCommitFailureReconcilesOriginal (0.08s)
+=== RUN   TestSRStopBindingCommitFailureDoesNotDispatch
+--- PASS: TestSRStopBindingCommitFailureDoesNotDispatch (0.09s)
+=== RUN   TestSRFreezeOrcaAgent
+=== RUN   TestSRFreezeOrcaAgent/agent=
+--- PASS: TestSRFreezeOrcaAgent/agent= (5.07s)
+=== RUN   TestSRFreezeOrcaAgent/agent=codex
+--- PASS: TestSRFreezeOrcaAgent/agent=codex (4.83s)
+=== RUN   TestSRFreezeOrcaAgent/agent=pi
+--- PASS: TestSRFreezeOrcaAgent/agent=pi (5.23s)
+=== RUN   TestSRFreezeOrcaAgent/agent=dsh
+--- PASS: TestSRFreezeOrcaAgent/agent=dsh (5.12s)
+=== RUN   TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly
+--- PASS: TestSRFreezeOrcaAgent/remote-native-and-legacy-readonly (5.15s)
+--- PASS: TestSRFreezeOrcaAgent (25.39s)
+=== RUN   TestRAParserAcquisition
+=== RUN   TestRAParserAcquisition/completed
+--- PASS: TestRAParserAcquisition/completed (8.71s)
+=== RUN   TestRAParserAcquisition/needs_input
+--- PASS: TestRAParserAcquisition/needs_input (8.43s)
+=== RUN   TestRAParserAcquisition/conflict
+--- PASS: TestRAParserAcquisition/conflict (8.55s)
+=== RUN   TestRAParserAcquisition/failed
+--- PASS: TestRAParserAcquisition/failed (11.75s)
+=== RUN   TestRAParserAcquisition/policy_violation
+--- PASS: TestRAParserAcquisition/policy_violation (11.44s)
+=== RUN   TestRAParserAcquisition/side_effect_unverified
+--- PASS: TestRAParserAcquisition/side_effect_unverified (8.96s)
+=== RUN   TestRAParserAcquisition/stop
+--- PASS: TestRAParserAcquisition/stop (5.74s)
+=== RUN   TestRAParserAcquisition/source-drift
+--- PASS: TestRAParserAcquisition/source-drift (8.90s)
+=== RUN   TestRAParserAcquisition/new-source
+--- PASS: TestRAParserAcquisition/new-source (6.52s)
+--- PASS: TestRAParserAcquisition (78.98s)
+=== RUN   TestRALateParserReceiptAndDuplicate
+--- PASS: TestRALateParserReceiptAndDuplicate (9.38s)
+=== RUN   TestRAStateAuthorityParserHistory
+--- PASS: TestRAStateAuthorityParserHistory (6.48s)
+=== RUN   TestRAAtomicParserRecovery
+--- PASS: TestRAAtomicParserRecovery (11.74s)
+=== RUN   TestRAParserDispatchCommitFailureDoesNotStartResource
+--- PASS: TestRAParserDispatchCommitFailureDoesNotStartResource (8.82s)
+=== RUN   TestRAConcurrencyParserStopResources
+--- PASS: TestRAConcurrencyParserStopResources (9.38s)
+=== RUN   TestRAStateAuthorityParserReferences
+--- PASS: TestRAStateAuthorityParserReferences (6.54s)
+=== RUN   TestRARecoveredParserStartedReceiptStaysRunning
+--- PASS: TestRARecoveredParserStartedReceiptStaysRunning (6.55s)
+=== RUN   TestSRPreparationQueryStopAuthorization
+=== RUN   TestSRPreparationQueryStopAuthorization/cancel-blocked-query
+--- PASS: TestSRPreparationQueryStopAuthorization/cancel-blocked-query (0.05s)
+=== RUN   TestSRPreparationQueryStopAuthorization/successful-query-races-stop
+--- PASS: TestSRPreparationQueryStopAuthorization/successful-query-races-stop (0.05s)
+=== RUN   TestSRPreparationQueryStopAuthorization/failed-stop-commit
+--- PASS: TestSRPreparationQueryStopAuthorization/failed-stop-commit (0.07s)
+=== RUN   TestSRPreparationQueryStopAuthorization/stale-stop
+--- PASS: TestSRPreparationQueryStopAuthorization/stale-stop (0.05s)
+=== RUN   TestSRPreparationQueryStopAuthorization/normal-query
+--- PASS: TestSRPreparationQueryStopAuthorization/normal-query (0.05s)
+--- PASS: TestSRPreparationQueryStopAuthorization (0.27s)
+=== RUN   TestSRPreparationQueryStopSettlesOriginalOperation
+--- PASS: TestSRPreparationQueryStopSettlesOriginalOperation (0.07s)
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/already-revoked (0.05s)
+=== RUN   TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState/revision-changed (0.05s)
+--- PASS: TestSRPreparationQueryRejectsRevokedOrChangedState (0.11s)
+=== RUN   TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization
+--- PASS: TestSRPreparationQueryServiceGenerationCancellationPreservesAuthorization (0.05s)
+=== RUN   TestPrivateRunGitGrantDoesNotExpandLegacyCache
+--- PASS: TestPrivateRunGitGrantDoesNotExpandLegacyCache (14.06s)
+=== RUN   TestProgressClosedObservationIsNotReopened
+--- PASS: TestProgressClosedObservationIsNotReopened (0.48s)
+=== RUN   TestProgressTerminalShutdownFinishesClosed
+--- PASS: TestProgressTerminalShutdownFinishesClosed (0.65s)
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown/observing
+--- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown/observing (0.72s)
+=== RUN   TestProgressActiveAndResumedObserversDetachOnShutdown/closed
+--- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown/closed (0.72s)
+--- PASS: TestProgressActiveAndResumedObserversDetachOnShutdown (1.44s)
+=== RUN   TestProgressTerminalPendingFinalizationStillStarts
+--- PASS: TestProgressTerminalPendingFinalizationStillStarts (1.38s)
+=== RUN   TestProgressIndependentVersionSurvivesBusinessCloneAndRestart
+--- PASS: TestProgressIndependentVersionSurvivesBusinessCloneAndRestart (0.62s)
+=== RUN   TestProgressStopBeforeInitializationHasNoInventedSnapshot
+--- PASS: TestProgressStopBeforeInitializationHasNoInventedSnapshot (0.42s)
+=== RUN   TestProgressInitializationRecoveryRetainsUnverifiedSeed
+--- PASS: TestProgressInitializationRecoveryRetainsUnverifiedSeed (0.49s)
+=== RUN   TestProgressOrcaRoutingDoesNotRequireBusinessWorker
+--- PASS: TestProgressOrcaRoutingDoesNotRequireBusinessWorker (0.41s)
+=== RUN   TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback
+=== RUN   TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/original
+--- PASS: TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/original (0.00s)
+=== RUN   TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/missing-owner
+--- PASS: TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/missing-owner (0.00s)
+=== RUN   TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/unsupported-owner
+--- PASS: TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/unsupported-owner (0.00s)
+=== RUN   TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/owner-error
+--- PASS: TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback/owner-error (0.00s)
+--- PASS: TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback (0.00s)
+=== RUN   TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner
+--- PASS: TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner (0.00s)
+=== RUN   TestSRReportFreezesOriginatingNativePolicy
+=== RUN   TestSRReportFreezesOriginatingNativePolicy/frozen_native_permissions;_business_read_only_is_prompt_policy
+--- PASS: TestSRReportFreezesOriginatingNativePolicy/frozen_native_permissions;_business_read_only_is_prompt_policy (0.05s)
+=== RUN   TestSRReportFreezesOriginatingNativePolicy/host_managed_permissions;_business_read_only_is_prompt_policy
+--- PASS: TestSRReportFreezesOriginatingNativePolicy/host_managed_permissions;_business_read_only_is_prompt_policy (0.05s)
+--- PASS: TestSRReportFreezesOriginatingNativePolicy (0.10s)
+=== RUN   TestSRLongTurnCanPrepareNextStage
+--- PASS: TestSRLongTurnCanPrepareNextStage (0.06s)
+=== RUN   TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload
+=== RUN   TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/orca-terminal
+--- PASS: TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/orca-terminal (0.05s)
+=== RUN   TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/codex-app-server
+--- PASS: TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/codex-app-server (0.05s)
+--- PASS: TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload (0.10s)
+=== RUN   TestSRStartupFailureBlocksBeforePreparationDeadline
+--- PASS: TestSRStartupFailureBlocksBeforePreparationDeadline (0.06s)
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation/pending
+--- PASS: TestSRAcceptedResourceUsesOriginalOperation/pending (0.06s)
+=== RUN   TestSRAcceptedResourceUsesOriginalOperation/deadline
+--- PASS: TestSRAcceptedResourceUsesOriginalOperation/deadline (0.07s)
+--- PASS: TestSRAcceptedResourceUsesOriginalOperation (0.13s)
+=== RUN   TestRAAtomicCompletion
+--- PASS: TestRAAtomicCompletion (6.39s)
+=== RUN   TestRARecoveryMissingCheckpoint
+--- PASS: TestRARecoveryMissingCheckpoint (0.45s)
+=== RUN   TestRAStateAuthority
+--- PASS: TestRAStateAuthority (0.64s)
+=== RUN   TestRABudgetReportOnce
+--- PASS: TestRABudgetReportOnce (6.25s)
+=== RUN   TestRAConcurrencyPublication
+=== RUN   TestRAConcurrencyPublication/stop
+--- PASS: TestRAConcurrencyPublication/stop (15.26s)
+=== RUN   TestRAConcurrencyPublication/new-source
+--- PASS: TestRAConcurrencyPublication/new-source (12.49s)
+=== RUN   TestRAConcurrencyPublication/head-drift
+--- PASS: TestRAConcurrencyPublication/head-drift (12.40s)
+=== RUN   TestRAConcurrencyPublication/wrong-pr-head
+--- PASS: TestRAConcurrencyPublication/wrong-pr-head (10.11s)
+--- PASS: TestRAConcurrencyPublication (50.25s)
+=== RUN   TestRAConfigRejectBeforeEffects
+--- PASS: TestRAConfigRejectBeforeEffects (0.02s)
+=== RUN   TestRAAuditObservedReportWork
+--- PASS: TestRAAuditObservedReportWork (7.81s)
+=== RUN   TestRATransitionUnknownNativeGate
+--- PASS: TestRATransitionUnknownNativeGate (0.39s)
+=== RUN   TestRAStateAuthorityQuestionSource
+--- PASS: TestRAStateAuthorityQuestionSource (2.99s)
+=== RUN   TestRARecoveryConsumedInput
+--- PASS: TestRARecoveryConsumedInput (0.46s)
+=== RUN   TestRAStateAuthorityMilestone
+--- PASS: TestRAStateAuthorityMilestone (0.57s)
+=== RUN   TestRAFeedbackSupersedesUnsent
+--- PASS: TestRAFeedbackSupersedesUnsent (2.68s)
+=== RUN   TestRAResumeConsumedActiveInputWaitsForOriginalEvidence
+--- PASS: TestRAResumeConsumedActiveInputWaitsForOriginalEvidence (0.43s)
+=== RUN   TestResultFilePendingUntilWholeExecutionStops
+--- PASS: TestResultFilePendingUntilWholeExecutionStops (0.95s)
+=== RUN   TestResultFileFinalBytesAtomicReplacementAndSealOnce
+=== RUN   TestResultFileFinalBytesAtomicReplacementAndSealOnce/0_bytes
+--- PASS: TestResultFileFinalBytesAtomicReplacementAndSealOnce/0_bytes (1.64s)
+=== RUN   TestResultFileFinalBytesAtomicReplacementAndSealOnce/3_bytes
+--- PASS: TestResultFileFinalBytesAtomicReplacementAndSealOnce/3_bytes (1.46s)
+=== RUN   TestResultFileFinalBytesAtomicReplacementAndSealOnce/65536_bytes
+--- PASS: TestResultFileFinalBytesAtomicReplacementAndSealOnce/65536_bytes (1.42s)
+--- PASS: TestResultFileFinalBytesAtomicReplacementAndSealOnce (4.52s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/file_missing
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/file_missing (1.76s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/size_exceeded
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/size_exceeded (1.40s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/binding_invalid
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/binding_invalid (1.36s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/transport_unavailable
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/transport_unavailable (1.38s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/file_changing
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/file_changing (1.46s)
+=== RUN   TestResultFileFailureSealsAndPreservesProgress/read_failed
+--- PASS: TestResultFileFailureSealsAndPreservesProgress/read_failed (1.48s)
+--- PASS: TestResultFileFailureSealsAndPreservesProgress (8.84s)
+=== RUN   TestResultFileStaleAggregateAndLatePublication
+--- PASS: TestResultFileStaleAggregateAndLatePublication (1.42s)
+=== RUN   TestResultFileBindingAndResumeFence
+--- PASS: TestResultFileBindingAndResumeFence (0.93s)
+=== RUN   TestResultFileInitializationRecoveryAndNoStopCreation
+--- PASS: TestResultFileInitializationRecoveryAndNoStopCreation (1.74s)
+=== RUN   TestResultFilePreparationFailureStillPreparesPeer
+=== RUN   TestResultFilePreparationFailureStillPreparesPeer/progress
+--- PASS: TestResultFilePreparationFailureStillPreparesPeer/progress (1.42s)
+=== RUN   TestResultFilePreparationFailureStillPreparesPeer/result
+--- PASS: TestResultFilePreparationFailureStillPreparesPeer/result (1.33s)
+--- PASS: TestResultFilePreparationFailureStillPreparesPeer (2.75s)
+=== RUN   TestResultFileNormalCompletionRequiresStoppedProducer
+--- PASS: TestResultFileNormalCompletionRequiresStoppedProducer (0.90s)
+=== RUN   TestResultFileBoundedReadAndFailedPersistence
+--- PASS: TestResultFileBoundedReadAndFailedPersistence (1.18s)
+=== RUN   TestResultFileShutdownDeadlineAndOriginalRecovery
+--- PASS: TestResultFileShutdownDeadlineAndOriginalRecovery (1.74s)
+=== RUN   TestDisplayRunsAreIndependentWhitelistCopies
+--- PASS: TestDisplayRunsAreIndependentWhitelistCopies (0.00s)
+=== RUN   TestDisplayRunsIgnoreRolledBackChanges
+--- PASS: TestDisplayRunsIgnoreRolledBackChanges (0.07s)
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown
+--- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown (0.05s)
+=== RUN   TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped
+--- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped (0.06s)
+--- PASS: TestSRShutdownSettlementUsesCommittedFinalNativeEvidence (0.11s)
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original
+--- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/original (0.08s)
+=== RUN   TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource
+--- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent/changed-resource (0.07s)
+--- PASS: TestSRStopRecoversLateCreationFactsUnderOriginalIntent (0.15s)
+=== RUN   TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable
+=== RUN   TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/orca-terminal
+--- PASS: TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/orca-terminal (0.05s)
+=== RUN   TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/codex-app-server
+--- PASS: TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/codex-app-server (0.05s)
+--- PASS: TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable (0.10s)
+=== RUN   TestRemoteStopBudgetCanCompleteAnOriginalCLICall
+--- PASS: TestRemoteStopBudgetCanCompleteAnOriginalCLICall (0.12s)
+=== RUN   TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress
+--- PASS: TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress (0.07s)
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original
+--- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original (0.06s)
+=== RUN   TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt
+--- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt (0.06s)
+--- PASS: TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation (0.12s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/current (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/null-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/app-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/codex-app-server/unknown-operation (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/current (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/null-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/app-auth (0.00s)
+=== RUN   TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations/orca-terminal/unknown-operation (0.00s)
+--- PASS: TestServiceGenerationCheckRejectsRetiredAuthenticationAndUnknownOperations (0.00s)
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/conversation (0.06s)
+=== RUN   TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration/generate (0.05s)
+--- PASS: TestServiceGenerationContentDoesNotRequireUnusedParserConfiguration (0.10s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/null (0.05s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{}
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{} (0.05s)
+=== RUN   TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"}
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts/{"app_id":1,"installation_id":2,"private_key_env":"OLD_KEY"} (0.05s)
+--- PASS: TestServiceGenerationRunRejectsRetiredFrozenProfileWithoutChangingFacts (0.15s)
+=== RUN   TestSRFreezeManagedTerminalAuthenticationPath
+=== RUN   TestSRFreezeManagedTerminalAuthenticationPath/pi
+--- PASS: TestSRFreezeManagedTerminalAuthenticationPath/pi (6.51s)
+=== RUN   TestSRFreezeManagedTerminalAuthenticationPath/dsh
+--- PASS: TestSRFreezeManagedTerminalAuthenticationPath/dsh (5.03s)
+--- PASS: TestSRFreezeManagedTerminalAuthenticationPath (11.54s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca (0.00s)
+=== RUN   TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped (0.00s)
+--- PASS: TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence (0.00s)
+=== RUN   TestRAAuditLifecycle
+--- PASS: TestRAAuditLifecycle (7.92s)
+=== RUN   TestRARecoveryBusinessInput
+--- PASS: TestRARecoveryBusinessInput (5.22s)
+=== RUN   TestRAVersionRejectLegacy
+--- PASS: TestRAVersionRejectLegacy (0.00s)
+=== RUN   TestRAUnreportedOutcomeBoundary
+=== RUN   TestRAUnreportedOutcomeBoundary/unreported
+--- PASS: TestRAUnreportedOutcomeBoundary/unreported (2.94s)
+=== RUN   TestRAUnreportedOutcomeBoundary/unknown
+--- PASS: TestRAUnreportedOutcomeBoundary/unknown (2.79s)
+=== RUN   TestRAUnreportedOutcomeBoundary/failed
+--- PASS: TestRAUnreportedOutcomeBoundary/failed (3.24s)
+=== RUN   TestRAUnreportedOutcomeBoundary/cancelled
+--- PASS: TestRAUnreportedOutcomeBoundary/cancelled (2.73s)
+=== RUN   TestRAUnreportedOutcomeBoundary/business-blocked
+--- PASS: TestRAUnreportedOutcomeBoundary/business-blocked (2.84s)
+--- PASS: TestRAUnreportedOutcomeBoundary (14.53s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	451.111s
