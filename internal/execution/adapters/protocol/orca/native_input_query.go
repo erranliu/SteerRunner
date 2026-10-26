@@ -2,7 +2,6 @@ package orca
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -43,20 +42,10 @@ func queryInputTerminal(ctx context.Context, environment string, p b.ProcessIden
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
 		return Terminal{}, stateIdentityError("original native input terminal identity is incomplete")
 	}
-	socket, err := openStateConnection(ctx, environment, p.RuntimeID)
+	t, err := queryTerminal(ctx, environment, p)
 	if err != nil {
 		return Terminal{}, err
 	}
-	defer socket.close()
-	raw, err := callState(ctx, socket, "terminal.show", map[string]string{"terminal": p.Terminal})
-	if err != nil {
-		return Terminal{}, err
-	}
-	var result struct{ Terminal Terminal }
-	if json.Unmarshal(raw, &result) != nil {
-		return Terminal{}, errors.New("Orca original native input terminal query unavailable")
-	}
-	t := result.Terminal
 	if t.Handle != p.Terminal || t.IncarnationID != p.Incarnation || t.WorktreeID != p.WorktreeID || !t.Connected || t.Exited() || t.AgentIdentity != "codex" || t.WorktreePath == "" || t.Branch == "" {
 		return t, stateIdentityError("original native input terminal was replaced or disconnected")
 	}

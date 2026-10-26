@@ -1,5 +1,9 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-26 原终端核验增量：L1 自动包含 `TestOriginalTerminalRPC*`、`TestQueryBoundTerminal*`、`TestOriginalTerminalConcurrency` 及 `TestOrcaNativeStateStream/terminal-query*`，覆盖生产构造器的 IPC 查询、加密远端协议、身份/两次观察核验、握手/读取取消与共享 CLI 锁隔离。并发比较只衡量受控读取路径，不授予真实 Run 容量或 L3 资格；范围及原始前后对比见[专项记录](acceptance/original-terminal-rpc.md)。
+
+提交前审计补充 `TestTerminalQueryCancellationCannotHideKnownIdentityConflict` 和 `TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity`，覆盖身份冲突与取消同时出现的错误优先级，以及停止前、手动恢复前后 RPC 核验的原 incarnation 约束。
+
 2026-10-23 SessionStart 空预览增量：既有 L1 包入口自动包含 `TestOrcaNativeInputQueryRecoversCompactedWorkingAndFinal`、`TestOrcaNativeInputProofRejectsUnboundHistory`、`TestOrcaNativeInputCachedBindingCannotCrossBoundary`、`TestOrcaNativeInputQueryCannotHideLaterNotification`、`TestOrcaNativeInputPagesRequireExactlyOneOriginalUser`、`TestOrcaNativeInputQueryRejectsIdentityChangeDuringRead`。覆盖原输入完整核验、重复同文拒收、working/重建/final、缓存边界、分页与读取竞争；不新增模型或 PR case。现场验证仅为原 Run 的只读补证，不冒充生产部署或新远端发布资格。
 
 提交前审计补充 `TestOrcaNativeInputCannotCombineDifferentMainRecords`、`TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples`、`TestOrcaNativeInputIdentityErrorRemainsDurable`，并扩展原分页和 proof 反例。覆盖两路 main/agent/outcome/marker 不一致、找到正文后仍须验证游标、旧样本不撤销新绑定、更换 feed 立即失效，以及读取前后确定冲突不会因补查失败丢失。均使用隔离协议夹具，随原 L1 入口自动执行。

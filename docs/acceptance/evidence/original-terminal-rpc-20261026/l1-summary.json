@@ -1,0 +1,53 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "5df57b69e98382abcd63676b04a73079fd939fa6",
+  "source_dirty": true,
+  "started_at": "2026-10-26T02:59:31.4431408Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "native_driver_compile_exit": 0,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestAuthenticationNativeToolBoundary",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestOrcaWorkspaceStartupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_zero_match_guard": true,
+      "test_count": 626,
+      "level": "L1",
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\682b\\SteerRunner\\.evidence\\terminal-rpc\\l1\\framework",
+      "terminal_extension_test_count": 29,
+      "terminal_extensions_passed": true,
+      "exit_code": 1,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\682b\\SteerRunner\\.evidence\\terminal-rpc\\l1",
+      "terminal_extension_exit": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+  "finished_at": "2026-10-26T03:15:04.1075931Z"
+}

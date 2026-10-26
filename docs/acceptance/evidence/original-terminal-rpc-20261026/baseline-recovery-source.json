@@ -1,0 +1,8 @@
+{
+  "baseline_commit": "5df57b69e98382abcd63676b04a73079fd939fa6",
+  "overlay": ".evidence/terminal-rpc/baseline-code/overlay.json",
+  "pid": 31160,
+  "runner_sha256": "4FFCF02AA50509A31DE0616CCAAB33B2729161A001578F955E57D01323211CB8",
+  "pattern": "^TestSRResourceCreationRecovery$/^(owner-crash|missing-initial-plan)$",
+  "fixture_sha256": "823F7DC0F95C958542D138136DF4998688F777A01D6372D26CC78F0263EB8E6B"
+}

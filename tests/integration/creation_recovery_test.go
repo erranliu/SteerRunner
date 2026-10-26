@@ -41,13 +41,33 @@ func creationObservationFixture(t *testing.T, dir, runtime string) {
 				defer conn.Close()
 				scanner := bufio.NewScanner(conn)
 				for scanner.Scan() {
-					var request struct{ ID, Method, AuthToken string }
+					var request struct {
+						ID, Method, AuthToken string
+						Params                struct{ Terminal string }
+					}
 					if json.Unmarshal(scanner.Bytes(), &request) != nil || request.AuthToken != "creation-fixture-token" {
 						return
 					}
 					result := map[string]any{}
 					if request.Method == "worktree.ps" {
 						result = map[string]any{"worktrees": []any{}, "totalCount": 0, "truncated": false}
+					}
+					if request.Method == "terminal.show" {
+						// Serve the same durable identity as the CLI fixture, including
+						// its original response gate for the receipt-before-commit case.
+						var created struct{ Terminal native.Terminal }
+						raw, err := os.ReadFile(filepath.Join(dir, "worktree-created.json"))
+						if err != nil || json.Unmarshal(raw, &created) != nil || request.Params.Terminal != created.Terminal.Handle {
+							return
+						}
+						_ = process.New(time.Second).WriteExecutionFile(filepath.Join(dir, "show-entered"), []byte("entered"))
+						for {
+							if _, err := os.Stat(filepath.Join(dir, "hold-show-response")); os.IsNotExist(err) {
+								break
+							}
+							time.Sleep(20 * time.Millisecond)
+						}
+						result = map[string]any{"terminal": created.Terminal}
 					}
 					_ = json.NewEncoder(conn).Encode(map[string]any{"id": request.ID, "ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtime}})
 				}

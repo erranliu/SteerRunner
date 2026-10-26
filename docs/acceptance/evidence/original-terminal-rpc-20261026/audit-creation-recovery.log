@@ -1,0 +1,24 @@
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1901284755\native\original-worktree runtime=creation-runtime-sr-1901284755 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1477121555\native\original-worktree runtime=creation-runtime-sr-1477121555 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-3644697849\native\original-worktree runtime=creation-runtime-sr-3644697849 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-2838712072\native\original-worktree runtime=creation-runtime-sr-2838712072 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1253260475\native\original-worktree runtime=creation-runtime-sr-1253260475 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/planned-initial-terminal
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-4229404643\native\original-worktree runtime=creation-runtime-sr-4229404643 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/missing-initial-plan
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1222075264\native\original-worktree runtime=creation-runtime-sr-1222075264 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (183.95s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (27.59s)
+    --- PASS: TestSRResourceCreationRecovery/kill (20.87s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (24.98s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (27.59s)
+    --- PASS: TestSRResourceCreationRecovery/owner-crash (24.62s)
+    --- PASS: TestSRResourceCreationRecovery/planned-initial-terminal (27.43s)
+    --- PASS: TestSRResourceCreationRecovery/missing-initial-plan (30.87s)
+PASS
