@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"reflect"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
@@ -31,9 +32,11 @@ func progressBinding(r *runstate.Record) string {
 	return reliable.Digest(canonical(values))
 }
 func (e *Engine) saveProgressLocked(r *runstate.Record, p *runstate.Progress) error {
-	next := r.Clone()
+	current := e.runs[r.ID]
+	next := current.Clone()
 	next.Progress = p
 	next = next.Clone() // do not publish mutable preparation-local pointers
+	next.ResultFile = current.ResultFile
 	if err := e.store.SaveProgress(next); err != nil {
 		return err
 	}
@@ -82,7 +85,7 @@ func (e *Engine) prepareProgress(r *runstate.Record) (outErr error) {
 			p.WorkspaceInstance = source.Instance
 			source.Close()
 		} else {
-			if err := verifyEvidenceWorkspace(ctx, gitHost(), r); err != nil {
+			if err := verifyOriginalWorkspace(ctx, gitHost(), r, true); err != nil {
 				return errors.New("binding_invalid")
 			}
 			dirs, err := workspace.ProgressDirectories(p.Workspace, r.ID, true)
@@ -221,7 +224,7 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	current := e.runs[id]
-	if current.Progress == nil || current.Progress.Binding != r.Progress.Binding {
+	if current.Progress == nil || !reflect.DeepEqual(current.Progress, r.Progress) {
 		return
 	}
 	next := current.Clone().Progress

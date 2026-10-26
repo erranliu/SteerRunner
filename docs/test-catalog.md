@@ -275,3 +275,10 @@ Controlled 新增 TestSRProgressFile，默认顶层数从 22 增至 23，覆盖�
 | orca-remote.cli-wait-retry/default | L3 / 同一 driver | 原生远端 repo list 在固定 environment/runtime 中恢复，保留原 operation/Attempt；同样验证取消、唯一创建/输入及资源结算 | 同上；原环境目标单独冻结，不以本机结果替代 | 已注册/实现；远端资格单列 |
 
 L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读取分类和有界策略、UTC 预算/次数/next time 恢复、时间倒退、持久失败、真实并发变化与 stop 优先、公开 schema/事件对象和 null。创建/发送/停止没有新增重试；完整前置和原生通过不能互相替代。[Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [验收](acceptance/orca-cli-wait-retry.md)。当前全集 35 场景/45 case，其中 L3 29 场景/39 case；Controlled 24 个顶层。
+
+
+## result-file 本地与受控增量（2026-10-26）
+
+新增 Controlled `TestSRResultFile`，当前 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
+
+定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。

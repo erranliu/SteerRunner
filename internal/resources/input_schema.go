@@ -52,6 +52,7 @@ func runInputSchema(schemas map[string]any) map[string]any {
 	result["required"] = []string{"title", "repository", "documents", "execution", "workflow", "publication"}
 	properties := result["properties"].(map[string]any)
 	properties["progress_file"] = progressInputSchema()
+	properties["result_file"] = progressInputSchema()
 	properties["title"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	properties["name_prefix"] = namePrefixSchema()
 	properties["execution"] = schemas["run_configuration"].(map[string]any)["properties"].(map[string]any)["execution"]

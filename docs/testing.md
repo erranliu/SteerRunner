@@ -532,3 +532,10 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修改其源文件，再次换代服务；必须保持原终态快照逐字段不变，活动同伴继续更新且零额外原生输入。快速回归同时核对已收尾不重开、待收尾仍采样、停服终态 closed、活动/恢复 detached，以及未启用 Orca 通道的环境隔离。`tests/framework/progress-parallel-test.ps1` 纳入正式框架入口，验证有效窗口及四种不合格报告；合成窗口只证明核验器行为，不授予 L3 或实际并行资格。
 
 2026-10-23：远端 Orca Codex 最后消息沿现有 smoke、multirun、connection-reconnect drivers 核验公开 CLI 身份、摘要边界及重复读取时间；不新建 catalog case。`TestOrcaNativeStateLiveLifecycle` 的原 opt-in 入口记录普通通知和 query-only 的实际样本、独立消息/完成事件及原资源关闭。缺 prompt 的查询场景若真实出现，应保持未核实且零重发；若来源保留 prompt，只登记匹配路径通过。Controlled 覆盖空 prompt 连续链、标记变化、断线/重启和诊断重附着。详见[Spec](spec/orca-last-message.spec.md)、[Plan](spec/orca-last-message.plan.md)及[原验收](acceptance/execution-observability.md)。
+
+
+## result-file 本地与受控增量（2026-10-26）
+
+新增 Controlled `TestSRResultFile`，当前 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
+
+定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。

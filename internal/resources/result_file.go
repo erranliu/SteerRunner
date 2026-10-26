@@ -1,0 +1,7 @@
+package resources
+
+import "github.com/erranliu/SteerRunner/internal/contracts"
+
+func ResultFileCapabilities() any {
+	return map[string]any{"contract": contracts.ResultFileContract, "command": "result-file --run-id R --json", "submit_property": "result_file", "environment_variable": contracts.ResultFileEnvironment, "max_bytes": contracts.MaxResultBytes, "encoding": "base64", "digest": "sha256", "collection": "end_only", "query_reads_file": false, "version": "0 until successful seal, then 1 forever; does not change Run revision", "delivery": "final-only: at most one snapshot after original execution ended and producers stopped; no running collection or query reads; bounded by 2 seconds and lifecycle deadline; failed seal is final; resume never refreshes", "supported": map[string]any{"adapters": []string{"codex-app-server", "orca-terminal"}, "target_kinds": []string{"local", "orca_environment"}, "workflows": []string{"development/2", "development-audited/2"}}, "path_boundary": "fixed original host/worktree/relative file; no arbitrary caller paths or directory scan; adversarial link replacement races are outside this contract", "retention": "sealed success or failure retained after stop and restart; state-dir required", "statuses": []string{"disabled", "pending", "closed"}, "diagnostics": []string{"binding_invalid", "workspace_unavailable", "directory_unavailable", "file_missing", "read_failed", "size_exceeded", "file_changing", "initialization_unverified", "transport_unavailable"}}
+}

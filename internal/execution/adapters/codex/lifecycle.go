@@ -59,9 +59,12 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 		serverDir = filepath.Join(setup.RunDirectory, "runs", snapshot.Session.WorkflowRunID, "attempts", snapshot.Session.AttemptID, "app-server")
 	}
 	processEnv := func(base []string) []string {
-		env := lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, append(append([]string{}, setup.BlockedEnvironment...), "STEERLINE_PROGRESS_FILE"))
+		env := lifecycleProcessEnvironment(base, snapshot.Session.WorkflowRunID, snapshot.Session.ExecutionID, append(append([]string{}, setup.BlockedEnvironment...), "STEERLINE_PROGRESS_FILE", "STEERLINE_RESULT_FILE"))
 		if setup.ProgressFile != "" {
 			env = setEnvironmentValues(env, map[string]string{"STEERLINE_PROGRESS_FILE": setup.ProgressFile})
+		}
+		if setup.ResultFile != "" {
+			env = setEnvironmentValues(env, map[string]string{"STEERLINE_RESULT_FILE": setup.ResultFile})
 		}
 		return env
 	}

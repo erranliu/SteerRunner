@@ -6,11 +6,13 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"os"
 	"path/filepath"
 	"reflect"
+	"syscall"
 	"testing"
 	"time"
 )
@@ -62,6 +64,7 @@ func TestSRProgressFile(t *testing.T) {
 		accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 		id := accepted.Data.(map[string]any)["run_id"].(string)
 		ids = append(ids, id)
+		waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.Workspace != "" })
 		wait(id, func(v contracts.ProgressFileView) bool { return v.Version == 1 })
 		run := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
 		paths = append(paths, filepath.Join(run.Execution.Workspace, ".steerrunner", "progress", id, "progress.bin"))
@@ -89,9 +92,7 @@ func TestSRProgressFile(t *testing.T) {
 	for i := 0; i < 2; i++ {
 		tmp := paths[i] + ".tmp"
 		_ = os.WriteFile(tmp, append(data, byte(i)), 0600)
-		if err := os.Rename(tmp, paths[i]); err != nil {
-			t.Fatal(err)
-		}
+		replaceProgressProducerFile(t, tmp, paths[i])
 		v := wait(ids[i], func(v contracts.ProgressFileView) bool { return v.Version == 2 })
 		decoded, _ := base64.StdEncoding.DecodeString(*v.ContentBase64)
 		if !bytes.Equal(decoded, append(data, byte(i))) {
@@ -179,3 +180,21 @@ func TestSRProgressFile(t *testing.T) {
 	}
 }
 func stringsForJSON(s string) string { raw, _ := json.Marshal(s); return string(raw[1 : len(raw)-1]) }
+
+// Windows may reject replacement while the destination read handle is open.
+// This is producer coordination, with the same complete temporary file; no
+// Runner read, lifecycle, delivery deadline or content assertion is retried.
+func replaceProgressProducerFile(t *testing.T, from, to string) {
+	t.Helper()
+	deadline := time.Now().Add(time.Second)
+	for {
+		err := os.Rename(from, to)
+		if err == nil {
+			return
+		}
+		if (!errors.Is(err, syscall.ERROR_ACCESS_DENIED) && !errors.Is(err, syscall.Errno(32))) || !time.Now().Before(deadline) {
+			t.Fatal(err)
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+}

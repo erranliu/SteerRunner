@@ -35,3 +35,37 @@ func UnwrapProgressCommand(command, run string) (string, bool) {
 	}
 	return "", false
 }
+
+func ResultCommand(command, run string) string {
+	if run == "" {
+		return "& { $srResultBefore=[Environment]::GetEnvironmentVariable('STEERLINE_RESULT_FILE'); try { [Environment]::SetEnvironmentVariable('STEERLINE_RESULT_FILE',$null); " + command + " } finally { [Environment]::SetEnvironmentVariable('STEERLINE_RESULT_FILE',$srResultBefore) } }"
+	}
+	relative := ".steerrunner/result/" + run + "/result.bin"
+	lines := []string{
+		`$srResultBefore=[Environment]::GetEnvironmentVariable('STEERLINE_RESULT_FILE')`,
+		`try { $env:STEERLINE_RESULT_FILE=[IO.Path]::GetFullPath((Join-Path (Get-Location).ProviderPath ` + quote(relative) + `))`,
+		`$srResultExclude=@(& git rev-parse --path-format=absolute --git-path info/exclude); if($LASTEXITCODE -ne 0 -or $srResultExclude.Count -ne 1) { throw 'Result ignore unavailable' }; [IO.File]::AppendAllText($srResultExclude[0],"` + "`n/.steerrunner/result/`n" + `")`,
+		command,
+		`} finally { [Environment]::SetEnvironmentVariable('STEERLINE_RESULT_FILE',$srResultBefore) }`,
+	}
+	return "& { " + strings.Join(lines, "; ") + " }"
+}
+
+// FileCommands adds exactly the two managed channels; historical frozen launches
+// remain valid and are never recompiled during service recovery.
+func FileCommands(command, progressRun, resultRun string) string {
+	return ResultCommand(ProgressCommand(command, progressRun), resultRun)
+}
+func UnwrapFileCommands(command, run string) (string, bool) {
+	const marker = "\x00steerrunner-result-command\x00"
+	for _, candidate := range []string{run, ""} {
+		prefix, suffix, _ := strings.Cut(ResultCommand(marker, candidate), marker)
+		if strings.HasPrefix(command, prefix) && strings.HasSuffix(command, suffix) && len(command) >= len(prefix)+len(suffix) {
+			inner := command[len(prefix) : len(command)-len(suffix)]
+			if ResultCommand(inner, candidate) == command {
+				return UnwrapProgressCommand(inner, run)
+			}
+		}
+	}
+	return UnwrapProgressCommand(command, run)
+}

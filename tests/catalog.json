@@ -27,6 +27,7 @@
     "TestSRRunEvidenceR2",
     "TestSRResourceCreationRecovery",
     "TestSRProgressFile",
+    "TestSRResultFile",
     "TestSROrcaCLIWaitRetry"
   ],
   "scenarios": [

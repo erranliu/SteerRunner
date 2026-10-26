@@ -81,6 +81,14 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if orca.LegacyRemoteProfile(r.Profile) && r.PendingStop == "" {
 		return false
 	}
+	// Recovery only samples an already-ended original execution. No port or
+	// replacement resource is constructed by result collection.
+	if resultEndEligible(r) {
+		e.sealResult(e.ctx, id)
+		e.mu.Lock()
+		r = e.runs[id].Clone()
+		e.mu.Unlock()
+	}
 	if r.PendingStop == "" {
 		if err := validateOperationVersions(r); err != nil {
 			e.block(id, "recovery_contract_unsupported", err, true)
@@ -93,9 +101,8 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
 		return false
 	}
-	if r.PendingStop == "" && r.Request.ProgressFile != nil && r.Snapshot.Workspace.Path != "" && (r.Progress == nil || !r.Progress.Initialized) {
-		if err := e.prepareProgress(r); err != nil {
-			e.logger.Printf("progress initialization unavailable run=%s", id)
+	if r.PendingStop == "" && !progressTerminal(r) && r.Snapshot.Workspace.Path != "" && filesNeedPreparation(r) {
+		if !e.prepareRuntimeFiles(r) {
 			return false
 		}
 		e.mu.Lock()

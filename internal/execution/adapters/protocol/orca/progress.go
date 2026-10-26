@@ -19,6 +19,12 @@ type ProgressFiles struct {
 }
 
 func OpenProgressFiles(ctx context.Context, environment, runtime, host, worktree, workspace, instance, run string) (*ProgressFiles, error) {
+	return openFiles(ctx, environment, runtime, host, worktree, workspace, instance, run, false)
+}
+func OpenResultFiles(ctx context.Context, environment, runtime, host, worktree, workspace, instance, run string) (*ProgressFiles, error) {
+	return openFiles(ctx, environment, runtime, host, worktree, workspace, instance, run, true)
+}
+func openFiles(ctx context.Context, environment, runtime, host, worktree, workspace, instance, run string, result bool) (*ProgressFiles, error) {
 	if environment == "" && host != "local" {
 		return nil, errors.New("binding_invalid")
 	}
@@ -47,7 +53,11 @@ func OpenProgressFiles(ctx context.Context, environment, runtime, host, worktree
 	if json.Unmarshal(raw, &value) != nil || value.Worktree.ID != worktree || !strings.EqualFold(strings.ReplaceAll(value.Worktree.Path, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) || instance != "" && value.Worktree.InstanceID != instance {
 		return fail()
 	}
-	return &ProgressFiles{socket: socket, selector: "id:" + worktree, relative: ".steerrunner/progress/" + run + "/progress.bin", Instance: value.Worktree.InstanceID}, nil
+	relative := ".steerrunner/progress/" + run + "/progress.bin"
+	if result {
+		relative = ".steerrunner/result/" + run + "/result.bin"
+	}
+	return &ProgressFiles{socket: socket, selector: "id:" + worktree, relative: relative, Instance: value.Worktree.InstanceID}, nil
 }
 func (c *ProgressFiles) Close() error { return c.socket.close() }
 func (c *ProgressFiles) Initialize(ctx context.Context, raw []byte) error {

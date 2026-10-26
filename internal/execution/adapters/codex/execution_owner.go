@@ -37,6 +37,7 @@ type ExecutionOwnerIdentity struct {
 
 type ownerConfig struct {
 	ProgressFile                                                                                            string
+	ResultFile                                                                                              string
 	Token                                                                                                   string
 	RuntimeSHA256                                                                                           string
 	Snapshot                                                                                                b.LifecycleSnapshot
@@ -198,7 +199,7 @@ func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwned
 		return err
 	}
 	identity := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: dir, Process: *id, RuntimeSHA256: sha, ExitPublicKey: hex.EncodeToString(public), RetainsParser: startParser != nil, WorkspaceCheckpoints: true}
-	setup := b.LifecycleSetup{ProgressFile: cfg.ProgressFile, Snapshot: cfg.Snapshot, ProfileData: cfg.ProfileData, ProfileID: cfg.ProfileID, AcceptedConfigVersion: cfg.AcceptedConfigVersion,
+	setup := b.LifecycleSetup{ProgressFile: cfg.ProgressFile, ResultFile: cfg.ResultFile, Snapshot: cfg.Snapshot, ProfileData: cfg.ProfileData, ProfileID: cfg.ProfileID, AcceptedConfigVersion: cfg.AcceptedConfigVersion,
 		RepositoryPath: cfg.RepositoryPath, RepositoryURL: cfg.RepositoryURL, RunDirectory: cfg.RunDirectory, RemoteName: cfg.RemoteName, TargetBranch: cfg.TargetBranch,
 		AttemptNumber: cfg.AttemptNumber, ProcessHost: process.New(60 * time.Second), CommandTimeout: 60 * time.Second, GitExecutable: "git"}
 	port, err := NewExecutionLifecycle(setup)
@@ -427,7 +428,7 @@ func (l *ExecutionLifecycle) ensureOwner(ctx context.Context, request b.Lifecycl
 	if err = os.MkdirAll(dir, 0700); err != nil {
 		return err
 	}
-	cfg := ownerConfig{ProgressFile: l.setup.ProgressFile, Token: l.setup.ProcessHost.NewProcessGeneration() + l.setup.ProcessHost.NewProcessGeneration(), RuntimeSHA256: sha, Snapshot: request.Snapshot.Clone(), ProfileData: l.setup.ProfileData, ProfileID: l.setup.ProfileID, AcceptedConfigVersion: l.setup.AcceptedConfigVersion,
+	cfg := ownerConfig{ProgressFile: l.setup.ProgressFile, ResultFile: l.setup.ResultFile, Token: l.setup.ProcessHost.NewProcessGeneration() + l.setup.ProcessHost.NewProcessGeneration(), RuntimeSHA256: sha, Snapshot: request.Snapshot.Clone(), ProfileData: l.setup.ProfileData, ProfileID: l.setup.ProfileID, AcceptedConfigVersion: l.setup.AcceptedConfigVersion,
 		RepositoryPath: l.setup.RepositoryPath, RepositoryURL: l.setup.RepositoryURL, RunDirectory: l.setup.RunDirectory, RemoteName: l.setup.RemoteName, TargetBranch: l.setup.TargetBranch, AttemptNumber: l.setup.AttemptNumber}
 	if err = l.setup.ProcessHost.WriteExecutionFile(filepath.Join(dir, ExecutionOwnerConfigFile), encode(cfg)); err != nil {
 		return err

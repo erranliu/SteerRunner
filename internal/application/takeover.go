@@ -15,10 +15,15 @@ import (
 
 // TakeoverFacts projects existing records through the selected build's concrete
 // decoders. It neither constructs workers nor grants any input authorization.
-func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, support contracts.RecoverySupport, profiles []workflow.Profile) []contracts.TakeoverItem {
+func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
 	items := []contracts.TakeoverItem{}
 	for _, r := range runs {
 		item := contracts.TakeoverItem{ID: r.ID, Kind: "run", Revision: r.Revision, InputDigest: r.InputDigest, Status: "compatible"}
+		if r.Request.ResultFile != nil && (len(resultContracts) != 1 || resultContracts[0] != contracts.ResultFileContract) {
+			item.Status, item.Diagnostic = "unsupported", "result file contract unsupported"
+			items = append(items, item)
+			continue
+		}
 		var err error
 		requiresAcquisition := r.Workflow.Config != nil && r.Workflow.Config.RequiresResultAcquisition()
 		hasParser := false
@@ -127,7 +132,7 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 	return items
 }
 
-func (e *Engine) Takeover(support contracts.RecoverySupport, profiles []workflow.Profile) []contracts.TakeoverItem {
+func (e *Engine) Takeover(support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
 	e.mu.Lock()
 	runs := make([]*runstate.Record, 0, len(e.runs))
 	for _, r := range e.runs {
@@ -138,5 +143,5 @@ func (e *Engine) Takeover(support contracts.RecoverySupport, profiles []workflow
 		checks = append(checks, r.Clone())
 	}
 	e.mu.Unlock()
-	return e.store.BindTakeoverRequests(TakeoverFacts(runs, checks, support, profiles))
+	return e.store.BindTakeoverRequests(TakeoverFacts(runs, checks, support, profiles, resultContracts...))
 }
