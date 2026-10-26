@@ -99,8 +99,8 @@ func QueryNativeInput(ctx context.Context, environment, runtime, provider, path 
 func QueryOriginalInput(ctx context.Context, environment string, process b.ProcessIdentity, pane string, baseline int64, before AgentState) (AgentState, error) {
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
-	if before.MetadataObservation == nil {
-		return queryThinOriginalInput(ctx, environment, process, pane, baseline, before)
+	if before.MetadataObservation == nil || before.CanQueryCompletionInput() {
+		return queryFencedCompletionInput(ctx, environment, process, pane, baseline, before)
 	}
 	input, err := QueryNativeInput(ctx, environment, process.RuntimeID, before.ProviderSession.ID, before.ProviderSession.TranscriptPath, baseline)
 	if err != nil {
