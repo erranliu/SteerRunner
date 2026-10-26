@@ -27,6 +27,7 @@ $taskCases = @(Get-SRLiveCases $taskScenario)
 $taskCase = @($taskCases | Where-Object { $_.id -ceq $Case })
 if ($taskCase.Count -ne 1) { throw 'Select an exact registered case; multi-case scenarios require -Case' }
 $taskStability = $taskScenario.driver -eq 'execution-stability'
+$taskParser = $taskScenario.driver -eq 'result-acquisition'
 $taskLegacyConfig = Get-Content -LiteralPath $Config -Raw | ConvertFrom-Json
 if ($taskLegacyConfig.PSObject.Properties['github_auth'] -or $taskLegacyConfig.PSObject.Properties['remote_github_auth']) { throw 'GitHub App authentication is unsupported; use gh login on the execution host' }
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
@@ -43,7 +44,7 @@ $taskRequired = $taskCase[0].requirements
 $taskSelected = $taskConfig.configurations[$taskRequired.roles.primary.configuration]
 $taskExecution = $taskSelected.execution | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
 $taskFixture = $taskConfig.fixture
-if ($taskFixture.publication.provider -cne 'command' -or $taskFixture.publication.settings.base_url -cne 'https://github.com') { throw 'Dedicated live fixtures require the explicit GitHub command publication provider' }
+if (-not $taskParser -and ($taskFixture.publication.provider -cne 'command' -or $taskFixture.publication.settings.base_url -cne 'https://github.com')) { throw 'Dedicated live fixtures require the explicit GitHub command publication provider' }
 $taskAudit = if ($taskScenario.driver -eq 'development-audited') { $taskSelected.workflow.audit_model } else { $null }
 $taskOrca = ''; $taskEnvironment = ''; $taskLocalHelper = ''
 if ($taskExecution.adapter -eq 'codex-app-server') {
@@ -67,8 +68,10 @@ function Invoke-Git([string[]]$Arguments) {
     return ($taskOutput | Out-String).Trim()
 }
 if ($taskStability) { & (Join-Path $PSScriptRoot 'stability-preflight.ps1') -Config $Config -Scenario $Scenario -Case $Case -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -RequireAdmin:(Test-SRAdminCase $Scenario $Case) }
-& gh auth status --active --hostname github.com 2>&1 | Out-Host
-if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }
+if (-not $taskParser) {
+    & gh auth status --active --hostname github.com 2>&1 | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw 'Host GitHub login is unavailable' }
+}
 $taskID = [Guid]::NewGuid().ToString('N').Substring(0,12)
 $taskRoot = Join-Path ([IO.Path]::GetFullPath($FixtureParent)) $taskID
 if (Test-Path -LiteralPath $taskRoot) { throw 'Fixture directory must be new' }
@@ -107,19 +110,25 @@ if ($taskScenario.target -eq 'orca-local' -or ($taskScenario.target -eq 'orca-en
 }
 $taskSourceRevision = $taskFixture.repository.base_revision
 $taskRepository = Join-Path $taskRoot 'SteerlineTest'
-$null = Invoke-Git @('clone','--quiet','--no-hardlinks',$taskFixture.repository.url,$taskRepository)
-$null = Invoke-Git @('-C',$taskRepository,'checkout','-b',$taskBase,$taskSourceRevision)
+if ($taskParser) {
+    # Only local frozen materials are needed; no remote, login or test PR.
+    $null = Invoke-Git @('init','--quiet','-b',$taskBase,$taskRepository)
+} else {
+    $null = Invoke-Git @('clone','--quiet','--no-hardlinks',$taskFixture.repository.url,$taskRepository)
+    $null = Invoke-Git @('-C',$taskRepository,'checkout','-b',$taskBase,$taskSourceRevision)
+}
 $taskToolDir = Join-Path $taskRepository 'sr-smoke'
 New-Item -ItemType Directory -Path $taskToolDir | Out-Null
 $taskTemplates = Join-Path $taskRepo 'tests/fixtures/evidence-smoke'
 $taskTemplateNames = @('spec.md','plan.md','check.ps1','publish.ps1','pr-list.ps1')
 if ($taskScenario.level -eq 'L2') { $taskTemplateNames = @('spec.md','plan.md','check.ps1') }
+if ($taskParser) { $taskTemplateNames = @('spec.md','plan.md') }
 foreach ($taskName in $taskTemplateNames) {
     $taskText = [IO.File]::ReadAllText((Join-Path $taskTemplates $taskName))
     # Windows PowerShell 5 requires a BOM for non-ASCII source literals.
     [IO.File]::WriteAllText((Join-Path $taskToolDir $taskName),$taskText,[Text.UTF8Encoding]::new($taskName.EndsWith('.ps1')))
 }
-if ($taskScenario.level -ne 'L2') { Write-JSON (Join-Path $taskToolDir 'publication.json') @{fixture_id=$taskID;base_branch=$taskBase} }
+if ($taskScenario.level -ne 'L2' -and -not $taskParser) { Write-JSON (Join-Path $taskToolDir 'publication.json') @{fixture_id=$taskID;base_branch=$taskBase} }
 if ($taskStability) {
     foreach ($taskName in @('control.ps1','check.ps1','publish.ps1')) {
         $taskText = [IO.File]::ReadAllText((Join-Path $taskRepo ('tests/fixtures/evidence-stability/' + $taskName)))
@@ -154,6 +163,7 @@ $null = Invoke-Git @('-C',$taskRepository,'add','--','sr-smoke')
 if ($taskStability) { $null = Invoke-Git @('-C',$taskRepository,'add','--','.gitignore') }
 $null = Invoke-Git @('-C',$taskRepository,'-c','user.name=SteerRunner Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m',('Prepare independent smoke ' + $taskID))
 $taskBaseRevision = Invoke-Git @('-C',$taskRepository,'rev-parse','HEAD')
+if ($taskParser) { $taskSourceRevision = $taskBaseRevision }
 if ($taskScenario.level -eq 'L2') {
     # Preserve a real packed reference fixture; the worker must still commit
     # without root-level packed-refs.lock permission errors.
@@ -170,11 +180,13 @@ if ((Get-FileHash -LiteralPath $taskExe -Algorithm SHA256).Hash.ToLowerInvariant
 $taskBuild = Get-Content -LiteralPath ($taskExe + '.build.json') -Raw | ConvertFrom-Json
 $taskSpec = Join-Path $taskToolDir 'spec.md'
 $taskPlan = Join-Path $taskToolDir 'plan.md'
-$taskPublication = $taskFixture.publication | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
-$taskPublication.base_branch = $taskBase
-# Only the test-owned query instrumentation is replaced. Preserve configured
-# provider, repository and authentication references in the public settings.
-$taskPublication.settings.query = @{executable='powershell.exe';args=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$taskQuery,'-URL','{pr_url}')}
+$taskPublication = @{}
+if (-not $taskParser) {
+    $taskPublication = $taskFixture.publication | ConvertTo-Json -Depth 40 | ConvertFrom-Json -AsHashtable
+    $taskPublication.base_branch = $taskBase
+    # Only the test-owned query instrumentation is replaced.
+    $taskPublication.settings.query = @{executable='powershell.exe';args=@('-NoProfile','-ExecutionPolicy','Bypass','-File',$taskQuery,'-URL','{pr_url}')}
+}
 $taskManifest = [ordered]@{
     schema='steerrunner-test/v1';id=$taskID;level=$taskScenario.level;scenario=$Scenario;driver=$taskScenario.driver;root=$taskRoot
     runner_exe=$taskExe;runner_sha256=$taskBuild.sha256.ToLowerInvariant();source_commit=$taskBuild.source_commit;source_dirty=$taskBuild.source_dirty
@@ -204,37 +216,39 @@ if ($taskStability) {
 # Persist the intended ref before its first external mutation; uncertain pushes
 # retain this identity and are never retried under a replacement fixture name.
 Write-JSON (Join-Path $taskRoot 'manifest.json') $taskManifest
-$taskPreparation.status = 'pushing-base'
-Write-JSON (Join-Path $taskRoot 'preparation.json') $taskPreparation
-$taskPushRef = 'refs/heads/' + $taskBase
-$taskPushAttempts = @()
-foreach ($taskPushAttempt in 1..3) {
-    $taskPushEntry = @{attempt=$taskPushAttempt;revision=$taskBaseRevision;ref=$taskPushRef;outcome='dispatching'}
-    $taskPushAttempts += $taskPushEntry
-    Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
-    try {
-        $null = Invoke-Git @('-C',$taskRepository,'push','origin',($taskBaseRevision + ':' + $taskPushRef))
-        $taskPushEntry.outcome = 'confirmed'
-        break
-    } catch {
-        $taskPushFailure = $_
-        $taskPushEntry.outcome = 'failed'
-        $taskPushEntry['error'] = $_.Exception.Message
+if (-not $taskParser) {
+    $taskPreparation.status = 'pushing-base'
+    Write-JSON (Join-Path $taskRoot 'preparation.json') $taskPreparation
+    $taskPushRef = 'refs/heads/' + $taskBase
+    $taskPushAttempts = @()
+    foreach ($taskPushAttempt in 1..3) {
+        $taskPushEntry = @{attempt=$taskPushAttempt;revision=$taskBaseRevision;ref=$taskPushRef;outcome='dispatching'}
+        $taskPushAttempts += $taskPushEntry
         Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
-        # A failed query is unknown and throws. Only a successful exact-ref
-        # query proving absence permits another non-force push of the same SHA.
-        $taskRemoteRef = Invoke-Git @('-C',$taskRepository,'ls-remote','--refs','origin',$taskPushRef)
-        if ($taskRemoteRef) {
-            if ($taskRemoteRef -cne ($taskBaseRevision + "`t" + $taskPushRef)) { throw 'Original fixture ref changed; never overwrite it' }
-            $taskPushEntry.outcome = 'confirmed-by-query'
+        try {
+            $null = Invoke-Git @('-C',$taskRepository,'push','origin',($taskBaseRevision + ':' + $taskPushRef))
+            $taskPushEntry.outcome = 'confirmed'
             break
+        } catch {
+            $taskPushFailure = $_
+            $taskPushEntry.outcome = 'failed'
+            $taskPushEntry['error'] = $_.Exception.Message
+            Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
+            # A failed query is unknown and throws. Only a successful exact-ref
+            # query proving absence permits another non-force push of the same SHA.
+            $taskRemoteRef = Invoke-Git @('-C',$taskRepository,'ls-remote','--refs','origin',$taskPushRef)
+            if ($taskRemoteRef) {
+                if ($taskRemoteRef -cne ($taskBaseRevision + "`t" + $taskPushRef)) { throw 'Original fixture ref changed; never overwrite it' }
+                $taskPushEntry.outcome = 'confirmed-by-query'
+                break
+            }
+            if ($taskPushAttempt -eq 3) { throw $taskPushFailure }
+            $taskPushEntry.outcome = 'confirmed-absent'
+            Start-Sleep -Milliseconds 250
         }
-        if ($taskPushAttempt -eq 3) { throw $taskPushFailure }
-        $taskPushEntry.outcome = 'confirmed-absent'
-        Start-Sleep -Milliseconds 250
     }
+    Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
 }
-Write-JSON (Join-Path $taskRoot 'evidence/fixture-base-push.json') $taskPushAttempts
 if ($taskScenario.target -eq 'orca-environment') {
     $taskRuntime = & (Join-Path $PSScriptRoot 'prepare-native-orca.ps1') -Manifest (Join-Path $taskRoot 'manifest.json') -OrcaExe $taskOrca -Environment $taskEnvironment -Target orca_environment
     $taskManifest['remote_runtime_id'] = [string]$taskRuntime

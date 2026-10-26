@@ -15,7 +15,7 @@ try {
     if ($taskJob.entry.driver -eq 'controlled-integration') {
         $taskRecord.evidence = Join-Path $taskJob.output ($taskJob.entry.id + '-r' + $taskJob.repeat_index)
         $taskPattern = '^' + [regex]::Escape($taskJob.case.test) + '$'
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern -TimeoutMinutes $taskJob.entry.timeout_minutes | Out-Host
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskRecord.evidence -Pattern $taskPattern -TimeoutMinutes $taskJob.entry.timeout_minutes -PreparedArtifactsDirectory (Join-Path $taskJob.output 'controlled') | Out-Host
         $taskUntil = [DateTime]::UtcNow.AddMinutes($taskJob.entry.timeout_minutes).AddSeconds(30)
         $taskResultPath = Join-Path $taskRecord.evidence 'result.json'
         while (-not (Test-Path -LiteralPath $taskResultPath)) {
@@ -61,6 +61,8 @@ try {
         if($taskManifest.driver -eq 'environment-check'){
             $taskCheck=(Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'check-latest.json') -Raw|ConvertFrom-Json).data.check
             $taskView=[pscustomobject]@{run_id=$taskCheck.check_id;execution=[pscustomobject]@{workspace=$taskCheck.actual.workspace;session_id=$taskCheck.actual.session_id;branch=$taskCheck.resources.head_ref};pr=[pscustomobject]@{url=$taskCheck.resources.pr_url}}
+        } elseif ($taskManifest.driver -eq 'result-acquisition') {
+            $taskView=$null
         } else {
             $taskView=if($taskScenario.PSObject.Properties['runs']){$null}else{Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'latest-run.json') -Raw|ConvertFrom-Json}
         }

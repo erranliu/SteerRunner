@@ -91,6 +91,8 @@ $taskResults += @{name='parallel-scheduler-isolation';passed=$true}
 & $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/native-result-test.ps1') -Repository $taskRepo -Evidence (Join-Path $taskEvidence 'native-result') *> (Join-Path $taskEvidence 'native-result-framework.log')
 if ($LASTEXITCODE -ne 0) { throw 'Native result contract checks failed; inspect native-result-framework.log' }
 $taskResults += @{name='native-result-contracts';passed=$true}
+& (Join-Path $taskRepo 'tests/framework/prepared-artifacts-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
+$taskResults += @{name='prepared-artifact-guards';passed=$true}
 & $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/progress-parallel-test.ps1') -Repository $taskRepo -Evidence (Join-Path $taskEvidence 'progress-parallel') *> (Join-Path $taskEvidence 'progress-parallel-framework.log')
 if ($LASTEXITCODE -ne 0) { throw 'Progress parallel evidence checks failed; inspect progress-parallel-framework.log' }
 $taskResults += @{name='progress-parallel-failure-artifact';passed=$true}

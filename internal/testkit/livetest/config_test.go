@@ -40,7 +40,7 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 	for _, test := range report.Cases {
 		found[test.ScenarioID+"/"+test.CaseID] = test
 	}
-	if found["local-codex.feedback/default"].Availability != "available" || found["orca-local.pi/default"].Availability != "unavailable" || found["orca-remote.smoke/default"].Availability != "unavailable" {
+	if found["local-codex.smoke/default"].Availability != "available" || found["orca-local.pi/default"].Availability != "unavailable" || found["orca-remote.smoke/default"].Availability != "unavailable" {
 		t.Fatal("one missing entry blocked independent routes", found)
 	}
 	if _, err := os.Stat(native); !os.IsNotExist(err) {
@@ -53,7 +53,7 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 	shared.Publication.Settings = json.RawMessage(`{"base_url":"https://github.com"}`)
 	wrongProvider.Fixture, _ = json.Marshal(shared)
 	for _, test := range AssessConfig(wrongProvider, digest, resources.Catalog()).Cases {
-		if test.ScenarioID == "local-codex.feedback" && test.Availability != "unavailable" {
+		if test.ScenarioID == "local-codex.smoke" && test.Availability != "unavailable" {
 			t.Fatal("fixture generation would silently replace the configured publication provider")
 		}
 	}
@@ -152,7 +152,7 @@ func TestSRCheckAuthenticationAvailability(t *testing.T) {
 	}
 	for _, test := range report.Cases {
 		switch test.ScenarioID {
-		case "environment-check.local-sandbox", "local-codex.feedback":
+		case "environment-check.local-sandbox", "local-codex.smoke":
 			found := false
 			for _, reason := range test.Reasons {
 				found = found || reason.Code == "invalid_configuration"

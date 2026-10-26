@@ -49,6 +49,24 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal(err)
 	}
+	parser := m
+	parser.Level, parser.Scenario, parser.Driver = "L3", "local-codex.result-acquisition", "result-acquisition"
+	parser.Publication = contracts.Publication{}
+	if err := parser.Validate(); err != nil {
+		t.Fatal("standalone parser manifest rejected", err)
+	}
+	for _, mutate := range []func(*Manifest){
+		func(x *Manifest) { x.Level = "L2" },
+		func(x *Manifest) { x.Scenario = "local-codex.smoke" },
+		func(x *Manifest) { x.Publication = m.Publication },
+		func(x *Manifest) { x.Execution.Target.Environment = "foreign" },
+	} {
+		bad := parser
+		mutate(&bad)
+		if bad.Validate() == nil {
+			t.Fatal("parser accepted a delivery or foreign target contract")
+		}
+	}
 	local := m
 	local.Level, local.Scenario = "L3", "orca-local.smoke"
 	local.LocalRuntimeID, local.LocalRepositoryPath = "local-original", repo

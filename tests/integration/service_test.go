@@ -375,6 +375,7 @@ func TestSRStandalonePackage(t *testing.T) {
 
 func TestSRServiceOwnership(t *testing.T) {
 	testCount.Add(1)
+	t.Run("reused_owner_pid", testFixtureOwnerExitWithReusedPID)
 	t.Run("offline_verification", testOfflineVerificationAfterWriterExitWithoutShutdownReceipt)
 	t.Run("remote_offline_scope", testRemoteOfflineScope)
 	t.Run("queries_do_not_start", func(t *testing.T) {

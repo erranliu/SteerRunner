@@ -4,6 +4,7 @@ param(
     [string]$BaselineExe = '',
     [string]$ContentNativeExecutable = '',
     [string]$ContentNativeModel = '',
+    [string]$PreparedArtifactsDirectory = '',
     [string]$RunnerExe = '',
     [ValidateRange(1,60)][int]$TimeoutMinutes = 25
 )
@@ -19,20 +20,37 @@ New-Item -ItemType Directory -Path $taskEvidence | Out-Null
 $taskRunnerExe = if ($RunnerExe) { (Resolve-Path -LiteralPath $RunnerExe).Path } else { Join-Path $taskEvidence 'steerrunner.exe' }
 $taskTestExe = Join-Path $taskEvidence 'integration.test.exe'
 $taskHelperExe = Join-Path $taskEvidence 'native-fixture.exe'
-Push-Location $taskRepo
-try {
-    if (-not $RunnerExe) { & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe }
-    & go test ./internal/contracts ./internal/cli ./internal/storage ./internal/host -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage|TestSRStartupIntent)$' -count=1 -timeout=2m -v 2>&1 | Tee-Object -FilePath (Join-Path $taskEvidence 'unit-foundation.log') | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw 'Foundation unit tests failed; inspect unit-foundation.log.' }
-	if ($ContentNativeExecutable) {
-		& go test -tags live -c -o $taskTestExe ./tests/integration
-	} else {
-		& go test -c -o $taskTestExe ./tests/integration
-	}
-    if ($LASTEXITCODE -ne 0) { throw 'Integration fixture build failed.' }
-    & go build -o $taskHelperExe ./tests/helpers/native
-    if ($LASTEXITCODE -ne 0) { throw 'Native protocol fixture build failed.' }
-} finally { Pop-Location }
+if ($PreparedArtifactsDirectory) {
+    if ($RunnerExe) { throw 'PreparedArtifactsDirectory cannot be combined with RunnerExe; select one frozen artifact source.' }
+    if ($BaselineExe -or $ContentNativeExecutable) { throw 'Prepared controlled artifacts cannot be used for native or cross-build tests.' }
+    $PreparedArtifactsDirectory = (Resolve-Path -LiteralPath $PreparedArtifactsDirectory).Path
+    $taskOriginalIdentity = Get-Content -LiteralPath (Join-Path $PreparedArtifactsDirectory 'source-identity.json') -Raw | ConvertFrom-Json
+    $taskOriginalResult = Get-Content -LiteralPath (Join-Path $PreparedArtifactsDirectory 'result.json') -Raw | ConvertFrom-Json
+    if ($taskOriginalResult.exit_code -ne 0 -or $taskOriginalResult.scenario_count -lt 1 -or (Select-String -LiteralPath (Join-Path $PreparedArtifactsDirectory 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Prepared controlled artifacts require a passed prerequisite without skips.' }
+    foreach ($taskArtifact in @(@{name='steerrunner.exe';field='runner_sha256'},@{name='integration.test.exe';field='fixture_sha256'},@{name='native-fixture.exe';field='native_fixture_sha256'})) {
+        $taskPath = Join-Path $PreparedArtifactsDirectory $taskArtifact.name
+        if (-not $taskOriginalIdentity.PSObject.Properties[$taskArtifact.field] -or (Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash -ine $taskOriginalIdentity.($taskArtifact.field)) { throw 'Prepared controlled artifact identity changed or is missing.' }
+    }
+    $taskRunnerExe = Join-Path $PreparedArtifactsDirectory 'steerrunner.exe'
+    $taskTestExe = Join-Path $PreparedArtifactsDirectory 'integration.test.exe'
+    $taskHelperExe = Join-Path $PreparedArtifactsDirectory 'native-fixture.exe'
+} else {
+    Push-Location $taskRepo
+    try {
+        if (-not $RunnerExe) { & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe }
+        & go test ./internal/contracts ./internal/cli ./internal/storage ./internal/host -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage|TestSRStartupIntent)$' -count=1 -timeout=2m -v 2>&1 | Tee-Object -FilePath (Join-Path $taskEvidence 'unit-foundation.log') | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Foundation unit tests failed; inspect unit-foundation.log.' }
+        if ($ContentNativeExecutable) {
+            & go test -tags live -c -o $taskTestExe ./tests/integration
+        } else {
+            & go test -c -o $taskTestExe ./tests/integration
+        }
+        if ($LASTEXITCODE -ne 0) { throw 'Integration fixture build failed.' }
+        & go build -o $taskHelperExe ./tests/helpers/native
+        if ($LASTEXITCODE -ne 0) { throw 'Native protocol fixture build failed.' }
+    } finally { Pop-Location }
+
+}
 
 function Quote-WindowsArgument([string]$Argument) {
     '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"'
@@ -63,11 +81,17 @@ $taskMetadata = [ordered]@{
     pattern = $Pattern
     runner_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskRunnerExe).Hash
     fixture_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskTestExe).Hash
+    native_fixture_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskHelperExe).Hash
     source_commit = (& git -C $taskRepo rev-parse HEAD).Trim()
     source_dirty = -not [string]::IsNullOrWhiteSpace((& git -C $taskRepo status --porcelain | Out-String))
     go_version = (& go version | Out-String).Trim()
     os_version = [Environment]::OSVersion.VersionString
     machine = $env:COMPUTERNAME
+}
+if ($PreparedArtifactsDirectory) {
+    $taskMetadata['prepared_artifacts_directory'] = $PreparedArtifactsDirectory
+    $taskMetadata.source_commit = $taskOriginalIdentity.source_commit
+    $taskMetadata.source_dirty = $taskOriginalIdentity.source_dirty
 }
 if ($BaselineExe) {
     $taskMetadata['baseline_exe'] = $BaselineExe

@@ -181,7 +181,11 @@ func (m Manifest) Validate() error {
 	if m.BaseBranch != "codex/srtest/"+m.ID+"/base" || !revisionPattern.MatchString(m.BaseRevision) || !revisionPattern.MatchString(m.SourceRevision) || !revisionPattern.MatchString(m.SourceCommit) {
 		return errors.New("fixture must freeze source revisions and its dedicated test base")
 	}
-	if m.Publication.Repository != Repository || m.Publication.BaseBranch != m.BaseBranch {
+	if m.Driver == "result-acquisition" {
+		if m.Scenario != "local-codex.result-acquisition" || m.Level != "L3" || m.Execution.Adapter != "codex-app-server" || m.Execution.Target.Kind != "local" || m.Execution.Target.Environment != "" || m.RemoteRuntimeID != "" || m.LocalRuntimeID != "" || m.Publication.Repository != "" || m.Publication.BaseBranch != "" || m.Publication.Provider != "" || len(m.Publication.Settings) != 0 {
+			return errors.New("parser fixture requires standalone local L3 without publication")
+		}
+	} else if m.Publication.Repository != Repository || m.Publication.BaseBranch != m.BaseBranch {
 		return errors.New("live publication is restricted to the dedicated SteerlineTest base")
 	}
 	if m.Driver == "development-audited" {

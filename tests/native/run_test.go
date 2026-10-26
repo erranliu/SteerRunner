@@ -744,7 +744,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 	}
 	// workflow/2 ends at pr_ready. The feedback scenario proves rejection,
 	// rather than mislabeling an ordinary successful delivery as feedback.
-	if m.Driver == "development-feedback" || m.Scenario == "orca-remote.full-access" {
+	if m.Driver == "development-feedback" || m.Scenario == "local-codex.smoke" || m.Scenario == "orca-remote.full-access" {
 		inputCount := func() int {
 			if m.Execution.Adapter != "orca-terminal" {
 				return 0

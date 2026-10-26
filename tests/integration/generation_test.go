@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -33,14 +34,44 @@ func waitFixtureOwnerExit(t *testing.T, dir, id string) {
 			continue
 		}
 		until := time.Now().Add(5 * time.Second)
-		for process.InspectProcess(&ready.Identity.Process) != "process absent" {
+		for {
+			probe := process.Probe(&ready.Identity.Process)
+			// A reused PID proves the original owner is gone. Never wait for,
+			// or stop, the unrelated process now holding that PID.
+			if probe.State == "absent" || probe.State == "pid-reused" {
+				break
+			}
 			if time.Now().After(until) {
-				t.Errorf("explicitly stopped fixture owner remains: %+v", ready.Identity.Process)
+				t.Errorf("explicitly stopped fixture owner remains unverified: %+v (%s: %s)", ready.Identity.Process, probe.State, probe.Reason)
 				break
 			}
 			time.Sleep(20 * time.Millisecond)
 		}
 	}
+}
+
+func testFixtureOwnerExitWithReusedPID(t *testing.T) {
+	identity, err := process.NewServiceFacts().CurrentIdentity()
+	if err != nil || process.Probe(identity).State != "matches" {
+		t.Fatal("current test process identity unavailable", err)
+	}
+	created, err := strconv.ParseUint(identity.Created, 16, 64)
+	if err != nil || created == 0 {
+		t.Fatal("current process creation identity unavailable", err)
+	}
+	// Store an older incarnation of our own PID. The current test process
+	// stays alive, so waiting for the PID itself would fail this regression.
+	identity.Created = fmt.Sprintf("%016x", created-1)
+	dir := t.TempDir()
+	owner := filepath.Join(dir, "runs", "original", "app-server", "owner")
+	if err := os.MkdirAll(owner, 0700); err != nil {
+		t.Fatal(err)
+	}
+	body, _ := json.Marshal(map[string]any{"identity": codex.ExecutionOwnerIdentity{Process: *identity}})
+	if err := os.WriteFile(filepath.Join(owner, "owner-ready.json"), body, 0600); err != nil {
+		t.Fatal(err)
+	}
+	waitFixtureOwnerExit(t, dir, "original")
 }
 
 // A real second image with different package bytes/default resource digest.

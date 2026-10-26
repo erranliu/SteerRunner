@@ -32,8 +32,39 @@ $taskFull=$taskBase.Clone();$taskFull.merge_commit='merge';$taskFull.feedback_re
 Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
 $taskManifest.driver='development-smoke';$taskFull.Remove('feedback_rejected')
 Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
-$taskManifest.driver='result-acquisition'
-Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskFull)
+$taskSmokeManifest=Convert-ResultObject @{scenario='local-codex.smoke';level='L2';driver='development-smoke'}
+$taskSmoke=$taskFull.Clone();$taskSmoke.scenario='local-codex.smoke';$taskSmoke.level='L2'
+$taskRejected=$false;try{Assert-SRNativeScenario $taskSmokeManifest $taskResult (Convert-ResultObject $taskSmoke)}catch{$taskRejected=$true}
+if(-not $taskRejected){throw 'Consolidated smoke omitted the feedback rejection assertion'}
+$taskSmoke.feedback_rejected=$true
+Assert-SRNativeScenario $taskSmokeManifest $taskResult (Convert-ResultObject $taskSmoke)
+$taskParserManifest=Convert-ResultObject @{id='parser-fixture';root='parser-root';base_branch='parser-base';scenario='local-codex.result-acquisition';level='L3';driver='result-acquisition'}
+$taskParser=Convert-ResultObject @{
+    scenario='local-codex.result-acquisition';level='L3';passed=$true;parser_stopped=$true;business_outcome='parsed';production_parser_calls=3;permission_probe_calls=1
+    calls=@(@{label='parser-default';run_id='parser-parser-fixture-parser-default';session_id='parser-default-session';stopped=$true},@{label='parser-explicit';run_id='parser-parser-fixture-parser-explicit';session_id='parser-explicit-session';stopped=$true},@{label='parser-cancel';run_id='parser-parser-fixture-parser-cancel';session_id='';stopped=$true})
+    cases=@(@{case='parser-default';passed=$true;session='parser-default-session';tool_events=0},@{case='parser-boundaries';passed=$true;session='parser-explicit-session';induced_output_status='policy_violation';canary_unchanged=$true;read_only_command_denied=$true;active_cancel_stopped=$true})
+}
+Assert-SRNativeScenario $taskParserManifest $taskResult $taskParser
+$taskParserResources=@(Get-SRNativeResources $taskParserManifest $taskParser $null)
+if($taskParserResources.Count -ne 7 -or 'session:parser-default-session' -notin $taskParserResources -or 'run:parser-parser-fixture-parser-cancel' -notin $taskParserResources){throw 'Parser resources require a fictitious development snapshot or lost original calls'}
+foreach($taskMutation in @('old-merged-result','missing-call','wrong-run','duplicate-session','unsettled','missing-session','missing-boundary','false-pass','wrong-source','wrong-outcome','published')){
+    $taskBad=$taskParser|ConvertTo-Json -Depth 30|ConvertFrom-Json
+    switch($taskMutation){
+        'old-merged-result'{$taskBad=$taskFull}
+        'missing-call'{$taskBad.calls=@($taskBad.calls[0])}
+        'wrong-run'{$taskBad.calls[0].run_id='foreign'}
+        'duplicate-session'{$taskBad.calls[1].session_id=$taskBad.calls[0].session_id}
+        'unsettled'{$taskBad.calls[2].stopped=$false}
+        'missing-session'{$taskBad.calls[0].session_id=''}
+        'missing-boundary'{$taskBad.cases[1].read_only_command_denied=$false}
+        'false-pass'{$taskBad.passed='true'}
+        'wrong-source'{$taskBad.cases[0].session='foreign'}
+        'wrong-outcome'{$taskBad.business_outcome='merged'}
+        'published'{$taskBad|Add-Member -NotePropertyName pr_url -NotePropertyValue 'unexpected'}
+    }
+    $taskRejected=$false;try{Assert-SRNativeScenario $taskParserManifest $taskResult $taskBad}catch{$taskRejected=$true}
+    if(-not $taskRejected){throw "Parser result accepted invalid proof: $taskMutation"}
+}
 $taskManifest.driver='development-multirun'
 $taskMulti=$taskBase.Clone();$taskMulti.runs=@(@{run_id='a';stop_status='stopped';new_inputs_allowed=$false;execution=@{session_id='s-a';workspace='w-a';branch='b-a'};pr=@{url='pr-a'}},@{run_id='b';stop_status='stopped';new_inputs_allowed=$false;execution=@{session_id='s-b';workspace='w-b';branch='b-b'};pr=@{url='pr-b'}})
 Assert-SRNativeScenario $taskManifest $taskResult (Convert-ResultObject $taskMulti)

@@ -1,5 +1,9 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-27 主线同步：通用目录当前为 **34 场景 / 44 case**（L2 1/1、L3 29/39、L4 4/4），
+Controlled 前置为 **26 个顶层测试**，另有 **4 个 focused native L3 专项**，不混入通用目录计数。
+下文日期增量中的旧数量仅表示当时状态；本次已落实 L2/parser 拆分、feedback 吸收、generate/takeover 及 L4 同批构建复用，核对与后续精简顺序见[整理结论](#测试整理结论-2026-10-26)。
+
 2026-10-26 固定交付包增量：普通 L1 framework 包含 `tests/framework/delivery-test.ps1` 的文件清单、组件来源和证据绑定反例。`scripts/test-delivery.ps1` 为独立的受控交付入口，复用 installation/client/viewer/`TestSRProgressFile`，固定包内被测文件，不新增 L2–L4 场景或真机资格。调用方测试进度 0/6 的历史缺口继续保留；范围及命令见[测试指南](testing.md#固定交付包验证2026-10-26)。
 
 2026-10-26 原终端核验增量：L1 自动包含 `TestOriginalTerminalRPC*`、`TestQueryBoundTerminal*`、`TestOriginalTerminalConcurrency` 及 `TestOrcaNativeStateStream/terminal-query*`，覆盖生产构造器的 IPC 查询、加密远端协议、身份/两次观察核验、握手/读取取消与共享 CLI 锁隔离。并发比较只衡量受控读取路径，不授予真实 Run 容量或 L3 资格；范围及原始前后对比见[专项记录](acceptance/original-terminal-rpc.md)。
@@ -30,10 +34,10 @@ PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation
 分层定义、设计及清单维护规则、运行入口和证据要求见[测试指南](testing.md)。
 已实现项对应仓库注册；规划项使用文档编号，不计入已实现或通过数量。
 
-以下清单于 **2026-10-25** 对照[执行目录](../tests/catalog.json)和
+以下清单于 **2026-10-26** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 两 case、L3 二十九场景三十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十九场景三十九 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
@@ -62,8 +66,7 @@ L1 补充报告 64 条/16 MiB 总量、单文件 1 MiB 和发现 256 项的包�
 
 | 场景 ID / Case ID | 独有验证目标与目标范围 | 当前入口、预期及缺口 | 并行条件 |
 | --- | --- | --- | --- |
-| `local-codex.result-acquisition` / `default` | 默认认证解析、显式模型/只读权限与取消、development 实际交付三个内部 case | `-Level L2 -Scenario local-codex.result-acquisition`；预期 `merged`，内部 case_count=3；本机 Codex 0.159.2。原生只读权限、行为约定及工具事后拒收分别取证 | 独立短路径现场、parser Job/会话、Canary 与本次测试 PR；不修改 SteerLine |
-| `local-codex.smoke` / `default` | 最小开发交付：冻结 Spec/Plan → 接受任务 → 执行 → 发布并核验 `pr_ready` → driver 合入核验 → 停止及清理 | `-Level L2`；预期 `merged`。workflow/2 只执行本列交付路径；不需要反馈资格文件。历史构建结果不自动转为当前构建通过 | 每次独立现场/state-dir/Run/本机 worker/分支/PR/认证 capability；无共享可变构建输出；本轮 L2 串行验收，实际并行资格单独登记 |
+| `local-codex.smoke` / `default` | 最小开发交付：冻结 Spec/Plan → 接受任务 → 执行 → 发布并核验 `pr_ready` → 验证发布后反馈拒绝 → driver 合入核验 → 停止及清理 | `-Level L2`；预期 `merged`。workflow/2 只执行本列交付路径；不需要反馈资格文件。历史构建结果不自动转为当前构建通过 | 每次独立现场/state-dir/Run/本机 worker/分支/PR/认证 capability；无共享可变构建输出；本轮 L2 串行验收，实际并行资格单独登记 |
 
 前置为 L1、完整 Controlled、本机原生 Codex 资格、SteerlineTest 仓库及执行主机认证。
 L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无 stderr 错误，
@@ -71,18 +74,18 @@ L2 另有同权限、无模型的 Git 提交前置：loose/packed head 均须无
 发布器；审计实际命令输出中的权限拒绝，退出码 0 不能掩盖 `packed-refs.lock` 错误。
 默认 broker 收尾还要求可信拒绝计数为 0，缺计数或 HTTP 401/403 均不能通过。
 每次独立现场、Run、base/head 和 PR；执行步骤及收尾见[测试指南的完整 smoke 契约](testing.md#当前完整-smoke-契约)。
-目标 L2 不包含额外反馈轮、恢复或审计流程；driver 的真实合并可保留为交付核验手段，
+L2 不包含额外模型反馈轮、恢复或审计流程；在原 `pr_ready` 上验证反馈拒绝，driver 的真实合并作为交付核验手段，
 不把合并变成 Runner 的生产交付能力，保留 `merged` 预期和原 PR/分支/现场证据。
-workflow/2 的 L2 直接使用无反馈交付路径，不再依赖反馈资格文件。独立
-`local-codex.feedback` 改为验证发布后反馈被拒绝、原 Turn/PR head 不变；
-不以该场景或历史 workflow/1 资格启用返工。
+workflow/2 的 L2 使用生产提示词直接交付，不依赖反馈资格文件；在合入前验证发布后反馈被拒绝、原 revision/Turn/PR head 不变。
+原 `local-codex.feedback` 已退役，历史证据保留，不启用返工。
 本机当前认证版本的实际结果见[沙箱认证验收](acceptance/sandbox-authentication.md)，
 通过结论须绑定对应源码、构建和配置。
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的二十七场景、三十七 case，含原远端流程、12 个核心可靠性 case、三个本机 Codex 流程及新增本机 Orca 流程。全部保留在
+以下为已注册的二十九场景、三十九 case，含原远端流程、本机 Codex/Orca 流程、progress 与 CLI 等待专项。execution-stability driver 当前共 16 case，包含原 12 个核心可靠性 case。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
+主表列出交付、环境检查、隔离与恢复；其余 5 个 progress case 和 2 个 CLI 等待 case 分别见文末专项，不重复计数。
 
 **通用并行条件：** 每 case/repeat 独立现场、冻结材料、state-dir、服务实例和所属 Run、远端
 worktree/terminal/session、base/head、PR、控制门、journal 和证据目录；构建使用独立输出
@@ -134,7 +137,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-remote.stop-revocation` | `unreachable` | 暂时不可达时先撤销授权，未知停止不假报 stopped；撤销跨重启保持，反馈/旧 revision 不能绕过，恢复后独立收尾 | `revoked-unverified`，无 PR | 专属网络故障与服务换代；验证整个故障窗、watchdog 和资源清理不会干扰其它 case |
 | `orca-remote.publication-unknown` | `completion-gap` | PR 已存在但 Runner 缺完成证据；找回原 final/PR/head，零重复发布 | `merged` | 专属发布屏障与网络范围；实际 PR 列表、发布调用计数仅按本现场分支核验 |
 | `orca-remote.publication-unknown` | `query-unavailable` | 原完成证据恢复后 PR 查询仍失败，不能用旧快照假报 ready；查询恢复后核验同一 PR | `merged` | 另隔离本现场查询故障开关及 provider journal；验证不阻断其它现场查询 |
-| `local-codex.feedback` | `default` | 明确提交一次发布后反馈并验证 `invalid_state` 拒绝；原 revision、Turn、PR head 不变，再核验合入及完整停止 | `merged` | 本机原生进程及 capability 按 Run 隔离；已与 audited 在上限 2 下共同通过，具体构建见验收 |
+| `local-codex.result-acquisition` | `default` | 默认认证解析、显式模型、原生只读工具拒绝与 canary、活动取消、原 receipt 与进程收尾；2 个内部 case、3 次 parser 调用和 1 次权限探针 | `parsed`，不创建 development Run、服务或 PR | 仅准备本地冻结材料，无远端 clone/push 或 gh 登录；逐调用登记原 Run/session，结果与清理独立校验 |
 | `local-codex.audited` | `default` | 两实际不同模型完成实施与同轮代码审计修复并切回执行模型发布；仅代码审计，记录修复数量/内容和 pre_head/post_head 来源，真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个原生 owner 保持可用，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
 | `environment-check.local-sandbox` | `complete` | 本机 sandbox 的原生权限、认证、Agent Git/PR 工具及 Check 原对象收尾 | `checked`，Check passed/completed；owned PR 关闭、不合入，owned 分支/工作区删除，writer 停止 | 独立 Check/session/workspace/base/head/PR；本轮串行真机通过，PR #556 关闭并收尾，见[独立配置验收](acceptance/independent-configuration.md)；并行资格另验 |
@@ -154,7 +157,7 @@ Runner/helper/Node；共享管理员宿主的队列回执归属、恢复动作�
 
 | 文档编号 / 内容 | 独有验证目标与目标判据 | 并行条件 | 当前状态与缺口 |
 | --- | --- | --- | --- |
-| L3-P01 发布后反馈边界 | 初次 `pr_ready` 后提交反馈，必须以 `invalid_state` 拒绝；原 revision、Turn、PR head 与 native 输入数不变，再核验合入及完整停止 | 独立本机现场及 worker；输入、commit/PR 身份和认证 capability 均按本 Run 归属 | 已注册 `local-codex.feedback/default`；不产生反馈资格文件，也不启用返工 |
+| L3-P01 发布后反馈边界 | 初次 `pr_ready` 后提交反馈，必须以 `invalid_state` 拒绝；原 revision、Turn、PR head 与 native 输入数不变，再核验合入及完整停止 | 独立本机现场及 worker；输入、commit/PR 身份和认证 capability 均按本 Run 归属 | 已并入 `local-codex.smoke/default`（L2）；原独立 ID 退役，不产生反馈资格文件，也不启用返工 |
 | L3-P02 两模型审计通过 | 实施后执行一次代码审计及 P0–P2 修复；核实审计模型及原工作树来源，发布切回执行模型，实际 PR 核验后停止 | 独立本机现场；冻结执行/审计模型；模型切换不影响其它 session，容量满足两种模型 | 已注册 `local-codex.audited/default`，读取 `local-codex-audited` 的 `workflow.audit_model`；原生远端因缺实际模型/工作树证明而明确 unsupported，保留原定向诊断入口 |
 | L3-P03 审计修复与阻断的受控覆盖对账 | 同一次正式审计内修复并验证，核对 fixed_count/fixed_issues/remaining_issues 与 pre_head/post_head；遗留 P0–P2、验证未完成或来源失效时不发布；无自动返修/重审 | 使用隔离服务和原生协议夹具，固定审计结果、turn 及调用计数；不要求真实模型稳定产生 finding | 已纳入默认 Controlled：`TestSRWorkflowDiscoveryAndSelection`、`TestSRResultAcquisition`；含零/正数修复、一次补报及 parser 分支，不新增必跑真机 finding case |
 | L3-P04 同一服务内多个 Run 隔离 | 在同一服务内接受不同请求，核验 request/command/event/原生会话/工作区/PR 不串线；停止一个 Run 不撤销其它 Run 的授权 | case 内共享服务/state-dir，各 Run 独立工作区/会话/分支/PR；case 之间仍独立服务；冻结并发上限，允许契约内资源排队 | 已注册 `local-codex.multirun/default` 与原生 `orca-remote.multirun/default`；远端不承诺 capability 撤销，并将 `TestSRMultipleRunsIsolation` 纳入默认 Controlled；受控完成屏障和 PR provider 按原会话/工作区隔离 |
@@ -188,19 +191,124 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共三十三场景、四十三 case：L2 两项、L3 三十七项（含原 12 项核心可靠性）、L4 四项。
-Controlled 默认前置二十三个顶层测试，审计子变体和并行调度的框架检查另在原始日志登记。
+当前共三十四场景、四十四 case：L2 一场景/一 case、L3 二十九场景/三十九 case、L4 四场景/四 case。
+Controlled 默认前置二十六个顶层测试，另有四个 focused native L3 专项；专项内部子变体、审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
 实现与资格分别登记：调度器检查可以证明队列上限、L4 互斥、worker 失联及构建变化拒绝，
 不能代替真机后端并发资格。新远端使用执行主机既有登录，完整远端 Check 为 unsupported；不再以 helper 准备作为普通 Run 前置。历史构建未配置或准备
 失败时仍阻断。保留历史失败和 unsupported，不使用旧 36/36 冒充当前全 L3 通过。
 
-本机 smoke 直接执行 workflow/2 的最小交付链，不读取反馈资格文件。独立 feedback case 验证发布后输入拒绝。
+本机 smoke 直接执行 workflow/2 的最小交付链，不读取反馈资格文件。同一 smoke 在合入前验证发布后输入拒绝。
 两模型与多 Run 真实 PR 均显式保留未合入，仍要求原资源和服务停止。
 跨 case 重复 root/base/Run/session/workspace/branch/PR、缺失身份或构建摘要变化一律不通过。
 
-## 调整建议审计与实施顺序
+## 测试整理结论 2026-10-26
+
+本次以 `17e3206` 的注册、driver 与脚本为基线做源码核对；未运行模型、创建 PR 或取得新真机资格。
+下列正文保留调整前的源码审计依据与建议；其中三项场景精简及 L4 同批构建复用已经落实，未实施项仍是建议，不能据此推导新真机资格。
+
+| 本次调整 | 当前行为 |
+| --- | --- |
+| L2/parser 拆分 | L2 仅 `local-codex.smoke`；`local-codex.result-acquisition` 移入 L3，固定预期为 `parsed`，只准备本地材料、执行 parser/权限/取消验证，无开发交付、gh 登录或远端分支 |
+| feedback 吸收 | L2 smoke 在原 `pr_ready` 后核验 `invalid_state` 与 revision/Turn/PR head 不变，随后沿原路径合入与停止；独立 `local-codex.feedback` 从当前注册退役 |
+| generate/takeover 复用 | `TestSRContentNative/generate-takeover` 复用一次生成执行显式 stop、离线结算与同 EXE 接管核验；`conversation` 保留多轮/中断/空闲重启。focused 注册合并为 3 项 |
+| L4 同批构建复用 | 四个 L4 worker 复用同批已通过的 Controlled Runner/driver/fixture；逐项校验三份 SHA256 和前置结果，保留独立现场/结果及独占锁 |
+
+单独选择生成/接管：`test-foundation.ps1 -Pattern '^TestSRContentNative$/^generate-takeover$' -ContentNativeExecutable <绝对原生EXE路径> -OutDir <新目录>`；只跑对话则将末段换成 `^conversation$`。
+`test-content-workflows.ps1` 运行整个父测试，报告两个子场景分别通过；每次独立选测均生成新现场，不复用历史执行。
+L4 四项断言/互斥保持；本次仅增加同批已验证二进制复用，不增加跨构建缓存、case 级调度或新的选测 profile。
+
+本次定向验证：livetest 与 process 全包通过，两个 live driver 编译通过，脚本框架 23 组通过；内容生成/多轮对话两个受控场景及 L4 四项定向回归通过。
+四个 L4 case 的三份二进制摘要均与同批前置一致，资源压力保持 20 轮，句柄 238→308（增长 70，原上限 128）。
+首轮资源压力虽完成 20 轮，但清理辅助函数将复用 PID 的新进程误认为原 owner，原批次仍保留失败；原现场公开 offline 核验 resources_settled=true。
+已修正测试辅助函数按原创建身份识别 pid-reused，并在既有 `TestSRServiceOwnership/reused_owner_pid` 内补回归，再用新 driver 重跑上述四项；不终止复用 PID 的其它进程。
+本次未重跑完整 L1、25 项 Controlled 或真实模型/PR，不将定向结果登记为完整新构建原生资格。
+
+### L2：保留一个最小交付，拆出 parser 专项
+
+确定重复的是 `local-codex.result-acquisition` 的最后一段：
+[resultAcquisition](../tests/native/result_acquisition_test.go) 在 `parser-default`、`parser-boundaries` 后直接调用
+`developmentSmoke`，与 `local-codex.smoke` 再跑同一套生产提示词交付；其结果还明确记录 `workflow-smoke.parser_calls=0`。
+这段交付没有验证 parser 参与开发流程。当前 parser 专项实际还有三次 parser 调用和一次权限探针，不能用目录中的一个 case 估算模型成本。
+
+建议保留 `local-codex.smoke` 为唯一 L2，把 result-acquisition 改为 L3 parser 契约专项，并去掉内部重复的 workflow-smoke。
+默认模型/显式模型、原生只读工具拒绝、canary 不变、活动取消与原 receipt 可读等断言全部保留；结果获取的服务接线继续由
+`TestSRResultAcquisition` 及真实 parser 换代专项验证。迁移要同步 manifest、结果校验与 `parser-cases.json` 契约，不能只改 level。
+尤其不能反向删除独立 smoke：其 worker 还通过 `TestLinkedGitNativeCommit` 检查原生 Git/跨仓库写入边界，result-acquisition 的 worker 没有这项前置。
+
+第二个优先合并点是 `local-codex.feedback`：workflow/2 下它已不执行反馈返工，独有目标只是发布后反馈以 `invalid_state` 拒绝，
+并确认 revision、Turn、PR head 不变。建议把这组无模型的控制断言并入已有本机 smoke 的 `pr_ready` 后、合入前，随后退役独立 feedback 场景。
+保持 smoke 使用生产提示词和生产发布路径；不引入 L3 的固定发布器或额外模型轮。原 feedback ID 的历史结果保留，新增断言单独报告，不能借旧结果声称新 smoke 通过。
+这两项实施后，一次原本同时选择它们的完整运行可少两遍完整开发/发布/合入流程；本次没有据此估算耗时或 token 百分比。
+
+### L3：按测试目的组织，后端差异作为独立变体
+
+调整前的 29 场景可以归为以下七组；本次将其中 feedback 移入 smoke，新增 parser L3 组，L3 场景/case 总数保持 29/39。归组可减少清单和配置的分散，不意味着减少对应后端的实际资格验证。
+
+| 测试目的 | 当前场景数 / case 数 | 整理建议 |
+| --- | --- | --- |
+| 后端开发交付 | 7 / 7 | `orca-local.smoke`、`orca-local.codex/pi/dsh/pi-full-access`、`orca-remote.smoke/full-access` 使用统一后端矩阵；先核对本机 smoke 能否被 codex 变体吸收，保留无业务问答的直达路径及原终端回执验证后再决定是否退役 |
+| 环境检查 | 4 / 4 | `environment-check.local-*`、`environment-check.orca-local-*` 按 adapter × access_mode 展示；不同权限模式仍分别执行，Check 的工具/认证/owned 资源清理不能由普通开发交付替代 |
+| 工作流边界与审计 | 2 / 2 | feedback 按上文并入 smoke；audited 保留真实不同模型、原 turn/workspace 来源与切回执行模型的断言 |
+| 同服务 Run 隔离 | 3 / 3 | `local-codex.multirun`、`orca-local.mixed`、`orca-remote.multirun` 共用隔离契约，分别保留本机 owner、混合 agent、远端原终端的差异断言 |
+| 原生执行可靠性 | 6 / 16 | caller-exit、connection-reconnect、service-restart、stop-revocation、publication-unknown、initialization-stop；维持按故障窗口分别判定，不合成连续故障大场景 |
+| Progress 字节通道 | 5 / 5 | 三后端基本接线 + 本机 multirun/recovery；现已共用 `progressFiles`，重点精简展示和选测，保留后台无 final 的观察窗、停一方后另一方写入、离线更新后的版本/身份断言 |
+| CLI 排队与取消 | 2 / 2 | 本机 status 与远端 repo list 共用 driver，分别保留目标接线；仍需独占共享用户 cache 的测试 lease，不能只因归入 L3 就并行执行 |
+
+`developmentSmoke` 已由多个 driver 共用，`executionStability`、`progressFiles`、`cliWaitRetry` 也已复用实现；
+主要问题是每项承担的职责和运行矩阵，而不是再把这些函数拼成更大的 helper。
+本机通用 agent 场景还隐含启动失败、原生 send 回执丢失、业务问答、发布后换代及另起活动写者停止等流程，
+详见 [developmentSmoke](../tests/native/run_test.go) 与[终端可靠性辅助](../tests/native/terminal_reliability_test.go)。
+后续应把这些职责作为独立结果条目，后端常规选测聚焦接线、问答与交付，完整资格保留每种 agent 的原生完成/停止差异。
+不能因为 Codex/Pi/DSH 使用同一函数，就删除 Pi 的 A01、DSH 的 A02/H01、各 agent 的失回执和活动写者停止证明。
+
+以下相似项具有不同独有断言，当前不建议削减：
+
+- restart 的 graceful/kill × active/boundary，分别覆盖退出方式及完成事实落盘窗口；full-access 两项还验证独立权限组合。
+- stop 的 active/boundary/unreachable，分别证明活动停止、迟到结果不能推进阶段、不可达时先撤权而不假报 stopped。
+- publication 的 completion-gap/query-unavailable，分别验证原 final 对账和 PR 查询失败期间不使用旧快照。
+- 开发 multirun 与 progress-multirun：前者校验请求/事件/工作区/PR，后者在原生仍活动时校验进度归属和停止隔离。
+
+四个 focused native 专项中，最明确的模型调用复用机会是把
+`TestSRContentGenerateTakeoverNative` 的显式 stop、offline verify-stopped、同 EXE verify-takeover 和数据库字节不变断言，
+接到 `TestSRContentNative` 已有 generate 结果之后。建议抽出共享断言，并保留可独立选择的 generate/takeover 子场景；
+合并运行时复用一次生成，定向诊断时仍能只运行该子场景。需要同步 focused registry、精确 Pattern、结果数与独立证据名。
+当前 `TestSRContentNativeGenerationRecovery` 实际使用 conversation 的活动工具，覆盖 graceful/kill/compatible-image/startup-stop；
+它与 `TestSRContentNative` 的空闲重启后继续对话不同，也与真实 parser 的独立 owner 换代不同，这三种恢复不能相互替代。
+
+### L4：保留独立故障断言，优先消除重复构建
+
+四项总数不多，没有确认可直接删除的重复测试。
+
+| 场景 | 结论 |
+| --- | --- |
+| permanent-evidence-loss | 保留原证据永久丢失、跨多次换代及显式 resume 也不能换源的组合边界；普通暂态断线不包含这些断言 |
+| stop-commit-race | 保留“原生已停、停止回执事务未提交”的跨系统窗口；不与接受事务失败混为一个 case |
+| storage-failure | 最值得复查层级：当前只有隔离 DB 的接受事务失败、原 ID 重试与零提前副作用，未见必须独占宿主的资源；候选移入常规受控可靠性组，但保留公开 CLI + 真实 SQLite 的断言 |
+| resource-pressure | 保留独占与 20 轮、每轮真实进程退出、handles 增长 ≤128；不能缩成几轮普通交付来声称等价覆盖 |
+
+storage-failure 暂不直接移级：`test.ps1` 与注册测试将 controlled-integration / controlled target 绑定到 L4，
+需先让调度和结果契约表达“受控、可并行的常规可靠性测试”，再更新注册、框架断言及文档。不能只把它加入每批必跑的 Controlled 来宣称减少总成本。
+前三项均使用私有服务、目录或 DB；如要解除全宿主独占，应另外验证与其它 case 的实际并行和收尾，不能从源码隔离直接推导资格。
+
+调整前每个 L4 worker 都通过 `test-foundation.ps1` 单独构建 Runner、integration driver、native fixture，并重复 foundation 单元前置。
+优先考虑同批冻结一次这些只读二进制，各 case 仍独立服务/目录/证据与结果，resource-pressure 继续独占。
+该项已通过 `-PreparedArtifactsDirectory` 落实：只接受通过且无 skip 的前置，Runner/driver/native fixture 的任一摘要缺失或变化都在执行前拒绝。正式 L4 worker 自动使用同批 `controlled/` 产物，不减少四项业务断言或合并其结果。
+
+### 运行与维护顺序
+
+1. 先校准当前数量与场景归组（本次已完成）。当前增量入口积累很多，后续功能说明应指向专项验收，现行计数只维护一个汇总位置。
+2. 先实现 L2/parser 拆分、feedback 吸收及 generate/takeover 复用，每步核对独有断言、注册/结果校验和原证据归属；再执行相应真实后端验收。
+3. 增加明确的按改动选测组合与统一 focused-native 报告。现有 `test.ps1 -Level L3` 不执行当前四个 focused 专项；“完整通用 L3”与“包含 focused 的完整原生资格”应分开标明。
+4. 同批只读构建复用已实现；后续再评估 storage-failure 分层和前三项 L4 的互斥范围。正式入口的 L1/Controlled 门禁保持完整，同一批无需为每个场景重新调用整个入口。
+
+当前可以将同一次变更需要的多个场景放到一次 `test.ps1 -Scenario ...` 调用中，共享该批的一次 L1/Controlled 前置。
+尚无 case 级选择或命名选测 profile：选择 service-restart 会运行它的六个 case，自定义 catalog 也必须包含该场景全部 case。
+如后续增加 case 级选测，要保留精确 ID 校验和完整级别覆盖计算，选测成功不能报告为整个 L3 通过。
+当前没有同构建的全量耗时/token 汇总，本节的成本结论来自明确重复的执行路径，不声称实测加速比例。
+
+## 历史调整审计与实施顺序（2026-10-16）
 
 2026-10-16 审计保留了 L3 核心可靠性和独有断言设计，修正了仅凭复合故障归 L4、遗漏
 同服务多 Run 隔离、强迫模型制造 finding 的问题。实现保留指南与清单分离，不改写历史资格。
@@ -227,15 +335,14 @@ verify-takeover，断言原 inspect 不变、零额外 turn/start、原 submit �
 L1 `TestContentFrozenTakeoverContracts` 从正式 freeze 产生零值配置记录，覆盖两种内容流程、
 可变配置不参与接管、记录不变及未知 codec/workflow/version/材料/parser 反例；
 `TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts` 保留 development 配置严格检查。
-L3 专项 `TestSRContentGenerateTakeoverNative` 由现有 foundation live 入口显式选择，
+原 `TestSRContentGenerateTakeoverNative` 已合并为 `TestSRContentNative/generate-takeover`，由现有 foundation live 入口显式选择，
 使用新 C:/srt/gt-*、真实 Codex、一个生成回合、原 content_result、显式 stop、verify-stopped
-和离线同 EXE verify-takeover，核对原 Run/input/request 与数据库字节不变。与多轮用例独立，
-不需要开发专用配置。结果见[本次验收](acceptance/content-takeover.md)。
+和离线同 EXE verify-takeover，核对原 Run/input/request 与数据库字节不变。作为可单选的子场景保留，不需要开发专用配置。结果见[本次验收](acceptance/content-takeover.md)。
 
 真实 L3 专属入口为 `scripts/test-content-workflows.ps1 -NativeExecutable <原生0.159.2 EXE>`，
 注册在 `focused_native_scenarios`，不混入 development 的 Git/PR manifest driver。入口先运行
 定向规则与三个受控场景，再以 `-tags live` 的 `TestSRContentNative` 在新 `C:/srt/cw-*` 现场
-通过公开 CLI 验证 JSON 生成、五个串行原轮（含中断）、空闲重启后原 thread 继续及结算。
+通过公开 CLI 验证一次 JSON 生成及其离线接管、五个串行对话原轮（含中断）、空闲重启后原 thread 继续及结算。
 模型可通过 `-Model` 显式选择；省略 `-NativeExecutable` 仅运行受控测试，不声称真实通过。
 原生 opt-in 仅编译 live 时存在；默认不执行真实会话。证据及本构建结论见
 [内容流程专属验收](acceptance/content-workflows.md)。
