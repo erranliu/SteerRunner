@@ -45,7 +45,6 @@
     "orca-remote.service-restart",
     "orca-remote.stop-revocation",
     "orca-remote.publication-unknown",
-    "local-codex.feedback",
     "local-codex.audited",
     "local-codex.multirun",
     "controlled.permanent-evidence-loss",
@@ -114,28 +113,11 @@
       ]
     },
     {
-      "id": "local-codex.content-generate-takeover",
-      "level": "L3",
-      "test": "TestSRContentGenerateTakeoverNative",
-      "entry": "scripts/test-foundation.ps1",
-      "scope": "new C:/srt/gt-* state; one real native generate; no Git, PR or development config",
-      "requires": [
-        "explicit native executable",
-        "controlled content prerequisites"
-      ],
-      "expected": [
-        "original content_result",
-        "explicit stop and verify-stopped settlement",
-        "same EXE offline compatible with original Run/input/request bindings",
-        "unchanged original database"
-      ]
-    },
-    {
       "id": "local-codex.content-workflows",
       "level": "L3",
       "test": "TestSRContentNative",
       "entry": "scripts/test-content-workflows.ps1",
-      "scope": "new C:/srt/cw-* state, original native Codex 0.159.2, no Git or PR",
+      "scope": "new C:/srt/gt-* and cw-* states, original native Codex 0.159.2, no Git or PR",
       "requires": [
         "explicit native executable",
         "controlled content prerequisites"
@@ -145,7 +127,21 @@
         "same-thread multiple turns",
         "interrupt then continue",
         "idle service restart then original-thread continue",
-        "resource settlement"
+        "resource settlement",
+        "explicit generated Run stop",
+        "offline resource settlement",
+        "same EXE takeover retains Run/input/request bindings",
+        "unchanged original database"
+      ],
+      "subcases": [
+        {
+          "id": "generate-takeover",
+          "pattern": "^TestSRContentNative$/^generate-takeover$"
+        },
+        {
+          "id": "conversation",
+          "pattern": "^TestSRContentNative$/^conversation$"
+        }
       ]
     }
   ]

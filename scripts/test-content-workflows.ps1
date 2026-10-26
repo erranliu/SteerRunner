@@ -15,7 +15,7 @@ function Wait-ContentResult([string]$Directory) {
         $taskResultPath = Join-Path $Directory 'result.json'
         if (Test-Path -LiteralPath $taskResultPath) {
             $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
-            if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -lt 1) { throw "Tests failed: $taskResultPath" }
+            if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -lt 1 -or (Select-String -LiteralPath (Join-Path $Directory 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw "Tests failed or skipped: $taskResultPath" }
             return $taskResult
         }
         Start-Sleep -Milliseconds 500
@@ -36,6 +36,10 @@ try {
         & (Join-Path $PSScriptRoot 'test-foundation.ps1') -Pattern '^TestSRContentNative$' -OutDir $taskNative -ContentNativeExecutable $NativeExecutable -ContentNativeModel $Model
         $taskNativeResult = Wait-ContentResult $taskNative
         if ($taskNativeResult.scenario_count -ne 1) { throw 'Native content scenario count mismatch.' }
+        foreach ($taskSubcase in @('generate-takeover','conversation')) {
+            if (-not (Select-String -LiteralPath (Join-Path $taskNative 'integration.log') -Pattern ('--- PASS: TestSRContentNative/' + [regex]::Escape($taskSubcase) + ' \(') -Quiet)) { throw "Native content subcase did not pass: $taskSubcase" }
+        }
+        $taskSummary['native_subcases'] = @('generate-takeover','conversation')
         $taskSummary.native = 'passed'
     }
     [IO.File]::WriteAllText((Join-Path $taskOutput 'summary.json'),($taskSummary|ConvertTo-Json),[Text.UTF8Encoding]::new($false))

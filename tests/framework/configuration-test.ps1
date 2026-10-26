@@ -20,7 +20,7 @@ try {
     $taskRelative=Get-SRTestConfiguration -RunnerExe $taskRunner -Helper $taskHelper -Config 'config.json'
     if($taskRelative.source_digest -cne $taskAssessment.source_digest){throw 'Relative Config did not resolve against the caller PowerShell location'}
 } finally { Pop-Location }
-if(@($taskAssessment.cases|Where-Object {$_.scenario_id -eq 'local-codex.feedback' -and $_.availability -eq 'available'}).Count -ne 1){throw 'Static configuration availability incorrectly probed the native tool'}
+if(@($taskAssessment.cases|Where-Object {$_.scenario_id -eq 'local-codex.smoke' -and $_.availability -eq 'available'}).Count -ne 1){throw 'Static configuration availability incorrectly probed the native tool'}
 if(@($taskAssessment.cases|Where-Object {$_.scenario_id -eq 'orca-local.pi' -and $_.availability -eq 'unavailable'}).Count -ne 1){throw 'Missing optional agent configuration became available'}
 foreach ($taskRemoteCase in @('orca-remote.multirun')) {
     if (@($taskAssessment.cases | Where-Object {$_.scenario_id -eq $taskRemoteCase -and $_.availability -eq 'unavailable'}).Count -ne 1) {throw 'Missing remote configuration was omitted or inherited the local baseline'}
@@ -91,7 +91,7 @@ foreach ($taskIdentity in @('ConfigurationSHA256','HelperSHA256','RequirementsSH
     $taskRejected=$false
     try {
         $taskExpected=@{}; $taskExpected[$taskIdentity]='0'*64
-        & (Join-Path $Repository 'scripts/new-test-fixture.ps1') -Scenario 'local-codex.feedback' -Config $taskPath -RunnerExe $taskRunner -ConfigHelper $taskHelper @taskExpected | Out-Null
+        & (Join-Path $Repository 'scripts/new-test-fixture.ps1') -Scenario 'local-codex.smoke' -Config $taskPath -RunnerExe $taskRunner -ConfigHelper $taskHelper @taskExpected | Out-Null
     } catch { $taskRejected=$_.Exception.Message -match 'Frozen batch artifact changed during assessment' }
     if(-not $taskRejected){throw ('Fixture ignored batch identity after parsing: '+$taskIdentity)}
 }
@@ -114,7 +114,7 @@ try {
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
 if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 39 -or $taskPrerequisite.levels.L3.requested.Count -ne 39 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 33 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
 $taskFrozenCatalog = Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json') -Raw | ConvertFrom-Json
-if ($taskFrozenCatalog.scenarios.Count -ne 35 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 45) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
+if ($taskFrozenCatalog.scenarios.Count -ne 34 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 44) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
 # L2's native preparation is a case dependency, never a global L3 prerequisite.
 $taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'
 $taskBoundaryBody=@'
@@ -136,5 +136,20 @@ $script:taskBoundaryRecords=@()
 Invoke-SRCaseBatch -Executions $taskBoundaryExecutions -Output $taskBoundaryOut -Config $taskPath -RunnerExe $taskRunner -ConfigHelper $taskHelper -ConfigurationSHA256 $taskAssessment.source_digest -MaxParallel 2 -WorkerScript $taskBoundaryWorker -LeaseDirectory (Join-Path $taskRoot 'locks') -Checkpoint {param($records)$script:taskBoundaryRecords=@($records)}
 $taskBoundaryFailed=@($script:taskBoundaryRecords | Where-Object {$_.scenario -eq 'local-codex.smoke'})[0]
 if($taskBoundaryFailed.status -ne 'failed' -or $taskBoundaryFailed.error -notmatch 'L2 native Git' -or $taskBoundaryFailed.git_boundary.exit_code -eq 0 -or (Test-Path -LiteralPath $taskBoundaryFailed.fixture_record) -or @($script:taskBoundaryRecords | Where-Object {$_.scenario -eq 'configured' -and $_.status -eq 'passed'}).Count -ne 1){throw 'L2 preparation failure blocked its independent L3 peer or was reclassified as unavailable'}
-[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{configuration_contract='passed';missing_batch='incomplete';missing_count=39;independent_dispatch='passed';complete_level_passed=$false}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+$taskParserConfig=$taskConfig | ConvertTo-Json -Depth 60 | ConvertFrom-Json -AsHashtable
+$taskParserConfig.configurations.'local-codex'.execution.settings.executable=$taskHelper
+$taskParserConfig.fixture.Remove('publication')
+$taskParserConfigPath=Join-Path $taskRoot 'parser-config.json'
+[IO.File]::WriteAllText($taskParserConfigPath,($taskParserConfig|ConvertTo-Json -Depth 60),[Text.UTF8Encoding]::new($false))
+# The protocol helper supplies only --version here. No native input is sent.
+# Fail immediately if the parser fixture still asks gh for login or publication.
+$taskParserManifestPath = & {
+    function gh { throw 'Parser fixture attempted GitHub access' }
+    & (Join-Path $Repository 'scripts/new-test-fixture.ps1') -Scenario 'local-codex.result-acquisition' -Config $taskParserConfigPath -RunnerExe $taskRunner -ConfigHelper $taskHelper -FixtureParent (Join-Path $taskRoot 'parser-fixtures')
+}
+$taskParserManifest=Get-Content -LiteralPath $taskParserManifestPath -Raw | ConvertFrom-Json
+$taskParserPreparation=Get-Content -LiteralPath (Join-Path $taskParserManifest.root 'preparation.json') -Raw | ConvertFrom-Json
+$taskParserRemotes=& git -C $taskParserManifest.repository_path remote
+if($LASTEXITCODE -ne 0 -or $taskParserRemotes -or $taskParserManifest.level -cne 'L3' -or @($taskParserManifest.publication.PSObject.Properties).Count -gt 0 -or $taskParserPreparation.status -cne 'ready' -or (Test-Path -LiteralPath (Join-Path $taskParserManifest.root 'evidence/fixture-base-push.json'))){throw 'Parser fixture retained a remote, publication or incomplete preparation'}
+[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{configuration_contract='passed';missing_batch='incomplete';missing_count=39;independent_dispatch='passed';parser_local_preparation='passed';complete_level_passed=$false}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 Write-Output 'Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed'

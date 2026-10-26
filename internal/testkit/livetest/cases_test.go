@@ -72,6 +72,25 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 		}
 	}
 }
+
+func TestConsolidatedSmokeAndParserContracts(t *testing.T) {
+	l2 := 0
+	for _, s := range Scenarios() {
+		if s.Level == "L2" {
+			l2++
+			if s.ID != "local-codex.smoke" || s.Driver != "development-smoke" || len(s.Cases) != 1 || s.Cases[0].Outcome != "merged" {
+				t.Fatal("L2 must retain production delivery", s)
+			}
+		}
+	}
+	s, c, err := Lookup("local-codex.result-acquisition", "default")
+	if l2 != 1 || err != nil || s.Level != "L3" || s.Driver != "result-acquisition" || c.Outcome != "parsed" || c.Requirements == nil || c.Requirements.Publication {
+		t.Fatal("parser still requires development delivery", l2, s, c, err)
+	}
+	if _, _, err := Lookup("local-codex.feedback", "default"); err == nil {
+		t.Fatal("retired feedback still duplicates smoke")
+	}
+}
 func TestStabilityResultCannotPassMissingOrMismatchedEvidence(t *testing.T) {
 	m := Manifest{Scenario: "orca-remote.caller-exit", CaseID: "accepted-response-lost", RepeatIndex: 1}
 	original := StabilityResult{Scenario: m.Scenario, CaseID: m.CaseID, RepeatIndex: 1, RunID: "original", TestOutcome: "passed", BusinessOutcome: "merged", FaultsHit: 1, AuditComplete: true, PRURL: "https://github.com/erranliu/SteerlineTest/pull/1", MergeCommit: strings40, Cleanup: Cleanup{NativeStopped: true, ServiceStopped: true, FacilitiesRestored: true}, Assertions: []Assertion{{Name: "fault-hit", Passed: true, Evidence: "faults.jsonl"}, {Name: "original-identity", Passed: true, Evidence: "native.json"}, {Name: "no-duplicate-inputs", Passed: true, Evidence: "calls.jsonl"}}}

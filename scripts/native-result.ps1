@@ -49,6 +49,13 @@ function Assert-SRAuditModels($Manifest,$View,[string]$History) {
 }
 function Get-SRNativeResources($Manifest,$Scenario,$View) {
     $taskResources=@(('root:'+$Manifest.root),('base:'+$Manifest.base_branch))
+    if ((Get-SRResultField $Manifest 'driver') -eq 'result-acquisition') {
+        foreach ($taskCall in @($Scenario.calls)) {
+            $taskResources+='run:'+$taskCall.run_id
+            if ($taskCall.session_id) { $taskResources+='session:'+$taskCall.session_id }
+        }
+        return $taskResources
+    }
     $taskRuns=if($Scenario.PSObject.Properties['runs']){@($Scenario.runs)}else{@($View)}
     foreach($taskRun in $taskRuns){
         if(-not (Get-SRResultField $taskRun 'run_id')){throw 'Native resource snapshot lacks Run identity'}
@@ -73,6 +80,10 @@ function Get-SRNativeResources($Manifest,$Scenario,$View) {
 function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
     if ((Get-SRResultField $Result 'exit_code') -ne 0 -or (Get-SRResultField $Result 'scenario_count') -ne 1) { throw 'Live scenario did not execute exactly once and pass' }
     if ((Get-SRResultField $Scenario 'scenario') -cne $Manifest.scenario -or (Get-SRResultField $Scenario 'level') -cne $Manifest.level) { throw 'Live scenario identity differs from its manifest' }
+    if ($Manifest.driver -eq 'result-acquisition') {
+        Assert-SRParserScenario $Manifest $Scenario
+        return
+    }
     foreach($taskField in @('passed','run_stopped','service_stopped')) {
         $taskValue=Get-SRResultField $Scenario $taskField
         if ($taskValue -isnot [bool] -or -not $taskValue) { throw "Live result lacks confirmed $taskField" }
@@ -116,13 +127,36 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
             foreach($taskField in @('session_id','workspace','branch')){if(@($taskRuns|ForEach-Object {Get-SRResultField (Get-SRResultField $_ 'execution') $taskField}|Where-Object {$_}|Select-Object -Unique).Count -ne 2){throw 'Multi-Run native resources collide or are missing'}}
             if(@($taskRuns|ForEach-Object {Get-SRResultField (Get-SRResultField $_ 'pr') 'url'}|Where-Object {$_}|Select-Object -Unique).Count -ne 2 -or $taskMerge){throw 'Multi-Run PR identities collide or were unexpectedly merged'}
         }
-        {$_ -in @('development-smoke','development-feedback','result-acquisition')} {
+        {$_ -in @('development-smoke','development-feedback')} {
             if(-not $taskMerge){throw 'Live smoke lacks its verified merge'}
-            if(($_ -eq 'development-feedback' -or $Manifest.scenario -eq 'orca-remote.full-access') -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
+            if(($_ -eq 'development-feedback' -or $Manifest.scenario -eq 'local-codex.smoke' -or $Manifest.scenario -eq 'orca-remote.full-access') -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
             if(Get-SRResultField $Scenario 'feedback_head'){throw 'workflow/2 must not create a feedback revision'}
         }
         default {throw 'Unsupported development result driver'}
     }
+}
+
+function Assert-SRParserScenario($Manifest,$Scenario) {
+    if ($Manifest.scenario -cne 'local-codex.result-acquisition' -or $Manifest.level -cne 'L3' -or $Scenario.business_outcome -cne 'parsed' -or $Scenario.production_parser_calls -ne 3 -or $Scenario.permission_probe_calls -ne 1) { throw 'Parser result differs from its standalone L3 contract' }
+    foreach ($taskFlag in @('passed','parser_stopped')) {
+        $taskValue=Get-SRResultField $Scenario $taskFlag
+        if ($taskValue -isnot [bool] -or -not $taskValue) { throw 'Parser resources or assertions are unverified' }
+    }
+    foreach ($taskField in @('pr_url','merge_commit','run_id','runs')) { if (Get-SRResultField $Scenario $taskField) { throw 'Parser-only result contains development resources' } }
+    $taskCalls=@(Get-SRResultField $Scenario 'calls')
+    $taskCases=@(Get-SRResultField $Scenario 'cases')
+    if ($taskCalls.Count -ne 3 -or ($taskCalls.label -join ',') -cne 'parser-default,parser-explicit,parser-cancel' -or $taskCases.Count -ne 2 -or ($taskCases.case -join ',') -cne 'parser-default,parser-boundaries') { throw 'Parser calls or cases are missing, reordered or duplicated' }
+    $taskSessions=@{}
+    foreach ($taskCall in $taskCalls) {
+        if ($taskCall.run_id -cne ('parser-'+$Manifest.id+'-'+$taskCall.label) -or $taskCall.stopped -isnot [bool] -or -not $taskCall.stopped) { throw 'Parser original call identity or settlement differs' }
+        if ($taskCall.session_id) {
+            if ($taskSessions.ContainsKey($taskCall.session_id)) { throw 'Parser native sessions collide' }
+            $taskSessions[$taskCall.session_id]=$true
+        } elseif ($taskCall.label -cne 'parser-cancel') { throw 'Completed parser lacks its original session' }
+    }
+    foreach ($taskCase in $taskCases) { if ($taskCase.passed -isnot [bool] -or -not $taskCase.passed) { throw 'Parser case did not pass' } }
+    if ($taskCases[0].session -cne $taskCalls[0].session_id -or $taskCases[1].session -cne $taskCalls[1].session_id -or $taskCases[0].tool_events -ne 0 -or $taskCases[1].induced_output_status -notin @('completed','policy_violation')) { throw 'Parser semantic or source evidence is incomplete' }
+    foreach ($taskFlag in @('canary_unchanged','read_only_command_denied','active_cancel_stopped')) { if ((Get-SRResultField $taskCases[1] $taskFlag) -cne $true) { throw 'Parser boundary evidence is incomplete' } }
 }
 
 function Assert-SREnvironmentScenario($taskNative,$taskScenario,$taskCheckEnvelope) {

@@ -20,13 +20,12 @@ import (
 var contentNativeExe = flag.String("content-native-exe", "", "Explicit existing native Codex 0.159.2; never installed by this driver")
 var contentNativeModel = flag.String("content-native-model", "", "Optional model available to the existing native account")
 
-// Focused public-CLI proof for final-only takeover, independent of development
-// configuration and of the multi-turn native acceptance scenario below.
-func TestSRContentGenerateTakeoverNative(t *testing.T) {
+// Generation and offline takeover share one native result. This subcase can
+// also be selected independently of the continued-conversation subcase.
+func contentGenerateTakeoverNative(t *testing.T) {
 	if *contentNativeExe == "" {
 		t.Skip("explicit native opt-in required")
 	}
-	testCount.Add(1)
 	if !filepath.IsAbs(*contentNativeExe) || *evidenceFlag == "" {
 		t.Fatal("explicit executable/evidence identity required")
 	}
@@ -66,6 +65,7 @@ func TestSRContentGenerateTakeoverNative(t *testing.T) {
 		t.Fatal("real generation failed", generated)
 	}
 	save("content-result-response", call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+	save("content-history-response", call(t, dir, []string{"history", "--run-id", id}, "", 0))
 	stopRaw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "native-generate-explicit-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, generated.Revision))})
 	save("explicit-stop-response", call(t, dir, []string{"stop", "--run-id", id, "--input", "-"}, string(stopRaw), 0))
 	stopped := waitRunFor(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" }, time.Minute)
@@ -111,7 +111,24 @@ func TestSRContentNative(t *testing.T) {
 	if *contentNativeExe == "" {
 		t.Skip("explicit native opt-in required")
 	}
-	testCount.Add(1)
+	executed := false
+	t.Run("generate-takeover", func(t *testing.T) {
+		executed = true
+		contentGenerateTakeoverNative(t)
+	})
+	t.Run("conversation", func(t *testing.T) {
+		executed = true
+		contentConversationNative(t)
+	})
+	if executed {
+		testCount.Add(1)
+	}
+}
+
+func contentConversationNative(t *testing.T) {
+	if *contentNativeExe == "" {
+		t.Skip("explicit native opt-in required")
+	}
 	if !filepath.IsAbs(*contentNativeExe) || *evidenceFlag == "" {
 		t.Fatal("explicit executable/evidence identity required")
 	}
@@ -141,15 +158,6 @@ func TestSRContentNative(t *testing.T) {
 		raw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: requestID, Input: input})
 		return call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
 	}
-	// Full instructions and schema are fixed materials. No native output-schema
-	// retry agent participates: the real final is parsed once by Runner.
-	gen := submit("native-generate", contracts.RunRequest{Title: "Native JSON generation", Workflow: contracts.Workflow{ID: "generate", Version: 1}, Generate: &contracts.GenerateInput{Instruction: `Return exactly {"ok":true,"count":3}. Do not use tools.`, Materials: []contracts.Document{}, OutputSchema: json.RawMessage(`{"type":"object","required":["ok","count"],"properties":{"ok":{"const":true},"count":{"const":3}},"additionalProperties":false}`)}})
-	generated := waitRunFor(t, dir, gen, func(v contracts.RunView) bool { return v.StopStatus == "stopped" }, 3*time.Minute)
-	saveNative("native-generation", generated)
-	if generated.ContentResult == nil || generated.ContentResult.Status != "succeeded" || len(generated.ContentResult.JSON) == 0 || generated.Status != "completed" || !generated.ContentResult.Source.Verified {
-		t.Fatal("real structured generation failed", generated)
-	}
-	call(t, dir, []string{"history", "--run-id", gen}, "", 0)
 	nonce := "cw-" + contracts.NewID()
 	conversation := submit("native-conversation", contracts.RunRequest{Title: "Native continued conversation", Workflow: contracts.Workflow{ID: "conversation", Version: 1}, Conversation: &contracts.ConversationInput{Instruction: "Remember the token " + nonce + " for this session. Reply with this exact token only. Do not use tools.", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: directory, Access: "read_only"}}})
 	idle := waitRunFor(t, dir, conversation, func(v contracts.RunView) bool { return v.Controls.CanMessage || v.Status == "blocked" }, 3*time.Minute)
@@ -226,5 +234,5 @@ func TestSRContentNative(t *testing.T) {
 	if turns != 5 || !closed.Closed || closed.Status != "closed" {
 		t.Fatal("unexpected native turn budget or cleanup", turns, closed)
 	}
-	t.Logf("native=true generate=passed conversation=passed interrupt=passed restart=passed session=%s root=%s", original, root)
+	t.Logf("native=true conversation=passed interrupt=passed restart=passed session=%s root=%s", original, root)
 }

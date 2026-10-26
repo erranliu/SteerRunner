@@ -1,5 +1,9 @@
 # SteerRunner L1–L4 测试指南
 
+2026-10-27 核对：当前通用目录为 L2 1 场景/1 case、L3 29 场景/39 case、L4 4 场景/4 case，
+Controlled 前置 26 个顶层测试，另有 4 个 focused native L3 专项。
+L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用已落实；当前行为、独立子场景入口与 L4 后续建议见[测试清单整理结论](test-catalog.md#测试整理结论-2026-10-26)。
+
 ## 固定交付包验证（2026-10-26）
 
 `scripts/test-delivery.ps1 -PackageDir <已打包目录> -OutDir <新的包外证据目录>` 以包内 Runner、客户端 helper 和 Viewer 为被测对象，不重新构建替代 Runner。复用隔离安装/篡改检查、客户端受控矩阵、Viewer 原生窗口检查和 `TestSRProgressFile`；后者验证原始字节、原子替换、多 Run 隔离、读取失败保留、服务重启零重发和终态快照不刷新。
@@ -9,6 +13,8 @@
 该资格不替代 L1/完整 Controlled、L2/L3 真机资格，也不验证 SteerLine 的业务进度字段或页面。Task18 的 0/6 仍按[原负例](acceptance/task18-runner-retest-20261026.md#测试进度显示的独立负例)保留；Runner 不解释测试安排、不补写业务进度。本入口只建立可重复的 Runner 侧字节通道基线。
 
 普通 L1 的 framework 增加 `tests/framework/delivery-test.ps1`，使用合成包核验清单遗漏/多余/重复/越界、构建回执失配和资格报告失败/不完整/跨包/证据变化；不启动模型、服务或 Viewer。`test-foundation.ps1 -RunnerExe <固定 EXE>` 和 `test-client.ps1 -ClientHelper <固定脚本>` 为显式选择被测产物的可选参数，省略时保持原入口行为。
+
+`test-foundation.ps1` 的 `-RunnerExe` 与 `-PreparedArtifactsDirectory` 是两种互斥的产物来源：前者保持指定 Runner 不重建，后者复用已通过前置的 Runner/driver/fixture 并校验摘要；同时指定会在执行前拒绝，避免替换固定交付包中的被测 Runner。
 
 文件清单及源码摘要使用固定 ordinal 排序，避免 .NET/PowerShell 的区域排序差异。framework 和交付入口均另用 Windows PowerShell 5.1 核对同一包摘要；最终资格只有在宿主与 Windows PowerShell 身份一致时通过。
 
@@ -115,7 +121,7 @@ Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 24 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。目前固定 26 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
 丢响应找回、停止授权跨重启保持、审计发现/修复/预算、同服务多 Run 隔离及资源创建回执恢复。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
@@ -137,7 +143,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
 [脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十九场景／三十九 case；原 12 个
 可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
-新增场景须注册需求并将 ID 加入执行目录，同步 manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不执行发布后反馈，也不读取反馈资格文件；L3 feedback 核验拒绝后原 revision、Turn 与 PR head 不变。
+新增场景须注册需求并将 ID 加入执行目录，同步 manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不创建发布后反馈模型轮，也不读取反馈资格文件；smoke 在原 PR 上核验反馈拒绝后 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
 文档规划不表示入口已经支持新 case、L4 或并行调度。
@@ -184,7 +190,7 @@ New-Item -ItemType Directory -Force .evidence | Out-Null
 Copy-Item tests/test-config.example.json .evidence/test-config.json
 .\scripts\test.ps1 -Level L2 -Config .evidence/test-config.json
 .\scripts\test.ps1 -Level L3 -Scenario orca-remote.smoke -Config .evidence/test-config.json
-.\scripts\test.ps1 -Level L3 -Scenario local-codex.feedback,local-codex.audited,local-codex.multirun -MaxParallel 2 -Config .evidence/test-config.json
+.\scripts\test.ps1 -Level L3 -Scenario local-codex.result-acquisition,local-codex.audited,local-codex.multirun -MaxParallel 2 -Config .evidence/test-config.json
 # 全 L3 保留全部注册 case；缺配置的项目不派发，报告 incomplete，退出 1。
 .\scripts\test.ps1 -Level L3 -Config .evidence/test-config.json
 .\scripts\test.ps1 -Level L2,L3 -Config .evidence/test-config.json
@@ -198,7 +204,7 @@ PowerShell 交互调用多个场景时可使用数组；外部命令行请传实
 单个场景 ID。审计配置 `local-codex-audited` 的 settings.model 与 workflow.audit_model.model
 须显式且不同，effort 位于各自的 reasoning_effort。独立两模型场景仍保留原会话，不要求模型产生 finding。
 
-有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整受控前置；全缺配置时只报告不可用，不启动这些前置。共享前置失败阻止所依赖的 case；L2 专属原生 Git 检查归其 worker 准备，失败不阻止独立 L3。L4 不需要真机
+有可执行 case 的 L2/L3/L4 自动先运行 L1 和完整受控前置；全缺配置时只报告不可用，不启动这些前置。共享前置失败阻止所依赖的 case；L2 专属原生 Git 检查归其 worker 准备，失败不阻止独立 L3。L4 复用同批已通过 Controlled 的三份冻结二进制，逐项校验摘要、前置零退出与无 skip，仍独占执行；不复用其它构建或历史通过。L4 不需要真机
 配置，执行真实 EXE/服务/Git/SQLite 和受控原生协议，不消耗模型 token 或创建真实 PR。
 `-MaxParallel` 默认为 1，范围 1–8；L2/L3 可并行，L4 先排空队列后独占执行。调度器还
 用当前用户宿主的八个 OS 文件锁槽协调不同批次的场景；L4 占全部槽，L2/L3 各占一槽。
@@ -280,8 +286,7 @@ Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_U
 
 ## 当前完整 smoke 契约
 
-本节以 workflow/2 的 driver 为准，包含实现、发布核验、真实合并与停止；发布后反馈返工已移除，独立 feedback case 验证该输入明确拒绝，不创建新实施轮或更新 PR；[测试清单](test-catalog.md)
-中的 L2 最小化为后续调整目标，当前执行步骤或结果判定尚未改变。
+本节以 workflow/2 的 driver 为准，包含实现、发布核验、反馈拒绝、真实合并与停止。L2 仅保留 `local-codex.smoke`；parser 专项属于 L3，不再重复运行开发交付。反馈拒绝复用原 PR，不创建新实施轮或更新 PR。
 
 固定任务改编自 SteerlineTest 的 native-101 Spec/Plan，源 commit 为
 `cebdd5ab552150c49743e40593c836689ecf789b`。自有版本位于
@@ -313,8 +318,7 @@ L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
 8. 显式 stop 原 Run，确认 `new_inputs_allowed=false` 和 `stop_status=stopped`；再停止服务并确认
    `not_running`。保留 Git 工作区、分支、PR 和原始现场供审计。
 
-L2 和普通远端 smoke 均执行首次交付、合入和收尾；独立 L3 feedback 在合入前
-额外验证发布后反馈拒绝。audited/multirun 按各自清单验证真实 PR，保留未合入并停止原资源。
+L2 和普通远端 smoke 均执行首次交付、合入和收尾；L2 在合入前额外验证发布后反馈拒绝，原独立 `local-codex.feedback` 已退役。audited/multirun 按各自清单验证真实 PR，保留未合入并停止原资源。
 两模型入口额外生成 `audit-models.json`，从原 session/workspace 的原生 history 按审计
 turn_id 和发布 turn_id 校验实际 model/effort，不能仅凭请求配置认定发生了模型切换。
 
@@ -458,7 +462,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 
 结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，十一项内部 case 覆盖成功行、零/正数审计修复、离线审计、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式停止；不创建真实 PR。该场景的终态、阶段准备及停止观察等待已统一为 5 分钟，离线回执观察为 1 分钟；这些是测试等待预算，不改变生产单次操作期限，修正记录见[PR #38 复验](acceptance/pr38-review-20261020.md)。完整 Controlled 按上文 45 分钟聚合预算执行。
 
-`local-codex.result-acquisition` 已注册为 L2 专属 driver；入口先 L1 和完整 Controlled，再运行默认原生认证解析、已有 home/显式模型与权限反例/取消、development 真实 PR 闭环三项内部 case。原生只读权限、行为约定和工具事后检测分别取证，不宣称空工具表、零隐式上下文或工具执行前拦截。2026-10-17 原强隔离阻断记录保持历史原样。实际命令、失败修正及最新通过状态以验收证据为准。
+`local-codex.result-acquisition` 现为 L3 parser 专项；入口先 L1 和完整 Controlled，再执行默认原生认证解析、显式模型/只读权限/取消两项内部 case（三次 parser 调用、一次权限探针）。固定预期 `parsed`；仅准备本地冻结材料，不执行 development、远端 clone/push、gh 登录或 PR 合入。原调用/session 与停止证据独立登记，缺失、重复或旧 merged 结果不能通过。原生只读权限、行为约定和工具事后检测分别取证；历史失败与旧构建资格保留，不能代替当前构建真机验收。
 ## 环境检查定向验收
 
 规则：`go test ./internal/application ./internal/contracts ./internal/cli ./internal/storage ./internal/execution/... -run '^TestEnvironmentCheck' -count=1`。
@@ -539,7 +543,7 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 
 ## 运行时单文件汇报增量
 
-新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 29 场景/39 case，总 35 场景/45 case；Controlled 24 顶层（新增 TestSRProgressFile），原有项全部保留。正式脚本自动执行 L1、完整 Controlled；建议 -MaxParallel 7 同时调度两项 L2 与五项 L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
+新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 29 场景/39 case，总 34 场景/44 case；Controlled 26 顶层，原有项全部保留。正式脚本自动执行 L1、完整 Controlled；可用 -MaxParallel 6 同时调度一项 L2 与五项 progress L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
 
 PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修改其源文件，再次换代服务；必须保持原终态快照逐字段不变，活动同伴继续更新且零额外原生输入。快速回归同时核对已收尾不重开、待收尾仍采样、停服终态 closed、活动/恢复 detached，以及未启用 Orca 通道的环境隔离。`tests/framework/progress-parallel-test.ps1` 纳入正式框架入口，验证有效窗口及四种不合格报告；合成窗口只证明核验器行为，不授予 L3 或实际并行资格。
 

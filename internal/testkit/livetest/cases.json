@@ -3,17 +3,17 @@
   "scenarios": [
     {
       "id": "local-codex.result-acquisition",
-      "level": "L2",
+      "level": "L3",
       "driver": "result-acquisition",
       "target": "local-codex",
       "timeout_minutes": 30,
       "cases": [
         {
           "id": "default",
-          "outcome": "merged",
+          "outcome": "parsed",
           "requirements": {
             "operation": "submit",
-            "publication": true,
+            "publication": false,
             "roles": {
               "primary": {
                 "agent": "codex",
@@ -536,34 +536,6 @@
               }
             },
             "admin": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "local-codex.feedback",
-      "level": "L3",
-      "driver": "development-feedback",
-      "target": "local-codex",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "codex",
-                "adapter": "codex-app-server",
-                "configuration": "local-codex",
-                "target_kind": "local",
-                "access_mode": "sandbox",
-                "workflow": "development"
-              }
-            },
-            "admin": false
           }
         }
       ]
