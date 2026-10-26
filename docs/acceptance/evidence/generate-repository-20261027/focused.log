@@ -1,0 +1,4 @@
+ok  	github.com/erranliu/SteerRunner/internal/contracts	1.268s
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.287s [no tests to run]
+ok  	github.com/erranliu/SteerRunner/internal/execution/workspace	9.795s
+ok  	github.com/erranliu/SteerRunner/internal/application	7.119s

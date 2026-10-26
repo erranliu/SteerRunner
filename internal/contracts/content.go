@@ -17,14 +17,39 @@ type ConversationInput struct {
 	Directory   DirectoryAccess `json:"directory"`
 }
 type GenerateInput struct {
-	Instruction  string           `json:"instruction"`
-	Materials    []Document       `json:"materials"`
-	Directory    *DirectoryAccess `json:"directory,omitempty"`
-	OutputSchema json.RawMessage  `json:"output_schema,omitempty"`
+	Repository   *GenerateRepository `json:"repository,omitempty"`
+	Instruction  string              `json:"instruction"`
+	Materials    []Document          `json:"materials"`
+	Directory    *DirectoryAccess    `json:"directory,omitempty"`
+	OutputSchema json.RawMessage     `json:"output_schema,omitempty"`
 }
 type MessageInput struct {
 	ExpectedRevision uint64 `json:"expected_revision"`
 	Text             string `json:"text"`
+}
+
+const MaxGenerateResultBytes = 1 << 20
+const MaxGenerateRepositoryBytes = 64 << 20
+const MaxGenerateRepositoryFiles = 4096
+const MaxGenerateRepositoryManifestBytes = 1 << 20
+
+type GenerateRepository struct {
+	LocalPath string `json:"local_path"`
+	Commit    string `json:"commit"`
+}
+
+type RepositoryFile struct {
+	Path      string `json:"path"`
+	Blob      string `json:"blob"`
+	SHA256    string `json:"sha256"`
+	SizeBytes int    `json:"size_bytes"`
+}
+
+type RepositorySource struct {
+	LocalPath string           `json:"local_path"`
+	Commit    string           `json:"commit"`
+	Tree      string           `json:"tree"`
+	Files     []RepositoryFile `json:"files"`
 }
 
 func (r RunRequest) ContentInput() (string, []Document, *DirectoryAccess) {
@@ -81,16 +106,27 @@ func validateContentRun(data []byte, r RunRequest) *Fault {
 			return Fail(2, "invalid_output_schema", err.Error())
 		}
 	}
+	if r.Generate != nil {
+		if raw, present := contentFields["repository"]; present && string(raw) == "null" {
+			return invalid
+		}
+		if repo := r.Generate.Repository; repo != nil {
+			if directory != nil || !filepath.IsAbs(repo.LocalPath) || !plain(repo.LocalPath) || !commitPattern.MatchString(repo.Commit) || len(r.Generate.OutputSchema) == 0 {
+				return invalid
+			}
+		}
+	}
 	configuration, _ := json.Marshal(map[string]json.RawMessage{"workflow": fields["workflow"], "execution": fields["execution"]})
 	return ValidateRunConfiguration(configuration)
 }
 
 type ContentResult struct {
-	Status     string          `json:"status"`
-	Text       string          `json:"text,omitempty"`
-	JSON       json.RawMessage `json:"json,omitempty"`
-	Diagnostic string          `json:"diagnostic,omitempty"`
-	Source     FinalView       `json:"source"`
+	RepositorySource *RepositorySource `json:"repository_source,omitempty"`
+	Status           string            `json:"status"`
+	Text             string            `json:"text,omitempty"`
+	JSON             json.RawMessage   `json:"json,omitempty"`
+	Diagnostic       string            `json:"diagnostic,omitempty"`
+	Source           FinalView         `json:"source"`
 }
 type HistoryEntry struct {
 	RequestCommandID string         `json:"request_command_id,omitempty"`

@@ -11,6 +11,7 @@
 | 内部执行职责整理 | [执行边界收敛](execution-boundary-refactor.md) |
 | 服务换代与原执行接管 | [恢复专项](service-generation-recovery.md)、[近期 PR 补测](pr-test-gaps-20261020.md)、[创建执行器修复复验](pr38-review-20261020.md)；后两项补充原历史矩阵，真实后端及调用方资格仍独立判断 |
 | 内容工作流与接管 | [生成/对话](content-workflows.md)、[内容接管](content-takeover.md) |
+| 固定 commit 的只读代码调查与多文档 | [GEN-REPO 验证](generate-repository.md)：受控停止/未知/重启与真实本机 Codex 调查分别记录 |
 | 结果提取与 parser | [结果获取](result-acquisition.md) |
 | R2 证据与 Git 查询 | [R2 专项](run-evidence-r2.md) |
 | 运行时单文件汇报 | [PR #55 审计及当前构建验收](runtime-progress-pr55-review.md) / [主线整合验收](runtime-progress-integration.md) / [原始专项与失败历史](runtime-progress.md)；本地、Orca 本地/远端、恢复、多 Run 与实际并行分别登记 |

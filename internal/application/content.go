@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"os"
@@ -22,10 +23,21 @@ import (
 
 // This is admission into the existing aggregate and lifecycle, not a second
 // session runner. Native initialization still goes through reliable.Next.
-func freezeContent(dir string, r *runstate.Record, attempt, generation string, payload []byte) (*runstate.Record, error) {
+func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt, generation string, payload []byte) (*runstate.Record, error) {
 	_, docs, access := r.Request.ContentInput()
 	path := filepath.Join(dir, "runs", r.ID, "content")
-	if access != nil {
+	if r.Request.Generate != nil && r.Request.Generate.Repository != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
+			return nil, err
+		}
+		ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+		defer cancel()
+		source, err := workspace.FreezeContentRepository(ctx, gitHost(), *r.Request.Generate.Repository, path)
+		if err != nil {
+			return nil, contracts.Fail(4, "directory_unavailable", err.Error())
+		}
+		r.RepositorySource = source
+	} else if access != nil {
 		path = filepath.Clean(access.Path)
 	} else if err := os.MkdirAll(path, 0700); err != nil {
 		return nil, err
@@ -71,6 +83,12 @@ func verifyContentDirectory(r *runstate.Record) error {
 	if err != nil || identity != r.DirectoryIdentity {
 		return errors.Join(err, errors.New("original read-only directory identity changed"))
 	}
+	if r.Request.Generate != nil && r.Request.Generate.Repository != nil {
+		if r.RepositorySource == nil {
+			return errors.New("fixed repository source unavailable")
+		}
+		return workspace.VerifyContentRepository(r.Snapshot.Ref.WorkspacePath, r.RepositorySource)
+	}
 	return nil
 }
 
@@ -87,6 +105,9 @@ func contentPrompt(r *runstate.Record, message string) (string, error) {
 		materials = append(materials, map[string]string{"path": m.Path, "sha256": m.Digest, "content": m.Content})
 	}
 	text := "Instruction:\n" + instruction + "\nFrozen submitted materials:\n" + string(canonical(materials))
+	if r.RepositorySource != nil {
+		text += "\nInvestigate relevant code using read-only tools in the current fixed repository snapshot. Do not read the caller's original checkout or other versions. No writes, commits, PRs, Tasks or DAGs. Document paths are logical relative paths returned as JSON, never files to write. Use caller Roadmap internal codes. Cite relevant source paths and this commit in your documents. Fixed commit: " + r.RepositorySource.Commit + "; tree: " + r.RepositorySource.Tree
+	}
 	if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
 		text += "\nReturn exactly one JSON value matching this JSON Schema, without Markdown fences:\n" + string(r.Request.Generate.OutputSchema)
 	}
@@ -96,11 +117,22 @@ func contentPrompt(r *runstate.Record, message string) (string, error) {
 // Called under the sole actor lock after native identity normalization. It
 // records facts in the same StageResults and advances only the frozen cursor.
 func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEvidence, result reliable.Result) {
+	oversized := r.Request.Generate != nil && (len(result.Content) > contracts.MaxGenerateResultBytes || !utf8.ValidString(result.Content))
+	if oversized {
+		// Preserve source identity and failure, but never replicate an unbounded
+		// body across Run, final, stage and history responses.
+		result.Content, value.LastMessage = "", ""
+	}
 	final := contracts.FinalView{CommandID: input.CommandID, AttemptID: input.AttemptID, SessionID: value.SessionID, TurnID: value.TurnID, NativeOutcome: result.NativeOutcome, Verified: result.ContentVerified, Source: value.FinalSource, ItemID: value.FinalItemID, Text: result.Content, Diagnostic: result.Diagnostic}
 	content := &contracts.ContentResult{Status: "failed", Source: final, Diagnostic: result.Failure}
+	content.RepositorySource = r.RepositorySource
 	if result.Succeeded && result.ContentVerified && result.NativeOutcome == "succeeded" && result.Failure == "" {
 		content.Status, content.Text = "succeeded", result.Content
-		if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
+		if oversized {
+			content.Status, content.Text, content.Diagnostic = "failed", "", "generate_result_limit_exceeded_or_invalid_utf8"
+		} else if r.RepositorySource != nil && verifyContentDirectory(r) != nil {
+			content.Status, content.Text, content.Diagnostic = "failed", "", "repository_snapshot_changed"
+		} else if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
 			data, err := ra.ValidateOutput(r.Request.Generate.OutputSchema, result.Content)
 			if err != nil {
 				content.Status, content.Text, content.Diagnostic = "failed", "", err.Error()

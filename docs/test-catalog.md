@@ -286,3 +286,12 @@ L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读�
 新增 Controlled `TestSRResultFile`，当前 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
 
 定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。
+
+## 固定版本代码调查与多文档生成（2026-10-27）
+
+新增 Controlled `TestSRContentRepository`（登记后共 26 项）和 focused native `TestSRContentRepositoryNative`。
+受控场景覆盖固定 commit/脏工作树隔离、完整双文档、同请求重放、完成/运行中/启动结果未知时重启、停止后重启不重发。
+原 generate/conversation/question/unknown 回归分别保持独立场景。
+定向单元覆盖输入及公开 Schema、旧 commit 与后续提交隔离、文件/总量限制、链接/危险路径、Git 环境覆盖、快照漂移、正文/JSON/Schema/缺 final/1 MiB 边界。
+真实 Codex 仅核验只读工具读固定文件、双文档、完成结果重启与重放、停止及结算；未把受控运行中故障注入算作真实资格。
+[Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接入](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md)。

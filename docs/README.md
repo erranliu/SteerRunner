@@ -14,6 +14,7 @@
 | 独立使用的双 skill、共享 helper、只读快照及独立 Viewer | [薄壳 Spec](spec/skill-shell.spec.md) / [Plan](spec/skill-shell.plan.md) / [实现与验收](acceptance/skill-shell.md) |
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
 | 无仓库的对话与生成输入 | [内容流程 Spec](spec/content-workflows.spec.md) / [Plan](spec/content-workflows.plan.md) |
+| 固定 commit 只读调查并生成多文档 | [GEN-REPO Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接口与示例](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md) |
 | 权限、单仓库认证与环境检查 | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md)、[环境检查 Spec](spec/environment-check.spec.md) / [Plan](spec/environment-check.plan.md) |
 | Orca 路由、原生查询与后端范围 | [本机/远程连接 Spec](spec/orca-local-remote.spec.md) / [Plan](spec/orca-local-remote.plan.md)、[远端原生 Spec](spec/orca-remote-native.spec.md) / [Plan](spec/orca-remote-native.plan.md)、[通用 Agent Spec](spec/orca-generic-agent.spec.md) / [Plan](spec/orca-generic-agent.plan.md) |
 | Orca CLI 排队、读取重试与公开等待状态（2026-10-25） | [Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [独立验收](acceptance/orca-cli-wait-retry.md)；Runner 只读准备与原操作恢复，调用方 UI 接线另验 |
