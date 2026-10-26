@@ -1,5 +1,17 @@
 # 双 Skill 薄壳与独立 Viewer 验收
 
+## 2026-10-26 固定交付包与证据绑定
+
+本增量基于 `17e320659df7bca1337cc59ba2265561560c0b00` 的 dirty 工作区，收敛构建/打包/安装/资格核对到共享 PowerShell 校验实现。包清单升级为 version=2，保留原 CLI、数据库和 Viewer 快照版本；组件可来自不同提交，分别保留源码摘要及 EXE 回执。受控测试显式使用包内 Runner、客户端 helper 和 Viewer，不重建替代被测产物。构建和测试前后复核输入，资格绑定包、结果、进度原始字节/日志/身份记录。
+
+Windows PowerShell 5.1 与 PowerShell 7 各通过 23 项交付专属正反例，包含跨运行时摘要一致性；此前完整 framework 23 组通过，最终交付检查另行定向复验。Viewer 模块 `go test ./... -count=1` 通过。同 commit、同为 dirty 的不同输入在隔离 Git 夹具中取得不同源码摘要。
+
+最终包为本机 `.evidence/delivery-package-ordinal`，最终受控资格位于 `.evidence/delivery-qualification-ordinal/qualification.json`；四项全部通过：隔离安装 6 项、包内客户端 32 项、原生 Viewer 9 项、`TestSRProgressFile` 一个完整场景（46.01 秒）。资格及其绑定的进度原始字节/日志/身份记录经 PowerShell 7 和 Windows PowerShell 5.1 分别复核通过。入库[摘要](evidence/delivery-20261026/summary.json)保留构建与包摘要；入口及复现命令见[测试指南](../testing.md#固定交付包验证2026-10-26)。原始本机证据不入库，不将报告副本或摘要当作可单独验证的资格。
+
+中间构建发现 Runner 回执 SHA 大小写不一致，已统一为小写后重建；跨版本复核又发现默认区域排序导致相同包在 PowerShell 7/5.1 下内容摘要不同，改为 ordinal 排序并加入两版检查。中间 `.evidence/delivery-qualification-02`、`delivery-qualification-final`、`delivery-qualification-v2` 保留当时记录；其早期 passed 不替代最终包资格，尤其 v2 中间结果未通过后续跨运行时核对。
+
+本轮均为隔离构建、安装及受控原生协议，无真实模型/PR，不部署用户安装或操作已有服务。progress_transport 只证明 Runner 原始字节、重启、多 Run 隔离和终态封存；Task18 的调用方 0/6 缺口保持，未取得调用方源码前不认定写入、解析或页面根因，也不改写历史报告。
+
 日期：2026-10-23。对应 [Spec](../spec/skill-shell.spec.md) / [Plan](../spec/skill-shell.plan.md)。实现完成；本机 Codex 和一个既有 Orca environment 的 Spec+Plan → 问答 → 经 Runner 核验 PR → 原 Run 停止 / 停服核验均取得真实证据。本报告只覆盖以下构建与场景，不宣称全部后端组合或干净 Windows 虚拟机均已验证。
 
 ## 同日 Rebase 集成复验

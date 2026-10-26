@@ -1,5 +1,7 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-26 固定交付包增量：普通 L1 framework 包含 `tests/framework/delivery-test.ps1` 的文件清单、组件来源和证据绑定反例。`scripts/test-delivery.ps1` 为独立的受控交付入口，复用 installation/client/viewer/`TestSRProgressFile`，固定包内被测文件，不新增 L2–L4 场景或真机资格。调用方测试进度 0/6 的历史缺口继续保留；范围及命令见[测试指南](testing.md#固定交付包验证2026-10-26)。
+
 2026-10-26 原终端核验增量：L1 自动包含 `TestOriginalTerminalRPC*`、`TestQueryBoundTerminal*`、`TestOriginalTerminalConcurrency` 及 `TestOrcaNativeStateStream/terminal-query*`，覆盖生产构造器的 IPC 查询、加密远端协议、身份/两次观察核验、握手/读取取消与共享 CLI 锁隔离。并发比较只衡量受控读取路径，不授予真实 Run 容量或 L3 资格；范围及原始前后对比见[专项记录](acceptance/original-terminal-rpc.md)。
 
 提交前审计补充 `TestTerminalQueryCancellationCannotHideKnownIdentityConflict` 和 `TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity`，覆盖身份冲突与取消同时出现的错误优先级，以及停止前、手动恢复前后 RPC 核验的原 incarnation 约束。

@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$RunnerExe,[Parameter(Mandatory=$true)][string]$OutDir,[string]$ViewerExe='')
+param([Parameter(Mandatory=$true)][string]$RunnerExe,[Parameter(Mandatory=$true)][string]$OutDir,[string]$ViewerExe='',[string]$ClientHelper='')
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version 2
 $taskRepo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -27,7 +27,7 @@ $taskURL='https://github.com/example/fixture.git'
 & $taskGit -C $taskProject remote add origin $taskURL
 & $taskGit -C $taskProject push -u origin main | Out-Null
 $taskRoot=Join-Path $taskOut 'client'
-$taskHelper=Join-Path $taskRepo 'client/steerrunner-client.ps1'
+$taskHelper=if ($ClientHelper) { (Resolve-Path -LiteralPath $ClientHelper).Path } else { Join-Path $taskRepo 'client/steerrunner-client.ps1' }
 $taskEnvironment=@{};foreach ($taskKey in @('PATH','APPDATA','SRCLI_TEST_ROOT','SRCLI_REAL_RUNNER','SRCLI_TEST_URL','SRCLI_TEST_LOST_RESPONSE','SRCLI_TEST_INSTANCE','SRCLI_TEST_SCENARIO','SRCLI_TEST_NATIVE_VERSION','ORCA_CLI_COMMAND','ORCA_DEV_REPO_ROOT')) { $taskEnvironment[$taskKey]=[Environment]::GetEnvironmentVariable($taskKey) }
 $taskPassed=New-Object Collections.Generic.List[string]
 function Invoke-Client([string]$Action,$InputValue,[int]$Expected=0,[switch]$NonGit) {
@@ -120,7 +120,7 @@ try {
     [IO.File]::WriteAllText((Join-Path $taskRoot 'client.json'),'{"version":1,"version":1}')
     $r=Invoke-Client Configure $null 2
     Assert ($r.error.code -eq 'invalid_json') 'duplicate configuration key rejected without overwrite'
-    $taskReport=@{controlled=$true;passed=@($taskPassed);runner_sha256=(Get-FileHash -LiteralPath $taskRunner -Algorithm SHA256).Hash;live_execution=$false}
+    $taskReport=@{controlled=$true;passed=@($taskPassed);runner_sha256=(Get-FileHash -LiteralPath $taskRunner -Algorithm SHA256).Hash;client_helper_sha256=(Get-FileHash -LiteralPath $taskHelper -Algorithm SHA256).Hash;live_execution=$false}
     [IO.File]::WriteAllText((Join-Path $taskOut 'result.json'),($taskReport | ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))
     Write-Output ($taskReport | ConvertTo-Json -Depth 8)
 } finally { foreach ($taskKey in $taskEnvironment.Keys) { [Environment]::SetEnvironmentVariable($taskKey,$taskEnvironment[$taskKey]) } }
