@@ -1,0 +1,11 @@
+{
+  "pid": 38464,
+  "pattern": "^(TestSRMultipleRunsIsolation|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSROrcaCLIWaitRetry|TestSRResourceCreationRecovery)$",
+  "runner_sha256": "9AA799FA060A38A68F1A46DE0997075DF68F320C04131300B1714F2D06F6DDDA",
+  "fixture_sha256": "C37BAFDEA2050026E7ED4CE49A9A9C16D1D6911DCD38931AED0ADC467127366D",
+  "source_commit": "5df57b69e98382abcd63676b04a73079fd939fa6",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

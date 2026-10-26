@@ -20,7 +20,7 @@ import (
 )
 
 func TestOrcaNativeStateStream(t *testing.T) {
-	for _, scenario := range []string{"subscription-query", "sample-feed", "wrong-runtime", "wrong-request", "cancelled"} {
+	for _, scenario := range []string{"subscription-query", "sample-feed", "wrong-runtime", "wrong-request", "cancelled", "terminal-query", "terminal-query-runtime", "terminal-query-request", "terminal-query-cancelled"} {
 		t.Run(scenario, func(t *testing.T) {
 			pub, private, err := box.GenerateKey(rand.Reader)
 			if err != nil {
@@ -77,7 +77,23 @@ func TestOrcaNativeStateStream(t *testing.T) {
 						id = "foreign"
 					}
 					result := any(map[string]string{"runtimeId": runtime})
-					if request.Method == "worktree.ps" {
+					if request.Method == "terminal.show" {
+						if string(request.Params["terminal"]) != `"terminal"` {
+							t.Error("wrong terminal selector")
+							return
+						}
+						if scenario == "terminal-query-cancelled" {
+							_, _ = socket.read(ctx)
+							return
+						}
+						if scenario == "terminal-query-runtime" {
+							runtime = "replacement"
+						}
+						if scenario == "terminal-query-request" {
+							id = "foreign"
+						}
+						result = map[string]any{"terminal": Terminal{Handle: "terminal", IncarnationID: "incarnation", WorktreeID: "worktree", WorktreePath: "/original", Branch: "worker", AgentIdentity: "codex", Connected: true}}
+					} else if request.Method == "worktree.ps" {
 						if string(request.Params["limit"]) != "100" {
 							return
 						}
@@ -115,6 +131,26 @@ func TestOrcaNativeStateStream(t *testing.T) {
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 			defer cancel()
+			if strings.HasPrefix(scenario, "terminal-query") {
+				queryCtx, stop := context.WithTimeout(ctx, 300*time.Millisecond)
+				defer stop()
+				terminal, err := QueryBoundTerminal(queryCtx, "test-remote", b.ProcessIdentity{RuntimeID: "runtime", Terminal: "terminal", Incarnation: "incarnation"})
+				switch scenario {
+				case "terminal-query":
+					if err != nil || terminal.RuntimeID != "runtime" || terminal.WorktreeID != "worktree" || terminal.WorktreePath != "/original" || terminal.AgentIdentity != "codex" {
+						t.Fatal(terminal, err)
+					}
+				case "terminal-query-cancelled":
+					if !errors.Is(err, context.DeadlineExceeded) {
+						t.Fatal(err)
+					}
+				default:
+					if !errors.Is(err, ErrStateIdentityChanged) {
+						t.Fatal("identity conflict lost", err)
+					}
+				}
+				return
+			}
 			if scenario == "sample-feed" {
 				feed, err := OpenStateFeed(ctx, "test-remote", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"})
 				if err != nil {

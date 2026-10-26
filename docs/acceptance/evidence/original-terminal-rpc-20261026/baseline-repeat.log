@@ -1,0 +1,44 @@
+=== RUN   TestOriginalTerminalConcurrency
+=== RUN   TestOriginalTerminalConcurrency/1
+    terminal_query_windows_test.go:186: callers=1 reads=6 elapsed_ms=126.911 pair_p95_ms=43.280 reads_per_sec=47.28 cli_calls=6 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/5
+    terminal_query_windows_test.go:186: callers=5 reads=30 elapsed_ms=621.558 pair_p95_ms=207.834 reads_per_sec=48.27 cli_calls=30 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/10
+    terminal_query_windows_test.go:186: callers=10 reads=60 elapsed_ms=1241.225 pair_p95_ms=416.049 reads_per_sec=48.34 cli_calls=60 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/20
+    terminal_query_windows_test.go:186: callers=20 reads=120 elapsed_ms=2480.364 pair_p95_ms=827.517 reads_per_sec=48.38 cli_calls=120 rpc_calls=0
+--- PASS: TestOriginalTerminalConcurrency (4.48s)
+    --- PASS: TestOriginalTerminalConcurrency/1 (0.13s)
+    --- PASS: TestOriginalTerminalConcurrency/5 (0.62s)
+    --- PASS: TestOriginalTerminalConcurrency/10 (1.24s)
+    --- PASS: TestOriginalTerminalConcurrency/20 (2.48s)
+=== RUN   TestOriginalTerminalConcurrency
+=== RUN   TestOriginalTerminalConcurrency/1
+    terminal_query_windows_test.go:186: callers=1 reads=6 elapsed_ms=125.120 pair_p95_ms=42.560 reads_per_sec=47.95 cli_calls=6 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/5
+    terminal_query_windows_test.go:186: callers=5 reads=30 elapsed_ms=619.176 pair_p95_ms=206.825 reads_per_sec=48.45 cli_calls=30 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/10
+    terminal_query_windows_test.go:186: callers=10 reads=60 elapsed_ms=1238.168 pair_p95_ms=414.280 reads_per_sec=48.46 cli_calls=60 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/20
+    terminal_query_windows_test.go:186: callers=20 reads=120 elapsed_ms=2479.132 pair_p95_ms=826.671 reads_per_sec=48.40 cli_calls=120 rpc_calls=0
+--- PASS: TestOriginalTerminalConcurrency (4.47s)
+    --- PASS: TestOriginalTerminalConcurrency/1 (0.12s)
+    --- PASS: TestOriginalTerminalConcurrency/5 (0.62s)
+    --- PASS: TestOriginalTerminalConcurrency/10 (1.24s)
+    --- PASS: TestOriginalTerminalConcurrency/20 (2.48s)
+=== RUN   TestOriginalTerminalConcurrency
+=== RUN   TestOriginalTerminalConcurrency/1
+    terminal_query_windows_test.go:186: callers=1 reads=6 elapsed_ms=127.427 pair_p95_ms=42.653 reads_per_sec=47.09 cli_calls=6 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/5
+    terminal_query_windows_test.go:186: callers=5 reads=30 elapsed_ms=622.361 pair_p95_ms=208.802 reads_per_sec=48.20 cli_calls=30 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/10
+    terminal_query_windows_test.go:186: callers=10 reads=60 elapsed_ms=1239.812 pair_p95_ms=414.228 reads_per_sec=48.39 cli_calls=60 rpc_calls=0
+=== RUN   TestOriginalTerminalConcurrency/20
+    terminal_query_windows_test.go:186: callers=20 reads=120 elapsed_ms=2489.024 pair_p95_ms=833.717 reads_per_sec=48.21 cli_calls=120 rpc_calls=0
+--- PASS: TestOriginalTerminalConcurrency (4.49s)
+    --- PASS: TestOriginalTerminalConcurrency/1 (0.13s)
+    --- PASS: TestOriginalTerminalConcurrency/5 (0.62s)
+    --- PASS: TestOriginalTerminalConcurrency/10 (1.24s)
+    --- PASS: TestOriginalTerminalConcurrency/20 (2.49s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	16.445s

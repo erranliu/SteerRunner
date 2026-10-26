@@ -1,0 +1,21 @@
+[
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "passed_top_level": 137,
+    "skipped": [
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "outcome": "pass"
+  },
+  {
+    "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "passed_top_level": 35,
+    "skipped": [
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive"
+    ],
+    "outcome": "pass"
+  }
+]

@@ -1,0 +1,4 @@
+=== RUN   TestTerminalQueryCancellationCannotHideKnownIdentityConflict
+--- PASS: TestTerminalQueryCancellationCannotHideKnownIdentityConflict (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.488s

@@ -1,0 +1,6 @@
+=== RUN   TestTerminalQueryCancellationCannotHideKnownIdentityConflict
+    terminal_query_windows_test.go:106: identity conflict lost to cancellation: context canceled, context=context canceled, calls=0
+--- FAIL: TestTerminalQueryCancellationCannotHideKnownIdentityConflict (0.02s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.127s
+FAIL

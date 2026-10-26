@@ -1,0 +1,12 @@
+=== RUN   TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity
+=== RUN   TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=false
+=== RUN   TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=true
+=== RUN   TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=false
+=== RUN   TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=true
+--- PASS: TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity (0.11s)
+    --- PASS: TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=false (0.03s)
+    --- PASS: TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=true (0.02s)
+    --- PASS: TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=false (0.02s)
+    --- PASS: TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=true (0.03s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	3.022s

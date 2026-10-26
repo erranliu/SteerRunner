@@ -318,7 +318,14 @@ func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native
 		return native.Terminal{}, stateErr
 	}
 	initializing := l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed
-	t, err := l.client.InspectBoundTerminal(ctx, l.profile.Target(), s.Ref.External)
+	var t native.Terminal
+	var err error
+	if l.nativeAccess {
+		t, err = native.QueryBoundTerminal(ctx, l.profile.Environment, s.Ref.External)
+	} else {
+		// The explicit state-factory constructor uses isolated CLI fixtures.
+		t, err = l.client.InspectBoundTerminal(ctx, l.profile.Target(), s.Ref.External)
+	}
 	if err != nil {
 		return t, err
 	}

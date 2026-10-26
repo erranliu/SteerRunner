@@ -1,0 +1,18 @@
+[
+  {
+    "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+    "sha256": "2c76fb8339720e974aa7a5e3c18b706e405cf0e717d72aa1b2ecbf91dc96b1db"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/client.go",
+    "sha256": "d6d4953d9712f78706efb1bd32c7ec39e47c5075b255734e2d67b15abc65c7a9"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/native_input_query.go",
+    "sha256": "d746d5c3f5b9790369d3a4d968306f37fb0aa10bc962dedb7d01752a8c287096"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/terminal_query.go",
+    "sha256": "bc79f9abc9c7c1c81f1eb8dd3f4235025119da6c277d2ccf7fa7871d562f0344"
+  }
+]

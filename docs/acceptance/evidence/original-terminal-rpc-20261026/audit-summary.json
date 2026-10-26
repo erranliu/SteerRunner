@@ -1,0 +1,73 @@
+{
+  "base_commit": "84c942cd100840ad89b1c730a2d2cceeac671d36",
+  "source_dirty": true,
+  "production_sources": [
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "sha256": "2C76FB8339720E974AA7A5E3C18B706E405CF0E717D72AA1B2ECBF91DC96B1DB"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/client.go",
+      "sha256": "D6D4953D9712F78706EFB1BD32C7EC39E47C5075B255734E2D67B15ABC65C7A9"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/native_input_query.go",
+      "sha256": "D746D5C3F5B9790369D3A4D968306F37FB0AA10BC962DEDB7D01752A8C287096"
+    },
+    {
+      "path": "internal/execution/adapters/protocol/orca/terminal_query.go",
+      "sha256": "2FE457332FB730D07C24F8130B17BD1BAA3E573DEE48BF9205CA789118430D5D"
+    }
+  ],
+  "packages": [
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+      "passed_top_level": 137,
+      "skipped": [
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "outcome": "pass"
+    },
+    {
+      "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "passed_top_level": 35,
+      "skipped": [
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive"
+      ],
+      "outcome": "pass"
+    }
+  ],
+  "application_stop_tests": [
+    "TestSRStopBindingCommitFailureDoesNotDispatch",
+    "TestSRPreparationQueryStopAuthorization",
+    "TestSRPreparationQueryStopSettlesOriginalOperation",
+    "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence",
+    "TestSRStopRecoversLateCreationFactsUnderOriginalIntent",
+    "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable",
+    "TestRemoteStopBudgetCanCompleteAnOriginalCLICall"
+  ],
+  "creation_recovery": {
+    "outcome": "pass",
+    "passed_cases": 7,
+    "elapsed_seconds": 183.95,
+    "result": "audit-creation-recovery-result.json",
+    "source_identity": "audit-creation-recovery-source.json",
+    "log": "audit-creation-recovery.log"
+  },
+  "go_vet": "pass: protocol/orca, orcatransport, tests/integration",
+  "diff_check": "pass",
+  "original_logs": [
+    {
+      "path": ".evidence/terminal-rpc/audit/final-packages.jsonl",
+      "sha256": "F7CFD43D5B415F6A7DB47A7D4E0FA3294E6D2A5DE888A26424AEF350B5DF705E"
+    },
+    {
+      "path": ".evidence/terminal-rpc/audit/stop-application.jsonl",
+      "sha256": "5357ECF54B6C87544F690A04F4BD077B0A1EACC26BC14A48E7142B9501C102B2"
+    }
+  ],
+  "validation_scope": "Latest-base targeted audit. Original L1 aggregate timeout and historical supplementary coverage are reported separately; no latest-base full L1 or live capacity claim."
+}
