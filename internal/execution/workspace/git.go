@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os/exec"
 	"strings"
 	"time"
@@ -35,6 +36,15 @@ func (b *outputLimit) Write(data []byte) (int, error) {
 
 // Output runs a fixed Git executable and argument vector in the given directory.
 func (g Git) Output(ctx context.Context, directory string, args ...string) ([]byte, error) {
+	return g.output(ctx, directory, nil, 16<<20, args...)
+}
+
+// OutputInput uses the same owned process and deadline for bounded batch reads.
+func (g Git) OutputInput(ctx context.Context, directory string, input io.Reader, maxBytes int, args ...string) ([]byte, error) {
+	return g.output(ctx, directory, input, maxBytes, args...)
+}
+
+func (g Git) output(ctx context.Context, directory string, input io.Reader, maxBytes int, args ...string) ([]byte, error) {
 	if g.Command.Executable == "" || g.Start == nil || g.Timeout <= 0 {
 		return nil, errors.New("Git command, process starter and positive timeout are required")
 	}
@@ -46,9 +56,25 @@ func (g Git) Output(ctx context.Context, directory string, args ...string) ([]by
 	argv := append(append([]string(nil), g.Command.Args...), args...)
 	cmd := exec.Command(g.Command.Executable, argv...)
 	cmd.Dir = directory
-	cmd.Env = overrideEnv(cmd.Environ(), map[string]string{"GIT_TERMINAL_PROMPT": "0"})
+	cmd.Stdin = input
+	environment := cmd.Environ()
+	if len(g.Command.BlockedEnvironment) > 0 {
+		filtered := []string{}
+		for _, entry := range environment {
+			name, _, _ := strings.Cut(entry, "=")
+			blocked := false
+			for _, key := range g.Command.BlockedEnvironment {
+				blocked = blocked || strings.EqualFold(name, key)
+			}
+			if !blocked {
+				filtered = append(filtered, entry)
+			}
+		}
+		environment = filtered
+	}
+	cmd.Env = overrideEnv(environment, map[string]string{"GIT_TERMINAL_PROMPT": "0"})
 	var stdout outputLimit
-	stdout.max = 16 << 20
+	stdout.max = maxBytes
 	var stderr outputLimit
 	stderr.max = 1 << 20
 	cmd.Stdout, cmd.Stderr = &stdout, &stderr

@@ -38,7 +38,7 @@ func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 		request.Conversation = &contracts.ConversationInput{Instruction: "Discuss", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: t.TempDir(), Access: "read_only"}}
 	}
 	r := &runstate.Record{ID: "run", Request: request, Allowed: true, Status: "queued", InputDigest: "digest", CommandStates: map[string]string{}}
-	r, err = freezeContent(dir, r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
+	r, err = freezeContent(context.Background(), dir, r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +55,7 @@ func contentEngine(t *testing.T, id string) (*Engine, *worker) {
 func TestContentMaterialSnapshot(t *testing.T) {
 	material := "fixed submitted material"
 	r := &runstate.Record{ID: "snapshot", InputDigest: "fixed", Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: "generate", Version: 1}, Generate: &contracts.GenerateInput{Instruction: "Use the material", Materials: []contracts.Document{{Kind: "inline", Path: "source.txt", Content: &material}}}, Execution: contracts.Execution{Settings: json.RawMessage(`{"access_mode":"read_only"}`)}}}
-	r, err := freezeContent(t.TempDir(), r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
+	r, err := freezeContent(context.Background(), t.TempDir(), r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
 	if err != nil {
 		t.Fatal(err)
 	}

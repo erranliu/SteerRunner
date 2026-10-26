@@ -250,7 +250,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	r.InputDigest = reliable.Digest(canonical(r.Request))
 	if workflow.Content(request.Workflow.ID) {
-		return freezeContent(dir, r, attempt, generation, payload)
+		return freezeContent(ctx, dir, r, attempt, generation, payload)
 	}
 	git := gitHost()
 	cache := repositoryCache(dir, request.Repository)

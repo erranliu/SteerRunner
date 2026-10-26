@@ -1,0 +1,39 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "roadmap-R7-spec-plan-001",
+  "input": {
+    "title": "Roadmap R7 Spec and Plan",
+    "workflow": {"id": "generate", "version": 1},
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {"kind": "local"},
+      "settings": {"access_mode": "read_only", "executable": "C:/Tools/codex.exe"}
+    },
+    "generate": {
+      "repository": {
+        "local_path": "C:/Repos/Product",
+        "commit": "0123456789abcdef0123456789abcdef01234567"
+      },
+      "instruction": "调查相关代码，依据材料生成 R7 的 Spec 和 Plan。文档注明相关源码相对路径与固定 commit。使用 Roadmap 内部代号 R7；不分配正式任务编号。完整正文放入 JSON，不写入文件。",
+      "materials": [
+        {"kind": "inline", "path": "roadmap/R7.txt", "content": "此处由 SteerLine 提供业务规则、范围、文档格式与验收要求。"}
+      ],
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["documents"],
+        "properties": {
+          "documents": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {"type": "object", "additionalProperties": false, "required": ["path", "content"], "properties": {"path": {"const": "roadmap/R7/spec.md"}, "content": {"type": "string", "minLength": 1}}},
+              {"type": "object", "additionalProperties": false, "required": ["path", "content"], "properties": {"path": {"const": "roadmap/R7/plan.md"}, "content": {"type": "string", "minLength": 1}}}
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -28,6 +28,7 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
 	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
 	Progress            *Progress                      `json:"progress,omitempty"`
 	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
@@ -164,6 +165,7 @@ func (r *Record) View() contracts.RunView {
 	}
 	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && !unresolved, CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
 	if workflow.Content(r.Request.Workflow.ID) {
+		v.RepositorySource = r.RepositorySource
 		v.Closed, v.ContentResult = r.Closed, r.ContentResult
 		v.Controls.CanReply = r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.Question != nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
 		v.Controls.CanResume = r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == ""

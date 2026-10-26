@@ -19,6 +19,11 @@ func verifyFrozenMaterials(r *runstate.Record) error {
 	if !workflow.Content(r.Request.Workflow.ID) {
 		return nil
 	}
+	if r.Request.Generate != nil && r.Request.Generate.Repository != nil {
+		if err := verifyContentDirectory(r); err != nil {
+			return err
+		}
+	}
 	for _, material := range r.Materials {
 		if material.Digest != ra.Digest([]byte(material.Content)) || !filepath.IsAbs(material.SnapshotPath) {
 			return errors.New("original frozen material identity is invalid")

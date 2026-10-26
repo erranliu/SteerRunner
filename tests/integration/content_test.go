@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func contentFixture(t *testing.T, workflow string, schema json.RawMessage) (string, string, contracts.ServiceInfo) {
+func contentFixture(t *testing.T, workflow string, schema json.RawMessage, repository ...*contracts.GenerateRepository) (string, string, contracts.ServiceInfo) {
 	t.Helper()
 	root := t.TempDir()
 	native := filepath.Join(root, "native")
@@ -22,7 +22,11 @@ func contentFixture(t *testing.T, workflow string, schema json.RawMessage) (stri
 	t.Setenv("CODEX_HOME", native)
 	t.Setenv("STEERRUNNER_CONTENT_FIXTURE", "1")
 	if !existsTest(filepath.Join(native, "content-final")) {
-		_ = os.WriteFile(filepath.Join(native, "content-final"), []byte(`{"ok":true}`), 0600)
+		final := os.Getenv("STEERRUNNER_CONTENT_FINAL")
+		if final == "" {
+			final = `{"ok":true}`
+		}
+		_ = os.WriteFile(filepath.Join(native, "content-final"), []byte(final), 0600)
 	}
 	if marker := os.Getenv("STEERRUNNER_CONTENT_MARKER"); marker != "" {
 		_ = os.WriteFile(filepath.Join(native, marker), []byte("marker"), 0600)
@@ -32,6 +36,9 @@ func contentFixture(t *testing.T, workflow string, schema json.RawMessage) (stri
 	r := contracts.RunRequest{Title: "Content controlled", Workflow: contracts.Workflow{ID: workflow, Version: 1}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: settings}}
 	if workflow == "generate" {
 		r.Generate = &contracts.GenerateInput{Instruction: "Return content", Materials: []contracts.Document{}, OutputSchema: schema}
+		if len(repository) > 0 {
+			r.Generate.Repository = repository[0]
+		}
 	} else {
 		r.Conversation = &contracts.ConversationInput{Instruction: "Discuss", Materials: []contracts.Document{}, Directory: contracts.DirectoryAccess{Path: root, Access: "read_only"}}
 	}

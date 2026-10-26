@@ -16,6 +16,10 @@ func contentInputSchema(schemas map[string]any, id string) map[string]any {
 		input["required"] = []string{"instruction", "materials", "directory"}
 	}
 	p := input["properties"].(map[string]any)
+	if id == "generate" {
+		p["repository"] = map[string]any{"type": "object", "required": []string{"local_path", "commit"}, "additionalProperties": false, "properties": map[string]any{"local_path": map[string]any{"type": "string", "minLength": 1}, "commit": map[string]any{"type": "string", "pattern": `^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$`}}}
+		input["allOf"] = []any{map[string]any{"if": map[string]any{"required": []string{"repository"}}, "then": map[string]any{"required": []string{"output_schema"}, "not": map[string]any{"required": []string{"directory"}}}}}
+	}
 	p["instruction"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	p["directory"] = map[string]any{"type": "object", "required": []string{"path", "access"}, "additionalProperties": false, "properties": map[string]any{"path": map[string]any{"type": "string", "minLength": 1}, "access": map[string]any{"const": "read_only"}}}
 	p["materials"] = map[string]any{"type": "array", "items": map[string]any{"type": "object", "required": []string{"kind", "path", "content"}, "additionalProperties": false, "properties": map[string]any{"kind": map[string]any{"const": "inline"}, "path": map[string]any{"type": "string", "minLength": 1}, "content": map[string]any{"type": "string"}, "commit": map[string]any{"const": ""}}}}

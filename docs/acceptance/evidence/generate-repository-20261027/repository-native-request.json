@@ -1,0 +1,81 @@
+{
+  "protocol": "steerrunner-cli/v1",
+  "request_id": "native-fixed-repository",
+  "input": {
+    "generate": {
+      "repository": {
+        "local_path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\TestSRContentRepositoryNative3093723158\\001",
+        "commit": "1d5e659e5b77699da0dd4909a84ed0378823e03f"
+      },
+      "instruction": "Use a shell read-only tool to read code.txt in the current snapshot. Return two documents at R7/spec.md and R7/plan.md. Include the entire exact contents of code.txt and the fixed commit in each document body. Use Roadmap internal code R7. Do not write files. Return only JSON matching output_schema.",
+      "materials": [],
+      "output_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "documents"
+        ],
+        "properties": {
+          "documents": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "prefixItems": [
+              {
+                "type": "object",
+                "required": [
+                  "path",
+                  "content"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "const": "R7/spec.md"
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "path",
+                  "content"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "const": "R7/plan.md"
+                  },
+                  "content": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "title": "Fixed repository code investigation",
+    "workflow": {
+      "id": "generate",
+      "version": 1
+    },
+    "execution": {
+      "adapter": "codex-app-server",
+      "target": {
+        "kind": "local"
+      },
+      "settings": {
+        "access_mode": "read_only",
+        "executable": "C:\\Users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "low"
+      }
+    }
+  }
+}

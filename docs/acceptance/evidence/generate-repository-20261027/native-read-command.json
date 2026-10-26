@@ -1,0 +1,86 @@
+[
+  {
+    "type": "commandExecution",
+    "id": "exec-d7755ea9-1e34-487f-a85f-0fe8f2147c41",
+    "pluginId": null,
+    "scriptPath": null,
+    "command": "\"C:\\\\Users\\\\lmas1\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.exe\" -NoProfile -Command 'Get-Content -LiteralPath code.txt -Raw'",
+    "cwd": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content",
+    "processId": "69172",
+    "source": "unifiedExecStartup",
+    "status": "completed",
+    "commandActions": [
+      {
+        "type": "read",
+        "command": "Get-Content -LiteralPath code.txt -Raw",
+        "name": "code.txt",
+        "path": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content\\code.txt"
+      }
+    ],
+    "aggregatedOutput": "FIXED_SOURCE_47\n\r\n",
+    "exitCode": 0,
+    "durationMs": 1762
+  },
+  {
+    "type": "commandExecution",
+    "id": "exec-d7755ea9-1e34-487f-a85f-0fe8f2147c41",
+    "pluginId": null,
+    "scriptPath": null,
+    "command": "\"C:\\\\Users\\\\lmas1\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.exe\" -NoProfile -Command 'Get-Content -LiteralPath code.txt -Raw'",
+    "cwd": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content",
+    "processId": "69172",
+    "source": "unifiedExecStartup",
+    "status": "completed",
+    "commandActions": [
+      {
+        "type": "read",
+        "command": "Get-Content -LiteralPath code.txt -Raw",
+        "name": "code.txt",
+        "path": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content\\code.txt"
+      }
+    ],
+    "aggregatedOutput": "FIXED_SOURCE_47\n\r\n",
+    "exitCode": 0,
+    "durationMs": 1762
+  },
+  {
+    "type": "commandExecution",
+    "id": "exec-313b45cd-c1d9-4790-9201-81c3b70ed04d",
+    "pluginId": null,
+    "scriptPath": null,
+    "command": "\"C:\\\\Users\\\\lmas1\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.exe\" -NoProfile -Command '$bytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) '\"'code.txt')); [System.Convert]::ToBase64String(\"'$bytes); rg --files -g AGENTS.md -g '\"'\"'!node_modules'\"' -g '\"'!vendor'\"'\"",
+    "cwd": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content",
+    "processId": "74468",
+    "source": "unifiedExecStartup",
+    "status": "failed",
+    "commandActions": [
+      {
+        "type": "unknown",
+        "command": "$bytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) 'code.txt')); [System.Convert]::ToBase64String($bytes); rg --files -g AGENTS.md -g '!node_modules' -g '!vendor'"
+      }
+    ],
+    "aggregatedOutput": "RklYRURfU09VUkNFXzQ3Cg==\r\n",
+    "exitCode": 1,
+    "durationMs": 2134
+  },
+  {
+    "type": "commandExecution",
+    "id": "exec-313b45cd-c1d9-4790-9201-81c3b70ed04d",
+    "pluginId": null,
+    "scriptPath": null,
+    "command": "\"C:\\\\Users\\\\lmas1\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps\\\\pwsh.exe\" -NoProfile -Command '$bytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) '\"'code.txt')); [System.Convert]::ToBase64String(\"'$bytes); rg --files -g AGENTS.md -g '\"'\"'!node_modules'\"' -g '\"'!vendor'\"'\"",
+    "cwd": "C:\\srt\\gr-427689408\\state\\runs\\310b98e02b5ecc29ae48299ee0b21c0f\\content",
+    "processId": "74468",
+    "source": "unifiedExecStartup",
+    "status": "failed",
+    "commandActions": [
+      {
+        "type": "unknown",
+        "command": "$bytes = [System.IO.File]::ReadAllBytes((Join-Path (Get-Location) 'code.txt')); [System.Convert]::ToBase64String($bytes); rg --files -g AGENTS.md -g '!node_modules' -g '!vendor'"
+      }
+    ],
+    "aggregatedOutput": "RklYRURfU09VUkNFXzQ3Cg==\r\n",
+    "exitCode": 1,
+    "durationMs": 2134
+  }
+]

@@ -1,0 +1,4 @@
+=== RUN   TestRAConcurrencyParserStopResources
+--- PASS: TestRAConcurrencyParserStopResources (8.90s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	11.786s

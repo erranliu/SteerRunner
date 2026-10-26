@@ -16,7 +16,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
-var Version = "0.2.0-dev.3-r2"
+var Version = "0.2.0-dev.3-r3"
 var SourceCommit = "development"
 
 //go:embed assets/*
@@ -69,6 +69,7 @@ func VersionInfo() any {
 }
 
 func Capabilities() any {
+	// Repository generation shares generate/1 and the original content result.
 	parserSupported, parserReason := ra.ParserSupport()
 	viewerAdapters := []string{}
 	if runtime.GOOS == "windows" {
@@ -104,6 +105,7 @@ func Capabilities() any {
 		"workflow":              json.RawMessage(Read("development.json")),
 		"workflows":             workflow.Catalog(),
 		"configuration_schemas": ConfigurationSchemas(),
+		"generate":              map[string]any{"workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
 		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},

@@ -21,6 +21,7 @@
     "TestEnvironmentCheckCLI",
     "TestSRResultAcquisition",
     "TestSRContentGenerate",
+    "TestSRContentRepository",
     "TestSRContentConversation",
     "TestSRContentQuestionAndUnknown",
     "TestSRContentGenerationRecovery",
@@ -68,6 +69,15 @@
     "orca-remote.cli-wait-retry"
   ],
   "focused_native_scenarios": [
+    {
+      "id": "local-codex.generate-repository",
+      "level": "L3",
+      "test": "TestSRContentRepositoryNative",
+      "entry": "scripts/test-foundation.ps1",
+      "scope": "new C:/srt/gr-* state and disposable dirty Git fixture; read-only native code investigation; no target writes or PR",
+      "requires": ["explicit native executable", "TestSRContentRepository"],
+      "expected": ["real read-only code tool observed", "fixed commit and full two-document result", "original request replay and completed-result restart", "stop and verify-stopped settlement"]
+    },
     {
       "id": "local-codex.generation-recovery",
       "level": "L3",
