@@ -62,6 +62,7 @@ type Publication struct {
 
 type RunRequest struct {
 	ProgressFile *ProgressFileInput `json:"progress_file,omitempty"`
+	ResultFile   *ResultFileInput   `json:"result_file,omitempty"`
 	Conversation *ConversationInput `json:"conversation,omitempty"`
 	Generate     *GenerateInput     `json:"generate,omitempty"`
 	Title        string             `json:"title"`
@@ -213,18 +214,25 @@ func ValidateRun(data []byte) *Fault {
 		return invalid
 	}
 	if raw := map[string]json.RawMessage{}; json.Unmarshal(data, &raw) == nil {
-		if v, ok := raw["progress_file"]; ok && string(v) == "null" {
-			return invalid
-		}
-		if value.ProgressFile != nil {
-			var p map[string]json.RawMessage
-			_ = json.Unmarshal(raw["progress_file"], &p)
-			if v, ok := p["initial_content_base64"]; !ok || string(v) == "null" {
-				return invalid
+		for _, name := range []string{"progress_file", "result_file"} {
+			if v, ok := raw[name]; ok {
+				if string(v) == "null" {
+					return invalid
+				}
+				var fields map[string]json.RawMessage
+				if json.Unmarshal(v, &fields) != nil {
+					return invalid
+				}
+				if initial, ok := fields["initial_content_base64"]; !ok || string(initial) == "null" {
+					return invalid
+				}
 			}
 		}
 	}
 	if err := ValidateProgress(value); err != nil {
+		return err
+	}
+	if err := ValidateResultFile(value); err != nil {
 		return err
 	}
 	var fields map[string]json.RawMessage

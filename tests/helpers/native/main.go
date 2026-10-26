@@ -296,6 +296,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		response["result"] = map[string]any{"turnId": id}
 		return response, nil
 	case "turn/start":
+		_ = appendCall(map[string]any{"method": "result/environment", "path": os.Getenv("STEERLINE_RESULT_FILE"), "progress_path": os.Getenv("STEERLINE_PROGRESS_FILE"), "cwd": s.thread.Cwd})
 		if path := os.Getenv("STEERLINE_PROGRESS_FILE"); path != "" {
 			_ = appendCall(map[string]any{"method": "progress/environment", "path": path, "cwd": s.thread.Cwd})
 		}

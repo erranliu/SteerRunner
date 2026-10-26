@@ -116,6 +116,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if err := contracts.ValidateProgress(request); err != nil {
 		return nil, err
 	}
+	if err := contracts.ValidateResultFile(request); err != nil {
+		return nil, err
+	}
 	if workflow.Content(request.Workflow.ID) {
 		if err := contracts.ValidateRun(input.Input); err != nil {
 			return nil, err
@@ -375,12 +378,16 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		payload = canonical(p)
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.ProgressFile != nil || r.LaunchCommand != "") {
+	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.ProgressFile != nil || r.Request.ResultFile != nil || r.LaunchCommand != "") {
 		progressRun := ""
 		if r.Request.ProgressFile != nil {
 			progressRun = r.ID
 		}
-		r.LaunchCommand = agentlaunch.ProgressCommand(r.LaunchCommand, progressRun)
+		resultRun := ""
+		if r.Request.ResultFile != nil {
+			resultRun = r.ID
+		}
+		r.LaunchCommand = agentlaunch.FileCommands(r.LaunchCommand, progressRun, resultRun)
 	}
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: key, CodecVersion: codec, Purpose: b.ImplementationConfigPurpose, ProjectID: repo.CommonDir, ProfileID: id, AcceptedConfigVersion: r.InputDigest}, payload)
 	if err != nil {
@@ -533,6 +540,9 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 	}
 	if r.Request.ProgressFile != nil {
 		input.Prompt += "\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.\n"
+	}
+	if r.Request.ResultFile != nil {
+		input.Prompt += "\nOptional caller-owned result bytes: STEERLINE_RESULT_FILE contains the absolute path of this Run's independent result file. Write complete raw bytes there (max 65536 bytes); coordinate writers and atomically replace using a temporary file in the same directory. Runner collects this file only once after the whole execution ends and its producers stop, never at a single turn end or pr_ready. Runner preserves bytes without interpreting business success or process exit.\n"
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
 	if state.Kind == "execute" && state.Contract == "implementation" {

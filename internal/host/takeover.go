@@ -51,8 +51,11 @@ func qualifyLegacyRecovery(dir string) error {
 }
 
 type takeoverCandidate struct {
-	Recovery  contracts.RecoverySupport `json:"recovery"`
-	Workflows []workflow.Profile        `json:"workflows"`
+	Recovery   contracts.RecoverySupport `json:"recovery"`
+	Workflows  []workflow.Profile        `json:"workflows"`
+	ResultFile struct {
+		Contract string `json:"contract"`
+	} `json:"result_file"`
 }
 
 func candidateCapabilities(ctx context.Context, path string) (takeoverCandidate, string, *contracts.Fault) {
@@ -137,5 +140,5 @@ func VerifyTakeover(ctx context.Context, dir, candidate string) (contracts.Takeo
 	if err != nil {
 		return empty, contracts.Fail(3, "unsupported_schema", "Check records cannot be decoded.")
 	}
-	return finishTakeover(dir, "", sha, reader.BindTakeoverRequests(application.TakeoverFacts(runs, checks, caps.Recovery, caps.Workflows))), nil
+	return finishTakeover(dir, "", sha, reader.BindTakeoverRequests(application.TakeoverFacts(runs, checks, caps.Recovery, caps.Workflows, caps.ResultFile.Contract))), nil
 }

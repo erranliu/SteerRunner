@@ -369,8 +369,13 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		if failure != nil {
 			return reject(failure)
 		}
-		items := s.engine.Takeover(caps.Recovery, caps.Workflows)
+		items := s.engine.Takeover(caps.Recovery, caps.Workflows, caps.ResultFile.Contract)
 		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
+	case "result-file":
+		if wire.Request != nil {
+			return reject(contracts.Fail(2, "invalid_request", "Result queries do not accept input."))
+		}
+		return s.engine.HandleResultFile(wire.Options.RunID), false
 	case "progress-file":
 		if wire.Request != nil {
 			return reject(contracts.Fail(2, "invalid_request", "Progress queries do not accept input."))

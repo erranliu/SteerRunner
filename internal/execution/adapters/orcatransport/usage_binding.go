@@ -47,7 +47,7 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 	}
 	prompt := usageReadyPrompt
 	launch := proof.LaunchCommand
-	if inner, ok := agentlaunch.UnwrapProgressCommand(launch, proof.RunID); ok {
+	if inner, ok := agentlaunch.UnwrapFileCommands(launch, proof.RunID); ok {
 		launch = inner
 	}
 	if inner, ok := agentlaunch.UnwrapTeaPathLaunch(launch); ok {

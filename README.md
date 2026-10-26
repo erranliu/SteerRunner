@@ -129,6 +129,7 @@ Runner 和 Viewer 输出到 `bin`，完整交付包输出到指定的新目录�
 ## 更多文档
 
 - [运行时单文件汇报通道](docs/runtime-progress.md)：可选原始字节、独立快照版本、执行环境路径及本机/Orca 远端采集；[Spec](docs/spec/runtime-progress.spec.md) / [Plan](docs/spec/runtime-progress.plan.md) / [验收](docs/acceptance/runtime-progress.md)。
+- [result-file 最终文件快照](docs/runtime-result-file.md)：仅结束时封存一次，运行中 pending，重启及 resume 不刷新；[Spec](docs/spec/runtime-result-file.spec.md) / [Plan](docs/spec/runtime-result-file.plan.md) / [本地验收](docs/acceptance/runtime-result-file.md)。
 - [文档索引](docs/README.md)：全部使用说明、设计契约与验收入口。
 - [CLI 与运维指南](docs/cli-guide.md)：详细命令、权限、恢复、状态目录和服务维护。
 - [Workflow 指南](docs/workflows/README.md)：开发、带审计开发、持续会话和一次生成。

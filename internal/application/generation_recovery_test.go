@@ -92,6 +92,14 @@ func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *te
 	if len(items) != 1 || items[0].Status != "compatible" || !bytes.Equal(before, canonical(r)) {
 		t.Fatalf("same contract report rejected or mutated original record: %+v", items)
 	}
+	withResult := r.Clone()
+	withResult.Request.ResultFile = &contracts.ResultFileInput{}
+	for _, contract := range []string{"", "steerrunner-result-file/v99", contracts.ResultFileContract} {
+		item := TakeoverFacts([]*runstate.Record{withResult}, nil, resources.RecoveryCapabilities(), workflow.Catalog(), contract)[0]
+		if (item.Status == "compatible") != (contract == contracts.ResultFileContract) {
+			t.Fatal("candidate file capability not fenced", contract, item)
+		}
+	}
 	for _, version := range []int{0, 99} {
 		copy := r.Clone()
 		copy.Snapshot.Ref.Version = version

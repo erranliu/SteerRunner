@@ -33,6 +33,7 @@ type Engine struct {
 	store             *storage.Store
 	ctx               context.Context
 	cancel            context.CancelFunc
+	shutdownContext   context.Context // guarded by mu; parent deadline for closing workers
 	runs              map[string]*runstate.Record
 	workers           map[string]*worker
 	checks            map[string]*runstate.CheckRecord
@@ -41,17 +42,18 @@ type Engine struct {
 	wait              sync.WaitGroup
 }
 type worker struct {
-	progressEnabled  bool
-	progressWatching bool // guarded by Engine.mu
-	parserTask       b.ParserTask
-	ownedInputs      map[string]bool
-	checkpoints      map[string]*workflow.WorkspaceSource
-	gate             sync.Mutex         // serializes new native dispatch with committed revocation
-	queryCancel      context.CancelFunc // protected by gate; only a read-only preparation scope
-	wake             chan struct{}
-	port             b.LifecyclePort
-	observer         b.LifecycleObserver
-	handle           b.StopHandle
+	progressEnabled         bool
+	progressWatching        bool // guarded by Engine.mu
+	resultCollectionStarted bool // one bounded attempt per live service; durable Sealed survives restart
+	parserTask              b.ParserTask
+	ownedInputs             map[string]bool
+	checkpoints             map[string]*workflow.WorkspaceSource
+	gate                    sync.Mutex         // serializes new native dispatch with committed revocation
+	queryCancel             context.CancelFunc // protected by gate; only a read-only preparation scope
+	wake                    chan struct{}
+	port                    b.LifecyclePort
+	observer                b.LifecycleObserver
+	handle                  b.StopHandle
 }
 
 func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logger, launchOwner ...func(context.Context, string) error) (*Engine, error) {
@@ -159,6 +161,7 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		// Published progress values are immutable; the collector/preparer commits
 		// new copies. Avoid cloning the whole execution record for this field.
 		next.Progress = prior.Progress
+		next.ResultFile = prior.ResultFile
 	}
 	var expected uint64
 	if prior != nil {
@@ -430,7 +433,7 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Repository.LocalPath != "" {
 		repository = r.Request.Repository.LocalPath
 	}
-	return b.LifecycleSetup{ProgressFile: progressPath(r), LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
+	return b.LifecycleSetup{ProgressFile: progressPath(r), ResultFile: resultPath(r), LaunchExecutionOwner: e.launchOwner, Logf: e.logger.Printf, ReadOnlyPreparation: func(ctx context.Context, query func(context.Context) error) error {
 		return e.preparationQuery(r.ID, w, ctx, query)
 	}, Snapshot: r.Snapshot.Clone(), ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest, AgentLaunchCommand: r.LaunchCommand, ProcessHost: process.New(60 * time.Second), OwnedProcess: w.handle, RepositoryPath: repository, RepositoryURL: r.Request.Repository.URL, RunDirectory: e.dir, CommandTimeout: 60 * time.Second, AttemptNumber: r.Snapshot.Session.AttemptNumber, GitExecutable: "git", RemoteName: r.Request.Repository.Remote, TargetBranch: r.Request.Repository.BaseBranch, WorkerTreeAbsent: func(identity b.ProcessIdentity) bool {
 		e.mu.Lock()
@@ -495,6 +498,9 @@ func (e *Engine) refreshPR(id string) error {
 }
 
 func (e *Engine) Shutdown(ctx context.Context) error {
+	e.mu.Lock()
+	e.shutdownContext = ctx
+	e.mu.Unlock()
 	e.cancel()
 	// Cancel observation/dispatch by this writer. Durable Run authorization is
 	// revoked only by accepted task controls, never by replacing the service.

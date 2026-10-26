@@ -28,6 +28,7 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
+	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
 	Progress            *Progress                      `json:"progress,omitempty"`
 	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
 	Closed              bool                           `json:"closed,omitempty"`

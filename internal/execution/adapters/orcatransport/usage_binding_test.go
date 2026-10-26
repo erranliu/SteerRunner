@@ -183,29 +183,30 @@ func TestUsageProgressAndShellWrappedInitialization(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, progressRun := range []string{"", run} {
-		launch := agentlaunch.ProgressCommand(inner, progressRun)
-		proof := UsageInitialization{LaunchCommand: launch, CreatedAt: start, RunID: run}
-		state := State{LaunchAccepted: true, LaunchConfirmed: true, LaunchDigest: digest([]byte(launch)), Turns: []Turn{{Accepted: true, Native: NativeProof{BaseRootAt: start.Add(time.Minute).UnixMilli()}}}}
-		if got := usageInitialization(state, proof); got == nil || got.WireSHA256 != parsers.TextHash(codex.NativeReadinessPrompt) {
-			t.Fatal("progress launch lost initialization", progressRun, got)
-		}
-		for _, bad := range []string{launch + "; other", strings.Replace(launch, "$srProgressBefore", "$other", 1)} {
-			p, s := proof, state
-			p.LaunchCommand, s.LaunchDigest = bad, digest([]byte(bad))
-			if usageInitialization(s, p) != nil {
-				t.Fatal("modified progress wrapper accepted")
+		for _, launch := range []string{agentlaunch.ProgressCommand(inner, progressRun), agentlaunch.FileCommands(inner, progressRun, ""), agentlaunch.FileCommands(inner, progressRun, run)} {
+			proof := UsageInitialization{LaunchCommand: launch, CreatedAt: start, RunID: run}
+			state := State{LaunchAccepted: true, LaunchConfirmed: true, LaunchDigest: digest([]byte(launch)), Turns: []Turn{{Accepted: true, Native: NativeProof{BaseRootAt: start.Add(time.Minute).UnixMilli()}}}}
+			if got := usageInitialization(state, proof); got == nil || got.WireSHA256 != parsers.TextHash(codex.NativeReadinessPrompt) {
+				t.Fatal("progress launch lost initialization", progressRun, got)
 			}
-		}
-		if progressRun != "" {
-			proof.RunID = strings.Repeat("b", 32)
+			for _, bad := range []string{launch + "; other", strings.Replace(launch, "$srProgressBefore", "$other", 1)} {
+				p, s := proof, state
+				p.LaunchCommand, s.LaunchDigest = bad, digest([]byte(bad))
+				if usageInitialization(s, p) != nil {
+					t.Fatal("modified progress wrapper accepted")
+				}
+			}
+			if strings.Contains(launch, run) {
+				proof.RunID = strings.Repeat("b", 32)
+				if usageInitialization(state, proof) != nil {
+					t.Fatal("foreign run initialized")
+				}
+			}
+			proof.RunID = run
+			state.LaunchDigest = "different"
 			if usageInitialization(state, proof) != nil {
-				t.Fatal("foreign run initialized")
+				t.Fatal("full digest bypassed")
 			}
-		}
-		proof.RunID = run
-		state.LaunchDigest = "different"
-		if usageInitialization(state, proof) != nil {
-			t.Fatal("full digest bypassed")
 		}
 	}
 }

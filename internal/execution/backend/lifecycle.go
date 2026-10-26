@@ -884,6 +884,7 @@ type LifecycleResolver interface {
 // implementation port. It is not a center record or a write capability.
 type LifecycleSetup struct {
 	ProgressFile string
+	ResultFile   string
 	// Optional host scope, invoked synchronously during Execute with the host's
 	// dispatch gate held. Only the supplied read-only query may run with that
 	// gate released. The scope restores the gate and rechecks authorization

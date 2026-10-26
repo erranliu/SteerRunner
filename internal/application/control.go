@@ -132,6 +132,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		next.CommandStates[command] = "completed"
 		_ = e.commitLocked(next, nil, "run_stopped")
 		e.mu.Unlock()
+		e.sealResult(e.ctx, id)
 		return false
 	}
 	var index = -1
@@ -197,10 +198,15 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	} else {
 		receipt, err = p.StopLifecycle(ctx, request.Clone(), w.handle)
 	}
-	if w.observer != nil {
-		_ = w.observer.Close(context.Background())
-		w.observer = nil
-	}
+	defer func() {
+		if w.observer != nil {
+			_ = w.observer.Close(context.Background())
+			w.observer = nil
+		}
+	}()
+	// Deferred after the stop commit and unlock, before observer/resource release.
+	// The original stop deadline remains in force throughout collection.
+	defer e.sealResult(ctx, id)
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	prior := e.runs[id]
@@ -290,6 +296,15 @@ func (e *Engine) failControl(id, command string, err error) {
 	_ = e.commitLocked(r, nil, "control_rejected")
 }
 func (e *Engine) closeWorker(id string, w *worker) {
+	e.mu.Lock()
+	parent := e.shutdownContext
+	e.mu.Unlock()
+	if parent == nil {
+		parent = context.Background()
+	}
+	// Only a previously confirmed Run end qualifies, never mere service exit.
+	// Result collection also respects the service shutdown parent's deadline.
+	e.sealResult(parent, id)
 	e.stopParserForShutdown(id, w)
 	if w.observer != nil {
 		_ = w.observer.Close(context.Background())
