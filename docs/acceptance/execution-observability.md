@@ -1,5 +1,9 @@
 # 执行可见性验收
 
+## 2026-10-26 Task18 远端复验补录
+
+缺失 working 通知的既有原输入查询修复保持原身份、唯一性、outcome 和零重发守卫。固定 f3 EXE 的两轮原远端执行、所选真实报告、发布与资源结算已复核，其中一轮包含用户要求的本机重启恢复；原 Run/Attempt/terminal/request 均保留。第二轮调用方进度仍为 0/6，不能声明进度显示连续通过。构建、两真实 PR、历史遗漏修正、原报告身份及本机 L2/业务未验边界集中见[补录](task18-runner-retest-20261026.md)，下文保留各历史时点原结论。
+
 ## 2026-10-25 缺失 working 通知的薄结束补证（验证中）
 
 Task18 原配置第二轮 Run `27761aaae314c4bbcd00a7d7fae688d1` 已产生 Gitea PR419 / head `e51362e701f788295b3ec41ebf20258b87828ecd`，Runner 仍为 `publish.execute / observation_unverified`，不能计成功。独立只读现有协议探针核实原 terminal/incarnation/worktree/pane/provider、唯一原发布输入及不变 done/273 字符完整正文；探针仅用公开上一 final 观察时间作为诊断估计 baseline，不冒充该 Run 的持久证明。
