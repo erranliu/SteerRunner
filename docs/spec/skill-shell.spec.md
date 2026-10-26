@@ -92,6 +92,12 @@ Runner 默认 state-dir 沿公开约定，首次解析为绝对路径保存；�
 
 ### 4.2 独立交付与定位
 
+2026-10-26 交付校验增量：构建回执使用 `steerrunner-build/v1`，绑定组件、平台、commit、dirty、实际源码内容摘要及 EXE SHA256。构建前后核对源码摘要，变化则拒绝发布本次输出。包记录 Runner、Viewer 各自回执及客户端/skill/安装脚本来源，允许组件来自不同提交；不据来源相同推导兼容。打包要求新格式回执，旧 EXE 或缺失/过期回执需重新构建；原 CLI、数据库和 Viewer 快照格式不变。
+
+包内 `manifest.json` 使用 version=2，增加必需的 `provenance` 及组件 build 记录；Viewer 快照 schema 仍为 1。清单必须覆盖除自身外的全部文件，拒绝遗漏、多余文件、重复/越界路径、链接、摘要或组件来源失配。安装在写入前调用同一校验实现，保留已有安装/同名 skill 的拒绝语义。新格式包携带校验脚本与构建回执，可安装后再次核对。新校验器拒绝旧 version=1 包；旧完整包仍使用随包旧安装器，已有用户安装、调用方配置与服务不迁移。
+
+受控交付资格保存于包外的 `steerrunner-delivery-qualification/v1` 报告，scope=`controlled-client-delivery`；四项必需结果为 installation、client、viewer、progress_transport，绑定最终包清单/内容摘要和各结果文件摘要，进度项另绑定原始快照、日志与进程/被测 EXE 身份记录。缺项、失败、包或证据变化不通过。原生 Viewer 只核验其既有 Run 快照，progress_transport 只验证原始字节通道；不宣称调用方测试进度页面或任何真实后端组合通过。该机制检测意外混装/变化，不是包签名或第三方来源认证。
+
 发行包包含 Runner EXE、独立 `steerrunner-viewer.exe`、`client/steerrunner-client.ps1`、两个 skill 文件夹和最小安装脚本。安装脚本只负责本机放置/定位与 skill 发现，不是配置或执行引擎。两个 skill 均定位同一份共享 helper，不各自复制实现，不引用开发 checkout、内部 testkit 或另一个必须额外安装的 skill。helper 从发行包根目录定位 Viewer；不再增加用户必须配置的 Viewer 路径或新的方案字段。
 
 安装时为各 skill 生成 `assets/client-location.json`，记录绝对 helper 路径；从 helper 所在 client 目录定位发行包根目录 EXE，作为首次发现候选，用户无需手填路径。默认安装到当前用户的持久目录，skill 安装到当前宿主支持的技能目录；明确指定目录时尊重指定值。安装与重装不得静默覆盖其它同名 skill、用户配置、运行记录或正在使用的 EXE。安装包记录版本及内容摘要，移动/删除后定位失败明确诊断。

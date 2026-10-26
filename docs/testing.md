@@ -1,5 +1,17 @@
 # SteerRunner L1–L4 测试指南
 
+## 固定交付包验证（2026-10-26）
+
+`scripts/test-delivery.ps1 -PackageDir <已打包目录> -OutDir <新的包外证据目录>` 以包内 Runner、客户端 helper 和 Viewer 为被测对象，不重新构建替代 Runner。复用隔离安装/篡改检查、客户端受控矩阵、Viewer 原生窗口检查和 `TestSRProgressFile`；后者验证原始字节、原子替换、多 Run 隔离、读取失败保留、服务重启零重发和终态快照不刷新。
+
+`qualification.json` 的 scope 固定为 `controlled-client-delivery`，记录包清单/完整内容摘要、测试 harness 的提交及源码摘要、四项结果文件摘要；进度项另绑定原始快照、日志与进程/被测 EXE 身份记录。失败保留独立报告，未执行或缺报告不能通过。报告必须位于包外；验证结束复核包与 harness 未变化。`scripts/verify-client-package.ps1 -PackageDir <目录> -Qualification <报告>` 复核同一包、完整检查和结果文件，之后改变包或绑定证据会拒绝。
+
+该资格不替代 L1/完整 Controlled、L2/L3 真机资格，也不验证 SteerLine 的业务进度字段或页面。Task18 的 0/6 仍按[原负例](acceptance/task18-runner-retest-20261026.md#测试进度显示的独立负例)保留；Runner 不解释测试安排、不补写业务进度。本入口只建立可重复的 Runner 侧字节通道基线。
+
+普通 L1 的 framework 增加 `tests/framework/delivery-test.ps1`，使用合成包核验清单遗漏/多余/重复/越界、构建回执失配和资格报告失败/不完整/跨包/证据变化；不启动模型、服务或 Viewer。`test-foundation.ps1 -RunnerExe <固定 EXE>` 和 `test-client.ps1 -ClientHelper <固定脚本>` 为显式选择被测产物的可选参数，省略时保持原入口行为。
+
+文件清单及源码摘要使用固定 ordinal 排序，避免 .NET/PowerShell 的区域排序差异。framework 和交付入口均另用 Windows PowerShell 5.1 核对同一包摘要；最终资格只有在宿主与 Windows PowerShell 身份一致时通过。
+
 2026-10-25 Orca CLI 等待增量：Controlled 新增 `TestSROrcaCLIWaitRetry`（现在 24 个顶层）；L3 新增 `orca-local.cli-wait-retry/default`、`orca-remote.cli-wait-retry/default`，现在 L3 为 29 场景/39 case，全目录 35 场景/45 case。两项原生 case 复用原 fixture 和转发 journal，以独占测试 lease 与同 cache 的其它 case 串行；独立 state-dir 不是 CLI cache 隔离证明。持锁故障只作用于 fixture 私有互斥 key，真实 CLI 转发器仍取得原用户共享 cache 的互斥；不会绕过生产入口。
 
 最小受控入口为 `./scripts/test-foundation.ps1 -Pattern '^TestSROrcaCLIWaitRetry$' -OutDir <新绝对目录>`，覆盖真实跨进程 >15 秒排队、原服务正常/强杀重启、stop、换代前撤销与暂态退避（六个变体）；组件/公开 schema/持久事务反例纳入原 L1。正式原生入口为 `./scripts/test.ps1 -Level L3 -Scenario orca-local.cli-wait-retry,orca-remote.cli-wait-retry -Config <独立配置> -MaxParallel 1 -OutDir <新目录>`；该入口仍运行完整 L1/Controlled 前置。案例实现不代表目标通过，实际构建、原生资格及清理见[专项验收](acceptance/orca-cli-wait-retry.md)。

@@ -94,5 +94,8 @@ $taskResults += @{name='native-result-contracts';passed=$true}
 & $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/progress-parallel-test.ps1') -Repository $taskRepo -Evidence (Join-Path $taskEvidence 'progress-parallel') *> (Join-Path $taskEvidence 'progress-parallel-framework.log')
 if ($LASTEXITCODE -ne 0) { throw 'Progress parallel evidence checks failed; inspect progress-parallel-framework.log' }
 $taskResults += @{name='progress-parallel-failure-artifact';passed=$true}
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/delivery-test.ps1') -Repository $taskRepo -Evidence (Join-Path $taskEvidence 'delivery') *> (Join-Path $taskEvidence 'delivery-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Delivery package and qualification guards failed; inspect delivery-framework.log' }
+$taskResults += @{name='delivery-package-and-evidence-binding';passed=$true}
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{exit_code=0;test_count=$taskResults.Count;tests=$taskResults}|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
 Write-Host 'Framework guards and Windows PowerShell checker passed'

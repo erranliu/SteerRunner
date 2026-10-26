@@ -126,6 +126,15 @@ Runner 每秒采样，变化时导出，无变化时每 5 秒发送心跳。View
 
 Runner 和 Viewer 输出到 `bin`，完整交付包输出到指定的新目录。开发验证入口为 `.\scripts\test.ps1 -Level L1`；真实代理和远端测试需按[测试指南](docs/testing.md)配置。
 
+构建会同时生成 EXE 的 `.build.json` 来源回执；打包须使用带新格式回执的 Runner 与 Viewer，生成 version=2 包清单。旧完整包继续使用随包安装器，新校验入口只接收新格式包。交付包冻结后，在包外运行受控交付验证，再核对同一包与对应报告：
+
+```powershell
+.\scripts\test-delivery.ps1 -PackageDir .\dist\SteerRunner -OutDir .\.evidence\delivery-check
+.\scripts\verify-client-package.ps1 -PackageDir .\dist\SteerRunner -Qualification .\.evidence\delivery-check\qualification.json
+```
+
+该入口使用包内 Runner、客户端脚本与 Viewer，检查隔离安装、客户端、原生 Viewer 和受控进度字节通道。它不调用真实模型或创建 PR；真实后端、调用方测试语义与页面资格仍按测试指南独立验证。测试后改变包内容须重新验证。
+
 ## 更多文档
 
 - [运行时单文件汇报通道](docs/runtime-progress.md)：可选原始字节、独立快照版本、执行环境路径及本机/Orca 远端采集；[Spec](docs/spec/runtime-progress.spec.md) / [Plan](docs/spec/runtime-progress.plan.md) / [验收](docs/acceptance/runtime-progress.md)。

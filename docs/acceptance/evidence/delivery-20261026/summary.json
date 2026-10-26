@@ -1,0 +1,49 @@
+{
+  "schema": "steerrunner-delivery-validation-summary/v1",
+  "date": "2026-10-26",
+  "scope": "controlled-client-delivery",
+  "status": "passed",
+  "manifest_version": 2,
+  "harness_source": {
+    "source_dirty": true,
+    "source_commit": "17e320659df7bca1337cc59ba2265561560c0b00",
+    "source_digest": "0a08be683e20c2e73372aebfccf68b0dd599809b3a0df0d5f1e8395f55a30603"
+  },
+  "runner": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "4e1fc3a005445ca0786b976a167dc10053dc532b3010e09a27b202ad57e01ff9",
+    "version": "0.2.0-dev.3-r2",
+    "source_commit": "17e320659df7bca1337cc59ba2265561560c0b00",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "6b6046ae2784d8c430a5a6efc667d741abe0227f5e0a6232bda3d1c25e3c2f96"
+  },
+  "viewer": {
+    "source_dirty": true,
+    "schema": "steerrunner-build/v1",
+    "component": "viewer",
+    "sha256": "10f785f272773fb2edd714e5eddba59d61db9cc4a267c937adcbf6d394943692",
+    "platform": "windows/amd64",
+    "source_commit": "17e320659df7bca1337cc59ba2265561560c0b00",
+    "source_digest": "ecd4b2b53c3bff9b6554cb26c93d00c2b6370e990995b65a67b9457a2ef7cdc3"
+  },
+  "manifest_sha256": "8b57f0ad98ce278e5f591e4310764eebf06732160c95ca4f969ef56f686490dc",
+  "payload_sha256": "a1cea52a144b1c08ccda44724d3aed0a38e402d0d600a40c9637ebbc0e23d63b",
+  "qualification_sha256": "9bb355396638accadba7bdf9b5f9a2eb5d8c7726b28c131b41f5f37474bcb14e",
+  "local_qualification": ".evidence/delivery-qualification-ordinal/qualification.json",
+  "tests": {
+    "viewer_native": 9,
+    "qualification_verified_in_both_runtimes": true,
+    "installation": 6,
+    "progress_transport": 1,
+    "delivery_guards_powershell7": 23,
+    "viewer_module": "passed",
+    "client": 32,
+    "delivery_guards_windows_powershell": 23,
+    "framework_groups": 23
+  },
+  "caller_progress_accepted": false,
+  "real_backend_qualification": false
+}

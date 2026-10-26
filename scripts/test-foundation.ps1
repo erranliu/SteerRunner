@@ -4,6 +4,7 @@ param(
     [string]$BaselineExe = '',
     [string]$ContentNativeExecutable = '',
     [string]$ContentNativeModel = '',
+    [string]$RunnerExe = '',
     [ValidateRange(1,60)][int]$TimeoutMinutes = 25
 )
 $ErrorActionPreference = 'Stop'
@@ -15,12 +16,12 @@ if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/foundation-' + [Da
 $taskEvidence = [IO.Path]::GetFullPath($OutDir)
 if (Test-Path -LiteralPath $taskEvidence) { throw 'Evidence directory must be new.' }
 New-Item -ItemType Directory -Path $taskEvidence | Out-Null
-$taskRunnerExe = Join-Path $taskEvidence 'steerrunner.exe'
+$taskRunnerExe = if ($RunnerExe) { (Resolve-Path -LiteralPath $RunnerExe).Path } else { Join-Path $taskEvidence 'steerrunner.exe' }
 $taskTestExe = Join-Path $taskEvidence 'integration.test.exe'
 $taskHelperExe = Join-Path $taskEvidence 'native-fixture.exe'
 Push-Location $taskRepo
 try {
-    & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe
+    if (-not $RunnerExe) { & (Join-Path $PSScriptRoot 'build.ps1') -OutFile $taskRunnerExe }
     & go test ./internal/contracts ./internal/cli ./internal/storage ./internal/host -run '^(TestSRCLIContract|TestSRShutdownReceipt|TestSRUnsupportedStorage|TestSRStartupIntent)$' -count=1 -timeout=2m -v 2>&1 | Tee-Object -FilePath (Join-Path $taskEvidence 'unit-foundation.log') | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Foundation unit tests failed; inspect unit-foundation.log.' }
 	if ($ContentNativeExecutable) {
