@@ -79,6 +79,16 @@ func (p *NativeProof) rejectIdentity(s native.AgentState) bool {
 		p.reject("Native original agent/pane/provider changed")
 		return true
 	}
+	if o := s.MetadataObservation; o != nil && s.CanQueryCompletionInput() {
+		if p.BaseAuthority != "" && o.AuthorityID != p.BaseAuthority {
+			p.reject("Native baseline authority changed")
+			return true
+		}
+		if p.Authority != "" && (o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation) {
+			p.reject("Native main-agent authority changed")
+			return true
+		}
+	}
 	return false
 }
 
@@ -317,9 +327,12 @@ func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool 
 	}
 	o := i.Observation
 	if i.MatchesOriginalQuery(s) {
-		// The legacy projection has no hook envelope. A separate terminal-
-		// fenced, unique-input query corroborates this exact canonical done
-		// record instead; it cannot authorize starts, streams, or another end.
+		if o := s.MetadataObservation; o != nil && (o.Revision <= p.BaseRevision || p.Authority != "" && o.Revision < p.Revision) {
+			return false
+		}
+		// A separate terminal-fenced, unique-input query corroborates this
+		// exact canonical done record, with either absent metadata or fully
+		// matching metadata. It cannot authorize starts, streams or another end.
 		// The independently fenced original-input read can also corroborate a
 		// done record whose streamed working notification was never received.
 		return s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > p.BaseRootAt && i.Timestamp <= s.MainAgent.StateStartedAt &&
@@ -502,7 +515,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&
 			s.MainAgent != nil && s.UpdatedAt >= s.MainAgent.StateStartedAt &&
 			turn.Native.BaseRootAt > 0 && turn.Native.Conflict == "" &&
-			(turn.Native.WorkingAt > 0 || s.ThinMetadata && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt) &&
+			(turn.Native.WorkingAt > 0 || s.CanQueryCompletionInput() && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt) &&
 			turn.Native.attribution(s, turn, false).kind == provenanceMissing && !turn.Native.retainsOriginalInput(s) {
 			var inputErr error
 			s, inputErr = l.queryInput(ctx, state.Process, turn.Native.Pane, turn.Native.BaseRootAt, s)

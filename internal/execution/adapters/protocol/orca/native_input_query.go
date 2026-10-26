@@ -19,7 +19,7 @@ type originalInputQuery struct {
 // queried native completion. A copied proof cannot authorize another record.
 func (i *NativeInput) MatchesOriginalQuery(s AgentState) bool {
 	return i != nil && i.query != nil && i.ID == i.query.input.ID && i.Text == i.query.input.Text &&
-		i.Timestamp == i.query.input.Timestamp && i.Baseline == i.query.input.Baseline && sameThinCompletion(i.query.state, s)
+		i.Timestamp == i.query.input.Timestamp && i.Baseline == i.query.input.Baseline && sameOriginalCompletion(i.query.state, s)
 }
 
 func (i *NativeInput) MatchesOriginalProcess(p b.ProcessIdentity) bool {
@@ -38,6 +38,37 @@ func sameThinCompletion(a, s AgentState) bool {
 		!a.Interrupted && !s.Interrupted && !a.ToolOutput && !s.ToolOutput
 }
 
+// CanQueryCompletionInput admits only the existing thin projection or a fully
+// corroborated metadata record. Partial metadata is never promoted to thin.
+// The actual input must still be read uniquely after the frozen baseline and
+// fenced by the exact terminal/process before and after that read.
+func (s AgentState) CanQueryCompletionInput() bool {
+	return sameThinCompletion(s, s) || sameCorroboratedCompletion(s, s)
+}
+
+func corroboratedCompletion(s AgentState) bool {
+	o := s.MetadataObservation
+	return !s.ThinMetadata && s.MainAgent != nil && s.State == "done" && s.MainAgent.State == "done" &&
+		s.AgentType == "codex" && s.PaneKey != "" && s.ProviderSession.ID != "" && s.ProviderSession.TranscriptPath != "" &&
+		s.Prompt == "" && s.UpdatedAt >= s.MainAgent.StateStartedAt && s.MainAgent.StateStartedAt > 0 &&
+		s.TurnStartedAt > 0 && s.TurnStartedAt <= s.MainAgent.StateStartedAt &&
+		o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Incarnation > 0 && o.Revision > 0 && o.ObservedAt >= s.MainAgent.StateStartedAt &&
+		(s.Observation == nil || *s.Observation == *o) &&
+		!s.SessionBoundary && !s.RestoredUnconfirmed && !s.Interrupted && !s.ToolOutput
+}
+
+func sameCorroboratedCompletion(a, s AgentState) bool {
+	return corroboratedCompletion(a) && corroboratedCompletion(s) &&
+		a.PaneKey == s.PaneKey && a.ProviderSession == s.ProviderSession && *a.MainAgent == *s.MainAgent &&
+		a.UpdatedAt == s.UpdatedAt && a.TurnStartedAt == s.TurnStartedAt && a.LastAssistantMessage == s.LastAssistantMessage &&
+		*a.MetadataObservation == *s.MetadataObservation &&
+		(a.Observation == nil && s.Observation == nil || a.Observation != nil && s.Observation != nil && *a.Observation == *s.Observation)
+}
+
+func sameOriginalCompletion(a, s AgentState) bool {
+	return sameThinCompletion(a, s) || sameCorroboratedCompletion(a, s)
+}
+
 func queryInputTerminal(ctx context.Context, environment string, p b.ProcessIdentity) (Terminal, error) {
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
 		return Terminal{}, stateIdentityError("original native input terminal identity is incomplete")
@@ -52,8 +83,8 @@ func queryInputTerminal(ctx context.Context, environment string, p b.ProcessIden
 	return t, nil
 }
 
-func queryThinOriginalInput(ctx context.Context, environment string, p b.ProcessIdentity, pane string, baseline int64, before AgentState) (AgentState, error) {
-	if !sameThinCompletion(before, before) || baseline <= 0 || before.MainAgent.StateStartedAt <= baseline {
+func queryFencedCompletionInput(ctx context.Context, environment string, p b.ProcessIdentity, pane string, baseline int64, before AgentState) (AgentState, error) {
+	if !before.CanQueryCompletionInput() || baseline <= 0 || before.MainAgent.StateStartedAt <= baseline {
 		return before, errors.New("Orca original main-agent metadata does not corroborate native input")
 	}
 	terminal, err := queryInputTerminal(ctx, environment, p)
@@ -68,7 +99,7 @@ func queryThinOriginalInput(ctx context.Context, environment string, p b.Process
 	if err != nil {
 		return after, err
 	}
-	if !sameThinCompletion(before, after) {
+	if !sameOriginalCompletion(before, after) {
 		return after, errors.New("Orca original completion changed during native input query")
 	}
 	confirmed, err := queryInputTerminal(ctx, environment, p)
@@ -81,6 +112,14 @@ func queryThinOriginalInput(ctx context.Context, environment string, p b.Process
 	frozen := after
 	main := *after.MainAgent
 	frozen.MainAgent = &main
+	if after.MetadataObservation != nil {
+		metadata := *after.MetadataObservation
+		frozen.MetadataObservation = &metadata
+	}
+	if after.Observation != nil {
+		observation := *after.Observation
+		frozen.Observation = &observation
+	}
 	input.query = &originalInputQuery{process: p, state: frozen, input: *input}
 	after.NativeInput = input
 	return after, nil
