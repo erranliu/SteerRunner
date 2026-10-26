@@ -1,0 +1,25 @@
+{
+  "package": "github.com/erranliu/SteerRunner/internal/application",
+  "command": "go test ./internal/application -count=1 -timeout=30m -json",
+  "source_commit": "8fc1b0bc79dd89b00ee118de95b649855aa9a27f",
+  "source_dirty": false,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "started_at": "2026-10-27T05:52:33.6930379+08:00",
+  "finished_at": "2026-10-27T06:00:07.451494+08:00",
+  "elapsed_seconds": 453.7584561,
+  "package_elapsed_seconds": 451.112,
+  "exit_code": 0,
+  "top_level_passed": 141,
+  "passed_including_subtests": 333,
+  "failed": 0,
+  "skipped": 0,
+  "previous_timeout_test": {
+    "Test": "TestRAConcurrencyParserStopResources",
+    "Action": "pass",
+    "Elapsed": 9.38
+  },
+  "implementation_changes": "none",
+  "runner_version": "0.2.0-dev.3-r3",
+  "runner_source_commit": "8fc1b0bc79dd89b00ee118de95b649855aa9a27f",
+  "runner_sha256": "F45830F3DE8780EF049F56FA56CA941B426C018FB0826CE33A4142B4D8689A02"
+}

@@ -296,4 +296,5 @@ L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读�
 原 generate/conversation/question/unknown 回归分别保持独立场景。
 定向单元覆盖输入及公开 Schema、旧 commit 与后续提交隔离、文件/总量限制、链接/危险路径、Git 环境覆盖、快照漂移、正文/JSON/Schema/缺 final/1 MiB 边界。
 真实 Codex 仅核验只读工具读固定文件、双文档、完成结果重启与重放、停止及结算；未把受控运行中故障注入算作真实资格。
+补充 application 整包复验：30 分钟预算下完整通过 141 个顶层测试、含子用例 333 项，0 失败/跳过，包内耗时 451.112 秒；未宣称完整仓库全集通过，详见上述功能的验收记录。
 [Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接入](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md)。
