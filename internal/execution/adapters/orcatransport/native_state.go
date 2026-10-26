@@ -320,7 +320,7 @@ func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool 
 	i := s.NativeInput
 	if i == nil || !turn.Accepted || !turn.Started || p.agentName() != "codex" || p.BaseRootAt <= 0 ||
 		i.Baseline != p.BaseRootAt || i.ID == "" || i.Timestamp <= p.BaseRootAt || i.Timestamp > s.UpdatedAt ||
-		i.Text != strings.TrimRight(strings.ReplaceAll(turn.Prompt, "\r\n", "\n"), "\r\n") ||
+		i.Text != nativePromptText(turn.Prompt) ||
 		s.PaneKey != p.Pane || s.ProviderSession.ID == "" || s.ProviderSession.ID != p.Provider || s.AgentType != p.agentName() ||
 		s.MainAgent == nil || s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted || s.ToolOutput || p.Conflict != "" {
 		return false

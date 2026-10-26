@@ -6,6 +6,7 @@
 2. 原生 lifecycle 在缺少 working 时可进入该严格查询，不建立新状态或伪造 working；authority/revision 和旧冲突守卫继续约束最终结果。
 3. 用真实 IPC fixture 复现原 f3 拒绝同形状；补完整元数据正例、观察器重建、重复输入及元数据/资源读取竞争反例。
 4. 定向 owner、正式 L1、构建字节身份分别存档。候选二进制及变更可审查后，按原固定 Runner 验收约束取得未来新轮 pin 授权；不得热替换原 Run。
+5. 真实候选又暴露 Windows CRLF paste 多出空行：按公开冻结提示、材料引用及源码固定后缀逐字节重建，验证原 native 输入正好为 CR→LF 的 paste 结果。发送前复用已有 LF 形式编译，保留原逻辑输入/digest；用真实原发送捕获、ConPTY 行变换和 IPC 完整 lifecycle 回归，覆盖 observed/missed/restored，以及正文、额外空行和重复输入拒绝。新 EXE 另登记，不替换此前获准的旧候选。
 
 | 验证 | 入口与通过条件 |
 | --- | --- |

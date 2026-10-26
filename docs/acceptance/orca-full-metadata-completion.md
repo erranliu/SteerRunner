@@ -26,3 +26,13 @@ WMI 隐藏独立验证 driver 只降低自身 token 中四项原普通调用方�
 用户已明确回复“允许新轮次使用该候选 Runner（推荐）”，仅批准未来全新轮次使用原代 `8e1ce9f` / 上述 `30b3bc...` EXE。授权另存 `runner-pin-authorization-20261026T0930.json`，原 f3 Run/home/pin 不变；模型、独立 Unity 环境绑定、业务合同、原 base 与必跑测试保持不变。
 
 后续使用新普通 clone/home、原测试入口及原始报告，逐轮核实原 Run/Attempt、唯一输入、真实发布、原进度布尔集合及 UI、一致的原报告与清理，连续两次全部合格才完成。原 6/6、模型自述或组件回归不能代替这两次。原报告的 dirty 代码身份差异、clean published-head 和完整 MagicPotion / 人工业务未验边界继续保留。
+
+## 新候选 CRLF paste 发现
+
+原代 `8e1ce9f` / `30b3bc...` 的 candidate-01 真实执行八项测试，公开进度已为 8/8，但实施结束后仍未进入发布，不能计通过。独立只读查询证明完整元数据资格及 terminal-fenced 唯一输入查询本身均成功，私有 baseline 未被读取或供给。这次问题不是忽略 working 的资格分支本身。
+
+公开冻结 prompt、原材料路径及源码定义的完成标记/进度后缀可以重建 9498 字节逻辑提示，其中包含内联 Windows writer 的 57 个 CRLF。原 native transcript 为 9497 字节，逐字节等于把每个 CR 换成 LF 后移除结尾换行的 paste 结果。现有归属匹配要求 CRLF→单 LF，对应 9440 字节，两者正好多出 57 个换行；因此拒绝全文匹配符合原守卫。证据 `candidate-01/diagnostics/native-attribution-20261026T1125/exact-wire-reconstruction.json`，真实 native 输入 SHA256 为 `8b565aeffdfde180f09c72649a53f1ec164b411f530ffe41066ae88acd4092cc`。
+
+修正在原发送前编译 CRLF→LF，并与原匹配路径共享函数，不折叠事后 transcript 空白或改写历史。新回归从实际捕获的唯一发送构造 ConPTY paste 结果，再走原 IPC 和 lifecycle；旧实现确实多出空行而失败。首版 observed fixture 使用了不同 incarnation，被原身份守卫正确拒绝；修正夹具同源 incarnation 后正例通过，产品守卫未放宽，原失败保留。
+
+该追加修复尚需新一轮完整 owner/L1/干净构建登记；此前用户对 `30b3bc...` 的批准不自动覆盖新二进制。candidate-01 原报告/进度及 SDK 环境变化证据保留，完整复验仍为 0，不声称发布或 clean-head / 完整业务通过。
