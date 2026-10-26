@@ -20,10 +20,7 @@ func wirePrompt(t *Turn) string {
 		return codex.RemoteModelPrompt(t.Command, t.InputDigest, t.StepID, t.Model, t.ReasoningEffort, t.Prompt)
 	}
 	if t.WireFormat != remoteWireCommand && t.WireFormat != extensionWireCommand {
-		// ConPTY treats CR and LF as separate paste line breaks. Compile the
-		// native wire text to the same form required by original-input proof,
-		// before sending once; never repair a changed transcript afterwards.
-		return nativePromptText(t.Prompt)
+		return t.Prompt
 	}
 	// The TUI removes trailing line terminators. Compile that wire text before
 	// hashing, so history verification compares every delivered byte.

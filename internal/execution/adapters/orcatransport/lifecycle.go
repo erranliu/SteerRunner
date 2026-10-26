@@ -707,6 +707,12 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	// start/completion evidence. A 30s CLI wait would hold the shared file lock
 	// while other Runs need independent preparation/observation calls.
 	text := wirePrompt(turn)
+	if turn.WireFormat == "" && s.Ref.Agent.Name == "codex" {
+		// ConPTY pastes CR and LF as separate line breaks. Compile Codex text
+		// to its existing original-input matching form before the only send;
+		// keep the frozen logical input/digest and other agents unchanged.
+		text = nativePromptText(text)
+	}
 	if l.profile.Terminal != nil && l.profile.Terminal.Agent == "dsh" {
 		// ConPTY's paste ingress uses CR for line breaks. DSH normalizes these
 		// back to LF in the original composer; raw LF is lost by its Windows
