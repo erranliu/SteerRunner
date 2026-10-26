@@ -36,3 +36,15 @@ WMI 隐藏独立验证 driver 只降低自身 token 中四项原普通调用方�
 修正在原发送前编译 CRLF→LF，并与原匹配路径共享函数，不折叠事后 transcript 空白或改写历史。新回归从实际捕获的唯一发送构造 ConPTY paste 结果，再走原 IPC 和 lifecycle；旧实现确实多出空行而失败。首版 observed fixture 使用了不同 incarnation，被原身份守卫正确拒绝；修正夹具同源 incarnation 后正例通过，产品守卫未放宽，原失败保留。
 
 该追加修复尚需新一轮完整 owner/L1/干净构建登记；此前用户对 `30b3bc...` 的批准不自动覆盖新二进制。candidate-01 原报告/进度及 SDK 环境变化证据保留，完整复验仍为 0，不声称发布或 clean-head / 完整业务通过。
+
+
+candidate-01 已完成原 Run stop、宿主 stop 和 public offline 核验：resources_settled=true，完整精确 owned native census0 / truncated=false / omittedHosts 为空，本地 home/bin 进程0。原八项报告、XML、输入与清理只读核验通过，进度 version33 恰好八个 true、302字节，SHA256 `0a1b323fd2072babff36eb71e998194fa8162cd564be764ed9c034c00287a5fe`，API/UI8/8；没有真实 PR，故完整连续资格仍为0。证据为独立 scope 的 `candidate-01/verification-20261026T1150-reports/`、`verification-20261026T1155-inputs/` 和 `cleanup-blocked-20261026T1200/`。
+
+首版换行修正放在通用 wire 分支，完整 owner 检查发现 Pi 的原历史 wire 断言受影响。后续将编译精确限制于 Codex native 唯一发送，Pi 原断言保持不变；两代完整 owner 已通过，正式 L1/构建02仍在核验。前次失败日志保留，不用定向通过替代完整资格。原代与主线新增四文件的 aggregate stable patch-id 均为 `f1a4a919f4cd29a7e1366d44f26e8b0ab38ce409`。
+
+原 worker 在本轮另行临时安装 SDK8.0.427，而机器原有 SDK8.0.426 确已存在。该环境变化单独保留、不追认不变环境资格。拟议独立启动器只向子进程 PATH 加入现有 SDK8.0.426，沿原 Unity 与 native 字节；不安装 SDK、不改全局/原 home/profile。新 Runner 与此环境例外尚未获得未来新轮批准；不存在热替换或新业务输入。
+
+
+正式验证02已完成：主线干净受测源 `20d3bd98e40797b0dc70b8edaf38fa2ef560e11d` L1 703 顶层+29扩展通过，原代干净受测源 `7c0df6cafb050f294e7066dfdeb896424fe78230` L1 676顶层+29扩展通过；两个完整 owner、framework、native compile、零匹配守卫通过。原代干净构建 EXE SHA256 `00051e332f19805db1f814069c98da48be7411b8b2799955283bc3ee81edca0d`，保存在 `runner-wire-build-02/`。main-build02 时本验收文档补录已进入工作区，因此构建元数据 source_dirty=true；如实保留，不冒称干净 main 构建。主线后续纯文档提交后的干净 build03 单独保存来源，L1 受测产品代码仍为20d。
+
+拟议 SDK 启动器 qualification03 及无模型原生 initialize/config/read/command/exec 探针通过，真实解析现有 `C:/Users/Administrator/.dotnet/dotnet.exe` 8.0.426 与要求的 Unity 路径，父环境未变、无 thread/turn、原生进程和诊断终端已停止。启动器 SHA256 `061b713d2c65d35bb9005ac10bcf21c8f73b83ec867f22a3d9dee21c869182c3`，默认 Defender 开启、定向扫描无检测。前两次资格在编译前因 PS7 不支持目标 ConsoleApplication、以及本地 CRLF 文件与原 LF payload 的 SHA 区别失败，均保留；未覆盖已有二进制或绕过防护。原代新 Runner 与该子环境提案仍须未来新轮明确批准，连续真实完整复验仍为0/2。
