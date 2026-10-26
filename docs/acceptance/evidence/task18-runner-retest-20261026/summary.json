@@ -1,0 +1,201 @@
+{
+  "schema": "task18-runner-retest-evidence/v1",
+  "recorded_at": "2026-10-26T06:26:21.922677+00:00",
+  "runner_chain_consecutive_passes": 2,
+  "progress_display_consecutive_passes": 0,
+  "overall_task18_business_accepted": false,
+  "runner_product_commit": "f3dd4ec020134e1eb56625ddd670641a33229151",
+  "runner_exe_sha256": "4a822c99fec734f296890b8d71a4a4013dfef46e3ab4c1395573130025a4e16e",
+  "test_harness_commit": "58dd5ba44460633ef4b98e84eb4d7437221b788d",
+  "caller_commit": "57623186b63c16be2a5748665e63d52ae615adbf",
+  "task_base": "afe67b539e787fe05ce58876d612a6edb45e25f7",
+  "task_contract_digest": "51da15701f56ee129ebf21624ac258764ded1d69437bc6cd32b9e3008fdc5724",
+  "profile_id": "orca-remote-desktop64g-xhigh-unity-env",
+  "profile_digest": "125fb06bd49ed2f13787b0cf56bd4624516bf27efd53bd0415bdab611b3eb3aa",
+  "rounds": [
+    {
+      "round": 6,
+      "candidate_id": "8b875aeabdde6a23a638cb11839200b2",
+      "runner_run_id": "8b545e5b195c42bd85fb72d20564afec",
+      "attempt_id": "50a180c3b9a1ebedf7f9bd16ef5d7c4d",
+      "head": "e067ba86df0ec7ee77185b83a850e547be003248",
+      "pr": "http://192.168.0.66:3000/zymobile/merge-h-308-code/pulls/423",
+      "selected_test_ids": [
+        "l1.minimum",
+        "l2.smoke",
+        "activities.bingo.reward_purchase_restart_duplicate",
+        "structure.asmdef-governance",
+        "structure.asmdef-source",
+        "structure.resource-contract",
+        "structure.diff-check"
+      ],
+      "resources_settled": true,
+      "native_terminals": 0,
+      "local_owned_processes": 0,
+      "no_extra_caller_business_inputs": true,
+      "project_required_l1_l2_verified": true,
+      "published_head_tests_verified": false,
+      "task18_business_accepted": false,
+      "scope": "Original Runner execution/result/publication and all seven actual tests, including original mandatory Unity L1/L2, individually frozen report/input/XML/cleanup verification, plus owned Run/host shutdown. Not clean-final-head or full MagicPotion business acceptance.",
+      "qualification_boundary": "L1 and L2/Bingo passed against their own frozen original dirty workspaces before publication. L1 original codeIdentity differs from L2/Bingo; current original-base reconstruction matches L2/Bingo. Do not infer all selected tests ran against the same final code or clean PR head. Full MagicPotion/PlayMode/manual task-specific requirements remain unaccepted. Original earlier failures retained; no test rerun by parent.",
+      "checks_report_sha256": "4dfdb46d6e7ea4ee5a60c436aeaf70598b1600bb476a4d6dacff1a502a04eb27",
+      "chain_report_sha256": "ad37611f2817fbd62a5dee94f99e57894af26e99b634c39b5da1ebc6745b3bd5",
+      "xml_passed_counts": [
+        11,
+        1,
+        1,
+        1
+      ],
+      "original_code_identities": [
+        "afe67b539e787fe05ce58876d612a6edb45e25f7:b9c4f91a7952a245c72fd790376edab15d0cd3d403ef3f2e4cf612df9a11c6f1",
+        "afe67b539e787fe05ce58876d612a6edb45e25f7:221e0e3d58179c888b422d2627b01aa761e2831633f29ab59c0ff93122f4529d",
+        "afe67b539e787fe05ce58876d612a6edb45e25f7:221e0e3d58179c888b422d2627b01aa761e2831633f29ab59c0ff93122f4529d"
+      ],
+      "dirty_at_readonly_verification": [
+        " M Merge-Blast/Assets/ZYMobileLib/Resources/ZYMobileBuiltInResourceWhitelist.json"
+      ],
+      "progress_display_passed": true,
+      "original_evidence_root": "C:/SteerlineDebug/wt-507e-task18-retest/round-06",
+      "raw_reports": "verification-20261026T0449-reports-02/remote-report-evidence.json",
+      "original_input_validation": "verification-20261026T0452-inputs/remote-report-evidence.json",
+      "cleanup": "round-06/cleanup-20261026T0500/result.json"
+    },
+    {
+      "round": 7,
+      "candidate_id": "1af016d628b355e048bb101b47012557",
+      "runner_run_id": "596b316d8e877daed36279206054f05a",
+      "attempt_id": "16cc9f19a54d37635c500df8b0057b1a",
+      "head": "dadf856da31e433042dda32dea8cb5c7665b3937",
+      "pr": "http://192.168.0.66:3000/zymobile/merge-h-308-code/pulls/426",
+      "selected_test_ids": [
+        "l1.minimum",
+        "l2.smoke",
+        "structure.asmdef-governance",
+        "structure.asmdef-source",
+        "structure.resource-contract",
+        "structure.diff-check"
+      ],
+      "resources_settled": true,
+      "native_terminals": 0,
+      "local_owned_processes": 0,
+      "no_extra_caller_business_inputs": true,
+      "project_required_l1_l2_verified": true,
+      "published_head_tests_verified": false,
+      "task18_business_accepted": false,
+      "scope": "Original Runner chain and all six real selected historical test reports, including Unity L1/L2, followed by owned cleanup. Includes user-authorized original-home reboot recovery. Progress reporting/display is a separate failed validation; not full product/business acceptance.",
+      "qualification_boundary": "L1 and L2 passed against their own frozen original dirty workspaces before publication. L1 original codeIdentity differs from L2; current original-base reconstruction differs from both original test identities. Do not infer all selected tests ran against the same final code or clean PR head. Full MagicPotion/PlayMode/manual task-specific requirements remain unaccepted. Original earlier failures retained; no test rerun by parent.",
+      "checks_report_sha256": "b22c760cfdb0ccf4ba4f98e992ace2ab0ea355eea46fcbad9a17eaa11c3862a7",
+      "chain_report_sha256": "b970949f1bad2ed09c336450dadb12cf1e8f81d6cf855e7956a3413315dc4db4",
+      "xml_passed_counts": [
+        11,
+        1,
+        1
+      ],
+      "original_code_identities": [
+        "afe67b539e787fe05ce58876d612a6edb45e25f7:949f645238a7ab4f5b34b635fe363d8caf5cdd886c91584a639acf83d580fe4d",
+        "afe67b539e787fe05ce58876d612a6edb45e25f7:099e33e0297f2029b5ab52a1bfa1a35ccc49527a00b4242f4f079866b08e8d16"
+      ],
+      "dirty_at_readonly_verification": [],
+      "progress_display_passed": false,
+      "original_evidence_root": "C:/SteerlineDebug/wt-507e-task18-retest/round-07",
+      "raw_reports": "verification-20261026T0616-reports/remote-report-evidence.json",
+      "original_input_validation": "verification-20261026T0620-inputs/remote-report-evidence.json",
+      "cleanup": "round-07/cleanup-20261026T0630/result.json",
+      "reboot_recovery": {
+        "same_original_submit_request": true,
+        "stage": "publish.execute",
+        "after_service_created": "134374680476911573",
+        "before_service_instance": "b9c61d791da1283ac5c33c619163fad6",
+        "same_attempt": true,
+        "last_boot_time": "2026-10-26T05:49:24.5000000Z",
+        "after_service_instance": "70ecd2b2e2cb8826ff4a734a4c642267",
+        "at": "2026-10-26T06:02:24.8469630Z",
+        "same_run": true,
+        "user_instruction": "本机刚才重启了一下，你正好试试能不能恢复",
+        "revision": 201,
+        "same_original_terminal_incarnation": true,
+        "after_service_pid": 3684,
+        "restoration_evidence": "round-07/diagnostics/reboot-recovery-20261026T0600",
+        "no_new_task_submit_reply_resume": true,
+        "original_home_restored": true,
+        "qualification": "Recovery verified through original identity and workflow advancement, not final PR/test/cleanup acceptance.",
+        "same_candidate": true,
+        "snapshot": "round-07/observations/2026-10-26T06-01-11-594Z"
+      },
+      "public_progress": {
+        "progress_version": 1,
+        "observed_at": "2026-10-26T04:57:56.3381215Z",
+        "collection_status": "closed",
+        "commit": "afe67b539e787fe05ce58876d612a6edb45e25f7",
+        "status": "ready",
+        "diagnostic": "进度字段与本次固定测试安排不一致",
+        "plan_path": "SteerlineFlow/plans/n308-18.plan.md",
+        "total": 6,
+        "passed": 0,
+        "pending": 6,
+        "rows": [
+          {
+            "id": "l1.minimum",
+            "name": "现有 L1 精选集合",
+            "level": "L1",
+            "environment": "Unity 2022.3.62f2 / Android / test_bundle",
+            "command": "pwsh -File tools/run-tests.ps1 -Level L1",
+            "check": "真实发现并执行 tools/testing/l1-selection.json 精选成员，XML/summary/输入核验一致，非零且无失败、跳过或清理失败。",
+            "status": "pending"
+          },
+          {
+            "id": "l2.smoke",
+            "name": "冷启动与核心三合一 Smoke",
+            "level": "L2",
+            "environment": "Unity 2022.3.62f2 / Android / test_bundle",
+            "command": "pwsh -File tools/run-tests.ps1 -Level L2",
+            "check": "空档首图与已有玩家真实三合一、保存退出均完成；非零业务断言、输入和 cleanup 全部通过。",
+            "status": "pending"
+          },
+          {
+            "id": "structure.asmdef-governance",
+            "name": "程序集依赖治理",
+            "level": "L4",
+            "environment": "PowerShell / 仓库静态结构",
+            "command": "pwsh -File tools/run-managed-check.ps1 -TestId structure.asmdef-governance",
+            "check": "允许边/禁止边和程序集治理校验退出码为 0；仅结构证据。",
+            "status": "pending"
+          },
+          {
+            "id": "structure.asmdef-source",
+            "name": "源码程序集唯一归属",
+            "level": "L4",
+            "environment": "PowerShell / 仓库静态结构",
+            "command": "pwsh -File tools/run-managed-check.ps1 -TestId structure.asmdef-source",
+            "check": "真实索引/唯一归属/依赖图检查退出码为 0，保存本轮报告；不替代 Unity 编译。",
+            "status": "pending"
+          },
+          {
+            "id": "structure.resource-contract",
+            "name": "资源入口结构契约",
+            "level": "L4",
+            "environment": "PowerShell / 仓库静态结构",
+            "command": "pwsh -File tools/run-managed-check.ps1 -TestId structure.resource-contract",
+            "check": "资源边界关键结构检查退出码为 0；不证明真实 Bundle/Source 行为。",
+            "status": "pending"
+          },
+          {
+            "id": "structure.diff-check",
+            "name": "Git 空白检查",
+            "level": "L4",
+            "environment": "Git / 当前工作区",
+            "command": "pwsh -File tools/run-managed-check.ps1 -TestId structure.diff-check",
+            "check": "退出码为 0；只检查工作区差异空白，提交候选另按固定 base/candidate 检查。",
+            "status": "pending"
+          }
+        ],
+        "material_status": "current",
+        "association_available": true
+      }
+    }
+  ],
+  "local_complete_l2_passed": false,
+  "round05_excluded": "Missing mandatory project Unity L1/L2; original four-report Runner-only history remains unchanged.",
+  "documentation_base_commit": "74d594c5f00e32e97d2ee911db5ac787302022bc",
+  "documentation_base_not_tested_product": true
+}

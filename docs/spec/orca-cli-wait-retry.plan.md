@@ -1,5 +1,7 @@
 # Plan：Orca CLI 等待、读取重试与公开状态
 
+2026-10-26 补录执行结果见 [Task18 远端复验](../acceptance/task18-runner-retest-20261026.md)：原 Run 的执行、报告归属、真实发布和清理两轮完成，用户批准的独立 Unity 环境绑定和本机重启恢复逐项登记。验证内容限定为各自冻结的原始报告，不继承为 clean 发布 head、完整 Task18 功能、本机完整 L2 或本 Plan 独立原生等待场景资格；调用方进度第二轮未完成，另列负例。本次仅补录文档，不修改原执行策略或补发输入。
+
 日期：2026-10-25。状态：P0–P2 已实施；L1/定向受控通过，P3 完整验收被 Windows Defender 拦截。依据 [Spec](orca-cli-wait-retry.spec.md)，结果归[验收记录](../acceptance/orca-cli-wait-retry.md)。源码调查基线 `af5e244ddae05d4c19069852d56c5a74a68ab1ce`。
 
 ## 1. 独立交付与结构约束

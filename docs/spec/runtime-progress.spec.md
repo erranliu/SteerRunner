@@ -1,5 +1,7 @@
 # 运行时单文件汇报通道 Spec
 
+2026-10-26 调用方联验补录见 [Task18 复验](../acceptance/task18-runner-retest-20261026.md#测试进度显示的独立负例)：一轮真实页面 7/7 与报告一致，另一轮原六项报告通过而公开测试进度仍 0/6、字段不匹配。该负例不能记作调用方上报/显示验收通过，也不能仅据它认定原始字节通道或某个渲染层故障。本 Spec 的内容所有权与原始字节边界保持不变，未补写原文件制造通过。
+
 2026-10-24；实现与注册已完成，当前构建资格见[审计验收](../acceptance/runtime-progress-pr55-review.md)，主线合入过程见[整合验收](../acceptance/runtime-progress-integration.md)，原始历史见[专属验收](../acceptance/runtime-progress.md)。本次只修改 Runner，Orca 本地及远端均为必需范围。调用方拥有内容与解释，执行工具拥有写入；Runner 只传原始字节。无 Plan、测试语义或 SteerLine 接线。
 
 - 可选 submit `progress_file: {initial_content_base64: "..."}`，严格 base64，最大 65536 字节。未配置无文件、无观察 goroutine。支持具有工作区写资格的 codex-app-server 本机开发流程与 Orca local / orca_environment 开发流程；read_only 内容流程不扩大权限。
