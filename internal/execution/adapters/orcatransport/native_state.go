@@ -474,8 +474,8 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 	}
 	if turn.Native.wantsQuery(l.clock()) {
 		turn.Native.LastQuery, turn.Native.HintPending = l.clock(), false
-		if !turn.Accepted || !turn.Started {
-			return "Original input has no verified start receipt; no input was resent"
+		if !turn.Accepted {
+			return "Original input has no verified acceptance receipt; no input was resent"
 		}
 		var sample native.StateSample
 		var err error
@@ -511,6 +511,21 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		if (s.MainAgent == nil || s.UpdatedAt >= s.MainAgent.StateStartedAt) && (turn.Native.rejectIdentity(s) || turn.Native.rejectProvenance(s, turn)) {
 			observation.invalidate()
 			return turn.Native.diagnostic()
+		}
+		if !turn.Started {
+			var startErr error
+			s, startErr = l.queryCompletedOriginalStart(ctx, snapshot, state, turn, s)
+			if startErr != nil {
+				return startErr.Error()
+			}
+			sample.AgentState = s
+			drain()
+			if turn.Native.Conflict != "" {
+				return turn.Native.diagnostic()
+			}
+			if !turn.Started {
+				return "Original input has no verified start receipt or completed original input; no input was resent"
+			}
 		}
 		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&
 			s.MainAgent != nil && s.UpdatedAt >= s.MainAgent.StateStartedAt &&

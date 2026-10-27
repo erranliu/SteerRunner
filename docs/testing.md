@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+N
+
 2026-10-27 核对：当前通用目录为 L2 1 场景/1 case、L3 29 场景/39 case、L4 4 场景/4 case，
 Controlled 前置 26 个顶层测试，另有 4 个 focused native L3 专项。
 L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用已落实；当前行为、独立子场景入口与 L4 后续建议见[测试清单整理结论](test-catalog.md#测试整理结论-2026-10-26)。

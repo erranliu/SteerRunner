@@ -693,6 +693,14 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		l.observation(s, feed)
 		l.observationMu.Unlock()
 	}
+	// A completed READY hook can precede the TUI returning to its composer.
+	// Gate the only native Codex send on the original terminal becoming idle;
+	// this is input readiness, never completion/attribution evidence.
+	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
+		if err := l.waitOriginalComposer(ctx, s); err != nil {
+			return receipt, err
+		}
+	}
 	turn.Request = nativeRequest(r.Operation.ID)
 	turn.Attempted = true
 	receipt.Disposition = b.OperationUnknown
