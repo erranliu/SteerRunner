@@ -1,0 +1,38 @@
+[
+  {
+    "mode": "lifecycle-final",
+    "raw_sha256": "9cd1b8c8f3177b408c1bb196d24fadd839467633162b39cf0589a5d08b3ae90e",
+    "raw_digest_matches": true,
+    "full_native_text_matches": true,
+    "original_user_id": "01a17c5c-f1c9-7e32-be66-d2b507a9d813",
+    "original_input_after_baseline": true,
+    "provider_unchanged": true,
+    "pane_unchanged": true,
+    "original_main_after_baseline": true,
+    "canonical_final_matches": true,
+    "completed": true,
+    "cleaned_up": true,
+    "paste_calls": 1,
+    "enter_calls": 1,
+    "zero_census": true,
+    "git_blob_preserves_raw_bytes": true
+  },
+  {
+    "mode": "segmented-shape-final",
+    "raw_sha256": "a83b17a4dfa87ba179a40989f0cd23f86970c884520944c997fb994c66355a3e",
+    "raw_digest_matches": true,
+    "full_native_text_matches": true,
+    "original_user_id": "01a17c5e-0f5c-7a43-9e0d-05366aa3dc6a",
+    "original_input_after_baseline": true,
+    "provider_unchanged": true,
+    "pane_unchanged": true,
+    "original_main_after_baseline": true,
+    "canonical_final_matches": true,
+    "completed": true,
+    "cleaned_up": true,
+    "paste_calls": 2,
+    "enter_calls": 1,
+    "zero_census": true,
+    "git_blob_preserves_raw_bytes": true
+  }
+]

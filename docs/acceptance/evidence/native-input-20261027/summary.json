@@ -1,0 +1,170 @@
+{
+  "schema": "steerrunner-native-input-qualification/v1",
+  "qualified_source_commit": "ffb9c510280d470e064e48770b8eea30174d82c4",
+  "source_dirty": false,
+  "qualified_probe_source_digest": "111056783fefb9f3d8ae31df115a202b0ce31a18de6cd1e8e8179f649edbdae2",
+  "native_probe_test_exe_sha256": "950d41ea9a54438381f2381dc429fac89e324d551a0c5a41842b71550e453c19",
+  "formal_l1": "passed",
+  "top_level_tests": 714,
+  "terminal_extensions": 29,
+  "opt_in_or_helper_skips": [
+    "TestProcessHostCommandHelper",
+    "TestAuthenticationNativeToolBoundary",
+    "TestOrcaStoppedNativeProbe",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestUsageExistingNativeEvidence",
+    "TestUsageRemoteCodexCleanupLive",
+    "TestUsageRemoteCodexLive",
+    "TestRunUsageLocalCodexPublicLive",
+    "TestRunUsageLocalPiPublicLive",
+    "TestRunUsageLocalDSHPublicLive",
+    "TestRunUsageRemotePublicLive",
+    "TestOrcaLocalIPCNativeProbe",
+    "TestUsageLocalAcceptanceRepoCleanupLive",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestServiceStopWorkerHelper",
+    "TestOrcaWorkspaceStartupLive"
+  ],
+  "native_skips_counted_as_pass": false,
+  "production_lifecycle": "passed: one paste, one Enter, unique complete original input and canonical final",
+  "natural_segmented_one_paste_qualified": false,
+  "explicit_two_paste_native_shape": "passed: 4300 + 8602 scalars; one logical user input and one Enter",
+  "unknown_effects_never_replayed": "controlled regressions passed",
+  "probe_resources_settled": true,
+  "both_owned_worktrees_confirmed_absent": true,
+  "clean_runner_build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "1ac424acde86a3356799e429e1929139b428bd40fe77676b2445502388d69167",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "ffb9c510280d470e064e48770b8eea30174d82c4",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "a745ab738152e974850cbaca7851fb13c0d33cd08a915cda555f1ae465556347"
+  },
+  "clean_runner_exe_is_native_probe_target": false,
+  "raw_report_root": "C:\\Users\\lmas1\\.codex\\worktrees\\2121\\SteerRunner\\.evidence\\native-input-20261027",
+  "steerline_progress_chain_passes": 0,
+  "steerline_progress_chain_target": 2,
+  "steerline_resume_condition": "human reports PR66 merged, verify actual merge/build, official fresh independent package; no historical hot replacement",
+  "not_qualified": [
+    "non-BMP/emoji native input",
+    "natural single-paste segmented shape",
+    "local native input path",
+    "other client/profile combinations",
+    "SteerLine progress/API/UI/publication integration"
+  ],
+  "merged": false,
+  "deployed": false,
+  "evidence": [
+    {
+      "path": "baseline-reproduction-final.log",
+      "sha256": "96894017b8c72466a4b92ab6547623262986aac4c043270a7ea5d46de072e9cb"
+    },
+    {
+      "path": "committed-probe-source.json",
+      "sha256": "9a9a25b6ffe01a2101c17289deec83bb9caf8fc7856fc079c182f405ed783211"
+    },
+    {
+      "path": "current-before-fix.log",
+      "sha256": "e856dceedbba3be219fada1da0addca188215b9873eb37ffcc321ee8c05703b4"
+    },
+    {
+      "path": "final-worktree-after-removal.json",
+      "sha256": "4fad9219169f9f1be40a4e6cf3fc4919c47950de0ca4b91c9984ddbe9e8450a9"
+    },
+    {
+      "path": "final-worktree-removed.json",
+      "sha256": "8aa519b981c2e4cc6a6a2666a2badbd4a5a942d74c40979954dbbae497cd4830"
+    },
+    {
+      "path": "focused-after-fix.log",
+      "sha256": "c189b4a62a1b3408eae297d9bd11ea4e6ea446236927b817509783274be001c7"
+    },
+    {
+      "path": "framework-final.json",
+      "sha256": "f790b50c231827220a9cc210bd2ab5297fb5b15c3f024d7f4669a4715e071f48"
+    },
+    {
+      "path": "independent-probe-verification.json",
+      "sha256": "7c8c6b71ff1f9de558415019d4c3f8677c71087e67811d71c40aa094168f0c3c"
+    },
+    {
+      "path": "l1-final.json",
+      "sha256": "329ea2831a0987d185c56e84614dadb730036e1ebdb1d0558c36b72f879739f7"
+    },
+    {
+      "path": "l1-pre-final-probe-guards.json",
+      "sha256": "e9a7526a2f5a7b6f653ffd7d1e6fce136dbe59e8bc4b49e3928dadf09c96db8f"
+    },
+    {
+      "path": "lifecycle-final/actual-public-draft-read-13.json",
+      "sha256": "10424119c8b04560ec57dcec3db2b903c640c0e5d8666246b0677a970f08a31e"
+    },
+    {
+      "path": "lifecycle-final/actual-public-draft-read-14.json",
+      "sha256": "32caab2de884861d73323337b5e7cc2ba776bbf37a3dc8aafde38eb9b7744d1b"
+    },
+    {
+      "path": "lifecycle-final/native-result.json",
+      "sha256": "d1927897ad3022061f3917ea1c47eaf250dbf645b8b5164b0437238d96e60519"
+    },
+    {
+      "path": "lifecycle-final/original-input.txt",
+      "sha256": "9cd1b8c8f3177b408c1bb196d24fadd839467633162b39cf0589a5d08b3ae90e"
+    },
+    {
+      "path": "lifecycle-final/result.json",
+      "sha256": "2cc762cc2fd321aedfd9a4bc53275d8f790dcc388d6c4694bf1c00c8cc8290d2"
+    },
+    {
+      "path": "lifecycle-final/target.json",
+      "sha256": "488250524220ec4bf18dd2df39ca0df7d65a567aceeaf17206fe971c59c36b45"
+    },
+    {
+      "path": "lifecycle-final/test.log",
+      "sha256": "6fb461602e4881960bdd26cca422531d87c3e50780191e6a2ce6ed46c9e5ca94"
+    },
+    {
+      "path": "runner-build.json",
+      "sha256": "425fca81e730159c35c400b7ca54e073d1551cc4d70e2f3156f16626e8b275e0"
+    },
+    {
+      "path": "segmented-shape-final/actual-public-draft-read-15.json",
+      "sha256": "2511da45228829bf48e4784cf0fc7131f961ddc6762e1d43e8fc1f81f911c08f"
+    },
+    {
+      "path": "segmented-shape-final/actual-public-draft-read-16.json",
+      "sha256": "d61ae20059782fa05411269504d0bd43d94e63e4f8f706726ddea2239212e2a4"
+    },
+    {
+      "path": "segmented-shape-final/native-result.json",
+      "sha256": "18188fcde83e9c1466cc5d515ad3343854c6dd5346238773f3e2446719ae6f31"
+    },
+    {
+      "path": "segmented-shape-final/original-input.txt",
+      "sha256": "a83b17a4dfa87ba179a40989f0cd23f86970c884520944c997fb994c66355a3e"
+    },
+    {
+      "path": "segmented-shape-final/result.json",
+      "sha256": "0491a7534a88533b8c865a26857cf405f18e7086f798dd31f67f072763f716a1"
+    },
+    {
+      "path": "segmented-shape-final/target.json",
+      "sha256": "488250524220ec4bf18dd2df39ca0df7d65a567aceeaf17206fe971c59c36b45"
+    },
+    {
+      "path": "segmented-shape-final/test.log",
+      "sha256": "82bbb48811a373ef8adbb2b418aa09c48ef17b5e5fcaadeea7997670010fbd85"
+    },
+    {
+      "path": "worktree-after-removal.json",
+      "sha256": "904e61464f09ecf9a4e300abce0f68e8b0e11def20df566ccc6ac1cebb35e016"
+    },
+    {
+      "path": "worktree-removed.json",
+      "sha256": "b500b0dc4f0e04f545497d52903dbea8309f02354c3f7e93c3ac6d95c5bebdd4"
+    }
+  ]
+}
