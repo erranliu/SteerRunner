@@ -9,11 +9,36 @@ import (
 )
 
 func TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights(t *testing.T) {
+	var original windows.Token
+	if err := windows.OpenProcessToken(windows.CurrentProcess(), windows.TOKEN_QUERY|windows.TOKEN_DUPLICATE, &original); err != nil {
+		t.Fatal(err)
+	}
+	defer original.Close()
+	originalProfile, err := tokenProfile(original)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// WMI may start the test with every present privilege enabled. Build the
+	// disabled-right fixture on a private duplicate, never the process token.
 	var caller windows.Token
-	if err := windows.OpenProcessToken(windows.CurrentProcess(), windows.TOKEN_QUERY|windows.TOKEN_DUPLICATE, &caller); err != nil {
+	if err := windows.DuplicateTokenEx(original, windows.TOKEN_QUERY|windows.TOKEN_DUPLICATE|windows.TOKEN_ADJUST_PRIVILEGES, nil, windows.SecurityImpersonation, windows.TokenPrimary, &caller); err != nil {
 		t.Fatal(err)
 	}
 	defer caller.Close()
+	initial, err := tokenPrivileges(caller)
+	if err != nil || len(initial) < 2 {
+		t.Fatalf("fixture requires two existing rights: %v", err)
+	}
+	hasDisabled := false
+	for _, p := range initial {
+		hasDisabled = hasDisabled || p.Attributes&windows.SE_PRIVILEGE_ENABLED == 0
+	}
+	if !hasDisabled {
+		fixture := windows.Tokenprivileges{PrivilegeCount: 1, Privileges: [1]windows.LUIDAndAttributes{{Luid: initial[0].Luid, Attributes: 0}}}
+		if err := windows.AdjustTokenPrivileges(caller, false, &fixture, 0, nil, nil); err != nil {
+			t.Fatal(err)
+		}
+	}
 	before, err := tokenProfile(caller)
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +55,7 @@ func TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights(t *testing.T) 
 		}
 	}
 	if selected == nil {
-		t.Skip("caller has no disabled privilege to exercise WMI behavior")
+		t.Fatal("private fixture did not establish a disabled privilege")
 	}
 	var child windows.Token
 	if err := windows.DuplicateTokenEx(caller, windows.TOKEN_QUERY|windows.TOKEN_ADJUST_PRIVILEGES, nil, windows.SecurityImpersonation, windows.TokenPrimary, &child); err != nil {
@@ -96,5 +121,9 @@ func TestBrokerPreservesDisabledPrivilegesAndRejectsMissingRights(t *testing.T) 
 	unchanged, err := tokenProfile(caller)
 	if err != nil || unchanged != before {
 		t.Fatalf("caller token changed: %v", err)
+	}
+	processProfile, err := tokenProfile(original)
+	if err != nil || processProfile != originalProfile {
+		t.Fatalf("actual process token changed: %v", err)
 	}
 }
