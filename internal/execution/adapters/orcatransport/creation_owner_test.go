@@ -78,6 +78,10 @@ func testCreationOwnerRetainsWorkspaceAcrossCallerLoss(t *testing.T, missingHand
 	for _, environment := range []string{"", "paired-worker"} {
 		t.Run(environment, func(t *testing.T) {
 			l, f, s, host := ownedCreationFixture(t, environment)
+			// This is durable owner/terminal recovery, not a one-second latency
+			// assertion. Leave the dispatch handshake and all no-recreate checks
+			// intact while allowing bounded filesystem scheduling under full L1.
+			l.profile.WaitTimeout = "5s"
 			l.setup.AgentLaunchCommand, f.commandMode = "opaque-start", true
 			entered, release, finished := make(chan struct{}), make(chan struct{}), make(chan error, 1)
 			host.output = func(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
