@@ -728,6 +728,21 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		// exact committed native text, as for every other input.
 		text = "\x1b[200~" + strings.ReplaceAll(text, "\n", "\r") + "\x1b[201~"
 	}
+	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") {
+		raw, pasteErr := l.submitNativePaste(ctx, s, text)
+		receipt.Operation.Receipt = raw
+		if pasteErr != nil {
+			l.closeStateFeed()
+			return receipt, pasteErr
+		}
+		turn.Accepted = true
+		receipt.Implementation, err = l.envelope(s, state)
+		receipt.State.InputAccepted = true
+		receipt.Disposition = b.OperationAccepted
+		// Raw paste/Enter receipts prove effects, not a native turn start. Only the
+		// independently fenced unique original completion may recover Started.
+		return receipt, err
+	}
 	args := []string{"terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--retry-request", turn.Request, "--json"}
 	if l.profileVersion == NativeRemoteProfileVersion {
 		// Orca's default receipt may precede the original turn-start observation.

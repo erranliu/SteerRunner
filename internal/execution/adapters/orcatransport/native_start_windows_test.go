@@ -44,7 +44,7 @@ func TestNativeComposerGatePreventsPrematureInput(t *testing.T) {
 }
 
 func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) {
-	for _, mode := range []string{"original", "restored", "duplicate", "altered", "ready-only", "working", "authority-conflict", "stale-metadata", "interrupted", "other-process", "query-error-conflict", "query-error-identity"} {
+	for _, mode := range []string{"original", "restored", "thin-preview", "duplicate", "altered", "ready-only", "working", "authority-conflict", "stale-metadata", "interrupted", "other-process", "query-error-conflict", "query-error-identity"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, s := fixtureOn(t, "paired-worker")
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -107,7 +107,13 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 			if mode == "other-process" {
 				process.Incarnation = "replacement"
 			}
-			thinInputRPC(t, process, end, prompt, mode == "duplicate", true)
+			if mode == "thin-preview" {
+				end.Prompt = preview(input.Prompt)
+				end.MetadataObservation = nil
+				end.ThinMetadata = true
+				end.TurnStartedAt = 0
+			}
+			thinInputRPC(t, process, end, prompt, mode == "duplicate", mode != "thin-preview")
 			l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.StateSample, error) {
 				return native.QueryOriginalSample(ctx, "", p, pane)
 			}
@@ -127,7 +133,7 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 			if err != nil {
 				t.Fatal(err)
 			}
-			positive := mode == "original" || mode == "restored"
+			positive := mode == "original" || mode == "restored" || mode == "thin-preview"
 			if positive {
 				if !r.State.TurnStarted || r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || r.TurnEvidence.LastMessage != end.LastAssistantMessage {
 					t.Fatal("original completion did not establish missed start", r)

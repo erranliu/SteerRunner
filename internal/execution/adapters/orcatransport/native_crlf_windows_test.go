@@ -30,6 +30,10 @@ func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			host.screen = true
+			l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
+				return native.StateSample{AgentState: base}, nil
+			}
 			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
 			if err != nil {
 				t.Fatal(err)
