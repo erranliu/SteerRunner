@@ -139,5 +139,37 @@ go test ./internal/execution/adapters/orcatransport ./internal/execution/adapter
 首轮探针 `lifecycle-01` / `segmented-shape-01` 通过，但清单必填字段和全文留证补强后重新跑
 最终源码；首轮不代替最终版本。首个工作区已移除并以 `selector_not_found` 复核。
 
-最终 L1、源码提交、构建及第二个工作区清理结果在同目录机器摘要中补录。
-本专项完成后只交付 Runner 输入能力基线；不得将其登记为 SteerLine 原测试进度集成复验通过。
+最终冻结源码提交为 `ffb9c510280d470e064e48770b8eea30174d82c4`，工作树干净。
+提交后重算的 probe 源码摘要与上述 dirty 最终原生探针完全相同；两种原生 probe 本身不是
+旧 PR head 或干净 Runner EXE 的公开业务 CLI 资格。原始 CRLF/日志按既有做法用
+`.gitattributes` 保留，独立复核的完整原文、provider、pane、main 时间与精确确认标记全部一致。
+
+最终正式命令 `./scripts/test.ps1 -Level L1 -OutDir .evidence/native-input-20261027/l1-final`
+在该干净提交上通过：714 个顶层 Go 测试、29 项 terminal extensions、24 项 framework、
+native driver 编译和零匹配守卫；16 个原有 opt-in/helper skip 不计原生资格，allowlist 未改。
+完整 adapter/protocol 包的受影响回归均包含其中。首轮同产品源码 L1 的通过记录仍单独保留，
+不代替本次最终提交的正式结果。
+
+干净构建命令：
+
+```powershell
+./scripts/build.ps1 -OutFile "$PWD/.evidence/native-input-20261027/build/steerrunner.exe"
+```
+
+源码为上述 `ffb9c51`，`source_dirty=false`，版本 `0.2.0-dev.3-r3`，EXE SHA256 为
+`a745ab738152e974850cbaca7851fb13c0d33cd08a915cda555f1ae465556347`。
+该构建只留在隔离输出目录，未安装或部署。原生探针实际运行的是同源码的 test EXE，
+不是这个 Runner EXE 的完整业务流程；后续 SteerLine 必须按正式入口生成新包。
+
+第二个本次自建工作区也已移除，`final-worktree-after-removal.json` 独立返回
+`selector_not_found`；两个模式各自的 close/零完整清单证据均保留。
+最终[机器摘要与逐文件 SHA](evidence/native-input-20261027/summary.json)、
+[正式 L1](evidence/native-input-20261027/l1-final.json)、
+[构建](evidence/native-input-20261027/runner-build.json)及
+[独立原文/归属复核](evidence/native-input-20261027/independent-probe-verification.json)可直接审阅。
+原始完整日志根为当前仓库的 `.evidence/native-input-20261027`；命令错误、首次探针及各版本
+记录均保留，没有将缺证据/超时/skip 改记成功。
+
+本专项的上述 Runner 输入能力范围验收完成，PR66 保持草稿，不合并、不部署。
+原 SteerLine 对话的人工分工明确要求 PR66 实际合入后才恢复：本次交回验收资料和构建身份，
+不解除其暂停门禁，不启动业务复验。其连续结果仍为 0/2，不得将最小探针计入该目标。

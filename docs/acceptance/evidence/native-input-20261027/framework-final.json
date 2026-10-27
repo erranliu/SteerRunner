@@ -1,0 +1,102 @@
+{
+  "test_count": 24,
+  "exit_code": 0,
+  "tests": [
+    {
+      "passed": true,
+      "name": "catalog-expansion-compatibility"
+    },
+    {
+      "passed": true,
+      "name": "independent-configuration"
+    },
+    {
+      "passed": true,
+      "name": "parallel-runtime-cache"
+    },
+    {
+      "passed": true,
+      "name": "zero-match"
+    },
+    {
+      "passed": true,
+      "name": "duplicate-catalog"
+    },
+    {
+      "passed": true,
+      "name": "missing-level-catalog"
+    },
+    {
+      "passed": true,
+      "name": "repeat-zero"
+    },
+    {
+      "passed": true,
+      "name": "repeat-non-live"
+    },
+    {
+      "passed": true,
+      "name": "parallel-zero"
+    },
+    {
+      "passed": true,
+      "name": "parallel-excess"
+    },
+    {
+      "passed": true,
+      "name": "retired-auth-github_auth"
+    },
+    {
+      "passed": true,
+      "name": "retired-auth-remote_github_auth"
+    },
+    {
+      "passed": true,
+      "name": "checker-positive-negative"
+    },
+    {
+      "passed": true,
+      "name": "pr-list-zero-one-many"
+    },
+    {
+      "passed": true,
+      "name": "publisher-empty"
+    },
+    {
+      "passed": true,
+      "name": "publisher-existing"
+    },
+    {
+      "passed": true,
+      "name": "publisher-conflict"
+    },
+    {
+      "passed": true,
+      "name": "publisher-query-failure"
+    },
+    {
+      "passed": true,
+      "name": "stability-registry-gate-scope"
+    },
+    {
+      "passed": true,
+      "name": "parallel-scheduler-isolation"
+    },
+    {
+      "passed": true,
+      "name": "native-result-contracts"
+    },
+    {
+      "passed": true,
+      "name": "prepared-artifact-guards"
+    },
+    {
+      "passed": true,
+      "name": "progress-parallel-failure-artifact"
+    },
+    {
+      "passed": true,
+      "name": "delivery-package-and-evidence-binding"
+    }
+  ]
+}
