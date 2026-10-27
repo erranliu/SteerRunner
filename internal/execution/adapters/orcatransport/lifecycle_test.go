@@ -19,6 +19,7 @@ import (
 type fakeHost struct {
 	callerFileWriter              func(string, []byte) error
 	nativeSends                   int
+	nativePaste                   bool
 	nativePrompt                  string
 	nativeReply                   string
 	mu                            sync.Mutex
@@ -144,6 +145,21 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 			return nil, errors.New("lost response")
 		}
 		text := arg("--text")
+		if strings.HasPrefix(text, "\x1b[200~") && !strings.Contains(strings.Join(c.Args, " "), "--enter") {
+			f.nativeSends++
+			f.nativePrompt = strings.TrimSuffix(strings.TrimPrefix(text, "\x1b[200~"), "\x1b[201~")
+			f.draft = f.nativePrompt
+			f.nativePaste = true
+			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": len(text)}}
+			break
+		}
+		if f.nativePaste && text == "" && strings.Contains(strings.Join(c.Args, " "), "--enter") {
+			f.nativePaste = false
+			f.draft = ""
+			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": 1}}
+			break
+		}
+
 		if f.commandMode && !f.launched {
 			f.launched = true
 			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation}}}

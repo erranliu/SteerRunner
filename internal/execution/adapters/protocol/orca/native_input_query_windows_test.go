@@ -10,15 +10,20 @@ import (
 )
 
 func TestThinCompletionInputRequiresStableOriginalResources(t *testing.T) {
-	for _, fault := range []string{"none", "incarnation", "terminal", "worktree", "disconnected", "agent", "workspace", "branch", "provider", "path", "main-time", "body", "partial-main", "partial-observation", "partial-marker", "boundary", "restored", "duplicate", "same-text-duplicate", "assistant-only", "runtime", "child"} {
+	for _, fault := range []string{"none", "preview", "changed-preview", "incarnation", "terminal", "worktree", "disconnected", "agent", "workspace", "branch", "provider", "path", "main-time", "body", "partial-main", "partial-observation", "partial-marker", "boundary", "restored", "duplicate", "same-text-duplicate", "assistant-only", "runtime", "child"} {
 		t.Run(fault, func(t *testing.T) {
 			reads, shows := 0, 0
 			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
 				main := map[string]any{"state": "done", "stateStartedAt": 20}
 				provider := map[string]string{"id": "provider", "transcriptPath": "original.jsonl"}
 				state := map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "state": "done", "prompt": "", "mainAgent": main, "updatedAt": 20, "lastAssistantMessage": "canonical final"}
+				if fault == "preview" || fault == "changed-preview" {
+					state["prompt"] = "original full input"
+				}
 				if reads > 0 {
 					switch fault {
+					case "changed-preview":
+						state["prompt"] = "other input"
 					case "provider":
 						provider["id"] = "other"
 					case "path":
@@ -98,7 +103,7 @@ func TestThinCompletionInputRequiresStableOriginalResources(t *testing.T) {
 				t.Fatal(err)
 			}
 			after, err := QueryOriginalInput(ctx, "", p, "tab:leaf", 10, before)
-			if fault != "none" {
+			if fault != "none" && fault != "preview" {
 				if err == nil || after.NativeInput.MatchesOriginalQuery(after) {
 					t.Fatal("unverified completion acquired input evidence", fault, err)
 				}

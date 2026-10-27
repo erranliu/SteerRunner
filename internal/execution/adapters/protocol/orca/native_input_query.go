@@ -31,7 +31,7 @@ func sameThinCompletion(a, s AgentState) bool {
 		a.State == "done" && s.State == "done" && a.MainAgent.State == "done" && *a.MainAgent == *s.MainAgent && a.AgentType == "codex" && s.AgentType == a.AgentType &&
 		a.PaneKey != "" && a.PaneKey == s.PaneKey && a.ProviderSession == s.ProviderSession &&
 		a.ProviderSession.ID != "" && a.ProviderSession.TranscriptPath != "" &&
-		a.Prompt == "" && s.Prompt == "" && a.UpdatedAt == s.UpdatedAt && s.UpdatedAt >= s.MainAgent.StateStartedAt &&
+		a.Prompt == s.Prompt && a.UpdatedAt == s.UpdatedAt && s.UpdatedAt >= s.MainAgent.StateStartedAt &&
 		a.LastAssistantMessage == s.LastAssistantMessage && a.TurnStartedAt == 0 && s.TurnStartedAt == 0 &&
 		a.Observation == nil && s.Observation == nil && a.MetadataObservation == nil && s.MetadataObservation == nil &&
 		!a.SessionBoundary && !s.SessionBoundary && !a.RestoredUnconfirmed && !s.RestoredUnconfirmed &&
@@ -50,7 +50,7 @@ func corroboratedCompletion(s AgentState) bool {
 	o := s.MetadataObservation
 	return !s.ThinMetadata && s.MainAgent != nil && s.State == "done" && s.MainAgent.State == "done" &&
 		s.AgentType == "codex" && s.PaneKey != "" && s.ProviderSession.ID != "" && s.ProviderSession.TranscriptPath != "" &&
-		s.Prompt == "" && s.UpdatedAt >= s.MainAgent.StateStartedAt && s.MainAgent.StateStartedAt > 0 &&
+		s.UpdatedAt >= s.MainAgent.StateStartedAt && s.MainAgent.StateStartedAt > 0 &&
 		s.TurnStartedAt > 0 && s.TurnStartedAt <= s.MainAgent.StateStartedAt &&
 		o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Incarnation > 0 && o.Revision > 0 && o.ObservedAt >= s.MainAgent.StateStartedAt &&
 		(s.Observation == nil || *s.Observation == *o) &&
@@ -60,7 +60,7 @@ func corroboratedCompletion(s AgentState) bool {
 func sameCorroboratedCompletion(a, s AgentState) bool {
 	return corroboratedCompletion(a) && corroboratedCompletion(s) &&
 		a.PaneKey == s.PaneKey && a.ProviderSession == s.ProviderSession && *a.MainAgent == *s.MainAgent &&
-		a.UpdatedAt == s.UpdatedAt && a.TurnStartedAt == s.TurnStartedAt && a.LastAssistantMessage == s.LastAssistantMessage &&
+		a.Prompt == s.Prompt && a.UpdatedAt == s.UpdatedAt && a.TurnStartedAt == s.TurnStartedAt && a.LastAssistantMessage == s.LastAssistantMessage &&
 		*a.MetadataObservation == *s.MetadataObservation &&
 		(a.Observation == nil && s.Observation == nil || a.Observation != nil && s.Observation != nil && *a.Observation == *s.Observation)
 }

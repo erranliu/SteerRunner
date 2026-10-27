@@ -10,17 +10,22 @@ import (
 )
 
 func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T) {
-	for _, fault := range []string{"none", "incarnation", "workspace", "branch", "provider", "path", "main-time", "body", "authority", "revision", "marker", "missing-marker", "missing-observation", "partial-observation", "mismatched-main", "boundary", "restored", "tool-output", "duplicate", "same-text-duplicate", "shortened-user"} {
+	for _, fault := range []string{"none", "preview", "changed-preview", "incarnation", "workspace", "branch", "provider", "path", "main-time", "body", "authority", "revision", "marker", "missing-marker", "missing-observation", "partial-observation", "mismatched-main", "boundary", "restored", "tool-output", "duplicate", "same-text-duplicate", "shortened-user"} {
 		t.Run(fault, func(t *testing.T) {
 			reads, shows := 0, 0
 			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
 				main := map[string]any{"state": "done", "stateStartedAt": 20}
 				provider := map[string]string{"id": "provider", "transcriptPath": "original.jsonl"}
 				state := map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "state": "done", "prompt": "", "mainAgent": main, "updatedAt": 20, "turnStartedAt": 12, "lastAssistantMessage": "canonical final"}
+				if fault == "preview" || fault == "changed-preview" {
+					state["prompt"] = "original full input"
+				}
 				observation := map[string]any{"origin": "hook", "kind": "transition", "authorityId": "authority", "incarnation": 1, "revision": 2, "observedAt": 20}
 				marker := int64(12)
 				if reads > 0 {
 					switch fault {
+					case "changed-preview":
+						state["prompt"] = "other input"
 					case "provider":
 						provider["id"] = "other"
 					case "path":
@@ -102,7 +107,7 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				t.Fatal(err)
 			}
 			after, err := QueryOriginalInput(context.Background(), "", p, "tab:leaf", 10, before)
-			if fault != "none" {
+			if fault != "none" && fault != "preview" {
 				if err == nil && after.NativeInput.MatchesOriginalQuery(after) {
 					t.Fatal("unverified record acquired completion query proof", fault)
 				}
