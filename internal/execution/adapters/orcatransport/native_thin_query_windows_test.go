@@ -17,7 +17,7 @@ import (
 
 func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, fullMetadata ...bool) {
 	t.Helper()
-	endpoint := `\\.\pipe\sr-thin-input-` + filepath.Base(t.TempDir())
+	endpoint := `\\.\pipe\sr-thin-input-` + digest([]byte(t.TempDir()))[:24]
 	listener, err := winio.ListenPipe(endpoint, nil)
 	if err != nil {
 		t.Fatal(err)
