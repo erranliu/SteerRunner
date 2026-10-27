@@ -1,0 +1,66 @@
+=== RUN   TestNativePasteDraftSegments
+=== RUN   TestNativePasteDraftSegments/observed-two-elements
+=== RUN   TestNativePasteDraftSegments/different-boundaries
+=== RUN   TestNativePasteDraftSegments/duplicate-size-labels
+=== RUN   TestNativePasteDraftSegments/visible-fragments
+=== RUN   TestNativePasteDraftSegments/plain
+=== RUN   TestNativePasteDraftSegments/non-bmp-count-retained
+=== RUN   TestNativePasteDraftSegments/wrong-total
+=== RUN   TestNativePasteDraftSegments/over-total
+=== RUN   TestNativePasteDraftSegments/wrong-visible-fragment
+=== RUN   TestNativePasteDraftSegments/missing-ordinal
+=== RUN   TestNativePasteDraftSegments/invalid-first-ordinal
+=== RUN   TestNativePasteDraftSegments/foreign-ordinal
+=== RUN   TestNativePasteDraftSegments/skipped-ordinal
+=== RUN   TestNativePasteDraftSegments/zero
+=== RUN   TestNativePasteDraftSegments/overflow
+=== RUN   TestNativePasteDraftSegments/trailing-draft
+=== RUN   TestNativePasteDraftSegments/truncated
+=== RUN   TestNativePasteDraftSegments/emoji-loss
+=== RUN   TestNativePasteDraftSegments/single-chinese
+=== RUN   TestNativePasteDraftSegments/crlf-blank-lines
+=== RUN   TestNativePasteDraftSegments/scalar-not-bytes
+=== RUN   TestNativePasteDraftSegments/scalar-not-utf16
+=== RUN   TestNativePasteDraftSegments/combining-scalars
+=== RUN   TestNativePasteDraftSegments/numbered-mixed
+=== RUN   TestNativePasteDraftSegments/leading-zero
+=== RUN   TestNativePasteDraftSegments/negative
+=== RUN   TestNativePasteDraftSegments/incomplete-after-prefix
+=== RUN   TestNativePasteDraftSegments/extra-visible-prefix
+=== RUN   TestNativePasteDraftSegments/duplicate-ordinal
+=== RUN   TestNativePasteDraftSegments/invalid-utf8-equal
+    native_paste_segments_test.go:46: got true want false
+--- FAIL: TestNativePasteDraftSegments (0.00s)
+    --- PASS: TestNativePasteDraftSegments/observed-two-elements (0.00s)
+    --- PASS: TestNativePasteDraftSegments/different-boundaries (0.00s)
+    --- PASS: TestNativePasteDraftSegments/duplicate-size-labels (0.00s)
+    --- PASS: TestNativePasteDraftSegments/visible-fragments (0.00s)
+    --- PASS: TestNativePasteDraftSegments/plain (0.00s)
+    --- PASS: TestNativePasteDraftSegments/non-bmp-count-retained (0.00s)
+    --- PASS: TestNativePasteDraftSegments/wrong-total (0.00s)
+    --- PASS: TestNativePasteDraftSegments/over-total (0.00s)
+    --- PASS: TestNativePasteDraftSegments/wrong-visible-fragment (0.00s)
+    --- PASS: TestNativePasteDraftSegments/missing-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/invalid-first-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/foreign-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/skipped-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/zero (0.00s)
+    --- PASS: TestNativePasteDraftSegments/overflow (0.00s)
+    --- PASS: TestNativePasteDraftSegments/trailing-draft (0.00s)
+    --- PASS: TestNativePasteDraftSegments/truncated (0.00s)
+    --- PASS: TestNativePasteDraftSegments/emoji-loss (0.00s)
+    --- PASS: TestNativePasteDraftSegments/single-chinese (0.00s)
+    --- PASS: TestNativePasteDraftSegments/crlf-blank-lines (0.00s)
+    --- PASS: TestNativePasteDraftSegments/scalar-not-bytes (0.00s)
+    --- PASS: TestNativePasteDraftSegments/scalar-not-utf16 (0.00s)
+    --- PASS: TestNativePasteDraftSegments/combining-scalars (0.00s)
+    --- PASS: TestNativePasteDraftSegments/numbered-mixed (0.00s)
+    --- PASS: TestNativePasteDraftSegments/leading-zero (0.00s)
+    --- PASS: TestNativePasteDraftSegments/negative (0.00s)
+    --- PASS: TestNativePasteDraftSegments/incomplete-after-prefix (0.00s)
+    --- PASS: TestNativePasteDraftSegments/extra-visible-prefix (0.00s)
+    --- PASS: TestNativePasteDraftSegments/duplicate-ordinal (0.00s)
+    --- FAIL: TestNativePasteDraftSegments/invalid-utf8-equal (0.00s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.529s
+FAIL

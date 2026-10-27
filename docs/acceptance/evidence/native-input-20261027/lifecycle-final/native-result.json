@@ -1,0 +1,141 @@
+{
+  "after_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "before_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "business_inputs": 1,
+  "cleaned_up": true,
+  "cleanup": {
+    "disposition": "confirmed"
+  },
+  "completed": true,
+  "diagnostics": [
+    "Original input has no verified start receipt or completed original input; no input was resent",
+    "Native original input metadata is incomplete; awaiting original evidence",
+    ""
+  ],
+  "enter_calls": 1,
+  "final": {
+    "native_outcome": "unreported",
+    "final_origin": "terminal_observed",
+    "FinalDiagnostic": "",
+    "FinalNativeSessionID": "",
+    "FinalNativeTurnID": "",
+    "FinalSource": "orca.terminal.native-state-reply.v1",
+    "FinalItemID": "552387f543f1f1bebc0baedee31e64c6e813e7669e3871ce47c561dec0d4b900",
+    "FinalVerified": true,
+    "SourcePath": "",
+    "TurnID": "9e10762994e86844d7e09da88ad30480",
+    "CommandID": "9e10762994e86844d7e09da88ad30480",
+    "SessionID": "orca-terminal:f8616747-34af-4543-8487-ec6b5d8de4ff:term_e7cba7d7-1ff6-45f5-bbaf-0a5b7bba0238:7379f758-27f9-4e76-8f19-f9d7a4a50462",
+    "Started": true,
+    "Completed": true,
+    "Succeeded": true,
+    "LastMessage": "SR_NATIVE_INPUT_9e10762994e86844d7e09da88ad30480",
+    "Failure": "",
+    "PRCandidates": null
+  },
+  "initial_start_confirmed": false,
+  "launch": {
+    "access_mode": "full_access",
+    "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+    "args": [
+      "--no-daemon"
+    ],
+    "model": "gpt-6-luna",
+    "reasoning_effort": "xhigh"
+  },
+  "logical_bytes": 14606,
+  "mode": "long-input",
+  "original_query": {
+    "state": "done",
+    "paneKey": "c7c9ded6-1cd0-417d-8d15-4c36dae5a3f8:7b19b2ec-6655-4a34-abe0-29f22ba24ed5",
+    "agentType": "codex",
+    "prompt": "This is a no-tools delivery qualification. Do not use tools, read or modify files, execute business tests, commit, deploy or publish. Reply exactly with SR_NATIVE_INPUT_9e10762994e86844d7e09da88ad3048",
+    "updatedAt": 1793087830858,
+    "stateStartedAt": 1793087830858,
+    "turnStartedAt": 1793087827934,
+    "mainAgent": {
+      "state": "done",
+      "stateStartedAt": 1793087830858
+    },
+    "providerSession": {
+      "id": "01a17c5c-7a23-72d3-bdba-98b03e0daa63",
+      "transcriptPath": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\sessions\\2026\\10\\27\\rollout-2026-10-27T15-56-37-01a17c5c-7a23-72d3-bdba-98b03e0daa63.jsonl"
+    },
+    "lastAssistantMessage": "SR_NATIVE_INPUT_9e10762994e86844d7e09da88ad30480"
+  },
+  "paste_calls": 1,
+  "prompt_sha256": "9cd1b8c8f3177b408c1bb196d24fadd839467633162b39cf0589a5d08b3ae90e",
+  "ready": {
+    "state": "done",
+    "paneKey": "c7c9ded6-1cd0-417d-8d15-4c36dae5a3f8:7b19b2ec-6655-4a34-abe0-29f22ba24ed5",
+    "agentType": "codex",
+    "prompt": "For this initialization turn only, initialize this agent session and reply READY without using tools or changing files. This readiness instruction expires immediately after that reply. In all subseque",
+    "updatedAt": 1793087806082,
+    "stateStartedAt": 1793087806082,
+    "turnStartedAt": 0,
+    "mainAgent": {
+      "state": "done",
+      "stateStartedAt": 1793087806082
+    },
+    "providerSession": {
+      "id": "01a17c5c-7a23-72d3-bdba-98b03e0daa63",
+      "transcriptPath": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\sessions\\2026\\10\\27\\rollout-2026-10-27T15-56-37-01a17c5c-7a23-72d3-bdba-98b03e0daa63.jsonl"
+    },
+    "lastAssistantMessage": "READY"
+  },
+  "submission_attempts": 1,
+  "submit_receipt": "eyJQYXN0ZSI6eyJzZW5kIjp7ImhhbmRsZSI6InRlcm1fZTdjYmE3ZDctMWZmNi00NWY1LWJiYWYtMGE1YjdiYmEwMjM4IiwiYWNjZXB0ZWQiOnRydWUsImJ5dGVzV3JpdHRlbiI6MTQxMTR9fSwiU3VibWl0Ijp7InNlbmQiOnsiaGFuZGxlIjoidGVybV9lN2NiYTdkNy0xZmY2LTQ1ZjUtYmJhZi0wYTViN2JiYTAyMzgiLCJhY2NlcHRlZCI6dHJ1ZSwiYnl0ZXNXcml0dGVuIjoxfX19",
+  "terminal": {
+    "handle": "term_e7cba7d7-1ff6-45f5-bbaf-0a5b7bba0238",
+    "incarnationId": "7379f758-27f9-4e76-8f19-f9d7a4a50462",
+    "worktreeId": "59f29cc4-7282-47f4-9929-e8fe97fe1628::C:/Users/Administrator/orca/workspaces/merge-h-308-code/sr-native-input-accept-20261027-2121-final",
+    "worktreePath": "",
+    "branch": "",
+    "agentIdentity": "",
+    "connected": false,
+    "orphaned": false,
+    "status": "",
+    "agentWait": null
+  },
+  "verified_original_input": {
+    "ID": "01a17c5c-f1c9-7e32-be66-d2b507a9d813",
+    "Text": "This is a no-tools delivery qualification. Do not use tools, read or modify files, execute business tests, commit, deploy or publish. Reply exactly with SR_NATIVE_INPUT_9e10762994e86844d7e09da88ad30480.\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n中文原始输入 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```",
+    "Timestamp": 1793087828434,
+    "Baseline": 1793087806082,
+    "Observation": null
+  }
+}

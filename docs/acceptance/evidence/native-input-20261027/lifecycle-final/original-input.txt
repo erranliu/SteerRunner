@@ -1,0 +1,502 @@
+This is a no-tools delivery qualification. Do not use tools, read or modify files, execute business tests, commit, deploy or publish. Reply exactly with SR_NATIVE_INPUT_9e10762994e86844d7e09da88ad30480.
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+
+中文原始输入 example fragment, preserve every character and blank line.
+```powershell
+Write-Output 'fixture-only-never-execute'
+```
+

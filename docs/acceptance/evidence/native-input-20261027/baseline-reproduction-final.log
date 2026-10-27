@@ -1,0 +1,39 @@
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/none
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/unicode-collapsed
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/segmented
+    native_paste_test.go:135: sole staged input not verified original paste did not settle; no Enter sent and no input resent 1 0 9
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/late-complete
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/reset-stability
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-plain-collapsed
+    native_paste_test.go:139: fault not rejected <nil> 1 1
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-segments
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/existing-draft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/unavailable-screen
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-size
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/paste-response-lost
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-draft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/replaced-terminal
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-provider
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-main
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/enter-response-lost
+--- FAIL: TestNativeMultilinePasteRequiresSettledOriginalDraft (5.91s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/none (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/unicode-collapsed (0.25s)
+    --- FAIL: TestNativeMultilinePasteRequiresSettledOriginalDraft/segmented (2.00s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/late-complete (0.76s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/reset-stability (0.76s)
+    --- FAIL: TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-plain-collapsed (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-segments (0.71s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/existing-draft (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/unavailable-screen (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-size (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/paste-response-lost (0.00s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-draft (0.11s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/replaced-terminal (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-provider (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-main (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/enter-response-lost (0.26s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	8.547s
+FAIL

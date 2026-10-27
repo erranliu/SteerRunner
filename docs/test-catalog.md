@@ -1,7 +1,13 @@
 # SteerRunner L2–L4 测试清单
 
 2026-10-27 主线同步：通用目录当前为 **34 场景 / 44 case**（L2 1/1、L3 29/39、L4 4/4），
-Controlled 前置为 **26 个顶层测试**，另有 **4 个 focused native L3 专项**，不混入通用目录计数。
+Controlled 前置为 **26 个顶层测试**，另有 **5 个 focused native L3 专项**，不混入通用目录计数。
+
+`orca-remote.native-input` 复用 `TestOrcaNativeStateLiveLifecycle`，由
+`scripts/test-native-input.ps1` 显式运行：`long-input` 是生产 Lifecycle 的一次粘贴/一次提交；
+`segmented-shape` 是两次真实粘贴形成相邻折叠块的独立试验。两者都要求唯一完整原文、
+原轮次/原 provider/原进程结果和确认清理，不能互相替代。默认 L1 只运行受控草稿、
+未知回执、CRLF、启动/完成归属及恢复反例；真实探针另验，见[入口](testing.md)。
 下文日期增量中的旧数量仅表示当时状态；本次已落实 L2/parser 拆分、feedback 吸收、generate/takeover 及 L4 同批构建复用，核对与后续精简顺序见[整理结论](#测试整理结论-2026-10-26)。
 
 2026-10-26 固定交付包增量：普通 L1 framework 包含 `tests/framework/delivery-test.ps1` 的文件清单、组件来源和证据绑定反例。`scripts/test-delivery.ps1` 为独立的受控交付入口，复用 installation/client/viewer/`TestSRProgressFile`，固定包内被测文件，不新增 L2–L4 场景或真机资格。调用方测试进度 0/6 的历史缺口继续保留；范围及命令见[测试指南](testing.md#固定交付包验证2026-10-26)。

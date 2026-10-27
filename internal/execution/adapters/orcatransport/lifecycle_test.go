@@ -17,32 +17,33 @@ import (
 )
 
 type fakeHost struct {
-	callerFileWriter              func(string, []byte) error
-	nativeSends                   int
-	nativePaste                   bool
-	nativePrompt                  string
-	nativeReply                   string
-	mu                            sync.Mutex
-	root, nativePath, incarnation string
-	calls                         [][]string
-	lines                         []string
-	writeReply, unknown, clipped  bool
-	screen                        bool
-	unstarted, busy               bool
-	draft                         string
-	commandMode, launched         bool
-	delayLaunchIdentity           bool
-	collapsedEcho                 bool
-	waitFailures                  int
-	waitBlocked                   string
-	rejectInput                   bool
-	rejectWrongRequest            bool
-	rejectUnavailable             bool
-	waitCalls                     int
-	waitBudgets                   []time.Duration
-	workspace                     map[string]any
-	repoInventory                 any
-	failShow, unknownClose        bool
+	callerFileWriter               func(string, []byte) error
+	nativeSends                    int
+	nativePaste                    bool
+	lostPasteReply, lostEnterReply bool
+	nativePrompt                   string
+	nativeReply                    string
+	mu                             sync.Mutex
+	root, nativePath, incarnation  string
+	calls                          [][]string
+	lines                          []string
+	writeReply, unknown, clipped   bool
+	screen                         bool
+	unstarted, busy                bool
+	draft                          string
+	commandMode, launched          bool
+	delayLaunchIdentity            bool
+	collapsedEcho                  bool
+	waitFailures                   int
+	waitBlocked                    string
+	rejectInput                    bool
+	rejectWrongRequest             bool
+	rejectUnavailable              bool
+	waitCalls                      int
+	waitBudgets                    []time.Duration
+	workspace                      map[string]any
+	repoInventory                  any
+	failShow, unknownClose         bool
 }
 
 func (f *fakeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
@@ -150,12 +151,18 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 			f.nativePrompt = strings.TrimSuffix(strings.TrimPrefix(text, "\x1b[200~"), "\x1b[201~")
 			f.draft = f.nativePrompt
 			f.nativePaste = true
+			if f.lostPasteReply {
+				return nil, errors.New("paste applied; response lost")
+			}
 			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": len(text)}}
 			break
 		}
 		if f.nativePaste && text == "" && strings.Contains(strings.Join(c.Args, " "), "--enter") {
 			f.nativePaste = false
 			f.draft = ""
+			if f.lostEnterReply {
+				return nil, errors.New("Enter applied; response lost")
+			}
 			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": 1}}
 			break
 		}

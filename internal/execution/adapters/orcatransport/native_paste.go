@@ -144,11 +144,11 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 var nativePasteLabel = regexp.MustCompile(`^\[Pasted Content ([1-9][0-9]*) chars\](?: #([1-9][0-9]*))?`)
 
 func nativePasteDraftMatches(draft, text string) bool {
-	if draft == text {
-		return true
-	}
 	if !utf8.ValidString(draft) || !utf8.ValidString(text) {
 		return false
+	}
+	if draft == text {
+		return true
 	}
 	occurrences := map[int]int{}
 	for draft != "" {
