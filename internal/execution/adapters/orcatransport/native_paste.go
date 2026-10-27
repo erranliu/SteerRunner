@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -89,18 +90,23 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 	if err != nil {
 		return receipt(), err
 	}
-	expected := fmt.Sprintf("[Pasted Content %d chars]", utf8.RuneCountInString(text))
 	stable := 0
+	previousDraft := ""
 	for {
 		draft, err = read()
 		if err != nil {
 			return receipt(), err
 		}
-		if draft == text || draft == expected {
-			stable++
+		if nativePasteDraftMatches(draft, text) {
+			if draft == previousDraft {
+				stable++
+			} else {
+				stable = 1
+			}
 		} else {
 			stable = 0
 		}
+		previousDraft = draft
 		if stable >= 2 {
 			break
 		}
@@ -130,4 +136,51 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 	entered, err := send(nil)
 	evidence.Submit = entered.Payload
 	return receipt(), err
+}
+
+// A single ConPTY write may become several Codex paste elements, with literal
+// fragments between them. Match the complete rendered draft against the frozen
+// input's scalar positions; collapsed text remains readiness, never final proof.
+var nativePasteLabel = regexp.MustCompile(`^\[Pasted Content ([1-9][0-9]*) chars\](?: #([1-9][0-9]*))?`)
+
+func nativePasteDraftMatches(draft, text string) bool {
+	if draft == text {
+		return true
+	}
+	if !utf8.ValidString(draft) || !utf8.ValidString(text) {
+		return false
+	}
+	occurrences := map[int]int{}
+	for draft != "" {
+		if label := nativePasteLabel.FindStringSubmatch(draft); label != nil {
+			count, err := strconv.Atoi(label[1])
+			if err != nil || count > utf8.RuneCountInString(text) {
+				return false
+			}
+			occurrences[count]++
+			ordinal := 1
+			if label[2] != "" {
+				ordinal, err = strconv.Atoi(label[2])
+			}
+			if err != nil || ordinal != occurrences[count] || (label[2] != "" && ordinal < 2) {
+				return false
+			}
+			for i := 0; i < count; i++ {
+				_, size := utf8.DecodeRuneInString(text)
+				text = text[size:]
+			}
+			draft = draft[len(label[0]):]
+			continue
+		}
+		if text == "" {
+			return false
+		}
+		dr, ds := utf8.DecodeRuneInString(draft)
+		tr, ts := utf8.DecodeRuneInString(text)
+		if dr != tr {
+			return false
+		}
+		draft, text = draft[ds:], text[ts:]
+	}
+	return text == ""
 }

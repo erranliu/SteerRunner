@@ -15,7 +15,7 @@ import (
 )
 
 func TestNativeMultilinePasteRequiresSettledOriginalDraft(t *testing.T) {
-	for _, fault := range []string{"none", "unicode-collapsed", "existing-draft", "unavailable-screen", "wrong-size", "paste-response-lost", "wrong-draft", "replaced-terminal", "changed-provider", "changed-main", "enter-response-lost"} {
+	for _, fault := range []string{"none", "unicode-collapsed", "segmented", "changing-segments", "existing-draft", "unavailable-screen", "wrong-size", "paste-response-lost", "wrong-draft", "replaced-terminal", "changed-provider", "changed-main", "enter-response-lost"} {
 		t.Run(fault, func(t *testing.T) {
 			l, host, s := fixtureOn(t, "paired-worker")
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -65,6 +65,13 @@ func TestNativeMultilinePasteRequiresSettledOriginalDraft(t *testing.T) {
 						if fault == "unicode-collapsed" {
 							draft = fmt.Sprintf("[Pasted Content %d chars]", utf8.RuneCountInString(text))
 						}
+						if fault == "segmented" || fault == "changing-segments" {
+							split := 1000
+							if fault == "changing-segments" && reads%2 == 0 {
+								split++
+							}
+							draft = fmt.Sprintf("[Pasted Content %d chars][Pasted Content %d chars]", split, utf8.RuneCountInString(text)-split)
+						}
 					}
 					if fault == "existing-draft" {
 						draft = "human draft"
@@ -109,10 +116,13 @@ func TestNativeMultilinePasteRequiresSettledOriginalDraft(t *testing.T) {
 			if fault == "wrong-draft" {
 				budget = 100 * time.Millisecond
 			}
+			if fault == "changing-segments" {
+				budget = 700 * time.Millisecond
+			}
 			ctx, cancel := context.WithTimeout(context.Background(), budget)
 			defer cancel()
 			_, err = l.submitNativePaste(ctx, s, text)
-			if fault == "none" || fault == "unicode-collapsed" {
+			if fault == "none" || fault == "unicode-collapsed" || fault == "segmented" {
 				if err != nil || pasted != 1 || entered != 1 || reads != 3 {
 					t.Fatal("sole staged input not verified", err, pasted, entered, reads)
 				}
