@@ -1,0 +1,12 @@
+{
+  "source_commit": "6c4936f4af767bec6daa2dc313fa80f453b85896",
+  "source_dirty": true,
+  "mode": "long-input",
+  "target_sha256": "488250524220EC4BF18DD2DF39CA0DF7D65A567ACEEAF17206FE971C59C36B45",
+  "passed": true,
+  "source_digest": "111056783fefb9f3d8ae31df115a202b0ce31a18de6cd1e8e8179f649edbdae2",
+  "orca_cli_sha256": "894700BC388AF843B06628DED98DBDD1D9D25E3A94FEA661DBF4DC16EEED5AE2",
+  "test_exe_sha256": "950D41EA9A54438381F2381DC429FAC89E324D551A0C5A41842B71550E453C19",
+  "exit_code": 0,
+  "finished_at": "2026-10-27T07:57:16.8533455Z"
+}

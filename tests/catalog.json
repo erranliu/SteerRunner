@@ -69,6 +69,19 @@
   ],
   "focused_native_scenarios": [
     {
+      "id": "orca-remote.native-input",
+      "level": "L3",
+      "test": "TestOrcaNativeStateLiveLifecycle",
+      "entry": "scripts/test-native-input.ps1",
+      "scope": "fresh empty Orca worktree; fixed CLI/native launch; synthetic no-tools input; no business suite or PR",
+      "requires": ["explicit fixed target.json", "new output directory", "complete empty terminal census"],
+      "expected": ["unique complete original input and canonical result", "one production paste and Enter", "unknown effects never replayed in controlled regressions", "confirmed terminal close and zero complete census"],
+      "subcases": [
+        {"id": "long-input", "mode": "long-input", "scope": "production Lifecycle; natural draft shape recorded"},
+        {"id": "segmented-shape", "mode": "segmented-shape", "scope": "two explicit real paste effects; one logical input and Enter; separate shape qualification"}
+      ]
+    },
+    {
       "id": "local-codex.generate-repository",
       "level": "L3",
       "test": "TestSRContentRepositoryNative",

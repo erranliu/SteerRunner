@@ -1,0 +1,15 @@
+{
+  "CLI": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+  "Environment": "e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+  "Runtime": "f8616747-34af-4543-8487-ec6b5d8de4ff",
+  "Worktree": "id:59f29cc4-7282-47f4-9929-e8fe97fe1628::C:/Users/Administrator/orca/workspaces/merge-h-308-code/sr-native-input-accept-20261027-2121-final",
+  "Launch": {
+    "args": [
+      "--no-daemon"
+    ],
+    "access_mode": "full_access",
+    "model": "gpt-6-luna",
+    "reasoning_effort": "xhigh",
+    "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe"
+  }
+}

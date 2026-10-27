@@ -1,0 +1,3 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+--- PASS: TestOrcaNativeStateLiveLifecycle (44.75s)
+PASS

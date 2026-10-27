@@ -28,6 +28,18 @@ func TestNativePasteDraftSegments(t *testing.T) {
 		{"trailing-draft", "[Pasted Content 3 chars]x", "abc", false},
 		{"truncated", "[Pasted Content 3 chars", "abc", false},
 		{"emoji-loss", "[Pasted Content 1 chars]", "中🙂", false},
+		{"single-chinese", "[Pasted Content 4 chars]", "中文\n\n", true},
+		{"crlf-blank-lines", "头\r\n[Pasted Content 2 chars]\r\n\r\n尾", "头\r\n中文\r\n\r\n尾", true},
+		{"scalar-not-bytes", "[Pasted Content 6 chars]", "中文", false},
+		{"scalar-not-utf16", "[Pasted Content 3 chars]", "中🙂", false},
+		{"combining-scalars", "[Pasted Content 2 chars][Pasted Content 1 chars]", "e\u0301中", true},
+		{"numbered-mixed", "中[Pasted Content 2 chars]文[Pasted Content 2 chars] #2\n", "中ab文cd\n", true},
+		{"leading-zero", "[Pasted Content 02 chars]", "ab", false},
+		{"negative", "[Pasted Content -2 chars]", "ab", false},
+		{"incomplete-after-prefix", "head[Pasted Content 2 chars][Pasted Content", "headabcd", false},
+		{"extra-visible-prefix", "x[Pasted Content 2 chars]", "ab", false},
+		{"duplicate-ordinal", "[Pasted Content 2 chars][Pasted Content 2 chars] #2[Pasted Content 2 chars] #2", "abcdef", false},
+		{"invalid-utf8-equal", string([]byte{0xff}), string([]byte{0xff}), false},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			if got := nativePasteDraftMatches(c.draft, c.text); got != c.want {

@@ -1,0 +1,159 @@
+=== RUN   TestNativeRemoteSubmissionWaitsForOriginalStart
+--- PASS: TestNativeRemoteSubmissionWaitsForOriginalStart (0.01s)
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/missed
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/observed
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/restored
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/changed-input
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/expanded-lines
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/duplicate-input
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/unknown-paste
+=== RUN   TestNativeCRLFPastePreservesOriginalInputAndCompletion/unknown-submit
+--- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion (1.94s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/missed (0.29s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/observed (0.27s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/restored (0.28s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/changed-input (0.28s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/expanded-lines (0.29s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/duplicate-input (0.27s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/unknown-paste (0.00s)
+    --- PASS: TestNativeCRLFPastePreservesOriginalInputAndCompletion/unknown-submit (0.26s)
+=== RUN   TestNativePasteDraftSegments
+=== RUN   TestNativePasteDraftSegments/observed-two-elements
+=== RUN   TestNativePasteDraftSegments/different-boundaries
+=== RUN   TestNativePasteDraftSegments/duplicate-size-labels
+=== RUN   TestNativePasteDraftSegments/visible-fragments
+=== RUN   TestNativePasteDraftSegments/plain
+=== RUN   TestNativePasteDraftSegments/non-bmp-count-retained
+=== RUN   TestNativePasteDraftSegments/wrong-total
+=== RUN   TestNativePasteDraftSegments/over-total
+=== RUN   TestNativePasteDraftSegments/wrong-visible-fragment
+=== RUN   TestNativePasteDraftSegments/missing-ordinal
+=== RUN   TestNativePasteDraftSegments/invalid-first-ordinal
+=== RUN   TestNativePasteDraftSegments/foreign-ordinal
+=== RUN   TestNativePasteDraftSegments/skipped-ordinal
+=== RUN   TestNativePasteDraftSegments/zero
+=== RUN   TestNativePasteDraftSegments/overflow
+=== RUN   TestNativePasteDraftSegments/trailing-draft
+=== RUN   TestNativePasteDraftSegments/truncated
+=== RUN   TestNativePasteDraftSegments/emoji-loss
+=== RUN   TestNativePasteDraftSegments/single-chinese
+=== RUN   TestNativePasteDraftSegments/crlf-blank-lines
+=== RUN   TestNativePasteDraftSegments/scalar-not-bytes
+=== RUN   TestNativePasteDraftSegments/scalar-not-utf16
+=== RUN   TestNativePasteDraftSegments/combining-scalars
+=== RUN   TestNativePasteDraftSegments/numbered-mixed
+=== RUN   TestNativePasteDraftSegments/leading-zero
+=== RUN   TestNativePasteDraftSegments/negative
+=== RUN   TestNativePasteDraftSegments/incomplete-after-prefix
+=== RUN   TestNativePasteDraftSegments/extra-visible-prefix
+=== RUN   TestNativePasteDraftSegments/duplicate-ordinal
+=== RUN   TestNativePasteDraftSegments/invalid-utf8-equal
+--- PASS: TestNativePasteDraftSegments (0.00s)
+    --- PASS: TestNativePasteDraftSegments/observed-two-elements (0.00s)
+    --- PASS: TestNativePasteDraftSegments/different-boundaries (0.00s)
+    --- PASS: TestNativePasteDraftSegments/duplicate-size-labels (0.00s)
+    --- PASS: TestNativePasteDraftSegments/visible-fragments (0.00s)
+    --- PASS: TestNativePasteDraftSegments/plain (0.00s)
+    --- PASS: TestNativePasteDraftSegments/non-bmp-count-retained (0.00s)
+    --- PASS: TestNativePasteDraftSegments/wrong-total (0.00s)
+    --- PASS: TestNativePasteDraftSegments/over-total (0.00s)
+    --- PASS: TestNativePasteDraftSegments/wrong-visible-fragment (0.00s)
+    --- PASS: TestNativePasteDraftSegments/missing-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/invalid-first-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/foreign-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/skipped-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/zero (0.00s)
+    --- PASS: TestNativePasteDraftSegments/overflow (0.00s)
+    --- PASS: TestNativePasteDraftSegments/trailing-draft (0.00s)
+    --- PASS: TestNativePasteDraftSegments/truncated (0.00s)
+    --- PASS: TestNativePasteDraftSegments/emoji-loss (0.00s)
+    --- PASS: TestNativePasteDraftSegments/single-chinese (0.00s)
+    --- PASS: TestNativePasteDraftSegments/crlf-blank-lines (0.00s)
+    --- PASS: TestNativePasteDraftSegments/scalar-not-bytes (0.00s)
+    --- PASS: TestNativePasteDraftSegments/scalar-not-utf16 (0.00s)
+    --- PASS: TestNativePasteDraftSegments/combining-scalars (0.00s)
+    --- PASS: TestNativePasteDraftSegments/numbered-mixed (0.00s)
+    --- PASS: TestNativePasteDraftSegments/leading-zero (0.00s)
+    --- PASS: TestNativePasteDraftSegments/negative (0.00s)
+    --- PASS: TestNativePasteDraftSegments/incomplete-after-prefix (0.00s)
+    --- PASS: TestNativePasteDraftSegments/extra-visible-prefix (0.00s)
+    --- PASS: TestNativePasteDraftSegments/duplicate-ordinal (0.00s)
+    --- PASS: TestNativePasteDraftSegments/invalid-utf8-equal (0.00s)
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/none
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/unicode-collapsed
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/segmented
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/late-complete
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/reset-stability
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-plain-collapsed
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-segments
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/existing-draft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/unavailable-screen
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-size
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/paste-response-lost
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-draft
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/replaced-terminal
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-provider
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-main
+=== RUN   TestNativeMultilinePasteRequiresSettledOriginalDraft/enter-response-lost
+--- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft (4.60s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/none (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/unicode-collapsed (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/segmented (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/late-complete (0.76s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/reset-stability (0.76s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-plain-collapsed (0.71s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changing-segments (0.71s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/existing-draft (0.00s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/unavailable-screen (0.00s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-size (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/paste-response-lost (0.00s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/wrong-draft (0.11s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/replaced-terminal (0.01s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-provider (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/changed-main (0.26s)
+    --- PASS: TestNativeMultilinePasteRequiresSettledOriginalDraft/enter-response-lost (0.26s)
+=== RUN   TestNativeComposerGatePreventsPrematureInput
+=== RUN   TestNativeComposerGatePreventsPrematureInput/ready
+=== RUN   TestNativeComposerGatePreventsPrematureInput/busy
+=== RUN   TestNativeComposerGatePreventsPrematureInput/permission
+=== RUN   TestNativeComposerGatePreventsPrematureInput/timeout
+--- PASS: TestNativeComposerGatePreventsPrematureInput (0.02s)
+    --- PASS: TestNativeComposerGatePreventsPrematureInput/ready (0.01s)
+    --- PASS: TestNativeComposerGatePreventsPrematureInput/busy (0.01s)
+    --- PASS: TestNativeComposerGatePreventsPrematureInput/permission (0.00s)
+    --- PASS: TestNativeComposerGatePreventsPrematureInput/timeout (0.00s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.39s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.03s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	9.295s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	1.293s [no tests to run]

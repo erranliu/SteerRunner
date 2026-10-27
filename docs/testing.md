@@ -3,10 +3,24 @@
 N
 
 2026-10-27 核对：当前通用目录为 L2 1 场景/1 case、L3 29 场景/39 case、L4 4 场景/4 case，
-Controlled 前置 26 个顶层测试，另有 4 个 focused native L3 专项。
+Controlled 前置 26 个顶层测试，另有 5 个 focused native L3 专项。
 L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用已落实；当前行为、独立子场景入口与 L4 后续建议见[测试清单整理结论](test-catalog.md#测试整理结论-2026-10-26)。
 
 ## 固定交付包验证（2026-10-26）
+
+Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，已登记为 focused native
+`orca-remote.native-input`。入口为 `./scripts/test-native-input.ps1 -Target <固定目标JSON>
+-OutDir <全新目录> -Mode long-input`；单独的 `-Mode segmented-shape` 显式执行两次真实
+粘贴，验证相邻折叠块，只计独立形态试验，不计生产一次粘贴自然分段。
+目标 JSON 含 `Worktree`（完整 `id:repo::path`）、`Runtime`、`Environment`、`CLI` 和
+`Launch`（现有 `agentlaunch.Config` 的 executable/args/model/reasoning_effort/access_mode）。
+只用新的隔离工作区，先关闭已核实属于本次创建的空闲默认 shell；不能填历史业务终端。
+测试拒绝非空/不完整清单、重复目录、跳过、零匹配、全文/唯一性/进程归属不符与未确认清理。
+每个模式独立启动并关闭一个终端；保留 target、源码摘要、测试 EXE SHA、原文、真实 draft
+reads、原生全文查询、原结果与前后完整清单。运行后移除自建工作区。
+自然长输入包含中文 BMP、CRLF、空行和代码块；非 BMP 的历史原生失败仍未验收。
+默认 L1 不启动它；不将 opt-in skip 当真实通过。具体命令与范围见
+[输入验收](acceptance/native-start-confirmation-20261027.md#仓库内可重复输入验收2026-10-27)。
 
 `scripts/test-delivery.ps1 -PackageDir <已打包目录> -OutDir <新的包外证据目录>` 以包内 Runner、客户端 helper 和 Viewer 为被测对象，不重新构建替代 Runner。复用隔离安装/篡改检查、客户端受控矩阵、Viewer 原生窗口检查和 `TestSRProgressFile`；后者验证原始字节、原子替换、多 Run 隔离、读取失败保留、服务重启零重发和终态快照不刷新。
 

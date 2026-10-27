@@ -11,7 +11,7 @@ import (
 )
 
 func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
-	for _, mode := range []string{"missed", "observed", "restored", "changed-input", "expanded-lines", "duplicate-input"} {
+	for _, mode := range []string{"missed", "observed", "restored", "changed-input", "expanded-lines", "duplicate-input", "unknown-paste", "unknown-submit"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, s := fixtureOn(t, "paired-worker")
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -31,10 +31,56 @@ func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
 			}
 			bind(&s, r)
 			host.screen = true
+			host.lostPasteReply = mode == "unknown-paste"
+			host.lostEnterReply = mode == "unknown-submit"
 			l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
 				return native.StateSample{AgentState: base}, nil
 			}
 			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+			if strings.HasPrefix(mode, "unknown-") {
+				if err == nil || r.Disposition != b.OperationUnknown || r.State.InputAccepted || r.State.TurnStarted {
+					t.Fatal("lost effect was reported known", r, err)
+				}
+				bind(&s, r)
+				countSends := func() int {
+					n := 0
+					for _, call := range host.calls {
+						if len(call) > 1 && call[0] == "terminal" && call[1] == "send" {
+							n++
+						}
+					}
+					return n
+				}
+				sends := countSends()
+				want := 1
+				if mode == "unknown-submit" {
+					want = 2
+				}
+				if sends != want {
+					t.Fatal("unexpected initial effects", sends, want)
+				}
+				l.closeStateFeed()
+				port, e := NewLifecycleWithStateFactory(l.setup, l.stateFactory)
+				if e != nil {
+					t.Fatal(e)
+				}
+				l = port.(*Lifecycle)
+				defer l.closeStateFeed()
+				for i := 0; i < 2; i++ {
+					observed, _, e := l.observeOnce(context.Background(), s)
+					if e != nil || observed.State.TurnStarted || observed.TurnEvidence != nil {
+						t.Fatal("unknown effect invented completion", observed, e)
+					}
+					_, _, _ = l.Reconcile(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+					if _, e := l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input})); e == nil {
+						t.Fatal("restarted adapter allowed a second attempt")
+					}
+				}
+				if countSends() != sends || host.nativeSends != 1 {
+					t.Fatal("unknown effect replayed after observation/reconcile/restart", host.calls)
+				}
+				return
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
