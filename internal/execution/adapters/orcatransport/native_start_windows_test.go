@@ -2,6 +2,7 @@ package orcatransport
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"testing"
 	"time"
@@ -43,7 +44,7 @@ func TestNativeComposerGatePreventsPrematureInput(t *testing.T) {
 }
 
 func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) {
-	for _, mode := range []string{"original", "restored", "duplicate", "altered", "ready-only", "working", "authority-conflict", "stale-metadata", "interrupted", "other-process"} {
+	for _, mode := range []string{"original", "restored", "duplicate", "altered", "ready-only", "working", "authority-conflict", "stale-metadata", "interrupted", "other-process", "query-error-conflict", "query-error-identity"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, s := fixtureOn(t, "paired-worker")
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -111,7 +112,15 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 				return native.QueryOriginalSample(ctx, "", p, pane)
 			}
 			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
-				return native.QueryOriginalInput(ctx, "", p, pane, baseline, before)
+				current, err := native.QueryOriginalInput(ctx, "", p, pane, baseline, before)
+				if err == nil && mode == "query-error-conflict" {
+					current.ProviderSession.ID = "replaced-after-read"
+					return current, errors.New("independent post-read mismatch")
+				}
+				if err == nil && mode == "query-error-identity" {
+					return current, native.ErrStateIdentityChanged
+				}
+				return current, err
 			}
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
 			r, _, err = l.observeOnce(context.Background(), s)
@@ -130,6 +139,18 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 				}
 			} else if r.State.TurnStarted || r.TurnEvidence != nil {
 				t.Fatal("unverified input authorized start/completion", mode, r)
+			}
+			if strings.HasPrefix(mode, "query-error-") {
+				bind(&s, r)
+				saved, err := l.state(s)
+				if err != nil || turnFor(&saved, input.CommandID).Native.Conflict == "" {
+					t.Fatal("query failure discarded positive replacement evidence", err)
+				}
+				l.clock = func() time.Time { return time.Unix(162, 0).UTC() }
+				again, _, err := l.observeOnce(context.Background(), s)
+				if err != nil || again.State.TurnStarted || again.TurnEvidence != nil || again.Diagnostic == "" {
+					t.Fatal("later observation erased original identity conflict", again, err)
+				}
 			}
 			sends := 0
 			for _, call := range host.calls {

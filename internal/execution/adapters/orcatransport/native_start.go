@@ -49,14 +49,29 @@ func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.
 	}
 	current, err := l.queryInput(ctx, state.Process, turn.Native.Pane, turn.Native.BaseRootAt, sample)
 	if err != nil {
+		// A failed post-read fence may still contain positive replacement
+		// evidence. Preserve it just as the ordinary started-turn query does.
+		if errors.Is(err, native.ErrStateIdentityChanged) {
+			turn.Native.reject(err.Error())
+		} else if current.MainAgent == nil || current.UpdatedAt >= current.MainAgent.StateStartedAt {
+			turn.Native.rejectIdentity(current)
+			turn.Native.rejectProvenance(current, turn)
+		}
+		if turn.Native.Conflict != "" {
+			return current, errors.New(turn.Native.diagnostic())
+		}
 		return current, errors.New("Native original start query is unverified: " + err.Error())
 	}
 	if turn.Native.rejectIdentity(current) || turn.Native.rejectProvenance(current, turn) {
 		return current, errors.New(turn.Native.diagnostic())
 	}
 	input := current.NativeInput
-	if input == nil || !input.MatchesOriginalQuery(current) || !input.MatchesOriginalProcess(state.Process) {
+	if input == nil || !input.MatchesOriginalQuery(current) {
 		return current, nil
+	}
+	if !input.MatchesOriginalProcess(state.Process) {
+		turn.Native.reject("Native original start query belongs to another process")
+		return current, errors.New(turn.Native.diagnostic())
 	}
 	candidate := *turn
 	candidate.Started = true
