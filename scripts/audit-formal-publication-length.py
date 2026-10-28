@@ -25,7 +25,10 @@ def native(text):
 def audit(root):
     summary = load(root/"summary.json")
     assert summary["status"] == "completed" and summary["active_case"] is None
-    assert len(summary["rows"]) == 6
+    effective = summary.get("valid_samples", summary["rows"])
+    assert len(effective) == 6
+    effective_roots = {r["root"] for r in effective}
+    new_scope = summary.get("schema") == "valid-formal-publication-comparison/v1"
     rows, baseline, providers = [], None, set()
     for ordinal, source in enumerate(summary["rows"], 1):
         case = root/source["root"]
@@ -64,6 +67,9 @@ def audit(root):
         row["cleanup_verified"] = True
         row["setup_failure_before_native_session"] = setup_failure
         inputs = record["workflow"].get("StageInputs") or []
+        if new_scope and inputs:
+            first_text = native(inputs[0]["prompt"])
+            assert len(first_text) == 833 and sha(first_text.encode()) == "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
         stages = {p["command_id"]: p for p in inputs}
         pubs = [p for p in inputs if p["step_id"] == "publish.execute"]
         row["stages"] = [p["step_id"] for p in inputs]
@@ -99,6 +105,33 @@ def audit(root):
         for values in effects.values():
             assert values.count("paste") <= 1 and values.count("enter") <= 1, "original effect repeated"
         row.update(effects=dict(effects), draft_observations=dict(shapes), cli_errors=cli_errors, first_tool_output_observed=tool_output)
+        row["valid_publication_sample"] = source["root"] in effective_roots
+        if new_scope:
+            first_complete = any(v["CommandID"] == inputs[0]["command_id"] and v["FinalVerified"] and v["Succeeded"] for v in record["workflow"].get("StageResults") or []) if inputs else False
+            observed_valid = first_complete and tool_output and len(pubs) == 1 and effects.get(pubs[0]["command_id"], []).count("paste") == 1
+            assert observed_valid == row["valid_publication_sample"] == source["valid_publication_sample"]
+            row["first_task_canonical_verified"] = first_complete
+            viewport = collections.defaultdict(list)
+            for path in (Path(source["state_dir"])/"native-input").rglob("*.viewport-result.json"):
+                event = load(path)
+                rpc = event["rpc"]
+                assert rpc["StartedAt"] and rpc["FinishedAt"]
+                if source["passed"]:
+                    assert rpc["RequestID"] and not rpc["Error"]
+                if rpc["Method"] == "terminal.resizeForClient":
+                    viewport[event["input"]["command_id"]].append(rpc)
+            if source["passed"]:
+                for command, calls in viewport.items():
+                    calls.sort(key=lambda v: v["StartedAt"])
+                    assert len(calls) == 2
+                    fit, restore = calls
+                    assert fit["Params"]["mode"] == "mobile-fit" and restore["Params"]["mode"] == "restore"
+                    assert fit["Params"]["clientId"] == restore["Params"]["clientId"]
+                    assert fit["Params"]["terminal"] == restore["Params"]["terminal"]
+                    a, z = fit["Result"]["terminal"], restore["Result"]["terminal"]
+                    assert (a["cols"], a["rows"]) == (1024, 80)
+                    assert (z["cols"], z["rows"]) == (a["previousCols"], a["previousRows"])
+                row["owned_viewport_restored"] = True
         if setup_failure:
             row["failure_class"] = "repository_directory_mismatch_before_native_workspace"
         elif not pubs and inputs and all("enter" not in v for v in effects.values()):
@@ -150,15 +183,16 @@ def audit(root):
         rows.append(row)
     groups = []
     for group in ("long", "short"):
-        selected = [r for r in rows if r["group"] == group]
+        selected = [r for r in rows if r["group"] == group and r["root"] in effective_roots]
         assert len(selected) == 3
         groups.append(dict(group=group, attempts=3, reached_publication=sum(bool(r["reached_publication"]) for r in selected),
                            passed=sum(bool(r["passed"]) for r in selected), failed=sum(not r["passed"] for r in selected),
                            input_scalars=[r.get("input_scalars") for r in selected], input_bytes=[r.get("input_bytes") for r in selected]))
     return dict(schema="formal-publication-length-independent-audit/v1", audit_passed=True,
                 audit_scope="offline evidence consistency; does not promote pre-publication failures into target trials",
-                target_comparison_complete=all(r["reached_publication"] for r in rows),
-                formal_publication_qualification_passed=all(r["passed"] for r in rows),
+                target_comparison_complete=all(r["reached_publication"] for r in rows if r["root"] in effective_roots),
+                formal_publication_qualification_passed=all(r["passed"] for r in rows if r["root"] in effective_roots),
+                front_failures_preserved=[r for r in rows if r["root"] not in effective_roots],
                 source_build=summary["source_build"], groups=groups, rows=rows, cleanup_verified=True,
                 business_tests_run=0, business_rounds_counted=0)
 

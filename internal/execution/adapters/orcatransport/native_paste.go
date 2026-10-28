@@ -190,20 +190,27 @@ func nativeDraftNeedsReflow(draft, text string) bool {
 		return false
 	}
 	d, t := []rune(draft), []rune(text)
-	if len(d) != len(t) {
-		return false
-	}
 	different := false
-	for i, r := range t {
-		if d[i] == r {
+	i, j := 0, 0
+	for i < len(d) && j < len(t) {
+		if d[i] == t[j] {
+			i++
+			j++
 			continue
 		}
-		if r != ' ' || d[i] != '\n' {
+		if d[i] != '\n' {
 			return false
+		}
+		// The renderer can replace a word separator or insert a row break
+		// inside a word. This only permits requesting a fresh view. Neither
+		// form is accepted by the unchanged exact comparator below.
+		i++
+		if t[j] == ' ' {
+			j++
 		}
 		different = true
 	}
-	return different
+	return different && i == len(d) && j == len(t)
 }
 
 // A single ConPTY write may become several Codex paste elements, with literal

@@ -20,7 +20,7 @@ func (v reflowTestViewport) Restore(context.Context) (json.RawMessage, error) {
 }
 
 func TestNative833ReflowPreservesExactTextAndFences(t *testing.T) {
-	for _, fault := range []string{"before-fix", "none", "real-newline", "changed-byte", "lost-fit-reply", "changed-provider", "changed-terminal", "restore-failed"} {
+	for _, fault := range []string{"before-fix", "none", "inserted-wrap", "real-newline", "real-inserted-newline", "changed-byte", "lost-fit-reply", "changed-provider", "changed-terminal", "restore-failed"} {
 		t.Run(fault, func(t *testing.T) {
 			raw, err := os.ReadFile("testdata/draft833.txt")
 			if err != nil {
@@ -31,6 +31,9 @@ func TestNative833ReflowPreservesExactTextAndFences(t *testing.T) {
 				t.Fatal("frozen original 833 input changed")
 			}
 			painted := strings.Replace(text, "; coordinate writers", "; coordinate\nwriters", 1)
+			if fault == "inserted-wrap" || fault == "real-inserted-newline" {
+				painted = strings.Replace(painted, "隔离投递诊断", "隔离投递\n诊断", 1)
+			}
 			if painted == text || nativePasteDraftMatches(painted, text) || !nativeDraftNeedsReflow(painted, text) {
 				t.Fatal("fixture no longer rejects the original ambiguity")
 			}
@@ -62,7 +65,7 @@ func TestNative833ReflowPreservesExactTextAndFences(t *testing.T) {
 					draft := ""
 					if pasted > 0 {
 						draft = painted
-						if wide && fault != "real-newline" {
+						if wide && fault != "real-newline" && fault != "real-inserted-newline" {
 							draft = text
 						}
 						if wide && fault == "changed-byte" {
@@ -111,7 +114,7 @@ func TestNative833ReflowPreservesExactTextAndFences(t *testing.T) {
 				}
 			}
 			budget := 600 * time.Millisecond
-			if fault == "none" || fault == "restore-failed" {
+			if fault == "none" || fault == "inserted-wrap" || fault == "restore-failed" {
 				budget = 2 * time.Second
 			}
 			ctx, cancel := context.WithTimeout(context.Background(), budget)
@@ -120,14 +123,14 @@ func TestNative833ReflowPreservesExactTextAndFences(t *testing.T) {
 			if pasted != 1 || entered > 1 || fits > 1 || restores != fits {
 				t.Fatal("effect repeated or viewport leaked", pasted, entered, fits, restores, err)
 			}
-			if fault == "none" {
+			if fault == "none" || fault == "inserted-wrap" {
 				if err != nil || entered != 1 {
 					t.Fatal("unchanged 833 input not submitted", err, entered)
 				}
 			} else if err == nil {
 				t.Fatal("fault accepted", fault)
 			}
-			if fault != "none" && fault != "restore-failed" && entered != 0 {
+			if fault != "none" && fault != "inserted-wrap" && fault != "restore-failed" && entered != 0 {
 				t.Fatal("unverified original submitted", fault)
 			}
 		})
