@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"path/filepath"
 	"time"
 
@@ -62,4 +63,14 @@ func writeNativeDiagnostic(path string, value any) error {
 		return err
 	}
 	return process.New(0).WriteExecutionFile(path, raw)
+}
+
+func nativeViewportRecorder(ctx context.Context) native.ViewportRecorder {
+	d, ok := ctx.Value(nativeInputDiagnosticKey{}).(nativeInputDiagnostic)
+	if !ok {
+		return nil
+	}
+	return func(call native.ViewportRPC) error {
+		return writeNativeDiagnostic(filepath.Join(d.Directory, call.ID+".viewport-"+call.Phase+".json"), map[string]any{"input": d, "rpc": call})
+	}
 }
