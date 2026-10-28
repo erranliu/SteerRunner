@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory)][string]$Target,
     [Parameter(Mandatory)][string]$OutDir,
-    [ValidateSet('long-input','segmented-shape','followup-immediate','followup-idle','followup-output')][string]$Mode = 'long-input'
+    [ValidateSet('long-input','segmented-shape','followup-immediate','followup-idle','followup-output')][string]$Mode = 'long-input',
+    [ValidateRange(256,3427)][int]$FollowupScalars = 3427
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -16,8 +17,9 @@ New-Item -ItemType Directory -Path $taskOut | Out-Null
 Copy-Item -LiteralPath $Target -Destination (Join-Path $taskOut 'target.json')
 $taskSource = [ordered]@{source_commit=(& git -C $taskRepo rev-parse HEAD).Trim();source_dirty=-not [string]::IsNullOrWhiteSpace((& git -C $taskRepo status --porcelain | Out-String));mode=$Mode;target_sha256=(Get-FileHash -LiteralPath $Target).Hash;passed=$false}
 $taskSource['source_digest']=$taskIdentity.source_digest
+$taskSource['followup_scalars']=$FollowupScalars
 $taskSource['orca_cli_sha256']=(Get-FileHash -LiteralPath $taskTarget.CLI).Hash
-$taskKeys = @('STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ENVIRONMENT')
+$taskKeys = @('STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ENVIRONMENT','STEERRUNNER_ORCA_FOLLOWUP_SCALARS')
 $taskPrevious = @{}
 foreach($taskKey in $taskKeys) { $taskPrevious[$taskKey]=[Environment]::GetEnvironmentVariable($taskKey) }
 Push-Location $taskRepo
@@ -29,6 +31,7 @@ try {
     [Environment]::SetEnvironmentVariable($taskKeys[0],$taskOut)
     [Environment]::SetEnvironmentVariable($taskKeys[1],$Mode)
     [Environment]::SetEnvironmentVariable($taskKeys[2],[string]$taskTarget.Environment)
+    [Environment]::SetEnvironmentVariable($taskKeys[3],[string]$FollowupScalars)
     & $taskExe '-test.run=^TestOrcaNativeStateLiveLifecycle$' '-test.count=1' '-test.timeout=6m' '-test.v' 1> (Join-Path $taskOut 'test.log') 2> (Join-Path $taskOut 'test-stderr.log')
     $taskSource['exit_code']=$LASTEXITCODE
     $taskLog=Get-Content -LiteralPath (Join-Path $taskOut 'test.log') -Raw
@@ -38,6 +41,7 @@ try {
     if ($Mode -eq 'long-input' -and ($taskResult.paste_calls -ne 1 -or $taskResult.enter_calls -ne 1 -or $taskResult.business_inputs -ne 1)) { throw 'Expected one production paste, one submit and one original input' }
     if ($Mode -eq 'segmented-shape' -and ($taskResult.paste_calls -ne 2 -or $taskResult.enter_calls -ne 1 -or $taskResult.logical_inputs -ne 1)) { throw 'Expected two real paste effects, one submit and one logical original input' }
     if ($Mode.StartsWith('followup-') -and ($taskResult.paste_calls -ne 2 -or $taskResult.enter_calls -ne 2 -or $taskResult.verified_turns.Count -ne 2)) { throw 'Expected two independent verified original turns and exactly two production submissions' }
+    if ($Mode.StartsWith('followup-') -and $taskResult.verified_turns[1].input_scalars -ne $FollowupScalars) { throw 'Actual second input scalar count differs from frozen probe size' }
     $taskAfter=Get-SRSourceIdentity $taskRepo $taskSourcePaths
     if ($taskAfter.source_digest -cne $taskIdentity.source_digest) { throw 'Probe source changed during execution' }
     $taskSource.passed=$true

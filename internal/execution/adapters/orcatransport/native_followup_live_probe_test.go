@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -28,7 +29,16 @@ func runNativeFollowupProbe(t *testing.T, ctx context.Context, l *Lifecycle, s b
 	}
 	second := "这是第一任务完成后的第二条诊断输入，模拟后续发布提示的中文、换行和长粘贴形态。\n不发布、不创建PR、不使用工具、不修改任何文件。忽略以下只读占位材料的含义。只回复唯一标记：" + secondMarker + "\n\n"
 	filler := strings.Repeat("中文发布输入占位材料；保留原请求、完整正文及换行。\n\n", 150)
-	second += string([]rune(filler)[:3427-utf8.RuneCountInString(second)])
+	scalars := 3427
+	if raw := os.Getenv("STEERRUNNER_ORCA_FOLLOWUP_SCALARS"); raw != "" {
+		var err error
+		scalars, err = strconv.Atoi(raw)
+		if err != nil || scalars < utf8.RuneCountInString(second) || scalars > 3427 {
+			t.Fatal("invalid frozen followup scalar count; no task input sent")
+		}
+	}
+	second += string([]rune(filler)[:scalars-utf8.RuneCountInString(second)])
+	record["followup_scalars"] = scalars
 	verified := []any{}
 	record["verified_turns"] = verified
 	for index, prompt := range []string{first, second} {
@@ -87,7 +97,7 @@ func runNativeFollowupProbe(t *testing.T, ctx context.Context, l *Lifecycle, s b
 				if err != nil || original.NativeInput == nil || original.NativeInput.Text != nativePromptText(prompt) || !original.NativeInput.MatchesOriginalProcess(s.Ref.External) || !original.NativeInput.MatchesOriginalQuery(original) || original.LastAssistantMessage != marker || original.ProviderSession.ID != ready.ProviderSession.ID {
 					t.Fatal("independent original full input/identity/final verification", index, err)
 				}
-				verified = append(verified, map[string]any{"index": index + 1, "completed_at": time.Now().UTC(), "command_id": input.CommandID, "input_bytes": len(prompt), "input_sha256": digest([]byte(prompt)), "baseline": baseline, "query": original, "final": r.TurnEvidence})
+				verified = append(verified, map[string]any{"index": index + 1, "completed_at": time.Now().UTC(), "command_id": input.CommandID, "input_bytes": len(prompt), "input_scalars": utf8.RuneCountInString(prompt), "input_sha256": digest([]byte(prompt)), "baseline": baseline, "query": original, "final": r.TurnEvidence})
 				record["verified_turns"] = verified
 				break
 			}
