@@ -2,9 +2,9 @@
 
 当前内置流程为 development/2、development-audited/2、conversation/1、generate/1。本目录解释现有实现；执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)，不加载本目录 Markdown。当前文档入口见[项目文档索引](../README.md)。
 
-2026-10-28 输入契约：每次现有投递操作的最终 UTF-8 文字同时满足调用方 ≤2000B、Runner ≤1000B、总计 ≤3000B。正文覆盖、inline 材料/schema、回答/反馈属于调用方；默认正文、事实/引用、标签/换行、结果要求和原生包装属于 Runner。完成原有换行与包装后检查，冻结后不得追加；超限明确拒绝，不截断、摘要或拆分。原工具/文件结果不受正文预算限制，复制进新正文时重新归属计量。实际 JSON 封装与 Windows 命令行另行保护。
+2026-10-28 输入契约：每次现有投递操作的最终 UTF-8 文字仅限制 Runner ≤1000B；调用方和总量无正文预算，仍记录全部字节、归属和摘要。正文覆盖、inline 材料/schema、回答/反馈属于调用方；默认正文、事实/引用、标签/换行、结果要求和原生包装属于 Runner。完成原有换行与包装后检查，冻结后不得追加；超限明确拒绝，不截断、摘要或拆分。原工具/文件结果不受正文预算限制，复制进新正文时重新归属计量。实际 JSON 封装与 Windows 命令行另行保护。
 
-`capabilities.model_input_contract` 与原 `workflows` 发布实际使用的定义、动态槽与预算；定义来自原 owner 的编译常量，没有加载 Markdown 或新增 DSL。`prompt_overrides` 仍只替换原正文：审计 execute 的默认格式可随正文覆盖，report 的固定结果格式、材料/来源、适用的提交/完成要求仍保留。progress/result 写入规则只给实施/审计 execute；在同一已核实原生会话中可沿用已提供的规则，不改变文件通道、原字节和封存时机。
+`capabilities.model_input_contract.utf8_bytes` 中 caller/total 为 null（无正文预算）、runner 为 1000。`capabilities.model_input_contract` 与原 `workflows` 发布实际使用的定义、动态槽与预算；定义来自原 owner 的编译常量，没有加载 Markdown 或新增 DSL。`prompt_overrides` 仍只替换原正文：审计 execute 的默认格式可随正文覆盖，report 的固定结果格式、材料/来源、适用的提交/完成要求仍保留。progress/result 写入规则只给实施/审计 execute；在同一已核实原生会话中可沿用已提供的规则，不改变文件通道、原字节和封存时机。
 
 开发步骤继续引用原 worktree 内的 Spec/Plan 路径，长路径/多引用同样计入 Runner，可能被拒绝。内容流程保留 inline/schema 能力及原输出容量，不能自动改成未经支持的附件协议。长审计 final 仍优先程序提取；未尝试的 parser 超预算时沿用原一次 report 后备，不新增轮次。旧冻结定义不因新默认文字而失效，已接受/未知输入继续原观察与对账；只有可靠补算且预算内的新派发可继续。详见[Spec](../spec/workflow-input-budget.spec.md)和[验收与容量取舍](../acceptance/workflow-input-budget.md)。
 

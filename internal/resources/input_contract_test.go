@@ -23,4 +23,18 @@ func TestInputContractDiscoveryMatchesOwners(t *testing.T) {
 	if len(c["workflows"].([]workflow.Profile)) != 4 {
 		t.Fatal("workflow removed")
 	}
+	var published struct {
+		UTF8Bytes map[string]*int `json:"utf8_bytes"`
+	}
+	if err := json.Unmarshal(raw, &published); err != nil {
+		t.Fatal(err)
+	}
+	for _, key := range []string{"caller", "total"} {
+		if value, ok := published.UTF8Bytes[key]; !ok || value != nil {
+			t.Fatal("unlimited budget must be published as null", key)
+		}
+	}
+	if value := published.UTF8Bytes["runner"]; value == nil || *value != m.RunnerInputBytes {
+		t.Fatal("Runner limit changed")
+	}
 }

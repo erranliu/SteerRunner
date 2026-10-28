@@ -16,6 +16,38 @@ import (
 
 type reflowTestViewport struct{ restore func() error }
 
+func TestNativePreparationAcceptsLongCallerInput(t *testing.T) {
+	l, _, s := fixtureOn(t, "paired-worker")
+	r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	bind(&s, r)
+	text := strings.Repeat("中文😀\n", 500)
+	input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: text, InputVersion: 1}
+	_, input.Budget, err = m.FreezeInput(m.InputPart{Source: "caller.direct", Owner: m.CallerInput, Text: text})
+	if err != nil {
+		t.Fatal(err)
+	}
+	s.PendingTurn = &input
+	r, _, err = l.Execute(context.Background(), request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	bind(&s, r)
+	defer l.closeStateFeed()
+	state, err := l.state(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	turn := turnFor(&state, command(s))
+	// Preserve the existing native trailing-newline normalization.
+	want := strings.TrimRight(text, "\r\n")
+	if nativeWireText(turn) != want || turn.WireBudget.CallerBytes != len(want) || turn.WireBudget.TotalBytes <= 3000 || m.CheckInput(want, turn.WireBudget) != nil {
+		t.Fatal("long caller input changed or rejected", turn.WireBudget)
+	}
+}
+
 func (v reflowTestViewport) Restore(context.Context) (json.RawMessage, error) {
 	return json.RawMessage(`{"restored":true}`), v.restore()
 }
@@ -164,7 +196,6 @@ func TestComposerReflowCannotBypassInputBudget(t *testing.T) {
 		source string
 		count  int
 	}{
-		{"caller", m.CallerInput, "caller.direct", 2001},
 		{"runner", m.RunnerInput, "workflow.body", 1001},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

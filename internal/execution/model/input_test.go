@@ -8,9 +8,9 @@ import (
 )
 
 func TestInputBudgetBoundaries(t *testing.T) {
-	for _, pair := range [][2]int{{1999, 0}, {2000, 0}, {2001, 0}, {0, 999}, {0, 1000}, {0, 1001}, {1999, 1000}, {2000, 1000}, {2001, 1000}, {2000, 1001}} {
+	for _, pair := range [][2]int{{1999, 0}, {2000, 0}, {2001, 0}, {2999, 0}, {3000, 0}, {3001, 0}, {10552, 0}, {1 << 20, 1000}, {0, 999}, {0, 1000}, {0, 1001}, {1999, 1000}, {2000, 1000}, {2001, 1000}, {2000, 1001}, {10552, 1001}} {
 		text, b, err := FreezeInput(InputPart{"caller.direct", CallerInput, strings.Repeat("c", pair[0])}, InputPart{"native.header", RunnerInput, strings.Repeat("r", pair[1])})
-		want := pair[0] > 2000 || pair[1] > 1000 || pair[0]+pair[1] > 3000
+		want := pair[1] > RunnerInputBytes
 		var limit *InputBudgetError
 		if errors.As(err, &limit) != want || b.CallerBytes != pair[0] || b.RunnerBytes != pair[1] || b.TotalBytes != len(text) || b.TotalBytes != pair[0]+pair[1] {
 			t.Fatalf("%v: %+v %v", pair, b, err)
@@ -42,7 +42,7 @@ func TestInputFreezeAndNativeNewlines(t *testing.T) {
 	}
 }
 func TestAnswerTextExactNativeJSON(t *testing.T) {
-	for _, answers := range []map[string][]string{nil, {}, {"问😀": {"中文\n\"<&😀", "e\u0301"}, "a": nil}} {
+	for _, answers := range []map[string][]string{nil, {}, {"问😀": {"中文\n\"<&😀", "e\u0301"}, "a": nil}, {"q": {strings.Repeat("中文😀\n", 1000)}}} {
 		text, b, err := FreezeInput(AnswerParts(answers)...)
 		expected, _ := json.Marshal(map[string]any{"answers": answers})
 		if err != nil || text != string(expected) || b.TotalBytes != len(expected) {

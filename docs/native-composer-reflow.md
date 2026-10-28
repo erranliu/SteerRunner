@@ -6,6 +6,6 @@ Orca 的屏幕行投影可能把 Codex 编辑框的显示折行重建为 LF。Ru
 
 视口操作前后核对原 runtime、terminal、incarnation、worktree；已有外部显示策略时不接管。临时覆盖使用唯一 owner ID，退出时仅恢复该 owner 的原尺寸，并核验恢复回执。结果不确定时不重发输入；即使调用失败，也尝试清理已创建的自身视口覆盖，原错误不会因此变成成功。没有更改账号、全局环境或全局视口偏好。
 
-该操作只改善呈现，不提供接受、启动或完成凭据。它发生在现有最终输入预算检查之后，不追加模型可见文字；调用方 2000B、Runner 1000B、总计 3000B 的规则原样保留，超限时不会投递或重绘。唯一原输入、原进程及 canonical final 继续由原通道独立核验。
+该操作只改善呈现，不提供接受、启动或完成凭据。它发生在现有最终输入预算检查之后，不追加模型可见文字；当前只保留 Runner 1000B；调用方和总量不设正文额度，仍计量冻结，超限时不会投递或重绘。唯一原输入、原进程及 canonical final 继续由原通道独立核验。
 
-实现从 [PR #67](https://github.com/erranliu/SteerRunner/pull/67) 的固定 head `49722a8053dfa21d449693c8c4c5c5cfa5c57db5` 选择性整合；不迁入其重复零值实现、`omit_publish_source_facts` 开关或通用进程诊断层。对应回归和当前整合资格见[整合验收](acceptance/pr67-integration.md)。历史 3715B 长输入成功记录不适用于当前 3000B 硬上限。
+实现从 [PR #67](https://github.com/erranliu/SteerRunner/pull/67) 的固定 head `49722a8053dfa21d449693c8c4c5c5cfa5c57db5` 选择性整合；不迁入其重复零值实现、`omit_publish_source_facts` 开关或通用进程诊断层。对应回归和当前整合资格见[整合验收](acceptance/pr67-integration.md)。历史 3715B 长输入成功只证明当时固定版本；取消 C/T 额度不扩大该记录的资格，也不追认历史失败。

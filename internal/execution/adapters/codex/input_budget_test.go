@@ -25,21 +25,24 @@ func TestInputSessionAggregateAndZeroOversizeSend(t *testing.T) {
 	if _, err := StartThread(context.Background(), nil, params, "workspace"); err == nil {
 		t.Fatal("alternate Go container bypassed session accounting")
 	}
-	if err := SteerAsyncAnswer(context.Background(), nil, "t", "w", "turn", "c", strings.Repeat("c", 2001)); err == nil {
-		t.Fatal("async oversize sent")
+	if err := SteerAsyncAnswer(context.Background(), nil, "t", "w", "turn", "c", string([]byte{0xff})); err == nil {
+		t.Fatal("invalid UTF-8 async answer sent")
 	}
-	if err := SendAskReply(context.Background(), AskReply{Answer: b.Answer{Answers: map[string][]string{"q": {strings.Repeat("c", 2001)}}}}); err == nil {
-		t.Fatal("ask oversize sent")
+	if err := SendAskReply(context.Background(), AskReply{Answer: b.Answer{Answers: map[string][]string{strings.Repeat("q", 1001): {"answer"}}}}); err == nil {
+		t.Fatal("ask Runner framing overflow sent")
 	}
 }
 func TestInputTurnChecksFinalFrozenText(t *testing.T) {
-	for _, n := range []int{2000, 2001} {
+	for _, n := range []int{1999, 2000, 2001, 2999, 3000, 3001, 10552} {
 		input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: strings.Repeat("c", n)}
 		parts, _ := input.ModelInputParts()
 		_, input.Budget, _ = m.DescribeInput(parts...)
 		params, err := TurnParams(context.Background(), TurnParamsInput{Worktree: "workspace", ThreadID: "00000000-0000-0000-0000-000000000001", TurnInput: input, Sandbox: "read-only"}, nil)
-		if (err != nil) != (n == 2001) {
+		if err != nil {
 			t.Fatal(n, params, err)
+		}
+		if _, err := TurnStartParams("w", "t", "c", input.Prompt, "read-only", "", "", nil, input.Budget); err != nil {
+			t.Fatal("long frozen caller input rejected", n, err)
 		}
 	}
 	text, budget, _ := m.FreezeInput(m.InputPart{Source: "caller.direct", Owner: m.CallerInput, Text: "frozen"})
