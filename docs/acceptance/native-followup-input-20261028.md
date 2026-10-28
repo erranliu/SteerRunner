@@ -119,3 +119,26 @@ ASCII/中文句号；没有用更长输入通过推断原长度通过。原折�
 原现场六文件和原 store 文件的 SHA 再次核对未变。机器摘要、原始文件索引和完整清理记录见
 [专项证据](evidence/native-followup-input-20261028/summary.json)，
 原始完整日志根为 `.evidence/subsequent-native-input-20261028/`。
+
+## 追加：实际800字符对照
+
+按用户后续要求，沿用相同环境、账号、SDK launcher、模型和执行配置，在新工作区运行一次
+`followup-immediate -FollowupScalars 800`。只把原生产 Lifecycle 双任务探针的第二输入从3427缩到800；
+第一任务、中文/换行模板、正文及身份/回执核验不变。没有更改产品发送逻辑或原始失败现场。
+
+**本次通过**：第一任务的真实工具输出已观测；同一 provider 的第二条公开原输入恰为800 scalars、
+2206 UTF-8 bytes，SHA `acb26e2645edd157e1477a6511577ce50f4c1cea0107653b3cd8b6e664c8a391`。
+原草稿自然显示完整明文，连续两次逐字相同并精确匹配；每个任务一次paste、一次Enter，
+两个原任务均完成且唯一最终标记匹配。关闭后另一个只读进程恢复唯一完整user row，与冻结正文逐字相符；
+该补充读取不制造关闭后的进程/完成回执，现场运行时的严格前后进程核验仍由原探针执行。
+
+干净探针源码 `d48fb76ee7ff3a7b4c308eed72d1b829457c5876`，test EXE SHA256
+`4933f5e634dfe55753e7f6d57c714cdef8bc713d373a8eed814a3dfef11aa5a5`。
+47.22秒完成，无重发。完整native清单为0、无截断/omitted hosts，新工作区移除后
+selector_not_found，本地进程0；累计本专项10个新工作区均已清理。
+
+此项使用test EXE调用生产Lifecycle；正式publish.execute会自动追加Source facts，不能通过只缩override
+使其实际正文低于1000，因此没有把该结果记作交付Runner EXE的完整发布链通过。
+800明文成功也不证明原3427折叠草稿失败只由总长度导致；上方交付门禁及SteerLine 0/2不变。
+[机器摘要及原文](evidence/native-followup-input-20261028/under1000-summary.json)，
+原始完整日志根 `.evidence/native-followup-under1000-20261028/`。

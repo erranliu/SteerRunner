@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "scope": "real two-task production Lifecycle probe using test EXE; not shipped Runner EXE development/publication qualification",
+  "source": {
+    "source_commit": "d48fb76ee7ff3a7b4c308eed72d1b829457c5876",
+    "source_dirty": false,
+    "mode": "followup-immediate",
+    "target_sha256": "93709FA49A5E783C91B783AEAAF5746B3AFE619BB8CFCFEA379719DA69312673",
+    "passed": true,
+    "source_digest": "d2b662b8e35f4a9028d697be557bdd39b5afa94d1492c8bee53ba22c3fd02437",
+    "followup_scalars": 800,
+    "orca_cli_sha256": "894700BC388AF843B06628DED98DBDD1D9D25E3A94FEA661DBF4DC16EEED5AE2",
+    "test_exe_sha256": "4933F5E634DFE55753E7F6D57C714CDEF8BC713D373A8EED814A3DFEF11AA5A5",
+    "exit_code": 0,
+    "finished_at": "2026-10-28T03:20:22.0638322Z"
+  },
+  "actual_second_input": {
+    "scalars": 800,
+    "bytes": 2206,
+    "sha256": "acb26e2645edd157e1477a6511577ce50f4c1cea0107653b3cd8b6e664c8a391",
+    "unique_public_row": "01a18085-cb77-7f10-98a3-a7a90a6df348",
+    "final": "SR_FOLLOWUP_60284f5f32316590f191a2c7606f45ad",
+    "draft_shape": "exact full plain text, two identical matching reads",
+    "matching_draft_files": [
+      "actual-public-draft-read-05.json",
+      "actual-public-draft-read-06.json"
+    ]
+  },
+  "original_tool_output_observed": true,
+  "production_effects": {
+    "4a3c085ed9b1058dacace916adf4ea5a": [
+      "submit",
+      "paste"
+    ],
+    "fdbf2476316606cdcf2ef5eb7ef2a877": [
+      "paste",
+      "submit"
+    ]
+  },
+  "original_query_final": {
+    "state": "done",
+    "paneKey": "3f42e33e-6318-4309-8464-5cc76468ef59:8ea7cd3e-e39c-4ba9-8e4a-d41a385674cd",
+    "agentType": "codex",
+    "prompt": "这是第一任务完成后的第二条诊断输入，模拟后续发布提示的中文、换行和长粘贴形态。 不发布、不创建PR、不使用工具、不修改任何文件。忽略以下只读占位材料的含义。只回复唯一标记：SR_FOLLOWUP_60284f5f32316590f191a2c7606f45ad 中文发布输入占位材料；保留原请求、完整正文及换行。 中文发布输入占位材料；保留原请求、完整正文及换行。 中文发布输入占位材料；保留原请求、",
+    "updatedAt": 1793157616629,
+    "stateStartedAt": 1793157616629,
+    "turnStartedAt": 0,
+    "mainAgent": {
+      "state": "done",
+      "stateStartedAt": 1793157616629
+    },
+    "providerSession": {
+      "id": "01a18085-4ebd-7d61-9889-d5836984bd4b",
+      "transcriptPath": "C:\\Users\\Administrator\\AppData\\Roaming\\orca\\codex-accounts\\0fe4721f-dcad-47f6-a9a6-a23b7a863b25\\home\\sessions\\2026\\10\\28\\rollout-2026-10-28T11-19-42-01a18085-4ebd-7d61-9889-d5836984bd4b.jsonl"
+    },
+    "lastAssistantMessage": "SR_FOLLOWUP_60284f5f32316590f191a2c7606f45ad"
+  },
+  "cleanup": {
+    "native_zero": true,
+    "truncated": false,
+    "omitted_hosts": [],
+    "worktree_removed": true,
+    "after": "selector_not_found",
+    "local_processes": 0
+  },
+  "raw_index_sha256": "70f9b042106c5f3bc796b780a63d3adba821fbe98c3d11b3bf95ed5d5a8a8a99",
+  "limits": {
+    "original_3427_failure_root_cause_confirmed": false,
+    "published_runner_qualification_changed": false,
+    "business_rounds_counted": 0
+  },
+  "at": "2026-10-28T03:23:14.860724+00:00"
+}
