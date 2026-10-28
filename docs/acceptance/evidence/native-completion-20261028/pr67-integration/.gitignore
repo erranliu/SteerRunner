@@ -1,0 +1,11 @@
+*
+!.gitignore
+!README.md
+!verification-summary.json
+!controlled-packages.log
+!repeat-10.log
+!directed-final.log
+!source-digests.json
+!short-input-1.json
+!short-input-2.json
+!real-probe-pass.log

@@ -18,7 +18,11 @@ import (
 // combined paste/Enter returned accepted. Keep these two effects separate:
 // paste exactly once, observe its draft, then submit exactly once. A draft is
 // readiness only; original transcript/main-agent evidence still owns completion.
-func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot, text string) (json.RawMessage, error) {
+type composerViewport interface {
+	Restore(context.Context) (json.RawMessage, error)
+}
+
+func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot, text string) (result json.RawMessage, resultErr error) {
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
 	if strings.ContainsAny(text, "\x00\x1b") {
@@ -85,17 +89,49 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 	}
 	payload := "\x1b[200~" + text + "\x1b[201~"
 	pasted, err := send(&payload)
-	evidence := struct{ Paste, Submit json.RawMessage }{Paste: pasted.Payload}
+	evidence := struct {
+		Paste, Submit   json.RawMessage
+		ViewportFit     json.RawMessage `json:",omitempty"`
+		ViewportRestore json.RawMessage `json:",omitempty"`
+	}{Paste: pasted.Payload}
 	receipt := func() json.RawMessage { raw, _ := json.Marshal(evidence); return raw }
+	var viewport composerViewport
+	defer func() {
+		if viewport == nil {
+			return
+		}
+		restoreCtx, stop := context.WithTimeout(context.WithoutCancel(ctx), 10*time.Second)
+		defer stop()
+		var restoreErr error
+		evidence.ViewportRestore, restoreErr = viewport.Restore(restoreCtx)
+		resultErr = errors.Join(resultErr, restoreErr)
+		result = receipt()
+	}()
 	if err != nil {
 		return receipt(), err
 	}
 	stable := 0
 	previousDraft := ""
+	reflowAttempted := false
 	for {
 		draft, err = read()
 		if err != nil {
 			return receipt(), err
+		}
+		if !reflowAttempted && l.fitComposer != nil && nativeDraftNeedsReflow(draft, text) {
+			reflowAttempted = true
+			if _, err := l.original(ctx, s); err != nil {
+				return receipt(), err
+			}
+			viewport, evidence.ViewportFit, err = l.fitComposer(ctx, s.Ref.External, nil)
+			if err != nil {
+				return receipt(), err
+			}
+			if _, err := l.original(ctx, s); err != nil {
+				return receipt(), err
+			}
+			stable, previousDraft = 0, ""
+			continue // discard the narrow observation, then require exact stable text
 		}
 		if nativePasteDraftMatches(draft, text) {
 			if draft == previousDraft {
@@ -136,6 +172,37 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 	entered, err := send(nil)
 	evidence.Submit = entered.Payload
 	return receipt(), err
+}
+
+// This only asks for a different view; it NEVER accepts or rewrites whitespace.
+// A real LF or other altered byte must still fail nativePasteDraftMatches after
+// reflow. In particular the original comparator and all transcript fences stay.
+func nativeDraftNeedsReflow(draft, text string) bool {
+	if draft == text || !utf8.ValidString(draft) || !utf8.ValidString(text) {
+		return false
+	}
+	d, t := []rune(draft), []rune(text)
+	different := false
+	i, j := 0, 0
+	for i < len(d) && j < len(t) {
+		if d[i] == t[j] {
+			i++
+			j++
+			continue
+		}
+		if d[i] != '\n' {
+			return false
+		}
+		// The renderer can replace a word separator or insert a row break
+		// inside a word. This only permits requesting a fresh view. Neither
+		// form is accepted by the unchanged exact comparator below.
+		i++
+		if t[j] == ' ' {
+			j++
+		}
+		different = true
+	}
+	return different && i == len(d) && j == len(t)
 }
 
 // A single ConPTY write may become several Codex paste elements, with literal

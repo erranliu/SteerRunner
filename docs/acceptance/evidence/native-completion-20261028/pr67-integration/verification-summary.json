@@ -1,0 +1,131 @@
+{
+  "source_pr": 67,
+  "destination_pr": 68,
+  "source_pr_head": "49722a8053dfa21d449693c8c4c5c5cfa5c57db5",
+  "destination_prior_head": "2dd3129bf60849bf838f012158c47c962cfedb54",
+  "migration_scope": {
+    "retained": "Owned temporary viewport reflow, exact stable composer matching, restoration and adversarial/follow-up regression tests",
+    "excluded": [
+      "duplicate zero-incarnation implementation",
+      "omit_publish_source_facts presentation switch",
+      "general process DiagnosticPath subsystem",
+      "large-input experiment drivers"
+    ],
+    "unchanged_from_pr68": [
+      "internal/execution/adapters/protocol/orca/state_observation.go",
+      "internal/execution/adapters/protocol/orca/native_input_query.go",
+      "internal/execution/adapters/orcatransport/native_state.go",
+      "internal/contracts/run.go",
+      "internal/execution/workflow/input.go",
+      "internal/execution/workflow/prompt.go",
+      "internal/execution/process/host.go",
+      "internal/execution/backend/operation.go"
+    ]
+  },
+  "controlled": {
+    "full_protocol_seconds": 25.269,
+    "full_adapter_seconds": 99.533,
+    "repeat_subcases": 26,
+    "repeat_rounds": 10,
+    "repeat_assertions": 260,
+    "final_directed_subcases": 27,
+    "extra_case": "genuine trailing-space loss remains rejected",
+    "production_unchanged_after_full_regression": true
+  },
+  "native_samples": [
+    {
+      "root": "probe01",
+      "outcome": "failed",
+      "logical_inputs_verified_accepted": 0,
+      "paste_calls": 1,
+      "bare_enters": 0,
+      "viewport_calls": 0,
+      "condition": "fixed inert probe notes had a trailing blank absent from screen; original exact matcher correctly refused and read deadline expired",
+      "operation_result": "unknown; not replayed",
+      "cleaned_up": true
+    },
+    {
+      "root": "probe02",
+      "outcome": "preflight rejected before model creation",
+      "model_created": false,
+      "input_sends": 0,
+      "reason": "unused fallback shell had not been verified closed; the guard prevented launch",
+      "original_record_cleaned_up": false,
+      "later_owned_shell_cleanup_confirmed": true
+    },
+    {
+      "root": "probe03",
+      "outcome": "passed",
+      "test_seconds": 51.28,
+      "package_seconds": 54.025,
+      "only_payload_condition_changed_from_probe01": "remove trailing blank from fixed probe notes before freezing; fresh nonce/session",
+      "same_normalized_payload_except_one_trailing_blank": true,
+      "logical_inputs_verified_accepted": 2,
+      "all_finals_verified": true,
+      "account_digest": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+      "same_original_account": true,
+      "caller_runner_total_bytes": [
+        [
+          978,
+          0,
+          978
+        ],
+        [
+          144,
+          0,
+          144
+        ]
+      ],
+      "test_binary_sha256": "1d6717af7f2236c396e28d973fb7cc99e26f3b987992fff310154bd7a467b3be",
+      "source_go_files": 419,
+      "source_changed_after_freeze": [],
+      "viewport": {
+        "fit_sequence": 20,
+        "restore_sequence": 28,
+        "same_owner": true,
+        "fit_cols_rows": [
+          1024,
+          80
+        ],
+        "original_cols_rows": [
+          177,
+          83
+        ],
+        "restored_cols_rows": [
+          177,
+          83
+        ],
+        "fit_error": "",
+        "restore_error": ""
+      },
+      "cleaned_up": true
+    }
+  ],
+  "cleanup": {
+    "01": {
+      "removed": true,
+      "after": "selector_not_found"
+    },
+    "02": {
+      "removed": true,
+      "after": "selector_not_found"
+    }
+  },
+  "private_raw_capture_sha256": {
+    "probe01/native-result.json": "9bfabae6522a531c2db8a7507f7942f3896b33e3a773e3fad4ef26471c0c9fec",
+    "probe01/test.log": "e87208d1a4893c344dad324eff4159dae46ff8553ffd0b4aa6472db184ea8a1d",
+    "probe01/native-observer.jsonl": "1eb6cbd3d198178fa317aac5d83c84b31c16a5d76545feb4566da1c3717cc58e",
+    "probe01/invocation.json": "9c694fdc1a9892881065d4059622c535f6fc97c9769f28a66022a68768cd700e",
+    "probe02/native-result.json": "f09109b3c6b2990b2d26334f044057d9564f72cd096a10712f4d1386f727ee3d",
+    "probe02/test.log": "35250346ee4c369e20f21069c36667122e8556f4a06b5d7798010cb75df6b3cd",
+    "probe02/invocation.json": "cc975b84a8afca7563c2398349498d6c3d0f60c1db5ac6c495467ecca2d26109",
+    "probe03/native-result.json": "b2159334e466f52a78aa0b77d42d77bba1decc1262154f4bd75a58a584da608e",
+    "probe03/test.log": "7420020e942b37ae28ab4e1edf2674ecfe60e6c571862da67c62745f65d90577",
+    "probe03/native-observer.jsonl": "7b6d438c1af9ec62f12a50ae044b4819bd72416d9e41f26860b73a5ebb0b12ec",
+    "probe03/invocation.json": "1e0dd5901808e2be8aef997066fd74bc9c474258de2fd2da05be39e3b1965820"
+  },
+  "business_chain_run": false,
+  "unknown_input_resent": false,
+  "original_failures_reclassified": false,
+  "source_pr_branch_deleted": false
+}

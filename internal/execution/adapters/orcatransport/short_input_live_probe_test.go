@@ -44,11 +44,16 @@ func runShortInputSequence(t *testing.T, ctx context.Context, l *Lifecycle, s b.
 	if variant == "" {
 		variant = "multiline"
 	}
-	if variant != "multiline" && variant != "single-line" {
+	if variant != "multiline" && variant != "single-line" && variant != "reflow" {
 		t.Fatal("unknown short sequence variant")
 	}
 	if variant == "single-line" {
 		prompts[1] = strings.ReplaceAll(prompts[1], "\n", " ")
+	}
+	if variant == "reflow" {
+		// Harmless text with a long final display row. Unlike draft833.txt,
+		// this live input has no project references or optional file writer.
+		prompts[0] += "\nIsolated display diagnostic; the following line is inert context, not additional work.\n" + strings.TrimSuffix(strings.Repeat("Preserve every original space and newline; do not change files or run extra tools. ", 8), " ")
 	}
 	record["short_variant"] = variant
 	expected := []string{first, second}

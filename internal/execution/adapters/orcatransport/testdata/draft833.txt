@@ -1,0 +1,12 @@
+仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。
+用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。
+仅返回以下 JSON 结构，不加代码块或其他文字：
+{"outcome":"done","summary":"隔离投递诊断任务完成。"}
+Spec: SteerlineFlow/spec/n308-18.spec.md
+Plan: SteerlineFlow/plans/n308-18.plan.md
+Reference: SteerlineFlow/spec/activity-common-constraints.md
+Reference: SteerlineFlow/testing/acceptance/n308-18.md
+Reference: SteerlineFlow/testing/test-list.json
+Reference: SteerlineFlow/testing.md
+完成后，在最终回复末尾单独写一行：实施及必要验证已完成。
+Optional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.

@@ -1,0 +1,604 @@
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.11s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.02s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.12s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.01s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.11s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.01s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.11s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.02s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.12s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.02s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.13s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.01s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.12s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.01s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.12s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.01s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.11s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.02s)
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/none
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/foreign-fit
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size
+=== RUN   TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size
+--- PASS: TestBoundComposerViewportOwnsFitAndRestore (0.13s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/none (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-runtime (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-terminal (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-incarnation (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/wrong-worktree (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/foreign-fit (0.02s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-fit-size (0.01s)
+    --- PASS: TestBoundComposerViewportOwnsFitAndRestore/bad-restore-size (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	3.288s
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.36s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.45s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.25s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.34s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.27s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.27s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.46s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.37s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.29s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.46s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.25s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.38s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.29s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.46s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.25s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.25s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.36s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.27s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.45s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.25s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.01s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.38s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.29s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.48s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.02s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.27s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.38s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.29s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.66s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.77s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.30s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.38s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.29s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.56s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.64s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.68s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.01s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.25s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.39s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.29s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.30s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.46s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.25s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.00s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.01s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+=== RUN   TestNativeFollowupAfterCompletedToolTurn
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/none
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/zero-incarnation
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/draft-only
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/submit-response-lost
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/old-final
+=== RUN   TestNativeFollowupAfterCompletedToolTurn/changed-input
+--- PASS: TestNativeFollowupAfterCompletedToolTurn (1.36s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/none (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/zero-incarnation (0.28s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/draft-only (0.01s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/submit-response-lost (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/old-final (0.26s)
+    --- PASS: TestNativeFollowupAfterCompletedToolTurn/changed-input (0.28s)
+=== RUN   TestNative833ReflowPreservesExactTextAndFences
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/before-fix
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/none
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/inserted-wrap
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-byte
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-provider
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/changed-terminal
+=== RUN   TestNative833ReflowPreservesExactTextAndFences/restore-failed
+--- PASS: TestNative833ReflowPreservesExactTextAndFences (3.45s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/before-fix (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/none (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/inserted-wrap (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-newline (0.61s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/real-inserted-newline (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-byte (0.60s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/lost-fit-reply (0.01s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-provider (0.26s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/changed-terminal (0.01s)
+    --- PASS: TestNative833ReflowPreservesExactTextAndFences/restore-failed (0.26s)
+=== RUN   TestComposerReflowCannotBypassInputBudget
+=== RUN   TestComposerReflowCannotBypassInputBudget/caller
+=== RUN   TestComposerReflowCannotBypassInputBudget/runner
+--- PASS: TestComposerReflowCannotBypassInputBudget (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/caller (0.00s)
+    --- PASS: TestComposerReflowCannotBypassInputBudget/runner (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	51.276s
