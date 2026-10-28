@@ -16,6 +16,10 @@ import (
 )
 
 func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, fullMetadata ...bool) {
+	thinInputRPCAt(t, p, end, prompt, duplicate, 11001, fullMetadata...)
+}
+
+func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, timestamp int64, fullMetadata ...bool) {
 	t.Helper()
 	endpoint := `\\.\pipe\sr-thin-input-` + digest([]byte(t.TempDir()))[:24]
 	listener, err := winio.ListenPipe(endpoint, nil)
@@ -51,7 +55,7 @@ func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prom
 						result = map[string]any{"terminal": map[string]any{"handle": p.Terminal, "incarnationId": p.Incarnation, "worktreeId": p.WorktreeID, "worktreePath": "original", "branch": "worker", "connected": true, "agentIdentity": "codex"}}
 					case "nativeChat.readSession":
 						user := func(id string) any {
-							return map[string]any{"id": id, "role": "user", "source": "transcript", "timestamp": 11001, "blocks": []any{map[string]string{"type": "text", "text": prompt}}}
+							return map[string]any{"id": id, "role": "user", "source": "transcript", "timestamp": timestamp, "blocks": []any{map[string]string{"type": "text", "text": prompt}}}
 						}
 						messages := []any{user("original"), map[string]any{"role": "assistant", "text": "NOT THE NATIVE FINAL"}}
 						if duplicate {

@@ -70,6 +70,7 @@ type Lifecycle struct {
 	stateFactory      native.StateFeedFactory
 	queryNative       func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
 	queryInput        func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
+	fitComposer       func(context.Context, b.ProcessIdentity, native.ViewportRecorder) (composerViewport, json.RawMessage, error)
 	feed              native.StateFeed
 	feedProcess       b.ProcessIdentity
 	feedMu            sync.Mutex
@@ -86,6 +87,15 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 	if err == nil {
 		port.(*Lifecycle).nativeAccess = true
 		l := port.(*Lifecycle)
+		if l.profile.Environment != "" && l.profile.Terminal == nil && setup.Snapshot.Ref.Agent.Name == "codex" {
+			l.fitComposer = func(ctx context.Context, p b.ProcessIdentity, record native.ViewportRecorder) (composerViewport, json.RawMessage, error) {
+				lease, receipt, err := native.FitBoundComposer(ctx, l.profile.Environment, p, record)
+				if lease == nil {
+					return nil, receipt, err
+				}
+				return lease, receipt, err
+			}
+		}
 		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
 			return native.QueryOriginalSample(ctx, l.profile.Environment, process, pane)
 		}

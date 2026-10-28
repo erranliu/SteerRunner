@@ -118,3 +118,5 @@ go test ./internal/execution/adapters/orcatransport -run '^TestNativeUnstartedRe
 终端已确认关闭，完整 scoped census 为零；核对精确非主路径后移除新 worktree，后续 `worktree show` 返回 `selector_not_found`。结果汇总见 [verification-summary.json](evidence/native-completion-20261028/zero-fix/verification-summary.json)。
 
 **验收结论仅为合法零值契约缺口已修正，并由受控和本次最小真实路径验证。** 原 Run、原 publication operation 与原 4 分钟超时均未恢复或重放，原失败不追认为已修复，也未重跑 MagicPotion、Unity 或 SteerLine 业务链。
+
+后续按授权将 PR67 的必要提交前草稿重绘修复整合到 PR68；本节零值生产实现与确认条件不变，新整合的源码/受控及真实资格另见[整合验收](pr67-integration.md)。不把旧源码的通过记录直接替代整合后验收。

@@ -1,0 +1,21 @@
+{
+  "input_budget": {
+    "contract": "steerrunner-model-input/v1",
+    "sha256": "4d3fbcb7bcce099ff893e707b2df5dd0663375a0401fb124c397d2fae4de1ed3",
+    "provenance_sha256": "48fd2cc74756f02ac835e7de03fa130f1e842a144343bdfe7f9ebdf2b6148ec2",
+    "caller_bytes": 978,
+    "runner_bytes": 0,
+    "total_bytes": 978,
+    "fragments": [
+      {
+        "source": "caller.direct",
+        "owner": "caller",
+        "bytes": 978
+      }
+    ]
+  },
+  "input_version": 1,
+  "CommandID": "678181ef82ebd401d30552ab743a6fd4",
+  "Prompt": "Run only the harmless shell command Write-Output 'SR_TOOL_88ddc71eb6ae8334bb8ceb7c5c43a576' once, then reply exactly SR_FIRST_88ddc71eb6ae8334bb8ceb7c5c43a576. No file writes, business tests, commits, deployment or publication.\nIsolated display diagnostic; the following line is inert context, not additional work.\nPreserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools. Preserve every original space and newline; do not change files or run extra tools.",
+  "Purpose": ""
+}
