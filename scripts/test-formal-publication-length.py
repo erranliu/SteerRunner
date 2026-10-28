@@ -33,6 +33,13 @@ def native_text(text):
     return text.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n")
 
 
+def submit_digest(request):
+    # storage.RequestDigest: sorted JSON map inside an ordered Go struct.
+    body = json.dumps(request, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    body = body.replace("&", "\\u0026").replace("<", "\\u003c").replace(">", "\\u003e").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    return digest(('{"Protocol":"steerrunner-cli/v1","Command":"submit","Target":"","Input":'+body+'}').encode())
+
+
 def complete_zero(value):
     return (value.get("totalCount") == 0 and value.get("terminals") == []
             and value.get("truncated") is False and bool(value["hostScope"]["hostIds"])
@@ -104,6 +111,40 @@ class Case:
     def inspect(self):
         return self.runner(["inspect"], extra=["--run-id", self.run_id])["data"]["run"]
 
+    def reconcile_admission(self, request, original):
+        """Read the original durable acceptance receipt; never resend submit."""
+        expected = submit_digest(request)
+        until = time.monotonic()+60
+        while time.monotonic() < until:
+            conn = sqlite3.connect((self.state/"runner.db").as_uri()+"?mode=ro", uri=True)
+            try:
+                row = conn.execute("SELECT digest,command,run_id,command_id,response FROM commands WHERE request_id=?", (self.request_id,)).fetchone()
+            finally:
+                conn.close()
+            if not row:
+                time.sleep(.5)
+                continue
+            stored_digest, command, run_id, command_id, response = row
+            receipt = json.loads(response)
+            if stored_digest != expected or command != "submit" or not run_id or not command_id or not receipt.get("ok") or receipt["request_id"] != self.request_id:
+                raise RuntimeError("original admission receipt identity/full-input mismatch; no replay")
+            data = receipt["data"]
+            if data["receipt_status"] != "accepted" or data["run_id"] != run_id or data["command_id"] != command_id:
+                raise RuntimeError("original durable admission not accepted; no replay")
+            view = self.runner(["inspect"], extra=["--request-id", self.request_id])["data"]["run"]
+            if view["run_id"] != run_id:
+                raise RuntimeError("original request lookup points at another Run")
+            self.run_id = run_id
+            record = self.stored("read-only-admission-run-record.json")
+            if record["submit_command_id"] != command_id or record["snapshot"]["Ref"]["run_id"] != run_id:
+                raise RuntimeError("original accepted command/Run binding changed")
+            save(self.root/"read-only-admission-proof.json", dict(original_response=original, expected_request_digest=expected,
+                 stored_request_digest=stored_digest, command_id=command_id, original_receipt=receipt, lookup=view,
+                 expected_instance_id=self.instance, input_resent=False))
+            self.result["admission_response_reconciled"] = True
+            return run_id
+        raise RuntimeError("original admission still unknown after bounded read-only lookup; no replay")
+
     def stored(self, name):
         conn = sqlite3.connect((self.state/"runner.db").as_uri()+"?mode=ro", uri=True)
         try:
@@ -145,7 +186,13 @@ class Case:
                 raise RuntimeError("frozen Runner EXE changed")
             started = self.runner(["service", "start"])["data"]
             self.instance = started["instance_id"]
-            self.run_id = self.runner(["submit"], request, self.request_id)["data"]["run_id"]
+            admitted = self.runner(["submit"], request, self.request_id, check=False)
+            if admitted.get("ok"):
+                self.run_id = admitted["data"]["run_id"]
+            elif admitted.get("error", {}).get("code") == "request_outcome_unknown":
+                self.run_id = self.reconcile_admission(request, admitted)
+            else:
+                raise RuntimeError(admitted)
             self.result["run_id"] = self.run_id
             until = time.monotonic()+360
             while time.monotonic() < until:

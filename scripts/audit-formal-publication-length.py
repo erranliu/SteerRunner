@@ -44,14 +44,39 @@ def audit(root):
         for pair in (2, 3):
             comparable["workflow"]["prompt_overrides"]["publish"] = comparable["workflow"]["prompt_overrides"]["publish"].replace(f"SRPUB{pair:02d}", "SRPUB01")
         setup_failure = source["cleanup"].get("no_workspace_created", False)
+        manual_path = summary.get("independent_cleanup_proofs", {}).get(source["run_id"])
+        manual_cleanup = bool(manual_path)
         if not setup_failure:
             if baseline is None:
                 baseline = comparable
             assert comparable == baseline, "unapproved between-case request change"
-        assert all(source["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero"))
-        assert source["cleanup"].get("worktree_removed") or setup_failure
-        assert load(case/"verify-stopped.json")["resources_settled"]
-        if setup_failure:
+        if manual_cleanup:
+            evidence = Path(manual_path).parent
+            proof = load(Path(manual_path))
+            assert not source["valid_publication_sample"] and not source["reached_publication"]
+            assert not record.get("native_started") and not record.get("native_managed") and not record["workflow"].get("StageInputs")
+            assert proof["run_id"] == source["run_id"] and proof["runner_resources_settled"] is False
+            assert source["cleanup"]["service_stopped"] and not load(case/"closed-run.json")["new_inputs_allowed"]
+            assert load(case/"verify-stopped.json")["resources_settled"] is False
+            w = load(evidence/"owned-worktree.json")
+            assert w["displayName"] == f"sr-pub3-{source['ordinal']:02d}-{source['run_id']}" and not w["isMainWorktree"]
+            assert w["id"] == proof["worktree_id"] and w["instanceId"] == proof["instance_id"]
+            terminal = load(evidence/"idle-shell-show.json")["result"]["terminal"]
+            assert terminal["worktreeId"] == w["id"] and terminal["agentWait"] is None
+            closed = load(evidence/"orca-close-only-owned-idle-shell-attempt1.result.json")
+            assert closed["ok"] and closed["result"]["close"]["handle"] == terminal["handle"] and closed["result"]["close"]["ptyKilled"]
+            zero = load(evidence/"orca-immediate-prerm-zero-attempt1.result.json")["result"]
+            assert zero["totalCount"] == 0 and zero["terminals"] == [] and zero["truncated"] is False
+            assert zero["hostScope"]["hostIds"] and zero["hostScope"]["omittedHostIds"] == []
+            assert any(not (v := load(p))["ok"] and v["error"]["code"] == "selector_not_found" for p in evidence.glob("orca-removal-readonly-*.result.json"))
+            assert load(evidence/"local-owner-absence.json")["process_ids"] == []
+        else:
+            assert all(source["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero"))
+            assert source["cleanup"].get("worktree_removed") or setup_failure
+            assert load(case/"verify-stopped.json")["resources_settled"]
+        if manual_cleanup:
+            pass
+        elif setup_failure:
             assert not record.get("native_started") and not record.get("workspace_fact")
             assert not record["snapshot"].get("Implementation")
             inventory = load(sorted(case.glob("orca-no-worktree-created-inventory-attempt*.result.json"))[-1])
@@ -65,6 +90,8 @@ def audit(root):
             assert any(v["ok"] is False and v["error"]["code"] == "selector_not_found" for v in after_reads)
         row = {k: source.get(k) for k in ("ordinal", "pair", "group", "root", "passed", "reached_publication", "error", "run_id", "marker")}
         row["cleanup_verified"] = True
+        row["cleanup_evidence_scope"] = "independent_unstarted_front_resources_absent" if manual_cleanup else "runner_and_native_verified"
+        row["runner_resources_settled"] = source["cleanup"].get("resources_settled")
         row["setup_failure_before_native_session"] = setup_failure
         inputs = record["workflow"].get("StageInputs") or []
         if new_scope and inputs:
@@ -132,7 +159,9 @@ def audit(root):
                     assert (a["cols"], a["rows"]) == (1024, 80)
                     assert (z["cols"], z["rows"]) == (a["previousCols"], a["previousRows"])
                 row["owned_viewport_restored"] = True
-        if setup_failure:
+        if manual_cleanup:
+            row["failure_class"] = "workspace_creation_response_lost_before_sdk_or_task_input"
+        elif setup_failure:
             row["failure_class"] = "repository_directory_mismatch_before_native_workspace"
         elif not pubs and inputs and all("enter" not in v for v in effects.values()):
             row["failure_class"] = "first_input_draft_mismatch_no_submit_call"
