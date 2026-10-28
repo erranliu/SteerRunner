@@ -42,7 +42,8 @@ def main():
     final = json.dumps({"outcome": "needs_input", "summary": marker, "question": marker}, separators=(",", ":"))
     first = ("仅执行隔离输入诊断，不运行任何业务测试，不改文件、不提交、不推送、不创建PR。\n"
              "用一次 shell 工具执行 Write-Output 'SR_CLI_TOOL_OUTPUT'，确认输出并正常结束。\n"
-             "最终回复末尾独立一行：实施及必要验证已完成。")
+             "完成后仅返回以下 ASCII JSON，不输出代码块或额外自然语言：\n"
+             '{"outcome":"done","summary":"SR_CLI_TOOL_OUTPUT"}')
     second = "后续发布输入的最小诊断：禁止真实发布、工具调用、文件修改和PR创建。只返回以下唯一结构化标记（不要代码块或说明）：\n" + final + "\n\n"
     second += ("只读中文占位材料，保留完整输入与空行。\n\n" * 200)[:3427-len(second)]
     request_id = "followup-" + uuid.uuid4().hex
