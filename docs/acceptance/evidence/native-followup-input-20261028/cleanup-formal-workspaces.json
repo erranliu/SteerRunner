@@ -1,0 +1,34 @@
+[
+  {
+    "name": "formal-cli-final",
+    "run_id": "7b79527e952eea3657f573d9a8809309",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-7b79527e952eea3657f573d9a8809309",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "formal-cli-qualified",
+    "run_id": "b4e8ac121ca3201da433585c76bd0ea5",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-b4e8ac121ca3201da433585c76bd0ea5",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "formal-cli-structured",
+    "run_id": "ef5fb485bcff5a4e5257824c2c4345d1",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-ef5fb485bcff5a4e5257824c2c4345d1",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "formal-cli-3427",
+    "run_id": "54064730dabc03b25e50a5a65b2c25f2",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-54064730dabc03b25e50a5a65b2c25f2",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  }
+]

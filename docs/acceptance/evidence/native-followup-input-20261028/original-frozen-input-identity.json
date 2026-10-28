@@ -1,0 +1,13 @@
+{
+  "logical_bytes": 3768,
+  "logical_scalars": 3428,
+  "logical_sha256": "d6e3f935342eee61a3fabd2ae8cb876b53d4e44d6bf603a5a1923fe6f4a58551",
+  "normalized_bytes": 3767,
+  "normalized_scalars": 3427,
+  "normalized_sha256": "8de9178bbd2945bc6c862785a532b244779d6eb411d1ea599026d2ff84f6f423",
+  "attempted": true,
+  "accepted": false,
+  "started": false,
+  "old_run_stopped": true,
+  "old_new_inputs_allowed": false
+}

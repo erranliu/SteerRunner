@@ -1,0 +1,517 @@
+{
+  "status": "draft-unqualified-for-original-publication",
+  "finished_at": "2026-10-28T03:13:49.567564+00:00",
+  "product_build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "130fdc9022f2c504fdcd5957eb26c57748e697bee8dad598576fd6772a808abf",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "c47974d040530233787ff3da7ab3c10b1e957952",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2"
+  },
+  "original": {
+    "verified": true,
+    "original_root": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01",
+    "runner_source": "ffb9c510280d470e064e48770b8eea30174d82c4",
+    "runner_exe_sha256": "a745ab738152e974850cbaca7851fb13c0d33cd08a915cda555f1ae465556347",
+    "run": "600d14e87929e5555c74675b56cde86a",
+    "attempt": "219608c2f90445b83698824345efa5fe",
+    "publication_operation": "bbe27895a8d0e57683d4201371a55d48",
+    "public_pages": 4,
+    "public_user_rows": [
+      {
+        "id": "01a17f7e-d83d-7db3-a670-9facdde730b0",
+        "timestamp": 1793140381768,
+        "bytes": 327,
+        "sha256": "e85ce05c809290a96736e8864dc29ecc9a1459ca590bdd79cf3fd4b85a0bd28f"
+      },
+      {
+        "id": "01a17f7f-2445-7830-8edd-52961a09d370",
+        "timestamp": 1793140401270,
+        "bytes": 10552,
+        "sha256": "a1840b1b5c3e11a008c0e5b25c521118706f36c82141cde39a4cf339881f0970"
+      }
+    ],
+    "same_provider_and_main": true,
+    "checks": 9,
+    "publication_passed": false,
+    "old_resources_settled": true,
+    "root_cause_confirmed": false,
+    "events": [
+      {
+        "v": 1,
+        "seq": 360,
+        "ts": "2026-10-27T23:16:19.9968042Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "337da2fb20b3b0f2a4cfd712127fa443",
+        "kind": "runner_event",
+        "status": "started",
+        "title": "started"
+      },
+      {
+        "v": 1,
+        "seq": 361,
+        "ts": "2026-10-27T23:16:20.0360853Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "64210cf3a9d5e1274bab39887d911c76",
+        "kind": "runner_event",
+        "status": "completed",
+        "title": "completed"
+      },
+      {
+        "v": 1,
+        "seq": 362,
+        "ts": "2026-10-27T23:16:20.126413Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "4f0efcd6d90e0fa884cbe45a969391df",
+        "kind": "runner_event",
+        "status": "result_committed",
+        "title": "result_committed"
+      },
+      {
+        "v": 1,
+        "seq": 363,
+        "ts": "2026-10-27T23:16:20.126413Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "97193e77835ebf7517ab9c74d059dae7",
+        "kind": "worker_state",
+        "status": "running",
+        "title": "Workflow 切换：implement.execute → publish.execute（执行中）",
+        "meta": {
+          "from": {
+            "workflow_stage": "implement.execute",
+            "workflow_status": "running"
+          },
+          "to": {
+            "workflow_stage": "publish.execute",
+            "workflow_status": "running"
+          }
+        }
+      },
+      {
+        "v": 1,
+        "seq": 364,
+        "ts": "2026-10-27T23:16:20.1946424Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "a5d0e5cd73e883fc9e55974c605c58bf",
+        "kind": "runner_event",
+        "status": "operation_committed",
+        "title": "operation_committed"
+      },
+      {
+        "v": 1,
+        "seq": 365,
+        "ts": "2026-10-27T23:16:20.9055726Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "317b72adce25f2daeb1ad52a41547c07",
+        "kind": "runner_event",
+        "status": "operation_confirmed",
+        "title": "operation_confirmed"
+      },
+      {
+        "v": 1,
+        "seq": 366,
+        "ts": "2026-10-27T23:16:21.0311281Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "e871c171e0da1a713400a41d2e656ac1",
+        "kind": "runner_event",
+        "status": "operation_committed",
+        "title": "operation_committed"
+      },
+      {
+        "v": 1,
+        "seq": 367,
+        "ts": "2026-10-27T23:17:02.8818308Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "bc3fdf08fbbff64a733946b4fe750ae1",
+        "kind": "runner_event",
+        "status": "operation_outcome_unknown",
+        "title": "operation_outcome_unknown"
+      },
+      {
+        "v": 1,
+        "seq": 368,
+        "ts": "2026-10-27T23:17:02.8818308Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "6c8ee8ad972cae46c8a1b7ef1de1cf4f",
+        "kind": "worker_state",
+        "status": "reconciling",
+        "title": "状态切换：执行中 → 状态核验中",
+        "detail": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+        "meta": {
+          "from": {
+            "workflow_stage": "publish.execute",
+            "workflow_status": "running"
+          },
+          "to": {
+            "diagnostic": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+            "workflow_stage": "publish.execute",
+            "workflow_status": "reconciling"
+          }
+        }
+      },
+      {
+        "v": 1,
+        "seq": 369,
+        "ts": "2026-10-27T23:17:03.3160076Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "41c16382bb1bf08632440bfbeceb570e",
+        "kind": "runner_event",
+        "status": "operation_outcome_unknown",
+        "title": "operation_outcome_unknown"
+      },
+      {
+        "v": 1,
+        "seq": 370,
+        "ts": "2026-10-27T23:17:03.3160076Z",
+        "source": "steerrunner-cli/v1",
+        "run_id": "cbad26c0f90646efb54c515e19da4251",
+        "task_id": "18",
+        "item_id": "89387a630cbe21aee899c7d12c3d045e",
+        "kind": "worker_state",
+        "status": "reconciling",
+        "title": "诊断信息更新",
+        "detail": "Original input has no verified acceptance receipt; no input was resent",
+        "meta": {
+          "from": {
+            "diagnostic": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+            "workflow_stage": "publish.execute",
+            "workflow_status": "reconciling"
+          },
+          "to": {
+            "diagnostic": "Original input has no verified acceptance receipt; no input was resent",
+            "workflow_stage": "publish.execute",
+            "workflow_status": "reconciling"
+          }
+        }
+      }
+    ],
+    "files": [
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\runner-publication-blocker-handoff.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\runner-publication-blocker-handoff.json",
+        "sha256": "D799A5CBF7C8BA47718F11E95A9A6B3E4ED1FAE677A20458946E3034C8E88BB7",
+        "bytes": 2420
+      },
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\blocked-checks-verified.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\blocked-checks-verified.json",
+        "sha256": "88DAEDB69160D48082ECFB747FE2761F84B852373C84CB1FF4E95E67DBAA06C3",
+        "bytes": 12277
+      },
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\chain-result.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\chain-result.json",
+        "sha256": "8CBD767239AE0B02C06E3A8C099F6E1D42E4A54121768A66C91CC039745EC7B9",
+        "bytes": 2293
+      },
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\diagnostics\\native-public-session-unconfirmed-publish-20261027T232229307663Z\\result.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\diagnostics\\native-public-session-unconfirmed-publish-20261027T232229307663Z\\result.json",
+        "sha256": "ADE6954AF0444925E2B7535C22C35ACAAD5DC3D1D5A1E8C2240529AE41B2A8AA",
+        "bytes": 1405451
+      },
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\diagnostics\\native-publication-read-2026-10-27T23-20-32-094Z\\read-data.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\diagnostics\\native-publication-read-2026-10-27T23-20-32-094Z\\read-data.json",
+        "sha256": "47B461FD19E5BFF164657DA2DCE40A78A20768FCB5E832C0AEF8F7EAC9A72E99",
+        "bytes": 3543
+      },
+      {
+        "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\cleanup-blocked-publication\\result.json",
+        "copy": ".evidence\\subsequent-native-input-20261028\\original\\cleanup-blocked-publication\\result.json",
+        "sha256": "FBE107C3E5741F718DA593CF2CB39D4B9FC7A97E525A28BC889013A40D7A5EA1",
+        "bytes": 668
+      }
+    ]
+  },
+  "original_frozen_input": {
+    "logical_bytes": 3768,
+    "logical_scalars": 3428,
+    "logical_sha256": "d6e3f935342eee61a3fabd2ae8cb876b53d4e44d6bf603a5a1923fe6f4a58551",
+    "normalized_bytes": 3767,
+    "normalized_scalars": 3427,
+    "normalized_sha256": "8de9178bbd2945bc6c862785a532b244779d6eb411d1ea599026d2ff84f6f423",
+    "attempted": true,
+    "accepted": false,
+    "started": false,
+    "old_run_stopped": true,
+    "old_new_inputs_allowed": false
+  },
+  "owner_validation": {
+    "top_level_passed": 189,
+    "package_count": 3,
+    "failures": 0,
+    "original_helper_opt_in_skips": 6,
+    "catalog_guards": "passed"
+  },
+  "independent_long_input": {
+    "independently_verified": true,
+    "build": {
+      "schema": "steerrunner-build/v1",
+      "component": "runner",
+      "source_digest": "130fdc9022f2c504fdcd5957eb26c57748e697bee8dad598576fd6772a808abf",
+      "version": "0.2.0-dev.3-r3",
+      "source_commit": "c47974d040530233787ff3da7ab3c10b1e957952",
+      "source_dirty": false,
+      "protocol": "steerrunner-cli/v1",
+      "platform": "windows/amd64",
+      "sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2"
+    },
+    "formal": {
+      "passed": true,
+      "started_at": "2026-10-28T03:02:41.024621+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+      "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+      "request_id": "followup-530ed3f0c13c43b3b741e901427bc75c",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\",\"question\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "ef5fb485bcff5a4e5257824c2c4345d1",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T03:03:52.560064+00:00"
+    },
+    "actual_publication_input_bytes": 12018,
+    "actual_publication_input_scalars": 6010,
+    "actual_publication_input_sha256": "ce9815c86e0e0ca877060105527444c24ecb6b72735ff1774316ef583862b445",
+    "unique_production_inputs": 2,
+    "per_input_effects": {
+      "ad23090e02442d06bc9ce782b12a592d": [
+        "paste",
+        "submit"
+      ],
+      "26dfa0797b57294243a4f94af9a0c8b9": [
+        "submit",
+        "paste"
+      ]
+    },
+    "tool_output_observed": true,
+    "owner_packages": [
+      "github.com/erranliu/SteerRunner/internal/execution/process",
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+    ],
+    "owner_top_level_passes": 189,
+    "old_publication_root_cause_confirmed": false,
+    "business_rounds_counted": 0
+  },
+  "formal_runs": [
+    {
+      "root": "formal-cli-01",
+      "passed": false,
+      "started_at": "2026-10-28T02:40:27.063515+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\candidate\\steerrunner.exe",
+      "runner_sha256": "d4c90d865689858e890448e0fdbfff95e7449e22256c0c6f07732a9f560d1a15",
+      "request_id": "followup-8a95d9f7455f4b63a1cb6d908d3a7c1a",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_655f6132eac1442cb896e5648cfeeab5\",\"question\":\"SR_CLI_FOLLOWUP_655f6132eac1442cb896e5648cfeeab5\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true
+      },
+      "run_id": "1afadc9b7be53ba00b5439516c76f14f",
+      "error": "unknown original operation; no replay or Enter",
+      "cleanup_error": "{'protocol': 'steerrunner-cli/v1', 'ok': False, 'request_id': None, 'data': None, 'error': {'code': 'invalid_arguments', 'message': 'This option does not apply to this command.'}}",
+      "finished_at": "2026-10-28T02:41:45.586967+00:00"
+    },
+    {
+      "root": "formal-cli-02",
+      "passed": false,
+      "started_at": "2026-10-28T02:42:56.736727+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\candidate\\steerrunner.exe",
+      "runner_sha256": "d4c90d865689858e890448e0fdbfff95e7449e22256c0c6f07732a9f560d1a15",
+      "request_id": "followup-8e002ac1fd734697b2a44eb212fe604a",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_e47adad8e6954528b3514b7de76d3b0e\",\"question\":\"SR_CLI_FOLLOWUP_e47adad8e6954528b3514b7de76d3b0e\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "4d97bddba53a0c9f980ba09759381ffc",
+      "error": "bounded formal two-task probe expired; no replay",
+      "finished_at": "2026-10-28T02:47:09.905173+00:00"
+    },
+    {
+      "root": "formal-cli-final",
+      "passed": false,
+      "started_at": "2026-10-28T02:54:51.999468+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+      "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+      "request_id": "followup-31fa1587c9214f73a9b22f900f751c93",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_bf6607828c0c431a9dfc998d67103365\",\"question\":\"SR_CLI_FOLLOWUP_bf6607828c0c431a9dfc998d67103365\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "7b79527e952eea3657f573d9a8809309",
+      "error": "unexpected boundary publish.execute blocked: SR_CLI_FOLLOWUP_bf6607828c0c431a9dfc998d67103365",
+      "finished_at": "2026-10-28T02:56:13.388888+00:00"
+    },
+    {
+      "root": "formal-cli-qualified",
+      "passed": false,
+      "started_at": "2026-10-28T02:56:58.065290+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+      "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+      "request_id": "followup-307c35c58de3423e8c698a9394693856",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_bce8503be04a4c07bc368cd83b74b3db\",\"question\":\"SR_CLI_FOLLOWUP_bce8503be04a4c07bc368cd83b74b3db\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "b4e8ac121ca3201da433585c76bd0ea5",
+      "error": "unknown original operation; no replay or Enter",
+      "finished_at": "2026-10-28T02:58:32.786337+00:00"
+    },
+    {
+      "root": "formal-cli-structured",
+      "passed": true,
+      "started_at": "2026-10-28T03:02:41.024621+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+      "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+      "request_id": "followup-530ed3f0c13c43b3b741e901427bc75c",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\",\"question\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "ef5fb485bcff5a4e5257824c2c4345d1",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T03:03:52.560064+00:00"
+    },
+    {
+      "root": "formal-cli-3427",
+      "passed": false,
+      "started_at": "2026-10-28T03:05:05.657003+00:00",
+      "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+      "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+      "request_id": "followup-d35ab163541e4d828d86761f3cec037b",
+      "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_7904078b8fcd464281ca2b55d81b6691\",\"question\":\"SR_CLI_FOLLOWUP_7904078b8fcd464281ca2b55d81b6691\"}",
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "run_id": "54064730dabc03b25e50a5a65b2c25f2",
+      "error": "unknown original operation; no replay or Enter",
+      "finished_at": "2026-10-28T03:06:45.900962+00:00"
+    }
+  ],
+  "cleanup": {
+    "owned_workspaces": [
+      {
+        "name": "a",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-a-20261028",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "b",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-b-20261028",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "c",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-c-20261028",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-01",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-1afadc9b7be53ba00b5439516c76f14f",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-02",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-4d97bddba53a0c9f980ba09759381ffc",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-final",
+        "run_id": "7b79527e952eea3657f573d9a8809309",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-7b79527e952eea3657f573d9a8809309",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-qualified",
+        "run_id": "b4e8ac121ca3201da433585c76bd0ea5",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-b4e8ac121ca3201da433585c76bd0ea5",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-structured",
+        "run_id": "ef5fb485bcff5a4e5257824c2c4345d1",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-ef5fb485bcff5a4e5257824c2c4345d1",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "name": "formal-cli-3427",
+        "run_id": "54064730dabc03b25e50a5a65b2c25f2",
+        "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-54064730dabc03b25e50a5a65b2c25f2",
+        "zero_native": true,
+        "removed": true,
+        "after_error": "selector_not_found"
+      }
+    ],
+    "local_processes": {
+      "at": "2026-10-28T03:11:36.3968586Z",
+      "count": 0,
+      "processes": []
+    }
+  },
+  "raw_index": {
+    "path": "raw-files.json",
+    "sha256": "5f1e30a5b40943abf9147042aac0ef35ad6d6f9ab6e9b57c37441b1918cd401d",
+    "files": 2079
+  },
+  "limits": {
+    "original_root_cause_confirmed": false,
+    "original_3427_production_qualification_passed": false,
+    "short_plain_wrapped_draft_fixed": false,
+    "business_tests_run": false,
+    "business_rounds_counted": 0,
+    "merge_or_deployment": false
+  }
+}

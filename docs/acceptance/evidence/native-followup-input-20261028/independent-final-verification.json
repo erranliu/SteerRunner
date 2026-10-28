@@ -1,0 +1,53 @@
+{
+  "independently_verified": true,
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "130fdc9022f2c504fdcd5957eb26c57748e697bee8dad598576fd6772a808abf",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "c47974d040530233787ff3da7ab3c10b1e957952",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2"
+  },
+  "formal": {
+    "passed": true,
+    "started_at": "2026-10-28T03:02:41.024621+00:00",
+    "runner": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\subsequent-native-input-20261028\\build-final\\steerrunner.exe",
+    "runner_sha256": "5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2",
+    "request_id": "followup-530ed3f0c13c43b3b741e901427bc75c",
+    "marker": "{\"outcome\":\"needs_input\",\"summary\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\",\"question\":\"SR_CLI_FOLLOWUP_fbba5fc0cf37429198f475827dbe791c\"}",
+    "cleanup": {
+      "run_stopped": true,
+      "service_stopped": true,
+      "resources_settled": true
+    },
+    "run_id": "ef5fb485bcff5a4e5257824c2c4345d1",
+    "public_session_verified": true,
+    "finished_at": "2026-10-28T03:03:52.560064+00:00"
+  },
+  "actual_publication_input_bytes": 12018,
+  "actual_publication_input_scalars": 6010,
+  "actual_publication_input_sha256": "ce9815c86e0e0ca877060105527444c24ecb6b72735ff1774316ef583862b445",
+  "unique_production_inputs": 2,
+  "per_input_effects": {
+    "ad23090e02442d06bc9ce782b12a592d": [
+      "paste",
+      "submit"
+    ],
+    "26dfa0797b57294243a4f94af9a0c8b9": [
+      "submit",
+      "paste"
+    ]
+  },
+  "tool_output_observed": true,
+  "owner_packages": [
+    "github.com/erranliu/SteerRunner/internal/execution/process",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+  ],
+  "owner_top_level_passes": 189,
+  "old_publication_root_cause_confirmed": false,
+  "business_rounds_counted": 0
+}

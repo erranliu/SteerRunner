@@ -21,6 +21,14 @@ Run `600d14e87929e5555c74675b56cde86a`，Attempt `219608c2f90445b83698824345efa5
 23:20 屏幕保留 `[Pasted Content 3427 chars]`。原材料不能区分哪一次 CLI 调用超时；
 不能认定漏 Enter、长实施时间或本专项后来发现的零值问题就是原发布失败根因。
 
+另从原服务记录定位到 `C:/slr/kc43sgn3blq4xpqd6s6g67r5ya`，仅复制 DB/WAL/SHM 作为取证副本，
+在副本上以只读 SQLite 查询原 Run，源文件前后 SHA 不变，没有启动原服务。
+原发布冻结正文为 3428 scalars/3768 bytes，SHA `d6e3f935342eee61a3fabd2ae8cb876b53d4e44d6bf603a5a1923fe6f4a58551`；
+沿既有换行/末尾规范化后为 3427 scalars/3767 bytes，SHA
+`8de9178bbd2945bc6c862785a532b244779d6eb411d1ea599026d2ff84f6f423`，与屏幕折叠块的计数相符。
+因此不能仅根据逻辑正文的末尾换行推断原草稿计数丢失。保存状态仍为 attempted=true、accepted=false、
+started=false、原 Run stopped/new_inputs_allowed=false。
+
 ## 已有测试审计与新增试验
 
 PR66 的 long-input 是一次生产 Lifecycle paste/Enter，segmented-shape 是显式两次 paste 合成一输入。
@@ -77,3 +85,37 @@ stdout/stderr、原 deadline 与取消时刻、原始回执。日志写入失败
 相同原请求结果未知时只读对账并停止，不能换 request 或补 Enter。
 关闭 Run、停服、verify-stopped 及完整 native census 分别留证；新工作区仅在完整清单为零后移除。
 失败现场不复用，原结果不覆盖。最终干净构建/正式入口验收及证据摘要在下方追加。
+
+## 固定构建、独立验收及未通过的交付门禁
+
+产品/测试源码提交 `c47974d040530233787ff3da7ab3c10b1e957952`，干净构建 `source_dirty=false`。
+EXE SHA256 `5457a8cac5e653c0903025ae7577342ca4e1a7a283ba83475651259e1bcea0c2`，
+产品源码摘要 `130fdc9022f2c504fdcd5957eb26c57748e697bee8dad598576fd6772a808abf`。
+原文件位于本报告根 `build-final/steerrunner.exe`，未安装、合并或部署。
+随后三个驱动修订仅修正诊断边界/冻结首回复/校准实际输入长度；没有修改该 EXE 的产品源码。
+
+| 最终验证 | 结果 |
+| --- | --- |
+| 三个受影响完整 owner 包 | 189 个顶层测试通过、零失败；6 个原有 helper/opt-in skip 不计原生资格，skip allowlist 未改 |
+| catalogue guards | expansion、冻结重载、兼容及冲突守卫通过 |
+| 显式零值失败反例 | `zero-incarnation-before-fix.log` 中显式 0 失败；修复后显式 0/正值通过，missing/null/负值及其往返拒绝，双任务严格反例通过 |
+| `formal-cli-final` | 两条生产输入完成，但驱动错误地把 publication needs_input 对应的合法 blocked 状态当异常，关闭前未执行独立审计；该外层结果仍失败 |
+| `formal-cli-qualified` | 首 final 末尾为 ASCII 句号，未命中固定中文成功声明，转入 implement.report。952 字符补报草稿观测为 957 字符，差异是 5 个额外 LF；draft-settle 预算耗尽，没有 submit CLI 调用。未知结果没有重发。失败保留 |
+| `formal-cli-structured` | 实际 EXE 的 implement.execute → publish.execute 完成；独立 native 查询、另一 Python 只读逐文件核验均通过。恰好两条生产输入，每条一个 paste/一个 Enter，工具输出已观测，精确唯一原文/进程/provider/main/最终标记及完整停止结算通过。实际发布输入为 6010 scalars/12018 bytes，SHA `ce9815c86e0e0ca877060105527444c24ecb6b72735ff1774316ef583862b445`，不是原 3427 字符形态资格 |
+| `formal-cli-3427` | 按已测 Source facts 追加长度校准占位正文，但首 final 的 JSON 后又附 ASCII 句号的声明，进入补报并再次遇到 952→957 的可见草稿差异，未抵达目标发布输入；该结果失败，不统计为目标形态通过 |
+
+测试/驱动的所有错误和首次失败保留。没有删除不利样本、把失败改记通过、归一化额外 LF 或宽松匹配
+ASCII/中文句号；没有用更长输入通过推断原长度通过。原折叠草稿3427故障仍未定位到确切调用阶段；
+本次新的 plain draft 可见差异也不能冒充原折叠块故障的因果证明。
+
+**本场景的合格构建交付门禁仍未通过。** 上述 EXE 是已修正零值并具备逐阶段留证的诊断候选，
+仅已通过明确记载的6000字符级正式双阶段最小路径。原长度的正式发布链及短可见草稿边界没有通过，
+不能据此恢复 SteerLine 两轮正式业务复验。Runner 探针不计业务轮次，SteerLine 仍为0/2。
+下一步需要能区分原文换行与可见草稿折行的只读证据，或新的可定位原折叠草稿失败证据；
+不通过扩大正文/身份/回执接受条件绕过它。PR保持草稿，不自动合并或部署。
+
+全部9个本次新建 Orca 工作区均在完整 native 清单为0、无截断/omitted hosts 后移除，
+逐一 `worktree show` 返回 selector_not_found；所有新 Run/服务和本地 EXE 进程独立结算。
+原现场六文件和原 store 文件的 SHA 再次核对未变。机器摘要、原始文件索引和完整清理记录见
+[专项证据](evidence/native-followup-input-20261028/summary.json)，
+原始完整日志根为 `.evidence/subsequent-native-input-20261028/`。

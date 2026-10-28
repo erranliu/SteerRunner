@@ -1,0 +1,37 @@
+[
+  {
+    "name": "a",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-a-20261028",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "b",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-b-20261028",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "c",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-c-20261028",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "formal-cli-01",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-1afadc9b7be53ba00b5439516c76f14f",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  },
+  {
+    "name": "formal-cli-02",
+    "identity": "903fb315-7d5e-4246-8913-816e1d3bdf03::C:/Users/Administrator/orca/workspaces/SteerlineTest/sr-followup-cli-4d97bddba53a0c9f980ba09759381ffc",
+    "zero_native": true,
+    "removed": true,
+    "after_error": "selector_not_found"
+  }
+]
