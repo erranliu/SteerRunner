@@ -85,6 +85,10 @@ func compatibleWorkflow(current, frozen workflow.Profile, adapter string) bool {
 		// Keep routing, contracts, permissions, model roles and budgets exact.
 		candidate.Prompt, original.Prompt = "", ""
 		candidate.ResultInstruction, original.ResultInstruction = "", ""
+		// Runs accepted before policy slots keep their original declarations.
+		if original.PolicySlots == nil {
+			candidate.PolicySlots = nil
+		}
 		if !reflect.DeepEqual(candidate, original) {
 			return false
 		}

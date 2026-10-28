@@ -2,6 +2,40 @@
 
 当前内置流程为 development/2、development-audited/2、conversation/1、generate/1。本目录解释现有实现；执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)，不加载本目录 Markdown。当前文档入口见[项目文档索引](../README.md)。
 
+## 项目策略槽位
+
+开发 workflow 使用三个固定路径，相对于项目仓库根目录，区分大小写：
+
+| 槽位 | 固定相对路径 |
+| --- | --- |
+| `git` | `SteerlineFlow/runner-policies/git.md` |
+| `command` | `SteerlineFlow/runner-policies/command.md` |
+| `testing` | `SteerlineFlow/runner-policies/testing.md` |
+
+步骤的 `policy_slots` 是 workflow 公开定义的一部分；空数组表示不引用。当前选择如下：
+
+| workflow / 步骤 | 槽位（按追加顺序） |
+| --- | --- |
+| development/2、development-audited/2 的 `implement.execute` | `git`、`command`、`testing` |
+| development-audited/2 的 `audit.code.execute` | `git`、`command`、`testing` |
+| 两种开发流程的 `publish.execute` | `git`、`command` |
+| 两种开发流程的所有 report、parse、input、verify、milestone 步骤 | 无 |
+| conversation/1、generate/1 的所有步骤 | 无 |
+
+Runner 接受开发 Run 时，从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
+
+存在且由当前步骤选中的每个槽位，只追加以下公开模板（`%s` 替换为完整固定相对路径，开头有一个换行）：
+
+```text
+阅读项目策略：%s。
+```
+
+模板在 workflow 的 `policy_read_template` 中公开并随 Run 冻结，固定路径与模板也在 `capabilities.model_input_contract.workflow.project_policies` 中发布。提示词不内联策略正文或摘要，不追加模板之外的隐含要求；正文覆盖仍保留所选引用。引用及换行属于 Runner，计入现有最终提示词预算，超限沿原错误路径拒绝，不截断或绕过预算。旧 Run 沿原冻结定义与输入，不补查槽位或重新追加提示。具体输出见[阅读模板示例](project-policies.example.md)。
+
+预算示例：Orca Codex 模型桥的原生包装也计入 1000B。默认审计正文加三个策略引用，或默认审计开发实施正文加三个引用及 progress/result 两份首次写入说明，在该包装下会超限；最终输入检查返回 `input_budget_exceeded` 且不发送。codex-app-server 直接正文仍单独按原输入检查。这些组合不会自动省略引用、指南或改走额外轮次。
+
+文档存在只表示槽位已配置，不证明环境就绪。项目端负责声明并检测策略依赖的环境能力，SteerLine 负责准入，且不额外向 Runner 传槽位或路径。Runner 不新增环境准备、检测或能力依赖引擎；策略不能扩大原生权限、发布授权或改变 workflow 通过标准。`SteerlineFlow/environment.md` 是独立环境要求文档，不属于这三个槽位，也不会因此追加阅读提示。
+
 2026-10-28 输入契约：每次现有投递操作的最终 UTF-8 文字仅限制 Runner ≤1000B；调用方和总量无正文预算，仍记录全部字节、归属和摘要。正文覆盖、inline 材料/schema、回答/反馈属于调用方；默认正文、事实/引用、标签/换行、结果要求和原生包装属于 Runner。完成原有换行与包装后检查，冻结后不得追加；超限明确拒绝，不截断、摘要或拆分。原工具/文件结果不受正文预算限制，复制进新正文时重新归属计量。实际 JSON 封装与 Windows 命令行另行保护。
 
 `capabilities.model_input_contract.utf8_bytes` 中 caller/total 为 null（无正文预算）、runner 为 1000。`capabilities.model_input_contract` 与原 `workflows` 发布实际使用的定义、动态槽与预算；定义来自原 owner 的编译常量，没有加载 Markdown 或新增 DSL。`prompt_overrides` 仍只替换原正文：审计 execute 的默认格式可随正文覆盖，report 的固定结果格式、材料/来源、适用的提交/完成要求仍保留。progress/result 写入规则只给实施/审计 execute；在同一已核实原生会话中可沿用已提供的规则，不改变文件通道、原字节和封存时机。
