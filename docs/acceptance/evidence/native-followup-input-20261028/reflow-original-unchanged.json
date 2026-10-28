@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "at": "2026-10-28T06:13:04.466473+00:00",
+  "files": [
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\runner-publication-blocker-handoff.json",
+      "sha256": "d799a5cbf7c8ba47718f11e95a9a6b3e4ed1fae677a20458946e3034c8e88bb7",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\blocked-checks-verified.json",
+      "sha256": "88daedb69160d48082ecfb747fe2761f84b852373c84cb1ff4e95e67dbaa06c3",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\chain-result.json",
+      "sha256": "8cbd767239ae0b02c06e3a8c099f6e1d42e4a54121768a66c91cc039745ec7b9",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\diagnostics\\native-public-session-unconfirmed-publish-20261027T232229307663Z\\result.json",
+      "sha256": "ade6954af0444925e2b7535c22c35acaad5dc3d1d5a1e8c2240529ae41b2a8aa",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\diagnostics\\native-publication-read-2026-10-27T23-20-32-094Z\\read-data.json",
+      "sha256": "47b461fd19e5bff164657da2dce40a78a20768fcb5e832c0aef8f7eac9a72e99",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\cleanup-blocked-publication\\result.json",
+      "sha256": "fbe107c3e5741f718da593cf2cb39d4b9fc7a97e525a28bc889013a40d7a5ea1",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\slr\\kc43sgn3blq4xpqd6s6g67r5ya\\runner.db",
+      "sha256": "817f7b0d850aeb95e1bebf43f6aeebbebf67c88df280eb231ad5c7dada7eb9ad",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\slr\\kc43sgn3blq4xpqd6s6g67r5ya\\runner.db-wal",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\slr\\kc43sgn3blq4xpqd6s6g67r5ya\\runner.db-shm",
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "unchanged": true
+    },
+    {
+      "source": "C:\\SteerlineDebug\\wt-507e-progress-0of6\\entryfixed-01\\application-home\\bin\\steerrunner.exe",
+      "sha256": "a745ab738152e974850cbaca7851fb13c0d33cd08a915cda555f1ae465556347",
+      "unchanged": true
+    }
+  ]
+}

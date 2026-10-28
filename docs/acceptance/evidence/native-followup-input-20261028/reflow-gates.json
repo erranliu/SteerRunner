@@ -1,0 +1,522 @@
+{
+  "rows": [
+    {
+      "phase": "gate",
+      "original_summary": {
+        "schema": "valid-formal-publication-comparison/v1",
+        "phase": "gate",
+        "status": "stopped",
+        "started_at": "2026-10-28T05:24:55.409340+00:00",
+        "source_build": {
+          "schema": "steerrunner-build/v1",
+          "component": "runner",
+          "source_digest": "e4cd4e7bf3af12ff26c780e6004fd333cfb67b224bb60ed81d7bfd9e113a663f",
+          "version": "0.2.0-dev.3-r3",
+          "source_commit": "2a75e44d236b0e21f76f221666b92b4b74b28582",
+          "source_dirty": false,
+          "protocol": "steerrunner-cli/v1",
+          "platform": "windows/amd64",
+          "sha256": "279ac4c3e73588ec5b0f058e7b14bbb635090768449c43db8256767a9bbf060e"
+        },
+        "runner_sha256": "279ac4c3e73588ec5b0f058e7b14bbb635090768449c43db8256767a9bbf060e",
+        "rows": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:24:55.411542+00:00",
+            "passed": false,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "279ac4c3e73588ec5b0f058e7b14bbb635090768449c43db8256767a9bbf060e",
+            "state_dir": "C:\\srp3\\20261028-reflow-2a75-gate\\00",
+            "request_id": "pub3-b31a911971494a87b06a751125032d02",
+            "marker": "SRPUB00",
+            "run_id": "5b5f9d32fe4e639633995d140017285d",
+            "error": "unknown original operation; no resend or Enter",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "finished_at": "2026-10-28T05:27:36.944936+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "effd3f6e0e637b0a32854d96f1035c8e": [
+                "paste"
+              ],
+              "4727061152dc390d10201e6c1799e26c": [
+                "paste",
+                "enter"
+              ]
+            }
+          }
+        ],
+        "valid_samples": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:24:55.411542+00:00",
+            "passed": false,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "279ac4c3e73588ec5b0f058e7b14bbb635090768449c43db8256767a9bbf060e",
+            "state_dir": "C:\\srp3\\20261028-reflow-2a75-gate\\00",
+            "request_id": "pub3-b31a911971494a87b06a751125032d02",
+            "marker": "SRPUB00",
+            "run_id": "5b5f9d32fe4e639633995d140017285d",
+            "error": "unknown original operation; no resend or Enter",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "finished_at": "2026-10-28T05:27:36.944936+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "effd3f6e0e637b0a32854d96f1035c8e": [
+                "paste"
+              ],
+              "4727061152dc390d10201e6c1799e26c": [
+                "paste",
+                "enter"
+              ]
+            }
+          }
+        ],
+        "front_failures": [],
+        "active_case": null,
+        "qualified": false,
+        "error": "real gate failed; no comparison started or sample reused",
+        "finished_at": "2026-10-28T05:27:37.317992+00:00"
+      },
+      "original_summary_sha256": "75597cf14deb5ce0d1111a771f3808047973b43798e5df13713e8e56f41015ad"
+    },
+    {
+      "phase": "gate-r2",
+      "original_summary": {
+        "schema": "valid-formal-publication-comparison/v1",
+        "phase": "gate",
+        "status": "stopped",
+        "started_at": "2026-10-28T05:32:22.943764+00:00",
+        "source_build": {
+          "schema": "steerrunner-build/v1",
+          "component": "runner",
+          "source_digest": "22f3419f15ea87dd4d0013d1b34e7f7614a55a0acc2604b12bed14d41605af1f",
+          "version": "0.2.0-dev.3-r3",
+          "source_commit": "0fa92246b60bdafeae1a06ab15c53003b533947b",
+          "source_dirty": false,
+          "protocol": "steerrunner-cli/v1",
+          "platform": "windows/amd64",
+          "sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e"
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "rows": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:32:22.954137+00:00",
+            "passed": false,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+            "state_dir": "C:\\srp3\\20261028-reflow-r2-gate\\00",
+            "request_id": "pub3-413bf42423c2462f90270aa27de5f60b",
+            "marker": "SRPUB00",
+            "run_id": "916091a1b9351b0188a82b84c826302b",
+            "error": "expected exactly implement.execute and publish.execute, no report input",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "finished_at": "2026-10-28T05:34:41.138731+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "810ae9e1da85e0c894db4a4fc901f721": [
+                "enter",
+                "paste"
+              ],
+              "1e4ef7ef406deab5b9001c224c5ffa76": [
+                "paste",
+                "enter"
+              ],
+              "178da5396a33403a4ac539efee58dea1": [
+                "enter",
+                "paste"
+              ]
+            }
+          }
+        ],
+        "valid_samples": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:32:22.954137+00:00",
+            "passed": false,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+            "state_dir": "C:\\srp3\\20261028-reflow-r2-gate\\00",
+            "request_id": "pub3-413bf42423c2462f90270aa27de5f60b",
+            "marker": "SRPUB00",
+            "run_id": "916091a1b9351b0188a82b84c826302b",
+            "error": "expected exactly implement.execute and publish.execute, no report input",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "finished_at": "2026-10-28T05:34:41.138731+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "810ae9e1da85e0c894db4a4fc901f721": [
+                "enter",
+                "paste"
+              ],
+              "1e4ef7ef406deab5b9001c224c5ffa76": [
+                "paste",
+                "enter"
+              ],
+              "178da5396a33403a4ac539efee58dea1": [
+                "enter",
+                "paste"
+              ]
+            }
+          }
+        ],
+        "front_failures": [],
+        "active_case": null,
+        "qualified": false,
+        "error": "real gate failed; no comparison started or sample reused",
+        "finished_at": "2026-10-28T05:34:41.511457+00:00"
+      },
+      "original_summary_sha256": "239cb0208eca8fa9ed8c8e1e77d501620da0c594b430a46ff9ec6801bd8ab3eb"
+    },
+    {
+      "phase": "gate-r3",
+      "original_summary": {
+        "schema": "valid-formal-publication-comparison/v1",
+        "phase": "gate",
+        "status": "completed",
+        "started_at": "2026-10-28T05:35:05.740170+00:00",
+        "source_build": {
+          "schema": "steerrunner-build/v1",
+          "component": "runner",
+          "source_digest": "22f3419f15ea87dd4d0013d1b34e7f7614a55a0acc2604b12bed14d41605af1f",
+          "version": "0.2.0-dev.3-r3",
+          "source_commit": "0fa92246b60bdafeae1a06ab15c53003b533947b",
+          "source_dirty": false,
+          "protocol": "steerrunner-cli/v1",
+          "platform": "windows/amd64",
+          "sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e"
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "rows": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:35:05.742537+00:00",
+            "passed": true,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+            "state_dir": "C:\\srp3\\20261028-reflow-r3-gate\\00",
+            "request_id": "pub3-4782ef8258f9400fa44b11ac77f93a48",
+            "marker": "SRPUB00",
+            "run_id": "4ead33f1cd9151c3c204b652a15624a8",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "public_session_verified": true,
+            "finished_at": "2026-10-28T05:37:09.153441+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "direct_two_task_pair": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "907b88ee20c17fe52d6388e3e0fe3aa8": [
+                "enter",
+                "paste"
+              ],
+              "12cb502b575887f16e0f056a66251d71": [
+                "enter",
+                "paste"
+              ]
+            }
+          }
+        ],
+        "valid_samples": [
+          {
+            "ordinal": 0,
+            "pair": 0,
+            "group": "short",
+            "root": "00-short-0",
+            "started_at": "2026-10-28T05:35:05.742537+00:00",
+            "passed": true,
+            "reached_publication": true,
+            "cleanup": {
+              "run_stopped": true,
+              "service_stopped": true,
+              "resources_settled": true,
+              "native_zero": true,
+              "worktree_removed": true
+            },
+            "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+            "state_dir": "C:\\srp3\\20261028-reflow-r3-gate\\00",
+            "request_id": "pub3-4782ef8258f9400fa44b11ac77f93a48",
+            "marker": "SRPUB00",
+            "run_id": "4ead33f1cd9151c3c204b652a15624a8",
+            "input_scalars": 903,
+            "input_bytes": 1169,
+            "input_sha256": "96f52efcdb4c83ebf07e7d249ca249aeac9c598c588641bcaef59b9f09839397",
+            "public_session_verified": true,
+            "finished_at": "2026-10-28T05:37:09.153441+00:00",
+            "first_task_canonical_verified": true,
+            "first_real_tool_output_observed": true,
+            "direct_two_task_pair": true,
+            "valid_publication_sample": true,
+            "effects": {
+              "907b88ee20c17fe52d6388e3e0fe3aa8": [
+                "enter",
+                "paste"
+              ],
+              "12cb502b575887f16e0f056a66251d71": [
+                "enter",
+                "paste"
+              ]
+            }
+          }
+        ],
+        "front_failures": [],
+        "active_case": null,
+        "qualified": true,
+        "finished_at": "2026-10-28T05:37:09.546294+00:00"
+      },
+      "original_summary_sha256": "332ffc2f36e81733420b7029a1b140eb5616bad26cd2df05937864d0e6da452d"
+    }
+  ],
+  "interrupted_precomparison": {
+    "schema": "valid-formal-publication-comparison/v1",
+    "phase": "comparison",
+    "status": "stopped",
+    "started_at": "2026-10-28T05:37:18.685471+00:00",
+    "source_build": {
+      "schema": "steerrunner-build/v1",
+      "component": "runner",
+      "source_digest": "22f3419f15ea87dd4d0013d1b34e7f7614a55a0acc2604b12bed14d41605af1f",
+      "version": "0.2.0-dev.3-r3",
+      "source_commit": "0fa92246b60bdafeae1a06ab15c53003b533947b",
+      "source_dirty": false,
+      "protocol": "steerrunner-cli/v1",
+      "platform": "windows/amd64",
+      "sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e"
+    },
+    "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+    "rows": [
+      {
+        "ordinal": 1,
+        "pair": 1,
+        "group": "long",
+        "root": "01-long-1",
+        "started_at": "2026-10-28T05:37:18.687255+00:00",
+        "passed": false,
+        "reached_publication": false,
+        "cleanup": {
+          "run_stopped": true,
+          "service_stopped": true,
+          "resources_settled": true,
+          "native_zero": true,
+          "worktree_removed": true
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "state_dir": "C:\\srp3\\20261028-reflow-r3-comparison\\01",
+        "request_id": "pub3-a74ac99f9cd445e8b53aed5dd0d42aaa",
+        "marker": "SRPUB01",
+        "run_id": "99f9c9c70845bf25b34e0893344df3d7",
+        "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+        "finished_at": "2026-10-28T05:39:15.339594+00:00",
+        "first_task_canonical_verified": true,
+        "first_real_tool_output_observed": true,
+        "direct_two_task_pair": false,
+        "valid_publication_sample": false,
+        "effects": {
+          "dd77127dd552b44f51edc0f8bd2a1f42": [
+            "enter",
+            "paste"
+          ],
+          "4503efa23fc57e08cc5cb60f70908e37": [
+            "enter",
+            "paste"
+          ]
+        }
+      },
+      {
+        "ordinal": 2,
+        "pair": 1,
+        "group": "long",
+        "root": "02-long-1",
+        "started_at": "2026-10-28T05:39:15.644560+00:00",
+        "passed": false,
+        "reached_publication": false,
+        "cleanup": {
+          "service_stopped": true,
+          "resources_settled": false
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "state_dir": "C:\\srp3\\20261028-reflow-r3-comparison\\02",
+        "request_id": "pub3-41a882ed0ff945d59991f44514b4214e",
+        "marker": "SRPUB01",
+        "run_id": "50048278ed6605e526c59ca890118ac9",
+        "error": "unknown original operation; no resend or Enter",
+        "cleanup_error": "new admitted worktree identity unavailable; stop for owned read-only reconciliation",
+        "finished_at": "2026-10-28T05:41:10.972360+00:00",
+        "first_task_canonical_verified": false,
+        "first_real_tool_output_observed": false,
+        "direct_two_task_pair": false,
+        "valid_publication_sample": false,
+        "effects": {}
+      },
+      {
+        "ordinal": 3,
+        "pair": 1,
+        "group": "long",
+        "root": "03-long-1",
+        "started_at": "2026-10-28T05:46:32.472830+00:00",
+        "passed": false,
+        "reached_publication": false,
+        "cleanup": {
+          "run_stopped": true,
+          "service_stopped": true,
+          "resources_settled": true
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "state_dir": "C:\\srp3\\20261028-reflow-r3-comparison\\03",
+        "request_id": "pub3-149021ca502a4536910804527c628b4f",
+        "marker": "SRPUB01",
+        "error": "{'protocol': 'steerrunner-cli/v1', 'ok': False, 'request_id': 'pub3-149021ca502a4536910804527c628b4f', 'data': None, 'error': {'code': 'request_outcome_unknown', 'message': 'The original request outcome is unknown; inspect or retry the same request_id and input.'}}",
+        "run_id": "03f148fd2cac243a31bd9371ae83314e",
+        "cleanup_error": "new admitted worktree identity unavailable; stop for owned read-only reconciliation",
+        "finished_at": "2026-10-28T05:47:10.544538+00:00",
+        "first_task_canonical_verified": false,
+        "first_real_tool_output_observed": false,
+        "direct_two_task_pair": false,
+        "valid_publication_sample": false,
+        "effects": {}
+      }
+    ],
+    "valid_samples": [],
+    "front_failures": [
+      {
+        "ordinal": 1,
+        "pair": 1,
+        "group": "long",
+        "root": "01-long-1",
+        "started_at": "2026-10-28T05:37:18.687255+00:00",
+        "passed": false,
+        "reached_publication": false,
+        "cleanup": {
+          "run_stopped": true,
+          "service_stopped": true,
+          "resources_settled": true,
+          "native_zero": true,
+          "worktree_removed": true
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "state_dir": "C:\\srp3\\20261028-reflow-r3-comparison\\01",
+        "request_id": "pub3-a74ac99f9cd445e8b53aed5dd0d42aaa",
+        "marker": "SRPUB01",
+        "run_id": "99f9c9c70845bf25b34e0893344df3d7",
+        "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+        "finished_at": "2026-10-28T05:39:15.339594+00:00",
+        "first_task_canonical_verified": true,
+        "first_real_tool_output_observed": true,
+        "direct_two_task_pair": false,
+        "valid_publication_sample": false,
+        "effects": {
+          "dd77127dd552b44f51edc0f8bd2a1f42": [
+            "enter",
+            "paste"
+          ],
+          "4503efa23fc57e08cc5cb60f70908e37": [
+            "enter",
+            "paste"
+          ]
+        }
+      },
+      {
+        "ordinal": 2,
+        "pair": 1,
+        "group": "long",
+        "root": "02-long-1",
+        "started_at": "2026-10-28T05:39:15.644560+00:00",
+        "passed": false,
+        "reached_publication": false,
+        "cleanup": {
+          "service_stopped": true,
+          "resources_settled": false
+        },
+        "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+        "state_dir": "C:\\srp3\\20261028-reflow-r3-comparison\\02",
+        "request_id": "pub3-41a882ed0ff945d59991f44514b4214e",
+        "marker": "SRPUB01",
+        "run_id": "50048278ed6605e526c59ca890118ac9",
+        "error": "unknown original operation; no resend or Enter",
+        "cleanup_error": "new admitted worktree identity unavailable; stop for owned read-only reconciliation",
+        "finished_at": "2026-10-28T05:41:10.972360+00:00",
+        "first_task_canonical_verified": false,
+        "first_real_tool_output_observed": false,
+        "direct_two_task_pair": false,
+        "valid_publication_sample": false,
+        "effects": {}
+      }
+    ],
+    "active_case": null,
+    "qualified": false,
+    "finished_at": "2026-10-28T05:47:10.637773+00:00",
+    "independent_cleanup_proofs": {
+      "50048278ed6605e526c59ca890118ac9": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\draft833-fix-20261028\\manual-reconcile-02\\independent-cleanup-proof.json"
+    },
+    "resumed_at": "2026-10-28T05:46:32.470311+00:00",
+    "error": "owned cleanup not complete; stop before another sample"
+  }
+}

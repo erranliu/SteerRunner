@@ -22,11 +22,12 @@ def native(text):
     return text.replace("\r\n", "\n").replace("\r", "\n").rstrip("\n")
 
 
-def audit(root):
+def audit(root, partial=False):
     summary = load(root/"summary.json")
-    assert summary["status"] == "completed" and summary["active_case"] is None
     effective = summary.get("valid_samples", summary["rows"])
-    assert len(effective) == 6
+    if not partial:
+        assert summary["status"] == "completed" and summary["active_case"] is None
+        assert len(effective) == 6
     effective_roots = {r["root"] for r in effective}
     new_scope = summary.get("schema") == "valid-formal-publication-comparison/v1"
     rows, baseline, providers = [], None, set()
@@ -164,7 +165,7 @@ def audit(root):
         elif setup_failure:
             row["failure_class"] = "repository_directory_mismatch_before_native_workspace"
         elif not pubs and inputs and all("enter" not in v for v in effects.values()):
-            row["failure_class"] = "first_input_draft_mismatch_no_submit_call"
+            row["failure_class"] = "first_input_pasted_without_submit" if any("paste" in v for v in effects.values()) else "first_input_not_pasted_or_submitted"
             row["first_input_scalars"] = len(native(inputs[0]["prompt"]))
             row["first_input_sha256"] = sha(native(inputs[0]["prompt"]).encode())
         else:
@@ -208,19 +209,24 @@ def audit(root):
             providers.add(provider)
             canonical = record["workflow"]["StageResults"]
             assert len(canonical) == 2 and all(v["FinalVerified"] and v["Succeeded"] for v in canonical)
+            if request.get("progress_file"):
+                assert record["progress"]["view"]["content_base64"] == request["progress_file"]["initial_content_base64"]
+                row["caller_report_bytes_unchanged"] = True
             row.update(public_original_id=independent["original_input"]["ID"], provider=provider, independent_verified=True)
         rows.append(row)
     groups = []
     for group in ("long", "short"):
         selected = [r for r in rows if r["group"] == group and r["root"] in effective_roots]
-        assert len(selected) == 3
-        groups.append(dict(group=group, attempts=3, reached_publication=sum(bool(r["reached_publication"]) for r in selected),
+        if not partial:
+            assert len(selected) == 3
+        groups.append(dict(group=group, attempts=len(selected), reached_publication=sum(bool(r["reached_publication"]) for r in selected),
                            passed=sum(bool(r["passed"]) for r in selected), failed=sum(not r["passed"] for r in selected),
                            input_scalars=[r.get("input_scalars") for r in selected], input_bytes=[r.get("input_bytes") for r in selected]))
     return dict(schema="formal-publication-length-independent-audit/v1", audit_passed=True,
                 audit_scope="offline evidence consistency; does not promote pre-publication failures into target trials",
-                target_comparison_complete=all(r["reached_publication"] for r in rows if r["root"] in effective_roots),
-                formal_publication_qualification_passed=all(r["passed"] for r in rows if r["root"] in effective_roots),
+                partial=partial,
+                target_comparison_complete=len(effective)==6 and all(r["reached_publication"] for r in rows if r["root"] in effective_roots),
+                formal_publication_qualification_passed=len(effective)==6 and all(r["passed"] for r in rows if r["root"] in effective_roots),
                 front_failures_preserved=[r for r in rows if r["root"] not in effective_roots],
                 source_build=summary["source_build"], groups=groups, rows=rows, cleanup_verified=True,
                 business_tests_run=0, business_rounds_counted=0)
@@ -230,8 +236,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--partial", action="store_true", help="Audit settled rows only; never claim 3+3 qualification")
     args = parser.parse_args()
-    value = audit(args.root)
+    value = audit(args.root, args.partial)
     with args.out.open("xb") as out:
         out.write((json.dumps(value, ensure_ascii=False, indent=2)+"\n").encode())
     print(json.dumps({"audit_passed": value["audit_passed"], "groups": value["groups"]}, ensure_ascii=False))

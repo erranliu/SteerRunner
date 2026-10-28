@@ -1,0 +1,793 @@
+{
+  "schema": "valid-formal-publication-comparison/v1",
+  "phase": "comparison",
+  "status": "completed",
+  "started_at": "2026-10-28T05:51:52.439493+00:00",
+  "source_build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "22f3419f15ea87dd4d0013d1b34e7f7614a55a0acc2604b12bed14d41605af1f",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "0fa92246b60bdafeae1a06ab15c53003b533947b",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e"
+  },
+  "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+  "rows": [
+    {
+      "ordinal": 1,
+      "pair": 1,
+      "group": "long",
+      "root": "01-long-1",
+      "started_at": "2026-10-28T05:51:52.452242+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\01",
+      "request_id": "pub3-c9fd08668f9c4d5eaa79d8403fcbc303",
+      "marker": "SRPUB01",
+      "run_id": "793b34a66ff641800b8a04091d7b613a",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "b862d3314dfd34365758fba2d2cf4c835976498001e59346acde6131ae0184e6",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T05:53:55.514885+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "2be5c270b0ee01dd92c155276eef9418": [
+          "paste",
+          "enter"
+        ],
+        "fa73d2b1b52cdcc1786e612adff43b06": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 2,
+      "pair": 1,
+      "group": "short",
+      "root": "02-short-1",
+      "started_at": "2026-10-28T05:53:55.878057+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\02",
+      "request_id": "pub3-b98fc43ab1e040458a8d546c2b733dd8",
+      "marker": "SRPUB01",
+      "run_id": "e56962548c127a9266cff896131b03d0",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T05:55:24.558218+00:00",
+      "first_task_canonical_verified": false,
+      "first_real_tool_output_observed": false,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "9eff334268adbf25a3dc2de7fda2994c": [
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 3,
+      "pair": 1,
+      "group": "short",
+      "root": "03-short-1",
+      "started_at": "2026-10-28T05:55:24.939976+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\03",
+      "request_id": "pub3-163fd0c013db4e0abad64cf6a4725930",
+      "marker": "SRPUB01",
+      "run_id": "cef12f1f3bfe63a5bf062090d4c7e1bb",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T05:57:30.483238+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "74bbbcabd32ace351c5cda35df5cd7e5": [
+          "paste",
+          "enter"
+        ],
+        "84995f87cb38a36bb5ece9a501331e6f": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 4,
+      "pair": 1,
+      "group": "short",
+      "root": "04-short-1",
+      "started_at": "2026-10-28T05:57:30.865650+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\04",
+      "request_id": "pub3-7f9a73935aec4d70ab37ec513dce5ab7",
+      "marker": "SRPUB01",
+      "run_id": "4ab7ce850830b28057e0b5c74c94a321",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "089e59380e649639bd5d09a213b66e7cc587a4aa137fc3936e99098b4e1488ae",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T05:59:51.358230+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "40d7dab9cc1fbeee0ced2bcb1575f597": [
+          "paste",
+          "enter"
+        ],
+        "1bb105cd132740623a9b37ea4b57e782": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 5,
+      "pair": 2,
+      "group": "short",
+      "root": "05-short-2",
+      "started_at": "2026-10-28T05:59:51.773282+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\05",
+      "request_id": "pub3-8a909c060074402d8ed3b7d4d4ad13ce",
+      "marker": "SRPUB02",
+      "run_id": "35b2fb795b93a1a806f0bcb64b6e86d7",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T06:02:10.844006+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "04da6fc832427f13df7b7168a533a50d": [
+          "paste",
+          "enter"
+        ],
+        "8fba4d1442532111088da4adf0695d62": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 6,
+      "pair": 2,
+      "group": "short",
+      "root": "06-short-2",
+      "started_at": "2026-10-28T06:02:11.486173+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\06",
+      "request_id": "pub3-cad7858d98ab4dc597fdf972f6b0ef9e",
+      "marker": "SRPUB02",
+      "run_id": "819a06c3aaa8a160ec3f10e71f4f6c8a",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "3c62935c2958bdf179645916c1da90876de45909adbaea7c716ce3bc2e8b82d5",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:04:14.974323+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "135b3ac69ee36f3c76b621dbcc20bc1c": [
+          "enter",
+          "paste"
+        ],
+        "4fedf2d0ca39a19ea733318c601ebf6f": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 7,
+      "pair": 2,
+      "group": "long",
+      "root": "07-long-2",
+      "started_at": "2026-10-28T06:04:15.315765+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\07",
+      "request_id": "pub3-433e7d4b27c149b2bf74fba19299a60a",
+      "marker": "SRPUB02",
+      "run_id": "ac423234ad3e5c6726e0ec54f52a285c",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "ae77cbc9b029e3ea2ed08bbce300f0bfabaaebef3629327cb59d1c446dcffeea",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:06:15.806121+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "62a65b3238e131d6e281b3c4ec748256": [
+          "enter",
+          "paste"
+        ],
+        "07384cb3cd9df2ef45a4652c424ad84a": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 8,
+      "pair": 3,
+      "group": "long",
+      "root": "08-long-3",
+      "started_at": "2026-10-28T06:06:16.129982+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\08",
+      "request_id": "pub3-63273a28857546f9adca5bbcc7b74a54",
+      "marker": "SRPUB03",
+      "run_id": "b725fed3161ec5809f3f052e82d34804",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "49d6eb101bcd325f6d26db300ff047746d3c9995e7d696ef659f4a060e95f8cc",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:08:23.874218+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "9fbd58dcd020a3bc3b1dd709f7a1576e": [
+          "paste",
+          "enter"
+        ],
+        "ba071dbd66f87db7df3fda0fbb3461fb": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 9,
+      "pair": 3,
+      "group": "short",
+      "root": "09-short-3",
+      "started_at": "2026-10-28T06:08:24.278446+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\09",
+      "request_id": "pub3-8bdf1748a1c34cec9fab398c91695559",
+      "marker": "SRPUB03",
+      "run_id": "2028229cb78f6d8675bd244d311c3390",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T06:10:09.275856+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "40b45d5ba10f18e96d66dd01003d8019": [
+          "enter",
+          "paste"
+        ],
+        "2fc5e20b7d8245791582ddb860164479": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 10,
+      "pair": 3,
+      "group": "short",
+      "root": "10-short-3",
+      "started_at": "2026-10-28T06:10:09.598174+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\10",
+      "request_id": "pub3-ab7552d8a0644e6ba01e04ae122ffaeb",
+      "marker": "SRPUB03",
+      "run_id": "2d1ccf08901a12e71b94acb525e2951b",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "0944e092ac0cb4fb740fb91c77643e3a60c1acff8275641c8a58f569cf8aeab5",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:12:43.549926+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "f2d55775ed38b0df300f8bf92183b45f": [
+          "paste",
+          "enter"
+        ],
+        "870c4a2932aa2423dcd2a3a23359fe88": [
+          "enter",
+          "paste"
+        ]
+      }
+    }
+  ],
+  "valid_samples": [
+    {
+      "ordinal": 1,
+      "pair": 1,
+      "group": "long",
+      "root": "01-long-1",
+      "started_at": "2026-10-28T05:51:52.452242+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\01",
+      "request_id": "pub3-c9fd08668f9c4d5eaa79d8403fcbc303",
+      "marker": "SRPUB01",
+      "run_id": "793b34a66ff641800b8a04091d7b613a",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "b862d3314dfd34365758fba2d2cf4c835976498001e59346acde6131ae0184e6",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T05:53:55.514885+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "2be5c270b0ee01dd92c155276eef9418": [
+          "paste",
+          "enter"
+        ],
+        "fa73d2b1b52cdcc1786e612adff43b06": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 4,
+      "pair": 1,
+      "group": "short",
+      "root": "04-short-1",
+      "started_at": "2026-10-28T05:57:30.865650+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\04",
+      "request_id": "pub3-7f9a73935aec4d70ab37ec513dce5ab7",
+      "marker": "SRPUB01",
+      "run_id": "4ab7ce850830b28057e0b5c74c94a321",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "089e59380e649639bd5d09a213b66e7cc587a4aa137fc3936e99098b4e1488ae",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T05:59:51.358230+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "40d7dab9cc1fbeee0ced2bcb1575f597": [
+          "paste",
+          "enter"
+        ],
+        "1bb105cd132740623a9b37ea4b57e782": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 6,
+      "pair": 2,
+      "group": "short",
+      "root": "06-short-2",
+      "started_at": "2026-10-28T06:02:11.486173+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\06",
+      "request_id": "pub3-cad7858d98ab4dc597fdf972f6b0ef9e",
+      "marker": "SRPUB02",
+      "run_id": "819a06c3aaa8a160ec3f10e71f4f6c8a",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "3c62935c2958bdf179645916c1da90876de45909adbaea7c716ce3bc2e8b82d5",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:04:14.974323+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "135b3ac69ee36f3c76b621dbcc20bc1c": [
+          "enter",
+          "paste"
+        ],
+        "4fedf2d0ca39a19ea733318c601ebf6f": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 7,
+      "pair": 2,
+      "group": "long",
+      "root": "07-long-2",
+      "started_at": "2026-10-28T06:04:15.315765+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\07",
+      "request_id": "pub3-433e7d4b27c149b2bf74fba19299a60a",
+      "marker": "SRPUB02",
+      "run_id": "ac423234ad3e5c6726e0ec54f52a285c",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "ae77cbc9b029e3ea2ed08bbce300f0bfabaaebef3629327cb59d1c446dcffeea",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:06:15.806121+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "62a65b3238e131d6e281b3c4ec748256": [
+          "enter",
+          "paste"
+        ],
+        "07384cb3cd9df2ef45a4652c424ad84a": [
+          "paste",
+          "enter"
+        ]
+      }
+    },
+    {
+      "ordinal": 8,
+      "pair": 3,
+      "group": "long",
+      "root": "08-long-3",
+      "started_at": "2026-10-28T06:06:16.129982+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\08",
+      "request_id": "pub3-63273a28857546f9adca5bbcc7b74a54",
+      "marker": "SRPUB03",
+      "run_id": "b725fed3161ec5809f3f052e82d34804",
+      "input_scalars": 3427,
+      "input_bytes": 3715,
+      "input_sha256": "49d6eb101bcd325f6d26db300ff047746d3c9995e7d696ef659f4a060e95f8cc",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:08:23.874218+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "9fbd58dcd020a3bc3b1dd709f7a1576e": [
+          "paste",
+          "enter"
+        ],
+        "ba071dbd66f87db7df3fda0fbb3461fb": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 10,
+      "pair": 3,
+      "group": "short",
+      "root": "10-short-3",
+      "started_at": "2026-10-28T06:10:09.598174+00:00",
+      "passed": true,
+      "reached_publication": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\10",
+      "request_id": "pub3-ab7552d8a0644e6ba01e04ae122ffaeb",
+      "marker": "SRPUB03",
+      "run_id": "2d1ccf08901a12e71b94acb525e2951b",
+      "input_scalars": 903,
+      "input_bytes": 1169,
+      "input_sha256": "0944e092ac0cb4fb740fb91c77643e3a60c1acff8275641c8a58f569cf8aeab5",
+      "public_session_verified": true,
+      "finished_at": "2026-10-28T06:12:43.549926+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": true,
+      "valid_publication_sample": true,
+      "effects": {
+        "f2d55775ed38b0df300f8bf92183b45f": [
+          "paste",
+          "enter"
+        ],
+        "870c4a2932aa2423dcd2a3a23359fe88": [
+          "enter",
+          "paste"
+        ]
+      }
+    }
+  ],
+  "front_failures": [
+    {
+      "ordinal": 2,
+      "pair": 1,
+      "group": "short",
+      "root": "02-short-1",
+      "started_at": "2026-10-28T05:53:55.878057+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\02",
+      "request_id": "pub3-b98fc43ab1e040458a8d546c2b733dd8",
+      "marker": "SRPUB01",
+      "run_id": "e56962548c127a9266cff896131b03d0",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T05:55:24.558218+00:00",
+      "first_task_canonical_verified": false,
+      "first_real_tool_output_observed": false,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "9eff334268adbf25a3dc2de7fda2994c": [
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 3,
+      "pair": 1,
+      "group": "short",
+      "root": "03-short-1",
+      "started_at": "2026-10-28T05:55:24.939976+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\03",
+      "request_id": "pub3-163fd0c013db4e0abad64cf6a4725930",
+      "marker": "SRPUB01",
+      "run_id": "cef12f1f3bfe63a5bf062090d4c7e1bb",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T05:57:30.483238+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "74bbbcabd32ace351c5cda35df5cd7e5": [
+          "paste",
+          "enter"
+        ],
+        "84995f87cb38a36bb5ece9a501331e6f": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 5,
+      "pair": 2,
+      "group": "short",
+      "root": "05-short-2",
+      "started_at": "2026-10-28T05:59:51.773282+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\05",
+      "request_id": "pub3-8a909c060074402d8ed3b7d4d4ad13ce",
+      "marker": "SRPUB02",
+      "run_id": "35b2fb795b93a1a806f0bcb64b6e86d7",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T06:02:10.844006+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "04da6fc832427f13df7b7168a533a50d": [
+          "paste",
+          "enter"
+        ],
+        "8fba4d1442532111088da4adf0695d62": [
+          "enter",
+          "paste"
+        ]
+      }
+    },
+    {
+      "ordinal": 9,
+      "pair": 3,
+      "group": "short",
+      "root": "09-short-3",
+      "started_at": "2026-10-28T06:08:24.278446+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "state_dir": "C:\\srp3\\20261028-reflow-r4-comparison\\09",
+      "request_id": "pub3-8bdf1748a1c34cec9fab398c91695559",
+      "marker": "SRPUB03",
+      "run_id": "2028229cb78f6d8675bd244d311c3390",
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "finished_at": "2026-10-28T06:10:09.275856+00:00",
+      "first_task_canonical_verified": true,
+      "first_real_tool_output_observed": true,
+      "direct_two_task_pair": false,
+      "valid_publication_sample": false,
+      "effects": {
+        "40b45d5ba10f18e96d66dd01003d8019": [
+          "enter",
+          "paste"
+        ],
+        "2fc5e20b7d8245791582ddb860164479": [
+          "enter",
+          "paste"
+        ]
+      }
+    }
+  ],
+  "active_case": null,
+  "qualified": true,
+  "finished_at": "2026-10-28T06:12:43.965827+00:00"
+}

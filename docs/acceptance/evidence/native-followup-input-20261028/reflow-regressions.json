@@ -1,0 +1,88 @@
+{
+  "suites": [
+    {
+      "name": "reflow-targeted",
+      "package_results": [
+        {
+          "Time": "2026-10-28T13:09:35.1765693+08:00",
+          "Action": "pass",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+          "Elapsed": 2.283
+        },
+        {
+          "Time": "2026-10-28T13:09:52.6184086+08:00",
+          "Action": "pass",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Elapsed": 18.617
+        }
+      ],
+      "top_pass": 4,
+      "top_skip": 0,
+      "exit": null,
+      "failed_test_entries": 0,
+      "raw_log_sha256": "3b3c4c8cc52da0c2cd2b54ba26ed6571074319558186029b9e61afef17a27c14"
+    },
+    {
+      "name": "reflow-owner",
+      "package_results": [
+        {
+          "Time": "2026-10-28T13:16:25.7261371+08:00",
+          "Action": "pass",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+          "Elapsed": 25.496
+        },
+        {
+          "Time": "2026-10-28T13:18:20.5992962+08:00",
+          "Action": "pass",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Elapsed": 138.727
+        }
+      ],
+      "top_pass": 185,
+      "top_skip": 5,
+      "exit": {
+        "exit_code": 0
+      },
+      "failed_test_entries": 0,
+      "raw_log_sha256": "e9d88547dffd604bec127e39fca3c093c3cd6141550af269e79e0fe535000789"
+    },
+    {
+      "name": "reflow-insert-owner",
+      "package_results": [
+        {
+          "Time": "2026-10-28T13:31:59.8809115+08:00",
+          "Action": "fail",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Elapsed": 230.454
+        }
+      ],
+      "top_pass": 101,
+      "top_skip": 2,
+      "exit": {
+        "exit_code": 1
+      },
+      "failed_test_entries": 209,
+      "raw_log_sha256": "074f5627ae6bf178a7a9325bdfab2902f52ca1994c3af352e2a74757794a5110"
+    },
+    {
+      "name": "reflow-insert-owner-ipc",
+      "package_results": [
+        {
+          "Time": "2026-10-28T13:32:06.2595302+08:00",
+          "Action": "pass",
+          "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+          "Elapsed": 137.256
+        }
+      ],
+      "top_pass": 145,
+      "top_skip": 2,
+      "exit": {
+        "exit_code": 0
+      },
+      "failed_test_entries": 0,
+      "raw_log_sha256": "090f615f511d3746df0228dd5251f68f6861d1afa580f1ebf5d0023601685c35"
+    }
+  ],
+  "failed_sandbox_run_retained": true,
+  "final_adapter_exit_code": 0
+}

@@ -1,0 +1,364 @@
+{
+  "cases": [
+    {
+      "phase": "gate",
+      "root": "00-short-0",
+      "run_id": "5b5f9d32fe4e639633995d140017285d",
+      "request_id": "pub3-b31a911971494a87b06a751125032d02",
+      "build": "279ac4c3e73588ec5b0f058e7b14bbb635090768449c43db8256767a9bbf060e",
+      "passed": false,
+      "error": "unknown original operation; no resend or Enter",
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "gate-r2",
+      "root": "00-short-0",
+      "run_id": "916091a1b9351b0188a82b84c826302b",
+      "request_id": "pub3-413bf42423c2462f90270aa27de5f60b",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "expected exactly implement.execute and publish.execute, no report input",
+      "stages": [
+        "implement.execute",
+        "implement.report",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "gate-r3",
+      "root": "00-short-0",
+      "run_id": "4ead33f1cd9151c3c204b652a15624a8",
+      "request_id": "pub3-4782ef8258f9400fa44b11ac77f93a48",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r3",
+      "root": "01-long-1",
+      "run_id": "99f9c9c70845bf25b34e0893344df3d7",
+      "request_id": "pub3-a74ac99f9cd445e8b53aed5dd0d42aaa",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "stages": [
+        "implement.execute",
+        "implement.report"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r3",
+      "root": "02-long-1",
+      "run_id": "50048278ed6605e526c59ca890118ac9",
+      "request_id": "pub3-41a882ed0ff945d59991f44514b4214e",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "unknown original operation; no resend or Enter",
+      "stages": [],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "service_stopped": true,
+        "resources_settled": false
+      },
+      "independent_cleanup_scope": "exact_owned_idle_shell_and_worktree_removed; Runner resources_settled remains false"
+    },
+    {
+      "phase": "comparison-r3",
+      "root": "03-long-1",
+      "run_id": "03f148fd2cac243a31bd9371ae83314e",
+      "request_id": "pub3-149021ca502a4536910804527c628b4f",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "{'protocol': 'steerrunner-cli/v1', 'ok': False, 'request_id': 'pub3-149021ca502a4536910804527c628b4f', 'data': None, 'error': {'code': 'request_outcome_unknown', 'message': 'The original request outcome is unknown; inspect or retry the same request_id and input.'}}",
+      "stages": [],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true
+      },
+      "independent_cleanup_scope": "rejected_before_native_creation; exact repository inventory proves no owned worktree"
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "01-long-1",
+      "run_id": "793b34a66ff641800b8a04091d7b613a",
+      "request_id": "pub3-c9fd08668f9c4d5eaa79d8403fcbc303",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "02-short-1",
+      "run_id": "e56962548c127a9266cff896131b03d0",
+      "request_id": "pub3-b98fc43ab1e040458a8d546c2b733dd8",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "unknown original operation; no resend or Enter",
+      "stages": [
+        "implement.execute"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "03-short-1",
+      "run_id": "cef12f1f3bfe63a5bf062090d4c7e1bb",
+      "request_id": "pub3-163fd0c013db4e0abad64cf6a4725930",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "stages": [
+        "implement.execute",
+        "implement.report"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "04-short-1",
+      "run_id": "4ab7ce850830b28057e0b5c74c94a321",
+      "request_id": "pub3-7f9a73935aec4d70ab37ec513dce5ab7",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "05-short-2",
+      "run_id": "35b2fb795b93a1a806f0bcb64b6e86d7",
+      "request_id": "pub3-8a909c060074402d8ed3b7d4d4ad13ce",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "stages": [
+        "implement.execute",
+        "implement.report"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "06-short-2",
+      "run_id": "819a06c3aaa8a160ec3f10e71f4f6c8a",
+      "request_id": "pub3-cad7858d98ab4dc597fdf972f6b0ef9e",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "07-long-2",
+      "run_id": "ac423234ad3e5c6726e0ec54f52a285c",
+      "request_id": "pub3-433e7d4b27c149b2bf74fba19299a60a",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "08-long-3",
+      "run_id": "b725fed3161ec5809f3f052e82d34804",
+      "request_id": "pub3-63273a28857546f9adca5bbcc7b74a54",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "09-short-3",
+      "run_id": "2028229cb78f6d8675bd244d311c3390",
+      "request_id": "pub3-8bdf1748a1c34cec9fab398c91695559",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": false,
+      "error": "first-task contract insufficient; extra report input is outside the controlled two-task pair",
+      "stages": [
+        "implement.execute",
+        "implement.report"
+      ],
+      "direct_two_task_pair": false,
+      "counted_in_comparison": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    },
+    {
+      "phase": "comparison-r4",
+      "root": "10-short-3",
+      "run_id": "2d1ccf08901a12e71b94acb525e2951b",
+      "request_id": "pub3-ab7552d8a0644e6ba01e04ae122ffaeb",
+      "build": "18372541a5f0cf20b86f60df8a546900d9fdf53bde6cb25451dc7463e6c9cd6e",
+      "passed": true,
+      "error": null,
+      "stages": [
+        "implement.execute",
+        "publish.execute"
+      ],
+      "direct_two_task_pair": true,
+      "counted_in_comparison": true,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "independent_cleanup_scope": null
+    }
+  ],
+  "all_cleanup_verified": true,
+  "business_tests_run": 0,
+  "business_rounds_counted": 0
+}

@@ -1,0 +1,144 @@
+{
+  "rows": [
+    {
+      "case": "01-long-1",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    },
+    {
+      "case": "04-short-1",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    },
+    {
+      "case": "06-short-2",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    },
+    {
+      "case": "07-long-2",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    },
+    {
+      "case": "08-long-3",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    },
+    {
+      "case": "10-short-3",
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "first_draft_reads": [
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        },
+        {
+          "shape": "different",
+          "scalars": 833,
+          "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+        },
+        {
+          "shape": "plain-exact",
+          "scalars": 833,
+          "sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+        }
+      ],
+      "exact_read_count": 2,
+      "owned_viewport_restored": true
+    }
+  ],
+  "original_text_unchanged": true,
+  "whitespace_equivalence_used": false
+}
