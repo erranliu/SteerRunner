@@ -424,6 +424,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	}
 	r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: kind, Protocol: protocol, Target: target, Agent: b.AgentSpec{Name: agent}, RunID: id, AttemptID: attempt, WorkspacePath: worktree, WorkspaceBranch: branch, BaseCommit: request.Repository.BaseRevision}, Session: b.SessionContext{ProjectID: repo.CommonDir, NamePrefix: namePrefix, WorkflowRunID: id, ExecutionID: id, AttemptID: attempt, Agent: b.AgentSpec{Name: agent}, Target: target, AttemptNumber: 1}, ConfigurationDigest: r.InputDigest, ResourceGeneration: generation, WorkspacePlan: b.WorkspaceIntent{Path: worktree, Branch: branch, BaseCommit: request.Repository.BaseRevision}}
 	r.Workflow = workflow.Snapshot{StepID: flowProfile.Initial, Config: &flowProfile}
+	if err := freezeProjectPolicies(ctx, r); err != nil {
+		return nil, err
+	}
 	if request.Execution.Adapter == "codex-app-server" {
 		var settings contracts.CodexSettings
 		_ = json.Unmarshal(r.Request.Execution.Settings, &settings)

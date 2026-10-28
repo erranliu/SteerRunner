@@ -8,14 +8,15 @@ import (
 )
 
 type Snapshot struct {
-	PublicationResultID    string         `json:"publication_result_id,omitempty"`
-	Config                 *Profile       `json:"config"`
-	ExecutionModel         *ModelSettings `json:"execution_model,omitempty"`
-	AuditModel             *ModelSettings `json:"audit_model,omitempty"`
-	ImplementationResultID string         `json:"implementation_result_id,omitempty"`
-	AuditResultID          string         `json:"audit_result_id,omitempty"`
-	Results                []ra.Result    `json:"results,omitempty"`
-	Audits                 []AuditRecord  `json:"audits,omitempty"`
+	ProjectPolicies        *ProjectPolicies `json:"project_policies,omitempty"`
+	PublicationResultID    string           `json:"publication_result_id,omitempty"`
+	Config                 *Profile         `json:"config"`
+	ExecutionModel         *ModelSettings   `json:"execution_model,omitempty"`
+	AuditModel             *ModelSettings   `json:"audit_model,omitempty"`
+	ImplementationResultID string           `json:"implementation_result_id,omitempty"`
+	AuditResultID          string           `json:"audit_result_id,omitempty"`
+	Results                []ra.Result      `json:"results,omitempty"`
+	Audits                 []AuditRecord    `json:"audits,omitempty"`
 	StepID                 string
 	PRURL                  string
 	StageInputs            []StageInput
@@ -83,5 +84,9 @@ func InputParts(w Snapshot, input StageInput, body string, caller bool) ([]m.Inp
 	if body == "" {
 		body = state.Prompt
 	}
-	return promptParts(state, facts, body, caller)
+	parts, err := promptParts(state, facts, body, caller)
+	if err != nil {
+		return nil, err
+	}
+	return append(parts, policyParts(w, state)...), nil
 }

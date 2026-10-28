@@ -14,10 +14,16 @@ func TestInputContractDiscoveryMatchesOwners(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, text := range []string{m.InputContract, workflow.ProgressInstruction, workflow.ResultFileInstruction, workflow.ContentRepositoryInstruction} {
+	for _, text := range []string{m.InputContract, workflow.ProgressInstruction, workflow.ResultFileInstruction, workflow.ContentRepositoryInstruction, workflow.PolicyReadTemplate} {
 		quoted, _ := json.Marshal(text)
 		if !strings.Contains(string(raw), string(quoted)) {
 			t.Fatal("discovery omits execution definition", text)
+		}
+	}
+	for _, slot := range workflow.PolicySlots() {
+		quoted, _ := json.Marshal(slot.Path)
+		if !strings.Contains(string(raw), string(quoted)) {
+			t.Fatal("discovery omits fixed policy path", slot.Path)
 		}
 	}
 	if len(c["workflows"].([]workflow.Profile)) != 4 {

@@ -1,5 +1,7 @@
 # Workflow：development-audited（确认稿）
 
+项目策略：`implement.execute`、`audit.code.execute` 显式引用 `git`、`command`、`testing`；`publish.execute` 引用 `git`、`command`；report、parse 等其余步骤不引用。固定路径及公开的 `\n阅读项目策略：%s。` 模板见[项目策略槽位](README.md#项目策略槽位)和[示例](project-policies.example.md)。仅固定源码中存在的所选文件产生引用，引用计入原预算；策略不解除审计来源、权限、发布授权或通过标准。
+
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。
 
 2026-10-21 默认提示优化：原审计结束优先给出现有审计 JSON 契约，减少额外结果获取。仅修改新 Run 的默认提示文本，原冻结提示、流程边、预算、模型与来源核验不变；没有原生 schema 强约束，非 JSON 仍沿既有后备。原生小样本和跨构建旧提示保留/新默认验证见[本轮验收](../acceptance/reliable-delivery-simplification.md)。

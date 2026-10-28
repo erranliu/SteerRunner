@@ -6,6 +6,7 @@ import (
 )
 
 type Profile struct {
+	PolicyReadTemplate string           `json:"policy_read_template,omitempty"`
 	ID                 string           `json:"id"`
 	Version            int              `json:"version"`
 	Description        string           `json:"description"`
@@ -54,6 +55,7 @@ func Lookup(id string, version int) (Profile, bool) {
 		return Profile{}, false
 	}
 	p.States = developmentStates(p.AuditModelRequired)
+	p.PolicyReadTemplate = PolicyReadTemplate
 	return p, true
 }
 func Catalog() []Profile {
