@@ -90,7 +90,9 @@ def main():
         while time.monotonic() < until:
             view = inspect()
             dump(root / "latest-run.json", view)
-            if view["step"].startswith("publish") and view["status"] == "waiting_input":
+            # Publication has no business-input continuation state: its explicit
+            # needs_input result settles as blocked, unlike implementation input.
+            if view["step"].startswith("publish") and view["status"] in ("waiting_input", "blocked"):
                 msg = call(["last-message"], extra=["--run-id", run_id])["data"]
                 dump(root / "final-message.json", msg)
                 if msg.get("message", {}).get("text", "").strip() != final:
