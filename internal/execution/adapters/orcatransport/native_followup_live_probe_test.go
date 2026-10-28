@@ -97,7 +97,7 @@ func runNativeFollowupProbe(t *testing.T, ctx context.Context, l *Lifecycle, s b
 				if err != nil || original.NativeInput == nil || original.NativeInput.Text != nativePromptText(prompt) || !original.NativeInput.MatchesOriginalProcess(s.Ref.External) || !original.NativeInput.MatchesOriginalQuery(original) || original.LastAssistantMessage != marker || original.ProviderSession.ID != ready.ProviderSession.ID {
 					t.Fatal("independent original full input/identity/final verification", index, err)
 				}
-				verified = append(verified, map[string]any{"index": index + 1, "completed_at": time.Now().UTC(), "command_id": input.CommandID, "input_bytes": len(prompt), "input_scalars": utf8.RuneCountInString(prompt), "input_sha256": digest([]byte(prompt)), "baseline": baseline, "query": original, "final": r.TurnEvidence})
+				verified = append(verified, map[string]any{"index": index + 1, "completed_at": time.Now().UTC(), "command_id": input.CommandID, "input_bytes": len(prompt), "input_scalars": utf8.RuneCountInString(prompt), "input_sha256": digest([]byte(prompt)), "baseline": baseline, "query": original, "original_input": original.NativeInput, "final": r.TurnEvidence})
 				record["verified_turns"] = verified
 				break
 			}
