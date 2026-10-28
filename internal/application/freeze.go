@@ -523,7 +523,7 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			}
 			// Use explicit JSON names for the fixed material references consumed by Workflow.
 			input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": r.Request.Documents.Spec.Path}, "plan": map[string]string{"path": r.Request.Documents.Plan.Path}, "references": refs})
-			prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
+			prompt, err := workflow.RenderInputPresentation(r.Workflow, input, r.PromptBodies[state.PromptKey], r.Request.Workflow.OmitPublishSourceFacts)
 			if err != nil {
 				return err
 			}

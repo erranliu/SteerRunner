@@ -36,10 +36,12 @@ type Documents struct {
 }
 
 type Workflow struct {
-	ID              string                  `json:"id"`
-	Version         int                     `json:"version"`
-	PromptOverrides map[string]string       `json:"prompt_overrides,omitempty"`
-	AuditModel      *workflow.ModelSettings `json:"audit_model,omitempty"`
+	ID              string            `json:"id"`
+	Version         int               `json:"version"`
+	PromptOverrides map[string]string `json:"prompt_overrides,omitempty"`
+	// Presentation only: the publication result/source bindings remain intact.
+	OmitPublishSourceFacts bool                    `json:"omit_publish_source_facts,omitempty"`
+	AuditModel             *workflow.ModelSettings `json:"audit_model,omitempty"`
 }
 
 type Target struct {
@@ -304,6 +306,11 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	_ = json.Unmarshal(data, &requestFields)
 	var workflowFields map[string]json.RawMessage
 	_ = json.Unmarshal(requestFields["workflow"], &workflowFields)
+	if raw, present := workflowFields["omit_publish_source_facts"]; present {
+		if string(raw) != "true" && string(raw) != "false" || workflow.Content(profile.ID) {
+			return invalid
+		}
+	}
 	if workflow.Content(profile.ID) {
 		if _, present := workflowFields["prompt_overrides"]; present {
 			return invalid

@@ -26,6 +26,10 @@ func RenderPromptWithBody(step string, facts any, body string) (string, error) {
 	return renderPrompt(s, facts, body)
 }
 func renderPrompt(state State, facts any, body string) (string, error) {
+	return renderPromptPresentation(state, facts, body, false)
+}
+
+func renderPromptPresentation(state State, facts any, body string, omitPublishSourceFacts bool) (string, error) {
 	text := state.Prompt
 	if body != "" {
 		text = body
@@ -52,7 +56,7 @@ func renderPrompt(state State, facts any, body string) (string, error) {
 				seen[ref.Path] = true
 			}
 		}
-	} else if string(raw) != "{}" && string(raw) != "null" {
+	} else if !(omitPublishSourceFacts && state.Kind == "execute" && state.Contract == "publication") && string(raw) != "{}" && string(raw) != "null" {
 		text += "\nSource facts:\n" + string(raw)
 	}
 	if state.Kind == "report" {

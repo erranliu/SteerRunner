@@ -50,6 +50,10 @@
           }
         }
       },
+      "omit_publish_source_facts": {
+        "type": "boolean",
+        "description": "Omit only the visible Source facts block from publish.execute; retain complete stored facts and all source/receipt verification. Defaults to false."
+      },
       "prompt_overrides": {
         "type": "object",
         "additionalProperties": {
@@ -125,7 +129,8 @@
             },
             "prompt_overrides": {
               "maxProperties": 0
-            }
+            },
+            "omit_publish_source_facts": false
           }
         },
         "else": {

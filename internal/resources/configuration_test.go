@@ -31,6 +31,11 @@ func TestSRPublishedRunConfiguration(t *testing.T) {
 		valid                     bool
 	}{
 		{"plain", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2}`, true},
+		{"publish_facts_hidden", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"omit_publish_source_facts":true}`, true},
+		{"publish_facts_visible", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"omit_publish_source_facts":false}`, true},
+		{"publish_facts_null", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"omit_publish_source_facts":null}`, false},
+		{"publish_facts_string", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}}`, `{"id":"development","version":2,"omit_publish_source_facts":"true"}`, false},
+		{"content_publish_facts", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":"read_only"}}`, `{"id":"conversation","version":1,"omit_publish_source_facts":false}`, false},
 		{"legacy_empty_mode", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":2}`, true},
 		{"legacy_null_app_reference", `{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"github_auth":null}}`, `{"id":"development","version":2}`, false},
 		{"orca_legacy_empty_mode", `{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"access_mode":""}}`, `{"id":"development","version":2}`, true},

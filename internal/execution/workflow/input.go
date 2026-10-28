@@ -49,6 +49,13 @@ func RenderInput(w Snapshot, input StageInput) (string, error) {
 	return RenderInputWithBody(w, input, "")
 }
 func RenderInputWithBody(w Snapshot, input StageInput, body string) (string, error) {
+	return RenderInputPresentation(w, input, body, false)
+}
+
+// RenderInputPresentation changes only the visible publication facts block.
+// It still resolves the complete acquired facts; it never edits the snapshot,
+// source binding, result contracts, or exact rendered-input verification.
+func RenderInputPresentation(w Snapshot, input StageInput, body string, omitPublishSourceFacts bool) (string, error) {
 	state, ok := w.State(input.StepID)
 	if !ok || state.Prompt == "" {
 		return "", errors.New("no prompt in frozen state definition")
@@ -77,6 +84,6 @@ func RenderInputWithBody(w Snapshot, input StageInput, body string) (string, err
 	if body == "" {
 		body = state.Prompt
 	}
-	text, err := renderPrompt(state, facts, body)
+	text, err := renderPromptPresentation(state, facts, body, omitPublishSourceFacts)
 	return text, err
 }
