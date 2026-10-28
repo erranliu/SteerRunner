@@ -1,0 +1,1035 @@
+{
+  "schema": "formal-publication-length-independent-audit/v1",
+  "audit_passed": true,
+  "audit_scope": "offline evidence consistency; does not promote pre-publication failures into target trials",
+  "target_comparison_complete": false,
+  "formal_publication_qualification_passed": false,
+  "source_build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "2668cd3ca4603db7a1fca56758bd189fd2b1edae310430f374a14c664fed83b1",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "c6f17e4700388d14fdaee4829165cad7e76b9a38",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641"
+  },
+  "groups": [
+    {
+      "group": "long",
+      "attempts": 3,
+      "reached_publication": 0,
+      "passed": 0,
+      "failed": 3,
+      "input_scalars": [
+        null,
+        null,
+        null
+      ],
+      "input_bytes": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "group": "short",
+      "attempts": 3,
+      "reached_publication": 0,
+      "passed": 0,
+      "failed": 3,
+      "input_scalars": [
+        null,
+        null,
+        null
+      ],
+      "input_bytes": [
+        null,
+        null,
+        null
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "ordinal": 1,
+      "pair": 1,
+      "group": "long",
+      "root": "01-long-1",
+      "passed": false,
+      "reached_publication": false,
+      "error": "pre-publication boundary implement.execute blocked: no Orca Git repository has directory name \"repository\" in environment \"e68f4edf-8a83-42c2-a9da-6d404d3aa3d8\"; register the matching repository first",
+      "run_id": "819dccc965aaec6cf0759be0c5fc7789",
+      "marker": "SRPUB01",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": true,
+      "stages": [],
+      "effects": {},
+      "draft_observations": {},
+      "cli_errors": [],
+      "first_tool_output_observed": false,
+      "failure_class": "repository_directory_mismatch_before_native_workspace"
+    },
+    {
+      "ordinal": 2,
+      "pair": 1,
+      "group": "short",
+      "root": "02-short-1",
+      "passed": false,
+      "reached_publication": false,
+      "error": "unknown original operation; no resend or Enter",
+      "run_id": "e59095d89bfb77642dd39d11273130cf",
+      "marker": "SRPUB01",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": false,
+      "stages": [
+        "implement.execute"
+      ],
+      "effects": {
+        "6fd2c2326a1b81ab72e1e781997f3e8f": [
+          "paste"
+        ]
+      },
+      "draft_observations": {
+        "6fd2c2326a1b81ab72e1e781997f3e8f": [
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          }
+        ]
+      },
+      "cli_errors": [],
+      "first_tool_output_observed": false,
+      "failure_class": "first_input_draft_mismatch_no_submit_call",
+      "first_input_scalars": 833,
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+    },
+    {
+      "ordinal": 3,
+      "pair": 2,
+      "group": "short",
+      "root": "03-short-2",
+      "passed": false,
+      "reached_publication": false,
+      "error": "unknown original operation; no resend or Enter",
+      "run_id": "e38b50ab32042596bf396c421585fb51",
+      "marker": "SRPUB02",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": false,
+      "stages": [
+        "implement.execute"
+      ],
+      "effects": {
+        "3dec9b3ea5e362cef11500f2bd4da8cb": [
+          "paste"
+        ]
+      },
+      "draft_observations": {
+        "3dec9b3ea5e362cef11500f2bd4da8cb": [
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          }
+        ]
+      },
+      "cli_errors": [
+        {
+          "at": "2026-10-28T04:33:28.2136092Z",
+          "command_id": "3dec9b3ea5e362cef11500f2bd4da8cb",
+          "phase": "pre-submit",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()",
+          "exit_code": 1
+        }
+      ],
+      "first_tool_output_observed": false,
+      "failure_class": "first_input_draft_mismatch_no_submit_call",
+      "first_input_scalars": 833,
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+    },
+    {
+      "ordinal": 4,
+      "pair": 2,
+      "group": "long",
+      "root": "04-long-2",
+      "passed": false,
+      "reached_publication": false,
+      "error": "unknown original operation; no resend or Enter",
+      "run_id": "68e75cef6c23aea3ce95cf1dc7b4b4e8",
+      "marker": "SRPUB02",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": false,
+      "stages": [
+        "implement.execute"
+      ],
+      "effects": {
+        "bcc7c4591b537b6e55cd554d21c05bb8": [
+          "paste"
+        ]
+      },
+      "draft_observations": {
+        "bcc7c4591b537b6e55cd554d21c05bb8": [
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          }
+        ]
+      },
+      "cli_errors": [
+        {
+          "at": "2026-10-28T04:35:21.4037758Z",
+          "command_id": "bcc7c4591b537b6e55cd554d21c05bb8",
+          "phase": "pre-submit",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()",
+          "exit_code": 1
+        }
+      ],
+      "first_tool_output_observed": false,
+      "failure_class": "first_input_draft_mismatch_no_submit_call",
+      "first_input_scalars": 833,
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+    },
+    {
+      "ordinal": 5,
+      "pair": 3,
+      "group": "long",
+      "root": "05-long-3",
+      "passed": false,
+      "reached_publication": false,
+      "error": "unknown original operation; no resend or Enter",
+      "run_id": "4bdb7672e0872f5032e3d4d8489e5d13",
+      "marker": "SRPUB03",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": false,
+      "stages": [
+        "implement.execute"
+      ],
+      "effects": {
+        "1912332e17d7adfbe43b8ce3c8e058e3": [
+          "paste"
+        ]
+      },
+      "draft_observations": {
+        "1912332e17d7adfbe43b8ce3c8e058e3": [
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          }
+        ]
+      },
+      "cli_errors": [
+        {
+          "at": "2026-10-28T04:37:21.0574715Z",
+          "command_id": "1912332e17d7adfbe43b8ce3c8e058e3",
+          "phase": "pre-submit",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()",
+          "exit_code": 1
+        }
+      ],
+      "first_tool_output_observed": false,
+      "failure_class": "first_input_draft_mismatch_no_submit_call",
+      "first_input_scalars": 833,
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+    },
+    {
+      "ordinal": 6,
+      "pair": 3,
+      "group": "short",
+      "root": "06-short-3",
+      "passed": false,
+      "reached_publication": false,
+      "error": "unknown original operation; no resend or Enter",
+      "run_id": "f08bc79ac7229604a29b35077cdcb0c2",
+      "marker": "SRPUB03",
+      "cleanup_verified": true,
+      "setup_failure_before_native_session": false,
+      "stages": [
+        "implement.execute"
+      ],
+      "effects": {
+        "89590e0ba6be5d1303939a0693def8e5": [
+          "paste"
+        ]
+      },
+      "draft_observations": {
+        "89590e0ba6be5d1303939a0693def8e5": [
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          },
+          {
+            "shape": "different",
+            "scalars": 833,
+            "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+          }
+        ]
+      },
+      "cli_errors": [
+        {
+          "at": "2026-10-28T04:39:21.9423963Z",
+          "command_id": "89590e0ba6be5d1303939a0693def8e5",
+          "phase": "pre-submit",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()",
+          "exit_code": 1
+        }
+      ],
+      "first_tool_output_observed": false,
+      "failure_class": "first_input_draft_mismatch_no_submit_call",
+      "first_input_scalars": 833,
+      "first_input_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de"
+    }
+  ],
+  "cleanup_verified": true,
+  "business_tests_run": 0,
+  "business_rounds_counted": 0
+}

@@ -142,3 +142,84 @@ selector_not_found，本地进程0；累计本专项10个新工作区均已清�
 800明文成功也不证明原3427折叠草稿失败只由总长度导致；上方交付门禁及SteerLine 0/2不变。
 [机器摘要及原文](evidence/native-followup-input-20261028/under1000-summary.json)，
 原始完整日志根 `.evidence/native-followup-under1000-20261028/`。
+
+
+## 追加：批准后的正式 Runner 3+3，发布输入对照未完成
+
+用户已接受新同一构建、无副作用发布诊断正文、新身份及最小首任务三项共同偏离。
+正式路径固定为实际 Runner 的 `service start` / `submit` → development/2 →
+implement.execute → 同一会话 publish.execute；没有使用 test EXE 或直接 Lifecycle 投递。
+原 Gitea 仓库、AIRefactor、base `3b59842c3343ce92ef900cc66aeffc7ebb26e2e7`、材料路径、
+Orca environment、SDK launcher、模型/effort/权限和 40s transport 配置保留。
+第一任务仅要求一次 `Write-Output 'SR_INPUT_TOOL_OUTPUT'` 和诊断 JSON；不执行任何业务测试。
+
+新增 `workflow.omit_publish_source_facts`，默认 false；true 只省略 publish.execute 可见的
+Source facts 标签和 JSON。完整持久化结果、attempts/fields/source、文档与严格 dispatch/native
+核验不变。null/非布尔及 content workflow 拒绝；实施/报告/固定发布策略/PR target/文件说明不变。
+正例验证逐字删除恰好一个区块并保留完整来源；当前来源、输入绑定、acquired result 缺失反例仍拒绝。
+
+所有六次使用同一个干净构建：源码 `c6f17e4700388d14fdaee4829165cad7e76b9a38`，
+产品摘要 `2668cd3ca4603db7a1fca56758bd189fd2b1edae310430f374a14c664fed83b1`，
+EXE SHA256 `544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641`。
+后续仅修正实验观察/清理驱动；产品源码摘要和 EXE 在结束后再次核对未变，没有热换旧包。
+该构建包含前述已批准的零值修复和阶段留证，不等于原 a745... EXE。
+
+| 组别 | 已执行正式 Run | 到达 publish.execute | 发布输入通过 | 前置失败 |
+| --- | ---: | ---: | ---: | --- |
+| 长版 | 3 | 0 | 未测 | 1次新镜像目录名不匹配；2次首任务草稿不一致 |
+| 短版 | 3 | 0 | 未测 | 3次首任务草稿不一致 |
+
+**六次 Run 已结算；目标发布输入的 3+3 对照没有完成，不能得出长度结论，也不能交付为本场景合格构建。**
+没有把假定的3427/903审阅文本当作本次已投递正文；本次实际没有生成或投递任何 publish.execute 输入。
+没有补跑替换失败样本。先前占位文本 test EXE 的800/3427通过及被叫停10x批次，均不计入本次对照。
+
+首个长版因新本地镜像叫 `repository` 而被正式仓库解析器拒绝，未创建原生工作区。
+这是实验配置错误；保留原失败及清理异常，停止结算后仅把新镜像更名为原仓库目录名
+`merge-h-308-code`，继续未开始的五个序号，未恢复或重试首个 Run。
+
+其余五次的新首任务均在进入工作流首任务的 start_turn 阶段粘贴后停止。
+逻辑正文834字符/1084字节，原有规范化后833字符/1083字节；可见草稿同为833字符，
+但在零基偏移668处把 ASCII 空格观测为 LF：
+
+```text
+冻结正文：...; coordinate writers with a lock, ...
+可见草稿：...; coordinate
+writers with a lock, ...
+```
+
+独立逐文件比对确认五次相同差异；每次一次paste、零次Enter、零次重发，
+原结果为 `outcome_unknown`，具体原错误为
+`original paste did not settle; no Enter sent and no input resent`。
+176条原生 CLI 阶段记录关联 request/operation/command/Run/Attempt、字节/摘要、
+开始/结束、退出码、stdout/stderr、deadline/cancel 与原始回执；全文及只读草稿保留在归档。
+这只是可见草稿投影差异，未证明真实编辑器正文被改写；也不是原3427折叠草稿故障的复现或因果证明。
+由于首任务未提交，没有真实工具输出、后续发布原文或接受/启动/最终标记可用于目标验收。
+不能把离线证据一致性核对通过写成原生发布链通过。
+
+清理驱动两次暂停也全部保留：空阶段列表处理错误、观察器UTF-8解码错误、
+异步 worktree rm 首次只读查询仍存在。随后分别补齐原 Run/服务结算、只读确认删除，
+未重复 rm 或输入；后续观察器固定UTF-8并保存精确stdout/stderr字节，删除只做有界只读对账。
+早期附加清理观察器的原始无损字节不足不补造；生产投递阶段的原生CLI原记录完整保留。
+最终驱动修正为任何样本失败则非零退出；本次原调度器完成循环的exit 0仍原样留存，
+所有结论以逐次结果和原回执为准，不把exit 0当成功。
+
+受影响定向测试通过；六个owner测试二进制均输出PASS，373个顶层PASS、5个原有helper/opt-in skip、
+无测试失败记录。application二进制输出PASS/ok，但外层Go控制器未正常结算；核对无直接子进程后
+有界停止，异常及原输出保留，不宣称完整Go命令正常退出。
+
+六个新Run/服务均停止且verify-stopped确认resources_settled；五个实际新建原生工作区均完整
+native census=0、无截断/omitted hosts，随后删除并只读确认selector_not_found。
+另一个在创建前失败，完整新Run记录及对应仓库清单证明无该Run工作区。本地本构建Runner进程0，
+测试控制器0。只保留诊断数据和来源镜像，不恢复任何旧Run/工作区。
+原六文件、原store文件及原EXE的SHA再次核对未变。没有业务测试、真实发布、自动合并或部署，
+SteerLine仍为0/2。
+
+[机器结算](evidence/native-followup-input-20261028/formal-3x-summary.json)、
+[独立一致性核对](evidence/native-followup-input-20261028/formal-3x-independent-audit.json)、
+[五次草稿差异](evidence/native-followup-input-20261028/formal-3x-draft-audit.json)、
+[统一时间线](evidence/native-followup-input-20261028/formal-3x-timeline.json)、
+[原始报告索引](evidence/native-followup-input-20261028/formal-3x-raw-files.json)。
+完整本地归档为 `.evidence/formal-publication-comparison-3x-20261028-raw.zip`，1194份记录，
+SHA256 `0a2aefb17941ec7c95758a4285953097ba3a7adebcfd3598aa8ebe2bcf5cb58a`。
+原生发布输入验收仍被首输入草稿门禁阻塞；继续工作前须取得能区分原换行与可见折行的可靠只读证据，
+或重新确认共同首输入呈现调整；不通过宽松匹配正文或扩大旧探针范围绕过它。PR保持草稿。

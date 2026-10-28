@@ -58,11 +58,13 @@ class Case:
             proc = subprocess.run(argv, input=payload, capture_output=True, timeout=timeout,
                                   creationflags=subprocess.CREATE_NO_WINDOW)
             record.update(exit_code=proc.returncode, stdout=proc.stdout.decode("utf-8-sig", errors="replace"),
-                          stderr=proc.stderr.decode("utf-8", errors="replace"))
+                          stderr=proc.stderr.decode("utf-8", errors="replace"),
+                          stdout_base64=base64.b64encode(proc.stdout).decode(), stderr_base64=base64.b64encode(proc.stderr).decode())
         except subprocess.TimeoutExpired as exc:
             record.update(timed_out_at=now(), exit_code=None,
                           stdout=(exc.stdout or b"").decode("utf-8", errors="replace"),
-                          stderr=(exc.stderr or b"").decode("utf-8", errors="replace"))
+                          stderr=(exc.stderr or b"").decode("utf-8", errors="replace"),
+                          stdout_base64=base64.b64encode(exc.stdout or b"").decode(), stderr_base64=base64.b64encode(exc.stderr or b"").decode())
             raise
         finally:
             record["finished_at"] = now()
@@ -84,7 +86,7 @@ class Case:
 
     def orca(self, arguments, label):
         # Only read-only remote unavailability is retried; mutations never are.
-        readonly = arguments[:2] in (["terminal", "list"], ["terminal", "show"], ["terminal", "read"], ["worktree", "show"])
+        readonly = arguments[:2] in (["terminal", "list"], ["terminal", "show"], ["terminal", "read"], ["worktree", "show"], ["worktree", "list"])
         for attempt in range(1, 4):
             request = self.root / f"orca-{label}-attempt{attempt}.request.json"
             if request.exists():
@@ -212,7 +214,7 @@ class Case:
         try:
             if self.run_id:
                 before = self.stored("before-stop-run-record.json")
-                for stage in before["workflow"].get("StageInputs", []):
+                for stage in before["workflow"].get("StageInputs") or []:
                     (self.root/(stage["step_id"]+".native.txt")).write_bytes(native_text(stage["prompt"]).encode())
                     if stage["step_id"] == "publish.execute":
                         text = native_text(stage["prompt"])
@@ -255,7 +257,7 @@ class Case:
                 self.result["cleanup"]["resources_settled"] = proof["resources_settled"]
             if self.run_id:
                 raw = self.stored("closed-run-record.json")
-                save(self.root/"complete-internal-results.json", raw["workflow"].get("results", []))
+                save(self.root/"complete-internal-results.json", raw["workflow"].get("results") or [])
             if self.worktree:
                 owned_tail = self.worktree.split("::", 1)[-1].replace("\\", "/").rsplit("/", 1)[-1]
                 if not self.worktree.startswith("59f29cc4-7282-47f4-9929-e8fe97fe1628::") or self.run_id not in owned_tail or not owned_tail.startswith(f"sr-pub3-{self.ordinal:02d}-"):
@@ -267,12 +269,27 @@ class Case:
                 removed = self.orca(["worktree", "rm", "--worktree", "id:"+self.worktree, "--force"], "worktree-remove")
                 if not removed.get("ok"):
                     raise RuntimeError("owned worktree removal unconfirmed; do not repeat")
-                after = self.orca(["worktree", "show", "--worktree", "id:"+self.worktree], "worktree-after")
-                if after.get("ok") or after.get("error", {}).get("code") != "selector_not_found":
-                    raise RuntimeError("owned worktree still present")
+                for read in range(1, 61):
+                    after = self.orca(["worktree", "show", "--worktree", "id:"+self.worktree], f"worktree-after-{read:02d}")
+                    if not after.get("ok") and after.get("error", {}).get("code") == "selector_not_found":
+                        break
+                    if not after.get("ok"):
+                        raise RuntimeError("owned removal reconciliation unavailable; no repeat rm")
+                    time.sleep(1)
+                else:
+                    raise RuntimeError("owned worktree still present after bounded read-only removal reconciliation")
                 self.result["cleanup"]["worktree_removed"] = True
             elif not self.run_id:
                 self.result["cleanup"].update(run_stopped=True, native_zero=True, worktree_removed=True, no_run_admitted=True)
+            elif (not raw.get("native_started") and not raw.get("workspace_fact")
+                  and not raw["snapshot"].get("Implementation")
+                  and "no Orca Git repository has directory name" in self.result.get("error", "")):
+                # The production resolver rejects before worktree creation.
+                # Preserve that failure and independently check the exact repo.
+                inventory = self.orca(["worktree", "list", "--repo", "id:59f29cc4-7282-47f4-9929-e8fe97fe1628"], "no-worktree-created-inventory")
+                if not inventory.get("ok") or "worktrees" not in inventory["result"] or any(self.run_id in json.dumps(w) for w in inventory["result"]["worktrees"]):
+                    raise RuntimeError("pre-creation failure workspace absence not verified")
+                self.result["cleanup"].update(native_zero=True, no_workspace_created=True, worktree_removed=False)
             else:
                 raise RuntimeError("new admitted worktree identity unavailable; stop for owned read-only reconciliation")
         except Exception as exc:
@@ -281,6 +298,7 @@ class Case:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--resume", action="store_true", help="Continue unattempted ordinals after owned cleanup; never replay a case")
     for name in ("runner", "audit-exe", "baseline", "repository", "first", "publish", "out", "state-root", "runtime", "orca", "pwsh"):
         ap.add_argument("--"+name, required=True)
     args = ap.parse_args()
@@ -288,19 +306,41 @@ def main():
         setattr(args, name, str(Path(getattr(args, name)).resolve()))
     args.orca_wrapper = str(Path(__file__).with_name("invoke-owned-orca.ps1").resolve())
     root, states = Path(args.out), Path(args.state_root)
-    root.mkdir(exist_ok=False)
-    if states.exists():
-        raise RuntimeError("state root must be new")
     args.runner_sha = digest(Path(args.runner).read_bytes())
     baseline = load(args.baseline)
-    summary = dict(schema="formal-publication-length-comparison/v1", started_at=now(), status="running",
-                   source_build=load(args.runner+".build.json"), runner_sha256=args.runner_sha,
-                   audit_exe_sha256=digest(Path(args.audit_exe).read_bytes()), state_root=str(states),
-                   planned_per_group=3, rows=[], active_case=None,
-                   scope="actual Runner service/submit development/2 implement.execute to publish.execute; no business tests or real publication")
+    if args.resume:
+        summary = load(root/"summary.json")
+        if summary["status"] != "stopped" or summary["active_case"] or not 1 <= len(summary["rows"]) < 6 or summary["runner_sha256"] != args.runner_sha:
+            raise RuntimeError("only settled attempted cases may resume to unattempted ordinals")
+        index = 1
+        while (root/f"interruption-{index:02d}-summary.json").exists():
+            index += 1
+        save(root/f"interruption-{index:02d}-summary.json", summary)
+        for i, row in enumerate(summary["rows"]):
+            repair = root/row["root"]/"manual-cleanup-result.json"
+            if repair.exists():
+                repaired = load(repair)
+                if repaired["passed"] != row["passed"] or repaired["run_id"] != row["run_id"]:
+                    raise RuntimeError("read-only cleanup reconciliation changed original outcome/identity")
+                summary["rows"][i] = row = repaired
+            if row["ordinal"] != i+1 or not all(row["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero")) or not (row["cleanup"].get("worktree_removed") or row["cleanup"].get("no_workspace_created")):
+                raise RuntimeError("original attempted case not fully settled")
+        summary.pop("error", None)
+        summary.update(status="running", resumed_at=now(), resume_reason="All original failed cases retained; cleanup-only driver corrections. Continue unattempted ordinals; no input/creation replay or Runner EXE change.")
+    else:
+        root.mkdir(exist_ok=False)
+        if states.exists():
+            raise RuntimeError("state root must be new")
+        summary = dict(schema="formal-publication-length-comparison/v1", started_at=now(), status="running",
+                       source_build=load(args.runner+".build.json"), runner_sha256=args.runner_sha,
+                       audit_exe_sha256=digest(Path(args.audit_exe).read_bytes()), state_root=str(states),
+                       planned_per_group=3, rows=[], active_case=None,
+                       scope="actual Runner service/submit development/2 implement.execute to publish.execute; no business tests or real publication")
     save(root/"summary.json", summary)
     try:
         for ordinal, (group, pair) in enumerate([("long", 1), ("short", 1), ("short", 2), ("long", 2), ("long", 3), ("short", 3)], 1):
+            if ordinal <= len(summary["rows"]):
+                continue
             name = f"{ordinal:02d}-{group}-{pair}"
             summary["active_case"] = name
             save(root/"summary.json", summary)
@@ -310,7 +350,7 @@ def main():
             summary["active_case"] = None
             save(root/"summary.json", summary)
             print(json.dumps(result, ensure_ascii=False), flush=True)
-            if result.get("cleanup_error") or not all(result["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero", "worktree_removed")):
+            if result.get("cleanup_error") or not all(result["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero")) or not (result["cleanup"].get("worktree_removed") or result["cleanup"].get("no_workspace_created")):
                 raise RuntimeError("owned cleanup incomplete; stop before next sample")
         summary["status"] = "completed"
     except Exception as exc:
@@ -319,6 +359,8 @@ def main():
     finally:
         summary["finished_at"] = now()
         save(root/"summary.json", summary)
+    if not all(row["passed"] for row in summary["rows"]):
+        raise SystemExit("Formal schedule finished with failed samples; see preserved per-case outcomes")
 
 
 if __name__ == "__main__":

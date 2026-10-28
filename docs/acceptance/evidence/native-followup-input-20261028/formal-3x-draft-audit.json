@@ -1,0 +1,326 @@
+{
+  "verified_cases": 5,
+  "at": "2026-10-28T04:42:21.014851+00:00",
+  "rows": [
+    {
+      "case": "02-short-1",
+      "run_id": "e59095d89bfb77642dd39d11273130cf",
+      "driver_request_id": "pub3-629e8dc6feb84c70b82b6720c70d008b",
+      "command_id": "6fd2c2326a1b81ab72e1e781997f3e8f",
+      "logical_scalars": 834,
+      "logical_bytes": 1084,
+      "logical_sha256": "072ff24f2499f041b8040f8e4b6a8319c713967eb8f7ba49b6fc6b3af3f1fc14",
+      "native_scalars": 833,
+      "native_bytes": 1083,
+      "native_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "observed_draft_scalars": 833,
+      "observed_draft_bytes": 1083,
+      "latest_draft": {
+        "file": "C:\\srp3\\20261028-381bd1b6\\02\\native-input\\9b494eb5ba9f9d6348798eb61eaebb63196d0fbb0228fd7a79b80f5d88f45f4f\\5afee9d1952e238554244bfdab524579\\b4131f434997f94c98f6d8b1e06f202b.result.json",
+        "draft": "仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。\n用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。\n仅返回以下 JSON 结构，不加代码块或其他文字：\n{\"outcome\":\"done\",\"summary\":\"隔离投递诊断任务完成。\"}\nSpec: SteerlineFlow/spec/n308-18.spec.md\nPlan: SteerlineFlow/plans/n308-18.plan.md\nReference: SteerlineFlow/spec/activity-common-constraints.md\nReference: SteerlineFlow/testing/acceptance/n308-18.md\nReference: SteerlineFlow/testing/test-list.json\nReference: SteerlineFlow/testing.md\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate\nwriters with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.",
+        "scalars": 833,
+        "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      },
+      "draft_sample_count": 30,
+      "observed_draft_hashes": [
+        "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      ],
+      "difference": [
+        {
+          "kind": "replace",
+          "expected_start": 668,
+          "expected_end": 669,
+          "observed_start": 668,
+          "observed_end": 669,
+          "expected": " ",
+          "observed": "\n"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "paste",
+          "file": "C:\\srp3\\20261028-381bd1b6\\02\\native-input\\9b494eb5ba9f9d6348798eb61eaebb63196d0fbb0228fd7a79b80f5d88f45f4f\\5afee9d1952e238554244bfdab524579\\580b96845a695766a8402a935a49001f.result.json",
+          "exit_code": 0
+        }
+      ],
+      "request_results": [
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\02\\native-input\\b3fb488221a09b48d26118bcf23c510abb6a796c524449532d253a089a09d19f\\917063a368d66f6fc9a5c82b32360c87\\input.result.json",
+          "phase": "prepare",
+          "operation_id": "28ca73275e791afee59c0a1fc31098e2",
+          "started_at": "2026-10-28T04:27:58.6317586Z",
+          "finished_at": "2026-10-28T04:28:02.4737598Z",
+          "error": "",
+          "disposition": "confirmed"
+        },
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\02\\native-input\\9b494eb5ba9f9d6348798eb61eaebb63196d0fbb0228fd7a79b80f5d88f45f4f\\5afee9d1952e238554244bfdab524579\\input.result.json",
+          "phase": "pre-submit",
+          "operation_id": "018b3ed2a83151d6e194918c7ab81444",
+          "started_at": "2026-10-28T04:28:02.5392752Z",
+          "finished_at": "2026-10-28T04:28:44.2819299Z",
+          "error": "original paste did not settle; no Enter sent and no input resent",
+          "disposition": "outcome_unknown"
+        }
+      ],
+      "reached_publication": false,
+      "counts_as_original_3427_reproduction": false
+    },
+    {
+      "case": "03-short-2",
+      "run_id": "e38b50ab32042596bf396c421585fb51",
+      "driver_request_id": "pub3-199dc6a6728547cabd3fde61ae4a9acb",
+      "command_id": "3dec9b3ea5e362cef11500f2bd4da8cb",
+      "logical_scalars": 834,
+      "logical_bytes": 1084,
+      "logical_sha256": "072ff24f2499f041b8040f8e4b6a8319c713967eb8f7ba49b6fc6b3af3f1fc14",
+      "native_scalars": 833,
+      "native_bytes": 1083,
+      "native_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "observed_draft_scalars": 833,
+      "observed_draft_bytes": 1083,
+      "latest_draft": {
+        "file": "C:\\srp3\\20261028-381bd1b6\\03\\native-input\\8fc6afac4e67b0d519a1f06c68a7ba9fc3fedf0a6de5520cf4bd6f0852163953\\356fa204e11cdda30a926b381795ca74\\552b2e0ee3726bf776e150bac7760b6f.result.json",
+        "draft": "仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。\n用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。\n仅返回以下 JSON 结构，不加代码块或其他文字：\n{\"outcome\":\"done\",\"summary\":\"隔离投递诊断任务完成。\"}\nSpec: SteerlineFlow/spec/n308-18.spec.md\nPlan: SteerlineFlow/plans/n308-18.plan.md\nReference: SteerlineFlow/spec/activity-common-constraints.md\nReference: SteerlineFlow/testing/acceptance/n308-18.md\nReference: SteerlineFlow/testing/test-list.json\nReference: SteerlineFlow/testing.md\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate\nwriters with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.",
+        "scalars": 833,
+        "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      },
+      "draft_sample_count": 32,
+      "observed_draft_hashes": [
+        "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      ],
+      "difference": [
+        {
+          "kind": "replace",
+          "expected_start": 668,
+          "expected_end": 669,
+          "observed_start": 668,
+          "observed_end": 669,
+          "expected": " ",
+          "observed": "\n"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "paste",
+          "file": "C:\\srp3\\20261028-381bd1b6\\03\\native-input\\8fc6afac4e67b0d519a1f06c68a7ba9fc3fedf0a6de5520cf4bd6f0852163953\\356fa204e11cdda30a926b381795ca74\\b4c21371f4cb032e12beec7fbe9ab03b.result.json",
+          "exit_code": 0
+        }
+      ],
+      "request_results": [
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\03\\native-input\\db77dec38d6c70660114968138ef7b58b2dc40f0b67c490d6a4536e2b766a1e9\\6635340fead7fdedaeededcd30b64bac\\input.result.json",
+          "phase": "prepare",
+          "operation_id": "78987cfb117070fb688cf74fb0da74ce",
+          "started_at": "2026-10-28T04:32:42.8769639Z",
+          "finished_at": "2026-10-28T04:32:46.555046Z",
+          "error": "",
+          "disposition": "confirmed"
+        },
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\03\\native-input\\8fc6afac4e67b0d519a1f06c68a7ba9fc3fedf0a6de5520cf4bd6f0852163953\\356fa204e11cdda30a926b381795ca74\\input.result.json",
+          "phase": "pre-submit",
+          "operation_id": "418831e6201af37ba6ed91705a1b802c",
+          "started_at": "2026-10-28T04:32:46.6093518Z",
+          "finished_at": "2026-10-28T04:33:28.2252007Z",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+          "disposition": "outcome_unknown"
+        }
+      ],
+      "reached_publication": false,
+      "counts_as_original_3427_reproduction": false
+    },
+    {
+      "case": "04-long-2",
+      "run_id": "68e75cef6c23aea3ce95cf1dc7b4b4e8",
+      "driver_request_id": "pub3-d57d71ccdb2c42ca94e51e4ef222b994",
+      "command_id": "bcc7c4591b537b6e55cd554d21c05bb8",
+      "logical_scalars": 834,
+      "logical_bytes": 1084,
+      "logical_sha256": "072ff24f2499f041b8040f8e4b6a8319c713967eb8f7ba49b6fc6b3af3f1fc14",
+      "native_scalars": 833,
+      "native_bytes": 1083,
+      "native_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "observed_draft_scalars": 833,
+      "observed_draft_bytes": 1083,
+      "latest_draft": {
+        "file": "C:\\srp3\\20261028-381bd1b6\\04\\native-input\\5d647bf3f1393afa665b5c05074cb2b95aea5270ab0cf6df4f03ae40304d48e0\\1117b1dc7cefd607f52cab7d06d1edd0\\21990e114465d1f036bad0ff68fe2861.result.json",
+        "draft": "仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。\n用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。\n仅返回以下 JSON 结构，不加代码块或其他文字：\n{\"outcome\":\"done\",\"summary\":\"隔离投递诊断任务完成。\"}\nSpec: SteerlineFlow/spec/n308-18.spec.md\nPlan: SteerlineFlow/plans/n308-18.plan.md\nReference: SteerlineFlow/spec/activity-common-constraints.md\nReference: SteerlineFlow/testing/acceptance/n308-18.md\nReference: SteerlineFlow/testing/test-list.json\nReference: SteerlineFlow/testing.md\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate\nwriters with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.",
+        "scalars": 833,
+        "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      },
+      "draft_sample_count": 32,
+      "observed_draft_hashes": [
+        "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      ],
+      "difference": [
+        {
+          "kind": "replace",
+          "expected_start": 668,
+          "expected_end": 669,
+          "observed_start": 668,
+          "observed_end": 669,
+          "expected": " ",
+          "observed": "\n"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "paste",
+          "file": "C:\\srp3\\20261028-381bd1b6\\04\\native-input\\5d647bf3f1393afa665b5c05074cb2b95aea5270ab0cf6df4f03ae40304d48e0\\1117b1dc7cefd607f52cab7d06d1edd0\\cdd8cbb7b2c85aa876199ffd68d4592b.result.json",
+          "exit_code": 0
+        }
+      ],
+      "request_results": [
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\04\\native-input\\6323efdd70cff1a4093960bc55a194fdbe98f2125a52d5a8c80939d828d192f6\\9357c49cb8d86a4a6fc3973f42253547\\input.result.json",
+          "phase": "prepare",
+          "operation_id": "cb8c30474951094fccbf3ef749ea5216",
+          "started_at": "2026-10-28T04:34:36.2443972Z",
+          "finished_at": "2026-10-28T04:34:39.8257353Z",
+          "error": "",
+          "disposition": "confirmed"
+        },
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\04\\native-input\\5d647bf3f1393afa665b5c05074cb2b95aea5270ab0cf6df4f03ae40304d48e0\\1117b1dc7cefd607f52cab7d06d1edd0\\input.result.json",
+          "phase": "pre-submit",
+          "operation_id": "4c8b1cf4e5db60129d95d304b179c6da",
+          "started_at": "2026-10-28T04:34:39.8785144Z",
+          "finished_at": "2026-10-28T04:35:21.4162736Z",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+          "disposition": "outcome_unknown"
+        }
+      ],
+      "reached_publication": false,
+      "counts_as_original_3427_reproduction": false
+    },
+    {
+      "case": "05-long-3",
+      "run_id": "4bdb7672e0872f5032e3d4d8489e5d13",
+      "driver_request_id": "pub3-fb269318475c4287af53a381b414df85",
+      "command_id": "1912332e17d7adfbe43b8ce3c8e058e3",
+      "logical_scalars": 834,
+      "logical_bytes": 1084,
+      "logical_sha256": "072ff24f2499f041b8040f8e4b6a8319c713967eb8f7ba49b6fc6b3af3f1fc14",
+      "native_scalars": 833,
+      "native_bytes": 1083,
+      "native_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "observed_draft_scalars": 833,
+      "observed_draft_bytes": 1083,
+      "latest_draft": {
+        "file": "C:\\srp3\\20261028-381bd1b6\\05\\native-input\\4abc670667aa5f17d0d697ea645ec39e549b4d9a8ce9e9f183773f097213e675\\6e30d59fba9960b2099f4eb944ea7853\\35db4fc4520506828d2ca8eaf5660535.result.json",
+        "draft": "仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。\n用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。\n仅返回以下 JSON 结构，不加代码块或其他文字：\n{\"outcome\":\"done\",\"summary\":\"隔离投递诊断任务完成。\"}\nSpec: SteerlineFlow/spec/n308-18.spec.md\nPlan: SteerlineFlow/plans/n308-18.plan.md\nReference: SteerlineFlow/spec/activity-common-constraints.md\nReference: SteerlineFlow/testing/acceptance/n308-18.md\nReference: SteerlineFlow/testing/test-list.json\nReference: SteerlineFlow/testing.md\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate\nwriters with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.",
+        "scalars": 833,
+        "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      },
+      "draft_sample_count": 29,
+      "observed_draft_hashes": [
+        "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      ],
+      "difference": [
+        {
+          "kind": "replace",
+          "expected_start": 668,
+          "expected_end": 669,
+          "observed_start": 668,
+          "observed_end": 669,
+          "expected": " ",
+          "observed": "\n"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "paste",
+          "file": "C:\\srp3\\20261028-381bd1b6\\05\\native-input\\4abc670667aa5f17d0d697ea645ec39e549b4d9a8ce9e9f183773f097213e675\\6e30d59fba9960b2099f4eb944ea7853\\67950950b66eeffbf8321b0a5f96eb07.result.json",
+          "exit_code": 0
+        }
+      ],
+      "request_results": [
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\05\\native-input\\7967056d70df8ed36d0b64f7f99c19618c79fc5a89e8b1236a0ef70ec9ebc323\\8286b057187740b35ab62bb4d8d406a9\\input.result.json",
+          "phase": "prepare",
+          "operation_id": "359ed9939256348c91a90d04519ef8ed",
+          "started_at": "2026-10-28T04:36:35.461773Z",
+          "finished_at": "2026-10-28T04:36:39.1787491Z",
+          "error": "",
+          "disposition": "confirmed"
+        },
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\05\\native-input\\4abc670667aa5f17d0d697ea645ec39e549b4d9a8ce9e9f183773f097213e675\\6e30d59fba9960b2099f4eb944ea7853\\input.result.json",
+          "phase": "pre-submit",
+          "operation_id": "196b12cfcda3f2f019ee64d97e712300",
+          "started_at": "2026-10-28T04:36:39.2315012Z",
+          "finished_at": "2026-10-28T04:37:21.0826969Z",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+          "disposition": "outcome_unknown"
+        }
+      ],
+      "reached_publication": false,
+      "counts_as_original_3427_reproduction": false
+    },
+    {
+      "case": "06-short-3",
+      "run_id": "f08bc79ac7229604a29b35077cdcb0c2",
+      "driver_request_id": "pub3-a0f87fa619f443f78097896d3f8f0e0a",
+      "command_id": "89590e0ba6be5d1303939a0693def8e5",
+      "logical_scalars": 834,
+      "logical_bytes": 1084,
+      "logical_sha256": "072ff24f2499f041b8040f8e4b6a8319c713967eb8f7ba49b6fc6b3af3f1fc14",
+      "native_scalars": 833,
+      "native_bytes": 1083,
+      "native_sha256": "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de",
+      "observed_draft_scalars": 833,
+      "observed_draft_bytes": 1083,
+      "latest_draft": {
+        "file": "C:\\srp3\\20261028-381bd1b6\\06\\native-input\\03067d1213ba66bd609dc846f44f5a30c0a8ea1991855380aa3428f3151cfc29\\23be007fd38705881d298d465e15772f\\c2be442dce01b22942484256500fd6f0.result.json",
+        "draft": "仅执行隔离投递诊断，不运行任何项目或业务测试，不修改文件、不提交、不推送、不创建PR。\n用一次 shell 工具执行无副作用命令 Write-Output 'SR_INPUT_TOOL_OUTPUT'，确认真实输出并正常结束。\n仅返回以下 JSON 结构，不加代码块或其他文字：\n{\"outcome\":\"done\",\"summary\":\"隔离投递诊断任务完成。\"}\nSpec: SteerlineFlow/spec/n308-18.spec.md\nPlan: SteerlineFlow/plans/n308-18.plan.md\nReference: SteerlineFlow/spec/activity-common-constraints.md\nReference: SteerlineFlow/testing/acceptance/n308-18.md\nReference: SteerlineFlow/testing/test-list.json\nReference: SteerlineFlow/testing.md\n完成后，在最终回复末尾单独写一行：实施及必要验证已完成。\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate\nwriters with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.",
+        "scalars": 833,
+        "sha256": "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      },
+      "draft_sample_count": 32,
+      "observed_draft_hashes": [
+        "4bcda39156b57b068cdd346bf2864f3d64be014cba9beb8fb644d59fd4554518"
+      ],
+      "difference": [
+        {
+          "kind": "replace",
+          "expected_start": 668,
+          "expected_end": 669,
+          "observed_start": 668,
+          "observed_end": 669,
+          "expected": " ",
+          "observed": "\n"
+        }
+      ],
+      "effects": [
+        {
+          "kind": "paste",
+          "file": "C:\\srp3\\20261028-381bd1b6\\06\\native-input\\03067d1213ba66bd609dc846f44f5a30c0a8ea1991855380aa3428f3151cfc29\\23be007fd38705881d298d465e15772f\\fa0834561cec3e839c3d42a3335680b9.result.json",
+          "exit_code": 0
+        }
+      ],
+      "request_results": [
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\06\\native-input\\f466a47a9f74b2980699f76c4d0cd59ca6b72f6208d892be6322e432b6b2f312\\8e1fa3f370480d0e5f24a44c70ee09b9\\input.result.json",
+          "phase": "prepare",
+          "operation_id": "482175b790e2604316151ab026a249d5",
+          "started_at": "2026-10-28T04:38:36.3609811Z",
+          "finished_at": "2026-10-28T04:38:39.6509727Z",
+          "error": "",
+          "disposition": "confirmed"
+        },
+        {
+          "file": "C:\\srp3\\20261028-381bd1b6\\06\\native-input\\03067d1213ba66bd609dc846f44f5a30c0a8ea1991855380aa3428f3151cfc29\\23be007fd38705881d298d465e15772f\\input.result.json",
+          "phase": "pre-submit",
+          "operation_id": "9b176a2f47a79ad7fbee311834d5aefd",
+          "started_at": "2026-10-28T04:38:39.7331589Z",
+          "finished_at": "2026-10-28T04:39:21.9624429Z",
+          "error": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe failed: context deadline exceeded ()\nunexpected end of JSON input",
+          "disposition": "outcome_unknown"
+        }
+      ],
+      "reached_publication": false,
+      "counts_as_original_3427_reproduction": false
+    }
+  ]
+}

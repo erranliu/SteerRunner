@@ -1,0 +1,425 @@
+{
+  "schema": "formal-publication-length-closeout/v1",
+  "status": "six_formal_runs_settled_target_comparison_not_completed",
+  "at": "2026-10-28T04:47:13.452853+00:00",
+  "baseline": {
+    "run": "600d14e87929e5555c74675b56cde86a",
+    "attempt": "219608c2f90445b83698824345efa5fe",
+    "operation": "bbe27895a8d0e57683d4201371a55d48",
+    "source": "ffb9c510280d470e064e48770b8eea30174d82c4",
+    "exe_sha256": "a745ab738152e974850cbaca7851fb13c0d33cd08a915cda555f1ae465556347"
+  },
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "2668cd3ca4603db7a1fca56758bd189fd2b1edae310430f374a14c664fed83b1",
+    "version": "0.2.0-dev.3-r3",
+    "source_commit": "c6f17e4700388d14fdaee4829165cad7e76b9a38",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641"
+  },
+  "groups": [
+    {
+      "group": "long",
+      "attempts": 3,
+      "reached_publication": 0,
+      "passed": 0,
+      "failed": 3,
+      "input_scalars": [
+        null,
+        null,
+        null
+      ],
+      "input_bytes": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "group": "short",
+      "attempts": 3,
+      "reached_publication": 0,
+      "passed": 0,
+      "failed": 3,
+      "input_scalars": [
+        null,
+        null,
+        null
+      ],
+      "input_bytes": [
+        null,
+        null,
+        null
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "ordinal": 1,
+      "pair": 1,
+      "group": "long",
+      "root": "01-long-1",
+      "started_at": "2026-10-28T04:23:47.238241+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "no_workspace_created": true,
+        "worktree_removed": false
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\01",
+      "request_id": "pub3-526617b5b3c04eaf82850d0c3675c161",
+      "marker": "SRPUB01",
+      "run_id": "819dccc965aaec6cf0759be0c5fc7789",
+      "error": "pre-publication boundary implement.execute blocked: no Orca Git repository has directory name \"repository\" in environment \"e68f4edf-8a83-42c2-a9da-6d404d3aa3d8\"; register the matching repository first",
+      "finished_at": "2026-10-28T04:24:02.235758+00:00",
+      "initial_cleanup_error": "'NoneType' object is not iterable"
+    },
+    {
+      "ordinal": 2,
+      "pair": 1,
+      "group": "short",
+      "root": "02-short-1",
+      "started_at": "2026-10-28T04:27:05.951835+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\02",
+      "request_id": "pub3-629e8dc6feb84c70b82b6720c70d008b",
+      "marker": "SRPUB01",
+      "run_id": "e59095d89bfb77642dd39d11273130cf",
+      "error": "unknown original operation; no resend or Enter",
+      "cleanup_observation_error": "'utf-8' codec can't decode bytes in position 1064-1065: invalid continuation byte",
+      "finished_at": "2026-10-28T04:28:57.683785+00:00",
+      "initial_cleanup_error": "owned worktree still present"
+    },
+    {
+      "ordinal": 3,
+      "pair": 2,
+      "group": "short",
+      "root": "03-short-2",
+      "started_at": "2026-10-28T04:31:49.641476+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\03",
+      "request_id": "pub3-199dc6a6728547cabd3fde61ae4a9acb",
+      "marker": "SRPUB02",
+      "run_id": "e38b50ab32042596bf396c421585fb51",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T04:33:46.838294+00:00"
+    },
+    {
+      "ordinal": 4,
+      "pair": 2,
+      "group": "long",
+      "root": "04-long-2",
+      "started_at": "2026-10-28T04:33:46.840628+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\04",
+      "request_id": "pub3-d57d71ccdb2c42ca94e51e4ef222b994",
+      "marker": "SRPUB02",
+      "run_id": "68e75cef6c23aea3ce95cf1dc7b4b4e8",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T04:35:41.849714+00:00"
+    },
+    {
+      "ordinal": 5,
+      "pair": 3,
+      "group": "long",
+      "root": "05-long-3",
+      "started_at": "2026-10-28T04:35:41.852368+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\05",
+      "request_id": "pub3-fb269318475c4287af53a381b414df85",
+      "marker": "SRPUB03",
+      "run_id": "4bdb7672e0872f5032e3d4d8489e5d13",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T04:37:41.107926+00:00"
+    },
+    {
+      "ordinal": 6,
+      "pair": 3,
+      "group": "short",
+      "root": "06-short-3",
+      "started_at": "2026-10-28T04:37:41.110555+00:00",
+      "passed": false,
+      "reached_publication": false,
+      "cleanup": {
+        "run_stopped": true,
+        "service_stopped": true,
+        "resources_settled": true,
+        "native_zero": true,
+        "worktree_removed": true
+      },
+      "runner_sha256": "544f21d55aeeea9f9e13af68586a6fe6c894853bc46280a4376475a621474641",
+      "state_dir": "C:\\srp3\\20261028-381bd1b6\\06",
+      "request_id": "pub3-a0f87fa619f443f78097896d3f8f0e0a",
+      "marker": "SRPUB03",
+      "run_id": "f08bc79ac7229604a29b35077cdcb0c2",
+      "error": "unknown original operation; no resend or Enter",
+      "finished_at": "2026-10-28T04:39:42.080163+00:00"
+    }
+  ],
+  "independent_evidence_consistency_verified": true,
+  "target_comparison_complete": false,
+  "qualified_build_delivered": false,
+  "original_3427_root_cause_confirmed": false,
+  "first_input_blocker": {
+    "cases": 5,
+    "logical_scalars": 834,
+    "logical_bytes": 1084,
+    "native_scalars": 833,
+    "native_bytes": 1083,
+    "draft_scalars": 833,
+    "difference": "one ASCII space at zero-based offset 668 observed as LF",
+    "paste_calls": 5,
+    "enter_calls": 0,
+    "new_business_tool_calls": 0,
+    "publication_inputs_attempted": 0,
+    "note": "visible draft projection only; does not prove actual composer bytes were changed or explain the historical collapsed 3427 input failure"
+  },
+  "cleanup": {
+    "runs_stopped": 6,
+    "services_stopped": 6,
+    "resources_settled": 6,
+    "new_native_workspaces_created": 5,
+    "complete_zero_censuses": 5,
+    "worktrees_removed_and_absent": 5,
+    "pre_creation_failure_no_workspace": 1,
+    "local_owned_runner_processes": 0
+  },
+  "limits": [
+    "First long attempt failed due diagnostic mirror directory name; retained and not replaced.",
+    "Five remaining attempts failed before first task submission, so no target publication input was rendered/sent.",
+    "Actual driver completed the six-case schedule with exit 0 despite failed rows; final source now returns nonzero on any failed sample. Original exit and per-case failures preserved.",
+    "First two cleanup pauses and observer encoding failure retained; product-native CLI records remain complete. Read-only asynchronous removal reconciliation and UTF-8 observer corrections did not change the Runner binary or experiment inputs.",
+    "373 top-level tests reported PASS; 5 opt-in/helper skips not native qualification. application binary reported PASS, but outer Go controller did not settle and was stopped with no observed children; not presented as normal full-command exit.",
+    "Prior placeholder test-EXE 10x batch is excluded.",
+    "No business tests, real publication, old Run restoration, global/account changes, agents, automations, or cross-chat messages."
+  ],
+  "retained_state_store_identities": [
+    {
+      "case": "01-long-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\01\\runner.db",
+      "bytes": 155648,
+      "sha256": "6594ad7ea641287e8b2f279e481287190b1e36861d0d6650c0b810fef1367e0a",
+      "archived": false
+    },
+    {
+      "case": "01-long-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\01\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "01-long-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\01\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    },
+    {
+      "case": "02-short-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\02\\runner.db",
+      "bytes": 1028096,
+      "sha256": "008a9c5bf31d9f57e477ea7365b73ac7e651fa0ed3a6e6444a86b940b3ca5b4b",
+      "archived": false
+    },
+    {
+      "case": "02-short-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\02\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "02-short-1",
+      "path": "C:\\srp3\\20261028-381bd1b6\\02\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    },
+    {
+      "case": "03-short-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\03\\runner.db",
+      "bytes": 1028096,
+      "sha256": "9455e18d3dba48e80a8b9dd4d7a39879649642a178d33eeb29ae91cb89c54faa",
+      "archived": false
+    },
+    {
+      "case": "03-short-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\03\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "03-short-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\03\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    },
+    {
+      "case": "04-long-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\04\\runner.db",
+      "bytes": 1028096,
+      "sha256": "ca2da70761470850f4424bbf4e61d1c1f93db1147a1ebcaee5834c2efb18d851",
+      "archived": false
+    },
+    {
+      "case": "04-long-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\04\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "04-long-2",
+      "path": "C:\\srp3\\20261028-381bd1b6\\04\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    },
+    {
+      "case": "05-long-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\05\\runner.db",
+      "bytes": 1028096,
+      "sha256": "37f4f3033b1379318fd2f9452d7fc9dc6c1d60a3dfc00d7db35b81de8dfad3c5",
+      "archived": false
+    },
+    {
+      "case": "05-long-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\05\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "05-long-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\05\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    },
+    {
+      "case": "06-short-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\06\\runner.db",
+      "bytes": 1028096,
+      "sha256": "a37d089209827bd892dfb342b65c141d69ddfccb3ec569f52692ceb47042864c",
+      "archived": false
+    },
+    {
+      "case": "06-short-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\06\\runner.db-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "archived": false
+    },
+    {
+      "case": "06-short-3",
+      "path": "C:\\srp3\\20261028-381bd1b6\\06\\runner.db-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "archived": false
+    }
+  ],
+  "owner_regression": {
+    "packages": {
+      "github.com/erranliu/SteerRunner/internal/contracts": {
+        "passed_top_level": 18,
+        "skipped_top_level": 0,
+        "failed": [],
+        "go_package_status": "pass",
+        "test_binary_PASS_output": true
+      },
+      "github.com/erranliu/SteerRunner/internal/resources": {
+        "passed_top_level": 15,
+        "skipped_top_level": 0,
+        "failed": [],
+        "go_package_status": "pass",
+        "test_binary_PASS_output": true
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/workflow": {
+        "passed_top_level": 15,
+        "skipped_top_level": 0,
+        "failed": [],
+        "go_package_status": "pass",
+        "test_binary_PASS_output": true
+      },
+      "github.com/erranliu/SteerRunner/internal/application": {
+        "passed_top_level": 142,
+        "skipped_top_level": 0,
+        "failed": [],
+        "go_package_status": null,
+        "test_binary_PASS_output": true
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport": {
+        "passed_top_level": 144,
+        "skipped_top_level": 2,
+        "failed": [],
+        "go_package_status": "pass",
+        "test_binary_PASS_output": true
+      },
+      "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca": {
+        "passed_top_level": 39,
+        "skipped_top_level": 3,
+        "failed": [],
+        "go_package_status": "pass",
+        "test_binary_PASS_output": true
+      }
+    },
+    "controller_normal_exit": false,
+    "controller_settlement": "exact owned Go controller stopped after all test binaries reported PASS; no children observed; raw interruption retained",
+    "product_test_failures": 0
+  },
+  "evidence_archive": {
+    "path": "C:\\Users\\lmas1\\.codex\\worktrees\\c3d3\\SteerRunner\\.evidence\\formal-publication-comparison-3x-20261028-raw.zip",
+    "bytes": 3640294,
+    "sha256": "0a2aefb17941ec7c95758a4285953097ba3a7adebcfd3598aa8ebe2bcf5cb58a",
+    "file_count": 1194,
+    "scope": "complete preserved report/CLI/draft/timeline/driver records; binaries, Git caches, service secrets and raw SQLite stores excluded; state-store identities retained separately",
+    "archive_closeout_note": "archive holds the pre-archive closeout; current closeout adds only archive identity"
+  }
+}
