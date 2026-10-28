@@ -30,6 +30,8 @@ def main():
     ap.add_argument("--revision", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--audit-exe", required=True)
+    ap.add_argument("--override-scalars", type=int, default=844,
+                    help="override length; production adds about 2583 source-fact scalars")
     args = ap.parse_args()
     root = pathlib.Path(args.out).resolve()
     root.mkdir(parents=True, exist_ok=False)
@@ -45,7 +47,9 @@ def main():
              "完成后仅返回以下 ASCII JSON，不输出代码块或额外自然语言：\n"
              '{"outcome":"done","summary":"SR_CLI_TOOL_OUTPUT"}')
     second = "后续发布输入的最小诊断：禁止真实发布、工具调用、文件修改和PR创建。只返回以下唯一结构化标记（不要代码块或说明）：\n" + final + "\n\n"
-    second += ("只读中文占位材料，保留完整输入与空行。\n\n" * 200)[:3427-len(second)]
+    if not len(second) <= args.override_scalars <= 4000:
+        raise ValueError("override must contain the whole marker and remain bounded")
+    second += ("只读中文占位材料，保留完整输入与空行。\n\n" * 200)[:args.override_scalars-len(second)]
     request_id = "followup-" + uuid.uuid4().hex
     request = {"title": "Runner isolated followup input diagnostic", "name_prefix": "sr-followup-cli",
                "repository": {"url": "https://github.com/erranliu/SteerlineTest.git", "local_path": str(pathlib.Path(args.repository).resolve()), "remote": "origin", "base_branch": "main", "base_revision": args.revision},
@@ -115,6 +119,8 @@ def main():
                 saved, turn = next((s, t) for s, t in unique.values() if t.get("step_id") == "publish.execute")
                 audit = {"environment": execution["target"]["environment"], "process": saved["process"], "pane": turn["native"]["pane"], "baseline": turn["native"]["base_root_at"], "input": turn["prompt"].replace("\r\n", "\n").replace("\r", "\n").rstrip("\n"), "final": final}
                 dump(root / "audit-request.json", audit)
+                if not 3300 <= len(audit["input"]) <= 3500:
+                    raise RuntimeError("actual production input is outside the original 3427-scalar shape boundary")
                 proc = subprocess.run([str(pathlib.Path(args.audit_exe).resolve()), str(root / "audit-request.json")], capture_output=True, timeout=60, creationflags=subprocess.CREATE_NO_WINDOW)
                 (root / "independent-original.json").write_bytes(proc.stdout)
                 (root / "independent-original-stderr.txt").write_bytes(proc.stderr)
