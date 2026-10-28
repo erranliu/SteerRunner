@@ -18,13 +18,14 @@ type MainAgentState struct {
 	StateStartedAt int64  `json:"stateStartedAt"`
 }
 type StateObservation struct {
-	Origin      string `json:"origin"`
-	Kind        string `json:"kind"`
-	AuthorityID string `json:"authorityId"`
-	Incarnation int64  `json:"incarnation"`
-	Revision    int64  `json:"revision"`
-	ObservedAt  int64  `json:"observedAt"`
-	Boundary    bool   `json:"boundary,omitempty"`
+	Origin             string `json:"origin"`
+	Kind               string `json:"kind"`
+	AuthorityID        string `json:"authorityId"`
+	Incarnation        int64  `json:"incarnation"`
+	Revision           int64  `json:"revision"`
+	ObservedAt         int64  `json:"observedAt"`
+	Boundary           bool   `json:"boundary,omitempty"`
+	incarnationMissing bool
 }
 
 // AgentState carries public original-pane facts. The provider's own transcript

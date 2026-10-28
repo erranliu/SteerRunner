@@ -9,6 +9,7 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"sync"
@@ -110,14 +111,29 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		return nil, err
 	}
 	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, readStopArtifact: native.ReadStopArtifact, clock: func() time.Time { return time.Now().UTC() }}
-	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+	call := func(ctx context.Context, timeout time.Duration, args ...string) (raw []byte, callErr error) {
 		all := append(append([]string(nil), p.Args...), args...)
 		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
 		if p.Environment != "" {
 			all = append(all, "--environment", p.Environment)
 		}
+		diagnosticPath := ""
+		if d, ok := ctx.Value(nativeInputDiagnosticKey{}).(nativeInputDiagnostic); ok {
+			diagnosticPath = filepath.Join(d.Directory, process.New(0).NewProcessGeneration())
+			started := time.Now().UTC()
+			if err := writeNativeDiagnostic(diagnosticPath+".call-intent.json", map[string]any{"at": started, "input": d, "args": all}); err != nil {
+				return nil, err
+			}
+			defer func() {
+				message := ""
+				if callErr != nil {
+					message = callErr.Error()
+				}
+				callErr = errors.Join(callErr, writeNativeDiagnostic(diagnosticPath+".call-result.json", map[string]any{"started_at": started, "finished_at": time.Now().UTC(), "input": d, "error": message, "stdout": string(raw), "queue_not_invoked": native.IsCLIQueueError(callErr)}))
+			}()
+		}
 		invoke := func(ctx context.Context) ([]byte, error) {
-			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked, DiagnosticPath: diagnosticPath})
 		}
 		if native.PreparationOwnsCLI(ctx) {
 			return invoke(ctx)
@@ -577,7 +593,12 @@ func nativeRequest(operation string) string {
 
 // Persist the original input and native state baseline before submission.
 // A visible reply cannot substitute for this turn's native ending evidence.
-func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
+func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (result b.LifecycleReceipt, resultErr error) {
+	ctx, finish, err := l.beginNativeInput(ctx, r, "prepare")
+	if err != nil {
+		return result, err
+	}
+	defer func() { resultErr = finish(result, resultErr) }()
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
 	state, err := l.state(s)
@@ -638,7 +659,12 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 	}
 	return receipt, err
 }
-func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
+func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (finalReceipt b.LifecycleReceipt, resultErr error) {
+	ctx, finish, err := l.beginNativeInput(ctx, r, "pre-submit")
+	if err != nil {
+		return finalReceipt, err
+	}
+	defer func() { resultErr = finish(finalReceipt, resultErr) }()
 	s := r.Snapshot
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}
 	state, err := l.state(s)

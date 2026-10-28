@@ -66,4 +66,7 @@ type LaunchCommand struct {
 	// Timeout overrides the host's ordinary command budget for this operation.
 	// The caller's context can still cancel it earlier.
 	Timeout time.Duration
+	// DiagnosticPath records this one invocation, including successful stderr.
+	// It is a Runner-owned local path, never a worker input or retry authority.
+	DiagnosticPath string
 }

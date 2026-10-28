@@ -144,6 +144,10 @@ func runNativeInputLiveProbe(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	if strings.HasPrefix(os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE"), "followup-") {
+		runNativeFollowupProbe(t, ctx, l, s, target.Environment, ready, record, root)
+		return
+	}
 	nonce := make([]byte, 16)
 	if _, e := rand.Read(nonce); e != nil {
 		t.Fatal(e)

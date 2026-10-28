@@ -1,7 +1,7 @@
 param(
     [Parameter(Mandatory)][string]$Target,
     [Parameter(Mandatory)][string]$OutDir,
-    [ValidateSet('long-input','segmented-shape')][string]$Mode = 'long-input'
+    [ValidateSet('long-input','segmented-shape','followup-immediate','followup-idle','followup-output')][string]$Mode = 'long-input'
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -37,6 +37,7 @@ try {
     if (-not $taskResult.completed -or -not $taskResult.cleaned_up) { throw 'Missing original completion or confirmed cleanup' }
     if ($Mode -eq 'long-input' -and ($taskResult.paste_calls -ne 1 -or $taskResult.enter_calls -ne 1 -or $taskResult.business_inputs -ne 1)) { throw 'Expected one production paste, one submit and one original input' }
     if ($Mode -eq 'segmented-shape' -and ($taskResult.paste_calls -ne 2 -or $taskResult.enter_calls -ne 1 -or $taskResult.logical_inputs -ne 1)) { throw 'Expected two real paste effects, one submit and one logical original input' }
+    if ($Mode.StartsWith('followup-') -and ($taskResult.paste_calls -ne 2 -or $taskResult.enter_calls -ne 2 -or $taskResult.verified_turns.Count -ne 2)) { throw 'Expected two independent verified original turns and exactly two production submissions' }
     $taskAfter=Get-SRSourceIdentity $taskRepo $taskSourcePaths
     if ($taskAfter.source_digest -cne $taskIdentity.source_digest) { throw 'Probe source changed during execution' }
     $taskSource.passed=$true

@@ -111,7 +111,7 @@ func nativeBaseline(s native.AgentState, now time.Time) NativeProof {
 }
 func trustedState(s native.AgentState) bool {
 	o := s.Observation
-	return s.AgentType != "" && s.MainAgent != nil && o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Revision > 0 && o.ObservedAt > 0
+	return s.AgentType != "" && s.MainAgent != nil && o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.HasValidIncarnation() && o.Revision > 0 && o.ObservedAt > 0
 }
 
 func (p NativeProof) agentName() string {

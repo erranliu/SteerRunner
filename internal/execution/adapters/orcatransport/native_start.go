@@ -12,6 +12,7 @@ import (
 )
 
 func (l *Lifecycle) waitOriginalComposer(ctx context.Context, snapshot b.LifecycleSnapshot) error {
+	ctx = nativeInputPhase(ctx, "composer-ready")
 	if _, err := l.original(ctx, snapshot); err != nil {
 		return err
 	}

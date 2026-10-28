@@ -72,7 +72,7 @@ func (liveProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]by
 
 func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	if mode := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE"); mode != "" {
-		if mode != "long-input" && mode != "segmented-shape" {
+		if mode != "long-input" && mode != "segmented-shape" && mode != "followup-immediate" && mode != "followup-idle" && mode != "followup-output" {
 			t.Fatal("unknown native probe mode")
 		}
 		runNativeInputLiveProbe(t)

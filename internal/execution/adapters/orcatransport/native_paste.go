@@ -21,6 +21,7 @@ import (
 func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot, text string) (json.RawMessage, error) {
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
+	ctx = nativeInputPhase(ctx, "draft-before-paste")
 	if strings.ContainsAny(text, "\x00\x1b") {
 		return nil, errors.New("native paste contains terminal control characters; no input sent")
 	}
@@ -54,6 +55,11 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 		return nil, errors.New("original native composer already contains a draft; no input sent")
 	}
 	send := func(text *string) (native.Result, error) {
+		phase := "submit"
+		if text != nil {
+			phase = "paste"
+		}
+		ctx := nativeInputPhase(ctx, phase)
 		if _, err := l.original(ctx, s); err != nil {
 			return native.Result{}, err
 		}
@@ -90,6 +96,7 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 	if err != nil {
 		return receipt(), err
 	}
+	ctx = nativeInputPhase(ctx, "draft-settle")
 	stable := 0
 	previousDraft := ""
 	for {
@@ -117,6 +124,7 @@ func (l *Lifecycle) submitNativePaste(ctx context.Context, s b.LifecycleSnapshot
 		}
 	}
 	// The original main/provider must still be at the frozen pre-input boundary.
+	ctx = nativeInputPhase(ctx, "pre-submit-fence")
 	state, err := l.state(s)
 	if err != nil {
 		return receipt(), err
