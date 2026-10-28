@@ -1,0 +1,10 @@
+# Raw captures remain local; only this review set is published.
+*
+!.gitignore
+!README.md
+!verification-summary.json
+!repeat-counts.json
+!directed.log
+!controlled-packages.log
+!repeat-30.log
+!probe01/

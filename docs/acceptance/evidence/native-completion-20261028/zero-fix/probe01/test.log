@@ -1,0 +1,4 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+--- PASS: TestOrcaNativeStateLiveLifecycle (47.87s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	50.285s

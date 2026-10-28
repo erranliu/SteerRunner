@@ -1,0 +1,4 @@
+=== RUN   TestWireBudgetLegacyPreparedInputPersistsBeforeSend
+--- PASS: TestWireBudgetLegacyPreparedInputPersistsBeforeSend (0.01s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.947s

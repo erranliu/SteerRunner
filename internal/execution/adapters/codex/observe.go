@@ -74,7 +74,7 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 			if envelope.Method == "item/tool/call" || IsAsyncQuestion(envelope) {
 				if err := validateAsk(envelope); err != nil {
 					if len(envelope.ID) != 0 {
-						if rejectErr := client.RejectRequest(envelope.ID, "SteerLine rejected an unsupported or malformed native question"); rejectErr != nil {
+						if rejectErr := client.RejectRequest(envelope.ID, codexapp.RejectMalformedQuestion); rejectErr != nil {
 							return false, errors.Join(err, rejectErr)
 						}
 					}
@@ -90,7 +90,7 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 				}
 			}
 			if len(envelope.ID) != 0 && envelope.Method != "item/tool/call" {
-				if err := client.RejectRequest(envelope.ID, "SteerLine cannot authorize this native Codex host request"); err != nil {
+				if err := client.RejectRequest(envelope.ID, codexapp.RejectUnauthorizedRequest); err != nil {
 					return false, err
 				}
 				event.Kind, event.Status, event.Title = "approval", "rejected", "Unsupported Codex host request"

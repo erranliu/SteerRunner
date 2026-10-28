@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
@@ -41,7 +43,21 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 		e.failControl(id, saved.CommandID, err)
 		return false
 	}
-	input := b.LifecycleInput{Feedback: &b.FeedbackInput{DecisionID: saved.CommandID, QuestionID: saved.QuestionID, Message: saved.Text, Answer: &b.Answer{Answers: answers}}}
+	ask, err := codex.DecodeQuestionRoute(*r.Snapshot.QuestionRoute, r.Snapshot.Session)
+	if err != nil {
+		e.failControl(id, saved.CommandID, err)
+		return false
+	}
+	parts := m.AnswerParts(answers)
+	if ask.Delivery == "async" {
+		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: saved.Text}}
+	}
+	_, budget, err := m.FreezeInput(parts...)
+	if err != nil {
+		e.failControl(id, saved.CommandID, err)
+		return false
+	}
+	input := b.LifecycleInput{Feedback: &b.FeedbackInput{Budget: budget, DecisionID: saved.CommandID, QuestionID: saved.QuestionID, Message: saved.Text, Answer: &b.Answer{Answers: answers}}}
 	index, err := e.saveIntent(id, r, b.LifecycleCandidate{Action: b.LifecycleDeliverFeedback, Input: input})
 	if err != nil {
 		return false

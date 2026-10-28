@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"os/exec"
 	"path/filepath"
 	"runtime"
@@ -211,6 +212,11 @@ func (l *ExecutionLifecycle) Execute(ctx context.Context, request executionbacke
 		return l.observeOwnerReceipt(ctx, request, receipt)
 	}
 	snapshot := request.Snapshot.Clone()
+	if request.Input.Turn != nil && request.Input.Turn.Budget == nil && snapshot.PendingTurn != nil && snapshot.PendingTurn.CommandID == request.Input.Turn.CommandID && snapshot.PendingTurn.Prompt == request.Input.Turn.Prompt {
+		copy := *request.Input.Turn
+		copy.Budget = snapshot.PendingTurn.Budget.Clone()
+		request.Input.Turn = &copy
+	}
 	var receipt executionbackend.LifecycleReceipt
 	var observer executionbackend.LifecycleObserver
 	var err error
@@ -259,6 +265,21 @@ func (l ExecutionLifecycle) deliverFeedback(ctx context.Context, request executi
 	}
 	if input.QuestionID != "" && input.QuestionID != ask.CallID {
 		return receipt, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "saved feedback changed its original question identity"}
+	}
+	parts := m.AnswerParts(input.Answer.Answers)
+	if ask.Delivery == "async" {
+		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: input.Message}}
+	}
+	text, budget, budgetErr := m.FreezeInput(parts...)
+	if budgetErr != nil {
+		return receipt, budgetErr
+	}
+	if input.Budget != nil {
+		if err := m.CheckInput(text, input.Budget); err != nil {
+			return receipt, err
+		}
+	} else {
+		input.Budget = budget
 	}
 	if err := l.Backend.ValidateReply(binding, ask.Generation, ask.ThreadID, ask.TurnID, snapshot.Session.CurrentTurnID, snapshot.Session.LastStoppedTurnID); err != nil {
 		return receipt, err

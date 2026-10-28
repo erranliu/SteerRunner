@@ -144,6 +144,10 @@ func runNativeInputLiveProbe(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
+	if os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE") == "short-sequence" {
+		runShortInputSequence(t, ctx, l, s, creator, identity, ready, record, root)
+		return
+	}
 	nonce := make([]byte, 16)
 	if _, e := rand.Read(nonce); e != nil {
 		t.Fatal(e)
@@ -239,11 +243,13 @@ type segmentProbeHost struct {
 	b.ManagedProcessHost
 	root   string
 	reads  atomic.Uint64
+	calls  atomic.Uint64
 	pastes atomic.Uint64
 	enters atomic.Uint64
 }
 
 func (h *segmentProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
+	started := time.Now().UTC()
 	if len(c.Args) > 1 && c.Args[0] == "terminal" && c.Args[1] == "send" {
 		for _, arg := range c.Args {
 			if arg == "--text" {
@@ -255,6 +261,21 @@ func (h *segmentProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand)
 		}
 	}
 	raw, err := h.ManagedProcessHost.OutputCommand(ctx, c)
+	if os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE") == "short-sequence" {
+		textBytes := 0
+		for i, arg := range c.Args {
+			if arg == "--text" && i+1 < len(c.Args) {
+				textBytes = len(c.Args[i+1])
+			}
+		}
+		data, _ := json.MarshalIndent(map[string]any{"started": started, "returned": time.Now().UTC(), "command": c, "text_transport_bytes": textBytes, "windows_command_line_utf16_with_nul": process.CommandLineUnits(c.Executable, c.Args), "exit_error": errorText(err), "context_error": errorText(ctx.Err()), "stdout_bytes": len(raw), "stdout": json.RawMessage(raw)}, "", "  ")
+		if len(data) == 0 {
+			data, _ = json.Marshal(map[string]any{"started": started, "returned": time.Now().UTC(), "command": c, "text_transport_bytes": textBytes, "exit_error": errorText(err), "context_error": errorText(ctx.Err()), "stdout_text": string(raw)})
+		}
+		if e := os.WriteFile(filepath.Join(h.root, fmt.Sprintf("actual-cli-%03d.json", h.calls.Add(1))), data, 0600); e != nil {
+			return nil, e
+		}
+	}
 	if len(c.Args) > 1 && c.Args[0] == "terminal" && c.Args[1] == "read" {
 		n := h.reads.Add(1)
 		if e := os.WriteFile(filepath.Join(h.root, fmt.Sprintf("actual-public-draft-read-%02d.json", n)), raw, 0600); e != nil {

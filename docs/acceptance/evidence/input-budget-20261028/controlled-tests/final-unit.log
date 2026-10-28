@@ -1,0 +1,67 @@
+=== RUN   TestInputBudgetBoundaries
+--- PASS: TestInputBudgetBoundaries (0.00s)
+=== RUN   TestInputFreezeAndNativeNewlines
+--- PASS: TestInputFreezeAndNativeNewlines (0.00s)
+=== RUN   TestAnswerTextExactNativeJSON
+--- PASS: TestAnswerTextExactNativeJSON (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/model	1.177s
+=== RUN   TestSRExecutionDependencyBoundary
+--- PASS: TestSRExecutionDependencyBoundary (0.13s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/workflow	1.609s
+=== RUN   TestInputContractDiscoveryMatchesOwners
+--- PASS: TestInputContractDiscoveryMatchesOwners (0.02s)
+=== RUN   TestSRWorkflowSelection
+--- PASS: TestSRWorkflowSelection (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/resources	1.595s
+=== RUN   TestEnvironmentCheckCompletionNotification
+--- PASS: TestEnvironmentCheckCompletionNotification (0.00s)
+=== RUN   TestEnvironmentCheckWriteGate
+--- PASS: TestEnvironmentCheckWriteGate (0.00s)
+=== RUN   TestEnvironmentCheckPermissionModes
+--- PASS: TestEnvironmentCheckPermissionModes (0.00s)
+=== RUN   TestInputSessionAggregateAndZeroOversizeSend
+    input_budget_test.go:19: worker plus ask description Runner=888
+--- PASS: TestInputSessionAggregateAndZeroOversizeSend (0.00s)
+=== RUN   TestInputTurnChecksFinalFrozenText
+--- PASS: TestInputTurnChecksFinalFrozenText (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	2.614s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp	0.934s [no tests to run]
+=== RUN   TestWireBudgetDefaultStages
+    input_budget_test.go:44: implement.report/ Runner=324
+    input_budget_test.go:44: implement.report/native-command-v1 Runner=450
+    input_budget_test.go:44: implement.report/native-model-command-v1 Runner=724
+    input_budget_test.go:44: implement.report/terminal-extension-v1 Runner=450
+    input_budget_test.go:44: audit.code.report/ Runner=524
+    input_budget_test.go:44: audit.code.report/native-command-v1 Runner=650
+    input_budget_test.go:44: audit.code.report/native-model-command-v1 Runner=925
+    input_budget_test.go:44: audit.code.report/terminal-extension-v1 Runner=650
+    input_budget_test.go:44: implement.execute/ Runner=152
+    input_budget_test.go:44: implement.execute/native-command-v1 Runner=278
+    input_budget_test.go:44: implement.execute/native-model-command-v1 Runner=553
+    input_budget_test.go:44: implement.execute/terminal-extension-v1 Runner=278
+    input_budget_test.go:44: publish.execute/ Runner=322
+    input_budget_test.go:44: publish.execute/native-command-v1 Runner=448
+    input_budget_test.go:44: publish.execute/native-model-command-v1 Runner=721
+    input_budget_test.go:44: publish.execute/terminal-extension-v1 Runner=448
+    input_budget_test.go:44: publish.report/ Runner=372
+    input_budget_test.go:44: publish.report/native-command-v1 Runner=498
+    input_budget_test.go:44: publish.report/native-model-command-v1 Runner=769
+    input_budget_test.go:44: publish.report/terminal-extension-v1 Runner=498
+    input_budget_test.go:44: audit.code.execute/ Runner=557
+    input_budget_test.go:44: audit.code.execute/native-command-v1 Runner=683
+    input_budget_test.go:44: audit.code.execute/native-model-command-v1 Runner=960
+    input_budget_test.go:44: audit.code.execute/terminal-extension-v1 Runner=683
+--- PASS: TestWireBudgetDefaultStages (0.00s)
+=== RUN   TestWireBudgetRejectsHeaderOverflowAndChangedBody
+--- PASS: TestWireBudgetRejectsHeaderOverflowAndChangedBody (0.00s)
+=== RUN   TestTerminalToolDescriptionsBudget
+    input_budget_test.go:71: DSH tool descriptions Runner=238
+--- PASS: TestTerminalToolDescriptionsBudget (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.615s

@@ -14,6 +14,22 @@ import (
 // advance retains the dispatch gate and checks authorization, policy and
 // higher-priority controls before preparing or dispatching the next input.
 func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate.Record) bool {
+	if r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.Budget == nil && r.Snapshot.PendingTurn.InputVersion > 0 && !unknown(r) {
+		input := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID)
+		if input == nil {
+			e.block(id, "input_failed", errors.New("original input source unavailable"), false)
+			return false
+		}
+		if err := ensureStageBudget(r, input); err != nil {
+			e.block(id, "input_failed", err, false)
+			return false
+		}
+		r.Snapshot.PendingTurn.Budget = input.Budget.Clone()
+		e.mu.Lock()
+		err := e.commitLocked(r, nil, "input_budget_verified")
+		e.mu.Unlock()
+		return err == nil
+	}
 	if r.Snapshot.Workspace.Path != "" && r.Snapshot.PendingTurn == nil && len(r.Workflow.StageInputs) == 0 {
 		if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.Config.Initial}, ""); err != nil {
 			e.block(id, "input_failed", err, false)

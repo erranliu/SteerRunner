@@ -435,37 +435,6 @@ func cloneStringMap(v map[string]string) map[string]string {
 func (c *HistoryClient) UserAgent() string  { return c.userAgent }
 func (c *HistoryClient) NativeHome() string { return c.serverHome }
 
-func (c *HistoryClient) BootstrapSession(ctx context.Context, cwd, sandbox, instruction string) (string, error) {
-	params := map[string]any{"cwd": cwd, "ephemeral": false}
-	if sandbox != "" {
-		params["sandbox"] = sandbox
-	}
-	raw, err := c.call(ctx, "thread/start", params)
-	if err != nil {
-		return "", err
-	}
-	var started struct {
-		Thread HistoryThread `json:"thread"`
-	}
-	if err = json.Unmarshal(raw, &started); err != nil {
-		return "", err
-	}
-	if !ValidNativeID(started.Thread.ID) {
-		return "", errors.New("Codex session lacks native identity")
-	}
-	_, err = c.call(ctx, "thread/inject_items", map[string]any{"threadId": started.Thread.ID, "items": []any{map[string]any{"type": "message", "role": "user", "content": []any{map[string]string{"type": "input_text", "text": instruction}}}}})
-	return started.Thread.ID, err
-}
-
-func ResumeCommand(command executionbackend.Command, sessionID string, args []string, prompt, cwd string) executionbackend.LaunchCommand {
-	argv := append(append([]string{}, command.Args...), "resume", "--include-non-interactive", sessionID)
-	argv = append(argv, args...)
-	if prompt != "" {
-		argv = append(argv, prompt)
-	}
-	return executionbackend.LaunchCommand{Executable: command.Executable, Args: argv, WorkingDirectory: cwd}
-}
-
 func ReaderCommand(command executionbackend.Command, profile string) executionbackend.Command {
 	command.Args = append([]string(nil), command.Args...)
 	if profile != "" {

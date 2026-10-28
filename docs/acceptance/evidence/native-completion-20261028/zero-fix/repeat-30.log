@@ -1,0 +1,692 @@
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.48s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.07s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.18s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.29s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.42s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.30s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.13s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.30s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.41s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.16s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.06s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.29s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.31s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.31s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.30s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.05s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.06s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.19s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.18s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.21s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.23s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.20s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.20s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.19s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.21s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.20s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.23s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.30s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.19s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.30s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.19s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.22s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.20s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.27s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	40.780s

@@ -3,6 +3,7 @@ package codexworker
 import (
 	"context"
 	"errors"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
@@ -21,6 +22,14 @@ type TurnParamsInput struct {
 }
 
 func TurnParams(ctx context.Context, input TurnParamsInput, linkedWorktreeArgs func(context.Context, string) ([]string, error)) (map[string]any, error) {
+	parts, budgetErr := input.TurnInput.ModelInputParts()
+	if budgetErr != nil {
+		return nil, budgetErr
+	}
+	_, budget, freezeErr := m.FreezeInput(parts...)
+	if freezeErr != nil {
+		return nil, freezeErr
+	}
 	if !nativeID.MatchString(input.ThreadID) || !executionbackend.StableExecutionID(input.CommandID) || input.Worktree == "" || input.Prompt == "" {
 		return nil, errors.New("Codex app-server turn lacks a fixed thread, command or input")
 	}
@@ -39,5 +48,5 @@ func TurnParams(ctx context.Context, input TurnParamsInput, linkedWorktreeArgs f
 	if input.TurnInput.Model != "" {
 		model, effort = input.TurnInput.Model, input.TurnInput.ReasoningEffort
 	}
-	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, model, effort, roots)
+	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, model, effort, roots, budget)
 }

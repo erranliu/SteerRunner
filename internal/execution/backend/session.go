@@ -1,5 +1,10 @@
 package backend
 
+import (
+	"fmt"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
+)
+
 type DecisionOption struct {
 	ID       string `json:"id"`
 	Label    string `json:"label"`
@@ -60,15 +65,27 @@ type SessionContext struct {
 // TurnInput identifies a fixed input operation; accepting it does not prove
 // that its native turn has started. The native session route is bound separately.
 type TurnInput struct {
-	StepID             string `json:"step_id,omitempty"`
-	InputVersion       uint64 `json:"input_version,omitempty"`
-	ReportToolPolicy   string `json:"report_tool_policy,omitempty"`
+	Budget             *m.InputBudget `json:"input_budget,omitempty"`
+	StepID             string         `json:"step_id,omitempty"`
+	InputVersion       uint64         `json:"input_version,omitempty"`
+	ReportToolPolicy   string         `json:"report_tool_policy,omitempty"`
 	CommandID          string
 	Prompt             string
 	Purpose            string
 	LinkedWorktreeArgs []string `json:"linked_worktree_args,omitempty"`
 	Model              string   `json:"model,omitempty"`
 	ReasoningEffort    string   `json:"reasoning_effort,omitempty"`
+}
+
+func (i TurnInput) ModelInputParts() ([]m.InputPart, error) {
+	if i.Budget != nil {
+		return m.InputParts(i.Prompt, i.Budget)
+	}
+	if i.InputVersion > 0 {
+		return nil, fmt.Errorf("frozen input provenance unavailable; candidate not sent")
+	}
+	// Direct SDK/terminal callers provide text without workflow additions.
+	return []m.InputPart{{Source: "caller.direct", Owner: m.CallerInput, Text: i.Prompt}}, nil
 }
 
 // Answer is the structured answer content for the original verified question.

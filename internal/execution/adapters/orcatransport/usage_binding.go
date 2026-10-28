@@ -23,7 +23,7 @@ var usageSessionID = regexp.MustCompile(`^[A-Za-z0-9_-]{1,256}$`)
 // that an initialization prompt was delivered.
 var usagePlainLaunch = regexp.MustCompile(`^& '(?:[^']|'')*'(?: '(?:[^']|'')*')*$`)
 
-const usageReadyPrompt = "Initialize this agent session. Reply READY only. Do not use tools or change files."
+const usageReadyPrompt = codex.BootstrapInstruction
 
 type UsageInitialization struct {
 	LaunchCommand string

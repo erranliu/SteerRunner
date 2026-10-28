@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"reflect"
@@ -19,6 +20,8 @@ import (
 )
 
 type Turn struct {
+	Budget           *m.InputBudget           `json:"input_budget,omitempty"`
+	WireBudget       *m.InputBudget           `json:"wire_budget,omitempty"`
 	Model            string                   `json:"model,omitempty"`
 	ReasoningEffort  string                   `json:"reasoning_effort,omitempty"`
 	StepID           string                   `json:"step_id,omitempty"`
@@ -115,6 +118,9 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
 		if p.Environment != "" {
 			all = append(all, "--environment", p.Environment)
+		}
+		if err := process.CheckCommandLine(p.Executable, all); err != nil {
+			return nil, err
 		}
 		invoke := func(ctx context.Context) ([]byte, error) {
 			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
@@ -456,7 +462,7 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 		return b.PreparationFacts{}, errors.New("workspace has no original agent terminal; do not create a replacement")
 	}
 	gate := b.GateRequired
-	if turnFor(&state, s.PendingTurn.CommandID) != nil {
+	if turn := turnFor(&state, s.PendingTurn.CommandID); turn != nil && (turn.Attempted || turn.WireBudget != nil) {
 		gate = b.GateReady
 	}
 	return b.PreparationFacts{Workspace: b.GateReady, Resource: resource, Session: gate}, nil
@@ -596,10 +602,21 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 	if input == nil || !b.StableExecutionID(input.CommandID) {
 		return receipt, errors.New("missing original worker input")
 	}
+	if input.Budget == nil && s.PendingTurn != nil && s.PendingTurn.CommandID == input.CommandID && s.PendingTurn.Prompt == input.Prompt {
+		copy := *input
+		copy.Budget = s.PendingTurn.Budget.Clone()
+		input = &copy
+	}
 	inputDigest := digest([]byte(input.Prompt))
 	if turn := turnFor(&state, input.CommandID); turn != nil {
 		if turn.InputDigest != inputDigest {
 			return receipt, errors.New("prepared worker input changed")
+		}
+		if !turn.Attempted && turn.WireBudget == nil {
+			turn.Budget = input.Budget.Clone()
+			if err := freezeWireInput(turn, input.InputVersion); err != nil {
+				return receipt, err
+			}
 		}
 	} else {
 		if l.profile.Terminal != nil {
@@ -609,7 +626,11 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 			if e := l.readTerminalReadiness(&state, true); e != nil {
 				return receipt, e
 			}
-			state.Turns = append(state.Turns, Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, WireFormat: extensionWireCommand, Native: NativeProof{Agent: s.Ref.Agent.Name}})
+			prepared := Turn{Budget: input.Budget.Clone(), Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, WireFormat: extensionWireCommand, Native: NativeProof{Agent: s.Ref.Agent.Name}}
+			if err := freezeWireInput(&prepared, input.InputVersion); err != nil {
+				return receipt, err
+			}
+			state.Turns = append(state.Turns, prepared)
 		} else {
 			defer l.closeStateFeed()
 			initial, readyErr := l.ready(ctx, s)
@@ -620,12 +641,15 @@ func (l *Lifecycle) prepareInput(ctx context.Context, r b.LifecycleRequest) (b.L
 				return receipt, errors.New("remote preparation native session changed")
 			}
 			baseline := nativeBaseline(initial, l.clock())
-			prepared := Turn{Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline, Model: input.Model, ReasoningEffort: input.ReasoningEffort, StepID: input.StepID}
+			prepared := Turn{Budget: input.Budget.Clone(), Command: input.CommandID, Prompt: input.Prompt, InputDigest: inputDigest, Native: baseline, Model: input.Model, ReasoningEffort: input.ReasoningEffort, StepID: input.StepID}
 			if l.profile.Environment == "" && state.RemoteReadiness != nil && state.RemoteReadiness.NativeTransport == codex.RemoteNativeTransport {
 				prepared.WireFormat = remoteWireCommand
 				if input.Model != "" {
 					prepared.WireFormat = remoteModelWireCommand
 				}
+			}
+			if err := freezeWireInput(&prepared, input.InputVersion); err != nil {
+				return receipt, err
 			}
 			state.Turns = append(state.Turns, prepared)
 		}
@@ -663,6 +687,29 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	}
 	if turn.Attempted {
 		return receipt, errors.New("original terminal input was already attempted; reconcile only")
+	}
+	// Budget metadata fences new dispatch, never existing observation/stop.
+	if turn.Budget != nil {
+		if _, err := m.InputParts(turn.Prompt, turn.Budget); err != nil {
+			return receipt, err
+		}
+	}
+	if _, err := input.ModelInputParts(); err != nil && input.Budget != nil {
+		return receipt, err
+	}
+	if turn.WireBudget == nil {
+		if input.Budget == nil && s.PendingTurn != nil && s.PendingTurn.CommandID == input.CommandID && s.PendingTurn.Prompt == input.Prompt {
+			copy := *input
+			copy.Budget = s.PendingTurn.Budget.Clone()
+			input = &copy
+		}
+		turn.Budget = input.Budget.Clone()
+		if err := freezeWireInput(turn, input.InputVersion); err != nil {
+			return receipt, err
+		}
+	}
+	if err := m.CheckInput(nativeWireText(turn), turn.WireBudget); err != nil {
+		return receipt, err
 	}
 	if l.profile.Terminal != nil {
 		if _, e := l.original(ctx, s); e != nil {

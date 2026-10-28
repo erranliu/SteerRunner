@@ -1,0 +1,25 @@
+=== RUN   TestEnvironmentCheckCompletionNotification
+--- PASS: TestEnvironmentCheckCompletionNotification (0.00s)
+=== RUN   TestEnvironmentCheckWriteGate
+--- PASS: TestEnvironmentCheckWriteGate (0.00s)
+=== RUN   TestEnvironmentCheckPermissionModes
+--- PASS: TestEnvironmentCheckPermissionModes (0.00s)
+=== RUN   TestInputSessionAggregateAndZeroOversizeSend
+    input_budget_test.go:19: worker plus ask description Runner=888
+--- PASS: TestInputSessionAggregateAndZeroOversizeSend (0.00s)
+=== RUN   TestInputTurnChecksFinalFrozenText
+--- PASS: TestInputTurnChecksFinalFrozenText (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	3.384s
+=== RUN   TestInputParserBudgetKeepsCompleteEvidence
+    input_budget_test.go:19: valid repaired audit parser Runner=628
+--- PASS: TestInputParserBudgetKeepsCompleteEvidence (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec	1.037s
+testing: warning: no tests to run
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp	0.956s [no tests to run]
+=== RUN   TestCommandLineTransportBound
+--- PASS: TestCommandLineTransportBound (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/process	0.832s

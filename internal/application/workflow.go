@@ -84,6 +84,7 @@ func compatibleWorkflow(current, frozen workflow.Profile, adapter string) bool {
 		// Default text is already frozen in the original definition/PromptBodies.
 		// Keep routing, contracts, permissions, model roles and budgets exact.
 		candidate.Prompt, original.Prompt = "", ""
+		candidate.ResultInstruction, original.ResultInstruction = "", ""
 		if !reflect.DeepEqual(candidate, original) {
 			return false
 		}

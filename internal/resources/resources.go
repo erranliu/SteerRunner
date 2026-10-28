@@ -11,8 +11,12 @@ import (
 	"sort"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	model "github.com/erranliu/SteerRunner/internal/execution/model"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
@@ -52,6 +56,8 @@ func resourceDigest(catalog CapabilityCatalog) string {
 	definition, _ := json.Marshal(workflow.Catalog())
 	digest.Write([]byte("compiled-workflow-definitions\x00"))
 	digest.Write(definition)
+	digest.Write([]byte("model-input-contract\x00"))
+	digest.Write(marshal(ModelInputContract()))
 	digest.Write([]byte("published-configuration\x00"))
 	digest.Write(ConfigurationSchemas())
 	digest.Write([]byte("capability-catalog\x00"))
@@ -68,6 +74,20 @@ func VersionInfo() any {
 	}
 }
 
+func ModelInputContract() any {
+	return map[string]any{
+		"contract":          model.InputContract,
+		"utf8_bytes":        map[string]int{"caller": model.CallerInputBytes, "runner": model.RunnerInputBytes, "total": model.TotalInputBytes},
+		"measurement":       "all new model-visible text in one native dispatch after framing/newline handling; no borrowing, truncation, summarization or automatic splitting; checked text is frozen and verified before send",
+		"caller":            "body override, instruction, inline materials, schema, answer, feedback; escaped data remains caller",
+		"runner":            "default body, labels/separators/newlines, dynamic facts/references, result format, completion, native model/header framing, developer and Runner tool descriptions, parser source text",
+		"tool_file_results": "not new input text unless copied into it; existing file channels only, references must resolve in execution workspace",
+		"workflow":          workflow.InputContract(), "native": codex.InputContract(), "terminal": orca.InputContract(),
+		"parser":    map[string]any{"boundary": parser.ParserBoundary, "format": parser.ParserFormat, "instruction": "original frozen parse state.prompt", "evidence": "complete JSON-encoded original final; unattempted oversized parser uses existing report fallback"},
+		"transport": map[string]any{"codex_websocket_max_bytes": 16 << 20, "windows_command_line_max_utf16_with_nul": 32767, "orca": "actual CLI argv protected independently; remote RPC envelope not exposed by CLI"},
+	}
+}
+
 func Capabilities() any {
 	// Repository generation shares generate/1 and the original content result.
 	parserSupported, parserReason := ra.ParserSupport()
@@ -76,6 +96,7 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
+		"model_input_contract":       ModelInputContract(),
 		"execution_wait":             map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
 		"run_observation":            map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
 		"recovery":                   RecoveryCapabilities(),

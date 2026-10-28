@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"io"
 	"time"
 )
@@ -79,10 +80,11 @@ type ParseEvidence struct {
 }
 
 type FeedbackInput struct {
-	DecisionID string  `json:"decision_id,omitempty"`
-	QuestionID string  `json:"question_id,omitempty"`
-	Message    string  `json:"message,omitempty"`
-	Answer     *Answer `json:"answer,omitempty"`
+	Budget     *m.InputBudget `json:"input_budget,omitempty"`
+	DecisionID string         `json:"decision_id,omitempty"`
+	QuestionID string         `json:"question_id,omitempty"`
+	Message    string         `json:"message,omitempty"`
+	Answer     *Answer        `json:"answer,omitempty"`
 }
 
 // ResourceIntent describes one generic resource creation. Purpose is a closed
@@ -197,6 +199,7 @@ func (input LifecycleInput) Clone() LifecycleInput {
 	}
 	if input.Turn != nil {
 		value := *input.Turn
+		value.Budget = value.Budget.Clone()
 		value.LinkedWorktreeArgs = append([]string(nil), value.LinkedWorktreeArgs...)
 		input.Turn = &value
 	}
@@ -206,6 +209,7 @@ func (input LifecycleInput) Clone() LifecycleInput {
 	}
 	if input.Feedback != nil {
 		value := *input.Feedback
+		value.Budget = value.Budget.Clone()
 		if value.Answer != nil {
 			answer := cloneAnswer(*value.Answer)
 			value.Answer = &answer
@@ -311,6 +315,7 @@ func (snapshot LifecycleSnapshot) Clone() LifecycleSnapshot {
 	snapshot.KnownQuestionIDs = append([]string(nil), snapshot.KnownQuestionIDs...)
 	if snapshot.PendingTurn != nil {
 		turn := *snapshot.PendingTurn
+		turn.Budget = turn.Budget.Clone()
 		turn.LinkedWorktreeArgs = append([]string(nil), turn.LinkedWorktreeArgs...)
 		snapshot.PendingTurn = &turn
 	}

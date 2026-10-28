@@ -1,0 +1,362 @@
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.63s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.70s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.05s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.07s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.30s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.63s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.61s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.61s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.62s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.58s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.29s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.58s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.58s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.59s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.58s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.60s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:244: REPRODUCED accepted=true started=false final=false input_queries=0 diagnostic=Original input has no verified start receipt or completed original input; no input was resent
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.58s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.28s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	21.060s

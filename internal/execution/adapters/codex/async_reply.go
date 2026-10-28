@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"io"
 	"os"
 
@@ -13,6 +14,9 @@ import (
 // SteerAsyncAnswer sends one saved input to the original active turn. A failed
 // precondition or uncertain receipt never falls back to starting another turn.
 func SteerAsyncAnswer(ctx context.Context, client *codexapp.Client, thread, workspace, turn, command, message string) error {
+	if _, _, err := m.FreezeInput(m.InputPart{Source: "caller.answer", Owner: m.CallerInput, Text: message}); err != nil {
+		return err
+	}
 	if err := ResumeThread(ctx, client, thread, workspace); err != nil {
 		return err
 	}

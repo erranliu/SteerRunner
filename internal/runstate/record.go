@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
@@ -72,6 +73,7 @@ type Record struct {
 	Snapshot            b.LifecycleSnapshot            `json:"snapshot"`
 	Profile             []b.ImplementationDataEnvelope `json:"profile"`
 	LaunchCommand       string                         `json:"launch_command,omitempty"`
+	LaunchInput         *m.InputBudget                 `json:"launch_input_budget,omitempty"`
 	Workflow            workflow.Snapshot              `json:"workflow"`
 	Intents             []operation.Intent             `json:"intents"`
 	Attempts            []Attempt                      `json:"attempts,omitempty"`

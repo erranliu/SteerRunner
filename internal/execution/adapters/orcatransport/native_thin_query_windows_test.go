@@ -23,12 +23,19 @@ func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prom
 		t.Fatal(err)
 	}
 	done := make(chan struct{})
+	stop := make(chan struct{})
 	go func() {
 		defer close(done)
 		for {
 			conn, err := listener.Accept()
 			if err != nil {
 				return
+			}
+			select {
+			case <-stop:
+				_ = conn.Close()
+				return
+			default:
 			}
 			func(conn net.Conn) {
 				defer conn.Close()
@@ -68,7 +75,27 @@ func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prom
 			}(conn)
 		}
 	}()
-	t.Cleanup(func() { _ = listener.Close(); <-done })
+	t.Cleanup(func() {
+		// Stop Accept before closing winio's listener. Repeated tests exposed
+		// an intermittent listener.Close/Accept shutdown hang on Windows.
+		close(stop)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		wake, err := winio.DialPipeContext(ctx, endpoint)
+		if err != nil {
+			t.Errorf("wake test RPC accept: %v", err)
+			return
+		}
+		// Keep the wake client open until Accept returns; an immediate close
+		// may be retried internally as ERROR_NO_DATA instead of waking it.
+		defer wake.Close()
+		select {
+		case <-done:
+			_ = listener.Close()
+		case <-ctx.Done():
+			t.Error("test RPC accept did not stop", ctx.Err())
+		}
+	})
 	dir := t.TempDir()
 	t.Setenv("ORCA_USER_DATA_PATH", dir)
 	data, _ := json.Marshal(map[string]any{"runtimeId": p.RuntimeID, "authToken": "test-secret", "transport": map[string]string{"kind": "named-pipe", "endpoint": endpoint}})

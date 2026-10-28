@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"slices"
 	"strings"
@@ -39,6 +40,14 @@ func (c *Config) Clone() *Config {
 	return &copy
 }
 func quote(text string) string { return "'" + strings.ReplaceAll(text, "'", "''") + "'" }
+
+func (c *Config) InitializationParts() []m.InputPart {
+	parts := []m.InputPart{{Source: "native.initialization", Owner: m.RunnerInput, Text: codex.NativeReadinessPrompt}}
+	if c != nil && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox") && gitHubRepository(c.RepositoryURL) {
+		parts = append(parts, m.InputPart{Source: "native.initialization", Owner: m.RunnerInput, Text: " " + codex.AuthenticationInstruction})
+	}
+	return parts
+}
 
 func (c *Config) Command(agent string) (string, error) {
 	if c == nil {
@@ -103,13 +112,16 @@ func (c *Config) Command(agent string) (string, error) {
 		args = append(args, "-c", "tui.animations=false")
 		// Establish the native session before transport waits for its identity.
 		// This readiness input authorizes no business work, tools or file changes.
-		args = append(args, codex.NativeReadinessPrompt)
+		text, _, err := m.FreezeInput(c.InitializationParts()...)
+		if err != nil {
+			return "", err
+		}
+		args = append(args, text)
 	}
 	parts := []string{"&", quote(c.Executable)}
 	linked := agent == "codex" && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox")
 	authentication := linked && gitHubRepository(c.RepositoryURL)
 	if authentication {
-		args[len(args)-1] += " Runtime authentication is already configured. Do not print environment variables, credential/config values, or authentication headers. Do not run login, change authentication, or repeat uncertain publication."
 		if !slices.Contains(args, "--no-daemon") {
 			parts = append(parts, quote("--no-daemon"))
 		}
@@ -117,6 +129,11 @@ func (c *Config) Command(agent string) (string, error) {
 	}
 	if linked {
 		parts = append(parts, "@srGitWriteArgs")
+	}
+	if agent == "codex" {
+		if _, _, err := m.FreezeInput(m.InputPart{Source: "native.initialization", Owner: m.RunnerInput, Text: args[len(args)-1]}); err != nil {
+			return "", err
+		}
 	}
 	for _, arg := range args {
 		parts = append(parts, quote(arg))

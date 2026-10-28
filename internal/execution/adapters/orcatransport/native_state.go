@@ -111,7 +111,7 @@ func nativeBaseline(s native.AgentState, now time.Time) NativeProof {
 }
 func trustedState(s native.AgentState) bool {
 	o := s.Observation
-	return s.AgentType != "" && s.MainAgent != nil && o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Revision > 0 && o.ObservedAt > 0
+	return s.AgentType != "" && s.MainAgent != nil && o.ValidHookTransition()
 }
 
 func (p NativeProof) agentName() string {
@@ -339,7 +339,7 @@ func (p NativeProof) recordedInputMatches(s native.AgentState, turn *Turn) bool 
 			(p.WorkingAt == 0 || p.RootWorkingAt > p.BaseRootAt && s.MainAgent.StateStartedAt > p.RootWorkingAt)
 	}
 	if p.Authority == "" || p.WorkingAt <= 0 || p.RootWorkingAt <= p.BaseRootAt ||
-		o == nil || o.Origin != "hook" || o.Kind != "transition" || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
+		!o.ValidHookTransition() || o.ObservedAt < s.MainAgent.StateStartedAt || o.AuthorityID != p.Authority || o.Incarnation != p.Incarnation || o.Revision < p.Revision || o.Revision <= p.BaseRevision {
 		return false
 	}
 	return s.MainAgent.State == "working" && s.MainAgent.StateStartedAt == p.RootWorkingAt ||

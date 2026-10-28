@@ -1,0 +1,1002 @@
+{
+  "publication_note": "Sanitized review copy. Original raw bytes are retained locally and are not changed or published.",
+  "original_sha256": "0c54cbd1872e209941d9846055722315756f03d9b8df58ad248ce68a97af3e6c",
+  "record": {
+    "scope": "test diagnostics and controlled reproduction only; no completion predicate changes",
+    "production_go_files_compared_to_probe01": 232,
+    "production_files_changed": [],
+    "original_stall_root_cause_proven": false,
+    "live_stall_reproduced_this_round": false,
+    "controlled_trigger": "accepted, no verified started receipt, full generation=0 done metadata, no alternate admissible source proof",
+    "probes": [
+      {
+        "directory": "probe01",
+        "classification": "harness assertion rejected existing observed-root proof; stopped after first task",
+        "test_binary_sha256": "dbc47a65e593fea8f31a492e46ab7388219fa277e65f0b3fb70dcd7cd406aebc",
+        "account_identifier_sha256": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+        "completed": false,
+        "cleaned_up": true,
+        "logical_inputs_verified_accepted": 1,
+        "paste_calls": 1,
+        "enter_calls": 1,
+        "launch": {
+          "access_mode": "full_access",
+          "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+          "args": [
+            "--no-daemon"
+          ],
+          "model": "gpt-6-luna",
+          "reasoning_effort": "xhigh"
+        },
+        "inputs": [
+          {
+            "index": 1,
+            "prepare_at": "2026-10-28T06:19:07.0451356Z",
+            "submit_at": "2026-10-28T06:19:07.6353093Z",
+            "submit_returned_at": "2026-10-28T06:19:12.7781233Z",
+            "completed_at": "2026-10-28T06:19:22.2843308Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "d563f487a6e0ee55fe8dba703fd9a7b9c6ea4e1560a04eab54dcacfd7d361158",
+              "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+              "caller_bytes": 227,
+              "runner_bytes": 0,
+              "total_bytes": 227,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 227
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_d6678541-2601-4f1d-af9f-f906941ee6db:66f85442-9602-4a9f-be3d-11d3659dec64",
+              "session_generation": "66f85442-9602-4a9f-be3d-11d3659dec64",
+              "turn_id": "e82032a91eafda5584687b7e42a0cdd3",
+              "input_accepted": true,
+              "turn_started": true
+            },
+            "final_verified": true
+          }
+        ],
+        "cli_calls": [
+          {
+            "file": "actual-cli-001.json",
+            "started": "2026-10-28T06:18:50.5071791Z",
+            "returned": "2026-10-28T06:18:51.9197567Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-002.json",
+            "started": "2026-10-28T06:18:51.9214163Z",
+            "returned": "2026-10-28T06:18:52.9299518Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 1132,
+            "stdout_bytes": 928,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-003.json",
+            "started": "2026-10-28T06:18:52.9310016Z",
+            "returned": "2026-10-28T06:18:54.2748929Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 191,
+            "stdout_bytes": 1254,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-004.json",
+            "started": "2026-10-28T06:19:08.3093629Z",
+            "returned": "2026-10-28T06:19:09.3206834Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-005.json",
+            "started": "2026-10-28T06:19:09.4053394Z",
+            "returned": "2026-10-28T06:19:12.7737189Z",
+            "text_transport_bytes": 227,
+            "windows_command_line_utf16_with_nul": 506,
+            "stdout_bytes": 859,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-006.json",
+            "started": "2026-10-28T06:19:23.2187212Z",
+            "returned": "2026-10-28T06:19:24.403803Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 192,
+            "stdout_bytes": 319,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-007.json",
+            "started": "2026-10-28T06:19:24.4048552Z",
+            "returned": "2026-10-28T06:19:25.2788261Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          }
+        ],
+        "query_projections": [
+          {
+            "sequence": 18,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:19:13.1566783Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 369,
+              "observedAt": 1793168352887,
+              "boundary": true
+            }
+          }
+        ],
+        "counter_note": "legacy paste_calls counts all --text calls; enter_calls includes both text+Enter and bare Enter",
+        "actual_bracketed_paste_calls": 0,
+        "actual_bare_enter_calls": 0
+      },
+      {
+        "directory": "probe02-multiline",
+        "classification": "second paste CLI connection failure; no second Enter or verified accepted input; no resend",
+        "test_binary_sha256": "2f73f35694f3cea23b9a2b6e920b5359be9c789e83b1d109314a09808aff67c0",
+        "account_identifier_sha256": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+        "completed": false,
+        "cleaned_up": true,
+        "logical_inputs_verified_accepted": 1,
+        "paste_calls": 2,
+        "enter_calls": 1,
+        "launch": {
+          "access_mode": "full_access",
+          "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+          "args": [
+            "--no-daemon"
+          ],
+          "model": "gpt-6-luna",
+          "reasoning_effort": "xhigh"
+        },
+        "inputs": [
+          {
+            "index": 1,
+            "prepare_at": "2026-10-28T06:25:03.3754903Z",
+            "submit_at": "2026-10-28T06:25:04.2054703Z",
+            "submit_returned_at": "2026-10-28T06:25:08.993032Z",
+            "completed_at": "2026-10-28T06:25:23.117133Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "42884387cba68bcd94e389120c81325afaffcbf226c0903fe0d7b1bbbab64cef",
+              "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+              "caller_bytes": 227,
+              "runner_bytes": 0,
+              "total_bytes": 227,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 227
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_fd2813a9-14fc-4eb1-b89f-00df8bd76b29:560926d5-c007-4031-9c42-1f647a41c6ce",
+              "session_generation": "560926d5-c007-4031-9c42-1f647a41c6ce",
+              "turn_id": "51d21ad19ee8c585c229f2e82624ee63",
+              "input_accepted": true,
+              "turn_started": true
+            },
+            "final_verified": true
+          },
+          {
+            "index": 2,
+            "prepare_at": "2026-10-28T06:25:24.0309577Z",
+            "submit_at": "2026-10-28T06:25:24.543214Z",
+            "submit_returned_at": "2026-10-28T06:25:40.9451532Z",
+            "completed_at": null,
+            "prepare_error": "",
+            "submit_error": "C:/Users/<redacted>/AppData/Local/Programs/orca/resources/bin/orca.exe failed: exit status 1 ()\nCould not connect to the remote Orca runtime at ws://<private-host>:6768: the host did not answer, so anything running on it is unverifiable.",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "d839ef327b64449253c89d4f7ce7de95bb080820034a13b1777f3703ca7168d4",
+              "provenance_sha256": "c3af529a839555987e76fe96ceef796ddaee844748dcb4e1b5e406f5877ce90a",
+              "caller_bytes": 144,
+              "runner_bytes": 0,
+              "total_bytes": 144,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 144
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_fd2813a9-14fc-4eb1-b89f-00df8bd76b29:560926d5-c007-4031-9c42-1f647a41c6ce",
+              "session_generation": "560926d5-c007-4031-9c42-1f647a41c6ce",
+              "turn_id": "49bd52ed7b114bb3d134986269643eaf"
+            },
+            "final_verified": false
+          }
+        ],
+        "cli_calls": [
+          {
+            "file": "actual-cli-001.json",
+            "started": "2026-10-28T06:24:42.5859352Z",
+            "returned": "2026-10-28T06:24:43.3507227Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-002.json",
+            "started": "2026-10-28T06:24:43.3517538Z",
+            "returned": "2026-10-28T06:24:44.4189566Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 1132,
+            "stdout_bytes": 928,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-003.json",
+            "started": "2026-10-28T06:24:44.4200231Z",
+            "returned": "2026-10-28T06:24:45.1487266Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 191,
+            "stdout_bytes": 1254,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-004.json",
+            "started": "2026-10-28T06:25:05.0571983Z",
+            "returned": "2026-10-28T06:25:05.8374317Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-005.json",
+            "started": "2026-10-28T06:25:05.9520872Z",
+            "returned": "2026-10-28T06:25:08.981072Z",
+            "text_transport_bytes": 227,
+            "windows_command_line_utf16_with_nul": 506,
+            "stdout_bytes": 859,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-006.json",
+            "started": "2026-10-28T06:25:25.4504811Z",
+            "returned": "2026-10-28T06:25:26.810081Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-007.json",
+            "started": "2026-10-28T06:25:26.9789043Z",
+            "returned": "2026-10-28T06:25:28.0804951Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4235,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-008.json",
+            "started": "2026-10-28T06:25:28.1721209Z",
+            "returned": "2026-10-28T06:25:40.9328137Z",
+            "text_transport_bytes": 156,
+            "windows_command_line_utf16_with_nul": 357,
+            "stdout_bytes": 292,
+            "exit_error": "C:/Users/<redacted>/AppData/Local/Programs/orca/resources/bin/orca.exe failed: exit status 1 ()",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-009.json",
+            "started": "2026-10-28T06:25:41.2811889Z",
+            "returned": "2026-10-28T06:25:42.0985545Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4235,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-010.json",
+            "started": "2026-10-28T06:25:42.1473733Z",
+            "returned": "2026-10-28T06:25:43.0656887Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4235,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-011.json",
+            "started": "2026-10-28T06:25:43.0672933Z",
+            "returned": "2026-10-28T06:25:44.4859021Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 192,
+            "stdout_bytes": 319,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-012.json",
+            "started": "2026-10-28T06:25:44.4874216Z",
+            "returned": "2026-10-28T06:25:45.6408798Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          }
+        ],
+        "query_projections": [
+          {
+            "sequence": 18,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:25:09.3047393Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 376,
+              "observedAt": 1793168709114,
+              "boundary": true
+            }
+          },
+          {
+            "sequence": 35,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:25:22.9240749Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          },
+          {
+            "sequence": 43,
+            "kind": "input.original_check",
+            "at": "2026-10-28T06:25:24.027535Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          }
+        ],
+        "counter_note": "legacy paste_calls counts all --text calls; enter_calls includes both text+Enter and bare Enter",
+        "actual_bracketed_paste_calls": 1,
+        "actual_bare_enter_calls": 0
+      },
+      {
+        "directory": "probe03-multiline",
+        "classification": "multiline second input completed through existing thin-metadata fenced original query",
+        "test_binary_sha256": "35bced9b35f97e229aaa1a5db732619d7633ddfd098d2f0f0991ea961e32e39d",
+        "account_identifier_sha256": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+        "completed": true,
+        "cleaned_up": true,
+        "logical_inputs_verified_accepted": 2,
+        "paste_calls": 2,
+        "enter_calls": 2,
+        "launch": {
+          "access_mode": "full_access",
+          "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+          "args": [
+            "--no-daemon"
+          ],
+          "model": "gpt-6-luna",
+          "reasoning_effort": "xhigh"
+        },
+        "inputs": [
+          {
+            "index": 1,
+            "prepare_at": "2026-10-28T06:29:36.8628307Z",
+            "submit_at": "2026-10-28T06:29:37.359914Z",
+            "submit_returned_at": "2026-10-28T06:29:42.2692225Z",
+            "completed_at": "2026-10-28T06:29:49.3131333Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "ca3e0aba453fff198f9e2f8cf551cf8542dd2186d57a60e80041434014397265",
+              "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+              "caller_bytes": 227,
+              "runner_bytes": 0,
+              "total_bytes": 227,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 227
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_b71c12d0-7df8-470b-8f2a-50d2d2e3e416:0b920af5-4c46-4e61-ac94-f295d7302179",
+              "session_generation": "0b920af5-4c46-4e61-ac94-f295d7302179",
+              "turn_id": "34d36263eb8839484c3989076ff9d875",
+              "input_accepted": true,
+              "turn_started": true
+            },
+            "final_verified": true
+          },
+          {
+            "index": 2,
+            "prepare_at": "2026-10-28T06:29:49.8008448Z",
+            "submit_at": "2026-10-28T06:29:50.2623262Z",
+            "submit_returned_at": "2026-10-28T06:29:58.0304065Z",
+            "completed_at": "2026-10-28T06:30:02.9768091Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "10f92e7700718fb9df8eec8759d88c9846c32103d6b2cc05e7d1ae6a9740b89e",
+              "provenance_sha256": "c3af529a839555987e76fe96ceef796ddaee844748dcb4e1b5e406f5877ce90a",
+              "caller_bytes": 144,
+              "runner_bytes": 0,
+              "total_bytes": 144,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 144
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_b71c12d0-7df8-470b-8f2a-50d2d2e3e416:0b920af5-4c46-4e61-ac94-f295d7302179",
+              "session_generation": "0b920af5-4c46-4e61-ac94-f295d7302179",
+              "turn_id": "5293ba316657dcb435d6efb62c3d4510",
+              "input_accepted": true
+            },
+            "final_verified": true
+          }
+        ],
+        "cli_calls": [
+          {
+            "file": "actual-cli-001.json",
+            "started": "2026-10-28T06:29:19.9516224Z",
+            "returned": "2026-10-28T06:29:20.6935771Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-002.json",
+            "started": "2026-10-28T06:29:20.6952841Z",
+            "returned": "2026-10-28T06:29:21.8103648Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 1132,
+            "stdout_bytes": 928,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-003.json",
+            "started": "2026-10-28T06:29:21.8114337Z",
+            "returned": "2026-10-28T06:29:22.6453783Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 191,
+            "stdout_bytes": 1254,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-004.json",
+            "started": "2026-10-28T06:29:37.9488403Z",
+            "returned": "2026-10-28T06:29:39.0806846Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-005.json",
+            "started": "2026-10-28T06:29:39.1710998Z",
+            "returned": "2026-10-28T06:29:42.2642382Z",
+            "text_transport_bytes": 227,
+            "windows_command_line_utf16_with_nul": 506,
+            "stdout_bytes": 859,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-006.json",
+            "started": "2026-10-28T06:29:50.8305841Z",
+            "returned": "2026-10-28T06:29:51.6566832Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-007.json",
+            "started": "2026-10-28T06:29:51.8301884Z",
+            "returned": "2026-10-28T06:29:53.0900096Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4245,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-008.json",
+            "started": "2026-10-28T06:29:53.1775293Z",
+            "returned": "2026-10-28T06:29:54.3012954Z",
+            "text_transport_bytes": 156,
+            "windows_command_line_utf16_with_nul": 357,
+            "stdout_bytes": 289,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-009.json",
+            "started": "2026-10-28T06:29:54.4803359Z",
+            "returned": "2026-10-28T06:29:55.3056505Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4276,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-010.json",
+            "started": "2026-10-28T06:29:55.6501982Z",
+            "returned": "2026-10-28T06:29:56.7374049Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 202,
+            "stdout_bytes": 4276,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-011.json",
+            "started": "2026-10-28T06:29:57.0689631Z",
+            "returned": "2026-10-28T06:29:57.9360337Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 199,
+            "stdout_bytes": 287,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-012.json",
+            "started": "2026-10-28T06:30:03.7628876Z",
+            "returned": "2026-10-28T06:30:04.9220352Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 192,
+            "stdout_bytes": 319,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-013.json",
+            "started": "2026-10-28T06:30:04.9243147Z",
+            "returned": "2026-10-28T06:30:06.0863121Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          }
+        ],
+        "query_projections": [
+          {
+            "sequence": 18,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:29:42.5676582Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 383,
+              "observedAt": 1793168982357,
+              "boundary": true
+            }
+          },
+          {
+            "sequence": 34,
+            "kind": "input.original_check",
+            "at": "2026-10-28T06:29:49.7981034Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 386,
+              "observedAt": 1793168989121
+            }
+          },
+          {
+            "sequence": 49,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:29:56.9686448Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 386,
+              "observedAt": 1793168989121
+            }
+          },
+          {
+            "sequence": 58,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:30:02.084159Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          },
+          {
+            "sequence": 61,
+            "kind": "query.input.end",
+            "at": "2026-10-28T06:30:02.7831755Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          },
+          {
+            "sequence": 70,
+            "kind": "input.original_check",
+            "at": "2026-10-28T06:30:03.7587431Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          }
+        ],
+        "counter_note": "legacy paste_calls counts all --text calls; enter_calls includes both text+Enter and bare Enter",
+        "actual_bracketed_paste_calls": 1,
+        "actual_bare_enter_calls": 1
+      },
+      {
+        "directory": "probe04-single-line",
+        "classification": "single-line second input completed through original started receipt and observed-root proof",
+        "test_binary_sha256": "4ca80eaabeb9f2f3c833356bf52374151afac94fccebb5fd7880667ede0b6ee3",
+        "account_identifier_sha256": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+        "completed": true,
+        "cleaned_up": true,
+        "logical_inputs_verified_accepted": 2,
+        "paste_calls": 2,
+        "enter_calls": 2,
+        "launch": {
+          "access_mode": "full_access",
+          "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+          "args": [
+            "--no-daemon"
+          ],
+          "model": "gpt-6-luna",
+          "reasoning_effort": "xhigh"
+        },
+        "inputs": [
+          {
+            "index": 1,
+            "prepare_at": "2026-10-28T06:36:25.1483826Z",
+            "submit_at": "2026-10-28T06:36:25.6297434Z",
+            "submit_returned_at": "2026-10-28T06:36:30.9476595Z",
+            "completed_at": "2026-10-28T06:36:41.7596714Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "27aa0a04e9afe0c5328697cc0f0b769ff64665e1d37826f821a33000d248354a",
+              "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+              "caller_bytes": 227,
+              "runner_bytes": 0,
+              "total_bytes": 227,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 227
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_5db9ba4a-97ea-415f-b1f0-89a20e58a6a6:072c781d-9cb1-4d24-83fb-fafa90600716",
+              "session_generation": "072c781d-9cb1-4d24-83fb-fafa90600716",
+              "turn_id": "590a948840ddfbde325ca740d8e1e9b7",
+              "input_accepted": true,
+              "turn_started": true
+            },
+            "final_verified": true
+          },
+          {
+            "index": 2,
+            "prepare_at": "2026-10-28T06:36:42.5068249Z",
+            "submit_at": "2026-10-28T06:36:43.0275485Z",
+            "submit_returned_at": "2026-10-28T06:36:47.8698313Z",
+            "completed_at": "2026-10-28T06:36:51.9957453Z",
+            "prepare_error": "",
+            "submit_error": "",
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "dcdec7e6e703b7c946d39502a5ffec73e644271d1d2f2bff7de8c6a0203c2fda",
+              "provenance_sha256": "c3af529a839555987e76fe96ceef796ddaee844748dcb4e1b5e406f5877ce90a",
+              "caller_bytes": 144,
+              "runner_bytes": 0,
+              "total_bytes": 144,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 144
+                }
+              ]
+            },
+            "submit_state": {
+              "worker_live": true,
+              "session_available": true,
+              "session_id": "orca-terminal:878c2e5f-9602-4f7c-85a9-5239a6116f1b:term_5db9ba4a-97ea-415f-b1f0-89a20e58a6a6:072c781d-9cb1-4d24-83fb-fafa90600716",
+              "session_generation": "072c781d-9cb1-4d24-83fb-fafa90600716",
+              "turn_id": "d110b5f628f0aaaef2221e648453a86c",
+              "input_accepted": true,
+              "turn_started": true
+            },
+            "final_verified": true
+          }
+        ],
+        "cli_calls": [
+          {
+            "file": "actual-cli-001.json",
+            "started": "2026-10-28T06:36:09.2697001Z",
+            "returned": "2026-10-28T06:36:10.3426351Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-002.json",
+            "started": "2026-10-28T06:36:10.3436669Z",
+            "returned": "2026-10-28T06:36:11.4142526Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 1132,
+            "stdout_bytes": 928,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-003.json",
+            "started": "2026-10-28T06:36:11.4149056Z",
+            "returned": "2026-10-28T06:36:12.2168563Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 191,
+            "stdout_bytes": 1254,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-004.json",
+            "started": "2026-10-28T06:36:26.2277443Z",
+            "returned": "2026-10-28T06:36:27.0243143Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-005.json",
+            "started": "2026-10-28T06:36:27.0976226Z",
+            "returned": "2026-10-28T06:36:30.9430293Z",
+            "text_transport_bytes": 227,
+            "windows_command_line_utf16_with_nul": 506,
+            "stdout_bytes": 859,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-006.json",
+            "started": "2026-10-28T06:36:43.670205Z",
+            "returned": "2026-10-28T06:36:44.7025685Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 225,
+            "stdout_bytes": 345,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-007.json",
+            "started": "2026-10-28T06:36:44.8167861Z",
+            "returned": "2026-10-28T06:36:47.8646765Z",
+            "text_transport_bytes": 144,
+            "windows_command_line_utf16_with_nul": 423,
+            "stdout_bytes": 859,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-008.json",
+            "started": "2026-10-28T06:36:52.5388953Z",
+            "returned": "2026-10-28T06:36:53.6271878Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 192,
+            "stdout_bytes": 319,
+            "exit_error": "",
+            "context_error": ""
+          },
+          {
+            "file": "actual-cli-009.json",
+            "started": "2026-10-28T06:36:53.6282571Z",
+            "returned": "2026-10-28T06:36:54.3727808Z",
+            "text_transport_bytes": 0,
+            "windows_command_line_utf16_with_nul": 275,
+            "stdout_bytes": 349,
+            "exit_error": "",
+            "context_error": ""
+          }
+        ],
+        "query_projections": [
+          {
+            "sequence": 18,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:36:31.2945009Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 392,
+              "observedAt": 1793169391045,
+              "boundary": true
+            }
+          },
+          {
+            "sequence": 32,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:36:41.4574247Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          },
+          {
+            "sequence": 40,
+            "kind": "input.original_check",
+            "at": "2026-10-28T06:36:42.5034981Z",
+            "thin": true,
+            "can_query_completion_input": true,
+            "metadata_observation": null
+          },
+          {
+            "sequence": 57,
+            "kind": "query.native.end",
+            "at": "2026-10-28T06:36:48.1764931Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 396,
+              "observedAt": 1793169407970,
+              "boundary": true
+            }
+          },
+          {
+            "sequence": 70,
+            "kind": "input.original_check",
+            "at": "2026-10-28T06:36:52.5354623Z",
+            "thin": false,
+            "can_query_completion_input": false,
+            "metadata_observation": {
+              "origin": "hook",
+              "kind": "transition",
+              "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+              "incarnation": 0,
+              "revision": 397,
+              "observedAt": 1793169410793
+            }
+          }
+        ],
+        "counter_note": "legacy paste_calls counts all --text calls; enter_calls includes both text+Enter and bare Enter",
+        "actual_bracketed_paste_calls": 0,
+        "actual_bare_enter_calls": 0
+      }
+    ],
+    "all_account_digests_match_original": true,
+    "stable_regression": {
+      "log": "stable-captured-final-30.log",
+      "passed": true,
+      "per_case_pass_counts": {
+        "zero-incarnation": 30,
+        "zero-incarnation-started": 30,
+        "multiline-zero-incarnation": 30,
+        "multiline-generation-one": 30
+      }
+    },
+    "cleanup": [
+      {
+        "index": "01",
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "index": "02",
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "index": "03",
+        "removed": true,
+        "after_error": "selector_not_found"
+      },
+      {
+        "index": "04",
+        "removed": true,
+        "after_error": "selector_not_found"
+      }
+    ],
+    "final_test_sources_sha256": {
+      "internal/execution/adapters/orcatransport/short_input_trace_test.go": "48f0873c6960e3cf0d90aec91bbd83b6442763b1f83bbb546fd228e4d46fc1da",
+      "internal/execution/adapters/orcatransport/short_input_live_probe_test.go": "aa3143eb00cfe2bda7cf36d2722f75a353d76ad85ee04ed82bc054d75c683a0c",
+      "internal/execution/adapters/orcatransport/native_start_windows_test.go": "edcb8e6dce4f19de683d17a83b7ef4f5af1da84afbe3d030a65ac43bc5cbb0d0",
+      "internal/execution/adapters/orcatransport/native_thin_query_windows_test.go": "d1be41c1a5513e66ada13dd38f3dff92ad9d3cbcd802b9057dd1af1c667e8337",
+      "internal/execution/adapters/orcatransport/testdata/completion-zero-incarnation.json": "a5d496896e579f3430e6e9f041eaa69461095d9593669726a5cccefcb786f259"
+    },
+    "full_adapter_regression": {
+      "passed": true,
+      "duration_seconds": 93.561,
+      "log": "adapter-regression-final.log",
+      "real_probe_switches_enabled": false
+    }
+  }
+}

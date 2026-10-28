@@ -4,6 +4,8 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| Runner 输入契约与字节预算 | [预算及提示词收敛](workflow-input-budget.md)：受控测试与软目标取舍；原配置新现场的后续 144B 输入公开接受，但 Runner 完成确认超时，原投递缺陷未宣称修复 |
+| 后续输入完成确认 | [原生状态与 observer 诊断及合法零值修复](native-completion-confirmation.md)：保留修复前证据；270 次受控断言及一次真实完整零值恢复路径通过，原输入/完成归属要求保留，原失败未追认 |
 | 双 skill 薄壳与独立 Viewer | [专项验收](skill-shell.md)：原 ID 调用、只读 JSON、刷新/过期、独立安装、本机 / 一个 Orca environment 的真实 PR 与停止范围 |
 | 当前公开读取与受理边界 | [完整绑定及原子 observe](reliability-simplification.md) |
 | Run token 与独立费用 | [用量、归属去重及授权撤销](run-usage-and-cost.md)；本机三组合、远端 Codex 的主会话现场单列，远端 Pi/DSH 生产绑定仍不支持 |

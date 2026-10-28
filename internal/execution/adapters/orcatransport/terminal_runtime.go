@@ -17,6 +17,7 @@ import (
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -99,6 +100,18 @@ func TerminalExtensionDigest() string {
 // RunTerminalAgent keeps the original TUI on Orca's stdio. Only native tools use
 // the sandbox CLI; this path never starts a Codex model/server or a Pi SDK agent.
 func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
+	var inputParts []m.InputPart
+	var inputBudget *m.InputBudget
+	if c.Agent == "dsh" {
+		parts, err := terminalDescriptionParts()
+		if err != nil {
+			return err
+		}
+		if _, inputBudget, err = m.FreezeInput(parts...); err != nil {
+			return err
+		}
+		inputParts = parts
+	}
 	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "sandbox" && c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !filepath.IsAbs(c.AuthenticationState) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
 		return errors.New("native terminal frozen launch configuration invalid")
 	}
@@ -225,6 +238,9 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		}
 	}
 	config := map[string]any{"version": 1, "run_id": c.ExecutionID, "session_id": c.SessionID, "cwd": working, "directory": c.StateDirectory, "tool_host": self, "tool_policy": policy, "auth_probe": auth.Probe, "authentication_expires_at": auth.ExpiresAt, "extension_bundle_sha256": TerminalExtensionDigest(), "reasoning_effort": c.ReasoningEffort, "model": c.Model}
+	if inputBudget != nil {
+		config["runner_input_budget"], config["runner_input_parts"] = inputBudget, inputParts
+	}
 	if c.Agent == "dsh" {
 		config["dsh_tools_module"] = filepath.Join(moduleRoot, "@deepseek-ai", "dsh-tools", "lib", "index.js")
 		config["dsh_llm_module"] = filepath.Join(moduleRoot, "@deepseek-ai", "dsh-llm", "lib", "index.js")

@@ -1,6 +1,9 @@
 package workflow
 
-import "encoding/json"
+import (
+	"encoding/json"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
+)
 
 const DevelopmentFlow = "development/2"
 
@@ -21,6 +24,7 @@ const (
 // StageInput is the frozen business binding of a native input. Native transport
 // purpose remains business/readiness; it is not the business step identifier.
 type StageInput struct {
+	Budget                 *m.InputBudget  `json:"input_budget,omitempty"`
 	FeedbackDecisionID     string          `json:"feedback_decision_id,omitempty"`
 	CommandID              string          `json:"command_id"`
 	AttemptID              string          `json:"attempt_id"`

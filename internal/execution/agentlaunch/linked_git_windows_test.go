@@ -86,7 +86,7 @@ func TestLinkedGitLaunchUsesVerifiedExecutionHostRoots(t *testing.T) {
 		}
 	}
 	want := []string{filepath.Join(common, "objects"), filepath.Join(common, "refs"), filepath.Join(common, "logs"), filepath.Clean(admin)}
-	if !reflect.DeepEqual(roots, want) || !strings.HasPrefix(args[len(args)-1], codex.NativeReadinessPrompt) || !strings.Contains(args[len(args)-1], "Do not print environment") {
+	if !reflect.DeepEqual(roots, want) || !strings.HasPrefix(args[len(args)-1], codex.NativeReadinessPrompt) || !strings.Contains(args[len(args)-1], codex.AuthenticationInstruction) {
 		t.Fatal("linked roots or initialization input changed", args)
 	}
 	var auth struct {

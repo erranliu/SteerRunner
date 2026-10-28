@@ -1,0 +1,283 @@
+{
+  "scope": "Runner explicit initial zero handling; historical unknown failures remain unchanged",
+  "controlled": {
+    "directed_log": "directed.log",
+    "full_packages_log": "controlled-packages.log",
+    "protocol_seconds": 26.7,
+    "adapter_seconds": 95.618,
+    "repeat": {
+      "case_count": 9,
+      "asserted_scenarios": 270,
+      "per_case": {
+        "zero-incarnation": 30,
+        "zero-incarnation-restored": 30,
+        "zero-incarnation-started": 30,
+        "multiline-zero-incarnation": 30,
+        "multiline-generation-one": 30,
+        "missing-incarnation": 30,
+        "null-incarnation": 30,
+        "multiline-missing-incarnation": 30,
+        "multiline-null-incarnation": 30
+      }
+    }
+  },
+  "real_probe": {
+    "test_exit": 0,
+    "test_seconds": 47.87,
+    "completed": true,
+    "cleaned_up": true,
+    "logical_inputs": 2,
+    "test_binary_sha256": "34900ebac1938b65e0518c9197c0c457fca5adf4edc365c5d10b0ac44508d6bd",
+    "source_go_files": 415,
+    "changed_since_freeze": [],
+    "account_identifier_sha256": "9d2f4b224dacf9a46e64bd3e5be216a069f68a39aaddbf90cb196cf74632c992",
+    "account_matches_original": true,
+    "launch": {
+      "access_mode": "full_access",
+      "executable": "C:/sr-task18-unity-sdk-env/20261026-1210/task18-unity-sdk-environment-launcher.exe",
+      "args": [
+        "--no-daemon"
+      ],
+      "model": "gpt-6-luna",
+      "reasoning_effort": "xhigh"
+    },
+    "second_original_started_receipt": false,
+    "zero_path": {
+      "submit_sequence": 54,
+      "query_begin_sequence": 67,
+      "query_end_sequence": 68,
+      "final_sequence": 76,
+      "metadata": {
+        "origin": "hook",
+        "kind": "transition",
+        "authorityId": "main-agent-hooks:7947a2f4-f938-4c47-a1d0-973d80605f4b",
+        "revision": 406,
+        "observedAt": 1793173829626,
+        "incarnation": 0
+      },
+      "thin_metadata": false,
+      "query_allowed": true,
+      "same_canonical_state_before_after": true,
+      "matches_original_query": true,
+      "matches_original_process": true,
+      "recovered_input_sha256": "3752ba9e5b54d0d9afeb8c402ae7bfa2318798058de3758a5691228941ef7651",
+      "input_matches_frozen_wire": true,
+      "baseline": 1793173816682,
+      "final_verified": true
+    },
+    "second_new_user_rows": 1,
+    "second_new_tool_blocks": 0,
+    "inputs": [
+      {
+        "index": 1,
+        "wire_budget": {
+          "contract": "steerrunner-model-input/v1",
+          "sha256": "846cc8b35415586b061a5c382145ac1041a9522725cdf0788fab11bb0bfd9e7f",
+          "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+          "caller_bytes": 227,
+          "runner_bytes": 0,
+          "total_bytes": 227,
+          "fragments": [
+            {
+              "source": "caller.direct",
+              "owner": "caller",
+              "bytes": 227
+            }
+          ]
+        },
+        "submit_at": "2026-10-28T07:50:05.0729556Z",
+        "submit_returned_at": "2026-10-28T07:50:09.5091263Z",
+        "completed_at": "2026-10-28T07:50:17.7658378Z",
+        "final_verified": true
+      },
+      {
+        "index": 2,
+        "wire_budget": {
+          "contract": "steerrunner-model-input/v1",
+          "sha256": "3752ba9e5b54d0d9afeb8c402ae7bfa2318798058de3758a5691228941ef7651",
+          "provenance_sha256": "c3af529a839555987e76fe96ceef796ddaee844748dcb4e1b5e406f5877ce90a",
+          "caller_bytes": 144,
+          "runner_bytes": 0,
+          "total_bytes": 144,
+          "fragments": [
+            {
+              "source": "caller.direct",
+              "owner": "caller",
+              "bytes": 144
+            }
+          ]
+        },
+        "submit_at": "2026-10-28T07:50:19.6642484Z",
+        "submit_returned_at": "2026-10-28T07:50:26.2360303Z",
+        "completed_at": "2026-10-28T07:50:31.4616523Z",
+        "final_verified": true
+      }
+    ],
+    "cli_calls": [
+      {
+        "file": "actual-cli-001.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:49:46.1543762Z",
+        "returned": "2026-10-28T07:49:47.0699731Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 275,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-002.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:49:47.071601Z",
+        "returned": "2026-10-28T07:49:48.1205832Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 1132,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-003.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:49:48.1211266Z",
+        "returned": "2026-10-28T07:49:48.9543423Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 191,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-004.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:05.6917757Z",
+        "returned": "2026-10-28T07:50:06.4271197Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 225,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-005.json",
+        "has_text": true,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:06.5107579Z",
+        "returned": "2026-10-28T07:50:09.5031298Z",
+        "text_transport_bytes": 227,
+        "windows_command_line_utf16_with_nul": 506,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-006.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:20.307262Z",
+        "returned": "2026-10-28T07:50:21.0275407Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 225,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-007.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:21.2068546Z",
+        "returned": "2026-10-28T07:50:22.0533091Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 202,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-008.json",
+        "has_text": true,
+        "bracketed_paste": true,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:22.161904Z",
+        "returned": "2026-10-28T07:50:22.9377126Z",
+        "text_transport_bytes": 156,
+        "windows_command_line_utf16_with_nul": 357,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-009.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:23.1123098Z",
+        "returned": "2026-10-28T07:50:23.8876814Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 202,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-010.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:24.2278547Z",
+        "returned": "2026-10-28T07:50:24.9711003Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 202,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-011.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": true,
+        "started": "2026-10-28T07:50:25.3234786Z",
+        "returned": "2026-10-28T07:50:26.1501926Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 199,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-012.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:32.192787Z",
+        "returned": "2026-10-28T07:50:33.1503089Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 192,
+        "exit_error": "",
+        "context_error": ""
+      },
+      {
+        "file": "actual-cli-013.json",
+        "has_text": false,
+        "bracketed_paste": false,
+        "bare_enter": false,
+        "started": "2026-10-28T07:50:33.1514664Z",
+        "returned": "2026-10-28T07:50:33.9780857Z",
+        "text_transport_bytes": 0,
+        "windows_command_line_utf16_with_nul": 275,
+        "exit_error": "",
+        "context_error": ""
+      }
+    ]
+  },
+  "cleanup": {
+    "removed": true,
+    "after": "selector_not_found"
+  },
+  "original_failure_replayed": false,
+  "original_failure_reclassified": false,
+  "business_chain_run": false,
+  "pr_created": false
+}

@@ -1,0 +1,99 @@
+{
+  "publication_note": "Sanitized review copy. Original raw bytes are retained locally and are not changed or published.",
+  "original_sha256": "a83e16946ffc4af405c00034fcf893535e68df0af8d8a748d8ed23b924822b3b",
+  "record": {
+    "checked_at": "2026-10-28T07:36:55.310Z",
+    "app_version": "1.4.242",
+    "scope": "Direct execution of installed pure sequencer/codec only; no Orca runtime calls or model input",
+    "first": {
+      "origin": "hook",
+      "authorityId": "contract-check",
+      "incarnation": 0,
+      "revision": 1,
+      "observedAt": 1000,
+      "kind": "transition"
+    },
+    "second": {
+      "origin": "hook",
+      "authorityId": "contract-check",
+      "incarnation": 0,
+      "revision": 2,
+      "observedAt": 1000,
+      "kind": "transition"
+    },
+    "rebound": {
+      "origin": "hook",
+      "authorityId": "contract-check",
+      "incarnation": 1,
+      "revision": 3,
+      "observedAt": 1000,
+      "kind": "transition"
+    },
+    "fresh": {
+      "origin": "hook",
+      "authorityId": "other-authority",
+      "incarnation": 0,
+      "revision": 1,
+      "observedAt": 1000,
+      "kind": "transition"
+    },
+    "codec_cases": {
+      "zero": {
+        "accepted": true,
+        "observation": {
+          "origin": "hook",
+          "authorityId": "contract-check",
+          "incarnation": 0,
+          "revision": 1,
+          "observedAt": 1000,
+          "kind": "transition"
+        }
+      },
+      "positive": {
+        "accepted": true,
+        "observation": {
+          "origin": "hook",
+          "authorityId": "contract-check",
+          "incarnation": 1,
+          "revision": 1,
+          "observedAt": 1000,
+          "kind": "transition"
+        }
+      },
+      "negative": {
+        "accepted": false,
+        "observation": null
+      },
+      "fraction": {
+        "accepted": false,
+        "observation": null
+      },
+      "string": {
+        "accepted": false,
+        "observation": null
+      },
+      "null": {
+        "accepted": false,
+        "observation": null
+      },
+      "missing": {
+        "accepted": false
+      },
+      "no_observation": {
+        "accepted": true,
+        "has_observation": false
+      }
+    },
+    "source_files": {
+      "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-status-observation.js": {
+        "sha256": "899729f8a1740eb37a27b62fe3eacdcc3808079ac14e7c1bbbec53f16d582844"
+      },
+      "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-status-store-status-codec.js": {
+        "sha256": "bca4b266927e56dac98a66107ec1af90ec4543d984d03d2f50a598837843f054"
+      },
+      "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\main\\chunks\\orcad-migration-source-retention-C8UK6eLo.js": {
+        "sha256": "52ac67275cd7374ab00804ba12a38ae911dd1d586fba41f2cb80e8183afc0eb9"
+      }
+    }
+  }
+}

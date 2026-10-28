@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 )
 
 func AppServerLaunch(executable string, args []string, profile, endpoint string) (executionbackend.LaunchCommand, error) {
@@ -49,7 +50,16 @@ func WritableRoots(args []string) ([]string, error) {
 	return roots, nil
 }
 
-func TurnStartParams(worktree, threadID, commandID, prompt, sandbox, model, effort string, writableRoots []string) (map[string]any, error) {
+func TurnStartParams(worktree, threadID, commandID, prompt, sandbox, model, effort string, writableRoots []string, budgets ...*m.InputBudget) (map[string]any, error) {
+	if len(budgets) > 0 {
+		if err := m.CheckInput(prompt, budgets[0]); err != nil {
+			return nil, err
+		}
+	} else {
+		if _, _, err := m.FreezeInput(m.InputPart{Source: "native.bootstrap", Owner: m.RunnerInput, Text: prompt}); err != nil {
+			return nil, err
+		}
+	}
 	if worktree == "" || threadID == "" || commandID == "" || prompt == "" {
 		return nil, errors.New("Codex app-server turn lacks a fixed thread, command or input")
 	}

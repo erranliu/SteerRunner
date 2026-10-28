@@ -10,7 +10,7 @@ import (
 )
 
 func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T) {
-	for _, fault := range []string{"none", "preview", "changed-preview", "incarnation", "workspace", "branch", "provider", "path", "main-time", "body", "authority", "revision", "marker", "missing-marker", "missing-observation", "partial-observation", "mismatched-main", "boundary", "restored", "tool-output", "duplicate", "same-text-duplicate", "shortened-user"} {
+	for _, fault := range []string{"none", "positive-incarnation", "preview", "changed-preview", "incarnation", "observation-incarnation", "observation-incarnation-backward", "workspace", "branch", "provider", "path", "main-time", "body", "authority", "revision", "revision-backward", "marker", "missing-marker", "missing-observation", "partial-observation", "missing-incarnation", "null-incarnation", "negative-incarnation", "unsafe-incarnation", "mismatched-main", "boundary", "restored", "tool-output", "duplicate", "same-text-duplicate", "shortened-user"} {
 		t.Run(fault, func(t *testing.T) {
 			reads, shows := 0, 0
 			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
@@ -20,7 +20,10 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				if fault == "preview" || fault == "changed-preview" {
 					state["prompt"] = "original full input"
 				}
-				observation := map[string]any{"origin": "hook", "kind": "transition", "authorityId": "authority", "incarnation": 1, "revision": 2, "observedAt": 20}
+				observation := map[string]any{"origin": "hook", "kind": "transition", "authorityId": "authority", "incarnation": 0, "revision": 2, "observedAt": 20}
+				if fault == "positive-incarnation" || fault == "observation-incarnation-backward" {
+					observation["incarnation"] = 1
+				}
 				marker := int64(12)
 				if reads > 0 {
 					switch fault {
@@ -39,6 +42,12 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 						observation["authorityId"] = "other"
 					case "revision":
 						observation["revision"] = 3
+					case "revision-backward":
+						observation["revision"] = 1
+					case "observation-incarnation":
+						observation["incarnation"] = 1
+					case "observation-incarnation-backward":
+						observation["incarnation"] = 0
 					case "marker":
 						marker = 13
 						state["turnStartedAt"] = 13
@@ -87,6 +96,14 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 						delete(metadata, "observation")
 					case "partial-observation":
 						metadata["observation"] = map[string]any{"authorityId": "authority"}
+					case "missing-incarnation":
+						delete(observation, "incarnation")
+					case "null-incarnation":
+						observation["incarnation"] = nil
+					case "negative-incarnation":
+						observation["incarnation"] = -1
+					case "unsafe-incarnation":
+						observation["incarnation"] = int64(1 << 53)
 					case "mismatched-main":
 						metadata["mainAgent"] = map[string]any{"state": "done", "stateStartedAt": 19}
 					case "boundary":
@@ -107,7 +124,7 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				t.Fatal(err)
 			}
 			after, err := QueryOriginalInput(context.Background(), "", p, "tab:leaf", 10, before)
-			if fault != "none" && fault != "preview" {
+			if fault != "none" && fault != "preview" && fault != "positive-incarnation" {
 				if err == nil && after.NativeInput.MatchesOriginalQuery(after) {
 					t.Fatal("unverified record acquired completion query proof", fault)
 				}
