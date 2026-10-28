@@ -108,7 +108,7 @@ def audit(root):
         row["valid_publication_sample"] = source["root"] in effective_roots
         if new_scope:
             first_complete = any(v["CommandID"] == inputs[0]["command_id"] and v["FinalVerified"] and v["Succeeded"] for v in record["workflow"].get("StageResults") or []) if inputs else False
-            observed_valid = first_complete and tool_output and len(pubs) == 1 and effects.get(pubs[0]["command_id"], []).count("paste") == 1
+            observed_valid = first_complete and tool_output and [v["step_id"] for v in inputs] == ["implement.execute", "publish.execute"] and len(pubs) == 1 and effects.get(pubs[0]["command_id"], []).count("paste") == 1
             assert observed_valid == row["valid_publication_sample"] == source["valid_publication_sample"]
             row["first_task_canonical_verified"] = first_complete
             viewport = collections.defaultdict(list)

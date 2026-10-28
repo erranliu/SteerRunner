@@ -153,6 +153,8 @@ class Case:
                 save(self.root/"latest-run.json", view)
                 if any(op["status"] == "outcome_unknown" for op in view.get("operations", [])):
                     raise RuntimeError("unknown original operation; no resend or Enter")
+                if view["step"] == "implement.report":
+                    raise RuntimeError("first-task contract insufficient; extra report input is outside the controlled two-task pair")
                 if view["step"].startswith("publish") and view["status"] in ("waiting_input", "blocked"):
                     raw = self.stored("active-run-record.json")
                     inputs = raw["workflow"]["StageInputs"]

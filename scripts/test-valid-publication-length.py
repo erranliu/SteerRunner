@@ -45,12 +45,13 @@ def classify(case, row):
     for values in effects.values():
         if values.count("paste") > 1 or values.count("enter") > 1:
             raise RuntimeError("original input effect repeated")
-    valid = complete_first and tool_output and len(pubs) == 1 and effects.get(pubs[0]["command_id"], []).count("paste") == 1
+    direct_pair = [v["step_id"] for v in stages] == ["implement.execute", "publish.execute"]
+    valid = complete_first and tool_output and direct_pair and len(pubs) == 1 and effects.get(pubs[0]["command_id"], []).count("paste") == 1
     if first:
         text = formal.native_text(first["prompt"])
         if len(text) != 833 or hashlib.sha256(text.encode()).hexdigest() != "ddbdf515b767483e34347e17abf27d7b046856d2c6d2188f3517bfabf5ef53de":
             raise RuntimeError("original frozen 833-character first input changed")
-    result = dict(row, first_task_canonical_verified=complete_first, first_real_tool_output_observed=tool_output,
+    result = dict(row, first_task_canonical_verified=complete_first, first_real_tool_output_observed=tool_output, direct_two_task_pair=direct_pair,
                   valid_publication_sample=valid, effects=effects)
     formal.save(case.root/"effective-sample.json", result)
     return result
