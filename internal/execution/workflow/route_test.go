@@ -183,7 +183,7 @@ func TestRASourcesReportUsesOriginalContext(t *testing.T) {
 	}
 	w.StageResults = []StageResult{{CommandID: i.CommandID, AttemptID: i.AttemptID, StepID: i.StepID, InputVersion: i.Version, TurnID: r.TurnID, Succeeded: true, FinalVerified: true, Final: r.Content}}
 	prompt, err := RenderInput(w, *n.Next)
-	if err != nil || len(prompt) > 12000 || !strings.Contains(prompt, i.CommandID) || !strings.Contains(prompt, ra.Digest([]byte(r.Content))) || strings.Contains(prompt, "existing result output") {
+	if err != nil || len(prompt) > 1000 || !strings.Contains(prompt, i.CommandID) || strings.Contains(prompt, "existing result output") || n.Acquired.Source.FinalDigest != ra.Digest([]byte(r.Content)) {
 		t.Fatal("report duplicated execution output instead of binding original context", err)
 	}
 	if w.StageResults[0].Final != r.Content {

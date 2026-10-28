@@ -1,0 +1,15 @@
+{
+  "remote_app_version": "1.4.242",
+  "remote_runtime_id": "878c2e5f-9602-4f7c-85a9-5239a6116f1b",
+  "local_inspected_app_version": "1.4.242",
+  "same_release_version": true,
+  "remote_package_byte_identity_claimed": false,
+  "zero_is_valid_initial_incarnation": true,
+  "codec_explicit_zero_accepted": true,
+  "codec_missing_or_null_accepted": false,
+  "production_files_compared_to_probe01": 232,
+  "production_files_changed": [],
+  "new_terminal_or_model_input_created": false,
+  "fix_implemented": false,
+  "original_real_stall_cause_proven": false
+}

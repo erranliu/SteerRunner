@@ -8,7 +8,6 @@ import (
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
-	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -32,8 +31,11 @@ func TestOrcaWorkspaceStartupLive(t *testing.T) {
 		t.Fatal(err)
 	}
 	raw, err := os.ReadFile(filepath.Join(root, "manifest.json"))
-	var fixture livetest.Manifest
-	if err != nil || contracts.DecodeStrict(raw, &fixture) != nil || fixture.Validate() != nil || fixture.Execution.Adapter != "orca-terminal" {
+	var fixture struct {
+		Execution      contracts.Execution `json:"execution"`
+		RepositoryPath string              `json:"repository_path"`
+	}
+	if err != nil || json.Unmarshal(raw, &fixture) != nil || contracts.ValidateExecution(fixture.Execution) != nil || fixture.Execution.Adapter != "orca-terminal" || !filepath.IsAbs(fixture.RepositoryPath) {
 		t.Fatal("requires an independent Runner Orca fixture")
 	}
 	var settings contracts.OrcaSettings

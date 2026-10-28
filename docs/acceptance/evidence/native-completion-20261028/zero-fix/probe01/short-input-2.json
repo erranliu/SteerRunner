@@ -1,0 +1,21 @@
+{
+  "input_budget": {
+    "contract": "steerrunner-model-input/v1",
+    "sha256": "3752ba9e5b54d0d9afeb8c402ae7bfa2318798058de3758a5691228941ef7651",
+    "provenance_sha256": "c3af529a839555987e76fe96ceef796ddaee844748dcb4e1b5e406f5877ce90a",
+    "caller_bytes": 144,
+    "runner_bytes": 0,
+    "total_bytes": 144,
+    "fragments": [
+      {
+        "source": "caller.direct",
+        "owner": "caller",
+        "bytes": 144
+      }
+    ]
+  },
+  "input_version": 2,
+  "CommandID": "b82f17d2e2500f7575fc24ef41f44b11",
+  "Prompt": "Publication-style delivery probe.\nDo not create a PR, run tools or change anything. Reply only with SR_PUBLISH_3e4bfd8cc97b68025185476ed7975b44.",
+  "Purpose": ""
+}

@@ -1,0 +1,482 @@
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.53s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.11s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.15s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.05s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.01s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.03s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.12s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.42s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.12s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.06s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.12s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.16s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.06s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.04s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.06s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.04s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.26s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.13s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.05s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.30s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.14s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.06s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.01s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.01s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.05s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.01s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.19s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.09s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.07s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.05s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.03s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.28s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.11s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.13s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.03s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.05s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.03s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.03s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.26s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.11s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.03s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (0.29s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.04s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original
+=== RUN   TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected
+--- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle (0.11s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/observed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed/duplicate-rejected (0.02s)
+    --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored (0.04s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/original (0.02s)
+        --- PASS: TestThinOriginalQueryCompletesThroughNativeLifecycle/missed-restored/duplicate-rejected (0.02s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	6.978s

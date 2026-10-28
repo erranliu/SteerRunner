@@ -1,0 +1,9 @@
+{
+  "go_test_exit": 0,
+  "started_utc": "2026-10-28T07:49:41.3738752Z",
+  "repeat_log": "../repeat-30.log",
+  "mode": "short-sequence",
+  "ended_utc": "2026-10-28T07:50:34.1091744Z",
+  "variant": "multiline",
+  "controlled_packages_log": "../controlled-packages.log"
+}

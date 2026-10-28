@@ -1,0 +1,15 @@
+{
+  "case_count": 9,
+  "asserted_scenarios": 270,
+  "per_case": {
+    "zero-incarnation": 30,
+    "zero-incarnation-restored": 30,
+    "zero-incarnation-started": 30,
+    "multiline-zero-incarnation": 30,
+    "multiline-generation-one": 30,
+    "missing-incarnation": 30,
+    "null-incarnation": 30,
+    "multiline-missing-incarnation": 30,
+    "multiline-null-incarnation": 30
+  }
+}

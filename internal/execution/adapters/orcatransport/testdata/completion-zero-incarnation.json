@@ -1,0 +1,33 @@
+{
+  "source": "probe04-single-line/native-observer.jsonl input.original_check index=2; combined with observed accepted/unstarted multiline receipt from probe03",
+  "normalization": "Identifiers/marker redacted; native clocks translated by one common origin; observation revision renumbered above baseline=10; field presence and incarnation=0 unchanged.",
+  "prompt": "Publication-style delivery probe.\nDo not create a PR, run tools or change anything. Reply only with SR_PUBLISH_00000000000000000000000000000000.",
+  "state": {
+    "state": "done",
+    "paneKey": "tab:pane",
+    "agentType": "codex",
+    "prompt": "Publication-style delivery probe. Do not create a PR, run tools or change anything. Reply only with SR_PUBLISH_00000000000000000000000000000000.",
+    "updatedAt": 20527,
+    "stateStartedAt": 20527,
+    "turnStartedAt": 17704,
+    "mainAgent": {
+      "state": "done",
+      "stateStartedAt": 20527
+    },
+    "providerSession": {
+      "id": "provider",
+      "transcriptPath": "original.jsonl"
+    },
+    "lastAssistantMessage": "SR_PUBLISH_00000000000000000000000000000000"
+  },
+  "metadata_observation": {
+    "origin": "hook",
+    "kind": "transition",
+    "authorityId": "hooks",
+    "incarnation": 0,
+    "revision": 12,
+    "observedAt": 20527
+  },
+  "thin_metadata": false,
+  "can_query_completion_input": false
+}

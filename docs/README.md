@@ -29,6 +29,10 @@
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md)、[测试清单](test-catalog.md)、[验收记录索引](acceptance/README.md) |
 
+## 输入预算整改
+
+- [Spec](spec/workflow-input-budget.spec.md) · [最小实施 Plan](spec/workflow-input-budget.plan.md) · [验收与真实短探针](acceptance/workflow-input-budget.md)：预算与提示词收敛已实现；真实后续输入已接受，Runner 完成确认仍有独立验收缺口。
+
 ## 当前契约与历史范围
 
 当前使用 `steerrunner-cli/v1`、state/v4、资源版本 2，内置流程为 development/2、development-audited/2、conversation/1、generate/1。开发材料是固定基线 worktree 内的仓库相对路径；内容流程仍冻结 inline 材料。兼容换代保留原授权，未知副作用只对账。当前开发流程到 `pr_ready` 后拒绝业务反馈；审计在一次正式执行中修复 P0–P2，无 Spec 审计或自动返修循环。

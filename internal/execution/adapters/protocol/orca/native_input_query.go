@@ -52,7 +52,7 @@ func corroboratedCompletion(s AgentState) bool {
 		s.AgentType == "codex" && s.PaneKey != "" && s.ProviderSession.ID != "" && s.ProviderSession.TranscriptPath != "" &&
 		s.UpdatedAt >= s.MainAgent.StateStartedAt && s.MainAgent.StateStartedAt > 0 &&
 		s.TurnStartedAt > 0 && s.TurnStartedAt <= s.MainAgent.StateStartedAt &&
-		o != nil && o.Origin == "hook" && o.Kind == "transition" && o.AuthorityID != "" && o.Incarnation > 0 && o.Revision > 0 && o.ObservedAt >= s.MainAgent.StateStartedAt &&
+		o.ValidHookTransition() && o.ObservedAt >= s.MainAgent.StateStartedAt &&
 		(s.Observation == nil || *s.Observation == *o) &&
 		!s.SessionBoundary && !s.RestoredUnconfirmed && !s.Interrupted && !s.ToolOutput
 }

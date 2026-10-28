@@ -1,0 +1,21 @@
+{
+  "input_budget": {
+    "contract": "steerrunner-model-input/v1",
+    "sha256": "ca3e0aba453fff198f9e2f8cf551cf8542dd2186d57a60e80041434014397265",
+    "provenance_sha256": "9e9620a7b49584d53fe1ff35e073e2bc0020dd3a09c6da6cf095aa458ef073eb",
+    "caller_bytes": 227,
+    "runner_bytes": 0,
+    "total_bytes": 227,
+    "fragments": [
+      {
+        "source": "caller.direct",
+        "owner": "caller",
+        "bytes": 227
+      }
+    ]
+  },
+  "input_version": 1,
+  "CommandID": "34d36263eb8839484c3989076ff9d875",
+  "Prompt": "Run only the harmless shell command Write-Output 'SR_TOOL_9939668ae713572a444cb3575edc4892' once, then reply exactly SR_FIRST_9939668ae713572a444cb3575edc4892. No file writes, business tests, commits, deployment or publication.",
+  "Purpose": ""
+}

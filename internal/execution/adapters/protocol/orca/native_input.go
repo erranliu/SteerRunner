@@ -13,6 +13,9 @@ import (
 // NativeInput is read from Orca's existing transcript RPC, never from a screen
 // or hook preview. It corroborates input attribution, not turn completion.
 type NativeInput struct {
+	// Transient public pages for diagnostics; never added to persisted input
+	// identity or model text. The original bounded query owns their lifecycle.
+	Pages       []json.RawMessage `json:"-"`
 	ID          string
 	Text        string
 	Timestamp   int64
@@ -37,11 +40,13 @@ func QueryNativeInput(ctx context.Context, environment, runtime, provider, path 
 	params := map[string]any{"agent": "codex", "sessionId": provider, "transcriptPath": path, "limit": 100}
 	previous := int64(-1)
 	var input *NativeInput
+	pages := []json.RawMessage{}
 	for page := 0; page < 16; page++ {
 		raw, err := callState(ctx, socket, "nativeChat.readSession", params)
 		if err != nil {
 			return nil, err
 		}
+		pages = append(pages, append(json.RawMessage(nil), raw...))
 		var value struct {
 			Messages *[]struct {
 				ID, Role, Source string
@@ -74,6 +79,7 @@ func QueryNativeInput(ctx context.Context, environment, runtime, provider, path 
 				if input == nil {
 					return nil, errors.New("Orca original native input absent after baseline")
 				}
+				input.Pages = pages
 				return input, nil
 			}
 			if input != nil {
@@ -83,6 +89,7 @@ func QueryNativeInput(ctx context.Context, environment, runtime, provider, path 
 		}
 		if !*value.HasMore {
 			if input != nil {
+				input.Pages = pages
 				return input, nil
 			}
 			return nil, errors.New("Orca original native input absent")

@@ -13,7 +13,9 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
@@ -95,7 +97,11 @@ func NewEnvironmentSession(setup EnvironmentSetup) (*EnvironmentSession, error) 
 			actions = append(actions, item.ID)
 		}
 	}
-	s.input = b.TurnInput{CommandID: contracts.NewID(), Prompt: fmt.Sprintf("Run environment check %s. Nonce: %s. Sequentially call %s once for each action in this exact order: %s. Stop on failure. After the last result, reply DONE. Do not perform business work.", setup.CheckID, setup.Nonce, environmentTool, strings.Join(actions, ", ")), LinkedWorktreeArgs: setup.LinkedWriteArgs}
+	s.input = b.TurnInput{CommandID: contracts.NewID(), Prompt: fmt.Sprintf(EnvironmentTaskFormat, setup.CheckID, setup.Nonce, environmentTool, strings.Join(actions, ", ")), LinkedWorktreeArgs: setup.LinkedWriteArgs}
+	_, s.input.Budget, err = m.FreezeInput(m.InputPart{Source: "environment.task", Owner: m.RunnerInput, Text: s.input.Prompt})
+	if err != nil {
+		return nil, err
+	}
 	return s, nil
 }
 
@@ -158,7 +164,7 @@ func (s *EnvironmentSession) Start(ctx context.Context) (string, error) {
 	}
 	turnCtx, turnCancel := context.WithTimeout(ctx, 30*time.Second)
 	defer turnCancel()
-	turn, err := StartTurn(turnCtx, s.handle.client, params)
+	turn, err := StartTurn(turnCtx, s.handle.client, params, s.input.Budget)
 	s.turn = turn.Turn.ID
 	return s.turn, err
 }
@@ -193,7 +199,7 @@ func (s *EnvironmentSession) Next(ctx context.Context) (EnvironmentCall, error) 
 				return EnvironmentCall{RequestID: event.ID, CallID: p.CallID, Action: args.Action, Nonce: args.Nonce}, nil
 			}
 			if len(event.ID) > 0 {
-				_ = s.handle.client.RejectRequest(event.ID, "Environment checks permit only fixed probes; approval and escalation are disabled.")
+				_ = s.handle.client.RejectRequest(event.ID, codexapp.RejectEnvironmentRequest)
 				return EnvironmentCall{}, errors.New("unexpected_native_approval_or_tool_request")
 			}
 			if event.Method == "turn/completed" {

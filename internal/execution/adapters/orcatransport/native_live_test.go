@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -72,7 +71,7 @@ func (liveProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]by
 
 func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	if mode := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE"); mode != "" {
-		if mode != "long-input" && mode != "segmented-shape" {
+		if mode != "long-input" && mode != "segmented-shape" && mode != "short-sequence" {
 			t.Fatal("unknown native probe mode")
 		}
 		runNativeInputLiveProbe(t)
@@ -87,8 +86,14 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 	rawFixture, err := os.ReadFile(filepath.Join(root, "manifest.json"))
-	var fixture livetest.Manifest
-	if err != nil || contracts.DecodeStrict(rawFixture, &fixture) != nil || fixture.Validate() != nil || fixture.Execution.Adapter != "orca-terminal" {
+	// This focused lifecycle probe needs only the fixed native target. The
+	// broader fixture CLI validates the full business manifest separately.
+	var fixture struct {
+		Execution       contracts.Execution `json:"execution"`
+		RepositoryPath  string              `json:"repository_path"`
+		RemoteRuntimeID string              `json:"remote_runtime_id"`
+	}
+	if err != nil || json.Unmarshal(rawFixture, &fixture) != nil || contracts.ValidateExecution(fixture.Execution) != nil || fixture.Execution.Adapter != "orca-terminal" || !filepath.IsAbs(fixture.RepositoryPath) || fixture.RemoteRuntimeID == "" {
 		t.Fatal("native lifecycle requires an independent Runner Orca fixture")
 	}
 	worktree, runtime, executable := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_WORKTREE"), os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_RUNTIME"), os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_CLI")

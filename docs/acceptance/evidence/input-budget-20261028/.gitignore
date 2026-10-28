@@ -1,0 +1,7 @@
+# Raw captures remain local; only this review set is published.
+*
+!.gitignore
+!README.md
+!account-comparison.json
+!controlled-tests/
+!short01/

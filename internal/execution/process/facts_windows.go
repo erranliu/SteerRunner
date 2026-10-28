@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"syscall"
+	"unicode/utf16"
 	"unsafe"
 
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -71,6 +73,13 @@ func StartManagedBound(cmd *exec.Cmd, ready func(executionbackend.ProcessIdentit
 }
 
 func startManagedBound(cmd *exec.Cmd, ready func(executionbackend.ProcessIdentity) error) (*childProcess, error) {
+	executable, args := cmd.Path, []string(nil)
+	if len(cmd.Args) > 0 {
+		executable, args = cmd.Args[0], cmd.Args[1:]
+	}
+	if err := CheckCommandLine(executable, args); err != nil {
+		return nil, err
+	}
 	job, e := windows.CreateJobObject(nil, nil)
 	if e != nil {
 		return nil, e
@@ -140,6 +149,22 @@ func startManagedBound(cmd *exec.Cmd, ready func(executionbackend.ProcessIdentit
 		return &childProcess{job: job, identity: id}, nil
 	}
 	return fail(fmt.Errorf("cannot locate suspended initial thread: %w", e))
+}
+
+// CreateProcessW includes the terminating NUL in its 32767 UTF-16-unit limit.
+// Match os/exec's Windows argv escaping, independently of model-text budgets.
+func CommandLineUnits(executable string, args []string) int {
+	argv := append([]string{executable}, args...)
+	for i := range argv {
+		argv[i] = syscall.EscapeArg(argv[i])
+	}
+	return len(utf16.Encode([]rune(strings.Join(argv, " ")))) + 1
+}
+func CheckCommandLine(executable string, args []string) error {
+	if units := CommandLineUnits(executable, args); units > 32767 {
+		return fmt.Errorf("transport command line exceeds Windows UTF-16 limit: %d/32767 units including NUL; not started", units)
+	}
+	return nil
 }
 
 // A managed worker's descendants remain in its non-breakaway, kill-on-close

@@ -1,0 +1,141 @@
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/none
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/positive-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/preview
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/changed-preview
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/observation-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/observation-incarnation-backward
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/workspace
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/branch
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/provider
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/path
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/main-time
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/body
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/authority
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/revision
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/revision-backward
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/marker
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-marker
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-observation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/partial-observation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/null-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/negative-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/unsafe-incarnation
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/mismatched-main
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/boundary
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/restored
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/tool-output
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/duplicate
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/same-text-duplicate
+=== RUN   TestCorroboratedCompletionInputRequiresStableOriginalResources/shortened-user
+--- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources (0.50s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/none (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/positive-incarnation (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/preview (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/changed-preview (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/incarnation (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/observation-incarnation (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/observation-incarnation-backward (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/workspace (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/branch (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/provider (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/path (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/main-time (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/body (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/authority (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/revision (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/revision-backward (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/marker (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-marker (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-observation (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/partial-observation (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/missing-incarnation (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/null-incarnation (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/negative-incarnation (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/unsafe-incarnation (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/mismatched-main (0.01s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/boundary (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/restored (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/tool-output (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/duplicate (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/same-text-duplicate (0.02s)
+    --- PASS: TestCorroboratedCompletionInputRequiresStableOriginalResources/shortened-user (0.01s)
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/zero
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/positive
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/max-safe
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/unsafe
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/negative
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/missing
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/null
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/fraction
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/string
+=== RUN   TestObservationExplicitIncarnationSurvivesRoundTrip/boolean
+--- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/zero (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/positive (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/max-safe (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/unsafe (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/negative (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/missing (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/null (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/fraction (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/string (0.00s)
+    --- PASS: TestObservationExplicitIncarnationSurvivesRoundTrip/boolean (0.00s)
+=== RUN   TestObservationMissingIncarnationDoesNotBecomeExplicitZero
+--- PASS: TestObservationMissingIncarnationDoesNotBecomeExplicitZero (0.00s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca	2.537s
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation
+    native_start_windows_test.go:257: RECOVERED accepted=true started=true final=true input_queries=1
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation
+=== RUN   TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation
+--- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput (1.46s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/original (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/thin-preview (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/duplicate (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/altered (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/ready-only (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/working (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/authority-conflict (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/stale-metadata (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/interrupted (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/other-process (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-conflict (0.03s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/query-error-identity (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-restored (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/zero-incarnation-started (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-zero-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-generation-one (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/missing-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/null-incarnation (0.02s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-missing-incarnation (0.27s)
+    --- PASS: TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput/multiline-null-incarnation (0.28s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	4.027s

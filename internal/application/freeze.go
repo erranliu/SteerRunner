@@ -12,6 +12,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/evidence"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/publication"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
@@ -27,7 +28,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unicode/utf16"
 )
 
 var repositoryLocks sync.Map
@@ -238,6 +238,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		if agent == "codex" || settings.AgentLaunch.Executable != "" && agent != "pi" && agent != "dsh" {
 			r.LaunchCommand, err = launch.Command(agent)
+			if err == nil && agent == "codex" {
+				_, r.LaunchInput, err = m.FreezeInput(launch.InitializationParts()...)
+			}
 		}
 		if err != nil {
 			return nil, contracts.Fail(2, "invalid_input", "Invalid frozen agent launch configuration.")
@@ -503,6 +506,8 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 		}
 	}
 	if input.Prompt == "" {
+		var parts []m.InputPart
+		var err error
 		if r.Workflow.ExecutionModel != nil {
 			model := r.Workflow.ExecutionModel
 			if state, _ := r.Workflow.State(input.StepID); state.ModelRole == "audit" {
@@ -511,11 +516,10 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			input.Model, input.ReasoningEffort = model.Model, model.ReasoningEffort
 		}
 		if state.Contract == "final" {
-			prompt, err := contentPrompt(r, feedback)
+			parts, err = contentParts(r, feedback)
 			if err != nil {
 				return err
 			}
-			input.Prompt = prompt
 		} else {
 			refs := []workflow.FileReference{}
 			for _, doc := range r.Request.Documents.References {
@@ -523,26 +527,50 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			}
 			// Use explicit JSON names for the fixed material references consumed by Workflow.
 			input.MaterialFacts = canonical(map[string]any{"spec": map[string]string{"path": r.Request.Documents.Spec.Path}, "plan": map[string]string{"path": r.Request.Documents.Plan.Path}, "references": refs})
-			prompt, err := workflow.RenderInputWithBody(r.Workflow, input, r.PromptBodies[state.PromptKey])
+			_, caller := r.Request.Workflow.PromptOverrides[state.PromptKey]
+			parts, err = workflow.InputParts(r.Workflow, input, r.PromptBodies[state.PromptKey], caller)
 			if err != nil {
 				return err
 			}
 			if feedback != "" {
-				prompt += "\nUser feedback for the original session:\n" + feedback
+				parts = append(parts, m.InputPart{Source: "feedback.label", Owner: m.RunnerInput, Text: workflow.FeedbackLabel}, m.InputPart{Source: "caller.feedback", Owner: m.CallerInput, Text: feedback})
 			}
-			prompt += workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)
-			input.Prompt = prompt
+			parts = append(parts, m.InputPart{Source: "publication.target", Owner: m.RunnerInput, Text: workflow.PublicationInstruction(state, canonical(r.Request.Publication), r.Request.Repository.Remote, r.Request.Repository.BaseBranch)})
 			input.SuccessOutput = state.SuccessOutput
 		}
-	}
-	if r.Request.Execution.Adapter == "orca-terminal" && len(utf16.Encode([]rune(input.Prompt))) > 12000 {
-		return contracts.Fail(3, "unsupported_capability", "The rendered Orca prompt exceeds the current CLI transport limit (12000 UTF-16 units).")
-	}
-	if r.Request.ProgressFile != nil {
-		input.Prompt += "\nOptional caller-owned byte report: STEERLINE_PROGRESS_FILE contains the absolute path of this Run's report file. Write complete raw bytes there (max 65536 bytes); coordinate writers with a lock, read/merge if needed, then atomically replace using a temporary file in the same directory. Runner preserves bytes and does not interpret them.\n"
-	}
-	if r.Request.ResultFile != nil {
-		input.Prompt += "\nOptional caller-owned result bytes: STEERLINE_RESULT_FILE contains the absolute path of this Run's independent result file. Write complete raw bytes there (max 65536 bytes); coordinate writers and atomically replace using a temporary file in the same directory. Runner collects this file only once after the whole execution ends and its producers stop, never at a single turn end or pr_ready. Runner preserves bytes without interpreting business success or process exit.\n"
+		if state.Kind == "execute" && (state.Contract == "implementation" || state.Contract == "audit") {
+			if r.Request.ProgressFile != nil {
+				text := workflow.ProgressInstruction
+				if priorFileInstruction(r, "progress") {
+					text = workflow.ContinueProgressInstruction
+				}
+				parts = append(parts, m.InputPart{Source: "progress", Owner: m.RunnerInput, Text: "\n" + text})
+			}
+			if r.Request.ResultFile != nil {
+				text := workflow.ResultFileInstruction
+				if priorFileInstruction(r, "result_file") {
+					text = workflow.ContinueResultInstruction
+				}
+				parts = append(parts, m.InputPart{Source: "result_file", Owner: m.RunnerInput, Text: "\n" + text})
+			}
+		}
+		if r.Request.Execution.Adapter == "orca-terminal" {
+			// Preserve the frozen logical body; native normalization/framing owns
+			// the final send budget. Validate the normalized body early as well.
+			_, _, err = m.FreezeInput(m.NativeInputParts(parts)...)
+			if err == nil {
+				input.Prompt, input.Budget, err = m.DescribeInput(parts...)
+			}
+		} else {
+			input.Prompt, input.Budget, err = m.FreezeInput(parts...)
+		}
+		if err != nil {
+			return err
+		}
+	} else {
+		if err := ensureStageBudget(r, &input); err != nil {
+			return err
+		}
 	}
 	input.CommandID, input.AttemptID, input.Version = contracts.NewID(), r.Snapshot.Session.AttemptID, uint64(len(r.Workflow.StageInputs)+1)
 	if state.Kind == "execute" && state.Contract == "implementation" {
@@ -582,7 +610,7 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			r.History = append(r.History, contracts.HistoryEntry{RequestCommandID: requestCommand, CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, Role: "user", Text: text})
 		}
 	}
-	r.Snapshot.PendingTurn = &b.TurnInput{StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
+	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
 	r.Snapshot.Session.PendingCommandID = input.CommandID
 	r.Snapshot.Session.PendingTurnID = ""
 	r.Status, r.Phase = "running", "input_queued"

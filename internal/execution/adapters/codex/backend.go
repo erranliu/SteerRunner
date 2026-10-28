@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"slices"
 	"sync"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 )
 
 // ProcessPort preserves the host's managed process / Job Object policy.
@@ -82,6 +84,13 @@ func (h *SessionHandle) Detach() executionbackend.StopHandle {
 func encode(v any) []byte { b, _ := json.Marshal(v); return append(b, '\n') }
 
 func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input executionbackend.TurnInput) (handle *SessionHandle, receipt Binding, err error) {
+	parts, budgetErr := input.ModelInputParts()
+	if budgetErr != nil {
+		return nil, fixed, budgetErr
+	}
+	if _, _, budgetErr = m.FreezeInput(parts...); budgetErr != nil {
+		return nil, fixed, budgetErr
+	}
 	receipt = fixed
 	credentialPrepared := false
 	defer func() {
@@ -215,15 +224,22 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 				return nil, receipt, configErr
 			}
 			params["config"] = config
-			params["developerInstructions"] = "Read-only content session. Work within the submitted directory and frozen materials. Return content to the caller. Do not commit, push, create PRs or change files. Use steerrunner_ask for necessary human questions."
+			params["developerInstructions"] = ContentSessionInstruction
 		}
 		if b.Config.EnvironmentCheck {
 			// All check tools route through a closed native probe port. The
 			// credential broker additionally gates each external write once.
 			params["config"] = map[string]any{"features.shell_tool": false, "features.apply_patch_freeform": false, "features.multi_agent": false, "features.apps": false, "web_search": "disabled", "mcp_servers": map[string]any{}}
-			params["developerInstructions"] = "Execute the requested finite environment probes using steerrunner_environment_probe only. Use the exact nonce and actions from the input, sequentially. Stop after a failed tool. Do not use other tools or repeat a failed/uncertain action. Report completion after the last action."
+			params["developerInstructions"] = EnvironmentSessionInstruction
 		}
 		threadCtx := ctx
+		inputFacts, inputErr := sessionInput(params)
+		if inputErr != nil {
+			return nil, receipt, inputErr
+		}
+		if err := b.Process.WriteAtomic(filepath.Join(b.Config.ServerDir, "thread.json"), encode(ThreadReceipt{Input: inputFacts})); err != nil {
+			return nil, receipt, err
+		}
 		threadCancel := func() {}
 		if b.Config.EnvironmentCheck {
 			threadCtx, threadCancel = context.WithTimeout(ctx, 30*time.Second)
@@ -233,6 +249,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		if startErr != nil {
 			return nil, receipt, startErr
 		}
+		response.Input = inputFacts
 		h.Binding.SessionID = response.Thread.ID
 		if b.Config.EnvironmentCheck || b.Config.Sandbox == "read-only" {
 			want := "workspaceWrite"
@@ -264,6 +281,9 @@ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executio
 	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
 		return nil, "", errors.New("app-server turn changed its prepared request identity or input")
 	}
+	if input.Budget != nil && h.input.Budget != nil && !reflect.DeepEqual(input.Budget, h.input.Budget) {
+		return nil, "", errors.New("prepared input provenance changed")
+	}
 	if err := b.verifySandboxReadiness(ctx, h, input); err != nil {
 		return nil, "", preparationBlocked(err)
 	}
@@ -271,7 +291,7 @@ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executio
 	if err != nil {
 		return nil, "", err
 	}
-	turn, err := StartTurn(ctx, h.client, params)
+	turn, err := StartTurn(ctx, h.client, params, input.Budget)
 	if err != nil {
 		return nil, "", err
 	}

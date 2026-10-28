@@ -2,6 +2,9 @@ package workflow
 
 import ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 
+const AuditPrompt = "审计修复 P0–P2；必要验证后提交，无改动沿用提交。\n"
+const AuditReportPrompt = "仅报告原审计；不补做或编造。"
+
 // State is a frozen built-in choice of existing capabilities, not a user DSL.
 // StepID in Snapshot is the only active business cursor; States are immutable.
 type State struct {
@@ -43,9 +46,9 @@ func developmentStates(audited bool) map[string]State {
 		StepPRReady:        {Kind: "milestone"},
 	}
 	if audited {
-		states[StepAuditCode] = State{Kind: "execute", Contract: "audit", PromptKey: "audit.code", Prompt: "审计当前代码，直接修复发现的 P0–P2 问题并完成必要验证。验证后将最终代码改动追加提交到当前分支；无改动时沿用当前提交。报告实际修复的 P0–P2 总数及逐项问题、修复内容；未修复问题和未完成事项如实说明。\n最终回复必须为单一 JSON 对象，不添加代码围栏或额外正文。\n" + ra.ResultInstruction("audit"), ModelRole: "audit", Next: StepPublish, Report: StepAuditReport, ReportLimit: 1, Parse: StepAuditParse, Wait: StepAuditInput, Workspace: "audit"}
+		states[StepAuditCode] = State{Kind: "execute", Contract: "audit", PromptKey: "audit.code", Prompt: AuditPrompt + ra.ResultInstruction("audit"), ModelRole: "audit", Next: StepPublish, Report: StepAuditReport, ReportLimit: 1, Parse: StepAuditParse, Wait: StepAuditInput, Workspace: "audit"}
 		states[StepAuditParse] = State{Kind: "parse", Contract: "audit", Prompt: "仅整理已有代码审计与修复结果；不得重审、测试、修复或发布。缺失信息如实表达，不由沉默推断成功或零修复。", Next: StepPublish, Report: StepAuditReport, ReportLimit: 1, Wait: StepAuditInput, Workspace: "audit"}
-		states[StepAuditReport] = State{Kind: "report", Contract: "audit", PromptKey: StepAuditReport, Prompt: "根据已有上下文整理指定审计修复结果；只报告，不重审、修代码或补检查。保留实际修复数量、逐项内容及遗留问题，缺失、歧义、冲突如实标注。", ModelRole: "audit", Next: StepPublish, Wait: StepAuditInput, Workspace: "audit"}
+		states[StepAuditReport] = State{Kind: "report", Contract: "audit", PromptKey: StepAuditReport, Prompt: AuditReportPrompt, ModelRole: "audit", Next: StepPublish, Wait: StepAuditInput, Workspace: "audit"}
 		states[StepAuditInput] = State{Kind: "input", ManualImplementation: StepImplement}
 	}
 	for key, state := range states {

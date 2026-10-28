@@ -8,6 +8,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
@@ -30,6 +31,11 @@ func (e *Engine) selectParser(r *runstate.Record, input workflow.StageInput, sta
 		return
 	}
 	pack := parser.FreezePackage(parser.Package{Config: r.AcquisitionConfig, Source: workflow.Source(*source), ImplementationResultID: input.ImplementationResultID, Final: source.Final, Instruction: parseState.Prompt})
+	if err := m.CheckInput(pack.Prompt, pack.Budget); err != nil {
+		transition.Reason = err.Error()
+		transition.Acquired.Missing = append(transition.Acquired.Missing, "parser candidate not sent: "+err.Error())
+		return // keep the original, already-authorized one-report fallback
+	}
 	pack.ReportToolPolicy = transition.Next.ReportToolPolicy
 	payload, err := json.Marshal(pack)
 	if err != nil || len(payload) > r.AcquisitionConfig.Config.CodexParser.MaxInputBytes {

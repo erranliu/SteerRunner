@@ -3,6 +3,7 @@ package workflow
 import (
 	"encoding/json"
 	"errors"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 )
 
@@ -49,34 +50,38 @@ func RenderInput(w Snapshot, input StageInput) (string, error) {
 	return RenderInputWithBody(w, input, "")
 }
 func RenderInputWithBody(w Snapshot, input StageInput, body string) (string, error) {
+	parts, err := InputParts(w, input, body, body != "")
+	if err != nil {
+		return "", err
+	}
+	text, _, err := m.FreezeInput(parts...)
+	return text, err
+}
+func InputParts(w Snapshot, input StageInput, body string, caller bool) ([]m.InputPart, error) {
 	state, ok := w.State(input.StepID)
 	if !ok || state.Prompt == "" {
-		return "", errors.New("no prompt in frozen state definition")
+		return nil, errors.New("no prompt in frozen state definition")
 	}
-	facts := map[string]any{"materials": input.MaterialFacts}
+	facts := map[string]any{}
+	if state.Kind == "execute" && state.Contract == "implementation" {
+		facts["materials"] = input.MaterialFacts
+	}
 	if state.Kind == "report" {
 		source, original := Result(w, input.SourceCommandID), Input(w, input.SourceCommandID)
 		if source == nil || original == nil || source.TurnID != input.SourceTurnID || source.InputVersion != input.SourceVersion {
-			return "", errors.New("report lacks exact original business source")
+			return nil, errors.New("report lacks exact original business source")
 		}
-		facts["source_binding"] = Source(*source)
-		facts["native_succeeded"] = source.Succeeded
-		facts["final_verified"] = source.FinalVerified
-		facts["failure"] = source.Failure
-		facts["workspace"] = source.Workspace
-		facts["implementation_result_id"] = input.ImplementationResultID
+		facts["source"] = source.CommandID
+		if source.Failure != "" {
+			facts["failure"] = source.Failure
+		}
 	} else if state.Contract == "audit" {
 		if !AuditSource(w, input) {
-			return "", errors.New("audit lacks current implementation result")
+			return nil, errors.New("audit lacks current implementation result")
 		}
-		facts["implementation_result"] = Acquired(w, input.ImplementationResultID)
-	} else if state.Contract == "publication" {
-		facts["implementation_result"] = Acquired(w, input.ImplementationResultID)
-		facts["audit_result"] = Acquired(w, input.AuditResultID)
 	}
 	if body == "" {
 		body = state.Prompt
 	}
-	text, err := renderPrompt(state, facts, body)
-	return text, err
+	return promptParts(state, facts, body, caller)
 }

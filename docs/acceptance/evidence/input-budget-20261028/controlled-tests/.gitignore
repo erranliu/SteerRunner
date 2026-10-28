@@ -1,0 +1,16 @@
+# Raw captures remain local; only this review set is published.
+*
+!.gitignore
+!README.md
+!adapters.log
+!application.log
+!budget.log
+!codex.log
+!combinations.log
+!completion-repeat.log
+!content.log
+!extra.log
+!final-codex.log
+!final-compile.log
+!final-unit.log
+!legacy.log

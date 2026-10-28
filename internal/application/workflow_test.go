@@ -30,7 +30,7 @@ func (auditRestorePort) BindRecovery(_ context.Context, _, next b.LifecycleSnaps
 	return b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: 1, Purpose: b.ImplementationResourcePurpose, ImplementationKey: "test", ProjectID: "project", ExecutionID: "execution", AttemptID: next.Session.AttemptID, Generation: next.ResourceGeneration, ConfigDigest: "config"}, []byte(`{}`))
 }
 
-func auditEngine(t *testing.T) (*Engine, *worker) {
+func auditEngine(t *testing.T, fileMasks ...int) (*Engine, *worker) {
 	t.Helper()
 	dir := t.TempDir()
 	s, err := storage.Open(dir)
@@ -43,6 +43,14 @@ func auditEngine(t *testing.T) (*Engine, *worker) {
 	p, _ := workflow.Lookup(workflow.AuditedDevelopment, 2)
 	r := &runstate.Record{ID: "run", Allowed: true, CommandStates: map[string]string{}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}}}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec", SnapshotPath: "spec"}}, {MaterialView: contracts.MaterialView{Path: "plan", SnapshotPath: "plan"}}}}
 	r.Request.Documents = contracts.Documents{Spec: contracts.Document{Path: "spec"}, Plan: contracts.Document{Path: "plan"}}
+	if len(fileMasks) > 0 {
+		if fileMasks[0]&1 != 0 {
+			r.Request.ProgressFile = &contracts.ProgressFileInput{}
+		}
+		if fileMasks[0]&2 != 0 {
+			r.Request.ResultFile = &contracts.ResultFileInput{}
+		}
+	}
 	repo := t.TempDir()
 	gitTest(t, repo, "init", "-b", "main")
 	gitTest(t, repo, "config", "user.email", "fixture@example.test")

@@ -1,0 +1,46 @@
+{
+  "publication_note": "Sanitized review copy. Original raw bytes are retained locally and are not changed or published.",
+  "original_sha256": "5ed8a3868f6770eb5e598a08200de53a5836b239b47da84cdc094d01cafba59b",
+  "record": {
+    "package_version": "1.4.242",
+    "source": "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\main\\chunks\\orcad-migration-source-retention-C8UK6eLo.js",
+    "sha256": "52ac67275cd7374ab00804ba12a38ae911dd1d586fba41f2cb80e8183afc0eb9",
+    "snippets": [
+      {
+        "needle": "incarnationFloor",
+        "offset": 199973,
+        "excerpt": "e2`,`copilot`]);function fle(e,t){return t===`plain-escape`&&e!==void 0&&dle.has(e)}var ple=1024,mle=class{authorityId;revision=0;incarnationFloor=0;incarnationByPaneKey=new Map;constructor(e){this.authorityId=e}getAuthorityId(){return this.authorityId}observe(e,t){return this.revision+=1,{origin:t.origin,authorityId:this.authorityId,incarnation:this.resolveIncarnation(e),revision:this.revision,observedAt:t.observedAt,...t.boundary?{boundary:!0}:{},...t.kind?{kind:t.kind}:{}}}rebind(e){this.incarnationFloor+=1,this.incarnationByPaneKey.delete(e),this.setIncarnation(e,this.incarnationFloor)"
+      },
+      {
+        "needle": "AgentStatusObservationSequencer",
+        "offset": -1,
+        "excerpt": null
+      },
+      {
+        "needle": "agent-status-observation",
+        "offset": -1,
+        "excerpt": null
+      },
+      {
+        "needle": "mle=",
+        "offset": 199940,
+        "excerpt": " dle=new Set([`opencode`,`opencode2`,`copilot`]);function fle(e,t){return t===`plain-escape`&&e!==void 0&&dle.has(e)}var ple=1024,mle=class{authorityId;revision=0;incarnationFloor=0;incarnationByPaneKey=new Map;constructor(e){this.authorityId=e}getAuthorityId(){return this.authorityId}observe(e,t){return this.revision+=1,{origin:t.origin,authorityId:this.authorityId,incarnation:this.resolveIncarnation(e),revision:this.revision,observedAt:t.observedAt,...t.boundary?{boundary:!0}:{},...t.kind?{kind:t.kind}:{}}}rebind(e){this.incarnationFloor+=1,this.incarnationByPaneKey.delete(e)"
+      },
+      {
+        "needle": "observations=new mle",
+        "offset": 226984,
+        "excerpt": " Set;restartedStatusLaunchTokenHashByPaneKey=new Map;connectionTimestampWatermarkById=new Map;evidenceObservedAtByPaneKey=new Map;observations=new mle(hle(`main-agent-hooks`))},Es=class{byPaneKey=new Map;defer(e,t,n){this.cancel(e),this.start(e,t,n)}deferUnlessPending(e,t,n){this.byPaneKey.has(e)||this.start(e,t,n)}move(e,t){let n=this.byPaneKey.get(e);n!==void 0&&e!==t&&(this.byPaneKey.delete(e),this.cancel(t),n.paneKey=t,this.byPaneKey.set(t,n))}cancel(e){let t=this.byPaneKey.get(e);t!==void 0&&(clearTimeout(t.timer),this.byPaneKey.delete(e))}clear(){for(let e of this.byPaneKey.values())clea"
+      },
+      {
+        "needle": "observations.rebind",
+        "offset": 291012,
+        "excerpt": "s.env,{admitOpenCodeTui:t=>{let r=this.getAgentStatusDisposition(t.paneKey,{...t,source:e,isReplay:n});return r===`restart`&&this.observations.rebind(t.paneKey),r!==`suppress`}});return wae(r,e,t),r&&r.hookEventName===`SessionStart`&&ht(e,t)&&this.kickOpenCodeBinder(),{event:r,onAccepted:()=>Gee(this.state,e,t,r?.providerSession?.id)}}let r=t.paneKey,i=typeof r==`string`?r.trim():``;if(!i)return{event:ti(this.state,e,t,this.env)};let a=this.state.claudeRunningNonAgentTaskPaneKeys.has(i),o=this.state.claudeActiveSessionCronPaneKeys.has(i),s=ti(this.state,e,t,this.env),c=s?.providerSession?.tra"
+      },
+      {
+        "needle": "stampObservation(e,t,n)",
+        "offset": 248248,
+        "excerpt": "unch_source:`unknown`,request_kind:`followup`,...w.y()})}catch(e){console.error(`[agent-hooks] prompt-sent telemetry failed`,e)}}}stampObservation(e,t,n){return this.observations.observe(e.paneKey,{origin:t,observedAt:n,boundary:e.source!==void 0&&V(e.source,e.hookEventName),kind:e.providerSessionOnly?`identity-only`:e.isReplay===!0||t===`osc`?`snapshot`:`transition`})}},Lue=class extends Iue{claudeOwedNotificationExpiry=new Xce(this.state);commitStatusRowMutation(e,t,n=!0){return t&&this.claudeOwedNotificationExpiry.arm(t.paneKey,e=>{this.server&&this.applyNormalizedStatus(e)}),super.commitStatu"
+      }
+    ]
+  }
+}

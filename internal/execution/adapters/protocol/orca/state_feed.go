@@ -25,6 +25,9 @@ type StateObservation struct {
 	Revision    int64  `json:"revision"`
 	ObservedAt  int64  `json:"observedAt"`
 	Boundary    bool   `json:"boundary,omitempty"`
+	// Keep an absent/null wire value distinct from an explicit initial zero.
+	// MarshalJSON preserves that distinction in saved snapshots and round trips.
+	incarnationMissing bool
 }
 
 // AgentState carries public original-pane facts. The provider's own transcript

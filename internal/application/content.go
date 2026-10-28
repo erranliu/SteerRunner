@@ -14,6 +14,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
@@ -93,26 +94,42 @@ func verifyContentDirectory(r *runstate.Record) error {
 }
 
 func contentPrompt(r *runstate.Record, message string) (string, error) {
-	if err := verifyContentDirectory(r); err != nil {
+	parts, err := contentParts(r, message)
+	if err != nil {
 		return "", err
+	}
+	text, _, err := m.FreezeInput(parts...)
+	return text, err
+}
+func contentParts(r *runstate.Record, message string) ([]m.InputPart, error) {
+	if err := verifyContentDirectory(r); err != nil {
+		return nil, err
 	}
 	instruction, _, _ := r.Request.ContentInput()
 	if message != "" {
-		return message, nil
+		return []m.InputPart{{Source: "caller.message", Owner: m.CallerInput, Text: message}}, nil
 	}
-	materials := []map[string]string{}
-	for _, m := range r.Materials {
-		materials = append(materials, map[string]string{"path": m.Path, "sha256": m.Digest, "content": m.Content})
+	parts := []m.InputPart{{Source: "content.label", Owner: m.RunnerInput, Text: workflow.ContentTaskLabel}, {Source: "caller.instruction", Owner: m.CallerInput, Text: instruction}, {Source: "content.material_frame", Owner: m.RunnerInput, Text: workflow.ContentMaterialsLabel}}
+	for i, material := range r.Materials {
+		prefix := ""
+		if i > 0 {
+			prefix = ","
+		}
+		encoded := string(canonical(material.Content))
+		parts = append(parts, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: prefix + `{"content":"`}, m.InputPart{Source: "caller.material", Owner: m.CallerInput, Text: encoded[1 : len(encoded)-1]}, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: `","path":` + string(canonical(material.Path)) + `,"sha256":` + string(canonical(material.Digest)) + `}`})
 	}
-	text := "Instruction:\n" + instruction + "\nFrozen submitted materials:\n" + string(canonical(materials))
+	parts = append(parts, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: "]"})
 	if r.RepositorySource != nil {
-		text += "\nInvestigate relevant code using read-only tools in the current fixed repository snapshot. Do not read the caller's original checkout or other versions. No writes, commits, PRs, Tasks or DAGs. Document paths are logical relative paths returned as JSON, never files to write. Use caller Roadmap internal codes. Cite relevant source paths and this commit in your documents. Fixed commit: " + r.RepositorySource.Commit + "; tree: " + r.RepositorySource.Tree
+		parts = append(parts, m.InputPart{Source: "content.repository", Owner: m.RunnerInput, Text: "\n" + ContentRepositoryInstruction + r.RepositorySource.Commit + "; tree: " + r.RepositorySource.Tree})
 	}
 	if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
-		text += "\nReturn exactly one JSON value matching this JSON Schema, without Markdown fences:\n" + string(r.Request.Generate.OutputSchema)
+		parts = append(parts, m.InputPart{Source: "content.schema_label", Owner: m.RunnerInput, Text: "\n" + ContentSchemaInstruction}, m.InputPart{Source: "caller.schema", Owner: m.CallerInput, Text: string(r.Request.Generate.OutputSchema)})
 	}
-	return text, nil
+	return parts, nil
 }
+
+const ContentRepositoryInstruction = workflow.ContentRepositoryInstruction
+const ContentSchemaInstruction = workflow.ContentSchemaInstruction
 
 // Called under the sole actor lock after native identity normalization. It
 // records facts in the same StageResults and advances only the frozen cursor.

@@ -1,0 +1,16 @@
+=== RUN   TestBudgetAuditedFilesRemainUsable
+    input_budget_test.go:120: audited implement.execute model bridge Runner=586
+    input_budget_test.go:127: audited audit.code.execute model bridge Runner=902
+    input_budget_test.go:136: audited publish.execute model bridge Runner=657
+    input_budget_test.go:120: audited implement.execute model bridge Runner=714
+    input_budget_test.go:127: audited audit.code.execute model bridge Runner=932
+    input_budget_test.go:136: audited publish.execute model bridge Runner=657
+    input_budget_test.go:120: audited implement.execute model bridge Runner=770
+    input_budget_test.go:127: audited audit.code.execute model bridge Runner=930
+    input_budget_test.go:136: audited publish.execute model bridge Runner=657
+    input_budget_test.go:120: audited implement.execute model bridge Runner=898
+    input_budget_test.go:127: audited audit.code.execute model bridge Runner=960
+    input_budget_test.go:136: audited publish.execute model bridge Runner=657
+--- PASS: TestBudgetAuditedFilesRemainUsable (32.28s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/application	35.872s

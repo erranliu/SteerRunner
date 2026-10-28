@@ -8,6 +8,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"reflect"
 	"time"
 )
 
@@ -111,6 +112,9 @@ func matchesCheckpoint(f, want *workflow.WorkspaceSource) bool {
 }
 
 func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInput) error {
+	if native := r.Snapshot.PendingTurn; native != nil && native.CommandID == input.CommandID && input.Budget != nil && native.Budget != nil && !reflect.DeepEqual(input.Budget, native.Budget) {
+		return errors.New("native input provenance differs from frozen stage")
+	}
 	if err := verifyFrozenMaterials(r); err != nil {
 		return err
 	}

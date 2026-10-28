@@ -57,18 +57,14 @@ func Completion(summary string) Report {
 	return Report{reportBody: reportBody{Outcome: "done", Summary: summary}}
 }
 
-const ResultContract = `Return one JSON object:
-{"outcome":"done|needs_input|blocked","summary":"result"}
-For needs_input add question. For blocked add blocker: {"category":"failure|unknown_external|permission|prerequisite","action":"action","error":"error","known":"optional","unknown":"optional"}.`
+const ResultContract = `JSON only: outcome=done|needs_input|blocked,summary; needs_input:question; blocked:blocker{category=failure|unknown_external|permission|prerequisite,action,error,known?,unknown?}.`
 
 func ResultInstruction(contract string) string {
 	switch contract {
 	case "audit":
-		return ResultContract + `
-Include fixed_count (nonnegative integer), fixed_issues [{"severity":"P0|P1|P2","issue":"issue","repair":"actual repair","evidence":"existing location/change evidence"}], and remaining_issues [{"severity":"P0|P1|P2","issue":"issue","reason":"reason"}]. Explicitly use 0 and [] only when known. done requires completed audit and necessary validation, no remaining P0-P2 issues. Preserve incomplete work and partial statistics. Never invent missing facts.`
+		return ResultContract + ` fixed_count>=0=len(fixed_issues); severity=P0|P1|P2; fixed_issues:[{severity,issue,repair,evidence}],remaining_issues:[{severity,issue,reason}]. done: audit+validation complete,remaining_issues=[]. Keep partial/unknown; never invent facts or 0/[].`
 	case "publication":
-		return ResultContract + `
-For done include outputs: {"pr_url":"actual PR URL"}.`
+		return ResultContract + ` done: outputs:{pr_url:actual PR URL}.`
 	default:
 		return ResultContract
 	}

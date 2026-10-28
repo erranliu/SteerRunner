@@ -1,0 +1,13 @@
+# Raw captures remain local; only this review set is published.
+*
+!.gitignore
+!README.md
+!public-diagnostic-summary.json
+!stable-captured-final-30.log
+!adapter-regression-final.log
+!probe01/
+!probe02-multiline/
+!probe03-multiline/
+!probe04-single-line/
+!orca-contract-check/
+!zero-fix/

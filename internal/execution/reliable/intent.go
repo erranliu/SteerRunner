@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"reflect"
 	"slices"
 )
 
@@ -81,5 +82,8 @@ func QualifyInput(input *b.TurnInput, caps b.LifecyclePolicyCapabilities) error 
 	return nil
 }
 func SameInput(candidate *b.TurnInput, input b.TurnInput) bool {
+	if candidate != nil && candidate.Budget != nil && input.Budget != nil && !reflect.DeepEqual(candidate.Budget, input.Budget) {
+		return false
+	}
 	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
 }

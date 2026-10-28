@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"sync"
 )
 
@@ -158,6 +159,9 @@ func (c *Client) ReplyRequest(id json.RawMessage, result any) error {
 }
 
 func (c *Client) RejectRequest(id json.RawMessage, reason string) error {
+	if _, _, err := m.FreezeInput(m.InputPart{Source: "native.exception", Owner: m.RunnerInput, Text: reason}); err != nil {
+		return err
+	}
 	if len(id) == 0 || !json.Valid(id) {
 		return errors.New("Codex request has no valid JSON-RPC identity")
 	}

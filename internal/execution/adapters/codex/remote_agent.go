@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/nativeaudit"
@@ -39,21 +40,23 @@ const RemoteFailurePrefix = "SR_REMOTE_AGENT_FAILURE:"
 const RemoteNativeTransport = "codex-remote-inline-v3"
 
 type RemoteReadiness struct {
-	AuthenticationControl bool              `json:"authentication_control,omitempty"`
-	ExitPublicKey         []byte            `json:"exit_public_key,omitempty"`
-	Owner                 b.ProcessIdentity `json:"owner"`
-	NativeTransport       string            `json:"native_transport"`
-	RuntimeSHA256         string            `json:"runtime_sha256"`
-	Verified              bool              `json:"verified"`
-	Contract              string            `json:"contract"`
-	Workspace             string            `json:"workspace"`
-	Repository            string            `json:"repository"`
-	SessionID             string            `json:"session_id"`
-	ConfigurationDigest   string            `json:"configuration_digest"`
-	Process               b.ProcessIdentity `json:"process"`
-	CheckedAt             time.Time         `json:"checked_at"`
-	ExpiresAt             time.Time         `json:"expires_at"`
-	AccessMode            string            `json:"access_mode"`
+	Input                 *SessionInputFacts `json:"runner_input,omitempty"`
+	Bootstrap             *SessionInputFacts `json:"runner_bootstrap,omitempty"`
+	AuthenticationControl bool               `json:"authentication_control,omitempty"`
+	ExitPublicKey         []byte             `json:"exit_public_key,omitempty"`
+	Owner                 b.ProcessIdentity  `json:"owner"`
+	NativeTransport       string             `json:"native_transport"`
+	RuntimeSHA256         string             `json:"runtime_sha256"`
+	Verified              bool               `json:"verified"`
+	Contract              string             `json:"contract"`
+	Workspace             string             `json:"workspace"`
+	Repository            string             `json:"repository"`
+	SessionID             string             `json:"session_id"`
+	ConfigurationDigest   string             `json:"configuration_digest"`
+	Process               b.ProcessIdentity  `json:"process"`
+	CheckedAt             time.Time          `json:"checked_at"`
+	ExpiresAt             time.Time          `json:"expires_at"`
+	AccessMode            string             `json:"access_mode"`
 }
 
 func RemoteConfigurationDigest(c RemoteAgentConfig) string {
@@ -221,6 +224,21 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	params["developerInstructions"] = worker.instructions()
+	inputFacts, inputErr := sessionInput(params)
+	if inputErr != nil {
+		return inputErr
+	}
+	bootstrapParts := []model.InputPart{{Source: "native.bootstrap", Owner: model.RunnerInput, Text: BootstrapInstruction}}
+	_, bootstrapBudget, err := model.FreezeInput(bootstrapParts...)
+	if err != nil {
+		return err
+	}
+	bootstrapFacts := &SessionInputFacts{Budget: bootstrapBudget, Parts: bootstrapParts, Fields: []string{"input[0].text"}}
+	// Reuse the original readiness record; a pending input journal is explicitly
+	// unverified and cannot authorize TUI/business activity.
+	if err := host.WriteExecutionFile(filepath.Join(dir, "ready.json"), encode(RemoteReadiness{Input: inputFacts, Bootstrap: bootstrapFacts, Verified: false})); err != nil {
+		return err
+	}
 	var thread struct {
 		Thread struct {
 			ID string `json:"id"`
@@ -235,7 +253,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	// Codex does not persist an empty thread's rollout. Complete the same
 	// tool-free READY bootstrap used by the terminal launcher before the TUI
 	// resumes it, so a second connection cannot invent a replacement session.
-	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", "Initialize this agent session. Reply READY only. Do not use tools or change files.", permissions.Sandbox, c.Model, c.ReasoningEffort, append(roots, plan.Directory))
+	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", BootstrapInstruction, permissions.Sandbox, c.Model, c.ReasoningEffort, append(roots, plan.Directory))
 	if err != nil {
 		return err
 	}
@@ -244,7 +262,9 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 			ID string `json:"id"`
 		} `json:"turn"`
 	}
-	if err = client.Call(ctx, "turn/start", bootstrap, &turn); err != nil {
+	bootstrapReceipt, bootstrapErr := StartTurn(ctx, client, bootstrap, bootstrapBudget)
+	turn.Turn.ID = bootstrapReceipt.Turn.ID
+	if err = bootstrapErr; err != nil {
 		return errors.New("remote_bootstrap_start_failed")
 	}
 	bootstrapCtx, cancelBootstrap := context.WithTimeout(ctx, 90*time.Second)
@@ -259,7 +279,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 				return errors.New("remote_bootstrap_connection_lost")
 			}
 			if len(event.ID) > 0 {
-				_ = client.RejectRequest(event.ID, "The initialization turn permits no tools or approvals.")
+				_ = client.RejectRequest(event.ID, codexapp.RejectInitializationRequest)
 				return errors.New("remote_bootstrap_unexpected_request")
 			}
 			if event.Method == "turn/completed" {
@@ -275,6 +295,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		mode = "sandbox"
 	}
 	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
+	prepared.Input, prepared.Bootstrap = inputFacts, bootstrapFacts
 	prepared.AuthenticationControl = true
 	prepared.RuntimeSHA256, err = RuntimeBinarySHA256()
 	if err != nil {

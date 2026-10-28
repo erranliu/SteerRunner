@@ -1,0 +1,5 @@
+--- FAIL: TestBudgetParserOverflowRetainsReportAndLongFinal (7.34s)
+    input_budget_test.go:107: overflow lost original final/report fallback audit.code.report input_budget_exceeded: caller=0/2000 runner=5583/1000 total=5583/3000 UTF-8 bytes; sources=parser.boundary,parser.instruction,parser.format,parser.evidence; candidate not sent
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/application	158.927s
+FAIL

@@ -1,0 +1,41 @@
+{
+  "publication_note": "Sanitized review copy. Original raw bytes are retained locally and are not changed or published.",
+  "original_sha256": "883ebed401f6a3a441bf259c85e2090cdf150fc58c2797c24b7acf1f0fd2bf08",
+  "record": {
+    "version": "1.4.242",
+    "files": [
+      {
+        "source": "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-status-observation.js",
+        "sha256": "899729f8a1740eb37a27b62fe3eacdcc3808079ac14e7c1bbbec53f16d582844",
+        "excerpts": [
+          {
+            "start_line": 24,
+            "end_line": 88,
+            "text": "];\n// Order incarnation/revision only within one authorityId; restarts/machines/byte parsers are incomparable and use the timestamp fallback.\n// Decay against the stamping authority's clock or replica-local receipt, never cross-machine subtraction. Carry receipt across repeated snapshots.\n// A published host freshness verdict cannot age after contact loss; local receipt keeps decaying without new frames.\n/** Bound pane state; authority-wide incarnation floors preserve order after eviction. */\nconst OBSERVATION_PANE_STATE_MAX = 1024;\n/** Authority-wide revisions stay increasing after per-pane eviction; rebind advances the incarnation floor so reobserved panes never move backwards. */\nclass AgentStatusObservationSequencer {\n    authorityId;\n    revision = 0;\n    incarnationFloor = 0;\n    incarnationByPaneKey = new Map();\n    constructor(authorityId) {\n        this.authorityId = authorityId;\n    }\n    getAuthorityId() {\n        return this.authorityId;\n    }\n    observe(paneKey, args) {\n        this.revision += 1;\n        return {\n            origin: args.origin,\n            authorityId: this.authorityId,\n            incarnation: this.resolveIncarnation(paneKey),\n            revision: this.revision,\n            observedAt: args.observedAt,\n            ...(args.boundary ? { boundary: true } : {}),\n            ...(args.kind ? { kind: args.kind } : {})\n        };\n    }\n    /** The pane's PTY was rebound (relaunch, reattach, pane reuse): later observations\n     *  describe a different session behind the same key. */\n    rebind(paneKey) {\n        this.incarnationFloor += 1;\n        this.incarnationByPaneKey.delete(paneKey);\n        this.setIncarnation(paneKey, this.incarnationFloor);\n    }\n    /** Pane is gone; drop its state. Re-observation after this reads the current floor. */\n    forget(paneKey) {\n        this.incarnationByPaneKey.delete(paneKey);\n    }\n    resolveIncarnation(paneKey) {\n        const known = this.incarnationByPaneKey.get(paneKey);\n        if (known !== undefined) {\n            return known;\n        }\n        this.setIncarnation(paneKey, this.incarnationFloor);\n        return this.incarnationFloor;\n    }\n    setIncarnation(paneKey, incarnation) {\n        this.incarnationByPaneKey.set(paneKey, incarnation);\n        while (this.incarnationByPaneKey.size > OBSERVATION_PANE_STATE_MAX) {\n            const oldest = this.incarnationByPaneKey.keys().next().value;\n            if (oldest === undefined) {\n                return;\n            }\n            this.incarnationByPaneKey.delete(oldest);\n        }\n    }\n}\nexports.AgentStatusObservationSequencer = AgentStatusObservationSequencer;\n/** Regenerate IDs each process start: reset revision counters must not compare with old or hydrated observations. */\nfunction createAgentStatusAuthorityId(role) {\n    return `${role}:${(0, non_secure_context_uuid_1.createNonSecureContextUuid)()}`;\n}"
+          }
+        ]
+      },
+      {
+        "source": "C:/Users/<redacted>\\AppData\\Local\\Programs\\orca\\resources\\app.asar.unpacked\\out\\shared\\agent-status-store-status-codec.js",
+        "sha256": "bca4b266927e56dac98a66107ec1af90ec4543d984d03d2f50a598837843f054",
+        "excerpts": [
+          {
+            "start_line": 21,
+            "end_line": 32,
+            "text": "    return typeof value === 'number' && Number.isFinite(value) && value >= 0;\n}\nfunction isRevision(value) {\n    return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;\n}\nfunction isBoundedString(value) {\n    return (typeof value === 'string' &&\n        value.length > 0 &&\n        value.length <= MAX_ID_LENGTH &&\n        !value.includes('\\0'));\n}\nfunction copyJsonRecord(value) {"
+          },
+          {
+            "start_line": 58,
+            "end_line": 91,
+            "text": "function parseObservation(value) {\n    if (!isRecord(value) ||\n        !hasOnlyKeys(value, ['origin', 'authorityId', 'incarnation', 'revision', 'observedAt'], ['boundary', 'kind']) ||\n        (value.origin !== 'hook' &&\n            value.origin !== 'osc' &&\n            value.origin !== 'title' &&\n            value.origin !== 'process' &&\n            value.origin !== 'launch' &&\n            value.origin !== 'orchestration' &&\n            value.origin !== 'structured') ||\n        !isBoundedString(value.authorityId) ||\n        !isRevision(value.incarnation) ||\n        !isRevision(value.revision) ||\n        !isTimestamp(value.observedAt) ||\n        (value.boundary !== undefined && value.boundary !== true) ||\n        (value.kind !== undefined &&\n            value.kind !== 'transition' &&\n            value.kind !== 'snapshot' &&\n            value.kind !== 'identity-only')) {\n        return null;\n    }\n    return {\n        origin: value.origin,\n        authorityId: value.authorityId,\n        incarnation: value.incarnation,\n        revision: value.revision,\n        observedAt: value.observedAt,\n        ...(value.boundary === true ? { boundary: true } : {}),\n        ...(value.kind !== undefined ? { kind: value.kind } : {})\n    };\n}\nfunction parseOrchestration(value) {\n    if (!isRecord(value) || !isBoundedString(value.taskId) || !isBoundedString(value.dispatchId)) {\n        return null;"
+          },
+          {
+            "start_line": 194,
+            "end_line": 201,
+            "text": "    if (copied.observation !== undefined) {\n        const observation = parseObservation(copied.observation);\n        if (!observation) {\n            return null;\n        }\n        parsed.observation = observation;\n    }\n    if (copied.providerSessionOnly === true) {"
+          }
+        ]
+      }
+    ]
+  }
+}

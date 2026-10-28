@@ -1,0 +1,8 @@
+# Raw captures remain local; only this review set is published.
+*
+!.gitignore
+!README.md
+!verification-summary.json
+!public-installed-contract-check.json
+!public-upstream-observation-excerpts.json
+!public-host-observation-snippets.json

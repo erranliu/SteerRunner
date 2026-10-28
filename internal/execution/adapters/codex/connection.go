@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -40,8 +41,9 @@ type AskReply struct {
 }
 
 type ThreadReceipt struct {
-	ApprovalPolicy    string `json:"approvalPolicy,omitempty"`
-	ApprovalsReviewer string `json:"approvalsReviewer,omitempty"`
+	Input             *SessionInputFacts `json:"runner_input,omitempty"`
+	ApprovalPolicy    string             `json:"approvalPolicy,omitempty"`
+	ApprovalsReviewer string             `json:"approvalsReviewer,omitempty"`
 	Sandbox           struct {
 		Type string `json:"type"`
 	} `json:"sandbox,omitempty"`
@@ -53,6 +55,9 @@ type ThreadReceipt struct {
 }
 
 func StartThread(ctx context.Context, client *codexapp.Client, params map[string]any, workspace string) (ThreadReceipt, error) {
+	if _, err := sessionInput(params); err != nil {
+		return ThreadReceipt{}, err
+	}
 	var receipt ThreadReceipt
 	if err := client.Call(ctx, "thread/start", params, &receipt); err != nil {
 		return ThreadReceipt{}, err
@@ -97,7 +102,30 @@ type TurnReceipt struct {
 	} `json:"turn"`
 }
 
-func StartTurn(ctx context.Context, client *codexapp.Client, params map[string]any) (TurnReceipt, error) {
+func StartTurn(ctx context.Context, client *codexapp.Client, params map[string]any, budgets ...*m.InputBudget) (TurnReceipt, error) {
+	raw, err := json.Marshal(params["input"])
+	if err != nil {
+		return TurnReceipt{}, err
+	}
+	var inputs []struct{ Type, Text string }
+	if json.Unmarshal(raw, &inputs) != nil || len(inputs) == 0 {
+		return TurnReceipt{}, errors.New("native turn input missing")
+	}
+	var text strings.Builder
+	for _, input := range inputs {
+		if input.Type != "text" {
+			return TurnReceipt{}, errors.New("unaccounted native turn input")
+		}
+		text.WriteString(input.Text)
+	}
+	if len(budgets) > 0 && budgets[0] != nil {
+		err = m.CheckInput(text.String(), budgets[0])
+	} else {
+		_, _, err = m.FreezeInput(m.InputPart{Source: "caller.direct", Owner: m.CallerInput, Text: text.String()})
+	}
+	if err != nil {
+		return TurnReceipt{}, err
+	}
 	var receipt TurnReceipt
 	if err := client.Call(ctx, "turn/start", params, &receipt); err != nil {
 		return TurnReceipt{}, err
@@ -112,6 +140,9 @@ func StartTurn(ctx context.Context, client *codexapp.Client, params map[string]a
 // the exact native request ID. Retrying an uncertain result remains the
 // service writer's responsibility.
 func SendAskReply(ctx context.Context, reply AskReply) error {
+	if _, _, err := m.FreezeInput(m.AnswerParts(reply.Answers)...); err != nil {
+		return err
+	}
 	probeCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	client, err := codexapp.Open(probeCtx, reply.Endpoint)
