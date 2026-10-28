@@ -57,11 +57,43 @@ def classify(case, row):
     return result
 
 
+def independently_cleaned_front(args, root, row, proof_path):
+    """Cleanup-only evidence never changes the failed Run or acceptance result."""
+    if row["valid_publication_sample"] or row.get("reached_publication"):
+        return False
+    proof = formal.load(Path(proof_path))
+    evidence = Path(proof_path).parent
+    record = formal.load(root/row["root"]/"closed-run-record.json")
+    assert proof["run_id"] == row["run_id"] and proof["runner_resources_settled"] is False
+    assert not record.get("native_started") and not record.get("native_managed") and not record["workflow"].get("StageInputs")
+    assert row["cleanup"]["service_stopped"] and record["pending_stop"]
+    assert formal.load(root/row["root"]/"closed-run.json")["new_inputs_allowed"] is False
+    worktree = formal.load(evidence/"owned-worktree.json")
+    assert worktree["displayName"] == f"sr-pub3-{row['ordinal']:02d}-{row['run_id']}" and not worktree["isMainWorktree"]
+    assert worktree["id"] == proof["worktree_id"] and worktree["instanceId"] == proof["instance_id"]
+    terminal = formal.load(evidence/"idle-shell-show.json")["result"]["terminal"]
+    assert terminal["worktreeId"] == worktree["id"] and terminal["agentWait"] is None
+    read = formal.load(evidence/"idle-shell-read.json")["result"]["terminal"]
+    assert read["tail"] == ["PS "+worktree["path"].replace("/", "\\")+">"] and not read["truncated"]
+    closed = formal.load(evidence/"orca-close-only-owned-idle-shell-attempt1.result.json")
+    zero = formal.load(evidence/"orca-immediate-prerm-zero-attempt1.result.json")
+    assert closed["ok"] and closed["result"]["close"]["handle"] == terminal["handle"] and closed["result"]["close"]["ptyKilled"]
+    assert zero["ok"] and formal.complete_zero(zero["result"])
+    assert all(v["_meta"]["runtimeId"] == args.runtime for v in (closed, zero))
+    assert formal.load(evidence/"orca-remove-only-owned-created-worktree-attempt1.result.json")["ok"]
+    assert any(not (v := formal.load(p))["ok"] and v["error"]["code"] == "selector_not_found" for p in evidence.glob("orca-removal-readonly-*.result.json"))
+    local = formal.load(evidence/"local-owner-absence.json")
+    assert local["executable"] == args.runner and local["process_ids"] == [] and local["verified"]
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("runner", "audit-exe", "baseline", "repository", "first", "publish", "out", "state-root", "runtime", "orca", "pwsh", "phase"):
         parser.add_argument("--"+name, required=True)
     parser.add_argument("--gate-summary")
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--front-cleanup-proof")
     args = parser.parse_args()
     if args.phase not in ("gate", "comparison"):
         raise RuntimeError("explicit gate or comparison required")
@@ -74,16 +106,40 @@ def main():
         if not gate.get("qualified") or gate["runner_sha256"] != args.runner_sha:
             raise RuntimeError("same exact Runner build must first pass real first-task/publication gate")
     root, states = Path(args.out), Path(args.state_root)
-    root.mkdir(exist_ok=False)
-    if states.exists():
-        raise RuntimeError("fresh state root required")
-    summary = dict(schema="valid-formal-publication-comparison/v1", phase=args.phase, status="running", started_at=formal.now(),
-                   source_build=formal.load(args.runner+".build.json"), runner_sha256=args.runner_sha,
-                   rows=[], valid_samples=[], front_failures=[], active_case=None, qualified=False)
+    if args.resume:
+        summary = formal.load(root/"summary.json")
+        assert args.phase == "comparison" and summary["status"] == "stopped" and summary["active_case"] is None
+        assert summary["runner_sha256"] == args.runner_sha
+        assert len(summary["rows"]) > 0
+        interruption = root/("interruption-"+formal.now().replace(":", "-")+".json")
+        formal.save(interruption, summary)
+        for row in summary["rows"]:
+            settled = not row.get("cleanup_error") and all(row["cleanup"].get(k) for k in ("run_stopped", "service_stopped", "resources_settled", "native_zero", "worktree_removed"))
+            if not settled:
+                assert args.front_cleanup_proof and independently_cleaned_front(args, root, row, args.front_cleanup_proof)
+                summary.setdefault("independent_cleanup_proofs", {})[row["run_id"]] = str(Path(args.front_cleanup_proof).resolve())
+        summary["valid_samples"] = [r for r in summary["rows"] if r["valid_publication_sample"]]
+        summary["front_failures"] = [r for r in summary["rows"] if not r["valid_publication_sample"]]
+        summary.update(status="running", resumed_at=formal.now())
+        summary.pop("error", None)
+    else:
+        root.mkdir(exist_ok=False)
+        if states.exists():
+            raise RuntimeError("fresh state root required")
+        summary = dict(schema="valid-formal-publication-comparison/v1", phase=args.phase, status="running", started_at=formal.now(),
+                       source_build=formal.load(args.runner+".build.json"), runner_sha256=args.runner_sha,
+                       rows=[], valid_samples=[], front_failures=[], active_case=None, qualified=False)
     formal.save(root/"summary.json", summary)
     baseline = formal.load(Path(args.baseline))
     schedule = [("short", 0)] if args.phase == "gate" else [("long", 1), ("short", 1), ("short", 2), ("long", 2), ("long", 3), ("short", 3)]
-    ordinal, consecutive_front = (0 if args.phase == "gate" else 1), 0
+    assert [(v["group"], v["pair"]) for v in summary["valid_samples"]] == schedule[:len(summary["valid_samples"])]
+    schedule = schedule[len(summary["valid_samples"]):]
+    ordinal = max((v["ordinal"] for v in summary["rows"]), default=(-1 if args.phase == "gate" else 0))+1
+    consecutive_front = 0
+    for row in reversed(summary["rows"]):
+        if row["valid_publication_sample"]: break
+        consecutive_front += 1
+    assert consecutive_front < 3, "bounded front-failure limit reached; diagnose before more runs"
     try:
         for group, pair in schedule:
             while True:
