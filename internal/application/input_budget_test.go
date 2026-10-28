@@ -53,13 +53,19 @@ func TestBudgetCallerOwnershipAndFeedback(t *testing.T) {
 			t.Fatal("legacy input rewritten", err)
 		}
 	}
-	r := budgetRecord()
-	r.PromptBodies[workflow.StepImplement] = strings.Repeat("c", 2000)
-	r.Request.Workflow.PromptOverrides = map[string]string{workflow.StepImplement: r.PromptBodies[workflow.StepImplement]}
-	if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, "x"); err == nil || r.Snapshot.PendingTurn != nil || len(r.Workflow.StageInputs) != 0 {
-		t.Fatal("caller overflow queued input", err)
+	for _, size := range []int{1999, 2000, 2001, 3001, 10552} {
+		r := budgetRecord()
+		r.PromptBodies[workflow.StepImplement] = strings.Repeat("c", size)
+		r.Request.Workflow.PromptOverrides = map[string]string{workflow.StepImplement: r.PromptBodies[workflow.StepImplement]}
+		if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, "回答😀"); err != nil {
+			t.Fatal("caller text rejected", size, err)
+		}
+		input := r.Snapshot.PendingTurn
+		if input == nil || len(r.Workflow.StageInputs) != 1 || input.Budget.CallerBytes != size+len("回答😀") || !strings.Contains(input.Prompt, r.PromptBodies[workflow.StepImplement]) {
+			t.Fatal("caller text changed or unaccounted", size)
+		}
 	}
-	r = budgetRecord()
+	r := budgetRecord()
 	r.Request.Documents.Spec.Path = strings.Repeat("p", 1100)
 	if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err == nil || r.Snapshot.PendingTurn != nil {
 		t.Fatal("Runner path overflow queued", err)

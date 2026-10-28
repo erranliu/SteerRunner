@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -77,7 +78,7 @@ func TestAsyncQuestionObserveSteerAndReconcile(t *testing.T) {
 	case <-ctx.Done():
 		t.Fatal("question not observed")
 	}
-	command, message := "saved-answer-command", "Answer to original async item: worker"
+	command, message := "saved-answer-command", "Answer to original async item: worker "+strings.Repeat("中文😀\n", 400)
 	if err := codexworker.SteerAsyncAnswer(ctx, client, thread.Thread.ID, workspace, turn.Turn.ID, command, message); err != nil {
 		t.Fatal(err)
 	}

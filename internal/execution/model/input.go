@@ -11,9 +11,7 @@ import (
 )
 
 const InputContract = "steerrunner-model-input/v1"
-const CallerInputBytes = 2000
 const RunnerInputBytes = 1000
-const TotalInputBytes = 3000
 
 type InputOwner string
 
@@ -60,7 +58,7 @@ type InputBudgetError struct {
 }
 
 func (e *InputBudgetError) Error() string {
-	return fmt.Sprintf("input_budget_exceeded: caller=%d/%d runner=%d/%d total=%d/%d UTF-8 bytes; sources=%s; candidate not sent", e.CallerBytes, CallerInputBytes, e.RunnerBytes, RunnerInputBytes, e.TotalBytes, TotalInputBytes, strings.Join(e.Sources, ","))
+	return fmt.Sprintf("input_budget_exceeded: caller=%d/unlimited runner=%d/%d total=%d/unlimited UTF-8 bytes; sources=%s; candidate not sent", e.CallerBytes, e.RunnerBytes, RunnerInputBytes, e.TotalBytes, strings.Join(e.Sources, ","))
 }
 func (b *InputBudget) Clone() *InputBudget {
 	if b == nil {
@@ -141,7 +139,7 @@ func CheckInput(text string, b *InputBudget) error {
 	if _, err := InputParts(text, b); err != nil {
 		return err
 	}
-	if b.CallerBytes > CallerInputBytes || b.RunnerBytes > RunnerInputBytes || b.TotalBytes > TotalInputBytes {
+	if b.RunnerBytes > RunnerInputBytes {
 		sources := []string{}
 		for _, p := range b.Fragments {
 			sources = append(sources, p.Source)

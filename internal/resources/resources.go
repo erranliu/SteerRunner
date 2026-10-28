@@ -77,8 +77,8 @@ func VersionInfo() any {
 func ModelInputContract() any {
 	return map[string]any{
 		"contract":          model.InputContract,
-		"utf8_bytes":        map[string]int{"caller": model.CallerInputBytes, "runner": model.RunnerInputBytes, "total": model.TotalInputBytes},
-		"measurement":       "all new model-visible text in one native dispatch after framing/newline handling; no borrowing, truncation, summarization or automatic splitting; checked text is frozen and verified before send",
+		"utf8_bytes":        map[string]any{"caller": nil, "runner": model.RunnerInputBytes, "total": nil},
+		"measurement":       "all new model-visible text in one native dispatch after framing/newline handling; null byte limits mean no text budget; only Runner-generated text is capped; no truncation, summarization or automatic splitting; checked text is frozen and verified before send",
 		"caller":            "body override, instruction, inline materials, schema, answer, feedback; escaped data remains caller",
 		"runner":            "default body, labels/separators/newlines, dynamic facts/references, result format, completion, native model/header framing, developer and Runner tool descriptions, parser source text",
 		"tool_file_results": "not new input text unless copied into it; existing file channels only, references must resolve in execution workspace",
