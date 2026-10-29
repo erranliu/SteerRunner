@@ -13,6 +13,9 @@ import (
 
 func freezeProjectPolicies(ctx context.Context, r *runstate.Record) error {
 	git := gitHost()
+	// Fixed paths must not inherit the host's pathspec parsing or case rules.
+	git.Command.BlockedEnvironment = append(git.Command.BlockedEnvironment,
+		"GIT_LITERAL_PATHSPECS", "GIT_GLOB_PATHSPECS", "GIT_NOGLOB_PATHSPECS", "GIT_ICASE_PATHSPECS")
 	return readProjectPolicies(r, func(args ...string) ([]byte, error) {
 		return git.Output(ctx, r.RepositoryPath, append([]string{"--no-replace-objects"}, args...)...)
 	})
