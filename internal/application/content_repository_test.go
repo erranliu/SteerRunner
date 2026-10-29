@@ -51,7 +51,7 @@ func repositoryFixture(t *testing.T) (string, string) {
 func TestContentRepositoryFixedObjectsAndRecovery(t *testing.T) {
 	path, commit := repositoryFixture(t)
 	material := "Roadmap R7"
-	r := &runstate.Record{ID: "repo", InputDigest: "fixed", Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: "generate", Version: 1}, Generate: &contracts.GenerateInput{Repository: &contracts.GenerateRepository{LocalPath: path, Commit: commit}, Instruction: "Investigate", Materials: []contracts.Document{{Kind: "inline", Path: "roadmap.txt", Content: &material}}, OutputSchema: json.RawMessage(`{"type":"object"}`)}}}
+	r := &runstate.Record{ID: "repo", InputDigest: "fixed", Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: "generate", Version: 1}, Generate: &contracts.GenerateInput{Repository: &contracts.GenerateRepository{LocalPath: path, Commit: commit, Paths: []string{"code.txt"}}, Instruction: "Investigate", Materials: []contracts.Document{{Kind: "inline", Path: "roadmap.txt", Content: &material}}, OutputSchema: json.RawMessage(`{"type":"object"}`)}}}
 	r, err := freezeContent(context.Background(), t.TempDir(), r, "attempt", "generation", canonical(codex.ProfileConfig{Executable: os.Args[0], AccessMode: "read_only"}))
 	if err != nil {
 		t.Fatal(err)
