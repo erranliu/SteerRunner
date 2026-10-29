@@ -58,11 +58,20 @@ func TestContentRepositoryUnsafeAndLimits(t *testing.T) {
 		}()},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			tree := write(tc.tree, "mktree")
+			tree := write(tc.tree+fmt.Sprintf("100644 blob %s\tselected.txt\n", blob), "mktree")
 			commit := run("commit-tree", tree, "-m", "test snapshot")
 			destination := filepath.Join(t.TempDir(), "snapshot")
 			if _, err := FreezeContentRepository(context.Background(), g, contracts.GenerateRepository{LocalPath: dir, Commit: commit}, destination); err == nil {
 				t.Fatal("unsupported tree accepted")
+			}
+			source, err := FreezeContentRepository(context.Background(), g, contracts.GenerateRepository{LocalPath: dir, Commit: commit, Paths: []string{"selected.txt"}}, filepath.Join(t.TempDir(), "selected"))
+			if err != nil || source.Commit != commit || source.Tree != tree || len(source.Files) != 1 || source.Files[0].Path != "selected.txt" || source.Files[0].Blob != blob {
+				t.Fatalf("selected original object snapshot: %+v / %v", source, err)
+			}
+			for _, paths := range [][]string{{}, {"missing"}, {"selected.txt", "SELECTED.txt"}, {"../selected.txt"}, {"link"}} {
+				if _, err := FreezeContentRepository(context.Background(), g, contracts.GenerateRepository{LocalPath: dir, Commit: commit, Paths: paths}, filepath.Join(t.TempDir(), "rejected")); err == nil {
+					t.Fatalf("invalid selection accepted: %v", paths)
+				}
 			}
 			if _, err := os.Stat(destination); !os.IsNotExist(err) {
 				t.Fatal("failed admission left snapshot", err)

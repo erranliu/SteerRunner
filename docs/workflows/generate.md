@@ -104,3 +104,9 @@ $state = 'C:/RunnerState/spec-plan'
 超时或连接丢失先 inspect 原 request_id；如需重放，必须原 request_id + 原始请求，不能换 ID。
 `stop` 仍使用原 expected_revision，`resume` 沿用既有可恢复状态限制。generate 关闭后不重新生成。
 重启必须保留 state-dir，并使用支持此输入及源 manifest 的 Runner 版本。
+
+### 按文件选择固定材料
+
+`generate.repository.paths` 可显式列出所需普通文件的完整仓库相对路径；省略该字段表示整棵提交树。显式清单必须非空、无重复且逐项存在，不能使用目录、通配符或链接，选择失败不会回退整仓。公开能力 `generate.repository.selection` 为 `explicit_file_paths_or_whole_tree`。
+
+4096 文件、64 MiB 正文与 1 MiB manifest 上限只统计实际冻结的文件。所选文件直接读取原提交的 blob，`repository_source.commit/tree` 仍指向原提交及根树，逐文件 blob/SHA256/size 不变；未选中的大资源不会被复制。执行后仍按完整 manifest 核验本次私有快照的不可变性。此选择只控制生成调查材料，不选择或删减项目测试。
