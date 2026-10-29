@@ -90,6 +90,60 @@ func TestProjectPoliciesFreezeFixedCommitAndRecovery(t *testing.T) {
 	}
 }
 
+func TestProjectPoliciesIgnoreGitPathspecEnvironment(t *testing.T) {
+	f := newBaseRefreshFixture(t, "origin", "main")
+	slots := workflow.PolicySlots()
+	for path, content := range map[string]string{
+		slots[0].Path: "fixed git policy",
+		slots[1].Path: "fixed command policy",
+		"SteerlineFlow/runner-policies/Testing.md": "wrong case must not configure testing",
+	} {
+		full := filepath.Join(f.writer, filepath.FromSlash(path))
+		if err := os.MkdirAll(filepath.Dir(full), 0700); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(full, []byte(content), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	f.pinned = f.commit("pathspec policies")
+	f.git(f.writer, "push", f.remoteName, "HEAD:refs/heads/"+f.branch)
+	f.request.Repository.BaseRevision = f.pinned
+	f.input.Input = canonical(f.request)
+	r := f.freeze()
+	want := &workflow.ProjectPolicies{Commit: f.pinned, Files: []workflow.PolicyFile{
+		{PolicySlot: slots[0], Exists: true, SHA256: ra.Digest([]byte("fixed git policy"))},
+		{PolicySlot: slots[1], Exists: true, SHA256: ra.Digest([]byte("fixed command policy"))},
+		{PolicySlot: slots[2]},
+	}}
+	if !reflect.DeepEqual(r.Workflow.ProjectPolicies, want) {
+		t.Fatalf("incorrect baseline policies: %+v", r.Workflow.ProjectPolicies)
+	}
+	if err := queueInput(r, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
+		t.Fatal(err)
+	}
+	wantPrompt := r.Snapshot.PendingTurn.Prompt
+	for _, env := range []string{"GIT_LITERAL_PATHSPECS", "GIT_GLOB_PATHSPECS", "GIT_NOGLOB_PATHSPECS", "GIT_ICASE_PATHSPECS"} {
+		t.Run(env, func(t *testing.T) {
+			t.Setenv(env, "1")
+			candidate := r.Clone()
+			candidate.Workflow.ProjectPolicies = nil
+			if err := freezeProjectPolicies(context.Background(), candidate); err != nil {
+				t.Fatal("host pathspec settings broke fixed policy lookup", err)
+			}
+			if !reflect.DeepEqual(candidate.Workflow.ProjectPolicies, want) {
+				t.Fatalf("host pathspec settings changed policy existence or hashes: %+v", candidate.Workflow.ProjectPolicies)
+			}
+			if err := queueInput(candidate, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
+				t.Fatal(err)
+			}
+			if candidate.Snapshot.PendingTurn.Prompt != wantPrompt {
+				t.Fatal("host pathspec settings changed policy reading requirements")
+			}
+		})
+	}
+}
+
 func TestProjectPoliciesUnreadableFailsAtomically(t *testing.T) {
 	path := workflow.PolicySlots()[0].Path
 	for _, mode := range []string{"lookup", "blob", "directory", "symlink"} {
