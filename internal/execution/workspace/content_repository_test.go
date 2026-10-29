@@ -73,6 +73,19 @@ func TestContentRepositoryUnsafeAndLimits(t *testing.T) {
 					t.Fatalf("invalid selection accepted: %v", paths)
 				}
 			}
+			if tc.name == "total-size" || tc.name == "file-count" {
+				paths := []string{}
+				count := 2049
+				if tc.name == "file-count" {
+					count = contracts.MaxGenerateRepositoryFiles + 1
+				}
+				for i := 0; i < count; i++ {
+					paths = append(paths, fmt.Sprintf("f%05d", i))
+				}
+				if _, err := FreezeContentRepository(context.Background(), g, contracts.GenerateRepository{LocalPath: dir, Commit: commit, Paths: paths}, filepath.Join(t.TempDir(), "over-limit")); err == nil {
+					t.Fatal("selected file bounds bypassed")
+				}
+			}
 			if _, err := os.Stat(destination); !os.IsNotExist(err) {
 				t.Fatal("failed admission left snapshot", err)
 			}
