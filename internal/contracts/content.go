@@ -34,8 +34,9 @@ const MaxGenerateRepositoryFiles = 4096
 const MaxGenerateRepositoryManifestBytes = 1 << 20
 
 type GenerateRepository struct {
-	LocalPath string `json:"local_path"`
-	Commit    string `json:"commit"`
+	LocalPath string   `json:"local_path"`
+	Commit    string   `json:"commit"`
+	Paths     []string `json:"paths,omitempty"`
 }
 
 type RepositoryFile struct {
@@ -111,6 +112,23 @@ func validateContentRun(data []byte, r RunRequest) *Fault {
 			return invalid
 		}
 		if repo := r.Generate.Repository; repo != nil {
+			var repositoryFields map[string]json.RawMessage
+			_ = json.Unmarshal(contentFields["repository"], &repositoryFields)
+			if raw, present := repositoryFields["paths"]; present && string(raw) == "null" {
+				return invalid
+			}
+			if repo.Paths != nil {
+				if len(repo.Paths) == 0 || len(repo.Paths) > MaxGenerateRepositoryFiles {
+					return invalid
+				}
+				selected := map[string]bool{}
+				for _, path := range repo.Paths {
+					if !ValidArtifactPath(path) || selected[strings.ToLower(path)] {
+						return invalid
+					}
+					selected[strings.ToLower(path)] = true
+				}
+			}
 			if directory != nil || !filepath.IsAbs(repo.LocalPath) || !plain(repo.LocalPath) || !commitPattern.MatchString(repo.Commit) || len(r.Generate.OutputSchema) == 0 {
 				return invalid
 			}

@@ -42,6 +42,20 @@ func FreezeContentRepository(ctx context.Context, g Git, input contracts.Generat
 		return nil, err
 	}
 	source := &contracts.RepositorySource{LocalPath: input.LocalPath, Commit: strings.ToLower(input.Commit), Tree: strings.TrimSpace(string(tree)), Files: []contracts.RepositoryFile{}}
+	selected := map[string]bool{}
+	if input.Paths != nil {
+		if len(input.Paths) == 0 || len(input.Paths) > contracts.MaxGenerateRepositoryFiles {
+			return nil, errors.New("invalid repository paths")
+		}
+		folded := map[string]bool{}
+		for _, path := range input.Paths {
+			if !contracts.ValidArtifactPath(path) || folded[strings.ToLower(path)] {
+				return nil, errors.New("invalid repository paths")
+			}
+			selected[path] = true
+			folded[strings.ToLower(path)] = true
+		}
+	}
 	seen := map[string]bool{}
 	components := map[string]string{}
 	var batch strings.Builder
@@ -51,6 +65,9 @@ func FreezeContentRepository(ctx context.Context, g Git, input contracts.Generat
 			continue
 		}
 		header, name, ok := strings.Cut(string(entry), "\t")
+		if input.Paths != nil && !selected[name] {
+			continue
+		}
 		fields := strings.Fields(header)
 		if !ok || len(fields) != 4 || (fields[0] != "100644" && fields[0] != "100755") || fields[1] != "blob" || !contracts.ValidArtifactPath(name) || seen[strings.ToLower(name)] {
 			return nil, fmt.Errorf("unsupported repository entry %q (regular safe unique paths required)", name)
@@ -78,6 +95,9 @@ func FreezeContentRepository(ctx context.Context, g Git, input contracts.Generat
 		seen[strings.ToLower(name)] = true
 		source.Files = append(source.Files, contracts.RepositoryFile{Path: name, Blob: fields[2], SizeBytes: size})
 		batch.WriteString(fields[2] + "\n")
+	}
+	if input.Paths != nil && len(source.Files) != len(selected) {
+		return nil, errors.New("selected repository file is missing or not a regular file")
 	}
 	objects, err := g.OutputInput(ctx, input.LocalPath, strings.NewReader(batch.String()), contracts.MaxGenerateRepositoryBytes+(1<<20), "cat-file", "--batch")
 	if err != nil {
