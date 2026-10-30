@@ -2,6 +2,8 @@
 
 2026-10-30。配套[Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)。窄范围实现已完成，项目检查/受控回归与真实资格分别登记；未达到真实双端放行条件，PR保持draft。
 
+后续本机适配、隔离 agent 构建和真实准备诊断见[本机补验记录](orca-native-submit-local.md)。下文为此前批次的原始结论；本机缺测试适配的问题已补齐，当前阻断为原控制回执默认读取发生屏幕折行。本机资格仍为 0/3，不将准备失败改为通过。
+
 ## 实现与保证
 
 删除Runner原submitNativePaste分支，使普通远端Codex多行输入直接进入原terminal send的text+enter+原request路径。删除草稿全文/折叠标签/显示LF判断、双稳定、专用轮询期限、viewport fit/restore、专用fixture与probe手动分段模式。输入规范化、冻结wire/摘要和原runtime/terminal/incarnation/session绑定保留。原受影响输入NUL/ESC拒收及观察feed清理保留。

@@ -1,0 +1,230 @@
+{
+  "agent_sha256": "e80553915e620f4c8bee679a4f46d57c175e6074a29b79620ece83315b453c7e",
+  "before_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": [
+          "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        ],
+        "omittedHostSelectors": [
+          {
+            "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+            "selector": "--environment 台式机64G"
+          }
+        ]
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "business_inputs": 0,
+  "cleaned_up": false,
+  "completed": false,
+  "emergency_census": {
+    "Payload": {
+      "terminals": [
+        {
+          "handle": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+          "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@8400730b",
+          "incarnationId": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+          "orphaned": false,
+          "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+          "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+          "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-01",
+          "tabId": "4cb29e54-ba27-4227-9474-e6b147d69c84",
+          "leafId": "2dffd927-8acb-482f-bc47-cd127fe52642",
+          "title": "SteerRunner isolated local input",
+          "connected": false,
+          "writable": false,
+          "lastOutputAt": 1793365676845,
+          "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-01\u003e",
+          "exitCause": {
+            "kind": "operator_close"
+          },
+          "executionHostId": "local"
+        }
+      ],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": [
+          "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        ],
+        "omittedHostSelectors": [
+          {
+            "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+            "selector": "--environment 台式机64G"
+          }
+        ]
+      },
+      "topologyRevisions": {
+        "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01": 1139
+      },
+      "totalCount": 1,
+      "truncated": false
+    },
+    "RuntimeID": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "emergency_census_empty": false,
+  "emergency_cleanup": true,
+  "emergency_control": {
+    "disposition": "confirmed"
+  },
+  "emergency_control_error": "",
+  "emergency_terminal": {
+    "disposition": "confirmed"
+  },
+  "emergency_terminal_error": "",
+  "input_budget": {
+    "contract": "steerrunner-model-input/v1",
+    "sha256": "e8eb7d54fa83ccdf270a0be4bf9b9112885a555fe91b0bced671e3ce0e5d7578",
+    "provenance_sha256": "02c89194b3cbe00f04f7e4ff2d33f98082da29e03293af6323e34aab28575e24",
+    "caller_bytes": 4898,
+    "runner_bytes": 0,
+    "total_bytes": 4898,
+    "fragments": [
+      {
+        "source": "caller.direct",
+        "owner": "caller",
+        "bytes": 4898
+      }
+    ]
+  },
+  "launch": {
+    "runtime_executable": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe",
+    "repository_url": "https://github.com/erranliu/SteerlineTest.git",
+    "access_mode": "sandbox",
+    "executable": "C:/Users/lmas1/AppData/Local/OpenAI/Codex/bin/22cfb1d302613eae/codex.exe",
+    "args": [
+      "--no-daemon"
+    ],
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high"
+  },
+  "logical_sha256": "e8eb7d54fa83ccdf270a0be4bf9b9112885a555fe91b0bced671e3ce0e5d7578",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "terminal": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+    "runtime_id": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+    "incarnation": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+    "execution_host": "local",
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01"
+  },
+  "run_id": "7a6150a145fcbe504b25e906fa3573ed",
+  "stop_error": "original Codex native exit binding is incomplete; PTY exit is insufficient",
+  "stop_receipt": {
+    "operation": {
+      "version": 1,
+      "id": "cd42be13031f2ea0006656a1a16bc726",
+      "run_id": "7a6150a145fcbe504b25e906fa3573ed",
+      "attempt_id": "16de73ecff669d89f56907b4fd76fdc4",
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "target": {
+        "id": "orca-terminal:390d160e546904609b67be1b",
+        "execution_host": "local"
+      },
+      "action": "stop_execution",
+      "idempotency_key": "probe-stop",
+      "request": "e30=",
+      "receipt": "eyJ2ZXJzaW9uIjoxLCJwaGFzZSI6Im5vdC1hdHRlbXB0ZWQifQ==",
+      "payload_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "status": "in_flight",
+      "started_at": "2026-10-30T13:07:55.9193219Z",
+      "updated_at": "2026-10-30T13:07:55.9193219Z",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:390d160e546904609b67be1b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "7a6150a145fcbe504b25e906fa3573ed",
+        "attempt_id": "16de73ecff669d89f56907b4fd76fdc4",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+          "runtime_id": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+          "incarnation": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01"
+        }
+      },
+      "lifecycle_identity": {
+        "project_id": "native-input-probe",
+        "execution_id": "7a6150a145fcbe504b25e906fa3573ed",
+        "configuration_digest": "c224a1a758bcc8431b72ea3f9483579659fae3a881939ebcbee903308eec1b2e",
+        "resource_generation": "9cdffbb99086b1ece3abf30f1459966b",
+        "input_binding_digest": "bd7d9f03d30c5414be30000253682677cadf1c2d283ee48ab466cfe00b029e6e",
+        "ref": {
+          "version": 0,
+          "backend": "orca",
+          "protocol": "orca_terminal_v3",
+          "target": {
+            "id": "orca-terminal:390d160e546904609b67be1b",
+            "execution_host": "local"
+          },
+          "agent": {
+            "name": "codex"
+          },
+          "run_id": "7a6150a145fcbe504b25e906fa3573ed",
+          "attempt_id": "16de73ecff669d89f56907b4fd76fdc4",
+          "external": {
+            "kind": "orca_terminal",
+            "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+            "terminal": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+            "runtime_id": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+            "incarnation": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+            "execution_host": "local",
+            "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01"
+          }
+        }
+      }
+    },
+    "disposition": "outcome_unknown",
+    "state": {}
+  },
+  "target_kind": "local",
+  "terminal_create": {
+    "Payload": {
+      "terminal": {
+        "processId": 30168,
+        "handle": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+        "tabId": "4cb29e54-ba27-4227-9474-e6b147d69c84",
+        "paneKey": "4cb29e54-ba27-4227-9474-e6b147d69c84:2dffd927-8acb-482f-bc47-cd127fe52642",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@8400730b",
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "title": "SteerRunner isolated local input",
+        "executionHostId": "local",
+        "incarnationId": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "RuntimeID": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "total_generic_calls": 0,
+  "total_terminal_reads": 1
+}

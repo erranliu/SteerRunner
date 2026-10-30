@@ -1,0 +1,23 @@
+{
+  "id": "65117dfe-2639-4ca2-a890-6370069cb3f3",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_4d63e2d8-db6e-425a-99f8-bcaad422952a",
+      "status": "running",
+      "tail": [
+        "SR_STREAM_PROBE:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

@@ -10,6 +10,10 @@ Controlled 前置为 **26 个顶层测试**，另有 **5 个 focused native L3 �
 唯一完整原文、原 provider/进程结果及清理，不再依赖草稿或resize。
 `controlled -Repeat 30` 在同一正式脚本入口运行确定性 local/remote 提交、异常回执、
 重启、身份和共享锁反例，报告每叶例实际执行/失败/跳过，不算真实 Orca 资格。
+同一入口支持 `Environment` 为空的本机目标，使用隔离构建的现有 Runner agent，执行原
+control/ready/model/history/stop；本机准备失败须保留回执和清理记录，不计为提交通过。
+`TestLocalNativeProbeTargetAndBusinessScope`、`TestLocalNativeProbeCensusKeepsOriginalHostScope`
+验证本机配置、调用计数和原宿主清单边界，随正式 controlled 入口运行。
 旧 `segmented-shape` 模式退出当前入口，历史证据不改；本机原准备/模型/history未具备时
 须如实标未验证。默认 L1 包含受控回归，真实探针另验，见[入口](testing.md)。
 下文日期增量中的旧数量仅表示当时状态；本次已落实 L2/parser 拆分、feedback 吸收、generate/takeover 及 L4 同批构建复用，核对与后续精简顺序见[整理结论](#测试整理结论-2026-10-26)。

@@ -1,0 +1,4 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_local_probe_test.go:79: local probe requires an empty authoritative fresh worktree
+--- FAIL: TestOrcaNativeStateLiveLifecycle (0.57s)
+FAIL

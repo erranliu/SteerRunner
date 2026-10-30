@@ -1,0 +1,57 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T13:07:57.3634755Z",
+  "started": "2026-10-30T13:07:56.6190882Z",
+  "stdout": {
+    "id": "a3b97215-b754-41fb-bbd8-3f10f98c4bc2",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@8400730b",
+        "incarnationId": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-01",
+        "tabId": "4cb29e54-ba27-4227-9474-e6b147d69c84",
+        "leafId": "2dffd927-8acb-482f-bc47-cd127fe52642",
+        "title": "SteerRunner isolated local input",
+        "paneTitle": "SteerRunner isolated local input",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793365676845,
+        "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-01\u003e",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 1321,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

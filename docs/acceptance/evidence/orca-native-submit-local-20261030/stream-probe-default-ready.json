@@ -1,0 +1,59 @@
+{
+  "id": "cdbed910-0c94-47ab-90f8-31cb9a418bdd",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_4d63e2d8-db6e-425a-99f8-bcaad422952a",
+      "status": "running",
+      "tail": [
+        "SR_STREAM_PROBE:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-lo",
+        "cal-20261030-02>"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 7,
+      "tailRows": [
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": false,
+          "trailingSpaces": 0
+        },
+        {
+          "wrapped": true,
+          "trailingSpaces": 1
+        }
+      ],
+      "source": "screen"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}
