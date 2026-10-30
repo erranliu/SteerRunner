@@ -11,7 +11,7 @@ import (
 )
 
 func TestNativeFollowupAfterCompletedToolTurn(t *testing.T) {
-	for _, fault := range []string{"none", "zero-incarnation", "draft-only", "submit-response-lost", "old-final", "changed-input"} {
+	for _, fault := range []string{"none", "zero-incarnation", "submit-response-lost", "old-final", "changed-input"} {
 		t.Run(fault, func(t *testing.T) {
 			l, host, feed, s, first := publicMessageFixture(t)
 			feed.events = []native.AgentState{messageStart(first)}
@@ -39,28 +39,22 @@ func TestNativeFollowupAfterCompletedToolTurn(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
-			host.screen = true
-			if fault == "draft-only" {
-				host.lostPasteReply = true
-			}
+			host.unstarted = true
 			if fault == "submit-response-lost" {
-				host.lostEnterReply = true
+				host.lostSubmitReply = true
 			}
 			l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
 				return native.StateSample{AgentState: end}, nil
 			}
 			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &second}))
 			bind(&s, r)
-			if fault == "draft-only" || fault == "submit-response-lost" {
+			if fault == "submit-response-lost" {
 				if err == nil || r.Disposition != b.OperationUnknown || r.State.InputAccepted {
 					t.Fatal("unknown became accepted", r, err)
 				}
 				before := len(host.calls)
 				if _, err := l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &second})); err == nil || len(host.calls) != before {
 					t.Fatal("unknown second input replayed", err)
-				}
-				if (host.draft != "") != (fault == "draft-only") {
-					t.Fatal("fixture failed to distinguish draft from applied submit")
 				}
 				return
 			}

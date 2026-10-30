@@ -1,0 +1,53 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "2e9bf0258f0636f5b7ec30dbd0efe30b78c1e070",
+  "source_dirty": true,
+  "started_at": "2026-10-30T12:16:17.2995421Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "test_count": 711,
+      "level": "L1",
+      "terminal_extensions_passed": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-native-submit-20261030-impl\\l1\\framework",
+      "native_driver_compile_exit": 0,
+      "terminal_extension_exit": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-native-submit-20261030-impl\\l1",
+      "terminal_extension_test_count": 29,
+      "skipped_tests": [
+        "TestAuthenticationNativeToolBoundary",
+        "TestProcessHostCommandHelper",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "exit_code": 0,
+      "native_zero_match_guard": true
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-30T12:25:15.6463283Z"
+}

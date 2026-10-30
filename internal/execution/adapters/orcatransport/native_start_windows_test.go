@@ -287,11 +287,7 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 					sends++
 				}
 			}
-			wantSends := 1
-			if multiline {
-				wantSends = 2
-			}
-			if sends != wantSends || host.nativeSends != 1 {
+			if sends != 1 || host.nativeSends != 1 {
 				t.Fatal("recovery sent another input", sends, host.nativeSends)
 			}
 		})

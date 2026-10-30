@@ -17,33 +17,33 @@ import (
 )
 
 type fakeHost struct {
-	callerFileWriter               func(string, []byte) error
-	nativeSends                    int
-	nativePaste                    bool
-	lostPasteReply, lostEnterReply bool
-	nativePrompt                   string
-	nativeReply                    string
-	mu                             sync.Mutex
-	root, nativePath, incarnation  string
-	calls                          [][]string
-	lines                          []string
-	writeReply, unknown, clipped   bool
-	screen                         bool
-	unstarted, busy                bool
-	draft                          string
-	commandMode, launched          bool
-	delayLaunchIdentity            bool
-	collapsedEcho                  bool
-	waitFailures                   int
-	waitBlocked                    string
-	rejectInput                    bool
-	rejectWrongRequest             bool
-	rejectUnavailable              bool
-	waitCalls                      int
-	waitBudgets                    []time.Duration
-	workspace                      map[string]any
-	repoInventory                  any
-	failShow, unknownClose         bool
+	terminalHandle                string
+	callerFileWriter              func(string, []byte) error
+	nativeSends                   int
+	lostSubmitReply               bool
+	nativePrompt                  string
+	nativeReply                   string
+	mu                            sync.Mutex
+	root, nativePath, incarnation string
+	calls                         [][]string
+	lines                         []string
+	writeReply, unknown, clipped  bool
+	draft                         string
+	screen                        bool
+	unstarted, busy               bool
+	commandMode, launched         bool
+	delayLaunchIdentity           bool
+	collapsedEcho                 bool
+	waitFailures                  int
+	waitBlocked                   string
+	rejectInput                   bool
+	rejectWrongRequest            bool
+	rejectUnavailable             bool
+	waitCalls                     int
+	waitBudgets                   []time.Duration
+	workspace                     map[string]any
+	repoInventory                 any
+	failShow, unknownClose        bool
 }
 
 func (f *fakeHost) StartManaged(*exec.Cmd) (b.StopHandle, error) {
@@ -84,7 +84,11 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 	if f.nativePath != "" {
 		path = f.nativePath
 	}
-	terminal := map[string]any{"handle": "terminal", "incarnationId": f.incarnation, "worktreeId": "repo::" + path, "worktreePath": path, "branch": "worker", "connected": true, "agentIdentity": "codex", "status": "running"}
+	handle := f.terminalHandle
+	if handle == "" {
+		handle = "terminal"
+	}
+	terminal := map[string]any{"handle": handle, "incarnationId": f.incarnation, "worktreeId": "repo::" + path, "worktreePath": path, "branch": "worker", "connected": true, "agentIdentity": "codex", "status": "running"}
 	if f.commandMode && (!f.launched || f.delayLaunchIdentity) {
 		terminal["agentIdentity"] = ""
 	}
@@ -119,7 +123,7 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 		result = map[string]any{"wait": map[string]any{"satisfied": !f.busy && f.waitBlocked == "", "blockedReason": f.waitBlocked}}
 	case "terminal read":
 		if f.screen || strings.Contains(strings.Join(c.Args, " "), "--screen") {
-			result = map[string]any{"terminal": map[string]any{"handle": "terminal", "source": "screen", "tail": f.lines, "oldestCursor": "0", "nextCursor": "0", "latestCursor": "0", "truncated": true, "limited": f.clipped, "draft": f.draft}}
+			result = map[string]any{"terminal": map[string]any{"handle": handle, "source": "screen", "tail": f.lines, "oldestCursor": "0", "nextCursor": "0", "latestCursor": "0", "truncated": true, "limited": f.clipped, "draft": f.draft}}
 			break
 		}
 		cursor := 0
@@ -129,7 +133,7 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 		if cursor > len(f.lines) {
 			return nil, errors.New("cursor reset")
 		}
-		result = map[string]any{"terminal": map[string]any{"handle": "terminal", "source": "stream", "tail": f.lines[cursor:], "oldestCursor": "0", "nextCursor": strconv.Itoa(len(f.lines)), "latestCursor": strconv.Itoa(len(f.lines)), "truncated": f.clipped}}
+		result = map[string]any{"terminal": map[string]any{"handle": handle, "source": "stream", "tail": f.lines[cursor:], "oldestCursor": "0", "nextCursor": strconv.Itoa(len(f.lines)), "latestCursor": strconv.Itoa(len(f.lines)), "truncated": f.clipped}}
 	case "terminal send":
 		if f.rejectUnavailable {
 			return json.Marshal(map[string]any{"ok": false, "error": map[string]any{"code": "runtime_unavailable", "message": "runtime unavailable"}, "_meta": map[string]any{"runtimeId": "runtime"}})
@@ -139,37 +143,17 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 			if f.rejectWrongRequest {
 				id = "foreign"
 			}
-			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": false, "prompt": map[string]any{"requestId": id, "processIncarnation": f.incarnation}}}
+			result = map[string]any{"send": map[string]any{"handle": handle, "accepted": false, "prompt": map[string]any{"requestId": id, "processIncarnation": f.incarnation}}}
 			break
 		}
 		if f.unknown {
 			return nil, errors.New("lost response")
 		}
 		text := arg("--text")
-		if strings.HasPrefix(text, "\x1b[200~") && !strings.Contains(strings.Join(c.Args, " "), "--enter") {
-			f.nativeSends++
-			f.nativePrompt = strings.TrimSuffix(strings.TrimPrefix(text, "\x1b[200~"), "\x1b[201~")
-			f.draft = f.nativePrompt
-			f.nativePaste = true
-			if f.lostPasteReply {
-				return nil, errors.New("paste applied; response lost")
-			}
-			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": len(text)}}
-			break
-		}
-		if f.nativePaste && text == "" && strings.Contains(strings.Join(c.Args, " "), "--enter") {
-			f.nativePaste = false
-			f.draft = ""
-			if f.lostEnterReply {
-				return nil, errors.New("Enter applied; response lost")
-			}
-			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "bytesWritten": 1}}
-			break
-		}
 
 		if f.commandMode && !f.launched {
 			f.launched = true
-			result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation}}}
+			result = map[string]any{"send": map[string]any{"handle": handle, "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation}}}
 			break
 		}
 		if strings.Contains(text, "SL_RESULT") || strings.Contains(text, "reply_b64") || strings.Contains(text, "nonce=") {
@@ -193,12 +177,15 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 		if f.unstarted {
 			stages = stages[:1]
 		}
-		result = map[string]any{"send": map[string]any{"handle": "terminal", "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation, "stages": stages}}}
+		if f.lostSubmitReply {
+			return nil, errors.New("prompt applied; response lost")
+		}
+		result = map[string]any{"send": map[string]any{"handle": handle, "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": f.incarnation, "stages": stages, "provider": "codex", "observation": "supported"}}}
 	case "terminal close":
 		if f.unknownClose {
 			return nil, errors.New("close response lost")
 		}
-		result = map[string]any{"close": map[string]any{"handle": "terminal", "ptyKilled": true}}
+		result = map[string]any{"close": map[string]any{"handle": handle, "ptyKilled": true}}
 	default:
 		return nil, errors.New("unexpected resource or orchestration dependency")
 	}

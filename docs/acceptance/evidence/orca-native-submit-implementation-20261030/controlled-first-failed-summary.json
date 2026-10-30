@@ -1,0 +1,656 @@
+{
+  "schema": "steerrunner-native-input-controlled/v1",
+  "repeat": 1,
+  "cases": [
+    {
+      "id": "TestNativeComposerGatePreventsPrematureInput/busy",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeComposerGatePreventsPrematureInput/permission",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeComposerGatePreventsPrematureInput/ready",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeComposerGatePreventsPrematureInput/timeout",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/changed-input",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/duplicate-input",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/expanded-lines",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/missed",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/observed",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/restored",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeCRLFPastePreservesOriginalInputAndCompletion/unknown-submit",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeFollowupAfterCompletedToolTurn/changed-input",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeFollowupAfterCompletedToolTurn/none",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeFollowupAfterCompletedToolTurn/old-final",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeFollowupAfterCompletedToolTurn/submit-response-lost",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeFollowupAfterCompletedToolTurn/zero-incarnation",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptControlCharactersRejected/6e340b9c",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptControlCharactersRejected/77adfc95",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptProcessingOrder/local",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptProcessingOrder/remote",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/accepted-only",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/future-stage",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/handle",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/incarnation-replaced",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/missing-observation",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/missing-provider",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/no-stages",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/old-host",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/permission",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/rejected",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/reordered-stages",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/request",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/response-lost",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/runtime",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/start-only",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/local/unsupported",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/accepted-only",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/future-stage",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/handle",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/incarnation-replaced",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/missing-observation",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/missing-provider",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/no-stages",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/old-host",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/permission",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/rejected",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/reordered-stages",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/request",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/response-lost",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/runtime",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/start-only",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptReceiptFaults/remote/unsupported",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSharedQueueWithStopAndCancellation",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/blank-lines",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/chinese",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/crlf",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/long",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/multiline",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/local/single",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/blank-lines",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/chinese",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/crlf",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/long",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/multiline",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativePromptSubmission/remote/single",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput",
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/authority",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/baseline",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/boundary",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/conflict",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/future-row",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/incarnation",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/interrupted",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/missing-id",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/new-root",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/no-acceptance",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/no-start",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/no-working",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/observation-before-main",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/observation-time",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/old-row",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/pane",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/prefix-only",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/provider",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/restored",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/revision",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/text",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeInputProofRejectsUnboundHistory/tool-output",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeStateBinding/native-original-is-immutable",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOrcaNativeStateBinding/preserve-native-markdown",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestRecoveryRejectsProviderReplacementInsideOriginalTerminal",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "executed": 91,
+  "passed": 87,
+  "failed": 4,
+  "skipped": 0,
+  "exit_code": 1,
+  "source": {
+    "source_commit": "2e9bf0258f0636f5b7ec30dbd0efe30b78c1e070",
+    "source_dirty": true,
+    "mode": "controlled",
+    "target_sha256": "",
+    "passed": false,
+    "source_digest": "e9433527b8fe18165bb4441b4aca41eb2e791b4eb4fa7135926d9c9ae575231e"
+  }
+}

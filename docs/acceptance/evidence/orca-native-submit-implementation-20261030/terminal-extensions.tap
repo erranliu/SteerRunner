@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: DSH requires root quiescence and a real persistence checkpoint before settlement
+ok 1 - DSH requires root quiescence and a real persistence checkpoint before settlement
+  ---
+  duration_ms: 49.5489
+  type: 'test'
+  ...
+# Subtest: child session events and unrelated native turn endings cannot complete the root
+ok 2 - child session events and unrelated native turn endings cannot complete the root
+  ---
+  duration_ms: 45.6013
+  type: 'test'
+  ...
+# Subtest: an empty or failed native flush never becomes a successful native receipt
+ok 3 - an empty or failed native flush never becomes a successful native receipt
+  ---
+  duration_ms: 45.864
+  type: 'test'
+  ...
+# Subtest: a native failure without an assistant reply is a settled failure with no invented final
+ok 4 - a native failure without an assistant reply is a settled failure with no invented final
+  ---
+  duration_ms: 33.4304
+  type: 'test'
+  ...
+# Subtest: manual, altered and duplicate inputs fence later tools without rewriting a settled result
+ok 5 - manual, altered and duplicate inputs fence later tools without rewriting a settled result
+  ---
+  duration_ms: 85.9161
+  type: 'test'
+  ...
+# Subtest: session replacement and replies over the UTF-8 bound cannot remain verified
+ok 6 - session replacement and replies over the UTF-8 bound cannot remain verified
+  ---
+  duration_ms: 105.5683
+  type: 'test'
+  ...
+# Subtest: DSH binds the native reasoning effort before tools and settlement
+ok 7 - DSH binds the native reasoning effort before tools and settlement
+  ---
+  duration_ms: 51.8993
+  type: 'test'
+  ...
+# Subtest: DSH maps frozen effort at the official request seam and verifies the durable header
+ok 8 - DSH maps frozen effort at the official request seam and verifies the durable header
+  ---
+  duration_ms: 116.2707
+  type: 'test'
+  ...
+# Subtest: failed native initialization publishes a bounded failure for either terminal agent
+ok 9 - failed native initialization publishes a bounded failure for either terminal agent
+  ---
+  duration_ms: 33.0266
+  type: 'test'
+  ...
+# Subtest: an observed input or agent_end cannot certify start or completion
+ok 10 - an observed input or agent_end cannot certify start or completion
+  ---
+  duration_ms: 48.8714
+  type: 'test'
+  ...
+# Subtest: same prompt with distinct command IDs retains separate native inputs
+ok 11 - same prompt with distinct command IDs retains separate native inputs
+  ---
+  duration_ms: 65.4533
+  type: 'test'
+  ...
+# Subtest: duplicate, manual and altered input are fenced without a second execution
+ok 12 - duplicate, manual and altered input are fenced without a second execution
+  ---
+  duration_ms: 150.8366
+  type: 'test'
+  ...
+# Subtest: non-TUI or enabled tools cannot become ready
+ok 13 - non-TUI or enabled tools cannot become ready
+  ---
+  duration_ms: 12.805
+  type: 'test'
+  ...
+# Subtest: a changed expanded or committed input cannot settle successfully
+ok 14 - a changed expanded or committed input cannot settle successfully
+  ---
+  duration_ms: 112.7225
+  type: 'test'
+  ...
+# Subtest: retry outcomes are observed until the real settled boundary
+ok 15 - retry outcomes are observed until the real settled boundary
+  ---
+  duration_ms: 42.4592
+  type: 'test'
+  ...
+# Subtest: a provider error remains a settled failure, never a successful reply
+ok 16 - a provider error remains a settled failure, never a successful reply
+  ---
+  duration_ms: 50.0676
+  type: 'test'
+  ...
+# Subtest: missing native entries, pending continuations and oversized replies remain unverified
+ok 17 - missing native entries, pending continuations and oversized replies remain unverified
+  ---
+  duration_ms: 316.1617
+  type: 'test'
+  ...
+# Subtest: writer failures fence input and incomplete temporary files are never a final receipt
+ok 18 - writer failures fence input and incomplete temporary files are never a final receipt
+  ---
+  duration_ms: 280.2121
+  type: 'test'
+  ...
+# Subtest: native shell shortcut is replaced even though no built-in tools are active
+ok 19 - native shell shortcut is replaced even though no built-in tools are active
+  ---
+  duration_ms: 352.3124
+  type: 'test'
+  ...
+# Subtest: the fixed-text probe caps the native payload without changing the provider or model
+ok 20 - the fixed-text probe caps the native payload without changing the provider or model
+  ---
+  duration_ms: 210.1224
+  type: 'test'
+  ...
+# Subtest: shutdown or identity change cannot rewrite a frozen result or certify a new session
+ok 21 - shutdown or identity change cannot rewrite a frozen result or certify a new session
+  ---
+  duration_ms: 337.3762
+  type: 'test'
+  ...
+# Subtest: reply boundaries count UTF-8 bytes and never truncate
+ok 22 - reply boundaries count UTF-8 bytes and never truncate
+  ---
+  duration_ms: 66.9253
+  type: 'test'
+  ...
+# Subtest: a failed final receipt write fences later input even if Pi catches the callback error
+ok 23 - a failed final receipt write fences later input even if Pi catches the callback error
+  ---
+  duration_ms: 32.0665
+  type: 'test'
+  ...
+# Subtest: non-text final content cannot masquerade as a complete text reply
+ok 24 - non-text final content cannot masquerade as a complete text reply
+  ---
+  duration_ms: 35.2258
+  type: 'test'
+  ...
+# Subtest: reinitializing an extension on the same session changes its frozen load identity
+ok 25 - reinitializing an extension on the same session changes its frozen load identity
+  ---
+  duration_ms: 20.0942
+  type: 'test'
+  ...
+# Subtest: managed tools revalidate the live model, tools, thinking and workspace before execution
+ok 26 - managed tools revalidate the live model, tools, thinking and workspace before execution
+  ---
+  duration_ms: 181.2904
+  type: 'test'
+  ...
+# Subtest: managed thinking is read from Pi and an explicit clamped request blocks readiness
+ok 27 - managed thinking is read from Pi and an explicit clamped request blocks readiness
+  ---
+  duration_ms: 33.6653
+  type: 'test'
+  ...
+# Subtest: native selection changes fence the instance before a later tool or input
+ok 28 - native selection changes fence the instance before a later tool or input
+  ---
+  duration_ms: 90.5642
+  type: 'test'
+  ...
+# Subtest: unknown native host outcomes fence later tools while ordinary command failures remain retryable
+ok 29 - unknown native host outcomes fence later tools while ordinary command failures remain retryable
+  ---
+  duration_ms: 1.6801
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2599.4861
