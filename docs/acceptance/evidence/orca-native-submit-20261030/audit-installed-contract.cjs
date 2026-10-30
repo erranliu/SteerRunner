@@ -43,12 +43,13 @@ function noOutputGate() {
   const state = { ptysById: new Map([['pty', { launchAgent: 'codex' }]]),
     subscribeToTerminalData: () => () => {} };
   const gate = method.call(state, 'pty', 3);
-  gate.arm();
-  for (let n = 0; timers.size && n < 10; n++) {
-    const [id, timer] = [...timers].sort((a, b) => a[1].at - b[1].at)[0];
-    timers.delete(id); now = timer.at; timer.f();
-  }
-  return gate;
+  return { arm: () => gate.arm(), dispose: () => gate.dispose(), wait: async () => {
+    for (let n = 0; timers.size && n < 10; n++) {
+      const [id, timer] = [...timers].sort((a, b) => a[1].at - b[1].at)[0];
+      timers.delete(id); now = timer.at; timer.f();
+    }
+    await gate.wait();
+  } };
 }
 async function writeProbe(mode) {
   const logical = '原输入\n\nkeep exact bytes';
@@ -74,7 +75,7 @@ async function writeProbe(mode) {
     // Exact extracted gate, driven by virtual time without any output or input ACK.
     createAgentPromptRenderGate: () => {
       const gate = noOutputGate();
-      return { arm() {}, dispose: () => gate.dispose(), wait: async () => { await gate.wait(); gateReleased = true; } };
+      return { arm: () => gate.arm(), dispose: () => gate.dispose(), wait: async () => { await gate.wait(); gateReleased = true; } };
     },
     // Isolate the first CR. Supplemental CRs are tested with the actual method below.
     resubmitHeldAgentPrompt: async () => 0,
@@ -132,7 +133,7 @@ async function startWithoutText() {
   return { start_observed: true, prompt_text_or_digest_supplied: false };
 }
 const cases = {
-  'render-timeout-no-consumption-ack': async () => { await noOutputGate().wait(); return { released_without_output: true }; },
+  'render-timeout-no-consumption-ack': async () => { const gate = noOutputGate(); gate.arm(); await gate.wait(); return { released_without_output: true }; },
   'accepted-before-consumption': () => writeProbe('not-consumed'),
   'transport-accepted-truncation': () => writeProbe('truncated'),
   'transport-accepted-byte-change': () => writeProbe('changed-byte'),
@@ -151,6 +152,7 @@ const cases = {
     results.push({ id, executed: 30, failed: failures, skipped: 0, sample });
   }
   const result = { schema: 'orca-installed-submit-characterization/v1',
+    audit_script_sha256: sha(fs.readFileSync(__filename)),
     bundle_basename: require('node:path').basename(bundle), bundle_sha256: sha(bytes), extracts,
     scope: 'isolated installed methods; virtual timing and dependency fixtures; no live terminal or historical reproduction',
     excluded: ['Runner L3 qualification', 'live native reproduction', 'remote bundle identity', 'provider correctness'],

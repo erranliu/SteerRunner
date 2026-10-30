@@ -23,7 +23,7 @@
 
 [只读核验脚本](evidence/orca-native-submit-20261030/audit-installed-contract.cjs) 从指定本机安装包提取五个原函数，不 import 或启动 Orca；使用虚拟计时、PTY sink、activity fixture 和明确列出的依赖替换。保存安装 bundle SHA、函数 UTF-16 offset/摘要；不发布整个安装包。
 
-最终 [修正夹具后的结果](evidence/orca-native-submit-20261030/installed-contract-corrected.json)：8 个不同反例，每例30次，共 **240 次，失败0，跳过0**。断言观察到契约不足即通过核验，不代表输入修复通过：
+最终 [核验结果](evidence/orca-native-submit-20261030/installed-contract-final.json)：8 个不同反例，每例30次，共 **240 次，失败0，跳过0**。断言观察到契约不足即通过核验，不代表输入修复通过：
 
 - 无任何输出或消费 ACK，原 render gate 由虚拟截止计时释放。
 - 原 write 函数在消费为空、截断、改字节、已有输入或并发混入的隔离 sink 情况下仍写 CR 并给 input_accepted；这里替换了 transport/provider，不声称真实 provider 已产生这些故障。
@@ -31,6 +31,8 @@
 - 原 start observer 无需输入正文或摘要即可按 activity sequence 接受开始。
 
 首轮 [夹具失败记录](evidence/orca-native-submit-20261030/installed-contract.json) 原样保留：240次中150失败、0跳过。原因是注入的外部 Error 与 VM Error 不同 realm，使原函数的 `instanceof Error` 无法识别模拟 stalled；修正注入同一 Error 构造器后另开结果文件。首轮不是 Orca 真实故障或 Runner 测试失败；没有改写为通过。最早一次核验还因输出父目录不存在未保存结果；没有原生副作用。
+
+中间 [Error 修正批次](evidence/orca-native-submit-20261030/installed-contract-corrected.json) 240/0/0 保留。最终批次进一步让虚拟 gate 按实际调用顺序 arm → payload → wait → CR，并记录核验脚本摘要；仍为240/0/0。三个已保存批次共720次、150个夹具断言失败、0跳过；覆盖始终只有8类，不将累计次数当作新增覆盖。
 
 范围：这是隔离安装函数的契约反例核验，**不是正式 L3 稳定回归、真实原生故障复现或远端 bundle 测试**。未执行 Spec 的 NS-T01–T10 新方案矩阵，不能用这240次替代。
 
@@ -40,6 +42,12 @@
 
 同时采纳计数澄清：NS-T06 原业务请求尝试1次，实际 commit/执行按故障位置为0或1，不要求消费前失败也提交。独立审计者复核修订后通过，无新增P0–P2；仅方案通过，Orca gate、实施和真实验收仍未完成。
 
-## 待补记录
+## 最终独立复审
+
+新的独立只读 agent `final_review` 核实提交 `203af58` 的 diff、安装 bundle SHA、五个函数偏移/摘要、脚本依赖替换、计数和删除范围，无P0–P2。它确认这是契约阻断调查，不能宣称 Runner 已修复、L3通过或已完成真实会话。脚本最终 gate 顺序/摘要记录的小改动及项目检查结果另行补充复核。
+
+## 项目检查（结果待补）
+
+正式 `scripts/test.ps1 -Level L1 -OutDir .evidence/orca-native-submit-l1` 首轮中止，exit=1，报 `Runner source changed during build; build again from stable inputs.`：构建期间主会话提交了本批文档，源码身份改变；Go测试尚未执行。原失败 summary 保留，固定提交后使用新目录重跑，不覆盖首轮。
 
 项目检查和最终独立复审结果在执行后补入。P2–P5 未通过；新方案真实 local 0/3、remote 0/3，未创建原生模型会话，业务提交 0，新增待清理 Orca 资源 0。
