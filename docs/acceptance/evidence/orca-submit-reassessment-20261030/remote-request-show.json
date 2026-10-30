@@ -1,0 +1,12 @@
+{
+  "id": "31ed5255-de06-4605-9675-e336fe02cd70",
+  "ok": true,
+  "result": {
+    "requestId": "sr-native-submit-audit-f60450e5a6594317bb8421fe17492819",
+    "state": "absent",
+    "interpretation": "No receipt for request sr-native-submit-audit-f60450e5a6594317bb8421fe17492819 under this caller identity. It never reached this Orca runtime, failed before recording anything, or its receipt was pruned. Absent is not proof that nothing happened."
+  },
+  "_meta": {
+    "runtimeId": "64bdec68-d3ed-4216-a894-0cc143ed4653"
+  }
+}

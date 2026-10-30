@@ -1,0 +1,146 @@
+{
+  "scope": "installed CLI handlers and mutation runner with isolated RPC/DB/PTY dependencies; not live prompt delivery or historical reproduction",
+  "bundle_sha256": "112906a35157eebe09dfd37be0da222ac230dd3a1a70c1e6d2ffa0c830bae0b5",
+  "script_sha256": "51713cdf95dad5ed56cd6757f96aa567e9a795df4e9235cb2941383f47b0f953",
+  "provenance": {
+    "durable_mutation_runner": {
+      "start_utf16": 9956988,
+      "end_utf16": 9960431,
+      "sha256": "c3b66f96acadb38c12e1daac1327f1ab57a132c202f10f9c077f5675fc982084"
+    },
+    "payload_and_replay_helpers": {
+      "start_utf16": 5125073,
+      "end_utf16": 5126059,
+      "sha256": "909d0a9279b23b14b78f173b928c4fd1701f0e97bd78fa6ae360b22ac35324ed"
+    },
+    "canonical_json": {
+      "start_utf16": 5127501,
+      "end_utf16": 5127679,
+      "sha256": "f1e55312b4e54ca6e9b9bac8577ca82dcc4be099468d78546f9547092731b7e9"
+    },
+    "receipt_metadata": {
+      "start_utf16": 5127162,
+      "end_utf16": 5127314,
+      "sha256": "0616b6f5327a7add424cd8d5c1a1344b6ad52190872a7b89c0b1dadbf4889dcf"
+    },
+    "replay_observation": {
+      "start_utf16": 9299485,
+      "end_utf16": 9299795,
+      "sha256": "e33d73430d0a9eb44bfbaa5a9dbedefd331a353d0eac93333e5a96d5caed11a8"
+    },
+    "cli_handler_sha256": "25c30f6d914fad05a5a35d2be92fcdc47982bf0cee250510055b30663cce526a"
+  },
+  "executed": 13,
+  "failed": 0,
+  "skipped": 0,
+  "results": [
+    {
+      "id": "text-plus-enter-selects-durable-prompt",
+      "passed": true,
+      "evidence": {
+        "preflight": 1,
+        "durable": true,
+        "exact_text": "中文\n\nbody"
+      }
+    },
+    {
+      "id": "raw-paste-bypasses-prompt",
+      "passed": true,
+      "evidence": {
+        "preflight": 0,
+        "durable": false
+      }
+    },
+    {
+      "id": "bare-enter-bypasses-prompt",
+      "passed": true,
+      "evidence": {
+        "preflight": 0,
+        "durable": false
+      }
+    },
+    {
+      "id": "default-does-not-request-start-observation",
+      "passed": true,
+      "evidence": {
+        "wait_submit_ms": null
+      }
+    },
+    {
+      "id": "old-host-retry-refused-before-dispatch",
+      "passed": true,
+      "evidence": {
+        "calls": 0
+      }
+    },
+    {
+      "id": "accepted-without-start-has-warning",
+      "passed": true,
+      "evidence": {
+        "warning_present": true
+      }
+    },
+    {
+      "id": "generic-framing-requires-plain-text",
+      "passed": true,
+      "evidence": {
+        "preframed_text_would_change": true
+      }
+    },
+    {
+      "id": "completed-replay-three-times-no-new-write",
+      "passed": true,
+      "evidence": {
+        "writes": 1,
+        "observations": 0,
+        "rows": 1
+      }
+    },
+    {
+      "id": "completed-replay-with-wait-only-observes",
+      "passed": true,
+      "evidence": {
+        "writes": 1,
+        "observations": 1,
+        "rows": 1
+      }
+    },
+    {
+      "id": "pending-after-restart-refuses-resend",
+      "passed": true,
+      "evidence": {
+        "writes": 1,
+        "observations": 0,
+        "rows": 1
+      }
+    },
+    {
+      "id": "changed-payload-rejected",
+      "passed": true,
+      "evidence": {
+        "writes": 1,
+        "observations": 0,
+        "rows": 1
+      }
+    },
+    {
+      "id": "replacement-incarnation-replays-replacement-warning",
+      "passed": true,
+      "evidence": {
+        "writes": 1,
+        "observations": 0,
+        "rows": 1
+      }
+    },
+    {
+      "id": "pruned-receipt-does-not-preserve-deduplication",
+      "passed": true,
+      "evidence": {
+        "writes": 2,
+        "observations": 0,
+        "rows": 1,
+        "note": "memory fixture deliberately removes retained receipt; absent must not authorize replay"
+      }
+    }
+  ]
+}
