@@ -1,6 +1,6 @@
 # Orca 提交问题重新核查
 
-后续状态：本文保留当时调查及审计记录，实施方案以当前[Spec](../spec/orca-native-submit.spec.md)和[Plan](../spec/orca-native-submit.plan.md)为准。后续深审已撤回下文当时的“无P0–P2”结论；重试预算已退出方案，正常受理后不查mutation、不追加wait-submit。本机模型/长final等价设计尚未闭合，生产实施尚未开始。以下历史记录及原始证据不改写为通过。
+后续状态：本文保留当时调查及审计记录，实施方案以当前[Spec](../spec/orca-native-submit.spec.md)和[Plan](../spec/orca-native-submit.plan.md)为准。当前范围仅替换屏幕草稿多行提交并清理专用依赖，保留原模型、history/完成和停止流程；M1迁移与request-show生产恢复退出本次范围，重试预算仍不采用。旧版审计结论不替代本版审计或真实验收；生产实施尚未开始。以下历史正文及原始证据不改写为通过。
 
 2026-10-30，当前 Runner 生产源码基线仍为 `a086a9984dc0bd32b3f02b9698cd26c9ba313d90`，调查分支上一提交 `f57d1f1`。没有修改 Orca、Runner 生产代码、用户全局设置或历史 Run。用户要求重新区分实际 Orca 缺陷与 Runner 用法，不在本次调查中实施重试。
 
