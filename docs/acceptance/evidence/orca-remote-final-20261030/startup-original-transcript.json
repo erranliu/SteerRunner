@@ -1,0 +1,36 @@
+{
+  "input": {
+    "ID": "01a18d73-001b-7503-830a-305eeb26f098",
+    "Text": "Initialize: READY only, no tools/changes. This rule ends after READY; later/compacted turns complete the current task. Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats.",
+    "Timestamp": 1793374486563,
+    "Baseline": 1,
+    "Observation": null
+  },
+  "pages": [
+    {
+      "messages": [
+        {
+          "id": "01a18d73-001b-7503-830a-305eeb26f098",
+          "role": "user",
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Initialize: READY only, no tools/changes. This rule ends after READY; later/compacted turns complete the current task. Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats."
+            }
+          ],
+          "timestamp": 1793374486563,
+          "source": "transcript"
+        }
+      ],
+      "hasMore": false,
+      "beforeOffset": 70600,
+      "lifecycle": {
+        "state": "working",
+        "turnId": "01a18d72-c0d0-78a2-a939-c9d2208e76f4",
+        "timestamp": 1793374470510
+      }
+    }
+  ],
+  "purpose": "read-only startup failure diagnosis, not qualification",
+  "queried_at": "2026-10-30T15:37:06.5899725Z"
+}

@@ -1,0 +1,55 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_74a2f6ce-2210-4214-ae94-0600df3bfdb6",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-final-03",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:51:40.8491254Z",
+  "started": "2026-10-30T15:51:40.1714618Z",
+  "stdout": {
+    "id": "879700b2-77e2-43c7-8c33-01780a63d5f6",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_74a2f6ce-2210-4214-ae94-0600df3bfdb6",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-03@@55bd217d",
+        "incarnationId": "772381c7-d851-4a91-a242-b707590f4d18",
+        "orphaned": false,
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-03",
+        "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-03",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-final-03",
+        "tabId": "78de6bcb-7256-4775-b46e-8c7a684eb4a1",
+        "leafId": "644241ec-dd9c-4cc2-b6a1-0e4c65839664",
+        "title": "SteerRunner isolated native input probe",
+        "paneTitle": "SteerRunner isolated native input probe",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793375497013,
+        "preview": "PS C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-03\u003e\u0026 { $ErrorActio\u0026 { $ErrorActionPreference='Stop",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 1425,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 191
+}

@@ -1,0 +1,34 @@
+package main
+
+import (
+ "context"
+ "encoding/json"
+ "fmt"
+ "os"
+ "time"
+ native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+ b "github.com/erranliu/SteerRunner/internal/execution/backend"
+)
+
+func main() {
+ if os.Args[1] == "--diagnostic-state" {
+  raw, err := os.ReadFile(os.Args[2]); if err != nil {panic(err)}
+  var made struct { Result struct {Terminal native.Terminal} }; if err=json.Unmarshal(raw,&made);err!=nil{panic(err)}
+  t:=made.Result.Terminal
+  ctx,cancel:=context.WithTimeout(context.Background(),40*time.Second);defer cancel()
+  identity:=b.ProcessIdentity{Kind:"orca_terminal",RuntimeID:"64108a37-610d-478c-a565-194c376217c5",Terminal:t.Handle,Incarnation:t.IncarnationID,WorktreeID:t.WorktreeID}
+  raw,err=native.QueryState(ctx,"9cf377a1-42de-4f2b-8874-70f63a7bbab2",identity.RuntimeID,"id:"+identity.WorktreeID);if err!=nil{panic(err)}
+  state,err:=native.DecodeOriginalState(raw,identity);if err!=nil{panic(err)}
+  sample,err:=native.QueryOriginalSample(ctx,"9cf377a1-42de-4f2b-8874-70f63a7bbab2",identity,state.PaneKey);if err!=nil{panic(err)}
+  out,err:=json.MarshalIndent(sample,"","  ");if err!=nil{panic(err)};fmt.Println(string(out));return
+ }
+ raw, err := os.ReadFile(os.Args[1]); if err != nil { panic(err) }
+ var saved struct { Last native.AgentState `json:"last_startup_state"` }
+ if err = json.Unmarshal(raw, &saved); err != nil { panic(err) }
+ ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second); defer cancel()
+ input, err := native.QueryNativeInput(ctx, "9cf377a1-42de-4f2b-8874-70f63a7bbab2", "64108a37-610d-478c-a565-194c376217c5", saved.Last.ProviderSession.ID, saved.Last.ProviderSession.TranscriptPath, 1)
+ record := map[string]any{"purpose":"read-only startup failure diagnosis, not qualification", "queried_at":time.Now().UTC(), "input":input}
+ if err != nil { record["error"] = err.Error() }; if input != nil { record["pages"] = input.Pages }
+ out, err := json.MarshalIndent(record,"","  "); if err != nil {panic(err)}
+ fmt.Println(string(out))
+}

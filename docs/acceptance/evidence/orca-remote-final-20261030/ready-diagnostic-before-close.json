@@ -1,0 +1,31 @@
+{
+  "id": "21ce3a32-ce2f-4ce0-aaaa-5cb21e23fdb9",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_13167c21-2016-4a34-8d5b-28552ba51655",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@8d0e412d",
+      "incarnationId": "68d9706d-9ab7-48e6-82b5-231a38334b6f",
+      "orphaned": false,
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-diagnostic",
+      "tabId": "9c4da351-4c49-4d3c-9dd8-a1c793c07ff2",
+      "leafId": "0c2f573d-40dc-4453-8d5c-d548aa4c38dd",
+      "title": "Codex ready",
+      "paneTitle": "Runner owned READY-only failure diagnosis",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793374994456,
+      "preview": "rked for 1m 58s • 23:43\n› Ask Codex to do anything\nGPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-diagnostic\n? for shortcuts                                                                                                                    ⚠ 2 warnings · f2 to view",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

@@ -416,3 +416,5 @@ L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读�
 真实 Codex 仅核验只读工具读固定文件、双文档、完成结果重启与重放、停止及结算；未把受控运行中故障注入算作真实资格。
 补充 application 整包复验：30 分钟预算下完整通过 141 个顶层测试、含子用例 333 项，0 失败/跳过，包内耗时 451.112 秒；未宣称完整仓库全集通过，详见上述功能的验收记录。
 [Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接入](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md)。
+
+原生输入正式 focused 入口的远端准备与业务共享现有本机同等六分钟 fixture 总期限，不单设90秒准备上限。原 READY 只读查询、原冻结输入/intent、一次通用提交、原输入/完成及正式停止均保留；生产等待参数不变。双端各三个真实会话与失败边界见[最终远端验收](acceptance/orca-native-submit-remote-final.md)。

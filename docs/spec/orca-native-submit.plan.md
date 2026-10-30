@@ -1,7 +1,7 @@
 # Orca 多行输入屏幕草稿依赖修复 Plan
 
 日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
-状态：按用户授权实施，**真实双端验收未完成**。实数及未验项见[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
+状态：按用户授权实施，真实双端各三个独立原生会话通过。实数及边界见[远端最终验收](../acceptance/orca-native-submit-remote-final.md)和[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
 
 ## P0 固定范围与基线
 
@@ -75,11 +75,19 @@ NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。�
 
 ## P6 独立复审与交付
 
+2026-10-30 最终远端进展：用户指定现有 environment `192.168.1.151`，固定新配对及 runtime，
+在七个本次隔离现场中保留三份准备失败和独立诊断，三个全新 final 原生会话通过。远端测试仅补
+独立 Run/Attempt、创建身份围栏、原输入/intent/receipt 保存和既有正式 StopLifecycle/verifyStopped。
+READY-only 诊断在约118秒恢复并经原独立查询确认，审计同意删除测试专属90秒预算，准备与业务
+共享现有本机六分钟 fixture 期限，不改生产等待/提交/完成/停止算法，不重投或补 Enter。
+最终同源矩阵5040/0/0、L1通过；本机3/3与远端3/3的证明范围分别保持。详见远端最终验收。
+七个本次路径/注册及诊断资源已清理；独立复审和PR记录最终增量，不回写历史失败。
+
 2026-10-30 最终本机进展：按用户授权恢复实际 PTY host 的正常启动上下文后，本机三个全新
 原生会话通过。仅补测试目标的既有 AuditModel 前置门禁及签名证据绝对路径，未改认证或
 模型/完成生产代码。最终矩阵 168×30=5040/0/0，项目 L1 通过；NS-T07/T10 的目标反例绑定
 `TestLocalNativeProbeTargetAndBusinessScope/audit-*` 和 `writer-effort`。详见[最终补验](../acceptance/orca-native-submit-local-final.md)。
-远端仍未验证，原失败保持失败，PR 继续 Draft。
+其时远端仍未验证，原失败保持失败，PR 当时继续 Draft；最新双端状态见本节首段。
 
 2026-10-30 本机适配补充：已在隔离目录构建现有 `cmd/steerrunner-agent`，新增正式入口的本机
 v3 control/ready/history 测试适配。3900 次确定性回归通过；真实准备暴露原 control 默认读取

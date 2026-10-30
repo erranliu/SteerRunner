@@ -63,3 +63,5 @@ summary.source.passed是写出该摘要时的输入对象快照；最终执行�
 独立生产审查未发现P0–P2；测试审查发现逐段控制、漏选门禁、提交后状态断言和证据层次问题，已修正并复核。最后NUL/ESC拒收feed释放增量已随最终30次矩阵及两包整包复核，两个独立审计者均已解压原事件并核对源码摘要，无新增P0–P2。当前全仓代码/脚本/测试搜索草稿/viewport专用符号无残留；当前testing/test-catalog及focused目录已更新，历史acceptance/evidence保留。
 
 证据[文件摘要清单](evidence/orca-native-submit-implementation-20261030/manifest.json)与[变更源码摘要](evidence/orca-native-submit-implementation-20261030/changed-source-sha256.json)用于独立复核。受控测试目录没有与真实模型目录混合；未创建本次真实Orca终端。只读进程清单确认本次隔离证据目录下的测试EXE均已退出。
+
+2026-10-30 后续远端补验：用户指定现有 192.168.1.151 后，三个全新远端原生会话通过，连同本机已达双端各3/3。仅补测试身份/归档/正式停止及共享既有fixture总期限；生产流程未再改。原失败保持失败，范围及全部证据见[远端最终记录](orca-native-submit-remote-final.md)。

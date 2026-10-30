@@ -1,0 +1,84 @@
+{
+  "operation": {
+    "version": 1,
+    "id": "03e46da02850f0ab47c6e018562f33c2",
+    "run_id": "2efd0df6378901a4a9c9aeea930c2372",
+    "attempt_id": "9f4f559cc055a517a01a5cee0d223552",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "target": {
+      "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+      "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+      "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    },
+    "action": "stop_execution",
+    "idempotency_key": "probe-stop",
+    "request": "e30=",
+    "receipt": "eyJ2ZXJzaW9uIjoxLCJwaGFzZSI6ImNvbmZpcm1lZCJ9",
+    "payload_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "status": "in_flight",
+    "started_at": "2026-10-30T15:50:40.5096066Z",
+    "updated_at": "2026-10-30T15:50:40.5096066Z",
+    "ref": {
+      "version": 0,
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "target": {
+        "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+        "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+      },
+      "agent": {
+        "name": "codex"
+      },
+      "run_id": "2efd0df6378901a4a9c9aeea930c2372",
+      "attempt_id": "9f4f559cc055a517a01a5cee0d223552",
+      "external": {
+        "kind": "orca_terminal",
+        "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+        "terminal": "term_9a4c8e88-879b-4e2f-a831-e8dd09e5136d",
+        "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+        "incarnation": "f4355db4-1178-4425-9c2f-f181915cf493",
+        "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02"
+      }
+    },
+    "lifecycle_identity": {
+      "project_id": "native-input-probe",
+      "execution_id": "2efd0df6378901a4a9c9aeea930c2372",
+      "configuration_digest": "native-input-probe",
+      "resource_generation": "a05ad5bb832dcd3ba36ea1e59918db48",
+      "input_binding_digest": "2638a20f26375a5fa2f1b28f94d5dbf124166a869663554ddb1c4a7c1e828c76",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+          "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "2efd0df6378901a4a9c9aeea930c2372",
+        "attempt_id": "9f4f559cc055a517a01a5cee0d223552",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_9a4c8e88-879b-4e2f-a831-e8dd09e5136d",
+          "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+          "incarnation": "f4355db4-1178-4425-9c2f-f181915cf493",
+          "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02"
+        }
+      }
+    }
+  },
+  "disposition": "confirmed",
+  "diagnostic": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked.",
+  "state": {
+    "worker_absent": true,
+    "stopped": true
+  }
+}

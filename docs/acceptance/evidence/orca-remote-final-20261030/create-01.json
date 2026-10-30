@@ -1,0 +1,81 @@
+{
+  "id": "52a79667-6a8e-40b4-96af-a9b6e439004b",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+      "identity": {
+        "key": "wt2:local:c738b597-1c8f-40a7-be65-1198ea34afa9",
+        "executionHostId": "local",
+        "instanceId": "c738b597-1c8f-40a7-be65-1198ea34afa9"
+      },
+      "instanceId": "c738b597-1c8f-40a7-be65-1198ea34afa9",
+      "repoId": "09e35751-6517-4e7c-ae20-178ed0e90000",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "09e35751-6517-4e7c-ae20-178ed0e90000",
+      "creatorProvenance": {
+        "kind": "paired-device",
+        "deviceId": "c665c998-b911-4972-aa31-dc974c6c9b04"
+      },
+      "path": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+      "head": "3acce81548b0baea50560ebefea8645c3185524a",
+      "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-01",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "codex-sr-native-remote-20261031-01",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": false,
+      "isPinned": false,
+      "sortOrder": 1793373867479,
+      "lastActivityAt": 1793373867478,
+      "createdAt": 1793373867478,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1793373863747
+      },
+      "baseRef": "refs/remotes/origin/main",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "workspaceLineage": null,
+      "git": {
+        "path": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+        "head": "3acce81548b0baea50560ebefea8645c3185524a",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-01",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    },
+    "lineage": null,
+    "workspaceLineage": null,
+    "warnings": [],
+    "localBaseRefUpdateSuggestion": {
+      "baseRef": "origin/main",
+      "localBranch": "main",
+      "behind": 176
+    },
+    "catalogVersion": {
+      "epoch": "ad328dcd-3193-4a59-92e0-207ef2ff9821",
+      "sequence": 22
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

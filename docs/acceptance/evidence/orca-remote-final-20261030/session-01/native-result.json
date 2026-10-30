@@ -1,0 +1,75 @@
+{
+  "after_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "64108a37-610d-478c-a565-194c376217c5",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "bare_enter_calls": 0,
+  "before_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "64108a37-610d-478c-a565-194c376217c5",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "business_inputs": 0,
+  "business_request_mismatches": 0,
+  "cleaned_up": true,
+  "cleanup": {
+    "disposition": "confirmed"
+  },
+  "completed": false,
+  "emergency_cleanup": true,
+  "enter_flag_calls": 0,
+  "launch": {
+    "repository_url": "https://github.com/erranliu/SteerlineTest.git",
+    "access_mode": "sandbox",
+    "executable": "codex",
+    "args": [
+      "--no-daemon"
+    ],
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high"
+  },
+  "mode": "long-input",
+  "screen_reads": 0,
+  "submit_calls": 0,
+  "terminal": {
+    "handle": "term_8ff8bde2-1b42-4267-ae62-0814aceadf93",
+    "incarnationId": "d9e7db63-18f2-42df-b7ff-5168abc55bc1",
+    "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+    "worktreePath": "",
+    "branch": "",
+    "agentIdentity": "",
+    "connected": false,
+    "orphaned": false,
+    "status": "",
+    "agentWait": null
+  },
+  "text_calls": 0,
+  "text_only_calls": 0
+}

@@ -1,0 +1,39 @@
+{
+  "id": "b0bcf3e6-d542-4711-b940-6d6bddfbb8b8",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_2506ab2a-7093-436e-8378-62e6c92a2046",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02@@32259aac",
+        "incarnationId": "061bfc75-d359-4c21-bfa8-de71958b924d",
+        "orphaned": false,
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02",
+        "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-qualified-02",
+        "tabId": "4da08328-abb4-4048-a59e-094bf628ed97",
+        "leafId": "0fe5efeb-6edd-490e-a508-4cc42905a3ea",
+        "title": "Terminal 1",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793374787310,
+        "preview": "PS C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-02>",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": []
+    },
+    "topologyRevisions": {
+      "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02": 937
+    },
+    "totalCount": 1,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

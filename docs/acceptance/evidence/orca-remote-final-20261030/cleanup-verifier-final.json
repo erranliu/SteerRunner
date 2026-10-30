@@ -1,0 +1,8 @@
+{
+  "runtime": "64108a37-610d-478c-a565-194c376217c5",
+  "verifier_handle": "term_bd3cf9f4-c72a-4baf-9ada-8696668b0363",
+  "verifier_absent": true,
+  "truncated": false,
+  "private_original_sha256": "8F962BCFE8F48BDDDCECF4A6CCF2E9FB09BBFCD3C7BDAF38A823209D962AF2A7",
+  "scope": "Only verifier absence; other original repository terminals untouched"
+}

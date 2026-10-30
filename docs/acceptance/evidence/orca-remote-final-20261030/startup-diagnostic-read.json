@@ -1,0 +1,23 @@
+{
+  "id": "91a42b21-bec0-41c9-89ee-1a323eb656d8",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "SR_REMOTE_STARTUP_DIAGNOSTIC_READY"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

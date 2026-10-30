@@ -1,0 +1,29 @@
+{
+  "reason": "Unrelated worktree registrations or other original repository terminal previews; no effect on owned cleanup verdict",
+  "files": [
+    {
+      "path": "cleanup-git-check-read.json",
+      "bytes": 4530,
+      "sha256": "5fba401562f0c4fc39502be63df946483147040ef27d1cdf0fefa18d29549af7",
+      "public_body": false
+    },
+    {
+      "path": "cleanup-git-check-read-complete.json",
+      "bytes": 12569,
+      "sha256": "1ae2a2db1edfa6e8c837a5533bded5f0f883cd8c79a13ce5e35143dac0bc3aa8",
+      "public_body": false
+    },
+    {
+      "path": "cleanup-verifier-final-census-private.json",
+      "bytes": 1226,
+      "sha256": "8f962bcfe8f48bdddcecf4a6ccf2e9fb09bbfcd3c7bdaf38a823209d962af2a7",
+      "public_body": false
+    },
+    {
+      "path": "cleanup-diagnostic-list.json",
+      "bytes": 5692,
+      "sha256": "806bbf1013c81d48be3c9fa4923b4fd57b2bd5d05e6f9690c0263e19101b5b6a",
+      "public_body": false
+    }
+  ]
+}

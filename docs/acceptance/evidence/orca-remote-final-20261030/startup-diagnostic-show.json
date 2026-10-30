@@ -1,0 +1,30 @@
+{
+  "id": "c99da019-213e-4b8c-b4f6-2c17aa14182a",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@acdbe8c4",
+      "incarnationId": "5e7286d8-11db-4a4a-8eae-5940ef54b423",
+      "orphaned": false,
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-diagnostic",
+      "tabId": "a50f5b6e-d9db-4d90-b761-dd859f5e5e44",
+      "leafId": "b6731ec5-756e-45bd-8b6c-bb7286b95a5c",
+      "title": "Runner owned remote startup diagnosis",
+      "paneTitle": "Runner owned remote startup diagnosis",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793374350898,
+      "preview": "SR_REMOTE_STARTUP_DIAGNOSTIC_READY\nPS C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-diagnostic>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "read",
+      "--terminal",
+      "term_f0e752d6-cf24-4369-a948-13b41b6f062e",
+      "--cursor",
+      "0",
+      "--limit",
+      "1000",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-qualified-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:35:59.8271113Z",
+  "started": "2026-10-30T15:35:59.1200689Z",
+  "stdout": {
+    "id": "a7d99f19-d595-45c2-8ade-a38b58bdba60",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_f0e752d6-cf24-4369-a948-13b41b6f062e",
+        "status": "running",
+        "tail": [
+          "'--git-path',$srLeaf); if($srPath -ine (Join-Path $srCommon $srLeaf) -or -not [IO.Directory]::Exists($srPath)) { throw 'Linked Git data root differs' }; srGitPlain $srPath; $srGitWriteArgs+=@('--add-dir',$srPath) }; $srGitWriteArgs+=@('--add-dir',$srAdmin); if((srGitPath @('rev-parse','--path-format=absolute','--git-common-dir')) -ine $srCommon -or (srGitPath @('rev-parse','--absolute-git-dir')) -ine $srAdmin) { throw 'Linked Git identity changed during launch' }; \u0026 { if($env:GIT_CONFIG_COUNT -or $env:GIT_CONFIG_PARAMETERS) { throw 'Existing process Git configuration conflicts with native authentication' }; foreach($srName in [Environment]::GetEnvironmentVariables().Keys) { if($srName -match '^(GIT_TRACE|GIT_CURL_VERBOSE|GH_DEBUG)' -and [Environment]::GetEnvironmentVariable($srName)) { throw 'Credential transport cannot run with inherited authentication tracing' } }; $srAuthNames=@('GH_HOST','GH_TOKEN','GIT_CONFIG_COUNT','GIT_CONFIG_KEY_0','GIT_CONFIG_VALUE_0','GH_PROMPT_DISABLED','GIT_TERMINAL_PROMPT'); $srAuthBefore=@{}; foreach($srName in $srAuthNames) { $srAuthBefore[$srName]=[Environment]::GetEnvironmentVariable($srName) }; $ErrorActionPreference='Continue'; $srCredential=(\u0026 gh auth token --hostname github.com 2\u003e$null | Out-String).Trim(); $srCredentialExit=$LASTEXITCODE; $ErrorActionPreference='Stop'; if($srCredentialExit -ne 0 -or -not $srCredential -or $srCredential -match '[\\r\\n]') { throw 'Existing execution-host gh login unavailable; no agent input was sent' }; try { $env:GH_HOST='github.com'; $env:GH_TOKEN=$srCredential; $env:GH_PROMPT_DISABLED='1'; $env:GIT_TERMINAL_PROMPT='0'; $env:GIT_CONFIG_COUNT='1'; $env:GIT_CONFIG_KEY_0='http.https://github.com/erranliu/SteerlineTest.git.extraHeader'; $env:GIT_CONFIG_VALUE_0='Authorization: Basic '+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(('x-access-token:'+$srCredential))); $srAllowed=@('PATH','PATHEXT','SystemRoot','SystemDrive','COMSPEC','WINDIR','TEMP','TMP','USERPROFILE','HOME','APPDATA','LOCALAPPDATA','ProgramFiles','ProgramFiles(x86)','ProgramData','GH_HOST','GH_TOKEN','GH_PROMPT_DISABLED','GH_CONFIG_DIR','GIT_TERMINAL_PROMPT','GIT_CONFIG_COUNT','GIT_CONFIG_KEY_0','GIT_CONFIG_VALUE_0','HTTPS_PROXY','HTTP_PROXY','NO_PROXY','SSL_CERT_FILE','GIT_SSL_CAINFO','ORCA_AGENT_HOOK_ENDPOINT','ORCA_AGENT_HOOK_PORT','ORCA_AGENT_HOOK_TOKEN','ORCA_AGENT_HOOK_TRANSPORT','ORCA_AGENT_HOOK_ENV','ORCA_AGENT_HOOK_NODE','ORCA_AGENT_HOOK_VERSION','ORCA_PANE_KEY','ORCA_AGENT_PANE','ORCA_AGENT_LAUNCH_TOKEN','ORCA_AGENT_LAUNCH','ORCA_TAB_ID','ORCA_WORKTREE_ID','ORCA_USER_DATA_PATH'); $srAllowed+=@('STEERLINE_PROGRESS_FILE','STEERLINE_RESULT_FILE'); $srPolicy='shell_environment_policy.include_only=['+(@($srAllowed | ForEach-Object { \"'\"+$_+\"'\" }) -join ',')+']'; $srNativeAuthenticationArgs=@('--config',\"shell_environment_policy.inherit='all'\",'--config','shell_environment_policy.ignore_default_excludes=true','--config',$srPolicy); \u0026 'codex' @srNativeAuthenticationArgs @srGitWriteArgs '--no-daemon' '--config' 'sandbox_mode=workspace-write' '--config' 'windows.sandbox=mxc' '--config' 'allow_login_shell=false' '--config' 'features.shell_snapshot=false' '--config' 'features.shell_snapshot_v2=false' '--config' 'approval_policy=never' '--config' 'approvals_reviewer=user' '--config' 'sandbox_workspace_write.writable_roots=[]' '--config' 'sandbox_workspace_write.exclude_tmpdir_env_var=true' '--config' 'sandbox_workspace_write.exclude_slash_tmp=true' '--config' 'sandbox_workspace_write.network_access=true' '--model' 'gpt-6-luna' '-c' 'model_reasoning_effort=\"high\"' '-c' 'tui.animations=false' 'Initialize: READY only, no tools/changes. This rule ends after READY; later/compacted turns complete the current task. Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats.' } finally { foreach($srName in $srAuthNames) { [Environment]::SetEnvironmentVariable($srName,$srAuthBefore[$srName]) }; $srCredential=$null } } }"
+        ],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "1",
+        "latestCursor": "1",
+        "returnedLineCount": 1,
+        "source": "stream"
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 4500,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 215
+}

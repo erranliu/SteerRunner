@@ -1,0 +1,51 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02",
+      "--title",
+      "SteerRunner isolated native input probe",
+      "--command",
+      "\u0026 { $ErrorActionPreference='Stop'; foreach($srName in @('GIT_DIR','GIT_WORK_TREE','GIT_COMMON_DIR','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES','GIT_INDEX_FILE','GIT_NAMESPACE')) { if([Environment]::GetEnvironmentVariable($srName)) { throw 'Linked Git environment override rejected' } }; function srGitPath([string[]]$srArgv) { $srOut=@(\u0026 git @srArgv); if($LASTEXITCODE -ne 0 -or $srOut.Count -ne 1 -or -not [IO.Path]::IsPathRooted($srOut[0])) { throw 'Linked Git path unavailable' }; return [IO.Path]::GetFullPath($srOut[0]).TrimEnd('\\') }; function srGitPlain([string]$srPath) { $srItem=Get-Item -LiteralPath $srPath -Force; while($null -ne $srItem) { if(($srItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Linked Git path redirected' }; if($srItem -is [IO.FileInfo]) { $srItem=$srItem.Directory } else { $srItem=$srItem.Parent } } }; $srWorkspace=[IO.Path]::GetFullPath((Get-Location).ProviderPath).TrimEnd('\\'); $srTop=srGitPath @('rev-parse','--show-toplevel'); $srCommon=srGitPath @('rev-parse','--path-format=absolute','--git-common-dir'); $srAdmin=srGitPath @('rev-parse','--absolute-git-dir'); if($srTop -ine $srWorkspace -or [IO.Path]::GetDirectoryName($srAdmin) -ine (Join-Path $srCommon 'worktrees')) { throw 'Linked Git workspace/admin identity differs' }; $srGitFile=Join-Path $srWorkspace '.git'; srGitPlain $srGitFile; srGitPlain $srCommon; srGitPlain $srAdmin; $srText=[IO.File]::ReadAllText($srGitFile).Trim(); if(-not $srText.StartsWith('gitdir: ')) { throw 'Linked Git file unavailable' }; $srDeclared=$srText.Substring(8); if(-not [IO.Path]::IsPathRooted($srDeclared)) { $srDeclared=Join-Path $srWorkspace $srDeclared }; if([IO.Path]::GetFullPath($srDeclared).TrimEnd('\\') -ine $srAdmin) { throw 'Linked Git file identity differs' }; $srBacklink=Join-Path $srAdmin 'gitdir'; $srCommonFile=Join-Path $srAdmin 'commondir'; srGitPlain $srBacklink; srGitPlain $srCommonFile; if([IO.Path]::GetFullPath([IO.File]::ReadAllText($srBacklink).Trim()) -ine $srGitFile -or [IO.Path]::GetFullPath((Join-Path $srAdmin ([IO.File]::ReadAllText($srCommonFile).Trim()))).TrimEnd('\\') -ine $srCommon) { throw 'Linked Git backlinks differ' }; $srRemote=@(\u0026 git remote get-url 'origin'); if($LASTEXITCODE -ne 0 -or $srRemote.Count -ne 1 -or $srRemote[0] -cne 'https://github.com/erranliu/SteerlineTest.git') { throw 'Linked Git repository differs' }; $srGitWriteArgs=@(); foreach($srLeaf in @('objects','refs','logs')) { $srPath=srGitPath @('rev-parse','--path-format=absolute','--git-path',$srLeaf); if($srPath -ine (Join-Path $srCommon $srLeaf) -or -not [IO.Directory]::Exists($srPath)) { throw 'Linked Git data root differs' }; srGitPlain $srPath; $srGitWriteArgs+=@('--add-dir',$srPath) }; $srGitWriteArgs+=@('--add-dir',$srAdmin); if((srGitPath @('rev-parse','--path-format=absolute','--git-common-dir')) -ine $srCommon -or (srGitPath @('rev-parse','--absolute-git-dir')) -ine $srAdmin) { throw 'Linked Git identity changed during launch' }; \u0026 { if($env:GIT_CONFIG_COUNT -or $env:GIT_CONFIG_PARAMETERS) { throw 'Existing process Git configuration conflicts with native authentication' }; foreach($srName in [Environment]::GetEnvironmentVariables().Keys) { if($srName -match '^(GIT_TRACE|GIT_CURL_VERBOSE|GH_DEBUG)' -and [Environment]::GetEnvironmentVariable($srName)) { throw 'Credential transport cannot run with inherited authentication tracing' } }; $srAuthNames=@('GH_HOST','GH_TOKEN','GIT_CONFIG_COUNT','GIT_CONFIG_KEY_0','GIT_CONFIG_VALUE_0','GH_PROMPT_DISABLED','GIT_TERMINAL_PROMPT'); $srAuthBefore=@{}; foreach($srName in $srAuthNames) { $srAuthBefore[$srName]=[Environment]::GetEnvironmentVariable($srName) }; $ErrorActionPreference='Continue'; $srCredential=(\u0026 gh auth token --hostname github.com 2\u003e$null | Out-String).Trim(); $srCredentialExit=$LASTEXITCODE; $ErrorActionPreference='Stop'; if($srCredentialExit -ne 0 -or -not $srCredential -or $srCredential -match '[\\r\\n]') { throw 'Existing execution-host gh login unavailable; no agent input was sent' }; try { $env:GH_HOST='github.com'; $env:GH_TOKEN=$srCredential; $env:GH_PROMPT_DISABLED='1'; $env:GIT_TERMINAL_PROMPT='0'; $env:GIT_CONFIG_COUNT='1'; $env:GIT_CONFIG_KEY_0='http.https://github.com/erranliu/SteerlineTest.git.extraHeader'; $env:GIT_CONFIG_VALUE_0='Authorization: Basic '+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes(('x-access-token:'+$srCredential))); $srAllowed=@('PATH','PATHEXT','SystemRoot','SystemDrive','COMSPEC','WINDIR','TEMP','TMP','USERPROFILE','HOME','APPDATA','LOCALAPPDATA','ProgramFiles','ProgramFiles(x86)','ProgramData','GH_HOST','GH_TOKEN','GH_PROMPT_DISABLED','GH_CONFIG_DIR','GIT_TERMINAL_PROMPT','GIT_CONFIG_COUNT','GIT_CONFIG_KEY_0','GIT_CONFIG_VALUE_0','HTTPS_PROXY','HTTP_PROXY','NO_PROXY','SSL_CERT_FILE','GIT_SSL_CAINFO','ORCA_AGENT_HOOK_ENDPOINT','ORCA_AGENT_HOOK_PORT','ORCA_AGENT_HOOK_TOKEN','ORCA_AGENT_HOOK_TRANSPORT','ORCA_AGENT_HOOK_ENV','ORCA_AGENT_HOOK_NODE','ORCA_AGENT_HOOK_VERSION','ORCA_PANE_KEY','ORCA_AGENT_PANE','ORCA_AGENT_LAUNCH_TOKEN','ORCA_AGENT_LAUNCH','ORCA_TAB_ID','ORCA_WORKTREE_ID','ORCA_USER_DATA_PATH'); $srAllowed+=@('STEERLINE_PROGRESS_FILE','STEERLINE_RESULT_FILE'); $srPolicy='shell_environment_policy.include_only=['+(@($srAllowed | ForEach-Object { \"'\"+$_+\"'\" }) -join ',')+']'; $srNativeAuthenticationArgs=@('--config',\"shell_environment_policy.inherit='all'\",'--config','shell_environment_policy.ignore_default_excludes=true','--config',$srPolicy); \u0026 'C:/Users/liuming/AppData/Local/OpenAI/Codex/bin/0ab0e7a8f3779036/codex.exe' @srNativeAuthenticationArgs @srGitWriteArgs '--no-daemon' '--config' 'sandbox_mode=workspace-write' '--config' 'windows.sandbox=mxc' '--config' 'allow_login_shell=false' '--config' 'features.shell_snapshot=false' '--config' 'features.shell_snapshot_v2=false' '--config' 'approval_policy=never' '--config' 'approvals_reviewer=user' '--config' 'sandbox_workspace_write.writable_roots=[]' '--config' 'sandbox_workspace_write.exclude_tmpdir_env_var=true' '--config' 'sandbox_workspace_write.exclude_slash_tmp=true' '--config' 'sandbox_workspace_write.network_access=true' '--model' 'gpt-6-luna' '-c' 'model_reasoning_effort=\"high\"' '-c' 'tui.animations=false' 'Initialize: READY only, no tools/changes. This rule ends after READY; later/compacted turns complete the current task. Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats.' } finally { foreach($srName in $srAuthNames) { [Environment]::SetEnvironmentVariable($srName,$srAuthBefore[$srName]) }; $srCredential=$null } } }",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-final-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:48:27.2156848Z",
+  "started": "2026-10-30T15:48:25.8140753Z",
+  "stdout": {
+    "id": "3fa8dd73-d1b6-4bc7-a22e-10f01dde3149",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "processId": 18048,
+        "handle": "term_9a4c8e88-879b-4e2f-a831-e8dd09e5136d",
+        "tabId": "0c66d9fa-a7c8-49cd-ae6b-889df30851c8",
+        "paneKey": "0c66d9fa-a7c8-49cd-ae6b-889df30851c8:24b5a1f2-724f-4022-9bdb-c77b832911e0",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02@@2097e7dc",
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02",
+        "title": "SteerRunner isolated native input probe",
+        "executionHostId": "local",
+        "incarnationId": "f4355db4-1178-4425-9c2f-f181915cf493",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 934,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 6936
+}

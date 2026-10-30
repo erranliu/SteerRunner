@@ -550,3 +550,5 @@ PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修�
 新增 Controlled `TestSRResultFile`，当前 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
 
 定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。
+
+原生输入正式 focused 入口的远端准备与业务共享现有本机同等六分钟 fixture 总期限，不单设90秒准备上限。原 READY 只读查询、原冻结输入/intent、一次通用提交、原输入/完成及正式停止均保留；生产等待参数不变。双端各三个真实会话与失败边界见[最终远端验收](acceptance/orca-native-submit-remote-final.md)。

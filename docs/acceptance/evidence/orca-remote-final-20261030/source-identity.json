@@ -1,0 +1,10 @@
+{
+  "base_commit": "4be3c52c2c141da65c50fe9c39c6c6eb5a271c11",
+  "changed_source_paths": [
+    "internal/execution/adapters/orcatransport/native_input_live_probe_test.go"
+  ],
+  "changed_test_sha256": "31A40D4D8D5665BDF7D6C8E0A8648257FD9C5DAC655D20A9D72489B6AC2B9B05",
+  "go_version": "go version go1.26.4 windows/amd64",
+  "production_changed": false,
+  "source_digest": "c1a6550561df3b602f58658e2102364913f5e1f427926ecfe2d91256f2f36a96"
+}

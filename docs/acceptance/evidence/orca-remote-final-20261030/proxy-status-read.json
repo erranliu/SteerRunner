@@ -1,0 +1,24 @@
+{
+  "id": "5c978b93-cf19-44e1-8329-b8449c2c424f",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "=@(); foreach($e in $endpoints){if($e.host -and $e.port -gt 0){$client=[Net.Sockets.TcpClient]::new();try{$task=$client.ConnectAsync([string]$e.host,[int]$e.port);$ok=$task.Wait(3000) -and $client.Connected;$probes+=,[ordered]@{name=$e.name;host=$e.host;port=$e.port;connected=$ok}}catch{$probes+=,[ordered]@{name=$e.name;connected=$false;error=$_.Exception.GetType().Name}}finally{$client.Dispose()}}}; [ordered]@{configured_endpoint_metadata=$endpoints;tcp_probes=$probes} | ConvertTo-Json -Depth 6 -Comp$ErrorActionPreference='Stop'; $endpoints=@(); foreach($name in @('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','OPENAI_BASE_URL')){$value=[Environment]::GetEnvironmentVariable($name); if($value){try{$u=[uri]$value;$endpoints+=,[ordered]@{name=$name;scheme=$u.Scheme;host=$u.DnsSafeHost;port=$u.Port}}catch{$endpoints+=,[ordered]@{name=$name;unparseable=$true}}}}; $probes=@(); foreach($e in $endpoints){if($e.host -and $e.port -gt 0){$client=[Net.Sockets.TcpClient]::new();try{$task=$client.ConnectAsync([string]$e.host,[int]$e.port);$ok=$task.Wait(3000) -and $client.Connected;$probes+=,[ordered]@{name=$e.name;host=$e.host;port=$e.port;connected=$ok}}catch{$probes+=,[ordered]@{name=$e.name;connected=$false;error=$_.Exception.GetType().Name}}finally{$client.Dispose()}}}; [ordered]@{configured_endpoint_metadata=$endpoints;tcp_probes=$probes} | ConvertTo-Json -Depth 6 -Compr$ErrorActionPreference='Stop'; $endpoints=@(); foreach($name in @('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','OPENAI_BASE_URL')){$value=[Environment]::GetEnvironmentVariable($name); if($value){try{$u=[uri]$value;$endpoints+=,[ordered]@{name=$name;scheme=$u.Scheme;host=$u.DnsSafeHost;port=$u.Port}}catch{$endpoints+=,[ordered]@{name=$name;unparseable=$true}}}}; $probes=@(); foreach($e in $endpoints){if($e.host -and $e.port -gt 0){$client=[Net.Sockets.TcpClient]::new();try{$task=$client.ConnectAsync([string]$e.host,[int]$e.port);$ok=$task.Wait(3000) -and $client.Connected;$probes+=,[ordered]@{name=$e.name;host=$e.host;port=$e.port;connected=$ok}}catch{$probes+=,[ordered]@{name=$e.name;connected=$false;error=$_.Exception.GetType().Name}}finally{$client.Dispose()}}}; [ordered]@{configured_endpoint_metadata=$endpoints;tcp_probes=$probes} | ConvertTo-Json -Depth 6 -Compre$ErrorActionPreference='Stop'; $endpoints=@(); foreach($name in @('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','OPENAI_BASE_URL')){$value=[Environment]::GetEnvironmentVariable($name); if($value){try{$u=[uri]$value;$endpoints+=,[ordered]@{name=$name;scheme=$u.Scheme;host=$u.DnsSafeHost;port=$u.Port}}catch{$endpoints+=,[ordered]@{name=$name;unparseable=$true}}}}; $probes=@(); foreach($e in $endpoints){if($e.host -and $e.port -gt 0){$client=[Net.Sockets.TcpClient]::new();try{$task=$client.ConnectAsync([string]$e.host,[int]$e.port);$ok=$task.Wait(3000) -and $client.Connected;$probes+=,[ordered]@{name=$e.name;host=$e.host;port=$e.port;connected=$ok}}catch{$probes+=,[ordered]@{name=$e.name;connected=$false;error=$_.Exception.GetType().Name}}finally{$client.Dispose()}}}; [ordered]@{configured_endpoint_metadata=$endpoints;tcp_probes=$probes} | ConvertTo-Json -Depth 6 -Compres$ErrorActionPreference='Stop'; $endpoints=@(); foreach($name in @('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','OPENAI_BASE_URL')){$value=[Environment]::GetEnvironmentVariable($name); if($value){try{$u=[uri]$value;$endpoints+=,[ordered]@{name=$name;scheme=$u.Scheme;host=$u.DnsSafeHost;port=$u.Port}}catch{$endpoints+=,[ordered]@{name=$name;unparseable=$true}}}}; $probes=@(); foreach($e in $endpoints){if($e.host -and $e.port -gt 0){$client=[Net.Sockets.TcpClient]::new();try{$task=$client.ConnectAsync([string]$e.host,[int]$e.port);$ok=$task.Wait(3000) -and $client.Connected;$probes+=,[ordered]@{name=$e.name;host=$e.host;port=$e.port;connected=$ok}}catch{$probes+=,[ordered]@{name=$e.name;connected=$false;error=$_.Exception.GetType().Name}}finally{$client.Dispose()}}}; [ordered]@{configured_endpoint_metadata=$endpoints;tcp_probes=$probes} | ConvertTo-Json -Depth 6 -Compress",
+        "{\"configured_endpoint_metadata\":[],\"tcp_probes\":[]}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "13",
+      "latestCursor": "13",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

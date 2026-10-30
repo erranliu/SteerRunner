@@ -1,0 +1,168 @@
+{
+  "operation": {
+    "version": 1,
+    "id": "fcc962c81e7f1093541ad8a624162415",
+    "run_id": "d74720b1b68373e9fa6389d1e8efde5f",
+    "attempt_id": "88147c3967c004225b701b31caa91d0f",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "target": {
+      "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+      "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+      "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    },
+    "action": "prepare_session",
+    "idempotency_key": "probe-prepare",
+    "request": "eyJpbnB1dF9idWRnZXQiOnsiY29udHJhY3QiOiJzdGVlcnJ1bm5lci1tb2RlbC1pbnB1dC92MSIsInNoYTI1NiI6IjAxMjQ1MTUzNjFkOWZlZWM3NWQ0OGQ2MzMyYzExNWIzOThmNzQ3NDQ2NmY1ZWExMDY1ZDYzYzgzYThmZTJmYmMiLCJwcm92ZW5hbmNlX3NoYTI1NiI6IjAyYzg5MTk0YjNjYmUwMGYwNGY3ZTRmZjJkMzNmOTgwODJkYTI5ZTAzMjkzYWY2MzIzZTM0YWFiMjg1NzVlMjQiLCJjYWxsZXJfYnl0ZXMiOjQ4OTgsInJ1bm5lcl9ieXRlcyI6MCwidG90YWxfYnl0ZXMiOjQ4OTgsImZyYWdtZW50cyI6W3sic291cmNlIjoiY2FsbGVyLmRpcmVjdCIsIm93bmVyIjoiY2FsbGVyIiwiYnl0ZXMiOjQ4OTh9XX0sImlucHV0X3ZlcnNpb24iOjEsIkNvbW1hbmRJRCI6ImUwOTlhZjlkZWNlZjU0ZGNjMGI5ZWM4ZTc1NDI4NzM3IiwiUHJvbXB0IjoiTm8tdG9vbHMgbmF0aXZlIGlucHV0IHF1YWxpZmljYXRpb24uIERvIG5vdCB1c2UgdG9vbHMsIHJlYWQgb3IgY2hhbmdlIGZpbGVzLCBydW4gY29tbWFuZHMsIGNyZWF0ZSBjb21taXRzLCBkZXBsb3kgb3IgcHVibGlzaC4gUmVwbHkgZXhhY3RseSB3aXRoIFNSX05BVElWRV9JTlBVVF9lMDk5YWY5ZGVjZWY1NGRjYzBiOWVjOGU3NTQyODczNy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbuS4reaWhyBvcmlnaW5hbCBsaW5lOyBwcmVzZXJ2ZSBibGFuayBsaW5lcy5cclxuXHJcbiIsIlB1cnBvc2UiOiIifQ==",
+    "payload_digest": "35d05859457f3441c075ccf3733e9cf036f772bbbb0df7b88f5181090b219597",
+    "status": "in_flight",
+    "started_at": "2026-10-30T15:47:50.4905037Z",
+    "updated_at": "2026-10-30T15:47:50.4905037Z",
+    "ref": {
+      "version": 0,
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "target": {
+        "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+        "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+      },
+      "agent": {
+        "name": "codex"
+      },
+      "run_id": "d74720b1b68373e9fa6389d1e8efde5f",
+      "attempt_id": "88147c3967c004225b701b31caa91d0f",
+      "external": {
+        "kind": "orca_terminal",
+        "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+        "terminal": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+        "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+        "incarnation": "37bc36a7-3e86-49a7-83dc-9267189cb458",
+        "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01"
+      }
+    },
+    "lifecycle_identity": {
+      "project_id": "native-input-probe",
+      "execution_id": "d74720b1b68373e9fa6389d1e8efde5f",
+      "configuration_digest": "native-input-probe",
+      "resource_generation": "1fed4c6fdfb21172d5dff3ed8b7ac1d3",
+      "input_binding_digest": "8680111270e1f0953e3d5b660794e74aee0c76d1296ce3eeb784d39c0ae1490b",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:52d5d717bd13c214c4e0cf01",
+          "external_runtime": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "d74720b1b68373e9fa6389d1e8efde5f",
+        "attempt_id": "88147c3967c004225b701b31caa91d0f",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+          "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+          "incarnation": "37bc36a7-3e86-49a7-83dc-9267189cb458",
+          "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01"
+        }
+      }
+    }
+  },
+  "disposition": "confirmed",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "terminal": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+    "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+    "incarnation": "37bc36a7-3e86-49a7-83dc-9267189cb458",
+    "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+    "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01"
+  },
+  "implementation": [
+    {
+      "version": 1,
+      "codec_version": 7,
+      "purpose": "execution-resources",
+      "implementation_key": "orca.terminal-state",
+      "project_id": "native-input-probe",
+      "execution_id": "d74720b1b68373e9fa6389d1e8efde5f",
+      "attempt_id": "88147c3967c004225b701b31caa91d0f",
+      "generation": "1fed4c6fdfb21172d5dff3ed8b7ac1d3",
+      "config_digest": "native-input-probe",
+      "digest": "d096b6726ad5c6689c949a81a7244ae2cca5ff0b251e06efa3a445841043f448",
+      "payload": {
+        "process": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+          "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+          "incarnation": "37bc36a7-3e86-49a7-83dc-9267189cb458",
+          "execution_host": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "worktree_id": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01"
+        },
+        "turns": [
+          {
+            "input_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "0124515361d9feec75d48d6332c115b398f7474466f5ea1065d63c83a8fe2fbc",
+              "provenance_sha256": "02c89194b3cbe00f04f7e4ff2d33f98082da29e03293af6323e34aab28575e24",
+              "caller_bytes": 4898,
+              "runner_bytes": 0,
+              "total_bytes": 4898,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 4898
+                }
+              ]
+            },
+            "wire_budget": {
+              "contract": "steerrunner-model-input/v1",
+              "sha256": "05debffa9deaa4cf8e474e31de4f256dc84e0f7a5f616ad48b140f17e802b6aa",
+              "provenance_sha256": "a082cd889383b8d7b72575277a5e36d3685404e5a0cc1dddf3833fbbdff19244",
+              "caller_bytes": 4694,
+              "runner_bytes": 0,
+              "total_bytes": 4694,
+              "fragments": [
+                {
+                  "source": "caller.direct",
+                  "owner": "caller",
+                  "bytes": 4694
+                }
+              ]
+            },
+            "receipt_queried_at": "0001-01-01T00:00:00Z",
+            "native": {
+              "pane": "e2925dc4-40fa-4af7-a9f1-9513c64c1631:ed2a9ba3-84e8-4fa9-be9a-460b1a41c440",
+              "provider": "01a18d7e-b244-78d3-880b-03b287272740",
+              "base_root_at": 1793375266309,
+              "last_signal": "2026-10-30T15:47:50.795064Z",
+              "last_query": "2026-10-30T15:47:50.795064Z",
+              "hint": "e2925dc4-40fa-4af7-a9f1-9513c64c1631:ed2a9ba3-84e8-4fa9-be9a-460b1a41c440:done:1793375266309"
+            },
+            "command": "e099af9decef54dcc0b9ec8e75428737",
+            "input_digest": "0124515361d9feec75d48d6332c115b398f7474466f5ea1065d63c83a8fe2fbc",
+            "attempted": false,
+            "accepted": false,
+            "started": false,
+            "settled": false,
+            "prompt": "No-tools native input qualification. Do not use tools, read or change files, run commands, create commits, deploy or publish. Reply exactly with SR_NATIVE_INPUT_e099af9decef54dcc0b9ec8e75428737.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n中文 original line; preserve blank lines.\r\n\r\n"
+          }
+        ]
+      }
+    }
+  ],
+  "state": {
+    "worker_live": true,
+    "session_available": true,
+    "session_id": "orca-terminal:64108a37-610d-478c-a565-194c376217c5:term_1f48742f-d872-4aab-8431-6a21f7a70f12:37bc36a7-3e86-49a7-83dc-9267189cb458",
+    "session_generation": "37bc36a7-3e86-49a7-83dc-9267189cb458"
+  }
+}

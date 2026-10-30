@@ -1,6 +1,6 @@
 # Orca 三个本机原生会话最终补验
 
-2026-10-30。本机 **3/3 通过**，远端仍沿此前 **0/3 未验证**，PR 保持 Draft。配套 [Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)、[socket 根因与环境恢复](orca-auth-socket-rootcause.md)。本页不改写此前失败记录。
+2026-10-30。本机 **3/3 通过**；本页批次结束时远端仍为 0/3、PR 为 Draft，随后用户指定新目标的[远端补验](orca-native-submit-remote-final.md)已达 3/3。配套 [Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)、[socket 根因与环境恢复](orca-auth-socket-rootcause.md)。本页不改写此前失败记录。
 
 ## 本轮最小修正
 

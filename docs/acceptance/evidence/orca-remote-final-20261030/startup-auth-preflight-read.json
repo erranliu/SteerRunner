@@ -1,0 +1,24 @@
+{
+  "id": "352b1b01-6adb-4cd2-8742-8615e3044d8f",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "n');git_status=@(git status --porcelain)} | ConvertTo-Json -C$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostname github.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Co$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostnamegithub.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Com$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostnamegithub.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Comp$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostname github.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Compr$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostname github.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Compre$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostname github.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Compres$ErrorActionPreference='Stop'; $gh=Get-Command gh -ErrorAction SilentlyContinue; $authExit=$null; if($gh) { & gh auth token --hostname github.com 1>$null 2>$null; $authExit=$LASTEXITCODE }; $codex=Get-Command codex -CommandType Application,ExternalScript -ErrorAction SilentlyContinue | Select-Object -First 1; [ordered]@{gh_available=[bool]$gh;gh_token_query_exit=$authExit;codex_source=$codex.Source;codex_help_has_no_daemon=[bool]((& $codex.Source --help 2>$null | Out-String) -match '--no-daemon');git_status=@(git status --porcelain)} | ConvertTo-Json -Compress",
+        "{\"gh_available\":true,\"gh_token_query_exit\":0,\"codex_source\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.ps1\",\"codex_help_has_no_daemon\":true,\"git_status\":[]}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "3",
+      "latestCursor": "3",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

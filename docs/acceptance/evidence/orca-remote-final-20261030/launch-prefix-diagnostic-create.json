@@ -1,0 +1,22 @@
+{
+  "id": "21dffe4d-31a0-40ea-b3a8-83b02004e775",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 14172,
+      "handle": "term_020e87f8-1d31-42cf-b33d-8abcc01025d8",
+      "tabId": "dcb1dd47-dd42-470f-9901-4681a03920b5",
+      "paneKey": "dcb1dd47-dd42-470f-9901-4681a03920b5:bf65f80d-0246-4f70-95a1-1fcf504843a8",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@f0439272",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Runner owned launch prefix diagnostic, no model",
+      "executionHostId": "local",
+      "incarnationId": "54d304d4-314e-4a59-af0c-a27ec1495b77",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

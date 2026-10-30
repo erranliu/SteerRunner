@@ -1,0 +1,22 @@
+{
+  "id": "52269b9a-1e33-4353-bf0e-fb738e4cc21d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 5680,
+      "handle": "term_fd90e437-4613-49c5-b150-a6786a6c601c",
+      "tabId": "02b260fd-8c4a-44c2-a152-03e2399f53bf",
+      "paneKey": "02b260fd-8c4a-44c2-a152-03e2399f53bf:fecdb31f-d9aa-498b-a63c-bc1cbe4db196",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01@@96271420",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+      "title": "Runner owned remote qualification discovery",
+      "executionHostId": "local",
+      "incarnationId": "fecd6091-8e5c-4ff3-b0a1-1fa721a20b2c",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

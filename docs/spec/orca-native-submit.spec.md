@@ -1,11 +1,16 @@
 # Orca 多行输入屏幕草稿依赖修复 Spec
 
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：窄范围代码已实施，**真实双端验收未完成**。实施/检查实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+状态：窄范围代码已实施，本次真实双端各三个独立原生会话通过。实施/检查实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
-最终本机补验已达 3/3，原请求、原文/模型/final及正式停止认证均通过；远端仍 0/3 未验证。
+最终本机补验已达 3/3，原请求、原文/模型/final及正式停止认证均通过；用户新指定的远端
+`192.168.1.151` 已达 3/3，保留原 NativeProof/原输入/final及 `orca_terminal` 正式停止范围。
 见[本机最终记录](../acceptance/orca-native-submit-local-final.md)。本机测试目标须具备与正式
 workflow 相同的既有 writer/audit 冻结配置，不清空 Turn.Model 或放宽模型凭据校验。
+
+远端测试适配仅补独立身份、原 operation/input/receipt 归档和既有正式 stop，未修改生产链路。
+准备与业务共用现有本机同等六分钟 fixture 总期限，删除测试专属 90 秒上限；只读等待原 READY，
+不增加发送或重试预算，生产时限不变。此前三份准备失败仍不计资格，也不声称冷启动 SLA 达标。
 
 本版替代上一版整条执行/完成链路统一方案。M1本机模型控制、长final迁移退出本次范围，不再作为修复前置；这些能力并未迁移或验证等价。旧审计结论仅适用于对应旧版。2026-10-30，design_audit与final_review独立只读复审本版均无P0–P2文档发现；此结论不代表生产实施或真实验收完成。
 

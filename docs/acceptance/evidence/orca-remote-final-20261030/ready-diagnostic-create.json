@@ -1,0 +1,22 @@
+{
+  "id": "62ad6f1e-fdb5-4d47-ac4e-6446e85f35cd",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 7632,
+      "handle": "term_13167c21-2016-4a34-8d5b-28552ba51655",
+      "tabId": "9c4da351-4c49-4d3c-9dd8-a1c793c07ff2",
+      "paneKey": "9c4da351-4c49-4d3c-9dd8-a1c793c07ff2:0c2f573d-40dc-4453-8d5c-d548aa4c38dd",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@8d0e412d",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Runner owned READY-only failure diagnosis",
+      "executionHostId": "local",
+      "incarnationId": "68d9706d-9ab7-48e6-82b5-231a38334b6f",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

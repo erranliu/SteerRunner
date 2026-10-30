@@ -1,0 +1,22 @@
+{
+  "id": "3ef7b84a-4e4d-4341-888d-80b0eb81cb12",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 12676,
+      "handle": "term_bd3cf9f4-c72a-4baf-9ada-8696668b0363",
+      "tabId": "24652593-043e-4e3d-8bbb-408ac3199c8f",
+      "paneKey": "24652593-043e-4e3d-8bbb-408ac3199c8f:475a50d8-e77c-49c8-8a6b-0e7c2e792232",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest@@ebfe1afb",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest",
+      "title": "Runner owned read-only cleanup verifier",
+      "executionHostId": "local",
+      "incarnationId": "7bb7f282-ed18-44a4-8a66-4ac3d6544d5f",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

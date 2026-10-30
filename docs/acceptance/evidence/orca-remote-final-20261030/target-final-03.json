@@ -1,0 +1,16 @@
+{
+  "Worktree": "id:09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-03",
+  "Runtime": "64108a37-610d-478c-a565-194c376217c5",
+  "Environment": "9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+  "CLI": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+  "Launch": {
+    "executable": "C:/Users/liuming/AppData/Local/OpenAI/Codex/bin/0ab0e7a8f3779036/codex.exe",
+    "args": [
+      "--no-daemon"
+    ],
+    "repository_url": "https://github.com/erranliu/SteerlineTest.git",
+    "access_mode": "sandbox",
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high"
+  }
+}

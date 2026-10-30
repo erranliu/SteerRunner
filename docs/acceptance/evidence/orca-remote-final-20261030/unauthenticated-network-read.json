@@ -1,0 +1,24 @@
+{
+  "id": "bb2a0a6c-475e-49b0-b1ff-e5886f1448a9",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "rror=$null; try{$task=$tcp.ConnectAsync($hostName,443); $connected=$task.Wait(5000) -and $tcp.Connected}catch{$tcpError=$_.Exception.GetType().Name}finally{$tcp.Dispose()}; Add-Type -AssemblyName System.Net.Http; $client=[Net.Http.HttpClient]::new(); $client.Timeout=[TimeSpan]::FromSeconds(10); $status=$null; $httpError=$null; $watch=[Diagnostics.Stopwatch]::StartNew(); try{$response=$client.SendAsync([Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Head,'https://chatgpt.com/')).GetAwaiter().GetResult();$status=[int]$response.StatusCode;$response.Dispose()}catch{$httpError=$_.Exception.GetType().Name}finally{$watch.Stop();$client.Dispose()}; [ordered]@{purpose='unauthenticated connectivity diagnosis only';host=$hostName;tcp443_connected=$connected;tcp_error_type=$tcpError;head_http_status=$status;head_error_type=$httpError;head_elapsed_ms=$watch.ElapsedMilliseconds} | ConvertTo-Json -Compr$ErrorActionPreference='Stop'; $hostName='chatgpt.com'; $tcp=[Net.Sockets.TcpClient]::new(); $connected=$false; $tcpError=$null; try{$task=$tcp.ConnectAsync($hostName,443); $connected=$task.Wait(5000) -and $tcp.Connected}catch{$tcpError=$_.Exception.GetType().Name}finally{$tcp.Dispose()}; Add-Type -AssemblyName System.Net.Http; $client=[Net.Http.HttpClient]::new(); $client.Timeout=[TimeSpan]::FromSeconds(10); $status=$null; $httpError=$null; $watch=[Diagnostics.Stopwatch]::StartNew(); try{$response=$client.SendAsync([Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Head,'https://chatgpt.com/')).GetAwaiter().GetResult();$status=[int]$response.StatusCode;$response.Dispose()}catch{$httpError=$_.Exception.GetType().Name}finally{$watch.Stop();$client.Dispose()}; [ordered]@{purpose='unauthenticated connectivity diagnosis only';host=$hostName;tcp443_connected=$connected;tcp_error_type=$tcpError;head_http_status=$status;head_error_type=$httpError;head_elapsed_ms=$watch.ElapsedMilliseconds} | ConvertTo-Json -Compre$ErrorActionPreference='Stop'; $hostName='chatgpt.com'; $tcp=[Net.Sockets.TcpClient]::new(); $connected=$false; $tcpError=$null; try{$task=$tcp.ConnectAsync($hostName,443);$connected=$task.Wait(5000) -and $tcp.Connected}catch{$tcpError=$_.Exception.GetType().Name}finally{$tcp.Dispose()}; Add-Type -AssemblyName System.Net.Http; $client=[Net.Http.HttpClient]::new(); $client.Timeout=[TimeSpan]::FromSeconds(10); $status=$null; $httpError=$null; $watch=[Diagnostics.Stopwatch]::StartNew(); try{$response=$client.SendAsync([Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Head,'https://chatgpt.com/')).GetAwaiter().GetResult();$status=[int]$response.StatusCode;$response.Dispose()}catch{$httpError=$_.Exception.GetType().Name}finally{$watch.Stop();$client.Dispose()}; [ordered]@{purpose='unauthenticated connectivity diagnosis only';host=$hostName;tcp443_connected=$connected;tcp_error_type=$tcpError;head_http_status=$status;head_error_type=$httpError;head_elapsed_ms=$watch.ElapsedMilliseconds} | ConvertTo-Json -Compres$ErrorActionPreference='Stop'; $hostName='chatgpt.com'; $tcp=[Net.Sockets.TcpClient]::new(); $connected=$false; $tcpError=$null; try{$task=$tcp.ConnectAsync($hostName,443); $connected=$task.Wait(5000) -and $tcp.Connected}catch{$tcpError=$_.Exception.GetType().Name}finally{$tcp.Dispose()}; Add-Type -AssemblyName System.Net.Http; $client=[Net.Http.HttpClient]::new(); $client.Timeout=[TimeSpan]::FromSeconds(10); $status=$null; $httpError=$null; $watch=[Diagnostics.Stopwatch]::StartNew(); try{$response=$client.SendAsync([Net.Http.HttpRequestMessage]::new([Net.Http.HttpMethod]::Head,'https://chatgpt.com/')).GetAwaiter().GetResult();$status=[int]$response.StatusCode;$response.Dispose()}catch{$httpError=$_.Exception.GetType().Name}finally{$watch.Stop();$client.Dispose()}; [ordered]@{purpose='unauthenticated connectivity diagnosis only';host=$hostName;tcp443_connected=$connected;tcp_error_type=$tcpError;head_http_status=$status;head_error_type=$httpError;head_elapsed_ms=$watch.ElapsedMilliseconds} | ConvertTo-Json -Compress",
+        "{\"purpose\":\"unauthenticated connectivity diagnosis only\",\"host\":\"chatgpt.com\",\"tcp443_connected\":false,\"tcp_error_type\":null,\"head_http_status\":403,\"head_error_type\":null,\"head_elapsed_ms\":1480}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "17",
+      "latestCursor": "17",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

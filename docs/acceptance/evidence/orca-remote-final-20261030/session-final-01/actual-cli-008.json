@@ -1,0 +1,43 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "close",
+      "--terminal",
+      "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-final-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:48:04.7897901Z",
+  "started": "2026-10-30T15:48:03.9333927Z",
+  "stdout": {
+    "id": "153583a3-ba5d-4987-be06-86cd0caed309",
+    "ok": true,
+    "result": {
+      "close": {
+        "handle": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+        "tabId": "e2925dc4-40fa-4af7-a9f1-9513c64c1631",
+        "ptyKilled": true
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 319,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 192
+}
