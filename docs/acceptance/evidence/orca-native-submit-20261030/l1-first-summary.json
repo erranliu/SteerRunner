@@ -1,0 +1,22 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "a086a9984dc0bd32b3f02b9698cd26c9ba313d90",
+  "source_dirty": true,
+  "started_at": "2026-10-30T09:11:15.2316473Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "failed",
+  "results": [],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "Runner source changed during build; build again from stable inputs.",
+  "finished_at": "2026-10-30T09:12:10.6575985Z"
+}

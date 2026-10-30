@@ -1,0 +1,150 @@
+{
+  "schema": "orca-installed-submit-characterization/v1",
+  "audit_script_sha256": "1ef166b95a43dbb53531a645896c866b3a139419a9c8986be1ee6296d1394a2f",
+  "bundle_basename": "orcad-server.js",
+  "bundle_sha256": "112906a35157eebe09dfd37be0da222ac230dd3a1a70c1e6d2ffa0c830bae0b5",
+  "extracts": {
+    "renderGate": {
+      "start_utf16": 8428943,
+      "end_utf16": 8429724,
+      "sha256": "d03149608c5e6fe915902253be0fd28d42d96b5142a42ccc34bdc002b06bd987"
+    },
+    "writePrompt": {
+      "start_utf16": 8424325,
+      "end_utf16": 8427763,
+      "sha256": "6281c8b64022b646aef163ab58b619973f53b1924db80f4f09d21963c94bea32"
+    },
+    "resubmit": {
+      "start_utf16": 8423231,
+      "end_utf16": 8423948,
+      "sha256": "e72cb1dc396160e5fc327c25503f79509677be357c4dced6b7abb676476b1846"
+    },
+    "heldDraftMatch": {
+      "start_utf16": 5267811,
+      "end_utf16": 5268125,
+      "sha256": "e14fbdcebd8abcab0df999d008468a1f1ebceb1e50dbecf10c4a61fed05c6b5a"
+    },
+    "observeStart": {
+      "start_utf16": 4144017,
+      "end_utf16": 4144890,
+      "sha256": "b3c48fcb1220edfa9e5ae2be6bd55a359cdc4fea80fe1c311708187819031877"
+    }
+  },
+  "scope": "isolated installed methods; virtual timing and dependency fixtures; no live terminal or historical reproduction",
+  "excluded": [
+    "Runner L3 qualification",
+    "live native reproduction",
+    "remote bundle identity",
+    "provider correctness"
+  ],
+  "cases": [
+    {
+      "id": "render-timeout-no-consumption-ack",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "released_without_output": true
+      }
+    },
+    {
+      "id": "accepted-before-consumption",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "writes": 2,
+        "submit_cr": 1,
+        "accepted": true,
+        "consumed_matches": false,
+        "request_id": "original-request",
+        "consumed_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "expected_sha256": "904c188f02bc8d0871daa3cefc580e597ae3fdbb62cf1bf72811c5ae3d40c1af"
+      }
+    },
+    {
+      "id": "transport-accepted-truncation",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "writes": 2,
+        "submit_cr": 1,
+        "accepted": true,
+        "consumed_matches": false,
+        "request_id": "original-request",
+        "consumed_sha256": "d48105c15be8cb43b8a5eaf1307695b67744bd821abd71f351c4684241425390",
+        "expected_sha256": "904c188f02bc8d0871daa3cefc580e597ae3fdbb62cf1bf72811c5ae3d40c1af"
+      }
+    },
+    {
+      "id": "transport-accepted-byte-change",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "writes": 2,
+        "submit_cr": 1,
+        "accepted": true,
+        "consumed_matches": false,
+        "request_id": "original-request",
+        "consumed_sha256": "1949b7d664783cd877b2812f12bc88d900c00bcd593d2c2d1d9ac8035ce382fa",
+        "expected_sha256": "904c188f02bc8d0871daa3cefc580e597ae3fdbb62cf1bf72811c5ae3d40c1af"
+      }
+    },
+    {
+      "id": "existing-composer-input",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "writes": 2,
+        "submit_cr": 1,
+        "accepted": true,
+        "consumed_matches": false,
+        "request_id": "original-request",
+        "consumed_sha256": "5cf7356f160220e218da36bbc2e3550da0655e80ce80255dd900edfb6dda685a",
+        "expected_sha256": "904c188f02bc8d0871daa3cefc580e597ae3fdbb62cf1bf72811c5ae3d40c1af"
+      }
+    },
+    {
+      "id": "concurrent-writer-interleaving",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "writes": 2,
+        "submit_cr": 1,
+        "accepted": true,
+        "consumed_matches": false,
+        "request_id": "original-request",
+        "consumed_sha256": "d9f4d740f93c373aefacd387c6f54ec4837970aa11ca41d3160265dc8b8f22c2",
+        "expected_sha256": "904c188f02bc8d0871daa3cefc580e597ae3fdbb62cf1bf72811c5ae3d40c1af"
+      }
+    },
+    {
+      "id": "screen-held-supplemental-enter",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "supplemental_cr": 1,
+        "source": "screen-draft + held-retry",
+        "virtual_time": true
+      }
+    },
+    {
+      "id": "start-observer-does-not-verify-text",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "start_observed": true,
+        "prompt_text_or_digest_supplied": false
+      }
+    }
+  ],
+  "executed": 240,
+  "failed": 0,
+  "skipped": 0
+}
