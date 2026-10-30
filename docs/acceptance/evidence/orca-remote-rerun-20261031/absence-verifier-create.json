@@ -1,0 +1,22 @@
+{
+  "id": "c7c82d8b-a45d-4cc1-809a-0e2ccbf79e78",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 20776,
+      "handle": "term_e2c57fa3-9180-437c-9b17-c0b838046516",
+      "tabId": "12240959-473c-4728-b691-fcb396329d02",
+      "paneKey": "12240959-473c-4728-b691-fcb396329d02:15c804f7-2bd5-4e2d-91a7-f0f6cd88e206",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest@@cb6e51f2",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest",
+      "title": "Runner owned rerun absence verifier",
+      "executionHostId": "local",
+      "incarnationId": "658076cd-678d-47ba-b74e-800b1347ecf9",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

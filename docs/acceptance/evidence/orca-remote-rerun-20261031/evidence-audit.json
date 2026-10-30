@@ -1,0 +1,32 @@
+{
+  "schema": "steerrunner-remote-native-evidence-audit/v1",
+  "sessions": [
+    {
+      "run_id": "81707f4b9d5ea40229805e0658af25a8",
+      "attempt_id": "650e1a232f4c9cc1fea4079541c560a9",
+      "request_id": "d3cdfaf1-7dfa-b5f4-2594-9257928af168",
+      "operation_id": "05194dcf4c264ca04b2db8cf02b69010",
+      "runtime_id": "64108a37-610d-478c-a565-194c376217c5",
+      "terminal": "term_479423e6-2451-4da1-ac34-c7b555e8ee0a",
+      "incarnation": "2aa4d115-132a-42ee-9486-b6443ed84d37",
+      "provider_session": "01a18f2f-36ea-7b03-9317-a9ee5b0d6bb4",
+      "user_item": "01a18f31-163b-79a0-acbb-0dddb9530148",
+      "logical_bytes": 4898,
+      "logical_sha256": "000064d3d2db3da9e20ab5535b87e86f299111725833cdc8ae3ca5cb4992069a",
+      "wire_bytes": 4694,
+      "wire_sha256": "847388a5b643f0321e5cb8dde18bfcc1665a7c0dd49ab8532388bda94c77443b",
+      "submit_calls": 1,
+      "accepted": true,
+      "started": true,
+      "completed": true,
+      "final_sha256": "300ab88ebc9f1a3546fd4ee44d74c4e52af1c6b4aea50ca03a89844922e4d469",
+      "formal_stop_verified": true,
+      "stop_scope": "orca_terminal",
+      "initialization_elapsed_ms": 120989,
+      "business_elapsed_ms": 10066,
+      "source_digest": "c1a6550561df3b602f58658e2102364913f5e1f427926ecfe2d91256f2f36a96",
+      "test_exe_sha256": "D559DA6EDC10E88AB8F40F7AD74A8AEB948290BD5DACBE9EA0F5B5DB8CFA5EAE",
+      "passed": true
+    }
+  ]
+}

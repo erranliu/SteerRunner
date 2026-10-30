@@ -1,0 +1,29 @@
+{
+  "id": "bc0bf962-1aa7-41a0-abf0-4cb4e90825b6",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_e2c57fa3-9180-437c-9b17-c0b838046516",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest@@cb6e51f2",
+      "incarnationId": "658076cd-678d-47ba-b74e-800b1347ecf9",
+      "orphaned": false,
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest",
+      "worktreePath": "C:/project/SteerlineTest",
+      "branch": "refs/heads/main",
+      "tabId": "12240959-473c-4728-b691-fcb396329d02",
+      "leafId": "15c804f7-2bd5-4e2d-91a7-f0f6cd88e206",
+      "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793403883766,
+      "preview": "{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-rerun-20261031-afe3aedc\",\"exists\":false,\"registered\":false,\"exclude_sha256\":\"6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1\"}\nPS C:\\project\\SteerlineTest>",
+      "executionHostId": "local",
+      "paneRuntimeId": 1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

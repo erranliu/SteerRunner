@@ -1,0 +1,23 @@
+{
+  "id": "0a14e0bb-d55b-4466-bd52-94c14ae32fd6",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_9ac88ed3-4df3-4073-9c6d-e0cad6c555e8",
+      "status": "running",
+      "tail": [
+        "{\"workspace\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-rerun-20261031-afe3aedc\",\"git_top\":\"C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc\",\"clean\":true,\"git_status\":[],\"exclude_sha256\":\"6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1\"}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

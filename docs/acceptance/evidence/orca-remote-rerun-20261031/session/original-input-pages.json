@@ -1,0 +1,61 @@
+[
+  {
+    "messages": [
+      {
+        "id": "01a18f2f-77f5-7bc1-ba4e-c3301a2e89ea",
+        "role": "user",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Initialize: READY only, no tools/changes. This rule ends after READY; later/compacted turns complete the current task. Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats."
+          }
+        ],
+        "timestamp": 1793403615230,
+        "source": "transcript"
+      },
+      {
+        "id": "msg_0aebb88ebda8f717016ae52b4647e08191a9ac982adb587458",
+        "role": "assistant",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "READY"
+          }
+        ],
+        "timestamp": 1793403714435,
+        "source": "transcript"
+      },
+      {
+        "id": "01a18f31-163b-79a0-acbb-0dddb9530148",
+        "role": "user",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "No-tools native input qualification. Do not use tools, read or change files, run commands, create commits, deploy or publish. Reply exactly with SR_NATIVE_INPUT_30a4ed7b2a7fee046eec25b47d23b89e.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines."
+          }
+        ],
+        "timestamp": 1793403721283,
+        "source": "transcript"
+      },
+      {
+        "id": "msg_0aebb88ebda8f717016ae52b4fafa481918f641dc8ee96b21f",
+        "role": "assistant",
+        "blocks": [
+          {
+            "type": "text",
+            "text": "SR_NATIVE_INPUT_30a4ed7b2a7fee046eec25b47d23b89e"
+          }
+        ],
+        "timestamp": 1793403723925,
+        "source": "transcript"
+      }
+    ],
+    "hasMore": false,
+    "beforeOffset": 141026,
+    "lifecycle": {
+      "state": "completed",
+      "turnId": "01a18f31-1494-70b2-ba1c-0980ca781e6c",
+      "timestamp": 1793403724339
+    }
+  }
+]
