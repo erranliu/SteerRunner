@@ -1,0 +1,119 @@
+{
+  "schema": "orca-installed-submit-characterization/v1",
+  "bundle_basename": "orcad-server.js",
+  "bundle_sha256": "112906a35157eebe09dfd37be0da222ac230dd3a1a70c1e6d2ffa0c830bae0b5",
+  "extracts": {
+    "renderGate": {
+      "start_utf16": 8428943,
+      "end_utf16": 8429724,
+      "sha256": "d03149608c5e6fe915902253be0fd28d42d96b5142a42ccc34bdc002b06bd987"
+    },
+    "writePrompt": {
+      "start_utf16": 8424325,
+      "end_utf16": 8427763,
+      "sha256": "6281c8b64022b646aef163ab58b619973f53b1924db80f4f09d21963c94bea32"
+    },
+    "resubmit": {
+      "start_utf16": 8423231,
+      "end_utf16": 8423948,
+      "sha256": "e72cb1dc396160e5fc327c25503f79509677be357c4dced6b7abb676476b1846"
+    },
+    "heldDraftMatch": {
+      "start_utf16": 5267811,
+      "end_utf16": 5268125,
+      "sha256": "e14fbdcebd8abcab0df999d008468a1f1ebceb1e50dbecf10c4a61fed05c6b5a"
+    },
+    "observeStart": {
+      "start_utf16": 4144017,
+      "end_utf16": 4144890,
+      "sha256": "b3c48fcb1220edfa9e5ae2be6bd55a359cdc4fea80fe1c311708187819031877"
+    }
+  },
+  "scope": "isolated installed methods; virtual timing and dependency fixtures; no live terminal or historical reproduction",
+  "excluded": [
+    "Runner L3 qualification",
+    "live native reproduction",
+    "remote bundle identity",
+    "provider correctness"
+  ],
+  "cases": [
+    {
+      "id": "render-timeout-no-consumption-ack",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "released_without_output": true
+      }
+    },
+    {
+      "id": "accepted-before-consumption",
+      "executed": 30,
+      "failed": 30,
+      "skipped": 0,
+      "sample": {
+        "error": "Error: agent_prompt_stalled"
+      }
+    },
+    {
+      "id": "transport-accepted-truncation",
+      "executed": 30,
+      "failed": 30,
+      "skipped": 0,
+      "sample": {
+        "error": "Error: agent_prompt_stalled"
+      }
+    },
+    {
+      "id": "transport-accepted-byte-change",
+      "executed": 30,
+      "failed": 30,
+      "skipped": 0,
+      "sample": {
+        "error": "Error: agent_prompt_stalled"
+      }
+    },
+    {
+      "id": "existing-composer-input",
+      "executed": 30,
+      "failed": 30,
+      "skipped": 0,
+      "sample": {
+        "error": "Error: agent_prompt_stalled"
+      }
+    },
+    {
+      "id": "concurrent-writer-interleaving",
+      "executed": 30,
+      "failed": 30,
+      "skipped": 0,
+      "sample": {
+        "error": "Error: agent_prompt_stalled"
+      }
+    },
+    {
+      "id": "screen-held-supplemental-enter",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "supplemental_cr": 1,
+        "source": "screen-draft + held-retry",
+        "virtual_time": true
+      }
+    },
+    {
+      "id": "start-observer-does-not-verify-text",
+      "executed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "sample": {
+        "start_observed": true,
+        "prompt_text_or_digest_supplied": false
+      }
+    }
+  ],
+  "executed": 240,
+  "failed": 150,
+  "skipped": 0
+}
