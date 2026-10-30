@@ -1,0 +1,54 @@
+{
+  "current_package": {
+    "status": 15700
+  },
+  "go": "go1.26.4",
+  "orca_package": {
+    "status": 15700
+  },
+  "parent_pid": 10656,
+  "pid": 19212,
+  "probes": [
+    {
+      "absolute_lstat_error": null,
+      "base": "C:/Users/lmas1/AppData/Local/SteerRunner/a",
+      "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-1537239219",
+      "directory_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1537239219",
+      "directory_remove_error": null,
+      "echo_error": null,
+      "listen_error": null,
+      "marker_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1537239219\\marker.txt",
+      "marker_remove_error": null,
+      "marker_write_error": null,
+      "mkdir_error": null,
+      "open_root_error": null,
+      "original_absent": true,
+      "root_lstat_error": null,
+      "server_error": null,
+      "socket_path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1537239219\\s",
+      "socket_remove_error": null,
+      "started": "2026-10-30T14:42:26.1725701Z"
+    },
+    {
+      "absolute_lstat_error": null,
+      "base": "C:/Users/lmas1/AppData/Local",
+      "directory": "C:/Users/lmas1/AppData/Local\\sr-ad-490413614",
+      "directory_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\sr-ad-490413614",
+      "directory_remove_error": null,
+      "echo_error": null,
+      "listen_error": null,
+      "marker_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\sr-ad-490413614\\marker.txt",
+      "marker_remove_error": null,
+      "marker_write_error": null,
+      "mkdir_error": null,
+      "open_root_error": null,
+      "original_absent": true,
+      "root_lstat_error": null,
+      "server_error": null,
+      "socket_path": "C:\\Users\\lmas1\\AppData\\Local\\sr-ad-490413614\\s",
+      "socket_remove_error": null,
+      "started": "2026-10-30T14:42:26.1788594Z"
+    }
+  ],
+  "time": "2026-10-30T14:42:26.1725701Z"
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+    "path_absent": true,
+    "registration_absent": true
+  },
+  {
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+    "path_absent": true,
+    "registration_absent": true
+  },
+  {
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+    "path_absent": true,
+    "registration_absent": true
+  },
+  {
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+    "path_absent": true,
+    "registration_absent": true
+  },
+  {
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+    "path_absent": true,
+    "registration_absent": true
+  }
+]

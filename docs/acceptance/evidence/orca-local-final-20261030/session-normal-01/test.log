@@ -1,0 +1,5 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_local_probe_test.go:324: original local input did not complete context deadline exceeded
+    native_input_local_probe_test.go:164: formal original local stop/authentication cleanup not verified
+--- FAIL: TestOrcaNativeStateLiveLifecycle (366.21s)
+FAIL

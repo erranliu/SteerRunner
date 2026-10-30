@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+      "--text",
+      "eyJpZCI6IjMxNDg2NDA1MWMxM2EzNTMzOTkxZDkwYmM5YTU0ZmIxIiwiYmluZGluZyI6IjQwYmY2MmJkOTNiNDg0YjU3YzQ0MDg2MDMwYzEzOGQwNGE5NGNkMzVlZTUwZjA1OTI3YThmNDllNTc5NjhlYzEiLCJtZXRob2QiOiJvcmlnaW5hbC10dXJuIiwic2Vzc2lvbiI6IjAxYTE4ZDQ0LTBlNmItNzA2My1hOTdhLTM0ZDY4MzhlNjUzOSIsImlucHV0X2RpZ2VzdCI6ImNiYzYzMTAxZDQxNTJlN2I3OGFkM2FiMTlhYmVhMzY0ZDE4ZGI3MGYwMmQ3YjNiZGY5MDc3ZGU1ZWJkNDg5YmYifQ",
+      "--enter",
+      "--retry-request",
+      "ed47ca25-e73c-a931-6551-0cb392ed12bc",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:44:10.9213209Z",
+  "started": "2026-10-30T14:44:09.703875Z",
+  "stdout": {
+    "id": "a55ba454-c7a3-4763-9d55-e96cbc429098",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+        "accepted": true,
+        "bytesWritten": 367,
+        "prompt": {
+          "requestId": "ed47ca25-e73c-a931-6551-0cb392ed12bc",
+          "stages": [
+            "input_accepted"
+          ],
+          "provider": "unsupported",
+          "observation": "unsupported",
+          "processIncarnation": "7470df2d-1147-47c5-8825-a2ed1de72596",
+          "generation": 6,
+          "baselineWorkingSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "ed47ca25-e73c-a931-6551-0cb392ed12bc",
+        "replayed": false
+      },
+      "warnings": [
+        "input was accepted, but this provider cannot report delivery. Inspect the terminal before retrying."
+      ]
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 881,
+  "text_transport_bytes": 366,
+  "windows_command_line_utf16_with_nul": 575
+}

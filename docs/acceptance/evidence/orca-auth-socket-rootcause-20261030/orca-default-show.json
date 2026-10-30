@@ -1,0 +1,29 @@
+{
+  "id": "da9486da-ba97-4d0f-ba97-bd5320a6cd89",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_1a934cbe-65ba-4808-8e9f-85ef5561c85e",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01@@8ad551fa",
+      "incarnationId": "37e27751-a4c1-4f38-a0ff-b830b76f677a",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+      "branch": "refs/heads/erranliu/codex-sr-auth-context-20261030-01",
+      "tabId": "3509174e-5836-491d-b111-2b37ceaefc11",
+      "leafId": "3d83bb0a-c27a-4868-a232-0a93b8e8b58d",
+      "title": "Terminal 1",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793370334849,
+      "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-auth-context-20261030-01>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

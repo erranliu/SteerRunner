@@ -1,0 +1,187 @@
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"os"
+	"path/filepath"
+	"runtime"
+	"syscall"
+	"time"
+	"unsafe"
+
+	"golang.org/x/sys/windows"
+)
+
+func failure(err error) any {
+	if err == nil {
+		return nil
+	}
+	var errno syscall.Errno
+	record := map[string]any{"text": err.Error()}
+	if errors.As(err, &errno) {
+		record["errno"] = uint32(errno)
+	}
+	return record
+}
+
+func finalPath(path string) any {
+	f, e := os.Open(path)
+	if e != nil {
+		return failure(e)
+	}
+	defer f.Close()
+	b := make([]uint16, 32768)
+	n, e := windows.GetFinalPathNameByHandle(windows.Handle(f.Fd()), &b[0], uint32(len(b)), 0)
+	if e != nil {
+		return failure(e)
+	}
+	return windows.UTF16ToString(b[:n])
+}
+
+func packageName(pid uint32) any {
+	h, e := windows.OpenProcess(windows.PROCESS_QUERY_LIMITED_INFORMATION, false, pid)
+	if e != nil {
+		return failure(e)
+	}
+	defer windows.CloseHandle(h)
+	proc := windows.NewLazySystemDLL("kernel32.dll").NewProc("GetPackageFullName")
+	var n uint32
+	r, _, _ := proc.Call(uintptr(h), uintptr(unsafe.Pointer(&n)), 0)
+	if r != 122 {
+		return map[string]any{"status": r}
+	}
+	b := make([]uint16, n)
+	r, _, _ = proc.Call(uintptr(h), uintptr(unsafe.Pointer(&n)), uintptr(unsafe.Pointer(&b[0])))
+	return map[string]any{"status": r, "name": windows.UTF16ToString(b)}
+}
+
+func probe(base string) map[string]any {
+	rec := map[string]any{"base": base, "started": time.Now().UTC()}
+	dir, e := os.MkdirTemp(base, "sr-ad-")
+	rec["mkdir_error"] = failure(e)
+	if e != nil {
+		return rec
+	}
+	rec["directory"] = dir
+	marker := filepath.Join(dir, "marker.txt")
+	e = os.WriteFile(marker, []byte("owned no-credential diagnostic\n"), 0600)
+	rec["marker_write_error"] = failure(e)
+	rec["marker_final_path"] = finalPath(marker)
+	rec["directory_final_path"] = finalPath(dir)
+	root, e := os.OpenRoot(dir)
+	rec["open_root_error"] = failure(e)
+	if e != nil {
+		return rec
+	}
+	socket := filepath.Join(dir, "s")
+	rec["socket_path"] = socket
+	listener, e := net.Listen("unix", socket)
+	rec["listen_error"] = failure(e)
+	if e == nil {
+		listener.(*net.UnixListener).SetUnlinkOnClose(false)
+		_, e = root.Lstat("s")
+		rec["root_lstat_error"] = failure(e)
+		_, e = os.Lstat(socket)
+		rec["absolute_lstat_error"] = failure(e)
+		listener.(*net.UnixListener).SetDeadline(time.Now().Add(3 * time.Second))
+		server := make(chan error, 1)
+		go func() {
+			c, e := listener.Accept()
+			if e == nil {
+				defer c.Close()
+				c.SetDeadline(time.Now().Add(3 * time.Second))
+				b := []byte{0}
+				_, e = io.ReadFull(c, b)
+				if e == nil {
+					_, e = c.Write(b)
+				}
+			}
+			server <- e
+		}()
+		c, e := net.DialTimeout("unix", socket, 2*time.Second)
+		if e == nil {
+			c.SetDeadline(time.Now().Add(2 * time.Second))
+			_, e = c.Write([]byte{42})
+			if e == nil {
+				b := []byte{0}
+				_, e = io.ReadFull(c, b)
+				if e == nil && b[0] != 42 {
+					e = fmt.Errorf("echo mismatch")
+				}
+			}
+			c.Close()
+		}
+		rec["echo_error"] = failure(e)
+		listener.Close()
+		rec["server_error"] = failure(<-server)
+		rec["socket_remove_error"] = failure(root.Remove("s"))
+	}
+	root.Close()
+	rec["marker_remove_error"] = failure(os.Remove(marker))
+	e = os.Remove(dir)
+	rec["directory_remove_error"] = failure(e)
+	if e != nil {
+		entries, _ := os.ReadDir(dir)
+		if len(entries) != 1 || entries[0].Name() != "s" {
+			rec["cleanup_refused"] = "unexpected contents"
+			return rec
+		}
+		destination, e := os.MkdirTemp("", "sr-ad-clean-")
+		if e == nil {
+			e = os.Remove(destination)
+		}
+		if e == nil {
+			e = os.Rename(dir, destination)
+		}
+		rec["cleanup_destination"], rec["relocate_error"] = destination, failure(e)
+		if e == nil {
+			rec["relocated_socket_final_path"] = finalPath(filepath.Join(destination, "s"))
+			rec["relocated_socket_remove_error"] = failure(os.Remove(filepath.Join(destination, "s")))
+			rec["relocated_directory_remove_error"] = failure(os.Remove(destination))
+		}
+	}
+	_, e = os.Stat(dir)
+	rec["original_absent"] = os.IsNotExist(e)
+	return rec
+}
+
+func main() {
+	out := os.Args[1]
+	result := map[string]any{"pid": os.Getpid(), "parent_pid": os.Getppid(), "go": runtime.Version(), "current_package": packageName(uint32(os.Getpid())), "orca_package": packageName(26940), "time": time.Now().UTC()}
+	if len(os.Args) > 3 && os.Args[2] == "--verify" {
+		raw, e := os.ReadFile(os.Args[3])
+		if e != nil {
+			panic(e)
+		}
+		var paths []string
+		if e = json.Unmarshal(raw, &paths); e != nil {
+			panic(e)
+		}
+		checks := []map[string]any{}
+		for _, p := range paths {
+			_, e := os.Lstat(p)
+			checks = append(checks, map[string]any{"path": p, "absent": os.IsNotExist(e), "error": failure(e)})
+		}
+		result["checks"] = checks
+		raw, _ = json.MarshalIndent(result, "", "  ")
+		if e = os.WriteFile(out, raw, 0600); e != nil {
+			panic(e)
+		}
+		return
+	}
+	rows := []map[string]any{}
+	for _, base := range os.Args[2:] {
+		rows = append(rows, probe(base))
+	}
+	result["probes"] = rows
+	raw, _ := json.MarshalIndent(result, "", "  ")
+	if out == "-" {
+		os.Stdout.Write(raw)
+	} else if e := os.WriteFile(out, raw, 0600); e != nil {
+		panic(e)
+	}
+}

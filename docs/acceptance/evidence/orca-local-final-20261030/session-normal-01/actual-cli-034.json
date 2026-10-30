@@ -1,0 +1,61 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "read",
+      "--terminal",
+      "term_a5a63707-d1de-4a9e-97aa-c5c843870fc0",
+      "--cursor",
+      "0",
+      "--limit",
+      "1000",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:43:37.2085085Z",
+  "started": "2026-10-30T14:43:36.5970734Z",
+  "stdout": {
+    "id": "e552901b-26cf-411f-b9d5-5825608de73d",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_a5a63707-d1de-4a9e-97aa-c5c843870fc0",
+        "status": "running",
+        "tail": [
+          "Q29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'",
+          "SR_REMOTE_READY:eyJydW5uZXJfaW5wdXQiOnsiYnVkZ2V0Ijp7ImNvbnRyYWN0Ijoic3RlZXJydW5uZXItbW9kZWwtaW5wdXQvdjEiLCJzaGEyNTYiOiIwNTQ4ZDM4OGU0Y2I0ZTRiMjQzMjc4OTkzMjQyZGU1ODAzMmRjYzBhYzdhYTQ2YTQwMmJhMTAwZTE5MjMzNmQ4IiwicHJvdmVuYW5jZV9zaGEyNTYiOiIwYWY1ZGFjMWY0ZmJkMzVjMTg5ZmUwYzIyYjYyMzhlZmNmNzJkODgzYzQzOGYzZDU5OWVkZDA2NmEzYTQwYjJiIiwiY2FsbGVyX2J5dGVzIjowLCJydW5uZXJfYnl0ZXMiOjc4NiwidG90YWxfYnl0ZXMiOjc4NiwiZnJhZ21lbnRzIjpbeyJzb3VyY2UiOiJuYXRpdmUuZGV2ZWxvcGVyIiwib3duZXIiOiJydW5uZXIiLCJieXRlcyI6Nzg2fV19LCJwYXJ0cyI6W3siU291cmNlIjoibmF0aXZlLmRldmVsb3BlciIsIk93bmVyIjoicnVubmVyIiwiVGV4dCI6InNoZWxsPVwiQzpcXFxcV2luZG93c1xcXFxTeXN0ZW0zMlxcXFxXaW5kb3dzUG93ZXJTaGVsbFxcXFx2MS4wXFxcXHBvd2Vyc2hlbGwuZXhlXCIsbG9naW49ZmFsc2XjgILkuLTml7bmlofku7bpmZDmnKzmrKEgQXBwQ29udGFpbmVyIOW3peWFt-S4tOaXtuebruW9leW5tuWQjOasoea4heeQhu-8jOemgeWGmeiupOivgS9HaXTnrqHnkIbmoLnjgILkuI3lvpfovpPlh7rnjq_looMv5Yet5o2u44CB5o-Q5p2D44CB55m75b2V44CB5pS56K6k6K-B5oiW5p2D6ZmQ44CC5LuF57K-56Gu5pqC5a2Y5Lu75Yqh6Lev5b6E77yM5qOA5p-l6Z2e56m65pqC5a2YZGlmZuS4lOS7heWQq-S7u-WKoe-8m-S4suihjOaaguWtmC_mo4Dmn6Uv5o-Q5Lqk77yM6Z2e6Zu25Y2z5YGc44CCY29tbWl05LiN55So566h6YGT77yM57Sn5o6l5ZG95Luk5L-d5a2Y5bm25omT5Y2w5YW2JExBU1RFWElUQ09ERe-8jOWGjeafpeeKtuaAgeOAgkdpdDIuNTXku4XliKDpmaTnvLrlpLFBVVRPX01FUkdF5Lqn55SfcGFja2VkLXJlZnMubG9ja-WRiuitpuaXtu-8mumAgOWHujDkuJRIRUFE5YmN6L-b44CB54i25o-Q5LqkL-i3r-W-hOato-ehruOAgXdvcmt0cmVl5bmy5YeA44CB5pegbWVyZ2UvY2hlcnJ5LXBpY2svcmV2ZXJ054q25oCB77yM5oql5ZGK5ZGK6K2m5ZCO57un57ut77yM5LiN6YeN6K-V5o-Q5Lqk5oiW5L-u5riF55CG44CC5YW25L2Z5aSx6LSlL-acquefpeWQq-iupOivgei_h-acn-OAgeaymeeuseaLkue7ne-8jOS_neeVmeWOn-WIhuaUry9QUue7k-aenOW5tuWBnOatouWvuei0pu-8m-acquefpeWPkeW4g-S4jemHjeWBmuOAgiJ9XSwiZmllbGRzIjpbImRldmVsb3Blckluc3RydWN0aW9ucyJdfSwicnVubmVyX2Jvb3RzdHJhcCI6eyJidWRnZXQiOnsiY29udHJhY3QiOiJzdGVlcnJ1bm5lci1tb2RlbC1pbnB1dC92MSIsInNoYTI1NiI6Ijk3MWI5YTkzYWRkNGJkMDI4Y2EwNzBkYTNkODY0YWM4ZjJiMDI5NDM3YzQ0YTlhOTQyMGRjMWVmY2MyMjI0MjEiLCJwcm92ZW5hbmNlX3NoYTI1NiI6IjdhOTI1ODk5OTM1NDA4YjU5ODRhZWRkZGY0NGNjMmU5MDRjZGJjYzRmYzEzZjZjMDVmNzQ0NzQyMGNlY2IyOTgiLCJjYWxsZXJfYnl0ZXMiOjAsInJ1bm5lcl9ieXRlcyI6ODIsInRvdGFsX2J5dGVzIjo4MiwiZnJhZ21lbnRzIjpbeyJzb3VyY2UiOiJuYXRpdmUuYm9vdHN0cmFwIiwib3duZXIiOiJydW5uZXIiLCJieXRlcyI6ODJ9XX0sInBhcnRzIjpbeyJTb3VyY2UiOiJuYXRpdmUuYm9vdHN0cmFwIiwiT3duZXIiOiJydW5uZXIiLCJUZXh0IjoiSW5pdGlhbGl6ZSB0aGlzIGFnZW50IHNlc3Npb24uIFJlcGx5IFJFQURZIG9ubHkuIERvIG5vdCB1c2UgdG9vbHMgb3IgY2hhbmdlIGZpbGVzLiJ9XSwiZmllbGRzIjpbImlucHV0WzBdLnRleHQiXX0sImF1dGhlbnRpY2F0aW9uX2NvbnRyb2wiOnRydWUsImV4aXRfcHVibGljX2tleSI6IjJDN0UyZHhmdk1laWxTendsL2ljYlNzVWRxK3FIVGc0WWJ2MXlHTDZvOHc9Iiwib3duZXIiOnsia2luZCI6Im9zIiwicGlkIjozMTE0OCwiY3JlYXRlZCI6IjAxZGQ2ODdjZmY4NTE5YzIiLCJleGVjdXRhYmxlIjoiYzpcXHVzZXJzXFxsbWFzMVxcLmNvZGV4XFx3b3JrdHJlZXNcXDhlZDVcXHN0ZWVycnVubmVyXFwuZXZpZGVuY2VcXG9yY2EtbG9jYWwtc3RyZWFtLTIwMjYxMDMwXFxiaW5cXHN0ZWVycnVubmVyLWFnZW50LmV4ZSJ9LCJuYXRpdmVfdHJhbnNwb3J0IjoiY29kZXgtcmVtb3RlLWlubGluZS12MyIsInJ1bnRpbWVfc2hhMjU2IjoiMTMyMGJmMjAxNDkyOTk0ZGEwNDk5MWMwMTE4NTQ5ZjA2NDhiOTlkNmNhMWRmOTlkOTY2ZDZiNzI5MDNjZjdlOSIsInZlcmlmaWVkIjp0cnVlLCJjb250cmFjdCI6ImNvZGV4LXBvbGljeS12MTA6MC4xNTkuMjpleHBsaWNpdC1hY2Nlc3MtbW9kZTpyZXBvc2l0b3J5LWF1dGgtYnJva2VyOm5ldmVyIiwid29ya3NwYWNlIjoiQzpcXFVzZXJzXFxsbWFzMVxcb3JjYVxcd29ya3NwYWNlc1xcU3RlZXJsaW5lVGVzdFxcY29kZXgtc3ItbmF0aXZlLWxvY2FsLTIwMjYxMDMwLW5vcm1hbC0wMSIsInJlcG9zaXRvcnkiOiJodHRwczovL2dpdGh1Yi5jb20vZXJyYW5saXUvU3RlZXJsaW5lVGVzdC5naXQiLCJzZXNzaW9uX2lkIjoiMDFhMThkNDQtMGU2Yi03MDYzLWE5N2EtMzRkNjgzOGU2NTM5IiwiY29uZmlndXJhdGlvbl9kaWdlc3QiOiJjMjI0YTFhNzU4YmNjODQzMWI3MmVhM2Y5NDgzNTc5NjU5ZmFlM2E4ODE5MzllYmNiZWU5MDMzMDhlZWMxYjJlIiwicHJvY2VzcyI6eyJraW5kIjoib3MiLCJwaWQiOjM1MjY4LCJjcmVhdGVkIjoiMDFkZDY4N2QwMzE3MTE0MyIsImV4ZWN1dGFibGUiOiJjOlxcdXNlcnNcXGxtYXMxXFxhcHBkYXRhXFxsb2NhbFxcb3BlbmFpXFxjb2RleFxcYmluXFwyMmNmYjFkMzAyNjEzZWFlXFxjb2RleC5leGUifSwiY2hlY2tlZF9hdCI6IjIwMjYtMTAtMzBUMTQ6NDM6MzYuOTIzOTM0MVoiLCJleHBpcmVzX2F0IjoiMjAyNi0xMC0zMFQyMzo0MzoxOS45Njk0NTgxKzA4OjAwIiwiYWNjZXNzX21vZGUiOiJzYW5kYm94In0K",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "8",
+        "latestCursor": "8",
+        "returnedLineCount": 8,
+        "source": "stream"
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 8550,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 164
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "name": "appserver.log",
+    "bytes": 222,
+    "sha256": "c08ee274dddbadb949ca0a2e81a67ea73af8e0124912104556a8b807ba7e54c5",
+    "session": "session-normal-01"
+  },
+  {
+    "name": "authentication-cleanup.json",
+    "bytes": 1164,
+    "sha256": "4af1d3a23ddfa9aaefa11ef1e28c9e644831257342fe32927941369b82895fa6",
+    "session": "session-normal-01"
+  },
+  {
+    "name": "configuration.json",
+    "bytes": 249,
+    "sha256": "61f75a761719bc272fe724cd7a1791780d17d9d00dd7115a7aa0b29a4b0849e2",
+    "session": "session-normal-01"
+  },
+  {
+    "name": "ready.json",
+    "bytes": 2910,
+    "sha256": "ed4b9423e9d3fbb7e3b0067bd1e68b754027fdf4af5180122cd580bd8d9d58b6",
+    "session": "session-normal-01"
+  },
+  {
+    "name": "sandbox-readiness.json",
+    "bytes": 661,
+    "sha256": "a1e6b57d40331bcfb9beab920f5b044a67deb5d160468a30d944e7e2d403a624",
+    "session": "session-normal-01"
+  },
+  {
+    "name": "appserver.log",
+    "bytes": 222,
+    "sha256": "ce3f7fd290d8f6d805aa2e8dcb798b570f3239dd53e85bc044df9ab031f34090",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "authentication-cleanup.json",
+    "bytes": 1166,
+    "sha256": "3380e7bb88e4bb3523a1b3b2cdb04a67d8596c9ea2ba9c9b43b6f71675d1d8b6",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "authentication-stop.json",
+    "bytes": 140,
+    "sha256": "16d6f3635ee55025c4664c7c1a6148f2d8f0a52b79073ff9c3aeeae040839035",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "configuration.json",
+    "bytes": 313,
+    "sha256": "01d7cfd64b0ae249673ceb453274a3254f1fe8168a9244677e3ed7036cf7ddc6",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "ready.json",
+    "bytes": 2912,
+    "sha256": "3526bbcede9eb3cd63ad0830cea4b716c5e576a40ad9bbd8dd0403c1974d86d1",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "sandbox-readiness.json",
+    "bytes": 663,
+    "sha256": "f2283b9ad5e51b417741b9798bcbc9dd3227157c38d63861ac027e4741b33a49",
+    "session": "session-qualified-01"
+  },
+  {
+    "name": "appserver.log",
+    "bytes": 222,
+    "sha256": "f0f76bef1a7837726f8adcd55fe0edaae9fd3896ebe3de47531ab4855f78d086",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "authentication-cleanup.json",
+    "bytes": 1167,
+    "sha256": "71251771b1b165e3f449fb039887646184bb8e978ed724a8cf7589a6f645cca8",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "authentication-stop.json",
+    "bytes": 140,
+    "sha256": "93f5cd29ce5b2cffe533a85c661d48e0f4e5d74c1dc8f1d47c52c3a3e8d0467d",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "configuration.json",
+    "bytes": 313,
+    "sha256": "01d7cfd64b0ae249673ceb453274a3254f1fe8168a9244677e3ed7036cf7ddc6",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "ready.json",
+    "bytes": 2913,
+    "sha256": "5a45dad3bf250c8ed4d75b3bad73575d6f7f61ddaad377f452ec0a006a50836e",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "sandbox-readiness.json",
+    "bytes": 663,
+    "sha256": "77834a607fbba7610f9d2144d95c34c600ed1c22f825a2d6b9be96a15784d3cb",
+    "session": "session-qualified-02"
+  },
+  {
+    "name": "appserver.log",
+    "bytes": 222,
+    "sha256": "b0f56d2dee5af7dacc517fc82426c6bce5c48f285d5f61e920cd0fa59c00a9b4",
+    "session": "session-qualified-03"
+  },
+  {
+    "name": "authentication-cleanup.json",
+    "bytes": 1167,
+    "sha256": "bc4f7d81805b8487f045177e9029af1df5e4d76207da9bdf513513b7691a5626",
+    "session": "session-qualified-03"
+  },
+  {
+    "name": "authentication-stop.json",
+    "bytes": 140,
+    "sha256": "210ef87661fa729d53794154c8b457b3571f03dc4261f6f59c73d0a314f95ec0",
+    "session": "session-qualified-03"
+  },
+  {
+    "name": "configuration.json",
+    "bytes": 313,
+    "sha256": "01d7cfd64b0ae249673ceb453274a3254f1fe8168a9244677e3ed7036cf7ddc6",
+    "session": "session-qualified-03"
+  },
+  {
+    "name": "ready.json",
+    "bytes": 2913,
+    "sha256": "e0109f6a8d98ba4cb331817c2e84c119300e3c8f7c79b39d19b79ffea4cf3de5",
+    "session": "session-qualified-03"
+  },
+  {
+    "name": "sandbox-readiness.json",
+    "bytes": 664,
+    "sha256": "916f3df2a0525d0dfdab4f93b0219a42b37ba3f20d0e9616c1c7de64dede273f",
+    "session": "session-qualified-03"
+  }
+]

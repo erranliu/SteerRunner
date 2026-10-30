@@ -1,0 +1,58 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:01:20.6213993Z",
+  "started": "2026-10-30T15:01:20.0753895Z",
+  "stdout": {
+    "id": "6c33afaa-3593-457e-a440-b5ba8119f1a6",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03@@d9cfea82",
+        "incarnationId": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-qualified-03",
+        "tabId": "3a4eb1ca-5af5-4004-a92b-79078e4b84d6",
+        "leafId": "633f406c-4d1a-49fb-806c-c9c810d78335",
+        "title": "codex-sr-native-local...",
+        "paneTitle": "SteerRunner isolated local input",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793372478705,
+        "preview": "k lines.\n中文 original line; preserve blank lines.\n中文 original line; preserve blank lines.\n• SR_LOCAL_NATIVE_11baa31fcf1deb91706fc8ecd1f529b1\nWorked for 2s • 23:00  › Ask Codex to do anything   GPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-qualified-03 · ← for agents",
+        "executionHostId": "local",
+        "agentIdentity": "codex",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 1623,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

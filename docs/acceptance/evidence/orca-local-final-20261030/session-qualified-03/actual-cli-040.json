@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+      "--text",
+      "eyJpZCI6ImQwMzY3OWFhYmJlNTExYjA5ZTQ5ZGEwNmQ0MzhhYTJiIiwiYmluZGluZyI6IjA5YmM3MDUwZWUyMzY0MDc1MTRlZmFkNTMwZTAyZTIzODljZjU4OWY5YzUxYzljM2RkZjJlNDkwZDU3NWY4YjEiLCJtZXRob2QiOiJvcmlnaW5hbC10dXJuIiwic2Vzc2lvbiI6IjAxYTE4ZDUzLTZlMjktNzBlMS1iN2E1LTgwY2Y3MWVmNGY4YiIsImlucHV0X2RpZ2VzdCI6ImFmOWM1MTQ5NTZjOTU4YWVhNWJmODJmMmU1MzkxZTcxNjQxMzVjYzgzZTE1YjgxY2JkOTAxZGUxZTA4MTI4YjgifQ",
+      "--enter",
+      "--retry-request",
+      "66d597da-add7-3633-f30c-e9317bf14b11",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:01:12.5668169Z",
+  "started": "2026-10-30T15:01:11.3946981Z",
+  "stdout": {
+    "id": "bf8b385a-5aa8-4ce7-81ad-aa5575c5f911",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+        "accepted": true,
+        "bytesWritten": 367,
+        "prompt": {
+          "requestId": "66d597da-add7-3633-f30c-e9317bf14b11",
+          "stages": [
+            "input_accepted"
+          ],
+          "provider": "unsupported",
+          "observation": "unsupported",
+          "processIncarnation": "d5961beb-cbd4-4c4c-a9a0-5726bb0b8e15",
+          "generation": 24,
+          "baselineWorkingSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "66d597da-add7-3633-f30c-e9317bf14b11",
+        "replayed": false
+      },
+      "warnings": [
+        "input was accepted, but this provider cannot report delivery. Inspect the terminal before retrying."
+      ]
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 882,
+  "text_transport_bytes": 366,
+  "windows_command_line_utf16_with_nul": 575
+}

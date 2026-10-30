@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_22dda5ef-d29a-411d-9ec6-54b626ddaae4",
+      "--text",
+      "[SteerRunner model=eyJjb21tYW5kIjoiMTI5NzZhYWI4MDkyMDM4ZWRkNjcxN2Y5Y2JlOGI0NmUiLCJpbnB1dF9kaWdlc3QiOiJkNDRmYmM5OGJlYTFlYTFiOTVjNWExZjA2NGQ2NDNhMDk0Y2NlNDk5MDFiMjgxNzU5ZjMwM2RiOWFmZmM3MTI3IiwiYm9keV9kaWdlc3QiOiJkNjUzNjdlMmNhNjUzYWMwYTlhNDkxNDQwMzMzZDIwZGFjZDIxYjdiNzZjNDQzYTY2YjI4OGQ1ZTE4NGUyMjQyIiwic3RlcCI6ImltcGxlbWVudC5leGVjdXRlIiwibW9kZWwiOiJncHQtNi1sdW5hIiwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2gifQ]\nNo-tools native input qualification. Do not use tools, read or change files, run commands, create commits, deploy or publish. Reply exactly with SR_LOCAL_NATIVE_12976aab8092038edd6717f9cbe8b46e.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.\n\n中文 original line; preserve blank lines.",
+      "--enter",
+      "--retry-request",
+      "653ce0eb-804a-3bf4-28e6-faa45b111737",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 50000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:57:36.2800657Z",
+  "started": "2026-10-30T14:57:29.8381492Z",
+  "stdout": {
+    "id": "9dc95fb9-611c-4d17-ad59-827dc12bf9b0",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_22dda5ef-d29a-411d-9ec6-54b626ddaae4",
+        "accepted": true,
+        "bytesWritten": 5106,
+        "prompt": {
+          "requestId": "653ce0eb-804a-3bf4-28e6-faa45b111737",
+          "stages": [
+            "input_accepted",
+            "turn_started"
+          ],
+          "provider": "codex",
+          "observation": "supported",
+          "processIncarnation": "360f8e01-2eb3-4312-a5cf-855379cdd3ed",
+          "generation": 17,
+          "baselineWorkingSequence": 0,
+          "baselineExplicitWorkingStartedAt": null,
+          "baselinePermissionSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "653ce0eb-804a-3bf4-28e6-faa45b111737",
+        "replayed": false
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 859,
+  "text_transport_bytes": 5093,
+  "windows_command_line_utf16_with_nul": 4904
+}

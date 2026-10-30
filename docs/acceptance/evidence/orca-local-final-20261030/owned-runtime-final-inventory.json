@@ -1,0 +1,184 @@
+[
+  {
+    "server_pid": 35268,
+    "session": "session-normal-01",
+    "server_absent": true,
+    "runtime_directory": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\remote-runtime\\2a150458422dba267c3da3cbecc2aa0c",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-normal-01",
+    "owner_pid": 31148,
+    "owner_absent": true,
+    "items": [
+      {
+        "Name": "appserver.log",
+        "Length": 222,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-cleanup.json",
+        "Length": 1164,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "configuration.json",
+        "Length": 249,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "ready.json",
+        "Length": 2910,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "sandbox-readiness.json",
+        "Length": 661,
+        "Attributes": 32,
+        "PSIsContainer": false
+      }
+    ]
+  },
+  {
+    "server_pid": 21120,
+    "session": "session-qualified-01",
+    "server_absent": true,
+    "runtime_directory": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\remote-runtime\\31bee1c537114b7df5f5aa2123f182be",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-qualified-01",
+    "owner_pid": 31456,
+    "owner_absent": true,
+    "items": [
+      {
+        "Name": "appserver.log",
+        "Length": 222,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-cleanup.json",
+        "Length": 1166,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-stop.json",
+        "Length": 140,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "configuration.json",
+        "Length": 313,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "ready.json",
+        "Length": 2912,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "sandbox-readiness.json",
+        "Length": 663,
+        "Attributes": 32,
+        "PSIsContainer": false
+      }
+    ]
+  },
+  {
+    "server_pid": 40644,
+    "session": "session-qualified-02",
+    "server_absent": true,
+    "runtime_directory": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\remote-runtime\\2b66cbe70c78a0ff960410414b129e7c",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-qualified-02",
+    "owner_pid": 31136,
+    "owner_absent": true,
+    "items": [
+      {
+        "Name": "appserver.log",
+        "Length": 222,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-cleanup.json",
+        "Length": 1167,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-stop.json",
+        "Length": 140,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "configuration.json",
+        "Length": 313,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "ready.json",
+        "Length": 2913,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "sandbox-readiness.json",
+        "Length": 663,
+        "Attributes": 32,
+        "PSIsContainer": false
+      }
+    ]
+  },
+  {
+    "server_pid": 39736,
+    "session": "session-qualified-03",
+    "server_absent": true,
+    "runtime_directory": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\remote-runtime\\d67e38ebf41346f2e02b6e7846c3d439",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-qualified-03",
+    "owner_pid": 11180,
+    "owner_absent": true,
+    "items": [
+      {
+        "Name": "appserver.log",
+        "Length": 222,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-cleanup.json",
+        "Length": 1167,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "authentication-stop.json",
+        "Length": 140,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "configuration.json",
+        "Length": 313,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "ready.json",
+        "Length": 2913,
+        "Attributes": 32,
+        "PSIsContainer": false
+      },
+      {
+        "Name": "sandbox-readiness.json",
+        "Length": 664,
+        "Attributes": 32,
+        "PSIsContainer": false
+      }
+    ]
+  }
+]

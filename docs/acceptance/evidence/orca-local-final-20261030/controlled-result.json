@@ -1,0 +1,9 @@
+{
+  "source_commit": "e854378d1c89f86512214d430a7d8f509653faf1",
+  "source_dirty": true,
+  "mode": "controlled",
+  "target_sha256": "",
+  "passed": true,
+  "source_digest": "d3c372680bb8a744f6c955289c1591fcc73569df16ee664584d2042eb7a3f5bb",
+  "finished_at": "2026-10-30T14:57:58.8268194Z"
+}

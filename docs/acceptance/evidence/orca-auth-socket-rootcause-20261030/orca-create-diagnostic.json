@@ -1,0 +1,22 @@
+{
+  "id": "9c696209-5e5b-4e8b-8fc1-dad3c974861d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 35360,
+      "handle": "term_c2cb1e21-fe1e-45a3-a1d5-4a6a7eba6c21",
+      "tabId": "40e3c145-b3a7-430c-b382-48457999c4c5",
+      "paneKey": "40e3c145-b3a7-430c-b382-48457999c4c5:ad40c35c-1e07-4882-8b91-e078755a34ab",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01@@a6810ff1",
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+      "title": "SteerRunner no-credential context diagnostic",
+      "executionHostId": "local",
+      "incarnationId": "5a74938a-e587-4007-af20-5f15b8b03606",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

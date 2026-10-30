@@ -1,0 +1,52 @@
+{
+  "id": "721be16c-3cc4-4e10-82b2-e856981effc1",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_4202f775-db77-47d9-9558-7b68cc5f5883",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02@@d882666a",
+        "incarnationId": "ef077a98-c655-4dc7-91d0-d29fd5330b41",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-qualified-02",
+        "tabId": "fabd0009-47d3-404a-a22b-2ef35641b3be",
+        "leafId": "2ff8ad91-13a5-4d2f-85aa-dfbeb899a198",
+        "title": "Terminal 1",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": [
+        "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      ],
+      "omittedHostSelectors": [
+        {
+          "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "selector": "--environment 192.168.1.151"
+        },
+        {
+          "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "selector": "--environment 台式机64G"
+        }
+      ]
+    },
+    "topologyRevisions": {
+      "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02": 1207
+    },
+    "totalCount": 1,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_e8b09543-a493-4bad-aca2-10109e32e962",
+      "--text",
+      "eyJpZCI6ImE3YTI2YzM1ZGIzZmJkM2JkMmQ2MzRjNTBhZDk4Zjg0IiwiYmluZGluZyI6ImRhMzQ2ZWY3YmNmY2EyNDM2NjM5MGIwOGZkMWViYTk4NjYxYjQyYjEyMWZiZTVmNDkyZGZkNzg5NmZmZTNhMmUiLCJtZXRob2QiOiJhdXRoZW50aWNhdGlvbi1zdG9wIiwic2Vzc2lvbiI6IjAxYTE4ZDUwLWJiYjUtNzRjMS05NjJiLTBjMDU5M2IyMjk2ZCJ9",
+      "--enter",
+      "--retry-request",
+      "ae1493bb-d886-526f-eb9f-1a83ef25cb05",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:58:07.0687585Z",
+  "started": "2026-10-30T14:58:05.9809963Z",
+  "stdout": {
+    "id": "7c8f7bf1-b6fd-4a18-b42e-e1b9f1b67b31",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_e8b09543-a493-4bad-aca2-10109e32e962",
+        "accepted": true,
+        "bytesWritten": 265,
+        "prompt": {
+          "requestId": "ae1493bb-d886-526f-eb9f-1a83ef25cb05",
+          "stages": [
+            "input_accepted"
+          ],
+          "provider": "unsupported",
+          "observation": "unsupported",
+          "processIncarnation": "fe8e97fa-f3cf-4703-87bb-b4f656744cea",
+          "generation": 18,
+          "baselineWorkingSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "ae1493bb-d886-526f-eb9f-1a83ef25cb05",
+        "replayed": false
+      },
+      "warnings": [
+        "input was accepted, but this provider cannot report delivery. Inspect the terminal before retrying."
+      ]
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 882,
+  "text_transport_bytes": 264,
+  "windows_command_line_utf16_with_nul": 473
+}

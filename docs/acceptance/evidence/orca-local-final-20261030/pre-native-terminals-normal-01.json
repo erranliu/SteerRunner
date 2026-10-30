@@ -1,0 +1,53 @@
+{
+  "id": "d2c3e685-edba-4f44-996e-2660a570bdc4",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_c791f35b-9ad4-4a7d-aefc-0d62a91822d5",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01@@885e10c5",
+        "incarnationId": "a87af851-29e2-448a-9d89-22dfe39a5411",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+        "branch": "",
+        "tabId": "542c953a-2511-4b01-860e-89a622e73062",
+        "leafId": "690906d9-be58-475e-8274-3060f0be8ca9",
+        "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+        "paneTitle": "SteerRunner full normal-context diagnostic",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793371346242,
+        "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-normal-01>",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": [
+        "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      ],
+      "omittedHostSelectors": [
+        {
+          "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "selector": "--environment 192.168.1.151"
+        },
+        {
+          "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "selector": "--environment 台式机64G"
+        }
+      ]
+    },
+    "topologyRevisions": {
+      "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01": 1189
+    },
+    "totalCount": 1,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+  }
+}

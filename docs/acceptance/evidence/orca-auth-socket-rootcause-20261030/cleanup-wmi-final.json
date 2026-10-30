@@ -1,0 +1,326 @@
+{
+  "checks": [
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-1099046314: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-1099046314"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2009394686: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2009394686"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2325558932: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2325558932"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2652325236: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-2652325236"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-4148175260: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-4148175260"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/Temp\\sr-ad-1295306349: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/Temp\\sr-ad-1295306349"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/Temp\\sr-ad-160998040: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/Temp\\sr-ad-160998040"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/Temp\\sr-ad-1911541242: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/Temp\\sr-ad-1911541242"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local/Temp\\sr-ad-3969122720: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local/Temp\\sr-ad-3969122720"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local\\sr-ad-3217034803: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local\\sr-ad-3217034803"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:/Users/lmas1/AppData/Local\\sr-ad-4188221855: The system cannot find the file specified."
+      },
+      "path": "C:/Users/lmas1/AppData/Local\\sr-ad-4188221855"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-3217034803: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-3217034803"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-4188221855: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-4188221855"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\sr-ad-1104604927: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\sr-ad-1104604927"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1541755372: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1541755372"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1780958915: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1780958915"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2009394686: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2009394686"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2117539457: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2117539457"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2325558932: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2325558932"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2652325236: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-2652325236"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-3768359486: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-3768359486"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-4148175260: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-4148175260"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-996412277: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-996412277"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1295306349: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1295306349"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1524561303: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1524561303"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-160998040: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-160998040"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1911541242: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1911541242"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-2540374888: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-2540374888"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3907929593: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3907929593"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3969122720: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3969122720"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3971677539: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-3971677539"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-4050498474: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-4050498474"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-2385015044: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-2385015044"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3429575530: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3429575530"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3957577064: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3957577064"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-4230996325: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-4230996325"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-757585511: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-757585511"
+    },
+    {
+      "absent": true,
+      "error": {
+        "errno": 2,
+        "text": "GetFileAttributesEx C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-778452814: The system cannot find the file specified."
+      },
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-778452814"
+    }
+  ],
+  "current_package": {
+    "status": 15700
+  },
+  "go": "go1.26.4",
+  "orca_package": {
+    "status": 15700
+  },
+  "parent_pid": 32388,
+  "pid": 9804,
+  "time": "2026-10-30T14:31:22.7428573Z"
+}

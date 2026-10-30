@@ -1,0 +1,23 @@
+{
+  "id": "7d8c11e4-81e8-4559-bf93-28c382d20a09",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c8c9b1e9-d70e-4d31-ae03-3498e4e9dd75",
+      "status": "running",
+      "tail": [
+        "SR_NATIVE_CONTROL_READY:eyJiaW5kaW5nIjoiZjc0ZDlhNzUwMTM3ZDM0NDVlYzNkODI3N2VhZjI1Y2FjM2FlOTAwZWI0ZmE4Zjg3MTU1ZTAyY2ExYzYwMDUzMSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC1xdWFsaWZpZWQtMDEiLCJydW50aW1lX3NoYTI1NiI6IjEzMjBiZjIwMTQ5Mjk5NGRhMDQ5OTFjMDExODU0OWYwNjQ4Yjk5ZDZjYTFkZjk5ZDk2NmQ2YjcyOTAzY2Y3ZTkifQ"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+  }
+}

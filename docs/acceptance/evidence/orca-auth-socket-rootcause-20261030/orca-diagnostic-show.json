@@ -1,0 +1,30 @@
+{
+  "id": "b6b6e6ef-09c0-43f1-97b4-42cec96a348c",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_c2cb1e21-fe1e-45a3-a1d5-4a6a7eba6c21",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01@@a6810ff1",
+      "incarnationId": "5a74938a-e587-4007-af20-5f15b8b03606",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+      "branch": "refs/heads/erranliu/codex-sr-auth-context-20261030-01",
+      "tabId": "40e3c145-b3a7-430c-b382-48457999c4c5",
+      "leafId": "ad40c35c-1e07-4882-8b91-e078755a34ab",
+      "title": "C:\\Users\\lmas1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "paneTitle": "SteerRunner no-credential context diagnostic",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793370335782,
+      "preview": "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-auth-context-20261030-01>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

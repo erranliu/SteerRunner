@@ -1,0 +1,78 @@
+{
+  "current_package": {
+    "status": 15700
+  },
+  "go": "go1.26.4",
+  "orca_package": {
+    "status": 15700
+  },
+  "pid": 36348,
+  "probes": [
+    {
+      "absolute_lstat_error": null,
+      "base": "C:/Users/lmas1/AppData/Local/Temp",
+      "directory": "C:/Users/lmas1/AppData/Local/Temp\\sr-ad-1295306349",
+      "directory_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1295306349",
+      "directory_remove_error": null,
+      "echo_error": null,
+      "listen_error": null,
+      "marker_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1295306349\\marker.txt",
+      "marker_remove_error": null,
+      "marker_write_error": null,
+      "mkdir_error": null,
+      "open_root_error": null,
+      "original_absent": true,
+      "root_lstat_error": null,
+      "server_error": null,
+      "socket_path": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-1295306349\\s",
+      "socket_remove_error": null,
+      "started": "2026-10-30T14:21:27.6114866Z"
+    },
+    {
+      "absolute_lstat_error": {
+        "errno": 1920,
+        "text": "CreateFile C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314\\s: The file cannot be accessed by the system."
+      },
+      "base": "C:/Users/lmas1/AppData/Local/SteerRunner/a",
+      "cleanup_destination": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3957577064",
+      "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-1099046314",
+      "directory_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314",
+      "directory_remove_error": {
+        "errno": 145,
+        "text": "remove C:/Users/lmas1/AppData/Local/SteerRunner/a\\sr-ad-1099046314: The directory is not empty."
+      },
+      "echo_error": {
+        "errno": 10022,
+        "text": "dial unix C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314\\s: connect: An invalid argument was supplied."
+      },
+      "listen_error": null,
+      "marker_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314\\marker.txt",
+      "marker_remove_error": null,
+      "marker_write_error": null,
+      "mkdir_error": null,
+      "open_root_error": null,
+      "original_absent": true,
+      "relocate_error": null,
+      "relocated_directory_remove_error": null,
+      "relocated_socket_final_path": {
+        "errno": 1920,
+        "text": "open C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-ad-clean-3957577064\\s: The file cannot be accessed by the system."
+      },
+      "relocated_socket_remove_error": null,
+      "root_lstat_error": {
+        "errno": 1920,
+        "text": "statat s: The file cannot be accessed by the system."
+      },
+      "server_error": {
+        "text": "accept unix C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314\\s: use of closed network connection"
+      },
+      "socket_path": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-ad-1099046314\\s",
+      "socket_remove_error": {
+        "errno": 1920,
+        "text": "removeat s: The file cannot be accessed by the system."
+      },
+      "started": "2026-10-30T14:21:27.6265868Z"
+    }
+  ],
+  "time": "2026-10-30T14:21:27.6114866Z"
+}

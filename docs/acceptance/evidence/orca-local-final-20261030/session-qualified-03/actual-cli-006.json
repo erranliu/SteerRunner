@@ -1,0 +1,52 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "read",
+      "--terminal",
+      "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+      "--cursor",
+      "0",
+      "--limit",
+      "1000",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:00:02.4173313Z",
+  "started": "2026-10-30T15:00:01.8342958Z",
+  "stdout": {
+    "id": "5d2a4c1d-9f16-4c79-a6f7-2112a86ff222",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+        "status": "running",
+        "tail": [],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "0",
+        "latestCursor": "0",
+        "returnedLineCount": 0,
+        "source": "stream"
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 472,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 164
+}

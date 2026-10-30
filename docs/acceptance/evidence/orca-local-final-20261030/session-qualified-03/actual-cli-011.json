@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+      "--text",
+      "\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJhdWRpdF9tb2RlbCI6eyJtb2RlbCI6ImdwdC02LjEtc29sIiwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2gifSwiZXhlY3V0YWJsZSI6IkM6L1VzZXJzL2xtYXMxL0FwcERhdGEvTG9jYWwvT3BlbkFJL0NvZGV4L2Jpbi8yMmNmYjFkMzAyNjEzZWFlL2NvZGV4LmV4ZSIsImFyZ3MiOlsiLS1uby1kYWVtb24iXSwibW9kZWwiOiJncHQtNi1sdW5hIiwicmVhc29uaW5nX2VmZm9ydCI6ImhpZ2giLCJhY2Nlc3NfbW9kZSI6InNhbmRib3giLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCJ9'",
+      "--enter",
+      "--retry-request",
+      "cb248275-48ad-082d-90bd-c70f59ed9cea",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:00:07.5817635Z",
+  "started": "2026-10-30T15:00:06.4761342Z",
+  "stdout": {
+    "id": "e107ce97-c105-49e4-8fe1-d1336e25f2ca",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+        "accepted": true,
+        "bytesWritten": 553,
+        "prompt": {
+          "requestId": "cb248275-48ad-082d-90bd-c70f59ed9cea",
+          "stages": [
+            "input_accepted"
+          ],
+          "provider": "unsupported",
+          "observation": "unsupported",
+          "processIncarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+          "generation": 23,
+          "baselineWorkingSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "cb248275-48ad-082d-90bd-c70f59ed9cea",
+        "replayed": false
+      },
+      "warnings": [
+        "input was accepted, but this provider cannot report delivery. Inspect the terminal before retrying."
+      ]
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 882,
+  "text_transport_bytes": 552,
+  "windows_command_line_utf16_with_nul": 763
+}

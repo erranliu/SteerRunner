@@ -1,0 +1,51 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"golang.org/x/sys/windows"
+	"os"
+	"unsafe"
+)
+
+func info(t windows.Token, class uint32) ([]byte, error) {
+	var n uint32
+	windows.GetTokenInformation(t, class, nil, 0, &n)
+	if n == 0 {
+		return nil, fmt.Errorf("empty token info %d", class)
+	}
+	b := make([]byte, n)
+	e := windows.GetTokenInformation(t, class, &b[0], n, &n)
+	return b, e
+}
+
+func main() {
+	t := windows.GetCurrentProcessToken()
+	rec := map[string]any{"pid": os.Getpid(), "parent_pid": os.Getppid(), "elevated": t.IsElevated()}
+	user, e := t.GetTokenUser()
+	if e != nil {
+		panic(e)
+	}
+	rec["user_sid"] = user.User.Sid.String()
+	b, e := info(t, windows.TokenIntegrityLevel)
+	if e != nil {
+		panic(e)
+	}
+	rec["integrity_sid"] = (*windows.Tokenmandatorylabel)(unsafe.Pointer(&b[0])).Label.Sid.String()
+	for name, class := range map[string]uint32{"elevation_type": windows.TokenElevationType, "restrictions": windows.TokenHasRestrictions, "uac_virtualization_enabled": windows.TokenVirtualizationEnabled} {
+		b, e = info(t, class)
+		if e != nil {
+			rec[name+"_error"] = e.Error()
+		} else {
+			rec[name] = *(*uint32)(unsafe.Pointer(&b[0]))
+		}
+	}
+	b, e = info(t, windows.TokenRestrictedSids)
+	if e == nil {
+		rec["restricted_sid_count"] = *(*uint32)(unsafe.Pointer(&b[0]))
+	}
+	raw, _ := json.MarshalIndent(rec, "", "  ")
+	if e = os.WriteFile(os.Args[1], raw, 0600); e != nil {
+		panic(e)
+	}
+}

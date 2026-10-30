@@ -1,0 +1,70 @@
+{
+  "id": "9ca297ab-3648-4326-a4f6-3cb27d2662a8",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_1a934cbe-65ba-4808-8e9f-85ef5561c85e",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01@@8ad551fa",
+        "incarnationId": "37e27751-a4c1-4f38-a0ff-b830b76f677a",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+        "branch": "refs/heads/erranliu/codex-sr-auth-context-20261030-01",
+        "tabId": "3509174e-5836-491d-b111-2b37ceaefc11",
+        "leafId": "3d83bb0a-c27a-4868-a232-0a93b8e8b58d",
+        "title": "Terminal 1",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local"
+      },
+      {
+        "handle": "term_c2cb1e21-fe1e-45a3-a1d5-4a6a7eba6c21",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01@@a6810ff1",
+        "incarnationId": "5a74938a-e587-4007-af20-5f15b8b03606",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01",
+        "branch": "refs/heads/erranliu/codex-sr-auth-context-20261030-01",
+        "tabId": "40e3c145-b3a7-430c-b382-48457999c4c5",
+        "leafId": "ad40c35c-1e07-4882-8b91-e078755a34ab",
+        "title": "SteerRunner no-credential context diagnostic",
+        "paneTitle": "SteerRunner no-credential context diagnostic",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": [
+        "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      ],
+      "omittedHostSelectors": [
+        {
+          "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "selector": "--environment 192.168.1.151"
+        },
+        {
+          "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "selector": "--environment 台式机64G"
+        }
+      ]
+    },
+    "topologyRevisions": {
+      "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-auth-context-20261030-01": 1171
+    },
+    "totalCount": 2,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

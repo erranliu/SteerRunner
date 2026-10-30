@@ -1,0 +1,58 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_22dda5ef-d29a-411d-9ec6-54b626ddaae4",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:58:04.8043186Z",
+  "started": "2026-10-30T14:58:04.215089Z",
+  "stdout": {
+    "id": "e6d3e91c-50ad-497a-8dde-c9d3c490e711",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_22dda5ef-d29a-411d-9ec6-54b626ddaae4",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02@@0ba15af8",
+        "incarnationId": "360f8e01-2eb3-4312-a5cf-855379cdd3ed",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-02",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-qualified-02",
+        "tabId": "f2fe26d9-7944-430b-98b1-d40a63bc9d09",
+        "leafId": "b6162f70-a185-4700-9d74-0feab302f236",
+        "title": "codex-sr-native-local...",
+        "paneTitle": "SteerRunner isolated local input",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793372284677,
+        "preview": "erve blank lines.\n• SR_LOCAL_NATIVE_12976aab8092038edd6717f9cbe8b46e\nWorked for 2s • 22:57  › Ask Codex to do anything   GPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-local-20261030-qualified-02 · ← for agents\nReconnecting to server… (5s)  › Ask Codex to do anything   ctrl+c quit",
+        "executionHostId": "local",
+        "agentIdentity": "codex",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 1618,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

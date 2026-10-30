@@ -1,0 +1,5 @@
+{
+  "sha256": "19f6d5b17d9a5073c9bc5ba00e1b72ceda71eedd34341dfec1fbb016cb7bca9c",
+  "source_sha256": "ac0391b0f813288530e1ebece1bf63abee5f38383365b5f9ad098f907628dae0",
+  "built_with": "go version go1.26.4 windows/amd64"
+}

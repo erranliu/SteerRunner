@@ -20,6 +20,8 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 `Launch`（现有 `agentlaunch.Config` 的 executable/args/model/reasoning_effort/access_mode）。
 本机目标的 `Environment` 为空，另须在 `Launch.runtime_executable` 指定本次隔离构建的现有
 `cmd/steerrunner-agent`，保留真实 `repository_url`。helper 须位于受测工作区写入范围之外。
+本机模型回合还须提供现有 `Launch.audit_model`（model/reasoning_effort），其模型名与 writer
+不同且 effort 合法，与正式 workflow 冻结契约一致；只配置该能力，不额外投递 audit 输入。
 本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop/authentication 流程；
 不预置 ready、不借远端完成来源。设置阶段与业务阶段的调用分别记录，业务阶段按原 terminal
 及 request 计数，任意无 ID 正文、补 Enter 或错误 request 也不能漏计。

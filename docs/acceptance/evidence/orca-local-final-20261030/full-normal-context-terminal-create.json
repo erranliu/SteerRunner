@@ -1,0 +1,22 @@
+{
+  "id": "96b3cb95-74e8-4ad1-aa62-1d65e4f7cb47",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 10656,
+      "handle": "term_c791f35b-9ad4-4a7d-aefc-0d62a91822d5",
+      "tabId": "542c953a-2511-4b01-860e-89a622e73062",
+      "paneKey": "542c953a-2511-4b01-860e-89a622e73062:690906d9-be58-475e-8274-3060f0be8ca9",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01@@885e10c5",
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+      "title": "SteerRunner full normal-context diagnostic",
+      "executionHostId": "local",
+      "incarnationId": "a87af851-29e2-448a-9d89-22dfe39a5411",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+  }
+}

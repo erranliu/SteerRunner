@@ -1,0 +1,72 @@
+{
+  "id": "67b323cd-58fa-4d5b-9022-dd11a7b32816",
+  "ok": true,
+  "result": {
+    "repos": [
+      {
+        "id": "faae3ad4-da24-4d6d-9698-d8931b893789",
+        "path": "C:\\Projects\\SteerlineTest",
+        "displayName": "SteerlineTest",
+        "badgeColor": "#737373",
+        "addedAt": 1790134393187,
+        "kind": "git",
+        "externalWorktreeVisibilityLegacy": false,
+        "gitUsername": "erranliu",
+        "externalWorktreeVisibility": "show",
+        "projectGroupId": null,
+        "projectGroupOrder": 0,
+        "repoIcon": {
+          "type": "image",
+          "src": "https://github.com/erranliu.png?size=64",
+          "source": "github",
+          "label": "erranliu/SteerlineTest"
+        },
+        "upstream": null,
+        "gitRemoteIdentity": {
+          "canonicalKey": "github.com/erranliu/SteerlineTest",
+          "remoteName": "origin",
+          "remoteUrl": "https://github.com/erranliu/SteerlineTest.git"
+        },
+        "hookSettings": {
+          "mode": "auto",
+          "setupRunPolicy": "run-by-default",
+          "setupAgentStartupPolicy": "start-immediately",
+          "scripts": {
+            "setup": "",
+            "archive": ""
+          }
+        }
+      },
+      {
+        "id": "d30825ee-5296-4a20-b79f-577fbda05156",
+        "path": "C:/Projects/merge-h-308-code",
+        "displayName": "merge-h-308-code",
+        "badgeColor": "#737373",
+        "addedAt": 1791951478269,
+        "kind": "git",
+        "externalWorktreeVisibilityLegacy": false,
+        "externalWorktreeVisibility": "show",
+        "gitUsername": "liuming",
+        "upstream": null,
+        "gitRemoteIdentity": {
+          "canonicalKey": "192.168.0.66/zymobile/merge-h-308-code",
+          "remoteName": "origin",
+          "remoteUrl": "http://192.168.0.66:3000/zymobile/merge-h-308-code.git"
+        },
+        "projectHostSetupMethod": "imported-existing-folder",
+        "hookSettings": {
+          "mode": "auto",
+          "setupRunPolicy": "run-by-default",
+          "setupAgentStartupPolicy": "start-immediately",
+          "scripts": {
+            "setup": "",
+            "archive": ""
+          }
+        }
+      }
+    ]
+  },
+  "_meta": {
+    "runtimeId": "3d4192a2-49af-4150-88a6-c3e34c393f7a"
+  }
+}

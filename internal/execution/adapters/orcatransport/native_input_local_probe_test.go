@@ -127,7 +127,7 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 						auth, closure, authErr := ReadAuthenticationStopEvidence(l.setup.RunDirectory, snapshot, state)
 						record["authentication_stop"], record["control_closure"], record["authentication_error"] = auth, closure, errorText(authErr)
 						if path, pathErr := codex.RemoteExitPath(*state.RemoteReadiness); pathErr == nil {
-							if raw, e := os.ReadFile(path); e == nil {
+							if raw, e := os.ReadFile(filepath.Join(state.RemoteReadiness.Workspace, filepath.FromSlash(path))); e == nil {
 								record["signed_exit"] = json.RawMessage(raw)
 							}
 						}
@@ -330,6 +330,12 @@ func validateLocalProbeTarget(target nativeInputProbeTarget) (string, error) {
 	if target.Environment != "" || !filepath.IsAbs(target.Launch.RuntimeExecutable) || target.Launch.RepositoryURL == "" || target.Launch.Model == "" || target.Launch.ReasoningEffort == "" {
 		return "", errors.New("local probe needs the original v3 helper, repository and model configuration")
 	}
+	// The probe freezes a workflow model turn. Its helper must receive the same
+	// model-enabled configuration that production workflow freezing supplies.
+	audit := target.Launch.AuditModel
+	if audit == nil || audit.Model == "" || strings.TrimSpace(audit.Model) != audit.Model || strings.ContainsAny(audit.Model, "\x00\r\n\t") || audit.Model == target.Launch.Model || !codex.ValidReasoningEffort(audit.ReasoningEffort) || !codex.ValidReasoningEffort(target.Launch.ReasoningEffort) {
+		return "", errors.New("local model turn needs its original valid, distinct audit model configuration")
+	}
 	return codex.RuntimeDigest(target.Launch.RuntimeExecutable)
 }
 
@@ -356,14 +362,15 @@ func TestLocalNativeProbeTargetAndBusinessScope(t *testing.T) {
 	if err := os.WriteFile(helper, []byte("isolated fixture image"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	target := nativeInputProbeTarget{Launch: agentlaunch.Config{RuntimeExecutable: helper, RepositoryURL: "https://github.com/owner/repo.git", Model: "model", ReasoningEffort: "high"}}
+	target := nativeInputProbeTarget{Launch: agentlaunch.Config{RuntimeExecutable: helper, RepositoryURL: "https://github.com/owner/repo.git", Model: "model", ReasoningEffort: "high", AuditModel: &workflow.ModelSettings{Model: "audit-model", ReasoningEffort: "high"}}}
 	actual, err := validateLocalProbeTarget(target)
 	if err != nil || actual != digest([]byte("isolated fixture image")) {
 		t.Fatal(actual, err)
 	}
-	for _, fault := range []string{"remote", "helper", "repository", "model", "effort"} {
+	for _, fault := range []string{"remote", "helper", "repository", "model", "effort", "audit-missing", "audit-empty", "audit-same-model", "audit-effort", "audit-name", "writer-effort"} {
 		t.Run(fault, func(t *testing.T) {
 			changed := target
+			changed.Launch = *target.Launch.Clone()
 			switch fault {
 			case "remote":
 				changed.Environment = "paired"
@@ -375,6 +382,18 @@ func TestLocalNativeProbeTargetAndBusinessScope(t *testing.T) {
 				changed.Launch.Model = ""
 			case "effort":
 				changed.Launch.ReasoningEffort = ""
+			case "audit-missing":
+				changed.Launch.AuditModel = nil
+			case "audit-empty":
+				changed.Launch.AuditModel.Model = ""
+			case "audit-same-model":
+				changed.Launch.AuditModel.Model = target.Launch.Model
+			case "audit-effort":
+				changed.Launch.AuditModel.ReasoningEffort = "invalid"
+			case "audit-name":
+				changed.Launch.AuditModel.Model = "audit\nmodel"
+			case "writer-effort":
+				changed.Launch.ReasoningEffort = "invalid"
 			}
 			if _, err := validateLocalProbeTarget(changed); err == nil {
 				t.Fatal("unqualified local target admitted")
