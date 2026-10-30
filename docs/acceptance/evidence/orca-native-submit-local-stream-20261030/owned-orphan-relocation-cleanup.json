@@ -1,0 +1,16 @@
+[
+  {
+    "destination": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-owned-socket-cleanup-a46364fdd9d34252b913578d9fa76a3a",
+    "destination_absent": true,
+    "original_absent": true,
+    "error": "",
+    "original": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\64ntcwhtubkskoktlgzfl5at3a"
+  },
+  {
+    "destination": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-owned-socket-cleanup-b6b9583d88d44ad28070c8966b2e966c",
+    "destination_absent": true,
+    "original_absent": true,
+    "error": "",
+    "original": "C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-uds-3752029058"
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "read",
+      "--terminal",
+      "term_5a553813-c5f7-4b68-b93f-151690802984",
+      "--cursor",
+      "0",
+      "--limit",
+      "1000",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:04:13.4737235Z",
+  "started": "2026-10-30T14:04:12.8521734Z",
+  "stdout": {
+    "id": "f03026a3-5df8-45bd-8fde-de7f36a1df52",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_5a553813-c5f7-4b68-b93f-151690802984",
+        "status": "running",
+        "tail": [
+          "bG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3Qu\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0I\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'",
+          "SR_REMOTE_AGENT_FAILURE:authentication_api_socket_unverified",
+          "remote agent preparation/execution failed: authentication_api_socket_unverified"
+        ],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "3",
+        "latestCursor": "3",
+        "returnedLineCount": 3,
+        "source": "stream"
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 4733,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 164
+}

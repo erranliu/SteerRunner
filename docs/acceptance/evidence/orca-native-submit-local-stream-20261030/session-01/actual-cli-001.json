@@ -1,0 +1,55 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "list",
+      "--worktree",
+      "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+      "--json"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\session-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:03:57.7011504Z",
+  "started": "2026-10-30T14:03:57.1059273Z",
+  "stdout": {
+    "id": "d785b00e-86ff-43b1-ad26-61b789af1531",
+    "ok": true,
+    "result": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": [
+          "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        ],
+        "omittedHostSelectors": [
+          {
+            "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+            "selector": "--environment 192.168.1.151"
+          },
+          {
+            "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+            "selector": "--environment 台式机64G"
+          }
+        ]
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 788,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 219
+}

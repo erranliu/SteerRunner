@@ -14,6 +14,8 @@ Controlled 前置为 **26 个顶层测试**，另有 **5 个 focused native L3 �
 control/ready/model/history/stop；本机准备失败须保留回执和清理记录，不计为提交通过。
 `TestLocalNativeProbeTargetAndBusinessScope`、`TestLocalNativeProbeCensusKeepsOriginalHostScope`
 验证本机配置、调用计数和原宿主清单边界，随正式 controlled 入口运行。
+`TestLocalPreparationOriginalStream` 另覆盖两处准备回执的公开 cursor 流、来源/完整性与绑定，
+不新增正式 L3 case、不把准备回执成功计为真实原任务完成。
 旧 `segmented-shape` 模式退出当前入口，历史证据不改；本机原准备/模型/history未具备时
 须如实标未验证。默认 L1 包含受控回归，真实探针另验，见[入口](testing.md)。
 下文日期增量中的旧数量仅表示当时状态；本次已落实 L2/parser 拆分、feedback 吸收、generate/takeover 及 L4 同批构建复用，核对与后续精简顺序见[整理结论](#测试整理结论-2026-10-26)。

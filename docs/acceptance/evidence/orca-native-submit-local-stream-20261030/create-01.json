@@ -1,0 +1,75 @@
+{
+  "id": "7b3c7d58-87c1-4f05-ac3f-fbf6f13a6174",
+  "ok": true,
+  "result": {
+    "worktree": {
+      "id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+      "identity": {
+        "key": "wt2:local:3d808387-910d-4aa9-8421-9b6e6c28350e",
+        "executionHostId": "local",
+        "instanceId": "3d808387-910d-4aa9-8421-9b6e6c28350e"
+      },
+      "instanceId": "3d808387-910d-4aa9-8421-9b6e6c28350e",
+      "repoId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "projectId": "github:erranliu/steerlinetest",
+      "hostId": "local",
+      "projectHostSetupId": "faae3ad4-da24-4d6d-9698-d8931b893789",
+      "creatorProvenance": {
+        "kind": "host"
+      },
+      "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+      "head": "3acce81548b0baea50560ebefea8645c3185524a",
+      "branch": "refs/heads/erranliu/codex-sr-native-stream-20261030-01",
+      "isBare": false,
+      "isMainWorktree": false,
+      "displayName": "codex-sr-native-stream-20261030-01",
+      "displayNameMode": "fixed",
+      "comment": "",
+      "linkedIssue": null,
+      "linkedPR": null,
+      "linkedLinearIssue": null,
+      "linkedLinearIssueWorkspaceId": null,
+      "linkedLinearIssueOrganizationUrlKey": null,
+      "linkedGitLabMR": null,
+      "linkedGitLabIssue": null,
+      "linkedBitbucketPR": null,
+      "linkedAzureDevOpsPR": null,
+      "linkedGiteaPR": null,
+      "linkedWorkItem": null,
+      "linkedTaskSourceContext": null,
+      "isArchived": false,
+      "isUnread": false,
+      "isPinned": false,
+      "sortOrder": 1793368982482,
+      "lastActivityAt": 1793368982481,
+      "createdAt": 1793368982481,
+      "cliProvenance": {
+        "kind": "created-by-cli",
+        "createdAt": 1793368977172
+      },
+      "baseRef": "refs/remotes/origin/main",
+      "workspaceStatus": "in-progress",
+      "parentWorktreeId": null,
+      "childWorktreeIds": [],
+      "lineage": null,
+      "workspaceLineage": null,
+      "git": {
+        "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+        "head": "3acce81548b0baea50560ebefea8645c3185524a",
+        "branch": "refs/heads/erranliu/codex-sr-native-stream-20261030-01",
+        "isBare": false,
+        "isMainWorktree": false
+      }
+    },
+    "lineage": null,
+    "workspaceLineage": null,
+    "warnings": [],
+    "catalogVersion": {
+      "epoch": "a3893bc7-454f-421d-aa7a-504233091338",
+      "sequence": 65
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

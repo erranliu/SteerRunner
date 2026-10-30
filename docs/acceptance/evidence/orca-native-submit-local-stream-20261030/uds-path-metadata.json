@@ -1,0 +1,38 @@
+[
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/Temp",
+    "attributes": "Directory"
+  },
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/SteerRunner",
+    "attributes": "Directory"
+  },
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a",
+    "attributes": "Directory"
+  },
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a/64ntcwhtubkskoktlgzfl5at3a",
+    "attributes": "Directory"
+  },
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a/64ntcwhtubkskoktlgzfl5at3a/s",
+    "attributes": "Archive, ReparsePoint"
+  },
+  {
+    "target": null,
+    "link_type": null,
+    "path": "C:/Users/lmas1/AppData/Local/SteerRunner/a/sr-uds-3752029058/s",
+    "attributes": "Archive, ReparsePoint"
+  }
+]

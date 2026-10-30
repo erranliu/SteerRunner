@@ -133,7 +133,7 @@ func (f *fakeHost) OutputCommand(_ context.Context, c b.LaunchCommand) ([]byte, 
 		if cursor > len(f.lines) {
 			return nil, errors.New("cursor reset")
 		}
-		result = map[string]any{"terminal": map[string]any{"handle": handle, "source": "stream", "tail": f.lines[cursor:], "oldestCursor": "0", "nextCursor": strconv.Itoa(len(f.lines)), "latestCursor": strconv.Itoa(len(f.lines)), "truncated": f.clipped}}
+		result = map[string]any{"terminal": map[string]any{"handle": handle, "source": "stream", "tail": f.lines[cursor:], "oldestCursor": "0", "nextCursor": strconv.Itoa(len(f.lines)), "latestCursor": strconv.Itoa(len(f.lines)), "truncated": f.clipped, "limited": false}}
 	case "terminal send":
 		if f.rejectUnavailable {
 			return json.Marshal(map[string]any{"ok": false, "error": map[string]any{"code": "runtime_unavailable", "message": "runtime unavailable"}, "_meta": map[string]any{"runtimeId": "runtime"}})

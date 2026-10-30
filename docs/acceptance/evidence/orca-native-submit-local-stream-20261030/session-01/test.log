@@ -1,0 +1,5 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_local_probe_test.go:254: original lifecycle step unverified create_resource remote_agent_preparation_failed:authentication_api_socket_unverified
+    native_input_local_probe_test.go:164: formal original local stop/authentication cleanup not verified
+--- FAIL: TestOrcaNativeStateLiveLifecycle (21.32s)
+FAIL

@@ -1,0 +1,57 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_5a553813-c5f7-4b68-b93f-151690802984",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:04:14.7588702Z",
+  "started": "2026-10-30T14:04:14.1296124Z",
+  "stdout": {
+    "id": "6d5902b1-8db3-4406-bb79-68e04c511214",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_5a553813-c5f7-4b68-b93f-151690802984",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01@@46726e88",
+        "incarnationId": "61b9581b-e006-4fa0-8ceb-094c87d067eb",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-stream-20261030-01",
+        "tabId": "f310a161-6717-4cea-9ee8-c6c2dbc37736",
+        "leafId": "0e269bde-3794-4dfb-99ff-d5b3681b48d5",
+        "title": "C:\\Users\\lmas1\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+        "paneTitle": "SteerRunner isolated local input",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793369050550,
+        "preview": "nlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'\nSR_REMOTE_AGENT_FAILURE:authentication_api_socket_unverified\nremote agent preparation/execution failed: authentication_api_socket_unverified\nPS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\codex-sr-native-stream-20261030-01\u003e",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 1621,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

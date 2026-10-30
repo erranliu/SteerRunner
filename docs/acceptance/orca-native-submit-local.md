@@ -2,6 +2,8 @@
 
 2026-10-30。关联 [Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)、[此前实施记录](orca-native-submit-implementation.md)。本次只补测试适配，生产代码未增加变更。本机三个成功原生会话尚未完成，当前资格仍为 **0/3**。
 
+本页保留授权前的原始批次记录。用户随后已允许两处最小读取修正，实施与新现场结果见[原始流补验](orca-native-submit-local-stream.md)：control READY 已恢复完整读取，新现场仍在既有认证 socket 准备阶段失败，本机资格未提升。
+
 ## 测试适配与构建
 
 在 `.evidence/orca-local-input-20261030/bin/steerrunner-agent.exe` 隔离构建现有 `cmd/steerrunner-agent`，SHA256 为 `e80553915e620f4c8bee679a4f46d57c175e6074a29b79620ece83315b453c7e`。没有安装、部署或修改用户全局配置。helper 位于受测 Git 工作区写入范围之外。

@@ -1,0 +1,26 @@
+[
+  {
+    "sha256": "8ee1ebb43a0bbd71095f63cbe654eb8310abc9204aebf6c145b7ddf55d39ad55",
+    "path": "internal/execution/adapters/orcatransport/control_terminal.go"
+  },
+  {
+    "sha256": "6d814e760d65f4b0f981f84ef0bfd8ad8f68138cf7953110234a2947a94b0a8d",
+    "path": "internal/execution/adapters/orcatransport/local_authentication.go"
+  },
+  {
+    "sha256": "b5141c68c8c03bd4648db81ef8606292f863b67d58a123e0a39ed2d21fa3dc1d",
+    "path": "internal/execution/adapters/orcatransport/control_terminal_test.go"
+  },
+  {
+    "sha256": "bd66f89c2724ba3c1292c9463cb596cb98a5c8fcb2a74109f68a9c59f83b79d1",
+    "path": "internal/execution/adapters/orcatransport/lifecycle_test.go"
+  },
+  {
+    "sha256": "50d08882a0ab311d9bb6402d39c8dfa5ef74ff145354b63c847ffab606764fb7",
+    "path": "internal/execution/adapters/orcatransport/local_preparation_stream_test.go"
+  },
+  {
+    "sha256": "de71ae9abe11a549899fedc909406cd0d98e99b01148923de6bbf6dede6f4781",
+    "path": "scripts/test-native-input.ps1"
+  }
+]
