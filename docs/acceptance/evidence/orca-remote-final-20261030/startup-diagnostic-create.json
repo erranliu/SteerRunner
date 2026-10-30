@@ -1,0 +1,22 @@
+{
+  "id": "e7d75f17-347b-4ce2-a7e2-c22a42d54c76",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 8596,
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "tabId": "a50f5b6e-d9db-4d90-b761-dd859f5e5e44",
+      "paneKey": "a50f5b6e-d9db-4d90-b761-dd859f5e5e44:b6731ec5-756e-45bd-8b6c-bb7286b95a5c",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@acdbe8c4",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Runner owned remote startup diagnosis",
+      "executionHostId": "local",
+      "incarnationId": "5e7286d8-11db-4a4a-8eae-5940ef54b423",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "52da8ade-f65e-4462-acef-12a020136409",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p|ForEach-Object{try{$_|ConvertFrom-Json}catch{}}); $meta=$rows|Where-Object type -eq 'session_meta'|Select-Object -First 1; $items=@($rows|ForEach-Object{[ordered]@{type=$_.type;payload_type=$_.payload.type;role=$_.payload.role;item_type=$_.payload.item.type;at=$_.timestamp}}); $log=Join-Path $env:USERPROFILE '.codex/log/codex-tui.log'; $matches=@(); if(Test-Path -LiteralPath $log){$matches=@(Get-Content -LiteralPath $log -Tail 10000 | Where-Object {$_ -match [regex]::Escape($session) -and $_ -match 'WARN|ERROR'} | Select-Object -Last 10)}; [ordered]@{session=$session;cli_version=$meta.payload.cli_version;model_provider=$meta.payload.model_provider;rows=$items;scoped_errors=$matches} | ConvertTo-Json -Depth 8 -Compress$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json                                                                                                        $ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -C$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Co$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Com$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Comp$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Compr$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Compre$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Compres$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; [ordered]@{path=$p;version=(& $p --version | Out-String).Trim();sha256=(Get-FileHash -LiteralPath $p).Hash;bytes=(Get-Item -LiteralPath $p).Length} | ConvertTo-Json -Compress",
+        "{\"path\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\OpenAI\\\\Codex\\\\bin\\\\0ab0e7a8f3779036\\\\codex.exe\",\"version\":\"codex-cli 0.165.0-alpha.1.2\",\"sha256\":\"0C09E45BC76433756EB2D492F6DB0CE6F269967E6618F4A6AE73E2FA239694B8\",\"bytes\":357330736}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "9",
+      "latestCursor": "9",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

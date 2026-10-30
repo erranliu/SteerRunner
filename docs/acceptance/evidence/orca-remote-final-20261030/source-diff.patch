@@ -1,0 +1,219 @@
+diff --git a/internal/execution/adapters/orcatransport/native_input_live_probe_test.go b/internal/execution/adapters/orcatransport/native_input_live_probe_test.go
+index f373f1e..2f4c6c8 100644
+--- a/internal/execution/adapters/orcatransport/native_input_live_probe_test.go
++++ b/internal/execution/adapters/orcatransport/native_input_live_probe_test.go
+@@ -17,7 +17,9 @@ import (
+ 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+ 	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
+ 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
++	"github.com/erranliu/SteerRunner/internal/execution/model"
+ 	"github.com/erranliu/SteerRunner/internal/execution/process"
++	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
+ )
+ 
+ type nativeInputProbeTarget struct {
+@@ -52,10 +54,11 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 		runLocalNativeInputProbe(t, root, target)
+ 		return
+ 	}
+-	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
++	ctx, cancel := context.WithTimeout(context.Background(), 6*time.Minute)
+ 	defer cancel()
+ 	baseHost := process.New(40 * time.Second)
+ 	host := &nativeInputProbeHost{ManagedProcessHost: baseHost, root: root}
++	profile := Profile{Executable: target.CLI, Environment: target.Environment, WaitTimeout: "40s"}
+ 	creator := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+ 		args = append(args, "--environment", target.Environment)
+ 		return host.OutputCommand(ctx, b.LaunchCommand{Executable: target.CLI, Args: args, WorkingDirectory: root, Timeout: timeout})
+@@ -64,6 +67,7 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 	defer func() {
+ 		record["text_calls"], record["enter_flag_calls"] = host.pastes.Load(), host.enters.Load()
+ 		record["submit_calls"], record["text_only_calls"], record["bare_enter_calls"], record["screen_reads"] = host.submits.Load(), host.textOnly.Load(), host.bareEnter.Load(), host.reads.Load()
++		record["business_request_mismatches"] = host.businessForeignRequest.Load()
+ 		raw, _ := json.MarshalIndent(record, "", "  ")
+ 		if err := os.WriteFile(filepath.Join(root, "native-result.json"), raw, 0600); err != nil {
+ 			t.Error(err)
+@@ -87,32 +91,51 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 	if e != nil {
+ 		t.Fatal(e)
+ 	}
++	initializationStarted := time.Now().UTC()
++	record["initialization_started_at"] = initializationStarted
+ 	created, e := creator.MetaCall(ctx, "terminal", "create", "--worktree", target.Worktree, "--title", "SteerRunner isolated native input probe", "--command", launch, "--json")
+ 	var value struct{ Terminal native.Terminal }
+-	if e != nil || created.RuntimeID != target.Runtime || json.Unmarshal(created.Payload, &value) != nil || value.Terminal.Handle == "" {
++	if e != nil || created.CallUncertain || created.ErrorCode != "" || created.RuntimeID != target.Runtime || json.Unmarshal(created.Payload, &value) != nil || value.Terminal.Handle == "" || value.Terminal.IncarnationID == "" || value.Terminal.WorktreeID != strings.TrimPrefix(target.Worktree, "id:") {
+ 		t.Fatal("new probe creation unverified", e)
+ 	}
+ 	terminal := value.Terminal
++	identity := b.ProcessIdentity{Kind: "orca_terminal", Executable: target.CLI, Terminal: terminal.Handle, RuntimeID: target.Runtime, Incarnation: terminal.IncarnationID, WorktreeID: terminal.WorktreeID, ExecutionHost: profile.Target().ExecutionHost}
+ 	record["terminal"] = terminal
++	formalStopAttempted, formalStopVerified := false, false
+ 	defer func() {
+ 		cleanup, cancel := context.WithTimeout(context.Background(), 25*time.Second)
+ 		defer cancel()
+-		proof, e := creator.CloseTerminalChecked(cleanup, terminal.Handle, target.Runtime)
++		if formalStopAttempted {
++			record["cleaned_up"] = formalStopVerified && census(cleanup, "after_census")
++			if record["cleaned_up"] != true {
++				t.Error("original formal remote stop/census unverified; no close repeated")
++			}
++			return
++		}
++		inspected, e := creator.InspectBoundTerminal(cleanup, profile.Target(), identity)
++		if e == nil && inspected.WorktreeID != identity.WorktreeID {
++			e = fmt.Errorf("original emergency cleanup worktree changed")
++		}
++		var proof b.StopReceipt
++		if e == nil {
++			proof, e = creator.CloseTerminalChecked(cleanup, identity.Terminal, identity.RuntimeID)
++		}
+ 		record["cleanup"] = proof
++		record["emergency_cleanup"] = true
+ 		record["cleaned_up"] = e == nil && proof.Disposition == "confirmed" && census(cleanup, "after_census")
+ 		if record["cleaned_up"] != true {
+ 			t.Error("owned terminal cleanup/census unverified", e)
+ 		}
+ 	}()
+-	terminal, e = creator.ShowTerminal(ctx, terminal.Handle)
+-	if e != nil {
+-		t.Fatal(e)
++	shown, e := creator.ShowTerminal(ctx, terminal.Handle)
++	if e != nil || shown.IncarnationID != identity.Incarnation || shown.WorktreeID != identity.WorktreeID {
++		t.Fatal("original created terminal changed before readiness", e)
+ 	}
+-	profile := Profile{Executable: target.CLI, Environment: target.Environment, WaitTimeout: "40s"}
+-	identity := b.ProcessIdentity{Kind: "orca_terminal", Executable: target.CLI, Terminal: terminal.Handle, RuntimeID: target.Runtime, Incarnation: terminal.IncarnationID, WorktreeID: terminal.WorktreeID, ExecutionHost: profile.Target().ExecutionHost}
++	terminal = shown
+ 	var ready native.AgentState
+-	startup, startupCancel := context.WithTimeout(ctx, 90*time.Second)
+-	defer startupCancel()
++	// Preparation consumes the same bounded fixture deadline as the local
++	// adapter; slow original READY requests are only queried, never resent.
++	startup := ctx
+ 	for {
+ 		raw, e := native.QueryState(startup, target.Environment, target.Runtime, "id:"+identity.WorktreeID)
+ 		var state native.AgentState
+@@ -124,18 +147,27 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 			e = queryErr
+ 			state = sample.AgentState
+ 		}
++		record["last_startup_state"], record["last_startup_error"] = state, errorText(e)
+ 		if e == nil && state.MainAgent != nil && state.MainAgent.State == "done" && state.LastAssistantMessage == "READY" {
+ 			ready = state
+ 			break
+ 		}
+ 		select {
+ 		case <-startup.Done():
++			// Failure-only diagnostics do not authorize input or repair readiness.
++			diagnostic, done := context.WithTimeout(context.Background(), 5*time.Second)
++			result, readErr := creator.MetaCall(diagnostic, "terminal", "read", "--terminal", identity.Terminal, "--cursor", "0", "--limit", "1000", "--json")
++			done()
++			record["startup_failure_stream"], record["startup_failure_stream_error"] = result, errorText(readErr)
+ 			t.Fatal("initial READY not verified", e)
+ 		case <-time.After(time.Second):
+ 		}
+ 	}
+ 	record["ready"] = ready
+-	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), External: identity}, Session: b.SessionContext{ProjectID: "native-input-probe", ExecutionID: strings.Repeat("a", 32), AttemptID: strings.Repeat("b", 32), WorkflowRunID: strings.Repeat("a", 32), SessionID: SessionID(identity)}, ConfigurationDigest: "native-input-probe", ResourceGeneration: "native-input-probe", Workspace: b.WorkspaceIntent{Path: terminal.WorktreePath, Branch: strings.TrimPrefix(terminal.Branch, "refs/heads/")}}
++	record["ready_at"], record["initialization_elapsed_ms"] = time.Now().UTC(), time.Since(initializationStarted).Milliseconds()
++	runID, attemptID := probeID(t), probeID(t)
++	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: runID, AttemptID: attemptID, External: identity}, Session: b.SessionContext{ProjectID: "native-input-probe", ExecutionID: runID, AttemptID: attemptID, WorkflowRunID: runID, SessionID: SessionID(identity)}, ConfigurationDigest: "native-input-probe", ResourceGeneration: probeID(t), Workspace: b.WorkspaceIntent{Path: terminal.WorktreePath, Branch: strings.TrimPrefix(terminal.Branch, "refs/heads/")}}
++	record["run_id"], record["attempt_id"], record["process"] = runID, attemptID, identity
+ 	raw, _ = json.Marshal(profile)
+ 	data, e := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: NativeRemoteProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: ProfileKey, ProjectID: s.Session.ProjectID, ProfileID: "native", AcceptedConfigVersion: "native"}, raw)
+ 	if e != nil {
+@@ -151,6 +183,28 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 	if e != nil {
+ 		t.Fatal(e)
+ 	}
++	defer func() {
++		cleanup, cancel := context.WithTimeout(context.Background(), 45*time.Second)
++		defer cancel()
++		formalStopAttempted = true
++		intent, err := operation.New(runID, s, b.LifecycleCandidate{Action: b.LifecycleStopExecution, Input: b.LifecycleInput{Stop: &b.StopInput{}}}, probeID(t), "probe-stop", time.Now().UTC())
++		if err != nil {
++			t.Error(err)
++			return
++		}
++		writeLocalProbe(t, host, root, "stop-intent.json", intent)
++		receipt, stopErr := l.StopLifecycle(cleanup, intent.Request, nil)
++		record["stop_receipt"], record["stop_error"], record["stop_scope"] = receipt, errorText(stopErr), l.StopEvidenceScope()
++		writeLocalProbe(t, host, root, "stop-receipt.json", receipt)
++		if stopErr == nil && receipt.Disposition == b.OperationConfirmed && receipt.State.Stopped && receipt.State.WorkerAbsent {
++			verifyErr := l.verifyStopped(cleanup, s)
++			record["verify_stopped_error"] = errorText(verifyErr)
++			formalStopVerified = verifyErr == nil
++		}
++		if !formalStopVerified {
++			t.Error("formal original remote stop unverified", stopErr)
++		}
++	}()
+ 	if os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE") == "short-sequence" {
+ 		runShortInputSequence(t, ctx, l, s, creator, identity, ready, record, root)
+ 		return
+@@ -160,23 +214,43 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 		t.Fatal(e)
+ 	}
+ 	marker := "SR_NATIVE_INPUT_" + hex.EncodeToString(nonce)
+-	normalized := "This is a no-tools delivery qualification. Do not use tools, read or modify files, execute business tests, commit, deploy or publish. Reply exactly with " + marker + ".\n\n" + strings.Repeat("\u4e2d\u6587\u539f\u59cb\u8f93\u5165 example fragment, preserve every character and blank line.\n```powershell\nWrite-Output 'fixture-only-never-execute'\n```\n\n", 100)
+-	prompt := strings.ReplaceAll(normalized, "\n", "\r\n")
++	text := "No-tools native input qualification. Do not use tools, read or change files, run commands, create commits, deploy or publish. Reply exactly with " + marker + ".\r\n\r\n" + strings.Repeat("中文 original line; preserve blank lines.\r\n\r\n", 100)
++	prompt, budget, e := model.FreezeInput(model.InputPart{Source: "caller.direct", Owner: model.CallerInput, Text: text})
++	if e != nil {
++		t.Fatal(e)
++	}
+ 	if e := os.WriteFile(filepath.Join(root, "original-input.txt"), []byte(prompt), 0600); e != nil {
+ 		t.Fatal(e)
+ 	}
+ 	record["prompt_sha256"] = digest([]byte(prompt))
+ 	record["logical_bytes"] = len(prompt)
+-	input := b.TurnInput{CommandID: hex.EncodeToString(nonce), Prompt: prompt}
++	input := b.TurnInput{CommandID: hex.EncodeToString(nonce), Prompt: prompt, Budget: budget, InputVersion: 1}
++	writeLocalProbe(t, host, root, "original-input.json", input)
++	writeLocalProbe(t, host, root, "wire-input.txt", nativePromptText(prompt))
+ 	s.PendingTurn = &input
+-	r, _, e := l.Execute(ctx, request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
++	s.Session.PendingCommandID = input.CommandID
++	prepared, e := operation.New(runID, s, b.LifecycleCandidate{Action: b.LifecyclePrepareSession, Input: b.LifecycleInput{Turn: &input}}, probeID(t), "probe-prepare", time.Now().UTC())
++	if e != nil {
++		t.Fatal(e)
++	}
++	writeLocalProbe(t, host, root, "prepare-intent.json", prepared)
++	r, _, e := l.Execute(ctx, prepared.Request)
++	writeLocalProbe(t, host, root, "prepare-receipt.json", r)
+ 	if e != nil {
+ 		t.Fatal(e)
+ 	}
+ 	bind(&s, r)
+-	req := request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input})
+-	req.Operation.ID += "-" + terminal.Handle
++	intent, e := operation.New(runID, s, b.LifecycleCandidate{Action: b.LifecycleStartTurn, Input: b.LifecycleInput{Turn: &input}}, probeID(t), "probe-submit", time.Now().UTC())
++	if e != nil {
++		t.Fatal(e)
++	}
++	req := intent.Request
++	host.businessTerminal, host.businessRequest = identity.Terminal, nativeRequest(req.Operation.ID)
++	writeLocalProbe(t, host, root, "submit-intent.json", intent)
++	writeLocalProbe(t, host, root, "snapshot.json", s)
++	record["business_started_at"] = time.Now().UTC()
+ 	r, obs, e := l.Execute(ctx, req)
++	writeLocalProbe(t, host, root, "submit-receipt.json", r)
+ 	record["submission_attempts"] = 1
+ 	if r.State.InputAccepted {
+ 		record["business_inputs"] = 1
+@@ -228,10 +302,13 @@ func runNativeInputLiveProbe(t *testing.T) {
+ 				}
+ 				record["original_query"] = verified
+ 				record["verified_original_input"] = verified.NativeInput
+-				if host.submits.Load() != 1 || host.textOnly.Load() != 0 || host.bareEnter.Load() != 0 || host.reads.Load() != 0 {
++				writeLocalProbe(t, host, root, "original-input-pages.json", verified.NativeInput.Pages)
++				writeLocalProbe(t, host, root, "snapshot.json", s)
++				if host.submits.Load() != 1 || host.textOnly.Load() != 0 || host.bareEnter.Load() != 0 || host.reads.Load() != 0 || host.businessForeignRequest.Load() != 0 {
+ 					t.Fatal("expected one production generic submit and no split input or screen read")
+ 				}
+ 				record["completed"] = true
++				record["completed_at"] = time.Now().UTC()
+ 				record["final"] = r.TurnEvidence
+ 				record["diagnostics"] = diagnostics
+ 				return

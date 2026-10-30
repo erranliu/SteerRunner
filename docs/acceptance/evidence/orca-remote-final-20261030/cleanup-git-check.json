@@ -1,0 +1,49 @@
+{
+  "owned_workspaces": [
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-01",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-01",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-01",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-01",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-02",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-diagnostic",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-01",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-02",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-02",
+      "git_status": [],
+      "clean": true
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-03",
+      "git_top": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-03",
+      "git_status": [],
+      "clean": true
+    }
+  ],
+  "exclude_sha256": "6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1",
+  "private_original_sha256": "1AE2A2DB1EDFA6E8C837A5533BDED5F0F883CD8C79A13CE5E35143DAC0BC3AA8",
+  "omitted": "Unrelated Git worktree registration rows; original retained privately"
+}

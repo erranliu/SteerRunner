@@ -1,0 +1,8 @@
+Artifact differs from frozen Spec
+At C:\Users\lmas1\.codex\worktrees\8ed5\SteerRunner\.evidence\orca-remote-final-20261031\l1-shared-deadline-final\frame
+work\checker\check.ps1:6 char:208
++ ... r $taskLines[5] -ne '') { throw 'Artifact differs from frozen Spec' }
++                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Artifact differs from frozen Spec:String) [], RuntimeException
+    + FullyQualifiedErrorId : Artifact differs from frozen Spec
+ 

@@ -1,0 +1,456 @@
+{
+  "schema": "steerrunner-tests/v1",
+  "l1_packages": [
+    "./internal/..."
+  ],
+  "controlled_scenarios": [
+    "TestSRStandalonePackage",
+    "TestSRServiceOwnership",
+    "TestSRInputFreeze",
+    "TestSRPermissionQualification",
+    "TestSRRunWorkflow",
+    "TestSRStorageLogsEvents",
+    "TestSRPublicationIdentity",
+    "TestSRPublicationBeforeWorkflowReady",
+    "TestSRNativeUnknownAndStop",
+    "TestSRRestartPreservesAuthorization",
+    "TestSRStabilityLostSubmitResponse",
+    "TestSRStabilityRevocationAcrossRestart",
+    "TestSRWorkflowDiscoveryAndSelection",
+    "TestSRMultipleRunsIsolation",
+    "TestSRResultAcquisition",
+    "TestSRContentGenerate",
+    "TestSRContentRepository",
+    "TestSRContentConversation",
+    "TestSRContentQuestionAndUnknown",
+    "TestSRContentGenerationRecovery",
+    "TestSRRunEvidenceR2",
+    "TestSRResourceCreationRecovery",
+    "TestSRProgressFile",
+    "TestSRResultFile",
+    "TestSROrcaCLIWaitRetry"
+  ],
+  "scenarios": [
+    {
+      "id": "orca-local.pi",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.pi-full-access",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.dsh",
+      "level": "L3",
+      "driver": "development-feedback",
+      "target": "orca-local",
+      "agent": "dsh",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.result-acquisition",
+      "level": "L3",
+      "driver": "result-acquisition",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.smoke",
+      "level": "L2",
+      "driver": "development-smoke",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.smoke",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.full-access",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.caller-exit",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "accepted-response-lost"
+      ]
+    },
+    {
+      "id": "orca-remote.connection-reconnect",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "active-disconnect",
+        "pre-send-disconnect"
+      ]
+    },
+    {
+      "id": "orca-remote.service-restart",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "graceful-active",
+        "kill-active",
+        "graceful-active-full-access",
+        "kill-active-full-access",
+        "graceful-boundary",
+        "kill-boundary"
+      ]
+    },
+    {
+      "id": "orca-remote.stop-revocation",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 30,
+      "cases": [
+        "active",
+        "boundary",
+        "unreachable"
+      ]
+    },
+    {
+      "id": "orca-remote.publication-unknown",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "completion-gap",
+        "query-unavailable"
+      ]
+    },
+    {
+      "id": "local-codex.audited",
+      "level": "L3",
+      "driver": "development-audited",
+      "target": "local-codex",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "local-codex",
+      "timeout_minutes": 45,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.permanent-evidence-loss",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.stop-commit-race",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.storage-failure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "controlled.resource-pressure",
+      "level": "L4",
+      "driver": "controlled-integration",
+      "target": "controlled",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.multirun",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-environment",
+      "timeout_minutes": 45,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.smoke",
+      "level": "L3",
+      "driver": "development-smoke",
+      "target": "orca-local",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.mixed",
+      "level": "L3",
+      "driver": "development-multirun",
+      "target": "orca-local",
+      "agent": "pi",
+      "timeout_minutes": 30,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.initialization-stop",
+      "level": "L3",
+      "driver": "execution-stability",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "before-readiness",
+        "restart-before-readiness"
+      ]
+    },
+    {
+      "id": "local-codex.progress-file",
+      "level": "L3",
+      "driver": "progress-file",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.progress-file",
+      "level": "L3",
+      "driver": "progress-file",
+      "target": "orca-local",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.progress-file",
+      "level": "L3",
+      "driver": "progress-file",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.progress-multirun",
+      "level": "L3",
+      "driver": "progress-file",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "local-codex.progress-recovery",
+      "level": "L3",
+      "driver": "progress-file",
+      "target": "local-codex",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-local.cli-wait-retry",
+      "level": "L3",
+      "driver": "cli-wait-retry",
+      "target": "orca-local",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    },
+    {
+      "id": "orca-remote.cli-wait-retry",
+      "level": "L3",
+      "driver": "cli-wait-retry",
+      "target": "orca-environment",
+      "timeout_minutes": 15,
+      "cases": [
+        "default"
+      ]
+    }
+  ],
+  "focused_native_scenarios": [
+    {
+      "id": "orca-remote.native-input",
+      "level": "L3",
+      "test": "TestOrcaNativeStateLiveLifecycle",
+      "entry": "scripts/test-native-input.ps1",
+      "scope": "controlled deterministic input faults, or fresh empty local/remote Orca worktree and fixed native launch through original preparation and completion; no business suite or PR",
+      "requires": [
+        "long-input: explicit fixed target.json",
+        "new output directory for either mode",
+        "long-input: complete empty original-host terminal census",
+        "local long-input: existing isolated Runner agent and original repository URL"
+      ],
+      "expected": [
+        "unique complete original input and canonical result",
+        "one business generic text+enter submit; zero split business input or composer reads",
+        "unknown effects never replayed in controlled regressions",
+        "confirmed terminal close and zero complete census"
+      ],
+      "subcases": [
+        {
+          "id": "long-input",
+          "mode": "long-input",
+          "scope": "production Lifecycle generic submit; no screen draft gate"
+        },
+        {
+          "id": "controlled",
+          "mode": "controlled",
+          "scope": "same production submit through controlled local/remote fixtures; per-leaf Repeat, explicit counts; not real Orca qualification"
+        }
+      ]
+    },
+    {
+      "id": "local-codex.generate-repository",
+      "level": "L3",
+      "test": "TestSRContentRepositoryNative",
+      "entry": "scripts/test-foundation.ps1",
+      "scope": "new C:/srt/gr-* state and disposable dirty Git fixture; read-only native code investigation; no target writes or PR",
+      "requires": [
+        "explicit native executable",
+        "TestSRContentRepository"
+      ],
+      "expected": [
+        "real read-only code tool observed",
+        "fixed commit and full two-document result",
+        "original request replay and completed-result restart",
+        "stop and verify-stopped settlement"
+      ]
+    },
+    {
+      "id": "local-codex.generation-recovery",
+      "level": "L3",
+      "test": "TestSRContentNativeGenerationRecovery",
+      "entry": "scripts/test-generation-recovery.ps1",
+      "scope": "new C:/srt/cw-recovery-* state; real native Codex, no Git or PR",
+      "requires": [
+        "explicit native executable",
+        "controlled recovery prerequisites"
+      ],
+      "expected": [
+        "active graceful restart",
+        "active kill",
+        "compatible binary takeover",
+        "startup stop",
+        "same original process/session/turn",
+        "offline resource settlement"
+      ]
+    },
+    {
+      "id": "local-codex.parser-generation-recovery",
+      "level": "L3",
+      "test": "TestSRNativeParserGenerationRecovery",
+      "entry": "scripts/test-generation-recovery.ps1",
+      "scope": "isolated controlled business/provider; real native parser and original owner; no real PR",
+      "requires": [
+        "explicit native executable",
+        "controlled recovery prerequisites"
+      ],
+      "expected": [
+        "original parser survives graceful/kill",
+        "offline completion adopted once",
+        "explicit stop cancels original parser"
+      ]
+    },
+    {
+      "id": "local-codex.content-workflows",
+      "level": "L3",
+      "test": "TestSRContentNative",
+      "entry": "scripts/test-content-workflows.ps1",
+      "scope": "new C:/srt/gt-* and cw-* states, original native Codex 0.159.2, no Git or PR",
+      "requires": [
+        "explicit native executable",
+        "controlled content prerequisites"
+      ],
+      "expected": [
+        "one structured generation",
+        "same-thread multiple turns",
+        "interrupt then continue",
+        "idle service restart then original-thread continue",
+        "resource settlement",
+        "explicit generated Run stop",
+        "offline resource settlement",
+        "same EXE takeover retains Run/input/request bindings",
+        "unchanged original database"
+      ],
+      "subcases": [
+        {
+          "id": "generate-takeover",
+          "pattern": "^TestSRContentNative$/^generate-takeover$"
+        },
+        {
+          "id": "conversation",
+          "pattern": "^TestSRContentNative$/^conversation$"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_f0e752d6-cf24-4369-a948-13b41b6f062e",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-qualified-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:36:00.5025814Z",
+  "started": "2026-10-30T15:35:59.8281827Z",
+  "stdout": {
+    "id": "67e2cf1d-ecf9-4375-b3d4-4d2aa1787c51",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_f0e752d6-cf24-4369-a948-13b41b6f062e",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-01@@28da3d82",
+        "incarnationId": "f42cde3d-e5c1-402f-91dc-e22376f688db",
+        "orphaned": false,
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-01",
+        "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-qualified-01",
+        "tabId": "7c0b2bc6-20e5-4208-90db-c06a19100091",
+        "leafId": "f0f27f9e-77ef-47a4-b90d-05960a1e690c",
+        "title": "codex-sr-native-remot...",
+        "paneTitle": "SteerRunner isolated native input probe",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793374548032,
+        "preview": "Reconnecting... 4/5 (1m 17s • esc to interrupt)\n└ Request timed out\n└ Tip: Press ctrl+t to open the full transcript.\n› Ask Codex to do anything\nGPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-01\n? for shortcuts",
+        "executionHostId": "local",
+        "agentIdentity": "codex",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 1586,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 191
+}

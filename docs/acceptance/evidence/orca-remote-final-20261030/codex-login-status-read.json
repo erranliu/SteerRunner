@@ -1,0 +1,24 @@
+{
+  "id": "4d50355e-e204-4cce-a330-2b830a70ac57",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "tusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Co$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Com$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Comp$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Compr$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Compre$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Compres$ErrorActionPreference='Continue'; $old=(Get-Command codex -CommandType Application,ExternalScript | Select-Object -First 1).Source; $new='C:\\Users\\liuming\\AppData\\Local\\OpenAI\\Codex\\bin\\0ab0e7a8f3779036\\codex.exe'; $checks=@(); foreach($p in @($old,$new)){ $status=(& $p login status 2>&1 | Out-String); $statusExit=$LASTEXITCODE; $checks+=,[ordered]@{executable=$p;login_status_exit=$statusExit;login_kind=$(if($status -match 'ChatGPT'){'ChatGPT'}elseif($status -match 'API key'){'API key'}else{'unclassified'});logged_in=($statusExit -eq 0)} }; [ordered]@{authentication_status_only=$checks} | ConvertTo-Json -Depth 5 -Compress",
+        "{\"authentication_status_only\":[{\"executable\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.ps1\",\"login_status_exit\":0,\"login_kind\":\"ChatGPT\",\"logged_in\":true},{\"executable\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\OpenAI\\\\Codex\\\\bin\\\\0ab0e7a8f3779036\\\\codex.exe\",\"login_status_exit\":0,\"login_kind\":\"ChatGPT\",\"logged_in\":true}]}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "11",
+      "latestCursor": "11",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

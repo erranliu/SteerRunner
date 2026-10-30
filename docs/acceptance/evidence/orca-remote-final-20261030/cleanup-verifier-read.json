@@ -1,0 +1,23 @@
+{
+  "id": "f1cb7a31-ee89-4493-a6f6-07770c7321f7",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_bd3cf9f4-c72a-4baf-9ada-8696668b0363",
+      "status": "running",
+      "tail": [
+        "{\"cleanup_paths\":[{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-01\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-qualified-01\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-qualified-02\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-diagnostic\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-final-01\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-final-02\",\"exists\":false,\"registered\":false},{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-final-03\",\"exists\":false,\"registered\":false}],\"exclude_sha256\":\"6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1\"}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "runtime": "64108a37-610d-478c-a565-194c376217c5",
+  "host_scope": {
+    "hostIds": [
+      "local"
+    ],
+    "omittedHostIds": []
+  },
+  "total_count": 4,
+  "truncated": false,
+  "owned_terminals": [
+    {
+      "handle": "term_2cca79e6-84b5-48ca-8220-f2d9c781632c",
+      "incarnationId": "f656b780-85e9-4063-ad7e-ab7db3465887",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Terminal 1",
+      "connected": true
+    },
+    {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "incarnationId": "5e7286d8-11db-4a4a-8eae-5940ef54b423",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "connected": true
+    },
+    {
+      "handle": "term_b487c605-9798-458e-9e33-bc2cc944b5ec",
+      "incarnationId": "82a0e9cf-2efe-4f5f-8fe0-4e30543d8242",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Runner owned harmless long startup diagnosis",
+      "connected": true
+    },
+    {
+      "handle": "term_020e87f8-1d31-42cf-b33d-8abcc01025d8",
+      "incarnationId": "54d304d4-314e-4a59-af0c-a27ec1495b77",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "connected": true
+    }
+  ],
+  "private_original_sha256": "806BBF1013C81D48BE3C9FA4923B4FD57B2BD5D05E6F9690C0263E19101B5B6A",
+  "omitted": "Preview may contain unrelated Git worktree registration rows; original retained privately"
+}

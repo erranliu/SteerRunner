@@ -1,0 +1,23 @@
+{
+  "id": "2687a05b-76db-4f64-a0e5-f6ad9e4d275b",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_fd90e437-4613-49c5-b150-a6786a6c601c",
+      "status": "running",
+      "tail": [
+        "{\"commands\":[{\"Name\":\"codex\",\"CommandType\":2,\"Source\":\"\",\"Path\":null},{\"Name\":\"codex.ps1\",\"CommandType\":16,\"Source\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.ps1\",\"Path\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.ps1\"},{\"Name\":\"codex.cmd\",\"CommandType\":32,\"Source\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.cmd\",\"Path\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex.cmd\"},{\"Name\":\"codex\",\"CommandType\":32,\"Source\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex\",\"Path\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\Programs\\\\nodejs\\\\codex\"}],\"candidates\":[{\"path\":\"C:\\\\Users\\\\liuming\\\\AppData\\\\Local\\\\OpenAI\\\\Codex\\\\bin\\\\0ab0e7a8f3779036\\\\codex.exe\",\"sha256\":\"0C09E45BC76433756EB2D492F6DB0CE6F269967E6618F4A6AE73E2FA239694B8\",\"bytes\":357330736}],\"git_status\":[],\"cwd\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-20261031-01\"}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

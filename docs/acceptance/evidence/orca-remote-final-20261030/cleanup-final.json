@@ -1,0 +1,40 @@
+{
+  "cleanup_paths": [
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-01",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-01",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-02",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-diagnostic",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-01",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-02",
+      "exists": false,
+      "registered": false
+    },
+    {
+      "path": "C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-final-03",
+      "exists": false,
+      "registered": false
+    }
+  ],
+  "exclude_sha256": "6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1"
+}

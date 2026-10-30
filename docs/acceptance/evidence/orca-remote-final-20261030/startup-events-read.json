@@ -1,0 +1,24 @@
+{
+  "id": "13a4c9aa-6b70-41ee-937c-d7372a9aaa00",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_7343286e-37ec-4ce5-be8f-07b61151b3e3",
+      "status": "running",
+      "tail": [
+        "ach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Com$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\.codex\\sessions\\2026\\10\\30\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p | ForEach-Object {try{$_|ConvertFrom-Json}catch{}}); $events=@($rows | Where-Object type -eq 'event_msg' | ForEach-Object { [ordered]@{at=$_.timestamp;type=$_.payload.type;message=$(if($_.payload.type -in @('error','warning','turn_aborted','task_complete')){$_.payload.message}else{$null})} }); [ordered]@{path=$p;bytes=(Get-Item -LiteralPath $p).Length;sha256=(Get-FileHash -LiteralPath $p).Hash;event_types=@($events|ForEach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Comp$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\.codex\\sessions\\2026\\10\\30\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p | ForEach-Object {try{$_|ConvertFrom-Json}catch{}}); $events=@($rows | Where-Object type -eq 'event_msg' | ForEach-Object { [ordered]@{at=$_.timestamp;type=$_.payload.type;message=$(if($_.payload.type -in @('error','warning','turn_aborted','task_complete')){$_.payload.message}else{$null})} }); [ordered]@{path=$p;bytes=(Get-Item -LiteralPath $p).Length;sha256=(Get-FileHash -LiteralPath $p).Hash;event_types=@($events|ForEach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Compr$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\.codex\\sessions\\2026\\10\\30\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p | ForEach-Object {try{$_|ConvertFrom-Json}catch{}}); $events=@($rows | Where-Object type -eq 'event_msg' | ForEach-Object { [ordered]@{at=$_.timestamp;type=$_.payload.type;message=$(if($_.payload.type -in @('error','warning','turn_aborted','task_complete')){$_.payload.message}else{$null})} }); [ordered]@{path=$p;bytes=(Get-Item -LiteralPath $p).Length;sha256=(Get-FileHash -LiteralPath $p).Hash;event_types=@($events|ForEach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Compre$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\.codex\\sessions\\2026\\10\\30\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p | ForEach-Object {try{$_|ConvertFrom-Json}catch{}}); $events=@($rows | Where-Object type -eq 'event_msg' | ForEach-Object { [ordered]@{at=$_.timestamp;type=$_.payload.type;message=$(if($_.payload.type -in @('error','warning','turn_aborted','task_complete')){$_.payload.message}else{$null})} }); [ordered]@{path=$p;bytes=(Get-Item -LiteralPath $p).Length;sha256=(Get-FileHash -LiteralPath $p).Hash;event_types=@($events|ForEach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Compres$ErrorActionPreference='Stop'; $p='C:\\Users\\liuming\\.codex\\sessions\\2026\\10\\30\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl'; $rows=@(Get-Content -LiteralPath $p | ForEach-Object {try{$_|ConvertFrom-Json}catch{}}); $events=@($rows | Where-Object type -eq 'event_msg' | ForEach-Object { [ordered]@{at=$_.timestamp;type=$_.payload.type;message=$(if($_.payload.type -in @('error','warning','turn_aborted','task_complete')){$_.payload.message}else{$null})} }); [ordered]@{path=$p;bytes=(Get-Item -LiteralPath $p).Length;sha256=(Get-FileHash -LiteralPath $p).Hash;event_types=@($events|ForEach-Object {$_.type});diagnostics=@($events|Where-Object {$_.type -in @('error','warning','turn_aborted','task_complete')})} | ConvertTo-Json -Depth 8 -Compress",
+        "{\"path\":\"C:\\\\Users\\\\liuming\\\\.codex\\\\sessions\\\\2026\\\\10\\\\30\\\\rollout-2026-10-30T23-34-30-01a18d72-bf69-72d2-a731-0307c23dca31.jsonl\",\"bytes\":71306,\"sha256\":\"2FAEE67448D125DB8B726EB60E8B89553BDBA95255736E2AD0E163468988108B\",\"event_types\":[\"task_started\",\"item_completed\"],\"diagnostics\":[]}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "5",
+      "latestCursor": "5",
+      "returnedLineCount": 2,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

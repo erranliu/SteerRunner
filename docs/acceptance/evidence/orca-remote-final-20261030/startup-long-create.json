@@ -1,0 +1,22 @@
+{
+  "id": "0696e8b8-f0aa-403c-b62a-6053276918ec",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 21252,
+      "handle": "term_b487c605-9798-458e-9e33-bc2cc944b5ec",
+      "tabId": "eaadf885-e8ee-4a8a-9de7-dffad5906e1a",
+      "paneKey": "eaadf885-e8ee-4a8a-9de7-dffad5906e1a:aeb4b94c-efbf-4146-8193-6f93a73c262b",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic@@7dc32ef0",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-diagnostic",
+      "title": "Runner owned harmless long startup diagnosis",
+      "executionHostId": "local",
+      "incarnationId": "82a0e9cf-2efe-4f5f-8fe0-4e30543d8242",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

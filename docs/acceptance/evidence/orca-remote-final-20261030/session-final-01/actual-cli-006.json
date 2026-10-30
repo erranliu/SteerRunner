@@ -1,0 +1,70 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "list",
+      "--worktree",
+      "id:09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-final-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:48:03.2898228Z",
+  "started": "2026-10-30T15:48:02.5789974Z",
+  "stdout": {
+    "id": "0e5b96d1-e08b-4fbe-80b5-8773508d4b28",
+    "ok": true,
+    "result": {
+      "terminals": [
+        {
+          "handle": "term_1f48742f-d872-4aab-8431-6a21f7a70f12",
+          "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01@@7d42b621",
+          "incarnationId": "37bc36a7-3e86-49a7-83dc-9267189cb458",
+          "orphaned": false,
+          "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01",
+          "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01",
+          "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-final-01",
+          "tabId": "e2925dc4-40fa-4af7-a9f1-9513c64c1631",
+          "leafId": "ed2a9ba3-84e8-4fa9-be9a-460b1a41c440",
+          "title": "Codex ready",
+          "paneTitle": "SteerRunner isolated native input probe",
+          "connected": true,
+          "writable": true,
+          "lastOutputAt": 1793375277484,
+          "preview": "   中文 original line; preserve blank lines. Ask Codex to do anything? for shortcuts Working (0s • esc to interrupt) · Running hook13• SR_NATIVE_INPUT_e099af9decef54dcc0b9ec8e75428737 • SR_NATIVE_INPUT_e099af9decef54dcc0b9ec8e75428737Working (4s • esc to interrupt) · Running hook  Worked for 4s •23:47",
+          "executionHostId": "local",
+          "agentIdentity": "codex"
+        }
+      ],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": []
+      },
+      "topologyRevisions": {
+        "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-final-01": 959
+      },
+      "totalCount": 1,
+      "truncated": false
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 1884,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 278
+}

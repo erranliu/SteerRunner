@@ -1,0 +1,4 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_live_probe_test.go:159: initial READY not verified <nil>
+--- FAIL: TestOrcaNativeStateLiveLifecycle (95.62s)
+FAIL

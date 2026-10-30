@@ -1,0 +1,5 @@
+Exception: C:\Users\lmas1\.codex\worktrees\8ed5\SteerRunner\scripts\new-test-fixture.ps1:32
+Line |
+  32 |  … b_auth']) { throw 'GitHub App authentication is unsupported; use gh l …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | GitHub App authentication is unsupported; use gh login on the execution host

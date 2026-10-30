@@ -1,0 +1,56 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_6603f1d5-2194-4785-b828-e4da22072d65",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-final-20261031\\session-qualified-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T15:41:34.3156998Z",
+  "started": "2026-10-30T15:41:33.6108795Z",
+  "stdout": {
+    "id": "4d887851-8a21-4a88-b698-db0e23cb1885",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_6603f1d5-2194-4785-b828-e4da22072d65",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02@@649bad87",
+        "incarnationId": "96a29fcc-a914-461b-844c-5babccbbbacf",
+        "orphaned": false,
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02",
+        "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-20261031-qualified-02",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-20261031-qualified-02",
+        "tabId": "8d26c29b-b3c6-4e39-8877-9598d6f3deb2",
+        "leafId": "f73ed335-ec86-46e7-a757-0c6a2b1f2c00",
+        "title": "Codex",
+        "paneTitle": "SteerRunner isolated native input probe",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793374883129,
+        "preview": "ex using ! (e.g. !ls)\n› Ask Codex to do anything\nGPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-20261031-qualified-02\n? for shortcuts                                                                                                                     ⚠ 1 warning · f2 to view",
+        "executionHostId": "local",
+        "agentIdentity": "codex",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 1608,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 191
+}
