@@ -10,17 +10,20 @@ L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用已落
 
 ## 固定交付包验证（2026-10-26）
 
-Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，已登记为 focused native
-`orca-remote.native-input`。入口为 `./scripts/test-native-input.ps1 -Target <固定目标JSON>
--OutDir <全新目录> -Mode long-input`；单独的 `-Mode segmented-shape` 显式执行两次真实
-粘贴，验证相邻折叠块，只计独立形态试验，不计生产一次粘贴自然分段。
+Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，登记为 focused native
+`orca-remote.native-input`。真实入口为 `./scripts/test-native-input.ps1 -Target <固定目标JSON>
+-OutDir <全新目录> -Mode long-input`，调用生产通用 text+enter+原请求 ID；不读取草稿或调整视口。
+原 `segmented-shape` 手动两次粘贴试验已退出当前入口，旧证据保留。
+确定性故障入口为 `./scripts/test-native-input.ps1 -Mode controlled -Repeat 30 -OutDir <全新目录>`，
+无需真实目标，输出每个叶例及总执行/失败/跳过计数；它不是实际 Orca L3 资格。
 目标 JSON 含 `Worktree`（完整 `id:repo::path`）、`Runtime`、`Environment`、`CLI` 和
 `Launch`（现有 `agentlaunch.Config` 的 executable/args/model/reasoning_effort/access_mode）。
 只用新的隔离工作区，先关闭已核实属于本次创建的空闲默认 shell；不能填历史业务终端。
 测试拒绝非空/不完整清单、重复目录、跳过、零匹配、全文/唯一性/进程归属不符与未确认清理。
-每个模式独立启动并关闭一个终端；保留 target、源码摘要、测试 EXE SHA、原文、真实 draft
-reads、原生全文查询、原结果与前后完整清单。运行后移除自建工作区。
-自然长输入包含中文 BMP、CRLF、空行和代码块；非 BMP 的历史原生失败仍未验收。
+每次真实调用独立启动并关闭一个终端，保留 target、源码/EXE/CLI 摘要、请求/回执、
+一次通用提交/零分开输入计数、正式唯一原输入、原结果与前后完整清单。
+自然长输入包含中文 BMP、CRLF、空行和代码块；本机仍须具备原准备/模型/history条件，
+未具备时单列未验证，不能借远端profile或补查询伪装本机完成资格。
 默认 L1 不启动它；不将 opt-in skip 当真实通过。具体命令与范围见
 [输入验收](acceptance/native-start-confirmation-20261027.md#仓库内可重复输入验收2026-10-27)。
 

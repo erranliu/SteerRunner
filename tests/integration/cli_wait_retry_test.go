@@ -20,7 +20,7 @@ import (
 // private cache has no real Orca files and never locks a production cache.
 func TestSROrcaCLIWaitRetry(t *testing.T) {
 	testCount.Add(1)
-	for _, mode := range []string{"release-after-15s", "graceful-restart", "kill-restart", "stop-queued", "transient-backoff", "restart-stop-queued"} {
+	for _, mode := range []string{"release-after-15s", "graceful-restart", "kill-restart", "stop-queued", "transient-backoff", "restart-stop-queued", "three-runs-stop-queued"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, req := setupRun(t)
 			state := os.Getenv("STEERRUNNER_FIXTURE_STATE")
@@ -66,6 +66,70 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			id := accepted.Data.(map[string]any)["run_id"].(string)
 			before := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.ExecutionWait != nil && v.ExecutionWait.Stage == "queue" })
 			q := *before.ExecutionWait
+			if mode == "three-runs-stop-queued" {
+				ids := []string{id}
+				for i := 1; i < 3; i++ {
+					peer := req
+					peer.RequestID = fmt.Sprintf("queued-peer-%d", i)
+					body, _ := json.Marshal(peer)
+					ids = append(ids, call(t, dir, []string{"submit", "--input", "-"}, string(body), 0).Data.(map[string]any)["run_id"].(string))
+				}
+				deadlines := map[string]time.Time{}
+				for _, runID := range ids {
+					v := waitRun(t, dir, runID, func(v contracts.RunView) bool { return v.ExecutionWait != nil && v.ExecutionWait.Stage == "queue" })
+					if v.ExecutionWait.CallsStarted != 0 || v.Execution.Workspace != "" {
+						t.Fatal("queued Run dispatched", v)
+					}
+					if _, exists := deadlines[runID]; exists {
+						t.Fatal("Run identity collided")
+					}
+					deadlines[runID] = v.ExecutionWait.DeadlineAt
+				}
+				// Revoke the middle Run while both peers retain their original queues.
+				middle := waitRun(t, dir, ids[1], func(contracts.RunView) bool { return true })
+				revokeWithFreshRevision(t, dir, ids[1], middle.Revision)
+				waitRun(t, dir, ids[1], func(v contracts.RunView) bool { return v.StopStatus == "stopped" && !v.NewInputsAllowed })
+				for _, runID := range []string{ids[0], ids[2]} {
+					v := waitRun(t, dir, runID, func(contracts.RunView) bool { return true })
+					if v.ExecutionWait == nil || !v.NewInputsAllowed || v.ExecutionWait.CallsStarted != 0 || !v.ExecutionWait.DeadlineAt.Equal(deadlines[runID]) {
+						t.Fatal("peer queue or deadline changed", v)
+					}
+					revokeWithFreshRevision(t, dir, runID, v.Revision)
+					waitRun(t, dir, runID, func(v contracts.RunView) bool { return v.StopStatus == "stopped" && !v.NewInputsAllowed })
+				}
+				close(release)
+				held = false
+				if err := <-done; err != nil {
+					t.Fatal(err)
+				}
+				// Cleanup normally consumes this single result channel.
+				done <- nil
+				// Service exit is the worker-settlement barrier. Releasing the mutex
+				// alone does not prove canceled queue workers can no longer dispatch.
+				call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("finish-three-queued", service.InstanceID), 0)
+				if err := waitOwnedService(service); err != nil {
+					t.Fatal(err)
+				}
+				reader, err := storage.OpenReader(dir)
+				if err != nil {
+					t.Fatal(err)
+				}
+				rows, err := reader.Runs()
+				reader.Close()
+				if err != nil || len(rows) != 3 {
+					t.Fatal("lost queued Run records", err, len(rows))
+				}
+				for _, row := range rows {
+					if row.Allowed || len(row.Intents) != 1 || row.Intents[0].PreparationQuery == nil || row.Intents[0].PreparationQuery.Wait.CallsStarted != 0 || !row.Intents[0].PreparationQuery.Wait.DeadlineAt.Equal(deadlines[row.ID]) {
+						t.Fatal("revoked queue dispatched or changed identity/deadline", row.ID)
+					}
+				}
+				if _, err := os.Stat(filepath.Join(state, "worktree-created.json")); !os.IsNotExist(err) {
+					t.Fatal("canceled queue created a workspace")
+				}
+
+				return
+			}
 			defer func() {
 				latest, _, _, _ := invoke(runnerEXE, []string{"observe", "--run-id", id, "--state-dir", dir, "--json"}, "")
 				record, _ := json.MarshalIndent(map[string]any{"mode": mode, "queue": before, "final_observation": latest}, "", "  ")

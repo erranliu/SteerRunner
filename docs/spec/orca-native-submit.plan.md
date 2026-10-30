@@ -1,13 +1,13 @@
 # Orca 多行输入屏幕草稿依赖修复 Plan
 
 日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
-状态：按用户最新范围修订，**尚未实施**。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
+状态：按用户授权实施，**真实双端验收未完成**。实数及未验项见[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
 
 ## P0 固定范围与基线
 
 复核lifecycle.go的受影响条件：远端、普通Codex、无extension/wire、多行→submitNativePaste。其余路径已有通用text+enter。本次仅删除这条手动分支、屏幕附属依赖并增加必要回执校验；原wire与逻辑输入摘要、模型设置、本机history和远端NativeProof、prepare/auth/stop/codec均保持。M1不再是实施前置，也不保留其迁移任务供实现阶段展开。
 
-本轮只改Spec/Plan及调查记录状态，不改生产、测试注册或安装环境。13项安装代码隔离核查、两个目标absent只读查询、旧快照/隔离重复及过去L1不是本方案实现验收；历史根因未确认，原字节和失败批次保留。
+设计阶段只改Spec/Plan；当前已按P2/P3替换提交和清理专用代码，并扩展正式测试入口，未部署安装环境。13项安装代码隔离核查、两个目标absent只读查询、旧快照/隔离重复及过去L1不是本方案实现验收；历史根因未确认，原字节和失败批次保留。
 
 ## P1 实施前独立审计
 
@@ -15,7 +15,7 @@
 
 保留宿主内部raw/held-Enter及任意人工输入排他的证据边界。旧版本审计结论不直接覆盖本版；本版审计需单列继承现有远端20秒观察后的共享锁风险，不把准备idle当空草稿或原子排他证明。
 
-2026-10-30本版复审：design_audit与final_review独立只读核对Spec/Plan及相关代码，均无P0–P2文档发现。只认可本版窄范围设计与证据边界，生产实施、故障重复和两端真实验收仍未执行。
+2026-10-30本版复审：design_audit与final_review独立只读核对Spec/Plan及相关代码，均无P0–P2文档发现。该次结论只认可窄范围设计与证据边界；后续实施/故障重复/真实资格分别记录，不追溯改写此次文档审计。
 
 ## P2 替换多行提交
 
@@ -37,7 +37,7 @@
 
 扩展现有orcatransport夹具、protocol/orca协议测试和tests/integration CLI/SQLite/服务恢复入口。用channel/显式屏障控制处理延迟、分段、回执顺序与故障位置；记录原请求、通用submit次数、实际CLI正文/UTF-8或摘要、模型wire与原结果。模拟provider处理只能证明Runner调用行为，不冒充真实Orca完整消费证明。
 
-NS-T09扩展TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation及既有observer_queue/stop入口：同服务一个多行send持锁、第二Run的stop排队、第三Run调用排队后取消，用屏障释放持锁调用。核对取消回调0次、锁最终释放、未知不伪装已停止/完成及原提交不重复；不按外部OS锁的全局FIFO断言成功顺序，也不把已有独立锁测试充当新增接线验证。
+NS-T09分层扩展TestNativePromptSharedQueueWithStopAndCancellation、TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation及既有observer_queue/stop入口：同服务一个多行send持锁、第二Run的stop排队、第三Run调用排队后取消，用屏障释放持锁调用。核对取消回调0次、锁最终释放、未知不伪装已停止/完成及原提交不重复；不按外部OS锁的全局FIFO断言成功顺序，也不把已有独立锁测试充当新增接线验证。adapter三fixture与TestSROrcaCLIWaitRetry/three-runs-stop-queued真实服务三Run各自登记；后者核验准备队列零派发及撤销，不能将两者合称同服务三个活动原生Run的多行发送/观察/停止全链路证明。
 
 | 需求ID | 入口与拟映射 | 条件与独有断言 | 证据 |
 | --- | --- | --- | --- |

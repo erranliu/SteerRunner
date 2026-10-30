@@ -1,0 +1,78 @@
+[
+  {
+    "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+    "sha256": "e5dc4ca012124f9fa300270189ac401468d85733b09937a542a8c82fd5bc0f7e"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/lifecycle_test.go",
+    "sha256": "e7a915cf60a3ffe75ffad4c055f9c9786d2714a0e73e7913c7048673473c55da"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_crlf_windows_test.go",
+    "sha256": "7519857c524e89ae8f234e9ec746a7001b569a3c95c062bd58557fdde692b275"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_followup_windows_test.go",
+    "sha256": "2afc5f9cc640b2f84aedac8d98970b3b2077ed8afffcd36942fe549448123c0d"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+    "sha256": "8e09e888a34ae089b9d79d5ab824acf8d9fa4a75d44ba2c5b09280308067154a"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_live_test.go",
+    "sha256": "14058462fd4d4f6b34e7d56f81e7d7ca60b29e5ba52422390b9ddba1228f7c0f"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_paste.go",
+    "sha256": null
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_paste_segments_test.go",
+    "sha256": null
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_paste_test.go",
+    "sha256": null
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_reflow_test.go",
+    "sha256": null
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_start_windows_test.go",
+    "sha256": "c8a393f81c668aac7d90ecd7d3e0aa4a4e769df1cfadbb97015c12d1d0d8f90f"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_submit_queue_test.go",
+    "sha256": "356f188b7f9d4de405318f4fd35613f44a8c816012061b02748d9a329754723d"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/native_submit_test.go",
+    "sha256": "d7a2fc0e6fc93ea32f2bff426234a601ab459487f6be1a4e655c1253df5f9e5e"
+  },
+  {
+    "path": "internal/execution/adapters/orcatransport/short_input_trace_test.go",
+    "sha256": "48f0873c6960e3cf0d90aec91bbd83b6442763b1f83bbb546fd228e4d46fc1da"
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/terminal_viewport.go",
+    "sha256": null
+  },
+  {
+    "path": "internal/execution/adapters/protocol/orca/terminal_viewport_windows_test.go",
+    "sha256": null
+  },
+  {
+    "path": "scripts/test-native-input.ps1",
+    "sha256": "643ff8fc683f192524947aa7f47746eb7161547117466092cf876c6e519aa05f"
+  },
+  {
+    "path": "tests/catalog.json",
+    "sha256": "325c01de6c94a3eb2bca7d0b6d0a48a62d9380f61715067fb6a4cfda0794399d"
+  },
+  {
+    "path": "tests/integration/cli_wait_retry_test.go",
+    "sha256": "e723fed2e4cb8e4ea1c435028226b3add42f0582aa957625df71b44041aa8ed8"
+  }
+]

@@ -11,7 +11,7 @@ import (
 )
 
 func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
-	for _, mode := range []string{"missed", "observed", "restored", "changed-input", "expanded-lines", "duplicate-input", "unknown-paste", "unknown-submit"} {
+	for _, mode := range []string{"missed", "observed", "restored", "changed-input", "expanded-lines", "duplicate-input", "unknown-submit"} {
 		t.Run(mode, func(t *testing.T) {
 			l, host, s := fixtureOn(t, "paired-worker")
 			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -30,9 +30,8 @@ func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
-			host.screen = true
-			host.lostPasteReply = mode == "unknown-paste"
-			host.lostEnterReply = mode == "unknown-submit"
+			host.unstarted = true
+			host.lostSubmitReply = mode == "unknown-submit"
 			l.queryNative = func(context.Context, b.ProcessIdentity, string) (native.StateSample, error) {
 				return native.StateSample{AgentState: base}, nil
 			}
@@ -53,9 +52,6 @@ func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
 				}
 				sends := countSends()
 				want := 1
-				if mode == "unknown-submit" {
-					want = 2
-				}
 				if sends != want {
 					t.Fatal("unexpected initial effects", sends, want)
 				}

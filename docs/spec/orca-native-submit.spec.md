@@ -1,7 +1,7 @@
 # Orca 多行输入屏幕草稿依赖修复 Spec
 
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：按用户最新确认收窄，**尚未实施**。本轮只调整设计文档，配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+状态：窄范围代码已实施，**真实双端验收未完成**。实施/检查实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
 本版替代上一版整条执行/完成链路统一方案。M1本机模型控制、长final迁移退出本次范围，不再作为修复前置；这些能力并未迁移或验证等价。旧审计结论仅适用于对应旧版。2026-10-30，design_audit与final_review独立只读复审本版均无P0–P2文档发现；此结论不代表生产实施或真实验收完成。
 
@@ -15,7 +15,7 @@
 
 ## 2. 当前事实与提交契约
 
-当前lifecycle.go在Environment非空、Terminal为空、agent=codex、WireFormat为空且正文含LF时调用submitNativePaste。该路径做text-only手动bracketed paste、屏幕草稿比较/双稳定/可能resize，最后单独Enter；其余路径已经调用通用text+enter。普通本机Codex不进入这一草稿分支。
+基线lifecycle.go在Environment非空、Terminal为空、agent=codex、WireFormat为空且正文含LF时调用submitNativePaste。该路径做text-only手动bracketed paste、屏幕草稿比较/双稳定/可能resize，最后单独Enter；其余路径已经调用通用text+enter。普通本机Codex不进入这一草稿分支。
 
 Orca CLI只有同次text+enter且非interrupt才启用agentPrompt及durable请求绑定。修复后复用既有调用：
 
@@ -73,4 +73,4 @@ Plan的NS-T01–T10映射既有正式入口、条件与证据；实现时登记�
 
 实施后完成项目规定检查、正式L3/稳定回归与独立复审。真实验证在全新隔离现场，以无副作用最小任务，本机/远端各至少3个独立native session，记录原请求、实际Runner通用提交次数、accepted/started/completed证据、正式原输入/final与精确停止清理。一次RPC不等于一次底层按键，宿主内部不可观察次数记不可观察；缺条件标未验证。
 
-模型与长结果仅做既有能力不退化的回归，不要求先迁移、重新证明两端等价或用六个短任务替代这些既有测试。不跑Unity、业务完整交付或创建业务PR。当前只修订文档，生产修改和真实验收仍为0；不宣称已复现历史原生故障或已修复，更新原单独Draft PR，未验收前不合并/部署。
+模型与长结果仅做既有能力不退化的回归，不要求先迁移、重新证明两端等价或用六个短任务替代这些既有测试。不跑Unity、业务完整交付或创建业务PR。本次已修改提交及清理代码，真实本机/远端资格仍未验收；不宣称已复现历史原生故障或已修复，更新原单独Draft PR，未验收前不合并/部署。

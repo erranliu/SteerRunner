@@ -49,14 +49,15 @@ func runNativeInputLiveProbe(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
 	baseHost := process.New(40 * time.Second)
-	host := &segmentProbeHost{ManagedProcessHost: baseHost, root: root}
+	host := &nativeInputProbeHost{ManagedProcessHost: baseHost, root: root}
 	creator := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		args = append(args, "--environment", target.Environment)
 		return host.OutputCommand(ctx, b.LaunchCommand{Executable: target.CLI, Args: args, WorkingDirectory: root, Timeout: timeout})
 	}})
 	record := map[string]any{"business_inputs": 0, "completed": false, "cleaned_up": false, "launch": target.Launch, "mode": os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE")}
 	defer func() {
-		record["paste_calls"], record["enter_calls"] = host.pastes.Load(), host.enters.Load()
+		record["text_calls"], record["enter_flag_calls"] = host.pastes.Load(), host.enters.Load()
+		record["submit_calls"], record["text_only_calls"], record["bare_enter_calls"], record["screen_reads"] = host.submits.Load(), host.textOnly.Load(), host.bareEnter.Load(), host.reads.Load()
 		raw, _ := json.MarshalIndent(record, "", "  ")
 		if err := os.WriteFile(filepath.Join(root, "native-result.json"), raw, 0600); err != nil {
 			t.Error(err)
@@ -160,10 +161,6 @@ func runNativeInputLiveProbe(t *testing.T) {
 	}
 	record["prompt_sha256"] = digest([]byte(prompt))
 	record["logical_bytes"] = len(prompt)
-	if os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE") == "segmented-shape" {
-		runNativeSegmentedShape(t, ctx, creator, identity, ready, prompt, marker, record)
-		return
-	}
 	input := b.TurnInput{CommandID: hex.EncodeToString(nonce), Prompt: prompt}
 	s.PendingTurn = &input
 	r, _, e := l.Execute(ctx, request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
@@ -179,6 +176,8 @@ func runNativeInputLiveProbe(t *testing.T) {
 		record["business_inputs"] = 1
 	}
 	record["submit_receipt"] = r.Operation.Receipt
+	record["request_id"] = r.RequestID
+	record["operation_id"] = req.Operation.ID
 	record["initial_start_confirmed"] = r.State.TurnStarted
 	if e != nil || obs == nil {
 		t.Fatal("original submission unverified", e)
@@ -223,8 +222,8 @@ func runNativeInputLiveProbe(t *testing.T) {
 				}
 				record["original_query"] = verified
 				record["verified_original_input"] = verified.NativeInput
-				if host.pastes.Load() != 1 || host.enters.Load() != 1 {
-					t.Fatal("expected exactly one production paste and Enter")
+				if host.submits.Load() != 1 || host.textOnly.Load() != 0 || host.bareEnter.Load() != 0 || host.reads.Load() != 0 {
+					t.Fatal("expected one production generic submit and no split input or screen read")
 				}
 				record["completed"] = true
 				record["final"] = r.TurnEvidence
@@ -239,29 +238,42 @@ func runNativeInputLiveProbe(t *testing.T) {
 }
 
 // Logs actual public reads only; no send interception, mutation, or fabricated response.
-type segmentProbeHost struct {
+type nativeInputProbeHost struct {
 	b.ManagedProcessHost
-	root   string
-	reads  atomic.Uint64
-	calls  atomic.Uint64
-	pastes atomic.Uint64
-	enters atomic.Uint64
+	root      string
+	reads     atomic.Uint64
+	calls     atomic.Uint64
+	pastes    atomic.Uint64
+	enters    atomic.Uint64
+	submits   atomic.Uint64
+	textOnly  atomic.Uint64
+	bareEnter atomic.Uint64
 }
 
-func (h *segmentProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
+func (h *nativeInputProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
 	started := time.Now().UTC()
 	if len(c.Args) > 1 && c.Args[0] == "terminal" && c.Args[1] == "send" {
+		hasText, hasEnter := false, false
 		for _, arg := range c.Args {
 			if arg == "--text" {
+				hasText = true
 				h.pastes.Add(1)
 			}
 			if arg == "--enter" {
+				hasEnter = true
 				h.enters.Add(1)
 			}
 		}
+		if hasText && hasEnter {
+			h.submits.Add(1)
+		} else if hasText {
+			h.textOnly.Add(1)
+		} else if hasEnter {
+			h.bareEnter.Add(1)
+		}
 	}
 	raw, err := h.ManagedProcessHost.OutputCommand(ctx, c)
-	if os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_MODE") == "short-sequence" {
+	{
 		textBytes := 0
 		for i, arg := range c.Args {
 			if arg == "--text" && i+1 < len(c.Args) {
@@ -278,127 +290,9 @@ func (h *segmentProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand)
 	}
 	if len(c.Args) > 1 && c.Args[0] == "terminal" && c.Args[1] == "read" {
 		n := h.reads.Add(1)
-		if e := os.WriteFile(filepath.Join(h.root, fmt.Sprintf("actual-public-draft-read-%02d.json", n)), raw, 0600); e != nil {
+		if e := os.WriteFile(filepath.Join(h.root, fmt.Sprintf("unexpected-terminal-read-%02d.json", n)), raw, 0600); e != nil {
 			return nil, e
 		}
 	}
 	return raw, err
-}
-
-// Explicit two-effect shape experiment; this is not the production one-paste path.
-func runNativeSegmentedShape(t *testing.T, ctx context.Context, creator native.Client, identity b.ProcessIdentity, ready native.AgentState, prompt, marker string, record map[string]any) {
-	environment := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_ENVIRONMENT")
-	record["submission_attempts"] = 1
-	text := nativePromptText(prompt)
-
-	initial, e := creator.MetaCall(ctx, "terminal", "read", "--terminal", identity.Terminal, "--limit", "80", "--json")
-	var initialDraft struct {
-		Terminal struct{ Handle, Draft string }
-	}
-	if e != nil || initial.CallUncertain || initial.ErrorCode != "" || json.Unmarshal(initial.Payload, &initialDraft) != nil || initial.RuntimeID != identity.RuntimeID || initialDraft.Terminal.Handle != identity.Terminal || initialDraft.Terminal.Draft != "" {
-		t.Fatal("fresh composer not empty", e)
-	}
-	runes := []rune(text)
-	split := len(runes) / 3
-	chunks := []string{string(runes[:split]), string(runes[split:])}
-	record["paste_attempts"] = 0
-	for index, chunk := range chunks {
-		record["paste_attempts"] = index + 1
-		payload := "\x1b[200~" + chunk + "\x1b[201~"
-		pasted, e := creator.MetaCall(ctx, "terminal", "send", "--terminal", identity.Terminal, "--text", payload, "--json")
-		record[fmt.Sprintf("paste_receipt_%d", index+1)] = pasted
-		var paste struct {
-			Send struct {
-				Handle       string
-				Accepted     bool
-				BytesWritten int
-			}
-		}
-		if e != nil || pasted.CallUncertain || pasted.ErrorCode != "" || json.Unmarshal(pasted.Payload, &paste) != nil || !paste.Send.Accepted || paste.Send.Handle != identity.Terminal || pasted.RuntimeID != identity.RuntimeID || paste.Send.BytesWritten != len(payload) {
-			t.Fatal("sole original chunk unverified; no retry", e)
-		}
-		expectedText := string(runes[:split])
-		if index == 1 {
-			expectedText = text
-		}
-		stable := 0
-		last := ""
-		drafts := []string{}
-		for {
-			raw, e := creator.MetaCall(ctx, "terminal", "read", "--terminal", identity.Terminal, "--limit", "80", "--json")
-			var read struct {
-				Terminal struct{ Handle, Draft, Source string }
-			}
-			if e != nil || raw.CallUncertain || raw.ErrorCode != "" || json.Unmarshal(raw.Payload, &read) != nil || raw.RuntimeID != identity.RuntimeID || read.Terminal.Handle != identity.Terminal || read.Terminal.Source != "screen" {
-				t.Fatal("original draft read unverified", e)
-			}
-			draft := read.Terminal.Draft
-			drafts = append(drafts, draft)
-			record[fmt.Sprintf("drafts_%d", index+1)] = drafts
-			if nativePasteDraftMatches(draft, expectedText) {
-				if draft == last {
-					stable++
-				} else {
-					stable = 1
-				}
-			} else {
-				stable = 0
-			}
-			last = draft
-			if stable >= 2 {
-				if index == 1 && strings.Count(draft, "[Pasted Content ") < 2 {
-					t.Fatal("segmented native shape not reproduced; do not claim qualification")
-				}
-				break
-			}
-			select {
-			case <-ctx.Done():
-				t.Fatal("segmented composer did not settle; no Enter")
-			case <-time.After(300 * time.Millisecond):
-			}
-		}
-	}
-	record["logical_inputs"] = 1
-	current, e := creator.ShowTerminal(ctx, identity.Terminal)
-	if e != nil || current.IncarnationID != identity.Incarnation || current.WorktreeID != identity.WorktreeID || current.AgentIdentity != "codex" {
-		t.Fatal("original terminal changed", e)
-	}
-	boundary, e := native.QueryOriginalSample(ctx, environment, identity, ready.PaneKey)
-	if e != nil || boundary.MainAgent == nil || boundary.MainAgent.State != "done" || boundary.MainAgent.StateStartedAt != ready.MainAgent.StateStartedAt || boundary.ProviderSession != ready.ProviderSession {
-		t.Fatal("pre-input boundary changed; no Enter", e)
-	}
-	record["enter_attempts"] = 1
-	entered, e := creator.MetaCall(ctx, "terminal", "send", "--terminal", identity.Terminal, "--enter", "--json")
-	record["enter_receipt"] = entered
-	if e != nil {
-		t.Fatal(e)
-	}
-	var enter struct {
-		Send struct {
-			Handle       string
-			Accepted     bool
-			BytesWritten int
-		}
-	}
-	if entered.CallUncertain || entered.ErrorCode != "" || json.Unmarshal(entered.Payload, &enter) != nil || !enter.Send.Accepted || enter.Send.BytesWritten != 1 || enter.Send.Handle != identity.Terminal || entered.RuntimeID != identity.RuntimeID {
-		t.Fatal("original submit unverified")
-	}
-	for {
-		sample, e := native.QueryOriginalSample(ctx, environment, identity, ready.PaneKey)
-		if e == nil && sample.AgentState.State == "done" && sample.AgentState.LastAssistantMessage == marker {
-			state, e := native.QueryOriginalInput(ctx, environment, identity, ready.PaneKey, ready.MainAgent.StateStartedAt, sample.AgentState)
-			if e == nil && state.NativeInput != nil && state.NativeInput.Text == text && state.NativeInput.MatchesOriginalProcess(identity) && state.NativeInput.MatchesOriginalQuery(state) {
-				record["verified_original_input"] = state.NativeInput
-				record["completed"] = true
-				record["final"] = state
-				return
-			}
-			record["last_query_error"] = fmt.Sprint(e)
-		}
-		select {
-		case <-ctx.Done():
-			t.Fatal("original staged input not completed", ctx.Err())
-		case <-time.After(time.Second):
-		}
-	}
 }

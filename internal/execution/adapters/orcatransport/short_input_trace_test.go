@@ -102,17 +102,6 @@ func (f *shortTraceFeed) Close() {
 }
 
 func (r *shortInputTrace) attach(l *Lifecycle) {
-	if fit := l.fitComposer; fit != nil {
-		l.fitComposer = func(ctx context.Context, p b.ProcessIdentity, record native.ViewportRecorder) (composerViewport, json.RawMessage, error) {
-			return fit(ctx, p, func(event native.ViewportRPC) error {
-				r.write("viewport.rpc", event)
-				if record != nil {
-					return record(event)
-				}
-				return nil
-			})
-		}
-	}
 	factory := l.stateFactory
 	var mu sync.Mutex
 	feedID := 0

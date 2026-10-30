@@ -1,0 +1,139 @@
+{
+  "schema": "steerrunner-native-submit-evidence/v1",
+  "production_base": "a086a9984dc0bd32b3f02b9698cd26c9ba313d90",
+  "source_commit_before_implementation": "2e9bf0258f0636f5b7ec30dbd0efe30b78c1e070",
+  "real_local_sessions_verified": 0,
+  "real_remote_sessions_verified": 0,
+  "files": [
+    {
+      "name": "adapter-sandbox-failed.log.gz",
+      "bytes": 2477,
+      "sha256": "5fa090135217be651e8a9bf1458f8a1097f399a06fc2d4726f24be30e53d316c"
+    },
+    {
+      "name": "changed-source-sha256.json",
+      "bytes": 2858,
+      "sha256": "2c8aa4372e78e45692b66031295888cf7efb7d191d5be59eb97d4ffec483cc6a"
+    },
+    {
+      "name": "controlled-final-result.json",
+      "bytes": 298,
+      "sha256": "c830793d4c48801acc555ad79bc345e4d373529ba6b0c187ef71c430615aa43c"
+    },
+    {
+      "name": "controlled-final-summary.json",
+      "bytes": 21131,
+      "sha256": "acc4b0332e7c819618e2192a5a7b112f1857387ee2705c071fa4e5d74350e987"
+    },
+    {
+      "name": "controlled-final-tests.jsonl.gz",
+      "bytes": 173208,
+      "sha256": "d81b9552dba8aeadbe547a233b64591c59a274fcfe156b4cc9ac72ce5cf620d7"
+    },
+    {
+      "name": "controlled-first-failed-summary.json",
+      "bytes": 15468,
+      "sha256": "f0d97b441fd870d8089f68c50ba52d1a5871e002bdf2412e536e63884aeffe3d"
+    },
+    {
+      "name": "controlled-first-failed-tests.jsonl.gz",
+      "bytes": 5237,
+      "sha256": "5823004ada32705242cea66f3213af2e491e66cbb94d59102147ea8958434458"
+    },
+    {
+      "name": "controlled-second-failed-summary.json",
+      "bytes": 20896,
+      "sha256": "54aab1129cb5839246ffc92fe540a393bfd7404a864a259f7e5a11b565cc2cb0"
+    },
+    {
+      "name": "controlled-second-failed-tests.jsonl.gz",
+      "bytes": 6152,
+      "sha256": "bff0fb17bc240ac55a97d0020f6b0122217d05d4b7225fa88563b0045c5357d2"
+    },
+    {
+      "name": "final-adapters-summary.json",
+      "bytes": 583,
+      "sha256": "287c8f34530c9c999a3b1c187fcff26fab8f1de26d98ac582c53ea463fc71447"
+    },
+    {
+      "name": "final-adapters-tests.jsonl.gz",
+      "bytes": 47264,
+      "sha256": "2044863eba47e49491b7db2e282767020f5773a8f6407fcd29c4f43a4a65c45f"
+    },
+    {
+      "name": "l1-counts.json",
+      "bytes": 358,
+      "sha256": "84446b3eb7ef73a480ec67c77b59e92410d74e59a3ad1854322f5bb243b16a5f"
+    },
+    {
+      "name": "l1-summary.json",
+      "bytes": 1887,
+      "sha256": "57eac122db3a15ce59afc8fdbba7c40f977b4fa827d9582a883801ec99000292"
+    },
+    {
+      "name": "l1-tests.jsonl.gz",
+      "bytes": 136153,
+      "sha256": "69bf2119d4fdf3d35f9d2f29bad335b8a1b6f0fe8ffba37713715f3ba9db38d3"
+    },
+    {
+      "name": "local-ready.json",
+      "bytes": 9840,
+      "sha256": "3ad6f2d6b341f36e25769a2d64cb196b86540105d4d1783664f8abc042b0beff"
+    },
+    {
+      "name": "matrix-first-failed.log.gz",
+      "bytes": 401,
+      "sha256": "9d2c4ca35e086842c4174aae44bb7d90df26606d3f3545e8f4730fb138b28a32"
+    },
+    {
+      "name": "remote-unavailable-first.json",
+      "bytes": 209,
+      "sha256": "c71afe84c0db41dc623814a2447063c197a75382541ad44bd1c6c41320fed118"
+    },
+    {
+      "name": "remote-unavailable-second.json",
+      "bytes": 198,
+      "sha256": "6de6e25d6df914f7ae8a0bb83e3e565ec3bbcc1d30bc5e143830cb0107abf578"
+    },
+    {
+      "name": "service-queue-final.log.gz",
+      "bytes": 113,
+      "sha256": "ef608c08f813112c07de90d019b9f2db1c0502ec3c0a1548204dd3ed4e795ac3"
+    },
+    {
+      "name": "service-queue-first-failed.log.gz",
+      "bytes": 412,
+      "sha256": "dcbc155c8ed0366aa2ce0b59967f5a4ab42675706068a5ad6aee4ba2952a4c05"
+    },
+    {
+      "name": "service-queue-result.json",
+      "bytes": 227,
+      "sha256": "fea7925129152c96f8ab858339a3d0d77ff21309098dcdd8c412d73d025dcc0f"
+    },
+    {
+      "name": "service-queue-source-identity.json",
+      "bytes": 587,
+      "sha256": "144b8fa373c49e1f1e9000b43593bc7cc48a43100a04770bd267660e26d1d165"
+    },
+    {
+      "name": "service-result.json",
+      "bytes": 222,
+      "sha256": "889d035120a117462898d72f7cc23b0ff84379b33c9a897af28fa993ff6f1400"
+    },
+    {
+      "name": "service-source-identity.json",
+      "bytes": 662,
+      "sha256": "a808be48b66a2a1e88fbface88374cc0c23089ab686ca4e6f30f3cf97f4ec002"
+    },
+    {
+      "name": "service-tests.log.gz",
+      "bytes": 1258,
+      "sha256": "5ec7cdac3f67e70bf16220e912f7da1a9304c0a66d3e0e6f6952b69bb13f7c0e"
+    },
+    {
+      "name": "terminal-extensions.tap",
+      "bytes": 6540,
+      "sha256": "7d21fd9f431bf2ca69ed1604383a83af0413959f8ce13177d86eb7aab96a427e"
+    }
+  ]
+}

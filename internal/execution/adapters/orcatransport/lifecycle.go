@@ -70,7 +70,6 @@ type Lifecycle struct {
 	stateFactory      native.StateFeedFactory
 	queryNative       func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
 	queryInput        func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
-	fitComposer       func(context.Context, b.ProcessIdentity, native.ViewportRecorder) (composerViewport, json.RawMessage, error)
 	feed              native.StateFeed
 	feedProcess       b.ProcessIdentity
 	feedMu            sync.Mutex
@@ -87,15 +86,6 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 	if err == nil {
 		port.(*Lifecycle).nativeAccess = true
 		l := port.(*Lifecycle)
-		if l.profile.Environment != "" && l.profile.Terminal == nil && setup.Snapshot.Ref.Agent.Name == "codex" {
-			l.fitComposer = func(ctx context.Context, p b.ProcessIdentity, record native.ViewportRecorder) (composerViewport, json.RawMessage, error) {
-				lease, receipt, err := native.FitBoundComposer(ctx, l.profile.Environment, p, record)
-				if lease == nil {
-					return nil, receipt, err
-				}
-				return lease, receipt, err
-			}
-		}
 		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
 			return native.QueryOriginalSample(ctx, l.profile.Environment, process, pane)
 		}
@@ -785,20 +775,11 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		// exact committed native text, as for every other input.
 		text = "\x1b[200~" + strings.ReplaceAll(text, "\n", "\r") + "\x1b[201~"
 	}
-	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") {
-		raw, pasteErr := l.submitNativePaste(ctx, s, text)
-		receipt.Operation.Receipt = raw
-		if pasteErr != nil {
-			l.closeStateFeed()
-			return receipt, pasteErr
-		}
-		turn.Accepted = true
-		receipt.Implementation, err = l.envelope(s, state)
-		receipt.State.InputAccepted = true
-		receipt.Disposition = b.OperationAccepted
-		// Raw paste/Enter receipts prove effects, not a native turn start. Only the
-		// independently fenced unique original completion may recover Started.
-		return receipt, err
+	// Preserve the removed multiline ingress's control-character rejection.
+	// Other agents and existing wire formats retain their own input contract.
+	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" && turn.WireFormat == "" && strings.Contains(text, "\n") && strings.ContainsAny(text, "\x00\x1b") {
+		l.closeStateFeed()
+		return receipt, errors.New("native multiline input contains terminal control characters; no input sent")
 	}
 	args := []string{"terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--retry-request", turn.Request, "--json"}
 	if l.profileVersion == NativeRemoteProfileVersion {
@@ -817,6 +798,8 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 				RequestID          string   `json:"requestId"`
 				ProcessIncarnation string   `json:"processIncarnation"`
 				Stages             []string `json:"stages"`
+				Provider           string   `json:"provider"`
+				Observation        string   `json:"observation"`
 			} `json:"prompt"`
 		} `json:"send"`
 	}
@@ -831,6 +814,16 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	if !bound || sent.Send.Accepted == nil || !*sent.Send.Accepted {
 		l.closeStateFeed()
 		return receipt, errors.Join(callErr, errors.New("original terminal input outcome is unknown; do not resend"))
+	}
+	if l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
+		prompt := sent.Send.Prompt
+		stages := prompt.Stages
+		validStages := len(stages) == 1 && stages[0] == "input_accepted" ||
+			len(stages) == 2 && stages[0] == "input_accepted" && stages[1] == "turn_started"
+		if prompt.Provider != "codex" || prompt.Observation != "supported" || !validStages {
+			l.closeStateFeed()
+			return receipt, errors.Join(callErr, errors.New("original Codex prompt receipt is unsupported or unverified; outcome unknown; do not resend"))
+		}
 	}
 	turn.Accepted = true
 	for _, stage := range sent.Send.Prompt.Stages {
