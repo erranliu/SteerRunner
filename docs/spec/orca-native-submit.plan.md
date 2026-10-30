@@ -1,65 +1,75 @@
-# Orca 原生输入可靠提交 Plan
+# Orca 原生输入通用提交 Plan
 
-日期：2026-10-30。基线及规范见 [Spec](orca-native-submit.spec.md)。
-状态：追加调查修正了先前归因和漏查接口，见[重新核查](../acceptance/orca-native-submit-reassessment.md)。原始强保证尚未获证；不能把它写成已证实的 Orca 缺陷。用户限定不修改 Orca、只允许查询及明确无输入副作用的重试；该范围应复用现有接口，不依赖新增 Orca API。本 Plan 的强提交实施仍未执行。
+日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[重新核查](../acceptance/orca-native-submit-reassessment.md)。
+状态：按用户确认方案修订，**尚未实施**。复用既有通用提交和原请求查询，不新增Runner重试次数/预算，不以修改Orca为前置。此前新增strict接口、committed状态和三次重试方案均退出当前实施范围，旧调查记录仅供溯源。
 
-## P0 当前代码与能力调查
+## P0 固定调查与审计边界
 
-核实五个指定文件、`local_codex_history.go`、`Turn/NativeProof`、state codec、正式测试目录与真实输入入口。记录当前本机/远端 runtime、版本和能力，查 CLI schema、handler、host native 提交实现和请求恢复语义。保留安装包 SHA-256 和函数定位，不发布凭据、配置或共享终端正文。
+以当前checkout复核五个指定文件、local_codex_history.go、state codec、正式目录和输入脚本。已核实CLI仅text+enter进入agentPrompt，当前多行raw split绕开它；request-show已在本机/远端实测可用。13项安装代码隔离核验及只读查询不是历史原生复现，历史根因仍未确认。
 
-对当前安装包做隔离函数行为核验：静默 render gate、缺消费确认仍受理、正文截断/改字节/混入、补 Enter、开始观察不等于全文。用虚拟时钟/受控信号；实际调用原安装函数，明确替换了哪些依赖。每个反例 30 次仅为契约证据稳定性，**不是 Runner L3 或真实故障复现**。
+本轮只修订Spec/Plan并检查一致性、链接和删除清单，不改生产代码、配置、测试注册、安装环境或历史证据。完成独立文档审计后更新原单独PR；后续实现仍按下述顺序进行。
 
-退出标准：区分 Runner 用法、Orca 公开契约、原始更强目标及历史根因。原始强目标未获证时不得宣称已完成；不能因此跳过既有接口核查或笼统阻断全部 Runner 侧恢复工作。保留独立 draft PR，尚未实施的范围明确标注。
+## P1 实施前独立方案审计
 
-## P1 独立方案审计
+审计：同一次text+enter、无Runner框架/补Enter、原请求身份、accepted/started/completed区分、原请求只读查询、本机/远端共用、旧路径完整删除及测试证据层次。确认没有残留新Orca API、强提交proof、committed阶段、三次重试预算或新状态机作为实施前置。
 
-新独立只读审计者检查 Spec/Plan/证据与当前源码：五层事实、提交前正确性、旧路径删除清单、本机/远端一致性、超时零重发、并发围栏和测试映射。主会话修正确认的问题，记录审计者、范围和结论。审计通过设计不表示 Orca gate 已通过。
+审计也须检查保证边界：保留现有准备/权限/操作串行化及身份冲突阻断，但不宣称Orca已提供原子全文消费或所有人工写者排他事务。历史症状是否消失交真实验证，不能由正确接口或隔离通过直接推定。
 
-## P2 既有能力与原始强目标核验
+本轮对本版两份文档的独立只读审计已通过（reassessment_review，无P0–P2）；P2起的生产实施和后续验收尚未执行。
 
-已核实既有 `terminal.send text+enter`、`--retry-request`、`--wait-submit` 与只读 `orchestration request-show`；本机/远端入口一致。先纠正拆分 raw paste/Enter 绕开通用 prompt 的用法，再审计原请求恢复：同 caller/runtime/request、retained method/send.handle/incarnation 必须匹配。query 的 completed 不是任务完成，pending/absent/operation_unknown 不授权普通重发。
+## P2 共同提交与对账接线
 
-不修改/升级 Orca，不编造字段、不通过项目材料绕过。用户选定的有限恢复只重试查询和明确未产生输入的操作；先按最多三次重试与总期限设计预算，耗尽明确报错但保留 outcome unknown，不报成未执行。用同ID重放也不是无条件安全：记录可能被清理，缺证时不能发送。该恢复实施须另补精确 Spec/测试，不自动实施本节后面的原始强提交迁移。原始正文消费/排他目标若仍要求，应单独证明；目前未证明可满足，也未证明历史原生问题是 Orca 违约。
+1. 复用protocol/orca.Client和目标连接。普通原生Codex单行/多行、本机/远端调用一个提交函数，一次传入规范化正文、--enter和原--retry-request ID；统一使用既有--wait-submit 20/CLI50秒上限，原调用方更短期限优先。不加循环、额外计时器或预算配置。
+2. 先持久化原operation intent和冻结输入，核验原runtime/worktree/terminal/incarnation、pane/provider、主回合基线、权限及准备资格。保留CRLF→LF/去尾换行、输入预算及NUL/ESC检查。正文不带Runner bracketed框架，不按屏幕投影决定提交。
+3. 复用原send.prompt回执解析，校验runtime/handle/requestId/incarnation等真实返回身份。accepted仅记受理，turn_started沿既有开始规则，模型completed仍由原输入/final证明。不能要求或假造现有回执没有的消费摘要字段。
+4. 在既有Reconcile/observer中复用orchestration request-show只读查询。保持同caller/runtime/request，核验method及保留send回执；completed仅为mutation回执保存，pending/absent/unknown不授权重投。沿既有查询节奏、期限和阻断/错误返回，不增加三次重试或新恢复执行器。
+5. 统一NewLifecycle的本机/远端原输入查询接线，以及本机Codex prepareInput/observeOnce的wire、observeRecorded/helper选择，迁入共同原输入/final证明。保留执行准备、认证、模型参数和停止保证；先核实耦合再改，不能只统一函数名而保留不同正文/完成算法。
 
-## P3 Runner 实施（P1、P2 通过后）
+默认复用Turn、NativeProof、operation receipt和现有状态codec。若实现发现必要证据无法保存，先给最小字段/codec变更及保守读取测试，不建立新提交状态机。能力/身份不满足时在副作用前拒绝或保留未知，无旧host/raw send回退。旧未知记录不重派。
 
-1. 在现有 `protocol/orca` 调用/查询上增加强提交验证；沿用目标选择与原 requestId，写入前冻结参数与身份。能力缺失明确拒绝，无 legacy 回退。
-2. `Lifecycle.submit` 普通原生 Codex 单行/多行、本机/远端调用同一函数；只调用一次业务提交。同步将本机 Codex `prepareInput` 的 native-command/model wire 选择及 `observeOnce -> observeRecorded` 完成选择迁入同一正文编译、原输入/final 核验链路，清理仅供其使用的 helper reader/receipt 调用。保留既有执行准备、认证、模型参数和停止保证，不能以此次统一为由收缩；P2 必须核实这些耦合可安全解除。仅保存返回的权威 proof，按既有 Turn/operation 状态推进；accepted 不设 started/completed。unknown 只读原请求，不再 send/Enter。
-3. 保留输入预算、NUL/ESC 安全检查、规范化、prepare/readiness、完整原输入和 final 的独立证明。原请求 started receipt 必须证明原归属；否则继续原查询规则，不借普通 activity 认领。
-4. 按 Spec §6 完整删除草稿/重绘实现、状态、fixture、专用模式和当前文档门禁。全仓搜索所有符号/配置及引用，确保没有隐藏旧分支或新旧两套路径；历史 evidence 原字节保留。
-5. 如需 codec 变更，仅为存储强提交 proof；旧未知记录不自动恢复提交，原停止和查询继续按原身份。无新增公开配置开关。
+## P3 彻底删除旧路径
 
-## P4 确定性行为回归（规划，均未实现）
+按Spec §6清单删除native_paste.go、fitComposer初始化及viewport类型/实现、独立paste/Enter、显示换行/标签/双稳定门禁及其专用期限；控制字符检查移至共同前置。删除本机Codex专用wire/完成选择中被共同实现取代的接线，不误删其它agent extension和共享准备/停止能力。
 
-扩展现有 `orcatransport` fixture 与 `tests/integration` 的 CLI/SQLite/服务重启入口；协议使用真实 IPC/WS fixture，不伪造“已经可靠提交”的上游保证。新增 provider 测试端点仅在 test fixture 内，通道可逐段放行 consumed-input 与 receipts，无生产故障模式。
+同步删除或迁移native_paste*、native_reflow、viewport测试及fixture字段；live probe取消草稿/resize门禁和segmented-shape专用模式，保留长输入、正式原文、唯一性、身份、final和清理断言。清理相关当前文档、脚本/目录声明及只为旧路径存在的配置/状态；不改历史evidence原字节和失败结论。
 
-| 需求 ID | 入口与拟映射 | 条件与独有断言 | 证据 |
+全仓搜索submitNativePaste/nativePasteDraftMatches/nativeDraftNeedsReflow/fitComposer/FitBoundComposer/ComposerViewport/ViewportRPC/ViewportFit/ViewportRestore及旧模式，结合引用判断删除完整性；共享WaitTimeout不能误删。最终仅一条原生Codex通用提交路径，不保留兼容回退、实验开关或第二套状态机。
+
+## P4 确定性回归与正式入口映射
+
+扩展现有orcatransport、protocol/orca夹具及tests/integration的CLI/SQLite/服务恢复入口。夹具用channel/受控回执顺序注入延迟、分段、丢失和身份变化，记录请求ID、调用次数、实际传给通用入口的字节/摘要及原结果。不要把模拟provider行为说成真实Orca保证。
+
+| 需求ID | 入口与拟映射 | 条件与独有断言 | 证据 |
 | --- | --- | --- | --- |
-| NS-T01 | `orcatransport` 共同提交表；focused native `native-input` | 多行、中文、内部空行、CRLF、长输入；逻辑冻结不变，规范化 wire 字节/摘要完全一致 | request、长度、SHA、provider 消费全文；1 submit |
-| NS-T02 | 同表、现有 `TestOrcaNativeStateLiveLifecycle` | 屏幕折行、宽度变化、折叠标签、投影缺 LF、屏幕不可读；不调用 read/resize，不影响提交/正式判定 | read/resize=0、原 wire digest、原结果 |
-| NS-T03 | 共同提交表 + native input query 反例 | 缺失、截断、单字节篡改、额外输入；消费边界前拒绝、0执行；恶意/冲突 proof 后正式核验也拒绝 | consumed bytes、commit=0、execution=0；冲突原因 |
-| NS-T04 | 共同提交表/provider channel | 正文分段到达、消费确认延迟；最后一段及校验前绝不提交；无固定 sleep | channel 步序和实际提交 ordinal |
-| NS-T05 | 既有 native start/completion tests | accepted 入队，随后 committed，尚未 started；都不能完成；独立主回合/全文证据后才推进 | 每一边界的 Turn facts/事件及 final |
-| NS-T06 | 扩展 `TestSRStabilityLostSubmitResponse`、native tests | paste/consume、commit、start、final 各窗口丢回执/超时；只读查询可恢复原证据，未知时不补写 | 原业务请求尝试=1；实际 commit/执行按注入边界为0或1且≤1，补 CR=0 |
-| NS-T07 | 共同提交表与协议身份反例 | runtime/terminal/incarnation/pane/provider/boundary 变化、原草稿和并发人工写者；提交前竞争使其无执行地失败 | 原因、拒绝/unknown、0额外写入；不能用屏幕正文判 |
-| NS-T08 | 扩展 `TestSRRestartPreservesAuthorization` 和原 unknown/reconnect 入口 | 重复请求、断线重连、commit 前后服务重启、receipt 丢失/过期；旧 identity 不重投 | 原 operation journal、查询计数、实际 execution=0或1 |
-| NS-T09 | 全部共同表参数化 local IPC/remote WS | 相同输入/故障矩阵，不允许本机 helper/凭据/完成旁路 | 两目标结果逐 case 相同、传输绑定证据 |
-| NS-T10 | 既有 original input/final、stop/reconcile tests | 原全文唯一性、完整原 final、冲突/工具输出/旧 done 拒绝，原资源停止/清理不退化 | 原证明链和完整 stop census |
+| NS-T01 | orcatransport共同提交表；既有focused native-input | 多行、中文、内部空行、CRLF、长输入；逻辑冻结不变，wire按既有规则规范化；无手动ESC框架 | 原prompt/digest、实际CLI参数/UTF-8、1次通用提交 |
+| NS-T02 | 同表及TestOrcaNativeStateLiveLifecycle | 屏幕折行、宽度变化、折叠标签、投影缺LF、屏幕不可读不影响Runner提交/正式判定 | Runner正文read/resize=0、text-only/bareEnter=0；不把Orca内部行为计为Runner调用 |
+| NS-T03 | 原输入query及final归属反例 | 实际输入缺失、截断、改字节、额外/重复输入不能算原输入成功 | 独立原文/唯一性核验失败、0成功归属；不伪称现有API能保证错误文本执行前必被原子拒绝 |
+| NS-T04 | 共同提交/受控Orca入口 | 粘贴处理延迟、分段、回执乱序；Runner只调用通用text+enter，不另按屏幕/固定sleep/补Enter恢复 | 参数/步序、业务submit=1、额外输入=0；Orca真实粘贴处理由P5验证 |
+| NS-T05 | 既有native start/completion tests | accepted尚未started；query的mutation completed只保存accepted；均不提前完成 | Turn事实/事件、原开始补证与完整final |
+| NS-T06 | 扩展TestSRStabilityLostSubmitResponse及native tests | 写入/受理、开始、完成各窗口丢回执/超时，原请求只读查询；查不到、pending或查询失败不触发send | 原请求ID/目标一致，Runner业务submit≤1、text-only/bareEnter=0、结果未知保留 |
+| NS-T07 | 协议身份/本机准备与并发反例 | runtime/terminal/incarnation/pane/provider/主回合变化、已知外来输入冲突、同Runner并发操作 | 副作用前可见冲突阻断；后见冲突不得成功归属；记录原因，不借idle/屏幕证明原子排他 |
+| NS-T08 | 扩展TestSRRestartPreservesAuthorization、原unknown/reconnect入口 | 重复调用、断线/重启前后、回执丢失/被清理；既有intent只Reconcile，request-show absent不新发 | 原journal、只读query计数、重启/恢复后0追加send；无新预算可被重置 |
+| NS-T09 | 同一表参数化local IPC/remote WS | 同组输入/故障共用提交、查询、开始及完成语义，不保留本机wire/helper完成旁路 | 两目标逐case核验、target之外无算法分流；准备/模型/认证/停止能力不退化 |
+| NS-T10 | 既有original input/final、stop/reconcile tests | 原全文唯一性、完整final、工具输出/旧done/冲突拒绝，原资源停止清理 | 原证明链、完整stop census；未知不伪装为已停止 |
 
-NS-T03–T08 的每个叶子故障、每个目标 **30 次**；报告用例清单、执行/失败/跳过，保留首次失败和后续修复的新批次。不要把一次快照回放 100 次列为此矩阵。
+NS-T03–T08每个叶子故障、每个目标30次；报告实际执行、失败、跳过及用例清单，保留首轮失败和新批次。重复不替代覆盖，旧240次或新增13项安装函数核查不计作本矩阵。
 
-P3 时将 NS-T01–T10 绑定实际测试名与已登记 case；扩展 `tests/catalog.json.focused_native_scenarios`，使既有 `scripts/test-native-input.ps1` 支持 local/remote 相同目标格式，删除目前强制 Environment 非空和 segmented-shape 旧门禁。通用 L3 的 ID 不因文档规划而预先注册；实装时同步 `cases.json`、目录/manifest 校验、`docs/testing.md`、`test-catalog.md`。不为达到计数增加业务模型任务。
+实现时把需求ID绑定实际测试名/case ID：优先扩展tests/catalog.json.focused_native_scenarios及scripts/test-native-input.ps1、原TestOrcaNativeStateLiveLifecycle，统一local/remote目标格式，不再强制Environment非空；取消segmented-shape旧门禁。新增正式case同步cases.json/manifest/目录校验、docs/testing.md及test-catalog.md；规划阶段不预注册未实现case。
 
-## P5 项目检查及真实验证（P3、P4 后）
+## P5 项目检查与真实验证
 
-按仓库 `scripts/test.ps1 -Level L1`、受影响 Controlled/L3 的正式入口完成检查，执行框架目录一致性校验。仅在新变更或失败提出新疑问时增加检查，避免无目的重复。
+实施完成后按scripts/test.ps1 -Level L1及受影响Controlled/L3正式入口完成检查，运行框架目录一致性校验及P4重复矩阵。当前只有文档变更，不把过去基线通过当成未来实现验收。
 
-真实输入沿扩展后的既有 `scripts/test-native-input.ps1`，每目标三次独立调用/新目录/原生会话，使用同一个无副作用最小提示词（只返回 nonce；不要求写项目文件、Git 或 PR）。覆盖多行、中文、空行/CRLF及长输入；记录真实 logical/wire 原文与摘要。
+真实验证沿扩展后的既有输入入口，本机/远端各3个独立原生会话、全新隔离现场/证据目录，使用无副作用最小任务（只返回nonce，不写项目、不跑业务/Unity、不建业务PR）。同组样例覆盖多行/中文/空行/CRLF/长输入，并使用同一受测构建与契约。
 
-每个现场在发送前记录源码/EXE/CLI 摘要、完整目标/资源清单、native input baseline；唯一 requestId 与提交意图先持久化。调用一次强提交，保留底层 write/submit ordinal、accepted/committed/started/completed 原凭据，正式原输入/原 final 查询。最后仅精确关闭本次资源，按完整清单核验清理，记录六个会话的结果、失败、未验与清理。缺少底层实际计数不能用 Runner 调用次数代替。
+发送前保存源码/EXE/CLI摘要、原目标/身份/完整清单和native基线；原请求及冻结正文先持久化。记录一次Runner通用提交、原accepted/started回执与必要的只读request-show结果、正式唯一原输入/完整final，最后精确关闭本次资源并用完整清单核验清理。
 
-不能重投历史未知 Run、补 Enter、重跑 Unity、创建业务 PR 或改配置以求通过。缺真实路径前提记未验证；受控通过不能代替本机/远端三个独立原生会话。Orca 强契约缺失时这六场均阻断，不在旧实现上跑后声称完成新方案真实验收。
+分别报告Runner RPC、mutation记录及provider历史输入次数；Orca内部按键/传输次数若公开接口不可观察则明确记不可观察，不能拿一次RPC反推一次Enter。请求未知时只读对账，不向历史Run重发或补Enter。缺真实条件记未验证，不用夹具通过或另一目标结果代替。
 
-## P6 独立复审与 PR
+历史症状是否消失由这些新现场证据判断，不能因选择了正确入口就宣布修复。原始更强的原子全文消费/任意人工输入排他事务不在本次新增保证内，也不要求修改Orca取得它们。真实测试暴露的冲突/未知必须如实失败或未验，不静默绕过。
 
-最终 diff、实际测试、真实证据及清理范围交新的独立只读审计者复审；修正已确认问题，报告保留项和未验边界。单独分支/PR，不合并、不部署。若 P2 仍阻断，只提交设计/缺口证据的 draft PR；标题/正文明确“未实施”，最终报告不得声称屏幕依赖已移除或可靠提交已保证。
+## P6 独立复审与交付
+
+将最终diff、测试实数、真实原输入/final/清理证据及全仓删除清单交独立只读审计者，修正确认问题。更新原单独PR，不合并、不部署；未完成实施/真实验收前保持draft并明确未验项。
+
+最终报告说明：Runner哪些屏幕依赖已删；可靠处理沿用哪些Orca既有契约及其边界；原身份/执行证明保留位置；稳定测试计数、六个真实会话结果及未验项；旧代码/测试/配置/文档清理情况与PR链接。不新增重试预算，不把旧失败改成通过。
