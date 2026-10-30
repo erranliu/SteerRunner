@@ -1,0 +1,41 @@
+{
+  "id": "baef954f-857a-44e8-ae45-9b84d0bda174",
+  "ok": true,
+  "result": {
+    "repo": {
+      "id": "09e35751-6517-4e7c-ae20-178ed0e90000",
+      "path": "C:/project/SteerlineTest",
+      "displayName": "SteerlineTest",
+      "badgeColor": "#737373",
+      "addedAt": 1790284746618,
+      "kind": "git",
+      "externalWorktreeVisibilityLegacy": false,
+      "gitUsername": "erranliu",
+      "repoIcon": {
+        "type": "image",
+        "src": "https://github.com/erranliu.png?size=64",
+        "source": "github",
+        "label": "erranliu/SteerlineTest"
+      },
+      "upstream": null,
+      "gitRemoteIdentity": {
+        "canonicalKey": "github.com/erranliu/SteerlineTest",
+        "remoteName": "origin",
+        "remoteUrl": "https://github.com/erranliu/SteerlineTest.git"
+      },
+      "projectHostSetupMethod": "imported-existing-folder",
+      "hookSettings": {
+        "mode": "auto",
+        "setupRunPolicy": "run-by-default",
+        "setupAgentStartupPolicy": "start-immediately",
+        "scripts": {
+          "setup": "",
+          "archive": ""
+        }
+      }
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

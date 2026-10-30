@@ -1,0 +1,23 @@
+{
+  "id": "9a71d942-03c0-4c6a-913c-b92d700fe91d",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_e2c57fa3-9180-437c-9b17-c0b838046516",
+      "status": "running",
+      "tail": [
+        "{\"path\":\"C:\\\\Users\\\\liuming\\\\orca\\\\workspaces\\\\SteerlineTest\\\\codex-sr-native-remote-rerun-20261031-afe3aedc\",\"exists\":false,\"registered\":false,\"exclude_sha256\":\"6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1\"}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

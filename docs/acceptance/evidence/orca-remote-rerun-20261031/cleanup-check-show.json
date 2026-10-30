@@ -1,0 +1,30 @@
+{
+  "id": "332e2d5a-2f22-4fff-b292-49771e291e34",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_9ac88ed3-4df3-4073-9c6d-e0cad6c555e8",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc@@1bee5f9f",
+      "incarnationId": "f3790796-3bfe-4296-aa53-035d2ec169b7",
+      "orphaned": false,
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc",
+      "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc",
+      "branch": "refs/heads/erranliu/codex-sr-native-remote-rerun-20261031-afe3aedc",
+      "tabId": "06a5c497-78d8-48ff-9aed-069453e39db6",
+      "leafId": "7d8feb9b-292c-40f2-91f7-e559396146df",
+      "title": "C:\\Program Files\\WindowsApps\\Microsoft.PowerShell_7.6.9.0_x64__8wekyb3d8bbwe\\pwsh.exe",
+      "paneTitle": "Runner owned rerun cleanup check",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793403815671,
+      "preview": "rs/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc\",\"clean\":true,\"git_status\":[],\"exclude_sha256\":\"6671FE83B7A07C8932EE89164D1F2793B2318058EB8B98DC5C06EE0A5A3B0EC1\"}\nPS C:\\Users\\liuming\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-rerun-20261031-afe3aedc>",
+      "executionHostId": "local",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

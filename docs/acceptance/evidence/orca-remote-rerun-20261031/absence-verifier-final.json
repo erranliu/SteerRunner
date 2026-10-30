@@ -1,0 +1,8 @@
+{
+  "runtime": "64108a37-610d-478c-a565-194c376217c5",
+  "original_verifier": "term_e2c57fa3-9180-437c-9b17-c0b838046516",
+  "absent": true,
+  "truncated": false,
+  "omitted_host_count": 0,
+  "scope": "Only owned verifier absence; other repository terminals untouched"
+}

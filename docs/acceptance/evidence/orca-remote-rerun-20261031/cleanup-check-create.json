@@ -1,0 +1,22 @@
+{
+  "id": "ea64038a-7692-4d39-a9d7-be8ad6080b26",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 9480,
+      "handle": "term_9ac88ed3-4df3-4073-9c6d-e0cad6c555e8",
+      "tabId": "06a5c497-78d8-48ff-9aed-069453e39db6",
+      "paneKey": "06a5c497-78d8-48ff-9aed-069453e39db6:7d8feb9b-292c-40f2-91f7-e559396146df",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc@@1bee5f9f",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc",
+      "title": "Runner owned rerun cleanup check",
+      "executionHostId": "local",
+      "incarnationId": "f3790796-3bfe-4296-aa53-035d2ec169b7",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}

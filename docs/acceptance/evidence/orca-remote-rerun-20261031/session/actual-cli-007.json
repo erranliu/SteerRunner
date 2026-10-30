@@ -1,0 +1,60 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_479423e6-2451-4da1-ac34-c7b555e8ee0a",
+      "--json",
+      "--environment",
+      "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-remote-rerun-20261031-afe3aedc\\session",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T23:42:11.5022741Z",
+  "started": "2026-10-30T23:42:10.9039778Z",
+  "stdout": {
+    "id": "42447e97-6248-4af2-b3af-0e0029fdf4e1",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_479423e6-2451-4da1-ac34-c7b555e8ee0a",
+        "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc@@63b5ad20",
+        "incarnationId": "2aa4d115-132a-42ee-9486-b6443ed84d37",
+        "orphaned": false,
+        "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc",
+        "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/codex-sr-native-remote-rerun-20261031-afe3aedc",
+        "branch": "refs/heads/erranliu/codex-sr-native-remote-rerun-20261031-afe3aedc",
+        "tabId": "9ce18673-0cd6-4750-a6fd-27d8a8bba0f7",
+        "leafId": "c38148f9-f310-41cc-8d1a-5008880affbd",
+        "title": "Codex ready",
+        "paneTitle": "SteerRunner isolated native input probe",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": 1793403724381,
+        "preview": "rked for 3s • 07:42\n› Ask Codex to do anything\nGPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\codex-sr-native-remote-rerun-20261031-afe3aedc\n? for shortcuts                                                                                                                    ⚠ 2 warnings · f2 to view",
+        "executionHostId": "local",
+        "agentIdentity": "codex",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+    }
+  },
+  "stdout_bytes": 1624,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 191
+}
