@@ -23,6 +23,8 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop/authentication 流程；
 不预置 ready、不借远端完成来源。设置阶段与业务阶段的调用分别记录，业务阶段按原 terminal
 及 request 计数，任意无 ID 正文、补 Enter 或错误 request 也不能漏计。
+准备/控制回执通过公开 `--cursor 0` 读取原始流，要求来源及完整性元数据齐全；
+`TestLocalPreparationOriginalStream` 随 controlled 矩阵核验两处读取的完整/空流和拒收反例。
 只用新的隔离工作区，先关闭已核实属于本次创建的空闲默认 shell；不能填历史业务终端。
 测试拒绝非空/不完整清单、重复目录、跳过、零匹配、全文/唯一性/进程归属不符与未确认清理。
 每次真实调用独立启动并关闭一个终端，保留 target、源码/EXE/CLI 摘要、请求/回执、

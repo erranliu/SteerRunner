@@ -51,12 +51,19 @@ NS-T09分层扩展TestNativePromptSharedQueueWithStopAndCancellation、TestOrcaC
 | NS-T08 | 扩展TestSRRestartPreservesAuthorization及原reconnect/unknown入口 | 重复请求、断线、服务重启、原回执丢失/已清理 | 原journal/Request/Attempted恢复后只走现有对账；0追加send，无预算可重置或同ID安全重放假设 |
 | NS-T09 | 参数化local IPC/remote WS；既有CLI锁/多Run入口 | 同组输入/故障经通用提交；同服务≥3个Run、原生观察/stop排队、调用和排队期间取消 | 两目标无草稿路径、原wire/完成接线保留；CLI参数/锁序/实际调用计数；无死锁、取消后0派发/追加输入，遵守原调用期限，锁风险如实登记 |
 | NS-T10 | 既有model/history/original input/final及stop/reconcile tests | 执行→审计→执行模型/effort、本机32KiB结果边界、远端hook截断拒收、正式原文与资源清理 | 跑原有能力回归，不迁移模型/结果或放宽阈值；原证明链与完整stop census不退化 |
+| NS-T02/T07/T10 授权增量 | TestLocalPreparationOriginalStream；同一 focused native-input 正式入口 | 两处显式 cursor 原始回执、完整/空流、屏幕/缺字段/截断/受限/身份/绑定反例 | 32 新叶例各30次；同矩阵共4860/0/0，最终L1通过；真实READY恢复但认证目录条件阻断，完整资格仍未验证 |
 
 NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。报告实际执行、失败、跳过及case清单；目标固有不支持能力单列，不伪造双端模型能力等价。重复不替代覆盖，不计旧快照或13项隔离核查为新矩阵。
 
 实现时把NS-T01–T10绑定实际测试名/case ID；优先扩展tests/catalog.json.focused_native_scenarios、scripts/test-native-input.ps1及原TestOrcaNativeStateLiveLifecycle。统一测试目标格式，允许本机Environment为空，生产流程不因此改造。必要新增正式case同步cases.json/manifest/目录校验和当前文档，规划阶段不预注册未实现case。
 
 ## P5 项目检查与真实验证
+
+2026-10-30 用户已明确允许上述两处最小生产读取修正。实施 `--cursor 0` 及完整 stream
+校验，扩展原 control/ready 夹具和正式 controlled 入口，覆盖完整/空流、screen/缺 source、
+截断/输出受限/保留起点缺失、身份变化和错误编码。先审计该增量，再运行每例 30 次与受影响
+整包/项目规定检查。用最终构建的现有 agent 在三个全新本机现场验证，不重用失败 intent。
+仍不调整提交、模型、完成/停止算法；若出现其它生产问题，保留证据与范围边界。
 
 实施后运行scripts/test.ps1 -Level L1、受影响Controlled/L3正式入口、目录一致性及P4重复矩阵。核对diff没有模型、history、NativeProof/原输入、prepare/auth/stop/codec的生产重构；回执必要校验和草稿清理需逐项解释。多Run/观察/stop锁与取消回归为放行条件。
 
@@ -72,7 +79,9 @@ NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。�
 v3 control/ready/history 测试适配。3900 次确定性回归通过；真实准备暴露原 control 默认读取
 返回 screen、折行破坏 READY 的问题，尚未进入业务提交，本机仍为 0/3。公开 cursor 流读取
 对照已确认可保留原始行。两处准备/控制读取的最小生产修正超出原窄范围，当前仅列候选、
-等待范围确认，未实施或通过测试注入；详见[本机补验记录](../acceptance/orca-native-submit-local.md)。
+当时等待范围确认，未实施或通过测试注入；详见[本机补验记录](../acceptance/orca-native-submit-local.md)。
+用户随后已授权，P5 的两处读取增量已实施；最新[原始流补验记录](../acceptance/orca-native-submit-local-stream.md)
+分别记录读取修正验证及认证目录新阻断，本机仍未取得三个成功会话。
 
 提交最终diff、实际测试计数、六个真实会话证据、清理清单与未验项做独立复审，修正确认问题。更新原单独PR，实施和验收前保持draft，不合并或部署安装环境。
 

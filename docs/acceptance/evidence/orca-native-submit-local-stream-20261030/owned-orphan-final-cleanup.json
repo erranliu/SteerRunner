@@ -1,0 +1,22 @@
+[
+  {
+    "error": "",
+    "fsutil_exit": 1,
+    "fsutil_output": [
+      "Error 1920: The file cannot be accessed by the system."
+    ],
+    "directory_absent": false,
+    "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a/64ntcwhtubkskoktlgzfl5at3a",
+    "socket_absent": false
+  },
+  {
+    "error": "",
+    "fsutil_exit": 1,
+    "fsutil_output": [
+      "Error 1920: The file cannot be accessed by the system."
+    ],
+    "directory_absent": false,
+    "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a/sr-uds-3752029058",
+    "socket_absent": false
+  }
+]

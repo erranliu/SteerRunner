@@ -1,0 +1,23 @@
+{
+  "id": "92287418-14c3-4266-9003-c263805b1ded",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_962d3c17-5933-4f38-b2d9-e9ab9c0e689b",
+      "status": "running",
+      "tail": [
+        "{\"absolute_lstat_error\":\"\\u003cnil\\u003e\",\"absolute_lstat_mode\":\"Srw-rw-rw-\",\"directory\":\"C:\\\\Users\\\\lmas1\\\\AppData\\\\Local\\\\Temp\\\\sr-uds-237264303\",\"directory_remove_error\":\"\\u003cnil\\u003e\",\"listen_error\":\"\\u003cnil\\u003e\",\"listener_close_error\":\"\\u003cnil\\u003e\",\"root_close_error\":\"\\u003cnil\\u003e\",\"root_lstat_error\":\"\\u003cnil\\u003e\",\"root_lstat_mode\":\"Srw-rw-rw-\",\"socket_remove_error\":\"\\u003cnil\\u003e\"}"
+      ],
+      "truncated": false,
+      "limited": false,
+      "oldestCursor": "0",
+      "nextCursor": "1",
+      "latestCursor": "1",
+      "returnedLineCount": 1,
+      "source": "stream"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

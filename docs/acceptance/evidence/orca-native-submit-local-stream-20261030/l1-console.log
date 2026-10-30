@@ -1,0 +1,4 @@
+Catalog expansion, frozen reload, legacy compatibility and conflict guards passed
+Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed
+Parallel cold-cache publication waits for the shared lock and preserves complete immutable bytes.
+Prepared artifact changes, missing identities, failed prerequisites and skips rejected before launch

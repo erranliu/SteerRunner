@@ -1,0 +1,22 @@
+{
+  "id": "03b7c16e-5f66-432b-984c-7db19e563833",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 10664,
+      "handle": "term_962d3c17-5933-4f38-b2d9-e9ab9c0e689b",
+      "tabId": "0a9cae00-7efa-451c-92c3-3ad686c7a5fa",
+      "paneKey": "0a9cae00-7efa-451c-92c3-3ad686c7a5fa:e9ea944d-b40b-4695-9f48-53e55eb7f6b9",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01@@6b772565",
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+      "title": "SteerRunner isolated UDS diagnostic",
+      "executionHostId": "local",
+      "incarnationId": "f806352d-9789-4653-b4a5-93b483c8bef6",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

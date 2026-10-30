@@ -125,15 +125,19 @@ func (l *Lifecycle) controlLines(ctx context.Context, state State) ([]string, er
 	if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
 		return nil, err
 	}
-	r, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--limit", "1000", "--json")
+	r, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--cursor", "0", "--limit", "1000", "--json")
 	var value struct {
 		Terminal struct {
-			Handle string
-			Tail   []string
+			Handle, Source, OldestCursor string
+			Tail                         []string
+			Truncated, Limited           *bool
 		}
 	}
 	if err != nil || r.CallUncertain || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &value) != nil || value.Terminal.Handle != p.Terminal {
 		return nil, errors.New("original native control output identity changed")
+	}
+	if value.Terminal.Source != "stream" || value.Terminal.OldestCursor != "0" || value.Terminal.Truncated == nil || *value.Terminal.Truncated || value.Terminal.Limited == nil || *value.Terminal.Limited {
+		return nil, errors.New("original native control output stream incomplete or unavailable")
 	}
 	for i := range value.Terminal.Tail {
 		value.Terminal.Tail[i] = strings.TrimSpace(value.Terminal.Tail[i])

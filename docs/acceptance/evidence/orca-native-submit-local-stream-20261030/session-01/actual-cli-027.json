@@ -1,0 +1,37 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "close",
+      "--terminal",
+      "term_5a553813-c5f7-4b68-b93f-151690802984",
+      "--json"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\session-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:04:17.7255869Z",
+  "started": "2026-10-30T14:04:16.8532684Z",
+  "stdout": {
+    "id": "a71467a3-b9ec-4491-93b0-1a64ce3b5e35",
+    "ok": true,
+    "result": {
+      "close": {
+        "handle": "term_5a553813-c5f7-4b68-b93f-151690802984",
+        "tabId": "f310a161-6717-4cea-9ee8-c6c2dbc37736",
+        "ptyKilled": true
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 319,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 141
+}

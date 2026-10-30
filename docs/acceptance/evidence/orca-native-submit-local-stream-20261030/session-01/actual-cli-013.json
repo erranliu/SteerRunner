@@ -1,0 +1,64 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "send",
+      "--terminal",
+      "term_5a553813-c5f7-4b68-b93f-151690802984",
+      "--text",
+      "\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--configuration' 'eyJleGVjdXRhYmxlIjoiQzovVXNlcnMvbG1hczEvQXBwRGF0YS9Mb2NhbC9PcGVuQUkvQ29kZXgvYmluLzIyY2ZiMWQzMDI2MTNlYWUvY29kZXguZXhlIiwiYXJncyI6WyItLW5vLWRhZW1vbiJdLCJtb2RlbCI6ImdwdC02LWx1bmEiLCJyZWFzb25pbmdfZWZmb3J0IjoiaGlnaCIsImFjY2Vzc19tb2RlIjoic2FuZGJveCIsInJlcG9zaXRvcnlfdXJsIjoiaHR0cHM6Ly9naXRodWIuY29tL2VycmFubGl1L1N0ZWVybGluZVRlc3QuZ2l0In0'",
+      "--enter",
+      "--retry-request",
+      "391899ad-6910-e1ee-730f-0b4b3118993f",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-stream-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:04:06.7163757Z",
+  "started": "2026-10-30T14:04:05.5597373Z",
+  "stdout": {
+    "id": "4502ea87-f71c-4ceb-837d-95e050a7eb4a",
+    "ok": true,
+    "result": {
+      "send": {
+        "handle": "term_5a553813-c5f7-4b68-b93f-151690802984",
+        "accepted": true,
+        "bytesWritten": 468,
+        "prompt": {
+          "requestId": "391899ad-6910-e1ee-730f-0b4b3118993f",
+          "stages": [
+            "input_accepted"
+          ],
+          "provider": "unsupported",
+          "observation": "unsupported",
+          "processIncarnation": "61b9581b-e006-4fa0-8ceb-094c87d067eb",
+          "generation": 86,
+          "baselineWorkingSequence": 0
+        }
+      },
+      "mutation": {
+        "requestId": "391899ad-6910-e1ee-730f-0b4b3118993f",
+        "replayed": false
+      },
+      "warnings": [
+        "input was accepted, but this provider cannot report delivery. Inspect the terminal before retrying."
+      ]
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 882,
+  "text_transport_bytes": 467,
+  "windows_command_line_utf16_with_nul": 678
+}

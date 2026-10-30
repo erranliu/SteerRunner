@@ -1,0 +1,14 @@
+[
+  {
+    "directory_absent": false,
+    "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a/64ntcwhtubkskoktlgzfl5at3a",
+    "error": "系统无法访问此文件。 : 'C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\64ntcwhtubkskoktlgzfl5at3a\\s'.",
+    "socket_absent": false
+  },
+  {
+    "directory_absent": false,
+    "directory": "C:/Users/lmas1/AppData/Local/SteerRunner/a/sr-uds-3752029058",
+    "error": "系统无法访问此文件。 : 'C:\\Users\\lmas1\\AppData\\Local\\SteerRunner\\a\\sr-uds-3752029058\\s'.",
+    "socket_absent": false
+  }
+]

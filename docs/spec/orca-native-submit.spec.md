@@ -13,6 +13,13 @@
 
 不修改Orca，不用实验开关、私有API或安装包内部函数作生产依赖。不增加提交重试、重试预算、固定sleep、request-show生产恢复、状态机、codec字段、通用框架或兼容回退。其它agent extension、业务脚本、SteerLine/Unity和环境检测不在修改范围；不部署安装环境、不改全局设置或历史证据。
 
+2026-10-30 用户追加授权本机补验发现的最小读取修正：仅 `controlLines` 和
+`readLocalCodexReadiness` 显式使用公开 `terminal read --cursor 0 --limit 1000`，读取原始回执。
+要求 `source=stream`、完整保留起点及明确未截断/未受输出上限裁切的元数据；屏幕投影、缺少来源或
+不完整输出拒收，空的完整流仍按原 pending 处理。保留原回执解码和身份/绑定核验，
+不拼接屏幕行、不回退默认读取，不改变提交、模型、完成或停止算法。该增量单独测试和复审，
+不将此前失败现场改判为通过。
+
 ## 2. 当前事实与提交契约
 
 基线lifecycle.go在Environment非空、Terminal为空、agent=codex、WireFormat为空且正文含LF时调用submitNativePaste。该路径做text-only手动bracketed paste、屏幕草稿比较/双稳定/可能resize，最后单独Enter；其余路径已经调用通用text+enter。普通本机Codex不进入这一草稿分支。

@@ -1,0 +1,26 @@
+{
+  "top_level_passed": 714,
+  "passed_including_subtests": 2651,
+  "failed": 0,
+  "skipped": 17,
+  "packages_passed": 34,
+  "skip_cases": [
+    "TestAuthenticationNativeToolBoundary",
+    "TestProcessHostCommandHelper",
+    "TestOrcaStoppedNativeProbe",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestUsageExistingNativeEvidence",
+    "TestUsageRemoteCodexCleanupLive",
+    "TestUsageRemoteCodexLive",
+    "TestRunUsageLocalCodexPublicLive",
+    "TestRunUsageLocalPiPublicLive",
+    "TestRunUsageLocalDSHPublicLive",
+    "TestRunUsageRemotePublicLive",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestOrcaLocalIPCNativeProbe",
+    "TestUsageLocalAcceptanceRepoCleanupLive",
+    "TestServiceStopWorkerHelper",
+    "TestShortInputProbeInspect",
+    "TestOrcaWorkspaceStartupLive"
+  ]
+}

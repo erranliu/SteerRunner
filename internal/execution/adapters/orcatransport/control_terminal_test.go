@@ -111,6 +111,7 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				lines = append(lines, codex.RemoteControlPrefix+base64.RawURLEncoding.EncodeToString(raw))
 			}
 			terminal["tail"] = lines
+			terminal["source"], terminal["oldestCursor"], terminal["truncated"], terminal["limited"] = "stream", "0", false, false
 			result = map[string]any{"terminal": terminal}
 		case "send":
 			c.sends++

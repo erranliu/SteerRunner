@@ -48,18 +48,22 @@ func (l *Lifecycle) readLocalCodexReadiness(ctx context.Context, s b.LifecycleSn
 	if l.profile.Environment != "" {
 		return ready, errors.New("helper preparation is local only")
 	}
-	result, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", s.Ref.External.Terminal, "--limit", "1000", "--json")
+	result, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", s.Ref.External.Terminal, "--cursor", "0", "--limit", "1000", "--json")
 	if err != nil {
 		return ready, err
 	}
 	var value struct {
 		Terminal struct {
-			Handle string
-			Tail   []string
+			Handle, Source, OldestCursor string
+			Tail                         []string
+			Truncated, Limited           *bool
 		}
 	}
-	if json.Unmarshal(result.Payload, &value) != nil || result.RuntimeID != s.Ref.External.RuntimeID || value.Terminal.Handle != s.Ref.External.Terminal {
+	if result.CallUncertain || json.Unmarshal(result.Payload, &value) != nil || result.RuntimeID != s.Ref.External.RuntimeID || value.Terminal.Handle != s.Ref.External.Terminal {
 		return ready, errors.New("remote readiness original terminal changed")
+	}
+	if value.Terminal.Source != "stream" || value.Terminal.OldestCursor != "0" || value.Terminal.Truncated == nil || *value.Terminal.Truncated || value.Terminal.Limited == nil || *value.Terminal.Limited {
+		return ready, errors.New("remote readiness output stream incomplete or unavailable")
 	}
 	found := 0
 	for _, line := range value.Terminal.Tail {
