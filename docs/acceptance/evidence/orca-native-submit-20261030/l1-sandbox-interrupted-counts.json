@@ -1,0 +1,22 @@
+{
+  "status": "interrupted_after_sandbox_failures",
+  "source_commit": "b83f6d79925171b71af39425867f4c00c6a9b087",
+  "framework_passed": 24,
+  "counts": {
+    "skip_package": 1,
+    "pass_test": 2288,
+    "pass_top_level_test": 574,
+    "fail_package": 29,
+    "fail_test": 248,
+    "fail_top_level_test": 131,
+    "skip_test": 16,
+    "skip_top_level_test": 16,
+    "pass_package": 3
+  },
+  "unfinished_packages": [
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+  ],
+  "raw_jsonl_sha256": "2624f42520d4bcc71c7947d10e1afdc14a120540a01dad8b6500d077574b8980",
+  "note": "Partial events, not a completed L1 run; raw summary remains running. Git config permission denials and IPC fixture problems observed. No assertion that every failure has the same cause."
+}

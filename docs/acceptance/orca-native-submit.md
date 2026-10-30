@@ -44,10 +44,25 @@
 
 ## 最终独立复审
 
-新的独立只读 agent `final_review` 核实提交 `203af58` 的 diff、安装 bundle SHA、五个函数偏移/摘要、脚本依赖替换、计数和删除范围，无P0–P2。它确认这是契约阻断调查，不能宣称 Runner 已修复、L3通过或已完成真实会话。脚本最终 gate 顺序/摘要记录的小改动及项目检查结果另行补充复核。
+新的独立只读 agent `final_review` 核实提交 `203af58` 的 diff、安装 bundle SHA、五个函数偏移/摘要、脚本依赖替换、计数和删除范围，无P0–P2。它确认这是契约阻断调查，不能宣称 Runner 已修复、L3通过或已完成真实会话。对 `b83f6d7` 的最终 gate 顺序、脚本摘要、三个批次和首轮 L1 记录补充复核也通过。最终项目检查记录亦已复核：公开summary与raw字节一致，独立解析JSONL的计数/SHA一致，失败/中止记录保留，无P0–P2；并只读确认全局执行策略未改。
 
-## 项目检查（结果待补）
+## 项目检查
 
 正式 `scripts/test.ps1 -Level L1 -OutDir .evidence/orca-native-submit-l1` 首轮中止，exit=1，报 `Runner source changed during build; build again from stable inputs.`：构建期间主会话提交了本批文档，源码身份改变；Go测试尚未执行。原失败 summary 保留，固定提交后使用新目录重跑，不覆盖首轮。
 
-项目检查和最终独立复审结果在执行后补入。P2–P5 未通过；新方案真实 local 0/3、remote 0/3，未创建原生模型会话，业务提交 0，新增待清理 Orca 资源 0。
+后续均固定 `b83f6d79925171b71af39425867f4c00c6a9b087`，期间没有改文件或提交：
+
+| 批次 | 实际结果 | 证据与边界 |
+| --- | --- | --- |
+| `l1-stable` | exit1，Go尚未执行 | [summary](evidence/orca-native-submit-20261030/l1-policy-failure-summary.json)、[日志](evidence/orca-native-submit-20261030/l1-policy-failure.log)；Windows PowerShell 包核验被 AuthorizationManager 拒绝 |
+| delivery 定向复核 | 23项通过 | [结果](evidence/orca-native-submit-20261030/delivery-process-policy-recheck.json)；只设置子进程执行策略，不修改全局策略 |
+| `l1-process-policy` | 框架24项通过；Go测试发生权限/IPC失败后中止，非完整L1 | [部分计数](evidence/orca-native-submit-20261030/l1-sandbox-interrupted-counts.json)：574个顶层通过、131个顶层失败、16跳过；含子测试2288通过、248失败、16跳过，2包未完成；raw summary仍为running，未改成通过。记录了临时Git config权限拒绝/IPC问题，不声称全部失败原因相同 |
+| `l1-unsandboxed` | **正式L1 passed / exit0** | [原summary](evidence/orca-native-submit-20261030/l1-final-summary.json)、[JSONL派生计数/摘要](evidence/orca-native-submit-20261030/l1-final-counts.json)；712顶层通过、0失败、17跳过；含子测试2611通过、0失败、17跳过；34包通过，1包无测试 |
+
+最终批次以批准的 sandbox 外进程执行相同正式入口，仍只在当前测试进程设置 `PSExecutionPolicyPreference=Bypass`；全局策略只读核验为 LocalMachine RemoteSigned，其它 scope Undefined，未执行 Set-ExecutionPolicy。最终[框架24项](evidence/orca-native-submit-20261030/framework-final.json)、Node原生扩展29项/0失败/0跳过、native driver编译与零匹配guard通过。17个skip均是正式入口允许的既有opt-in/辅助项，不是17个真实原生通过；summary的live case计数0不表示Go测试零执行。
+
+完整 raw JSONL、coverage、TAP与所有框架夹具保留在本工作区 `.evidence/orca-native-submit-l1-*`；公开精简摘要和JSONL SHA以便对照，失败/中止现场不覆盖。另通过 `git diff --check`、核验脚本 `node --check` 和三份专项文档相对链接检查。最后仅增加文档/证据记录，生产源码与受测 `b83f6d7` 相同。
+
+## 未验与删除状态
+
+P2 Orca强提交gate未通过，P3–P5实施/新稳定矩阵/真实验收没有完成。原生提交新方案真实 local **0/3**、remote **0/3**，未创建模型会话，业务提交0，新增待清理Orca资源0。Controlled/L3新方案未执行，不能用上述基线或240次契约反例核验替代。旧草稿门禁、重绘代码、配置/fixture和当前运行文档没有删除；删除清单是待P2通过后的实施要求。原runtime/session/request、原输入/final和停止证明代码均保留，无安装、部署或历史失败迁移。

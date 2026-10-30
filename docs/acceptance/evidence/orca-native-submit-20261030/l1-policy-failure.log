@@ -1,0 +1,8 @@
+AuthorizationManager check failed.
+    + CategoryInfo          : SecurityError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+Exception: C:\Users\lmas1\.codex\worktrees\8ed5\SteerRunner\tests\framework\delivery-test.ps1:27
+Line |
+  27 |  … DE -ne 0) { throw 'Windows PowerShell package verification failed.' } …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Windows PowerShell package verification failed.

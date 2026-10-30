@@ -1,0 +1,32 @@
+{
+  "source_commit": "b83f6d79925171b71af39425867f4c00c6a9b087",
+  "counts": {
+    "skip_package": 1,
+    "pass_test": 2611,
+    "pass_top_level_test": 712,
+    "pass_package": 34,
+    "skip_test": 17,
+    "skip_top_level_test": 17
+  },
+  "skipped_tests": [
+    "github.com/erranliu/SteerRunner/internal/execution/process::TestProcessHostCommandHelper",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/codex::TestAuthenticationNativeToolBoundary",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca::TestOrcaLocalPipeNativeEvidence",
+    "github.com/erranliu/SteerRunner/internal/host::TestOrcaStoppedNativeProbe",
+    "github.com/erranliu/SteerRunner/internal/usage/collect::TestUsageExistingNativeEvidence",
+    "github.com/erranliu/SteerRunner/internal/usage/collect::TestUsageRemoteCodexCleanupLive",
+    "github.com/erranliu/SteerRunner/internal/usage/collect::TestUsageRemoteCodexLive",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca::TestOrcaLocalIPCNativeProbe",
+    "github.com/erranliu/SteerRunner/internal/cli::TestRunUsageLocalCodexPublicLive",
+    "github.com/erranliu/SteerRunner/internal/cli::TestRunUsageLocalPiPublicLive",
+    "github.com/erranliu/SteerRunner/internal/cli::TestRunUsageLocalDSHPublicLive",
+    "github.com/erranliu/SteerRunner/internal/cli::TestRunUsageRemotePublicLive",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca::TestUsageLocalAcceptanceRepoCleanupLive",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport::TestOrcaNativeStateLiveLifecycle",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/codex::TestServiceStopWorkerHelper",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport::TestShortInputProbeInspect",
+    "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport::TestOrcaWorkspaceStartupLive"
+  ],
+  "raw_jsonl_sha256": "08618e01e5b63155ffe9eaf381da0a6e1cf2a0895c4cfa7fedc0ee2b969ba0e1",
+  "scope": "existing unchanged L1 baseline; no new native-submit L3 qualification"
+}
