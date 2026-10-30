@@ -1,0 +1,17 @@
+Proposed minimal scope expansion (not applied):
+
+internal/execution/adapters/orcatransport/control_terminal.go:controlLines
+  terminal read --terminal <original-control> --cursor 0 --limit 1000 --json
+  Require source=stream before parsing original ready/control receipt.
+
+internal/execution/adapters/orcatransport/local_authentication.go:readLocalCodexReadiness
+  terminal read --terminal <original-main> --cursor 0 --limit 1000 --json
+  Require source=stream before parsing original readiness receipt.
+
+Preserve original runtime/terminal/incarnation, fixed request identity,
+exact decoded binding, model/history/final/stop checks. No joining screen rows,
+viewport adjustment, input retry, extra Enter, or alternate model path.
+
+Evidence: stream-probe-default-ready.json => screen, 7 projected rows;
+stream-probe-cursor-ready.json => stream, 1 raw 316-character line matching
+SR_STREAM_PROBE: + 300 lowercase a exactly. No model input used.

@@ -8,7 +8,7 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'delivery-contract.ps1')
-$taskSourcePaths = @('internal','go.mod','go.sum','scripts/test-native-input.ps1','scripts/delivery-contract.ps1')
+$taskSourcePaths = @('internal','cmd/steerrunner-agent','go.mod','go.sum','scripts/test-native-input.ps1','scripts/delivery-contract.ps1')
 $taskIdentity = Get-SRSourceIdentity $taskRepo $taskSourcePaths
 if ($Mode -ne 'controlled' -and (-not $Target -or $Repeat -ne 1)) { throw 'Real probe requires a fixed target and one fresh independent session per invocation' }
 $taskTarget = if ($Mode -eq 'controlled') { $null } else { Get-Content -LiteralPath $Target -Raw | ConvertFrom-Json }
@@ -24,7 +24,7 @@ if ($Mode -eq 'controlled') {
         $taskExe = Join-Path $taskOut 'native-input.test.exe'
         & go test -c -o $taskExe ./internal/execution/adapters/orcatransport 1> (Join-Path $taskOut 'compile.log') 2> (Join-Path $taskOut 'compile-stderr.log')
         if ($LASTEXITCODE -ne 0) { throw 'Controlled native input compilation failed' }
-        $taskPattern = '^(TestNativePrompt.*|TestNativeCRLFPastePreservesOriginalInputAndCompletion|TestNativeFollowupAfterCompletedToolTurn|TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput|TestOrcaNativeInputProofRejectsUnboundHistory|TestOrcaNativeStateBinding|TestRecoveryRejectsProviderReplacementInsideOriginalTerminal|TestNativeComposerGatePreventsPrematureInput)$'
+        $taskPattern = '^(TestNativePrompt.*|TestLocalNativeProbe.*|TestNativeCRLFPastePreservesOriginalInputAndCompletion|TestNativeFollowupAfterCompletedToolTurn|TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput|TestOrcaNativeInputProofRejectsUnboundHistory|TestOrcaNativeStateBinding|TestRecoveryRejectsProviderReplacementInsideOriginalTerminal|TestNativeComposerGatePreventsPrematureInput)$'
         Push-Location (Join-Path $taskRepo 'internal/execution/adapters/orcatransport')
         try {
             & go tool test2json -t -p github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport $taskExe "-test.run=$taskPattern" "-test.count=$Repeat" '-test.timeout=8m' '-test.v' 1> (Join-Path $taskOut 'tests.jsonl') 2> (Join-Path $taskOut 'test-stderr.log')
@@ -32,7 +32,7 @@ if ($Mode -eq 'controlled') {
         } finally { Pop-Location }
         $taskEvents = @(Get-Content -LiteralPath (Join-Path $taskOut 'tests.jsonl') | ForEach-Object { $_ | ConvertFrom-Json })
         $taskTestNames = @($taskEvents | Where-Object { $_.PSObject.Properties.Name -contains 'Test' } | ForEach-Object {$_.Test} | Sort-Object -Unique)
-        $taskRequiredRoots = @('TestNativePromptSubmission','TestNativePromptReceiptFaults','TestNativePromptProcessingOrder','TestNativePromptControlCharactersRejected','TestNativePromptSharedQueueWithStopAndCancellation','TestNativeCRLFPastePreservesOriginalInputAndCompletion','TestNativeFollowupAfterCompletedToolTurn','TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput','TestOrcaNativeInputProofRejectsUnboundHistory','TestOrcaNativeStateBinding','TestRecoveryRejectsProviderReplacementInsideOriginalTerminal','TestNativeComposerGatePreventsPrematureInput')
+        $taskRequiredRoots = @('TestLocalNativeProbeTargetAndBusinessScope','TestLocalNativeProbeCensusKeepsOriginalHostScope','TestNativePromptSubmission','TestNativePromptReceiptFaults','TestNativePromptProcessingOrder','TestNativePromptControlCharactersRejected','TestNativePromptSharedQueueWithStopAndCancellation','TestNativeCRLFPastePreservesOriginalInputAndCompletion','TestNativeFollowupAfterCompletedToolTurn','TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput','TestOrcaNativeInputProofRejectsUnboundHistory','TestOrcaNativeStateBinding','TestRecoveryRejectsProviderReplacementInsideOriginalTerminal','TestNativeComposerGatePreventsPrematureInput')
         $taskMissingRoots = @($taskRequiredRoots | Where-Object { $_ -cnotin $taskTestNames })
         $taskLeaves = @($taskTestNames | Where-Object { $taskName = $_; @($taskTestNames | Where-Object { $_.StartsWith($taskName + '/') }).Count -eq 0 })
         $taskCases = @($taskLeaves | ForEach-Object {
@@ -56,6 +56,10 @@ if ($Mode -eq 'controlled') {
     return
 }
 $taskSource['orca_cli_sha256']=(Get-FileHash -LiteralPath $taskTarget.CLI).Hash
+if (-not $taskTarget.Environment) {
+    if (-not $taskTarget.Launch.runtime_executable -or -not $taskTarget.Launch.repository_url) { throw 'Local native probe needs the existing agent helper and original repository URL' }
+    $taskSource['agent_sha256']=(Get-FileHash -LiteralPath $taskTarget.Launch.runtime_executable).Hash
+}
 $taskKeys = @('STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ENVIRONMENT')
 $taskPrevious = @{}
 foreach($taskKey in $taskKeys) { $taskPrevious[$taskKey]=[Environment]::GetEnvironmentVariable($taskKey) }
@@ -68,7 +72,7 @@ try {
     [Environment]::SetEnvironmentVariable($taskKeys[0],$taskOut)
     [Environment]::SetEnvironmentVariable($taskKeys[1],$Mode)
     [Environment]::SetEnvironmentVariable($taskKeys[2],[string]$taskTarget.Environment)
-    & $taskExe '-test.run=^TestOrcaNativeStateLiveLifecycle$' '-test.count=1' '-test.timeout=6m' '-test.v' 1> (Join-Path $taskOut 'test.log') 2> (Join-Path $taskOut 'test-stderr.log')
+    & $taskExe '-test.run=^TestOrcaNativeStateLiveLifecycle$' '-test.count=1' '-test.timeout=10m' '-test.v' 1> (Join-Path $taskOut 'test.log') 2> (Join-Path $taskOut 'test-stderr.log')
     $taskSource['exit_code']=$LASTEXITCODE
     $taskLog=Get-Content -LiteralPath (Join-Path $taskOut 'test.log') -Raw
     if ($LASTEXITCODE -ne 0 -or $taskLog -notmatch '(?m)^--- PASS: TestOrcaNativeStateLiveLifecycle ' -or $taskLog -match '(?m)^--- SKIP:') { throw 'Native input probe failed, skipped or did not execute' }

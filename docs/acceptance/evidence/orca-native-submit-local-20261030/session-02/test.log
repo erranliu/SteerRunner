@@ -1,0 +1,6 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_local_probe_test.go:241: original lifecycle step unverified create_resource original native control helper binding changed
+        pending lifecycle resource lacks its accepted original resource identity
+    native_input_local_probe_test.go:153: formal original local stop/authentication cleanup not verified
+--- FAIL: TestOrcaNativeStateLiveLifecycle (15.92s)
+FAIL

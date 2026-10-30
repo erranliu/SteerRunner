@@ -1,0 +1,57 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_7741b47f-7aa0-4c08-a7d1-67073ed66b62",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T13:07:55.1707907Z",
+  "started": "2026-10-30T13:07:54.4839326Z",
+  "stdout": {
+    "id": "e3548ec0-6526-4290-89eb-5d84abbbb404",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_7741b47f-7aa0-4c08-a7d1-67073ed66b62",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@981010c6",
+        "incarnationId": "adca72b4-db3b-4dd1-9100-19790c9c3592",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-01",
+        "tabId": "b6aaae6a-e4e4-4831-b89b-e410ce507124",
+        "leafId": "204e3400-11cb-4627-a79e-efa399d535cb",
+        "title": "SteerRunner native control",
+        "paneTitle": "SteerRunner native control",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 1212,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

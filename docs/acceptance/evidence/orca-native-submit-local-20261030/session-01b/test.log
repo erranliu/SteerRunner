@@ -1,0 +1,5 @@
+=== RUN   TestOrcaNativeStateLiveLifecycle
+    native_input_local_probe_test.go:215: original lifecycle step unverified create_resource pending lifecycle resource lacks its accepted original resource identity
+    native_input_local_probe_test.go:137: formal original local stop/authentication cleanup not verified
+--- FAIL: TestOrcaNativeStateLiveLifecycle (8.75s)
+FAIL

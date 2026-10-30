@@ -1,0 +1,15 @@
+{
+  "packages_passed": 2,
+  "top_level_passed": 186,
+  "passed": 979,
+  "failed": 0,
+  "skipped": 6,
+  "skip_cases": [
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestOrcaLocalIPCNativeProbe",
+    "TestUsageLocalAcceptanceRepoCleanupLive",
+    "TestShortInputProbeInspect",
+    "TestOrcaWorkspaceStartupLive"
+  ]
+}

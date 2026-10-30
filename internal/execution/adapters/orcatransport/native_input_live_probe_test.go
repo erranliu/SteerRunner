@@ -20,6 +20,11 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
+type nativeInputProbeTarget struct {
+	Worktree, Runtime, Environment, CLI string
+	Launch                              agentlaunch.Config
+}
+
 // The existing opt-in lifecycle entry owns one fresh terminal and never replays
 // a prior probe. The host records real calls without replacing responses.
 func runNativeInputLiveProbe(t *testing.T) {
@@ -27,10 +32,7 @@ func runNativeInputLiveProbe(t *testing.T) {
 	if root == "" {
 		t.Fatal("explicit mode requires a fresh probe root")
 	}
-	var target struct {
-		Worktree, Runtime, Environment, CLI string
-		Launch                              agentlaunch.Config
-	}
+	var target nativeInputProbeTarget
 	raw, e := os.ReadFile(filepath.Join(root, "target.json"))
 	if e != nil {
 		t.Fatal(e)
@@ -38,7 +40,7 @@ func runNativeInputLiveProbe(t *testing.T) {
 	if e = contracts.DecodeStrict(raw, &target); e != nil {
 		t.Fatal(e)
 	}
-	if target.Worktree == "" || target.Runtime == "" || target.Environment == "" || target.CLI == "" || target.Launch.Executable == "" || target.Launch.Model == "" {
+	if target.Worktree == "" || target.Runtime == "" || target.CLI == "" || target.Launch.Executable == "" || target.Launch.Model == "" {
 		t.Fatal("incomplete fixed native probe target")
 	}
 	owner, e := os.OpenFile(filepath.Join(root, "probe-attempted"), os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
@@ -46,6 +48,10 @@ func runNativeInputLiveProbe(t *testing.T) {
 		t.Fatal("probe root already attempted; never replay", e)
 	}
 	owner.Close()
+	if target.Environment == "" {
+		runLocalNativeInputProbe(t, root, target)
+		return
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
 	baseHost := process.New(40 * time.Second)
@@ -240,18 +246,50 @@ func runNativeInputLiveProbe(t *testing.T) {
 // Logs actual public reads only; no send interception, mutation, or fabricated response.
 type nativeInputProbeHost struct {
 	b.ManagedProcessHost
-	root      string
-	reads     atomic.Uint64
-	calls     atomic.Uint64
-	pastes    atomic.Uint64
-	enters    atomic.Uint64
-	submits   atomic.Uint64
-	textOnly  atomic.Uint64
-	bareEnter atomic.Uint64
+	root                                                                string
+	reads                                                               atomic.Uint64
+	calls                                                               atomic.Uint64
+	pastes                                                              atomic.Uint64
+	enters                                                              atomic.Uint64
+	submits                                                             atomic.Uint64
+	textOnly                                                            atomic.Uint64
+	bareEnter                                                           atomic.Uint64
+	businessRequest, businessTerminal                                   string
+	businessSubmits, businessTextOnly, businessBareEnter, businessReads atomic.Uint64
+	businessForeignRequest                                              atomic.Uint64
 }
 
 func (h *nativeInputProbeHost) OutputCommand(ctx context.Context, c b.LaunchCommand) ([]byte, error) {
 	started := time.Now().UTC()
+	arg := func(key string) string {
+		for i, a := range c.Args {
+			if a == key && i+1 < len(c.Args) {
+				return c.Args[i+1]
+			}
+		}
+		return ""
+	}
+	if len(c.Args) > 1 && c.Args[0] == "terminal" && h.businessRequest != "" {
+		if c.Args[1] == "send" && arg("--terminal") == h.businessTerminal {
+			enter := false
+			for _, a := range c.Args {
+				enter = enter || a == "--enter"
+			}
+			if arg("--text") != "" && enter {
+				h.businessSubmits.Add(1)
+				if arg("--retry-request") != h.businessRequest {
+					h.businessForeignRequest.Add(1)
+				}
+			} else if enter {
+				h.businessBareEnter.Add(1)
+			} else {
+				h.businessTextOnly.Add(1)
+			}
+		}
+		if c.Args[1] == "read" && arg("--terminal") == h.businessTerminal {
+			h.businessReads.Add(1)
+		}
+	}
 	if len(c.Args) > 1 && c.Args[0] == "terminal" && c.Args[1] == "send" {
 		hasText, hasEnter := false, false
 		for _, arg := range c.Args {

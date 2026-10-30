@@ -1,0 +1,30 @@
+{
+  "schema": "steerrunner-local-native-agent-build/v1",
+  "source_commit": "a82fdc24af951df1789791120131e0989c3faed2",
+  "command": "go build -trimpath -o .evidence/orca-local-input-20261030/bin/steerrunner-agent.exe ./cmd/steerrunner-agent",
+  "path": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe",
+  "sha256": "e80553915e620f4c8bee679a4f46d57c175e6074a29b79620ece83315b453c7e",
+  "go_build_info": [
+    "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe: go1.26.4",
+    "\tpath\tgithub.com/erranliu/SteerRunner/cmd/steerrunner-agent",
+    "\tmod\tgithub.com/erranliu/SteerRunner\t(devel)\t",
+    "\tdep\tgithub.com/Microsoft/go-winio\tv0.6.2\th1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=",
+    "\tdep\tgithub.com/coder/websocket\tv1.8.14\th1:9L0p0iKiNOibykf283eHkKUHHrpG7f65OE3BhhO7v9g=",
+    "\tdep\tgithub.com/klauspost/compress\tv1.18.6\th1:2jupLlAwFm95+YDR+NwD2MEfFO9d4z4Prjl1XXDjuao=",
+    "\tdep\tgithub.com/santhosh-tekuri/jsonschema/v6\tv6.0.3\th1:1EYB5IzjZawrrnELUi78f9fPu57HuXjmddZPjrls/28=",
+    "\tdep\tgithub.com/vektah/gqlparser/v2\tv2.5.30\th1:EqLwGAFLIzt1wpx1IPpY67DwUujF1OfzgEyDsLrN6kE=",
+    "\tdep\tgolang.org/x/crypto\tv0.44.0\th1:A97SsFvM3AIwEEmTBiaxPPTYpDC47w720rdiiUvgoAU=",
+    "\tdep\tgolang.org/x/sys\tv0.38.0\th1:3yZWxaJjBmCWXqhN1qh02AkOnCQ1poK6oF+a7xWL6Gc=",
+    "\tdep\tgolang.org/x/text\tv0.31.0\th1:aC8ghyu4JhP8VojJ2lEHBnochRno1sgL6nEi9WGFGMM=",
+    "\tbuild\t-buildmode=exe",
+    "\tbuild\t-compiler=gc",
+    "\tbuild\t-trimpath=true",
+    "\tbuild\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,tlssecpmlkem=0,tlssha1=1,updatemaxprocs=0,urlstrictcolons=0,x509sha256skid=0",
+    "\tbuild\tCGO_ENABLED=0",
+    "\tbuild\tGOARCH=amd64",
+    "\tbuild\tGOOS=windows",
+    "\tbuild\tGOAMD64=v1"
+  ],
+  "installed": false,
+  "production_changes_this_batch": []
+}

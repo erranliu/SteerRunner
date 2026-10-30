@@ -1,0 +1,22 @@
+{
+  "id": "1dfbc943-69cb-407d-bd87-9fc1d36eb2ff",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 31696,
+      "handle": "term_4d63e2d8-db6e-425a-99f8-bcaad422952a",
+      "tabId": "94f6b4b7-70bf-4f31-9e0b-e2dddefd9458",
+      "paneKey": "94f6b4b7-70bf-4f31-9e0b-e2dddefd9458:ee99d64c-25c2-4bb4-a689-036dda6170fa",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02@@b34a2954",
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02",
+      "title": "SteerRunner stream receipt probe",
+      "executionHostId": "local",
+      "incarnationId": "455c1373-22f8-49f4-95c5-a2e75a51a738",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+  }
+}

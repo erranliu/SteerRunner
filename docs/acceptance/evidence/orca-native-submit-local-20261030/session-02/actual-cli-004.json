@@ -1,0 +1,53 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02",
+      "--title",
+      "SteerRunner native control",
+      "--command",
+      "\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe' '--native-control' 'eyJiaW5kaW5nIjoiNGYwYTgyOWI1YzExZDExOWRiYzE4MmNmOTA3OGFjMTM0Y2FmM2E5MmZlZjMwZGVmZjI1ZmM3YThjYTFiMGVjYyIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC0wMiIsInJ1bnRpbWVfc2hhMjU2IjoiZTgwNTUzOTE1ZTYyMGY0YzhiZWU2NzlhNGY0NmQ1N2MxNzVlNjA3NGEyOWI3OTYyMGVjZTgzMzE1YjQ1M2M3ZSJ9'",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T13:10:31.3936002Z",
+  "started": "2026-10-30T13:10:30.6218224Z",
+  "stdout": {
+    "id": "0b1c6221-5eeb-4b24-8f21-a3b5d18ba8a8",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "processId": 17816,
+        "handle": "term_e9af4283-09e7-48c3-a334-b8aac37bc0e1",
+        "tabId": "4a94ea12-9c00-458c-8db3-19a278bfb125",
+        "paneKey": "4a94ea12-9c00-458c-8db3-19a278bfb125:2e095424-24ef-4c4f-9424-3883e720ee22",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02@@0fa09338",
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-02",
+        "title": "SteerRunner native control",
+        "executionHostId": "local",
+        "incarnationId": "8f3500d4-3fb1-4b05-817a-c29c129ec0cb",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 903,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 746
+}

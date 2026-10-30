@@ -1,0 +1,47 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+      "--title",
+      "SteerRunner isolated local input",
+      "--json"
+    ],
+    "WorkingDirectory": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\session-01b",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": null,
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T13:07:52.7986571Z",
+  "started": "2026-10-30T13:07:51.9102986Z",
+  "stdout": {
+    "id": "83fedd24-b91c-4faa-91be-c2e4f888b3b4",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "processId": 30168,
+        "handle": "term_ab3c266f-9f5f-4bb3-9f5e-de075f48f609",
+        "tabId": "4cb29e54-ba27-4227-9474-e6b147d69c84",
+        "paneKey": "4cb29e54-ba27-4227-9474-e6b147d69c84:2dffd927-8acb-482f-bc47-cd127fe52642",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@8400730b",
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "title": "SteerRunner isolated local input",
+        "executionHostId": "local",
+        "incarnationId": "7c5e1a56-929b-4ff5-8e23-62f9a6e93039",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 909,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 263
+}

@@ -1,0 +1,47 @@
+{
+  "agent_sha256": "e80553915e620f4c8bee679a4f46d57c175e6074a29b79620ece83315b453c7e",
+  "before_census": {
+    "Payload": {
+      "terminals": [],
+      "hostScope": {
+        "hostIds": [
+          "local"
+        ],
+        "omittedHostIds": [
+          "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+        ],
+        "omittedHostSelectors": [
+          {
+            "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+            "selector": "--environment 台式机64G"
+          }
+        ]
+      },
+      "topologyRevisions": {},
+      "totalCount": 0,
+      "truncated": false
+    },
+    "RuntimeID": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+    "ErrorCode": "",
+    "ErrorMessage": "",
+    "CallUncertain": false
+  },
+  "business_inputs": 0,
+  "cleaned_up": false,
+  "completed": false,
+  "emergency_cleanup": false,
+  "launch": {
+    "runtime_executable": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe",
+    "repository_url": "https://github.com/erranliu/SteerlineTest.git",
+    "access_mode": "sandbox",
+    "executable": "C:/Users/lmas1/AppData/Local/OpenAI/Codex/bin/22cfb1d302613eae/codex.exe",
+    "args": [
+      "--no-daemon"
+    ],
+    "model": "gpt-6-luna",
+    "reasoning_effort": "high"
+  },
+  "target_kind": "local",
+  "total_generic_calls": 0,
+  "total_terminal_reads": 0
+}

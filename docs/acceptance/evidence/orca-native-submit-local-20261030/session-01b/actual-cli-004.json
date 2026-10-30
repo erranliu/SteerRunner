@@ -1,0 +1,53 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+      "--title",
+      "SteerRunner native control",
+      "--command",
+      "\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-input-20261030\\bin\\steerrunner-agent.exe' '--native-control' 'eyJiaW5kaW5nIjoiYWNlMDgzMGI4MjQ0MDhhYTFlOGE1NWMwZGNhM2E4ZWI3MDVjYjY0NzFlMzk0OTFjYWU3MzczNzNkNjA1MzhiMyIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC0wMSIsInJ1bnRpbWVfc2hhMjU2IjoiZTgwNTUzOTE1ZTYyMGY0YzhiZWU2NzlhNGY0NmQ1N2MxNzVlNjA3NGEyOWI3OTYyMGVjZTgzMzE1YjQ1M2M3ZSJ9'",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T13:07:54.482722Z",
+  "started": "2026-10-30T13:07:53.5130247Z",
+  "stdout": {
+    "id": "0ecdbad2-f672-4af2-a55d-b10d1edac608",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "processId": 2928,
+        "handle": "term_7741b47f-7aa0-4c08-a7d1-67073ed66b62",
+        "tabId": "b6aaae6a-e4e4-4831-b89b-e410ce507124",
+        "paneKey": "b6aaae6a-e4e4-4831-b89b-e410ce507124:204e3400-11cb-4627-a79e-efa399d535cb",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01@@981010c6",
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-01",
+        "title": "SteerRunner native control",
+        "executionHostId": "local",
+        "incarnationId": "adca72b4-db3b-4dd1-9100-19790c9c3592",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "_meta": {
+      "runtimeId": "4f073b25-6af0-4b4b-bcb8-d2174d704504"
+    }
+  },
+  "stdout_bytes": 902,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 746
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "sha256": "68b306fb927a83912df93f75cbf6860c92534a81993aa12d5de50ba482d8a939",
+    "path": "internal/execution/adapters/orcatransport/native_input_live_probe_test.go"
+  },
+  {
+    "sha256": "d8b530ad9b71684cf9ff368b3ceac55666cae3cfabe68634ca4b0b2cb1336e3c",
+    "path": "internal/execution/adapters/orcatransport/native_input_local_probe_test.go"
+  },
+  {
+    "sha256": "503db34728caa22dd8ed67f4d277840ed79e7394f93afca318965a54e1acd280",
+    "path": "scripts/test-native-input.ps1"
+  }
+]
