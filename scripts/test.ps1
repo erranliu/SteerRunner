@@ -122,7 +122,7 @@ try {
         exit 1
     }
     # Unit tests and controlled integration are prerequisites for every live batch.
-    foreach ($taskKey in @('STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT','SR_USAGE_EXISTING_STATE','SR_USAGE_LIVE_STATE','SR_USAGE_LIVE_RUN','SR_USAGE_LIVE_EVIDENCE','SR_USAGE_LIVE_PUBLIC','SR_USAGE_LIVE_CLEANUP_STATE','SR_USAGE_LOCAL_LIVE','SR_USAGE_LOCAL_STATE','SR_USAGE_LOCAL_RUN','SR_USAGE_LOCAL_EVIDENCE','SR_USAGE_LOCAL_REPO_CLEANUP','SR_USAGE_LOCAL_CLEANUP_ROOT')) { if ([Environment]::GetEnvironmentVariable($taskKey)) { throw "Unexpected live opt-in in L1: $taskKey" } }
+    foreach ($taskKey in @('STEERRUNNER_SHORT_INPUT_INSPECT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT','SR_USAGE_EXISTING_STATE','SR_USAGE_LIVE_STATE','SR_USAGE_LIVE_RUN','SR_USAGE_LIVE_EVIDENCE','SR_USAGE_LIVE_PUBLIC','SR_USAGE_LIVE_CLEANUP_STATE','SR_USAGE_LOCAL_LIVE','SR_USAGE_LOCAL_STATE','SR_USAGE_LOCAL_RUN','SR_USAGE_LOCAL_EVIDENCE','SR_USAGE_LOCAL_REPO_CLEANUP','SR_USAGE_LOCAL_CLEANUP_ROOT')) { if ([Environment]::GetEnvironmentVariable($taskKey)) { throw "Unexpected live opt-in in L1: $taskKey" } }
     Write-Host 'Running L1'
     $taskFramework = Join-Path $taskOut 'framework'
     & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework
@@ -156,7 +156,7 @@ try {
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
     # Existing usage acceptance/cleanup probes are explicit native opt-ins;
     # default skips are not native passes. Their live environment guards above remain mandatory.
-    $taskAllowedSkips = @('TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe',
+    $taskAllowedSkips = @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe',
         'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive',
         'TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })

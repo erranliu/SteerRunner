@@ -39,7 +39,7 @@ Runner 调查版本：`fa5e0a82da88f77eba4cb539d17bf0a4a18dce29`，调查开始�
 
 SHA/资源摘要继续用于校验选中的二进制、冻结资源和原运行事实，不能成为新服务接管的整体相等条件。不得删去原进程路径、PID/creation time、endpoint/generation、Orca runtime/worktree/terminal/incarnation/provider 的精确身份核验。
 
-每个构建在既有 `version/capabilities` 输出中公开支持的 state 格式、workflow ID/version、operation/result 契约及 adapter key/codec；本机独立执行宿主还需声明自己的控制协议。沿用已有能力目录和具体 decoder，不新增兼容策略注册器。Run/Check 的实际要求从原 Workflow.Config、Operation.Version 和 implementation envelope 等既有字段读取；不再保存一份会与它们漂移的 per-Run 兼容 manifest 或独立恢复语义版本。
+每个构建在既有 `version/capabilities` 输出中公开支持的 state 格式、workflow ID/version、operation/result 契约及 adapter key/codec；本机独立执行宿主还需声明自己的控制协议。沿用已有能力目录和具体 decoder，不新增兼容策略注册器。Run 的实际要求从原 Workflow.Config、Operation.Version 和 implementation envelope 等既有字段读取；不再保存一份会与它们漂移的 per-Run 兼容 manifest 或独立恢复语义版本。
 
 | 边界 | 接管规则 |
 | --- | --- |
@@ -59,15 +59,7 @@ SHA/资源摘要继续用于校验选中的二进制、冻结资源和原运行�
 
 ### 3.2 首次接入与格式升级
 
-首期使用 `steerrunner-state/v4` / SQLite user_version=4 作为唯一全库语义边界。理由是 v3 服务会在启动/退出时撤销 Run 授权并可能结束本机执行，不能让它重新写入采用新停服语义的目录。升版用于让旧 EXE 现有格式检查明确拒写，不代表需要增加新表或重建状态。Allowed/ResumeRequired、PendingStop/Resume、现有问题/来源和 command/operation 身份继续承担授权与派发事实；不预增撤销代次、派发租约、消费标记或导入游标。
-
-Operation.Version 保持 1，复用既有 in_flight/accepted/confirmed/rejected/outcome_unknown；是否已建立可能调用的意图按 §7 判断，不增加平行派发状态。独立本机 owner 协议为 `steerrunner-execution-owner/v1`，`codex.app-server-binding` codec 从现有 1 增至 2，仅新增原 owner 身份/协议绑定；旧 codec1 不改写成已移交。未改变语义的 profile/权限资源/result/workflow 版本不随服务构建递增。若实施发现现有记录确有不可表达的事实，须先指出具体反例再增最小字段，不能以“未来恢复可能需要”为由建账本。
-
-提供本调查基线 state/v3→v4 的一次受控无损升级：旧 writer 已退出且新服务独占 writer.lock；先只读检查记录及必需 codec；一致性备份 DB（含 WAL 内容），冻结文件原位保留，不覆盖或重新冻结；同一 SQLite 事务更新格式。文件来源/摘要的完整资格和不支持项隔离须按验收记录逐项证明，不能由格式升级推断。失败整笔回滚，原文件/外部资源不改。不能用“新空目录/重新 submit”作为升级方案；不支持任意历史 v1/v2 或早已退役的远端 helper 格式迁移。
-
-现 v3 已丢失的授权不能补造：Allowed=true 且无 stop/等待/业务阻断等冲突时，可保留已保存授权；旧停服/启动已写入 Allowed=false/ResumeRequired=true 的记录保留原门槛，不能猜回“原本应该运行”。旧 epoch 的未投递答案依旧保持待人工确认；已尝试发送者仅对账。旧格式的 in_flight 操作一律按可能已调用处理，不能补成尚未发送。
-
-旧本机 Codex 的 kill-on-close/停服 Kill 所有权不能由新 EXE 事后消除。首次从未支持本能力的旧服务切换时，预检必须在停服前识别这一限制；不得为了升级杀原执行、伪造接管成功或要求重跑。其活动树只有原服务提供经验证的协作所有权移交才可无中断接管；本轮调查未发现该接口。该存量限制是待解决/不可追溯的边界，不计入已实现保证。已完成的原结果、PR 和可接管的 Orca 记录仍保留；首次升级不能被宣传为所有历史活动执行均可无损接管。
+当前只接受 `steerrunner-state/v5` / SQLite user_version=5；新库无 Check 表和索引。v3/v4 整体拒绝，不读取、迁移或自动回退。原版本负责全部旧资源结算与证据保留；完成后使用新独立目录。v5 内的 Run 原请求、授权、输入和结果身份、pending stop、资源结算规则保持。
 
 新格式建立后，相同相关契约的 A→B→C 构建接管无需再次迁移或人工 resume。旧远端 helper Run 按 [现有退役规则](orca-remote-native.spec.md#6-旧记录与恢复)只读/精确停止；不恢复其运行栈，不因保留历史事实让兼容的新 Run 无法加载。完整性损坏导致无法安全识别记录时拒绝写入；可识别但不支持执行的单项保留只读诊断，其他兼容 Run 可继续。
 
@@ -175,7 +167,7 @@ PR/引用沿冻结仓库、base/head、执行关联和既有 provider 查询找�
 | SteerLine | 保存 Task/DAG/Candidate→Run、原 CLI 信封与 request_id、投影游标及 PR/Delivery；换代重绑服务实例前核验接管证明，重连事件补投影，不重新 submit/批量 resume。先办理已存取消/交付停止义务；TaskDelivery 仍由本地事务决定 |
 | 部署工具 | 新包暂存与契约预检、旧写者退出/锁释放、不可变 owner 文件保留、新服务启动、逐项接管报告和失败回退；不删除原 state-dir 或强迫业务树退出 |
 
-最小公开增量：`version/capabilities/service status` 的版本化恢复描述；一个只读 `service verify-takeover --candidate <新EXE绝对路径> --json` 预检入口，在线通过当前服务、离线在既有 writer.lock 下只读检查。输出 `contract=steerrunner-takeover/v1`、目录和旧 writer 身份、候选 EXE SHA/契约、逐 Run/Check 的 revision/input_digest、compatible/read_only/unsupported/conflict 及原因；附原创建 command 的 request_id/request_digest，供丢失 submit 回执的调用方在 worker 启动前精确关联。request_digest 沿现 commands 定义：对保留 JSON number 的输入对象及 Protocol/Command/Target 字段做 canonical JSON SHA-256；不是另一份 Run manifest。它不停止、迁移、启动服务或授权输入；预检通过不代表接管已完成。
+最小公开增量：`version/capabilities/service status` 的版本化恢复描述；一个只读 `service verify-takeover --candidate <新EXE绝对路径> --json` 预检入口，在线通过当前服务、离线在既有 writer.lock 下只读检查。输出 `contract=steerrunner-takeover/v1`、目录和旧 writer 身份、候选 EXE SHA/契约、逐 Run 的 revision/input_digest、compatible/read_only/unsupported/conflict 及原因；附原创建 command 的 request_id/request_digest，供丢失 submit 回执的调用方在 worker 启动前精确关联。request_digest 沿现 commands 定义：对保留 JSON number 的输入对象及 Protocol/Command/Target 字段做 canonical JSON SHA-256；不是另一份 Run manifest。它不停止、迁移、启动服务或授权输入；预检通过不代表接管已完成。
 
 冻结配置资格与创建共用 workflow 能力判断：开发结果解释及 report/parse 依赖 result-acquisition
 配置，final-only 内容流程允许其原有零值。实际 parser 操作独立保留冻结配置和解析契约校验，
@@ -191,7 +183,6 @@ SteerLine 的安装 pin 仍校验所选文件确是选中的构建；把“pin �
 
 这是一项有原 stop 事实依据的启动排序输入，不是通用控制批处理接口；不新增 `release-dispatch`、持久调度锁或第二份授权状态。输入须在发布 ready/启动 worker 前完成处理，未知受理通过原 request_id 找回。调用方崩溃后从自身持久停止义务重建启动输入，不依赖内存 release 步骤；独立 Runner 无此类义务时直接启动。启动输入的严格 schema 及现启动意图保存方式在 P0/P1 固定，不能启动后再“尽快 stop”弥补竞态。
 
-环境检查沿独立 [Check 契约](environment-check.spec.md)（实际定义见 [总 Spec](steerrunner.spec.md)）处理：保留原 ID、报告、绝对期限、已建引用/PR、停止和清理义务；重启只对账原写操作并继续已授权且可证明未执行的清理，不重跑探针/创建 PR 证明 passed。远端完整 Check 当前 unsupported 仍不变。未接管 Check/未知创建须在报告中逐项列出，不得从聚合中省略。
 
 ## 10. 验收条件
 

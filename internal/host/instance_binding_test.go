@@ -24,7 +24,7 @@ func TestSRExpectedInstanceFencesReplacement(t *testing.T) {
 	if err := writeEndpoint(dir, replacement); err != nil {
 		t.Fatal(err)
 	}
-	for _, command := range []string{"submit", "reply", "resume", "environment-check start", "inspect", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"} {
+	for _, command := range []string{"submit", "reply", "resume", "inspect", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"} {
 		_, fault := Call(context.Background(), dir, Options{Command: command, ExpectedInstanceID: "A"}, nil)
 		if fault == nil || fault.Detail.Code != "stale_instance" {
 			t.Fatalf("%s reached replacement: %v", command, fault)

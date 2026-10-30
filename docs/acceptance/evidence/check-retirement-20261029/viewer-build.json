@@ -1,0 +1,9 @@
+{
+  "source_digest": "ecd4b2b53c3bff9b6554cb26c93d00c2b6370e990995b65a67b9457a2ef7cdc3",
+  "source_commit": "af29ee471587d7eef41a5eb9ff7d52aefb815183",
+  "sha256": "10f785f272773fb2edd714e5eddba59d61db9cc4a267c937adcbf6d394943692",
+  "source_dirty": true,
+  "platform": "windows/amd64",
+  "component": "viewer",
+  "schema": "steerrunner-build/v1"
+}

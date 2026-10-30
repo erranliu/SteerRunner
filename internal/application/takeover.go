@@ -15,7 +15,7 @@ import (
 
 // TakeoverFacts projects existing records through the selected build's concrete
 // decoders. It neither constructs workers nor grants any input authorization.
-func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
+func TakeoverFacts(runs []*runstate.Record, support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
 	items := []contracts.TakeoverItem{}
 	for _, r := range runs {
 		item := contracts.TakeoverItem{ID: r.ID, Kind: "run", Revision: r.Revision, InputDigest: r.InputDigest, Status: "compatible"}
@@ -108,27 +108,6 @@ func TakeoverFacts(runs []*runstate.Record, checks []*runstate.CheckRecord, supp
 		}
 		items = append(items, item)
 	}
-	for _, r := range checks {
-		item := contracts.TakeoverItem{ID: r.View.CheckID, Kind: "check", Revision: r.View.Revision, InputDigest: r.View.InputDigest, Status: "compatible"}
-		if r.View.Input.Execution.Adapter == "orca-terminal" && r.View.Input.Execution.Target.Kind != "local" {
-			item.Status = "read_only"
-			item.Diagnostic = "remote Check actors are unsupported; original facts remain queryable"
-		} else {
-			// Checks retain raw execution settings rather than a Run profile
-			// envelope. Qualify them too, before reporting that a new writer can
-			// adopt the state. In particular retired App authentication must not
-			// silently become the current host's gh identity.
-			if err := contracts.ValidateExecution(r.View.Input.Execution); err != nil {
-				item.Status, item.Diagnostic = "unsupported", "frozen Check execution configuration unsupported"
-			}
-			for _, op := range r.Operations {
-				if !slices.Contains(support.OperationVersions, op.Version) {
-					item.Status, item.Diagnostic = "unsupported", "Check operation version unsupported"
-				}
-			}
-		}
-		items = append(items, item)
-	}
 	return items
 }
 
@@ -138,10 +117,6 @@ func (e *Engine) Takeover(support contracts.RecoverySupport, profiles []workflow
 	for _, r := range e.runs {
 		runs = append(runs, r.Clone())
 	}
-	checks := make([]*runstate.CheckRecord, 0, len(e.checks))
-	for _, r := range e.checks {
-		checks = append(checks, r.Clone())
-	}
 	e.mu.Unlock()
-	return e.store.BindTakeoverRequests(TakeoverFacts(runs, checks, support, profiles, resultContracts...))
+	return e.store.BindTakeoverRequests(TakeoverFacts(runs, support, profiles, resultContracts...))
 }

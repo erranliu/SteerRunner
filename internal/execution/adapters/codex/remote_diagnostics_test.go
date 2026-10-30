@@ -27,7 +27,7 @@ func TestRemoteAuthenticationFailureDiagnosticsRemainFinite(t *testing.T) {
 }
 
 func TestEnvironmentObservationDiagnosticsPreserveFiniteOriginalFailure(t *testing.T) {
-	for _, code := range []string{"original_native_connection_lost", "original_native_turn_unsettled", "native_command_queue_unavailable", "native_cli_request_unverified"} {
+	for _, code := range []string{"original_native_turn_unsettled", "authentication_broker_unavailable", "authentication_api_binding_invalid", "authentication_expired_or_unavailable"} {
 		if got := EnvironmentDiagnostic(errors.New(code + ": credential-bearing-provider-detail")); got != code {
 			t.Fatal("original failure category lost", got)
 		}

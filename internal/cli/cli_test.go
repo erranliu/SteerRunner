@@ -58,7 +58,7 @@ func TestSRCLIContract(t *testing.T) {
 func TestSRExpectedInstanceDoesNotStartService(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "not-created")
 	var output, diagnostics bytes.Buffer
-	exit := Run([]string{"environment-check", "start", "--state-dir", dir, "--expected-instance-id", "A", "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"check-original","input":{}}`), &output, &diagnostics)
+	exit := Run([]string{"submit", "--state-dir", dir, "--expected-instance-id", "A", "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"submit-original","input":{"title":"Bound submit","workflow":{"id":"generate","version":1},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":"read_only"}},"generate":{"instruction":"Return content","materials":[]}}}`), &output, &diagnostics)
 	if exit != 4 || !strings.Contains(output.String(), "service_unavailable") {
 		t.Fatalf("exit=%d output=%s", exit, &output)
 	}

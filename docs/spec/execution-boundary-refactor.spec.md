@@ -6,7 +6,7 @@
 
 保持 Workflow → ReliableExecution → ExecutionAdapter 的职责方向，收拢新增能力带来的重复派发、恢复与结算规则，并消除证据读侧对执行控制的全局锁阻塞。完成标准是规则有明确所有者、实际调用者复用同一规则、原行为可验证；不以新增包数、接口数或文件行数验收。
 
-本轮是内部重构，不重新定义执行与恢复行为。依据为当前[服务换代恢复](service-generation-recovery.spec.md)、[结果获取](result-acquisition.spec.md)、[内容流程](content-workflows.spec.md)、[R2 证据](run-evidence-r2.spec.md)及[既有可靠层模块化](../archive/2026-10/spec/reliable-modularization.spec.md)。其中旧模块化文档的 state/v2 和“换代统一禁止新输入、要求 resume”是历史范围；本轮沿当前 state/v4 和服务换代契约，不恢复旧策略。现有能力缺口和未验资格沿[服务换代验收](../acceptance/service-generation-recovery.md)保留，不因本轮结构整理改记通过。
+本轮是内部重构，不重新定义执行与恢复行为。依据为当前[服务换代恢复](service-generation-recovery.spec.md)、[结果获取](result-acquisition.spec.md)、[内容流程](content-workflows.spec.md)、[R2 证据](run-evidence-r2.spec.md)及[既有可靠层模块化](../archive/2026-10/spec/reliable-modularization.spec.md)。其中旧模块化文档的 state/v2 和“换代统一禁止新输入、要求 resume”是历史范围；本轮沿当前 state/v5 和服务换代契约，不恢复旧策略。现有能力缺口和未验资格沿[服务换代验收](../acceptance/service-generation-recovery.md)保留，不因本轮结构整理改记通过。
 
 文档轮仅编写 Spec/Plan；2026-10-20 用户追加“实施吧”，已授权本轮代码、隔离构建与必要验证。部署、安装环境及发布/合并不在范围。实际实施和证据见[验收记录](../acceptance/execution-boundary-refactor.md)。
 

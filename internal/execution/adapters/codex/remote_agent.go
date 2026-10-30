@@ -283,7 +283,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 				return errors.New("remote_bootstrap_unexpected_request")
 			}
 			if event.Method == "turn/completed" {
-				if _, e := decodeEnvironmentCompletion(event.Params, thread.Thread.ID, turn.Turn.ID); e != nil {
+				if e := validateTurnCompletion(event.Params, thread.Thread.ID, turn.Turn.ID); e != nil {
 					return e
 				}
 				bootstrapped = true

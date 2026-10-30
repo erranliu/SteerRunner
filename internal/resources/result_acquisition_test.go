@@ -9,7 +9,7 @@ import (
 
 func TestRAPublicContract(t *testing.T) {
 	c := Capabilities().(map[string]any)
-	if c["resource_version"] != 2 || c["protocol"] != "steerrunner-cli/v1" {
+	if c["resource_version"] != 3 || c["protocol"] != "steerrunner-cli/v1" {
 		t.Fatal(c)
 	}
 	for _, p := range workflow.Catalog() {

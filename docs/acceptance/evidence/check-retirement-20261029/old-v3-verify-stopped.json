@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":null,"error":{"code":"unsupported_schema","message":"State directory contains an unsupported storage format; preserve it and use a new directory."}}

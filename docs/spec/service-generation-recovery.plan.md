@@ -24,8 +24,8 @@
 涉及 `contracts/resources`、`host/cli`、`storage/runstate` 和现 operation 入口，由 application 唯一提交。
 
 1. 在既有 `version/capabilities` 中公开支持的版本集合，增加 `steerrunner-takeover/v1` 只读报告及 `service verify-takeover --candidate`；区分预检 compatible 与实际接管，不保存投影结论为第二状态。实现 P0 固定的启动 `pending_stops` 输入及其原请求幂等/拒绝诊断。
-2. 实施 state/v4 / user_version=4 语义门，阻止 v3 服务重新写入并执行旧停服策略；保持现表、授权字段、Operation.Version=1 和操作状态。既有输入/后继与完整 Intents 共同判断是否曾建立副作用意图；已有 in_flight 只对账，不增加 not_dispatched/dispatching 状态、撤销代次、消费标记或导入游标。必需新增字段须用具体不可表达的崩溃反例证明。
-3. 实施指定基线 v3→v4 的独占锁、整目录资格检查、一致性备份、原子升级和失败回滚。SQLite 在线备份或等价一致性快照必须含 WAL，不能直接拷贝活动 DB 文件。旧 SHA/原状态/命令幂等记录/事件序号/冻结文件保持，升级不生成业务输入、修改外部资源或重绑会话。升级前后逐条比对关键不可变字段，不要求合法新增字段或结算状态结构全等。
+2. 使用当前 state/v5 / user_version=5 语义门，阻止 v3 服务重新写入并执行旧停服策略；删除 Check 专属表/字段，保留 Run 表、授权字段、Operation.Version=1 和操作状态。既有输入/后继与完整 Intents 共同判断是否曾建立副作用意图；已有 in_flight 只对账，不增加 not_dispatched/dispatching 状态、撤销代次、消费标记或导入游标。必需新增字段须用具体不可表达的崩溃反例证明。
+3. 不迁移或兼容读取 v3/v4；原版本结算旧现场后使用新目录。v5 内原请求与 Run 恢复沿现有契约。
 4. 对旧 Allowed=false/ResumeRequired、旧 epoch 答案和未知操作保留门槛；不推断新授权。未知必需格式拒写；可读退役记录隔离，不把旧远端 helper 搬回运行路径。
 5. 调整 host selectedService：按 CLI 契约选活动服务，仍验证原实例/token/目录，构建 SHA 为身份和来源。具体 workflow 校验不再对整个 Profile 做 DeepEqual：沿现两个定义核对冻结执行语义及原 adapter 支持，Description/新增其它 adapter/新默认提示词变化不使旧 Run 失效；实际转移/contract 等同号变更仍拒绝。不引入泛型语义差异引擎。
 

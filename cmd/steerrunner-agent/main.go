@@ -122,27 +122,6 @@ func main() {
 		fmt.Fprintln(os.Stderr, "remote original turn inspection failed")
 		os.Exit(1)
 	}
-	if len(os.Args) == 3 && os.Args[1] == "--environment-session" {
-		var setup codex.RemoteCheckSetup
-		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])
-		if err == nil {
-			err = contracts.DecodeStrict(raw, &setup)
-		}
-		startup := "remote_check_configuration_invalid"
-		if err == nil {
-			err = codex.ServeRemoteCheck(context.Background(), setup, os.Stdin, os.Stdout)
-			startup = codex.RemoteCheckStartupDiagnostic(err)
-		}
-		if err != nil {
-			if startup != "" {
-				fmt.Fprintln(os.Stdout, codex.RemoteCheckStartupFailurePrefix+startup)
-			} else {
-				fmt.Fprintln(os.Stderr, "remote environment session failed:", codex.EnvironmentDiagnostic(err))
-			}
-			os.Exit(1)
-		}
-		return
-	}
 	if len(os.Args) == 3 && os.Args[1] == "--audit" {
 		var input struct{ Workspace, Session string }
 		raw, err := base64.RawURLEncoding.DecodeString(os.Args[2])

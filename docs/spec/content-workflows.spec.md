@@ -4,7 +4,7 @@
 
 ## 边界与调查
 
-设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v4；内容流程接管按[服务换代 Spec](service-generation-recovery.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
+设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v5；内容流程接管按[服务换代 Spec](service-generation-recovery.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
 当前 RunRequest 强制仓库、Spec/Plan、publication；freeze 创建 Git 副本；queueInput 注入开发材料；
 Route 负责补报/发布。不能将这些开发前置用于内容流程。现有 Record/Commit、operation、
 reliable.Next/NormalizeResult、Codex ExecutionLifecycle、原生问答路由、VerifyManualRecovery/

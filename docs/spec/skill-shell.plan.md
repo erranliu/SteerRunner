@@ -43,7 +43,6 @@ helper 只提供内部固定动作：discover/configure、submit、observe/inspe
 4. 发现当前项目身份、remote/base 分支线索及对应发布 host 的 gh 认证事实。无法推断的信息保留缺口；非 Git cwd 只保存机器配置。Orca 项目通过对应端 repo list/show 匹配身份，名称/URL 相同但路径有多个候选时让用户选择，不能拿调用方路径猜远端路径。
 5. 按 Spec §3.3 保存首次默认、保留既有选择；候选全部不可用仍完成诊断。按 §3.4 分别给出缺 Orca 的安装提示、启动提示、environment 配置及连接/项目修复提示。安装 URL 在实现发布时核对官方来源，不在 helper 中执行下载。
 6. 给 GitHub command provider 提供符合现有 PRInfo 的固定 gh 查询模板，并沿既有 Gitea provider 形状处理用户已有配置。优先复用 gh 的结构化输出/转换能力，不生成依赖 testkit 的查询脚本、不新增 provider。模板必须验证实际字段、head SHA、merged/closed 状态和 host/仓库一致性，不能把原始 gh JSON 直接当 Runner PRInfo。
-7. 显式完整环境检查复用现有 environment-check start/inspect/stop，先展示副作用范围；普通无参数配置无该调用。远端检查 unsupported 单独解释。
 
 完成条件：SS-02、SS-03、SS-04 的发现与选择用例通过；一次无参数调用可给出可解释结果，无 agent、worktree、终端、PR 或自动安装副作用。
 
@@ -61,7 +60,7 @@ helper 只提供内部固定动作：discover/configure、submit、observe/inspe
 
 ## 5. P4：Runner 最小展示导出
 
-1. 固定 Spec §7 的 UTF-8 文件契约、默认目录和复用 host.Normalize 的 source_id 计算；用文件格式样例验证字段，无新增 RunList CLI、IPC、配置服务或存储迁移。导出全部已持久化 Run，不依赖客户端 submissions，首版不混入 environment-check，不做跨机采集。
+1. 固定 Spec §7 的 UTF-8 文件契约、默认目录和复用 host.Normalize 的 source_id 计算；用文件格式样例验证字段，无新增 RunList CLI、IPC、配置服务或存储迁移。导出全部已持久化 Run，不依赖客户端 submissions，不做跨机采集。
 2. 在原服务加载就绪后建立单个串行导出者，每 1 秒采样既有投影；不挂业务提交回调/队列。短时持原有读取保护，只复制白名单字段为独立 DTO，释放锁后按 run_id 排序、比较与写入；workflow 只取 id/version，禁止序列化完整对象。变化则发布，无变化每 5 秒心跳重新取数。未提交/加载不完整/读取失败不能发布新鲜或伪空快照。
 3. generated_at 固定为取到一致投影的 UTC，不在写入完成/重试时后移。每次发布尝试先分配当前实例的新 sequence，失败/替换未知不复用，允许跳号，仅用内存计数。最多一份在途副本，无积压/重叠；用非 JSON 后缀临时文件，关闭后原子替换。替换前失败保留原文件，替换未知不删目标/不假定未生效；收尾后重新取数发布新序列。连续失败时尝试间隔至少 5 秒且诊断限频。文件 I/O 不在业务事务/受理回执路径同步等待，不触发 provider/原生查询，不修改 Run revision/事件。
 4. 单次文件发布 2 秒预算，超时取消并确认原操作收尾。停服先撤销新发布、取消并收尾在途写入，在既有停服期限内确认结束后才释放 writer lease；未能证明退出则报告既有停服未核实/失败，不能留下仍可迟写的任务再释放锁。服务换代覆盖同 source 文件，实例/序列变化不建立第二来源；失败/崩溃/停服保留最后文件自然过期，不补造 stopped。

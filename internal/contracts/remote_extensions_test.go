@@ -51,7 +51,7 @@ func TestTerminalAgentsCannotUseCodexAuditModels(t *testing.T) {
 }
 
 // Removed authentication settings must never silently choose a different actor.
-func TestGitHubAppConfigurationRejectedBeforeRunOrCheck(t *testing.T) {
+func TestGitHubAppConfigurationRejectedBeforeRun(t *testing.T) {
 	for _, adapter := range []string{"codex-app-server", "orca-terminal", "orca-remote"} {
 		for _, legacy := range []string{`null`, `{}`, `{"app_id":3,"installation_id":7,"private_key_env":"OLD_APP_KEY"}`} {
 			t.Run(adapter+legacy, func(t *testing.T) {
@@ -67,12 +67,6 @@ func TestGitHubAppConfigurationRejectedBeforeRunOrCheck(t *testing.T) {
 				raw, _ := json.Marshal(request)
 				if fault := ValidateRun(raw); fault == nil || fault.Detail.Code != "invalid_input" {
 					t.Fatal("legacy App Run accepted", fault)
-				}
-				check := checkInputFixture()
-				check.Execution = execution
-				raw, _ = json.Marshal(check)
-				if fault := ValidateEnvironmentCheck(raw); fault == nil || fault.Detail.Code != "invalid_input" {
-					t.Fatal("legacy App check accepted", fault)
 				}
 			})
 		}

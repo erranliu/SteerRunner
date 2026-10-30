@@ -18,7 +18,6 @@
     "TestSRStabilityRevocationAcrossRestart",
     "TestSRWorkflowDiscoveryAndSelection",
     "TestSRMultipleRunsIsolation",
-    "TestEnvironmentCheckCLI",
     "TestSRResultAcquisition",
     "TestSRContentGenerate",
     "TestSRContentRepository",
@@ -51,12 +50,8 @@
     "controlled.stop-commit-race",
     "controlled.storage-failure",
     "controlled.resource-pressure",
-    "environment-check.local-sandbox",
-    "environment-check.local-full-access",
     "orca-remote.multirun",
     "orca-local.smoke",
-    "environment-check.orca-local-sandbox",
-    "environment-check.orca-local-full-access",
     "orca-local.mixed",
     "orca-remote.initialization-stop",
     "local-codex.progress-file",
@@ -74,11 +69,28 @@
       "test": "TestOrcaNativeStateLiveLifecycle",
       "entry": "scripts/test-native-input.ps1",
       "scope": "fresh empty Orca worktree; fixed CLI/native launch; synthetic no-tools input; no business suite or PR",
-      "requires": ["explicit fixed target.json", "new output directory", "complete empty terminal census"],
-      "expected": ["unique complete original input and canonical result", "one production paste and Enter", "unknown effects never replayed in controlled regressions", "confirmed terminal close and zero complete census"],
+      "requires": [
+        "explicit fixed target.json",
+        "new output directory",
+        "complete empty terminal census"
+      ],
+      "expected": [
+        "unique complete original input and canonical result",
+        "one production paste and Enter",
+        "unknown effects never replayed in controlled regressions",
+        "confirmed terminal close and zero complete census"
+      ],
       "subcases": [
-        {"id": "long-input", "mode": "long-input", "scope": "production Lifecycle; natural draft shape recorded"},
-        {"id": "segmented-shape", "mode": "segmented-shape", "scope": "two explicit real paste effects; one logical input and Enter; separate shape qualification"}
+        {
+          "id": "long-input",
+          "mode": "long-input",
+          "scope": "production Lifecycle; natural draft shape recorded"
+        },
+        {
+          "id": "segmented-shape",
+          "mode": "segmented-shape",
+          "scope": "two explicit real paste effects; one logical input and Enter; separate shape qualification"
+        }
       ]
     },
     {
@@ -87,8 +99,16 @@
       "test": "TestSRContentRepositoryNative",
       "entry": "scripts/test-foundation.ps1",
       "scope": "new C:/srt/gr-* state and disposable dirty Git fixture; read-only native code investigation; no target writes or PR",
-      "requires": ["explicit native executable", "TestSRContentRepository"],
-      "expected": ["real read-only code tool observed", "fixed commit and full two-document result", "original request replay and completed-result restart", "stop and verify-stopped settlement"]
+      "requires": [
+        "explicit native executable",
+        "TestSRContentRepository"
+      ],
+      "expected": [
+        "real read-only code tool observed",
+        "fixed commit and full two-document result",
+        "original request replay and completed-result restart",
+        "stop and verify-stopped settlement"
+      ]
     },
     {
       "id": "local-codex.generation-recovery",

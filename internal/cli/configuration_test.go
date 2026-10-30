@@ -26,7 +26,6 @@ func TestSRStaticConfigurationInterfaces(t *testing.T) {
 	text := "Frozen document"
 	run := contracts.RunRequest{Title: "Validate without readiness", Repository: contracts.Repository{URL: "https://github.com/example/repository.git", Remote: "origin", BaseBranch: "main", BaseRevision: strings.Repeat("a", 40)}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"executable":"not-installed-codex.exe"}`)}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "spec.md", Content: &text}, Plan: contracts.Document{Kind: "inline", Path: "plan.md", Content: &text}}, Publication: contracts.Publication{Provider: "gitea", Repository: "example/repository", BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://example.invalid"}`)}}
 	validRun, _ := json.Marshal(run)
-	validCheck, _ := json.Marshal(contracts.CheckInput{Repository: run.Repository, Execution: run.Execution})
 	tests := []struct {
 		name    string
 		args    []string
@@ -37,7 +36,6 @@ func TestSRStaticConfigurationInterfaces(t *testing.T) {
 	}{
 		{"valid", []string{"validate", "--kind", "run-configuration", "--input", "-"}, strings.NewReader(valid), 0, "", true},
 		{"valid-run-no-readiness-probe", []string{"validate", "--kind", "run", "--input", "-"}, bytes.NewReader(validRun), 0, "", true},
-		{"valid-check-no-workflow", []string{"validate", "--kind", "environment-check", "--input", "-"}, bytes.NewReader(validCheck), 0, "", true},
 		{"unknown-workflow-priority", []string{"validate", "--kind", "run-configuration", "--input", "-"}, strings.NewReader(strings.Replace(valid, "development", "unknown", 1)), 3, "unsupported_schema", true},
 		{"envelope-not-auto-unwrapped", []string{"validate", "--kind", "run", "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"id","input":{}}`), 2, "invalid_input", true},
 		{"duplicate", []string{"validate", "--kind", "run", "--input", "-"}, strings.NewReader(`{"title":"a","title":"b"}`), 2, "invalid_input", true},
@@ -75,7 +73,7 @@ func TestSRStaticConfigurationInterfaces(t *testing.T) {
 			Catalog resources.CapabilityCatalog `json:"capability_catalog"`
 		} `json:"data"`
 	}
-	if json.Unmarshal(output.Bytes(), &response) != nil || response.Data.Source.Kind != "executable" || len(response.Data.Source.ExecutableSHA256) != 64 || response.Data.Source.InstanceID != "" || len(response.Data.Catalog.ValidationKinds) != 3 {
+	if json.Unmarshal(output.Bytes(), &response) != nil || response.Data.Source.Kind != "executable" || len(response.Data.Source.ExecutableSHA256) != 64 || response.Data.Source.InstanceID != "" || len(response.Data.Catalog.ValidationKinds) != 2 {
 		t.Fatal(output.String())
 	}
 	if _, err := os.Stat(absent); !os.IsNotExist(err) {

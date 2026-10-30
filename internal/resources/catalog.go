@@ -10,14 +10,14 @@ import (
 
 // Combination describes implemented routes, never an inventory of a host.
 type Combination struct {
-	Adapter      string              `json:"adapter"`
-	TargetKind   string              `json:"target_kind"`
-	Agent        string              `json:"agent"`
-	Workflow     *contracts.Workflow `json:"workflow"`
-	AccessMode   string              `json:"access_mode"`
-	Operations   []string            `json:"operations"`
-	Schema       string              `json:"schema"`
-	Requirements []string            `json:"requirements"`
+	Adapter      string             `json:"adapter"`
+	TargetKind   string             `json:"target_kind"`
+	Agent        string             `json:"agent"`
+	Workflow     contracts.Workflow `json:"workflow"`
+	AccessMode   string             `json:"access_mode"`
+	Operations   []string           `json:"operations"`
+	Schema       string             `json:"schema"`
+	Requirements []string           `json:"requirements"`
 }
 type CapabilityCatalog struct {
 	Version         int               `json:"version"`
@@ -27,7 +27,7 @@ type CapabilityCatalog struct {
 
 func Catalog() CapabilityCatalog {
 	result := CapabilityCatalog{Version: 1, Combinations: []Combination{}, ValidationKinds: map[string]string{
-		"run-configuration": "/configuration_schemas/run_configuration", "run": "/configuration_schemas/run_input", "environment-check": "/environment_check_schema/$defs/input",
+		"run-configuration": "/configuration_schemas/run_configuration", "run": "/configuration_schemas/run_input",
 	}}
 	for _, adapter := range []string{"codex-app-server", "orca-terminal"} {
 		for _, target := range []string{"local", "orca_environment"} {
@@ -72,19 +72,15 @@ func Catalog() CapabilityCatalog {
 						}
 						// Model examples are only used to evaluate the production route gate.
 						selection.AuditModel = nil
-						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, &selection, mode, []string{"submit", "reply", "resume", "stop"}, "/configuration_schemas/run_configuration", needed})
+						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, selection, mode, []string{"submit", "reply", "resume", "stop"}, "/configuration_schemas/run_configuration", needed})
 					}
-					check := contracts.CheckInput{Repository: contracts.Repository{URL: "https://github.com/example/repository.git", Remote: "origin", BaseBranch: "main", BaseRevision: "1111111111111111111111111111111111111111"}, Execution: execution}
-					if contracts.ValidateEnvironmentCheck(marshal(check)) == nil && checkMechanism(adapter, target, mode) {
-						needed := append(slices.Clone(requirements), "host-gh-repository-broker")
-						result.Combinations = append(result.Combinations, Combination{adapter, target, agent, nil, mode, []string{"environment-check start", "environment-check stop"}, "/environment_check_schema/$defs/input", needed})
-					}
+
 				}
 			}
 		}
 	}
 	for _, id := range []string{"conversation", "generate"} {
-		selection := &contracts.Workflow{ID: id, Version: 1}
+		selection := contracts.Workflow{ID: id, Version: 1}
 		operations := []string{"submit", "inspect", "history", "stop", "resume"}
 		if id == "conversation" {
 			operations = append(operations, "message", "reply", "interrupt", "close")
@@ -92,28 +88,6 @@ func Catalog() CapabilityCatalog {
 		result.Combinations = append(result.Combinations, Combination{"codex-app-server", "local", "codex", selection, "read_only", operations, "/configuration_schemas/" + id + "_input", []string{"per_execution_native_verification", "native_codex_0.159.2_or_newer_permissions", "self_contained_schema_only"}})
 	}
 	return result
-}
-
-// Environment-check already owns a published mechanism/support matrix. Consume
-// it rather than infer its native support from ordinary Run admission.
-func checkMechanism(adapter, target, mode string) bool {
-	var matrix struct {
-		Targets []struct {
-			Adapter   string   `json:"adapter"`
-			Target    string   `json:"target"`
-			Mechanism string   `json:"mechanism"`
-			Modes     []string `json:"access_modes"`
-		} `json:"targets"`
-	}
-	if json.Unmarshal(Read("environment-check.capabilities.json"), &matrix) != nil {
-		panic("invalid check capability resource")
-	}
-	for _, entry := range matrix.Targets {
-		if entry.Adapter == adapter && entry.Target == target && entry.Mechanism == "implemented" && slices.Contains(entry.Modes, mode) {
-			return true
-		}
-	}
-	return false
 }
 
 func marshal(value any) json.RawMessage {
@@ -126,6 +100,9 @@ func marshal(value any) json.RawMessage {
 
 // Declares is for caller/test selection only, never for production admission.
 func (c CapabilityCatalog) Declares(execution contracts.Execution, selection *contracts.Workflow, operation string) bool {
+	if selection == nil {
+		return false
+	}
 	agent, mode := "codex", "sandbox"
 	var values struct {
 		Agent      string `json:"agent"`
@@ -144,10 +121,7 @@ func (c CapabilityCatalog) Declares(execution contracts.Execution, selection *co
 		if entry.Adapter != execution.Adapter || entry.TargetKind != execution.Target.Kind || entry.Agent != agent || entry.AccessMode != mode || !slices.Contains(entry.Operations, operation) {
 			continue
 		}
-		if selection == nil && entry.Workflow == nil {
-			return true
-		}
-		if selection != nil && entry.Workflow != nil && entry.Workflow.ID == selection.ID && entry.Workflow.Version == selection.Version {
+		if entry.Workflow.ID == selection.ID && entry.Workflow.Version == selection.Version {
 			return true
 		}
 	}

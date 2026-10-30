@@ -30,7 +30,7 @@ if ($taskVersion.data.source_commit -cne ($taskRunnerBuild.source_commit + $(if(
 $taskRunnerVersion=@{version=$taskVersion.data.version;source_commit=$taskVersion.data.source_commit;platform=$taskVersion.data.platform;resource_version=$taskVersion.data.resource_version;resource_digest=$taskVersion.data.resource_digest;protocols=$taskVersion.data.protocols}
 $taskRunnerVersion['build']=$taskRunnerBuild
 $taskSource['schema']='steerrunner-package-source/v1'
-$taskManifest=@{version=2;snapshot_schema_version=1;provenance=$taskSource;components=@{runner=$taskRunnerVersion;viewer=@{build=$taskViewerBuild};client_contract_version=1;viewer_snapshot_schema_version=1};files=$taskEntries}
+$taskManifest=@{version=2;snapshot_schema_version=1;provenance=$taskSource;components=@{runner=$taskRunnerVersion;viewer=@{build=$taskViewerBuild};client_contract_version=2;viewer_snapshot_schema_version=1};files=$taskEntries}
 [IO.File]::WriteAllText((Join-Path $taskOut 'manifest.json'),($taskManifest | ConvertTo-Json -Depth 10),(New-Object Text.UTF8Encoding($false)))
 $null=Test-SRClientPackage $taskOut
 Write-Output $taskOut

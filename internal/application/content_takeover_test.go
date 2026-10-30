@@ -64,7 +64,7 @@ func TestContentFrozenTakeoverContracts(t *testing.T) {
 			check := func(record *runstate.Record, want string) contracts.TakeoverItem {
 				t.Helper()
 				before := canonical(record)
-				item := s.BindTakeoverRequests(TakeoverFacts([]*runstate.Record{record}, nil, resources.RecoveryCapabilities(), workflow.Catalog()))[0]
+				item := s.BindTakeoverRequests(TakeoverFacts([]*runstate.Record{record}, resources.RecoveryCapabilities(), workflow.Catalog()))[0]
 				if item.Status != want || !bytes.Equal(before, canonical(record)) || item.ID != r.ID || item.InputDigest != r.InputDigest || item.RequestID != input.RequestID || item.RequestDigest != command.Digest {
 					t.Fatalf("takeover lost original facts or wrong status: %+v", item)
 				}
@@ -121,7 +121,7 @@ func TestTakeoverActualParserContractStillRequired(t *testing.T) {
 	if err := parser.ValidateRecovery(r.Intents[index].Request); err != nil {
 		t.Fatal("original parser fixture invalid", err)
 	}
-	if item := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "compatible" {
+	if item := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "compatible" {
 		t.Fatal(item)
 	}
 	var pack map[string]any
@@ -131,7 +131,7 @@ func TestTakeoverActualParserContractStillRequired(t *testing.T) {
 	pack["profile"] = "unknown-parser-profile"
 	r.Intents[index].Request.Input.Parse.Payload = string(canonical(pack))
 	before := canonical(r)
-	item := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]
+	item := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())[0]
 	if item.Status != "unsupported" || item.Diagnostic != "frozen parser/result acquisition contract unsupported" || !bytes.Equal(before, canonical(r)) {
 		t.Fatal(item)
 	}

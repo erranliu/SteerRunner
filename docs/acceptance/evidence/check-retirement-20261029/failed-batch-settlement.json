@@ -1,0 +1,21 @@
+{
+  "status": "failed_batch_aborted_after_original_assertion",
+  "reason": "baseline fixture does not recognize current production prompts",
+  "settlement": [
+    {
+      "runs": [
+        "fd7010c5af2275ed46bfc8dd333d11a7"
+      ],
+      "state_dir": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-306436243\\runner",
+      "resources_settled": true
+    },
+    {
+      "runs": [
+        "36b73b0610f5f80181a927300ddba801"
+      ],
+      "state_dir": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-3014413866\\runner",
+      "resources_settled": true
+    }
+  ],
+  "original_evidence": "C:\\srt\\cr29a\\controlled-final2"
+}

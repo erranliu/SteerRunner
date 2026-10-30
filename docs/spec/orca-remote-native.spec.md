@@ -12,9 +12,9 @@ PR [#13](https://github.com/erranliu/SteerRunner/pull/13) 增加认证准备要�
 
 本次只改变 `adapter=orca-terminal`、`target.kind=orca_environment` 的新 Run，正向对象为 Windows/amd64 原生 Codex。保持一个 adapter，不增加公共 helper/native 模式选择或新的执行服务。
 
-对该范围，本文取代[认证 Spec](sandbox-authentication.spec.md)的远端 broker/helper/同 app-server 预检要求、[连接 Spec](orca-local-remote.spec.md)的远端 helper 准备要求及此前专项改动白名单、[停止 Plan](orca-shutdown-verification.plan.md)的 helper 签名/Job/认证关闭要求，并按 §7 收缩[完整环境检查](environment-check.spec.md)。原生连接、路由、身份和未知结果对账规则保留。
+对该范围，本文取代[认证 Spec](sandbox-authentication.spec.md)的远端 broker/helper/同 app-server 预检要求、[连接 Spec](orca-local-remote.spec.md)的远端 helper 准备要求及此前专项改动白名单、[停止 Plan](orca-shutdown-verification.plan.md)的 helper 签名/Job/认证关闭要求。原生连接、路由、身份和未知结果对账规则保留。
 
-本机 `codex-app-server`、Orca local 的 Codex/Pi/DSH 受管执行及其认证/树证明保持原语义。远端 Pi/DSH 本次不扩展。旧 Run/Check 和历史验收不迁移、不改写、不借新规则降级放行。
+本机 `codex-app-server`、Orca local 的 Codex/Pi/DSH 受管执行及其认证/树证明保持原语义。远端 Pi/DSH 本次不扩展。旧 Run 和历史验收不迁移、不改写、不借新规则降级放行。
 
 ## 2. 执行链、配置与冻结身份
 
@@ -105,7 +105,7 @@ close 已尝试但响应丢失时，只读原清单可确认上述资源结束�
 
 - v4 `stop_status=stopped` 和 `resources_settled=true` 仍基于原停止回执/完整清单；不得仅凭状态字符串或 scope 放行。离线成功、活动及未核实逐 Run 结果均带适用 scope；scope 不等于成功。
 - `WorkerAbsent` 只表示原 Orca 资源结束；不设置完整树 `WritersAbsent=true`，不声明认证撤销。只读 scope 不进入恢复或自动重发资格判断。
-- 其他模式保留原证明要求。缺 scope 的旧记录不推断 v4；聚合须逐个 Run/Check 按原范围结算，不排除旧未知项。
+- 其他模式保留原证明要求。缺 scope 的旧记录不推断 v4；聚合须逐个 Run 按原范围结算，不排除旧未知项。
 
 服务停止继续 `ContinueExecutionOnServiceStop`：结束本机观察，不自动停止远端业务；CLI/调用方退出亦不隐式 stop。离线 `service verify-stopped` 保留 writer lease/实例围栏，仅按同一原清单重验新模式并返回 scope；不启动 Engine/服务/模型/helper、不建终端、不发输入、不写原数据库或失败回执。
 
@@ -115,7 +115,7 @@ close 已尝试但响应丢失时，只读原清单可确认上述资源结束�
 
 旧 profile、resource、input digest、attempt 和证据不迁移、不补写；本次故障 Run 不会因新代码变成可续跑。
 
-旧远端 v3 仅支持既有持久快照查询；服务加载时即隔离其自动观察/调度，自动恢复推进、resume、后继输入与 Check actor 对账执行明确 unsupported，不启动 helper/reader/actor。旧记录仍可查询，不能因其不受支持而使整个状态目录服务启动失败；未结算资源仍阻断部署。禁止为兼容旧记录保留完整 v3 远端生命周期、历史查询和签名验证运行栈。
+旧远端 v3 仅支持既有持久快照查询；服务加载时即隔离其自动观察/调度，自动恢复推进、resume、后继输入执行明确 unsupported，不启动 helper/reader/actor。旧记录仍可查询，不能因其不受支持而使整个状态目录服务启动失败；未结算资源仍阻断部署。禁止为兼容旧记录保留完整 v3 远端生命周期、历史查询和签名验证运行栈。
 
 显式 stop 可从既有记录提取并核验原 runtime/worktree/terminal/incarnation，经 Orca 精确关闭原终端；该操作不把旧 Run 转成 v4。只存在 PTY 关闭事实仍未核实，不补记原 helper 树/认证已结算。仅复用原先已持久化且身份完整的停止结论；其余缺口交由原构建或人工处理，不在新构建里补建兼容引擎。旧文件与进程不自动卸载、不杀共享进程，历史保留。
 
@@ -123,15 +123,9 @@ close 已尝试但响应丢失时，只读原清单可确认上述资源结束�
 
 v4 Run 服务换代后仅对账/观察仍存在的原资源，新输入仍需显式 resume；原身份冲突、未知输入、外部输入边界和 final 缺口均不授权重发。原终端已消失不以 PTY 范围证明满足全树恢复资格，不自动新建终端/代理。
 
-## 7. 完整环境检查与消费者
+## 7. 消费者边界
 
-本期 `environment-check start` 对远端完整权限/工具/发布检查返回退出码 3、`unsupported_capability`，说明仅支持 Orca 原生运行。保留可识别 request_id 的原拒绝查询语义；不创建 Check 资源、helper actor、模型或探针 PR。unsupported 不等于 passed，也不是普通 Run 前置门。
-
-内嵌 capabilities 仅收缩远端完整检查；普通 Run、local Codex、Orca local 检查的支持不误删。旧 Check 可 inspect/处理已有资源，不能重启 actor，缺原证据保持未核实。
-
-SteerLine 的远端 preset/schema/请求不输出 helper 字段；展示执行主机已有登录与权限、停止范围为 Orca 原终端。逐 Run 重验展示只读 scope，部署成功仍取现有 `resources_settled`，不另建 scope 授权/聚合策略。旧 Run/Check 不降级；不能因完整 Check unsupported 阻断普通 Run，不能把它显示为完整检查通过。仅消费公开 CLI，不读 Runner 私有库。
-
-新增字段、schema/capabilities/resource digest 与拒绝诊断须做跨仓验证。调用方未接通时不得声明完整产品交付。
+旧 Check 业务已整体退役；无专用命令、查询或资源接管兼容。SteerLine 的绑定、占用检查、HTTP/UI 和清理调用必须另行同步移除，不能直接连接旧客户端。当前状态只接受 v5；普通远端 Run 的路由、身份及停止 scope 保持。
 
 ## 8. 验收与非目标
 
@@ -149,8 +143,7 @@ P0 按“保留的能力、已明确收缩的保证、新发现缺口”逐项�
 | ORN-A04 | scoped stop/只读重验，未知零重发，不伪造树/认证证明 | L1；Controlled EXE；L3 活动停止 |
 | ORN-A05 | 退出继续运行、服务换代显式恢复与原请求对账 | Controlled |
 | ORN-A06 | 旧远端 v3 只读/精确处理资源、拒绝恢复，不保留 helper 运行栈；local v3 回归 | L1/Controlled 混合记录/local 回归 |
-| ORN-A07 | 完整远端 Check unsupported 且零资源，普通 Run 不受阻 | schema/capabilities/公共 CLI |
-| ORN-A08 | SteerLine 配置/scope/部署/Check 同步，旧未知项仍阻断 | 消费者定向及跨仓验证 |
+| ORN-A08 | SteerLine 配置/scope/旧 Check 消费者删除同步，旧未知项仍阻断 | 消费者定向及跨仓验证 |
 | ORN-A09 | full_access 开发闭环与活动停止，复用现有 case；最终构建/零 helper/清理证据 | Plan 两 case 一轮 |
 
 不整体回退 PR #18/#27，不修改 Orca、不增加 SSH/daemon、远端 shell 网关、检查服务、凭据 provider 或第二套可靠执行状态机。不为 sandbox 另跑完整 PR 闭环：保留参数及失败语义，以 Controlled 验证，未真机通过的范围如实登记；不能自动转 full_access。完整 L3/L4 资格不在本次范围。文档可审阅不等于功能完成；当前实现与验收状态见专属记录，不以文档状态代替现场结果。

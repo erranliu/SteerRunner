@@ -22,7 +22,7 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 
 开发交付以 `pr_ready` 为 Runner 里程碑；合并观察与 TaskDelivery 分别处理。`pr_ready` 不保证执行资源已停止。内容生成交付完整 text/JSON 及资源结算；持续对话每轮交付结果后等待显式 message。
 
-当前主链使用 state/v4、development/2、development-audited/2，以及 conversation/1、generate/1。旧文档中的 state/v2/v3 和“一律重启后手动 resume”不能直接作为当前操作指引。职责依据：[执行边界收敛](spec/execution-boundary-refactor.spec.md)、[服务换代恢复](spec/service-generation-recovery.spec.md)。
+当前主链使用 state/v5、development/2、development-audited/2，以及 conversation/1、generate/1。旧文档中的 state/v2/v3 和“一律重启后手动 resume”不能直接作为当前操作指引。职责依据：[执行边界收敛](spec/execution-boundary-refactor.spec.md)、[服务换代恢复](spec/service-generation-recovery.spec.md)。
 
 ## 2 正常交付链路
 
@@ -137,7 +137,6 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 
 创建执行器缩小了“服务丢失创建响应”的恢复窗口，但没有消除外部系统不提供持久创建关联时的不可判定性。当前已有 Runner 内部保留回执与受控故障窗口证据；不能宣称在 Orca、CLI、创建执行器同时失效时仍能任意找回。来源：[创建恢复追补](acceptance/pr-test-gaps-20261020.md)、[创建执行器](../internal/execution/adapters/orcatransport/creation_owner.go)、[恢复资格](../internal/execution/reliable/recovery_policy.go)。
 
-独立 environment-check 另有规则：服务重启后只对账原检查与清理，不恢复模型输入和测试写操作；能力结果与清理结果分开。不能把 Run 的自动接续推广到 Check。来源：[启动协调](../internal/application/engine.go)、[环境检查契约](spec/environment-check.spec.md)。
 
 ## 5 停止 关服务与更新
 
@@ -182,7 +181,6 @@ SteerLine 审计与实施基线为本机 checkout `36d4f596`；其结论不表�
 | 项目 | 当前边界 | 调用方应如何使用 |
 | --- | --- | --- |
 | capabilities 与纯 validate | 配置发现、提前诊断；submit 自带生产校验 | 配置变化时发现能力，需要时预校验；无需每次依次调用三遍 |
-| 完整 environment-check | 独立主动检查，会真实写引用并可创建测试 PR；不是 Run 必填前置 | 新主机、权限/认证变化、环境故障定位时按需使用；不替代 Run 内必要准备 |
 | 独立代码审计 | development-audited 的业务选择 | 需要独立审计时选择；普通开发不应被自动升级成带审计流程 |
 | 原 agent 补报 | 每源最多一次的后备获取方式 | 已取得可信充分结果就跳过；明确未完成不为确认失败再补报 |
 | 独立 parser | 默认关闭；仅当前审计结果获取可选择 | 不为普通实施、发布、内容生成准备 parser 环境或增加解析回合 |
@@ -299,5 +297,5 @@ V1 已按第 8.3 节先用提示词覆盖试验，再验证原 Run 接管和新�
 | 创建回执保留与 unknown | [创建执行器](../internal/execution/adapters/orcatransport/creation_owner.go)、[反例测试](../internal/execution/adapters/orcatransport/creation_owner_test.go) | [创建恢复追补](acceptance/pr-test-gaps-20261020.md) |
 | 结果获取与审计来源 | [结果获取 Spec](spec/result-acquisition.spec.md)、[Workflow 核验](../internal/execution/workflow/verification.go) | [结果获取验收](acceptance/result-acquisition.md) |
 | 内容流程与接管 | [内容 Spec](spec/content-workflows.spec.md) | [内容流程](acceptance/content-workflows.md)、[内容接管](acceptance/content-takeover.md) |
-| 环境与资源结算 | [环境检查 Spec](spec/environment-check.spec.md)、[verify-stopped](../internal/host/verify_stopped.go)、[verify-takeover](../internal/host/takeover.go) | [环境检查](acceptance/environment-check.md)、[Orca 原生远端](acceptance/orca-remote-native.md) |
+| Run 资源结算 | [verify-stopped](../internal/host/verify_stopped.go)、[verify-takeover](../internal/host/takeover.go) | [Check 退役边界](acceptance/check-retirement.md)、[Orca 原生远端](acceptance/orca-remote-native.md) |
 | 按需证据 | [R2 说明](run-evidence-r2.md) | [R2 验收](acceptance/run-evidence-r2.md) |

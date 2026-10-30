@@ -8,9 +8,9 @@ SteerRunner 是可靠的开发执行器：接收确定的材料、执行参数�
 
 本规格固定以下边界：Runner 声明支持能力并验证、冻结和执行请求；外部系统管理实际部署、执行方案和默认选择；测试框架维护本仓独立测试配置。本地原生 Codex 为独立项目交付与基础真机测试的必需配置，不成为所有外部请求的统一架构依赖。
 
-调查基线为本工作树提交 `59c7597ac8056fc5c29ad622034e10e74e4395de`。当前已有 `capabilities.configuration_schemas.run_configuration`、`contracts.ValidateRunConfiguration`、`ValidateRun`、`ValidateEnvironmentCheck`、接受时冻结、CLI 幂等与实例绑定。本仓测试不依赖 SteerLine checkout；`live-config/v1|v2` 的扁平字段由脚本装配为生产请求，场景需求、默认值及环境前置部分散布于脚本。公开 CLI 尚无本文的离线能力查询、纯校验及测试可用性入口；完整 Run 输入 schema 也不能由现有通用信封 schema 替代。
+调查基线为本工作树提交 `59c7597ac8056fc5c29ad622034e10e74e4395de`。当前已有 `capabilities.configuration_schemas.run_configuration`、`contracts.ValidateRunConfiguration`、`ValidateRun`、接受时冻结、CLI 幂等与实例绑定。本仓测试不依赖 SteerLine checkout；`live-config/v1|v2` 的扁平字段由脚本装配为生产请求，场景需求、默认值及环境前置部分散布于脚本。公开 CLI 尚无本文的离线能力查询、纯校验及测试可用性入口；完整 Run 输入 schema 也不能由现有通用信封 schema 替代。
 
-相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../acceptance/run-configuration-publication.md)、[workflow 选择](../archive/2026-10/spec/workflow-selection-audit.spec.md)、[环境检查](environment-check.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
+相关依据：[产品与 CLI](steerrunner.spec.md)、[配置发布现状](../acceptance/run-configuration-publication.md)、[workflow 选择](../archive/2026-10/spec/workflow-selection-audit.spec.md)、[测试分层](../testing.md)、[测试清单](../test-catalog.md)。本文是职责、配置消费及可用性规则的增量，不改变原执行状态机、权限、停止、PR 核验和测试独有断言。
 
 ## 2. 职责与非目标
 
@@ -31,10 +31,10 @@ Runner 的 state-dir、日志等宿主设置仍由 Runner 定义和消费；本�
 ### 3.1 共用单元与校验层次
 
 1. `Execution` 与 `RunConfiguration = {execution, workflow}` 保持现有公开形状。内部配置的 execution 直接符合公开 Execution；需要 workflow 的 Run 再校验完整 RunConfiguration，不另建 `codex_executable` 等生产字段的平行版本。
-2. `repository`、`documents`、`publication`、环境检查 input 及 CLI 信封复用各自公开契约。`run_configuration` 校验通过不代表完整 Run／Publication 校验通过。
-3. 对外发布完整 Run input schema，并复用既有环境检查 schema、adapter/provider schema。`cli.schema.json` 继续表示信封；文档必须区分信封、配置片段和完整 input。
+2. `repository`、`documents`、`publication` 及 CLI 信封复用各自公开契约。`run_configuration` 校验通过不代表完整 Run／Publication 校验通过。
+3. 对外发布完整 Run input schema，并复用既有 adapter/provider schema。`cli.schema.json` 继续表示信封；文档必须区分信封、配置片段和完整 input。
 4. JSON 类型、必填、枚举、未知字段、显式 null 等形状规则在 schema 与生产 gate 间保持一致。仓库与发布目标一致性等不能由标准 JSON Schema 表达的跨字段语义，由同一生产纯校验负责，公开说明限制；schema 单独通过不承诺准入通过。
-5. 测试配置项的 execution 始终校验；workflow 如提供，连同 execution 校验 RunConfiguration，不接受“未消费所以可填非法值”。Run case 缺 workflow 不可用；environment-check 不要求 workflow，只投影 execution 及检查输入，不发送虚构 workflow。配置项携带的合法 workflow 也不能证明检查组合受支持。SteerLine 可独立做前端校验，Runner 的最终 gate 始终有效；测试不能放宽生产规则或借测试字段绕过它。
+5. 测试配置项的 execution 始终校验；workflow 如提供，连同 execution 校验 RunConfiguration，不接受“未消费所以可填非法值”。Run case 缺 workflow 不可用。SteerLine 可独立做前端校验，Runner 的最终 gate 始终有效；测试不能放宽生产规则或借测试字段绕过它。
 
 同一字段值由生产 schema／gate 解释；测试独有约束只决定用例是否满足验证目的。例如“两模型不同”、基线的绝对 native 路径、特定模式属于测试约束，不反向改变外部请求契约。新增组合描述采用有限、类型明确的声明，复用现有判定，不建设通用规则 DSL／配置解释器。
 
@@ -52,15 +52,15 @@ Runner 仅应用公开契约中固定的默认值。当前普通本机路径的 
 
 ## 4. 能力声明与直接使用入口
 
-接口分为能力描述、纯配置校验、执行／控制和实际环境检查四类。前两类不进入执行受理，后两类沿既有持久化与资源核验路径；不要求先运行 validate 或持有历史检查报告才能 submit。
+接口分为能力描述、纯配置校验、执行／控制三类。前两类不进入执行受理，执行／控制沿既有持久化与资源核验路径；不要求先运行 validate 或持有历史检查报告才能 submit。
 
 ### 4.1 能力目录
 
 能力按 `adapter + target.kind + agent + workflow + operation/access_mode` 的支持组合表达，不能把维度任意做笛卡尔积。复用既有 catalog 与生产支持 gate，发布 schema 引用、必要条件、原生版本限制及已实现操作；实施时补齐当前可表达的组合，不能把任意 Orca agent 字符串被接受解释为可靠链路已实现。
 
-目录只声明所选 Runner 构建的实现能力，不扫描机器来添加／删除支持项。某机器缺登录、程序或连接是现场不就绪；缺相应原生操作实现才是不支持。普通执行支持不自动推导 environment-check、审计或停止能力支持。历史测试通过单独绑定构建和配置，不成为现场就绪证明。
+目录只声明所选 Runner 构建的实现能力，不扫描机器来添加／删除支持项。某机器缺登录、程序或连接是现场不就绪；缺相应原生操作实现才是不支持。普通执行支持不自动推导 审计或停止能力支持。历史测试通过单独绑定构建和配置，不成为现场就绪证明。
 
-在 capabilities.data 中增量增加 `capability_catalog`，其 `version:1` 表示目录结构版本，`combinations` 是有限的类型化条目。每条给出 adapter、target_kind、agent、workflow（不适用时为 null）、access_mode、支持的 operations、公开 schema 引用及必要条件。operations 使用已公开命令标识，如 `submit`、`reply`、`resume`、`stop`、`environment-check start`；条件限制须落实到具体组合，不把某模式的支持泛化到其他模式。必要条件只表达实现约束、必需字段及依赖版本，不列用户机器、账号、模型资产或动态就绪值，也不承载可执行表达式。
+在 capabilities.data 中增量增加 `capability_catalog`，其 `version:1` 表示目录结构版本，`combinations` 是有限的类型化条目。每条给出 adapter、target_kind、agent、workflow、access_mode、支持的 operations、公开 schema 引用及必要条件。operations 使用已公开命令标识，如 `submit`、`reply`、`resume`、`stop`；条件限制须落实到具体组合，不把某模式的支持泛化到其他模式。必要条件只表达实现约束、必需字段及依赖版本，不列用户机器、账号、模型资产或动态就绪值，也不承载可执行表达式。
 
 workflow 为已公开的 `{id,version}` 或 null；null 仅表示该条目服务于无 workflow 的操作，不是任意 workflow 通配。adapter 已决定的隐式 agent（本机 Codex）及契约允许缺省的 agent／access_mode，用生产既有默认规则建立只读匹配视图；不修改原输入、不查现场，也不把非法显式值当成缺省。operations 表示该链路的命令处理已有实现，不表示当前状态允许调用或必然完成；例如 stop 的授权撤销、原生停止与写者退出证据仍分别按既有契约判断，已知的原生限制须随该条目说明。
 
@@ -68,7 +68,7 @@ workflow 为已公开的 `{id,version}` 或 null；null 仅表示该条目服务
 
 目录不是额外的生产准入白名单。`validate.valid=true` 只表示相应生产纯 gate 接受该值；目录未列出的扩展标识可能仍满足输入契约，但不能宣称链路已受支持或现场就绪。反之，目录列为支持的组合仍须满足其参数／schema／语义约束。validate 不因目录缺项额外拒绝原 gate 接受的输入；原 gate 明确返回 unsupported_capability／unsupported_schema 时继续拒绝。测试只选择已声明的链路；目录缺项记 `undeclared_capability`，与 gate 已明确判定不支持分别表达。
 
-同一 capability_catalog 内增加固定的 `validation_kinds` 映射以发现本期三个校验入口；键为 kind，值为相对 capabilities.data 的 schema JSON Pointer：`run-configuration` → `/configuration_schemas/run_configuration`，`run` → `/configuration_schemas/run_input`，`environment-check` → `/environment_check_schema/$defs/input`。既有 environment_check_schema 是含 $defs 的整份文档，不能把文档根误当成 input schema；使用子 schema 时保留原文档的本地 $ref 解析上下文。对应 schema 均须随同一响应可取得；其中 run_input 为本期新增完整 Run input schema。顶层 commands 保留旧列表并增量列出 validate；不能仅凭该命令名推断所有 kind。该映射不增加运行时注册／插件／任意 schema 执行机制。
+同一 capability_catalog 的 `validation_kinds` 只含两个固定映射：`run-configuration` → `/configuration_schemas/run_configuration`，`run` → `/configuration_schemas/run_input`。schema 随同一响应提供；不增加运行时注册或任意 schema 执行机制。
 
 增量增加 `capability_source`，以 `kind:executable|service` 区分来源，并包含实际程序版本、CLI 协议、EXE SHA 和 resource_digest。离线值来自当前被调用的 EXE；在线值必须由实际响应的服务附带其 instance_id 与固定构建身份，不能由 CLI 先查 status 再拼接而产生实例竞态。同版两种查询的静态目录／schema 一致，来源对象不同；离线结果不能证明当前服务就绪或与该 EXE 相同。
 
@@ -79,13 +79,12 @@ workflow 为已公开的 `{id,version}` 或 null；null 仅表示该条目服务
 | `capabilities --offline --json` | 当前 EXE 的公开目录、schema、版本及 capability_source；静态部分与同版在线声明同源 | 不启动／连接服务，不读测试或外部配置，不探测工具；`--offline` 与 state-dir、实例绑定等在线选项组合拒绝 |
 | `validate --kind run-configuration --input - --json` | stdin 直接为 `{execution, workflow}`，调用配置片段纯校验 | 不要求协议／request_id／input 写信封，不加载命名 profile |
 | `validate --kind run --input - --json` | stdin 直接为完整 Run input，调用完整 Run 纯校验 | 不受理 Run、不取得材料、不查询程序路径、不创建目录／回执 |
-| `validate --kind environment-check --input - --json` | stdin 直接为完整 Check input，调用检查 input 纯校验 | 不要求 workflow，不执行实际环境检查，不创建 Check |
 
-三个 validate kind 只接受对应的原始对象，不自动解包 `{protocol, request_id, input}`；误传写信封按未知／缺失字段拒绝，不启用两种输入格式猜测。沿既有 UTF-8、8 MiB、唯一字段、单 JSON 对象及严格字段规则读取；不填入材料内容、解析凭据或把原生默认伪写成确定结果。CLI 的协议选择仍沿全局协议参数，stdin 不重复包裹协议。
+两个 validate kind 只接受对应的原始对象，不自动解包 `{protocol, request_id, input}`；误传写信封按未知／缺失字段拒绝，不启用两种输入格式猜测。沿既有 UTF-8、8 MiB、唯一字段、单 JSON 对象及严格字段规则读取；不填入材料内容、解析凭据或把原生默认伪写成确定结果。CLI 的协议选择仍沿全局协议参数，stdin 不重复包裹协议。
 
-`--state-dir`、实例绑定及 Run 选择器不适用于纯校验。响应继续使用现有 v1 Response，request_id 始终 null，不建立幂等记录且不能通过 inspect 查到校验。真正 submit／environment-check start 的写信封、request_id、去重和受理行为保持原样，并再次校验完整输入；纯 validate 成功不替代写信封合法性或现场核验。
+`--state-dir`、实例绑定及 Run 选择器不适用于纯校验。响应继续使用现有 v1 Response，request_id 始终 null，不建立幂等记录且不能通过 inspect 查到校验。真正 submit 的写信封、request_id、去重和受理行为保持原样，并再次校验完整输入；纯 validate 成功不替代写信封合法性或现场核验。
 
-不新增自动 profile 合并或模板执行接口。独立用户直接维护完整请求文件，通过既有 stdin 提交；SteerLine 和测试框架各自装配同形状请求。纯校验不保证随后现场仍可用。实际 Agent、push／PR 探针继续使用显式 environment-check，不进入能力查询或纯校验。
+不新增自动 profile 合并或模板执行接口。独立用户直接维护完整请求文件，通过既有 stdin 提交；SteerLine 和测试框架各自装配同形状请求。纯校验不保证随后现场仍可用。能力查询和纯校验不执行 Agent 或 Git/PR 操作。
 
 ### 4.3 校验结果与字段诊断
 
@@ -139,7 +138,7 @@ resource_digest 覆盖静态生产资源、schema、默认规则与公开能力�
 | 外层字段 | 拟定形状与规则 |
 | --- | --- |
 | `schema` | 固定 `steerrunner-test-config/v1`；未知版本拒绝 |
-| `configurations` | 测试配置项 ID 到 `{execution, workflow?}` 的映射。ID 由唯一 case 注册引用，例如 `local-codex`、`local-codex-audited`、`orca-local-pi`；execution 必需，workflow 对 Run 必需、检查不消费。不支持继承、表达式或自动 fallback |
+| `configurations` | 测试配置项 ID 到 `{execution, workflow?}` 的映射。ID 由唯一 case 注册引用，例如 `local-codex`、`local-codex-audited`、`orca-local-pi`；execution 必需，workflow 对 Run 必需。不支持继承、表达式或自动 fallback |
 | `fixture` | 一份 `{repository, publication?}`，字段使用完整公开对象，声明本批测试源。源 commit／分支只读；真正测试写入使用每 case 独立命名空间。当前专属 GitHub 现场要求 command publication，其他合法产品 provider 不自动替换。缺字段／不符 case 要求仅影响依赖它的 case |
 | `harness` | 仅测试设置：admin_host 故障宿主；字段由严格测试 schema 限定，不能携带自由 shell 或覆写生产参数。证据目录沿既有 -OutDir 管理，不重复配置 |
 
@@ -183,7 +182,6 @@ case 的配置项引用、角色、组合、模式、模型约束、夹具及故
 | 两模型审计 | 本地审计 workflow，显式实施／审计模型且不同 |
 | Orca 本机 Codex／Pi／DSH | 对应 local/agent 配置、helper、注册项目及匹配工具 |
 | Orca 远端及可靠性 | orca_environment、明确远端配置；故障 case 额外要求其独有设施 |
-| 两种权限环境检查 | 对应检查支持组合及显式匹配模式；普通 workflow 支持不能代替检查支持 |
 | 混合多 Run | 两个不同角色配置、同服务隔离要求及相应夹具 |
 
 本规格的 L3 可用性专指“配置是否足以选择并尝试此 case”。只加载所选 EXE 的静态能力声明、配置、schema 与 case 需求，不探测真实工具／账号／网络，不调用模型或创建现场。程序路径存在性、原生版本、登录、权限及远端连接仍由实际测试的既有准备阶段核验；不额外建立一轮全链路预检。
@@ -238,7 +236,7 @@ case 的配置项引用、角色、组合、模式、模型约束、夹具及故
 | IC-02 | 离线能力与三个可发现 kind 的原始对象纯校验零服务／目录／外部动作；schema 引用可解，来源同版一致；无 request_id；输入／I/O／内部错误及主 fault 优先级正确 | L1 + Controlled |
 | IC-03 | 独立 CLI、测试组装和外部完整请求共用契约；测试文件变化不影响普通 submit，原重试／恢复不读新配置 | Controlled |
 | IC-04 | 固定 local-codex 基线缺失、相对／包装器／错版本路径不能合格；L1／Controlled 可独立运行；L3 通过不能伪造 L2 基线，不误加远端统一依赖 | L1 + 定向原生前置 |
-| IC-05 | case 需求覆盖全部注册项；无用户逐 case 绑定副本；检查不强带 workflow；混合／审计／模式精确匹配，原因区分缺配置／错误／不支持，available 不代表环境就绪 | L1 + 框架受控测试 |
+| IC-05 | case 需求覆盖全部注册项；无用户逐 case 绑定副本；混合／审计／模式精确匹配，原因区分缺配置／错误／不支持，available 不代表环境就绪 | L1 + 框架受控测试 |
 | IC-06 | 不可用 case 零派发且不阻断独立已配置项；请求范围不收缩、子集／显式排除／空集／失败优先级及完整覆盖判断正确 | 框架受控测试 |
 | IC-07 | manifest 固定真实请求、配置／构建／需求摘要；原停止、幂等和未知结果对账断言保持 | Controlled + 复用 L3 |
 | IC-08 | 使用新配置完成本地 Codex L2，生产提示词、真实发布与收尾证据满足原 smoke 要求 | L2 真机 |

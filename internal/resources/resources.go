@@ -20,7 +20,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 )
 
-var Version = "0.2.0-dev.3-r3"
+var Version = "0.2.0-dev.4"
 var SourceCommit = "development"
 
 //go:embed assets/*
@@ -68,7 +68,7 @@ func resourceDigest(catalog CapabilityCatalog) string {
 func VersionInfo() any {
 	return map[string]any{
 		"version": Version, "source_commit": SourceCommit,
-		"protocols": []string{contracts.Protocol}, "resource_version": 2,
+		"protocols": []string{contracts.Protocol}, "resource_version": 3,
 		"resource_digest": Digest(), "platform": "windows/amd64",
 		"recovery": RecoveryCapabilities(),
 	}
@@ -96,32 +96,29 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
-		"model_input_contract":       ModelInputContract(),
-		"execution_wait":             map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
-		"run_observation":            map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
-		"recovery":                   RecoveryCapabilities(),
-		"run_usage":                  UsageCapabilities(),
-		"run_cost":                   CostCapabilities(),
-		"run_usage_schema":           json.RawMessage(Read("run-usage.schema.json")),
-		"run_usage_events_schema":    json.RawMessage(Read("run-usage-events.schema.json")),
-		"run_cost_estimate_schema":   json.RawMessage(Read("run-cost-estimate.schema.json")),
-		"run_pricing_policy_schema":  json.RawMessage(Read("run-pricing-policy.schema.json")),
-		"service_start_schema":       json.RawMessage(Read("service-start.schema.json")),
-		"progress_file":              ProgressCapabilities(),
-		"progress_file_schema":       json.RawMessage(Read("progress-file.schema.json")),
-		"result_file":                ResultFileCapabilities(),
-		"result_file_schema":         json.RawMessage(Read("result-file.schema.json")),
-		"run_evidence":               json.RawMessage(Read("run-evidence.capabilities.json")),
-		"run_evidence_schema":        json.RawMessage(Read("run-evidence.schema.json")),
-		"environment_check":          json.RawMessage(Read("environment-check.capabilities.json")),
-		"environment_check_fixtures": json.RawMessage(Read("environment-check.fixtures.json")),
-		"environment_check_schema":   json.RawMessage(Read("environment-check.schema.json")),
-		"native_session_viewer":      map[string]any{"adapters": viewerAdapters},
+		"model_input_contract":      ModelInputContract(),
+		"execution_wait":            map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
+		"run_observation":           map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
+		"recovery":                  RecoveryCapabilities(),
+		"run_usage":                 UsageCapabilities(),
+		"run_cost":                  CostCapabilities(),
+		"run_usage_schema":          json.RawMessage(Read("run-usage.schema.json")),
+		"run_usage_events_schema":   json.RawMessage(Read("run-usage-events.schema.json")),
+		"run_cost_estimate_schema":  json.RawMessage(Read("run-cost-estimate.schema.json")),
+		"run_pricing_policy_schema": json.RawMessage(Read("run-pricing-policy.schema.json")),
+		"service_start_schema":      json.RawMessage(Read("service-start.schema.json")),
+		"progress_file":             ProgressCapabilities(),
+		"progress_file_schema":      json.RawMessage(Read("progress-file.schema.json")),
+		"result_file":               ResultFileCapabilities(),
+		"result_file_schema":        json.RawMessage(Read("result-file.schema.json")),
+		"run_evidence":              json.RawMessage(Read("run-evidence.capabilities.json")),
+		"run_evidence_schema":       json.RawMessage(Read("run-evidence.schema.json")),
+		"native_session_viewer":     map[string]any{"adapters": viewerAdapters},
 		"instance_binding": map[string]any{"expected_instance_id": true, "full_binding": map[string]any{
 			"contract": contracts.ServiceBindingContract, "before_effects": true, "no_implicit_start": true, "commands": contracts.ServiceBindingCommands(),
 		}},
 		"protocol": contracts.Protocol, "version": Version,
-		"resource_version": 2, "resource_digest": Digest(),
+		"resource_version": 3, "resource_digest": Digest(),
 		"execution":             map[string]any{"status": "implemented", "adapters": []string{"codex-app-server", "orca-terminal"}, "readiness": "requires_per_run_native_verification"},
 		"workflow":              json.RawMessage(Read("development.json")),
 		"workflows":             workflow.Catalog(),
@@ -129,13 +126,13 @@ func Capabilities() any {
 		"generate":              map[string]any{"workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "selection": "explicit_file_paths_or_whole_tree", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check inspect", "environment-check stop", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
 	}
 }
 
 func RecoveryCapabilities() contracts.RecoverySupport {
-	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v3", "steerrunner-state/v4"}, WritableStateFormat: "steerrunner-state/v4", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
+	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v5"}, WritableStateFormat: "steerrunner-state/v5", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
 		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {3, 4}, "orca.terminal-profile": {3, 4}, "orca.terminal-state": {6, 7}}}
 }

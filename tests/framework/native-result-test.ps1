@@ -84,18 +84,6 @@ foreach($taskField in @('session_id','workspace','branch')){
 $taskResourceView.run_id='foreign'
 $taskRejected=$false;try{Get-SRNativeResources $taskResourceManifest (Convert-ResultObject $taskBase) $taskResourceView|Out-Null}catch{$taskRejected=$true}
 if(-not $taskRejected){throw 'Foreign native resource snapshot accepted'}
-$taskEnvManifest=Convert-ResultObject @{scenario='environment-check.local-sandbox';level='L3';driver='environment-check';base_revision='base';execution=@{settings=@{access_mode='sandbox'}}}
-$taskEnvScenario=$taskBase.Clone();$taskEnvScenario.scenario=$taskEnvManifest.scenario
-$taskEnvItems=@(1..12|ForEach-Object {@{required=$true;status='passed';evidence=@(@{verified=$true;source='native_tool_and_owner_verification';check_id='first';session_id='session';turn_id='turn';nonce='nonce';operation_id='operation';tool_call_id='tool'})}})
-$taskEnv=Convert-ResultObject @{ok=$true;data=@{check=@{check_id='first';status='completed';result='passed';cleanup_status='completed';input=@{execution=@{settings=@{access_mode='sandbox'}}};actual=@{access_mode='sandbox';approval_policy='never';session_id='session';turn_id='turn';nonce='nonce'};resources=@{base_sha='base';head_sha='first-head';pr_url='pr-first';pr_closed=$true;base_deleted=$true;head_deleted=$true;writer_stopped=$true;local_removed=$true};items=$taskEnvItems}}}
-Assert-SRNativeScenario $taskEnvManifest $taskResult (Convert-ResultObject $taskEnvScenario)
-Assert-SREnvironmentScenario $taskEnvManifest (Convert-ResultObject $taskEnvScenario) $taskEnv
-foreach($taskMutation in @('mode','cleanup','evidence')){
-    $taskBadEnvelope=$taskEnv|ConvertTo-Json -Depth 30|ConvertFrom-Json
-    switch($taskMutation){'mode'{$taskBadEnvelope.data.check.actual.access_mode='full_access'};'cleanup'{$taskBadEnvelope.data.check.resources.pr_closed=$false};'evidence'{$taskBadEnvelope.data.check.items[0].evidence[0].session_id='foreign'}}
-    $taskRejected=$false;try{Assert-SREnvironmentScenario $taskEnvManifest (Convert-ResultObject $taskEnvScenario) $taskBadEnvelope}catch{$taskRejected=$true}
-    if(-not $taskRejected){throw "Environment Check merge lost its $taskMutation validation"}
-}
 if($Evidence){
     $null=[IO.Directory]::CreateDirectory($Evidence)
     $taskHistory=Join-Path $Evidence 'audit-history.jsonl'

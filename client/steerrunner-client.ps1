@@ -1,5 +1,5 @@
 ﻿param(
-    [ValidateSet('Configure','Discover','Submit','Observe','Inspect','Reply','Resume','Stop','Reconcile','List','Viewer','Evidence','Check')]
+    [ValidateSet('Configure','Discover','Submit','Observe','Inspect','Reply','Resume','Stop','Reconcile','List','Viewer','Evidence')]
     [string]$Action = 'Configure',
     [string]$InputFile = '',
     [string]$ClientRoot = '',
@@ -300,7 +300,7 @@ function Load-Record([string]$id) {
 function Send-Saved($record,[switch]$Retry) {
     $meta=$record.meta; $config=@{runner_executable=$meta.runner_executable;state_dir=$meta.state_dir}
     $binding=Binding $config
-    $queryCmd=@('inspect'); if ($meta.command.StartsWith('environment-check ')) { $queryCmd=@('environment-check','inspect') }
+    $queryCmd=@('inspect')
     $query=Runner $config.runner_executable ($queryCmd+@('--state-dir',$config.state_dir,'--request-id',$meta.request_id,'--expected-binding',(JSON $binding)))
     if ($query.exit_code -eq 0 -and $query.response.ok) { Atomic (Join-Path $record.directory 'receipt.json') $query.response; return @{operation_id=$meta.request_id;cli=$query;reconciled=$true} }
     if (-not $Retry) { return @{operation_id=$meta.request_id;cli=$query;reconciled=$false;note='Unknown results require reconciliation of the original ID; no new request was sent.'} }
@@ -419,18 +419,6 @@ try {
         'Reconcile' { Keys $inputValue @('operation_id','retry_same_request');$id=Identifier $inputValue.operation_id;$lock=Lock (Join-Path (Record-Directory $id) 'command.lock');try{$data=Send-Saved (Load-Record $id) -Retry:([bool](Get $inputValue 'retry_same_request' $false))}finally{$lock.Dispose()} }
         'List' { $data=@(); $path=Join-Path $script:root 'submissions'; if (Test-Path -LiteralPath $path) { foreach ($dir in Get-ChildItem -LiteralPath $path -Directory) { try { $record=Load-Record $dir.Name;$data+=@{operation_id=$record.meta.request_id;command=$record.meta.command;state_dir=$record.meta.state_dir;project=$record.meta.project;run_id=$record.meta.run_id} } catch { $data+=@{operation_id=$dir.Name;error='damaged_or_incomplete_record'} } } } }
         'Viewer' { $viewer=Join-Path $script:bundle 'steerrunner-viewer.exe'; if (-not [IO.File]::Exists($viewer)) { Fail 'viewer_missing' 'Viewer is not installed in this bundle.' }; Start-Process -FilePath $viewer -WindowStyle Normal | Out-Null; $data=@{opened=$true} }
-        'Check' {
-            Keys $inputValue @('operation','operation_id','input','check_id','state_dir','acknowledge_side_effects')
-            $config=Load-Config;$config.runner_executable=Resolve-Runner $config
-            if (Has $inputValue 'state_dir') { $config.state_dir=$inputValue.state_dir }
-            $operation=Get $inputValue 'operation' 'inspect'
-            if ($operation -eq 'inspect') { $binding=Binding $config;$data=@{cli=(Runner $config.runner_executable @('environment-check','inspect','--state-dir',$config.state_dir,'--check-id',$inputValue.check_id,'--expected-binding',(JSON $binding)))} }
-            elseif ($operation -in @('start','stop')) {
-                if (-not (Get $inputValue 'acknowledge_side_effects' $false)) { Fail 'explicit_check_required' 'The skill must first explain and obtain authorization for the public check side effects.' }
-                $id=Identifier $inputValue.operation_id;$lock=Lock (Join-Path (Record-Directory $id) 'command.lock')
-                try { if ([IO.File]::Exists((Join-Path (Record-Directory $id) 'meta.json'))) { $data=Send-Saved (Load-Record $id) } else { if ($operation -eq 'start') { Validate $config 'environment-check' $inputValue.input };$binding=Binding $config -Start:($operation -eq 'start');$record=Save-Command $id ('environment-check '+$operation) $config $inputValue.input '' $binding $null;$data=Send-Saved $record -Retry } } finally { $lock.Dispose() }
-            } else { Fail 'invalid_input' 'Unknown environment check operation.' }
-        }
         default { $data=Existing $inputValue $Action }
     }
     $exitCode=0; if ($data -is [Collections.IDictionary] -and (Has $data 'cli')) { $exitCode=$data.cli.exit_code }

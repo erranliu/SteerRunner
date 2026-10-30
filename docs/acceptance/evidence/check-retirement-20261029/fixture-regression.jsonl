@@ -1,0 +1,16 @@
+{"Time":"2026-10-29T17:34:52.1369907+08:00","Action":"start","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol"}
+{"Time":"2026-10-29T17:34:52.1375204+08:00","Action":"start","Package":"github.com/erranliu/SteerRunner/tests/helpers/native"}
+{"Time":"2026-10-29T17:34:53.4137008+08:00","Action":"run","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Test":"TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts"}
+{"Time":"2026-10-29T17:34:53.4137008+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Test":"TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts","Output":"=== RUN   TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts\n"}
+{"Time":"2026-10-29T17:34:53.4232335+08:00","Action":"run","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Test":"TestCurrentAuditReportNeverExecutesRepair"}
+{"Time":"2026-10-29T17:34:53.4232335+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Test":"TestCurrentAuditReportNeverExecutesRepair","Output":"=== RUN   TestCurrentAuditReportNeverExecutesRepair\n"}
+{"Time":"2026-10-29T17:34:53.4259438+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Test":"TestCurrentAuditReportNeverExecutesRepair","Output":"--- PASS: TestCurrentAuditReportNeverExecutesRepair (0.00s)\n"}
+{"Time":"2026-10-29T17:34:53.4259438+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Test":"TestCurrentAuditReportNeverExecutesRepair","Elapsed":0}
+{"Time":"2026-10-29T17:34:53.4259438+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Output":"PASS\n"}
+{"Time":"2026-10-29T17:34:53.429015+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Output":"ok  \tgithub.com/erranliu/SteerRunner/tests/helpers/native\t1.292s\n"}
+{"Time":"2026-10-29T17:34:53.429015+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/tests/helpers/native","Elapsed":1.292}
+{"Time":"2026-10-29T17:34:54.4194265+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Test":"TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts","Output":"--- PASS: TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts (1.01s)\n"}
+{"Time":"2026-10-29T17:34:54.4194265+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Test":"TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts","Elapsed":1.01}
+{"Time":"2026-10-29T17:34:54.4194265+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Output":"PASS\n"}
+{"Time":"2026-10-29T17:34:54.4253825+08:00","Action":"output","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Output":"ok  \tgithub.com/erranliu/SteerRunner/internal/testkit/protocol\t2.288s\n"}
+{"Time":"2026-10-29T17:34:54.4253825+08:00","Action":"pass","Package":"github.com/erranliu/SteerRunner/internal/testkit/protocol","Elapsed":2.288}

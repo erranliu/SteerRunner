@@ -1,5 +1,7 @@
 # 通用 Orca Agent 本机接入验收
 
+历史构建验收记录：以下 Check、旧状态升级和已删除源码的描述仅说明当时构建，不是当前入口。2026-10-29 已退役旧业务，当前边界见[退役记录](check-retirement.md)；原始失败、资源与结算证据保持。
+
 日期：2026-10-18；工作分支 `codex/orca-terminal-agents`，基线 `7c48969`（本机 Orca 接入合并后）。验收构建来自当时未提交的工作树，以本文登记的构建 SHA 绑定。
 
 本次只改 Runner 及其配套进程内扩展。Orca 1.4.224 不改源码、安装包、命令或全局配置；没有 structured、SDK 会话驱动、RPC、ACP 或 headless 替代路径。执行仍是原 Orca terminal 内的原 agent TUI。

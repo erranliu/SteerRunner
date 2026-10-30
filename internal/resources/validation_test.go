@@ -38,7 +38,7 @@ func TestSRValidationPreservesGateAndDiagnostics(t *testing.T) {
 			}
 		}
 	}
-	for _, name := range []string{"run-configuration", "run", "environment-check"} {
+	for _, name := range []string{"run-configuration", "run"} {
 		if diagnosticSchema(name) == nil {
 			t.Fatal("published schema did not compile", name)
 		}
@@ -64,12 +64,6 @@ func TestSRCapabilityCatalogIsStaticAndResolvable(t *testing.T) {
 	for name, pointer := range catalog.ValidationKinds {
 		var schemas map[string]json.RawMessage
 		_ = json.Unmarshal(ConfigurationSchemas(), &schemas)
-		if name == "environment-check" {
-			if pointer != "/environment_check_schema/$defs/input" {
-				t.Fatal(pointer)
-			}
-			continue
-		}
 		key := strings.TrimPrefix(pointer, "/configuration_schemas/")
 		if len(schemas[key]) == 0 {
 			t.Fatal("unresolvable schema", name, pointer)
@@ -84,7 +78,7 @@ func TestSRCapabilityCatalogIsStaticAndResolvable(t *testing.T) {
 		if entry.TargetKind == "orca_environment" {
 			execution.Target.Environment = "selected"
 		}
-		if contracts.ValidateExecution(execution) != nil || !catalog.Declares(execution, entry.Workflow, entry.Operations[0]) {
+		if contracts.ValidateExecution(execution) != nil || !catalog.Declares(execution, &entry.Workflow, entry.Operations[0]) {
 			t.Fatal("catalog disagrees with gate", entry)
 		}
 	}

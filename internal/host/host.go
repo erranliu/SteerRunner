@@ -23,7 +23,6 @@ type Options struct {
 	Candidate          string                            `json:"candidate,omitempty"`
 	ArtifactID         string                            `json:"artifact_id,omitempty"`
 	ExpectedInstanceID string                            `json:"expected_instance_id,omitempty"`
-	CheckID            string                            `json:"check_id,omitempty"`
 	NativeSession      *contracts.NativeSessionTarget    `json:"native_session,omitempty"`
 	Command            string                            `json:"command"`
 	RunID              string                            `json:"run_id,omitempty"`

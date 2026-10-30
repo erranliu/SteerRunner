@@ -117,7 +117,6 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
     foreach($taskField in @('run_id','pr_url','original_head')) { if ([string]::IsNullOrWhiteSpace([string](Get-SRResultField $Scenario $taskField))) { throw "Live result lacks $taskField" } }
     $taskMerge=Get-SRResultField $Scenario 'merge_commit'
     switch($Manifest.driver) {
-        'environment-check' { if($taskMerge){throw 'Environment check must close its verified PR without merging'} }
         'development-audited' { if ($taskMerge) { throw 'Audited scenario must leave its verified PR unmerged' } }
         'development-multirun' {
             $taskRuns=@(Get-SRResultField $Scenario 'runs')
@@ -157,19 +156,4 @@ function Assert-SRParserScenario($Manifest,$Scenario) {
     foreach ($taskCase in $taskCases) { if ($taskCase.passed -isnot [bool] -or -not $taskCase.passed) { throw 'Parser case did not pass' } }
     if ($taskCases[0].session -cne $taskCalls[0].session_id -or $taskCases[1].session -cne $taskCalls[1].session_id -or $taskCases[0].tool_events -ne 0 -or $taskCases[1].induced_output_status -notin @('completed','policy_violation')) { throw 'Parser semantic or source evidence is incomplete' }
     foreach ($taskFlag in @('canary_unchanged','read_only_command_denied','active_cancel_stopped')) { if ((Get-SRResultField $taskCases[1] $taskFlag) -cne $true) { throw 'Parser boundary evidence is incomplete' } }
-}
-
-function Assert-SREnvironmentScenario($taskNative,$taskScenario,$taskCheckEnvelope) {
-    $taskMerge=Get-SRResultField $taskScenario 'merge_commit'
- $taskCheck = $taskCheckEnvelope.data.check
- if (-not $taskCheckEnvelope.ok -or $taskCheck.check_id -ne $taskScenario.run_id -or $taskCheck.status -ne 'completed' -or $taskCheck.result -ne 'passed' -or $taskCheck.cleanup_status -ne 'completed' -or $taskCheck.input.execution.settings.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.access_mode -ne $taskNative.execution.settings.access_mode -or $taskCheck.actual.approval_policy -ne 'never' -or -not $taskCheck.actual.session_id -or -not $taskCheck.actual.turn_id -or $taskCheck.resources.base_sha -ne $taskNative.base_revision -or $taskCheck.resources.head_sha -ne $taskScenario.original_head -or $taskCheck.resources.pr_url -ne $taskScenario.pr_url) { throw 'Original complete Check context/result does not match the frozen native case' }
- foreach ($taskField in @('pr_closed','base_deleted','head_deleted','writer_stopped','local_removed')) { if (-not $taskCheck.resources.$taskField) { throw "Unsettled original Check resource: $taskField" } }
- if (@($taskCheck.items).Count -ne 12) { throw 'Original native manifest is incomplete' }
- foreach ($taskItem in $taskCheck.items) {
-  if (-not $taskItem.required -or $taskItem.status -ne 'passed' -or @($taskItem.evidence).Count -eq 0) { throw 'Original native item lacks passed required evidence' }
-  foreach ($taskFact in $taskItem.evidence) { if (-not $taskFact.verified -or $taskFact.source -ne 'native_tool_and_owner_verification' -or $taskFact.check_id -ne $taskCheck.check_id -or $taskFact.session_id -ne $taskCheck.actual.session_id -or $taskFact.turn_id -ne $taskCheck.actual.turn_id -or $taskFact.nonce -ne $taskCheck.actual.nonce -or -not $taskFact.operation_id -or -not $taskFact.tool_call_id) { throw 'Original native evidence identity conflicts with its Check' } }
- }
-
- if (-not $taskScenario.pr_url -or -not $taskScenario.original_head -or $taskMerge) { throw 'Environment check must verify and close its owned PR without merging' }
-
 }

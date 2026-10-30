@@ -1,0 +1,282 @@
+[
+  {
+    "label": "l1-summary.json",
+    "original_path": "C:\\srt\\cr29e\\fixed\\summary.json",
+    "size_bytes": 1723,
+    "sha256": "1815e59d452fc9d6d46fd953279299206d51e38a0ba60d604397802464f85012",
+    "copy": "l1-summary.json"
+  },
+  {
+    "label": "framework-result.json",
+    "original_path": "C:\\srt\\cr29e\\fixed\\framework\\result.json",
+    "size_bytes": 1936,
+    "sha256": "f162042d8cf97d71c208c946989d5437565520762ff0495337c3dc397a3e9d72",
+    "copy": "framework-result.json"
+  },
+  {
+    "label": "controlled-result.json",
+    "original_path": "C:\\srt\\cr29e\\controlled\\result.json",
+    "size_bytes": 206,
+    "sha256": "073d09a2b6f91f6e261d5910fce5f57898232a56c28fe12fa13933fa3e78d1a3",
+    "copy": "controlled-result.json"
+  },
+  {
+    "label": "controlled-source-identity.json",
+    "original_path": "C:\\srt\\cr29e\\controlled\\source-identity.json",
+    "size_bytes": 1211,
+    "sha256": "b2ac9dba9d1c914d4c953f622605a7019beb223faf9b5ec1bcca9e4b8090d583",
+    "copy": "controlled-source-identity.json"
+  },
+  {
+    "label": "controlled.log",
+    "original_path": "C:\\srt\\cr29e\\controlled\\integration.log",
+    "size_bytes": 14749,
+    "sha256": "b0d05eed9a497d3199f9b85d92a4df2aa8b9c3f84afd98f03440515fe4b25f1b",
+    "copy": "controlled.log"
+  },
+  {
+    "label": "client-result.json",
+    "original_path": "C:\\srt\\cr29e\\client\\result.json",
+    "size_bytes": 2054,
+    "sha256": "8125b27a516b5e5da46373e7ef71fe0d745bcefa51aab3840143961fad66a3c7",
+    "copy": "client-result.json"
+  },
+  {
+    "label": "public-contract-result.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\result.json",
+    "size_bytes": 1008,
+    "sha256": "45f45c4231956d7c5f7fe65ec9dc4d7876947bc019f40f72a8aff82a75b82776",
+    "copy": "public-contract-result.json"
+  },
+  {
+    "label": "version.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\version.json",
+    "size_bytes": 755,
+    "sha256": "ebe922e95f2d2655c3adc2bfe5cac19788e744fce14238d3a21741377c856e32",
+    "copy": "version.json"
+  },
+  {
+    "label": "capabilities.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\capabilities.json",
+    "size_bytes": 107236,
+    "sha256": "69adabdd7ebda7393ef76710523de081266d792c65bf1366a46373d2aeb16c25",
+    "copy": "capabilities.json"
+  },
+  {
+    "label": "help.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\help.json",
+    "size_bytes": 1373,
+    "sha256": "3ccce36c4bc02d7bbe5569e34ed2e694939ff9707ffb885ff422edb125d8316f",
+    "copy": "help.json"
+  },
+  {
+    "label": "runner-build.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\final-bin\\steerrunner.exe.build.json",
+    "size_bytes": 422,
+    "sha256": "b078ecda6d31e045f6a84bdf1a83f5a5192e7642d6ea6df8421a61006996e803",
+    "copy": "runner-build.json"
+  },
+  {
+    "label": "viewer-build.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\bin\\steerrunner-viewer.exe.build.json",
+    "size_bytes": 356,
+    "sha256": "271887c59dc7b1042abeee1753b849ae9f488f865716e2549e3e1652b1ba4143",
+    "copy": "viewer-build.json"
+  },
+  {
+    "label": "package-manifest.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\package-final\\manifest.json",
+    "size_bytes": 4036,
+    "sha256": "76dd4b14bf82ef56764ca5c9e76caa8d1b0c9d6ed853654dcacd7186d818d96b",
+    "copy": "package-manifest.json"
+  },
+  {
+    "label": "package-integrity.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\package-final-integrity.json",
+    "size_bytes": 205,
+    "sha256": "1bdfccd24007abbb19f1dd81d892e20bd7c22b74741a89650dc57bf7dc9635f3",
+    "copy": "package-integrity.json"
+  },
+  {
+    "label": "failed-batch-settlement.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\settlement.json",
+    "size_bytes": 638,
+    "sha256": "76b5060a6072f3c121987caed38519bffebeae5d4f2450b24aea4e52db214312",
+    "copy": "failed-batch-settlement.json"
+  },
+  {
+    "label": "initial-fixed-failure.json",
+    "original_path": "C:\\srt\\cr29a\\fixed\\summary.json",
+    "size_bytes": 1831,
+    "sha256": "430ae6614d6beb1f706d8d26638cc8382b986899b370e6254ac64aa365adc8b7",
+    "copy": "initial-fixed-failure.json"
+  },
+  {
+    "label": "unexpected-optin-skip-failure.json",
+    "original_path": "C:\\srt\\cr29b\\fixed\\summary.json",
+    "size_bytes": 1812,
+    "sha256": "a4876704ba40c08a2f04e05184439b69bbe2d555ee5c34a3b1341d70013fb826",
+    "copy": "unexpected-optin-skip-failure.json"
+  },
+  {
+    "label": "sentinel-message-failure.json",
+    "original_path": "C:\\srt\\cr29c\\fixed\\summary.json",
+    "size_bytes": 627,
+    "sha256": "4245d652ca3e0238bf485b86ac4d6ac8411986848e0d5b143df92015b920850e",
+    "copy": "sentinel-message-failure.json"
+  },
+  {
+    "label": "intermediate-timeout-failure.json",
+    "original_path": "C:\\srt\\cr29d\\fixed\\summary.json",
+    "size_bytes": 1812,
+    "sha256": "7a4e85bc22747544966486614281a3434ddbbcc12cff6dce601ecd8fe268d0ae",
+    "copy": "intermediate-timeout-failure.json"
+  },
+  {
+    "label": "baseline-fixture-failure.log",
+    "original_path": "C:\\srt\\cr29a\\controlled-final2\\integration.log",
+    "size_bytes": 2407,
+    "sha256": "20537e207d4f966801de74ebce47bf369ed73f8bcde7227c1cc1351793079a6d",
+    "copy": "baseline-fixture-failure.log"
+  },
+  {
+    "label": "initial-controlled-compile-failure.log",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-inventory\\controlled-final-launch.log",
+    "size_bytes": 528,
+    "sha256": "c0dceb96a44b90b1852c87c97a937cc09a3b1f99f59d1acec5ef670e14c257a0",
+    "copy": "initial-controlled-compile-failure.log"
+  },
+  {
+    "label": "fixture-regression.jsonl",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\fixture-regression.jsonl",
+    "size_bytes": 3098,
+    "sha256": "877bddc169a56d776197c266732484672fc9ee1ff1f180ab7a00050e676992a6",
+    "copy": "fixture-regression.jsonl"
+  },
+  {
+    "label": "raw-l1.jsonl",
+    "original_path": "C:\\srt\\cr29e\\fixed\\l1.jsonl",
+    "size_bytes": 2613623,
+    "sha256": "2683dd297461d59142d1c35d396eb6bb720d8ff9175768351ac2b504a265d178",
+    "copy": null
+  },
+  {
+    "label": "coverage.out",
+    "original_path": "C:\\srt\\cr29e\\fixed\\coverage.out",
+    "size_bytes": 1445714,
+    "sha256": "300721776568d3a9364bd2182bfa9dd04c1ed5ecfb5acbb9ef3c41d73979d7a4",
+    "copy": null
+  },
+  {
+    "label": "raw-controlled-caller-commands.jsonl",
+    "original_path": "C:\\srt\\cr29e\\controlled\\caller-commands.jsonl",
+    "size_bytes": 31192296,
+    "sha256": "fbcf4c982c33de59d6ee147cd59983385b51628ff06e26982c2c073af9ff5a38",
+    "copy": null
+  },
+  {
+    "label": "initial-component-failures.jsonl",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-inventory\\component-tests.jsonl",
+    "size_bytes": 1385361,
+    "sha256": "3e0fd23597f0570e7f56b8e3b07903a493c51a3b9b64a3ec0263422ea6f11d92",
+    "copy": null
+  },
+  {
+    "label": "intermediate-timeout-failure.jsonl",
+    "original_path": "C:\\srt\\cr29d\\fixed\\l1.jsonl",
+    "size_bytes": 2580687,
+    "sha256": "c39b9743d5bc3f00960816036bfea9d4511954ff281aeaceea3c9a8035be9eb8",
+    "copy": null
+  },
+  {
+    "label": "boundary-tests.jsonl",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\boundary-tests.jsonl",
+    "size_bytes": 369515,
+    "sha256": "bffe26cf4d0bf544d1fa09f4f2169db4c7a3f0a7d4090f972753375e6922a31f",
+    "copy": null
+  },
+  {
+    "label": "codex-after-fixture.jsonl",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\codex-after-fixture.jsonl",
+    "size_bytes": 275461,
+    "sha256": "68af93444b4cc77c15487c8f2ca2bd3518835189a62aca0eefe0c0ffa60a379d",
+    "copy": null
+  },
+  {
+    "label": "settlement-0b96c9b7-after.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-after.json",
+    "size_bytes": 2223,
+    "sha256": "1e0fc62175f2704d89099801062479d8a80a0e72efde47a4571775f64669a675",
+    "copy": "settlement-0b96c9b7-after.json"
+  },
+  {
+    "label": "settlement-0b96c9b7-before.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-before.json",
+    "size_bytes": 2268,
+    "sha256": "c97156fdc37ceb4465572ef24180bc3398d8de5e3756b1ee73118dab0fd300d9",
+    "copy": "settlement-0b96c9b7-before.json"
+  },
+  {
+    "label": "settlement-0b96c9b7-service-stop.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-service-stop.json",
+    "size_bytes": 304,
+    "sha256": "749fe6bfce52b38b5e471f4aec1ae8eb3ef41e1384c390a335ca7ca43474ec4c",
+    "copy": "settlement-0b96c9b7-service-stop.json"
+  },
+  {
+    "label": "settlement-0b96c9b7-stop-receipt.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-stop-receipt.json",
+    "size_bytes": 286,
+    "sha256": "d6577d65291bee57a9eff278e367c655b6665236efd34fd721ea45c31e157fce",
+    "copy": "settlement-0b96c9b7-stop-receipt.json"
+  },
+  {
+    "label": "settlement-0b96c9b7-stop-request.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-stop-request.json",
+    "size_bytes": 138,
+    "sha256": "17796f391fed792f5725f34194c3b588c0dcd08342528c6ea4c9be04a1cc107e",
+    "copy": "settlement-0b96c9b7-stop-request.json"
+  },
+  {
+    "label": "settlement-0b96c9b7-verify-stopped.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\0b96c9b7-verify-stopped.json",
+    "size_bytes": 348,
+    "sha256": "8ec38605db72cb297e9ddb5c42c36c628de6c1097e0eb042d20e252cd286ec2d",
+    "copy": "settlement-0b96c9b7-verify-stopped.json"
+  },
+  {
+    "label": "settlement-7d03b2ba-verify-stopped.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\failed-batch-settlement2\\7d03b2ba-verify-stopped.json",
+    "size_bytes": 347,
+    "sha256": "907f09c477a367fd68f125d3af4f6695d5ba9829de278fb32a83ab27f94cd05a",
+    "copy": "settlement-7d03b2ba-verify-stopped.json"
+  },
+  {
+    "label": "old-v3-verify-stopped.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\old-v3\\verify-stopped.json",
+    "size_bytes": 219,
+    "sha256": "86d28a7513a7b0b786f1fe46f3cde808ee3cff4b6fcfeb15bed57a6cc8da43e6",
+    "copy": "old-v3-verify-stopped.json"
+  },
+  {
+    "label": "old-v3-verify-takeover.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\old-v3\\verify-takeover.json",
+    "size_bytes": 219,
+    "sha256": "86d28a7513a7b0b786f1fe46f3cde808ee3cff4b6fcfeb15bed57a6cc8da43e6",
+    "copy": "old-v3-verify-takeover.json"
+  },
+  {
+    "label": "old-v4-verify-stopped.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\old-v4\\verify-stopped.json",
+    "size_bytes": 219,
+    "sha256": "86d28a7513a7b0b786f1fe46f3cde808ee3cff4b6fcfeb15bed57a6cc8da43e6",
+    "copy": "old-v4-verify-stopped.json"
+  },
+  {
+    "label": "old-v4-verify-takeover.json",
+    "original_path": "C:\\Users\\lmas1\\.codex\\worktrees\\95d9\\SteerRunner\\.evidence\\check-retirement-final\\public-final\\old-v4\\verify-takeover.json",
+    "size_bytes": 219,
+    "sha256": "86d28a7513a7b0b786f1fe46f3cde808ee3cff4b6fcfeb15bed57a6cc8da43e6",
+    "copy": "old-v4-verify-takeover.json"
+  }
+]

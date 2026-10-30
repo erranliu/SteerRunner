@@ -65,7 +65,7 @@ func TestSRNativeParserGenerationRecovery(t *testing.T) {
 				}
 				return false
 			}, 2*time.Minute)
-			reader, err := storage.OpenRecoveryReader(dir)
+			reader, err := storage.OpenReader(dir)
 			if err != nil {
 				t.Fatal(err)
 			}

@@ -139,7 +139,7 @@ func testGenerationCreationReceipt(t *testing.T) {
 	if err := killOwnedService(info); err != nil {
 		t.Fatal(err)
 	}
-	reader, err := storage.OpenRecoveryReader(dir)
+	reader, err := storage.OpenReader(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -175,7 +175,7 @@ func testGenerationPendingStop(t *testing.T) {
 	if err := waitOwnedService(info); err != nil {
 		t.Fatal(err)
 	}
-	reader, err := storage.OpenRecoveryReader(dir)
+	reader, err := storage.OpenReader(dir)
 	if err != nil {
 		t.Fatal(err)
 	}

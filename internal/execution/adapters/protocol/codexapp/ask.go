@@ -6,7 +6,6 @@ const AskToolName = "steerline_ask"
 const AskToolDescription = "Ask only necessary human decisions; group related questions, offer clear options and wait for answers."
 const RejectMalformedQuestion = "Runner rejected an unsupported or malformed native question."
 const RejectUnauthorizedRequest = "Runner cannot authorize this native host request."
-const RejectEnvironmentRequest = "Only fixed environment probes; no approval or escalation."
 const RejectInitializationRequest = "Initialization permits no tools or approvals."
 
 // AskDynamicTool describes the native app-server tool used for worker questions.

@@ -80,10 +80,6 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 			logger.Print("service failed: ", outErr)
 		}
 	}()
-	if err := qualifyLegacyRecovery(dir); err != nil {
-		logger.Print("recovery source rejected: ", err)
-		return err
-	}
 	store, err := storage.Open(dir)
 	if err != nil {
 		logger.Print("startup rejected: ", err)
@@ -352,7 +348,7 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		if wire.Request.Protocol != contracts.Protocol || !contracts.ValidRequestID(id) {
 			return reject(contracts.Fail(2, "invalid_request", "Invalid request envelope."))
 		}
-		if invalid := contracts.ValidateInput(wire.Options.Command, wire.Request.Input); invalid != nil && wire.Options.Command != "environment-check start" && wire.Options.Command != "environment-check stop" {
+		if invalid := contracts.ValidateInput(wire.Options.Command, wire.Request.Input); invalid != nil {
 			return reject(invalid)
 		}
 	}
@@ -383,8 +379,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 		return s.engine.HandleProgress(wire.Options.RunID), false
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
 		return s.engine.HandleEvidence(wire.Options.Command, wire.Options.RunID, wire.Options.ArtifactID, wire.Request), false
-	case "environment-check start", "environment-check stop", "environment-check inspect":
-		return s.engine.HandleEnvironmentCheck(wire.Options.Command, wire.Options.CheckID, wire.Options.RequestID, wire.Request), false
 	case "open-native-session":
 		if s.stopping || wire.Request != nil || wire.Options.NativeSession == nil || wire.Options.NativeSession.RunID != wire.Options.RunID {
 			return reject(contracts.Fail(5, "invalid_state", "Native viewer requires a ready service and exact original target."))

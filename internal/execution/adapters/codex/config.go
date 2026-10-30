@@ -24,7 +24,6 @@ type Config struct {
 	Authentication          *AuthenticationRuntime
 	AuthenticationTransport *AuthenticationTransport
 	RemoteName              string
-	EnvironmentCheck        bool
 }
 
 func ValidReasoningEffort(value string) bool {

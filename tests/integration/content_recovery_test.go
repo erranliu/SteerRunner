@@ -107,7 +107,7 @@ func TestSRContentGenerationRecovery(t *testing.T) {
 
 func offlineContentStop(t *testing.T, dir, id, requestID string) contracts.Request {
 	t.Helper()
-	reader, err := storage.OpenRecoveryReader(dir)
+	reader, err := storage.OpenReader(dir)
 	if err != nil {
 		t.Fatal(err)
 	}

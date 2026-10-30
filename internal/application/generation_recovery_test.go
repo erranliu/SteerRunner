@@ -88,14 +88,14 @@ func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *te
 	r.Snapshot.Ref.Version = 1
 	r.AcquisitionConfig.Config = ra.DefaultConfig()
 	before := canonical(r)
-	items := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+	items := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
 	if len(items) != 1 || items[0].Status != "compatible" || !bytes.Equal(before, canonical(r)) {
 		t.Fatalf("same contract report rejected or mutated original record: %+v", items)
 	}
 	withResult := r.Clone()
 	withResult.Request.ResultFile = &contracts.ResultFileInput{}
 	for _, contract := range []string{"", "steerrunner-result-file/v99", contracts.ResultFileContract} {
-		item := TakeoverFacts([]*runstate.Record{withResult}, nil, resources.RecoveryCapabilities(), workflow.Catalog(), contract)[0]
+		item := TakeoverFacts([]*runstate.Record{withResult}, resources.RecoveryCapabilities(), workflow.Catalog(), contract)[0]
 		if (item.Status == "compatible") != (contract == contracts.ResultFileContract) {
 			t.Fatal("candidate file capability not fenced", contract, item)
 		}
@@ -103,23 +103,23 @@ func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *te
 	for _, version := range []int{0, 99} {
 		copy := r.Clone()
 		copy.Snapshot.Ref.Version = version
-		items = TakeoverFacts([]*runstate.Record{copy}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+		items = TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())
 		if items[0].Status != "unsupported" {
 			t.Fatalf("unknown execution record %d accepted", version)
 		}
 	}
 	copy := r.Clone()
 	copy.AcquisitionConfig = ra.FrozenConfig{}
-	if item := TakeoverFacts([]*runstate.Record{copy}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+	if item := TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
 		t.Fatal("missing development result-acquisition configuration accepted")
 	}
 	copy = r.Clone()
 	copy.AcquisitionConfig.Config.Schema = "steerrunner-result-acquisition/v99"
-	if item := TakeoverFacts([]*runstate.Record{copy}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+	if item := TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
 		t.Fatal("unknown result-acquisition contract accepted")
 	}
 	r.Profile[0].CodecVersion = 99
-	items = TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+	items = TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
 	if items[0].Status != "unsupported" || items[0].InputDigest != "input" {
 		t.Fatal("unknown codec accepted or original input identity lost")
 	}

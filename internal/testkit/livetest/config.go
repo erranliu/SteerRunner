@@ -280,12 +280,7 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 			}
 		}
 		if fixtureOK {
-			if requirements.Operation == "environment-check start" {
-				raw, _ := json.Marshal(contracts.CheckInput{Repository: fixture.Repository, Execution: value.Execution, Publication: fixture.Publication})
-				if fault := contracts.ValidateEnvironmentCheck(raw); fault != nil {
-					add("/fixture", fault.Detail.Code, "The complete environment-check fixture violates the production contract.")
-				}
-			} else if selection != nil && fixture.Publication != nil {
+			if selection != nil && fixture.Publication != nil {
 				text := "fixture"
 				raw, _ := json.Marshal(contracts.RunRequest{Title: "Test configuration", Repository: fixture.Repository, Execution: value.Execution, Workflow: *selection, Publication: *fixture.Publication, Documents: contracts.Documents{Spec: contracts.Document{Kind: "inline", Path: "spec.md", Content: &text}, Plan: contracts.Document{Kind: "inline", Path: "plan.md", Content: &text}}})
 				if fault := contracts.ValidateRun(raw); fault != nil {
