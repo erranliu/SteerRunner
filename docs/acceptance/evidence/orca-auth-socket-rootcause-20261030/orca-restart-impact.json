@@ -1,0 +1,28 @@
+{
+  "local_count": 1,
+  "truncated": false,
+  "total_count": 1,
+  "local_connected": 1,
+  "runtime_id": "4f073b25-6af0-4b4b-bcb8-d2174d704504",
+  "contents_saved": false,
+  "host_scope": {
+    "hostIds": [
+      "local"
+    ],
+    "omittedHostIds": [
+      "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+      "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+    ],
+    "omittedHostSelectors": [
+      {
+        "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "selector": "--environment 192.168.1.151"
+      },
+      {
+        "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+        "selector": "--environment 台式机64G"
+      }
+    ]
+  },
+  "ok": true
+}

@@ -2,6 +2,8 @@
 
 2026-10-30。用户明确授权最小读取修正；关联 [Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md) 和[授权前失败记录](orca-native-submit-local.md)。两处读取修正已完成，**本机真实业务输入资格仍为 0/3**。
 
+本页为该失败批次的原始结论。随后已查明启动上下文与遗留 PTY host 的关联并按授权恢复，最终[三个本机会话补验](orca-native-submit-local-final.md)通过；不改写本页原始失败。
+
 ## 修改与审计
 
 仅 `controlLines`、`readLocalCodexReadiness` 的生产读取显式增加公开 `--cursor 0`，保留原 `--limit 1000`。要求 `source=stream`、`oldestCursor=0`，`truncated/limited` 明确为 false；来源/完整性缺失或受限时拒收，空完整流仍沿原 pending 语义。保留原 runtime/handle/CallUncertain、回执解码、身份及绑定核验。

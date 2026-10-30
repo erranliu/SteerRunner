@@ -1,0 +1,53 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "create",
+      "--worktree",
+      "id:faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+      "--title",
+      "SteerRunner native control",
+      "--command",
+      "\u0026 'C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\.evidence\\orca-local-stream-20261030\\bin\\steerrunner-agent.exe' '--native-control' 'eyJiaW5kaW5nIjoiZjc0ZDlhNzUwMTM3ZDM0NDVlYzNkODI3N2VhZjI1Y2FjM2FlOTAwZWI0ZmE4Zjg3MTU1ZTAyY2ExYzYwMDUzMSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC1xdWFsaWZpZWQtMDEiLCJydW50aW1lX3NoYTI1NiI6IjEzMjBiZjIwMTQ5Mjk5NGRhMDQ5OTFjMDExODU0OWYwNjQ4Yjk5ZDZjYTFkZjk5ZDk2NmQ2YjcyOTAzY2Y3ZTkifQ'",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:51:58.1476205Z",
+  "started": "2026-10-30T14:51:57.2975141Z",
+  "stdout": {
+    "id": "f27873bc-0e86-4b40-bb12-d7d8f39cabd6",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "processId": 34180,
+        "handle": "term_c8c9b1e9-d70e-4d31-ae03-3498e4e9dd75",
+        "tabId": "08c6b4aa-0c86-4b63-91b4-0c1468b64e79",
+        "paneKey": "08c6b4aa-0c86-4b63-91b4-0c1468b64e79:2ff4ce18-939d-410c-88ec-f67524271576",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01@@689681c9",
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+        "title": "SteerRunner native control",
+        "executionHostId": "local",
+        "incarnationId": "8282f0c6-95f3-4849-972f-179823b844aa",
+        "hostPlatform": "win32",
+        "surface": "visible"
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 923,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 771
+}

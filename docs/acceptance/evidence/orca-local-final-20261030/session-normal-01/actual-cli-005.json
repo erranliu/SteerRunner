@@ -1,0 +1,57 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:43:09.6854282Z",
+  "started": "2026-10-30T14:43:08.9467206Z",
+  "stdout": {
+    "id": "c2fc613d-3712-48ec-96d2-a2c15befb75e",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01@@961d2ac1",
+        "incarnationId": "7470df2d-1147-47c5-8825-a2ed1de72596",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-normal-01",
+        "tabId": "862d24ef-a328-4aaf-b64c-22929a0415a3",
+        "leafId": "b991262c-5f0f-4079-8c39-509e861bbb4e",
+        "title": "SteerRunner native control",
+        "paneTitle": "SteerRunner native control",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 1240,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

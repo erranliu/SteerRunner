@@ -1,0 +1,33 @@
+package main
+
+import (
+ "encoding/json"
+ "os"
+ "path/filepath"
+
+ codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+)
+
+func main(){
+ rows:=[]map[string]any{}
+ for _,root:=range os.Args[1:] {
+  raw,e:=os.ReadFile(filepath.Join(root,"snapshot.json"));if e!=nil {panic(e)}
+  var snapshot struct{Implementation []struct{Payload struct{Ready codex.RemoteReadiness `json:"remote_readiness"`}}}
+  if e=json.Unmarshal(raw,&snapshot);e!=nil {panic(e)}
+  ready:=snapshot.Implementation[0].Payload.Ready
+  runtime:=codex.RemoteRuntimeDirectory(ready.Workspace)
+  id:=filepath.Base(runtime)
+  plan,e:=codex.PlanAuthenticationTransport(filepath.Join(os.Getenv("LOCALAPPDATA"),"SteerRunner"),ready.Workspace,ready.Repository,codex.PolicyResourceIdentity{ProjectID:ready.Repository,ExecutionID:id,AttemptID:id,Generation:id,ConfigDigest:ready.ConfigurationDigest})
+  if e!=nil {panic(e)}
+  _,runtimeErr:=os.Lstat(runtime);_,socketErr:=os.Lstat(plan.Directory);_,workspaceErr:=os.Lstat(ready.Workspace)
+  row:=map[string]any{"session":filepath.Base(root),"runtime_directory":runtime,"socket_directory":plan.Directory,"workspace":ready.Workspace,"runtime_absent":os.IsNotExist(runtimeErr),"socket_absent":os.IsNotExist(socketErr),"workspace_absent":os.IsNotExist(workspaceErr)}
+  if raw,e=os.ReadFile(filepath.Join(root,"failed-exit-original.json"));e==nil {
+   err:=codex.VerifyRemoteExit(raw,ready)
+   row["supplemental_failed_exit_signature_valid"]=err==nil
+   if err!=nil {row["supplemental_failed_exit_error"]=err.Error()}
+   row["qualification_passed"]=false
+  }
+  rows=append(rows,row)
+ }
+ json.NewEncoder(os.Stdout).Encode(rows)
+}

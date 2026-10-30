@@ -1,0 +1,57 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "show",
+      "--terminal",
+      "term_c8c9b1e9-d70e-4d31-ae03-3498e4e9dd75",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:52:01.7618763Z",
+  "started": "2026-10-30T14:52:01.1487553Z",
+  "stdout": {
+    "id": "47b07209-77e6-488b-86b5-0fc1c7225a2c",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_c8c9b1e9-d70e-4d31-ae03-3498e4e9dd75",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01@@689681c9",
+        "incarnationId": "8282f0c6-95f3-4849-972f-179823b844aa",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-01",
+        "branch": "refs/heads/erranliu/codex-sr-native-local-20261030-qualified-01",
+        "tabId": "08c6b4aa-0c86-4b63-91b4-0c1468b64e79",
+        "leafId": "2ff4ce18-939d-410c-88ec-f67524271576",
+        "title": "SteerRunner native control",
+        "paneTitle": "SteerRunner native control",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local",
+        "paneRuntimeId": -1,
+        "rendererGraphEpoch": 0,
+        "agentWait": null
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 1252,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 140
+}

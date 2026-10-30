@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "top_level_passed": 714,
+  "passed_including_subtests": 2657,
+  "failed": 0,
+  "skipped": 17,
+  "packages_passed": 34,
+  "skip_cases": [
+    "TestAuthenticationNativeToolBoundary",
+    "TestProcessHostCommandHelper",
+    "TestOrcaStoppedNativeProbe",
+    "TestOrcaLocalPipeNativeEvidence",
+    "TestRunUsageLocalCodexPublicLive",
+    "TestRunUsageLocalPiPublicLive",
+    "TestRunUsageLocalDSHPublicLive",
+    "TestRunUsageRemotePublicLive",
+    "TestUsageExistingNativeEvidence",
+    "TestUsageRemoteCodexCleanupLive",
+    "TestUsageRemoteCodexLive",
+    "TestOrcaNativeStateLiveLifecycle",
+    "TestOrcaLocalIPCNativeProbe",
+    "TestUsageLocalAcceptanceRepoCleanupLive",
+    "TestServiceStopWorkerHelper",
+    "TestShortInputProbeInspect",
+    "TestOrcaWorkspaceStartupLive"
+  ],
+  "framework_passed": true,
+  "extension_count": 29,
+  "native_driver_compile_exit": 0,
+  "native_zero_match_guard": true
+}

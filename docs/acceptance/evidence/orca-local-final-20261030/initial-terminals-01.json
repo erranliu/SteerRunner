@@ -1,0 +1,70 @@
+{
+  "id": "460c64ec-f3e5-41f6-95bb-d041bb85f903",
+  "ok": true,
+  "result": {
+    "terminals": [
+      {
+        "handle": "term_e9926e9f-d60c-4385-a3e7-a1ddae2bb0fb",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01@@a0dcc640",
+        "incarnationId": "c02d17ae-f3ef-4783-89b9-c2ad2801074d",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+        "branch": "",
+        "tabId": "67ff39d4-8fc6-4bc4-8135-6de69a332662",
+        "leafId": "b5cb2ba8-c35f-4aa9-8f01-493509314473",
+        "title": "Terminal 1",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local"
+      },
+      {
+        "handle": "term_12e384df-3e30-4d33-91bd-d85b7ef0fbc2",
+        "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01@@dc15783a",
+        "incarnationId": "93348dc1-76a4-4e81-bb7f-556985b93388",
+        "orphaned": false,
+        "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+        "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+        "branch": "",
+        "tabId": "3b661358-6914-4324-9866-c6f8801141e0",
+        "leafId": "5701724e-d098-4cbc-a853-3f42b8f8ca9b",
+        "title": "SteerRunner restarted-context diagnostic",
+        "paneTitle": "SteerRunner restarted-context diagnostic",
+        "connected": true,
+        "writable": true,
+        "lastOutputAt": null,
+        "preview": "",
+        "executionHostId": "local"
+      }
+    ],
+    "hostScope": {
+      "hostIds": [
+        "local"
+      ],
+      "omittedHostIds": [
+        "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+        "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8"
+      ],
+      "omittedHostSelectors": [
+        {
+          "hostId": "runtime:9cf377a1-42de-4f2b-8874-70f63a7bbab2",
+          "selector": "--environment 192.168.1.151"
+        },
+        {
+          "hostId": "runtime:e68f4edf-8a83-42c2-a9da-6d404d3aa3d8",
+          "selector": "--environment 台式机64G"
+        }
+      ]
+    },
+    "topologyRevisions": {
+      "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01": 1178
+    },
+    "totalCount": 2,
+    "truncated": false
+  },
+  "_meta": {
+    "runtimeId": "277f9139-b0d2-448d-8075-2c68cc4f0a1c"
+  }
+}

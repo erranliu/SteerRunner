@@ -1,0 +1,22 @@
+{
+  "id": "510d7cbd-0004-4b83-bcaf-0b72daa0ebcd",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 6508,
+      "handle": "term_12e384df-3e30-4d33-91bd-d85b7ef0fbc2",
+      "tabId": "3b661358-6914-4324-9866-c6f8801141e0",
+      "paneKey": "3b661358-6914-4324-9866-c6f8801141e0:5701724e-d098-4cbc-a853-3f42b8f8ca9b",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01@@dc15783a",
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-final-20261030-01",
+      "title": "SteerRunner restarted-context diagnostic",
+      "executionHostId": "local",
+      "incarnationId": "93348dc1-76a4-4e81-bb7f-556985b93388",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "277f9139-b0d2-448d-8075-2c68cc4f0a1c"
+  }
+}

@@ -3,6 +3,10 @@
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
 状态：窄范围代码已实施，**真实双端验收未完成**。实施/检查实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
+最终本机补验已达 3/3，原请求、原文/模型/final及正式停止认证均通过；远端仍 0/3 未验证。
+见[本机最终记录](../acceptance/orca-native-submit-local-final.md)。本机测试目标须具备与正式
+workflow 相同的既有 writer/audit 冻结配置，不清空 Turn.Model 或放宽模型凭据校验。
+
 本版替代上一版整条执行/完成链路统一方案。M1本机模型控制、长final迁移退出本次范围，不再作为修复前置；这些能力并未迁移或验证等价。旧审计结论仅适用于对应旧版。2026-10-30，design_audit与final_review独立只读复审本版均无P0–P2文档发现；此结论不代表生产实施或真实验收完成。
 
 ## 1. 修改边界

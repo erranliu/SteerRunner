@@ -1,0 +1,41 @@
+{
+  "current_package": {
+    "status": 15700
+  },
+  "go": "go1.26.4",
+  "orca_package": {
+    "status": 15700
+  },
+  "pid": 23184,
+  "probes": [
+    {
+      "absolute_lstat_error": {
+        "errno": 1920,
+        "text": "CreateFile C:\\Users\\lmas1\\AppData\\Local\\sr-ad-3217034803\\s: The file cannot be accessed by the system."
+      },
+      "base": "C:/Users/lmas1/AppData/Local",
+      "directory": "C:/Users/lmas1/AppData/Local\\sr-ad-3217034803",
+      "directory_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-3217034803",
+      "directory_remove_error": null,
+      "echo_error": {
+        "errno": 10022,
+        "text": "dial unix C:\\Users\\lmas1\\AppData\\Local\\sr-ad-3217034803\\s: connect: An invalid argument was supplied."
+      },
+      "listen_error": null,
+      "marker_final_path": "\\\\?\\C:\\Users\\lmas1\\AppData\\Local\\Packages\\OpenAI.Codex_2p2nqsd0c76g0\\LocalCache\\Local\\sr-ad-3217034803\\marker.txt",
+      "marker_remove_error": null,
+      "marker_write_error": null,
+      "mkdir_error": null,
+      "open_root_error": null,
+      "original_absent": true,
+      "root_lstat_error": null,
+      "server_error": {
+        "text": "accept unix C:\\Users\\lmas1\\AppData\\Local\\sr-ad-3217034803\\s: use of closed network connection"
+      },
+      "socket_path": "C:\\Users\\lmas1\\AppData\\Local\\sr-ad-3217034803\\s",
+      "socket_remove_error": null,
+      "started": "2026-10-30T14:22:01.5841512Z"
+    }
+  ],
+  "time": "2026-10-30T14:22:01.5841512Z"
+}

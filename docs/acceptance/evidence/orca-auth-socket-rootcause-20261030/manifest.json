@@ -1,0 +1,198 @@
+{
+  "personal_user_sid_omitted": true,
+  "files": [
+    {
+      "bytes": 12054,
+      "sha256": "93433c8e49ee0ebe421f8837a191184889c241f3001625054bea4c88a75eaa08",
+      "path": "cleanup-current-final.json"
+    },
+    {
+      "bytes": 5785,
+      "sha256": "4365eb57ba16858a68b5e9ace5ddaedabb93a60e1a477d69829ccf9104278f51",
+      "path": "cleanup-current-view.json"
+    },
+    {
+      "bytes": 2669,
+      "sha256": "b774810afa45579ea87372914944fbefa84e503942fd142dee9562a24dae36b8",
+      "path": "cleanup-targets.json"
+    },
+    {
+      "bytes": 48,
+      "sha256": "7b773d902748dfce7abae48868eea7bf5a6245d681c5b5874fb42f84cdb45255",
+      "path": "cleanup-wmi-create.json"
+    },
+    {
+      "bytes": 12054,
+      "sha256": "7b5d0995f8a780cb7f2433430b946585baa828935c327f132f92fdf806ce88b7",
+      "path": "cleanup-wmi-final.json"
+    },
+    {
+      "bytes": 3213,
+      "sha256": "3e1049665b35d918299bd4ce2b61492bbe575c7dffdc526a9d01f2257510566a",
+      "path": "confirm-direct-1.json"
+    },
+    {
+      "bytes": 3211,
+      "sha256": "a97f62d0b522d300a281efd8c095dc5816a384393a0fc6b3a966fc23d15419d4",
+      "path": "confirm-direct-2.json"
+    },
+    {
+      "bytes": 3210,
+      "sha256": "c3df179986e1b79cac3719e1607355b00ab5afb26c288ab81f7b488b8ec874e8",
+      "path": "confirm-direct-3.json"
+    },
+    {
+      "bytes": 1992,
+      "sha256": "764e369f95e546fca62813ead151acdc80e67f7990022914987fae8d1c5e334f",
+      "path": "confirm-wmi-1.json"
+    },
+    {
+      "bytes": 1991,
+      "sha256": "6e2151ea5283acea611129d0d81cbb2d1a82b5de128a8b9c810d9b0930b29dbd",
+      "path": "confirm-wmi-2.json"
+    },
+    {
+      "bytes": 1987,
+      "sha256": "6d2c07e14fd7f405899d8eeef86ccafafcbbaf3796d5846abd00b0be49b72193",
+      "path": "confirm-wmi-3.json"
+    },
+    {
+      "bytes": 177,
+      "sha256": "a66157904ae7459b2084ea76866f4a7c8aca2b96c5ec8fafd1dcda099d80d601",
+      "path": "confirm-wmi-launches.json"
+    },
+    {
+      "bytes": 3220,
+      "sha256": "bd3aae3d15d66f55a6ca588dda2acf652f82665e23724c838959df64aab8e481",
+      "path": "context-explorer.json"
+    },
+    {
+      "bytes": 3192,
+      "sha256": "e6bd751f71e85926fb80111ea5e0c4339383978d072614abbe860004d86852da",
+      "path": "context-medium.json"
+    },
+    {
+      "bytes": 1564,
+      "sha256": "99584ce7b674f71dc4f151aef733919c73cd6970031892e5d2ebb0425a496d4c",
+      "path": "context-new-appdata.json"
+    },
+    {
+      "bytes": 3732,
+      "sha256": "48873c4088fbe13c01fa35dc245a4c29079e3d9fbc36a41b2ec178ceca8d6e4c",
+      "path": "context-orca.json"
+    },
+    {
+      "bytes": 2826,
+      "sha256": "12842c7de5539be9151fe027f651fd383d61080b412ca7f1fa11f047e3d8ead3",
+      "path": "context-wmi.json"
+    },
+    {
+      "bytes": 228,
+      "sha256": "ead74da3737e2bdf24a0ec7c26f82a4380951b2a5d336fe0c56d0aa6b53a4411",
+      "path": "diagnostic-build.json"
+    },
+    {
+      "bytes": 9595,
+      "sha256": "8dc3e30dce4c6ffdd0e7c33a5a4f5a4a70c6679d0c470bbca7a669c637e213c3",
+      "path": "orca-after-close-status.json"
+    },
+    {
+      "bytes": 232,
+      "sha256": "5f9baf10c2f1e04d1bdec0dc56bc72287f6e6750447e524332ce0f842cc58f5c",
+      "path": "orca-approved-close-request.json"
+    },
+    {
+      "bytes": 788,
+      "sha256": "1eff9c189b5bdcb58f2434585c0ec1f8174e06d6a94ec8fcaeae93b7743b3f43",
+      "path": "orca-before-remove.json"
+    },
+    {
+      "bytes": 921,
+      "sha256": "2ecf0e45dbb8519ef0a9293b80e4c5f3519da3c5ebf8355a0d32614b63bae6e7",
+      "path": "orca-create-diagnostic.json"
+    },
+    {
+      "bytes": 2609,
+      "sha256": "b069d1b97bd53431623fb4244339c914ee26f2b53216d004ee1116bfa70ff1b1",
+      "path": "orca-create-worktree.json"
+    },
+    {
+      "bytes": 319,
+      "sha256": "c422aaeae2bc32168639b4ac738619861c1e2c64fa7e339268aee91697427364",
+      "path": "orca-default-close.json"
+    },
+    {
+      "bytes": 775,
+      "sha256": "a616bc980bf6563ab52151e92c869fcf31cbfd365c2a073084f2d6517f85ab62",
+      "path": "orca-default-read.json"
+    },
+    {
+      "bytes": 1244,
+      "sha256": "5f8ab2b65f417a553d9719250346a16dd22ea3c950c240df5ecc9fe7fb0623f8",
+      "path": "orca-default-show.json"
+    },
+    {
+      "bytes": 319,
+      "sha256": "0063e7165859ab2b7ac81d5b5dd79e301485ff7be8ce651f56d7ddd866c2b877",
+      "path": "orca-diagnostic-close.json"
+    },
+    {
+      "bytes": 1408,
+      "sha256": "5fefac55bb859096ffb1a6eb12d952c56f291eb5ae209d29e342d1425f0fec83",
+      "path": "orca-diagnostic-show.json"
+    },
+    {
+      "bytes": 2889,
+      "sha256": "aa849b8f32337665aec79442cb78b3e2eab264cef5daa462bb5c50ce1844ec42",
+      "path": "orca-owned-terminals.json"
+    },
+    {
+      "bytes": 307,
+      "sha256": "47fcb5f3a519cbd174807daf13fc48167dc0f007ec608f35bd0b72b7a8e37cb8",
+      "path": "orca-remove-worktree.json"
+    },
+    {
+      "bytes": 713,
+      "sha256": "e3f253e9d143016e42aff23219bb16fdc54c49a75785d4d5d8e8938e7a528da3",
+      "path": "orca-restart-impact.json"
+    },
+    {
+      "bytes": 9595,
+      "sha256": "8dc3e30dce4c6ffdd0e7c33a5a4f5a4a70c6679d0c470bbca7a669c637e213c3",
+      "path": "orca-status.json"
+    },
+    {
+      "bytes": 9595,
+      "sha256": "05739ca27e3f6daf13b92a001c3d5c68fd53d29f6858c098aef9c5f9b9a13981",
+      "path": "orca-user-restarted-status.json"
+    },
+    {
+      "bytes": 5022,
+      "sha256": "ac0391b0f813288530e1ebece1bf63abee5f38383365b5f9ad098f907628dae0",
+      "path": "socket-context.go.txt"
+    },
+    {
+      "bytes": 594,
+      "sha256": "ddc21d94b80f39b40933328882b5cdafdec9ba2ada4114948372519d0642ff4d",
+      "path": "token-context-comparison.json"
+    },
+    {
+      "bytes": 1400,
+      "sha256": "59bc42f07d6d3e4cce196e3d632a17f5aa99ddaf4d3917fc5b6c13b27ee77acb",
+      "path": "token-context.go.txt"
+    },
+    {
+      "bytes": 49,
+      "sha256": "5488db4d1c5d84b7c11eb5e3bd39973be557274c83d99f148ca444091c602b69",
+      "path": "token-wmi-create.json"
+    },
+    {
+      "bytes": 49,
+      "sha256": "bcbf13c402abfe937d8b19572949c6a4c282e588c7ab81b1a2aef0b0d8a0e7e9",
+      "path": "wmi-diagnostic-create.json"
+    }
+  ],
+  "normal_context_recovery_verified": true,
+  "production_authentication_changed": false,
+  "schema": "steerrunner-auth-socket-rootcause-evidence/v1"
+}

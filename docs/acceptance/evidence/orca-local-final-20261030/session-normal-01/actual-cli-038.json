@@ -1,0 +1,54 @@
+{
+  "command": {
+    "Executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "Args": [
+      "terminal",
+      "read",
+      "--terminal",
+      "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+      "--cursor",
+      "0",
+      "--limit",
+      "1000",
+      "--json"
+    ],
+    "WorkingDirectory": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-normal-01",
+    "EnvironmentRefs": null,
+    "BlockedEnvironment": [
+      "ORCA_ENVIRONMENT",
+      "ORCA_PAIRING_CODE",
+      "ORCA_REMOTE_PAIRING"
+    ],
+    "Timeout": 40000000000
+  },
+  "context_error": "",
+  "exit_error": "",
+  "returned": "2026-10-30T14:44:09.7023034Z",
+  "started": "2026-10-30T14:44:09.0872034Z",
+  "stdout": {
+    "id": "c2e80ce6-ac91-4ec0-86c4-77d1df29b86f",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_f86f5f96-cb77-4504-9e65-533a50d0c3c1",
+        "status": "running",
+        "tail": [
+          "SR_NATIVE_CONTROL_READY:eyJiaW5kaW5nIjoiNDBiZjYyYmQ5M2I0ODRiNTdjNDQwODYwMzBjMTM4ZDA0YTk0Y2QzNWVlNTBmMDU5MjdhOGY0OWU1Nzk2OGVjMSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC1ub3JtYWwtMDEiLCJydW50aW1lX3NoYTI1NiI6IjEzMjBiZjIwMTQ5Mjk5NGRhMDQ5OTFjMDExODU0OWYwNjQ4Yjk5ZDZjYTFkZjk5ZDk2NmQ2YjcyOTAzY2Y3ZTkifQ"
+        ],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "1",
+        "latestCursor": "1",
+        "returnedLineCount": 1,
+        "source": "stream"
+      }
+    },
+    "_meta": {
+      "runtimeId": "92c410b8-3132-4c48-a07f-2888faa81c53"
+    }
+  },
+  "stdout_bytes": 864,
+  "text_transport_bytes": 0,
+  "windows_command_line_utf16_with_nul": 164
+}

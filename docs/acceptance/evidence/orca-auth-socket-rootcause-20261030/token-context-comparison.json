@@ -1,0 +1,18 @@
+{
+  "restricted_sid_count": 0,
+  "raw_direct_sha256": "583b3897ba96ca7a86d22e76cd61f1cf815d3aa1e3de0f1376031e7f01fec067",
+  "integrity": "S-1-16-8192",
+  "raw_normal_sha256": "627c83a12d57fde0d10814361a8e14c5e3645106a3979cebf6fc02b7fd7d0173",
+  "equal_metrics": {
+    "uac_virtualization_enabled": true,
+    "user_sid": true,
+    "restrictions": true,
+    "elevated": true,
+    "restricted_sid_count": true,
+    "elevation_type": true,
+    "integrity_sid": true
+  },
+  "elevated": false,
+  "schema": "steerrunner-token-context-comparison/v1",
+  "personal_sid_omitted": true
+}

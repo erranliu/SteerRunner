@@ -75,6 +75,12 @@ NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。�
 
 ## P6 独立复审与交付
 
+2026-10-30 最终本机进展：按用户授权恢复实际 PTY host 的正常启动上下文后，本机三个全新
+原生会话通过。仅补测试目标的既有 AuditModel 前置门禁及签名证据绝对路径，未改认证或
+模型/完成生产代码。最终矩阵 168×30=5040/0/0，项目 L1 通过；NS-T07/T10 的目标反例绑定
+`TestLocalNativeProbeTargetAndBusinessScope/audit-*` 和 `writer-effort`。详见[最终补验](../acceptance/orca-native-submit-local-final.md)。
+远端仍未验证，原失败保持失败，PR 继续 Draft。
+
 2026-10-30 本机适配补充：已在隔离目录构建现有 `cmd/steerrunner-agent`，新增正式入口的本机
 v3 control/ready/history 测试适配。3900 次确定性回归通过；真实准备暴露原 control 默认读取
 返回 screen、折行破坏 READY 的问题，尚未进入业务提交，本机仍为 0/3。公开 cursor 流读取

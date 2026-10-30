@@ -1,0 +1,6 @@
+{
+  "pid": 8832,
+  "reason": "User-approved local Orca restart; actual local PTY parent remained in old process context",
+  "path": "C:\\Users\\lmas1\\AppData\\Local\\Orca\\daemon-host-profiles\\aaf6ef042d94f1f3\\1.4.242\\build-5d4d6a5da52a\\Orca.exe",
+  "parent_pid": 26940
+}

@@ -14,6 +14,8 @@ Controlled 前置为 **26 个顶层测试**，另有 **5 个 focused native L3 �
 control/ready/model/history/stop；本机准备失败须保留回执和清理记录，不计为提交通过。
 `TestLocalNativeProbeTargetAndBusinessScope`、`TestLocalNativeProbeCensusKeepsOriginalHostScope`
 验证本机配置、调用计数和原宿主清单边界，随正式 controlled 入口运行。
+模型回合目标须具备现有、合法且与 writer 不同模型名的 `Launch.audit_model`，缺失或非法在
+资源创建前拒收；不清空 Turn.Model 或放松正式模型核验来通过。
 `TestLocalPreparationOriginalStream` 另覆盖两处准备回执的公开 cursor 流、来源/完整性与绑定，
 不新增正式 L3 case、不把准备回执成功计为真实原任务完成。
 旧 `segmented-shape` 模式退出当前入口，历史证据不改；本机原准备/模型/history未具备时

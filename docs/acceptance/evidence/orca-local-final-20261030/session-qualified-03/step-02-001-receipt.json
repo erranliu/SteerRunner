@@ -1,0 +1,137 @@
+{
+  "operation": {
+    "version": 1,
+    "id": "f6eba601ad152315535038606f5b17d0",
+    "run_id": "42720ff7930aab91a6509514e3d02adc",
+    "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "target": {
+      "id": "orca-terminal:390d160e546904609b67be1b",
+      "execution_host": "local"
+    },
+    "action": "create_resource",
+    "idempotency_key": "probe-create_resource",
+    "request": "eyJwdXJwb3NlIjoiYWdlbnQtc3RhcnQiLCJuYW1lIjoib3JpZ2luYWwtdGVybWluYWwiLCJvYmplY3RpdmUiOiJcdTAwMjYgJ0M6XFxVc2Vyc1xcbG1hczFcXC5jb2RleFxcd29ya3RyZWVzXFw4ZWQ1XFxTdGVlclJ1bm5lclxcLmV2aWRlbmNlXFxvcmNhLWxvY2FsLXN0cmVhbS0yMDI2MTAzMFxcYmluXFxzdGVlcnJ1bm5lci1hZ2VudC5leGUnICctLWNvbmZpZ3VyYXRpb24nICdleUpoZFdScGRGOXRiMlJsYkNJNmV5SnRiMlJsYkNJNkltZHdkQzAyTGpFdGMyOXNJaXdpY21WaGMyOXVhVzVuWDJWbVptOXlkQ0k2SW1ocFoyZ2lmU3dpWlhobFkzVjBZV0pzWlNJNklrTTZMMVZ6WlhKekwyeHRZWE14TDBGd2NFUmhkR0V2VEc5allXd3ZUM0JsYmtGSkwwTnZaR1Y0TDJKcGJpOHlNbU5tWWpGa016QXlOakV6WldGbEwyTnZaR1Y0TG1WNFpTSXNJbUZ5WjNNaU9sc2lMUzF1Ynkxa1lXVnRiMjRpWFN3aWJXOWtaV3dpT2lKbmNIUXROaTFzZFc1aElpd2ljbVZoYzI5dWFXNW5YMlZtWm05eWRDSTZJbWhwWjJnaUxDSmhZMk5sYzNOZmJXOWtaU0k2SW5OaGJtUmliM2dpTENKeVpYQnZjMmwwYjNKNVgzVnliQ0k2SW1oMGRIQnpPaTh2WjJsMGFIVmlMbU52YlM5bGNuSmhibXhwZFM5VGRHVmxjbXhwYm1WVVpYTjBMbWRwZENKOScifQ==",
+    "receipt": "ewogICAgInNlbmQiOiB7CiAgICAgICJoYW5kbGUiOiAidGVybV84ZDg4YmJmZi01ZDhlLTRjOTUtODdlYy1mYjY2NjAyMGJkYjAiLAogICAgICAiYWNjZXB0ZWQiOiB0cnVlLAogICAgICAiYnl0ZXNXcml0dGVuIjogNTUzLAogICAgICAicHJvbXB0IjogewogICAgICAgICJyZXF1ZXN0SWQiOiAiY2IyNDgyNzUtNDhhZC0wODJkLTkwYmQtYzcwZjU5ZWQ5Y2VhIiwKICAgICAgICAic3RhZ2VzIjogWwogICAgICAgICAgImlucHV0X2FjY2VwdGVkIgogICAgICAgIF0sCiAgICAgICAgInByb3ZpZGVyIjogInVuc3VwcG9ydGVkIiwKICAgICAgICAib2JzZXJ2YXRpb24iOiAidW5zdXBwb3J0ZWQiLAogICAgICAgICJwcm9jZXNzSW5jYXJuYXRpb24iOiAiYzYxMDMzYzAtMWJmNy00NjA4LWJkY2YtNmQ5NzQ3MTJmODU5IiwKICAgICAgICAiZ2VuZXJhdGlvbiI6IDIzLAogICAgICAgICJiYXNlbGluZVdvcmtpbmdTZXF1ZW5jZSI6IDAKICAgICAgfQogICAgfSwKICAgICJtdXRhdGlvbiI6IHsKICAgICAgInJlcXVlc3RJZCI6ICJjYjI0ODI3NS00OGFkLTA4MmQtOTBiZC1jNzBmNTllZDljZWEiLAogICAgICAicmVwbGF5ZWQiOiBmYWxzZQogICAgfSwKICAgICJ3YXJuaW5ncyI6IFsKICAgICAgImlucHV0IHdhcyBhY2NlcHRlZCwgYnV0IHRoaXMgcHJvdmlkZXIgY2Fubm90IHJlcG9ydCBkZWxpdmVyeS4gSW5zcGVjdCB0aGUgdGVybWluYWwgYmVmb3JlIHJldHJ5aW5nLiIKICAgIF0KICB9",
+    "payload_digest": "3b151028ce0262f2e7f1c8ea801fb78a3f29456ba44de816cb9b7d589d28c03b",
+    "status": "in_flight",
+    "started_at": "2026-10-30T15:00:06.4514472Z",
+    "updated_at": "2026-10-30T15:00:06.4514472Z",
+    "ref": {
+      "version": 0,
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "target": {
+        "id": "orca-terminal:390d160e546904609b67be1b",
+        "execution_host": "local"
+      },
+      "agent": {
+        "name": "codex"
+      },
+      "run_id": "42720ff7930aab91a6509514e3d02adc",
+      "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+      "external": {
+        "kind": "orca_terminal",
+        "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+        "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+        "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+        "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+        "execution_host": "local",
+        "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+      }
+    },
+    "lifecycle_identity": {
+      "project_id": "native-input-probe",
+      "execution_id": "42720ff7930aab91a6509514e3d02adc",
+      "configuration_digest": "cad23c739420c4bb1325a8aa544739a8f33ab73f4def01b16a9712aacd732bce",
+      "resource_generation": "8b1139c940f638e496c5ee80be64c64a",
+      "input_binding_digest": "9cfc20871378760b6576302620e4323eca135eddb3eb1af57c3dcf2d371841e4",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:390d160e546904609b67be1b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "42720ff7930aab91a6509514e3d02adc",
+        "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+          "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+          "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+        }
+      }
+    }
+  },
+  "disposition": "accepted",
+  "diagnostic": "Waiting for the original execution-host preparation receipt",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+    "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+    "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "execution_host": "local",
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+  },
+  "implementation": [
+    {
+      "version": 1,
+      "codec_version": 7,
+      "purpose": "execution-resources",
+      "implementation_key": "orca.terminal-state",
+      "project_id": "native-input-probe",
+      "execution_id": "42720ff7930aab91a6509514e3d02adc",
+      "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+      "generation": "8b1139c940f638e496c5ee80be64c64a",
+      "config_digest": "cad23c739420c4bb1325a8aa544739a8f33ab73f4def01b16a9712aacd732bce",
+      "digest": "4a065790781ce1e2d7252018b2762cf5956149778d32fb1a1f4ec6f5453bf06a",
+      "payload": {
+        "control": {
+          "process": {
+            "kind": "orca_native_control",
+            "terminal": "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+            "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+            "incarnation": "d5961beb-cbd4-4c4c-a9a0-5726bb0b8e15",
+            "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+          },
+          "ready": {
+            "binding": "09bc7050ee236407514efad530e02e2389cf589f9c51c9c3ddf2e490d575f8b1",
+            "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+            "runtime_sha256": "1320bf201492994da04991c0118549f0648b99d6ca1df99d966d6b72903cf7e9"
+          }
+        },
+        "process": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+          "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+          "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+        },
+        "turns": null,
+        "launch_digest": "d55f4f6fbdfbc3fbcef2d234d619dc3ae74a44c59d0db7cfaed3320302017f8d",
+        "launch_request": "cb248275-48ad-082d-90bd-c70f59ed9cea",
+        "launch_attempted": true,
+        "launch_accepted": true
+      }
+    }
+  ],
+  "state": {
+    "session_id": "orca-terminal:92c410b8-3132-4c48-a07f-2888faa81c53:term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0:c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "session_generation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "resource_id": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+    "resource_pending": true,
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+  }
+}

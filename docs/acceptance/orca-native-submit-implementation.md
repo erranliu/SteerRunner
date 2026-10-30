@@ -6,6 +6,8 @@
 
 最新授权增量见[本机原始流补验](orca-native-submit-local-stream.md)：两处准备读取已修正，真实 control READY 校验通过；新现场被既有认证 socket 的 Windows 1920 错误阻断，仍无业务提交、仍为 0/3。前述状态按各批次保留，不覆盖原始证据。
 
+最终本机补验现为 **3/3 通过**；根因、环境恢复、测试目标门禁与全部原始凭据见[最终记录](orca-native-submit-local-final.md)。远端仍 0/3 未验证，PR 保持 Draft。下文数字仍属于此前实施批次。
+
 ## 实现与保证
 
 删除Runner原submitNativePaste分支，使普通远端Codex多行输入直接进入原terminal send的text+enter+原request路径。删除草稿全文/折叠标签/显示LF判断、双稳定、专用轮询期限、viewport fit/restore、专用fixture与probe手动分段模式。输入规范化、冻结wire/摘要和原runtime/terminal/incarnation/session绑定保留。原受影响输入NUL/ESC拒收及观察feed清理保留。

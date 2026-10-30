@@ -1,0 +1,138 @@
+{
+  "operation": {
+    "version": 1,
+    "id": "f6eba601ad152315535038606f5b17d0",
+    "run_id": "42720ff7930aab91a6509514e3d02adc",
+    "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "target": {
+      "id": "orca-terminal:390d160e546904609b67be1b",
+      "execution_host": "local"
+    },
+    "action": "create_resource",
+    "idempotency_key": "probe-create_resource",
+    "request": "eyJwdXJwb3NlIjoiYWdlbnQtc3RhcnQiLCJuYW1lIjoib3JpZ2luYWwtdGVybWluYWwiLCJvYmplY3RpdmUiOiJcdTAwMjYgJ0M6XFxVc2Vyc1xcbG1hczFcXC5jb2RleFxcd29ya3RyZWVzXFw4ZWQ1XFxTdGVlclJ1bm5lclxcLmV2aWRlbmNlXFxvcmNhLWxvY2FsLXN0cmVhbS0yMDI2MTAzMFxcYmluXFxzdGVlcnJ1bm5lci1hZ2VudC5leGUnICctLWNvbmZpZ3VyYXRpb24nICdleUpoZFdScGRGOXRiMlJsYkNJNmV5SnRiMlJsYkNJNkltZHdkQzAyTGpFdGMyOXNJaXdpY21WaGMyOXVhVzVuWDJWbVptOXlkQ0k2SW1ocFoyZ2lmU3dpWlhobFkzVjBZV0pzWlNJNklrTTZMMVZ6WlhKekwyeHRZWE14TDBGd2NFUmhkR0V2VEc5allXd3ZUM0JsYmtGSkwwTnZaR1Y0TDJKcGJpOHlNbU5tWWpGa016QXlOakV6WldGbEwyTnZaR1Y0TG1WNFpTSXNJbUZ5WjNNaU9sc2lMUzF1Ynkxa1lXVnRiMjRpWFN3aWJXOWtaV3dpT2lKbmNIUXROaTFzZFc1aElpd2ljbVZoYzI5dWFXNW5YMlZtWm05eWRDSTZJbWhwWjJnaUxDSmhZMk5sYzNOZmJXOWtaU0k2SW5OaGJtUmliM2dpTENKeVpYQnZjMmwwYjNKNVgzVnliQ0k2SW1oMGRIQnpPaTh2WjJsMGFIVmlMbU52YlM5bGNuSmhibXhwZFM5VGRHVmxjbXhwYm1WVVpYTjBMbWRwZENKOScifQ==",
+    "receipt": "eyJvcGVyYXRpb24iOnsidmVyc2lvbiI6MSwiaWQiOiJmNmViYTYwMWFkMTUyMzE1NTM1MDM4NjA2ZjViMTdkMCIsInJ1bl9pZCI6IjQyNzIwZmY3OTMwYWFiOTFhNjUwOTUxNGUzZDAyYWRjIiwiYXR0ZW1wdF9pZCI6Ijc5ODE0MjQ0OWYwOTRkZDlmN2VjMDM2OWI1MzNiZDdkIiwiYmFja2VuZCI6Im9yY2EiLCJwcm90b2NvbCI6Im9yY2FfdGVybWluYWxfdjMiLCJ0YXJnZXQiOnsiaWQiOiJvcmNhLXRlcm1pbmFsOjM5MGQxNjBlNTQ2OTA0NjA5YjY3YmUxYiIsImV4ZWN1dGlvbl9ob3N0IjoibG9jYWwifSwiYWN0aW9uIjoiY3JlYXRlX3Jlc291cmNlIiwiaWRlbXBvdGVuY3lfa2V5IjoicHJvYmUtY3JlYXRlX3Jlc291cmNlIiwicmVxdWVzdCI6ImV5SndkWEp3YjNObElqb2lZV2RsYm5RdGMzUmhjblFpTENKdVlXMWxJam9pYjNKcFoybHVZV3d0ZEdWeWJXbHVZV3dpTENKdlltcGxZM1JwZG1VaU9pSmNkVEF3TWpZZ0owTTZYRnhWYzJWeWMxeGNiRzFoY3pGY1hDNWpiMlJsZUZ4Y2QyOXlhM1J5WldWelhGdzRaV1ExWEZ4VGRHVmxjbEoxYm01bGNseGNMbVYyYVdSbGJtTmxYRnh2Y21OaExXeHZZMkZzTFhOMGNtVmhiUzB5TURJMk1UQXpNRnhjWW1sdVhGeHpkR1ZsY25KMWJtNWxjaTFoWjJWdWRDNWxlR1VuSUNjdExXTnZibVpwWjNWeVlYUnBiMjRuSUNkbGVVcG9aRmRTY0dSR09YUmlNbEpzWWtOSk5tVjVTblJpTWxKc1lrTkpOa2x0Wkhka1F6QXlUR3BGZEdNeU9YTkphWGRwWTIxV2FHTXlPWFZoVnpWdVdESldiVnB0T1hsa1EwazJTVzFvY0ZveVoybG1VM2RwV2xob2JGa3pWakJaVjBweldsTkpOa2xyVFRaTU1WWjZXbGhLZWt3eWVIUlpXRTE0VERCR2QyTkZVbWhrUjBWMlZFYzVhbGxYZDNaVU0wSnNZbXRHU2t3d1RuWmFSMVkwVERKS2NHSnBPSGxOYlU1dFdXcEdhMDE2UVhsT2FrVjZXbGRHYkV3eVRuWmFSMVkwVEcxV05GcFRTWE5KYlVaNVdqTk5hVTlzYzJsTVV6RjFZbmt4YTFsWFZuUmlNalJwV0ZOM2FXSlhPV3RhVjNkcFQybEtibU5JVVhST2FURnpaRmMxYUVscGQybGpiVlpvWXpJNWRXRlhOVzVZTWxadFdtMDVlV1JEU1RaSmJXaHdXakpuYVV4RFNtaFpNazVzWXpOT1ptSlhPV3RhVTBrMlNXNU9hR0p0VW1saU0yZHBURU5LZVZwWVFuWmpNbXd3WWpOS05WZ3pWbmxpUTBrMlNXMW9NR1JJUW5wUGFUaDJXakpzTUdGSVZtbE1iVTUyWWxNNWJHTnVTbWhpYlhod1pGTTVWR1JIVm14amJYaHdZbTFXVlZwWVRqQk1iV1J3WkVOS09TY2lmUT09IiwicGF5bG9hZF9kaWdlc3QiOiIzYjE1MTAyOGNlMDI2MmYyZTdmMWM4ZWE4MDFmYjc4YTNmMjk0NTZiYTQ0ZGU4MTZjYjliN2Q1ODlkMjhjMDNiIiwic3RhdHVzIjoiYWNjZXB0ZWQiLCJzdGFydGVkX2F0IjoiMjAyNi0xMC0zMFQxNTowMDowNi40NTE0NDcyWiIsInVwZGF0ZWRfYXQiOiIyMDI2LTEwLTMwVDE1OjAwOjEwLjQ4NTQzMDRaIiwiZGlhZ25vc3RpYyI6IldhaXRpbmcgZm9yIHRoZSBvcmlnaW5hbCBleGVjdXRpb24taG9zdCBwcmVwYXJhdGlvbiByZWNlaXB0IiwicmVmIjp7InZlcnNpb24iOjAsImJhY2tlbmQiOiJvcmNhIiwicHJvdG9jb2wiOiJvcmNhX3Rlcm1pbmFsX3YzIiwidGFyZ2V0Ijp7ImlkIjoib3JjYS10ZXJtaW5hbDozOTBkMTYwZTU0NjkwNDYwOWI2N2JlMWIiLCJleGVjdXRpb25faG9zdCI6ImxvY2FsIn0sImFnZW50Ijp7Im5hbWUiOiJjb2RleCJ9LCJydW5faWQiOiI0MjcyMGZmNzkzMGFhYjkxYTY1MDk1MTRlM2QwMmFkYyIsImF0dGVtcHRfaWQiOiI3OTgxNDI0NDlmMDk0ZGQ5ZjdlYzAzNjliNTMzYmQ3ZCIsImV4dGVybmFsIjp7ImtpbmQiOiJvcmNhX3Rlcm1pbmFsIiwiZXhlY3V0YWJsZSI6IkM6XFxVc2Vyc1xcbG1hczFcXEFwcERhdGFcXExvY2FsXFxQcm9ncmFtc1xcb3JjYVxccmVzb3VyY2VzXFxiaW5cXG9yY2EuZXhlIiwidGVybWluYWwiOiJ0ZXJtXzhkODhiYmZmLTVkOGUtNGM5NS04N2VjLWZiNjY2MDIwYmRiMCIsInJ1bnRpbWVfaWQiOiI5MmM0MTBiOC0zMTMyLTRjNDgtYTA3Zi0yODg4ZmFhODFjNTMiLCJpbmNhcm5hdGlvbiI6ImM2MTAzM2MwLTFiZjctNDYwOC1iZGNmLTZkOTc0NzEyZjg1OSIsImV4ZWN1dGlvbl9ob3N0IjoibG9jYWwiLCJ3b3JrdHJlZV9pZCI6ImZhYWUzYWQ0LWRhMjQtNGQ2ZC05Njk4LWQ4OTMxYjg5Mzc4OTo6QzovVXNlcnMvbG1hczEvb3JjYS93b3Jrc3BhY2VzL1N0ZWVybGluZVRlc3QvY29kZXgtc3ItbmF0aXZlLWxvY2FsLTIwMjYxMDMwLXF1YWxpZmllZC0wMyJ9fSwibGlmZWN5Y2xlX2lkZW50aXR5Ijp7InByb2plY3RfaWQiOiJuYXRpdmUtaW5wdXQtcHJvYmUiLCJleGVjdXRpb25faWQiOiI0MjcyMGZmNzkzMGFhYjkxYTY1MDk1MTRlM2QwMmFkYyIsImNvbmZpZ3VyYXRpb25fZGlnZXN0IjoiY2FkMjNjNzM5NDIwYzRiYjEzMjVhOGFhNTQ0NzM5YThmMzNhYjczZjRkZWYwMWIxNmE5NzEyYWFjZDczMmJjZSIsInJlc291cmNlX2dlbmVyYXRpb24iOiI4YjExMzljOTQwZjYzOGU0OTZjNWVlODBiZTY0YzY0YSIsImlucHV0X2JpbmRpbmdfZGlnZXN0IjoiOWNmYzIwODcxMzc4NzYwYjY1NzYzMDI2MjBlNDMyM2VjYTEzNWVkZGIzZWIxYWY1N2MzZGNmMmQzNzE4NDFlNCIsInJlZiI6eyJ2ZXJzaW9uIjowLCJiYWNrZW5kIjoib3JjYSIsInByb3RvY29sIjoib3JjYV90ZXJtaW5hbF92MyIsInRhcmdldCI6eyJpZCI6Im9yY2EtdGVybWluYWw6MzkwZDE2MGU1NDY5MDQ2MDliNjdiZTFiIiwiZXhlY3V0aW9uX2hvc3QiOiJsb2NhbCJ9LCJhZ2VudCI6eyJuYW1lIjoiY29kZXgifSwicnVuX2lkIjoiNDI3MjBmZjc5MzBhYWI5MWE2NTA5NTE0ZTNkMDJhZGMiLCJhdHRlbXB0X2lkIjoiNzk4MTQyNDQ5ZjA5NGRkOWY3ZWMwMzY5YjUzM2JkN2QiLCJleHRlcm5hbCI6eyJraW5kIjoib3JjYV90ZXJtaW5hbCIsImV4ZWN1dGFibGUiOiJDOlxcVXNlcnNcXGxtYXMxXFxBcHBEYXRhXFxMb2NhbFxcUHJvZ3JhbXNcXG9yY2FcXHJlc291cmNlc1xcYmluXFxvcmNhLmV4ZSIsInRlcm1pbmFsIjoidGVybV84ZDg4YmJmZi01ZDhlLTRjOTUtODdlYy1mYjY2NjAyMGJkYjAiLCJydW50aW1lX2lkIjoiOTJjNDEwYjgtMzEzMi00YzQ4LWEwN2YtMjg4OGZhYTgxYzUzIiwiaW5jYXJuYXRpb24iOiJjNjEwMzNjMC0xYmY3LTQ2MDgtYmRjZi02ZDk3NDcxMmY4NTkiLCJleGVjdXRpb25faG9zdCI6ImxvY2FsIiwid29ya3RyZWVfaWQiOiJmYWFlM2FkNC1kYTI0LTRkNmQtOTY5OC1kODkzMWI4OTM3ODk6OkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC1xdWFsaWZpZWQtMDMifX19fSwiZGlzcG9zaXRpb24iOiJhY2NlcHRlZCIsImRpYWdub3N0aWMiOiJXYWl0aW5nIGZvciB0aGUgb3JpZ2luYWwgZXhlY3V0aW9uLWhvc3QgcHJlcGFyYXRpb24gcmVjZWlwdCIsInByb2Nlc3MiOnsia2luZCI6Im9yY2FfdGVybWluYWwiLCJleGVjdXRhYmxlIjoiQzpcXFVzZXJzXFxsbWFzMVxcQXBwRGF0YVxcTG9jYWxcXFByb2dyYW1zXFxvcmNhXFxyZXNvdXJjZXNcXGJpblxcb3JjYS5leGUiLCJ0ZXJtaW5hbCI6InRlcm1fOGQ4OGJiZmYtNWQ4ZS00Yzk1LTg3ZWMtZmI2NjYwMjBiZGIwIiwicnVudGltZV9pZCI6IjkyYzQxMGI4LTMxMzItNGM0OC1hMDdmLTI4ODhmYWE4MWM1MyIsImluY2FybmF0aW9uIjoiYzYxMDMzYzAtMWJmNy00NjA4LWJkY2YtNmQ5NzQ3MTJmODU5IiwiZXhlY3V0aW9uX2hvc3QiOiJsb2NhbCIsIndvcmt0cmVlX2lkIjoiZmFhZTNhZDQtZGEyNC00ZDZkLTk2OTgtZDg5MzFiODkzNzg5OjpDOi9Vc2Vycy9sbWFzMS9vcmNhL3dvcmtzcGFjZXMvU3RlZXJsaW5lVGVzdC9jb2RleC1zci1uYXRpdmUtbG9jYWwtMjAyNjEwMzAtcXVhbGlmaWVkLTAzIn0sImltcGxlbWVudGF0aW9uIjpbeyJ2ZXJzaW9uIjoxLCJjb2RlY192ZXJzaW9uIjo3LCJwdXJwb3NlIjoiZXhlY3V0aW9uLXJlc291cmNlcyIsImltcGxlbWVudGF0aW9uX2tleSI6Im9yY2EudGVybWluYWwtc3RhdGUiLCJwcm9qZWN0X2lkIjoibmF0aXZlLWlucHV0LXByb2JlIiwiZXhlY3V0aW9uX2lkIjoiNDI3MjBmZjc5MzBhYWI5MWE2NTA5NTE0ZTNkMDJhZGMiLCJhdHRlbXB0X2lkIjoiNzk4MTQyNDQ5ZjA5NGRkOWY3ZWMwMzY5YjUzM2JkN2QiLCJnZW5lcmF0aW9uIjoiOGIxMTM5Yzk0MGY2MzhlNDk2YzVlZTgwYmU2NGM2NGEiLCJjb25maWdfZGlnZXN0IjoiY2FkMjNjNzM5NDIwYzRiYjEzMjVhOGFhNTQ0NzM5YThmMzNhYjczZjRkZWYwMWIxNmE5NzEyYWFjZDczMmJjZSIsImRpZ2VzdCI6IjRhMDY1NzkwNzgxY2UxZTJkNzI1MjAxOGIyNzYyY2Y1OTU2MTQ5Nzc4ZDMyZmIxYTFmNGVjNmY1NDUzYmYwNmEiLCJwYXlsb2FkIjp7ImNvbnRyb2wiOnsicHJvY2VzcyI6eyJraW5kIjoib3JjYV9uYXRpdmVfY29udHJvbCIsInRlcm1pbmFsIjoidGVybV82NDVkMTExZC1iMjY5LTQxZjEtYTA3ZS0wYmIwZjY3NDdiMDQiLCJydW50aW1lX2lkIjoiOTJjNDEwYjgtMzEzMi00YzQ4LWEwN2YtMjg4OGZhYTgxYzUzIiwiaW5jYXJuYXRpb24iOiJkNTk2MWJlYi1jYmQ0LTRjNGMtYTlhMC01NzI2YmIwYjhlMTUiLCJ3b3JrdHJlZV9pZCI6ImZhYWUzYWQ0LWRhMjQtNGQ2ZC05Njk4LWQ4OTMxYjg5Mzc4OTo6QzovVXNlcnMvbG1hczEvb3JjYS93b3Jrc3BhY2VzL1N0ZWVybGluZVRlc3QvY29kZXgtc3ItbmF0aXZlLWxvY2FsLTIwMjYxMDMwLXF1YWxpZmllZC0wMyJ9LCJyZWFkeSI6eyJiaW5kaW5nIjoiMDliYzcwNTBlZTIzNjQwNzUxNGVmYWQ1MzBlMDJlMjM4OWNmNTg5ZjljNTFjOWMzZGRmMmU0OTBkNTc1ZjhiMSIsIndvcmtzcGFjZSI6IkM6L1VzZXJzL2xtYXMxL29yY2Evd29ya3NwYWNlcy9TdGVlcmxpbmVUZXN0L2NvZGV4LXNyLW5hdGl2ZS1sb2NhbC0yMDI2MTAzMC1xdWFsaWZpZWQtMDMiLCJydW50aW1lX3NoYTI1NiI6IjEzMjBiZjIwMTQ5Mjk5NGRhMDQ5OTFjMDExODU0OWYwNjQ4Yjk5ZDZjYTFkZjk5ZDk2NmQ2YjcyOTAzY2Y3ZTkifX0sInByb2Nlc3MiOnsia2luZCI6Im9yY2FfdGVybWluYWwiLCJleGVjdXRhYmxlIjoiQzpcXFVzZXJzXFxsbWFzMVxcQXBwRGF0YVxcTG9jYWxcXFByb2dyYW1zXFxvcmNhXFxyZXNvdXJjZXNcXGJpblxcb3JjYS5leGUiLCJ0ZXJtaW5hbCI6InRlcm1fOGQ4OGJiZmYtNWQ4ZS00Yzk1LTg3ZWMtZmI2NjYwMjBiZGIwIiwicnVudGltZV9pZCI6IjkyYzQxMGI4LTMxMzItNGM0OC1hMDdmLTI4ODhmYWE4MWM1MyIsImluY2FybmF0aW9uIjoiYzYxMDMzYzAtMWJmNy00NjA4LWJkY2YtNmQ5NzQ3MTJmODU5IiwiZXhlY3V0aW9uX2hvc3QiOiJsb2NhbCIsIndvcmt0cmVlX2lkIjoiZmFhZTNhZDQtZGEyNC00ZDZkLTk2OTgtZDg5MzFiODkzNzg5OjpDOi9Vc2Vycy9sbWFzMS9vcmNhL3dvcmtzcGFjZXMvU3RlZXJsaW5lVGVzdC9jb2RleC1zci1uYXRpdmUtbG9jYWwtMjAyNjEwMzAtcXVhbGlmaWVkLTAzIn0sInR1cm5zIjpudWxsLCJsYXVuY2hfZGlnZXN0IjoiZDU1ZjRmNmZiZGZiYzNmYmNlZjJkMjM0ZDYxOWRjM2FlNzRhNDRjNTlkMGRiN2NmYWVkMzMyMDMwMjAxN2Y4ZCIsImxhdW5jaF9yZXF1ZXN0IjoiY2IyNDgyNzUtNDhhZC0wODJkLTkwYmQtYzcwZjU5ZWQ5Y2VhIiwibGF1bmNoX2F0dGVtcHRlZCI6dHJ1ZSwibGF1bmNoX2FjY2VwdGVkIjp0cnVlfX1dLCJzdGF0ZSI6eyJzZXNzaW9uX2lkIjoib3JjYS10ZXJtaW5hbDo5MmM0MTBiOC0zMTMyLTRjNDgtYTA3Zi0yODg4ZmFhODFjNTM6dGVybV84ZDg4YmJmZi01ZDhlLTRjOTUtODdlYy1mYjY2NjAyMGJkYjA6YzYxMDMzYzAtMWJmNy00NjA4LWJkY2YtNmQ5NzQ3MTJmODU5Iiwic2Vzc2lvbl9nZW5lcmF0aW9uIjoiYzYxMDMzYzAtMWJmNy00NjA4LWJkY2YtNmQ5NzQ3MTJmODU5IiwicmVzb3VyY2VfaWQiOiJ0ZXJtXzhkODhiYmZmLTVkOGUtNGM5NS04N2VjLWZiNjY2MDIwYmRiMCIsInJlc291cmNlX3BlbmRpbmciOnRydWUsIndvcmt0cmVlX2lkIjoiZmFhZTNhZDQtZGEyNC00ZDZkLTk2OTgtZDg5MzFiODkzNzg5OjpDOi9Vc2Vycy9sbWFzMS9vcmNhL3dvcmtzcGFjZXMvU3RlZXJsaW5lVGVzdC9jb2RleC1zci1uYXRpdmUtbG9jYWwtMjAyNjEwMzAtcXVhbGlmaWVkLTAzIn19",
+    "payload_digest": "3b151028ce0262f2e7f1c8ea801fb78a3f29456ba44de816cb9b7d589d28c03b",
+    "status": "accepted",
+    "started_at": "2026-10-30T15:00:06.4514472Z",
+    "updated_at": "2026-10-30T15:00:11.2645985Z",
+    "diagnostic": "Waiting for the original execution-host preparation receipt",
+    "ref": {
+      "version": 0,
+      "backend": "orca",
+      "protocol": "orca_terminal_v3",
+      "target": {
+        "id": "orca-terminal:390d160e546904609b67be1b",
+        "execution_host": "local"
+      },
+      "agent": {
+        "name": "codex"
+      },
+      "run_id": "42720ff7930aab91a6509514e3d02adc",
+      "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+      "external": {
+        "kind": "orca_terminal",
+        "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+        "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+        "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+        "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+        "execution_host": "local",
+        "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+      }
+    },
+    "lifecycle_identity": {
+      "project_id": "native-input-probe",
+      "execution_id": "42720ff7930aab91a6509514e3d02adc",
+      "configuration_digest": "cad23c739420c4bb1325a8aa544739a8f33ab73f4def01b16a9712aacd732bce",
+      "resource_generation": "8b1139c940f638e496c5ee80be64c64a",
+      "input_binding_digest": "9cfc20871378760b6576302620e4323eca135eddb3eb1af57c3dcf2d371841e4",
+      "ref": {
+        "version": 0,
+        "backend": "orca",
+        "protocol": "orca_terminal_v3",
+        "target": {
+          "id": "orca-terminal:390d160e546904609b67be1b",
+          "execution_host": "local"
+        },
+        "agent": {
+          "name": "codex"
+        },
+        "run_id": "42720ff7930aab91a6509514e3d02adc",
+        "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+        "external": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+          "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+          "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+        }
+      }
+    }
+  },
+  "disposition": "accepted",
+  "diagnostic": "Waiting for the original execution-host preparation receipt",
+  "process": {
+    "kind": "orca_terminal",
+    "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+    "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+    "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+    "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "execution_host": "local",
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+  },
+  "implementation": [
+    {
+      "version": 1,
+      "codec_version": 7,
+      "purpose": "execution-resources",
+      "implementation_key": "orca.terminal-state",
+      "project_id": "native-input-probe",
+      "execution_id": "42720ff7930aab91a6509514e3d02adc",
+      "attempt_id": "798142449f094dd9f7ec0369b533bd7d",
+      "generation": "8b1139c940f638e496c5ee80be64c64a",
+      "config_digest": "cad23c739420c4bb1325a8aa544739a8f33ab73f4def01b16a9712aacd732bce",
+      "digest": "4a065790781ce1e2d7252018b2762cf5956149778d32fb1a1f4ec6f5453bf06a",
+      "payload": {
+        "control": {
+          "process": {
+            "kind": "orca_native_control",
+            "terminal": "term_645d111d-b269-41f1-a07e-0bb0f6747b04",
+            "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+            "incarnation": "d5961beb-cbd4-4c4c-a9a0-5726bb0b8e15",
+            "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+          },
+          "ready": {
+            "binding": "09bc7050ee236407514efad530e02e2389cf589f9c51c9c3ddf2e490d575f8b1",
+            "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03",
+            "runtime_sha256": "1320bf201492994da04991c0118549f0648b99d6ca1df99d966d6b72903cf7e9"
+          }
+        },
+        "process": {
+          "kind": "orca_terminal",
+          "executable": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+          "terminal": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+          "runtime_id": "92c410b8-3132-4c48-a07f-2888faa81c53",
+          "incarnation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+          "execution_host": "local",
+          "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+        },
+        "turns": null,
+        "launch_digest": "d55f4f6fbdfbc3fbcef2d234d619dc3ae74a44c59d0db7cfaed3320302017f8d",
+        "launch_request": "cb248275-48ad-082d-90bd-c70f59ed9cea",
+        "launch_attempted": true,
+        "launch_accepted": true
+      }
+    }
+  ],
+  "state": {
+    "session_id": "orca-terminal:92c410b8-3132-4c48-a07f-2888faa81c53:term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0:c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "session_generation": "c61033c0-1bf7-4608-bdcf-6d974712f859",
+    "resource_id": "term_8d88bbff-5d8e-4c95-87ec-fb666020bdb0",
+    "resource_pending": true,
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-local-20261030-qualified-03"
+  }
+}
