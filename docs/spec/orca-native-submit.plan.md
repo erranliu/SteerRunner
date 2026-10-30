@@ -1,7 +1,7 @@
 # Orca 原生输入可靠提交 Plan
 
 日期：2026-10-30。基线及规范见 [Spec](orca-native-submit.spec.md)。
-状态：P0 调查完成；P1 独立方案审计通过；P2 被 Orca 契约缺口阻断。后续阶段不能绕过前置。
+状态：追加调查修正了先前归因和漏查接口，见[重新核查](../acceptance/orca-native-submit-reassessment.md)。原始强保证尚未获证；不能把它写成已证实的 Orca 缺陷。用户限定不修改 Orca、只允许查询及明确无输入副作用的重试；该范围应复用现有接口，不依赖新增 Orca API。本 Plan 的强提交实施仍未执行。
 
 ## P0 当前代码与能力调查
 
@@ -9,17 +9,17 @@
 
 对当前安装包做隔离函数行为核验：静默 render gate、缺消费确认仍受理、正文截断/改字节/混入、补 Enter、开始观察不等于全文。用虚拟时钟/受控信号；实际调用原安装函数，明确替换了哪些依赖。每个反例 30 次仅为契约证据稳定性，**不是 Runner L3 或真实故障复现**。
 
-退出标准：明确既有接口能否满足 Spec §5。不能满足则出具接口缺口及证据，停止生产实施；可以交独立 draft PR 保存 Spec/Plan/审计结果，不能将任务标已修复。
+退出标准：区分 Runner 用法、Orca 公开契约、原始更强目标及历史根因。原始强目标未获证时不得宣称已完成；不能因此跳过既有接口核查或笼统阻断全部 Runner 侧恢复工作。保留独立 draft PR，尚未实施的范围明确标注。
 
 ## P1 独立方案审计
 
 新独立只读审计者检查 Spec/Plan/证据与当前源码：五层事实、提交前正确性、旧路径删除清单、本机/远端一致性、超时零重发、并发围栏和测试映射。主会话修正确认的问题，记录审计者、范围和结论。审计通过设计不表示 Orca gate 已通过。
 
-## P2 Orca 前置契约核验（阻断）
+## P2 既有能力与原始强目标核验
 
-要求 Orca 提供 Spec §5 的严格 `terminal.send` 扩展/等效既有接口、能力标识、只读请求查询和可核验的 provider 消费/排他提交保证。复用 mutation journal；上游证明重复、重启、未知窗不产生额外写入/CR。只接受两执行目标相同契约。
+已核实既有 `terminal.send text+enter`、`--retry-request`、`--wait-submit` 与只读 `orchestration request-show`；本机/远端入口一致。先纠正拆分 raw paste/Enter 绕开通用 prompt 的用法，再审计原请求恢复：同 caller/runtime/request、retained method/send.handle/incarnation 必须匹配。query 的 completed 不是任务完成，pending/absent/operation_unknown 不授权普通重发。
 
-不在 Runner 仓库修改/升级安装中的 Orca，不编造响应字段，不通过项目材料或脚本绕过。若无法满足，应由 Orca 修复其 native delivery/provider 接口并提供源码/测试证据后再继续本 Plan。缺接口不是用户缺少授权，不要求用户确认不安全切换。
+不修改/升级 Orca，不编造字段、不通过项目材料绕过。用户选定的有限恢复只重试查询和明确未产生输入的操作；先按最多三次重试与总期限设计预算，耗尽明确报错但保留 outcome unknown，不报成未执行。用同ID重放也不是无条件安全：记录可能被清理，缺证时不能发送。该恢复实施须另补精确 Spec/测试，不自动实施本节后面的原始强提交迁移。原始正文消费/排他目标若仍要求，应单独证明；目前未证明可满足，也未证明历史原生问题是 Orca 违约。
 
 ## P3 Runner 实施（P1、P2 通过后）
 

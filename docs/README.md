@@ -19,7 +19,7 @@
 | 旧 Check 退役与新版本边界 | [删除契约、消费者和验证](acceptance/check-retirement.md) |
 | Orca 路由、原生查询与后端范围 | [本机/远程连接 Spec](spec/orca-local-remote.spec.md) / [Plan](spec/orca-local-remote.plan.md)、[远端原生 Spec](spec/orca-remote-native.spec.md) / [Plan](spec/orca-remote-native.plan.md)、[通用 Agent Spec](spec/orca-generic-agent.spec.md) / [Plan](spec/orca-generic-agent.plan.md) |
 | Orca CLI 排队、读取重试与公开等待状态（2026-10-25） | [Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [独立验收](acceptance/orca-cli-wait-retry.md)；Runner 只读准备与原操作恢复，调用方 UI 接线另验 |
-| Orca 原生可靠提交调查（2026-10-30，契约阻断、未实施） | [Spec](spec/orca-native-submit.spec.md) / [Plan](spec/orca-native-submit.plan.md) / [调查与证据](acceptance/orca-native-submit.md)；现有 prompt-delivery 不证明提交前完整消费，禁止直接切换 |
+| Orca 原生可靠提交调查（2026-10-30，未实施） | [Spec](spec/orca-native-submit.spec.md) / [Plan](spec/orca-native-submit.plan.md) / [调查与证据](acceptance/orca-native-submit.md) / [归因修正](acceptance/orca-native-submit-reassessment.md)；Runner 多行绕开通用入口，现成回执查询已核实，尚未证明 Orca 历史缺陷 |
 | 服务换代、原执行接管与创建回执 | [换代恢复 Spec](spec/service-generation-recovery.spec.md) / [Plan](spec/service-generation-recovery.plan.md) |
 | 停止、初始化与停止证据范围 | [初始化停止 Plan](spec/initialization-stop.plan.md)、[Orca 停止取证 Plan](spec/orca-shutdown-verification.plan.md) |
 | 报告、日志及工作区 Git 查询 | [R2 操作指南](run-evidence-r2.md)、[Spec](spec/run-evidence-r2.spec.md) / [Plan](spec/run-evidence-r2.plan.md) |
