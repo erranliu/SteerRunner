@@ -11,13 +11,12 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	_ "modernc.org/sqlite"
 )
 
-const Format = "steerrunner-state/v4"
+const Format = "steerrunner-state/v5"
 
 type Store struct{ db *sql.DB }
 
@@ -53,40 +52,18 @@ func Open(dir string) (*Store, error) {
 		if _, err := db.Exec(`
 BEGIN IMMEDIATE;
 CREATE TABLE metadata (format TEXT NOT NULL);
-INSERT INTO metadata VALUES ('steerrunner-state/v4');
+INSERT INTO metadata VALUES ('steerrunner-state/v5');
 CREATE TABLE commands (
  request_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE,
  command TEXT NOT NULL, instance_id TEXT NOT NULL, digest TEXT NOT NULL,
- response BLOB NOT NULL, action_status TEXT NOT NULL, run_id TEXT, check_id TEXT
+ response BLOB NOT NULL, action_status TEXT NOT NULL, run_id TEXT
 );
-CREATE TABLE checks(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
 CREATE TABLE runs(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
 CREATE TABLE events(seq INTEGER PRIMARY KEY AUTOINCREMENT,run_id TEXT NOT NULL,event_id TEXT NOT NULL UNIQUE,body BLOB NOT NULL);
 CREATE INDEX events_run ON events(run_id,seq);
-PRAGMA user_version=4;
+PRAGMA user_version=5;
 COMMIT;`); err != nil {
 			return fail(err)
-		}
-	}
-	if !fresh {
-		var format string
-		var version int
-		if db.QueryRow(`SELECT format FROM metadata`).Scan(&format) == nil && db.QueryRow(`PRAGMA user_version`).Scan(&version) == nil && format == "steerrunner-state/v3" && version == 3 {
-			// Qualify the source before changing its semantic marker. Unknown
-			// fields must never disappear through a decode/re-encode on startup.
-			if err := qualifyRecoverySource(db); err != nil {
-				return fail(err)
-			}
-			// VACUUM INTO takes a consistent snapshot, including committed WAL
-			// pages. Never copy runner.db while SQLite may still have a WAL.
-			backup := filepath.Join(dir, "runner-state-v3-"+contracts.NewID()+".backup.db")
-			if _, err := db.Exec(`VACUUM INTO '` + strings.ReplaceAll(backup, "'", "''") + `'`); err != nil {
-				return fail(err)
-			}
-			if _, err := db.Exec(`BEGIN IMMEDIATE; UPDATE metadata SET format='steerrunner-state/v4'; PRAGMA user_version=4; COMMIT;`); err != nil {
-				_, _ = db.Exec(`ROLLBACK`)
-				return fail(err)
-			}
 		}
 	}
 	if err := validateFormat(db); err != nil {
@@ -101,14 +78,10 @@ COMMIT;`); err != nil {
 // OpenReader never creates or migrates storage. The host must hold the writer
 // lease while using this snapshot for offline resource verification.
 func OpenReader(dir string) (*Store, error) {
-	return openReader(dir, false)
+	return openReader(dir)
 }
 
-// OpenRecoveryReader also reads the explicitly supported v3 source format.
-// It never migrates it; only the exclusive service writer may upgrade.
-func OpenRecoveryReader(dir string) (*Store, error) { return openReader(dir, true) }
-
-func openReader(dir string, legacy bool) (*Store, error) {
+func openReader(dir string) (*Store, error) {
 	path, err := filepath.Abs(filepath.Join(dir, "runner.db"))
 	if err != nil {
 		return nil, err
@@ -123,7 +96,7 @@ func openReader(dir string, legacy bool) (*Store, error) {
 		return nil, err
 	}
 	db.SetMaxOpenConns(1)
-	if err := validateReadableFormat(db, legacy); err != nil {
+	if err := validateFormat(db); err != nil {
 		db.Close()
 		return nil, err
 	}
@@ -131,26 +104,16 @@ func openReader(dir string, legacy bool) (*Store, error) {
 }
 
 func validateFormat(db *sql.DB) error {
-	return validateReadableFormat(db, false)
-}
-
-func validateReadableFormat(db *sql.DB, legacy bool) error {
 	var format string
 	var version int
 	var count int
-	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || !(format == Format && version == 4 || legacy && format == "steerrunner-state/v3" && version == 3) {
+	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || (format != Format || version != 5) {
 		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory.")
 	}
 	return nil
 }
 
 func (s *Store) Close() error { return s.db.Close() }
-
-func (s *Store) StateFormat() (string, error) {
-	var format string
-	err := s.db.QueryRow(`SELECT format FROM metadata`).Scan(&format)
-	return format, err
-}
 
 func StopDigest(input contracts.Request) string {
 	var value any

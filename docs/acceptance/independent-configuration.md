@@ -1,5 +1,7 @@
 # 独立配置与测试配置验收
 
+历史构建验收记录：以下 Check、旧状态升级和已删除源码的描述仅说明当时构建，不是当前入口。2026-10-29 已退役旧业务，当前边界见[退役记录](check-retirement.md)；原始失败、资源与结算证据保持。
+
 > Workflow/2 组合增量：保留本页原构建事实；当前基线、manifest 与严格公开校验使用 development/2，移除已废弃的反馈资格参数，配置读取显式使用 UTF-8。最终配置/CLI/注册需求与框架、原生配置冻结接线的复验见[组合验收](evidence/rebase-control-20261019/README.md)。
 
 日期：2026-10-19。[Spec](../spec/independent-configuration.spec.md) / [Plan](../spec/independent-configuration.plan.md)。

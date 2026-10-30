@@ -2,7 +2,7 @@
 
 2026-10-26 测试整理：T7 当前入口改为 `test.ps1 -Level L3 -Scenario local-codex.result-acquisition`，只保留两个 parser 内部 case（3 次解析调用、1 次权限探针），固定预期 `parsed`，不创建 PR。原第三项 development smoke 由唯一 L2 `local-codex.smoke` 承担；下文三内部 case / L2 的实施记录属于调整前版本，历史资格保留，现行组织见[测试清单](../test-catalog.md#测试整理结论-2026-10-26)。
 
-2026-10-21 状态核对：三种获取方式与两种开发定义已实施，实际构建资格及历史失败见[专属验收](../acceptance/result-acquisition.md)。下文保留实施顺序与阶段记录；当前 state/v4、兼容换代及开发 worktree 文档路径规则按[换代 Spec](service-generation-recovery.spec.md)和[产品契约](steerrunner.spec.md)，不恢复旧文档快照门槛。
+2026-10-21 状态核对：三种获取方式与两种开发定义已实施，实际构建资格及历史失败见[专属验收](../acceptance/result-acquisition.md)。下文保留实施顺序与阶段记录；当前 state/v5、兼容换代及开发 worktree 文档路径规则按[换代 Spec](service-generation-recovery.spec.md)和[产品契约](steerrunner.spec.md)，不恢复旧文档快照门槛。
 
 > 2026-10-19 主线接入：rebase 到 `a3dc15d` 后保留原生签名退出和固定控制边界，按 §6 审计并重验。旧批次源码/失败仍保留；最终记录见[本轮验收](../acceptance/evidence/rebase-control-20261019/README.md)。
 

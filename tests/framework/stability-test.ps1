@@ -4,10 +4,7 @@ $ErrorActionPreference='Stop'
 $taskCatalog=Get-SRTestCatalog (Join-Path $Repository 'tests/catalog.json')
 $taskCount=0
 foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.level -eq 'L3'})){$taskCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskCount -ne 39){throw 'L3 registry must retain local agent cases, both restart access modes and exclude retired remote checks'}
-$taskEnvironmentCount=0
-foreach($taskEntry in @($taskCatalog.scenarios|Where-Object {$_.driver -eq 'environment-check'})){$taskEnvironmentCount+=@(Get-SRLiveCases $taskEntry).Count}
-if($taskEnvironmentCount -ne 4){throw 'Environment check registry must include only Codex and local Orca access modes'}
+if($taskCount -ne 35){throw 'L3 registry must retain all supported Run cases and both restart access modes'}
 $taskEntry=$taskCatalog.scenarios|Where-Object {$_.id -eq 'orca-remote.service-restart'}
 $taskEntry.cases=@('graceful-active')
 $taskRejected=$false

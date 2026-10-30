@@ -10,10 +10,8 @@ import (
 )
 
 const ContentSessionInstruction = "Read-only: use submitted directory/frozen materials; return content. No writes, commits, push or PR. Ask via steerline_ask."
-const EnvironmentSessionInstruction = "Use only steerrunner_environment_probe for the fixed nonce/actions, once each in order. Stop on failure or unknown; no other tools/business work. Reply DONE after all actions."
 const BootstrapInstruction = "Initialize this agent session. Reply READY only. Do not use tools or change files."
 const AuthenticationInstruction = "Authentication set; no env/credential/config/header dumps, login, auth/permission changes, escalation or uncertain publication repeats."
-const EnvironmentTaskFormat = "Run environment check %s. Nonce: %s. Sequentially call %s once for each action in this exact order: %s. Stop on failure. After the last result, reply DONE. Do not perform business work."
 
 // Session fields stay in their existing native request. This checks all Runner
 // authored prose in that one request; schemas remain structured metadata.
@@ -90,5 +88,5 @@ func sessionInput(params map[string]any) (*SessionInputFacts, error) {
 	return &SessionInputFacts{Budget: budget, Parts: parts, Fields: fields}, nil
 }
 func InputContract() any {
-	return map[string]any{"initialization": NativeReadinessPrompt, "bootstrap": BootstrapInstruction, "authentication": AuthenticationInstruction, "worker": WorkerInstructionFormat, "content_session": ContentSessionInstruction, "environment_session": EnvironmentSessionInstruction, "environment_task": EnvironmentTaskFormat, "environment_slots": "check ID, nonce, fixed required action IDs; Runner", "ask_tool": codexapp.AskDynamicTool(), "environment_tool": environmentProbeTool(), "answers": "caller text; native JSON question IDs/framing are Runner; same-ask/turn binding unchanged", "native_rejections": []string{codexapp.RejectMalformedQuestion, codexapp.RejectUnauthorizedRequest, codexapp.RejectEnvironmentRequest, codexapp.RejectInitializationRequest}}
+	return map[string]any{"initialization": NativeReadinessPrompt, "bootstrap": BootstrapInstruction, "authentication": AuthenticationInstruction, "worker": WorkerInstructionFormat, "content_session": ContentSessionInstruction, "ask_tool": codexapp.AskDynamicTool(), "answers": "caller text; native JSON question IDs/framing are Runner; same-ask/turn binding unchanged", "native_rejections": []string{codexapp.RejectMalformedQuestion, codexapp.RejectUnauthorizedRequest, codexapp.RejectInitializationRequest}}
 }

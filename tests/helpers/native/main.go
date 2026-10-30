@@ -314,7 +314,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 		if err := appendCall(map[string]any{"method": "turn/start", "thread": s.thread.ID, "cwd": s.thread.Cwd, "prompt": prompt, "model": str("model"), "effort": str("effort")}); err != nil {
 			return fail(err)
 		}
-		audit := (strings.HasPrefix(prompt, "Audit the current") || strings.HasPrefix(prompt, "审计当前代码") || strings.HasPrefix(prompt, "根据已有上下文整理指定审计"))
+		audit := (strings.HasPrefix(prompt, "Audit the current") || strings.HasPrefix(prompt, "审计当前代码") || strings.HasPrefix(prompt, "根据已有上下文整理指定审计") || strings.HasPrefix(prompt, "审计修复 P0–P2；") || strings.HasPrefix(prompt, "仅报告原审计；"))
 		if os.Getenv("STEERRUNNER_AUDIT_EXPECT_MODELS") == "1" {
 			expectedModel, expectedEffort := "executor", "medium"
 			if audit {
@@ -369,7 +369,7 @@ func (s *server) call(request rpc) (map[string]any, []map[string]any) {
 			_ = os.Remove(marker)
 			return nil, nil
 		}
-		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || audit && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")) || (strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布")) && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
+		if exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn")) || audit && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")) || (strings.HasPrefix(prompt, "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布") || strings.HasPrefix(prompt, "仅整理原发布结果与 PR URL，不重发；")) && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-publication-report")) {
 			if os.Getenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER") == "1" {
 				if err := os.WriteFile(statePath(s.thread.ID)+".completed", encode(s.thread), 0600); err != nil {
 					return fail(err)
@@ -409,7 +409,7 @@ func auditResult(cwd, prompt string) (string, error) {
 	if exists(filepath.Join(root, "audit-unicode-alias")) {
 		return `{"outcome":"done","summary":"ambiguous audit","verdict":"pass","findings":[{"severity":"P1","message":"blocking defect"}],"findingſ":[]}`, nil
 	}
-	if strings.HasPrefix(prompt, "根据已有上下文整理指定审计") {
+	if strings.HasPrefix(prompt, "根据已有上下文整理指定审计") || strings.HasPrefix(prompt, "仅报告原审计；") {
 		return `{"outcome":"done","summary":"original audit formatted","fixed_count":0,"fixed_issues":[],"remaining_issues":[]}`, nil
 	}
 	if exists(filepath.Join(root, "audit-question")) {

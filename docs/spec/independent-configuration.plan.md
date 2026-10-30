@@ -14,9 +14,9 @@
 
 | 位置 | 当前事实 | 拟改动 |
 | --- | --- | --- |
-| `internal/contracts/run.go`、`environment_check.go` | 已有生产纯 gate | 作为唯一语义入口，补共用结构化诊断／可靠映射；保留旧 gate 语义，避免 CLI／测试各写一套判定 |
+| `internal/contracts/run.go` | 已有生产纯 gate | 作为唯一语义入口，补共用结构化诊断／可靠映射；保留旧 gate 语义，避免 CLI／测试各写一套判定 |
 | `internal/resources/configuration.go`、`assets/settings.schema.json` | 已发布 RunConfiguration；组合规则部分生成 | 补完整 Run input schema、有限类型化支持组合／默认／限制及一致性反例；保留现有字段与 schema 键 |
-| `internal/resources/resources.go`、`internal/cli/cli.go`、`internal/host/server.go` | capabilities 当前经服务，validate 尚无 | 增加 Spec §4 的离线能力与三类原始对象校验，响应沿 v1；由服务附带真实来源身份，不以 status 拼接，不改变旧写请求读取 |
+| `internal/resources/resources.go`、`internal/cli/cli.go`、`internal/host/server.go` | capabilities 当前经服务，validate 尚无 | 增加 Spec §4 的离线能力与两类原始对象校验，响应沿 v1；由服务附带真实来源身份，不以 status 拼接，不改变旧写请求读取 |
 | `internal/application/freeze.go`、`runstate` | 已有接受冻结及原输入恢复 | 原则上复用；只在发现公开默认与实现不一致时定向修复，不因测试管理增加持久状态 |
 | `internal/testkit/livetest/cases.json`、`cases.go` | 唯一 case 注册及现有 manifest 校验 | 扩充配置项引用／必要角色和约束；不建设通用规则引擎，不变更原场景目标 |
 | `scripts/live-catalog.ps1`、`tests/catalog.json` | 校验注册一致性 | Go／PowerShell 直接消费唯一需求；catalog 不增加需求镜像，现有重复元数据继续核对 |
@@ -31,17 +31,17 @@
 
 ### P0 固定契约与场景映射
 
-1. 逐项核对公开 gate、schema、freeze 的默认值、遗漏／空串／null、能力组合及环境检查区别，形成对照用例。以原 gate 判定／主 fault／退出码及默认值为本期兼容基线；差异修正到 schema／说明，不能用新 schema 前置拦截旧写路径。模型默认保留现有语义，不用新增测试框架改变产品选择。
-2. 从唯一 case 注册逐 case 列出固定配置项引用、必要角色、workflow／agent／模式、模型关系、夹具和管理员设施需求。Run 与环境检查按实际 input 分开验证；混合场景列出全部角色。当前数量从 registry 计算，不复制可能过时的数字或增加用户绑定表。
+1. 逐项核对公开 gate、schema、freeze 的默认值、遗漏／空串／null、能力组合，形成对照用例。以原 gate 判定／主 fault／退出码及默认值为本期兼容基线；差异修正到 schema／说明，不能用新 schema 前置拦截旧写路径。模型默认保留现有语义，不用新增测试框架改变产品选择。
+2. 从唯一 case 注册逐 case 列出固定配置项引用、必要角色、workflow／agent／模式、模型关系、夹具和管理员设施需求。Run 按实际 input 验证；混合场景列出全部角色。当前数量从 registry 计算，不复制可能过时的数字或增加用户绑定表。
 3. 固定 Spec §5 的外层 schema、严格解析及字段诊断；保存基线和完整 L3 资格的独立结论。没有本机 Codex 时仍能做 L1／Controlled。
 
 完成条件：IC-01／04／05 的输入矩阵、注册映射及预期结果可以确定性验证；不启动模型、修改部署或对外宣称支持。
 
 ### P1 公开契约与独立使用
 
-1. 在已有发布中增加 configuration_schemas.run_input、capability_catalog/version/combinations/validation_kinds 及组合／默认描述；保留既有字段和 run_configuration。validation_kinds 的三个固定引用随响应可解，不做动态校验注册。由共同实现描述生成有限组合，缺省值只建立只读匹配视图；workflow null 不作通配。目录缺项与 gate 接受分别测试，不能把目录变为旧请求的新白名单。
+1. 在已有发布中增加 configuration_schemas.run_input、capability_catalog/version/combinations/validation_kinds 及组合／默认描述；保留既有字段和 run_configuration。validation_kinds 的两个固定引用随响应可解，不做动态校验注册。由共同实现描述生成有限组合，缺省值只建立只读匹配视图；workflow null 不作通配。目录缺项与 gate 接受分别测试，不能把目录变为旧请求的新白名单。
 2. 实现 capabilities --offline：静态目录与在线同版同源；capability_source 标明 executable 或 service、构建／资源身份，在线 instance_id 由实际响应服务提供，不能先查 status 再拼接。新字段增量发布，离线结果不冒充当前服务事实。
-3. validate 支持 run-configuration、run、environment-check 三个 kind，stdin 直接读取对应对象，不读取／自动解包写信封，不要求或回显 request_id。严格 JSON／UTF-8／大小限制沿既有规则；在 host／state-dir 处理前完成。既有写命令继续走原 ReadRequest 与幂等处理。
+3. validate 支持 run-configuration、run 两个 kind，stdin 直接读取对应对象，不读取／自动解包写信封，不要求或回显 request_id。严格 JSON／UTF-8／大小限制沿既有规则；在 host／state-dir 处理前完成。既有写命令继续走原 ReadRequest 与幂等处理。
 4. 共用校验输出 issues 的 JSON Pointer、稳定 code 和 message；根级定位作为明确兜底，不靠解析人类文案或重复规则。沿 v1 Response，request_id=null；原 gate 决定 valid、主 fault 及退出码，附加 schema issues 不改变错误优先级。已知 kind 输入格式错误为 invalid_input／exit 2、有结论的 gate 错误为原 exit 2/3，参数／协议错误 data=null；I/O／内部故障 internal_error、data=null、exit 1，不伪造 valid=false。按 Spec §4.3 表格验证，不改变旧命令错误结构。
 5. 区分 CLI 协议、schema／目录结构版本、构建／资源／实例身份和调用方配置版本；更新 help／命令列表／裸对象与响应样例。新增静态生产目录／schema／默认规则纳入 resource_digest，排除来源身份、摘要本身及测试配置／case 注册／时间／辅助路径；用确定序列化避免自引用与现场漂移。断言公开目录变化会改变摘要，测试／实例变化不会。新 CLI 与旧服务仍按既有构建身份拒绝混用。
 6. 用隔离目录及动作计数证明零副作用。保存旧合法／非法请求与旧能力消费样例作对照，验证接受／拒绝、主错误／退出码、默认值、原写信封／request_id、实例绑定及普通 submit 不读测试文件。已知消费者未通过不能宣称兼容，需适配时由调用方仓库明确完成；不增加自动双 payload／协议降级，不强制外部改用 validate。
@@ -50,7 +50,7 @@
 
 ### P2 独立测试配置与本地基线
 
-1. 新配置只由显式 Config 指定；按入口 cwd 解析文件路径，读取一次并固定本批副本／摘要，文件内辅助路径按原文件目录处理。worker 与 fixture 生成器只消费快照，同时保存批次 catalog；固定 Runner／helper／需求身份，生成器在解析后再次对照批次原摘要，拒绝旧 helper 使用不同注册。execution 始终校验，workflow 若提供则校验完整 RunConfiguration；Run case 缺 workflow 不可用，检查仅发送 execution，不强带 workflow。共用一份 fixture 的完整 Repository／可选 Publication。
+1. 新配置只由显式 Config 指定；按入口 cwd 解析文件路径，读取一次并固定本批副本／摘要，文件内辅助路径按原文件目录处理。worker 与 fixture 生成器只消费快照，同时保存批次 catalog；固定 Runner／helper／需求身份，生成器在解析后再次对照批次原摘要，拒绝旧 helper 使用不同注册。execution 始终校验，workflow 若提供则校验完整 RunConfiguration；Run case 缺 workflow 不可用。共用一份 fixture 的完整 Repository／可选 Publication。
 2. 严格区分全文件损坏与单项无效、未配置与显式空值。拒绝未知版本、字段、重复键及隐式继承；按字段返回无秘密诊断。需求引用由 registry 维护；用户不维护 case 绑定、baseline 指针或多项目 fixture 目录。
 3. 基线固定 configurations.local-codex，为 development/sandbox；检查显式绝对 native 路径和 L2 的注册引用。路径／版本等现场核验复用原资格机制，不写进静态可用性状态；不把它作为全部外部请求／L3 的硬依赖。
 4. 现场生成器只替换 Spec 允许的临时仓库、分支、固定 commit、路径和材料，记录原值／生成值；保留 Orca 注册项目入口，caller clone 不能替代它。既有 provider/query 取证与故障 helper 仍由 case 生成，记录具体路径／参数，不要求配置填伪造占位值。不通过场景名改变模式或模型，不扩展既有测试仓库范围。生成后校验完整请求及测试独有约束，再保存 request_id 和正文。
@@ -87,7 +87,7 @@
 | 公共契约 | 内外同值同判；目录声明／gate 接受／现场就绪分层，缺省匹配／workflow null／操作限制；三个 kind/schema 可发现；裸对象、误传信封、重复／未知／null、定位及输入／I/O／内部错误、主 fault 优先级 | P1：`go test ./internal/contracts ./internal/resources ./internal/cli`，扩展现有发布测试 | IC-01、IC-02 |
 | 无副作用及外部隔离 | 离线／validate 零 host／目录／Agent／Git／PR；request_id=null；在线来源由同一实际响应服务给出，换代不混拼；测试文件不影响外部请求 | P1/P2：扩展 `TestSRStandalonePackage`、`TestSRInputFreeze` 等 Controlled 用例 | IC-02、IC-03 |
 | 外部兼容 | 旧请求判定／默认／主错误及退出码保持；不加目录白名单；旧字段／schema 键保留，已知消费样例通过；静态目录变摘要、测试／来源不变摘要；原实例绑定不绕过 | P1：旧请求与消费样例对照，定向 CLI／host Controlled；SteerLine 自有消费另验 | IC-10 |
-| 配置与基线 | 固定本地配置缺失，绝对 native 与 shim／错版本；无 Codex 仍可跑 L1；外部不读取基线；L3 全通过仍不能伪造 L2；检查无 workflow | P2：配置 testkit／framework 测试及定向原生前置 | IC-04、IC-05 |
+| 配置与基线 | 固定本地配置缺失，绝对 native 与 shim／错版本；无 Codex 仍可跑 L1；外部不读取基线；L3 全通过仍不能伪造 L2 | P2：配置 testkit／framework 测试及定向原生前置 | IC-04、IC-05 |
 | 可用性与选择 | 单项无效不掩盖其他项；审计／混合／模式／设施；available 只表示配置齐备；缺项零派发且独立项运行、请求范围不缩小、失败优先级／空集／排除／覆盖准确 | P3：`tests/framework/` 受控矩阵，动作计数及 summary 断言 | IC-05、IC-06 |
 | 冻结与可靠性 | 原配置批内变化不改变 worker 输入／路径基准；旧 request_id／resume 不变；查询与实际执行构建同源；原停止与未知对账保持 | P2/P3：复用 Controlled；相关 L3 只验证变更涉及的链路 | IC-03、IC-07 |
 | 本机基础闭环 | 新配置、本地原生 Codex、原 L2 全流程及收尾 | P4：实现后的 `scripts/test.ps1 -Level L2 -Config <新文件>` | IC-08 |
@@ -101,7 +101,6 @@
 .\bin\steerrunner.exe capabilities --offline --json
 Get-Content -Raw -Encoding utf8 .\run-configuration.json | .\bin\steerrunner.exe validate --kind run-configuration --input - --json
 Get-Content -Raw -Encoding utf8 .\run-input.json | .\bin\steerrunner.exe validate --kind run --input - --json
-Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe validate --kind environment-check --input - --json
 .\scripts\test.ps1 -Level L3 -Config .evidence/test-config.json -ListAvailability
 .\scripts\test.ps1 -Level L3 -Scenario local-codex.feedback -Config .evidence/test-config.json
 .\scripts\test.ps1 -Level L3 -Config .evidence/test-config.json
@@ -119,7 +118,7 @@ Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe valid
 | --- | --- | --- |
 | Spec／Plan | 初稿与审计完成；本轮已授权实施 | 保留 §6 历史文档审计，不将其算作运行验收；本轮结果见验收登记 |
 | P0–P1 契约与静态 CLI | 已实现；最终 L1 与 16 个 Controlled 场景通过 | 307 个 Go 顶层测试、28 个 Node 扩展测试及 framework；新增 gate 对照／静态接口／摘要与来源断言 |
-| P2 测试配置与本机基线规则 | 已实现；静态与框架通过 | 新格式、单项诊断、原目录路径、基线／检查 workflow、旧格式拒绝与冻结摘要 |
+| P2 测试配置与本机基线规则 | 已实现；静态与框架通过 | 新格式、单项诊断、原目录路径、基线／Run workflow、旧格式拒绝与冻结摘要 |
 | P3 可用性与报告 | 已实现；框架通过 | 缺配置零派发、独立项执行、完整范围／覆盖判定；真实批次缺项事实继续登记 |
 | P4 本机 L2 | 通过，baseline.l2_verified=true | 原生 Codex 0.159.2、生产默认提示词、真实 PR #564 更新／合入、原 Run／服务／认证收尾，IC-08 |
 | P4 选定 L3／完整 L3 | 已配置本机 3/3 通过；26 项不可用，完整 L3 不通过 | 实际 4/4 case 通过，完整请求保持 30；批次 incomplete／exit 1，无实际失败或显式排除。见原报告及便携清单，IC-09 |
@@ -133,7 +132,6 @@ Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe valid
 
 | 问题 | 已落实的文档修正 |
 | --- | --- |
-| 统一契约被解释为所有配置必须含 workflow，与独立环境检查职责冲突 | execution 共用；提供 workflow 时校验 RunConfiguration，检查不要求／发送 workflow；测试专有约束不外溢到生产 |
 | baseline 选择指针、逐 case 用户绑定及多 fixture 映射重复承担测试注册职责 | 固定 local-codex 基线、registry 直接引用配置项、一份共用测试源；不建多项目配置管理器 |
 | 三组状态与独立环境探测形成第二套就绪判断，新增模式过多 | 仅配置 available／unavailable 及原因；只加列表入口，现场失败留在原准备／测试流程 |
 | 全量缺一个配置就零派发全部用例，超出单项不可用边界 | 不可用 case 不启动，独立已配置项可运行；请求范围不缩小，缺项仍 incomplete／非零退出 |

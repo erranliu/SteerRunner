@@ -28,7 +28,7 @@ func validInputSource(source string, owner InputOwner) bool {
 		return owner == RunnerInput
 	case "caller.direct", "caller.message", "caller.instruction", "caller.material", "caller.schema", "caller.feedback", "caller.answer":
 		return owner == CallerInput
-	case "materials", "source_facts", "result_format", "commit", "success", "feedback.label", "publication.target", "progress", "result_file", "content.label", "content.material_frame", "content.repository", "content.schema_label", "native.developer", "native.tool_description", "native.initialization", "native.header", "native.bootstrap", "native.exception", "environment.task", "parser.boundary", "parser.instruction", "parser.format", "parser.evidence", "native.answer_frame", "legacy.wrapper", "legacy.content.label", "legacy.content.frame", "legacy.content.wrapper", "legacy.parser":
+	case "materials", "source_facts", "result_format", "commit", "success", "feedback.label", "publication.target", "progress", "result_file", "content.label", "content.material_frame", "content.repository", "content.schema_label", "native.developer", "native.tool_description", "native.initialization", "native.header", "native.bootstrap", "native.exception", "parser.boundary", "parser.instruction", "parser.format", "parser.evidence", "native.answer_frame", "legacy.wrapper", "legacy.content.label", "legacy.content.frame", "legacy.content.wrapper", "legacy.parser":
 		return owner == RunnerInput
 	}
 	return false

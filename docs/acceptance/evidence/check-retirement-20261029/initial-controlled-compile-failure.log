@@ -1,0 +1,6 @@
+# github.com/erranliu/SteerRunner/tests/integration [github.com/erranliu/SteerRunner/tests/integration.test]
+tests\integration\audit_test.go:128:28: undefined: storage.OpenRecoveryReader
+tests\integration\content_recovery_test.go:110:25: undefined: storage.OpenRecoveryReader
+tests\integration\generation_test.go:142:25: undefined: storage.OpenRecoveryReader
+tests\integration\generation_test.go:178:25: undefined: storage.OpenRecoveryReader
+tests\integration\service_test.go:204:30: undefined: storage.OpenRecoveryReader

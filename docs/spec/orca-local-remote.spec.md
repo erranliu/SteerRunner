@@ -14,7 +14,7 @@
 
 保留一个 `orca-terminal` 后端，共用 `StateFeed`、工作区、原生回合证明、最终回复、执行主机准备、停止和恢复逻辑。CLI 继续执行工作区/终端/输入操作，不整体改为 RPC。
 
-**生产代码修改仅限 `internal/execution/adapters/orcatransport/` 及其原生协议包 `internal/execution/adapters/protocol/orca/`。** 上层已能表达 local/remote，本次保持 `contracts`、`application`（包括 freeze、engine、environment-check owner）、`backend / reliable / workflow`、storage 和 Codex/agentlaunch 的生产代码及接口不变。测试、现场脚本和说明文档可以同步更新，这不构成上层运行逻辑改造。
+**生产代码修改仅限 `internal/execution/adapters/orcatransport/` 及其原生协议包 `internal/execution/adapters/protocol/orca/`。** 上层已能表达 local/remote，本次保持 `contracts`、`application`（包括 freeze、engine）、`backend / reliable / workflow`、storage 和 Codex/agentlaunch 的生产代码及接口不变。测试、现场脚本和说明文档可以同步更新，这不构成上层运行逻辑改造。
 
 不扩展多实例管理、environment 重命名治理、跨 runtime 迁移或其他操作系统；不借此次连接改造新增通用生命周期阶段、存储模型或认证框架。原需求不能满足时说明具体缺口，不以复杂平台建设作为默认解法。
 
@@ -53,7 +53,7 @@
 
 初次连接须核验本机 metadata、CLI status 和直接 RPC 返回的 runtime 一致；已绑定资源的操作使用记录中的 expected runtime。补齐本机工作区当前较弱的检查：复用 `workspaceCreation.ResolvedRuntimeID`，将发现 runtime 与创建响应比较；后续原生查询继续与已记录身份比较。检查失败保留原操作回执和未知事实，停止后续输入，不按名称创建替代资源。
 
-创建前的本机能力核验只需原生 `worktree.ps` 与源项目 `session.tabs.list` 可用、runtime 一致；不创建临时 agent 或要求订阅。环境检查按 URL 与本机 `local_path` 精确选择注册源仓库，避免本机两份同 URL 项目歧义；远程保留原选择规则。
+创建前的本机能力核验只需原生 `worktree.ps` 与源项目 `session.tabs.list` 可用、runtime 一致；不创建临时 agent 或要求订阅。普通 Run 继续按原注册项目与仓库身份规则选择资源。
 
 该局部检查不声称解决 CLI 在检查与副作用之间切换 runtime 的所有竞态，也不为此增加通用事务协议。已有 operation intent、creation checkpoint 和未知结果对账规则保持。
 
@@ -88,17 +88,15 @@ L1/Controlled 使用协议夹具验证确定性负例，不启动模型、不创
 
 ## 5. 收敛后的 L3
 
-仅新增以下 3 场景/3 case，现已注册但不表示真机通过；复用现有 development-smoke/environment-check driver、fixture 和结果契约。
+当前本专项保留 `orca-local.smoke/default` 普通 Run 场景；复用 development-smoke driver、fixture 和结果契约。
 
 | 文档编号 / 拟注册场景 | Case | 固定预期 | 独有覆盖 |
 | --- | --- | --- | --- |
 | OLR-L01 `orca-local.smoke` | `default` | `merged`；原 Run/服务/辅助资源停止 | sandbox；服务及子进程无 pair 和隐式 environment；真实 IPC 初始查询、原请求开始回执、新主代理 done 和 final；实施、原会话一次反馈、新 head、同一 PR、精确 head 合入；最终 stop 不能仅结束观察 |
-| OLR-L02 `environment-check.orca-local-sandbox` | `complete` | `checked`；owned PR 关闭不合入、引用/工作区删除、writer 停止 | 本机 Orca 的真实 helper、MXC、认证与既有十二项工具检查；绑定原 runtime/session |
-| OLR-L03 `environment-check.orca-local-full-access` | `complete` | `checked`；同上 | full_access 实际生效及对应原生检查/收尾；不另跑一遍 full_access 开发闭环 |
 
 此外，使用同一受测构建执行既有 `orca-remote.smoke/default` 和 `orca-remote.connection-reconnect/active-disconnect` 各一次，分别验证远程完整流程与抽象后远程观察重连无回归。复用现有故障设施和判据，不改变其完整双通路断连要求，也不把远程结果描述为本机 IPC 故障通过。
 
-本次必跑真机集合为 **新增 3 + 既有 2 = 5 case，各一次**。本机两种环境检查的主要目的是证明真实执行主机接线；它们不能由共享权限编译的单元测试替代。本机开发 smoke 已有一次反馈与真实停止，故不再复制 caller-exit、四种 restart、三种 stop、两种 publication-unknown 等共享稳定性矩阵。
+当前本专项保留 **本机 smoke + 既有远端 2 = 3 case，各一次**。本机开发 smoke 已有一次反馈与真实停止，故不再复制 caller-exit、四种 restart、三种 stop、两种 publication-unknown 等共享稳定性矩阵。
 
 取消前版 18 个新增 case、99 次资格、强制跨目标并行批次、IPC relay/进程重定向设施及新 routing driver 的要求。这些不是本次的待办项。只有实施暴露了独立的传输缺陷、现有验证确实不能覆盖时，才按具体风险增加最小测试；不得自动恢复整套矩阵。
 
@@ -108,16 +106,15 @@ L1/Controlled 使用协议夹具验证确定性负例，不启动模型、不创
 
 复用现有 manifest v1/v2、live-config 和结果格式。不增加 manifest/config v3、新 outcome、混合目标数据模型或通用审计事件系统。允许为本机 fixture 添加必要的可选 helper 路径；agent/model/effort 优先复用已有本机配置。不能把远程专用 runtime 字段改成本机含义；本机 `local_runtime_id` 与 `local_repository_path` 冻结进现有 manifest，受其摘要保护，再与原生回执交叉核验。`preparation.json` 只记录准备结果，不能作为运行时路由来源；远程/Codex fixture 拒绝携带这两个本机 Orca 字段。
 
-新增 3 case 各自独立 fixture、state-dir、Run/Check、工作区/会话、分支、PR 和证据目录，可共享只读安装及 Orca runtime。没有本机故障设施，不修改共享端点/ACL。默认串行验收；并行安全由资源隔离设计和 Controlled 验证，本次不外推真机并行资格。
+各 case 使用独立 fixture、state-dir、Run、工作区/会话、分支、PR 和证据目录，可共享只读安装及 Orca runtime。没有本机故障设施，不修改共享端点/ACL。默认串行验收；并行安全由资源隔离设计和 Controlled 验证，本次不外推真机并行资格。
 
-沿用现有 case 期限：开发/远程重连 30 分钟，环境检查 15 分钟；沿用原生 timeout 和收尾预算，不新增一套期限体系。保存受测源码/EXE/工具摘要、pair presence=false、通路与 runtime、必要原生事实、Git/PR 身份及清理结果，不记录凭据、完整环境或认证帧。test/business/cleanup 结论分开；未知、skip、缺结果、错误身份或清理未确认均不得通过。
+沿用现有 case 期限：开发/远程重连 30 分钟；沿用原生 timeout 和收尾预算，不新增一套期限体系。保存受测源码/EXE/工具摘要、pair presence=false、通路与 runtime、必要原生事实、Git/PR 身份及清理结果，不记录凭据、完整环境或认证帧。test/business/cleanup 结论分开；未知、skip、缺结果、错误身份或清理未确认均不得通过。
 
 | 验收 ID | 完成条件 | 覆盖 |
 | --- | --- | --- |
 | OLR-A01 | 本机无 pair、远程明确 environment，失败无隐式切换 | V01/V04/V05，L01 |
 | OLR-A02 | 私有连接抽象支持原生查询/上传及远程订阅；本机查询和远程订阅加补查共用 StateFeed，现有身份和执行语义保持 | V02–V05，源码范围审查 |
 | OLR-A03 | 本机开发、反馈、原生 final、真实 PR 和停止闭环成立 | L01 |
-| OLR-A04 | 本机两种权限的真实执行主机准备和 Check 完整收尾 | L02/L03 |
 | OLR-A05 | 共享可靠性负例及两项远程真机回归通过，证据完整 | V04/V06；完整 L1/Controlled；登记 5 case 原始结果 |
 
 实施后在 `docs/acceptance/orca-local-remote.md` 登记以上结果、失败历史和未验边界。README 等支持声明以真实完成的范围为准，不继承其他构建的历史通过。

@@ -1,8 +1,7 @@
 param(
     [Parameter(Mandatory=$true)][string]$Manifest,
     [string]$Pattern = '^TestSRLiveScenario$',
-    [ValidateRange(1,60)][int]$TimeoutMinutes = 30,
-    [switch]$ValidateOnly
+    [ValidateRange(1,60)][int]$TimeoutMinutes = 30
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -14,15 +13,10 @@ $taskRoot = [IO.Path]::GetFullPath($taskNative.root)
 $taskPreparation = Get-Content -LiteralPath (Join-Path $taskRoot 'preparation.json') -Raw | ConvertFrom-Json
 if ($taskPreparation.status -ne 'ready' -or $taskPreparation.fixture_id -ne $taskNative.id -or $taskPreparation.base_branch -ne $taskNative.base_branch) { throw 'Fixture preparation is incomplete; do not start an agent' }
 $taskEvidence = Join-Path $taskRoot 'evidence'
-if (-not $ValidateOnly -and (Test-Path -LiteralPath (Join-Path $taskEvidence 'native.log'))) { throw 'Fixture is frozen after execution; generate a new fixture' }
+if ((Test-Path -LiteralPath (Join-Path $taskEvidence 'native.log'))) { throw 'Fixture is frozen after execution; generate a new fixture' }
 if ((Get-FileHash -LiteralPath $taskNative.runner_exe -Algorithm SHA256).Hash -ne $taskNative.runner_sha256) { throw 'Frozen Runner executable changed' }
 $taskTestExe = Join-Path $taskRoot 'bin/native.test.exe'
 $taskResultPath = Join-Path $taskEvidence 'result.json'
-if ($ValidateOnly) {
-    if ($taskNative.driver -ne 'environment-check') { throw 'Read-only result validation currently supports environment-check fixtures only' }
-    $taskOriginal = Get-Content -LiteralPath (Join-Path $taskEvidence 'source-identity.json') -Raw | ConvertFrom-Json
-    if ($taskOriginal.manifest_sha256 -ne (Get-FileHash -LiteralPath $taskManifestPath -Algorithm SHA256).Hash -or $taskOriginal.driver_sha256 -ne (Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash -or $taskOriginal.runner_sha256 -ne $taskNative.runner_sha256 -or $taskOriginal.scenario -ne $taskNative.scenario) { throw 'Original frozen fixture/build identity changed' }
-} else {
 Push-Location $taskRepo
 try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
@@ -61,7 +55,6 @@ while (-not (Test-Path -LiteralPath $taskResultPath)) {
     Start-Sleep -Seconds 2
 }
 
-}
 $taskResult = Get-Content -LiteralPath $taskResultPath -Raw | ConvertFrom-Json
 if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne 1) { throw "Live scenario failed; inspect $taskEvidence/native.log" }
 $taskScenario = Get-Content -LiteralPath (Join-Path $taskEvidence 'scenario.json') -Raw | ConvertFrom-Json
@@ -72,10 +65,7 @@ if ($taskNative.schema -eq 'steerrunner-test/v2') {
 } else {
     . (Join-Path $PSScriptRoot 'native-result.ps1')
     Assert-SRNativeScenario $taskNative $taskResult $taskScenario
-    if($taskNative.driver -eq 'environment-check'){
-        $taskEnvelope=Get-Content -LiteralPath (Join-Path $taskEvidence 'check-latest.json') -Raw|ConvertFrom-Json
-        Assert-SREnvironmentScenario $taskNative $taskScenario $taskEnvelope
-    } elseif($taskNative.driver -eq 'development-audited'){
+    if($taskNative.driver -eq 'development-audited'){
         $taskView=Get-Content -LiteralPath (Join-Path $taskEvidence 'latest-run.json') -Raw|ConvertFrom-Json
         if($taskNative.execution.adapter -eq 'orca-terminal'){
             Assert-SRManagedOrcaAuditModels $taskNative $taskView (Get-Content -LiteralPath (Join-Path $taskEvidence 'audit-models.json') -Raw|ConvertFrom-Json)

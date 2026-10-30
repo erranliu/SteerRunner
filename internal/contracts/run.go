@@ -478,13 +478,6 @@ func ValidateInput(command string, data []byte) *Fault {
 		if DecodeStrict(data, &value) != nil || value.ExpectedRevision == 0 || !ValidArtifactPath(value.RelativePath) {
 			return Fail(2, "artifact_path_invalid", "Expected revision and a portable relative artifact path are required.")
 		}
-	case "environment-check start":
-		return ValidateEnvironmentCheck(data)
-	case "environment-check stop":
-		var value CheckStopInput
-		if DecodeStrict(data, &value) != nil || !plain(value.CheckID) || value.ExpectedRevision == 0 {
-			return invalid
-		}
 	case "submit":
 		return ValidateRun(data)
 	case "service stop":

@@ -13,42 +13,8 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
-	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
-
-// Called with writer.lock held, before the first semantic marker upgrade.
-// An unsupported aggregate must not be silently adopted by changing v3 to v4.
-func qualifyLegacyRecovery(dir string) error {
-	if _, err := os.Stat(filepath.Join(dir, "runner.db")); os.IsNotExist(err) {
-		return nil
-	} else if err != nil {
-		return err
-	}
-	r, err := storage.OpenRecoveryReader(dir)
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-	format, err := r.StateFormat()
-	if err != nil || format == storage.Format {
-		return err
-	}
-	runs, err := r.Runs()
-	if err != nil {
-		return err
-	}
-	checks, err := r.Checks()
-	if err != nil {
-		return err
-	}
-	for _, item := range application.TakeoverFacts(runs, checks, resources.RecoveryCapabilities(), workflow.Catalog()) {
-		if item.Status == "unsupported" {
-			return contracts.Fail(3, "unsupported_schema", "Legacy state contains unsupported execution contracts; preserve it and inspect the takeover report before upgrading.")
-		}
-	}
-	return nil
-}
 
 type takeoverCandidate struct {
 	Recovery   contracts.RecoverySupport `json:"recovery"`
@@ -127,7 +93,7 @@ func VerifyTakeover(ctx context.Context, dir, candidate string) (contracts.Takeo
 	if _, err = os.Stat(bootstrapPath(dir)); !os.IsNotExist(err) {
 		return empty, contracts.Fail(4, "startup_unverified", "Original startup is unresolved.")
 	}
-	reader, err := storage.OpenRecoveryReader(dir)
+	reader, err := storage.OpenReader(dir)
 	if err != nil {
 		return empty, fault(err, contracts.Fail(3, "unsupported_schema", "Recovery source format unavailable."))
 	}
@@ -136,9 +102,5 @@ func VerifyTakeover(ctx context.Context, dir, candidate string) (contracts.Takeo
 	if err != nil {
 		return empty, contracts.Fail(3, "unsupported_schema", "Run records cannot be decoded.")
 	}
-	checks, err := reader.Checks()
-	if err != nil {
-		return empty, contracts.Fail(3, "unsupported_schema", "Check records cannot be decoded.")
-	}
-	return finishTakeover(dir, "", sha, reader.BindTakeoverRequests(application.TakeoverFacts(runs, checks, caps.Recovery, caps.Workflows, caps.ResultFile.Contract))), nil
+	return finishTakeover(dir, "", sha, reader.BindTakeoverRequests(application.TakeoverFacts(runs, caps.Recovery, caps.Workflows, caps.ResultFile.Contract))), nil
 }

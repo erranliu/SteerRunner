@@ -1,5 +1,7 @@
 # 验收：远端仅通过 Orca 执行
 
+历史构建验收记录：以下 Check、旧状态升级和已删除源码的描述仅说明当时构建，不是当前入口。2026-10-29 已退役旧业务，当前边界见[退役记录](check-retirement.md)；原始失败、资源与结算证据保持。
+
 日期：2026-10-19。归属 [Spec](../spec/orca-remote-native.spec.md) / [Plan](../spec/orca-remote-native.plan.md)。已完成 P0 原生探针、查询修复、helper 删除及 unreported 最小修正；完整闭环、活动停止、结果阻断和上层契约验收通过（按当前 workflow v2 边界）。最终审计另修复持久结果回放的原 outcome 丢失，最新构建及补验见文末；以下历史阶段记录保留。详见首轮 [P0 实测报告](../archive/2026-10/acceptance/orca-remote-native-p0-20261019.md)及[补验报告](../archive/2026-10/acceptance/orca-remote-native-p0-query-fix-20261019.md)。
 
 ## 2026-10-24 n308-19 真实远端 L4 最终结果

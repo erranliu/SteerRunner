@@ -31,7 +31,7 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 		return strings.TrimSpace(string(data)), nil
 	}
 	switch {
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan.") || strings.HasPrefix(prompt, "根据以下 Spec、Plan") || strings.HasPrefix(prompt, "读取当前 worktree 中以下路径的 Spec、Plan"):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Implement the following Spec and Plan.") || strings.HasPrefix(prompt, "根据以下 Spec、Plan") || strings.HasPrefix(prompt, "读取当前 worktree 中以下路径的 Spec、Plan") || strings.HasPrefix(prompt, "读取所列 Spec/Plan/材料，实施并完成必要验证。"):
 		content := "staged fixture result\n"
 		if err := os.WriteFile(filepath.Join(cwd, "stage-result.txt"), []byte(content), 0600); err != nil {
 			return "", err
@@ -46,9 +46,9 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 			return "Implemented and verified.\n实施及必要验证已完成。", nil
 		}
 		return "Implemented and verified.", nil
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding implementation result as JSON.") || strings.HasPrefix(prompt, "根据已有执行上下文整理指定实施结果"):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding implementation result as JSON.") || strings.HasPrefix(prompt, "根据已有执行上下文整理指定实施结果") || strings.HasPrefix(prompt, "仅整理原实施结果，不补做；"):
 		return `{"outcome":"done","summary":"source implementation completed"}`, nil
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布"):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Format the preceding publication result as JSON.") || strings.HasPrefix(prompt, "根据已有上下文整理指定发布") || strings.HasPrefix(prompt, "仅整理原发布结果与 PR URL，不重发；"):
 		// Fixture model memory comes from the provider artifact of its preceding turn.
 		data, err := os.ReadFile(provider)
 		if err != nil {
@@ -67,7 +67,7 @@ func StagedBusiness(cwd, prompt, provider, remote string) (string, error) {
 
 		body, err := json.Marshal(map[string]any{"outcome": "done", "outputs": map[string]string{"pr_url": url}, "summary": "original publication reported"})
 		return string(body), err
-	case strings.HasPrefix(strings.TrimSpace(prompt), "Push and create or reuse a PR using the current checked-out branch.") || strings.HasPrefix(prompt, "将当前分支 push"):
+	case strings.HasPrefix(strings.TrimSpace(prompt), "Push and create or reuse a PR using the current checked-out branch.") || strings.HasPrefix(prompt, "将当前分支 push") || strings.HasPrefix(prompt, "发布当前分支并创建 PR；"):
 		head, err := git("rev-parse", "HEAD")
 		if err != nil {
 			return "", err

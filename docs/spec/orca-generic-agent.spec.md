@@ -13,7 +13,7 @@
 3. 不启用 Orca structured agent session，不直连 agent SDK/RPC，不以 ACP、headless 或普通一次性 CLI 替代本期 TUI。允许通过 agent **已有的进程内正式扩展 API**观察/拦截原 TUI 的输入和事件；扩展不另建会话或执行引擎。
 4. 扩展源由 Runner 维护，按本 Run/受管实例显式装载，不修改 agent 核心或用户全局 profile。不能装载、不能隔离或缺少必要事件时，该对象保持 unsupported/blocked。
 5. 复用现有 adapter、operation、lifecycle、observer、stop gate、恢复和持久化；不建设插件平台、能力注册中心、事件总线、常驻旁路服务、第二套状态机或通用进程管理框架。
-6. 原操作先落盘、单写者、未知只对账、服务重启零自动输入和独立 PR 核验保持。`codex-app-server`、审计 workflow、独立 `environment-check` 不扩展；旧 Codex terminal 的权限、输入、证据语义不升级。
+6. 原操作先落盘、单写者、未知只对账、服务重启零自动输入和独立 PR 核验保持。`codex-app-server`、审计 workflow 不扩展；旧 Codex terminal 的权限、输入、证据语义不升级。
 
 首期正向范围为 Windows/amd64 执行主机、target=local。保留原 `orca_environment` 和已验 Codex 远端行为；Pi/DSH 的远端扩展装载、回执读取和停止没有真实证据前不声明支持。
 

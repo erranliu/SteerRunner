@@ -125,7 +125,7 @@ func TestSRResultAcquisition(t *testing.T) {
 				if len(active.ResultAcquisition) < 2 || countNative(t, "turn/start") != 2 {
 					t.Fatal("parser did not start from the completed original audit")
 				}
-				reader, err := storage.OpenRecoveryReader(dir)
+				reader, err := storage.OpenReader(dir)
 				if err != nil {
 					t.Fatal(err)
 				}

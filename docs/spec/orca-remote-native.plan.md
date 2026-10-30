@@ -10,7 +10,6 @@
 | orcatransport 的 profile/lifecycle/agent/authentication/native_state/stop/verify_stopped | 复用原生命令、准备/完成/停止；隔离旧资源 |
 | protocol/orca 的 client/stopped/state_feed/state_subscription | 优先原样复用；仅修正原身份/回执/清单验证实际缺口，不改 Orca 协议 |
 | contracts/contracts、application/control/verify_stopped | 仅逐 Run 重验输出只读 scope；停止事实沿既有 receipt，RunView 使用已有 diagnostic |
-| application/environment_check、远端 Check session 入口、内嵌 Check capabilities | 新远端完整检查 unsupported；旧记录可查，不重启 actor；local 保持 |
 | 现有 livetest/native/integration、fixture/config/catalog/scripts | 去掉远端 helper 上传/审计前置，调整证据断言，复用 driver |
 | 文档及 SteerLine 消费者 | 新契约、配置、scope、部署与 Check 支持声明同步 |
 
@@ -23,7 +22,6 @@
 | freeze/agentlaunch 的 runtime 参数与摘要编译 | 删除远端传递与编译；共享 local 调用保留，不增加 v4 helper 分支 |
 | agent/authentication 的 helper readiness，remote_receipt 的 reader/inspection journal | 从远端启动/输入/完成/恢复链删除；确由 Orca local Codex 使用的实现限定 local，v3 旧远端不得调入 |
 | stop/verify_stopped 的远端签名、停止文件与 reader 结算 | 从远端链删除；新路径只用 Orca 原清单，旧远端只返回原持久结论或未核实，不加载旧 helper 运行栈 |
-| application/environment_check 到 RemoteEnvironmentSession 的远端 actor | 新旧远端均阻止执行；local Check 实际使用的 session 代码保留 |
 | remote-runtime-upload、fixture/ready/audit/stability 的远端 helper 准备与查询 | 删除远端上传/探测/历史审计依赖及失效配置/测试；无 local 使用的工具/分支删除 |
 
 交付记录给出实际删除清单、剩余共享函数的 local 调用者和远端调用回归；只写“native 分支未调用”不满足删除要求。禁止增加 legacy 远端 adapter、兼容服务、通用模式/证据注册器或新 helper 包装层。
@@ -54,7 +52,7 @@ P0 不重跑稳定性矩阵：一套原生探针资源、一个临时 PR，结�
 
 1. schema 按 adapter/target 禁止新远端 runtime 路径/SHA 键（含空值）；纯配置校验、submit、capabilities 一致，`invalid_input` 必须先于 Run/Git fetch/Orca 创建副作用。
 2. 新远端 freeze 使用原 envelope 的 profile codec v4，payload 只有 transport/路由；local 仍 v3，target ID 和 input digest 定义不变。观察恢复修复后的 state 写入 v7、精确读取 v6/v7，保守转换规则见 Spec §4。不加 execution_mode。旧程序拒绝 v4 是预期。
-3. adapter 入口一次区分 v4 远端、v3 local 和只读旧 v3 远端；前两类复用正常生命周期。服务加载旧远端 Run/Check 时先阻止自动观察/调度，不因此使服务整体加载失败；其查询及未结算资源事实保留。拒绝未知版本、目标冲突、helper 配置/资源混存；不把版本判断扩散到 workflow/reliable。
+3. adapter 入口一次区分 v4 远端、v3 local 和只读旧 v3 远端；前两类复用正常生命周期。服务加载旧远端 Run 时先阻止自动观察/调度，不因此使服务整体加载失败；其查询及未结算资源事实保留。拒绝未知版本、目标冲突、helper 配置/资源混存；不把版本判断扩散到 workflow/reliable。
 4. 复用 agentlaunch 编译直接 Codex/model/effort/access-mode 命令；沿原启动 intent/接受回执，未知启动只对账，不重复发送。
 5. 不探测/安装/上传远端 runtime，不新增诊断终端或替代脚本；无工具 READY 只绑定会话。
 
@@ -81,9 +79,9 @@ P0 不重跑稳定性矩阵：一套原生探针资源、一个临时 PR，结�
 2. 新 native stop 先撤销输入，经原 close 加完整原终端清单确认；复用 VerifyTerminalStopped/originalTerminalInventory 的 runtime/worktree/incarnation/host/计数/截断校验。仅 ptyKilled 不足。
 3. close 丢回执只读原清单，资源结束可结算范围内事实，不伪造回执、不重复 close；清单滞后仅有界重读，活动/断线/身份冲突保持 unknown。
 4. Stopped/WorkerAbsent 不设全树 WritersAbsent；删除远端签名退出/停止文件/认证撤销依赖。stopped 快捷分支仍须原身份及既有已提交停止回执，缺证据只读重验；scope 不参与授权/恢复，也不进入持久化比较。
-5. 离线复用相同清单规则并返回 scope，保留 writer lease/实例围栏和只读库；不启动 Engine/观察/helper/终端、不写原 DB/历史回执。聚合不排除旧未知 Run/Check。
+5. 离线复用相同清单规则并返回 scope，保留 writer lease/实例围栏和只读库；不启动 Engine/观察/helper/终端、不写原 DB/历史回执。聚合不排除旧未知 Run。
 6. 服务退出只停本地观察；调用方退出不关业务；换代后新输入仍需显式 resume。
-7. 旧远端 v3 只查持久快照、复用原已提交结论；显式 stop 仅从记录提取核验原终端身份，经 Orca 精确关闭，不将 PTY 事实补记为原 helper 已结算。拒绝自动观察推进/resume/后继/Check actor 对账；缺证据保留未核实，由原构建或人工处理。不为旧运行保留签名/reader 验证执行栈，不迁移、不降级、不重派。
+7. 旧远端 v3 只查持久快照、复用原已提交结论；显式 stop 仅从记录提取核验原终端身份，经 Orca 精确关闭，不将 PTY 事实补记为原 helper 已结算。拒绝自动观察推进/resume/后继；缺证据保留未核实，由原构建或人工处理。不为旧运行保留签名/reader 验证执行栈，不迁移、不降级、不重派。
 
 退出条件：清单/停止/丢回执/只读 scope/混合旧记录/EXE 离线反例通过，无 scope 跨层持久化；local 证明不回退、旧远端不误结算且无 helper 兼容引擎。对应 ORN-A04/A05/A06。
 
@@ -102,7 +100,7 @@ P0 不重跑稳定性矩阵：一套原生探针资源、一个临时 PR，结�
 
 ## 7. 测试计划
 
-扩展既有配置、native_state/input_reconnect/verify_stopped、service/environment-check integration 夹具；只为缺口增加断言/子例，不预建三套 Native 测试族或模拟业务后端。新增子例同步进入既有 Controlled 注册。零匹配/skip 不能记通过；登记实际非零测试/断言、退出码、源码与构建身份。
+扩展既有配置、native_state/input_reconnect/verify_stopped、service integration 夹具；只为缺口增加断言/子例，不预建三套 Native 测试族或模拟业务后端。新增子例同步进入既有 Controlled 注册。零匹配/skip 不能记通过；登记实际非零测试/断言、退出码、源码与构建身份。
 
 | 验收项 | 层级/场景 | 环境、时点与命令 | 通过判据 |
 | --- | --- | --- | --- |
@@ -186,4 +184,4 @@ aaf5480 的显式 unknown 阻断保留。只有首次新核实的缺 outcome 原
 
 历史 StageResult 可同时保存 `Succeeded=true` 和显式 unknown。新结果的 NormalizeResult 门不能覆盖恢复后的 parser、报告来源与发布前置条件；这些入口必须核对原 Outcome，不被新报告的成功值晋升。仅复用一个私有准入判定，并在 RouteParsed 保留原 Outcome；业务边、快照结构、旧空值语义和恢复授权不变，无迁移或新模式。
 
-复用 workflow 的 `TestRAHistoricalOutcomeCannotBePromoted` 覆盖序列化恢复后 unknown/failed/cancelled/未知值与 succeeded/unreported 正例，检查直接路由、parser、报告与发布前置条件。审计后执行 workflow/reliable/adapter/protocol/contracts/resources/livetest 全包、消费者契约、Controlled 的 ResultAcquisition/NativeUnknownAndStop，以及最终 EXE 的既有 full-access/default。应用层选择 `TestRA|TestSRFreezeOrcaAgent|TestEnvironmentCheckLegacyRemote`，预算 20m；180s 的首次预算不足记录保留，不能计通过。新增日志、最终构建身份及实际结果登记专属验收；活动停止复用未改停止代码的上一轮真实证据，明确其构建差异。
+复用 workflow 的 `TestRAHistoricalOutcomeCannotBePromoted` 覆盖序列化恢复后 unknown/failed/cancelled/未知值与 succeeded/unreported 正例，检查直接路由、parser、报告与发布前置条件。审计后执行 workflow/reliable/adapter/protocol/contracts/resources/livetest 全包、消费者契约、Controlled 的 ResultAcquisition/NativeUnknownAndStop，以及最终 EXE 的既有 full-access/default。应用层选择 `TestRA|TestSRFreezeOrcaAgent`，预算 20m；180s 的首次预算不足记录保留，不能计通过。新增日志、最终构建身份及实际结果登记专属验收；活动停止复用未改停止代码的上一轮真实证据，明确其构建差异。

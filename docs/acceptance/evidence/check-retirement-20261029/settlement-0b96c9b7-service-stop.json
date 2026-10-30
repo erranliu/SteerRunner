@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":"retirement-service-stop-8a888f228c6d9ddf6679f9445bc57b15","data":{"action_status":"pending","command_id":"5fbbd80623a2da8c3f02f465dc32bd38","instance_id":"8a888f228c6d9ddf6679f9445bc57b15","receipt_status":"accepted","run_id":null},"error":null}

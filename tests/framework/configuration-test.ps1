@@ -31,7 +31,7 @@ $taskMissingOut=Join-Path $taskRoot 'missing-batch'
 & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -OutDir $taskMissingOut *> (Join-Path $taskRoot 'missing.log')
 if($LASTEXITCODE -ne 1){throw 'Missing requested L3 configurations were not incomplete'}
 $taskSummary=Get-Content -LiteralPath (Join-Path $taskMissingOut 'summary.json') -Raw|ConvertFrom-Json
-if($taskSummary.status -ne 'incomplete' -or $taskSummary.executed_case_count -ne 0 -or $taskSummary.results.Count -ne 39 -or $taskSummary.levels.L3.requested.Count -ne 39 -or $taskSummary.levels.L3.executed.Count -ne 0 -or $taskSummary.levels.L3.complete_level_passed){throw 'Missing case coverage was silently reduced or counted as passed'}
+if($taskSummary.status -ne 'incomplete' -or $taskSummary.executed_case_count -ne 0 -or $taskSummary.results.Count -ne 35 -or $taskSummary.levels.L3.requested.Count -ne 35 -or $taskSummary.levels.L3.executed.Count -ne 0 -or $taskSummary.levels.L3.complete_level_passed){throw 'Missing case coverage was silently reduced or counted as passed'}
 if(Test-Path -LiteralPath (Join-Path $taskMissingOut 'framework')){throw 'Unconfigured batch started execution prerequisites'}
 $taskList=& $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L3 -Config $taskMissing -RunnerExe $taskRunner -ConfigHelper $taskHelper -ListAvailability
 if($LASTEXITCODE -ne 0 -or ($taskList|Out-String|ConvertFrom-Json).status -ne 'availability'){throw 'Missing configuration inventory failed or mixed stdout'}
@@ -112,9 +112,20 @@ try {
     $taskPrerequisiteExit=$LASTEXITCODE
 } finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_ORCA_STATE_PROBE_ROOT',$taskPreviousOptIn) }
 $taskPrerequisite=Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'summary.json') -Raw | ConvertFrom-Json
-if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 39 -or $taskPrerequisite.levels.L3.requested.Count -ne 39 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 33 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
+if($taskPrerequisiteExit -ne 1 -or $taskPrerequisite.status -ne 'failed' -or $taskPrerequisite.error -notmatch 'Unexpected live opt-in' -or $taskPrerequisite.results.Count -ne 35 -or $taskPrerequisite.levels.L3.requested.Count -ne 35 -or $taskPrerequisite.levels.L3.executed.Count -ne 0 -or $taskPrerequisite.unavailable_case_count -ne 30 -or $taskPrerequisite.baseline.l2_verified -or $taskPrerequisite.levels.L3.complete_level_passed){throw 'Prerequisite failure lost requested, unavailable or unexecuted case facts'}
 $taskFrozenCatalog = Get-Content -LiteralPath (Join-Path $taskPrerequisiteOut 'frozen-catalog.json') -Raw | ConvertFrom-Json
-if ($taskFrozenCatalog.scenarios.Count -ne 34 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 44) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
+if ($taskFrozenCatalog.scenarios.Count -ne 30 -or @($taskFrozenCatalog.scenarios | Where-Object { $_ -is [string] }).Count -ne 0 -or @($taskFrozenCatalog.scenarios | ForEach-Object { $_.cases }).Count -ne 40) { throw 'Batch catalog was not frozen as complete expanded scenario objects' }
+# The short-input diagnostic is native opt-in too; never let inherited state
+# reach either the default framework or unit tests.
+$taskPriorShort=[Environment]::GetEnvironmentVariable('STEERRUNNER_SHORT_INPUT_INSPECT')
+$taskShortOut=Join-Path $taskRoot 'short-input-optin-rejected'
+try {
+    $env:STEERRUNNER_SHORT_INPUT_INSPECT='configuration-framework-sentinel'
+    & $taskShell -NoProfile -File (Join-Path $Repository 'scripts/test.ps1') -Level L1 -OutDir $taskShortOut *> (Join-Path $taskRoot 'short-input-optin-rejected.log')
+    $taskShortExit=$LASTEXITCODE
+} finally { [Environment]::SetEnvironmentVariable('STEERRUNNER_SHORT_INPUT_INSPECT',$taskPriorShort) }
+$taskShort=Get-Content -LiteralPath (Join-Path $taskShortOut 'summary.json') -Raw | ConvertFrom-Json
+if($taskShortExit -ne 1 -or $taskShort.status -ne 'failed' -or $taskShort.error -cne 'Unexpected live opt-in in L1: STEERRUNNER_SHORT_INPUT_INSPECT' -or $taskShort.results.Count -ne 0 -or (Test-Path -LiteralPath (Join-Path $taskShortOut 'framework'))){throw 'Native short-input diagnostic reached L1 execution'}
 # L2's native preparation is a case dependency, never a global L3 prerequisite.
 $taskBoundaryWorker=Join-Path $taskRoot 'boundary-worker.ps1'
 $taskBoundaryBody=@'
@@ -151,5 +162,5 @@ $taskParserManifest=Get-Content -LiteralPath $taskParserManifestPath -Raw | Conv
 $taskParserPreparation=Get-Content -LiteralPath (Join-Path $taskParserManifest.root 'preparation.json') -Raw | ConvertFrom-Json
 $taskParserRemotes=& git -C $taskParserManifest.repository_path remote
 if($LASTEXITCODE -ne 0 -or $taskParserRemotes -or $taskParserManifest.level -cne 'L3' -or @($taskParserManifest.publication.PSObject.Properties).Count -gt 0 -or $taskParserPreparation.status -cne 'ready' -or (Test-Path -LiteralPath (Join-Path $taskParserManifest.root 'evidence/fixture-base-push.json'))){throw 'Parser fixture retained a remote, publication or incomplete preparation'}
-[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{configuration_contract='passed';missing_batch='incomplete';missing_count=39;independent_dispatch='passed';parser_local_preparation='passed';complete_level_passed=$false}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+[IO.File]::WriteAllText((Join-Path $taskRoot 'verified.json'),(@{configuration_contract='passed';missing_batch='incomplete';missing_count=35;independent_dispatch='passed';parser_local_preparation='passed';complete_level_passed=$false}|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 Write-Output 'Strict config, static availability, legacy rejection, incomplete scope and independent dispatch passed'

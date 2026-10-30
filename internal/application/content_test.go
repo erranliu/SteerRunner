@@ -137,13 +137,13 @@ func TestContentRecoveryKeepsContractsAndRejectsForeignMessageScope(t *testing.T
 				}
 				r := e.runs["run"]
 				before := string(canonical(r))
-				items := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+				items := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
 				if len(items) != 1 || items[0].Status != "compatible" || string(canonical(r)) != before {
 					t.Fatal("content contract rejected or rewritten", phase, items)
 				}
 				changed := r.Clone()
 				changed.Profile[0].CodecVersion = 99
-				if item := TakeoverFacts([]*runstate.Record{changed}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+				if item := TakeoverFacts([]*runstate.Record{changed}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
 					t.Fatal("content bypassed codec validation", phase, item)
 				}
 			}
@@ -193,14 +193,14 @@ func TestContentAdmissionTakeoverDoesNotRequireDevelopmentParser(t *testing.T) {
 				t.Fatal(err)
 			}
 			before := string(canonical(r))
-			items := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())
+			items := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
 			if len(items) != 1 || items[0].Status != "compatible" || string(canonical(r)) != before {
 				t.Fatal("production content admission cannot be taken over unchanged", items)
 			}
 			if err := os.WriteFile(r.Materials[0].SnapshotPath, []byte("replaced material"), 0600); err != nil {
 				t.Fatal(err)
 			}
-			if item := TakeoverFacts([]*runstate.Record{r}, nil, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
+			if item := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "unsupported" {
 				t.Fatal("content bypassed frozen material verification", item)
 			}
 		})

@@ -124,11 +124,6 @@ func (b Backend) verifySandboxReadiness(ctx context.Context, h *SessionHandle, i
 	if b.Config.Authentication == nil {
 		return nil
 	}
-	if b.Config.EnvironmentCheck {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, 30*time.Second)
-		defer cancel()
-	}
 	return b.checkSandboxReadiness(ctx, h, input, h.client.Call)
 }
 

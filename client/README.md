@@ -47,3 +47,8 @@ The helper runs on Windows PowerShell 5.1; no Go, Node or Python is needed to ru
 the delivered bundle. Native agent versions and supported combinations come
 from the bundled Runner capabilities. `manifest.json` records component identity
 and file SHA-256 values; these verify package integrity, not execution readiness.
+
+Client contract version 2 removes the Check action and its request routing.
+Runner state is v5 only; settle all older resources with their original build
+before using a fresh state directory. Existing Check clients require matching
+consumer changes and must not be pointed directly at this version.

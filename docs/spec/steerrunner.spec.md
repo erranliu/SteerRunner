@@ -1,8 +1,10 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
-2026-10-21 文档整理：本文继续维护当前产品与 CLI 契约；首版调查和历史范围按各节日期阅读。当前 state/v4、workflow/2、内容流程、恢复及材料规则由本文和下列专项共同维护；完整导航见[文档索引](../README.md)，旧计划与已取代设计见[历史归档](../archive/README.md)。
+2026-10-29：Runner 已删除旧 Check 业务；当前状态 v5、资源版本 3，旧状态整体拒绝。普通 Run/result 契约及 SteerLine 配套边界见[退役记录](../acceptance/check-retirement.md)。
 
-2026-10-19 远端设计修订：用户要求新 `orca_environment` Run 仅通过 Orca 执行，删除远端 SteerRunner helper 接线。认证、完成、停止证据、旧记录隔离及完整 Check 收缩以[专项 Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)为准；实现与验收结果见专项记录。新远端采用现有 profile envelope 的 v4，不加模式字段；旧远端 v3 仅查询/精确处理原终端，不保留 helper 兼容引擎、不降级放行缺证据记录。本地受管及历史证明保持原范围。
+2026-10-21 文档整理：本文继续维护当前产品与 CLI 契约；首版调查和历史范围按各节日期阅读。当前 state/v5、workflow/2、内容流程、恢复及材料规则由本文和下列专项共同维护；完整导航见[文档索引](../README.md)，旧计划与已取代设计见[历史归档](../archive/README.md)。
+
+2026-10-19 远端设计修订：用户要求新 `orca_environment` Run 仅通过 Orca 执行，删除远端 SteerRunner helper 接线。认证、完成、停止证据、旧记录隔离以[专项 Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)为准；实现与验收结果见专项记录。新远端采用现有 profile envelope 的 v4，不加模式字段；旧远端 v3 仅查询/精确处理原终端，不保留 helper 兼容引擎、不降级放行缺证据记录。本地受管及历史证明保持原范围。
 
 日期：2026-10-14。用户已授权按[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
 
@@ -14,13 +16,13 @@
 
 ## 当前产品边界（2026-10-19）
 
-SteerRunner 面向个人，在本人管理和信任的多台执行主机上运行冻结的 Spec/Plan。调用方指定本机或已配对 Orca environment；SteerLine 负责任务规划、DAG、目标选择和最终交付组织。Runner 负责独立 Run、环境检查、执行事实、反馈、显式恢复、停止和可核验 PR。
+SteerRunner 面向个人，在本人管理和信任的多台执行主机上运行冻结的 Spec/Plan。调用方指定本机或已配对 Orca environment；SteerLine 负责任务规划、DAG、目标选择和最终交付组织。Runner 负责独立 Run、执行事实、反馈、显式恢复、停止和可核验 PR。
 
 每台执行机由用户安装工具、登录 gh 并准备固定仓库/base；Runner 不复制调用方凭据，也不自动安装、修复登录、提升 OS 权限或迁移正在执行的 Run。当前平台和 agent 支持仍以 capabilities 与对应验收矩阵为准，个人多机定位不代表所有 OS/agent 已通过验证。
 
-本机 codex-app-server 与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；各 Run/Check 独立 capability、期限、操作边界、socket 与清理证明。远端遵循 Orca 原生链路，使用执行主机已有认证，不创建 Runner broker/capability，不承诺远端凭据单仓库、限时或退出失效。多 Run 的工作区/会话/事件/PR/停止仍隔离；停止不退出宿主登录。双模型来源核验仅支持本机受管 Codex，原生远端审计和完整环境检查明确 unsupported，零相关资源；保留显式 sandbox/full_access 和未知结果零重发。
+本机 codex-app-server 与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；各 Run 独立 capability、期限、操作边界、socket 与清理证明。远端遵循 Orca 原生链路，使用执行主机已有认证，不创建 Runner broker/capability，不承诺远端凭据单仓库、限时或退出失效。多 Run 的工作区/会话/事件/PR/停止仍隔离；停止不退出宿主登录。双模型来源核验仅支持本机受管 Codex，原生远端审计明确 unsupported，零相关资源；保留显式 sandbox/full_access 和未知结果零重发。
 
-本阶段不提供 GitHub App 签发/私钥管理、团队/多租户账号系统、集中密钥托管或自动跨机故障迁移。移除 `execution.settings.github_auth`，所有形态（含 null）在 Run/Check 接受前返回 invalid_input；内部 profile/helper 配置同样严格拒绝，不能静默切换身份。旧 App 执行必须用原版本完成停止和认证收尾后升级；历史请求/报告保留，不转换为新身份或本构建资格。
+本阶段不提供 GitHub App 签发/私钥管理、团队/多租户账号系统、集中密钥托管或自动跨机故障迁移。移除 `execution.settings.github_auth`，所有形态（含 null）在 Run 接受前返回 invalid_input；内部 profile/helper 配置同样严格拒绝，不能静默切换身份。旧 App 执行必须用原版本完成停止和认证收尾后升级；历史请求/报告保留，不转换为新身份或本构建资格。
 
 ## 1. 目标、依据与首版范围
 
@@ -83,7 +85,7 @@ Windows 首版 IPC 使用命名管道。端点绑定规范化 `state-dir`、随�
 
 同一规范化目录最多一个服务写者。并发启动对账同一实例，不生成两个宿主；别名/大小写路径指向同一实际目录时也不能绕过锁。启动失败或实例失效返回明确错误，未证明旧写者结束不得接管。每个状态目录的服务独立管理其 Run。
 
-调用方可在 resident 业务/查询命令上传 `--expected-instance-id <id>`：该预期实例在发现端及服务受理端核验，不匹配返回 `stale_instance` 且零业务派发；绑定的 submit/environment-check start 不隐式启动服务。`capabilities.instance_binding.expected_instance_id: true` 公布支持。version、serve、service start/status/verify-stopped 不接收此参数；service stop 仍由原输入正文 expected_instance_id 约束。
+调用方可在 resident 业务/查询命令上传 `--expected-instance-id <id>`：该预期实例在发现端及服务受理端核验，不匹配返回 `stale_instance` 且零业务派发；绑定的 submit 不隐式启动服务。`capabilities.instance_binding.expected_instance_id: true` 公布支持。version、serve、service start/status/verify-stopped 不接收此参数；service stop 仍由原输入正文 expected_instance_id 约束。
 
 `submit` 和显式 `service start` 可在服务不存在时启动同目录的后台服务；后台启动不弹可见窗口。服务必须脱离 CLI/调用方的生命周期和会随其退出而结束的 Job 所有权；不能仅创建一个继承父 Job 的子进程就声称常驻。无法独立启动时在接受 Run 前明确失败，允许用户从独立入口启动同一个 serve 宿主，不增加另一种执行机制。`inspect`、`events`、`last-message`、`reply`、`resume`、`stop` 不隐式启动服务，服务不可用时返回 `service_unavailable`。`version` 不需要服务；`service status` 仅核验发现/进程/握手事实，不成为数据库读取后门。
 

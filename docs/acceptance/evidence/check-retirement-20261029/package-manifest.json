@@ -1,0 +1,112 @@
+{
+  "provenance": {
+    "source_commit": "af29ee471587d7eef41a5eb9ff7d52aefb815183",
+    "schema": "steerrunner-package-source/v1",
+    "source_dirty": true,
+    "source_digest": "58919a7779a641ea458266f5cd0a8065074d400e775046211a3b1f32610d9087"
+  },
+  "snapshot_schema_version": 1,
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "NOTICE",
+      "sha256": "6e1c34cd3c03a98f25dc48fcfba5c3d070e31a64fbb7005c928104f8c4cc7f0f"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.txt",
+      "sha256": "7be26035434faf10b4e6ed87c57e947a0083eefad666a338861351a3c7b28f0a"
+    },
+    {
+      "path": "client/README.md",
+      "sha256": "f6b514c594557af8e53bc7dd906f1488658483084eaf735c49b3152f56fa8cbc"
+    },
+    {
+      "path": "client/steerrunner-client.ps1",
+      "sha256": "1812e4810be33be40499d0c69d189ce765775c2a864acfb8a70941e5fa8242d7"
+    },
+    {
+      "path": "scripts/delivery-contract.ps1",
+      "sha256": "4730258e7843cb4d447d489752e3980bf5c780550a7651e56d8777dbe6c305c8"
+    },
+    {
+      "path": "scripts/install-client.ps1",
+      "sha256": "3c6df866f2a5a87830cd9d9eb6ee0a7fd86868d6ce8a85d0800a570f2bed635b"
+    },
+    {
+      "path": "scripts/verify-client-package.ps1",
+      "sha256": "1b547db722bdb1d7e6259afbe0ed8b9bb5685bf9062c303b3c310e4b5141e0a2"
+    },
+    {
+      "path": "skills/steerrunner-configure/SKILL.md",
+      "sha256": "3a93e06a73b2bf9eb1ba9b0aafe199032756150e06a3d1c3202bb17dbe9d8026"
+    },
+    {
+      "path": "skills/steerrunner-configure/agents/openai.yaml",
+      "sha256": "853bb08abd6594c4fc0ce93f40107a2b5d495c614c7f973395d9ad2bbd21fe98"
+    },
+    {
+      "path": "skills/steerrunner-run/SKILL.md",
+      "sha256": "71ace264f310916539bce924e9385beee842f05b57aa2d19ecea909ff856ed17"
+    },
+    {
+      "path": "skills/steerrunner-run/agents/openai.yaml",
+      "sha256": "419463a4065344ab7332475ba15597472f7fb5942f95ecc222d7fc8ccffae6d3"
+    },
+    {
+      "path": "steerrunner-viewer.exe",
+      "sha256": "10f785f272773fb2edd714e5eddba59d61db9cc4a267c937adcbf6d394943692"
+    },
+    {
+      "path": "steerrunner-viewer.exe.build.json",
+      "sha256": "271887c59dc7b1042abeee1753b849ae9f488f865716e2549e3e1652b1ba4143"
+    },
+    {
+      "path": "steerrunner.exe",
+      "sha256": "7b57b06472ae7c36befa71222cdc6e61f7bc2fda410adee6d6aaf32e58fdc2b5"
+    },
+    {
+      "path": "steerrunner.exe.build.json",
+      "sha256": "b078ecda6d31e045f6a84bdf1a83f5a5192e7642d6ea6df8421a61006996e803"
+    }
+  ],
+  "components": {
+    "runner": {
+      "resource_digest": "2db7c54cc80821239b0d2b59a00f9378c718086b824d5770ea90a730bb7a1068",
+      "source_commit": "af29ee471587d7eef41a5eb9ff7d52aefb815183-dirty",
+      "build": {
+        "schema": "steerrunner-build/v1",
+        "component": "runner",
+        "source_digest": "1fc19cd53089c9c827018c619165c50885902e42aa8053c80b6cea8aad5ac2df",
+        "version": "0.2.0-dev.4",
+        "source_commit": "af29ee471587d7eef41a5eb9ff7d52aefb815183",
+        "source_dirty": true,
+        "protocol": "steerrunner-cli/v1",
+        "platform": "windows/amd64",
+        "sha256": "7b57b06472ae7c36befa71222cdc6e61f7bc2fda410adee6d6aaf32e58fdc2b5"
+      },
+      "version": "0.2.0-dev.4",
+      "platform": "windows/amd64",
+      "resource_version": 3,
+      "protocols": [
+        "steerrunner-cli/v1"
+      ]
+    },
+    "client_contract_version": 2,
+    "viewer": {
+      "build": {
+        "source_digest": "ecd4b2b53c3bff9b6554cb26c93d00c2b6370e990995b65a67b9457a2ef7cdc3",
+        "source_commit": "af29ee471587d7eef41a5eb9ff7d52aefb815183",
+        "sha256": "10f785f272773fb2edd714e5eddba59d61db9cc4a267c937adcbf6d394943692",
+        "source_dirty": true,
+        "platform": "windows/amd64",
+        "component": "viewer",
+        "schema": "steerrunner-build/v1"
+      }
+    },
+    "viewer_snapshot_schema_version": 1
+  },
+  "version": 2
+}

@@ -38,10 +38,10 @@ func TestSRFullBindingCLI(t *testing.T) {
 			t.Fatal("invalid binding accepted", argv)
 		}
 	}
-	// A complete bound environment check must not create even a bootstrap in an
+	// A complete bound submit must not create even a bootstrap in an
 	// absent namespace; input semantics cannot grant implicit service startup.
 	var output, diagnostics bytes.Buffer
-	code := Run([]string{"environment-check", "start", "--state-dir", binding.StateDir, "--expected-binding", string(body), "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"check-original","input":{}}`), &output, &diagnostics)
+	code := Run([]string{"submit", "--state-dir", binding.StateDir, "--expected-binding", string(body), "--input", "-"}, strings.NewReader(`{"protocol":"steerrunner-cli/v1","request_id":"submit-original","input":{"title":"Bound submit","workflow":{"id":"generate","version":1},"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":"read_only"}},"generate":{"instruction":"Return content","materials":[]}}}`), &output, &diagnostics)
 	if code == 0 {
 		t.Fatal("absent bound service accepted action", output.String())
 	}

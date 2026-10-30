@@ -22,7 +22,7 @@
 | `protocol/orca/state_stream.go / state_config.go` | 一个包内连接接口/打开函数；保留远程 WS；新增本机 metadata、认证与 IPC；删除空 environment 时读 pair 的分支 |
 | `protocol/orca/state_subscription.go / artifact.go` | 使用抽象连接，停止直接访问 WS `.conn`；查询、订阅、上传各自有界 |
 | `protocol/orca/state_feed.go / state_query_feed.go` | environment 为空时打开查询式 feed；远程保持原订阅分支；保留既有解码与 StateFeed，查询式 feed 不产生通知事件 |
-| `orcatransport/lifecycle.go / workspace.go / environment_check.go` | 移除本机配对前置；CLI 路由一致；复用现有 runtime 字段补本机创建响应校验；Check 保留原 helper 路径 |
+| `orcatransport/lifecycle.go / workspace.go` | 移除本机配对前置；CLI 路由一致；复用现有 runtime 字段补本机创建响应校验 |
 | `tests/native`、`internal/testkit/livetest`、fixture/scripts/catalog | 现有 driver 支持本机 Orca；只注册 Spec 的 3 case，调整必要的 manifest/配置校验与准备参数 |
 
 生产代码修改白名单只有 `internal/execution/adapters/orcatransport/` 与 `internal/execution/adapters/protocol/orca/`。保持 `contracts`、全部 `application`、`backend / reliable / workflow`、storage、Codex 和 agentlaunch 的生产代码及接口不变；上层已有目标字段足够使用。不新增 production transport registry、凭据 provider、持久绑定层、routing driver 或通用 RPC 审计平台。测试/现场脚本/文档单独列入验证改动，不借测试接线扩张生产范围。
@@ -57,7 +57,6 @@
 2. 本机 preflight 对照本机 metadata、CLI status 与直接查询的 runtime。创建资源时复用现有 `workspaceCreation.ResolvedRuntimeID`，扩展当前仅远程执行的发现/创建响应核验到本机；保留原 creation checkpoint、operation intent 和未知结果对账。后续继续使用原 ProcessIdentity，不新增绑定提交步骤。
    preflight 验证 `worktree.ps` 与源项目 tabs 查询，不以本机订阅支持为门槛；原生查询失败仍在业务资源创建前拒绝。
 3. 本机 native 端口从已保存原身份查询，远程保留订阅加补查；错 runtime/终端换代即拒绝后续输入。旧本机 profile 实际绑定远程时不迁移；profile/state/target hash 不改，使用现有记录夹具验证。
-4. 环境检查仍在实际 Orca 执行上下文运行 helper 和同权限预检。只改必要的本机目标接线；不为名称含 remote 批量改名或重构所有 Check owner。
 5. 扩展现有 Controlled 测试中的协议来源参数/子变体，覆盖同服务两目标隔离、有效 pair 干扰、本机/远程失败无回退、一次断线重接、服务重启显式继续、stop 迟到事实及输入结果未知零重发。复用原 testkit、公开 CLI、真实服务/SQLite/隔离 Git 和审计，不新增模型 driver。
 
 退出条件：完整 L1/Controlled 通过，V04 新子变体另行签收，不能以既有 16 项回归替代。改动范围审查确认无新中心阶段、持久化版本和旧格式迁移；保持既有 Codex 路径。发现原框架能直接复用的行为不重写。
@@ -66,7 +65,7 @@
 
 依赖 P2。
 
-1. 在 catalog/cases 及测试清单同步注册 3 场景：`orca-local.smoke/default`、`environment-check.orca-local-sandbox/complete`、`environment-check.orca-local-full-access/complete`。复用现有两种 driver/outcome，不新建完整本机 execution-stability 矩阵。
+1. 在 catalog/cases 及测试清单保留 `orca-local.smoke/default`。复用现有 development driver/outcome，不新建完整本机 execution-stability 矩阵。
 2. manifest 继续使用现有 v1；v2 远程稳定性不变。本机 `local_runtime_id` / `local_repository_path` 在准备成功后写入最终 manifest，受 manifest 摘要保护并与原生回执交叉校验；preparation 仅作证据，不参与运行时目标选择，不把 `RemoteRuntimeID` 改为双重含义，不引入混合目标 manifest。
 3. 现场生成器增加 `orca-local` 分支，复用 `codex_executable / model / reasoning_effort`；增加必要的可选 `orca_local_runtime_executable`，多个同名注册项目时用测试配置 `orca_local_repository_path` 精确选择，更新白名单/example，沿用原 schema。后者来自真机发现的两份同名注册仓库，不改变生产配置。远程 `remote_*` 保持原义。本机单目标无需 remote environment。
 4. `prepare-native-orca.ps1` 接受明确本机/远程目标，只有远程必需且传 environment。本机对真实注册项目准备专属 base，保存 runtime，确认原准备终端关闭；不复制认证文件。
@@ -85,8 +84,6 @@ $config = '.evidence/live-orca-stability.json'
 .\scripts\test.ps1 -Level Controlled -OutDir .evidence/orca-local-remote-prerequisites
 $cases = @(
     @{scenario='orca-local.smoke'; case='default'; timeout=30},
-    @{scenario='environment-check.orca-local-sandbox'; case='complete'; timeout=15},
-    @{scenario='environment-check.orca-local-full-access'; case='complete'; timeout=15},
     @{scenario='orca-remote.smoke'; case='default'; timeout=30},
     @{scenario='orca-remote.connection-reconnect'; case='active-disconnect'; timeout=30}
 )
@@ -99,7 +96,7 @@ foreach ($item in $cases) {
 管理员前置未满足时，不应让该阻断隐藏其他 case 的实际结果。本轮已先用 `scripts/test.ps1 -Level Controlled -OutDir .evidence/olr/query-verified` 完整执行一次 L1/Controlled，再用现有 `new-test-fixture.ps1` 和 `test-native.ps1 -Manifest <本 case 的 manifest.json> -TimeoutMinutes <既有期限>` 串行执行四个可运行 case。每个现场核对相同 Runner/driver 和生产源码摘要，并引用该完整前置结果；直接 native 入口本身不会自动补做前置。第五项单列管理员预检阻断，整批不能报五项全过；管理员宿主就绪后仍须补跑原重连 case。
 
 1. 本机新增 3 case、远程既有 2 case 各一次，使用同一受测源码及构建。配置中的本机/远程工具、模型、权限按各目标冻结，不拼接不同代码版本的结果。
-2. 本机 smoke 证明 pair 缺失、真实 IPC 查询、发送前基线、原请求开始回执、新主代理 done/原生 final 和完整开发/一次反馈/合入/停止。两个环境检查分别证明真实 sandbox/full_access 准备和既有十二项检查，不能只确认 CLI 可访问。
+2. 本机 smoke 证明 pair 缺失、真实 IPC 查询、发送前基线、原请求开始回执、新主代理 done/原生 final 和完整开发/一次反馈/合入/停止。
 3. 远程重连复用已存在的故障设施、事实屏障和动作计数，仍要求原双通路真实中断及原资源零重发。不新增本机故障注入设施，也不声称验证了本机全链路不可达。
 4. 默认串行，不设强制 MaxParallel=2 或三轮门槛。新 case 的现场/资源仍须隔离；同服务双目标并发由 Controlled 覆盖，本次不报告真机并行资格。
 5. 前置失败不启动模型，case 失败保留原结果；修复后新现场重跑受影响项。只有源码修改波及另一类连接或框架时才扩大回归，不自动恢复 99 执行计划。
@@ -135,10 +132,10 @@ git diff --check
 | P1 连接与观察 | 私有 IPC/WS 连接、查询式 feed、取消/关闭及身份负例已实现并通过 L1 | 不宣称所有瞬时事件可见或本机全 IPC 故障资格 |
 | P2 adapter | 本机能力门改为查询；完整 L1 273 项、既有 Controlled 16/16 通过 | V04 同服务双连接子变体仍待补验 |
 | P3 现场 | 新增 3 case 已注册，17 场景/23 case 的守卫通过；本机 3 项及远程 smoke 的同构建新现场已准备 | 注册/准备不计 L3 通过 |
-| P4 真机 | 免 pair 本机开发 smoke、sandbox/full_access Check、远程 smoke 共四项已通过，均确认完整收尾，Runner/driver 摘要一致 | 远程 reconnect 等管理员故障宿主，未启动模型，不计通过 |
+| P4 真机 | 历史构建的免 pair 本机开发 smoke、权限检查、远程 smoke 已通过；Check 现已退役，均确认完整收尾，Runner/driver 摘要一致 | 远程 reconnect 等管理员故障宿主，未启动模型，不计通过 |
 
 执行采用同构建串行顺序；失败保留原现场并停止后续自动链，先核对原资源及清理，不重发未知输入。
-本机开发必须验证一次反馈、新 head、同一 PR 精确 head 合入和实际停止；两个 Check 必须各自十二项检查及清理完成。
+本机开发必须验证一次反馈、新 head、同一 PR 精确 head 合入和实际停止。
 远程重连的管理员前置与本机查询能力分开登记。完整验收仍要求 V04 与五项 L3 的明确结果，不能因当前部分通过就标记全部完成。
 当前四项通过与一项前置阻断的同构建记录见[验证汇总](../acceptance/evidence/orca-local-remote/query-qualification.json)。
 剩余工作为补验 V04 的现有 Controlled 子变体，并在管理员宿主就绪后补跑远程重连；不要求用户修改 Orca。

@@ -112,7 +112,7 @@ Runner 每秒采样，变化时导出，无变化时每 5 秒发送心跳。View
 .\steerrunner.exe service status --state-dir C:\SteerRunnerData --json
 ```
 
-提交 JSON、查询执行、环境检查、停服及升级说明见 [CLI 与运维指南](docs/cli-guide.md)，请求字段见 [CLI 契约](docs/spec/steerrunner.spec.md)。
+提交 JSON、查询执行、停服及升级说明见 [CLI 与运维指南](docs/cli-guide.md)，请求字段见 [CLI 契约](docs/spec/steerrunner.spec.md)。
 
 ## 从源码构建
 

@@ -57,24 +57,14 @@ func TestSRIndependentTestConfiguration(t *testing.T) {
 			t.Fatal("fixture generation would silently replace the configured publication provider")
 		}
 	}
-	shared.Publication.Provider = "command"
-	shared.Publication.Settings = json.RawMessage(`{"base_url":"https://github.com/","query":{"executable":"gh","args":["api"]}}`)
-	wrongProvider.Fixture, _ = json.Marshal(shared)
-	for _, test := range AssessConfig(wrongProvider, digest, resources.Catalog()).Cases {
-		if test.ScenarioID == "environment-check.local-sandbox" && test.Availability != "unavailable" {
-			t.Fatal("noncanonical fixture URL cannot pass the actual check admission", test)
-		}
+	loaded.Configurations["independent-run"] = entry
+	baseScenario, baseCase, err := Lookup("local-codex.smoke", "default")
+	if err != nil {
+		t.Fatal(err)
 	}
-	// Removing workflow only disables Run cases; a Check still consumes the same Execution.
-	var value map[string]json.RawMessage
-	_ = json.Unmarshal(entry, &value)
-	delete(value, "workflow")
-	entry, _ = json.Marshal(value)
-	loaded.Configurations["local-codex-check"] = entry
-	baseScenario, baseCase, _ := Lookup("environment-check.local-sandbox", "complete")
-	baseCase.Requirements = &Requirements{Roles: map[string]RoleRequirement{"primary": {Configuration: "local-codex-check", Adapter: "codex-app-server", TargetKind: "local", Agent: "codex", AccessMode: "sandbox"}}, Operation: "environment-check start", Publication: true}
+	baseCase.Requirements = &Requirements{Roles: map[string]RoleRequirement{"primary": {Configuration: "independent-run", Adapter: "codex-app-server", TargetKind: "local", Agent: "codex", AccessMode: "sandbox", Workflow: "development"}}, Operation: "submit", Publication: true}
 	if result := assessCase(loaded, baseScenario, baseCase, resources.Catalog()); result.Availability != "available" {
-		t.Fatal("Check required workflow", result)
+		t.Fatal(result)
 	}
 	baseline := loaded.Configurations["local-codex"]
 	delete(loaded.Configurations, "local-codex")
@@ -130,7 +120,7 @@ func TestSRAllLiveCasesHaveRequirements(t *testing.T) {
 	}
 }
 
-func TestSRCheckAuthenticationAvailability(t *testing.T) {
+func TestSRRunAuthenticationAvailability(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "tests", "test-config.example.json"))
 	if err != nil {
 		t.Fatal(err)
@@ -152,7 +142,7 @@ func TestSRCheckAuthenticationAvailability(t *testing.T) {
 	}
 	for _, test := range report.Cases {
 		switch test.ScenarioID {
-		case "environment-check.local-sandbox", "local-codex.smoke":
+		case "local-codex.smoke":
 			found := false
 			for _, reason := range test.Reasons {
 				found = found || reason.Code == "invalid_configuration"

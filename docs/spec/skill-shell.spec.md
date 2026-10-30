@@ -48,7 +48,6 @@
 
 命令存在、连接成功、仓库已注册、配置合法、真实执行通过分别陈述。远端工具/登录无法只读证明时标为未核实，不能为补齐发现而创建远端探针终端。历史通过不等于当前可用；配置再次调用即重新发现，执行时仍由 Runner 核验真实环境。
 
-完整 `environment-check start` 是用户另行要求的检查，可由 configure skill 调用既有命令，但须先说明其专属引用、push 和测试 PR 操作及范围。无参数发现不隐含授权它；远端完整检查 unsupported 不阻断普通远端 Run，也不显示为检查通过。
 
 ### 3.3 默认选择与重复调用
 
@@ -150,7 +149,7 @@ helper 每次提供有限观察，单次等待不超过 30 秒；活动聊天可
 
 ### 7.1 数据来源与单写者
 
-Runner 服务导出该 state-dir 中当前可读取的全部持久化 Run，包括其它 skill、SteerLine 或直接 CLI 提交的 Run；不以客户端 submissions 记录作为列表来源。首版仅列 Run，不混入独立 environment-check。读取自己的既有状态投影即可，不新增公开 Run 列表 CLI，不让外部 helper 扫描私有库。
+Runner 服务导出该 state-dir 中当前可读取的全部持久化 Run，包括其它 skill、SteerLine 或直接 CLI 提交的 Run；不以客户端 submissions 记录作为列表来源。首版仅列 Run。读取自己的既有状态投影即可，不新增公开 Run 列表 CLI，不让外部 helper 扫描私有库。
 
 默认导出到当前用户 `%LOCALAPPDATA%/SteerRunnerView/snapshots/<source_id>.json`。`source_id` 是服务现有 `host.Normalize` 结果的 UTF-8 字节的完整 SHA-256 小写十六进制标识，复用 writer lease 的路径规范化，不能由 helper/Viewer 另写一套路径或大小写规则；仅供定位/去重，不暴露真实目录，不作为执行身份或授权。每个 state-dir 对应一个文件；沿现有 writer lease 保证只有其当前服务写入，不另外维护全局聚合文件或注册中心。Viewer 枚举该目录的 JSON 文件，以 `(source_id, run_id)` 区分来源；首版仅支持本机普通目录，不实现跨机同步、网络共享采集或远端部署。Orca 远端 Run 仍由管理它的本机 Runner 导出。
 

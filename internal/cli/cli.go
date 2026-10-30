@@ -96,8 +96,6 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 				value.protocol = parameter
 			case "--input":
 				value.input = parameter
-			case "--check-id":
-				value.opts.CheckID = parameter
 			case "--run-id":
 				value.opts.RunID = parameter
 			case "--artifact-id":
@@ -140,13 +138,13 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	if len(positional) == 1 {
 		value.opts.Command = positional[0]
 	}
-	if len(positional) == 2 && (positional[0] == "service" || positional[0] == "environment-check" || positional[0] == "artifacts") {
+	if len(positional) == 2 && (positional[0] == "service" || positional[0] == "artifacts") {
 		value.opts.Command = positional[0] + " " + positional[1]
 	}
 	switch value.opts.Command {
 	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost":
 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
 	default:
 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
 	}
@@ -193,18 +191,14 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 		return value, contracts.Fail(2, "invalid_arguments", "Write commands require --input -; other commands do not accept input.")
 	}
 	selectors := 0
-	for _, id := range []string{value.opts.RunID, value.opts.RequestID, value.opts.CommandID, value.opts.CheckID} {
+	for _, id := range []string{value.opts.RunID, value.opts.RequestID, value.opts.CommandID} {
 		if id != "" {
 			selectors++
 		}
 	}
 	switch value.opts.Command {
-	case "environment-check inspect":
-		if selectors != 1 || (value.opts.CheckID == "" && value.opts.RequestID == "") {
-			return value, contracts.Fail(2, "invalid_arguments", "environment-check inspect requires exactly one check-id or request-id.")
-		}
 	case "inspect":
-		if selectors != 1 || value.opts.CheckID != "" || value.opts.RefreshPR && value.opts.RunID == "" {
+		if selectors != 1 || value.opts.RefreshPR && value.opts.RunID == "" {
 			return value, contracts.Fail(2, "invalid_arguments", "inspect requires exactly one identifier; refresh-pr requires run-id.")
 		}
 	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "message", "interrupt", "close", "history":
@@ -251,7 +245,7 @@ func writes(command string) bool {
 	switch command {
 	case "artifacts collect":
 		return true
-	case "environment-check start", "environment-check stop", "submit", "service stop", "reply", "resume", "stop", "message", "interrupt", "close":
+	case "submit", "service stop", "reply", "resume", "stop", "message", "interrupt", "close":
 		return true
 	default:
 		return false
@@ -276,7 +270,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		return finish(contracts.Success("", resources.VersionInfo()), 0)
 	}
 	if options.opts.Command == "help" {
-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "environment-check start", "environment-check stop", "environment-check inspect", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run|environment-check --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
 	if options.offline {
 		executable, err := os.Executable()
@@ -335,7 +329,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 		if requestErr != nil {
 			return reject(requestErr)
 		}
-		if invalid := contracts.ValidateInput(options.opts.Command, value.Input); invalid != nil && options.opts.Command != "environment-check start" && options.opts.Command != "environment-check stop" {
+		if invalid := contracts.ValidateInput(options.opts.Command, value.Input); invalid != nil {
 			return reject(invalid)
 		}
 		request = &value
@@ -357,7 +351,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
 	defer cancel()
-	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && options.opts.ExpectedBinding == nil && (options.opts.Command == "submit" || options.opts.Command == "environment-check start") {
+	if options.opts.Command == "service start" || options.opts.ExpectedInstanceID == "" && options.opts.ExpectedBinding == nil && options.opts.Command == "submit" {
 		executable, err := os.Executable()
 		if err != nil {
 			return reject(contracts.Fail(4, "service_start_failed", "Cannot locate this executable."))

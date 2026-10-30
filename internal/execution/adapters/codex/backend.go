@@ -157,7 +157,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	defer func() {
 		receipt = h.Binding
 		if err != nil {
-			if (b.Config.EnvironmentCheck || b.Config.Sandbox == "read-only") && h.process != nil {
+			if b.Config.Sandbox == "read-only" && h.process != nil {
 				// Preserve partial/late owned launch handles for explicit tree
 				// settlement, including handshake and thread-create failures.
 				h.owned = false
@@ -208,9 +208,6 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			return h, receipt, preparationBlocked(err)
 		}
 		tools := []any{codexapp.AskDynamicTool()}
-		if b.Config.EnvironmentCheck {
-			tools = []any{environmentProbeTool()}
-		}
 		params, paramErr := ThreadParams(b.Config.Workspace, b.Config.Sandbox, b.Config.Model, tools)
 		if paramErr != nil {
 			return nil, receipt, paramErr
@@ -226,13 +223,6 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 			params["config"] = config
 			params["developerInstructions"] = ContentSessionInstruction
 		}
-		if b.Config.EnvironmentCheck {
-			// All check tools route through a closed native probe port. The
-			// credential broker additionally gates each external write once.
-			params["config"] = map[string]any{"features.shell_tool": false, "features.apply_patch_freeform": false, "features.multi_agent": false, "features.apps": false, "web_search": "disabled", "mcp_servers": map[string]any{}}
-			params["developerInstructions"] = EnvironmentSessionInstruction
-		}
-		threadCtx := ctx
 		inputFacts, inputErr := sessionInput(params)
 		if inputErr != nil {
 			return nil, receipt, inputErr
@@ -240,25 +230,14 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		if err := b.Process.WriteAtomic(filepath.Join(b.Config.ServerDir, "thread.json"), encode(ThreadReceipt{Input: inputFacts})); err != nil {
 			return nil, receipt, err
 		}
-		threadCancel := func() {}
-		if b.Config.EnvironmentCheck {
-			threadCtx, threadCancel = context.WithTimeout(ctx, 30*time.Second)
-		}
-		response, startErr := StartThread(threadCtx, h.client, params, b.Config.Workspace)
-		threadCancel()
+		response, startErr := StartThread(ctx, h.client, params, b.Config.Workspace)
 		if startErr != nil {
 			return nil, receipt, startErr
 		}
 		response.Input = inputFacts
 		h.Binding.SessionID = response.Thread.ID
-		if b.Config.EnvironmentCheck || b.Config.Sandbox == "read-only" {
-			want := "workspaceWrite"
-			if b.Config.Sandbox == "read-only" {
-				want = "readOnly"
-			}
-			if b.Config.Sandbox == "danger-full-access" {
-				want = "dangerFullAccess"
-			}
+		if b.Config.Sandbox == "read-only" {
+			want := "readOnly"
 			if response.ApprovalPolicy != "never" || response.ApprovalsReviewer != "user" || response.Sandbox.Type != want {
 				h.owned = false
 				return h, h.Binding, errors.New("native_effective_permissions_unverified")

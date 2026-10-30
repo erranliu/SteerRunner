@@ -201,7 +201,7 @@ func cleanupService(t *testing.T, dir string, info contracts.ServiceInfo) {
 		if currentInfo.Status == "not_running" {
 			// A failed offline assertion can leave its native owner alive. Reopen
 			// only with original fixture stop obligations admitted before dispatch.
-			if reader, err := storage.OpenRecoveryReader(dir); err == nil {
+			if reader, err := storage.OpenReader(dir); err == nil {
 				runs, readErr := reader.Runs()
 				reader.Close()
 				pending := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{}}

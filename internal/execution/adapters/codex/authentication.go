@@ -29,7 +29,6 @@ func githubTarget(remote string) (string, error) {
 // gh credential stays in the broker and is never serialized or given to tools.
 type AuthenticationRuntime struct {
 	brokerTransport http.RoundTripper
-	checkGate       *checkWriteGate
 	mu              sync.Mutex
 	repository      string
 	remoteURL       string
@@ -73,7 +72,6 @@ func (a *AuthenticationRuntime) prepare(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	broker.checkGate = a.checkGate
 	a.broker, a.token, a.expires = broker, broker.capability, broker.expires
 	return nil
 }

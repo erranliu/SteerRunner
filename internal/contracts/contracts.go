@@ -89,7 +89,7 @@ func ExitCode(response Response) int {
 		return 3
 	case "service_unavailable", "service_start_failed", "detach_unsupported", "startup_unverified", "environment_unavailable":
 		return 4
-	case "snapshot_not_found", "snapshot_expired", "invalid_usage_cursor", "usage_policy_conflict", "usage_observation_stale", "request_conflict", "request_not_found", "command_not_found", "run_not_found", "check_not_found", "stale_instance", "directory_conflict", "stale_revision", "invalid_state", "stale_question", "resume_required", "operation_unverified", "answer_pending", "repository_conflict":
+	case "snapshot_not_found", "snapshot_expired", "invalid_usage_cursor", "usage_policy_conflict", "usage_observation_stale", "request_conflict", "request_not_found", "command_not_found", "run_not_found", "stale_instance", "directory_conflict", "stale_revision", "invalid_state", "stale_question", "resume_required", "operation_unverified", "answer_pending", "repository_conflict":
 		return 5
 	case "request_outcome_unknown":
 		return 6
@@ -150,16 +150,9 @@ type ServiceStopInput struct {
 }
 
 type StoppedVerification struct {
-	Checks           []StoppedCheck `json:"checks"`
-	StateDir         string         `json:"state_dir"`
-	ResourcesSettled bool           `json:"resources_settled"`
-	Runs             []StoppedRun   `json:"runs"`
-}
-
-type StoppedCheck struct {
-	CheckID          string `json:"check_id"`
-	InputDigest      string `json:"input_digest"`
-	ResourcesSettled bool   `json:"resources_settled"`
+	StateDir         string       `json:"state_dir"`
+	ResourcesSettled bool         `json:"resources_settled"`
+	Runs             []StoppedRun `json:"runs"`
 }
 
 type StoppedRun struct {

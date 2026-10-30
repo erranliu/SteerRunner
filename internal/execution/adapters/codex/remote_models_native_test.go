@@ -124,7 +124,7 @@ func TestBoundaryNativeModelBridge(t *testing.T) {
 				t.Fatal("unexpected native bootstrap request")
 			}
 			if event.Method == "turn/completed" {
-				if _, err = decodeEnvironmentCompletion(event.Params, thread.Thread.ID, bootstrap.Turn.ID); err != nil {
+				if err = validateTurnCompletion(event.Params, thread.Thread.ID, bootstrap.Turn.ID); err != nil {
 					t.Fatal(err)
 				}
 				bootstrapped = true

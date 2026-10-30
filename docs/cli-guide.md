@@ -22,7 +22,6 @@ Runner 不维护部署清单或命名 profile。SteerLine／独立调用方选�
 .\bin\steerrunner.exe capabilities --offline --json
 Get-Content -Raw -Encoding utf8 .\run-configuration.json | .\bin\steerrunner.exe validate --kind run-configuration --input - --json
 Get-Content -Raw -Encoding utf8 .\run-input.json | .\bin\steerrunner.exe validate --kind run --input - --json
-Get-Content -Raw -Encoding utf8 .\check-input.json | .\bin\steerrunner.exe validate --kind environment-check --input - --json
 ```
 
 三个文件直接保存对应对象，不含写信封。`validate` 返回 `request_id=null` 和字段诊断；成功只说明生产纯 gate 接受，不证明环境就绪。实际 `submit`／检查 start 仍使用原 v1 写信封和 request_id。能力目录列出实现组合、schema 引用和限制；离线来源标记 EXE，在线来源由响应服务附带其 instance_id。旧接口不要求先调用 validate。
@@ -40,7 +39,7 @@ GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null�
 固定 approval never，失败不会回退自动审核发布。
 Orca local 受管执行使用可信 helper、同权限准备与认证撤销；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
 个人多机边界、App 移除和本次验证见[专项记录](acceptance/personal-runner-gh-only-20261019.md)。
-同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计或完整环境检查；原 helper 构建的历史验证范围见
+同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计；原 helper 构建的历史验证范围见
 [Orca 扩展验收](archive/2026-10/acceptance/orca-remote-extensions-20261018.md)。
 设置、外部前置及受控/真实验收边界见[测试指南](testing.md)和[专属记录](acceptance/sandbox-authentication.md)。
 
@@ -65,42 +64,9 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 开发流程的 Spec、Plan 和参考材料只需提供仓库相对路径，例如 `"spec":{"path":"docs/spec/task.spec.md"}`。本地 Codex 与 Orca 均直接读取固定 commit 创建的 worktree 内文档；Runner 不检查文档提交、推送、存在性或正文，不复制/传输/内嵌材料。调用方负责文档可用性；缺失由代理按实际执行情况反馈。旧 kind/content/commit 字段可按原形状提交，但不再决定开发材料来源。Orca 的 12000 UTF-16 单元限制仅适用于实际提示词。`conversation`、`generate` 仍支持独立 inline 材料。Orca 的 local_path 指向已注册项目，environment 必须预先配置；执行主机的仓库须已获取固定 base commit，创建工作区时核验实际 base/head。Runner 不复制调用方的认证或安装配置。
 
-## 主动环境检查
-
-`environment-check` 独立于 development Run，不接收 Task、Spec/Plan 或 workflow。
-检查和普通执行均通过 `execution.settings.access_mode` 选择 `sandbox`（默认）或显式
-`full_access`，两者始终 `never`，不会从沙箱失败自动切换模式。全访问不增加 OS 权限。
-
-开始前应展示 `steerline-check/<check_id>/base|head` 命名空间及检查清单：原生权限、工作区/临时/Git
-管理目录读写、远端读取/fetch、提交与专属引用 push；传入 Publication 时还必须创建、查询并关闭
-专属 base/head 间的测试 PR。PR 不合并，清理按原 SHA 删除 owned 引用。无 Publication 时 PR 项为
-`not_applicable`，报告不证明发布就绪；不检查构建、测试及业务资源。
-
-本机 codex-app-server 及 Orca local 受管路径已实现 Windows Codex >= 0.159.2 + HTTPS GitHub `.git` 仓库 + 执行主机 gh 登录 broker 的两种模式。
-上述本机路径的普通执行与环境检查统一使用执行主机 gh 单仓库 broker；原生远端完整环境检查明确 unsupported，普通远端 Run 使用已有 Orca 原生认证。不支持 GitHub App。旧 App 配置拒绝测试不计为 App 真机验收。
-已实现组合缺登录、权限或网络时，受理后的报告记录失败/未核实。真实验收和发布状态分别见
-[环境检查记录](acceptance/environment-check.md)和[当前 Orca 路径验收](acceptance/orca-local-remote.md)。
-
-`check-request.json` 使用 v1 信封，input 含 `repository`、`execution`，可含 `correlation`、
-`publication`、`execution_timeout`（默认 `10m`）和 `cleanup_timeout`（默认 `2m`）。Repository 和
-Publication 形状沿普通执行；项目 base 只核对来源，测试 PR 使用 Runner 分配的专属 base。
-capabilities 返回内嵌检查 schema、操作清单、支持矩阵和经过生产查询路径校验的公开样例。
-
-```powershell
-Get-Content -Raw -Encoding utf8 .\check-request.json | .\bin\steerrunner.exe environment-check start --state-dir C:\Temp\SteerRunnerCheck --input - --json
-.\bin\steerrunner.exe environment-check inspect --state-dir C:\Temp\SteerRunnerCheck --request-id check-start-001 --json
-.\bin\steerrunner.exe environment-check inspect --state-dir C:\Temp\SteerRunnerCheck --check-id <check_id> --json
-```
-
-start 异步回执只证明持久化。stop 的 v1 input 为 `{"check_id":"原ID","expected_revision":当前revision}`，
-同样使用 `environment-check stop --input -`；按 stop request_id 查询返回原停止命令。
-查询不启动服务、恢复 Agent 或清理资源；服务重启只对账原对象，不重放模型输入/写操作。
-同一写操作的重复工具请求不会再次转发；未知结果只查原对象。能力结果与清理结算分别判断，
-残留对象不显示全部完成。公开契约及样例随 `resource_digest` 固定。
-
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v4、资源版本 2；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。支持经源记录资格核验和一致性备份的 state/v3→v4 受控升级；不支持任意历史格式或退役执行栈的迁移。兼容性与存量资源限制见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)，不能把新空目录、重新 submit 当作已有 Run 的恢复方案。
+当前持久格式为 state/v5、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v5 内普通 Run 的重启与接管语义保持。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
 
 独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](acceptance/result-acquisition.md)。
 
@@ -168,11 +134,11 @@ worker 的 common Git 目录只属于该 Run。sandbox 模式只为这个私有�
 代价是每个 Run 多一份本机仓库副本。
 已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
 
-本机 GitHub 认证 broker 的 socket 使用 `a/<26位资源键>/s`，避免把 Git 管理目录的深度叠加到 AF_UNIX 地址上。资源键保留 128 位摘要，绑定项目、执行、attempt、资源 generation、配置摘要、工作区和 remote；权限资源 codec v4 在会话创建前固定该目录。原生启动、就绪检查、正式回合和环境检查只增加本执行的目录访问，不授权共享的 `a/` 或整个状态目录。地址仍按 106 字节预检，超限时明确阻断。
+本机 GitHub 认证 broker 的 socket 使用 `a/<26位资源键>/s`，避免把 Git 管理目录的深度叠加到 AF_UNIX 地址上。资源键保留 128 位摘要，绑定项目、执行、attempt、资源 generation、配置摘要、工作区和 remote；权限资源 codec v4 在会话创建前固定该目录。原生启动、就绪检查、正式回合只增加本执行的目录访问，不授权共享的 `a/` 或整个状态目录。地址仍按 106 字节预检，超限时明确阻断。
 
 认证关闭、进程退出或准备失败时，仅删除原 socket 和已核验的空目录；目录重定向、身份替换、外来文件或崩溃遗留目录不会被递归删除或自动接管，未完成清理会如实报告。旧 codec v3 权限资源仍可读取，但不能静默增加认证目录授权；需要使用新资源创建执行。
 
-支持调查基线 state/v3 到 state/v4 的一致性备份与原子语义升级；不导入 SteerLine 数据。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
+当前只接受 state/v5，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
 
 ## 定向验证
 
@@ -180,7 +146,7 @@ L1–L4 定义、维护规则和执行入口见[测试指南](testing.md)，具�
 [测试清单](test-catalog.md)：L1 为快速单元/集成测试，
 L2 为最小核心 smoke，L3 为尽量正交、可并行的不同流程及核心可靠性测试，L4 为更复杂
 边界或确实无法并行的测试。调用方退出、断连、服务换代、停止撤销和发布对账保留在 L3。
-当前已注册 L2 两 case、L3 二十二场景／三十二 case（含远端可靠性、本机反馈拒绝／审计／多 Run、本机 Codex 与 Orca local 的双权限环境检查及 Pi／DSH），
+当前已注册 L2 一 case、L3 二十五场景／三十五 case（含远端可靠性、本机反馈拒绝／审计／多 Run、progress、CLI 等待及 Pi／DSH），
 L4 四个受控边界场景，共二十八场景／三十八 case；默认 Controlled 二十二个顶层测试。受控前置已纳入审计及多 Run，支持有界并行与 L4 独占；L2 直接执行最小交付路径，不读取反馈资格文件。真实后端并行资格及远端原生范围分别登记，逐项内容见清单。
 历史实际结果见[稳定性验收](acceptance/l3-execution-stability.md)，
 该受测套件完整资格为同构建连续三轮。

@@ -25,7 +25,7 @@ type ValidationResult struct {
 }
 
 func ValidationKind(value string) bool {
-	return value == "run-configuration" || value == "run" || value == "environment-check"
+	return value == "run-configuration" || value == "run"
 }
 
 // Validate calls the unchanged gate first. Schema diagnostics never determine
@@ -38,8 +38,6 @@ func Validate(value string, data []byte) (ValidationResult, *contracts.Fault) {
 		fault = contracts.ValidateRunConfiguration(data)
 	case "run":
 		fault = contracts.ValidateRun(data)
-	case "environment-check":
-		fault = contracts.ValidateEnvironmentCheck(data)
 	default:
 		return result, contracts.Fail(2, "invalid_arguments", "Unknown validation kind.")
 	}
@@ -69,13 +67,10 @@ func diagnosticSchema(value string) *jsonschema.Schema {
 		if json.Unmarshal(ConfigurationSchemas(), &values) != nil {
 			return
 		}
-		for name, raw := range map[string]json.RawMessage{"run-configuration": values["run_configuration"], "run": values["run_input"], "environment-check": Read("environment-check.schema.json")} {
+		for name, raw := range map[string]json.RawMessage{"run-configuration": values["run_configuration"], "run": values["run_input"]} {
 			doc, err := jsonschema.UnmarshalJSON(strings.NewReader(string(raw)))
 			if err != nil {
 				continue
-			}
-			if name == "environment-check" {
-				doc.(map[string]any)["$ref"] = "#/$defs/input"
 			}
 			compiler := jsonschema.NewCompiler()
 			url := "https://runner.invalid/" + name
