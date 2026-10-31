@@ -1,0 +1,48 @@
+{
+  "status": "passed",
+  "exact_registry_count": 25,
+  "groups": [
+    {
+      "group": "results",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-metadata-fixed\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T03:03:32.5740033Z",
+        "scenario_count": 1
+      },
+      "identity": {
+        "pid": 35552,
+        "pattern": "^TestSRResultAcquisition$",
+        "runner_sha256": "74A29A03AB91461D80537159300EAF9902E1A87E495145620BBD3BEF481B3B88",
+        "fixture_sha256": "8CEC65465C90072B8D569E6384E8E459E10381EBB8DCD80021730660B65F8F36",
+        "native_fixture_sha256": "E858554487298AAD6C810AED1146BC8DA7A1921C1F8385F19C6325F68D0A9EDE",
+        "source_commit": "fc205994260eb5d7d85e82b76721d2b4d4f48dee",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    },
+    {
+      "group": "rest",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-metadata-fixed\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T03:05:17.0872853Z",
+        "scenario_count": 24
+      },
+      "identity": {
+        "pid": 47480,
+        "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestSRContentGenerate|TestSRContentRepository|TestSRContentConversation|TestSRContentQuestionAndUnknown|TestSRContentGenerationRecovery|TestSRRunEvidenceR2|TestSRResourceCreationRecovery|TestSRProgressFile|TestSRResultFile|TestSROrcaCLIWaitRetry)$",
+        "runner_sha256": "74A29A03AB91461D80537159300EAF9902E1A87E495145620BBD3BEF481B3B88",
+        "fixture_sha256": "8CEC65465C90072B8D569E6384E8E459E10381EBB8DCD80021730660B65F8F36",
+        "native_fixture_sha256": "E858554487298AAD6C810AED1146BC8DA7A1921C1F8385F19C6325F68D0A9EDE",
+        "source_commit": "fc205994260eb5d7d85e82b76721d2b4d4f48dee",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    }
+  ]
+}

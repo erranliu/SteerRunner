@@ -1,0 +1,427 @@
+{
+  "schema": "steerrunner-provider-network-diagnostic/v1",
+  "network": {
+    "kind": "steerrunner-remote-network-diagnostic",
+    "proxy_env": [
+      {
+        "endpoint": null,
+        "name": "HTTP_PROXY",
+        "present": false
+      },
+      {
+        "endpoint": null,
+        "name": "HTTPS_PROXY",
+        "present": false
+      },
+      {
+        "endpoint": null,
+        "name": "ALL_PROXY",
+        "present": false
+      },
+      {
+        "endpoint": null,
+        "name": "NO_PROXY",
+        "present": false
+      },
+      {
+        "endpoint": null,
+        "name": "OPENAI_BASE_URL",
+        "present": false
+      },
+      {
+        "endpoint": null,
+        "name": "CHATGPT_BASE_URL",
+        "present": false
+      }
+    ],
+    "codex_config": [
+      {
+        "key": "model",
+        "value": "gpt-6.1-sol"
+      }
+    ],
+    "https": [
+      {
+        "endpoint": "https://chatgpt.com",
+        "result": "000 0.000000 0.000000",
+        "exit_code": 28
+      },
+      {
+        "endpoint": "https://api.openai.com",
+        "result": "000 0.000000 0.000000",
+        "exit_code": 28
+      },
+      {
+        "endpoint": "https://github.com",
+        "result": "200 0.097110 0.207461",
+        "exit_code": 0
+      }
+    ],
+    "system_proxy": {
+      "server": "127.0.0.1:7897",
+      "auto_config_present": false,
+      "enabled": 1
+    },
+    "codex_command": "C:\\Users\\liuming\\AppData\\Local\\Programs\\nodejs\\codex.ps1"
+  },
+  "network_cleanup": {
+    "confirmed": true,
+    "proof": {
+      "disposition": "confirmed"
+    },
+    "scope": "orca_terminal"
+  },
+  "diagnostics": [
+    {
+      "phase": "original-native-network-timeout",
+      "raw_directory": ".evidence\\provider-startup-trace-fd53261b38b0",
+      "state_transitions": [
+        {
+          "elapsed_ms": 95,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "",
+          "query_main": null,
+          "query_provider": "",
+          "query_state": "",
+          "sample": 0
+        },
+        {
+          "elapsed_ms": 6484,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793416381359
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 3
+        },
+        {
+          "elapsed_ms": 8586,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793416381359
+          },
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793416381359
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 4
+        },
+        {
+          "elapsed_ms": 23490,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793416381359
+          },
+          "metadata_provider": "01a18ff2-4208-7a83-a28a-1a14e76a044d",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793416381359
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 11
+        }
+      ],
+      "cleanup": {
+        "confirmed": true,
+        "proof": {
+          "disposition": "confirmed"
+        },
+        "scope": "orca_terminal"
+      },
+      "counts_as_smoke": false
+    },
+    {
+      "phase": "compound-proxy-command-not-qualified",
+      "raw_directory": ".evidence\\provider-proxy-trace-435f4da2dd2a",
+      "state_transitions": [
+        {
+          "elapsed_ms": 95,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "",
+          "query_main": null,
+          "query_provider": "",
+          "query_state": "",
+          "sample": 0
+        },
+        {
+          "elapsed_ms": 8579,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793416885747
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 4
+        },
+        {
+          "elapsed_ms": 10696,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793416885747
+          },
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793416885747
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 5
+        },
+        {
+          "elapsed_ms": 16992,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793416885747
+          },
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "done",
+            "outcome": "success",
+            "stateStartedAt": 1793416895348
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 8
+        },
+        {
+          "elapsed_ms": 19090,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "done",
+          "query_main": {
+            "state": "done",
+            "outcome": "success",
+            "stateStartedAt": 1793416895348
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 9
+        }
+      ],
+      "cleanup": {
+        "confirmed": true,
+        "proof": {
+          "disposition": "confirmed"
+        },
+        "scope": "orca_terminal"
+      },
+      "counts_as_smoke": false
+    },
+    {
+      "phase": "temporary-wrapper-not-qualified",
+      "raw_directory": ".evidence\\provider-wrapper-trace-57feb719c52d",
+      "state_transitions": [
+        {
+          "elapsed_ms": 94,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "",
+          "query_main": null,
+          "query_provider": "",
+          "query_state": "",
+          "sample": 0
+        }
+      ],
+      "cleanup": {
+        "confirmed": true,
+        "proof": {
+          "disposition": "confirmed"
+        },
+        "scope": "orca_terminal"
+      },
+      "counts_as_smoke": false
+    },
+    {
+      "phase": "process-proxy-without-bypass-not-qualified",
+      "raw_directory": ".evidence\\provider-process-env-trace-a4efd7f614cd",
+      "state_transitions": [
+        {
+          "elapsed_ms": 100,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "",
+          "query_main": null,
+          "query_provider": "",
+          "query_state": "",
+          "sample": 0
+        },
+        {
+          "elapsed_ms": 4288,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793417170018
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 2
+        },
+        {
+          "elapsed_ms": 6382,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793417170018
+          },
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793417170018
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 3
+        },
+        {
+          "elapsed_ms": 12702,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793417170018
+          },
+          "metadata_provider": "",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "done",
+            "outcome": "success",
+            "stateStartedAt": 1793417179459
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 6
+        },
+        {
+          "elapsed_ms": 14801,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "done",
+          "query_main": {
+            "state": "done",
+            "outcome": "success",
+            "stateStartedAt": 1793417179459
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 7
+        }
+      ],
+      "cleanup": {
+        "confirmed": true,
+        "proof": {
+          "disposition": "confirmed"
+        },
+        "scope": "orca_terminal"
+      },
+      "counts_as_smoke": false
+    },
+    {
+      "phase": "process-proxy-with-bypass-diagnostic-only",
+      "raw_directory": ".evidence\\provider-proxy-bypass-trace-d1e8fd72532f",
+      "state_transitions": [
+        {
+          "elapsed_ms": 103,
+          "metadata_main": null,
+          "metadata_provider": "",
+          "metadata_state": "",
+          "query_main": null,
+          "query_provider": "",
+          "query_state": "",
+          "sample": 0
+        },
+        {
+          "elapsed_ms": 10664,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793417290664
+          },
+          "metadata_provider": "01a19000-0f77-7f01-87ab-a44d5c392712",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "working",
+            "stateStartedAt": 1793417290664
+          },
+          "query_provider": "",
+          "query_state": "working",
+          "sample": 5
+        },
+        {
+          "elapsed_ms": 12772,
+          "metadata_main": {
+            "state": "working",
+            "stateStartedAt": 1793417290664
+          },
+          "metadata_provider": "01a19000-0f77-7f01-87ab-a44d5c392712",
+          "metadata_state": "working",
+          "query_main": {
+            "state": "done",
+            "stateStartedAt": 1793417293999
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 6
+        },
+        {
+          "elapsed_ms": 14887,
+          "metadata_main": null,
+          "metadata_provider": "01a19000-0f77-7f01-87ab-a44d5c392712",
+          "metadata_state": "done",
+          "query_main": {
+            "state": "done",
+            "stateStartedAt": 1793417293999
+          },
+          "query_provider": "",
+          "query_state": "done",
+          "sample": 7
+        }
+      ],
+      "cleanup": {
+        "confirmed": true,
+        "proof": {
+          "disposition": "confirmed"
+        },
+        "scope": "orca_terminal"
+      },
+      "counts_as_smoke": false
+    }
+  ],
+  "temporary_files": [
+    {
+      "path": "C:/Users/liuming/orca/workspaces/SteerlineTest/sr-proxy-bootstrap-d88e2d06e641/.sr-smoke-codex-proxy.ps1",
+      "absent": true
+    },
+    {
+      "path": "C:/Users/liuming/orca/workspaces/SteerlineTest/sr-wrapper-observe-e04cf1147ad4/codex.ps1",
+      "absent": true
+    }
+  ],
+  "file_cleanup_terminal": {
+    "confirmed": true,
+    "proof": {
+      "disposition": "confirmed"
+    },
+    "scope": "orca_terminal"
+  },
+  "global_config_changed": false,
+  "credentials_read_or_changed": false,
+  "smoke_status": "failed",
+  "remote_orca_restart": "awaiting_user_authorization"
+}
