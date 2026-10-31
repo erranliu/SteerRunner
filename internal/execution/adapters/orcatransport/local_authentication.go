@@ -35,7 +35,7 @@ func (l *Lifecycle) checkLocalReadiness(s State) error {
 	if r != nil && l.profile.RuntimeSHA256 != "" && r.RuntimeSHA256 != l.profile.RuntimeSHA256 {
 		return errors.New("remote_runtime_build_mismatch; zero business input")
 	}
-	if r == nil || len(r.ExitPublicKey) != ed25519.PublicKeySize || r.Owner.PID <= 0 || r.Owner.Created == "" || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || r.Repository != l.setup.RepositoryURL || !codex.ValidNativeID(r.SessionID) || r.Process.PID <= 0 || !r.ExpiresAt.After(l.clock().Add(5*time.Second)) || r.CheckedAt.After(l.clock().Add(5*time.Second)) || !r.ExpiresAt.After(r.CheckedAt) {
+	if r == nil || len(r.ExitPublicKey) != ed25519.PublicKeySize || r.Owner.PID <= 0 || r.Owner.Created == "" || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || !codex.SupportedDevelopmentPolicy(r.Contract) || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || r.Repository != l.setup.RepositoryURL || !codex.ValidNativeID(r.SessionID) || r.Process.PID <= 0 || !r.ExpiresAt.After(l.clock().Add(5*time.Second)) || r.CheckedAt.After(l.clock().Add(5*time.Second)) || !r.ExpiresAt.After(r.CheckedAt) {
 		return errors.New("remote_sandbox_readiness_unverified_or_expired; zero business input")
 	}
 	return nil

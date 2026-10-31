@@ -178,7 +178,7 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 	usageCtx, usageCancel := context.WithCancel(ctx)
 	defer usageCancel()
 	usageDone := make(chan struct{})
-	collector := &collect.Collector{Store: store, Policy: usagePolicy, Instance: service.InstanceID}
+	collector := &collect.Collector{Store: store, Policy: usagePolicy, Instance: service.InstanceID, CanObserveRun: engine.CanCollectUsage}
 	// Publish existing targets before advertising a ready query endpoint.
 	existingRuns, readErr := store.Runs()
 	if readErr != nil {

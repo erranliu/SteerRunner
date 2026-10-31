@@ -58,7 +58,7 @@ func TestSRCLIContract(t *testing.T) {
 		}
 		var value map[string]any
 		json.Unmarshal(body, &value)
-		value["execution"].(map[string]any)["settings"] = map[string]any{"token": "known-secret-value"}
+		value["execution"].(map[string]any)["settings"] = map[string]any{"access_mode": "full_access", "token": "known-secret-value"}
 		invalid, _ := json.Marshal(value)
 		if failure := ValidateRun(invalid); failure == nil || strings.Contains(failure.Error(), "known-secret-value") {
 			t.Fatal("secret/unknown settings were not rejected safely")
@@ -100,7 +100,7 @@ func validRun() []byte {
 		Title: "中文任务", Repository: Repository{URL: "https://example.com/repo.git", BaseRevision: strings.Repeat("a", 40), Remote: "origin", BaseBranch: "main"},
 		Documents:   Documents{Spec: Document{Kind: "inline", Path: "spec.md", Content: stringPointer("Spec")}, Plan: Document{Kind: "inline", Path: "plan.md", Content: stringPointer("Plan")}},
 		Workflow:    Workflow{ID: "development", Version: 2},
-		Execution:   Execution{Adapter: "codex-app-server", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{}`)},
+		Execution:   Execution{Adapter: "codex-app-server", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)},
 		Publication: Publication{Provider: "gitea", Repository: "owner/repo", BaseBranch: "main", Settings: json.RawMessage(`{"base_url":"https://example.com"}`)},
 	}
 	body, _ := json.Marshal(value)

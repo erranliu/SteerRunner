@@ -84,7 +84,7 @@ func RevokeRemoteAuthentication(ctx context.Context, q RemoteAuthenticationQuery
 	var ready RemoteReadiness
 	dir := RemoteRuntimeDirectory(q.Workspace)
 	raw, err := os.ReadFile(filepath.Join(dir, "ready.json"))
-	if err != nil || json.Unmarshal(raw, &ready) != nil || !ready.Verified || ready.NativeTransport != RemoteNativeTransport || ready.Contract != PolicyContract || !ValidNativeID(ready.SessionID) || !ready.AuthenticationControl || !sameWorkspace(ready.Workspace, q.Workspace) || ready.SessionID != q.Session {
+	if err != nil || json.Unmarshal(raw, &ready) != nil || !ready.Verified || ready.NativeTransport != RemoteNativeTransport || !SupportedDevelopmentPolicy(ready.Contract) || !ValidNativeID(ready.SessionID) || !ready.AuthenticationControl || !sameWorkspace(ready.Workspace, q.Workspace) || ready.SessionID != q.Session {
 		return RemoteAuthenticationCleanup{}, errors.New("remote_authentication_binding_invalid")
 	}
 	self, err := RuntimeBinarySHA256()

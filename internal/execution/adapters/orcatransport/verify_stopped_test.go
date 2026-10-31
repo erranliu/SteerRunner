@@ -126,3 +126,20 @@ func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
 		})
 	}
 }
+
+func TestLegacyFullAccessCodexStopsWithOriginalSignedExit(t *testing.T) {
+	l, _, s, c := fixtureFixedControl(t)
+	c.ready.Contract, c.ready.AccessMode = codex.ReadOnlyPolicyContract, "full_access"
+	s = prepareFixedControl(t, l, s, c)
+	before := c.creates
+	receipt, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
+	if err != nil || !receipt.State.Stopped {
+		t.Fatal("legacy full_access stop could not verify original signed exit", receipt, err)
+	}
+	if err := l.verifyStopped(context.Background(), s); err != nil {
+		t.Fatal("legacy full_access stopped proof rejected", err)
+	}
+	if c.creates != before {
+		t.Fatal("legacy stop created a replacement control terminal")
+	}
+}

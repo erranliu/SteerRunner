@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
@@ -65,7 +64,7 @@ func (e *Engine) run(id string, w *worker) {
 func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	snapshot := e.runs[id]
-	verify := snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
+	verify := !readOnlyRun(snapshot) && snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
 	e.mu.Unlock()
 	if verify {
 		return e.verifyPublication(id)
@@ -78,12 +77,12 @@ func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
-	if orca.LegacyRemoteProfile(r.Profile) && r.PendingStop == "" {
+	if readOnlyRun(r) && r.PendingStop == "" {
 		return false
 	}
 	// Recovery only samples an already-ended original execution. No port or
 	// replacement resource is constructed by result collection.
-	if resultEndEligible(r) {
+	if !readOnlyRun(r) && resultEndEligible(r) {
 		e.sealResult(e.ctx, id)
 		e.mu.Lock()
 		r = e.runs[id].Clone()
@@ -95,8 +94,10 @@ func (e *Engine) advance(id string, w *worker) bool {
 			return false
 		}
 	}
-	if handled, progress := e.advanceParser(id, w, r); handled {
-		return progress
+	if !readOnlyRun(r) {
+		if handled, progress := e.advanceParser(id, w, r); handled {
+			return progress
+		}
 	}
 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
 		return false

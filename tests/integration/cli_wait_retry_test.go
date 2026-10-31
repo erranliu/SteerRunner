@@ -29,7 +29,7 @@ func TestSROrcaCLIWaitRetry(t *testing.T) {
 			creationObservationFixture(t, state, runtime)
 			var input contracts.RunRequest
 			_ = json.Unmarshal(req.Input, &input)
-			settings, _ := json.Marshal(map[string]any{"transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
+			settings, _ := json.Marshal(map[string]any{"access_mode": "full_access", "transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
 			input.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: settings}
 			req.Input, _ = json.Marshal(input)
 			service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))

@@ -50,7 +50,7 @@ export function attachEvidence(pi, options = {}) {
         ctx.sessionManager.getSessionId() !== config.session_id ||
         path.resolve(ctx.cwd) !== config.cwd) throw new Error("probe_binding_mismatch");
     const ready = (preparation) => {
-      identity = { version: options.source ? 2 : 1, source: options.source ?? "pi-extension-p0", source_sha256: sourceDigest,
+      identity = { version: options.source ? 3 : 1, source: options.source ?? "pi-extension-p0", source_sha256: sourceDigest,
       run_id: config.run_id, session_id: config.session_id, instance_id: randomUUID(), pid: process.pid,
       process_started_at: new Date(performance.timeOrigin).toISOString(), mode: ctx.mode,
       tools: pi.getActiveTools(), model: ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : "", preparation,

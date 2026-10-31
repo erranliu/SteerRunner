@@ -65,6 +65,9 @@ func (e *Engine) saveResultPreparationLocked(original *runstate.Record, p *runst
 }
 
 func (e *Engine) prepareResult(r *runstate.Record) (outErr error) {
+	if readOnlyRun(r) {
+		return nil
+	}
 	defer func() {
 		if outErr == nil {
 			return
@@ -255,7 +258,7 @@ func resultEndIdentity(r *runstate.Record) string {
 func (e *Engine) sealResult(parent context.Context, id string) {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
-	if r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
+	if readOnlyRun(r) || r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
 		e.mu.Unlock()
 		return
 	}

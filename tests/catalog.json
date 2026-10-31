@@ -33,12 +33,10 @@
   "scenarios": [
     "orca-local.codex",
     "orca-local.pi",
-    "orca-local.pi-full-access",
     "orca-local.dsh",
     "local-codex.result-acquisition",
     "local-codex.smoke",
     "orca-remote.smoke",
-    "orca-remote.full-access",
     "orca-remote.caller-exit",
     "orca-remote.connection-reconnect",
     "orca-remote.service-restart",

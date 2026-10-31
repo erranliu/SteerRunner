@@ -35,10 +35,7 @@ func (e *Engine) verifyPolicyResources(r *runstate.Record) error {
 			return err
 		}
 		mode := profile.AccessMode
-		if mode == "" {
-			mode = "sandbox"
-		}
-		actual := "sandbox"
+		actual := ""
 		for _, arg := range payload.Settings.Args {
 			if arg == "sandbox_mode=read-only" {
 				actual = "read_only"

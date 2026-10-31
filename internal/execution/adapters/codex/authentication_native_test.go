@@ -82,7 +82,7 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	r.Auth = a
 	host := process.New(30 * time.Second)
 	canary := a.token
-	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: server, Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Authentication: a, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "diagnostic-generation" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
+	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: server, Sandbox: "danger-full-access", WindowsSandbox: "", WorkerRuntime: true, Authentication: a, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "diagnostic-generation" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
 	if *authenticationHostBroker {
 		backend.Config.AuthenticationTransport, err = PlanAuthenticationTransport(state, work, a.remoteURL, PolicyResourceIdentity{ProjectID: repo, ExecutionID: backend.Config.RunID, AttemptID: "diagnostic-attempt", Generation: "diagnostic-generation", ConfigDigest: "diagnostic-config"})
 		if err != nil {
@@ -141,12 +141,12 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 			Stderr   string `json:"stderr"`
 		}
 		toolRoots, _ := WritableRoots(backend.toolWriteArgs(roots))
-		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", toolRoots)
-		// The additional grant must not permit writes to the shared parent.
+		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "danger-full-access", "", "", toolRoots)
+		// full_access can write outside the worktree; this isolated canary is removed in the same command.
 		outside := filepath.Join(filepath.Dir(backend.Config.AuthenticationTransport.Directory), "outside-canary")
-		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `[IO.File]::WriteAllText(` + psLiteral(outside) + `,'unexpected')`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
-		if _, statErr := os.Stat(outside); err != nil || result.ExitCode == 0 || !os.IsNotExist(statErr) {
-			t.Fatal("authentication parent boundary not enforced", err, result.ExitCode, statErr)
+		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `$ErrorActionPreference='Stop'; try { [IO.File]::WriteAllText(` + psLiteral(outside) + `,'probe') } finally { if ([IO.File]::Exists(` + psLiteral(outside) + `)) { [IO.File]::Delete(` + psLiteral(outside) + `) } }`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
+		if _, statErr := os.Stat(outside); err != nil || result.ExitCode != 0 || !os.IsNotExist(statErr) {
+			t.Fatal("full_access canary failed or was not removed", err, result.ExitCode, statErr)
 		}
 		// Query only. No worker business input, Git push, or PR mutation occurs.
 		err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{r.Shell, "-NoProfile", "-NonInteractive", "-Command", `gh pr list --repo erranliu/SteerlineTest --head sandbox-readiness-nonexistent --state all --json url,state`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 20000}, &result)
@@ -164,14 +164,13 @@ func TestAuthenticationNativeToolBoundary(t *testing.T) {
 	} else if _, err := os.Stat(filepath.Join(server, "thread.json")); !os.IsNotExist(err) {
 		t.Error("failed readiness created native business thread")
 	}
-	// Git 2.55 unconditionally deletes the absent AUTO_MERGE after committing.
-	// Its packed-refs cleanup remains denied. Verify the commit's own exit and
-	// actual Git state independently; never repair/retry the denied operation.
+	// Verify the actual commit exit, exact parent/paths and clean Git state.
+	// Full access has no shared-config or packed-lock denial guarantee.
 	// A rejected preparation closes its native client; do not issue more calls
 	// after the expected invalid-credential rejection. The qualified branch and
 	// TestLinkedGitNativeCommit exercise the actual Git boundary.
 	if *authenticationHostBroker {
-		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", []string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")})
+		policy, _ := TurnStartParams(work, "probe", "probe", "probe", "danger-full-access", "", "", []string{filepath.Join(repo, ".git", "objects"), filepath.Join(repo, ".git", "refs"), filepath.Join(repo, ".git", "logs"), filepath.Join(repo, ".git", "worktrees", "worker")})
 		script := `$ErrorActionPreference='Continue'
 $before=(& git rev-parse HEAD | Out-String).Trim()
 [IO.File]::WriteAllText((Join-Path $pwd 'native-commit-probe'),'owned native Git diagnostic')
@@ -184,14 +183,11 @@ $parent=(& git rev-parse HEAD^ | Out-String).Trim()
 $paths=@(& git diff-tree --no-commit-id --name-only -r HEAD)
 $clean=[string]::IsNullOrWhiteSpace((& git status --porcelain | Out-String))
 $pending=@('AUTO_MERGE','MERGE_HEAD','CHERRY_PICK_HEAD','REVERT_HEAD')|Where-Object{& git rev-parse --verify -q $_ 2>$null | Out-Null;$LASTEXITCODE -eq 0}
-$configDenied=$false;$packedLockDenied=$false
-try{$f=[IO.File]::Open(` + psLiteral(filepath.Join(repo, ".git", "config")) + `,[IO.FileMode]::Open,[IO.FileAccess]::Write);$f.Dispose()}catch{$configDenied=$true}
-try{[IO.File]::WriteAllText(` + psLiteral(filepath.Join(repo, ".git", "packed-refs.lock")) + `,'owned diagnostic')}catch{$packedLockDenied=$true}finally{if(-not $packedLockDenied){[IO.File]::Delete(` + psLiteral(filepath.Join(repo, ".git", "packed-refs.lock")) + `)}}
 git -c user.name=Diagnostic -c user.email=diagnostic@example.invalid commit -m 'must not create another commit' 1>$null 2>$null
 $emptyCode=$LASTEXITCODE
 $unchanged=((& git rev-parse HEAD|Out-String).Trim() -ceq $head)
-$verified=$commitCode -eq 0 -and $head -cne $before -and $parent -ceq $before -and $paths.Count -eq 1 -and $paths[0] -ceq 'native-commit-probe' -and $clean -and $pending.Count -eq 0 -and $configDenied -and $packedLockDenied -and $emptyCode -ne 0 -and $unchanged
-Write-Output ('SR_NATIVE_GIT_BOUNDARY:'+(@{verified=$verified;commit_exit=$commitCode;empty_commit_exit=$emptyCode;head=$head;parent=$parent;config_denied=$configDenied;packed_lock_denied=$packedLockDenied;clean=$clean;pending_count=$pending.Count}|ConvertTo-Json -Compress))
+$verified=$commitCode -eq 0 -and $head -cne $before -and $parent -ceq $before -and $paths.Count -eq 1 -and $paths[0] -ceq 'native-commit-probe' -and $clean -and $pending.Count -eq 0 -and $emptyCode -ne 0 -and $unchanged
+Write-Output ('SR_NATIVE_GIT_BOUNDARY:'+(@{verified=$verified;commit_exit=$commitCode;empty_commit_exit=$emptyCode;head=$head;parent=$parent;access_mode='full_access';clean=$clean;pending_count=$pending.Count}|ConvertTo-Json -Compress))
 if(-not $verified){exit 22};exit 0`
 		var result struct {
 			ExitCode       int
@@ -208,7 +204,7 @@ if(-not $verified){exit 22};exit 0`
 		if err != nil || result.ExitCode != 0 || json.Unmarshal([]byte(marker), &proof) != nil || !proof.Verified {
 			t.Errorf("native Git commit boundary failed: exit=%d rpc=%v stdout=%s stderr=%s", result.ExitCode, err, result.Stdout, result.Stderr)
 		}
-		_ = os.WriteFile(filepath.Join(evidence, "native-git-boundary.json"), encode(map[string]any{"exit_code": result.ExitCode, "proof": json.RawMessage(marker), "packed_cleanup_denial": strings.Contains(result.Stdout+result.Stderr, "packed-refs.lock"), "business_inputs": 0, "external_writes": 0}), 0600)
+		_ = os.WriteFile(filepath.Join(evidence, "native-git-boundary.json"), encode(map[string]any{"exit_code": result.ExitCode, "proof": json.RawMessage(marker), "access_mode": "full_access", "business_inputs": 0, "publication_writes": 0}), 0600)
 	}
 	// Never count this controlled invalid token as real authenticated publication.
 	for _, dir := range []string{server, filepath.Join(root, "runs"), r.Temp} {

@@ -291,9 +291,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		}
 	}
 	mode := c.AccessMode
-	if mode == "" {
-		mode = "sandbox"
-	}
 	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
 	prepared.Input, prepared.Bootstrap = inputFacts, bootstrapFacts
 	prepared.AuthenticationControl = true

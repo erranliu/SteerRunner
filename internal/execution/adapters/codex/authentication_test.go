@@ -35,7 +35,7 @@ func TestAuthenticationMissingBlocksBeforeNativeStartAndBusinessInput(t *testing
 	}
 	a.resolveHost = func(context.Context) ([]byte, error) { return nil, fmt.Errorf("authentication_host_login_unavailable") }
 	calls := 0
-	backend := Backend{Config: Config{Executable: os.Args[0], Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Authentication: a}, Process: ProcessPort{Start: func(*exec.Cmd) (b.StopHandle, error) { calls++; return nil, nil }, WriteAtomic: func(string, []byte) error { calls++; return nil }}}
+	backend := Backend{Config: Config{Executable: os.Args[0], Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "danger-full-access", WindowsSandbox: "", WorkerRuntime: true, Authentication: a}, Process: ProcessPort{Start: func(*exec.Cmd) (b.StopHandle, error) { calls++; return nil, nil }, WriteAtomic: func(string, []byte) error { calls++; return nil }}}
 	_, binding, err := backend.PrepareSession(context.Background(), Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "business input", LinkedWorktreeArgs: []string{"--add-dir", root, "--add-dir", root, "--add-dir", root, "--add-dir", admin}})
 	if !isPreparationBlocked(err) || !strings.Contains(err.Error(), "authentication_host_login_unavailable") || calls != 0 || binding.Process != nil || binding.SessionID != "" {
 		t.Fatalf("authentication failure reached native input: %+v %v calls=%d", binding, err, calls)
@@ -67,7 +67,7 @@ func TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession(t *testi
 	a := testAuthentication(t)
 	a.expires = time.Now().Add(-time.Minute)
 	called := false
-	l := &ExecutionLifecycle{Backend: Backend{Config: Config{Executable: os.Args[0], Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Authentication: a}, Process: ProcessPort{Start: func(*exec.Cmd) (b.StopHandle, error) { called = true; return nil, nil }}}}
+	l := &ExecutionLifecycle{Backend: Backend{Config: Config{Executable: os.Args[0], Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "danger-full-access", WindowsSandbox: "", WorkerRuntime: true, Authentication: a}, Process: ProcessPort{Start: func(*exec.Cmd) (b.StopHandle, error) { called = true; return nil, nil }}}}
 	process := b.ProcessIdentity{Kind: "os", PID: 123, Created: "original"}
 	binding := Binding{Process: &process, Endpoint: "ws://127.0.0.1:1", Generation: "original-generation", SessionID: "00000000-0000-0000-0000-000000000008"}
 	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{External: process}, Session: b.SessionContext{ProjectID: strings.Repeat("a", 32), ExecutionID: strings.Repeat("b", 32), AttemptID: strings.Repeat("c", 32)}, ConfigurationDigest: "fixed-config", ResourceGeneration: strings.Repeat("d", 32)}
@@ -78,7 +78,7 @@ func TestAuthenticationExpiredReconnectRejectsNewInputOnOriginalSession(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	permissions, _ := NativePermissions("windows", "local", "codex", "sandbox")
+	permissions, _ := NativePermissions("windows", "local", "codex", "full_access")
 	policy, err := NewPolicyResourceEnvelope(policyID, PolicyResourcePayload{AuthenticationTransport: plan, NativeVersion: PolicyCodexVersion, Contract: PolicyContract, Settings: b.LaunchCommand{Executable: os.Args[0], WorkingDirectory: work, Args: permissions.Args()}})
 	if err != nil {
 		t.Fatal(err)
@@ -163,7 +163,7 @@ func TestSandboxReadinessUsesNativePolicyAndFiniteEvidence(t *testing.T) {
 		t.Run(stage, func(t *testing.T) {
 			a := testAuthentication(t)
 			dir := t.TempDir()
-			backend := Backend{Config: Config{Authentication: a, Workspace: dir, Sandbox: "workspace-write"}, Process: ProcessPort{WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
+			backend := Backend{Config: Config{Authentication: a, Workspace: dir, Sandbox: "danger-full-access"}, Process: ProcessPort{WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
 			h := &SessionHandle{Paths: TurnPaths{TurnDir: dir}, Binding: Binding{Process: &b.ProcessIdentity{Kind: "os", PID: 7, Created: "original"}}}
 			input := b.TurnInput{CommandID: "original", LinkedWorktreeArgs: []string{"--add-dir", dir, "--add-dir", dir, "--add-dir", dir, "--add-dir", dir}}
 			calls := 0
@@ -177,7 +177,7 @@ func TestSandboxReadinessUsesNativePolicyAndFiniteEvidence(t *testing.T) {
 					t.Fatal("probe changed tool environment/workspace")
 				}
 				policy := m["sandboxPolicy"].(map[string]any)
-				if policy["type"] != "workspaceWrite" || policy["networkAccess"] != true || len(policy["writableRoots"].([]string)) != 4 {
+				if policy["type"] != "dangerFullAccess" || policy["networkAccess"] != nil || policy["writableRoots"] != nil {
 					t.Fatal("probe widened policy")
 				}
 				body, _ := json.Marshal(params)

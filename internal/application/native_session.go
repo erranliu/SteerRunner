@@ -35,6 +35,9 @@ func (e *Engine) OpenNativeSession(target contracts.NativeSessionTarget) contrac
 	e.mu.Lock()
 	r := e.runs[target.RunID].Clone()
 	e.mu.Unlock()
+	if readOnlyRun(r) {
+		return reject("unsupported_capability", retiredAccessDiagnostic, 3)
+	}
 	s := r.Snapshot
 	if s.Session.AttemptID != target.AttemptID || s.Session.SessionID != target.SessionID || s.ResourceGeneration != target.Generation {
 		return reject("stale_revision", "Original native session target changed; refresh before opening.", 5)

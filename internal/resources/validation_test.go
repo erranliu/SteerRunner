@@ -11,10 +11,10 @@ import (
 
 func TestSRValidationPreservesGateAndDiagnostics(t *testing.T) {
 	examples := []string{
-		`{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}},"workflow":{"id":"development","version":2}}`,
-		`{"execution":{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"future-agent"}},"workflow":{"id":"development","version":2}}`,
-		`{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{}},"workflow":{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}}`,
-		`{"execution":{"adapter":"codex-app-server","target":{"kind":"orca_environment","environment":"e"},"settings":{}},"workflow":{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}}`,
+		`{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":"full_access"}},"workflow":{"id":"development","version":2}}`,
+		`{"execution":{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"future-agent","access_mode":"full_access"}},"workflow":{"id":"development","version":2}}`,
+		`{"execution":{"adapter":"codex-app-server","target":{"kind":"local"},"settings":{"access_mode":"full_access"}},"workflow":{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}}`,
+		`{"execution":{"adapter":"codex-app-server","target":{"kind":"orca_environment","environment":"e"},"settings":{"access_mode":"full_access"}},"workflow":{"id":"development-audited","version":2,"audit_model":{"model":"audit"}}}`,
 		`{}`, `null`, `{"workflow":null}`, `{"workflow":{"id":"unknown","version":2}}`,
 	}
 	for _, input := range examples {
@@ -83,7 +83,7 @@ func TestSRCapabilityCatalogIsStaticAndResolvable(t *testing.T) {
 		}
 	}
 	// Legacy extension values remain accepted without being advertised as implemented.
-	raw := `{"execution":{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"future-agent"}},"workflow":{"id":"development","version":2}}`
+	raw := `{"execution":{"adapter":"orca-terminal","target":{"kind":"local"},"settings":{"agent":"future-agent","access_mode":"full_access"}},"workflow":{"id":"development","version":2}}`
 	var input contracts.RunConfiguration
 	_ = json.Unmarshal([]byte(raw), &input)
 	result, fault := Validate("run-configuration", []byte(raw))

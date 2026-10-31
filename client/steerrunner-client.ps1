@@ -99,7 +99,15 @@ function Runner([string]$exe,[string[]]$argv,[string]$body='',[int]$seconds=35) 
     return $r
 }
 function Require($r) { if ($r.exit_code -ne 0 -or -not $r.response -or -not $r.response.ok) { $code='runner_unavailable'; if ($r.response -and $r.response.error) { $code=$r.response.error.code }; Fail $code 'Runner rejected this operation; inspect the original CLI response or configuration.' }; return ,$r.response.data }
-function Validate($config,[string]$kind,$value) { $r=Runner $config.runner_executable @('validate','--kind',$kind,'--input','-') (JSON $value); $null=Require $r }
+function Validate($config,[string]$kind,$value) {
+    if ($kind -in @('run-configuration','run')) {
+        $execution=Get $value 'execution'; $settings=Get $execution 'settings'; $workflow=Get $value 'workflow'
+        $mode=Get $settings 'access_mode'; $workflowId=Get $workflow 'id'
+        if (($workflowId -in @('development','development-audited')) -and $mode -cne 'full_access') {
+            Fail 'access_mode_migration_required' 'Development requires explicit full_access. Update the saved profile source; sandbox and implicit modes are retired. Frozen submissions must be reconciled with their original identifiers.'
+        }
+    }
+    $r=Runner $config.runner_executable @('validate','--kind',$kind,'--input','-') (JSON $value); $null=Require $r }
 function Load-Config {
     $path=Join-Path $script:root 'client.json'
     if (-not [IO.File]::Exists($path)) { return @{version=1;runner_executable=$null;state_dir=(Join-Path $env:LOCALAPPDATA 'SteerRunner');default_profile=$null;profiles=@{}} }
@@ -162,7 +170,7 @@ function Discover($config) {
         $version=Process $native @('--version') '' 5 -Discovery
         $required=@($caps.capability_catalog.combinations | Where-Object { $_.adapter -eq 'codex-app-server' -and $_.workflow -and $_.workflow.id -eq 'development' } | ForEach-Object { $_.requirements } | Where-Object { $_ -match '^native_codex_(.+)_permissions$' } | Select-Object -Unique)
         $supported=$version.exit_code -eq 0 -and (Native-Matches $version.text $required)
-        if ($supported) { $profile=@{execution=@{adapter='codex-app-server';target=@{kind='local'};settings=@{executable=$native;access_mode='sandbox'}};workflow=@{id='development';version=2}}; try { Validate $config 'run-configuration' $profile; $report.candidates+=@{id='local-codex';profile=$profile;connected=$true;facts=@('native_entry_found','static_configuration_valid','execution_readiness_unverified')};$nativeSupported=$true;break } catch { $report.gaps+='native_configuration_unsupported' } }
+        if ($supported) { $profile=@{execution=@{adapter='codex-app-server';target=@{kind='local'};settings=@{executable=$native;access_mode='full_access'}};workflow=@{id='development';version=2}}; try { Validate $config 'run-configuration' $profile; $report.candidates+=@{id='local-codex';profile=$profile;connected=$true;facts=@('native_entry_found','static_configuration_valid','execution_readiness_unverified')};$nativeSupported=$true;break } catch { $report.gaps+='native_configuration_unsupported' } }
     }
     if (-not $nativeSupported) { $report.gaps+='native_codex_missing_or_version_unverified' }
     $orca=$null
@@ -190,7 +198,7 @@ function Discover($config) {
         foreach ($target in $targets) {
             if (-not $caps) { continue }
             $kind='local';$targetObject=@{kind='local'};if ($target.environment) { $kind='orca_environment';$targetObject=@{kind=$kind;environment=$target.environment} }
-            $profile=@{execution=@{adapter='orca-terminal';target=$targetObject;settings=@{agent='codex';access_mode='sandbox';transport=@{executable=$orca}}};workflow=@{id='development';version=2}}
+            $profile=@{execution=@{adapter='orca-terminal';target=$targetObject;settings=@{agent='codex';access_mode='full_access';transport=@{executable=$orca}}};workflow=@{id='development';version=2}}
             try { Validate $config 'run-configuration' $profile; $report.candidates+=@{id=$target.id;profile=$profile;connected=$target.connected;facts=@('static_configuration_valid','execution_host_tools_and_login_unverified','project_binding_required')} } catch { $report.gaps+='orca_configuration_unsupported' }
         }
     } else { $report.gaps+='orca_missing'; $report.orca.hint='要使用 SteerRunner 远程执行，请先安装 Orca，再配置远端 environment、执行主机工具/登录及项目，然后重新运行配置 skill。本机候选不受影响。' }

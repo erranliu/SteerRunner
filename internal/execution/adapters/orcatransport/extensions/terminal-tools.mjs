@@ -8,7 +8,7 @@ const literal = (value) => "'" + value.replaceAll("'", "''") + "'";
 const executableLimit = 16 * 1024 * 1024;
 
 export function createTerminalToolOperations({ executable, policy, environment = process.env }, launch = spawn) {
-  if (!path.isAbsolute(executable) || !["sandbox", "full_access"].includes(policy.access_mode)) {
+  if (!path.isAbsolute(executable) || policy.access_mode !== "full_access") {
     throw new Error("invalid_frozen_tool_policy");
   }
   const configuration = Buffer.from(JSON.stringify(policy)).toString("base64url");
@@ -106,10 +106,10 @@ export async function prepareTerminalTools(config, environment, launch = spawn) 
       if (inside.exitCode !== 0) throw new Error("native_tool_environment_audit_failed");
       failure = "native_write_boundary_audit_failed";
       const boundary = await operations.execute(`$ErrorActionPreference='Stop';[IO.File]::WriteAllText(${quote(outside)},'verified');[IO.File]::Delete(${quote(outside)})`);
-      if ((boundary.exitCode === 0) !== (config.tool_policy.access_mode === "full_access")) throw new Error("native_write_boundary_audit_failed");
-      return { operations, preparation: { contract: "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never", access_mode: config.tool_policy.access_mode,
+      if (boundary.exitCode !== 0) throw new Error("native_write_boundary_audit_failed");
+      return { operations, preparation: { contract: "windows-terminal-tools-v2:full-access:never", access_mode: config.tool_policy.access_mode,
         authentication_expires_at: config.authentication_expires_at, verified: true,
-        inside_write_verified: true, provider_environment_absent: true, outside_write_denied: boundary.exitCode !== 0 } };
+        inside_write_verified: true, provider_environment_absent: true, outside_write_verified: true } };
   } catch (error) {
       // A plugin manager may keep its TUI alive after a rejected initializer.
       // Preserve a bounded failure fact, never raw output/env or success proof.

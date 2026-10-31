@@ -24,7 +24,7 @@ func TestPS2RejectsAllRetiredCodexOverrides(t *testing.T) {
 
 func TestPS2NativeResourceRejectsApprovalChanges(t *testing.T) {
 	identity := PolicyResourceIdentity{ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt", Generation: "generation", ConfigDigest: "profile"}
-	permissions, err := NativePermissions("windows", "local", "codex")
+	permissions, err := NativePermissions("windows", "local", "codex", "full_access")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,27 +49,27 @@ func TestPS2NativeResourceRejectsApprovalChanges(t *testing.T) {
 
 func TestPS2NativeLaunchAndInputForbidEscalation(t *testing.T) {
 	for _, host := range []string{"local", "orca"} {
-		permissions, err := NativePermissions("windows", host, "codex")
+		permissions, err := NativePermissions("windows", host, "codex", "full_access")
 		if err != nil {
 			t.Fatal(err)
 		}
 		args := strings.Join(permissions.Args(), " ")
-		for _, setting := range []string{"sandbox_mode=workspace-write", "windows.sandbox=mxc", "approval_policy=never", "approvals_reviewer=user", "network_access=true", "exclude_tmpdir_env_var=true", "exclude_slash_tmp=true"} {
+		for _, setting := range []string{"sandbox_mode=danger-full-access", "approval_policy=never", "approvals_reviewer=user"} {
 			if !strings.Contains(args, setting) {
 				t.Fatal("missing", setting, args)
 			}
 		}
-		for _, forbidden := range []string{"=elevated", "=unelevated", "danger-full-access", "auto_review", "approval_policy=on-request"} {
+		for _, forbidden := range []string{"=elevated", "=unelevated", "workspace-write", "windows.sandbox=", "auto_review", "approval_policy=on-request"} {
 			if strings.Contains(args, forbidden) {
 				t.Fatal("unexpected fallback", args)
 			}
 		}
 	}
-	thread, err := ThreadStartParams("candidate", "workspace-write", "", nil)
+	thread, err := ThreadStartParams("candidate", "danger-full-access", "", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	turn, err := TurnStartParams("candidate", "thread", "command", "prompt", "workspace-write", "", "", []string{"candidate/.git/admin"})
+	turn, err := TurnStartParams("candidate", "thread", "command", "prompt", "danger-full-access", "", "", []string{"candidate/.git/admin"})
 	if err != nil {
 		t.Fatal(err)
 	}

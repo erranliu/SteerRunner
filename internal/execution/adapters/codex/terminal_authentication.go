@@ -20,7 +20,7 @@ type TerminalAuthentication struct {
 }
 
 func PrepareTerminalAuthentication(ctx context.Context, workspace, remote, state string, identity PolicyResourceIdentity, roots, base []string, mode string) (prepared *TerminalAuthentication, result error) {
-	if mode != "sandbox" && mode != "full_access" {
+	if mode != "full_access" {
 		return nil, errors.New("terminal authentication access mode invalid")
 	}
 	args, err := LinkedWorktreeWriteArgs(rootsAt(roots, 0), rootsAt(roots, 1), rootsAt(roots, 2), rootsAt(roots, 3))
@@ -64,10 +64,7 @@ func PrepareTerminalAuthentication(ctx context.Context, workspace, remote, state
 	// The same values previously compiled into Codex tool policy now apply to
 	// the actual Pi native process environment. No proxy/trust setting is global.
 	env = setEnvironmentValues(env, map[string]string{"HTTPS_PROXY": auth.broker.address, "HTTP_PROXY": auth.broker.address, "NO_PROXY": "", "SSL_CERT_FILE": auth.broker.caPath, "GIT_SSL_CAINFO": auth.broker.caPath, "GH_CONFIG_DIR": auth.broker.configDir})
-	sandbox := "workspace-write"
-	if mode == "full_access" {
-		sandbox = "danger-full-access"
-	}
+	sandbox := "danger-full-access"
 	probe, expires, err := auth.readinessScript(roots, "origin", sandbox)
 	if err != nil {
 		return nil, err

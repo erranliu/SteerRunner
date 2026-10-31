@@ -33,7 +33,7 @@ func TestRegistryPreservesReliabilityAndBindsControlledEdges(t *testing.T) {
 			}
 		}
 	}
-	if reliability != 16 || edges != 4 {
+	if reliability != 14 || edges != 4 {
 		t.Fatalf("core/edge coverage changed: reliability=%d edges=%d", reliability, edges)
 	}
 }
@@ -57,8 +57,8 @@ func TestLiveRegistryHasCompleteL3Cases(t *testing.T) {
 			}
 		}
 	}
-	if scenarios != 25 || cases != 35 {
-		t.Fatalf("expected 25 scenarios/35 cases, got %d/%d", scenarios, cases)
+	if scenarios != 23 || cases != 31 {
+		t.Fatalf("expected 23 scenarios/31 cases, got %d/%d", scenarios, cases)
 	}
 	for _, agent := range []string{"codex", "pi", "dsh"} {
 		scenario, _, err := Lookup("orca-local."+agent, "default")
@@ -108,5 +108,24 @@ func TestStabilityResultCannotPassMissingOrMismatchedEvidence(t *testing.T) {
 				t.Fatal("false success accepted")
 			}
 		})
+	}
+}
+
+func TestRetiredPermissionDuplicatesAreNotAliases(t *testing.T) {
+	for _, v := range [][2]string{{"orca-local.pi-full-access", "default"}, {"orca-remote.full-access", "default"}, {"orca-remote.service-restart", "graceful-active-full-access"}, {"orca-remote.service-restart", "kill-active-full-access"}} {
+		if _, _, err := Lookup(v[0], v[1]); err == nil {
+			t.Fatal("retired permission case accepted", v)
+		}
+	}
+	for _, s := range Scenarios() {
+		for _, c := range s.Cases {
+			if c.Requirements != nil {
+				for _, role := range c.Requirements.Roles {
+					if role.AccessMode != "full_access" {
+						t.Fatal("development case retained implicit/sandbox permissions", s.ID, c.ID)
+					}
+				}
+			}
+		}
 	}
 }

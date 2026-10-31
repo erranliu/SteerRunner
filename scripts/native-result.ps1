@@ -128,7 +128,7 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
         }
         {$_ -in @('development-smoke','development-feedback')} {
             if(-not $taskMerge){throw 'Live smoke lacks its verified merge'}
-            if(($_ -eq 'development-feedback' -or $Manifest.scenario -eq 'local-codex.smoke' -or $Manifest.scenario -eq 'orca-remote.full-access') -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
+            if(($_ -eq 'development-feedback' -or $Manifest.scenario -eq 'local-codex.smoke' -or $Manifest.scenario -eq 'orca-remote.smoke') -and (Get-SRResultField $Scenario 'feedback_rejected') -cne $true){throw 'Feedback boundary case lacks explicit rejection evidence'}
             if(Get-SRResultField $Scenario 'feedback_head'){throw 'workflow/2 must not create a feedback revision'}
         }
         default {throw 'Unsupported development result driver'}

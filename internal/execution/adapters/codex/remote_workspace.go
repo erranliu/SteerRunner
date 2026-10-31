@@ -54,7 +54,7 @@ func InspectRemoteWorkspaceAudit(ctx context.Context, setup RemoteControlSetup, 
 	}
 	dir := RemoteRuntimeDirectory(setup.Workspace)
 	raw, err := os.ReadFile(filepath.Join(dir, "ready.json"))
-	if err != nil || b.DecodeStrictJSON(raw, &out.Readiness, "trailing workspace readiness") != nil || !out.Readiness.Verified || out.Readiness.NativeTransport != RemoteNativeTransport || out.Readiness.Contract != PolicyContract || out.Readiness.SessionID != session || !sameWorkspace(out.Readiness.Workspace, setup.Workspace) || out.Readiness.RuntimeSHA256 != setup.RuntimeSHA256 {
+	if err != nil || b.DecodeStrictJSON(raw, &out.Readiness, "trailing workspace readiness") != nil || !out.Readiness.Verified || out.Readiness.NativeTransport != RemoteNativeTransport || !SupportedDevelopmentPolicy(out.Readiness.Contract) || out.Readiness.SessionID != session || !sameWorkspace(out.Readiness.Workspace, setup.Workspace) || out.Readiness.RuntimeSHA256 != setup.RuntimeSHA256 {
 		return out, errors.New("original_workspace_preparation_mismatch")
 	}
 	sha, err := RuntimeBinarySHA256()

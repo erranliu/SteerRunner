@@ -125,7 +125,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	// Recover only its original receipt so stop can address the exact resource.
 	// Reconciliation cannot dispatch another create or restore input authority.
 	for index, intent := range r.Intents {
-		if intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
+		if !readOnlyRun(r) && intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
 			if e.invoke(id, w, p, index, true) {
 				return true
 			}
@@ -139,7 +139,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		}
 	}
 	command := r.PendingStop
-	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) {
+	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) && codex.ExecutionOwner(r.Snapshot) == nil {
 		e.mu.Lock()
 		next := e.runs[id].Clone()
 		next.StopStatus, next.Status, next.Phase = "stopped", "stopped", "stopped"
@@ -200,7 +200,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		} else {
 			receipt, _, err = p.Reconcile(ctx, request.Clone())
 		}
-	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil {
+	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil && !retiredDevelopment(r) {
 		if w.handle == nil {
 			err = errors.New("The original owned writer handle is unavailable; only identity reconciliation is allowed")
 			receipt.Disposition = b.OperationUnknown

@@ -9,7 +9,7 @@ func TestLocalOrcaAuditedModelsRequireManagedRuntime(t *testing.T) {
 	var request map[string]any
 	_ = json.Unmarshal(validRun(), &request)
 	request["workflow"] = map[string]any{"id": "development-audited", "version": 2, "audit_model": map[string]any{"model": "reviewer", "reasoning_effort": "high"}}
-	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
+	request["execution"] = map[string]any{"adapter": "orca-terminal", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"access_mode": "full_access", "agent_launch": map[string]any{"executable": "codex.exe", "runtime_executable": "C:/trusted/helper.exe", "model": "writer", "reasoning_effort": "high"}}}
 	wire, _ := json.Marshal(request)
 	if fault := ValidateRun(wire); fault != nil {
 		t.Fatal("valid remote configuration rejected", fault)
@@ -39,7 +39,7 @@ func TestLocalOrcaAuditedModelsRequireManagedRuntime(t *testing.T) {
 func TestTerminalAgentsCannotUseCodexAuditModels(t *testing.T) {
 	for _, agent := range []string{"pi", "dsh"} {
 		t.Run(agent, func(t *testing.T) {
-			execution := Execution{Adapter: "orca-terminal", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"agent":"` + agent + `","agent_launch":{"runtime_executable":"helper.exe","model":"writer"}}`)}
+			execution := Execution{Adapter: "orca-terminal", Target: Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access","agent":"` + agent + `","agent_launch":{"runtime_executable":"helper.exe","model":"writer"}}`)}
 			if fault := ValidateExecution(execution); fault != nil {
 				t.Fatal(fault)
 			}
@@ -78,7 +78,7 @@ func TestNativeRemoteAuditAndRetiredAppAreRejectedPurely(t *testing.T) {
 		t.Run(mode, func(t *testing.T) {
 			var request map[string]any
 			_ = json.Unmarshal(validRun(), &request)
-			settings := map[string]any{"agent_launch": map[string]any{"model": "writer", "reasoning_effort": "high"}}
+			settings := map[string]any{"access_mode": "full_access", "agent_launch": map[string]any{"model": "writer", "reasoning_effort": "high"}}
 			if mode == "helper" {
 				settings["agent_launch"].(map[string]any)["runtime_executable"] = "C:/retired/helper.exe"
 			}

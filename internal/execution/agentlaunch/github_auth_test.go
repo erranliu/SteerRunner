@@ -27,10 +27,10 @@ func TestNativeGitHubAuthenticationRejectsForeignCredentialTargets(t *testing.T)
 	}
 }
 
-func TestNativeGitHubAuthenticationNeverCompilesCallerCredentials(t *testing.T) {
+func TestFullAccessUsesExistingNativeLogin(t *testing.T) {
 	t.Setenv("GH_TOKEN", "caller-only-credential-never-transport")
-	command, err := (&Config{Executable: "codex", RepositoryURL: "https://github.com/owner/repo.git", AccessMode: "sandbox"}).Command("codex")
-	if err != nil || strings.Contains(command, "caller-only-credential-never-transport") || !strings.Contains(command, "gh auth token --hostname github.com") || !strings.Contains(command, "finally") {
-		t.Fatal("credential was transported or original environment is not restored", err)
+	command, err := (&Config{Executable: "codex", RepositoryURL: "https://github.com/owner/repo.git", AccessMode: "full_access"}).Command("codex")
+	if err != nil || strings.Contains(command, "caller-only-credential-never-transport") || strings.Contains(command, "gh auth token") || strings.Contains(command, "srGitWriteArgs") {
+		t.Fatal(command, err)
 	}
 }

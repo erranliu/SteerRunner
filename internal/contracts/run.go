@@ -358,6 +358,12 @@ func ValidateExecution(value Execution) *Fault {
 			return Fail(2, "invalid_input", "GitHub App authentication is unsupported. Remove github_auth and sign in with gh on the execution host.")
 		}
 	}
+	if value.Adapter == "codex-app-server" || value.Adapter == "orca-terminal" {
+		var mode string
+		if raw, ok := fields["access_mode"]; !ok || json.Unmarshal(raw, &mode) != nil || mode != "full_access" && !(value.Adapter == "codex-app-server" && mode == "read_only") {
+			return Fail(2, "invalid_input", "execution.settings.access_mode must be explicitly full_access for development or read_only for local content; sandbox and implicit permissions are retired. Update the configuration source before submitting a new request.")
+		}
+	}
 	invalid := Fail(2, "invalid_input", "Execution settings do not satisfy the embedded contract.")
 	switch value.Adapter {
 	case "codex-app-server":
@@ -507,5 +513,5 @@ func ValidateInput(command string, data []byte) *Fault {
 }
 
 func validAccessMode(value string) bool {
-	return value == "" || value == "sandbox" || value == "full_access"
+	return value == "full_access"
 }

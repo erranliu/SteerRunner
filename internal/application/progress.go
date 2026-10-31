@@ -44,6 +44,9 @@ func (e *Engine) saveProgressLocked(r *runstate.Record, p *runstate.Progress) er
 	return nil
 }
 func (e *Engine) prepareProgress(r *runstate.Record) (outErr error) {
+	if readOnlyRun(r) {
+		return nil
+	}
 	defer func() {
 		if outErr == nil {
 			return
@@ -204,6 +207,9 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
+	if readOnlyRun(r) {
+		return
+	}
 	if r.Progress == nil || !r.Progress.Initialized {
 		if final != "" {
 			e.mu.Lock()
@@ -316,6 +322,9 @@ func (e *Engine) finishProgress(id, status string) {
 }
 
 func (e *Engine) startProgressLocked(id string, w *worker) {
+	if readOnlyRun(e.runs[id]) {
+		return
+	}
 	if !w.progressEnabled || w.progressWatching || e.ctx.Err() != nil {
 		return
 	}

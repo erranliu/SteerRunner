@@ -94,7 +94,7 @@ func TestWorkerRuntimeEnvironmentPreservesGitConfigAndRejectsAlias(t *testing.T)
 	if strings.Contains(joined, "shell_environment_policy.set.TEMP=") || strings.Contains(joined, "shell_environment_policy.set.TMP=") || !strings.Contains(joined, "shell_environment_policy.set.GIT_CONFIG_KEY_1=\"maintenance.auto\"") || strings.Contains(joined, "private-test-placeholder") || strings.Contains(joined, "http.example.extraheader") {
 		t.Fatal("native runtime pin omitted fixed values or exposed inherited Git settings")
 	}
-	if strings.Contains(r.instructions(), "TEMP and TMP point to") || !strings.Contains(r.instructions(), "AppContainer") {
+	if strings.Contains(r.instructions(), "TEMP and TMP point to") || !strings.Contains(r.instructions(), "本次Run指定临时目录") {
 		t.Fatal("worker instructions override native tool temporary directories")
 	}
 	if _, err := r.environment([]string{"GIT_CONFIG_COUNT=invalid"}); err == nil {

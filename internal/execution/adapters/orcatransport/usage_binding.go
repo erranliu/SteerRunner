@@ -80,7 +80,7 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 // committed evidence; it never starts, changes or deploys that runtime.
 func usagePreparedInitialization(state State, proof UsageInitialization, p Profile) bool {
 	r := state.RemoteReadiness
-	if p.Environment != "" || p.Terminal != nil || p.RuntimeExecutable == "" || len(p.RuntimeSHA256) != 64 || r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.RuntimeSHA256 != p.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != p.RuntimeConfigurationDigest || !usageSessionID.MatchString(r.SessionID) || r.Workspace == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.CheckedAt.Before(proof.CreatedAt) {
+	if p.Environment != "" || p.Terminal != nil || p.RuntimeExecutable == "" || len(p.RuntimeSHA256) != 64 || r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || !codex.SupportedDevelopmentPolicy(r.Contract) || r.RuntimeSHA256 != p.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != p.RuntimeConfigurationDigest || !usageSessionID.MatchString(r.SessionID) || r.Workspace == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.CheckedAt.Before(proof.CreatedAt) {
 		return false
 	}
 	quote := func(s string) string { return "'" + strings.ReplaceAll(s, "'", "''") + "'" }
@@ -160,7 +160,7 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 	found := false
 	for _, e := range profile {
 		if e.ImplementationKey == ProfileKey {
-			if e.CodecVersion != ProfileVersion && e.CodecVersion != NativeRemoteProfileVersion {
+			if e.CodecVersion != ProfileVersion && e.CodecVersion != NativeRemoteProfileVersion && e.CodecVersion != FullAccessTerminalProfileVersion {
 				return binding, p, State{}, errors.New("FORMAT_UNSUPPORTED")
 			}
 			if e.Validate() != nil {

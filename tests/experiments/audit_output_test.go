@@ -149,7 +149,7 @@ func TestAuditJSONOutputExperiment(t *testing.T) {
 				}
 				write(t, filepath.Join(root, "frozen-input.json"), map[string]any{"prompt": prompt, "prompt_sha256": ra.Digest([]byte(prompt)), "pre_head": pre, "model": *nativeModel, "effort": "low", "parser_enabled": false})
 				host := process.New(10 * time.Second)
-				backend := codex.Backend{Config: codex.Config{Executable: *nativeExe, Workspace: repo, RunDir: runtime, RunID: contracts.NewID(), ServerDir: runtime, Sandbox: "workspace-write", WindowsSandbox: "mxc", Model: *nativeModel, ReasoningEffort: "low", WorkerRuntime: true, Environment: func(env []string) []string {
+				backend := codex.Backend{Config: codex.Config{Executable: *nativeExe, Workspace: repo, RunDir: runtime, RunID: contracts.NewID(), ServerDir: runtime, Sandbox: "danger-full-access", WindowsSandbox: "", Model: *nativeModel, ReasoningEffort: "low", WorkerRuntime: true, Environment: func(env []string) []string {
 					for i, entry := range env {
 						if strings.HasPrefix(strings.ToUpper(entry), "PATH=") {
 							env[i] = "PATH=" + filepath.Dir(shell) + string(os.PathListSeparator) + entry[5:]

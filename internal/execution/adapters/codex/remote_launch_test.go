@@ -47,7 +47,7 @@ func TestRemoteServerGrantsOnlyBoundAuthenticationChild(t *testing.T) {
 	}
 	plan, _ := socketFixture(t)
 	roots := []string{"objects", "refs", "logs", "admin"}
-	config := LaunchConfig{Executable: os.Args[0], Workspace: plan.Workspace, ServerDir: t.TempDir(), Sandbox: "workspace-write", WindowsSandbox: "mxc", WritableRoots: roots, AuthenticationTransport: plan}
+	config := LaunchConfig{Executable: os.Args[0], Workspace: plan.Workspace, ServerDir: t.TempDir(), Sandbox: "danger-full-access", WindowsSandbox: "", WritableRoots: roots, AuthenticationTransport: plan}
 	captured := errors.New("captured launch")
 	_, _, _, err := LaunchServer(config, func(cmd *exec.Cmd) (int, error) {
 		var got []string
@@ -58,7 +58,7 @@ func TestRemoteServerGrantsOnlyBoundAuthenticationChild(t *testing.T) {
 				}
 			}
 		}
-		want := append(append([]string(nil), roots...), plan.Directory)
+		var want []string
 		if !reflect.DeepEqual(got, want) {
 			t.Fatal("native server granted unexpected roots", got, want)
 		}

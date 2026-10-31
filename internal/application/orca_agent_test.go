@@ -26,7 +26,7 @@ func TestSRFreezeOrcaAgent(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			settings := contracts.OrcaSettings{Agent: agent}
+			settings := contracts.OrcaSettings{AccessMode: "full_access", Agent: agent}
 			settings.Transport.Executable = executable
 			f.request.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: canonical(settings)}
 			f.input.Input = canonical(f.request)

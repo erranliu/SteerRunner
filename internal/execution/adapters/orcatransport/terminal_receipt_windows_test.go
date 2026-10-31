@@ -48,7 +48,7 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	c := TerminalConfig{ReceiptVersion: 2, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AuthenticationState: t.TempDir(), AccessMode: "sandbox", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
+	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AuthenticationState: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256
@@ -175,7 +175,7 @@ func TestManagedNativeChannelRejectsMissingChangedAndLateFacts(t *testing.T) {
 		t.Fatal(e)
 	}
 	self, _ := os.Executable()
-	c := TerminalConfig{ReceiptVersion: 2, Agent: "pi", ExecutionID: snap.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "sandbox", ConfigurationDigest: snap.ConfigurationDigest, BundleSHA256: meta.BundleSHA256, EvidenceSHA256: meta.PiSHA256, Model: "", ReasoningEffort: ""}
+	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: snap.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: snap.ConfigurationDigest, BundleSHA256: meta.BundleSHA256, EvidenceSHA256: meta.PiSHA256, Model: "", ReasoningEffort: ""}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256
@@ -193,7 +193,7 @@ func TestManagedNativeChannelRejectsMissingChangedAndLateFacts(t *testing.T) {
 		t.Fatal(e)
 	}
 	owner := TerminalOwner{Job: job, RuntimeSHA256: meta.RuntimeSHA256, ExtensionSHA256: meta.BundleSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}
-	ready := TerminalReceipt{Version: 2, Source: "pi-extension-v1", SourceSHA256: meta.PiSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, InstanceID: "original-load", PID: job.Worker.PID, ProcessStartedAt: time.Now().UTC(), Mode: "tui", Tools: []string{"read", "write", "edit", "powershell"}, Model: "test/test", ReasoningEffort: "low", Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "sandbox", InsideWriteVerified: true, ProviderEnvironmentAbsent: true, OutsideWriteDenied: true, AuthenticationExpiresAt: time.Now().Add(time.Hour)}}
+	ready := TerminalReceipt{Version: 3, Source: "pi-extension-v1", SourceSHA256: meta.PiSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, InstanceID: "original-load", PID: job.Worker.PID, ProcessStartedAt: time.Now().UTC(), Mode: "tui", Tools: []string{"read", "write", "edit", "powershell"}, Model: "test/test", ReasoningEffort: "low", Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "full_access", InsideWriteVerified: true, ProviderEnvironmentAbsent: true, OutsideWriteVerified: testBool(true), AuthenticationExpiresAt: time.Now().Add(time.Hour)}}
 	turn := Turn{Command: strings.Repeat("c", 32), Prompt: "original input", InputDigest: digest([]byte("original input")), Attempted: true, Accepted: true, WireFormat: extensionWireCommand, Native: NativeProof{Agent: "pi"}}
 	ready.ActiveCommandID = turn.Command
 	fact := ready
@@ -342,7 +342,7 @@ func TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	c := TerminalConfig{ReceiptVersion: 2, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "sandbox", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
+	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256

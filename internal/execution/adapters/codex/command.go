@@ -46,9 +46,6 @@ func ManagedCommand(options ManagedCommandOptions) (executionbackend.LaunchComma
 	}
 	args = append(args, "--no-daemon", "--strict-config")
 	args = append(args, permissions.Args()...)
-	for _, root := range options.WriteRoots {
-		args = append(args, "--add-dir", root)
-	}
 	if options.WorkingDirectory != "" {
 		args = append(args, "--cd", options.WorkingDirectory)
 	}

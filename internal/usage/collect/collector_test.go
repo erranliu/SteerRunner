@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 	"time"
 
@@ -17,6 +18,41 @@ import (
 	"github.com/erranliu/SteerRunner/internal/usage/api"
 	"github.com/erranliu/SteerRunner/internal/usage/parsers"
 )
+
+func TestUsageRetirementGatePreservesPersistedUsageAndSkipsNewAccess(t *testing.T) {
+	s, r, _ := localFixture(t)
+	ctx := context.Background()
+	if err := s.EnsureUsage(ctx, r.ID, time.Now().UTC()); err != nil {
+		t.Fatal(err)
+	}
+	before, err := s.GetRunUsage(ctx, r.ID, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	checks := 0
+	c := Collector{Store: s, Policy: api.DefaultPolicy(), Instance: "i", CanObserveRun: func(id string) bool {
+		checks++
+		if id != r.ID {
+			t.Fatal("unexpected Run", id)
+		}
+		return false
+	}}
+	authorizedTick(t, &c, ctx)
+	after, err := s.GetRunUsage(ctx, r.ID, 0)
+	if err != nil || checks != 1 || !reflect.DeepEqual(before, after) {
+		t.Fatal("retired collection changed persisted usage", checks, before, after, err)
+	}
+	keys, err := s.UsageJournalKeys(ctx, "source:")
+	if err != nil || len(keys) != 0 {
+		t.Fatal("retired collection discovered or journaled a native source", keys, err)
+	}
+	c.CanObserveRun = func(string) bool { return true }
+	c.Tick(ctx)
+	current, err := s.GetRunUsage(ctx, r.ID, 0)
+	if err != nil || current.Tokens == nil || *current.Tokens.Total != 85 {
+		t.Fatal("eligible collection regressed", current, err)
+	}
+}
 
 func TestUsageCollectorPermitAndSourceIdentity(t *testing.T) {
 	s, r, _ := localFixture(t)

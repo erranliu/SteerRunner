@@ -43,7 +43,7 @@ func TestRunNamePrefixPublishedContract(t *testing.T) {
 			t.Run(workflow+"/"+tc.name, func(t *testing.T) {
 				input := map[string]any{
 					"title": "Naming contract", "workflow": map[string]any{"id": workflow, "version": 1},
-					"execution": map[string]any{"adapter": "codex-app-server", "target": map[string]any{"kind": "local"}, "settings": map[string]any{}},
+					"execution": map[string]any{"adapter": "codex-app-server", "target": map[string]any{"kind": "local"}, "settings": map[string]any{"access_mode": "full_access"}},
 				}
 				if workflow == "development" {
 					input["workflow"] = map[string]any{"id": workflow, "version": 2}

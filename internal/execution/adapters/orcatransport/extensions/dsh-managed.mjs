@@ -74,7 +74,7 @@ export function attachDSHEvidence(ctx, config, prepared, { defineTool, lastAssis
     const globals = ctx.tools.schemas().map((tool) => tool.name);
     if (globals.length) agent.ctx.tools.restrict({ deny: globals });
     if (!toolsMatch(agent)) { writeReceipt(config.directory,"load-diagnostic",{stage:"unexpected_native_tools",global:ctx.tools.schemas().map(t=>t.name),agent:agent.ctx.tools.schemas(agent).map(t=>t.name)}); throw new Error("unexpected_native_tools"); }
-    identity = { version: 2, source: "dsh-plugin-v1", source_sha256: sourceDigest, run_id: config.run_id,
+    identity = { version: 3, source: "dsh-plugin-v1", source_sha256: sourceDigest, run_id: config.run_id,
       session_id: config.session_id, native_session_id: agent.session.id, instance_id: randomUUID(), pid: process.pid,
       process_started_at: new Date(performance.timeOrigin).toISOString(), mode: "tui", tools: ["powershell"],
       model: `${agent.options.provider}/${agent.options.model}`, reasoning_effort: prepared.callConfig.reasoningEffort, preparation: prepared.preparation };

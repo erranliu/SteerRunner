@@ -59,6 +59,7 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
+	stopOnly          bool
 	observationMu     sync.Mutex
 	nativeObservation *nativeObservation
 	terminalMu        sync.Mutex
@@ -467,6 +468,9 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 }
 
 func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.stopOnly {
+		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle permits original stop only")
+	}
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	if err := r.Validate(); err != nil {
 		return receipt, nil, err
@@ -951,6 +955,9 @@ func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot)
 }
 
 func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.stopOnly && r.Operation.Action != string(b.LifecycleStopExecution) {
+		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle only reconciles original stop")
+	}
 	defer l.closeStateFeed()
 	if r.Operation.Action != string(b.LifecycleStopExecution) {
 		if err := l.agentExecutionSupport(r.Snapshot.Ref.Agent.Name); err != nil {
@@ -1295,4 +1302,15 @@ func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnaps
 }
 func (l *Lifecycle) BindRecovery(_ context.Context, original, replacement b.LifecycleSnapshot) (b.ImplementationDataEnvelope, error) {
 	return b.ImplementationDataEnvelope{}, errors.New("replacing an Orca session requires a new execution")
+}
+
+// Reuses only the original transport identity and stop protocol. Execute and
+// non-stop reconciliation are fenced before any resource or business work.
+func NewOriginalStopLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
+	p, err := NewLifecycle(setup)
+	if err != nil {
+		return nil, err
+	}
+	p.(*Lifecycle).stopOnly = true
+	return p, nil
 }

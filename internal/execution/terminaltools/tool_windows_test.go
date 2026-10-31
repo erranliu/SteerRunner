@@ -16,7 +16,7 @@ import (
 func fixture(t *testing.T) Config {
 	t.Helper()
 	root := t.TempDir()
-	c := Config{AccessMode: "sandbox", Workspace: filepath.Join(root, "workspace"), StateDirectory: filepath.Join(root, "state"), Shell: filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe"), SandboxExecutable: filepath.Join(root, "sandbox.exe")}
+	c := Config{AccessMode: "full_access", Workspace: filepath.Join(root, "workspace"), StateDirectory: filepath.Join(root, "state"), Shell: filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe")}
 	for _, dir := range []string{c.Workspace, c.StateDirectory} {
 		if err := os.Mkdir(dir, 0700); err != nil {
 			t.Fatal(err)
@@ -25,29 +25,16 @@ func fixture(t *testing.T) Config {
 	return c
 }
 
-func TestDualPermissionCommandsKeepSandboxAndFullAccessDistinct(t *testing.T) {
+func TestFullAccessCommandHasNoCodexSandboxDependency(t *testing.T) {
 	c := fixture(t)
-	script := filepath.Join(c.StateDirectory, "tool.ps1")
-	command, err := c.Command(script)
-	if err != nil {
-		t.Fatal(err)
-	}
-	joined := strings.Join(command.Args, " ")
-	if command.Executable != c.SandboxExecutable || !strings.Contains(joined, "windows.sandbox=mxc") || !strings.Contains(joined, "--permission-profile steerrunner-terminal") || !strings.Contains(joined, `":root"="read"`) {
-		t.Fatal(command)
-	}
-	if strings.Contains(joined, ":tmpdir") || strings.Contains(joined, "app-server") || strings.Contains(joined, "--model") {
-		t.Fatal(command)
-	}
-	c.AccessMode = "full_access"
-	command, err = c.Command(script)
+	command, err := c.Command(filepath.Join(c.StateDirectory, "tool.ps1"))
 	if err != nil || command.Executable != c.Shell || strings.Contains(strings.Join(command.Args, " "), "sandbox") {
 		t.Fatal(command, err)
 	}
-	for _, mode := range []string{"", "auto", "danger-full-access"} {
+	for _, mode := range []string{"", "sandbox", "auto", "danger-full-access"} {
 		c.AccessMode = mode
-		if _, err = c.Command(script); err == nil {
-			t.Fatal("accepted undeclared mode", mode)
+		if _, err := c.Command(filepath.Join(c.StateDirectory, "tool.ps1")); err == nil {
+			t.Fatal("accepted retired/implicit mode", mode)
 		}
 	}
 }

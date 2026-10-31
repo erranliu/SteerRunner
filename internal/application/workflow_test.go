@@ -41,7 +41,7 @@ func auditEngine(t *testing.T, fileMasks ...int) (*Engine, *worker) {
 	w := &worker{port: auditPort{reportPolicyPort{policy: "frozen_native_permissions; business_read_only_is_prompt_policy"}}, wake: make(chan struct{}, 1)}
 	e := &Engine{dir: dir, ctx: context.Background(), epoch: "epoch", store: s, runs: map[string]*runstate.Record{}, workers: map[string]*worker{"run": w}}
 	p, _ := workflow.Lookup(workflow.AuditedDevelopment, 2)
-	r := &runstate.Record{ID: "run", Allowed: true, CommandStates: map[string]string{}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}}}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec", SnapshotPath: "spec"}}, {MaterialView: contracts.MaterialView{Path: "plan", SnapshotPath: "plan"}}}}
+	r := &runstate.Record{ID: "run", Allowed: true, CommandStates: map[string]string{}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: []byte(`{"access_mode":"full_access"}`)}}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{Path: "spec", SnapshotPath: "spec"}}, {MaterialView: contracts.MaterialView{Path: "plan", SnapshotPath: "plan"}}}}
 	r.Request.Documents = contracts.Documents{Spec: contracts.Document{Path: "spec"}, Plan: contracts.Document{Path: "plan"}}
 	if len(fileMasks) > 0 {
 		if fileMasks[0]&1 != 0 {
@@ -175,6 +175,11 @@ func TestRAVersionRejectLegacy(t *testing.T) {
 
 // Tests construct the same frozen definition that submit now persists.
 func bindTestWorkflow(r *runstate.Record) {
+	// Positive test fixtures represent new requests, with explicitly granted permissions.
+	if len(r.Request.Execution.Settings) == 0 {
+		r.Request.Execution.Settings = []byte(`{"access_mode":"full_access"}`)
+	}
+
 	if r.Request.Workflow.Version != 2 {
 		return
 	}

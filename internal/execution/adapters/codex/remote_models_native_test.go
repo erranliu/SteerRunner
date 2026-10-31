@@ -33,7 +33,7 @@ func TestBoundaryNativeModelBridge(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Minute)
 	defer cancel()
 	host := process.New(30 * time.Second)
-	owned, _, endpoint, err := LaunchServer(LaunchConfig{Executable: executable, Workspace: dir, ServerDir: dir, Sandbox: "read-only", WindowsSandbox: "mxc"}, host.StartManaged, func(env []string) []string { return env })
+	owned, _, endpoint, err := LaunchServer(LaunchConfig{Executable: executable, Workspace: dir, ServerDir: dir, Sandbox: "read-only", WindowsSandbox: ""}, host.StartManaged, func(env []string) []string { return env })
 	if err != nil {
 		t.Fatal(err)
 	}

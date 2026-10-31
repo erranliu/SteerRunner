@@ -1,7 +1,7 @@
 package orcatransport
 
 import (
-	"crypto/sha256"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -20,11 +20,35 @@ import (
 type TerminalPreparation struct {
 	InsideWriteVerified       bool      `json:"inside_write_verified"`
 	ProviderEnvironmentAbsent bool      `json:"provider_environment_absent"`
-	OutsideWriteDenied        bool      `json:"outside_write_denied"`
+	OutsideWriteDenied        *bool     `json:"outside_write_denied,omitempty"`
+	OutsideWriteVerified      *bool     `json:"outside_write_verified,omitempty"`
 	Contract                  string    `json:"contract"`
 	AccessMode                string    `json:"access_mode"`
 	AuthenticationExpiresAt   time.Time `json:"authentication_expires_at"`
 	Verified                  bool      `json:"verified"`
+}
+
+func (p *TerminalPreparation) UnmarshalJSON(raw []byte) error {
+	type wire TerminalPreparation
+	var value wire
+	if err := b.DecodeStrictJSON(raw, &value, "trailing terminal preparation"); err != nil {
+		return err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &fields); err != nil {
+		return err
+	}
+	if value.Contract == terminaltools.Contract {
+		if _, exists := fields["outside_write_denied"]; exists {
+			return errors.New("new preparation contains retired denial evidence")
+		}
+	} else {
+		if _, exists := fields["outside_write_verified"]; exists {
+			return errors.New("legacy preparation contains new evidence fields")
+		}
+	}
+	*p = TerminalPreparation(value)
+	return nil
 }
 
 // TerminalStartupFailure is positive evidence from a helper which returned
@@ -117,23 +141,27 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 	if c == nil || l.profile.Environment != "" {
 		return errors.New("local native terminal profile missing")
 	}
-	sourceName, sourceKind, tools := "pi-evidence.mjs", "pi-extension-v1", []string{"read", "write", "edit", "powershell"}
+	sourceKind, tools := "pi-extension-v1", []string{"read", "write", "edit", "powershell"}
 	if c.Agent == "dsh" {
-		sourceName, sourceKind, tools = "dsh-managed.mjs", "dsh-plugin-v1", []string{"powershell"}
+		sourceKind, tools = "dsh-plugin-v1", []string{"powershell"}
 		if r.NativeSessionID == "" {
 			return errors.New("DSH native session identity missing")
 		}
 	}
-	source, _ := terminalAssets.ReadFile("extensions/" + sourceName)
 	expectedSHA := c.EvidenceSHA256
-	if expectedSHA == "" {
-		expectedSHA = fmt.Sprintf("%x", sha256.Sum256(source))
+	if expectedSHA == "" || c.BundleSHA256 == "" {
+		return errors.New("original frozen terminal source hashes missing")
 	}
 	version := c.ReceiptVersion
 	if version == 0 {
 		version = 1
 	} // Original frozen helpers keep their source contract.
-	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || r.Preparation.Contract != terminaltools.Contract || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.InsideWriteVerified || !r.Preparation.ProviderEnvironmentAbsent || r.Preparation.OutsideWriteDenied != (c.AccessMode == "sandbox") {
+	preparationValid := validTerminalPreparation(r.Preparation, version)
+	if l.stopOnly && version <= 2 && c.AccessMode == "sandbox" {
+		p := r.Preparation
+		preparationValid = p.AccessMode == "sandbox" && p.Contract == "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never" && p.OutsideWriteDenied != nil && *p.OutsideWriteDenied && p.OutsideWriteVerified == nil
+	}
+	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.InsideWriteVerified || !r.Preparation.ProviderEnvironmentAbsent || !l.stopOnly && c.AccessMode != "full_access" {
 		return errors.New("native terminal receipt binding changed")
 	}
 	model := c.Model
@@ -166,10 +194,10 @@ func (l *Lifecycle) readTerminalOwner() (TerminalOwner, error) {
 
 func (l *Lifecycle) terminalOwnerBinding(owner TerminalOwner) bool {
 	c := l.profile.Terminal
-	bundle := c.BundleSHA256
-	if bundle == "" {
-		bundle = TerminalExtensionDigest()
+	if c == nil || len(c.BundleSHA256) != 64 {
+		return false
 	}
+	bundle := c.BundleSHA256
 	_, creationErr := strconv.ParseUint(owner.Job.Owner.Created, 16, 64)
 	return len(owner.Job.Owner.Created) == 16 && creationErr == nil && owner.RuntimeSHA256 != "" && owner.RuntimeSHA256 == l.profile.RuntimeSHA256 && owner.ExtensionSHA256 == bundle && owner.RunID == c.ExecutionID && owner.SessionID == c.SessionID && owner.ConfigurationDigest == c.ConfigurationDigest && owner.AccessMode == c.AccessMode && owner.Job.Owner.Kind == "os" && owner.Job.Owner.PID > 0 && owner.Job.Owner.Created != "" && owner.Job.Owner.Executable == strings.ToLower(filepath.Clean(l.profile.RuntimeExecutable))
 }
@@ -433,4 +461,17 @@ func (l *Lifecycle) terminalEvidence(state State, turn Turn) *b.TurnEvidence {
 		nativeSession = f.NativeSessionID
 	}
 	return &b.TurnEvidence{NativeOutcome: "succeeded", FinalOrigin: "native_history", FinalSource: f.Source, FinalItemID: f.NativeReplyID, FinalVerified: true, TurnID: turn.Command, CommandID: turn.Command, SessionID: SessionID(state.Process), Started: true, Completed: true, Succeeded: true, LastMessage: turn.Reply, FinalNativeSessionID: nativeSession, FinalNativeTurnID: f.NativeInputID}
+}
+
+func validTerminalPreparation(p TerminalPreparation, version int) bool {
+	if p.AccessMode != "full_access" {
+		return false
+	}
+	switch version {
+	case 1, 2:
+		return p.Contract == "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never" && p.OutsideWriteDenied != nil && !*p.OutsideWriteDenied && p.OutsideWriteVerified == nil
+	case 3:
+		return p.Contract == terminaltools.Contract && p.OutsideWriteDenied == nil && p.OutsideWriteVerified != nil && *p.OutsideWriteVerified
+	}
+	return false
 }

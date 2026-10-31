@@ -12,7 +12,7 @@ func TestSRWorkflowSelection(t *testing.T) {
 		t.Fatal(err)
 	}
 	base["workflow"] = map[string]any{"id": workflow.AuditedDevelopment, "version": 2, "audit_model": map[string]any{"model": "reviewer"}, "prompt_overrides": map[string]any{"audit.code": "custom audit"}}
-	base["execution"].(map[string]any)["settings"] = map[string]any{"model": "executor"}
+	base["execution"].(map[string]any)["settings"] = map[string]any{"access_mode": "full_access", "model": "executor"}
 	data, _ := json.Marshal(base)
 	if fault := ValidateRun(data); fault != nil {
 		t.Fatal(fault)
@@ -32,7 +32,9 @@ func TestSRWorkflowSelection(t *testing.T) {
 		"executable": func(v map[string]any) {
 			v["workflow"].(map[string]any)["audit_model"].(map[string]any)["executable"] = "other"
 		},
-		"implicit_execution": func(v map[string]any) { v["execution"].(map[string]any)["settings"] = map[string]any{} },
+		"implicit_execution": func(v map[string]any) {
+			v["execution"].(map[string]any)["settings"] = map[string]any{"access_mode": "full_access"}
+		},
 		"wrong_step": func(v map[string]any) {
 			v["workflow"].(map[string]any)["prompt_overrides"] = map[string]any{"repair.execute": "fix"}
 		},

@@ -39,26 +39,27 @@ func TestSRFreezeManagedTerminalAuthenticationPath(t *testing.T) {
 			f.state = state
 			self, _ := os.Executable()
 			digest := strings.Repeat("a", 64)
-			t.Setenv("SR_TEST_TERMINAL_METADATA", string(canonical(orca.TerminalMetadata{Version: 3, Contract: terminaltools.Contract, RuntimeSHA256: digest, BundleSHA256: digest, PiSHA256: digest, DSHSHA256: digest})))
-			// A private npm shim tests native path resolution without depending on
-			// an installed Codex or executing any model, auth, or sandbox command.
-			bin := t.TempDir()
-			native := filepath.Join(bin, "node_modules", "@openai", "codex", "vendor", "x86_64-pc-windows-msvc", "bin", "codex.exe")
-			if err := os.MkdirAll(filepath.Dir(native), 0700); err != nil {
-				t.Fatal(err)
-			}
-			if err := os.WriteFile(native, []byte("MZ00"), 0600); err != nil {
-				t.Fatal(err)
-			}
-			if err := os.WriteFile(filepath.Join(bin, "codex.cmd"), []byte(`node_modules\@openai\codex\bin\codex.js`), 0600); err != nil {
-				t.Fatal(err)
-			}
-			t.Setenv("PATH", bin+string(os.PathListSeparator)+os.Getenv("PATH"))
+			t.Setenv("SR_TEST_TERMINAL_METADATA", string(canonical(orca.TerminalMetadata{Version: 4, Contract: terminaltools.Contract, RuntimeSHA256: digest, BundleSHA256: digest, PiSHA256: digest, DSHSHA256: digest})))
+			// The managed terminal path must not discover or require Codex.
 			git, err := exec.LookPath("git")
 			if err != nil {
 				t.Fatal(err)
 			}
-			settings := contracts.OrcaSettings{Agent: agent}
+			paths := []string{}
+			for _, directory := range filepath.SplitList(os.Getenv("PATH")) {
+				if _, err := os.Stat(filepath.Join(directory, "codex.cmd")); err == nil {
+					continue
+				}
+				if _, err := os.Stat(filepath.Join(directory, "codex.exe")); err == nil {
+					continue
+				}
+				paths = append(paths, directory)
+			}
+			t.Setenv("PATH", strings.Join(paths, string(os.PathListSeparator)))
+			if _, err := exec.LookPath("codex.cmd"); err == nil {
+				t.Fatal("fixture still exposes Codex")
+			}
+			settings := contracts.OrcaSettings{AccessMode: "full_access", Agent: agent}
 			settings.Transport.Executable = git
 			settings.AgentLaunch.Executable = agent
 			settings.AgentLaunch.RuntimeExecutable = self
@@ -70,6 +71,9 @@ func TestSRFreezeManagedTerminalAuthenticationPath(t *testing.T) {
 				t.Fatal("managed terminal repeated the Run ID in the socket root", profile, err)
 			}
 			c := profile.Terminal
+			if c.SandboxExecutable != "" || c.ReceiptVersion != 3 || r.Profile[0].CodecVersion != orca.FullAccessTerminalProfileVersion {
+				t.Fatal("terminal kept sandbox executable or old contract", c, r.Profile[0].CodecVersion)
+			}
 			identity := codex.PolicyResourceIdentity{ProjectID: c.ProjectID, ExecutionID: c.ExecutionID, AttemptID: c.AttemptID, Generation: c.Generation, ConfigDigest: c.ConfigurationDigest}
 			plan, err := codex.PlanAuthenticationTransport(c.AuthenticationState, r.Snapshot.Ref.WorkspacePath, c.RepositoryURL, identity)
 			if err != nil {

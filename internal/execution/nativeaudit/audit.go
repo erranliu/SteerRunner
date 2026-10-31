@@ -23,7 +23,7 @@ type SandboxAudit struct {
 }
 
 func AuditSandboxHistory(source io.Reader, session, workspace string) (SandboxAudit, error) {
-	return AuditAccessModeHistory(source, session, workspace, "sandbox")
+	return AuditAccessModeHistory(source, session, workspace, "full_access")
 }
 
 func AuditAccessModeHistory(source io.Reader, session, workspace, mode string) (SandboxAudit, error) {
@@ -57,15 +57,12 @@ func AuditAccessModeHistory(source io.Reader, session, workspace, mode string) (
 				Type    string `json:"type"`
 				Network bool   `json:"network_access"`
 			}
-			expected := "workspace-write"
-			if mode == "full_access" {
-				expected = "danger-full-access"
-			}
-			if mode != "sandbox" && mode != "full_access" {
+			expected := "danger-full-access"
+			if mode != "full_access" {
 				return a, errors.New("invalid audit access mode")
 			}
-			if json.Unmarshal(p["sandbox_policy"], &policy) != nil || value("approval_policy") != "never" || policy.Type != expected || mode == "sandbox" && !policy.Network {
-				return a, errors.New("native history audit permissions differ from fixed sandbox")
+			if json.Unmarshal(p["sandbox_policy"], &policy) != nil || value("approval_policy") != "never" || policy.Type != expected {
+				return a, errors.New("native history audit permissions differ from fixed full_access")
 			}
 		case "response_item":
 			kind := value("type")
@@ -95,9 +92,7 @@ func AuditAccessModeHistory(source io.Reader, session, workspace, mode string) (
 				}
 			}
 			forbiddenValues := []string{"--dangerously-bypass-approvals-and-sandbox"}
-			if mode == "sandbox" {
-				forbiddenValues = append(forbiddenValues, "danger-full-access", "dangerFullAccess")
-			}
+
 			for _, forbidden := range forbiddenValues {
 				if strings.Contains(arguments, forbidden) {
 					a.Bypasses++

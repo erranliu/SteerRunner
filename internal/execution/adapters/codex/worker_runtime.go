@@ -162,7 +162,7 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 	return setEnvironmentValues(env, values), nil
 }
 
-const WorkerInstructionFormat = "shell=%q,login=false。临时文件限本次 AppContainer 工具临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。Git2.55仅删除缺失AUTO_MERGE产生packed-refs.lock告警时：退出0且HEAD前进、父提交/路径正确、worktree干净、无merge/cherry-pick/revert状态，报告告警后继续，不重试提交或修清理。其余失败/未知含认证过期、沙箱拒绝，保留原分支/PR结果并停止对账；未知发布不重做。"
+const WorkerInstructionFormat = "shell=%q,login=false。临时文件使用本次Run指定临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。失败或未知（含认证过期）保留原分支/PR结果并停止对账；未知发布不重做。"
 
 func (r *workerRuntime) instructions() string {
 	return fmt.Sprintf(WorkerInstructionFormat, r.Shell)
@@ -211,7 +211,6 @@ func (r *workerRuntime) configArgs(env []string) ([]string, error) {
 				if err := broker.socketLease.verify(); err != nil {
 					return nil, err
 				}
-				args = append(args, "--add-dir", broker.socketLease.plan.Directory)
 			}
 			// Public transport values belong to tool policy, not the app-server's
 			// own model/network environment. No machine-wide proxy or trust change.

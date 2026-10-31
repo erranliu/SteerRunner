@@ -172,13 +172,15 @@
         },
         "access_mode": {
           "enum": [
-            "sandbox",
-            "full_access"
+            "full_access",
+            "read_only"
           ],
-          "default": "sandbox",
-          "description": "Frozen explicit permission mode. Both modes use native never; no approval or fallback."
+          "description": "Explicit permission mode. Development requires full_access; local content requires read_only."
         }
-      }
+      },
+      "required": [
+        "access_mode"
+      ]
     },
     "orca-terminal": {
       "$id": "steerrunner/adapters/orca-terminal/settings/v1",
@@ -376,13 +378,14 @@
         },
         "access_mode": {
           "enum": [
-            "sandbox",
             "full_access"
           ],
-          "default": "sandbox",
-          "description": "Frozen explicit permission mode. Both modes use native never; no approval or fallback."
+          "description": "Explicit permission mode. Development requires full_access; local content requires read_only."
         }
-      }
+      },
+      "required": [
+        "access_mode"
+      ]
     }
   },
   "providers": {

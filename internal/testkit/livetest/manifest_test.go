@@ -34,7 +34,7 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	if err := os.Mkdir(repo, 0700); err != nil {
 		t.Fatal(err)
 	}
-	m := Manifest{Schema: "steerrunner-test/v1", ID: "012345abcdef", Level: "L2", Scenario: "local-codex.smoke", Driver: "development-smoke", Root: root, RunnerExe: exe, RunnerSHA256: exeSHA, SourceCommit: strings40, RepositoryPath: repo, SourceRevision: strings40, BaseBranch: "codex/srtest/012345abcdef/base", BaseRevision: strings40, SpecPath: spec, SpecSHA256: specSHA, PlanPath: plan, PlanSHA256: planSHA, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Repository: Repository, BaseBranch: "codex/srtest/012345abcdef/base", Settings: json.RawMessage(`{}`)}, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano)}
+	m := Manifest{Schema: "steerrunner-test/v1", ID: "012345abcdef", Level: "L2", Scenario: "local-codex.smoke", Driver: "development-smoke", Root: root, RunnerExe: exe, RunnerSHA256: exeSHA, SourceCommit: strings40, RepositoryPath: repo, SourceRevision: strings40, BaseBranch: "codex/srtest/012345abcdef/base", BaseRevision: strings40, SpecPath: spec, SpecSHA256: specSHA, PlanPath: plan, PlanSHA256: planSHA, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}, Publication: contracts.Publication{Repository: Repository, BaseBranch: "codex/srtest/012345abcdef/base", Settings: json.RawMessage(`{}`)}, CreatedAt: time.Now().UTC().Format(time.RFC3339Nano)}
 	wire, err := json.Marshal(m)
 	if err != nil {
 		t.Fatal(err)
@@ -70,7 +70,7 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	local := m
 	local.Level, local.Scenario = "L3", "orca-local.smoke"
 	local.LocalRuntimeID, local.LocalRepositoryPath = "local-original", repo
-	local.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"sandbox","agent_launch":{"runtime_executable":"C:/trusted/agent.exe","runtime_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}`)}
+	local.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access","agent_launch":{"runtime_executable":"C:/trusted/agent.exe","runtime_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}`)}
 	preparation, _ := json.Marshal(map[string]any{"fixture_id": local.ID, "status": "ready", "orca_runtime_id": "local-original", "orca_repository_path": repo})
 	if err := os.WriteFile(filepath.Join(root, "preparation.json"), preparation, 0600); err != nil {
 		t.Fatal(err)
@@ -79,11 +79,11 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 		t.Fatal("valid local Orca fixture rejected", err)
 	}
 	defaultMode := local
-	defaultMode.Execution.Settings = json.RawMessage(strings.Replace(string(local.Execution.Settings), `"access_mode":"sandbox"`, `"access_mode":""`, 1))
-	if err := defaultMode.Validate(); err != nil {
-		t.Fatal("manifest rejected the original sandbox default", err)
+	defaultMode.Execution.Settings = json.RawMessage(strings.Replace(string(local.Execution.Settings), `"access_mode":"full_access"`, `"access_mode":""`, 1))
+	if err := defaultMode.Validate(); err == nil {
+		t.Fatal("manifest accepted implicit permissions")
 	}
-	if strings.Contains(string(defaultMode.Execution.Settings), `"access_mode":"sandbox"`) {
+	if strings.Contains(string(defaultMode.Execution.Settings), `"access_mode":"full_access"`) {
 		t.Fatal("default matching rewrote the frozen request")
 	}
 	if runtime, err := local.OrcaRuntimeID(); err != nil || runtime != "local-original" {
@@ -119,7 +119,7 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 		}
 	}
 	full := m
-	full.Scenario, full.Level, full.RemoteRuntimeID = "orca-remote.full-access", "L3", "paired-runtime"
+	full.Scenario, full.Level, full.RemoteRuntimeID = "orca-remote.smoke", "L3", "paired-runtime"
 	full.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}
 	if err := full.Validate(); err != nil {
 		t.Fatal("explicit remote full-access fixture rejected", err)
@@ -140,23 +140,23 @@ func TestManifestRejectsChangedInputsAndUnsafeTargets(t *testing.T) {
 	audited := m
 	audited.Driver = "development-audited"
 	audited.AuditModel = &workflow.ModelSettings{Model: "reviewer", ReasoningEffort: "high"}
-	audited.Execution.Settings = json.RawMessage(`{"model":"executor","reasoning_effort":"medium"}`)
+	audited.Execution.Settings = json.RawMessage(`{"access_mode":"full_access","model":"executor","reasoning_effort":"medium"}`)
 	if err := audited.Validate(); err != nil {
 		t.Fatal("valid audited fixture rejected", err)
 	}
 	remoteAudited := audited
 	remoteAudited.Level, remoteAudited.Scenario, remoteAudited.RemoteRuntimeID = "L3", "orca-remote.audited", "paired-runtime"
-	remoteAudited.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"agent_launch":{"runtime_executable":"C:/trusted/helper.exe","model":"executor","reasoning_effort":"high"}}`)}
+	remoteAudited.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired-environment"}, Settings: json.RawMessage(`{"access_mode":"full_access","agent_launch":{"runtime_executable":"C:/trusted/helper.exe","model":"executor","reasoning_effort":"high"}}`)}
 	if remoteAudited.Validate() == nil {
 		t.Fatal("native remote fixture accepted retired helper audit")
 	}
-	remoteAudited.Execution.Settings = json.RawMessage(`{"agent_launch":{"model":"executor"}}`)
+	remoteAudited.Execution.Settings = json.RawMessage(`{"access_mode":"full_access","agent_launch":{"model":"executor"}}`)
 	if remoteAudited.Validate() == nil {
 		t.Fatal("remote audit fixture accepted without managed model control")
 	}
 	for _, mutate := range []func(*Manifest){
 		func(x *Manifest) { x.AuditModel = nil },
-		func(x *Manifest) { x.Execution.Settings = json.RawMessage(`{}`) },
+		func(x *Manifest) { x.Execution.Settings = json.RawMessage(`{"access_mode":"full_access"}`) },
 		func(x *Manifest) { x.AuditModel = &workflow.ModelSettings{Model: "executor"} },
 		func(x *Manifest) { x.Driver = "development-smoke" },
 		func(x *Manifest) { x.Execution.Adapter = "orca-terminal" },

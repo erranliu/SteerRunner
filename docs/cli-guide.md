@@ -129,7 +129,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
 本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
-worker 的 common Git 目录只属于该 Run。sandbox 模式只为这个私有目录增加写根，
+worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译沙箱写根；这个私有目录仍绑定本次 Run，
 允许 Git 创建 `packed-refs.lock` 等根级锁，不授权共享缓存、其它 Run 或整个状态目录。
 代价是每个 Run 多一份本机仓库副本。
 已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
@@ -193,3 +193,12 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 正常排队/退避期间保持原授权，不需要人工 resume。服务重启继续原 operation、目标、deadline 和次数；已有精确创建计划时只核验该计划。窗口耗尽或确定错误仍沿原 blocked/resume 契约处理；重复控制请求沿原 request_id 幂等，不能新开同一窗口。stop 及时取消排队/退避并撤销后继派发；等待消失不证明既有资源已经停止，仍查询原 stop/verify-stopped 证据。创建、启动、发送、停止的期限及未知结果核验规则保持原契约。
 
 `calls_started` 是本查询提交到调用边界的保守次数，不能证明子进程实际创建，也不是业务 Attempt/模型启动数。状态、controls、operation、unknown 和资源事实继续作为授权依据。构建资格及 local/remote 独立结果见[专项验收](acceptance/orca-cli-wait-retry.md)。
+
+
+## 开发权限迁移
+
+开发 workflow/2 显式要求 `execution.settings.access_mode=full_access`；内容流程仍显式 `read_only`。sandbox、缺省、空值、null 不会自动转换。修改客户端 `profiles` 中的可编辑配置，保持目标环境、模型、仓库和发布设置；先用新构建的 `capabilities --offline` 与 `validate --kind run-configuration` 核对，再以新 request_id 提交。配置 helper 返回 `access_mode_migration_required` 时修改原配置源，不另选候选或复用旧 ID 换正文。
+
+已有提交继续按原 request_id 查询/对账；原冻结 Request、digest、Attempt、PR 及证据不变。旧 sandbox/隐式模式 Run 在新服务中只读，拒绝 resume/reply、自动推进、PR refresh、新采集和原生会话 open，仅保留持久事实查询与身份可核验时的精确 stop。退役不等于原 worker 已停止：原 owner 中在途回合可能继续运行。停止不支持或证据缺失时，保留未结算事实，用原版本处理；不要重建会话或把旧 Run 改为 full_access。
+
+升级顺序：旧版本停收新任务→完成或精确停止受影响 Run→核实 worker/parser/broker/socket 结算→更新产品/helper/扩展与可编辑配置→检查新构建接管清单及配置→提交新任务。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除。旧显式 full_access/read_only 仅按原冻结契约恢复；开发权限不改变 read_only 和现有认证链路。版本与测试映射见 [Spec](spec/development-full-access.spec.md) / [Plan](spec/development-full-access.plan.md)。

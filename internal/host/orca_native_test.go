@@ -93,7 +93,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	var launchCommand string
 	args := []string{"terminal", "create", "--worktree", "id:" + w.ID, "--title", "SteerRunner stop proof probe", "--command", "powershell.exe -NoProfile"}
 	if helper != "" {
-		config = codex.RemoteAgentConfig{Executable: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_NATIVE"), RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", AccessMode: "sandbox", Model: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_MODEL")}
+		config = codex.RemoteAgentConfig{Executable: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_NATIVE"), RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", AccessMode: "full_access", Model: os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_MODEL")}
 		if config.Executable == "" || len(os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256")) != 64 {
 			t.Fatal("real native helper identity missing")
 		}

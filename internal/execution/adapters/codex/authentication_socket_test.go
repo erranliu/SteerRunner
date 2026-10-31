@@ -284,7 +284,7 @@ func TestAuthenticationSocketPreservesForeignFiles(t *testing.T) {
 
 func TestAuthenticationSocketPolicyBinding(t *testing.T) {
 	plan, _ := socketFixture(t)
-	permissions, _ := NativePermissions("windows", "local", "codex")
+	permissions, _ := NativePermissions("windows", "local", "codex", "full_access")
 	payload := PolicyResourcePayload{NativeVersion: PolicyCodexVersion, Contract: PolicyContract, Settings: b.LaunchCommand{Executable: "codex.exe", Args: permissions.Args(), WorkingDirectory: plan.Workspace}, AuthenticationTransport: plan}
 	envelope, err := NewPolicyResourceEnvelope(plan.Identity, payload)
 	if err != nil {
@@ -333,7 +333,7 @@ func TestAuthenticationSocketPolicyBinding(t *testing.T) {
 
 func TestAuthenticationSocketBuildsFrozenResource(t *testing.T) {
 	plan, _ := socketFixture(t)
-	raw, _ := EncodeProfileConfig(ProfileConfig{Executable: os.Args[0], AccessMode: "sandbox"})
+	raw, _ := EncodeProfileConfig(ProfileConfig{Executable: os.Args[0], AccessMode: "full_access"})
 	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: ProfileCodecKey, CodecVersion: ProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: plan.Identity.ProjectID, ProfileID: "profile", AcceptedConfigVersion: "accepted"}, raw)
 	if err != nil {
 		t.Fatal(err)
@@ -347,7 +347,7 @@ func TestAuthenticationSocketBuildsFrozenResource(t *testing.T) {
 	if err != nil || payload.AuthenticationTransport == nil || *payload.AuthenticationTransport != *plan {
 		t.Fatal("resource did not freeze transport", payload, err)
 	}
-	if !slices.Contains(bound.WriteRoots, plan.Directory) {
+	if slices.Contains(bound.WriteRoots, plan.Directory) {
 		t.Fatal("resource grant missing", bound.WriteRoots)
 	}
 	if _, err := os.Lstat(plan.Directory); !os.IsNotExist(err) {
@@ -381,7 +381,7 @@ func TestAuthenticationSocketNativeGrants(t *testing.T) {
 		t.Fatal(err)
 	}
 	i := slices.Index(args, "--add-dir")
-	if i < 0 || args[i+1] != plan.Directory {
+	if i >= 0 {
 		t.Fatal("native launch omitted exact authentication grant", args)
 	}
 	backend := Backend{Config: Config{AuthenticationTransport: plan}}
@@ -394,12 +394,12 @@ func TestAuthenticationSocketNativeGrants(t *testing.T) {
 		t.Fatal("shared parent granted")
 	}
 	// Also check the actual native turn policy compiler, used by commands and turns.
-	params, err := TurnStartParams(plan.Workspace, "thread", "command", "prompt", "workspace-write", "", "", roots)
+	params, err := TurnStartParams(plan.Workspace, "thread", "command", "prompt", "danger-full-access", "", "", roots)
 	if err != nil {
 		t.Fatal(err)
 	}
 	raw, _ := json.Marshal(params["sandboxPolicy"])
-	if !strings.Contains(string(raw), "writableRoots") || len(params["sandboxPolicy"].(map[string]any)["writableRoots"].([]string)) != 5 {
+	if strings.Contains(string(raw), "writableRoots") || params["sandboxPolicy"].(map[string]any)["type"] != "dangerFullAccess" {
 		t.Fatal(string(raw))
 	}
 }
