@@ -1,6 +1,6 @@
 # 远端 provider 元数据启动竞态与联网诊断
 
-日期：2026-10-31。接续[实施后审计](development-full-access-audit.md)，本记录不改写前两次远端失败，也不把诊断初始化计作真实 smoke。
+日期：2026-10-31。**最终构建的 L1、Controlled 及真实远端 smoke 均通过，详见文末最终验收。** 接续[实施后审计](development-full-access-audit.md)，本记录不改写前两次远端失败，也不把诊断初始化计作真实 smoke。
 
 ## 代码修复
 
@@ -48,8 +48,23 @@
 
 新回归先对基线复现失败，再用隔离 Go overlay 验证修复，待基线 L1 结束才修改源码；修复后整个 livetest 包及[原真实 journal 离线复核](evidence/provider-metadata-20261031/native-audit-recheck.json)通过。离线复核记录一个业务工作树、三段文本输入、零辅助终端和完整回执，不把已失败的 smoke 改成通过。#717 已关闭、未合入。原始日志为 `native-paste-audit-{reproduction,fix-tests}.log`。
 
+## 最终验收
+
+代码提交 `b2d622c40e7a01d3af5f3d43d5358292d4d0db81`，工作树干净时构建；源码摘要 `80473210bce871ff81023fc6af6f585d7774b5e96aa94c910706ac9f5a1d4f65`，Runner SHA256 `34a5d02cf8b978e68613c129e4c89bda361876e3f0e2c94d263fdd9c8670751e`。[固定构建](evidence/provider-metadata-20261031/final-build.json)与[最终摘要](evidence/provider-metadata-20261031/final-validation.json)绑定同一源码和产物。后续提交仅整理文档及便携证据，不重建或改变该产品源码。
+
+| 验证 | 最终结果 |
+| --- | --- |
+| 完整 L1 | 728 项 Go 顶层测试、29 项 Node 通过；framework、native driver 编译、零匹配 guard 通过，17 项既有 helper/opt-in allowlist skip。[原始摘要](evidence/provider-metadata-20261031/final-l1-summary.json) |
+| 完整 Controlled | 同一固定 Runner，results 1 项 + rest 24 项，精确注册集合 25/25，无缺项、重复或 skip。[构建与逐项集合](evidence/provider-metadata-20261031/final-controlled-summary.json) |
+| 真实远端 smoke | 新现场 `C:/srt/684dabe442c9`，Run `3b9766cac2a02d861bc932ba6a7dc7a5`；135.10 秒通过，真实交付、冻结启动命令及原生 paste/Enter 回执审计、无效反馈零新增输入、PR 合入与内容核验全部通过。[协调结果](evidence/provider-metadata-20261031/final-remote-summary.json)及[验收与收尾证据](evidence/provider-metadata-20261031/final-remote-smoke.json) |
+| 专用测试 PR | [#718](https://github.com/erranliu/SteerlineTest/pull/718) 已合入专用测试 base，head `a558051f8f3d06b55e426d6e139f792ba31111ef`，merge commit `45dd7febe5b348ef277da34776c12ab61cbb9cd3`；另经 GitHub 连接器核验 merged=true，与现场记录一致。失败轮次 #717 已关闭、未合入 |
+| 收尾 | 原 Run、服务停止；offline stopped verification 确认原 Run 资源 settled，证据严格限于 `orca_terminal`，不声明登录凭据撤销或宿主全部 OS 后代终止 |
+
+远端沿用 `codex`、`gpt-6.1-sol/medium` 和原有认证，冻结配置 SHA 与重启后首轮相同：`3ed9cd636c8c2fe046ada1ce4c6d269a62fbeef2c06c1989633814a0e6d38bfe`。未使用临时代理启动脚本、文件部署或辅助终端。native launch contract 记录请求参数已逐字核对，`effective_parameters_verified=false` 仍原样保留，不把命令审计扩大为远端有效权限的独立证明。
+
 ## 当前交付状态
 
-产品元数据竞态、远端联网前置与测试启动审计消费者均已处理。PR #74 继续保持草稿；将固定新构建，完成更新后的基础验证及新现场完整 smoke 后再转为正式 PR。
+元数据启动竞态、远端网络前置与两个原生审计消费者遗漏均已处理；最终完整基础回归与真实远端 smoke 通过，满足用户本轮将 PR #74 转为正式评审的条件。保留前述历次失败、诊断和有限证明范围，不追改成通过。授权后的代理与 NO_PROXY 用户环境设置保留，原值备份路径见网络修复记录。
+
 
 其他未执行的 L3、Pi/DSH、audited 及 read_only/parser 真机资格继续沿原审计记录登记为未验证。本机 L2 #716 为此前 `ba18cb7` 构建结果，不追认为本次 `fc20599` 的新真机运行。

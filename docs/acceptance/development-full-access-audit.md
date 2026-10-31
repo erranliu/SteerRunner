@@ -44,9 +44,11 @@ L2/L3 的静态清单共 32 case，16 项 available、16 项 unavailable；缺�
 
 ## 后续远端排查
 
-后续 `fc20599` 修复 provider 元数据启动竞态，并完成新构建的 L1 / Controlled。真实远端复测仍因模型联网超时未通过；进程代理与本机绕过诊断已定位环境原因。当前状态及独立证据见[远端排查记录](development-full-access-provider.md)，本节之前的失败记录保持原样。
+后续修复 provider 元数据启动竞态及两个原生审计消费者遗漏；用户授权设置远端代理与本机绕过并重启对应主应用/终端 daemon。最终 `b2d622c` 固定构建的 L1（728 Go / 29 Node）、完整 Controlled（25/25）及真实远端 smoke 均通过，专用测试 PR #718 已合入，原 Run 与服务收尾。当前状态、构建身份和独立证据见[远端排查记录](development-full-access-provider.md)，本节之前的失败记录保持原样。
 
-## 交付边界
+## 原审计阶段交付边界
+
+以下保留首次审计阶段的状态，后续最终验收见上一节链接。
 
 代码审计确认的四项问题已修复，基础回归、Controlled 和本机 L2 通过。远端 smoke 的原生 readiness 资格失败；其他 L3、Pi/DSH、audited、管理员窗口及 read_only/parser 真机专项仍未验证。PR 标为草稿，保留真实失败和未验范围，不声明完整 Spec 真机验收通过。
 

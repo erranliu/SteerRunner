@@ -1,0 +1,75 @@
+{
+  "status": "passed",
+  "exact_registry_count": 25,
+  "passed": [
+    "TestSRResultAcquisition",
+    "TestSRWorkflowDiscoveryAndSelection",
+    "TestSROrcaCLIWaitRetry",
+    "TestSRContentGenerationRecovery",
+    "TestSRContentRepository",
+    "TestSRContentGenerate",
+    "TestSRContentConversation",
+    "TestSRContentQuestionAndUnknown",
+    "TestSRResourceCreationRecovery",
+    "TestSRMultipleRunsIsolation",
+    "TestSRProgressFile",
+    "TestSRResultFile",
+    "TestSRRunEvidenceR2",
+    "TestSRStandalonePackage",
+    "TestSRServiceOwnership",
+    "TestSRStabilityLostSubmitResponse",
+    "TestSRStabilityRevocationAcrossRestart",
+    "TestSRInputFreeze",
+    "TestSRPermissionQualification",
+    "TestSRRunWorkflow",
+    "TestSRStorageLogsEvents",
+    "TestSRPublicationIdentity",
+    "TestSRPublicationBeforeWorkflowReady",
+    "TestSRNativeUnknownAndStop",
+    "TestSRRestartPreservesAuthorization"
+  ],
+  "groups": [
+    {
+      "group": "results",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-final-fixed\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T04:42:07.3923314Z",
+        "scenario_count": 1
+      },
+      "identity": {
+        "pid": 22768,
+        "pattern": "^TestSRResultAcquisition$",
+        "runner_sha256": "34A5D02CF8B978E68613C129E4C89BDA361876E3F0E2C94D263FDD9C8670751E",
+        "fixture_sha256": "8CEC65465C90072B8D569E6384E8E459E10381EBB8DCD80021730660B65F8F36",
+        "native_fixture_sha256": "438C750E18AD8334D8B46B25FEDD7A4855D04ADD54114F2E32BE11EF26194045",
+        "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    },
+    {
+      "group": "rest",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-final-fixed\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T04:43:51.0900455Z",
+        "scenario_count": 24
+      },
+      "identity": {
+        "pid": 47436,
+        "pattern": "^(TestSRStandalonePackage|TestSRServiceOwnership|TestSRInputFreeze|TestSRPermissionQualification|TestSRRunWorkflow|TestSRStorageLogsEvents|TestSRPublicationIdentity|TestSRPublicationBeforeWorkflowReady|TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRStabilityLostSubmitResponse|TestSRStabilityRevocationAcrossRestart|TestSRWorkflowDiscoveryAndSelection|TestSRMultipleRunsIsolation|TestSRContentGenerate|TestSRContentRepository|TestSRContentConversation|TestSRContentQuestionAndUnknown|TestSRContentGenerationRecovery|TestSRRunEvidenceR2|TestSRResourceCreationRecovery|TestSRProgressFile|TestSRResultFile|TestSROrcaCLIWaitRetry)$",
+        "runner_sha256": "34A5D02CF8B978E68613C129E4C89BDA361876E3F0E2C94D263FDD9C8670751E",
+        "fixture_sha256": "8CEC65465C90072B8D569E6384E8E459E10381EBB8DCD80021730660B65F8F36",
+        "native_fixture_sha256": "438C750E18AD8334D8B46B25FEDD7A4855D04ADD54114F2E32BE11EF26194045",
+        "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+        "source_dirty": false,
+        "go_version": "go version go1.26.4 windows/amd64",
+        "os_version": "Microsoft Windows NT 10.0.26200.0",
+        "machine": "LIUMING-ASUS"
+      }
+    }
+  ]
+}
