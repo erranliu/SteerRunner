@@ -1,0 +1,10 @@
+{
+  "omitted_fields": "unrelated existing terminal entries",
+  "source_sha256": "c3eedd686358d6bece5a02bb9ab085f9d77e57b33288fd647534ab32bf04e37f",
+  "handle": "term_aed764ac-6ae0-4b78-ad06-75cde55b2b8c",
+  "truncated": false,
+  "incarnation": "f717e3e6-dead-4058-9089-1b19f6aa118c",
+  "present_in_complete_census": false,
+  "pty_killed": true,
+  "runtime": "64108a37-610d-478c-a565-194c376217c5"
+}

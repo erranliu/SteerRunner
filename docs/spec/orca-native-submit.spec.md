@@ -1,9 +1,9 @@
 # Orca 多行输入屏幕草稿依赖修复 Spec
 
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：窄范围代码已实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正另见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+状态：窄范围代码已实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正的稳定矩阵/L1通过，最新真实远端3/3、本机0/3，PR保持Draft。见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
-最终本机补验已达 3/3，原请求、原文/模型/final及正式停止认证均通过；用户新指定的远端
+原存档构建的本机补验为 3/3，原请求、原文/模型/final及正式停止认证均通过；当时用户新指定的远端
 `192.168.1.151` 已达 3/3，保留原 NativeProof/原输入/final及 `orca_terminal` 正式停止范围。
 见[本机最终记录](../acceptance/orca-native-submit-local-final.md)。本机测试目标须具备与正式
 workflow 相同的既有 writer/audit 冻结配置，不清空 Turn.Model 或放宽模型凭据校验。
