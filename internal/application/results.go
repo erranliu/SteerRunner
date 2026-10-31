@@ -174,7 +174,7 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 	r.Snapshot.Session.LastStoppedTurnID = value.TurnID
 	r.Snapshot.PendingTurn = nil
 	r.NextStage = nil
-	if state.Parse != "" && transition.Acquired != nil && transition.Acquired.Status == "insufficient" && transition.Next != nil && r.AcquisitionConfig.Config.CodexParser.Enabled {
+	if state.Parse != "" && transition.Acquired != nil && transition.Acquired.Status == "insufficient" && transition.Next != nil {
 		e.selectParser(r, inputCopy, state, &transition)
 	}
 	e.applyWorkflowTransition(r, inputCopy, state, transition)

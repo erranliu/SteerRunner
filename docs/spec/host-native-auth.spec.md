@@ -1,5 +1,7 @@
 # Spec：开发执行使用主机已有认证
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 日期：2026-10-31。状态：代码已实施，回归与原生资格按[验收记录](../acceptance/host-native-auth.md)单列。审计及用户允许丢弃旧记录后的收缩见 [Plan §8](host-native-auth.plan.md#8-文档审计记录2026-10-31)。
 
 调查基线：`cf8df21374555bde90baf081c21f4d9581580f42`（已包含开发 sandbox 退役及后续原生提交修复）。实施见 [Plan](host-native-auth.plan.md)。

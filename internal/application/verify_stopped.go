@@ -62,13 +62,6 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 }
 
 func stoppedRecord(r *runstate.Record, absent func(*b.ProcessIdentity) bool) bool {
-	for _, intent := range r.Intents {
-		if parserUnsettled(intent) {
-			if intent.Receipt == nil || !validStoppedIdentity(intent.Receipt.OriginalHost) || !validStoppedIdentity(intent.Receipt.Process) || !absent(intent.Receipt.OriginalHost) || !absent(intent.Receipt.Process) {
-				return false
-			}
-		}
-	}
 	if r.ID == "" || r.InputDigest == "" {
 		return false
 	}

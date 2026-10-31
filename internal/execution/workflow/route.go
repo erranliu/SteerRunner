@@ -48,21 +48,21 @@ func Source(r StageResult) ra.Source {
 // Route consumes normalized native evidence and frozen definition values. It
 // performs no effects and has no workflow-ID or success-wording branches.
 func Route(w Snapshot, input StageInput, result reliable.Result, reportPolicy string) Transition {
-	return route(w, input, result, reportPolicy, nil, "")
+	return route(w, input, result, reportPolicy, nil)
 }
 
 // RouteParsed projects the actual original native facts and an independent
 // candidate; it never creates a StageInput, StageResult, or native agent final.
-func RouteParsed(w Snapshot, input StageInput, body, operationID, reportPolicy string) Transition {
+func RouteParsed(w Snapshot, input StageInput, body string) Transition {
 	source := Result(w, input.CommandID)
 	if source == nil {
 		return Transition{Status: "blocked", Reason: "original parser source missing"}
 	}
 	result := reliable.Result{NativeOutcome: source.Outcome, Succeeded: source.Succeeded, ContentVerified: source.FinalVerified, Content: source.Final, TurnID: source.TurnID, Failure: source.Failure}
-	return route(w, input, result, reportPolicy, &body, operationID)
+	return route(w, input, result, input.ReportToolPolicy, &body)
 }
 
-func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy string, parsed *string, operationID string) Transition {
+func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy string, parsed *string) Transition {
 	t := Transition{AcceptResult: true}
 	state, ok := w.State(input.StepID)
 	if !ok {
@@ -108,7 +108,6 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 	acquired.Attempts = []ra.Attempt{{Method: acquired.Method, Source: ref, CommandID: input.CommandID, Status: "insufficient"}}
 	if parsed != nil {
 		acquired.Attempts[0].CommandID = ""
-		acquired.Attempts[0].OperationID = operationID
 	}
 	if current := Result(w, input.CommandID); state.Kind == "report" && current != nil && current.UnexpectedWork {
 		acquired.Status = "conflict"
@@ -121,7 +120,7 @@ func route(w Snapshot, input StageInput, result reliable.Result, reportPolicy st
 	locator := "native.final:$"
 	if parsed != nil {
 		candidate, err = ra.DecodeReport(*parsed, state.Contract)
-		locator = "parser:" + operationID + ":$"
+		locator = "parser:provided_text:$"
 	}
 	semanticMarker := false
 	if state.Contract == "publication" && state.Kind == "execute" {

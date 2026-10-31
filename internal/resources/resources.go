@@ -12,7 +12,7 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	model "github.com/erranliu/SteerRunner/internal/execution/model"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
-	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
+	parser "github.com/erranliu/SteerRunner/internal/textanalysis"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"io/fs"
 	"runtime"
@@ -127,7 +127,7 @@ func Capabilities() any {
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
 		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
-		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "requires_per_acquisition_native_verification", "empty_tool_guarantee": false},
+		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "CLI_existing_login; in_memory_task; internal_process_cleanup", "empty_tool_guarantee": false},
 	}
 }
 

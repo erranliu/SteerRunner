@@ -11,8 +11,6 @@ func InputValue(action executionbackend.LifecycleAction, input executionbackend.
 		return nil, err
 	}
 	switch action {
-	case executionbackend.LifecycleParseResult:
-		return input.Parse, nil
 	case executionbackend.LifecyclePrepareWorkspace:
 		return input.Workspace, nil
 	case executionbackend.LifecycleCreateResource:

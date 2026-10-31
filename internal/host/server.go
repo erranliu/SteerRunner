@@ -17,8 +17,6 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/runview"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -48,9 +46,7 @@ func Serve(ctx context.Context, dir, startupID string) (outErr error) {
 	}
 	if executionOwnerDirectory(dir) {
 		completeBootstrap(dir, startupID)
-		return codex.ServeExecutionOwner(ctx, dir, func(ctx context.Context, root string, request b.LifecycleRequest) codex.OwnedParser {
-			return parser.Start(ctx, root, request, func(b.LifecycleReceipt) error { return nil })
-		})
+		return codex.ServeExecutionOwner(ctx, dir)
 	}
 	for _, name := range []string{"service", "logs"} {
 		if err := os.MkdirAll(filepath.Join(dir, name), 0700); err != nil {

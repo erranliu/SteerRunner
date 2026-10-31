@@ -50,10 +50,6 @@ function Assert-SRAuditModels($Manifest,$View,[string]$History) {
 function Get-SRNativeResources($Manifest,$Scenario,$View) {
     $taskResources=@(('root:'+$Manifest.root),('base:'+$Manifest.base_branch))
     if ((Get-SRResultField $Manifest 'driver') -eq 'result-acquisition') {
-        foreach ($taskCall in @($Scenario.calls)) {
-            $taskResources+='run:'+$taskCall.run_id
-            if ($taskCall.session_id) { $taskResources+='session:'+$taskCall.session_id }
-        }
         return $taskResources
     }
     $taskRuns=if($Scenario.PSObject.Properties['runs']){@($Scenario.runs)}else{@($View)}
@@ -136,24 +132,10 @@ function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
 }
 
 function Assert-SRParserScenario($Manifest,$Scenario) {
-    if ($Manifest.scenario -cne 'local-codex.result-acquisition' -or $Manifest.level -cne 'L3' -or $Scenario.business_outcome -cne 'parsed' -or $Scenario.production_parser_calls -ne 3 -or $Scenario.permission_probe_calls -ne 1) { throw 'Parser result differs from its standalone L3 contract' }
-    foreach ($taskFlag in @('passed','parser_stopped')) {
-        $taskValue=Get-SRResultField $Scenario $taskFlag
-        if ($taskValue -isnot [bool] -or -not $taskValue) { throw 'Parser resources or assertions are unverified' }
-    }
-    foreach ($taskField in @('pr_url','merge_commit','run_id','runs')) { if (Get-SRResultField $Scenario $taskField) { throw 'Parser-only result contains development resources' } }
-    $taskCalls=@(Get-SRResultField $Scenario 'calls')
+    if ($Manifest.scenario -cne 'local-codex.result-acquisition' -or $Manifest.level -cne 'L3' -or $Scenario.business_outcome -cne 'parsed' -or $Scenario.analysis_invocations -ne 2 -or $Scenario.permission_probe_calls -ne 0) { throw 'Parser result differs from its text-analysis contract' }
+    if ($Scenario.passed -isnot [bool] -or -not $Scenario.passed) { throw 'Parser assertions did not pass' }
+    foreach ($taskField in @('pr_url','merge_commit','run_id','runs','calls')) { if (Get-SRResultField $Scenario $taskField) { throw 'Text parser result contains execution resources' } }
     $taskCases=@(Get-SRResultField $Scenario 'cases')
-    if ($taskCalls.Count -ne 3 -or ($taskCalls.label -join ',') -cne 'parser-default,parser-explicit,parser-cancel' -or $taskCases.Count -ne 2 -or ($taskCases.case -join ',') -cne 'parser-default,parser-boundaries') { throw 'Parser calls or cases are missing, reordered or duplicated' }
-    $taskSessions=@{}
-    foreach ($taskCall in $taskCalls) {
-        if ($taskCall.run_id -cne ('parser-'+$Manifest.id+'-'+$taskCall.label) -or $taskCall.stopped -isnot [bool] -or -not $taskCall.stopped) { throw 'Parser original call identity or settlement differs' }
-        if ($taskCall.session_id) {
-            if ($taskSessions.ContainsKey($taskCall.session_id)) { throw 'Parser native sessions collide' }
-            $taskSessions[$taskCall.session_id]=$true
-        } elseif ($taskCall.label -cne 'parser-cancel') { throw 'Completed parser lacks its original session' }
-    }
-    foreach ($taskCase in $taskCases) { if ($taskCase.passed -isnot [bool] -or -not $taskCase.passed) { throw 'Parser case did not pass' } }
-    if ($taskCases[0].session -cne $taskCalls[0].session_id -or $taskCases[1].session -cne $taskCalls[1].session_id -or $taskCases[0].tool_events -ne 0 -or $taskCases[1].induced_output_status -notin @('completed','policy_violation')) { throw 'Parser semantic or source evidence is incomplete' }
-    foreach ($taskFlag in @('canary_unchanged','read_only_command_denied','active_cancel_stopped')) { if ((Get-SRResultField $taskCases[1] $taskFlag) -cne $true) { throw 'Parser boundary evidence is incomplete' } }
+    if ($taskCases.Count -ne 2 -or ($taskCases.case -join ',') -cne 'text-analysis,cancellation') { throw 'Parser cases are missing, duplicated or reordered' }
+    foreach ($taskCase in $taskCases) { if ($taskCase.passed -isnot [bool] -or -not $taskCase.passed) { throw 'Parser case failed' } }
 }

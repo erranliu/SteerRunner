@@ -94,11 +94,6 @@ func (e *Engine) advance(id string, w *worker) bool {
 			return false
 		}
 	}
-	if !readOnlyRun(r) {
-		if handled, progress := e.advanceParser(id, w, r); handled {
-			return progress
-		}
-	}
 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
 		return false
 	}
@@ -109,6 +104,9 @@ func (e *Engine) advance(id string, w *worker) bool {
 		e.mu.Lock()
 		r = e.runs[id].Clone()
 		e.mu.Unlock()
+	}
+	if analysisEligible(r) && !unknown(r) {
+		return e.advanceAcquisition(id, w, r)
 	}
 	p, err := e.port(r, w)
 	if err != nil {

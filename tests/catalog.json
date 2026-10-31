@@ -129,22 +129,6 @@
       ]
     },
     {
-      "id": "local-codex.parser-generation-recovery",
-      "level": "L3",
-      "test": "TestSRNativeParserGenerationRecovery",
-      "entry": "scripts/test-generation-recovery.ps1",
-      "scope": "isolated controlled business/provider; real native parser and original owner; no real PR",
-      "requires": [
-        "explicit native executable",
-        "controlled recovery prerequisites"
-      ],
-      "expected": [
-        "original parser survives graceful/kill",
-        "offline completion adopted once",
-        "explicit stop cancels original parser"
-      ]
-    },
-    {
       "id": "local-codex.content-workflows",
       "level": "L3",
       "test": "TestSRContentNative",

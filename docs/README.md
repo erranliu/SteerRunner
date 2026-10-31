@@ -13,6 +13,7 @@
 | 配置发现、离线校验及内部测试配置 | [独立配置 Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md) |
 | 独立使用的双 skill、共享 helper、只读快照及独立 Viewer | [薄壳 Spec](spec/skill-shell.spec.md) / [Plan](spec/skill-shell.plan.md) / [实现与验收](acceptance/skill-shell.md) |
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
+| Parser 独立文本分析与执行链路解耦 | [Spec](spec/parser-decoupling.spec.md) / [Plan](spec/parser-decoupling.plan.md) / [验收](acceptance/parser-decoupling.md)；复用 Codex 登录和 CLI，内存任务，工具禁用/进程管理仅在 parser 内；无持久解析槽、跨重启预算或全局断代 |
 | 无仓库的对话与生成输入 | [内容流程 Spec](spec/content-workflows.spec.md) / [Plan](spec/content-workflows.plan.md) |
 | 固定 commit 只读调查并生成多文档 | [GEN-REPO Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接口与示例](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md) |
 | 历史 broker 设计（现行见宿主认证） | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md) |

@@ -9,6 +9,8 @@ import (
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -106,13 +108,19 @@ func TestBudgetFileGuidesIsolation(t *testing.T) {
 }
 func TestBudgetParserOverflowRetainsReportAndLongFinal(t *testing.T) {
 	e, _ := auditEngine(t)
-	e.runs["run"].AcquisitionConfig = ra.FrozenConfig{Config: ra.DefaultConfig()}
-	e.runs["run"].AcquisitionConfig.Config.CodexParser.Enabled = true
+	config := ra.DefaultConfig()
+	config.CodexParser.Enabled = true
+	if err := os.MkdirAll(filepath.Join(e.dir, "service"), 0700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(e.dir, "service", "result-acquisition.json"), canonical(config), 0600); err != nil {
+		t.Fatal(err)
+	}
 	finishStage(t, e, "实施及必要验证已完成。")
-	final := "Audit incomplete: " + strings.Repeat("unknown evidence ", 300)
+	final := "Audit incomplete: " + strings.Repeat("unknown evidence ", 4100)
 	finishStage(t, e, final)
 	r := e.runs["run"]
-	if parserIndex(r) >= 0 || r.Workflow.StepID != workflow.StepAuditReport || r.Snapshot.PendingTurn == nil || r.Workflow.StageResults[len(r.Workflow.StageResults)-1].Final != final {
+	if r.Workflow.StepID != workflow.StepAuditReport || r.Snapshot.PendingTurn == nil || r.Workflow.StageResults[len(r.Workflow.StageResults)-1].Final != final {
 		t.Fatal("overflow lost original final/report fallback", r.Workflow.StepID, r.Diagnostic)
 	}
 	if len(r.Workflow.StageInputs) != 3 {

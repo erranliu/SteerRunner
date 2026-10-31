@@ -1,5 +1,7 @@
 # Spec：服务重启、更新与重新部署后的原执行接管
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 > 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
 
 日期：2026-10-19，2026-10-20 补充创建恢复职责。状态：Runner 核心、parser 保留、离线审计和 SteerLine 接线已有定向证据；Orca 资源创建由 Runner 独立执行器保留原回执，只使用现有公开接口。当前源码的验证范围见[追补验收](../acceptance/pr-test-gaps-20261020.md)，历史证据和跨仓限制见[验收记录](../acceptance/service-generation-recovery.md)。[实施 Plan](service-generation-recovery.plan.md)。

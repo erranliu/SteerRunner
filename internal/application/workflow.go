@@ -34,11 +34,6 @@ func validateWorkflow(r *runstate.Record) error {
 	if err := validateOperationVersions(r); err != nil {
 		return err
 	}
-	for _, intent := range r.Intents {
-		if receipt := intent.Receipt; receipt != nil && receipt.ParseEvidence != nil && receipt.ParseEvidence.Status == "side_effect_unverified" {
-			return errors.New("original parser tool side effects require reconciliation; resume cannot authorize a successor")
-		}
-	}
 	p, ok := workflow.Lookup(r.Request.Workflow.ID, r.Request.Workflow.Version)
 	if !ok || r.Workflow.Config == nil || !compatibleWorkflow(p, *r.Workflow.Config, r.Request.Execution.Adapter) {
 		return errors.New("unsupported or inconsistent frozen workflow definition")
@@ -47,7 +42,7 @@ func validateWorkflow(r *runstate.Record) error {
 		return errors.New("business cursor absent from frozen definition")
 	}
 	if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
-		if err := validateParserReference(r); err != nil {
+		if err := validateAnalysisSource(r); err != nil {
 			return err
 		}
 	}

@@ -23,8 +23,8 @@ func ValidateRecovery(setup b.LifecycleSetup, codecs map[string][]int, ownerProt
 				err = fmt.Errorf("legacy service owns the live native Job; independent transfer is unavailable")
 			} else if binding.Owner != nil && binding.Owner.Protocol != ownerProtocol {
 				err = fmt.Errorf("original execution owner protocol unsupported")
-			} else if binding.Owner != nil && !needs.Stopped && ((!binding.Owner.RetainsParser && needs.Parser) || !binding.Owner.WorkspaceCheckpoints && needs.WorkspaceCheckpoints) {
-				err = fmt.Errorf("original owner lacks required parser/completion-checkpoint capability; no live owner replaced")
+			} else if binding.Owner != nil && !needs.Stopped && (!binding.Owner.WorkspaceCheckpoints && needs.WorkspaceCheckpoints) {
+				err = fmt.Errorf("original owner lacks required completion-checkpoint capability; no live owner replaced")
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 # Spec：Workflow 能力解耦与结构化结果获取
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 2026-10-21 当前适用范围：本文维护 workflow/2 与结果获取；当时升级 state/v2→v3 的章节为历史实施范围，当前 v5 格式及旧格式拒绝规则见[服务换代 Spec](service-generation-recovery.spec.md)。开发 Spec/Plan/参考材料只引用固定基线 worktree 内的相对路径，Runner 不再准备或验证独立文档快照；内容 inline 材料、parser 冻结材料包和结果来源核验继续沿各自契约。
 
 > 2026-10-19 主线接入已完成：rebase 到 `2aa17cc`，干净源码 `bb84ea8` 完整 L1 385 Go/29 Node、Controlled16、原生 workflow3 通过；测试修正 `51792ee` 后，复用相同生产源码/冻结 EXE 的停止探针2通过；签名原生退出、reader 结算与固定控制边界已组合核验。初始化创建身份未知仍阻塞，四项管理员变体未执行；不继承历史构建资格。见[最终证据](../acceptance/evidence/rebase-control-20261019/README.md)。SteerLine/Orca 不改。

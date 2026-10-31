@@ -1,5 +1,7 @@
 # Workflow：development-audited（确认稿）
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](../spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../spec/development-full-access.spec.md)。
 
 项目策略：`implement.execute`、`audit.code.execute` 显式引用 `git`、`command`、`testing`；`publish.execute` 引用 `git`、`command`；report、parse 等其余步骤不引用。固定路径及公开的 `\n阅读项目策略：%s。` 模板见[项目策略槽位](README.md#项目策略槽位)和[示例](project-policies.example.md)。仅固定源码中存在的所选文件产生引用，引用计入原预算；策略不解除审计来源、权限、发布授权或通过标准。
@@ -197,7 +199,7 @@ stateDiagram-v2
 保留实际修复数量、逐项内容及遗留问题；缺失、歧义、冲突如实标注，不补造修复或完成结论。
 ```
 
-原生权限由 Codex 执行，统一 parser owner 管理冻结输入、独立资源和工具事件拒收；提示词只约定整理行为，不承诺提前拦截或零隐式上下文。包内绑定真实原审计及所审实施结果，不把实施 final 当审计结论。
+Parser 复用现有 Codex 登录/CLI，在独立临时目录分析指定文本；工具禁用、异常事件拒收和短进程清理封装在组件内。没有原生操作、独立 owner 或解析恢复账本。调用方在内存中关联当前审计源并按原事务采纳结果，不把实施 final 当审计结论。
 
 ### A-AUDIT-REPORT → audit.code 内部 report
 
@@ -233,7 +235,7 @@ Runner 对当前源只发一次正式审计修复输入，工作在这次 execut
 
 每原实施（含明确人工续执行）最多 1 次实施 report；每原审计最多 1 次独立 parse 和 1 次原 agent report；每次原发布最多 1 次发布 report。全部无格式修正或报告重试。完整可信机器审计结果直接核验；普通实施/发布命中成功行且核验通过也零额外获取模型调用。只有审计获取可探测/启动 parser；其他阶段即使 parser 已开启也不依赖其环境。解析关闭、不适用或明确不可用时采用预算内审计补报，不能绕过真正审计或放宽结论核验。
 
-原执行、审计及补报 final 原样保留，解析候选单列并绑定真实审计和当前实施源。新实施原子失效旧获取资格及审计完成资格；迟到解析不能推进新源。原外层/内部进度、操作意图和预算均在现 Run/Record/Commit 管理，不建立第二套权威。兼容服务重启保留原授权和等待状态，补收原 owner/parser 事实后，可自动接续已证明未发送的后继及具备资格的获取意图；原 in_flight/未知动作仅对账。重启、resume、补读不重置次数、不重发已尝试提示词或重启未知 parser。需要显式恢复时，只续原授权范围，不默认实施或重审。详见[当前换代契约](../spec/service-generation-recovery.spec.md)。
+原执行、审计及补报 final 原样保留，解析候选单列并绑定真实审计和当前实施源。新源、暂停、停止使旧内存任务失效；迟到候选不能推进。主执行继续沿原恢复和未知副作用对账规则；parser 不参与这些规则。服务重启后，仍在业务 parse 等待且获准推进时可以重新分析，接受额外推理费用；已采纳结果和已提交后继不重做。
 
 stop、服务换代、未知操作优先于所有边，所有 executor/parser owned 资源纳入原停止核验。可信 final 缺失先原来源补读，原生失败/冲突不通过解析或补报解除。实施 input 的用户输入不能越过原会话/原操作资格；审计原生问答仍承接原请求。本次发布产生的 PR 可独立绑定、核验、刷新 merged，不因此越过当前审计或提交 TaskDelivery。
 
@@ -243,4 +245,4 @@ stop、服务换代、未知操作优先于所有边，所有 executor/parser ow
 
 ## 当前实现映射
 
-确定性 extract 采用 development 的同次提交映射。代码审计只有一个真正执行输入；完整机器结果直接核验，其余在 parser 开启且材料适用时进入持久化 parse 游标，否则选择一次原审计补报。parser 操作在原 Intents，attempt 只引用 operation_id；正常采纳或明确失败后备沿原 Commit，不新建执行 Turn。来源以真实审计 Command/Turn 和当前实施结果为主，解析、补报各列来源；原报告终态检查点缺失不能由 report 的新 HEAD 补成完成。新源/停止/冲突与恢复规则见总 Spec，实际结果见[本轮记录](../acceptance/evidence/result-acquisition-20261018/README.md)。
+确定性 extract 采用 development 的同次提交映射。实际审计已有完整结构时直接核验；其余可进入 audit.parse 业务等待并启动内存文本任务，否则选择一次原审计补报。parser 不写 Intents 或 operation_id，结果采纳和必要后继沿原 Commit。原审计 checkpoint、实施源和发布前核验保持；详见 [解耦验收](../acceptance/parser-decoupling.md)。

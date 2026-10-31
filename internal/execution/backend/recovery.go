@@ -4,6 +4,5 @@ package backend
 // cursor, mutable aggregate, or input authorization.
 type RecoveryRequirements struct {
 	Stopped              bool
-	Parser               bool
 	WorkspaceCheckpoints bool
 }

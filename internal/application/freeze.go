@@ -16,7 +16,6 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/publication"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -129,21 +128,14 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if request.Execution.Adapter == "orca-terminal" && request.Repository.LocalPath == "" {
 		return nil, contracts.Fail(2, "invalid_input", "Orca execution requires repository.local_path for its registered project identity.")
 	}
-	var acquisitionConfig ra.FrozenConfig
-	var err error
 	flowProfile, supported := workflow.Lookup(request.Workflow.ID, request.Workflow.Version)
 	if !supported {
 		return nil, contracts.Fail(3, "unsupported_capability", "Workflow interpreter unavailable.")
 	}
-	if flowProfile.RequiresResultAcquisition() {
-		acquisitionConfig, err = ra.LoadConfig(dir)
-		if err != nil {
-			return nil, contracts.Fail(2, "invalid_input", err.Error())
-		}
-	}
+	var err error
 	id, attempt, generation := contracts.NewID(), contracts.NewID(), contracts.NewID()
 	now := time.Now().UTC()
-	r := &runstate.Record{AcquisitionConfig: acquisitionConfig, ID: id, Request: request, Allowed: true, Status: "queued", Phase: "accepted", CreatedAt: now, UpdatedAt: now, ResourceDigest: resources.Digest(), CommandStates: map[string]string{}}
+	r := &runstate.Record{ID: id, Request: request, Allowed: true, Status: "queued", Phase: "accepted", CreatedAt: now, UpdatedAt: now, ResourceDigest: resources.Digest(), CommandStates: map[string]string{}}
 	if !workflow.Content(request.Workflow.ID) {
 		if _, err := providerFor(r); err != nil {
 			return nil, contracts.Fail(2, "invalid_input", "Publication configuration does not match the fixed repository or non-secret schema.")

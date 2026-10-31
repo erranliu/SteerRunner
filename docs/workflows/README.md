@@ -79,7 +79,7 @@ Spec/Plan、Git、补报、审计或发布路径。[Spec](../spec/content-workfl
 
 调用 `PromptExecutionAgent` 才产生原执行会话的真实 Command/Turn。报告状态也通过此入口发送报告提示词；没有单独的 `switchStage`、`reportAgent` 或任意模型工具来推进状态。`ParseResult` 有自己的解析操作/会话身份，`ExtractResult`、`VerifyResult` 没有伪造的报告 Turn。
 
-actor 在原 Record/Commit 唯一更新 Workflow.StepID、源/结果引用、待发送意图和 Status/Phase 投影；StageInputs/Results 是历史，NextStage 仅是原会话真实提示输入载荷；parse/核验/等待无 NextStage，parser 尝试引用同一 Record 的实际操作，不另存恢复账本；AcquisitionAttempt 是获取事实，均不另行决定业务位置。只改投影或 parser 完成不能推进；游标/意图/来源错配先对账，不能从最新 Turn 重建。原生问答留在原 execute；执行结束后的业务等待才进入定义的 input。同 Run 至多一个可派发的业务输入/parser 意图；前置结果 ID 和原业务源版本随输入/意图冻结，不从最近报告选源，报告新版本不重置原源预算。
+actor 在原 Record/Commit 唯一更新 Workflow.StepID、源/结果引用、待发送意图和 Status/Phase 投影；StageInputs/Results 是历史，NextStage 仅是原会话真实提示输入载荷；parse/核验/等待无 NextStage，parser 为内存文本任务，不创建原生操作或恢复账本；AcquisitionAttempt 是获取事实，均不另行决定业务位置。只改投影或 parser 完成不能推进；游标/意图/来源错配先对账，不能从最新 Turn 重建。原生问答留在原 execute；执行结束后的业务等待才进入定义的 input。同 Run 至多一个当前业务输入或文本获取任务；前置结果 ID 和原业务源版本随输入/意图冻结，不从最近报告选源，报告新版本不重置原源预算。
 
 业务 state 与现有 status/phase 分开。例如原生终态未核实可使 `publish` 暂停于 reconciling，无需为每种技术故障复制一组业务状态。本文及两份定义只列业务与获取状态；W/E/V 的来源、停止、恢复、单写及原子性规则仍由总 Spec 引用的共同生命周期维护。
 

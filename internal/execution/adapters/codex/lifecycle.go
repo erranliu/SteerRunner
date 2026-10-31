@@ -311,7 +311,7 @@ func (l ExecutionLifecycle) Reconcile(ctx context.Context, request executionback
 	if err := l.validateIdentity(request.Snapshot); err != nil {
 		return executionbackend.LifecycleReceipt{Operation: request.Operation, Disposition: executionbackend.OperationUnknown, Diagnostic: err.Error()}, nil, err
 	}
-	if l.setup.LaunchExecutionOwner != nil && (request.Operation.Action == string(executionbackend.LifecyclePrepareSession) || request.Operation.Action == string(executionbackend.LifecycleStartTurn) || request.Operation.Action == string(executionbackend.LifecycleDeliverFeedback) || request.Operation.Action == string(executionbackend.LifecycleStopExecution) || request.Operation.Action == string(executionbackend.LifecycleParseResult)) {
+	if l.setup.LaunchExecutionOwner != nil && (request.Operation.Action == string(executionbackend.LifecyclePrepareSession) || request.Operation.Action == string(executionbackend.LifecycleStartTurn) || request.Operation.Action == string(executionbackend.LifecycleDeliverFeedback) || request.Operation.Action == string(executionbackend.LifecycleStopExecution)) {
 		receipt, err := l.ownerCall(ctx, request, true)
 		if err != nil {
 			return receipt, nil, err
