@@ -1,0 +1,92 @@
+{
+  "schema": "development-full-access-audit-closeout/v1",
+  "date": "2026-10-31",
+  "code_build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "a7b635f52df4f3e39d04b5662285da417556e874308bb07ed635360e6e6f40c0",
+    "version": "0.2.0-dev.4",
+    "source_commit": "ba18cb7cf83708740abef306e8b74d086a22b480",
+    "source_dirty": false,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "86ce042ce92327eb663660da82123bf0e9ff72c52bab370d2700ad9e0ee2fef2"
+  },
+  "resource_digest": "21725cc1e4fffbf6808a74a5eaf736bf2ac2003626eb103d11323b1fb3ea692d",
+  "test_config_helper_sha256": "ae7ab36b4352782821e8a29458e5caf6abfecc03bb4ee6d1e33af7246a10492a",
+  "terminal_metadata": {
+    "version": 4,
+    "contract": "windows-terminal-tools-v2:full-access:never",
+    "runtime_sha256": "ebf1b924d63053b9b270dc7964295f18aa23e7f395ca149c8ff67ced0dc66514",
+    "bundle_sha256": "3fb69c38cbda7fd6a797cb72ee3effe066e433007ddfa34af47a0e9aaf39708e",
+    "pi_sha256": "29036f575394c2b920d71d25ff4424b7572b91f4927a383254edd0fca5e9e352",
+    "dsh_sha256": "e77458b31ba6660863c174017d594857406b4091ba69855a4d7f81a261677556"
+  },
+  "confirmed_findings_fixed": 4,
+  "l1": {
+    "status": "passed",
+    "go_top_level_passed": 724,
+    "node_passed": 29,
+    "allowlisted_skip_count": 17,
+    "evidence": ".evidence/full-access-l1-pr"
+  },
+  "controlled": {
+    "status": "passed",
+    "scenario_count": 25,
+    "missing": [],
+    "unexpected_skips": 0,
+    "evidence": [
+      ".evidence/full-access-controlled-pr-results",
+      ".evidence/full-access-controlled-pr-rest"
+    ]
+  },
+  "native_without_model": [
+    {
+      "test": "TestAuthenticationNativeToolBoundary",
+      "duration_seconds": 19.69,
+      "evidence": ".evidence/full-access-diagnostics/native-auth-pr.log",
+      "scope": "native tools without model; separate from real smoke qualification"
+    },
+    {
+      "test": "TestLinkedGitNativeCommit",
+      "duration_seconds": 9.6,
+      "evidence": ".evidence/full-access-diagnostics/native-git-pr.log",
+      "scope": "native tools without model; separate from real smoke qualification"
+    }
+  ],
+  "configuration_discovery": {
+    "requested_static_cases": 32,
+    "available": 16,
+    "unavailable": 16,
+    "original_configuration_unchanged": true
+  },
+  "authorized_live_validation": {
+    "selected_cases": [
+      "local-codex.smoke/default",
+      "orca-remote.smoke/default"
+    ],
+    "status": "failed",
+    "executed_native_cases": 2,
+    "passed_native_cases": 1,
+    "failed_native_cases": 1,
+    "failed_preparations": 1,
+    "local_l2_passed": true,
+    "test_pr": "https://github.com/erranliu/SteerlineTest/pull/716",
+    "merge_commit": "d21c173cc0090b8cb67d41eb25c7e729c5c34c9a",
+    "remote_smoke_passed": false,
+    "remote_failure": "original native readiness unavailable; no input was sent: Orca queried original provider metadata currently unavailable",
+    "remote_run_stopped": true,
+    "remote_service_stopped": true,
+    "remote_stop_scope": "orca_terminal",
+    "complete_l3_passed": false
+  },
+  "remaining_unverified": [
+    "Other L3 cases, including Pi/DSH, audited and admin fault windows",
+    "read_only/parser live qualification"
+  ],
+  "preserved_preparation_failure": {
+    "evidence": ".evidence/full-access-diagnostics/live-selected-pr.log",
+    "cause": "Ad hoc evidence coordinator initially read catalog strings before calling the existing Get-SRTestCatalog expander; no test fixture or PR created at this failure."
+  },
+  "pr_readiness": "draft: remote native qualification failed; no weakened provider/session identity gate"
+}

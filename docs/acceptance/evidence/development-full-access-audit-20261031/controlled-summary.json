@@ -1,0 +1,64 @@
+{
+  "schema": "development-full-access-controlled/v1",
+  "source_commit": "ba18cb7cf83708740abef306e8b74d086a22b480",
+  "status": "passed",
+  "scenario_count": 25,
+  "missing": [],
+  "duplicates": 0,
+  "unexpected_skips": 0,
+  "groups": [
+    {
+      "directory": ".evidence/full-access-controlled-pr-results",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\full-access-pr-qualified\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T02:28:41.2507365Z",
+        "scenario_count": 1
+      },
+      "runner_sha256": "86ce042ce92327eb663660da82123bf0e9ff72c52bab370d2700ad9e0ee2fef2",
+      "fixture_sha256": "d91dc6fca82e1cff62a70b98d55c507c42ca569e1638edccf1626f400d928fe8",
+      "native_fixture_sha256": "8add0899af933f1f57fd23c39b9a4cfaf7a6655158c28bab65472343ebdb4433",
+      "passed_scenarios": [
+        "TestSRResultAcquisition"
+      ]
+    },
+    {
+      "directory": ".evidence/full-access-controlled-pr-rest",
+      "result": {
+        "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\full-access-pr-qualified\\steerrunner.exe",
+        "exit_code": 0,
+        "finished_at": "2026-10-31T02:30:40.5247235Z",
+        "scenario_count": 24
+      },
+      "runner_sha256": "86ce042ce92327eb663660da82123bf0e9ff72c52bab370d2700ad9e0ee2fef2",
+      "fixture_sha256": "d91dc6fca82e1cff62a70b98d55c507c42ca569e1638edccf1626f400d928fe8",
+      "native_fixture_sha256": "8add0899af933f1f57fd23c39b9a4cfaf7a6655158c28bab65472343ebdb4433",
+      "passed_scenarios": [
+        "TestSRWorkflowDiscoveryAndSelection",
+        "TestSROrcaCLIWaitRetry",
+        "TestSRContentGenerationRecovery",
+        "TestSRContentRepository",
+        "TestSRContentGenerate",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRResourceCreationRecovery",
+        "TestSRMultipleRunsIsolation",
+        "TestSRProgressFile",
+        "TestSRResultFile",
+        "TestSRRunEvidenceR2",
+        "TestSRStandalonePackage",
+        "TestSRServiceOwnership",
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRRunWorkflow",
+        "TestSRStorageLogsEvents",
+        "TestSRPublicationIdentity",
+        "TestSRPublicationBeforeWorkflowReady",
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization"
+      ]
+    }
+  ]
+}
