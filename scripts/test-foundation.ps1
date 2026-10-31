@@ -65,6 +65,11 @@ $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-Windows
 $taskStartup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
 # Test harness only: a CIM-created process does not inherit the tool caller's
 # Job chain. The production startup path continues to verify breakaway itself.
+$taskArtifactIdentity=@{
+    runner_sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $taskRunnerExe).Hash
+    fixture_sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $taskTestExe).Hash
+    native_fixture_sha256=(Get-FileHash -Algorithm SHA256 -LiteralPath $taskHelperExe).Hash
+}
 $taskCreated = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{
     CommandLine = $taskCommandLine
     CurrentDirectory = $taskRepo
@@ -78,10 +83,11 @@ if ($taskProcess) {
 }
 $taskMetadata = [ordered]@{
     pid = $taskCreated.ProcessId
+    process_started_at = if($taskProcess){$taskProcess.CreationDate.ToUniversalTime().ToString('o')}else{''}
     pattern = $Pattern
-    runner_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskRunnerExe).Hash
-    fixture_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskTestExe).Hash
-    native_fixture_sha256 = (Get-FileHash -Algorithm SHA256 -LiteralPath $taskHelperExe).Hash
+    runner_sha256 = $taskArtifactIdentity.runner_sha256
+    fixture_sha256 = $taskArtifactIdentity.fixture_sha256
+    native_fixture_sha256 = $taskArtifactIdentity.native_fixture_sha256
     source_commit = (& git -C $taskRepo rev-parse HEAD).Trim()
     source_dirty = -not [string]::IsNullOrWhiteSpace((& git -C $taskRepo status --porcelain | Out-String))
     go_version = (& go version | Out-String).Trim()

@@ -10,18 +10,21 @@ param(
     [switch]$SkipAdminRequired,
     [switch]$ListAvailability,
     [string]$RunnerExe = '',
-    [string]$ConfigHelper = ''
+    [string]$ConfigHelper = '',
+    [string]$PrerequisitesFrom = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'live-catalog.ps1')
 . (Join-Path $PSScriptRoot 'test-scheduler.ps1')
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
+. (Join-Path $PSScriptRoot 'test-prerequisite-contract.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FixtureParent')) {
+foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FixtureParent','PrerequisitesFrom')) {
     $taskValue = Get-Variable -Name $taskParameter -ValueOnly
     if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
 }
+$taskDefaultCatalog = -not $Catalog
 if (-not $Catalog) { $Catalog = Join-Path $taskRepo 'tests/catalog.json' }
 if (-not $OutDir -and -not $ListAvailability) { $OutDir = Join-Path $taskRepo ('.evidence/tests-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss') + '-' + [Guid]::NewGuid().ToString('N').Substring(0,6)) }
 $taskOut = if($OutDir){[IO.Path]::GetFullPath($OutDir)}else{''}
@@ -36,9 +39,23 @@ $taskSummary['first_pass_rate']=0
 function Save-Summary { if(-not $taskOut){return}; $taskTemporary=Join-Path $taskOut 'summary.json.tmp';[IO.File]::WriteAllText($taskTemporary,($taskSummary|ConvertTo-Json -Depth 70),[Text.UTF8Encoding]::new($false));[IO.File]::Move($taskTemporary,(Join-Path $taskOut 'summary.json'),$true) }
 $taskExitCode = 2
 $taskExpanded = @()
+$taskReused = $null
+$taskPreflight = $null
+$taskAssessment = $null
+$taskSummary['prerequisite_stages'] = @()
 Save-Summary
 Push-Location $taskRepo
 try {
+    if ($PrerequisitesFrom) {
+        if ($Level.Count -ne 1 -or $Level[0] -ne 'L2' -or $ListAvailability -or -not $taskDefaultCatalog) { throw 'Prerequisite reuse only supports -Level L2 with the default catalog and without ListAvailability' }
+        $taskVerifyStarted=[DateTime]::UtcNow
+        $taskReused=Read-SRPrerequisites $taskRepo $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($PrerequisitesFrom)
+        if($RunnerExe) {
+            $null=Get-SRBuildRecord $RunnerExe 'runner'
+            if((Get-SRFileDigest $RunnerExe) -cne (Get-SRFileDigest $taskReused.runner_exe)){throw 'Explicit Runner differs from prerequisite Runner'}
+        } else { $RunnerExe=$taskReused.runner_exe }
+        $taskSummary['prerequisite_source']=@{path=$taskReused.manifest_path;sha256=$taskReused.manifest_sha256;verification_seconds=([DateTime]::UtcNow-$taskVerifyStarted).TotalSeconds}
+    }
     if ($MaxParallel -lt 1 -or $MaxParallel -gt 8) { throw 'MaxParallel must be between 1 and 8' }
     $taskSummary['max_parallel'] = $MaxParallel
     if ($Repeat -lt 1 -or $Repeat -gt 10) { throw 'Repeat must be between 1 and 10' }
@@ -94,6 +111,7 @@ try {
         # Workers consume the batch catalog rather than a mutable caller file.
         $Catalog = Join-Path $taskOut 'frozen-catalog.json'
         [IO.File]::WriteAllText($Catalog,($taskCatalog | ConvertTo-Json -Depth 60),[Text.UTF8Encoding]::new($false))
+        $taskSummary['catalog_sha256']=Get-SRFileDigest $Catalog
     }
     $taskExpanded = @()
     foreach ($taskRound in 1..$Repeat) {
@@ -121,65 +139,43 @@ try {
         Save-Summary
         exit 1
     }
-    # Unit tests and controlled integration are prerequisites for every live batch.
-    foreach ($taskKey in @('STEERRUNNER_SHORT_INPUT_INSPECT','STEERRUNNER_ORCA_STATE_PROBE_MODE','STEERRUNNER_ORCA_STATE_PROBE_ROOT','STEERRUNNER_ORCA_WORKSPACE_PROBE_ROOT','STEERRUNNER_ORCA_LOCAL_PIPE_EVIDENCE','STEERRUNNER_ORCA_IPC_PROBE_ROOT','STEERRUNNER_ORCA_STOP_PROBE_ROOT','SR_USAGE_EXISTING_STATE','SR_USAGE_LIVE_STATE','SR_USAGE_LIVE_RUN','SR_USAGE_LIVE_EVIDENCE','SR_USAGE_LIVE_PUBLIC','SR_USAGE_LIVE_CLEANUP_STATE','SR_USAGE_LOCAL_LIVE','SR_USAGE_LOCAL_STATE','SR_USAGE_LOCAL_RUN','SR_USAGE_LOCAL_EVIDENCE','SR_USAGE_LOCAL_REPO_CLEANUP','SR_USAGE_LOCAL_CLEANUP_ROOT')) { if ([Environment]::GetEnvironmentVariable($taskKey)) { throw "Unexpected live opt-in in L1: $taskKey" } }
-    Write-Host 'Running L1'
-    $taskFramework = Join-Path $taskOut 'framework'
-    & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework
-    $taskCoverage = Join-Path $taskOut 'coverage.out'
-    & go test @($taskCatalog.l1_packages) -count=1 -timeout=12m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
-    $taskUnitCode = $LASTEXITCODE
-    # The two formal native extensions are part of L1, including on machines
-    # without model credentials or a running Orca instance.
-    $taskExtensionLog = Join-Path $taskOut 'terminal-extensions.tap'
-    & node --test --test-reporter=tap internal/execution/adapters/orcatransport/extensions/pi-evidence.test.mjs internal/execution/adapters/orcatransport/extensions/dsh-managed.test.mjs 1> $taskExtensionLog 2> (Join-Path $taskOut 'terminal-extensions-stderr.log')
-    $taskExtensionCode = $LASTEXITCODE
-    $taskExtensionResult = Get-Content -LiteralPath $taskExtensionLog -Raw
-    $taskExtensionCount = if ($taskExtensionResult -match '(?m)^# tests (\d+)\s*$') { [int]$Matches[1] } else { 0 }
-    $taskExtensionsPassed = $taskExtensionCode -eq 0 -and $taskExtensionCount -gt 0 -and $taskExtensionResult -match '(?m)^# fail 0\s*$' -and $taskExtensionResult -match '(?m)^# skipped 0\s*$'
-    # Compile live drivers without running them. This gate precedes all real
-    # fixture mutations and token-consuming execution.
-    $taskDriver = Join-Path $taskOut 'native.test.exe'
-    & go test -tags=live -c -o $taskDriver ./tests/native 1> (Join-Path $taskOut 'native-compile.log') 2> (Join-Path $taskOut 'native-compile-stderr.log')
-    $taskCompileCode = $LASTEXITCODE
-    $taskZeroGuard = $false
-    if ($taskCompileCode -eq 0) {
-        $taskZeroEvidence = Join-Path $taskFramework 'native-zero-match'
-        New-Item -ItemType Directory -Path $taskZeroEvidence | Out-Null
-        & $taskDriver '-test.run=^NoSuchScenario$' -evidence-dir $taskZeroEvidence
-        $taskGuardCode = $LASTEXITCODE
-        $taskGuardResult = Get-Content -LiteralPath (Join-Path $taskZeroEvidence 'result.json') -Raw | ConvertFrom-Json
-        $taskZeroGuard = $taskGuardCode -eq 1 -and $taskGuardResult.exit_code -eq 1 -and $taskGuardResult.scenario_count -eq 0
-    }
-    $taskEvents = @(Get-Content -LiteralPath (Join-Path $taskOut 'l1.jsonl') | ForEach-Object { $_ | ConvertFrom-Json })
-    $taskPassed = @($taskEvents | Where-Object { $_.Action -eq 'pass' -and $_.PSObject.Properties['Test'] -and $_.Test -notmatch '/' }).Count
-    $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
-    # Existing usage acceptance/cleanup probes are explicit native opt-ins;
-    # default skips are not native passes. Their live environment guards above remain mandatory.
-    $taskAllowedSkips = @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestOrcaStoppedNativeProbe',
-        'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive',
-        'TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
-    $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })
-    $taskSummary.results += @{level='L1';exit_code=$taskUnitCode;test_count=$taskPassed;skipped_tests=@($taskSkips | ForEach-Object { $_.Test });evidence=$taskOut;framework_evidence=$taskFramework;native_driver_compile_exit=$taskCompileCode;native_zero_match_guard=$taskZeroGuard;terminal_extension_exit=$taskExtensionCode;terminal_extension_test_count=$taskExtensionCount;terminal_extensions_passed=$taskExtensionsPassed}
-    Save-Summary
-    if ($taskUnitCode -ne 0 -or $taskPassed -eq 0 -or $taskUnexpected.Count -gt 0 -or $taskCompileCode -ne 0 -or -not $taskZeroGuard -or -not $taskExtensionsPassed) { throw 'L1 failed, had unexpected skips, or native extension/driver guards failed' }
-    if ('Controlled' -in $Level -or $taskSelected.Count -gt 0) {
-        Write-Host 'Running controlled integration prerequisite'
-        $taskControlled = Join-Path $taskOut 'controlled'
-        $taskPattern = '^(' + (($taskCatalog.controlled_scenarios | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')$'
-        $taskControlledMinutes = 45
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -OutDir $taskControlled -Pattern $taskPattern -TimeoutMinutes $taskControlledMinutes | Out-Host
-        # The child owns the aggregate test deadline. Do not declare timeout
-        # before that contract ends; allow only result-file/cleanup latency.
-        $taskUntil = [DateTime]::UtcNow.AddMinutes($taskControlledMinutes).AddSeconds(30)
-        while (-not (Test-Path -LiteralPath (Join-Path $taskControlled 'result.json'))) {
-            if ([DateTime]::UtcNow -gt $taskUntil) { throw 'Controlled harness timed out; inspect integration.log' }
-            Start-Sleep -Seconds 2
+    # Default execution and explicit reuse share stages, never qualification shortcuts.
+    Assert-SRNoLiveOptIn
+    if($taskReused) {
+        $taskL1Record=$taskReused.manifest.stages['l1-core'].record.Clone()
+        foreach($taskStageName in @('l1-core','controlled')) {
+            $taskSourceStage=$taskReused.manifest.stages[$taskStageName]
+            $taskSummary.prerequisite_stages+=@(@{name=$taskStageName;kind='reused';original_finished_at=$taskSourceStage.finished_at;original_duration_seconds=$taskSourceStage.duration_seconds;source=$taskReused.manifest_path})
         }
-        $taskResult = Get-Content -LiteralPath (Join-Path $taskControlled 'result.json') -Raw | ConvertFrom-Json
-        $taskSummary.results += @{level='Controlled';exit_code=$taskResult.exit_code;scenario_count=$taskResult.scenario_count;evidence=$taskControlled}
+    } else {
+        $taskCore=Invoke-SRL1Core $taskRepo $taskOut $taskCatalog $taskDefaultCatalog
+        $taskL1Record=$taskCore.record
+        $taskSummary.prerequisite_stages+=@($taskCore.stage)
+    }
+    $taskPreflight=Invoke-SRNativePreflight $taskRepo $taskOut -RequireStable:([bool]$taskReused)
+    $taskSummary.prerequisite_stages+=@($taskPreflight)
+    $taskL1Record['native_driver_compile_exit']=$taskPreflight.compile_exit
+    $taskL1Record['native_zero_match_guard']=$taskPreflight.zero_match_guard
+    $taskSummary.results+=@($taskL1Record)
+    Save-Summary
+    if(($taskReused -eq $null -and -not $taskCore.passed) -or $taskPreflight.compile_exit -ne 0 -or -not $taskPreflight.zero_match_guard){throw 'L1 failed, had unexpected skips, or native extension/driver guards failed'}
+    if($taskReused) {
+        $taskSummary.results+=@($taskReused.manifest.stages.controlled.record.Clone())
+    } elseif('Controlled' -in $Level -or $taskSelected.Count -gt 0) {
+        $taskControlled=Invoke-SRControlledStage $taskRepo $taskOut $taskCatalog $taskDefaultCatalog
+        $taskSummary.results+=@($taskControlled.record)
+        $taskSummary.prerequisite_stages+=@($taskControlled.stage)
         Save-Summary
-        if ($taskResult.exit_code -ne 0 -or $taskResult.scenario_count -ne @($taskCatalog.controlled_scenarios).Count -or (Select-String -LiteralPath (Join-Path $taskControlled 'integration.log') -Pattern '--- SKIP:' -Quiet)) { throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario' }
+        if(-not $taskControlled.passed){throw 'Controlled prerequisite failed, skipped or did not execute every selected scenario'}
+    }
+    Save-Summary
+    $taskDriverArguments=@{}
+    if($taskReused) {
+        $taskCheck=Read-SRPrerequisites $taskRepo $PrerequisitesFrom
+        $taskNativeNow=Get-SRPrerequisiteSnapshot $taskRepo -Native
+        if($taskCheck.manifest_sha256 -cne $taskReused.manifest_sha256 -or -not $taskNativeNow.supported -or $taskNativeNow.fingerprint -cne $taskPreflight.input_finish.fingerprint -or (Get-SRFileDigest $taskPreflight.driver_path) -cne $taskPreflight.driver_sha256){throw 'Prerequisite or preflight identity changed before worker startup'}
+        Assert-SRFrozenBatchFiles $Config $Catalog $RunnerExe $ConfigHelper $taskSummary
+        $taskDriverArguments=@{NativeDriver=$taskPreflight.driver_path;NativeDriverSHA256=$taskPreflight.driver_sha256}
     }
     $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
@@ -187,10 +183,16 @@ try {
     $taskRunnerSHA=if($taskAssessment){$taskSummary.runner_sha256}else{''}
     $taskHelperSHA=if($taskAssessment){$taskSummary.helper_sha256}else{''}
     $taskRequirementsSHA=if($taskAssessment){$taskSummary.requirements_sha256}else{''}
-    Invoke-SRCaseBatch -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
+    Invoke-SRCaseBatch @taskDriverArguments -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
         param($Records)
         $taskSummary.results = @($taskPrerequisites) + @(Merge-SRCaseRecords -Executions $taskExpanded -Records $Records)
         Save-Summary
+    }
+    if($taskReused) {
+        $taskCheck=Read-SRPrerequisites $taskRepo $PrerequisitesFrom
+        $taskNativeNow=Get-SRPrerequisiteSnapshot $taskRepo -Native
+        Assert-SRFrozenBatchFiles $Config $Catalog $RunnerExe $ConfigHelper $taskSummary
+        if($taskCheck.manifest_sha256 -cne $taskReused.manifest_sha256 -or -not $taskNativeNow.supported -or $taskNativeNow.fingerprint -cne $taskPreflight.input_finish.fingerprint -or (Get-SRFileDigest $taskPreflight.driver_path) -cne $taskPreflight.driver_sha256){throw 'Prerequisite or native driver inputs changed during execution'}
     }
     $taskSummary.status = Get-SRBatchOutcome -Records $taskSummary.results -SelectedScenarioCount $taskSelected.Count -AuthorizedExclusions $taskSummary.authorized_exclusion_count
 } catch {
@@ -206,9 +208,10 @@ try {
         $taskSummary['first_pass_rate'] = if ($taskSummary.executed_case_count) { $taskSummary.passed_case_count / $taskSummary.executed_case_count } else { 0 }
         $taskSummary['unavailable_case_count'] = @($taskSummary.results | Where-Object { $_.ContainsKey('status') -and $_.status -eq 'unavailable' }).Count
         Set-SRLevelCoverage -Summary $taskSummary -Registered @(Get-SRCaseRegistry) -Records @($taskSummary.results | Where-Object {$_.ContainsKey('case_id')}) -Levels $Level
-        if ($taskAssessment -and $taskSummary.levels.ContainsKey('L2')) { $taskSummary.baseline.l2_verified = $taskSummary.levels.L2.complete_level_passed }
+        Set-SRQualificationCoverage -Summary $taskSummary -Executions $taskExpanded -Records @($taskSummary.results | Where-Object {$_.ContainsKey('case_id')})
     }
     $taskSummary['finished_at'] = [DateTime]::UtcNow.ToString('o')
+    $taskSummary['duration_seconds']=([DateTime]::UtcNow-[DateTime]::Parse($taskSummary.started_at).ToUniversalTime()).TotalSeconds
     Save-Summary
     if ($taskOut -and -not $ListAvailability) { Write-Host "Test report: $taskOut/summary.json" }
 }

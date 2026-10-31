@@ -1,5 +1,7 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-31 验证编排增量：独立前置和显式 L2 复用见[入口说明](testing.md#独立前置与显式-l2-复用) / [验收](acceptance/validation-reuse.md)。本轮未增删任何场景、case、内部变体或 skip 义务；L3/L4 不开放复用。
+
 2026-10-31：当前开发正向配置统一显式 full_access；read_only 专项保留。Pi/远端 smoke 及 active restart 的双权限重复项按 [Spec DFA-06](spec/development-full-access.spec.md#dfa-06测试矩阵收敛) 合并，原故障窗口与独有断言保留；历史资格不继承到当前构建。
 
 2026-10-29 退役旧 Check：当前 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。

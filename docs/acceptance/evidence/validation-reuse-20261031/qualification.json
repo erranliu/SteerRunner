@@ -1,0 +1,139 @@
+{
+  "schema": "steerrunner-validation-reuse-acceptance/v1",
+  "status": "passed",
+  "source_commit": "5c5c1653961ad08a836e82fc84f0898667864a5c",
+  "source_dirty": true,
+  "prerequisite_manifest_sha256": "cefb6558e250f1bbbae4c1c306386f84cdea73227c4d29be3acd9360a2f6adfb",
+  "prerequisite_input_digest": "3111583c205ebcff8f40cd5f4338dd77c9e96f74803b429df6dcbd6ec2b4c0d9",
+  "go_test_count": 717,
+  "node_test_count": 29,
+  "controlled_count": 25,
+  "prerequisite_stages": [
+    {
+      "name": "l1-core",
+      "status": "passed",
+      "duration_seconds": 696.6262366
+    },
+    {
+      "name": "controlled",
+      "status": "passed",
+      "duration_seconds": 1305.9495918
+    }
+  ],
+  "l2": {
+    "status": "passed",
+    "executed": 1,
+    "passed": 1,
+    "complete_level_passed": true,
+    "l2_verified": true,
+    "duration_seconds": 267.0045046,
+    "verification_seconds": 5.9195494,
+    "timings": {
+      "git_boundary_seconds": 13.4817955,
+      "total_seconds": 239.2446899,
+      "native_and_cleanup_seconds": 215.8566249,
+      "preparation_seconds": 9.2909609
+    },
+    "runner_sha256": "66fdb60ac6c5b7566b946634e6e01d61baf2890bd59088b4bbd0fed23bcfc6d1",
+    "driver_sha256": "9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae",
+    "guarded_driver_matches": true,
+    "prerequisite_execution_outputs_absent": true
+  },
+  "evidence": [
+    {
+      "file": "prerequisites.json",
+      "sha256": "cefb6558e250f1bbbae4c1c306386f84cdea73227c4d29be3acd9360a2f6adfb",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\prerequisites.json"
+    },
+    {
+      "file": "runner-build.json",
+      "sha256": "af8c680996bedf6b5baaef73f50fffa64d12b6b7700de1003d22c28d6992ce9c",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\controlled\\steerrunner.exe.build.json"
+    },
+    {
+      "file": "controlled-result.json",
+      "sha256": "12aa629a614d846bc7459bdab701f6885a26f0e5f136c5e19a33b904b9360130",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\controlled\\result.json"
+    },
+    {
+      "file": "controlled.log",
+      "sha256": "4b468ac39ed89feb9a80be929d622af6a91c01cae2a5d14a0a140de467f87f38",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\controlled\\integration.log"
+    },
+    {
+      "file": "framework-result.json",
+      "sha256": "6e363a59607f80471511e2f84a443761280dc95e4c89ce7481e14b714b4999b5",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\framework\\result.json"
+    },
+    {
+      "file": "contract-verified.json",
+      "sha256": "ca9e0dbdb35376a0c5a5213cc368f80627f307040a6b7a2693252d8a2f6391c2",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-03\\framework\\prerequisites\\verified.json"
+    },
+    {
+      "file": "contract-readonly-verified.json",
+      "sha256": "ca9e0dbdb35376a0c5a5213cc368f80627f307040a6b7a2693252d8a2f6391c2",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-contract-readonly\\prerequisites\\verified.json"
+    },
+    {
+      "file": "summary.json",
+      "sha256": "b3e9b1880e68084ef65a33c55e55848f15dbe94109c82af9e308084b12714651",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-l2-final\\summary.json"
+    },
+    {
+      "file": "case.json",
+      "sha256": "c1e87ec48f6348da5938040809ee1155f5ecba1f9fbcfd0d0c27ab00f279ef6a",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-l2-final\\local-codex.smoke-default-r1-case.json"
+    },
+    {
+      "file": "scenario.json",
+      "sha256": "b38b16c6bbe5580e03256962eb181202be26a551e226bc66653ffd952e20fee6",
+      "original": "C:\\srt\\b160f403d519\\evidence\\scenario.json"
+    },
+    {
+      "file": "result.json",
+      "sha256": "78cc9b61ce4b191b9501228cb224aceada2c01008363d40c1731b3f715825bcd",
+      "original": "C:\\srt\\b160f403d519\\evidence\\result.json"
+    },
+    {
+      "file": "source-identity.json",
+      "sha256": "8a806ee8ec8cc5a8c2d1c82a1ed5c868ef66020675524ae0ac67d4cca4b4a9c2",
+      "original": "C:\\srt\\b160f403d519\\evidence\\source-identity.json"
+    },
+    {
+      "file": "command-audit.json",
+      "sha256": "73b32e0c80ee8d71faaf44dcaa8ac65246cbf62766bf85396ea4b6bbdb2da38a",
+      "original": "C:\\srt\\b160f403d519\\evidence\\worker-command-audit.json"
+    },
+    {
+      "file": "permission-audit.json",
+      "sha256": "e9f2261f62e723c16d7411181cf47516e06932e3408323cdc8a03522d427d1cc",
+      "original": "C:\\srt\\b160f403d519\\evidence\\worker-sandbox-audit.json"
+    },
+    {
+      "file": "native-turn-audit.json",
+      "sha256": "262248758c2ece27eee333070d8b79834ce62f919cf5c2f209c64ea8b6490cec",
+      "original": "C:\\srt\\b160f403d519\\evidence\\native-turn-audit.json"
+    },
+    {
+      "file": "partial-rejected-summary.json",
+      "sha256": "88291b3d79fd46359acb9822125f069b9993d5c3deacf71487bfb4b8432c3535",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-partial-rejected\\summary.json"
+    },
+    {
+      "file": "failed-controlled-result.json",
+      "sha256": "dd90b8e8f85ef22fcb376552d2b7333118ca597613240bc20b9565f7803023ae",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-02\\controlled\\result.json"
+    },
+    {
+      "file": "failed-controlled.log",
+      "sha256": "bb3d23abdbe8d61159f0d83b353db9f50b78a2cc1f78c1b40f15a6d69742d244",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-final-02\\controlled\\integration.log"
+    },
+    {
+      "file": "creation-diagnostic-result.json",
+      "sha256": "6300a799c1220488be76f9ffae26fa97a52e8de7c478d29cfd377b34c81f0599",
+      "original": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-creation-diagnostic\\result.json"
+    }
+  ]
+}

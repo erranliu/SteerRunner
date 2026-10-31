@@ -1,0 +1,18 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "5c5c1653961ad08a836e82fc84f0898667864a5c",
+  "source_dirty": true,
+  "started_at": "2026-10-31T12:35:55.7667878Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "failed",
+  "results": [],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "prerequisite_stages": [],
+  "error": "Prerequisite controlled is missing, changed or not a direct complete success; generate fresh prerequisites",
+  "finished_at": "2026-10-31T12:37:01.4178757Z",
+  "duration_seconds": 65.6511413
+}

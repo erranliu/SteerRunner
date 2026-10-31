@@ -70,6 +70,21 @@ function Get-SRBatchOutcome {
     if ($AuthorizedExclusions) { return 'passed_with_exclusions' }
     return 'passed'
 }
+
+# Case sets remain diagnostic; qualification also requires every selected repeat
+# and a successful final batch gate. Never resurrect qualification in finally.
+function Set-SRQualificationCoverage {
+    param([Collections.IDictionary]$Summary,[object[]]$Executions,[object[]]$Records)
+    foreach($level in $Summary.levels.Keys) {
+        $complete=$Summary.status -in @('passed','passed_with_exclusions')
+        foreach($execution in @($Executions | Where-Object {$_.entry.level -eq $level})) {
+            $matches=@($Records | Where-Object {$_.level -eq $level -and $_.scenario -ceq $execution.entry.id -and $_.case_id -ceq $execution.case.id -and $_.repeat_index -eq $execution.repeat_index})
+            if($matches.Count -ne 1 -or $matches[0].status -ne 'passed'){$complete=$false}
+        }
+        $Summary.levels[$level].complete_level_passed=$Summary.levels[$level].complete_level_passed -and $complete
+    }
+    if($Summary.Contains('baseline') -and $Summary.levels.ContainsKey('L2')){$Summary.baseline.l2_verified=$Summary.levels.L2.complete_level_passed}
+}
 function Test-SRCodexVersion {
     param([string]$Version)
     $taskMatch = [regex]::Match($Version.Trim(), '^codex-cli (0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$')
