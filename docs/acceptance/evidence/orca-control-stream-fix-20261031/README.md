@@ -2,6 +2,8 @@
 
 对应[验收记录](../../orca-native-submit-control-stream.md)。源码/构建身份见 source-identity.json，
 每个公开文件的字节数和 SHA256 见 manifest.json。
+本目录的 .gitattributes 仅关闭证据文件的换行转换，保证 Git 提交中的原字节与清单一致，
+不修改用户全局 Git 配置。
 
 - before.jsonl.gz / before-exit.txt：新增首批 12 个正式流程叶例在旧生产实现上的失败。
 - controlled-summary.json / controlled-tests.jsonl.gz：原正式 controlled 入口的逐叶摘要与完整原事件。
