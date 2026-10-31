@@ -1,0 +1,57 @@
+{
+  "restart": {
+    "stage": "restart_finished",
+    "old_pid": 22492,
+    "port": 6768,
+    "proxy": "http://127.0.0.1:7897",
+    "started_at": "2026-10-31T04:06:36.0910560Z",
+    "daemon_old_pid": 10516,
+    "daemon_stopped": true,
+    "new_pid": 12088,
+    "listeners": [
+      {
+        "LocalAddress": "0.0.0.0",
+        "LocalPort": 6768,
+        "OwningProcess": 12088
+      }
+    ],
+    "finished_at": "2026-10-31T04:07:09.9515368Z"
+  },
+  "https": {
+    "endpoint": "https://chatgpt.com",
+    "result": "403 1.636074",
+    "exit_code": 0
+  },
+  "listeners": [
+    {
+      "LocalPort": 6768,
+      "OwningProcess": 12088
+    }
+  ],
+  "process_http_match": true,
+  "task_present": false,
+  "process_https_match": true,
+  "process_no_proxy": "localhost,127.0.0.1,::1,192.168.1.151",
+  "schema": "steerrunner-authorized-remote-proxy-restart/v1",
+  "user_authorized": true,
+  "runtime_id_after": "c7911c80-1c69-42bb-ab2e-db16cf81e02f",
+  "runtime_id_before": "9832f197-1f7a-4c76-b3e7-074fd12b30f0",
+  "model_unchanged": "gpt-6.1-sol",
+  "effort_unchanged": "medium",
+  "authentication_changed": false,
+  "launcher_wrapper_used": false,
+  "user_environment_keys_changed": [
+    "HTTP_PROXY",
+    "HTTPS_PROXY",
+    "NO_PROXY"
+  ],
+  "original_environment_backup": "C:/Users/liuming/orca/workspaces/SteerlineTest/sr-restart-exec-1049b75de431/proxy-env-backup.json",
+  "raw_verification_directory": ".evidence/remote-daemon-verify-da49cd1adbff",
+  "verification_cleanup": {
+    "confirmed": true,
+    "proof": {
+      "disposition": "confirmed"
+    },
+    "scope": "orca_terminal"
+  }
+}

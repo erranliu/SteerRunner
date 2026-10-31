@@ -1,0 +1,11 @@
+{
+  "scenario": "orca-remote.smoke",
+  "level": "L3",
+  "stage": "verify-original-pr",
+  "run_id": "7fa4165c985ba925500c9a2a019f808e",
+  "pr_url": "https://github.com/erranliu/SteerlineTest/pull/717",
+  "original_head": "5eb235684546ec4f02f02c0b750a99ce1af2db68",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}
