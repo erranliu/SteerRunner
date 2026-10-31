@@ -14,7 +14,7 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 `orca-remote.native-input`。真实入口为 `./scripts/test-native-input.ps1 -Target <固定目标JSON>
 -OutDir <全新目录> -Mode long-input`，调用生产通用 text+enter+原请求 ID；不读取草稿或调整视口。
 原 `segmented-shape` 手动两次粘贴试验已退出当前入口，旧证据保留。
-保真修正另由原受控入口覆盖模型桥实际 WebSocket、超16MiB回复后同连接原提交、CR参数与逻辑LF原文、仅stage不提前Started。最新235叶各30次与双端各3场证据见[专项验收](acceptance/orca-native-submit-integrity.md)。
+保真修正另由原受控入口覆盖模型桥实际 WebSocket、超16MiB回复后同连接原提交、CR参数与逻辑LF原文、仅stage不提前Started。最新239叶各30次（含生产构造器接线回归）与双端各3场证据见[专项验收](acceptance/orca-native-submit-reaudit.md)。
 确定性故障入口为 `./scripts/test-native-input.ps1 -Mode controlled -Repeat 30 -OutDir <全新目录>`，
 无需真实目标，输出每个叶例及总执行/失败/跳过计数；它不是实际 Orca L3 资格。
 目标 JSON 含 `Worktree`（完整 `id:repo::path`）、`Runtime`、`Environment`、`CLI` 和

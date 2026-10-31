@@ -23,7 +23,8 @@
 | 本机认证 | [沙箱认证](sandbox-authentication.md)、[个人多机与 gh-only](personal-runner-gh-only-20261019.md) |
 | 旧 Check 退役 | [删除契约、消费者和验证](check-retirement.md) |
 | Orca CLI 等待/读取重试 | [专项实施与独立验收](orca-cli-wait-retry.md)；local/remote 分目标、保留失败与清理证据 |
-| Orca 原生输入保真 | [最新验收与原始证据](orca-native-submit-integrity.md)：统一CR传输编译、原生模型桥128MiB上限及正式开始凭据；同源双端各3/3、7050次稳定回归，L1与最终独立复审通过，边界按报告登记；历史失败不改判 |
+| PR73再审计 | [查询接线与证据范围修正](orca-native-submit-reaudit.md)：生产构造器本机原输入查询、7170次矩阵/L1及新源双端各3场；无helper本机真实与远端实际模型均未独立核验 |
+| 先前Orca原生输入保真 | [最新验收与原始证据](orca-native-submit-integrity.md)：统一CR传输编译、原生模型桥128MiB上限及正式开始凭据；同源双端各3/3、7050次稳定回归，L1与最终独立复审通过，边界按报告登记；历史失败不改判 |
 | Orca 当前路径 | [连接统一](orca-local-remote.md)、[远端原生](orca-remote-native.md)、[通用 Agent](orca-generic-agent.md)；旧 helper 结果不证明新远端能力 |
 | 停止及资源范围 | [初始化停止](initialization-stop.md)、[Orca 停止取证](orca-shutdown-verification.md)、[停止验证](shutdown-verification.md) |
 | 原会话与进度查看 | [原会话查看](native-session-viewer.md)、[执行可见性](execution-observability.md) |

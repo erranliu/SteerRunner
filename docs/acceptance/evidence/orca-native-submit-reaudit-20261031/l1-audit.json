@@ -1,0 +1,14 @@
+{
+  "source_digest": "c21d915a6d5ce1d03e7b437b94048614781052312279076ac2cb678f2c3ad894",
+  "status": "passed",
+  "top_pass": 722,
+  "pass_including_subtests": 2735,
+  "failed": 0,
+  "test_skips": 17,
+  "no_test_packages": 1,
+  "passed_packages": 34,
+  "framework_checks": 24,
+  "extensions": 29,
+  "driver_compile": 0,
+  "zero_match_guard": true
+}

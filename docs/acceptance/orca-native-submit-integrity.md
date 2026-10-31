@@ -1,5 +1,7 @@
 # Orca 原生输入保真与正式开始凭据验收
 
+后续再审计确认597d669仍有普通本机无helper查询接线P2，旧审计漏掉了这一组合；其中泛称六场模型/effort已核验也超出证据，实际history模型证明仅在本机managed核验，远端只有冻结启动偏好、实际model/effort未独立核验。本页保留原构建已执行的测试与六场结果，原放行结论由[本轮再审计](orca-native-submit-reaudit.md)替代，不代表新源资格；原Spec/Plan可按597d669历史版本核对。
+
 2026-10-31。对应 [Spec §4.1](../spec/orca-native-submit.spec.md)、[Plan P0.1](../spec/orca-native-submit.plan.md) 和 [PR #73](https://github.com/erranliu/SteerRunner/pull/73)。本次冻结源码的稳定回归 **7050 通过、0 失败、0 跳过**；全新本机 **3/3**、远端 **3/3** 原生会话通过。项目L1及最终独立补充复审均通过，无未修P0–P2；按本报告证据边界放行。
 
 本记录追加新构建资格，不改变[上一批本机三场失败](orca-native-submit-control-stream.md)或历史未知 Run。未向旧 Run 重发或补 Enter，未部署安装、修改 Orca、用户全局配置、SteerLine 或业务检测材料。
@@ -65,7 +67,7 @@
 
 每场 Runner 通用业务 send **1 次**、text-only **0**、单独 Enter **0**、业务屏幕读取 **0**、请求不匹配 **0**。宿主内部按键/恢复次数不可观察，不从一次 Runner RPC 推断一次底层按键。本机每场逻辑 wire 5093 字节/201 LF，实际参数 201 CR/0 LF；远端 4694 字节/200 LF，实际参数 200 CR/0 LF。正式原输入均逐字等于原逻辑 wire，未用放宽规范化消除差异。
 
-六场原回执 input_accepted 成立，初始业务 Started=false；随后原正式输入/turn 证明 Started，并核验原模型/effort、完整 final nonce 和完成归属。本机还离线核验原退出签名、writer/reader absent、原认证撤销/broker关闭/socket清理及 control closed。远端保留原 NativeProof/query 与 `orca_terminal` 正式停止范围，不声称远端整机树或全局凭据清理。
+六场原回执input_accepted成立，初始业务Started=false；随后原正式输入/turn证明Started，并核验完整final nonce和完成归属。本机managed另核验实际模型/effort；远端只有冻结启动偏好，实际模型/effort未独立核验。本机还离线核验原退出签名、writer/reader absent、原认证撤销/broker关闭/socket清理及 control closed。远端保留原 NativeProof/query 与 `orca_terminal` 正式停止范围，不声称远端整机树或全局凭据清理。
 
 停止后每场原 host 的完整 census 为空，紧接公开 worktree rm 后再逐一查询得到原 runtime 的 selector_not_found；本机路径另核实不存在。rm 的原异步回执为 removing=true，不能把它本身改写为同步 removed=true；最终目录不注册由后续只读查询证明。远端未独立查询物理路径不存在，不扩大该结论。本机 census 中 omitted 的其它环境不是被清理对象。
 

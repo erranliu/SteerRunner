@@ -1,118 +1,82 @@
-# Orca 多行输入屏幕草稿依赖修复 Spec
+# Orca 原生输入通用提交 Spec
 
-日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：窄范围代码及后续授权修正已实施。最新冻结源的7050次稳定回归、本机3/3、远端3/3全新原生会话通过；完整L1与最终独立归档复审均通过，无未修P0–P2。见[最新保真验收](../acceptance/orca-native-submit-integrity.md)。此前[持续读取批次](../acceptance/orca-native-submit-control-stream.md)的本机0/3保持失败，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+2026-10-31。PR #73；主线基线 `a086a9984dc0bd32b3f02b9698cd26c9ba313d90`，本次再审计基线 `597d669`。配套 [Plan](orca-native-submit.plan.md)。
 
-原存档构建的本机补验为 3/3，原请求、原文/模型/final及正式停止认证均通过；当时用户新指定的远端
-`192.168.1.151` 已达 3/3，保留原 NativeProof/原输入/final及 `orca_terminal` 正式停止范围。
-见[本机最终记录](../acceptance/orca-native-submit-local-final.md)。本机测试目标须具备与正式
-workflow 相同的既有 writer/audit 冻结配置，不清空 Turn.Model 或放宽模型凭据校验。
+当前再审计修正已实施：冻结源 `c21d915a6d5ce1d03e7b437b94048614781052312279076ac2cb678f2c3ad894`，正式矩阵 239 叶各 30 次＝7170/0/0，原查询回归 450/0/0；完整L1与新源managed本机3/3、远端3/3均通过，最终独立补充复核通过，无未修P0–P2；按本Spec及验收报告边界放行。原构建资格不能平移为本次通过。
 
-远端测试适配仅补独立身份、原 operation/input/receipt 归档和既有正式 stop，未修改生产链路。
-准备与业务共用现有本机同等六分钟 fixture 总期限，删除测试专属 90 秒上限；只读等待原 READY，
-不增加发送或重试预算，生产时限不变。此前三份准备失败仍不计资格，也不声称冷启动 SLA 达标。
+## 1. 边界与单一提交路径
 
-本版替代上一版整条执行/完成链路统一方案。M1本机模型控制、长final迁移退出本次范围，不再作为修复前置；这些能力并未迁移或验证等价。旧审计结论仅适用于对应旧版。2026-10-30，design_audit与final_review独立只读复审本版均无P0–P2文档发现；此结论不代表生产实施或真实验收完成。
+删除原远端普通 Codex 多行专用 paste/草稿/Enter 分支，所有本机与远端原生 Codex 进入既有通用 `terminal send --text --enter --retry-request <原请求ID>`；仅目标路由不同，不新增本机专用 runtime、凭据或完成旁路。
 
-## 1. 修改边界
+保留进入发送前的冻结正文、wire 包装、预算和规范化。普通 Codex 继续 CRLF→LF、去尾 CR/LF，内部空白和空行保持；所有原生 Codex 在同一 send 前将逻辑 LF 编译为终端 CR，Codex paste 规范化恢复 LF。原逻辑 wire/hash/预算不变，实际 CLI 参数摘要单独记录，正式原输入必须精确匹配原逻辑正文。保留原草稿输入范围的 NUL/ESC 拒绝，检查位于传输编码之前。
 
-只修当前远端普通原生Codex多行输入依赖屏幕草稿的问题：移除submitNativePaste分支，让它进入lifecycle.go已经存在的通用terminal send路径。单行、多行、本机、远端使用同一种Orca通用提交能力，不再按多行选择Runner手动paste/Enter算法。
+不修改 Orca，不引入新或实验性 Orca API、提交重试/预算、固定 sleep、request-show 恢复、第二套状态机、codec 字段/版本、通用执行框架、兼容回退或实验模式。不增加环境检测、项目脚本专用分支，不改业务材料，不部署安装或修改全局配置。
 
-**保留进入提交前的正文编译，保留提交后的原有执行与完成流程。** 本机native-command/model包装、模型/effort及clientUserMessageId传递、observeRecorded/history reader和32KiB结果能力不迁移；远端NativeProof、queryOriginalInput/新done补证也不替换。本机与远端既存的准备、认证、正文包装及完成证据来源不要求在此修复中重构为同一实现。保留这些已有流程不代表新增本机旁路、runtime或凭据。
+本机既有native-command/model、实际模型/effort/clientUserMessageId、recorded history与32KiB结果能力保留；远端既有NativeProof、正式原输入和新done证明保留。远端仅冻结启动模型偏好，实际model/effort未独立核验、audited不支持，不得概括为两端实际模型证明等价。既存准备、认证和完成来源不在本次重构为一套；这不代表新增目标专用实现。
 
-不修改Orca，不用实验开关、私有API或安装包内部函数作生产依赖。不增加提交重试、重试预算、固定sleep、request-show生产恢复、状态机、codec字段、通用框架或兼容回退。其它agent extension、业务脚本、SteerLine/Unity和环境检测不在修改范围；不部署安装环境、不改全局设置或历史证据。
+## 2. 五种事实与权威边界
 
-2026-10-30 用户追加授权本机补验发现的最小读取修正：`controlLines` 和
-`readLocalCodexReadiness` 显式使用公开 cursor 原始流，不拼接屏幕行或回退默认读取。
-2026-10-31 复审发现：不能把准备阶段的全历史完整门禁用于持续控制查询，否则正常累积
-超过 1000 行或淘汰旧前缀后会永久拒收。此次修正区分读取目的：
-
-- control READY 与本机 launch READY 仍从 cursor 0、limit 1000 读取，要求保留起点、
-  `source=stream` 和明确未截断/未受限；空的完整流仍按原 pending 处理。
-- 持续 original-turn/workspace-audit/authentication-stop 查询从 cursor 0 读取当前保留窗口，
-  允许第一次读取报告旧前缀淘汰；若 limited，按公开 nextCursor 读取后续页，最多扫描到
-  首次读取的 latestCursor，不追赶新增输出。每页验证原 runtime/terminal/incarnation、
-  来源与 cursor 元数据；中途丢页、cursor 不前进/倒退、身份变化或取消均失败并保留原因。
-  仍由原解码、请求 ID/binding/request digest 和各类正式证据决定是否采纳响应。
-
-分页只在这一次只读查询内使用局部变量，不新增持久 cursor、状态机、重试预算或发送。
-保留原 checkpoint、未知处理、提交/模型/完成/停止算法；此前真实会话仅证明其存档构建，
-不能自动成为本次读取增量的真实资格，也不将此前失败改判为通过。
-
-## 2. 当前事实与提交契约
-
-基线lifecycle.go在Environment非空、Terminal为空、agent=codex、WireFormat为空且正文含LF时调用submitNativePaste。该路径做text-only手动bracketed paste、屏幕草稿比较/双稳定/可能resize，最后单独Enter；其余路径已经调用通用text+enter。普通本机Codex不进入这一草稿分支。
-
-Orca CLI只有同次text+enter且非interrupt才启用agentPrompt及durable请求绑定。修复后复用既有调用：
-
-```text
-terminal send --terminal <原终端> --text <既有编译后的正文>
-              --enter --retry-request <原请求ID> --json
-```
-
-保留wirePrompt/nativePromptText与输入预算的先后关系。普通Codex正文继续CRLF→LF、去尾CR/LF，不改变内部空白和空行；本机既有wire不改成普通正文。移除的是Runner附加的ESC bracketed框架，不能把框架再交给Orca净化后包装。原草稿分支NUL/ESC拒绝检查保留在该受影响输入的发送前，不顺手改变其它agent的输入范围。
-
-既有通用调用的等待规则保持：NativeRemoteProfileVersion使用现有--wait-submit 20和50秒CLI上限，其它既有路径保持原参数，调用方更短期限优先。不统一等待策略、不增加预算；受影响多行改走此入口后会继承远端既有20秒开始观察，区别于原40秒草稿流程。该观察不重发原输入，不保证一定取得turn_started。CLI整次调用持共享锁，新增多行使用它可能延迟其它Run的观察/停止，甚至耗尽其原期限；必须通过Plan的多Run锁与取消回归。排队和执行共用原deadline，取锁不刷新期限；排队取消的CLIQueueError表示回调未执行，不保证stop抢占或所有排队调用成功。若暴露死锁、取消后派发、期限刷新、错误成功或违反既有停止约束，修订提交范围再审计，不临时造锁、轮询器或分支回退。
-
-提交回执仅做必要的原生Codex校验：保留runtime/terminal handle/requestId/processIncarnation绑定、CallUncertain及错误检查；确认provider=codex、observation=supported及阶段一致后才采纳受理。Codex 的 turn_started 阶段仅保留为原回执提示，不能直接发布原业务 Started；原输入和原 turn 的正式查询才建立开始事实。复用现有解析和Turn事实，不建立第二个回执层，也不改变其它agent契约。unsupported、old-host、缺字段、incarnation_replaced或未知值不升级为成功；permission沿原阻断语义。明确拒绝与未知保留区别，未证明调用前无副作用时不能报成“未发送”。
-
-能力预检不能排除宿主未识别前台agent时内部raw发送。因此Runner不主动选择raw或fallback，并不保证Orca内部不存在raw或held-Enter恢复；异常回执可能已有副作用，禁止追加正文、补Enter或换ID重试。已发布通用入口是提交顺序的承担者；当前没有独立的原子消费全文/任意人工写者排他证明，不能把事后原输入核验冒充执行前保证。
-
-## 3. 五种事实及权威来源
-
-| 事实 | 权威来源与能证明什么 | 不能证明什么 |
+| 事实 | 原权威来源及能证明什么 | 不能证明什么 |
 | --- | --- | --- |
-| 传输写入成功 | 原传输/调用回执，按实际settlement解释 | bytesWritten不证明TUI完整消费、开始或完成 |
-| 完整输入提交 | Runner向Orca通用入口一次交付既有编译后的完整正文及Enter，由Orca负责framing、处理与提交顺序 | 无新增committed或全文消费摘要；不能承诺原子消费或所有人工写者排他 |
-| 原请求accepted | 原runtime/terminal/incarnation/request绑定、可验证provider/observation的send.prompt受理回执 | 不等于开始、完成或完整正文证明 |
-| 原任务started | 原有history中的唯一匹配原输入及turn，或远端独立唯一原输入与新done补证 | accepted、Orca turn_started、普通working、idle、屏幕变化不能单独认领原任务 |
-| 完成及结果归属 | 本机原recordedTurn/validateRecordedTurn；远端原NativeProof/正式原输入查询、主代理新done与完整final；保留各自唯一性、身份和冲突核验及workflow验证 | mutation completed不是模型完成，模型完成也不是业务交付成功 |
+| 传输写入成功 | 原调用/传输回执，按 settlement 解释 | bytesWritten 不证明 TUI 全文消费、业务开始或完成 |
+| 完整正文交付 | Runner 冻结并一次交付完整编译正文和 Enter，Orca 通用入口承担 framing/处理/提交顺序 | 无新增全文原子消费 ACK 或摘要，不承诺任意人工写者排他 |
+| accepted | 原 runtime/terminal/incarnation/request 绑定且 provider=codex、observation=supported、阶段一致的原回执 | 不是 started、completed 或全文消费证明 |
+| started | 本机 managed 原 history 唯一原输入/turn；普通原生的独立唯一原输入及新 done 补证 | send 的 turn_started、working、idle、READY 或屏幕变化不能单独认领原业务 |
+| completed 及结果归属 | 本机原 recordedTurn/validateRecordedTurn；普通原生原 NativeProof/完整原输入/新 done/完整 final，保留唯一性、冲突和 workflow 校验 | mutation completed 不等于模型完成；模型完成不等于业务交付 |
 
-继续先冻结Turn.Prompt/InputDigest、wire与原operation intent，再执行唯一提交。保留ProcessIdentity、session、runtime、terminal、incarnation、pane/provider、command/request、authority/revision和回合基线；accepted、started、settled各自判定，不降低工具/旧结果排除和完整性围栏。
+先冻结 Turn.Prompt/InputDigest、wire、预算和 operation intent，再进行唯一提交。保留 runtime、terminal、incarnation、session/provider/pane、command/request、authority/revision、原回合基线和资源所有权绑定。accepted、started、settled 分别判定，不降低工具输出、旧结果、重复输入、模型或完整性围栏。
 
-保留既有准备、权限、原资源检查、Runner串行化和已知并发/外来输入冲突阻断。删除草稿前置空检查与全文比较后，不能再宣称能通过屏幕排除已有草稿；idle也不能证明草稿为空。已知有他人输入或身份/会话冲突则阻断，不清空或合并。任意人工输入竞态/未知草稿能否在执行前完全排除仍未获证，真实验证须记录边界；本次不以修改Orca或恢复屏幕全文比较补造保证。
+提交阶段由原通用入口负责顺序，Runner 保证原身份的一次完整参数交付、统一编码和未知不重复；事后正式原文核验不能阻止错误文本已经执行。不得把它改称执行前原子消费保证。保留准备、权限、原资源核验、串行化和已知外来输入/身份冲突阻断；已知冲突不清空或合并。idle 不证明无草稿，任意未知草稿或人工输入竞态的完全排除仍未获证。
 
-## 4. 未知回执沿原流程处理
+## 3. 受理、开始和未知处理
 
-发送超时、回执丢失或不可验证时，沿现有错误、operation journal、Reconcile和observer保留原身份、原因与未知事实，不新增查询/重试入口。不再次调用send，不补Enter，不换ID、不建替代资源或重派历史Run。不能因同ID曾有去重就重放send；mutation记录可能被清理。
+沿用原 runtime/handle/request/incarnation/CallUncertain 与错误校验；Codex 只接受 input_accepted，或依次 input_accepted/turn_started。unsupported、old-host、缺字段、替换、未知阶段不升级成功，保留原因及原回执；可能有副作用时不能谎报“未发送”。
 
-不新增orchestration request-show接线、计时器或恢复循环。该接口已核实存在，仍保留为调查事实，不列为本次生产依赖或正常完成门禁。丢失accepted时，现有observer可能因缺受理证明而无法认领完成；本次不承诺恢复这种缺失回执，按原期限/错误处理明确保留未知，不能伪造accepted或改称确定未执行。
+Codex 的 turn_started 只保留为宿主提示，不设置业务 Started 或发布 EventStarted。本机 managed 继续 observeRecorded；普通原生继续 queryCompletedOriginalStart。后者可能直到 done 才建立开始事实，之前不发布依赖 Started 的 working。其它 agent/extension 规则不变。
 
-正常accepted后使用原有观察。首次只有accepted不能提前started/completed；远端既有queryCompletedOriginalStart仅在原身份、唯一正式原输入及新done充分时补证，本机沿原history读取。保持working依赖Started的既有规则，不新建开始轮询器。已有强事实/完整final/持久冲突不得因弱回执或后续观察缺口被清除。
+发送超时、回执丢失或不可验证，沿原 operation journal、Reconcile 和 observer 保留身份、原因及未知事实；不再次 send、不补 Enter、不换 ID、不建替代资源、不重派旧 Run。同 ID 也不构成安全重投许可，原 mutation 可能已清理。缺 accepted 的旧流程不承诺恢复完成，不能伪造 accepted 或确定未执行；已有强事实和冲突不能被弱观察清除。
 
-## 4.1 2026-10-31 本机正文保真与凭据修正
+NativeRemoteProfileVersion 保留既有 --wait-submit 20 和 50 秒 CLI 上限，其他路径参数不改，更短调用方期限优先。观察不重投，CLI 仍持原共享锁；排队和执行共用原 deadline，取锁不刷新，不保证 stop 抢占或全局 FIFO。不得另造锁、轮询器或回退规避锁回归。
 
-用户授权修复只读调查发现的问题并重新验证。原三场失败保持失败：CLI 正文均 5093 字节，精确原 session 的 Codex 提交历史只剩 5079/5077/5077 字节，仅丢失 14/16/16 个 LF；原回执均有 turn_started、initial_start_confirmed=true，但正式历史没有对应业务 turn。不能据此唯一归因到 Orca、ConPTY 或 Codex 的具体函数，当时也不能宣称 LF→CR 已验证。旧16MiB桥接仍断连时，单独CR候选也丢失8个LF；只修128MiB并保留LF的后续本机三场为2通过/1缺2个LF。因此限额断线不能解释全部正文损坏，不将任一单独修正冒称完整修复。
+## 4. 原始控制读取
 
-最小增量只有四处：
+READY/control 与本机 launch READY 从公开 cursor 0、limit 1000 读取，要求原 stream、保留起点、明确未截断/未受限及原身份；完整空流仍 pending，不拼接屏幕行。
 
-- 模型桥对 rewrite 拒绝返回原 JSON-RPC id 的结构化错误，不把该请求转发给原 server，不断连伪装成传输未知，不重试。无 request id 的非法消息关闭连接，不能伪造请求身份。保留认证、单活动连接、原线程、正文摘要、冻结模型与 clientUserMessageId 规则；错误不包含正文或凭据。
-- 原生 Codex 不再把 send 回执阶段直接提升为业务 Started；本机继续 observeRecorded，远端继续 queryCompletedOriginalStart。未得到既有正式证明时保持未证实，即使运行中只能等到 done；不新增开始查询、字段、状态机或回退。其他 agent/terminal extension 语义不变。
-- 模型桥上游 WebSocket 消息上限从 16 MiB 对齐到原生 Codex remote client 已有的 128 MiB 有界上限；下游 2 MiB 输入边界保持。诊断原始流直接捕获 16777217 字节处 read-limit 错误，随后下游取消和重连；大元数据请求先于业务发送，首断发生在正文处理中。不是 Orca 提交 API 的缺口证据。冻结逻辑正文、wire、摘要和预算保持原规则，不增加启动等待、配置开关或重连逻辑。
+持续 original-turn/workspace-audit/authentication-stop 读取当前保留窗口：首读可报告前缀淘汰；按 nextCursor 分页，只读到首次 latestCursor，不追赶新输出。逐页前后核验原 runtime/terminal/incarnation，核验来源、cursor 单调性及完整行；中途丢页、倒退、无进展、身份变化或取消失败并保留原因。分页仅用本次查询的局部变量；沿原解码、request/binding/digest 和 checkpoint 决定采纳，无持久 cursor 或新发送机制。
 
-- 所有原生Codex在同一通用send前将逻辑LF编译为终端粘贴CR；位于既有控制字符拒绝之后，两端/单多行/既有wire格式共用同一规则。Codex既有paste归一化恢复LF；不改逻辑wire/hash/预算或模型桥正文检查，不增加LF回退。分别记录实际CLI参数摘要与原逻辑wire摘要，正式history/query必须逐字等于逻辑wire，不能对损坏正文放宽归一化。
+### 4.1 模型桥保真与提交阶段
 
-消息上限与CR传输编译的组合已完成大回复/同连接原提交确定性测试、原模型桥摘要核验和同一冻结源的双端各三个全新独立原生会话。24根235叶各30次=7050/0/0，双端各3/3；完整L1与最终独立归档复审均通过，按验收报告边界放行，逐场身份/原字节见最新保真验收；失败不重投、不补 Enter，保留失败记录，不保留先前LF实现的兼容路径、诊断探针或实验模式。不把成功归因扩写为已唯一定位下层缺陷或证明任意人工输入排他。原输入/模型/final/正式 stop 证明不变；不部署安装或修改 Orca/全局配置。
+原生模型桥上游消息上限从 16MiB 对齐既有 Codex 原客户端的 128MiB 有界上限，下游 2MiB 不变。真实诊断已有 16777217 字节 read-limit 首错和完整 23,771,840 字节回复证据。限额断线不能解释全部缺 LF：单独 CR/16MiB 和 128MiB/LF 都曾失败，不能把任一单项或诊断会话计为完整通过。
 
-## 5. 删除与保留清单
+rewrite 拒绝时向原数字/字符串 RPC id 返回结构化错误，零转发、不重试、不以静默断连掩盖原因；缺失/非法 id 关闭连接，错误不带正文或凭据。认证、单活动连接、原 thread、冻结正文/模型及 clientUserMessageId 约束保持。不得以安装包内部函数作为生产依赖。
 
-最后L1另暴露既有RPC单元夹具listener.Close挂死，原12分钟超时保持失败。仅测试文件沿用仓库已有stop/wake停Accept顺序，失败仍报错并关闭活动连接/等待worker；无依赖升级或生产RPC改动。修后IPC990/0/0、controlled7050/0/0使用b3a642…5c91新测试源，L1通过721顶层/2730含子例、0失败，17明确跳过另列。六场c8资格保留，逐文件证明唯一差异为未参与live/agent的单元夹具，agent重建字节相同；不声称所有检查全源相同。
+### 4.2 再审计：普通本机正式原输入查询
 
-| 对象 | 本次处置 |
+597d669 的 P2 回归：Started 收紧覆盖所有原生 Codex，但 NewLifecycle 仅给远端接入 queryInput。development/2 仍允许非 GitHub、无 managed helper 的本机 Codex，其 WireFormat 为空；既不走 observeRecorded，也无独立原输入查询，accepted 后无法恢复 started/completed。
+
+最小修正取消既有 queryInput 闭包的远端限定，继续由同一个 QueryOriginalInput 和 Environment 路由目标。保留唯一完整原文、原 process/terminal/session 的前后围栏与新 done 判定；不恢复 send 阶段授权。本机 managed 仍走 observeRecorded，其他 agent/extension 不进入 Codex 原输入补证。没有新增查询 API、完成算法、runtime、凭据、状态或回退。
+
+生产构造器回归不注入 Started/queryInput，实际 IPC 计数证明查询发生一次；thin/corroborated 正例及 duplicate/altered 反例覆盖中文、空行、CRLF、超过预览的长文。本次既有正式本机目标为 GitHub/managed，未覆盖无 helper 的非 GitHub 真实目标，确定性 IPC 证明不能冒称该分支真实通过；managed 本机新现场只证明其自身路径。
+
+## 5. 清理与保留
+
+| 对象 | 处置 |
 | --- | --- |
-| submitNativePaste及native_paste.go | 删除手动paste/Enter、草稿全文/标签匹配、显示LF推断、双稳定、250ms轮询、40秒专用期限；迁出受影响输入的控制字符检查 |
-| fitComposer/composerViewport | 删除Lifecycle字段、初始化和调用；删除仅为正文匹配存在的FitBoundComposer/ComposerViewport、ViewportRPC/Recorder、fit/restore回执与terminal_viewport.go专用实现/测试 |
-| 专用测试、fixture、probe、脚本和文档 | 删除native_paste*、native_reflow及草稿/resize专用断言；live probe取消手动分段paste与segmented-shape门禁，改验实际通用提交；迁移内容、身份、未知/并发反例，保留正式原输入/final/清理断言 |
-| wire与模型 | 保留prepareInput、freezeWireInput、nativeWireText、wirePrompt、native-command/model、remote_models及实际模型核验，不改正文身份与预算 |
-| 原输入/完成/停止 | 保留NewLifecycle现有查询接线、native_start/native_state、observeRecorded/helper reader、reply上限、准备/认证/资源所有权、stop与清理，不重构或统一来源 |
-| 状态与旧记录 | 复用Turn/operation receipt/现有codec，不新增字段或版本，不自动迁移旧未知为已受理；历史evidence保留原字节与失败结论 |
+| native_paste.go / submitNativePaste | 删除手动 paste/Enter、草稿全文/标签匹配、显示换行推断、双稳定、专用轮询/期限 |
+| fitComposer/composerViewport/terminal_viewport.go | 删除正文匹配用的 fit/restore、相关字段、RPC/Recorder、回执、实现及专用测试 |
+| native_paste*/native_reflow/segmented-shape | 删除专用测试、模式和配置；内容/身份/未知反例迁入通用行为回归，live probe 不再分段手动 paste |
+| wire/model/history/NativeProof | 保留逻辑规范化、预算、模型、正式原输入/final；普通本机仅补既有查询接线 |
+| 准备/认证/stop/codec | 保留原证明链和所有权范围；不增加字段或迁移旧未知为成功 |
+| 活动文档与历史 | 活动 Spec/Plan 只描述当前路径；历史验收、原字节和失败结论原样保留 |
 
-全仓按引用确认屏幕专用项无残留；共享WaitTimeout、通用terminal read能力、其它agent/extension测试不因同名误删。本次“旧路径清理完整”只指草稿提交路径，不包括本来就存在的模型和完成流程。只保留一条Runner通用提交算法，不新增旧host回退或实验模式。
+逐引用搜索确认屏幕专用项无生产残留，保留共享 WaitTimeout、通用 terminal read 及其它 agent 所需能力。RPC 单测夹具的 stop/wake 停 Accept 后 Close 修正仅在测试中保留，不升级依赖、不改变生产 RPC、预算或清理判定。
 
 ## 6. 验收与交付
 
-Plan的NS-T01–T10映射既有正式入口、条件与证据；实现时登记实际测试名/case ID。核心确定性故障各目标每叶例30次，报告执行/失败/跳过；夹具控制延迟、分段、顺序与故障点，按请求身份、实际调用及字节/摘要核验，不靠固定sleep或重放同一快照充数。
+测试 ID、入口、条件和证据见 Plan 的 NS-T01–T15。核心确定性每叶各 30 次，夹具用 channel/屏障控制延迟、分段、顺序和故障位置，以实际调用、请求身份、正文/摘要和正式证明判定；报告执行/失败/跳过，不能以单快照重复替代覆盖。完成项目 L1、受影响正式 L3/controlled 及独立复核。
 
-实施后完成项目规定检查、正式L3/稳定回归与独立复审。真实验证在全新隔离现场，以无副作用最小任务，本机/远端各至少3个独立native session，记录原请求、实际Runner通用提交次数、accepted/started/completed证据、正式原输入/final与精确停止清理。一次RPC不等于一次底层按键，宿主内部不可观察次数记不可观察；缺条件标未验证。
+新源采用隔离构建的现有 Runner agent；全新本机与远端各至少三个独立原生会话，仅无副作用 nonce 任务。记录源/EXE/CLI摘要、Run/request/runtime/terminal/incarnation/session、accepted/started/completed、原文/final及正式 stop/完整原 host 空清单。Runner 一次 RPC 不等于宿主一次按键，不可观察次数如实标记。远端 stop 范围仍为 orca_terminal；物理路径未独立核验不得宣称消失。
 
-模型与长结果仅做既有能力不退化的回归，不要求先迁移、重新证明两端等价或用六个短任务替代这些既有测试。不跑Unity、业务完整交付或创建业务PR。原窄范围提交修正已有双端各三个真实会话及一次远端重跑记录；本次持续控制读取增量的检查、复审与未验边界另行登记，不宣称完整复现或修复历史原生故障。更新原单独 PR，不合并或部署。
+不重跑业务/Unity或创建业务 PR；更新原 PR #73，不合并或部署。缺少真实条件如实标未验证。历史 dirty 原源码未恢复，不宣称完整复现或修复历史原生故障。
+
+历史与原字节分别见[原实现](../acceptance/orca-native-submit-implementation.md)、[原双端验收](../acceptance/orca-native-submit-remote-final.md)、[持续读取批次](../acceptance/orca-native-submit-control-stream.md)、[保真与开始凭据批次](../acceptance/orca-native-submit-integrity.md)；各批资格互不平移，失败不改判通过。
