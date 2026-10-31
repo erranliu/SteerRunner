@@ -3,6 +3,8 @@
 日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 状态：按用户授权实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正另见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)；原实数及边界见[远端最终验收](../acceptance/orca-native-submit-remote-final.md)和[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
 
+最新读取增量：6150 次稳定回归与项目 L1 通过；新构建真实远端3/3、本机0/3。失败与正式清理凭据保留，当前PR保持Draft，不将原构建资格平移为当前通过。
+
 ## P0 固定范围与基线
 
 复核lifecycle.go的受影响条件：远端、普通Codex、无extension/wire、多行→submitNativePaste。其余路径已有通用text+enter。本次仅删除这条手动分支、屏幕附属依赖并增加必要回执校验；原wire与逻辑输入摘要、模型设置、本机history和远端NativeProof、prepare/auth/stop/codec均保持。M1不再是实施前置，也不保留其迁移任务供实现阶段展开。

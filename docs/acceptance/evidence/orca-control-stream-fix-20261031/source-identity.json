@@ -1,0 +1,26 @@
+{
+  "source_digest": "232b050240b7a17ecd1766de28dc56f298598ef11a79a64141978d29823a6a8d",
+  "baseline": "2beeb90c512f9434292fc7f93279d604ed61e342",
+  "agent_sha256": "c06abe33f9be90322af4b7fc0a7a5d445d82d94bcf52148650fca00b5970bf2d",
+  "test_exe_sha256": "65267770abd96a2d617ce164b8e0251d382aece27d2aa6de53eced58dfa1709b",
+  "production_paths": [
+    "internal/execution/adapters/orcatransport/control_terminal.go",
+    "internal/execution/adapters/orcatransport/control_checkpoint.go"
+  ],
+  "production_sha256": [
+    {
+      "Path": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\internal\\execution\\adapters\\orcatransport\\control_terminal.go",
+      "Hash": "DB7DEE1C3903D833163263BFFD3B6BCD37DF13907CC01FF45CDEE2FD33E19F30"
+    },
+    {
+      "Path": "C:\\Users\\lmas1\\.codex\\worktrees\\8ed5\\SteerRunner\\internal\\execution\\adapters\\orcatransport\\control_checkpoint.go",
+      "Hash": "B2DF83D0E2490AA85356D7A6953A97F5CCFDDB257DE778188F9776ACA994EEBC"
+    }
+  ],
+  "framework_tests": 24,
+  "l1_passed": 717,
+  "l1_passed_with_subtests": 2700,
+  "skipped_tests": 17,
+  "skipped_no_test_packages": 1,
+  "code_commit": "cf29e1484f38b8e98e87e1c6505cdc96da8cbdb4"
+}

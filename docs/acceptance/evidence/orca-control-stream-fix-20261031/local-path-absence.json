@@ -1,0 +1,23 @@
+[
+  {
+    "git_registered": false,
+    "session": "local-01",
+    "path_exists": false,
+    "runtime": "92c410b8-3132-4c48-a07f-2888faa81c53",
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-control-fix-local-7e5aca1a"
+  },
+  {
+    "git_registered": false,
+    "session": "local-02",
+    "path_exists": false,
+    "runtime": "92c410b8-3132-4c48-a07f-2888faa81c53",
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-control-fix-local-90d998d8"
+  },
+  {
+    "git_registered": false,
+    "session": "local-03",
+    "path_exists": false,
+    "runtime": "92c410b8-3132-4c48-a07f-2888faa81c53",
+    "path": "C:/Users/lmas1/orca/workspaces/SteerlineTest/codex-sr-native-control-fix-local-e7ad2518"
+  }
+]

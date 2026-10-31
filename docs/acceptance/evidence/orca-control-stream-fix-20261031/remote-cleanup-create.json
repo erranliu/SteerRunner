@@ -1,0 +1,22 @@
+{
+  "id": "cfd5a6af-c0b8-4384-a4f0-84fcda4efbb1",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "processId": 15544,
+      "handle": "term_aed764ac-6ae0-4b78-ad06-75cde55b2b8c",
+      "tabId": "31c5999f-77ec-42d7-bf72-569408d96bd1",
+      "paneKey": "31c5999f-77ec-42d7-bf72-569408d96bd1:8caa998d-8245-4211-ad0a-9b55e5d427f1",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest@@00765c69",
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/project/SteerlineTest",
+      "title": "Runner isolated cleanup verification",
+      "executionHostId": "local",
+      "incarnationId": "f717e3e6-dead-4058-9089-1b19f6aa118c",
+      "hostPlatform": "win32",
+      "surface": "visible"
+    }
+  },
+  "_meta": {
+    "runtimeId": "64108a37-610d-478c-a565-194c376217c5"
+  }
+}
