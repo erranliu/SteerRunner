@@ -60,6 +60,18 @@ func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAud
 			return facts, errors.New("native remote startup evidence missing")
 		}
 	}
+	submits := map[string]bool{}
+	if len(policies) == 1 && policies[0].NativeLaunchCommand != "" {
+		var pending bool
+		var err error
+		submits, pending, err = auditNativePasteSubmissions(calls, runtime, policies[0])
+		if err != nil {
+			return facts, err
+		}
+		if pending {
+			facts.Complete = false
+		}
+	}
 	aux := map[string]bool{}
 	if len(policies) > 1 {
 		return facts, errors.New("multiple native receipt policies")
@@ -102,7 +114,7 @@ func AnalyzeNativeAudit(raw []byte, runtime string, policies ...NativeReceiptAud
 			if create && !aux[c.ID] {
 				facts.Creations++
 			}
-			if send {
+			if send && !submits[c.ID] {
 				found := false
 				for i, a := range c.Args {
 					if a == "--text" && i+1 < len(c.Args) {
