@@ -25,13 +25,17 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop/authentication 流程；
 不预置 ready、不借远端完成来源。设置阶段与业务阶段的调用分别记录，业务阶段按原 terminal
 及 request 计数，任意无 ID 正文、补 Enter 或错误 request 也不能漏计。
-准备/控制回执通过公开 `--cursor 0` 读取原始流，要求来源及完整性元数据齐全；
-`TestLocalPreparationOriginalStream` 随 controlled 矩阵核验两处读取的完整/空流和拒收反例。
+准备回执通过公开 `--cursor 0` 读取原始流，要求保留起点及来源/完整性元数据齐全；
+持续控制查询允许旧前缀正常淘汰，按 `nextCursor` 分页至首次 `latestCursor` 快照。
+`TestLocalPreparationOriginalStream` 核验准备完整/空流和拒收反例；`TestFixedControlRetainedStream`、
+`TestFixedControlStreamFaults`、`TestFixedControlStreamBoundaries` 随同一 controlled 矩阵核验累计
+输出后的 history/workspace/认证停止、逐页身份/缺页/取消，以及快照/空流/半行边界。
 只用新的隔离工作区，先关闭已核实属于本次创建的空闲默认 shell；不能填历史业务终端。
 测试拒绝非空/不完整清单、重复目录、跳过、零匹配、全文/唯一性/进程归属不符与未确认清理。
-每次真实调用独立启动并关闭一个终端，保留 target、源码/EXE/CLI 摘要、请求/回执、
+每次真实调用独立启动并关闭会话及所属业务/control 终端，保留 target、源码/EXE/CLI 摘要、请求/回执、
 一次通用提交/零分开输入计数、正式唯一原输入、原结果与前后完整清单。
-自然长输入包含中文 BMP、CRLF、空行和代码块；本机仍须具备原准备/模型/history条件，
+当前最小自然长输入包含中文 BMP、CRLF 和空行；非 BMP 与代码块的受控覆盖不算本批真实资格。
+本机仍须具备原准备/模型/history条件，
 未具备时单列未验证，不能借远端profile或补查询伪装本机完成资格。
 默认 L1 不启动它；不将 opt-in skip 当真实通过。具体命令与范围见
 [输入验收](acceptance/native-start-confirmation-20261027.md#仓库内可重复输入验收2026-10-27)。
