@@ -1,0 +1,9 @@
+{
+  "url": "https://github.com/erranliu/SteerlineTest/pull/723",
+  "merged": true,
+  "base": "codex/srtest/b160f403d519/base",
+  "head": "codex/runner-9e3f733f17fe880ab0750e31784bcddb",
+  "head_sha": "257d176013167e6af2ff1785f5a67737e97c9b11",
+  "merge_commit_sha": "b92dc5d54a706658adbb929ec648a7f0c365af8e",
+  "merged_at": "2026-10-31T13:25:45Z"
+}
