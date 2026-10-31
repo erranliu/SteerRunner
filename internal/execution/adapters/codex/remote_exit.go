@@ -8,25 +8,23 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
 // Only the original helper holds the signing key. The workspace copy is public
 // and untrusted: deletion denies verification, modification cannot grant it.
 type RemoteExit struct {
-	Readiness            RemoteReadiness    `json:"readiness"`
-	TUI                  *b.ProcessIdentity `json:"tui,omitempty"`
-	WritersAbsent        bool               `json:"writers_absent"`
-	AuthenticationClosed bool               `json:"authentication_closed"`
-	ClosedAt             time.Time          `json:"closed_at"`
+	Readiness     RemoteReadiness    `json:"readiness"`
+	TUI           *b.ProcessIdentity `json:"tui,omitempty"`
+	WritersAbsent bool               `json:"writers_absent"`
+	ClosedAt      time.Time          `json:"closed_at"`
 }
 
 type signedRemoteExit struct {
@@ -57,8 +55,8 @@ func VerifyRemoteExit(raw []byte, ready RemoteReadiness) error {
 		b.DecodeStrictJSON(signed.Body, &exit, "trailing native exit body") != nil {
 		return errors.New("original Codex signed exit is invalid")
 	}
-	if !bytes.Equal(encode(exit.Readiness), encode(ready)) || !exit.WritersAbsent || !exit.AuthenticationClosed || exit.ClosedAt.Before(ready.CheckedAt) || exit.ClosedAt.IsZero() {
-		return errors.New("original Codex writer-tree/authentication exit is incomplete or foreign")
+	if !bytes.Equal(encode(exit.Readiness), encode(ready)) || !exit.WritersAbsent || exit.ClosedAt.Before(ready.CheckedAt) || exit.ClosedAt.IsZero() {
+		return errors.New("original Codex writer-tree exit is incomplete or foreign")
 	}
 	return nil
 }

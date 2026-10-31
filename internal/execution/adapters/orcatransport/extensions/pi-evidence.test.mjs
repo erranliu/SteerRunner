@@ -22,14 +22,14 @@ test("failed native initialization publishes a bounded failure for either termin
       return child;
     };
     const config = {directory, cwd:directory, run_id:"a".repeat(32), session_id:randomUUID(), extension_bundle_sha256:"b".repeat(64),
-      tool_host:path.join(directory,"host.exe"), tool_policy:{access_mode:"full_access",workspace:directory}, auth_probe:"fixed probe", authentication_expires_at:new Date(Date.now()+60000).toISOString()};
+      tool_host:path.join(directory,"host.exe"), tool_policy:{access_mode:"full_access",workspace:directory}};
     await assert.rejects(prepareTerminalTools(config, {}, launch), /native_tool_preparation_failed/);
     assert.equal(calls,1); // No audit canaries or business work after the failed probe.
     const raw = fs.readFileSync(path.join(directory,"preparation-failure.json"),"utf8"), fact = JSON.parse(raw);
     assert.equal(fact.pid,process.pid); assert.equal(fact.run_id,config.run_id); assert.equal(fact.session_id,config.session_id);
     assert.equal(fact.extension_bundle_sha256,config.extension_bundle_sha256);
     assert.equal(fact.failure,"native_tool_preparation_failed");
-    assert.equal(fact.probe_stage,stage === "remote_git_transport" ? stage : "unverified");
+    assert.equal(fact.probe_stage,"unverified");
     assert.ok(!raw.includes("raw-secret") && !raw.includes("private-diagnostic"));
     assert.equal(fs.existsSync(path.join(directory,"readiness.json")),false);
   }
@@ -44,7 +44,7 @@ function fixture(t, overrides = {}, options = {}) {
     fs.rmSync(resolved, { recursive: true });
   });
   const configFile = path.join(directory, "config.json");
-  const config = { version: 1, directory, cwd: directory, run_id: "a".repeat(32), session_id: randomUUID() };
+  const config = { version: 2, directory, cwd: directory, run_id: "a".repeat(32), session_id: randomUUID() };
   fs.writeFileSync(configFile, JSON.stringify(config));
   const handlers = new Map(), branch = [];
   let tools = options.tools ?? [];
@@ -231,7 +231,7 @@ test("managed thinking is read from Pi and an explicit clamped request blocks re
   const f=fixture(t,{},managedOptions);f.config.reasoning_effort="xhigh";fs.writeFileSync(f.configFile,JSON.stringify(f.config));
   await f.emit("session_start");assert.equal(f.read("readiness").reasoning_effort,"low");
   assert.equal(f.read("readiness").failure,"native_thinking_level_mismatch");assert.equal(f.input().action,"handled");
-  const ok=fixture(t,{},managedOptions);await ok.emit("session_start");assert.equal(ok.read("readiness").version,3);assert.equal(ok.read("readiness").reasoning_effort,"low");
+  const ok=fixture(t,{},managedOptions);await ok.emit("session_start");assert.equal(ok.read("readiness").version,4);assert.equal(ok.read("readiness").reasoning_effort,"low");
 });
 test("native selection changes fence the instance before a later tool or input",async(t)=>{
   for(const event of ["model_select","thinking_level_select"]){const f=fixture(t,{},managedOptions);await f.emit("session_start");f.input();f.commit();f.emit(event);assert.equal(f.read("readiness").stage,"unverified");assert.equal(f.gate.mayExecuteTools(f.ctx),false);}

@@ -6,17 +6,16 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-	"testing"
-	"time"
-
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	terminal "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
 )
 
 func terminalInputFingerprint(t *testing.T, m livetest.Manifest, run contracts.RunView) string {
@@ -260,7 +259,7 @@ func verifyLocalTerminalFaults(t *testing.T, m livetest.Manifest, dir string, in
 					break
 				}
 			}
-			if !verified || !fact.NoWorkerStarted || !fact.AuthenticationClosed || fact.Owner.RunID != id || view.Execution.TurnStarted || view.PR != nil {
+			if !verified || !fact.NoWorkerStarted || fact.Owner.RunID != id || view.Execution.TurnStarted || view.PR != nil {
 				save(t, "startup-failure-unverified.json", view)
 				t.Fatal("native pre-worker failure proof unavailable")
 			}

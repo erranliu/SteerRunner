@@ -156,7 +156,7 @@ try {
     $taskSkips = @($taskEvents | Where-Object { $_.Action -eq 'skip' -and $_.PSObject.Properties['Test'] })
     # Existing usage acceptance/cleanup probes are explicit native opt-ins;
     # default skips are not native passes. Their live environment guards above remain mandatory.
-    $taskAllowedSkips = @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestAuthenticationNativeToolBoundary','TestOrcaStoppedNativeProbe',
+    $taskAllowedSkips = @('TestShortInputProbeInspect','TestProcessHostCommandHelper','TestServiceStopWorkerHelper','TestOrcaLocalPipeNativeEvidence','TestOrcaLocalIPCNativeProbe','TestOrcaNativeStateLiveLifecycle','TestOrcaWorkspaceStartupLive','TestOrcaStoppedNativeProbe',
         'TestUsageLocalAcceptanceRepoCleanupLive','TestUsageExistingNativeEvidence','TestUsageRemoteCodexCleanupLive','TestUsageRemoteCodexLive',
         'TestRunUsageLocalCodexPublicLive','TestRunUsageLocalPiPublicLive','TestRunUsageLocalDSHPublicLive','TestRunUsageRemotePublicLive')
     $taskUnexpected = @($taskSkips | Where-Object { $_.Test -notin $taskAllowedSkips })

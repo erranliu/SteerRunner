@@ -1,9 +1,11 @@
 package orcatransport
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"io"
 	"os"
 	"path/filepath"
@@ -11,21 +13,13 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
-	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 )
 
 type TerminalPreparation struct {
-	InsideWriteVerified       bool      `json:"inside_write_verified"`
-	ProviderEnvironmentAbsent bool      `json:"provider_environment_absent"`
-	OutsideWriteDenied        *bool     `json:"outside_write_denied,omitempty"`
-	OutsideWriteVerified      *bool     `json:"outside_write_verified,omitempty"`
-	Contract                  string    `json:"contract"`
-	AccessMode                string    `json:"access_mode"`
-	AuthenticationExpiresAt   time.Time `json:"authentication_expires_at"`
-	Verified                  bool      `json:"verified"`
+	ProviderEnvironmentAbsent bool   `json:"provider_environment_absent"`
+	Contract                  string `json:"contract"`
+	AccessMode                string `json:"access_mode"`
+	Verified                  bool   `json:"verified"`
 }
 
 func (p *TerminalPreparation) UnmarshalJSON(raw []byte) error {
@@ -34,19 +28,6 @@ func (p *TerminalPreparation) UnmarshalJSON(raw []byte) error {
 	if err := b.DecodeStrictJSON(raw, &value, "trailing terminal preparation"); err != nil {
 		return err
 	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &fields); err != nil {
-		return err
-	}
-	if value.Contract == terminaltools.Contract {
-		if _, exists := fields["outside_write_denied"]; exists {
-			return errors.New("new preparation contains retired denial evidence")
-		}
-	} else {
-		if _, exists := fields["outside_write_verified"]; exists {
-			return errors.New("legacy preparation contains new evidence fields")
-		}
-	}
 	*p = TerminalPreparation(value)
 	return nil
 }
@@ -54,20 +35,18 @@ func (p *TerminalPreparation) UnmarshalJSON(raw []byte) error {
 // TerminalStartupFailure is positive evidence from a helper which returned
 // before starting the native agent. It cannot qualify a missing/changed owner.
 type TerminalStartupFailure struct {
-	Version              int           `json:"version"`
-	Failure              string        `json:"failure,omitempty"`
-	Owner                TerminalOwner `json:"owner"`
-	NoWorkerStarted      bool          `json:"no_worker_started"`
-	AuthenticationClosed bool          `json:"authentication_closed"`
-	ClosedAt             time.Time     `json:"closed_at"`
+	Version         int           `json:"version"`
+	Failure         string        `json:"failure,omitempty"`
+	Owner           TerminalOwner `json:"owner"`
+	NoWorkerStarted bool          `json:"no_worker_started"`
+	ClosedAt        time.Time     `json:"closed_at"`
 }
 
 type TerminalExit struct {
-	AuthenticationClosed *bool         `json:"authentication_closed,omitempty"`
-	Version              int           `json:"version"`
-	Owner                TerminalOwner `json:"owner"`
-	WritersAbsent        bool          `json:"writers_absent"`
-	ClosedAt             time.Time     `json:"closed_at"`
+	Version       int           `json:"version"`
+	Owner         TerminalOwner `json:"owner"`
+	WritersAbsent bool          `json:"writers_absent"`
+	ClosedAt      time.Time     `json:"closed_at"`
 }
 
 // One bounded native receipt. This is extension evidence, never a Codex DTO or
@@ -157,11 +136,8 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 		version = 1
 	} // Original frozen helpers keep their source contract.
 	preparationValid := validTerminalPreparation(r.Preparation, version)
-	if l.stopOnly && version <= 2 && c.AccessMode == "sandbox" {
-		p := r.Preparation
-		preparationValid = p.AccessMode == "sandbox" && p.Contract == "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never" && p.OutsideWriteDenied != nil && *p.OutsideWriteDenied && p.OutsideWriteVerified == nil
-	}
-	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.InsideWriteVerified || !r.Preparation.ProviderEnvironmentAbsent || !l.stopOnly && c.AccessMode != "full_access" {
+
+	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.ProviderEnvironmentAbsent || !l.stopOnly && c.AccessMode != "full_access" {
 		return errors.New("native terminal receipt binding changed")
 	}
 	model := c.Model
@@ -214,7 +190,7 @@ func (l *Lifecycle) readStartupFailure() (TerminalStartupFailure, error) {
 	if err := readTerminalFile(l.profile.Terminal.StateDirectory, "startup-exit", &fact); err != nil {
 		return fact, err
 	}
-	if fact.Version != 1 || !fact.NoWorkerStarted || !fact.AuthenticationClosed || fact.ClosedAt.IsZero() || fact.Owner.Job.Handle != 0 || fact.Owner.Job.Worker != (b.ProcessIdentity{}) || !l.terminalOwnerBinding(fact.Owner) {
+	if fact.Version != 2 || !fact.NoWorkerStarted || fact.ClosedAt.IsZero() || fact.Owner.Job.Handle != 0 || fact.Owner.Job.Worker != (b.ProcessIdentity{}) || !l.terminalOwnerBinding(fact.Owner) {
 		return fact, errors.New("native terminal startup exit remains unverified")
 	}
 	switch process.Probe(&fact.Owner.Job.Owner).State {
@@ -239,7 +215,7 @@ func (e *terminalStartupError) Error() string {
 
 func (l *Lifecycle) terminalExitVerified(owner TerminalOwner) bool {
 	var fact TerminalExit
-	return readTerminalFile(l.profile.Terminal.StateDirectory, "exit", &fact) == nil && fact.Version == 1 && (l.profile.Terminal.ReceiptVersion < 2 || fact.AuthenticationClosed != nil && *fact.AuthenticationClosed) && fact.WritersAbsent && !fact.ClosedAt.IsZero() && reflect.DeepEqual(fact.Owner, owner) && process.Probe(&owner.Job.Owner).State == "absent"
+	return readTerminalFile(l.profile.Terminal.StateDirectory, "exit", &fact) == nil && fact.Version == 2 && fact.WritersAbsent && !fact.ClosedAt.IsZero() && reflect.DeepEqual(fact.Owner, owner) && process.Probe(&owner.Job.Owner).State == "absent"
 }
 
 func (l *Lifecycle) pinTerminalJob(owner TerminalOwner) error {
@@ -294,8 +270,8 @@ func (l *Lifecycle) readTerminalReadiness(state *State, requireLease bool) error
 	if err := l.validateTerminalReceipt(ready); err != nil {
 		return err
 	}
-	if ready.Stage != "ready" || requireLease && !ready.Preparation.AuthenticationExpiresAt.After(l.clock().Add(5*time.Second)) {
-		return errors.New("native terminal preparation unverified or expired")
+	if ready.Stage != "ready" {
+		return errors.New("native terminal preparation unverified")
 	}
 	owner, err := l.readTerminalOwner()
 	if err != nil {
@@ -346,7 +322,7 @@ func (l *Lifecycle) terminalPreparationFailure() error {
 		return errors.New("native terminal preparation failure binding changed")
 	}
 	switch failure.Failure {
-	case "native_preparation_failed", "native_authentication_preparation_missing", "native_tool_preparation_invalid", "native_tool_preparation_failed", "native_tool_environment_audit_failed", "native_write_boundary_audit_failed":
+	case "native_tool_preparation_missing", "native_tool_preparation_invalid", "native_tool_preparation_failed", "native_tool_environment_audit_failed":
 		return fmt.Errorf("%s; original native initialization failed; no business input sent", failure.Failure)
 	default:
 		return errors.New("native terminal preparation failure code invalid")
@@ -464,14 +440,5 @@ func (l *Lifecycle) terminalEvidence(state State, turn Turn) *b.TurnEvidence {
 }
 
 func validTerminalPreparation(p TerminalPreparation, version int) bool {
-	if p.AccessMode != "full_access" {
-		return false
-	}
-	switch version {
-	case 1, 2:
-		return p.Contract == "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never" && p.OutsideWriteDenied != nil && !*p.OutsideWriteDenied && p.OutsideWriteVerified == nil
-	case 3:
-		return p.Contract == terminaltools.Contract && p.OutsideWriteDenied == nil && p.OutsideWriteVerified != nil && *p.OutsideWriteVerified
-	}
-	return false
+	return version == 4 && p.AccessMode == "full_access" && p.Contract == terminaltools.Contract && p.Verified && p.ProviderEnvironmentAbsent
 }

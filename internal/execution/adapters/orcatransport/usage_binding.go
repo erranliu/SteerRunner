@@ -80,7 +80,7 @@ func usageInitialization(state State, proof UsageInitialization, profiles ...Pro
 // committed evidence; it never starts, changes or deploys that runtime.
 func usagePreparedInitialization(state State, proof UsageInitialization, p Profile) bool {
 	r := state.RemoteReadiness
-	if p.Environment != "" || p.Terminal != nil || p.RuntimeExecutable == "" || len(p.RuntimeSHA256) != 64 || r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || !codex.SupportedDevelopmentPolicy(r.Contract) || r.RuntimeSHA256 != p.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != p.RuntimeConfigurationDigest || !usageSessionID.MatchString(r.SessionID) || r.Workspace == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.CheckedAt.Before(proof.CreatedAt) {
+	if p.Environment != "" || p.Terminal != nil || p.RuntimeExecutable == "" || len(p.RuntimeSHA256) != 64 || r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.RuntimeSHA256 != p.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != p.RuntimeConfigurationDigest || !usageSessionID.MatchString(r.SessionID) || r.Workspace == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.CheckedAt.Before(proof.CreatedAt) {
 		return false
 	}
 	quote := func(s string) string { return "'" + strings.ReplaceAll(s, "'", "''") + "'" }
@@ -180,11 +180,15 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 	if p.Environment != "" && binding.Agent != "codex" {
 		return binding, p, State{}, errors.New("PRODUCTION_BINDING_UNSUPPORTED")
 	}
+	version := LocalStateVersion
+	if p.Environment != "" {
+		version = StateVersion
+	}
 	var state State
 	found = false
 	for _, e := range s.Implementation {
 		if e.ImplementationKey == StateKey {
-			if !readableStateVersion(e.CodecVersion) || e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest) != nil {
+			if e.CodecVersion != version || e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest) != nil {
 				return binding, p, state, errors.New("IDENTITY_UNVERIFIED")
 			}
 			var err error

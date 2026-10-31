@@ -8,19 +8,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
-	"time"
-
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 //go:embed extensions/pi-evidence.mjs extensions/pi-managed.mjs extensions/dsh-managed.mjs extensions/terminal-tools.mjs extensions/receipt.mjs
@@ -40,7 +39,6 @@ type TerminalConfig struct {
 	Executable          string `json:"executable"`
 	SandboxExecutable   string `json:"sandbox_executable,omitempty"`
 	StateDirectory      string `json:"state_directory"`
-	AuthenticationState string `json:"authentication_state"`
 	RepositoryURL       string `json:"repository_url"`
 	AccessMode          string `json:"access_mode"`
 	Model               string `json:"model,omitempty"`
@@ -67,12 +65,15 @@ func (c *TerminalConfig) UnmarshalJSON(raw []byte) error {
 }
 
 type TerminalMetadata struct {
-	Version       int    `json:"version"`
-	Contract      string `json:"contract"`
-	RuntimeSHA256 string `json:"runtime_sha256"`
-	BundleSHA256  string `json:"bundle_sha256"`
-	PiSHA256      string `json:"pi_sha256"`
-	DSHSHA256     string `json:"dsh_sha256"`
+	Authentication string `json:"authentication"`
+	CodexTransport string `json:"codex_transport"`
+	CodexPolicy    string `json:"codex_policy"`
+	Version        int    `json:"version"`
+	Contract       string `json:"contract"`
+	RuntimeSHA256  string `json:"runtime_sha256"`
+	BundleSHA256   string `json:"bundle_sha256"`
+	PiSHA256       string `json:"pi_sha256"`
+	DSHSHA256      string `json:"dsh_sha256"`
 }
 
 // Metadata is captured from the selected helper before accepting a Run, so an
@@ -88,7 +89,7 @@ func TerminalRuntimeMetadata() (TerminalMetadata, error) {
 	}
 	pi, _ := terminalAssets.ReadFile("extensions/pi-evidence.mjs")
 	dsh, _ := terminalAssets.ReadFile("extensions/dsh-managed.mjs")
-	return TerminalMetadata{Version: 4, Contract: terminaltools.Contract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi)), DSHSHA256: fmt.Sprintf("%x", sha256.Sum256(dsh))}, nil
+	return TerminalMetadata{Version: 5, Contract: terminaltools.Contract, Authentication: "host-native", CodexTransport: codex.RemoteNativeTransport, CodexPolicy: codex.PolicyContract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi)), DSHSHA256: fmt.Sprintf("%x", sha256.Sum256(dsh))}, nil
 }
 
 type TerminalOwner struct {
@@ -131,7 +132,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		}
 		inputParts = parts
 	}
-	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || c.SandboxExecutable != "" || !filepath.IsAbs(c.StateDirectory) || !filepath.IsAbs(c.AuthenticationState) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
+	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || c.SandboxExecutable != "" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
 		return errors.New("native terminal frozen launch configuration invalid")
 	}
 	metadata, err := TerminalRuntimeMetadata()
@@ -157,16 +158,14 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	if err = os.MkdirAll(c.StateDirectory, 0700); err != nil {
 		return err
 	}
-	if err = os.MkdirAll(c.AuthenticationState, 0700); err != nil {
-		return err
-	}
+
 	host := process.New(time.Minute)
 	root, err := process.CurrentIdentity()
 	if err != nil {
 		return err
 	}
 	startupOwner := TerminalOwner{Job: process.OwnedJobReference{Owner: *root}, RuntimeSHA256: metadata.RuntimeSHA256, ExtensionSHA256: metadata.BundleSHA256, SessionID: c.SessionID, RunID: c.ExecutionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}
-	workerStarted, authenticationClosed := false, true
+	workerStarted := false
 	// A positive failure receipt is written only after synchronous preparation
 	// commands have returned and their owned Jobs are closed. Missing evidence
 	// never proves no worker. The reader also requires this exact helper to exit.
@@ -182,7 +181,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 				}
 			}
 			failure = fmt.Sprintf("%.2048s", failure)
-			raw, _ := json.Marshal(TerminalStartupFailure{Version: 1, Failure: failure, Owner: startupOwner, NoWorkerStarted: true, AuthenticationClosed: authenticationClosed, ClosedAt: time.Now().UTC()})
+			raw, _ := json.Marshal(TerminalStartupFailure{Version: 2, Failure: failure, Owner: startupOwner, NoWorkerStarted: true, ClosedAt: time.Now().UTC()})
 			result = errors.Join(result, host.WriteExecutionFile(filepath.Join(c.StateDirectory, "startup-exit.json"), raw))
 		}
 	}()
@@ -223,22 +222,12 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	if err != nil {
 		return err
 	}
-	identity := codex.PolicyResourceIdentity{ProjectID: c.ProjectID, ExecutionID: c.ExecutionID, AttemptID: c.AttemptID, Generation: c.Generation, ConfigDigest: c.ConfigurationDigest}
-	auth, err := codex.PrepareTerminalAuthentication(ctx, working, c.RepositoryURL, c.AuthenticationState, identity, rootPaths, os.Environ(), c.AccessMode)
-	if err != nil {
-		if auth != nil {
-			authenticationClosed = auth.Close()
-		}
-		return err
-	}
-	authenticationClosed = false
-	defer func() { authenticationClosed = auth.Close() }()
 	self, err := os.Executable()
 	if err != nil {
 		return err
 	}
 	shell := filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
-	policy := terminaltools.Config{AccessMode: c.AccessMode, Workspace: working, WriteRoots: auth.WriteRoots, Shell: shell, StateDirectory: c.StateDirectory}
+	policy := terminaltools.Config{AccessMode: c.AccessMode, Workspace: working, WriteRoots: rootPaths, Shell: shell, StateDirectory: c.StateDirectory}
 	if err = policy.Validate(); err != nil {
 		return err
 	}
@@ -248,7 +237,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 			return err
 		}
 	}
-	config := map[string]any{"version": 1, "run_id": c.ExecutionID, "session_id": c.SessionID, "cwd": working, "directory": c.StateDirectory, "tool_host": self, "tool_policy": policy, "auth_probe": auth.Probe, "authentication_expires_at": auth.ExpiresAt, "extension_bundle_sha256": TerminalExtensionDigest(), "reasoning_effort": c.ReasoningEffort, "model": c.Model}
+	config := map[string]any{"version": 2, "run_id": c.ExecutionID, "session_id": c.SessionID, "cwd": working, "directory": c.StateDirectory, "tool_host": self, "tool_policy": policy, "extension_bundle_sha256": TerminalExtensionDigest(), "reasoning_effort": c.ReasoningEffort, "model": c.Model}
 	if inputBudget != nil {
 		config["runner_input_budget"], config["runner_input_parts"] = inputBudget, inputParts
 	}
@@ -279,7 +268,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	command.Stdout = output
 	command.Stderr = diagnostics
 	envObject := map[string]string{}
-	for _, entry := range auth.Environment {
+	for _, entry := range terminaltools.ToolEnvironment(os.Environ()) {
 		key, value, _ := strings.Cut(entry, "=")
 		envObject[key] = value
 	}
@@ -346,8 +335,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 	if !tree.WritersAbsent() {
 		return errors.New("Pi owned writers remain unverified")
 	}
-	authenticationClosed = auth.Close()
-	exitBytes, _ := json.Marshal(TerminalExit{Version: 1, Owner: ownerRecord, WritersAbsent: true, AuthenticationClosed: &authenticationClosed, ClosedAt: time.Now().UTC()})
+	exitBytes, _ := json.Marshal(TerminalExit{Version: 2, Owner: ownerRecord, WritersAbsent: true, ClosedAt: time.Now().UTC()})
 	if e := host.WriteExecutionFile(filepath.Join(c.StateDirectory, "exit.json"), exitBytes); e != nil {
 		return e
 	}

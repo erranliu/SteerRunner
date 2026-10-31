@@ -129,5 +129,5 @@ func onlyInitialTerminalFlags(args []string, p NativeReceiptAuditPolicy) bool {
 }
 
 func sameReceiptReady(a, b codex.RemoteReadiness) bool {
-	return a.Owner == b.Owner && string(a.ExitPublicKey) == string(b.ExitPublicKey) && a.AuthenticationControl == b.AuthenticationControl && a.Verified == b.Verified && a.NativeTransport == b.NativeTransport && a.RuntimeSHA256 == b.RuntimeSHA256 && a.Contract == b.Contract && a.SessionID == b.SessionID && a.ConfigurationDigest == b.ConfigurationDigest && a.Repository == b.Repository && a.AccessMode == b.AccessMode && a.Process == b.Process && sameAuditPath(a.Workspace, b.Workspace) && a.CheckedAt.Equal(b.CheckedAt) && a.ExpiresAt.Equal(b.ExpiresAt)
+	return a.Owner == b.Owner && string(a.ExitPublicKey) == string(b.ExitPublicKey) && a.Verified == b.Verified && a.NativeTransport == b.NativeTransport && a.RuntimeSHA256 == b.RuntimeSHA256 && a.Contract == b.Contract && a.SessionID == b.SessionID && a.ConfigurationDigest == b.ConfigurationDigest && a.Repository == b.Repository && a.AccessMode == b.AccessMode && a.Process == b.Process && sameAuditPath(a.Workspace, b.Workspace) && a.CheckedAt.Equal(b.CheckedAt)
 }

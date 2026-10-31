@@ -5,14 +5,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"strings"
-	"testing"
-	"time"
-
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strings"
+	"testing"
+	"time"
 )
 
 // Exercise the existing history, workspace and stop entry points, not just a reader.
@@ -72,16 +71,14 @@ func TestFixedControlRetainedStream(t *testing.T) {
 					if err != nil || !fact.Qualified {
 						t.Fatal("workspace query blocked", fact, err)
 					}
-					if err := l.revokeAuthentication(context.Background(), state); err != nil {
-						t.Fatal("authentication stop blocked", err)
-					}
+
 					if err := l.closeControl(context.Background(), state); err != nil {
 						t.Fatal(err)
 					}
-					if _, _, err := ReadAuthenticationStopEvidence(l.setup.RunDirectory, l.setup.Snapshot, state); err != nil {
+					if _, err := ReadControlClosureEvidence(l.setup.RunDirectory, l.setup.Snapshot, state); err != nil {
 						t.Fatal("formal cleanup proof missing", err)
 					}
-					if control.sends != 4 || control.creates != 1 || control.closes != 1 || host.nativeSends != 1 {
+					if control.sends != 3 || control.creates != 1 || control.closes != 1 || host.nativeSends != 1 {
 						t.Fatal("queries created resources or repeated business input", control.sends, control.creates, control.closes, host.nativeSends)
 					}
 					if len(control.readCursors) < 2 || control.readCursors[0] != 0 || control.readCursors[1] != control.streamOldest+1000 {
@@ -143,8 +140,8 @@ func TestFixedControlStreamFaults(t *testing.T) {
 			l, host, snapshot, control := fixtureFixedControl(t)
 			snapshot = prepareFixedControl(t, l, snapshot, control)
 			state, _ := l.state(snapshot)
-			q := codex.RemoteControlRequest{ID: contracts.NewID(), Binding: control.setup.Binding, Method: "authentication-stop", Session: control.ready.SessionID}
-			response := codex.RemoteControlResponse{ID: q.ID, Binding: q.Binding, RequestDigest: codex.RemoteControlDigest(q), Authentication: &codex.RemoteAuthenticationCleanup{Readiness: control.ready, Revoked: true, BrokerClosed: true, SocketCleaned: true, Mode: "host-gh-repository-broker"}}
+			q := codex.RemoteControlRequest{ID: contracts.NewID(), Binding: control.setup.Binding, Method: "workspace-audit", Session: control.ready.SessionID, Audit: &codex.RemoteWorkspaceAuditQuery{Intent: snapshot.Workspace}}
+			response := codex.RemoteControlResponse{ID: q.ID, Binding: q.Binding, RequestDigest: codex.RemoteControlDigest(q), Workspace: &codex.RemoteWorkspaceAudit{Readiness: control.ready, WritersAbsent: true}}
 			raw, _ := json.Marshal(response)
 			control.stream = make([]string, 1001)
 			for i := range control.stream {
@@ -219,7 +216,7 @@ func TestFixedControlStreamFaults(t *testing.T) {
 			}})
 			value, err := l.dispatchControl(ctx, state, q)
 			want := fault == "complete" || fault == "growing-stream"
-			if (err == nil) != want || want && (value.ID != q.ID || value.Authentication == nil || validateAuthenticationStop(control.ready, *value.Authentication) != nil) {
+			if (err == nil) != want || want && (value.ID != q.ID || value.Workspace == nil || !value.Workspace.WritersAbsent) {
 				t.Fatal("incorrect original response qualification", fault, value, err)
 			}
 			if reads != 2 && fault != "no-progress" && fault != "premature-end" || reads != 1 && (fault == "no-progress" || fault == "premature-end") || control.sends != 0 || host.nativeSends != 0 || control.creates != 1 {

@@ -7,13 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
-	"sync"
-	"testing"
-	"time"
-
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
@@ -23,6 +16,12 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"testing"
+	"time"
 )
 
 func probeID(t *testing.T) string {
@@ -124,8 +123,8 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 					record["verify_stopped_error"] = errorText(verifyErr)
 					state, stateErr := l.state(snapshot)
 					if stateErr == nil && state.RemoteReadiness != nil {
-						auth, closure, authErr := ReadAuthenticationStopEvidence(l.setup.RunDirectory, snapshot, state)
-						record["authentication_stop"], record["control_closure"], record["authentication_error"] = auth, closure, errorText(authErr)
+						closure, authErr := ReadControlClosureEvidence(l.setup.RunDirectory, snapshot, state)
+						record["control_closure"], record["control_error"] = closure, errorText(authErr)
 						if path, pathErr := codex.RemoteExitPath(*state.RemoteReadiness); pathErr == nil {
 							if raw, e := os.ReadFile(filepath.Join(state.RemoteReadiness.Workspace, filepath.FromSlash(path))); e == nil {
 								record["signed_exit"] = json.RawMessage(raw)

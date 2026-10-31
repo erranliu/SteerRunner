@@ -31,7 +31,6 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 	responses := map[string]bool{}
 	intents := map[string][]string{}
 	receipts := map[string]bool{}
-	authConfirmed := false
 	for index, c := range calls {
 		if len(c.Args) < 2 {
 			continue
@@ -229,9 +228,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 					if err := validateAuditControlResponse(q, response, ready, modelWire); err != nil {
 						return exempt, 0, 0, 0, err
 					}
-					if q.Method == "authentication-stop" && response.Error == "" {
-						authConfirmed = true
-					}
+
 					responses[q.ID] = true
 				}
 			}
@@ -308,7 +305,7 @@ func analyzeReceiptInspectors(calls []nativeAuditCall, runtime string, p NativeR
 		exempt[callID] = true
 	}
 	count := 0
-	if closed && (!ready.AuthenticationControl || authConfirmed) {
+	if closed {
 		count = 1
 	}
 	return exempt, 1, count, initial, nil
@@ -346,8 +343,8 @@ func validateAuditControlResponse(q codex.RemoteControlRequest, r codex.RemoteCo
 		return errors.New("original readiness missing")
 	}
 	if r.Error != "" {
-		expected := map[string]string{"workspace-audit": "workspace_audit_unverified", "original-turn": "original_turn_unverified", "authentication-stop": "authentication_stop_unverified"}[q.Method]
-		if r.Error != expected || r.Authentication != nil {
+		expected := map[string]string{"workspace-audit": "workspace_audit_unverified", "original-turn": "original_turn_unverified"}[q.Method]
+		if r.Error != expected {
 			return errors.New("invalid finite control error")
 		}
 		switch q.Method {
@@ -360,10 +357,6 @@ func validateAuditControlResponse(q codex.RemoteControlRequest, r codex.RemoteCo
 			if r.Workspace != nil || v == nil || !v.InspectionFailed || !v.ReaderWritersAbsent || !sameReceiptReady(*ready, v.Readiness) || v.Source != codex.RemoteTurnSource || v.InputDigest != q.InputDigest {
 				return errors.New("failed query reader settlement unverified")
 			}
-		case "authentication-stop":
-			if r.Turn != nil || r.Workspace != nil {
-				return errors.New("invalid authentication error")
-			}
 		default:
 			return errors.New("unknown control method")
 		}
@@ -371,17 +364,12 @@ func validateAuditControlResponse(q codex.RemoteControlRequest, r codex.RemoteCo
 	}
 	switch q.Method {
 	case "workspace-audit":
-		if q.Audit == nil || r.Workspace == nil || r.Turn != nil || r.Authentication != nil || codex.ValidateRemoteWorkspaceAudit(*ready, *q.Audit, *r.Workspace) != nil {
+		if q.Audit == nil || r.Workspace == nil || r.Turn != nil || codex.ValidateRemoteWorkspaceAudit(*ready, *q.Audit, *r.Workspace) != nil {
 			return errors.New("original workspace proof mismatch")
-		}
-	case "authentication-stop":
-		v := r.Authentication
-		if v == nil || r.Workspace != nil || r.Turn != nil || !sameReceiptReady(*ready, v.Readiness) || !v.Revoked || !v.BrokerClosed || !v.SocketCleaned || v.Mode != "host-gh-repository-broker" {
-			return errors.New("authentication proof mismatch")
 		}
 	case "original-turn":
 		v := r.Turn
-		if v == nil || r.Workspace != nil || r.Authentication != nil || !v.ReaderWritersAbsent || v.InspectionFailed || !sameReceiptReady(*ready, v.Readiness) || v.Source != codex.RemoteTurnSource || v.InputDigest != q.InputDigest || v.Completed && !v.Started || v.Started && (!codex.ValidNativeID(v.NativeTurnID) || v.UserItemID == "") || v.FinalText != "" && (v.FinalItemID == "" || v.FinalDigest != receiptHash(v.FinalText)) {
+		if v == nil || r.Workspace != nil || !v.ReaderWritersAbsent || v.InspectionFailed || !sameReceiptReady(*ready, v.Readiness) || v.Source != codex.RemoteTurnSource || v.InputDigest != q.InputDigest || v.Completed && !v.Started || v.Started && (!codex.ValidNativeID(v.NativeTurnID) || v.UserItemID == "") || v.FinalText != "" && (v.FinalItemID == "" || v.FinalDigest != receiptHash(v.FinalText)) {
 			return errors.New("original turn proof mismatch")
 		}
 		if model, ok := models[q.InputDigest]; ok && v.Started && (v.Model != model.Model || v.ReasoningEffort != model.ReasoningEffort) {

@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
@@ -14,9 +16,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 type Turn struct {
@@ -175,6 +174,9 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		if e.ImplementationKey == StateKey {
 			// The retired remote v5 payload is read only to fence an explicit
 			// stop to its original Process; no helper state is restored.
+			if !legacyRemote && e.CodecVersion != l.stateVersion() {
+				return State{}, errors.New("terminal state/profile codec mismatch")
+			}
 			if found || !readableStateVersion(e.CodecVersion) && (!legacyRemote || e.CodecVersion != 5) {
 				return state, errors.New("unsupported terminal state")
 			}
@@ -284,12 +286,19 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	return state, nil
 }
 
+func (l *Lifecycle) stateVersion() int {
+	if l.profile.Environment == "" {
+		return LocalStateVersion
+	}
+	return StateVersion
+}
+
 func (l *Lifecycle) envelope(s b.LifecycleSnapshot, state State) ([]b.ImplementationDataEnvelope, error) {
 	raw, err := json.Marshal(state)
 	if err != nil {
 		return nil, err
 	}
-	e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}, raw)
+	e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: l.stateVersion(), Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}, raw)
 	if err != nil {
 		return nil, err
 	}
@@ -433,9 +442,7 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 	if (s.Ref.Agent.Name == "pi" || s.Ref.Agent.Name == "dsh") && (l.profile.Terminal == nil || l.profile.Environment != "" || len(l.profile.RuntimeSHA256) != 64) {
 		return b.PreparationFacts{}, errors.New("native terminal preparation profile missing; zero business input")
 	}
-	if l.profile.Environment == "" && strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") && l.profile.RuntimeExecutable == "" {
-		return b.PreparationFacts{}, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "remote_sandbox_authentication_unsupported: Orca terminal transport has no trusted execution-host credential preparation and deterministic same-sandbox command capability; zero business input"}
-	}
+
 	if s.Workspace.Path == "" {
 		return b.PreparationFacts{Workspace: b.GateRequired, Resource: b.GateUnverified, Session: b.GateUnverified}, nil
 	}
@@ -1078,7 +1085,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 				return receipt, errors.New("original native terminal owned writers remain unverified")
 			}
 		}
-		// Let the helper close its broker and commit its exit before closing
+		// Let the helper stop its native tree and commit its exit before closing
 		// the PTY. Closing the PTY first can terminate that cleanup mid-write.
 		if owner.Job.Handle != 0 && l.profile.Terminal.ReceiptVersion >= 2 {
 			until := time.Now().Add(3 * time.Second)
@@ -1086,7 +1093,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 				time.Sleep(20 * time.Millisecond)
 			}
 			if !l.terminalExitVerified(owner) {
-				return receipt, errors.New("original native terminal exit/authentication cleanup unverified")
+				return receipt, errors.New("original native terminal exit cleanup unverified")
 			}
 		}
 	}
@@ -1095,31 +1102,23 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	if stateErr != nil {
 		return receipt, stateErr
 	}
-	var authErr error
-	if l.profile.Terminal == nil {
-		// An original pending read may have consumed the caller's stop budget.
-		// Finish that same actor/request within a separate bounded cleanup budget.
-		authCtx, cancelAuth := context.WithTimeout(context.WithoutCancel(ctx), 45*time.Second)
-		authErr = l.revokeAuthentication(authCtx, state)
-		cancelAuth()
-	}
 	// Stop authorization is already durable. Credential uncertainty cannot keep
 	// the original worker running; finish its exact PTY closure within a bounded
 	// cleanup context even if the preceding credential observation timed out.
 	stopCtx, cancelStop := context.WithTimeout(context.WithoutCancel(ctx), 30*time.Second)
 	defer cancelStop()
 	if err = l.originalForStop(stopCtx, r.Snapshot); err != nil {
-		return receipt, errors.Join(authErr, err)
+		return receipt, err
 	}
 	if l.usesControl() {
 		if err = l.stopCodexNative(stopCtx, state, r.Snapshot.Workspace.Path); err != nil {
-			return receipt, errors.Join(authErr, err)
+			return receipt, err
 		}
 	}
 	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
-		return receipt, errors.Join(authErr, err)
+		return receipt, err
 	}
 	if proof.Disposition == "confirmed" {
 		if l.profile.Terminal != nil {
@@ -1131,7 +1130,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 				return receipt, errors.New("original native terminal runtime root stop unverified")
 			}
 			if terminalOwner.Job.Handle != 0 && l.profile.Terminal.ReceiptVersion >= 2 && !l.terminalExitVerified(*terminalOwner) {
-				return receipt, errors.New("original native terminal exit/authentication cleanup unverified")
+				return receipt, errors.New("original native terminal exit cleanup unverified")
 			}
 			l.closeTerminalJob()
 		}
@@ -1143,9 +1142,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		}
 		// Do not destroy the sole route to an uncommitted revocation proof.
 		// The known original control actor remains owned and blocks settlement.
-		if authErr != nil {
-			return receipt, authErr
-		}
+
 		if cleanupErr := l.closeControl(stopCtx, state); cleanupErr != nil {
 			return receipt, cleanupErr
 		}

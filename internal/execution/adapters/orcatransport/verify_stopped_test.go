@@ -86,7 +86,7 @@ func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
 				if e != nil {
 					t.Fatal(e)
 				}
-				j.Response = nil
+				j.Closed = false
 				if e = l.saveControlCheckpoint(state, j); e != nil {
 					t.Fatal(e)
 				}
@@ -127,19 +127,15 @@ func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
 	}
 }
 
-func TestLegacyFullAccessCodexStopsWithOriginalSignedExit(t *testing.T) {
+func TestHostNativeReadinessRejectsRetiredFullAccessContract(t *testing.T) {
 	l, _, s, c := fixtureFixedControl(t)
-	c.ready.Contract, c.ready.AccessMode = codex.ReadOnlyPolicyContract, "full_access"
 	s = prepareFixedControl(t, l, s, c)
-	before := c.creates
-	receipt, err := l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
-	if err != nil || !receipt.State.Stopped {
-		t.Fatal("legacy full_access stop could not verify original signed exit", receipt, err)
+	state, err := l.state(s)
+	if err != nil {
+		t.Fatal(err)
 	}
-	if err := l.verifyStopped(context.Background(), s); err != nil {
-		t.Fatal("legacy full_access stopped proof rejected", err)
-	}
-	if c.creates != before {
-		t.Fatal("legacy stop created a replacement control terminal")
+	state.RemoteReadiness.Contract = codex.ReadOnlyPolicyContract
+	if _, err = l.codexReadiness(state, s.Workspace.Path); err == nil {
+		t.Fatal("retired full-access contract admitted")
 	}
 }

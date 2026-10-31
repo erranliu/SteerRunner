@@ -20,23 +20,21 @@ func (l *Lifecycle) checkLocalReadiness(s State) error {
 	}
 	if l.profile.Terminal != nil {
 		r := s.TerminalReadiness
-		if r == nil || r.Stage != "ready" || !r.Preparation.AuthenticationExpiresAt.After(l.clock().Add(5*time.Second)) {
-			return errors.New("Pi original preparation missing or expired; zero business input")
+		if r == nil || r.Stage != "ready" {
+			return errors.New("native terminal original preparation missing; zero business input")
 		}
 		return l.validateTerminalReceipt(*r)
 	}
-	if !strings.Contains(strings.ToLower(l.setup.RepositoryURL), "github.com") {
+	if l.profile.RuntimeExecutable == "" {
 		return nil
 	}
-	if l.profile.RuntimeExecutable == "" {
-		return errors.New("remote_sandbox_authentication_unsupported: execution-host runtime is not configured; zero business input")
-	}
+
 	r := s.RemoteReadiness
 	if r != nil && l.profile.RuntimeSHA256 != "" && r.RuntimeSHA256 != l.profile.RuntimeSHA256 {
 		return errors.New("remote_runtime_build_mismatch; zero business input")
 	}
-	if r == nil || len(r.ExitPublicKey) != ed25519.PublicKeySize || r.Owner.PID <= 0 || r.Owner.Created == "" || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || !codex.SupportedDevelopmentPolicy(r.Contract) || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || r.Repository != l.setup.RepositoryURL || !codex.ValidNativeID(r.SessionID) || r.Process.PID <= 0 || !r.ExpiresAt.After(l.clock().Add(5*time.Second)) || r.CheckedAt.After(l.clock().Add(5*time.Second)) || !r.ExpiresAt.After(r.CheckedAt) {
-		return errors.New("remote_sandbox_readiness_unverified_or_expired; zero business input")
+	if r == nil || len(r.ExitPublicKey) != ed25519.PublicKeySize || r.Owner.PID <= 0 || r.Owner.Created == "" || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || r.Repository != l.setup.RepositoryURL || !codex.ValidNativeID(r.SessionID) || r.Process.PID <= 0 || r.CheckedAt.After(l.clock().Add(5*time.Second)) {
+		return errors.New("remote_host_readiness_unverified; zero business input")
 	}
 	return nil
 }

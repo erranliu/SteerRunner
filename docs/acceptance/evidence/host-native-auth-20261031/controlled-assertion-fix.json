@@ -1,0 +1,7 @@
+{
+  "file": "tests/integration/verify_stopped_test.go",
+  "sha256": "220776dd43f30dbbd1cef697e367c265669d660b7adda0db76e3a6bcfb723b3a",
+  "change": "Use retired profile codec 3 and require zero native inventory calls on rejection.",
+  "production_changed": false,
+  "runner_sha256": "72432bfe7f3d6bce98d5f3b27d533d317cbc9c3cdc31cdf9f5e472d336fc6c2e"
+}

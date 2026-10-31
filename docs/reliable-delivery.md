@@ -22,7 +22,7 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 
 开发交付以 `pr_ready` 为 Runner 里程碑；合并观察与 TaskDelivery 分别处理。`pr_ready` 不保证执行资源已停止。内容生成交付完整 text/JSON 及资源结算；持续对话每轮交付结果后等待显式 message。
 
-当前主链使用 state/v5、development/2、development-audited/2，以及 conversation/1、generate/1。旧文档中的 state/v2/v3 和“一律重启后手动 resume”不能直接作为当前操作指引。职责依据：[执行边界收敛](spec/execution-boundary-refactor.spec.md)、[服务换代恢复](spec/service-generation-recovery.spec.md)。
+当前主链使用 state/v6、development/2、development-audited/2，以及 conversation/1、generate/1。旧文档中的 state/v2/v3 和“一律重启后手动 resume”不能直接作为当前操作指引。职责依据：[执行边界收敛](spec/execution-boundary-refactor.spec.md)、[服务换代恢复](spec/service-generation-recovery.spec.md)。
 
 ## 2 正常交付链路
 
@@ -62,7 +62,7 @@ flowchart TD
 
 ### 2.2 准备和首次派发
 
-开发 Run 准备自己的工作区和分支，核验固定 base/head、目标和权限。本机及 Orca local 受管 GitHub 路径使用执行主机已有 gh 登录的单仓库、有限期 broker；新远端 Run 使用已有 Orca 原生认证。内容 workflow 使用本机 read_only，不要求开发仓库、Spec/Plan 或 publication。
+开发 Run 准备自己的工作区和分支，核验固定 base/head、目标和权限。本机及 Orca local 开发路径直接使用执行主机已有 Git/gh/SSH 登录；新远端 Run 使用已有 Orca 原生认证。内容 workflow 使用本机 read_only，不要求开发仓库、Spec/Plan 或 publication。
 
 **首次副作用前先持久化原操作 ID、输入摘要和身份绑定。** 新提交的意图才进入 Execute；已有的 in_flight、accepted pending 或 outcome_unknown 进入原操作 Reconcile。重启后即使怀疑“上次还没来得及调用”，也不能把普通 in_flight 当作未发送。parser 的 pending 是其既有专属未派发状态，不能推广成其他动作的判断。
 
@@ -154,7 +154,7 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 
 ### 5.2 停止证据为什么较多
 
-本机受管路径既要停止原业务/工具写者，也要核实本 Run 的认证 broker 与 parser 等资源。Orca local 的固定控制通道承载原回执、来源和撤销证明；撤销尚未核实就关闭它，会丢掉继续对账的唯一通道。停止应在有界预算内推进业务写者退出，同时保留必要的原撤销对账路径，不能因一项未确认就放任业务继续写。
+本机受管路径停止原业务/工具写者及 parser。Orca local 的固定控制通道承载原回执与来源查询；停止先结算查询 reader，再持久化关闭意图、关闭原控制终端并核验缺席。关闭结果未知时按原身份对账，不重发关闭，不依赖虚构的认证撤销证明。
 
 远端原生 Orca 的停止保证限于原 terminal scope，不能宣称远端 OS 全树退出或宿主 gh 登录撤销。本机停止一个 Run 也不应退出宿主 gh 登录或停止其他 Run。上述证据可以统一收集和展示，但不能相互冒充。
 
@@ -222,7 +222,7 @@ V1 已按第 8.3 节先用提示词覆盖试验，再验证原 Run 接管和新�
 - **发送受理、轮次开始、完整 final 和业务完成。** 它们证明不同阶段；可以减少 UI 节点，不能让前一层推导后一层。
 - **发布前后的来源核验。** provider 查询前后重新检查工作区和提交绑定，覆盖的是查询期间源变化；不是天然重复。只有具备等价不可变快照和并发保证时才可讨论减少采样。
 - **旧写者退出与原会话资格。** 只核实 session 存在就恢复进程，会冒出两个写者；只核实 PID 消失也不能证明完整工具树退出。
-- **认证撤销、业务树停止、控制通道关闭。** 分属不同资源；尤其不能先关唯一证明通道再假定撤销完成。
+- **业务树停止、查询 reader 结算、控制通道关闭。** 分别核验原身份；控制关闭前完成已有查询结算，未知关闭不重发。
 - **未知与失败。** unknown 不是可以重试的失败；自动换 ID、换会话、重跑发布都可能制造重复副作用。
 - **冻结输入与恢复时来源核验。** 省去对移动文件、目录替换和身份变化的检查，会使原授权被用于另一份输入或资源。
 

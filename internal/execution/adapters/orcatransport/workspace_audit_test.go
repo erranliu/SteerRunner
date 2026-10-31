@@ -35,7 +35,7 @@ func TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead(t *
 			}
 			if mode == "workspace-reader-live" {
 				state, _ := l.state(s)
-				if err = l.revokeAuthentication(context.Background(), state); err == nil || c.sends != 1 {
+				if err = l.closeControl(context.Background(), state); err == nil || c.sends != 1 {
 					t.Fatal("unsettled reader proof overwritten", err, c.sends)
 				}
 			}

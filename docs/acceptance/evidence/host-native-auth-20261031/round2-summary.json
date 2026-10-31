@@ -1,0 +1,51 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "cf8df21374555bde90baf081c21f4d9581580f42",
+  "source_dirty": true,
+  "started_at": "2026-10-31T08:23:10.5145355Z",
+  "requested_levels": [
+    "L1",
+    "Controlled"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-round2\\framework",
+      "terminal_extension_exit": 0,
+      "test_count": 554,
+      "terminal_extension_test_count": 29,
+      "native_zero_match_guard": true,
+      "terminal_extensions_passed": true,
+      "level": "L1",
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-round2",
+      "exit_code": 1,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper"
+      ],
+      "native_driver_compile_exit": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "error": "L1 failed, had unexpected skips, or native extension/driver guards failed",
+  "finished_at": "2026-10-31T08:35:10.5112013Z"
+}

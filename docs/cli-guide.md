@@ -33,11 +33,11 @@ Windows 自动启动先验证挂起子进程的 Job 隔离；原生 breakaway �
 本机执行支持原生 Codex `>= 0.159.2`，按语义版本比较，无版本上限；更新版本的预发布版也可通过最低版本检查（如 `0.163.0-alpha.10.2`），但 `0.159.2` 自身的预发布版低于基线。各版本仍须通过原有协议与权限资格核验。
 本机及 Orca local 受管 GitHub worker 使用执行主机已有 gh 登录的单仓库受限代理，宿主 OAuth 不进入 worker。
 Runner 在业务前准备各 Run 独立的有限期 capability，并执行与实际权限模式一致的原生工具检查。
-认证秘密不写进请求、持久化配置或材料；停止关闭该 Run 的 broker，不退出宿主 gh 登录，不影响其他 Run。
+认证秘密不写进请求、持久化配置或材料；开发执行继承执行主机已有 Git/gh/SSH 登录；停止只关闭该 Run 的执行、工具和控制资源，不退出宿主登录。
 GitHub App 支持已移除，旧 `execution.settings.github_auth`（包括 null）明确拒绝，不能静默改用个人身份。
 升级前须用旧版本停止、核实并收尾已有 App Run/Check；新版本不迁移其身份或接管旧 App 凭据。
 固定 approval never，失败不会回退自动审核发布。
-Orca local 受管执行使用可信 helper、同权限准备与认证撤销；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
+Orca local 受管执行使用可信 helper、原会话 readiness 与精确资源停止；新远端 Run 只使用已有 Orca/Codex/Git/gh，不部署 helper，不承诺 Runner capability、同工具预检或登录撤销。远端配置中的 runtime_executable/runtime_sha256 键（含空值）拒绝。
 个人多机边界、App 移除和本次验证见[专项记录](acceptance/personal-runner-gh-only-20261019.md)。
 同服务多 Run 保留原工作区、会话、事件、PR 与停止隔离。原生远端不支持有来源证明的双模型审计；原 helper 构建的历史验证范围见
 [Orca 扩展验收](archive/2026-10/acceptance/orca-remote-extensions-20261018.md)。
@@ -66,7 +66,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v5、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v5 内普通 Run 的重启与接管语义保持。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
+当前持久格式为 state/v6、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v6 内普通 Run 的重启与接管语义保持。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
 
 独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](acceptance/result-acquisition.md)。
 
@@ -126,7 +126,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 状态目录
 
-调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
+调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v6`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
 本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
 worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译沙箱写根；这个私有目录仍绑定本次 Run，
@@ -134,11 +134,11 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 代价是每个 Run 多一份本机仓库副本。
 已有 Run 的共享缓存和冻结权限保持原样，不在恢复时扩大授权；该修复通过新 Run 生效。
 
-本机 GitHub 认证 broker 的 socket 使用 `a/<26位资源键>/s`，避免把 Git 管理目录的深度叠加到 AF_UNIX 地址上。资源键保留 128 位摘要，绑定项目、执行、attempt、资源 generation、配置摘要、工作区和 remote；权限资源 codec v4 在会话创建前固定该目录。原生启动、就绪检查、正式回合只增加本执行的目录访问，不授权共享的 `a/` 或整个状态目录。地址仍按 106 字节预检，超限时明确阻断。
+开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi/DSH 通用工具保留宿主 HOME，过滤模型 provider 密钥；DSH 自身的隔离 HOME 不改变工具登录位置。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
 
-认证关闭、进程退出或准备失败时，仅删除原 socket 和已核验的空目录；目录重定向、身份替换、外来文件或崩溃遗留目录不会被递归删除或自动接管，未完成清理会如实报告。旧 codec v3 权限资源仍可读取，但不能静默增加认证目录授权；需要使用新资源创建执行。
+默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v6`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
-当前只接受 state/v5，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
+当前只接受 state/v6，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
 
 ## 定向验证
 
@@ -201,4 +201,4 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 已有提交继续按原 request_id 查询/对账；原冻结 Request、digest、Attempt、PR 及证据不变。旧 sandbox/隐式模式 Run 在新服务中只读，拒绝 resume/reply、自动推进、PR refresh、新采集和原生会话 open，仅保留持久事实查询与身份可核验时的精确 stop。退役不等于原 worker 已停止：原 owner 中在途回合可能继续运行。停止不支持或证据缺失时，保留未结算事实，用原版本处理；不要重建会话或把旧 Run 改为 full_access。
 
-升级顺序：旧版本停收新任务→完成或精确停止受影响 Run→核实 worker/parser/broker/socket 结算→更新产品/helper/扩展与可编辑配置→检查新构建接管清单及配置→提交新任务。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除。旧显式 full_access/read_only 仅按原冻结契约恢复；开发权限不改变 read_only 和现有认证链路。版本与测试映射见 [Spec](spec/development-full-access.spec.md) / [Plan](spec/development-full-access.plan.md)。
+升级顺序：旧版本停收新任务→完成或精确停止受影响 Run→核实原 worker/parser 与旧版认证资源结算→更新产品/helper/扩展与可编辑配置→检查新构建接管清单及配置→提交新任务。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除。新版本不读取旧 Run；新建 read_only 内容/parser 与原生远端链路保留。版本与测试映射见 [Spec](spec/host-native-auth.spec.md) / [Plan](spec/host-native-auth.plan.md)。

@@ -65,33 +65,29 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 		if settings.AgentName() == "pi" || settings.AgentName() == "dsh" {
 			var fact orcatransport.TerminalExit
 			raw, readErr := os.ReadFile(filepath.Join(m.Root, "s", "terminal-agents", view.RunID, view.Execution.AttemptID, "exit.json"))
-			if readErr != nil || contracts.DecodeStrict(raw, &fact) != nil || state.TerminalOwner == nil || !reflect.DeepEqual(fact.Owner, *state.TerminalOwner) || fact.Owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || fact.Version != 1 || !fact.WritersAbsent || fact.AuthenticationClosed == nil || !*fact.AuthenticationClosed || fact.ClosedAt.IsZero() || process.Probe(&fact.Owner.Job.Owner).State != "absent" {
+			if readErr != nil || contracts.DecodeStrict(raw, &fact) != nil || state.TerminalOwner == nil || !reflect.DeepEqual(fact.Owner, *state.TerminalOwner) || fact.Owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || fact.Version != 2 || !fact.WritersAbsent || fact.ClosedAt.IsZero() || process.Probe(&fact.Owner.Job.Owner).State != "absent" {
 				return nil, errors.New("original terminal exit/authentication cleanup unverified")
 			}
 			evidence = fact
 		} else {
-			proof, actor, proofErr := orcatransport.ReadAuthenticationStopEvidence(filepath.Join(m.Root, "s"), record.Snapshot, state)
+			actor, proofErr := orcatransport.ReadControlClosureEvidence(filepath.Join(m.Root, "s"), record.Snapshot, state)
 			if proofErr != nil {
 				return nil, proofErr
 			}
-			if proof.Readiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+			if state.RemoteReadiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
 				return nil, errors.New("remote cleanup helper was not frozen")
 			}
-			expectedMode := "host-gh-repository-broker"
-			if proof.Mode != expectedMode {
-				return nil, errors.New("remote cleanup authentication source changed")
-			}
-			path, pathErr := codex.RemoteExitPath(proof.Readiness)
+			path, pathErr := codex.RemoteExitPath(*state.RemoteReadiness)
 			if pathErr != nil {
 				return nil, pathErr
 			}
 			exitCtx, cancelExit := context.WithTimeout(context.Background(), 30*time.Second)
 			raw, readErr := orca.ReadStopArtifact(exitCtx, m.Execution.Target.Environment, state.Process.RuntimeID, state.Process.WorktreeID, path)
 			cancelExit()
-			if readErr != nil || codex.VerifyRemoteExit(raw, proof.Readiness) != nil {
+			if readErr != nil || codex.VerifyRemoteExit(raw, *state.RemoteReadiness) != nil {
 				return nil, errors.Join(readErr, errors.New("original signed native exit unverified"))
 			}
-			evidence = livetest.SignedNativeExitEvidence{Proof: proof, Control: livetest.SignedNativeControlClosure{Process: actor.Process, Closed: actor.Closed}, Bytes: raw}
+			evidence = livetest.SignedNativeExitEvidence{Proof: *state.RemoteReadiness, Control: livetest.SignedNativeControlClosure{Process: actor.Process, Closed: actor.Closed}, Bytes: raw}
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()

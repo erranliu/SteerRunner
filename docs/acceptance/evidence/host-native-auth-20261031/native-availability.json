@@ -1,0 +1,150 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "cf8df21374555bde90baf081c21f4d9581580f42",
+  "source_dirty": true,
+  "started_at": "2026-10-31T08:40:53.2050910Z",
+  "requested_levels": [
+    "L2",
+    "L3"
+  ],
+  "status": "availability",
+  "results": [],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": [
+      {
+        "path": "/configurations/local-codex",
+        "code": "missing_configuration",
+        "message": "The mandatory local Codex baseline is not configured correctly."
+      }
+    ]
+  },
+  "availability": [
+    {
+      "scenario_id": "orca-local.codex",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.pi",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.dsh",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-build\\steerrunner.exe",
+  "runner_sha256": "72432bfe7f3d6bce98d5f3b27d533d317cbc9c3cdc31cdf9f5e472d336fc6c2e",
+  "resource_digest": "d3bb096b0600c524d35c4b8ff9c776f36ff7c90bacb94cde08e36f2a4cf3bb0a",
+  "source_config_digest": "",
+  "requirements_sha256": "6a66ce3b8e0f9fa22d8e9b748c72ccd5f0836219c7465a9a8874d6a387c68777",
+  "helper_sha256": "8b3ea33d2975cfdf561e6a578e6beb5b3ee12a6c2930fec66441b52bfb3ba443",
+  "finished_at": "2026-10-31T08:40:54.8141768Z"
+}

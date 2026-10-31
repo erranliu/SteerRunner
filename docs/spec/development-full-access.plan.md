@@ -1,5 +1,7 @@
 # Plan：开发执行统一 full_access
 
+> 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
+
 日期：2026-10-31。状态：P0–P4 已实施；P5 最终 L1/Controlled 与原生无模型专项通过，真实 L2/L3、read_only/parser 真机资格因缺配置未完整执行。依据 [Spec](development-full-access.spec.md)，调查基线 `a086a9984dc0bd32b3f02b9698cd26c9ba313d90`；实施阶段结果见 [实施与验证](../acceptance/development-full-access.md)，当前审计修复后的验证见[审计记录](../acceptance/development-full-access-audit.md)。
 
 ## 1. 实施原则与顺序

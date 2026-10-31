@@ -13,7 +13,7 @@ type SignedNativeControlClosure struct {
 }
 
 type SignedNativeExitEvidence struct {
-	Proof   codex.RemoteAuthenticationCleanup `json:"proof"`
-	Control SignedNativeControlClosure        `json:"control"`
-	Bytes   []byte                            `json:"signed_native_exit_bytes"`
+	Proof   codex.RemoteReadiness      `json:"proof"`
+	Control SignedNativeControlClosure `json:"control"`
+	Bytes   []byte                     `json:"signed_native_exit_bytes"`
 }

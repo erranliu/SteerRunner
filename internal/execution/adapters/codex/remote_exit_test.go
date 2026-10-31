@@ -3,19 +3,18 @@ package codexworker
 import (
 	"context"
 	"encoding/json"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
 func TestRemoteExitRequiresOriginalSignedCompleteSettlement(t *testing.T) {
-	for _, mode := range []string{"complete", "live-tree", "authentication-open", "changed-body", "other-run", "other-key", "truncated"} {
+	for _, mode := range []string{"complete", "live-tree", "changed-body", "other-run", "other-key", "truncated"} {
 		t.Run(mode, func(t *testing.T) {
 			workspace := t.TempDir()
 			writer, public, err := newRemoteExitWriter(workspace)
@@ -24,13 +23,11 @@ func TestRemoteExitRequiresOriginalSignedCompleteSettlement(t *testing.T) {
 			}
 			defer writer.close()
 			ready := RemoteReadiness{ExitPublicKey: public, SessionID: "original-session", ConfigurationDigest: "original-config", Owner: b.ProcessIdentity{PID: 1, Created: "original-helper"}, CheckedAt: time.Now().UTC()}
-			exit := RemoteExit{Readiness: ready, WritersAbsent: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()}
+			exit := RemoteExit{Readiness: ready, WritersAbsent: true, ClosedAt: time.Now().UTC()}
 			if mode == "live-tree" {
 				exit.WritersAbsent = false
 			}
-			if mode == "authentication-open" {
-				exit.AuthenticationClosed = false
-			}
+
 			if err = writer.write(exit); err != nil {
 				t.Fatal(err)
 			}

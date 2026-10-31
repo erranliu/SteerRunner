@@ -110,7 +110,7 @@ function Validate($config,[string]$kind,$value) {
     $r=Runner $config.runner_executable @('validate','--kind',$kind,'--input','-') (JSON $value); $null=Require $r }
 function Load-Config {
     $path=Join-Path $script:root 'client.json'
-    if (-not [IO.File]::Exists($path)) { return @{version=1;runner_executable=$null;state_dir=(Join-Path $env:LOCALAPPDATA 'SteerRunner');default_profile=$null;profiles=@{}} }
+    if (-not [IO.File]::Exists($path)) { return @{version=1;runner_executable=$null;state_dir=(Join-Path $env:LOCALAPPDATA 'SteerRunner-v6');default_profile=$null;profiles=@{}} }
     $c=Read-JSON $path; Keys $c @('version','runner_executable','state_dir','default_profile','profiles')
     if ($c.version -ne 1 -or $c.profiles -isnot [Collections.IDictionary] -or -not [IO.Path]::IsPathRooted($c.state_dir)) { Fail 'invalid_configuration' 'Unsupported or damaged client configuration.' }
     return ,$c

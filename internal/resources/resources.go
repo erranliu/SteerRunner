@@ -6,10 +6,6 @@ import (
 	"embed"
 	"encoding/hex"
 	"encoding/json"
-	"io/fs"
-	"runtime"
-	"sort"
-
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
@@ -18,6 +14,9 @@ import (
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	"io/fs"
+	"runtime"
+	"sort"
 )
 
 var Version = "0.2.0-dev.4"
@@ -133,6 +132,6 @@ func Capabilities() any {
 }
 
 func RecoveryCapabilities() contracts.RecoverySupport {
-	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v5"}, WritableStateFormat: "steerrunner-state/v5", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
-		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {3, 4}, "orca.terminal-profile": {3, 4, 5}, "orca.terminal-state": {6, 7}}}
+	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v6"}, WritableStateFormat: "steerrunner-state/v6", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
+		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3, 4}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {4, 5}, "orca.terminal-profile": {4, 6}, "orca.terminal-state": {7, 8}}}
 }

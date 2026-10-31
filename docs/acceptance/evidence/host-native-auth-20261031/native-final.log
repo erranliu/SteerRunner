@@ -1,0 +1,16 @@
+=== RUN   TestLinkedGitNativeCommit
+    git_boundary_live_test.go:30: preserved Git boundary: C:\Users\lmas1\AppData\Local\Temp\sr-git-boundary-4121273236
+=== RUN   TestLinkedGitNativeCommit/loose-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary e1c2738] boundary
+         stderr=
+=== RUN   TestLinkedGitNativeCommit/packed-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary 4bee9e1] boundary
+         stderr=
+--- PASS: TestLinkedGitNativeCommit (3.73s)
+    --- PASS: TestLinkedGitNativeCommit/loose-head (0.50s)
+    --- PASS: TestLinkedGitNativeCommit/packed-head (0.47s)
+=== RUN   TestHostNativeReadOnlyCommand
+    git_boundary_live_test.go:170: native read-only command rejected the write; no model input
+--- PASS: TestHostNativeReadOnlyCommand (2.10s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	8.184s

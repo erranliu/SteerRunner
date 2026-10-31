@@ -44,13 +44,13 @@ export function attachEvidence(pi, options = {}) {
     const location = pi.getFlag("steerrunner-evidence-config");
     if (typeof location !== "string" || fs.statSync(location).size > (options.initialize ? 65536 : 4096)) throw new Error("invalid_probe_config");
     config = JSON.parse(fs.readFileSync(location, "utf8"));
-    if (config.version !== 1 || !/^[a-f0-9]{32}$/.test(config.run_id) ||
+    if (config.version !== 2 || !/^[a-f0-9]{32}$/.test(config.run_id) ||
         !path.isAbsolute(config.directory) || !path.isAbsolute(config.cwd) ||
         ctx.mode !== "tui" || !toolsMatch() ||
         ctx.sessionManager.getSessionId() !== config.session_id ||
         path.resolve(ctx.cwd) !== config.cwd) throw new Error("probe_binding_mismatch");
     const ready = (preparation) => {
-      identity = { version: options.source ? 3 : 1, source: options.source ?? "pi-extension-p0", source_sha256: sourceDigest,
+      identity = { version: options.source ? 4 : 1, source: options.source ?? "pi-extension-p0", source_sha256: sourceDigest,
       run_id: config.run_id, session_id: config.session_id, instance_id: randomUUID(), pid: process.pid,
       process_started_at: new Date(performance.timeOrigin).toISOString(), mode: ctx.mode,
       tools: pi.getActiveTools(), model: ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : "", preparation,

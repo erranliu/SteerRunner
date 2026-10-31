@@ -12,7 +12,7 @@ import (
 )
 
 func TestRetiredStateFormatsRefusedWithoutChangingOriginalResources(t *testing.T) {
-	for _, version := range []int{3, 4} {
+	for _, version := range []int{3, 4, 5} {
 		t.Run(fmt.Sprint(version), func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "runner.db")
@@ -71,7 +71,7 @@ func TestFreshStateHasOnlySupportedRunResources(t *testing.T) {
 	if err = s.db.QueryRow(`SELECT count(*) FROM pragma_table_info('commands') WHERE name='check_id'`).Scan(&count); err != nil || count != 0 {
 		t.Fatal("retired command index", count, err)
 	}
-	if s.db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || version != 5 || s.db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || format != Format {
+	if s.db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || version != 6 || s.db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || format != Format {
 		t.Fatal("format disagreement")
 	}
 }

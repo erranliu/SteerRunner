@@ -5,10 +5,9 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/json"
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	"testing"
 	"time"
-
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 )
 
 func TestSignedNativeExitSurvivesIndentedArchive(t *testing.T) {
@@ -17,7 +16,7 @@ func TestSignedNativeExitSurvivesIndentedArchive(t *testing.T) {
 		t.Fatal(err)
 	}
 	ready := codex.RemoteReadiness{ExitPublicKey: public, CheckedAt: time.Now().UTC()}
-	body, _ := json.Marshal(codex.RemoteExit{Readiness: ready, WritersAbsent: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()})
+	body, _ := json.Marshal(codex.RemoteExit{Readiness: ready, WritersAbsent: true, ClosedAt: time.Now().UTC()})
 	signed, _ := json.Marshal(struct {
 		Body      json.RawMessage `json:"body"`
 		Signature []byte          `json:"signature"`

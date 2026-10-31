@@ -5,14 +5,13 @@ package native
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/erranliu/SteerRunner/internal/contracts"
+	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
 )
 
 // Both requests enter the same real service before either is awaited. Product
@@ -122,22 +121,11 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 					allStopped = false
 					t.Error("remote multi-Run cleanup unconfirmed", err)
 				} else {
-					save(t, fmt.Sprintf("peer-%d-authentication-cleanup.json", i), proof)
+					save(t, fmt.Sprintf("peer-%d-native-execution-cleanup.json", i), proof)
 				}
 				continue
 			}
-			var fact struct {
-				Revoked    bool   `json:"revocation_confirmed"`
-				Repository string `json:"repository"`
-			}
-			if manifests[i].Execution.Adapter == "orca-terminal" {
-				continue
-			}
-			data, err := os.ReadFile(filepath.Join(dir, "runs", ids[i], "app-server", "authentication-cleanup.json"))
-			if err != nil || json.Unmarshal(data, &fact) != nil || !fact.Revoked || fact.Repository != livetest.Repository {
-				allStopped = false
-				t.Error("multi-Run capability cleanup unconfirmed", err)
-			}
+
 		}
 		r.RunStopped = allStopped
 	})

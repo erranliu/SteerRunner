@@ -1,9 +1,10 @@
 package codexworker
 
 import (
-	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/erranliu/SteerRunner/internal/execution/hostenv"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -13,7 +14,6 @@ import (
 type workerRuntime struct {
 	Shell     string
 	Temp      string
-	Auth      *AuthenticationRuntime
 	OrcaHooks bool
 }
 
@@ -107,12 +107,18 @@ func setEnvironmentValues(env []string, values map[string]string) []string {
 }
 
 func (r *workerRuntime) environment(env []string) ([]string, error) {
-	if r.Auth != nil {
-		var err error
-		env, err = r.Auth.environment(env)
-		if err != nil {
-			return nil, err
+	env = hostenv.Development(env)
+	if r.OrcaHooks {
+		value := environmentValue(env, "NO_PROXY")
+		for _, host := range []string{"127.0.0.1", "localhost", "::1"} {
+			if !strings.Contains(","+value+",", ","+host+",") {
+				if value != "" {
+					value += ","
+				}
+				value += host
+			}
 		}
+		env = setEnvironmentValues(env, map[string]string{"NO_PROXY": value})
 	}
 	paths := []string{filepath.Dir(r.Shell)}
 	for _, path := range filepath.SplitList(environmentValue(env, "PATH")) {
@@ -147,18 +153,7 @@ func (r *workerRuntime) environment(env []string) ([]string, error) {
 		fmt.Sprintf("GIT_CONFIG_KEY_%d", count+2):   "core.longpaths",
 		fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+2): "true",
 	}
-	if r.Auth != nil {
-		// Git's helper launcher invokes MSYS sh, which cannot create its named
-		// objects in MXC. Send a URL-scoped HTTP header from process environment
-		// instead. Never pin this secret value with a native config argv.
-		header := "AUTHORIZATION: basic " + base64.StdEncoding.EncodeToString([]byte("x-access-token:"+environmentValue(env, "GH_TOKEN")))
-		entries := [][2]string{{"credential.helper", ""}, {"http." + r.Auth.remoteURL + ".extraheader", header}, {"credential.interactive", "false"}}
-		for i, entry := range entries {
-			values[fmt.Sprintf("GIT_CONFIG_KEY_%d", count+3+i)] = entry[0]
-			values[fmt.Sprintf("GIT_CONFIG_VALUE_%d", count+3+i)] = entry[1]
-		}
-		values["GIT_CONFIG_COUNT"] = strconv.Itoa(count + 6)
-	}
+
 	return setEnvironmentValues(env, values), nil
 }
 
@@ -169,61 +164,13 @@ func (r *workerRuntime) instructions() string {
 }
 
 func (r *workerRuntime) configArgs(env []string) ([]string, error) {
-	count, err := strconv.Atoi(environmentValue(env, "GIT_CONFIG_COUNT"))
-	if r.Auth != nil {
-		count -= 3
+	names := strings.Fields(hostenv.ToolNames)
+	names = append(names, "GIT_CONFIG_COUNT", "GIT_CONFIG_KEY_*", "GIT_CONFIG_VALUE_*")
+	if r.OrcaHooks {
+		names = append(names, strings.Fields("ORCA_AGENT_HOOK_ENDPOINT ORCA_AGENT_HOOK_PORT ORCA_AGENT_HOOK_TOKEN ORCA_AGENT_HOOK_TRANSPORT ORCA_AGENT_HOOK_ENV ORCA_AGENT_HOOK_NODE ORCA_AGENT_HOOK_VERSION ORCA_PANE_KEY ORCA_AGENT_PANE ORCA_AGENT_LAUNCH_TOKEN ORCA_AGENT_LAUNCH ORCA_TAB_ID ORCA_WORKTREE_ID ORCA_USER_DATA_PATH")...)
 	}
-	if err != nil || count < 3 || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-3)) != "maintenance.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2)) != "gc.auto" || environmentValue(env, fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1)) != "core.longpaths" {
-		return nil, errors.New("worker native environment lacks its fixed Git configuration")
-	}
-	values := [][2]string{{"PATH", environmentValue(env, "PATH")}, {"GIT_CONFIG_COUNT", strconv.Itoa(count)},
-		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-3), "maintenance.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-3), "false"},
-		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-2), "gc.auto"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-2), "0"},
-		{fmt.Sprintf("GIT_CONFIG_KEY_%d", count-1), "core.longpaths"}, {fmt.Sprintf("GIT_CONFIG_VALUE_%d", count-1), "true"}}
-	args := make([]string, 0, len(values)*2)
-	for _, entry := range values {
-		args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))
-	}
-	if r.Auth != nil {
-		// Values are inherited from the process environment, never argv. The
-		// explicit allowlist prevents unrelated caller secrets
-		// from reaching shell tools even when native defaults exclude *TOKEN*.
-		args = append(args, "--config", `shell_environment_policy.inherit="all"`, "--config", "shell_environment_policy.ignore_default_excludes=true", "--config", `shell_environment_policy.include_only=["PATH","PATHEXT","SystemRoot","SystemDrive","COMSPEC","WINDIR","TEMP","TMP","USERPROFILE","HOME","APPDATA","LOCALAPPDATA","ProgramFiles","ProgramFiles(x86)","ProgramData","GH_HOST","GH_TOKEN","GH_PROMPT_DISABLED","GH_CONFIG_DIR","GIT_TERMINAL_PROMPT","GIT_CONFIG_*","HTTPS_PROXY","HTTP_PROXY","NO_PROXY","SSL_CERT_FILE","GIT_SSL_CAINFO","STEERLINE_PROGRESS_FILE","STEERLINE_RESULT_FILE"]`)
-		if r.OrcaHooks {
-			// Native Codex command hooks use this same environment policy. Keep
-			// only the existing pane-scoped hook transport and identity; never
-			// admit remote pairing credentials or the whole ORCA_* namespace.
-			const hookNames = `,"ORCA_AGENT_HOOK_ENDPOINT","ORCA_AGENT_HOOK_PORT","ORCA_AGENT_HOOK_TOKEN","ORCA_AGENT_HOOK_TRANSPORT","ORCA_AGENT_HOOK_ENV","ORCA_AGENT_HOOK_NODE","ORCA_AGENT_HOOK_VERSION","ORCA_PANE_KEY","ORCA_AGENT_PANE","ORCA_AGENT_LAUNCH_TOKEN","ORCA_AGENT_LAUNCH","ORCA_TAB_ID","ORCA_WORKTREE_ID","ORCA_USER_DATA_PATH"`
-			args[len(args)-1] = strings.TrimSuffix(args[len(args)-1], "]") + hookNames + "]"
-		}
-		for i := count; i < count+3; i++ {
-			for _, prefix := range []string{"GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_"} {
-				if i == count+1 && prefix == "GIT_CONFIG_VALUE_" {
-					continue
-				} // secret: environment only
-				name := fmt.Sprintf("%s%d", prefix, i)
-				args = append(args, "--config", "shell_environment_policy.set."+name+"="+strconv.Quote(environmentValue(env, name)))
-			}
-		}
-		args = append(args, "--config", "shell_environment_policy.set.GIT_CONFIG_COUNT="+strconv.Quote(strconv.Itoa(count+3)))
-		if broker := r.Auth.broker; broker != nil {
-			if broker.socketLease != nil {
-				if err := broker.socketLease.verify(); err != nil {
-					return nil, err
-				}
-			}
-			// Public transport values belong to tool policy, not the app-server's
-			// own model/network environment. No machine-wide proxy or trust change.
-			noProxy := ""
-			if r.OrcaHooks {
-				// Native status hooks must reach Orca's loopback listener rather
-				// than the repository-only GitHub authentication proxy.
-				noProxy = "127.0.0.1,localhost,::1"
-			}
-			for _, entry := range [][2]string{{"HTTPS_PROXY", broker.address}, {"HTTP_PROXY", broker.address}, {"NO_PROXY", noProxy}, {"SSL_CERT_FILE", broker.caPath}, {"GIT_SSL_CAINFO", broker.caPath}, {"GH_CONFIG_DIR", broker.configDir}} {
-				args = append(args, "--config", "shell_environment_policy.set."+entry[0]+"="+strconv.Quote(entry[1]))
-			}
-		}
-	}
+	raw, _ := json.Marshal(names)
+	args := []string{"--config", `shell_environment_policy.inherit="all"`, "--config", "shell_environment_policy.ignore_default_excludes=true", "--config", "shell_environment_policy.include_only=" + string(raw)}
+	// Values remain in process environment, including arbitrary Git credential headers.
 	return args, nil
 }

@@ -127,10 +127,14 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal(err)
 	}
 	dir := filepath.Join(root, "state")
+	stateVersion := orca.LocalStateVersion
+	if environment != "" {
+		stateVersion = orca.StateVersion
+	}
 	state := orca.State{Process: p}
 	freezeState := func() {
 		raw, _ := json.Marshal(state)
-		e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, raw)
+		e, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: stateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, raw)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -218,7 +222,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	// Native reader settlement is covered through the fixed protocol in the
 	// workflow tests; this zero-business probe isolates offline signed exit.
 	stateRaw, _ := json.Marshal(state)
-	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
+	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: stateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
 	if err != nil {
 		t.Fatal(err)
 	}

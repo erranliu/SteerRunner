@@ -7,7 +7,7 @@ import (
 )
 
 // Contract identity retains the minimum version baseline for frozen resources.
-const PolicyContract = "codex-policy-v11:0.159.2:full-access:repository-auth-broker:never"
+const PolicyContract = "codex-policy-v12:0.159.2:full-access:host-native-auth:never"
 const ReadOnlyPolicyContract = "codex-policy-v10:0.159.2:explicit-access-mode:repository-auth-broker:never"
 const PolicyMinimumCodexVersion = "0.159.2"
 const PolicyCodexVersion = "codex-cli " + PolicyMinimumCodexVersion

@@ -36,7 +36,7 @@ func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
 		if err != nil {
 			return Profile{}, 0, err
 		}
-		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal == nil || p.Terminal.ReceiptVersion != 3 || p.Terminal.AccessMode != "full_access" || p.Terminal.SandboxExecutable != "" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64) {
+		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || p.Terminal.SandboxExecutable != "" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
 			return Profile{}, 0, errors.New("new full-access terminal profile is incomplete or contains retired settings")
 		}
 		if version == NativeRemoteProfileVersion {

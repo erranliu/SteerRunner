@@ -291,7 +291,7 @@ func localFixture(t *testing.T) (*storage.Store, *runstate.Record, string) {
 	}
 	state := orca.State{Turns: []orca.Turn{{Command: "command-0", Prompt: "fixture input 0", Accepted: true, Settled: true}}}
 	raw, _ = json.Marshal(state)
-	envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, CodecVersion: orca.StateVersion, ProjectID: "p", ExecutionID: "r", AttemptID: "a", Generation: "g", ConfigDigest: "config"}, raw)
+	envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, CodecVersion: orca.LocalStateVersion, ProjectID: "p", ExecutionID: "r", AttemptID: "a", Generation: "g", ConfigDigest: "config"}, raw)
 	if err != nil {
 		t.Fatal(err)
 	}

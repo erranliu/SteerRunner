@@ -50,7 +50,7 @@ func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt,
 	r.DirectoryIdentity = identity
 	r.RepositoryPath = path
 	project := "content:" + identity
-	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: codex.ProfileCodecKey, CodecVersion: codex.ProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: project, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}, payload)
+	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: codex.ProfileCodecKey, CodecVersion: codex.ReadOnlyProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: project, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}, payload)
 	if err != nil {
 		return nil, err
 	}

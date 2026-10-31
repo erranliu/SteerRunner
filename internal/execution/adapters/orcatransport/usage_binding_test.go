@@ -24,8 +24,8 @@ func TestUsagePreparedLocalCodexInitialization(t *testing.T) {
 		t.Fatal("verified fixed bootstrap omitted", got)
 	}
 	state.RemoteReadiness.Contract = codex.ReadOnlyPolicyContract
-	if got := usageInitialization(state, proof, p); got == nil || got.ID != "$initialization" {
-		t.Fatal("frozen v10 full_access bootstrap omitted", got)
+	if got := usageInitialization(state, proof, p); got != nil {
+		t.Fatal("retired full_access bootstrap admitted", got)
 	}
 	state.RemoteReadiness.Contract = codex.PolicyContract
 	for _, mutate := range []func(*State, *UsageInitialization, *Profile){
@@ -62,7 +62,7 @@ func TestUsageFullAccessTerminalProfileVersions(t *testing.T) {
 	for _, agent := range []string{"pi", "dsh"} {
 		t.Run(agent, func(t *testing.T) {
 			snapshot := b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", WorkspacePath: `C:\work`, Agent: b.AgentSpec{Name: agent}}, Session: b.SessionContext{ProjectID: "project", ExecutionID: "run", AttemptID: "attempt"}, ResourceGeneration: "generation", ConfigurationDigest: "configuration"}
-			p := Profile{Executable: "orca", WaitTimeout: "1s", Terminal: &TerminalConfig{Agent: agent, ReceiptVersion: 3, AccessMode: "full_access", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", SessionID: "runner-session", BundleSHA256: strings.Repeat("a", 64), EvidenceSHA256: strings.Repeat("b", 64)}}
+			p := Profile{Executable: "orca", WaitTimeout: "1s", Terminal: &TerminalConfig{Agent: agent, ReceiptVersion: 4, AccessMode: "full_access", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", SessionID: "runner-session", BundleSHA256: strings.Repeat("a", 64), EvidenceSHA256: strings.Repeat("b", 64)}}
 			state := State{Turns: []Turn{{Command: "command", Accepted: true, Prompt: "original input"}}}
 			expectedSession := p.Terminal.SessionID
 			if agent == "dsh" {
@@ -70,7 +70,7 @@ func TestUsageFullAccessTerminalProfileVersions(t *testing.T) {
 				state.TerminalReadiness = &TerminalReceipt{NativeSessionID: expectedSession}
 			}
 			raw, _ := json.Marshal(state)
-			envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: StateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
+			envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: LocalStateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -104,7 +104,7 @@ func TestUsageRecordedCodexIDsUseOriginalTurnAndWireDigest(t *testing.T) {
 	state := State{Turns: []Turn{{Command: "command", Accepted: true, Prompt: "exact input", InputDigest: digest([]byte("exact input")), Native: NativeProof{Provider: "native-session"}, Recorded: &codex.RemoteTurnReceipt{NativeTurnID: "native-turn", UserItemID: "thread-read-item-not-rollout-item", InputDigest: digest([]byte("exact input"))}}}}
 	bind := func() (parsers.Binding, error) {
 		raw, _ := json.Marshal(state)
-		envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: StateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
+		envelope, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{Purpose: b.ImplementationResourcePurpose, ImplementationKey: StateKey, CodecVersion: LocalStateVersion, ProjectID: "project", ExecutionID: "run", AttemptID: "attempt", Generation: "generation", ConfigDigest: "configuration"}, raw)
 		if err != nil {
 			t.Fatal(err)
 		}

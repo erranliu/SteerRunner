@@ -7,16 +7,15 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"github.com/erranliu/SteerRunner/internal/contracts"
+	_ "modernc.org/sqlite"
 	"net/url"
 	"os"
 	"path/filepath"
 	"runtime"
-
-	"github.com/erranliu/SteerRunner/internal/contracts"
-	_ "modernc.org/sqlite"
 )
 
-const Format = "steerrunner-state/v5"
+const Format = "steerrunner-state/v6"
 
 type Store struct{ db *sql.DB }
 
@@ -36,7 +35,7 @@ func Open(dir string) (*Store, error) {
 		_, readErr := file.ReadAt(header[:], 0)
 		file.Close()
 		if readErr != nil || string(header[:]) != "SQLite format 3\x00" {
-			return nil, contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory.")
+			return nil, contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v6 --state-dir.")
 		}
 	}
 	db, err := sql.Open("sqlite", databasePath)
@@ -52,7 +51,7 @@ func Open(dir string) (*Store, error) {
 		if _, err := db.Exec(`
 BEGIN IMMEDIATE;
 CREATE TABLE metadata (format TEXT NOT NULL);
-INSERT INTO metadata VALUES ('steerrunner-state/v5');
+INSERT INTO metadata VALUES ('steerrunner-state/v6');
 CREATE TABLE commands (
  request_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE,
  command TEXT NOT NULL, instance_id TEXT NOT NULL, digest TEXT NOT NULL,
@@ -61,7 +60,7 @@ CREATE TABLE commands (
 CREATE TABLE runs(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
 CREATE TABLE events(seq INTEGER PRIMARY KEY AUTOINCREMENT,run_id TEXT NOT NULL,event_id TEXT NOT NULL UNIQUE,body BLOB NOT NULL);
 CREATE INDEX events_run ON events(run_id,seq);
-PRAGMA user_version=5;
+PRAGMA user_version=6;
 COMMIT;`); err != nil {
 			return fail(err)
 		}
@@ -107,8 +106,8 @@ func validateFormat(db *sql.DB) error {
 	var format string
 	var version int
 	var count int
-	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || (format != Format || version != 5) {
-		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; preserve it and use a new directory.")
+	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || (format != Format || version != 6) {
+		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v6 --state-dir.")
 	}
 	return nil
 }

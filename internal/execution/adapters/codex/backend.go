@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,11 +15,6 @@ import (
 	"runtime"
 	"slices"
 	"sync"
-	"time"
-
-	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
-	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
-	m "github.com/erranliu/SteerRunner/internal/execution/model"
 )
 
 // ProcessPort preserves the host's managed process / Job Object policy.
@@ -92,14 +90,6 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		return nil, fixed, budgetErr
 	}
 	receipt = fixed
-	credentialPrepared := false
-	defer func() {
-		if err != nil && fixed.Process == nil && credentialPrepared {
-			if !b.Config.Authentication.Close() {
-				err = preparationBlocked(errors.Join(err, errors.New("authentication_cleanup_unverified")))
-			}
-		}
-	}()
 	if !executionbackend.StableExecutionID(input.CommandID) || input.Prompt == "" || b.Config.Workspace == "" || b.Config.Executable == "" || fixed.SessionID != "" && !ValidNativeID(fixed.SessionID) {
 		return nil, receipt, errors.New("app-server worker turn lacks its fixed workspace or command")
 	}
@@ -118,41 +108,13 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 		if err != nil {
 			return nil, receipt, err
 		}
-		workerSetup.Auth = b.Config.Authentication
-		if workerSetup.Auth != nil {
-			if err = workerSetup.Auth.prepare(ctx); err != nil {
-				return nil, receipt, preparationBlocked(err)
-			}
-			credentialPrepared = true
-			if workerSetup.Auth.broker != nil {
-				if err = workerSetup.Auth.broker.installPublicCA(workerSetup.Temp); err != nil {
-					return nil, receipt, preparationBlocked(err)
-				}
-				plan := b.Config.AuthenticationTransport
-				if plan == nil || !sameWorkspace(plan.Workspace, b.Config.Workspace) || plan.Remote != workerSetup.Auth.remoteURL {
-					return nil, receipt, preparationBlocked(errors.New("authentication_api_binding_mismatch"))
-				}
-				if err = workerSetup.Auth.broker.installAPITransport(workerSetup.Temp, plan); err != nil {
-					return nil, receipt, preparationBlocked(err)
-				}
-			}
-		}
+
 	}
 	paths, err := PrepareTurn(b.Config.RunDir, b.Config.RunID, input.CommandID, b.Config.ServerDir, input.Prompt, b.Process.WriteAtomic)
 	if err != nil {
 		return nil, receipt, err
 	}
-	if auth := b.Config.Authentication; auth != nil {
-		auth.mu.Lock()
-		auth.onClose = func(revoked bool) {
-			facts := map[string]any{"revocation_confirmed": revoked, "checked_at": time.Now().UTC(), "expires_at": auth.expires, "repository": auth.repository}
-			if auth.broker != nil {
-				facts["broker"] = auth.broker.facts()
-			}
-			_ = b.Process.WriteAtomic(filepath.Join(b.Config.ServerDir, "authentication-cleanup.json"), encode(facts))
-		}
-		auth.mu.Unlock()
-	}
+
 	h := &SessionHandle{Binding: fixed, Paths: paths, input: input}
 	defer func() {
 		receipt = h.Binding
@@ -266,7 +228,7 @@ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executio
 	if err := b.verifySandboxReadiness(ctx, h, input); err != nil {
 		return nil, "", preparationBlocked(err)
 	}
-	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return b.toolWriteArgs(linkedArgs), nil })
+	params, err := TurnParams(ctx, TurnParamsInput{Worktree: b.Config.Workspace, ThreadID: h.Binding.SessionID, TurnInput: input, Sandbox: b.Config.Sandbox, Model: b.Config.Model, ReasoningEffort: b.Config.ReasoningEffort}, func(context.Context, string) ([]string, error) { return append([]string(nil), linkedArgs...), nil })
 	if err != nil {
 		return nil, "", err
 	}

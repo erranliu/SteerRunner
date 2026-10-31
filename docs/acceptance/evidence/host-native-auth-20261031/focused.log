@@ -1,0 +1,3 @@
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	2.090s
+ok  	github.com/erranliu/SteerRunner/internal/execution/hostenv	1.373s
+ok  	github.com/erranliu/SteerRunner/internal/application	28.332s

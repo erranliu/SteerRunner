@@ -7,19 +7,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
-	"time"
-
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/nativeaudit"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 // RemoteAgentConfig is public configuration. Authentication is resolved only on
@@ -37,26 +36,24 @@ type RemoteAgentConfig struct {
 
 const RemoteReadyPrefix = "SR_REMOTE_READY:"
 const RemoteFailurePrefix = "SR_REMOTE_AGENT_FAILURE:"
-const RemoteNativeTransport = "codex-remote-inline-v3"
+const RemoteNativeTransport = "codex-remote-inline-v4"
 
 type RemoteReadiness struct {
-	Input                 *SessionInputFacts `json:"runner_input,omitempty"`
-	Bootstrap             *SessionInputFacts `json:"runner_bootstrap,omitempty"`
-	AuthenticationControl bool               `json:"authentication_control,omitempty"`
-	ExitPublicKey         []byte             `json:"exit_public_key,omitempty"`
-	Owner                 b.ProcessIdentity  `json:"owner"`
-	NativeTransport       string             `json:"native_transport"`
-	RuntimeSHA256         string             `json:"runtime_sha256"`
-	Verified              bool               `json:"verified"`
-	Contract              string             `json:"contract"`
-	Workspace             string             `json:"workspace"`
-	Repository            string             `json:"repository"`
-	SessionID             string             `json:"session_id"`
-	ConfigurationDigest   string             `json:"configuration_digest"`
-	Process               b.ProcessIdentity  `json:"process"`
-	CheckedAt             time.Time          `json:"checked_at"`
-	ExpiresAt             time.Time          `json:"expires_at"`
-	AccessMode            string             `json:"access_mode"`
+	Input               *SessionInputFacts `json:"runner_input,omitempty"`
+	Bootstrap           *SessionInputFacts `json:"runner_bootstrap,omitempty"`
+	ExitPublicKey       []byte             `json:"exit_public_key,omitempty"`
+	Owner               b.ProcessIdentity  `json:"owner"`
+	NativeTransport     string             `json:"native_transport"`
+	RuntimeSHA256       string             `json:"runtime_sha256"`
+	Verified            bool               `json:"verified"`
+	Contract            string             `json:"contract"`
+	Workspace           string             `json:"workspace"`
+	Repository          string             `json:"repository"`
+	SessionID           string             `json:"session_id"`
+	ConfigurationDigest string             `json:"configuration_digest"`
+	Process             b.ProcessIdentity  `json:"process"`
+	CheckedAt           time.Time          `json:"checked_at"`
+	AccessMode          string             `json:"access_mode"`
 }
 
 func RemoteConfigurationDigest(c RemoteAgentConfig) string {
@@ -69,9 +66,9 @@ func RemoteRuntimeDirectory(worktree string) string {
 	return filepath.Join(os.Getenv("LOCALAPPDATA"), "SteerRunner", "remote-runtime", fmt.Sprintf("%x", key[:16]))
 }
 
-// RunRemoteAgent owns the credential broker and the original app-server tree.
-// The TUI resumes that same server/thread only after its deterministic native
-// command/exec probe passes. It never executes Git or publication on the host.
+// RunRemoteAgent owns the original app-server tree and resumes the same thread
+// in its TUI after the native bootstrap is ready. Git and publication use the
+// execution host login through the original agent tools.
 func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, output, diagnostics io.Writer, bindings model.Bindings) (result error) {
 	c.models = bindings.Clone()
 	if err := c.validateModels(); err != nil {
@@ -119,19 +116,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth, err := newAuthentication(c.RepositoryURL)
-	if err != nil {
-		return err
-	}
-	defer auth.Close()
-	if err = auth.prepare(ctx); err != nil {
-		return err
-	}
-	worker.Auth = auth
 	worker.OrcaHooks = true
-	if err = auth.broker.installPublicCA(worker.Temp); err != nil {
-		return err
-	}
 	roots, _ := WritableRoots(writeArgs)
 	dir := RemoteRuntimeDirectory(wd)
 	// Evidence lives outside the workspace and all four writable Git roots.
@@ -144,16 +129,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
-		return err
-	}
-	plan, err := remoteAuthenticationTransport(c, wd)
-	if err != nil {
-		return err
-	}
-	if err = auth.broker.installAPITransport(worker.Temp, plan); err != nil {
-		return err
-	}
-	if err = remoteTrustedPaths(wd, []string{plan.Directory}, []string{self, native, dir}); err != nil {
 		return err
 	}
 	exitWriter, publicKey, err := newRemoteExitWriter(wd)
@@ -172,13 +147,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	auth.onClose = func(revoked bool) {
-		var original RemoteReadiness
-		body, _ := os.ReadFile(filepath.Join(dir, "ready.json"))
-		_ = json.Unmarshal(body, &original)
-		_ = host.WriteExecutionFile(filepath.Join(dir, "authentication-cleanup.json"), encode(map[string]any{"session_id": original.SessionID, "configuration_digest": RemoteConfigurationDigest(c), "revocation_confirmed": revoked, "broker": auth.broker.facts()}))
-	}
-	owned, _, endpoint, err := LaunchServer(LaunchConfig{AuthenticationTransport: plan, Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
+	owned, _, endpoint, err := LaunchServer(LaunchConfig{Executable: native, Workspace: wd, ServerDir: dir, Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox, Runtime: worker, WritableRoots: roots, Model: c.Model, ReasoningEffort: c.ReasoningEffort}, host.StartManaged, func(env []string) []string {
 		return lifecycleProcessEnvironment(env, "remote-runtime", "remote-runtime", nil)
 	})
 	if err != nil {
@@ -192,9 +161,8 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		// server/tools and the remote TUI are owned, non-breakaway Jobs.
 		tuiAbsent := settleRemoteTree(tuiOwned)
 		writersAbsent := settleRemoteTree(owned) && tuiAbsent
-		authenticationClosed := auth.Close()
 		if ready != nil {
-			proof := RemoteExit{Readiness: *ready, WritersAbsent: writersAbsent, AuthenticationClosed: authenticationClosed, ClosedAt: time.Now().UTC()}
+			proof := RemoteExit{Readiness: *ready, WritersAbsent: writersAbsent, ClosedAt: time.Now().UTC()}
 			if tuiOwned != nil {
 				identity := tuiOwned.Identity()
 				proof.TUI = &identity
@@ -204,8 +172,8 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		if tuiOwned != nil {
 			tuiOwned.Close()
 		}
-		if !writersAbsent || !authenticationClosed {
-			result = errors.Join(result, errors.New("original native tree/authentication cleanup unverified"))
+		if !writersAbsent {
+			result = errors.Join(result, errors.New("original native tree cleanup unverified"))
 		}
 	}()
 	client, err := ConnectAppServer(ctx, endpoint)
@@ -214,11 +182,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	}
 	defer client.Close()
 	identity := owned.Identity()
-	h := &SessionHandle{Binding: Binding{Process: &identity, Endpoint: endpoint}, Paths: TurnPaths{TurnDir: dir}}
-	backend := Backend{Config: Config{AuthenticationTransport: plan, Executable: native, Workspace: wd, Sandbox: permissions.Sandbox, Authentication: auth, RemoteName: "origin"}, Process: ProcessPort{WriteAtomic: host.WriteExecutionFile}}
-	if err = backend.checkSandboxReadiness(ctx, h, b.TurnInput{CommandID: "remote-preparation", LinkedWorktreeArgs: writeArgs}, client.Call); err != nil {
-		return err
-	}
 	params, err := ThreadStartParams(wd, permissions.Sandbox, c.Model, nil)
 	if err != nil {
 		return err
@@ -253,7 +216,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	// Codex does not persist an empty thread's rollout. Complete the same
 	// tool-free READY bootstrap used by the terminal launcher before the TUI
 	// resumes it, so a second connection cannot invent a replacement session.
-	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", BootstrapInstruction, permissions.Sandbox, c.Model, c.ReasoningEffort, append(roots, plan.Directory))
+	bootstrap, err := TurnStartParams(wd, thread.Thread.ID, "remote-bootstrap", BootstrapInstruction, permissions.Sandbox, c.Model, c.ReasoningEffort, roots)
 	if err != nil {
 		return err
 	}
@@ -291,9 +254,8 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		}
 	}
 	mode := c.AccessMode
-	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), ExpiresAt: auth.expires, AccessMode: mode}
+	prepared := RemoteReadiness{ExitPublicKey: publicKey, Owner: *owner, NativeTransport: RemoteNativeTransport, Verified: true, Contract: PolicyContract, Workspace: wd, Repository: c.RepositoryURL, SessionID: thread.Thread.ID, ConfigurationDigest: RemoteConfigurationDigest(c), Process: identity, CheckedAt: time.Now().UTC(), AccessMode: mode}
 	prepared.Input, prepared.Bootstrap = inputFacts, bootstrapFacts
-	prepared.AuthenticationControl = true
 	prepared.RuntimeSHA256, err = RuntimeBinarySHA256()
 	if err != nil {
 		return err
@@ -302,9 +264,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	ready = &prepared
-	controlCtx, cancelControl := context.WithCancel(ctx)
-	defer cancelControl()
-	go watchRemoteAuthentication(controlCtx, dir, prepared, auth)
 	// The transport captures this finite receipt before any business input and
 	// binds it to the original PTY incarnation and native provider session.
 	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(ready)))
@@ -372,11 +331,6 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 // Keep the socket below the execution-host state root, rather than the deep
 // Git or protected evidence directory. The exact lease binds the original
 // workspace and frozen public configuration; only its child gets write access.
-func remoteAuthenticationTransport(c RemoteAgentConfig, wd string) (*AuthenticationTransport, error) {
-	state := filepath.Join(os.Getenv("LOCALAPPDATA"), "SteerRunner")
-	id := filepath.Base(RemoteRuntimeDirectory(wd))
-	return PlanAuthenticationTransport(state, wd, c.RepositoryURL, PolicyResourceIdentity{ProjectID: c.RepositoryURL, ExecutionID: id, AttemptID: id, Generation: id, ConfigDigest: RemoteConfigurationDigest(c)})
-}
 
 func remoteTUIArgs(c RemoteAgentConfig, endpoint, session string) []string {
 	// Inline mode preserves the preparation receipt. A second tracked Orca
