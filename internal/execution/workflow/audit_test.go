@@ -83,7 +83,7 @@ func TestRAParserFieldProvenance(t *testing.T) {
 		t.Run(tc.field, func(t *testing.T) {
 			w, input := auditFixture()
 			before := *Result(w, input.CommandID)
-			got := RouteParsed(w, input, tc.body, "parser-operation", "")
+			got := RouteParsed(w, input, tc.body)
 			if got.Acquired == nil || got.Acquired.Source != Source(before) || got.Cursor != StepAuditInput || got.Next != nil {
 				t.Fatal(got)
 			}
@@ -91,7 +91,7 @@ func TestRAParserFieldProvenance(t *testing.T) {
 			for _, field := range got.Acquired.Fields {
 				if field.Field == tc.field {
 					found = true
-					if field.Method != "llm_parser" || field.Source != Source(before) || field.Locator != "parser:parser-operation:$/"+tc.field {
+					if field.Method != "llm_parser" || field.Source != Source(before) || field.Locator != "parser:provided_text:$/"+tc.field {
 						t.Fatal(field)
 					}
 				}

@@ -435,7 +435,7 @@ func auditResult(cwd, prompt string) (string, error) {
 }
 
 func parserFixture() {
-	if !strings.Contains(strings.Join(os.Args, " "), "mcp_servers.fixture_external.enabled=false") {
+	if args := strings.Join(os.Args, " "); !strings.Contains(args, "--ignore-user-config") || !strings.Contains(args, "mcp_servers={}") {
 		os.Exit(4)
 	}
 	input, _ := io.ReadAll(os.Stdin)

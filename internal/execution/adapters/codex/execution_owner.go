@@ -26,13 +26,15 @@ const ExecutionOwnerProtocol = "steerrunner-execution-owner/v1"
 const ExecutionOwnerConfigFile = "codex-owner.json"
 
 type ExecutionOwnerIdentity struct {
-	RetainsParser        bool              `json:"retains_parser,omitempty"`
-	WorkspaceCheckpoints bool              `json:"workspace_checkpoints,omitempty"`
-	Protocol             string            `json:"protocol"`
-	Directory            string            `json:"directory"`
-	Process              b.ProcessIdentity `json:"process"`
-	RuntimeSHA256        string            `json:"runtime_sha256"`
-	ExitPublicKey        string            `json:"exit_public_key"`
+	// Opaque legacy wire metadata: preserve old signed checkpoints byte-for-byte.
+	// New owners leave it false; it is never consulted for execution or recovery.
+	LegacyParserCapability bool              `json:"retains_parser,omitempty"`
+	WorkspaceCheckpoints   bool              `json:"workspace_checkpoints,omitempty"`
+	Protocol               string            `json:"protocol"`
+	Directory              string            `json:"directory"`
+	Process                b.ProcessIdentity `json:"process"`
+	RuntimeSHA256          string            `json:"runtime_sha256"`
+	ExitPublicKey          string            `json:"exit_public_key"`
 }
 
 type ownerConfig struct {
@@ -59,7 +61,6 @@ type ownerResponse struct {
 	Pending bool
 }
 type ownerOperation struct {
-	Parser   OwnedParser
 	Digest   string
 	Response ownerResponse
 	Done     chan struct{}
@@ -161,16 +162,7 @@ func RuntimeDigest(path string) (string, error) {
 
 // ServeExecutionOwner is reached through the existing independently verified
 // service bootstrap, using a private per-execution directory and pinned image.
-// OwnedParser retains only the original bounded acquisition process, never Run
-// authorization or workflow state. Its existing started/final journals are used.
-type OwnedParser interface {
-	Cancel()
-	Done() <-chan struct{}
-	Result() (b.LifecycleReceipt, bool)
-}
-type StartOwnedParser func(context.Context, string, b.LifecycleRequest) OwnedParser
-
-func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwnedParser) error {
+func ServeExecutionOwner(ctx context.Context, dir string) error {
 	raw, err := os.ReadFile(filepath.Join(dir, ExecutionOwnerConfigFile))
 	if err != nil {
 		return err
@@ -198,7 +190,7 @@ func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwned
 	if err != nil {
 		return err
 	}
-	identity := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: dir, Process: *id, RuntimeSHA256: sha, ExitPublicKey: hex.EncodeToString(public), RetainsParser: startParser != nil, WorkspaceCheckpoints: true}
+	identity := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: dir, Process: *id, RuntimeSHA256: sha, ExitPublicKey: hex.EncodeToString(public), WorkspaceCheckpoints: true}
 	setup := b.LifecycleSetup{ProgressFile: cfg.ProgressFile, ResultFile: cfg.ResultFile, Snapshot: cfg.Snapshot, ProfileData: cfg.ProfileData, ProfileID: cfg.ProfileID, AcceptedConfigVersion: cfg.AcceptedConfigVersion,
 		RepositoryPath: cfg.RepositoryPath, RepositoryURL: cfg.RepositoryURL, RunDirectory: cfg.RunDirectory, RemoteName: cfg.RemoteName, TargetBranch: cfg.TargetBranch,
 		AttemptNumber: cfg.AttemptNumber, ProcessHost: process.New(60 * time.Second), CommandTimeout: 60 * time.Second, GitExecutable: "git"}
@@ -249,49 +241,13 @@ func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwned
 				return
 			}
 			action := b.LifecycleAction(q.Request.Operation.Action)
-			allowed := action == b.LifecyclePrepareSession || action == b.LifecycleStartTurn || action == b.LifecycleDeliverFeedback || action == b.LifecycleStopObservation || action == b.LifecycleStopExecution || action == b.LifecycleParseResult
-			if !allowed || (q.Method != "native" && q.Method != "receipt" && !(action == b.LifecycleParseResult && q.Method == "cancel_parser")) {
+			allowed := action == b.LifecyclePrepareSession || action == b.LifecycleStartTurn || action == b.LifecycleDeliverFeedback || action == b.LifecycleStopObservation || action == b.LifecycleStopExecution
+			if !allowed || (q.Method != "native" && q.Method != "receipt") {
 				respond(ownerResponse{Error: "unsupported local native action"})
 				return
 			}
 			digest := ownerRequestDigest(q.Request)
 			mu.Lock()
-			if action == b.LifecycleParseResult {
-				p := q.Request.Input.Parse
-				if p == nil || p.Owner == nil || *p.Owner != identity.Process || startParser == nil {
-					mu.Unlock()
-					respond(ownerResponse{Error: "parser original owner binding is unavailable"})
-					return
-				}
-				prior := ops[q.Request.Operation.ID]
-				if prior != nil && prior.Digest != digest {
-					mu.Unlock()
-					respond(ownerResponse{Error: "original parser binding changed"})
-					return
-				}
-				var task OwnedParser
-				if prior != nil {
-					task = prior.Parser
-				}
-				if task == nil && q.Method == "native" {
-					task = startParser(ctx, cfg.RunDirectory, q.Request)
-					ops[q.Request.Operation.ID] = &ownerOperation{Digest: digest, Parser: task}
-				}
-				mu.Unlock()
-				if task == nil {
-					respond(ownerResponse{Error: "original parser was not dispatched; no replay"})
-					return
-				}
-				if q.Method == "cancel_parser" {
-					task.Cancel()
-				}
-				if receipt, done := task.Result(); done {
-					respond(ownerResponse{Receipt: receipt})
-				} else {
-					respond(ownerResponse{Pending: true})
-				}
-				return
-			}
 			prior := ops[q.Request.Operation.ID]
 			if prior != nil {
 				mu.Unlock()
@@ -321,25 +277,6 @@ func ServeExecutionOwner(ctx context.Context, dir string, startParser StartOwned
 			var observer b.LifecycleObserver
 			var callErr error
 			if action == b.LifecycleStopExecution {
-				mu.Lock()
-				active := []OwnedParser{}
-				for _, operation := range ops {
-					if task := operation.Parser; task != nil {
-						task.Cancel()
-						active = append(active, task)
-					}
-				}
-				mu.Unlock()
-				for _, task := range active {
-					select {
-					case <-task.Done():
-					case <-callCtx.Done():
-						callErr = callCtx.Err()
-					}
-					if result, done := task.Result(); !done || !result.State.WritersAbsent {
-						callErr = errors.New("original parser tree exit is unverified")
-					}
-				}
 				receipt.Operation = q.Request.Operation
 				if callErr == nil {
 					receipt.State, callErr = lifecycle.ShutdownLifecycle(callCtx, q.Request.Snapshot, owned)
@@ -442,12 +379,6 @@ func (l ExecutionLifecycle) ownerCall(ctx context.Context, request b.LifecycleRe
 		method = "receipt"
 	}
 	return l.callOwner(ctx, request, method)
-}
-
-// CancelParser only revokes the existing original acquisition; it cannot start
-// an absent operation. Used after the Run's explicit stop is already durable.
-func (l ExecutionLifecycle) CancelParser(ctx context.Context, request b.LifecycleRequest) (b.LifecycleReceipt, error) {
-	return l.callOwner(ctx, request, "cancel_parser")
 }
 
 func ExecutionOwner(snapshot b.LifecycleSnapshot) *ExecutionOwnerIdentity {

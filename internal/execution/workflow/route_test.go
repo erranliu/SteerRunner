@@ -207,7 +207,7 @@ func TestRAHistoricalOutcomeCannotBePromoted(t *testing.T) {
 			}
 			allowed := outcome == "succeeded" || outcome == "unreported"
 			parsed := `{"outcome":"done","summary":"parser claims completed"}`
-			for _, next := range []Transition{Route(w, input, result, ""), RouteParsed(w, input, parsed, "original-parser", "")} {
+			for _, next := range []Transition{Route(w, input, result, ""), RouteParsed(w, input, parsed)} {
 				if (next.Next != nil) != allowed || !allowed && (next.Publish || next.Acquired != nil && next.Acquired.Status == "satisfied") {
 					t.Fatal("historical native outcome was promoted", outcome, next)
 				}

@@ -154,7 +154,7 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-remote.stop-revocation` | `unreachable` | 暂时不可达时先撤销授权，未知停止不假报 stopped；撤销跨重启保持，反馈/旧 revision 不能绕过，恢复后独立收尾 | `revoked-unverified`，无 PR | 专属网络故障与服务换代；验证整个故障窗、watchdog 和资源清理不会干扰其它 case |
 | `orca-remote.publication-unknown` | `completion-gap` | PR 已存在但 Runner 缺完成证据；找回原 final/PR/head，零重复发布 | `merged` | 专属发布屏障与网络范围；实际 PR 列表、发布调用计数仅按本现场分支核验 |
 | `orca-remote.publication-unknown` | `query-unavailable` | 原完成证据恢复后 PR 查询仍失败，不能用旧快照假报 ready；查询恢复后核验同一 PR | `merged` | 另隔离本现场查询故障开关及 provider journal；验证不阻断其它现场查询 |
-| `local-codex.result-acquisition` | `default` | 默认认证解析、显式模型、原生只读工具拒绝与 canary、活动取消、原 receipt 与进程收尾；2 个内部 case、3 次 parser 调用和 1 次权限探针 | `parsed`，不创建 development Run、服务或 PR | 仅准备本地冻结材料，无远端 clone/push 或 gh 登录；逐调用登记原 Run/session，结果与清理独立校验 |
+| `local-codex.result-acquisition` | `default` | 现有 Codex 登录/CLI 文本分析与取消，2 个内部 case；工具禁用和进程管理封装内部，无权限探针或 owner 恢复 | `parsed`，不创建 development Run、服务或 PR | 文本来源和 JSON/schema 校验；主执行恢复/停止独立验证 |
 | `local-codex.audited` | `default` | 两实际不同模型完成实施与同轮代码审计修复并切回执行模型发布；仅代码审计，记录修复数量/内容和 pre_head/post_head 来源，真实 PR 核验 | `pr_ready`，PR 保留未合入，Run/服务停止 | 显式执行/审计模型；逐 turn 权限及实际模型历史核验；已与 feedback 在上限 2 下共同通过，具体构建见验收 |
 | `local-codex.multirun` | `default` | 同一真实服务接受两个不同请求，校验请求/命令查询、不同会话/工作区/分支/PR 与全部事件页归属；停止第一个 Run 后第二个原生 owner 保持可用，第一 Run 仍停止且 head 不变 | 两 Run 均达 `pr_ready`，PR 保留未合入，最后均停止 | case 内共享服务、独立 Run 资源；批次其它 case 独立服务；受控变体还在活动回合停止一个 Run 后释放另一个的原始完成事实 |
 
@@ -289,7 +289,7 @@ L4 四项断言/互斥保持；本次仅增加同批已验证二进制复用，�
 接到 `TestSRContentNative` 已有 generate 结果之后。建议抽出共享断言，并保留可独立选择的 generate/takeover 子场景；
 合并运行时复用一次生成，定向诊断时仍能只运行该子场景。需要同步 focused registry、精确 Pattern、结果数与独立证据名。
 当前 `TestSRContentNativeGenerationRecovery` 实际使用 conversation 的活动工具，覆盖 graceful/kill/compatible-image/startup-stop；
-它与 `TestSRContentNative` 的空闲重启后继续对话不同，也与真实 parser 的独立 owner 换代不同，这三种恢复不能相互替代。
+它与 `TestSRContentNative` 的空闲重启后继续对话不同，原 parser 独立 owner 换代已退役，文本任务重算不计为主执行恢复资格。
 
 ### L4：保留独立故障断言，优先消除重复构建
 

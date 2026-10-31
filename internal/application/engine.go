@@ -12,9 +12,11 @@ import (
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
+	"github.com/erranliu/SteerRunner/internal/textanalysis"
 	"log"
 	"path/filepath"
 	"sync"
@@ -22,6 +24,9 @@ import (
 )
 
 type Engine struct {
+	textAnalyzer textanalysis.Analyzer
+	analyzeText  func(context.Context, textanalysis.Request, ra.ParserConfig) (string, error)
+
 	launchOwner       func(context.Context, string) error
 	openNativeConsole func(context.Context, b.LaunchCommand) error
 	lastMessages      map[string]contracts.LastMessage
@@ -44,7 +49,7 @@ type worker struct {
 	progressEnabled         bool
 	progressWatching        bool // guarded by Engine.mu
 	resultCollectionStarted bool // one bounded attempt per live service; durable Sealed survives restart
-	parserTask              b.ParserTask
+	acquisition             *textTask
 	ownedInputs             map[string]bool
 	checkpoints             map[string]*workflow.WorkspaceSource
 	gate                    sync.Mutex         // serializes new native dispatch with committed revocation
@@ -137,6 +142,7 @@ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, e
 		return err
 	}
 	e.runs[next.ID] = next
+	e.invalidateAnalysisLocked(next)
 	if w := e.workers[next.ID]; w != nil && !progressTerminal(next) {
 		e.startProgressLocked(next.ID, w)
 	}
@@ -500,7 +506,7 @@ func (e *Engine) ResourceSettlementError() error {
 	}
 	var failures []error
 	for _, r := range runs {
-		if r.StopStatus != "stopped" || !parserResourcesSettled(r) {
+		if r.StopStatus != "stopped" {
 			failures = append(failures, fmt.Errorf("run %s: native stop status %q", r.ID, r.StopStatus))
 		}
 	}
