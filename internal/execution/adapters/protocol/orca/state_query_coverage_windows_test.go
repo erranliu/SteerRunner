@@ -3,16 +3,67 @@ package orca
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"reflect"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+func TestOriginalAgentQueryProviderMetadataAvailability(t *testing.T) {
+	for _, mode := range []string{"late-provider", "missing-provider", "changed-provider", "changed-pane"} {
+		t.Run(mode, func(t *testing.T) {
+			var metadataReads atomic.Int32
+			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
+				switch req.Method {
+				case "status.get":
+					ipcReply(conn, req, "runtime", map[string]any{})
+				case "worktree.ps":
+					ipcReply(conn, req, "runtime", map[string]any{"totalCount": 1, "truncated": false, "worktrees": []any{map[string]any{"worktreeId": "original", "agents": []any{map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "mainAgent": map[string]any{"state": "done", "stateStartedAt": 20}, "providerSession": map[string]string{"id": "provider"}}}}}})
+				case "session.tabs.list":
+					provider, leaf := "", "leaf"
+					if mode == "late-provider" && metadataReads.Add(1) > 1 {
+						provider = "provider"
+					}
+					if mode == "changed-provider" {
+						provider = "foreign"
+					}
+					if mode == "changed-pane" {
+						leaf = "foreign"
+					}
+					ipcReply(conn, req, "runtime", map[string]any{"worktree": "original", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": leaf, "agentStatus": map[string]any{"providerSession": map[string]string{"id": provider}}}}})
+				}
+			})
+			p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "original", Terminal: "terminal", Incarnation: "incarnation"}
+			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+			defer cancel()
+			_, err := QueryOriginalAgent(ctx, "", p, "tab:leaf")
+			if mode == "changed-provider" || mode == "changed-pane" {
+				if !errors.Is(err, ErrStateIdentityChanged) || errors.Is(err, ErrOriginalMainAgentUnavailable) {
+					t.Fatal("conflicting identity became retryable metadata absence", err)
+				}
+				return
+			}
+			if !errors.Is(err, ErrOriginalMainAgentUnavailable) {
+				t.Fatal("missing provider metadata did not preserve bounded readiness waiting", err)
+			}
+			state, err := QueryOriginalAgent(ctx, "", p, "tab:leaf")
+			if mode == "late-provider" {
+				if err != nil || state.ProviderSession.ID != "provider" || state.PaneKey != "tab:leaf" {
+					t.Fatal("same original provider did not become available", state, err)
+				}
+			} else if !errors.Is(err, ErrOriginalMainAgentUnavailable) {
+				t.Fatal("permanent absence qualified a session", state, err)
+			}
+		})
+	}
+}
 
 func TestOriginalAgentQueryCoversLimitedSnapshot(t *testing.T) {
 	for _, scenario := range []struct {

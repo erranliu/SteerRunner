@@ -258,7 +258,10 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 		return s, stateIdentityError("queried original pane/provider metadata changed")
 	}
 	if current.ProviderSession.ID == "" {
-		return s, errors.New("Orca queried original provider metadata currently unavailable")
+		// Session association can lag the original pane while Codex starts.
+		// Keep it unavailable so readiness retries within its existing deadline;
+		// it cannot qualify input until both independent queries agree.
+		return s, fmt.Errorf("%w: provider metadata currently unavailable", ErrOriginalMainAgentUnavailable)
 	}
 	s.ProviderSession = current.ProviderSession
 	// Legacy tab projections can lose the entire main-agent envelope. Keep that
