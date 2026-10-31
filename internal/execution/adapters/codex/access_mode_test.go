@@ -54,7 +54,7 @@ func TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess(t *testing.T) {
 		args     []string
 		valid    bool
 	}{
-		{PolicyContract, full.Args(), true}, {ReadOnlyPolicyContract, legacy, true},
+		{PolicyContract, full.Args(), true}, {ReadOnlyPolicyContract, legacy, false},
 		{ReadOnlyPolicyContract, read.Args(), true}, {PolicyContract, read.Args(), false},
 		{PolicyContract, legacy, false}, {ReadOnlyPolicyContract, full.Args(), false},
 		{ReadOnlyPolicyContract, append(legacy, "--config", "sandbox_mode=workspace-write"), false},

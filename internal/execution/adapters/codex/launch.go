@@ -10,18 +10,17 @@ import (
 )
 
 type LaunchConfig struct {
-	AuthenticationTransport *AuthenticationTransport
-	WritableRoots           []string
-	Model                   string
-	ReasoningEffort         string
-	Executable              string
-	Args                    []string
-	Profile                 string
-	Workspace               string
-	ServerDir               string
-	Sandbox                 string
-	WindowsSandbox          string
-	Runtime                 *workerRuntime
+	WritableRoots   []string
+	Model           string
+	ReasoningEffort string
+	Executable      string
+	Args            []string
+	Profile         string
+	Workspace       string
+	ServerDir       string
+	Sandbox         string
+	WindowsSandbox  string
+	Runtime         *workerRuntime
 }
 
 // LaunchServer starts the fixed native app-server. The caller supplies its
@@ -44,15 +43,7 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 			return identity, nil, "", fmt.Errorf("remote native server needs four verified Git roots")
 		}
 	}
-	if plan := config.AuthenticationTransport; plan != nil {
-		if err = plan.validate(); err != nil {
-			return identity, nil, "", err
-		}
-		if len(roots) != 4 || !sameWorkspace(plan.Workspace, config.Workspace) {
-			return identity, nil, "", fmt.Errorf("authentication_api_binding_mismatch")
-		}
-		roots = append(roots, plan.Directory)
-	}
+
 	if config.Model != "" {
 		args = append(args, "--config", fmt.Sprintf("model=%q", config.Model))
 	}
@@ -107,9 +98,7 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 	}
 	go func() {
 		_ = cmd.Wait()
-		if config.Runtime != nil && config.Runtime.Auth != nil {
-			config.Runtime.Auth.Close()
-		}
+
 	}()
 	return identity, cmd.Process, endpoint, nil
 }

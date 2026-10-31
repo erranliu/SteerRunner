@@ -1,5 +1,7 @@
 # 沙箱认证准备与发布验收
 
+> 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
+
 2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
 
 2026-10-19 范围修订（已实施，验收见专项记录）：新远端 `orca_environment` Run 按[仅 Orca Spec](orca-remote-native.spec.md)使用执行主机已有登录及代理权限，不要求 Runner broker、helper readiness 或同 app-server 确定性预检；不得将本节旧保证记作新路径通过。旧冻结 Run 与本地受管路径保留原规则，历史验收不重写。

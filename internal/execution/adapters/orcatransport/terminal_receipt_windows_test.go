@@ -48,7 +48,7 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AuthenticationState: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
+	c := TerminalConfig{ReceiptVersion: 4, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256
@@ -74,7 +74,7 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	live := TerminalStartupFailure{Version: 1, Failure: "authentication_api_socket_path_too_long", Owner: TerminalOwner{RuntimeSHA256: meta.RuntimeSHA256, ExtensionSHA256: meta.BundleSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}, NoWorkerStarted: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()}
+	live := TerminalStartupFailure{Version: 2, Failure: "authentication_api_socket_path_too_long", Owner: TerminalOwner{RuntimeSHA256: meta.RuntimeSHA256, ExtensionSHA256: meta.BundleSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}, NoWorkerStarted: true, ClosedAt: time.Now().UTC()}
 	live.Owner.Job.Owner = *identity
 	liveBody, _ := json.Marshal(live)
 	if e := os.WriteFile(filepath.Join(c.StateDirectory, "startup-exit.json"), liveBody, 0600); e != nil {
@@ -111,7 +111,7 @@ func TestTerminalStartupFailureCanStopWithoutInventingWorker(t *testing.T) {
 		t.Fatal("verified startup failure remained pending or lost its cause", r, e)
 	}
 	original := fact
-	for _, change := range []func(*TerminalStartupFailure){func(f *TerminalStartupFailure) { f.NoWorkerStarted = false }, func(f *TerminalStartupFailure) { f.AuthenticationClosed = false }, func(f *TerminalStartupFailure) { f.Owner.RuntimeSHA256 = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Owner.Created = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Handle = 1 }, func(f *TerminalStartupFailure) { f.Owner.RunID = "foreign" }, func(f *TerminalStartupFailure) { f.Owner.SessionID = "foreign" }, func(f *TerminalStartupFailure) { f.ClosedAt = time.Time{} }} {
+	for _, change := range []func(*TerminalStartupFailure){func(f *TerminalStartupFailure) { f.NoWorkerStarted = false }, func(f *TerminalStartupFailure) { f.Owner.RuntimeSHA256 = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Owner.Created = "changed" }, func(f *TerminalStartupFailure) { f.Owner.Job.Handle = 1 }, func(f *TerminalStartupFailure) { f.Owner.RunID = "foreign" }, func(f *TerminalStartupFailure) { f.Owner.SessionID = "foreign" }, func(f *TerminalStartupFailure) { f.ClosedAt = time.Time{} }} {
 		fact = original
 		change(&fact)
 		body, _ := json.Marshal(fact)
@@ -175,7 +175,7 @@ func TestManagedNativeChannelRejectsMissingChangedAndLateFacts(t *testing.T) {
 		t.Fatal(e)
 	}
 	self, _ := os.Executable()
-	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: snap.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: snap.ConfigurationDigest, BundleSHA256: meta.BundleSHA256, EvidenceSHA256: meta.PiSHA256, Model: "", ReasoningEffort: ""}
+	c := TerminalConfig{ReceiptVersion: 4, Agent: "pi", ExecutionID: snap.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: snap.ConfigurationDigest, BundleSHA256: meta.BundleSHA256, EvidenceSHA256: meta.PiSHA256, Model: "", ReasoningEffort: ""}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256
@@ -193,7 +193,7 @@ func TestManagedNativeChannelRejectsMissingChangedAndLateFacts(t *testing.T) {
 		t.Fatal(e)
 	}
 	owner := TerminalOwner{Job: job, RuntimeSHA256: meta.RuntimeSHA256, ExtensionSHA256: meta.BundleSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode}
-	ready := TerminalReceipt{Version: 3, Source: "pi-extension-v1", SourceSHA256: meta.PiSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, InstanceID: "original-load", PID: job.Worker.PID, ProcessStartedAt: time.Now().UTC(), Mode: "tui", Tools: []string{"read", "write", "edit", "powershell"}, Model: "test/test", ReasoningEffort: "low", Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "full_access", InsideWriteVerified: true, ProviderEnvironmentAbsent: true, OutsideWriteVerified: testBool(true), AuthenticationExpiresAt: time.Now().Add(time.Hour)}}
+	ready := TerminalReceipt{Version: 4, Source: "pi-extension-v1", SourceSHA256: meta.PiSHA256, RunID: c.ExecutionID, SessionID: c.SessionID, InstanceID: "original-load", PID: job.Worker.PID, ProcessStartedAt: time.Now().UTC(), Mode: "tui", Tools: []string{"read", "write", "edit", "powershell"}, Model: "test/test", ReasoningEffort: "low", Stage: "ready", Preparation: TerminalPreparation{Verified: true, Contract: terminaltools.Contract, AccessMode: "full_access", ProviderEnvironmentAbsent: true}}
 	turn := Turn{Command: strings.Repeat("c", 32), Prompt: "original input", InputDigest: digest([]byte("original input")), Attempted: true, Accepted: true, WireFormat: extensionWireCommand, Native: NativeProof{Agent: "pi"}}
 	ready.ActiveCommandID = turn.Command
 	fact := ready
@@ -225,7 +225,7 @@ func TestManagedNativeChannelRejectsMissingChangedAndLateFacts(t *testing.T) {
 			case "wrong-native-session":
 				candidate.NativeSessionID = "foreign-native-session"
 			case "changed-preparation":
-				candidate.Preparation.AuthenticationExpiresAt = candidate.Preparation.AuthenticationExpiresAt.Add(time.Minute)
+				candidate.Preparation.ProviderEnvironmentAbsent = false
 			case "wrong-session":
 				candidate.SessionID = "replacement"
 			case "wrong-command":
@@ -324,8 +324,7 @@ func TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup(t *testing.T) {
 		}
 		// This is the interval PTY close used to interrupt.
 		time.Sleep(150 * time.Millisecond)
-		closed := true
-		body, _ = json.Marshal(TerminalExit{Version: 1, Owner: owner, WritersAbsent: true, AuthenticationClosed: &closed, ClosedAt: time.Now().UTC()})
+		body, _ = json.Marshal(TerminalExit{Version: 2, Owner: owner, WritersAbsent: true, ClosedAt: time.Now().UTC()})
 		if e = process.New(0).WriteExecutionFile(filepath.Join(c.StateDirectory, "exit.json"), body); e != nil {
 			t.Fatal(e)
 		}
@@ -342,7 +341,7 @@ func TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	c := TerminalConfig{ReceiptVersion: 3, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
+	c := TerminalConfig{ReceiptVersion: 4, Agent: "pi", ExecutionID: s.Session.ExecutionID, SessionID: "original-native", StateDirectory: t.TempDir(), AccessMode: "full_access", ConfigurationDigest: s.ConfigurationDigest, BundleSHA256: meta.BundleSHA256}
 	l.profile.Terminal = &c
 	l.profile.RuntimeExecutable = self
 	l.profile.RuntimeSHA256 = meta.RuntimeSHA256
@@ -394,8 +393,7 @@ func TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup(t *testing.T) {
 	if e = l.verifyStopped(context.Background(), s); e != nil {
 		t.Fatal("original helper exit proof was not accepted", e)
 	}
-	no := false
-	exit.AuthenticationClosed = &no
+	exit.WritersAbsent = false
 	raw, _ = json.Marshal(exit)
 	os.WriteFile(filepath.Join(c.StateDirectory, "exit.json"), raw, 0600)
 	if l.terminalExitVerified(owner) {

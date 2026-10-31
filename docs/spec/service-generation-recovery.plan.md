@@ -1,5 +1,7 @@
 # Plan：服务换代后的原执行接管
 
+> 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
+
 日期：2026-10-19，状态于 2026-10-21 核对：核心接管、parser 保留、离线审计和调用方接线已实施并有定向证据；Orca 有限创建执行器已实现并受控验证，只调用现有公开接口。对应 [Spec](service-generation-recovery.spec.md)。当前构建、追补及未验范围见[近期 PR 补测](../acceptance/pr-test-gaps-20261020.md)与[创建恢复复验](../acceptance/pr38-review-20261020.md)；历史阶段、失败及跨仓限制保留在[专属验收记录](../acceptance/service-generation-recovery.md)，不因整理文档改记通过或部署。
 
 2026-10-21 材料边界补充：下文实施时的 Material.Content/digest、原文件快照核验只在实际使用该类冻结材料的契约中适用。当前开发材料是固定基线 worktree 内的仓库相对路径，恢复和新阶段不再检查独立文档快照；conversation/generate 的 inline 材料与 parser 已冻结输入仍沿原来源规则。

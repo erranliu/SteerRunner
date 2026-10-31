@@ -24,7 +24,7 @@ function fixture(t, { flush = true, finish = "stop" } = {}) {
     whenIdle: async () => {}, cancel: () => { cancelled++; } };
   const ctx = { tools: { schemas, guard: (value) => { guard = value; } }, sessions: { flush: async () => { flushes++; return flush; } },
     on: (name, callback) => handlers.set(name, callback) };
-  attachDSHEvidence(ctx, { version: 1, run_id: "b".repeat(32), session_id: "frozen-binding", cwd: directory, directory },
+  attachDSHEvidence(ctx, { version: 2, run_id: "b".repeat(32), session_id: "frozen-binding", cwd: directory, directory },
     { callConfig, operations: { verified: () => true, execute: async () => ({ exitCode: 0, stdout: Buffer.from("ok"), stderr: Buffer.alloc(0) }) }, preparation: { verified: true } },
     { defineTool: (value) => value, lastAssistantStreamChunk: () => ({ reason: { kind: finish } }) });
   const emit = (name, ...args) => handlers.get(name)?.(...args);

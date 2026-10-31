@@ -6,6 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/hostenv"
+	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"io"
 	"os"
 	"os/exec"
@@ -13,12 +16,9 @@ import (
 	"runtime"
 	"strings"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
-const Contract = "windows-terminal-tools-v2:full-access:never"
+const Contract = "windows-terminal-tools-v3:full-access:host-native-auth:never"
 
 // Config is compiled by the trusted launch, never from a model tool argument.
 // Authentication remains in inherited process environment, not this document.
@@ -166,18 +166,4 @@ if ($?) { exit 0 } else {
 // The trusted runtime supplies repository-scoped authentication before this
 // boundary. Pi model-provider credentials and unrelated caller secrets never
 // reach native tools, in either permission mode.
-func ToolEnvironment(base []string) []string {
-	allowed := map[string]bool{}
-	for _, key := range strings.Fields("PATH PATHEXT SYSTEMROOT SYSTEMDRIVE COMSPEC WINDIR TEMP TMP USERPROFILE HOME APPDATA LOCALAPPDATA PROGRAMFILES PROGRAMFILES(X86) PROGRAMDATA GH_HOST GH_TOKEN GH_PROMPT_DISABLED GH_CONFIG_DIR GIT_TERMINAL_PROMPT HTTPS_PROXY HTTP_PROXY NO_PROXY SSL_CERT_FILE GIT_SSL_CAINFO CODEX_HOME STEERLINE_PROGRESS_FILE STEERLINE_RESULT_FILE") {
-		allowed[key] = true
-	}
-	var result []string
-	for _, entry := range base {
-		key, _, _ := strings.Cut(entry, "=")
-		upper := strings.ToUpper(key)
-		if allowed[upper] || strings.HasPrefix(upper, "GIT_CONFIG_") {
-			result = append(result, entry)
-		}
-	}
-	return result
-}
+func ToolEnvironment(base []string) []string { return hostenv.Tools(base) }

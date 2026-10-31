@@ -11,10 +11,10 @@ import (
 )
 
 func TestFixedControlNativeAudit(t *testing.T) {
-	for _, mode := range []string{"valid", "reader-unverified", "query-failed", "failed-reader-unverified", "foreign-reader-owner", "lost-send-receipt", "lost-close-inventory", "wrong-helper", "title-only", "late-create", "extra-create-flag", "wrong-workspace", "wrong-ready", "wrong-incarnation", "wrong-session", "wrong-input", "wrong-response", "changed-final", "bad-auth", "retired-app-auth", "missing-close", "unconfirmed-close", "unknown-create", "unresolved-send", "extra-send-flag", "initial-valid", "initial-no-empty", "initial-extra-command", "model-valid", "model-switched", "workspace-valid", "workspace-dirty", "workspace-reader-live", "workspace-foreign-ready", "workspace-query-failed"} {
+	for _, mode := range []string{"valid", "reader-unverified", "query-failed", "failed-reader-unverified", "foreign-reader-owner", "lost-send-receipt", "lost-close-inventory", "wrong-helper", "title-only", "late-create", "extra-create-flag", "wrong-workspace", "wrong-ready", "wrong-incarnation", "wrong-session", "wrong-input", "wrong-response", "changed-final", "missing-close", "unconfirmed-close", "unknown-create", "unresolved-send", "extra-send-flag", "initial-valid", "initial-no-empty", "initial-extra-command", "model-valid", "model-switched", "workspace-valid", "workspace-dirty", "workspace-reader-live", "workspace-foreign-ready", "workspace-query-failed"} {
 		t.Run(mode, func(t *testing.T) {
 			p := NativeReceiptAuditPolicy{Executable: "C:/runtime/helper.exe", SHA256: strings.Repeat("b", 64), ConfigurationDigest: strings.Repeat("a", 64), AccessMode: "full_access", Environment: "paired"}
-			ready := codex.RemoteReadiness{Verified: true, NativeTransport: codex.RemoteNativeTransport, Contract: codex.PolicyContract, Workspace: "C:/worker", Repository: RemoteURL, RuntimeSHA256: p.SHA256, ConfigurationDigest: p.ConfigurationDigest, AccessMode: p.AccessMode, SessionID: "01a1453f-0327-7f21-b0b9-ee79dad66108", Process: b.ProcessIdentity{PID: 7, Created: "native-creation"}, CheckedAt: time.Now().UTC(), ExpiresAt: time.Now().UTC().Add(time.Hour), AuthenticationControl: true}
+			ready := codex.RemoteReadiness{Verified: true, NativeTransport: codex.RemoteNativeTransport, Contract: codex.PolicyContract, Workspace: "C:/worker", Repository: RemoteURL, RuntimeSHA256: p.SHA256, ConfigurationDigest: p.ConfigurationDigest, AccessMode: p.AccessMode, SessionID: "01a1453f-0327-7f21-b0b9-ee79dad66108", Process: b.ProcessIdentity{PID: 7, Created: "native-creation"}, CheckedAt: time.Now().UTC()}
 			setup := codex.RemoteControlSetup{Binding: strings.Repeat("a", 64), Workspace: ready.Workspace, RuntimeSHA256: p.SHA256}
 			encoded := func(v any) string { raw, _ := json.Marshal(v); return base64.RawURLEncoding.EncodeToString(raw) }
 			wt := "repo::C:/worker"
@@ -87,9 +87,9 @@ func TestFixedControlNativeAudit(t *testing.T) {
 			if mode == "wrong-input" {
 				query.InputDigest = strings.Repeat("f", 64)
 			}
-			methods := []string{"original-turn", "authentication-stop"}
+			methods := []string{"original-turn"}
 			if strings.HasPrefix(mode, "workspace-") {
-				methods = []string{"original-turn", "workspace-audit", "authentication-stop"}
+				methods = []string{"original-turn", "workspace-audit"}
 			}
 			for _, method := range methods {
 				query.Audit = nil
@@ -149,11 +149,6 @@ func TestFixedControlNativeAudit(t *testing.T) {
 					if mode == "workspace-query-failed" {
 						response.Error = "workspace_audit_unverified"
 						response.Workspace.Inspection.Qualified = false
-					}
-				} else {
-					response.Authentication = &codex.RemoteAuthenticationCleanup{Readiness: ready, Revoked: mode != "bad-auth", BrokerClosed: true, SocketCleaned: true, Mode: "host-gh-repository-broker"}
-					if mode == "retired-app-auth" {
-						response.Authentication.Mode = "github-app-repository-broker"
 					}
 				}
 				if mode == "wrong-response" {

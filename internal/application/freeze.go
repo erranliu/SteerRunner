@@ -177,7 +177,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			r.Request.Workflow.AuditModel = &model
 		}
-		key, codec, payload = codex.ProfileCodecKey, codex.ProfileCodecVersion, canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
+		key, codec, payload = codex.ProfileCodecKey, codex.ProfileVersionForMode(settings.AccessMode), canonical(codex.ProfileConfig{AccessMode: settings.AccessMode, Executable: settings.Executable, Model: settings.Model, ReasoningEffort: settings.ReasoningEffort})
 	} else {
 		var settings contracts.OrcaSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
@@ -202,7 +202,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if agent == "codex" && settings.AgentLaunch.Model != "" && settings.AgentLaunch.ReasoningEffort == "" {
 			settings.AgentLaunch.ReasoningEffort = "medium"
 		}
-		if (agent == "pi" || agent == "dsh") && settings.AgentLaunch.RuntimeExecutable != "" {
+		if request.Execution.Target.Kind == "local" && settings.AgentLaunch.RuntimeExecutable != "" {
 			helper, helperErr := exec.LookPath(settings.AgentLaunch.RuntimeExecutable)
 			if helperErr == nil {
 				helper, helperErr = filepath.Abs(helper)
@@ -231,6 +231,15 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			profile.RuntimeExecutable = launch.RuntimeExecutable
 			profile.RuntimeSHA256 = settings.AgentLaunch.RuntimeSHA256
+		}
+		if launch.RuntimeExecutable != "" && agent == "codex" {
+			metadataBytes, probeErr := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: launch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
+			var metadata orca.TerminalMetadata
+			if probeErr != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.CodexTransport != codex.RemoteNativeTransport || metadata.CodexPolicy != codex.PolicyContract || len(metadata.RuntimeSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && settings.AgentLaunch.RuntimeSHA256 != metadata.RuntimeSHA256 {
+				return nil, contracts.Fail(4, "environment_unavailable", "The selected host-native Codex helper metadata or build does not match.")
+			}
+			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
+			profile.RuntimeSHA256 = metadata.RuntimeSHA256
 		}
 		if launch.RuntimeExecutable != "" && agent == "codex" {
 			profile.RuntimeConfigurationDigest = codex.RemoteConfigurationDigest(launch.RemoteConfig())
@@ -350,7 +359,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if settings.AgentLaunch.RuntimeExecutable != "" {
 			metadataBytes, e := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: settings.AgentLaunch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
 			var metadata orca.TerminalMetadata
-			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 4 || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 5 || metadata.Authentication != "host-native" || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
 				return nil, contracts.Fail(4, "environment_unavailable", "The selected local terminal helper metadata or frozen build does not match.")
 			}
 			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
@@ -360,7 +369,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			// The transport adds a short digest directory bound to the full Run,
 			// attempt and generation. Repeating the Run ID here can exceed the
 			// native socket path limit even with a short state directory.
-			c := orca.TerminalConfig{ReceiptVersion: 3, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: dir, RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+			c := orca.TerminalConfig{ReceiptVersion: 4, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			c.BundleSHA256 = metadata.BundleSHA256
 			c.EvidenceSHA256 = metadata.PiSHA256
 			if agent == "dsh" {

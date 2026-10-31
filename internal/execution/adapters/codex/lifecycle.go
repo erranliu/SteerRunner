@@ -6,16 +6,15 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
+	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"slices"
 	"strings"
 	"time"
-
-	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
 const ServiceStopBehavior = executionbackend.StopExecutionOnServiceStop
@@ -69,20 +68,13 @@ func NewExecutionLifecycle(setup executionbackend.LifecycleSetup) (executionback
 		}
 		return env
 	}
-	var authentication *AuthenticationRuntime
-	if strings.Contains(strings.ToLower(setup.RepositoryURL), "github.com") {
-		authentication, err = newAuthentication(setup.RepositoryURL)
-		if err != nil {
-			return nil, err
-		}
-	}
 	backend := Backend{
 		Config: Config{
 			Executable: profile.Executable, Args: []string(nil),
 			Profile: "", Sandbox: permissions.Sandbox, WindowsSandbox: permissions.WindowsSandbox,
 			Model: profile.Model, ReasoningEffort: profile.ReasoningEffort, Workspace: snapshot.Ref.WorkspacePath,
 			RunDir: setup.RunDirectory, RunID: snapshot.Session.WorkflowRunID, ServerDir: serverDir,
-			Environment: processEnv, WorkerRuntime: profile.AccessMode != "read_only", Authentication: authentication, RemoteName: setup.RemoteName,
+			Environment: processEnv, WorkerRuntime: profile.AccessMode != "read_only", RemoteName: setup.RemoteName,
 		},
 		Process: ProcessPort{
 			Start: setup.ProcessHost.StartManaged, Inspect: setup.ProcessHost.InspectProcess,
@@ -581,7 +573,7 @@ func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request execution
 	if l.Backend.Process.Inspect(&ref.External) == "process absent" {
 		handle.Close()
 		result.Disposition, result.State.Stopped = executionbackend.OperationConfirmed, true
-		return result, l.closeAuthentication()
+		return result, nil
 	}
 	handle.Kill()
 	ticker := time.NewTicker(40 * time.Millisecond)
@@ -590,7 +582,7 @@ func (l ExecutionLifecycle) StopLifecycle(ctx context.Context, request execution
 		if l.Backend.Process.Inspect(&ref.External) == "process absent" {
 			handle.Close()
 			result.Disposition, result.State.Stopped = executionbackend.OperationConfirmed, true
-			return result, l.closeAuthentication()
+			return result, nil
 		}
 		select {
 		case <-ctx.Done():
@@ -726,9 +718,7 @@ func (l *ExecutionLifecycle) ReleasePreparation() {
 
 func (l *ExecutionLifecycle) prepareSession(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, input executionbackend.TurnInput) (executionbackend.LifecycleReceipt, executionbackend.LifecycleObserver, error) {
 	l.ReleasePreparation()
-	if err := l.bindAuthenticationTransport(snapshot); err != nil {
-		return executionbackend.LifecycleReceipt{Disposition: executionbackend.OperationRejected, Diagnostic: err.Error()}, nil, err
-	}
+
 	fixed, _, err := l.readBinding(snapshot)
 	if err != nil {
 		return executionbackend.LifecycleReceipt{}, nil, err
@@ -778,9 +768,7 @@ func (l *ExecutionLifecycle) prepareSession(ctx context.Context, snapshot execut
 }
 
 func (l *ExecutionLifecycle) startTurn(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, input executionbackend.TurnInput) (executionbackend.LifecycleReceipt, executionbackend.LifecycleObserver, error) {
-	if err := l.bindAuthenticationTransport(snapshot); err != nil {
-		return executionbackend.LifecycleReceipt{Disposition: executionbackend.OperationRejected, Diagnostic: err.Error()}, nil, err
-	}
+
 	fixed, found, err := l.readBinding(snapshot)
 	if err != nil {
 		return executionbackend.LifecycleReceipt{}, nil, err

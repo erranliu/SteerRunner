@@ -19,26 +19,25 @@ type controlCheckpoint struct {
 	Binding  string                       `json:"binding"`
 	Request  codex.RemoteControlRequest   `json:"request"`
 	Response *codex.RemoteControlResponse `json:"response,omitempty"`
+	Closing  bool                         `json:"closing,omitempty"`
 	Closed   bool                         `json:"closed"`
 }
 
 func (l *Lifecycle) journalPath(state State) (string, string, error) {
-	if !filepath.IsAbs(l.setup.RunDirectory) || state.RemoteReadiness == nil || state.Control == nil || state.Control.Ready == nil {
+	if !filepath.IsAbs(l.setup.RunDirectory) || state.Control == nil {
 		return "", "", errors.New("caller control checkpoint directory or original binding missing")
 	}
 	raw, _ := json.Marshal(struct {
-		Project, Execution, Attempt, Generation, Config string
-		Process                                         b.ProcessIdentity
-		Ready                                           any
-		Control                                         ControlTerminal
-	}{l.setup.Snapshot.Session.ProjectID, l.setup.Snapshot.Session.ExecutionID, l.setup.Snapshot.Session.AttemptID, l.setup.Snapshot.ResourceGeneration, l.setup.Snapshot.ConfigurationDigest, state.Process, state.RemoteReadiness, *state.Control})
+		Project, Execution, Attempt, Generation, Configuration, Workspace string
+		Business, Control                                                 b.ProcessIdentity
+	}{l.setup.Snapshot.Session.ProjectID, l.setup.Snapshot.Session.ExecutionID, l.setup.Snapshot.Session.AttemptID, l.setup.Snapshot.ResourceGeneration, l.setup.Snapshot.ConfigurationDigest, strings.ToLower(strings.ReplaceAll(l.setup.Snapshot.Workspace.Path, "\\", "/")), state.Process, state.Control.Process})
 	binding := digest(raw)
 	return filepath.Join(l.setup.RunDirectory, "orca-native-inspections", binding+".json"), binding, nil
 }
 
 func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error) {
 	path, binding, err := l.journalPath(state)
-	j := controlCheckpoint{Version: 2, Binding: binding}
+	j := controlCheckpoint{Version: 3, Binding: binding}
 	if err != nil {
 		return j, err
 	}
@@ -49,8 +48,18 @@ func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error
 	if err != nil {
 		return j, err
 	}
-	if len(raw) > 2<<20 || b.DecodeStrictJSON(raw, &j, "trailing native control checkpoint") != nil || j.Version != 2 || j.Binding != binding || j.Request.Validate(*state.Control.Ready) != nil || j.Request.Session != state.RemoteReadiness.SessionID {
+	if len(raw) > 2<<20 || b.DecodeStrictJSON(raw, &j, "trailing native control checkpoint") != nil || j.Version != 3 || j.Binding != binding {
 		return j, errors.New("native control checkpoint changed or foreign")
+	}
+	if j.Closed && (!j.Closing || j.Request.ID != "" && j.Response == nil) {
+		return j, errors.New("closed control checkpoint has unsettled intent or query")
+	}
+	if j.Request.ID == "" {
+		if j.Response != nil || j.Request != (codex.RemoteControlRequest{}) {
+			return j, errors.New("empty control query has payload")
+		}
+	} else if state.Control.Ready == nil || state.RemoteReadiness == nil || j.Request.Validate(*state.Control.Ready) != nil || j.Request.Session != state.RemoteReadiness.SessionID {
+		return j, errors.New("control query identity changed")
 	}
 	if j.Request.Method == "original-turn" {
 		found := false
@@ -74,7 +83,7 @@ func (l *Lifecycle) saveControlCheckpoint(state State, j controlCheckpoint) erro
 	if err != nil {
 		return err
 	}
-	if j.Version != 2 || j.Binding != binding {
+	if j.Version != 3 || j.Binding != binding {
 		return errors.New("native control checkpoint parent changed")
 	}
 	raw, err := json.Marshal(j)
@@ -88,26 +97,17 @@ func validateControlResponse(q codex.RemoteControlRequest, r codex.RemoteControl
 	if r.ID != q.ID || r.Binding != q.Binding || r.RequestDigest != codex.RemoteControlDigest(q) {
 		return errors.New("original native control response binding changed")
 	}
-	if r.Error != "" {
-		if q.Method == "workspace-audit" {
-			if r.Error != "workspace_audit_unverified" || r.Turn != nil || r.Authentication != nil || r.Workspace == nil {
-				return errors.New("native workspace control error invalid")
-			}
-			return nil
+	switch q.Method {
+	case "original-turn":
+		if r.Workspace != nil || r.Turn == nil || r.Error != "" && (r.Error != "original_turn_unverified" || !r.Turn.InspectionFailed) {
+			return errors.New("native turn response changed")
 		}
-		if r.Workspace != nil || r.Authentication != nil || r.Error != "original_turn_unverified" && r.Error != "authentication_stop_unverified" || (q.Method == "original-turn") != (r.Error == "original_turn_unverified") || r.Turn != nil && (q.Method != "original-turn" || !r.Turn.InspectionFailed) {
-			return errors.New("native control error invalid")
+	case "workspace-audit":
+		if r.Turn != nil || r.Workspace == nil || r.Error != "" && r.Error != "workspace_audit_unverified" {
+			return errors.New("native workspace response changed")
 		}
-		return nil
-	}
-	if q.Method == "workspace-audit" {
-		if r.Workspace == nil || r.Turn != nil || r.Authentication != nil {
-			return errors.New("native workspace response kind changed")
-		}
-		return nil
-	}
-	if r.Workspace != nil || q.Method == "original-turn" && (r.Turn == nil || r.Authentication != nil) || q.Method == "authentication-stop" && (r.Authentication == nil || r.Turn != nil) {
-		return errors.New("native control response kind changed")
+	default:
+		return errors.New("native control method invalid")
 	}
 	return nil
 }
@@ -182,12 +182,10 @@ func (l *Lifecycle) callControlWithAudit(ctx context.Context, state State, metho
 	if err != nil {
 		return empty, err
 	}
-	if j.Closed {
+	if j.Closing || j.Closed {
 		return empty, errors.New("original native control already closed")
 	}
-	if method != "authentication-stop" && j.Request.Method == "authentication-stop" {
-		return empty, errors.New("original authentication revocation requested; no later receipt query")
-	}
+
 	if j.Request.ID != "" && j.Response == nil {
 		r, err := l.dispatchControl(ctx, state, j.Request)
 		if err != nil {
@@ -201,9 +199,7 @@ func (l *Lifecycle) callControlWithAudit(ctx context.Context, state State, metho
 			return r, nil
 		}
 	}
-	if method == "authentication-stop" && j.Response != nil && j.Request.Method == method && j.Response.Error == "" {
-		return *j.Response, nil
-	}
+
 	// Never overwrite the only proof for a possibly live native reader.
 	// A known query failure may advance only after its original tree settled.
 	if j.Request.Method == "original-turn" && j.Response != nil {

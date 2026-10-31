@@ -1,5 +1,7 @@
 # Spec：Orca 本机与远程连接统一
 
+> 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
+
 2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
 
 2026-10-19 后续范围修订（已实施，验收见专项记录）：新远端 Run 的执行主机准备、helper 依赖、停止与完整 Check 规则由[仅 Orca Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)取代；本文件连接、路由和原生身份规则继续适用。这里的两 adapter 修改白名单属于历史连接专项，不限制后续去 helper 所必需的配置/投影/调用方改动。本机受管和旧记录边界保持。

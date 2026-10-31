@@ -1,0 +1,7 @@
+--- FAIL: TestOrcaStateCodecUpgradeRetainsOriginalBinding (0.01s)
+    state_codec_test.go:80: upgrade lost original identity terminal state/profile codec mismatch
+--- FAIL: TestOriginalTerminalRPCChecksBothSidesOfObservation (0.01s)
+    terminal_query_windows_test.go:351: replaced terminal published a result or replayed input terminal state/profile codec mismatch <nil> 0 1
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	91.891s
+FAIL

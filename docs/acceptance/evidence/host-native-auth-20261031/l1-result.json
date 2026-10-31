@@ -1,0 +1,33 @@
+{
+  "parent_batch_status": "failed",
+  "component": {
+    "terminal_extensions_passed": true,
+    "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-final\\framework",
+    "terminal_extension_test_count": 29,
+    "level": "L1",
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-final",
+    "native_zero_match_guard": true,
+    "native_driver_compile_exit": 0,
+    "test_count": 717,
+    "terminal_extension_exit": 0,
+    "skipped_tests": [
+      "TestProcessHostCommandHelper",
+      "TestOrcaStoppedNativeProbe",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestUsageExistingNativeEvidence",
+      "TestUsageRemoteCodexCleanupLive",
+      "TestUsageRemoteCodexLive",
+      "TestRunUsageLocalCodexPublicLive",
+      "TestRunUsageLocalPiPublicLive",
+      "TestRunUsageLocalDSHPublicLive",
+      "TestRunUsageRemotePublicLive",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "exit_code": 0
+  }
+}

@@ -41,7 +41,7 @@ try {
             Save-Case
             Push-Location ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')))
             try {
-                & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -sandbox-auth-native $taskBoundaryConfig.configuration.configurations.'local-codex'.execution.settings.executable 1> $taskBoundaryLog 2> ($taskBoundaryLog+'.stderr.log')
+                & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -host-native-executable $taskBoundaryConfig.configuration.configurations.'local-codex'.execution.settings.executable 1> $taskBoundaryLog 2> ($taskBoundaryLog+'.stderr.log')
                 $taskRecord.git_boundary['exit_code']=$LASTEXITCODE
             } finally { Pop-Location }
             if ($taskRecord.git_boundary.exit_code -ne 0) { throw 'L2 native Git commit or repository isolation failed' }

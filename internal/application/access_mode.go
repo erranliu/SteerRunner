@@ -2,13 +2,12 @@ package application
 
 import (
 	"encoding/json"
-	"strings"
-
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
+	"strings"
 )
 
 const retiredAccessDiagnostic = "Development sandbox/implicit permissions are retired. This Run is read-only; only exact original-resource stop is supported. An existing native execution may still be running."
@@ -61,7 +60,7 @@ func retiredDevelopment(r *runstate.Record) bool {
 		if json.Unmarshal(resource.Payload, &policy) != nil {
 			return true
 		}
-		if resource.ImplementationKey != codex.PolicyResourcesCodecKey || resource.CodecVersion != 3 && resource.CodecVersion != 4 || !codex.SupportedDevelopmentPolicy(policy.Contract) {
+		if resource.ImplementationKey != codex.PolicyResourcesCodecKey || resource.CodecVersion != 5 || !codex.SupportedDevelopmentPolicy(policy.Contract) {
 			return true
 		}
 		mode := ""

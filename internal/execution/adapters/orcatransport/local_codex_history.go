@@ -4,11 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
-	"time"
-
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"strings"
+	"time"
 )
 
 const remoteWireCommand = "native-command-v1"
@@ -105,7 +104,7 @@ func validateReaderExit(state State, turn *Turn, value codex.RemoteTurnReceipt) 
 	if turn.Model != "" && value.Started && (value.Model != turn.Model || value.ReasoningEffort != turn.ReasoningEffort) {
 		return errors.New("original native model differs from the frozen workflow turn")
 	}
-	if r.AuthenticationControl != ready.AuthenticationControl || r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.Process != ready.Process || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) || !r.ExpiresAt.Equal(ready.ExpiresAt) {
+	if r.Owner != ready.Owner || string(r.ExitPublicKey) != string(ready.ExitPublicKey) || r.Process != ready.Process || r.AccessMode != ready.AccessMode || !r.CheckedAt.Equal(ready.CheckedAt) {
 		return errors.New("original native readiness identity changed")
 	}
 	return nil

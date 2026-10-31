@@ -15,8 +15,9 @@
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
 | 无仓库的对话与生成输入 | [内容流程 Spec](spec/content-workflows.spec.md) / [Plan](spec/content-workflows.plan.md) |
 | 固定 commit 只读调查并生成多文档 | [GEN-REPO Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接口与示例](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md) |
-| 权限与单仓库认证 | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md) |
+| 历史 broker 设计（现行见宿主认证） | [认证 Spec](spec/sandbox-authentication.spec.md) / [Plan](spec/sandbox-authentication.plan.md) |
 | 开发执行统一 full_access、配置迁移及旧 Run | [Spec](spec/development-full-access.spec.md) / [Plan](spec/development-full-access.plan.md) / [实施验证](acceptance/development-full-access.md) / [实施后审计](acceptance/development-full-access-audit.md) |
+| 开发认证改用执行主机已有登录（已实施，真机资格单列） | [Spec](spec/host-native-auth.spec.md) / [Plan](spec/host-native-auth.plan.md) / [实施验收](acceptance/host-native-auth.md)；删除 broker/CA/socket/租期，新 state/v6 不兼容旧记录，保留新建只读与原生远端链路 |
 | 旧 Check 退役与新版本边界 | [删除契约、消费者和验证](acceptance/check-retirement.md) |
 | Orca 路由、原生查询与后端范围 | [本机/远程连接 Spec](spec/orca-local-remote.spec.md) / [Plan](spec/orca-local-remote.plan.md)、[远端原生 Spec](spec/orca-remote-native.spec.md) / [Plan](spec/orca-remote-native.plan.md)、[通用 Agent Spec](spec/orca-generic-agent.spec.md) / [Plan](spec/orca-generic-agent.plan.md) |
 | Orca CLI 排队、读取重试与公开等待状态（2026-10-25） | [Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [独立验收](acceptance/orca-cli-wait-retry.md)；Runner 只读准备与原操作恢复，调用方 UI 接线另验 |
@@ -38,7 +39,7 @@
 
 ## 当前契约与历史范围
 
-当前使用 `steerrunner-cli/v1`、state/v5、资源版本 3，内置流程为 development/2、development-audited/2、conversation/1、generate/1。开发材料是固定基线 worktree 内的仓库相对路径；内容流程仍冻结 inline 材料。兼容换代保留原授权，未知副作用只对账。当前开发流程到 `pr_ready` 后拒绝业务反馈；审计在一次正式执行中修复 P0–P2，无 Spec 审计或自动返修循环。
+当前使用 `steerrunner-cli/v1`、state/v6、资源版本 3，内置流程为 development/2、development-audited/2、conversation/1、generate/1。开发材料是固定基线 worktree 内的仓库相对路径；内容流程仍冻结 inline 材料。兼容换代保留原授权，未知副作用只对账。当前开发流程到 `pr_ready` 后拒绝业务反馈；审计在一次正式执行中修复 P0–P2，无 Spec 审计或自动返修循环。
 
 运行时支持组合由 `capabilities` 发布，字段以[内嵌 schema](../internal/resources/assets/cli.schema.json)和生产校验为准；工作流定义见[源码](../internal/execution/workflow)，默认提示见[内嵌资源](../internal/resources/assets/prompts.json)。支持声明还需要对应构建的验收证据。
 

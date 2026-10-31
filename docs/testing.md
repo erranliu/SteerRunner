@@ -23,7 +23,7 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 `cmd/steerrunner-agent`，保留真实 `repository_url`。helper 须位于受测工作区写入范围之外。
 本机模型回合还须提供现有 `Launch.audit_model`（model/reasoning_effort），其模型名与 writer
 不同且 effort 合法，与正式 workflow 冻结契约一致；只配置该能力，不额外投递 audit 输入。
-本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop/authentication 流程；
+本机适配依次调用原 control、launch、ready、模型 wire/history 和正式 stop 流程；
 不预置 ready、不借远端完成来源。设置阶段与业务阶段的调用分别记录，业务阶段按原 terminal
 及 request 计数，任意无 ID 正文、补 Enter 或错误 request 也不能漏计。
 准备回执通过公开 `--cursor 0` 读取原始流，要求保留起点及来源/完整性元数据齐全；
@@ -213,7 +213,7 @@ L1 拒绝该 live opt-in，默认 skip 不计真机通过。
 
 在仓库根目录使用 PowerShell 7：
 
-认证 socket 的快速回归随 L1 运行（`TestAuthenticationSocket*`），覆盖原安装布局的 124 字节旧路径与 90 字节新路径、冻结资源身份、各 Run/attempt 的隔离、目录 junction/替换、socket 替换、错误 capability、部分准备失败及精确清理。定向原生入口 `TestAuthenticationNativeToolBoundary -sandbox-auth-native <codex.exe> -sandbox-auth-host-broker` 使用独立长路径 Git 夹具和只读 GitHub 查询，检查实际 full_access 工具连接、单仓库认证范围、工作区外 canary 成功写入及退出清理，不运行模型或发布 PR。
+宿主认证快速回归随 L1 运行，覆盖环境继承/过滤、Git 进程配置、缺登录有界失败、helper metadata 资格、无查询/未就绪停止、reader 结算与关闭意图。旧 broker/socket/CA/capability/租期测试已删除。独立真实无模型入口为 `go test -tags=live ./internal/execution/adapters/codex -run '^(TestLinkedGitNativeCommit|TestHostNativeReadOnlyCommand)$' -v -count=1 -args -host-native-executable=<Codex绝对路径>`；验证 loose/packed refs 提交与 read_only 拒写，不证明真实 push/PR。
 
 ```powershell
 .\scripts\test.ps1 -Level L1
@@ -301,14 +301,14 @@ Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_U
 在 full_access 下执行，原 GitHub URL 保持。socket 保留原私有工作区与冻结身份绑定，证书不安装到系统。
 代理仅允许目标仓库的 Git 上传/下载、身份/仓库只读查询和 PR 查询/创建；禁止其它
 仓库、管理接口、未知 GraphQL 及重定向。GitHub App 支持已移除：`execution.settings.github_auth`（含 null）严格拒绝；fixture 的旧
-`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。本机/Orca local 受管认证使用宿主 gh 单仓库 broker；远端使用已有 Orca 原生认证，不承诺相同 capability 或撤销保证。
+`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。本机/Orca local 开发使用宿主 Git/gh/SSH 登录；远端使用已有 Orca 原生认证。Runner 不再提供 broker/capability 或认证撤销证明。
 宿主登录成功不能证明就绪；适用链路的实际认证准备失败仍零业务输入，不回退审批发布。
 历史认证资格见[原验收](acceptance/sandbox-authentication.md)，当前 full_access 的实际范围见[实施与验证](acceptance/development-full-access.md)。
 
 权限模式由配置项的 `execution.settings.access_mode` 冻结；开发仅接受显式 `full_access`，内容流程保留显式 `read_only`。旧 sandbox/空模式不得作为正向开发配置。模式迁移、重复 case 合并及旧 Run 边界见 [Spec](spec/development-full-access.spec.md)。
 普通开发复用生产 full_access 权限编译；已退役的环境检查不恢复。`execution.settings.agent_launch.args` 只填写支持的启动参数（示例为
 `["--no-daemon"]`），不以额外 `-c` 重复覆盖冻结权限。不能把不同模式/配置的运行
-合并为同一通过结果。Orca local 的 `agent_launch.runtime_executable` 指向用户安装的受管 helper，核验摘要后沿同权限准备、原控制回执、broker 与停止证明；这些保证不适用于原生远端。
+合并为同一通过结果。Orca local 的 `agent_launch.runtime_executable` 指向用户安装的受管 helper，核验摘要后沿同权限准备、原控制回执与停止证明；这些保证不适用于原生远端。
 
 远端只使用既有 Orca/Codex/Git/gh 和用户登录，不上传、探测或调用 Runner helper，不转发本机 token、OAuth 或 gh 配置。远端 runtime_executable/runtime_sha256 键（包括空值）在接受前拒绝。model/effort/access_mode 仅核验冻结参数及传递命令；native-launch-contract 明记 effective_parameters_verified=false，native-call-audit 要求零 helper/query terminal，不冒充 OS token、权限审计或实际模型回读。完整远端 Check 和有来源证明的双模型审计明确不支持。
 
@@ -328,10 +328,9 @@ Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_U
 L2 使用生产默认的实施/报告/发布提示词，不覆盖 `prompt_overrides`，也不把
 `publish.ps1` 发布器放入 L2 夹具；Git 提交、push 和 gh PR 创建由原 worker 完成。
 夹具显式保留 packed refs。L2 case 的准备另通过实际 native `command/exec` 验证 loose/packed
-head 提交的 stderr 为空，且另一个仓库仍不可写；不使用模型或远端写操作。
+head 提交的 stderr 为空，且提交未改动独立 peer 仓库；不使用模型或远端写操作。
 worker 命令日志审计会拒绝权限错误，即使命令退出码为 0、提交及 PR 已成功。
-文件系统拒绝及 HTTP 401/403 均在审计范围内；默认 host broker 的可信收尾事实还须
-包含拒绝计数且为 0、closed 和 socket cleanup 已确认，不能用隐藏输出掩盖拒绝。
+文件系统拒绝及 HTTP 401/403 均在审计范围内；宿主认证失败需保留有界诊断，不记录凭据。停止核实原业务树、工具 Job、parser 和控制终端，不生成认证关闭证明。
 L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
 
 1. 生成 `C:/srt/<随机ID>` 短路径现场（可用 `-FixtureParent` 指定父目录），构建 Runner，
@@ -373,12 +372,7 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。原生工具入口保留历史 flag 名，用
-`go test ./internal/execution/adapters/codex -run '^TestAuthenticationNativeToolBoundary$' -v -count=1 -args -sandbox-auth-native=<Codex绝对路径>`
-单独执行，使用无效受控 canary，不运行模型、不证明真实认证/发布。
-同一命令增加 `-sandbox-auth-host-broker=true` 可在全新诊断现场使用宿主登录的受限代理，
-验证 full_access 工具的 Git/gh 只读认证能力；仍零业务输入、不证明 push/PR 创建。此入口保留原进程
-身份、准备事实和关闭计数，不导出宿主 token。
+禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。真实宿主认证与 PR 交付须使用新 state/v6 和固定 Runner/helper/extensions，按现有 L2/L3 case 单列验收；缺配置或环境记 incomplete。
 
 未满足冻结 case 预期的失败、超时、unknown、unsupported、缺 final 均不通过；不可达停止
 的 `revoked-unverified` 按其故障窗口契约独立判定，不冒充停止确认或业务交付。清理未确认

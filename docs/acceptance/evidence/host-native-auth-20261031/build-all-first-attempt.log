@@ -1,0 +1,6 @@
+# github.com/erranliu/SteerRunner/docs/acceptance/evidence/rebase-control-20261019/checks/export-exit
+docs\acceptance\evidence\rebase-control-20261019\checks\export-exit\main.go:23:17: undefined: codex.RemoteAuthenticationCleanup
+# github.com/erranliu/SteerRunner/docs/acceptance/evidence/rebase-control-20261019/checks/verify-proof
+docs\acceptance\evidence\rebase-control-20261019\checks\verify-proof\main.go:44:19: undefined: codex.RemoteAuthenticationCleanup
+docs\acceptance\evidence\rebase-control-20261019\checks\verify-proof\main.go:81:33: undefined: transport.ReadAuthenticationStopEvidence
+docs\acceptance\evidence\rebase-control-20261019\checks\verify-proof\main.go:99: envelope.Body.AuthenticationClosed undefined (type codexworker.RemoteExit has no field or method AuthenticationClosed)

@@ -1,15 +1,12 @@
 package orcatransport
 
 import (
-	"context"
 	"encoding/json"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/terminaltools"
 )
 
 func TestOriginalTerminalOwnerNeverInfersMissingBundleFromCurrentBuild(t *testing.T) {
@@ -34,9 +31,9 @@ func TestPreparationVersionsRejectMixedFieldsIncludingNull(t *testing.T) {
 		raw   string
 		valid bool
 	}{
-		{`{"contract":"` + terminaltools.Contract + `","access_mode":"full_access","outside_write_verified":true}`, true},
+		{`{"contract":"` + terminaltools.Contract + `","access_mode":"full_access","verified":true,"provider_environment_absent":true}`, true},
 		{`{"contract":"` + terminaltools.Contract + `","access_mode":"full_access","outside_write_verified":true,"outside_write_denied":null}`, false},
-		{`{"contract":"windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never","access_mode":"full_access","outside_write_denied":false}`, true},
+		{`{"contract":"windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never","access_mode":"full_access","outside_write_denied":false}`, false},
 		{`{"contract":"windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never","access_mode":"full_access","outside_write_denied":false,"outside_write_verified":null}`, false},
 	} {
 		var p TerminalPreparation
@@ -49,28 +46,5 @@ func TestPreparationVersionsRejectMixedFieldsIncludingNull(t *testing.T) {
 		if err := json.Unmarshal([]byte(raw), &c); err == nil {
 			t.Fatal("new config accepted retired field", raw)
 		}
-	}
-}
-
-func TestLegacySandboxReceiptIsPassiveStopEvidenceOnly(t *testing.T) {
-	l, _, s := fixture(t)
-	l.profile.Terminal = &TerminalConfig{Agent: "pi", ReceiptVersion: 2, ExecutionID: s.Session.ExecutionID, SessionID: "original", AccessMode: "sandbox", EvidenceSHA256: strings.Repeat("a", 64), BundleSHA256: strings.Repeat("b", 64)}
-	ready := TerminalReceipt{Version: 2, Source: "pi-extension-v1", SourceSHA256: strings.Repeat("a", 64), RunID: s.Session.ExecutionID, SessionID: "original", InstanceID: "load", PID: 12, ProcessStartedAt: time.Now(), Mode: "tui", Tools: []string{"read", "write", "edit", "powershell"}, ReasoningEffort: "low", Preparation: TerminalPreparation{Verified: true, Contract: "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never", AccessMode: "sandbox", InsideWriteVerified: true, ProviderEnvironmentAbsent: true, OutsideWriteDenied: testBool(true)}}
-	if err := l.validateTerminalReceipt(ready); err == nil {
-		t.Fatal("legacy sandbox qualified a current execution")
-	}
-	l.stopOnly = true
-	if err := l.validateTerminalReceipt(ready); err != nil {
-		t.Fatal("original stop evidence lost", err)
-	}
-	if _, _, err := l.Execute(context.Background(), b.LifecycleRequest{}); err == nil {
-		t.Fatal("stop-only adapter executes business work")
-	}
-	if _, _, err := l.Reconcile(context.Background(), b.LifecycleRequest{}); err == nil {
-		t.Fatal("stop-only adapter reconciles business work")
-	}
-	ready.Preparation.OutsideWriteDenied = testBool(false)
-	if err := l.validateTerminalReceipt(ready); err == nil {
-		t.Fatal("wrong original permission evidence accepted")
 	}
 }

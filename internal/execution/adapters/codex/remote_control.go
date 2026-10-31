@@ -36,13 +36,12 @@ type RemoteControlRequest struct {
 }
 
 type RemoteControlResponse struct {
-	ID             string                       `json:"id"`
-	Binding        string                       `json:"binding"`
-	RequestDigest  string                       `json:"request_digest"`
-	Error          string                       `json:"error,omitempty"`
-	Turn           *RemoteTurnReceipt           `json:"turn,omitempty"`
-	Authentication *RemoteAuthenticationCleanup `json:"authentication,omitempty"`
-	Workspace      *RemoteWorkspaceAudit        `json:"workspace_audit,omitempty"`
+	ID            string                `json:"id"`
+	Binding       string                `json:"binding"`
+	RequestDigest string                `json:"request_digest"`
+	Error         string                `json:"error,omitempty"`
+	Turn          *RemoteTurnReceipt    `json:"turn,omitempty"`
+	Workspace     *RemoteWorkspaceAudit `json:"workspace_audit,omitempty"`
 }
 
 func RemoteControlDigest(request RemoteControlRequest) string {
@@ -57,10 +56,6 @@ func (q RemoteControlRequest) Validate(setup RemoteControlSetup) error {
 	switch q.Method {
 	case "original-turn":
 		if q.Audit != nil || len(q.InputDigest) != 64 || strings.Trim(q.InputDigest, "0123456789abcdef") != "" {
-			return errors.New("native_control_input_invalid")
-		}
-	case "authentication-stop":
-		if q.InputDigest != "" || q.Audit != nil {
 			return errors.New("native_control_input_invalid")
 		}
 	case "workspace-audit":
@@ -95,14 +90,8 @@ func ServeRemoteControl(ctx context.Context, setup RemoteControlSetup, input io.
 			if e != nil {
 				r.Error = "workspace_audit_unverified"
 			}
-		} else {
-			value, e := RevokeRemoteAuthentication(ctx, RemoteAuthenticationQuery{Workspace: setup.Workspace, Session: q.Session})
-			if e != nil {
-				r.Error = "authentication_stop_unverified"
-			} else {
-				r.Authentication = &value
-			}
 		}
+
 		return r
 	})
 }

@@ -96,7 +96,7 @@ func testRemoteOfflineScope(t *testing.T) {
 			}
 			version := orca.NativeRemoteProfileVersion
 			if mode == "legacy" {
-				version = orca.ProfileVersion
+				version = 3 // Retired profile, rejected before native inventory.
 			}
 			frozen := makeEnvelope(b.ImplementationDataEnvelope{CodecVersion: version, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: "project", ProfileID: id, AcceptedConfigVersion: config}, profile)
 			if mode == "invalid-profile" {
@@ -157,7 +157,7 @@ func testRemoteOfflineScope(t *testing.T) {
 			if !bytes.Equal(before, after) || bytes.Contains(after, []byte("stop_evidence_scope")) {
 				t.Fatal("offline verification modified storage or persisted scope")
 			}
-			if strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" {
+			if strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" || mode == "legacy" {
 				if _, err := os.Stat(inventory + ".calls"); !os.IsNotExist(err) {
 					t.Fatal("uncreated record caused inventory or helper effect", err)
 				}

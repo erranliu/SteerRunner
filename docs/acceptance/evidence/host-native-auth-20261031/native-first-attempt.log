@@ -1,0 +1,17 @@
+=== RUN   TestLinkedGitNativeCommit
+    git_boundary_live_test.go:30: preserved Git boundary: C:\Users\lmas1\AppData\Local\Temp\sr-git-boundary-3098577833
+=== RUN   TestLinkedGitNativeCommit/loose-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary a57a02b] boundary
+         stderr=
+=== RUN   TestLinkedGitNativeCommit/packed-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary c7b6e41] boundary
+         stderr=
+--- PASS: TestLinkedGitNativeCommit (4.95s)
+    --- PASS: TestLinkedGitNativeCommit/loose-head (0.63s)
+    --- PASS: TestLinkedGitNativeCommit/packed-head (0.56s)
+=== RUN   TestHostNativeReadOnlyCommand
+    git_boundary_live_test.go:122: open C:\Users\lmas1\AppData\Local\Temp\TestHostNativeReadOnlyCommand3724864560\001\server\appserver.log: The system cannot find the path specified.
+--- FAIL: TestHostNativeReadOnlyCommand (0.01s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	7.541s
+FAIL

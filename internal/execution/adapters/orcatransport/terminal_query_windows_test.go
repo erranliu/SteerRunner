@@ -332,6 +332,13 @@ func TestOriginalTerminalRPCChecksBothSidesOfObservation(t *testing.T) {
 	l.profile.Environment = ""
 	s.Ref.Target = l.profile.Target()
 	l.setup.Snapshot.Ref.Target = s.Ref.Target
+	for i := range s.Implementation {
+		if s.Implementation[i].ImplementationKey == StateKey {
+			s.Implementation[i].CodecVersion = LocalStateVersion
+			s.Implementation[i], _ = b.NewImplementationDataEnvelope(s.Implementation[i], s.Implementation[i].Payload)
+		}
+	}
+
 	l.nativeAccess = true
 	terminal := native.Terminal{Handle: s.Ref.External.Terminal, RuntimeID: s.Ref.External.RuntimeID, IncarnationID: s.Ref.External.Incarnation, WorktreeID: s.Ref.External.WorktreeID, WorktreePath: s.Workspace.Path, Branch: s.Workspace.Branch, AgentIdentity: s.Ref.Agent.Name, Connected: true}
 	var reads atomic.Int32

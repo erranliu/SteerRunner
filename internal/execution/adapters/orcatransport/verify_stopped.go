@@ -5,13 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"reflect"
-	"strings"
-	"time"
-
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"reflect"
+	"strings"
+	"time"
 )
 
 // VerifyStopped constructs only a frozen reader, never an observer or execution.
@@ -54,7 +53,7 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 	}
 	owner, e := l.readTerminalOwner()
 	if e != nil || state.TerminalOwner == nil || !reflect.DeepEqual(state.TerminalOwner, &owner) || !l.terminalExitVerified(owner) {
-		return errors.Join(e, errors.New("original native terminal exit/authentication cleanup is unverified"))
+		return errors.Join(e, errors.New("original native terminal exit cleanup is unverified"))
 	}
 	return ctx.Err()
 }
@@ -64,7 +63,7 @@ func (l *Lifecycle) codexReadiness(state State, workspace string) (codex.RemoteR
 		return codex.RemoteReadiness{}, errors.New("helper writer-tree verification is local only")
 	}
 	r := state.RemoteReadiness
-	if r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || !codex.SupportedDevelopmentPolicy(r.Contract) || r.RuntimeSHA256 == "" || r.RuntimeSHA256 != l.profile.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || !codex.ValidNativeID(r.SessionID) || r.Workspace == "" || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) || r.Repository == "" || r.Repository != l.setup.RepositoryURL || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.Process.Executable == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Owner.Executable == "" || r.CheckedAt.IsZero() || state.TerminalOwner != nil || state.TerminalReadiness != nil {
+	if r == nil || !r.Verified || r.NativeTransport != codex.RemoteNativeTransport || r.Contract != codex.PolicyContract || r.RuntimeSHA256 == "" || r.RuntimeSHA256 != l.profile.RuntimeSHA256 || r.ConfigurationDigest == "" || r.ConfigurationDigest != l.profile.RuntimeConfigurationDigest || !codex.ValidNativeID(r.SessionID) || r.Workspace == "" || !strings.EqualFold(strings.ReplaceAll(r.Workspace, "\\", "/"), strings.ReplaceAll(workspace, "\\", "/")) || r.Repository == "" || r.Repository != l.setup.RepositoryURL || r.Process.Kind != "os" || r.Process.PID <= 0 || r.Process.Created == "" || r.Process.Executable == "" || r.Owner.Kind != "os" || r.Owner.PID <= 0 || r.Owner.Created == "" || r.Owner.Executable == "" || r.CheckedAt.IsZero() || state.TerminalOwner != nil || state.TerminalReadiness != nil {
 		return codex.RemoteReadiness{}, errors.New("original Codex native exit binding is incomplete; PTY exit is insufficient")
 	}
 	if _, err := codex.RemoteExitPath(*r); err != nil {
@@ -115,14 +114,17 @@ func (l *Lifecycle) stopCodexNative(ctx context.Context, state State, workspace 
 
 // The original checkpoint is transport evidence, never a replacement Run state.
 func (l *Lifecycle) verifyControlStopped(ctx context.Context, state State) error {
-	if err := l.validateControl(l.setup.Snapshot, state, true); err != nil {
+	if err := l.validateControl(l.setup.Snapshot, state, false); err != nil {
 		return err
 	}
 	if err := l.client.VerifyTerminalStopped(ctx, state.Control.Process); err != nil {
 		return err
 	}
-	_, _, err := ReadAuthenticationStopEvidence(l.setup.RunDirectory, l.setup.Snapshot, state)
-	return err
+	j, err := l.loadControlCheckpoint(state)
+	if err != nil || !j.Closed {
+		return errors.Join(err, errors.New("original control closure unverified"))
+	}
+	return nil
 }
 
 func (l *Lifecycle) originalForStop(ctx context.Context, s b.LifecycleSnapshot) error {

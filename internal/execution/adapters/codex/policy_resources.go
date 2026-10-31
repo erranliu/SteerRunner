@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"strings"
-
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strings"
 )
 
 const PolicyResourcesCodecKey = "codex.policy-resources"
@@ -49,10 +48,16 @@ type BoundPolicyResources struct {
 // PolicyResourcePayload contains native version, permission contract and launch
 // settings. The center stores it as opaque, identity-bound codec data.
 type PolicyResourcePayload struct {
-	NativeVersion           string                         `json:"native_version"`
-	Contract                string                         `json:"contract"`
-	Settings                executionbackend.LaunchCommand `json:"settings"`
-	AuthenticationTransport *AuthenticationTransport       `json:"authentication_transport,omitempty"`
+	NativeVersion string                         `json:"native_version"`
+	Contract      string                         `json:"contract"`
+	Settings      executionbackend.LaunchCommand `json:"settings"`
+}
+
+func policyResourceVersion(contract string) int {
+	if contract == ReadOnlyPolicyContract {
+		return 4
+	}
+	return 5
 }
 
 func NewPolicyResourceEnvelope(identity PolicyResourceIdentity, payload PolicyResourcePayload) (executionbackend.ImplementationDataEnvelope, error) {
@@ -61,7 +66,7 @@ func NewPolicyResourceEnvelope(identity PolicyResourceIdentity, payload PolicyRe
 		return executionbackend.ImplementationDataEnvelope{}, err
 	}
 	return executionbackend.NewImplementationDataEnvelope(executionbackend.ImplementationDataEnvelope{
-		CodecVersion: 4, Purpose: executionbackend.ImplementationResourcePurpose,
+		CodecVersion: policyResourceVersion(payload.Contract), Purpose: executionbackend.ImplementationResourcePurpose,
 		ImplementationKey: PolicyResourcesCodecKey, ProjectID: identity.ProjectID,
 		ExecutionID: identity.ExecutionID, AttemptID: identity.AttemptID,
 		Generation: identity.Generation, ConfigDigest: identity.ConfigDigest,
@@ -118,12 +123,7 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 		return BoundPolicyResources{}, err
 	}
 	payload := PolicyResourcePayload{NativeVersion: version, Contract: permissions.Contract, Settings: command}
-	if request.Host == "local" && strings.Contains(strings.ToLower(request.RepositoryURL), "github.com") {
-		payload.AuthenticationTransport, err = PlanAuthenticationTransport(request.RunDirectory, request.Workspace, request.RepositoryURL, request.ResourceIdentity)
-		if err != nil {
-			return BoundPolicyResources{}, err
-		}
-	}
+
 	envelope, err := NewPolicyResourceEnvelope(request.ResourceIdentity, payload)
 	if err != nil {
 		return BoundPolicyResources{}, err
@@ -145,7 +145,11 @@ func profileConfigFromEnvelopes(data []executionbackend.ImplementationDataEnvelo
 	if found == nil {
 		return ProfileConfig{}, errors.New("Codex profile configuration envelope is missing")
 	}
-	if found.CodecVersion != ProfileCodecVersion {
+	var mode struct {
+		AccessMode string `json:"access_mode"`
+	}
+	_ = json.Unmarshal(found.Payload, &mode)
+	if found.CodecVersion != ProfileVersionForMode(mode.AccessMode) {
 		return ProfileConfig{}, errors.New("unsupported Codex profile configuration version")
 	}
 	if err := found.ValidateProfileIdentity(identity.ProjectID, identity.ProfileID, identity.AcceptedConfigVersion); err != nil {
@@ -155,7 +159,7 @@ func profileConfigFromEnvelopes(data []executionbackend.ImplementationDataEnvelo
 }
 
 func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity) (PolicyResourcePayload, error) {
-	if envelope.ImplementationKey != PolicyResourcesCodecKey || (envelope.CodecVersion != 3 && envelope.CodecVersion != 4) {
+	if envelope.ImplementationKey != PolicyResourcesCodecKey || (envelope.CodecVersion != 4 && envelope.CodecVersion != 5) {
 		return PolicyResourcePayload{}, errors.New("unsupported permission resource codec")
 	}
 	if err := envelope.ValidateResourceIdentity(identity.ProjectID, identity.ExecutionID, identity.AttemptID, identity.Generation, identity.ConfigDigest); err != nil {
@@ -165,20 +169,13 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 	if err := executionbackend.DecodeStrictJSON(envelope.Payload, &payload, "permission resource payload has trailing JSON"); err != nil {
 		return PolicyResourcePayload{}, err
 	}
-	if !SupportedDevelopmentPolicy(payload.Contract) || VerifyPolicyVersion(payload.NativeVersion) != nil || payload.Settings.Executable == "" {
+	if envelope.CodecVersion != policyResourceVersion(payload.Contract) || !SupportedDevelopmentPolicy(payload.Contract) || VerifyPolicyVersion(payload.NativeVersion) != nil || payload.Settings.Executable == "" {
 		return PolicyResourcePayload{}, errors.New("permission resource evidence is incomplete or unsupported")
 	}
 	if err := validateNativeLaunchArgs(payload.Settings.Args, payload.Contract); err != nil {
 		return PolicyResourcePayload{}, err
 	}
-	if p := payload.AuthenticationTransport; p != nil {
-		if envelope.CodecVersion != 4 || p.Identity != identity || !sameWorkspace(p.Workspace, payload.Settings.WorkingDirectory) {
-			return PolicyResourcePayload{}, errors.New("authentication_api_binding_mismatch")
-		}
-		if err := p.validate(); err != nil {
-			return PolicyResourcePayload{}, err
-		}
-	}
+
 	return payload, nil
 }
 
@@ -197,13 +194,10 @@ func validateNativeLaunchArgs(args []string, contracts ...string) error {
 		}
 	}
 	permissions, err := NativePermissions("windows", "local", "codex", mode)
-	if err != nil || !SupportedDevelopmentPolicy(contract) || mode == "read_only" && contract != ReadOnlyPolicyContract {
+	if err != nil || !SupportedDevelopmentPolicy(contract) || mode == "read_only" && contract != ReadOnlyPolicyContract || mode == "full_access" && contract != PolicyContract {
 		return errors.New("unsupported frozen permission mode/contract")
 	}
 	expectedArgs := permissions.Args()
-	if mode == "full_access" && contract == ReadOnlyPolicyContract {
-		expectedArgs = append(expectedArgs, legacyWorkspaceArgs()...)
-	}
 	expected := map[string]string{}
 	for i := 0; i < len(expectedArgs); i += 2 {
 		key, value, _ := strings.Cut(expectedArgs[i+1], "=")

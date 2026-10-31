@@ -1,5 +1,7 @@
 # Spec：远端仅通过 Orca 执行
 
+> 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
+
 2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
 
 日期：2026-10-19。状态：P0 已按收敛契约通过，原生查询漏项已修复；远端 helper 删除已实施；已实施 unreported/显式 unknown 最小契约，并通过最新基线的完整闭环与活动停止验收（workflow v2）。调查基线：`a3dc15dc2f90787ea6e38e78d4dbc8a275470646`。配套 [Plan](orca-remote-native.plan.md)，结果登记在[专属验收](../acceptance/orca-remote-native.md)。实现与实际验证范围以专属验收记录为准。

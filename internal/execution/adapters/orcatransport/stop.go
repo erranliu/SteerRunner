@@ -49,9 +49,7 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 		if err != nil {
 			return receipt, nil, err
 		}
-		if err = l.reconcileAuthenticationStop(ctx, state); err != nil {
-			return receipt, nil, err
-		}
+
 		if err = l.closeControl(ctx, state); err != nil {
 			return receipt, nil, err
 		}

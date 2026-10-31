@@ -1,0 +1,7 @@
+=== RUN   TestHostNativeReadOnlyCommand
+    git_boundary_live_test.go:166: native read-only command rejected the write; no model input
+    git_boundary_live_test.go:132: read-only native owner remains unverified
+--- FAIL: TestHostNativeReadOnlyCommand (3.14s)
+FAIL
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	6.270s
+FAIL

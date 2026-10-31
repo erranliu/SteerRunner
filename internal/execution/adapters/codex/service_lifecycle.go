@@ -3,9 +3,8 @@ package codexworker
 import (
 	"context"
 	"errors"
-	"time"
-
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"time"
 )
 
 func (l ExecutionLifecycle) writersAbsent(binding Binding) bool {
@@ -24,13 +23,6 @@ func (l ExecutionLifecycle) writersAbsent(binding Binding) bool {
 	return l.setup.WorkerTreeAbsent != nil && l.setup.WorkerTreeAbsent(*binding.Process)
 }
 
-func (l ExecutionLifecycle) closeAuthentication() error {
-	if auth := l.Backend.Config.Authentication; auth != nil && !auth.Close() {
-		return errors.New("authentication_cleanup_unverified: Run capability closed; original broker resources could not be confirmed removed")
-	}
-	return nil
-}
-
 // ShutdownLifecycle releases only this worker's owned process tree. It does not
 // send turn/interrupt or claim the interrupted native turn completed.
 func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot executionbackend.LifecycleSnapshot, owned executionbackend.StopHandle) (executionbackend.LifecycleStateFacts, error) {
@@ -38,7 +30,7 @@ func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot exec
 		return executionbackend.LifecycleStateFacts{}, err
 	}
 	if l.setup.LaunchExecutionOwner != nil {
-		// The independent owner retains the native connection, Job and broker.
+		// The independent owner retains the native connection and Job.
 		// Closing this service's observation is not an execution stop.
 		return executionbackend.LifecycleStateFacts{}, nil
 	}
@@ -55,7 +47,7 @@ func (l ExecutionLifecycle) ShutdownLifecycle(ctx context.Context, snapshot exec
 	defer ticker.Stop()
 	for {
 		if tree, ok := owned.(executionbackend.ProcessTreeHandle); ok && tree.WritersAbsent() && l.Backend.Process.Inspect(&identity) == "process absent" {
-			return executionbackend.LifecycleStateFacts{WorkerAbsent: true, WritersAbsent: true, Stopped: true}, l.closeAuthentication()
+			return executionbackend.LifecycleStateFacts{WorkerAbsent: true, WritersAbsent: true, Stopped: true}, nil
 		}
 		select {
 		case <-ctx.Done():

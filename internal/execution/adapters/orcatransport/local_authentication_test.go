@@ -12,15 +12,11 @@ import (
 	"time"
 )
 
-func TestRemoteAuthenticationCapabilityMissingBlocksBeforeBusiness(t *testing.T) {
-	l, host, s := fixture(t)
+func TestHostNativeAuthDirectLaunchNeedsNoCredentialCapability(t *testing.T) {
+	l, _, _ := fixture(t)
 	l.setup.RepositoryURL = "https://github.com/erranliu/SteerlineTest.git"
-	_, err := l.PreparationFacts(context.Background(), s)
-	if err == nil || !strings.Contains(err.Error(), "remote_sandbox_authentication_unsupported") {
-		t.Fatalf("unsupported remote admitted: %v", err)
-	}
-	if len(host.calls) != 0 {
-		t.Fatal("unsupported preparation performed native work")
+	if err := l.checkLocalReadiness(State{}); err != nil {
+		t.Fatal(err)
 	}
 }
 
@@ -78,26 +74,24 @@ func decodeReceiptState(l *Lifecycle, s b.LifecycleSnapshot, r b.LifecycleReceip
 	return l.state(s)
 }
 
-func TestRemoteReadinessRejectsMissingExpiredAndChangedBindings(t *testing.T) {
+func TestRemoteReadinessRejectsMissingAndChangedBindings(t *testing.T) {
 	l, _, _ := fixture(t)
 	l.setup.RepositoryURL = "https://github.com/erranliu/SteerlineTest.git"
 	l.profile.RuntimeExecutable = "C:/runtime/steerrunner-agent.exe"
 	l.profile.RuntimeConfigurationDigest = strings.Repeat("a", 64)
 	now := time.Now().UTC()
 	l.clock = func() time.Time { return now }
-	good := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Repository: l.setup.RepositoryURL, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", Process: b.ProcessIdentity{PID: 123}, CheckedAt: now, ExpiresAt: now.Add(time.Hour)}
+	good := codex.RemoteReadiness{ExitPublicKey: make([]byte, 32), Owner: b.ProcessIdentity{PID: 124, Created: "helper-creation"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Repository: l.setup.RepositoryURL, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", Process: b.ProcessIdentity{PID: 123}, CheckedAt: now}
 	if err := l.checkLocalReadiness(State{RemoteReadiness: &good}); err != nil {
 		t.Fatal(err)
 	}
-	for _, test := range []string{"missing", "expired", "wrong-repo", "wrong-config", "wrong-contract", "missing-process", "future", "unverified", "legacy-transport"} {
+	for _, test := range []string{"missing", "wrong-repo", "wrong-config", "wrong-contract", "missing-process", "future", "unverified", "legacy-transport"} {
 		t.Run(test, func(t *testing.T) {
 			value := good
 			state := State{RemoteReadiness: &value}
 			switch test {
 			case "missing":
 				state.RemoteReadiness = nil
-			case "expired":
-				value.ExpiresAt = now
 			case "wrong-repo":
 				value.Repository = "https://github.com/other/repo.git"
 			case "wrong-config":

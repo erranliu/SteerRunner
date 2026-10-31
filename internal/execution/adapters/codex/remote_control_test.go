@@ -69,7 +69,7 @@ func TestFixedControlFiniteProtocol(t *testing.T) {
 				}
 				return RemoteControlResponse{Error: "original_turn_unverified"}
 			})
-			valid := mode == "query" || mode == "revoke" || mode == "duplicate" || mode == "workspace"
+			valid := mode == "query" || mode == "duplicate" || mode == "workspace"
 			if (err == nil) != valid {
 				t.Fatal(mode, err)
 			}

@@ -7,23 +7,21 @@ import (
 // Config is the native implementation input assembled from frozen records.
 // It is never embedded in contracts or read from mutable project state.
 type Config struct {
-	TerminalCheckpoint      func(commandID, sessionID, turnID string) error
-	Executable              string
-	Args                    []string
-	Profile                 string
-	Sandbox                 string
-	WindowsSandbox          string
-	Model                   string
-	ReasoningEffort         string
-	Workspace               string
-	RunDir                  string
-	RunID                   string
-	ServerDir               string
-	Environment             func([]string) []string
-	WorkerRuntime           bool
-	Authentication          *AuthenticationRuntime
-	AuthenticationTransport *AuthenticationTransport
-	RemoteName              string
+	TerminalCheckpoint func(commandID, sessionID, turnID string) error
+	Executable         string
+	Args               []string
+	Profile            string
+	Sandbox            string
+	WindowsSandbox     string
+	Model              string
+	ReasoningEffort    string
+	Workspace          string
+	RunDir             string
+	RunID              string
+	ServerDir          string
+	Environment        func([]string) []string
+	WorkerRuntime      bool
+	RemoteName         string
 }
 
 func ValidReasoningEffort(value string) bool {

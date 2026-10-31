@@ -173,7 +173,7 @@ func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunVie
 	if ready.SourceSHA256 != expectedSource {
 		t.Fatal("native extension differs from frozen helper")
 	}
-	if ready.Source != source || ready.Stage != "ready" || ready.RunID != run.RunID || ready.SessionID != owner.SessionID || ready.PID != owner.Job.Worker.PID || !p.Verified || p.Contract != terminaltools.Contract || p.AccessMode != settings.AccessMode || !p.InsideWriteVerified || !p.ProviderEnvironmentAbsent || p.AccessMode != "full_access" || p.OutsideWriteDenied != nil || p.OutsideWriteVerified == nil || !*p.OutsideWriteVerified || ready.Version != 3 || owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || owner.ExtensionSHA256 != metadata.BundleSHA256 {
+	if ready.Source != source || ready.Stage != "ready" || ready.RunID != run.RunID || ready.SessionID != owner.SessionID || ready.PID != owner.Job.Worker.PID || !p.Verified || p.Contract != terminaltools.Contract || p.AccessMode != settings.AccessMode || !p.ProviderEnvironmentAbsent || p.AccessMode != "full_access" || ready.Version != 4 || owner.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 || owner.ExtensionSHA256 != metadata.BundleSHA256 {
 		t.Fatal("original Pi native permission/authentication audit failed")
 	}
 	job, e := process.AttachOwnedJob(owner.Job)

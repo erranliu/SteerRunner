@@ -10,19 +10,18 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
-	"testing"
-	"time"
-
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
 )
 
 var manifestFlag = flag.String("native-manifest", "", "Runner-owned frozen live fixture")
@@ -549,28 +548,12 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 				if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
 					proof, proofErr := localStopEvidence(m, view)
 					if proofErr != nil {
-						t.Error("remote authentication cleanup unconfirmed", proofErr)
+						t.Error("original native execution cleanup unconfirmed", proofErr)
 					} else {
-						save(t, "remote-authentication-cleanup.json", proof)
+						save(t, "native-execution-cleanup.json", proof)
 					}
 				}
-				if m.Execution.Adapter == "codex-app-server" && view.Execution.SessionID != "" {
-					var cleanup struct {
-						Revoked    bool      `json:"revocation_confirmed"`
-						Repository string    `json:"repository"`
-						Expires    time.Time `json:"expires_at"`
-					}
-					body, readErr := os.ReadFile(filepath.Join(dir, "runs", r.RunID, "app-server", "authentication-cleanup.json"))
-					if readErr != nil || json.Unmarshal(body, &cleanup) != nil || !cleanup.Revoked || cleanup.Repository != livetest.Repository {
-						t.Error("worker authentication cleanup is unverified", readErr)
-					}
-					if m.Level == "L2" {
-						if err := livetest.CheckBrokerCleanup(body); err != nil {
-							t.Error(err)
-						}
-					}
-					save(t, "authentication-cleanup.json", cleanup)
-				}
+
 				return
 			}
 			if view.StopStatus == "unsupported" {

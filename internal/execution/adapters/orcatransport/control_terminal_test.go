@@ -57,10 +57,10 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 		t.Fatal(err)
 	}
 	now := time.Now().UTC()
-	c := &fixedControlFixture{ready: codex.RemoteReadiness{ExitPublicKey: public, Owner: b.ProcessIdentity{Kind: "os", PID: 124, Created: "owner-creation", Executable: "helper"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: l.profile.RuntimeSHA256, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{Kind: "os", PID: 123, Created: "native-process", Executable: "codex"}, CheckedAt: now, ExpiresAt: now.Add(time.Hour), AuthenticationControl: true}}
+	c := &fixedControlFixture{ready: codex.RemoteReadiness{ExitPublicKey: public, Owner: b.ProcessIdentity{Kind: "os", PID: 124, Created: "owner-creation", Executable: "helper"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: l.profile.RuntimeSHA256, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{Kind: "os", PID: 123, Created: "native-process", Executable: "codex"}, CheckedAt: now}}
 	l.setup.RepositoryURL = c.ready.Repository
 	l.readStopArtifact = func(context.Context, string, string, string, string) ([]byte, error) {
-		body, _ := json.Marshal(codex.RemoteExit{Readiness: c.ready, WritersAbsent: true, AuthenticationClosed: true, ClosedAt: time.Now().UTC()})
+		body, _ := json.Marshal(codex.RemoteExit{Readiness: c.ready, WritersAbsent: true, ClosedAt: time.Now().UTC()})
 		return json.Marshal(map[string]any{"body": json.RawMessage(body), "signature": ed25519.Sign(private, body)})
 	}
 	original := l.client
@@ -173,15 +173,9 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				}
 				response.Turn = &value
 			} else {
-				proof := codex.RemoteAuthenticationCleanup{Readiness: c.ready, Revoked: true, BrokerClosed: true, SocketCleaned: true, Mode: "host-gh-repository-broker"}
-				if c.mode == "retired-app-auth" {
-					proof.Mode = "github-app-repository-broker"
-				}
-				if c.mode == "bad-auth" {
-					proof.Revoked = false
-				}
-				response.Authentication = &proof
+				t.Fatal("unsupported fixture control query", q.Method)
 			}
+
 			if c.mode == "wrong-response" {
 				response.RequestDigest = "foreign"
 			}
@@ -302,45 +296,8 @@ func TestFixedControlReceiptRecovery(t *testing.T) {
 	}
 }
 
-func TestFixedControlAuthenticationAndClosure(t *testing.T) {
-	for _, mode := range []string{"success", "lost-send", "lost-close", "bad-auth", "retired-app-auth"} {
-		t.Run(mode, func(t *testing.T) {
-			l, _, s, c := fixtureFixedControl(t)
-			s = prepareFixedControl(t, l, s, c)
-			state, _ := l.state(s)
-			c.mode = mode
-			err := l.revokeAuthentication(context.Background(), state)
-			if mode == "lost-send" {
-				err = l.reconcileAuthenticationStop(context.Background(), state)
-			}
-			if (err == nil) != (mode != "bad-auth" && mode != "retired-app-auth") {
-				t.Fatal(err)
-			}
-			if err := l.closeControl(context.Background(), state); err != nil {
-				t.Fatal(err)
-			}
-			_, actor, proofErr := ReadAuthenticationStopEvidence(l.setup.RunDirectory, l.setup.Snapshot, state)
-			if mode == "bad-auth" || mode == "retired-app-auth" {
-				if proofErr == nil {
-					t.Fatal("bad proof accepted")
-				}
-			} else {
-				if proofErr != nil || !actor.Closed || *actor.Process != state.Control.Process {
-					t.Fatal(actor, proofErr)
-				}
-				if err := l.reconcileAuthenticationStop(context.Background(), state); err != nil {
-					t.Fatal(err)
-				}
-			}
-			if c.creates != 1 || c.sends != 1 || c.closes != 1 {
-				t.Fatal("replacement revoker or duplicate request", c.creates, c.sends, c.closes)
-			}
-		})
-	}
-}
-
 func TestFixedControlRunStopAndServiceRelease(t *testing.T) {
-	for _, mode := range []string{"success", "bad-auth"} {
+	for _, mode := range []string{"success"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
@@ -390,22 +347,6 @@ func TestFixedControlWindowsPathSpellings(t *testing.T) {
 	state.RemoteReadiness = &foreign
 	if err := l.validateControl(s, state, true); err == nil {
 		t.Fatal("foreign workspace accepted")
-	}
-}
-
-func TestFixedControlRevocationPreventsLateQuery(t *testing.T) {
-	l, _, s, c := fixtureFixedControl(t)
-	s = prepareFixedControl(t, l, s, c)
-	state, _ := l.state(s)
-	if err := l.revokeAuthentication(context.Background(), state); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := l.callControl(context.Background(), state, "original-turn", strings.Repeat("d", 64)); err == nil {
-		t.Fatal("late query overwrote revocation proof")
-	}
-	j, err := l.loadControlCheckpoint(state)
-	if err != nil || j.Response == nil || j.Response.Authentication == nil || c.sends != 1 {
-		t.Fatal("revocation proof lost", j, err, c.sends)
 	}
 }
 
@@ -473,7 +414,7 @@ func TestFixedControlTransportCheckpointFailure(t *testing.T) {
 				}
 				return write(path, raw)
 			}
-			if err := l.revokeAuthentication(context.Background(), state); err == nil {
+			if err := inspectHostNativeControl(l, state); err == nil {
 				t.Fatal("storage fault hidden")
 			}
 			if phase == "intent" {
@@ -484,58 +425,13 @@ func TestFixedControlTransportCheckpointFailure(t *testing.T) {
 			}
 			f.callerFileWriter = write
 			l = &Lifecycle{setup: l.setup, profile: l.profile, client: l.client, clock: l.clock}
-			if err := l.reconcileAuthenticationStop(context.Background(), state); err != nil {
+			if err := inspectHostNativeControl(l, state); err != nil {
 				t.Fatal("original response not recovered", err)
 			}
 			if c.sends != 1 || c.creates != 1 {
 				t.Fatal("commit recovery repeated effect", c.sends, c.creates)
 			}
 		})
-	}
-}
-
-func TestFixedControlStopCleanupBudgetSurvivesCallerCancellation(t *testing.T) {
-	l, f, s, c := fixtureFixedControl(t)
-	s = prepareFixedControl(t, l, s, c)
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-	write := f.callerFileWriter
-	f.callerFileWriter = func(path string, raw []byte) error {
-		var j controlCheckpoint
-		_ = json.Unmarshal(raw, &j)
-		if j.Request.Method == "authentication-stop" {
-			cancel()
-		}
-		return write(path, raw)
-	}
-	r, err := l.StopLifecycle(ctx, request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
-	if err != nil || !r.State.Stopped || c.authBudget < 40*time.Second || c.closes != 1 {
-		t.Fatal("revocation lost the bounded cleanup budget", r, err, c.authBudget, c.closes)
-	}
-}
-
-func TestFixedControlStopRetainsUnresolvedRevocationRoute(t *testing.T) {
-	l, f, s, c := fixtureFixedControl(t)
-	s = prepareFixedControl(t, l, s, c)
-	c.mode = "lost-send"
-	q := request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}})
-	r, err := l.StopLifecycle(context.Background(), q, nil)
-	if err == nil || r.State.Stopped || !r.State.WorkerAbsent || c.closes != 0 {
-		t.Fatal("unresolved proof route destroyed", r, err, c.closes)
-	}
-	q.Operation.Receipt, _ = json.Marshal(r)
-	r, _, err = l.Reconcile(context.Background(), q)
-	if err != nil || !r.State.Stopped || c.closes != 1 || c.creates != 1 || c.sends != 1 {
-		t.Fatal("original revocation not reconciled", r, err, c.closes, c.creates, c.sends)
-	}
-	closes := 0
-	for _, call := range f.calls {
-		if len(call) > 3 && call[0] == "terminal" && call[1] == "close" && call[3] == s.Ref.External.Terminal {
-			closes++
-		}
-	}
-	if closes != 1 {
-		t.Fatal("business close repeated", closes)
 	}
 }
 
@@ -561,7 +457,7 @@ func TestFixedControlQueryFailurePreservesNativeReaderSettlement(t *testing.T) {
 				t.Fatal("query failure discarded original resource proof", j, err)
 			}
 			before := c.sends
-			err = l.reconcileAuthenticationStop(context.Background(), state)
+			err = l.closeControl(context.Background(), state)
 			if mode == "reader-unverified" {
 				if err == nil || c.sends != before {
 					t.Fatal("unverified reader proof overwritten", err, c.sends)
@@ -570,9 +466,19 @@ func TestFixedControlQueryFailurePreservesNativeReaderSettlement(t *testing.T) {
 				if after.Request.ID != j.Request.ID {
 					t.Fatal("original query lost")
 				}
-			} else if err != nil || c.sends != before+1 || c.creates != 1 {
+			} else if err != nil || c.sends != before || c.creates != 1 {
 				t.Fatal("settled failed query blocked original revocation", err, c.sends, c.creates)
 			}
 		})
 	}
+}
+
+func inspectHostNativeControl(l *Lifecycle, state State) error {
+	intent := l.setup.Snapshot.WorkspacePlan
+	intent.Path = state.RemoteReadiness.Workspace
+	if intent.Branch == "" {
+		intent.Branch = "main"
+	}
+	_, err := l.callControlWithAudit(context.Background(), state, "workspace-audit", "", &codex.RemoteWorkspaceAuditQuery{Intent: intent})
+	return err
 }
