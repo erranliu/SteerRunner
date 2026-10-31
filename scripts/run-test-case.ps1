@@ -3,12 +3,20 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $taskJob = Get-Content -LiteralPath $Request -Raw | ConvertFrom-Json
 $taskRecord = $taskJob.record | ConvertTo-Json -Depth 30 | ConvertFrom-Json -AsHashtable
+$taskClock=[Diagnostics.Stopwatch]::StartNew()
+$taskRecord['timings']=@{}
 function Save-Case {
     $taskTemporary = $taskJob.result_path + '.tmp'
     [IO.File]::WriteAllText($taskTemporary,($taskRecord | ConvertTo-Json -Depth 40),[Text.UTF8Encoding]::new($false))
     [IO.File]::Move($taskTemporary,$taskJob.result_path,$true)
 }
 try {
+    $taskDriverArguments=@{}
+    if($taskJob.PSObject.Properties['native_driver'] -or $taskJob.PSObject.Properties['native_driver_sha256']) {
+        if(-not $taskJob.PSObject.Properties['native_driver'] -or -not $taskJob.PSObject.Properties['native_driver_sha256'] -or -not $taskJob.native_driver -or -not $taskJob.native_driver_sha256){throw 'Incomplete frozen native driver identity'}
+        if($taskJob.entry.level -ne 'L2' -or (Get-FileHash -LiteralPath $taskJob.native_driver -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskJob.native_driver_sha256){throw 'Frozen native driver changed or is outside L2'}
+        $taskDriverArguments=@{DriverExe=$taskJob.native_driver;DriverSHA256=$taskJob.native_driver_sha256}
+    }
     $taskRecord.started_at = [DateTime]::UtcNow.ToString('o')
     $taskRecord.status=if($taskJob.entry.driver -eq 'controlled-integration'){'running'}else{'preparing'}
     Save-Case
@@ -41,20 +49,26 @@ try {
             Save-Case
             Push-Location ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')))
             try {
+                $taskBoundaryClock=[Diagnostics.Stopwatch]::StartNew()
                 & go test -tags=live ./internal/execution/adapters/codex -run '^TestLinkedGitNativeCommit$' -count=1 -timeout=3m -v -args -host-native-executable $taskBoundaryConfig.configuration.configurations.'local-codex'.execution.settings.executable 1> $taskBoundaryLog 2> ($taskBoundaryLog+'.stderr.log')
                 $taskRecord.git_boundary['exit_code']=$LASTEXITCODE
+                $taskRecord.timings['git_boundary_seconds']=$taskBoundaryClock.Elapsed.TotalSeconds
             } finally { Pop-Location }
             if ($taskRecord.git_boundary.exit_code -ne 0) { throw 'L2 native Git commit or repository isolation failed' }
         }
         $taskExpectedIdentities=@{}
+        $taskPreparationClock=[Diagnostics.Stopwatch]::StartNew()
         foreach ($taskIdentity in @(@{field='configuration_sha256';parameter='ConfigurationSHA256'},@{field='runner_sha256';parameter='RunnerSHA256'},@{field='helper_sha256';parameter='HelperSHA256'},@{field='requirements_sha256';parameter='RequirementsSHA256'})) {
             if ($taskJob.PSObject.Properties[$taskIdentity.field]) { $taskExpectedIdentities[$taskIdentity.parameter]=[string]$taskJob.($taskIdentity.field) }
         }
         $taskRecord.manifest = [string](& (Join-Path $PSScriptRoot 'new-test-fixture.ps1') -Scenario $taskJob.entry.id -Case $taskJob.case.id -RepeatIndex $taskJob.repeat_index -Config $taskJob.config -Catalog $taskJob.catalog -FixtureParent $taskJob.fixture_parent -RecordPath $taskRecord.fixture_record -RunnerExe $taskJob.runner_exe -ConfigHelper $taskJob.config_helper @taskExpectedIdentities)
         $taskRecord.evidence = Join-Path (Split-Path -Parent $taskRecord.manifest) 'evidence'
         $taskRecord.status = 'running'
+        $taskRecord.timings['preparation_seconds']=$taskPreparationClock.Elapsed.TotalSeconds
         Save-Case
-        $taskRecord.evidence = & (Join-Path $PSScriptRoot 'test-native.ps1') -Manifest $taskRecord.manifest -TimeoutMinutes $taskJob.entry.timeout_minutes
+        $taskNativeClock=[Diagnostics.Stopwatch]::StartNew()
+        $taskRecord.evidence = & (Join-Path $PSScriptRoot 'test-native.ps1') -Manifest $taskRecord.manifest @taskDriverArguments -TimeoutMinutes $taskJob.entry.timeout_minutes
+        $taskRecord.timings['native_and_cleanup_seconds']=$taskNativeClock.Elapsed.TotalSeconds
         $taskManifest = Get-Content -LiteralPath $taskRecord.manifest -Raw | ConvertFrom-Json
         $taskScenario = Get-Content -LiteralPath (Join-Path $taskRecord.evidence 'scenario.json') -Raw | ConvertFrom-Json
         . (Join-Path $PSScriptRoot 'native-result.ps1')
@@ -76,6 +90,7 @@ try {
     $taskRecord.error = $_.Exception.Message
 } finally {
     $taskRecord.finished_at = [DateTime]::UtcNow.ToString('o')
+    $taskRecord.timings['total_seconds']=$taskClock.Elapsed.TotalSeconds
     Save-Case
 }
 if ($taskRecord.status -ne 'passed') { exit 1 }

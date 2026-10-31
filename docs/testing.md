@@ -358,6 +358,23 @@ Runner 生产契约的交付里程碑仍为 `pr_ready`。合并属于测试 driv
 
 ## 证据与失败
 
+### 独立前置与显式 L2 复用
+
+入口和资格见 [Spec](spec/validation-reuse.spec.md)、[Plan](spec/validation-reuse.plan.md)及[验收记录](acceptance/validation-reuse.md)。默认 test.ps1 仍运行完整前置；显式复用首轮只支持单级别 L2 和默认 catalog。
+
+```powershell
+# 不需要真实模型；L1/Controlled 也可分别选择 Stage
+.\scripts\test-prerequisites.ps1 -Stage All -OutDir C:\srt-evidence\prereq-a
+.\scripts\test.ps1 -Level L2 -Config C:\srt-config\local.json `
+  -PrerequisitesFrom C:\srt-evidence\prereq-a -OutDir C:\srt-evidence\l2-b
+```
+
+来源必须有新格式直接成功的 l1-core 和完整 Controlled，且同机同账号/工作副本、输入和实际证据/产物匹配。native-only 或无关说明文档可命中；共享源码、脚本、依赖、catalog/registry、参与 L1 的 docs JSON 改动失效。历史报告不补签，单阶段/focused Pattern 不能拼装完整前置；失配明确拒绝，不自动补跑。
+
+来源后续 native 失败不改写已封存的前置，原失败批次仍 failed。本轮重新评估配置/可用性、新编译/guard driver、新 fixture，完整执行 Git 边界、真实发布/合并/审计及停止。L3/L4、混合级别、自定义 catalog 和 ListAvailability 不接受复用参数，继续原入口。
+
+### 批次报告
+
 批次 `.evidence/tests-*/summary.json` 包含来源、每级结果及现场路径。
 报告保存原请求范围、每 case 的 availability／原因，以及每级 registered／requested／excluded／unavailable／executed／passed／missing
 集合和 `complete_level_passed`；repeat 单独计数。缺配置的项为 unavailable，零派发，独立的

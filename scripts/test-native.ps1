@@ -1,7 +1,9 @@
 param(
     [Parameter(Mandatory=$true)][string]$Manifest,
     [string]$Pattern = '^TestSRLiveScenario$',
-    [ValidateRange(1,60)][int]$TimeoutMinutes = 30
+    [ValidateRange(1,60)][int]$TimeoutMinutes = 30,
+    [string]$DriverExe = '',
+    [string]$DriverSHA256 = ''
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -17,11 +19,17 @@ if ((Test-Path -LiteralPath (Join-Path $taskEvidence 'native.log'))) { throw 'Fi
 if ((Get-FileHash -LiteralPath $taskNative.runner_exe -Algorithm SHA256).Hash -ne $taskNative.runner_sha256) { throw 'Frozen Runner executable changed' }
 $taskTestExe = Join-Path $taskRoot 'bin/native.test.exe'
 $taskResultPath = Join-Path $taskEvidence 'result.json'
+if($PSBoundParameters.ContainsKey('DriverExe') -or $PSBoundParameters.ContainsKey('DriverSHA256')) {
+    if(-not $DriverExe -or -not $DriverSHA256 -or $taskNative.level -ne 'L2'){throw 'Incomplete or unsupported frozen native driver identity'}
+    $taskTestExe=(Resolve-Path -LiteralPath $DriverExe).Path
+    if((Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $DriverSHA256){throw 'Frozen native driver changed'}
+} else {
 Push-Location $taskRepo
 try {
     & go test -tags=live -c -o $taskTestExe ./tests/native
     if ($LASTEXITCODE -ne 0) { throw 'Native driver build failed' }
 } finally { Pop-Location }
+}
 function Quote-WindowsArgument([string]$Argument) { '"' + ($Argument -replace '(\\*)"', '$1$1\"' -replace '(\\+)$', '$1$1') + '"' }
 $taskArguments = @($taskTestExe,"-test.run=$Pattern",'-test.v',("-test.timeout={0}m" -f $TimeoutMinutes),'-native-manifest',$taskManifestPath,'-evidence-dir',$taskEvidence)
 $taskCommandLine = ($taskArguments | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '

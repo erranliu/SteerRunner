@@ -32,6 +32,7 @@
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md)、[测试清单](test-catalog.md)、[验收记录索引](acceptance/README.md) |
+| 验证链路解耦与前置结果复用（已实施，首轮限定 L2） | [Spec](spec/validation-reuse.spec.md) / [Plan](spec/validation-reuse.plan.md) / [原验收](acceptance/validation-reuse.md) / [实现审计](acceptance/validation-reuse-audit.md)；L2 新现场完整执行，默认及 L3/L4 链路保留，修复后资格单列 |
 
 ## 输入预算整改
 
