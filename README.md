@@ -44,6 +44,10 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 - 当你并行需求日益强烈时，你自然会有远端执行的需求，
 -
 
+## 开发执行权限
+
+开发工作流必须显式设置 `execution.settings.access_mode=full_access`。旧 `sandbox`、省略、空值和 null 均拒绝；请修改可编辑配置源后用新 request_id 提交新任务，旧冻结 Run 不原地升权。full_access 使用执行账号已有权限，可写工作区以外路径；独立 worktree 不提供操作系统隔离。内容流程和独立结果 parser 继续使用 read_only，本地 GitHub broker 与原认证清理保留。升级前用原版本完成或精确停止受影响旧 Run，并核实执行与认证资源结算。详见 [权限 Spec](docs/spec/development-full-access.spec.md) 和 [迁移说明](docs/cli-guide.md#开发权限迁移)。
+
 ## 使用前准备
 
 当前交付目标为 **Windows/amd64**。运行 Runner 和 Viewer 无需安装 Go；skill 的共享 helper 使用系统自带 Windows PowerShell 5.1。

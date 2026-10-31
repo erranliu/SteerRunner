@@ -40,6 +40,7 @@ type Engine struct {
 	wait              sync.WaitGroup
 }
 type worker struct {
+	started                 bool
 	progressEnabled         bool
 	progressWatching        bool // guarded by Engine.mu
 	resultCollectionStarted bool // one bounded attempt per live service; durable Sealed survives restart
@@ -74,13 +75,6 @@ func New(ctx context.Context, dir string, store *storage.Store, logger *log.Logg
 	for _, r := range runs {
 		e.runs[r.ID] = r
 		e.workers[r.ID] = &worker{wake: make(chan struct{}, 1)}
-		if orca.LegacyRemoteProfile(r.Profile) {
-			view := r.Clone()
-			view.Allowed, view.ResumeRequired = false, true
-			view.Diagnostic = "Legacy remote helper Run is read-only; only exact original terminal stop is supported."
-			e.runs[r.ID] = view
-			continue
-		}
 		// A service instance owns observation, not the durable authorization.
 		// Preserve pending controls, business waits and the original cursor.
 	}
@@ -95,6 +89,14 @@ func (e *Engine) Start() {
 
 }
 func (e *Engine) launch(id string, w *worker) {
+	if readOnlyRun(e.runs[id]) && e.runs[id].PendingStop == "" {
+		return
+	}
+	if w.started {
+		e.signal(w)
+		return
+	}
+	w.started = true
 	w.progressEnabled = e.runs[id].Request.ProgressFile != nil
 	e.startProgressLocked(id, w)
 	e.wait.Add(1)
@@ -215,8 +217,8 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if isContent && r.Closed && command != "stop" {
 			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
 		}
-		if command != "stop" && orca.LegacyRemoteProfile(r.Profile) {
-			return reject(contracts.Fail(3, "unsupported_capability", "Legacy remote helper Runs are read-only; only exact original terminal stop is supported."))
+		if command != "stop" && readOnlyRun(r) {
+			return reject(contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic))
 		}
 		next := r.Clone()
 		var revision contracts.RevisionInput
@@ -318,7 +320,11 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if (command == "stop" || command == "close") && w.queryCancel != nil {
 			w.queryCancel()
 		}
-		e.signal(w)
+		if readOnlyRun(next) && command == "stop" {
+			e.launch(runID, w)
+		} else {
+			e.signal(w)
+		}
 		return receipt.Response
 	}
 	if command == "inspect" && runID == "" {
@@ -338,7 +344,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		var view *contracts.RunView
 		if value.RunID != nil {
 			if r := e.runs[*value.RunID]; r != nil {
-				v := r.View()
+				v := publicRunView(r)
 				view = &v
 			}
 		}
@@ -380,7 +386,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		}
 		return contentHistory(r, after, limit)
 	}
-	return contracts.Success("", map[string]any{"command": nil, "run": r.View()})
+	return contracts.Success("", map[string]any{"command": nil, "run": publicRunView(r)})
 }
 func unknown(r *runstate.Record) bool {
 	for _, intent := range r.Intents {
@@ -405,6 +411,15 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	}}
 }
 func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
+	if retiredDevelopment(r) {
+		if r.PendingStop == "" {
+			return nil, contracts.Fail(3, "unsupported_capability", retiredAccessDiagnostic)
+		}
+		if r.Request.Execution.Adapter == "codex-app-server" {
+			return codex.NewOriginalOwnerStopLifecycle(e.setup(r, w)), nil
+		}
+		return orca.NewOriginalStopLifecycle(e.setup(r, w))
+	}
 	if w.port != nil {
 		return w.port, nil
 	}
@@ -433,8 +448,8 @@ func (e *Engine) refreshPR(id string) error {
 	if r.PR == nil {
 		return nil
 	}
-	if orca.LegacyRemoteProfile(r.Profile) {
-		return contracts.Fail(3, "unsupported_capability", "Legacy remote Run exposes its persisted PR snapshot only.")
+	if readOnlyRun(r) {
+		return contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic)
 	}
 	provider, err := providerFor(r)
 	if err != nil {

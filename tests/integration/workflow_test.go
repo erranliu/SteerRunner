@@ -124,6 +124,34 @@ func TestSRPermissionQualification(t *testing.T) {
 	}
 	info := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, info)
+	// Invalid permission modes are refused before creating a Run, Git resources,
+	// native version probes, owners or authentication. The same service remains usable.
+	var original contracts.RunRequest
+	_ = json.Unmarshal(request.Input, &original)
+	var settings map[string]any
+	_ = json.Unmarshal(original.Execution.Settings, &settings)
+	for i, mode := range []any{"sandbox", "", nil, false, "omitted"} {
+		if mode == "omitted" {
+			delete(settings, "access_mode")
+		} else {
+			settings["access_mode"] = mode
+		}
+		rejected := original
+		rejected.Execution.Settings, _ = json.Marshal(settings)
+		body, _ := json.Marshal(rejected)
+		envelope := contracts.Request{Protocol: contracts.Protocol, RequestID: "rejected-mode-" + string(rune('a'+i)), Input: body}
+		wire, _ := json.Marshal(envelope)
+		call(t, dir, []string{"submit", "--input", "-"}, string(wire), 2)
+		call(t, dir, []string{"inspect", "--request-id", envelope.RequestID}, "", 5)
+	}
+	for _, leaf := range []string{"repositories", "workspaces", "runs"} {
+		if _, err := os.Stat(filepath.Join(dir, leaf)); !os.IsNotExist(err) {
+			t.Fatal("rejected permissions prepared execution resources", leaf, err)
+		}
+	}
+	if countNative(t, "thread/start") != 0 || countNative(t, "turn/start") != 0 {
+		t.Fatal("rejected permissions reached native execution")
+	}
 	raw, _ := json.Marshal(request)
 	accepted := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
 	id := accepted.Data.(map[string]any)["run_id"].(string)
@@ -228,8 +256,8 @@ func setupRun(t *testing.T) (string, contracts.Request) {
 			_ = os.WriteFile(filepath.Join(*evidenceFlag, strings.ReplaceAll(t.Name(), "/", "-")+"-native-calls.jsonl"), body, 0600)
 		}
 	})
-	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "spec.md"}, Plan: contracts.Document{Path: "plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
-	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{Executable: helperEXE})
+	request := contracts.RunRequest{Title: "独立Runner controlled", Repository: contracts.Repository{URL: "https://controlled.invalid/owner/repo.git", LocalPath: source, Remote: "origin", BaseBranch: "main", BaseRevision: revision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "spec.md"}, Plan: contracts.Document{Path: "plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: json.RawMessage(`{"access_mode":"full_access"}`)}, Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: "main"}}
+	request.Execution.Settings, _ = json.Marshal(contracts.CodexSettings{AccessMode: "full_access", Executable: helperEXE})
 	request.Publication.Settings, _ = json.Marshal(contracts.CommandProviderSettings{BaseURL: "https://controlled.invalid", Query: contracts.QuerySettings{Executable: helperEXE, Args: []string{"--query", provider}}})
 	raw, _ := json.Marshal(request)
 	return filepath.Join(root, "runner"), contracts.Request{Protocol: contracts.Protocol, RequestID: "original-submit", Input: raw}

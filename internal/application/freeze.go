@@ -123,6 +123,8 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if err := contracts.ValidateRun(input.Input); err != nil {
 			return nil, err
 		}
+	} else if err := contracts.ValidateRunConfiguration(canonical(contracts.RunConfiguration{Execution: request.Execution, Workflow: request.Workflow})); err != nil {
+		return nil, err
 	}
 	if request.Execution.Adapter == "orca-terminal" && request.Repository.LocalPath == "" {
 		return nil, contracts.Fail(2, "invalid_input", "Orca execution requires repository.local_path for its registered project identity.")
@@ -156,9 +158,6 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 	if request.Execution.Adapter == "codex-app-server" {
 		var settings contracts.CodexSettings
 		_ = json.Unmarshal(request.Execution.Settings, &settings)
-		if settings.AccessMode == "" {
-			settings.AccessMode = "sandbox"
-		}
 		if settings.Executable == "" {
 			settings.Executable = "codex.exe"
 		}
@@ -351,21 +350,17 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		if settings.AgentLaunch.RuntimeExecutable != "" {
 			metadataBytes, e := process.New(30*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: settings.AgentLaunch.RuntimeExecutable, Args: []string{"--terminal-metadata"}})
 			var metadata orca.TerminalMetadata
-			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 3 || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+			if e != nil || len(metadataBytes) > 4096 || contracts.DecodeStrict(metadataBytes, &metadata) != nil || metadata.Version != 4 || metadata.Contract != terminaltools.Contract || len(metadata.RuntimeSHA256) != 64 || len(metadata.BundleSHA256) != 64 || len(metadata.PiSHA256) != 64 || len(metadata.DSHSHA256) != 64 || settings.AgentLaunch.RuntimeSHA256 != "" && metadata.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
 				return nil, contracts.Fail(4, "environment_unavailable", "The selected local terminal helper metadata or frozen build does not match.")
 			}
 			settings.AgentLaunch.RuntimeSHA256 = metadata.RuntimeSHA256
 			p.RuntimeSHA256 = metadata.RuntimeSHA256
 			r.Request.Execution.Settings = canonical(settings)
 			r.InputDigest = reliable.Digest(canonical(r.Request))
-			sandbox, e := codex.NativeExecutable("codex.cmd")
-			if e != nil {
-				return nil, contracts.Fail(4, "environment_unavailable", "Pi native Windows sandbox executable is unavailable.")
-			}
 			// The transport adds a short digest directory bound to the full Run,
 			// attempt and generation. Repeating the Run ID here can exceed the
 			// native socket path limit even with a short state directory.
-			c := orca.TerminalConfig{ReceiptVersion: 2, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, SandboxExecutable: sandbox, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: dir, RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
+			c := orca.TerminalConfig{ReceiptVersion: 3, Agent: agent, ProjectID: repo.CommonDir, ExecutionID: id, AttemptID: attempt, Generation: generation, ConfigurationDigest: r.InputDigest, SessionID: contracts.NewID(), Executable: settings.AgentLaunch.Executable, StateDirectory: filepath.Join(dir, "terminal-agents", id, attempt), AuthenticationState: dir, RepositoryURL: request.Repository.URL, AccessMode: settings.AccessMode, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
 			c.BundleSHA256 = metadata.BundleSHA256
 			c.EvidenceSHA256 = metadata.PiSHA256
 			if agent == "dsh" {
@@ -373,9 +368,7 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			// Pi session IDs use its native UUID spelling; the Run remains a hex ID.
 			c.SessionID = c.SessionID[:8] + "-" + c.SessionID[8:12] + "-" + c.SessionID[12:16] + "-" + c.SessionID[16:20] + "-" + c.SessionID[20:]
-			if c.AccessMode == "" {
-				c.AccessMode = "sandbox"
-			}
+			codec = orca.FullAccessTerminalProfileVersion
 			p.Terminal = &c
 			r.LaunchCommand = c.Command(settings.AgentLaunch.RuntimeExecutable)
 		}

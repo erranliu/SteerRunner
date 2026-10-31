@@ -1,5 +1,7 @@
 # Workflow：development-audited（确认稿）
 
+开发仅支持显式 `execution.settings.access_mode=full_access`；sandbox/省略/空值拒绝。内容流程及 parser 的 read_only 与认证链路不变；迁移及旧 Run 规则见 [权限 Spec](../spec/development-full-access.spec.md)。
+
 项目策略：`implement.execute`、`audit.code.execute` 显式引用 `git`、`command`、`testing`；`publish.execute` 引用 `git`、`command`；report、parse 等其余步骤不引用。固定路径及公开的 `\n阅读项目策略：%s。` 模板见[项目策略槽位](README.md#项目策略槽位)和[示例](project-policies.example.md)。仅固定源码中存在的所选文件产生引用，引用计入原预算；策略不解除审计来源、权限、发布授权或通过标准。
 
 > 实施状态（2026-10-18）：已按确认的最小边界实现并完成必要验证。原生权限、行为约定和事后检测见总 Spec §6；当前支持 Windows / Codex >= 0.159.2，默认关闭独立解析。实际支持范围、失败修正及最终证据见[验收登记](../acceptance/result-acquisition.md)。历史“仅设计”说明指此前设计轮次。

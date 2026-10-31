@@ -1,0 +1,148 @@
+{
+  "schema": "development-full-access-closeout/v1",
+  "date": "2026-10-31",
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "4e9b07243ea401b0aa3bc5b5b1ec1b25faa2c429b29b1a5e478645c069b0bff2",
+    "version": "0.2.0-dev.4",
+    "source_commit": "a086a9984dc0bd32b3f02b9698cd26c9ba313d90",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "09c7290bc65adea80f136eed2dff2948580270d71adc73d68b525884bc0434f8"
+  },
+  "helper_sha256": "71d1d6121031a9c3f3c8d9e293219f785b17d27e73ce08e13b70e98898c5d7ba",
+  "resource_digest": "21725cc1e4fffbf6808a74a5eaf736bf2ac2003626eb103d11323b1fb3ea692d",
+  "terminal_metadata": {
+    "version": 4,
+    "contract": "windows-terminal-tools-v2:full-access:never",
+    "runtime_sha256": "16d22b0a2702720fca9a066033c8587bff8808668b9e54da1a8b4dca2b8709de",
+    "bundle_sha256": "3fb69c38cbda7fd6a797cb72ee3effe066e433007ddfa34af47a0e9aaf39708e",
+    "pi_sha256": "29036f575394c2b920d71d25ff4424b7572b91f4927a383254edd0fca5e9e352",
+    "dsh_sha256": "e77458b31ba6660863c174017d594857406b4091ba69855a4d7f81a261677556"
+  },
+  "l1": {
+    "status": "passed",
+    "go_top_level_passed": 720,
+    "node_passed": 29,
+    "allowed_skips": [
+      "TestProcessHostCommandHelper",
+      "TestAuthenticationNativeToolBoundary",
+      "TestOrcaStoppedNativeProbe",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestUsageExistingNativeEvidence",
+      "TestUsageRemoteCodexCleanupLive",
+      "TestUsageRemoteCodexLive",
+      "TestRunUsageLocalCodexPublicLive",
+      "TestRunUsageLocalPiPublicLive",
+      "TestRunUsageLocalDSHPublicLive",
+      "TestRunUsageRemotePublicLive",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "evidence": ".evidence/full-access-l1-qualified"
+  },
+  "controlled": {
+    "status": "passed",
+    "scenario_count": 25,
+    "duplicates": 0,
+    "missing": [],
+    "unexpected_skips": 0,
+    "groups": [
+      {
+        "directory": ".evidence/full-access-controlled-qualified-results",
+        "result": {
+          "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\full-access-qualified\\steerrunner.exe",
+          "exit_code": 0,
+          "finished_at": "2026-10-31T02:00:51.2881707Z",
+          "scenario_count": 1
+        },
+        "runner_sha256": "09c7290bc65adea80f136eed2dff2948580270d71adc73d68b525884bc0434f8",
+        "fixture_sha256": "bcfad5065fac3228fad69bdf76b2407fc222e08aa7453a4df9461a62e27dc88d",
+        "native_fixture_sha256": "e67601feafdeef6fbe2d990374b6c5e51dbbaa9054e882df1cccce7068f4eb63",
+        "passed_scenarios": [
+          "TestSRResultAcquisition"
+        ]
+      },
+      {
+        "directory": ".evidence/full-access-controlled-qualified-rest",
+        "result": {
+          "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\full-access-qualified\\steerrunner.exe",
+          "exit_code": 0,
+          "finished_at": "2026-10-31T02:03:13.500174Z",
+          "scenario_count": 24
+        },
+        "runner_sha256": "09c7290bc65adea80f136eed2dff2948580270d71adc73d68b525884bc0434f8",
+        "fixture_sha256": "bcfad5065fac3228fad69bdf76b2407fc222e08aa7453a4df9461a62e27dc88d",
+        "native_fixture_sha256": "e67601feafdeef6fbe2d990374b6c5e51dbbaa9054e882df1cccce7068f4eb63",
+        "passed_scenarios": [
+          "TestSRWorkflowDiscoveryAndSelection",
+          "TestSROrcaCLIWaitRetry",
+          "TestSRContentGenerationRecovery",
+          "TestSRContentRepository",
+          "TestSRContentGenerate",
+          "TestSRContentConversation",
+          "TestSRContentQuestionAndUnknown",
+          "TestSRResourceCreationRecovery",
+          "TestSRMultipleRunsIsolation",
+          "TestSRProgressFile",
+          "TestSRResultFile",
+          "TestSRRunEvidenceR2",
+          "TestSRStandalonePackage",
+          "TestSRServiceOwnership",
+          "TestSRStabilityLostSubmitResponse",
+          "TestSRStabilityRevocationAcrossRestart",
+          "TestSRInputFreeze",
+          "TestSRPermissionQualification",
+          "TestSRRunWorkflow",
+          "TestSRStorageLogsEvents",
+          "TestSRPublicationIdentity",
+          "TestSRPublicationBeforeWorkflowReady",
+          "TestSRNativeUnknownAndStop",
+          "TestSRRestartPreservesAuthorization"
+        ]
+      }
+    ]
+  },
+  "native_without_model": [
+    {
+      "test": "TestAuthenticationNativeToolBoundary",
+      "duration_seconds": 17.76,
+      "evidence": ".evidence/full-access-diagnostics/native-auth-qualified.log",
+      "scope": "native tools without model; not real PR delivery"
+    },
+    {
+      "test": "TestLinkedGitNativeCommit",
+      "duration_seconds": 5.38,
+      "evidence": ".evidence/full-access-diagnostics/native-git-qualified.log",
+      "scope": "native tools without model; not real PR delivery"
+    }
+  ],
+  "live_qualification": {
+    "requested_l3_scenarios": 23,
+    "requested_l3_cases": 31,
+    "available": 0,
+    "executed": 0,
+    "passed": 0,
+    "reason": "No actual test fixture/configuration supplied; L2/L3 and read_only/parser live qualification not executed"
+  },
+  "preserved_prior_failures": [
+    {
+      "evidence": ".evidence/full-access-l1-final",
+      "cause": "terminal helper fixture still emitted metadata 3; corrected to 4"
+    },
+    {
+      "evidence": ".evidence/full-access-l1-release",
+      "cause": "application package reached 12m timeout; 695 top-level tests passed; not reclassified as passed"
+    },
+    {
+      "evidence": ".evidence/full-access-diagnostics/.full-access-native-auth.log",
+      "cause": "retired sandbox denial assertions; replaced with full_access checks and rerun"
+    }
+  ]
+}

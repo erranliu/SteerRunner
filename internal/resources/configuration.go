@@ -16,14 +16,14 @@ func ConfigurationSchemas() json.RawMessage {
 	adapters := schemas["adapters"].(map[string]any)
 	schemas["message_input"] = map[string]any{"type": "object", "required": []string{"expected_revision", "text"}, "additionalProperties": false, "properties": map[string]any{"expected_revision": map[string]any{"type": "integer", "minimum": 1}, "text": map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}}}
 	schemas["revision_input"] = map[string]any{"type": "object", "required": []string{"expected_revision"}, "additionalProperties": false, "properties": map[string]any{"expected_revision": map[string]any{"type": "integer", "minimum": 1}}}
-	// An explicit empty mode retains the sandbox default. Retired App fields
+	// Permission modes are explicit. Retired App fields
 	// remain absent from the strict adapter schemas, including null values.
 	for _, name := range []string{"codex-app-server", "orca-terminal"} {
 		properties := adapters[name].(map[string]any)["properties"].(map[string]any)
-		properties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access"}
+		properties["access_mode"].(map[string]any)["enum"] = []string{"full_access"}
 	}
 	nativeProperties := adapters["codex-app-server"].(map[string]any)["properties"].(map[string]any)
-	nativeProperties["access_mode"].(map[string]any)["enum"] = []string{"", "sandbox", "full_access", "read_only"}
+	nativeProperties["access_mode"].(map[string]any)["enum"] = []string{"full_access", "read_only"}
 	local := map[string]any{"type": "object", "required": []string{"kind"}, "additionalProperties": false,
 		"properties": map[string]any{"kind": map[string]any{"const": "local"}, "environment": map[string]any{"const": ""}}}
 	remote := map[string]any{"type": "object", "required": []string{"kind", "environment"}, "additionalProperties": false,
@@ -109,7 +109,7 @@ func stripSchemaIDs(v any) {
 }
 
 func mergeSettingsRestriction(existing any) map[string]any {
-	return map[string]any{"allOf": []any{existingOrEmpty(existing), map[string]any{"properties": map[string]any{"access_mode": map[string]any{"enum": []string{"", "sandbox", "full_access"}}}}}}
+	return map[string]any{"allOf": []any{existingOrEmpty(existing), map[string]any{"properties": map[string]any{"access_mode": map[string]any{"enum": []string{"full_access"}}}}}}
 }
 func existingOrEmpty(value any) any {
 	if value == nil {

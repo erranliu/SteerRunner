@@ -164,7 +164,7 @@ func TestSRResourceCreationRecovery(t *testing.T) {
 			// Hold the original show until the service is killed; a two-second
 			// query timeout could commit an unknown receipt between inspect and kill,
 			// invalidating the fault window's captured revision under disk load.
-			settings, _ := json.Marshal(map[string]any{"transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
+			settings, _ := json.Marshal(map[string]any{"access_mode": "full_access", "transport": map[string]any{"executable": helperEXE, "args": []string{"--orca-create-fixture"}, "wait_timeout": "15s"}})
 			input.Execution = contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "local"}, Settings: settings}
 			request.Input, _ = json.Marshal(input)
 			service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))

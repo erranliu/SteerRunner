@@ -53,7 +53,7 @@ func TestVerifyPolicyMinimumVersion(t *testing.T) {
 
 func TestPolicyResourceAcceptsNewerNativeVersion(t *testing.T) {
 	identity := PolicyResourceIdentity{ProjectID: "project", ExecutionID: "execution", AttemptID: "attempt", Generation: "generation", ConfigDigest: "profile"}
-	permissions, err := NativePermissions("windows", "local", "codex")
+	permissions, err := NativePermissions("windows", "local", "codex", "full_access")
 	if err != nil {
 		t.Fatal(err)
 	}

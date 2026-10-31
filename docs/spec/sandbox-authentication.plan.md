@@ -1,5 +1,7 @@
 # 沙箱认证实施 Plan
 
+2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+
 1. 分别诊断 MXC 的 Git 文件写入、helper/钥匙串、环境过滤及网络，保存脱敏原生证据。
 2. 在现有 Codex runtime 中增加执行主机 gh 登录的受限认证代理作为默认方案。
    宿主 OAuth 只留在可信进程内存；worker 只继承随机、有限期、单仓库的代理 capability。

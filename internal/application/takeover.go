@@ -43,9 +43,9 @@ func TakeoverFacts(runs []*runstate.Record, support contracts.RecoverySupport, p
 			items = append(items, item)
 			continue
 		}
-		if orca.LegacyRemoteProfile(r.Profile) {
-			item.Status = "read_only"
-			item.Diagnostic = "retired remote helper execution remains read-only"
+		if readOnlyRun(r) {
+			item.Status = readOnlyStatus(r)
+			item.Diagnostic = readOnlyProjection(r).Diagnostic
 			items = append(items, item)
 			continue
 		}

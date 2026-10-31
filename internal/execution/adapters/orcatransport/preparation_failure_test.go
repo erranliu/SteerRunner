@@ -14,7 +14,7 @@ func TestNativePreparationFailureIsBoundAndNeverReady(t *testing.T) {
 	for _, agent := range []string{"pi", "dsh"} {
 		t.Run(agent, func(t *testing.T) {
 			l, _, _ := fixture(t)
-			c := &TerminalConfig{Agent: agent, StateDirectory: t.TempDir(), ExecutionID: strings.Repeat("a", 32), SessionID: "original", ConfigurationDigest: "config", AccessMode: "sandbox"}
+			c := &TerminalConfig{Agent: agent, StateDirectory: t.TempDir(), ExecutionID: strings.Repeat("a", 32), SessionID: "original", ConfigurationDigest: "config", AccessMode: "full_access", BundleSHA256: TerminalExtensionDigest()}
 			l.profile.Terminal = c
 			l.profile.RuntimeExecutable, l.profile.RuntimeSHA256 = filepath.Join(c.StateDirectory, "host.exe"), "frozen-runtime"
 			owner := TerminalOwner{RunID: c.ExecutionID, SessionID: c.SessionID, ConfigurationDigest: c.ConfigurationDigest, AccessMode: c.AccessMode, RuntimeSHA256: l.profile.RuntimeSHA256, ExtensionSHA256: TerminalExtensionDigest()}

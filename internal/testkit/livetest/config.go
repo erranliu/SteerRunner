@@ -151,8 +151,8 @@ func (c TestConfig) BaselineIssues() []resources.Issue {
 	_ = json.Unmarshal(value.Execution.Settings, &settings)
 	file := strings.ToLower(filepath.Base(settings.Executable))
 	wrapper := slices.Contains([]string{"node.exe", "cmd.exe", "powershell.exe", "pwsh.exe", "sh.exe", "bash.exe"}, file) || slices.Contains([]string{".cmd", ".ps1", ".bat", ".js"}, strings.ToLower(filepath.Ext(file)))
-	if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" || value.Workflow == nil || value.Workflow.ID != "development" || value.Workflow.Version != 2 || len(value.Workflow.PromptOverrides) != 0 || settings.AccessMode != "sandbox" || !filepath.IsAbs(settings.Executable) || wrapper {
-		issues = append(issues, resources.Issue{Path: "/configurations/local-codex", Code: "invalid_configuration", Message: "Baseline requires local development/2, explicit sandbox and an absolute native Codex executable."})
+	if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" || value.Workflow == nil || value.Workflow.ID != "development" || value.Workflow.Version != 2 || len(value.Workflow.PromptOverrides) != 0 || settings.AccessMode != "full_access" || !filepath.IsAbs(settings.Executable) || wrapper {
+		issues = append(issues, resources.Issue{Path: "/configurations/local-codex", Code: "invalid_configuration", Message: "Baseline requires local development/2, explicit full_access and an absolute native Codex executable."})
 	}
 	return issues
 }
@@ -226,9 +226,6 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 			agent = settings.Agent
 		}
 		mode := settings.AccessMode
-		if mode == "" {
-			mode = "sandbox"
-		}
 		if value.Execution.Adapter != required.Adapter || value.Execution.Target.Kind != required.TargetKind || agent != required.Agent || mode != required.AccessMode {
 			add(path, "invalid_configuration", "Execution does not match the registered role, target, agent or permission mode.")
 			continue

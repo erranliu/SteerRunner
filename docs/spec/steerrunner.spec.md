@@ -1,5 +1,7 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
+2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+
 2026-10-29：Runner 已删除旧 Check 业务；当前状态 v5、资源版本 3，旧状态整体拒绝。普通 Run/result 契约及 SteerLine 配套边界见[退役记录](../acceptance/check-retirement.md)。
 
 2026-10-21 文档整理：本文继续维护当前产品与 CLI 契约；首版调查和历史范围按各节日期阅读。当前 state/v5、workflow/2、内容流程、恢复及材料规则由本文和下列专项共同维护；完整导航见[文档索引](../README.md)，旧计划与已取代设计见[历史归档](../archive/README.md)。

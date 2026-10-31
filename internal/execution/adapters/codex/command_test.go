@@ -7,7 +7,7 @@ import (
 )
 
 func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
-	base := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Sandbox: "workspace-write", WindowsSandbox: "mxc"}
+	base := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Sandbox: "danger-full-access", WindowsSandbox: ""}
 	for _, model := range []string{"", "chosen-model"} {
 		options := base
 		options.Model = model
@@ -15,7 +15,7 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 			options.ReasoningEffort = "high"
 		}
 		command, err := ManagedCommand(options)
-		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "approval_policy=never") || !strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=mxc") {
+		if err != nil || !strings.Contains(strings.Join(command.Args, " "), "approval_policy=never") || strings.Contains(strings.Join(command.Args, " "), "windows.sandbox=") {
 			t.Fatalf("permissions not frozen: %v / %v", command, err)
 		}
 		if model == "" && strings.Contains(strings.Join(command.Args, " "), "--model") {
@@ -29,7 +29,7 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 			t.Fatalf("conflicting args accepted: %v", args)
 		}
 	}
-	for _, mode := range []string{"", "automatic", "danger-full-access", "unelevated", "elevated"} {
+	for _, mode := range []string{"mxc", "automatic", "danger-full-access", "unelevated", "elevated"} {
 		options := base
 		options.WindowsSandbox = mode
 		if _, err := ManagedCommand(options); err == nil {
@@ -39,18 +39,18 @@ func TestManagedOrcaLaunchFreezesPermissionsAndRejectsArgs(t *testing.T) {
 }
 
 func TestManagedCommandIndependentEffortAndOrderedPermissionArgs(t *testing.T) {
-	options := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Args: []string{"--no-alt-screen", "--search"}, ReasoningEffort: "high", Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkingDirectory: "C:/worker's checkout", WriteRoots: []string{"C:/repo/.git/objects"}}
+	options := ManagedCommandOptions{Host: "orca", Agent: "codex", Executable: "codex.exe", Args: []string{"--no-alt-screen", "--search"}, ReasoningEffort: "high", Sandbox: "danger-full-access", WindowsSandbox: "", WorkingDirectory: "C:/worker's checkout", WriteRoots: []string{"C:/repo/.git/objects"}}
 	command, err := ManagedCommand(options)
 	if err != nil {
 		t.Fatal(err)
 	}
 	want := []string{"--no-alt-screen", "--search", "--config", "model_reasoning_effort=high", "--no-daemon", "--strict-config"}
-	permissions, err := NativePermissions("windows", "orca", "codex")
+	permissions, err := NativePermissions("windows", "orca", "codex", "full_access")
 	if err != nil {
 		t.Fatal(err)
 	}
 	want = append(want, permissions.Args()...)
-	want = append(want, "--add-dir", options.WriteRoots[0], "--cd", options.WorkingDirectory)
+	want = append(want, "--cd", options.WorkingDirectory)
 	if command.Executable != options.Executable || command.WorkingDirectory != options.WorkingDirectory || !reflect.DeepEqual(command.Args, want) {
 		t.Fatalf("fixed command drifted: %+v", command)
 	}

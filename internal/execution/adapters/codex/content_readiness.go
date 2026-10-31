@@ -40,7 +40,7 @@ func (b Backend) verifyContentReadiness(ctx context.Context, h *SessionHandle, i
 	}
 	err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe"), "-NoProfile", "-NonInteractive", "-Command", script}, "cwd": b.Config.Workspace, "sandboxPolicy": params["sandboxPolicy"], "timeoutMs": 10000, "outputBytesCap": 2048}, &response)
 	verified := err == nil && response.ExitCode == 0 && strings.TrimSpace(response.Stdout) == marker
-	fact := map[string]any{"command_id": input.CommandID, "process": h.Binding.Process, "workspace": b.Config.Workspace, "contract": PolicyContract, "scope": "read_only_directory", "authentication_verified": true, "verified": verified, "checked_at": time.Now().UTC()}
+	fact := map[string]any{"command_id": input.CommandID, "process": h.Binding.Process, "workspace": b.Config.Workspace, "contract": ReadOnlyPolicyContract, "scope": "read_only_directory", "authentication_verified": true, "verified": verified, "checked_at": time.Now().UTC()}
 	if err := b.Process.WriteAtomic(filepath.Join(h.Paths.TurnDir, "content-readiness.json"), encode(fact)); err != nil {
 		return errors.New("content_readiness_evidence_unavailable")
 	}

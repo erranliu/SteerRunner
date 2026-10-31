@@ -12,7 +12,7 @@ func TestTurnParamsRejectsUnboundCommandBeforeWorkspaceProbe(t *testing.T) {
 	called := false
 	_, err := TurnParams(context.Background(), TurnParamsInput{
 		Worktree: "C:/fixed/worktree", ThreadID: "00000000-0000-0000-0000-000000000001",
-		TurnInput: executionbackend.TurnInput{CommandID: "wrong", Prompt: "continue"}, Sandbox: "workspace-write",
+		TurnInput: executionbackend.TurnInput{CommandID: "wrong", Prompt: "continue"}, Sandbox: "danger-full-access",
 	}, func(context.Context, string) ([]string, error) {
 		called = true
 		return nil, nil
@@ -23,7 +23,7 @@ func TestTurnParamsRejectsUnboundCommandBeforeWorkspaceProbe(t *testing.T) {
 }
 
 func TestSRTurnModelBinding(t *testing.T) {
-	input := TurnParamsInput{Worktree: "C:/fixed/worktree", ThreadID: "00000000-0000-0000-0000-000000000001", TurnInput: executionbackend.TurnInput{CommandID: strings.Repeat("a", 32), Prompt: "fixed", Model: "reviewer", ReasoningEffort: "high"}, Sandbox: "workspace-write", Model: "executor", ReasoningEffort: "medium"}
+	input := TurnParamsInput{Worktree: "C:/fixed/worktree", ThreadID: "00000000-0000-0000-0000-000000000001", TurnInput: executionbackend.TurnInput{CommandID: strings.Repeat("a", 32), Prompt: "fixed", Model: "reviewer", ReasoningEffort: "high"}, Sandbox: "danger-full-access", Model: "executor", ReasoningEffort: "medium"}
 	params, err := TurnParams(context.Background(), input, func(context.Context, string) ([]string, error) { return nil, nil })
 	if err != nil || params["model"] != "reviewer" || params["effort"] != "high" || params["threadId"] != input.ThreadID {
 		t.Fatal("per-turn model not used", err, params)

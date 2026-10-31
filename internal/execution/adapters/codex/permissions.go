@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-// LinkedWorktreeWriteArgs compiles four previously verified, fixed Git
-// directories into Codex writable-path arguments. Resource discovery belongs
-// to workspace; this package only owns argv generation.
+// LinkedWorktreeWriteArgs preserves the frozen encoding of four verified Git
+// paths used by runtime/authentication identity checks. New full_access launches
+// never emit these legacy arguments as native write grants.
 func LinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string, error) {
 	if objects == "" || refs == "" || logs == "" || admin == "" {
 		return nil, errors.New("linked worktree Git write paths are incomplete")
@@ -17,9 +17,8 @@ func LinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string, error
 }
 
 // PrivateLinkedWorktreeWriteArgs is only for an owner-verified, single-Run
-// repository. Git's files backend locks packed-refs even when deleting an
-// absent AUTO_MERGE after a successful commit. File-only MXC grants cannot
-// authorize creation of that lock; the private common directory is required.
+// repository. The additional common path retains legacy frozen data and the
+// runtime's private-repository identity check; it is no longer a native grant.
 func PrivateLinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string, error) {
 	args, err := LinkedWorktreeWriteArgs(objects, refs, logs, admin)
 	if err != nil {
@@ -32,6 +31,3 @@ func PrivateLinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string
 	}
 	return append(args, "--add-dir", common), nil
 }
-
-// LocalSandboxArgs fixes the native Windows implementation without expanding
-// the turn's workspace-write roots or initiating administrator setup.

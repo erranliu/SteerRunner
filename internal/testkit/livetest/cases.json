@@ -20,7 +20,7 @@
                 "adapter": "codex-app-server",
                 "configuration": "local-codex",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -49,7 +49,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-codex",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -77,35 +77,6 @@
                 "agent": "pi",
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-pi",
-                "target_kind": "local",
-                "access_mode": "sandbox",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "orca-local.pi-full-access",
-      "level": "L3",
-      "driver": "development-feedback",
-      "target": "orca-local",
-      "agent": "pi",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "pi",
-                "adapter": "orca-terminal",
-                "configuration": "orca-local-pi-full-access",
                 "target_kind": "local",
                 "access_mode": "full_access",
                 "workflow": "development"
@@ -136,7 +107,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-dsh",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -164,7 +135,7 @@
                 "adapter": "codex-app-server",
                 "configuration": "local-codex",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -191,34 +162,6 @@
                 "agent": "codex",
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
-                "target_kind": "orca_environment",
-                "access_mode": "sandbox",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        }
-      ]
-    },
-    {
-      "id": "orca-remote.full-access",
-      "level": "L3",
-      "driver": "development-smoke",
-      "target": "orca-environment",
-      "timeout_minutes": 30,
-      "cases": [
-        {
-          "id": "default",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "codex",
-                "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex-full-access",
                 "target_kind": "orca_environment",
                 "access_mode": "full_access",
                 "workflow": "development"
@@ -248,7 +191,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -276,7 +219,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -295,7 +238,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -323,7 +266,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -341,44 +284,6 @@
                 "agent": "codex",
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
-                "target_kind": "orca_environment",
-                "access_mode": "sandbox",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        },
-        {
-          "id": "graceful-active-full-access",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "codex",
-                "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex-full-access",
-                "target_kind": "orca_environment",
-                "access_mode": "full_access",
-                "workflow": "development"
-              }
-            },
-            "admin": false
-          }
-        },
-        {
-          "id": "kill-active-full-access",
-          "outcome": "merged",
-          "requirements": {
-            "operation": "submit",
-            "publication": true,
-            "roles": {
-              "primary": {
-                "agent": "codex",
-                "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex-full-access",
                 "target_kind": "orca_environment",
                 "access_mode": "full_access",
                 "workflow": "development"
@@ -399,7 +304,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -418,7 +323,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -444,7 +349,7 @@
               "primary": {
                 "agent": "codex",
                 "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex-full-access",
+                "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
                 "access_mode": "full_access",
                 "workflow": "development"
@@ -465,7 +370,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -484,7 +389,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -512,7 +417,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -531,7 +436,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -559,7 +464,7 @@
                 "adapter": "codex-app-server",
                 "configuration": "local-codex-audited",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development-audited",
                 "different_models": true
               }
@@ -588,7 +493,7 @@
                 "adapter": "codex-app-server",
                 "configuration": "local-codex",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -670,7 +575,7 @@
               "primary": {
                 "agent": "codex",
                 "adapter": "orca-terminal",
-                "configuration": "orca-remote-codex-full-access",
+                "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
                 "access_mode": "full_access",
                 "workflow": "development"
@@ -700,7 +605,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-codex",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -726,7 +631,7 @@
             "roles": {
               "secondary": {
                 "adapter": "orca-terminal",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "configuration": "orca-local-dsh",
                 "target_kind": "local",
                 "agent": "dsh",
@@ -737,7 +642,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-local-pi",
                 "target_kind": "local",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -765,7 +670,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -784,7 +689,7 @@
                 "adapter": "orca-terminal",
                 "configuration": "orca-remote-codex",
                 "target_kind": "orca_environment",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             },
@@ -813,7 +718,7 @@
                 "adapter": "codex-app-server",
                 "target_kind": "local",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -841,7 +746,7 @@
                 "adapter": "orca-terminal",
                 "target_kind": "local",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -869,7 +774,7 @@
                 "adapter": "orca-terminal",
                 "target_kind": "orca_environment",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -897,7 +802,7 @@
                 "adapter": "codex-app-server",
                 "target_kind": "local",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -925,7 +830,7 @@
                 "adapter": "codex-app-server",
                 "target_kind": "local",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -953,7 +858,7 @@
                 "adapter": "orca-terminal",
                 "target_kind": "local",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }
@@ -981,7 +886,7 @@
                 "adapter": "orca-terminal",
                 "target_kind": "orca_environment",
                 "agent": "codex",
-                "access_mode": "sandbox",
+                "access_mode": "full_access",
                 "workflow": "development"
               }
             }

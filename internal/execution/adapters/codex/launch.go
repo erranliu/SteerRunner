@@ -1,7 +1,6 @@
 package codexworker
 
 import (
-	"encoding/json"
 	"fmt"
 	"net"
 	"os"
@@ -53,10 +52,6 @@ func LaunchServer[T any](config LaunchConfig, start func(*exec.Cmd) (T, error), 
 			return identity, nil, "", fmt.Errorf("authentication_api_binding_mismatch")
 		}
 		roots = append(roots, plan.Directory)
-	}
-	if len(roots) > 0 {
-		encoded, _ := json.Marshal(roots)
-		args = append(args, "--config", "sandbox_workspace_write.writable_roots="+string(encoded))
 	}
 	if config.Model != "" {
 		args = append(args, "--config", fmt.Sprintf("model=%q", config.Model))

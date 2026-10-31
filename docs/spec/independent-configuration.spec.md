@@ -1,5 +1,7 @@
 # Spec：独立调用配置契约与内部测试配置
 
+2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+
 日期：2026-10-19。状态：已实施；本机基线与已配置 L3 通过，完整 L3 缺配置而不完整。运行证据见[登记](../acceptance/independent-configuration.md)及 [Plan](independent-configuration.plan.md)。
 
 ## 1. 目标、范围与当前基线

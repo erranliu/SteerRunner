@@ -35,7 +35,7 @@ func Catalog() CapabilityCatalog {
 				if adapter == "codex-app-server" && (target != "local" || agent != "codex") {
 					continue
 				}
-				for _, mode := range []string{"sandbox", "full_access"} {
+				for _, mode := range []string{"full_access"} {
 					settings := map[string]any{"access_mode": mode}
 					if adapter == "orca-terminal" {
 						settings["agent"] = agent
@@ -47,7 +47,12 @@ func Catalog() CapabilityCatalog {
 					if contracts.ValidateExecution(execution) != nil {
 						continue
 					}
-					requirements := []string{"per_execution_native_verification", "execution_host_authentication", "native_codex_0.159.2_or_newer_permissions"}
+					requirements := []string{"per_execution_native_verification", "execution_host_authentication"}
+					if agent == "codex" {
+						requirements = append(requirements, "native_codex_0.159.2_or_newer_permissions")
+					} else {
+						requirements = append(requirements, "managed_windows_terminal_tools")
+					}
 					if target == "orca_environment" {
 						requirements = []string{"configured_orca_environment", "execution_host_native_login", "native_launch_parameters_requested_only"}
 					}
@@ -103,7 +108,7 @@ func (c CapabilityCatalog) Declares(execution contracts.Execution, selection *co
 	if selection == nil {
 		return false
 	}
-	agent, mode := "codex", "sandbox"
+	agent, mode := "codex", ""
 	var values struct {
 		Agent      string `json:"agent"`
 		AccessMode string `json:"access_mode"`

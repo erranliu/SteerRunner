@@ -134,6 +134,9 @@ func (e *Engine) handleEvidence(command, runID, artifactID string, input *contra
 		}
 		return reject(contracts.Fail(5, "artifact_not_found", "Artifact identity does not belong to this Run."))
 	}
+	if readOnlyRun(r) {
+		return reject(contracts.Fail(3, "unsupported_capability", retiredAccessDiagnostic))
+	}
 	ctx, cancel := context.WithTimeout(e.ctx, 20*time.Second)
 	defer cancel()
 	if command == "workspace-git" {

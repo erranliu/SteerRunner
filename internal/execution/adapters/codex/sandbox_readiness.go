@@ -58,10 +58,7 @@ func (a *AuthenticationRuntime) readinessScript(roots []string, remoteName strin
  }
  if ((($raw -join [char]10) | ConvertFrom-Json).login -cne ` + psLiteral(a.broker.login) + `) { throw 'broker identity mismatch' }`
 	transportProbe := `if ($env:HTTPS_PROXY -cne ` + psLiteral(a.broker.address) + ` -or $env:SSL_CERT_FILE -cne ` + psLiteral(a.broker.caPath) + ` -or -not [IO.File]::Exists($env:SSL_CERT_FILE)) { throw 'transport filtered' }`
-	containerValue := "1"
-	if len(modes) > 0 && modes[0] == "danger-full-access" {
-		containerValue = "0"
-	}
+	containerValue := "0"
 	script := `$ErrorActionPreference='Stop'
 $stage='tool_environment'
 try {

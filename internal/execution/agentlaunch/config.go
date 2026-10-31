@@ -10,7 +10,6 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
-	"slices"
 	"strings"
 )
 
@@ -43,9 +42,6 @@ func quote(text string) string { return "'" + strings.ReplaceAll(text, "'", "''"
 
 func (c *Config) InitializationParts() []m.InputPart {
 	parts := []m.InputPart{{Source: "native.initialization", Owner: m.RunnerInput, Text: codex.NativeReadinessPrompt}}
-	if c != nil && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox") && gitHubRepository(c.RepositoryURL) {
-		parts = append(parts, m.InputPart{Source: "native.initialization", Owner: m.RunnerInput, Text: " " + codex.AuthenticationInstruction})
-	}
 	return parts
 }
 
@@ -119,17 +115,6 @@ func (c *Config) Command(agent string) (string, error) {
 		args = append(args, text)
 	}
 	parts := []string{"&", quote(c.Executable)}
-	linked := agent == "codex" && c.RepositoryURL != "" && (c.AccessMode == "" || c.AccessMode == "sandbox")
-	authentication := linked && gitHubRepository(c.RepositoryURL)
-	if authentication {
-		if !slices.Contains(args, "--no-daemon") {
-			parts = append(parts, quote("--no-daemon"))
-		}
-		parts = append(parts, "@srNativeAuthenticationArgs")
-	}
-	if linked {
-		parts = append(parts, "@srGitWriteArgs")
-	}
 	if agent == "codex" {
 		if _, _, err := m.FreezeInput(m.InputPart{Source: "native.initialization", Owner: m.RunnerInput, Text: args[len(args)-1]}); err != nil {
 			return "", err
@@ -139,12 +124,6 @@ func (c *Config) Command(agent string) (string, error) {
 		parts = append(parts, quote(arg))
 	}
 	command := strings.Join(parts, " ")
-	if authentication {
-		command = gitHubAuthenticationLaunch(c.RepositoryURL, command)
-	}
-	if linked {
-		command = linkedGitLaunch(c.RepositoryURL, c.RepositoryRemote, command)
-	}
 	if agent == "codex" && c.RepositoryURL != "" && !gitHubRepository(c.RepositoryURL) {
 		command = teaPathLaunch(command)
 	}

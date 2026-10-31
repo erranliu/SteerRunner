@@ -103,6 +103,10 @@ func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, 
 }
 
 func (m Manifest) Validate() error {
+	if m.Scenario == "orca-local.pi-full-access" || m.Scenario == "orca-remote.full-access" || m.CaseID == "graceful-active-full-access" || m.CaseID == "kill-active-full-access" {
+		return errors.New("retired permission case; select its canonical full_access scenario")
+	}
+
 	if m.Driver == "cli-wait-retry" || strings.HasSuffix(m.Scenario, ".cli-wait-retry") {
 		scenario, _, err := Lookup(m.Scenario, "default")
 		target := "orca-environment"
@@ -153,7 +157,7 @@ func (m Manifest) Validate() error {
 	}
 	if m.Scenario == "orca-local.mixed" {
 		var first, peer contracts.OrcaSettings
-		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || (peer.AccessMode != "" && peer.AccessMode != "sandbox") || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
+		if m.Driver != "development-multirun" || m.PeerExecution == nil || m.PeerExecution.Adapter != "orca-terminal" || m.PeerExecution.Target.Kind != "local" || m.PeerExecution.Target.Environment != "" || contracts.ValidateExecution(*m.PeerExecution) != nil || contracts.DecodeStrict(m.Execution.Settings, &first) != nil || contracts.DecodeStrict(m.PeerExecution.Settings, &peer) != nil || first.AgentName() != "pi" || peer.AgentName() != "dsh" || peer.AccessMode != "full_access" || peer.AgentLaunch.RuntimeExecutable != first.AgentLaunch.RuntimeExecutable || peer.AgentLaunch.RuntimeSHA256 != first.AgentLaunch.RuntimeSHA256 {
 			return errors.New("mixed local fixture requires frozen Pi and DSH executions on the same helper")
 		}
 	} else if m.PeerExecution != nil {
@@ -220,15 +224,9 @@ func (m Manifest) Validate() error {
 					return errors.New("local Orca requires a frozen runtime and absolute repository path")
 				}
 				var settings contracts.OrcaSettings
-				mode := "sandbox"
-				if m.Scenario == "orca-local.pi-full-access" {
-					mode = "full_access"
-				}
+				mode := "full_access"
 				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
 					return errors.New("invalid local Orca settings")
-				}
-				if settings.AccessMode == "" {
-					settings.AccessMode = "sandbox"
 				}
 				if settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
 					return errors.New("local Orca requires its frozen native runtime and case access mode")
@@ -264,7 +262,7 @@ func (m Manifest) Validate() error {
 			return fmt.Errorf("frozen fixture input changed: %s", path)
 		}
 	}
-	if m.Scenario == "orca-remote.full-access" {
+	if m.Scenario == "orca-remote.smoke" {
 		var settings contracts.OrcaSettings
 		if m.Level != "L3" || m.Driver != "development-smoke" || m.Execution.Adapter != "orca-terminal" || contracts.DecodeStrict(m.Execution.Settings, &settings) != nil || settings.AccessMode != "full_access" {
 			return errors.New("remote full-access smoke requires its explicit frozen access mode")

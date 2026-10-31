@@ -12,7 +12,7 @@
         },
         "adapter": "codex-app-server",
         "settings": {
-          "access_mode": "sandbox",
+          "access_mode": "full_access",
           "reasoning_effort": "medium",
           "executable": "C:/path/to/native/codex.exe"
         }

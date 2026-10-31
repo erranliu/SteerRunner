@@ -11,7 +11,7 @@ import (
 
 func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 	for _, effort := range []string{"high", "xhigh"} {
-		c := &Config{Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: effort, Args: []string{"--no-alt-screen"}}
+		c := &Config{AccessMode: "full_access", Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: effort, Args: []string{"--no-alt-screen"}}
 		cmd, err := c.Command("codex")
 		if err != nil || !strings.Contains(cmd, "'gpt-6-luna'") || !strings.Contains(cmd, "model_reasoning_effort=\""+effort+"\"") || !strings.Contains(cmd, "tui.animations=false") {
 			t.Fatal(cmd, err)
@@ -34,7 +34,7 @@ func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 			t.Fatal("invalid launch accepted", config)
 		}
 	}
-	c := &Config{Executable: "agent's path", Args: []string{"$secret; other"}}
+	c := &Config{AccessMode: "full_access", Executable: "agent's path", Args: []string{"$secret; other"}}
 	cmd, err := c.Command("opaque")
 	if err != nil || !strings.Contains(cmd, "'agent''s path'") || !strings.Contains(cmd, "'$secret; other'") {
 		t.Fatal("shell quoting changed values", cmd, err)
@@ -43,7 +43,7 @@ func TestAgentLaunchCompilesAndProtectsPreferences(t *testing.T) {
 
 func TestRemoteRuntimeCarriesOnlyFrozenPublicConfiguration(t *testing.T) {
 	t.Setenv("GH_TOKEN", "caller-credential-never-copied")
-	for _, mode := range []string{"sandbox", "full_access"} {
+	for _, mode := range []string{"full_access"} {
 		c := Config{RuntimeExecutable: "C:/runner runtime/steerrunner-agent.exe", RepositoryURL: "https://github.com/erranliu/SteerlineTest.git", Executable: "codex", Model: "gpt-6-luna", ReasoningEffort: "high", AccessMode: mode}
 		c.AuditModel = &workflow.ModelSettings{Model: "gpt-6.1-sol", ReasoningEffort: "high"}
 		command, err := c.Command("codex")

@@ -55,10 +55,7 @@ func NormalizeProfilePayload(payload []byte, goos, host, agent string) ([]byte, 
 	return encoded, display, err
 }
 func NormalizeProfileConfig(config ProfileConfig, host, agent string) (ProfileConfig, error) {
-	if config.AccessMode == "" {
-		config.AccessMode = "sandbox"
-	}
-	if config.AccessMode != "sandbox" && config.AccessMode != "full_access" && !(host == "local" && config.AccessMode == "read_only") {
+	if config.AccessMode != "full_access" && !(host == "local" && config.AccessMode == "read_only") {
 		return ProfileConfig{}, errors.New("unsupported access mode")
 	}
 	if config.Executable == "" {

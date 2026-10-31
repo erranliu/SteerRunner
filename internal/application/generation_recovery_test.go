@@ -79,11 +79,11 @@ func TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliatio
 
 func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *testing.T) {
 	p, _ := workflow.Lookup("development", 2)
-	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: codex.ProfileCodecKey, CodecVersion: codex.ProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: "project", ProfileID: "run", AcceptedConfigVersion: "input"}, []byte(`{"executable":"codex.exe"}`))
+	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: codex.ProfileCodecKey, CodecVersion: codex.ProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: "project", ProfileID: "run", AcceptedConfigVersion: "input"}, []byte(`{"access_mode":"full_access","executable":"codex.exe"}`))
 	if err != nil {
 		t.Fatal(err)
 	}
-	r := &runstate.Record{ID: "run", InputDigest: "input", Profile: []b.ImplementationDataEnvelope{profile}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server"}}, Workflow: workflow.Snapshot{Config: &p}}
+	r := &runstate.Record{ID: "run", InputDigest: "input", Profile: []b.ImplementationDataEnvelope{profile}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Settings: []byte(`{"access_mode":"full_access"}`)}}, Workflow: workflow.Snapshot{Config: &p}}
 	r.Snapshot.Session.ProjectID = "project"
 	r.Snapshot.Ref.Version = 1
 	r.AcquisitionConfig.Config = ra.DefaultConfig()

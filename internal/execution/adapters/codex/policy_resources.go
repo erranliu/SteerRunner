@@ -100,9 +100,6 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 	if err := VerifyPolicyVersion(version); err != nil {
 		return BoundPolicyResources{}, err
 	}
-	if permissions.Sandbox == "workspace-write" {
-		roots = append([]string{request.Workspace}, roots...)
-	}
 	var command executionbackend.LaunchCommand
 	switch request.Host {
 	case "local":
@@ -125,9 +122,6 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 		payload.AuthenticationTransport, err = PlanAuthenticationTransport(request.RunDirectory, request.Workspace, request.RepositoryURL, request.ResourceIdentity)
 		if err != nil {
 			return BoundPolicyResources{}, err
-		}
-		if permissions.Sandbox == "workspace-write" {
-			roots = append(roots, payload.AuthenticationTransport.Directory)
 		}
 	}
 	envelope, err := NewPolicyResourceEnvelope(request.ResourceIdentity, payload)
@@ -171,10 +165,10 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 	if err := executionbackend.DecodeStrictJSON(envelope.Payload, &payload, "permission resource payload has trailing JSON"); err != nil {
 		return PolicyResourcePayload{}, err
 	}
-	if payload.Contract != PolicyContract || VerifyPolicyVersion(payload.NativeVersion) != nil || payload.Settings.Executable == "" {
+	if !SupportedDevelopmentPolicy(payload.Contract) || VerifyPolicyVersion(payload.NativeVersion) != nil || payload.Settings.Executable == "" {
 		return PolicyResourcePayload{}, errors.New("permission resource evidence is incomplete or unsupported")
 	}
-	if err := validateNativeLaunchArgs(payload.Settings.Args); err != nil {
+	if err := validateNativeLaunchArgs(payload.Settings.Args, payload.Contract); err != nil {
 		return PolicyResourcePayload{}, err
 	}
 	if p := payload.AuthenticationTransport; p != nil {
@@ -188,8 +182,12 @@ func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEn
 	return payload, nil
 }
 
-func validateNativeLaunchArgs(args []string) error {
-	mode := "sandbox"
+func validateNativeLaunchArgs(args []string, contracts ...string) error {
+	contract := PolicyContract
+	if len(contracts) == 1 {
+		contract = contracts[0]
+	}
+	mode := ""
 	for _, arg := range args {
 		if arg == "sandbox_mode=read-only" {
 			mode = "read_only"
@@ -198,17 +196,32 @@ func validateNativeLaunchArgs(args []string) error {
 			mode = "full_access"
 		}
 	}
-	permissions, _ := NativePermissions("windows", "local", "codex", mode)
+	permissions, err := NativePermissions("windows", "local", "codex", mode)
+	if err != nil || !SupportedDevelopmentPolicy(contract) || mode == "read_only" && contract != ReadOnlyPolicyContract {
+		return errors.New("unsupported frozen permission mode/contract")
+	}
+	expectedArgs := permissions.Args()
+	if mode == "full_access" && contract == ReadOnlyPolicyContract {
+		expectedArgs = append(expectedArgs, legacyWorkspaceArgs()...)
+	}
 	expected := map[string]string{}
-	for i := 0; i < len(permissions.Args()); i += 2 {
-		key, value, _ := strings.Cut(permissions.Args()[i+1], "=")
+	for i := 0; i < len(expectedArgs); i += 2 {
+		key, value, _ := strings.Cut(expectedArgs[i+1], "=")
 		expected[key] = value
 	}
 	seen := map[string]bool{}
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
 		case "--no-daemon", "--strict-config":
-		case "--model", "--add-dir", "--cd":
+		case "--add-dir":
+			if contract != ReadOnlyPolicyContract {
+				return errors.New("new development launch cannot contain write grants")
+			}
+			i++
+			if i >= len(args) || args[i] == "" {
+				return errors.New("legacy launch root missing")
+			}
+		case "--model", "--cd":
 			i++
 			if i >= len(args) || args[i] == "" {
 				return errors.New("native launch has an incomplete argument")

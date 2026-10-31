@@ -11,6 +11,7 @@ import (
 const ProfileKey = "orca.terminal-profile"
 const ProfileVersion = 3
 const NativeRemoteProfileVersion = 4
+const FullAccessTerminalProfileVersion = 5
 const StateKey = "orca.terminal-state"
 const StateVersion = 7
 const ServiceStopBehavior = b.ContinueExecutionOnServiceStop

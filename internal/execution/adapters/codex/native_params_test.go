@@ -30,21 +30,16 @@ func TestTurnStartParamsKeepApprovalAndWritableRoots(t *testing.T) {
 	if _, err := WritableRoots([]string{"--add-dir"}); err == nil {
 		t.Fatal("incomplete Codex writable root was accepted")
 	}
-	params, err := TurnStartParams("C:/worktree", "thread", "command", "continue", "workspace-write", "model", "high", roots)
+	params, err := TurnStartParams("C:/worktree", "thread", "command", "continue", "danger-full-access", "model", "high", roots)
 	if err != nil {
 		t.Fatal(err)
 	}
 	policy, ok := params["sandboxPolicy"].(map[string]any)
-	if !ok || policy["type"] != "workspaceWrite" || params["approvalPolicy"] != "never" || params["approvalsReviewer"] != "user" || params["effort"] != "high" {
+	if !ok || policy["type"] != "dangerFullAccess" || params["approvalPolicy"] != "never" || params["approvalsReviewer"] != "user" || params["effort"] != "high" {
 		t.Fatalf("native turn policy changed: %+v", params)
 	}
-	writable, ok := policy["writableRoots"].([]string)
-	if !ok || !reflect.DeepEqual(writable, roots) {
-		t.Fatalf("native writable roots changed: %+v", policy)
-	}
-	roots[0] = "changed"
-	if writable[0] != "C:/worktree" {
-		t.Fatal("native turn shares mutable writable roots")
+	if policy["writableRoots"] != nil || policy["networkAccess"] != nil {
+		t.Fatalf("full_access contains workspace grants: %+v", policy)
 	}
 	if _, err := TurnStartParams("C:/worktree", "thread", "command", "continue", "unsupported", "", "", nil); err == nil {
 		t.Fatal("unsupported Codex sandbox was accepted")

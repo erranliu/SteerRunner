@@ -43,9 +43,6 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 		a.ReasoningEffort = "medium"
 	}
 	mode := s.AccessMode
-	if mode == "" {
-		mode = "sandbox"
-	}
 	config := codex.RemoteAgentConfig{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: mode, RepositoryURL: RemoteURL}
 	if m.AuditModel != nil {
 		model := *m.AuditModel

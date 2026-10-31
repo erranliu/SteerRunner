@@ -51,7 +51,7 @@ func newBaseRefreshFixture(t *testing.T, remoteName, branch string) *baseRefresh
 		Repository:  contracts.Repository{URL: url, LocalPath: f.source, Remote: remoteName, BaseBranch: branch, BaseRevision: f.pinned},
 		Documents:   contracts.Documents{Spec: contracts.Document{Kind: "git", Path: "spec.md", Commit: f.initial}, Plan: contracts.Document{Kind: "git", Path: "plan.md", Commit: f.initial}},
 		Workflow:    contracts.Workflow{ID: "development", Version: 2},
-		Execution:   contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.CodexSettings{Executable: executable})},
+		Execution:   contracts.Execution{Adapter: "codex-app-server", Target: contracts.Target{Kind: "local"}, Settings: canonical(contracts.CodexSettings{AccessMode: "full_access", Executable: executable})},
 		Publication: contracts.Publication{Provider: "command", Repository: "owner/repo", BaseBranch: branch, Settings: canonical(contracts.CommandProviderSettings{BaseURL: "https://github.com", Query: contracts.QuerySettings{Executable: executable, Args: []string{}}})},
 	}
 	if _, err := providerFor(&runstate.Record{Request: f.request}); err != nil {

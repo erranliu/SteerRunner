@@ -38,13 +38,32 @@ type TerminalConfig struct {
 	ConfigurationDigest string `json:"configuration_digest"`
 	SessionID           string `json:"session_id"`
 	Executable          string `json:"executable"`
-	SandboxExecutable   string `json:"sandbox_executable"`
+	SandboxExecutable   string `json:"sandbox_executable,omitempty"`
 	StateDirectory      string `json:"state_directory"`
 	AuthenticationState string `json:"authentication_state"`
 	RepositoryURL       string `json:"repository_url"`
 	AccessMode          string `json:"access_mode"`
 	Model               string `json:"model,omitempty"`
 	ReasoningEffort     string `json:"reasoning_effort,omitempty"`
+}
+
+func (c *TerminalConfig) UnmarshalJSON(raw []byte) error {
+	type wire TerminalConfig
+	var value wire
+	if err := b.DecodeStrictJSON(raw, &value, "trailing terminal configuration"); err != nil {
+		return err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(raw, &fields); err != nil {
+		return err
+	}
+	if value.ReceiptVersion >= 3 {
+		if _, exists := fields["sandbox_executable"]; exists {
+			return errors.New("sandbox_executable is retired for new terminal configurations")
+		}
+	}
+	*c = TerminalConfig(value)
+	return nil
 }
 
 type TerminalMetadata struct {
@@ -69,7 +88,7 @@ func TerminalRuntimeMetadata() (TerminalMetadata, error) {
 	}
 	pi, _ := terminalAssets.ReadFile("extensions/pi-evidence.mjs")
 	dsh, _ := terminalAssets.ReadFile("extensions/dsh-managed.mjs")
-	return TerminalMetadata{Version: 3, Contract: terminaltools.Contract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi)), DSHSHA256: fmt.Sprintf("%x", sha256.Sum256(dsh))}, nil
+	return TerminalMetadata{Version: 4, Contract: terminaltools.Contract, RuntimeSHA256: fmt.Sprintf("%x", sha256.Sum256(raw)), BundleSHA256: TerminalExtensionDigest(), PiSHA256: fmt.Sprintf("%x", sha256.Sum256(pi)), DSHSHA256: fmt.Sprintf("%x", sha256.Sum256(dsh))}, nil
 }
 
 type TerminalOwner struct {
@@ -98,7 +117,7 @@ func TerminalExtensionDigest() string {
 }
 
 // RunTerminalAgent keeps the original TUI on Orca's stdio. Only native tools use
-// the sandbox CLI; this path never starts a Codex model/server or a Pi SDK agent.
+// the owned PowerShell tool host; this path never starts a Codex model/server or a Pi SDK agent.
 func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, output, diagnostics io.Writer) (result error) {
 	var inputParts []m.InputPart
 	var inputBudget *m.InputBudget
@@ -112,7 +131,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		}
 		inputParts = parts
 	}
-	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "sandbox" && c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !filepath.IsAbs(c.AuthenticationState) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
+	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || c.SandboxExecutable != "" || !filepath.IsAbs(c.StateDirectory) || !filepath.IsAbs(c.AuthenticationState) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
 		return errors.New("native terminal frozen launch configuration invalid")
 	}
 	metadata, err := TerminalRuntimeMetadata()
@@ -177,14 +196,6 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		return err
 	}
 	rootPaths := []string{roots.Objects, roots.Refs, roots.Logs, roots.Admin}
-	sandbox, err := codex.NativeExecutable(c.SandboxExecutable)
-	if err != nil {
-		return err
-	}
-	version, err := host.OutputCommand(ctx, b.LaunchCommand{Executable: sandbox, Args: []string{"--version"}})
-	if err != nil || codex.VerifyPolicyVersion(string(version)) != nil {
-		return errors.New("Pi native sandbox version unsupported")
-	}
 	agentExecutable, err := exec.LookPath(c.Executable)
 	if err != nil {
 		return err
@@ -227,7 +238,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		return err
 	}
 	shell := filepath.Join(os.Getenv("SystemRoot"), "System32", "WindowsPowerShell", "v1.0", "powershell.exe")
-	policy := terminaltools.Config{AccessMode: c.AccessMode, Workspace: working, WriteRoots: auth.WriteRoots, SandboxExecutable: sandbox, Shell: shell, StateDirectory: c.StateDirectory}
+	policy := terminaltools.Config{AccessMode: c.AccessMode, Workspace: working, WriteRoots: auth.WriteRoots, Shell: shell, StateDirectory: c.StateDirectory}
 	if err = policy.Validate(); err != nil {
 		return err
 	}

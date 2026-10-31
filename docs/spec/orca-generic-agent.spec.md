@@ -1,5 +1,7 @@
 # Spec：通用 Orca Agent 接入
 
+2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+
 日期：2026-10-18。状态：审计修补及必要验收完成。Codex、Pi sandbox/full_access、DSH sandbox，以及同服务 Pi/DSH 混合场景已在同一冻结构建批次真实通过；完整交付、真实投递丢响应、恢复、活动写者停止及构建绑定见[验收记录](../acceptance/orca-generic-agent.md)。采用现有 terminal/TUI 与 Runner 配套正式扩展，未修改 Orca。
 
 本 Spec 扩展 [SteerRunner 产品契约](steerrunner.spec.md)：继续使用 `orca-terminal`，由 Orca 管理工作区和终端，由 Runner 对接 agent 的原生事实。目标是**已适配的 agent 只改配置，新 agent 补少量适配**，不承诺所有 Orca 可启动的 TUI 自动具备可靠执行能力。

@@ -4,7 +4,6 @@ package terminaltools
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -19,24 +18,23 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 )
 
-const Contract = "windows-terminal-tools-v1:codex-sandbox-cli-0.159.2:never"
+const Contract = "windows-terminal-tools-v2:full-access:never"
 
 // Config is compiled by the trusted launch, never from a model tool argument.
 // Authentication remains in inherited process environment, not this document.
 type Config struct {
-	AccessMode        string   `json:"access_mode"`
-	Workspace         string   `json:"workspace"`
-	WriteRoots        []string `json:"write_roots"`
-	SandboxExecutable string   `json:"sandbox_executable"`
-	Shell             string   `json:"shell"`
-	StateDirectory    string   `json:"state_directory"`
+	AccessMode     string   `json:"access_mode"`
+	Workspace      string   `json:"workspace"`
+	WriteRoots     []string `json:"write_roots"`
+	Shell          string   `json:"shell"`
+	StateDirectory string   `json:"state_directory"`
 }
 
 func (c Config) Validate() error {
 	if runtime.GOOS != "windows" {
 		return errors.New("terminal tools require Windows")
 	}
-	if c.AccessMode != "sandbox" && c.AccessMode != "full_access" {
+	if c.AccessMode != "full_access" {
 		return errors.New("invalid terminal tool access mode")
 	}
 	for _, p := range append([]string{c.Workspace, c.StateDirectory, c.Shell}, c.WriteRoots...) {
@@ -53,9 +51,6 @@ func (c Config) Validate() error {
 			return errors.New("terminal tool state is inside a writable root")
 		}
 	}
-	if c.AccessMode == "sandbox" && (!filepath.IsAbs(c.SandboxExecutable) || strings.ContainsAny(c.SandboxExecutable, "\x00\r\n")) {
-		return errors.New("terminal sandbox executable missing")
-	}
 	return nil
 }
 
@@ -67,19 +62,7 @@ func (c Config) Command(script string) (b.LaunchCommand, error) {
 		return b.LaunchCommand{}, errors.New("tool script is outside original state directory")
 	}
 	args := []string{"-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", script}
-	if c.AccessMode == "full_access" {
-		return b.LaunchCommand{Executable: c.Shell, Args: args, WorkingDirectory: c.Workspace}, nil
-	}
-	// JSON string quoting is also valid TOML basic-string quoting. These are
-	// argv values, not shell expressions. Explicit roots avoid ambient temp grants.
-	quote := func(v string) string { raw, _ := json.Marshal(v); return string(raw) }
-	entries := []string{`":root"="read"`}
-	for _, root := range append([]string{c.Workspace}, c.WriteRoots...) {
-		entries = append(entries, quote(root)+`="write"`)
-	}
-	policy := "permissions.steerrunner-terminal.filesystem={" + strings.Join(entries, ",") + "}"
-	bound := []string{"sandbox", "--permission-profile", "steerrunner-terminal", "-c", "windows.sandbox=mxc", "-c", policy, "-c", "permissions.steerrunner-terminal.network.enabled=true", "-C", c.Workspace, "--", c.Shell}
-	return b.LaunchCommand{Executable: c.SandboxExecutable, Args: append(bound, args...), WorkingDirectory: c.Workspace}, nil
+	return b.LaunchCommand{Executable: c.Shell, Args: args, WorkingDirectory: c.Workspace}, nil
 }
 
 // Run owns exactly one native tool tree. Even successful shell exit does not

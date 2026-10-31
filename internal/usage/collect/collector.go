@@ -31,6 +31,9 @@ type Collector struct {
 	Policy   api.Policy
 	Instance string
 	Leases   *access.Manager
+	// The resident engine classifies frozen records before any new log access.
+	// Cleanup of existing leases remains independent of observation eligibility.
+	CanObserveRun func(string) bool
 }
 type checkpoint struct {
 	Bytes               int
@@ -82,6 +85,9 @@ func (c *Collector) Tick(ctx context.Context) {
 	}
 }
 func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
+	if c.CanObserveRun != nil && !c.CanObserveRun(r.ID) {
+		return
+	}
 	prior, _ := c.Store.GetRunUsage(ctx, r.ID, 0)
 	s := api.Snapshot{RunID: r.ID, AccessCleanupStatus: "not_required", Issues: []api.Issue{}, Coverage: api.Coverage{SourceSummaries: []api.SourceSummary{}, Finalized: true}}
 	inputs := []b.LifecycleSnapshot{}

@@ -1,5 +1,7 @@
 # SteerRunner L2–L4 测试清单
 
+2026-10-31：当前开发正向配置统一显式 full_access；read_only 专项保留。Pi/远端 smoke 及 active restart 的双权限重复项按 [Spec DFA-06](spec/development-full-access.spec.md#dfa-06测试矩阵收敛) 合并，原故障窗口与独有断言保留；历史资格不继承到当前构建。
+
 2026-10-29 退役旧 Check：当前 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。
 
 2026-10-27 主线同步：通用目录当前为 **34 场景 / 44 case**（L2 1/1、L3 29/39、L4 4/4），
@@ -45,7 +47,7 @@ PR #47 合并前复审增加 `TestUsageCrossRunConflictSurvivesCachedObservation
 以下清单于 **2026-10-26** 对照[执行目录](../tests/catalog.json)和
 [唯一 case 定义](../internal/testkit/livetest/cases.json)核对。入口支持
 `L1,Controlled,L2,L3,L4` 和 `-MaxParallel 1..8`；L4 独占执行，L2/L3 有界并行。
-已注册 L2 一 case、L3 二十五场景三十五 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
+已注册 L2 一 case、L3 二十三场景三十一 case、L4 四 case；原 12 个可靠性 case 全部保留在 L3。
 以下区分实现状态与实际受控/真机验收，旧构建的通过结果不作为新构建资格。
 本轮实际结果、配置来源和失败历史见[测试功能验收](acceptance/test-levels.md)。
 配置引用／角色及模式等要求直接随唯一 case 注册发布；本次只调整配置消费，不增删业务 case。
@@ -86,12 +88,12 @@ L2 不包含额外模型反馈轮、恢复或审计流程；在原 `pr_ready` �
 不把合并变成 Runner 的生产交付能力，保留 `merged` 预期和原 PR/分支/现场证据。
 workflow/2 的 L2 使用生产提示词直接交付，不依赖反馈资格文件；在合入前验证发布后反馈被拒绝、原 revision/Turn/PR head 不变。
 原 `local-codex.feedback` 已退役，历史证据保留，不启用返工。
-本机当前认证版本的实际结果见[沙箱认证验收](acceptance/sandbox-authentication.md)，
+本机历史沙箱认证结果见[原验收](acceptance/sandbox-authentication.md)，当前权限变更及未验范围见[full_access 验证](acceptance/development-full-access.md)，
 通过结论须绑定对应源码、构建和配置。
 
 ## L3：不同流程与核心可靠性
 
-以下为已注册的二十五场景、三十五 case，含原远端流程、本机 Codex/Orca 流程、progress 与 CLI 等待专项。execution-stability driver 当前共 16 case，包含原 12 个核心可靠性 case。全部保留在
+以下为已注册的二十三场景、三十一 case，含原远端流程、本机 Codex/Orca 流程、progress 与 CLI 等待专项。execution-stability driver 当前共 14 case，包含原 12 个核心可靠性 case。全部保留在
 L3，使用 `-Level L3 -Scenario <场景 ID>` 运行；选择场景即运行它的全部 case。
 主表列出交付、隔离与恢复；其余 5 个 progress case 和 2 个 CLI 等待 case 分别见文末专项，不重复计数。
 
@@ -123,17 +125,14 @@ worker/服务，须先对账原现场并收尾，再启动独占测试；当前�
 | `orca-local.codex` | `default` | 本机 Orca terminal 的开发、业务问答、发布后反馈拒绝、原终端/agent 身份、真实 PR 与清理 | `merged`，权限审计及 Run/服务停止 | 复用 development-feedback；含业务 reply、丢 submit 响应对账、兼容换代保留授权和活动 stop；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.pi` | `default` | Pi 的同一 terminal 开发、业务问答及发布后反馈拒绝，不能继承 Codex 原生证据 | 同上 | A01 扩展、双权限工具及原生权限审计已接线；包含业务 reply、换代和活动写者停止；实际结果见[通用接入验收](acceptance/orca-generic-agent.md) |
 | `orca-local.dsh` | `default` | DSH 的同一 terminal 开发、业务问答及发布后反馈拒绝，排除 SessionStart/子事件假完成 | 同上 | A02 原 TUI 固定 profile、原生持久事实、业务 reply 及 H01 已接线；不改 Orca，结果见[通用接入验收](acceptance/orca-generic-agent.md) |
-| `orca-local.pi-full-access` | `default` | Pi 显式 full_access 的完整交付与同会话恢复、活动写者停止 | `merged`，Run/服务停止 | 独立双权限实测，不借 sandbox 结果 |
 | `orca-local.mixed` | `default` | 同一服务的 Pi/DSH：独立输入/原生会话/回执/PR，停止 Pi 后 DSH 的原生 owner 保持可用 | 两个原 PR、隔离验证及 Run/服务停止 | 冻结 peer_execution；只验证一个混合组合 |
-| `orca-remote.multirun` | `default` | 同服务接受两个请求，独立原终端/工作区/分支/事件/PR；停止一方后另一方原生 owner 保持可用 | 两个原 PR，Run/服务停止，离线核验两项 orca_terminal scope | `orca-remote-codex-full-access`；不部署 helper，不声明远端 broker 或完整 OS 树证明 |
+| `orca-remote.multirun` | `default` | 同服务接受两个请求，独立原终端/工作区/分支/事件/PR；停止一方后另一方原生 owner 保持可用 | 两个原 PR，Run/服务停止，离线核验两项 orca_terminal scope | `orca-remote-codex`；不部署 helper，不声明远端 broker 或完整 OS 树证明 |
 | `orca-remote.smoke` | `default` | 远端适配器的工作区创建、原生会话与真实交付；与 L2 的区别在远端契约 | `merged` | 不操作共享 runtime；独立 worktree/会话/PR，按当前 workflow/2 直接交付 |
-| `orca-remote.full-access` | `default` | 显式 full_access 下完整远端开发闭环、发布后反馈拒绝及冻结参数传递核对 | `merged`，Run 原终端及服务停止 | 场景固定 full_access，独立工作区/会话/PR；不能借 sandbox 的结果代替 |
 | `orca-remote.caller-exit` | `accepted-response-lost` | 接受回执丢失后结束调用方，原服务继续；按原 request_id 找回唯一 Run，同 ID/正文重试不重复输入 | `merged` | 只结束本现场调用方及 submit 进程；核验服务和其它现场仍运行 |
 | `orca-remote.connection-reconnect` | `active-disconnect` | 原服务不换代的活动回合断连，恢复后自动重接原 Attempt/会话，无需 resume、零重发 | `merged` | 专属网络故障范围；验证本现场双通路中断且其它现场通信不受影响 |
 | `orca-remote.connection-reconnect` | `pre-send-disconnect` | 实施/报告结束，发布 `start_turn` 已提交但尚未发出；仅阻断 Runner 直连状态通道，原 CLI 身份读取仍成功；自动重试后保留原 operation/Attempt/session，无需 resume 且发布一次 | `merged` | 本机测试 CLI 转发器在原发布终端的首次发送前身份读取处设门；仅阻断现场 Runner EXE，保留 CLI/诊断通路。证据须含门前快照、阻断后返回的原读取、完整建连超时后的再次读取、阻断期零新输入/授权保留及单次 PR。已实现并注册，真机及并行资格尚未执行 |
-| `orca-remote.service-restart` | `graceful-active` | sandbox 活动回合正常停服换代，原授权保持，原结果自动对账、零重发，无需 resume | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
-| `orca-remote.service-restart` | `kill-active` | sandbox 活动回合异常终止服务后，原授权和会话保持，旧写者失效，自动继续 | `merged` | 精确匹配本现场服务 PID/创建时间；同一 handle/incarnation 补读原回执，零重发业务；验证重启不影响其它服务 |
-| `orca-remote.service-restart` | `graceful-active-full-access` / `kill-active-full-access` | full_access 分别验证正常/强杀换代后的原授权、Attempt/generation、零原输入重发和自动完成交付 | `merged` | 独立固定完整权限配置；不能代替 sandbox case 的资格 |
+| `orca-remote.service-restart` | `graceful-active` | full_access 活动回合正常停服换代，原授权保持，原结果自动对账、零重发，无需 resume | `merged` | 只停本现场服务并确认旧写者退出；验证与其它现场恢复流程互不干扰 |
+| `orca-remote.service-restart` | `kill-active` | full_access 活动回合异常终止服务后，原授权和会话保持，旧写者失效，自动继续 | `merged` | 精确匹配本现场服务 PID/创建时间；同一 handle/incarnation 补读原回执，零重发业务；验证重启不影响其它服务 |
 | `orca-remote.service-restart` | `graceful-boundary` | 实施已完成但证据尚未交付时正常停服；迟到完成事实按原授权继续对账和后继阶段 | `merged` | 专属网络/完成屏障，加本现场正常服务换代；验证屏障与网络恢复不会释放其它 case |
 | `orca-remote.service-restart` | `kill-boundary` | 同一切换点异常终止服务，完成事实与新实例对账后不丢失原结果、不重复阶段输入 | `merged` | 专属网络/完成屏障，加精确服务终止；验证旧/新写者和回执归属隔离 |
 | `orca-remote.stop-revocation` | `active` | 活动回合 stop 撤销后继输入授权，并确认原生执行真正停止 | `stopped`，无 PR | 只停止本现场原生资源；核验原认证 broker/socket、业务写者及固定控制终端关闭，撤销证明与关闭证明分开；验证其它 Run 授权及执行不受影响 |
@@ -193,7 +192,7 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 ## 当前清单与资格边界
 
-当前共三十场景、四十 case：L2 一场景/一 case、L3 二十五场景/三十五 case、L4 四场景/四 case。
+当前共二十八场景、三十六 case：L2 一场景/一 case、L3 二十三场景/三十一 case、L4 四场景/四 case。
 Controlled 默认前置二十五个顶层测试，另有四个 focused native L3 专项；专项内部子变体、审计子变体和并行调度的框架检查另在原始日志登记。
 L3-P01/P02/P04 与 L4-P01–P04 已绑定可执行项；L3-P03 是已有受控覆盖，不重复计算。
 
@@ -250,7 +249,7 @@ L4 四项断言/互斥保持；本次仅增加同批已验证二进制复用，�
 
 | 测试目的 | 当前场景数 / case 数 | 整理建议 |
 | --- | --- | --- |
-| 后端开发交付 | 7 / 7 | `orca-local.smoke`、`orca-local.codex/pi/dsh/pi-full-access`、`orca-remote.smoke/full-access` 使用统一后端矩阵；先核对本机 smoke 能否被 codex 变体吸收，保留无业务问答的直达路径及原终端回执验证后再决定是否退役 |
+| 后端开发交付 | 7 / 7 | `orca-local.smoke`、`orca-local.codex/pi/dsh`、`orca-remote.smoke` 使用统一后端矩阵；先核对本机 smoke 能否被 codex 变体吸收，保留无业务问答的直达路径及原终端回执验证后再决定是否退役 |
 | 工作流边界与审计 | 2 / 2 | feedback 按上文并入 smoke；audited 保留真实不同模型、原 turn/workspace 来源与切回执行模型的断言 |
 | 同服务 Run 隔离 | 3 / 3 | `local-codex.multirun`、`orca-local.mixed`、`orca-remote.multirun` 共用隔离契约，分别保留本机 owner、混合 agent、远端原终端的差异断言 |
 | 原生执行可靠性 | 6 / 16 | caller-exit、connection-reconnect、service-restart、stop-revocation、publication-unknown、initialization-stop；维持按故障窗口分别判定，不合成连续故障大场景 |

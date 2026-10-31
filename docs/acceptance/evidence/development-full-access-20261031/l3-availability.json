@@ -1,0 +1,738 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "a086a9984dc0bd32b3f02b9698cd26c9ba313d90",
+  "source_dirty": true,
+  "requested_levels": [
+    "L3"
+  ],
+  "status": "availability",
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "runner_sha256": "09c7290bc65adea80f136eed2dff2948580270d71adc73d68b525884bc0434f8",
+  "resource_digest": "21725cc1e4fffbf6808a74a5eaf736bf2ac2003626eb103d11323b1fb3ea692d",
+  "helper_sha256": "71d1d6121031a9c3f3c8d9e293219f785b17d27e73ce08e13b70e98898c5d7ba",
+  "requested_scenario_count": 23,
+  "requested_case_count": 31,
+  "available_case_count": 0,
+  "unavailable_case_count": 31,
+  "availability": [
+    {
+      "scenario_id": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.codex",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.pi",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.dsh",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "pre-send-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.audited",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/local-codex-audited",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.mixed",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        },
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.initialization-stop",
+      "case_id": "before-readiness",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.initialization-stop",
+      "case_id": "restart-before-readiness",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/fixture/publication",
+          "code": "missing_fixture",
+          "message": "The case requires its explicit test publication configuration."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.progress-multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.progress-recovery",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/fixture",
+          "code": "missing_fixture",
+          "message": "A valid test source fixture is required."
+        },
+        {
+          "path": "/configurations/orca-remote-codex",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    }
+  ]
+}

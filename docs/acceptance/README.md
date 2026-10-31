@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 开发统一 full_access | [实施与验证](development-full-access.md)、[实施后审计与修复](development-full-access-audit.md)：开发 sandbox 退役、read_only 与认证保留；最终构建回归与真实后端未验范围单列 |
 | 取消调用方正文预算 | [变更及受控验收](caller-input-unlimited.md)：取消 C=2000/T=3000 拒绝线；保留 Runner 1000B、计量冻结及传输保护 |
 | Runner 输入契约与字节预算 | [预算及提示词收敛](workflow-input-budget.md)：受控测试与软目标取舍；原配置新现场的后续 144B 输入公开接受，但 Runner 完成确认超时，原投递缺陷未宣称修复 |
 | 后续输入完成确认 | [原生状态与 observer 诊断及合法零值修复](native-completion-confirmation.md)：保留修复前证据；270 次受控断言及一次真实完整零值恢复路径通过，原输入/完成归属要求保留，原失败未追认 |

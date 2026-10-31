@@ -33,20 +33,9 @@ func TurnParams(ctx context.Context, input TurnParamsInput, linkedWorktreeArgs f
 	if !nativeID.MatchString(input.ThreadID) || !executionbackend.StableExecutionID(input.CommandID) || input.Worktree == "" || input.Prompt == "" {
 		return nil, errors.New("Codex app-server turn lacks a fixed thread, command or input")
 	}
-	var roots []string
-	if input.Sandbox == "workspace-write" {
-		args, err := linkedWorktreeArgs(ctx, input.Worktree)
-		if err != nil {
-			return nil, err
-		}
-		roots, err = WritableRoots(args)
-		if err != nil {
-			return nil, err
-		}
-	}
 	model, effort := input.Model, input.ReasoningEffort
 	if input.TurnInput.Model != "" {
 		model, effort = input.TurnInput.Model, input.TurnInput.ReasoningEffort
 	}
-	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, model, effort, roots, budget)
+	return TurnStartParams(input.Worktree, input.ThreadID, input.CommandID, input.Prompt, input.Sandbox, model, effort, nil, budget)
 }

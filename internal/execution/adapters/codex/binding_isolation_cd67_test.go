@@ -56,7 +56,7 @@ func TestCD63BindingCodecIsolation(t *testing.T) {
 		operation := executionbackend.Operation{Version: 1, ID: newID(), RunID: copy.WorkflowRunID, AttemptID: copy.CurrentAttemptID, Backend: ref.Backend, Protocol: ref.Protocol, Target: ref.Target, Action: string(executionbackend.LifecyclePrepareSession), PayloadDigest: operationDigest(mustJSON(input)), Status: executionbackend.OperationInFlight, Ref: &ref}
 		operation.LifecycleIdentity = &executionbackend.LifecycleOperationIdentity{ProjectID: snapshot.Session.ProjectID, ExecutionID: snapshot.Session.ExecutionID, ConfigurationDigest: snapshot.ConfigurationDigest, ResourceGeneration: snapshot.ResourceGeneration, InputBindingDigest: executionbackend.LifecycleBindingDigest(snapshot), Ref: snapshot.Ref}
 		startCalled := false
-		lifecycle := codexworker.ExecutionLifecycle{Backend: codexworker.Backend{Config: codexworker.Config{Executable: os.Args[0], Workspace: workspace, RunDir: t.TempDir(), RunID: copy.WorkflowRunID, ServerDir: serverDir, Sandbox: "workspace-write", WindowsSandbox: "elevated"}, Process: codexworker.ProcessPort{Start: func(*exec.Cmd) (executionbackend.StopHandle, error) {
+		lifecycle := codexworker.ExecutionLifecycle{Backend: codexworker.Backend{Config: codexworker.Config{Executable: os.Args[0], Workspace: workspace, RunDir: t.TempDir(), RunID: copy.WorkflowRunID, ServerDir: serverDir, Sandbox: "danger-full-access", WindowsSandbox: "elevated"}, Process: codexworker.ProcessPort{Start: func(*exec.Cmd) (executionbackend.StopHandle, error) {
 			startCalled = true
 			return nil, errors.New("unexpected process start")
 		}, Inspect: func(*executionbackend.ProcessIdentity) string { return "matching process still exists" }, NewGeneration: newID, WriteAtomic: AtomicWrite}}}

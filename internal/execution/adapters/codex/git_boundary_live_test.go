@@ -42,7 +42,7 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 		t.Fatal(err)
 	}
 	host := process.New(30 * time.Second)
-	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "workspace-write", WindowsSandbox: "mxc", WorkerRuntime: true, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "git-boundary" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
+	backend := Backend{Config: Config{Executable: *authenticationNative, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "danger-full-access", WindowsSandbox: "", WorkerRuntime: true, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "git-boundary" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 	h, _, err := backend.PrepareSession(ctx, Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "no business input", LinkedWorktreeArgs: roots})
@@ -61,13 +61,21 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 			t.Error("native Git probe process exit was not confirmed")
 		}
 	})
+	outside := filepath.Join(root, "peer.git")
+	if err = os.Mkdir(outside, 0700); err != nil {
+		t.Fatal(err)
+	}
+	canary := filepath.Join(outside, "config")
+	if err = os.WriteFile(canary, []byte("unchanged"), 0600); err != nil {
+		t.Fatal(err)
+	}
 	for _, mode := range []string{"loose-head", "packed-head"} {
 		t.Run(mode, func(t *testing.T) {
 			if mode == "packed-head" {
 				git("-C", repo, "pack-refs", "--all")
 			}
 			writable, _ := WritableRoots(roots)
-			policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", writable)
+			policy, _ := TurnStartParams(work, "probe", "probe", "probe", "danger-full-access", "", "", writable)
 			var result struct {
 				ExitCode int    `json:"exitCode"`
 				Stdout   string `json:"stdout"`
@@ -80,25 +88,11 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 			}
 		})
 	}
-	outside := filepath.Join(root, "peer.git")
-	if err = os.Mkdir(outside, 0700); err != nil {
-		t.Fatal(err)
-	}
-	canary := filepath.Join(outside, "config")
-	if err = os.WriteFile(canary, []byte("unchanged"), 0600); err != nil {
-		t.Fatal(err)
-	}
-	writable, _ := WritableRoots(roots)
-	policy, _ := TurnStartParams(work, "probe", "probe", "probe", "workspace-write", "", "", writable)
-	var denied struct {
-		ExitCode int `json:"exitCode"`
-	}
-	err = h.client.Call(ctx, "command/exec", map[string]any{"command": []string{"powershell.exe", "-NoProfile", "-NonInteractive", "-Command", `[IO.File]::WriteAllText(` + psLiteral(canary) + `,'changed')`}, "cwd": work, "sandboxPolicy": policy["sandboxPolicy"], "timeoutMs": 25000}, &denied)
 	body, readErr := os.ReadFile(canary)
-	if err != nil || denied.ExitCode == 0 || readErr != nil || string(body) != "unchanged" {
-		t.Fatal("private Git authorization escaped into another repository")
+	if readErr != nil || string(body) != "unchanged" {
+		t.Fatal("normal commits touched the independent peer repository")
 	}
-	proof, _ := json.MarshalIndent(map[string]any{"loose_and_packed_head_commits": !t.Failed(), "peer_write_denied": true, "business_inputs": 0, "git_common": common}, "", "  ")
+	proof, _ := json.MarshalIndent(map[string]any{"loose_and_packed_head_commits": !t.Failed(), "peer_unchanged_by_commit": true, "access_mode": "full_access", "business_inputs": 0, "git_common": common}, "", "  ")
 	if err = os.WriteFile(filepath.Join(root, "git-boundary-result.json"), proof, 0600); err != nil {
 		t.Fatal(err)
 	}

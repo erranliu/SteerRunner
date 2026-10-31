@@ -7,7 +7,7 @@ import (
 
 func TestSandboxAuditRejectsEscalationWrongPolicyAndMissingEvidence(t *testing.T) {
 	good := `{"type":"session_meta","payload":{"id":"original","cwd":"C:/worker"}}
-{"type":"turn_context","payload":{"approval_policy":"never","sandbox_policy":{"type":"workspace-write","network_access":true}}}
+{"type":"turn_context","payload":{"approval_policy":"never","sandbox_policy":{"type":"danger-full-access","network_access":true}}}
 {"type":"response_item","payload":{"type":"function_call","name":"exec_command","arguments":"{\"cmd\":\"git push\"}"}}
 `
 	for _, c := range []struct {
