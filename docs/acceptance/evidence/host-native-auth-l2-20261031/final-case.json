@@ -1,0 +1,37 @@
+{
+  "status": "passed",
+  "repeat_index": 1,
+  "finished_at": "2026-10-31T10:59:50.7738980Z",
+  "manifest": "C:\\srt\\3068b813b9d0\\manifest.json",
+  "case_id": "default",
+  "scenario": "local-codex.smoke",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2-retry\\local-codex.smoke-default-r1-fixture.json",
+  "evidence": "C:\\srt\\3068b813b9d0\\evidence",
+  "level": "L2",
+  "started_at": "2026-10-31T10:55:54.9012961Z",
+  "git_boundary": {
+    "exit_code": 0,
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2-retry\\local-codex-smoke-r1-git-boundary.log"
+  },
+  "resources": [
+    "root:C:\\srt\\3068b813b9d0",
+    "base:codex/srtest/3068b813b9d0/base",
+    "run:e8bd5542b5dd97abaf4c045785e19e3b",
+    "workspace:c:\\srt\\3068b813b9d0\\s\\workspaces\\s2ic74edfauaghs7un3or323mi",
+    "session:01a1919a-a74d-7e43-83e0-321d583661ca",
+    "branch:codex/runner-e8bd5542b5dd97abaf4c045785e19e3b",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/722"
+  ],
+  "identity": {
+    "pid": 38572,
+    "manifest_sha256": "d6b92ee0b9531d75cfa58ec62872b1992762e91fb77eca1245c0f70073d53cd4",
+    "driver_sha256": "9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae",
+    "runner_sha256": "0d554cd5a94ce6b5c772515e9b88d27b055fa7c8268d7f5b83c40ecbabe727a8",
+    "source_commit": "d864a04bb2ee7179f1d8ad4a3f5db5d08179933c",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.smoke",
+    "level": "L2"
+  },
+  "expected_outcome": "merged"
+}

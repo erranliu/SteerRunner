@@ -1,0 +1,118 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "55b13585230824c04ca5910020274a8dd1b20806",
+  "source_dirty": false,
+  "started_at": "2026-10-31T10:14:59.3073083Z",
+  "requested_levels": [
+    "L2"
+  ],
+  "status": "failed",
+  "results": [
+    {
+      "exit_code": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2",
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "terminal_extensions_passed": true,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2\\framework",
+      "terminal_extension_exit": 0,
+      "terminal_extension_test_count": 29,
+      "native_zero_match_guard": true,
+      "native_driver_compile_exit": 0,
+      "test_count": 717,
+      "level": "L1"
+    },
+    {
+      "scenario_count": 25,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2\\controlled",
+      "exit_code": 0,
+      "level": "Controlled"
+    },
+    {
+      "status": "failed",
+      "git_boundary": {
+        "exit_code": 0,
+        "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2\\local-codex-smoke-r1-git-boundary.log"
+      },
+      "repeat_index": 1,
+      "finished_at": "2026-10-31T10:51:47.5238415Z",
+      "error": "Live scenario failed; inspect C:\\srt\\7785b029a677\\evidence/native.log",
+      "manifest": "C:\\srt\\7785b029a677\\manifest.json",
+      "case_id": "default",
+      "scenario": "local-codex.smoke",
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2\\local-codex.smoke-default-r1-fixture.json",
+      "evidence": "C:\\srt\\7785b029a677\\evidence",
+      "level": "L2",
+      "started_at": "2026-10-31T10:48:32.8106485Z"
+    }
+  ],
+  "executed_case_count": 1,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "baseline": {
+    "l2_verified": false,
+    "configuration_issues": []
+  },
+  "availability": [
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "runner_exe": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\host-native-auth-l2\\bin\\steerrunner.exe",
+  "runner_sha256": "0d554cd5a94ce6b5c772515e9b88d27b055fa7c8268d7f5b83c40ecbabe727a8",
+  "resource_digest": "d3bb096b0600c524d35c4b8ff9c776f36ff7c90bacb94cde08e36f2a4cf3bb0a",
+  "source_config_digest": "f758bbb0ce0256fd92923cfdaa813d151db914708352cb624646cba2ca60b923",
+  "requirements_sha256": "6a66ce3b8e0f9fa22d8e9b748c72ccd5f0836219c7465a9a8874d6a387c68777",
+  "helper_sha256": "8b3ea33d2975cfdf561e6a578e6beb5b3ee12a6c2930fec66441b52bfb3ba443",
+  "configuration_sha256": "f758bbb0ce0256fd92923cfdaa813d151db914708352cb624646cba2ca60b923",
+  "selected_scenarios": [
+    "local-codex.smoke"
+  ],
+  "repeat": 1,
+  "planned_case_count": 1,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "unavailable_case_count": 0,
+  "levels": {
+    "L2": {
+      "requested": [
+        "local-codex.smoke/default"
+      ],
+      "registered": [
+        "local-codex.smoke/default"
+      ],
+      "executed": [
+        "local-codex.smoke/default"
+      ],
+      "missing": [
+        "local-codex.smoke/default"
+      ],
+      "unavailable": [],
+      "complete_level_passed": false,
+      "passed": [],
+      "excluded": []
+    }
+  },
+  "finished_at": "2026-10-31T10:51:47.7676210Z"
+}

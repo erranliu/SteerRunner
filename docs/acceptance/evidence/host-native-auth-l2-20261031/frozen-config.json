@@ -1,0 +1,47 @@
+{
+  "schema": "steerrunner-test-config/v1",
+  "configurations": {
+    "local-codex": {
+      "workflow": {
+        "version": 2,
+        "id": "development"
+      },
+      "execution": {
+        "target": {
+          "kind": "local"
+        },
+        "adapter": "codex-app-server",
+        "settings": {
+          "access_mode": "full_access",
+          "reasoning_effort": "medium",
+          "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+          "model": "gpt-6.1-sol"
+        }
+      }
+    }
+  },
+  "fixture": {
+    "repository": {
+      "base_branch": "main",
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "remote": "origin",
+      "base_revision": "9e0489047af5f16f14879fbcbe08d4e1f43ee702",
+      "local_path": "C:/Projects/SteerlineTest"
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "main",
+      "settings": {
+        "query": {
+          "executable": "gh",
+          "args": [
+            "api"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  },
+  "harness": {}
+}

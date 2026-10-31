@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/local-codex.smoke
+    run_test.go:784: open C:\srt\7785b029a677\s\runs\b708da019e1ea3b0faeb9202a6a0940d\turns\e2357dbc1a5e52d2ca032677e7008c3a\sandbox-readiness.json: The system cannot find the file specified.
+--- FAIL: TestSRLiveScenario (174.73s)
+    --- FAIL: TestSRLiveScenario/local-codex.smoke (174.71s)
+FAIL
