@@ -20,7 +20,7 @@ function Open-SRTestLease([bool]$Exclusive,[string]$Directory = '') {
 }
 
 function Invoke-SRCaseBatch {
-    param([object[]]$Executions,[string]$Output,[string]$Config,[string]$Catalog,[string]$FixtureParent,[int]$MaxParallel,[string]$RunnerExe = '',[string]$ConfigHelper = '',[string]$ConfigurationSHA256 = '',[string]$RunnerSHA256 = '',[string]$HelperSHA256 = '',[string]$RequirementsSHA256 = '',[scriptblock]$Checkpoint,[string]$WorkerScript = (Join-Path $PSScriptRoot 'run-test-case.ps1'),[string]$LeaseDirectory = '')
+    param([object[]]$Executions,[string]$Output,[string]$Config,[string]$Catalog,[string]$FixtureParent,[int]$MaxParallel,[string]$RunnerExe = '',[string]$ConfigHelper = '',[string]$ConfigurationSHA256 = '',[string]$RunnerSHA256 = '',[string]$HelperSHA256 = '',[string]$RequirementsSHA256 = '',[scriptblock]$Checkpoint,[string]$NativeDriver = '',[string]$NativeDriverSHA256 = '',[string]$WorkerScript = (Join-Path $PSScriptRoot 'run-test-case.ps1'),[string]$LeaseDirectory = '')
     $taskPending = [Collections.Generic.Queue[object]]::new()
     foreach ($taskExecution in $Executions) { $taskPending.Enqueue($taskExecution) }
     $taskActive = [Collections.Generic.List[object]]::new()
@@ -55,6 +55,7 @@ function Invoke-SRCaseBatch {
             $taskResult = Join-Path $Output ($taskStem + '-case.json')
             $taskRequest = Join-Path $Output ($taskStem + '-request.json')
             $taskJob = @{entry=$taskNext.entry;case=$taskNext.case;repeat_index=$taskNext.repeat_index;config=$Config;configuration_sha256=$ConfigurationSHA256;catalog=$Catalog;fixture_parent=$FixtureParent;runner_exe=$RunnerExe;runner_sha256=$RunnerSHA256;config_helper=$ConfigHelper;helper_sha256=$HelperSHA256;requirements_sha256=$RequirementsSHA256;output=$Output;result_path=$taskResult;record=$taskRecord}
+            if($NativeDriver -or $NativeDriverSHA256){$taskJob['native_driver']=$NativeDriver;$taskJob['native_driver_sha256']=$NativeDriverSHA256}
             [IO.File]::WriteAllText($taskRequest,($taskJob | ConvertTo-Json -Depth 30),[Text.UTF8Encoding]::new($false))
             $taskRecord.status='preparing'
             $taskInfo = [Diagnostics.ProcessStartInfo]::new($taskShell)

@@ -1,0 +1,43 @@
+{
+  "finished_at": "2026-10-31T13:26:14.9942530Z",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-l2-final\\local-codex.smoke-default-r1-fixture.json",
+  "started_at": "2026-10-31T13:22:15.8299149Z",
+  "evidence": "C:\\srt\\b160f403d519\\evidence",
+  "case_id": "default",
+  "status": "passed",
+  "scenario": "local-codex.smoke",
+  "repeat_index": 1,
+  "level": "L2",
+  "manifest": "C:\\srt\\b160f403d519\\manifest.json",
+  "timings": {
+    "git_boundary_seconds": 13.4817955,
+    "total_seconds": 239.2446899,
+    "native_and_cleanup_seconds": 215.8566249,
+    "preparation_seconds": 9.2909609
+  },
+  "git_boundary": {
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-l2-final\\local-codex-smoke-r1-git-boundary.log",
+    "exit_code": 0
+  },
+  "resources": [
+    "root:C:\\srt\\b160f403d519",
+    "base:codex/srtest/b160f403d519/base",
+    "run:9e3f733f17fe880ab0750e31784bcddb",
+    "workspace:c:\\srt\\b160f403d519\\s\\workspaces\\saq5ftdw36ecvhqarrm4z7tfiu",
+    "session:01a19220-c170-7762-b9cd-85160c77b1f1",
+    "branch:codex/runner-9e3f733f17fe880ab0750e31784bcddb",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/723"
+  ],
+  "identity": {
+    "pid": 29204,
+    "manifest_sha256": "9673d0d872a5a06acf520326543bfc1717f8303b0ce7cb592db0bdf796673eee",
+    "driver_sha256": "9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae",
+    "runner_sha256": "66fdb60ac6c5b7566b946634e6e01d61baf2890bd59088b4bbd0fed23bcfc6d1",
+    "source_commit": "5c5c1653961ad08a836e82fc84f0898667864a5c",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.smoke",
+    "level": "L2"
+  },
+  "expected_outcome": "merged"
+}

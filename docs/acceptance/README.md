@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 验证链路解耦与 L2 前置复用 | [实施与验收](validation-reuse.md)：合同检查、完整前置和真实 L2 分别登记；L3/L4 不开放复用 |
 | 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)、[审计与本机 L2](host-native-auth-audit-l2.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
 | 开发统一 full_access | [实施与验证](development-full-access.md)、[实施后审计与修复](development-full-access-audit.md)：开发 sandbox 退役、read_only 与认证保留；最终构建回归与真实后端未验范围单列 |
 | 取消调用方正文预算 | [变更及受控验收](caller-input-unlimited.md)：取消 C=2000/T=3000 拒绝线；保留 Runner 1000B、计量冻结及传输保护 |
