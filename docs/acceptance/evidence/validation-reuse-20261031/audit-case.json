@@ -1,0 +1,43 @@
+{
+  "started_at": "2026-10-31T15:02:28.4384573Z",
+  "status": "passed",
+  "finished_at": "2026-10-31T15:05:42.8272699Z",
+  "case_id": "default",
+  "manifest": "C:\\srt\\b082660d2a59\\manifest.json",
+  "scenario": "local-codex.smoke",
+  "repeat_index": 1,
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-pr-final-l2\\local-codex.smoke-default-r1-fixture.json",
+  "level": "L2",
+  "evidence": "C:\\srt\\b082660d2a59\\evidence",
+  "timings": {
+    "native_and_cleanup_seconds": 179.428212,
+    "total_seconds": 194.4493001,
+    "preparation_seconds": 7.7982971,
+    "git_boundary_seconds": 6.761919
+  },
+  "git_boundary": {
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-pr-final-l2\\local-codex-smoke-r1-git-boundary.log",
+    "exit_code": 0
+  },
+  "resources": [
+    "root:C:\\srt\\b082660d2a59",
+    "base:codex/srtest/b082660d2a59/base",
+    "run:bbff79eeb3ae2c64918014f4b806e3d1",
+    "workspace:c:\\srt\\b082660d2a59\\s\\workspaces\\ohkgmsbuypr3rqvhuds5ig3u3q",
+    "session:01a1927c-53cb-7931-a7f9-6aacfebbb4bb",
+    "branch:codex/runner-bbff79eeb3ae2c64918014f4b806e3d1",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/724"
+  ],
+  "identity": {
+    "pid": 17792,
+    "manifest_sha256": "9471793f94345f5b843d921e87f6e05c02cbacd715b3a2bb20f956f8b9d3b4e0",
+    "driver_sha256": "9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae",
+    "runner_sha256": "228c530e788097080a5770014636d891246aa4aa9bdedccf6fc200be33c47220",
+    "source_commit": "8f8fbdfacd154739bb397db709128cc55ce7dd0e",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.smoke",
+    "level": "L2"
+  },
+  "expected_outcome": "merged"
+}

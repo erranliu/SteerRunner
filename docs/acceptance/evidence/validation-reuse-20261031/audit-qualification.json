@@ -1,0 +1,86 @@
+{
+  "schema": "steerrunner-validation-reuse-audit/v1",
+  "status": "passed",
+  "code_commit": "8f8fbdfacd154739bb397db709128cc55ce7dd0e",
+  "source_dirty": false,
+  "prerequisite_manifest_sha256": "67b065f3dfa969745dbad240783ff2881645eeba4520d4455f3481f8f8b2f1bf",
+  "input_digest": "b43e61f0d58269392ad392ce6fa583fe4a793eb58c52e34fccd64ce73d3ea13a",
+  "contract_count": 75,
+  "go_tests": 717,
+  "node_tests": 29,
+  "controlled_tests": 25,
+  "l2_cases": 1,
+  "l2_seconds": 218.6153386,
+  "verification_seconds": 5.4556431,
+  "runner_sha256": "228c530e788097080a5770014636d891246aa4aa9bdedccf6fc200be33c47220",
+  "driver_sha256": "9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae",
+  "guarded_driver_matches": true,
+  "l2_verified": true,
+  "complete_level_passed": true,
+  "evidence": [
+    {
+      "file": "audit-prerequisites.json",
+      "sha256": "67b065f3dfa969745dbad240783ff2881645eeba4520d4455f3481f8f8b2f1bf"
+    },
+    {
+      "file": "audit-baseline-summary.json",
+      "sha256": "a2561144abe4c74a21afb9b3f6ec4152abd6d1fa768804274d0532cfafed6bfa"
+    },
+    {
+      "file": "audit-controlled-result.json",
+      "sha256": "3caaa8e6e7a3800ed9ecea9724da4cf712f42bfe136905ef7e0349378ba66f0f"
+    },
+    {
+      "file": "audit-controlled.log",
+      "sha256": "dec9579d1b1b31096d63079b8b91350902f2824762d09816b4fba29c3632eccf"
+    },
+    {
+      "file": "audit-runner-build.json",
+      "sha256": "5bd0f0f9d66269bc16dd35a01685609c0d806752d77ceeda8071beed3a3999d1"
+    },
+    {
+      "file": "audit-framework-result.json",
+      "sha256": "9551889661217a74e5fe36b3510040dd46b51c5301f0d5e111a5d09e8daaac25"
+    },
+    {
+      "file": "audit-contract-verified.json",
+      "sha256": "0f4dc8aa93364a35cb88e9597616932b6030a6e1d4e3f7fc0b44c31ad951fb2f"
+    },
+    {
+      "file": "audit-readonly-contract-verified.json",
+      "sha256": "6eb8306dac89b3e18180b8d8586e8f930ec0a4de5468b9269da10ef3986a4348"
+    },
+    {
+      "file": "audit-summary.json",
+      "sha256": "1311abeeb60cbc520d269dd1e56d8f136ef4a07191ab1ab1c17e94881b5763c7"
+    },
+    {
+      "file": "audit-case.json",
+      "sha256": "38e3ff804b59b15e97e0df3d7870d7b6668c40c6f17e92d5272ca0516e664346"
+    },
+    {
+      "file": "audit-scenario.json",
+      "sha256": "ed240900ccd36250ed16dafe17cd2bbd5b4626ffaa1f4eefdc8601032943d7bb"
+    },
+    {
+      "file": "audit-native-result.json",
+      "sha256": "99d53217bfc36cc0562e57656d55d8a35c5cc52d828d376782a7bcd374615b0a"
+    },
+    {
+      "file": "audit-source-identity.json",
+      "sha256": "23e1108455fc85bda0cbae3463299f395f9e1c90af5e8ee8beb4ae6bdb5a0c8b"
+    },
+    {
+      "file": "audit-command.json",
+      "sha256": "213775a31b434241a4b043620c36f64d4ddff1b82ba8a46234d37ba2f2da89f7"
+    },
+    {
+      "file": "audit-permission.json",
+      "sha256": "90d9f1ec02c05547d499c22446cc2206da8d68cd18bb7867f2373a36f1f0144d"
+    },
+    {
+      "file": "audit-turn.json",
+      "sha256": "6807011dc68ac4a985fbc151670a8d3105d7220b215a987458f072b43d237b56"
+    }
+  ]
+}
