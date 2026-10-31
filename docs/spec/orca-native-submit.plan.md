@@ -1,130 +1,70 @@
-# Orca 多行输入屏幕草稿依赖修复 Plan
+# Orca 原生输入通用提交 Plan
 
-日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
-状态：按用户授权实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正另见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)；原实数及边界见[远端最终验收](../acceptance/orca-native-submit-remote-final.md)和[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
+2026-10-31。配套 [Spec](orca-native-submit.spec.md)，PR #73。当前再审计基线 597d669；新冻结源 c21d915a6d5ce1d03e7b437b94048614781052312279076ac2cb678f2c3ad894。
 
-最新保真修正：[验收及原始证据](../acceptance/orca-native-submit-integrity.md)。同一冻结源7050次稳定回归、本机3/3、远端3/3通过，完整L1与最终独立归档复审均通过，无未修P0–P2。此前读取批次6150次/L1通过而本机0/3的失败保持原结论，不将原构建资格平移。
+状态：最小查询接线修正、旧生产 overlay 红对照和正式7170次矩阵已完成；原查询回归450/0/0。完整L1与新源managed本机3/3、远端3/3通过，最终独立补充复核通过，无未修P0–P2；按Spec及验收报告边界放行。旧批次资格仅由对应验收报告证明，不平移为当前通过。
 
-## P0.1 本机失败后最小修正（2026-10-31）
+## P0 固定当前范围与审计发现
 
-先审计 Spec §4.1，再实现四处收敛增量：remote_models.go 返回原请求 id 的 JSON-RPC 校验错误；lifecycle.go 不把 Codex stage 当正式 Started；模型桥上游消息上限从 16 MiB 对齐原 Codex 客户端 128 MiB（下游 2 MiB 不变）；同一Codex提交入口的LF→CR传输编译，正式正文仍须等于原逻辑LF。无新 wire/version/codec、状态字段、重试、屏幕/延时门禁或目标专用路径，不修改 Orca。单独CR/cap16失败与cap128/LF的本机2通过1失败均保留；诊断捕获16777217字节处read-limit首错，并以128MiB桥接完整转发23,771,840字节plugin/list。最终组合已完成冻结源 c8ead691…1395 的双端各3/3与7050次稳定回归；完整L1和归档复审另取实际结果。不增加等待、门禁或目标分支。
+以当前checkout和PR基线核对全部生产diff。保留一条通用text+enter提交、原编译/冻结、模型、准备、认证、原输入/完成与stop证明；删除草稿/显示换行/双稳定/视口专用路径。不引入实验API、重试、状态机、通用框架或兼容链。历史阶段结论放入原验收报告，活动Spec/Plan不再叠加互相冲突的旧实施指令。
 
-| ID | 扩展既有入口 | 条件与证据 |
+本次P2：所有Codex send stage都已降为提示，但普通本机无helper仍缺queryInput构造接线。直接NewLifecycle、未预置Started/queryInput的回归确认无法开始/完成；增加RPC计数后四例均因query=0击中旧实现。仓库契约仍允许非GitHub、development/2普通本机配置，不以宣称该配置不支持规避回归。
+
+## P1 实施前与实现复核
+
+先审Spec §4.2、旧生产红对照及其真实构造器接线，再仅删除NewLifecycle.queryInput的远端if，保留同一QueryOriginalInput和Environment路由。managed observeRecorded、extension分流、Codex正式补证条件、认证与身份校验不变，不恢复stage当Started。
+
+复用thin原输入IPC夹具，terminal.show返回其实际worktree绑定路径；返回原输入查询计数，不新造夹具。测试不注入Started或queryInput，不改变本机publicCandidate=nil契约。独立只读方案和实际diff复核已无新增P0–P2；最终检查和新现场仍须分别完成。
+
+## P2 静态清理与兼容边界
+
+逐引用确认submitNativePaste/nativePasteDraftMatches/nativeDraftNeedsReflow/fitComposer/FitBoundComposer/ComposerViewport/ViewportRPC/ViewportRecorder/ViewportFit/ViewportRestore/segmented-shape在生产和当前入口不再存在；历史证据仅保留原事实。保留共享WaitTimeout、通用read、wire/reader、其它agent/extension所需功能。
+
+仅保留既有状态和codec，不迁移旧未知为accepted，不修改旧Run绑定。核对RPC错误无正文/秘密、无诊断探针；新旧提交路径不能并存。提交等待和共享CLI锁仍用原deadline，取消后不得派发、刷新期限或追加输入。
+
+## P3 测试ID与原正式入口
+
+| ID | 原入口/测试 | 条件与证据 |
 | --- | --- | --- |
-| NS-T11 | TestRemoteModelBridgeUsesOriginalNativeConnection / RejectsInvalidOriginalRequest / RejectsUnboundInvalidRequest / PreservesLargeNativeReplies；scripts/test-native-input.ps1 controlled | 大于16MiB小于128MiB的原回复，完整字节/摘要、同一连接后续原turn/start、连接/请求计数；原 RPC 数字/字符串 id；缺换行/截断/改字节/混入正文、外来 session/模型/方法拒收；真实 WebSocket 调用计数证明拒绝零转发、错误后只读查询仍通、无重试，认证及正常原请求不退化；每叶 30 次 |
-| NS-T12 | TestNativePromptSubmission/WireFormats/ReceiptFaults/ProcessingOrder、TestNativeCRLFPastePreservesOriginalInputAndCompletion、TestTerminalReplyRequiresOriginalStartedAndEnded | 本机与远端同文；多行/中文/空行/CRLF/长文、分段/延迟；实际CLI参数仅LF→CR、逻辑wire/预算/冻结摘要不变、Codex恢复后逐字匹配；受理及带 turn_started 回执都不能提前业务 Started；原正式输入与 done 才补证，错误/未知零额外输入；每叶 30 次 |
-| NS-T13 | 原 TestOrcaNativeStateLiveLifecycle / test-native-input.ps1 long-input | 同一冻结源和隔离构建的现有 agent，双端各 3 个全新 session；记录原请求、实际唯一 send、初始非 Started、正式原输入/摘要/turn/模型/final、既有 stop/空清单，历史失败不重发、不补 Enter |
-| NS-T14 | 原 TestOriginalTerminalRPC* / TestOriginalTerminalConcurrency；L1原入口 | 最后检查确认既有IPC单元夹具Close挂死；复用thin-query stop/wake停Accept顺序，仅改一个_test.go。6根33叶各30次=990/0/0，修后controlled30=7050/0/0，完整L1通过721顶层/2730含子例、0失败，17明确跳过另列。保留c8六场资格，逐文件差异证明生产/live源未变、agent重建SHA相同；新b3a642…5c91测试源与原c8源分别登记，不额外投递业务或冒称所有检查全源相同 |
+| NS-T01 | TestNativePromptSubmission / WireFormats | 本机/远端多行、中文、空行、CRLF、长文；冻结逻辑正文、wire/预算/摘要及实际CR参数，唯一通用submit |
+| NS-T02 | 同表及TestOrcaNativeStateLiveLifecycle | 折行/宽度/折叠标签/投影缺LF/不可读不授权提交；草稿read/fit/restore、text-only与单独Enter为0 |
+| NS-T03 | 原input/history/native final反例 | 缺失/截断/改字节/混入/重复输入、工具/旧结果不成功归属，正式完整原文与唯一性保持 |
+| NS-T04 | TestNativePromptProcessingOrder / ReceiptFaults | 延迟/分段/乱序、unsupported/缺字段/permission/替换；channel/屏障及真实调用数，不用固定sleep恢复 |
+| NS-T05 | 原native start / history / TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput | accepted及turn_started提示不能提前业务started/completed；原唯一输入与新done或history才证明 |
+| NS-T06 | TestSRStabilityLostSubmitResponse及native回执反例 | 各阶段回执丢失/超时保留intent/未知原因；submit≤1、0补Enter、0request-show新恢复 |
+| NS-T07 | TestOrcaNativeStateBinding / RecoveryRejectsProviderReplacementInsideOriginalTerminal | runtime/terminal/incarnation/pane/provider/session及已知外来输入冲突；原原因不丢、不成功归属 |
+| NS-T08 | TestSRRestartPreservesAuthorization及原reconnect/unknown | journal/Request/Attempted恢复后只对账；重复请求、断线、重启不追加业务send |
+| NS-T09 | TestNativePromptSharedQueueWithStopAndCancellation / TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation / TestSROrcaCLIWaitRetry | 持锁send、peer stop、第三Run取消，用屏障验证0取消后派发/原deadline/锁释放；three-runs-stop-queued验证服务三Run准备队列，不能冒称三个活动原生Run全链路 |
+| NS-T10 | 原model/history/original-input/final/stop/reconcile | 本机writer/audit/writer、实际模型/effort、32KiB结果、hook截断拒收、正式原文及资源/认证/签名证明不退化；Pi/DSH不变 |
+| NS-T02/07/10 | TestLocalPreparationOriginalStream / TestLocalNativeProbeTargetAndBusinessScope / CensusKeepsOriginalHostScope | READY原始流完整/空流/缺字段/身份/绑定反例、目标配置及原host清单；不把准备成功计业务完成 |
+| NS-T02/07/10 | TestFixedControlRetainedStream / StreamFaults / StreamBoundaries | >1000行/分页/前缀淘汰、丢页/倒退/无进展/身份/取消/快照/半行；原请求与正式history/workspace/auth-stop证明 |
+| NS-T11 | TestRemoteModelBridgeUsesOriginalNativeConnection / RejectsInvalidOriginalRequest / RejectsUnboundInvalidRequest / PreservesLargeNativeReplies | >16MiB原回复完整字节/摘要与同连接原提交；错误保留RPC id、零转发、查询仍通，认证/原线程/模型冻结不变 |
+| NS-T12 | TestNativePromptWireFormats / ReceiptFaults / TestNativeCRLFPastePreservesOriginalInputAndCompletion / TestTerminalReplyRequiresOriginalStartedAndEnded | 实际CR参数与逻辑LF分开核验，正式原输入不可放宽；started-hint/accepted不能提前开始，busy与unstarted前提分别保持 |
+| NS-T13 | TestOrcaNativeStateLiveLifecycle / test-native-input.ps1 long-input | 新冻结源、隔离agent/driver；双端各3新session，唯一send/原请求/正式原文/模型/final/stop及空census |
+| NS-T14 | TestOriginalTerminalRPC* / TestOriginalTerminalConcurrency | 既有单测夹具stop/wake停Accept再Close，连接/worker在失败分支仍清理，错误明确；仅测试修正，不升级依赖或预算 |
+| NS-T15 | TestLocalNativeProbeOriginalQueryConstructor；原controlled必需root | 生产构造器、不预置Started/queryInput；thin/corroborated/duplicate/altered，中文/空行/CRLF长原文；实际查询1次、业务submit1次，0伪造streamed working/helper final；每叶30次 |
 
-受控矩阵纳入桥接包的必需 root 与 30 次计数，不能因它在另一个 Go 包而漏选。项目 L1、原长 final/模型/停止及其他 agent 回归照常；实现后检查所有旧“回执直接证明 started”测试/文档语义，更新成正式凭据，不削弱断言或删除覆盖。真实测试适配只记录/验证唯一实际CR参数与冻结逻辑LF wire的可逆关系，不伪造 history、模型或回执。完成独立复审并更新原 PR；不合并或部署。
+NS-T01–T12故障仍按目标/叶例重复30次，重复不替代覆盖。夹具必须确定控制处理延迟、分段、回执顺序和故障点，以原请求、调用计数、字节/摘要判定，不以同一离线快照充数。
 
-以下 P0–P6 记录原批次；本轮增量边界及覆盖以 P0.1 和 Spec §4.1 为准。
+## P4 正式检查与当前实数
 
-## P0 固定范围与基线
+- 原入口 `scripts/test-native-input.ps1 -Mode controlled -Repeat 30 -OutDir <新目录>`：当前25必需roots、239叶、7170执行/7170通过/0失败/0跳过/缺失root 0；含NS-T15四叶各30次。
+- 原thin/corroborated与新构造器回归：3 roots、15叶各30次，450/0/0。旧生产overlay最终四例全失败，原事件与退出码1保留。
+- `scripts/test.ps1 -Level L1`：独立运行完整规定检查、框架/扩展/native编译和零匹配门禁，原默认并行与12分钟单包期限，不跳过失败、不改全局配置。完整L1已覆盖受影响整包，无需重复同一整包来凑次数。
+- 目录/测试入口与源码冻结检查照常。不同源/EXE/批次分别记录，缺失或意外skip不算通过。
 
-复核lifecycle.go的受影响条件：远端、普通Codex、无extension/wire、多行→submitNativePaste。其余路径已有通用text+enter。本次仅删除这条手动分支、屏幕附属依赖并增加必要回执校验；原wire与逻辑输入摘要、模型设置、本机history和远端NativeProof、prepare/auth/stop/codec均保持。M1不再是实施前置，也不保留其迁移任务供实现阶段展开。
+## P5 新源真实验证
 
-设计阶段只改Spec/Plan；当前已按P2/P3替换提交和清理专用代码，并扩展正式测试入口，未部署安装环境。13项安装代码隔离核查、两个目标absent只读查询、旧快照/隔离重复及过去L1不是本方案实现验收；历史根因未确认，原字节和失败批次保留。
+在本次隔离目录构建现有cmd/steerrunner-agent，固定源/EXE/CLI摘要。启动前读取并核对当前runtime，不套用过期模板；运行中的同一runtime可用于新的独立会话。用原long-input正式入口，在全新空现场本机与192.168.1.151远端各3独立session，只返回nonce，不跑业务/Unity，不创建业务PR。
 
-## P1 实施前独立审计
+记录各场helper/WireFormat类别，不能把managed本机现场说成无helper分支真实通过。本次既有正式本机目标为GitHub/managed，未覆盖无helper的非GitHub真实目标，生产构造器+隔离IPC证明与真实证明分开；不改GitHub仓库URL、认证、业务材料来绕过该条件。
 
-审计本版范围：是否真正只替换多行提交、是否保留wire/模型/history/完成与停止；是否有新私有/实验API、request-show恢复、codec/状态机或等待策略混入。核查原身份/intent、必要provider/observation校验、accepted/started/completed区分、未知零重投以及草稿专用删除清单。
+发送前保存Run/Attempt/runtime/terminal/incarnation/session/原request、冻结正文及完整资源清单；核验一次Runner业务通用submit、accepted/正式started/completed、唯一原文/final；本机managed另核验实际模型/effort，远端只冻结启动偏好，实际模型/effort未独立核验。0text-only、0补Enter、0业务屏幕读取；宿主内部不可观察次数不推断。
 
-保留宿主内部raw/held-Enter及任意人工输入排他的证据边界。旧版本审计结论不直接覆盖本版；本版审计需单列继承现有远端20秒观察后的共享锁风险，不把准备idle当空草稿或原子排他证明。
+按既有正式stop核验原资源、认证/reader/writer/签名及原host完整空清单，精确移除本次工作区并保存异步rm和后续not-found。远端停止仅orca_terminal；未独立核验物理路径则保留未验。未知或失败不向旧Run重发或补Enter，改用全新现场也不能追认旧失败。
 
-2026-10-30本版复审：design_audit与final_review独立只读核对Spec/Plan及相关代码，均无P0–P2文档发现。该次结论只认可窄范围设计与证据边界；后续实施/故障重复/真实资格分别记录，不追溯改写此次文档审计。
+## P6 复核与PR
 
-## P2 替换多行提交
+独立只读审实现、测试/源身份、原事件实数、六场原调用及正式证明、停止范围和离线归档。确认活动文档单一契约、旧代码/状态/配置/测试清理完整，未引入实验API、回退、第二状态机或诊断探针。修确认问题后按影响补验证，不重复无关检查。
 
-1. 在lifecycle.go移除submitNativePaste条件及其提前Accepted返回，让该输入落入已有terminal send代码；继续使用原wirePrompt/nativePromptText结果、--enter、原--retry-request ID及原目标连接。不另建本机/远端发送器，不包装ESC，不保留屏幕/old-host回退。
-2. 保持提交前原准备/idle/身份检查、wire冻结与预算、operation intent/Request/Attempted持久化顺序。原草稿路径的NUL/ESC检查移到受影响输入的副作用前，保持其它agent与本机wire输入范围；检查失败不能先发正文。
-3. 沿用既有CLI等待参数与调用上限：NativeRemoteProfileVersion的--wait-submit 20、50秒调用上限及更短调用方期限不改，其它路径原参数不改。多行继承既有通用观察会改变锁占用，可能耗尽其它调用原期限；记录真实调用/排队和取消结果，排队与执行共用原deadline，不保证stop抢占。不增加计时器、统一成新等待策略或声称与旧40秒草稿路径耗时相同。若发现死锁、取消后派发、期限刷新、错误成功或违反既有停止约束，先修订设计，不临时添加锁或兼容分流。
-4. 在现有send.prompt解析中增加普通原生Codex所必需的provider/observation和阶段一致性校验，保留原runtime/handle/request/incarnation/CallUncertain检查。可验证accepted只记受理；按最新 P0.1，Codex turn_started 只保留原回执，不设置 Started 或发布 EventStarted，正式开始依原 history/done 证明。不支持、缺字段、替换或未知不算可靠成功，保留原回执及原因，可能有副作用时不报未发送。其它agent契约保持。
-5. 不改observeOnce分流、NewLifecycle.queryInput目标接线、native_start/native_state、observeRecorded或reader。未知沿原错误/Reconcile/observer，不新接request-show、不回放send；缺accepted不能绕过原完成前提。保留本机模型/长final能力和原stop证明，不新建桥接、结果来源或持久化字段。
-
-## P3 清理屏幕专用依赖
-
-按Spec §5删除native_paste.go、Lifecycle.fitComposer及初始化、composerViewport、terminal_viewport.go专用实现/测试及fit/restore回执；删除native_paste*、native_reflow的投影/稳定断言和fixture字段，将有价值故障迁入通用提交行为测试。short_input_trace等诊断删除专用fit包装，不能误删独立证据。
-
-现有native_input_live_probe改为调用实际生产提交链路，取消手工paste/Enter、草稿read/resize门禁与segmented-shape专用模式；更新scripts/test-native-input.ps1、focused catalog及当前testing/test-catalog说明，计数改为Runner通用提交和正式历史原输入，保留原文/final/身份/清理断言。本机新增目标适配只用于同一正式测试入口，按现有准备与history流程验证，不改生产完成接线。
-
-全仓搜索submitNativePaste/nativePasteDraftMatches/nativeDraftNeedsReflow/fitComposer/FitBoundComposer/ComposerViewport/ViewportRPC/ViewportRecorder/ViewportFit/ViewportRestore/segmented-shape，逐引用确认专用项已删、共享项仍有正当使用。保留wire/reader、共享WaitTimeout及通用read能力。历史acceptance/evidence不删除或改判通过，必要时只追加后续状态说明。
-
-## P4 确定性回归与正式入口映射
-
-扩展现有orcatransport夹具、protocol/orca协议测试和tests/integration CLI/SQLite/服务恢复入口。用channel/显式屏障控制处理延迟、分段、回执顺序与故障位置；记录原请求、通用submit次数、实际CLI正文/UTF-8或摘要、模型wire与原结果。模拟provider处理只能证明Runner调用行为，不冒充真实Orca完整消费证明。
-
-NS-T09分层扩展TestNativePromptSharedQueueWithStopAndCancellation、TestOrcaCLISerializesProcessesWithoutRetryOrDispatchAfterCancellation及既有observer_queue/stop入口：同服务一个多行send持锁、第二Run的stop排队、第三Run调用排队后取消，用屏障释放持锁调用。核对取消回调0次、锁最终释放、未知不伪装已停止/完成及原提交不重复；不按外部OS锁的全局FIFO断言成功顺序，也不把已有独立锁测试充当新增接线验证。adapter三fixture与TestSROrcaCLIWaitRetry/three-runs-stop-queued真实服务三Run各自登记；后者核验准备队列零派发及撤销，不能将两者合称同服务三个活动原生Run的多行发送/观察/停止全链路证明。
-
-| 需求ID | 入口与拟映射 | 条件与独有断言 | 证据 |
-| --- | --- | --- | --- |
-| NS-T01 | lifecycle既有提交表；focused native-input | 多行、中文、内部空行、CRLF、长输入；本机现有wire、普通远端规范化均保持 | 冻结prompt/digest、编译wire/参数逐字节、一次通用submit；0手动ESC框架 |
-| NS-T02 | 同表及TestOrcaNativeStateLiveLifecycle | 折行、宽度改变、折叠标签、投影缺LF及屏幕不可读不影响Runner提交/归属 | 草稿正文read/fit/restore=0，text-only/bareEnter=0；正式原输入/final断言保留 |
-| NS-T03 | 原输入/history/native final既有反例 | 原输入缺失、截断、改字节、混入/重复输入；工具/旧结果 | 不能归属原输入成功；用正式原文/唯一性证明，不声称执行前原子拒绝 |
-| NS-T04 | 通用提交受控夹具 | 正文处理延迟/分段、回执乱序；unsupported/old-host/缺provider或observation/permission/进程替换 | submit≤1、无分开Enter/固定sleep恢复；异常不算可靠受理/开始、不谎报无副作用 |
-| NS-T05 | 原native start及本机history tests | 首次仅accepted、观察期限内未开始；随后新done/原输入补证或本机history完成 | 不提前started/completed；保留working开始条件和目标原有完成来源，无新增查询门禁 |
-| NS-T06 | 扩展TestSRStabilityLostSubmitResponse及native tests | 写入/提交、受理、开始、完成窗口回执丢失/超时；重复观察仍未知 | 原回执/原因/intent保留；submit≤1、request-show=0、0追加输入；缺accepted不伪造完成 |
-| NS-T07 | 身份/准备/并发反例 | runtime/terminal/incarnation/pane/provider/session变化、已知外来输入、同Runner并发 | 已知前置冲突零发送，后见冲突不成功归属、原因保留；idle不证明空草稿或原子排他 |
-| NS-T08 | 扩展TestSRRestartPreservesAuthorization及原reconnect/unknown入口 | 重复请求、断线、服务重启、原回执丢失/已清理 | 原journal/Request/Attempted恢复后只走现有对账；0追加send，无预算可重置或同ID安全重放假设 |
-| NS-T09 | 参数化local IPC/remote WS；既有CLI锁/多Run入口 | 同组输入/故障经通用提交；同服务≥3个Run、原生观察/stop排队、调用和排队期间取消 | 两目标无草稿路径、原wire/完成接线保留；CLI参数/锁序/实际调用计数；无死锁、取消后0派发/追加输入，遵守原调用期限，锁风险如实登记 |
-| NS-T10 | 既有model/history/original input/final及stop/reconcile tests | 执行→审计→执行模型/effort、本机32KiB结果边界、远端hook截断拒收、正式原文与资源清理 | 跑原有能力回归，不迁移模型/结果或放宽阈值；原证明链与完整stop census不退化 |
-| NS-T02/T07/T10 原准备读取批次 | TestLocalPreparationOriginalStream；同一 focused native-input 正式入口 | 两处显式 cursor 原始回执、完整/空流、屏幕/缺字段/截断/受限/身份/绑定反例 | 当时32新叶例各30次、同矩阵4860/0/0；当时READY恢复但认证目录阻断，后续双端资格见P6 |
-| NS-T02/T07/T10 持续读取修正 | TestFixedControlRetainedStream / TestFixedControlStreamFaults / TestFixedControlStreamBoundaries；同一 controlled 正式入口 | 超1000行/三页/前缀淘汰后正式history/workspace/auth-stop；未知回执沿原checkpoint恢复；缺页/身份/取消及快照/空流/半行边界 | 新增37叶例各30次；按原请求、摘要、实际读/发送及正式清理证明核验；实数见本次增量验收 |
-
-NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。报告实际执行、失败、跳过及case清单；目标固有不支持能力单列，不伪造双端模型能力等价。重复不替代覆盖，不计旧快照或13项隔离核查为新矩阵。
-
-实现时把NS-T01–T10绑定实际测试名/case ID；优先扩展tests/catalog.json.focused_native_scenarios、scripts/test-native-input.ps1及原TestOrcaNativeStateLiveLifecycle。统一测试目标格式，允许本机Environment为空，生产流程不因此改造。必要新增正式case同步cases.json/manifest/目录校验和当前文档，规划阶段不预注册未实现case。
-
-## P5 项目检查与真实验证
-
-2026-10-31 复审修正：先审计 Spec §1 的准备/持续读取边界，再仅调整 control 读取与两个
-调用点。准备维持 cursor 0 的严格完整门禁；持续查询按 nextCursor 读取首次 latestCursor
-以内的保留原始流，逐页核验身份和单调 cursor；首读允许旧前缀淘汰，中途缺页拒收。
-不新增持久状态、发送、恢复分支或通用分页框架。扩展现有 fixed control fixture 模拟累计
-输出、1000 行分页和旧前缀淘汰，通过实际读/发送计数、原请求和正式证据核验 history、
-workspace-audit、authentication-stop；覆盖分页中丢回执/身份变化/取消、无进展、持续新增输出、
-旧响应与错误绑定。将新增测试纳入原 controlled 入口，每叶例 30 次，先证实旧实现失败，
-再运行修复后矩阵、项目 L1 和独立复审。历史真实会话按原构建保存，不计为此增量的真实验证；
-不向旧 Run 重投、不补 Enter，不部署或改全局配置。最新增量结果单列验收记录。
-
-2026-10-30 用户已明确允许上述两处最小生产读取修正。实施 `--cursor 0` 及完整 stream
-校验，扩展原 control/ready 夹具和正式 controlled 入口，覆盖完整/空流、screen/缺 source、
-截断/输出受限/保留起点缺失、身份变化和错误编码。先审计该增量，再运行每例 30 次与受影响
-整包/项目规定检查。用最终构建的现有 agent 在三个全新本机现场验证，不重用失败 intent。
-仍不调整提交、模型、完成/停止算法；若出现其它生产问题，保留证据与范围边界。
-
-实施后运行scripts/test.ps1 -Level L1、受影响Controlled/L3正式入口、目录一致性及P4重复矩阵。核对diff没有模型、history、NativeProof/原输入、prepare/auth/stop/codec的生产重构；回执必要校验和草稿清理需逐项解释。多Run/观察/stop锁与取消回归为放行条件。
-
-使用受测构建，在全新隔离现场，本机/远端各至少3个独立原生会话。同组无副作用最小任务覆盖多行、中文、空行、CRLF、长输入，只返回nonce、不跑业务/Unity或创建业务PR。各目标按已有准备、认证和完成证明运行，不新增生产旁路。本机模型/长结果跑既有不退化回归，不要求先完成M1迁移，也不把六个短任务当作全部能力证明。
-
-发送前保存源码/测试EXE/CLI摘要、目标runtime/terminal/incarnation/session、原请求/冻结正文及完整资源清单。记录一次Runner通用提交、实际accepted/started及原完成证据、正式唯一原输入/完整final，精确停止本次资源并用清单证明清理。宿主内部按键/传输不可观察则明确标记，不能以一次RPC推断一次Enter。
-
-丢回执或未知不人工补Enter、不向历史Run重发；没有新增request-show自动恢复，缺证沿原错误处理，不能为了六次通过临时绕过。缺真实条件如实记未验证，不用受控通过或其它目标代替。历史症状是否消失只能由新现场证据判断。
-
-## P6 独立复审与交付
-
-2026-10-30 最终远端进展：用户指定现有 environment `192.168.1.151`，固定新配对及 runtime，
-在七个本次隔离现场中保留三份准备失败和独立诊断，三个全新 final 原生会话通过。远端测试仅补
-独立 Run/Attempt、创建身份围栏、原输入/intent/receipt 保存和既有正式 StopLifecycle/verifyStopped。
-READY-only 诊断在约118秒恢复并经原独立查询确认，审计同意删除测试专属90秒预算，准备与业务
-共享现有本机六分钟 fixture 期限，不改生产等待/提交/完成/停止算法，不重投或补 Enter。
-最终同源矩阵5040/0/0、L1通过；本机3/3与远端3/3的证明范围分别保持。详见远端最终验收。
-七个本次路径/注册及诊断资源已清理；独立复审和PR记录最终增量，不回写历史失败。
-
-2026-10-30 最终本机进展：按用户授权恢复实际 PTY host 的正常启动上下文后，本机三个全新
-原生会话通过。仅补测试目标的既有 AuditModel 前置门禁及签名证据绝对路径，未改认证或
-模型/完成生产代码。最终矩阵 168×30=5040/0/0，项目 L1 通过；NS-T07/T10 的目标反例绑定
-`TestLocalNativeProbeTargetAndBusinessScope/audit-*` 和 `writer-effort`。详见[最终补验](../acceptance/orca-native-submit-local-final.md)。
-其时远端仍未验证，原失败保持失败，PR 当时继续 Draft；最新双端状态见本节首段。
-
-2026-10-30 本机适配补充：已在隔离目录构建现有 `cmd/steerrunner-agent`，新增正式入口的本机
-v3 control/ready/history 测试适配。3900 次确定性回归通过；真实准备暴露原 control 默认读取
-返回 screen、折行破坏 READY 的问题，尚未进入业务提交，本机仍为 0/3。公开 cursor 流读取
-对照已确认可保留原始行。两处准备/控制读取的最小生产修正超出原窄范围，当前仅列候选、
-当时等待范围确认，未实施或通过测试注入；详见[本机补验记录](../acceptance/orca-native-submit-local.md)。
-用户随后已授权，P5 的两处读取增量已实施；最新[原始流补验记录](../acceptance/orca-native-submit-local-stream.md)
-分别记录当时读取修正验证及认证目录阻断；这是历史批次，当前双端结果见本节首段。
-
-提交最终diff、实际测试计数、六个真实会话证据、清理清单与未验项做独立复审，修正确认问题。更新原单独PR，实施和验收前保持draft，不合并或部署安装环境。
-
-最终说明删除的屏幕依赖、沿用的通用提交契约及未获证边界、保留的模型/身份/原输入/完成/停止位置、稳定与真实测试实数、专用代码/配置/测试/文档清理和PR链接。不新增重试预算，不把历史失败改为通过。
+新生产源完成新资格后更新原PR #73，不合并或部署；报告当前结果、已清理范围、权威来源、未验边界和PR链接。旧构建和历史失败保留在对应[实施](../acceptance/orca-native-submit-implementation.md)、[原双端](../acceptance/orca-native-submit-remote-final.md)、[持续读取](../acceptance/orca-native-submit-control-stream.md)、[保真](../acceptance/orca-native-submit-integrity.md)验收中，不改写或平移。

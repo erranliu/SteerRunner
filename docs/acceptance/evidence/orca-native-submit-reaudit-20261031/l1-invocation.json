@@ -1,0 +1,7 @@
+{
+  "package_parallelism": "existing Go default",
+  "level": "L1",
+  "source_digest": "c21d915a6d5ce1d03e7b437b94048614781052312279076ac2cb678f2c3ad894",
+  "entry": "scripts/test.ps1",
+  "per_package_timeout": "12m"
+}

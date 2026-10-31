@@ -21,7 +21,7 @@ control/ready/model/history/stop；本机准备失败须保留回执和清理记
 持续控制读取的累计输出/history/workspace/认证停止及分页故障、快照边界分别由
 `TestFixedControlRetainedStream`、`TestFixedControlStreamFaults`、`TestFixedControlStreamBoundaries`
 覆盖，纳入同一 controlled 入口的必需 root，每个叶例实际重复 30 次。
-保真修正另由原受控入口覆盖模型桥实际 WebSocket、超16MiB回复后同连接原提交、CR参数与逻辑LF原文、仅stage不提前Started；235叶各30次与双端各3场证据见[专项验收](acceptance/orca-native-submit-integrity.md)。
+保真修正另由原受控入口覆盖模型桥实际 WebSocket、超16MiB回复后同连接原提交、CR参数与逻辑LF原文、仅stage不提前Started；239叶各30次（含生产构造器接线回归）与双端各3场证据见[专项验收](acceptance/orca-native-submit-reaudit.md)。
 旧 `segmented-shape` 模式退出当前入口，历史证据不改；本机原准备/模型/history未具备时
 须如实标未验证。默认 L1 包含受控回归，真实探针另验，见[入口](testing.md)。
 下文日期增量中的旧数量仅表示当时状态；本次已落实 L2/parser 拆分、feedback 吸收、generate/takeover 及 L4 同批构建复用，核对与后续精简顺序见[整理结论](#测试整理结论-2026-10-26)。

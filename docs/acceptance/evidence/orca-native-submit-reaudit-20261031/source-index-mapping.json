@@ -1,0 +1,19 @@
+{
+  "source_digest": "c21d915a6d5ce1d03e7b437b94048614781052312279076ac2cb678f2c3ad894",
+  "checked_source_files": 695,
+  "git_source_content_digest": "37221d19a8d12020dbcbd0fae4992f20d1fffc421a35403dc3aec8658a9fc432",
+  "normalizations": [
+    {
+      "path": "internal/execution/adapters/orcatransport/native_start_windows_test.go",
+      "raw_sha256": "cd4c842de76140dd21d523e138bce821d0371a4e5c402c10180513fd777ba722",
+      "git_blob_sha256": "2272640ae388c6734cb5c78bae9b6138c9b8ad1f0cebd1937675616299e685de",
+      "conversion": "existing repository CRLF to LF only"
+    },
+    {
+      "path": "scripts/test-native-input.ps1",
+      "raw_sha256": "5757598d541b0a43a2c125d2402033920adaafcb74c6c62d083fae9b8a5260b7",
+      "git_blob_sha256": "b871d1c446ee9aa9a8530ab52cf06a2bdf5cdc127f9fe73b02831c9d94dc86dc",
+      "conversion": "existing repository CRLF to LF only"
+    }
+  ]
+}

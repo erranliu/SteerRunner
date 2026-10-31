@@ -7,6 +7,8 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -15,12 +17,16 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, fullMetadata ...bool) {
-	thinInputRPCAt(t, p, end, prompt, duplicate, 11001, fullMetadata...)
+func thinInputRPC(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, fullMetadata ...bool) *atomic.Int32 {
+	return thinInputRPCAt(t, p, end, prompt, duplicate, 11001, fullMetadata...)
 }
 
-func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, timestamp int64, fullMetadata ...bool) {
+func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, prompt string, duplicate bool, timestamp int64, fullMetadata ...bool) *atomic.Int32 {
 	t.Helper()
+	_, workspace, ok := strings.Cut(p.WorktreeID, "::")
+	if !ok || workspace == "" {
+		t.Fatal("missing original fixture workspace")
+	}
 	endpoint := `\\.\pipe\sr-thin-input-` + digest([]byte(t.TempDir()))[:24]
 	listener, err := winio.ListenPipe(endpoint, nil)
 	if err != nil {
@@ -28,6 +34,7 @@ func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, pr
 	}
 	done := make(chan struct{})
 	stop := make(chan struct{})
+	var inputQueries atomic.Int32
 	go func() {
 		defer close(done)
 		for {
@@ -52,8 +59,9 @@ func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, pr
 					case "status.get":
 						result = map[string]any{}
 					case "terminal.show":
-						result = map[string]any{"terminal": map[string]any{"handle": p.Terminal, "incarnationId": p.Incarnation, "worktreeId": p.WorktreeID, "worktreePath": "original", "branch": "worker", "connected": true, "agentIdentity": "codex"}}
+						result = map[string]any{"terminal": map[string]any{"handle": p.Terminal, "incarnationId": p.Incarnation, "worktreeId": p.WorktreeID, "worktreePath": workspace, "branch": "worker", "connected": true, "agentIdentity": "codex"}}
 					case "nativeChat.readSession":
+						inputQueries.Add(1)
 						user := func(id string) any {
 							return map[string]any{"id": id, "role": "user", "source": "transcript", "timestamp": timestamp, "blocks": []any{map[string]string{"type": "text", "text": prompt}}}
 						}
@@ -105,6 +113,95 @@ func thinInputRPCAt(t *testing.T, p b.ProcessIdentity, end native.AgentState, pr
 	data, _ := json.Marshal(map[string]any{"runtimeId": p.RuntimeID, "authToken": "test-secret", "transport": map[string]string{"kind": "named-pipe", "endpoint": endpoint}})
 	if err := os.WriteFile(filepath.Join(dir, "orca-runtime.json"), data, 0600); err != nil {
 		t.Fatal(err)
+	}
+	return &inputQueries
+}
+
+// The unmanaged local native path is still supported for non-GitHub repos.
+// Exercise the production constructor without injecting queryInput or Started.
+func TestLocalNativeProbeOriginalQueryConstructor(t *testing.T) {
+	for _, mode := range []string{"thin", "corroborated", "duplicate", "altered"} {
+		t.Run(mode, func(t *testing.T) {
+			l, host, s := fixture(t)
+			l.setup.RepositoryURL = "https://gitea.example/owner/repo.git"
+			r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bind(&s, r)
+			base := fixtureState(10, "previous", "done")
+			factory := func(context.Context, string, b.ProcessIdentity) (native.StateFeed, error) {
+				return &controlledStateFeed{initial: base, current: base}, nil
+			}
+			l.stateFactory = factory
+			l.clock = func() time.Time { return time.Unix(100, 0).UTC() }
+			input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: strings.Repeat("本机原文\r\n\r\n", 40)}
+			s.PendingTurn = &input
+			r, err = l.prepareInput(context.Background(), request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bind(&s, r)
+			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+			if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
+				t.Fatal("acceptance became business start", r, err)
+			}
+			bind(&s, r)
+			l.closeStateFeed()
+			state, err := l.state(s)
+			if err != nil || state.Turns[0].WireFormat != "" || state.RemoteReadiness != nil {
+				t.Fatal("not the ordinary local native path", state, err)
+			}
+			end := fixtureState(12, "", "done")
+			end.Observation, end.TurnStartedAt = nil, 0
+			end.ProviderSession.TranscriptPath = "original.jsonl"
+			end.LastAssistantMessage = "canonical local native completion"
+			if mode == "corroborated" {
+				meta := *fixtureState(12, "", "done").Observation
+				meta.Incarnation = 1
+				end.MetadataObservation, end.TurnStartedAt = &meta, 11000
+			}
+			text := nativePromptText(input.Prompt)
+			if mode == "altered" {
+				text += " foreign input"
+			}
+			queries := thinInputRPC(t, state.Process, end, text, mode == "duplicate", mode == "corroborated")
+			t.Setenv("LOCALAPPDATA", t.TempDir())
+			setup := l.setup.Clone()
+			setup.Snapshot = s
+			port, err := NewLifecycle(setup)
+			if err != nil {
+				t.Fatal(err)
+			}
+			l = port.(*Lifecycle)
+			l.stateFactory = factory
+			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
+			t.Cleanup(l.closeStateFeed)
+			r, message, err := l.observeOnce(context.Background(), s)
+			if err != nil || host.nativeSends != 1 {
+				t.Fatal("query failed or repeated business input", err, host.nativeSends)
+			}
+			if queries.Load() != 1 {
+				t.Fatalf("original input query calls=%d; diagnostic=%q", queries.Load(), r.Diagnostic)
+			}
+			positive := mode == "thin" || mode == "corroborated"
+			if !positive {
+				if r.State.TurnStarted || r.TurnEvidence != nil || message != nil || r.Diagnostic == "" {
+					t.Fatal("foreign input claimed", r, message)
+				}
+				return
+			}
+			// Local native finals use TurnEvidence; the remote public-candidate
+			// channel remains disabled for local targets.
+			if !r.State.TurnStarted || r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || r.TurnEvidence.LastMessage != end.LastAssistantMessage || message != nil {
+				t.Fatalf("accepted local native input cannot complete through constructor: started=%t final=%t diagnostic=%q", r.State.TurnStarted, r.TurnEvidence != nil, r.Diagnostic)
+			}
+			bind(&s, r)
+			state, err = l.state(s)
+			if err != nil || state.Turns[0].Native.WorkingAt != 0 || state.Turns[0].Recorded != nil {
+				t.Fatal("fabricated streamed start or helper fallback", state, err)
+			}
+		})
 	}
 }
 

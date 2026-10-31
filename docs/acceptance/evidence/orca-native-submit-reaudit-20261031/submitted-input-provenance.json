@@ -1,0 +1,21 @@
+{
+  "source": "C:/Users/lmas1/.codex/history.jsonl",
+  "selection": "Exact provider session_id of this batch local-01/02/03 only; original selected JSONL lines plus LF, no unrelated history.",
+  "records": [
+    {
+      "session_id": "01a19004-e873-7150-a8cd-c5f4d5dc2f76",
+      "original_line_sha256": "bc9b6b062619e868785e081ce67cc62250cf9a9e2fedc17bd0ba106ad396a61b",
+      "text_sha256": "2859a7f222c0f301edb6c9d51ae2a8babec62380838b39591e3db9416741f50c"
+    },
+    {
+      "session_id": "01a19006-adad-79f3-b6c2-ad1c1e91720e",
+      "original_line_sha256": "a45dd42b03fdc476774a0aefa0e249615ea2777d60e684863c43b9a67517315e",
+      "text_sha256": "44c6b6d1273b4af7995df09cfaf9467cbf44f0f3abed92ef48cfb844ead3894a"
+    },
+    {
+      "session_id": "01a19008-3447-7c83-81b7-d644768bbd13",
+      "original_line_sha256": "4d56cb959463726f3cd2ad520f8f2b285cfd5858262b9ab93ff00868c8a94d18",
+      "text_sha256": "08b508008a22c970e22eddb4e34440033f961fdb58d4d0aa6d4146db5a338355"
+    }
+  ]
+}
