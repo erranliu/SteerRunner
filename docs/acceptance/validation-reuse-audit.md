@@ -10,13 +10,14 @@
 | P1：子进程创建时间二次解析丢失时区 | PowerShell 可将 JSON ISO 时间直接转换为 DateTime，再 Parse 会通过无时区字符串转换，在非 UTC 主机误判活跃 PID 已复用；改为保留 DateTime 类型直接转换 UTC | 真实仍存活子进程先暴露半个 JSON，退出后结果才允许读取；原判断在此测试实际失败，修复后通过 |
 | P2：先解析 result，再等 harness 退出 | result.json 的可见性不代表写入或进程结束；现在沿原聚合期限先确认子进程退出，再解析结果，不改变断言、场景或超时预算 | 实际半写结果发布及超期拒绝合同；完整 Controlled 重新验证 |
 | P2：构建/运行设置遗漏 | GOAMD64/GODEBUG 改变未改变输入身份；现记录这两项；不支持非空 NODE_OPTIONS 的预加载/附加设置，原默认入口继续允许原环境执行 | 真实 Go 环境切换摘要差异、Node 设置拒绝 |
+| P2：合同入口误把不可复用当作默认失败 | 仓库含不支持复用的目录输入时，直接调用严格 snapshot 的合同冒烟会阻断原默认测试；改用默认入口相同的 unavailable 回退，并在普通隔离仓库单独验证严格 snapshot | 不支持输入的默认回退合同；正常严格 snapshot 冒烟仍保留 |
 | P1：原始证据 Git 换行转换 | 新证据目录继承 text/eol=lf，原始 manifest 经索引过滤后 Git 对象 SHA 与原始字节不同，破坏归档 SHA；增加目录 -text/-whitespace 保护 | 暂存和提交后的 blob SHA 与原始内容一致；资格证据 SHA 全量重算 |
 
 不修改生产 Go、catalog/registry、integration/native 测试主体、权限/发布/停止逻辑、循环、skip allowlist 或场景期限。L3/L4 不开放复用，原可选字段缺省路径保持。
 
 ## 合同检查
 
-74 项通过，源记录 `.evidence/validation-reuse-audit-contract-02/prerequisites/verified.json`。包括前序 66 项、任意 ignored 数据、目录输入、构建设置、Node 附加设置、真实子进程结果发布与原 deadline。原失败合同尝试保留在 audit-contract-01，不追认通过。
+75 项通过，源记录 `.evidence/validation-reuse-audit-contract-03/prerequisites/verified.json`。包括前序 66 项、任意 ignored 数据、目录输入及默认回退、构建设置、Node 附加设置、真实子进程结果发布与原 deadline。原失败合同尝试保留在 audit-contract-01，不追认通过。
 
 ## 最终验证
 
