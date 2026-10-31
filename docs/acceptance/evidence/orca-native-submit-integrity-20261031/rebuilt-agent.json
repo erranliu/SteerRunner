@@ -1,0 +1,7 @@
+{
+  "original_agent_sha256": "10F90833023CAF64C4EC4C6412D7C66CC398983F10202FAB1E9AA508104DB15E",
+  "rebuilt_agent_sha256": "10F90833023CAF64C4EC4C6412D7C66CC398983F10202FAB1E9AA508104DB15E",
+  "source_digest_after_unit_fixture": "b3a64227b6b7af3ab4595b24cd85434fe56d427f2685d3cbc488555e8e635c91",
+  "command": "go build -trimpath -buildvcs=false ./cmd/steerrunner-agent",
+  "identical": true
+}

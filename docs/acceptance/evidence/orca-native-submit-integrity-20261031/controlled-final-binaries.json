@@ -1,0 +1,13 @@
+{
+  "source_digest": "b3a64227b6b7af3ab4595b24cd85434fe56d427f2685d3cbc488555e8e635c91",
+  "executables": [
+    {
+      "file": "native-input.test.exe",
+      "sha256": "bc04fc4702de40f195afa095e00d5f49fca9474edc2451b3ccac6090a1c1bfd8"
+    },
+    {
+      "file": "native-model.test.exe",
+      "sha256": "24f1fc3b80b1e621e763002db147f1c9ad68b75659de0c94018cffdc2c3beef6"
+    }
+  ]
+}

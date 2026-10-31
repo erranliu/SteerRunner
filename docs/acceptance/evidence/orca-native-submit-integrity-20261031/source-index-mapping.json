@@ -1,0 +1,21 @@
+{
+  "native_source_digest": "c8ead691b0f28ebae4c9bfeb21c2dd90e2966535f8a7873873aa0fa5d7e81395",
+  "final_test_source_digest": "b3a64227b6b7af3ab4595b24cd85434fe56d427f2685d3cbc488555e8e635c91",
+  "git_source_content_digest": "74d85da6405207993e8ed16e6742d8858a23b210aabd1992d84dd54349ecd06f",
+  "checked_source_files": 695,
+  "normalizations": [
+    {
+      "path": "internal/execution/adapters/orcatransport/native_start_windows_test.go",
+      "raw_sha256": "cd4c842de76140dd21d523e138bce821d0371a4e5c402c10180513fd777ba722",
+      "git_blob_sha256": "2272640ae388c6734cb5c78bae9b6138c9b8ad1f0cebd1937675616299e685de",
+      "conversion": "CRLF to LF only under existing repository attributes"
+    },
+    {
+      "path": "scripts/test-native-input.ps1",
+      "raw_sha256": "3cee0bf00cb295d9cd110b3e008431b07185b4f92704d457a83c4a05f44bc894",
+      "git_blob_sha256": "86f537f5d5506e5d34c5b090ab90f271892de79f65f99103c7c93c7ef27399d3",
+      "conversion": "CRLF to LF only under existing repository attributes"
+    }
+  ],
+  "note": "The build-time dirty raw-source digest is not relabeled as a clean commit digest. All staged source contents equal tested bytes modulo the existing repository CRLF-to-LF text conversion in the listed files."
+}

@@ -89,18 +89,18 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 			}
 			host.unstarted = mode != "zero-incarnation-started"
 			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-			if err != nil || !r.State.InputAccepted || r.State.TurnStarted != !host.unstarted {
-				t.Fatal("fixture must capture the original start receipt", r, err)
+			if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
+				t.Fatal("receipt stage cannot prove original business start", r, err)
 			}
 			bind(&s, r)
 			if mode == "zero-incarnation-started" {
-				// The ordinary text+Enter path has an original start receipt and
-				// can retain the observed working root on the legal initial generation.
+				// Even a reported start plus working cannot replace the formal
+				// original-input proof on the legal initial generation.
 				working := fixtureState(11, input.Prompt, "working")
 				feed.events = []native.AgentState{working}
 				feed.current = working
 				r, _, err = l.observeOnce(context.Background(), s)
-				if err != nil {
+				if err != nil || r.State.TurnStarted {
 					t.Fatal(err)
 				}
 				bind(&s, r)
@@ -259,7 +259,7 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 			if missing {
 				// An absent/null counter must remain incomplete, including after
 				// the RPC and implementation snapshot JSON round trips.
-				if inputQueries != 0 || !strings.Contains(r.Diagnostic, "no verified start receipt") {
+				if inputQueries != 0 || !strings.Contains(r.Diagnostic, "no verified original turn/input proof") {
 					t.Fatal("incomplete observation authorized recovery", inputQueries, r.Diagnostic)
 				}
 				bind(&s, r)

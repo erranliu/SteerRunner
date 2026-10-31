@@ -781,11 +781,17 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		l.closeStateFeed()
 		return receipt, errors.New("native multiline input contains terminal control characters; no input sent")
 	}
+	if l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
+		// Encode terminal paste line breaks as CR; Codex restores logical LF.
+		// Frozen wire/budget digests still describe the original logical text,
+		// not this CLI parameter. Local and remote inputs use the same encoding.
+		text = strings.ReplaceAll(text, "\n", "\r")
+	}
 	args := []string{"terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--retry-request", turn.Request, "--json"}
 	if l.profileVersion == NativeRemoteProfileVersion {
 		// Orca's default receipt may precede the original turn-start observation.
 		// Wait on this single accepted request; timeout never resends input and
-		// still leaves Started false unless the bound receipt proves it.
+		// is only a hint; original native input/history must prove business start.
 		args = append(args, "--wait-submit", "20")
 	}
 	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, args...)
@@ -827,7 +833,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	}
 	turn.Accepted = true
 	for _, stage := range sent.Send.Prompt.Stages {
-		if stage == "turn_started" && l.profile.Terminal == nil {
+		if stage == "turn_started" && l.profile.Terminal == nil && s.Ref.Agent.Name != "codex" {
 			turn.Started = true
 		}
 	}

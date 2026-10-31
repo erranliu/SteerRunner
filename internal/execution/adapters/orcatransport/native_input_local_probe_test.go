@@ -263,6 +263,9 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 			if candidate.Action == b.LifecycleStartTurn {
 				observed = result.Observer
 				record["submit_receipt"], record["initial_start_confirmed"] = result.Receipt.Operation.Receipt, result.Receipt.State.TurnStarted
+				if result.Receipt.State.TurnStarted {
+					t.Fatal("send stage was promoted to original business start")
+				}
 				record["business_inputs"] = 1
 			}
 			break

@@ -39,7 +39,7 @@ func (l *Lifecycle) waitOriginalComposer(ctx context.Context, snapshot b.Lifecyc
 }
 
 // A completed, independently queried original input proves that it started even
-// when the bounded send receipt missed turn_started. Never replay a send, infer
+// without trusting a send stage. Never replay a send, infer
 // a start from READY/a screen/working alone, or authorize a streamed start here.
 func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.LifecycleSnapshot, state *State, turn *Turn, sample native.AgentState) (native.AgentState, error) {
 	if turn.Started || !turn.Accepted || l.queryInput == nil || turn.Native.agentName() != "codex" ||

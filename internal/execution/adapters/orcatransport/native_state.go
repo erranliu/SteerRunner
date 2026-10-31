@@ -524,7 +524,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 				return turn.Native.diagnostic()
 			}
 			if !turn.Started {
-				return "Original input has no verified start receipt or completed original input; no input was resent"
+				return "Original input has no verified original turn/input proof; no input was resent"
 			}
 		}
 		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&

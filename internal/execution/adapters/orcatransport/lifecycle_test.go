@@ -362,7 +362,7 @@ func TestTerminalLifecycleReplyReuseAndExactStop(t *testing.T) {
 		var input b.TurnInput
 		s, input = prepared(t, l, s, cmd)
 		r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-		if err != nil || !r.State.InputAccepted || !r.State.TurnStarted {
+		if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
 			t.Fatal("acceptance confused with start", err)
 		}
 		bind(&s, r)
@@ -554,6 +554,7 @@ func TestPreparationAndSubmissionNeverReadScreen(t *testing.T) {
 }
 
 func settled(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot) (b.LifecycleReceipt, *b.PublicMessage, error) {
+	s = confirmedNativeTurn(t, l, s)
 	t.Helper()
 	return l.observeOnce(context.Background(), s)
 }
@@ -575,8 +576,15 @@ func TestTerminalReplyRequiresOriginalStartedAndEnded(t *testing.T) {
 			}
 			bind(&s, r)
 			f.busy = mode == "busy"
+			if mode == "busy" {
+				s = confirmedNativeTurn(t, l, s)
+			}
+			state, stateErr := l.state(s)
+			if stateErr != nil || turnFor(&state, input.CommandID).Started != (mode == "busy") {
+				t.Fatal("wrong confirmed-start fixture precondition", stateErr)
+			}
 			r, _, err = l.observeOnce(context.Background(), s)
-			if err != nil || r.TurnEvidence != nil {
+			if err != nil || r.TurnEvidence != nil || r.State.TurnStarted != (mode == "busy") || r.State.TurnCompleted {
 				t.Fatal("unverified completion", err)
 			}
 		})
@@ -594,8 +602,8 @@ func TestTerminalPreviousReplyCannotCompleteNewTurn(t *testing.T) {
 	f.lines = append([]string(nil), old...)
 	s, input := prepared(t, l, s, strings.Repeat("c", 32))
 	r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-	if err != nil || !r.State.TurnStarted {
-		t.Fatal("new input did not start", err)
+	if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
+		t.Fatal("new input acceptance became start", err)
 	}
 	bind(&s, r)
 	// An idle screen can still show the previous completion. Unrelated output
@@ -644,6 +652,7 @@ func TestTerminalNativeFinalRecoveryNeverReplaysInput(t *testing.T) {
 	}
 	bind(&s, r)
 	// Persist the original native start/end and body before settlement.
+	s = confirmedNativeTurn(t, l, s)
 	state, err := l.state(s)
 	if err != nil {
 		t.Fatal(err)
@@ -690,8 +699,8 @@ func TestNativeRemoteSubmissionWaitsForOriginalStart(t *testing.T) {
 		s, input := prepared(t, l, s, strings.Repeat("c", 32))
 		f.unstarted = unstarted
 		r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-		if err != nil || !r.State.InputAccepted || r.State.TurnStarted == unstarted {
-			t.Fatal("start must come from the original receipt", r, err)
+		if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
+			t.Fatal("send stage cannot prove original business start", r, err)
 		}
 		bind(&s, r)
 		state, err := l.state(s)

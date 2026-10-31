@@ -259,6 +259,9 @@ func runNativeInputLiveProbe(t *testing.T) {
 	record["request_id"] = r.RequestID
 	record["operation_id"] = req.Operation.ID
 	record["initial_start_confirmed"] = r.State.TurnStarted
+	if r.State.TurnStarted {
+		t.Fatal("send stage was promoted to original business start")
+	}
 	if e != nil || obs == nil {
 		t.Fatal("original submission unverified", e)
 	}

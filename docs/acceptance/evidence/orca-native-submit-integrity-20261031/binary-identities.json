@@ -1,0 +1,32 @@
+{
+  "agent": {
+    "sha256": "10f90833023caf64c4ec4c6412d7c66cc398983f10202fab1e9aa508104db15e"
+  },
+  "test_executables": [
+    {
+      "session": "local-01",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    },
+    {
+      "session": "local-02",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    },
+    {
+      "session": "local-03",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    },
+    {
+      "session": "remote-01",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    },
+    {
+      "session": "remote-02",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    },
+    {
+      "session": "remote-03",
+      "sha256": "e8fb4781abb74ebed2594bfb05b213667a034ce252e191fa905016ab2816e0d2"
+    }
+  ],
+  "note": "Isolated builds; binaries are not published or deployed. Build-time HEAD c5104e0, dirty=true; tested source bytes are pinned separately."
+}

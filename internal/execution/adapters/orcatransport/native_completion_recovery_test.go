@@ -34,6 +34,7 @@ func TestOrcaNativeIncompleteMetadataRecovers(t *testing.T) {
 						t.Fatal(err)
 					}
 					bind(&s, r)
+					s = confirmedNativeTurn(t, l, s)
 					poll := func() b.LifecycleReceipt {
 						r, _, err := l.observeOnce(context.Background(), s)
 						if err != nil {
@@ -171,6 +172,7 @@ func TestOrcaNativeFinalRetainsVerifiedInputBinding(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			s = confirmedNativeTurn(t, l, s)
 			start := fixtureState(11, input.Prompt, "working")
 			feed.events, feed.current = []native.AgentState{start}, start
 			r, _, err = l.observeOnce(context.Background(), s)
@@ -254,6 +256,7 @@ func TestOrcaObserverReportsChangingGapAndRecovery(t *testing.T) {
 		t.Fatal(err)
 	}
 	bind(&s, r)
+	s = confirmedNativeTurn(t, l, s)
 	start := fixtureState(11, input.Prompt, "working")
 	partial := fixtureState(12, "", "working")
 	partial.MainAgent.StateStartedAt = start.MainAgent.StateStartedAt

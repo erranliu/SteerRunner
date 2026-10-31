@@ -1,0 +1,50 @@
+[
+  {
+    "root": ".evidence/orca-native-integrity-fix-20261031/local-01",
+    "source_digest": "bb68f1229a19e618a01a2109ace573090d4a4e3dbdf1f7b4c76c96db6177bc12",
+    "run": "9c96739d9e0c68a2f65575768f4f5f3b",
+    "request": "f08452ef-f5d0-ed14-6fbd-960d502fcdcb",
+    "session": "01a18f8f-4962-7023-839e-b55248b66b06",
+    "logical_bytes": 5093,
+    "actual_parameter_sha256": "23eacb3e99e79f72eeb4932ce467b9fac99801b41035cdd47e9a9b7de1c9686c",
+    "logical_sha256": "cb3db32ee8a8f3b5c62800e30c3f225aeb53f4ea4bdd37b875e14ba8cd3202fd",
+    "submitted_bytes": 5085,
+    "submitted_sha256": "7da973ca7c21993d1d6e63de1fa4fd6f5cae25cc65512ecb19abf0e59827303e",
+    "only_lf_deleted": true,
+    "deleted_lf": 8,
+    "deleted_positions": [
+      593,
+      594,
+      634,
+      635,
+      675,
+      676,
+      716,
+      717
+    ],
+    "completed": false,
+    "cleaned_up": true,
+    "initial_start": false
+  },
+  {
+    "root": ".evidence/orca-native-integrity-final-20261031/local-03",
+    "source_digest": "e05e046a0f20e8a1861e60791d593ff889300a86694c8cdbdba3ac976728aeb5",
+    "run": "7fa3197773242370a61a9c126e03978a",
+    "request": "5e8d8939-e89e-df31-66e6-0506eb752621",
+    "session": "01a18fa6-3b75-74e3-b5a9-9b656e823880",
+    "logical_bytes": 5093,
+    "actual_parameter_sha256": "1ae9ba778823a86f5f5414f19520e98c791a8ec569e30410ef97eb221b9119e6",
+    "logical_sha256": "1ae9ba778823a86f5f5414f19520e98c791a8ec569e30410ef97eb221b9119e6",
+    "submitted_bytes": 5091,
+    "submitted_sha256": "dba95319593c5e49b58cf31b44b42c172272c7e5d5e1921905252d98a2871d7c",
+    "only_lf_deleted": true,
+    "deleted_lf": 2,
+    "deleted_positions": [
+      3586,
+      3587
+    ],
+    "completed": false,
+    "cleaned_up": true,
+    "initial_start": false
+  }
+]

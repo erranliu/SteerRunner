@@ -1,0 +1,242 @@
+{
+  "source_digest": "b3a64227b6b7af3ab4595b24cd85434fe56d427f2685d3cbc488555e8e635c91",
+  "repeat": 30,
+  "roots": 6,
+  "leaves": 33,
+  "executed": 990,
+  "failed": 0,
+  "skipped": 0,
+  "cases": [
+    {
+      "id": "TestOriginalTerminalRPCIdentity/valid",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/orphaned",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/refs-prefix",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/initializing",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/initializing-wrong-branch",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/managed-pi",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/managed-dsh",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/runtime",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/request",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/handle",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/incarnation",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/worktree",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/workspace",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/branch",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/agent",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/disconnected",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/exited",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/empty",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/malformed",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCIdentity/rejected",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCBypassesCLIQueue",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCCancellation/already-canceled",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCCancellation/cancel-read",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCCancellation/deadline",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCChecksBothSidesOfObservation",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=false",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/stop/replaced=true",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=false",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity/recovery/replaced=true",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalConcurrency/1",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalConcurrency/5",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalConcurrency/10",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "id": "TestOriginalTerminalConcurrency/20",
+      "executed": 30,
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0
+    }
+  ]
+}
