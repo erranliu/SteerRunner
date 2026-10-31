@@ -1,0 +1,106 @@
+[
+  {
+    "file": "codex-rs__app-server-client__src__remote.rs",
+    "bytes": 45207,
+    "sha256": "24aae9b4a6ae2df99e82f46924b288201fdbcdbf4905210f1f3dff3c2ff6007f",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/app-server-client/src/remote.rs"
+  },
+  {
+    "file": "codex-rs__app-server-client__src__remote_websocket.rs",
+    "bytes": 4786,
+    "sha256": "d045e4f4e8feb3c13e7c786df96430283690b0f9a8ffd7a58d8db8c5b491c8b5",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/app-server-client/src/remote_websocket.rs"
+  },
+  {
+    "file": "codex-rs__app-server-protocol__src__protocol__v2__turn.rs",
+    "bytes": 24006,
+    "sha256": "738b3d50295333f9974ec95c8154e24af42abf505f7cbabc6a32cfe1e8130889",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/app-server-protocol/src/protocol/v2/turn.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app_server_session.rs",
+    "bytes": 187566,
+    "sha256": "f235475653165b10d2f49c86b961682557072cb3314df3b02a243efa12ade137",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app_server_session.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app__app_server_requests.rs",
+    "bytes": 48958,
+    "sha256": "9a729236f110f47404bf73fcb3192140da1a76a3f5a86e105d11361df0c5ec28",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app/app_server_requests.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app__backend_sessions.rs",
+    "bytes": 4843,
+    "sha256": "45f55f57cd632e61cde1f117e8d939009e41a10e1caf84f0fbdb555ce4bffddc",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app/backend_sessions.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app__event_dispatch.rs",
+    "bytes": 189726,
+    "sha256": "c68c0d09e36f93682ec65e1618b55c66d6020e70d7bf3f402215caaa71de41da",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app/event_dispatch.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app__reconnect.rs",
+    "bytes": 28252,
+    "sha256": "efcd8ed38855f9db16532aa6dec9014977ead3585132cffa4cf347edbb5003e9",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app/reconnect.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__app__user_turn_submission.rs",
+    "bytes": 7382,
+    "sha256": "f748e38e4dd963e9a483148180bec86e2500f9301162c71da1bd9ac56062f5a7",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/app/user_turn_submission.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__chatwidget__input_flow.rs",
+    "bytes": 18227,
+    "sha256": "7818b1ce9413b89b1fdd9f1dd1350af2bd839c7100bab2ee003873f53f9deb6d",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/chatwidget/input_flow.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__chatwidget__input_submission.rs",
+    "bytes": 24387,
+    "sha256": "d89e2d6298b3036b85e6f11579ed4a3d068c44a1b44eebdec3cd7a12160f3d2b",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/chatwidget/input_submission.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__chatwidget__reconnect.rs",
+    "bytes": 11576,
+    "sha256": "5f6f1830d1a85856fb3b172daeed62e87907509a2d110c43b4b6c19c7eedd7e3",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/chatwidget/reconnect.rs"
+  },
+  {
+    "file": "codex-rs__tui__src__startup_recovery.rs",
+    "bytes": 6276,
+    "sha256": "1c0ef22d326c5686de7d06c3af9fe6f8a22d8e24fb3dacd712d98ca38cdb78fd",
+    "ref": "rust-v0.166.0-alpha.5.1",
+    "repository": "openai/codex",
+    "path": "codex-rs/tui/src/startup_recovery.rs"
+  }
+]

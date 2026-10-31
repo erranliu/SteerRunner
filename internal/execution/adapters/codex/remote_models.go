@@ -222,7 +222,10 @@ func startRemoteModelBridge(ctx context.Context, c RemoteAgentConfig, upstream, 
 			return
 		}
 		defer upstreamConn.CloseNow()
-		upstreamConn.SetReadLimit(16 << 20)
+		// Match Codex's native remote-client message bound. Startup metadata
+		// (for example plugin/list) can exceed 16 MiB; truncating it disconnects
+		// the TUI while it is still consuming the original terminal input.
+		upstreamConn.SetReadLimit(128 << 20)
 		connection, cancelConnection := context.WithCancel(lifetime)
 		defer cancelConnection()
 		done := make(chan struct{}, 1)
@@ -243,9 +246,31 @@ func startRemoteModelBridge(ctx context.Context, c RemoteAgentConfig, upstream, 
 			if e != nil {
 				break
 			}
+			original := body
 			body, e = rewriteRemoteModelRequest(body, c, session)
 			if e != nil {
-				break
+				var request struct {
+					ID json.RawMessage `json:"id"`
+				}
+				if json.Unmarshal(original, &request) != nil || len(request.ID) == 0 || string(request.ID) == "null" {
+					break
+				}
+				var id any
+				if json.Unmarshal(request.ID, &id) != nil {
+					break
+				}
+				_, stringID := id.(string)
+				_, numberID := id.(float64)
+				if !stringID && !numberID {
+					break
+				}
+				// Reject the original RPC explicitly, without forwarding it or
+				// disguising an integrity failure as a reconnectable transport loss.
+				reply, _ := json.Marshal(map[string]any{"id": request.ID, "error": map[string]any{"code": -32602, "message": e.Error()}})
+				if downstream.Write(connection, websocket.MessageText, reply) != nil {
+					break
+				}
+				continue
 			}
 			if upstreamConn.Write(connection, kind, body) != nil {
 				break

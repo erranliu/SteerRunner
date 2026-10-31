@@ -147,6 +147,7 @@ func TestOrcaNativeStateLifecycle(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			s = confirmedNativeTurn(t, l, s)
 			feed.queries = 0
 			instant := time.Unix(100, 0).UTC()
 			l.clock = func() time.Time { return instant }
@@ -279,6 +280,7 @@ func TestOrcaNativeFinalIgnoresScreen(t *testing.T) {
 					t.Fatal(err)
 				}
 				bind(&s, r)
+				s = confirmedNativeTurn(t, l, s)
 				body := `{"outcome":"done","summary":"Published","outputs":{"pr_url":"https://github.com/erranliu/SteerlineTest/pull/229"}}`
 				if scenario == "shortened-link" {
 					body = "Updated [evidence/native-101.md](C:/work/evidence/native-101.md) with `UTF-8`."
@@ -334,6 +336,7 @@ func TestOrcaNativeFinalRetriesMissingBodyAndQueryFailure(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			s = confirmedNativeTurn(t, l, s)
 			feed.queries = 0
 			instant := time.Unix(100, 0).UTC()
 			l.clock = func() time.Time { return instant }
@@ -374,12 +377,14 @@ func TestOrcaObserverDeliversNativeFinalWithoutScreen(t *testing.T) {
 	bind(&s, r)
 	s, input := prepared(t, l, s, strings.Repeat("c", 32))
 	f.writeReply = true
-	r, observer, err := l.Execute(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-	if err != nil || observer == nil {
-		t.Fatal("submission did not start observation", err)
+	r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+	if err != nil {
+		t.Fatal(err)
 	}
-	defer observer.Close(context.Background())
 	bind(&s, r)
+	s = confirmedNativeTurn(t, l, s)
+	observer := l.observe(s, nil)
+	defer observer.Close(context.Background())
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	completed := 0

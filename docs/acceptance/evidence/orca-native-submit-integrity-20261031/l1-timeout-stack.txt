@@ -1,0 +1,69 @@
+panic: test timed out after 12m0s
+	running tests:
+		TestOriginalTerminalRPCIdentity (10m56s)
+		TestOriginalTerminalRPCIdentity/request (10m56s)
+
+goroutine 1274 [running]:
+testing.(*M).startAlarm.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2802 +0x354
+created by time.goFunc
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/time/sleep.go:215 +0x2d
+
+goroutine 1 [chan receive, 10 minutes]:
+testing.(*T).Run(0x1978e3e1dc00, {0x7ff71ab26c52?, 0x7ff71a59540e?}, 0x7ff71ab62c88)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+testing.runTests.func1(0x1978e3e1dc00)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2585 +0x3e
+testing.tRunner(0x1978e3e1dc00, 0x1978e42dfc58)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+testing.runTests({0x7ff71ab26c90, 0x1f}, {0x7ff71ab44e56, 0x49}, 0x1978e3e24d80, {0x7ff71b0151c0, 0x9a, 0x9a}, {0xc2b173129f2c6d10, 0xa7a3e24fc9, ...})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2583 +0x4f0
+testing.(*M).Run(0x1978e41e6140)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2443 +0x6ac
+main.main()
+	_testmain.go:362 +0x9b
+
+goroutine 302 [syscall, 10 minutes]:
+syscall.syscalln(0x0?, 0x0?, {0x1978e4259f08?, 0x1978e3ecfab0?, 0x0?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/runtime/syscall_windows.go:431 +0x4e
+syscall.SyscallN(0x3e3?, {0x1978e4259f08?, 0x1978e417e380?, 0x1978e4300848?})
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/syscall/dll_windows.go:99 +0x1e
+github.com/Microsoft/go-winio.getQueuedCompletionStatus(0x340, 0x1978e4259f8c?, 0x1978e4259f90?, 0x1978e4259f98?, 0xffffffff)
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/zsyscall_windows.go:327 +0xac
+github.com/Microsoft/go-winio.ioCompletionProcessor(0x340)
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/file.go:162 +0x85
+created by github.com/Microsoft/go-winio.initIO in goroutine 318
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/file.go:58 +0x5d
+
+goroutine 862 [chan receive, 10 minutes]:
+testing.(*T).Run(0x1978e3fc1800, {0x7ff71ab0fdfd?, 0x7ff71aac2ec0?}, 0x1978e430a0c0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2109 +0x4c7
+github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport.TestOriginalTerminalRPCIdentity(0x1978e3fc1800)
+	C:/Users/lmas1/.codex/worktrees/8ed5/SteerRunner/internal/execution/adapters/orcatransport/terminal_query_windows_test.go:133 +0x85
+testing.tRunner(0x1978e3fc1800, 0x7ff71ab62c88)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2036 +0xc3
+created by testing.(*T).Run in goroutine 1
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+
+goroutine 976 [chan receive, 10 minutes]:
+github.com/Microsoft/go-winio.(*win32PipeListener).Close(0x1978e3f96370)
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/pipe.go:578 +0x7a
+github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport.terminalQueryIPC.func2()
+	C:/Users/lmas1/.codex/worktrees/8ed5/SteerRunner/internal/execution/adapters/orcatransport/terminal_query_windows_test.go:73 +0x44
+testing.(*common).Cleanup.func1()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:1317 +0x109
+testing.(*common).runCleanup(0x1978e3e1c000, 0x1978e40d0ba0?)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:1667 +0xea
+testing.tRunner.func2()
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2030 +0x25
+testing.tRunner(0x1978e3e1c000, 0x1978e430a0c0)
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2042 +0xed
+created by testing.(*T).Run in goroutine 862
+	C:/Users/lmas1/.codex/tools/go/go1.26.4/go/src/testing/testing.go:2101 +0x4a9
+
+goroutine 977 [select, 10 minutes]:
+github.com/Microsoft/go-winio.(*win32PipeListener).listenerRoutine(0x1978e3f96370)
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/pipe.go:462 +0x85
+created by github.com/Microsoft/go-winio.ListenPipe in goroutine 976
+	C:/Users/lmas1/go/pkg/mod/github.com/!microsoft/go-winio@v0.6.2/pipe.go:536 +0x205
+FAIL	github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport	720.356s

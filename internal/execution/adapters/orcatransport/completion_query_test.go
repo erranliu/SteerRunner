@@ -87,6 +87,9 @@ func TestOrcaCompletionQuery(t *testing.T) {
 				t.Fatal(err)
 			}
 			bind(&s, r)
+			if scenario != "accepted-only" {
+				s = confirmedNativeTurn(t, l, s)
+			}
 			feed.queries = 0
 			end := fixtureState(12, input.Prompt, "done")
 			end.Observation = nil // Actual worktree.ps snapshots omit it.

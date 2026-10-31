@@ -34,6 +34,7 @@ func terminalQueryIPC(t *testing.T, terminal native.Terminal, serve func(net.Con
 	var connections []net.Conn
 	var workers sync.WaitGroup
 	done := make(chan struct{})
+	stop := make(chan struct{})
 	go func() {
 		defer close(done)
 		for {
@@ -42,9 +43,16 @@ func terminalQueryIPC(t *testing.T, terminal native.Terminal, serve func(net.Con
 				return
 			}
 			mu.Lock()
+			select {
+			case <-stop:
+				mu.Unlock()
+				_ = conn.Close()
+				return
+			default:
+			}
 			connections = append(connections, conn)
-			mu.Unlock()
 			workers.Add(1)
+			mu.Unlock()
 			go func() {
 				defer workers.Done()
 				defer conn.Close()
@@ -70,14 +78,39 @@ func terminalQueryIPC(t *testing.T, terminal native.Terminal, serve func(net.Con
 		}
 	}()
 	t.Cleanup(func() {
+		defer func() {
+			mu.Lock()
+			active := append([]net.Conn(nil), connections...)
+			mu.Unlock()
+			for _, conn := range active {
+				_ = conn.Close()
+			}
+			workers.Wait()
+		}()
+		// Match the thin-query fixture: stop Accept before listener.Close.
+		// go-winio can otherwise consume Close without stopping its listener.
+		close(stop)
+		select {
+		case <-done:
+		default:
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+			defer cancel()
+			wake, err := winio.DialPipeContext(ctx, endpoint)
+			if err != nil {
+				t.Errorf("wake test RPC accept: %v", err)
+				return
+			}
+			// Keep it connected so Accept does not retry ERROR_NO_DATA.
+			defer wake.Close()
+			select {
+			case <-done:
+			case <-ctx.Done():
+				t.Error("test RPC accept did not stop", ctx.Err())
+				return
+			}
+		}
 		_ = listener.Close()
 		<-done
-		mu.Lock()
-		for _, conn := range connections {
-			_ = conn.Close()
-		}
-		mu.Unlock()
-		workers.Wait()
 	})
 	dir := t.TempDir()
 	t.Setenv("ORCA_USER_DATA_PATH", dir)

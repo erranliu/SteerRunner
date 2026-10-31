@@ -1,0 +1,8 @@
+{
+  "entry": "scripts/test.ps1",
+  "process_environment_only": true,
+  "source_digest": "c8ead691b0f28ebae4c9bfeb21c2dd90e2966535f8a7873873aa0fa5d7e81395",
+  "level": "L1",
+  "per_package_timeout": "12m",
+  "package_parallelism": 1
+}

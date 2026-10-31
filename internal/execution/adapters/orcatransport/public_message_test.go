@@ -31,6 +31,7 @@ func publicMessageFixture(t *testing.T) (*Lifecycle, *fakeHost, *controlledState
 		t.Fatal(err)
 	}
 	bind(&s, r)
+	s = confirmedNativeTurn(t, l, s)
 	t.Cleanup(l.closeStateFeed)
 	return l, host, feed, s, input
 }

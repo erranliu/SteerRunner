@@ -1,7 +1,7 @@
 # Orca 多行输入屏幕草稿依赖修复 Spec
 
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：窄范围代码已实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正的稳定矩阵/L1通过，最新真实远端3/3、本机0/3，PR保持Draft。见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+状态：窄范围代码及后续授权修正已实施。最新冻结源的7050次稳定回归、本机3/3、远端3/3全新原生会话通过；完整L1与最终独立归档复审均通过，无未修P0–P2。见[最新保真验收](../acceptance/orca-native-submit-integrity.md)。此前[持续读取批次](../acceptance/orca-native-submit-control-stream.md)的本机0/3保持失败，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
 原存档构建的本机补验为 3/3，原请求、原文/模型/final及正式停止认证均通过；当时用户新指定的远端
 `192.168.1.151` 已达 3/3，保留原 NativeProof/原输入/final及 `orca_terminal` 正式停止范围。
@@ -54,7 +54,7 @@ terminal send --terminal <原终端> --text <既有编译后的正文>
 
 既有通用调用的等待规则保持：NativeRemoteProfileVersion使用现有--wait-submit 20和50秒CLI上限，其它既有路径保持原参数，调用方更短期限优先。不统一等待策略、不增加预算；受影响多行改走此入口后会继承远端既有20秒开始观察，区别于原40秒草稿流程。该观察不重发原输入，不保证一定取得turn_started。CLI整次调用持共享锁，新增多行使用它可能延迟其它Run的观察/停止，甚至耗尽其原期限；必须通过Plan的多Run锁与取消回归。排队和执行共用原deadline，取锁不刷新期限；排队取消的CLIQueueError表示回调未执行，不保证stop抢占或所有排队调用成功。若暴露死锁、取消后派发、期限刷新、错误成功或违反既有停止约束，修订提交范围再审计，不临时造锁、轮询器或分支回退。
 
-提交回执仅做必要的原生Codex校验：保留runtime/terminal handle/requestId/processIncarnation绑定、CallUncertain及错误检查；确认provider=codex、observation=supported及阶段一致后才采纳可靠受理/开始。复用现有解析和Turn事实，不建立第二个回执层，也不改变其它agent契约。unsupported、old-host、缺字段、incarnation_replaced或未知值不升级为成功；permission沿原阻断语义。明确拒绝与未知保留区别，未证明调用前无副作用时不能报成“未发送”。
+提交回执仅做必要的原生Codex校验：保留runtime/terminal handle/requestId/processIncarnation绑定、CallUncertain及错误检查；确认provider=codex、observation=supported及阶段一致后才采纳受理。Codex 的 turn_started 阶段仅保留为原回执提示，不能直接发布原业务 Started；原输入和原 turn 的正式查询才建立开始事实。复用现有解析和Turn事实，不建立第二个回执层，也不改变其它agent契约。unsupported、old-host、缺字段、incarnation_replaced或未知值不升级为成功；permission沿原阻断语义。明确拒绝与未知保留区别，未证明调用前无副作用时不能报成“未发送”。
 
 能力预检不能排除宿主未识别前台agent时内部raw发送。因此Runner不主动选择raw或fallback，并不保证Orca内部不存在raw或held-Enter恢复；异常回执可能已有副作用，禁止追加正文、补Enter或换ID重试。已发布通用入口是提交顺序的承担者；当前没有独立的原子消费全文/任意人工写者排他证明，不能把事后原输入核验冒充执行前保证。
 
@@ -65,7 +65,7 @@ terminal send --terminal <原终端> --text <既有编译后的正文>
 | 传输写入成功 | 原传输/调用回执，按实际settlement解释 | bytesWritten不证明TUI完整消费、开始或完成 |
 | 完整输入提交 | Runner向Orca通用入口一次交付既有编译后的完整正文及Enter，由Orca负责framing、处理与提交顺序 | 无新增committed或全文消费摘要；不能承诺原子消费或所有人工写者排他 |
 | 原请求accepted | 原runtime/terminal/incarnation/request绑定、可验证provider/observation的send.prompt受理回执 | 不等于开始、完成或完整正文证明 |
-| 原任务started | 原turn_started回执，或原有history/独立唯一原输入与新done补证 | accepted、普通working、idle、屏幕变化不能单独认领原任务 |
+| 原任务started | 原有history中的唯一匹配原输入及turn，或远端独立唯一原输入与新done补证 | accepted、Orca turn_started、普通working、idle、屏幕变化不能单独认领原任务 |
 | 完成及结果归属 | 本机原recordedTurn/validateRecordedTurn；远端原NativeProof/正式原输入查询、主代理新done与完整final；保留各自唯一性、身份和冲突核验及workflow验证 | mutation completed不是模型完成，模型完成也不是业务交付成功 |
 
 继续先冻结Turn.Prompt/InputDigest、wire与原operation intent，再执行唯一提交。保留ProcessIdentity、session、runtime、terminal、incarnation、pane/provider、command/request、authority/revision和回合基线；accepted、started、settled各自判定，不降低工具/旧结果排除和完整性围栏。
@@ -80,7 +80,23 @@ terminal send --terminal <原终端> --text <既有编译后的正文>
 
 正常accepted后使用原有观察。首次只有accepted不能提前started/completed；远端既有queryCompletedOriginalStart仅在原身份、唯一正式原输入及新done充分时补证，本机沿原history读取。保持working依赖Started的既有规则，不新建开始轮询器。已有强事实/完整final/持久冲突不得因弱回执或后续观察缺口被清除。
 
+## 4.1 2026-10-31 本机正文保真与凭据修正
+
+用户授权修复只读调查发现的问题并重新验证。原三场失败保持失败：CLI 正文均 5093 字节，精确原 session 的 Codex 提交历史只剩 5079/5077/5077 字节，仅丢失 14/16/16 个 LF；原回执均有 turn_started、initial_start_confirmed=true，但正式历史没有对应业务 turn。不能据此唯一归因到 Orca、ConPTY 或 Codex 的具体函数，当时也不能宣称 LF→CR 已验证。旧16MiB桥接仍断连时，单独CR候选也丢失8个LF；只修128MiB并保留LF的后续本机三场为2通过/1缺2个LF。因此限额断线不能解释全部正文损坏，不将任一单独修正冒称完整修复。
+
+最小增量只有四处：
+
+- 模型桥对 rewrite 拒绝返回原 JSON-RPC id 的结构化错误，不把该请求转发给原 server，不断连伪装成传输未知，不重试。无 request id 的非法消息关闭连接，不能伪造请求身份。保留认证、单活动连接、原线程、正文摘要、冻结模型与 clientUserMessageId 规则；错误不包含正文或凭据。
+- 原生 Codex 不再把 send 回执阶段直接提升为业务 Started；本机继续 observeRecorded，远端继续 queryCompletedOriginalStart。未得到既有正式证明时保持未证实，即使运行中只能等到 done；不新增开始查询、字段、状态机或回退。其他 agent/terminal extension 语义不变。
+- 模型桥上游 WebSocket 消息上限从 16 MiB 对齐到原生 Codex remote client 已有的 128 MiB 有界上限；下游 2 MiB 输入边界保持。诊断原始流直接捕获 16777217 字节处 read-limit 错误，随后下游取消和重连；大元数据请求先于业务发送，首断发生在正文处理中。不是 Orca 提交 API 的缺口证据。冻结逻辑正文、wire、摘要和预算保持原规则，不增加启动等待、配置开关或重连逻辑。
+
+- 所有原生Codex在同一通用send前将逻辑LF编译为终端粘贴CR；位于既有控制字符拒绝之后，两端/单多行/既有wire格式共用同一规则。Codex既有paste归一化恢复LF；不改逻辑wire/hash/预算或模型桥正文检查，不增加LF回退。分别记录实际CLI参数摘要与原逻辑wire摘要，正式history/query必须逐字等于逻辑wire，不能对损坏正文放宽归一化。
+
+消息上限与CR传输编译的组合已完成大回复/同连接原提交确定性测试、原模型桥摘要核验和同一冻结源的双端各三个全新独立原生会话。24根235叶各30次=7050/0/0，双端各3/3；完整L1与最终独立归档复审均通过，按验收报告边界放行，逐场身份/原字节见最新保真验收；失败不重投、不补 Enter，保留失败记录，不保留先前LF实现的兼容路径、诊断探针或实验模式。不把成功归因扩写为已唯一定位下层缺陷或证明任意人工输入排他。原输入/模型/final/正式 stop 证明不变；不部署安装或修改 Orca/全局配置。
+
 ## 5. 删除与保留清单
+
+最后L1另暴露既有RPC单元夹具listener.Close挂死，原12分钟超时保持失败。仅测试文件沿用仓库已有stop/wake停Accept顺序，失败仍报错并关闭活动连接/等待worker；无依赖升级或生产RPC改动。修后IPC990/0/0、controlled7050/0/0使用b3a642…5c91新测试源，L1通过721顶层/2730含子例、0失败，17明确跳过另列。六场c8资格保留，逐文件证明唯一差异为未参与live/agent的单元夹具，agent重建字节相同；不声称所有检查全源相同。
 
 | 对象 | 本次处置 |
 | --- | --- |

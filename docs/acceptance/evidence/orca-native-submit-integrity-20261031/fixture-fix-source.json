@@ -1,0 +1,14 @@
+{
+  "native_source_digest": "c8ead691b0f28ebae4c9bfeb21c2dd90e2966535f8a7873873aa0fa5d7e81395",
+  "final_test_source_digest": "b3a64227b6b7af3ab4595b24cd85434fe56d427f2685d3cbc488555e8e635c91",
+  "changes": [
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_query_windows_test.go",
+      "sha256": "464d7663fadf42cc03543c5efc3e614e277498d75e381c6f3f939c2bf8989994",
+      "before_sha256": "8a359be71c755c3fff59bb5007cbbe7557dade55891b942346b634d149d9b442"
+    }
+  ],
+  "production_source_changed": false,
+  "native_live_driver_changed": false,
+  "note": "Only terminalQueryIPC unit-test fixture shutdown changed after the six native sessions and first 7050-case matrix. No init/package side effect; fixture not used by the live driver and not part of agent build. Final checks and rebuilt agent are recorded separately."
+}

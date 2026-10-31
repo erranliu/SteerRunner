@@ -1,0 +1,32 @@
+{
+  "source": "C:/Users/lmas1/.codex/history.jsonl",
+  "extracted_at": "2026-10-31T02:22:49.717Z",
+  "selection": "Exact session_id: final local three plus the two negative cases listed in negative-input-comparison.json. Original selected JSONL lines, LF terminated; no unrelated history.",
+  "records": [
+    {
+      "session_id": "01a18f8f-4962-7023-839e-b55248b66b06",
+      "original_line_sha256": "e2b0fac545cc350b1384398cf6a8b1a8aac445fb775aa8c4e32229ac023f7ff9",
+      "text_sha256": "7da973ca7c21993d1d6e63de1fa4fd6f5cae25cc65512ecb19abf0e59827303e"
+    },
+    {
+      "session_id": "01a18fa6-3b75-74e3-b5a9-9b656e823880",
+      "original_line_sha256": "2cc9bc5a0f7734ecd6f48ae8071b0eedd5349c6ab44fd2c8371b03d6eab3c3cf",
+      "text_sha256": "dba95319593c5e49b58cf31b44b42c172272c7e5d5e1921905252d98a2871d7c"
+    },
+    {
+      "session_id": "01a18fb1-c39b-7eb3-9dc2-0a5f9038416c",
+      "original_line_sha256": "6384e98535972e3d4f1de6145da2a7395453c5f6bcd1b697a673e3d4e4d7f3aa",
+      "text_sha256": "7f9d944d0ed87fda9d9c2623433132f4285f20016809dc4631235556181c2d06"
+    },
+    {
+      "session_id": "01a18fb4-eaa9-7c90-af40-6c14ab0690de",
+      "original_line_sha256": "4851b085fb148af9c5892ea71e73a069bd4705ab6cc44845d27a15c89c9b409d",
+      "text_sha256": "7a19c8db5e4b1c0029141c1f1d9f004390a4f6630789f5e52c7696f7e4309c38"
+    },
+    {
+      "session_id": "01a18fb6-51af-7850-aacc-eddea7a77198",
+      "original_line_sha256": "b5b75c4e5468eb340f3aa04d96dd66bd9f9778ec6ae5f28a19da8eac3d0202f5",
+      "text_sha256": "54773ab7414117cf8b7ba19af4382a4ac134467e43fcd57aba92d85f4e46ea71"
+    }
+  ]
+}

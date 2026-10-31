@@ -8,9 +8,61 @@ import (
 	"testing"
 	"time"
 
+	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+func TestNativePromptWireFormats(t *testing.T) {
+	for _, format := range []string{"command", "model"} {
+		for _, body := range []string{"中文\r\n\r\nsecond\r\n", strings.Repeat("中文🙂\n\n", 500)} {
+			t.Run(format+"/"+digest([]byte(body))[:8], func(t *testing.T) {
+				l, host, s, control := fixtureFixedControl(t)
+				s = prepareFixedControl(t, l, s, control)
+				input := b.TurnInput{CommandID: strings.Repeat("c", 32), Prompt: body}
+				if format == "model" {
+					input.Model, input.ReasoningEffort, input.StepID = "writer", "high", "implement.execute"
+				}
+				s.PendingTurn = &input
+				r, err := l.prepareInput(context.Background(), request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
+				if err != nil {
+					t.Fatal(err)
+				}
+				bind(&s, r)
+				before, err := l.state(s)
+				if err != nil {
+					t.Fatal(err)
+				}
+				frozen := turnFor(&before, input.CommandID)
+				wire, budget := wirePrompt(frozen), *frozen.WireBudget
+				r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+				if err != nil || !r.State.InputAccepted || r.State.TurnStarted || host.nativeSends != 1 {
+					t.Fatal(r, err)
+				}
+				if host.nativePrompt != strings.ReplaceAll(wire, "\n", "\r") {
+					t.Fatal("original logical wire changed at submission", host.nativePrompt)
+				}
+				if strings.ReplaceAll(host.nativePrompt, "\r", "\n") != wire {
+					t.Fatal("terminal encoding changed logical wire")
+				}
+				if format == "model" {
+					if v, err := codex.ParseRemoteModelPrompt(strings.ReplaceAll(host.nativePrompt, "\r", "\n")); err != nil || v.Command != input.CommandID {
+						t.Fatal("model integrity proof lost", v, err)
+					}
+				}
+				bind(&s, r)
+				after, err := l.state(s)
+				if err != nil {
+					t.Fatal(err)
+				}
+				got := turnFor(&after, input.CommandID)
+				if got.Prompt != input.Prompt || got.InputDigest != digest([]byte(input.Prompt)) || wirePrompt(got) != wire || got.WireBudget.SHA256 != budget.SHA256 {
+					t.Fatal("frozen body or logical wire accounting changed")
+				}
+			})
+		}
+	}
+}
 
 // Exercise the real lifecycle submission, with independent control over the
 // provider's processing and receipt. No draft projection authorizes this fixture.
@@ -50,10 +102,10 @@ func TestNativePromptSubmission(t *testing.T) {
 					// Every projection is deliberately false and must remain unread.
 					h.screen, h.draft = true, "[Pasted Content 3 chars]\nwrong projection"
 					r, err := l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
-					if err != nil || !r.State.InputAccepted || !r.State.TurnStarted {
+					if err != nil || !r.State.InputAccepted || r.State.TurnStarted || len(r.Facts) != 0 {
 						t.Fatal(r, err)
 					}
-					if h.nativeSends != 1 || h.nativePrompt != nativePromptText(input.Prompt) {
+					if h.nativeSends != 1 || h.nativePrompt != strings.ReplaceAll(nativePromptText(input.Prompt), "\n", "\r") {
 						t.Fatal("changed original bytes", h.nativeSends, h.nativePrompt)
 					}
 					bind(&s, r)
@@ -62,7 +114,7 @@ func TestNativePromptSubmission(t *testing.T) {
 						t.Fatal(err)
 					}
 					frozen := turnFor(&st, input.CommandID)
-					if frozen.Prompt != input.Prompt || frozen.InputDigest != digest([]byte(input.Prompt)) || frozen.Request != r.RequestID || !frozen.Attempted || !frozen.Accepted || !frozen.Started {
+					if frozen.Prompt != input.Prompt || frozen.InputDigest != digest([]byte(input.Prompt)) || frozen.Request != r.RequestID || !frozen.Attempted || !frozen.Accepted || frozen.Started {
 						t.Fatal("changed frozen input")
 					}
 					sends := 0
@@ -92,7 +144,7 @@ func TestNativePromptSubmission(t *testing.T) {
 }
 
 func TestNativePromptReceiptFaults(t *testing.T) {
-	faults := []string{"accepted-only", "response-lost", "unsupported", "old-host", "permission", "missing-provider", "missing-observation", "incarnation-replaced", "request", "handle", "runtime", "no-stages", "start-only", "reordered-stages", "future-stage", "rejected"}
+	faults := []string{"accepted-only", "started-hint-only", "response-lost", "unsupported", "old-host", "permission", "missing-provider", "missing-observation", "incarnation-replaced", "request", "handle", "runtime", "no-stages", "start-only", "reordered-stages", "future-stage", "rejected"}
 	for _, target := range []string{"local", "remote"} {
 		t.Run(target, func(t *testing.T) {
 			env := ""
@@ -119,6 +171,8 @@ func TestNativePromptReceiptFaults(t *testing.T) {
 						send := v["result"].(map[string]any)["send"].(map[string]any)
 						p := send["prompt"].(map[string]any)
 						switch fault {
+						case "started-hint-only":
+							p["stages"] = []string{"input_accepted", "turn_started"}
 						case "unsupported", "old-host":
 							p["provider"] = fault
 							p["observation"] = "unsupported"
@@ -152,7 +206,7 @@ func TestNativePromptReceiptFaults(t *testing.T) {
 					}})
 					req := request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input})
 					r, err := l.submit(context.Background(), req)
-					if fault == "accepted-only" {
+					if fault == "accepted-only" || fault == "started-hint-only" {
 						if err != nil || !r.State.InputAccepted || r.State.TurnStarted {
 							t.Fatal("acceptance became start", r, err)
 						}
@@ -243,7 +297,7 @@ func TestNativePromptProcessingOrder(t *testing.T) {
 								enter = true
 							}
 						}
-						if !enter || text != nativePromptText(input.Prompt) || requestID == "" {
+						if !enter || text != strings.ReplaceAll(nativePromptText(input.Prompt), "\n", "\r") || requestID == "" {
 							return nil, errors.New("not one bound generic request")
 						}
 						close(entered)
@@ -289,7 +343,7 @@ func TestNativePromptProcessingOrder(t *testing.T) {
 					case <-ctx.Done():
 						t.Fatal(ctx.Err())
 					}
-					text := []byte(nativePromptText(input.Prompt))
+					text := []byte(strings.ReplaceAll(nativePromptText(input.Prompt), "\n", "\r"))
 					// Deliberately split a UTF-8 scalar and a newline boundary; the controlled
 					// provider must assemble all bytes before applying the combined submission.
 					cuts := []int{10, 12, len(text)}

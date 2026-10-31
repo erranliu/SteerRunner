@@ -103,7 +103,7 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 | --- | --- | --- |
 | CLI accepted 与 command_id | 原命令已持久受理 | 执行是否开始、动作是否完成；看 command 的 action_status 和 Run |
 | Operation accepted/confirmed | 该 action 契约所定义的受理或完成 | confirmed 必须结合 action 解读；准备完成不等于实施完成 |
-| input_accepted / turn_started | 原输入送达、原回合开始的对应事实 | 回合终态、完整 final、业务完成 |
+| Orca input_accepted / turn_started | 绑定原请求的宿主受理与开始观察 | 原生 Codex 的冻结正文及业务开始须由原线程输入/turn 证明；另需终态、完整 final、业务完成 |
 | 原生终态与 final verified | 原回合及完整最终输出的来源可采信 | 业务结果、审计与 PR 条件 |
 | 获取结果 satisfied | 原来源形成了满足获取契约的业务结果 | 当前源是否仍适用、下一业务边所需的其他条件 |
 | PR provider 核验 | 实际 PR 的身份与查询时状态 | 不自动证明合并、TaskDelivery 或资源停止 |

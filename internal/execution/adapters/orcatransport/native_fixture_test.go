@@ -2,11 +2,34 @@ package orcatransport
 
 import (
 	"context"
+	"testing"
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+// Completion/progress unit tests below begin with an independently confirmed
+// original input. This is a state precondition, never a fabricated send receipt.
+// Submission qualification and the actual history read are exercised separately
+// by native_submit, native_start and fixed-control lifecycle regressions.
+func confirmedNativeTurn(t *testing.T, l *Lifecycle, s b.LifecycleSnapshot) b.LifecycleSnapshot {
+	t.Helper()
+	state, err := l.state(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	turn := turnFor(&state, command(s))
+	if turn == nil || !turn.Accepted {
+		t.Fatal("cannot confirm an unaccepted fixture input")
+	}
+	turn.Started = true
+	s.Implementation, err = l.envelope(s, state)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return s
+}
 
 type hostStateFeed struct {
 	host    *fakeHost

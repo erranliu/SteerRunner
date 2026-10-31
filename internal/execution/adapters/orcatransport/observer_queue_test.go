@@ -25,6 +25,7 @@ func TestObserverQueueCancellationKeepsOriginalObservationWithoutResend(t *testi
 		t.Fatal(err)
 	}
 	bind(&snapshot, receipt)
+	snapshot = confirmedNativeTurn(t, l, snapshot)
 	original := l.client
 	queued := 0
 	l.client = native.New(native.Config{Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
