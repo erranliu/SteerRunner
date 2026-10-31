@@ -162,7 +162,7 @@ func developmentMultipleRuns(t *testing.T, m livetest.Manifest) {
 		runs[i] = waitReady(t, manifests[i], dir, ids[i], "")
 		verifyHead(t, manifests[i], runs[i], started)
 		auditWorkerSandbox(t, manifests[i], runs[i])
-		names := []string{"worker-sandbox-audit.json", "sandbox-readiness-audit.json"}
+		names := []string{"worker-sandbox-audit.json", "native-turn-audit.json"}
 		if manifests[i].Execution.Adapter == "orca-terminal" {
 			names = []string{"remote-worker-permission-audit.json"}
 			if manifests[i].Execution.Target.Kind == "orca_environment" {

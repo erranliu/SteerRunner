@@ -103,20 +103,29 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 			}
 		}
 		if d.Name() == "turn-start.json" {
+			// Development no longer produces authentication/readiness probes.
+			// Bind the committed start receipt to this original native history.
 			var fact struct {
-				Verified  bool      `json:"verified"`
-				CommandID string    `json:"command_id"`
-				Workspace string    `json:"workspace"`
-				Contract  string    `json:"contract"`
-				ExpiresAt time.Time `json:"expires_at"`
-				CheckedAt time.Time `json:"checked_at"`
+				Turn struct {
+					ID string `json:"id"`
+				} `json:"turn"`
 			}
-			body, err := os.ReadFile(filepath.Join(filepath.Dir(path), "sandbox-readiness.json"))
+			body, err := os.ReadFile(path)
 			if err != nil {
 				return err
 			}
-			if json.Unmarshal(body, &fact) != nil || !fact.Verified || fact.Contract != codex.PolicyContract || fact.CommandID != filepath.Base(filepath.Dir(path)) || fact.Workspace != run.Execution.Workspace || !fact.ExpiresAt.After(fact.CheckedAt) {
-				t.Error("business turn lacks bound sandbox readiness evidence")
+			found := false
+			if json.Unmarshal(body, &fact) == nil && codex.ValidNativeID(fact.Turn.ID) {
+				for _, original := range thread.Turns {
+					if original.ID == fact.Turn.ID {
+						found = true
+						break
+					}
+				}
+			}
+			if !found {
+				t.Error("business turn start receipt is missing from original native history")
+				return nil
 			}
 			verifiedTurns++
 		}
@@ -134,7 +143,7 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 			t.Fatal("L2 requires actual worker command results")
 		}
 	}
-	save(t, "sandbox-readiness-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
+	save(t, "native-turn-audit.json", map[string]any{"qualified_turns": verifiedTurns, "session": run.Execution.SessionID, "contract": codex.PolicyContract})
 }
 
 func auditTerminalWorker(t *testing.T, m livetest.Manifest, run contracts.RunView) {
