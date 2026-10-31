@@ -6,10 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	"github.com/erranliu/SteerRunner/internal/execution/process"
-	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
-	"github.com/erranliu/SteerRunner/internal/storage"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,7 +16,7 @@ import (
 
 func TestSRResultAcquisition(t *testing.T) {
 	testCount.Add(1)
-	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "audit-report", "parser-unsupported", "parser-complete", "parser-restart", "parser-kill", "parser-stop", "parser-tool"} {
+	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "audit-report", "parser-unsupported", "parser-complete", "parser-tool"} {
 		t.Run(scenario, func(t *testing.T) {
 			selectedRunner := runnerEXE
 			t.Cleanup(func() { runnerEXE = selectedRunner })
@@ -117,87 +114,6 @@ func TestSRResultAcquisition(t *testing.T) {
 				}
 				info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 				cleanupService(t, dir, info)
-			}
-			if scenario == "parser-restart" || scenario == "parser-kill" || scenario == "parser-stop" {
-				active := waitRunFor(t, dir, id, func(r contracts.RunView) bool {
-					return r.Step == workflow.StepAuditParse && r.Phase == "parser_running"
-				}, 5*time.Minute)
-				if len(active.ResultAcquisition) < 2 || countNative(t, "turn/start") != 2 {
-					t.Fatal("parser did not start from the completed original audit")
-				}
-				reader, err := storage.OpenReader(dir)
-				if err != nil {
-					t.Fatal(err)
-				}
-				runs, err := reader.Runs()
-				reader.Close()
-				if err != nil || len(runs) != 1 {
-					t.Fatal(err)
-				}
-				var requestFound bool
-				for _, intent := range runs[0].Intents {
-					if intent.Request.Input.Parse == nil {
-						continue
-					}
-					requestFound = true
-					started, err := parser.ReadStartedReceipt(dir, intent.Request)
-					if err != nil || started.Process == nil {
-						t.Fatalf("original parser identity: %v", err)
-					}
-					if scenario == "parser-stop" {
-						current := waitRun(t, dir, id, func(r contracts.RunView) bool { return true })
-						writeCommand(t, dir, "stop", id, "explicit-parser-stop", current.Revision)
-						waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)
-						if process.InspectProcess(started.Process) != "process absent" || countNative(t, "turn/start") != 2 {
-							t.Fatal("explicit stop retained parser or sent successor")
-						}
-						return
-					}
-					if scenario == "parser-kill" {
-						if err := killOwnedService(info); err != nil {
-							t.Fatal(err)
-						}
-					} else {
-						call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("parser-restart-stop", info.InstanceID), 0)
-					}
-					if err := waitOwnedService(info); err != nil {
-						t.Fatal(err)
-					}
-					if process.InspectProcess(started.Process) != "matching process still exists" {
-						t.Fatal("service exit killed original parser")
-					}
-					if *baselineFlag != "" {
-						retainCompatibilityDB(t, dir, "ebr-"+scenario+"-original-v4.db")
-					}
-					if err := os.Remove(hold); err != nil {
-						t.Fatal(err)
-					}
-					until := time.Now().Add(time.Minute)
-					for {
-						if receipt, err := parser.ReadReceipt(dir, intent.Request); err == nil && receipt.State.Stopped {
-							break
-						}
-						if time.Now().After(until) {
-							t.Fatal("original parser did not finish offline")
-						}
-						time.Sleep(20 * time.Millisecond)
-					}
-				}
-				if !requestFound {
-					t.Fatal("original parser intent missing")
-				}
-				if err := waitOwnedService(info); err != nil {
-					t.Fatal(err)
-				}
-				if *baselineFlag != "" {
-					runnerEXE = selectedRunner
-				}
-				info = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
-				cleanupService(t, dir, info)
-				starts, err := os.ReadFile(hold + ".starts")
-				if err != nil || string(starts) != "start\n" {
-					t.Fatal("original parser was replayed", err)
-				}
 			}
 			// This is the whole multi-turn flow, including original owner Git
 			// checkpoints and optional parsing. Keep the per-operation deadlines;

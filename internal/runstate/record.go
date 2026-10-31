@@ -29,17 +29,18 @@ type Attempt struct {
 	EndedAt  time.Time           `json:"ended_at"`
 }
 type Record struct {
-	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
-	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
-	Progress            *Progress                      `json:"progress,omitempty"`
-	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
-	Closed              bool                           `json:"closed,omitempty"`
-	PendingInterrupt    string                         `json:"pending_interrupt,omitempty"`
-	ContentResult       *contracts.ContentResult       `json:"content_result,omitempty"`
-	History             []contracts.HistoryEntry       `json:"history,omitempty"`
-	DirectoryIdentity   string                         `json:"directory_identity,omitempty"`
-	ReportWork          map[string]string              `json:"observed_report_work,omitempty"`
-	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config"`
+	RepositorySource  *contracts.RepositorySource `json:"repository_source,omitempty"`
+	ResultFile        *ResultFile                 `json:"result_file,omitempty"`
+	Progress          *Progress                   `json:"progress,omitempty"`
+	Artifacts         []Artifact                  `json:"artifacts,omitempty"`
+	Closed            bool                        `json:"closed,omitempty"`
+	PendingInterrupt  string                      `json:"pending_interrupt,omitempty"`
+	ContentResult     *contracts.ContentResult    `json:"content_result,omitempty"`
+	History           []contracts.HistoryEntry    `json:"history,omitempty"`
+	DirectoryIdentity string                      `json:"directory_identity,omitempty"`
+	ReportWork        map[string]string           `json:"observed_report_work,omitempty"`
+	// Inert v6 legacy metadata; new Runs omit it and never use it for admission or recovery.
+	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config,omitempty,omitzero"`
 	PRClues             []string                       `json:"pr_clues,omitempty"`
 	PRClueProbeAt       time.Time                      `json:"pr_clue_probe_at,omitempty"`
 	LastFinal           *contracts.FinalView           `json:"last_final,omitempty"`

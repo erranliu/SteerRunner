@@ -1,5 +1,7 @@
 # Spec：执行与可靠性边界收敛
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 日期：2026-10-20。状态：已实施并完成本轮验收。对应 [Plan](execution-boundary-refactor.plan.md)。调查基线：`bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55`，包含内容流程、R2 证据和服务换代恢复的合入。
 
 ## 1. 目标与契约依据

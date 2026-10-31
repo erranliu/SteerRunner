@@ -33,8 +33,8 @@ try {
     $taskSummary = [ordered]@{ controlled = 'passed'; native = 'not_requested'; evidence = $taskOutput }
     if ($NativeExecutable) {
         $taskNative = Join-Path $taskOutput 'native'
-        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -Pattern '^TestSR(ContentNativeGenerationRecovery|NativeParserGenerationRecovery)$' -OutDir $taskNative -ContentNativeExecutable $NativeExecutable -ContentNativeModel $Model
-        $null = Wait-RecoveryResult $taskNative 2
+        & (Join-Path $PSScriptRoot 'test-foundation.ps1') -Pattern '^TestSRContentNativeGenerationRecovery$' -OutDir $taskNative -ContentNativeExecutable $NativeExecutable -ContentNativeModel $Model
+        $null = Wait-RecoveryResult $taskNative 1
         $taskSummary.native = 'passed'
     }
     [IO.File]::WriteAllText((Join-Path $taskOutput 'summary.json'),($taskSummary | ConvertTo-Json),[Text.UTF8Encoding]::new($false))

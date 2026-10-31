@@ -13,9 +13,10 @@ import (
 )
 
 const ConfigSchema = "steerrunner-result-acquisition/v1"
-const ParserProfile = "codex-parser/v1:0.159.2:read-only:mxc:never:provided-text"
+const ParserProfile = "codex-parser/v2:0.159.2:cli:memory:provided-text"
 
 type ParserConfig struct {
+	MaxConcurrent   int    `json:"max_concurrent,omitempty"`
 	Enabled         bool   `json:"enabled"`
 	Executable      string `json:"executable"`
 	Model           string `json:"model"`
@@ -51,7 +52,7 @@ func LoadConfig(stateDir string) (FrozenConfig, error) {
 	if !utf8.Valid(data) || len(data) > 16384 {
 		return FrozenConfig{}, errors.New("result acquisition configuration exceeds bound")
 	}
-	fields := resultFields{"schema": nil, "codex_parser": {"enabled": nil, "executable": nil, "model": nil, "reasoning_effort": nil, "codex_home_env": nil, "timeout_seconds": nil, "max_input_bytes": nil, "max_output_bytes": nil}}
+	fields := resultFields{"schema": nil, "codex_parser": {"enabled": nil, "executable": nil, "model": nil, "reasoning_effort": nil, "codex_home_env": nil, "timeout_seconds": nil, "max_input_bytes": nil, "max_output_bytes": nil, "max_concurrent": nil}}
 	dec := json.NewDecoder(strings.NewReader(string(data)))
 	if err := uniqueJSON(dec, fields); err != nil {
 		return FrozenConfig{}, errors.New("ambiguous result acquisition configuration")
@@ -77,7 +78,7 @@ func LoadConfig(stateDir string) (FrozenConfig, error) {
 // configuration, credentials, provider availability or model defaults.
 func (c Config) Validate() error {
 	p := c.CodexParser
-	if c.Schema != ConfigSchema || p.Executable == "" || strings.ContainsAny(p.Executable+p.Model+p.ReasoningEffort, "\x00\r\n") || strings.TrimSpace(p.Model) != p.Model || p.TimeoutSeconds < 10 || p.TimeoutSeconds > 300 || p.MaxInputBytes < 16384 || p.MaxInputBytes > 262144 || p.MaxOutputBytes < 4096 || p.MaxOutputBytes > 65536 {
+	if p.MaxConcurrent < 0 || c.Schema != ConfigSchema || p.Executable == "" || strings.ContainsAny(p.Executable+p.Model+p.ReasoningEffort, "\x00\r\n") || strings.TrimSpace(p.Model) != p.Model || p.TimeoutSeconds < 10 || p.TimeoutSeconds > 300 || p.MaxInputBytes < 16384 || p.MaxInputBytes > 262144 || p.MaxOutputBytes < 4096 || p.MaxOutputBytes > 65536 {
 		return errors.New("unsupported or out of range result acquisition configuration")
 	}
 	if p.CodexHomeEnv != "" && !regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]{0,127}$`).MatchString(p.CodexHomeEnv) {
@@ -113,5 +114,5 @@ func ParserSupport() (bool, string) {
 	if runtime.GOOS != "windows" {
 		return false, "native parser profile is qualified only on Windows"
 	}
-	return true, "codex-parser/v1: native read-only/never, independent provided-text session; zero tools is a behavior contract with post-event rejection, not an empty-tool guarantee"
+	return true, "codex-parser/v1: CLI read-only/never, internal tool disabling and event rejection, disposable process; not an empty-tool guarantee; no execution owner or recovery"
 }

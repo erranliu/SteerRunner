@@ -321,7 +321,6 @@ func (e *Engine) closeWorker(id string, w *worker) {
 	// Only a previously confirmed Run end qualifies, never mere service exit.
 	// Result collection also respects the service shutdown parent's deadline.
 	e.sealResult(parent, id)
-	e.stopParserForShutdown(id, w)
 	if w.observer != nil {
 		_ = w.observer.Close(context.Background())
 		w.observer = nil
@@ -341,7 +340,7 @@ func (e *Engine) closeWorker(id string, w *worker) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	next := e.runs[id].Clone()
-	if err == nil && facts.Stopped && parserResourcesSettled(next) {
+	if err == nil && facts.Stopped {
 		next.StopStatus = "stopped"
 	} else if err != nil {
 		e.logger.Printf("service observation detach remains unverified run=%s diagnostic=%s", id, e.redact(next, err.Error()))

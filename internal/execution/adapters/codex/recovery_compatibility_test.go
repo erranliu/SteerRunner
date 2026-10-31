@@ -22,21 +22,19 @@ func TestRecoveryCompatibilityPreservesOriginalOwnerRequirements(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, variant := range []string{"compatible", "missing-parser", "missing-checkpoint", "settled", "owner-protocol", "legacy-live", "unknown-codec", "retired-authentication"} {
+	for _, variant := range []string{"compatible", "legacy-capability", "missing-checkpoint", "settled", "owner-protocol", "legacy-live", "unknown-codec", "retired-authentication"} {
 		t.Run(variant, func(t *testing.T) {
-			owner := &ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: filepath.Join(root, "original-owner"), Process: *current, RuntimeSHA256: strings.Repeat("a", 64), ExitPublicKey: strings.Repeat("b", 64), RetainsParser: true, WorkspaceCheckpoints: true}
-			needs := b.RecoveryRequirements{Parser: true, WorkspaceCheckpoints: true}
+			owner := &ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: filepath.Join(root, "original-owner"), Process: *current, RuntimeSHA256: strings.Repeat("a", 64), ExitPublicKey: strings.Repeat("b", 64), WorkspaceCheckpoints: true}
+			needs := b.RecoveryRequirements{WorkspaceCheckpoints: true}
 			protocol := ExecutionOwnerProtocol
 			want := ""
 			switch variant {
-			case "missing-parser":
-				owner.RetainsParser = false
-				want = "original owner lacks required parser/completion-checkpoint capability; no live owner replaced"
+			case "legacy-capability":
+				owner.LegacyParserCapability = true
 			case "missing-checkpoint":
 				owner.WorkspaceCheckpoints = false
-				want = "original owner lacks required parser/completion-checkpoint capability; no live owner replaced"
+				want = "original owner lacks required completion-checkpoint capability; no live owner replaced"
 			case "settled":
-				owner.RetainsParser = false
 				owner.WorkspaceCheckpoints = false
 				needs = b.RecoveryRequirements{Stopped: true}
 			case "owner-protocol":

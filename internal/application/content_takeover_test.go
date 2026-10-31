@@ -3,16 +3,13 @@ package application
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
-	parser "github.com/erranliu/SteerRunner/internal/execution/resultacquisition/codexexec"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -75,7 +72,7 @@ func TestContentFrozenTakeoverContracts(t *testing.T) {
 				t.Fatal(err)
 			}
 			check(r, "compatible")
-			for _, variant := range []string{"codec", "workflow", "workflow-version", "semantics", "execution-record", "material", "parser"} {
+			for _, variant := range []string{"codec", "workflow", "workflow-version", "semantics", "execution-record", "material"} {
 				t.Run(variant, func(t *testing.T) {
 					copy := r.Clone()
 					switch variant {
@@ -95,8 +92,7 @@ func TestContentFrozenTakeoverContracts(t *testing.T) {
 						copy.Snapshot.Ref.Version = 99
 					case "material":
 						copy.Materials[0].Content = "replaced"
-					case "parser":
-						copy.Intents = []operation.Intent{{Request: b.LifecycleRequest{Operation: b.Operation{Version: 1}, Input: b.LifecycleInput{Parse: &b.ParseInput{Payload: `{}`}}}}}
+
 					}
 					check(copy, "unsupported")
 				})
@@ -106,33 +102,5 @@ func TestContentFrozenTakeoverContracts(t *testing.T) {
 				t.Fatal("takeover changed stored record", err)
 			}
 		})
-	}
-}
-
-func TestTakeoverActualParserContractStillRequired(t *testing.T) {
-	e, _, index := parserEngine(t)
-	content, _ := contentEngine(t, "generate")
-	r := content.runs["run"].Clone()
-	r.AcquisitionConfig = e.runs["run"].AcquisitionConfig
-	r.Intents = []operation.Intent{e.runs["run"].Intents[index]}
-	index = 0
-	// Keep a real frozen parser operation while selecting a final-only profile:
-	// workflow capability cannot hide an existing parser's persisted contract.
-	if err := parser.ValidateRecovery(r.Intents[index].Request); err != nil {
-		t.Fatal("original parser fixture invalid", err)
-	}
-	if item := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "compatible" {
-		t.Fatal(item)
-	}
-	var pack map[string]any
-	if err := json.Unmarshal([]byte(r.Intents[index].Request.Input.Parse.Payload), &pack); err != nil {
-		t.Fatal(err)
-	}
-	pack["profile"] = "unknown-parser-profile"
-	r.Intents[index].Request.Input.Parse.Payload = string(canonical(pack))
-	before := canonical(r)
-	item := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())[0]
-	if item.Status != "unsupported" || item.Diagnostic != "frozen parser/result acquisition contract unsupported" || !bytes.Equal(before, canonical(r)) {
-		t.Fatal(item)
 	}
 }

@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+> 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
+
 2026-10-29 退役旧 Check：当前 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。
 
 N
@@ -486,9 +488,12 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 
 ## 结果获取重构的当前验证边界
 
-结果获取的定向命令和全部目标在 [Plan](spec/result-acquisition.plan.md#3-最小测试计划)，执行状态见[专属登记](acceptance/result-acquisition.md)。Controlled `TestSRResultAcquisition` 使用真实临时 Git/Runner EXE/SQLite，十一项内部 case 覆盖成功行、零/正数审计修复、离线审计、一次补报、parser 环境失败后备、正常解析、工具事件拒收和解析中停机/重启/显式停止；不创建真实 PR。该场景的终态、阶段准备及停止观察等待已统一为 5 分钟，离线回执观察为 1 分钟；这些是测试等待预算，不改变生产单次操作期限，修正记录见[PR #38 复验](acceptance/pr38-review-20261020.md)。完整 Controlled 按上文 45 分钟聚合预算执行。
+当前 parser 的设计与验证见 [解耦 Spec](spec/parser-decoupling.spec.md)、[Plan](spec/parser-decoupling.plan.md) 和 [验收](acceptance/parser-decoupling.md)。Controlled `TestSRResultAcquisition` 保留八项内部 case：成功行、零/正数审计修复、离线审计、一次补报、parser 不可用后备、正常解析和工具事件拒收；不创建真实 PR。旧 parser 原 owner 换代/强杀离线完成及资源停止取证义务已退役；正常业务 owner 的离线审计、恢复与停止仍独立验证。
 
-`local-codex.result-acquisition` 现为 L3 parser 专项；入口先 L1 和完整 Controlled，再执行默认原生认证解析、显式模型/只读权限/取消两项内部 case（三次 parser 调用、一次权限探针）。固定预期 `parsed`；仅准备本地冻结材料，不执行 development、远端 clone/push、gh 登录或 PR 合入。原调用/session 与停止证据独立登记，缺失、重复或旧 merged 结果不能通过。原生只读权限、行为约定和工具事后检测分别取证；历史失败与旧构建资格保留，不能代替当前构建真机验收。
+`local-codex.result-acquisition` 继续为 L3 parser 专项，预期 `parsed`。新 driver 只验证文本分析和取消两项内部 case，不创建 development Run、服务或 PR，不执行权限 canary、工具重启用探针或主执行停止取证。CLI 的 read-only、工具关闭、异常事件拒收和进程释放只由独立 parser 管理。全级 L3 仍按原脚本执行 L1/Controlled 前置。
+
+开发时可定向执行 `go test ./internal/textanalysis ./internal/storage` 及 application 的 `TestTextAcquisition*`；真实 parser 独立入口为 `go test -tags=live ./internal/textanalysis -run '^TestCLIParserLive$' -count=1 -v -timeout=180s -args '-parser-cli=<现有原生Codex绝对路径>' '-parser-model=<已有账号可用模型>'`。PowerShell 中含点号/等号的整个参数须引用，避免模型名称被拆分。它复用现有登录，不引入 API 服务或密钥，不代表完整 L2/L3、PR 或多机资格。
+
 ### 历史 helper 验收说明（不适用于新远端）
 
 下述 inline/独立查询终端描述保留给旧构建记录；当前 local 受管路径以固定 control actor 实现为准，原生远端不使用该历史查询链。
