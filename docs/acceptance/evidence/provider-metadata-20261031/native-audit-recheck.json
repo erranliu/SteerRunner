@@ -1,0 +1,14 @@
+{
+  "closed_inspections": 0,
+  "complete": true,
+  "counts_as_smoke": false,
+  "creations": 1,
+  "initial_terminals": 0,
+  "inspections": 0,
+  "original_fixture": "6c95d7aadfcc",
+  "pending_control_requests": false,
+  "prompts": 3,
+  "schema": "steerrunner-native-audit-recheck/v1",
+  "native_journal_sha256": "53d73fc6758d07aef1ea57ffebd27805b1a22b2f80224a28ea41a9f0d828de22",
+  "original_manifest_sha256": "013ac463838a2fa0b406bcffaa12ea99e2c9b1df624ef389bbeb49638b3726c2"
+}

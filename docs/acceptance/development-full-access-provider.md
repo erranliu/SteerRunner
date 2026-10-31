@@ -44,6 +44,10 @@
 
 使用首轮真实 journal 中的启动命令新增回归，修复前复现，修复后整个 livetest 包通过；另验证缺失包装器、意外启用通道、恢复变量/模型/权限变更及追加命令均拒绝。原始红绿日志在 `.evidence/full-access-diagnostics/remote-audit-{reproduction,fix}.log`。
 
+另一项遗漏由整份真实 journal 的离线复核提前发现：生产使用有边界的 bracketed paste 和单独 Enter 两步协议，测试审计把后者误当作缺少文本的业务输入。现在仅在原 native launch 策略下，把同一原终端、同一环境的一次粘贴与一次 Enter 配对；两次 intent/receipt 仍全部计入完整性，分别核验 runtime、handle、accepted、UTF-8 字节数及原参数。缺失回执或尚未提交的粘贴不能称 complete；额外 Enter、交错粘贴、错目标/环境、控制字节、参数或回执改变均拒绝。没有按“裸 Enter”一概豁免。
+
+新回归先对基线复现失败，再用隔离 Go overlay 验证修复，待基线 L1 结束才修改源码；修复后整个 livetest 包及[原真实 journal 离线复核](evidence/provider-metadata-20261031/native-audit-recheck.json)通过。离线复核记录一个业务工作树、三段文本输入、零辅助终端和完整回执，不把已失败的 smoke 改成通过。#717 已关闭、未合入。原始日志为 `native-paste-audit-{reproduction,fix-tests}.log`。
+
 ## 当前交付状态
 
 产品元数据竞态、远端联网前置与测试启动审计消费者均已处理。PR #74 继续保持草稿；将固定新构建，完成更新后的基础验证及新现场完整 smoke 后再转为正式 PR。
