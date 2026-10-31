@@ -1,0 +1,118 @@
+[
+  {
+    "mode": "full_access",
+    "exit_code": 0,
+    "valid": true,
+    "issues": []
+  },
+  {
+    "mode": "sandbox",
+    "exit_code": 2,
+    "valid": false,
+    "issues": [
+      {
+        "path": "/execution/settings/access_mode",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/adapter",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/settings",
+        "code": "unknown_field",
+        "message": "The value does not satisfy the published field contract."
+      }
+    ]
+  },
+  {
+    "mode": "",
+    "exit_code": 2,
+    "valid": false,
+    "issues": [
+      {
+        "path": "/execution/settings/access_mode",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/settings",
+        "code": "unknown_field",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/adapter",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      }
+    ]
+  },
+  {
+    "mode": "omitted",
+    "exit_code": 2,
+    "valid": false,
+    "issues": [
+      {
+        "path": "/execution/settings/access_mode",
+        "code": "required",
+        "message": "A required field is missing."
+      },
+      {
+        "path": "/execution/adapter",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/settings",
+        "code": "unknown_field",
+        "message": "The value does not satisfy the published field contract."
+      }
+    ]
+  },
+  {
+    "mode": "null",
+    "exit_code": 2,
+    "valid": false,
+    "issues": [
+      {
+        "path": "/execution/settings/access_mode",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/adapter",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/settings",
+        "code": "unknown_field",
+        "message": "The value does not satisfy the published field contract."
+      }
+    ]
+  },
+  {
+    "mode": "false",
+    "exit_code": 2,
+    "valid": false,
+    "issues": [
+      {
+        "path": "/execution/settings/access_mode",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/adapter",
+        "code": "invalid_value",
+        "message": "The value does not satisfy the published field contract."
+      },
+      {
+        "path": "/execution/settings",
+        "code": "unknown_field",
+        "message": "The value does not satisfy the published field contract."
+      }
+    ]
+  }
+]

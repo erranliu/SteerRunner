@@ -1,0 +1,8 @@
+{
+  "version": 4,
+  "contract": "windows-terminal-tools-v2:full-access:never",
+  "runtime_sha256": "ebf1b924d63053b9b270dc7964295f18aa23e7f395ca149c8ff67ced0dc66514",
+  "bundle_sha256": "3fb69c38cbda7fd6a797cb72ee3effe066e433007ddfa34af47a0e9aaf39708e",
+  "pi_sha256": "29036f575394c2b920d71d25ff4424b7572b91f4927a383254edd0fca5e9e352",
+  "dsh_sha256": "e77458b31ba6660863c174017d594857406b4091ba69855a4d7f81a261677556"
+}

@@ -1,0 +1,365 @@
+{
+  "schema": "development-full-access-config-discovery/v1",
+  "date": "2026-10-31",
+  "provenance": {
+    "source": "C:\\Users\\lmas1\\.codex\\worktrees\\6556\\SteerRunner\\.evidence\\ocu-20261030\\config.json",
+    "source_sha256": "60a1842eddb1e1780f2df665e037b68f685060a7f8ec8d4d16dcc9b1a40f0bac",
+    "copy": ".evidence/full-access-pr-test-config.json",
+    "copy_sha256": "255090c3711d328da060093d596486fd8e078eb9caa9af03b09698feb71944ad",
+    "changes": [
+      {
+        "configuration": "local-codex",
+        "old_access_mode": "sandbox",
+        "access_mode": "full_access"
+      },
+      {
+        "configuration": "orca-local-codex",
+        "old_access_mode": "sandbox",
+        "access_mode": "full_access"
+      },
+      {
+        "configuration": "orca-remote-codex",
+        "old_access_mode": "sandbox",
+        "access_mode": "full_access"
+      }
+    ],
+    "original_unchanged": true
+  },
+  "source_repository_verified": "https://github.com/erranliu/SteerlineTest.git",
+  "source_revision_verified": "9e0489047af5f16f14879fbcbe08d4e1f43ee702",
+  "availability_scope": [
+    "L2",
+    "L3"
+  ],
+  "requested_cases": 32,
+  "available_cases": 16,
+  "unavailable_cases": 16,
+  "availability": [
+    {
+      "scenario_id": "local-codex.result-acquisition",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.codex",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "Orca tests require an absolute transport; local managed tests also require helper references."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.pi",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.dsh",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.smoke",
+      "case_id": "default",
+      "level": "L2",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.caller-exit",
+      "case_id": "accepted-response-lost",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "active-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.connection-reconnect",
+      "case_id": "pre-send-disconnect",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "graceful-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.service-restart",
+      "case_id": "kill-boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "active",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "boundary",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.stop-revocation",
+      "case_id": "unreachable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "completion-gap",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.publication-unknown",
+      "case_id": "query-unavailable",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/harness/admin_host",
+          "code": "missing_test_facility",
+          "message": "The case requires an explicitly configured isolated network fault host."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.audited",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/local-codex-audited",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "local-codex.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.smoke",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "Orca tests require an absolute transport; local managed tests also require helper references."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-local.mixed",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-pi",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        },
+        {
+          "path": "/configurations/orca-local-dsh",
+          "code": "missing_configuration",
+          "message": "The required execution configuration is missing or invalid."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.initialization-stop",
+      "case_id": "before-readiness",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-remote.initialization-stop",
+      "case_id": "restart-before-readiness",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "Orca tests require an absolute transport; local managed tests also require helper references."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.progress-file",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-multirun",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "local-codex.progress-recovery",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    },
+    {
+      "scenario_id": "orca-local.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "unavailable",
+      "reasons": [
+        {
+          "path": "/configurations/orca-local-codex",
+          "code": "missing_configuration",
+          "message": "Orca tests require an absolute transport; local managed tests also require helper references."
+        }
+      ]
+    },
+    {
+      "scenario_id": "orca-remote.cli-wait-retry",
+      "case_id": "default",
+      "level": "L3",
+      "availability": "available",
+      "reasons": []
+    }
+  ],
+  "live_authorization": "User explicitly authorized local L2 and remote smoke plus their two independent test PRs on 2026-10-31; no live case started before complete same-source prerequisites."
+}

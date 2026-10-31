@@ -1,0 +1,57 @@
+{
+  "initial_preparation": {
+    "scenario": "orca-remote.smoke",
+    "level": "L3",
+    "case_id": "default",
+    "status": "failed",
+    "error": "Orca preparation call failed: Could not connect to the remote Orca runtime.",
+    "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\full-access-pr-live-verified\\orca-remote.smoke-default-r1-fixture.json"
+  },
+  "retry_case": {
+    "scenario": "orca-remote.smoke",
+    "level": "L3",
+    "case_id": "default",
+    "status": "failed",
+    "manifest": "C:\\srt\\442a5529125f\\manifest.json",
+    "evidence": "C:\\srt\\442a5529125f\\evidence",
+    "error": "Live scenario failed; inspect C:\\srt\\442a5529125f\\evidence/native.log"
+  },
+  "scenario": {
+    "scenario": "orca-remote.smoke",
+    "level": "L3",
+    "stage": "implementation",
+    "run_id": "124c5db7c2f8f60edb8f3b42c48dbb90",
+    "run_stopped": true,
+    "service_stopped": true,
+    "passed": false
+  },
+  "failure": "original native readiness unavailable; no input was sent: Orca queried original provider metadata currently unavailable",
+  "business_turn_started": false,
+  "offline_stopped": {
+    "state_dir": "c:\\srt\\442a5529125f\\s",
+    "resources_settled": true,
+    "runs": [
+      {
+        "stop_evidence_scope": "orca_terminal",
+        "run_id": "124c5db7c2f8f60edb8f3b42c48dbb90",
+        "input_digest": "6138de2a04e1e31aea859600c56dd3f2f6633f545425c9ee923c52520519d7c5",
+        "resources_settled": true
+      }
+    ]
+  },
+  "cleanup_run": {
+    "run_id": "124c5db7c2f8f60edb8f3b42c48dbb90",
+    "status": "stopped",
+    "phase": "stopped",
+    "stop_status": "stopped",
+    "diagnostic": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked."
+  },
+  "route_provenance": {
+    "source": "C:\\Users\\lmas1\\.codex\\worktrees\\6556\\SteerRunner\\.evidence\\ocu-remote-route-20261030\\config.json",
+    "source_sha256": "a054193846e0cff4ae8730b22e56dbeeafc895dc1eb63021fb485dc2941f41f2",
+    "copy": ".evidence/full-access-pr-route-test-config.json",
+    "copy_sha256": "4c26bdbf32ac98e93a341483be6de72fe5857796a85e224c0b4c1e658927adee",
+    "original_unchanged": true,
+    "reason": "Original configured Orca runtime was unreachable before manifest/business input; alternative saved route verified reachable via read-only status. Retry uses a new test fixture and only the same authorized remote smoke."
+  }
+}
