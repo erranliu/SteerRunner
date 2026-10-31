@@ -2,8 +2,8 @@
   "files": [
     {
       "path": ".gitattributes",
-      "bytes": 36,
-      "sha256": "586acaaef4807675bc613a239d383d0a6760027ce546d910541d390ac0300a2f"
+      "bytes": 60,
+      "sha256": "a9e991c7091c18d5a3ff9edf84aa965f47716ac38d557d9ed5127cfd5043a977"
     },
     {
       "path": "before-exit.txt",
