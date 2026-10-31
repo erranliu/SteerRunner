@@ -1,0 +1,111 @@
+{
+  "case": {
+    "repeat_index": 1,
+    "scenario": "orca-remote.smoke",
+    "evidence": "C:\\srt\\684dabe442c9\\evidence",
+    "started_at": "2026-10-31T04:43:56.5736366Z",
+    "expected_outcome": "merged",
+    "case_id": "default",
+    "manifest": "C:\\srt\\684dabe442c9\\manifest.json",
+    "resources": [
+      "root:C:\\srt\\684dabe442c9",
+      "base:codex/srtest/684dabe442c9/base",
+      "run:3b9766cac2a02d861bc932ba6a7dc7a5",
+      "workspace:C:/Users/liuming/orca/workspaces/SteerlineTest/sr-3b9766cac2a02d861bc932ba6a7dc7a5",
+      "session:orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_06bee9e1-bab0-4efc-aa26-314d2a330b74:cdde1c8f-90eb-48bd-af12-38f45752ce2c",
+      "branch:erranliu/sr-3b9766cac2a02d861bc932ba6a7dc7a5",
+      "pr:https://github.com/erranliu/SteerlineTest/pull/718"
+    ],
+    "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-final-remote-smoke\\orca-remote.smoke-default-r1-fixture.json",
+    "level": "L3",
+    "status": "passed",
+    "identity": {
+      "pid": 21660,
+      "manifest_sha256": "ae723163822c9c776b1da2dcc5356757e2e312db5972bd148884316bf9d9d99c",
+      "driver_sha256": "efd09b340efcb42970aa8988fd523156571a30324f542cdbbe153c34043486cc",
+      "runner_sha256": "34a5d02cf8b978e68613c129e4c89bda361876e3f0e2c94d263fdd9c8670751e",
+      "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+      "source_dirty": false,
+      "pattern": "^TestSRLiveScenario$",
+      "scenario": "orca-remote.smoke",
+      "level": "L3"
+    },
+    "finished_at": "2026-10-31T04:46:35.5821088Z"
+  },
+  "scenario": {
+    "scenario": "orca-remote.smoke",
+    "level": "L3",
+    "stage": "completed",
+    "run_id": "3b9766cac2a02d861bc932ba6a7dc7a5",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/718",
+    "original_head": "a558051f8f3d06b55e426d6e139f792ba31111ef",
+    "feedback_rejected": true,
+    "merge_commit": "45dd7febe5b348ef277da34776c12ab61cbb9cd3",
+    "run_stopped": true,
+    "service_stopped": true,
+    "passed": true
+  },
+  "manifest_sha256": "ae723163822c9c776b1da2dcc5356757e2e312db5972bd148884316bf9d9d99c",
+  "identity": {
+    "pid": 21660,
+    "manifest_sha256": "AE723163822C9C776B1DA2DCC5356757E2E312DB5972BD148884316BF9D9D99C",
+    "driver_sha256": "EFD09B340EFCB42970AA8988FD523156571A30324F542CDBBE153C34043486CC",
+    "runner_sha256": "34a5d02cf8b978e68613c129e4c89bda361876e3f0e2c94d263fdd9c8670751e",
+    "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+    "source_dirty": false,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "orca-remote.smoke",
+    "level": "L3"
+  },
+  "offline_stopped": {
+    "state_dir": "c:\\srt\\684dabe442c9\\s",
+    "resources_settled": true,
+    "runs": [
+      {
+        "stop_evidence_scope": "orca_terminal",
+        "run_id": "3b9766cac2a02d861bc932ba6a7dc7a5",
+        "input_digest": "1716d98c84484e731d553dba9cd19c1389caa60c82ff2a7a9dd5619b9d465bce",
+        "resources_settled": true
+      }
+    ]
+  },
+  "native_launch_contract": {
+    "effective_parameters_verified": false,
+    "helper_calls": 0,
+    "requested_access_mode": "full_access",
+    "requested_model": "gpt-6.1-sol",
+    "requested_reasoning_effort": "medium"
+  },
+  "native_call_audit": {
+    "Creations": 1,
+    "Complete": true,
+    "Inspections": 0,
+    "ClosedInspections": 0,
+    "InitialTerminals": 0,
+    "PendingControlRequests": false
+  },
+  "native_prompt_count": 3,
+  "native_journal_sha256": "72a236fb3765651d68b4299a106bad08238103ded2e5410aa9f3acce67bd950f",
+  "feedback_boundary": {
+    "native_inputs_after": 3,
+    "native_inputs_before": 3,
+    "pr_head_unchanged": true,
+    "rejected": true,
+    "revision_unchanged": true
+  },
+  "merged_pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/718",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 718,
+    "base_branch": "codex/srtest/684dabe442c9/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "erranliu/sr-3b9766cac2a02d861bc932ba6a7dc7a5",
+    "head_revision": "a558051f8f3d06b55e426d6e139f792ba31111ef",
+    "state": "merged",
+    "merged": true,
+    "merged_at": "2026-10-31T04:46:20Z",
+    "merge_commit": "45dd7febe5b348ef277da34776c12ab61cbb9cd3",
+    "checked_at": "2026-10-31T04:46:23.1050469Z"
+  }
+}

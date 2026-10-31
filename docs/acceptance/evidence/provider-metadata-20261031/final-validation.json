@@ -1,0 +1,16 @@
+{
+  "schema": "steerrunner-provider-final-validation/v1",
+  "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+  "source_digest": "80473210bce871ff81023fc6af6f585d7774b5e96aa94c910706ac9f5a1d4f65",
+  "runner_sha256": "34a5d02cf8b978e68613c129e4c89bda361876e3f0e2c94d263fdd9c8670751e",
+  "l1_go_top_tests": 728,
+  "node_tests": 29,
+  "controlled": 25,
+  "remote_smoke": "passed",
+  "test_pr": "https://github.com/erranliu/SteerlineTest/pull/718",
+  "merge_commit": "45dd7febe5b348ef277da34776c12ab61cbb9cd3",
+  "run_id": "3b9766cac2a02d861bc932ba6a7dc7a5",
+  "fixture_id": "684dabe442c9",
+  "stop_scope": "orca_terminal",
+  "other_l3_not_claimed": true
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "steerrunner-test-report/v1",
+  "source_commit": "b2d622c40e7a01d3af5f3d43d5358292d4d0db81",
+  "source_dirty": false,
+  "started_at": "2026-10-31T04:31:24.1467672Z",
+  "requested_levels": [
+    "L1"
+  ],
+  "status": "passed",
+  "results": [
+    {
+      "test_count": 728,
+      "terminal_extensions_passed": true,
+      "native_zero_match_guard": true,
+      "terminal_extension_exit": 0,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-final-l1",
+      "level": "L1",
+      "skipped_tests": [
+        "TestAuthenticationNativeToolBoundary",
+        "TestProcessHostCommandHelper",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "exit_code": 0,
+      "terminal_extension_test_count": 29,
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-final-l1\\framework",
+      "native_driver_compile_exit": 0
+    }
+  ],
+  "executed_case_count": 0,
+  "passed_case_count": 0,
+  "first_pass_rate": 0,
+  "max_parallel": 1,
+  "selected_scenarios": [],
+  "repeat": 1,
+  "planned_case_count": 0,
+  "authorized_exclusion_count": 0,
+  "scope": "selected-complete",
+  "finished_at": "2026-10-31T04:43:54.2165538Z"
+}
