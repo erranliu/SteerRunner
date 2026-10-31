@@ -1,6 +1,6 @@
 # 验证复用实现审计与 PR 验证
 
-日期：2026-10-31。状态：实现审计修复完成，最终完整前置及真实 L2 待验证。前序实现证据见[原验收](validation-reuse.md)，不改写原始结果；契约见 [Spec](../spec/validation-reuse.spec.md)。
+日期：2026-10-31。状态：实现审计修复完成，最终默认完整前置及真实 L2 均通过。[机器汇总](evidence/validation-reuse-20261031/audit-qualification.json)。前序实现证据见[原验收](validation-reuse.md)，不改写原始结果；契约见 [Spec](../spec/validation-reuse.spec.md)。
 
 ## 确认问题与修正
 
@@ -21,4 +21,16 @@
 
 ## 最终验证
 
-待从已提交、冻结的源码执行默认 `test.ps1 -Level L1,Controlled`，生成新的直接阶段证明，再经正式 L2 复用入口取得新现场结果。旧 source manifest 因实现及摘要范围变化失效，不回填或重签。原来一次创建身份场景失败及后续全量通过仍按原验收保留。
+最终源码固定为 `8f8fbdfacd154739bb397db709128cc55ce7dd0e`，source_dirty=false。默认 `test.ps1 -Level L1,Controlled -OutDir .evidence/validation-reuse-pr-final-baseline` 通过：75 项合同/完整 framework、717 个 Go 顶层、29 个 Node 扩展、编译/零匹配 guard、Controlled 25/25 零跳过。readonly Go flags 下另行 75 项通过。[默认汇总](evidence/validation-reuse-20261031/audit-baseline-summary.json)、[Controlled 原始结果](evidence/validation-reuse-20261031/audit-controlled-result.json)、[合同](evidence/validation-reuse-20261031/audit-contract-verified.json)、[readonly 合同](evidence/validation-reuse-20261031/audit-readonly-contract-verified.json)。
+
+两个直接成功阶段输入摘要均为 `b43e61f0d58269392ad392ce6fa583fe4a793eb58c52e34fccd64ce73d3ea13a`。新 manifest SHA256 `67b065f3dfa969745dbad240783ff2881645eeba4520d4455f3481f8f8b2f1bf`。[原始证明](evidence/validation-reuse-20261031/audit-prerequisites.json)。旧 manifest 因实现/摘要变化失效，未回填重签；过程中停止的旧候选保留 cancelled.json，不授予资格。
+
+正式 `test.ps1 -Level L2 -PrerequisitesFrom .evidence/validation-reuse-pr-final-baseline -Config .evidence/host-native-auth-l2-config.json -OutDir .evidence/validation-reuse-pr-final-l2` 通过，L2 1/1、complete_level_passed=true、baseline.l2_verified=true。两个阶段 reused，本轮 preflight executed，新目录无 l1.jsonl、coverage.out、controlled、framework/result.json。总耗时 218.62 秒（约 3 分 39 秒），初次来源核验 5.46 秒。[正式报告](evidence/validation-reuse-20261031/audit-summary.json)。
+
+固定 Runner SHA256 `228c530e788097080a5770014636d891246aa4aa9bdedccf6fc200be33c47220` 与来源实际受测产物一致；driver SHA256 `9b9c9d108b7467fb38cbd10374fc0dc97cee3de5866ea2566c4ff3ffc10eecae` 与本轮 guarded driver 一致。[Runner 回执](evidence/validation-reuse-20261031/audit-runner-build.json)、[case](evidence/validation-reuse-20261031/audit-case.json)、[执行身份](evidence/validation-reuse-20261031/audit-source-identity.json)。
+
+新现场 `C:/srt/b082660d2a59`，Run `bbff79eeb3ae2c64918014f4b806e3d1`。真实测试 PR [#724](https://github.com/erranliu/SteerlineTest/pull/724) head `1915b844bcd745c488ef7f666d0e6eaa255b4ec0`，仅合入专用 `codex/srtest/b082660d2a59/base`，merge `8a384a2f58633a28c82643ce0b7335760fa6d7fe`。GitHub 连接器独立确认 merged=true、base/head/merge 一致。[独立查询](evidence/validation-reuse-20261031/audit-github-pr.json)。
+
+原合并后 Git/checker、反馈拒绝、权限/命令审计及停止断言保持：22 条实际命令、权限错误 0；原生 history 2 contexts/15 tools，提权、审批和 bypass 均 0；2 个 turn 绑定通过。Run 与服务均停止。[业务与收尾](evidence/validation-reuse-20261031/audit-scenario.json)、[命令](evidence/validation-reuse-20261031/audit-command.json)、[权限](evidence/validation-reuse-20261031/audit-permission.json)、[turn](evidence/validation-reuse-20261031/audit-turn.json)。
+
+原来一次创建身份场景失败和后续全量通过仍按原验收保留。没有削减任何场景/断言/循环/skip 规则，没有替换真实 PR 验证；L3/L4 复用和相应新真机资格不在本轮范围。

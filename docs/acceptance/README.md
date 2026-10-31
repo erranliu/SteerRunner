@@ -4,7 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
-| 验证链路解耦与 L2 前置复用 | [实施与验收](validation-reuse.md)：合同检查、完整前置和真实 L2 分别登记；L3/L4 不开放复用 |
+| 验证链路解耦与 L2 前置复用 | [实施历史](validation-reuse.md)、[实现审计与最终资格](validation-reuse-audit.md)：75 项合同、完整默认前置和真实 L2 分别登记；L3/L4 不开放复用 |
 | Parser 内存文本任务解耦 | [实施与验证](parser-decoupling.md)：复用现有 Codex 登录/CLI，工具和进程管理仅在 parser 内；无原生操作/owner/停止取证耦合，保留 state/v6；先前 API 方向见 [历史](parser-decoupling-p1.md) |
 | 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)、[审计与本机 L2](host-native-auth-audit-l2.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
 | 开发统一 full_access | [实施与验证](development-full-access.md)、[实施后审计与修复](development-full-access-audit.md)：开发 sandbox 退役、read_only 与认证保留；最终构建回归与真实后端未验范围单列 |
