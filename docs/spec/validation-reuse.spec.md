@@ -1,6 +1,6 @@
 # Spec：验证链路解耦与前置结果复用
 
-日期：2026-10-31。状态：已实施，完整前置及正式复用 L2 通过，见[验收记录](../acceptance/validation-reuse.md)；文档审计见 [Plan §9](validation-reuse.plan.md#9-文档审计与修正2026-10-31)。资格仅按实际验证范围授予。实施见 [Plan](validation-reuse.plan.md)。
+日期：2026-10-31。状态：已实施，完整默认前置及正式复用 L2 通过，最新资格与实现审计见[审计验收](../acceptance/validation-reuse-audit.md)，[首轮历史](../acceptance/validation-reuse.md)保留；文档审计见 [Plan §9](validation-reuse.plan.md#9-文档审计与修正2026-10-31)。资格仅按实际验证范围授予。
 
 调查基线：`5c5c1653961ad08a836e82fc84f0898667864a5c`。前序动机见[宿主认证审计与 L2](../acceptance/host-native-auth-audit-l2.md)：完整前置通过后，仅修改 `tests/native` 的审计消费者，仍需手工拼装重跑 job 和资格来源。本轮将这一条反馈链路正规化。
 
