@@ -1,6 +1,8 @@
 # 宿主认证实施与验证
 
-日期：2026-10-31。调查及提交基线 `cf8df21374555bde90baf081c21f4d9581580f42`，工作分支 `codex/host-native-auth`，包含未提交改动。依据 [Spec](../spec/host-native-auth.spec.md) / [Plan](../spec/host-native-auth.plan.md)。代码已实施；最终 L1 与完整 Controlled 重跑已通过。实际模型/PR/Orca 真机交付仍因缺专用配置而未验，不能将其计为通过。
+> 后续审计与本机完整 L2 已通过，最新范围见[审计与 L2](host-native-auth-audit-l2.md)。下文保留首轮实施验证的构建与缺口。
+
+日期：2026-10-31。调查及提交基线 `cf8df21374555bde90baf081c21f4d9581580f42`，工作分支 `codex/host-native-auth`，包含未提交改动。依据 [Spec](../spec/host-native-auth.spec.md) / [Plan](../spec/host-native-auth.plan.md)。代码已实施；最终 L1 与完整 Controlled 重跑已通过。本记录首轮未执行实际模型/PR/Orca 真机交付；后续本机 L2 已在独立记录验证。
 
 ## 实施范围
 
@@ -22,7 +24,7 @@
 
 ## 原生未验范围
 
-当前工作区没有提供专用 fixture/publication 及执行配置。正式 ListAvailability 已记录 local-codex.smoke、orca-local.codex、orca-local.pi、orca-local.dsh、orca-remote.smoke 全部 unavailable（missing_fixture/missing_configuration），零实际派发。因此实际 Git/gh 发布、多模型切换、Orca 本机/远端真实运行、DSH 真机 HOME 及真实双 Run/重启不声明通过。其受控回归不能替代实际资格。
+首轮实施验证未提供专用 fixture/publication 及执行配置。正式 ListAvailability 已记录 local-codex.smoke、orca-local.codex、orca-local.pi、orca-local.dsh、orca-remote.smoke 全部 unavailable（missing_fixture/missing_configuration），零实际派发。因此实际 Git/gh 发布、多模型切换、Orca 本机/远端真实运行、DSH 真机 HOME 及真实双 Run/重启不声明通过。其受控回归不能替代实际资格。
 
 ## 失败记录
 
@@ -42,4 +44,4 @@
 - 完整现场：工作区 `.evidence/host-native-auth-*`；可随源码审查的摘要与日志见 [qualification.json](evidence/host-native-auth-20261031/qualification.json)、[L1](evidence/host-native-auth-20261031/l1-result.json)、[Controlled 重跑](evidence/host-native-auth-20261031/controlled-final-result.json)、[首轮失败](evidence/host-native-auth-20261031/formal-first-summary.json)、[原生探针](evidence/host-native-auth-20261031/native-final.log)、[真机可用性](evidence/host-native-auth-20261031/native-availability.json)。
 - 固定 Runner SHA256：`72432bfe7f3d6bce98d5f3b27d533d317cbc9c3cdc31cdf9f5e472d336fc6c2e`。构建与来源：[runner-build.json](evidence/host-native-auth-20261031/runner-build.json)、[生产代码文件哈希](evidence/host-native-auth-20261031/source-files.json)、[测试断言修正](evidence/host-native-auth-20261031/controlled-assertion-fix.json)、[helper/扩展 metadata](evidence/host-native-auth-20261031/terminal-metadata.json)。
 
-未部署、未改写真实账号登录或已安装版本，未创建真实测试 PR。历史报告中的成功、失败和未验结论保持原样。
+首轮实施未部署、未改写真实账号登录或已安装版本，未创建真实测试 PR；后续本机 L2 的测试 PR 单列于审计记录。历史报告中的成功、失败和未验结论保持原样。

@@ -4,7 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
-| 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
+| 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)、[审计与本机 L2](host-native-auth-audit-l2.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
 | 开发统一 full_access | [实施与验证](development-full-access.md)、[实施后审计与修复](development-full-access-audit.md)：开发 sandbox 退役、read_only 与认证保留；最终构建回归与真实后端未验范围单列 |
 | 取消调用方正文预算 | [变更及受控验收](caller-input-unlimited.md)：取消 C=2000/T=3000 拒绝线；保留 Runner 1000B、计量冻结及传输保护 |
 | Runner 输入契约与字节预算 | [预算及提示词收敛](workflow-input-budget.md)：受控测试与软目标取舍；原配置新现场的后续 144B 输入公开接受，但 Runner 完成确认超时，原投递缺陷未宣称修复 |

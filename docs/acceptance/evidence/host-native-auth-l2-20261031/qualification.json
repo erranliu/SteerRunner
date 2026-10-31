@@ -1,0 +1,41 @@
+{
+  "schema": "steerrunner-host-native-auth-l2/v1",
+  "product_commit": "55b13585230824c04ca5910020274a8dd1b20806",
+  "driver_commit": "d864a04bb2ee7179f1d8ad4a3f5db5d08179933c",
+  "runner_sha256": "0d554cd5a94ce6b5c772515e9b88d27b055fa7c8268d7f5b83c40ecbabe727a8",
+  "product_source_digest": "bf0c745aba28e40947173d3cfd36718071212add6187edf8eb33d98a71b3db37",
+  "L1": {
+    "passed": 717,
+    "extensions_passed": 29,
+    "exit_code": 0
+  },
+  "Controlled": {
+    "scenarios_passed": 25,
+    "exit_code": 0
+  },
+  "L2": {
+    "registered_cases": [
+      "local-codex.smoke/default"
+    ],
+    "passed_cases": [
+      "local-codex.smoke/default"
+    ],
+    "missing": [],
+    "skipped": [],
+    "excluded": [],
+    "exit_code": 0,
+    "run_id": "e8bd5542b5dd97abaf4c045785e19e3b",
+    "test_pr": "https://github.com/erranliu/SteerlineTest/pull/722",
+    "merge_commit": "60e78558f9237208c6ea57084c268958423a303d",
+    "run_stopped": true,
+    "service_stopped": true
+  },
+  "first_attempt": {
+    "test_pr": "https://github.com/erranliu/SteerlineTest/pull/721",
+    "closed": true,
+    "merged": false,
+    "failure": "retired sandbox-readiness.json required by native test audit"
+  },
+  "host_github_login_after_stop": "erranliu",
+  "note": "L1/Controlled prerequisites reused after a tests/native-only audit correction; production digest and Runner SHA unchanged. Original failed batch report preserved."
+}
