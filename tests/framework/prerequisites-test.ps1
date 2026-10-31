@@ -4,7 +4,7 @@ Set-StrictMode -Version Latest
 . (Join-Path $Repository 'scripts/test-prerequisite-contract.ps1')
 . (Join-Path $Repository 'scripts/test-configuration.ps1')
 $taskRealSnapshotFunction=${function:Get-SRPrerequisiteSnapshot}
-$taskRealSnapshot=Get-SRPrerequisiteSnapshot $Repository
+$taskRealSnapshot=Get-SRPrerequisiteSnapshotOrUnavailable $Repository
 if(-not $taskRealSnapshot.ContainsKey('fingerprint')){throw 'Real snapshot failed under strict mode'}
 $taskRoot=Join-Path $Evidence 'prerequisites'
 if(Test-Path -LiteralPath $taskRoot){throw 'Prerequisite framework evidence must be new'}
@@ -27,6 +27,8 @@ if($LASTEXITCODE -ne 0){throw 'Cannot initialize isolated prerequisite repositor
 if($LASTEXITCODE -ne 0){throw 'Cannot register isolated inputs'}
 & git -C $taskRepo -c user.name=Fixture -c user.email=fixture@example.invalid -c commit.gpgsign=false commit -qm fixture
 if($LASTEXITCODE -ne 0){throw 'Cannot commit isolated prerequisite inputs'}
+$taskIsolatedSnapshot=Get-SRPrerequisiteSnapshot $taskRepo
+if(-not $taskIsolatedSnapshot.ContainsKey('fingerprint')){throw 'Isolated real snapshot failed under strict mode'}
 # Environment/package doubles are confined to this test process. Production has no injection switch.
 $script:taskEnvironment='same-tools';$script:taskUnsupported=$false;$script:taskPackages=@('example.invalid/prerequisites/internal/fixture')
 function Get-SRPrerequisiteSnapshot([string]$Root,[switch]$Native) {
@@ -121,6 +123,9 @@ try {
     & git -C $taskRepo update-index --add --cacheinfo "160000,$gitlinkCommit,internal/fixture/link"
     if($LASTEXITCODE -ne 0){throw 'Cannot create isolated directory input'}
     Reject 'directory-or-gitlink-input' {Get-SRPrerequisiteFiles $taskRepo | Out-Null}
+    $unavailable=Get-SRPrerequisiteSnapshotOrUnavailable $taskRepo
+    if($unavailable.supported -or -not $unavailable.ContainsKey('fingerprint')){throw 'Unsupported source blocked default snapshot fallback'}
+    $taskChecks.Add('unsupported-source-default-fallback')
 } finally {& git -C $taskRepo update-index --force-remove -- internal/fixture/link;Remove-Item -LiteralPath $directoryInput}
 foreach($setting in @(@{name='GOAMD64';first='v1';second='v2'},@{name='GODEBUG';first='x509sha1=0';second='x509sha1=1'})) {
     $previous=[Environment]::GetEnvironmentVariable($setting.name)
