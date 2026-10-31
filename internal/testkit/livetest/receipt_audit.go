@@ -34,6 +34,9 @@ func ReceiptAuditPolicy(m Manifest) NativeReceiptAuditPolicy {
 			a.Executable = "codex"
 		}
 		command, _ := (&agentlaunch.Config{Executable: a.Executable, Args: a.Args, Model: a.Model, ReasoningEffort: a.ReasoningEffort, AccessMode: s.AccessMode, RepositoryURL: RemoteURL, RepositoryRemote: "origin"}).Command("codex")
+		// These native receipt scenarios disable both file channels. Match the
+		// complete frozen launch, including clearing inherited channel paths.
+		command = agentlaunch.FileCommands(command, "", "")
 		return NativeReceiptAuditPolicy{Environment: m.Execution.Target.Environment, NativeLaunchCommand: command}
 	}
 	if a.Executable == "" && s.AgentName() == "codex" {
