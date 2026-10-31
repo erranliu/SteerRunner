@@ -1,12 +1,15 @@
 # Orca 多行输入提交实施记录
 
-2026-10-30。配套[Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)。窄范围实现已完成，项目检查/受控回归与真实资格分别登记；未达到真实双端放行条件，PR保持draft。
+2026-10-30 初始实施批次的历史记录。配套[Spec](../spec/orca-native-submit.spec.md)、[Plan](../spec/orca-native-submit.plan.md)。
+当前原提交修正已取得[本机 3/3](orca-native-submit-local-final.md)、[远端 3/3](orca-native-submit-remote-final.md)
+及[远端单次重跑通过](orca-native-submit-remote-rerun.md)。下文的 draft、0/3 与阻断均属于各历史批次，
+不表示当前资格，也不把原失败改判为通过。2026-10-31 持续控制读取的复审修正与检查另行登记。
 
-后续本机适配、隔离 agent 构建和真实准备诊断见[本机补验记录](orca-native-submit-local.md)。下文为此前批次的原始结论；本机缺测试适配的问题已补齐，当前阻断为原控制回执默认读取发生屏幕折行。本机资格仍为 0/3，不将准备失败改为通过。
+后续本机适配、隔离 agent 构建和真实准备诊断见[本机补验记录](orca-native-submit-local.md)。当时本机缺测试适配的问题已补齐，阻断为原控制回执默认读取发生屏幕折行。本机当时资格为 0/3，不将准备失败改为通过。
 
-最新授权增量见[本机原始流补验](orca-native-submit-local-stream.md)：两处准备读取已修正，真实 control READY 校验通过；新现场被既有认证 socket 的 Windows 1920 错误阻断，仍无业务提交、仍为 0/3。前述状态按各批次保留，不覆盖原始证据。
+随后授权增量见[本机原始流补验](orca-native-submit-local-stream.md)：两处准备读取已修正，真实 control READY 校验通过；该批现场被既有认证 socket 的 Windows 1920 错误阻断，无业务提交、资格 0/3。前述状态按各批次保留，不覆盖原始证据。
 
-最终本机补验现为 **3/3 通过**；根因、环境恢复、测试目标门禁与全部原始凭据见[最终记录](orca-native-submit-local-final.md)。远端仍 0/3 未验证，PR 保持 Draft。下文数字仍属于此前实施批次。
+最终本机补验为 **3/3 通过**；根因、环境恢复、测试目标门禁与全部原始凭据见[最终记录](orca-native-submit-local-final.md)。本机批次结束时远端尚未验证、PR 当时为 Draft；后续状态见页首。下文数字仍属于此前实施批次。
 
 ## 实现与保证
 

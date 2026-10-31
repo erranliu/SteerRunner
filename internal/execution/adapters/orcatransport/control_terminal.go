@@ -8,6 +8,7 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -96,7 +97,7 @@ func (l *Lifecycle) prepareControl(ctx context.Context, r b.LifecycleRequest, re
 		finish()
 		return receipt, e
 	}
-	lines, e := l.controlLines(ctx, state)
+	lines, e := l.controlLines(ctx, state, true)
 	if e != nil {
 		finish()
 		return receipt, e
@@ -117,32 +118,75 @@ func (l *Lifecycle) prepareControl(ctx context.Context, r b.LifecycleRequest, re
 	return receipt, err
 }
 
-func (l *Lifecycle) controlLines(ctx context.Context, state State) ([]string, error) {
+func (l *Lifecycle) controlLines(ctx context.Context, state State, fromStart bool) ([]string, error) {
 	if state.Control == nil {
 		return nil, errors.New("original native control missing")
 	}
 	p := state.Control.Process
-	if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
-		return nil, err
-	}
-	r, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--cursor", "0", "--limit", "1000", "--json")
-	var value struct {
-		Terminal struct {
-			Handle, Source, OldestCursor string
-			Tail                         []string
-			Truncated, Limited           *bool
+	var lines []string
+	var cursor, boundary uint64
+	for {
+		if err := ctx.Err(); err != nil {
+			return nil, err
 		}
+		if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
+			return nil, err
+		}
+		r, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--cursor", strconv.FormatUint(cursor, 10), "--limit", "1000", "--json")
+		var value struct {
+			Terminal struct {
+				Handle, Source, OldestCursor, NextCursor, LatestCursor string
+				Tail                                                   []string
+				Truncated, Limited                                     *bool
+			}
+		}
+		if err != nil || r.CallUncertain || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &value) != nil || value.Terminal.Handle != p.Terminal {
+			return nil, errors.New("original native control output identity changed")
+		}
+		if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
+			return nil, err
+		}
+		page := value.Terminal
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		if page.Source != "stream" || page.Truncated == nil || page.Limited == nil {
+			return nil, errors.New("original native control output stream incomplete or unavailable")
+		}
+		if fromStart {
+			if page.OldestCursor != "0" || *page.Truncated || *page.Limited {
+				return nil, errors.New("original native control readiness stream incomplete")
+			}
+			lines = page.Tail
+			break
+		}
+		oldest, oldestErr := strconv.ParseUint(page.OldestCursor, 10, 64)
+		next, nextErr := strconv.ParseUint(page.NextCursor, 10, 64)
+		latest, latestErr := strconv.ParseUint(page.LatestCursor, 10, 64)
+		start := max(cursor, oldest)
+		if oldestErr != nil || nextErr != nil || latestErr != nil || next < start || next > latest || next-start > uint64(len(page.Tail)) || next-start > 1000 || *page.Truncated != (cursor < oldest) {
+			return nil, errors.New("original native control stream cursor invalid")
+		}
+		if cursor == 0 {
+			// Ongoing queries need retained replies, not the actor's entire history.
+			boundary = latest
+		} else if oldest > cursor || latest < boundary {
+			return nil, errors.New("original native control stream lost pages during read")
+		}
+		// Do not parse a partial line or chase output added after the first page.
+		lines = append(lines, page.Tail[:min(next, boundary)-start]...)
+		if next >= boundary {
+			break
+		}
+		if !*page.Limited || next <= start {
+			return nil, errors.New("original native control stream did not advance")
+		}
+		cursor = next
 	}
-	if err != nil || r.CallUncertain || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &value) != nil || value.Terminal.Handle != p.Terminal {
-		return nil, errors.New("original native control output identity changed")
+	for i := range lines {
+		lines[i] = strings.TrimSpace(lines[i])
 	}
-	if value.Terminal.Source != "stream" || value.Terminal.OldestCursor != "0" || value.Terminal.Truncated == nil || *value.Terminal.Truncated || value.Terminal.Limited == nil || *value.Terminal.Limited {
-		return nil, errors.New("original native control output stream incomplete or unavailable")
-	}
-	for i := range value.Terminal.Tail {
-		value.Terminal.Tail[i] = strings.TrimSpace(value.Terminal.Tail[i])
-	}
-	return value.Terminal.Tail, nil
+	return lines, nil
 }
 
 func (l *Lifecycle) closeControl(ctx context.Context, state State) error {

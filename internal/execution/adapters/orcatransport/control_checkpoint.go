@@ -116,7 +116,7 @@ func validateControlResponse(q codex.RemoteControlRequest, r codex.RemoteControl
 func (l *Lifecycle) dispatchControl(ctx context.Context, state State, q codex.RemoteControlRequest) (codex.RemoteControlResponse, error) {
 	var result codex.RemoteControlResponse
 	read := func() (bool, error) {
-		lines, err := l.controlLines(ctx, state)
+		lines, err := l.controlLines(ctx, state, false)
 		if err != nil {
 			return false, err
 		}

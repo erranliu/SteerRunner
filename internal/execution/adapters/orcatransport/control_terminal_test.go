@@ -12,6 +12,7 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -26,6 +27,9 @@ type fixedControlFixture struct {
 	requestIDs             []string
 	closed                 bool
 	authBudget             time.Duration
+	stream                 []string
+	streamOldest           int
+	readCursors            []int
 }
 
 func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, *fixedControlFixture) {
@@ -110,8 +114,16 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				raw, _ = json.Marshal(c.response)
 				lines = append(lines, codex.RemoteControlPrefix+base64.RawURLEncoding.EncodeToString(raw))
 			}
-			terminal["tail"] = lines
-			terminal["source"], terminal["oldestCursor"], terminal["truncated"], terminal["limited"] = "stream", "0", false, false
+			if c.stream != nil {
+				lines = c.stream
+			}
+			cursor, _ := strconv.Atoi(arg("--cursor"))
+			c.readCursors = append(c.readCursors, cursor)
+			start := max(cursor, c.streamOldest)
+			end := min(start+1000, c.streamOldest+len(lines))
+			terminal["tail"] = lines[start-c.streamOldest : end-c.streamOldest]
+			terminal["source"], terminal["oldestCursor"], terminal["truncated"], terminal["limited"] = "stream", strconv.Itoa(c.streamOldest), cursor < c.streamOldest, end < c.streamOldest+len(lines)
+			terminal["nextCursor"], terminal["latestCursor"] = strconv.Itoa(end), strconv.Itoa(c.streamOldest+len(lines))
 			result = map[string]any{"terminal": terminal}
 		case "send":
 			c.sends++
@@ -174,6 +186,10 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				response.RequestDigest = "foreign"
 			}
 			c.response = &response
+			if c.stream != nil {
+				raw, _ := json.Marshal(response)
+				c.stream = append(c.stream, codex.RemoteControlPrefix+base64.RawURLEncoding.EncodeToString(raw))
+			}
 			if c.mode == "lost-send" {
 				c.mode = ""
 				return nil, errors.New("lost send response")

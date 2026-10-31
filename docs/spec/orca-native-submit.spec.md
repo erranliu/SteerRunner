@@ -1,7 +1,7 @@
 # Orca 多行输入屏幕草稿依赖修复 Spec
 
 日期：2026-10-30。生产源码基线：`a086a9984dc0bd32b3f02b9698cd26c9ba313d90`。
-状态：窄范围代码已实施，本次真实双端各三个独立原生会话通过。实施/检查实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
+状态：窄范围代码已实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正另见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)，不混用构建资格。原实数与边界见[实施记录](../acceptance/orca-native-submit-implementation.md)及[远端最终验收](../acceptance/orca-native-submit-remote-final.md)。配套 [Plan](orca-native-submit.plan.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
 
 最终本机补验已达 3/3，原请求、原文/模型/final及正式停止认证均通过；用户新指定的远端
 `192.168.1.151` 已达 3/3，保留原 NativeProof/原输入/final及 `orca_terminal` 正式停止范围。
@@ -22,12 +22,22 @@ workflow 相同的既有 writer/audit 冻结配置，不清空 Turn.Model 或放
 
 不修改Orca，不用实验开关、私有API或安装包内部函数作生产依赖。不增加提交重试、重试预算、固定sleep、request-show生产恢复、状态机、codec字段、通用框架或兼容回退。其它agent extension、业务脚本、SteerLine/Unity和环境检测不在修改范围；不部署安装环境、不改全局设置或历史证据。
 
-2026-10-30 用户追加授权本机补验发现的最小读取修正：仅 `controlLines` 和
-`readLocalCodexReadiness` 显式使用公开 `terminal read --cursor 0 --limit 1000`，读取原始回执。
-要求 `source=stream`、完整保留起点及明确未截断/未受输出上限裁切的元数据；屏幕投影、缺少来源或
-不完整输出拒收，空的完整流仍按原 pending 处理。保留原回执解码和身份/绑定核验，
-不拼接屏幕行、不回退默认读取，不改变提交、模型、完成或停止算法。该增量单独测试和复审，
-不将此前失败现场改判为通过。
+2026-10-30 用户追加授权本机补验发现的最小读取修正：`controlLines` 和
+`readLocalCodexReadiness` 显式使用公开 cursor 原始流，不拼接屏幕行或回退默认读取。
+2026-10-31 复审发现：不能把准备阶段的全历史完整门禁用于持续控制查询，否则正常累积
+超过 1000 行或淘汰旧前缀后会永久拒收。此次修正区分读取目的：
+
+- control READY 与本机 launch READY 仍从 cursor 0、limit 1000 读取，要求保留起点、
+  `source=stream` 和明确未截断/未受限；空的完整流仍按原 pending 处理。
+- 持续 original-turn/workspace-audit/authentication-stop 查询从 cursor 0 读取当前保留窗口，
+  允许第一次读取报告旧前缀淘汰；若 limited，按公开 nextCursor 读取后续页，最多扫描到
+  首次读取的 latestCursor，不追赶新增输出。每页验证原 runtime/terminal/incarnation、
+  来源与 cursor 元数据；中途丢页、cursor 不前进/倒退、身份变化或取消均失败并保留原因。
+  仍由原解码、请求 ID/binding/request digest 和各类正式证据决定是否采纳响应。
+
+分页只在这一次只读查询内使用局部变量，不新增持久 cursor、状态机、重试预算或发送。
+保留原 checkpoint、未知处理、提交/模型/完成/停止算法；此前真实会话仅证明其存档构建，
+不能自动成为本次读取增量的真实资格，也不将此前失败改判为通过。
 
 ## 2. 当前事实与提交契约
 
@@ -89,4 +99,4 @@ Plan的NS-T01–T10映射既有正式入口、条件与证据；实现时登记�
 
 实施后完成项目规定检查、正式L3/稳定回归与独立复审。真实验证在全新隔离现场，以无副作用最小任务，本机/远端各至少3个独立native session，记录原请求、实际Runner通用提交次数、accepted/started/completed证据、正式原输入/final与精确停止清理。一次RPC不等于一次底层按键，宿主内部不可观察次数记不可观察；缺条件标未验证。
 
-模型与长结果仅做既有能力不退化的回归，不要求先迁移、重新证明两端等价或用六个短任务替代这些既有测试。不跑Unity、业务完整交付或创建业务PR。本次已修改提交及清理代码，真实本机/远端资格仍未验收；不宣称已复现历史原生故障或已修复，更新原单独Draft PR，未验收前不合并/部署。
+模型与长结果仅做既有能力不退化的回归，不要求先迁移、重新证明两端等价或用六个短任务替代这些既有测试。不跑Unity、业务完整交付或创建业务PR。原窄范围提交修正已有双端各三个真实会话及一次远端重跑记录；本次持续控制读取增量的检查、复审与未验边界另行登记，不宣称完整复现或修复历史原生故障。更新原单独 PR，不合并或部署。

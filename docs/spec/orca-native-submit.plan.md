@@ -1,7 +1,7 @@
 # Orca 多行输入屏幕草稿依赖修复 Plan
 
 日期：2026-10-30。配套 [Spec](orca-native-submit.spec.md)、[调查记录](../acceptance/orca-native-submit-reassessment.md)。
-状态：按用户授权实施，真实双端各三个独立原生会话通过。实数及边界见[远端最终验收](../acceptance/orca-native-submit-remote-final.md)和[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
+状态：按用户授权实施，原存档构建的真实双端各三个独立原生会话通过。2026-10-31 持续控制读取修正另见[本次增量验收](../acceptance/orca-native-submit-control-stream.md)；原实数及边界见[远端最终验收](../acceptance/orca-native-submit-remote-final.md)和[实施记录](../acceptance/orca-native-submit-implementation.md)。只替换屏幕草稿多行提交及清理专用依赖，保留模型、原输入/完成和停止流程。上一版M1迁移与request-show恢复接线退出本次范围，不代表其能力已闭合；不新增Orca能力或Runner重试预算。
 
 ## P0 固定范围与基线
 
@@ -51,13 +51,24 @@ NS-T09分层扩展TestNativePromptSharedQueueWithStopAndCancellation、TestOrcaC
 | NS-T08 | 扩展TestSRRestartPreservesAuthorization及原reconnect/unknown入口 | 重复请求、断线、服务重启、原回执丢失/已清理 | 原journal/Request/Attempted恢复后只走现有对账；0追加send，无预算可重置或同ID安全重放假设 |
 | NS-T09 | 参数化local IPC/remote WS；既有CLI锁/多Run入口 | 同组输入/故障经通用提交；同服务≥3个Run、原生观察/stop排队、调用和排队期间取消 | 两目标无草稿路径、原wire/完成接线保留；CLI参数/锁序/实际调用计数；无死锁、取消后0派发/追加输入，遵守原调用期限，锁风险如实登记 |
 | NS-T10 | 既有model/history/original input/final及stop/reconcile tests | 执行→审计→执行模型/effort、本机32KiB结果边界、远端hook截断拒收、正式原文与资源清理 | 跑原有能力回归，不迁移模型/结果或放宽阈值；原证明链与完整stop census不退化 |
-| NS-T02/T07/T10 授权增量 | TestLocalPreparationOriginalStream；同一 focused native-input 正式入口 | 两处显式 cursor 原始回执、完整/空流、屏幕/缺字段/截断/受限/身份/绑定反例 | 32 新叶例各30次；同矩阵共4860/0/0，最终L1通过；真实READY恢复但认证目录条件阻断，完整资格仍未验证 |
+| NS-T02/T07/T10 原准备读取批次 | TestLocalPreparationOriginalStream；同一 focused native-input 正式入口 | 两处显式 cursor 原始回执、完整/空流、屏幕/缺字段/截断/受限/身份/绑定反例 | 当时32新叶例各30次、同矩阵4860/0/0；当时READY恢复但认证目录阻断，后续双端资格见P6 |
+| NS-T02/T07/T10 持续读取修正 | TestFixedControlRetainedStream / TestFixedControlStreamFaults / TestFixedControlStreamBoundaries；同一 controlled 正式入口 | 超1000行/三页/前缀淘汰后正式history/workspace/auth-stop；未知回执沿原checkpoint恢复；缺页/身份/取消及快照/空流/半行边界 | 新增37叶例各30次；按原请求、摘要、实际读/发送及正式清理证明核验；实数见本次增量验收 |
 
 NS-T03–T08及NS-T09锁/取消故障：每个叶子故障、每目标30次。报告实际执行、失败、跳过及case清单；目标固有不支持能力单列，不伪造双端模型能力等价。重复不替代覆盖，不计旧快照或13项隔离核查为新矩阵。
 
 实现时把NS-T01–T10绑定实际测试名/case ID；优先扩展tests/catalog.json.focused_native_scenarios、scripts/test-native-input.ps1及原TestOrcaNativeStateLiveLifecycle。统一测试目标格式，允许本机Environment为空，生产流程不因此改造。必要新增正式case同步cases.json/manifest/目录校验和当前文档，规划阶段不预注册未实现case。
 
 ## P5 项目检查与真实验证
+
+2026-10-31 复审修正：先审计 Spec §1 的准备/持续读取边界，再仅调整 control 读取与两个
+调用点。准备维持 cursor 0 的严格完整门禁；持续查询按 nextCursor 读取首次 latestCursor
+以内的保留原始流，逐页核验身份和单调 cursor；首读允许旧前缀淘汰，中途缺页拒收。
+不新增持久状态、发送、恢复分支或通用分页框架。扩展现有 fixed control fixture 模拟累计
+输出、1000 行分页和旧前缀淘汰，通过实际读/发送计数、原请求和正式证据核验 history、
+workspace-audit、authentication-stop；覆盖分页中丢回执/身份变化/取消、无进展、持续新增输出、
+旧响应与错误绑定。将新增测试纳入原 controlled 入口，每叶例 30 次，先证实旧实现失败，
+再运行修复后矩阵、项目 L1 和独立复审。历史真实会话按原构建保存，不计为此增量的真实验证；
+不向旧 Run 重投、不补 Enter，不部署或改全局配置。最新增量结果单列验收记录。
 
 2026-10-30 用户已明确允许上述两处最小生产读取修正。实施 `--cursor 0` 及完整 stream
 校验，扩展原 control/ready 夹具和正式 controlled 入口，覆盖完整/空流、screen/缺 source、
@@ -95,7 +106,7 @@ v3 control/ready/history 测试适配。3900 次确定性回归通过；真实�
 对照已确认可保留原始行。两处准备/控制读取的最小生产修正超出原窄范围，当前仅列候选、
 当时等待范围确认，未实施或通过测试注入；详见[本机补验记录](../acceptance/orca-native-submit-local.md)。
 用户随后已授权，P5 的两处读取增量已实施；最新[原始流补验记录](../acceptance/orca-native-submit-local-stream.md)
-分别记录读取修正验证及认证目录新阻断，本机仍未取得三个成功会话。
+分别记录当时读取修正验证及认证目录阻断；这是历史批次，当前双端结果见本节首段。
 
 提交最终diff、实际测试计数、六个真实会话证据、清理清单与未验项做独立复审，修正确认问题。更新原单独PR，实施和验收前保持draft，不合并或部署安装环境。
 
