@@ -42,6 +42,10 @@ L2/L3 的静态清单共 32 case，16 项 available、16 项 unavailable；缺�
 
 真实执行前，用户额外明确授权这两项 smoke 及其专用测试 PR。此前自动审批拒绝的命令没有执行；新增授权后才启动。测试协调脚本首次在 catalog 展开阶段退出，未创建现场或 PR；已改用仓库现有 `Get-SRTestCatalog` 展开器并更换证据目录，原失败日志保留。
 
+## 后续远端排查
+
+后续 `fc20599` 修复 provider 元数据启动竞态，并完成新构建的 L1 / Controlled。真实远端复测仍因模型联网超时未通过；进程代理与本机绕过诊断已定位环境原因。当前状态及独立证据见[远端排查记录](development-full-access-provider.md)，本节之前的失败记录保持原样。
+
 ## 交付边界
 
 代码审计确认的四项问题已修复，基础回归、Controlled 和本机 L2 通过。远端 smoke 的原生 readiness 资格失败；其他 L3、Pi/DSH、audited、管理员窗口及 read_only/parser 真机专项仍未验证。PR 标为草稿，保留真实失败和未验范围，不声明完整 Spec 真机验收通过。

@@ -1,0 +1,9 @@
+{
+  "scenario": "orca-remote.smoke",
+  "level": "L3",
+  "stage": "implementation",
+  "run_id": "808395709cbaa4f5a511ff0c436e6ec9",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

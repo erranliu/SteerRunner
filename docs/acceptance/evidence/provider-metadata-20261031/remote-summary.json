@@ -1,0 +1,36 @@
+{
+  "source_digest": "c4a8c66349f9fc8be22c283899a76c2dadea50d97877c77e6c8100d3ac432a60",
+  "source_commit": "fc205994260eb5d7d85e82b76721d2b4d4f48dee",
+  "requested": [
+    "orca-remote.smoke/default"
+  ],
+  "prerequisites": [
+    ".evidence/provider-metadata-l1/summary.json",
+    ".evidence/provider-metadata-controlled-results/result.json",
+    ".evidence/provider-metadata-controlled-rest/result.json"
+  ],
+  "schema": "development-full-access-live-validation/v1",
+  "requirements_sha256": "4aadd0b6af0f7283ece9530fa6bfddcd0054b29af0e5d9a9f820d016663b7b20",
+  "runner_sha256": "74a29a03ab91461d80537159300eaf9902e1a87e495145620bbd3bef481b3b88",
+  "configuration_sha256": "3ed9cd636c8c2fe046ada1ce4c6d269a62fbeef2c06c1989633814a0e6d38bfe",
+  "status": "failed",
+  "resource_digest": "21725cc1e4fffbf6808a74a5eaf736bf2ac2003626eb103d11323b1fb3ea692d",
+  "helper_sha256": "3b8404efc9e2fdf74bb17bbf0bcbcd54af93b0d36ac822935207c0e3112dff2d",
+  "finished_at": "2026-10-31T03:06:38.5994075Z",
+  "started_at": "2026-10-31T03:05:19.0064601Z",
+  "results": [
+    {
+      "error": "Live scenario failed; inspect C:\\srt\\178033afc94e\\evidence/native.log",
+      "evidence": "C:\\srt\\178033afc94e\\evidence",
+      "started_at": "2026-10-31T03:05:19.7034158Z",
+      "manifest": "C:\\srt\\178033afc94e\\manifest.json",
+      "scenario": "orca-remote.smoke",
+      "repeat_index": 1,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\21a0\\SteerRunner\\.evidence\\provider-metadata-remote-smoke\\orca-remote.smoke-default-r1-fixture.json",
+      "level": "L3",
+      "status": "failed",
+      "finished_at": "2026-10-31T03:06:38.4242263Z",
+      "case_id": "default"
+    }
+  ]
+}
