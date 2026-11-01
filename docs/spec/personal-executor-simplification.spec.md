@@ -1,6 +1,8 @@
 # Spec：个人多机执行器的执行链路简化
 
-日期：2026-11-01。状态：P1 已独立验收；P2 观测解耦已实施并独立验收，Orca local 与完整 L1 补验通过；P3 已按 PES-A03/A04/A05/A08 独立验收通过，state/v7；P4 本项（原生问答输入）已按 PES-A06/A08 独立验收通过；其他候选不展开。P2 的 state/v6 证据仅证明其原构建。配套 [Plan](personal-executor-simplification.plan.md)，[P1 实施与验收](../acceptance/personal-executor-p1.md)、[P2 实施与验收](../acceptance/personal-executor-p2.md)、[P3 实施与验收](../acceptance/personal-executor-p3.md)、[P4 实施与验收](../acceptance/personal-executor-p4.md)。调查基线：`e2729563562314659a799a5f82debe427fcd7c24`，本批源码为该基线加未提交变更，不声明 clean 构建。
+日期：2026-11-01。总状态：本轮选定范围（P1、P2、P3、P4 原生问答输入）实施及独立验收已完成，当前操作文档冲突已收口；其他 P4 候选不展开。交付方式为一份汇总 PR，已验收实现与本次文档修订分开提交，待评审合并；不追称四批已各自独立提交。当前 state/v7。完整 L1/Controlled 与真实最小链路仍按各批原构建记账，P4 仅取得受影响定向资格；没有完整 L2/L3、全 agent、外仓或发布资格。
+
+配套 [Plan](personal-executor-simplification.plan.md)。[P1](../acceptance/personal-executor-p1.md)、[P2](../acceptance/personal-executor-p2.md)、[P3](../acceptance/personal-executor-p3.md)、[P4](../acceptance/personal-executor-p4.md)报告及证据保持原字节。调查/验收基线为 e2729563562314659a799a5f82debe427fcd7c24 加各批未提交内容；这些是当时的真实构建来源，提交整理不将其改写为 clean 构建或新提交的全量资格。
 
 ## 1. 目标与范围
 
@@ -10,9 +12,9 @@
 
 本稿只调整这些实施所必需的局部运行契约，不另立完整产品重定义项目。既有 full_access、宿主登录和独立 parser 简化已实施，不重复立项。
 
-### 1.1 基线事实
+### 1.1 实施前基线事实
 
-| 位置 | 当前行为 | 本轮改变 |
+| 位置 | 调查时行为 | 本轮改变 |
 | --- | --- | --- |
 | `application/worker.go:advance`、`result_file.go:prepareRuntimeFiles` | progress/result 初始化均成功才继续推进；失败下次唤醒仍可能再次准备 | 初始化有限尝试，异常仅影响通道诊断，不阻止业务步骤 |
 | `application/progress.go`、`result_file.go`、`engine.go:commitLocked` | 文件状态与业务共享 Record，分别保存并避免相互覆盖 | 保留存储及字节契约，取消文件就绪作为派发条件 |
@@ -185,6 +187,10 @@ Focused 跳过完整 L1/Controlled，仍新编译 native driver 并执行零匹�
 每批开始记录一份简短收益基线和预期删除/新增项，结束登记实测、差异及未达项，不新增收益平台或强制性能测试套件。有可比旧报告则复用；没有时如实标记耗时对照缺失，不为凑对照额外跑全后端。已证明启动阶段为 0 的结构收益与尚未量化的总耗时收益分别报告，不虚构加速比例。
 
 后两批必须用净删除或具体变化面收缩证明价值。若某项会保留同样规则、再新增更多权限/兼容分支或纯包装，应缩小/取消该项；不能为了满足总计划扩大框架。某批收益门槛未达，状态记为待调整/部分完成，不把它标成完整交付，也不阻塞前批独立结果。
+
+### 8.1 实际交付状态
+
+本轮选定范围的实施及独立验收已完成，其他 P4 候选不展开；当前 v7、升级排空和人工对账文档已统一。本次交付采用一份汇总 PR，已验收实现与文档修订分开提交、待评审合并。原计划的逐批独立提交没有实际形成，不倒造四个历史提交或宣称四个独立发布版本。各批原 commit/dirty、构建回执及历史失败保持，不把 PR 提交整理转为新的完整资格。逐批实测、仍未覆盖范围及部署/外仓边界见[Plan §7.1](personal-executor-simplification.plan.md#71-本轮总状态与交付边界)。
 
 ## 9. 分批验收条件
 

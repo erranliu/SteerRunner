@@ -138,7 +138,7 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 
 默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v7`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
-当前只接受 state/v7，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
+当前只接受 state/v7（SQLite user_version=7），拒绝 v6 及更旧目录，不迁移、不删除旧记录，也不替旧版本结算资源。同构建重启可接回原 owner/session；升级须先由原版本排空，再停止旧 writer、启用新版本。排空包括业务不再待输入/继续、原生资源已结算、无未完成副作用或控制命令，不能只看 pr_ready 或 service stop。`service verify-takeover --candidate` 已删除，返回普通未知命令 exit 2；不再提供跨构建活动任务接管。此次 v6→v7 使用新目录；未来格式/执行契约兼容且已排空时，可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。详见[现行升级契约](spec/personal-executor-simplification.spec.md#41-升级约定及状态目录)及[P3 验收](acceptance/personal-executor-p3.md)。
 
 ## 定向验证
 
@@ -199,15 +199,15 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 开发 workflow/2 显式要求 `execution.settings.access_mode=full_access`；内容流程仍显式 `read_only`。sandbox、缺省、空值、null 不会自动转换。修改客户端 `profiles` 中的可编辑配置，保持目标环境、模型、仓库和发布设置；先用新构建的 `capabilities --offline` 与 `validate --kind run-configuration` 核对，再以新 request_id 提交。配置 helper 返回 `access_mode_migration_required` 时修改原配置源，不另选候选或复用旧 ID 换正文。
 
-已有提交继续按原 request_id 查询/对账；原冻结 Request、digest、Attempt、PR 及证据不变。旧 sandbox/隐式模式 Run 在新服务中只读，拒绝 resume/reply、自动推进、PR refresh、新采集和原生会话 open，仅保留持久事实查询与身份可核验时的精确 stop。退役不等于原 worker 已停止：原 owner 中在途回合可能继续运行。停止不支持或证据缺失时，保留未结算事实，用原版本处理；不要重建会话或把旧 Run 改为 full_access。
+旧版本中的已有提交继续由原 EXE/state-dir 按原 request_id 查询、对账和收尾；原冻结 Request、digest、Attempt、PR 及证据不变。当前 v7 在 worker/owner/外部调用前拒绝 v6 及更旧目录，不提供旧 Run 的只读投影或精确 stop 兼容适配。退役不等于原 worker 已停止：原 owner 中的在途回合可能继续运行。停止不支持或证据缺失时保留原 EXE、目录和未结算事实，由用户与原版本处理；不要重建会话或把旧 Run 改为 full_access。
 
-升级顺序：旧版本停收新任务→完成或精确停止受影响 Run→核实原 worker/parser 与旧版认证资源结算→更新产品/helper/扩展与可编辑配置→检查新构建接管清单及配置→提交新任务。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除。新版本不读取旧 Run；新建 read_only 内容/parser 与原生远端链路保留。版本与测试映射见 [Spec](spec/host-native-auth.spec.md) / [Plan](spec/host-native-auth.plan.md)。
+本次 v6→v7 升级顺序：旧版本停收新任务→用原版本完成或精确停止旧 Run→核实原生资源及全部未完成操作/控制已结算→停止旧 writer→更新产品/helper/扩展与可编辑配置→明确选择新 v7 目录并重新绑定实例→检查新构建 capabilities 与配置→提交新任务。无法确认排空时保留原版本和目录，不尝试携带活动任务升级。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除；用户显式 state-dir 不会被静默改写。新建 read_only 内容、独立 parser 与原生远端链路保持。当前规则见[个人执行器 Spec](spec/personal-executor-simplification.spec.md)，宿主认证的历史实施见[认证 Spec](spec/host-native-auth.spec.md)。
 
 
 ## 人工对账与资源丢失
 
 原创建/输入结果未知时，只查询原操作，沿用原准备预算；没有共享预算时最多 30 秒。超时后显示 `status=blocked`、`phase=manual_intervention_required`、`resume_required=true`，停止业务推进。活动长回合不套用未知输入的 30 秒期限；停止证明及 accepted/ResourcePending 的原准备期限保持。
 
-先 `inspect --run-id R` 检查原操作诊断及 `controls.can_resume`，再用当前 revision 和新 request_id 调用 `resume --run-id R --input -`。该命令先用最多 30 秒只读查询原回执/观察；不 Execute、不新建 Attempt/owner/session/终端，不重发原输入。原事实解决未知且原资源仍有效时才解除技术暂停；原业务等待、阻断、stop/close 保持。仍未知、超时、冲突或资源丢失时 action_status=failed，继续人工介入；需要时用新 request_id/当前 revision 再查询。同 request_id/相同正文只回放原结果；inspect --request-id 可查询该控制结果。查询中 stop/close 可以提交且优先，迟到事实不恢复授权。
+先 `inspect --run-id R` 检查原操作诊断及 `controls.can_resume`，再用当前 revision 和新 request_id 调用 `resume --run-id R --input -`。该命令先用最多 30 秒只读查询原回执/观察；不 Execute、不新建 Attempt/owner/session/终端，不重发原输入。原事实解决未知且原资源仍有效时才解除技术暂停；原业务等待、阻断、stop/close 保持。仍未知、超时、冲突或资源丢失时 action_status=failed，继续人工介入；需要时用新 request_id/当前 revision 再查询。同 request_id/相同正文只回放原结果；inspect --request-id 可查询该控制结果。人工 resume 的期限在受理时持久保存，服务重启或保存失败不会续期；过期后需新 request_id 和当前 revision 再查。查询中 stop/close 可以提交且优先，迟到事实不恢复授权。
 
 资源丢失后由用户处理原现场并显式创建新 Run；Runner 不提供原会话重建。外部 SteerLine 需更新默认目录为 SteerRunner-v7、去除 verify-takeover/旧兼容矩阵读取，使用 can_resume 和原命令结果展示人工对账；本仓只更新 CLI、PowerShell helper 和两份 bundled skill，未改动或联验外部 SteerLine。

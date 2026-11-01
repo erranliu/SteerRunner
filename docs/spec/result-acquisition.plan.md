@@ -1,5 +1,7 @@
 # Plan：Workflow 能力解耦与结构化结果获取
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 2026-10-26 测试整理：T7 当前入口改为 `test.ps1 -Level L3 -Scenario local-codex.result-acquisition`，只保留两个 parser 内部 case（3 次解析调用、1 次权限探针），固定预期 `parsed`，不创建 PR。原第三项 development smoke 由唯一 L2 `local-codex.smoke` 承担；下文三内部 case / L2 的实施记录属于调整前版本，历史资格保留，现行组织见[测试清单](../test-catalog.md#测试整理结论-2026-10-26)。
 
 2026-10-21 状态核对：三种获取方式与两种开发定义已实施，实际构建资格及历史失败见[专属验收](../acceptance/result-acquisition.md)。下文保留实施顺序与阶段记录；当前 state/v5、兼容换代及开发 worktree 文档路径规则按[换代 Spec](service-generation-recovery.spec.md)和[产品契约](steerrunner.spec.md)，不恢复旧文档快照门槛。

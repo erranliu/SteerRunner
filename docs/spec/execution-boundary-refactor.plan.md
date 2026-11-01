@@ -1,5 +1,7 @@
 # Plan：执行与可靠性边界收敛
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 日期：2026-10-20。状态：五项代码收敛及本轮验收已完成。行为与验收依据 [Spec](execution-boundary-refactor.spec.md)。调查基线：`bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55`。文档轮仅新增文档与 README 索引；2026-10-20 用户追加实施授权。实际命令、结果与限制见[验收记录](../acceptance/execution-boundary-refactor.md)。
 
 ## 1. 实施顺序与共同约束
@@ -53,7 +55,7 @@
 主要位置：[reliable/recovery_policy.go](../../internal/execution/reliable/recovery_policy.go)、application/control、feedback、content 及必要 session 接线。
 
 1. 对照 resume、业务 feedback/answer、conversation message 的现资格，列出共同项与专属前置：原 session、idle、resource/process/writers、unknown、控制范围、内容目录、问题/业务 source。
-2. reliable 以窄事实集中共同判断；application 用共同函数协调 VerifyManualRecovery、必要的 BindRecovery 和提交前复核。保持原调用/释放/提交顺序，不能让抽函数改变恢复时机。
+2. reliable 以窄事实集中共同判断；application 用共同函数协调 VerifyManualRecovery 原资源只读资格核验和提交前复核；BindRecovery 已删除。保持原调用/释放/提交顺序，不向各 adapter 复制 Next/QualifyAction 共享准备门禁。
 3. 各业务入口提供所需输入与来源，沿原 queueInput、命令/history 和问题结算。保留 NextStage/PendingTurn 关联、原 Attempt 历史及绑定重置规则；统一不是统一所有错误或状态。
 4. 明确两条路径：兼容换代接回活动原执行；原资源丢失后的人工同 thread 恢复。对原授权、暂停、等待/blocked、已关闭、pending resume/stop 和旧 epoch/范围答案分别验证，禁止恢复 helper 自行续权或选下一业务步骤。
 

@@ -1,6 +1,6 @@
 # SteerRunner 文档索引
 
-核对日期：2026-10-22；整理基线：`70c19a0`，用量专项增补基线 `4d11148`。构建、启动和 CLI 示例从[项目 README](../README.md)开始。
+核对日期：2026-11-01；整理基线：`70c19a0`，用量专项增补基线 `4d11148`。构建、启动和 CLI 示例从[项目 README](../README.md)开始。
 
 ## 当前使用与开发
 
@@ -23,7 +23,7 @@
 | Orca 路由、原生查询与后端范围 | [本机/远程连接 Spec](spec/orca-local-remote.spec.md) / [Plan](spec/orca-local-remote.plan.md)、[远端原生 Spec](spec/orca-remote-native.spec.md) / [Plan](spec/orca-remote-native.plan.md)、[通用 Agent Spec](spec/orca-generic-agent.spec.md) / [Plan](spec/orca-generic-agent.plan.md) |
 | Orca CLI 排队、读取重试与公开等待状态（2026-10-25） | [Spec](spec/orca-cli-wait-retry.spec.md) / [Plan](spec/orca-cli-wait-retry.plan.md) / [独立验收](acceptance/orca-cli-wait-retry.md)；Runner 只读准备与原操作恢复，调用方 UI 接线另验 |
 | Orca 原生多行提交修正（已实施） | [Spec](spec/orca-native-submit.spec.md) / [Plan](spec/orca-native-submit.plan.md) / [原双端验收](acceptance/orca-native-submit-remote-final.md) / [远端重跑](acceptance/orca-native-submit-remote-rerun.md) / [持续控制读取增量](acceptance/orca-native-submit-control-stream.md) / [原保真验收](acceptance/orca-native-submit-integrity.md) / [最新再审计与普通本机接线修正](acceptance/orca-native-submit-reaudit.md)；删除草稿/视口门禁，最新双端各3/3与7170次稳定回归；远端实际模型未独立核验；历史失败和各批资格分别登记 |
-| 服务换代、原执行接管与创建回执 | [换代恢复 Spec](spec/service-generation-recovery.spec.md) / [Plan](spec/service-generation-recovery.plan.md) |
+| 普通重启、升级排空、人工对账与原创建回执 | [当前 Spec](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02) / [操作指南](cli-guide.md#人工对账与资源丢失)；[旧换代 Spec](spec/service-generation-recovery.spec.md) / [Plan](spec/service-generation-recovery.plan.md) 保留历史取代说明 |
 | 停止、初始化与停止证据范围 | [初始化停止 Plan](spec/initialization-stop.plan.md)、[Orca 停止取证 Plan](spec/orca-shutdown-verification.plan.md) |
 | 报告、日志及工作区 Git 查询 | [R2 操作指南](run-evidence-r2.md)、[Spec](spec/run-evidence-r2.spec.md) / [Plan](spec/run-evidence-r2.plan.md) |
 | 运行时单文件汇报、原始字节快照 | [接入指南](runtime-progress.md)、[Spec](spec/runtime-progress.spec.md) / [Plan](spec/runtime-progress.plan.md)、[主线整合验收](acceptance/runtime-progress-integration.md) / [专项历史](acceptance/runtime-progress.md) |
@@ -32,7 +32,7 @@
 | 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |
-| 个人多机执行器简化（P1–P3 及 P4 本项已独立验收） | [Spec](spec/personal-executor-simplification.spec.md) / [Plan](spec/personal-executor-simplification.plan.md) / [P1](acceptance/personal-executor-p1.md) / [P2](acceptance/personal-executor-p2.md) / [P3](acceptance/personal-executor-p3.md) / [P4](acceptance/personal-executor-p4.md)：当前 state/v7，净删除恢复/兼容，人工对账出口；P3 完整 L1/Controlled 与真实最小接线通过；P4 仅收口问答输入，其他候选不展开 |
+| 个人多机执行器简化（选定范围及文档收口完成，汇总 PR 待评审） | [Spec](spec/personal-executor-simplification.spec.md) / [Plan](spec/personal-executor-simplification.plan.md) / [P1](acceptance/personal-executor-p1.md) / [P2](acceptance/personal-executor-p2.md) / [P3](acceptance/personal-executor-p3.md) / [P4](acceptance/personal-executor-p4.md)：当前 state/v7，净删除恢复/兼容，人工对账出口；P3 完整 L1/Controlled 与真实最小接线通过；P4 仅收口问答输入，其他候选不展开 |
 | 测试入口、场景、资格与缺口 | [测试指南](testing.md)、[测试清单](test-catalog.md)、[验收记录索引](acceptance/README.md) |
 | 验证链路解耦与前置结果复用（已实施，首轮限定 L2） | [Spec](spec/validation-reuse.spec.md) / [Plan](spec/validation-reuse.plan.md) / [原验收](acceptance/validation-reuse.md) / [实现审计](acceptance/validation-reuse-audit.md)；L2 新现场完整执行，默认及 L3/L4 链路保留，修复后资格单列 |
 
@@ -57,6 +57,6 @@
 
 - [个人执行器 P2 独立交付与验收](acceptance/personal-executor-p2.md)：观测不阻塞业务、首次共享预算、故障/停止/重启；Orca local 与完整 L1 补验已通过。
 
-- [个人执行器 P3 独立交付与验收](acceptance/personal-executor-p3.md)：三类规则删除、生产净减少 558 行；v7、人工对账、完整 L1/Controlled 和三条真实最小链路通过；P4 未推进。
+- [个人执行器 P3 独立交付与验收](acceptance/personal-executor-p3.md)：三类规则删除、生产净减少 558 行；v7、人工对账、完整 L1/Controlled 和三条真实最小链路通过；该报告保留 P3 交付时状态，后续 P4 见下项。
 
 - [个人执行器 P4 独立交付与验收](acceptance/personal-executor-p4.md)：原生问答输入选择 2→1，application 去除私有解码；共享准备保持，采用组件和 3 项公开受控验证，不扩大为完整后端资格。

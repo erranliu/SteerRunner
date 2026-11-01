@@ -1,12 +1,14 @@
 # SteerRunner 可靠性交付链路与简化分析
 
+> 2026-11-01：当前运行指引已按[个人执行器简化](spec/personal-executor-simplification.spec.md)更新为 v7、升级先排空和人工对账。下文历史调查基线、试验、验收引用保留原范围；P1–P4 资格分别见[总状态](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不表示外部 SteerLine 已联验。
+
 日期：2026-10-21。代码基线：`8261310`。面向 SteerRunner 维护者与 SteerLine 接入方。
 
 合并前已同步 Runner 主干 `966fcef`（#43/#45）和调用方主干 `534ea902`（#372/#373）。下文当前行为按这些增量理解：开发文档使用 worktree 内路径，内容上传材料仍保留自己的冻结与核验；实际受理完整绑定、原子 observe 及调用方部署准备沿主干实现，原始试验仍只证明各自固定构建。
 
 SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原动作实际发生了什么、结果是否满足交付条件、资源是否已经结算。它们可以共用查询入口，但不能用一个成功回执相互替代。
 
-**已实现的快速路径和原命令对账不再作为新增改造立项；可以直接推进文档收敛与只读进度展示，结果获取和校验优化须先验证收益。** 普通开发的正常路径可以只有实施、发布两次业务模型输入；兼容服务换代可以自动接回原执行。未知发送只对账、原结果来源核验、PR 平台核验和精确停止取证仍是必要边界。第 6 节区分现有能力，第 7 节区分直接实施项和验证项，第 8 节给出批次与验收条件。
+**已实现的快速路径和原命令对账不再作为新增改造立项；可以直接推进文档收敛与只读进度展示，结果获取和校验优化须先验证收益。** 普通开发的正常路径可以只有实施、发布两次业务模型输入；同构建服务重启可以接回原执行，升级须先由原版本排空。未知发送只对账、原结果来源核验、PR 平台核验和精确停止取证仍是必要边界。第 6 节区分现有能力，第 7 节区分直接实施项和验证项，第 8 节给出批次与验收条件。
 
 ## 1 交付范围与责任
 
@@ -22,7 +24,7 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 
 开发交付以 `pr_ready` 为 Runner 里程碑；合并观察与 TaskDelivery 分别处理。`pr_ready` 不保证执行资源已停止。内容生成交付完整 text/JSON 及资源结算；持续对话每轮交付结果后等待显式 message。
 
-当前主链使用 state/v6、development/2、development-audited/2，以及 conversation/1、generate/1。旧文档中的 state/v2/v3 和“一律重启后手动 resume”不能直接作为当前操作指引。职责依据：[执行边界收敛](spec/execution-boundary-refactor.spec.md)、[服务换代恢复](spec/service-generation-recovery.spec.md)。
+当前主链使用 state/v7、SQLite user_version=7、默认 `%LOCALAPPDATA%/SteerRunner-v7`，流程保持 development/2、development-audited/2、conversation/1、generate/1。v6 及更旧目录非破坏拒绝，由原版本查询和结算。同构建重启保留原授权；升级先排空，不提供跨构建活动任务接管。当前职责与恢复边界以[个人执行器简化 Spec](spec/personal-executor-simplification.spec.md)为准；本文旧日期记录不授予当前构建资格。
 
 ## 2 正常交付链路
 
@@ -109,13 +111,13 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 | PR provider 核验 | 实际 PR 的身份与查询时状态 | 不自动证明合并、TaskDelivery 或资源停止 |
 | stop 命令受理 | 已提交撤销后续输入授权的停止意图 | 已在途动作的结果、原资源停止与结算 |
 | stop_status / resources_settled / verify-stopped | 在各自报告 scope 内取得停止或结算事实 | 不能超出 scope 推断远端 OS 全树、宿主登录等状态 |
-| verify-takeover compatible | 候选构建支持原记录的相关恢复契约 | 不证明资源已停止或当前网络/资源一定可达；仍需实际接回 |
+| 人工 resume 的 action_status=completed | 原事实已核实且符合当前控制资格，技术暂停已解除 | 不代表业务问题已回答、业务成功或资源停止；无效原资源不能重建 |
 
 这些层次可以在界面上汇总为一个进度，但必须保留分项。事件也要先成功落库，再向原观察端确认；先确认后落库会使崩溃后丢失唯一事实。重复事实幂等处理，冲突和陈旧事实不推进当前源。
 
 ## 4 异常与恢复决策
 
-先判断“原动作是否可能已经发生”，再判断是否需要恢复资源或用户授权。resume 是控制动作，不能把未知副作用变成可重试，也不自动授权重做业务。
+先判断“原动作是否可能已经发生”，再核对原资源及用户授权。未知创建/输入沿原准备期限只读对账，没有共同期限时最多 30 秒；耗尽转 blocked/manual_intervention_required、resume_required=true，轮询不重开窗口。显式 resume 持久受理后最多 30 秒只读核实原操作；原事实解决 unknown 且原资源有效才解除技术暂停，仍未知则 action_status=failed、可用新 request_id/当前 revision 再查。同 ID 回放原结果；期限不因重启或保存失败续期。resume 不重发输入、不创建替代资源，业务等待及 stop/close 保持。活动长回合、accepted/ResourcePending 和停止核实仍按各自原契约处理。
 
 | 情况 | 当前应走的流程 | 可以自动进行 | 必须停住的边界 |
 | --- | --- | --- | --- |
@@ -123,9 +125,9 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 | Orca 下一轮发送前，状态连接暂不可用 | 在原 transport.wait_timeout 内退避重连，恢复后重新核验原终端/工作区/provider session | 原身份仍一致且就绪时继续首次发送 | 认证拒绝、身份变化、等待/阻断或期限耗尽 |
 | Orca repo list 命中特定缓存 rename 冲突 | 原只读查询最多 5 次，共用 15 秒期限 | 受限退避和取消 | 普通权限/认证错误不进入重试；该规则不适用于 create/send |
 | 已尝试发送但响应/开始事实未知 | 只读对账原操作、原请求和原 session | 补收原回执 | 本地 ID 或普通 timeout 不提供 exactly-once 保证 |
-| 服务正常退出、强杀或兼容构建更新 | 新服务接回同 state-dir 的原 owner/资源与未完成操作 | 补收离线结果；原授权有效且证明未派发的唯一后继可接续 | 不批量 resume；暂停、人工等待、业务阻断、stop、closed、pr_ready 保持 |
+| 原执行版本的服务正常退出或强杀 | 同构建重开后接回同 state-dir 的原 owner/资源与未完成操作 | 补收离线结果；原授权有效且证明未派发的唯一后继可接续 | 不批量 resume；暂停、人工等待、业务阻断、stop、closed、pr_ready 保持 |
 | Orca 创建后、DB 尚未取得回执时服务退出 | 读取 Runner 独立创建执行器保存的原始回执，校验完整绑定后结算 | 原执行器留下可靠身份时找回原 worktree/terminal/control | 无回执、执行器也失效、回执损坏/异源时保持 unknown；不再 create，不按名字或列表认领 |
-| 原执行资源确实丢失 | 先证明旧进程/写者缺席、原 session 可用且 idle、未知操作已解决，再走显式原会话恢复 | 既有规则允许的事实读取 | 原 thread 不可用、旧写者未核清时不得建替代 thread |
+| 原执行资源丢失或原事实查询预算耗尽 | 转待人工；显式 resume 仅有界核实原事实，仍不可用则保持暂停 | 补收已保存原回执/final，不自动解除人工阻断 | 不新建 Attempt、owner、终端或替代 session；需要新执行由用户明确创建新 Run |
 | 程序提取不到业务结果 | 按当前源的冻结策略和剩余次数补报；仅审计可选择独立解析 | 在资格满足时完成尚未派发的获取 | 原失败/来源冲突/技术未知不能靠补报“修好” |
 | 已明确实施未完成 | development 进入 waiting_input，保留已知原因 | 展示结果和问题 | 无明确用户输入不自动实施 |
 | 保存的答案跨服务换代 | 核验原问题、原执行范围、来源和授权绑定 | 新规则下合法且未发送的原答案可续投 | 旧 epoch 答案、问题变化或错会话需人工确认；未知发送只对账 |
@@ -146,9 +148,9 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 | --- | --- | --- |
 | 停止这个 Run，或关闭持续对话 | 持久撤销输入授权 → 对账/停止原执行及 parser → 撤销适用的认证能力 → 核实资源结算 | 分项停止证据成立；仅命令受理不算完成 |
 | 暂时关服务，稍后继续 | 脱离原观察和连接，保留原执行 owner、授权、游标和事实；重开接回 | 服务写者退出即可描述为服务已停，资源可继续运行 |
-| 更新兼容 Runner | verify-takeover 核对候选构建与原记录 → 停旧服务 → 保留原 state-dir 和在用版本文件 → 新服务接回 | 契约兼容且原身份可接回；不要求先把所有 Run 停掉 |
+| 更新 Runner | 原版本停收新任务 → 完成或精确停止原 Run → 核实资源及未完成操作/控制已排空 → 停旧 writer → 启用新版本 | pr_ready/service stop 均不等于排空；本次 v6→v7 使用新目录，不携带活动任务接管 |
 
-删除 state-dir、移除在用 runtime 或破坏性迁移需要另外取得对应资源停止/结算事实。`service verify-stopped` 是离线显式核验，需原 writer 已退出；不应成为每次正常更新前“先把任务全停”的固定步骤。
+删除 state-dir、移除在用 runtime 或破坏性迁移需要对应资源停止/结算事实；无法确认时保留原 EXE/目录，由原版本和用户处理。`service verify-stopped` 是离线显式核验，需原 writer 已退出，其 scope 不扩大。`service verify-takeover` 已删除，普通未知命令 exit 2。此次 v6→v7 切新目录；未来格式/契约兼容且已排空时可继续原目录、查询历史，不因 EXE 变化强制换目录。
 
 服务离线时调用方尚未送达的 stop 不属于 Runner 已接受命令。重开可经 `service start` 的 `pending_stops` 提交原 stop 信封，在 worker 启动前先受理；仍要检查各原命令结果，不能假定提交清单即已全部撤销。
 
@@ -158,7 +160,7 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 
 远端原生 Orca 的停止保证限于原 terminal scope，不能宣称远端 OS 全树退出或宿主 gh 登录撤销。本机停止一个 Run 也不应退出宿主 gh 登录或停止其他 Run。上述证据可以统一收集和展示，但不能相互冒充。
 
-来源：[停服与接管契约](spec/service-generation-recovery.spec.md)、[Orca 停止规则](spec/orca-shutdown-verification.plan.md)、[离线停止核验](../internal/host/verify_stopped.go)。
+来源：[普通重启与升级排空契约](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)、[Orca 停止规则](spec/orca-shutdown-verification.plan.md)、[离线停止核验](../internal/host/verify_stopped.go)。
 
 ## 6 已实现能力与可选流程
 
@@ -185,13 +187,15 @@ SteerLine 审计与实施基线为本机 checkout `36d4f596`；其结论不表�
 | 原 agent 补报 | 每源最多一次的后备获取方式 | 已取得可信充分结果就跳过；明确未完成不为确认失败再补报 |
 | 独立 parser | 默认关闭；仅当前审计结果获取可选择 | 不为普通实施、发布、内容生成准备 parser 环境或增加解析回合 |
 | 自动返修和再审 | 当前 workflow/2 已无这条循环 | 不在外部重新套一层固定“审计 → 返修 → 再审”作为 Runner 必经链路 |
-| 兼容服务换代的人工 resume | 原授权及安全派发资格成立时无需人工 resume | 保留真实业务等待；仅资源丢失或授权/资格要求时走恢复 |
+| 同构建重启与人工 resume | 原授权及原资源资格成立时自动接回观察；技术待人工只由显式 resume 有界核实原事实 | 保留业务等待；升级先排空，丢失资源不能重建，未核实不授权后继 |
 | R2 discover/collect/list/read 与 workspace-git | 按需证据与当前 Git 观察，不是每个 Run 的发布前必经步骤 | 交付确需文件证据时采集；list/read 读取已提交不可变副本；当前 Git 不能替代历史 checkpoint |
 | 远端受管 helper | 新远端 Run 已沿 Orca 原生链路，不部署 Runner helper | 不把本机/Orca local 的认证和控制证明要求直接复制到原生远端 |
 
 按没有人工续执行、没有业务失败的单次开发源计算，普通开发快速路径为 2 次业务模型输入；两处都需要补报时最多 4 次。带审计快速路径为 3 次；若依次需要实施补报、审计 parse、审计补报及发布补报，最多 7 次。这是策略预算推导，不是延迟实测。parser 未开启时直接沿现有补报分支；已显式开启但资格失败或结果未知时，仍按原失败/对账与资源结算规则处理，不能一概跳过。重启不刷新次数或绝对期限。
 
-## 7 按审计结论修订的简化方案
+## 7 历史简化方案（2026-10-21）
+
+本节及第 8 节保留当时的方案与试验要求。现行 v7 的恢复、升级和职责范围以[个人执行器 Spec+Plan](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)为准，不再把下文跨构建接管验证作为新增能力或当前验收前置，也不在本次展开 V2 等后续方案。
 
 “可直接实施”表示不需要先证明新的原生能力，仍要完成列明的功能验证；“需要验证”表示先做限定试验，通过准入条件才进入生产改造。当前已实施 D1/D2，并完成 D3 核查及反例；V1 已完成限定试验、跨构建冻结验证和提示词默认调整，列入第 6 节已实现项。其余验证项按下述门槛推进，实际范围在[验收登记](acceptance/reliable-delivery-simplification.md)单独说明。
 
@@ -286,16 +290,16 @@ V1 已按第 8.3 节先用提示词覆盖试验，再验证原 Run 接管和新�
 
 ## 9 当前依据与验证范围
 
-正常链路事实以本节列出的源码/契约及实施基线为准；简化部分当前增加了调用方纯投影和只读展示，Runner 原执行机制、协议、权限与流程路由保持。历史运行资格按对应构建的验收记录理解，不把记录中的通过自动扩展到所有后端或本次 HEAD。新增交付与原生试验的具体范围见[本轮验收](acceptance/reliable-delivery-simplification.md)。
+正常链路以本节源码及现行[个人执行器 Spec](spec/personal-executor-simplification.spec.md)为准。2026-10-21 的纯投影/只读展示改动及原生试验按[当时验收](acceptance/reliable-delivery-simplification.md)记账；后续 P1–P4 的实施和资格分别见[总状态](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，旧通过不自动扩展到所有后端或当前 HEAD。
 
 简化方案审计轮及本次实施轮均运行 `go test ./internal/execution/workflow ./internal/execution/reliable ./internal/execution/reliable/operation -count=1 -timeout=90s`，三个包通过；这验证既有可靠性规则，不替代调用方摘要和 V1–V5 的各自验收。
 
 | 主题 | 当前代码与契约入口 | 已有验收入口 |
 | --- | --- | --- |
 | 唯一状态权威、原子提交与幂等 | [Store](../internal/storage/store.go)、[操作规则](../internal/execution/reliable/operation/effect.go)、[执行边界](spec/execution-boundary-refactor.spec.md) | [边界收敛](acceptance/execution-boundary-refactor.md) |
-| 服务换代、冻结契约与原会话恢复 | [Engine](../internal/application/engine.go)、[恢复资格](../internal/execution/reliable/recovery_policy.go)、[换代 Spec](spec/service-generation-recovery.spec.md) | [换代验收](acceptance/service-generation-recovery.md)、[近期补验和创建恢复追补](acceptance/pr-test-gaps-20261020.md) |
+| 同构建重启、升级排空及人工对账 | [Engine](../internal/application/engine.go)、[原操作对账](../internal/application/manual.go)、[现行契约](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02) | [P3 验收](acceptance/personal-executor-p3.md)；[旧换代验收](acceptance/service-generation-recovery.md)保留历史范围 |
 | 创建回执保留与 unknown | [创建执行器](../internal/execution/adapters/orcatransport/creation_owner.go)、[反例测试](../internal/execution/adapters/orcatransport/creation_owner_test.go) | [创建恢复追补](acceptance/pr-test-gaps-20261020.md) |
 | 结果获取与审计来源 | [结果获取 Spec](spec/result-acquisition.spec.md)、[Workflow 核验](../internal/execution/workflow/verification.go) | [结果获取验收](acceptance/result-acquisition.md) |
-| 内容流程与接管 | [内容 Spec](spec/content-workflows.spec.md) | [内容流程](acceptance/content-workflows.md)、[内容接管](acceptance/content-takeover.md) |
-| Run 资源结算 | [verify-stopped](../internal/host/verify_stopped.go)、[verify-takeover](../internal/host/takeover.go) | [Check 退役边界](acceptance/check-retirement.md)、[Orca 原生远端](acceptance/orca-remote-native.md) |
+| 内容流程与原资源重启 | [内容 Spec](spec/content-workflows.spec.md)、[当前恢复边界](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02) | [P3](acceptance/personal-executor-p3.md)、[P4](acceptance/personal-executor-p4.md)；[内容流程](acceptance/content-workflows.md)及[旧接管](acceptance/content-takeover.md)按历史构建记账 |
+| Run 资源结算 | [verify-stopped](../internal/host/verify_stopped.go)、[当前排空及人工对账契约](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02) | [Check 退役边界](acceptance/check-retirement.md)、[Orca 原生远端](acceptance/orca-remote-native.md) |
 | 按需证据 | [R2 说明](run-evidence-r2.md) | [R2 验收](acceptance/run-evidence-r2.md) |
