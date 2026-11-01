@@ -1,0 +1,187 @@
+=== RUN   TestSRResultAcquisition
+=== RUN   TestSRResultAcquisition/plain-marker
+=== RUN   TestSRResultAcquisition/audit-zero
+=== RUN   TestSRResultAcquisition/audit-positive
+=== RUN   TestSRResultAcquisition/audit-offline
+=== RUN   TestSRResultAcquisition/audit-report
+=== RUN   TestSRResultAcquisition/parser-unsupported
+=== RUN   TestSRResultAcquisition/parser-complete
+=== RUN   TestSRResultAcquisition/parser-tool
+--- PASS: TestSRResultAcquisition (392.86s)
+    --- PASS: TestSRResultAcquisition/plain-marker (19.18s)
+    --- PASS: TestSRResultAcquisition/audit-zero (50.39s)
+    --- PASS: TestSRResultAcquisition/audit-positive (48.14s)
+    --- PASS: TestSRResultAcquisition/audit-offline (49.88s)
+    --- PASS: TestSRResultAcquisition/audit-report (56.86s)
+    --- PASS: TestSRResultAcquisition/parser-unsupported (57.78s)
+    --- PASS: TestSRResultAcquisition/parser-complete (50.03s)
+    --- PASS: TestSRResultAcquisition/parser-tool (60.59s)
+=== RUN   TestSRWorkflowDiscoveryAndSelection
+--- PASS: TestSRWorkflowDiscoveryAndSelection (2.06s)
+=== RUN   TestSROrcaCLIWaitRetry
+=== RUN   TestSROrcaCLIWaitRetry/release-after-15s
+=== RUN   TestSROrcaCLIWaitRetry/graceful-restart
+=== RUN   TestSROrcaCLIWaitRetry/kill-restart
+=== RUN   TestSROrcaCLIWaitRetry/stop-queued
+=== RUN   TestSROrcaCLIWaitRetry/transient-backoff
+=== RUN   TestSROrcaCLIWaitRetry/restart-stop-queued
+=== RUN   TestSROrcaCLIWaitRetry/three-runs-stop-queued
+--- PASS: TestSROrcaCLIWaitRetry (70.32s)
+    --- PASS: TestSROrcaCLIWaitRetry/release-after-15s (23.67s)
+    --- PASS: TestSROrcaCLIWaitRetry/graceful-restart (8.47s)
+    --- PASS: TestSROrcaCLIWaitRetry/kill-restart (7.88s)
+    --- PASS: TestSROrcaCLIWaitRetry/stop-queued (4.75s)
+    --- PASS: TestSROrcaCLIWaitRetry/transient-backoff (9.05s)
+    --- PASS: TestSROrcaCLIWaitRetry/restart-stop-queued (6.84s)
+    --- PASS: TestSROrcaCLIWaitRetry/three-runs-stop-queued (9.66s)
+=== RUN   TestSRContentGenerationRecovery
+=== RUN   TestSRContentGenerationRecovery/generate-graceful
+=== RUN   TestSRContentGenerationRecovery/conversation-kill
+=== RUN   TestSRContentGenerationRecovery/question-reply
+=== RUN   TestSRContentGenerationRecovery/startup-stop
+--- PASS: TestSRContentGenerationRecovery (17.50s)
+    --- PASS: TestSRContentGenerationRecovery/generate-graceful (4.47s)
+    --- PASS: TestSRContentGenerationRecovery/conversation-kill (4.23s)
+    --- PASS: TestSRContentGenerationRecovery/question-reply (4.70s)
+    --- PASS: TestSRContentGenerationRecovery/startup-stop (4.10s)
+=== RUN   TestSRContentRepository
+=== RUN   TestSRContentRepository/complete
+=== RUN   TestSRContentRepository/active-restart-stop
+=== RUN   TestSRContentRepository/unknown-restart-stop
+--- PASS: TestSRContentRepository (24.65s)
+    --- PASS: TestSRContentRepository/complete (9.41s)
+    --- PASS: TestSRContentRepository/active-restart-stop (7.80s)
+    --- PASS: TestSRContentRepository/unknown-restart-stop (7.44s)
+=== RUN   TestSRContentGenerate
+=== RUN   TestSRContentGenerate/text
+=== RUN   TestSRContentGenerate/json
+=== RUN   TestSRContentGenerate/failed
+=== RUN   TestSRContentGenerate/cancelled
+=== RUN   TestSRContentGenerate/no_final
+=== RUN   TestSRContentGenerate/question
+=== RUN   TestSRContentGenerate/no_auth
+=== RUN   TestSRContentGenerate/no_directory
+--- PASS: TestSRContentGenerate (25.82s)
+    --- PASS: TestSRContentGenerate/text (4.05s)
+    --- PASS: TestSRContentGenerate/json (3.44s)
+    --- PASS: TestSRContentGenerate/failed (3.56s)
+    --- PASS: TestSRContentGenerate/cancelled (3.28s)
+    --- PASS: TestSRContentGenerate/no_final (2.85s)
+    --- PASS: TestSRContentGenerate/question (2.98s)
+    --- PASS: TestSRContentGenerate/no_auth (2.66s)
+    --- PASS: TestSRContentGenerate/no_directory (2.99s)
+=== RUN   TestSRContentConversation
+--- PASS: TestSRContentConversation (6.76s)
+=== RUN   TestSRContentQuestionAndUnknown
+=== RUN   TestSRContentQuestionAndUnknown/unknown-interrupt
+=== RUN   TestSRContentQuestionAndUnknown/question
+=== RUN   TestSRContentQuestionAndUnknown/unknown
+--- PASS: TestSRContentQuestionAndUnknown (12.64s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown-interrupt (3.34s)
+    --- PASS: TestSRContentQuestionAndUnknown/question (3.14s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown (6.17s)
+=== RUN   TestSRResourceCreationRecovery
+=== RUN   TestSRResourceCreationRecovery/graceful
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-2092864347\native\original-worktree runtime=creation-runtime-sr-2092864347 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/kill
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1997495561\native\original-worktree runtime=creation-runtime-sr-1997495561 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/receipt-before-commit
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1682997741\native\original-worktree runtime=creation-runtime-sr-1682997741 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/wire-loss
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1924954894\native\original-worktree runtime=creation-runtime-sr-1924954894 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/owner-crash
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1000214896\native\original-worktree runtime=creation-runtime-sr-1000214896 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/planned-initial-terminal
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1453543540\native\original-worktree runtime=creation-runtime-sr-1453543540 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+=== RUN   TestSRResourceCreationRecovery/missing-initial-plan
+    creation_recovery_test.go:288: original=creation-repo::C:\Users\lmas1\AppData\Local\Temp\sr-1588727857\native\original-worktree runtime=creation-runtime-sr-1588727857 handle=original-terminal incarnation=original-terminal-incarnation create=1 terminal-create=0 business-send=0
+--- PASS: TestSRResourceCreationRecovery (55.18s)
+    --- PASS: TestSRResourceCreationRecovery/graceful (7.41s)
+    --- PASS: TestSRResourceCreationRecovery/kill (7.76s)
+    --- PASS: TestSRResourceCreationRecovery/receipt-before-commit (7.77s)
+    --- PASS: TestSRResourceCreationRecovery/wire-loss (9.04s)
+    --- PASS: TestSRResourceCreationRecovery/owner-crash (7.59s)
+    --- PASS: TestSRResourceCreationRecovery/planned-initial-terminal (7.72s)
+    --- PASS: TestSRResourceCreationRecovery/missing-initial-plan (7.87s)
+=== RUN   TestSRMultipleRunsIsolation
+--- PASS: TestSRMultipleRunsIsolation (28.75s)
+=== RUN   TestSRProgressFile
+--- PASS: TestSRProgressFile (40.31s)
+=== RUN   TestSRResultFile
+--- PASS: TestSRResultFile (72.47s)
+=== RUN   TestSRRunEvidenceR2
+--- PASS: TestSRRunEvidenceR2 (70.59s)
+=== RUN   TestSRStandalonePackage
+--- PASS: TestSRStandalonePackage (1.83s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/reused_owner_pid
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (32.19s)
+    --- PASS: TestSRServiceOwnership/reused_owner_pid (0.02s)
+    --- PASS: TestSRServiceOwnership/offline_verification (20.87s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (1.44s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.22s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.20s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.63s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.10s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.09s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.10s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.09s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.08s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (2.28s)
+    --- PASS: TestSRServiceOwnership/parent_job (2.02s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.07s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (0.94s)
+    --- PASS: TestSRServiceOwnership/different_release (1.37s)
+    --- PASS: TestSRServiceOwnership/stale_writer (2.28s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (1.84s)
+=== RUN   TestSRStabilityLostSubmitResponse
+--- PASS: TestSRStabilityLostSubmitResponse (17.92s)
+=== RUN   TestSRStabilityRevocationAcrossRestart
+--- PASS: TestSRStabilityRevocationAcrossRestart (19.81s)
+=== RUN   TestSRInputFreeze
+    workflow_test.go:109: [submit --input - --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3960411983\runner --json] exit=0 expected=2 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":true,"request_id":"invalid-parser-config-new-request","data":{"action_status":"pending","command_id":"3bae3b37e7c249238181fe15afb3d6c6","receipt_status":"accepted","run_id":"da3fb7acfc46adb6b11e23df2922d15b"},"error":null} stderr=
+    service_test.go:268: fixture Run da3fb7acfc46adb6b11e23df2922d15b resources remain unverified: 
+    workflow_test.go:211: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3960411983
+--- FAIL: TestSRInputFreeze (52.56s)
+=== RUN   TestSRPermissionQualification
+--- PASS: TestSRPermissionQualification (12.45s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (18.46s)
+=== RUN   TestSRStorageLogsEvents
+--- PASS: TestSRStorageLogsEvents (18.25s)
+=== RUN   TestSRPublicationIdentity
+--- PASS: TestSRPublicationIdentity (18.50s)
+=== RUN   TestSRPublicationBeforeWorkflowReady
+--- PASS: TestSRPublicationBeforeWorkflowReady (19.18s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (20.15s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:588: original={InstanceID:024969e488e32ecf3b0855924138a5cf StateDir:c:\users\lmas1\appdata\local\temp\sr-1098136238\runner PID:30412 ProcessCreated:134379672235194553 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:971e162dbcc1fe5df466df4cd0b9adc658566b99d06d8e98b0a634d8658af7aa LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:024969e488e32ecf3b0855924138a5cf UsagePolicy:0x2fd1c0a4f980} candidate={InstanceID:6fc27fc80c3fa40ed57c8e6182dbf94c StateDir:c:\users\lmas1\appdata\local\temp\sr-1098136238\runner PID:38540 ProcessCreated:134379672443795803 Status:ready Detached:true Version:takeover-compatible Protocol:steerrunner-cli/v1 ResourceDigest:a67adad7716d649bd7166d92a7fb89b3ecd67376b5cbf54456ca0cf167d6365c ExecutableSHA256:5c2d700263ee8934a7d988a4650cece122931aed23a39b180afd4855fcfa3718 LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:6fc27fc80c3fa40ed57c8e6182dbf94c UsagePolicy:0x2fd1c09ec3f0} owner={Kind:os PID:47604 Created:01dd69999d5ce1e4 Executable:c:\users\lmas1\appdata\local\temp\sr-1098136238\runner\runtimes\971e162dbcc1fe5df466df4cd0b9adc658566b99d06d8e98b0a634d8658af7aa\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:23000 Created:01dd69999d84d6e8 Executable:c:\users\lmas1\.codex\worktrees\0344\steerrunner\.evidence\validation-reuse-merge-main-20261101\controlled\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:588: original={InstanceID:e0b44e11ba066d31f021a1035410c945 StateDir:c:\users\lmas1\appdata\local\temp\sr-1873791693\runner PID:14148 ProcessCreated:134379672485534964 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:971e162dbcc1fe5df466df4cd0b9adc658566b99d06d8e98b0a634d8658af7aa LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:e0b44e11ba066d31f021a1035410c945 UsagePolicy:0x2fd1c24da090} candidate={InstanceID:6b94bb37c6edf02a6c64d6a61a170947 StateDir:c:\users\lmas1\appdata\local\temp\sr-1873791693\runner PID:31804 ProcessCreated:134379672682389571 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:971e162dbcc1fe5df466df4cd0b9adc658566b99d06d8e98b0a634d8658af7aa LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:6b94bb37c6edf02a6c64d6a61a170947 UsagePolicy:0x2fd1c0a45800} owner={Kind:os PID:29828 Created:01dd6999ac013fb0 Executable:c:\users\lmas1\appdata\local\temp\sr-1873791693\runner\runtimes\971e162dbcc1fe5df466df4cd0b9adc658566b99d06d8e98b0a634d8658af7aa\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:42160 Created:01dd6999ac29525b Executable:c:\users\lmas1\.codex\worktrees\0344\steerrunner\.evidence\validation-reuse-merge-main-20261101\controlled\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- PASS: TestSRRestartPreservesAuthorization (91.98s)
+    --- PASS: TestSRRestartPreservesAuthorization/graceful (25.17s)
+    --- PASS: TestSRRestartPreservesAuthorization/kill (23.68s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (19.03s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (19.38s)
+FAIL

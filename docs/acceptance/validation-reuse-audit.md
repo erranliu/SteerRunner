@@ -34,3 +34,15 @@
 原合并后 Git/checker、反馈拒绝、权限/命令审计及停止断言保持：22 条实际命令、权限错误 0；原生 history 2 contexts/15 tools，提权、审批和 bypass 均 0；2 个 turn 绑定通过。Run 与服务均停止。[业务与收尾](evidence/validation-reuse-20261031/audit-scenario.json)、[命令](evidence/validation-reuse-20261031/audit-command.json)、[权限](evidence/validation-reuse-20261031/audit-permission.json)、[turn](evidence/validation-reuse-20261031/audit-turn.json)。
 
 原来一次创建身份场景失败和后续全量通过仍按原验收保留。没有削减任何场景/断言/循环/skip 规则，没有替换真实 PR 验证；L3/L4 复用和相应新真机资格不在本轮范围。
+
+## 主分支合并回归（2026-11-01）
+
+合入 `origin/main` 的 `38becd0`（parser 解耦）。唯一文本冲突是验收索引，保留双方条目。生产实现、catalog 和 native 场景采用主分支内容；旧前置证明在合并后的源码上实际被拒绝，未重签或复用旧资格。
+
+默认 `test.ps1 -Level L1,Controlled -OutDir .evidence/validation-reuse-merge-main-20261101`：完整 framework/75 项合同、716 个 Go 顶层测试、29 个 Node 检查、native 编译及零匹配保护通过，原 16 项 opt-in skip 保持。Controlled 实际执行 25 项，24 通过、1 失败；失败仅为 `TestSRInputFreeze` 的旧 parser 配置受理断言。[默认汇总](evidence/validation-reuse-20261031/merge-baseline-summary.json)、[原始结果](evidence/validation-reuse-20261031/merge-controlled-result.json)、[日志](evidence/validation-reuse-20261031/merge-controlled.log)、[framework](evidence/validation-reuse-20261031/merge-framework-result.json)。该整轮保持 failed，不授予完整前置资格。
+
+主分支 [PD-03](../spec/parser-decoupling.spec.md#5-内存文本任务与结果采纳pd-03) 已要求无解析需求不检查 parser 配置。仅同步该测试：保留原请求冻结、并发幂等和冲突检查；新增损坏 parser 配置下新 development Run 完成 `pr_ready`、精确两会话/六回合断言，再验证非法 Run 配置以 `invalid_input` 拒绝且不增加任何会话/回合。未将 parser 配置重新耦合回受理流程，也未修改生产代码、其它场景、skip 或期限。
+
+修正后 `test-foundation.ps1 -Pattern '^TestSRInputFreeze$' -OutDir .evidence/validation-reuse-merge-input-freeze-20261101 -TimeoutMinutes 8`：harness 退出且 1/1 通过，耗时 41.97 秒。[原始结果](evidence/validation-reuse-20261031/merge-input-freeze-result.json)、[日志](evidence/validation-reuse-20261031/merge-input-freeze.log)。其余 24 项的先前通过与本定向结果分别登记，不拼接为新的整轮通过证明。修正后另行复验 75 项复用合同。
+
+失败现场 `sr-3960411983` 保留；原 Run `da3fb7acfc46adb6b11e23df2922d15b` 曾未停止，使用原记录 revision 的 `PendingStops` 启动后核验 `stop_status=stopped`、revision=20，再按该服务 instance 停止服务；CIM 确认现场进程为零。[Run 收尾](evidence/validation-reuse-20261031/merge-cleanup-run.json)、[服务停止回执](evidence/validation-reuse-20261031/merge-cleanup-service-stop.json)。本次没有重跑真实 L2；上节 L2 仍只证明其固定代码版本。
