@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	"github.com/erranliu/SteerRunner/internal/execution/agentlaunch"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -431,6 +432,10 @@ func verifyHead(t *testing.T, m livetest.Manifest, view contracts.RunView, earli
 }
 
 func developmentSmoke(t *testing.T, m livetest.Manifest) {
+	_, observationFaultErr := os.Stat(filepath.Join(m.Root, "observation-fault.json"))
+	observationFault := observationFaultErr == nil
+	_, observationFilesErr := os.Stat(filepath.Join(m.Root, "observation-files.json"))
+	observationFiles := observationFilesErr == nil
 	audited := m.Driver == "development-audited"
 	r := scenarioResult{Scenario: m.Scenario, Level: m.Level, Stage: "preflight"}
 	checkpoint := func(stage string) { r.Stage = stage; save(t, "scenario.json", r) }
@@ -545,6 +550,25 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if view.StopStatus == "stopped" && !view.NewInputsAllowed {
 				r.RunStopped = true
 				save(t, "cleanup-run.json", view)
+				if observationFault || observationFiles {
+					var final contracts.ResultFileView
+					for until := time.Now().Add(5 * time.Second); time.Now().Before(until); time.Sleep(100 * time.Millisecond) {
+						response, readErr := command(m, dir, []string{"result-file", "--run-id", r.RunID}, nil)
+						if readErr != nil {
+							t.Error(readErr)
+							break
+						}
+						body, _ := json.Marshal(response.Data)
+						_ = json.Unmarshal(body, &final)
+						if final.CollectionStatus == "closed" {
+							break
+						}
+					}
+					save(t, "observation-final.json", final)
+					if final.CollectionStatus != "closed" || observationFault && (final.Version != 0 || final.Diagnostic == "") || observationFiles && (final.Version != 1 || final.ContentBase64 == nil || *final.ContentBase64 != "cDI=") {
+						t.Error("optional file final snapshot differs", final)
+					}
+				}
 				if m.Execution.Adapter == "orca-terminal" && m.Execution.Target.Kind == "local" {
 					proof, proofErr := localStopEvidence(m, view)
 					if proofErr != nil {
@@ -568,6 +592,10 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		t.Fatal(err)
 	}
 	input := contracts.RunRequest{Title: "SteerRunner " + m.Level + " " + m.Scenario, Correlation: map[string]string{"fixture_id": m.ID, "scenario": m.Scenario}, Repository: contracts.Repository{URL: livetest.RemoteURL, LocalPath: source, Remote: "origin", BaseBranch: m.BaseBranch, BaseRevision: m.BaseRevision}, Documents: contracts.Documents{Spec: contracts.Document{Path: "sr-smoke/spec.md"}, Plan: contracts.Document{Path: "sr-smoke/plan.md"}}, Workflow: contracts.Workflow{ID: "development", Version: 2}, Execution: m.Execution, Publication: m.Publication}
+	if observationFault || observationFiles {
+		input.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: "cDI="}
+		input.ResultFile = &contracts.ProgressFileInput{InitialContentBase64: "cDI="}
+	}
 	input.Workflow, err = m.RunWorkflow(nil)
 	if err != nil {
 		t.Fatal(err)
@@ -642,6 +670,22 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		invoke(t, m, dir, []string{"reply", "--run-id", r.RunID, "--input", "-"}, &answer)
 	}
 	first := waitReady(t, m, dir, r.RunID, "")
+	if observationFault || observationFiles {
+		progress := invoke(t, m, dir, []string{"progress-file", "--run-id", r.RunID}, nil)
+		result := invoke(t, m, dir, []string{"result-file", "--run-id", r.RunID}, nil)
+		save(t, "observation-fault-pr-ready.json", map[string]any{"run": first, "progress": progress.Data, "result": result.Data})
+		raw, _ := json.Marshal(progress.Data)
+		if observationFault && !bytes.Contains(raw, []byte(`"version":0`)) {
+			t.Fatal("faulty channel unexpectedly produced progress", string(raw))
+		}
+		if observationFiles && (!bytes.Contains(raw, []byte(`"version":1`)) || !bytes.Contains(raw, []byte(`"content_base64":"cDI="`))) {
+			t.Fatal("healthy original file wiring unavailable", string(raw))
+		}
+		raw, _ = json.Marshal(result.Data)
+		if !bytes.Contains(raw, []byte(`"collection_status":"pending"`)) {
+			t.Fatal("pr_ready prematurely sealed result", string(raw))
+		}
+	}
 	if m.Execution.Adapter == "orca-terminal" {
 		body, err := remoteDiagnostic(m, first)
 		if err != nil {
@@ -746,7 +790,7 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			audit, err := livetest.AnalyzeNativeAudit(raw, runtime, livetest.ReceiptAuditPolicy(m))
+			audit, err := livetest.AnalyzeNativeAudit(raw, runtime, smokeReceiptAuditPolicy(m, r.RunID))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -815,4 +859,19 @@ func developmentSmoke(t *testing.T, m livetest.Manifest) {
 		activeTerminalStop(t, m, dir, input)
 	}
 	t.Logf("%s %s run=%s PR=%s merge=%s", m.Level, m.Scenario, r.RunID, r.PRURL, r.MergeCommit)
+}
+
+// The optional-file probe changes only the two frozen channel wrappers. Keep
+// exact native command auditing rather than exempting the probe from it.
+func smokeReceiptAuditPolicy(m livetest.Manifest, runID string) livetest.NativeReceiptAuditPolicy {
+	p := livetest.ReceiptAuditPolicy(m)
+	_, faultErr := os.Stat(filepath.Join(m.Root, "observation-fault.json"))
+	_, filesErr := os.Stat(filepath.Join(m.Root, "observation-files.json"))
+	if (faultErr == nil || filesErr == nil) && p.NativeLaunchCommand != "" {
+		inner, ok := agentlaunch.UnwrapFileCommands(p.NativeLaunchCommand, runID)
+		if ok {
+			p.NativeLaunchCommand = agentlaunch.FileCommands(inner, runID, runID)
+		}
+	}
+	return p
 }

@@ -1,0 +1,43 @@
+{
+  "finished_at": "2026-11-01T02:26:16.3445059Z",
+  "evidence": "C:\\srt\\c13e96175937\\evidence",
+  "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\live-l2-01\\local-codex.smoke-default-r1-fixture.json",
+  "scenario": "local-codex.smoke",
+  "status": "passed",
+  "level": "L2",
+  "started_at": "2026-11-01T02:23:27.4794466Z",
+  "manifest": "C:\\srt\\c13e96175937\\manifest.json",
+  "repeat_index": 1,
+  "case_id": "default",
+  "timings": {
+    "native_and_cleanup_seconds": 143.8064329,
+    "total_seconds": 168.9213236,
+    "git_boundary_seconds": 12.4063234,
+    "preparation_seconds": 12.191281
+  },
+  "git_boundary": {
+    "exit_code": 0,
+    "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\live-l2-01\\local-codex-smoke-r1-git-boundary.log"
+  },
+  "resources": [
+    "root:C:\\srt\\c13e96175937",
+    "base:codex/srtest/c13e96175937/base",
+    "run:77c905679e7c0da45f1770456ff4ceee",
+    "workspace:c:\\srt\\c13e96175937\\s\\workspaces\\cem6uskwyajvswoybilbf2ykie",
+    "session:01a194ec-110c-7562-8d56-ed4fb392af2e",
+    "branch:codex/runner-77c905679e7c0da45f1770456ff4ceee",
+    "pr:https://github.com/erranliu/SteerlineTest/pull/727"
+  ],
+  "identity": {
+    "pid": 39572,
+    "manifest_sha256": "d956380fee8f7b8efa1e6471ce0f0d45a5f8e7f22c188053911524faf8814be9",
+    "driver_sha256": "7c1e4e357ec1a46e6467133728573a166ea7cfabb06f2280a6858fe863ecd46a",
+    "runner_sha256": "ee3c392d593ad058942be9b0be393bcc7055dc975244d0cea6ce169d5c8233bd",
+    "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+    "source_dirty": true,
+    "pattern": "^TestSRLiveScenario$",
+    "scenario": "local-codex.smoke",
+    "level": "L2"
+  },
+  "expected_outcome": "merged"
+}

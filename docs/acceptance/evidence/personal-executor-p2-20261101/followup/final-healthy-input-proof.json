@@ -1,0 +1,49 @@
+{
+  "path": "C:\\Users\\lmas1\\.codex\\sessions\\2026\\11\\01\\rollout-2026-11-01T11-52-11-01a1953c-720d-7952-938b-b6894098b4ca.jsonl",
+  "turns": [
+    {
+      "id": "01a1953c-7bea-7a30-a71b-cde904ef6898",
+      "items": [
+        {
+          "bytes": 82,
+          "id": "01a1953c-8ef6-7c33-8dc8-6f1276fe490b",
+          "prefix": "Initialize this agent session. Reply READY only. Do not use tools or change files.",
+          "sha256": "971b9a93add4bd028ca070da3d864ac8f2b029437c44a9a9420dc1efcc222421"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "01a1953c-b7f9-79e1-9886-3e61e0de6a23",
+      "items": [
+        {
+          "bytes": 1196,
+          "equals_expected_without_first_newline": false,
+          "exact_match": true,
+          "expected_bytes": 1196,
+          "expected_sha256": "ab0fc08376155851f12b3bac71765174bd060fba410897b9ee3855fcc736c308",
+          "id": "01a1953c-bb11-7a90-8944-27d327507628",
+          "prefix": "[SteerRunner command=86f57ad710f3a3e7904408e42b0b2e67 input=a548aa865eecd58fa6f38bacd919050b6c3291f5acaf2f644dd91665af29b8ce]\nImplement the frozen Spe",
+          "sha256": "ab0fc08376155851f12b3bac71765174bd060fba410897b9ee3855fcc736c308"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "01a1953e-84b0-7253-839f-b1d8109d0955",
+      "items": [
+        {
+          "bytes": 923,
+          "equals_expected_without_first_newline": false,
+          "exact_match": true,
+          "expected_bytes": 923,
+          "expected_sha256": "50fd7db7338e032e07607c44e645bbf3939b2231c63629d15e317ec0335a953c",
+          "id": "01a1953e-86e4-78d3-b048-d292cc547c04",
+          "prefix": "[SteerRunner command=80e3e03f1fa4589a9cd8801ae7651b38 input=71dc7b0d357a3b14f30fc89cc1bdcc7b7ff091dbe5768f752903ea08c05819d7]\nPublish the already veri",
+          "sha256": "50fd7db7338e032e07607c44e645bbf3939b2231c63629d15e317ec0335a953c"
+        }
+      ],
+      "status": "completed"
+    }
+  ]
+}

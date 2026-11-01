@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.smoke
+    run_test.go:828: invalid native audit receipt
+    run_test.go:575: original native execution cleanup unconfirmed original control closure missing
+--- FAIL: TestSRLiveScenario (314.13s)
+    --- FAIL: TestSRLiveScenario/orca-local.smoke (314.08s)
+FAIL

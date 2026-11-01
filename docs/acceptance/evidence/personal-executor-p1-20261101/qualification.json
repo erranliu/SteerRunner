@@ -1,0 +1,96 @@
+{
+  "evidence": [
+    {
+      "name": "configuration-contract.json",
+      "sha256": "e49f6402b20b4cb6f2b930fec2e83b40909ea3c983062cc63d8a2794f010bb1f"
+    },
+    {
+      "name": "focused-contract.json",
+      "sha256": "3c93bd5198f934c4f8c244c076164c96337e1de925b99d3bcd1abdf43e24dbfa"
+    },
+    {
+      "name": "github-pr.json",
+      "sha256": "5cd19a8033197e971daca361fbe52273a46155710f80de1c83eb05b937ec5563"
+    },
+    {
+      "name": "live-case.json",
+      "sha256": "c3bba0330b9bbeb448301888e65c02b1043a52cabac55aa0f92c3584aeb920e5"
+    },
+    {
+      "name": "live-summary.json",
+      "sha256": "bde503ca487ba92cd6bb23208324ec5061ac51ce2f52354a166e4d06a19ec686"
+    },
+    {
+      "name": "native-result.json",
+      "sha256": "7ca667174b9afd35df422f87b91eab9f848aeb6209ad1c0df5cdffbe9aab8abf"
+    },
+    {
+      "name": "native-source-identity.json",
+      "sha256": "17ec8afac48306f92bb1b511e5da2eafcd75c91269eccf96b88e10970b77714d"
+    },
+    {
+      "name": "native.log",
+      "sha256": "1fb514d0b04ff15a5f4c53e07ca03bfe6c56d8cd17f562cb035076f59d49df92"
+    },
+    {
+      "name": "parallel-consumer-contract.json",
+      "sha256": "261a2f2d2f0bda749bd7278685290cecae345873c154b07df4dceaf445f720e4"
+    },
+    {
+      "name": "prerequisite-contract.json",
+      "sha256": "0f4dc8aa93364a35cb88e9597616932b6030a6e1d4e3f7fc0b44c31ad951fb2f"
+    },
+    {
+      "name": "runner-build.json",
+      "sha256": "bc1f954a89dfa61e20825c1925e34cb580d508eee75bd97e65011381757fc715"
+    },
+    {
+      "name": "scenario.json",
+      "sha256": "cadedd74424e6ed42aae834b52c7f6e6666d27082e54228fb33a6a8fd28e479c"
+    },
+    {
+      "name": "scheduler-contract.json",
+      "sha256": "366d3b1e0240551689ad01331a322c9fc5887340e85dae681abfbae225ab6646"
+    },
+    {
+      "name": "source-files.json",
+      "sha256": "799d11a63b365e411e9c16ec7a3190bb29ed118da0dce951a9d1291ef8f31c68"
+    }
+  ],
+  "prerequisite_contract_checks": 75,
+  "live": {
+    "run_stopped": true,
+    "l2_verified": false,
+    "duration_seconds": 185.8517781,
+    "driver_sha256": "7c1e4e357ec1a46e6467133728573a166ea7cfabb06f2280a6858fe863ecd46a",
+    "test_pr": "https://github.com/erranliu/SteerlineTest/pull/727",
+    "service_stopped": true,
+    "scenario": "local-codex.smoke",
+    "status": "passed",
+    "runner_sha256": "ee3c392d593ad058942be9b0be393bcc7055dc975244d0cea6ce169d5c8233bd",
+    "complete_level_passed": false,
+    "timings": {
+      "native_preflight_seconds": 11.3303202,
+      "case_batch_seconds": 169.8618772,
+      "configuration_and_helper_seconds": 0.7634327,
+      "total_seconds": 185.8517781
+    },
+    "case_id": "default",
+    "prerequisite_execution_counts": {
+      "l1_core": 0,
+      "native_preflight": 1,
+      "controlled": 0
+    }
+  },
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "scope": "personal-executor-p1-focused",
+  "focused_contract_checks": 26,
+  "source_dirty": true,
+  "complete_native_qualification": false,
+  "p1_accepted": true,
+  "unverified": [
+    "real L3/Orca focused execution",
+    "current-source complete L1/Controlled qualification",
+    "matched complete-run timing comparison"
+  ]
+}

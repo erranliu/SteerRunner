@@ -20,9 +20,6 @@ func TestSRResultAcquisition(t *testing.T) {
 		t.Run(scenario, func(t *testing.T) {
 			selectedRunner := runnerEXE
 			t.Cleanup(func() { runnerEXE = selectedRunner })
-			if *baselineFlag != "" && (scenario == "parser-restart" || scenario == "parser-kill") {
-				runnerEXE = *baselineFlag
-			}
 			dir, envelope := setupRun(t)
 			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-parser")
 			if scenario == "audit-offline" {

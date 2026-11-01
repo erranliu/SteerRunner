@@ -1,0 +1,6 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.smoke
+    run_test.go:861: L3 orca-local.smoke run=8b1716cca0ae89426d7e13c6acceab04 PR=https://github.com/erranliu/SteerlineTest/pull/739 merge=dae3c17e63fa6186f3338f1a51580a8e7f7cd57d
+--- PASS: TestSRLiveScenario (249.96s)
+    --- PASS: TestSRLiveScenario/orca-local.smoke (249.93s)
+PASS

@@ -316,7 +316,7 @@ func TestTerminalStoppedNativeRemoteScope(t *testing.T) {
 				t.Fatal("scope missing")
 			}
 			want := 1
-			if mode == "started-branch-late" || mode == "initializing-foreign-branch" || mode == "initializing-foreign-worktree" || mode == "initializing-foreign-path" || mode == "already-absent" || mode == "wrong-incarnation" || mode == "mixed-control" || mode == "legacy-state-v4" || mode == "native-state-v5" {
+			if strings.HasPrefix(mode, "legacy") || mode == "started-branch-late" || mode == "initializing-foreign-branch" || mode == "initializing-foreign-worktree" || mode == "initializing-foreign-path" || mode == "already-absent" || mode == "wrong-incarnation" || mode == "mixed-control" || mode == "legacy-state-v4" || mode == "native-state-v5" {
 				want = 0
 			}
 			if closes != want {

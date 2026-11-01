@@ -1,0 +1,81 @@
+{
+  "mode": "controlled-final-only",
+  "native_turns": 4,
+  "runs": [
+    {
+      "ID": "57e4455e854db6d39aa90802c51fbcc5",
+      "Workspace": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\ghgl3ri4z7qdf5p2dig4ccw36m",
+      "ResultPath": "",
+      "ProgressPath": "",
+      "Progress": false,
+      "Result": false,
+      "Final": null,
+      "Sealed": {
+        "contract": "",
+        "run_id": "",
+        "version": 0,
+        "encoding": "",
+        "size_bytes": 0,
+        "collection_status": ""
+      }
+    },
+    {
+      "ID": "dc7dfc635ad6469ade4763cb837d6266",
+      "Workspace": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\e5273od4qfx7rpgfxedokhhhri",
+      "ResultPath": "",
+      "ProgressPath": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\e5273od4qfx7rpgfxedokhhhri\\.steerrunner\\progress\\dc7dfc635ad6469ade4763cb837d6266\\progress.bin",
+      "Progress": true,
+      "Result": false,
+      "Final": null,
+      "Sealed": {
+        "contract": "",
+        "run_id": "",
+        "version": 0,
+        "encoding": "",
+        "size_bytes": 0,
+        "collection_status": ""
+      }
+    },
+    {
+      "ID": "cc0da1562b7d3c686040af1f2d88c92e",
+      "Workspace": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\xx2vvb4xw6olc4teav7beimcl4",
+      "ResultPath": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\xx2vvb4xw6olc4teav7beimcl4\\.steerrunner\\result\\cc0da1562b7d3c686040af1f2d88c92e\\result.bin",
+      "ProgressPath": "",
+      "Progress": false,
+      "Result": true,
+      "Final": "AP9yAg==",
+      "Sealed": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "cc0da1562b7d3c686040af1f2d88c92e",
+        "version": 1,
+        "observed_at": "2026-11-01T03:15:51.157201Z",
+        "encoding": "base64",
+        "content_base64": "AP9yAg==",
+        "size_bytes": 4,
+        "sha256": "c3cf659e027e9a782b7c89636c5c6274d7cac35b384bd50ddf660498ec919b0f",
+        "collection_status": "closed"
+      }
+    },
+    {
+      "ID": "f6d0fca9624d577083227485dc759c09",
+      "Workspace": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\3ift7rcpvq4xnb4fyliysajmb4",
+      "ResultPath": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\3ift7rcpvq4xnb4fyliysajmb4\\.steerrunner\\result\\f6d0fca9624d577083227485dc759c09\\result.bin",
+      "ProgressPath": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4127654189\\runner\\workspaces\\3ift7rcpvq4xnb4fyliysajmb4\\.steerrunner\\progress\\f6d0fca9624d577083227485dc759c09\\progress.bin",
+      "Progress": true,
+      "Result": true,
+      "Final": "AP9yAw==",
+      "Sealed": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "f6d0fca9624d577083227485dc759c09",
+        "version": 1,
+        "observed_at": "2026-11-01T03:15:51.633328Z",
+        "encoding": "base64",
+        "content_base64": "AP9yAw==",
+        "size_bytes": 4,
+        "sha256": "0f702cfa06e0520a08300eed7ab3f4f88e5b80ab7cb89cc820ca2b33469f8712",
+        "collection_status": "closed"
+      }
+    }
+  ],
+  "service_instance_after_restart": "82362018e9caa826870aa732de1ecb69"
+}

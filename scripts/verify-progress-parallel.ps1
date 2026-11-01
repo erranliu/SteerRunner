@@ -10,6 +10,7 @@ $conflicts = @()
 $windows = @()
 $identities = @()
 $issues = @()
+if ($summary.PSObject.Properties['validation_scope'] -and $summary.validation_scope -ne 'complete') { $issues += 'Focused execution cannot grant complete parallel qualification' }
 if ($summary.status -ne 'passed' -or $summary.max_parallel -lt 2) { $issues += 'Official batch did not pass with parallel scheduling' }
 foreach ($id in $required) {
     $selected = @($cases | Where-Object { $_.scenario -eq $id })

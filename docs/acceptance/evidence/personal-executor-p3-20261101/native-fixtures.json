@@ -1,0 +1,44 @@
+[
+  {
+    "scenario": "local-codex.smoke",
+    "root": "C:\\srt\\aa9e0705b6df",
+    "run_id": "67c0dd99fd42fbcb9ed2ecc89d3edece",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/745",
+    "native_seconds": 126.7,
+    "report_seconds": 162.8086729,
+    "format": "steerrunner-state/v7",
+    "user_version": 7,
+    "runner_sha256": "8e45be489227e8619d0d2732db1f633a87f9db61eef8488a4e74de793420f552",
+    "stop_status": "stopped",
+    "status": "passed",
+    "passed_case_count": 1
+  },
+  {
+    "scenario": "orca-local.smoke",
+    "root": "C:\\srt\\8db8393be9b7",
+    "run_id": "780595e6d15d92802c7424d2f49db0fc",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/746",
+    "native_seconds": 255.54,
+    "report_seconds": 315.327662,
+    "format": "steerrunner-state/v7",
+    "user_version": 7,
+    "runner_sha256": "8e45be489227e8619d0d2732db1f633a87f9db61eef8488a4e74de793420f552",
+    "stop_status": "stopped",
+    "status": "passed",
+    "passed_case_count": 1
+  },
+  {
+    "scenario": "orca-remote.smoke",
+    "root": "C:\\srt\\d71611fa0a36",
+    "run_id": "f068d14abccb4786d17eeb955c65e3f6",
+    "pr_url": "https://github.com/erranliu/SteerlineTest/pull/747",
+    "native_seconds": 111.33,
+    "report_seconds": 149.2519358,
+    "format": "steerrunner-state/v7",
+    "user_version": 7,
+    "runner_sha256": "8e45be489227e8619d0d2732db1f633a87f9db61eef8488a4e74de793420f552",
+    "stop_status": "stopped",
+    "status": "passed",
+    "passed_case_count": 1
+  }
+]

@@ -13,18 +13,26 @@ import (
 // Called under the worker gate. Callers retain their distinct input/source
 // checks, diagnostics, authorization and atomic business/command commit.
 func (e *Engine) qualifyContinuation(r *runstate.Record, w *worker, p b.LifecyclePort, needsInput bool, unavailable func(b.LifecycleRecoveryEvidence, error) error) error {
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
+	return e.qualifyContinuationContext(e.ctx, r, w, p, needsInput, unavailable)
+}
+func (e *Engine) qualifyContinuationContext(parent context.Context, r *runstate.Record, w *worker, p b.LifecyclePort, needsInput bool, unavailable func(b.LifecycleRecoveryEvidence, error) error) error {
+	ctx, cancel := context.WithTimeout(parent, 10*time.Second)
 	facts, readErr := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
+	readErr = errors.Join(readErr, ctx.Err())
 	cancel()
-	restore, err := reliable.PlanContinuation(facts, r.Snapshot.Session.SessionID, unknown(r), needsInput)
+	var err error
+	if !reliable.CanContinueOriginal(facts) || needsInput && !facts.SessionIdle {
+		err = reliable.ErrContinuationUnavailable
+	}
 	if readErr != nil || errors.Is(err, reliable.ErrContinuationUnavailable) {
-		return unavailable(facts, readErr)
+		failure := unavailable(facts, readErr)
+		if failure != nil && (readErr != nil || !reliable.CanContinueOriginal(facts)) {
+			e.requireManual(r.ID, failure.Error())
+		}
+		return failure
 	}
 	if err != nil {
 		return err
-	}
-	if restore {
-		return e.restoreOriginalAttempt(r, w, p)
 	}
 	return nil
 }

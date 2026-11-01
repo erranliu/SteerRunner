@@ -1,7 +1,6 @@
 package application
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -10,11 +9,8 @@ import (
 	"testing"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
-	"github.com/erranliu/SteerRunner/internal/resources"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -74,54 +70,6 @@ func TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliatio
 	e.advance("run", w)
 	if p.executes != 1 || p.reconciles != 0 || e.runs["run"].Intents[0].Request.Operation.Status != b.OperationUnknown || e.runs["run"].Revision != revision {
 		t.Fatal("unsupported operation reached native I/O, lost its unknown fact or manufactured repeated revisions")
-	}
-}
-
-func TestServiceGenerationTakeoverRejectsUnknownCodecAndKeepsOriginalFacts(t *testing.T) {
-	p, _ := workflow.Lookup("development", 2)
-	profile, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{ImplementationKey: codex.ProfileCodecKey, CodecVersion: codex.ProfileCodecVersion, Purpose: b.ImplementationConfigPurpose, ProjectID: "project", ProfileID: "run", AcceptedConfigVersion: "input"}, []byte(`{"access_mode":"full_access","executable":"codex.exe"}`))
-	if err != nil {
-		t.Fatal(err)
-	}
-	r := &runstate.Record{ID: "run", InputDigest: "input", Profile: []b.ImplementationDataEnvelope{profile}, Request: contracts.RunRequest{Workflow: contracts.Workflow{ID: p.ID, Version: p.Version}, Execution: contracts.Execution{Adapter: "codex-app-server", Settings: []byte(`{"access_mode":"full_access"}`)}}, Workflow: workflow.Snapshot{Config: &p}}
-	r.Snapshot.Session.ProjectID = "project"
-	r.Snapshot.Ref.Version = 1
-	r.AcquisitionConfig.Config = ra.DefaultConfig()
-	before := canonical(r)
-	items := TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
-	if len(items) != 1 || items[0].Status != "compatible" || !bytes.Equal(before, canonical(r)) {
-		t.Fatalf("same contract report rejected or mutated original record: %+v", items)
-	}
-	withResult := r.Clone()
-	withResult.Request.ResultFile = &contracts.ResultFileInput{}
-	for _, contract := range []string{"", "steerrunner-result-file/v99", contracts.ResultFileContract} {
-		item := TakeoverFacts([]*runstate.Record{withResult}, resources.RecoveryCapabilities(), workflow.Catalog(), contract)[0]
-		if (item.Status == "compatible") != (contract == contracts.ResultFileContract) {
-			t.Fatal("candidate file capability not fenced", contract, item)
-		}
-	}
-	for _, version := range []int{0, 99} {
-		copy := r.Clone()
-		copy.Snapshot.Ref.Version = version
-		items = TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())
-		if items[0].Status != "unsupported" {
-			t.Fatalf("unknown execution record %d accepted", version)
-		}
-	}
-	copy := r.Clone()
-	copy.AcquisitionConfig = ra.FrozenConfig{}
-	if item := TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "compatible" {
-		t.Fatal("unused parser configuration blocked takeover")
-	}
-	copy = r.Clone()
-	copy.AcquisitionConfig.Config.Schema = "steerrunner-result-acquisition/v99"
-	if item := TakeoverFacts([]*runstate.Record{copy}, resources.RecoveryCapabilities(), workflow.Catalog())[0]; item.Status != "compatible" {
-		t.Fatal("unused parser configuration blocked takeover")
-	}
-	r.Profile[0].CodecVersion = 99
-	items = TakeoverFacts([]*runstate.Record{r}, resources.RecoveryCapabilities(), workflow.Catalog())
-	if items[0].Status != "unsupported" || items[0].InputDigest != "input" {
-		t.Fatal("unknown codec accepted or original input identity lost")
 	}
 }
 

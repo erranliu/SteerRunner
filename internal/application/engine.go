@@ -24,8 +24,9 @@ import (
 )
 
 type Engine struct {
-	textAnalyzer textanalysis.Analyzer
-	analyzeText  func(context.Context, textanalysis.Request, ra.ParserConfig) (string, error)
+	openRuntimeFile func(context.Context, *runstate.Record, bool, bool) (*runtimeFileChannel, error)
+	textAnalyzer    textanalysis.Analyzer
+	analyzeText     func(context.Context, textanalysis.Request, ra.ParserConfig) (string, error)
 
 	launchOwner       func(context.Context, string) error
 	openNativeConsole func(context.Context, b.LaunchCommand) error
@@ -48,7 +49,9 @@ type worker struct {
 	started                 bool
 	progressEnabled         bool
 	progressWatching        bool // guarded by Engine.mu
+	progressReadActive      bool // guarded by Engine.mu; at most one physical read even after a timeout
 	resultCollectionStarted bool // one bounded attempt per live service; durable Sealed survives restart
+	filesPreparationStarted bool // guarded by Engine.mu; also consumes a failed metadata save
 	acquisition             *textTask
 	ownedInputs             map[string]bool
 	checkpoints             map[string]*workflow.WorkspaceSource
@@ -94,9 +97,7 @@ func (e *Engine) Start() {
 
 }
 func (e *Engine) launch(id string, w *worker) {
-	if readOnlyRun(e.runs[id]) && e.runs[id].PendingStop == "" {
-		return
-	}
+
 	if w.started {
 		e.signal(w)
 		return
@@ -116,6 +117,10 @@ func (e *Engine) signal(w *worker) {
 }
 func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, events ...string) error {
 	prior := e.runs[next.ID]
+	if next.ManualPause != nil && !next.Closed && next.PendingStop == "" && next.StopStatus != "stopped" {
+		next.Status, next.Phase = "blocked", manualIntervention
+		next.Allowed, next.ResumeRequired = false, true
+	}
 	// Controls and terminal facts clear the projection in their own transaction.
 	if next.PendingStop != "" || next.PendingResume != "" || next.StopStatus == "stopped" || next.Closed || next.Question != nil || next.Status == "pr_ready" {
 		for i := range next.Intents {
@@ -223,9 +228,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if isContent && r.Closed && command != "stop" {
 			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
 		}
-		if command != "stop" && readOnlyRun(r) {
-			return reject(contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic))
-		}
+
 		next := r.Clone()
 		var revision contracts.RevisionInput
 		_ = json.Unmarshal(input.Input, &revision)
@@ -236,6 +239,10 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		next.CommandStates[receipt.ID] = "pending"
 		switch command {
 		case "stop", "close":
+			if next.PendingResume != "" {
+				next.CommandStates[next.PendingResume] = "failed"
+				next.PendingResume = ""
+			}
 			if isContent {
 				closeContent(next, receipt.ID)
 				break
@@ -249,10 +256,16 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			if !r.ResumeRequired {
 				return reject(contracts.Fail(5, "invalid_state", "Run does not require a new resume authorization."))
 			}
-			if unknown(r) {
-				return reject(contracts.Fail(5, "operation_unverified", "An original operation is unresolved; resume cannot replay it."))
+			if unknown(r) && r.ManualPause == nil {
+				return reject(contracts.Fail(5, "operation_unverified", "Wait for bounded original reconciliation before manual resume."))
+			}
+			if r.PendingStop != "" || r.PendingResume != "" {
+				return reject(contracts.Fail(5, "invalid_state", "An original stop or resume is pending."))
 			}
 			next.PendingResume = receipt.ID
+			if next.ManualPause != nil {
+				next.ManualPause.ResumeDeadline = time.Now().UTC().Add(30 * time.Second)
+			}
 			next.Phase = "resume_qualification"
 		case "reply":
 			var reply contracts.ReplyInput
@@ -326,11 +339,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if (command == "stop" || command == "close") && w.queryCancel != nil {
 			w.queryCancel()
 		}
-		if readOnlyRun(next) && command == "stop" {
-			e.launch(runID, w)
-		} else {
-			e.signal(w)
-		}
+		e.signal(w)
 		return receipt.Response
 	}
 	if command == "inspect" && runID == "" {
@@ -350,7 +359,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		var view *contracts.RunView
 		if value.RunID != nil {
 			if r := e.runs[*value.RunID]; r != nil {
-				v := publicRunView(r)
+				v := r.View()
 				view = &v
 			}
 		}
@@ -392,7 +401,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		}
 		return contentHistory(r, after, limit)
 	}
-	return contracts.Success("", map[string]any{"command": nil, "run": publicRunView(r)})
+	return contracts.Success("", map[string]any{"command": nil, "run": r.View()})
 }
 func unknown(r *runstate.Record) bool {
 	for _, intent := range r.Intents {
@@ -417,15 +426,7 @@ func (e *Engine) setup(r *runstate.Record, w *worker) b.LifecycleSetup {
 	}}
 }
 func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
-	if retiredDevelopment(r) {
-		if r.PendingStop == "" {
-			return nil, contracts.Fail(3, "unsupported_capability", retiredAccessDiagnostic)
-		}
-		if r.Request.Execution.Adapter == "codex-app-server" {
-			return codex.NewOriginalOwnerStopLifecycle(e.setup(r, w)), nil
-		}
-		return orca.NewOriginalStopLifecycle(e.setup(r, w))
-	}
+
 	if w.port != nil {
 		return w.port, nil
 	}
@@ -454,9 +455,7 @@ func (e *Engine) refreshPR(id string) error {
 	if r.PR == nil {
 		return nil
 	}
-	if readOnlyRun(r) {
-		return contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic)
-	}
+
 	provider, err := providerFor(r)
 	if err != nil {
 		return err

@@ -607,7 +607,7 @@ func queueInput(r *runstate.Record, input workflow.StageInput, feedback string) 
 			r.History = append(r.History, contracts.HistoryEntry{RequestCommandID: requestCommand, CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, Role: "user", Text: text})
 		}
 	}
-	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
+	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreePaths: append([]string(nil), r.LinkedGitPaths...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
 	r.Snapshot.Session.PendingCommandID = input.CommandID
 	r.Snapshot.Session.PendingTurnID = ""
 	r.Status, r.Phase = "running", "input_queued"

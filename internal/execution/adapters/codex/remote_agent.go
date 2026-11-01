@@ -103,12 +103,12 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err != nil {
 		return err
 	}
-	writeArgs, _ := LinkedWorktreeWriteArgs(resources.Objects, resources.Refs, resources.Logs, resources.Admin)
+	writeArgs, _ := LinkedWorktreePaths(resources.Objects, resources.Refs, resources.Logs, resources.Admin)
 	self, err := os.Executable()
 	if err != nil {
 		return err
 	}
-	rootPaths, _ := WritableRoots(writeArgs)
+	rootPaths := writeArgs
 	if err = remoteTrustedPaths(wd, rootPaths, []string{self, native, RemoteRuntimeDirectory(wd)}); err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	worker.OrcaHooks = true
-	roots, _ := WritableRoots(writeArgs)
+	roots := writeArgs
 	dir := RemoteRuntimeDirectory(wd)
 	// Evidence lives outside the workspace and all four writable Git roots.
 	if err = os.MkdirAll(dir, 0700); err != nil {

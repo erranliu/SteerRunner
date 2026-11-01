@@ -21,6 +21,7 @@ import (
 // Controlled public-EXE loop only: the native fixture is not a real remote Agent.
 func TestSRResultFile(t *testing.T) {
 	testCount.Add(1)
+	t.Run("optional-file-failure-business-loop", testOptionalFilesDoNotGateWorkflow)
 	dir, req := setupRun(t)
 	t.Setenv("STEERLINE_PROGRESS_FILE", "C:/foreign-run/progress.bin")
 	t.Setenv("STEERLINE_RESULT_FILE", "C:/foreign-run/result.bin")
@@ -222,5 +223,79 @@ func TestSRResultFile(t *testing.T) {
 		if err := os.WriteFile(filepath.Join(*evidenceFlag, "result-final-public-evidence.json"), raw, 0600); err != nil {
 			t.Fatal(err)
 		}
+	}
+}
+
+func testOptionalFilesDoNotGateWorkflow(t *testing.T) {
+	for mask := 0; mask < 4; mask++ {
+		t.Run(fmt.Sprintf("enabled-%d", mask), func(t *testing.T) {
+			dir, req := setupRun(t)
+			var input contracts.RunRequest
+			if err := json.Unmarshal(req.Input, &input); err != nil {
+				t.Fatal(err)
+			}
+			root := filepath.Join(input.Repository.LocalPath, ".steerrunner")
+			if err := os.MkdirAll(root, 0700); err != nil {
+				t.Fatal(err)
+			}
+			for _, channel := range []string{"progress", "result"} {
+				if err := os.WriteFile(filepath.Join(root, channel), []byte("blocked optional directory"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			git(t, input.Repository.LocalPath, "add", ".")
+			git(t, input.Repository.LocalPath, "-c", "user.name=Runner Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-m", "Block optional file directories")
+			input.Repository.BaseRevision = git(t, input.Repository.LocalPath, "rev-parse", "HEAD")
+			git(t, input.Repository.LocalPath, "push", "origin", "main")
+			if mask&1 != 0 {
+				input.ProgressFile = &contracts.ProgressFileInput{}
+			}
+			if mask&2 != 0 {
+				input.ResultFile = &contracts.ResultFileInput{}
+			}
+			req.Input, _ = json.Marshal(input)
+			raw, _ := json.Marshal(req)
+			service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+			cleanupService(t, dir, service)
+			start := time.Now()
+			response := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
+			id := response.Data.(map[string]any)["run_id"].(string)
+			t.Cleanup(func() {
+				v := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
+				if v.StopStatus != "stopped" {
+					stop, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "optional-cleanup-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, v.Revision))})
+					call(t, dir, []string{"stop", "--run-id", id, "--input", "-"}, string(stop), 0)
+					waitRun(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
+				}
+			})
+			ready := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Status == "pr_ready" })
+			if ready.PR == nil || ready.ResumeRequired || !ready.NewInputsAllowed || countNative(t, "turn/start") != 3 {
+				t.Fatal("optional failure disrupted workflow", ready)
+			}
+			elapsed := time.Since(start)
+			stop, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "optional-failure-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, ready.Revision))})
+			call(t, dir, []string{"stop", "--run-id", id, "--input", "-"}, string(stop), 0)
+			waitRun(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
+			if mask&2 != 0 {
+				var v contracts.ResultFileView
+				until := time.Now().Add(5 * time.Second)
+				for {
+					reply := call(t, dir, []string{"result-file", "--run-id", id}, "", 0)
+					body, _ := json.Marshal(reply.Data)
+					_ = json.Unmarshal(body, &v)
+					if v.CollectionStatus == "closed" {
+						break
+					}
+					if time.Now().After(until) {
+						t.Fatal("file fault prevented final settlement", v)
+					}
+					time.Sleep(100 * time.Millisecond)
+				}
+				if v.Version != 0 || v.Diagnostic == "" {
+					t.Fatal("failed channel fabricated final bytes", v)
+				}
+			}
+			t.Logf("enabled=%d: pr_ready=%v, business inputs=3 (including original result qualification fallback), stop confirmed", mask, elapsed)
+		})
 	}
 }

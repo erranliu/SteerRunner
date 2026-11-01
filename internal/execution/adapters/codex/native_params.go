@@ -38,18 +38,6 @@ func ThreadStartParams(worktree, sandbox, model string, dynamicTools []any) (map
 	return params, nil
 }
 
-// WritableRoots decodes the fixed Codex --add-dir arguments for native policy.
-func WritableRoots(args []string) ([]string, error) {
-	roots := make([]string, 0, len(args)/2)
-	for i := 0; i < len(args); i += 2 {
-		if i+1 >= len(args) || args[i] != "--add-dir" {
-			return nil, fmt.Errorf("unexpected Codex Git sandbox argument at %d", i)
-		}
-		roots = append(roots, args[i+1])
-	}
-	return roots, nil
-}
-
 func TurnStartParams(worktree, threadID, commandID, prompt, sandbox, model, effort string, writableRoots []string, budgets ...*m.InputBudget) (map[string]any, error) {
 	if len(budgets) > 0 {
 		if err := m.CheckInput(prompt, budgets[0]); err != nil {

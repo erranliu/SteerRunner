@@ -1,0 +1,2492 @@
+--- P2/internal/application/access_mode.go
++++ P3/internal/application/access_mode.go
+@@ -1,123 +0,0 @@
+-package application
+-
+-import (
+-	"encoding/json"
+-	"github.com/erranliu/SteerRunner/internal/contracts"
+-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+-	"github.com/erranliu/SteerRunner/internal/runstate"
+-	"strings"
+-)
+-
+-const retiredAccessDiagnostic = "Development sandbox/implicit permissions are retired. This Run is read-only; only exact original-resource stop is supported. An existing native execution may still be running."
+-
+-// Classification reads frozen data only. It never normalizes the old request,
+-// changes durable authorization or treats retirement as resource settlement.
+-func retiredDevelopment(r *runstate.Record) bool {
+-	if r == nil || workflow.Content(r.Request.Workflow.ID) || (r.Request.Workflow.ID != "development" && r.Request.Workflow.ID != "development-audited") {
+-		return false
+-	}
+-	var settings struct {
+-		AccessMode string `json:"access_mode"`
+-	}
+-	if json.Unmarshal(r.Request.Execution.Settings, &settings) != nil || settings.AccessMode != "full_access" {
+-		return true
+-	}
+-	for _, envelope := range r.Profile {
+-		switch envelope.ImplementationKey {
+-		case "codex.worker-profile":
+-			if envelope.CodecVersion != codex.ProfileCodecVersion {
+-				return true
+-			}
+-			var profile struct {
+-				AccessMode string `json:"access_mode"`
+-			}
+-			if json.Unmarshal(envelope.Payload, &profile) != nil || profile.AccessMode != "full_access" {
+-				return true
+-			}
+-		case "orca.terminal-profile":
+-			if envelope.CodecVersion != orca.ProfileVersion && envelope.CodecVersion != orca.NativeRemoteProfileVersion && envelope.CodecVersion != orca.FullAccessTerminalProfileVersion {
+-				return true
+-			}
+-			var profile struct {
+-				Terminal *struct {
+-					AccessMode string `json:"access_mode"`
+-				} `json:"terminal"`
+-			}
+-			if json.Unmarshal(envelope.Payload, &profile) != nil || profile.Terminal != nil && profile.Terminal.AccessMode != "full_access" {
+-				return true
+-			}
+-		}
+-	}
+-	if resource := r.Snapshot.PolicyResources; resource != nil {
+-		var policy struct {
+-			Contract string `json:"contract"`
+-			Settings struct {
+-				Args []string `json:"args"`
+-			} `json:"settings"`
+-		}
+-		if json.Unmarshal(resource.Payload, &policy) != nil {
+-			return true
+-		}
+-		if resource.ImplementationKey != codex.PolicyResourcesCodecKey || resource.CodecVersion != 5 || !codex.SupportedDevelopmentPolicy(policy.Contract) {
+-			return true
+-		}
+-		mode := ""
+-		for _, arg := range policy.Settings.Args {
+-			if strings.HasPrefix(arg, "sandbox_mode=") {
+-				if mode != "" {
+-					return true
+-				}
+-				mode = strings.TrimPrefix(arg, "sandbox_mode=")
+-			}
+-		}
+-		if mode != "danger-full-access" {
+-			return true
+-		}
+-	}
+-	return false
+-}
+-
+-func readOnlyRun(r *runstate.Record) bool {
+-	if r == nil {
+-		return false
+-	}
+-	return retiredDevelopment(r) || orca.LegacyRemoteProfile(r.Profile)
+-}
+-
+-func readOnlyStatus(r *runstate.Record) string {
+-	if retiredDevelopment(r) {
+-		var mode struct {
+-			AccessMode string `json:"access_mode"`
+-		}
+-		if json.Unmarshal(r.Request.Execution.Settings, &mode) != nil || mode.AccessMode != "" && mode.AccessMode != "sandbox" {
+-			return "unsupported"
+-		}
+-	}
+-	return "read_only"
+-}
+-
+-func readOnlyProjection(r *runstate.Record) *runstate.Record {
+-	if !readOnlyRun(r) {
+-		return r
+-	}
+-	// Only top-level presentation fields change. A shallow copy also keeps
+-	// malformed historical envelopes inspectable without re-marshaling them.
+-	copy := *r
+-	view := &copy
+-	view.Allowed, view.ResumeRequired = false, true
+-	view.Diagnostic = retiredAccessDiagnostic
+-	if readOnlyStatus(r) == "unsupported" {
+-		view.Diagnostic = "Frozen development permission data is inconsistent or unsupported; only persisted queries and supported original-resource stop are available."
+-	}
+-	return view
+-}
+-
+-func publicRunView(r *runstate.Record) contracts.RunView {
+-	v := readOnlyProjection(r).View()
+-	if readOnlyRun(r) {
+-		v.Controls = contracts.Controls{CanStop: r.StopStatus != "stopped", Reason: v.Diagnostic}
+-	}
+-	return v
+-}
+--- P2/internal/application/artifact.go
++++ P3/internal/application/artifact.go
+@@ -134,9 +134,7 @@
+ 		}
+ 		return reject(contracts.Fail(5, "artifact_not_found", "Artifact identity does not belong to this Run."))
+ 	}
+-	if readOnlyRun(r) {
+-		return reject(contracts.Fail(3, "unsupported_capability", retiredAccessDiagnostic))
+-	}
++
+ 	ctx, cancel := context.WithTimeout(e.ctx, 20*time.Second)
+ 	defer cancel()
+ 	if command == "workspace-git" {
+--- P2/internal/application/continuation.go
++++ P3/internal/application/continuation.go
+@@ -13,18 +13,26 @@
+ // Called under the worker gate. Callers retain their distinct input/source
+ // checks, diagnostics, authorization and atomic business/command commit.
+ func (e *Engine) qualifyContinuation(r *runstate.Record, w *worker, p b.LifecyclePort, needsInput bool, unavailable func(b.LifecycleRecoveryEvidence, error) error) error {
+-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
++	return e.qualifyContinuationContext(e.ctx, r, w, p, needsInput, unavailable)
++}
++func (e *Engine) qualifyContinuationContext(parent context.Context, r *runstate.Record, w *worker, p b.LifecyclePort, needsInput bool, unavailable func(b.LifecycleRecoveryEvidence, error) error) error {
++	ctx, cancel := context.WithTimeout(parent, 10*time.Second)
+ 	facts, readErr := p.VerifyManualRecovery(ctx, r.Snapshot.Clone())
++	readErr = errors.Join(readErr, ctx.Err())
+ 	cancel()
+-	restore, err := reliable.PlanContinuation(facts, r.Snapshot.Session.SessionID, unknown(r), needsInput)
++	var err error
++	if !reliable.CanContinueOriginal(facts) || needsInput && !facts.SessionIdle {
++		err = reliable.ErrContinuationUnavailable
++	}
+ 	if readErr != nil || errors.Is(err, reliable.ErrContinuationUnavailable) {
+-		return unavailable(facts, readErr)
++		failure := unavailable(facts, readErr)
++		if failure != nil && (readErr != nil || !reliable.CanContinueOriginal(facts)) {
++			e.requireManual(r.ID, failure.Error())
++		}
++		return failure
+ 	}
+ 	if err != nil {
+ 		return err
+ 	}
+-	if restore {
+-		return e.restoreOriginalAttempt(r, w, p)
+-	}
+ 	return nil
+ }
+--- P2/internal/application/control.go
++++ P3/internal/application/control.go
+@@ -3,7 +3,6 @@
+ import (
+ 	"context"
+ 	"errors"
+-	"github.com/erranliu/SteerRunner/internal/contracts"
+ 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+ 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+ 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+@@ -69,11 +68,33 @@
+ 	r := e.runs[id].Clone()
+ 	e.mu.Unlock()
+ 	command := r.PendingResume
++	deadline := time.Now().Add(30 * time.Second)
++	manual := r.ManualPause != nil
++	if manual {
++		deadline = r.ManualPause.ResumeDeadline
++		if deadline.IsZero() {
++			deadline = r.UpdatedAt.Add(30 * time.Second)
++		}
++		if !time.Now().Before(deadline) {
++			e.failControl(id, command, errors.New("Manual reconciliation deadline exhausted; use a new request_id and current revision for another read-only query"))
++			return false
++		}
++		if !e.reconcileManual(id, w, p, command, deadline) {
++			return false
++		}
++		e.mu.Lock()
++		r = e.runs[id].Clone()
++		e.mu.Unlock()
++	}
+ 	if r.Request.Conversation != nil || r.Request.Generate != nil {
+ 		if err := verifyContentDirectory(r); err != nil {
+ 			e.failControl(id, command, err)
+ 			return false
+ 		}
++		if err := verifyFrozenMaterials(r); err != nil {
++			e.failControl(id, command, err)
++			return false
++		}
+ 	}
+ 	if unknown(r) {
+ 		e.failControl(id, command, errors.New("Original operations require reconciliation before any resume"))
+@@ -85,25 +106,59 @@
+ 	}
+ 	if r.Snapshot.Session.SessionID != "" {
+ 
+-		// Idle restoration is deferred until input is needed; parse completion
+-		// may select an existing fallback after resume qualification.
++		// Continuation requires the original resource. No session is rebound.
+ 		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil
+ 		if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
+ 			needsInput = true
+ 		}
+-		if err := e.qualifyContinuation(r, w, p, needsInput, func(facts b.LifecycleRecoveryEvidence, err error) error {
++		ctx, cancel := context.WithDeadline(e.ctx, deadline)
++		w.queryCancel = cancel
++		w.gate.Unlock()
++		err := e.qualifyContinuationContext(ctx, r, w, p, needsInput, func(facts b.LifecycleRecoveryEvidence, err error) error {
+ 			return errors.Join(err, errors.New("The original session or prior writers cannot be verified for resume: "+facts.Diagnostic))
+-		}); err != nil {
++		})
++		w.gate.Lock()
++		w.queryCancel = nil
++		cancel()
++		if err != nil {
+ 			e.failControl(id, command, err)
+ 			return false
+ 		}
++	}
++	e.mu.Lock()
++	current := e.runs[id].Clone()
++	e.mu.Unlock()
++	if current.Revision != r.Revision || current.PendingResume != command || current.PendingStop != "" || current.Closed || e.ctx.Err() != nil {
++		return false
++	}
++	if manual && r.Snapshot.Ref.External.Kind == "" && r.Snapshot.Session.SessionID == "" {
++		e.failControl(id, command, errors.New("Original native resource is unavailable; create a new Run explicitly"))
++		return false
++	}
++	businessPause := manual && (r.ManualPause.Status == "blocked" || r.ManualPause.Status == "waiting_input")
++	businessDiagnostic := ""
++	if manual {
++		r.Status, r.Phase = r.ManualPause.Status, r.ManualPause.Phase
++		if businessPause {
++			businessDiagnostic = r.ManualPause.Diagnostic
++		}
++		r.ManualPause = nil
+ 	}
+ 	r.Allowed = true
+ 	r.ResumeRequired = false
+ 	r.PendingResume = ""
+-	r.Diagnostic = ""
++	r.Diagnostic = businessDiagnostic
++	if r.Question != nil {
++		r.Status, r.Phase = "waiting_input", "question"
++		businessPause = true
++	}
+ 	r.StopStatus = ""
+-	if err := resumeWorkflow(r); err != nil {
++	if err := func() error {
++		if businessPause {
++			return nil
++		}
++		return resumeWorkflow(r)
++	}(); err != nil {
+ 		e.failControl(id, command, err)
+ 		return false
+ 	}
+@@ -115,6 +170,9 @@
+ 	}
+ 	err := e.commitLocked(r, nil, "resume_qualified")
+ 	e.mu.Unlock()
++	if err == nil && manual && r.Result != nil {
++		return e.finishWithGate(id, *r.Result, &w.gate)
++	}
+ 	return err == nil
+ }
+ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
+@@ -132,7 +190,7 @@
+ 	// Recover only its original receipt so stop can address the exact resource.
+ 	// Reconciliation cannot dispatch another create or restore input authority.
+ 	for index, intent := range r.Intents {
+-		if !readOnlyRun(r) && intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
++		if intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
+ 			if e.invoke(id, w, p, index, true) {
+ 				return true
+ 			}
+@@ -207,7 +265,7 @@
+ 		} else {
+ 			receipt, _, err = p.Reconcile(ctx, request.Clone())
+ 		}
+-	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil && !retiredDevelopment(r) {
++	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil {
+ 		if w.handle == nil {
+ 			err = errors.New("The original owned writer handle is unavailable; only identity reconciliation is allowed")
+ 			receipt.Disposition = b.OperationUnknown
+@@ -268,43 +326,13 @@
+ 	return false
+ }
+ 
+-// Called only after original-session/idle/writer-absence verification.
+-func (e *Engine) restoreOriginalAttempt(r *runstate.Record, w *worker, p b.LifecyclePort) error {
+-	previous := r.Snapshot.Clone()
+-	r.Attempts = append(r.Attempts, runstate.Attempt{Snapshot: previous, EndedAt: time.Now().UTC()})
+-	preservePendingStage(r)
+-	r.Snapshot.Ref.AttemptID = contracts.NewID()
+-	r.Snapshot.Ref.External = b.ProcessIdentity{}
+-	r.Snapshot.Ref.Generation = ""
+-	r.Snapshot.ResourceGeneration = contracts.NewID()
+-	r.Snapshot.Session.AttemptID = r.Snapshot.Ref.AttemptID
+-	r.Snapshot.Session.AttemptNumber++
+-	r.Snapshot.Session.Generation = ""
+-	r.Snapshot.Session.LastStoppedTurnID = r.Snapshot.Session.CurrentTurnID
+-	r.Snapshot.PendingTurn = nil
+-	r.Snapshot.Session.PendingCommandID = ""
+-	r.Snapshot.Session.PendingTurnID = ""
+-	r.Snapshot.Operations = nil
+-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
+-	binding, err := p.BindRecovery(ctx, previous, r.Snapshot.Clone())
+-	cancel()
+-	if err != nil {
+-		return err
+-	}
+-	r.Snapshot.Implementation = []b.ImplementationDataEnvelope{binding}
+-	r.Snapshot.QuestionRoute = nil
+-	r.Snapshot.PolicyResources = nil
+-	if owner, ok := w.port.(b.LifecyclePreparationOwner); ok {
+-		owner.ReleasePreparation()
+-	}
+-	w.port = nil
+-	w.handle = nil
+-	return nil
+-}
+ func (e *Engine) failControl(id, command string, err error) {
+ 	e.mu.Lock()
+ 	defer e.mu.Unlock()
+ 	r := e.runs[id].Clone()
++	if r.PendingResume != command && r.PendingStop != "" || r.Closed {
++		return
++	}
+ 	r.CommandStates[command] = "failed"
+ 	r.Diagnostic = e.redact(r, err.Error())
+ 	r.PendingResume = ""
+--- P2/internal/application/engine.go
++++ P3/internal/application/engine.go
+@@ -97,9 +97,7 @@
+ 
+ }
+ func (e *Engine) launch(id string, w *worker) {
+-	if readOnlyRun(e.runs[id]) && e.runs[id].PendingStop == "" {
+-		return
+-	}
++
+ 	if w.started {
+ 		e.signal(w)
+ 		return
+@@ -119,6 +117,10 @@
+ }
+ func (e *Engine) commitLocked(next *runstate.Record, command *storage.Command, events ...string) error {
+ 	prior := e.runs[next.ID]
++	if next.ManualPause != nil && !next.Closed && next.PendingStop == "" && next.StopStatus != "stopped" {
++		next.Status, next.Phase = "blocked", manualIntervention
++		next.Allowed, next.ResumeRequired = false, true
++	}
+ 	// Controls and terminal facts clear the projection in their own transaction.
+ 	if next.PendingStop != "" || next.PendingResume != "" || next.StopStatus == "stopped" || next.Closed || next.Question != nil || next.Status == "pr_ready" {
+ 		for i := range next.Intents {
+@@ -226,9 +228,7 @@
+ 		if isContent && r.Closed && command != "stop" {
+ 			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
+ 		}
+-		if command != "stop" && readOnlyRun(r) {
+-			return reject(contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic))
+-		}
++
+ 		next := r.Clone()
+ 		var revision contracts.RevisionInput
+ 		_ = json.Unmarshal(input.Input, &revision)
+@@ -239,6 +239,10 @@
+ 		next.CommandStates[receipt.ID] = "pending"
+ 		switch command {
+ 		case "stop", "close":
++			if next.PendingResume != "" {
++				next.CommandStates[next.PendingResume] = "failed"
++				next.PendingResume = ""
++			}
+ 			if isContent {
+ 				closeContent(next, receipt.ID)
+ 				break
+@@ -252,10 +256,16 @@
+ 			if !r.ResumeRequired {
+ 				return reject(contracts.Fail(5, "invalid_state", "Run does not require a new resume authorization."))
+ 			}
+-			if unknown(r) {
+-				return reject(contracts.Fail(5, "operation_unverified", "An original operation is unresolved; resume cannot replay it."))
++			if unknown(r) && r.ManualPause == nil {
++				return reject(contracts.Fail(5, "operation_unverified", "Wait for bounded original reconciliation before manual resume."))
++			}
++			if r.PendingStop != "" || r.PendingResume != "" {
++				return reject(contracts.Fail(5, "invalid_state", "An original stop or resume is pending."))
+ 			}
+ 			next.PendingResume = receipt.ID
++			if next.ManualPause != nil {
++				next.ManualPause.ResumeDeadline = time.Now().UTC().Add(30 * time.Second)
++			}
+ 			next.Phase = "resume_qualification"
+ 		case "reply":
+ 			var reply contracts.ReplyInput
+@@ -329,11 +339,7 @@
+ 		if (command == "stop" || command == "close") && w.queryCancel != nil {
+ 			w.queryCancel()
+ 		}
+-		if readOnlyRun(next) && command == "stop" {
+-			e.launch(runID, w)
+-		} else {
+-			e.signal(w)
+-		}
++		e.signal(w)
+ 		return receipt.Response
+ 	}
+ 	if command == "inspect" && runID == "" {
+@@ -353,7 +359,7 @@
+ 		var view *contracts.RunView
+ 		if value.RunID != nil {
+ 			if r := e.runs[*value.RunID]; r != nil {
+-				v := publicRunView(r)
++				v := r.View()
+ 				view = &v
+ 			}
+ 		}
+@@ -395,7 +401,7 @@
+ 		}
+ 		return contentHistory(r, after, limit)
+ 	}
+-	return contracts.Success("", map[string]any{"command": nil, "run": publicRunView(r)})
++	return contracts.Success("", map[string]any{"command": nil, "run": r.View()})
+ }
+ func unknown(r *runstate.Record) bool {
+ 	for _, intent := range r.Intents {
+@@ -420,15 +426,7 @@
+ 	}}
+ }
+ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
+-	if retiredDevelopment(r) {
+-		if r.PendingStop == "" {
+-			return nil, contracts.Fail(3, "unsupported_capability", retiredAccessDiagnostic)
+-		}
+-		if r.Request.Execution.Adapter == "codex-app-server" {
+-			return codex.NewOriginalOwnerStopLifecycle(e.setup(r, w)), nil
+-		}
+-		return orca.NewOriginalStopLifecycle(e.setup(r, w))
+-	}
++
+ 	if w.port != nil {
+ 		return w.port, nil
+ 	}
+@@ -457,9 +455,7 @@
+ 	if r.PR == nil {
+ 		return nil
+ 	}
+-	if readOnlyRun(r) {
+-		return contracts.Fail(3, "unsupported_capability", readOnlyProjection(r).Diagnostic)
+-	}
++
+ 	provider, err := providerFor(r)
+ 	if err != nil {
+ 		return err
+--- P2/internal/application/freeze.go
++++ P3/internal/application/freeze.go
+@@ -607,7 +607,7 @@
+ 			r.History = append(r.History, contracts.HistoryEntry{RequestCommandID: requestCommand, CommandID: input.CommandID, SessionID: r.Snapshot.Session.SessionID, Role: "user", Text: text})
+ 		}
+ 	}
+-	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreeArgs: append([]string(nil), r.LinkedWriteArgs...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
++	r.Snapshot.PendingTurn = &b.TurnInput{Budget: input.Budget.Clone(), StepID: input.StepID, InputVersion: input.Version, CommandID: input.CommandID, Prompt: input.Prompt, Purpose: "business", ReportToolPolicy: input.ReportToolPolicy, LinkedWorktreePaths: append([]string(nil), r.LinkedGitPaths...), Model: input.Model, ReasoningEffort: input.ReasoningEffort}
+ 	r.Snapshot.Session.PendingCommandID = input.CommandID
+ 	r.Snapshot.Session.PendingTurnID = ""
+ 	r.Status, r.Phase = "running", "input_queued"
+--- P2/internal/application/manual.go
++++ P3/internal/application/manual.go
+@@ -0,0 +1,72 @@
++package application
++
++import (
++	"fmt"
++	"time"
++
++	b "github.com/erranliu/SteerRunner/internal/execution/backend"
++	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
++	"github.com/erranliu/SteerRunner/internal/runstate"
++)
++
++const manualIntervention = "manual_intervention_required"
++
++func reconciliationDeadline(r *runstate.Record, intent operation.Intent) time.Time {
++	if intent.PreparationQuery != nil {
++		return intent.PreparationQuery.Wait.DeadlineAt
++	}
++	if (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource) || intent.Request.Operation.Action == string(b.LifecyclePrepareSession)) && !r.PreparationDeadline.IsZero() {
++		return r.PreparationDeadline
++	}
++	return intent.Request.Operation.StartedAt.Add(30 * time.Second)
++}
++
++func (e *Engine) requireManual(id, diagnostic string) {
++	e.mu.Lock()
++	defer e.mu.Unlock()
++	r := e.runs[id].Clone()
++	if r.Closed || r.PendingStop != "" || r.StopStatus == "stopped" {
++		return
++	}
++	if r.ManualPause == nil {
++		r.ManualPause = &runstate.ManualPause{Status: r.Status, Phase: r.Phase, Diagnostic: r.Diagnostic}
++	}
++	r.Allowed, r.ResumeRequired = false, true
++	r.Status, r.Phase, r.Diagnostic = "blocked", manualIntervention, e.redact(r, diagnostic)
++	_ = e.commitLocked(r, nil, "manual_intervention_required")
++}
++
++// The accepted resume owns one finite read-only scope. It can only query saved
++// operations; restarting the service may repeat these reads, never their effects.
++func (e *Engine) reconcileManual(id string, w *worker, p b.LifecyclePort, command string, deadline time.Time) bool {
++	for {
++		e.mu.Lock()
++		r := e.runs[id].Clone()
++		e.mu.Unlock()
++		if r.PendingResume != command || r.PendingStop != "" || r.Closed {
++			return false
++		}
++		index := -1
++		for i, intent := range r.Intents {
++			if intent.NeedsReconciliation() {
++				index = i
++				break
++			}
++		}
++		if index < 0 {
++			return true
++		}
++		e.invoke(id, w, p, index, true, deadline)
++		e.mu.Lock()
++		next := e.runs[id].Clone()
++		e.mu.Unlock()
++		if next.PendingResume != command || next.PendingStop != "" || next.Closed || e.ctx.Err() != nil {
++			return false
++		}
++		if next.Intents[index].NeedsReconciliation() || next.Intents[index].Request.Operation.Status == b.OperationRejected {
++			op := next.Intents[index].Request.Operation
++			e.failControl(id, command, fmt.Errorf("Original %s operation %s remains %s: %s; retry resume with a new request_id and current revision", op.Action, op.ID, op.Status, op.Diagnostic))
++			return false
++		}
++	}
++}
+--- P2/internal/application/native_session.go
++++ P3/internal/application/native_session.go
+@@ -35,9 +35,7 @@
+ 	e.mu.Lock()
+ 	r := e.runs[target.RunID].Clone()
+ 	e.mu.Unlock()
+-	if readOnlyRun(r) {
+-		return reject("unsupported_capability", retiredAccessDiagnostic, 3)
+-	}
++
+ 	s := r.Snapshot
+ 	if s.Session.AttemptID != target.AttemptID || s.Session.SessionID != target.SessionID || s.ResourceGeneration != target.Generation {
+ 		return reject("stale_revision", "Original native session target changed; refresh before opening.", 5)
+--- P2/internal/application/observation.go
++++ P3/internal/application/observation.go
+@@ -19,17 +19,35 @@
+ 	if w.observer != nil {
+ 		return false
+ 	}
+-	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
++	deadline := r.ObservationDeadline
++	if deadline.IsZero() {
++		deadline = time.Now().Add(30 * time.Second)
++	}
++	ctx, cancel := context.WithDeadline(e.ctx, deadline)
+ 	receipt, observer, err := p.ObserveLifecycle(ctx, r.Snapshot.Clone())
+ 	cancel()
++	if err == nil && receipt.Disposition == b.OperationUnknown && observer == nil && receipt.TurnEvidence == nil {
++		err = errors.New("Original observation remains unverified: " + receipt.Diagnostic)
++	}
+ 	if err != nil {
+ 		if observer != nil {
+ 			_ = observer.Close(context.Background())
+ 		}
+-		if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
++		if !time.Now().Before(deadline) {
++			e.requireManual(id, "Original resource observation deadline exhausted: "+err.Error())
++		} else if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
+ 			e.logger.Printf("original observation unavailable run=%s diagnostic=%s", id, e.redact(r, err.Error()))
+ 		} else {
+-			e.block(id, "observation_unverified", err, true)
++			e.mu.Lock()
++			next := e.runs[id].Clone()
++			if next.Revision == r.Revision {
++				if next.ObservationDeadline.IsZero() {
++					next.ObservationDeadline = deadline
++				}
++				next.Diagnostic = e.redact(next, err.Error())
++				_ = e.commitLocked(next, nil, "observation_unverified")
++			}
++			e.mu.Unlock()
+ 		}
+ 		return false
+ 	}
+@@ -178,6 +196,7 @@
+ 	if merge(next, receipt) != nil {
+ 		return false
+ 	}
++	next.ObservationDeadline = time.Time{}
+ 	e.applyObservationDiagnostic(next, receipt.Diagnostic)
+ 	if reflect.DeepEqual(next, e.runs[id]) {
+ 		return true
+--- P2/internal/application/policy.go
++++ P3/internal/application/policy.go
+@@ -59,7 +59,7 @@
+ 	defer cancel()
+ 	bound, err := codex.BuildPolicyResourceEnvelope(ctx, codex.PolicyResourceBuildRequest{
+ 		ProfileData: r.Profile, ProfileIdentity: codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest},
+-		ResourceIdentity: identity, Host: "local", Agent: "codex", GOOS: runtime.GOOS, Workspace: s.Workspace.Path, LinkedWriteArgs: r.LinkedWriteArgs,
++		ResourceIdentity: identity, Host: "local", Agent: "codex", GOOS: runtime.GOOS, Workspace: s.Workspace.Path, LinkedGitPaths: r.LinkedGitPaths,
+ 		RunDirectory: e.dir, RepositoryURL: r.Request.Repository.URL,
+ 	}, func(ctx context.Context, executable string) (string, error) {
+ 		out, err := (commandHost{}).Output(ctx, b.Command{Executable: executable}, "--version")
+@@ -86,19 +86,19 @@
+ 	if err != nil {
+ 		return err
+ 	}
+-	args, err := codex.LinkedWorktreeWriteArgs(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
++	args, err := codex.LinkedWorktreePaths(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
+ 	// Never broaden an old shared cache's frozen authorization. Only the new
+ 	// per-Run repository identity can receive root-level Git lockfile access.
+ 	if strings.EqualFold(filepath.Clean(r.RepositoryPath), privateRunRepository(e.dir, r.Request.Repository, r.ID)) &&
+ 		strings.EqualFold(filepath.Clean(r.RepositoryCommon), filepath.Join(r.RepositoryPath, ".git")) {
+-		args, err = codex.PrivateLinkedWorktreeWriteArgs(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
++		args, err = codex.PrivateLinkedWorktreePaths(roots.Objects, roots.Refs, roots.Logs, roots.Admin)
+ 	}
+ 	if err != nil {
+ 		return err
+ 	}
+-	r.LinkedWriteArgs = args
++	r.LinkedGitPaths = args
+ 	if r.Snapshot.PendingTurn != nil {
+-		r.Snapshot.PendingTurn.LinkedWorktreeArgs = args
++		r.Snapshot.PendingTurn.LinkedWorktreePaths = args
+ 	}
+ 	return nil
+ }
+--- P2/internal/application/progress.go
++++ P3/internal/application/progress.go
+@@ -71,7 +71,7 @@
+ 	w := e.workers[id]
+ 	attempted := r.Progress != nil && (r.Progress.InitializationAttempted || r.Progress.Initialized) || w != nil && w.filesPreparationStarted || fileInputDispatched(r)
+ 	e.mu.Unlock()
+-	if readOnlyRun(r) || r.Request.ProgressFile == nil {
++	if r.Request.ProgressFile == nil {
+ 		return
+ 	}
+ 	if !attempted {
+@@ -193,9 +193,7 @@
+ }
+ 
+ func (e *Engine) startProgressLocked(id string, w *worker) {
+-	if readOnlyRun(e.runs[id]) {
+-		return
+-	}
++
+ 	if !w.progressEnabled || w.progressWatching || e.ctx.Err() != nil {
+ 		return
+ 	}
+--- P2/internal/application/result_file.go
++++ P3/internal/application/result_file.go
+@@ -93,7 +93,7 @@
+ func (e *Engine) sealResult(parent context.Context, id string) {
+ 	e.mu.Lock()
+ 	r := e.runs[id].Clone()
+-	if readOnlyRun(r) || r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
++	if r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
+ 		e.mu.Unlock()
+ 		return
+ 	}
+--- P2/internal/application/run_observation.go
++++ P3/internal/application/run_observation.go
+@@ -11,5 +11,5 @@
+ 	}
+ 	// Match the existing legacy read-only projection; a new read API cannot
+ 	// grant controls that the resident's original inspection withholds.
+-	return contracts.Success("", contracts.RunObservation{Contract: contracts.RunObservationContract, Run: publicRunView(r), EventPage: page})
++	return contracts.Success("", contracts.RunObservation{Contract: contracts.RunObservationContract, Run: r.View(), EventPage: page})
+ }
+--- P2/internal/application/runtime_files.go
++++ P3/internal/application/runtime_files.go
+@@ -83,7 +83,7 @@
+ 	w.gate.Lock()
+ 	e.mu.Lock()
+ 	r := e.runs[original.ID]
+-	if w.filesPreparationStarted || readOnlyRun(r) || !r.Allowed || r.ResumeRequired || r.PendingStop != "" || progressTerminal(r) || r.Snapshot.Workspace.Path == "" || e.ctx.Err() != nil || progressBinding(r) != progressBinding(original) {
++	if w.filesPreparationStarted || !r.Allowed || r.ResumeRequired || r.PendingStop != "" || progressTerminal(r) || r.Snapshot.Workspace.Path == "" || e.ctx.Err() != nil || progressBinding(r) != progressBinding(original) {
+ 		e.mu.Unlock()
+ 		w.gate.Unlock()
+ 		return
+--- P2/internal/application/takeover.go
++++ P3/internal/application/takeover.go
+@@ -1,107 +0,0 @@
+-package application
+-
+-import (
+-	"fmt"
+-	"slices"
+-
+-	"github.com/erranliu/SteerRunner/internal/contracts"
+-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
+-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+-	"github.com/erranliu/SteerRunner/internal/runstate"
+-)
+-
+-// TakeoverFacts projects existing records through the selected build's concrete
+-// decoders. It neither constructs workers nor grants any input authorization.
+-func TakeoverFacts(runs []*runstate.Record, support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
+-	items := []contracts.TakeoverItem{}
+-	for _, r := range runs {
+-		item := contracts.TakeoverItem{ID: r.ID, Kind: "run", Revision: r.Revision, InputDigest: r.InputDigest, Status: "compatible"}
+-		if r.Request.ResultFile != nil && (len(resultContracts) != 1 || resultContracts[0] != contracts.ResultFileContract) {
+-			item.Status, item.Diagnostic = "unsupported", "result file contract unsupported"
+-			items = append(items, item)
+-			continue
+-		}
+-		var err error
+-		if e := verifyFrozenMaterials(r); e != nil {
+-			err = e
+-		}
+-		if !slices.Contains(support.ExecutionRecordVersions, r.Snapshot.Ref.Version) {
+-			item.Status, item.Diagnostic = "unsupported", "execution record version unsupported"
+-			items = append(items, item)
+-			continue
+-		}
+-		if readOnlyRun(r) {
+-			item.Status = readOnlyStatus(r)
+-			item.Diagnostic = readOnlyProjection(r).Diagnostic
+-			items = append(items, item)
+-			continue
+-		}
+-		found := false
+-		for _, p := range profiles {
+-			if p.ID == r.Request.Workflow.ID && p.Version == r.Request.Workflow.Version {
+-				found = true
+-				if r.Workflow.Config == nil || !compatibleWorkflow(p, *r.Workflow.Config, r.Request.Execution.Adapter) {
+-					err = fmt.Errorf("frozen workflow execution semantics are unsupported")
+-				}
+-			}
+-		}
+-		if !found {
+-			err = fmt.Errorf("workflow interpreter unavailable")
+-		}
+-		for _, intent := range r.Intents {
+-			if !slices.Contains(support.OperationVersions, intent.Request.Operation.Version) {
+-				err = fmt.Errorf("operation version unsupported")
+-			}
+-			if q := intent.PreparationQuery; q != nil {
+-				if e := q.Validate(intent.Request.Operation); e != nil {
+-					err = e
+-				}
+-			}
+-
+-		}
+-		for _, op := range r.Snapshot.Operations {
+-			if !slices.Contains(support.OperationVersions, op.Version) {
+-				err = fmt.Errorf("snapshot operation version unsupported")
+-			}
+-		}
+-		for _, envelope := range append(append([]b.ImplementationDataEnvelope{}, r.Profile...), r.Snapshot.Implementation...) {
+-			if !slices.Contains(support.ImplementationCodecs[envelope.ImplementationKey], envelope.CodecVersion) {
+-				err = fmt.Errorf("implementation %s codec %d unsupported", envelope.ImplementationKey, envelope.CodecVersion)
+-			}
+-		}
+-		if r.Request.Execution.Adapter == "codex-app-server" {
+-
+-			setup := b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest}
+-			active := r.StopStatus != "stopped" && r.Status != "pr_ready"
+-			needs := b.RecoveryRequirements{Stopped: r.StopStatus == "stopped", WorkspaceCheckpoints: active && r.Workflow.RequiresWorkspace()}
+-			if e := codex.ValidateRecovery(setup, support.ImplementationCodecs, support.OwnerProtocol, needs); e != nil {
+-				err = e
+-			}
+-		} else if r.Request.Execution.Adapter == "orca-terminal" {
+-			e := orca.ValidateRecovery(b.LifecycleSetup{Snapshot: r.Snapshot, ProfileData: r.Profile, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest})
+-			if e != nil {
+-				err = e
+-			}
+-		} else {
+-			err = fmt.Errorf("execution adapter unsupported")
+-		}
+-		if err != nil {
+-			item.Status = "unsupported"
+-			item.Diagnostic = err.Error()
+-		}
+-		items = append(items, item)
+-	}
+-	return items
+-}
+-
+-func (e *Engine) Takeover(support contracts.RecoverySupport, profiles []workflow.Profile, resultContracts ...string) []contracts.TakeoverItem {
+-	e.mu.Lock()
+-	runs := make([]*runstate.Record, 0, len(e.runs))
+-	for _, r := range e.runs {
+-		runs = append(runs, r.Clone())
+-	}
+-	e.mu.Unlock()
+-	return e.store.BindTakeoverRequests(TakeoverFacts(runs, support, profiles, resultContracts...))
+-}
+--- P2/internal/application/usage.go
++++ P3/internal/application/usage.go
+@@ -19,7 +19,7 @@
+ 	e.mu.Lock()
+ 	defer e.mu.Unlock()
+ 	r := e.runs[run]
+-	return r != nil && !readOnlyRun(r)
++	return r != nil
+ }
+ 
+ // StopObserving begins the existing service shutdown without waiting for usage
+--- P2/internal/application/verify_stopped.go
++++ P3/internal/application/verify_stopped.go
+@@ -66,14 +66,7 @@
+ 		return false
+ 	}
+ 	if r.StopStatus == "stopped" {
+-		if orca.LegacyRemoteProfile(r.Profile) {
+-			for _, intent := range r.Intents {
+-				if intent.Request.Operation.Action == string(b.LifecycleStopExecution) && intent.Request.Snapshot.Ref.External == r.Snapshot.Ref.External && intent.Receipt != nil && intent.Receipt.Disposition == b.OperationConfirmed && intent.Receipt.State.Stopped && intent.Receipt.State.WorkerAbsent && intent.Receipt.ValidateFor(intent.Request) == nil {
+-					return true
+-				}
+-			}
+-			return false
+-		}
++
+ 		return true
+ 	}
+ 	return managedRecordWritersAbsent(r, r.Snapshot.Ref.External, absent)
+--- P2/internal/application/worker.go
++++ P3/internal/application/worker.go
+@@ -64,7 +64,7 @@
+ func (e *Engine) advance(id string, w *worker) bool {
+ 	e.mu.Lock()
+ 	snapshot := e.runs[id]
+-	verify := !readOnlyRun(snapshot) && snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
++	verify := snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
+ 	e.mu.Unlock()
+ 	if verify {
+ 		return e.verifyPublication(id)
+@@ -77,12 +77,10 @@
+ 	e.mu.Lock()
+ 	r := e.runs[id].Clone()
+ 	e.mu.Unlock()
+-	if readOnlyRun(r) && r.PendingStop == "" {
+-		return false
+-	}
++
+ 	// Recovery only samples an already-ended original execution. No port or
+ 	// replacement resource is constructed by result collection.
+-	if !readOnlyRun(r) && resultEndEligible(r) {
++	if resultEndEligible(r) {
+ 		w.gate.Unlock()
+ 		e.sealResult(e.ctx, id)
+ 		w.gate.Lock()
+@@ -99,7 +97,7 @@
+ 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
+ 		return false
+ 	}
+-	if analysisEligible(r) && !unknown(r) {
++	if r.ManualPause == nil && r.PendingResume == "" && analysisEligible(r) && !unknown(r) {
+ 		return e.advanceAcquisition(id, w, r)
+ 	}
+ 	p, err := e.port(r, w)
+@@ -116,16 +114,6 @@
+ 	if r.StopStatus == "stopped" && r.PendingResume == "" {
+ 		return false
+ 	}
+-	if unknown(r) {
+-		for i, intent := range r.Intents {
+-			if intent.NeedsReconciliation() {
+-				if intent.Request.Operation.Status == b.OperationAccepted && intent.Receipt != nil && intent.Receipt.State.ResourcePending && !r.PreparationDeadline.IsZero() && time.Now().After(r.PreparationDeadline) {
+-					e.block(id, "preparation_deadline", errors.New("The original native resource did not become ready within its preparation budget"), false)
+-				}
+-				return e.invoke(id, w, p, i, true)
+-			}
+-		}
+-	}
+ 	if r.PendingResume != "" {
+ 		if err := validateWorkflow(r); err != nil {
+ 			e.failControl(id, r.PendingResume, err)
+@@ -133,6 +121,21 @@
+ 		}
+ 		return e.resumeRun(id, w, p)
+ 	}
++	if r.ManualPause != nil {
++		return false
++	}
++	if unknown(r) {
++		for i, intent := range r.Intents {
++			if intent.NeedsReconciliation() {
++				if !time.Now().Before(reconciliationDeadline(r, intent)) {
++					e.requireManual(id, "Original operation reconciliation deadline exhausted; inspect original resources and use resume for a bounded read-only reconciliation")
++					return false
++				}
++				return e.invoke(id, w, p, i, true)
++			}
++		}
++	}
++
+ 	if err := validateWorkflow(r); err != nil {
+ 		e.block(id, "workflow_configuration", err, false)
+ 		return false
+@@ -213,7 +216,7 @@
+ 	}
+ 	return len(next.Intents) - 1, nil
+ }
+-func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reconcile bool) bool {
++func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reconcile bool, deadlines ...time.Time) bool {
+ 	e.mu.Lock()
+ 	r := e.runs[id].Clone()
+ 	e.mu.Unlock()
+@@ -235,11 +238,24 @@
+ 		}
+ 		request.Snapshot = r.Snapshot.Clone()
+ 	}
+-	ctx, cancel := context.WithTimeout(e.ctx, 90*time.Second)
++	deadline := time.Now().Add(90 * time.Second)
++	if reconcile && r.PendingStop == "" {
++		deadline = reconciliationDeadline(r, intent)
++	}
++	if len(deadlines) > 0 {
++		deadline = deadlines[0]
++	}
++	ctx, cancel := context.WithDeadline(e.ctx, deadline)
++	preparationRecovery := false
+ 	// Clone normalizes nil/empty implementation lists on both sides. Storage
+ 	// round trips may change that representation without changing any identity.
+ 	if intent.PreparationQuery != nil && intent.Receipt == nil && len(intent.Request.Operation.Receipt) == 0 && r.WorkspaceFact == nil && r.Snapshot.Workspace.Path == "" && b.LifecycleBindingDigest(r.Snapshot.Clone()) == b.LifecycleBindingDigest(intent.Request.Snapshot.Clone()) {
+-		ctx = b.WithPreparationRecovery(ctx, r.Allowed && !r.ResumeRequired && r.PendingStop == "")
++		// A queued initial preparation with no creation claim may continue the
++		// same intent under its original budget. The adapter proves absence of
++		// the durable creation claim before crossing its first-effect boundary.
++		// Manual resume never receives this authority.
++		preparationRecovery = r.Allowed && !r.ResumeRequired && r.PendingStop == "" && r.PendingResume == "" && r.ManualPause == nil
++		ctx = b.WithPreparationRecovery(ctx, preparationRecovery)
+ 	}
+ 	if !reconcile && request.Input.Turn != nil {
+ 		if w.ownedInputs == nil {
+@@ -247,7 +263,16 @@
+ 		}
+ 		w.ownedInputs[request.Input.Turn.CommandID] = true
+ 	}
+-	result := operation.Invoke(ctx, p, p, request, mode)
++	var result operation.EffectResult
++	if reconcile && !preparationRecovery {
++		w.queryCancel = cancel
++		w.gate.Unlock()
++		result = operation.Invoke(ctx, p, p, request, mode)
++		w.gate.Lock()
++		w.queryCancel = nil
++	} else {
++		result = operation.Invoke(ctx, p, p, request, mode)
++	}
+ 	cancel()
+ 	// Shutdown cancels this read, not the durable Run authorization. Keep the
+ 	// original in-flight operation so the next eligible generation can continue.
+@@ -258,18 +283,6 @@
+ 		if query != nil {
+ 			return false
+ 		}
+-	}
+-	if result.Observer != nil {
+-		if w.observer != nil {
+-			_ = w.observer.Close(context.Background())
+-		}
+-		w.observer = result.Observer
+-		if h := w.observer.StopHandle(); h != nil {
+-			e.retainHandle(w, h)
+-		}
+-	}
+-	if result.Receipt.Handle != nil {
+-		e.retainHandle(w, result.Receipt.Handle)
+ 	}
+ 	e.mu.Lock()
+ 	next := e.runs[id].Clone()
+@@ -316,7 +329,7 @@
+ 			next.CommandStates[command] = "unknown"
+ 		}
+ 	}
+-	if !progress && !preparationStopped {
++	if !progress && !preparationStopped && next.PendingStop == "" && !next.Closed && next.StopStatus != "stopped" {
+ 		next.Status = "reconciling"
+ 		if status == "rejected" {
+ 			next.Status = "blocked"
+@@ -349,7 +362,44 @@
+ 	err := e.commitLocked(next, nil, "operation_"+status)
+ 	e.mu.Unlock()
+ 	if err != nil {
+-		return false
++		if result.Observer != nil {
++			_ = result.Observer.Close(context.Background())
++		}
++		return false
++	}
++	e.mu.Lock()
++	current := e.runs[id].Clone()
++	e.mu.Unlock()
++	if result.Receipt.Handle != nil && result.Receipt.ValidateFor(request) == nil {
++		e.retainHandle(w, result.Receipt.Handle)
++	}
++	if current.PendingStop != "" || current.Closed || current.StopStatus == "stopped" || err != nil {
++		if result.Observer != nil {
++			_ = result.Observer.Close(context.Background())
++		}
++		return progress && !resourcePending
++	}
++	if result.Observer != nil {
++		if w.observer != nil {
++			_ = w.observer.Close(context.Background())
++		}
++		w.observer = result.Observer
++		if h := w.observer.StopHandle(); h != nil {
++			e.retainHandle(w, h)
++		}
++	}
++	if result.Receipt.Handle != nil {
++		e.retainHandle(w, result.Receipt.Handle)
++	}
++
++	if savedReceipt.TurnEvidence != nil && current.ManualPause != nil {
++		e.mu.Lock()
++		next := e.runs[id].Clone()
++		next.Result = savedReceipt.TurnEvidence
++		next.LastFinal = next.View().Final
++		err = e.commitLocked(next, nil, "manual_original_result_retained")
++		e.mu.Unlock()
++		return err == nil
+ 	}
+ 	if savedReceipt.TurnEvidence != nil {
+ 		return e.finishWithGate(id, *savedReceipt.TurnEvidence, &w.gate)
+--- P2/internal/cli/cli.go
++++ P3/internal/cli/cli.go
+@@ -29,7 +29,6 @@
+ 	help      bool
+ 	offline   bool
+ 	kind      string
+-	candidate string
+ }
+ 
+ func parse(argv []string) (arguments, *contracts.Fault) {
+@@ -81,8 +80,6 @@
+ 				value.opts.UsageRevision = revision
+ 			case "--pricing-policy":
+ 				value.opts.PricingPolicy = parameter
+-			case "--candidate":
+-				value.candidate = parameter
+ 			case "--kind":
+ 				value.kind = parameter
+ 			case "--expected-instance-id":
+@@ -144,7 +141,7 @@
+ 	switch value.opts.Command {
+ 	case "progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost":
+ 	case "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git":
+-	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
++	case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "observe", "last-message", "open-native-session", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history":
+ 	default:
+ 		return value, contracts.Fail(2, "invalid_arguments", "Expected a documented SteerRunner command; use --help.")
+ 	}
+@@ -179,14 +176,12 @@
+ 	}
+ 	if value.opts.ExpectedInstanceID != "" {
+ 		switch value.opts.Command {
+-		case "version", "serve", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover":
++		case "version", "serve", "service start", "service status", "service stop", "service verify-stopped":
+ 			return value, contracts.Fail(2, "invalid_arguments", "Expected instance identity applies to resident business/query commands.")
+ 		}
+ 	}
+ 	mutating := writes(value.opts.Command)
+-	if value.opts.Command == "service verify-takeover" && value.candidate == "" || value.opts.Command != "service verify-takeover" && value.candidate != "" {
+-		return value, contracts.Fail(2, "invalid_arguments", "verify-takeover requires --candidate and no other command accepts it.")
+-	}
++
+ 	if mutating && value.input != "-" || !mutating && value.input != "" && !(value.opts.Command == "service start" && value.input == "-") {
+ 		return value, contracts.Fail(2, "invalid_arguments", "Write commands require --input -; other commands do not accept input.")
+ 	}
+@@ -270,7 +265,7 @@
+ 		return finish(contracts.Success("", resources.VersionInfo()), 0)
+ 	}
+ 	if options.opts.Command == "help" {
+-		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object; service verify-takeover requires --candidate <absolute-executable>.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
++		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
+ 	}
+ 	if options.offline {
+ 		executable, err := os.Executable()
+@@ -378,13 +373,7 @@
+ 		}
+ 		return finish(contracts.Success("", result), 0)
+ 	}
+-	if options.opts.Command == "service verify-takeover" {
+-		result, failure := host.VerifyTakeover(ctx, dir, options.candidate)
+-		if failure != nil {
+-			return reject(failure)
+-		}
+-		return finish(contracts.Success("", result), 0)
+-	}
++
+ 	response, callErr := host.Call(ctx, dir, options.opts, request)
+ 	if callErr != nil {
+ 		return reject(callErr)
+--- P2/internal/contracts/recovery.go
++++ P3/internal/contracts/recovery.go
+@@ -4,6 +4,8 @@
+ 	"encoding/json"
+ 	"github.com/erranliu/SteerRunner/internal/usage/api"
+ )
++
++func (v ServiceStartInput) JSON() []byte { b, _ := json.Marshal(v); return b }
+ 
+ type PendingStop struct {
+ 	RunID   string  `json:"run_id"`
+@@ -44,34 +46,3 @@
+ 	}
+ 	return &input, nil
+ }
+-
+-// RecoverySupport describes decoders, not a second per-Run contract manifest.
+-type RecoverySupport struct {
+-	ReadableStateFormats    []string         `json:"readable_state_formats"`
+-	WritableStateFormat     string           `json:"writable_state_format"`
+-	OperationVersions       []int            `json:"operation_versions"`
+-	ExecutionRecordVersions []int            `json:"execution_record_versions"`
+-	ImplementationCodecs    map[string][]int `json:"implementation_codecs"`
+-	OwnerProtocol           string           `json:"owner_protocol"`
+-	PendingStops            bool             `json:"pending_stops"`
+-}
+-type TakeoverItem struct {
+-	RequestID     string `json:"request_id,omitempty"`
+-	RequestDigest string `json:"request_digest,omitempty"`
+-	ID            string `json:"id"`
+-	Kind          string `json:"kind"`
+-	Revision      uint64 `json:"revision"`
+-	InputDigest   string `json:"input_digest"`
+-	Status        string `json:"status"`
+-	Diagnostic    string `json:"diagnostic,omitempty"`
+-}
+-type TakeoverReport struct {
+-	Contract        string         `json:"contract"`
+-	StateDir        string         `json:"state_dir"`
+-	InstanceID      string         `json:"instance_id,omitempty"`
+-	CandidateSHA256 string         `json:"candidate_sha256"`
+-	Compatible      bool           `json:"compatible"`
+-	Items           []TakeoverItem `json:"items"`
+-}
+-
+-func (v ServiceStartInput) JSON() []byte { b, _ := json.Marshal(v); return b }
+--- P2/internal/execution/adapters/codex/backend.go
++++ P3/internal/execution/adapters/codex/backend.go
+@@ -104,7 +104,7 @@
+ 	}
+ 	var workerSetup *workerRuntime
+ 	if b.Config.WorkerRuntime {
+-		workerSetup, err = prepareWorkerRuntime(b.Config.Workspace, input.LinkedWorktreeArgs)
++		workerSetup, err = prepareWorkerRuntime(b.Config.Workspace, input.LinkedWorktreePaths)
+ 		if err != nil {
+ 			return nil, receipt, err
+ 		}
+@@ -219,7 +219,7 @@
+ // StartTurn is a separate operation: the center must persist PrepareSession's
+ // partial binding before calling it. No persistence callback drives the backend.
+ func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executionbackend.TurnInput, linkedArgs []string) (*Observation, string, error) {
+-	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
++	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreePaths, h.input.LinkedWorktreePaths) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
+ 		return nil, "", errors.New("app-server turn changed its prepared request identity or input")
+ 	}
+ 	if input.Budget != nil && h.input.Budget != nil && !reflect.DeepEqual(input.Budget, h.input.Budget) {
+--- P2/internal/execution/adapters/codex/diagnostic.go
++++ P3/internal/execution/adapters/codex/diagnostic.go
+@@ -22,7 +22,7 @@
+ 			return stage
+ 		}
+ 	}
+-	for _, stage := range []string{"authentication_broker_unavailable", "sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git"} {
++	for _, stage := range []string{"sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git"} {
+ 		if strings.Contains(err.Error(), stage) {
+ 			return stage
+ 		}
+--- P2/internal/execution/adapters/codex/execution_owner.go
++++ P3/internal/execution/adapters/codex/execution_owner.go
+@@ -26,15 +26,12 @@
+ const ExecutionOwnerConfigFile = "codex-owner.json"
+ 
+ type ExecutionOwnerIdentity struct {
+-	// Opaque legacy wire metadata: preserve old signed checkpoints byte-for-byte.
+-	// New owners leave it false; it is never consulted for execution or recovery.
+-	LegacyParserCapability bool              `json:"retains_parser,omitempty"`
+-	WorkspaceCheckpoints   bool              `json:"workspace_checkpoints,omitempty"`
+-	Protocol               string            `json:"protocol"`
+-	Directory              string            `json:"directory"`
+-	Process                b.ProcessIdentity `json:"process"`
+-	RuntimeSHA256          string            `json:"runtime_sha256"`
+-	ExitPublicKey          string            `json:"exit_public_key"`
++	WorkspaceCheckpoints bool              `json:"workspace_checkpoints,omitempty"`
++	Protocol             string            `json:"protocol"`
++	Directory            string            `json:"directory"`
++	Process              b.ProcessIdentity `json:"process"`
++	RuntimeSHA256        string            `json:"runtime_sha256"`
++	ExitPublicKey        string            `json:"exit_public_key"`
+ }
+ 
+ type ownerConfig struct {
+--- P2/internal/execution/adapters/codex/lifecycle.go
++++ P3/internal/execution/adapters/codex/lifecycle.go
+@@ -629,7 +629,6 @@
+ 		}
+ 	}
+ 	evidence.SessionAvailable, evidence.SessionIdle = true, historyThreadIdle(thread, stoppedTurn)
+-	evidence.SessionRebindable = managed && absent && evidence.WritersAbsent && evidence.SessionIdle
+ 	if !evidence.SessionIdle {
+ 		evidence.Diagnostic = "The original thread has an active or unverified native turn; no recovery input is allowed"
+ 	}
+@@ -679,31 +678,6 @@
+ 	}
+ 	defer client.Close()
+ 	return client.ReadThread(ctx, binding.SessionID, history.Workspace)
+-}
+-
+-func (l ExecutionLifecycle) BindRecovery(ctx context.Context, previous, next executionbackend.LifecycleSnapshot) (executionbackend.ImplementationDataEnvelope, error) {
+-	if err := ctx.Err(); err != nil {
+-		return executionbackend.ImplementationDataEnvelope{}, err
+-	}
+-	if err := l.validateIdentity(previous); err != nil {
+-		return executionbackend.ImplementationDataEnvelope{}, err
+-	}
+-	if err := l.validateIdentity(next); err != nil {
+-		return executionbackend.ImplementationDataEnvelope{}, err
+-	}
+-	if previous.Session.ProjectID != next.Session.ProjectID || previous.Session.ExecutionID != next.Session.ExecutionID ||
+-		previous.Session.AttemptID == next.Session.AttemptID || previous.ConfigurationDigest != next.ConfigurationDigest {
+-		return executionbackend.ImplementationDataEnvelope{}, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "manual recovery changed the fixed execution or configuration identity"}
+-	}
+-	binding, found, err := l.readBinding(previous.Clone())
+-	if err != nil {
+-		return executionbackend.ImplementationDataEnvelope{}, err
+-	}
+-	if !found || !ValidNativeID(binding.SessionID) {
+-		return executionbackend.ImplementationDataEnvelope{}, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "original app-server thread identity is unavailable for manual recovery"}
+-	}
+-	seed := AppServerBinding{SessionID: binding.SessionID}
+-	return NewAppServerBindingEnvelope(l.identity(next), seed)
+ }
+ 
+ // ReleasePreparation closes only an unconsumed preparation connection. The
+@@ -809,7 +783,7 @@
+ 		}
+ 		return receipt, nil, err
+ 	}
+-	observer, turnID, startErr := l.Backend.StartTurn(ctx, handle, input, input.LinkedWorktreeArgs)
++	observer, turnID, startErr := l.Backend.StartTurn(ctx, handle, input, input.LinkedWorktreePaths)
+ 	receipt := l.bindingReceipt(snapshot, binding)
+ 	receipt.State.SessionID, receipt.State.TurnID = binding.SessionID, turnID
+ 	receipt.State.SessionGeneration = binding.Generation
+@@ -932,7 +906,7 @@
+ 		return nil
+ 	}
+ 	copy := *turn
+-	copy.LinkedWorktreeArgs = append([]string(nil), turn.LinkedWorktreeArgs...)
++	copy.LinkedWorktreePaths = append([]string(nil), turn.LinkedWorktreePaths...)
+ 	return &copy
+ }
+ 
+--- P2/internal/execution/adapters/codex/native_params.go
++++ P3/internal/execution/adapters/codex/native_params.go
+@@ -38,18 +38,6 @@
+ 	return params, nil
+ }
+ 
+-// WritableRoots decodes the fixed Codex --add-dir arguments for native policy.
+-func WritableRoots(args []string) ([]string, error) {
+-	roots := make([]string, 0, len(args)/2)
+-	for i := 0; i < len(args); i += 2 {
+-		if i+1 >= len(args) || args[i] != "--add-dir" {
+-			return nil, fmt.Errorf("unexpected Codex Git sandbox argument at %d", i)
+-		}
+-		roots = append(roots, args[i+1])
+-	}
+-	return roots, nil
+-}
+-
+ func TurnStartParams(worktree, threadID, commandID, prompt, sandbox, model, effort string, writableRoots []string, budgets ...*m.InputBudget) (map[string]any, error) {
+ 	if len(budgets) > 0 {
+ 		if err := m.CheckInput(prompt, budgets[0]); err != nil {
+--- P2/internal/execution/adapters/codex/permissions.go
++++ P3/internal/execution/adapters/codex/permissions.go
+@@ -6,21 +6,20 @@
+ 	"strings"
+ )
+ 
+-// LinkedWorktreeWriteArgs preserves the frozen encoding of four verified Git
+-// paths used by runtime/authentication identity checks. New full_access launches
+-// never emit these legacy arguments as native write grants.
+-func LinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string, error) {
++// LinkedWorktreePaths returns four verified Git identity paths.
++// These paths are never emitted as native permission arguments.
++func LinkedWorktreePaths(objects, refs, logs, admin string) ([]string, error) {
+ 	if objects == "" || refs == "" || logs == "" || admin == "" {
+ 		return nil, errors.New("linked worktree Git write paths are incomplete")
+ 	}
+-	return []string{"--add-dir", objects, "--add-dir", refs, "--add-dir", logs, "--add-dir", admin}, nil
++	return []string{objects, refs, logs, admin}, nil
+ }
+ 
+-// PrivateLinkedWorktreeWriteArgs is only for an owner-verified, single-Run
+-// repository. The additional common path retains legacy frozen data and the
+-// runtime's private-repository identity check; it is no longer a native grant.
+-func PrivateLinkedWorktreeWriteArgs(objects, refs, logs, admin string) ([]string, error) {
+-	args, err := LinkedWorktreeWriteArgs(objects, refs, logs, admin)
++// PrivateLinkedWorktreePaths is only for an owner-verified, single-Run
++// repository. The additional common path records
++// the runtime's private-repository identity.
++func PrivateLinkedWorktreePaths(objects, refs, logs, admin string) ([]string, error) {
++	args, err := LinkedWorktreePaths(objects, refs, logs, admin)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -29,5 +28,5 @@
+ 	if !filepath.IsAbs(common) || !equal(objects, filepath.Join(common, "objects")) || !equal(refs, filepath.Join(common, "refs")) || !equal(logs, filepath.Join(common, "logs")) || !equal(filepath.Dir(filepath.Dir(admin)), common) || !equal(filepath.Dir(admin), filepath.Join(common, "worktrees")) {
+ 		return nil, errors.New("private linked Git roots do not share the verified common directory")
+ 	}
+-	return append(args, "--add-dir", common), nil
++	return append(args, common), nil
+ }
+--- P2/internal/execution/adapters/codex/policy.go
++++ P3/internal/execution/adapters/codex/policy.go
+@@ -83,7 +83,7 @@
+ 		"--config", "approval_policy=" + p.ApprovalPolicy, "--config", "approvals_reviewer=" + p.ApprovalsReviewer}
+ 	// Preserve the frozen v10 read-only argv; development has no write grants.
+ 	if p.Sandbox == "read-only" {
+-		args = append(args, legacyWorkspaceArgs()...)
++		args = append(args, readOnlyWorkspaceArgs()...)
+ 	}
+ 	if p.WindowsSandbox != "" {
+ 		args = append(args[:2], append([]string{"--config", "windows.sandbox=" + p.WindowsSandbox}, args[2:]...)...)
+@@ -104,8 +104,8 @@
+ 	return ""
+ }
+ 
+-// Legacy data is validated against its original contract, never launched.
+-func legacyWorkspaceArgs() []string {
++// Fixed content read-only launch settings.
++func readOnlyWorkspaceArgs() []string {
+ 	return []string{"--config", "sandbox_workspace_write.writable_roots=[]", "--config", "sandbox_workspace_write.exclude_tmpdir_env_var=true", "--config", "sandbox_workspace_write.exclude_slash_tmp=true", "--config", "sandbox_workspace_write.network_access=true"}
+ }
+ 
+--- P2/internal/execution/adapters/codex/policy_resources.go
++++ P3/internal/execution/adapters/codex/policy_resources.go
+@@ -29,13 +29,13 @@
+ 	ProfileIdentity  ProfileConfigIdentity
+ 	ResourceIdentity PolicyResourceIdentity
+ 
+-	Host            string
+-	Agent           string
+-	GOOS            string
+-	Workspace       string
+-	LinkedWriteArgs []string
+-	RunDirectory    string
+-	RepositoryURL   string
++	Host           string
++	Agent          string
++	GOOS           string
++	Workspace      string
++	LinkedGitPaths []string
++	RunDirectory   string
++	RepositoryURL  string
+ }
+ 
+ type PolicyVersionProbe func(context.Context, string) (string, error)
+@@ -89,10 +89,7 @@
+ 	if err != nil {
+ 		return BoundPolicyResources{}, err
+ 	}
+-	roots, err := WritableRoots(request.LinkedWriteArgs)
+-	if err != nil {
+-		return BoundPolicyResources{}, err
+-	}
++	roots := append([]string(nil), request.LinkedGitPaths...)
+ 	native, err := NativeExecutable(settings.Executable)
+ 	if err != nil {
+ 		return BoundPolicyResources{}, err
+@@ -207,14 +204,6 @@
+ 	for i := 0; i < len(args); i++ {
+ 		switch args[i] {
+ 		case "--no-daemon", "--strict-config":
+-		case "--add-dir":
+-			if contract != ReadOnlyPolicyContract {
+-				return errors.New("new development launch cannot contain write grants")
+-			}
+-			i++
+-			if i >= len(args) || args[i] == "" {
+-				return errors.New("legacy launch root missing")
+-			}
+ 		case "--model", "--cd":
+ 			i++
+ 			if i >= len(args) || args[i] == "" {
+--- P2/internal/execution/adapters/codex/recovery_compatibility.go
++++ P3/internal/execution/adapters/codex/recovery_compatibility.go
+@@ -1,42 +0,0 @@
+-package codexworker
+-
+-import (
+-	"fmt"
+-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+-	"github.com/erranliu/SteerRunner/internal/execution/process"
+-	"slices"
+-)
+-
+-// ValidateRecovery decodes original implementation data and probes only the
+-// legacy root when required. It creates no lifecycle, native connection or files.
+-func ValidateRecovery(setup b.LifecycleSetup, codecs map[string][]int, ownerProtocol string, needs b.RecoveryRequirements) error {
+-	var err error
+-	if _, e := DecodeProfileConfigEnvelope(setup.ProfileData, ProfileConfigIdentity{ProjectID: setup.Snapshot.Session.ProjectID, ProfileID: setup.ProfileID, AcceptedConfigVersion: setup.AcceptedConfigVersion}); e != nil {
+-		err = e
+-	}
+-	for _, envelope := range setup.Snapshot.Implementation {
+-		if envelope.ImplementationKey == ExecutionBindingCodecKey {
+-			binding, e := DecodeAppServerBindingEnvelope(envelope, AppServerBindingIdentity{ProjectID: setup.Snapshot.Session.ProjectID, ExecutionID: setup.Snapshot.Session.ExecutionID, AttemptID: setup.Snapshot.Session.AttemptID, Generation: setup.Snapshot.ResourceGeneration, ConfigDigest: setup.Snapshot.ConfigurationDigest})
+-			if e != nil {
+-				err = e
+-			} else if binding.Owner == nil && !needs.Stopped && process.InspectProcess(&setup.Snapshot.Ref.External) != "process absent" {
+-				err = fmt.Errorf("legacy service owns the live native Job; independent transfer is unavailable")
+-			} else if binding.Owner != nil && binding.Owner.Protocol != ownerProtocol {
+-				err = fmt.Errorf("original execution owner protocol unsupported")
+-			} else if binding.Owner != nil && !needs.Stopped && (!binding.Owner.WorkspaceCheckpoints && needs.WorkspaceCheckpoints) {
+-				err = fmt.Errorf("original owner lacks required completion-checkpoint capability; no live owner replaced")
+-			}
+-		}
+-	}
+-	if setup.Snapshot.PolicyResources != nil {
+-		p := setup.Snapshot.PolicyResources
+-		if !slices.Contains(codecs[p.ImplementationKey], p.CodecVersion) {
+-			err = fmt.Errorf("permission resource codec unsupported")
+-		}
+-		s := setup.Snapshot
+-		if _, e := DecodePolicyResourceEnvelope(*p, PolicyResourceIdentity{ProjectID: s.Session.ProjectID, ExecutionID: s.Session.ExecutionID, AttemptID: s.Session.AttemptID, Generation: s.ResourceGeneration, ConfigDigest: s.ConfigurationDigest}); e != nil {
+-			err = e
+-		}
+-	}
+-	return err
+-}
+--- P2/internal/execution/adapters/codex/remote_agent.go
++++ P3/internal/execution/adapters/codex/remote_agent.go
+@@ -103,12 +103,12 @@
+ 	if err != nil {
+ 		return err
+ 	}
+-	writeArgs, _ := LinkedWorktreeWriteArgs(resources.Objects, resources.Refs, resources.Logs, resources.Admin)
++	writeArgs, _ := LinkedWorktreePaths(resources.Objects, resources.Refs, resources.Logs, resources.Admin)
+ 	self, err := os.Executable()
+ 	if err != nil {
+ 		return err
+ 	}
+-	rootPaths, _ := WritableRoots(writeArgs)
++	rootPaths := writeArgs
+ 	if err = remoteTrustedPaths(wd, rootPaths, []string{self, native, RemoteRuntimeDirectory(wd)}); err != nil {
+ 		return err
+ 	}
+@@ -117,7 +117,7 @@
+ 		return err
+ 	}
+ 	worker.OrcaHooks = true
+-	roots, _ := WritableRoots(writeArgs)
++	roots := writeArgs
+ 	dir := RemoteRuntimeDirectory(wd)
+ 	// Evidence lives outside the workspace and all four writable Git roots.
+ 	if err = os.MkdirAll(dir, 0700); err != nil {
+--- P2/internal/execution/adapters/codex/retired_stop.go
++++ P3/internal/execution/adapters/codex/retired_stop.go
+@@ -1,50 +0,0 @@
+-package codexworker
+-
+-import (
+-	"context"
+-	"errors"
+-
+-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+-	"github.com/erranliu/SteerRunner/internal/execution/process"
+-)
+-
+-// A retired execution can address only its previously bound owner. There is
+-// no profile normalization, native launch or authentication preparation here.
+-func NewOriginalOwnerStopLifecycle(setup b.LifecycleSetup) b.LifecyclePort {
+-	return &originalOwnerStop{ExecutionLifecycle: ExecutionLifecycle{
+-		setup:   setup.Clone(),
+-		Backend: Backend{Process: ProcessPort{Inspect: process.InspectProcess}},
+-	}}
+-}
+-
+-type originalOwnerStop struct{ ExecutionLifecycle }
+-
+-func (*originalOwnerStop) Execute(_ context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+-	err := errors.New("retired execution only supports an original owner stop")
+-	return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected, Diagnostic: err.Error()}, nil, err
+-}
+-
+-func (l *originalOwnerStop) StopLifecycle(ctx context.Context, r b.LifecycleRequest, _ b.StopHandle) (b.LifecycleReceipt, error) {
+-	if r.Operation.Action != string(b.LifecycleStopExecution) || ExecutionOwner(r.Snapshot) == nil {
+-		return b.LifecycleReceipt{}, errors.New("original independent owner stop is unsupported; use the original build to settle resources")
+-	}
+-	if err := r.Validate(); err != nil {
+-		return b.LifecycleReceipt{}, err
+-	}
+-	return l.ownerCall(ctx, r, false)
+-}
+-
+-func (l *originalOwnerStop) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+-	if r.Operation.Action != string(b.LifecycleStopExecution) || ExecutionOwner(r.Snapshot) == nil {
+-		return b.LifecycleReceipt{}, nil, errors.New("retired execution only reconciles an original owner stop")
+-	}
+-	if err := r.Validate(); err != nil {
+-		return b.LifecycleReceipt{}, nil, err
+-	}
+-	receipt, err := l.ownerCall(ctx, r, true)
+-	return receipt, nil, err
+-}
+-
+-func (*originalOwnerStop) ShutdownLifecycle(context.Context, b.LifecycleSnapshot, b.StopHandle) (b.LifecycleStateFacts, error) {
+-	return b.LifecycleStateFacts{}, nil
+-}
+--- P2/internal/execution/adapters/codex/worker_runtime.go
++++ P3/internal/execution/adapters/codex/worker_runtime.go
+@@ -20,12 +20,12 @@
+ // The temp directory is a child of the already frozen linked-worktree admin
+ // root. It needs no additional writable root and cannot enter the candidate.
+ func prepareWorkerRuntime(worktree string, linkedArgs []string) (*workerRuntime, error) {
+-	roots, err := WritableRoots(linkedArgs)
+-	if err != nil || (len(roots) != 4 && len(roots) != 5) {
+-		return nil, errors.Join(err, errors.New("worker runtime needs fixed linked Git roots"))
++	roots := linkedArgs
++	if len(roots) != 4 && len(roots) != 5 {
++		return nil, errors.New("worker runtime needs fixed linked Git roots")
+ 	}
+ 	if len(roots) == 5 {
+-		verified, verifyErr := PrivateLinkedWorktreeWriteArgs(roots[0], roots[1], roots[2], roots[3])
++		verified, verifyErr := PrivateLinkedWorktreePaths(roots[0], roots[1], roots[2], roots[3])
+ 		if verifyErr != nil || !strings.EqualFold(filepath.Clean(verified[len(verified)-1]), filepath.Clean(roots[4])) {
+ 			return nil, errors.New("worker private Git common directory differs from its fixed roots")
+ 		}
+--- P2/internal/execution/adapters/orcatransport/control_checkpoint.go
++++ P3/internal/execution/adapters/orcatransport/control_checkpoint.go
+@@ -54,24 +54,14 @@
+ 		return j, err
+ 	}
+ 	raw, err := os.ReadFile(path)
+-	expectedBinding := binding
+-	if os.IsNotExist(err) {
+-		// Current v6 services could have written this same resource's checkpoint
+-		// while their cached setup still had an empty workspace. Read that exact
+-		// identity only; do not scan, reconstruct a resource or replay an input.
+-		oldPath, oldBinding, oldErr := l.journalPathForWorkspace(state, "")
+-		if oldErr == nil && oldPath != path {
+-			raw, err = os.ReadFile(oldPath)
+-			expectedBinding = oldBinding
+-		}
+-	}
++
+ 	if os.IsNotExist(err) {
+ 		return j, nil
+ 	}
+ 	if err != nil {
+ 		return j, err
+ 	}
+-	if len(raw) > 2<<20 || b.DecodeStrictJSON(raw, &j, "trailing native control checkpoint") != nil || j.Version != 3 || j.Binding != expectedBinding {
++	if len(raw) > 2<<20 || b.DecodeStrictJSON(raw, &j, "trailing native control checkpoint") != nil || j.Version != 3 || j.Binding != binding {
+ 		return j, errors.New("native control checkpoint changed or foreign")
+ 	}
+ 	if j.Closed && (!j.Closing || j.Request.ID != "" && j.Response == nil) {
+--- P2/internal/execution/adapters/orcatransport/lifecycle.go
++++ P3/internal/execution/adapters/orcatransport/lifecycle.go
+@@ -58,7 +58,6 @@
+ 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
+ }
+ type Lifecycle struct {
+-	stopOnly          bool
+ 	observationMu     sync.Mutex
+ 	nativeObservation *nativeObservation
+ 	terminalMu        sync.Mutex
+@@ -168,34 +167,20 @@
+ 		return State{}, err
+ 	}
+ 	state := State{}
+-	legacyRemote := l.profile.Environment != "" && l.profileVersion == ProfileVersion
+ 	found := false
+ 	for _, e := range s.Implementation {
+ 		if e.ImplementationKey == StateKey {
+-			// The retired remote v5 payload is read only to fence an explicit
+-			// stop to its original Process; no helper state is restored.
+-			if !legacyRemote && e.CodecVersion != l.stateVersion() {
++			if e.CodecVersion != l.stateVersion() {
+ 				return State{}, errors.New("terminal state/profile codec mismatch")
+ 			}
+-			if found || !readableStateVersion(e.CodecVersion) && (!legacyRemote || e.CodecVersion != 5) {
++			if found || !readableStateVersion(e.CodecVersion) {
+ 				return state, errors.New("unsupported terminal state")
+ 			}
+ 			found = true
+ 			if err := e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest); err != nil {
+ 				return state, err
+ 			}
+-			if legacyRemote {
+-				// Legacy stop extracts only the original identity, never an old
+-				// helper reader/control runtime or its historical turn codec.
+-				var original struct {
+-					Process b.ProcessIdentity `json:"process"`
+-				}
+-				if err := json.Unmarshal(e.Payload, &original); err != nil {
+-					return state, err
+-				}
+-				state.Process = original.Process
+-				continue
+-			}
++
+ 			var err error
+ 			state, err = decodeState(e.Payload, e.CodecVersion)
+ 			if err != nil {
+@@ -207,9 +192,7 @@
+ 		return state, errors.New("saved original terminal differs from current resource")
+ 	}
+ 	if l.profile.Environment != "" {
+-		if l.profileVersion != NativeRemoteProfileVersion {
+-			return state, nil // Only legacy stop may extract the original identity.
+-		}
++
+ 		if state.Control != nil || state.RemoteReadiness != nil || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.AdmissionAttempted || state.AdmissionAccepted {
+ 			return state, errors.New("native remote state contains helper preparation")
+ 		}
+@@ -422,9 +405,7 @@
+ }
+ 
+ func (l *Lifecycle) agentExecutionSupport(agent string) error {
+-	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion {
+-		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "legacy_remote_helper_unsupported: original snapshots and exact terminal stop only; start a new native Orca Run"}
+-	}
++
+ 	if agent != "codex" && !((agent == "pi" || agent == "dsh") && l.profile.Terminal != nil && l.profile.Terminal.Agent == agent && l.profile.Environment == "" && len(l.profile.RuntimeSHA256) == 64) {
+ 		// Orca 1.4.224 lacks the start, root outcome and permission preparation contract.
+ 		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "terminal_agent_evidence_unsupported: selected agent lacks verified native turn and permission preparation; zero business input"}
+@@ -475,9 +456,7 @@
+ }
+ 
+ func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+-	if l.stopOnly {
+-		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle permits original stop only")
+-	}
++
+ 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
+ 	if err := r.Validate(); err != nil {
+ 		return receipt, nil, err
+@@ -962,9 +941,7 @@
+ }
+ 
+ func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+-	if l.stopOnly && r.Operation.Action != string(b.LifecycleStopExecution) {
+-		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle only reconciles original stop")
+-	}
++
+ 	defer l.closeStateFeed()
+ 	if r.Operation.Action != string(b.LifecycleStopExecution) {
+ 		if err := l.agentExecutionSupport(r.Snapshot.Ref.Agent.Name); err != nil {
+@@ -1297,17 +1274,3 @@
+ 	}
+ 	return evidence, nil
+ }
+-func (l *Lifecycle) BindRecovery(_ context.Context, original, replacement b.LifecycleSnapshot) (b.ImplementationDataEnvelope, error) {
+-	return b.ImplementationDataEnvelope{}, errors.New("replacing an Orca session requires a new execution")
+-}
+-
+-// Reuses only the original transport identity and stop protocol. Execute and
+-// non-stop reconciliation are fenced before any resource or business work.
+-func NewOriginalStopLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
+-	p, err := NewLifecycle(setup)
+-	if err != nil {
+-		return nil, err
+-	}
+-	p.(*Lifecycle).stopOnly = true
+-	return p, nil
+-}
+--- P2/internal/execution/adapters/orcatransport/native_stop.go
++++ P3/internal/execution/adapters/orcatransport/native_stop.go
+@@ -105,9 +105,7 @@
+ 		}
+ 	}
+ 	receipt.State.WorkerAbsent = true
+-	if l.StopEvidenceScope() == "" {
+-		return receipt, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "Legacy remote terminal ended; original helper writer-tree/authentication settlement remains unverified. Use the original build or manual cleanup."}
+-	}
++
+ 	progress.Phase = "confirmed"
+ 	receipt.Disposition = b.OperationConfirmed
+ 	receipt.State.Stopped = true
+--- P2/internal/execution/adapters/orcatransport/profile.go
++++ P3/internal/execution/adapters/orcatransport/profile.go
+@@ -63,17 +63,6 @@
+ 	return raw, []string{"Orca：终端通信 · " + target, "启动与权限：由执行主机的 Orca 原生设置管理", "结果：同一终端的普通回复"}, err
+ }
+ 
+-// Legacy remote records are snapshots only. This classification never grants
+-// execution or settlement; original resource identity is still validated below.
+-func LegacyRemoteProfile(data []b.ImplementationDataEnvelope) bool {
+-	for _, e := range data {
+-		if e.ImplementationKey == ProfileKey && e.CodecVersion == ProfileVersion {
+-			p, err := DecodeProfile(e.Payload)
+-			return err == nil && p.Environment != ""
+-		}
+-	}
+-	return false
+-}
+ func (p Profile) Target() b.ExecutionTarget {
+ 	wire, _ := json.Marshal(struct {
+ 		Executable  string
+--- P2/internal/execution/adapters/orcatransport/profile_decode.go
++++ P3/internal/execution/adapters/orcatransport/profile_decode.go
+@@ -0,0 +1,54 @@
++package orcatransport
++
++import (
++	"encoding/json"
++	"errors"
++	b "github.com/erranliu/SteerRunner/internal/execution/backend"
++)
++
++// Decode only the current local and native remote profile contracts.
++func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
++	if setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 {
++		return Profile{}, 0, errors.New("unsupported Orca terminal lifecycle")
++	}
++	var p Profile
++	version := 0
++	found := false
++	for _, data := range setup.ProfileData {
++		if data.ImplementationKey != ProfileKey {
++			continue
++		}
++		if found || data.CodecVersion != NativeRemoteProfileVersion && data.CodecVersion != FullAccessTerminalProfileVersion {
++			return Profile{}, 0, errors.New("invalid terminal profile codec")
++		}
++		found = true
++		version = data.CodecVersion
++		if err := data.ValidateProfileIdentity(setup.Snapshot.Session.ProjectID, setup.ProfileID, setup.AcceptedConfigVersion); err != nil {
++			return Profile{}, 0, err
++		}
++		var err error
++		p, err = DecodeProfile(data.Payload)
++		if err != nil {
++			return Profile{}, 0, err
++		}
++		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
++			return Profile{}, 0, errors.New("new full-access terminal profile is incomplete or contains retired settings")
++		}
++		if version == NativeRemoteProfileVersion {
++			var fields map[string]json.RawMessage
++			_ = json.Unmarshal(data.Payload, &fields)
++			for _, key := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
++				if _, present := fields[key]; present {
++					return Profile{}, 0, errors.New("native remote profile contains a helper field")
++				}
++			}
++		}
++	}
++	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
++		return Profile{}, 0, errors.New("terminal profile differs from frozen target")
++	}
++	if version == NativeRemoteProfileVersion && (p.Environment == "" || p.Terminal != nil || p.RuntimeExecutable != "" || p.RuntimeSHA256 != "" || p.RuntimeConfigurationDigest != "") {
++		return Profile{}, 0, errors.New("native remote profile has incompatible local/helper configuration")
++	}
++	return p, version, nil
++}
+--- P2/internal/execution/adapters/orcatransport/recovery_compatibility.go
++++ P3/internal/execution/adapters/orcatransport/recovery_compatibility.go
+@@ -1,59 +0,0 @@
+-package orcatransport
+-
+-import (
+-	"encoding/json"
+-	"errors"
+-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+-)
+-
+-// ValidateRecovery shares the constructor's exact profile qualification, without
+-// constructing a lifecycle or giving it native process/transport capabilities.
+-func ValidateRecovery(setup b.LifecycleSetup) error {
+-	_, _, err := decodeLifecycleProfile(setup)
+-	return err
+-}
+-func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
+-	if setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 {
+-		return Profile{}, 0, errors.New("unsupported Orca terminal lifecycle")
+-	}
+-	var p Profile
+-	version := 0
+-	found := false
+-	for _, data := range setup.ProfileData {
+-		if data.ImplementationKey != ProfileKey {
+-			continue
+-		}
+-		if found || data.CodecVersion != ProfileVersion && data.CodecVersion != NativeRemoteProfileVersion && data.CodecVersion != FullAccessTerminalProfileVersion {
+-			return Profile{}, 0, errors.New("invalid terminal profile codec")
+-		}
+-		found = true
+-		version = data.CodecVersion
+-		if err := data.ValidateProfileIdentity(setup.Snapshot.Session.ProjectID, setup.ProfileID, setup.AcceptedConfigVersion); err != nil {
+-			return Profile{}, 0, err
+-		}
+-		var err error
+-		p, err = DecodeProfile(data.Payload)
+-		if err != nil {
+-			return Profile{}, 0, err
+-		}
+-		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || p.Terminal.SandboxExecutable != "" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
+-			return Profile{}, 0, errors.New("new full-access terminal profile is incomplete or contains retired settings")
+-		}
+-		if version == NativeRemoteProfileVersion {
+-			var fields map[string]json.RawMessage
+-			_ = json.Unmarshal(data.Payload, &fields)
+-			for _, key := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
+-				if _, present := fields[key]; present {
+-					return Profile{}, 0, errors.New("native remote profile contains a helper field")
+-				}
+-			}
+-		}
+-	}
+-	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
+-		return Profile{}, 0, errors.New("terminal profile differs from frozen target")
+-	}
+-	if version == NativeRemoteProfileVersion && (p.Environment == "" || p.Terminal != nil || p.RuntimeExecutable != "" || p.RuntimeSHA256 != "" || p.RuntimeConfigurationDigest != "") {
+-		return Profile{}, 0, errors.New("native remote profile has incompatible local/helper configuration")
+-	}
+-	return p, version, nil
+-}
+--- P2/internal/execution/adapters/orcatransport/terminal_receipt.go
++++ P3/internal/execution/adapters/orcatransport/terminal_receipt.go
+@@ -132,12 +132,9 @@
+ 		return errors.New("original frozen terminal source hashes missing")
+ 	}
+ 	version := c.ReceiptVersion
+-	if version == 0 {
+-		version = 1
+-	} // Original frozen helpers keep their source contract.
+ 	preparationValid := validTerminalPreparation(r.Preparation, version)
+ 
+-	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.ProviderEnvironmentAbsent || !l.stopOnly && c.AccessMode != "full_access" {
++	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.ProviderEnvironmentAbsent || c.AccessMode != "full_access" {
+ 		return errors.New("native terminal receipt binding changed")
+ 	}
+ 	model := c.Model
+@@ -147,7 +144,7 @@
+ 	if model != "" && r.Model != model {
+ 		return errors.New("native terminal model differs from frozen launch")
+ 	}
+-	if version >= 2 && (r.ReasoningEffort == "" || c.ReasoningEffort != "" && r.ReasoningEffort != c.ReasoningEffort) {
++	if r.ReasoningEffort == "" || c.ReasoningEffort != "" && r.ReasoningEffort != c.ReasoningEffort {
+ 		return errors.New("native terminal thinking level differs from frozen launch")
+ 	}
+ 	return nil
+--- P2/internal/execution/adapters/orcatransport/terminal_runtime.go
++++ P3/internal/execution/adapters/orcatransport/terminal_runtime.go
+@@ -37,7 +37,6 @@
+ 	ConfigurationDigest string `json:"configuration_digest"`
+ 	SessionID           string `json:"session_id"`
+ 	Executable          string `json:"executable"`
+-	SandboxExecutable   string `json:"sandbox_executable,omitempty"`
+ 	StateDirectory      string `json:"state_directory"`
+ 	RepositoryURL       string `json:"repository_url"`
+ 	AccessMode          string `json:"access_mode"`
+@@ -50,15 +49,6 @@
+ 	var value wire
+ 	if err := b.DecodeStrictJSON(raw, &value, "trailing terminal configuration"); err != nil {
+ 		return err
+-	}
+-	var fields map[string]json.RawMessage
+-	if err := json.Unmarshal(raw, &fields); err != nil {
+-		return err
+-	}
+-	if value.ReceiptVersion >= 3 {
+-		if _, exists := fields["sandbox_executable"]; exists {
+-			return errors.New("sandbox_executable is retired for new terminal configurations")
+-		}
+ 	}
+ 	*c = TerminalConfig(value)
+ 	return nil
+@@ -132,7 +122,7 @@
+ 		}
+ 		inputParts = parts
+ 	}
+-	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || c.SandboxExecutable != "" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
++	if c.ReceiptVersion != 4 || c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
+ 		return errors.New("native terminal frozen launch configuration invalid")
+ 	}
+ 	metadata, err := TerminalRuntimeMetadata()
+--- P2/internal/execution/adapters/orcatransport/verify_stopped.go
++++ P3/internal/execution/adapters/orcatransport/verify_stopped.go
+@@ -34,9 +34,7 @@
+ 		return err
+ 	}
+ 	if l.profile.Environment != "" {
+-		if l.StopEvidenceScope() == "" {
+-			return errors.New("legacy remote helper settlement cannot be established by terminal absence")
+-		}
++
+ 		return ctx.Err()
+ 	}
+ 	if l.profile.Terminal == nil {
+--- P2/internal/execution/backend/lifecycle.go
++++ P3/internal/execution/backend/lifecycle.go
+@@ -158,7 +158,7 @@
+ 	if input.Turn != nil {
+ 		value := *input.Turn
+ 		value.Budget = value.Budget.Clone()
+-		value.LinkedWorktreeArgs = append([]string(nil), value.LinkedWorktreeArgs...)
++		value.LinkedWorktreePaths = append([]string(nil), value.LinkedWorktreePaths...)
+ 		input.Turn = &value
+ 	}
+ 	if input.Completion != nil {
+@@ -274,7 +274,7 @@
+ 	if snapshot.PendingTurn != nil {
+ 		turn := *snapshot.PendingTurn
+ 		turn.Budget = turn.Budget.Clone()
+-		turn.LinkedWorktreeArgs = append([]string(nil), turn.LinkedWorktreeArgs...)
++		turn.LinkedWorktreePaths = append([]string(nil), turn.LinkedWorktreePaths...)
+ 		snapshot.PendingTurn = &turn
+ 	}
+ 	if snapshot.QuestionRoute != nil {
+@@ -735,14 +735,11 @@
+ 	// ResourceAvailable is native identity proof, independent of process ownership.
+ 	ResourceAvailable bool
+ 	// SessionIdle covers the original session, including any manual native turn.
+-	SessionIdle bool
+-	// SessionRebindable certifies restoration of that same session after resource loss.
+-	// The adapter owns this proof; the worker also requires absence and idle evidence.
+-	SessionRebindable bool
+-	Diagnostic        string
+-	ManagedProcess    bool
+-	ProcessAbsent     bool
+-	WritersAbsent     bool
++	SessionIdle    bool
++	Diagnostic     string
++	ManagedProcess bool
++	ProcessAbsent  bool
++	WritersAbsent  bool
+ }
+ 
+ // ServiceStopBehavior is frozen with the worker, independently of whether its
+@@ -773,7 +770,6 @@
+ 
+ type LifecycleRecoveryPort interface {
+ 	VerifyManualRecovery(context.Context, LifecycleSnapshot) (LifecycleRecoveryEvidence, error)
+-	BindRecovery(context.Context, LifecycleSnapshot, LifecycleSnapshot) (ImplementationDataEnvelope, error)
+ }
+ 
+ type LifecyclePolicyCapabilities struct {
+--- P2/internal/execution/backend/recovery.go
++++ P3/internal/execution/backend/recovery.go
+@@ -1,8 +0,0 @@
+-package backend
+-
+-// RecoveryRequirements are host-projected resource needs, without a workflow
+-// cursor, mutable aggregate, or input authorization.
+-type RecoveryRequirements struct {
+-	Stopped              bool
+-	WorkspaceCheckpoints bool
+-}
+--- P2/internal/execution/backend/session.go
++++ P3/internal/execution/backend/session.go
+@@ -65,16 +65,16 @@
+ // TurnInput identifies a fixed input operation; accepting it does not prove
+ // that its native turn has started. The native session route is bound separately.
+ type TurnInput struct {
+-	Budget             *m.InputBudget `json:"input_budget,omitempty"`
+-	StepID             string         `json:"step_id,omitempty"`
+-	InputVersion       uint64         `json:"input_version,omitempty"`
+-	ReportToolPolicy   string         `json:"report_tool_policy,omitempty"`
+-	CommandID          string
+-	Prompt             string
+-	Purpose            string
+-	LinkedWorktreeArgs []string `json:"linked_worktree_args,omitempty"`
+-	Model              string   `json:"model,omitempty"`
+-	ReasoningEffort    string   `json:"reasoning_effort,omitempty"`
++	Budget              *m.InputBudget `json:"input_budget,omitempty"`
++	StepID              string         `json:"step_id,omitempty"`
++	InputVersion        uint64         `json:"input_version,omitempty"`
++	ReportToolPolicy    string         `json:"report_tool_policy,omitempty"`
++	CommandID           string
++	Prompt              string
++	Purpose             string
++	LinkedWorktreePaths []string `json:"linked_worktree_paths,omitempty"`
++	Model               string   `json:"model,omitempty"`
++	ReasoningEffort     string   `json:"reasoning_effort,omitempty"`
+ }
+ 
+ func (i TurnInput) ModelInputParts() ([]m.InputPart, error) {
+--- P2/internal/execution/reliable/intent.go
++++ P3/internal/execution/reliable/intent.go
+@@ -85,5 +85,5 @@
+ 	if candidate != nil && candidate.Budget != nil && input.Budget != nil && !reflect.DeepEqual(candidate.Budget, input.Budget) {
+ 		return false
+ 	}
+-	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
++	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreePaths, input.LinkedWorktreePaths) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
+ }
+--- P2/internal/execution/reliable/recovery_policy.go
++++ P3/internal/execution/reliable/recovery_policy.go
+@@ -7,37 +7,10 @@
+ )
+ 
+ func CanContinueOriginal(e b.LifecycleRecoveryEvidence) bool {
+-	return e.SessionAvailable && e.SessionIdle && (e.ResourceAvailable && !e.ProcessAbsent || e.SessionRebindable && e.ProcessAbsent && e.WritersAbsent && !e.ResourceAvailable)
++	return e.SessionAvailable && e.ResourceAvailable && !e.ProcessAbsent
+ }
+ 
+ var ErrContinuationUnavailable = errors.New("original session continuation is unverified")
+-
+-// PlanContinuation describes resource restoration only; it does not grant input
+-// authority or select business work. An active original resource stays attached.
+-func PlanContinuation(e b.LifecycleRecoveryEvidence, session string, unknown, needsInput bool) (bool, error) {
+-	if !CanContinueOriginal(e) {
+-		return false, ErrContinuationUnavailable
+-	}
+-	if !e.ProcessAbsent || !needsInput {
+-		return false, nil
+-	}
+-	if err := ValidateRestoration(e, session, unknown); err != nil {
+-		return false, err
+-	}
+-	return true, nil
+-}
+-func ValidateRestoration(e b.LifecycleRecoveryEvidence, session string, unknown bool) error {
+-	if !e.SessionRebindable || !e.ProcessAbsent || !e.WritersAbsent || !e.SessionIdle {
+-		return errors.New("the original resource and writers are not proven stopped for same-session restoration")
+-	}
+-	if !e.SessionAvailable || session == "" {
+-		return errors.New("the original session identity is unavailable; handle the original execution manually")
+-	}
+-	if unknown {
+-		return errors.New("an earlier external operation has an unknown outcome; reconcile it before continuing")
+-	}
+-	return nil
+-}
+ 
+ type RecoveryRevision struct {
+ 	State            string
+--- P2/internal/host/host.go
++++ P3/internal/host/host.go
+@@ -20,7 +20,6 @@
+ 
+ type Options struct {
+ 	ExpectedBinding    *contracts.ExpectedServiceBinding `json:"expected_binding,omitempty"`
+-	Candidate          string                            `json:"candidate,omitempty"`
+ 	ArtifactID         string                            `json:"artifact_id,omitempty"`
+ 	ExpectedInstanceID string                            `json:"expected_instance_id,omitempty"`
+ 	NativeSession      *contracts.NativeSessionTarget    `json:"native_session,omitempty"`
+@@ -55,7 +54,7 @@
+ 	if dir == "" {
+ 		return "", errors.New("LOCALAPPDATA is unavailable; supply an absolute --state-dir")
+ 	}
+-	return filepath.Join(dir, "SteerRunner-v6"), nil
++	return filepath.Join(dir, "SteerRunner-v7"), nil
+ }
+ 
+ // Normalize resolves existing path aliases, including the existing ancestor of
+--- P2/internal/host/server.go
++++ P3/internal/host/server.go
+@@ -356,13 +356,6 @@
+ 			return reject(contracts.Fail(2, "invalid_request", "Usage queries do not accept input."))
+ 		}
+ 		return s.usageQuery(wire.Options), false
+-	case "service verify-takeover":
+-		caps, sha, failure := candidateCapabilities(context.Background(), wire.Options.Candidate)
+-		if failure != nil {
+-			return reject(failure)
+-		}
+-		items := s.engine.Takeover(caps.Recovery, caps.Workflows, caps.ResultFile.Contract)
+-		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
+ 	case "result-file":
+ 		if wire.Request != nil {
+ 			return reject(contracts.Fail(2, "invalid_request", "Result queries do not accept input."))
+--- P2/internal/host/takeover.go
++++ P3/internal/host/takeover.go
+@@ -1,106 +0,0 @@
+-package host
+-
+-import (
+-	"context"
+-	"encoding/json"
+-	"os"
+-	"path/filepath"
+-	"slices"
+-	"time"
+-
+-	"github.com/erranliu/SteerRunner/internal/application"
+-	"github.com/erranliu/SteerRunner/internal/contracts"
+-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+-	"github.com/erranliu/SteerRunner/internal/execution/process"
+-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+-	"github.com/erranliu/SteerRunner/internal/storage"
+-)
+-
+-type takeoverCandidate struct {
+-	Recovery   contracts.RecoverySupport `json:"recovery"`
+-	Workflows  []workflow.Profile        `json:"workflows"`
+-	ResultFile struct {
+-		Contract string `json:"contract"`
+-	} `json:"result_file"`
+-}
+-
+-func candidateCapabilities(ctx context.Context, path string) (takeoverCandidate, string, *contracts.Fault) {
+-	var caps takeoverCandidate
+-	if !filepath.IsAbs(path) {
+-		return caps, "", contracts.Fail(2, "invalid_arguments", "Candidate must be an absolute executable path.")
+-	}
+-	sha, err := executableDigest(path)
+-	if err != nil {
+-		return caps, "", contracts.Fail(4, "service_unavailable", "Candidate executable cannot be verified.")
+-	}
+-	raw, err := process.New(15*time.Second).OutputCommand(ctx, b.LaunchCommand{Executable: path, Args: []string{"capabilities", "--offline", "--json"}, Timeout: 15 * time.Second})
+-	if err != nil {
+-		return caps, sha, contracts.Fail(3, "unsupported_capability", "Candidate offline recovery capabilities are unavailable.")
+-	}
+-	var response contracts.Response
+-	if contracts.DecodeStrict(raw, &response) != nil || !response.OK || response.Protocol != contracts.Protocol {
+-		return caps, sha, contracts.Fail(3, "unsupported_protocol", "Candidate returned an unsupported capability response.")
+-	}
+-	data, _ := json.Marshal(response.Data)
+-	if json.Unmarshal(data, &caps) != nil || caps.Recovery.WritableStateFormat != storage.Format || !slices.Contains(caps.Recovery.ReadableStateFormats, storage.Format) {
+-		return caps, sha, contracts.Fail(3, "unsupported_schema", "Candidate does not support current durable execution semantics.")
+-	}
+-	after, err := executableDigest(path)
+-	if err != nil || sha != after {
+-		return caps, sha, contracts.Fail(5, "directory_conflict", "Candidate changed during compatibility verification.")
+-	}
+-	return caps, sha, nil
+-}
+-
+-func finishTakeover(dir, instance, sha string, items []contracts.TakeoverItem) contracts.TakeoverReport {
+-	result := contracts.TakeoverReport{Contract: "steerrunner-takeover/v1", StateDir: dir, InstanceID: instance, CandidateSHA256: sha, Compatible: true, Items: items}
+-	for _, item := range items {
+-		if item.Status != "compatible" && item.Status != "read_only" {
+-			result.Compatible = false
+-		}
+-	}
+-	return result
+-}
+-
+-func VerifyTakeover(ctx context.Context, dir, candidate string) (contracts.TakeoverReport, *contracts.Fault) {
+-	var empty contracts.TakeoverReport
+-	if busy, err := writerBusy(dir); err == nil && busy {
+-		response, failure := Call(ctx, dir, Options{Command: "service verify-takeover", Candidate: candidate}, nil)
+-		if failure != nil {
+-			return empty, failure
+-		}
+-		if !response.OK {
+-			return empty, contracts.Fail(contracts.ExitCode(response), response.Error.Code, response.Error.Message)
+-		}
+-		raw, _ := json.Marshal(response.Data)
+-		if contracts.DecodeStrict(raw, &empty) != nil {
+-			return empty, contracts.Fail(4, "service_unavailable", "Invalid takeover report.")
+-		}
+-		return empty, nil
+-	}
+-	caps, sha, failure := candidateCapabilities(ctx, candidate)
+-	if failure != nil {
+-		return empty, failure
+-	}
+-	lock, busy, err := tryLock(filepath.Join(dir, "service", "writer.lock"), false)
+-	if err != nil {
+-		return empty, fault(err, contracts.Fail(4, "service_unavailable", "Original writer lease unavailable."))
+-	}
+-	if busy {
+-		return empty, contracts.Fail(5, "directory_conflict", "Writer changed during preflight.")
+-	}
+-	defer lock.Close()
+-	if _, err = os.Stat(bootstrapPath(dir)); !os.IsNotExist(err) {
+-		return empty, contracts.Fail(4, "startup_unverified", "Original startup is unresolved.")
+-	}
+-	reader, err := storage.OpenReader(dir)
+-	if err != nil {
+-		return empty, fault(err, contracts.Fail(3, "unsupported_schema", "Recovery source format unavailable."))
+-	}
+-	defer reader.Close()
+-	runs, err := reader.Runs()
+-	if err != nil {
+-		return empty, contracts.Fail(3, "unsupported_schema", "Run records cannot be decoded.")
+-	}
+-	return finishTakeover(dir, "", sha, reader.BindTakeoverRequests(application.TakeoverFacts(runs, caps.Recovery, caps.Workflows, caps.ResultFile.Contract))), nil
+-}
+--- P2/internal/resources/resources.go
++++ P3/internal/resources/resources.go
+@@ -12,8 +12,8 @@
+ 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+ 	model "github.com/erranliu/SteerRunner/internal/execution/model"
+ 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
++	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+ 	parser "github.com/erranliu/SteerRunner/internal/textanalysis"
+-	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+ 	"io/fs"
+ 	"runtime"
+ 	"sort"
+@@ -69,7 +69,7 @@
+ 		"version": Version, "source_commit": SourceCommit,
+ 		"protocols": []string{contracts.Protocol}, "resource_version": 3,
+ 		"resource_digest": Digest(), "platform": "windows/amd64",
+-		"recovery": RecoveryCapabilities(),
++		"recovery": map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
+ 	}
+ }
+ 
+@@ -98,7 +98,7 @@
+ 		"model_input_contract":      ModelInputContract(),
+ 		"execution_wait":            map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
+ 		"run_observation":           map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
+-		"recovery":                  RecoveryCapabilities(),
++		"recovery":                  map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
+ 		"run_usage":                 UsageCapabilities(),
+ 		"run_cost":                  CostCapabilities(),
+ 		"run_usage_schema":          json.RawMessage(Read("run-usage.schema.json")),
+@@ -125,13 +125,8 @@
+ 		"generate":              map[string]any{"workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "selection": "explicit_file_paths_or_whole_tree", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
+ 		"capability_catalog":    Catalog(),
+ 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
+-		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
++		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+ 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
+ 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "CLI_existing_login; in_memory_task; internal_process_cleanup", "empty_tool_guarantee": false},
+ 	}
+ }
+-
+-func RecoveryCapabilities() contracts.RecoverySupport {
+-	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v6"}, WritableStateFormat: "steerrunner-state/v6", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
+-		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3, 4}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {4, 5}, "orca.terminal-profile": {4, 6}, "orca.terminal-state": {7, 8}}}
+-}
+--- P2/internal/runstate/record.go
++++ P3/internal/runstate/record.go
+@@ -8,7 +8,6 @@
+ 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+ 	m "github.com/erranliu/SteerRunner/internal/execution/model"
+ 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
+-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
+ 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+ 	"time"
+ )
+@@ -24,30 +23,31 @@
+ 	Text       string              `json:"text"`
+ 	Answers    map[string][]string `json:"answers,omitempty"`
+ }
+-type Attempt struct {
+-	Snapshot b.LifecycleSnapshot `json:"snapshot"`
+-	EndedAt  time.Time           `json:"ended_at"`
++type ManualPause struct {
++	Status, Phase, Diagnostic string
++	ResumeDeadline            time.Time `json:"resume_deadline,omitempty"`
+ }
++
+ type Record struct {
+-	RepositorySource  *contracts.RepositorySource `json:"repository_source,omitempty"`
+-	ResultFile        *ResultFile                 `json:"result_file,omitempty"`
+-	Progress          *Progress                   `json:"progress,omitempty"`
+-	Artifacts         []Artifact                  `json:"artifacts,omitempty"`
+-	Closed            bool                        `json:"closed,omitempty"`
+-	PendingInterrupt  string                      `json:"pending_interrupt,omitempty"`
+-	ContentResult     *contracts.ContentResult    `json:"content_result,omitempty"`
+-	History           []contracts.HistoryEntry    `json:"history,omitempty"`
+-	DirectoryIdentity string                      `json:"directory_identity,omitempty"`
+-	ReportWork        map[string]string           `json:"observed_report_work,omitempty"`
+-	// Inert v6 legacy metadata; new Runs omit it and never use it for admission or recovery.
+-	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config,omitempty,omitzero"`
++	ManualPause         *ManualPause                   `json:"manual_pause,omitempty"`
++	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
++	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
++	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
++	Progress            *Progress                      `json:"progress,omitempty"`
++	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
++	Closed              bool                           `json:"closed,omitempty"`
++	PendingInterrupt    string                         `json:"pending_interrupt,omitempty"`
++	ContentResult       *contracts.ContentResult       `json:"content_result,omitempty"`
++	History             []contracts.HistoryEntry       `json:"history,omitempty"`
++	DirectoryIdentity   string                         `json:"directory_identity,omitempty"`
++	ReportWork          map[string]string              `json:"observed_report_work,omitempty"`
+ 	PRClues             []string                       `json:"pr_clues,omitempty"`
+ 	PRClueProbeAt       time.Time                      `json:"pr_clue_probe_at,omitempty"`
+ 	LastFinal           *contracts.FinalView           `json:"last_final,omitempty"`
+ 	NativeStarted       bool                           `json:"native_started"`
+ 	SeenNative          map[string]string              `json:"seen_native,omitempty"`
+ 	AnswerHistory       []Answer                       `json:"answer_history,omitempty"`
+-	LinkedWriteArgs     []string                       `json:"linked_write_args,omitempty"`
++	LinkedGitPaths      []string                       `json:"linked_git_paths,omitempty"`
+ 	NextStage           *workflow.StageInput           `json:"next_stage,omitempty"`
+ 	PendingPRURL        string                         `json:"pending_pr_url,omitempty"`
+ 	NativeOwner         *b.ProcessIdentity             `json:"native_owner,omitempty"`
+@@ -77,7 +77,6 @@
+ 	LaunchInput         *m.InputBudget                 `json:"launch_input_budget,omitempty"`
+ 	Workflow            workflow.Snapshot              `json:"workflow"`
+ 	Intents             []operation.Intent             `json:"intents"`
+-	Attempts            []Attempt                      `json:"attempts,omitempty"`
+ 	Result              *b.TurnEvidence                `json:"result,omitempty"`
+ 	Question            *contracts.QuestionView        `json:"question,omitempty"`
+ 	PendingAnswer       *Answer                        `json:"pending_answer,omitempty"`
+@@ -166,12 +165,12 @@
+ 			unresolved = true
+ 		}
+ 	}
+-	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && !unresolved, CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
++	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+ 	if workflow.Content(r.Request.Workflow.ID) {
+ 		v.RepositorySource = r.RepositorySource
+ 		v.Closed, v.ContentResult = r.Closed, r.ContentResult
+ 		v.Controls.CanReply = r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.Question != nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
+-		v.Controls.CanResume = r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == ""
++		v.Controls.CanResume = r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == ""
+ 		v.Controls.CanMessage = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.Workflow.StepID == "input" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
+ 		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
+ 		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed
+--- P2/internal/storage/legacy_parser.go
++++ P3/internal/storage/legacy_parser.go
+@@ -1,41 +0,0 @@
+-package storage
+-
+-import (
+-	"encoding/json"
+-	"github.com/erranliu/SteerRunner/internal/contracts"
+-)
+-
+-// Recognize the retired shape before typed decoding, without a codec or resource query.
+-func rejectLegacyParser(raw []byte) error {
+-	var r struct {
+-		Intents []struct {
+-			Request struct {
+-				Operation struct{ Action string }
+-				Input     map[string]json.RawMessage
+-			}
+-		}
+-		Snapshot struct{ Operations []struct{ Action string } }
+-	}
+-	if err := json.Unmarshal(raw, &r); err != nil {
+-		return err
+-	}
+-	fail := func() error {
+-		return contracts.Fail(3, "unsupported_parser_record", "State contains retired native parser execution records; finish or stop them with the original version and use a fresh state/v6 directory. Original data was not changed.")
+-	}
+-	for _, i := range r.Intents {
+-		if i.Request.Operation.Action == "parse_result" {
+-			return fail()
+-		}
+-		for key, v := range i.Request.Input {
+-			if (key == "Parse" || key == "parse") && string(v) != "null" {
+-				return fail()
+-			}
+-		}
+-	}
+-	for _, op := range r.Snapshot.Operations {
+-		if op.Action == "parse_result" {
+-			return fail()
+-		}
+-	}
+-	return nil
+-}
+--- P2/internal/storage/runs.go
++++ P3/internal/storage/runs.go
+@@ -152,7 +152,6 @@
+ 		if err := rows.Scan(&raw); err != nil {
+ 			return nil, err
+ 		}
+-		if err := rejectLegacyParser(raw); err != nil { return nil, err }
+ 		var r runstate.Record
+ 		if err := b.DecodeStrictJSON(raw, &r, "trailing durable Run data"); err != nil {
+ 			return nil, err
+--- P2/internal/storage/store.go
++++ P3/internal/storage/store.go
+@@ -15,7 +15,7 @@
+ 	"runtime"
+ )
+ 
+-const Format = "steerrunner-state/v6"
++const Format = "steerrunner-state/v7"
+ 
+ type Store struct{ db *sql.DB }
+ 
+@@ -35,7 +35,7 @@
+ 		_, readErr := file.ReadAt(header[:], 0)
+ 		file.Close()
+ 		if readErr != nil || string(header[:]) != "SQLite format 3\x00" {
+-			return nil, contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v6 --state-dir.")
++			return nil, contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v7 --state-dir.")
+ 		}
+ 	}
+ 	db, err := sql.Open("sqlite", databasePath)
+@@ -51,7 +51,7 @@
+ 		if _, err := db.Exec(`
+ BEGIN IMMEDIATE;
+ CREATE TABLE metadata (format TEXT NOT NULL);
+-INSERT INTO metadata VALUES ('steerrunner-state/v6');
++INSERT INTO metadata VALUES ('steerrunner-state/v7');
+ CREATE TABLE commands (
+  request_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE,
+  command TEXT NOT NULL, instance_id TEXT NOT NULL, digest TEXT NOT NULL,
+@@ -60,7 +60,7 @@
+ CREATE TABLE runs(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body BLOB NOT NULL);
+ CREATE TABLE events(seq INTEGER PRIMARY KEY AUTOINCREMENT,run_id TEXT NOT NULL,event_id TEXT NOT NULL UNIQUE,body BLOB NOT NULL);
+ CREATE INDEX events_run ON events(run_id,seq);
+-PRAGMA user_version=6;
++PRAGMA user_version=7;
+ COMMIT;`); err != nil {
+ 			return fail(err)
+ 		}
+@@ -106,8 +106,8 @@
+ 	var format string
+ 	var version int
+ 	var count int
+-	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || (format != Format || version != 6) {
+-		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v6 --state-dir.")
++	if db.QueryRow(`SELECT count(*) FROM metadata`).Scan(&count) != nil || count != 1 || db.QueryRow(`SELECT format FROM metadata`).Scan(&format) != nil || db.QueryRow(`PRAGMA user_version`).Scan(&version) != nil || (format != Format || version != 7) {
++		return contracts.Fail(3, "unsupported_schema", "State directory contains an unsupported storage format; use a fresh state/v7 --state-dir.")
+ 	}
+ 	return nil
+ }
+--- P2/internal/storage/takeover.go
++++ P3/internal/storage/takeover.go
+@@ -1,16 +0,0 @@
+-package storage
+-
+-import "github.com/erranliu/SteerRunner/internal/contracts"
+-
+-// BindTakeoverRequests adds only existing accepted command facts, allowing a
+-// caller with a lost submit response to correlate before workers are started.
+-func (s *Store) BindTakeoverRequests(items []contracts.TakeoverItem) []contracts.TakeoverItem {
+-	for i := range items {
+-		item := &items[i]
+-		err := s.db.QueryRow(`SELECT request_id,digest FROM commands WHERE run_id=? AND command='submit'`, item.ID).Scan(&item.RequestID, &item.RequestDigest)
+-		if err != nil {
+-			item.Status, item.Diagnostic = "unsupported", "original accepted creation command is unavailable"
+-		}
+-	}
+-	return items
+-}
+--- P2/internal/storage/usage.go
++++ P3/internal/storage/usage.go
+@@ -51,12 +51,11 @@
+ 			LaunchCommand string    `json:"launch_command"`
+ 			Snapshot      b.LifecycleSnapshot
+ 			Profile       []b.ImplementationDataEnvelope
+-			Attempts      []runstate.Attempt
+ 		}
+ 		if err = json.Unmarshal(raw, &evidence); err != nil {
+ 			return nil, err
+ 		}
+-		runs = append(runs, &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile, Attempts: evidence.Attempts})
++		runs = append(runs, &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile})
+ 	}
+ 	return runs, rows.Err()
+ }
+--- P2/internal/usage/collect/collector.go
++++ P3/internal/usage/collect/collector.go
+@@ -90,12 +90,7 @@
+ 	}
+ 	prior, _ := c.Store.GetRunUsage(ctx, r.ID, 0)
+ 	s := api.Snapshot{RunID: r.ID, AccessCleanupStatus: "not_required", Issues: []api.Issue{}, Coverage: api.Coverage{SourceSummaries: []api.SourceSummary{}, Finalized: true}}
+-	inputs := []b.LifecycleSnapshot{}
+-	for _, a := range r.Attempts {
+-		inputs = append(inputs, a.Snapshot)
+-	}
+-	inputs = append(inputs, r.Snapshot)
+-	// A generation may occur in both attempts and current snapshot. Prefer current.
++	inputs := []b.LifecycleSnapshot{r.Snapshot}
+ 	byGeneration := map[string]b.LifecycleSnapshot{}
+ 	for _, v := range inputs {
+ 		key := v.Ref.AttemptID + ":" + v.ResourceGeneration

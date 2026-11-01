@@ -14,7 +14,7 @@ try {
     $taskDriverArguments=@{}
     if($taskJob.PSObject.Properties['native_driver'] -or $taskJob.PSObject.Properties['native_driver_sha256']) {
         if(-not $taskJob.PSObject.Properties['native_driver'] -or -not $taskJob.PSObject.Properties['native_driver_sha256'] -or -not $taskJob.native_driver -or -not $taskJob.native_driver_sha256){throw 'Incomplete frozen native driver identity'}
-        if($taskJob.entry.level -ne 'L2' -or (Get-FileHash -LiteralPath $taskJob.native_driver -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskJob.native_driver_sha256){throw 'Frozen native driver changed or is outside L2'}
+        if($taskJob.entry.level -notin @('L2','L3') -or (Get-FileHash -LiteralPath $taskJob.native_driver -Algorithm SHA256).Hash.ToLowerInvariant() -cne $taskJob.native_driver_sha256){throw 'Frozen native driver changed or is outside L2/L3'}
         $taskDriverArguments=@{DriverExe=$taskJob.native_driver;DriverSHA256=$taskJob.native_driver_sha256}
     }
     $taskRecord.started_at = [DateTime]::UtcNow.ToString('o')

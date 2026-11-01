@@ -22,7 +22,7 @@ func EnvironmentDiagnostic(err error) string {
 			return stage
 		}
 	}
-	for _, stage := range []string{"authentication_broker_unavailable", "sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "authentication_api_socket_path_too_long", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git"} {
+	for _, stage := range []string{"sandbox_readiness_evidence_unavailable", "native_version_unsupported", "native_executable_unavailable", "native_effective_permissions_unverified", "authentication_host_gh_unavailable", "authentication_host_login_unavailable", "authentication_expired_or_unavailable", "sandbox_identity", "tool_environment", "git_admin_read", "git_admin_write", "remote_identity", "git_transport_authentication", "github_identity_trust", "github_identity_transport", "github_identity_rejected", "github_identity", "github_repository", "remote_git_ca_file", "remote_git_ca_chain", "remote_git_tls", "remote_git_trust", "remote_git_transport", "remote_git_rejected", "remote_git"} {
 		if strings.Contains(err.Error(), stage) {
 			return stage
 		}

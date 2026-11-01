@@ -1,0 +1,291 @@
+{
+  "schema": "steerrunner-personal-executor-p2-acceptance/v1",
+  "date": "2026-11-01",
+  "status": "implemented_partially_accepted",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "state_format": "steerrunner-state/v6",
+  "p3_started": false,
+  "p4_started": false,
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "a6a879b6dd4ba6329629d58c0bd226fd0c3195cd38ffd9c63eb6f1fe85ad1787",
+    "version": "0.2.0-dev.4",
+    "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "bc3666e1ffe966479c3eafa59d5dabe7075e77de2ed63bf02ce76bedabd1ba9f"
+  },
+  "component": {
+    "pattern": "^TestRuntimeFiles|^TestProgress|^TestResultFile|^TestSRStopSerializes|^TestSROperation|^Test.*Preparation",
+    "test_pass_events": 72,
+    "elapsed_seconds": 67.894,
+    "exit_code": 0,
+    "top_level_passed": 34
+  },
+  "controlled": {
+    "exit_code": 0,
+    "four_enabled_combinations": [
+      {
+        "pr_ready_seconds": 17.5614122,
+        "stop_confirmed": true,
+        "mask": 0,
+        "native_inputs": 3
+      },
+      {
+        "pr_ready_seconds": 19.4501183,
+        "stop_confirmed": true,
+        "mask": 1,
+        "native_inputs": 3
+      },
+      {
+        "pr_ready_seconds": 22.5275862,
+        "stop_confirmed": true,
+        "mask": 2,
+        "native_inputs": 3
+      },
+      {
+        "pr_ready_seconds": 25.2956109,
+        "stop_confirmed": true,
+        "mask": 3,
+        "native_inputs": 3
+      }
+    ],
+    "report": "controlled-final/result.json",
+    "top_level_passed": 5
+  },
+  "metrics": {
+    "writes_after_marker_save_failure": 0,
+    "file_context_budget_seconds": 4,
+    "timeout_probe_to_next_business_action_seconds": 4.4145494,
+    "subsequent_advance_seconds": 0.0538852,
+    "initialization_replays_on_restart": 0,
+    "per_channel_initialization_writes_max": 1,
+    "stop_admission_during_io_seconds": 0.0106987
+  },
+  "internal_full_attempt": {
+    "application_package_timeout_seconds": 480,
+    "passed": false,
+    "passed_packages": 31
+  },
+  "qualification": {
+    "release": false,
+    "complete_L1": false,
+    "complete_L3": false,
+    "complete_L2": false
+  },
+  "real_cases": [
+    {
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T03:14:42.2059002Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\765f4c382028",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "5b280a3ac70fb529f4d2ed962305fc44",
+        "version": 1,
+        "observed_at": "2026-11-01T03:14:40.0776119Z",
+        "encoding": "base64",
+        "content_base64": "cDI=",
+        "size_bytes": 2,
+        "sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+        "collection_status": "closed"
+      },
+      "manifest_sha256": "e8f3a14576259aa1c94eb147f6ae948d6aae0382f793c2576edcac25d1e508a3",
+      "scenario": {
+        "scenario": "local-codex.smoke",
+        "level": "L2",
+        "stage": "completed",
+        "run_id": "5b280a3ac70fb529f4d2ed962305fc44",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/732",
+        "original_head": "e4d75fe1ec9bcc3a586805f2f0618d0b06d14829",
+        "feedback_rejected": true,
+        "merge_commit": "483e3b7693280bea84767528fed081cada76ea11",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "runner_sha256": "53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505",
+      "name": "local-healthy"
+    },
+    {
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T03:18:13.9192655Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\3dc815ba5d49",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "39797b69ae7f01c53df452543ff5f89b",
+        "version": 0,
+        "encoding": "base64",
+        "size_bytes": 0,
+        "collection_status": "closed",
+        "diagnostic": "binding_invalid"
+      },
+      "manifest_sha256": "8639a9505600ae710b7002a98d6ed46bfe5c8b3b76823fe771906bf1a5636973",
+      "scenario": {
+        "scenario": "local-codex.smoke",
+        "level": "L2",
+        "stage": "completed",
+        "run_id": "39797b69ae7f01c53df452543ff5f89b",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/734",
+        "original_head": "9ca1ebe028060fa3af9564b8b3f68dbdf11d24d5",
+        "feedback_rejected": true,
+        "merge_commit": "73299c6f46d1dbf2ae4e394f8e1754aa7ec70897",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "runner_sha256": "bc3666e1ffe966479c3eafa59d5dabe7075e77de2ed63bf02ce76bedabd1ba9f",
+      "name": "local-fault"
+    },
+    {
+      "harness": {
+        "exit_code": 1,
+        "finished_at": "2026-11-01T03:25:26.1175213Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\de83bbe9f761",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "de33b4013dd118bbf48d10b6f8295b2f",
+        "version": 1,
+        "observed_at": "2026-11-01T03:25:22.1082031Z",
+        "encoding": "base64",
+        "content_base64": "cDI=",
+        "size_bytes": 2,
+        "sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+        "collection_status": "closed"
+      },
+      "manifest_sha256": "35d8f358f961fe30c8466a26cb2d89130a87fd66948b20f71d0bd6343532c62d",
+      "scenario": {
+        "scenario": "orca-local.smoke",
+        "level": "L3",
+        "stage": "implementation",
+        "run_id": "de33b4013dd118bbf48d10b6f8295b2f",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": false
+      },
+      "runner_sha256": "53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505",
+      "name": "orca-local-healthy"
+    },
+    {
+      "harness": {
+        "exit_code": 1,
+        "finished_at": "2026-11-01T03:21:33.6764189Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\2615416a3eda",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "2ca1796afd003f9cbbe346aeb7d6bd86",
+        "version": 0,
+        "encoding": "base64",
+        "size_bytes": 0,
+        "collection_status": "closed",
+        "diagnostic": "read_failed"
+      },
+      "manifest_sha256": "e3ae673eb539fa76aebfe0b5c7cc14f0ffd92d5624398135c5cc3043c490ed19",
+      "scenario": {
+        "scenario": "orca-local.smoke",
+        "level": "L3",
+        "stage": "verify-original-pr",
+        "run_id": "2ca1796afd003f9cbbe346aeb7d6bd86",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/736",
+        "original_head": "fd28bcd05f698f461cd0ca43930271d9139252e6",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": false
+      },
+      "runner_sha256": "bc3666e1ffe966479c3eafa59d5dabe7075e77de2ed63bf02ce76bedabd1ba9f",
+      "name": "orca-local-fault"
+    },
+    {
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T03:15:01.0756112Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\fa639a16de91",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "9276ba3a6a7afab3a6d99f8d33217cc6",
+        "version": 1,
+        "observed_at": "2026-11-01T03:14:57.1955226Z",
+        "encoding": "base64",
+        "content_base64": "cDI=",
+        "size_bytes": 2,
+        "sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+        "collection_status": "closed"
+      },
+      "manifest_sha256": "f4a1a704780be25d93960b6bcb8c6da3fba942afa5b27397947b97796ec38d8d",
+      "scenario": {
+        "scenario": "orca-remote.smoke",
+        "level": "L3",
+        "stage": "completed",
+        "run_id": "9276ba3a6a7afab3a6d99f8d33217cc6",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/733",
+        "original_head": "2d00e33a55316590790842121c038e9f980dbc4a",
+        "feedback_rejected": true,
+        "merge_commit": "23ba3c4add8e460efd6bfbf4f9d027d2ddb3afaf",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "runner_sha256": "53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505",
+      "name": "orca-remote-healthy"
+    },
+    {
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T03:18:49.2526867Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "root": "C:\\srt\\053cc5cc17cd",
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "a11de8cb7337daa53b34d3743fcbe275",
+        "version": 0,
+        "encoding": "base64",
+        "size_bytes": 0,
+        "collection_status": "closed",
+        "diagnostic": "read_failed"
+      },
+      "manifest_sha256": "51716c071035621bf14893700362dce98349d8a78a4334911480d1eea44bd851",
+      "scenario": {
+        "scenario": "orca-remote.smoke",
+        "level": "L3",
+        "stage": "completed",
+        "run_id": "a11de8cb7337daa53b34d3743fcbe275",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/735",
+        "original_head": "2e05dbb78ecc4fc45ec4542bd183611b1fedc561",
+        "feedback_rejected": true,
+        "merge_commit": "a3a28889912c71c3f8c6f61bf6054470d1436284",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "runner_sha256": "bc3666e1ffe966479c3eafa59d5dabe7075e77de2ed63bf02ce76bedabd1ba9f",
+      "name": "orca-remote-fault"
+    }
+  ],
+  "gaps": [
+    "Orca local healthy complete native business loop timed out at original 12-minute wait; progress bytes and final result bytes verified, original Run and service stopped; native control closure proof missing",
+    "Orca local fault PR reached but native permission audit receipt parsing and original control closure proof failed; independent offline resources settled true"
+  ],
+  "all_real_probe_runs_stopped": true,
+  "independent_orca_local_resources_settled": true
+}

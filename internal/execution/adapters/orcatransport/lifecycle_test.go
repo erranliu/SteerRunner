@@ -402,7 +402,7 @@ func TestTerminalRecoveryQualificationIsIndependentOfManagedProcess(t *testing.T
 			f.nativeSends, f.writeReply = 1, true
 			before := len(f.calls)
 			evidence, err := l.VerifyManualRecovery(context.Background(), s)
-			if err != nil || !evidence.ResourceAvailable || !evidence.SessionIdle || !evidence.SessionAvailable || evidence.ManagedProcess || evidence.SessionRebindable {
+			if err != nil || !evidence.ResourceAvailable || !evidence.SessionIdle || !evidence.SessionAvailable || evidence.ManagedProcess {
 				t.Fatalf("original resource qualification: %+v %v", evidence, err)
 			}
 			f.draft = "unsubmitted input"

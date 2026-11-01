@@ -12,7 +12,7 @@ Runner 保存原始字节；结构、合并、业务含义与展示归调用方�
 
 省略时没有文件/采集任务，也不把父环境中其它 Run 的同名路径传给执行工具。规范 base64，解码后最大 65536 字节，允许空内容与非 UTF-8 / 非 JSON 字节。不接受调用方路径；固定在原实际工作区 `.steerrunner/progress/<run_id>/progress.bin`。
 
-第一次业务输入前初始化。环境变量 `STEERLINE_PROGRESS_FILE` 为绝对路径，执行提示说明用途。Orca 原启动命令在实际执行主机按 cwd 构造路径，工具白名单保留变量。脚本可通过同目录锁文件协调写者，读入旧内容进行业务合并，再用同目录临时文件原子替换目标。Runner 不合并内容。Git info/exclude 排除整个 progress 子树（含锁/临时文件），不改受跟踪文件，不增加其它目录写权限。
+首次业务输入候选成立后、派发前只做一次尽力初始化；不以通道成功作为业务门禁。环境变量 `STEERLINE_PROGRESS_FILE` 为绝对路径，执行提示说明用途。Orca 原启动命令在实际执行主机按 cwd 构造路径，工具白名单保留变量。脚本可通过同目录锁文件协调写者，读入旧内容进行业务合并，再用同目录临时文件原子替换目标。Runner 不合并内容。Git info/exclude 排除整个 progress 子树（含锁/临时文件），不改受跟踪文件，不增加其它目录写权限。
 
 ```powershell
 steerrunner progress-file --state-dir C:\owned-state --run-id R --json
@@ -41,12 +41,14 @@ version 独立、持久化，只在内容变化时增加；不改 Run revision�
 
 约 300ms 轮询。Orca 每次打开原绑定 IPC/配对通道，核验 runtime/worktree/路径及配对公钥指纹，限量读取固定相对文件；不扫描、不本机回退、不读终端画面、不用模型结果替代。重复读取检查内容稳定；不依赖旧文件 inode 或 mtime。采集不要求 native final 或终端存活。
 
-每轮采集预算 2 秒，初始化 4 秒；终态/stop/被动停服最后采样共用 2 秒。被动停服只释放本次观察，保留原业务授权/执行。重启沿原文件、绑定和版本，零业务重发。首次写入前保存初始化尝试；若恰在保存与实际写入之间崩溃，原文件缺失只报告异常，不自动重建或重复初始化。保留 state-dir 即可查询终态快照，源文件之后删除不删除已保存内容。
+每轮采集预算 2 秒，progress/result 的首次准备共用最多 4 秒（含查询、初始化和校验）；终态/stop/被动停服最后采样共用 2 秒。被动停服只释放本次观察，保留原业务授权/执行。重启沿原文件、绑定和版本，零业务重发。首次写入前保存初始化尝试；若恰在保存与实际写入之间崩溃，原文件缺失只报告异常，不自动重建或重复初始化。保留 state-dir 即可查询终态快照，源文件之后删除不删除已保存内容。
 
-本通道的正常收尾点为 development 的 `pr_ready`、`completed`、显式 `closed` 或已核实 `stopped`；这是观察收尾定义，不证明 native 资源退出。`waiting_input`、结果核验中和未知结果等业务等待仍持续观察。初始化结果未知时，只核对原文件是否仍等于初始字节；缺失或不完整均不重新初始化、不发业务输入，诊断保留为 unavailable。
+本通道的正常收尾点为 development 的 `pr_ready`、`completed`、显式 `closed` 或已核实 `stopped`；这是观察收尾定义，不证明 native 资源退出。`waiting_input`、结果核验中和未知结果等业务等待仍持续观察。初始化失败、超时、响应丢失或元数据保存失败均不阻止正常业务输入；不重复准备、不补写种子。后续只读原绑定文件，允许接受 Agent 已改写的稳定完整字节；读取失败保留最后快照和 unavailable 诊断。初始化标记保存失败时不发文件写 RPC；若业务已派发，重启仍可只读原文件。
 
 终态已保存 `closed` 后，服务重启不会重新读取源文件或改写该快照；终态尚未收尾时仍完成有界采样。服务退出与终态同时发生时保存 `closed`，仅活动 Run 保存 `detached`。显式恢复活动的 Run 可以沿原绑定继续观察。
 
 用户收敛后的边界：固定原 Run 的主机、工作区及相对文件，不承诺抵御采集瞬间的恶意链接/目录替换；不要求新增 Orca 安全接口，不部署远端常驻 Runner/helper。
 
 详见 [Spec](spec/runtime-progress.spec.md)、[Plan](spec/runtime-progress.plan.md)、[验收](acceptance/runtime-progress.md)。
+
+2026-11-01 P2：文件 I/O 在全局锁和业务 dispatch gate 外进行；首次尝试前短临界区持久化尝试事实，stop 先提交则不初始化，锁外返回后复核绑定与当前控制。超时的迟到结果不发布，同一 Run 最多一个未结束的物理 progress 读取。Git ignore 设置也是尽力操作。当前状态格式仍为 v6；见[观测解耦验收](acceptance/personal-executor-p2.md)。

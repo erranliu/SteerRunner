@@ -90,12 +90,7 @@ func (c *Collector) observe(ctx context.Context, r *runstate.Record) {
 	}
 	prior, _ := c.Store.GetRunUsage(ctx, r.ID, 0)
 	s := api.Snapshot{RunID: r.ID, AccessCleanupStatus: "not_required", Issues: []api.Issue{}, Coverage: api.Coverage{SourceSummaries: []api.SourceSummary{}, Finalized: true}}
-	inputs := []b.LifecycleSnapshot{}
-	for _, a := range r.Attempts {
-		inputs = append(inputs, a.Snapshot)
-	}
-	inputs = append(inputs, r.Snapshot)
-	// A generation may occur in both attempts and current snapshot. Prefer current.
+	inputs := []b.LifecycleSnapshot{r.Snapshot}
 	byGeneration := map[string]b.LifecycleSnapshot{}
 	for _, v := range inputs {
 		key := v.Ref.AttemptID + ":" + v.ResourceGeneration

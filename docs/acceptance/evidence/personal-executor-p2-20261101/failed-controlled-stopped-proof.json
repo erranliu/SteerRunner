@@ -1,0 +1,82 @@
+[
+  {
+    "state": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-1284479734\\runner",
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": null,
+      "data": {
+        "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-1284479734\\runner",
+        "resources_settled": true,
+        "runs": [
+          {
+            "run_id": "ca273be4d283674e3fea6c53cbc2d603",
+            "input_digest": "c626dcdbbbf6b97957799b69877c7885c7742fa0ea2735e309c6c296bf434dc1",
+            "resources_settled": true
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "state": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-4040136547\\runner",
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": null,
+      "data": {
+        "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-4040136547\\runner",
+        "resources_settled": true,
+        "runs": [
+          {
+            "run_id": "6e0e5cc87c99ef40fcca5e68c75e3b67",
+            "input_digest": "9307985ed58b32772281ccbe91a2401874823ad7a3af97618c589b4b038d21bb",
+            "resources_settled": true
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "state": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2141010025\\runner",
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": null,
+      "data": {
+        "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-2141010025\\runner",
+        "resources_settled": true,
+        "runs": [
+          {
+            "run_id": "6327a43522c7add2357cb601153ba4f4",
+            "input_digest": "3cf0a438e7800e4596dcc3cfc74a50ca8e07099cad365282784dff155351573e",
+            "resources_settled": true
+          }
+        ]
+      },
+      "error": null
+    }
+  },
+  {
+    "state": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2586611272\\runner",
+    "response": {
+      "protocol": "steerrunner-cli/v1",
+      "ok": true,
+      "request_id": null,
+      "data": {
+        "state_dir": "c:\\users\\lmas1\\appdata\\local\\temp\\sr-2586611272\\runner",
+        "resources_settled": true,
+        "runs": [
+          {
+            "run_id": "7127e4c3c6cae85b3e2e1fa9a5b90689",
+            "input_digest": "3b43c3349d7e7fe575344754ca67999cf126d82c72f8911d426bd061bb1ceab6",
+            "resources_settled": true
+          }
+        ]
+      },
+      "error": null
+    }
+  }
+]

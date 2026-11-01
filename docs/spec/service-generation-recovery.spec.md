@@ -1,5 +1,7 @@
 # Spec：服务重启、更新与重新部署后的原执行接管
 
+> 2026-11-01 P3 适用范围更新：以[个人执行器简化 Spec](personal-executor-simplification.spec.md)及其 Plan 为准。v7 不再支持候选构建接管、资源重建或退役权限兼容；保留同构建原资源重启、原创建回执和停止证明。未知操作超时转人工，显式 resume 只读对账。本文跨构建/旧 decoder 条款为历史记录，不代表现行能力。
+
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
 > 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。

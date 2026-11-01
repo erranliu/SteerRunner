@@ -356,13 +356,6 @@ func (s *server) dispatch(wire wireRequest) (contracts.Response, bool) {
 			return reject(contracts.Fail(2, "invalid_request", "Usage queries do not accept input."))
 		}
 		return s.usageQuery(wire.Options), false
-	case "service verify-takeover":
-		caps, sha, failure := candidateCapabilities(context.Background(), wire.Options.Candidate)
-		if failure != nil {
-			return reject(failure)
-		}
-		items := s.engine.Takeover(caps.Recovery, caps.Workflows, caps.ResultFile.Contract)
-		return contracts.Success("", finishTakeover(s.endpoint.Service.StateDir, s.endpoint.Service.InstanceID, sha, items)), false
 	case "result-file":
 		if wire.Request != nil {
 			return reject(contracts.Fail(2, "invalid_request", "Result queries do not accept input."))

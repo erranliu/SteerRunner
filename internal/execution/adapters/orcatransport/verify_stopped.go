@@ -34,9 +34,7 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 		return err
 	}
 	if l.profile.Environment != "" {
-		if l.StopEvidenceScope() == "" {
-			return errors.New("legacy remote helper settlement cannot be established by terminal absence")
-		}
+
 		return ctx.Err()
 	}
 	if l.profile.Terminal == nil {

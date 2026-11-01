@@ -1,0 +1,22 @@
+{
+  "old_command_budget_seconds": 480,
+  "formal_unchanged_budget_seconds": 720,
+  "old_application_elapsed_at_timeout": 480.5336154,
+  "running_test": "TestResultFileFailureSealsAndPreservesProgress/binding_invalid",
+  "running_test_elapsed_at_timeout": 0.0101873,
+  "isolated_slow_tests": [
+    {
+      "Test": "TestSRFreezeBaseBranchRefresh",
+      "Elapsed": 53.4
+    },
+    {
+      "Test": "TestSRFreezeOrcaAgent",
+      "Elapsed": 36.24
+    },
+    {
+      "Test": "TestRAConcurrencyPublication",
+      "Elapsed": 61.54
+    }
+  ],
+  "interpretation": "The package exhausted the manually shortened total budget; the then-running subtest had only just started. Isolated slow tests pass; final qualification uses the unchanged formal L1 entry."
+}

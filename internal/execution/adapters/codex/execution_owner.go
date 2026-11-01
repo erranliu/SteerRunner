@@ -26,15 +26,12 @@ const ExecutionOwnerProtocol = "steerrunner-execution-owner/v1"
 const ExecutionOwnerConfigFile = "codex-owner.json"
 
 type ExecutionOwnerIdentity struct {
-	// Opaque legacy wire metadata: preserve old signed checkpoints byte-for-byte.
-	// New owners leave it false; it is never consulted for execution or recovery.
-	LegacyParserCapability bool              `json:"retains_parser,omitempty"`
-	WorkspaceCheckpoints   bool              `json:"workspace_checkpoints,omitempty"`
-	Protocol               string            `json:"protocol"`
-	Directory              string            `json:"directory"`
-	Process                b.ProcessIdentity `json:"process"`
-	RuntimeSHA256          string            `json:"runtime_sha256"`
-	ExitPublicKey          string            `json:"exit_public_key"`
+	WorkspaceCheckpoints bool              `json:"workspace_checkpoints,omitempty"`
+	Protocol             string            `json:"protocol"`
+	Directory            string            `json:"directory"`
+	Process              b.ProcessIdentity `json:"process"`
+	RuntimeSHA256        string            `json:"runtime_sha256"`
+	ExitPublicKey        string            `json:"exit_public_key"`
 }
 
 type ownerConfig struct {

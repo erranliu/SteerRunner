@@ -1,0 +1,33 @@
+{
+  "check_count": 26,
+  "checks": [
+    "reject-level",
+    "reject-mixed-level",
+    "reject-scenario",
+    "reject-wildcard",
+    "reject-all",
+    "reject-unknown",
+    "reject-duplicate",
+    "reject-config",
+    "reject-missing-config",
+    "reject-runner",
+    "reject-catalog",
+    "reject-availability",
+    "reject-reuse",
+    "reject-implicit-output",
+    "reject-stale-runner",
+    "dispatch-L2",
+    "dispatch-L3",
+    "dispatch-default",
+    "dispatch-reuse",
+    "dispatch-compile-fail",
+    "dispatch-zero-match",
+    "dispatch-cleanup-fail",
+    "dispatch-empty",
+    "dispatch-changed-driver",
+    "all-cases-still-focused",
+    "l3-driver-before-fixture"
+  ],
+  "native_qualification": false,
+  "live_execution": false
+}

@@ -87,7 +87,7 @@ func TestSRContentRepository(t *testing.T) {
 				if view.ContentResult == nil || string(gotJSON) != string(expectedJSON) || view.ContentResult.RepositorySource == nil || view.Status != "completed" {
 					t.Fatal("full result lost", view)
 				}
-				verifyContentTakeover(t, dir, id)
+
 				call(t, dir, []string{"history", "--run-id", id}, "", 0)
 			}
 			contentCommand(t, dir, id, "stop", "stop-fixed-repository", map[string]any{}, 0)

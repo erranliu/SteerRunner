@@ -21,16 +21,16 @@ func TestSRResumeWorkflowRetainsOriginalReportSource(t *testing.T) {
 	if r.NextStage == nil || r.NextStage.CommandID != "" || r.NextStage.Prompt != input.Prompt {
 		t.Fatal("pending report lost its frozen prompt or retained a stale command")
 	}
-	// Control restores the same native session with a new Attempt before handing
-	// business continuation back to this helper.
-	r.Snapshot.Session = b.SessionContext{SessionID: "original-session", AttemptID: "new-attempt"}
+	// The same original attempt remains available; only its unsent successor
+	// receives a fresh command identity.
+	r.Snapshot.Session = b.SessionContext{SessionID: "original-session", AttemptID: "old-attempt"}
 	r.Snapshot.PendingTurn = nil
 	bindTestWorkflow(r)
 	if err := resumeWorkflow(r); err != nil {
 		t.Fatal(err)
 	}
 	queued := r.Workflow.StageInputs[len(r.Workflow.StageInputs)-1]
-	if queued.CommandID == "old-report" || queued.CommandID == "" || queued.AttemptID != "new-attempt" || queued.StepID != workflow.StepReport || queued.SourceCommandID != input.SourceCommandID || queued.SourceTurnID != input.SourceTurnID || queued.ReportToolPolicy != input.ReportToolPolicy || r.NextStage != nil {
+	if queued.CommandID == "old-report" || queued.CommandID == "" || queued.AttemptID != "old-attempt" || queued.StepID != workflow.StepReport || queued.SourceCommandID != input.SourceCommandID || queued.SourceTurnID != input.SourceTurnID || queued.ReportToolPolicy != input.ReportToolPolicy || r.NextStage != nil {
 		t.Fatal("resumed report lost its original source or native policy", queued)
 	}
 	if r.Snapshot.Session.SessionID != "original-session" || !reflect.DeepEqual(r.Workflow.StageInputs[1], input) || !r.Allowed || r.ResumeRequired {

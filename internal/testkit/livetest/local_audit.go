@@ -9,6 +9,7 @@ import (
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -43,18 +44,26 @@ func LocalPermissionAudit(ctx context.Context, client native.Client, process b.P
 		if _, err = client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, original); err != nil {
 			return audit, err
 		}
-		r, err = client.MetaCall(ctx, "terminal", "read", "--terminal", original.Terminal, "--limit", "200", "--json")
+		// Cursor reads use original complete output lines. The default screen
+		// tail can wrap one base64 receipt into multiple display rows.
+		r, err = client.MetaCall(ctx, "terminal", "read", "--terminal", original.Terminal, "--cursor", "0", "--limit", "200", "--json")
 		if err != nil {
 			return audit, err
 		}
 		var value struct {
 			Terminal struct {
-				Handle string
-				Tail   []string
+				Handle, Source, OldestCursor, NextCursor, LatestCursor string
+				Tail                                                   []string
+				Truncated, Limited                                     *bool
 			}
 		}
 		if json.Unmarshal(r.Payload, &value) != nil || r.RuntimeID != original.RuntimeID || value.Terminal.Handle != original.Terminal {
 			return audit, errors.New("remote audit read identity changed")
+		}
+		page := value.Terminal
+		next, cursorErr := strconv.ParseUint(page.NextCursor, 10, 64)
+		if page.Source != "stream" || page.OldestCursor != "0" || page.Truncated == nil || page.Limited == nil || *page.Truncated || *page.Limited || page.NextCursor != page.LatestCursor || cursorErr != nil || next > uint64(len(page.Tail)) {
+			return audit, errors.New("original native audit output stream incomplete")
 		}
 		for _, line := range value.Terminal.Tail {
 			line = strings.TrimSpace(line)

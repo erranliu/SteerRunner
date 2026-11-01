@@ -10,6 +10,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
 	executionmodel "github.com/erranliu/SteerRunner/internal/execution/evidence"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 )
 
 var nativeID = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
@@ -194,4 +195,21 @@ func DecodeQuestionRoute(route executionbackend.ImplementationDataEnvelope, fixe
 	data.RequestID = append(json.RawMessage(nil), data.RequestID...)
 	data.Generation = route.Generation
 	return data, nil
+}
+
+// PrepareLifecycleAnswer keeps the native route and its input representation
+// together. No process, connection or lifecycle state is needed to prepare it.
+func (ExecutionLifecycle) PrepareLifecycleAnswer(route executionbackend.ImplementationDataEnvelope, fixed executionbackend.SessionContext, answer executionbackend.Answer, message string) ([]m.InputPart, error) {
+	ask, err := DecodeQuestionRoute(route, fixed)
+	if err != nil {
+		return nil, err
+	}
+	return answerInputParts(ask, answer, message), nil
+}
+
+func answerInputParts(ask AskRouteData, answer executionbackend.Answer, message string) []m.InputPart {
+	if ask.Delivery == "async" {
+		return []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: message}}
+	}
+	return m.AnswerParts(answer.Answers)
 }

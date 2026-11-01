@@ -58,7 +58,6 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
-	stopOnly          bool
 	observationMu     sync.Mutex
 	nativeObservation *nativeObservation
 	terminalMu        sync.Mutex
@@ -168,34 +167,20 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		return State{}, err
 	}
 	state := State{}
-	legacyRemote := l.profile.Environment != "" && l.profileVersion == ProfileVersion
 	found := false
 	for _, e := range s.Implementation {
 		if e.ImplementationKey == StateKey {
-			// The retired remote v5 payload is read only to fence an explicit
-			// stop to its original Process; no helper state is restored.
-			if !legacyRemote && e.CodecVersion != l.stateVersion() {
+			if e.CodecVersion != l.stateVersion() {
 				return State{}, errors.New("terminal state/profile codec mismatch")
 			}
-			if found || !readableStateVersion(e.CodecVersion) && (!legacyRemote || e.CodecVersion != 5) {
+			if found || !readableStateVersion(e.CodecVersion) {
 				return state, errors.New("unsupported terminal state")
 			}
 			found = true
 			if err := e.ValidateResourceIdentity(s.Session.ProjectID, s.Session.ExecutionID, s.Session.AttemptID, s.ResourceGeneration, s.ConfigurationDigest); err != nil {
 				return state, err
 			}
-			if legacyRemote {
-				// Legacy stop extracts only the original identity, never an old
-				// helper reader/control runtime or its historical turn codec.
-				var original struct {
-					Process b.ProcessIdentity `json:"process"`
-				}
-				if err := json.Unmarshal(e.Payload, &original); err != nil {
-					return state, err
-				}
-				state.Process = original.Process
-				continue
-			}
+
 			var err error
 			state, err = decodeState(e.Payload, e.CodecVersion)
 			if err != nil {
@@ -207,9 +192,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		return state, errors.New("saved original terminal differs from current resource")
 	}
 	if l.profile.Environment != "" {
-		if l.profileVersion != NativeRemoteProfileVersion {
-			return state, nil // Only legacy stop may extract the original identity.
-		}
+
 		if state.Control != nil || state.RemoteReadiness != nil || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.AdmissionAttempted || state.AdmissionAccepted {
 			return state, errors.New("native remote state contains helper preparation")
 		}
@@ -422,9 +405,7 @@ func (l *Lifecycle) verifyLocalObservation(ctx context.Context, runtime string) 
 }
 
 func (l *Lifecycle) agentExecutionSupport(agent string) error {
-	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion {
-		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "legacy_remote_helper_unsupported: original snapshots and exact terminal stop only; start a new native Orca Run"}
-	}
+
 	if agent != "codex" && !((agent == "pi" || agent == "dsh") && l.profile.Terminal != nil && l.profile.Terminal.Agent == agent && l.profile.Environment == "" && len(l.profile.RuntimeSHA256) == 64) {
 		// Orca 1.4.224 lacks the start, root outcome and permission preparation contract.
 		return &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "terminal_agent_evidence_unsupported: selected agent lacks verified native turn and permission preparation; zero business input"}
@@ -475,9 +456,7 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 }
 
 func (l *Lifecycle) Execute(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
-	if l.stopOnly {
-		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle permits original stop only")
-	}
+
 	receipt := b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	if err := r.Validate(); err != nil {
 		return receipt, nil, err
@@ -752,7 +731,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 	// A completed READY hook can precede the TUI returning to its composer.
 	// Gate the only native Codex send on the original terminal becoming idle;
 	// this is input readiness, never completion/attribution evidence.
-	if l.profile.Environment != "" && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
+	if (l.profile.Environment != "" || l.usesControl()) && l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
 		if err := l.waitOriginalComposer(ctx, s); err != nil {
 			return receipt, err
 		}
@@ -962,9 +941,7 @@ func (l *Lifecycle) ObserveLifecycle(ctx context.Context, s b.LifecycleSnapshot)
 }
 
 func (l *Lifecycle) Reconcile(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
-	if l.stopOnly && r.Operation.Action != string(b.LifecycleStopExecution) {
-		return b.LifecycleReceipt{}, nil, errors.New("retired lifecycle only reconciles original stop")
-	}
+
 	defer l.closeStateFeed()
 	if r.Operation.Action != string(b.LifecycleStopExecution) {
 		if err := l.agentExecutionSupport(r.Snapshot.Ref.Agent.Name); err != nil {
@@ -1296,18 +1273,4 @@ func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnaps
 		evidence.Diagnostic = "Original native main agent is active/unverified; no recovery input is allowed"
 	}
 	return evidence, nil
-}
-func (l *Lifecycle) BindRecovery(_ context.Context, original, replacement b.LifecycleSnapshot) (b.ImplementationDataEnvelope, error) {
-	return b.ImplementationDataEnvelope{}, errors.New("replacing an Orca session requires a new execution")
-}
-
-// Reuses only the original transport identity and stop protocol. Execute and
-// non-stop reconciliation are fenced before any resource or business work.
-func NewOriginalStopLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
-	p, err := NewLifecycle(setup)
-	if err != nil {
-		return nil, err
-	}
-	p.(*Lifecycle).stopOnly = true
-	return p, nil
 }

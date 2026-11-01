@@ -1,0 +1,13 @@
+{
+  "pid": 37580,
+  "process_started_at": "2026-11-01T04:59:31.4578640Z",
+  "pattern": "^TestSROrcaCLIWaitRetry$",
+  "runner_sha256": "002D9301DCC9AD8F4C661F42B8E409F083C2A05BC07F33AD6D81FA552BA6EC8E",
+  "fixture_sha256": "F8269E3B90EF3BC1DE0C301721F21FA460080CBB4C84A2CF335C71DE72B9CD4C",
+  "native_fixture_sha256": "1C87CBDB6E42D02435FD44F84F1E4C0ABC89231BBE0FF0BDFAC06CE45D3F3C33",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

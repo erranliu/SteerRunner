@@ -66,7 +66,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v6、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v6 内普通 Run 的重启与接管语义保持。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
+当前持久格式为 state/v7、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v7 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
 
 独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](acceptance/result-acquisition.md)。
 
@@ -99,13 +99,13 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 新 Run 的默认 audit.code 提示优先要求最终输出已有审计 JSON 契约，以减少 parse/补报；这只是提示文本，不增加原生 schema 强约束。旧 Run 和显式提示覆盖保持原文，格式不足继续沿原有界后备；[原生对比及旧提示接管验证](acceptance/reliable-delivery-simplification.md)已登记。
 
-已有 Run 保留原冻结输入、流程语义和资源身份；兼容构建接管不要求 EXE SHA 或资源总摘要相同。不支持的 workflow、codec 或退役认证按具体资格拒绝或只读隔离；不能用升级自动恢复已丢失的授权或进程所有权。
+同构建服务重启保留原冻结输入、流程语义、授权和资源身份。升级前必须由原版本排空全部原生资源及未完成操作/控制；pr_ready 不等于排空。新 v7 非破坏拒绝 v6 及更早格式，不运行迁移器、不把旧记录伪投影为只读。以后执行契约兼容且已排空时可继续原目录查询历史；不增加逐 Run SHA 构建门禁。
 
 远端 Orca Codex 断线后若结束快照的输入预览为空，Runner 可通过独立查询核验保留的 `turnStartedAt` 与原可信 working 起点一致，再沿原结果路径收尾，过程不重发输入。缺失/变化的回合标记或已有归属冲突继续显示未核实；原生 done 不代表业务任务完成。规则与验证见[原生结束归属](spec/orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)。
 
 ## 停服及回执
 
-服务退出只脱离原生执行；显式 `stop --run-id` 才撤销该 Run 授权并停止原树。独立 owner 的固定版本文件保存在 state-dir/runtimes，执行结算前不得清理。`resources_settled=false` 不能作为删除目录的证明；兼容接管资格由 `service verify-takeover` 单独报告。离线重开可用 `service start --input -` 提交裸 `pending_stops` 对象，在启动 worker 前受理原 stop 信封，具体结构由 `capabilities.service_start_schema` 公布。
+服务退出只脱离原生执行；显式 `stop --run-id` 才撤销该 Run 授权并停止原树。独立 owner 的固定版本文件保存在 state-dir/runtimes，执行结算前不得清理。`resources_settled=false` 不能作为删除目录的证明。`service verify-takeover --candidate` 已删除，按未知命令返回 exit 2，不隐式启动服务。离线重开可用 `service start --input -` 提交裸 `pending_stops` 对象，在启动 worker 前受理原 stop 信封，具体结构由 `capabilities.service_start_schema` 公布。
 
 PowerShell 7 示例（stdin 为 UTF-8 JSON）：
 
@@ -126,7 +126,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 状态目录
 
-调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v6`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
+调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v7`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
 本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
 worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译沙箱写根；这个私有目录仍绑定本次 Run，
@@ -136,9 +136,9 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 
 开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi/DSH 通用工具保留宿主 HOME，过滤模型 provider 密钥；DSH 自身的隔离 HOME 不改变工具登录位置。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
 
-默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v6`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
+默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v7`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
-当前只接受 state/v6，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
+当前只接受 state/v7，不升级或兼容读取旧格式；原版本须先结算旧资源。更新前用 `service verify-takeover --candidate <绝对 EXE 路径>` 预检，再核实旧 writer 已退出；预检本身不会停服或接管。旧服务独占 Job 的活动本机执行无法事后无损转移，应在停服前拒绝切换。详见[服务换代恢复 Spec](spec/service-generation-recovery.spec.md)及[验收状态](acceptance/service-generation-recovery.md)。
 
 ## 定向验证
 
@@ -202,3 +202,12 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 已有提交继续按原 request_id 查询/对账；原冻结 Request、digest、Attempt、PR 及证据不变。旧 sandbox/隐式模式 Run 在新服务中只读，拒绝 resume/reply、自动推进、PR refresh、新采集和原生会话 open，仅保留持久事实查询与身份可核验时的精确 stop。退役不等于原 worker 已停止：原 owner 中在途回合可能继续运行。停止不支持或证据缺失时，保留未结算事实，用原版本处理；不要重建会话或把旧 Run 改为 full_access。
 
 升级顺序：旧版本停收新任务→完成或精确停止受影响 Run→核实原 worker/parser 与旧版认证资源结算→更新产品/helper/扩展与可编辑配置→检查新构建接管清单及配置→提交新任务。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除。新版本不读取旧 Run；新建 read_only 内容/parser 与原生远端链路保留。版本与测试映射见 [Spec](spec/host-native-auth.spec.md) / [Plan](spec/host-native-auth.plan.md)。
+
+
+## 人工对账与资源丢失
+
+原创建/输入结果未知时，只查询原操作，沿用原准备预算；没有共享预算时最多 30 秒。超时后显示 `status=blocked`、`phase=manual_intervention_required`、`resume_required=true`，停止业务推进。活动长回合不套用未知输入的 30 秒期限；停止证明及 accepted/ResourcePending 的原准备期限保持。
+
+先 `inspect --run-id R` 检查原操作诊断及 `controls.can_resume`，再用当前 revision 和新 request_id 调用 `resume --run-id R --input -`。该命令先用最多 30 秒只读查询原回执/观察；不 Execute、不新建 Attempt/owner/session/终端，不重发原输入。原事实解决未知且原资源仍有效时才解除技术暂停；原业务等待、阻断、stop/close 保持。仍未知、超时、冲突或资源丢失时 action_status=failed，继续人工介入；需要时用新 request_id/当前 revision 再查询。同 request_id/相同正文只回放原结果；inspect --request-id 可查询该控制结果。查询中 stop/close 可以提交且优先，迟到事实不恢复授权。
+
+资源丢失后由用户处理原现场并显式创建新 Run；Runner 不提供原会话重建。外部 SteerLine 需更新默认目录为 SteerRunner-v7、去除 verify-takeover/旧兼容矩阵读取，使用 can_resume 和原命令结果展示人工对账；本仓只更新 CLI、PowerShell helper 和两份 bundled skill，未改动或联验外部 SteerLine。

@@ -1,0 +1,22 @@
+[
+  {
+    "run_id": "ca273be4d283674e3fea6c53cbc2d603",
+    "stop_status": "stopped",
+    "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-1284479734\\runner"
+  },
+  {
+    "run_id": "6e0e5cc87c99ef40fcca5e68c75e3b67",
+    "stop_status": "stopped",
+    "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-4040136547\\runner"
+  },
+  {
+    "run_id": "6327a43522c7add2357cb601153ba4f4",
+    "stop_status": "stopped",
+    "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2141010025\\runner"
+  },
+  {
+    "run_id": "7127e4c3c6cae85b3e2e1fa9a5b90689",
+    "stop_status": "stopped",
+    "root": "C:\\Users\\lmas1\\AppData\\Local\\Temp\\sr-2586611272\\runner"
+  }
+]

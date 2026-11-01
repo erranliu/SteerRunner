@@ -29,13 +29,13 @@ type PolicyResourceBuildRequest struct {
 	ProfileIdentity  ProfileConfigIdentity
 	ResourceIdentity PolicyResourceIdentity
 
-	Host            string
-	Agent           string
-	GOOS            string
-	Workspace       string
-	LinkedWriteArgs []string
-	RunDirectory    string
-	RepositoryURL   string
+	Host           string
+	Agent          string
+	GOOS           string
+	Workspace      string
+	LinkedGitPaths []string
+	RunDirectory   string
+	RepositoryURL  string
 }
 
 type PolicyVersionProbe func(context.Context, string) (string, error)
@@ -89,10 +89,7 @@ func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuil
 	if err != nil {
 		return BoundPolicyResources{}, err
 	}
-	roots, err := WritableRoots(request.LinkedWriteArgs)
-	if err != nil {
-		return BoundPolicyResources{}, err
-	}
+	roots := append([]string(nil), request.LinkedGitPaths...)
 	native, err := NativeExecutable(settings.Executable)
 	if err != nil {
 		return BoundPolicyResources{}, err
@@ -207,14 +204,6 @@ func validateNativeLaunchArgs(args []string, contracts ...string) error {
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
 		case "--no-daemon", "--strict-config":
-		case "--add-dir":
-			if contract != ReadOnlyPolicyContract {
-				return errors.New("new development launch cannot contain write grants")
-			}
-			i++
-			if i >= len(args) || args[i] == "" {
-				return errors.New("legacy launch root missing")
-			}
 		case "--model", "--cd":
 			i++
 			if i >= len(args) || args[i] == "" {

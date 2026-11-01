@@ -1,31 +1,11 @@
 package codexworker
 
 import (
-	"context"
 	"strings"
 	"testing"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
-
-func TestRetiredOwnerPortRejectsBusinessWorkWithoutLaunchingOwner(t *testing.T) {
-	launched := false
-	port := NewOriginalOwnerStopLifecycle(b.LifecycleSetup{LaunchExecutionOwner: func(context.Context, string) error {
-		launched = true
-		return nil
-	}})
-	for _, action := range []b.LifecycleAction{b.LifecyclePrepareWorkspace, b.LifecyclePrepareSession, b.LifecycleStartTurn, b.LifecycleDeliverFeedback} {
-		request := b.LifecycleRequest{}
-		request.Operation.Action = string(action)
-		receipt, observer, err := port.Execute(context.Background(), request)
-		if err == nil || observer != nil || receipt.Disposition != b.OperationRejected || launched {
-			t.Fatal("retired owner port allowed business work", action, receipt, err)
-		}
-		if _, _, err := port.Reconcile(context.Background(), request); err == nil || launched {
-			t.Fatal("retired owner port reconciled business work", action, err)
-		}
-	}
-}
 
 func TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess(t *testing.T) {
 	full, err := NativePermissions("windows", "local", "codex", "full_access")
@@ -48,7 +28,7 @@ func TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess(t *testing.T) {
 		t.Fatal(full)
 	}
 	id := PolicyResourceIdentity{ProjectID: "p", ExecutionID: "e", AttemptID: "a", Generation: "g", ConfigDigest: "d"}
-	legacy := append(full.Args(), legacyWorkspaceArgs()...)
+	legacy := append(full.Args(), readOnlyWorkspaceArgs()...)
 	for _, tc := range []struct {
 		contract string
 		args     []string

@@ -1,0 +1,68 @@
+{
+  "baseline": "P3 independently accepted dirty working tree; excludes P1/P2/P3 changes",
+  "base_head": "e2729563562314659a799a5f82debe427fcd7c24",
+  "before_selection_owners": [
+    "internal/application/control.go",
+    "internal/execution/adapters/codex/lifecycle.go"
+  ],
+  "after_selection_owners": [
+    "internal/execution/adapters/codex/ask.go"
+  ],
+  "application_private_route_decoders": {
+    "before": 1,
+    "after": 0
+  },
+  "application_delivery_branches": {
+    "before": 1,
+    "after": 0
+  },
+  "production_files_changed": [
+    {
+      "path": "internal/application/control.go",
+      "added": 6,
+      "deleted": 5
+    },
+    {
+      "path": "internal/execution/adapters/codex/ask.go",
+      "added": 18,
+      "deleted": 0
+    },
+    {
+      "path": "internal/execution/adapters/codex/lifecycle.go",
+      "added": 1,
+      "deleted": 4
+    },
+    {
+      "path": "internal/execution/backend/lifecycle.go",
+      "added": 7,
+      "deleted": 0
+    }
+  ],
+  "production_added": 32,
+  "production_deleted": 9,
+  "production_net_added": 23,
+  "unchanged_shared_gate_and_state_files": [
+    "internal/application/preparation.go",
+    "internal/application/worker.go",
+    "internal/storage/store.go",
+    "internal/execution/reliable/binding.go",
+    "internal/execution/reliable/digest.go",
+    "internal/execution/reliable/environment.go",
+    "internal/execution/reliable/intent.go",
+    "internal/execution/reliable/operation/effect.go",
+    "internal/execution/reliable/operation/operation.go",
+    "internal/execution/reliable/operation/record.go",
+    "internal/execution/reliable/plan.go",
+    "internal/execution/reliable/recovery.go",
+    "internal/execution/reliable/recovery_policy.go",
+    "internal/execution/reliable/result.go",
+    "internal/execution/reliable/session.go",
+    "internal/execution/reliable/turn.go",
+    "internal/execution/reliable/workspace.go"
+  ],
+  "new_mandatory_backend_methods": 0,
+  "new_assembly_facades": 0,
+  "state_format": "steerrunner-state/v7",
+  "native_protocol_changed": false,
+  "other_candidates": "not expanded: profile/helper, permission resources, checkpoint, runtime files"
+}

@@ -11,7 +11,8 @@ param(
     [switch]$ListAvailability,
     [string]$RunnerExe = '',
     [string]$ConfigHelper = '',
-    [string]$PrerequisitesFrom = ''
+    [string]$PrerequisitesFrom = '',
+    [switch]$Focused
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -19,7 +20,9 @@ Set-StrictMode -Version Latest
 . (Join-Path $PSScriptRoot 'test-scheduler.ps1')
 . (Join-Path $PSScriptRoot 'test-configuration.ps1')
 . (Join-Path $PSScriptRoot 'test-prerequisite-contract.ps1')
+. (Join-Path $PSScriptRoot 'test-focused.ps1')
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$taskExplicitOutput = -not [string]::IsNullOrWhiteSpace($OutDir)
 foreach ($taskParameter in @('Config','Catalog','RunnerExe','ConfigHelper','FixtureParent','PrerequisitesFrom')) {
     $taskValue = Get-Variable -Name $taskParameter -ValueOnly
     if ($taskValue) { Set-Variable -Name $taskParameter -Value $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($taskValue) }
@@ -43,9 +46,17 @@ $taskReused = $null
 $taskPreflight = $null
 $taskAssessment = $null
 $taskSummary['prerequisite_stages'] = @()
+$taskSummary['validation_scope'] = if($Focused){'focused'}else{'complete'}
+$taskSummary['prerequisite_execution_counts'] = @{l1_core=0;controlled=0;native_preflight=0}
+$taskSummary['timings'] = @{}
+$taskFocusedNativeSource = ''
 Save-Summary
 Push-Location $taskRepo
 try {
+    if ($Focused) {
+        Assert-SRFocusedArguments $Level $Scenario $Config $RunnerExe $taskExplicitOutput $taskDefaultCatalog ([bool]$ListAvailability) $PrerequisitesFrom
+        Assert-SRFocusedRunner $taskRepo $RunnerExe
+    }
     if ($PrerequisitesFrom) {
         if ($Level.Count -ne 1 -or $Level[0] -ne 'L2' -or $ListAvailability -or -not $taskDefaultCatalog) { throw 'Prerequisite reuse only supports -Level L2 with the default catalog and without ListAvailability' }
         $taskVerifyStarted=[DateTime]::UtcNow
@@ -81,6 +92,7 @@ try {
     if ($ListAvailability -and @($Level | Where-Object {$_ -notin @('L2','L3')}).Count) { throw 'Availability only supports L2/L3 selections' }
     $taskAssessment = $null
     $taskLiveSelected = @($taskSelected | Where-Object {$_.target -ne 'controlled'})
+    $taskConfigurationStarted=[DateTime]::UtcNow
     if ($taskLiveSelected.Count) {
         if (-not $RunnerExe) {
             $RunnerExe = if($ListAvailability){Join-Path $taskRepo 'bin/steerrunner.exe'}else{Join-Path $taskOut 'bin/steerrunner.exe'}
@@ -113,6 +125,7 @@ try {
         [IO.File]::WriteAllText($Catalog,($taskCatalog | ConvertTo-Json -Depth 60),[Text.UTF8Encoding]::new($false))
         $taskSummary['catalog_sha256']=Get-SRFileDigest $Catalog
     }
+    $taskSummary.timings['configuration_and_helper_seconds']=([DateTime]::UtcNow-$taskConfigurationStarted).TotalSeconds
     $taskExpanded = @()
     foreach ($taskRound in 1..$Repeat) {
         foreach ($taskEntry in @($taskSelected | Sort-Object { if ($_.level -eq 'L4') { 1 } else { 0 } })) {
@@ -127,7 +140,7 @@ try {
     $taskSummary['repeat'] = $Repeat
     $taskSummary['planned_case_count'] = $taskExpanded.Count
     $taskSummary['authorized_exclusion_count'] = @($taskExpanded | Where-Object { $_.excluded }).Count
-    $taskSummary['scope'] = if ($SkipAdminRequired) { 'admin-free-subset' } else { 'selected-complete' }
+    $taskSummary['scope'] = if ($Focused) { 'focused-selection' } elseif ($SkipAdminRequired) { 'admin-free-subset' } else { 'selected-complete' }
     $taskSummary.results = @(Merge-SRCaseRecords -Executions $taskExpanded -Records @())
     Save-Summary
     $taskExitCode = 1
@@ -141,27 +154,38 @@ try {
     }
     # Default execution and explicit reuse share stages, never qualification shortcuts.
     Assert-SRNoLiveOptIn
-    if($taskReused) {
+    if($Focused) {
+        $taskFocusedNativeSource=Get-SRFocusedNativeSource $taskRepo
+        $taskSummary['native_source_digest']=$taskFocusedNativeSource
+    } elseif($taskReused) {
         $taskL1Record=$taskReused.manifest.stages['l1-core'].record.Clone()
         foreach($taskStageName in @('l1-core','controlled')) {
             $taskSourceStage=$taskReused.manifest.stages[$taskStageName]
             $taskSummary.prerequisite_stages+=@(@{name=$taskStageName;kind='reused';original_finished_at=$taskSourceStage.finished_at;original_duration_seconds=$taskSourceStage.duration_seconds;source=$taskReused.manifest_path})
         }
     } else {
+        $taskSummary.prerequisite_execution_counts.l1_core++
         $taskCore=Invoke-SRL1Core $taskRepo $taskOut $taskCatalog $taskDefaultCatalog
         $taskL1Record=$taskCore.record
         $taskSummary.prerequisite_stages+=@($taskCore.stage)
     }
+    $taskSummary.prerequisite_execution_counts.native_preflight++
     $taskPreflight=Invoke-SRNativePreflight $taskRepo $taskOut -RequireStable:([bool]$taskReused)
     $taskSummary.prerequisite_stages+=@($taskPreflight)
-    $taskL1Record['native_driver_compile_exit']=$taskPreflight.compile_exit
-    $taskL1Record['native_zero_match_guard']=$taskPreflight.zero_match_guard
-    $taskSummary.results+=@($taskL1Record)
+    $taskSummary.timings['native_preflight_seconds']=$taskPreflight.duration_seconds
+    if ($Focused) {
+        $taskSummary.results+=@(@{level='NativePreflight';exit_code=$taskPreflight.compile_exit;native_zero_match_guard=$taskPreflight.zero_match_guard})
+    } else {
+        $taskL1Record['native_driver_compile_exit']=$taskPreflight.compile_exit
+        $taskL1Record['native_zero_match_guard']=$taskPreflight.zero_match_guard
+        $taskSummary.results+=@($taskL1Record)
+    }
     Save-Summary
-    if(($taskReused -eq $null -and -not $taskCore.passed) -or $taskPreflight.compile_exit -ne 0 -or -not $taskPreflight.zero_match_guard){throw 'L1 failed, had unexpected skips, or native extension/driver guards failed'}
+    if((-not $Focused -and $taskReused -eq $null -and -not $taskCore.passed) -or $taskPreflight.compile_exit -ne 0 -or -not $taskPreflight.zero_match_guard){throw 'L1 failed, had unexpected skips, or native extension/driver guards failed'}
     if($taskReused) {
         $taskSummary.results+=@($taskReused.manifest.stages.controlled.record.Clone())
-    } elseif('Controlled' -in $Level -or $taskSelected.Count -gt 0) {
+    } elseif(-not $Focused -and ('Controlled' -in $Level -or $taskSelected.Count -gt 0)) {
+        $taskSummary.prerequisite_execution_counts.controlled++
         $taskControlled=Invoke-SRControlledStage $taskRepo $taskOut $taskCatalog $taskDefaultCatalog
         $taskSummary.results+=@($taskControlled.record)
         $taskSummary.prerequisite_stages+=@($taskControlled.stage)
@@ -177,16 +201,27 @@ try {
         Assert-SRFrozenBatchFiles $Config $Catalog $RunnerExe $ConfigHelper $taskSummary
         $taskDriverArguments=@{NativeDriver=$taskPreflight.driver_path;NativeDriverSHA256=$taskPreflight.driver_sha256}
     }
+    if ($Focused) {
+        Assert-SRFrozenBatchFiles $Config $Catalog $RunnerExe $ConfigHelper $taskSummary
+        Assert-SRFocusedInputs $taskRepo $RunnerExe $taskPreflight $taskFocusedNativeSource
+        $taskDriverArguments=@{NativeDriver=$taskPreflight.driver_path;NativeDriverSHA256=$taskPreflight.driver_sha256}
+    }
     $taskPrerequisites = @($taskSummary.results | Where-Object {-not $_.ContainsKey('case_id')})
     $taskResolvedConfig=if($Config){(Resolve-Path -LiteralPath $Config).ProviderPath}else{''}
     $taskConfigSHA=if($taskAssessment){$taskSummary.configuration_sha256}else{''}
     $taskRunnerSHA=if($taskAssessment){$taskSummary.runner_sha256}else{''}
     $taskHelperSHA=if($taskAssessment){$taskSummary.helper_sha256}else{''}
     $taskRequirementsSHA=if($taskAssessment){$taskSummary.requirements_sha256}else{''}
+    $taskBatchStarted=[DateTime]::UtcNow
     Invoke-SRCaseBatch @taskDriverArguments -Executions $taskExpanded -Output $taskOut -Config $taskResolvedConfig -Catalog ((Resolve-Path -LiteralPath $Catalog).ProviderPath) -FixtureParent $FixtureParent -MaxParallel $MaxParallel -RunnerExe $RunnerExe -ConfigHelper $ConfigHelper -ConfigurationSHA256 $taskConfigSHA -RunnerSHA256 $taskRunnerSHA -HelperSHA256 $taskHelperSHA -RequirementsSHA256 $taskRequirementsSHA -Checkpoint {
         param($Records)
         $taskSummary.results = @($taskPrerequisites) + @(Merge-SRCaseRecords -Executions $taskExpanded -Records $Records)
         Save-Summary
+    }
+    $taskSummary.timings['case_batch_seconds']=([DateTime]::UtcNow-$taskBatchStarted).TotalSeconds
+    if ($Focused) {
+        Assert-SRFrozenBatchFiles $Config $Catalog $RunnerExe $ConfigHelper $taskSummary
+        Assert-SRFocusedInputs $taskRepo $RunnerExe $taskPreflight $taskFocusedNativeSource
     }
     if($taskReused) {
         $taskCheck=Read-SRPrerequisites $taskRepo $PrerequisitesFrom
@@ -212,6 +247,7 @@ try {
     }
     $taskSummary['finished_at'] = [DateTime]::UtcNow.ToString('o')
     $taskSummary['duration_seconds']=([DateTime]::UtcNow-[DateTime]::Parse($taskSummary.started_at).ToUniversalTime()).TotalSeconds
+    $taskSummary.timings['total_seconds']=$taskSummary.duration_seconds
     Save-Summary
     if ($taskOut -and -not $ListAvailability) { Write-Host "Test report: $taskOut/summary.json" }
 }

@@ -1,0 +1,67 @@
+[
+  {
+    "path": "application.jsonl.gz",
+    "bytes": 3495,
+    "sha256": "7b0c3a1f5422c11792adfc8690606bd1cbc75657955ad82a30441ad39aa37142"
+  },
+  {
+    "path": "components.jsonl.gz",
+    "bytes": 17268,
+    "sha256": "02d62664dc98193edc764478e0f7209d87ca0ededd5fb93dfe8e993d8216ae4a"
+  },
+  {
+    "path": "controlled/caller-commands.jsonl.gz",
+    "bytes": 18064,
+    "sha256": "d3ad6ef0130c3fab7835b128bdb2ab97fe92386d5e707196345536f7254a478f"
+  },
+  {
+    "path": "controlled/integration.log",
+    "bytes": 1349,
+    "sha256": "d5b24da3d54529ca5118420caaa784484e4f9d75d7f176e51a9904f2b91c360e"
+  },
+  {
+    "path": "controlled/result.json",
+    "bytes": 204,
+    "sha256": "a1577e8009df9f01204c95ee2cca4835dbb0405d415b4aef1d24fa29a4e86361"
+  },
+  {
+    "path": "controlled/source-identity.json",
+    "bytes": 652,
+    "sha256": "6782a8c74787257dac7e785fc808d02000a1f7a5154e0755ec4910e964c2311c"
+  },
+  {
+    "path": "controlled/steerrunner.exe.build.json",
+    "bytes": 422,
+    "sha256": "c01d36a4b505c4272204a678a92e31db004966cea5b5978115ee0937532b2551"
+  },
+  {
+    "path": "controlled/unit-foundation.log",
+    "bytes": 3689,
+    "sha256": "a9318f4f6b27f26f14a79d2ec1bffead0e74e0545dc037bca066ba277d0f13d3"
+  },
+  {
+    "path": "final-boundaries.jsonl.gz",
+    "bytes": 1234,
+    "sha256": "4d2ec379758f2dae481bb40399b8d71345fe64c888ed5c81a00f86bb0a21db84"
+  },
+  {
+    "path": "metrics.json",
+    "bytes": 2219,
+    "sha256": "b1f037b8d046fc4d01c127160a967a02e3598d6ae3f4875b2c680a2725f7c274"
+  },
+  {
+    "path": "production.diff",
+    "bytes": 3804,
+    "sha256": "23db47ee37ed9fb08e78efcbc0967cce9efafe7ecc549232ea3fe44416540a8c"
+  },
+  {
+    "path": "raw-files.json",
+    "bytes": 608,
+    "sha256": "291391b750df12d3612546f13d41c6ecd3a0129ddc728717399fd67024cd2863"
+  },
+  {
+    "path": "verification-summary.json",
+    "bytes": 5337,
+    "sha256": "b78c56cb549b7e5b9fa32d56cc67f3cc32944e82e69fe6cc5b3c425f0b5c6e23"
+  }
+]

@@ -208,6 +208,18 @@ func TestSRAcceptedResourceUsesOriginalOperation(t *testing.T) {
 					t.Fatal("pending resource caused an immediate new preparation loop")
 				}
 			}
+			if expired {
+				current := e.runs[r.ID]
+				if len(current.Intents) != 1 || port.executes != 0 || len(port.observed) != 0 || current.Phase != manualIntervention || current.Allowed || !current.ResumeRequired || !current.View().Controls.CanResume {
+					t.Fatal("expired original preparation lacks a bounded manual exit", current.View())
+				}
+				port.confirm = true
+				e.advance(r.ID, worker)
+				if len(port.observed) != 0 || e.runs[r.ID].Allowed || e.runs[r.ID].Intents[i].Request.Operation.Status != b.OperationAccepted {
+					t.Fatal("late readiness reopened automatic reconciliation or authority")
+				}
+				return
+			}
 			if len(e.runs[r.ID].Intents) != 1 || port.executes != 0 || len(port.observed) != 3 {
 				t.Fatal("accepted resource was recreated", len(e.runs[r.ID].Intents), port.executes, port.observed)
 			}

@@ -57,6 +57,20 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 	if candidate.Done {
 		return false
 	}
+	if nativeInputAction(candidate.Action) && r.Snapshot.Workspace.Path != "" && filesNeedPreparation(r) {
+		// Next has established the original workspace/resource/session. Consume
+		// the optional window only now, before committing the first input intent.
+		w.gate.Unlock()
+		e.prepareRuntimeFiles(r)
+		w.gate.Lock()
+		e.mu.Lock()
+		current := e.runs[id]
+		stale := current.Revision != r.Revision || !current.Allowed || current.ResumeRequired || current.PendingStop != "" || progressBinding(current) != progressBinding(r)
+		e.mu.Unlock()
+		if stale || e.ctx.Err() != nil {
+			return false
+		}
+	}
 	ensurePreparationDeadline(r, time.Now().UTC())
 	if time.Now().After(r.PreparationDeadline) && candidate.Action != b.LifecycleStartTurn && candidate.Action != b.LifecycleSubmitInput {
 		e.block(id, "preparation_deadline", errors.New("The original preparation budget is exhausted"), false)

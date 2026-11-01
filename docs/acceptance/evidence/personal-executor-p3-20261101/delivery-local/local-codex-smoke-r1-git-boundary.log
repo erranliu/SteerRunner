@@ -1,0 +1,13 @@
+=== RUN   TestLinkedGitNativeCommit
+    git_boundary_live_test.go:30: preserved Git boundary: C:\Users\lmas1\AppData\Local\Temp\sr-git-boundary-1216076109
+=== RUN   TestLinkedGitNativeCommit/loose-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary cd4ee3c] boundary
+         stderr=
+=== RUN   TestLinkedGitNativeCommit/packed-head
+    git_boundary_live_test.go:88: err=<nil> exit=0 stdout=[boundary 7f8e72a] boundary
+         stderr=
+--- PASS: TestLinkedGitNativeCommit (5.36s)
+    --- PASS: TestLinkedGitNativeCommit/loose-head (0.43s)
+    --- PASS: TestLinkedGitNativeCommit/packed-head (0.44s)
+PASS
+ok  	github.com/erranliu/SteerRunner/internal/execution/adapters/codex	7.894s

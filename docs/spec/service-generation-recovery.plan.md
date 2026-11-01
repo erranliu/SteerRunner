@@ -1,5 +1,7 @@
 # Plan：服务换代后的原执行接管
 
+> 2026-11-01 P3 适用范围更新：以[个人执行器简化 Spec](personal-executor-simplification.spec.md)及其 Plan 为准。v7 不再支持候选构建接管、资源重建或退役权限兼容；保留同构建原资源重启、原创建回执和停止证明。未知操作超时转人工，显式 resume 只读对账。本文跨构建/旧 decoder 条款为历史记录，不代表现行能力。
+
 > 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。
 
 日期：2026-10-19，状态于 2026-10-21 核对：核心接管、parser 保留、离线审计和调用方接线已实施并有定向证据；Orca 有限创建执行器已实现并受控验证，只调用现有公开接口。对应 [Spec](service-generation-recovery.spec.md)。当前构建、追补及未验范围见[近期 PR 补测](../acceptance/pr-test-gaps-20261020.md)与[创建恢复复验](../acceptance/pr38-review-20261020.md)；历史阶段、失败及跨仓限制保留在[专属验收记录](../acceptance/service-generation-recovery.md)，不因整理文档改记通过或部署。

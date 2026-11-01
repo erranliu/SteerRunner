@@ -12,8 +12,8 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	model "github.com/erranliu/SteerRunner/internal/execution/model"
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
-	parser "github.com/erranliu/SteerRunner/internal/textanalysis"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
+	parser "github.com/erranliu/SteerRunner/internal/textanalysis"
 	"io/fs"
 	"runtime"
 	"sort"
@@ -69,7 +69,7 @@ func VersionInfo() any {
 		"version": Version, "source_commit": SourceCommit,
 		"protocols": []string{contracts.Protocol}, "resource_version": 3,
 		"resource_digest": Digest(), "platform": "windows/amd64",
-		"recovery": RecoveryCapabilities(),
+		"recovery": map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
 	}
 }
 
@@ -98,7 +98,7 @@ func Capabilities() any {
 		"model_input_contract":      ModelInputContract(),
 		"execution_wait":            map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
 		"run_observation":           map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
-		"recovery":                  RecoveryCapabilities(),
+		"recovery":                  map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
 		"run_usage":                 UsageCapabilities(),
 		"run_cost":                  CostCapabilities(),
 		"run_usage_schema":          json.RawMessage(Read("run-usage.schema.json")),
@@ -125,13 +125,8 @@ func Capabilities() any {
 		"generate":              map[string]any{"workflow": "generate/1", "repository": map[string]any{"input_property": "generate.repository", "source": "existing_local_git_objects", "commit": "full_commit_object_id", "snapshot": "private_regular_files_without_git", "selection": "explicit_file_paths_or_whole_tree", "max_manifest_bytes": contracts.MaxGenerateRepositoryManifestBytes, "max_files": contracts.MaxGenerateRepositoryFiles, "max_bytes": contracts.MaxGenerateRepositoryBytes, "unsupported": []string{"symlinks", "submodules", "unsafe_or_case_colliding_paths"}}, "result": "inspect/history: content_result.json", "source": "repository_source: commit/tree/files/blob/sha256/size_bytes", "max_result_utf8_bytes": contracts.MaxGenerateResultBytes, "output_schema": "caller_defined_json_schema_2020_12", "replay": "original_request_id_only_no_unknown_retry"},
 		"capability_catalog":    Catalog(),
 		"cli_schema":            json.RawMessage(Read("cli.schema.json")),
-		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "service verify-takeover", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
+		"commands":              []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "inspect", "submit", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"},
 		"result_acquisition_configuration_schema": json.RawMessage(Read("result-acquisition.schema.json")),
 		"parser_support": map[string]any{"supported": parserSupported, "profile": ra.ParserProfile, "reason": parserReason, "readiness": "CLI_existing_login; in_memory_task; internal_process_cleanup", "empty_tool_guarantee": false},
 	}
-}
-
-func RecoveryCapabilities() contracts.RecoverySupport {
-	return contracts.RecoverySupport{ReadableStateFormats: []string{"steerrunner-state/v6"}, WritableStateFormat: "steerrunner-state/v6", OperationVersions: []int{1}, ExecutionRecordVersions: []int{1}, OwnerProtocol: "steerrunner-execution-owner/v1", PendingStops: true,
-		ImplementationCodecs: map[string][]int{"codex.worker-profile": {3, 4}, "codex.app-server-binding": {1, 2}, "codex.policy-resources": {4, 5}, "orca.terminal-profile": {4, 6}, "orca.terminal-state": {7, 8}}}
 }

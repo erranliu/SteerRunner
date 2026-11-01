@@ -1,0 +1,8 @@
+{
+  "complete_level_passed": false,
+  "missing_batch": "incomplete",
+  "configuration_contract": "passed",
+  "missing_count": 31,
+  "parser_local_preparation": "passed",
+  "independent_dispatch": "passed"
+}

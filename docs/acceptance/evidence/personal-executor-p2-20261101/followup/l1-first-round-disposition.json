@@ -1,0 +1,5 @@
+{
+  "qualification": false,
+  "status": "failed_diagnostic_cancelled",
+  "reason": "Detected TestPreparationAndSubmissionNeverReadScreen regression; narrowed new gate to managed local Codex, then cancelled obsolete run before independent final rerun"
+}

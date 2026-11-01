@@ -65,16 +65,16 @@ type SessionContext struct {
 // TurnInput identifies a fixed input operation; accepting it does not prove
 // that its native turn has started. The native session route is bound separately.
 type TurnInput struct {
-	Budget             *m.InputBudget `json:"input_budget,omitempty"`
-	StepID             string         `json:"step_id,omitempty"`
-	InputVersion       uint64         `json:"input_version,omitempty"`
-	ReportToolPolicy   string         `json:"report_tool_policy,omitempty"`
-	CommandID          string
-	Prompt             string
-	Purpose            string
-	LinkedWorktreeArgs []string `json:"linked_worktree_args,omitempty"`
-	Model              string   `json:"model,omitempty"`
-	ReasoningEffort    string   `json:"reasoning_effort,omitempty"`
+	Budget              *m.InputBudget `json:"input_budget,omitempty"`
+	StepID              string         `json:"step_id,omitempty"`
+	InputVersion        uint64         `json:"input_version,omitempty"`
+	ReportToolPolicy    string         `json:"report_tool_policy,omitempty"`
+	CommandID           string
+	Prompt              string
+	Purpose             string
+	LinkedWorktreePaths []string `json:"linked_worktree_paths,omitempty"`
+	Model               string   `json:"model,omitempty"`
+	ReasoningEffort     string   `json:"reasoning_effort,omitempty"`
 }
 
 func (i TurnInput) ModelInputParts() ([]m.InputPart, error) {

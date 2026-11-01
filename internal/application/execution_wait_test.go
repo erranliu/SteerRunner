@@ -12,6 +12,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
+	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
 func TestSRExecutionWaitDurableProgressAndRealRevision(t *testing.T) {
@@ -234,7 +235,7 @@ func (p *queryRecoveryPort) Reconcile(ctx context.Context, r b.LifecycleRequest)
 	return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}, nil, nil
 }
 func TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity(t *testing.T) {
-	for _, mode := range []string{"nil-empty", "target-change", "revoked", "receipt-present"} {
+	for _, mode := range []string{"nil-empty", "target-change", "revoked", "receipt-present", "manual"} {
 		t.Run(mode, func(t *testing.T) {
 			e, w, _ := operationEngine(t)
 			i, err := e.saveIntent("run", e.runs["run"].Clone(), b.LifecycleCandidate{Action: b.LifecyclePrepareWorkspace, Input: b.LifecycleInput{Workspace: &b.WorkspaceIntent{}}})
@@ -256,6 +257,11 @@ func TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity(t *tes
 			if mode == "receipt-present" {
 				next.Intents[i].Receipt = &b.LifecycleReceipt{Operation: next.Intents[i].Request.Operation, Disposition: b.OperationUnknown}
 			}
+			if mode == "manual" {
+				next.ManualPause = &runstate.ManualPause{Status: "running"}
+				next.ResumeRequired = true
+				next.Allowed = false
+			}
 			if err := e.commitLocked(next, nil, "test_reloaded"); err != nil {
 				t.Fatal(err)
 			}
@@ -263,7 +269,7 @@ func TestSRExecutionWaitRecoveryNormalizesRepresentationButChecksIdentity(t *tes
 			w.gate.Lock()
 			e.invoke("run", w, p, i, true)
 			w.gate.Unlock()
-			if p.recorded != (mode == "nil-empty" || mode == "revoked") || p.authorized != (mode == "nil-empty") {
+			if p.recorded != (mode == "nil-empty" || mode == "revoked" || mode == "manual") || p.authorized != (mode == "nil-empty") {
 				t.Fatal("query recovery confused representation, identity or authorization", mode, p.recorded, p.authorized)
 			}
 		})

@@ -23,7 +23,7 @@ func TestWorkerRuntimeTempUsesFixedAdmin(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(worktree, ".git"), []byte("gitdir: "+filepath.ToSlash(admin)+"\n"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	args, err := LinkedWorktreeWriteArgs(filepath.Join(root, "repo", "objects"), filepath.Join(root, "repo", "refs"), filepath.Join(root, "repo", "logs"), admin)
+	args, err := LinkedWorktreePaths(filepath.Join(root, "repo", "objects"), filepath.Join(root, "repo", "refs"), filepath.Join(root, "repo", "logs"), admin)
 	if err != nil {
 		t.Fatal(err)
 	}

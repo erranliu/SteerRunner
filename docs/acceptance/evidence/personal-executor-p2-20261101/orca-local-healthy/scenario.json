@@ -1,0 +1,9 @@
+{
+  "scenario": "orca-local.smoke",
+  "level": "L3",
+  "stage": "implementation",
+  "run_id": "de33b4013dd118bbf48d10b6f8295b2f",
+  "run_stopped": true,
+  "service_stopped": true,
+  "passed": false
+}

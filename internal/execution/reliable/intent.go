@@ -85,5 +85,5 @@ func SameInput(candidate *b.TurnInput, input b.TurnInput) bool {
 	if candidate != nil && candidate.Budget != nil && input.Budget != nil && !reflect.DeepEqual(candidate.Budget, input.Budget) {
 		return false
 	}
-	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreeArgs, input.LinkedWorktreeArgs) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
+	return candidate != nil && candidate.CommandID == input.CommandID && candidate.Prompt == input.Prompt && candidate.Purpose == input.Purpose && candidate.StepID == input.StepID && candidate.InputVersion == input.InputVersion && candidate.ReportToolPolicy == input.ReportToolPolicy && slices.Equal(candidate.LinkedWorktreePaths, input.LinkedWorktreePaths) && candidate.Model == input.Model && candidate.ReasoningEffort == input.ReasoningEffort
 }

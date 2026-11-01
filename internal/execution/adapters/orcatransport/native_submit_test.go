@@ -64,6 +64,40 @@ func TestNativePromptWireFormats(t *testing.T) {
 	}
 }
 
+func TestLocalCodexBootstrapWaitsForOriginalComposer(t *testing.T) {
+	for _, mode := range []string{"busy", "unverified", "lost-wait"} {
+		t.Run(mode, func(t *testing.T) {
+			l, host, s, c := fixtureFixedControl(t)
+			s = prepareFixedControl(t, l, s, c)
+			input := b.TurnInput{CommandID: strings.Repeat("e", 32), Prompt: "first line\nsecond line"}
+			s.PendingTurn = &input
+			r, err := l.prepareInput(context.Background(), request(s, b.LifecyclePrepareSession, b.LifecycleInput{Turn: &input}))
+			if err != nil {
+				t.Fatal(err)
+			}
+			bind(&s, r)
+			switch mode {
+			case "busy":
+				host.busy = true
+			case "unverified":
+				host.waitBlocked = "initializing"
+			case "lost-wait":
+				host.waitFailures = 1
+			}
+			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+			if err == nil || r.State.InputAccepted || host.nativeSends != 0 || host.waitCalls != 1 {
+				t.Fatal("bootstrap READY allowed input before composer", err, r, host.nativeSends, host.waitCalls)
+			}
+			host.busy = false
+			host.waitBlocked = ""
+			r, err = l.submit(context.Background(), request(s, b.LifecycleStartTurn, b.LifecycleInput{Turn: &input}))
+			if err != nil || !r.State.InputAccepted || host.nativeSends != 1 {
+				t.Fatal("idle original composer did not accept the first input once", err, r)
+			}
+		})
+	}
+}
+
 // Exercise the real lifecycle submission, with independent control over the
 // provider's processing and receipt. No draft projection authorizes this fixture.
 func promptFixture(t *testing.T, environment, text string) (*Lifecycle, *fakeHost, b.LifecycleSnapshot, b.TurnInput) {
