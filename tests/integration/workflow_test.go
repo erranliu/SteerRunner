@@ -104,13 +104,28 @@ func TestSRInputFreeze(t *testing.T) {
 	if same := call(t, dir, []string{"submit", "--input", "-"}, string(acceptedRaw), 0); same.Data.(map[string]any)["run_id"] != id {
 		t.Fatal("config change re-froze duplicate request")
 	}
-	request.RequestID = "invalid-parser-config-new-request"
+	// Independent parser configuration is read only when text analysis is needed.
+	// A new development Run with structured results must still complete normally.
+	request.RequestID = "independent-parser-config-new-request"
 	newRaw, _ := json.Marshal(request)
-	if rejected := call(t, dir, []string{"submit", "--input", "-"}, string(newRaw), 2); rejected.Error.Code != "invalid_input" {
+	newRun := call(t, dir, []string{"submit", "--input", "-"}, string(newRaw), 0).Data.(map[string]any)["run_id"].(string)
+	if newRun == id {
+		t.Fatal("new request reused the original Run")
+	}
+	waitRun(t, dir, newRun, func(r contracts.RunView) bool { return r.Status == "pr_ready" })
+	if countNative(t, "thread/start") != 2 || countNative(t, "turn/start") != 6 {
+		t.Fatal("independent parser configuration changed normal development dispatch")
+	}
+	// Run configuration validation must still reject before any native effects.
+	request.RequestID = "invalid-run-config-new-request"
+	spec.Execution.Settings = json.RawMessage(`{"access_mode":"invalid"}`)
+	request.Input, _ = json.Marshal(spec)
+	invalidRaw, _ := json.Marshal(request)
+	if rejected := call(t, dir, []string{"submit", "--input", "-"}, string(invalidRaw), 2); rejected.Error.Code != "invalid_input" {
 		t.Fatal(rejected)
 	}
-	if countNative(t, "turn/start") != 3 {
-		t.Fatal("bad new config dispatched work")
+	if countNative(t, "thread/start") != 2 || countNative(t, "turn/start") != 6 {
+		t.Fatal("bad Run config dispatched work")
 	}
 
 }

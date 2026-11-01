@@ -1,0 +1,61 @@
+{
+  "schema": "steerrunner-merge-regression-summary/v1",
+  "derived": true,
+  "main_commit": "38becd0",
+  "raw_summary_path": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-merge-main-20261101\\summary.json",
+  "raw_summary_sha256": "8e8cbafbe7502367bd21a7b7cedfd4ce56d665e314ba571b97df8ce1c29f3fa9",
+  "status": "failed",
+  "started_at": "2026-11-01T00:10:59.4801943Z",
+  "source_commit": "7fbba1b0d8afd70481b54896d4283f0557aa4c5b",
+  "source_dirty": true,
+  "requested_levels": [
+    "L1",
+    "Controlled"
+  ],
+  "error": "Controlled prerequisite failed, skipped or did not execute every selected scenario",
+  "results": [
+    {
+      "level": "L1",
+      "exit_code": 0,
+      "test_count": 716,
+      "skipped_tests": [
+        "TestProcessHostCommandHelper",
+        "TestOrcaStoppedNativeProbe",
+        "TestOrcaLocalPipeNativeEvidence",
+        "TestUsageExistingNativeEvidence",
+        "TestUsageRemoteCodexCleanupLive",
+        "TestUsageRemoteCodexLive",
+        "TestRunUsageLocalCodexPublicLive",
+        "TestRunUsageLocalPiPublicLive",
+        "TestRunUsageLocalDSHPublicLive",
+        "TestRunUsageRemotePublicLive",
+        "TestOrcaLocalIPCNativeProbe",
+        "TestOrcaNativeStateLiveLifecycle",
+        "TestUsageLocalAcceptanceRepoCleanupLive",
+        "TestServiceStopWorkerHelper",
+        "TestShortInputProbeInspect",
+        "TestOrcaWorkspaceStartupLive"
+      ],
+      "terminal_extension_exit": 0,
+      "terminal_extension_test_count": 29,
+      "terminal_extensions_passed": true,
+      "scenario_count": null,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-merge-main-20261101",
+      "framework_evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-merge-main-20261101\\framework"
+    },
+    {
+      "level": "Controlled",
+      "exit_code": 1,
+      "test_count": null,
+      "skipped_tests": null,
+      "terminal_extension_exit": null,
+      "terminal_extension_test_count": null,
+      "terminal_extensions_passed": null,
+      "scenario_count": 25,
+      "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\0344\\SteerRunner\\.evidence\\validation-reuse-merge-main-20261101\\controlled",
+      "framework_evidence": null
+    }
+  ],
+  "complete_prerequisite_qualification": false,
+  "fresh_l2_executed": false
+}

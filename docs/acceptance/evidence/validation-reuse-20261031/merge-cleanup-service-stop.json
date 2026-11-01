@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":"merge-fixture-service-stop-corrected","data":{"action_status":"pending","command_id":"dbbadce10651ca433e0f4095970ac6ff","instance_id":"7a90e292b48d8d76d70ae51ebee681c7","receipt_status":"accepted","run_id":null},"error":null}
