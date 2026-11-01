@@ -36,7 +36,7 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		settled := stoppedRecord(r, func(id *b.ProcessIdentity) bool {
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
-		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || unknown(r)) {
+		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || scope == orca.LocalCodexStopScope && unknown(r)) {
 			settled = false // Verify the original inventory, not a saved status label.
 		}
 		probeErr := scopeErr

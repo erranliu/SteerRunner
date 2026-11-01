@@ -4,7 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
-| 本机 Orca Codex 停止条件收敛（state/v8） | [审计、实施与验收](orca-local-codex-stop-simplification.md)：登记原终端/helper/根身份，删除签名退出及控制关闭证明门禁；受影响组件、3 项公开受控、客户端合同和一条真实停止探针通过；不证明全部后代退出，不授予完整 L2/L3 |
+| 本机 Orca Codex 停止条件收敛（state/v8） | [初轮验收](orca-local-codex-stop-simplification.md) / [实现再审计](orca-local-codex-stop-reaudit.md)：登记原终端/helper/根身份，删除签名退出及控制关闭证明门禁；受影响组件、3 项公开受控、客户端合同和一条真实停止探针通过；不证明全部后代退出，不授予完整 L2/L3 |
 | 个人执行器 P1 快速定向验证 | [独立验收](personal-executor-p1.md)：26 项 focused 合同、75 项前置复用合同及相邻回归；本机正式定向 1/1、185.85 秒，完整前置启动为 0，完整 L2 资格为 false；该报告仅记录当时 P1；后续 P2/P3 见下，P4 未推进 |
 | 验证链路解耦与 L2 前置复用 | [实施历史](validation-reuse.md)、[实现审计与最终资格](validation-reuse-audit.md)：75 项合同、完整默认前置和真实 L2 分别登记；L3/L4 不开放复用 |
 | Parser 内存文本任务解耦 | [实施与验证](parser-decoupling.md)：复用现有 Codex 登录/CLI，工具和进程管理仅在 parser 内；无原生操作/owner/停止取证耦合，保留 state/v6；先前 API 方向见 [历史](parser-decoupling-p1.md) |

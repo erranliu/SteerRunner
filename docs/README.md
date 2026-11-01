@@ -10,7 +10,7 @@
 | 长期能力、可靠性承诺、责任边界及待实施收敛 | [产品承诺](spec/steerrunner.spec.md#长期产品承诺)；能力/可靠性使用稳定 PC-C/PC-R 编号，待实施条款不代表当前行为已改变 |
 | 请求字段、服务与 CLI 生命周期 | [CLI 契约](spec/steerrunner.spec.md#3-一个-exe服务与-cli) |
 | 请求、执行、回执、恢复与交付的全链路 | [可靠性交付链路](reliable-delivery.md) |
-| 四种内置流程、阶段及结果获取 | [Workflow 总览](workflows/README.md)、[普通开发](workflows/development.md)、[带审计开发](workflows/development-audited.md)、[持续对话](workflows/conversation.md)、[一次生成](workflows/generate.md) |
+| 内置流程、阶段及结果获取 | [Workflow 总览](workflows/README.md)、[普通开发](workflows/development.md)、[带审计开发](workflows/development-audited.md)、[持续对话](workflows/conversation.md)、[一次生成](workflows/generate.md) |
 | 配置发现、离线校验及内部测试配置 | [独立配置 Spec](spec/independent-configuration.spec.md) / [Plan](spec/independent-configuration.plan.md) |
 | 独立使用的双 skill、共享 helper、只读快照及独立 Viewer | [薄壳 Spec](spec/skill-shell.spec.md) / [Plan](spec/skill-shell.plan.md) / [实现与验收](acceptance/skill-shell.md) |
 | 开发结果提取、可选 parser、一次补报 | [结果获取 Spec](spec/result-acquisition.spec.md) / [Plan](spec/result-acquisition.plan.md) |
@@ -26,7 +26,7 @@
 | Orca 原生多行提交修正（已实施） | [Spec](spec/orca-native-submit.spec.md) / [Plan](spec/orca-native-submit.plan.md) / [原双端验收](acceptance/orca-native-submit-remote-final.md) / [远端重跑](acceptance/orca-native-submit-remote-rerun.md) / [持续控制读取增量](acceptance/orca-native-submit-control-stream.md) / [原保真验收](acceptance/orca-native-submit-integrity.md) / [最新再审计与普通本机接线修正](acceptance/orca-native-submit-reaudit.md)；删除草稿/视口门禁，最新双端各3/3与7170次稳定回归；远端实际模型未独立核验；历史失败和各批资格分别登记 |
 | 普通重启、升级排空、人工对账与原创建回执 | [当前 Spec](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02) / [操作指南](cli-guide.md#人工对账与资源丢失)；[旧换代 Spec](spec/service-generation-recovery.spec.md) / [Plan](spec/service-generation-recovery.plan.md) 保留历史取代说明 |
 | 停止、初始化与停止证据范围 | [初始化停止 Plan](spec/initialization-stop.plan.md)、[Orca 停止取证 Plan](spec/orca-shutdown-verification.plan.md) |
-| 本机 Orca Codex 停止条件收敛（已实施，专项验收） | [Spec](spec/orca-local-codex-stop-simplification.spec.md) / [Plan](spec/orca-local-codex-stop-simplification.plan.md) / [验收](acceptance/orca-local-codex-stop-simplification.md)：登记资源 scope、两类证明门禁删除、实际终止保留；现行 v8，不重释 v7 旧 Run |
+| 本机 Orca Codex 停止条件收敛（已实施，专项验收） | [Spec](spec/orca-local-codex-stop-simplification.spec.md) / [Plan](spec/orca-local-codex-stop-simplification.plan.md) / [初轮验收](acceptance/orca-local-codex-stop-simplification.md) / [再审计](acceptance/orca-local-codex-stop-reaudit.md)：登记资源 scope、两类证明门禁删除、实际终止保留；现行 v8，不重释 v7 旧 Run |
 | 报告、日志及工作区 Git 查询 | [R2 操作指南](run-evidence-r2.md)、[Spec](spec/run-evidence-r2.spec.md) / [Plan](spec/run-evidence-r2.plan.md) |
 | 运行时单文件汇报、原始字节快照 | [接入指南](runtime-progress.md)、[Spec](spec/runtime-progress.spec.md) / [Plan](spec/runtime-progress.plan.md)、[主线整合验收](acceptance/runtime-progress-integration.md) / [专项历史](acceptance/runtime-progress.md) |
 | Run token、独立估价及日志授权 | [用量与费用 Spec](spec/run-usage-and-cost.spec.md) / [Plan](spec/run-usage-and-cost.plan.md)、[实现及现场验收](acceptance/run-usage-and-cost.md) |
@@ -44,7 +44,7 @@
 
 ## 当前契约与历史范围
 
-当前使用 `steerrunner-cli/v1`、state/v8、资源版本 3，内置流程为 development/2、development-audited/2、conversation/1、generate/1。开发材料是固定基线 worktree 内的仓库相对路径；内容流程仍冻结 inline 材料。同构建重启保留原授权；升级须由原版本排空，未知副作用有界查询后转人工，显式 resume 只读对账原操作。当前开发流程到 `pr_ready` 后拒绝业务反馈；审计在一次正式执行中修复 P0–P2，无 Spec 审计或自动返修循环。
+当前使用 `steerrunner-cli/v1`、state/v8、资源版本 3，内置流程为 development/2、development-audited/2、conversation/1、generate/1、execute/1。开发材料是固定基线 worktree 内的仓库相对路径；内容流程仍冻结 inline 材料。同构建重启保留原授权；升级须由原版本排空，未知副作用有界查询后转人工，显式 resume 只读对账原操作。当前开发流程到 `pr_ready` 后拒绝业务反馈；审计在一次正式执行中修复 P0–P2，无 Spec 审计或自动返修循环。
 
 运行时支持组合由 `capabilities` 发布，字段以[内嵌 schema](../internal/resources/assets/cli.schema.json)和生产校验为准；工作流定义见[源码](../internal/execution/workflow)，默认提示见[内嵌资源](../internal/resources/assets/prompts.json)。支持声明还需要对应构建的验收证据。
 

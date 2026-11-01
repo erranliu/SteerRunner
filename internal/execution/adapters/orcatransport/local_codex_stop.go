@@ -10,7 +10,6 @@ import (
 	"time"
 
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
-	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 

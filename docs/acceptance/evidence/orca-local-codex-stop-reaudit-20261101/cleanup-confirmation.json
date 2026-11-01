@@ -1,0 +1,7 @@
+{
+  "query": "orca worktree list --repo id:faae3ad4-da24-4d6d-9698-d8931b893789 --json",
+  "runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+  "owned_worktree": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-final-4c7c2e6e",
+  "present": false,
+  "raw_sha256": "ff7f573292c5eed53206f3db92ce1609ef88a5392411481c3f93e502aef13c4e"
+}
