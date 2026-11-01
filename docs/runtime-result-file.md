@@ -38,4 +38,3 @@ result 保存与 progress、业务记录互不覆盖，文件保存不增加 Run
 ## execute/1 调用
 
 execute/1 复用同一可选 result_file、STEERLINE_RESULT_FILE、原停止与最终封存契约，支持 codex-app-server / orca-terminal 的既有 local / orca_environment 组合。输入不接收 publication 或 progress_file；结果对 Runner 仍是不透明字节，不因结果包含 ready 等字段获得特殊判定。调用方须同时核对原 Run completed、可信原生 final、stop_status=stopped 与 closed 最终快照。该通用工作流的单次输入及控制限制见[工作流说明](workflows/README.md#通用单次执行-execute1)。
-
