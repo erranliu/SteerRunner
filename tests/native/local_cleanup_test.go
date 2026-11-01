@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orcatransport "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/testkit/livetest"
@@ -70,24 +70,21 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 			}
 			evidence = fact
 		} else {
-			actor, proofErr := orcatransport.ReadControlClosureEvidence(filepath.Join(m.Root, "s"), record.Snapshot, state)
-			if proofErr != nil {
-				return nil, proofErr
+			if record.StopEvidenceScope != orcatransport.LocalCodexStopScope || view.StopEvidenceScope != record.StopEvidenceScope || state.RemoteReadiness == nil || state.RemoteReadiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
+				return nil, errors.New("original local Codex stop scope or helper binding changed")
 			}
-			if state.RemoteReadiness.RuntimeSHA256 != settings.AgentLaunch.RuntimeSHA256 {
-				return nil, errors.New("remote cleanup helper was not frozen")
+			repository := record.RepositoryPath
+			if record.Request.Repository.LocalPath != "" {
+				repository = record.Request.Repository.LocalPath
 			}
-			path, pathErr := codex.RemoteExitPath(*state.RemoteReadiness)
-			if pathErr != nil {
-				return nil, pathErr
+			verifyCtx, cancelVerify := context.WithTimeout(context.Background(), 30*time.Second)
+			verifyErr := orcatransport.VerifyStopped(verifyCtx, b.LifecycleSetup{Snapshot: record.Snapshot, ProfileData: record.Profile, ProfileID: record.ID, AcceptedConfigVersion: record.InputDigest, AgentLaunchCommand: record.LaunchCommand, ProcessHost: process.New(30 * time.Second), RepositoryPath: repository, RepositoryURL: record.Request.Repository.URL, RunDirectory: filepath.Join(m.Root, "s")})
+			cancelVerify()
+			if verifyErr != nil {
+				return nil, verifyErr
 			}
-			exitCtx, cancelExit := context.WithTimeout(context.Background(), 30*time.Second)
-			raw, readErr := orca.ReadStopArtifact(exitCtx, m.Execution.Target.Environment, state.Process.RuntimeID, state.Process.WorktreeID, path)
-			cancelExit()
-			if readErr != nil || codex.VerifyRemoteExit(raw, *state.RemoteReadiness) != nil {
-				return nil, errors.Join(readErr, errors.New("original signed native exit unverified"))
-			}
-			evidence = livetest.SignedNativeExitEvidence{Proof: *state.RemoteReadiness, Control: livetest.SignedNativeControlClosure{Process: actor.Process, Closed: actor.Closed}, Bytes: raw}
+			evidence = map[string]any{"scope": record.StopEvidenceScope, "helper": state.RemoteReadiness.Owner, "app_server": state.RemoteReadiness.Process, "control": state.Control}
+
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 40*time.Second)
 		defer cancel()
@@ -107,7 +104,7 @@ func localStopEvidence(m livetest.Manifest, view contracts.RunView) (any, error)
 		if err != nil {
 			return nil, err
 		}
-		return map[string]any{"run_id": view.RunID, "authentication": evidence, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_transient_read_failures": inventory.TransientReadFailures, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
+		return map[string]any{"run_id": view.RunID, "stop_evidence": evidence, "worktree": state.Process.WorktreeID, "runtime": inventory.Runtime, "remaining_terminals": 0, "complete_inventory": inventory.Verified, "inventory_transient_read_failures": inventory.TransientReadFailures, "inventory_observations": inventory.Observations, "inventory_checked_at": inventory.CheckedAt}, nil
 	}
 	return nil, errors.New("original Run missing from cleanup store")
 }

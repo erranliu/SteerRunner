@@ -33,12 +33,6 @@ func TestFixedWorkspaceAuditUsesFreshOriginalControlAndReconcilesPendingRead(t *
 					t.Fatal("new checkpoint reused stale source", fact, err, c.sends)
 				}
 			}
-			if mode == "workspace-reader-live" {
-				state, _ := l.state(s)
-				if err = l.closeControl(context.Background(), state); err == nil || c.sends != 1 {
-					t.Fatal("unsettled reader proof overwritten", err, c.sends)
-				}
-			}
 			if c.creates != 1 || f.nativeSends != before {
 				t.Fatal("source query created resources or business input", c.creates, f.nativeSends)
 			}

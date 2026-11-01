@@ -54,7 +54,7 @@ func DefaultDir() (string, error) {
 	if dir == "" {
 		return "", errors.New("LOCALAPPDATA is unavailable; supply an absolute --state-dir")
 	}
-	return filepath.Join(dir, "SteerRunner-v7"), nil
+	return filepath.Join(dir, "SteerRunner-v8"), nil
 }
 
 // Normalize resolves existing path aliases, including the existing ancestor of

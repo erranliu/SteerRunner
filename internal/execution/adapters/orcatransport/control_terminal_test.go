@@ -52,17 +52,14 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 	}
 	bind(&s, r)
 	l.profile.RuntimeExecutable, l.profile.RuntimeSHA256, l.profile.RuntimeConfigurationDigest = "C:/runtime/helper.exe", strings.Repeat("b", 64), strings.Repeat("a", 64)
-	public, private, err := ed25519.GenerateKey(rand.Reader)
+	public, _, err := ed25519.GenerateKey(rand.Reader)
 	if err != nil {
 		t.Fatal(err)
 	}
 	now := time.Now().UTC()
 	c := &fixedControlFixture{ready: codex.RemoteReadiness{ExitPublicKey: public, Owner: b.ProcessIdentity{Kind: "os", PID: 124, Created: "owner-creation", Executable: "helper"}, NativeTransport: codex.RemoteNativeTransport, Verified: true, Contract: codex.PolicyContract, Workspace: s.Workspace.Path, Repository: "https://github.com/erranliu/SteerlineTest.git", SessionID: "01a1433a-c857-7fc0-bf8c-02a784ad118e", RuntimeSHA256: l.profile.RuntimeSHA256, ConfigurationDigest: l.profile.RuntimeConfigurationDigest, Process: b.ProcessIdentity{Kind: "os", PID: 123, Created: "native-process", Executable: "codex"}, CheckedAt: now}}
 	l.setup.RepositoryURL = c.ready.Repository
-	l.readStopArtifact = func(context.Context, string, string, string, string) ([]byte, error) {
-		body, _ := json.Marshal(codex.RemoteExit{Readiness: c.ready, WritersAbsent: true, ClosedAt: time.Now().UTC()})
-		return json.Marshal(map[string]any{"body": json.RawMessage(body), "signature": ed25519.Sign(private, body)})
-	}
+	l.probeProcess = func(*b.ProcessIdentity) b.ProcessProbeFacts { return b.ProcessProbeFacts{State: "absent"} }
 	original := l.client
 	l.client = native.New(native.Config{CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
 		arg := func(name string) string {
@@ -457,18 +454,15 @@ func TestFixedControlQueryFailurePreservesNativeReaderSettlement(t *testing.T) {
 				t.Fatal("query failure discarded original resource proof", j, err)
 			}
 			before := c.sends
-			err = l.closeControl(context.Background(), state)
-			if mode == "reader-unverified" {
-				if err == nil || c.sends != before {
-					t.Fatal("unverified reader proof overwritten", err, c.sends)
-				}
-				after, _ := l.loadControlCheckpoint(state)
-				if after.Request.ID != j.Request.ID {
-					t.Fatal("original query lost")
-				}
-			} else if err != nil || c.sends != before || c.creates != 1 {
-				t.Fatal("settled failed query blocked original revocation", err, c.sends, c.creates)
+			_, err = l.StopLifecycle(context.Background(), request(s, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil)
+			if err != nil || c.sends != before || c.closes != 1 {
+				t.Fatal("query failure blocked scoped cleanup or dispatched a query", err, c.sends, c.closes)
 			}
+			retained, e := l.loadControlCheckpoint(state)
+			if e != nil || retained.Response == nil || retained.Response.Turn == nil || retained.Response.Turn.ReaderWritersAbsent != j.Response.Turn.ReaderWritersAbsent {
+				t.Fatal("stop rewrote the original query evidence", e)
+			}
+
 		})
 	}
 }

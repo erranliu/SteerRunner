@@ -1,6 +1,6 @@
 # SteerRunner L2–L4 测试清单
 
-> 2026-11-01 当前目录：P3 新增 TestSRManualReconciliation，Controlled 为 26 个顶层场景；其余通用场景/case 以 tests/catalog.json 与 cases.json 为准。当前为 state/v7；升级先排空，unknown 超时后的公开 resume 只读对账、零重建/重发见[P3 验收](acceptance/personal-executor-p3.md)。P1 的正式 test.ps1 -Focused 支持明确 L2/L3 场景、不启动完整 L1/Controlled、完整资格始终 false，见[测试指南](testing.md#快速定向验证p12026-11-01)。下文旧日期的数量、generate/takeover 建议、verify-takeover/旧兼容测试及结果仅属历史；候选接管成功场景已经退役，不作为现行测试义务。原生专项的 Pattern 不等于通用 Focused，也不授予完整 L2/L3。
+> 2026-11-01 当前目录：P3 新增 TestSRManualReconciliation，Controlled 为 26 个顶层场景；其余通用场景/case 以 tests/catalog.json 与 cases.json 为准。当前为 state/v8；升级先排空，unknown 超时后的公开 resume 只读对账、零重建/重发见[P3 验收](acceptance/personal-executor-p3.md)。P1 的正式 test.ps1 -Focused 支持明确 L2/L3 场景、不启动完整 L1/Controlled、完整资格始终 false，见[测试指南](testing.md#快速定向验证p12026-11-01)。下文旧日期的数量、generate/takeover 建议、verify-takeover/旧兼容测试及结果仅属历史；候选接管成功场景已经退役，不作为现行测试义务。原生专项的 Pattern 不等于通用 Focused，也不授予完整 L2/L3。
 
 2026-10-31 验证编排增量：独立前置和显式 L2 复用见[入口说明](testing.md#独立前置与显式-l2-复用) / [验收](acceptance/validation-reuse.md)。本轮未增删任何场景、case、内部变体或 skip 义务；L3/L4 不开放复用。
 
@@ -425,3 +425,7 @@ L1 同时核验 FIFO 取消/跨进程互斥、空输出队列错误、两项读�
 [Spec](spec/generate-repository.spec.md) / [Plan](spec/generate-repository.plan.md) / [接入](workflows/generate.md#固定仓库版本调查) / [验证](acceptance/generate-repository.md)。
 
 原生输入正式 focused 入口的远端准备与业务共享现有本机同等六分钟 fixture 总期限，不单设90秒准备上限。原 READY 只读查询、原冻结输入/intent、一次通用提交、原输入/完成及正式停止均保留；生产等待参数不变。双端各三个真实会话与失败边界见[最终远端验收](acceptance/orca-native-submit-remote-final.md)。
+
+## 本机 Orca Codex 停止条件收敛（2026-11-01）
+
+定向组件、公开受控和 `TestOrcaStoppedNativeProbe` 的显式隔离原生探针见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。新 scope 覆盖登记终端/helper/根身份，不依赖签名退出文件或 control Closed；直接 Codex、Pi/DSH、原生远端保留各自范围。探针使用真实 readiness 和原资源，Run 为隔离注入夹具，业务输入为 0，无真实 PR，不计完整 L2/L3。未设置显式探针环境时的 skip 不计真机通过。

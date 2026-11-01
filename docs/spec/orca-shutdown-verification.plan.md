@@ -1,5 +1,7 @@
 # Orca 停止取证与部署重验
 
+2026-11-01 后续取代：本机 Orca 受管 Codex 的停止及离线核验改为[登记资源范围](orca-local-codex-stop-simplification.spec.md)，已在 state/v8 实施并完成[专项验收](../acceptance/orca-local-codex-stop-simplification.md)。下文本地签名退出/control 关闭证明门禁属原版本历史，不再作为新范围条件；实际 helper/Job 清理和正常查询来源保留。旧 Run 由原版本读取，不改判旧记录；Pi/DSH 与原生远端不套用新 scope。
+
 2026-10-19 后续设计修订（已实施，验收见专项记录）：[仅 Orca Spec](orca-remote-native.spec.md)对新 profile v4 远端 Run 定义 `orca_terminal` 停止证据范围，不再要求远端 helper/Job/认证退出证明。本文历史证明不改写；本地受管路径保留，旧远端 v3 仅查询原记录/精确处理原终端，缺原证明仍未核实，不为其保留 helper 兼容运行栈。禁止把新范围用于放行旧缺证据记录。
 
 普通开发，2026-10-19。对应 [停服契约](steerrunner.spec.md)和调用方的 worker-lifecycle W18/E04–E05/V06–V07。实现 worktree：`codex/orca-stop-proof`；不修改安装环境、不兼容或迁移旧格式。

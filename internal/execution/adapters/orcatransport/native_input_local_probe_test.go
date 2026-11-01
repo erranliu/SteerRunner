@@ -123,14 +123,13 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 					record["verify_stopped_error"] = errorText(verifyErr)
 					state, stateErr := l.state(snapshot)
 					if stateErr == nil && state.RemoteReadiness != nil {
-						closure, authErr := ReadControlClosureEvidence(l.setup.RunDirectory, snapshot, state)
-						record["control_closure"], record["control_error"] = closure, errorText(authErr)
+						record["stop_evidence_scope"] = l.StopEvidenceScope()
 						if path, pathErr := codex.RemoteExitPath(*state.RemoteReadiness); pathErr == nil {
 							if raw, e := os.ReadFile(filepath.Join(state.RemoteReadiness.Workspace, filepath.FromSlash(path))); e == nil {
 								record["signed_exit"] = json.RawMessage(raw)
 							}
 						}
-						if verifyErr == nil && authErr == nil && waitEmpty(cleanup, "after_census") {
+						if verifyErr == nil && waitEmpty(cleanup, "after_census") {
 							record["cleaned_up"] = true
 							l.closeStateFeed()
 							return

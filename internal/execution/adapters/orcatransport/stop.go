@@ -16,6 +16,10 @@ type stopProgress struct {
 // authorize the first close during reconciliation. A crash with no receipt or
 // a lost close response remains unknown; neither permits repeating an effect.
 func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+	if l.localCodexScope() {
+		receipt, err := l.stopLocalCodex(ctx, r, false)
+		return receipt, nil, err
+	}
 	if l.profile.Environment != "" {
 		return l.reconcileRemoteStop(ctx, r)
 	}
@@ -45,19 +49,6 @@ func (l *Lifecycle) reconcileStop(ctx context.Context, r b.LifecycleRequest) (b.
 			return receipt, nil, errors.New("original business stop proof missing")
 		}
 		receipt.State.WorkerAbsent = true
-		state, err := l.state(r.Snapshot)
-		if err != nil {
-			return receipt, nil, err
-		}
-
-		if err = l.closeControl(ctx, state); err != nil {
-			return receipt, nil, err
-		}
-		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
-			if err = l.verifyStopped(ctx, r.Snapshot); err != nil {
-				return receipt, nil, err
-			}
-		}
 		progress.Phase = "confirmed"
 		receipt.Operation.Receipt, _ = json.Marshal(progress)
 		receipt.Disposition = b.OperationConfirmed

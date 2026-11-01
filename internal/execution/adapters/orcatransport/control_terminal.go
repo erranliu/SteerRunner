@@ -189,45 +189,6 @@ func (l *Lifecycle) controlLines(ctx context.Context, state State, fromStart boo
 	return lines, nil
 }
 
-func (l *Lifecycle) closeControl(ctx context.Context, state State) error {
-	if !l.usesControl() {
-		return nil
-	}
-	release, err := l.inspectionGate(ctx)
-	if err != nil {
-		return err
-	}
-	defer release()
-	if err := l.validateControl(l.setup.Snapshot, state, false); err != nil {
-		return err
-	}
-	j, err := l.loadControlCheckpoint(state)
-	if err != nil {
-		return err
-	}
-	if j.Closed {
-		return l.client.VerifyTerminalStopped(ctx, state.Control.Process)
-	}
-	if err = l.settleControlQuery(ctx, state, &j); err != nil {
-		return err
-	}
-	if !j.Closing {
-		j.Closing = true
-		if err = l.saveControlCheckpoint(state, j); err != nil {
-			return err
-		}
-		proof, closeErr := l.client.CloseReadonlyTerminal(ctx, state.Control.Process)
-		if closeErr != nil || proof.Disposition != "confirmed" {
-			return errors.Join(closeErr, errors.New("original native control closure unverified"))
-		}
-	}
-	if err = l.client.VerifyTerminalStopped(ctx, state.Control.Process); err != nil {
-		return err
-	}
-	j.Closed = true
-	return l.saveControlCheckpoint(state, j)
-}
-
 // Polling sleeps stay cancellable; the fixed actor owns any in-flight query.
 func controlPause(ctx context.Context) error {
 	select {
@@ -236,48 +197,4 @@ func controlPause(ctx context.Context) error {
 	case <-time.After(200 * time.Millisecond):
 		return nil
 	}
-}
-
-func (l *Lifecycle) settleControlQuery(ctx context.Context, state State, j *controlCheckpoint) error {
-	if j.Request.ID == "" {
-		return nil
-	}
-	if j.Response == nil {
-		response, err := l.dispatchControl(ctx, state, j.Request)
-		if err != nil {
-			return err
-		}
-		j.Response = &response
-		if err = l.saveControlCheckpoint(state, *j); err != nil {
-			return err
-		}
-	}
-	if err := validateControlResponse(j.Request, *j.Response); err != nil {
-		return err
-	}
-	if j.Request.Method == "original-turn" {
-		for i := range state.Turns {
-			turn := &state.Turns[i]
-			if digest([]byte(wirePrompt(turn))) == j.Request.InputDigest && j.Response.Turn != nil {
-				return validateReaderExit(state, turn, *j.Response.Turn)
-			}
-		}
-	} else if j.Request.Method == "workspace-audit" && j.Response.Workspace != nil && j.Response.Workspace.WritersAbsent {
-		return nil
-	}
-	return errors.New("original control reader settlement unverified")
-}
-
-type ControlClosure struct {
-	Process *b.ProcessIdentity `json:"process"`
-	Closed  bool               `json:"closed"`
-}
-
-func ReadControlClosureEvidence(directory string, snapshot b.LifecycleSnapshot, state State) (ControlClosure, error) {
-	l := &Lifecycle{setup: b.LifecycleSetup{RunDirectory: directory, Snapshot: snapshot}}
-	j, err := l.loadControlCheckpoint(state)
-	if err != nil || !j.Closed || state.Control == nil {
-		return ControlClosure{}, errors.Join(err, errors.New("original control closure missing"))
-	}
-	return ControlClosure{Process: &state.Control.Process, Closed: true}, nil
 }

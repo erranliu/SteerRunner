@@ -1,0 +1,49 @@
+warning: in the working copy of 'spec.md', LF will be replaced by CRLF the next time Git touches it
+To C:/Users/lmas1/.codex/worktrees/cdc6/SteerRunner/.evidence/orca-local-stop/client-contract/remote.git
+ * [new branch]      main -> main
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:213 char:80
++ ... $binding @('version','common_dir','profile','repository','publication ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unexpected token 'version','common_dir','profile','repository','publication'); if ($binding.version -ne 1 -or $binding.
+common_dir -cne $project.common_dir) { Fail 'project_identity_conflict' 'Saved' in expression or statement.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:221 char:74
++ ... .exit_code -ne 0 -or $url.text -match '(?i)(https?://[^/]*@|[?&](toke ...
++                                                                  ~
+Missing type name after '['.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:221 char:75
++ ... xit_code -ne 0 -or $url.text -match '(?i)(https?://[^/]*@|[?&](token| ...
++                                                                 ~
+The ampersand (&) character is not allowed. The & operator is reserved for future use; wrap an ampersand in double quot
+ation marks ("&") to pass it as part of a string.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:248 char:38
++     if ($url.text -match '^https://([^/]+)/([^/]+/[^/]+?)(?:\.git)?$' ...
++                                      ~
+Missing type name after '['.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:248 char:46
++     if ($url.text -match '^https://([^/]+)/([^/]+/[^/]+?)(?:\.git)?$' ...
++                                              ~
+Missing type name after '['.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:305 char:198
++ ... maged_request_record' 'Original request record is damaged; do not reb ...
++                                                                  ~
+Missing statement body in do loop.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:354 char:51
++         if ($base -notmatch '^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$')  ...
++                                                   ~
+Missing type name after '['.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:360 char:60
++ ...          if (-not $relative -or $relative -match '(^/|:|(^|/)\.\.?(/| ...
++                                                             ~~~~~
+Expressions are only allowed as the first element of a pipeline.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:360 char:65
++ ...     if (-not $relative -or $relative -match '(^/|:|(^|/)\.\.?(/|$))') ...
++                                                             ~~~~~
+Unexpected token '\.\.?' in expression or statement.
+At C:\Users\lmas1\.codex\worktrees\cdc6\SteerRunner\client\steerrunner-client.ps1:360 char:65
++ ...          if (-not $relative -or $relative -match '(^/|:|(^|/)\.\.?(/| ...
++                                                                  ~
+Missing closing ')' in expression.
+Not all parse errors were reported.  Correct the reported errors and try again.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnexpectedToken
+ 

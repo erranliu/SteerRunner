@@ -19,8 +19,6 @@ type controlCheckpoint struct {
 	Binding  string                       `json:"binding"`
 	Request  codex.RemoteControlRequest   `json:"request"`
 	Response *codex.RemoteControlResponse `json:"response,omitempty"`
-	Closing  bool                         `json:"closing,omitempty"`
-	Closed   bool                         `json:"closed"`
 }
 
 func (l *Lifecycle) journalPath(state State) (string, string, error) {
@@ -63,9 +61,6 @@ func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error
 	}
 	if len(raw) > 2<<20 || b.DecodeStrictJSON(raw, &j, "trailing native control checkpoint") != nil || j.Version != 3 || j.Binding != binding {
 		return j, errors.New("native control checkpoint changed or foreign")
-	}
-	if j.Closed && (!j.Closing || j.Request.ID != "" && j.Response == nil) {
-		return j, errors.New("closed control checkpoint has unsettled intent or query")
 	}
 	if j.Request.ID == "" {
 		if j.Response != nil || j.Request != (codex.RemoteControlRequest{}) {
@@ -189,15 +184,15 @@ func sameWorkspaceQuery(a, b *codex.RemoteWorkspaceAuditQuery) bool {
 
 func (l *Lifecycle) callControlWithAudit(ctx context.Context, state State, method, input string, audit *codex.RemoteWorkspaceAuditQuery) (codex.RemoteControlResponse, error) {
 	var empty codex.RemoteControlResponse
+	if l.stopping.Load() {
+		return empty, errors.New("original native control is stopping")
+	}
 	if err := l.validateControl(l.setup.Snapshot, state, true); err != nil {
 		return empty, err
 	}
 	j, err := l.loadControlCheckpoint(state)
 	if err != nil {
 		return empty, err
-	}
-	if j.Closing || j.Closed {
-		return empty, errors.New("original native control already closed")
 	}
 
 	if j.Request.ID != "" && j.Response == nil {

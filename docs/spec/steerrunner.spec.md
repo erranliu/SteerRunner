@@ -1,32 +1,106 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
-> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+维护日期：2026-11-01；本次核对代码基线：`8bed4c4`。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
-2026-10-31 当前开发权限修订：开发 sandbox 已退役，开发必须显式 full_access；read_only 与原认证链路保留。开发权限、迁移、旧 Run 与重复测试矩阵以 [统一权限 Spec](development-full-access.spec.md) / [Plan](development-full-access.plan.md) 为准。下文历史构建与验收事实不改写。
+## 长期产品承诺
 
-2026-10-29：Runner 已删除旧 Check 业务；当前状态 v5、资源版本 3，旧状态整体拒绝。普通 Run/result 契约及 SteerLine 配套边界见[退役记录](../acceptance/check-retirement.md)。
+### 定位与适用前提
 
-2026-10-21 文档整理：本文继续维护当前产品与 CLI 契约；首版调查和历史范围按各节日期阅读。当前 state/v5、workflow/2、内容流程、恢复及材料规则由本文和下列专项共同维护；完整导航见[文档索引](../README.md)，旧计划与已取代设计见[历史归档](../archive/README.md)。
+SteerRunner 是面向个人、运行在本人管理和信任的本机及多台远端机器上的 Agent 执行器。它接收确定的任务、材料和执行目标，按 Workflow 执行，维护可追踪的运行状态，返回结果或对应的 PR。无法可靠继续时保留已知事实和可定位的现场，说明缺口并交由本人处理。
 
-2026-10-19 远端设计修订：用户要求新 `orca_environment` Run 仅通过 Orca 执行，删除远端 SteerRunner helper 接线。认证、完成、停止证据、旧记录隔离以[专项 Spec](orca-remote-native.spec.md) / [Plan](orca-remote-native.plan.md)为准；实现与验收结果见专项记录。新远端采用现有 profile envelope 的 v4，不加模式字段；旧远端 v3 仅查询/精确处理原终端，不保留 helper 兼容引擎、不降级放行缺证据记录。本地受管及历史证明保持原范围。
+用户负责主机、工具、账号登录、仓库权限和可用资源；调用方负责需求规划、任务拆分、目标选择及最终业务决策。Runner 管理 Run，不接管 SteerLine 的 Task、DAG、Candidate 或 TaskDelivery，也不自动合并 PR。并行数量受主机资源、后端能力及平台限制，不承诺无限并行、固定吞吐或任务必定成功。
 
-日期：2026-10-14。用户已授权按[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)实施。所属交付：SteerRunner 首版独立化及 SteerLine 接入。本 Spec 描述首版目标，阶段能力、实际验证及未完成项统一见[专属验收](../acceptance/steerrunner.md)；不把契约中的命令视为当前全部可用。
+以下是支持路径应维护的产品边界，不代表任意平台、Agent、Workflow 组合已经通过验证。实际可用范围须同时核对当前构建的 `capabilities`、生产校验和[验收记录](../acceptance/README.md)。声明支持、已实现和已验证分别记录。
 
-历史用户范围（2026-10-15）：本次交付只验收 Windows/amd64 本机 Codex。Orca 本机与远端验收均已取消，适配器和契约保留为未验能力，不声明真机支持；原失败证据不改写为通过。
+### 能力与责任
 
-当前 Workflow 与结果获取以[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[两份 Workflow 定义](../workflows/README.md)为准；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工路径。CLI 生命周期、原子提交与 TaskDelivery 边界仍沿本文规则。
+| 编号 | 长期承诺 | 范围与限制 |
+| --- | --- | --- |
+| PC-C01 执行目标 | 在用户选定、已配置的主机和 Agent 上执行；支持独立 CLI 和客户端接入 | 主机、工具及登录由用户维护；具体后端和支持组合见当前实现范围，不承诺自动跨机迁移任务 |
+| PC-C02 任务绑定 | 保存接受时的任务、配置、材料引用及 Workflow；仓库任务固定基线、工作区、分支和结果对应关系 | 开发材料是固定基线 worktree 中的仓库相对路径，不承诺额外保存文档字节副本；内容流程沿各自材料冻结契约 |
+| PC-C03 长任务与流程 | 后台执行已接受的任务，按冻结 Workflow 管理步骤、结果、等待和显式用户输入，包括已声明的审计及修复步骤 | 不依赖调用方窗口存活；不接管调用方的任意任务 DAG，不承诺无限或超出 Workflow 定义的隐式返修 |
+| PC-C04 结果与 PR | 返回可归属的结果；开发流程通过 provider 核对 PR 的仓库、base/head 等身份 | Agent 给出的 URL 是候选；PR 就绪不代表已经合并、资源已停止或代码质量获得完整认证 |
+| PC-C05 审计 | 按选定 Workflow 执行审计及约定修复，保留结果来源和适用的提交绑定 | 不保证发现全部缺陷；不把旧提交的审计结论推广到新代码；仍遵守路径支持限制 |
+| PC-C06 执行权限 | 开发使用执行账号已有权限及 Git/gh/SSH 登录 | 必须显式 full_access；worktree 用于任务组织，不提供 OS 隔离，不承诺单仓库凭据、凭据退出失效或抵御恶意 Agent |
+| PC-C07 可见性 | 服务可用且查询合法时，按公开契约查询已提交的 Run 状态、受理回执、操作结果、停止状态及已保存结果；查询失败明确报错 | 核心查询返回已提交事实，不保证外部状态已实时刷新；消息摘要、文件进度、日志采集、用量和 Viewer 实时性等可选观测尽力提供 |
 
-历史扩展契约：[workflow/1 审计设计](../archive/2026-10/spec/workflow-selection-audit.spec.md) / [原 Plan 与验证记录](../archive/2026-10/spec/workflow-selection-audit.plan.md)已归档。当前多流程发现/选择、审计模型与一次代码审计修复以[结果获取 Spec](result-acquisition.spec.md)和[Workflow 定义](../workflows/README.md)为准；暂不提供外部 workflow 装载。
+开发权限采用[宿主认证](host-native-auth.spec.md)和[统一 full_access](development-full-access.spec.md)，不再创建 broker、CA、socket 或认证租期。内容流程的 read_only 和 parser 自身工具禁用机制继续保留；个人信任环境的定位不等于这些现行机制已删除，也不取消基本输入校验、凭据脱敏或精确资源身份核对。
 
-## 当前产品边界（2026-10-19）
+核心状态及回执查询不适用“可选观测尽力提供”的降级约定：无法查询时返回明确错误，不能伪造成功、空结果或终态。已提交快照与外部实时事实分别表达；外部查询失败时保留的旧事实沿现有契约带观察时间和诊断，不冒充最新状态。可选通道缺失、过期或采集失败只表示可见性缺口，不证明任务失败、完成或停止；不承诺逐 token 可见、断线期间实时更新或费用统计绝对准确。
 
-SteerRunner 面向个人，在本人管理和信任的多台执行主机上运行冻结的 Spec/Plan。调用方指定本机或已配对 Orca environment；SteerLine 负责任务规划、DAG、目标选择和最终交付组织。Runner 负责独立 Run、执行事实、反馈、显式恢复、停止和可核验 PR。
+### 长期责任边界与当前支持范围
 
-每台执行机由用户安装工具、登录 gh 并准备固定仓库/base；Runner 不复制调用方凭据，也不自动安装、修复登录、提升 OS 权限或迁移正在执行的 Run。当前平台和 agent 支持仍以 capabilities 与对应验收矩阵为准，个人多机定位不代表所有 OS/agent 已通过验证。
+长期不承担的职责包括多租户安全、主机级安全隔离、集中凭据托管、用户任务规划和自动跨机故障迁移。这些边界服务于个人可信主机的定位。
 
-本机 codex-app-server 与 Orca local 受管执行使用宿主已有 gh 登录的单仓库 broker；各 Run 独立 capability、期限、操作边界、socket 与清理证明。远端遵循 Orca 原生链路，使用执行主机已有认证，不创建 Runner broker/capability，不承诺远端凭据单仓库、限时或退出失效。多 Run 的工作区/会话/事件/PR/停止仍隔离；停止不退出宿主登录。双模型来源核验仅支持本机受管 Codex，原生远端审计明确 unsupported，零相关资源；保留显式 sandbox/full_access 和未知结果零重发。
+当前仅交付 Windows/amd64、远端使用 Orca、Workflow 使用内置定义且不提供外部定义装载，是本版本的实现及支持范围，不作为永久禁止扩展的产品原则。以后增加平台、后端或 Workflow 来源时，另行明确接口、行为和验证范围，并更新当前支持声明；现有代码或本文方向描述不自动构成新组合的支持资格。具体 Workflow 已声明的有限审计、修复或其他步骤仍应按定义执行，不能以“不承诺隐式返修”为由跳过。
 
-本阶段不提供 GitHub App 签发/私钥管理、团队/多租户账号系统、集中密钥托管或自动跨机故障迁移。移除 `execution.settings.github_auth`，所有形态（含 null）在 Run 接受前返回 invalid_input；内部 profile/helper 配置同样严格拒绝，不能静默切换身份。旧 App 执行必须用原版本完成停止和认证收尾后升级；历史请求/报告保留，不转换为新身份或本构建资格。
+### 可靠性承诺
+
+可靠性的重点是任务不串线、未知业务动作不盲重发、停止后不继续派发、没有证据不报成功。以下保证限于声明支持的机制及可核实事实；不以增加覆盖所有异常的恢复框架作为默认目标。
+
+| 编号 | 应保持的规则 | 不作出的保证 |
+| --- | --- | --- |
+| PC-R01 持久受理 | 单 state-dir 单 writer；同 request_id/同正文找回原命令，改正文冲突；Run、命令和业务事件原子提交后才发布状态或派发动作 | CLI 成功退出或内存状态不能代替持久事实；不提供与外部系统的跨库事务 |
+| PC-R02 副作用与未知 | 首次外发前持久保存操作身份和固定输入；可能已发生的创建、启动、业务输入及发布只核实原操作，不因超时或响应丢失重新派发 | 不承诺外部系统端到端 exactly-once；未知可转人工，不用盲目重试换取表面成功 |
+| PC-R03 任务及结果归属 | 按原 Run、工作区、会话、步骤和操作的必要身份接收事实；重复事实去重，冲突或错来源不推进业务 | 不仅凭终端文字、最新 HEAD 或一句完成声明认定原任务完成；不要求所有后端具备相同原生取证机制 |
+| PC-R04 退出与重启 | CLI/调用方退出不撤销已接受的执行；同构建的服务普通重启在原资源仍有效时接回原授权、游标及未完成操作，补收原结果 | 不保证资源丢失后重建 owner、Attempt、终端或 session；主执行不因重启重新授权或刷新预算；独立 parser 的例外见下文 |
+| PC-R05 有界恢复 | 查询沿原操作的适用预算；自动窗口耗尽或资源丢失后进入待人工，显式 resume 仅有界核实原事实并复核继续资格 | 不无限自动恢复，不自动跨机故障迁移；活动长回合不因未知输入的短查询期限被判失败；技术恢复不解除业务等待或停止撤销 |
+| PC-R06 撤销与停止 | stop 持久受理后禁止新的业务派发；按冻结的后端范围终止原资源，有证据才报告 stopped，无法核实仍为 unknown/unsupported | 已在途动作不可回滚；停止不撤销宿主登录，不证明整台主机无相关进程；服务停止、观察脱离与 Run 停止分别表达 |
+| PC-R07 结果声明 | 分开表达原生执行事实、Agent 汇报、程序核验、Workflow 完成、PR 平台事实及资源结算 | 不独立认证 Agent 的全部测试/质量声明；Agent 自述不能代替 Workflow 已要求的 final、审计来源或 PR 核验 |
+| PC-R08 观测容错 | progress/result 文件准备及采集故障只影响通道事实，保留可用快照和诊断，不成为新的业务门禁 | 不把观测失败解释为任务失败或资源已停止；业务意图或受理事务保存失败仍禁止派发，不能借观测容错跳过 |
+| PC-R09 并行任务 | 各 Run 的工作区、会话、输入、结果和停止目标分别绑定；只操作精确归属的资源 | 不提供主机级资源配额或 OS 安全隔离；后端串行通道、排队及资源不足可能限制并发 |
+| PC-R10 升级 | 原版本先排空原生资源和未完成操作/控制，再升级；兼容且已排空时允许保留目录和历史 | 不跨构建接管活动任务，不维护退役私有格式矩阵；pr_ready 或 service stop 均不能代替排空 |
+
+当前有界人工对账、普通服务重启及升级规则见[个人执行器简化 Spec §4](personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)和[操作指南](../cli-guide.md#人工对账与资源丢失)。服务重启不等于执行主机重启后仍保证资源存活。
+
+**独立 parser 的可靠性例外与代价：** parser 是内存文本任务，未提交的结果可能因服务中断丢失。服务重启或显式恢复后，仅在当前业务源及推进资格仍满足时，允许按当时的 parser 配置重新分析，可能重复推理和收费；不保证跨重启的总调用次数、总费用、相同模型或相同输出，也不恢复原 parser 操作或继承其预算。该取舍仅适用于独立文本分析，不允许重发原实施、审计、发布或其他业务执行。取消、结果采纳及 fallback 仍沿[parser 契约](parser-decoupling.spec.md)，不是在同一等待状态无限自动重算。
+
+### 成功与停止的含义
+
+| 对外事实 | 表示什么 | 不能推导什么 |
+| --- | --- | --- |
+| accepted | 请求及原受理命令已经持久保存 | 模型已开始、业务已完成 |
+| 开发交付 / pr_ready | 开发 Workflow 的结果和 PR 身份等必要核验条件已满足 | 所有测试由 Runner 独立复验、PR 已合并、执行资源已停止 |
+| generate 完整完成 | 完整原生 final 及适用的格式/schema 校验通过，结果已固定，并完成现行停止及资源结算 | 仅取得成功结果就代表全部完成；清理失败不能显示全部完成；不代表内容质量获得独立认证 |
+| conversation 回合完成 | 本轮原执行及结果按契约结算，保留结果/轮次事实，等待显式 message | 整个会话已关闭或资源已停止；原回合失败/取消不因回合结束被改写为业务成功 |
+| stop 已受理 | 后续业务输入授权已撤销 | 已在途动作回滚、原生进程立即结束 |
+| stop_status=stopped | 冻结后端范围内的停止证据满足现行契约 | 任意派生进程或主机后台服务均结束、宿主凭据撤销 |
+| resources_settled / verify-stopped | 在报告范围内取得现行资源结算事实 | 超出 scope 的主机级清场、任务质量或业务成功 |
+| service 已停止 | 服务写者退出 | Run 已停止；保留的原生执行可以继续 |
+
+Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边界套用到全部流程。内容结果状态与 cleanup/stop 状态分别报告；generate 成功结果已取得但清理失败时保留这两个事实，不能以结果成功覆盖未结算状态。conversation 的一轮结束也不自动关闭会话，close/stop 沿其显式控制契约。详见[内容流程契约](content-workflows.spec.md)。
+
+当前停止保证按冻结后端分别表达：原生远端 Orca 的 `orca_terminal` 核实原终端；本机 Orca 受管 Codex 的 `orca_local_codex_resources` 核实原业务/控制终端及 helper、app-server 原根进程；直接 Codex 和 Pi/DSH 沿各自现行机制。PC-R06 不将这些范围扩大为主机级清场。
+
+<a id="待实施的承诺收敛本机-orca-codex-停止"></a>
+### 现行停止范围：本机 Orca Codex
+
+状态：2026-11-01 已实施并完成专项最小验收，尚未部署或发布。见[Spec](orca-local-codex-stop-simplification.spec.md)、[Plan](orca-local-codex-stop-simplification.plan.md)和[验收](../acceptance/orca-local-codex-stop-simplification.md)。旧标题锚点仅保留链接兼容，不表示仍待实施。
+
+本机受管 Codex 按新 scope 终止并核实登记的原业务终端、控制终端、helper 和 app-server 原根进程。保留最多 15 秒的原停止预算、最多 2 秒的协作停止、原 helper 的 Job/工具实际清理、精确身份及停止后零新业务输入。删除签名退出文件和 control Closed/pending reader 响应作为该范围结算门禁；同一判据用于显式停止、服务关闭中的核验和离线 verify-stopped，后者即使已有 stopped 也重新查询原资源。
+
+代价是停止成功不再证明所有后代写进程退出；脱离管理的进程可由本人检查。原 stop 可能外发后只读对账，不重发 helper 请求或 close；部分清理中断可保持 unknown 转人工。正常业务及审计查询仍核验 reader/结果来源；共享退出签名写入、直接 Codex owner/checkpoint 保留。直接 Codex、Pi/DSH、原生远端和独立 parser 不改用此 scope。
+
+scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state/v8、user_version=8 和新默认目录明确隔离 v7 旧承诺；不回填旧 Run、不按新 EXE 重释原停止保证。原版本先排空，旧历史仍由原版本读取，显式目录和客户端绑定不自动迁移。
+
+确定收益是删除两类停止专属证明规则；adapter 生产代码净减少 14 行，包含格式、投影及客户端后生产代码净增加 15 行。未测得可比耗时加速，不承诺正常任务提速或全局净删。专项仅取得受影响组件、3 项公开受控及一条真实本机停止探针资格，不继承为完整 L2/L3。
+
+### 文档分工与维护规则
+
+- 本节是能力及可靠性承诺的长期总入口。CLI 字段/退出码、Workflow 和专项 Spec 细化机制；[可靠性交付链路](../reliable-delivery.md)解释运行路径；[操作指南](../cli-guide.md)描述如何使用；acceptance 保存具体构建的验证事实。
+- 改变产品承诺时在这里修改对应 PC-C/PC-R 项，标明现行或待实施，链接受影响专项。不能仅在某次 Plan、验收报告或聊天中改变长期承诺，也不能用新的产品方向覆盖尚未修改的运行行为。
+- 区分长期责任边界与当前支持范围；版本的平台、后端和定义装载限制不自动成为永久禁令，增加能力仍需独立设计及对应验证。各 Workflow 完成条件、核心状态查询和独立 parser 的例外不能被通用表述覆盖。
+- 实施完成后再把待实施条款并入现行承诺，更新相关操作说明和受影响的验证引用；只为实际受影响机制补验证，不因维护本文新增全后端测试前置。
+- 已完成的快速定向验证、观测不阻塞、恢复/兼容删除及问答输入收口保持结项。残余具体导入或共用 Record 不自动构成重开重构的理由，需另有重复规则、实际故障或可验证收益。
+- 本文后续保留首版背景及 CLI 细节；已取代条款按下面的当前基线和专项阅读。历史验收不改写，待实施方向不计为已实现或已验证。
+
+## 当前实现基线与历史说明
+
+当前使用 `steerrunner-cli/v1`、state/v8、SQLite user_version=8，默认 `%LOCALAPPDATA%/SteerRunner-v8`；拒绝 v7 及更旧目录，不迁移或代替原版本收尾。verify-takeover、跨构建活动任务接管、资源重建和旧 Check 已删除。开发权限与认证见上述现行承诺；恢复/升级详见[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)。
+
+当前 Workflow 与结果获取见[能力解耦及结果获取 Spec](result-acquisition.spec.md)和[Workflow 定义](../workflows/README.md)；它们取代 workflow/1 的固定报告、双审计及发布后反馈返工。下文首版目标、旧版本、旧权限/认证及恢复描述只在未被取代的范围适用；不恢复 broker/sandbox、旧 decoder 或资源重建要求。
+
+下文首版独立化调查日期为 2026-10-14，原[实施 Plan](../archive/2026-10/spec/steerrunner.plan.md)及[专属验收](../acceptance/steerrunner.md)保留其历史范围。2026-10-15 的本机限定验收、此前取消的 Orca 验收不改写，也不否定后续构建的专项结果。当前支持及缺口从[文档索引](../README.md)和对应验收查阅，不以首版记录推导当前全部资格。
 
 ## 1. 目标、依据与首版范围
 
@@ -97,15 +171,17 @@ Windows 实现先以原生 breakaway 挂起创建并检查 Job。创建被禁止
 
 CLI 或 SteerLine 退出、IPC 断连不会自动停止已接受的 Run。首次输入明确接受后，正常服务实例可继续既定 workflow；客户端进程是否存在不改变其授权。服务停机后的规则见第 8 节。
 
-`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。停服接受回执不能证明所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。本机 Codex 的独立 owner 保留原生连接、Job 和认证，服务只脱离观察；显式 Run stop 才停止原树。Orca 保留原观察脱离规则。相关契约、存量升级边界和当前资格见 [服务换代恢复 Spec](service-generation-recovery.spec.md)。Windows 系统服务注册与开机自启动另行设计。
+`service stop` 是服务生命周期命令，`stop` 是指定 Run 的执行命令。停服请求携带 status 返回的 expected_instance_id，核验后才能作用于该实例；新请求不得停止已经换代的服务。停服接受回执不能证明所有原生执行已经停止；必须保存各 Run 的已确认/未核实处理事实。本机 Codex 的独立 owner 保留原生连接和 Job/工具树，服务只脱离观察；显式 Run stop 才停止原树，不撤销宿主登录。Orca 保留原观察脱离规则。相关契约和当前资格见[个人执行器简化 Spec](personal-executor-simplification.spec.md)；[旧服务换代 Spec](service-generation-recovery.spec.md)保留历史说明。Windows 系统服务注册与开机自启动另行设计。
 
 服务在所有 worker 退出并读取持久化停止事实后、释放写锁前发布最终结算。`service status` 仅在写锁空闲且无未核实启动时公开 `last_shutdown`，绑定 `instance_id/request_id/state_dir/executable_sha256`，分别返回 `resources_settled` 和诊断；不读取或推导私有执行库。只有全部 Run 已持久化 stopped 且关闭无错误才标为 true；未知、unsupported、观察脱离、缺失证据不等于已停止。新写者获得写锁后首先移除旧结算，防止启动失败或异常退出后继续使用上一代证明。无记录不伪造成功。
 
-显式 `service verify-stopped` 为停机后的独立只读取证入口，不能隐式进入启动或恢复：取得既有 writer.lock、拒绝未核实启动后，只读当前格式数据库，逐 Run 返回原 ID、input_digest 和资源结论。已持久化 stopped 可作为原证据；未保存 stopped 的本地 managed Codex 仅在记录完整、原 Job 唯一 owner 和精确 root 都已退出时核实资源消失，复用现有 managed 恢复证明。Orca 另按冻结 profile/resource 查询原 runtime 的完整 worktree 终端清单：要求计数一致、未截断、该 runtime 自身的 local host 纳入且未省略；同 handle 必须保留原 incarnation 并已退出，或原终端在完整范围中缺席。无关配对 host 的省略不能冒充原 host 取证。PTY 清单不是 native writer-tree 证明；通用原生 helper 还须既有原 owner/exit/authentication 结算，且不能混入 Codex/readers 证据。Codex inline-v3 helper 在 readiness 中固定原 helper 身份和仅存内存的退出签名公钥；app-server/tools 与 TUI 分别由原非 breakaway Job 管理。显式 stop 只经既有原 runtime 文件通道提交与该 readiness 绑定的公开请求，先实际查询两棵 Job 至空并关闭认证，再由原 helper 签发完整 readiness 绑定的退出凭据，最后关闭原 PTY。helper 已返回原 shell 时也按原 PTY/worktree 和原生凭据核对，不依赖 agent 展示标签。公共凭据可放在工作区，但只有原 helper 持有私钥；文件改写、跨运行重放或缺签名不能放行。离线重验通过既有 files.readChunk 有界读取原 runtime/worktree 的固定相对路径并验签，不新建验证终端或执行。固定 control actor 及调用端检查点纳入原资源结算，每次只读 history/Git 查询须有原子进程树退出事实；最终原控制终端也须停止。查询失败可单独返回已结算的 reader 事实，不能晋升业务完成。缺 readiness/key/认证/树证明、未知创建或旧 helper 无证据仍未核实，不能用调用方本机 PID 代替原执行主机事实，也不迁移或补写历史证据。普通停服完成既有观察清理后可以使用同一读取规则提交最终 stopped，但不能因此自动关闭业务终端或输入。缺记录、身份/权限未知、仍活动、清单不完整或仅观察脱离均不能成功。缺目录、锁、库或不支持格式直接失败，不创建/迁移现场，不保存 stopped、不重写历史回执。调用方只消费该公开 CLI，不读取 Runner 私有库。实施和验证范围见 [Orca 停服核验 Plan](orca-shutdown-verification.plan.md)。
+显式 `service verify-stopped` 为停机后的独立只读取证入口：取得既有 writer.lock、拒绝未核实启动后，只读当前格式库，按逐 Run 冻结身份和范围返回结论。缺目录、锁、库、不支持格式、身份/权限未知、资源仍活动、清单不完整或未知创建均不能成功；不初始化服务/observer，不创建资源、不保存 stopped、不改原命令或 shutdown 回执。调用方只消费公开 CLI，不读取私有库。
+
+Orca 查询原 runtime/worktree 的新鲜完整终端清单，计数须一致、未截断，原 local host 未省略；原 handle/incarnation 已退出或确实缺席才成立。不能用调用端 PID 推断远端。原生远端仅报告 `orca_terminal`；本机受管 Codex 按上文 scope 另查 helper 与 app-server 原根身份，即使已保存 stopped 也不跳过；签名退出文件和 control 关闭检查点均不作门禁。正常 history/Git 查询仍要求原 reader 及来源证据。直接 Codex 的 managed owner/精确 root 和 Pi/DSH 原生 helper 沿各自原证明，不能混用新 scope。普通停服完成观察清理后可按同一读取判据记录资源结论，不自动关闭业务或续发输入。历史全树停止取证设计见[旧 Plan](orca-shutdown-verification.plan.md)，新范围及验证以[本次验收](../acceptance/orca-local-codex-stop-simplification.md)为准。
 
 ## 4. 状态目录、内嵌资源与环境依赖
 
-所有有目录上下文的命令使用 `--state-dir <绝对路径>`。独立使用时省略该参数，默认目录为当前用户 `%LOCALAPPDATA%/SteerRunner`；SteerLine 必须显式传入项目运行目录下的 `runner` 子目录。CLI 参数优先，不能依赖调用时 cwd 或 SteerLine 环境变量改变目标。
+所有有目录上下文的命令使用 `--state-dir <绝对路径>`。独立使用时省略该参数，当前默认目录为 `%LOCALAPPDATA%/SteerRunner-v8`；SteerLine 等集成方须显式选择并维护自己的状态目录。CLI 参数优先，不能依赖调用时 cwd 或 SteerLine 环境变量改变目标，也不静默迁移显式目录。
 
 建议布局如下；数据库和私有文件结构不属于调用方读写契约：
 
@@ -320,7 +396,7 @@ request_id、Run、Attempt、操作、会话/原生回合和原生资源身份�
 
 `resume` 是当前恢复状态下的新显式授权，不是盲重放。仅在原身份/操作状态核验到足以安全继续后执行；未知创建/输入沿原准备期限对账，没有共同期限时最多 30 秒；耗尽转 blocked/manual_intervention_required 并允许显式 resume。受理后最多 30 秒只读查询原操作，持久保存期限且重启/保存失败不续期；不 Execute、不创建新 Attempt/owner/终端或替代 session，不重发输入。真实原事实解决未知且原资源有效时才解除技术暂停；仍未知、资源不可达或冲突则本次 action_status=failed，保留待人工，可用新 request_id/当前 revision 再查。同 ID 回放原结果。原撤销、业务等待和阻断保持，stop/close 优先；资源丢失后由用户处理现场或显式创建新 Run。
 
-连接重接与同构建重启只接续原身份、原授权和原流程，不因此增加一次业务输入；既有人工门槛保持。升级须先由原版本排空原生资源及全部未完成副作用/控制，pr_ready 或 service stop 均不等于排空；verify-takeover 已删除，不提供跨构建活动任务接管。此次 v6→v7 使用新目录；未来格式/执行契约兼容且已排空时可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。其他新 Run 的合法 submit 不被一个旧目标的不可达阻断。
+连接重接与同构建重启只接续原身份、原授权和原流程，不因此增加一次业务输入；既有人工门槛保持。升级须先由原版本排空原生资源及全部未完成副作用/控制，pr_ready 或 service stop 均不等于排空；verify-takeover 已删除，不提供跨构建活动任务接管。此次 v7→v8 使用新目录；未来格式/执行契约兼容且已排空时可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。其他新 Run 的合法 submit 不被一个旧目标的不可达阻断。
 
 `stop.input` 含 expected_revision。接受 stop 的同一事务先保存 `new_inputs_allowed:false`，使未发送的准备、步骤、答案和恢复意图失去投递资格；随后才按后端真实能力停止原执行。已经发送的动作不能撤回，不宣称所有原生工具立即停止。迟到结果可核验和保存，但不得自动产生或发送下一输入。
 
@@ -332,13 +408,9 @@ stopped/failed 的后续 resume 仅在上列资格满足且仍有原会话时可
 
 ## 9. PR 成果与 SteerLine 协作
 
-Windows 的默认 `sandbox` 使用固定 MXC 权限资源契约；显式 `full_access` 核验对应的原生完整访问权限。sandbox 下 app-server 的宿主临时目录位于所属 Git 管理目录；实际工具的 TEMP/TMP 由原生 AppContainer 管理，Runner 不要求它们等于宿主路径，也不通过新写入根或手动环境覆盖绕过容器隔离。sandbox 验收须核实真实工具 token、操作系统返回的容器目录内临时文件读写及未授权兄弟目录拒写。原生依赖自有认证、会话历史、缓存和内核临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料仍归 state-dir。
+开发工作流必须显式选择 `full_access`，采用执行主机已有的 Git/gh/SSH 登录；不提供默认开发 sandbox、单仓库认证代理或认证租期。原生权限参数及启动条件仍按具体后端核验，不以模型声明代替已有程序检查。内容流程的 read_only 和 parser 自身约束不随开发权限简化而取消。现行规则见[统一权限](development-full-access.spec.md)、[宿主认证](host-native-auth.spec.md)及本文 PC-C06；旧[sandbox 认证设计](sandbox-authentication.spec.md)只供历史追溯。
 
-GitHub worker 的 W05–W07 使用可信执行主机认证准备与确定性同权限工具检查：
-默认 sandbox 为 workspace-write/MXC/network enabled/approval never；显式 full_access 为 danger-full-access/approval never，不能用作准备失败的回退。关闭 shell snapshot。
-不再申请自动审核发布。单仓库认证代理、进程环境、期限、失败零业务输入及远端能力
-边界见[认证契约](sandbox-authentication.spec.md)；W16 原发布责任和未知结果对账保持。
-本机可执行此准备；Orca terminal 缺同沙箱确定性能力时在业务前阻断，不接受模型检查声明。
+原生依赖的会话历史、缓存和临时目录不成为 Runner 恢复权威；Runner 自身状态、日志及冻结材料归 state-dir。未知发布继续核实原操作，不因权限放宽而重新推送或创建 PR。
 
 Runner 按冻结 publication 配置和当前实际工作分支推送，创建或复用该分支 PR。模型返回 URL 后，provider 需核验平台实例、仓库、base/head 仓库及分支与 Run 的绑定一致，才能进入 pr_ready。URL、仓库、number、查询状态和可取得的 revision/时间及诊断作为 PRFact 返回。
 

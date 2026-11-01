@@ -52,7 +52,7 @@ func TestFixedControlRetainedStream(t *testing.T) {
 							t.Fatal("lost send receipt was treated as confirmed")
 						}
 						// Recreate the lifecycle: the original checkpoint/response must recover.
-						l = &Lifecycle{setup: l.setup, profile: l.profile, client: l.client, clock: l.clock}
+						l = &Lifecycle{setup: l.setup, profile: l.profile, client: l.client, clock: l.clock, probeProcess: l.probeProcess, uploadStopArtifact: l.uploadStopArtifact}
 						value, err = l.recordedTurn(context.Background(), &state, &state.Turns[0])
 					}
 					if mode == "wrong-response" || mode == "wrong-input" {
@@ -72,11 +72,8 @@ func TestFixedControlRetainedStream(t *testing.T) {
 						t.Fatal("workspace query blocked", fact, err)
 					}
 
-					if err := l.closeControl(context.Background(), state); err != nil {
-						t.Fatal(err)
-					}
-					if _, err := ReadControlClosureEvidence(l.setup.RunDirectory, l.setup.Snapshot, state); err != nil {
-						t.Fatal("formal cleanup proof missing", err)
+					if r, err := l.StopLifecycle(context.Background(), request(snapshot, b.LifecycleStopExecution, b.LifecycleInput{Stop: &b.StopInput{}}), nil); err != nil || !r.State.Stopped {
+						t.Fatal("original resources not stopped", err)
 					}
 					if control.sends != 3 || control.creates != 1 || control.closes != 1 || host.nativeSends != 1 {
 						t.Fatal("queries created resources or repeated business input", control.sends, control.creates, control.closes, host.nativeSends)

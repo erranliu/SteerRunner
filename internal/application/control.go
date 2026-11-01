@@ -223,7 +223,8 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 			index = i
 		}
 	}
-	if index < 0 {
+	freshStop := index < 0
+	if freshStop {
 		var err error
 		index, err = e.saveIntent(id, r, b.LifecycleCandidate{Action: b.LifecycleStopExecution, Input: b.LifecycleInput{Stop: &b.StopInput{TurnID: r.Snapshot.Session.CurrentTurnID}}})
 		if err != nil {
@@ -242,8 +243,11 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		return false
 	}
 	request.Snapshot.Implementation = r.Snapshot.Clone().Implementation
+	if r.StopEvidenceScope == orca.LocalCodexStopScope {
+		request.Snapshot.Operations = r.Snapshot.Clone().Operations
+	}
 	stopBudget := 15 * time.Second
-	if r.Request.Execution.Adapter == "orca-terminal" {
+	if r.Request.Execution.Adapter == "orca-terminal" && r.StopEvidenceScope != orca.LocalCodexStopScope {
 		// One original stop needs multiple serialized CLI identity/closure
 		// queries. Allow the shared queue without timing out before its first
 		// close. This remains finite and is cancelled by service shutdown.
@@ -260,7 +264,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	defer cancel()
 	var receipt b.LifecycleReceipt
 	var err error
-	if r.Intents[index].Receipt != nil {
+	if r.Intents[index].Receipt != nil || r.StopEvidenceScope == orca.LocalCodexStopScope && !freshStop {
 		if e.writersAbsent(r, w, r.Snapshot.Ref.External) {
 			receipt = b.LifecycleReceipt{Operation: request.Operation, Disposition: b.OperationConfirmed, State: b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true, WritersAbsent: true}}
 		} else {
@@ -315,6 +319,9 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	if err == nil && receipt.State.Stopped {
 		if terminal, ok := p.(*orca.Lifecycle); ok && terminal.StopEvidenceScope() != "" {
 			next.Diagnostic = orca.NativeStopDiagnostic
+			if next.StopEvidenceScope == orca.LocalCodexStopScope {
+				next.Diagnostic = orca.LocalCodexStopDiagnostic
+			}
 		}
 	}
 	// Continue probing an unresolved stop, but only publish a new revision when

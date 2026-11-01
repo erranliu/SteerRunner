@@ -1,5 +1,7 @@
 # Spec：个人多机执行器的执行链路简化
 
+> 后续取代说明（2026-11-01）：该批已合入的 v7 与验证事实保持原范围；当前版本由[本机 Orca Codex 停止条件收敛](orca-local-codex-stop-simplification.spec.md)切为 v8，升级与停止按[长期承诺](steerrunner.spec.md#长期产品承诺)及[专项验收](../acceptance/orca-local-codex-stop-simplification.md)阅读，不重开 P1–P4。
+
 日期：2026-11-01。总状态：本轮选定范围（P1、P2、P3、P4 原生问答输入）实施及独立验收已完成，当前操作文档冲突已收口；其他 P4 候选不展开。交付方式为一份汇总 PR，已验收实现与本次文档修订分开提交，待评审合并；不追称四批已各自独立提交。当前 state/v7。完整 L1/Controlled 与真实最小链路仍按各批原构建记账，P4 仅取得受影响定向资格；没有完整 L2/L3、全 agent、外仓或发布资格。
 
 配套 [Plan](personal-executor-simplification.plan.md)。[P1](../acceptance/personal-executor-p1.md)、[P2](../acceptance/personal-executor-p2.md)、[P3](../acceptance/personal-executor-p3.md)、[P4](../acceptance/personal-executor-p4.md)报告及证据保持原字节。调查/验收基线为 e2729563562314659a799a5f82debe427fcd7c24 加各批未提交内容；这些是当时的真实构建来源，提交整理不将其改写为 clean 构建或新提交的全量资格。

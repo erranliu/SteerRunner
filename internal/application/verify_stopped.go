@@ -29,15 +29,18 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		var scopeErr error
 		if r.Request.Execution.Adapter == "orca-terminal" {
 			scope, scopeErr = orca.StopEvidenceScope(setup)
+			if scopeErr == nil && (scope == orca.LocalCodexStopScope || r.StopEvidenceScope != "") && scope != r.StopEvidenceScope {
+				scopeErr = fmt.Errorf("frozen stop evidence scope is missing or inconsistent")
+			}
 		}
 		settled := stoppedRecord(r, func(id *b.ProcessIdentity) bool {
 			return process.NewServiceFacts().Probe(id).State == "absent"
 		})
-		if scopeErr != nil || scope != "" && r.Snapshot.Ref.External.Kind != "" {
+		if scopeErr != nil || scope != "" && (r.Snapshot.Ref.External.Kind != "" || unknown(r)) {
 			settled = false // Verify the original inventory, not a saved status label.
 		}
-		var probeErr error
-		if !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
+		probeErr := scopeErr
+		if scopeErr == nil && !settled && r.ID != "" && r.InputDigest != "" && r.Request.Execution.Adapter == "orca-terminal" && r.Snapshot.Ref.RunID == r.ID && r.Snapshot.Session.ExecutionID == r.ID && r.Snapshot.ConfigurationDigest == r.InputDigest {
 			probeCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 			probeErr = orca.VerifyStopped(probeCtx, setup)
 			cancel()
@@ -48,7 +51,7 @@ func VerifyStopped(ctx context.Context, dir string, runs []*runstate.Record) con
 		v := contracts.StoppedRun{RunID: r.ID, InputDigest: r.InputDigest, ResourcesSettled: settled, StopEvidenceScope: scope}
 		if !settled {
 			v.Diagnostic = fmt.Sprintf("run %s: original native writer absence is unverified", r.ID)
-			if scope != "" {
+			if scope == "orca_terminal" {
 				v.Diagnostic = fmt.Sprintf("run %s: original Orca terminal absence is unverified", r.ID)
 			}
 			if probeErr != nil {

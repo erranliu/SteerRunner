@@ -391,6 +391,13 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		return nil, err
 	}
 	r.Profile = []b.ImplementationDataEnvelope{profile}
+	if request.Execution.Adapter == "orca-terminal" {
+		var p orca.Profile
+		if err := json.Unmarshal(payload, &p); err != nil {
+			return nil, err
+		}
+		r.StopEvidenceScope = orca.StopScope(p, agent)
+	}
 	seen := map[string]bool{}
 	for _, doc := range append([]contracts.Document{request.Documents.Spec, request.Documents.Plan}, request.Documents.References...) {
 		if seen[strings.ToLower(doc.Path)] {

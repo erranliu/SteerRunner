@@ -19,11 +19,12 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
-// Opt-in native contract probe: real PTY and released Runner EXE, no model/PR.
+// Opt-in native probe: real PTY, Runner EXE, optional Codex bootstrap; no business/PR.
 // The current-format Run is an isolated fixture bound to the actually created
 // native resource. It never imports installation state or business authority.
 func TestOrcaStoppedNativeProbe(t *testing.T) {
@@ -36,7 +37,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal("managed helper exit probe is local only; remote uses native terminal scope")
 	}
 	environment := ""
-	if !filepath.IsAbs(root) || !strings.HasPrefix(strings.ToLower(filepath.Clean(root)), `c:\steerlinedebug\`) || !filepath.IsAbs(cli) || !filepath.IsAbs(runner) || repo == "" || len(base) != 40 || !filepath.IsAbs(repository) {
+	if !filepath.IsAbs(root) || !filepath.IsAbs(cli) || !filepath.IsAbs(runner) || repo == "" || len(base) != 40 || !filepath.IsAbs(repository) {
 		t.Fatal("explicit independent probe identity missing")
 	}
 	if err := os.Mkdir(root, 0700); err != nil {
@@ -119,14 +120,17 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		profile.RuntimeExecutable, profile.RuntimeSHA256, profile.RuntimeConfigurationDigest = helper, os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256"), codex.RemoteConfigurationDigest(config)
 	}
 	id, attempt, digest := contracts.NewID(), contracts.NewID(), strings.Repeat("a", 64)
-	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: p}, Session: b.SessionContext{ProjectID: "stop-probe", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: digest, ResourceGeneration: "probe-generation"}
+	s := b.LifecycleSnapshot{Ref: b.ExecutionRef{Version: 1, Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: p}, Session: b.SessionContext{ProjectID: "stop-probe", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: digest, ResourceGeneration: "probe-generation"}
 	s.Workspace = b.WorkspaceIntent{Path: w.Path, Branch: strings.TrimPrefix(w.Branch, "refs/heads/"), BaseCommit: base}
 	profileRaw, _ := json.Marshal(profile)
 	profileData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.ProfileVersion, Purpose: b.ImplementationConfigPurpose, ImplementationKey: orca.ProfileKey, ProjectID: s.Session.ProjectID, ProfileID: id, AcceptedConfigVersion: digest}, profileRaw)
 	if err != nil {
 		t.Fatal(err)
 	}
-	dir := filepath.Join(root, "state")
+	dir, err := Normalize(filepath.Join(root, "state"))
+	if err != nil {
+		t.Fatal(err)
+	}
 	stateVersion := orca.LocalStateVersion
 	if environment != "" {
 		stateVersion = orca.StateVersion
@@ -152,7 +156,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 			t.Fatal("original control preparation unavailable", facts, e)
 		}
 		ref := s.Ref
-		operation := b.Operation{ID: contracts.NewID(), Action: string(b.LifecycleCreateResource), PayloadDigest: digest, Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: id, ConfigurationDigest: digest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}
+		operation := b.Operation{Version: 1, ID: contracts.NewID(), Action: string(b.LifecycleCreateResource), PayloadDigest: digest, Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: id, ConfigurationDigest: digest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}
 		q := b.LifecycleRequest{Snapshot: s, Input: b.LifecycleInput{Resource: facts.ResourceRequired}, Operation: operation}
 		receipt, _, e := owner.Execute(ctx, q)
 		for e == nil && receipt.Disposition == b.OperationAccepted {
@@ -183,7 +187,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if helper != "" {
 		profile.RuntimeExecutable, profile.RuntimeSHA256, profile.RuntimeConfigurationDigest = helper, os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER_SHA256"), codex.RemoteConfigurationDigest(config)
 		for until := time.Now().Add(150 * time.Second); ready == nil; {
-			read, e := c.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--limit", "1000", "--json")
+			read, e := c.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--cursor", "0", "--limit", "1000", "--json")
 			var value struct{ Terminal struct{ Tail []string } }
 			if e != nil || json.Unmarshal(read.Payload, &value) != nil {
 				t.Fatal("real native readiness read", e)
@@ -238,6 +242,11 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal(err)
 	}
 	r := &runstate.Record{ID: id, InputDigest: digest, Revision: 1, Snapshot: s, Profile: []b.ImplementationDataEnvelope{profileData}, RepositoryPath: repository, Request: contracts.RunRequest{Repository: contracts.Repository{URL: config.RepositoryURL}, Execution: contracts.Execution{Adapter: "orca-terminal"}}, Status: "blocked", Phase: "probe", CommandStates: map[string]string{}}
+	r.StopEvidenceScope = orca.StopScope(profile, "codex")
+	r.LaunchCommand = launchCommand
+	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
+	flow, _ := workflow.Lookup("development", 2)
+	r.Workflow = workflow.Snapshot{Config: &flow, StepID: flow.Initial}
 	if err = store.Commit(r, 0, nil); err != nil {
 		t.Fatal(err)
 	}
@@ -276,7 +285,11 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 			t.Fatal("verification started a service", e)
 		}
 		status, fault := Status(ctx, dir)
-		if fault != nil || status.Status != "not_running" || status.LastShutdown == nil || status.LastShutdown.ResourcesSettled {
+		if fault != nil || status.Status != "not_running" || status.LastShutdown == nil || status.LastShutdown.ResourcesSettled != func() bool {
+			var saved contracts.ServiceShutdown
+			_ = json.Unmarshal(failure, &saved)
+			return saved.ResourcesSettled
+		}() {
 			t.Fatal("offline verification replaced original shutdown or started execution", status, fault)
 		}
 	}
@@ -290,24 +303,104 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal("passive shutdown claimed active PTY stopped", facts, err)
 	}
 	if helper != "" {
-		stopping, e := orca.NewLifecycle(b.LifecycleSetup{Snapshot: s, ProfileData: r.Profile, ProfileID: id, AcceptedConfigVersion: digest, ProcessHost: probeProcessHost{cli: cli, allowStop: true, runDirectory: dir}, RepositoryPath: repository, RepositoryURL: config.RepositoryURL, RunDirectory: dir})
-		if e != nil {
-			t.Fatal(e)
+		// The fixture is bound to real resources; use the actual public Runner
+		// service/stop protocol rather than substituting an adapter receipt.
+		invoke := func(label string, body any, args ...string) json.RawMessage {
+			t.Helper()
+			cmd := exec.CommandContext(ctx, runner, append(args, "--state-dir", dir, "--json")...)
+			if body != nil {
+				raw, _ := json.Marshal(body)
+				cmd.Stdin = bytes.NewReader(raw)
+			}
+			raw, e := cmd.Output()
+			_ = os.WriteFile(filepath.Join(root, label+".json"), raw, 0600)
+			var result struct {
+				OK   bool            `json:"ok"`
+				Data json.RawMessage `json:"data"`
+			}
+			if e != nil || json.Unmarshal(raw, &result) != nil || !result.OK {
+				t.Fatalf("%s: %s %v", label, raw, e)
+			}
+			return result.Data
 		}
-		ref := s.Ref
-		stop := b.LifecycleRequest{Snapshot: s, Input: b.LifecycleInput{Stop: &b.StopInput{}}, Operation: b.Operation{ID: contracts.NewID(), Action: string(b.LifecycleStopExecution), PayloadDigest: digest, Ref: &ref, LifecycleIdentity: &b.LifecycleOperationIdentity{ProjectID: s.Session.ProjectID, ExecutionID: id, ConfigurationDigest: digest, ResourceGeneration: s.ResourceGeneration, InputBindingDigest: b.LifecycleBindingDigest(s), Ref: ref}}}
-		receipt, e := stopping.StopLifecycle(ctx, stop, nil)
-		raw, _ := json.Marshal(receipt)
-		_ = os.WriteFile(filepath.Join(root, "adapter-stop.json"), raw, 0600)
-		if e != nil || receipt.Disposition != b.OperationConfirmed || !receipt.State.Stopped || !receipt.State.WorkerAbsent {
-			t.Fatal("real adapter stop failed", receipt.Diagnostic, e)
+		var started contracts.ServiceInfo
+		rawStart := invoke("public-service-start", nil, "service", "start")
+		if json.Unmarshal(rawStart, &started) != nil || started.InstanceID == "" {
+			t.Fatalf("missing service identity: %s", rawStart)
 		}
+		serviceRunning := true
+		t.Cleanup(func() {
+			if serviceRunning {
+				body := map[string]any{"protocol": contracts.Protocol, "request_id": "probe-cleanup-service-stop", "input": contracts.ServiceStopInput{ExpectedInstanceID: started.InstanceID}}
+				raw, _ := json.Marshal(body)
+				cmd := exec.Command(runner, "service", "stop", "--state-dir", dir, "--input", "-", "--json")
+				cmd.Stdin = bytes.NewReader(raw)
+				_ = cmd.Run()
+			}
+		})
+		inspect := func() contracts.RunView {
+			var envelope struct {
+				Run contracts.RunView `json:"run"`
+			}
+			raw := invoke("public-inspect", nil, "inspect", "--run-id", id)
+			if json.Unmarshal(raw, &envelope) != nil || envelope.Run.StopEvidenceScope != orca.LocalCodexStopScope {
+				t.Fatalf("scope projection: %s", raw)
+			}
+			return envelope.Run
+		}
+		view := inspect()
+		body := map[string]any{"protocol": contracts.Protocol, "request_id": "probe-public-stop", "input": contracts.RevisionInput{ExpectedRevision: view.Revision}}
+		invoke("public-stop-receipt", body, "stop", "--run-id", id, "--input", "-")
+		for until := time.Now().Add(30 * time.Second); ; {
+			view = inspect()
+			if view.StopStatus == "stopped" {
+				break
+			}
+			if time.Now().After(until) {
+				t.Fatalf("public stop did not settle: %+v", view)
+			}
+			time.Sleep(200 * time.Millisecond)
+		}
+		invoke("public-service-stop", map[string]any{"protocol": contracts.Protocol, "request_id": "probe-public-service-stop", "input": contracts.ServiceStopInput{ExpectedInstanceID: started.InstanceID}}, "service", "stop", "--input", "-")
+		// The public service stop response is acceptance, not writer exit.
+		for until := time.Now().Add(20 * time.Second); ; {
+			status, fault := Status(ctx, dir)
+			if fault == nil && status.Status == "not_running" && status.LastShutdown != nil {
+				break
+			}
+			if time.Now().After(until) {
+				t.Fatalf("accepted service stop has not exited: %+v %v", status, fault)
+			}
+			time.Sleep(50 * time.Millisecond)
+		}
+		serviceRunning = false
+		before, err = os.ReadFile(filepath.Join(dir, "runner.db"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		failure, err = os.ReadFile(filepath.Join(dir, "service", "shutdown.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		verify("stopped-verified", true)
+		// Remove only this isolated probe's already-unneeded evidence. Production
+		// verification must not depend on either file, including after stopped.
 		path, _ := codex.RemoteExitPath(*ready)
-		raw, e = native.ReadStopArtifact(ctx, environment, p.RuntimeID, w.ID, path)
-		if e != nil || codex.VerifyRemoteExit(raw, *ready) != nil {
-			t.Fatal("real native exit unavailable", e)
+		exitPath := filepath.Join(ready.Workspace, filepath.FromSlash(path))
+		if err := os.Remove(exitPath); err != nil && !os.IsNotExist(err) {
+			t.Fatal(err)
 		}
-		_ = os.WriteFile(filepath.Join(root, "native-exit.json"), raw, 0600)
+		journals, err := filepath.Glob(filepath.Join(dir, "orca-native-inspections", "*.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, journal := range journals {
+			if err := os.Remove(journal); err != nil {
+				t.Fatal(err)
+			}
+		}
+		verify("stopped-without-proof-files", true)
+
 	} else {
 		proof, e := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
 		if e != nil || proof.Disposition != "confirmed" {

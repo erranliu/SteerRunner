@@ -11,10 +11,12 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"io"
 	"os"
 	"reflect"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -58,26 +60,28 @@ type State struct {
 	LaunchConfirmed    bool                   `json:"launch_confirmed,omitempty"`
 }
 type Lifecycle struct {
-	observationMu     sync.Mutex
-	nativeObservation *nativeObservation
-	terminalMu        sync.Mutex
-	terminalJob       b.ProcessTreeHandle
-	setup             b.LifecycleSetup
-	profile           Profile
-	profileVersion    int
-	client            native.Client
-	stateFactory      native.StateFeedFactory
-	queryNative       func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
-	queryInput        func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
-	feed              native.StateFeed
-	feedProcess       b.ProcessIdentity
-	feedMu            sync.Mutex
-	feedRetryAt       time.Time
-	clock             func() time.Time
-	nativeAccess      bool
-	readStopArtifact  func(context.Context, string, string, string, string) ([]byte, error)
-	inspectionOnce    sync.Once
-	inspectionSerial  chan struct{}
+	stopping           atomic.Bool
+	probeProcess       func(*b.ProcessIdentity) b.ProcessProbeFacts
+	uploadStopArtifact func(context.Context, string, string, string, string, io.Reader) error
+	observationMu      sync.Mutex
+	nativeObservation  *nativeObservation
+	terminalMu         sync.Mutex
+	terminalJob        b.ProcessTreeHandle
+	setup              b.LifecycleSetup
+	profile            Profile
+	profileVersion     int
+	client             native.Client
+	stateFactory       native.StateFeedFactory
+	queryNative        func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
+	queryInput         func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
+	feed               native.StateFeed
+	feedProcess        b.ProcessIdentity
+	feedMu             sync.Mutex
+	feedRetryAt        time.Time
+	clock              func() time.Time
+	nativeAccess       bool
+	inspectionOnce     sync.Once
+	inspectionSerial   chan struct{}
 }
 
 func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
@@ -109,7 +113,8 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 	if err != nil {
 		return nil, err
 	}
-	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, readStopArtifact: native.ReadStopArtifact, clock: func() time.Time { return time.Now().UTC() }}
+	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
+	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, native.UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		all := append(append([]string(nil), p.Args...), args...)
 		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
@@ -162,7 +167,8 @@ func (l *Lifecycle) validate(s b.LifecycleSnapshot) error {
 	return nil
 }
 
-func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
+// resourceState reads bound resource identities without accepting business evidence.
+func (l *Lifecycle) resourceState(s b.LifecycleSnapshot) (State, error) {
 	if err := l.validate(s); err != nil {
 		return State{}, err
 	}
@@ -182,7 +188,7 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 			}
 
 			var err error
-			state, err = decodeState(e.Payload, e.CodecVersion)
+			err = b.DecodeStrictJSON(e.Payload, &state, "trailing terminal state")
 			if err != nil {
 				return state, err
 			}
@@ -190,17 +196,6 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 	}
 	if state.Process.Terminal != "" && state.Process != s.Ref.External {
 		return state, errors.New("saved original terminal differs from current resource")
-	}
-	if l.profile.Environment != "" {
-
-		if state.Control != nil || state.RemoteReadiness != nil || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.AdmissionAttempted || state.AdmissionAccepted {
-			return state, errors.New("native remote state contains helper preparation")
-		}
-		for _, turn := range state.Turns {
-			if turn.Recorded != nil || turn.Extension != nil || turn.WireFormat != "" || turn.ReceiptRequest != "" || !turn.ReceiptQueriedAt.IsZero() {
-				return state, errors.New("native remote state contains helper turn evidence")
-			}
-		}
 	}
 	if state.LaunchAttempted && (state.LaunchDigest != digest([]byte(l.setup.AgentLaunchCommand)) || state.LaunchRequest == "") || state.LaunchAccepted && !state.LaunchAttempted || state.LaunchConfirmed && !state.LaunchAccepted {
 		return state, errors.New("original agent launch binding changed")
@@ -214,6 +209,28 @@ func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
 		}
 		if err := l.validateControl(s, state, false); err != nil {
 			return state, err
+		}
+	}
+	return state, nil
+}
+
+func (l *Lifecycle) state(s b.LifecycleSnapshot) (State, error) {
+	state, err := l.resourceState(s)
+	if err != nil {
+		return state, err
+	}
+	if err := validateNativeProofFlags(state); err != nil {
+		return state, err
+	}
+	if l.profile.Environment != "" {
+
+		if state.Control != nil || state.RemoteReadiness != nil || state.TerminalOwner != nil || state.TerminalReadiness != nil || state.AdmissionAttempted || state.AdmissionAccepted {
+			return state, errors.New("native remote state contains helper preparation")
+		}
+		for _, turn := range state.Turns {
+			if turn.Recorded != nil || turn.Extension != nil || turn.WireFormat != "" || turn.ReceiptRequest != "" || !turn.ReceiptQueriedAt.IsZero() {
+				return state, errors.New("native remote state contains helper turn evidence")
+			}
 		}
 	}
 	if l.usesControl() && (state.LaunchAttempted || len(state.Turns) != 0) {
@@ -1013,11 +1030,14 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		}
 		_ = h.owner.Close(ctx)
 		// Do not await an event acknowledgement from the actor performing stop.
-		// The control gate drains in-flight reads; its revocation checkpoint
-		// rejects later queries even before this goroutine has fully returned.
+		// The gate cancels in-flight reads; the scoped stop's in-memory fence
+		// rejects later control queries without another persistent checkpoint.
 	}
 	if l.profile.Environment != "" {
 		return l.remoteStopResult(ctx, r, true)
+	}
+	if l.localCodexScope() {
+		return l.stopLocalCodex(ctx, r, true)
 	}
 	progress := stopProgress{Version: 1, Phase: "not-attempted"}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
@@ -1075,10 +1095,6 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		}
 	}
 
-	state, stateErr := l.state(r.Snapshot)
-	if stateErr != nil {
-		return receipt, stateErr
-	}
 	// Stop authorization is already durable. Credential uncertainty cannot keep
 	// the original worker running; finish its exact PTY closure within a bounded
 	// cleanup context even if the preceding credential observation timed out.
@@ -1086,11 +1102,6 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	defer cancelStop()
 	if err = l.originalForStop(stopCtx, r.Snapshot); err != nil {
 		return receipt, err
-	}
-	if l.usesControl() {
-		if err = l.stopCodexNative(stopCtx, state, r.Snapshot.Workspace.Path); err != nil {
-			return receipt, err
-		}
 	}
 	progress.Phase = "attempted"
 	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
@@ -1113,29 +1124,6 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		}
 		progress.Phase = "business-confirmed"
 		receipt.State.WorkerAbsent = true
-		state, stateErr := l.state(r.Snapshot)
-		if stateErr != nil {
-			return receipt, stateErr
-		}
-		// Do not destroy the sole route to an uncommitted revocation proof.
-		// The known original control actor remains owned and blocks settlement.
-
-		if cleanupErr := l.closeControl(stopCtx, state); cleanupErr != nil {
-			return receipt, cleanupErr
-		}
-		if l.profile.Terminal == nil && l.profile.RuntimeExecutable != "" {
-			// Orca's acknowledged PTY close can precede its published inventory.
-			// Poll only the same original identity; never repeat the close.
-			until := time.Now().Add(3 * time.Second)
-			for {
-				if err := l.verifyStopped(stopCtx, r.Snapshot); err == nil {
-					break
-				} else if time.Now().After(until) || stopCtx.Err() != nil {
-					return receipt, err
-				}
-				time.Sleep(50 * time.Millisecond)
-			}
-		}
 
 		progress.Phase = "confirmed"
 		receipt.Disposition = b.OperationConfirmed
@@ -1185,11 +1173,7 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 		}
 	}
 	defer l.closeTerminalJob()
-	_, err := l.state(s)
-	if err != nil {
-		return b.LifecycleStateFacts{}, err
-	}
-	if err = l.verifyStopped(ctx, s); err != nil {
+	if err := l.verifyStopped(ctx, s); err != nil {
 		return b.LifecycleStateFacts{}, err
 	}
 	return b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}, nil
