@@ -71,10 +71,10 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		t.Fatal("native worktree creation", err)
 	}
 	w := creation.Worktree
-	cleaned := false
+	cleaned, exitArtifactAbsent := false, false
 	t.Cleanup(func() {
 		defer func() {
-			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "business_inputs": 0, "real_codex": os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER") != "", "fixture": "isolated current Run bound to real original native identities"})
+			raw, _ := json.Marshal(map[string]any{"passed": !t.Failed(), "resources_cleaned": cleaned, "exit_artifact_absent": exitArtifactAbsent, "runtime_id": made.RuntimeID, "worktree_id": w.ID, "environment": environment, "business_inputs": 0, "real_codex": os.Getenv("STEERRUNNER_ORCA_STOP_PROBE_HELPER") != "", "fixture": "isolated current Run bound to real original native identities"})
 			_ = os.WriteFile(filepath.Join(root, "result.json"), raw, 0600)
 		}()
 		cleanup, stop := context.WithTimeout(context.Background(), 40*time.Second)
@@ -219,12 +219,25 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assertNoExitArtifact := func() {
+		t.Helper()
+		relative, err := codex.RemoteExitPath(*ready)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := os.Stat(filepath.Join(ready.Workspace, filepath.FromSlash(relative))); !os.IsNotExist(err) {
+			t.Fatal("helper unexpectedly produced legacy exit artifact", err)
+		}
+	}
+	if helper != "" {
+		assertNoExitArtifact()
+	}
 	if ready == nil {
 		ready = &codex.RemoteReadiness{Process: *rootIdentity, SessionID: "probe-live-root"}
 	}
 	state.RemoteReadiness = ready
 	// Native reader settlement is covered through the fixed protocol in the
-	// workflow tests; this zero-business probe isolates offline signed exit.
+	// workflow tests; this zero-business probe isolates offline registered-resource settlement.
 	stateRaw, _ := json.Marshal(state)
 	stateData, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: stateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: s.Session.ProjectID, ExecutionID: id, AttemptID: attempt, Generation: s.ResourceGeneration, ConfigDigest: digest}, stateRaw)
 	if err != nil {
@@ -383,13 +396,10 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 			t.Fatal(err)
 		}
 		verify("stopped-verified", true)
-		// Remove only this isolated probe's already-unneeded evidence. Production
-		// verification must not depend on either file, including after stopped.
-		path, _ := codex.RemoteExitPath(*ready)
-		exitPath := filepath.Join(ready.Workspace, filepath.FromSlash(path))
-		if err := os.Remove(exitPath); err != nil && !os.IsNotExist(err) {
-			t.Fatal(err)
-		}
+		assertNoExitArtifact()
+		exitArtifactAbsent = true
+		// Discard only this probe's inspection journals to prove read-only
+		// verification needs neither the legacy export nor an earlier journal.
 		journals, err := filepath.Glob(filepath.Join(dir, "orca-native-inspections", "*.json"))
 		if err != nil {
 			t.Fatal(err)

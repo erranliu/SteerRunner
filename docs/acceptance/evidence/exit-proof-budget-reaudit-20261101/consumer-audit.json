@@ -1,0 +1,8 @@
+{
+  "retired_symbol_consumers": [
+    "docs/acceptance/evidence/rebase-control-20261019/checks/export-exit/main.go",
+    "docs/acceptance/evidence/rebase-control-20261019/checks/verify-proof/main.go"
+  ],
+  "retained_job_request_exclusion_body_unchanged": true,
+  "historical_module": "docs/acceptance/evidence/go.mod"
+}

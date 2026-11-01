@@ -1,0 +1,51 @@
+=== RUN   TestSRFrozenBudgetRecovery
+=== RUN   TestSRFrozenBudgetRecovery/accepted
+    frozen_budget_test.go:67: [history --run-id 691dc5afcf6266c324d4bfc18aaba5be --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-990208717\runner --json] exit=3 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":null,"error":{"code":"unsupported_capability","message":"Message history is available for content workflows."}} stderr=
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-990208717
+=== RUN   TestSRFrozenBudgetRecovery/unknown
+    frozen_budget_test.go:67: [history --run-id 755c7e7e728ccf3e78928b4cc61092b4 --state-dir C:\Users\lmas1\AppData\Local\Temp\sr-3219621220\runner --json] exit=3 expected=0 error=<nil> response={"protocol":"steerrunner-cli/v1","ok":false,"request_id":null,"data":null,"error":{"code":"unsupported_capability","message":"Message history is available for content workflows."}} stderr=
+    workflow_test.go:226: preserved failed fixture: C:\Users\lmas1\AppData\Local\Temp\sr-3219621220
+--- FAIL: TestSRFrozenBudgetRecovery (55.20s)
+    --- FAIL: TestSRFrozenBudgetRecovery/accepted (32.68s)
+    --- FAIL: TestSRFrozenBudgetRecovery/unknown (22.51s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/reused_owner_pid
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (36.67s)
+    --- PASS: TestSRServiceOwnership/reused_owner_pid (0.02s)
+    --- PASS: TestSRServiceOwnership/offline_verification (22.43s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (2.95s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.74s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.85s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.93s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.11s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.12s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.09s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.12s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.10s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (1.97s)
+    --- PASS: TestSRServiceOwnership/parent_job (2.68s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.01s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.66s)
+    --- PASS: TestSRServiceOwnership/different_release (1.26s)
+    --- PASS: TestSRServiceOwnership/stale_writer (2.92s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (2.34s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (19.52s)
+FAIL

@@ -1,8 +1,10 @@
 package codexworker
 
 import (
+	"bytes"
 	"context"
-	"encoding/json"
+	"crypto/ed25519"
+	"encoding/hex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
 	"os"
@@ -13,49 +15,61 @@ import (
 	"time"
 )
 
-func TestRemoteExitRequiresOriginalSignedCompleteSettlement(t *testing.T) {
-	for _, mode := range []string{"complete", "live-tree", "changed-body", "other-run", "other-key", "truncated"} {
-		t.Run(mode, func(t *testing.T) {
-			workspace := t.TempDir()
-			writer, public, err := newRemoteExitWriter(workspace)
-			if err != nil {
-				t.Fatal(err)
-			}
-			defer writer.close()
-			ready := RemoteReadiness{ExitPublicKey: public, SessionID: "original-session", ConfigurationDigest: "original-config", Owner: b.ProcessIdentity{PID: 1, Created: "original-helper"}, CheckedAt: time.Now().UTC()}
-			exit := RemoteExit{Readiness: ready, WritersAbsent: true, ClosedAt: time.Now().UTC()}
-			if mode == "live-tree" {
-				exit.WritersAbsent = false
-			}
+func TestRemoteStopBindingNeedsNoExitArtifact(t *testing.T) {
+	workspace := t.TempDir()
+	// Even a blocked legacy export root cannot affect pure binding generation.
+	if err := os.WriteFile(filepath.Join(workspace, ".sr-runtime-stage"), []byte("blocked"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	public, err := newRemoteStopBinding()
+	other, otherErr := newRemoteStopBinding()
+	if err != nil || otherErr != nil || len(public) != ed25519.PublicKeySize || bytes.Equal(public, other) {
+		t.Fatal("invalid or reused stop binding", err, otherErr)
+	}
+	ready := RemoteReadiness{ExitPublicKey: public, Workspace: workspace, SessionID: "original"}
+	stop, err := RemoteStopPath(ready)
+	if err != nil || stop != ".sr-runtime-stage/native-stop/"+hex.EncodeToString(public)+"/request.json" {
+		t.Fatal("changed request address", stop, err)
+	}
+}
 
-			if err = writer.write(exit); err != nil {
+func TestRemoteStopRequiresCompleteOriginalReadiness(t *testing.T) {
+	public, err := newRemoteStopBinding()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ready := RemoteReadiness{ExitPublicKey: public, Workspace: t.TempDir(), SessionID: "original", ConfigurationDigest: "original-config", CheckedAt: time.Now().UTC()}
+	relative, _ := RemoteStopPath(ready)
+	name := filepath.Join(ready.Workspace, filepath.FromSlash(relative))
+	if err := os.MkdirAll(filepath.Dir(name), 0700); err != nil {
+		t.Fatal(err)
+	}
+	for _, mode := range []string{"foreign", "partial", "oversized", "original"} {
+		t.Run(mode, func(t *testing.T) {
+			request := ready
+			if mode == "foreign" {
+				request.ConfigurationDigest = "replacement"
+			}
+			raw := encode(request)
+			if mode == "partial" {
+				raw = []byte(`{"session_id":"original"}`)
+			}
+			if mode == "oversized" {
+				raw = append(raw, bytes.Repeat([]byte(" "), 8193)...)
+			}
+			if err := os.WriteFile(name, raw, 0600); err != nil {
 				t.Fatal(err)
 			}
-			relative, _ := RemoteExitPath(ready)
-			raw, err := os.ReadFile(filepath.Join(workspace, filepath.FromSlash(relative)))
-			if err != nil {
-				t.Fatal(err)
-			}
-			switch mode {
-			case "changed-body":
-				var envelope signedRemoteExit
-				if json.Unmarshal(raw, &envelope) != nil {
-					t.Fatal("invalid fixture")
-				}
-				exit.Readiness.Owner.Created = "different-helper"
-				envelope.Body = encode(exit)
-				raw = encode(envelope)
-			case "other-run":
-				ready.SessionID = "replacement-session"
-			case "other-key":
-				ready.ExitPublicKey = make([]byte, 32)
-			case "truncated":
-				raw = raw[:len(raw)-10]
-			}
-			if err = VerifyRemoteExit(raw, ready); (err == nil) != (mode == "complete") {
-				t.Fatal(mode, err)
+			ctx, cancel := context.WithCancel(context.Background())
+			cancel() // first read must decide; invalid requests cannot outlive the context
+			if got := awaitRemoteStop(ctx, ready); got != (mode == "original") {
+				t.Fatal(mode, got)
 			}
 		})
+	}
+	exit, _ := RemoteExitPath(ready)
+	if _, err := os.Stat(filepath.Join(ready.Workspace, filepath.FromSlash(exit))); !os.IsNotExist(err) {
+		t.Fatal("unexpected exit artifact", err)
 	}
 }
 

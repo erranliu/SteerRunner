@@ -1,0 +1,25 @@
+{
+  "application": "go test ./internal/application -run '^(TestFrozenBudget.*|TestBudget.*|TestSRManual.*|TestSROperation.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSingleExecutionLateFinalPreservesOriginalStop|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSRStopRecoversLateCreationFactsUnderOriginalIntent)$' -count=1 -timeout 5m -json",
+  "adapters": "go test ./internal/execution/adapters/codex ./internal/execution/adapters/protocol/orca ./internal/execution/adapters/orcatransport -count=1 -timeout 4m -json",
+  "foundation_pattern": "^(TestSRFrozenBudgetRecovery|TestSRNativeUnknownAndStop|TestSRServiceOwnership)$",
+  "foundation_timeout_minutes": 8,
+  "native": "go test ./internal/host -run ^TestOrcaStoppedNativeProbe$ -count=1 -timeout 5m -json",
+  "compile_only": [
+    "go test -c -tags live -o .evidence/exit-proof-budget-reaudit/bin/native.test.exe ./tests/native",
+    "go test -c -tags live -o .evidence/exit-proof-budget-reaudit/bin/integration-live.test.exe ./tests/integration"
+  ],
+  "build": "scripts/build.ps1 -OutFile .evidence/exit-proof-budget-reaudit/bin/steerrunner.exe",
+  "helper_build": "go build -trimpath -o .evidence/exit-proof-budget-reaudit/bin/steerrunner-agent.exe ./cmd/steerrunner-agent",
+  "final_exit_codes": {
+    "application": 0,
+    "adapters": 0,
+    "foundation": 0,
+    "native": 0,
+    "compile_native": 0,
+    "compile_integration": 0,
+    "build": 0
+  },
+  "orca_guide_sha256": "5142112ef43e4a6bd7c208ae06337a8e47697580c7cd61fc8d967872cb2dc264",
+  "model": "gpt-6.1-sol",
+  "business_inputs": 0
+}
