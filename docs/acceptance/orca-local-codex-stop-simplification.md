@@ -1,5 +1,7 @@
 # 本机 Orca Codex 停止条件收敛：审计、实施与验收
 
+> 后续再审计已发现并修复初轮未覆盖的业务证据门禁、迟到创建、预算和 live 测试消费者。本文保留初轮构建及原始通过/失败事实，最终实现和 PR 验证以[再审计报告](orca-local-codex-stop-reaudit.md)为准。
+
 日期：2026-11-01。结论：按[Spec](../spec/orca-local-codex-stop-simplification.spec.md) / [Plan](../spec/orca-local-codex-stop-simplification.plan.md)完成专项实现与最小验收。未部署、提交、合并或发布，未改外部 SteerLine。长期承诺已更新为现行；本报告不授予完整 L1/Controlled、L2/L3、全 Agent 或任务交付资格。
 
 ## 审计后的实际取舍

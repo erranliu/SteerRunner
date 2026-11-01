@@ -1,0 +1,18 @@
+[
+  {
+    "package": "./tests/native",
+    "command": "go test -c -tags live -o <owned evidence executable> ./tests/native",
+    "compiled": true,
+    "executed": false,
+    "sha256": "abeae4a2ae0fc4e2f3c60667cd93e26169d417a38deb59fbbe3c6311e0d726e0",
+    "bytes": 19521024
+  },
+  {
+    "package": "./tests/integration",
+    "command": "go test -c -tags live -o <owned evidence executable> ./tests/integration",
+    "compiled": true,
+    "executed": false,
+    "sha256": "d5c361454e841bccd79e9e4f6a89e9009584aeb69b7bcfde26e4770c6f74b406",
+    "bytes": 15612416
+  }
+]

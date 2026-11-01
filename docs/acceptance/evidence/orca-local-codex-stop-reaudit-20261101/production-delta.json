@@ -1,0 +1,111 @@
+{
+  "base": "36de6ae56324b36d89adf240fc1fd26f595f0829",
+  "basis": "production Go/JSON/client; excludes tests, internal/testkit, docs and skill text",
+  "production": {
+    "added": 294,
+    "removed": 272,
+    "net": 22
+  },
+  "adapter": {
+    "added": 243,
+    "removed": 253,
+    "net": -10
+  },
+  "files": [
+    {
+      "file": "client/steerrunner-client.ps1",
+      "added": 2,
+      "removed": 2
+    },
+    {
+      "file": "internal/application/control.go",
+      "added": 10,
+      "removed": 3
+    },
+    {
+      "file": "internal/application/engine.go",
+      "added": 6,
+      "removed": 0
+    },
+    {
+      "file": "internal/application/freeze.go",
+      "added": 7,
+      "removed": 0
+    },
+    {
+      "file": "internal/application/verify_stopped.go",
+      "added": 7,
+      "removed": 4
+    },
+    {
+      "file": "internal/contracts/view.go",
+      "added": 1,
+      "removed": 0
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/control_checkpoint.go",
+      "added": 3,
+      "removed": 8
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/control_terminal.go",
+      "added": 0,
+      "removed": 83
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "added": 57,
+      "removed": 73
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/local_codex_stop.go",
+      "added": 158,
+      "removed": 0
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/native_stop.go",
+      "added": 7,
+      "removed": 5
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/state_codec.go",
+      "added": 10,
+      "removed": 5
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/stop.go",
+      "added": 4,
+      "removed": 13
+    },
+    {
+      "file": "internal/execution/adapters/orcatransport/verify_stopped.go",
+      "added": 4,
+      "removed": 66
+    },
+    {
+      "file": "internal/host/host.go",
+      "added": 1,
+      "removed": 1
+    },
+    {
+      "file": "internal/resources/assets/stop-evidence.schema.json",
+      "added": 6,
+      "removed": 0
+    },
+    {
+      "file": "internal/resources/resources.go",
+      "added": 3,
+      "removed": 2
+    },
+    {
+      "file": "internal/runstate/record.go",
+      "added": 2,
+      "removed": 1
+    },
+    {
+      "file": "internal/storage/store.go",
+      "added": 6,
+      "removed": 6
+    }
+  ]
+}

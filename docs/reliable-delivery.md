@@ -28,7 +28,7 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 
 完成语义分别适用：generate 已取得成功结果但 cleanup/stop 未结算时，不能显示全部完成；conversation 回合结束不表示会话关闭或业务成功。核心 Run/回执/操作及停止状态查询按公开契约返回已提交事实，失败明确报错；可选进度、日志采集、用量及 Viewer 实时性才适用尽力提供。服务重启可能丢失独立 parser 的未提交内存结果，重新取得业务资格后可按当时配置重算并产生重复费用，不保证跨重启的总次数、总费用、模型或输出一致；该例外不允许重做原业务执行。边界统一见[长期产品承诺](spec/steerrunner.spec.md#长期产品承诺)。
 
-当前主链使用 state/v8、SQLite user_version=8、默认 `%LOCALAPPDATA%/SteerRunner-v8`，流程保持 development/2、development-audited/2、conversation/1、generate/1。v7 及更旧目录非破坏拒绝，由原版本查询和结算。同构建重启保留原授权；升级先排空，不提供跨构建活动任务接管。当前职责与恢复边界以[个人执行器简化 Spec](spec/personal-executor-simplification.spec.md)为准；本文旧日期记录不授予当前构建资格。
+当前主链使用 state/v8、SQLite user_version=8、默认 `%LOCALAPPDATA%/SteerRunner-v8`，流程保持 development/2、development-audited/2、conversation/1、generate/1、execute/1。v7 及更旧目录非破坏拒绝，由原版本查询和结算。同构建重启保留原授权；升级先排空，不提供跨构建活动任务接管。当前职责与恢复边界以[个人执行器简化 Spec](spec/personal-executor-simplification.spec.md)为准；本文旧日期记录不授予当前构建资格。
 
 ## 2 正常交付链路
 
