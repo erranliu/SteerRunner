@@ -55,3 +55,13 @@ execute/1 在普通可写 Run 工作区只发送一次调用方正文，直接�
 - 定向 workflow/contracts/resources/application 全包通过；新增 SingleExecution 控制/停止/提问反例通过。公开能力描述最终修订后 workflow/resources 全包再次通过（1.375/2.311秒）。最初资源 catalogue 旧数量/版本期望失败已修正，未放宽实际 schema。
 
 跨仓真实单次调用由 SteerLine 当前专属验收记录；本段只声明上述 Runner 自有测试，不把受控结果当原生成功，不复用旧开发PR证明 execute；未部署或合并业务主分支。
+
+## 2026-11-01 两仓 PR 前主干整合复审
+
+用户要求审核后两仓提PR、不得合并。独立worktree整合main=8bed4c4；engine stop冲突保留PendingResume取消后对execute永久关闭，result_file能力保留主干best-effort初始化并公布execute/1，合并两文档定义；自动合并freeze/observation/runstate也逐项复审。`/root/prompt_review` 批准相对该最新主干的最终实际正文/接线/资产，无剩余可执行P0–P2。manual pause不恢复或追加execute输入，stop优先仍可收尾；无项目业务检测知识或新框架。
+
+证据 `C:/SteerlineDebug/wt-68d4-project-environment-workflow/result-consumption/pr-audit-02/`：正式runner/L1/01 passed，728项Go测试及29项终端扩展，应用全包551.027秒、coverage74.6%；按原分层记录的native opt-in/子进程角色跳过不代表原生资格。整合后的SingleExecution/manual/workflow/result-file组件回归应用包34.032秒通过。
+
+干净pin源码50f12791abd28e241298643b2ceb0b510899d370，source_digest cc89825927cec77174d04e4bffc91955d13c818b5928bef7bfb44ae0324fc201，EXE SHA256 f247b1332fb4e5f24aea92db8f9c14dcf044fb0c783a5996ee75e13ed97a570c。SteerLine/L4/local-01在该新pin实际通过（执行175.960秒、cleanup_complete=true）：项目入口只调用一次，原结果completed/ready，原Run可信native完成、停止、最终字节封存，准备前拒绝和准备后真实Task准入/停止，全部自有资源清理。平台不因不透明可选明细含failed而重判。SteerLine同轮固定L1/L2亦通过；其前轮原生负结果保留，不冒充当前pin重跑。
+
+本次收尾只补文档与空行规范，生产源码与50f1279相同。execute默认69字节、prompts.json 1088→1174字节保持，不以资产期望代替批准。Orca新增工作流原生矩阵未重跑；未部署、未合并、不启用自动合并。
