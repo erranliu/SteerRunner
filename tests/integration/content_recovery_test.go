@@ -11,7 +11,6 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
-	"github.com/erranliu/SteerRunner/internal/storage"
 )
 
 func TestSRContentGenerationRecovery(t *testing.T) {
@@ -107,23 +106,13 @@ func TestSRContentGenerationRecovery(t *testing.T) {
 
 func offlineContentStop(t *testing.T, dir, id, requestID string) contracts.Request {
 	t.Helper()
-	reader, err := storage.OpenReader(dir)
-	if err != nil {
-		t.Fatal(err)
+	// Use the public cold reader; the caller never opens Runner private storage.
+	v := runView(t, call(t, dir, []string{"inspect", "--offline", "--run-id", id}, "", 0))
+	if v.RunID != id || v.Revision == 0 {
+		t.Fatal("original cold Run binding missing", v)
 	}
-	runs, err := reader.Runs()
-	reader.Close()
-	if err != nil {
-		t.Fatal(err)
-	}
-	for _, r := range runs {
-		if r.ID == id {
-			raw, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: r.Revision})
-			return contracts.Request{Protocol: contracts.Protocol, RequestID: requestID, Input: raw}
-		}
-	}
-	t.Fatal("original offline content Run missing")
-	return contracts.Request{}
+	raw, _ := json.Marshal(contracts.RevisionInput{ExpectedRevision: v.Revision})
+	return contracts.Request{Protocol: contracts.Protocol, RequestID: requestID, Input: raw}
 }
 
 func marshalEvidence(t *testing.T, value any) []byte {
@@ -150,4 +139,61 @@ func historyRecoveryEvidence(t *testing.T, value any) []byte {
 	delete(run, "revision")
 	delete(run, "updated_at")
 	return marshalEvidence(t, page)
+}
+
+// Public EXE loop: no caller reads Runner private state or starts workers before
+// the original stop is durably accepted. The native peer is controlled.
+func TestSRSingleExecutionColdStop(t *testing.T) {
+	testCount.Add(1)
+	dir, request := setupRun(t)
+	native := os.Getenv("STEERRUNNER_FIXTURE_STATE")
+	t.Setenv("STEERRUNNER_CONTENT_FIXTURE", "1")
+	for name, text := range map[string]string{"hold-turn": "hold", "content-final": `{"completed":true}`} {
+		if err := os.WriteFile(filepath.Join(native, name), []byte(text), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	var input contracts.RunRequest
+	if err := json.Unmarshal(request.Input, &input); err != nil {
+		t.Fatal(err)
+	}
+	input.Workflow = contracts.Workflow{ID: "execute", Version: 1, PromptOverrides: map[string]string{"execute": "Invoke project detection once"}}
+	input.Publication = contracts.Publication{}
+	input.ProgressFile = nil
+	input.ResultFile = &contracts.ResultFileInput{InitialContentBase64: "e30="}
+	request.Input, _ = json.Marshal(input)
+	service := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
+	cleanupService(t, dir, service)
+	raw, _ := json.Marshal(request)
+	id := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0).Data.(map[string]any)["run_id"].(string)
+	original := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+	call(t, dir, []string{"service", "stop", "--input", "-"}, stopRequest("single-detach", service.InstanceID), 0)
+	if err := waitOwnedService(service); err != nil {
+		t.Fatal(err)
+	}
+	// Query by the original submit identity, as needed after an unknown receipt.
+	found := runView(t, call(t, dir, []string{"inspect", "--offline", "--request-id", request.RequestID}, "", 0))
+	if found.RunID != id || found.InputDigest != original.InputDigest || found.Revision < original.Revision {
+		t.Fatal(found)
+	}
+	stop := offlineContentStop(t, dir, id, "single-original-stop")
+	start := contracts.ServiceStartInput{PendingStops: []contracts.PendingStop{{RunID: id, Request: stop}}}
+	next := serviceInfo(t, call(t, dir, []string{"service", "start", "--input", "-"}, string(start.JSON()), 0))
+	cleanupService(t, dir, next)
+	settled := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" })
+	if !settled.Closed || countNative(t, "turn/start") != 1 || settled.InputDigest != original.InputDigest {
+		t.Fatal("replayed input or unclosed execution", settled)
+	}
+	receipt := call(t, dir, []string{"inspect", "--request-id", stop.RequestID}, "", 0)
+	var view struct {
+		Command contracts.CommandView `json:"command"`
+	}
+	if json.Unmarshal(marshalEvidence(t, receipt.Data), &view) != nil || view.Command.ActionStatus != "completed" {
+		t.Fatal("original stop did not settle", receipt)
+	}
+	result := call(t, dir, []string{"result-file", "--run-id", id}, "", 0)
+	var file contracts.ResultFileView
+	if json.Unmarshal(marshalEvidence(t, result.Data), &file) != nil || file.CollectionStatus != "closed" {
+		t.Fatal("final result was not sealed", result)
+	}
 }

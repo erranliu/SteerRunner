@@ -509,3 +509,29 @@ func TestSingleExecutionNativeQuestionClosesAndRetainsOriginalStop(t *testing.T)
 		t.Fatal("question reopened operation", stopped.View())
 	}
 }
+
+func TestSingleExecutionLateFinalPreservesOriginalStop(t *testing.T) {
+	e := singleExecutionFixture(t)
+	evidence := contentEvidence(e, "original result", "succeeded", true)
+	reply := contentControl(e, "stop", "original-user-stop", contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
+	if !reply.OK {
+		t.Fatal(reply)
+	}
+	original := e.runs["run"].PendingStop
+	again := contentControl(e, "stop", "another-stop", contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
+	if again.OK || again.Error.Code != "invalid_state" {
+		t.Fatal("accepted another unsettled stop", again)
+	}
+	if !e.finish("run", evidence) {
+		t.Fatal("late original final rejected")
+	}
+	if e.runs["run"].PendingStop != original {
+		t.Fatal("late final replaced original stop", original, e.runs["run"].PendingStop)
+	}
+	w := e.workers["run"]
+	e.stopRun("run", w, w.port)
+	command, err := e.store.Command("request_id", "original-user-stop")
+	if err != nil || command.ActionStatus != "completed" {
+		t.Fatal("original stop receipt did not settle", command, err)
+	}
+}
