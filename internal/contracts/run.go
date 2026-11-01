@@ -263,6 +263,12 @@ func ValidateRun(data []byte) *Fault {
 			return invalid
 		}
 	}
+	if value.Workflow.ID == workflow.SingleExecution {
+		if _, present := fields["publication"]; present || value.ProgressFile != nil {
+			return invalid
+		}
+		return nil
+	}
 	return ValidatePublication(value.Repository, value.Publication)
 }
 
@@ -282,6 +288,9 @@ func ValidateRunConfiguration(data []byte) *Fault {
 	profile, supported := workflow.Lookup(value.Workflow.ID, value.Workflow.Version)
 	if !supported {
 		return Fail(3, "unsupported_schema", "The selected workflow is not defined by this executable.")
+	}
+	if profile.ID == workflow.SingleExecution && (len(value.Workflow.PromptOverrides) != 1 || !plain(value.Workflow.PromptOverrides["execute"])) {
+		return invalid
 	}
 	if workflow.Content(profile.ID) {
 		if value.Execution.Adapter != "codex-app-server" || value.Execution.Target.Kind != "local" {

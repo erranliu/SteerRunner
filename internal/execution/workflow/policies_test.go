@@ -13,7 +13,7 @@ func TestProjectPolicyStepDeclarations(t *testing.T) {
 	for _, p := range Catalog() {
 		for id, state := range p.States {
 			want := []string{}
-			if !Content(p.ID) && state.Kind == "execute" {
+			if !Content(p.ID) && p.ID != SingleExecution && state.Kind == "execute" {
 				want = []string{"git", "command"}
 				if state.Contract != "publication" {
 					want = append(want, "testing")
@@ -72,5 +72,23 @@ func TestProjectPolicyRenderOverrideAndLegacy(t *testing.T) {
 	got, err = RenderInputWithBody(w, input, "custom body")
 	if err != nil || got != want {
 		t.Fatal("legacy input gained policy instructions", got, err)
+	}
+}
+
+func TestSingleExecutionHasNoPublicationOrAcquisition(t *testing.T) {
+	p, ok := Lookup(SingleExecution, 1)
+	if !ok || p.Initial != "execute" || len(p.States) != 2 || p.RequiresResultAcquisition() || p.AuditModelRequired {
+		t.Fatal(p)
+	}
+	s := p.States[p.Initial]
+	if s.Contract != "final" || s.Next != "closed" || s.Report != "" || s.Verify != "" || s.Wait != "" || len(s.PolicySlots) != 0 {
+		t.Fatal(s)
+	}
+	if _, ok := p.States[StepPublish]; ok {
+		t.Fatal("publication leaked into single execution")
+	}
+	body, err := RenderInputWithBody(Snapshot{Config: &p}, StageInput{StepID: "execute"}, "call existing entry")
+	if err != nil || body != "call existing entry" {
+		t.Fatal(body, err)
 	}
 }

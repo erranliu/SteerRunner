@@ -125,7 +125,7 @@ func (e *Engine) checkDispatchSource(r *runstate.Record, input workflow.StageInp
 	if err := workflow.VerifyPrerequisites(r.Workflow, input, state); err != nil {
 		return err
 	}
-	if state.Contract == "final" {
+	if state.Contract == "final" && workflow.Content(r.Request.Workflow.ID) {
 		return verifyContentDirectory(r)
 	}
 	if state.Workspace == "" {

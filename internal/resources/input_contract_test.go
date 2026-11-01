@@ -26,7 +26,7 @@ func TestInputContractDiscoveryMatchesOwners(t *testing.T) {
 			t.Fatal("discovery omits fixed policy path", slot.Path)
 		}
 	}
-	if len(c["workflows"].([]workflow.Profile)) != 4 {
+	if len(c["workflows"].([]workflow.Profile)) != 5 {
 		t.Fatal("workflow removed")
 	}
 	var published struct {

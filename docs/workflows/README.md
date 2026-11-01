@@ -1,6 +1,6 @@
 # Workflow 定义与统一能力
 
-当前内置流程为 development/2、development-audited/2、conversation/1、generate/1。本目录解释现有实现；执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)，不加载本目录 Markdown。当前文档入口见[项目文档索引](../README.md)。
+当前内置流程为 development/2、development-audited/2、conversation/1、generate/1、execute/1。本目录解释现有实现；执行定义与默认提示分别见[工作流源码](../../internal/execution/workflow)和[内嵌提示资源](../../internal/resources/assets/prompts.json)，不加载本目录 Markdown。当前文档入口见[项目文档索引](../README.md)。
 
 ## 项目策略槽位
 
@@ -20,7 +20,7 @@
 | development-audited/2 的 `audit.code.execute` | `git`、`command`、`testing` |
 | 两种开发流程的 `publish.execute` | `git`、`command` |
 | 两种开发流程的所有 report、parse、input、verify、milestone 步骤 | 无 |
-| conversation/1、generate/1 的所有步骤 | 无 |
+| conversation/1、generate/1、execute/1 的所有步骤 | 无 |
 
 Runner 接受开发 Run 时，从本次固定的 `repository.base_revision` Git 对象读取这三个精确路径，在原 Run 的 `workflow.project_policies` 中一起固定 commit、各槽位路径、`exists` 和存在文件的 SHA-256（原始 blob 字节）。不读取调用方工作区或当前 HEAD，不搜索其他目录，也不自动生成策略文档。空文件算存在；缺失文件保存 `exists=false` 并沿用原规则；已存在但不能读取的 blob、目录或符号链接明确以 `project_policy_unreadable` 拒绝。读取失败不会把槽位降级为缺失或接受部分观察。后续输入与恢复复用原记录，文件后来增删或修改不重新决定本 Run 的槽位。
 
@@ -144,3 +144,11 @@ actor 在原 Record/Commit 唯一更新 Workflow.StepID、源/结果引用、待
 development 本轮采用的等待规则：原结果已明确未成功或原 agent 报告确认未成功即可进入 input，不要求模型先提出具体问题；无法判断直接 report，不经过独立解析。implement 和 publish 对各自原源最多一次 report，不追加格式修正或报告重试；报告无效/不足且操作已结算时，implement 进入 input，publish 保持阻断。保留原 outcome 与已知原因，等待说明可来自 Workflow 自身政策。材料不足不改写成业务失败，原操作/停止/来源未知仍先对账，用户输入不能解除这些门槛。更细失败原因处理以后另行设计。
 
 两份流程均不设计复用先前 PR 或发布就绪后返工的业务分支，提示词不注入先前 PR 参数。对本次发布已产生的 PR 进行身份核验、查询和未知发布原操作对账仍属必要事实处理，不因删除上述业务分支而移除。
+
+## 通用单次执行 execute/1
+
+调用方提供 `workflow:{"id":"execute","version":1,"prompt_overrides":{"execute":"实际操作正文"}}`，以及普通 repository/documents/execution。只接受一个非空 execute 覆盖，默认短提示仅作公开定义；不以默认正文替代调用方明确操作。可使用 codex-app-server 或 orca-terminal 的现有目标、权限与工作区；执行仍须通过各自能力及权限准入。execute 不接收 publication、progress_file、generate 或多轮 conversation 输入，没有项目策略槽位、审计/发布/结果获取阶段；可选 result_file 复用最终封存，不识别其内容。
+
+原输入只发送一次。原生完成后原可信 final 直接结束并停止原执行；只有 verified/native succeeded 且原结果 succeeded 才公开 completed，失败保留原诊断。需要人类输入则关闭并登记 human_input_required，不继续对话。reply/resume/message/interrupt/close 均不支持；stop 永久关闭本 Run，不恢复或另发输入。受理未知、重启、原身份对账、停止及资源结算均沿既有 Run owner。调用方仍应核对公开终态、原生 final 与结果封存，不以文件内的业务 ready 代替执行成功。
+
+此流程不包含环境要求或项目自检知识，不复制调用方协议，不要求 PR 或项目测试目录；也不添加插件、服务或通用编排框架。

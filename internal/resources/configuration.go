@@ -60,11 +60,17 @@ func ConfigurationSchemas() json.RawMessage {
 			promptNames = false
 		}
 		overrides := any(map[string]any{"propertyNames": promptNames})
+		if profile.ID == workflow.SingleExecution {
+			overrides = map[string]any{"propertyNames": promptNames, "required": []string{"execute"}, "minProperties": 1}
+		}
 		if workflow.Content(profile.ID) {
 			overrides = false
 			execution["properties"].(map[string]any)["settings"] = map[string]any{"required": []string{"access_mode"}, "properties": map[string]any{"access_mode": map[string]any{"const": "read_only"}}}
 		} else {
 			execution["properties"].(map[string]any)["settings"] = mergeSettingsRestriction(execution["properties"].(map[string]any)["settings"])
+		}
+		if profile.ID == workflow.SingleExecution {
+			rules = append(rules, map[string]any{"if": selection, "then": map[string]any{"properties": map[string]any{"workflow": map[string]any{"required": []string{"prompt_overrides"}}}}})
 		}
 		rules = append(rules, map[string]any{"if": selection, "then": map[string]any{"properties": map[string]any{
 			"execution": execution,
@@ -80,7 +86,13 @@ func ConfigurationSchemas() json.RawMessage {
 	development["properties"].(map[string]any)["workflow"] = map[string]any{"allOf": []any{schemas["workflow"], map[string]any{"properties": map[string]any{"id": map[string]any{"enum": []string{"development", "development-audited"}}}}}}
 	schemas["conversation_input"] = contentInputSchema(schemas, "conversation")
 	schemas["generate_input"] = contentInputSchema(schemas, "generate")
-	schemas["run_input"] = map[string]any{"$id": "steerrunner/run-input/v1", "oneOf": []any{development, schemas["conversation_input"], schemas["generate_input"]}}
+	single := runInputSchema(schemas)
+	delete(single, "$id")
+	single["required"] = []string{"title", "repository", "documents", "execution", "workflow"}
+	sp := single["properties"].(map[string]any)
+	sp["publication"], sp["conversation"], sp["generate"], sp["progress_file"] = false, false, false, false
+	sp["workflow"] = map[string]any{"allOf": []any{schemas["workflow"], map[string]any{"properties": map[string]any{"id": map[string]any{"const": workflow.SingleExecution}, "prompt_overrides": map[string]any{"required": []string{"execute"}}}}}}
+	schemas["run_input"] = map[string]any{"$id": "steerrunner/run-input/v1", "oneOf": []any{development, schemas["conversation_input"], schemas["generate_input"], single}}
 	// Embedded adapter schemas occur in every input variant. They are one
 	// resource here; repeated nested $id values would create ambiguous resources.
 	var combined any

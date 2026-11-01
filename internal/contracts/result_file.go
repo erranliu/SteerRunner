@@ -18,7 +18,7 @@ func ValidateResultFile(r RunRequest) *Fault {
 		return Fail(2, "invalid_input", "result_file requires canonical base64 of at most 65536 raw bytes.")
 	}
 	if (r.Execution.Adapter != "codex-app-server" && r.Execution.Adapter != "orca-terminal") || r.Conversation != nil || r.Generate != nil {
-		return Fail(3, "unsupported_capability", "Result files require a writable development workspace on local Codex or Orca.")
+		return Fail(3, "unsupported_capability", "Result files require a writable run workspace on local Codex or Orca.")
 	}
 	return nil
 }

@@ -222,10 +222,14 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		}
 		r := e.runs[runID]
 		isContent := workflow.Content(r.Request.Workflow.ID)
+		single := r.Request.Workflow.ID == workflow.SingleExecution
+		if single && (command == "reply" || command == "resume" || command == "message" || command == "interrupt" || command == "close") {
+			return reject(contracts.Fail(3, "unsupported_capability", "Single execution accepts no additional input; use the original stop or inspect."))
+		}
 		if (command == "message" || command == "interrupt" || command == "close" || command == "history") && r.Request.Workflow.ID != "conversation" {
 			return reject(contracts.Fail(3, "unsupported_capability", "This operation requires conversation/1."))
 		}
-		if isContent && r.Closed && command != "stop" {
+		if (isContent || single) && r.Closed && command != "stop" {
 			return reject(contracts.Fail(5, "session_closed", "The Run is permanently closed to new input."))
 		}
 
@@ -243,7 +247,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				next.CommandStates[next.PendingResume] = "failed"
 				next.PendingResume = ""
 			}
-			if isContent {
+			if isContent || single {
 				closeContent(next, receipt.ID)
 				break
 			}

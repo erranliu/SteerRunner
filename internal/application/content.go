@@ -235,12 +235,12 @@ func answerCommand(answer *runstate.Answer) string {
 }
 
 func settleContentStatus(r *runstate.Record) {
-	if !workflow.Content(r.Request.Workflow.ID) || !r.Closed {
+	if (!workflow.Content(r.Request.Workflow.ID) && r.Request.Workflow.ID != workflow.SingleExecution) || !r.Closed {
 		return
 	}
 	r.Status, r.Phase = "closed", "closed"
 	r.Question, r.Snapshot.QuestionRoute, r.Snapshot.PendingQuestions = nil, nil, nil
-	if r.Request.Generate != nil && r.ContentResult != nil {
+	if (r.Request.Generate != nil || r.Request.Workflow.ID == workflow.SingleExecution) && r.ContentResult != nil {
 		r.Status = r.ContentResult.Status
 		if r.Status == "succeeded" {
 			r.Status = "completed"
