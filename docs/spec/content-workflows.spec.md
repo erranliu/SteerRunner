@@ -1,14 +1,15 @@
 # conversation/1 与 generate/1
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 日期：2026-10-19。普通开发授权；不修改 SteerLine、不部署、不进入 roadmap。
 
 ## 边界与调查
 
-设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v5；内容流程接管按[服务换代 Spec](service-generation-recovery.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
+设计调查时基线为 development/2、development-audited/2 和 state/v3。当前持久格式为 state/v7；普通重启及人工对账按[个人执行器 Spec](personal-executor-simplification.spec.md)，两种内容流程仍使用 conversation/1、generate/1。
 当前 RunRequest 强制仓库、Spec/Plan、publication；freeze 创建 Git 副本；queueInput 注入开发材料；
 Route 负责补报/发布。不能将这些开发前置用于内容流程。现有 Record/Commit、operation、
-reliable.Next/NormalizeResult、Codex ExecutionLifecycle、原生问答路由、VerifyManualRecovery/
-BindRecovery、owned Job 停止是复用边界，不另建运行时、账本或调度器。
+reliable.Next/NormalizeResult、Codex ExecutionLifecycle、原生问答路由、原资源只读资格核验、owned Job 停止是复用边界，不另建运行时、账本或调度器。
 
 ## 输入与公开面
 
@@ -46,7 +47,7 @@ conversation：execute → input，显式 message → 同一原生 thread execut
 原暂停/撤销门槛保持，适用的显式 resume 仍须核验原会话及旧 writer。close/stop 结算尚未派发的请求。
 历史同时关联调用命令与实际原生 command/turn，避免混淆接受和发送。
 
-2026-10-20 接管校正：创建与接管按冻结 workflow 的实际能力决定开发结果获取配置是否必需。
+2026-10-20 历史接管校正（候选接管、BindRecovery 和持久 parser 兼容矩阵现已退役，仅保留设计溯源）：创建与接管按冻结 workflow 的实际能力决定开发结果获取配置是否必需。
 final-only 的 generate/1、conversation/1 不消费开发结果解析器，合法零值 AcquisitionConfig
 必须可接管；不读取当前可变配置、不补默认值、不改写原记录。含开发结果解释、report 或 parse
 能力的流程仍严格校验冻结配置；任何已存在的 parser 意图仍校验配置、解析契约和原 owner

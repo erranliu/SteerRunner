@@ -1,5 +1,7 @@
 # SteerRunner L2–L4 测试清单
 
+> 2026-11-01 当前目录：P3 新增 TestSRManualReconciliation，Controlled 为 26 个顶层场景；其余通用场景/case 以 tests/catalog.json 与 cases.json 为准。当前为 state/v7；升级先排空，unknown 超时后的公开 resume 只读对账、零重建/重发见[P3 验收](acceptance/personal-executor-p3.md)。P1 的正式 test.ps1 -Focused 支持明确 L2/L3 场景、不启动完整 L1/Controlled、完整资格始终 false，见[测试指南](testing.md#快速定向验证p12026-11-01)。下文旧日期的数量、generate/takeover 建议、verify-takeover/旧兼容测试及结果仅属历史；候选接管成功场景已经退役，不作为现行测试义务。原生专项的 Pattern 不等于通用 Focused，也不授予完整 L2/L3。
+
 2026-10-31 验证编排增量：独立前置和显式 L2 复用见[入口说明](testing.md#独立前置与显式-l2-复用) / [验收](acceptance/validation-reuse.md)。本轮未增删任何场景、case、内部变体或 skip 义务；L3/L4 不开放复用。
 
 2026-10-31：当前开发正向配置统一显式 full_access；read_only 专项保留。Pi/远端 smoke 及 active restart 的双权限重复项按 [Spec DFA-06](spec/development-full-access.spec.md#dfa-06测试矩阵收敛) 合并，原故障窗口与独有断言保留；历史资格不继承到当前构建。

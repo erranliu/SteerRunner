@@ -1,5 +1,7 @@
 # Spec：Workflow 能力解耦与结构化结果获取
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
 2026-10-21 当前适用范围：本文维护 workflow/2 与结果获取；当时升级 state/v2→v3 的章节为历史实施范围，当前 v5 格式及旧格式拒绝规则见[服务换代 Spec](service-generation-recovery.spec.md)。开发 Spec/Plan/参考材料只引用固定基线 worktree 内的相对路径，Runner 不再准备或验证独立文档快照；内容 inline 材料、parser 冻结材料包和结果来源核验继续沿各自契约。

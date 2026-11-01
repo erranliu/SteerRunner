@@ -46,7 +46,7 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 
 ## 开发执行权限
 
-开发工作流必须显式设置 `execution.settings.access_mode=full_access`。旧 `sandbox`、省略、空值和 null 均拒绝；请修改可编辑配置源后用新 request_id 提交新任务，旧冻结 Run 不原地升权。full_access 使用执行账号已有权限，可写工作区以外路径；独立 worktree 不提供操作系统隔离。内容流程和独立结果 parser 继续使用 read_only。开发执行使用执行主机已有 Git/gh/SSH 登录，Runner 不再创建 broker、CA、socket 或认证租期。升级前用原版本排空全部原生资源及未完成操作/控制（pr_ready 不等于排空）；新版本仅接受全新的 state/v7，默认目录为 `%LOCALAPPDATA%/SteerRunner-v7`。详见 [宿主认证 Spec](docs/spec/host-native-auth.spec.md) 和 [迁移说明](docs/cli-guide.md#开发权限迁移)。
+开发工作流必须显式设置 `execution.settings.access_mode=full_access`。旧 `sandbox`、省略、空值和 null 均拒绝；请修改可编辑配置源后用新 request_id 提交新任务，旧冻结 Run 不原地升权。full_access 使用执行账号已有权限，可写工作区以外路径；独立 worktree 不提供操作系统隔离。内容流程和独立结果 parser 继续使用 read_only。开发执行使用执行主机已有 Git/gh/SSH 登录，Runner 不再创建 broker、CA、socket 或认证租期。升级前用原版本排空全部原生资源及未完成操作/控制（pr_ready 不等于排空）；本次 v6→v7 使用新目录，默认 `%LOCALAPPDATA%/SteerRunner-v7`，旧目录由原版本查询和收尾；未来格式/契约兼容且已排空时可继续原目录。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账，不重发输入或重建资源。详见[当前 Spec](docs/spec/personal-executor-simplification.spec.md)和[升级说明](docs/cli-guide.md#开发权限迁移)。
 
 ## 使用前准备
 

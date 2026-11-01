@@ -1,5 +1,7 @@
 # Spec：执行与可靠性边界收敛
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
 日期：2026-10-20。状态：已实施并完成本轮验收。对应 [Plan](execution-boundary-refactor.plan.md)。调查基线：`bf3ec581cb0b23a7358d95e5efa8ff5f607c2f55`，包含内容流程、R2 证据和服务换代恢复的合入。
@@ -77,7 +79,7 @@ parser 不再自行复制普通操作的固定输入、未知对账和冲突策�
 
 ### 5.3 续执行资格与宿主协调
 
-reliable 的共同资格函数只消费原执行事实、未知操作/控制约束及是否需要输入等窄值；业务侧提供输入意图及来源适用性。application 的共同协调函数执行原 session 核验、必要 BindRecovery 与锁内复核；不得把 Store 或业务 route 塞进可靠层。
+reliable 的共同资格函数只消费原执行事实、未知操作/控制约束及是否需要输入等窄值；业务侧提供输入意图及来源适用性。application 的共同协调函数执行原 session 只读资格核验与锁内复核；BindRecovery 已删除，不重建原资源；不得把 Store 或业务 route 塞进可靠层。
 
 resume/feedback/message 共用该规则与协调，各自保留准入、原问题/目录/source 校验、命令结算、queueInput 和业务结果。恢复 Attempt 的原字段更新、绑定清除/保留、句柄释放顺序和原子提交范围逐项保持；已活动树的观察接回与资源丢失后的人工恢复继续是不同分支。
 

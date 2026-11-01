@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+> 2026-11-01 当前使用：v7、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。
+
 ## 快速定向验证（P1，2026-11-01）
 
 开发反馈可直接运行受影响包的 `go test -run <明确模式>` 或 `scripts/test-foundation.ps1 -Pattern <明确模式>`。真实 case 使用正式定向入口，例如在仓库根目录执行：
@@ -15,7 +17,7 @@
 
 该入口不启动完整 L1/Controlled，仍新编译 native driver、执行零匹配保护，并把同一 driver 传给 L2/L3 worker。报告新增 `validation_scope=focused`、前置实际启动次数和阶段耗时；case 成功可以是 `status=passed`，但 `complete_level_passed`、`baseline.*_verified` 和完整交付资格始终为 false，即使选中了该级全部 case。`framework/native-zero-match` 目录只是原生零匹配保护，不代表执行完整 framework/L1。
 
-不带 Focused 的默认链路及已有 L2 前置复用规则保持；本增量不开放 L3 的前置证明复用。开发定向通过不替代发布所需的完整验证。P1 实测、历史失败和收益范围见[独立验收](acceptance/personal-executor-p1.md)；后续观测/恢复/职责改造尚未实施，当前仍为 state/v6。
+不带 Focused 的默认链路及已有 L2 前置复用规则保持；本增量不开放 L3 的前置证明复用。开发定向通过不替代发布所需的完整验证。P1 实测、历史失败和收益范围见[独立验收](acceptance/personal-executor-p1.md)。P1/P2 的 v6 报告只证明其原构建；当前 P1–P3 及 P4 问答输入项均已独立验收，使用 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`。P3 完整 L1/Controlled 与本机、Orca local/environment 最小真实接线通过；P4 仅取得受影响组件与公开受控资格。当前状态与交付边界见[Spec+Plan 总结](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不继承成全 agent、完整 L2/L3 或产品发布资格。
 
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
@@ -408,7 +410,7 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。真实宿主认证与 PR 交付须使用新 state/v6 和固定 Runner/helper/extensions，按现有 L2/L3 case 单列验收；缺配置或环境记 incomplete。
+禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。真实宿主认证与 PR 交付须使用新 state/v7 和固定 Runner/helper/extensions，按现有 L2/L3 case 单列验收；缺配置或环境记 incomplete。
 
 未满足冻结 case 预期的失败、超时、unknown、unsupported、缺 final 均不通过；不可达停止
 的 `revoked-unverified` 按其故障窗口契约独立判定，不冒充停止确认或业务交付。清理未确认

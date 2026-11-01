@@ -1,5 +1,7 @@
 # Spec：独立使用的双 Skill 薄壳
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 日期：2026-10-23。状态：已实施，已完成本次受控验证及本机 Codex / 一个 Orca environment 的真实闭环；具体资格与未验边界见[验收记录](../acceptance/skill-shell.md)。源码调查基线：`1cfe2f9a065830ab62d540d3de4c0011ed603b56`。实施见 [Plan](skill-shell.plan.md)。
 
 ## 1. 目标与范围
@@ -113,7 +115,7 @@ Viewer 为可单独复制运行的 Windows EXE，不需要 Runner、PowerShell�
 2. 采用用户明确的完整 commit；未指定时，解析并固定所选 repository.base_branch 的远端当前 tip，而非调用方特性分支 HEAD。必要 fetch 只更新调用方仓库的 remote-tracking refs，不 checkout/reset 或修改工作区；失败不以旧引用顶替。Runner 自己的刷新与祖先关系校验仍是最终 gate。
 3. Spec/Plan 转为仓库相对路径，用 Git 对象读取确认在固定 commit 内可读；按 Git 对该路径的正常 clean/换行规则比较工作副本的规范 blob 身份，避免把 Windows 正常 CRLF checkout 误报为材料修改。规范内容不同或尚未跟踪时，明确指出执行的是哪份材料并要求先使预期材料进入选定基线；检查不改写文件。helper 不自动 commit/push、拷贝材料或提交 inline 开发文档。远端沿公开 repo list/show 核对项目身份，其 commit 可达性由 Runner/执行端核验，调用方检查不冒充远端证明。
 4. 组装公开完整 input，调用 `validate --kind run --input - --json`；校验通过仅表示形状/纯 gate 通过。确定 input 后不随配置变化重新装配，尚不发送 submit。
-5. 执行时显式 start/connect 同 state-dir 的服务，取得实际在线能力和公开完整 binding。确认能力与已选请求适用后，先保存完整 v1 信封、request_id 和关联信息，再按现有 `--expected-binding` 通过 `submit` 发起。离线能力不冒充在线事实；身份改变先重新查询，不能静默改投。兼容性由现有服务/接管契约决定，不由壳根据 SHA 自行放行。
+5. 执行时显式 start/connect 同 state-dir 的服务，取得实际在线能力和公开完整 binding。确认能力与已选请求适用后，先保存完整 v1 信封、request_id 和关联信息，再按现有 `--expected-binding` 通过 `submit` 发起。离线能力不冒充在线事实；身份改变先重新查询，不能静默改投。服务与状态目录适用性以当前 v7、升级先排空契约为准；不调用已删除的 verify-takeover，不由壳根据 SHA 自行放行活动任务升级。
 6. 保存原回执和关联 run_id；以 `observe` 为常规同快照观察，必要时 `inspect` 查询原命令，`last-message` 仅展示活动。事件游标只沿已消费页前进，不按时间或消息文本推导业务结果。
 
 缺配置时 run skill 可调用同一 helper 的无参数发现并提示必要补齐，不要求用户先记住配置参数；没有可确定的项目/发布绑定时停止于提交前，不自动安装依赖或改变账户。
@@ -125,7 +127,7 @@ Viewer 为可单独复制运行的 Windows EXE，不需要 Runner、PowerShell�
 | 进度、跨聊天找回 | 调用记录定位同 state-dir/run_id，再用 `observe` / `inspect`；多条候选时展示供选择，不能仅凭“最近一次”操作其它项目 |
 | 打开 Run 列表窗口 | helper 打开独立 Viewer；也可直接双击 Viewer，不启动 Runner、不自动提交任务 |
 | 回答问题或业务续执行 | 先取当前 Run.controls、revision/question_id，使用 `reply`；只传用户当前明确内容 |
-| 技术恢复 | `controls.can_resume` 与当前恢复原因允许且用户明确要求后，使用 `resume`；不自动回答旧问题或重做实施 |
+| 技术恢复 | 先 inspect 原操作与 controls.can_resume；用户明确要求后以新 request_id/当前 revision 发 resume，最多 30 秒只读原事实，查询原命令 action_status；失败保持暂停，同 ID 回放、新 ID 可再查，不重发输入或重建资源，业务等待及 stop/close 保持 |
 | 停止 | `stop` 仅作用于明确原 Run；展示受理、撤销授权、原资源停止/未知的区别，不用 service stop 代替 |
 | 结果与证据 | 使用 Run/PR 事实，按需 `inspect --refresh-pr`、`artifacts discover/collect/list/read` 和 `workspace-git`；不读私有库，不用日志推断完成 |
 

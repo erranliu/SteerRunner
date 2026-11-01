@@ -1,5 +1,7 @@
 # Plan：独立使用的双 Skill 薄壳
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 2026-10-26 交付验证增量：复用同一 PowerShell 5.1 文件/来源校验实现，接入 Runner/Viewer 构建、打包和安装；显式传入包内 Runner 与 helper 运行既有测试，保存包外固定 scope 资格报告。先验证合成包和报告拒绝反例，再构建隔离包运行安装、客户端、Viewer 与原始进度受控场景，最后复核包及证据摘要。此增量不重构 Record/Engine、不改变进度内容所有权，也不替代历史真机验收。实际结果单列于[验收记录](../acceptance/skill-shell.md)。
 
 日期：2026-10-23。状态：P1–P6 已实施，本次验证与实际资格见[验收记录](../acceptance/skill-shell.md)；下文保留实施分解和验收目标，未执行的完整矩阵不视为通过。依据：[Spec](skill-shell.spec.md)，源码调查基线 `1cfe2f9a065830ab62d540d3de4c0011ed603b56`。

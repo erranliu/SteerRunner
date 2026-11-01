@@ -1,5 +1,7 @@
 # Spec：Parser 独立文本分析与执行链路解耦
 
+> 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
+
 日期：2026-10-31。状态：CLI 内存任务已实施，并完成实现审计的四项修复及本轮定向复验；此前正式 L1、定向受控证据保留，不作为修复后全量重跑的声明。设计保持内存文本任务。对应 [Plan](parser-decoupling.plan.md)；实施与验证见 [验收记录](../acceptance/parser-decoupling.md)，先前 API 调查见 [P1 历史](../acceptance/parser-decoupling-p1.md)。调查基线：`e78c0db6f4e9be6242c6928cfeae596c8358ca5f`。
 
 用户范围：保留特定输出文本的分析能力，移除 parser 与正常执行链路的权限、工具、恢复、停止取证等耦合。此前文档轮仅编写/修订 Spec/Plan；用户后续“实施吧”已授权实现和验证，不包括安装部署或操作真实业务资源。
