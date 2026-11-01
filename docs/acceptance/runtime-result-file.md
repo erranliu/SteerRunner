@@ -65,3 +65,12 @@ execute/1 在普通可写 Run 工作区只发送一次调用方正文，直接�
 干净pin源码50f12791abd28e241298643b2ceb0b510899d370，source_digest cc89825927cec77174d04e4bffc91955d13c818b5928bef7bfb44ae0324fc201，EXE SHA256 f247b1332fb4e5f24aea92db8f9c14dcf044fb0c783a5996ee75e13ed97a570c。SteerLine/L4/local-01在该新pin实际通过（执行175.960秒、cleanup_complete=true）：项目入口只调用一次，原结果completed/ready，原Run可信native完成、停止、最终字节封存，准备前拒绝和准备后真实Task准入/停止，全部自有资源清理。平台不因不透明可选明细含failed而重判。SteerLine同轮固定L1/L2亦通过；其前轮原生负结果保留，不冒充当前pin重跑。
 
 本次收尾只补文档与空行规范，生产源码与50f1279相同。execute默认69字节、prompts.json 1088→1174字节保持，不以资产期望代替批准。Orca新增工作流原生矩阵未重跑；未部署、未合并、不启用自动合并。
+
+
+## 2026-11-01 PR 复审修复
+
+PR79 复审发现 late final 自动关闭会覆盖已受理 PendingStop，导致原 stop 回执未完成；已改为保留原 stop，拒绝另一不同 stop，原请求仍可幂等重放。配套调用方同构建取消恢复不再调用退役 takeover；新增 public inspect --offline，非创建地取得原 writer 租约，只读 current/v7 snapshot，拒绝驻留写者、未知 bootstrap、旧格式、refresh 或实例绑定，不启动 worker、不迁移、不封存结果。调用方在原 pending_stops 入口于 worker 前受理必要 stop；Closed 原 Run 由既有持久停止继续结算。
+
+独立 /root/prompt_review 已审阅实际正文/接线/能力资产和反例并批准，无剩余可复现 P0–P2。Runner prompts.json1174字节、execute默认69字节均未改动；新增 offline_inspect 仅能力事实，没有项目要求、提示词副本或新框架。生产修复提交9fd309f，干净构建source_digest318c6fbc2fbaace541e240c843cbf7a1cb658e1adbf02d028e90b172c110f349，EXE SHA256 9a0d638479aa5e32599f868d114b0472b09d7f3a3a1116edf3b00c1b5d9ac5a9。
+
+证据根 C:/SteerlineDebug/wt-68d4-project-environment-workflow/result-consumption/pr-fixes-04/runner：cold-public-recovery 既有四种恢复路径通过；single-cold-stop-02 公共 EXE 与受控原生进程的 execute 冷恢复通过19.08秒，原请求/Run公开查询、worker前stop、一次输入、原stop回执completed、result closed。host/CLI非创建只读/驻留租约冲突/无原状态/不支持格式及application late-final定向回归通过；新增测试首轮编译错误保留，修正后新目录通过。上述受控恢复构建来自提交前 dirty 8c3ee3f，与新干净 pin 的生产 source_digest 相同，但 EXE/pin 不同，不当作新 pin 或真实模型冷恢复实跑。新干净 9fd309f/9a0d6384 pin 的实际本机 L4 由 SteerLine 4bdeeca2 执行并通过（准备21.712/执行267.119秒、cleanup_complete=true）：一次项目调用、原生可信完成/停止/封存、实际Task准入/停止与自有refs清理。正式 L1/summary.json passed，732项Go测试及29项终端扩展通过；native opt-in和子进程角色跳过沿原分层列出，不代表原生全矩阵。该次L1在8c3ee3f+dirty生产修复快照启动，随后仅提交原有内容，最终9fd309f生产代码未再改变。未部署、未合并、不启用自动合并。
