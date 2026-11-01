@@ -38,21 +38,10 @@ func TestBudgetCallerOwnershipAndFeedback(t *testing.T) {
 			t.Fatal("wrong ownership", b)
 		}
 		original := r.Workflow.StageInputs[0]
-		original.Budget = nil
-		// Restore a frozen input with no feedback decision: old saved source can
-		// only establish all of the suffix as Runner, so use its no-feedback form.
-		old := budgetRecord()
-		if override {
-			old.Request.Workflow.PromptOverrides = r.Request.Workflow.PromptOverrides
-		}
-		if err := queueInput(old, workflow.StageInput{StepID: workflow.StepImplement}, ""); err != nil {
-			t.Fatal(err)
-		}
-		original = old.Workflow.StageInputs[0]
 		text := original.Prompt
 		original.Budget = nil
-		if err := ensureStageBudget(old, &original); err != nil || original.Prompt != text {
-			t.Fatal("legacy input rewritten", err)
+		if err := ensureStageBudget(r, &original); err == nil || original.Prompt != text || original.Budget != nil {
+			t.Fatal("missing budget was reconstructed or text changed", err)
 		}
 	}
 	for _, size := range []int{1999, 2000, 2001, 3001, 10552} {

@@ -1,0 +1,93 @@
+{
+  "original-results": {
+    "top_pass": 1,
+    "sub_pass": 9,
+    "skip": [],
+    "fail": [],
+    "package_pass": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "seconds": 3.359
+      }
+    ]
+  },
+  "application-fixture-failure": {
+    "top_pass": 31,
+    "sub_pass": 53,
+    "skip": [],
+    "fail": [
+      "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair/accepted",
+      "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair",
+      "github.com/erranliu/SteerRunner/internal/application"
+    ],
+    "package_pass": []
+  },
+  "application-final": {
+    "top_pass": 33,
+    "sub_pass": 60,
+    "skip": [],
+    "fail": [],
+    "package_pass": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "seconds": 60.199
+      }
+    ]
+  },
+  "adapters-final": {
+    "top_pass": 290,
+    "sub_pass": 1041,
+    "skip": [
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "fail": [],
+    "package_pass": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+        "seconds": 24.673000000000002
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "seconds": 42.372
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "seconds": 87.531
+      }
+    ]
+  },
+  "foundation-final": {
+    "result": {
+      "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\exit-proof-budget-reaudit\\bin\\steerrunner.exe",
+      "exit_code": 0,
+      "finished_at": "2026-11-01T14:22:26.1620968Z",
+      "scenario_count": 3
+    },
+    "top_pass": 3,
+    "sub_pass": 20,
+    "skip": 0
+  },
+  "native-final": {
+    "result": {
+      "business_inputs": 0,
+      "environment": "",
+      "exit_artifact_absent": true,
+      "fixture": "isolated current Run bound to real original native identities",
+      "passed": true,
+      "real_codex": true,
+      "resources_cleaned": true,
+      "runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-final-9627100b"
+    },
+    "top_pass": 1,
+    "sub_pass": 0,
+    "skip": 0,
+    "seconds": 49.66
+  }
+}

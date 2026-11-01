@@ -1,0 +1,1 @@
+{"protocol":"steerrunner-cli/v1","ok":true,"request_id":"probe-public-service-stop","data":{"action_status":"pending","command_id":"5a398fc914adce50961539d3e45c042b","instance_id":"e715057716b62ea3b067bda4229347da","receipt_status":"accepted","run_id":null},"error":null}

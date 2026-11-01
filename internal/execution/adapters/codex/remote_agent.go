@@ -131,11 +131,10 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = host.WriteExecutionFile(filepath.Join(dir, "configuration.json"), encode(c)); err != nil {
 		return err
 	}
-	exitWriter, publicKey, err := newRemoteExitWriter(wd)
+	publicKey, err := newRemoteStopBinding()
 	if err != nil {
 		return err
 	}
-	defer exitWriter.close()
 	exclude, err := workspace.ResolveInfoExclude(ctx, git, repo, wd)
 	if err != nil {
 		return err
@@ -154,21 +153,12 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 		return err
 	}
 	defer owned.Close()
-	var ready *RemoteReadiness
 	var tuiOwned b.StopHandle
 	defer func() {
 		// Never close a Job before querying its complete tree. Both the native
 		// server/tools and the remote TUI are owned, non-breakaway Jobs.
 		tuiAbsent := settleRemoteTree(tuiOwned)
 		writersAbsent := settleRemoteTree(owned) && tuiAbsent
-		if ready != nil {
-			proof := RemoteExit{Readiness: *ready, WritersAbsent: writersAbsent, ClosedAt: time.Now().UTC()}
-			if tuiOwned != nil {
-				identity := tuiOwned.Identity()
-				proof.TUI = &identity
-			}
-			result = errors.Join(result, exitWriter.write(proof))
-		}
 		if tuiOwned != nil {
 			tuiOwned.Close()
 		}
@@ -263,10 +253,9 @@ func RunRemoteAgent(ctx context.Context, c RemoteAgentConfig, input io.Reader, o
 	if err = host.WriteExecutionFile(filepath.Join(dir, "ready.json"), encode(prepared)); err != nil {
 		return err
 	}
-	ready = &prepared
 	// The transport captures this finite receipt before any business input and
 	// binds it to the original PTY incarnation and native provider session.
-	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(ready)))
+	fmt.Fprintln(output, RemoteReadyPrefix+base64.RawURLEncoding.EncodeToString(encode(prepared)))
 	// Keep draining notifications so the independent preparation connection
 	// cannot stall the native server while the TUI owns business interaction.
 	go func() {

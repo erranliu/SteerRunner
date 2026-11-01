@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"errors"
+	"reflect"
 	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -14,9 +15,10 @@ import (
 // advance retains the dispatch gate and checks authorization, policy and
 // higher-priority controls before preparing or dispatching the next input.
 func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate.Record) bool {
-	if r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.Budget == nil && r.Snapshot.PendingTurn.InputVersion > 0 && !unknown(r) {
-		input := workflow.Input(r.Workflow, r.Snapshot.PendingTurn.CommandID)
-		if input == nil {
+	if r.Snapshot.PendingTurn != nil && r.Snapshot.PendingTurn.InputVersion > 0 && !unknown(r) {
+		pending := r.Snapshot.PendingTurn
+		input := workflow.Input(r.Workflow, pending.CommandID)
+		if input == nil || input.AttemptID != r.Snapshot.Session.AttemptID || input.StepID != pending.StepID || input.Version != pending.InputVersion || input.Prompt != pending.Prompt || input.ReportToolPolicy != pending.ReportToolPolicy || input.Model != pending.Model || input.ReasoningEffort != pending.ReasoningEffort {
 			e.block(id, "input_failed", errors.New("original input source unavailable"), false)
 			return false
 		}
@@ -24,11 +26,24 @@ func (e *Engine) prepareRun(id string, w *worker, p b.LifecyclePort, r *runstate
 			e.block(id, "input_failed", err, false)
 			return false
 		}
-		r.Snapshot.PendingTurn.Budget = input.Budget.Clone()
-		e.mu.Lock()
-		err := e.commitLocked(r, nil, "input_budget_verified")
-		e.mu.Unlock()
-		return err == nil
+		if pending.Budget == nil {
+			// Restore only an unsent copy; committed payloads stay immutable.
+			for _, intent := range r.Intents {
+				if turn := intent.Request.Input.Turn; nativeInputAction(b.LifecycleAction(intent.Request.Operation.Action)) && turn != nil && turn.CommandID == pending.CommandID {
+					e.block(id, "input_failed", errors.New("original input intent already committed; budget copy not restored"), false)
+					return false
+				}
+			}
+			pending.Budget = input.Budget.Clone()
+			e.mu.Lock()
+			err := e.commitLocked(r, nil, "input_budget_verified")
+			e.mu.Unlock()
+			return err == nil
+		}
+		if !reflect.DeepEqual(pending.Budget, input.Budget) {
+			e.block(id, "input_failed", errors.New("native input provenance differs from frozen stage"), false)
+			return false
+		}
 	}
 	if r.Snapshot.Workspace.Path != "" && r.Snapshot.PendingTurn == nil && len(r.Workflow.StageInputs) == 0 {
 		if err := queueInput(r, workflow.StageInput{StepID: r.Workflow.Config.Initial}, ""); err != nil {

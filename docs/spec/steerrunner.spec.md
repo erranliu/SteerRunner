@@ -79,11 +79,19 @@ Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边�
 
 本机受管 Codex 按新 scope 终止并核实登记的原业务终端、控制终端、helper 和 app-server 原根进程。保留最多 15 秒的原停止预算、最多 2 秒的协作停止、原 helper 的 Job/工具实际清理、精确身份及停止后零新业务输入。删除签名退出文件和 control Closed/pending reader 响应作为该范围结算门禁；同一判据用于显式停止、服务关闭中的核验和离线 verify-stopped，后者即使已有 stopped 也重新查询原资源。
 
-代价是停止成功不再证明所有后代写进程退出；脱离管理的进程可由本人检查。原 stop 可能外发后只读对账，不重发 helper 请求或 close；部分清理中断可保持 unknown 转人工。正常业务及审计查询仍核验 reader/结果来源；共享退出签名写入、直接 Codex owner/checkpoint 保留。直接 Codex、Pi/DSH、原生远端和独立 parser 不改用此 scope。
+代价是停止成功不再证明所有后代写进程退出；脱离管理的进程可由本人检查。原 stop 可能外发后只读对账，不重发 helper 请求或 close；部分清理中断可保持 unknown 转人工。正常业务及审计查询仍核验 reader/结果来源；专属 helper 退出文件产出已删除，公钥请求绑定、共享签名封装及直接 Codex owner/checkpoint 的真实签名仍保留。直接 Codex、Pi/DSH、原生远端和独立 parser 不改用此 scope。
 
 scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state/v8、user_version=8 和新默认目录明确隔离 v7 旧承诺；不回填旧 Run、不按新 EXE 重释原停止保证。原版本先排空，旧历史仍由原版本读取，显式目录和客户端绑定不自动迁移。
 
 确定收益是删除两类停止专属证明规则；adapter 生产代码净减少 10 行，包含格式、投影及客户端后生产代码净增加 22 行。未测得可比耗时加速，不承诺正常任务提速或全局净删。专项仅取得受影响组件、3 项公开受控及一条真实本机停止探针资格，不继承为完整 L2/L3。停止入口与业务证据的剩余耦合已在[再审计](../acceptance/orca-local-codex-stop-reaudit.md)修正，最终构建与验证以该报告为准。
+
+### 现行实现清尾：退出证明产出与旧预算重建
+
+状态：2026-11-01 已实施；见 [Spec](exit-proof-budget-cleanup.spec.md)、[Plan](exit-proof-budget-cleanup.plan.md)、[初轮验收](../acceptance/exit-proof-budget-cleanup.md)及[实现再审计](../acceptance/exit-proof-budget-reaudit.md)，最终构建/验证以再审计报告为准。本机 Orca Codex 不再预开、签名、写入或 Sync 专属 exit.json，也不保留其专用 verifier/读取包装。公钥形状、readiness 编码和原停止请求地址/完整匹配、Git exclude、实际 Job/reader 清理及直接 Codex owner/checkpoint 签名保持。
+
+已冻结阶段输入的新派发只接受已有合法 Budget，不再从旧提示词、材料或反馈反推来源。仅 PendingTurn 副本缺失时，可在原命令、步骤、版本、Attempt、正文及模型等绑定一致、尚无该输入的持久外发意图时复制原 StageInput 的合法 Budget，并先提交再继续。尚未渲染草稿仍正常首次冻结，已有预算（包括旧来源标签）继续校验。
+
+取舍：不再保证恢复已冻结却缺 Budget 的不完整现场，即使旧算法曾能补算也拒绝新候选，可能需本人处理。此限制不阻止原查询、结果观察、accepted/unknown 只读对账、stop 或离线核验，不补写原意图/结果。state/v8、CLI 和 Workflow 版本保持，不新增迁移器或恢复框架。生产代码分项净减 103/83 行；未做同条件耗时比较，不宣称任务提速。未部署、未发布，不授予完整 L2/L3 资格。
 
 ### 文档分工与维护规则
 

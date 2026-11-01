@@ -1,0 +1,47 @@
+=== RUN   TestSRFrozenBudgetRecovery
+=== RUN   TestSRFrozenBudgetRecovery/accepted
+=== RUN   TestSRFrozenBudgetRecovery/unknown
+--- PASS: TestSRFrozenBudgetRecovery (38.50s)
+    --- PASS: TestSRFrozenBudgetRecovery/accepted (19.32s)
+    --- PASS: TestSRFrozenBudgetRecovery/unknown (19.18s)
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/reused_owner_pid
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (31.63s)
+    --- PASS: TestSRServiceOwnership/reused_owner_pid (0.02s)
+    --- PASS: TestSRServiceOwnership/offline_verification (20.80s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (1.40s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.20s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.63s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.20s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.10s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.08s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.08s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.09s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.13s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (1.73s)
+    --- PASS: TestSRServiceOwnership/parent_job (2.26s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (1.25s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.01s)
+    --- PASS: TestSRServiceOwnership/different_release (1.31s)
+    --- PASS: TestSRServiceOwnership/stale_writer (2.02s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (1.97s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (27.76s)
+PASS

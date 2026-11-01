@@ -18,15 +18,6 @@ import (
 	"time"
 )
 
-// Only the original helper holds the signing key. The workspace copy is public
-// and untrusted: deletion denies verification, modification cannot grant it.
-type RemoteExit struct {
-	Readiness     RemoteReadiness    `json:"readiness"`
-	TUI           *b.ProcessIdentity `json:"tui,omitempty"`
-	WritersAbsent bool               `json:"writers_absent"`
-	ClosedAt      time.Time          `json:"closed_at"`
-}
-
 type signedRemoteExit struct {
 	Body      json.RawMessage `json:"body"`
 	Signature []byte          `json:"signature"`
@@ -44,59 +35,12 @@ func RemoteStopPath(ready RemoteReadiness) (string, error) {
 	return path.Join(path.Dir(p), "request.json"), err
 }
 
-func VerifyRemoteExit(raw []byte, ready RemoteReadiness) error {
-	if _, err := RemoteExitPath(ready); err != nil {
-		return err
-	}
-	var signed signedRemoteExit
-	var exit RemoteExit
-	if len(raw) > 64<<10 || b.DecodeStrictJSON(raw, &signed, "trailing native exit") != nil ||
-		!ed25519.Verify(ready.ExitPublicKey, signed.Body, signed.Signature) ||
-		b.DecodeStrictJSON(signed.Body, &exit, "trailing native exit body") != nil {
-		return errors.New("original Codex signed exit is invalid")
-	}
-	if !bytes.Equal(encode(exit.Readiness), encode(ready)) || !exit.WritersAbsent || exit.ClosedAt.Before(ready.CheckedAt) || exit.ClosedAt.IsZero() {
-		return errors.New("original Codex writer-tree exit is incomplete or foreign")
-	}
-	return nil
-}
-
-type remoteExitWriter struct {
-	key  ed25519.PrivateKey
-	file *os.File
-}
-
-func newRemoteExitWriter(workspace string) (*remoteExitWriter, ed25519.PublicKey, error) {
+// newRemoteStopBinding preserves the public readiness/request identity without
+// retaining a signing key or depending on workspace artifact availability.
+func newRemoteStopBinding() (ed25519.PublicKey, error) {
 	pub, key, err := ed25519.GenerateKey(rand.Reader)
-	if err != nil {
-		return nil, nil, err
-	}
-	relative, _ := RemoteExitPath(RemoteReadiness{ExitPublicKey: pub})
-	name := filepath.Join(workspace, filepath.FromSlash(relative))
-	if err = os.MkdirAll(filepath.Dir(name), 0700); err != nil {
-		return nil, nil, err
-	}
-	real, err := filepath.EvalSymlinks(filepath.Dir(name))
-	if err != nil || !sameWorkspace(real, filepath.Dir(name)) {
-		return nil, nil, errors.New("native exit export directory is linked")
-	}
-	// Open before launching any native worker/model. Retain this exact handle,
-	// so later workspace path replacement cannot redirect the final write.
-	f, err := os.OpenFile(name, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
-	if err != nil {
-		return nil, nil, err
-	}
-	return &remoteExitWriter{key: key, file: f}, pub, nil
-}
-
-func (w *remoteExitWriter) close() { w.file.Close(); clear(w.key) }
-
-func (w *remoteExitWriter) write(exit RemoteExit) error {
-	body := bytes.TrimSpace(encode(exit))
-	if _, err := w.file.Write(encode(signedRemoteExit{Body: body, Signature: ed25519.Sign(w.key, body)})); err != nil {
-		return err
-	}
-	return w.file.Sync()
+	clear(key)
+	return pub, err
 }
 
 func excludeRemoteExit(name string) error {

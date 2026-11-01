@@ -1,0 +1,30 @@
+{
+  "baseline": "^(TestFrozenBudget.*|TestBudgetCallerOwnershipAndFeedback|TestContentConcurrentMessages|TestRARecoveryBusinessInput|TestRAAuditLifecycle)$",
+  "application": "^(TestFrozenBudget.*|TestBudget.*|TestContent.*|TestSingleExecution.*|TestRA.*|TestSRManual.*|TestSROperation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestProjectPolicies.*)$",
+  "foundation": "^(TestSRFrozenBudgetRecovery|TestSRNativeUnknownAndStop|TestSRServiceOwnership)$",
+  "native": "^TestOrcaStoppedNativeProbe$",
+  "tools": {
+    "orca": {
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe",
+      "sha256": "e7a6fa40a59d237cdb7cf32444df6660da850d1b31e4162634287d91fdfc3cba"
+    },
+    "codex": {
+      "path": "C:\\Users\\lmas1\\AppData\\Local\\OpenAI\\Codex\\bin\\22cfb1d302613eae\\codex.exe",
+      "sha256": "3097c909fb6d5cd63510d44aceb1d42df9f6e85722a3e447e477def1ecf60e16"
+    }
+  },
+  "orca_guide_sha256": "5142112ef43e4a6bd7c208ae06337a8e47697580c7cd61fc8d967872cb2dc264",
+  "native_environment": {
+    "model": "gpt-6.1-sol",
+    "repo_id": "faae3ad4-da24-4d6d-9698-d8931b893789",
+    "base": "91371fda325f04ce18592da67412a7f8af98ce52",
+    "environment": "",
+    "business_inputs": 0
+  },
+  "compile_only": {
+    "native": "go test -c -tags live -o .evidence/exit-proof-budget/bin/native.test.exe ./tests/native",
+    "integration": "go test -c -tags live -o .evidence/exit-proof-budget/bin/integration-live.test.exe ./tests/integration",
+    "exit_code": 0
+  },
+  "final_runner_build_exit_code": 0
+}
