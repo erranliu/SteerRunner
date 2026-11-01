@@ -39,3 +39,19 @@ go test ./internal/application ./internal/execution/workspace ./internal/executi
 - 初次新单元测试编译因未使用 import 失败，移除后通过。一次 `go test ./tests/integration -run '^$'` 在编译后被仓库零场景防护拒绝，不计验收；正式受控入口按实际选择场景执行。
 - 先前持续观察设计及宽范围执行全部标记被取代，不计本稿通过；原记录完整保留于 `.evidence/result-final-only-superseded-notes.md` 及原 evidence 目录。上一轮宽范围 harness 已退出，其残留的私有 service-ownership fixture 服务经原实例核对后明确停止；未操作生产或共享 Orca 资源。
 - 本轮未重跑完整 content recovery、resource creation、全 Controlled、原生 L2/L3、全 Agent 矩阵。真实远端双文件闭环与部署仍未执行；没有推送或创建 PR。
+
+## 2026-11-01 通用 execute/1 增量
+
+用户明确授权最小扩展，并要求在独立 worktree 实施。工作区为 `C:/Users/lmas1/.codex/worktrees/runner-project-detection/SteerRunner`，分支 `codex/project-detection-execute`，基线 `e2729563562314659a799a5f82debe427fcd7c24`；原 `C:/Project/SteerRunner` 未修改。
+
+execute/1 在普通可写 Run 工作区只发送一次调用方正文，直接消费原可信 final 后关闭；不要求 publication，没有审计/发布/结果获取、项目策略或业务检测知识，复用 result_file 最终封存和原停止。拒绝 reply/resume/message/interrupt/close，停止后不恢复，提问按 human_input_required 关闭。未新增服务或框架。
+
+独立审核 `/root/prompt_review` 已审阅实际 Git 差异并批准；首审发现的额外输入/恢复漏洞已修正，后续复审无剩余可执行 P0–P2。新增默认正文为“执行调用方指定的操作一次，保留原始结果与失败。”，69 UTF-8 字节，SHA256 `d4ae6da49ec392028096e1f48fbd0935819a63c5d99e022663ec0d12741bb9c0`；prompts.json 1088→1174 字节。该正文是公开默认定义，正式 execute 请求必须提供唯一非空 execute 覆盖。ResultFileInstruction 正文不变；公开 result_file.when 同步增加 execute/1，未改变 progress 规则。样本和资产测试更新不替代独立批准。
+
+证据根 `C:/SteerlineDebug/wt-68d4-project-environment-workflow/result-consumption/runner/`：
+
+- `L1/01/summary.json` 正式 L1 passed；配置/catalog/framework、721 个 Go 测试及29个终端扩展测试通过，现场 opt-in/子进程角色跳过按原 L1 约定记录，不代表原生目标全部可用。application 全包 594.546 秒、coverage71.6%。
+- `result-file-01/result.json`：正式 TestSRResultFile 公开封存回归 exit_code=0，1 场景，原最终快照和停止证明保留。
+- 定向 workflow/contracts/resources/application 全包通过；新增 SingleExecution 控制/停止/提问反例通过。公开能力描述最终修订后 workflow/resources 全包再次通过（1.375/2.311秒）。最初资源 catalogue 旧数量/版本期望失败已修正，未放宽实际 schema。
+
+跨仓真实单次调用由 SteerLine 当前专属验收记录；本段只声明上述 Runner 自有测试，不把受控结果当原生成功，不复用旧开发PR证明 execute；未部署或合并业务主分支。

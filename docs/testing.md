@@ -599,3 +599,6 @@ P2 观测解耦的定向组件入口：go test ./internal/application -run 'Test
 P2 Orca local 补验：完整 L1 使用 `./scripts/test-prerequisites.ps1 -Stage L1 -OutDir <新目录>`，沿用原 12 分钟每 Go 包预算，包含 framework、全部 internal 包、原生扩展和 driver 守卫。定向组件的短预算不应直接套到全包累计执行；包总超时须结合 JSON 中的包启动和当前子测试启动时间判断，不据栈所在函数推断其卡死。本次没有增加超时、排除慢包或删除断言。
 
 本机受管 Codex 的 bootstrap READY 不等于 TUI composer 已可接收原输入；发送前沿原终端做既有 `tui-idle` 查询，只用于输入就绪，最终结果仍取原完整输入/原生回执。测试权限审计从 cursor=0 原始 stream 读取完整回执；画面折行文本不能用作审计输入。控制关闭证明的键使用原 actor 的稳定 workspace，允许只读核实当前 v6 的同一资源空 workspace 旧键，foreign canonical 拒绝仍保留。新旧现场、补验构建与结果见[验收报告](acceptance/personal-executor-p2.md)。
+
+execute/1 增量复用正式 L1（含 SingleExecution 契约/原生 final/停止/拒绝额外输入测试）及 foundation 的 TestSRResultFile 最终封存回归。跨仓消费者的真实单次调用另由 SteerLine 的 testing.project-environment-local 验证，不能以受控 peer 替代；Runner 自身测试无需 SteerLine checkout 或新测试框架。
+

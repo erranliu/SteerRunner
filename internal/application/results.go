@@ -110,7 +110,7 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 		return false
 	}
 	if state.Contract == "final" {
-		if r.Request.Conversation != nil && (result.NativeOutcome == "unknown" || result.NativeOutcome == "unreported") {
+		if (r.Request.Conversation != nil || r.Request.Workflow.ID == workflow.SingleExecution) && (result.NativeOutcome == "unknown" || result.NativeOutcome == "unreported") {
 			r.Result = &value
 			r.Status, r.Phase, r.Diagnostic = "reconciling", "native_outcome_unverified", "Original native turn outcome remains unverified"
 			_ = e.commitLocked(r, nil, "final_unavailable")
@@ -122,7 +122,7 @@ func (e *Engine) finishWithGate(id string, value b.TurnEvidence, gate *sync.Mute
 			_ = e.commitLocked(r, nil, "final_unavailable")
 			return false
 		}
-		if r.Request.Conversation != nil && result.Succeeded && !result.ContentVerified {
+		if (r.Request.Conversation != nil || r.Request.Workflow.ID == workflow.SingleExecution) && result.Succeeded && !result.ContentVerified {
 			r.Result = &value
 			r.Status, r.Phase, r.Diagnostic = "reconciling", "final_unavailable", "Original final content remains unverified"
 			_ = e.commitLocked(r, nil, "final_unavailable")

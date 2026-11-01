@@ -33,8 +33,12 @@ func (p Profile) RequiresResultAcquisition() bool {
 }
 
 const AuditedDevelopment = "development-audited"
+const SingleExecution = "execute"
 
 func Lookup(id string, version int) (Profile, bool) {
+	if id == SingleExecution && version == 1 {
+		return Profile{ID: id, Version: 1, Initial: "execute", Description: "Execute one caller operation in a fixed writable worktree, without publication.", SupportedAdapters: []string{"codex-app-server", "orca-terminal"}, PromptSteps: []string{"execute"}, States: map[string]State{"execute": {Kind: "execute", Contract: "final", ModelRole: "execution", PromptKey: "execute", Prompt: "执行调用方指定的操作一次，保留原始结果与失败。", Next: "closed", PolicySlots: []string{}}, "closed": {Kind: "terminal", PolicySlots: []string{}}}}, true
+	}
 	if version == 1 && (id == "conversation" || id == "generate") {
 		return contentProfile(id), true
 	}
@@ -63,7 +67,8 @@ func Catalog() []Profile {
 	a, _ := Lookup(AuditedDevelopment, 2)
 	c, _ := Lookup("conversation", 1)
 	g, _ := Lookup("generate", 1)
-	return []Profile{p, a, c, g}
+	x, _ := Lookup(SingleExecution, 1)
+	return []Profile{p, a, c, g, x}
 }
 func AuditStep(step string) bool {
 	return step == StepAuditCode || step == StepAuditReport || step == StepAuditParse || step == StepAuditInput || step == "audit.code"

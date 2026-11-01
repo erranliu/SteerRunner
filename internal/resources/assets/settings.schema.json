@@ -13,7 +13,8 @@
           "development",
           "development-audited",
           "conversation",
-          "generate"
+          "generate",
+          "execute"
         ]
       },
       "version": {
@@ -100,7 +101,8 @@
                   "implement.execute",
                   "implement.report",
                   "publish",
-                  "publish.report"
+                  "publish.report",
+                  "execute"
                 ]
               }
             }
@@ -129,9 +131,25 @@
           }
         },
         "else": {
-          "properties": {
-            "version": {
-              "const": 2
+          "if": {
+            "properties": {
+              "id": {
+                "const": "execute"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "version": {
+                "const": 1
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "version": {
+                "const": 2
+              }
             }
           }
         }

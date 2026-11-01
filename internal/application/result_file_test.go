@@ -16,6 +16,7 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
@@ -414,5 +415,97 @@ func TestResultFileShutdownDeadlineAndOriginalRecovery(t *testing.T) {
 	e2.sealResult(context.Background(), "run")
 	if resultView(e2).Diagnostic != "file_missing" || e2.runs["run"].Snapshot.Workspace.Path != originalWorkspace || w2.port != nil {
 		t.Fatal("original resource loss created a replacement")
+	}
+}
+
+func singleExecutionFixture(t *testing.T) *Engine {
+	t.Helper()
+	e, _ := resultFixture(t, false)
+	r := e.runs["run"].Clone()
+	p, _ := workflow.Lookup(workflow.SingleExecution, 1)
+	r.Request.Workflow = contracts.Workflow{ID: workflow.SingleExecution, Version: 1, PromptOverrides: map[string]string{"execute": "invoke project entry"}}
+	r.Request.Publication = contracts.Publication{}
+	r.Workflow = workflow.Snapshot{Config: &p, StepID: p.Initial}
+	r.Snapshot.Ref.Version = 1
+	r.Snapshot.PendingTurn = nil
+	r.NextStage = nil
+	if err := queueInput(r, workflow.StageInput{StepID: p.Initial}, ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	return e
+}
+
+func TestSingleExecutionClosesWithoutPublicationAndSealsOriginalResult(t *testing.T) {
+	e := singleExecutionFixture(t)
+	if !e.finish("run", contentEvidence(e, "entry returned", "succeeded", true)) {
+		t.Fatal("original final rejected")
+	}
+	done := e.runs["run"]
+	if !done.Closed || done.Workflow.StepID != "closed" || done.PendingStop == "" || done.LastFinal == nil || !done.LastFinal.Verified {
+		t.Fatal("not a closed single execution", done.Status, done.Workflow.StepID)
+	}
+	if resultView(e).CollectionStatus != "pending" {
+		t.Fatal("sealed with producer still running")
+	}
+	resultStopped(t, e)
+	e.sealResult(context.Background(), "run")
+	v := resultView(e)
+	if v.CollectionStatus != "closed" || v.Version != 1 || string(snapshotBytes(t, v)) != "seed" {
+		t.Fatal(v)
+	}
+}
+
+func TestSingleExecutionRejectsReplyAndResumeIncludingAfterStop(t *testing.T) {
+	e := singleExecutionFixture(t)
+	for _, kind := range []string{"answer", "feedback"} {
+		r := e.runs["run"]
+		q := contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: kind, QuestionID: "question", Text: "do more"}
+		v := contentControl(e, "reply", "single-"+kind, q)
+		if v.OK || v.Error.Code != "unsupported_capability" {
+			t.Fatal(v)
+		}
+	}
+	v := contentControl(e, "stop", "single-stop", contracts.RevisionInput{ExpectedRevision: e.runs["run"].Revision})
+	if !v.OK {
+		t.Fatal(v)
+	}
+	r := e.runs["run"]
+	if !r.Closed || r.ResumeRequired || r.View().Controls.CanReply || r.View().Controls.CanResume {
+		t.Fatal("stopped operation remained writable", r.View())
+	}
+	v = contentControl(e, "resume", "single-resume", contracts.RevisionInput{ExpectedRevision: r.Revision})
+	if v.OK || v.Error.Code != "unsupported_capability" {
+		t.Fatal(v)
+	}
+	if len(e.runs["run"].Workflow.StageInputs) != 1 {
+		t.Fatal("additional operation queued")
+	}
+}
+func TestSingleExecutionNativeQuestionClosesAndRetainsOriginalStop(t *testing.T) {
+	e := singleExecutionFixture(t)
+	r := e.runs["run"].Clone()
+	r.Snapshot.Session.Generation = "original-generation"
+	r.Snapshot.Session.CurrentTurnID = "original-turn"
+	if r.Snapshot.Session.ProjectID == "" {
+		r.Snapshot.Session.ProjectID = "project"
+	}
+	if err := e.commitLocked(r, nil); err != nil {
+		t.Fatal(err)
+	}
+	ss := r.Snapshot.Session
+	route, err := b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: 1, Purpose: b.ImplementationQuestionPurpose, ImplementationKey: "codex", ProjectID: ss.ProjectID, WorkflowRunID: "run", ExecutionID: "run", AttemptID: ss.AttemptID, Generation: ss.Generation, TurnID: ss.CurrentTurnID, QuestionID: "original-question"}, []byte(`{}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = e.acceptEvent("run", b.LifecycleEvent{Fact: b.EventFact{Kind: b.EventQuestion, Source: "native", SourceEventID: "original-question-event", QuestionRoute: &route, QuestionText: "need more input"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	stopped := e.runs["run"]
+	if !stopped.Closed || stopped.PendingStop == "" || stopped.ResumeRequired || stopped.View().Controls.CanReply || stopped.Diagnostic != "human_input_required" || len(stopped.Workflow.StageInputs) != 1 {
+		t.Fatal("question reopened operation", stopped.View())
 	}
 }

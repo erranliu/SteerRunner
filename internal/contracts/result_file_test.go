@@ -40,3 +40,31 @@ func TestResultFileAdmissionAndOpaqueByteBounds(t *testing.T) {
 		t.Fatal("channel identity/fence missing")
 	}
 }
+
+func TestSingleExecutionAdmissionWithoutPublication(t *testing.T) {
+	var input map[string]any
+	_ = json.Unmarshal(validRun(), &input)
+	input["workflow"] = map[string]any{"id": "execute", "version": 1, "prompt_overrides": map[string]string{"execute": "call the fixed entry"}}
+	input["result_file"] = map[string]any{"initial_content_base64": "e30="}
+	delete(input, "publication")
+	raw, _ := json.Marshal(input)
+	if f := ValidateRun(raw); f != nil {
+		t.Fatal(f)
+	}
+	for _, field := range []string{"publication", "progress_file"} {
+		bad := map[string]any{}
+		_ = json.Unmarshal(raw, &bad)
+		bad[field] = map[string]any{}
+		b, _ := json.Marshal(bad)
+		if ValidateRun(b) == nil {
+			t.Fatal("unexpected input accepted", field)
+		}
+	}
+	for _, overrides := range []map[string]string{nil, {"publish": "no"}, {"execute": " "}} {
+		input["workflow"] = map[string]any{"id": "execute", "version": 1, "prompt_overrides": overrides}
+		b, _ := json.Marshal(input)
+		if ValidateRun(b) == nil {
+			t.Fatal("missing or wrong operation accepted", overrides)
+		}
+	}
+}

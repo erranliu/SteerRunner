@@ -175,5 +175,13 @@ func (r *Record) View() contracts.RunView {
 		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
 		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed
 	}
+	if r.Request.Workflow.ID == workflow.SingleExecution {
+		v.Closed = r.Closed
+		v.Controls.CanReply = false
+		v.Controls.CanResume = false
+		v.Controls.CanMessage = false
+		v.Controls.CanInterrupt = false
+		v.Controls.CanClose = false
+	}
 	return v
 }
