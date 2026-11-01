@@ -1,5 +1,22 @@
 # SteerRunner L1–L4 测试指南
 
+## 快速定向验证（P1，2026-11-01）
+
+开发反馈可直接运行受影响包的 `go test -run <明确模式>` 或 `scripts/test-foundation.ps1 -Pattern <明确模式>`。真实 case 使用正式定向入口，例如在仓库根目录执行：
+
+```powershell
+.\scripts\build.ps1 -OutFile .\.evidence\p1-build\steerrunner.exe
+.\scripts\test.ps1 -Focused -Level L2 -Scenario local-codex.smoke `
+  -Config C:\srt-config\local.json -RunnerExe .\.evidence\p1-build\steerrunner.exe `
+  -OutDir .\.evidence\focused-smoke
+```
+
+`-Focused` 只接受单级 L2/L3、明确的 Scenario ID、现有 Config、匹配当前生产输入的固定 RunnerExe 和全新显式 OutDir。可选 ConfigHelper 沿原入口处理。不能与 Catalog、ListAvailability 或 PrerequisitesFrom 合用；不接受通配、重复、未注册或级别不匹配的场景。实际 case、配置评估、fixture、调度 lease、原生断言和停止清理保持。
+
+该入口不启动完整 L1/Controlled，仍新编译 native driver、执行零匹配保护，并把同一 driver 传给 L2/L3 worker。报告新增 `validation_scope=focused`、前置实际启动次数和阶段耗时；case 成功可以是 `status=passed`，但 `complete_level_passed`、`baseline.*_verified` 和完整交付资格始终为 false，即使选中了该级全部 case。`framework/native-zero-match` 目录只是原生零匹配保护，不代表执行完整 framework/L1。
+
+不带 Focused 的默认链路及已有 L2 前置复用规则保持；本增量不开放 L3 的前置证明复用。开发定向通过不替代发布所需的完整验证。P1 实测、历史失败和收益范围见[独立验收](acceptance/personal-executor-p1.md)；后续观测/恢复/职责改造尚未实施，当前仍为 state/v6。
+
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
 2026-10-29 退役旧 Check：当前 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。
@@ -572,3 +589,11 @@ PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修�
 定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。
 
 原生输入正式 focused 入口的远端准备与业务共享现有本机同等六分钟 fixture 总期限，不单设90秒准备上限。原 READY 只读查询、原冻结输入/intent、一次通用提交、原输入/完成及正式停止均保留；生产等待参数不变。双端各三个真实会话与失败边界见[最终远端验收](acceptance/orca-native-submit-remote-final.md)。
+
+P2 观测解耦的定向组件入口：go test ./internal/application -run 'TestRuntimeFiles|TestProgress|TestResultFile|TestSRStopSerializes|TestSROperation|Test.*Preparation' -count=1 -timeout=4m。公开 EXE 回归使用 test-foundation.ps1 的 TestSRProgressFile、TestSRResultFile、TestSRRunWorkflow、TestSRNativeUnknownAndStop、TestSRRestartPreservesAuthorization；TestSRResultFile 内增加四启用组合的目录故障→原 PR 闭环→明确停止，不改变原结果资格回退。
+
+最小真机探针复用 new-test-fixture.ps1 的 development-smoke driver：-ObservationFiles 启用两个健康通道，-ObservationFault 在新 fixture 的专用 base 提交两个同名普通文件，使通道目录无法创建。二者互斥且只接受 development-smoke；原 test-native.ps1 核验 PR、原生审计和停止，额外断言 progress、pr_ready 时 result 仍 pending、明确停止后 result 一次封存。原场景 ID/超时/业务断言保持；这些定向探针不授予完整 L2/L3 或发布资格。结果与命令见[独立验收](acceptance/personal-executor-p2.md)。
+
+P2 Orca local 补验：完整 L1 使用 `./scripts/test-prerequisites.ps1 -Stage L1 -OutDir <新目录>`，沿用原 12 分钟每 Go 包预算，包含 framework、全部 internal 包、原生扩展和 driver 守卫。定向组件的短预算不应直接套到全包累计执行；包总超时须结合 JSON 中的包启动和当前子测试启动时间判断，不据栈所在函数推断其卡死。本次没有增加超时、排除慢包或删除断言。
+
+本机受管 Codex 的 bootstrap READY 不等于 TUI composer 已可接收原输入；发送前沿原终端做既有 `tui-idle` 查询，只用于输入就绪，最终结果仍取原完整输入/原生回执。测试权限审计从 cursor=0 原始 stream 读取完整回执；画面折行文本不能用作审计输入。控制关闭证明的键使用原 actor 的稳定 workspace，允许只读核实当前 v6 的同一资源空 workspace 旧键，foreign canonical 拒绝仍保留。新旧现场、补验构建与结果见[验收报告](acceptance/personal-executor-p2.md)。

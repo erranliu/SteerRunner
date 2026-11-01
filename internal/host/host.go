@@ -20,7 +20,6 @@ const maxWireBytes = 2*contracts.MaxRequestBytes + 1024*1024
 
 type Options struct {
 	ExpectedBinding    *contracts.ExpectedServiceBinding `json:"expected_binding,omitempty"`
-	Candidate          string                            `json:"candidate,omitempty"`
 	ArtifactID         string                            `json:"artifact_id,omitempty"`
 	ExpectedInstanceID string                            `json:"expected_instance_id,omitempty"`
 	NativeSession      *contracts.NativeSessionTarget    `json:"native_session,omitempty"`
@@ -55,7 +54,7 @@ func DefaultDir() (string, error) {
 	if dir == "" {
 		return "", errors.New("LOCALAPPDATA is unavailable; supply an absolute --state-dir")
 	}
-	return filepath.Join(dir, "SteerRunner-v6"), nil
+	return filepath.Join(dir, "SteerRunner-v7"), nil
 }
 
 // Normalize resolves existing path aliases, including the existing ancestor of

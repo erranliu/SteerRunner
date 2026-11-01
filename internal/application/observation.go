@@ -19,17 +19,35 @@ func (e *Engine) attachObservation(id string, w *worker, p b.LifecycleObservePor
 	if w.observer != nil {
 		return false
 	}
-	ctx, cancel := context.WithTimeout(e.ctx, 30*time.Second)
+	deadline := r.ObservationDeadline
+	if deadline.IsZero() {
+		deadline = time.Now().Add(30 * time.Second)
+	}
+	ctx, cancel := context.WithDeadline(e.ctx, deadline)
 	receipt, observer, err := p.ObserveLifecycle(ctx, r.Snapshot.Clone())
 	cancel()
+	if err == nil && receipt.Disposition == b.OperationUnknown && observer == nil && receipt.TurnEvidence == nil {
+		err = errors.New("Original observation remains unverified: " + receipt.Diagnostic)
+	}
 	if err != nil {
 		if observer != nil {
 			_ = observer.Close(context.Background())
 		}
-		if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
+		if !time.Now().Before(deadline) {
+			e.requireManual(id, "Original resource observation deadline exhausted: "+err.Error())
+		} else if r.Status == "blocked" || r.Status == "waiting_input" || r.ResumeRequired {
 			e.logger.Printf("original observation unavailable run=%s diagnostic=%s", id, e.redact(r, err.Error()))
 		} else {
-			e.block(id, "observation_unverified", err, true)
+			e.mu.Lock()
+			next := e.runs[id].Clone()
+			if next.Revision == r.Revision {
+				if next.ObservationDeadline.IsZero() {
+					next.ObservationDeadline = deadline
+				}
+				next.Diagnostic = e.redact(next, err.Error())
+				_ = e.commitLocked(next, nil, "observation_unverified")
+			}
+			e.mu.Unlock()
 		}
 		return false
 	}
@@ -178,6 +196,7 @@ func (e *Engine) applyObservation(id string, original *runstate.Record, receipt 
 	if merge(next, receipt) != nil {
 		return false
 	}
+	next.ObservationDeadline = time.Time{}
 	e.applyObservationDiagnostic(next, receipt.Diagnostic)
 	if reflect.DeepEqual(next, e.runs[id]) {
 		return true

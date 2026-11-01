@@ -11,5 +11,5 @@ func (e *Engine) Observe(id, after string, limit int) contracts.Response {
 	}
 	// Match the existing legacy read-only projection; a new read API cannot
 	// grant controls that the resident's original inspection withholds.
-	return contracts.Success("", contracts.RunObservation{Contract: contracts.RunObservationContract, Run: publicRunView(r), EventPage: page})
+	return contracts.Success("", contracts.RunObservation{Contract: contracts.RunObservationContract, Run: r.View(), EventPage: page})
 }

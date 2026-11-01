@@ -42,7 +42,7 @@ func TestRecoveryProfileQualificationMatchesConstructorWithoutNativeCapabilities
 					}
 					_, oldErr := NewLifecycle(setup)
 					setup.ProcessHost = nil
-					err := ValidateRecovery(setup)
+					_, _, err := decodeLifecycleProfile(setup)
 					if (oldErr == nil) != (err == nil) || oldErr != nil && oldErr.Error() != err.Error() {
 						t.Fatal("qualification changed", oldErr, err)
 					}

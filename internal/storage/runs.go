@@ -152,7 +152,6 @@ func (s *Store) Runs() ([]*runstate.Record, error) {
 		if err := rows.Scan(&raw); err != nil {
 			return nil, err
 		}
-		if err := rejectLegacyParser(raw); err != nil { return nil, err }
 		var r runstate.Record
 		if err := b.DecodeStrictJSON(raw, &r, "trailing durable Run data"); err != nil {
 			return nil, err

@@ -1,0 +1,46 @@
+{
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "files": [
+    {
+      "sha256": "903def13a6fb6bbc26107c791574268b973a9595724d5a4d5db2605ef44a04bd",
+      "path": "scripts/test.ps1"
+    },
+    {
+      "sha256": "2a5f4133c1bd512c2e42c3f591de2c0ee22d957ea9596f4b1054f78c870b87ca",
+      "path": "scripts/test-focused.ps1"
+    },
+    {
+      "sha256": "28a721bcc90d39125f33d472c0217816d9bfe4c36aef751f51e652b359565ccd",
+      "path": "scripts/test-configuration.ps1"
+    },
+    {
+      "sha256": "3fb76b26f63316eeb0a73017ebe789742c5893e959cdff515676d7c000d05ee5",
+      "path": "scripts/run-test-case.ps1"
+    },
+    {
+      "sha256": "7f9cfaf694f95f0cc24aa14ae250058a86615a02058914efd0ab7ec93daff77e",
+      "path": "scripts/test-native.ps1"
+    },
+    {
+      "sha256": "5fe2e00585b2bdd78494a483ed046d61d3f8daaa1c6670f767e126b8f21e75cb",
+      "path": "scripts/test-framework.ps1"
+    },
+    {
+      "sha256": "c9c5fe847e73ca506d0e90b9f7968663636c0b89a170e505e00495303d8adc3f",
+      "path": "scripts/verify-progress-parallel.ps1"
+    },
+    {
+      "sha256": "81374d6012255c0ae30f2e0ccab26427d0b1e89de4ce962ddaba191b7f57944a",
+      "path": "tests/framework/focused-test.ps1"
+    },
+    {
+      "sha256": "15f23500d27542ad9a13d74ff5da1a0158bd367e459e5042b11ef3eac9fa078e",
+      "path": "tests/framework/prerequisites-test.ps1"
+    },
+    {
+      "sha256": "042dcfccd67866550cc309e05a4e10a4188e3b3ac48ee73b43ff20c0ae841374",
+      "path": "tests/framework/progress-parallel-test.ps1"
+    }
+  ],
+  "source_dirty": true
+}

@@ -31,8 +31,9 @@ func resultFixture(t *testing.T, progress bool) (*Engine, *worker) {
 	if err := e.commitLocked(r, nil); err != nil {
 		t.Fatal(err)
 	}
-	if !e.prepareRuntimeFiles(e.runs["run"].Clone()) {
-		t.Fatal("initialization failed", e.runs["run"].ResultFile)
+	e.prepareRuntimeFiles(e.runs["run"].Clone())
+	if !e.runs["run"].ResultFile.Initialized {
+		t.Fatal("fixture initialization failed", e.runs["run"].ResultFile)
 	}
 	return e, w
 }
@@ -267,23 +268,19 @@ func TestResultFileInitializationRecoveryAndNoStopCreation(t *testing.T) {
 		t.Fatal(err)
 	}
 	_ = os.WriteFile(path, []byte("partial unknown write"), 0600)
-	if err := e.prepareResult(e.runs["run"].Clone()); err == nil || err.Error() != "initialization_unverified" {
-		t.Fatal(err)
-	}
+	e.prepareRuntimeFiles(e.runs["run"].Clone())
 	got, _ := os.ReadFile(path)
 	if string(got) != "partial unknown write" {
 		t.Fatal("initialization replayed")
 	}
 	_ = os.Remove(path)
-	if err := e.prepareResult(e.runs["run"].Clone()); err == nil {
-		t.Fatal("missing unknown write recreated")
-	}
+	e.prepareRuntimeFiles(e.runs["run"].Clone())
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
 	resultStopped(t, e)
 	e.sealResult(context.Background(), "run")
-	if resultView(e).Diagnostic != "initialization_unverified" {
+	if resultView(e).Diagnostic != "file_missing" {
 		t.Fatal(resultView(e))
 	}
 	// No initialization is attempted for a Run already stopped before preparation.
@@ -295,9 +292,7 @@ func TestResultFileInitializationRecoveryAndNoStopCreation(t *testing.T) {
 	if err := e2.commitLocked(r, nil); err != nil {
 		t.Fatal(err)
 	}
-	if err := e2.prepareResult(e2.runs["run"].Clone()); err == nil {
-		t.Fatal("stop allowed initialization")
-	}
+	e2.prepareRuntimeFiles(e2.runs["run"].Clone())
 	e2.sealResult(context.Background(), "run")
 	if _, err := os.Stat(filepath.Join(r.Snapshot.Workspace.Path, ".steerrunner", "result")); !os.IsNotExist(err) {
 		t.Fatal("created result during stop", err)
@@ -307,26 +302,31 @@ func TestResultFileInitializationRecoveryAndNoStopCreation(t *testing.T) {
 func TestResultFilePreparationFailureStillPreparesPeer(t *testing.T) {
 	for _, failed := range []string{"progress", "result"} {
 		t.Run(failed, func(t *testing.T) {
-			e, _ := resultFixture(t, true)
-			p := e.runs["run"].Clone().ResultFile
-			p.Initialized = false
-			if err := e.saveResultLocked("run", p); err != nil {
+			e, _ := evidenceEngine(t)
+			r := e.runs["run"].Clone()
+			r.Request.ProgressFile = &contracts.ProgressFileInput{}
+			r.Request.ResultFile = &contracts.ResultFileInput{}
+			if err := e.commitLocked(r, nil); err != nil {
 				t.Fatal(err)
 			}
-			progress := e.runs["run"].Clone().Progress
-			progress.Initialized = false
-			if err := e.saveProgressLocked(e.runs["run"], progress); err != nil {
+			blocker := filepath.Join(r.Snapshot.Workspace.Path, ".steerrunner", failed)
+			if err := os.WriteFile(blocker, []byte("not a directory"), 0600); err != nil {
 				t.Fatal(err)
 			}
-			missing := resultPath(e.runs["run"])
-			if failed == "progress" {
-				missing = progressPath(e.runs["run"])
+			e.prepareRuntimeFiles(r)
+			got := e.runs["run"]
+			if got.Progress.Initialized != (failed != "progress") || got.ResultFile.Initialized != (failed != "result") {
+				t.Fatal("peer preparation skipped", got.Progress, got.ResultFile)
 			}
-			if err := os.Remove(missing); err != nil {
+			if !got.Progress.InitializationAttempted || !got.ResultFile.InitializationAttempted {
+				t.Fatal("missing durable attempt")
+			}
+			if err := os.Remove(blocker); err != nil {
 				t.Fatal(err)
 			}
-			if e.prepareRuntimeFiles(e.runs["run"].Clone()) || e.runs["run"].Progress.Initialized != (failed != "progress") || e.runs["run"].ResultFile.Initialized != (failed != "result") {
-				t.Fatal("peer preparation skipped")
+			e.prepareRuntimeFiles(got.Clone())
+			if _, err := os.Stat(blocker); !os.IsNotExist(err) {
+				t.Fatal("failed preparation recreated a missing directory", err)
 			}
 		})
 	}

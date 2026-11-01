@@ -1,5 +1,7 @@
 # Spec：验证链路解耦与前置结果复用
 
+> 2026-11-01 P1 增补：正式 `-Focused` 可单独执行选定 L2/L3 case，跳过完整前置但不授予完整资格，见[个人执行器 Spec PES-04](personal-executor-simplification.spec.md#6-快速定向验证pes-04)及[P1 验收](../acceptance/personal-executor-p1.md)。它不复用前置证明，不能与 PrerequisitesFrom 合用；本文的默认链路和仅 L2 显式前置复用范围保持。
+
 日期：2026-10-31。状态：已实施，完整默认前置及正式复用 L2 通过，最新资格与实现审计见[审计验收](../acceptance/validation-reuse-audit.md)，[首轮历史](../acceptance/validation-reuse.md)保留；文档审计见 [Plan §9](validation-reuse.plan.md#9-文档审计与修正2026-10-31)。资格仅按实际验证范围授予。
 
 调查基线：`5c5c1653961ad08a836e82fc84f0898667864a5c`。前序动机见[宿主认证审计与 L2](../acceptance/host-native-auth-audit-l2.md)：完整前置通过后，仅修改 `tests/native` 的审计消费者，仍需手工拼装重跑 job 和资格来源。本轮将这一条反馈链路正规化。

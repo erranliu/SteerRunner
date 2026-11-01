@@ -1,0 +1,102 @@
+{
+  "authentication": {
+    "proof": {
+      "runner_input": {
+        "budget": {
+          "contract": "steerrunner-model-input/v1",
+          "sha256": "6f257d58d9f5fd75b8a0ae55a5f4a03f3d1d27ec8f0c84e2a230c267c3b4b42b",
+          "provenance_sha256": "eb09e88e9adba9ac08ced9fd58d0795a1cf0604528f2821a241e751ba58eea24",
+          "caller_bytes": 0,
+          "runner_bytes": 541,
+          "total_bytes": 541,
+          "fragments": [
+            {
+              "source": "native.developer",
+              "owner": "runner",
+              "bytes": 541
+            }
+          ]
+        },
+        "parts": [
+          {
+            "Source": "native.developer",
+            "Owner": "runner",
+            "Text": "shell=\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\",login=false。临时文件使用本次Run指定临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。失败或未知（含认证过期）保留原分支/PR结果并停止对账；未知发布不重做。"
+          }
+        ],
+        "fields": [
+          "developerInstructions"
+        ]
+      },
+      "runner_bootstrap": {
+        "budget": {
+          "contract": "steerrunner-model-input/v1",
+          "sha256": "971b9a93add4bd028ca070da3d864ac8f2b029437c44a9a9420dc1efcc222421",
+          "provenance_sha256": "7a925899935408b5984aedddf44cc2e904cdbcc4fc13f6c05f7447420cecb298",
+          "caller_bytes": 0,
+          "runner_bytes": 82,
+          "total_bytes": 82,
+          "fragments": [
+            {
+              "source": "native.bootstrap",
+              "owner": "runner",
+              "bytes": 82
+            }
+          ]
+        },
+        "parts": [
+          {
+            "Source": "native.bootstrap",
+            "Owner": "runner",
+            "Text": "Initialize this agent session. Reply READY only. Do not use tools or change files."
+          }
+        ],
+        "fields": [
+          "input[0].text"
+        ]
+      },
+      "exit_public_key": "zQr2kQdBjn4bc8ixIMOAxS1/hn9JP/TvmzRnaXS/rAw=",
+      "owner": {
+        "kind": "os",
+        "pid": 15028,
+        "created": "01dd69b45b603c1f",
+        "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1e6e\\steerrunner\\.evidence\\personal-executor-p2-followup\\bin\\steerrunner-agent.exe"
+      },
+      "native_transport": "codex-remote-inline-v4",
+      "runtime_sha256": "b175cb636a516077f35c9368888b51ed07ba53389ce27b3cd5209079e3591885",
+      "verified": true,
+      "contract": "codex-policy-v12:0.159.2:full-access:host-native-auth:never",
+      "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-13d4af6be5180456a37d0765f3180156",
+      "repository": "https://github.com/erranliu/SteerlineTest.git",
+      "session_id": "01a1953c-720d-7952-938b-b6894098b4ca",
+      "configuration_digest": "ced10296e733edc2f313b37b79a7cb442eb53f8d99612d647ecc46afcc8d1475",
+      "process": {
+        "kind": "os",
+        "pid": 42260,
+        "created": "01dd69b45e11287d",
+        "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+      },
+      "checked_at": "2026-11-01T03:52:19.2651177Z",
+      "access_mode": "full_access"
+    },
+    "control": {
+      "process": {
+        "kind": "orca_native_control",
+        "terminal": "term_9ebe7bd0-58c4-4fbd-8489-5301ca65ec75",
+        "runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+        "incarnation": "4978a25d-bc8b-4dba-b6a7-902c6ec338ca",
+        "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-13d4af6be5180456a37d0765f3180156"
+      },
+      "closed": true
+    },
+    "signed_native_exit_bytes": "eyJib2R5Ijp7InJlYWRpbmVzcyI6eyJydW5uZXJfaW5wdXQiOnsiYnVkZ2V0Ijp7ImNvbnRyYWN0Ijoic3RlZXJydW5uZXItbW9kZWwtaW5wdXQvdjEiLCJzaGEyNTYiOiI2ZjI1N2Q1OGQ5ZjVmZDc1YjhhMGFlNTVhNWY0YTAzZjNkMWQyN2VjOGYwYzg0ZTJhMjMwYzI2N2MzYjRiNDJiIiwicHJvdmVuYW5jZV9zaGEyNTYiOiJlYjA5ZTg4ZTlhZGJhOWFjMDhjZWQ5ZmQ1OGQwNzk1YTFjZjA2MDQ1MjhmMjgyMWEyNDFlNzUxYmE1OGVlYTI0IiwiY2FsbGVyX2J5dGVzIjowLCJydW5uZXJfYnl0ZXMiOjU0MSwidG90YWxfYnl0ZXMiOjU0MSwiZnJhZ21lbnRzIjpbeyJzb3VyY2UiOiJuYXRpdmUuZGV2ZWxvcGVyIiwib3duZXIiOiJydW5uZXIiLCJieXRlcyI6NTQxfV19LCJwYXJ0cyI6W3siU291cmNlIjoibmF0aXZlLmRldmVsb3BlciIsIk93bmVyIjoicnVubmVyIiwiVGV4dCI6InNoZWxsPVwiQzpcXFxcV2luZG93c1xcXFxTeXN0ZW0zMlxcXFxXaW5kb3dzUG93ZXJTaGVsbFxcXFx2MS4wXFxcXHBvd2Vyc2hlbGwuZXhlXCIsbG9naW49ZmFsc2XjgILkuLTml7bmlofku7bkvb/nlKjmnKzmrKFSdW7mjIflrprkuLTml7bnm67lvZXlubblkIzmrKHmuIXnkIbvvIznpoHlhpnorqTor4EvR2l0566h55CG5qC544CC5LiN5b6X6L6T5Ye6546v5aKDL+WHreaNruOAgeaPkOadg+OAgeeZu+W9leOAgeaUueiupOivgeaIluadg+mZkOOAguS7heeyvuehruaaguWtmOS7u+WKoei3r+W+hO+8jOajgOafpemdnuepuuaaguWtmGRpZmbkuJTku4XlkKvku7vliqHvvJvkuLLooYzmmoLlrZgv5qOA5p+lL+aPkOS6pO+8jOmdnumbtuWNs+WBnOOAgmNvbW1pdOS4jeeUqOeuoemBk++8jOe0p+aOpeWRveS7pOS/neWtmOW5tuaJk+WNsOWFtiRMQVNURVhJVENPREXvvIzlho3mn6XnirbmgIHjgILlpLHotKXmiJbmnKrnn6XvvIjlkKvorqTor4Hov4fmnJ/vvInkv53nlZnljp/liIbmlK8vUFLnu5PmnpzlubblgZzmraLlr7notKbvvJvmnKrnn6Xlj5HluIPkuI3ph43lgZrjgIIifV0sImZpZWxkcyI6WyJkZXZlbG9wZXJJbnN0cnVjdGlvbnMiXX0sInJ1bm5lcl9ib290c3RyYXAiOnsiYnVkZ2V0Ijp7ImNvbnRyYWN0Ijoic3RlZXJydW5uZXItbW9kZWwtaW5wdXQvdjEiLCJzaGEyNTYiOiI5NzFiOWE5M2FkZDRiZDAyOGNhMDcwZGEzZDg2NGFjOGYyYjAyOTQzN2M0NGE5YTk0MjBkYzFlZmNjMjIyNDIxIiwicHJvdmVuYW5jZV9zaGEyNTYiOiI3YTkyNTg5OTkzNTQwOGI1OTg0YWVkZGRmNDRjYzJlOTA0Y2RiY2M0ZmMxM2Y2YzA1Zjc0NDc0MjBjZWNiMjk4IiwiY2FsbGVyX2J5dGVzIjowLCJydW5uZXJfYnl0ZXMiOjgyLCJ0b3RhbF9ieXRlcyI6ODIsImZyYWdtZW50cyI6W3sic291cmNlIjoibmF0aXZlLmJvb3RzdHJhcCIsIm93bmVyIjoicnVubmVyIiwiYnl0ZXMiOjgyfV19LCJwYXJ0cyI6W3siU291cmNlIjoibmF0aXZlLmJvb3RzdHJhcCIsIk93bmVyIjoicnVubmVyIiwiVGV4dCI6IkluaXRpYWxpemUgdGhpcyBhZ2VudCBzZXNzaW9uLiBSZXBseSBSRUFEWSBvbmx5LiBEbyBub3QgdXNlIHRvb2xzIG9yIGNoYW5nZSBmaWxlcy4ifV0sImZpZWxkcyI6WyJpbnB1dFswXS50ZXh0Il19LCJleGl0X3B1YmxpY19rZXkiOiJ6UXIya1FkQmpuNGJjOGl4SU1PQXhTMS9objlKUC9Udm16Um5hWFMvckF3PSIsIm93bmVyIjp7ImtpbmQiOiJvcyIsInBpZCI6MTUwMjgsImNyZWF0ZWQiOiIwMWRkNjliNDViNjAzYzFmIiwiZXhlY3V0YWJsZSI6ImM6XFx1c2Vyc1xcbG1hczFcXC5jb2RleFxcd29ya3RyZWVzXFwxZTZlXFxzdGVlcnJ1bm5lclxcLmV2aWRlbmNlXFxwZXJzb25hbC1leGVjdXRvci1wMi1mb2xsb3d1cFxcYmluXFxzdGVlcnJ1bm5lci1hZ2VudC5leGUifSwibmF0aXZlX3RyYW5zcG9ydCI6ImNvZGV4LXJlbW90ZS1pbmxpbmUtdjQiLCJydW50aW1lX3NoYTI1NiI6ImIxNzVjYjYzNmE1MTYwNzdmMzVjOTM2ODg4OGI1MWVkMDdiYTUzMzg5Y2UyN2IzY2Q1MjA5MDc5ZTM1OTE4ODUiLCJ2ZXJpZmllZCI6dHJ1ZSwiY29udHJhY3QiOiJjb2RleC1wb2xpY3ktdjEyOjAuMTU5LjI6ZnVsbC1hY2Nlc3M6aG9zdC1uYXRpdmUtYXV0aDpuZXZlciIsIndvcmtzcGFjZSI6IkM6XFxVc2Vyc1xcbG1hczFcXG9yY2FcXHdvcmtzcGFjZXNcXFN0ZWVybGluZVRlc3RcXHNyLTEzZDRhZjZiZTUxODA0NTZhMzdkMDc2NWYzMTgwMTU2IiwicmVwb3NpdG9yeSI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCIsInNlc3Npb25faWQiOiIwMWExOTUzYy03MjBkLTc5NTItOTM4Yi1iNjg5NDA5OGI0Y2EiLCJjb25maWd1cmF0aW9uX2RpZ2VzdCI6ImNlZDEwMjk2ZTczM2VkYzJmMzEzYjM3Yjc5YTdjYjQ0MmViNTNmOGQ5OTYxMmQ2NDdlY2M0NmFmY2M4ZDE0NzUiLCJwcm9jZXNzIjp7ImtpbmQiOiJvcyIsInBpZCI6NDIyNjAsImNyZWF0ZWQiOiIwMWRkNjliNDVlMTEyODdkIiwiZXhlY3V0YWJsZSI6ImM6XFx1c2Vyc1xcbG1hczFcXC5sb2NhbFxcYmluXFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4XFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4LXdpbjMyLXg2NFxcdmVuZG9yXFx4ODZfNjQtcGMtd2luZG93cy1tc3ZjXFxiaW5cXGNvZGV4LmV4ZSJ9LCJjaGVja2VkX2F0IjoiMjAyNi0xMS0wMVQwMzo1MjoxOS4yNjUxMTc3WiIsImFjY2Vzc19tb2RlIjoiZnVsbF9hY2Nlc3MifSwidHVpIjp7ImtpbmQiOiJvcyIsInBpZCI6MzQ5MzYsImNyZWF0ZWQiOiIwMWRkNjliNDY0OGVkZTRlIiwiZXhlY3V0YWJsZSI6ImM6XFx1c2Vyc1xcbG1hczFcXC5sb2NhbFxcYmluXFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4XFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4LXdpbjMyLXg2NFxcdmVuZG9yXFx4ODZfNjQtcGMtd2luZG93cy1tc3ZjXFxiaW5cXGNvZGV4LmV4ZSJ9LCJ3cml0ZXJzX2Fic2VudCI6dHJ1ZSwiY2xvc2VkX2F0IjoiMjAyNi0xMS0wMVQwMzo1NTo0NC40NDI3MjE0WiJ9LCJzaWduYXR1cmUiOiJhcjBnRzVubG9vYnlqb1JRMGN3alhFNncxMjRKSm1yMjZKK2lBQzd4N1B5bFp4NFhTMkEzWDhRa3dTL285bUQvcG5tRS9CbWNWZU1pZWI2WkYrOG5DZz09In0K"
+  },
+  "complete_inventory": true,
+  "inventory_checked_at": "2026-11-01T03:55:54.4874916Z",
+  "inventory_observations": 1,
+  "inventory_transient_read_failures": 0,
+  "remaining_terminals": 0,
+  "run_id": "13d4af6be5180456a37d0765f3180156",
+  "runtime": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+  "worktree": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-13d4af6be5180456a37d0765f3180156"
+}

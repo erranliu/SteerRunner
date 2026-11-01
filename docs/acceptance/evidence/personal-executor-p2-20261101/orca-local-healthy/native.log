@@ -1,0 +1,7 @@
+=== RUN   TestSRLiveScenario
+=== RUN   TestSRLiveScenario/orca-local.smoke
+    run_test.go:672: original execution timed out; no replacement or resend was attempted
+    run_test.go:575: original native execution cleanup unconfirmed original control closure missing
+--- FAIL: TestSRLiveScenario (760.28s)
+    --- FAIL: TestSRLiveScenario/orca-local.smoke (760.23s)
+FAIL

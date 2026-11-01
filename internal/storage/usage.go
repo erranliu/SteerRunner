@@ -51,12 +51,11 @@ func (s *Store) UsageRuns(ctx context.Context) ([]*runstate.Record, error) {
 			LaunchCommand string    `json:"launch_command"`
 			Snapshot      b.LifecycleSnapshot
 			Profile       []b.ImplementationDataEnvelope
-			Attempts      []runstate.Attempt
 		}
 		if err = json.Unmarshal(raw, &evidence); err != nil {
 			return nil, err
 		}
-		runs = append(runs, &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile, Attempts: evidence.Attempts})
+		runs = append(runs, &runstate.Record{ID: evidence.ID, Revision: evidence.Revision, Status: evidence.Status, StopStatus: evidence.StopStatus, CreatedAt: evidence.CreatedAt, LaunchCommand: evidence.LaunchCommand, Snapshot: evidence.Snapshot, Profile: evidence.Profile})
 	}
 	return runs, rows.Err()
 }

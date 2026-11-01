@@ -1,0 +1,9 @@
+{
+  "contract": "steerrunner-result-file/v1",
+  "run_id": "a11de8cb7337daa53b34d3743fcbe275",
+  "version": 0,
+  "encoding": "base64",
+  "size_bytes": 0,
+  "collection_status": "closed",
+  "diagnostic": "read_failed"
+}

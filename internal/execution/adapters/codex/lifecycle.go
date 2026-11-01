@@ -258,10 +258,7 @@ func (l ExecutionLifecycle) deliverFeedback(ctx context.Context, request executi
 	if input.QuestionID != "" && input.QuestionID != ask.CallID {
 		return receipt, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "saved feedback changed its original question identity"}
 	}
-	parts := m.AnswerParts(input.Answer.Answers)
-	if ask.Delivery == "async" {
-		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: input.Message}}
-	}
+	parts := answerInputParts(ask, *input.Answer, input.Message)
 	text, budget, budgetErr := m.FreezeInput(parts...)
 	if budgetErr != nil {
 		return receipt, budgetErr
@@ -629,7 +626,6 @@ func (l ExecutionLifecycle) VerifyManualRecovery(ctx context.Context, snapshot e
 		}
 	}
 	evidence.SessionAvailable, evidence.SessionIdle = true, historyThreadIdle(thread, stoppedTurn)
-	evidence.SessionRebindable = managed && absent && evidence.WritersAbsent && evidence.SessionIdle
 	if !evidence.SessionIdle {
 		evidence.Diagnostic = "The original thread has an active or unverified native turn; no recovery input is allowed"
 	}
@@ -679,31 +675,6 @@ func (l ExecutionLifecycle) readRecoveryThread(ctx context.Context, snapshot exe
 	}
 	defer client.Close()
 	return client.ReadThread(ctx, binding.SessionID, history.Workspace)
-}
-
-func (l ExecutionLifecycle) BindRecovery(ctx context.Context, previous, next executionbackend.LifecycleSnapshot) (executionbackend.ImplementationDataEnvelope, error) {
-	if err := ctx.Err(); err != nil {
-		return executionbackend.ImplementationDataEnvelope{}, err
-	}
-	if err := l.validateIdentity(previous); err != nil {
-		return executionbackend.ImplementationDataEnvelope{}, err
-	}
-	if err := l.validateIdentity(next); err != nil {
-		return executionbackend.ImplementationDataEnvelope{}, err
-	}
-	if previous.Session.ProjectID != next.Session.ProjectID || previous.Session.ExecutionID != next.Session.ExecutionID ||
-		previous.Session.AttemptID == next.Session.AttemptID || previous.ConfigurationDigest != next.ConfigurationDigest {
-		return executionbackend.ImplementationDataEnvelope{}, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "manual recovery changed the fixed execution or configuration identity"}
-	}
-	binding, found, err := l.readBinding(previous.Clone())
-	if err != nil {
-		return executionbackend.ImplementationDataEnvelope{}, err
-	}
-	if !found || !ValidNativeID(binding.SessionID) {
-		return executionbackend.ImplementationDataEnvelope{}, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "original app-server thread identity is unavailable for manual recovery"}
-	}
-	seed := AppServerBinding{SessionID: binding.SessionID}
-	return NewAppServerBindingEnvelope(l.identity(next), seed)
 }
 
 // ReleasePreparation closes only an unconsumed preparation connection. The
@@ -809,7 +780,7 @@ func (l *ExecutionLifecycle) startTurn(ctx context.Context, snapshot executionba
 		}
 		return receipt, nil, err
 	}
-	observer, turnID, startErr := l.Backend.StartTurn(ctx, handle, input, input.LinkedWorktreeArgs)
+	observer, turnID, startErr := l.Backend.StartTurn(ctx, handle, input, input.LinkedWorktreePaths)
 	receipt := l.bindingReceipt(snapshot, binding)
 	receipt.State.SessionID, receipt.State.TurnID = binding.SessionID, turnID
 	receipt.State.SessionGeneration = binding.Generation
@@ -932,7 +903,7 @@ func cloneTurn(turn *executionbackend.TurnInput) *executionbackend.TurnInput {
 		return nil
 	}
 	copy := *turn
-	copy.LinkedWorktreeArgs = append([]string(nil), turn.LinkedWorktreeArgs...)
+	copy.LinkedWorktreePaths = append([]string(nil), turn.LinkedWorktreePaths...)
 	return &copy
 }
 

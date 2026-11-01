@@ -1,0 +1,54 @@
+package orcatransport
+
+import (
+	"encoding/json"
+	"errors"
+	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+)
+
+// Decode only the current local and native remote profile contracts.
+func decodeLifecycleProfile(setup b.LifecycleSetup) (Profile, int, error) {
+	if setup.Snapshot.Ref.Backend != b.BackendOrca || setup.Snapshot.Ref.Protocol != b.ProtocolOrcaTerminalV3 {
+		return Profile{}, 0, errors.New("unsupported Orca terminal lifecycle")
+	}
+	var p Profile
+	version := 0
+	found := false
+	for _, data := range setup.ProfileData {
+		if data.ImplementationKey != ProfileKey {
+			continue
+		}
+		if found || data.CodecVersion != NativeRemoteProfileVersion && data.CodecVersion != FullAccessTerminalProfileVersion {
+			return Profile{}, 0, errors.New("invalid terminal profile codec")
+		}
+		found = true
+		version = data.CodecVersion
+		if err := data.ValidateProfileIdentity(setup.Snapshot.Session.ProjectID, setup.ProfileID, setup.AcceptedConfigVersion); err != nil {
+			return Profile{}, 0, err
+		}
+		var err error
+		p, err = DecodeProfile(data.Payload)
+		if err != nil {
+			return Profile{}, 0, err
+		}
+		if version == FullAccessTerminalProfileVersion && (p.Environment != "" || p.Terminal != nil && (p.Terminal.ReceiptVersion != 4 || p.Terminal.AccessMode != "full_access" || len(p.Terminal.BundleSHA256) != 64 || len(p.Terminal.EvidenceSHA256) != 64)) {
+			return Profile{}, 0, errors.New("new full-access terminal profile is incomplete or contains retired settings")
+		}
+		if version == NativeRemoteProfileVersion {
+			var fields map[string]json.RawMessage
+			_ = json.Unmarshal(data.Payload, &fields)
+			for _, key := range []string{"terminal", "runtime_executable", "runtime_sha256", "runtime_configuration_digest"} {
+				if _, present := fields[key]; present {
+					return Profile{}, 0, errors.New("native remote profile contains a helper field")
+				}
+			}
+		}
+	}
+	if !found || setup.Snapshot.Ref.Target.ID != p.Target().ID {
+		return Profile{}, 0, errors.New("terminal profile differs from frozen target")
+	}
+	if version == NativeRemoteProfileVersion && (p.Environment == "" || p.Terminal != nil || p.RuntimeExecutable != "" || p.RuntimeSHA256 != "" || p.RuntimeConfigurationDigest != "") {
+		return Profile{}, 0, errors.New("native remote profile has incompatible local/helper configuration")
+	}
+	return p, version, nil
+}

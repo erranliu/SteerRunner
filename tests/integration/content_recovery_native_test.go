@@ -28,8 +28,7 @@ func TestSRContentNativeGenerationRecovery(t *testing.T) {
 	if err := os.MkdirAll("C:/srt", 0700); err != nil {
 		t.Fatal(err)
 	}
-	candidate := buildCompatibleCandidate(t)
-	for _, mode := range []string{"graceful", "kill", "compatible-image", "startup-stop"} {
+	for _, mode := range []string{"graceful", "kill", "startup-stop"} {
 		t.Run(mode, func(t *testing.T) {
 			root, err := os.MkdirTemp("C:/srt", "cw-recovery-")
 			if err != nil {
@@ -47,13 +46,7 @@ func TestSRContentNativeGenerationRecovery(t *testing.T) {
 			active := waitRunFor(t, dir, id, func(v contracts.RunView) bool { return v.Controls.CanInterrupt && v.Execution.TurnID != "" }, time.Minute)
 			owner := contentProcess(t, dir, id)
 			tool := waitNativeRecoveryTool(t, dir, id, nonce, active, owner.Identity)
-			if mode == "compatible-image" {
-				check := call(t, dir, []string{"service", "verify-takeover", "--candidate", candidate}, "", 0)
-				var report contracts.TakeoverReport
-				if json.Unmarshal(marshalEvidence(t, check.Data), &report) != nil || !report.Compatible {
-					t.Fatal("real original execution cannot be adopted", check)
-				}
-			}
+
 			if mode == "kill" {
 				if err := killOwnedService(service); err != nil {
 					t.Fatal(err)
@@ -70,11 +63,7 @@ func TestSRContentNativeGenerationRecovery(t *testing.T) {
 			if process.InspectProcess(&tool.Process) != "matching process still exists" {
 				t.Fatal("original active tool did not survive service exit")
 			}
-			if mode == "compatible-image" {
-				previous := runnerEXE
-				runnerEXE = candidate
-				t.Cleanup(func() { runnerEXE = previous })
-			}
+
 			args := []string{"service", "start"}
 			startInput := ""
 			if mode == "startup-stop" {

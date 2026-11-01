@@ -186,7 +186,7 @@ func TestProgressStopBeforeInitializationHasNoInventedSnapshot(t *testing.T) {
 	}
 }
 
-func TestProgressInitializationRecoveryRetainsUnverifiedSeed(t *testing.T) {
+func TestProgressInitializationRecoveryReadsChangedSeedWithoutRewriting(t *testing.T) {
 	e, _ := auditEngine(t)
 	r := e.runs["run"].Clone()
 	r.Request.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: base64.StdEncoding.EncodeToString([]byte("original-seed"))}
@@ -205,18 +205,15 @@ func TestProgressInitializationRecoveryRetainsUnverifiedSeed(t *testing.T) {
 	if err := e.saveProgressLocked(e.runs[r.ID], p); err != nil {
 		t.Fatal(err)
 	}
-	if err := e.prepareProgress(e.runs[r.ID].Clone()); err == nil || err.Error() != "initialization_unverified" {
-		t.Fatal(err)
-	}
+	e.prepareRuntimeFiles(e.runs[r.ID].Clone())
+	e.collectProgress(context.Background(), r.ID, "")
 	path := filepath.Join(p.Workspace, filepath.FromSlash(workspace.ProgressRelative(r.ID)))
 	raw, _ := os.ReadFile(path)
-	if string(raw) != "partial" || e.runs[r.ID].Progress.Initialized {
-		t.Fatal("unverified initialization was replaced/accepted")
+	if string(raw) != "partial" || !e.runs[r.ID].Progress.Initialized || e.runs[r.ID].Progress.View.Version != 1 {
+		t.Fatal("original changed bytes were not read without rewriting")
 	}
 	_ = os.Remove(path)
-	if err := e.prepareProgress(e.runs[r.ID].Clone()); err == nil {
-		t.Fatal("missing seed was recreated")
-	}
+	e.prepareRuntimeFiles(e.runs[r.ID].Clone())
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
@@ -233,9 +230,7 @@ func TestProgressOrcaRoutingDoesNotRequireBusinessWorker(t *testing.T) {
 	}
 	// This fixture deliberately has no Orca profile. Routing must return a
 	// bounded diagnostic rather than dereference a business worker or dispatch.
-	if err := e.prepareProgress(e.runs[r.ID].Clone()); err == nil || err.Error() != "binding_invalid" {
-		t.Fatal(err)
-	}
+	e.prepareRuntimeFiles(e.runs[r.ID].Clone())
 	if e.runs[r.ID].Progress.View.Diagnostic != "binding_invalid" {
 		t.Fatal(e.runs[r.ID].Progress)
 	}

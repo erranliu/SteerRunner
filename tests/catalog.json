@@ -28,7 +28,8 @@
     "TestSRResourceCreationRecovery",
     "TestSRProgressFile",
     "TestSRResultFile",
-    "TestSROrcaCLIWaitRetry"
+    "TestSROrcaCLIWaitRetry",
+    "TestSRManualReconciliation"
   ],
   "scenarios": [
     "orca-local.codex",

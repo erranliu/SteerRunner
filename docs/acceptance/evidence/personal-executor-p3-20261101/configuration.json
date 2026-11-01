@@ -1,0 +1,97 @@
+{
+  "schema": "steerrunner-test-config/v1",
+  "configurations": {
+    "local-codex": {
+      "workflow": {
+        "version": 2,
+        "id": "development"
+      },
+      "execution": {
+        "target": {
+          "kind": "local"
+        },
+        "adapter": "codex-app-server",
+        "settings": {
+          "access_mode": "full_access",
+          "reasoning_effort": "medium",
+          "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe"
+        }
+      }
+    },
+    "orca-local-codex": {
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "execution": {
+        "target": {
+          "kind": "local"
+        },
+        "adapter": "orca-terminal",
+        "settings": {
+          "agent": "codex",
+          "access_mode": "full_access",
+          "transport": {
+            "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe"
+          },
+          "agent_launch": {
+            "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+            "model": "gpt-6.1-sol",
+            "reasoning_effort": "medium",
+            "runtime_executable": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p3\\delivery-bin\\steerrunner-agent.exe",
+            "runtime_sha256": "4406712eef2e04fb54a8feda1d5785bb2185dfef097e6276deb45cee4ed94256"
+          }
+        }
+      }
+    },
+    "orca-remote-codex": {
+      "workflow": {
+        "id": "development",
+        "version": 2
+      },
+      "execution": {
+        "target": {
+          "kind": "orca_environment",
+          "environment": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+        },
+        "adapter": "orca-terminal",
+        "settings": {
+          "agent": "codex",
+          "access_mode": "full_access",
+          "transport": {
+            "executable": "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe"
+          },
+          "agent_launch": {
+            "executable": "C:/Users/liuming/AppData/Local/OpenAI/Codex/bin/0ab0e7a8f3779036/codex.exe",
+            "model": "gpt-6-luna",
+            "reasoning_effort": "high"
+          }
+        }
+      }
+    }
+  },
+  "fixture": {
+    "repository": {
+      "base_branch": "main",
+      "url": "https://github.com/erranliu/SteerlineTest.git",
+      "remote": "origin",
+      "base_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+      "local_path": "C:/Projects/SteerlineTest"
+    },
+    "publication": {
+      "provider": "command",
+      "repository": "erranliu/SteerlineTest",
+      "base_branch": "main",
+      "settings": {
+        "query": {
+          "executable": "gh",
+          "args": [
+            "api"
+          ]
+        },
+        "base_url": "https://github.com"
+      }
+    }
+  },
+  "harness": {}
+}

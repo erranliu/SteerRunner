@@ -1,17 +1,13 @@
 package application
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
-	"errors"
-	"os"
 	"path/filepath"
 	"reflect"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -43,147 +39,13 @@ func (e *Engine) saveProgressLocked(r *runstate.Record, p *runstate.Progress) er
 	e.runs[r.ID] = next
 	return nil
 }
-func (e *Engine) prepareProgress(r *runstate.Record) (outErr error) {
-	if readOnlyRun(r) {
-		return nil
-	}
-	defer func() {
-		if outErr == nil {
-			return
-		}
-		e.mu.Lock()
-		defer e.mu.Unlock()
-		current := e.runs[r.ID]
-		if current == nil {
-			return
-		}
-		p := current.Clone().Progress
-		if p == nil {
-			p = &runstate.Progress{Workspace: r.Snapshot.Workspace.Path, Binding: progressBinding(r), View: contracts.ProgressFileView{Contract: contracts.ProgressContract, RunID: r.ID, Encoding: "base64"}}
-		}
-		p.View.CollectionStatus, p.View.Diagnostic = "unavailable", progressDiagnostic(outErr)
-		_ = e.saveProgressLocked(current, p)
-	}()
-	if r.Request.ProgressFile == nil || r.Snapshot.Workspace.Path == "" {
-		return nil
-	}
-	if r.Progress != nil && r.Progress.Initialized {
-		return nil
-	}
-	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
-	defer cancel()
-	p := r.Progress
-	if p == nil || p.HostID == "" {
-		p = &runstate.Progress{Workspace: r.Snapshot.Workspace.Path, Binding: progressBinding(r), HostID: "local", View: contracts.ProgressFileView{Contract: contracts.ProgressContract, RunID: r.ID, Encoding: "base64", CollectionStatus: "initializing"}}
-		if r.Request.Execution.Adapter == "orca-terminal" {
-			host, err := orca.ProgressHost(progressSetup(r))
-			if err != nil {
-				return errors.New("binding_invalid")
-			}
-			p.HostID = host
-			source, err := orca.ProgressSource(ctx, progressSetup(r), host, "")
-			if err != nil {
-				return err
-			}
-			p.WorkspaceInstance = source.Instance
-			source.Close()
-		} else {
-			if err := verifyOriginalWorkspace(ctx, gitHost(), r, true); err != nil {
-				return errors.New("binding_invalid")
-			}
-			dirs, err := workspace.ProgressDirectories(p.Workspace, r.ID, true)
-			if err != nil {
-				return err
-			}
-			p.Directories = dirs
-			out, err := gitHost().Output(ctx, p.Workspace, "rev-parse", "--path-format=absolute", "--git-path", "info/exclude")
-			if err != nil {
-				return errors.New("directory_unavailable")
-			}
-			f, err := os.OpenFile(string(bytes.TrimSpace(out)), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-			if err != nil {
-				return errors.New("directory_unavailable")
-			}
-			_, err = f.WriteString("\n/.steerrunner/progress/\n")
-			closeErr := f.Close()
-			if err != nil || closeErr != nil {
-				return errors.New("directory_unavailable")
-			}
-		}
-		e.mu.Lock()
-		err := e.saveProgressLocked(e.runs[r.ID], p)
-		e.mu.Unlock()
-		if err != nil {
-			return err
-		}
-	}
-	if p.Binding != progressBinding(r) || p.Workspace != r.Snapshot.Workspace.Path {
-		return errors.New("binding_invalid")
-	}
-	if !p.InitializationAttempted {
-		initial, _ := base64.StdEncoding.DecodeString(r.Request.ProgressFile.InitialContentBase64)
-		initialize := func() error { return workspace.InitializeProgress(p.Workspace, r.ID, p.Directories, initial) }
-		if r.Request.Execution.Adapter == "orca-terminal" {
-			source, err := orca.ProgressSource(ctx, progressSetup(r), p.HostID, p.WorkspaceInstance)
-			if err != nil {
-				return err
-			} // positively before the write RPC; retry opening is safe
-			defer source.Close()
-			initialize = func() error { return source.Initialize(ctx, initial) }
-		}
-		// Persist before the cross-system effect. After an uncertain restart only
-		// read the original file; never recreate it to repair missing evidence.
-		p.InitializationAttempted = true
-		e.mu.Lock()
-		err := e.saveProgressLocked(e.runs[r.ID], p)
-		e.mu.Unlock()
-		if err != nil {
-			return err
-		}
-		_ = initialize() // uncertain response is resolved by reading the same file
-	}
-	r.Progress = p
-	seed, err := e.readProgress(ctx, r)
-	if err != nil {
-		return err
-	}
-	expected, _ := base64.StdEncoding.DecodeString(r.Request.ProgressFile.InitialContentBase64)
-	if !bytes.Equal(seed, expected) {
-		return errors.New("initialization_unverified")
-	}
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	next := e.runs[r.ID].Clone().Progress
-	next.Initialized = true
-	next.View.CollectionStatus = "observing"
-	next.View.Diagnostic = ""
-	return e.saveProgressLocked(e.runs[r.ID], next)
-}
 func (e *Engine) readProgress(ctx context.Context, r *runstate.Record) ([]byte, error) {
-	p := r.Progress
-	if p == nil || p.Binding != progressBinding(r) || p.Workspace != r.Snapshot.Workspace.Path {
-		return nil, errors.New("binding_invalid")
+	c, err := e.runtimeFile(ctx, r, false, false)
+	if err != nil {
+		return nil, err
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" {
-		c, err := orca.ProgressSource(ctx, progressSetup(r), p.HostID, p.WorkspaceInstance)
-		if err != nil {
-			return nil, err
-		}
-		defer c.Close()
-		first, err := c.Read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		second, err := c.Read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if !bytes.Equal(first, second) {
-			return nil, errors.New("file_changing")
-		}
-		return second, nil
-	}
-	return workspace.ReadProgress(p.Workspace, r.ID, p.Directories)
+	defer c.close()
+	return c.read(ctx)
 }
 func (e *Engine) HandleProgress(id string) contracts.Response {
 	e.mu.Lock()
@@ -206,11 +68,13 @@ func progressTerminal(r *runstate.Record) bool {
 func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
+	w := e.workers[id]
+	attempted := r.Progress != nil && (r.Progress.InitializationAttempted || r.Progress.Initialized) || w != nil && w.filesPreparationStarted || fileInputDispatched(r)
 	e.mu.Unlock()
-	if readOnlyRun(r) {
+	if r.Request.ProgressFile == nil {
 		return
 	}
-	if r.Progress == nil || !r.Progress.Initialized {
+	if !attempted {
 		if final != "" {
 			e.mu.Lock()
 			current := e.runs[id]
@@ -226,14 +90,21 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 		}
 		return
 	}
-	data, err := e.readProgress(ctx, r)
+	sample := e.sampleRuntimeFile(ctx, r, false, false)
+	data, err := sample.data, sample.err
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	current := e.runs[id]
-	if current.Progress == nil || !reflect.DeepEqual(current.Progress, r.Progress) {
+	if !reflect.DeepEqual(current.Progress, r.Progress) {
 		return
 	}
-	next := current.Clone().Progress
+	next := fileState(current, false)
+	if err == nil {
+		view := next.View
+		next = sample.state
+		next.View = view
+		next.InitializationAttempted = true
+	}
 	v := &next.View
 	status, diagnostic := "observing", ""
 	if err != nil {
@@ -257,10 +128,10 @@ func (e *Engine) collectProgress(ctx context.Context, id, final string) {
 			changed = true
 		}
 	}
-	if changed || v.CollectionStatus != status || v.Diagnostic != diagnostic {
+	if changed || v.CollectionStatus != status || v.Diagnostic != diagnostic || !reflect.DeepEqual(current.Progress, next) {
 		v.CollectionStatus = status
 		v.Diagnostic = diagnostic
-		if e.saveProgressLocked(current, next) != nil {
+		if e.saveProgressLocked(current, next) != nil && e.logger != nil {
 			e.logger.Printf("progress commit unavailable run=%s", id)
 		}
 	}
@@ -322,9 +193,7 @@ func (e *Engine) finishProgress(id, status string) {
 }
 
 func (e *Engine) startProgressLocked(id string, w *worker) {
-	if readOnlyRun(e.runs[id]) {
-		return
-	}
+
 	if !w.progressEnabled || w.progressWatching || e.ctx.Err() != nil {
 		return
 	}

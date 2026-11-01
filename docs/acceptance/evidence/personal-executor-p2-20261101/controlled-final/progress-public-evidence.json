@@ -1,0 +1,292 @@
+{
+  "native_turns_after_restart": 2,
+  "native_turns_before_restart": 2,
+  "paths": [
+    "c:\\users\\lmas1\\appdata\\local\\temp\\sr-1664173897\\runner\\workspaces\\2trmdfgvsyo7urv7ewyrme7pma\\.steerrunner\\progress\\f38e655a5b4fd7d913c0a238fae286ca\\progress.bin",
+    "c:\\users\\lmas1\\appdata\\local\\temp\\sr-1664173897\\runner\\workspaces\\hje74sokkcnptstew2vdilz4mq\\.steerrunner\\progress\\a5b3fef979f8fb375b753d868e34b900\\progress.bin"
+  ],
+  "raw_execution_calls": "{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\",\"method\":\"thread/start\",\"thread\":\"c8ec92f2-fc04-ecff-2e90-500eff0ed957\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\",\"method\":\"result/environment\",\"path\":\"\",\"progress_path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\\\\.steerrunner\\\\progress\\\\f38e655a5b4fd7d913c0a238fae286ca\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\",\"method\":\"progress/environment\",\"path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\\\\.steerrunner\\\\progress\\\\f38e655a5b4fd7d913c0a238fae286ca\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\2trmdfgvsyo7urv7ewyrme7pma\",\"effort\":\"medium\",\"method\":\"turn/start\",\"model\":\"\",\"prompt\":\"读取所列 Spec/Plan/材料，实施并完成必要验证。\\nSpec: spec.md\\nPlan: plan.md\\n成功时末行：实施及必要验证已完成。\\nSTEERLINE_PROGRESS_FILE: raw\\u003c=65536B; lock/read-merge then same-dir temp+atomic replace. Runner preserves bytes, not semantics.\",\"thread\":\"c8ec92f2-fc04-ecff-2e90-500eff0ed957\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\",\"method\":\"thread/start\",\"thread\":\"4081cf33-3298-ef8e-d2f7-8f8ab230e1f4\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\",\"method\":\"result/environment\",\"path\":\"\",\"progress_path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\\\\.steerrunner\\\\progress\\\\a5b3fef979f8fb375b753d868e34b900\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\",\"method\":\"progress/environment\",\"path\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\\\\.steerrunner\\\\progress\\\\a5b3fef979f8fb375b753d868e34b900\\\\progress.bin\"}\n{\"cwd\":\"c:\\\\users\\\\lmas1\\\\appdata\\\\local\\\\temp\\\\sr-1664173897\\\\runner\\\\workspaces\\\\hje74sokkcnptstew2vdilz4mq\",\"effort\":\"medium\",\"method\":\"turn/start\",\"model\":\"\",\"prompt\":\"读取所列 Spec/Plan/材料，实施并完成必要验证。\\nSpec: spec.md\\nPlan: plan.md\\n成功时末行：实施及必要验证已完成。\\nSTEERLINE_PROGRESS_FILE: raw\\u003c=65536B; lock/read-merge then same-dir temp+atomic replace. Runner preserves bytes, not semantics.\",\"thread\":\"4081cf33-3298-ef8e-d2f7-8f8ab230e1f4\"}\n",
+  "revision_after": 9,
+  "revision_before": 9,
+  "run_ids": [
+    "f38e655a5b4fd7d913c0a238fae286ca",
+    "a5b3fef979f8fb375b753d868e34b900"
+  ],
+  "snapshots": [
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "pending"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "initializing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 1,
+      "observed_at": "2026-11-01T03:12:18.5660675Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0w",
+      "size_bytes": 6,
+      "sha256": "8efd6168a055d1e45863c237eb3feab2be94f10b7ccdc5bf8bb54305c8b19f7f",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "pending"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "initializing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "unavailable",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 0,
+      "encoding": "base64",
+      "size_bytes": 0,
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 1,
+      "observed_at": "2026-11-01T03:12:35.4470256Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0x",
+      "size_bytes": 6,
+      "sha256": "0eb026731d9ea3f870511f8c18daeb814eaa2c9e276082b204f2a962212fb5bd",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 1,
+      "observed_at": "2026-11-01T03:12:18.5660675Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0w",
+      "size_bytes": 6,
+      "sha256": "8efd6168a055d1e45863c237eb3feab2be94f10b7ccdc5bf8bb54305c8b19f7f",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:35.8908406Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 1,
+      "observed_at": "2026-11-01T03:12:35.4470256Z",
+      "encoding": "base64",
+      "content_base64": "c2VlZC0x",
+      "size_bytes": 6,
+      "sha256": "0eb026731d9ea3f870511f8c18daeb814eaa2c9e276082b204f2a962212fb5bd",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:36.1778478Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQB",
+      "size_bytes": 9,
+      "sha256": "9e162d4854f7d9428eff4b31bd303dc862f07354c6d0a54d50d34d880140b767",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:35.8908406Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:35.8908406Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "unavailable",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:36.1778478Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQB",
+      "size_bytes": 9,
+      "sha256": "9e162d4854f7d9428eff4b31bd303dc862f07354c6d0a54d50d34d880140b767",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:37.6845833Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1zdGlsbC1saXZl",
+      "size_bytes": 15,
+      "sha256": "aa33efc346284e221269428d6944c734318e3818cb418996ecc0aa1e94371bc4",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 2,
+      "observed_at": "2026-11-01T03:12:35.8908406Z",
+      "encoding": "base64",
+      "content_base64": "AP92aW9sZXQA",
+      "size_bytes": 9,
+      "sha256": "89cbfee951513bd016b2565f059d1c98da67530ac5c05ab9a82fa8bd38527fea",
+      "collection_status": "detached",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:39.1870201Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:39.1870201Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "unavailable",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:39.1870201Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "closed",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:37.6845833Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1zdGlsbC1saXZl",
+      "size_bytes": 15,
+      "sha256": "aa33efc346284e221269428d6944c734318e3818cb418996ecc0aa1e94371bc4",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 4,
+      "observed_at": "2026-11-01T03:12:40.0629139Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1hZnRlci1zdG9w",
+      "size_bytes": 15,
+      "sha256": "a60db26440882a5ee65eac2c11b610f6054f02856b2676ac06ad0fec599a856b",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:39.1870201Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "closed",
+      "diagnostic": "file_missing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 4,
+      "observed_at": "2026-11-01T03:12:40.0629139Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1hZnRlci1zdG9w",
+      "size_bytes": 15,
+      "sha256": "a60db26440882a5ee65eac2c11b610f6054f02856b2676ac06ad0fec599a856b",
+      "collection_status": "detached"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "a5b3fef979f8fb375b753d868e34b900",
+      "version": 5,
+      "observed_at": "2026-11-01T03:12:42.087142Z",
+      "encoding": "base64",
+      "content_base64": "cGVlci1hZnRlci1jbG9zZWQtcmVzdGFydA==",
+      "size_bytes": 25,
+      "sha256": "eb30e429dcf665945fc241d5de0bc3af93e38f51d5f804ca22b1ed6836edee59",
+      "collection_status": "observing"
+    },
+    {
+      "contract": "steerrunner-progress-file/v1",
+      "run_id": "f38e655a5b4fd7d913c0a238fae286ca",
+      "version": 3,
+      "observed_at": "2026-11-01T03:12:39.1870201Z",
+      "encoding": "base64",
+      "content_base64": "b2ZmbGluZS1sYXRlc3Q=",
+      "size_bytes": 14,
+      "sha256": "1ead2b0b571867a6341c85b768deff9ea42e240eebc88c0d4a26ca1972214cb8",
+      "collection_status": "closed",
+      "diagnostic": "file_missing"
+    }
+  ]
+}

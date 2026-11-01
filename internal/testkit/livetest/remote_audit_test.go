@@ -14,7 +14,7 @@ import (
 )
 
 func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
-	for _, mode := range []string{"valid", "foreign-session", "foreign-workspace", "unverified", "foreign-read-runtime", "invalid-receipt"} {
+	for _, mode := range []string{"valid", "wrapped-screen", "screen-only", "limited", "truncated", "foreign-session", "foreign-workspace", "unverified", "foreign-read-runtime", "invalid-receipt"} {
 		t.Run(mode, func(t *testing.T) {
 			original := b.ProcessIdentity{ExecutionHost: "local", RuntimeID: "runtime", WorktreeID: "repo::C:/worker", Terminal: "main", Incarnation: "main-inc"}
 			receipt := codex.RemoteAudit{Readiness: codex.RemoteReadiness{Verified: mode != "unverified", Workspace: "C:/worker", SessionID: "provider"}}
@@ -33,7 +33,7 @@ func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
 			creates, closes := 0, 0
 			client := native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
 				runtime := "runtime"
-				terminal := map[string]any{"handle": "inspector", "incarnationId": "inspector-inc", "worktreeId": original.WorktreeID, "connected": true, "status": "running", "tail": []string{line}}
+				terminal := map[string]any{"handle": "inspector", "incarnationId": "inspector-inc", "worktreeId": original.WorktreeID, "connected": true, "status": "running", "tail": []string{line}, "source": "stream", "oldestCursor": "0", "nextCursor": "1", "latestCursor": "1", "truncated": false, "limited": false}
 				var result any
 				switch args[1] {
 				case "create":
@@ -50,6 +50,23 @@ func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
 					if args[1] == "read" && mode == "foreign-read-runtime" {
 						runtime = "foreign"
 					}
+					if args[1] == "read" {
+						if !strings.Contains(strings.Join(args, " "), "--cursor 0") {
+							if mode == "wrapped-screen" {
+								terminal["tail"] = []string{line[:120], line[120:]}
+							} else {
+								t.Fatal("audit must read original stream", args)
+							}
+						}
+						switch mode {
+						case "screen-only":
+							terminal["source"] = "screen"
+						case "limited":
+							terminal["limited"] = true
+						case "truncated":
+							terminal["truncated"] = true
+						}
+					}
 					if args[1] == "close" {
 						closes++
 						result = map[string]any{"close": map[string]any{"handle": "inspector", "ptyKilled": true}}
@@ -60,7 +77,7 @@ func TestRemotePermissionAuditBindsReceiptAndClosesOnlyInspector(t *testing.T) {
 				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]any{"runtimeId": runtime}})
 			}})
 			audit, err := LocalPermissionAudit(context.Background(), client, original, "C:/frozen/helper.exe", "C:/worker", "provider")
-			if (err == nil) != (mode == "valid") || creates != 1 || closes != 1 || !audit.InspectorClosed || audit.Inspector == nil || audit.Inspector.Terminal != "inspector" {
+			if (err == nil) != (mode == "valid" || mode == "wrapped-screen") || creates != 1 || closes != 1 || !audit.InspectorClosed || audit.Inspector == nil || audit.Inspector.Terminal != "inspector" {
 				t.Fatal("receipt accepted or inspector cleanup unconfirmed", audit, err, creates, closes)
 			}
 		})

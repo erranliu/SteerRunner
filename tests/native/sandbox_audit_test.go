@@ -36,7 +36,7 @@ func auditWorkerSandbox(t *testing.T, m livetest.Manifest, run contracts.RunView
 				t.Fatal("native remote launch contract differs")
 			}
 			raw, readErr := os.ReadFile(filepath.Join(*evidenceFlag, "native-calls.jsonl"))
-			facts, auditErr := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, livetest.ReceiptAuditPolicy(m))
+			facts, auditErr := livetest.AnalyzeNativeAudit(raw, m.RemoteRuntimeID, smokeReceiptAuditPolicy(m, run.RunID))
 			expectedCreations := 1
 			if m.Driver == "development-multirun" {
 				expectedCreations = 2

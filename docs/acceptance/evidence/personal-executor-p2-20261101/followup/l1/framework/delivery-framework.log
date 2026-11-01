@@ -1,0 +1,23 @@
+separate component commits retain explicit identities
+Windows PowerShell and host runtime use the same package identity
+changed-bytes
+unlisted-file
+missing-file
+omitted-inventory-entry
+duplicate-path
+case-alias
+traversal-path
+stale-build-record
+inconsistent-component-source
+missing-provenance
+legacy-package-version
+missing-required-file-even-with-valid-inventory
+matching package and all evidence hashes accepted
+failed
+incomplete
+different-package
+different-scope
+changed-evidence
+outside-evidence
+changed-progress-log
+missing-progress-snapshots

@@ -231,16 +231,14 @@ func TestRAStateAuthorityQuestionSource(t *testing.T) {
 }
 
 func TestRARecoveryConsumedInput(t *testing.T) {
-	e, w := auditEngine(t)
+	e, _ := auditEngine(t)
 	r := e.runs["run"].Clone()
 	r.Snapshot.Session.CurrentCommandID = r.Snapshot.PendingTurn.CommandID
 	preservePendingStage(r)
 	if r.NextStage != nil {
 		t.Fatal("consumed prompt became an unsent input")
 	}
-	if err := e.restoreOriginalAttempt(r, w, auditRestorePort{}); err != nil {
-		t.Fatal(err)
-	}
+	r.Snapshot.PendingTurn = nil
 	if err := resumeWorkflow(r); err != nil || r.Snapshot.PendingTurn != nil || r.NextStage != nil || r.Status != "blocked" {
 		t.Fatal("resume resent consumed implementation", err)
 	}
@@ -258,7 +256,7 @@ func TestRAStateAuthorityMilestone(t *testing.T) {
 func TestRAFeedbackSupersedesUnsent(t *testing.T) {
 	e, w := auditEngine(t)
 	finishStage(t, e, "unclassified implementation")
-	w.port = auditRestorePort{}
+	w.port = auditPort{}
 	if !e.feedbackValue("run", w, w.port, &runstate.Answer{Epoch: e.epoch, CommandID: "feedback", Text: "Implement the requested adjustment"}, false) {
 		t.Fatal(e.runs["run"].Diagnostic)
 	}
@@ -299,7 +297,10 @@ func TestRAResumeConsumedActiveInputWaitsForOriginalEvidence(t *testing.T) {
 	if err := e.commitLocked(r, nil, "restarted"); err != nil {
 		t.Fatal(err)
 	}
-	if !e.resumeRun("run", w, p) {
+	w.gate.Lock()
+	resumedOK := e.resumeRun("run", w, p)
+	w.gate.Unlock()
+	if !resumedOK {
 		t.Fatal(e.runs["run"].Diagnostic)
 	}
 	resumed := e.runs["run"]

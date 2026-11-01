@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -76,43 +75,6 @@ func testFixtureOwnerExitWithReusedPID(t *testing.T) {
 
 // A real second image with different package bytes/default resource digest.
 // The JSON whitespace overlay changes no workflow, permission or result contract.
-func buildCompatibleCandidate(t *testing.T) string {
-	t.Helper()
-	// go test starts in tests/integration; the independent foundation harness
-	// starts in the repository root with explicit Runner/helper image paths.
-	root, err := os.Getwd()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := os.Stat(filepath.Join(root, "go.mod")); os.IsNotExist(err) {
-		root = filepath.Clean(filepath.Join(root, "..", ".."))
-	} else if err != nil {
-		t.Fatal(err)
-	}
-	dir := t.TempDir()
-	asset := filepath.Join(root, "internal", "resources", "assets", "prompts.json")
-	body, err := os.ReadFile(asset)
-	if err != nil {
-		t.Fatal(err)
-	}
-	replacement := filepath.Join(dir, "prompts.json")
-	if err = os.WriteFile(replacement, append(body, '\n'), 0600); err != nil {
-		t.Fatal(err)
-	}
-	overlay, _ := json.Marshal(map[string]any{"Replace": map[string]string{asset: replacement}})
-	path := filepath.Join(dir, "overlay.json")
-	if err = os.WriteFile(path, overlay, 0600); err != nil {
-		t.Fatal(err)
-	}
-	image := filepath.Join(dir, "candidate.exe")
-	cmd := exec.Command("go", "build", "-trimpath", "-overlay", path, "-ldflags", "-X github.com/erranliu/SteerRunner/internal/resources.Version=takeover-compatible", "-o", image, "./cmd/steerrunner")
-	cmd.Dir = root
-	if output, err := cmd.CombinedOutput(); err != nil {
-		t.Fatalf("candidate build: %v %s", err, output)
-	}
-	return image
-}
-
 func testGenerationCreationReceipt(t *testing.T) {
 	dir, request := setupRun(t)
 	hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-thread-response")

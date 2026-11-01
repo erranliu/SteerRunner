@@ -83,7 +83,7 @@ func (p Permissions) Args() []string {
 		"--config", "approval_policy=" + p.ApprovalPolicy, "--config", "approvals_reviewer=" + p.ApprovalsReviewer}
 	// Preserve the frozen v10 read-only argv; development has no write grants.
 	if p.Sandbox == "read-only" {
-		args = append(args, legacyWorkspaceArgs()...)
+		args = append(args, readOnlyWorkspaceArgs()...)
 	}
 	if p.WindowsSandbox != "" {
 		args = append(args[:2], append([]string{"--config", "windows.sandbox=" + p.WindowsSandbox}, args[2:]...)...)
@@ -104,8 +104,8 @@ func accessMode(sandbox string) string {
 	return ""
 }
 
-// Legacy data is validated against its original contract, never launched.
-func legacyWorkspaceArgs() []string {
+// Fixed content read-only launch settings.
+func readOnlyWorkspaceArgs() []string {
 	return []string{"--config", "sandbox_workspace_write.writable_roots=[]", "--config", "sandbox_workspace_write.exclude_tmpdir_env_var=true", "--config", "sandbox_workspace_write.exclude_slash_tmp=true", "--config", "sandbox_workspace_write.network_access=true"}
 }
 

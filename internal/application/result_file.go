@@ -1,17 +1,14 @@
 package application
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"errors"
-	"os"
 	"path/filepath"
 	"reflect"
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 	"github.com/erranliu/SteerRunner/internal/runstate"
@@ -22,22 +19,6 @@ func resultPath(r *runstate.Record) string {
 		return ""
 	}
 	return filepath.Join(r.Snapshot.WorkspacePlan.Path, filepath.FromSlash(workspace.ResultRelative(r.ID)))
-}
-
-func filesNeedPreparation(r *runstate.Record) bool {
-	return r.Request.ProgressFile != nil && (r.Progress == nil || !r.Progress.Initialized) ||
-		r.Request.ResultFile != nil && (r.ResultFile == nil || !r.ResultFile.Initialized && !r.ResultFile.Sealed)
-}
-
-// The worker holds its existing dispatch gate. Try both independent preparations
-// even if one fails; never interpret uncertain initialization as ready for input.
-func (e *Engine) prepareRuntimeFiles(r *runstate.Record) bool {
-	progressErr := e.prepareProgress(r.Clone())
-	e.mu.Lock()
-	current := e.runs[r.ID].Clone()
-	e.mu.Unlock()
-	resultErr := e.prepareResult(current)
-	return progressErr == nil && resultErr == nil
 }
 
 // Called with Engine.mu held. Save only against the current aggregate.
@@ -64,159 +45,13 @@ func (e *Engine) saveResultPreparationLocked(original *runstate.Record, p *runst
 	return e.saveResultLocked(original.ID, p)
 }
 
-func (e *Engine) prepareResult(r *runstate.Record) (outErr error) {
-	if readOnlyRun(r) {
-		return nil
-	}
-	defer func() {
-		if outErr == nil {
-			return
-		}
-		e.mu.Lock()
-		defer e.mu.Unlock()
-		current := e.runs[r.ID]
-		if current == nil {
-			return
-		}
-		p := current.Clone().ResultFile
-		if p == nil {
-			p = &runstate.ResultFile{Progress: runstate.Progress{Workspace: r.Snapshot.Workspace.Path, Binding: progressBinding(r), View: contracts.ProgressFileView{Contract: contracts.ResultFileContract, RunID: r.ID, Encoding: "base64"}}}
-		}
-		p.View.CollectionStatus, p.View.Diagnostic = "pending", progressDiagnostic(outErr)
-		_ = e.saveResultPreparationLocked(r, p)
-	}()
-	if r.Request.ResultFile == nil || r.Snapshot.Workspace.Path == "" {
-		return nil
-	}
-	if r.ResultFile != nil && (r.ResultFile.Initialized || r.ResultFile.Sealed) {
-		return nil
-	}
-	e.mu.Lock()
-	current := e.runs[r.ID]
-	allowed := current != nil && current.PendingStop == "" && !progressTerminal(current) && progressBinding(current) == progressBinding(r) && e.ctx.Err() == nil
-	e.mu.Unlock()
-	if !allowed {
-		return errors.New("binding_invalid")
-	}
-	ctx, cancel := context.WithTimeout(e.ctx, 4*time.Second)
-	defer cancel()
-	p := r.Clone().ResultFile
-	if p == nil || p.HostID == "" {
-		attempted := p != nil && p.InitializationAttempted
-		p = &runstate.ResultFile{Progress: runstate.Progress{Workspace: r.Snapshot.Workspace.Path, Binding: progressBinding(r), HostID: "local", View: contracts.ProgressFileView{Contract: contracts.ResultFileContract, RunID: r.ID, Encoding: "base64", CollectionStatus: "pending"}}}
-		p.InitializationAttempted = attempted
-		if r.Request.Execution.Adapter == "orca-terminal" {
-			host, err := orca.ProgressHost(progressSetup(r))
-			if err != nil {
-				return errors.New("binding_invalid")
-			}
-			p.HostID = host
-			source, err := orca.ResultSource(ctx, progressSetup(r), host, "")
-			if err != nil {
-				return err
-			}
-			p.WorkspaceInstance = source.Instance
-			source.Close()
-		} else {
-			if err := verifyOriginalWorkspace(ctx, gitHost(), r, true); err != nil {
-				return errors.New("binding_invalid")
-			}
-			dirs, err := workspace.ResultDirectories(p.Workspace, r.ID, true)
-			if err != nil {
-				return err
-			}
-			p.Directories = dirs
-			out, err := gitHost().Output(ctx, p.Workspace, "rev-parse", "--path-format=absolute", "--git-path", "info/exclude")
-			if err != nil {
-				return errors.New("directory_unavailable")
-			}
-			f, err := os.OpenFile(string(bytes.TrimSpace(out)), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-			if err != nil {
-				return errors.New("directory_unavailable")
-			}
-			_, err = f.WriteString("\n/.steerrunner/result/\n")
-			closeErr := f.Close()
-			if err != nil || closeErr != nil {
-				return errors.New("directory_unavailable")
-			}
-		}
-		e.mu.Lock()
-		err := e.saveResultPreparationLocked(r, p)
-		e.mu.Unlock()
-		if err != nil {
-			return err
-		}
-	}
-	if p.Binding != progressBinding(r) || p.Workspace != r.Snapshot.Workspace.Path {
-		return errors.New("binding_invalid")
-	}
-	if !p.InitializationAttempted {
-		initial, _ := base64.StdEncoding.DecodeString(r.Request.ResultFile.InitialContentBase64)
-		initialize := func() error { return workspace.InitializeResult(p.Workspace, r.ID, p.Directories, initial) }
-		if r.Request.Execution.Adapter == "orca-terminal" {
-			source, err := orca.ResultSource(ctx, progressSetup(r), p.HostID, p.WorkspaceInstance)
-			if err != nil {
-				return err
-			} // positively before the write RPC; retry opening is safe
-			defer source.Close()
-			initialize = func() error { return source.Initialize(ctx, initial) }
-		}
-		// Persist before the cross-system effect. After an uncertain restart only
-		// read the original file; never recreate it to repair missing evidence.
-		if err := ctx.Err(); err != nil {
-			return err
-		}
-		p.InitializationAttempted = true
-		e.mu.Lock()
-		err := e.saveResultPreparationLocked(r, p)
-		e.mu.Unlock()
-		if err != nil {
-			return err
-		}
-		_ = initialize() // uncertain response is resolved by reading the same file
-	}
-	r.ResultFile = p
-	seed, err := e.readResult(ctx, r)
-	if err != nil {
-		return err
-	}
-	expected, _ := base64.StdEncoding.DecodeString(r.Request.ResultFile.InitialContentBase64)
-	if !bytes.Equal(seed, expected) {
-		return errors.New("initialization_unverified")
-	}
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	next := e.runs[r.ID].Clone().ResultFile
-	next.Initialized = true
-	next.View.CollectionStatus = "pending"
-	next.View.Diagnostic = ""
-	return e.saveResultPreparationLocked(r, next)
-}
 func (e *Engine) readResult(ctx context.Context, r *runstate.Record) ([]byte, error) {
-	p := r.ResultFile
-	if p == nil || p.Binding != progressBinding(r) || p.Workspace != r.Snapshot.Workspace.Path {
-		return nil, errors.New("binding_invalid")
+	c, err := e.runtimeFile(ctx, r, true, false)
+	if err != nil {
+		return nil, err
 	}
-	if r.Request.Execution.Adapter == "orca-terminal" {
-		c, err := orca.ResultSource(ctx, progressSetup(r), p.HostID, p.WorkspaceInstance)
-		if err != nil {
-			return nil, err
-		}
-		defer c.Close()
-		first, err := c.Read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		second, err := c.Read(ctx)
-		if err != nil {
-			return nil, err
-		}
-		if !bytes.Equal(first, second) {
-			return nil, errors.New("file_changing")
-		}
-		return second, nil
-	}
-	return workspace.ReadResult(p.Workspace, r.ID, p.Directories)
+	defer c.close()
+	return c.read(ctx)
 }
 
 func (e *Engine) HandleResultFile(id string) contracts.Response {
@@ -258,7 +93,7 @@ func resultEndIdentity(r *runstate.Record) string {
 func (e *Engine) sealResult(parent context.Context, id string) {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
-	if readOnlyRun(r) || r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
+	if r.Request.ResultFile == nil || !resultEndEligible(r) || r.ResultFile != nil && r.ResultFile.Sealed {
 		e.mu.Unlock()
 		return
 	}
@@ -274,11 +109,7 @@ func (e *Engine) sealResult(parent context.Context, id string) {
 	defer cancel()
 	var data []byte
 	var err error
-	if r.ResultFile == nil || !r.ResultFile.Initialized {
-		err = errors.New("initialization_unverified")
-	} else {
-		data, err = boundedResultRead(ctx, func() ([]byte, error) { return e.readResult(ctx, r) })
-	}
+	data, err = boundedResultRead(ctx, func() ([]byte, error) { return e.readResult(ctx, r) })
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	if err := e.publishResultLocked(r, data, err); err != nil {

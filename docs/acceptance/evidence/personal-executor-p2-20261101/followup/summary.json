@@ -1,0 +1,151 @@
+{
+  "schema": "steerrunner-personal-executor-p2-followup/v1",
+  "status": "accepted",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "state_format": "steerrunner-state/v6",
+  "p3_started": false,
+  "p4_started": false,
+  "deployed": false,
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "d6d92844556eb881335d9c208663c3c689afe4fbbfedd7066c9f1c3af14b77a7",
+    "version": "0.2.0-dev.4",
+    "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "21983f9e930fafc50f6ffffc7c9ae8f0da4b52a4ad2f01f22b5eca06cd86186f"
+  },
+  "l1": {
+    "go_top_level_tests_passed": 725,
+    "native_driver_compile_exit": 0,
+    "report": "l1/stages.json",
+    "framework_groups_passed": 26,
+    "packages": 37,
+    "native_zero_match_guard": true,
+    "allowed_skips": [
+      "TestProcessHostCommandHelper",
+      "TestOrcaStoppedNativeProbe",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestUsageExistingNativeEvidence",
+      "TestUsageRemoteCodexCleanupLive",
+      "TestUsageRemoteCodexLive",
+      "TestRunUsageLocalCodexPublicLive",
+      "TestRunUsageLocalPiPublicLive",
+      "TestRunUsageLocalDSHPublicLive",
+      "TestRunUsageRemotePublicLive",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "application_elapsed_seconds": 658.12,
+    "unexpected_skips": 0,
+    "input_fingerprint_match": true,
+    "unchanged_package_timeout_seconds": 720,
+    "terminal_extension_tests_passed": 29,
+    "core_elapsed_seconds": 899.0679842,
+    "status": "passed",
+    "input_fingerprint": "3755a6580292f4ce9d6c05396c32a1d8d45dbda2e47db5784986851089d5c2da"
+  },
+  "orca_local": [
+    {
+      "runner_sha256": "21983f9e930fafc50f6ffffc7c9ae8f0da4b52a4ad2f01f22b5eca06cd86186f",
+      "scenario": {
+        "scenario": "orca-local.smoke",
+        "level": "L3",
+        "stage": "completed",
+        "run_id": "13d4af6be5180456a37d0765f3180156",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/738",
+        "original_head": "1829a883ef7d33209c216bff019c7d20b24d43da",
+        "merge_commit": "155ca9d4393e0d85ea8abef58ac241a87705c0f7",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "native": {
+        "business_inputs": 2,
+        "control_closed": true,
+        "exact_wire_sha_verified": true,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "mode": "healthy",
+      "seconds": 271.35,
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "13d4af6be5180456a37d0765f3180156",
+        "version": 1,
+        "observed_at": "2026-11-01T03:55:52.9376075Z",
+        "encoding": "base64",
+        "content_base64": "cDI=",
+        "size_bytes": 2,
+        "sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+        "collection_status": "closed"
+      },
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T03:55:58.0015591Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "fixture_root": "C:\\srt\\31da6aa6d952"
+    },
+    {
+      "runner_sha256": "21983f9e930fafc50f6ffffc7c9ae8f0da4b52a4ad2f01f22b5eca06cd86186f",
+      "scenario": {
+        "scenario": "orca-local.smoke",
+        "level": "L3",
+        "stage": "completed",
+        "run_id": "8b1716cca0ae89426d7e13c6acceab04",
+        "pr_url": "https://github.com/erranliu/SteerlineTest/pull/739",
+        "original_head": "265a56438817d607c7369e0f1976373ad8aa9a3c",
+        "merge_commit": "dae3c17e63fa6186f3338f1a51580a8e7f7cd57d",
+        "run_stopped": true,
+        "service_stopped": true,
+        "passed": true
+      },
+      "native": {
+        "business_inputs": 2,
+        "control_closed": true,
+        "exact_wire_sha_verified": true,
+        "complete_inventory": true,
+        "remaining_terminals": 0
+      },
+      "mode": "fault",
+      "seconds": 249.96,
+      "result_snapshot": {
+        "contract": "steerrunner-result-file/v1",
+        "run_id": "8b1716cca0ae89426d7e13c6acceab04",
+        "version": 0,
+        "encoding": "base64",
+        "size_bytes": 0,
+        "collection_status": "closed",
+        "diagnostic": "read_failed"
+      },
+      "harness": {
+        "exit_code": 0,
+        "finished_at": "2026-11-01T04:00:34.9900179Z",
+        "pattern": "^TestSRLiveScenario$",
+        "scenario_count": 1
+      },
+      "fixture_root": "C:\\srt\\2070edf4ce03"
+    }
+  ],
+  "old_v6_closures_read_only_verified": 2,
+  "business_input_exactness": "Both final runs contain exactly two original business inputs; each expected full wire SHA matches native history. No relaxed matcher, resource replacement or input resend.",
+  "all_final_runs_and_services_stopped": true,
+  "p2_previous_evidence": "../summary.json",
+  "scope": "Completes Orca local and full L1 for P2. Prior local Codex/environment probes remain evidence for their original builds; no full L2/L3 matrix or release qualification.",
+  "qualification": {
+    "p2_independent_acceptance": true,
+    "complete_L2": false,
+    "release": false,
+    "complete_L1": true,
+    "complete_L3": false
+  }
+}

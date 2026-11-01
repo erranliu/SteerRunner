@@ -23,13 +23,7 @@ func TestAppServerLaunchPreservesConfiguredArgs(t *testing.T) {
 }
 
 func TestTurnStartParamsKeepApprovalAndWritableRoots(t *testing.T) {
-	roots, err := WritableRoots([]string{"--add-dir", "C:/worktree", "--add-dir", "C:/shared"})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := WritableRoots([]string{"--add-dir"}); err == nil {
-		t.Fatal("incomplete Codex writable root was accepted")
-	}
+	roots := []string{"C:/worktree", "C:/shared"}
 	params, err := TurnStartParams("C:/worktree", "thread", "command", "continue", "danger-full-access", "model", "high", roots)
 	if err != nil {
 		t.Fatal(err)

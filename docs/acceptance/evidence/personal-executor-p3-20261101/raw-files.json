@@ -1,0 +1,62 @@
+{
+  "diagnostics/acceptance-01/l1.jsonl.gz": {
+    "raw_bytes": 2199552,
+    "raw_sha256": "a088bb4aab21e9d0b5e560bbc7a7b911759a6878a9dfb25f1ecdcce706fa1ca5"
+  },
+  "diagnostics/acceptance-03/l1.jsonl.gz": {
+    "raw_bytes": 2568192,
+    "raw_sha256": "aebded10f4a397a086c6e7a7a735ff58c40d12fe5e124531271ec61dda46b911"
+  },
+  "diagnostics/acceptance-04/l1.jsonl.gz": {
+    "raw_bytes": 0,
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "diagnostics/acceptance-05/l1.jsonl.gz": {
+    "raw_bytes": 2726015,
+    "raw_sha256": "488a2528f76b304dffa1e70355af3cd48fd76d09db55d7e015d774ba8ed29839"
+  },
+  "complete/l1/l1.jsonl.gz": {
+    "raw_bytes": 2725595,
+    "raw_sha256": "b71a08927b39fdcf0b7525458181a1b1e0059b475753447a951de14918cecebf"
+  },
+  "complete/l1/coverage.out.gz": {
+    "raw_bytes": 1332770,
+    "raw_sha256": "4e40ccd7f799045f75b279138ed9581490f47329140ed2e0e3d211dadf07964f"
+  },
+  "delivery-local/native/caller-commands.jsonl.gz": {
+    "raw_bytes": 239002,
+    "raw_sha256": "4fdfc65dcf8f41b6cdc40d2a5ce085e3b4d22cd7906eed6fd707ca83a1bce3df"
+  },
+  "delivery-local/native/driver-commands.jsonl.gz": {
+    "raw_bytes": 6541,
+    "raw_sha256": "be5f4103b9f6cf2ee28a8ede396c4839d550a7c0c8882d753b0ea2f8d6a4bc82"
+  },
+  "delivery-orca-local/native/caller-commands.jsonl.gz": {
+    "raw_bytes": 669115,
+    "raw_sha256": "29723c752045bce3a7007062cfb6a2e05c96df344be6f0f8bb053591ee49abed"
+  },
+  "delivery-orca-local/native/driver-commands.jsonl.gz": {
+    "raw_bytes": 5533,
+    "raw_sha256": "6774a0545e4da5a4641a419dc7ac019a57669f72a12628e7daf21c318d59f7b4"
+  },
+  "delivery-orca-local/native/native-calls.jsonl.gz": {
+    "raw_bytes": 748831,
+    "raw_sha256": "04568842cae3b6327aa49137fa9c664cc2341e321461cc7a49f3b77000442261"
+  },
+  "delivery-orca-remote/native/caller-commands.jsonl.gz": {
+    "raw_bytes": 378360,
+    "raw_sha256": "b551f996eb223d59fb7a68b5bac41003a1a17da1b3aff1c6ae2c58645b37aee2"
+  },
+  "delivery-orca-remote/native/driver-commands.jsonl.gz": {
+    "raw_bytes": 5492,
+    "raw_sha256": "c1c07ee782c97fdebff994aedefd1df6601c7e163ad3dbddcf11b8ce5337deff"
+  },
+  "delivery-orca-remote/native/native-calls.jsonl.gz": {
+    "raw_bytes": 32315,
+    "raw_sha256": "547a9288da54dc19455d3bec46a37bb91a03e10998628000829c65a011335d89"
+  },
+  "complete/controlled/caller-commands.jsonl.gz": {
+    "raw_bytes": 26714836,
+    "raw_sha256": "10d77ebc75e32108c9ed3c01986fa71c68a778f35d0316647eb8afade833586f"
+  }
+}

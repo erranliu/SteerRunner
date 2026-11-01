@@ -66,14 +66,7 @@ func stoppedRecord(r *runstate.Record, absent func(*b.ProcessIdentity) bool) boo
 		return false
 	}
 	if r.StopStatus == "stopped" {
-		if orca.LegacyRemoteProfile(r.Profile) {
-			for _, intent := range r.Intents {
-				if intent.Request.Operation.Action == string(b.LifecycleStopExecution) && intent.Request.Snapshot.Ref.External == r.Snapshot.Ref.External && intent.Receipt != nil && intent.Receipt.Disposition == b.OperationConfirmed && intent.Receipt.State.Stopped && intent.Receipt.State.WorkerAbsent && intent.Receipt.ValidateFor(intent.Request) == nil {
-					return true
-				}
-			}
-			return false
-		}
+
 		return true
 	}
 	return managedRecordWritersAbsent(r, r.Snapshot.Ref.External, absent)

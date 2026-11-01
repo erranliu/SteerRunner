@@ -11,6 +11,8 @@
     [string]$RunnerSHA256 = '',
     [string]$HelperSHA256 = '',
     [string]$RequirementsSHA256 = '',
+    [switch]$ObservationFault,
+    [switch]$ObservationFiles,
     [ValidateRange(1,10)][int]$RepeatIndex = 1
 )
 $ErrorActionPreference = 'Stop'
@@ -23,6 +25,8 @@ $taskCatalog = Get-SRTestCatalog $Catalog
 $taskScenarios = @($taskCatalog.scenarios | Where-Object { $_.id -eq $Scenario })
 if ($taskScenarios.Count -ne 1 -or $taskScenarios[0].level -notin @('L2','L3')) { throw 'Select exactly one registered live scenario' }
 $taskScenario = $taskScenarios[0]
+if ($ObservationFault -and $taskScenario.driver -ne 'development-smoke') { throw 'ObservationFault requires the original development-smoke driver' }
+if ($ObservationFiles -and ($ObservationFault -or $taskScenario.driver -ne 'development-smoke')) { throw 'ObservationFiles requires development-smoke without ObservationFault' }
 $taskCases = @(Get-SRLiveCases $taskScenario)
 $taskCase = @($taskCases | Where-Object { $_.id -ceq $Case })
 if ($taskCase.Count -ne 1) { throw 'Select an exact registered case; multi-case scenarios require -Case' }
@@ -159,6 +163,14 @@ if($taskInjected){throw 'Injected PR query transport unavailable'}
 '@
     [IO.File]::WriteAllText($taskQuery,$taskQuerySource,[Text.UTF8Encoding]::new($true))
 }
+if ($ObservationFault) {
+    $taskBlocked = Join-Path $taskRepository '.steerrunner'
+    $null = New-Item -ItemType Directory -Path $taskBlocked -Force
+    foreach ($taskChannel in @('progress','result')) { [IO.File]::WriteAllText((Join-Path $taskBlocked $taskChannel),'P2 optional channel directory unavailable',[Text.UTF8Encoding]::new($false)) }
+    $null = Invoke-Git @('-C',$taskRepository,'add','--','.steerrunner/progress','.steerrunner/result')
+    Write-JSON (Join-Path $taskRoot 'observation-fault.json') @{fault='directory_unavailable';channels=@('progress','result')}
+}
+if ($ObservationFiles) { Write-JSON (Join-Path $taskRoot 'observation-files.json') @{channels=@('progress','result');initial_content_base64='cDI='} }
 $null = Invoke-Git @('-C',$taskRepository,'add','--','sr-smoke')
 if ($taskStability) { $null = Invoke-Git @('-C',$taskRepository,'add','--','.gitignore') }
 $null = Invoke-Git @('-C',$taskRepository,'-c','user.name=SteerRunner Fixture','-c','user.email=fixture@example.invalid','commit','--quiet','-m',('Prepare independent smoke ' + $taskID))

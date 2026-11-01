@@ -1,0 +1,13 @@
+{
+  "pid": 31452,
+  "process_started_at": "2026-11-01T06:14:00.1714860Z",
+  "pattern": "^TestSRContent(Generate|Conversation|QuestionAndUnknown)$",
+  "runner_sha256": "57E1FD2FC06B660FBB2A03CF862E71CA2223C161AADA259192E6CF79B3972720",
+  "fixture_sha256": "ECE11492F1A830A6663B32996C2BD25CD38F380129FE0396897CC9EAB1CE53A8",
+  "native_fixture_sha256": "311BD5BB46399197EB2100A8722BFED4DC59D55AE28E4DFDBA08D476C856D4D7",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

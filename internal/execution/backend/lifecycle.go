@@ -158,7 +158,7 @@ func (input LifecycleInput) Clone() LifecycleInput {
 	if input.Turn != nil {
 		value := *input.Turn
 		value.Budget = value.Budget.Clone()
-		value.LinkedWorktreeArgs = append([]string(nil), value.LinkedWorktreeArgs...)
+		value.LinkedWorktreePaths = append([]string(nil), value.LinkedWorktreePaths...)
 		input.Turn = &value
 	}
 	if input.Completion != nil {
@@ -274,7 +274,7 @@ func (snapshot LifecycleSnapshot) Clone() LifecycleSnapshot {
 	if snapshot.PendingTurn != nil {
 		turn := *snapshot.PendingTurn
 		turn.Budget = turn.Budget.Clone()
-		turn.LinkedWorktreeArgs = append([]string(nil), turn.LinkedWorktreeArgs...)
+		turn.LinkedWorktreePaths = append([]string(nil), turn.LinkedWorktreePaths...)
 		snapshot.PendingTurn = &turn
 	}
 	if snapshot.QuestionRoute != nil {
@@ -718,6 +718,13 @@ type LifecycleReconcilePort interface {
 	Reconcile(context.Context, LifecycleRequest) (LifecycleReceipt, LifecycleObserver, error)
 }
 
+// LifecycleAnswerInputPort optionally prepares model input for an original
+// native question. It only validates values and returns input fragments; it
+// cannot dispatch feedback. The caller still freezes and commits the intent.
+type LifecycleAnswerInputPort interface {
+	PrepareLifecycleAnswer(ImplementationDataEnvelope, SessionContext, Answer, string) ([]m.InputPart, error)
+}
+
 type LifecycleObservePort interface {
 	ObserveLifecycle(context.Context, LifecycleSnapshot) (LifecycleReceipt, LifecycleObserver, error)
 }
@@ -735,14 +742,11 @@ type LifecycleRecoveryEvidence struct {
 	// ResourceAvailable is native identity proof, independent of process ownership.
 	ResourceAvailable bool
 	// SessionIdle covers the original session, including any manual native turn.
-	SessionIdle bool
-	// SessionRebindable certifies restoration of that same session after resource loss.
-	// The adapter owns this proof; the worker also requires absence and idle evidence.
-	SessionRebindable bool
-	Diagnostic        string
-	ManagedProcess    bool
-	ProcessAbsent     bool
-	WritersAbsent     bool
+	SessionIdle    bool
+	Diagnostic     string
+	ManagedProcess bool
+	ProcessAbsent  bool
+	WritersAbsent  bool
 }
 
 // ServiceStopBehavior is frozen with the worker, independently of whether its
@@ -773,7 +777,6 @@ type LifecycleAuditWorkspacePort interface {
 
 type LifecycleRecoveryPort interface {
 	VerifyManualRecovery(context.Context, LifecycleSnapshot) (LifecycleRecoveryEvidence, error)
-	BindRecovery(context.Context, LifecycleSnapshot, LifecycleSnapshot) (ImplementationDataEnvelope, error)
 }
 
 type LifecyclePolicyCapabilities struct {

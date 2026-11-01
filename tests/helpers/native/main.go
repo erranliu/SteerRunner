@@ -170,6 +170,9 @@ func main() {
 			for request.Method == "thread/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-thread-response")) {
 				time.Sleep(20 * time.Millisecond)
 			}
+			for request.Method == "turn/start" && exists(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-turn-response")) {
+				time.Sleep(20 * time.Millisecond)
+			}
 			if connection.Write(context.Background(), websocket.MessageText, encode(response)) != nil {
 				return
 			}

@@ -1,0 +1,84 @@
+--- P3/internal/application/control.go
++++ P4/internal/application/control.go
+@@ -42,14 +42,15 @@
+ 		e.failControl(id, saved.CommandID, err)
+ 		return false
+ 	}
+-	ask, err := codex.DecodeQuestionRoute(*r.Snapshot.QuestionRoute, r.Snapshot.Session)
++	owner, ok := p.(b.LifecycleAnswerInputPort)
++	if !ok {
++		e.failControl(id, saved.CommandID, errors.New("Original native answer input preparation is unavailable"))
++		return false
++	}
++	parts, err := owner.PrepareLifecycleAnswer(*r.Snapshot.QuestionRoute, r.Snapshot.Session, b.Answer{Answers: answers}, saved.Text)
+ 	if err != nil {
+ 		e.failControl(id, saved.CommandID, err)
+ 		return false
+-	}
+-	parts := m.AnswerParts(answers)
+-	if ask.Delivery == "async" {
+-		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: saved.Text}}
+ 	}
+ 	_, budget, err := m.FreezeInput(parts...)
+ 	if err != nil {
+--- P3/internal/execution/adapters/codex/ask.go
++++ P4/internal/execution/adapters/codex/ask.go
+@@ -10,6 +10,7 @@
+ 	"github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp"
+ 	executionbackend "github.com/erranliu/SteerRunner/internal/execution/backend"
+ 	executionmodel "github.com/erranliu/SteerRunner/internal/execution/evidence"
++	m "github.com/erranliu/SteerRunner/internal/execution/model"
+ )
+ 
+ var nativeID = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
+@@ -195,3 +196,20 @@
+ 	data.Generation = route.Generation
+ 	return data, nil
+ }
++
++// PrepareLifecycleAnswer keeps the native route and its input representation
++// together. No process, connection or lifecycle state is needed to prepare it.
++func (ExecutionLifecycle) PrepareLifecycleAnswer(route executionbackend.ImplementationDataEnvelope, fixed executionbackend.SessionContext, answer executionbackend.Answer, message string) ([]m.InputPart, error) {
++	ask, err := DecodeQuestionRoute(route, fixed)
++	if err != nil {
++		return nil, err
++	}
++	return answerInputParts(ask, answer, message), nil
++}
++
++func answerInputParts(ask AskRouteData, answer executionbackend.Answer, message string) []m.InputPart {
++	if ask.Delivery == "async" {
++		return []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: message}}
++	}
++	return m.AnswerParts(answer.Answers)
++}
+--- P3/internal/execution/adapters/codex/lifecycle.go
++++ P4/internal/execution/adapters/codex/lifecycle.go
+@@ -258,10 +258,7 @@
+ 	if input.QuestionID != "" && input.QuestionID != ask.CallID {
+ 		return receipt, &executionbackend.BackendError{Code: executionbackend.BackendIdentityMismatch, Diagnostic: "saved feedback changed its original question identity"}
+ 	}
+-	parts := m.AnswerParts(input.Answer.Answers)
+-	if ask.Delivery == "async" {
+-		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: input.Message}}
+-	}
++	parts := answerInputParts(ask, *input.Answer, input.Message)
+ 	text, budget, budgetErr := m.FreezeInput(parts...)
+ 	if budgetErr != nil {
+ 		return receipt, budgetErr
+--- P3/internal/execution/backend/lifecycle.go
++++ P4/internal/execution/backend/lifecycle.go
+@@ -718,6 +718,13 @@
+ 	Reconcile(context.Context, LifecycleRequest) (LifecycleReceipt, LifecycleObserver, error)
+ }
+ 
++// LifecycleAnswerInputPort optionally prepares model input for an original
++// native question. It only validates values and returns input fragments; it
++// cannot dispatch feedback. The caller still freezes and commits the intent.
++type LifecycleAnswerInputPort interface {
++	PrepareLifecycleAnswer(ImplementationDataEnvelope, SessionContext, Answer, string) ([]m.InputPart, error)
++}
++
+ type LifecycleObservePort interface {
+ 	ObserveLifecycle(context.Context, LifecycleSnapshot) (LifecycleReceipt, LifecycleObserver, error)
+ }

@@ -5,6 +5,8 @@ import (
 	"github.com/erranliu/SteerRunner/internal/usage/api"
 )
 
+func (v ServiceStartInput) JSON() []byte { b, _ := json.Marshal(v); return b }
+
 type PendingStop struct {
 	RunID   string  `json:"run_id"`
 	Request Request `json:"request"`
@@ -44,34 +46,3 @@ func ReadServiceStartInput(raw []byte) (*ServiceStartInput, *Fault) {
 	}
 	return &input, nil
 }
-
-// RecoverySupport describes decoders, not a second per-Run contract manifest.
-type RecoverySupport struct {
-	ReadableStateFormats    []string         `json:"readable_state_formats"`
-	WritableStateFormat     string           `json:"writable_state_format"`
-	OperationVersions       []int            `json:"operation_versions"`
-	ExecutionRecordVersions []int            `json:"execution_record_versions"`
-	ImplementationCodecs    map[string][]int `json:"implementation_codecs"`
-	OwnerProtocol           string           `json:"owner_protocol"`
-	PendingStops            bool             `json:"pending_stops"`
-}
-type TakeoverItem struct {
-	RequestID     string `json:"request_id,omitempty"`
-	RequestDigest string `json:"request_digest,omitempty"`
-	ID            string `json:"id"`
-	Kind          string `json:"kind"`
-	Revision      uint64 `json:"revision"`
-	InputDigest   string `json:"input_digest"`
-	Status        string `json:"status"`
-	Diagnostic    string `json:"diagnostic,omitempty"`
-}
-type TakeoverReport struct {
-	Contract        string         `json:"contract"`
-	StateDir        string         `json:"state_dir"`
-	InstanceID      string         `json:"instance_id,omitempty"`
-	CandidateSHA256 string         `json:"candidate_sha256"`
-	Compatible      bool           `json:"compatible"`
-	Items           []TakeoverItem `json:"items"`
-}
-
-func (v ServiceStartInput) JSON() []byte { b, _ := json.Marshal(v); return b }

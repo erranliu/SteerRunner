@@ -1,0 +1,29 @@
+=== RUN   TestSRContentGenerate
+=== RUN   TestSRContentGenerate/text
+=== RUN   TestSRContentGenerate/json
+=== RUN   TestSRContentGenerate/failed
+=== RUN   TestSRContentGenerate/cancelled
+=== RUN   TestSRContentGenerate/no_final
+=== RUN   TestSRContentGenerate/question
+=== RUN   TestSRContentGenerate/no_auth
+=== RUN   TestSRContentGenerate/no_directory
+--- PASS: TestSRContentGenerate (24.58s)
+    --- PASS: TestSRContentGenerate/text (4.04s)
+    --- PASS: TestSRContentGenerate/json (2.98s)
+    --- PASS: TestSRContentGenerate/failed (3.23s)
+    --- PASS: TestSRContentGenerate/cancelled (3.27s)
+    --- PASS: TestSRContentGenerate/no_final (2.88s)
+    --- PASS: TestSRContentGenerate/question (2.88s)
+    --- PASS: TestSRContentGenerate/no_auth (2.66s)
+    --- PASS: TestSRContentGenerate/no_directory (2.64s)
+=== RUN   TestSRContentConversation
+--- PASS: TestSRContentConversation (6.50s)
+=== RUN   TestSRContentQuestionAndUnknown
+=== RUN   TestSRContentQuestionAndUnknown/unknown-interrupt
+=== RUN   TestSRContentQuestionAndUnknown/question
+=== RUN   TestSRContentQuestionAndUnknown/unknown
+--- PASS: TestSRContentQuestionAndUnknown (12.91s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown-interrupt (3.60s)
+    --- PASS: TestSRContentQuestionAndUnknown/question (3.44s)
+    --- PASS: TestSRContentQuestionAndUnknown/unknown (5.87s)
+PASS

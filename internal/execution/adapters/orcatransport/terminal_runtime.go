@@ -37,7 +37,6 @@ type TerminalConfig struct {
 	ConfigurationDigest string `json:"configuration_digest"`
 	SessionID           string `json:"session_id"`
 	Executable          string `json:"executable"`
-	SandboxExecutable   string `json:"sandbox_executable,omitempty"`
 	StateDirectory      string `json:"state_directory"`
 	RepositoryURL       string `json:"repository_url"`
 	AccessMode          string `json:"access_mode"`
@@ -50,15 +49,6 @@ func (c *TerminalConfig) UnmarshalJSON(raw []byte) error {
 	var value wire
 	if err := b.DecodeStrictJSON(raw, &value, "trailing terminal configuration"); err != nil {
 		return err
-	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &fields); err != nil {
-		return err
-	}
-	if value.ReceiptVersion >= 3 {
-		if _, exists := fields["sandbox_executable"]; exists {
-			return errors.New("sandbox_executable is retired for new terminal configurations")
-		}
 	}
 	*c = TerminalConfig(value)
 	return nil
@@ -132,7 +122,7 @@ func RunTerminalAgent(ctx context.Context, c TerminalConfig, input io.Reader, ou
 		}
 		inputParts = parts
 	}
-	if c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || c.SandboxExecutable != "" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
+	if c.ReceiptVersion != 4 || c.Agent != "pi" && c.Agent != "dsh" || c.AccessMode != "full_access" || !filepath.IsAbs(c.StateDirectory) || !b.StableExecutionID(c.ExecutionID) || c.SessionID == "" {
 		return errors.New("native terminal frozen launch configuration invalid")
 	}
 	metadata, err := TerminalRuntimeMetadata()

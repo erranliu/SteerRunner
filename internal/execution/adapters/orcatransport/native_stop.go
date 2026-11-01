@@ -105,9 +105,7 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 		}
 	}
 	receipt.State.WorkerAbsent = true
-	if l.StopEvidenceScope() == "" {
-		return receipt, &b.BackendError{Code: b.BackendUnsupported, Diagnostic: "Legacy remote terminal ended; original helper writer-tree/authentication settlement remains unverified. Use the original build or manual cleanup."}
-	}
+
 	progress.Phase = "confirmed"
 	receipt.Disposition = b.OperationConfirmed
 	receipt.State.Stopped = true

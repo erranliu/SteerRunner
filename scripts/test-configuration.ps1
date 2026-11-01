@@ -55,7 +55,8 @@ function Set-SRLevelCoverage {
         foreach($taskSet in @('requested','excluded','unavailable','executed')) {
             $taskSets[$taskSet]=@($Records | Where-Object { $_.level -eq $taskLevel -and ($taskSet -eq 'requested' -or ($taskSet -eq 'executed' -and $_.status -in @('preparing','running','passed','failed')) -or $_.status -eq $taskSet) } | ForEach-Object { $_.scenario+'/'+$_.case_id } | Select-Object -Unique)
         }
-        $taskCoverage[$taskLevel] = @{complete_level_passed=($taskExpected.Count -gt 0 -and $taskMissing.Count -eq 0 -and $taskIncomplete.Count -eq 0);registered=$taskExpected;requested=$taskSets.requested;excluded=$taskSets.excluded;unavailable=$taskSets.unavailable;executed=$taskSets.executed;passed=$taskActual;missing=$taskMissing}
+        $taskFocused=$Summary.Contains('validation_scope') -and $Summary.validation_scope -eq 'focused'
+        $taskCoverage[$taskLevel] = @{complete_level_passed=(-not $taskFocused -and $taskExpected.Count -gt 0 -and $taskMissing.Count -eq 0 -and $taskIncomplete.Count -eq 0);registered=$taskExpected;requested=$taskSets.requested;excluded=$taskSets.excluded;unavailable=$taskSets.unavailable;executed=$taskSets.executed;passed=$taskActual;missing=$taskMissing}
     }
     $Summary['levels']=$taskCoverage
 }
@@ -76,7 +77,7 @@ function Get-SRBatchOutcome {
 function Set-SRQualificationCoverage {
     param([Collections.IDictionary]$Summary,[object[]]$Executions,[object[]]$Records)
     foreach($level in $Summary.levels.Keys) {
-        $complete=$Summary.status -in @('passed','passed_with_exclusions')
+        $complete=$Summary.status -in @('passed','passed_with_exclusions') -and -not ($Summary.Contains('validation_scope') -and $Summary.validation_scope -eq 'focused')
         foreach($execution in @($Executions | Where-Object {$_.entry.level -eq $level})) {
             $matches=@($Records | Where-Object {$_.level -eq $level -and $_.scenario -ceq $execution.entry.id -and $_.case_id -ceq $execution.case.id -and $_.repeat_index -eq $execution.repeat_index})
             if($matches.Count -ne 1 -or $matches[0].status -ne 'passed'){$complete=$false}
@@ -84,6 +85,9 @@ function Set-SRQualificationCoverage {
         $Summary.levels[$level].complete_level_passed=$Summary.levels[$level].complete_level_passed -and $complete
     }
     if($Summary.Contains('baseline') -and $Summary.levels.ContainsKey('L2')){$Summary.baseline.l2_verified=$Summary.levels.L2.complete_level_passed}
+    if($Summary.Contains('validation_scope') -and $Summary.validation_scope -eq 'focused' -and $Summary.Contains('baseline')) {
+        foreach($key in @($Summary.baseline.Keys)) { if($key -like '*_verified'){$Summary.baseline[$key]=$false} }
+    }
 }
 function Test-SRCodexVersion {
     param([string]$Version)

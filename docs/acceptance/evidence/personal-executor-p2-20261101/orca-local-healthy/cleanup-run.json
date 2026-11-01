@@ -1,0 +1,98 @@
+{
+  "execution_wait": null,
+  "operations": [
+    {
+      "operation_id": "441fc8243d5b158b51db202a992431e4",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "f9eb990d8cc1670686525b1e80a73d33",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "pending lifecycle resource lacks its accepted original resource identity"
+    },
+    {
+      "operation_id": "9f24a1b13a54fdc4d004d55ac46c248e",
+      "action": "create_resource",
+      "status": "confirmed",
+      "diagnostic": "Waiting for the original execution-host preparation receipt",
+      "original_diagnostic": "Original remote preparation verified; committing before first business input"
+    },
+    {
+      "operation_id": "c1417e75a0fc21a88381d8f379a70915",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "1c2be2b534f8f3c598f3a8204b86c1b8",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "951f97751fb5831b1c7799745ffad8e8",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "de33b4013dd118bbf48d10b6f8295b2f",
+  "revision": 45,
+  "title": "SteerRunner L3 orca-local.smoke",
+  "correlation": {
+    "fixture_id": "de83bbe9f761",
+    "scenario": "orca-local.smoke"
+  },
+  "input_digest": "8387aa51b6c6c0566b219303c4d87993e33b6e8097595430e2d470410e2b05f5",
+  "resource_digest": "e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker and wait for its confirmed completion. If it reports an ordinary content-validation failure, correct only the specified artifact and rerun the unchanged checker to verify that correction. If a shell tool yields a session_id or running status, poll that same pending command; do not launch another checker while the original is pending or its result is unknown. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. If the shell tool yields a session_id or running status, poll that same session until its final exit status and complete output; polling observes the original command and is required, not a second publication. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "implement.execute",
+  "status": "stopped",
+  "phase": "stopped",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/spec.md",
+      "commit": "2021ce014b09532625a432812fa325eccae29383",
+      "execution_location": "sr-smoke/spec.md"
+    },
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/plan.md",
+      "commit": "2021ce014b09532625a432812fa325eccae29383",
+      "execution_location": "sr-smoke/plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": false,
+    "attempt_id": "3b592b5a0298e318585a949971105d36",
+    "generation": "57c7d7bf1006dcd713b2a1a900e9bb4f",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:d64c6673-348a-4c73-9f1c-c60a51ec8f0c:term_9c8308ff-a5d7-459f-9b75-934684b6cebc:09156456-7af2-4a36-aa86-c8220e749758",
+    "final_available": false,
+    "workspace": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-de33b4013dd118bbf48d10b6f8295b2f",
+    "branch": "erranliu/sr-de33b4013dd118bbf48d10b6f8295b2f"
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": false,
+    "can_close": false,
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false
+  },
+  "created_at": "2026-11-01T03:12:49.7402793Z",
+  "updated_at": "2026-11-01T03:25:22.039355Z"
+}

@@ -132,12 +132,9 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 		return errors.New("original frozen terminal source hashes missing")
 	}
 	version := c.ReceiptVersion
-	if version == 0 {
-		version = 1
-	} // Original frozen helpers keep their source contract.
 	preparationValid := validTerminalPreparation(r.Preparation, version)
 
-	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.ProviderEnvironmentAbsent || !l.stopOnly && c.AccessMode != "full_access" {
+	if r.Version != version || r.Source != sourceKind || r.SourceSHA256 != expectedSHA || r.RunID != c.ExecutionID || r.SessionID != c.SessionID || r.InstanceID == "" || r.PID <= 0 || r.Mode != "tui" || r.ProcessStartedAt.IsZero() || !reflect.DeepEqual(r.Tools, tools) || !r.Preparation.Verified || !preparationValid || r.Preparation.AccessMode != c.AccessMode || !r.Preparation.ProviderEnvironmentAbsent || c.AccessMode != "full_access" {
 		return errors.New("native terminal receipt binding changed")
 	}
 	model := c.Model
@@ -147,7 +144,7 @@ func (l *Lifecycle) validateTerminalReceipt(r TerminalReceipt) error {
 	if model != "" && r.Model != model {
 		return errors.New("native terminal model differs from frozen launch")
 	}
-	if version >= 2 && (r.ReasoningEffort == "" || c.ReasoningEffort != "" && r.ReasoningEffort != c.ReasoningEffort) {
+	if r.ReasoningEffort == "" || c.ReasoningEffort != "" && r.ReasoningEffort != c.ReasoningEffort {
 		return errors.New("native terminal thinking level differs from frozen launch")
 	}
 	return nil

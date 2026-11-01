@@ -513,13 +513,6 @@ func TestSRNativeUnknownAndStop(t *testing.T) {
 }
 func TestSRRestartPreservesAuthorization(t *testing.T) {
 	testCount.Add(1)
-	selectedRunner := runnerEXE
-	defer func() { runnerEXE = selectedRunner }()
-	if *baselineFlag != "" {
-		runnerEXE = *baselineFlag
-	}
-	originalRunner := runnerEXE
-	candidate := buildCompatibleCandidate(t)
 	for _, mode := range []string{"graceful", "kill"} {
 		t.Run(mode, func(t *testing.T) {
 			dir, request := setupRun(t)
@@ -588,26 +581,15 @@ func TestSRRestartPreservesAuthorization(t *testing.T) {
 			if !completed || countNative(t, "turn/start") != 1 {
 				t.Fatal("offline owner did not save the original result, or sent a successor without the service")
 			}
-			if mode == "graceful" {
-				runnerEXE = candidate
-				t.Cleanup(func() { runnerEXE = originalRunner })
-			}
-			preflight := call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 0)
-			body, _ = json.Marshal(preflight.Data)
-			var report contracts.TakeoverReport
-			json.Unmarshal(body, &report)
-			if !report.Compatible {
-				t.Fatalf("same-contract takeover rejected: %+v", report)
-			}
 			next := serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 			t.Logf("original=%+v candidate=%+v owner=%+v native=%+v", info, next, owner.Identity.Process, native.Identity)
-			if mode == "graceful" && (next.ExecutableSHA256 == info.ExecutableSHA256 || next.ResourceDigest == info.ResourceDigest || next.Version == info.Version) {
-				t.Fatal("candidate did not change build, resource digest and product version")
+			if next.ExecutableSHA256 != info.ExecutableSHA256 {
+				t.Fatal("same-build restart selected a different executable")
 			}
 			cleanupService(t, dir, next)
 			ready := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.Status == "pr_ready" }, 5*time.Minute)
 			if ready.ResumeRequired || !ready.NewInputsAllowed || ready.Execution.SessionID != active.Execution.SessionID || countNative(t, "turn/start") != 3 || countNative(t, "thread/start") != 1 {
-				t.Fatal("takeover required resume, replayed an input or replaced the original session")
+				t.Fatal("restart required resume, replayed an input or replaced the original session")
 			}
 			revokeWithFreshRevision(t, dir, id, ready.Revision)
 			stopped := waitRunFor(t, dir, id, func(r contracts.RunView) bool { return r.StopStatus == "stopped" }, 5*time.Minute)

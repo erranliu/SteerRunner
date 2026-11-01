@@ -1,0 +1,12 @@
+{
+  "controlled": true,
+  "live_execution": false,
+  "passed": [
+    "valid",
+    "focused",
+    "missing-field",
+    "resource-collision",
+    "no-passing-cases",
+    "zero-selection"
+  ]
+}

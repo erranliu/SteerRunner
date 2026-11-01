@@ -3,7 +3,6 @@ package application
 import (
 	"context"
 	"errors"
-	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -43,14 +42,15 @@ func (e *Engine) answer(id string, w *worker, p b.LifecyclePort) bool {
 		e.failControl(id, saved.CommandID, err)
 		return false
 	}
-	ask, err := codex.DecodeQuestionRoute(*r.Snapshot.QuestionRoute, r.Snapshot.Session)
+	owner, ok := p.(b.LifecycleAnswerInputPort)
+	if !ok {
+		e.failControl(id, saved.CommandID, errors.New("Original native answer input preparation is unavailable"))
+		return false
+	}
+	parts, err := owner.PrepareLifecycleAnswer(*r.Snapshot.QuestionRoute, r.Snapshot.Session, b.Answer{Answers: answers}, saved.Text)
 	if err != nil {
 		e.failControl(id, saved.CommandID, err)
 		return false
-	}
-	parts := m.AnswerParts(answers)
-	if ask.Delivery == "async" {
-		parts = []m.InputPart{{Source: "caller.answer", Owner: m.CallerInput, Text: saved.Text}}
 	}
 	_, budget, err := m.FreezeInput(parts...)
 	if err != nil {
@@ -69,8 +69,30 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
 	command := r.PendingResume
+	deadline := time.Now().Add(30 * time.Second)
+	manual := r.ManualPause != nil
+	if manual {
+		deadline = r.ManualPause.ResumeDeadline
+		if deadline.IsZero() {
+			deadline = r.UpdatedAt.Add(30 * time.Second)
+		}
+		if !time.Now().Before(deadline) {
+			e.failControl(id, command, errors.New("Manual reconciliation deadline exhausted; use a new request_id and current revision for another read-only query"))
+			return false
+		}
+		if !e.reconcileManual(id, w, p, command, deadline) {
+			return false
+		}
+		e.mu.Lock()
+		r = e.runs[id].Clone()
+		e.mu.Unlock()
+	}
 	if r.Request.Conversation != nil || r.Request.Generate != nil {
 		if err := verifyContentDirectory(r); err != nil {
+			e.failControl(id, command, err)
+			return false
+		}
+		if err := verifyFrozenMaterials(r); err != nil {
 			e.failControl(id, command, err)
 			return false
 		}
@@ -85,25 +107,59 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	if r.Snapshot.Session.SessionID != "" {
 
-		// Idle restoration is deferred until input is needed; parse completion
-		// may select an existing fallback after resume qualification.
+		// Continuation requires the original resource. No session is rebound.
 		needsInput := r.NextStage != nil || r.Snapshot.PendingTurn != nil
 		if state, _ := r.Workflow.CurrentState(); state.Kind == "parse" {
 			needsInput = true
 		}
-		if err := e.qualifyContinuation(r, w, p, needsInput, func(facts b.LifecycleRecoveryEvidence, err error) error {
+		ctx, cancel := context.WithDeadline(e.ctx, deadline)
+		w.queryCancel = cancel
+		w.gate.Unlock()
+		err := e.qualifyContinuationContext(ctx, r, w, p, needsInput, func(facts b.LifecycleRecoveryEvidence, err error) error {
 			return errors.Join(err, errors.New("The original session or prior writers cannot be verified for resume: "+facts.Diagnostic))
-		}); err != nil {
+		})
+		w.gate.Lock()
+		w.queryCancel = nil
+		cancel()
+		if err != nil {
 			e.failControl(id, command, err)
 			return false
 		}
 	}
+	e.mu.Lock()
+	current := e.runs[id].Clone()
+	e.mu.Unlock()
+	if current.Revision != r.Revision || current.PendingResume != command || current.PendingStop != "" || current.Closed || e.ctx.Err() != nil {
+		return false
+	}
+	if manual && r.Snapshot.Ref.External.Kind == "" && r.Snapshot.Session.SessionID == "" {
+		e.failControl(id, command, errors.New("Original native resource is unavailable; create a new Run explicitly"))
+		return false
+	}
+	businessPause := manual && (r.ManualPause.Status == "blocked" || r.ManualPause.Status == "waiting_input")
+	businessDiagnostic := ""
+	if manual {
+		r.Status, r.Phase = r.ManualPause.Status, r.ManualPause.Phase
+		if businessPause {
+			businessDiagnostic = r.ManualPause.Diagnostic
+		}
+		r.ManualPause = nil
+	}
 	r.Allowed = true
 	r.ResumeRequired = false
 	r.PendingResume = ""
-	r.Diagnostic = ""
+	r.Diagnostic = businessDiagnostic
+	if r.Question != nil {
+		r.Status, r.Phase = "waiting_input", "question"
+		businessPause = true
+	}
 	r.StopStatus = ""
-	if err := resumeWorkflow(r); err != nil {
+	if err := func() error {
+		if businessPause {
+			return nil
+		}
+		return resumeWorkflow(r)
+	}(); err != nil {
 		e.failControl(id, command, err)
 		return false
 	}
@@ -115,9 +171,19 @@ func (e *Engine) resumeRun(id string, w *worker, p b.LifecyclePort) bool {
 	}
 	err := e.commitLocked(r, nil, "resume_qualified")
 	e.mu.Unlock()
+	if err == nil && manual && r.Result != nil {
+		return e.finishWithGate(id, *r.Result, &w.gate)
+	}
 	return err == nil
 }
 func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
+	w.gate.Lock()
+	defer w.gate.Unlock()
+	collect := func(ctx context.Context) {
+		w.gate.Unlock()
+		defer w.gate.Lock()
+		e.sealResult(ctx, id)
+	}
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
@@ -125,7 +191,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	// Recover only its original receipt so stop can address the exact resource.
 	// Reconciliation cannot dispatch another create or restore input authority.
 	for index, intent := range r.Intents {
-		if !readOnlyRun(r) && intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
+		if intent.NeedsReconciliation() && (intent.Request.Operation.Action == string(b.LifecyclePrepareWorkspace) || intent.Request.Operation.Action == string(b.LifecycleCreateResource)) {
 			if e.invoke(id, w, p, index, true) {
 				return true
 			}
@@ -148,7 +214,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		next.CommandStates[command] = "completed"
 		_ = e.commitLocked(next, nil, "run_stopped")
 		e.mu.Unlock()
-		e.sealResult(e.ctx, id)
+		collect(e.ctx)
 		return false
 	}
 	var index = -1
@@ -200,7 +266,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 		} else {
 			receipt, _, err = p.Reconcile(ctx, request.Clone())
 		}
-	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil && !retiredDevelopment(r) {
+	} else if r.Request.Execution.Adapter == "codex-app-server" && e.launchOwner == nil {
 		if w.handle == nil {
 			err = errors.New("The original owned writer handle is unavailable; only identity reconciliation is allowed")
 			receipt.Disposition = b.OperationUnknown
@@ -222,7 +288,7 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	}()
 	// Deferred after the stop commit and unlock, before observer/resource release.
 	// The original stop deadline remains in force throughout collection.
-	defer e.sealResult(ctx, id)
+	defer collect(ctx)
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	prior := e.runs[id]
@@ -261,43 +327,13 @@ func (e *Engine) stopRun(id string, w *worker, p b.LifecyclePort) bool {
 	return false
 }
 
-// Called only after original-session/idle/writer-absence verification.
-func (e *Engine) restoreOriginalAttempt(r *runstate.Record, w *worker, p b.LifecyclePort) error {
-	previous := r.Snapshot.Clone()
-	r.Attempts = append(r.Attempts, runstate.Attempt{Snapshot: previous, EndedAt: time.Now().UTC()})
-	preservePendingStage(r)
-	r.Snapshot.Ref.AttemptID = contracts.NewID()
-	r.Snapshot.Ref.External = b.ProcessIdentity{}
-	r.Snapshot.Ref.Generation = ""
-	r.Snapshot.ResourceGeneration = contracts.NewID()
-	r.Snapshot.Session.AttemptID = r.Snapshot.Ref.AttemptID
-	r.Snapshot.Session.AttemptNumber++
-	r.Snapshot.Session.Generation = ""
-	r.Snapshot.Session.LastStoppedTurnID = r.Snapshot.Session.CurrentTurnID
-	r.Snapshot.PendingTurn = nil
-	r.Snapshot.Session.PendingCommandID = ""
-	r.Snapshot.Session.PendingTurnID = ""
-	r.Snapshot.Operations = nil
-	ctx, cancel := context.WithTimeout(e.ctx, 10*time.Second)
-	binding, err := p.BindRecovery(ctx, previous, r.Snapshot.Clone())
-	cancel()
-	if err != nil {
-		return err
-	}
-	r.Snapshot.Implementation = []b.ImplementationDataEnvelope{binding}
-	r.Snapshot.QuestionRoute = nil
-	r.Snapshot.PolicyResources = nil
-	if owner, ok := w.port.(b.LifecyclePreparationOwner); ok {
-		owner.ReleasePreparation()
-	}
-	w.port = nil
-	w.handle = nil
-	return nil
-}
 func (e *Engine) failControl(id, command string, err error) {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	r := e.runs[id].Clone()
+	if r.PendingResume != command && r.PendingStop != "" || r.Closed {
+		return
+	}
 	r.CommandStates[command] = "failed"
 	r.Diagnostic = e.redact(r, err.Error())
 	r.PendingResume = ""

@@ -40,7 +40,7 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 	git("-C", repo, "pack-refs", "--all")
 	git("-C", repo, "worktree", "add", "-qb", "boundary", work)
 	common := filepath.Join(repo, ".git")
-	roots, err := PrivateLinkedWorktreeWriteArgs(filepath.Join(common, "objects"), filepath.Join(common, "refs"), filepath.Join(common, "logs"), filepath.Join(common, "worktrees", "worker"))
+	roots, err := PrivateLinkedWorktreePaths(filepath.Join(common, "objects"), filepath.Join(common, "refs"), filepath.Join(common, "logs"), filepath.Join(common, "worktrees", "worker"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +48,7 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 	backend := Backend{Config: Config{Executable: *hostNativeExecutable, Workspace: work, RunDir: root, RunID: strings.Repeat("a", 32), ServerDir: filepath.Join(root, "server"), Sandbox: "danger-full-access", WindowsSandbox: "", WorkerRuntime: true, Environment: func(env []string) []string { return env }}, Process: ProcessPort{Start: host.StartManaged, Inspect: host.InspectProcess, NewGeneration: func() string { return "git-boundary" }, WriteAtomic: func(path string, data []byte) error { return os.WriteFile(path, data, 0600) }}}
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
-	h, _, err := backend.PrepareSession(ctx, Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "no business input", LinkedWorktreeArgs: roots})
+	h, _, err := backend.PrepareSession(ctx, Binding{}, b.TurnInput{CommandID: strings.Repeat("b", 32), Prompt: "no business input", LinkedWorktreePaths: roots})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +77,7 @@ func TestLinkedGitNativeCommit(t *testing.T) {
 			if mode == "packed-head" {
 				git("-C", repo, "pack-refs", "--all")
 			}
-			writable, _ := WritableRoots(roots)
+			writable := roots
 			policy, _ := TurnStartParams(work, "probe", "probe", "probe", "danger-full-access", "", "", writable)
 			var result struct {
 				ExitCode int    `json:"exitCode"`

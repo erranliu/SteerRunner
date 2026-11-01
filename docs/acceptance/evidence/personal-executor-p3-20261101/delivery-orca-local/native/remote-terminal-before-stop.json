@@ -1,0 +1,30 @@
+{
+  "id": "82d81408-3f0b-446b-9d2f-7acaa4ca6c38",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_eff20de1-ea0d-4534-bbb5-de0cc03aa465",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-780595e6d15d92802c7424d2f49db0fc@@40e65485",
+      "incarnationId": "5bfb74ab-e8d7-44fa-95f8-b557bdb5970d",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-780595e6d15d92802c7424d2f49db0fc",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-780595e6d15d92802c7424d2f49db0fc",
+      "branch": "refs/heads/erranliu/sr-780595e6d15d92802c7424d2f49db0fc",
+      "tabId": "7b84f747-192b-4f92-a62d-ba17bfda0a56",
+      "leafId": "5602de15-3ee9-4374-bec0-9fabff0c0845",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793510088545,
+      "preview": "nything   GPT-6.1-Sol medium · ~\\orca\\workspaces\\SteerlineTest\\sr-780595e6d15d92802c7424d2f49db0fc · Implement frozen spec and …\nWorked for 17s • 13:14  › Ask Codex to do anything   GPT-6.1-Sol medium · ~\\orca\\workspaces\\SteerlineTest\\sr-780595e6d15d92802c7424d2f49db0fc · Implement frozen spec and …",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c"
+  }
+}

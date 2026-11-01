@@ -1,0 +1,414 @@
+{
+  "baseline": "P2 independently accepted uncommitted working tree before P3; not HEAD-only",
+  "base_head": "e2729563562314659a799a5f82debe427fcd7c24",
+  "baseline_snapshot_sha256": "3656eeafd83780f737aafb4b5a10da8705a97dc26aefc8fc450640fd031d8fb2",
+  "before_files": 344,
+  "after_files": 337,
+  "before_lines": 43970,
+  "after_lines": 43412,
+  "production_added": 465,
+  "production_deleted": 1023,
+  "net_deleted": 558,
+  "rename_note": "Current Orca profile decoding retained in profile_decode.go; its move contributes zero net reduction. Tests/docs excluded; gofmt used, no line compression.",
+  "files": [
+    {
+      "path": "internal/application/access_mode.go",
+      "added": 0,
+      "deleted": 123,
+      "before_sha256": "c41854cc08a18ecc3305b87daf1e0ea2aaafb4abb0d6acca45224fc0140e5f6a",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/application/artifact.go",
+      "added": 1,
+      "deleted": 3,
+      "before_sha256": "1d49c5a7c3209ec3d4769ef0de4721ac4327f457d55009e9fa58b91751a3d51e",
+      "after_sha256": "63fbb4a655d53c81f37cf431e20b207c4710c7d6e70a8d5c0d9b6c8b3603115c"
+    },
+    {
+      "path": "internal/application/continuation.go",
+      "added": 14,
+      "deleted": 6,
+      "before_sha256": "8e8d47ae2daccd13034628745c6032409ba70320c447cc3424093f80f013893d",
+      "after_sha256": "60d961eaabd4b67b0556b92c8c25747888829ee4f93d75623b4fd3000a735a6b"
+    },
+    {
+      "path": "internal/application/control.go",
+      "added": 70,
+      "deleted": 42,
+      "before_sha256": "6f4edf9167ab63fc19028ea52dcfd1200c1034b007823bd300230884d1e346d7",
+      "after_sha256": "3bb5205ce5ce72c7c187275096718335a5b0ae53a8ffb4c84b4e7e4da99057db"
+    },
+    {
+      "path": "internal/application/engine.go",
+      "added": 23,
+      "deleted": 27,
+      "before_sha256": "8f7ed2e52876772d413cb25ec903cc5864d7b061c8f7b9afb81d4814c89fa61f",
+      "after_sha256": "b6f34d1332f3eb269949461fbae8eb9a3a1f980c461121c65631b69fa1e9e9bc"
+    },
+    {
+      "path": "internal/application/freeze.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "986edc6fa98d5d4534b5125ab30717fc22620e422fbb266dbca8bd8dee218cc3",
+      "after_sha256": "3ad51b0a503d4272f16c083ed4e821ce29941d5bea4dc442499344efc0d8be31"
+    },
+    {
+      "path": "internal/application/manual.go",
+      "added": 72,
+      "deleted": 0,
+      "before_sha256": null,
+      "after_sha256": "c0dc5f1b0e12b4db0767413cf0057b7b3e5503b6326fbd518c42c074e53f8886"
+    },
+    {
+      "path": "internal/application/native_session.go",
+      "added": 1,
+      "deleted": 3,
+      "before_sha256": "01b815d4caa3a4357eb30408559a10ed34e669dda72d311c32acd62520a69d4e",
+      "after_sha256": "c640e1edeb0d82b76e5631f50e912172bb07f16d25d30745c5577fa1507a47af"
+    },
+    {
+      "path": "internal/application/observation.go",
+      "added": 22,
+      "deleted": 3,
+      "before_sha256": "4f6e7898fca17ab7e2ecd66e1cb679e73913b9338e5814a706deb62f2ba3fd8c",
+      "after_sha256": "ef88dc0b3ba3ded0f530b3a122b56d911824eafcee5993ae77145040da43e740"
+    },
+    {
+      "path": "internal/application/policy.go",
+      "added": 5,
+      "deleted": 5,
+      "before_sha256": "02dcf99d69cc49da3abada6d10dc80cce4fba0cb0bada0a98898363e1e4ba962",
+      "after_sha256": "7842c95d727b868d4bdee9ca52e1797574faff6e07039af95dd11ad4efef4d7b"
+    },
+    {
+      "path": "internal/application/progress.go",
+      "added": 2,
+      "deleted": 4,
+      "before_sha256": "d825276ddb87a03248b3fb36cfca9ceed35afc36d6a0646b744d426e9ac07c16",
+      "after_sha256": "8f445c71f47b58bf9da8b7ad947f6a2c62b2297b8965a303dea7095bfd77b8fd"
+    },
+    {
+      "path": "internal/application/result_file.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "88e38690c6a064e5d6b333367c3e082c87bc7ea165fc375052cc27de10833f68",
+      "after_sha256": "be1a84eef290780b840c687d4c4884186817fca08727d4e5e6c69029738e1b12"
+    },
+    {
+      "path": "internal/application/run_observation.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "28cce4b74e0f2605b2ca753603a76c96e049a1ecffb456f47cead4b2172ac9a6",
+      "after_sha256": "6608ebd7b7936269ca4d3bb986ac05a9736f80dc1ee58d7248693712af8776d6"
+    },
+    {
+      "path": "internal/application/runtime_files.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "1b67fda73c71433aa1b6766b26ffa8f88c5399549b25ff216d0aff16a5c059af",
+      "after_sha256": "f6db49ab01d4381042499263ea6b35a6eeb92fef90f703a88a9fb5e5b94519ad"
+    },
+    {
+      "path": "internal/application/takeover.go",
+      "added": 0,
+      "deleted": 107,
+      "before_sha256": "d196d9405a64ccbef750158acb1433d85f48df5770460937f5ab31331a46487f",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/application/usage.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "3f0bc5b979503011d80ea7a4f1c35297f07c5d1854c6be3486122d1d78dda2be",
+      "after_sha256": "63928d5a38bc34a4dc079cfd2834aaf73277d2d0a4b1c29f92a9ec71c16699fd"
+    },
+    {
+      "path": "internal/application/verify_stopped.go",
+      "added": 1,
+      "deleted": 8,
+      "before_sha256": "587f88f3ce1c7970a0c03d9fdcd9137474038660d37b2f2d49bf1e20d4e5d026",
+      "after_sha256": "ebe41046b42ebf7b3de95ba556ba80ce0af1df287957215c48015ed983738e0d"
+    },
+    {
+      "path": "internal/application/worker.go",
+      "added": 84,
+      "deleted": 34,
+      "before_sha256": "74cfce65d7ad1308e05e5ea297acc10ea8558318e9e7b721e2e76702e7ea5bf8",
+      "after_sha256": "967b567e1d16b8221fd030e0272f154f83b927ed005099b40b02b7339c662bb9"
+    },
+    {
+      "path": "internal/cli/cli.go",
+      "added": 5,
+      "deleted": 16,
+      "before_sha256": "40557193761f6af0d209b6595bc305e42fb9802b6afbce74b8540040cb3f36a2",
+      "after_sha256": "357f91fdd8dc334c107c1aa1201e9db12394c486fbe9065cfdafe07868a31556"
+    },
+    {
+      "path": "internal/contracts/recovery.go",
+      "added": 2,
+      "deleted": 31,
+      "before_sha256": "cfc7e447e4fbfe4c23f065c1f9492bf5868ac82732c806c118b25775010fbea9",
+      "after_sha256": "23142b2b482e55efa216d58d718d0fa0b08124abcccc4edd07016575b8314101"
+    },
+    {
+      "path": "internal/execution/adapters/codex/backend.go",
+      "added": 2,
+      "deleted": 2,
+      "before_sha256": "5c03fd1d746addcd8f6e30e9839178115371a267c55b953132b9051b662b5ef5",
+      "after_sha256": "cd4bffea6036f6550901bbcedf8e7c7fd83ac35678b36b9b65341639f1dc1e27"
+    },
+    {
+      "path": "internal/execution/adapters/codex/diagnostic.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "9573fad6e76d97e9959ff200d7d3ab487bcee445c95a6d813acec0c5e943fb28",
+      "after_sha256": "7df22a2666938e57e0ac8ae5968982b139de53efda340394505a4f90659a4f80"
+    },
+    {
+      "path": "internal/execution/adapters/codex/execution_owner.go",
+      "added": 6,
+      "deleted": 9,
+      "before_sha256": "fae8daf4e99730caa141b6e1ad68ea2b61a17411aab01e1569d6c5e8fd563de1",
+      "after_sha256": "ad1816be1c84889a56f8ab5f772a082fb5c83c4241646e9b8aa16bdc268c2d2f"
+    },
+    {
+      "path": "internal/execution/adapters/codex/lifecycle.go",
+      "added": 2,
+      "deleted": 28,
+      "before_sha256": "237ed0625a8752e2a6b74cc495efa8359f56eb3f64dffa5528204c3797955fd8",
+      "after_sha256": "b5cd1b84031bf288f39bc2cd5a204253e6e0f5af42663a4378dddfb34777232f"
+    },
+    {
+      "path": "internal/execution/adapters/codex/native_params.go",
+      "added": 0,
+      "deleted": 12,
+      "before_sha256": "e242eee5219a519e7cce9ff4609fa85522a636e8c48cc8b6bbb10c8114a7e42a",
+      "after_sha256": "8543feb97d518921a33865679923f9d966215e53d99da2db7060ca06366cb5b4"
+    },
+    {
+      "path": "internal/execution/adapters/codex/permissions.go",
+      "added": 10,
+      "deleted": 11,
+      "before_sha256": "66e9db7492d1b6a98f418de2deeea715a072edc74291351029954ee2b3423154",
+      "after_sha256": "c40828f6cb8a263af77e4aa3b8e8a647168fa73f37851334079fc331581f0e69"
+    },
+    {
+      "path": "internal/execution/adapters/codex/policy.go",
+      "added": 3,
+      "deleted": 3,
+      "before_sha256": "90fa0e782f370a8dd947bda59615d7cd7fdf095114eaf24f3c94d9736d90e773",
+      "after_sha256": "7224b609c22ab4fb64573c0c8f05fb98f7aa5b630ebb102229f6d5e09953824f"
+    },
+    {
+      "path": "internal/execution/adapters/codex/policy_resources.go",
+      "added": 8,
+      "deleted": 19,
+      "before_sha256": "6389f96c7ebee0682b01819052004592ba425422eb25d79711f24e74be198da0",
+      "after_sha256": "f2ded9a49a5800073975099f6f63afb63bad9e86be1b2b436a0d3672755c53cf"
+    },
+    {
+      "path": "internal/execution/adapters/codex/recovery_compatibility.go",
+      "added": 0,
+      "deleted": 42,
+      "before_sha256": "7a3d51ad4cb17922566d610d55419762d9642334de10839e95b3253f306cebf5",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/execution/adapters/codex/remote_agent.go",
+      "added": 3,
+      "deleted": 3,
+      "before_sha256": "78023ed95135a5d8df197fd72331dec2a9b0e26ac066168647efa204dbd0bacf",
+      "after_sha256": "a96c1f31eb199e90403ba70207d23185534341bf16da4a16b06b18c287697421"
+    },
+    {
+      "path": "internal/execution/adapters/codex/retired_stop.go",
+      "added": 0,
+      "deleted": 50,
+      "before_sha256": "21347ef9a3f7dede61b42c1d9cae42cb97c4d445926be2c4902b6423162b95f0",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/execution/adapters/codex/worker_runtime.go",
+      "added": 4,
+      "deleted": 4,
+      "before_sha256": "969ffd2b17f62a80c194ff5ab7aa8aff2185a4beba684dd768642eebed6f7ba1",
+      "after_sha256": "f2b17578e9f843a7b339468fd0582b237ed60ba0d105b9fc054e5b70ce4936d6"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/control_checkpoint.go",
+      "added": 2,
+      "deleted": 12,
+      "before_sha256": "d9039df11bba4928278fab83ea5edca26f3d432d43fced346b5bfe1f0a5d0cb6",
+      "after_sha256": "745b3e85b97fe7dd6af639431e1a97008526bdb07168eaf9eb0e501680c208dc"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/lifecycle.go",
+      "added": 7,
+      "deleted": 44,
+      "before_sha256": "3348d6dbb47eaf00c7450d8ee6e9540ab0096c920f6297a2bb685ad262197766",
+      "after_sha256": "2bd41c3005617923b592f749f5d60b7661f812ee433a86ac6cbfa3e1fe33b31e"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_stop.go",
+      "added": 1,
+      "deleted": 3,
+      "before_sha256": "18231946019af649ad8d8933c5913f0937282e6c17bb06a4d1da05aebcf86ba2",
+      "after_sha256": "aec543e79ea2c6a310ce1300b43499b67b6d98f3013627406b9d9cb8832f4cee"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/profile.go",
+      "added": 0,
+      "deleted": 11,
+      "before_sha256": "4a51a02284b41dc2b30f41a3e321fbe863d98c9259480e89e30bb973b7554cbc",
+      "after_sha256": "da33b2299c0dcb7f1473fb5b4fac82dc9fe978b56ec8fe9fa02c2790686d3a0e"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/profile_decode.go",
+      "added": 54,
+      "deleted": 0,
+      "before_sha256": null,
+      "after_sha256": "2bf5ac42a55b49c996de4e4ad71276f10f5272d889fd6d1b9c7e235b07366fef"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/recovery_compatibility.go",
+      "added": 0,
+      "deleted": 59,
+      "before_sha256": "b0f692545f73fe9617d2489b64f14a6358f9dd2ef0f88022f60603d949b5c94f",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_receipt.go",
+      "added": 2,
+      "deleted": 5,
+      "before_sha256": "780bd5c93af782f0a958b758e19aa4a893309d234872270fa2866f61e849861b",
+      "after_sha256": "9c4aacb4c9fe274137216dada361a6078ce757bf74ed4dc1c974d8674bce58f9"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/terminal_runtime.go",
+      "added": 1,
+      "deleted": 11,
+      "before_sha256": "f3ce8cdd12a12fe60509164c0a2891c3f715fc2774cfde28a83943b8006b0f40",
+      "after_sha256": "cb9a5f8ac8625375ff89768a94bba306009c5841466c740797b8f0b105dd1429"
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/verify_stopped.go",
+      "added": 1,
+      "deleted": 3,
+      "before_sha256": "e492baf43da7e4494f4c8059b82198bd5b338813edb085bcf4eb969a3c20c561",
+      "after_sha256": "bf5488c54dd298a507a9bd24257e6b39b01c8d0523a4f7cb9d3fbcff27a89a0e"
+    },
+    {
+      "path": "internal/execution/backend/lifecycle.go",
+      "added": 7,
+      "deleted": 11,
+      "before_sha256": "0fa1031bee2d5d91890a853a99e28173b74dc7433a9b69944b6208507bba4965",
+      "after_sha256": "1232d8a9ab5c31071ea0de34e4da4ae7ef3a5765f553de7deb74668dafa81145"
+    },
+    {
+      "path": "internal/execution/backend/recovery.go",
+      "added": 0,
+      "deleted": 8,
+      "before_sha256": "f6cf035be2b5001e8536aef7a5d43dd6159c0920a1cac544dd2e854817613d5b",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/execution/backend/session.go",
+      "added": 10,
+      "deleted": 10,
+      "before_sha256": "9708f0d827a5a2323c0964e06f360f7ae58eb8c9dd9092ccb857b1c40c96c139",
+      "after_sha256": "9a4b74038539a469cda7e244b64a9c2a12963f68ef1be9306ac0d4d29ed46baa"
+    },
+    {
+      "path": "internal/execution/reliable/intent.go",
+      "added": 1,
+      "deleted": 1,
+      "before_sha256": "bfaff6902f9a7dab20b1f9b1a60a5391c220fd48b99dbbfeb37a6cfbdd3a40a1",
+      "after_sha256": "ccbbcda46a5c65fadc78feb84fd7e42346e3d9e37bd5ac19ccc5805d9800648d"
+    },
+    {
+      "path": "internal/execution/reliable/recovery_policy.go",
+      "added": 1,
+      "deleted": 28,
+      "before_sha256": "cd8268b9de9f74dce63052ea4b88138fc0cebeb791dcd794c45966aa85e3dff9",
+      "after_sha256": "76ef7b5f041a49eec5d89b45ce700e7c133246a6b5a160aceb3c8f39ae3a0230"
+    },
+    {
+      "path": "internal/host/host.go",
+      "added": 1,
+      "deleted": 2,
+      "before_sha256": "7ad9e83d043925bd60ed946d72225ff1c3eaf2d5862099a07bb60b64c703c3b9",
+      "after_sha256": "5065afc16f8b5d7604c33a2f0a8a4dd2b97b56ecd199a3770f0f90fbcfe636e5"
+    },
+    {
+      "path": "internal/host/server.go",
+      "added": 0,
+      "deleted": 7,
+      "before_sha256": "65f72720b857bd21444d0c3f2b20ab5878958ff039b1592b41b5a36b6be96088",
+      "after_sha256": "bd0df8d2bac9a1f8ed4b503a816ad59fc3c5e398bb9fab553082557f81aa8195"
+    },
+    {
+      "path": "internal/host/takeover.go",
+      "added": 0,
+      "deleted": 106,
+      "before_sha256": "3bbe77552add9eb0ddb5def28552016df5ebbab8b60624b51d33bd6587e5cc0b",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/resources/resources.go",
+      "added": 4,
+      "deleted": 9,
+      "before_sha256": "4472dc9c1fac656220e3e72b1f22aa7b243a811904b5ffc22f2af8c4d2ac808c",
+      "after_sha256": "645082173932f3e13d5b6dddbec863f765f0c3c18fd68d7267ec92498cb6e9c4"
+    },
+    {
+      "path": "internal/runstate/record.go",
+      "added": 19,
+      "deleted": 20,
+      "before_sha256": "526023a70f42da9258c7e0478da23b6ca070be1fdf973af09212dc2059ae5bbb",
+      "after_sha256": "58dd11a8f10cc15e5382ee122f1791f59849e78b6e1f24aaa761fb1d91d984d0"
+    },
+    {
+      "path": "internal/storage/legacy_parser.go",
+      "added": 0,
+      "deleted": 41,
+      "before_sha256": "4db444184f95f796eb7e0e7b0e984a4c750e3efc3dff181872a37f0fbf57d556",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/storage/runs.go",
+      "added": 0,
+      "deleted": 1,
+      "before_sha256": "6446e6e722a850647fd6ad1332a30f31ef88933211d0757ecd551fd902141d37",
+      "after_sha256": "fe18c48f93c80c2cfc9323f74d4c0c5a699eef01e24cc840a4551536be9a52cf"
+    },
+    {
+      "path": "internal/storage/store.go",
+      "added": 6,
+      "deleted": 6,
+      "before_sha256": "e0954c6d13d242faa43ef92eee127d60e65928ed721fc400d66432b3c04aed03",
+      "after_sha256": "8312eab794bab968f216f70fef7de098545fe19f9718332684d80597c23fc600"
+    },
+    {
+      "path": "internal/storage/takeover.go",
+      "added": 0,
+      "deleted": 16,
+      "before_sha256": "e9d991f9bfbc789e7b6122a383c254d1c3f22c7b8f989738f024692277ce7f31",
+      "after_sha256": null
+    },
+    {
+      "path": "internal/storage/usage.go",
+      "added": 1,
+      "deleted": 2,
+      "before_sha256": "33887ab7e2f0d4afbb4fa2f9aafbd92e5345dd701d256b5e1b18b9cb3678fd30",
+      "after_sha256": "db8eeb4b674a680c931017aa649d921e97491ba35ccf2765e775533291c10ea7"
+    },
+    {
+      "path": "internal/usage/collect/collector.go",
+      "added": 1,
+      "deleted": 6,
+      "before_sha256": "a1ef6801ce2e5ce96bd24b43ed977205b65d2d6f7608953924a8834075eabcb4",
+      "after_sha256": "da13990b1b3a2e51c6f8d34bc56aab333791d4941c40fb54a29f542fa5a2929a"
+    }
+  ]
+}

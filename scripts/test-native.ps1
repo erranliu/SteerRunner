@@ -20,7 +20,7 @@ if ((Get-FileHash -LiteralPath $taskNative.runner_exe -Algorithm SHA256).Hash -n
 $taskTestExe = Join-Path $taskRoot 'bin/native.test.exe'
 $taskResultPath = Join-Path $taskEvidence 'result.json'
 if($PSBoundParameters.ContainsKey('DriverExe') -or $PSBoundParameters.ContainsKey('DriverSHA256')) {
-    if(-not $DriverExe -or -not $DriverSHA256 -or $taskNative.level -ne 'L2'){throw 'Incomplete or unsupported frozen native driver identity'}
+    if(-not $DriverExe -or -not $DriverSHA256 -or $taskNative.level -notin @('L2','L3')){throw 'Incomplete or unsupported frozen native driver identity'}
     $taskTestExe=(Resolve-Path -LiteralPath $DriverExe).Path
     if((Get-FileHash -LiteralPath $taskTestExe -Algorithm SHA256).Hash.ToLowerInvariant() -cne $DriverSHA256){throw 'Frozen native driver changed'}
 } else {

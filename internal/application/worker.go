@@ -64,7 +64,7 @@ func (e *Engine) run(id string, w *worker) {
 func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	snapshot := e.runs[id]
-	verify := !readOnlyRun(snapshot) && snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
+	verify := snapshot.PendingPRURL != "" && snapshot.StopStatus == "" && snapshot.PendingStop == "" && snapshot.PendingResume == "" && snapshot.Allowed && !snapshot.ResumeRequired && !unknown(snapshot)
 	e.mu.Unlock()
 	if verify {
 		return e.verifyPublication(id)
@@ -77,13 +77,13 @@ func (e *Engine) advance(id string, w *worker) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
-	if readOnlyRun(r) && r.PendingStop == "" {
-		return false
-	}
+
 	// Recovery only samples an already-ended original execution. No port or
 	// replacement resource is constructed by result collection.
-	if !readOnlyRun(r) && resultEndEligible(r) {
+	if resultEndEligible(r) {
+		w.gate.Unlock()
 		e.sealResult(e.ctx, id)
+		w.gate.Lock()
 		e.mu.Lock()
 		r = e.runs[id].Clone()
 		e.mu.Unlock()
@@ -97,15 +97,7 @@ func (e *Engine) advance(id string, w *worker) bool {
 	if r.Status == "pr_ready" && r.PendingResume == "" && r.PendingStop == "" && r.PendingFeedback == nil {
 		return false
 	}
-	if r.PendingStop == "" && !progressTerminal(r) && r.Snapshot.Workspace.Path != "" && filesNeedPreparation(r) {
-		if !e.prepareRuntimeFiles(r) {
-			return false
-		}
-		e.mu.Lock()
-		r = e.runs[id].Clone()
-		e.mu.Unlock()
-	}
-	if analysisEligible(r) && !unknown(r) {
+	if r.ManualPause == nil && r.PendingResume == "" && analysisEligible(r) && !unknown(r) {
 		return e.advanceAcquisition(id, w, r)
 	}
 	p, err := e.port(r, w)
@@ -114,20 +106,13 @@ func (e *Engine) advance(id string, w *worker) bool {
 		return false
 	}
 	if r.PendingStop != "" {
-		return e.stopRun(id, w, p)
+		w.gate.Unlock()
+		advanced := e.stopRun(id, w, p)
+		w.gate.Lock()
+		return advanced
 	}
 	if r.StopStatus == "stopped" && r.PendingResume == "" {
 		return false
-	}
-	if unknown(r) {
-		for i, intent := range r.Intents {
-			if intent.NeedsReconciliation() {
-				if intent.Request.Operation.Status == b.OperationAccepted && intent.Receipt != nil && intent.Receipt.State.ResourcePending && !r.PreparationDeadline.IsZero() && time.Now().After(r.PreparationDeadline) {
-					e.block(id, "preparation_deadline", errors.New("The original native resource did not become ready within its preparation budget"), false)
-				}
-				return e.invoke(id, w, p, i, true)
-			}
-		}
 	}
 	if r.PendingResume != "" {
 		if err := validateWorkflow(r); err != nil {
@@ -136,6 +121,21 @@ func (e *Engine) advance(id string, w *worker) bool {
 		}
 		return e.resumeRun(id, w, p)
 	}
+	if r.ManualPause != nil {
+		return false
+	}
+	if unknown(r) {
+		for i, intent := range r.Intents {
+			if intent.NeedsReconciliation() {
+				if !time.Now().Before(reconciliationDeadline(r, intent)) {
+					e.requireManual(id, "Original operation reconciliation deadline exhausted; inspect original resources and use resume for a bounded read-only reconciliation")
+					return false
+				}
+				return e.invoke(id, w, p, i, true)
+			}
+		}
+	}
+
 	if err := validateWorkflow(r); err != nil {
 		e.block(id, "workflow_configuration", err, false)
 		return false
@@ -216,7 +216,7 @@ func (e *Engine) saveIntent(id string, r *runstate.Record, candidate b.Lifecycle
 	}
 	return len(next.Intents) - 1, nil
 }
-func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reconcile bool) bool {
+func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reconcile bool, deadlines ...time.Time) bool {
 	e.mu.Lock()
 	r := e.runs[id].Clone()
 	e.mu.Unlock()
@@ -238,11 +238,24 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		}
 		request.Snapshot = r.Snapshot.Clone()
 	}
-	ctx, cancel := context.WithTimeout(e.ctx, 90*time.Second)
+	deadline := time.Now().Add(90 * time.Second)
+	if reconcile && r.PendingStop == "" {
+		deadline = reconciliationDeadline(r, intent)
+	}
+	if len(deadlines) > 0 {
+		deadline = deadlines[0]
+	}
+	ctx, cancel := context.WithDeadline(e.ctx, deadline)
+	preparationRecovery := false
 	// Clone normalizes nil/empty implementation lists on both sides. Storage
 	// round trips may change that representation without changing any identity.
 	if intent.PreparationQuery != nil && intent.Receipt == nil && len(intent.Request.Operation.Receipt) == 0 && r.WorkspaceFact == nil && r.Snapshot.Workspace.Path == "" && b.LifecycleBindingDigest(r.Snapshot.Clone()) == b.LifecycleBindingDigest(intent.Request.Snapshot.Clone()) {
-		ctx = b.WithPreparationRecovery(ctx, r.Allowed && !r.ResumeRequired && r.PendingStop == "")
+		// A queued initial preparation with no creation claim may continue the
+		// same intent under its original budget. The adapter proves absence of
+		// the durable creation claim before crossing its first-effect boundary.
+		// Manual resume never receives this authority.
+		preparationRecovery = r.Allowed && !r.ResumeRequired && r.PendingStop == "" && r.PendingResume == "" && r.ManualPause == nil
+		ctx = b.WithPreparationRecovery(ctx, preparationRecovery)
 	}
 	if !reconcile && request.Input.Turn != nil {
 		if w.ownedInputs == nil {
@@ -250,7 +263,16 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		}
 		w.ownedInputs[request.Input.Turn.CommandID] = true
 	}
-	result := operation.Invoke(ctx, p, p, request, mode)
+	var result operation.EffectResult
+	if reconcile && !preparationRecovery {
+		w.queryCancel = cancel
+		w.gate.Unlock()
+		result = operation.Invoke(ctx, p, p, request, mode)
+		w.gate.Lock()
+		w.queryCancel = nil
+	} else {
+		result = operation.Invoke(ctx, p, p, request, mode)
+	}
 	cancel()
 	// Shutdown cancels this read, not the durable Run authorization. Keep the
 	// original in-flight operation so the next eligible generation can continue.
@@ -261,18 +283,6 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 		if query != nil {
 			return false
 		}
-	}
-	if result.Observer != nil {
-		if w.observer != nil {
-			_ = w.observer.Close(context.Background())
-		}
-		w.observer = result.Observer
-		if h := w.observer.StopHandle(); h != nil {
-			e.retainHandle(w, h)
-		}
-	}
-	if result.Receipt.Handle != nil {
-		e.retainHandle(w, result.Receipt.Handle)
 	}
 	e.mu.Lock()
 	next := e.runs[id].Clone()
@@ -319,7 +329,7 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 			next.CommandStates[command] = "unknown"
 		}
 	}
-	if !progress && !preparationStopped {
+	if !progress && !preparationStopped && next.PendingStop == "" && !next.Closed && next.StopStatus != "stopped" {
 		next.Status = "reconciling"
 		if status == "rejected" {
 			next.Status = "blocked"
@@ -352,7 +362,44 @@ func (e *Engine) invoke(id string, w *worker, p b.LifecyclePort, index int, reco
 	err := e.commitLocked(next, nil, "operation_"+status)
 	e.mu.Unlock()
 	if err != nil {
+		if result.Observer != nil {
+			_ = result.Observer.Close(context.Background())
+		}
 		return false
+	}
+	e.mu.Lock()
+	current := e.runs[id].Clone()
+	e.mu.Unlock()
+	if result.Receipt.Handle != nil && result.Receipt.ValidateFor(request) == nil {
+		e.retainHandle(w, result.Receipt.Handle)
+	}
+	if current.PendingStop != "" || current.Closed || current.StopStatus == "stopped" || err != nil {
+		if result.Observer != nil {
+			_ = result.Observer.Close(context.Background())
+		}
+		return progress && !resourcePending
+	}
+	if result.Observer != nil {
+		if w.observer != nil {
+			_ = w.observer.Close(context.Background())
+		}
+		w.observer = result.Observer
+		if h := w.observer.StopHandle(); h != nil {
+			e.retainHandle(w, h)
+		}
+	}
+	if result.Receipt.Handle != nil {
+		e.retainHandle(w, result.Receipt.Handle)
+	}
+
+	if savedReceipt.TurnEvidence != nil && current.ManualPause != nil {
+		e.mu.Lock()
+		next := e.runs[id].Clone()
+		next.Result = savedReceipt.TurnEvidence
+		next.LastFinal = next.View().Final
+		err = e.commitLocked(next, nil, "manual_original_result_retained")
+		e.mu.Unlock()
+		return err == nil
 	}
 	if savedReceipt.TurnEvidence != nil {
 		return e.finishWithGate(id, *savedReceipt.TurnEvidence, &w.gate)

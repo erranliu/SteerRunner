@@ -1,0 +1,35 @@
+=== RUN   TestSRProgressFile
+--- PASS: TestSRProgressFile (43.46s)
+=== RUN   TestSRResultFile
+=== RUN   TestSRResultFile/optional-file-failure-business-loop
+=== RUN   TestSRResultFile/optional-file-failure-business-loop/enabled-0
+    result_file_test.go:298: enabled=0: pr_ready=17.5614122s, business inputs=3 (including original result qualification fallback), stop confirmed
+=== RUN   TestSRResultFile/optional-file-failure-business-loop/enabled-1
+    result_file_test.go:298: enabled=1: pr_ready=19.4501183s, business inputs=3 (including original result qualification fallback), stop confirmed
+=== RUN   TestSRResultFile/optional-file-failure-business-loop/enabled-2
+    result_file_test.go:298: enabled=2: pr_ready=22.5275862s, business inputs=3 (including original result qualification fallback), stop confirmed
+=== RUN   TestSRResultFile/optional-file-failure-business-loop/enabled-3
+    result_file_test.go:298: enabled=3: pr_ready=25.2956109s, business inputs=3 (including original result qualification fallback), stop confirmed
+--- PASS: TestSRResultFile (190.13s)
+    --- PASS: TestSRResultFile/optional-file-failure-business-loop (105.84s)
+        --- PASS: TestSRResultFile/optional-file-failure-business-loop/enabled-0 (20.78s)
+        --- PASS: TestSRResultFile/optional-file-failure-business-loop/enabled-1 (24.45s)
+        --- PASS: TestSRResultFile/optional-file-failure-business-loop/enabled-2 (28.33s)
+        --- PASS: TestSRResultFile/optional-file-failure-business-loop/enabled-3 (32.28s)
+=== RUN   TestSRRunWorkflow
+--- PASS: TestSRRunWorkflow (24.48s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (24.68s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:603: original={InstanceID:a720a77852da31ff7c82297ca6f21d9d StateDir:c:\users\lmas1\appdata\local\temp\sr-2753954417\runner PID:19672 ProcessCreated:134379766082202832 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505 LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:a720a77852da31ff7c82297ca6f21d9d UsagePolicy:0x39931bd2ca80} candidate={InstanceID:5ec82e0000858465278c2574f6e7a9f9 StateDir:c:\users\lmas1\appdata\local\temp\sr-2753954417\runner PID:45608 ProcessCreated:134379766352416566 Status:ready Detached:true Version:takeover-compatible Protocol:steerrunner-cli/v1 ResourceDigest:a67adad7716d649bd7166d92a7fb89b3ecd67376b5cbf54456ca0cf167d6365c ExecutableSHA256:8fd4b3e260ee4af9048e2846a60d77c3d9aba8119034611fc7549b239f4267be LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:5ec82e0000858465278c2574f6e7a9f9 UsagePolicy:0x39931be96840} owner={Kind:os PID:34932 Created:01dd69af78ea4426 Executable:c:\users\lmas1\appdata\local\temp\sr-2753954417\runner\runtimes\53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:43044 Created:01dd69af7947d640 Executable:c:\users\lmas1\.codex\worktrees\1e6e\steerrunner\.evidence\personal-executor-p2\controlled-final\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:603: original={InstanceID:141ab80135a363c237503ec03fbbbee9 StateDir:c:\users\lmas1\appdata\local\temp\sr-3712707858\runner PID:29364 ProcessCreated:134379766407715325 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505 LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:141ab80135a363c237503ec03fbbbee9 UsagePolicy:0x39931bd11680} candidate={InstanceID:5d74c717b6dcf507331fb2d092eb1679 StateDir:c:\users\lmas1\appdata\local\temp\sr-3712707858\runner PID:38396 ProcessCreated:134379766661776498 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584 ExecutableSHA256:53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505 LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:5d74c717b6dcf507331fb2d092eb1679 UsagePolicy:0x39931bf4a150} owner={Kind:os PID:24068 Created:01dd69af8c90adfd Executable:c:\users\lmas1\appdata\local\temp\sr-3712707858\runner\runtimes\53c22b235f31fadf51e0a66c039f80f4d30793c21f0d372ad8fa86d08b67a505\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:30384 Created:01dd69af8ccce24a Executable:c:\users\lmas1\.codex\worktrees\1e6e\steerrunner\.evidence\personal-executor-p2\controlled-final\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- PASS: TestSRRestartPreservesAuthorization (113.66s)
+    --- PASS: TestSRRestartPreservesAuthorization/graceful (32.84s)
+    --- PASS: TestSRRestartPreservesAuthorization/kill (30.61s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (23.37s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (24.10s)
+PASS

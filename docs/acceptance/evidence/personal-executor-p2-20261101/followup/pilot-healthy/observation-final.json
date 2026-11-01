@@ -1,0 +1,11 @@
+{
+  "contract": "steerrunner-result-file/v1",
+  "run_id": "bae32a6c7fac9c601d5dc568c8b4c67f",
+  "version": 1,
+  "observed_at": "2026-11-01T03:48:42.0533672Z",
+  "encoding": "base64",
+  "content_base64": "cDI=",
+  "size_bytes": 2,
+  "sha256": "3946ca64ff78d93ca61090a437cbb6b3d2ca0d488f5f9ccf3059608368b27693",
+  "collection_status": "closed"
+}

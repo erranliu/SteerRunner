@@ -1,0 +1,97 @@
+{
+  "inspector": {
+    "terminal": "term_f4347dd9-6761-4932-9d7c-b382c87a04ca",
+    "runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+    "incarnation": "23529221-7a20-4588-a26b-acbf122a6dd7",
+    "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-8b1716cca0ae89426d7e13c6acceab04"
+  },
+  "inspector_closed": true,
+  "readiness": {
+    "runner_input": {
+      "budget": {
+        "contract": "steerrunner-model-input/v1",
+        "sha256": "6f257d58d9f5fd75b8a0ae55a5f4a03f3d1d27ec8f0c84e2a230c267c3b4b42b",
+        "provenance_sha256": "eb09e88e9adba9ac08ced9fd58d0795a1cf0604528f2821a241e751ba58eea24",
+        "caller_bytes": 0,
+        "runner_bytes": 541,
+        "total_bytes": 541,
+        "fragments": [
+          {
+            "source": "native.developer",
+            "owner": "runner",
+            "bytes": 541
+          }
+        ]
+      },
+      "parts": [
+        {
+          "Source": "native.developer",
+          "Owner": "runner",
+          "Text": "shell=\"C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe\",login=false。临时文件使用本次Run指定临时目录并同次清理，禁写认证/Git管理根。不得输出环境/凭据、提权、登录、改认证或权限。仅精确暂存任务路径，检查非空暂存diff且仅含任务；串行暂存/检查/提交，非零即停。commit不用管道，紧接命令保存并打印其$LASTEXITCODE，再查状态。失败或未知（含认证过期）保留原分支/PR结果并停止对账；未知发布不重做。"
+        }
+      ],
+      "fields": [
+        "developerInstructions"
+      ]
+    },
+    "runner_bootstrap": {
+      "budget": {
+        "contract": "steerrunner-model-input/v1",
+        "sha256": "971b9a93add4bd028ca070da3d864ac8f2b029437c44a9a9420dc1efcc222421",
+        "provenance_sha256": "7a925899935408b5984aedddf44cc2e904cdbcc4fc13f6c05f7447420cecb298",
+        "caller_bytes": 0,
+        "runner_bytes": 82,
+        "total_bytes": 82,
+        "fragments": [
+          {
+            "source": "native.bootstrap",
+            "owner": "runner",
+            "bytes": 82
+          }
+        ]
+      },
+      "parts": [
+        {
+          "Source": "native.bootstrap",
+          "Owner": "runner",
+          "Text": "Initialize this agent session. Reply READY only. Do not use tools or change files."
+        }
+      ],
+      "fields": [
+        "input[0].text"
+      ]
+    },
+    "exit_public_key": "P5xKfljDCX48dX6UYzWy0mEf57oJCK+HTh4ds84iYE0=",
+    "owner": {
+      "kind": "os",
+      "pid": 37020,
+      "created": "01dd69b50b773272",
+      "executable": "c:\\users\\lmas1\\.codex\\worktrees\\1e6e\\steerrunner\\.evidence\\personal-executor-p2-followup\\bin\\steerrunner-agent.exe"
+    },
+    "native_transport": "codex-remote-inline-v4",
+    "runtime_sha256": "b175cb636a516077f35c9368888b51ed07ba53389ce27b3cd5209079e3591885",
+    "verified": true,
+    "contract": "codex-policy-v12:0.159.2:full-access:host-native-auth:never",
+    "workspace": "C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-8b1716cca0ae89426d7e13c6acceab04",
+    "repository": "https://github.com/erranliu/SteerlineTest.git",
+    "session_id": "01a19540-efb1-7cc3-9bd7-b2ac3a5ec30e",
+    "configuration_digest": "ced10296e733edc2f313b37b79a7cb442eb53f8d99612d647ecc46afcc8d1475",
+    "process": {
+      "kind": "os",
+      "pid": 38736,
+      "created": "01dd69b50d87a6ef",
+      "executable": "c:\\users\\lmas1\\.local\\bin\\node_modules\\@openai\\codex\\node_modules\\@openai\\codex-win32-x64\\vendor\\x86_64-pc-windows-msvc\\bin\\codex.exe"
+    },
+    "checked_at": "2026-11-01T03:57:15.0512493Z",
+    "access_mode": "full_access"
+  },
+  "native": {
+    "session": "01a19540-efb1-7cc3-9bd7-b2ac3a5ec30e",
+    "contexts": 3,
+    "tools": 8,
+    "escalations": 0,
+    "approvals": 0,
+    "bypasses": 0,
+    "native_sha256": "6a18e50593806f32dac68be2eef432b442cebd0ecf8f1196356c6a162d1812f4"
+  }
+}

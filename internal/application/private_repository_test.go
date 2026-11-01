@@ -24,7 +24,7 @@ func TestPrivateRunGitGrantDoesNotExpandLegacyCache(t *testing.T) {
 		}
 	}
 	prepare()
-	if len(r.LinkedWriteArgs) != 10 || r.LinkedWriteArgs[9] != r.RepositoryCommon {
+	if len(r.LinkedGitPaths) != 5 || r.LinkedGitPaths[4] != r.RepositoryCommon {
 		t.Fatal("new private repository lacks root-level Git lock access")
 	}
 	// Simulate the original storage layout without migrating its permissions.
@@ -33,7 +33,7 @@ func TestPrivateRunGitGrantDoesNotExpandLegacyCache(t *testing.T) {
 	r.Snapshot.WorkspacePlan.Path += "-legacy"
 	r.Snapshot.WorkspacePlan.Branch += "-legacy"
 	prepare()
-	if len(r.LinkedWriteArgs) != 8 {
+	if len(r.LinkedGitPaths) != 4 {
 		t.Fatal("legacy shared repository gained common-directory write access")
 	}
 }

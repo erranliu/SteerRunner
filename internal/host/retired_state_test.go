@@ -11,7 +11,7 @@ import (
 )
 
 func TestVerifyStoppedRejectsRetiredStateWithoutHidingResources(t *testing.T) {
-	for _, version := range []int{3, 4} {
+	for _, version := range []int{1, 2, 3, 4, 5, 6} {
 		t.Run(fmt.Sprint(version), func(t *testing.T) {
 			dir := t.TempDir()
 			if err := os.Mkdir(filepath.Join(dir, "service"), 0700); err != nil {

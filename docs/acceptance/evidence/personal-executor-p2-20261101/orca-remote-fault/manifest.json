@@ -1,0 +1,76 @@
+{
+  "schema": "steerrunner-test/v1",
+  "id": "053cc5cc17cd",
+  "level": "L3",
+  "scenario": "orca-remote.smoke",
+  "driver": "development-smoke",
+  "root": "C:\\srt\\053cc5cc17cd",
+  "runner_exe": "C:\\srt\\053cc5cc17cd\\bin\\steerrunner.exe",
+  "runner_sha256": "bc3666e1ffe966479c3eafa59d5dabe7075e77de2ed63bf02ce76bedabd1ba9f",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "repository_path": "C:\\srt\\053cc5cc17cd\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/053cc5cc17cd/base",
+  "base_revision": "f05fa5ae50d01d756e350c05901655b7054af49e",
+  "spec_path": "C:\\srt\\053cc5cc17cd\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\053cc5cc17cd\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "target": {
+      "kind": "orca_environment",
+      "environment": "9cf377a1-42de-4f2b-8874-70f63a7bbab2"
+    },
+    "adapter": "orca-terminal",
+    "settings": {
+      "agent": "codex",
+      "access_mode": "full_access",
+      "transport": {
+        "executable": "C:\\srt\\053cc5cc17cd\\bin\\local-audit.exe",
+        "args": [
+          "local-audit",
+          "-manifest",
+          "C:\\srt\\053cc5cc17cd\\manifest.json",
+          "-orca",
+          "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "--"
+        ]
+      },
+      "agent_launch": {
+        "executable": "C:/Users/liuming/AppData/Local/OpenAI/Codex/bin/0ab0e7a8f3779036/codex.exe",
+        "model": "gpt-6-luna",
+        "reasoning_effort": "high"
+      }
+    }
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/053cc5cc17cd/base",
+    "settings": {
+      "query": {
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\053cc5cc17cd\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ],
+        "executable": "powershell.exe"
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "36feef62be1f96ba5233033af006dc1e455cd00c27f54ee8c81505b8c630f413",
+  "configuration_path": "C:\\srt\\053cc5cc17cd\\bin\\test-config.json",
+  "workflow": {
+    "id": "development",
+    "version": 2
+  },
+  "created_at": "2026-11-01T03:15:55.0956031Z",
+  "requirements_sha256": "6a66ce3b8e0f9fa22d8e9b748c72ccd5f0836219c7465a9a8874d6a387c68777",
+  "remote_runtime_id": "c7911c80-1c69-42bb-ab2e-db16cf81e02f"
+}

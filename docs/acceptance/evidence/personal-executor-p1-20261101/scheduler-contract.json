@@ -1,0 +1,104 @@
+{
+  "parallel_case_count": 2,
+  "records": [
+    {
+      "level": "L3",
+      "repeat_index": 1,
+      "finished_at": "2026-11-01T02:23:42.8766033Z",
+      "manifest": null,
+      "case_id": "default",
+      "started_at": "2026-11-01T02:23:41.0373571Z",
+      "status": "passed",
+      "evidence": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\scheduler-regression\\scheduler\\first-default-r1-fixture.json",
+      "scenario": "first",
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:first"
+      ]
+    },
+    {
+      "level": "L3",
+      "repeat_index": 1,
+      "finished_at": "2026-11-01T02:23:42.9845191Z",
+      "manifest": null,
+      "case_id": "default",
+      "started_at": "2026-11-01T02:23:41.1419269Z",
+      "status": "passed",
+      "evidence": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\scheduler-regression\\scheduler\\second-default-r1-fixture.json",
+      "scenario": "second",
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:second"
+      ]
+    },
+    {
+      "level": "L4",
+      "repeat_index": 1,
+      "finished_at": "2026-11-01T02:23:46.4641212Z",
+      "manifest": null,
+      "case_id": "default",
+      "started_at": "2026-11-01T02:23:44.6172449Z",
+      "status": "passed",
+      "evidence": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\scheduler-regression\\scheduler\\exclusive-default-r1-fixture.json",
+      "scenario": "exclusive",
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:exclusive"
+      ]
+    },
+    {
+      "level": "L3",
+      "repeat_index": 1,
+      "finished_at": "2026-11-01T02:23:49.9219313Z",
+      "manifest": null,
+      "case_id": "default",
+      "started_at": "2026-11-01T02:23:48.0942491Z",
+      "status": "passed",
+      "evidence": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\scheduler-regression\\scheduler\\cli-wait-default-r1-fixture.json",
+      "scenario": "cli-wait",
+      "identity": {
+        "runner_sha256": "runner",
+        "fixture_sha256": "driver"
+      },
+      "resources": [
+        "run:cli-wait"
+      ]
+    },
+    {
+      "level": "L3",
+      "repeat_index": 1,
+      "finished_at": "2026-11-01T02:23:53.2039266Z",
+      "manifest": null,
+      "case_id": "default",
+      "started_at": "2026-11-01T02:23:51.3656037Z",
+      "status": "passed",
+      "evidence": null,
+      "fixture_record": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p1\\scheduler-regression\\scheduler\\last-default-r1-fixture.json",
+      "scenario": "last",
+      "identity": {
+        "fixture_sha256": "driver",
+        "runner_sha256": "runner"
+      },
+      "resources": [
+        "run:last"
+      ]
+    }
+  ],
+  "resource_collision_rejected": true,
+  "worker_loss_rejected": true,
+  "changed_build_rejected": true,
+  "exclusive_case_count": 2
+}

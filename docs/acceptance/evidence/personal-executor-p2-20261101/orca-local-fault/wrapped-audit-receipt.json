@@ -1,0 +1,215 @@
+{
+  "args": [
+    "terminal",
+    "read",
+    "--terminal",
+    "term_672dbed6-2c99-493d-b616-71646f866c83",
+    "--limit",
+    "200",
+    "--json"
+  ],
+  "argv_sha256": "6aafd80ab5250479ff4ff5d0e2f7bd34d2833b3a2f06ec444af03a37d732c9c1",
+  "at": "2026-11-01T03:21:06.1096887Z",
+  "call_id": "affbb74432e75a320565c86f43f24765",
+  "command": [
+    "terminal",
+    "read"
+  ],
+  "ended_at": "2026-11-01T03:21:06.462667Z",
+  "failed": false,
+  "kind": "receipt",
+  "response": {
+    "id": "050d6eaa-33f8-4d8b-9a97-92463c5bfddf",
+    "ok": true,
+    "result": {
+      "terminal": {
+        "handle": "term_672dbed6-2c99-493d-b616-71646f866c83",
+        "status": "running",
+        "tail": [
+          "SR_REMOTE_AUDIT:eyJpbnNwZWN0b3JfY2xvc2VkIjpmYWxzZSwicmVhZGluZXNzIjp7InJ1bm5lcl9pbnB1dCI6eyJidWRnZXQiOnsiY29udHJhY3QiOiJz",
+          "dGVlcnJ1bm5lci1tb2RlbC1pbnB1dC92MSIsInNoYTI1NiI6IjZmMjU3ZDU4ZDlmNWZkNzViOGEwYWU1NWE1ZjRhMDNmM2QxZDI3ZWM4ZjBjODRlMmEyMzBj",
+          "MjY3YzNiNGI0MmIiLCJwcm92ZW5hbmNlX3NoYTI1NiI6ImViMDllODhlOWFkYmE5YWMwOGNlZDlmZDU4ZDA3OTVhMWNmMDYwNDUyOGYyODIxYTI0MWU3NTFi",
+          "YTU4ZWVhMjQiLCJjYWxsZXJfYnl0ZXMiOjAsInJ1bm5lcl9ieXRlcyI6NTQxLCJ0b3RhbF9ieXRlcyI6NTQxLCJmcmFnbWVudHMiOlt7InNvdXJjZSI6Im5h",
+          "dGl2ZS5kZXZlbG9wZXIiLCJvd25lciI6InJ1bm5lciIsImJ5dGVzIjo1NDF9XX0sInBhcnRzIjpbeyJTb3VyY2UiOiJuYXRpdmUuZGV2ZWxvcGVyIiwiT3du",
+          "ZXIiOiJydW5uZXIiLCJUZXh0Ijoic2hlbGw9XCJDOlxcXFxXaW5kb3dzXFxcXFN5c3RlbTMyXFxcXFdpbmRvd3NQb3dlclNoZWxsXFxcXHYxLjBcXFxccG93",
+          "ZXJzaGVsbC5leGVcIixsb2dpbj1mYWxzZeOAguS4tOaXtuaWh-S7tuS9v-eUqOacrOasoVJ1buaMh-WumuS4tOaXtuebruW9leW5tuWQjOasoea4heeQhu-8",
+          "jOemgeWGmeiupOivgS9HaXTnrqHnkIbmoLnjgILkuI3lvpfovpPlh7rnjq_looMv5Yet5o2u44CB5o-Q5p2D44CB55m75b2V44CB5pS56K6k6K-B5oiW5p2D",
+          "6ZmQ44CC5LuF57K-56Gu5pqC5a2Y5Lu75Yqh6Lev5b6E77yM5qOA5p-l6Z2e56m65pqC5a2YZGlmZuS4lOS7heWQq-S7u-WKoe-8m-S4suihjOaaguWtmC_m",
+          "o4Dmn6Uv5o-Q5Lqk77yM6Z2e6Zu25Y2z5YGc44CCY29tbWl05LiN55So566h6YGT77yM57Sn5o6l5ZG95Luk5L-d5a2Y5bm25omT5Y2w5YW2JExBU1RFWElU",
+          "Q09ERe-8jOWGjeafpeeKtuaAgeOAguWksei0peaIluacquefpe-8iOWQq-iupOivgei_h-acn--8ieS_neeVmeWOn-WIhuaUry9QUue7k-aenOW5tuWBnOat",
+          "ouWvuei0pu-8m-acquefpeWPkeW4g-S4jemHjeWBmuOAgiJ9XSwiZmllbGRzIjpbImRldmVsb3Blckluc3RydWN0aW9ucyJdfSwicnVubmVyX2Jvb3RzdHJh",
+          "cCI6eyJidWRnZXQiOnsiY29udHJhY3QiOiJzdGVlcnJ1bm5lci1tb2RlbC1pbnB1dC92MSIsInNoYTI1NiI6Ijk3MWI5YTkzYWRkNGJkMDI4Y2EwNzBkYTNk",
+          "ODY0YWM4ZjJiMDI5NDM3YzQ0YTlhOTQyMGRjMWVmY2MyMjI0MjEiLCJwcm92ZW5hbmNlX3NoYTI1NiI6IjdhOTI1ODk5OTM1NDA4YjU5ODRhZWRkZGY0NGNj",
+          "MmU5MDRjZGJjYzRmYzEzZjZjMDVmNzQ0NzQyMGNlY2IyOTgiLCJjYWxsZXJfYnl0ZXMiOjAsInJ1bm5lcl9ieXRlcyI6ODIsInRvdGFsX2J5dGVzIjo4Miwi",
+          "ZnJhZ21lbnRzIjpbeyJzb3VyY2UiOiJuYXRpdmUuYm9vdHN0cmFwIiwib3duZXIiOiJydW5uZXIiLCJieXRlcyI6ODJ9XX0sInBhcnRzIjpbeyJTb3VyY2Ui",
+          "OiJuYXRpdmUuYm9vdHN0cmFwIiwiT3duZXIiOiJydW5uZXIiLCJUZXh0IjoiSW5pdGlhbGl6ZSB0aGlzIGFnZW50IHNlc3Npb24uIFJlcGx5IFJFQURZIG9u",
+          "bHkuIERvIG5vdCB1c2UgdG9vbHMgb3IgY2hhbmdlIGZpbGVzLiJ9XSwiZmllbGRzIjpbImlucHV0WzBdLnRleHQiXX0sImV4aXRfcHVibGljX2tleSI6Ik9v",
+          "VUloNzFIOVM5RkdtR28rQkkyZU5HWGgwWWxsZVFNQkdiSHRXL0thRnM9Iiwib3duZXIiOnsia2luZCI6Im9zIiwicGlkIjo0NjA2NCwiY3JlYXRlZCI6IjAx",
+          "ZGQ2OWFmN2ExODQwNDQiLCJleGVjdXRhYmxlIjoiYzpcXHVzZXJzXFxsbWFzMVxcLmNvZGV4XFx3b3JrdHJlZXNcXDFlNmVcXHN0ZWVycnVubmVyXFwuZXZp",
+          "ZGVuY2VcXHBlcnNvbmFsLWV4ZWN1dG9yLXAyXFxzdGVlcnJ1bm5lci1hZ2VudC1kZWxpdmVyeS5leGUifSwibmF0aXZlX3RyYW5zcG9ydCI6ImNvZGV4LXJl",
+          "bW90ZS1pbmxpbmUtdjQiLCJydW50aW1lX3NoYTI1NiI6IjRhZDJjN2Y4MjM0MmU4NDZiNzQyNzMxYzFmZjIyNDY0ZWY0ZTU4YzZmYmVkNDVjZGQ0YTAzMmIz",
+          "MWZlNjY1MGEiLCJ2ZXJpZmllZCI6dHJ1ZSwiY29udHJhY3QiOiJjb2RleC1wb2xpY3ktdjEyOjAuMTU5LjI6ZnVsbC1hY2Nlc3M6aG9zdC1uYXRpdmUtYXV0",
+          "aDpuZXZlciIsIndvcmtzcGFjZSI6IkM6XFxVc2Vyc1xcbG1hczFcXG9yY2FcXHdvcmtzcGFjZXNcXFN0ZWVybGluZVRlc3RcXHNyLTJjYTE3OTZhZmQwMDNm",
+          "OWNiYmUzNDZhZWI3ZDZiZDg2IiwicmVwb3NpdG9yeSI6Imh0dHBzOi8vZ2l0aHViLmNvbS9lcnJhbmxpdS9TdGVlcmxpbmVUZXN0LmdpdCIsInNlc3Npb25f",
+          "aWQiOiIwMWExOTUxYy03NzM4LTcwYjEtODUxMC01ZGU2ZGVmNGE1YjkiLCJjb25maWd1cmF0aW9uX2RpZ2VzdCI6ImNlZDEwMjk2ZTczM2VkYzJmMzEzYjM3",
+          "Yjc5YTdjYjQ0MmViNTNmOGQ5OTYxMmQ2NDdlY2M0NmFmY2M4ZDE0NzUiLCJwcm9jZXNzIjp7ImtpbmQiOiJvcyIsInBpZCI6MjM5ODAsImNyZWF0ZWQiOiIw",
+          "MWRkNjlhZjdjZTM3NGQ5IiwiZXhlY3V0YWJsZSI6ImM6XFx1c2Vyc1xcbG1hczFcXC5sb2NhbFxcYmluXFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4",
+          "XFxub2RlX21vZHVsZXNcXEBvcGVuYWlcXGNvZGV4LXdpbjMyLXg2NFxcdmVuZG9yXFx4ODZfNjQtcGMtd2luZG93cy1tc3ZjXFxiaW5cXGNvZGV4LmV4ZSJ9",
+          "LCJjaGVja2VkX2F0IjoiMjAyNi0xMS0wMVQwMzoxNzoyNS4wMzQ3ODYxWiIsImFjY2Vzc19tb2RlIjoiZnVsbF9hY2Nlc3MifSwibmF0aXZlIjp7InNlc3Np",
+          "b24iOiIwMWExOTUxYy03NzM4LTcwYjEtODUxMC01ZGU2ZGVmNGE1YjkiLCJjb250ZXh0cyI6MywidG9vbHMiOjksImVzY2FsYXRpb25zIjowLCJhcHByb3Zh",
+          "bHMiOjAsImJ5cGFzc2VzIjowLCJuYXRpdmVfc2hhMjU2IjoiYWRiMTRiOTJjNzg0OTU1ZmI2ZmIzOGY0ZTU2YWI1YmM0ODNhZDg5ZWEzMzAyMzZjNWYxMWFm",
+          "MDhhZmE0MmZhYSJ9fQ",
+          "PS C:\\Users\\lmas1\\orca\\workspaces\\SteerlineTest\\sr-2ca1796afd003f9cbbe346aeb7d6bd86>"
+        ],
+        "truncated": false,
+        "limited": false,
+        "oldestCursor": "0",
+        "nextCursor": "1",
+        "latestCursor": "1",
+        "returnedLineCount": 34,
+        "tailRows": [
+          {
+            "wrapped": false,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": true,
+            "trailingSpaces": 0
+          },
+          {
+            "wrapped": false,
+            "trailingSpaces": 1
+          }
+        ],
+        "source": "screen"
+      }
+    },
+    "_meta": {
+      "runtimeId": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c"
+    }
+  }
+}

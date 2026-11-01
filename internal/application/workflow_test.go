@@ -20,14 +20,10 @@ func (auditPort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.L
 	return b.LifecycleRecoveryEvidence{SessionAvailable: true, SessionIdle: true, ResourceAvailable: true}, nil
 }
 
-type auditRestorePort struct{ auditPort }
+type auditLostResourcePort struct{ auditPort }
 
-func (auditRestorePort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
-	return b.LifecycleRecoveryEvidence{SessionAvailable: true, SessionIdle: true, SessionRebindable: true, ProcessAbsent: true, WritersAbsent: true}, nil
-}
-
-func (auditRestorePort) BindRecovery(_ context.Context, _, next b.LifecycleSnapshot) (b.ImplementationDataEnvelope, error) {
-	return b.NewImplementationDataEnvelope(b.ImplementationDataEnvelope{CodecVersion: 1, Purpose: b.ImplementationResourcePurpose, ImplementationKey: "test", ProjectID: "project", ExecutionID: "execution", AttemptID: next.Session.AttemptID, Generation: next.ResourceGeneration, ConfigDigest: "config"}, []byte(`{}`))
+func (auditLostResourcePort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
+	return b.LifecycleRecoveryEvidence{SessionAvailable: true, SessionIdle: true, ProcessAbsent: true, WritersAbsent: true}, nil
 }
 
 func auditEngine(t *testing.T, fileMasks ...int) (*Engine, *worker) {

@@ -7,7 +7,7 @@ $taskIDs=@('local-codex.progress-file','orca-local.progress-file','orca-remote.p
 $taskStart=[DateTimeOffset]::UtcNow.AddSeconds(-125).ToString('o')
 $taskEnd=[DateTimeOffset]::UtcNow.ToString('o')
 $taskPassed=@()
-foreach($taskMode in @('valid','missing-field','resource-collision','no-passing-cases','zero-selection')) {
+foreach($taskMode in @('valid','focused','missing-field','resource-collision','no-passing-cases','zero-selection')) {
     $taskRoot=Join-Path $Evidence $taskMode
     New-Item -ItemType Directory -Path $taskRoot -ErrorAction Stop|Out-Null
     $taskCases=@()
@@ -21,7 +21,9 @@ foreach($taskMode in @('valid','missing-field','resource-collision','no-passing-
         $taskStatus=if($taskMode -eq 'no-passing-cases'){'queued'}else{'passed'}
         if($taskMode -ne 'zero-selection') { $taskCases+=@{scenario=$taskID;status=$taskStatus;evidence=$taskCaseDir;resources=@($taskResource);identity=@{runner_sha256=('a'*64);driver_sha256=('b'*64);source_commit=('c'*40)}} }
     }
-    [IO.File]::WriteAllText((Join-Path $taskRoot 'summary.json'),(@{status='passed';max_parallel=5;results=$taskCases}|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
+    $taskSummary=@{status='passed';max_parallel=5;results=$taskCases}
+    if($taskMode -eq 'focused'){$taskSummary['validation_scope']='focused'}
+    [IO.File]::WriteAllText((Join-Path $taskRoot 'summary.json'),($taskSummary|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
     & $taskShell -NoProfile -File $Verifier -Report $taskRoot *> (Join-Path $taskRoot 'verification.log')
     $taskCode=$LASTEXITCODE
     $taskResultPath=Join-Path $taskRoot 'progress-parallel-verification.json'

@@ -219,7 +219,7 @@ foreach($variant in @('partial','wrong-hash','wrong-level')) {
     $recordPath=Join-Path $taskRoot ($variant+'-case.json')
     $job=@{entry=@{id='local-codex.smoke';level='L2'};record=@{status='queued';started_at=$null;finished_at=$null};result_path=$recordPath;native_driver=$taskRunner}
     if($variant -ne 'partial'){$job['native_driver_sha256']=('0'*64)}
-    if($variant -eq 'wrong-level'){$job.entry.level='L3';$job.native_driver_sha256=Get-SRFileDigest $taskRunner}
+    if($variant -eq 'wrong-level'){$job.entry.level='L4';$job.native_driver_sha256=Get-SRFileDigest $taskRunner}
     $request=Join-Path $taskRoot ($variant+'-request.json');JSON $request $job
     & $shell -NoProfile -File (Join-Path $Repository 'scripts/run-test-case.ps1') -Request $request *> (Join-Path $taskRoot ($variant+'-worker.log'))
     $code=$LASTEXITCODE;$result=Get-Content -LiteralPath $recordPath -Raw | ConvertFrom-Json

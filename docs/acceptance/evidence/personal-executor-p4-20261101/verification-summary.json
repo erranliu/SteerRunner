@@ -1,0 +1,146 @@
+{
+  "status": "passed",
+  "acceptance": [
+    "PES-A06",
+    "PES-A08"
+  ],
+  "scope": "P4 native answer input representation only; targeted validation, no complete L1/Controlled/L2/L3 or release qualification",
+  "build": {
+    "schema": "steerrunner-build/v1",
+    "component": "runner",
+    "source_digest": "b73832d145a81aaa951381055316505b9294de843e0733174786adef75f06562",
+    "version": "0.2.0-dev.4",
+    "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+    "source_dirty": true,
+    "protocol": "steerrunner-cli/v1",
+    "platform": "windows/amd64",
+    "sha256": "57e1fd2fc06b660fbb2a03cf862e71ca2223c161aada259192e6cf79b3972720"
+  },
+  "checks": {
+    "components": {
+      "packages": [
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "github.com/erranliu/SteerRunner/internal/execution/backend",
+        "github.com/erranliu/SteerRunner/internal/execution/model",
+        "github.com/erranliu/SteerRunner/internal/execution/reliable",
+        "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+        "github.com/erranliu/SteerRunner/internal/execution/workflow"
+      ],
+      "top_level_passed": 145,
+      "skipped": [
+        "TestServiceStopWorkerHelper"
+      ],
+      "package_seconds": {
+        "github.com/erranliu/SteerRunner/internal/execution/model": 0.736,
+        "github.com/erranliu/SteerRunner/internal/execution/reliable/operation": 0.753,
+        "github.com/erranliu/SteerRunner/internal/execution/reliable": 0.771,
+        "github.com/erranliu/SteerRunner/internal/execution/backend": 0.796,
+        "github.com/erranliu/SteerRunner/internal/execution/workflow": 0.959,
+        "github.com/erranliu/SteerRunner/internal/execution/adapters/codex": 35.17
+      }
+    },
+    "application": {
+      "packages": [
+        "github.com/erranliu/SteerRunner/internal/application"
+      ],
+      "top_level_passed": 25,
+      "skipped": [],
+      "package_seconds": {
+        "github.com/erranliu/SteerRunner/internal/application": 6.356
+      }
+    },
+    "final-boundaries": {
+      "packages": [
+        "github.com/erranliu/SteerRunner/internal/application",
+        "github.com/erranliu/SteerRunner/internal/execution/workflow"
+      ],
+      "top_level_passed": 4,
+      "skipped": [],
+      "package_seconds": {
+        "github.com/erranliu/SteerRunner/internal/execution/workflow": 0.846,
+        "github.com/erranliu/SteerRunner/internal/application": 1.259
+      }
+    }
+  },
+  "controlled": {
+    "cases": [
+      "TestSRContentGenerate",
+      "TestSRContentConversation",
+      "TestSRContentQuestionAndUnknown"
+    ],
+    "result": {
+      "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p4\\controlled\\steerrunner.exe",
+      "exit_code": 0,
+      "finished_at": "2026-11-01T06:14:44.3706541Z",
+      "scenario_count": 3
+    }
+  },
+  "benefit": {
+    "baseline": "P3 independently accepted dirty working tree; excludes P1/P2/P3 changes",
+    "base_head": "e2729563562314659a799a5f82debe427fcd7c24",
+    "before_selection_owners": [
+      "internal/application/control.go",
+      "internal/execution/adapters/codex/lifecycle.go"
+    ],
+    "after_selection_owners": [
+      "internal/execution/adapters/codex/ask.go"
+    ],
+    "application_private_route_decoders": {
+      "before": 1,
+      "after": 0
+    },
+    "application_delivery_branches": {
+      "before": 1,
+      "after": 0
+    },
+    "production_files_changed": [
+      {
+        "path": "internal/application/control.go",
+        "added": 6,
+        "deleted": 5
+      },
+      {
+        "path": "internal/execution/adapters/codex/ask.go",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "path": "internal/execution/adapters/codex/lifecycle.go",
+        "added": 1,
+        "deleted": 4
+      },
+      {
+        "path": "internal/execution/backend/lifecycle.go",
+        "added": 7,
+        "deleted": 0
+      }
+    ],
+    "production_added": 32,
+    "production_deleted": 9,
+    "production_net_added": 23,
+    "unchanged_shared_gate_and_state_files": [
+      "internal/application/preparation.go",
+      "internal/application/worker.go",
+      "internal/storage/store.go",
+      "internal/execution/reliable/binding.go",
+      "internal/execution/reliable/digest.go",
+      "internal/execution/reliable/environment.go",
+      "internal/execution/reliable/intent.go",
+      "internal/execution/reliable/operation/effect.go",
+      "internal/execution/reliable/operation/operation.go",
+      "internal/execution/reliable/operation/record.go",
+      "internal/execution/reliable/plan.go",
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_policy.go",
+      "internal/execution/reliable/result.go",
+      "internal/execution/reliable/session.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/workspace.go"
+    ],
+    "new_mandatory_backend_methods": 0,
+    "new_assembly_facades": 0,
+    "state_format": "steerrunner-state/v7",
+    "native_protocol_changed": false,
+    "other_candidates": "not expanded: profile/helper, permission resources, checkpoint, runtime files"
+  }
+}

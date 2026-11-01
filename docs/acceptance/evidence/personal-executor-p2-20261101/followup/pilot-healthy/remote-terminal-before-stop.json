@@ -1,0 +1,30 @@
+{
+  "id": "3e89ae09-60f7-43ac-93b0-59074acb73bd",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_75a60e46-4cf5-4592-a9d0-fc4759723c86",
+      "ptyId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-bae32a6c7fac9c601d5dc568c8b4c67f@@7ea49b7a",
+      "incarnationId": "5a305220-dca3-4342-b98c-57334fcddeff",
+      "orphaned": false,
+      "worktreeId": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-bae32a6c7fac9c601d5dc568c8b4c67f",
+      "worktreePath": "C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-bae32a6c7fac9c601d5dc568c8b4c67f",
+      "branch": "refs/heads/erranliu/sr-bae32a6c7fac9c601d5dc568c8b4c67f",
+      "tabId": "4c93a1b3-ea16-47f3-a03f-eda8634e3e89",
+      "leafId": "5e4b6b17-708c-4ff4-b8a5-e92e068a9361",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793504848574,
+      "preview": "nything   GPT-6.1-Sol medium · ~\\orca\\workspaces\\SteerlineTest\\sr-bae32a6c7fac9c601d5dc568c8b4c67f · Implement spec and verify …\nWorked for 16s • 11:47  › Ask Codex to do anything   GPT-6.1-Sol medium · ~\\orca\\workspaces\\SteerlineTest\\sr-bae32a6c7fac9c601d5dc568c8b4c67f · Implement spec and verify …",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": -1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c"
+  }
+}

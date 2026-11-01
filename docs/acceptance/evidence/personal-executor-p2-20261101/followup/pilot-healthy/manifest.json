@@ -1,0 +1,78 @@
+{
+  "schema": "steerrunner-test/v1",
+  "id": "9d36d8fb1756",
+  "level": "L3",
+  "scenario": "orca-local.smoke",
+  "driver": "development-smoke",
+  "root": "C:\\srt\\9d36d8fb1756",
+  "runner_exe": "C:\\srt\\9d36d8fb1756\\bin\\steerrunner.exe",
+  "runner_sha256": "56e0dfb9297dbf38ba10a113bbaf227e1fe6499407698c552eb72ef71ffa9be6",
+  "source_commit": "e2729563562314659a799a5f82debe427fcd7c24",
+  "source_dirty": true,
+  "repository_path": "C:\\srt\\9d36d8fb1756\\SteerlineTest",
+  "source_revision": "cebdd5ab552150c49743e40593c836689ecf789b",
+  "base_branch": "codex/srtest/9d36d8fb1756/base",
+  "base_revision": "89cf89b5e67d377eb1d4366a63b2cad2e233597c",
+  "spec_path": "C:\\srt\\9d36d8fb1756\\SteerlineTest\\sr-smoke\\spec.md",
+  "spec_sha256": "027d6f6ee147ecb9506d4d7a9ca4639c66a75a3b0897a349057cd13ca8c34342",
+  "plan_path": "C:\\srt\\9d36d8fb1756\\SteerlineTest\\sr-smoke\\plan.md",
+  "plan_sha256": "4d38ebcf448c4be9623a9d882dbde81ce3a8e680c14fd9739d39a1c20d4c9515",
+  "execution": {
+    "target": {
+      "kind": "local"
+    },
+    "adapter": "orca-terminal",
+    "settings": {
+      "agent": "codex",
+      "access_mode": "full_access",
+      "transport": {
+        "executable": "C:\\srt\\9d36d8fb1756\\bin\\local-audit.exe",
+        "args": [
+          "local-audit",
+          "-manifest",
+          "C:\\srt\\9d36d8fb1756\\manifest.json",
+          "-orca",
+          "C:/Users/lmas1/AppData/Local/Programs/orca/resources/bin/orca.exe",
+          "--"
+        ]
+      },
+      "agent_launch": {
+        "executable": "C:/Users/lmas1/.local/bin/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe",
+        "model": "gpt-6.1-sol",
+        "reasoning_effort": "medium",
+        "runtime_executable": "C:\\Users\\lmas1\\.codex\\worktrees\\1e6e\\SteerRunner\\.evidence\\personal-executor-p2-followup\\steerrunner-agent.exe",
+        "runtime_sha256": "5d54a0760644626d4fb97ace1a20b53e4065a0fc39151e22c8a589dee9140b14"
+      }
+    }
+  },
+  "publication": {
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "base_branch": "codex/srtest/9d36d8fb1756/base",
+    "settings": {
+      "query": {
+        "executable": "powershell.exe",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\srt\\9d36d8fb1756\\bin\\query-pr.ps1",
+          "-URL",
+          "{pr_url}"
+        ]
+      },
+      "base_url": "https://github.com"
+    }
+  },
+  "configuration_sha256": "bb693bbdcb520a4a6785cd24ca49d7d2ea6cedaa8368e434c653a13cc4819271",
+  "configuration_path": "C:\\srt\\9d36d8fb1756\\bin\\test-config.json",
+  "workflow": {
+    "id": "development",
+    "version": 2
+  },
+  "created_at": "2026-11-01T03:43:39.3757338Z",
+  "requirements_sha256": "6a66ce3b8e0f9fa22d8e9b748c72ccd5f0836219c7465a9a8874d6a387c68777",
+  "local_runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+  "local_repository_path": "C:\\Projects\\SteerlineTest"
+}

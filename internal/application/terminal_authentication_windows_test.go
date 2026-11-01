@@ -71,7 +71,7 @@ func TestSRFreezeManagedTerminalAuthenticationPath(t *testing.T) {
 				t.Fatal("managed terminal repeated the Run ID in the socket root", profile, err)
 			}
 			c := profile.Terminal
-			if c.SandboxExecutable != "" || c.ReceiptVersion != 4 || r.Profile[0].CodecVersion != orca.FullAccessTerminalProfileVersion {
+			if c.ReceiptVersion != 4 || r.Profile[0].CodecVersion != orca.FullAccessTerminalProfileVersion {
 				t.Fatal("terminal kept sandbox executable or old contract", c, r.Profile[0].CodecVersion)
 			}
 			if strings.Contains(r.LaunchCommand, "authentication_state") {

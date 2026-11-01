@@ -104,7 +104,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 	}
 	var workerSetup *workerRuntime
 	if b.Config.WorkerRuntime {
-		workerSetup, err = prepareWorkerRuntime(b.Config.Workspace, input.LinkedWorktreeArgs)
+		workerSetup, err = prepareWorkerRuntime(b.Config.Workspace, input.LinkedWorktreePaths)
 		if err != nil {
 			return nil, receipt, err
 		}
@@ -219,7 +219,7 @@ func (b Backend) PrepareSession(ctx context.Context, fixed Binding, input execut
 // StartTurn is a separate operation: the center must persist PrepareSession's
 // partial binding before calling it. No persistence callback drives the backend.
 func (b Backend) StartTurn(ctx context.Context, h *SessionHandle, input executionbackend.TurnInput, linkedArgs []string) (*Observation, string, error) {
-	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreeArgs, h.input.LinkedWorktreeArgs) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
+	if h == nil || h.client == nil || input.CommandID != h.input.CommandID || input.Prompt != h.input.Prompt || !slices.Equal(input.LinkedWorktreePaths, h.input.LinkedWorktreePaths) || input.Model != h.input.Model || input.ReasoningEffort != h.input.ReasoningEffort {
 		return nil, "", errors.New("app-server turn changed its prepared request identity or input")
 	}
 	if input.Budget != nil && h.input.Budget != nil && !reflect.DeepEqual(input.Budget, h.input.Budget) {

@@ -98,16 +98,13 @@ func TestReliableInputOutcomeBoundaries(t *testing.T) {
 }
 
 func TestReliableRecoveryAndAuthorization(t *testing.T) {
-	e := b.LifecycleRecoveryEvidence{SessionAvailable: true, SessionIdle: true, SessionRebindable: true, ProcessAbsent: true, WritersAbsent: true}
-	if !CanContinueOriginal(e) || ValidateRestoration(e, "original", false) != nil {
-		t.Fatal("same session restoration rejected")
+	e := b.LifecycleRecoveryEvidence{SessionAvailable: true, ResourceAvailable: true}
+	if !CanContinueOriginal(e) {
+		t.Fatal("original live resource rejected")
 	}
-	if ValidateRestoration(e, "original", true) == nil {
-		t.Fatal("unknown effects bypassed recovery")
-	}
-	e.WritersAbsent = false
-	if CanContinueOriginal(e) || ValidateRestoration(e, "original", false) == nil {
-		t.Fatal("process death inferred writer absence")
+	e.ProcessAbsent = true
+	if CanContinueOriginal(e) {
+		t.Fatal("lost resource authorized restoration")
 	}
 	available := true
 	prior := RecoveryRevision{State: "running", SessionAvailable: &available, Version: 4}

@@ -108,7 +108,7 @@ func TestReliableFreshActionKeepsOriginalIntent(t *testing.T) {
 		{"changed command", func(r *b.LifecycleRequest, _ *effectFixture) { r.Input.Turn.CommandID = "replacement" }},
 		{"changed prompt", func(r *b.LifecycleRequest, _ *effectFixture) { r.Input.Turn.Prompt = "replacement" }},
 		{"changed write grant", func(r *b.LifecycleRequest, _ *effectFixture) {
-			r.Input.Turn.LinkedWorktreeArgs = []string{"replacement"}
+			r.Input.Turn.LinkedWorktreePaths = []string{"replacement"}
 		}},
 		{"missing pending input", func(r *b.LifecycleRequest, _ *effectFixture) { r.Snapshot.PendingTurn = nil }},
 		{"session already ready", func(r *b.LifecycleRequest, _ *effectFixture) { r.Operation.Action = string(b.LifecyclePrepareSession) }},

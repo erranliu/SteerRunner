@@ -1,0 +1,274 @@
+{
+  "execution_wait": null,
+  "result_acquisition": [
+    {
+      "id": "7738d9316063f4e9a3902a69000a63182b30990ca72f2d3d1de68341dee998ec",
+      "contract": "implementation",
+      "source": {
+        "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+        "command_id": "041a4152640d09b55972d431c12df926",
+        "turn_id": "041a4152640d09b55972d431c12df926",
+        "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+        "input_version": 1,
+        "final_digest": "a672b3c72ff52eaded49f54709da43d9c24f514eac4c0597df5b69bda4dd8c7a"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "041a4152640d09b55972d431c12df926",
+            "turn_id": "041a4152640d09b55972d431c12df926",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 1,
+            "final_digest": "a672b3c72ff52eaded49f54709da43d9c24f514eac4c0597df5b69bda4dd8c7a"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "041a4152640d09b55972d431c12df926",
+            "turn_id": "041a4152640d09b55972d431c12df926",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 1,
+            "final_digest": "a672b3c72ff52eaded49f54709da43d9c24f514eac4c0597df5b69bda4dd8c7a"
+          },
+          "locator": "native.final:last_nonempty_body_line",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "041a4152640d09b55972d431c12df926",
+            "turn_id": "041a4152640d09b55972d431c12df926",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 1,
+            "final_digest": "a672b3c72ff52eaded49f54709da43d9c24f514eac4c0597df5b69bda4dd8c7a"
+          },
+          "command_id": "041a4152640d09b55972d431c12df926",
+          "status": "satisfied"
+        }
+      ]
+    },
+    {
+      "id": "bbbaccc9edb1588f643d8879d73df28f5d6d4dee6b46e903ec4fe6a1412ff5f7",
+      "contract": "publication",
+      "source": {
+        "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+        "command_id": "81c270edb7835df7fb512643aca4879b",
+        "turn_id": "81c270edb7835df7fb512643aca4879b",
+        "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+        "input_version": 2,
+        "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+      },
+      "method": "program",
+      "status": "satisfied",
+      "fields": [
+        {
+          "field": "outcome",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "81c270edb7835df7fb512643aca4879b",
+            "turn_id": "81c270edb7835df7fb512643aca4879b",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 2,
+            "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+          },
+          "locator": "native.final:pr_url_match/outcome",
+          "method": "program"
+        },
+        {
+          "field": "summary",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "81c270edb7835df7fb512643aca4879b",
+            "turn_id": "81c270edb7835df7fb512643aca4879b",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 2,
+            "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+          },
+          "locator": "native.final:pr_url_match/summary",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "81c270edb7835df7fb512643aca4879b",
+            "turn_id": "81c270edb7835df7fb512643aca4879b",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 2,
+            "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+          },
+          "locator": "native.final:pr_url_match",
+          "method": "program"
+        },
+        {
+          "field": "outputs.pr_url",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "81c270edb7835df7fb512643aca4879b",
+            "turn_id": "81c270edb7835df7fb512643aca4879b",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 2,
+            "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+          },
+          "locator": "provider.Query(https://github.com/erranliu/SteerlineTest/pull/733):verified_repository_base_head",
+          "method": "program"
+        }
+      ],
+      "attempts": [
+        {
+          "method": "program",
+          "source": {
+            "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+            "command_id": "81c270edb7835df7fb512643aca4879b",
+            "turn_id": "81c270edb7835df7fb512643aca4879b",
+            "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+            "input_version": 2,
+            "final_digest": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a"
+          },
+          "command_id": "81c270edb7835df7fb512643aca4879b",
+          "status": "satisfied"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "operation_id": "e2d603b8bbf9589e1b3c849d80ca7cf8",
+      "action": "prepare_workspace",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "b590c25b40f2a412adf4277959c0981a",
+      "action": "create_resource",
+      "status": "confirmed",
+      "original_diagnostic": "Original startup command accepted; waiting for the original native agent identity"
+    },
+    {
+      "operation_id": "ed3e1fe31b1849dc2e95f21cdfa29030",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "69169a2437416fe606e5de9d0caf2458",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "edfb4d2003017b6b4d6cfc64c5c50a3e",
+      "action": "prepare_session",
+      "status": "confirmed"
+    },
+    {
+      "operation_id": "cc620ccb9e2bc89953d55cb0d5058f39",
+      "action": "start_turn",
+      "status": "accepted"
+    },
+    {
+      "operation_id": "6ba3addfcb2e71115e70d12bfdb02291",
+      "action": "stop_execution",
+      "status": "confirmed"
+    }
+  ],
+  "run_id": "9276ba3a6a7afab3a6d99f8d33217cc6",
+  "revision": 38,
+  "title": "SteerRunner L3 orca-remote.smoke",
+  "correlation": {
+    "fixture_id": "fa639a16de91",
+    "scenario": "orca-remote.smoke"
+  },
+  "input_digest": "6ae3f7a1a482786bb2dc130b3aaae634e9f2a743271b0cce0928ea9d89c76e1b",
+  "resource_digest": "e35460120d68a6e37c249a97f47b9624bd0b993859c7666600fc042040c1e584",
+  "workflow": {
+    "id": "development",
+    "version": 2,
+    "prompt_overrides": {
+      "implement.execute": "Implement the frozen Spec and Plan, run the fixed checker and wait for its confirmed completion. If it reports an ordinary content-validation failure, correct only the specified artifact and rerun the unchanged checker to verify that correction. If a shell tool yields a session_id or running status, poll that same pending command; do not launch another checker while the original is pending or its result is unknown. The checker may contain a bounded driver-owned gate; preserve it and the original pending command. Commit only the specified artifact after the checker succeeds. Report actual changes and verification. Publication is a separate Runner stage.",
+      "publish": "Publish the already verified committed artifact by running powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./sr-smoke/publish.ps1 once in the assigned sandbox. Wait for this original command to finish and report its actual PR URL. If the shell tool yields a session_id or running status, poll that same session until its final exit status and complete output; polling observes the original command and is required, not a second publication. Preserve an uncertain publication for original branch/PR reconciliation; never create a replacement. The test driver owns merge and test gates."
+    }
+  },
+  "step": "pr_ready",
+  "status": "stopped",
+  "phase": "stopped",
+  "diagnostic": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked.",
+  "new_inputs_allowed": false,
+  "resume_required": true,
+  "stop_status": "stopped",
+  "materials": [
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/spec.md",
+      "commit": "2c53ca976bc82b6ba0eedff8bc9145e0c55432c6",
+      "execution_location": "sr-smoke/spec.md"
+    },
+    {
+      "kind": "worktree",
+      "path": "sr-smoke/plan.md",
+      "commit": "2c53ca976bc82b6ba0eedff8bc9145e0c55432c6",
+      "execution_location": "sr-smoke/plan.md"
+    }
+  ],
+  "execution": {
+    "agent": "codex",
+    "workspace_scope": "revision",
+    "turn_started": true,
+    "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+    "generation": "78a10dc27f8fed7aefde5d46ca168309",
+    "backend": "orca",
+    "protocol": "orca_terminal_v3",
+    "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+    "turn_id": "81c270edb7835df7fb512643aca4879b",
+    "native_outcome": "unreported",
+    "final_available": true,
+    "workspace": "C:/Users/liuming/orca/workspaces/SteerlineTest/sr-9276ba3a6a7afab3a6d99f8d33217cc6",
+    "branch": "erranliu/sr-9276ba3a6a7afab3a6d99f8d33217cc6"
+  },
+  "controls": {
+    "can_message": false,
+    "can_interrupt": false,
+    "can_close": false,
+    "can_reply": false,
+    "can_resume": true,
+    "can_stop": false,
+    "reason": "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked."
+  },
+  "pr": {
+    "url": "https://github.com/erranliu/SteerlineTest/pull/733",
+    "provider": "command",
+    "repository": "erranliu/SteerlineTest",
+    "number": 733,
+    "base_branch": "codex/srtest/fa639a16de91/base",
+    "head_repository": "erranliu/SteerlineTest",
+    "head_branch": "erranliu/sr-9276ba3a6a7afab3a6d99f8d33217cc6",
+    "head_revision": "2d00e33a55316590790842121c038e9f980dbc4a",
+    "state": "merged",
+    "merged": true,
+    "merged_at": "2026-11-01T03:14:37Z",
+    "merge_commit": "23ba3c4add8e460efd6bfbf4f9d027d2ddb3afaf",
+    "checked_at": "2026-11-01T03:14:42.165658Z"
+  },
+  "summary": "PR verification pending: https://github.com/erranliu/SteerlineTest/pull/733",
+  "final": {
+    "command_id": "81c270edb7835df7fb512643aca4879b",
+    "attempt_id": "2a569c655a37e7ab6c0b50131eb2611d",
+    "session_id": "orca-terminal:c7911c80-1c69-42bb-ab2e-db16cf81e02f:term_2f15534e-bd25-4434-a2de-108973f78669:49ee3bed-3832-49e0-97cf-4d426835cb60",
+    "turn_id": "81c270edb7835df7fb512643aca4879b",
+    "native_outcome": "unreported",
+    "verified": true,
+    "source": "orca.terminal.native-state-reply.v1",
+    "item_id": "62192fbda21cd877ef33849a60147b7b884a87bb938abdf4b9b618a957e1986a",
+    "text": "发布命令已完成，退出码为 `0`。发布输出显示产物校验通过，实际 PR URL：https://github.com/erranliu/SteerlineTest/pull/733\n\n本次发布已完成。"
+  },
+  "created_at": "2026-11-01T03:12:47.7908551Z",
+  "updated_at": "2026-11-01T03:14:57.0734145Z"
+}

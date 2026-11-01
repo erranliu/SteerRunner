@@ -19,7 +19,7 @@ func (e *Engine) CanCollectUsage(run string) bool {
 	e.mu.Lock()
 	defer e.mu.Unlock()
 	r := e.runs[run]
-	return r != nil && !readOnlyRun(r)
+	return r != nil
 }
 
 // StopObserving begins the existing service shutdown without waiting for usage

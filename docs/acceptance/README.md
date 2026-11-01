@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 个人执行器 P1 快速定向验证 | [独立验收](personal-executor-p1.md)：26 项 focused 合同、75 项前置复用合同及相邻回归；本机正式定向 1/1、185.85 秒，完整前置启动为 0，完整 L2 资格为 false；该报告仅记录当时 P1；后续 P2/P3 见下，P4 未推进 |
 | 验证链路解耦与 L2 前置复用 | [实施历史](validation-reuse.md)、[实现审计与最终资格](validation-reuse-audit.md)：75 项合同、完整默认前置和真实 L2 分别登记；L3/L4 不开放复用 |
 | Parser 内存文本任务解耦 | [实施与验证](parser-decoupling.md)：复用现有 Codex 登录/CLI，工具和进程管理仅在 parser 内；无原生操作/owner/停止取证耦合，保留 state/v6；先前 API 方向见 [历史](parser-decoupling-p1.md) |
 | 开发宿主认证（state/v6） | [实施及验证范围](host-native-auth.md)、[审计与本机 L2](host-native-auth-audit-l2.md)：删除 broker/CA/socket/租期，保留只读、parser、原生远端与精确停止；真机缺口单列 |
@@ -37,3 +38,9 @@
 | 历史设计与旧构建复测 | [归档目录与替代入口](../archive/README.md) |
 
 原始证据继续位于 [evidence/](evidence/)。新结果追加到对应专项，登记固定构建和实际范围；不得把旧失败改记为通过，或把受控结果记作真机资格。
+
+- [个人执行器 P2：观测解耦](personal-executor-p2.md)：P2 独立验收通过；Orca local 健康/故障及完整 L1 已补齐，收益与历史失败分开记账；该报告记录原 v6 构建，后续状态见 P3。
+
+- [个人执行器 P3：恢复/兼容删除与人工对账](personal-executor-p3.md)：state/v7、生产净减少 558 行；完整 L1 720 测试、Controlled 26/26、三条真实最小链路通过，P4 未推进。
+
+- [个人执行器 P4：问答输入职责收口](personal-executor-p4.md)：私有选择入口 2→1，净增 23 行的窄能力取代跨层重复；145 项组件、25 项 application 定向及 3 项公开受控通过，无协议变化，不重跑全后端。

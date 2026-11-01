@@ -102,5 +102,8 @@ $taskResults += @{name='delivery-package-and-evidence-binding';passed=$true}
 & $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/prerequisites-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'prerequisites-framework.log')
 if ($LASTEXITCODE -ne 0) { throw 'Prerequisite contract checks failed; inspect prerequisites-framework.log' }
 $taskResults += @{name='prerequisite-reuse-contract';passed=$true}
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/focused-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'focused-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Focused execution contract checks failed; inspect focused-framework.log' }
+$taskResults += @{name='focused-execution-contract';passed=$true}
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'result.json'),(@{exit_code=0;test_count=$taskResults.Count;tests=$taskResults}|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
 Write-Host 'Framework guards and Windows PowerShell checker passed'

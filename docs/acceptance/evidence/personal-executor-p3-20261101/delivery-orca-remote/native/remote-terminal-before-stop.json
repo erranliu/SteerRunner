@@ -1,0 +1,30 @@
+{
+  "id": "e7d51c2e-4a0a-4d53-b3d5-9de96cdcaeab",
+  "ok": true,
+  "result": {
+    "terminal": {
+      "handle": "term_5c406f62-8ad9-43a4-904c-c6ad3d384373",
+      "ptyId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/sr-f068d14abccb4786d17eeb955c65e3f6@@be3b66cd",
+      "incarnationId": "1e951826-2b39-422f-bb08-5c6679ddd23e",
+      "orphaned": false,
+      "worktreeId": "09e35751-6517-4e7c-ae20-178ed0e90000::C:/Users/liuming/orca/workspaces/SteerlineTest/sr-f068d14abccb4786d17eeb955c65e3f6",
+      "worktreePath": "C:/Users/liuming/orca/workspaces/SteerlineTest/sr-f068d14abccb4786d17eeb955c65e3f6",
+      "branch": "refs/heads/erranliu/sr-f068d14abccb4786d17eeb955c65e3f6",
+      "tabId": "4c30dd97-14d3-4cec-af9b-f03ac2822270",
+      "leafId": "aeb1a451-c26f-4eac-8d01-82fa8ec3f0c0",
+      "title": "Codex ready",
+      "connected": true,
+      "writable": true,
+      "lastOutputAt": 1793510582571,
+      "preview": "s • 13:23\n› Ask Codex to do anything\nGPT-6-Luna high · ~\\orca\\workspaces\\SteerlineTest\\sr-f068d14abccb4786d17eeb955c65e3f6 · Initialize READY state\n? for shortcuts                                                                                                                 ⚠ 1 warning · f2 to view",
+      "executionHostId": "local",
+      "agentIdentity": "codex",
+      "paneRuntimeId": 1,
+      "rendererGraphEpoch": 0,
+      "agentWait": null
+    }
+  },
+  "_meta": {
+    "runtimeId": "c7911c80-1c69-42bb-ab2e-db16cf81e02f"
+  }
+}

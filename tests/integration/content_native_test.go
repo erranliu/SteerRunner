@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
-	"github.com/erranliu/SteerRunner/internal/storage"
 	"os"
 	"path/filepath"
 	"strings"
@@ -69,7 +68,7 @@ func contentGenerateTakeoverNative(t *testing.T) {
 	stopRaw, _ := json.Marshal(contracts.Request{Protocol: contracts.Protocol, RequestID: "native-generate-explicit-stop", Input: json.RawMessage(fmt.Sprintf(`{"expected_revision":%d}`, generated.Revision))})
 	save("explicit-stop-response", call(t, dir, []string{"stop", "--run-id", id, "--input", "-"}, string(stopRaw), 0))
 	stopped := waitRunFor(t, dir, id, func(v contracts.RunView) bool { return v.StopStatus == "stopped" }, time.Minute)
-	if stopped.ContentResult == nil || !bytes.Equal(mustJSON(generated.ContentResult), mustJSON(stopped.ContentResult)) {
+	if stopped.ContentResult == nil || !bytes.Equal(marshalEvidence(t, generated.ContentResult), marshalEvidence(t, stopped.ContentResult)) {
 		t.Fatal("stop replaced original content result")
 	}
 	save("stopped-inspect-response", call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
@@ -88,23 +87,13 @@ func contentGenerateTakeoverNative(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	response := call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 0)
-	save("verify-takeover-response", response)
-	var report contracts.TakeoverReport
-	reportRaw, _ := json.Marshal(response.Data)
-	if err := json.Unmarshal(reportRaw, &report); err != nil || !report.Compatible || len(report.Items) != 1 {
-		t.Fatal(response)
-	}
-	item := report.Items[0]
-	if item.ID != id || item.InputDigest != generated.InputDigest || item.RequestID != envelope.RequestID || item.RequestDigest != storage.RequestDigest("submit", "", envelope) || item.Status != "compatible" || item.Revision != stopped.Revision {
-		t.Fatal("original bindings changed", item)
-	}
+	call(t, dir, []string{"service", "verify-takeover", "--candidate", runnerEXE}, "", 2)
 	after, err := os.ReadFile(filepath.Join(dir, "runner.db"))
 	if err != nil || !bytes.Equal(before, after) {
-		t.Fatal("offline takeover changed original database", err)
+		t.Fatal("unknown command changed original database", err)
 	}
 	save("database-unchanged", map[string]any{"unchanged": true, "sha256": resultacquisition.Digest(before), "run_id": id, "input_digest": generated.InputDigest})
-	t.Logf("native=true root=%s run=%s result=passed settlement=passed takeover=compatible original_database=unchanged", root, id)
+	t.Logf("native=true root=%s run=%s result=passed settlement=passed retired_command=exit2 original_database=unchanged", root, id)
 }
 
 func TestSRContentNative(t *testing.T) {

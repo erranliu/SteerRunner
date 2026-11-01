@@ -24,13 +24,25 @@ type controlCheckpoint struct {
 }
 
 func (l *Lifecycle) journalPath(state State) (string, string, error) {
+	// The lifecycle may have been constructed before workspace preparation.
+	// Bind to the original actor's workspace, not that stale setup snapshot.
+	workspace := ""
+	if state.Control != nil && state.Control.Ready != nil {
+		workspace = state.Control.Ready.Workspace
+	} else if state.RemoteReadiness != nil {
+		workspace = state.RemoteReadiness.Workspace
+	}
+	return l.journalPathForWorkspace(state, workspace)
+}
+
+func (l *Lifecycle) journalPathForWorkspace(state State, workspace string) (string, string, error) {
 	if !filepath.IsAbs(l.setup.RunDirectory) || state.Control == nil {
 		return "", "", errors.New("caller control checkpoint directory or original binding missing")
 	}
 	raw, _ := json.Marshal(struct {
 		Project, Execution, Attempt, Generation, Configuration, Workspace string
 		Business, Control                                                 b.ProcessIdentity
-	}{l.setup.Snapshot.Session.ProjectID, l.setup.Snapshot.Session.ExecutionID, l.setup.Snapshot.Session.AttemptID, l.setup.Snapshot.ResourceGeneration, l.setup.Snapshot.ConfigurationDigest, strings.ToLower(strings.ReplaceAll(l.setup.Snapshot.Workspace.Path, "\\", "/")), state.Process, state.Control.Process})
+	}{l.setup.Snapshot.Session.ProjectID, l.setup.Snapshot.Session.ExecutionID, l.setup.Snapshot.Session.AttemptID, l.setup.Snapshot.ResourceGeneration, l.setup.Snapshot.ConfigurationDigest, strings.ToLower(strings.ReplaceAll(workspace, "\\", "/")), state.Process, state.Control.Process})
 	binding := digest(raw)
 	return filepath.Join(l.setup.RunDirectory, "orca-native-inspections", binding+".json"), binding, nil
 }
@@ -42,6 +54,7 @@ func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error
 		return j, err
 	}
 	raw, err := os.ReadFile(path)
+
 	if os.IsNotExist(err) {
 		return j, nil
 	}
@@ -75,6 +88,7 @@ func (l *Lifecycle) loadControlCheckpoint(state State) (controlCheckpoint, error
 	if j.Response != nil && validateControlResponse(j.Request, *j.Response) != nil {
 		return j, errors.New("native control checkpoint response changed")
 	}
+	j.Binding = binding
 	return j, nil
 }
 

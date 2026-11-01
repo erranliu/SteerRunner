@@ -8,7 +8,6 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/reliable/operation"
-	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"time"
 )
@@ -24,30 +23,31 @@ type Answer struct {
 	Text       string              `json:"text"`
 	Answers    map[string][]string `json:"answers,omitempty"`
 }
-type Attempt struct {
-	Snapshot b.LifecycleSnapshot `json:"snapshot"`
-	EndedAt  time.Time           `json:"ended_at"`
+type ManualPause struct {
+	Status, Phase, Diagnostic string
+	ResumeDeadline            time.Time `json:"resume_deadline,omitempty"`
 }
+
 type Record struct {
-	RepositorySource  *contracts.RepositorySource `json:"repository_source,omitempty"`
-	ResultFile        *ResultFile                 `json:"result_file,omitempty"`
-	Progress          *Progress                   `json:"progress,omitempty"`
-	Artifacts         []Artifact                  `json:"artifacts,omitempty"`
-	Closed            bool                        `json:"closed,omitempty"`
-	PendingInterrupt  string                      `json:"pending_interrupt,omitempty"`
-	ContentResult     *contracts.ContentResult    `json:"content_result,omitempty"`
-	History           []contracts.HistoryEntry    `json:"history,omitempty"`
-	DirectoryIdentity string                      `json:"directory_identity,omitempty"`
-	ReportWork        map[string]string           `json:"observed_report_work,omitempty"`
-	// Inert v6 legacy metadata; new Runs omit it and never use it for admission or recovery.
-	AcquisitionConfig   ra.FrozenConfig                `json:"result_acquisition_config,omitempty,omitzero"`
+	ManualPause         *ManualPause                   `json:"manual_pause,omitempty"`
+	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
+	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
+	ResultFile          *ResultFile                    `json:"result_file,omitempty"`
+	Progress            *Progress                      `json:"progress,omitempty"`
+	Artifacts           []Artifact                     `json:"artifacts,omitempty"`
+	Closed              bool                           `json:"closed,omitempty"`
+	PendingInterrupt    string                         `json:"pending_interrupt,omitempty"`
+	ContentResult       *contracts.ContentResult       `json:"content_result,omitempty"`
+	History             []contracts.HistoryEntry       `json:"history,omitempty"`
+	DirectoryIdentity   string                         `json:"directory_identity,omitempty"`
+	ReportWork          map[string]string              `json:"observed_report_work,omitempty"`
 	PRClues             []string                       `json:"pr_clues,omitempty"`
 	PRClueProbeAt       time.Time                      `json:"pr_clue_probe_at,omitempty"`
 	LastFinal           *contracts.FinalView           `json:"last_final,omitempty"`
 	NativeStarted       bool                           `json:"native_started"`
 	SeenNative          map[string]string              `json:"seen_native,omitempty"`
 	AnswerHistory       []Answer                       `json:"answer_history,omitempty"`
-	LinkedWriteArgs     []string                       `json:"linked_write_args,omitempty"`
+	LinkedGitPaths      []string                       `json:"linked_git_paths,omitempty"`
 	NextStage           *workflow.StageInput           `json:"next_stage,omitempty"`
 	PendingPRURL        string                         `json:"pending_pr_url,omitempty"`
 	NativeOwner         *b.ProcessIdentity             `json:"native_owner,omitempty"`
@@ -77,7 +77,6 @@ type Record struct {
 	LaunchInput         *m.InputBudget                 `json:"launch_input_budget,omitempty"`
 	Workflow            workflow.Snapshot              `json:"workflow"`
 	Intents             []operation.Intent             `json:"intents"`
-	Attempts            []Attempt                      `json:"attempts,omitempty"`
 	Result              *b.TurnEvidence                `json:"result,omitempty"`
 	Question            *contracts.QuestionView        `json:"question,omitempty"`
 	PendingAnswer       *Answer                        `json:"pending_answer,omitempty"`
@@ -166,12 +165,12 @@ func (r *Record) View() contracts.RunView {
 			unresolved = true
 		}
 	}
-	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && !unresolved, CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
+	v.Controls = contracts.Controls{CanReply: r.Allowed && !r.ResumeRequired && !unresolved && (r.Question != nil || r.Status == "pr_ready" || r.Status == "blocked"), CanResume: r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == "", CanStop: r.StopStatus != "stopped", Reason: r.Diagnostic}
 	if workflow.Content(r.Request.Workflow.ID) {
 		v.RepositorySource = r.RepositorySource
 		v.Closed, v.ContentResult = r.Closed, r.ContentResult
 		v.Controls.CanReply = r.Allowed && !r.ResumeRequired && !unresolved && !r.Closed && r.Question != nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
-		v.Controls.CanResume = r.ResumeRequired && !unresolved && !r.Closed && r.PendingStop == ""
+		v.Controls.CanResume = r.ResumeRequired && (!unresolved || r.ManualPause != nil) && !r.Closed && r.PendingStop == "" && r.PendingResume == ""
 		v.Controls.CanMessage = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.Workflow.StepID == "input" && r.PendingFeedback == nil && r.PendingAnswer == nil && r.PendingInterrupt == ""
 		v.Controls.CanInterrupt = r.Request.Workflow.ID == "conversation" && !r.Closed && r.Allowed && !r.ResumeRequired && !unresolved && r.PendingInterrupt == "" && s.Session.CurrentTurnID != "" && s.Session.CurrentTurnID != s.Session.LastStoppedTurnID
 		v.Controls.CanClose = r.Request.Workflow.ID == "conversation" && !r.Closed

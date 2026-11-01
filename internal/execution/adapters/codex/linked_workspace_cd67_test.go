@@ -16,7 +16,7 @@ import (
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
 )
 
-func TestCodexLinkedWorktreeWriteArgsOnlyGrantsFixedGitPaths(t *testing.T) {
+func TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths(t *testing.T) {
 	if runtime.GOOS != "windows" {
 		t.Skip("Windows workspace-write Git metadata gate")
 	}
@@ -49,7 +49,7 @@ func TestCodexLinkedWorktreeWriteArgsOnlyGrantsFixedGitPaths(t *testing.T) {
 	objects := filepath.Join(c.CommonDir, "objects")
 	refs := filepath.Join(c.CommonDir, "refs")
 	logs := filepath.Join(c.CommonDir, "logs")
-	if len(args) != 8 || args[0] != "--add-dir" || canonicalPath(args[1]) != canonicalPath(objects) || args[2] != "--add-dir" || canonicalPath(args[3]) != canonicalPath(refs) || args[4] != "--add-dir" || canonicalPath(args[5]) != canonicalPath(logs) || args[6] != "--add-dir" || canonicalPath(args[7]) != canonicalPath(admin) {
+	if len(args) != 4 || canonicalPath(args[0]) != canonicalPath(objects) || canonicalPath(args[1]) != canonicalPath(refs) || canonicalPath(args[2]) != canonicalPath(logs) || canonicalPath(args[3]) != canonicalPath(admin) {
 		t.Fatalf("unexpected Codex Git write grants: %q", args)
 	}
 	if _, err := linkedWriteArgs(ctx, git, c, repo); err == nil {
@@ -66,7 +66,7 @@ func linkedWriteArgs(ctx context.Context, git workspace.Git, repo workspace.Repo
 	if err != nil {
 		return nil, err
 	}
-	return codexworker.LinkedWorktreeWriteArgs(r.Objects, r.Refs, r.Logs, r.Admin)
+	return codexworker.LinkedWorktreePaths(r.Objects, r.Refs, r.Logs, r.Admin)
 }
 
 func canonicalPath(path string) string {

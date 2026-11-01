@@ -1,7 +1,6 @@
 param(
     [string]$OutDir = '',
     [string]$Pattern = '^(TestSRStandalonePackage|TestSRServiceOwnership)$',
-    [string]$BaselineExe = '',
     [string]$ContentNativeExecutable = '',
     [string]$ContentNativeModel = '',
     [string]$PreparedArtifactsDirectory = '',
@@ -10,9 +9,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-if ($BaselineExe) {
-    $BaselineExe = (Resolve-Path -LiteralPath $BaselineExe).Path
-}
+
 if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/foundation-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')) }
 $taskEvidence = [IO.Path]::GetFullPath($OutDir)
 if (Test-Path -LiteralPath $taskEvidence) { throw 'Evidence directory must be new.' }
@@ -22,7 +19,7 @@ $taskTestExe = Join-Path $taskEvidence 'integration.test.exe'
 $taskHelperExe = Join-Path $taskEvidence 'native-fixture.exe'
 if ($PreparedArtifactsDirectory) {
     if ($RunnerExe) { throw 'PreparedArtifactsDirectory cannot be combined with RunnerExe; select one frozen artifact source.' }
-    if ($BaselineExe -or $ContentNativeExecutable) { throw 'Prepared controlled artifacts cannot be used for native or cross-build tests.' }
+    if ($ContentNativeExecutable) { throw 'Prepared controlled artifacts cannot be used for native tests.' }
     $PreparedArtifactsDirectory = (Resolve-Path -LiteralPath $PreparedArtifactsDirectory).Path
     $taskOriginalIdentity = Get-Content -LiteralPath (Join-Path $PreparedArtifactsDirectory 'source-identity.json') -Raw | ConvertFrom-Json
     $taskOriginalResult = Get-Content -LiteralPath (Join-Path $PreparedArtifactsDirectory 'result.json') -Raw | ConvertFrom-Json
@@ -58,7 +55,7 @@ function Quote-WindowsArgument([string]$Argument) {
 # The caller selects the aggregate harness budget. Individual CLI, preparation,
 # fault and scenario polling deadlines are unchanged.
 $taskArgs = @("-test.run=$Pattern", '-test.v', "-test.timeout=$($TimeoutMinutes)m", '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
-if ($BaselineExe) { $taskArgs += @('-baseline-exe', $BaselineExe) }
+
 if ($ContentNativeExecutable) { $taskArgs += @('-content-native-exe', (Resolve-Path -LiteralPath $ContentNativeExecutable).Path) }
 if ($ContentNativeModel) { $taskArgs += @('-content-native-model', $ContentNativeModel) }
 $taskCommandLine = (@($taskTestExe) + $taskArgs | ForEach-Object { Quote-WindowsArgument $_ }) -join ' '
@@ -98,10 +95,6 @@ if ($PreparedArtifactsDirectory) {
     $taskMetadata['prepared_artifacts_directory'] = $PreparedArtifactsDirectory
     $taskMetadata.source_commit = $taskOriginalIdentity.source_commit
     $taskMetadata.source_dirty = $taskOriginalIdentity.source_dirty
-}
-if ($BaselineExe) {
-    $taskMetadata['baseline_exe'] = $BaselineExe
-    $taskMetadata['baseline_sha256'] = (Get-FileHash -Algorithm SHA256 -LiteralPath $BaselineExe).Hash
 }
 [IO.File]::WriteAllText((Join-Path $taskEvidence 'source-identity.json'), ($taskMetadata | ConvertTo-Json), [Text.UTF8Encoding]::new($false))
 Write-Output "Independent tests running; PID $($taskCreated.ProcessId); evidence $taskEvidence"
