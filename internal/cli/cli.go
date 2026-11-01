@@ -148,10 +148,10 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 	if value.protocol != contracts.Protocol {
 		return value, contracts.Fail(3, "unsupported_protocol", "This executable supports "+contracts.Protocol+".")
 	}
-	if value.offline && value.opts.Command != "capabilities" || value.opts.Command != "validate" && seen["--kind"] {
+	if value.offline && value.opts.Command != "capabilities" && value.opts.Command != "inspect" || value.opts.Command != "validate" && seen["--kind"] {
 		return value, contracts.Fail(2, "invalid_arguments", "This option does not apply to this command.")
 	}
-	if value.offline || value.opts.Command == "validate" {
+	if value.offline && value.opts.Command == "capabilities" || value.opts.Command == "validate" {
 		for option := range seen {
 			if option != "--json" && option != "--protocol" && option != "--offline" && !(value.opts.Command == "validate" && (option == "--kind" || option == "--input")) {
 				return value, contracts.Fail(2, "invalid_arguments", "Static commands do not accept service or target options.")
@@ -161,6 +161,9 @@ func parse(argv []string) (arguments, *contracts.Fault) {
 			return value, contracts.Fail(2, "invalid_arguments", "validate requires a supported --kind and --input -.")
 		}
 		return value, nil
+	}
+	if value.offline && (value.opts.RefreshPR || value.opts.ExpectedBinding != nil || value.opts.ExpectedInstanceID != "") {
+		return value, contracts.Fail(2, "invalid_arguments", "Offline inspect is an unbound persisted query and cannot refresh PR facts.")
 	}
 	if value.startupID != "" {
 		decoded, err := hex.DecodeString(value.startupID)
@@ -267,7 +270,7 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	if options.opts.Command == "help" {
 		return finish(contracts.Success("", map[string]any{"usage": "steerrunner <command> --state-dir <absolute-path> --json", "commands": []string{"progress-file", "result-file", "run-usage", "run-usage-events", "estimate-run-cost", "version", "service start", "service status", "service stop", "service verify-stopped", "capabilities", "submit", "inspect", "last-message", "open-native-session", "observe", "events", "reply", "resume", "stop", "validate", "message", "interrupt", "close", "history", "artifacts discover", "artifacts collect", "artifacts list", "artifacts read", "workspace-git"}, "input": "Write commands consume a UTF-8 JSON envelope from --input -. validate consumes a bare object. service start optionally consumes a bare pending_stops object.", "static": "capabilities --offline; validate --kind run-configuration|run --input -", "run_evidence": "artifacts discover|list --run-id R; artifacts collect --run-id R --input -; artifacts read --run-id R --artifact-id A; workspace-git --run-id R. Producer writes .steerrunner/artifacts/<relative_path> in original workspace. Max file 1 MiB. Read is base64; schema/limits in capabilities.run_evidence.", "instance_binding": "--expected-instance-id <id> fences resident business/query commands and disables implicit service startup."}), 0)
 	}
-	if options.offline {
+	if options.offline && options.opts.Command == "capabilities" {
 		executable, err := os.Executable()
 		if err != nil {
 			return reject(contracts.Fail(1, "internal_error", "Cannot identify this executable."))
@@ -332,6 +335,12 @@ func Run(argv []string, input io.Reader, output, diagnostics io.Writer) int {
 	dir, err := host.Normalize(options.dir)
 	if err != nil {
 		return reject(contracts.Fail(2, "invalid_arguments", "Cannot resolve an absolute state-dir."))
+	}
+	if options.offline && options.opts.Command == "inspect" {
+		ctx, cancel := context.WithTimeout(context.Background(), host.TimeoutSeconds*time.Second)
+		defer cancel()
+		response := host.InspectOffline(ctx, dir, options.opts)
+		return finish(response, contracts.ExitCode(response))
 	}
 	if options.opts.Command == "serve" {
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)

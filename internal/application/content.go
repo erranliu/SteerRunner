@@ -223,7 +223,11 @@ func closeContent(r *runstate.Record, command string) {
 		}
 	}
 	r.Closed, r.Allowed, r.ResumeRequired = true, false, false
-	r.Workflow.StepID, r.PendingStop, r.StopStatus, r.Phase = "closed", command, "pending", "closing"
+	// A late final/question must not replace an already accepted stop receipt.
+	if r.PendingStop == "" {
+		r.PendingStop = command
+	}
+	r.Workflow.StepID, r.StopStatus, r.Phase = "closed", "pending", "closing"
 	r.Status = "settling"
 }
 

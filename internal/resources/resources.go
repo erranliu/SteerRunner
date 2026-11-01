@@ -110,6 +110,7 @@ func Capabilities() any {
 		"progress_file_schema":      json.RawMessage(Read("progress-file.schema.json")),
 		"result_file":               ResultFileCapabilities(),
 		"result_file_schema":        json.RawMessage(Read("result-file.schema.json")),
+		"offline_inspect":           map[string]any{"command": "inspect --offline", "read_only": true, "writer_absent": true, "starts_workers": false},
 		"run_evidence":              json.RawMessage(Read("run-evidence.capabilities.json")),
 		"run_evidence_schema":       json.RawMessage(Read("run-evidence.schema.json")),
 		"native_session_viewer":     map[string]any{"adapters": viewerAdapters},

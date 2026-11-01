@@ -152,3 +152,10 @@ development 本轮采用的等待规则：原结果已明确未成功或原 agen
 原输入只发送一次。原生完成后原可信 final 直接结束并停止原执行；只有 verified/native succeeded 且原结果 succeeded 才公开 completed，失败保留原诊断。需要人类输入则关闭并登记 human_input_required，不继续对话。reply/resume/message/interrupt/close 均不支持；stop 永久关闭本 Run，不恢复或另发输入。受理未知、重启、原身份对账、停止及资源结算均沿既有 Run owner。调用方仍应核对公开终态、原生 final 与结果封存，不以文件内的业务 ready 代替执行成功。
 
 此流程不包含环境要求或项目自检知识，不复制调用方协议，不要求 PR 或项目测试目录；也不添加插件、服务或通用编排框架。
+
+
+### 启动前读取原执行
+
+`inspect --offline --state-dir D --run-id R --json`（也可选原 request-id 或 command-id，恰好一个）只读原 current state/v7 快照。没有驻留写者时，Runner 非创建地取得原 writer.lock 排他租约，拒绝未知 bootstrap/旧格式，不迁移、不启动服务/worker、不刷新 PR。持锁失败应改用已核对构建/实例的驻留 inspect；冷查询不能证明原进程已退出或最终文件已封存。capabilities 的 offline_inspect 明确 command/read_only/writer_absent/starts_workers。
+
+调用方可在同构建取消恢复时先查原 Run 和命令，再沿既有 service start pending_stops 入口提交原 stop；服务在 worker 启动前受理，避免旧业务输入继续推进。重复原 stop 仍幂等；未结算时拒绝不同 stop，迟到 final 不改写已受理的 stop。原 Run 已 Closed 时不再添加 stop，由原持久停止收尾，之后仍核对 stopped 及结果封存。此查询不提供跨构建接管、兼容迁移或业务结果复核。

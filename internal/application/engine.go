@@ -239,6 +239,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 		if revision.ExpectedRevision != r.Revision {
 			return reject(contracts.Fail(5, "stale_revision", "Run revision changed; inspect the current run before a new request."))
 		}
+		if (command == "stop" || command == "close") && r.PendingStop != "" {
+			return reject(contracts.Fail(5, "invalid_state", "An original stop is pending; inspect its original request."))
+		}
 		receipt := storage.NewCommand(command, runID, *input)
 		next.CommandStates[receipt.ID] = "pending"
 		switch command {
