@@ -240,6 +240,9 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 			return reject(contracts.Fail(5, "stale_revision", "Run revision changed; inspect the current run before a new request."))
 		}
 		if (command == "stop" || command == "close") && r.PendingStop != "" {
+			if r.StopEvidenceScope == orca.LocalCodexStopScope {
+				return reject(contracts.Fail(5, "operation_unverified", "Original stop is unresolved; inspect its original request_id, no second stop was accepted."))
+			}
 			return reject(contracts.Fail(5, "invalid_state", "An original stop is pending; inspect its original request."))
 		}
 		receipt := storage.NewCommand(command, runID, *input)
@@ -443,6 +446,9 @@ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
 		p, err = codex.NewExecutionLifecycle(e.setup(r, w))
 	} else {
 		p, err = orca.NewLifecycle(e.setup(r, w))
+		if err == nil && p.(*orca.Lifecycle).StopEvidenceScope() == orca.LocalCodexStopScope && r.StopEvidenceScope != orca.LocalCodexStopScope {
+			return nil, errors.New("frozen local Codex stop evidence scope is missing or inconsistent")
+		}
 	}
 	if err == nil {
 		w.port = p

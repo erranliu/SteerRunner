@@ -3,12 +3,14 @@
 SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 项目可独立使用，也可通过 CLI 接入其他工具。日常使用由两个 skill 完成配置和执行，独立 Windows Viewer 提供最小进度视图。
 
+能力范围、可靠性保证、用户责任和待实施调整统一维护在[长期产品承诺](docs/spec/steerrunner.spec.md#长期产品承诺)。实际支持组合以当前构建的 capabilities 及对应验收为准。
+
 ## 可以做什么
 
 - 如果你现在的开发方式，本机的资源占用已经影响你开更多并行，或者并行时机器卡顿，SteerRunner就是你需要的。
-- 将已经定义好的Spec+Plan，放在远端机器上运行。这样你可以开无限多的并行，而不用占用本机资源。
+- 将已经定义好的 Spec+Plan 放在远端机器上运行，分担本机的执行负载；并行数量取决于执行主机资源、后端能力和平台限制。
 - 你有多个订阅账号，可以每台电脑挂一个，把不同任务派过去执行。
-- 只需要在本机使用SteerRunner服务，就可以调动无限多台远程机器，
+- 在本机使用 SteerRunner 服务，调用已配置的多台远程机器。
 - 支持不同的Workflow，可以在执行过程中定制化审计或者其他流程。
 - 通过只读 Viewer 查看 Run、当前 Workflow/步骤、Status 和 PR。
 - 简单说SteerRunner封装了多台机器的Agent执行能力，让你在本机上即可调用，并收到执行结果(而不是在不同机器操作)。
@@ -18,7 +20,7 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 - 每个任务 1 Worktree 1 Spec(+plan)  1 PR，我们称之为1+1+1开发方式（更适合要运行1小时至十几小时，或者更长的任务）
 - 当你有能力拆出很多可以并行的长任务，形成Spec+Plan后，特别是Plan里包含了很多测试和验证，在本机开多个Session执行，很容易吃掉电脑上所有资源。
 - 一般情况下，带测试和验证的任务，5个并行就能让16核32G内存的电脑明显卡顿。
-- 有了SteerRunner，你可以在多台电脑上开启Orca(另一个开源项目https://www.onorca.dev/) ，就能跑任意多个并行长任务，跑完后得到一个PR，你自己选择要不要合并。
+- 有了 SteerRunner，你可以在多台电脑上开启 Orca（另一个开源项目 https://www.onorca.dev/），在资源允许的范围内并行执行长任务；成功完成开发流程后得到 PR，由你决定是否合并。
 - 要想充分发挥SteerRunner的能力，你最好先习惯将更多的开发需求，转化成长任务（获得并行AI开发能力）。
 
 ## SteerLine和SteerRunner
@@ -46,7 +48,7 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 
 ## 开发执行权限
 
-开发工作流必须显式设置 `execution.settings.access_mode=full_access`。旧 `sandbox`、省略、空值和 null 均拒绝；请修改可编辑配置源后用新 request_id 提交新任务，旧冻结 Run 不原地升权。full_access 使用执行账号已有权限，可写工作区以外路径；独立 worktree 不提供操作系统隔离。内容流程和独立结果 parser 继续使用 read_only。开发执行使用执行主机已有 Git/gh/SSH 登录，Runner 不再创建 broker、CA、socket 或认证租期。升级前用原版本排空全部原生资源及未完成操作/控制（pr_ready 不等于排空）；本次 v6→v7 使用新目录，默认 `%LOCALAPPDATA%/SteerRunner-v7`，旧目录由原版本查询和收尾；未来格式/契约兼容且已排空时可继续原目录。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账，不重发输入或重建资源。详见[当前 Spec](docs/spec/personal-executor-simplification.spec.md)和[升级说明](docs/cli-guide.md#开发权限迁移)。
+开发工作流必须显式设置 `execution.settings.access_mode=full_access`。旧 `sandbox`、省略、空值和 null 均拒绝；请修改可编辑配置源后用新 request_id 提交新任务，旧冻结 Run 不原地升权。full_access 使用执行账号已有权限，可写工作区以外路径；独立 worktree 不提供操作系统隔离。内容流程和独立结果 parser 继续使用 read_only。开发执行使用执行主机已有 Git/gh/SSH 登录，Runner 不再创建 broker、CA、socket 或认证租期。升级前用原版本排空全部原生资源及未完成操作/控制（pr_ready 不等于排空）；本次 v7→v8 使用新目录，默认 `%LOCALAPPDATA%/SteerRunner-v8`，旧目录由原版本查询和收尾；未来格式/契约兼容且已排空时可继续原目录。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账，不重发输入或重建资源。详见[当前 Spec](docs/spec/personal-executor-simplification.spec.md)和[升级说明](docs/cli-guide.md#开发权限迁移)。
 
 ## 使用前准备
 

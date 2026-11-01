@@ -66,7 +66,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 ## 选择 workflow 与审计模型
 
-当前持久格式为 state/v7、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v7 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
+当前持久格式为 state/v8、资源版本 3；开发流程使用 development/2 或 development-audited/2，内容流程使用 conversation/1 或 generate/1。旧格式整体拒绝，不迁移、不兼容读取。先由原版本结算全部旧资源并保留证据，再使用新独立状态目录；v8 保留同构建原资源重启重连；不重建丢失资源，不支持混合构建活动所有权。删除后的契约与客户端配套要求见[退役记录](acceptance/check-retirement.md)。
 
 独立解析采用显式开启的 Windows / Codex >= 0.159.2 受限 exec：原生只读权限、独立会话和工具事件事后拒收；不承诺空工具面或零隐式上下文。支持程序提取与一次原 agent 报告；审计可选独立解析，明确获取失败且资源结算后转一次原审计补报。可选 Runner 配置在 `<state-dir>/service/result-acquisition.json`，不增加 SteerLine 配置；启用配置也不会绕过原生门槛。[实施与验收记录](acceptance/result-acquisition.md)。
 
@@ -99,7 +99,7 @@ Orca 远端 Codex 的 SessionStart 可能清空输入预览并改变显示回合
 
 新 Run 的默认 audit.code 提示优先要求最终输出已有审计 JSON 契约，以减少 parse/补报；这只是提示文本，不增加原生 schema 强约束。旧 Run 和显式提示覆盖保持原文，格式不足继续沿原有界后备；[原生对比及旧提示接管验证](acceptance/reliable-delivery-simplification.md)已登记。
 
-同构建服务重启保留原冻结输入、流程语义、授权和资源身份。升级前必须由原版本排空全部原生资源及未完成操作/控制；pr_ready 不等于排空。新 v7 非破坏拒绝 v6 及更早格式，不运行迁移器、不把旧记录伪投影为只读。以后执行契约兼容且已排空时可继续原目录查询历史；不增加逐 Run SHA 构建门禁。
+同构建服务重启保留原冻结输入、流程语义、授权和资源身份。升级前必须由原版本排空全部原生资源及未完成操作/控制；pr_ready 不等于排空。新 v8 非破坏拒绝 v7 及更早格式，不运行迁移器、不把旧记录伪投影为只读。以后执行契约兼容且已排空时可继续原目录查询历史；不增加逐 Run SHA 构建门禁。
 
 远端 Orca Codex 断线后若结束快照的输入预览为空，Runner 可通过独立查询核验保留的 `turnStartedAt` 与原可信 working 起点一致，再沿原结果路径收尾，过程不重发输入。缺失/变化的回合标记或已有归属冲突继续显示未核实；原生 done 不代表业务任务完成。规则与验证见[原生结束归属](spec/orca-last-message.spec.md#52-允许空结束-prompt-的充分条件)。
 
@@ -126,7 +126,7 @@ exit 0 表示命令已持久接受。停服后再次启动服务，可用 `inspe
 
 ## 状态目录
 
-调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v7`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
+调用方使用绝对 `--state-dir`；省略时为 `%LOCALAPPDATA%/SteerRunner-v8`。目录下有 `runner.db`、`service/`、`inputs/`、`r/`、`workspaces/`、`logs/launch.log` 和 `logs/service.log`。由 SteerLine 使用时，应指定其项目运行目录下的 `runner/`，使数据和日志归属于该项目。CLI 不读取 SQLite，同目录只有服务持锁写入。
 
 本机新 Run 从宿主维护的仓库缓存创建独立、无 hardlink/alternates 的 Git 副本。
 worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译沙箱写根；这个私有目录仍绑定本次 Run，
@@ -136,9 +136,9 @@ worker 的 common Git 目录只属于该 Run。开发 full_access 不再编译�
 
 开发执行继承宿主机 HOME、Git 配置、credential helper、gh 和 SSH 登录。Runner 不导出 token 到 argv、配置或证据，不再创建认证 broker、CA、socket、capability 或租期。Pi/DSH 通用工具保留宿主 HOME，过滤模型 provider 密钥；DSH 自身的隔离 HOME 不改变工具登录位置。PR 查询 provider 的服务端 TokenEnv/command 认证仍保留。
 
-默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v7`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
+默认的新状态目录为 `%LOCALAPPDATA%/SteerRunner-v8`。已保存的客户端 state_dir 与实例绑定不会自动改写；旧目录明确返回 unsupported_schema，需使用全新目录重新绑定，不迁移旧记录。
 
-当前只接受 state/v7（SQLite user_version=7），拒绝 v6 及更旧目录，不迁移、不删除旧记录，也不替旧版本结算资源。同构建重启可接回原 owner/session；升级须先由原版本排空，再停止旧 writer、启用新版本。排空包括业务不再待输入/继续、原生资源已结算、无未完成副作用或控制命令，不能只看 pr_ready 或 service stop。`service verify-takeover --candidate` 已删除，返回普通未知命令 exit 2；不再提供跨构建活动任务接管。此次 v6→v7 使用新目录；未来格式/执行契约兼容且已排空时，可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。详见[现行升级契约](spec/personal-executor-simplification.spec.md#41-升级约定及状态目录)及[P3 验收](acceptance/personal-executor-p3.md)。
+当前只接受 state/v8（SQLite user_version=8），拒绝 v7 及更旧目录，不迁移、不删除旧记录，也不替旧版本结算资源。同构建重启可接回原 owner/session；升级须先由原版本排空，再停止旧 writer、启用新版本。排空包括业务不再待输入/继续、原生资源已结算、无未完成副作用或控制命令，不能只看 pr_ready 或 service stop。`service verify-takeover --candidate` 已删除，返回普通未知命令 exit 2；不再提供跨构建活动任务接管。此次 v7→v8 使用新目录；未来格式/执行契约兼容且已排空时，可继续原目录并查询历史，不因 EXE 字节或路径变化强制换目录。详见[现行升级契约](spec/personal-executor-simplification.spec.md#41-升级约定及状态目录)及[P3 验收](acceptance/personal-executor-p3.md)。
 
 ## 定向验证
 
@@ -199,9 +199,9 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 开发 workflow/2 显式要求 `execution.settings.access_mode=full_access`；内容流程仍显式 `read_only`。sandbox、缺省、空值、null 不会自动转换。修改客户端 `profiles` 中的可编辑配置，保持目标环境、模型、仓库和发布设置；先用新构建的 `capabilities --offline` 与 `validate --kind run-configuration` 核对，再以新 request_id 提交。配置 helper 返回 `access_mode_migration_required` 时修改原配置源，不另选候选或复用旧 ID 换正文。
 
-旧版本中的已有提交继续由原 EXE/state-dir 按原 request_id 查询、对账和收尾；原冻结 Request、digest、Attempt、PR 及证据不变。当前 v7 在 worker/owner/外部调用前拒绝 v6 及更旧目录，不提供旧 Run 的只读投影或精确 stop 兼容适配。退役不等于原 worker 已停止：原 owner 中的在途回合可能继续运行。停止不支持或证据缺失时保留原 EXE、目录和未结算事实，由用户与原版本处理；不要重建会话或把旧 Run 改为 full_access。
+旧版本中的已有提交继续由原 EXE/state-dir 按原 request_id 查询、对账和收尾；原冻结 Request、digest、Attempt、PR 及证据不变。当前 v8 在 worker/owner/外部调用前拒绝 v7 及更旧目录，不提供旧 Run 的只读投影或精确 stop 兼容适配。退役不等于原 worker 已停止：原 owner 中的在途回合可能继续运行。停止不支持或证据缺失时保留原 EXE、目录和未结算事实，由用户与原版本处理；不要重建会话或把旧 Run 改为 full_access。
 
-本次 v6→v7 升级顺序：旧版本停收新任务→用原版本完成或精确停止旧 Run→核实原生资源及全部未完成操作/控制已结算→停止旧 writer→更新产品/helper/扩展与可编辑配置→明确选择新 v7 目录并重新绑定实例→检查新构建 capabilities 与配置→提交新任务。无法确认排空时保留原版本和目录，不尝试携带活动任务升级。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除；用户显式 state-dir 不会被静默改写。新建 read_only 内容、独立 parser 与原生远端链路保持。当前规则见[个人执行器 Spec](spec/personal-executor-simplification.spec.md)，宿主认证的历史实施见[认证 Spec](spec/host-native-auth.spec.md)。
+本次 v7→v8 升级顺序：旧版本停收新任务→用原版本完成或精确停止旧 Run→核实原生资源及全部未完成操作/控制已结算→停止旧 writer→更新产品/helper/扩展与可编辑配置→明确选择新 v8 目录并重新绑定实例→检查新构建 capabilities 与配置→提交新任务。无法确认排空时保留原版本和目录，不尝试携带活动任务升级。`service stop` 不等于 Run 结算，仍在用的原版本文件不能覆盖或删除；用户显式 state-dir 不会被静默改写。新建 read_only 内容、独立 parser 与原生远端链路保持。当前规则见[个人执行器 Spec](spec/personal-executor-simplification.spec.md)，宿主认证的历史实施见[认证 Spec](spec/host-native-auth.spec.md)。
 
 
 ## 人工对账与资源丢失
@@ -210,4 +210,10 @@ Workflow 能力/状态机定义：[统一能力与边界](workflows/README.md) �
 
 先 `inspect --run-id R` 检查原操作诊断及 `controls.can_resume`，再用当前 revision 和新 request_id 调用 `resume --run-id R --input -`。该命令先用最多 30 秒只读查询原回执/观察；不 Execute、不新建 Attempt/owner/session/终端，不重发原输入。原事实解决未知且原资源仍有效时才解除技术暂停；原业务等待、阻断、stop/close 保持。仍未知、超时、冲突或资源丢失时 action_status=failed，继续人工介入；需要时用新 request_id/当前 revision 再查询。同 request_id/相同正文只回放原结果；inspect --request-id 可查询该控制结果。人工 resume 的期限在受理时持久保存，服务重启或保存失败不会续期；过期后需新 request_id 和当前 revision 再查。查询中 stop/close 可以提交且优先，迟到事实不恢复授权。
 
-资源丢失后由用户处理原现场并显式创建新 Run；Runner 不提供原会话重建。外部 SteerLine 需更新默认目录为 SteerRunner-v7、去除 verify-takeover/旧兼容矩阵读取，使用 can_resume 和原命令结果展示人工对账；本仓只更新 CLI、PowerShell helper 和两份 bundled skill，未改动或联验外部 SteerLine。
+资源丢失后由用户处理原现场并显式创建新 Run；Runner 不提供原会话重建。外部 SteerLine 需更新默认目录为 SteerRunner-v8、去除 verify-takeover/旧兼容矩阵读取，使用 can_resume 和原命令结果展示人工对账；本仓只更新 CLI、PowerShell helper 和两份 bundled skill，未改动或联验外部 SteerLine。
+
+### 本机 Orca Codex 的停止范围（v8）
+
+本机受管 Codex 的 `stop_evidence_scope=orca_local_codex_resources` 包括原业务/控制终端、helper 与 app-server 原根进程。保留原 helper 的协作停止、Job 清理及精确身份核验；签名退出文件、control Closed 和 pending reader 响应不再决定停止成功。该范围不证明全部后代进程退出，也不撤销宿主登录。部分资源仍活或身份未知时保持 unknown；原 stop 可能已调用后只读对账，不重复 close，也不接受新 request_id 替换未解决的 stop。
+
+普通 service stop 只脱离观察。离线 verify-stopped 即使看到已保存 stopped，仍重新查询本范围原资源；不写 DB 或原 shutdown 回执。直接 Codex、Pi/DSH 与原生远端的范围保持。当前源码的实现、验证与外部集成限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。

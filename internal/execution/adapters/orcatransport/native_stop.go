@@ -14,12 +14,12 @@ import (
 const NativeStopDiagnostic = "Stopped the original Orca terminal; detached background processes and execution-host credentials were not verified or revoked."
 
 // Scope describes the frozen contract, including when its proof is unavailable.
-// It is never persisted or used as authorization to resume or resend input.
+// The Run saves it as a contract fact, never as authority to resume or resend.
 func (l *Lifecycle) StopEvidenceScope() string {
-	if l.profile.Environment != "" && l.profileVersion == NativeRemoteProfileVersion {
-		return "orca_terminal"
+	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion {
+		return ""
 	}
-	return ""
+	return StopScope(l.profile, l.setup.Snapshot.Ref.Agent.Name)
 }
 
 func StopEvidenceScope(setup b.LifecycleSetup) (string, error) {
@@ -32,7 +32,9 @@ func StopEvidenceScope(setup b.LifecycleSetup) (string, error) {
 		return "", err
 	}
 	scope := l.StopEvidenceScope()
-	if scope != "" {
+	if scope == LocalCodexStopScope {
+		_, err = l.resourceState(setup.Snapshot)
+	} else if scope != "" {
 		_, err = l.state(setup.Snapshot)
 	}
 	return scope, err

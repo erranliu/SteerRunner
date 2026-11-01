@@ -1,6 +1,8 @@
 # SteerRunner 可靠性交付链路与简化分析
 
-> 2026-11-01：当前运行指引已按[个人执行器简化](spec/personal-executor-simplification.spec.md)更新为 v7、升级先排空和人工对账。下文历史调查基线、试验、验收引用保留原范围；P1–P4 资格分别见[总状态](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不表示外部 SteerLine 已联验。
+能力和可靠性承诺统一维护在[长期产品承诺](spec/steerrunner.spec.md#长期产品承诺)；本文解释实现链路和历史分析，不另立承诺。本机 Orca Codex 已按[现行长期承诺](spec/steerrunner.spec.md#现行停止范围本机-orca-codex)收敛停止范围，证据及限制见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。
+
+> 2026-11-01：当前运行指引已按[个人执行器简化](spec/personal-executor-simplification.spec.md)及停止条件收敛更新为 v8、升级先排空和人工对账。下文历史调查基线、试验、验收引用保留原范围；P1–P4 资格分别见[总状态](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不表示外部 SteerLine 已联验。
 
 日期：2026-10-21。代码基线：`8261310`。面向 SteerRunner 维护者与 SteerLine 接入方。
 
@@ -8,7 +10,7 @@
 
 SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原动作实际发生了什么、结果是否满足交付条件、资源是否已经结算。它们可以共用查询入口，但不能用一个成功回执相互替代。
 
-**已实现的快速路径和原命令对账不再作为新增改造立项；可以直接推进文档收敛与只读进度展示，结果获取和校验优化须先验证收益。** 普通开发的正常路径可以只有实施、发布两次业务模型输入；同构建服务重启可以接回原执行，升级须先由原版本排空。未知发送只对账、原结果来源核验、PR 平台核验和精确停止取证仍是必要边界。第 6 节区分现有能力，第 7 节区分直接实施项和验证项，第 8 节给出批次与验收条件。
+**已实现的快速路径和原命令对账不再作为新增改造立项；结果获取和校验优化须先验证收益。** 普通开发的正常路径可以只有实施、发布两次业务模型输入；同构建服务重启可以接回原执行，升级须先由原版本排空。未知发送只对账、原结果来源核验、PR 平台核验和现行后端范围内的停止证据仍是必要边界。第 6–8 节保留当时的分析与批次，不自动形成新的待办；已完成的观测解耦、定向验证和职责收口以当前总状态为准。
 
 ## 1 交付范围与责任
 
@@ -18,13 +20,15 @@ SteerRunner 的可靠性交付需要回答四件事：请求是否收下、原�
 | Workflow | 根据可信原结果选择补报、审计、发布或等待用户；保存唯一业务游标 | 不自行决定未知副作用能否重发 |
 | application 与 storage | 受理命令、授权与撤销、操作意图、Run/命令/事件的原子提交、公开投影 | 内存状态、CLI 退出码不能替代持久事实 |
 | reliable 与 adapter | 原操作执行或对账、精确身份、原 session/turn/final、停止事实 | 原生完成不直接等于业务成功 |
-| 独立 execution owner | 保留本机原生连接、Job/工具树、认证和适用的 parser；服务离线时保留原证据 | 不持有数据库或决定 Workflow 后继 |
+| 独立 execution owner | 保留本机原生连接、Job/工具树；服务离线时保留原证据 | 不持有数据库或决定 Workflow 后继；独立 parser 是自身管理的内存文本任务，宿主登录不由 owner 撤销 |
 | Orca 创建执行器 | 在 Runner 主机上执行一次冻结的公开 create，并保留原创建回执 | 不是远端 helper，不负责业务调度，也不保证无回执时找回资源 |
 | PR provider | 实际 PR、仓库、base/head、状态及适用的提交身份 | agent 给出的 URL 只是候选线索 |
 
 开发交付以 `pr_ready` 为 Runner 里程碑；合并观察与 TaskDelivery 分别处理。`pr_ready` 不保证执行资源已停止。内容生成交付完整 text/JSON 及资源结算；持续对话每轮交付结果后等待显式 message。
 
-当前主链使用 state/v7、SQLite user_version=7、默认 `%LOCALAPPDATA%/SteerRunner-v7`，流程保持 development/2、development-audited/2、conversation/1、generate/1。v6 及更旧目录非破坏拒绝，由原版本查询和结算。同构建重启保留原授权；升级先排空，不提供跨构建活动任务接管。当前职责与恢复边界以[个人执行器简化 Spec](spec/personal-executor-simplification.spec.md)为准；本文旧日期记录不授予当前构建资格。
+完成语义分别适用：generate 已取得成功结果但 cleanup/stop 未结算时，不能显示全部完成；conversation 回合结束不表示会话关闭或业务成功。核心 Run/回执/操作及停止状态查询按公开契约返回已提交事实，失败明确报错；可选进度、日志采集、用量及 Viewer 实时性才适用尽力提供。服务重启可能丢失独立 parser 的未提交内存结果，重新取得业务资格后可按当时配置重算并产生重复费用，不保证跨重启的总次数、总费用、模型或输出一致；该例外不允许重做原业务执行。边界统一见[长期产品承诺](spec/steerrunner.spec.md#长期产品承诺)。
+
+当前主链使用 state/v8、SQLite user_version=8、默认 `%LOCALAPPDATA%/SteerRunner-v8`，流程保持 development/2、development-audited/2、conversation/1、generate/1。v7 及更旧目录非破坏拒绝，由原版本查询和结算。同构建重启保留原授权；升级先排空，不提供跨构建活动任务接管。当前职责与恢复边界以[个人执行器简化 Spec](spec/personal-executor-simplification.spec.md)为准；本文旧日期记录不授予当前构建资格。
 
 ## 2 正常交付链路
 
@@ -66,7 +70,7 @@ flowchart TD
 
 开发 Run 准备自己的工作区和分支，核验固定 base/head、目标和权限。本机及 Orca local 开发路径直接使用执行主机已有 Git/gh/SSH 登录；新远端 Run 使用已有 Orca 原生认证。内容 workflow 使用本机 read_only，不要求开发仓库、Spec/Plan 或 publication。
 
-**首次副作用前先持久化原操作 ID、输入摘要和身份绑定。** 新提交的意图才进入 Execute；已有的 in_flight、accepted pending 或 outcome_unknown 进入原操作 Reconcile。重启后即使怀疑“上次还没来得及调用”，也不能把普通 in_flight 当作未发送。parser 的 pending 是其既有专属未派发状态，不能推广成其他动作的判断。
+**首次副作用前先持久化原操作 ID、输入摘要和身份绑定。** 新提交的意图才进入 Execute；已有的 in_flight、accepted pending 或 outcome_unknown 进入原操作 Reconcile。重启后即使怀疑“上次还没来得及调用”，也不能把普通 in_flight 当作未发送。独立 parser 是内存文本任务，不属于原生操作账本，其生命周期不能推广为业务动作的未派发判断。
 
 原 Run/Attempt、配置、resource generation、session、command/turn 和输入来源共同约束回执归属。原生受理输入和开始回合分别核实，不凭终端出现文字判断已经启动。
 
@@ -135,7 +139,7 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 | PR 查询失败或源提交变化 | 查询同一 PR，重新核验当前适用的结果/审计来源 | 补收外部事实 | 不从旧审计推出新 HEAD 已通过，不重新发布补查询 |
 | 服务启动结果 startup_unverified | 核实原 bootstrap 对应的精确进程 | 原启动事实对账 | 不再启动第二份服务 |
 
-前述“证明未派发”不等于“DB 没有成功回执”。普通操作一旦保存为 in_flight，跨重启就按可能已调用对待；尚未转为外发操作的业务后继和符合规则的 parser pending 才有各自的安全派发分支。
+前述“证明未派发”不等于“DB 没有成功回执”。普通操作一旦保存为 in_flight，跨重启就按可能已调用对待；尚未转为外发操作的业务后继才按原授权及来源判断。独立 parser 重启后的文本任务沿自身源/预算资格处理，不重建持久 parser pending，也不能授权重做原业务执行。
 
 创建执行器缩小了“服务丢失创建响应”的恢复窗口，但没有消除外部系统不提供持久创建关联时的不可判定性。当前已有 Runner 内部保留回执与受控故障窗口证据；不能宣称在 Orca、CLI、创建执行器同时失效时仍能任意找回。来源：[创建恢复追补](acceptance/pr-test-gaps-20261020.md)、[创建执行器](../internal/execution/adapters/orcatransport/creation_owner.go)、[恢复资格](../internal/execution/reliable/recovery_policy.go)。
 
@@ -146,21 +150,21 @@ PR 线索可以提前独立绑定，便于观察已经发生的外部事实；�
 
 | 用户意图 | 必要路径 | 完成条件 |
 | --- | --- | --- |
-| 停止这个 Run，或关闭持续对话 | 持久撤销输入授权 → 对账/停止原执行及 parser → 撤销适用的认证能力 → 核实资源结算 | 分项停止证据成立；仅命令受理不算完成 |
+| 停止这个 Run，或关闭持续对话 | 持久撤销输入授权 → 对账/停止原执行及取消适用的 parser → 按现行后端 scope 核实资源结算 | 分项停止证据成立；仅命令受理不算完成，不撤销执行主机已有登录 |
 | 暂时关服务，稍后继续 | 脱离原观察和连接，保留原执行 owner、授权、游标和事实；重开接回 | 服务写者退出即可描述为服务已停，资源可继续运行 |
-| 更新 Runner | 原版本停收新任务 → 完成或精确停止原 Run → 核实资源及未完成操作/控制已排空 → 停旧 writer → 启用新版本 | pr_ready/service stop 均不等于排空；本次 v6→v7 使用新目录，不携带活动任务接管 |
+| 更新 Runner | 原版本停收新任务 → 完成或精确停止原 Run → 核实资源及未完成操作/控制已排空 → 停旧 writer → 启用新版本 | pr_ready/service stop 均不等于排空；本次 v7→v8 使用新目录，不携带活动任务接管 |
 
-删除 state-dir、移除在用 runtime 或破坏性迁移需要对应资源停止/结算事实；无法确认时保留原 EXE/目录，由原版本和用户处理。`service verify-stopped` 是离线显式核验，需原 writer 已退出，其 scope 不扩大。`service verify-takeover` 已删除，普通未知命令 exit 2。此次 v6→v7 切新目录；未来格式/契约兼容且已排空时可继续原目录、查询历史，不因 EXE 变化强制换目录。
+删除 state-dir、移除在用 runtime 或破坏性迁移需要对应资源停止/结算事实；无法确认时保留原 EXE/目录，由原版本和用户处理。`service verify-stopped` 是离线显式核验，需原 writer 已退出，其 scope 不扩大。`service verify-takeover` 已删除，普通未知命令 exit 2。此次 v7→v8 切新目录；未来格式/契约兼容且已排空时可继续原目录、查询历史，不因 EXE 变化强制换目录。
 
 服务离线时调用方尚未送达的 stop 不属于 Runner 已接受命令。重开可经 `service start` 的 `pending_stops` 提交原 stop 信封，在 worker 启动前先受理；仍要检查各原命令结果，不能假定提交清单即已全部撤销。
 
-### 5.2 停止证据为什么较多
+### 5.2 停止证据的范围
 
-本机受管路径停止原业务/工具写者及 parser。Orca local 的固定控制通道承载原回执与来源查询；停止先结算查询 reader，再持久化关闭意图、关闭原控制终端并核验缺席。关闭结果未知时按原身份对账，不重发关闭，不依赖虚构的认证撤销证明。
+本机 Orca 受管 Codex 保留 helper 协作停止及 Job 实际清理，核实登记的原业务/控制终端、helper 与 app-server 根身份，报告 `orca_local_codex_resources`。退出签名文件、control Closed 和 pending reader 响应不再决定停止成功；正常 history/Git/审计查询仍保留原来源和 reader 证据。停止总预算 15 秒，协作等待最多 2 秒；可能外发后只读核实原资源，不重复 helper 请求或 close。缺证明文件可成功，资源仍活、错身份或未知创建仍不能成功。scope 不证明全部后代退出；部分清理中断可转人工。
 
 远端原生 Orca 的停止保证限于原 terminal scope，不能宣称远端 OS 全树退出或宿主 gh 登录撤销。本机停止一个 Run 也不应退出宿主 gh 登录或停止其他 Run。上述证据可以统一收集和展示，但不能相互冒充。
 
-来源：[普通重启与升级排空契约](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)、[Orca 停止规则](spec/orca-shutdown-verification.plan.md)、[离线停止核验](../internal/host/verify_stopped.go)。
+来源：[普通重启与升级排空契约](spec/personal-executor-simplification.spec.md#4-恢复与升级收缩pes-02)、[本机 Codex 现行停止规则](spec/orca-local-codex-stop-simplification.spec.md)、[离线停止核验](../internal/host/verify_stopped.go)。
 
 ## 6 已实现能力与可选流程
 
@@ -195,7 +199,7 @@ SteerLine 审计与实施基线为本机 checkout `36d4f596`；其结论不表�
 
 ## 7 历史简化方案（2026-10-21）
 
-本节及第 8 节保留当时的方案与试验要求。现行 v7 的恢复、升级和职责范围以[个人执行器 Spec+Plan](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)为准，不再把下文跨构建接管验证作为新增能力或当前验收前置，也不在本次展开 V2 等后续方案。
+本节及第 8 节保留当时的方案与试验要求。该批 v7 的恢复、升级和职责范围以[个人执行器 Spec+Plan](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)为准，不再把下文跨构建接管验证作为新增能力或当前验收前置，也不在本次展开 V2 等后续方案。
 
 “可直接实施”表示不需要先证明新的原生能力，仍要完成列明的功能验证；“需要验证”表示先做限定试验，通过准入条件才进入生产改造。当前已实施 D1/D2，并完成 D3 核查及反例；V1 已完成限定试验、跨构建冻结验证和提示词默认调整，列入第 6 节已实现项。其余验证项按下述门槛推进，实际范围在[验收登记](acceptance/reliable-delivery-simplification.md)单独说明。
 

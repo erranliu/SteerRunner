@@ -1,0 +1,18 @@
+[
+  {
+    "sha256": "e7a6fa40a59d237cdb7cf32444df6660da850d1b31e4162634287d91fdfc3cba",
+    "path": "C:\\Users\\lmas1\\AppData\\Local\\Programs\\orca\\resources\\bin\\orca.exe"
+  },
+  {
+    "sha256": "3097c909fb6d5cd63510d44aceb1d42df9f6e85722a3e447e477def1ecf60e16",
+    "path": "C:\\Users\\lmas1\\AppData\\Local\\OpenAI\\Codex\\bin\\22cfb1d302613eae\\codex.exe"
+  },
+  {
+    "sha256": "2831f8b04af45fe57c14120c4a88c4eb562f880d6496ad02567911e03e498607",
+    "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\orca-local-stop\\bin\\steerrunner-agent.exe"
+  },
+  {
+    "sha256": "0f88647c84b2528c42fd1f90c3a77f8427a643e616d4b3f897796a1db149d8e2",
+    "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\client\\steerrunner-client.ps1"
+  }
+]

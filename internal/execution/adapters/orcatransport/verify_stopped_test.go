@@ -67,8 +67,8 @@ func TestCodexStoppedRequiresNativeExitProofBeyondPTY(t *testing.T) {
 	}
 }
 
-func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
-	for _, mode := range []string{"complete", "live-business", "live-control", "changed-signature", "missing-control", "pending-control"} {
+func TestLocalCodexStoppedUsesRegisteredResources(t *testing.T) {
+	for _, mode := range []string{"complete", "live-business", "live-control", "missing-exit-file", "missing-control", "pending-control"} {
 		t.Run(mode, func(t *testing.T) {
 			l, _, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
@@ -86,20 +86,9 @@ func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
 				if e != nil {
 					t.Fatal(e)
 				}
-				j.Closed = false
+				// A pending or missing query checkpoint is not stop evidence.
 				if e = l.saveControlCheckpoint(state, j); e != nil {
 					t.Fatal(e)
-				}
-			}
-			if mode == "changed-signature" {
-				original := l.readStopArtifact
-				l.readStopArtifact = func(ctx context.Context, a, b, c, d string) ([]byte, error) {
-					raw, e := original(ctx, a, b, c, d)
-					var v map[string]json.RawMessage
-					_ = json.Unmarshal(raw, &v)
-					v["body"] = json.RawMessage(`{}`)
-					changed, _ := json.Marshal(v)
-					return changed, e
 				}
 			}
 			if mode == "live-business" || mode == "live-control" {
@@ -116,7 +105,7 @@ func TestCodexStoppedRequiresSignedExitAndFixedControl(t *testing.T) {
 			}
 			before, _ := json.Marshal(s)
 			err = l.verifyStopped(context.Background(), s)
-			if (err == nil) != (mode == "complete") {
+			if (err == nil) != (mode == "complete" || mode == "missing-exit-file" || mode == "pending-control") {
 				t.Fatal(mode, err)
 			}
 			after, _ := json.Marshal(s)

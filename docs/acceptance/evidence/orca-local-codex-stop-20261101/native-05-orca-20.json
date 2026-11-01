@@ -1,0 +1,12 @@
+{
+  "id": "3e6c894e-7e31-41b2-8f4c-eaea80f377e5",
+  "ok": true,
+  "result": {
+    "closed": 1,
+    "stopped": 1,
+    "retiredSurfaces": true
+  },
+  "_meta": {
+    "runtimeId": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c"
+  }
+}

@@ -29,6 +29,7 @@ type ManualPause struct {
 }
 
 type Record struct {
+	StopEvidenceScope   string                         `json:"stop_evidence_scope,omitempty"`
 	ManualPause         *ManualPause                   `json:"manual_pause,omitempty"`
 	ObservationDeadline time.Time                      `json:"observation_deadline,omitempty"`
 	RepositorySource    *contracts.RepositorySource    `json:"repository_source,omitempty"`
@@ -107,7 +108,7 @@ func (r *Record) Clone() *Record {
 	return &result
 }
 func (r *Record) View() contracts.RunView {
-	v := contracts.RunView{RunID: r.ID, Revision: r.Revision, Title: r.Request.Title, Correlation: r.Request.Correlation, InputDigest: r.InputDigest, ResourceDigest: r.ResourceDigest, Workflow: r.Request.Workflow, Step: r.Workflow.StepID, Status: r.Status, Phase: r.Phase, Diagnostic: r.Diagnostic, NewInputsAllowed: r.Allowed, ResumeRequired: r.ResumeRequired, StopStatus: r.StopStatus, Question: r.Question, PR: r.PR, Summary: r.Summary, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, Materials: []contracts.MaterialView{}}
+	v := contracts.RunView{RunID: r.ID, Revision: r.Revision, Title: r.Request.Title, Correlation: r.Request.Correlation, InputDigest: r.InputDigest, ResourceDigest: r.ResourceDigest, Workflow: r.Request.Workflow, Step: r.Workflow.StepID, Status: r.Status, Phase: r.Phase, Diagnostic: r.Diagnostic, NewInputsAllowed: r.Allowed, ResumeRequired: r.ResumeRequired, StopStatus: r.StopStatus, StopEvidenceScope: r.StopEvidenceScope, Question: r.Question, PR: r.PR, Summary: r.Summary, CreatedAt: r.CreatedAt, UpdatedAt: r.UpdatedAt, Materials: []contracts.MaterialView{}}
 	for _, a := range r.Workflow.Results {
 		v.ResultAcquisition = append(v.ResultAcquisition, contracts.AcquisitionView{ID: a.ID, Contract: a.Contract, Source: a.Source, Method: a.Method, Status: a.Status, Missing: a.Missing, Conflicts: a.Conflicts, Attempts: a.Attempts, Fields: a.Fields})
 	}

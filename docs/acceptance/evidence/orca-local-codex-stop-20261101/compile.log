@@ -1,0 +1,6 @@
+# github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport
+internal\execution\adapters\orcatransport\lifecycle.go:1086:2: declared and not used: state
+FAIL	github.com/erranliu/SteerRunner/internal/application [build failed]
+FAIL	github.com/erranliu/SteerRunner/internal/resources [build failed]
+ok  	github.com/erranliu/SteerRunner/internal/storage	1.020s [no tests to run]
+FAIL

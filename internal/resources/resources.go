@@ -69,7 +69,7 @@ func VersionInfo() any {
 		"version": Version, "source_commit": SourceCommit,
 		"protocols": []string{contracts.Protocol}, "resource_version": 3,
 		"resource_digest": Digest(), "platform": "windows/amd64",
-		"recovery": map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
+		"recovery": map[string]any{"state_format": "steerrunner-state/v8", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
 	}
 }
 
@@ -96,9 +96,10 @@ func Capabilities() any {
 	}
 	return map[string]any{
 		"model_input_contract":      ModelInputContract(),
+		"stop_evidence":             map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; not all descendants or host credentials"},
 		"execution_wait":            map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
 		"run_observation":           map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
-		"recovery":                  map[string]any{"state_format": "steerrunner-state/v7", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
+		"recovery":                  map[string]any{"state_format": "steerrunner-state/v8", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},
 		"run_usage":                 UsageCapabilities(),
 		"run_cost":                  CostCapabilities(),
 		"run_usage_schema":          json.RawMessage(Read("run-usage.schema.json")),

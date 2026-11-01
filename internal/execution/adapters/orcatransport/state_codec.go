@@ -18,11 +18,16 @@ func decodeState(raw json.RawMessage, version int) (State, error) {
 
 	err := b.DecodeStrictJSON(raw, &state, "trailing terminal state")
 	if err == nil {
-		for _, turn := range state.Turns {
-			if turn.Native.Conflict != "" && turn.Native.Waiting != "" {
-				return state, errors.New("native proof cannot be both conflicted and waiting")
-			}
-		}
+		err = validateNativeProofFlags(state)
 	}
 	return state, err
+}
+
+func validateNativeProofFlags(state State) error {
+	for _, turn := range state.Turns {
+		if turn.Native.Conflict != "" && turn.Native.Waiting != "" {
+			return errors.New("native proof cannot be both conflicted and waiting")
+		}
+	}
+	return nil
 }

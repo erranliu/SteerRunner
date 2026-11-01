@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erranliu/SteerRunner/internal/contracts"
+	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
@@ -27,7 +28,7 @@ func (p *cancellableStopBudgetPort) StopLifecycle(ctx context.Context, q b.Lifec
 }
 
 func TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable(t *testing.T) {
-	for _, adapter := range []string{"orca-terminal", "codex-app-server"} {
+	for _, adapter := range []string{"orca-terminal", "codex-app-server", "orca-local-codex"} {
 		t.Run(adapter, func(t *testing.T) {
 			store, err := storage.Open(t.TempDir())
 			if err != nil {
@@ -38,6 +39,10 @@ func TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable(t *testing.T) {
 			defer cancel()
 			e := &Engine{ctx: ctx, store: store, runs: map[string]*runstate.Record{}, logger: log.New(io.Discard, "", 0), launchOwner: func(context.Context, string) error { return nil }}
 			r := &runstate.Record{ID: "run", Allowed: false, ResumeRequired: true, Status: "reconciling", PendingStop: "original-stop", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: adapter}}, CommandStates: map[string]string{}}
+			if adapter == "orca-local-codex" {
+				r.Request.Execution.Adapter = "orca-terminal"
+				r.StopEvidenceScope = orca.LocalCodexStopScope
+			}
 			r.Snapshot = b.LifecycleSnapshot{Ref: b.ExecutionRef{RunID: "run", AttemptID: "attempt", External: b.ProcessIdentity{Kind: "terminal", Terminal: "original"}}, Session: b.SessionContext{ProjectID: "project", WorkflowRunID: "run", ExecutionID: "run", AttemptID: "attempt"}, ConfigurationDigest: "config", ResourceGeneration: "generation"}
 			if err = e.commitLocked(r, nil, "accepted"); err != nil {
 				t.Fatal(err)

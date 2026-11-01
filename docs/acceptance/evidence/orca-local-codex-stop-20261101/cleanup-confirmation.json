@@ -1,0 +1,27 @@
+{
+  "source": "fresh Orca worktree list --repo id:faae3ad4-da24-4d6d-9698-d8931b893789 --json",
+  "runtime_id": "d64c6673-348a-4c73-9f1c-c60a51ec8f0c",
+  "raw_sha256": "781537ee449e05ce71eb13dd4e30f14560cfee40eff3980b1f4f67b51456c744",
+  "owned_probes": [
+    {
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-01-f03a4686",
+      "present": false
+    },
+    {
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-02-6a1efb72",
+      "present": false
+    },
+    {
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-03-dbe5f697",
+      "present": false
+    },
+    {
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-04-d2f6e3f6",
+      "present": false
+    },
+    {
+      "worktree_id": "faae3ad4-da24-4d6d-9698-d8931b893789::C:/Users/lmas1/orca/workspaces/SteerlineTest/sr-stop-native-05-4d7d3f45",
+      "present": false
+    }
+  ]
+}

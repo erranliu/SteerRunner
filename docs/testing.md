@@ -1,6 +1,6 @@
 # SteerRunner L1–L4 测试指南
 
-> 2026-11-01 当前使用：v7、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。
+> 2026-11-01 当前使用：v8、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。
 
 ## 快速定向验证（P1，2026-11-01）
 
@@ -17,7 +17,7 @@
 
 该入口不启动完整 L1/Controlled，仍新编译 native driver、执行零匹配保护，并把同一 driver 传给 L2/L3 worker。报告新增 `validation_scope=focused`、前置实际启动次数和阶段耗时；case 成功可以是 `status=passed`，但 `complete_level_passed`、`baseline.*_verified` 和完整交付资格始终为 false，即使选中了该级全部 case。`framework/native-zero-match` 目录只是原生零匹配保护，不代表执行完整 framework/L1。
 
-不带 Focused 的默认链路及已有 L2 前置复用规则保持；本增量不开放 L3 的前置证明复用。开发定向通过不替代发布所需的完整验证。P1 实测、历史失败和收益范围见[独立验收](acceptance/personal-executor-p1.md)。P1/P2 的 v6 报告只证明其原构建；当前 P1–P3 及 P4 问答输入项均已独立验收，使用 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`。P3 完整 L1/Controlled 与本机、Orca local/environment 最小真实接线通过；P4 仅取得受影响组件与公开受控资格。当前状态与交付边界见[Spec+Plan 总结](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不继承成全 agent、完整 L2/L3 或产品发布资格。
+不带 Focused 的默认链路及已有 L2 前置复用规则保持；本增量不开放 L3 的前置证明复用。开发定向通过不替代发布所需的完整验证。P1 实测、历史失败和收益范围见[独立验收](acceptance/personal-executor-p1.md)。P1/P2 的 v6 报告只证明其原构建；P1–P3 及 P4 问答输入项在其原 state/v7 构建独立验收；当前停止条件收敛使用 state/v8、user_version=8，默认 `%LOCALAPPDATA%/SteerRunner-v8`，其受影响验证见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。P3 完整 L1/Controlled 与本机、Orca local/environment 最小真实接线通过；P4 仅取得受影响组件与公开受控资格。当前状态与交付边界见[Spec+Plan 总结](spec/personal-executor-simplification.plan.md#71-本轮总状态与交付边界)，不继承成全 agent、完整 L2/L3 或产品发布资格。
 
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
@@ -410,7 +410,7 @@ smoke 通过要求：非零且精确的场景数、无意外 skip、真实产物
 事实核验、原资源和服务均停止。L1 编译 live driver 并验证零场景失败门槛，同时运行入口
 的零匹配/缺配置/重复场景反例、Windows
 PowerShell checker 和发布夹具的受控反例，覆盖空 PR 列表、复用原 PR、冲突和查询失败
-禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。真实宿主认证与 PR 交付须使用新 state/v7 和固定 Runner/helper/extensions，按现有 L2/L3 case 单列验收；缺配置或环境记 incomplete。
+禁止重复创建。L1 只允许脚本逐名列出的 subprocess helper、Orca 取证入口、原生工具环境诊断及用量只读/清理现场入口默认 skip；相应 opt-in 遗留仍在运行前拒绝，任何其它 skip 均失败。这些 skip 不计真机通过。真实宿主认证与 PR 交付须使用新 state/v8 和固定 Runner/helper/extensions，按现有 L2/L3 case 单列验收；缺配置或环境记 incomplete。
 
 未满足冻结 case 预期的失败、超时、unknown、unsupported、缺 final 均不通过；不可达停止
 的 `revoked-unverified` 按其故障窗口契约独立判定，不冒充停止确认或业务交付。清理未确认
@@ -599,5 +599,8 @@ P2 观测解耦的定向组件入口：go test ./internal/application -run 'Test
 P2 Orca local 补验：完整 L1 使用 `./scripts/test-prerequisites.ps1 -Stage L1 -OutDir <新目录>`，沿用原 12 分钟每 Go 包预算，包含 framework、全部 internal 包、原生扩展和 driver 守卫。定向组件的短预算不应直接套到全包累计执行；包总超时须结合 JSON 中的包启动和当前子测试启动时间判断，不据栈所在函数推断其卡死。本次没有增加超时、排除慢包或删除断言。
 
 本机受管 Codex 的 bootstrap READY 不等于 TUI composer 已可接收原输入；发送前沿原终端做既有 `tui-idle` 查询，只用于输入就绪，最终结果仍取原完整输入/原生回执。测试权限审计从 cursor=0 原始 stream 读取完整回执；画面折行文本不能用作审计输入。控制关闭证明的键使用原 actor 的稳定 workspace，允许只读核实当前 v6 的同一资源空 workspace 旧键，foreign canonical 拒绝仍保留。新旧现场、补验构建与结果见[验收报告](acceptance/personal-executor-p2.md)。
+## 本机 Orca Codex 停止条件收敛（2026-11-01）
+
+定向组件、公开受控和 `TestOrcaStoppedNativeProbe` 的显式隔离原生探针见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。新 scope 覆盖登记终端/helper/根身份，不依赖签名退出文件或 control Closed；直接 Codex、Pi/DSH、原生远端保留各自范围。探针使用真实 readiness 和原资源，Run 为隔离注入夹具，业务输入为 0，无真实 PR，不计完整 L2/L3。未设置显式探针环境时的 skip 不计真机通过。
 
 execute/1 增量复用正式 L1（含 SingleExecution 契约/原生 final/停止/拒绝额外输入测试）及 foundation 的 TestSRResultFile 最终封存回归。跨仓消费者的真实单次调用另由 SteerLine 的 testing.project-environment-local 验证，不能以受控 peer 替代；Runner 自身测试无需 SteerLine checkout 或新测试框架。

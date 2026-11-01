@@ -1,0 +1,2 @@
+.evidence/orca-local-stop/client-baseline.ps1: parser_errors=23
+client/steerrunner-client.ps1: parser_errors=0
