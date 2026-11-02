@@ -199,11 +199,12 @@ func (s *stabilityRun) native() (orca.AgentState, error) {
 	if err != nil {
 		return orca.AgentState{}, err
 	}
-	initial, err := orca.DecodeOriginalState(raw, s.process)
+	resource := orca.StateResource{RuntimeID: s.process.RuntimeID, WorktreeID: s.process.WorktreeID, Handle: s.process.Terminal, IncarnationID: s.process.Incarnation}
+	initial, err := orca.DecodeOriginalState(raw, resource)
 	if err != nil {
 		return initial, err
 	}
-	state, err := orca.QueryOriginalAgent(ctx, s.m.Execution.Target.Environment, s.process, initial.PaneKey)
+	state, err := orca.QueryOriginalAgent(ctx, s.m.Execution.Target.Environment, resource, initial.PaneKey)
 	if err == nil {
 		s.note("original-native-state", state)
 		if s.provider == "" {

@@ -247,7 +247,7 @@ func auditLocalCodexWorker(t *testing.T, m livetest.Manifest, run contracts.RunV
 	if err != nil {
 		t.Fatal(err)
 	}
-	state, err := orca.DecodeOriginalState(raw, original)
+	state, err := orca.DecodeOriginalState(raw, orca.StateResource{RuntimeID: original.RuntimeID, WorktreeID: original.WorktreeID, Handle: original.Terminal, IncarnationID: original.Incarnation})
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -36,3 +36,9 @@ state_feed/state_query_feed 及解码/查询使用自有 StateResource，原生�
 对实现提交 `8d77b9b` 相对 `310f270` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核 45 文件职责/证明/格式 diff、12 文件 bytes/hash、源码摘要及全部统计，确认原非 nil 反例没有因改传 nil 空过。
 
 reader、原输入/thin/corroborated、恢复/CRLF/followup、状态/观察/codec、原 WS、依赖守卫和固定提交 diff 检查独立复跑通过。未独立重跑全集或真实场景；未运行模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。
+
+## 后续 live 测试入口修复
+
+B4c 额外编译 `tests/native` 的 live tag 时发现 B3 原两包全集之外的三处测试调用仍传旧 ProcessIdentity。sandbox_audit_test.go/stability_test.go 现显式映射为 StateResource，保留各原身份字段和断言；生产代码不变，单独修复提交。
+
+`go test -c -tags live -o .evidence/orca-b4c/native.test.exe ./tests/native` 通过（与当时 B4c 工作区一起编译）；仅编译，不运行真实场景。失败及补验命令保存在 B4c 归档，不重写本批原全集/审计结论或补记真实资格。
