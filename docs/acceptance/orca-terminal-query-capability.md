@@ -1,6 +1,6 @@
 # Orca 原终端查询能力 B1 验收
 
-日期：2026-11-02。状态：实现、受控回归及双端无模型现场通过，实施后独立审计待完成。依据 [Spec](../spec/orca-terminal-query-capability.spec.md) / [Plan](../spec/orca-terminal-query-capability.plan.md)。本批不改变生产支持组合、完成/停止合同，不授予 B5 真实 Runner 资格。
+日期：2026-11-02。状态：实现、受控回归及双端无模型现场通过，实施后独立审计通过。依据 [Spec](../spec/orca-terminal-query-capability.spec.md) / [Plan](../spec/orca-terminal-query-capability.plan.md)。本批不改变生产支持组合、完成/停止合同，不授予 B5 真实 Runner 资格。
 
 ## 1. 能力和接线
 
@@ -44,4 +44,6 @@ TestControlTerminalRPCIdentity 的 6 个子例验证有效双页、错 handle/in
 
 OTQ-01 由自有类型/无 backend 的查询文件、零连接缺身份和双端原生夹具证明；OTQ-02–04 由生产构造器、控制双页/四围栏/queue 及原取消测试证明；OTQ-05 由两包回归、依赖守卫及白名单 diff 证明；OTQ-06 由双端同 EXE 的两次查询、原身份及完整空清单证明。
 
-提交后独立只读审计一次；确认问题用独立 commit 修复并补受影响验证。该审计完成前长期路线保持“验证通过、待审计”。
+对实现提交 `c9097a7` 相对 `f6b0da3` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核全部 26 个归档文件 bytes/SHA256、源码/EXE 摘要、双端查询与清单，以及所有首次失败项在 15 根补验中的覆盖。
+
+独立复跑身份/取消、original/control RPC、原输入、control/history 和完整清单定向测试、正常权限下的 TestOrcaNativeStateStream、workflow 依赖守卫和固定提交 diff 检查均通过。审计没有运行模型或真实 Orca 资源，现场依据归档复核，不扩大资格。无确认问题，因此无代码修复 commit。
