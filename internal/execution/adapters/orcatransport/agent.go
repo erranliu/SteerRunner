@@ -19,8 +19,8 @@ func (l *Lifecycle) soleWorkspaceTerminal(ctx context.Context, worktree, runtime
 		if err != nil {
 			return native.Terminal{}, err
 		}
-		listing := native.DecodeTerminalInventory(result)
-		if !listing.BasicDecoded() || result.RuntimeID != runtime || listing.Truncated != nil && *listing.Truncated {
+		listing := native.DecodeTerminalInventory(result).Basic()
+		if !listing.Decoded() || result.RuntimeID != runtime || listing.Truncated {
 			return native.Terminal{}, errors.New("original workspace terminal inventory is unverified")
 		}
 		if len(listing.Terminals) > 1 {

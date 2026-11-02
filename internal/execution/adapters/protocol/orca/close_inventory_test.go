@@ -103,8 +103,17 @@ func TestOrcaCloseInventoryCapability(t *testing.T) {
 		t.Run("basic-scope-"+field, func(t *testing.T) {
 			payload, _ := json.Marshal(map[string]any{"terminals": []Terminal{{Handle: "original"}}, "truncated": false, field: "invalid extension type"})
 			inventory := DecodeTerminalInventory(Result{Payload: payload})
-			if !inventory.BasicDecoded() || inventory.Decoded() || len(inventory.Terminals) != 1 {
+			if !inventory.Basic().Decoded() || inventory.Decoded() || len(inventory.Basic().Terminals) != 1 {
 				t.Fatal("consumer field scopes collapsed", inventory)
+			}
+		})
+	}
+	for _, truncated := range []string{"true", "false"} {
+		t.Run("basic-duplicate-null-"+truncated, func(t *testing.T) {
+			inventory := DecodeTerminalInventory(Result{Payload: []byte(`{"terminals":[{"handle":"original"}],"truncated":` + truncated + `,"truncated":null}`)})
+			basic := inventory.Basic()
+			if !basic.Decoded() || basic.Truncated != (truncated == "true") || len(basic.Terminals) != 1 {
+				t.Fatal("basic bool scope lost its own duplicate/null semantics", basic)
 			}
 		})
 	}
