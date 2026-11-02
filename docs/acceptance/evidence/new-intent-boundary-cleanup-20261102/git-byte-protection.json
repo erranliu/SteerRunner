@@ -1,0 +1,13 @@
+{
+  "scope": "docs/acceptance/evidence/new-intent-boundary-cleanup-20261102/**",
+  "attributes": [
+    "docs/acceptance/evidence/new-intent-boundary-cleanup-20261102/foundation/source-identity.json: text: unset",
+    "docs/acceptance/evidence/new-intent-boundary-cleanup-20261102/foundation/source-identity.json: whitespace: unset"
+  ],
+  "representative_raw_file": "foundation/source-identity.json",
+  "raw_bytes": 684,
+  "CRLF_present": true,
+  "clean_hash_equals_no_filter_hash": true,
+  "git_blob_hash": "a3fd17ddfbdcdf274bdafcdfbb1f33e7a4962397",
+  "staged_or_committed": false
+}

@@ -34,6 +34,7 @@
 | 实例绑定与同快照 observe | [公开读取与受理边界 Plan](spec/reliability-simplification.plan.md) |
 | 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
+| 新意图写入边界与展示残留清尾 | [Spec](spec/new-intent-boundary-cleanup.spec.md) / [Plan](spec/new-intent-boundary-cleanup.plan.md) / [验收](acceptance/new-intent-boundary-cleanup.md) / [再审计](acceptance/new-intent-boundary-reaudit.md)：仅收窄四类新构造，保留历史/对账/停止与共享夹具/格式，净减26行；初轮498个组件/application及3公开场景通过，再审计27定向和最新主线3公开场景通过 |
 | 零消费者生产入口与孤立夹具清尾 | [Spec](spec/orphan-entry-cleanup.spec.md) / [Plan](spec/orphan-entry-cleanup.plan.md) / [验收](acceptance/orphan-entry-cleanup.md) / [再审计](acceptance/orphan-entry-reaudit.md)：生产净减201行、孤立测试支撑净减333行；共享夹具与持久格式不变，496个组件/application顶层及3个公开场景通过，再审计25个定向通过；首轮沙箱失败单列 |
 | 单事件确认与旧环境分支收口 | [Spec](spec/event-ack-cleanup.spec.md) / [Plan](spec/event-ack-cleanup.plan.md) / [初轮验收](acceptance/event-ack-cleanup.md) / [实现再审计](acceptance/event-ack-reaudit.md)：保留原提交语义，双确认收敛及无消费者字段/旧环境模型退役，生产净减105行 |
 | 旧历史采集支线与 Orca Backend 清理 | [Spec](spec/history-adapter-cleanup.spec.md) / [Plan](spec/history-adapter-cleanup.plan.md) / [初轮验收](acceptance/history-adapter-cleanup.md) / [实现再审计](acceptance/history-adapter-reaudit.md)：无装配历史采集和旧包装退役，真实 history binding/final/恢复保持，生产净减 986 行 |

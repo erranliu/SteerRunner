@@ -1,0 +1,6 @@
+{
+  "equal": true,
+  "bytes": 145263,
+  "sha256": "a5ec2f5e94487c7b4cea1711a50b23a423bc41aaf0c2d5444e0b9ec5284c7c16",
+  "scope": "durable root types/representative Record/Snapshot/Request/Receipt/HistoryBinding and four saved old input payloads/public capabilities/resource digest; transient PreparationFacts excluded"
+}

@@ -1,0 +1,151 @@
+{
+  "complete_controlled_passed": false,
+  "observed_top_level_seconds": 249.02,
+  "incomplete_tests": [],
+  "validation_scope": "controlled-timing",
+  "sources": [
+    {
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\foundation\\integration.log",
+      "sha256": "0fed67789ea1ac197c1a9cab9eb84c73134f0ad01d91c62a2ac525b25cd991e4"
+    },
+    {
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\foundation\\result.json",
+      "sha256": "58e5b6aa224955078e6c9f026ebc35c577c4a1c4038fa86670227cf7488ed5d5"
+    },
+    {
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\foundation\\source-identity.json",
+      "sha256": "55ff59a8e53a6de4de8000f5ddc71794dba5233494d6a3fbf74750149d89ac77"
+    }
+  ],
+  "status": "passed",
+  "missing_tests": [],
+  "unexpected_tests": [],
+  "unknown_tests": [],
+  "expected_tests": [],
+  "tests": [
+    {
+      "status": "pass",
+      "test": "TestSRNativeUnknownAndStop",
+      "group": "recovery",
+      "duration_seconds": 33.7
+    },
+    {
+      "status": "pass",
+      "test": "TestSRRestartPreservesAuthorization",
+      "group": "recovery",
+      "duration_seconds": 161.37
+    },
+    {
+      "status": "pass",
+      "test": "TestSRServiceOwnership",
+      "group": "foundation",
+      "duration_seconds": 53.95
+    }
+  ],
+  "schema": "steerrunner-controlled-timings/v1",
+  "groups": [
+    {
+      "registered_count": 5,
+      "id": "foundation",
+      "observed_seconds": 53.95,
+      "measured_count": 1,
+      "observed_count": 1,
+      "missing_tests": [
+        "TestSRStandalonePackage",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRStorageLogsEvents"
+      ]
+    },
+    {
+      "registered_count": 5,
+      "id": "workflow",
+      "observed_seconds": 0.0,
+      "measured_count": 0,
+      "observed_count": 0,
+      "missing_tests": [
+        "TestSRRunWorkflow",
+        "TestSRPublicationIdentity",
+        "TestSRPublicationBeforeWorkflowReady",
+        "TestSRWorkflowDiscoveryAndSelection",
+        "TestSRResultAcquisition"
+      ]
+    },
+    {
+      "registered_count": 7,
+      "id": "recovery",
+      "observed_seconds": 195.07,
+      "measured_count": 2,
+      "observed_count": 2,
+      "missing_tests": [
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRMultipleRunsIsolation",
+        "TestSRResourceCreationRecovery",
+        "TestSRManualReconciliation"
+      ]
+    },
+    {
+      "registered_count": 5,
+      "id": "content",
+      "observed_seconds": 0.0,
+      "measured_count": 0,
+      "observed_count": 0,
+      "missing_tests": [
+        "TestSRContentGenerate",
+        "TestSRContentRepository",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRContentGenerationRecovery"
+      ]
+    },
+    {
+      "registered_count": 4,
+      "id": "files",
+      "observed_seconds": 0.0,
+      "measured_count": 0,
+      "observed_count": 0,
+      "missing_tests": [
+        "TestSRRunEvidenceR2",
+        "TestSRProgressFile",
+        "TestSRResultFile",
+        "TestSRSingleExecutionColdStop"
+      ]
+    },
+    {
+      "registered_count": 1,
+      "id": "orca-cli",
+      "observed_seconds": 0.0,
+      "measured_count": 0,
+      "observed_count": 0,
+      "missing_tests": [
+        "TestSROrcaCLIWaitRetry"
+      ]
+    }
+  ],
+  "errors": [],
+  "observed_count": 3,
+  "slowest": [
+    {
+      "status": "pass",
+      "test": "TestSRRestartPreservesAuthorization",
+      "group": "recovery",
+      "duration_seconds": 161.37
+    },
+    {
+      "status": "pass",
+      "test": "TestSRServiceOwnership",
+      "group": "foundation",
+      "duration_seconds": 53.95
+    },
+    {
+      "status": "pass",
+      "test": "TestSRNativeUnknownAndStop",
+      "group": "recovery",
+      "duration_seconds": 33.7
+    }
+  ],
+  "qualification_eligible": false,
+  "passed_count": 3,
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\foundation"
+}

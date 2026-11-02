@@ -1,0 +1,15 @@
+{
+  "baseline_source_files": 787,
+  "authorized_changed_files": [
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/agentlaunch/config.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/operation/operation.go",
+    "internal/execution/reliable/plan.go"
+  ],
+  "other_existing_source_files_identical": 782,
+  "all_original_test_and_shared_helper_files_identical": true,
+  "exact_whole_file_transforms_passed": true,
+  "persistent_Clone_Validate_decoder_owner_Invoke_Reconcile_stop_unchanged": true,
+  "new_regression_file": "internal/application/new_intent_boundary_test.go"
+}

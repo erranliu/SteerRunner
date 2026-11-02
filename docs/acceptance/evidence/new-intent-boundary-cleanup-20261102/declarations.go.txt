@@ -1,0 +1,37 @@
+package main
+
+import (
+ "bytes"
+ "encoding/json"
+ "fmt"
+ "go/ast"
+ "go/format"
+ "go/parser"
+ "go/token"
+ "os"
+ "os/exec"
+ "path"
+ "sort"
+ "strings"
+)
+
+func git(args ...string) []byte {v,e:=exec.Command("git",args...).Output();if e!=nil{panic(e)};return v}
+func decls(name string,raw []byte)map[string]string{
+ out:=map[string]string{};set:=token.NewFileSet();f,e:=parser.ParseFile(set,name,raw,0);if e!=nil{panic(e)}
+ emit:=func(key string,n ast.Node){var b bytes.Buffer;if e:=format.Node(&b,set,n);e!=nil{panic(e)};out[path.Dir(name)+"|"+key]=b.String()}
+ for _,d:=range f.Decls {switch n:=d.(type){case *ast.FuncDecl:k:=n.Name.Name;if n.Recv!=nil{var b bytes.Buffer;format.Node(&b,set,n.Recv.List[0].Type);k=b.String()+"."+k};emit("func "+k,n);case *ast.GenDecl:for _,s:=range n.Specs{switch v:=s.(type){case *ast.TypeSpec:emit("type "+v.Name.Name,v);case *ast.ValueSpec:for _,id:=range v.Names{emit(n.Tok.String()+" "+id.Name,v)}}}}};return out
+}
+func main(){
+ names:=strings.Fields(string(git("diff","--name-only","HEAD","--","internal","cmd","tests")))
+ names=append(names,strings.Fields(string(git("ls-files","--others","--exclude-standard","--","internal","cmd","tests")))...)
+ before,after:=map[string]string{},map[string]string{};sourcesBefore,sourcesAfter:=map[string]string{},map[string]string{};files:=[]string{}
+ for _,name:=range names{if !strings.HasSuffix(name,".go")||strings.HasSuffix(name,"_test.go"){continue};files=append(files,name);old,e:=exec.Command("git","show","HEAD:"+name).Output();if e==nil{for k,v:=range decls(name,old){before[k]=v;sourcesBefore[k]=name}};raw,e:=os.ReadFile(name);if e==nil{for k,v:=range decls(name,raw){after[k]=v;sourcesAfter[k]=name}}else if !os.IsNotExist(e){panic(e)}}
+ removed,added,changed:=[]string{},[]string{},[]string{};moved:=map[string][]string{};identical:=0;types:=0
+ for k,v:=range before{a,ok:=after[k];if !ok{removed=append(removed,k)}else if v!=a{changed=append(changed,k)}else{identical++;if strings.Contains(k,"|type "){types++};if sourcesBefore[k]!=sourcesAfter[k]{moved[k]=[]string{sourcesBefore[k],sourcesAfter[k]}}}}
+ for k:=range after{if _,ok:=before[k];!ok{added=append(added,k)}}
+ sort.Strings(files);sort.Strings(removed);sort.Strings(added);sort.Strings(changed)
+ result:=map[string]any{"base_commit":strings.TrimSpace(string(git("rev-parse","HEAD"))),"changed_go_files":files,"identical_retained_declarations":identical,"identical_retained_types":types,"moved_declarations_identical":moved,"removed_declarations":removed,"added_declarations":added,"modified_retained_declarations":changed,"note":"Package-scoped keys include method receiver. All changed production files included; test files excluded and audited separately. Imports/comments excluded. Authorized modified declarations are checked by allowlist and reviewed/tested for exact intended changes. Baseline reference inventory and manual entry-point review establish removed-closure consumers separately."}
+ raw,_:=json.MarshalIndent(result,"","  ");if e:=os.WriteFile(".evidence/new-intent-boundary-cleanup/declarations.json",raw,0600);e!=nil{panic(e)}
+ allowed:=map[string]bool{"internal/execution/backend|type PreparationFacts":true,"internal/execution/reliable|func Next":true,"internal/execution/reliable/operation|func InputValue":true,"internal/execution/adapters/codex|type ObservationEvent":true,"internal/execution/adapters/codex|func Observe":true};if len(added)!=0{panic("unexpected new production declaration")};for _,k:=range changed{if !allowed[k]{panic("unexpected retained change: "+k)}}
+ fmt.Printf("identical retained=%d types=%d moved=%d removed=%d files=%d\n",identical,types,len(moved),len(removed),len(files))
+}
