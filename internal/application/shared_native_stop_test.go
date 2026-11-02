@@ -77,7 +77,11 @@ func (h *sharedNativeWire) OutputCommand(_ context.Context, command b.LaunchComm
 		if h.closes > 0 && h.mode == "query-failed" {
 			return nil, errors.New("original inventory unavailable")
 		}
-		result = map[string]any{"terminals": rows, "totalCount": len(rows), "truncated": h.closes > 0 && h.mode == "truncated", "hostScope": map[string]any{"hostIds": hosts, "omittedHostIds": []string{}}}
+		total := len(rows)
+		if h.closes > 0 && h.mode == "wrong-total-count" {
+			total++
+		}
+		result = map[string]any{"terminals": rows, "totalCount": total, "truncated": h.closes > 0 && h.mode == "truncated", "hostScope": map[string]any{"hostIds": hosts, "omittedHostIds": []string{}}}
 	case "terminal close":
 		h.closes++
 		if h.mode != "lost-live" && h.mode != "replacement" {
@@ -174,7 +178,7 @@ func sharedNativeEngine(t *testing.T, environment string) (*Engine, *worker, *sh
 
 func TestSharedNativeEngineStopReconciliation(t *testing.T) {
 	for _, environment := range []string{"", "paired-worker"} {
-		for _, mode := range []string{"lost-absent", "lost-live", "replacement", "missing-host", "wrong-runtime", "truncated", "query-failed", "receipt-commit-failed"} {
+		for _, mode := range []string{"lost-absent", "lost-live", "replacement", "missing-host", "wrong-runtime", "wrong-total-count", "truncated", "query-failed", "receipt-commit-failed"} {
 			t.Run(environment+"/"+mode, func(t *testing.T) {
 				e, w, wire, db, id := sharedNativeEngine(t, environment)
 				wire.mode = mode
