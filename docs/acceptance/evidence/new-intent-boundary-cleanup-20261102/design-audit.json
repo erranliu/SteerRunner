@@ -1,0 +1,29 @@
+{
+  "base_commit": "98309f835012c5ea43cad2245a11341a0d9fc040",
+  "product_test_diff_before_design": "",
+  "documents": {
+    "docs\\spec\\new-intent-boundary-cleanup.spec.md": "5f638771dfa885e2726c1e9b1ae650a2917432559cf0305b5209efe9cae67660",
+    "docs\\spec\\new-intent-boundary-cleanup.plan.md": "5345fa728fef19d2928157c788ee8bf25b3f36fb29d3cce5dfe37a4768847fd3"
+  },
+  "source_files": 787,
+  "decision": "pass",
+  "preserved": "LifecycleInput/Request/Candidate validation and Clone, CandidateForOperation, owner.validateOwnerRequest, Invoke/Reconcile/stop and original fixtures",
+  "transient_changes": [
+    "PreparationFacts.Cleanup",
+    "ObservationEvent.Summary",
+    "ObservationEvent.Title"
+  ],
+  "allowed_modified_declarations": [
+    "internal/execution/backend|type PreparationFacts",
+    "internal/execution/reliable|func Next",
+    "internal/execution/reliable/operation|func InputValue",
+    "internal/execution/adapters/codex|type ObservationEvent",
+    "internal/execution/adapters/codex|func Observe"
+  ],
+  "allowed_removed_declarations": [
+    "internal/execution/agentlaunch|func *Config.Display"
+  ],
+  "tests": "Real saveIntent/SQLite rejects legal old inputs without commit; manually encoded original requests still decode/validate/reconcile; submit_input and stop construct unchanged",
+  "controlled_selection": "test-foundation exact three, followed by test-controlled -FromEvidence timing import; no full groups expanded",
+  "audit_tool_note": "Initial name-only check also matched PowerShell Invoke-Client InputValue parameter and unrelated livetest.Cleanup fixture values. Reviewed scope: neither is operation.InputValue or PreparationFacts.Cleanup; these original scripts/fixtures must remain unchanged. No production/test edits before audit."
+}

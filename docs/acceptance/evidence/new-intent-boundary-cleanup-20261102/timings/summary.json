@@ -1,0 +1,16 @@
+{
+  "validation_scope": "controlled-selection",
+  "status": "passed",
+  "qualification_eligible": false,
+  "finished_at": "2026-11-02T06:55:28.0199530Z",
+  "duration_seconds": 0.1784238,
+  "timing_report": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\timings\\timings.json",
+  "catalog_sha256": "3f32d240468955ef85fbdce155cdc5703c4cd0e07ec8b79b98b6e9d9599a20be",
+  "complete_controlled_passed": false,
+  "schema": "steerrunner-controlled-selection/v1",
+  "mode": "timing-import",
+  "selection": null,
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-cleanup\\foundation",
+  "started_at": "2026-11-02T06:55:27.8497914Z",
+  "observed_top_level_seconds": 249.02
+}

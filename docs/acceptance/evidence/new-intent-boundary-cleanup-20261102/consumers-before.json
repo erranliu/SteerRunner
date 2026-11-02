@@ -1,0 +1,211 @@
+{
+  "InputValue": [
+    {
+      "file": "internal/execution/reliable/operation/operation.go",
+      "line": 9,
+      "text": "func InputValue(action executionbackend.LifecycleAction, input executionbackend.LifecycleInput) (any, error) {"
+    },
+    {
+      "file": "internal/execution/reliable/operation/record.go",
+      "line": 28,
+      "text": "value, err := InputValue(candidate.Action, candidate.Input)"
+    },
+    {
+      "file": "scripts/test-client.ps1",
+      "line": 33,
+      "text": "function Invoke-Client([string]$Action,$InputValue,[int]$Expected=0,[switch]$NonGit) {"
+    },
+    {
+      "file": "scripts/test-client.ps1",
+      "line": 37,
+      "text": "if ($null -ne $InputValue) { [IO.File]::WriteAllText($taskInput,($InputValue | ConvertTo-Json -Depth 50),(New-Object Text.UTF8Encoding($false)));$taskArgs+=@('-InputFile',$taskInput) }"
+    }
+  ],
+  "LifecycleReportCompletion": [
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 29,
+      "text": "LifecycleReportCompletion LifecycleAction = \"report_completion\""
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 130,
+      "text": "case LifecycleReportCompletion:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 303,
+      "text": "case LifecyclePrepareWorkspace, LifecycleCreateResource, LifecyclePrepareSession, LifecycleStartTurn, LifecycleSubmitInput, LifecycleReportCompletion,"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 498,
+      "text": "case LifecycleReportCompletion:"
+    },
+    {
+      "file": "internal/execution/reliable/operation/operation.go",
+      "line": 20,
+      "text": "case executionbackend.LifecycleReportCompletion:"
+    }
+  ],
+  "LifecycleAcknowledge": [
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 31,
+      "text": "LifecycleAcknowledge      LifecycleAction = \"acknowledge_delivery\""
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 134,
+      "text": "case LifecycleAcknowledge:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 304,
+      "text": "LifecycleDeliverFeedback, LifecycleAcknowledge, LifecycleStopObservation,"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 510,
+      "text": "case LifecycleAcknowledge:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle_test.go",
+      "line": 42,
+      "text": "Action: LifecycleAcknowledge,"
+    },
+    {
+      "file": "internal/execution/reliable/operation/operation.go",
+      "line": 24,
+      "text": "case executionbackend.LifecycleAcknowledge:"
+    }
+  ],
+  "LifecycleCleanup": [
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 34,
+      "text": "LifecycleCleanup          LifecycleAction = \"cleanup_resources\""
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 138,
+      "text": "case LifecycleCleanup:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 305,
+      "text": "LifecycleStopExecution, LifecycleCleanup, LifecycleHostAction:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 522,
+      "text": "case LifecycleCleanup:"
+    },
+    {
+      "file": "internal/execution/reliable/operation/operation.go",
+      "line": 28,
+      "text": "case executionbackend.LifecycleCleanup:"
+    },
+    {
+      "file": "internal/execution/reliable/plan.go",
+      "line": 94,
+      "text": "candidate := b.LifecycleCandidate{Action: b.LifecycleCleanup, Input: b.LifecycleInput{Cleanup: facts.Cleanup}}"
+    }
+  ],
+  "LifecycleHostAction": [
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 35,
+      "text": "LifecycleHostAction       LifecycleAction = \"host_action\""
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 140,
+      "text": "case LifecycleHostAction:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 305,
+      "text": "LifecycleStopExecution, LifecycleCleanup, LifecycleHostAction:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle.go",
+      "line": 528,
+      "text": "case LifecycleHostAction:"
+    },
+    {
+      "file": "internal/execution/backend/lifecycle_test.go",
+      "line": 20,
+      "text": "if err := (LifecycleCandidate{Action: LifecycleHostAction, Input: LifecycleInput{Host: &HostActionInput{Kind: HostOpenOriginal}}}).Validate(); err == nil {"
+    },
+    {
+      "file": "internal/execution/reliable/operation/operation.go",
+      "line": 30,
+      "text": "case executionbackend.LifecycleHostAction:"
+    }
+  ],
+  "ObservationEvent": [
+    {
+      "file": "internal/execution/adapters/codex/async_transport_test.go",
+      "line": 52,
+      "text": "asked := make(chan codexworker.ObservationEvent, 1)"
+    },
+    {
+      "file": "internal/execution/adapters/codex/async_transport_test.go",
+      "line": 59,
+      "text": "}, func(e codexworker.ObservationEvent) bool {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/backend.go",
+      "line": 323,
+      "text": "Events   chan ObservationEvent"
+    },
+    {
+      "file": "internal/execution/adapters/codex/backend.go",
+      "line": 334,
+      "text": "o := &Observation{Process: process, Events: make(chan ObservationEvent, 64), Done: make(chan error, 1), Finished: make(chan struct{}), cancel: cancel}"
+    },
+    {
+      "file": "internal/execution/adapters/codex/backend.go",
+      "line": 341,
+      "text": "completed, err := Observe(ctx, client, journal, threadID, turnID, replay, func(e codexapp.Envelope) error { _, err := ParseAskCall(e, threadID, turnID); return err }, func(event ObservationEvent) bool {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/observe.go",
+      "line": 14,
+      "text": "type ObservationEvent struct {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/observe.go",
+      "line": 27,
+      "text": "func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, validateAsk func(codexapp.Envelope) error, deliver func(ObservationEvent) bool, terminal ...func() error) (completed bool, err error) {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/observe.go",
+      "line": 29,
+      "text": "if !deliver(ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true, Kind: \"question\", Status: \"pending\", Title: \"Codex needs a decision\"}) {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/observe.go",
+      "line": 65,
+      "text": "event := ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true}"
+    },
+    {
+      "file": "internal/execution/adapters/codex/observe.go",
+      "line": 67,
+      "text": "if !deliver(ObservationEvent{Envelope: envelope, PublicMessage: message}) {"
+    }
+  ],
+  "Display": [
+    {
+      "file": "internal/execution/agentlaunch/config.go",
+      "line": 136,
+      "text": "func (c *Config) Display() []string {"
+    },
+    {
+      "file": "internal/host/server.go",
+      "line": 213,
+      "text": "// Display is a best-effort projection. It owns no execution authorization."
+    }
+  ]
+}

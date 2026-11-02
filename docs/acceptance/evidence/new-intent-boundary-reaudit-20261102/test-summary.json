@@ -1,0 +1,228 @@
+{
+  "application": {
+    "exit_code": 1,
+    "top_level": {
+      "pass": 16,
+      "fail": 1
+    },
+    "subtests": {
+      "pass": 22,
+      "fail": 3
+    },
+    "top_level_tests": [
+      {
+        "test": "TestSREventAckPreservesOriginalCommitBoundary",
+        "result": "pass"
+      },
+      {
+        "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+        "result": "fail"
+      },
+      {
+        "test": "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+        "result": "pass"
+      },
+      {
+        "test": "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+        "result": "pass"
+      },
+      {
+        "test": "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRNewIntentBoundaryRejectsNewButReconcilesSaved",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRNewIntentBoundaryKeepsSupportedPayloads",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationReconciliationKeepsPartialBinding",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRStopSerializesWithNativeDispatch",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationIntentCommitFailureDoesNotDispatch",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationReceiptCommitFailureReconcilesOriginal",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRStopBindingCommitFailureDoesNotDispatch",
+        "result": "pass"
+      }
+    ]
+  },
+  "budget-recheck": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 1
+    },
+    "subtests": {
+      "pass": 9
+    },
+    "top_level_tests": [
+      {
+        "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+        "result": "pass"
+      }
+    ]
+  },
+  "application-final": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 17
+    },
+    "subtests": {
+      "pass": 25
+    },
+    "top_level_tests": [
+      {
+        "test": "TestSREventAckPreservesOriginalCommitBoundary",
+        "result": "pass"
+      },
+      {
+        "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+        "result": "pass"
+      },
+      {
+        "test": "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+        "result": "pass"
+      },
+      {
+        "test": "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+        "result": "pass"
+      },
+      {
+        "test": "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+        "result": "pass"
+      },
+      {
+        "test": "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRNewIntentBoundaryRejectsNewButReconcilesSaved",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRNewIntentBoundaryKeepsSupportedPayloads",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationReconciliationKeepsPartialBinding",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRStopSerializesWithNativeDispatch",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationIntentCommitFailureDoesNotDispatch",
+        "result": "pass"
+      },
+      {
+        "test": "TestSROperationReceiptCommitFailureReconcilesOriginal",
+        "result": "pass"
+      },
+      {
+        "test": "TestSRStopBindingCommitFailureDoesNotDispatch",
+        "result": "pass"
+      }
+    ]
+  },
+  "consumers": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 10
+    },
+    "subtests": {
+      "pass": 18
+    },
+    "top_level_tests": [
+      {
+        "test": "TestLifecycleCandidateRequiresOneMatchingInput",
+        "result": "pass"
+      },
+      {
+        "test": "TestLifecycleRequestRequiresOriginalDurableOperation",
+        "result": "pass"
+      },
+      {
+        "test": "TestLifecycleReceiptCloneOwnsImplementationPayloadAndFacts",
+        "result": "pass"
+      },
+      {
+        "test": "TestObserverSingleAckPreservesWaitFailureAndCancellation",
+        "result": "pass"
+      },
+      {
+        "test": "TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead",
+        "result": "pass"
+      },
+      {
+        "test": "TestRecoveryHistoryIdleRequiresOriginalStoppedTurn",
+        "result": "pass"
+      },
+      {
+        "test": "TestAsyncQuestionObserveSteerAndReconcile",
+        "result": "pass"
+      },
+      {
+        "test": "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+        "result": "pass"
+      },
+      {
+        "test": "TestMockAppServerThreadAndTurnContract",
+        "result": "pass"
+      },
+      {
+        "test": "TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts",
+        "result": "pass"
+      }
+    ]
+  }
+}

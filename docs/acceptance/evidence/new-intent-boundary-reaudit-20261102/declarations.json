@@ -1,0 +1,25 @@
+{
+  "added_declarations": [],
+  "base_commit": "66cc0acf50b675c75458d9d6281139e16158a3a3",
+  "changed_go_files": [
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/agentlaunch/config.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/operation/operation.go",
+    "internal/execution/reliable/plan.go"
+  ],
+  "identical_retained_declarations": 90,
+  "identical_retained_types": 37,
+  "modified_retained_declarations": [
+    "internal/execution/adapters/codex|func Observe",
+    "internal/execution/adapters/codex|type ObservationEvent",
+    "internal/execution/backend|type PreparationFacts",
+    "internal/execution/reliable/operation|func InputValue",
+    "internal/execution/reliable|func Next"
+  ],
+  "moved_declarations_identical": {},
+  "note": "Package-scoped keys include method receiver. All changed production files included; test files excluded and audited separately. Imports/comments excluded. Authorized modified declarations are checked by allowlist and reviewed/tested for exact intended changes. Baseline reference inventory and manual entry-point review establish removed-closure consumers separately.",
+  "removed_declarations": [
+    "internal/execution/agentlaunch|func *Config.Display"
+  ]
+}

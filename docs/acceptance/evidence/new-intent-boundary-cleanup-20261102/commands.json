@@ -1,0 +1,75 @@
+{
+  "wire_before": {
+    "command": "go run ./.evidence/new-intent-boundary-cleanup/wire-audit.go .evidence/new-intent-boundary-cleanup/wire-before.json",
+    "exit_code": 0,
+    "before_product_edits": true
+  },
+  "wire_after": {
+    "command": "go run ./.evidence/new-intent-boundary-cleanup/wire-audit.go .evidence/new-intent-boundary-cleanup/wire-after.json",
+    "exit_code": 0
+  },
+  "declarations": {
+    "command": "go run ./.evidence/new-intent-boundary-cleanup/declarations.go",
+    "exit_code": 0
+  },
+  "new_boundary": {
+    "command": "go test ./internal/application -run '^TestSRNewIntentBoundary' -count=1 -timeout 2m -json",
+    "permission": "require_escalated",
+    "attempts": [
+      {
+        "log": "boundary.jsonl.gz",
+        "exit_code": 1,
+        "cause": "New test called internal invoke without worker gate; aborted."
+      },
+      {
+        "log": "boundary-final.jsonl.gz",
+        "exit_code": 1,
+        "cause": "Original fixture lacked frozen timestamps; existing reconciliation deadline required manual handling."
+      },
+      {
+        "log": "boundary-qualified.jsonl.gz",
+        "exit_code": 0,
+        "result": "2 top-level,12 subtests passed"
+      }
+    ]
+  },
+  "components": {
+    "command": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage ./internal/testkit/protocol -count=1 -timeout 5m -json",
+    "permission": "require_escalated",
+    "exit_code": 0
+  },
+  "application": {
+    "command": "go test ./internal/application -run '^(TestSRNewIntentBoundary.*|TestSREventAck.*|TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStop.*|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*|TestRemoteStopBudget.*)$' -count=1 -timeout 5m -json",
+    "permission": "require_escalated",
+    "exit_code": 0
+  },
+  "build": {
+    "command": "scripts/build.ps1 -OutFile .evidence/new-intent-boundary-cleanup/bin/steerrunner.exe",
+    "exit_code": 0
+  },
+  "live_compilation": {
+    "commands": [
+      "go test -c -tags live -o .evidence/new-intent-boundary-cleanup/compile/native.test.exe ./tests/native",
+      "go test -c -tags live -o .evidence/new-intent-boundary-cleanup/compile/integration-live.test.exe ./tests/integration"
+    ],
+    "exit_codes": [
+      0,
+      0
+    ]
+  },
+  "foundation": {
+    "command": "scripts/test-foundation.ps1 -OutDir .evidence/new-intent-boundary-cleanup/foundation -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$' -RunnerExe .evidence/new-intent-boundary-cleanup/bin/steerrunner.exe -TimeoutMinutes 8",
+    "permission": "require_escalated",
+    "launch_exit_code": 0,
+    "result_exit_code": 0,
+    "scenarios": 3,
+    "skips": 0
+  },
+  "timing_import": {
+    "command": "scripts/test-controlled.ps1 -FromEvidence .evidence/new-intent-boundary-cleanup/foundation -OutDir .evidence/new-intent-boundary-cleanup/timings",
+    "exit_code": 0,
+    "mode": "timing-import",
+    "qualification_eligible": false
+  },
+  "notes": "Only new regression fixture corrections between boundary attempts. Production implementation and all original tests unchanged after initial edits; source frozen before complete validation. Read-only name-scan collisions are recorded in design-audit. No full Controlled/L1/L2/L3 claim."
+}

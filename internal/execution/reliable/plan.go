@@ -90,10 +90,6 @@ func Next(ctx context.Context, port b.LifecyclePreparationPort, snapshot b.Lifec
 		candidate := b.LifecycleCandidate{Action: b.LifecycleCreateResource, Input: b.LifecycleInput{Resource: facts.ResourceRequired}}
 		return candidate, candidate.Validate()
 	}
-	if facts.Cleanup != nil {
-		candidate := b.LifecycleCandidate{Action: b.LifecycleCleanup, Input: b.LifecycleInput{Cleanup: facts.Cleanup}}
-		return candidate, candidate.Validate()
-	}
 	if snapshot.PendingTurn == nil {
 		return b.LifecycleCandidate{Done: true}, nil
 	}

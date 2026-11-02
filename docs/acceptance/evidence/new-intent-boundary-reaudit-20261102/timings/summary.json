@@ -1,0 +1,16 @@
+{
+  "catalog_sha256": "f882914f87fdcc54cb76163458d1e6e8c7aa367107a658586cc2c81d7b44343a",
+  "observed_top_level_seconds": 253.18,
+  "complete_controlled_passed": false,
+  "finished_at": "2026-11-02T07:14:15.1030215Z",
+  "mode": "timing-import",
+  "timing_report": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\timings\\timings.json",
+  "schema": "steerrunner-controlled-selection/v1",
+  "status": "passed",
+  "started_at": "2026-11-02T07:14:14.6235290Z",
+  "qualification_eligible": false,
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\foundation",
+  "selection": null,
+  "validation_scope": "controlled-selection",
+  "duration_seconds": 0.4955786
+}

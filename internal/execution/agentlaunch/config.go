@@ -133,16 +133,3 @@ func (c *Config) Command(agent string) (string, error) {
 func (c *Config) RemoteConfig() codex.RemoteAgentConfig {
 	return codex.RemoteAgentConfig{AuditModel: c.AuditModel, Executable: c.Executable, Args: c.Args, Model: c.Model, ReasoningEffort: c.ReasoningEffort, AccessMode: c.AccessMode, RepositoryURL: c.RepositoryURL}
 }
-func (c *Config) Display() []string {
-	if c == nil {
-		return nil
-	}
-	lines := []string{"代理启动：通用命令（覆盖原生默认启动）· 执行主机 PowerShell · 权限由启动参数与主机设置决定"}
-	if c.Model != "" {
-		lines = append(lines, "Model："+c.Model)
-	}
-	if c.ReasoningEffort != "" {
-		lines = append(lines, "Reasoning effort："+c.ReasoningEffort)
-	}
-	return lines
-}

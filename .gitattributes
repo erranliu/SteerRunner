@@ -50,3 +50,7 @@ docs/acceptance/evidence/event-ack-reaudit-20261102/** -text -whitespace
 
 docs/acceptance/evidence/orphan-entry-cleanup-20261102/** -text -whitespace
 docs/acceptance/evidence/orphan-entry-reaudit-20261102/** -text -whitespace
+
+docs/acceptance/evidence/new-intent-boundary-cleanup-20261102/** -text -whitespace
+
+docs/acceptance/evidence/new-intent-boundary-reaudit-20261102/** -text -whitespace
