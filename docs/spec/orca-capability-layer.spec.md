@@ -2,7 +2,7 @@
 
 维护日期：2026-11-02。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
-状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已有 Spec/Plan，待实施；后续批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
+状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已实施并通过受控验证，待独立审计；后续批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
 
 ## 1. 设计目标与范围
 
@@ -134,7 +134,7 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | B2d Terminal 等待 | 已完成 | [Spec](orca-terminal-wait-capability.spec.md) / [Plan](orca-terminal-wait-capability.plan.md) / [验收](../acceptance/orca-terminal-wait-capability.md)；原双端 composer 共用原生 wait | 唯一旧 wait 参数/结构已删除，等待不承担业务完成证明 | 原参数/期限、前后身份及负面等待/取消/原输入回归通过；独立审计通过 |
 | B3 状态与会话读取 | 已完成 | [Spec](orca-state-session-capability.spec.md) / [Plan](orca-state-session-capability.plan.md) / [验收](../acceptance/orca-state-session-capability.md)；原生消息/状态与执行认领分离，双端接入一份策略 | 协议状态已移除执行身份/原输入证明，原策略迁至执行侧 | 多用户原样读取、错误归属拒绝、原围栏/来源及两包全集通过；独立审计通过 |
 | B4a 仓库与工作区查询 | 已完成 | [Spec](orca-resource-query-capability.spec.md) / [Plan](orca-resource-query-capability.plan.md) / [验收](../acceptance/orca-resource-query-capability.md)；共用实际 repo list/worktree show 原生查询 | 目标 selector 选择留给消费方，删除对应查询/解析 | 原主机、仓库身份、基线和歧义拒绝保持 |
-| B4b 资源创建 | 待实施 | [Spec](orca-resource-create-capability.spec.md) / [Plan](orca-resource-create-capability.plan.md)；组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
+| B4b 资源创建 | 待独立审计 | [Spec](orca-resource-create-capability.spec.md) / [Plan](orca-resource-create-capability.plan.md) / [验收](../acceptance/orca-resource-create-capability.md)；组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
 | B4c 受限文件操作 | 待实施 | 按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
 | B4d 关闭与完整清单 | 待实施 | 共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |
 | B5 候选生产接线与业务资格 | 待实施 | 实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算 | 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |

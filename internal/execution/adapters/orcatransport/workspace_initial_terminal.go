@@ -82,10 +82,10 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 	}
 	create := func(readOnly bool) (native.Terminal, error) {
 		key := l.creationKey(s, binding, binding, "initial-terminal")
-		args := []string{"terminal", "create", "--worktree", "id:" + c.Worktree.ID, "--title", "SteerRunner initial execution " + c.Worktree.DisplayName, "--json"}
+		args := native.TerminalCreateArgs(native.TerminalCreate{Worktree: "id:" + c.Worktree.ID, Title: "SteerRunner initial execution " + c.Worktree.DisplayName})
 		r, e := l.creationCall(ctx, key, args, c.RuntimeID, c.Worktree.ID, l.creationTimeout(), readOnly)
-		var made struct{ Terminal native.Terminal }
-		if e != nil || r.CallUncertain || r.RuntimeID != c.RuntimeID || json.Unmarshal(r.Payload, &made) != nil || made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != c.Worktree.ID {
+		made, decodeErr := native.DecodeTerminalCreation(r)
+		if e != nil || r.CallUncertain || r.RuntimeID != c.RuntimeID || decodeErr != nil || made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != c.Worktree.ID {
 			return native.Terminal{}, errors.Join(e, errors.New("original initial terminal creation unverified; no replacement created"))
 		}
 		p := b.ProcessIdentity{Kind: "orca_terminal", Executable: l.profile.Executable, RuntimeID: r.RuntimeID, Terminal: made.Terminal.Handle, Incarnation: made.Terminal.IncarnationID, WorktreeID: c.Worktree.ID, ExecutionHost: l.profile.Target().ExecutionHost}

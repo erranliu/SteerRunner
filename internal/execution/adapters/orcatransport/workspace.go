@@ -87,7 +87,7 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 		if callErr != nil {
 			return receipt, callErr
 		}
-		if err = json.Unmarshal(result.Payload, &created); err != nil {
+		if created, err = decodeWorkspaceCreation(result); err != nil {
 			return receipt, err
 		}
 		created.RuntimeID = result.RuntimeID
@@ -199,12 +199,33 @@ func (l *Lifecycle) creationTimeout() time.Duration {
 }
 
 func (l *Lifecycle) workspaceCreationArgs(r b.LifecycleRequest, selector string) []string {
-	name := workspaceName(r.Snapshot)
-	args := []string{"worktree", "create", "--repo", selector, "--name", name, "--base-branch", r.Input.Workspace.BaseCommit, "--no-parent", "--setup", "skip", "--json"}
+	options := native.WorktreeCreate{Repository: selector, Name: workspaceName(r.Snapshot), BaseBranch: r.Input.Workspace.BaseCommit, NoParent: true, Setup: "skip"}
 	if l.setup.AgentLaunchCommand == "" {
-		args = append(args, "--agent", r.Snapshot.Ref.Agent.Name)
+		options.Agent = &r.Snapshot.Ref.Agent.Name
 	}
-	return args
+	return native.WorktreeCreateArgs(options)
+}
+
+// Native creation fields and execution checkpoint extensions have different
+// owners. Keep the latter's original decoding and persisted representation.
+func decodeWorkspaceCreation(result native.Result) (workspaceCreation, error) {
+	var created workspaceCreation
+	value, err := native.DecodeWorktreeCreation(result)
+	if err != nil {
+		return created, err
+	}
+	var checkpoint struct {
+		RuntimeID            string          `json:"runtime_id"`
+		ResolvedRepositoryID string          `json:"resolved_repository_id,omitempty"`
+		ResolvedRuntimeID    string          `json:"resolved_runtime_id,omitempty"`
+		Terminal             native.Terminal `json:"selected_terminal"`
+	}
+	if err = json.Unmarshal(result.Payload, &checkpoint); err != nil {
+		return created, err
+	}
+	created.Worktree, created.AgentTerminalHandle, created.StartupTerminal = value.Worktree, value.AgentTerminalHandle, value.StartupTerminal
+	created.RuntimeID, created.ResolvedRepositoryID, created.ResolvedRuntimeID, created.Terminal = checkpoint.RuntimeID, checkpoint.ResolvedRepositoryID, checkpoint.ResolvedRuntimeID, checkpoint.Terminal
+	return created, nil
 }
 
 func workspaceName(s b.LifecycleSnapshot) string {
@@ -227,7 +248,7 @@ func (l *Lifecycle) workspaceCreation(ctx context.Context, r b.LifecycleRequest,
 	if err != nil {
 		return created, err
 	}
-	if err = json.Unmarshal(result.Payload, &created); err != nil {
+	if created, err = decodeWorkspaceCreation(result); err != nil {
 		return created, err
 	}
 	created.RuntimeID, created.ResolvedRuntimeID = result.RuntimeID, plan.Runtime
