@@ -1,29 +1,53 @@
-# Orca 双端原生 Runner 候选 B5 验收进展
+# Orca 双端原生 Runner 候选 B5 验收
 
-日期：2026-11-02。状态：进行中，未取得真实 Runner 资格，不开始 B6。
+日期：2026-11-02。状态：OSR-01–05 全部通过；B5 已签收并通过实施后独立审计，允许进入 B6。依据 [Spec](../spec/orca-shared-native-runner.spec.md) / [Plan](../spec/orca-shared-native-runner.plan.md)。
 
-候选完整接线到公开 submit/freeze、profile/state codec 9、同一原生 Lifecycle、正式 Engine 停止与持久重入、在线/离线 orca_terminal scope。旧本机 managed 合同及其他组合仍保留。
+## 实现及冻结身份
 
-受控六包回归：456 个根、1565 个子节点、1789 个叶例，2013 pass、7 skip、1 fail；失败为旧远端无冻结 scope 时工作区来源错误回退到 helper owner。已恢复旧远端目标判断，并补本机候选同类拒绝；定向复验 2 根、6 子节点、6 叶例全通过。原始失败保留，未改记为全套通过。
+实施 `a5ac9dd`，独立修复 `77c7ad8`（CLI 路径）、`1334745`（补 count 反例）、`9905fa4`（既有业务反馈入口）、`ac361dd`（活动 Started 及清理边界）。最终生产源码 `ac361ddda57cb3ba143fc90dd1893f5a7af90bf1`，build source_digest `7ef1a5cc631f2fb120adcaea01edb3df6e4b2d42fc0fa5f6e05bb2f8bff4d985`，clean；Runner SHA256 `351da2322015d477d99a08b14cddb60bb3c64ace12ca74e33e40adef4874b7bf`，Windows/amd64，Go 1.24.2。
 
-双端停止矩阵在真实构造器、CLI FIFO、正式冻结/Engine/存储路径覆盖未知关闭、活动资源、替换 incarnation、缺 host、错 runtime、截断、查询失败、回执提交失败及原请求重入。上述六包运行中矩阵全通过。排队取消零派发、后续首次关闭通过，额外加了测试异常退出释放屏障。
+四场均为同源码、Runner、live driver；各 Manifest 冻结 CLI/转发器/材料/目标和 public 配置，经正式 service start→submit→freeze→Engine→持久化→Run stop→service stop→真实 service verify-stopped。CLI 为 Orca 1.4.242，SHA256 `e7a6fa40a59d237cdb7cf32444df6660da850d1b31e4162634287d91fdfc3cba`。本机 runtime `8a0d209e-094d-4ec3-a923-5cf6c064df67`；明确配对环境 **台式机64G** runtime `64bdec68-d3ed-4216-a894-0cc143ed4653`。注册测试源仓库为各原主机 `C:/Projects/SteerlineTest`，没有改变已安装服务或旧目录。
 
-受控正式离线 CLI 回归：1 根、30 子节点、26 叶例全通过（旧本机/远端及新双端候选）；测试配置/Manifest 包 41 根、191 子节点、215 叶例全通过。live-tag 编译、场景目录脚本校验通过；编译和受控 fixture 不计真实资格。
+## 最终真实资格
 
-新增注册 driver 只通过正式 CLI 提交/反馈/停止，不构造 Run/Snapshot，不代模型发布、不合并测试 PR；记录精确 CLI/转发器/Runner 身份，验证同原 terminal/provider 的 pre-pr_ready 反馈、测试 PR 仓库/base/head、原清单、Run stop/service stop/真实离线复核。四个真实场次尚未执行。OSR-03/04 真实部分及 OSR-05 审计待闭环。
+| 场景 / fixture | 正式 Run | 业务及停止结论 |
+| --- | --- | --- |
+| 本机开发 `fb72b0846670` | `74b7b6835f4cc31b6f87380871fdbc62` | 原会话反馈、真实检查器、commit/push/[PR #754](https://github.com/erranliu/SteerlineTest/pull/754)，head `117fc74ee3723d568dcdf39548b203f26991a350`；未合并，停止及离线通过 |
+| 远端开发 `d7ca2e402fc3` | `6bfa277dbab17ee7bd5c75741d96f8d5` | 原会话反馈、真实检查器、commit/push/[PR #755](https://github.com/erranliu/SteerlineTest/pull/755)，head `ef0917f29e434290f5c029531b499402259eccb7`；未合并，停止及离线通过 |
+| 本机活动 `09e7cd2cbd8d` | `fc4b91491e56a120823c189efa348147` | `implement.execute` 已 Started，原 provider/root 仍 working、hook metadata 有效、尚无 final 时正式撤销；停止及离线通过，无 PR |
+| 远端活动 `4e43581c5513` | `87eb26472e340ba37edb786ee86aff89` | 同本机活动边界；停止及离线通过，无 PR |
 
-当前原始记录在 .evidence/orca-b5；完成时按已有可复现 UTF-8 文件与 SHA256 格式归档，含初始失败。
+两成功场次的 needs_input 和正式 reply(kind=feedback) 均在 pr_ready 前，保持原 terminal/incarnation/provider；模型在原主机完成工作，driver 独立 GH 查询 repo/base/branch/head/open/unmerged，再取精确 Git 对象、核材料/diff、在私有 QA checkout 运行真实 check.ps1。没有测试脚本代模型发布或合并。
 
-后续修订：77c7ad8 修复测试 Manifest 对 Windows 正斜杠 CLI 路径的误拒绝；独立审计复核通过。1334745 补双端正式 Engine 的 totalCount/rows 不符反例，两个叶例全通过，不重发关闭、不结算。排队释放屏障后的正常主机权限复验通过；沙箱 Git 临时仓库写权限失败另保留。
+四场各原 close=1，完整原 runtime/worktree local host 清单未截断且原终端缺席，online stopped、writer 退出、离线 resources_settled 一致。活动场次撤销前后 send 数保持 2（bootstrap 和原业务各一次），没有后继输入。所有场次零 managed helper/control/history/扩展调用；原生 session reader 不伪装为 helper history。准备终端独立登记、确认关闭，不混入业务 scope；测试 base/worktree/未合并 PR 保留。
 
-真实场次 5a64408f87c1 在 service start 前因测试路径比较失败；准备终端已确认关闭，无 Run/PR。场次 3e4b30af354f 正式 Run 03dabd99220327b14179c99ad70c0058 已验证原请求 Started、完整 needs_input final，业务反馈被 Engine 的旧 gate 拒绝：workflow.FeedbackStep 明确支持 input.Continue，Engine 只认 ManualImplementation。本次 Run stop、service stop、真实 offline 验证均通过，关闭一次、零旧链，但业务场次仍为 failed、没有 PR，不能计资格。
+## 受控回归及边界
 
-针对上述入口不一致，允许 waiting_input 的冻结业务 input Continue/ManualImplementation，活动 native question 的 execute 状态和 milestone 继续拒绝；原 qualifyContinuation 的 session/resource/idle 校验不改。新增双端正式 Engine 的 idle/active 四例验证：先保存显式 feedback，只有原会话 idle 才冻结一个后继输入，非 idle 零输入/零派发；活动 execute 和 milestone 入口均拒绝。四例通过。准备未执行的远端 674b961e26f4 不记资格，保留其已关闭准备终端与 base。
+| 集合 | 实际结果 |
+| --- | --- |
+| 六包初始全集 | 456 根/1565 子节点/1789 叶；2013 pass、7 opt-in skip、1 fail；唯一失败为旧远端缺冻结 scope 时误回退 helper，已修复并定向复验，不改写初始失败 |
+| 最终两 Orca 包全集 | 236 根/1161 子节点/1237 叶；1390 pass、7 opt-in skip、0 fail |
+| 随后最终活动 Started 消费者反例 | 2 根/23 子节点/23 叶，全 pass；包括同前缀第二 user、foreign/wire proof、旧 profile、provider/双源 authority/incarnation、partial/截断 final、通知误归属 |
+| working/done 受控 IPC 原资源围栏 | 2 根/62 子节点/62 叶，全 pass；唯一完整 user、原 terminal 前后围栏、provider/path/root/stamp/metadata 不变，working 证明不能授 done |
+| 正式停止/来源及排队补验 | 3 根/8 子节点/8 叶全 pass；另补双端 count mismatch 两叶、blocked Run 合法首次 stop 两叶全 pass |
+| 正式 offline CLI | 1 根/30 子节点/26 叶全 pass：旧 offline_verification/remote_offline_scope 与新双端 native_candidate_offline_scope |
+| 测试配置/Manifest 包 | 41 根/191 子节点/215 叶全 pass；CLI slash 正例另补，旧 helper/其他 driver/workflow 和哈希反例保持 |
+| 其他 | 依赖守卫、生产构建、live-tag 编译、目录脚本、控制/反馈来源回归通过；零匹配/编译不算真实资格 |
 
-9905fa4 构建的真实成功业务场次：本机 0ac84bd0e288 / Run bdb7fd35aec3fb355e51c0fac5569c2f / PR #752 / head 3a0b5b002a7dcf93eaacf7e80c551032e925025d；远端 a5e6b5ae39f0 / Run 71b0bb9a75ab148115d147dfb58f14a2 / PR #753。两者同原会话反馈、独立原 Git 对象/check.ps1、未合并 PR、正式 Run stop/service stop/真实 offline 全通过，零旧链。
+子节点包含分组节点；集合重叠，不能相加。两包全集在最终双源 metadata 小补充前执行，后续 23 叶覆盖最终消费者；blocked 清理补充只改 driver/测试，另验证正式首次 stop。七 skip 为 TestOrcaLocalPipeNativeEvidence、TestOrcaLocalIPCNativeProbe、TestOrcaTerminalQueryLive、TestUsageLocalAcceptanceRepoCleanupLive、TestOrcaNativeStateLiveLifecycle、TestShortInputProbeInspect、TestOrcaWorkspaceStartupLive，均不计真实资格。
 
-同构建独立活动场次 02c06ff8e08a / 118c865d9b79f5dea6670e9ba7554000 与 1ca1c9d3e829 / 6edf242af2c497003cba50f33e6c3ad9 失败：旧 Codex 流程仅独立 done 输入证明赋 Started，驱动又误依赖主记录中省略的 Observation，错过 working 窗口并推进发布（原分支无提交差异，未取得 PR）。本机显式正式 stop 已受理；远端显式 stop 返回已确认 stale_revision，随后 driver 的原 stop 受理成功。两个 Run 均正式停止、service 退出、真实 offline 通过，原关闭一次，失败不改判资格。只读查询与所有失败日志保留。
+候选两端 profile/state codec=9、orca_terminal scope。活动 Started 只由独立完整唯一输入及原 working 事实证明，不使用 send hint；它不赋首个 WorkingAt/root/authority 或流覆盖，done（包括非空 preview）仍须 fresh done-only unique-input fence。旧 4/6/7/8 合同不重释。scope 不证明 Codex 全部后代退出或撤销凭据；实际模型未独立核验，工作区审计 unreported，audited/Pi/DSH/其他 workflow/显式 managed 组合不继承本批资格。
 
-后续独立修复增加上述 codec9 query-only 活动 Started、候选 done 强制 fresh 唯一输入、首个通知 root 禁止及双源 metadata 反证；driver 限定 implement.execute 窗口，错过即失败清理，sleep 返回只 needs_input 不进入发布；保存显式 metadata observation，清理按尚未尝试且 stop_status 为空决定合法首次 stop，不以输入是否允许作替代。
+## 失败、修复与历史场次
 
-受控两包全回归 236 根、1161 子节点、1237 叶例，1390 pass、7 opt-in skip、0 fail，7 skip 不计真实资格。随后最终双源身份补充的消费者反例 2 根/23 子节点/23 叶例全通过；working/completion 受控 IPC 原资源围栏 2 根/62 子节点/62 叶例全通过。新增实现影响 Started/完成，所以 9905fa4 两个成功场次只保留为历史事实，最终四场须以新构建全部 fresh 复验。
+- `5a64408f87c1` 在 service start 前因测试 Manifest slash 比较失败；无 Run/PR，准备终端确认关闭。`77c7ad8` 独立修复。
+- `3e4b30af354f` / Run `03dabd99220327b14179c99ad70c0058` 已有完整 needs_input final，但正式反馈被 Engine 旧 gate 拒绝；`9905fa4` 修复入口与既有 input.Continue 不一致，活动 execute/milestone 仍拒绝、原 idle 资格不变。Run/service/offline 全停止，无 PR，场次仍 failed。
+- `9905fa4` 历史成功场次 `0ac84bd0e288` / PR #752、`a5e6b5ae39f0` / PR #753 完整通过且未合并；因后续 Started 变化未平移资格，以上最终四场 fresh 复验。
+- 同旧构建活动场次 `02c06ff8e08a` / Run `118c865d9b79f5dea6670e9ba7554000`、`1ca1c9d3e829` / Run `6edf242af2c497003cba50f33e6c3ad9` 错过活动窗口并推进发布；原分支无提交差异，未取得 PR。本机显式 b5-stop 受理；远端显式 stop 明确 stale_revision 后，driver 自身 b5-stop 受理清理。两者 close=1、Run/service/offline 停止，仍 failed。`ac361dd` 修复独立 working Started、done/通知间接授权和 driver 窗口、blocked 清理。
+- `674b961e26f4` 仅准备、未执行，因构建更新作废，不计资格。初始控制测试 request_id/command_id 混淆、隔离构造器绕 FIFO、目录计数和沙箱 Git 权限失败均保留；最终测试使用真实构造器/FIFO，不把失败改判通过。
+
+## 独立审计与证据
+
+原独立审计者已关闭 `77c7ad8`、`9905fa4`、`ac361dd` 的代码修复，无剩余确认 P1/P2，并独立复核最终双端真实活动证据通过。同一独立审计者最终确认双端开发与归档全部通过：424 文件逐字节/SHA、归档 SHA、31 组测试统计一致；20 个公开派生副本仅裁除 27 条无关仓库行并添加归档说明，相关操作语义与计数保持；经 GitHub 只读复查 #754/#755 当前仍 open、merged=false、精确 base/head 一致。最终结论 clean，无未关闭 P1/P2，OSR-01–05 可签收，限已声明的 Codex/development/2 与 orca_terminal scope。
+
+[证据归档](evidence/orca-shared-native-runner-20261102/README.md) 含 424 个 UTF-8 文件与逐文件字节/SHA256，可机械复核；commands/source/test-statistics/scene-ledger 分开记录命令、身份、统计和场次。公开副本仅裁除无关注册仓库行，derivations 记录原始文件 SHA256；原完整日志本地保留，所有相关原操作/资源/请求/结果均保留。无 EXE、认证帧或数据库归档。
