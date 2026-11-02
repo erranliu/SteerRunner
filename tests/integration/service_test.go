@@ -54,8 +54,10 @@ func TestMain(m *testing.M) {
 		os.Exit(runJobHelper())
 	}
 	flag.Parse()
-	if _, err := selectedResultFileCases(*resultFileCasesFlag); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+	var selectionErr error
+	controlledCaseSelection, selectionErr = resolveControlledCases(*controlledCasesFlag, *resultFileCasesFlag)
+	if selectionErr != nil {
+		fmt.Fprintln(os.Stderr, selectionErr)
 		os.Exit(2)
 	}
 	helperEXE = *helperFlag
@@ -115,17 +117,22 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, "No foundation scenario matched.")
 		code = 1
 	}
-	if code == 0 && *resultFileCasesFlag != "" && len(resultFileCaseResults) == 0 {
-		fmt.Fprintln(os.Stderr, "Explicit ResultFile selection did not execute.")
-		code = 1
+	if code == 0 {
+		if err := verifyControlledCaseExecution(); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			code = 1
+		}
 	}
 	if root != "" {
 		os.RemoveAll(root)
 	}
 	if *evidenceFlag != "" {
 		result := map[string]any{"exit_code": code, "scenario_count": testCount.Load(), "exe": runnerEXE, "finished_at": time.Now().UTC().Format(time.RFC3339Nano)}
-		if len(resultFileCaseResults) > 0 {
-			result["result_file_cases"] = resultFileCaseResults
+		if len(controlledCaseResults) > 0 {
+			result["controlled_cases"] = controlledCaseResults
+		}
+		if receipts := controlledCaseResults["TestSRResultFile"]; len(receipts) > 0 {
+			result["result_file_cases"] = receipts
 		}
 		body, _ := json.Marshal(result)
 		_ = os.WriteFile(filepath.Join(*evidenceFlag, "result.json"), body, 0600)

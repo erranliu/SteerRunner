@@ -3,7 +3,6 @@
 package integration
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
@@ -16,15 +15,14 @@ import (
 
 func TestSRResultAcquisition(t *testing.T) {
 	testCount.Add(1)
-	for _, scenario := range []string{"plain-marker", "audit-zero", "audit-positive", "audit-offline", "audit-report", "parser-unsupported", "parser-complete", "parser-tool"} {
-		t.Run(scenario, func(t *testing.T) {
+	for _, scenario := range selectedControlledCases("TestSRResultAcquisition") {
+		runControlledCase(t, "TestSRResultAcquisition", scenario, func(t *testing.T) {
 			selectedRunner := runnerEXE
 			t.Cleanup(func() { runnerEXE = selectedRunner })
 			dir, envelope := setupRun(t)
-			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-parser")
+			hold := filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")
 			if scenario == "audit-offline" {
 				t.Setenv("STEERRUNNER_FIXTURE_MULTI_PROVIDER", "1")
-				hold = filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "hold-audit")
 				if err := os.WriteFile(hold, nil, 0600); err != nil {
 					t.Fatal(err)
 				}
@@ -66,13 +64,7 @@ func TestSRResultAcquisition(t *testing.T) {
 				if err := os.WriteFile(filepath.Join(dir, "service", "result-acquisition.json"), config, 0600); err != nil {
 					t.Fatal(err)
 				}
-				if scenario == "parser-restart" || scenario == "parser-kill" || scenario == "parser-stop" {
-					if err := os.WriteFile(hold, nil, 0600); err != nil {
-						t.Fatal(err)
-					}
-					t.Cleanup(func() { _ = os.Remove(hold) })
-					t.Setenv("STEERRUNNER_PARSER_CASE", "PARSER_WAIT("+base64.RawURLEncoding.EncodeToString([]byte(hold))+")")
-				}
+
 				if scenario == "parser-tool" {
 					t.Setenv("STEERRUNNER_PARSER_CASE", "PARSER_TOOL")
 				}

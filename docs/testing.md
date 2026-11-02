@@ -205,6 +205,9 @@ PR。现行顶层数量统一见[当前清单与资格边界](test-catalog.md#�
 | runtime-files | ProgressFile、ResultFile |
 | content-flow | content 组的五项，加 NativeUnknownAndStop、ManualReconciliation |
 | acceptance-control | foundation 与 recovery 两组的十二项 |
+| result-plain | ResultAcquisition/plain-marker |
+| result-audit | ResultAcquisition/audit-zero、audit-positive、audit-offline、audit-report |
+| result-parser | ResultAcquisition/parser-unsupported、parser-complete、parser-tool |
 
 表中测试名省略 `TestSR` 前缀。组合是常见改动的固定起点；修改共享事务、授权或原生协议时仍需按实际影响补选，不将组合当作所有改动的充分验证。
 
@@ -252,7 +255,7 @@ ResultFile 的实际子场景明细另见下节。报告新增 `subtests`（逐�
 ./scripts/test-foundation.ps1 -Pattern '^TestSRResultFile$' -ResultFileCase final-seal -OutDir .evidence/result-seal-new
 ```
 
-`-ResultFileCase` 仅作用于 ResultFile，内部传入独立的 `-result-file-cases` 标志，不使用全局 Go 子路径过滤。未知/重复 ID、选择集合没有 ResultFile、与 List/FromEvidence 混用均拒绝。未传此参数的 foundation/full 入口仍执行两类；其他测试看不到新的子路径过滤条件。
+`-ResultFileCase` 仅作用于 ResultFile，保留为兼容入口；新的选测入口统一解析为按父测试的 Case 计划，foundation 仍兼容旧 `-result-file-cases` 标志。不使用全局 Go 子路径过滤。未知/重复 ID、选择集合没有 ResultFile、与 List/FromEvidence 混用均拒绝。同一父测试不能同时用 Case 与 ResultFileCase。未收窄的 foundation/full 入口仍执行两类。
 
 每次新执行在 `result.json.result_file_cases` 记录实际执行的 ID、成功布尔和包含清理的耗时；`source-identity.json` 保存显式选择，选测 summary 保存解析后的精确集合。Go 端拒绝选中的父场景或 enabled 变体未执行；公开选测和完整前置另外核验对应 RUN/PASS、四个 enabled 叶例、重复/跳过/失败/多余场景及实际回执，完整前置必须具备两类实际覆盖。定向执行全部父测试但缺其中一类仍不能取得完整资格。
 
@@ -261,6 +264,59 @@ ResultFile 的实际子场景明细另见下节。报告新增 `subtests`（逐�
 本轮成本验证固定同一 Runner，最终默认全量和定向使用字节相同的 integration driver。默认 ResultFile 两类/八变体通过，顶层 205.11 秒（故障闭环 121.76、封存 83.35）；最终 execute-stop 的 ResultFile 只执行 final-seal/四变体，82.15 秒，该样本定向成本减少 59.95%。这是省去定向范围之外的四项故障业务闭环，不是让完整验证跳过它们。
 
 execute-stop 原版基线墙钟 307.29 秒，最终样本 279.10 秒；中间候选样本分别为 238.40 和 363.18 秒，波动明显，不能认定有稳定的组合整体提速。原版 ResultFile 的旧样本为 150.33 秒，最终默认全量为上述 205.11 秒，完整验证没有取得提速证据。本轮只验证相关测试及实际子场景，不授予完整 L1/Controlled 27 项或真实模型资格。原日志、失败反例、产物摘要与全部耗时样本保留于本工作副本 `.evidence/resultfile-granularity-20261102/`，可用同一固定 Runner 和上述入口复验；不把不同样本相加为覆盖或收益。
+
+### ResultAcquisition 断言对照（2026-11-02）
+
+本轮先以固定 Runner 复测 `TestSRResultAcquisition` 的原八项，再调整定向编排。下表按现有测试源码登记，不要求真实模型制造审计发现，也不将 parser 的接线验证替换为纯文本单元测试。
+
+| 职责 | 子场景 | 原生 turn/start 预算 | 原有独有断言及共同收尾 |
+| --- | --- | --- | --- |
+| 普通结果获取 | plain-marker | 2 | 普通开发到达 pr_ready；一个原 thread；保留完整工作流和原资源清理 |
+| 审计结果 | audit-zero | 3 | 显式 executor/reviewer 模型准备；唯一审计结果，SourceResultID/CommandID/TurnID 与最终 PR head 来源 |
+| 审计修复 | audit-positive | 3 | 上述审计来源；pre/post head 不同且 fixed_count=1 |
+| 离线审计 | audit-offline | 3 | 审计活动时停服；等待原 owner 至少两个 checkpoint；离线时 turn/start 仍为 2；原服务换代后原流程继续 |
+| 一次补报 | audit-report | 4 | 原审计以纯文本返回后补报；审计来源及单 thread/精确 turn 预算 |
+| parser 后备 | parser-unsupported | 4 | 保留审计工作流；llm_parser 有 failed attempt，不能隐藏不可用资格；原流程后备完成 |
+| parser 成功 | parser-complete | 3 | 保留审计工作流；实际结果 Method=llm_parser、Status=satisfied |
+| 工具事件回退 | parser-tool | 4 | 原 PARSER_TOOL 夹具输入、审计来源、补报回退后的精确预算；不增设真实工具调用或模型要求 |
+
+八项共同保留独立现场、公开服务/submit、最终 pr_ready、thread/start=1、原权限/模型夹具、停止及服务清理。各操作和整流程的既有期限不延长。已清理的 parser-restart/parser-kill/parser-stop 条件不在原八项常量列表内，且循环变量未被重写；只删除该不可达测试分支及其专属导入，不删除业务 owner 的恢复/停止义务。
+
+本轮将 ResultFile 的回执/选择机制与 ResultAcquisition 共用，使用 `-Case <父测试/子场景>` 和 Go driver 的 `-controlled-cases`，只支持这两个已登记的父测试。每个父测试独立解析，未指定的父测试仍运行自己的完整集合；不会以全局 `-test.run` 子路径过滤其他测试。原四个组合保持，新增上表三项职责组合，当前共七个固定组合；workflow 组和完整 Controlled 的 ResultAcquisition 仍执行全部八项。
+
+```powershell
+./scripts/test-controlled.ps1 -Combination result-plain -OutDir .evidence/result-plain-new
+./scripts/test-controlled.ps1 -Combination result-audit -OutDir .evidence/result-audit-new
+./scripts/test-controlled.ps1 -Combination result-parser -OutDir .evidence/result-parser-new
+# 合并三类，得到原八项；不能据此获取完整 Controlled 资格。
+./scripts/test-controlled.ps1 -Combination result-plain,result-audit,result-parser -OutDir .evidence/result-all-new
+# 每个父测试单独选择；Restart 等同批测试不受到子路径过滤。
+./scripts/test-controlled.ps1 -Combination result-plain,execute-stop -OutDir .evidence/result-mixed-new
+# 显式选择只接受已登记的精确 parent/case；父测试须在组合/组中。
+./scripts/test-controlled.ps1 -Combination result-parser -Case TestSRResultAcquisition/parser-complete -OutDir .evidence/parser-one-new
+```
+
+不同组合对同一父测试取并集；任一所选组/组合要求全量时保留全量。显式 Case 仅覆盖其父测试的选择，未知父测试、未知/重复 case、通配符、额外路径层级、缺父测试和旧参数冲突均拒绝。`summary.selection.cases` 与 `source-identity.controlled_cases` 记录实际请求，`result.json.controlled_cases` 按父测试记录实际完成 ID、成功布尔和包含清理的耗时。ResultFile 的原 result_file_cases 回执保留，存在通用回执时两者必须一致。
+
+`timings.case_coverage` 按父测试核实实际回执与 RUN/PASS 路径，ResultFile 还要求全部选定 enabled 叶例。完整资格须具备 ResultFile 两类和 ResultAcquisition 八项，不能仅凭 27 个父测试通过；所有定向入口仍不生成前置证明、完整资格标志始终 false。历史 ResultAcquisition 日志没有新回执时只统计成本、标 unverified_import，不补签覆盖。子场景和父测试时间不重复累计。
+
+当前原版基线实际八项通过，顶层 706.39 秒（plain 50.38；audit 83.38/79.97/85.93/117.32；parser 114.49/88.90/86.01）。本轮使用固定 Runner `a7117a33ccdb0e531bad46d677b60bb502cda60d68e2c6e4d7a6aefffa03db1f`，串行采样：
+
+| 执行范围 | 实际 ResultAcquisition 子场景数 | 父测试耗时（秒） | 相对新版八项的选测节省 |
+| --- | --- | --- | --- |
+| 原版默认八项基线 | 8 | 706.39 | 原基线，不补签新回执 |
+| 新版默认八项 | 8 | 592.19 | 回执与八项 RUN/PASS 均核验通过 |
+| result-audit | 4 | 321.39 | 270.80 秒，45.73% |
+| result-parser | 3 | 290.42 | 301.77 秒，50.96% |
+| 混合回归中的 result-plain 范围 | 1 | 30.01 | 562.18 秒，94.93% |
+
+上述均为单轮受控样本，使用本轮基线而非旧构建 475.80 秒；完整八项前后差异不能归因于本轮提速。定向收益来自少选无关职责，不减少已选场景的流程与断言。父测试耗时含场景清理，不含构建和入口准备，子场景耗时不重复累加。基线与新版八项的原始调用记录逐项核对 thread/start=1、turn/start=2/3/3/3/4/4/3/4 均不变；源码 AST 对照保留可达分支原 41 处 Fatal/Error 调用及直接失败条件，仅排除已证明不可达的旧分支。
+
+混合实测仅传 `-Case TestSRResultAcquisition/plain-marker`，父测试正则同时包含 ResultAcquisition、ResultFile、RestartPreservesAuthorization：三项顶层全部通过，共 310.96 秒。ResultFile 未传选择，实际保留两类和八个 enabled 叶例，旧/新回执一致；Restart 的 graceful、kill、creation_receipt、pending_stop 四项全部执行。各次新 driver 摘要一致，原生预算与实际子路径另在 `comparison.json` 对账。实际驱动反例确认退役 ID、未知父测试、通配符、额外路径层级、重复项均在创建证据前拒绝；子路径压掉选中项、其他父测试通过但显式父测试未运行也均失败。
+
+本轮完整脚本框架 27 组通过，包含选测/耗时 67 项、前置复用 75 项与 focused 契约 26 项检查；这些是框架守卫验证，不是 27 项 Controlled 全量执行。
+
+本轮实际日志、原始回执、断言对照和反例保留在 `.evidence/result-acquisition-20261102/`。这轮执行范围为定向 Controlled，完整 Controlled 集合仍为 27 项，L3/L4 不变。
 
 ## 测试清单维护规则
 
