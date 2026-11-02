@@ -82,13 +82,10 @@ func readCreationPlan(dir string) (creationPlan, error) {
 		!filepath.IsAbs(plan.Command.Executable) || len(plan.ImageSHA256) != 64 || len(plan.CommandSHA256) != 64 || plan.Deadline.IsZero() || plan.Command.Timeout <= 0 {
 		return plan, errors.New("original creation plan is invalid")
 	}
-	all := append(append([]string(nil), plan.Profile.Args...), plan.Arguments...)
-	if plan.Profile.Environment != "" {
-		all = append(all, "--environment", plan.Profile.Environment)
-	}
+	command := cliLaunchCommand(plan.Profile, plan.Command.Executable, plan.Repository, plan.Command.Timeout, plan.Arguments...)
 	if len(plan.Arguments) < 3 || plan.Arguments[0] != "worktree" && plan.Arguments[0] != "terminal" || plan.Arguments[1] != "create" ||
-		!reflect.DeepEqual(plan.Command.Args, all) || plan.Command.WorkingDirectory != plan.Repository ||
-		!reflect.DeepEqual(plan.Command.BlockedEnvironment, []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}) || plan.Runtime == "" {
+		!reflect.DeepEqual(plan.Command.Args, command.Args) || plan.Command.WorkingDirectory != plan.Repository ||
+		!reflect.DeepEqual(plan.Command.BlockedEnvironment, command.BlockedEnvironment) || plan.Runtime == "" {
 		return plan, errors.New("original creation command is invalid")
 	}
 	return plan, nil
@@ -132,12 +129,8 @@ func (l *Lifecycle) creationCall(ctx context.Context, key creationKey, arguments
 		if imageErr != nil || commandErr != nil {
 			return native.Result{}, errors.Join(imageErr, commandErr)
 		}
-		all := append(append([]string(nil), l.profile.Args...), arguments...)
-		if l.profile.Environment != "" {
-			all = append(all, "--environment", l.profile.Environment)
-		}
 		plan = creationPlan{Version: 1, Key: key, State: l.setup.RunDirectory, Profile: l.profile, Repository: l.setup.RepositoryPath, Selector: selector, Runtime: runtime, Arguments: append([]string(nil), arguments...),
-			Command:     b.LaunchCommand{Executable: executable, Args: all, WorkingDirectory: l.setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}},
+			Command:     cliLaunchCommand(l.profile, executable, l.setup.RepositoryPath, timeout, arguments...),
 			ImageSHA256: imageSHA, CommandSHA256: commandSHA, Deadline: time.Now().UTC().Add(timeout)}
 		if err = os.MkdirAll(filepath.Dir(dir), 0700); err != nil {
 			return native.Result{}, err
@@ -177,11 +170,7 @@ func (l *Lifecycle) creationCall(ctx context.Context, key creationKey, arguments
 				startErr != nil || len(startRaw) > 64<<10 || b.DecodeStrictJSON(startRaw, &started, "trailing creation dispatch") != nil || started.Version != 1 || started.PlanDigest != planDigest(plan) || result.StartedSHA != digest(startRaw) || started.Process.Kind != "os" || started.Process.PID <= 0 || started.Process.Created == "" || !filepath.IsAbs(started.Process.Executable) {
 				return native.Result{}, errors.New("original creation receipt invalid or foreign")
 			}
-			envelope, parseErr := native.ParseEnvelope(result.Output)
-			value := native.Result{Payload: envelope.Result, RuntimeID: envelope.Meta.RuntimeID, CallUncertain: result.Failed}
-			if envelope.Error != nil {
-				value.ErrorCode, value.ErrorMessage = envelope.Error.Code, envelope.Error.Message
-			}
+			value, parseErr := native.DecodeCLIResult(result.Output, result.Failed)
 			if result.Failed {
 				return value, errors.Join(parseErr, errors.New("original creation CLI failed; no create was repeated"))
 			}

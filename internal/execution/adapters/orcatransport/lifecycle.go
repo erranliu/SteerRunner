@@ -116,16 +116,12 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFe
 	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
 	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, native.UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
-		all := append(append([]string(nil), p.Args...), args...)
-		blocked := []string{"ORCA_ENVIRONMENT", "ORCA_PAIRING_CODE", "ORCA_REMOTE_PAIRING"}
-		if p.Environment != "" {
-			all = append(all, "--environment", p.Environment)
-		}
-		if err := process.CheckCommandLine(p.Executable, all); err != nil {
+		command := cliLaunchCommand(p, p.Executable, setup.RepositoryPath, timeout, args...)
+		if err := process.CheckCommandLine(command.Executable, command.Args); err != nil {
 			return nil, err
 		}
 		invoke := func(ctx context.Context) ([]byte, error) {
-			return setup.ProcessHost.OutputCommand(ctx, b.LaunchCommand{Executable: p.Executable, Args: all, WorkingDirectory: setup.RepositoryPath, Timeout: timeout, BlockedEnvironment: blocked})
+			return setup.ProcessHost.OutputCommand(ctx, command)
 		}
 		if native.PreparationOwnsCLI(ctx) {
 			return invoke(ctx)
