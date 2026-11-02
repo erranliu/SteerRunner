@@ -7,8 +7,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func TestQueryBoundTerminalMissingIdentityDoesNotConnect(t *testing.T) {
@@ -16,18 +14,18 @@ func TestQueryBoundTerminalMissingIdentityDoesNotConnect(t *testing.T) {
 		t.Run(field, func(t *testing.T) {
 			var calls atomic.Int32
 			localIPCFixture(t, func(net.Conn, ipcTestRequest) { calls.Add(1) })
-			p := b.ProcessIdentity{RuntimeID: "runtime", Terminal: "terminal", Incarnation: "incarnation"}
+			p := TerminalIdentity{RuntimeID: "runtime", Handle: "terminal", IncarnationID: "incarnation"}
 			switch field {
 			case "runtime":
 				p.RuntimeID = ""
 			case "terminal":
-				p.Terminal = ""
+				p.Handle = ""
 			case "incarnation":
-				p.Incarnation = ""
+				p.IncarnationID = ""
 			}
 			_, err := QueryBoundTerminal(context.Background(), "", p)
-			var identity *b.BackendError
-			if !errors.As(err, &identity) || identity.Code != b.BackendIdentityMismatch || calls.Load() != 0 {
+			var identity *TerminalIdentityError
+			if !errors.As(err, &identity) || !errors.Is(err, ErrStateIdentityChanged) || calls.Load() != 0 {
 				t.Fatal(err, calls.Load())
 			}
 		})
@@ -54,7 +52,7 @@ func TestQueryBoundTerminalHandshakeCancellation(t *testing.T) {
 			defer cancel()
 			result := make(chan error, 1)
 			go func() {
-				_, err := QueryBoundTerminal(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", Terminal: "terminal", Incarnation: "incarnation"})
+				_, err := QueryBoundTerminal(ctx, "", TerminalIdentity{RuntimeID: "runtime", Handle: "terminal", IncarnationID: "incarnation"})
 				result <- err
 			}()
 			if scenario == "cancel" {
@@ -101,7 +99,7 @@ func TestTerminalQueryCancellationCannotHideKnownIdentityConflict(t *testing.T) 
 	ctx := &cancelOnSecondErrContext{Context: parent, cancel: cancel}
 	// queryTerminal is also the existing native-input evidence path. Contrary
 	// runtime evidence must survive cancellation, so callers can retain it.
-	_, err := queryTerminal(ctx, "", b.ProcessIdentity{RuntimeID: "different-runtime", Terminal: "terminal", Incarnation: "incarnation"})
+	_, err := queryTerminal(ctx, "", TerminalIdentity{RuntimeID: "different-runtime", Handle: "terminal", IncarnationID: "incarnation"})
 	if !errors.Is(parent.Err(), context.Canceled) || !errors.Is(err, ErrStateIdentityChanged) || calls.Load() != 0 {
 		t.Fatalf("identity conflict lost to cancellation: %v, context=%v, calls=%d", err, parent.Err(), calls.Load())
 	}

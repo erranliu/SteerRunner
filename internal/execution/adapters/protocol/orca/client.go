@@ -138,8 +138,8 @@ func (c Client) InspectBoundTerminal(ctx context.Context, _ b.ExecutionTarget, p
 }
 
 func validateBoundTerminal(t Terminal, p b.ProcessIdentity) error {
-	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || t.RuntimeID != p.RuntimeID || t.Handle != p.Terminal || t.IncarnationID != p.Incarnation {
-		return &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original Orca runtime/terminal/incarnation changed"}
+	if err := validateTerminalIdentity(t, TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation}); err != nil {
+		return &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: err.Error(), Cause: err}
 	}
 	return nil
 }

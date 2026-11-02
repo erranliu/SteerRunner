@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -233,6 +234,164 @@ func TestOriginalTerminalRPCIdentity(t *testing.T) {
 			}
 		})
 	}
+}
+
+func controlQueryFixture(t *testing.T, read func(context.Context, []string) ([]byte, error)) (*Lifecycle, State, native.Terminal) {
+	t.Helper()
+	l, _, s, _ := originalQueryFixture(t) // the real NewLifecycle constructor
+	p := s.Ref.External
+	p.Kind, p.Terminal, p.Incarnation = "orca_native_control", "control", "control-inc"
+	state := State{Process: s.Ref.External, Control: &ControlTerminal{Process: p}}
+	terminal := native.Terminal{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation, WorktreeID: p.WorktreeID}
+	l.client = native.New(native.Config{Output: func(ctx context.Context, _ time.Duration, args ...string) ([]byte, error) {
+		if len(args) < 2 || args[0] != "terminal" || args[1] != "read" {
+			t.Errorf("control query used CLI show or another command: %v", args)
+			return nil, errors.New("unexpected CLI command")
+		}
+		return read(ctx, args)
+	}})
+	return l, state, terminal
+}
+
+func controlQueryPage(runtime string, args []string) ([]byte, error) {
+	cursor := ""
+	for i, arg := range args {
+		if arg == "--cursor" && i+1 < len(args) {
+			cursor = args[i+1]
+		}
+	}
+	index, err := strconv.Atoi(cursor)
+	if err != nil || index < 0 || index > 1 {
+		return nil, errors.New("unexpected control stream cursor")
+	}
+	page := map[string]any{"handle": "control", "source": "stream", "oldestCursor": "0", "nextCursor": strconv.Itoa(index + 1), "latestCursor": "2",
+		"truncated": false, "limited": index == 0, "tail": []string{[]string{" first ", " second "}[index]}}
+	return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminal": page}, "_meta": map[string]string{"runtimeId": runtime}})
+}
+
+func TestControlTerminalRPCIdentity(t *testing.T) {
+	for _, scenario := range []string{"valid", "handle", "incarnation", "missing", "runtime", "request"} {
+		t.Run(scenario, func(t *testing.T) {
+			var reads, queries atomic.Int32
+			var runtimeID string
+			l, state, terminal := controlQueryFixture(t, func(_ context.Context, args []string) ([]byte, error) {
+				reads.Add(1)
+				return controlQueryPage(runtimeID, args)
+			})
+			runtimeID = terminal.RuntimeID
+			terminalQueryIPC(t, terminal, func(conn net.Conn, id, runtime string) {
+				queries.Add(1)
+				current := terminal
+				switch scenario {
+				case "handle":
+					current.Handle = "foreign"
+				case "incarnation":
+					current.IncarnationID = "replacement"
+				case "missing":
+					current = native.Terminal{}
+				case "runtime":
+					runtime = "foreign"
+				case "request":
+					id = "foreign"
+				}
+				writeTerminalQueryReply(conn, id, runtime, map[string]any{"terminal": current})
+			})
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+			lines, err := l.controlLines(ctx, state, false)
+			if scenario == "valid" {
+				if err != nil || strings.Join(lines, ",") != "first,second" || reads.Load() != 2 || queries.Load() != 4 {
+					t.Fatal("control pages did not share native query fencing", lines, err, reads.Load(), queries.Load())
+				}
+				return
+			}
+			if err == nil || len(lines) != 0 || reads.Load() != 0 || queries.Load() != 1 || !errors.Is(err, native.ErrStateIdentityChanged) {
+				t.Fatal("contrary control identity accepted or downgraded", lines, err, reads.Load(), queries.Load())
+			}
+			if scenario == "handle" || scenario == "incarnation" || scenario == "missing" {
+				var mapped *b.BackendError
+				if !errors.As(err, &mapped) || mapped.Code != b.BackendIdentityMismatch {
+					t.Fatal("native terminal mismatch lost existing execution classification", err)
+				}
+			}
+		})
+	}
+}
+
+func TestControlTerminalRPCFencesPages(t *testing.T) {
+	for _, replaceAt := range []int32{1, 2, 3, 4} {
+		t.Run(fmt.Sprint(replaceAt), func(t *testing.T) {
+			var reads, queries atomic.Int32
+			var runtimeID string
+			l, state, terminal := controlQueryFixture(t, func(_ context.Context, args []string) ([]byte, error) {
+				reads.Add(1)
+				return controlQueryPage(runtimeID, args)
+			})
+			runtimeID = terminal.RuntimeID
+			terminalQueryIPC(t, terminal, func(conn net.Conn, id, runtime string) {
+				current := terminal
+				if queries.Add(1) == replaceAt {
+					current.IncarnationID = "replacement"
+				}
+				writeTerminalQueryReply(conn, id, runtime, map[string]any{"terminal": current})
+			})
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+			lines, err := l.controlLines(ctx, state, false)
+			if !errors.Is(err, native.ErrStateIdentityChanged) || len(lines) != 0 || queries.Load() != replaceAt || reads.Load() != replaceAt/2 {
+				t.Fatal("a page escaped its original-incarnation fence", lines, err, queries.Load(), reads.Load())
+			}
+		})
+	}
+	t.Run("CLI-queue", func(t *testing.T) {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+		entered, release, readEntered := make(chan struct{}), make(chan struct{}), make(chan struct{})
+		gateDone := make(chan error, 1)
+		var runtimeID string
+		l, state, terminal := controlQueryFixture(t, func(ctx context.Context, args []string) ([]byte, error) {
+			select {
+			case <-readEntered:
+			default:
+				close(readEntered)
+			}
+			return native.SerializeCLI(ctx, func(context.Context) ([]byte, error) { return controlQueryPage(runtimeID, args) })
+		})
+		runtimeID = terminal.RuntimeID
+		var queries atomic.Int32
+		terminalQueryIPC(t, terminal, func(conn net.Conn, id, runtime string) {
+			queries.Add(1)
+			writeTerminalQueryReply(conn, id, runtime, map[string]any{"terminal": terminal})
+		})
+		go func() {
+			_, err := native.SerializeCLI(ctx, func(ctx context.Context) ([]byte, error) {
+				close(entered)
+				select {
+				case <-release:
+					return nil, nil
+				case <-ctx.Done():
+					return nil, ctx.Err()
+				}
+			})
+			gateDone <- err
+		}()
+		defer func() { cancel(); <-gateDone }()
+		<-entered
+		result := make(chan error, 1)
+		go func() { _, err := l.controlLines(ctx, state, false); result <- err }()
+		select {
+		case <-readEntered:
+			if queries.Load() != 1 {
+				t.Fatal("pre-read identity waited for CLI queue", queries.Load())
+			}
+		case <-ctx.Done():
+			t.Fatal("control identity could not bypass CLI queue", ctx.Err())
+		}
+		close(release)
+		if err := <-result; err != nil || queries.Load() != 4 {
+			t.Fatal("control failed after CLI queue release", err, queries.Load())
+		}
+	})
 }
 
 func TestOriginalTerminalRPCBypassesCLIQueue(t *testing.T) {

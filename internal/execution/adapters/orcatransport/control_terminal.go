@@ -129,7 +129,7 @@ func (l *Lifecycle) controlLines(ctx context.Context, state State, fromStart boo
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
-		if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
+		if _, err := l.boundTerminal(ctx, p); err != nil {
 			return nil, err
 		}
 		r, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", p.Terminal, "--cursor", strconv.FormatUint(cursor, 10), "--limit", "1000", "--json")
@@ -143,7 +143,7 @@ func (l *Lifecycle) controlLines(ctx context.Context, state State, fromStart boo
 		if err != nil || r.CallUncertain || r.RuntimeID != p.RuntimeID || json.Unmarshal(r.Payload, &value) != nil || value.Terminal.Handle != p.Terminal {
 			return nil, errors.New("original native control output identity changed")
 		}
-		if _, err := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p); err != nil {
+		if _, err := l.boundTerminal(ctx, p); err != nil {
 			return nil, err
 		}
 		page := value.Terminal

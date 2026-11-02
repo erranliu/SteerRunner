@@ -5,15 +5,34 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+// TerminalIdentity identifies an exact terminal incarnation on an Orca runtime.
+type TerminalIdentity struct {
+	RuntimeID, Handle, IncarnationID string
+}
+
+// TerminalIdentityError reports missing or contrary native terminal identity.
+type TerminalIdentityError struct{}
+
+func (*TerminalIdentityError) Error() string {
+	return "original Orca runtime/terminal/incarnation changed"
+}
+
+func (*TerminalIdentityError) Unwrap() error { return ErrStateIdentityChanged }
+
+func validateTerminalIdentity(t Terminal, p TerminalIdentity) error {
+	if p.RuntimeID == "" || p.Handle == "" || p.IncarnationID == "" || t.RuntimeID != p.RuntimeID || t.Handle != p.Handle || t.IncarnationID != p.IncarnationID {
+		return &TerminalIdentityError{}
+	}
+	return nil
+}
 
 // QueryBoundTerminal reads the original terminal over the existing state RPC.
 // It owns a short-lived connection, separate from the state feed and CLI cache.
-func QueryBoundTerminal(ctx context.Context, environment string, p b.ProcessIdentity) (Terminal, error) {
-	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" {
-		return Terminal{}, &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original Orca runtime/terminal/incarnation changed"}
+func QueryBoundTerminal(ctx context.Context, environment string, p TerminalIdentity) (Terminal, error) {
+	if p.RuntimeID == "" || p.Handle == "" || p.IncarnationID == "" {
+		return Terminal{}, &TerminalIdentityError{}
 	}
 	// Match the lifecycle CLI's 40s budget, including connection/handshake time.
 	// A shorter caller deadline or cancellation always wins.
@@ -23,10 +42,10 @@ func QueryBoundTerminal(ctx context.Context, environment string, p b.ProcessIden
 	if err != nil {
 		return t, err
 	}
-	return t, validateBoundTerminal(t, p)
+	return t, validateTerminalIdentity(t, p)
 }
 
-func queryTerminal(ctx context.Context, environment string, p b.ProcessIdentity) (Terminal, error) {
+func queryTerminal(ctx context.Context, environment string, p TerminalIdentity) (Terminal, error) {
 	if err := ctx.Err(); err != nil {
 		return Terminal{}, err
 	}
@@ -39,7 +58,7 @@ func queryTerminal(ctx context.Context, environment string, p b.ProcessIdentity)
 		return Terminal{}, err
 	}
 	defer socket.close()
-	raw, err := callState(ctx, socket, "terminal.show", map[string]string{"terminal": p.Terminal})
+	raw, err := callState(ctx, socket, "terminal.show", map[string]string{"terminal": p.Handle})
 	if ctx.Err() != nil && !errors.Is(err, ErrStateIdentityChanged) {
 		return Terminal{}, ctx.Err()
 	}
