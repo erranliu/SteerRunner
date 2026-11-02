@@ -1,4 +1,4 @@
-package orca
+package orcatransport
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"net"
 	"testing"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -119,36 +120,41 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				}
 			})
 			p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}
-			before, err := QueryOriginalAgent(context.Background(), "", p, "tab:leaf")
+			before, err := native.QueryOriginalAgent(context.Background(), "", orcaStateResource(p), "tab:leaf")
 			if err != nil {
 				t.Fatal(err)
 			}
-			after, err := QueryOriginalInput(context.Background(), "", p, "tab:leaf", 10, before)
+			after, err := queryOriginalInput(context.Background(), "", p, "tab:leaf", 10, before)
 			if fault != "none" && fault != "preview" && fault != "positive-incarnation" {
-				if err == nil && after.NativeInput.MatchesOriginalQuery(after) {
+				if err == nil && after.NativeInput.MatchesOriginalQuery(after.AgentState) {
 					t.Fatal("unverified record acquired completion query proof", fault)
 				}
 				return
 			}
 			i := after.NativeInput
-			if err != nil || !i.MatchesOriginalQuery(after) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
+			if err != nil || !i.MatchesOriginalQuery(after.AgentState) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
 				t.Fatal("full metadata did not bind exact canonical completion", err, after, shows)
+			}
+			foreignProcess := p
+			foreignProcess.Executable = "another-execution-owner"
+			if i.MatchesOriginalProcess(foreignProcess) {
+				t.Fatal("native resource mapping weakened the full execution binding")
 			}
 			changed := after
 			meta := *after.MetadataObservation
 			meta.Revision++
 			changed.MetadataObservation = &meta
-			if i.MatchesOriginalQuery(changed) {
+			if i.MatchesOriginalQuery(changed.AgentState) {
 				t.Fatal("proof authorized a different metadata revision")
 			}
 			after.MetadataObservation.Revision++
-			if i.MatchesOriginalQuery(after) {
+			if i.MatchesOriginalQuery(after.AgentState) {
 				t.Fatal("in-place metadata mutation changed the frozen query proof")
 			}
 			raw, _ := json.Marshal(i)
-			var decoded NativeInput
+			var decoded nativeInput
 			_ = json.Unmarshal(raw, &decoded)
-			if decoded.MatchesOriginalQuery(after) {
+			if decoded.MatchesOriginalQuery(after.AgentState) {
 				t.Fatal("wire input fabricated query authority")
 			}
 		})

@@ -32,11 +32,11 @@ func (l *Lifecycle) waitOriginalComposer(ctx context.Context, snapshot b.Lifecyc
 // A completed, independently queried original input proves that it started even
 // without trusting a send stage. Never replay a send, infer
 // a start from READY/a screen/working alone, or authorize a streamed start here.
-func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.LifecycleSnapshot, state *State, turn *Turn, sample native.AgentState) (native.AgentState, error) {
+func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.LifecycleSnapshot, state *State, turn *Turn, sample native.AgentState) (originalInputState, error) {
 	if turn.Started || !turn.Accepted || l.queryInput == nil || turn.Native.agentName() != "codex" ||
-		turn.Native.BaseRootAt <= 0 || turn.Native.Conflict != "" || !sample.CanQueryCompletionInput() ||
+		turn.Native.BaseRootAt <= 0 || turn.Native.Conflict != "" || !canQueryCompletionInput(sample) ||
 		sample.MainAgent == nil || sample.MainAgent.State != "done" || sample.MainAgent.StateStartedAt <= turn.Native.BaseRootAt {
-		return sample, nil
+		return originalInputState{AgentState: sample}, nil
 	}
 	current, err := l.queryInput(ctx, state.Process, turn.Native.Pane, turn.Native.BaseRootAt, sample)
 	if err != nil {
@@ -45,19 +45,19 @@ func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.
 		if errors.Is(err, native.ErrStateIdentityChanged) {
 			turn.Native.reject(err.Error())
 		} else if current.MainAgent == nil || current.UpdatedAt >= current.MainAgent.StateStartedAt {
-			turn.Native.rejectIdentity(current)
-			turn.Native.rejectProvenance(current, turn)
+			turn.Native.rejectIdentity(current.AgentState)
+			turn.Native.rejectProvenance(current.AgentState, turn)
 		}
 		if turn.Native.Conflict != "" {
 			return current, errors.New(turn.Native.diagnostic())
 		}
 		return current, errors.New("Native original start query is unverified: " + err.Error())
 	}
-	if turn.Native.rejectIdentity(current) || turn.Native.rejectProvenance(current, turn) {
+	if turn.Native.rejectIdentity(current.AgentState) || turn.Native.rejectProvenance(current.AgentState, turn) {
 		return current, errors.New(turn.Native.diagnostic())
 	}
 	input := current.NativeInput
-	if input == nil || !input.MatchesOriginalQuery(current) {
+	if input == nil || !input.MatchesOriginalQuery(current.AgentState) {
 		return current, nil
 	}
 	if !input.MatchesOriginalProcess(state.Process) {
@@ -66,7 +66,7 @@ func (l *Lifecycle) queryCompletedOriginalStart(ctx context.Context, snapshot b.
 	}
 	candidate := *turn
 	candidate.Started = true
-	if !turn.Native.recordedInputMatches(current, &candidate) {
+	if !turn.Native.recordedInputMatches(current.AgentState, &candidate, input) {
 		return current, nil
 	}
 	if _, err := l.original(ctx, snapshot); err != nil {

@@ -1,4 +1,4 @@
-package orca
+package orcatransport
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"net"
 	"testing"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -98,24 +99,29 @@ func TestThinCompletionInputRequiresStableOriginalResources(t *testing.T) {
 			})
 			ctx := context.Background()
 			p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}
-			before, err := QueryOriginalAgent(ctx, "", p, "tab:leaf")
+			before, err := native.QueryOriginalAgent(ctx, "", orcaStateResource(p), "tab:leaf")
 			if err != nil {
 				t.Fatal(err)
 			}
-			after, err := QueryOriginalInput(ctx, "", p, "tab:leaf", 10, before)
+			after, err := queryOriginalInput(ctx, "", p, "tab:leaf", 10, before)
 			if fault != "none" && fault != "preview" {
-				if err == nil || after.NativeInput.MatchesOriginalQuery(after) {
+				if err == nil || after.NativeInput.MatchesOriginalQuery(after.AgentState) {
 					t.Fatal("unverified completion acquired input evidence", fault, err)
 				}
 				return
 			}
 			i := after.NativeInput
-			if err != nil || !i.MatchesOriginalQuery(after) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
+			if err != nil || !i.MatchesOriginalQuery(after.AgentState) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
 				t.Fatal("original query did not corroborate the canonical record", after, err, shows)
+			}
+			foreignProcess := p
+			foreignProcess.Executable = "another-execution-owner"
+			if i.MatchesOriginalProcess(foreignProcess) {
+				t.Fatal("native resource mapping weakened the full execution binding")
 			}
 			changed := after
 			changed.LastAssistantMessage = "different final"
-			if i.MatchesOriginalQuery(changed) {
+			if i.MatchesOriginalQuery(changed.AgentState) {
 				t.Fatal("query evidence authorized another completion")
 			}
 			p.Incarnation = "other"
@@ -123,9 +129,9 @@ func TestThinCompletionInputRequiresStableOriginalResources(t *testing.T) {
 				t.Fatal("query evidence authorized another process")
 			}
 			raw, _ := json.Marshal(i)
-			var decoded NativeInput
+			var decoded nativeInput
 			_ = json.Unmarshal(raw, &decoded)
-			if decoded.MatchesOriginalQuery(after) {
+			if decoded.MatchesOriginalQuery(after.AgentState) {
 				t.Fatal("serialized input fabricated query authority")
 			}
 		})

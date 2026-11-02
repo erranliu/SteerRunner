@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"testing"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func TestOrcaNativeStateIdentity(t *testing.T) {
@@ -14,7 +12,7 @@ func TestOrcaNativeStateIdentity(t *testing.T) {
 	if flagErr != nil || !flagState.SessionBoundary || !flagState.RestoredUnconfirmed || !flagState.ToolOutput {
 		t.Fatal("query dropped completion exclusion facts", flagState, flagErr)
 	}
-	p := b.ProcessIdentity{WorktreeID: "worktree", Terminal: "terminal", Incarnation: "original"}
+	p := StateResource{WorktreeID: "worktree", Handle: "terminal", IncarnationID: "original"}
 	for _, incarnation := range []string{"", "original", "replacement"} {
 		raw, _ := json.Marshal(map[string]any{"worktree": "worktree", "tabs": []any{map[string]string{"terminal": "terminal", "incarnationId": incarnation, "parentTabId": "tab", "leafId": "leaf"}}})
 		s, err := DecodeOriginalState(raw, p)

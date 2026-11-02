@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"golang.org/x/crypto/nacl/box"
 )
 
@@ -152,7 +151,7 @@ func TestOrcaNativeStateStream(t *testing.T) {
 				return
 			}
 			if scenario == "sample-feed" {
-				feed, err := OpenStateFeed(ctx, "test-remote", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"})
+				feed, err := OpenStateFeed(ctx, "test-remote", StateResource{RuntimeID: "runtime", WorktreeID: "worktree", Handle: "terminal", IncarnationID: "incarnation"})
 				if err != nil {
 					t.Fatal(err)
 				}

@@ -53,7 +53,7 @@ func TestHostNativeStateCodecRoundTripRetainsOriginalBinding(t *testing.T) {
 	}
 	end := fixtureState(100, input.Prompt, "done")
 	end.LastAssistantMessage = "valid-looking later reply"
-	if restored.Turns[0].Native.query(end, &restored.Turns[0], time.Now(), false) {
+	if restored.Turns[0].Native.query(end, &restored.Turns[0], time.Now(), false, nil) {
 		t.Fatal("upgrade cleared ambiguous historical rejection")
 	}
 	current, err := l.envelope(s, restored)

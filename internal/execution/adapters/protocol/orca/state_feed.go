@@ -8,9 +8,12 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+// StateResource binds native state queries to one worktree and terminal incarnation.
+type StateResource struct {
+	RuntimeID, WorktreeID, Handle, IncarnationID string
+}
 
 type MainAgentState struct {
 	State          string `json:"state"`
@@ -32,7 +35,7 @@ type StateObservation struct {
 
 // AgentState carries public original-pane facts. The provider's own transcript
 // locator is used only with Orca's existing read-only RPC; Runner never opens a
-// remote private file. Derived input proof cannot be supplied over the wire.
+// remote private file. Execution input proof is owned by the consumer, not this raw value.
 type AgentState struct {
 	State           string            `json:"state"`
 	PaneKey         string            `json:"paneKey"`
@@ -47,7 +50,6 @@ type AgentState struct {
 		ID             string `json:"id"`
 		TranscriptPath string `json:"transcriptPath,omitempty"`
 	} `json:"providerSession"`
-	NativeInput          *NativeInput      `json:"-"`
 	MetadataObservation  *StateObservation `json:"-"`
 	ThinMetadata         bool              `json:"-"`
 	LastAssistantMessage string            `json:"lastAssistantMessage,omitempty"`
@@ -85,9 +87,8 @@ type StateFeed interface {
 	Query(context.Context) (StateSample, error)
 	Close()
 }
-type StateFeedFactory func(context.Context, string, b.ProcessIdentity) (StateFeed, error)
 
-func DecodeOriginalState(raw json.RawMessage, p b.ProcessIdentity) (AgentState, error) {
+func DecodeOriginalState(raw json.RawMessage, p StateResource) (AgentState, error) {
 	var snapshot struct {
 		Worktree string
 		Tabs     []struct {
@@ -99,13 +100,13 @@ func DecodeOriginalState(raw json.RawMessage, p b.ProcessIdentity) (AgentState, 
 		return AgentState{}, stateIdentityError("snapshot worktree changed")
 	}
 	for _, tab := range snapshot.Tabs {
-		if tab.Terminal != p.Terminal {
+		if tab.Terminal != p.Handle {
 			continue
 		}
 		// Runtime-scoped handles and pane IDs bind the stream. The existing
 		// terminal.show checks bind the PTY incarnation around observation;
 		// session.tabs does not always include that separate metadata field.
-		if tab.IncarnationID != "" && tab.IncarnationID != p.Incarnation {
+		if tab.IncarnationID != "" && tab.IncarnationID != p.IncarnationID {
 			return AgentState{}, stateIdentityError("terminal incarnation changed")
 		}
 		s := AgentState{}
@@ -160,7 +161,7 @@ func DecodeOriginalAgent(raw json.RawMessage, worktree, pane string) (AgentState
 
 type nativeStateFeed struct {
 	environment string
-	process     b.ProcessIdentity
+	process     StateResource
 	initial     StateSample
 	sub         *StateSubscription
 	cancel      context.CancelFunc
@@ -170,7 +171,7 @@ type nativeStateFeed struct {
 	err         error
 }
 
-func OpenStateFeed(ctx context.Context, environment string, p b.ProcessIdentity) (StateFeed, error) {
+func OpenStateFeed(ctx context.Context, environment string, p StateResource) (StateFeed, error) {
 	if environment == "" {
 		return openLocalQueryFeed(ctx, p)
 	}
@@ -226,14 +227,14 @@ func (f *nativeStateFeed) Query(ctx context.Context) (StateSample, error) {
 	return QueryOriginalSample(ctx, f.environment, f.process, f.initial.PaneKey)
 }
 
-func QueryOriginalSample(ctx context.Context, environment string, process b.ProcessIdentity, pane string) (StateSample, error) {
+func QueryOriginalSample(ctx context.Context, environment string, process StateResource, pane string) (StateSample, error) {
 	s, err := QueryOriginalAgent(ctx, environment, process, pane)
 	return StateSample{AgentState: s, ReceivedAt: time.Now().UTC(), Kind: SampleQuery}, err
 }
 
 // A bounded independent read remains available when the notification stream is
-// disconnected. Its target comes from the persisted original execution only.
-func QueryOriginalAgent(ctx context.Context, environment string, process b.ProcessIdentity, pane string) (AgentState, error) {
+// disconnected. The caller supplies the exact native resource identity.
+func QueryOriginalAgent(ctx context.Context, environment string, process StateResource, pane string) (AgentState, error) {
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
 	raw, err := QueryWorktreeAgents(ctx, environment, process.RuntimeID)
@@ -244,8 +245,8 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 	if err != nil {
 		return s, err
 	}
-	// This separate read verifies session metadata, not a second completion
-	// source: title-projected done from it is never accepted.
+	// Keep the primary main-agent record/body; this separate read supplies
+	// associated session metadata rather than replacing it with tab projection.
 	metadata, err := QueryState(ctx, environment, process.RuntimeID, "id:"+process.WorktreeID)
 	if err != nil {
 		return s, err
@@ -258,15 +259,13 @@ func QueryOriginalAgent(ctx context.Context, environment string, process b.Proce
 		return s, stateIdentityError("queried original pane/provider metadata changed")
 	}
 	if current.ProviderSession.ID == "" {
-		// Session association can lag the original pane while Codex starts.
-		// Keep it unavailable so readiness retries within its existing deadline;
-		// it cannot qualify input until both independent queries agree.
+		// Session association can lag the original pane. Preserve its absence
+		// rather than returning the primary record as fully associated metadata.
 		return s, fmt.Errorf("%w: provider metadata currently unavailable", ErrOriginalMainAgentUnavailable)
 	}
 	s.ProviderSession = current.ProviderSession
 	// Legacy tab projections can lose the entire main-agent envelope. Keep that
-	// absence distinct from partial or contradictory metadata; only the former
-	// is eligible for the separately fenced original-input query.
+	// absence distinct from partial or contradictory metadata for the caller.
 	s.ThinMetadata = current.MainAgent == nil && current.Observation == nil && current.TurnStartedAt == 0 &&
 		current.AgentType == s.AgentType && current.State == s.State
 	s.SessionBoundary = s.SessionBoundary || current.SessionBoundary

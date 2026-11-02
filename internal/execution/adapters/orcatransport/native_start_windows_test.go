@@ -207,12 +207,12 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 			}
 			thinInputRPC(t, process, end, prompt, mode == "duplicate", mode != "thin-preview")
 			l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.StateSample, error) {
-				return native.QueryOriginalSample(ctx, "", p, pane)
+				return native.QueryOriginalSample(ctx, "", orcaStateResource(p), pane)
 			}
 			inputQueries := 0
-			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
+			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (originalInputState, error) {
 				inputQueries++
-				current, err := native.QueryOriginalInput(ctx, "", p, pane, baseline, before)
+				current, err := queryOriginalInput(ctx, "", p, pane, baseline, before)
 				if err == nil && mode == "query-error-conflict" {
 					current.ProviderSession.ID = "replaced-after-read"
 					return current, errors.New("independent post-read mismatch")
@@ -238,11 +238,11 @@ func TestNativeUnstartedReceiptRecoversOnlyCompletedOriginalInput(t *testing.T) 
 					t.Fatal("invented streamed start", e)
 				}
 				if mode == "zero-incarnation-started" {
-					queried, e := native.QueryOriginalSample(context.Background(), "", saved.Process, end.PaneKey)
+					queried, e := native.QueryOriginalSample(context.Background(), "", orcaStateResource(saved.Process), end.PaneKey)
 					if e != nil {
 						t.Fatal(e)
 					}
-					checked, e := native.QueryOriginalInput(context.Background(), "", saved.Process, end.PaneKey, turnFor(&saved, input.CommandID).Native.BaseRootAt, queried.AgentState)
+					checked, e := queryOriginalInput(context.Background(), "", saved.Process, end.PaneKey, turnFor(&saved, input.CommandID).Native.BaseRootAt, queried.AgentState)
 					if e != nil || !shortOriginalInputVerified(checked, saved.Process, turnFor(&saved, input.CommandID)) {
 						t.Fatal("probe rejected existing observed-root proof", e)
 					}

@@ -32,7 +32,7 @@ func runShortInputSequence(t *testing.T, ctx context.Context, l *Lifecycle, s b.
 	if deadline, ok := ctx.Deadline(); ok {
 		record["probe_deadline"] = deadline
 	}
-	trace.write("probe.ready", map[string]any{"process": identity, "ready": traceAgent(ready, identity), "snapshot_session": s.Session})
+	trace.write("probe.ready", map[string]any{"process": identity, "ready": traceAgent(ready, identity, nil), "snapshot_session": s.Session})
 	nonce := make([]byte, 16)
 	if _, err := rand.Read(nonce); err != nil {
 		t.Fatal(err)
@@ -154,15 +154,15 @@ func runShortInputSequence(t *testing.T, ctx context.Context, l *Lifecycle, s b.
 			t.Fatal("original short final unverified", err, receipt.Diagnostic)
 		}
 		bind(&s, receipt)
-		sample, err := native.QueryOriginalSample(ctx, l.profile.Environment, identity, ready.PaneKey)
+		sample, err := native.QueryOriginalSample(ctx, l.profile.Environment, orcaStateResource(identity), ready.PaneKey)
 		if err != nil {
 			t.Fatal(err)
 		}
-		verified, err := native.QueryOriginalInput(ctx, l.profile.Environment, identity, ready.PaneKey, turn.Native.BaseRootAt, sample.AgentState)
+		verified, err := queryOriginalInput(ctx, l.profile.Environment, identity, ready.PaneKey, turn.Native.BaseRootAt, sample.AgentState)
 		at["original_query"], at["query_error"] = verified, errorText(err)
 		state, stateErr := l.state(s)
 		completedTurn := turnFor(&state, input.CommandID)
-		trace.write("input.original_check", map[string]any{"input_index": i + 1, "query": traceAgent(verified, identity), "error": errorText(err), "state_error": errorText(stateErr), "completed_turn": completedTurn})
+		trace.write("input.original_check", map[string]any{"input_index": i + 1, "query": traceAgent(verified.AgentState, identity, verified.NativeInput), "error": errorText(err), "state_error": errorText(stateErr), "completed_turn": completedTurn})
 		if verified.NativeInput != nil {
 			at["public_pages"] = verified.NativeInput.Pages
 		}
@@ -184,11 +184,11 @@ func runShortInputSequence(t *testing.T, ctx context.Context, l *Lifecycle, s b.
 // Production supports both an independently fenced completed-input query and
 // the original observed working-root/authority proof. A post-final probe must
 // not demand the query-only marker from the latter (which has no such marker).
-func shortOriginalInputVerified(s native.AgentState, p b.ProcessIdentity, turn *Turn) bool {
-	if turn == nil || s.NativeInput == nil || s.NativeInput.Text != nativeWireText(turn) || !turn.Native.recordedInputMatches(s, turn) {
+func shortOriginalInputVerified(s originalInputState, p b.ProcessIdentity, turn *Turn) bool {
+	if turn == nil || s.NativeInput == nil || s.NativeInput.Text != nativeWireText(turn) || !turn.Native.recordedInputMatches(s.AgentState, turn, s.NativeInput) {
 		return false
 	}
-	if s.NativeInput.MatchesOriginalQuery(s) {
+	if s.NativeInput.MatchesOriginalQuery(s.AgentState) {
 		return s.NativeInput.MatchesOriginalProcess(p)
 	}
 	return s.NativeInput.Observation != nil

@@ -71,9 +71,9 @@ type Lifecycle struct {
 	profile            Profile
 	profileVersion     int
 	client             native.Client
-	stateFactory       native.StateFeedFactory
+	stateFactory       stateFeedFactory
 	queryNative        func(context.Context, b.ProcessIdentity, string) (native.StateSample, error)
-	queryInput         func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (native.AgentState, error)
+	queryInput         func(context.Context, b.ProcessIdentity, string, int64, native.AgentState) (originalInputState, error)
 	feed               native.StateFeed
 	feedProcess        b.ProcessIdentity
 	feedMu             sync.Mutex
@@ -85,15 +85,15 @@ type Lifecycle struct {
 }
 
 func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
-	port, err := NewLifecycleWithStateFactory(setup, native.OpenStateFeed)
+	port, err := NewLifecycleWithStateFactory(setup, openOrcaStateFeed)
 	if err == nil {
 		port.(*Lifecycle).nativeAccess = true
 		l := port.(*Lifecycle)
 		l.queryNative = func(ctx context.Context, process b.ProcessIdentity, pane string) (native.StateSample, error) {
-			return native.QueryOriginalSample(ctx, l.profile.Environment, process, pane)
+			return native.QueryOriginalSample(ctx, l.profile.Environment, orcaStateResource(process), pane)
 		}
-		l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
-			return native.QueryOriginalInput(ctx, l.profile.Environment, process, pane, baseline, before)
+		l.queryInput = func(ctx context.Context, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (originalInputState, error) {
+			return queryOriginalInput(ctx, l.profile.Environment, process, pane, baseline, before)
 		}
 	}
 	return port, err
@@ -101,7 +101,7 @@ func NewLifecycle(setup b.LifecycleSetup) (b.LifecyclePort, error) {
 
 // The explicit port supplies isolated native-response fixtures without adding
 // simulation flags to profiles or the shared business workflow.
-func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory native.StateFeedFactory) (b.LifecyclePort, error) {
+func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFactory) (b.LifecyclePort, error) {
 	if factory == nil {
 		return nil, errors.New("missing Orca native state source")
 	}

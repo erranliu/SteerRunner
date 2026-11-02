@@ -26,7 +26,7 @@ type provenance struct {
 
 // attribution is shared by notifications, independent queries and public
 // sampling. Missing fields are not durable contradictions.
-func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) provenance {
+func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool, input *nativeInput) provenance {
 	if s.SessionBoundary || s.RestoredUnconfirmed || s.Prompt != "" && s.Prompt != preview(turn.Prompt) {
 		return provenance{provenanceConflict, "Native original completion/input provenance is unverified"}
 	}
@@ -37,7 +37,7 @@ func (p NativeProof) attribution(s native.AgentState, turn *Turn, linked bool) p
 		return provenance{}
 	}
 	if s.Prompt == "" {
-		if linked || p.recordedInputMatches(s, turn) {
+		if linked || p.recordedInputMatches(s, turn, input) {
 			return provenance{}
 		}
 		return provenance{provenanceMissing, nativePromptMissing}
@@ -57,7 +57,7 @@ type nativeObservation struct {
 	lastSourceAt     int64
 	pending          *b.PublicMessage
 	diagnostic       string
-	input            *native.NativeInput
+	input            *nativeInput
 	inputStamp       int64
 	observedRevision int64
 }
@@ -85,12 +85,12 @@ func (o *nativeObservation) invalidate() {
 
 // A queried input binding is transient and scoped to this exact display stamp.
 // Another boundary or reconnect requires a new independent read.
-func (o *nativeObservation) bindInput(s *native.AgentState, p NativeProof) {
+func (o *nativeObservation) bindInput(s *native.AgentState, p NativeProof) *nativeInput {
 	// Old notifications cannot acquire a proof, but also cannot revoke the
 	// current binding before NativeProof.signal discards their stale revision.
 	if trustedState(*s) && s.Observation.AuthorityID == p.Authority && s.Observation.Incarnation == p.Incarnation &&
 		(s.Observation.Revision <= p.Revision || o.input != nil && o.input.Observation != nil && s.Observation.Revision < o.input.Observation.Revision) {
-		return
+		return nil
 	}
 	if o.input == nil || s.TurnStartedAt <= 0 || s.TurnStartedAt != o.inputStamp || !trustedState(*s) ||
 		s.MainAgent.State != "working" || s.MainAgent.StateStartedAt != p.RootWorkingAt ||
@@ -98,17 +98,17 @@ func (o *nativeObservation) bindInput(s *native.AgentState, p NativeProof) {
 		s.Observation.Revision < p.Revision || s.Observation.Boundary || s.ProviderSession.ID != p.Provider || s.PaneKey != p.Pane ||
 		s.SessionBoundary || s.RestoredUnconfirmed || s.Interrupted || s.ToolOutput {
 		o.input, o.inputStamp = nil, 0
-		return
+		return nil
 	}
 	input := *o.input
 	input.Observation = s.Observation
-	s.NativeInput = &input
+	return &input
 }
 
 func (o *nativeObservation) reattach(s native.AgentState, p NativeProof, turn *Turn) {
 	conflict := s.PaneKey != p.Pane || s.ProviderSession.ID != "" && p.Provider != "" && s.ProviderSession.ID != p.Provider ||
 		s.AgentType != "" && s.AgentType != p.agentName() || s.SessionBoundary || s.RestoredUnconfirmed || s.ToolOutput || s.Interrupted ||
-		s.MainAgent != nil && s.MainAgent.StateStartedAt > p.BaseRootAt && s.Prompt != "" && p.attribution(s, turn, false).kind == provenanceConflict ||
+		s.MainAgent != nil && s.MainAgent.StateStartedAt > p.BaseRootAt && s.Prompt != "" && p.attribution(s, turn, false, nil).kind == provenanceConflict ||
 		o.turnStartedAt > 0 && s.TurnStartedAt > 0 && o.turnStartedAt != s.TurnStartedAt
 	if conflict {
 		o.invalidate()
@@ -140,7 +140,7 @@ func (o *nativeObservation) supplements(sample native.StateSample, p NativeProof
 		p.EndedAt > 0 && s.MainAgent != nil && s.MainAgent.State == "done" && s.MainAgent.StateStartedAt == p.EndedAt
 }
 
-func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn *Turn, fresh bool) {
+func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn *Turn, fresh bool, input *nativeInput) {
 	s := sample.AgentState
 	if s.TurnStartedAt > 0 && o.turnStartedAt > 0 && s.TurnStartedAt != o.turnStartedAt {
 		o.invalidate()
@@ -168,7 +168,7 @@ func (o *nativeObservation) offer(sample native.StateSample, p NativeProof, turn
 	ended := p.EndedAt > 0 && p.EndedAt == s.MainAgent.StateStartedAt
 	working := fresh && sample.Kind == native.SampleNotification && trustedState(s) &&
 		p.WorkingAt > 0 && s.MainAgent.State == "working" && s.MainAgent.StateStartedAt == p.RootWorkingAt &&
-		p.attribution(s, turn, false).kind == provenanceMatched
+		p.attribution(s, turn, false, input).kind == provenanceMatched
 	if !ended && !working {
 		return
 	}

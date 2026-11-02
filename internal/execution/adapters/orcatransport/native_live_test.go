@@ -152,7 +152,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	process := b.ProcessIdentity{Kind: "orca_terminal", Executable: executable, Terminal: terminal.Handle, RuntimeID: runtime, Incarnation: terminal.IncarnationID, WorktreeID: terminal.WorktreeID, ExecutionHost: p.Target().ExecutionHost}
 	startup, startupCancel := context.WithTimeout(ctx, 90*time.Second)
 	defer startupCancel()
-	startupFeed, err := native.OpenStateFeed(startup, environment, process)
+	startupFeed, err := native.OpenStateFeed(startup, environment, orcaStateResource(process))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -188,7 +188,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	var publicMessages []b.PublicMessage
 	var samples []native.StateSample
 	l.stateFactory = func(ctx context.Context, environment string, p b.ProcessIdentity) (native.StateFeed, error) {
-		feed, err := native.OpenStateFeed(ctx, environment, p)
+		feed, err := native.OpenStateFeed(ctx, environment, orcaStateResource(p))
 		if err != nil {
 			return nil, err
 		}
