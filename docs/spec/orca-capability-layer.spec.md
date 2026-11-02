@@ -1,8 +1,8 @@
 # Orca 能力层长期设计
 
-维护日期：2026-11-02。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
+维护日期：2026-11-03。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
-状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已完成并通过独立审计；B4c 已完成并通过独立审计；B4d 已完成，独立审计唯一 P2 已修复并关闭；B5 已完成，最终同构建四场真实资格和独立审计均通过；B6 待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
+状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已完成并通过独立审计；B4c 已完成并通过独立审计；B4d 已完成，独立审计唯一 P2 已修复并关闭；B5 已完成，最终同构建四场真实资格和独立审计均通过；B6 已完成，最终同构建四场资格及归档独立审计通过；B0–B6 全部签收，保留例外和资格边界仍按当前合同逐项表达。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
 
 ## 1. 设计目标与范围
 
@@ -14,16 +14,16 @@
 
 现有 Orca 协议是实现依据，不为本设计修改 Orca、增加 SSH 网关、部署 helper 或构建完整 Orca SDK。仅抽取已有实际消费者需要的能力。
 
-## 2. 当前结构与可复用基础
+## 2. 初始结构与收敛结果
 
-| 现有位置 | 已有能力 | 需要收敛的边界 |
+| 位置 | 能力 | B1–B6 收敛结果 |
 | --- | --- | --- |
-| [protocol/orca/state_transport.go](../../internal/execution/adapters/protocol/orca/state_transport.go)、state_local.go、state_stream.go | 本机 IPC、远端配对连接、统一请求响应 | 保留连接差异，消除上层重复路由及协议细节 |
-| [protocol/orca/state_feed.go](../../internal/execution/adapters/protocol/orca/state_feed.go)、state_query_feed.go | 快照、通知和独立查询，区分样本来源 | 将原生读取与执行证据判定分开，保留来源差别 |
-| [protocol/orca/terminal_query.go](../../internal/execution/adapters/protocol/orca/terminal_query.go) | 原终端查询及身份核对 | 减少对执行层身份类型的依赖，接入控制终端等真实消费者 |
-| [protocol/orca/scoped_files.go](../../internal/execution/adapters/protocol/orca/scoped_files.go)、artifact.go | 选定主机上的有界文件操作 | 原生操作与 Run 专属路径、用途、预算分别归属 |
-| [orcatransport/creation_owner.go](../../internal/execution/adapters/orcatransport/creation_owner.go) | 冻结创建命令、首次派发及原回执对账 | owner 保留可靠执行职责，共用 Orca 命令构造与解码 |
-| [orcatransport/lifecycle.go](../../internal/execution/adapters/orcatransport/lifecycle.go) 及控制、history、停止实现 | 双端业务接线和现有证明链 | 拆出 Orca 操作；正文格式、证据来源和停止合同分别表达 |
+| [protocol/orca/state_transport.go](../../internal/execution/adapters/protocol/orca/state_transport.go)、state_local.go、state_stream.go | 本机 IPC、远端配对连接、统一请求响应 | 保留明确主机连接差异；公共调用构造/解码及路由由能力层提供 |
+| [protocol/orca/state_feed.go](../../internal/execution/adapters/protocol/orca/state_feed.go)、state_query_feed.go | 快照、通知和独立查询，区分样本来源 | 原生读取及样本来源自有类型；Run/输入/完成判定留在 adapter |
+| [protocol/orca/terminal_query.go](../../internal/execution/adapters/protocol/orca/terminal_query.go) | 原终端查询及身份核对 | 自有 TerminalIdentity，无执行层导入；业务/控制等实际消费者共用 |
+| [protocol/orca/scoped_files.go](../../internal/execution/adapters/protocol/orca/scoped_files.go)、[orcatransport/artifact.go](../../internal/execution/adapters/orcatransport/artifact.go) | 选定主机上的有界文件操作 | 能力层只管明确 scope/限额；Run/staging 路径、用途、预算由消费者持有 |
+| [orcatransport/creation_owner.go](../../internal/execution/adapters/orcatransport/creation_owner.go) | 冻结创建命令、首次派发及原回执对账 | owner 保留原操作/首次派发/未知对账，消费公共资源创建构造和解码 |
+| [orcatransport/lifecycle.go](../../internal/execution/adapters/orcatransport/lifecycle.go) 及控制、history、停止实现 | 双端业务接线和现有证明链 | 选定 Codex/development 原生合同双端共用；仍有 managed 消费者的模型/审计/停止例外单列 |
 
 `protocol/orca` 是能力层的实施起点。初始基线仍引用执行类型；B1–B4d 已逐项迁移并删除原执行依赖，当前生产文件不导入其他 internal 所有者。职责和真实消费者的验证仍按各批验收，不以目录、文件数或接口数签收。
 
@@ -138,7 +138,7 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | B4c 受限文件操作 | 已完成 | [Spec](orca-scoped-files-capability.spec.md) / [Plan](orca-scoped-files-capability.plan.md) / [验收](../acceptance/orca-scoped-files-capability.md)；按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
 | B4d 关闭与完整清单 | 已完成 | [Spec](orca-close-inventory-capability.spec.md) / [Plan](orca-close-inventory-capability.plan.md) / [验收](../acceptance/orca-close-inventory-capability.md)；共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |
 | B5 候选生产接线与业务资格 | 已完成，独立审计通过 | [Spec](orca-shared-native-runner.spec.md) / [Plan](orca-shared-native-runner.plan.md)；实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算| 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |
-| B6 最终启用并退役旧链 | 待实施 | 在已通过 B5 的完整接线上完成最终启用、合同/能力说明同步和无消费者旧链删除 | 两端只留连接、目标解析及确有必要的轻流程差异 | 最终构建复验受删除/启用影响的真实 Runner 资格与停止负例；原升级/旧记录规则保持，不首次补齐 B5 所需接线 |
+| B6 最终启用并退役旧链 | 已完成，独立审计通过 | [Spec](orca-native-rollout.spec.md) / [Plan](orca-native-rollout.plan.md) / [验收](../acceptance/orca-native-rollout.md)；公开合同与保留消费者同步，删除不可达重复 guard | 两端只留连接、目标解析及确有必要的轻流程差异 | 最终构建复验受删除/启用影响的真实 Runner 资格与停止负例；原升级/旧记录规则保持，不首次补齐 B5 所需接线 |
 
 B0 无能力层重构前置，复用当前真实 Orca 协议即可。B1 和 B2a 有独立收益，可在 B0 未结束时先行；B3 必须先有 B0 对拟统一组合的可行性与差距结论，不能先完成复杂取证抽离再验证方向。B0 失败或环境阻断时，相关统一目标保持待核验，先明确范围/设计调整，不自动回退 helper 取得“原生通过”。
 

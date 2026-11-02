@@ -1,6 +1,6 @@
 # Orca 双端执行合同
 
-当前支持声明（2026-11-03）：Codex / development/2 / full_access 的本机与明确 environment 使用同一原生 Orca 执行合同。正式入口、冻结、完整原输入与结果、业务反馈、发布核验和停止均已在 B5 接通；B6 同步公开合同并复验最终构建。实际资格见 [B5 验收](acceptance/orca-shared-native-runner.md)及 [B6 Spec/Plan](spec/orca-native-rollout.spec.md)。不修改已安装服务或用户原配置。
+当前支持声明（2026-11-03）：Codex / development/2 / full_access 的本机与明确 environment 使用同一原生 Orca 执行合同。正式入口、冻结、完整原输入与结果、业务反馈、发布核验和停止均已在 B5 接通；B6 已同步公开合同，并通过最终集成构建双端开发及活动停止四场、原资源离线与独立审计。实际资格见 [B5 验收](acceptance/orca-shared-native-runner.md)、[B6 验收](acceptance/orca-native-rollout.md)及 [B6 Spec/Plan](spec/orca-native-rollout.spec.md)。不修改已安装服务或用户原配置。
 
 ## 选择双端原生合同
 
