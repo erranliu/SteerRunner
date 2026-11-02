@@ -1,6 +1,6 @@
 # Plan：Orca 原终端查询能力 B1
 
-日期：2026-11-02。状态：P0–P4 完成，P5 验收已记录、独立审计待完成；见[验收](../acceptance/orca-terminal-query-capability.md)。依据 [Spec](orca-terminal-query-capability.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本批只实施 B1，B0 独立审计的确认问题已用独立 commit `1393d0e` 修复。
+日期：2026-11-02。状态：P0–P5 完成，独立审计未发现确认的 P0/P1/P2；见[验收](../acceptance/orca-terminal-query-capability.md)。依据 [Spec](orca-terminal-query-capability.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本批只实施 B1，B0 独立审计的确认问题已用独立 commit `1393d0e` 修复。
 
 ## P0 固定接线和变更白名单
 
