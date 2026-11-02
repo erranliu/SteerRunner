@@ -29,8 +29,87 @@
     "TestSRProgressFile",
     "TestSRResultFile",
     "TestSROrcaCLIWaitRetry",
-    "TestSRManualReconciliation"
+    "TestSRManualReconciliation",
+    "TestSRSingleExecutionColdStop"
   ],
+  "controlled_selection": {
+    "groups": {
+      "foundation": [
+        "TestSRStandalonePackage",
+        "TestSRServiceOwnership",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRStorageLogsEvents"
+      ],
+      "workflow": [
+        "TestSRRunWorkflow",
+        "TestSRPublicationIdentity",
+        "TestSRPublicationBeforeWorkflowReady",
+        "TestSRWorkflowDiscoveryAndSelection",
+        "TestSRResultAcquisition"
+      ],
+      "recovery": [
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization",
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRMultipleRunsIsolation",
+        "TestSRResourceCreationRecovery",
+        "TestSRManualReconciliation"
+      ],
+      "content": [
+        "TestSRContentGenerate",
+        "TestSRContentRepository",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRContentGenerationRecovery"
+      ],
+      "files": [
+        "TestSRRunEvidenceR2",
+        "TestSRProgressFile",
+        "TestSRResultFile",
+        "TestSRSingleExecutionColdStop"
+      ],
+      "orca-cli": [
+        "TestSROrcaCLIWaitRetry"
+      ]
+    },
+    "combinations": {
+      "execute-stop": [
+        "TestSRSingleExecutionColdStop",
+        "TestSRResultFile",
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization"
+      ],
+      "runtime-files": [
+        "TestSRProgressFile",
+        "TestSRResultFile"
+      ],
+      "content-flow": [
+        "TestSRContentGenerate",
+        "TestSRContentRepository",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRContentGenerationRecovery",
+        "TestSRNativeUnknownAndStop",
+        "TestSRManualReconciliation"
+      ],
+      "acceptance-control": [
+        "TestSRStandalonePackage",
+        "TestSRServiceOwnership",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRStorageLogsEvents",
+        "TestSRNativeUnknownAndStop",
+        "TestSRRestartPreservesAuthorization",
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRMultipleRunsIsolation",
+        "TestSRResourceCreationRecovery",
+        "TestSRManualReconciliation"
+      ]
+    }
+  },
   "scenarios": [
     "orca-local.codex",
     "orca-local.pi",
@@ -123,7 +202,6 @@
       "expected": [
         "active graceful restart",
         "active kill",
-        "compatible binary takeover",
         "startup stop",
         "same original process/session/turn",
         "offline resource settlement"
@@ -147,7 +225,7 @@
         "resource settlement",
         "explicit generated Run stop",
         "offline resource settlement",
-        "same EXE takeover retains Run/input/request bindings",
+        "retired verify-takeover command rejected with exit 2",
         "unchanged original database"
       ],
       "subcases": [

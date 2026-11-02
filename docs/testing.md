@@ -1,5 +1,7 @@
 # SteerRunner L1–L4 测试指南
 
+2026-11-02 核对：现行数量与独立原生专项统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。本次仅校正文档/专项描述，并将已有 `TestSRSingleExecutionColdStop` 纳入默认 Controlled 自动回归；其余测试内容、分级、调度与资格规则保持。
+
 > 2026-11-01 当前使用：v8、升级先排空及人工对账规则见[CLI 指南](cli-guide.md#人工对账与资源丢失)。未知操作查询预算耗尽后转待人工；显式 resume 最多 30 秒只读核实原事实，原输入零重发、零资源重建，stop/close 优先。下方按日期保存的旧数量与旧验收说明只描述当时构建。
 
 ## 快速定向验证（P1，2026-11-01）
@@ -21,13 +23,11 @@
 
 > 2026-10-31 parser 增补：独立解析已改为复用 Codex 登录/CLI 的内存文本任务；旧 parser operation、owner 接管、工具权限及停止取证条款由 [Parser 解耦 Spec](spec/parser-decoupling.spec.md) 取代。工具禁用和进程清理只在 parser 内；其余主执行契约与历史证据结论保持。
 
-2026-10-29 退役旧 Check：当前 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。
+2026-10-29 退役旧 Check：当时 Controlled 为 25 个顶层测试，L2 为 1 场景/1 case，L3 为 25 场景/35 case，L4 为 4 场景/4 case；完整通用目录为 30 场景/40 case。旧构建的日期记录不代表当前目录。删除范围与验证见[退役记录](acceptance/check-retirement.md)。
 
-N
-
-2026-10-27 核对：当前通用目录为 L2 1 场景/1 case、L3 29 场景/39 case、L4 4 场景/4 case，
+2026-10-27 历史核对：当时通用目录为 L2 1 场景/1 case、L3 29 场景/39 case、L4 4 场景/4 case，
 Controlled 前置 26 个顶层测试，另有 5 个 focused native L3 专项。
-L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用已落实；当前行为、独立子场景入口与 L4 后续建议见[测试清单整理结论](test-catalog.md#测试整理结论-2026-10-26)。
+该轮 L2/parser 拆分、feedback 吸收、内容生成及 L4 同批构建复用的历史依据与建议见[测试清单整理结论](test-catalog.md#测试整理结论-2026-10-26)；现行数量和专项入口见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。
 
 ## 固定交付包验证（2026-10-26）
 
@@ -74,15 +74,14 @@ Orca → 原生 Codex 输入专项复用 `TestOrcaNativeStateLiveLifecycle`，�
 
 文件清单及源码摘要使用固定 ordinal 排序，避免 .NET/PowerShell 的区域排序差异。framework 和交付入口均另用 Windows PowerShell 5.1 核对同一包摘要；最终资格只有在宿主与 Windows PowerShell 身份一致时通过。
 
-2026-10-25 Orca CLI 等待增量：Controlled 新增 `TestSROrcaCLIWaitRetry`（现在 24 个顶层）；L3 新增 `orca-local.cli-wait-retry/default`、`orca-remote.cli-wait-retry/default`，现在 L3 为 29 场景/39 case，全目录 35 场景/45 case。两项原生 case 复用原 fixture 和转发 journal，以独占测试 lease 与同 cache 的其它 case 串行；独立 state-dir 不是 CLI cache 隔离证明。持锁故障只作用于 fixture 私有互斥 key，真实 CLI 转发器仍取得原用户共享 cache 的互斥；不会绕过生产入口。
+2026-10-25 Orca CLI 等待增量：Controlled 新增 `TestSROrcaCLIWaitRetry`（当时 24 个顶层）；L3 新增 `orca-local.cli-wait-retry/default`、`orca-remote.cli-wait-retry/default`，当时 L3 为 29 场景/39 case，全目录 35 场景/45 case。两项原生 case 复用原 fixture 和转发 journal，以独占测试 lease 与同 cache 的其它 case 串行；独立 state-dir 不是 CLI cache 隔离证明。持锁故障只作用于 fixture 私有互斥 key，真实 CLI 转发器仍取得原用户共享 cache 的互斥；不会绕过生产入口。
 
 最小受控入口为 `./scripts/test-foundation.ps1 -Pattern '^TestSROrcaCLIWaitRetry$' -OutDir <新绝对目录>`，覆盖真实跨进程 >15 秒排队、原服务正常/强杀重启、stop、换代前撤销与暂态退避（六个变体）；组件/公开 schema/持久事务反例纳入原 L1。正式原生入口为 `./scripts/test.ps1 -Level L3 -Scenario orca-local.cli-wait-retry,orca-remote.cli-wait-retry -Config <独立配置> -MaxParallel 1 -OutDir <新目录>`；该入口仍运行完整 L1/Controlled 前置。案例实现不代表目标通过，实际构建、原生资格及清理见[专项验收](acceptance/orca-cli-wait-retry.md)。
 
 
 审计默认提示简化的定向入口与结果见[本轮验收](acceptance/reliable-delivery-simplification.md)。
-原生能力对比使用显式选择的[隔离试验](../tests/experiments/README.md)；跨构建冻结验证使用
-`scripts/test-foundation.ps1 -Pattern '^TestSRAuditPromptDefaultUpgrade$' -BaselineExe <变更前EXE> -OutDir <新目录>`。
-后者是需原 EXE 的补充受控场景，不改默认 22 项目录或以编译/跳过代替资格。
+原生能力对比使用显式选择的[隔离试验](../tests/experiments/README.md)。历史跨构建冻结验证
+`TestSRAuditPromptDefaultUpgrade` 及 foundation 的 `-BaselineExe` 参数已退役，不作为现行入口；原结果仅描述上述验收的原构建。
 
 Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/cost/... ./internal/storage ./internal/host ./internal/cli ./internal/contracts ./internal/resources -count=1`。真实 EXE 的用量查询使用隔离合成投影；三 agent 格式夹具均脱敏。原生产日志只读复算为显式 opt-in `TestUsageExistingNativeEvidence`，默认跳过，不启动业务 worker。实际范围、六组合缺口及首次整仓失败记录见[实施验收](acceptance/run-usage-and-cost.md)；这些测试随现有 L1 `./internal/...` 入口运行，不增加模型或 PR case。
 
@@ -128,7 +127,7 @@ SessionStart 空预览补证定向入口：`go test ./internal/execution/adapter
 | --- | --- | --- |
 | L1 | 快速的单元测试或集成测试 | 快速反馈规则、组件、协议、存储和依赖边界的正确性；现有默认入口不启动真实模型或创建真实 PR |
 | L2 | 代表最小核心流程的 Smoke test | 用最少的固定流程判断核心链路是否可用；扩展流程和边界变体放入 L3/L4 |
-| L3 | 可并行的多种不同流程及核心可靠性测试 | 覆盖开发、反馈、审计、远端执行，以及可预期故障下的可靠执行；各项独立、互不干扰，主要验证目标尽量正交 |
+| L3 | 可并行的多种不同流程及核心可靠性测试 | 覆盖开发、业务问答、审计、远端执行，以及可预期故障下的可靠执行；各项独立、互不干扰，主要验证目标尽量正交 |
 | L4 | 更复杂的边界情况测试，或确实无法并行的测试 | 覆盖复合故障、精确竞态、极端资源条件等；记录超出常规可靠性流程的条件，或必须串行的原因及互斥范围 |
 
 具体归类先看产品承诺和独有断言，再看故障组合及隔离条件。不能仅按故障数量、次数或
@@ -176,11 +175,56 @@ Agent 和 state stream 仍并行。等待占用原调用期限；取消后不启
 
 `Controlled` 是现有脚本的受控集成前置入口，不是 L1–L4 之外的第五级。它使用真实
 EXE/CLI/IPC/SQLite、隔离 Git 和原生协议/provider 夹具，可在本地隔离 push，不创建真实
-PR。目前固定 25 个顶层场景，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
+PR。现行顶层数量统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)，覆盖独立包、服务归属、材料冻结、权限资格、完整工作流、
 存储/日志/事件、PR 身份、工作流完成前的发布事实、原生未知结果与停止、重启后显式恢复、
-丢响应找回、停止授权跨重启保持、审计发现/修复/预算、同服务多 Run 隔离及资源创建回执恢复。
+丢响应找回、停止授权跨重启保持、审计发现/修复/预算、同服务多 Run 隔离、资源创建回执恢复、人工对账与 execute/1 冷启动停止。
 审计场景的子变体单独在日志中登记，批次 `scenario_count` 按顶层测试计数。
 是否纳入快速 L1 应按耗时和依赖评估。
+
+## Controlled 分组、固定选测与耗时（2026-11-02）
+
+主归属和固定组合维护在 `tests/catalog.json.controlled_selection`；完整执行集合仍只由原 `controlled_scenarios` 决定。
+六组必须无遗漏、无重复地覆盖全部注册测试；固定组合只能引用已注册测试，完整名称可用下列命令只读列出：
+
+```powershell
+./scripts/test-controlled.ps1 -List
+```
+
+| Group ID | 主要内容 | 顶层数 |
+| --- | --- | --- |
+| foundation | 独立包、服务归属、材料冻结、权限、存储/日志/事件 | 5 |
+| workflow | 开发闭环、发布身份/提前发布、工作流选择、审计结果获取 | 5 |
+| recovery | 未知结果、换代、丢响应、跨代撤销、多 Run、创建恢复、人工对账 | 7 |
+| content | generate、固定仓库调查、conversation、问答/unknown、内容恢复 | 5 |
+| files | R2、progress、result-file、ColdStop | 4 |
+| orca-cli | Orca CLI 排队/取消/读取重试 | 1 |
+
+| Combination ID | 固定测试集合 |
+| --- | --- |
+| execute-stop | SingleExecutionColdStop、ResultFile、NativeUnknownAndStop、RestartPreservesAuthorization |
+| runtime-files | ProgressFile、ResultFile |
+| content-flow | content 组的五项，加 NativeUnknownAndStop、ManualReconciliation |
+| acceptance-control | foundation 与 recovery 两组的十二项 |
+
+表中测试名省略 `TestSR` 前缀。组合是常见改动的固定起点；修改共享事务、授权或原生协议时仍需按实际影响补选，不将组合当作所有改动的充分验证。
+
+```powershell
+./scripts/test-controlled.ps1 -Group foundation,recovery -OutDir .evidence/control-basic-new
+./scripts/test-controlled.ps1 -Combination execute-stop -OutDir .evidence/execute-stop-new
+./scripts/test-controlled.ps1 -Combination runtime-files -RunnerExe <固定Runner绝对路径> -OutDir .evidence/files-new
+# 只读统计已有批次；输出必须使用原证据目录之外的新目录。
+./scripts/test-controlled.ps1 -FromEvidence <已有foundation证据目录> -OutDir .evidence/timing-import-new
+```
+
+入口复用 `test-foundation.ps1`，不运行完整 L1；其原有四项 foundation 单元前置、真实 EXE/受控 peer、独立进程、原超时与清理保持。Group 与 Combination 二选一，支持多个精确 ID、拒绝未知/重复/通配 ID；展开后的测试去重并按原完整目录顺序记录；实际执行顺序沿用原 Go 测试执行器，不按分组重新排序。每次使用新 OutDir，可用 `-TimeoutMinutes 1..60` 选择原 foundation 聚合预算，单项调用期限不变。
+
+`summary.json` 固定记录 `validation_scope=controlled-selection`、`complete_controlled_passed=false`、`qualification_eligible=false`，保存组合/精确测试集合、catalog 摘要及入口总耗时。即使选择六组全部测试，成功也只表示这次选择通过；不生成 `prerequisites.json`，不能用于 `-PrerequisitesFrom`。原 `test.ps1 -Level Controlled`、独立完整前置及 L2/L3/L4 的完整 Controlled 门禁继续执行原完整集合，不读取选测资格。
+
+`timings.json` 只累计 Go 顶层 `--- PASS/FAIL/SKIP: Test… (…s)`，不重复累计子测试；记录逐项状态、主分组、分组已观测数量/缺项、已观测耗时合计、最慢十项和原 log/result/source-identity 摘要。未完成项的耗时为 null，零执行、缺结果、重复记录、未知测试、失败/跳过或精确集合不匹配不能报告选测通过。顶层耗时合计不等于构建/准备/清理在内的入口墙钟耗时；日志精度为 Go 输出的百分之一秒，不用它推导细粒度性能收益。
+
+完整 Controlled 阶段也附加 `controlled/timings.json`，并在阶段 record 中记录路径。它是诊断附件，不增加完整资格的证据清单或门禁；统计不可用时记录 `timing_error`，原完整测试及资格判定仍按原规则执行。旧日志可通过 FromEvidence 只读统计，但不重写旧结果、不补签旧资格、不合并不同构建的通过或成本。
+
+历史成本样本：按本次分组只读统计 [P3 原完整日志](acceptance/evidence/personal-executor-p3-20261101/complete/controlled/integration.log)，当时 26 项共 1441.64 秒顶层耗时；workflow 541.29、recovery 326.17、files 279.39、foundation 112.44、content 94.71、orca-cli 87.64 秒。最慢项为 ResultAcquisition 475.80 秒和 ResultFile 155.87 秒。files 当时只有三项、缺 ColdStop；这些是原 v7 构建的成本样本，不是当前完整集合耗时，也不代表已取得加速收益。
 
 ## 测试清单维护规则
 
@@ -196,8 +240,7 @@ L2/L3/L4 的具体内容统一维护在[测试清单](test-catalog.md)。已实�
 [cases.json](../internal/testkit/livetest/cases.json)；PowerShell 的
 [目录读取](../scripts/live-catalog.ps1)将场景 ID 展开为注册元数据；旧格式自定义目录继续核对层级、driver、target、超时和完整 case 集，批次冻结展开后的完整目录。
 [Go 注册测试](../internal/testkit/livetest/cases_test.go)与
-[脚本检查](../tests/framework/stability-test.ps1)核对当前 L3 的二十三场景／三十一 case；原 12 个
-可靠性 case 保留。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
+[脚本检查](../tests/framework/stability-test.ps1)核对现行 L3 注册完整性；数量统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。四个 L4 场景绑定精确的受控测试名，不以受控结果代替真机资格。
 新增场景须注册需求并将 ID 加入执行目录，同步 manifest 校验和结果报告。workflow/2 在 `pr_ready` 后拒绝业务反馈；L2 不创建发布后反馈模型轮，也不读取反馈资格文件；smoke 在原 PR 上核验反馈拒绝后 revision、Turn 与 PR head 不变。
 耗时和模型使用按实际测试目的安排：快速规则/路由反例放 L1，复杂确定性分支使用受控
 集成，真机测试验证真实后端接线与核心行为，不强迫模型制造可重复的 finding。
@@ -316,13 +359,9 @@ node --test internal/execution/adapters/orcatransport/extensions/pi-evidence.tes
 发布 PR 或放行生产。真实证据见[新实施记录](spec/orca-generic-agent.plan.md#7-约束收敛后的实施pi-p0)；
 P0 探针不计为三个已注册 L3 case 或 Runner 真实重启/生产权限通过。
 
-本机 GitHub worker 默认使用执行主机已有 gh 登录的受限认证代理。OAuth 只在可信
-runtime 内存中，worker 只继承随机单仓库 capability，一小时到期、退出即失效。
-Git smart HTTP 经进程级代理及公开 CA，gh 经独立公开配置的 AF_UNIX 接口；原工具
-在 full_access 下执行，原 GitHub URL 保持。socket 保留原私有工作区与冻结身份绑定，证书不安装到系统。
-代理仅允许目标仓库的 Git 上传/下载、身份/仓库只读查询和 PR 查询/创建；禁止其它
-仓库、管理接口、未知 GraphQL 及重定向。GitHub App 支持已移除：`execution.settings.github_auth`（含 null）严格拒绝；fixture 的旧
-`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。本机/Orca local 开发使用宿主 Git/gh/SSH 登录；远端使用已有 Orca 原生认证。Runner 不再提供 broker/capability 或认证撤销证明。
+本机/Orca local 开发使用执行主机已有的 Git/gh/SSH 登录，原工具在 full_access 下执行，沿用原账号权限。
+GitHub App 支持已移除：`execution.settings.github_auth`（含 null）严格拒绝；fixture 的旧
+`github_auth`/`remote_github_auth` 同样在环境/仓库准备前拒绝。远端使用已有 Orca 原生认证。Runner 不再提供 broker/capability 或认证撤销证明。
 宿主登录成功不能证明就绪；适用链路的实际认证准备失败仍零业务输入，不回退审批发布。
 历史认证资格见[原验收](acceptance/sandbox-authentication.md)，当前 full_access 的实际范围见[实施与验证](acceptance/development-full-access.md)。
 
@@ -351,7 +390,7 @@ L2 使用生产默认的实施/报告/发布提示词，不覆盖 `prompt_overri
 夹具显式保留 packed refs。L2 case 的准备另通过实际 native `command/exec` 验证 loose/packed
 head 提交的 stderr 为空，且提交未改动独立 peer 仓库；不使用模型或远端写操作。
 worker 命令日志审计会拒绝权限错误，即使命令退出码为 0、提交及 PR 已成功。
-文件系统拒绝及 HTTP 401/403 均在审计范围内；宿主认证失败需保留有界诊断，不记录凭据。停止核实原业务树、工具 Job、parser 和控制终端，不生成认证关闭证明。
+文件系统拒绝及 HTTP 401/403 均在审计范围内；宿主认证失败需保留有界诊断，不记录凭据。停止按各后端的现行证据 scope 核实原资源；L2 不启动独立 parser，不生成认证关闭证明。
 L3 的固定发布器及故障门保持，用于原有反馈/可靠性场景。
 
 1. 生成 `C:/srt/<随机ID>` 短路径现场（可用 `-FixtureParent` 指定父目录），构建 Runner，
@@ -517,7 +556,7 @@ L1 另覆盖准备/发送前多次断连、独立查询失败、取消/期限耗
 .\scripts\test.ps1 -Level L3 -Repeat 3 -Config .evidence/test-config.json
 ```
 
-当前全 L3 每轮二十九场景三十九 case；原远端六场景十二 case 的历史三轮仍为三十六次，不能
+全 L3 每轮范围统一见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)；原远端六场景十二 case 的历史三轮仍为三十六次，不能
 与新增本机流程混用计数。L1/Controlled 每批完整执行一次。
 `-Repeat` 默认 1，范围 1–10。`-SkipAdminRequired` 仅供用户明确选择排除管理员场景时使用，
 报告保存所有排除项及 `passed_with_exclusions`，不能声明完整 L3 通过。当前最终验收要求全部执行。
@@ -577,7 +616,7 @@ driver 的原 12 分钟等待预算、原 PR 上的新 head、服务端 Git 对�
 
 ## 运行时单文件汇报增量
 
-新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。唯一注册当前为 L3 25 场景/35 case，总 30 场景/40 case；Controlled 25 顶层，原有项全部保留。正式脚本自动执行 L1、完整 Controlled；可用 -MaxParallel 6 同时调度一项 L2 与五项 progress L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
+新增五项 progress-file driver L3，场景/隔离/准确命令见测试清单的同名专项。该增量登记时为 L3 25 场景/35 case，总 30 场景/40 case；Controlled 当时 25 顶层，原有项全部保留。正式脚本自动执行 L1、完整 Controlled；可用 -MaxParallel 6 同时调度一项 L2 与五项 progress L3，结束后运行 scripts/verify-progress-parallel.ps1，核对同一构建五项全通过、资源隔离及各自 120 秒实际原生观察窗口重叠。source、快照、结果、清理及失败历史见 [专项验收](acceptance/runtime-progress.md)。不要用默认跳过、零选择、Controlled 或旧构建结果代替本次 native/remote 通过。
 
 PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修改其源文件，再次换代服务；必须保持原终态快照逐字段不变，活动同伴继续更新且零额外原生输入。快速回归同时核对已收尾不重开、待收尾仍采样、停服终态 closed、活动/恢复 detached，以及未启用 Orca 通道的环境隔离。`tests/framework/progress-parallel-test.ps1` 纳入正式框架入口，验证有效窗口及四种不合格报告；合成窗口只证明核验器行为，不授予 L3 或实际并行资格。
 
@@ -586,7 +625,7 @@ PR #55 审计补充：`TestSRProgressFile` 在同一服务中停止一项后修�
 
 ## result-file 本地与受控增量（2026-10-26）
 
-新增 Controlled `TestSRResultFile`，当前 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
+该增量新增 Controlled `TestSRResultFile`，当时 Controlled 注册 25 项。本轮只选取 `TestSRProgressFile|TestSRResultFile`：保留原 progress 回归；result 验证四种启用组合、实际环境清理、运行中 pending、结束后任意字节/原子替换、停止后封存及服务重启后不刷新。result 仅结束时采集，版本只有 0/1，不包含持续观察、交错采样或观察重开测试。
 
 定向单元覆盖封存失败/预算/原绑定、初始化未知只读对账、resume 不刷新、旧业务/progress/result 保存保护及持久化失败。完整 content/resource recovery 长流程不作为本功能默认回归；受控和真实远端资格分别登记，真实远端和部署留待后续。详见 [验收记录](acceptance/runtime-result-file.md)。
 
@@ -603,4 +642,4 @@ P2 Orca local 补验：完整 L1 使用 `./scripts/test-prerequisites.ps1 -Stage
 
 定向组件、公开受控和 `TestOrcaStoppedNativeProbe` 的显式隔离原生探针见[专项验收](acceptance/orca-local-codex-stop-simplification.md)。新 scope 覆盖登记终端/helper/根身份，不依赖签名退出文件或 control Closed；直接 Codex、Pi/DSH、原生远端保留各自范围。探针使用真实 readiness 和原资源，Run 为隔离注入夹具，业务输入为 0，无真实 PR，不计完整 L2/L3。未设置显式探针环境时的 skip 不计真机通过。
 
-execute/1 增量复用正式 L1（含 SingleExecution 契约/原生 final/停止/拒绝额外输入测试）及 foundation 的 TestSRResultFile 最终封存回归。跨仓消费者的真实单次调用另由 SteerLine 的 testing.project-environment-local 验证，不能以受控 peer 替代；Runner 自身测试无需 SteerLine checkout 或新测试框架。
+execute/1 复用正式 L1（含 SingleExecution 契约/原生 final/停止/拒绝额外输入测试）及 Controlled 的 `TestSRResultFile` 最终封存回归。2026-11-02 起，已有 `TestSRSingleExecutionColdStop` 也纳入默认 Controlled，覆盖公开 EXE 的原请求离线查询、PendingStops 冷启动停止、原输入一次与 result-file 封存；入口与范围见[当前清单与资格边界](test-catalog.md#当前清单与资格边界)。跨仓消费者的真实单次调用另由 SteerLine 的 testing.project-environment-local 验证，不能以受控 peer 替代；Runner 自身测试无需 SteerLine checkout 或新测试框架。
