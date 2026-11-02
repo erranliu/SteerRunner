@@ -1,12 +1,12 @@
 # Spec：Orca 终端发送能力 B2b
 
-日期：2026-11-02。状态：待实施。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，依赖已接入的 B2a 基础构造/解码；对应 [Plan](orca-terminal-send-capability.plan.md)。调查基线 `7240c16`。
+日期：2026-11-02。状态：已实现、定向验证通过，待实施后独立审计；见[验收](../acceptance/orca-terminal-send-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，依赖已接入的 B2a 基础构造/解码；对应 [Plan](orca-terminal-send-capability.plan.md)。调查基线 `7240c16`。
 
 ## 1. 目标和边界
 
 把现有 text+enter、原 request ID 和可选 wait-submit 的 Orca send 参数及原生接受回执抽为能力，业务输入、原 agent-start 和固定 control 请求共用。能力只发起一次调用，返回原 Result、接受字段、阶段、provider/observation 及解析完整性；不接收 Run、Turn 或 Workflow，不解释正文、不授予重派资格、不判 Started。
 
-能力输入采用自身的 handle/text/request/可选等待秒数。回执身份匹配使用 Orca TerminalIdentity 和原 request，不把缺字段、错 runtime/handle/incarnation/request、坏包或不确定结果升级为接受。解析完整性在本机内存生成，不能从 wire 注入。回执保留 Accepted 的缺失/false/true，接受和阶段的业务解释仍由消费者承担。
+能力输入采用自身的 handle/text/request/可选等待秒数。缺 handle/request 在调用前拒绝，不允许隐式活动终端。回执身份匹配使用 Orca TerminalIdentity 和原 request，不把缺字段、错 runtime/handle/incarnation/request、坏包或不确定结果升级为接受。解析完整性在本机内存生成，不能从 wire 注入。回执保留 Accepted 的缺失/false/true，接受和阶段的业务解释仍由消费者承担。
 
 保留普通调用原 timeout 与业务显式 50 秒；远端原 profile 的 `--wait-submit 20` 仍位于 `--json` 后，其他消费者不增加等待。所有环境/前缀/屏蔽/queue 行为继续经 B2a 和既有 Client；不增加 send 重试、输入拆分、补 Enter、RPC/CLI fallback 或自动换资源。
 
@@ -18,7 +18,7 @@
 | launchAgent | 同一发送及身份解码 | 原冻结命令/LaunchAttempted、原 readiness/agent、未知不重发及后续查询 |
 | dispatchControl | 同一发送及身份解码 | 原 control checkpoint、请求摘要、已有回执先读、固定 actor 同 request 机制、回执解码及用途 |
 
-三处 MetaCall 的 terminal send 手工构造和专属 send JSON 结构必须同批删除。迁出的结构只含原生字段；不能把 Agent 的模型/输入证明、control actor 方法或业务状态写入 Orca send 能力。三方现有 callErr/CallUncertain/ErrorCode 判定分别保留，不借统一改宽或改窄合同。
+三处 MetaCall 的 terminal send 手工构造和专属 send JSON 结构必须同批删除。迁出的结构只含原生字段；不能把 Agent 的模型/输入证明、control actor 方法或业务状态写入 Orca send 能力。原核心身份与完整可选 prompt 字段的解析范围分别保留：agent-start/control 只要求核心身份，业务原先还要求阶段/provider/observation 类型有效；不能因共享而把可选字段类型错误升级成核心身份失败，也不能用最后一个重复字段抹去已有类型错误。三方现有 callErr/CallUncertain/ErrorCode 判定分别保留，不借统一改宽或改窄合同。
 
 profile/state/target、operation journal、creation 持久编码、业务正文及 wire 摘要均不变。本批不改变原本机 helper/控制路径，也不将 B0 可行性转为正式业务启用。
 

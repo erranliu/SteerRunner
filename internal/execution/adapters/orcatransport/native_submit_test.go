@@ -178,7 +178,7 @@ func TestNativePromptSubmission(t *testing.T) {
 }
 
 func TestNativePromptReceiptFaults(t *testing.T) {
-	faults := []string{"accepted-only", "started-hint-only", "response-lost", "unsupported", "old-host", "permission", "missing-provider", "missing-observation", "incarnation-replaced", "request", "handle", "runtime", "no-stages", "start-only", "reordered-stages", "future-stage", "rejected"}
+	faults := []string{"accepted-only", "started-hint-only", "response-lost", "unsupported", "old-host", "permission", "missing-provider", "missing-observation", "incarnation-replaced", "request", "handle", "runtime", "no-stages", "start-only", "reordered-stages", "future-stage", "rejected", "malformed-stages", "malformed-provider", "malformed-observation"}
 	for _, target := range []string{"local", "remote"} {
 		t.Run(target, func(t *testing.T) {
 			env := ""
@@ -216,6 +216,12 @@ func TestNativePromptReceiptFaults(t *testing.T) {
 							delete(p, "provider")
 						case "missing-observation":
 							delete(p, "observation")
+						case "malformed-stages":
+							p["stages"] = 42
+						case "malformed-provider":
+							p["provider"] = []any{}
+						case "malformed-observation":
+							p["observation"] = map[string]any{}
 						case "incarnation-replaced":
 							p["processIncarnation"] = "replacement"
 						case "request":

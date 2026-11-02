@@ -186,6 +186,10 @@ func fixtureFixedControl(t *testing.T) (*Lifecycle, *fakeHost, b.LifecycleSnapsh
 				return nil, errors.New("lost send response")
 			}
 			result = map[string]any{"send": map[string]any{"handle": "control", "accepted": true, "prompt": map[string]any{"requestId": arg("--retry-request"), "processIncarnation": "control-inc"}}}
+			if c.mode == "optional-shape" {
+				prompt := result.(map[string]any)["send"].(map[string]any)["prompt"].(map[string]any)
+				prompt["stages"], prompt["provider"], prompt["observation"] = 42, []any{}, map[string]any{}
+			}
 		case "close":
 			c.closes++
 			c.closed = true
@@ -251,7 +255,7 @@ func TestFixedControlInitializationUnknownBlocksWithoutReplacement(t *testing.T)
 }
 
 func TestFixedControlReceiptRecovery(t *testing.T) {
-	for _, mode := range []string{"success", "lost-send", "wrong-session", "wrong-config", "wrong-input", "wrong-response", "wrong-incarnation", "failed", "in-progress"} {
+	for _, mode := range []string{"success", "lost-send", "wrong-session", "wrong-config", "wrong-input", "wrong-response", "wrong-incarnation", "failed", "in-progress", "optional-shape"} {
 		t.Run(mode, func(t *testing.T) {
 			l, f, s, c := fixtureFixedControl(t)
 			s = prepareFixedControl(t, l, s, c)
@@ -279,7 +283,7 @@ func TestFixedControlReceiptRecovery(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
-			want := mode == "success" || mode == "lost-send"
+			want := mode == "success" || mode == "lost-send" || mode == "optional-shape"
 			if (r.TurnEvidence != nil) != want {
 				t.Fatal("incorrect completion", r.Diagnostic, r.TurnEvidence)
 			}

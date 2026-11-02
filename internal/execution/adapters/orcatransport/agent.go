@@ -75,19 +75,9 @@ func (l *Lifecycle) launchAgent(ctx context.Context, r b.LifecycleRequest, recon
 		if err != nil {
 			return receipt, err
 		}
-		result, callErr := l.client.MetaCall(ctx, "terminal", "send", "--terminal", state.Process.Terminal, "--text", l.setup.AgentLaunchCommand, "--enter", "--retry-request", state.LaunchRequest, "--json")
+		result, sent, callErr := l.client.SendTerminal(ctx, native.TerminalSend{Handle: state.Process.Terminal, Text: l.setup.AgentLaunchCommand, RequestID: state.LaunchRequest})
 		receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
-		var value struct {
-			Send struct {
-				Handle   string
-				Accepted bool
-				Prompt   struct {
-					RequestID          string
-					ProcessIncarnation string
-				}
-			}
-		}
-		if json.Unmarshal(result.Payload, &value) != nil || result.RuntimeID != state.Process.RuntimeID || value.Send.Handle != state.Process.Terminal || !value.Send.Accepted || value.Send.Prompt.RequestID != state.LaunchRequest || value.Send.Prompt.ProcessIncarnation != state.Process.Incarnation || result.CallUncertain || result.ErrorCode != "" {
+		if !sent.Matches(native.TerminalIdentity{RuntimeID: state.Process.RuntimeID, Handle: state.Process.Terminal, IncarnationID: state.Process.Incarnation}, state.LaunchRequest) || sent.Accepted == nil || !*sent.Accepted || result.CallUncertain || result.ErrorCode != "" {
 			return receipt, errors.Join(callErr, errors.New("original agent launch outcome is unknown; do not resend"))
 		}
 		state.LaunchAccepted = true
