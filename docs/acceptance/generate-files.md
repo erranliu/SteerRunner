@@ -29,3 +29,11 @@
 - 配套真实链使用上述干净 Runner 构建 EXE SHA256=41de9144c4c999298628e24511f24767f5f3cb5d2959b23edfd80fc55b35be08，source digest=30dc64bec16156fdb0e62af9b5911d4c21392aa5bccf1789e44d7a8f2cba1463。`diagnostics/live-runner-l1-repaired-20261102T161722633Z` 被模型抄错 confirmed_digest 的 schema 校验拒绝，原 Run stopped、resources_settled=true，原失败保留；独立新现场 `diagnostics/live-runner-l1-repaired-confirmation-20261102T162140859Z/summary.json` 通过（243.930s），两次 generate、六份文档、实际隔离 Git/provider 发布合并与 SQLite 两任务一依赖，公开正常停止及资源结算通过。无原请求重发或校验放宽。
 
 第二轮完整入口 `test-results/runner-L1-complete-20261102T163508518Z` 又暴露原 `TestOrcaPreSendReconnect/provider-query-exhausted` 的20ms调度竞争（首次连接前预算耗尽，opens=0）；已保留为失败。核实本轮 go.exe/子 application.test.exe 的PID、精确EXE及唯一输出路径后，中止该已知失败轮次剩余应用包，operator-abort.json保存身份与原因，不计通过。修复仅在测试：保持正常3s readiness预算，在原连接/查询回调等待该真实 deadline 后返回失败，核验 DeadlineExceeded、原查询一次、零发送/零重连；取消用例在实际首次连接中注入cancel，明确核验Canceled，避免把短设定时间当作首次调用发生的保证。没有改生产重连/操作预算或略过测试。
+
+## 最终完整 L1 通过与正式审阅资格
+
+最终干净提交 `b11219e8fc9bfa5dc357202e58aded5aa4591df7`，正式命令 `./scripts/test.ps1 -Level L1 -OutDir <独立目录>`，报告 `test-results/runner-L1-final-20261102T164640208Z/summary.json`：status=passed、validation_scope=complete、exit_code=0、738 个顶层测试通过（2806 个父/子 pass 事件、36 个包通过）、零失败事件；29 项终端扩展、framework、native driver compile 和零匹配守卫全部通过。16 项原有显式原生 opt-in/helper skip 保持原白名单，不计为原生通过，没有意外跳过或新增例外。总耗时 1028.197s；application 实际 771.223s（超过旧720s聚合上限），审计用例本身9.26s，证明修正包级预算而非放宽某个卡死用例。
+
+重连全表与取消定向重复10轮在 `diagnostics/reconnect-deadline-repair-20261102T164422437Z/go-test.jsonl` 中为150个父/子pass、零fail/skip；最终完整L1中对应全表亦通过。四处夹具/守卫修复及12m→20m聚合预算均经过独立只读审核，未修改产品操作期限、预算准入、重连或原生接收代码，也未删减测试。此最终结果更新前文暂缓L1资格的结论，原始失败及操作者中止报告仍保留。
+
+配套真实链仍按上节固定生产构建记录，之后仅测试/脚本与验收变更；不冒称重跑生产行为。按照用户授权，在补齐本次记录后将 Runner #89 和 SteerLine #430 转入正式审阅；以公开PR回执核对最终状态，不执行合并或安装部署。
