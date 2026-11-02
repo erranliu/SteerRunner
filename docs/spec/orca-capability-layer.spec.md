@@ -2,7 +2,7 @@
 
 维护日期：2026-11-02。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
-状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已完成并通过独立审计；B4c 已完成并通过独立审计；B4d 已完成，独立审计唯一 P2 已修复并关闭；后续批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
+状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已完成并通过独立审计；B4b 已完成并通过独立审计；B4c 已完成并通过独立审计；B4d 已完成，独立审计唯一 P2 已修复并关闭；B5 已有 Spec/Plan，待实施；B6 待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
 
 ## 1. 设计目标与范围
 
@@ -137,7 +137,7 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | B4b 资源创建 | 已完成 | [Spec](orca-resource-create-capability.spec.md) / [Plan](orca-resource-create-capability.plan.md) / [验收](../acceptance/orca-resource-create-capability.md)；组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
 | B4c 受限文件操作 | 已完成 | [Spec](orca-scoped-files-capability.spec.md) / [Plan](orca-scoped-files-capability.plan.md) / [验收](../acceptance/orca-scoped-files-capability.md)；按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
 | B4d 关闭与完整清单 | 已完成 | [Spec](orca-close-inventory-capability.spec.md) / [Plan](orca-close-inventory-capability.plan.md) / [验收](../acceptance/orca-close-inventory-capability.md)；共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |
-| B5 候选生产接线与业务资格 | 待实施 | 实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算 | 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |
+| B5 候选生产接线与业务资格 | 待实施 | [Spec](orca-shared-native-runner.spec.md) / [Plan](orca-shared-native-runner.plan.md)；实现选定组合的完整候选生产接线，在隔离 Runner 构建/状态目录中经真实入口验证双端开发、持久结果和停止结算| 为 B6 提供已实现、可受理并可完整结算的新 Run 路径 | 按 §6.2–§6.3 通过真实 Runner 受理/冻结/执行/发布/stop/离线核验、零旧链调用及停止负例；能力测试装配不单独签收 |
 | B6 最终启用并退役旧链 | 待实施 | 在已通过 B5 的完整接线上完成最终启用、合同/能力说明同步和无消费者旧链删除 | 两端只留连接、目标解析及确有必要的轻流程差异 | 最终构建复验受删除/启用影响的真实 Runner 资格与停止负例；原升级/旧记录规则保持，不首次补齐 B5 所需接线 |
 
 B0 无能力层重构前置，复用当前真实 Orca 协议即可。B1 和 B2a 有独立收益，可在 B0 未结束时先行；B3 必须先有 B0 对拟统一组合的可行性与差距结论，不能先完成复杂取证抽离再验证方向。B0 失败或环境阻断时，相关统一目标保持待核验，先明确范围/设计调整，不自动回退 helper 取得“原生通过”。
