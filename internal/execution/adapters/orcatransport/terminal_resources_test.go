@@ -44,3 +44,22 @@ func TestTerminalResourceErrorMapping(t *testing.T) {
 		}
 	}
 }
+
+func TestWorkspaceTerminalInventoryDuplicateTruncatedNull(t *testing.T) {
+	for _, environment := range []string{"", "paired-worker"} {
+		for _, truncated := range []string{"true", "false"} {
+			t.Run(environment+"/"+truncated, func(t *testing.T) {
+				l, _, _ := fixtureOn(t, environment)
+				calls := 0
+				l.client = native.New(native.Config{Output: func(context.Context, time.Duration, ...string) ([]byte, error) {
+					calls++
+					return []byte(`{"ok":true,"result":{"terminals":[{"handle":"original","incarnationId":"incarnation","worktreeId":"worktree"}],"truncated":` + truncated + `,"truncated":null},"_meta":{"runtimeId":"runtime"}}`), nil
+				}})
+				_, err := l.soleWorkspaceTerminal(context.Background(), "worktree", "runtime")
+				if (err != nil) != (truncated == "true") || calls != 1 {
+					t.Fatal("truncated basic inventory adopted or reread", truncated, calls, err)
+				}
+			})
+		}
+	}
+}

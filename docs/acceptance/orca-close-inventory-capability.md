@@ -28,3 +28,11 @@ soleWorkspaceTerminal 与 initialWorkspaceTerminalRecovery 接入公共列表参
 全集 skip 为 TestOrcaLocalPipeNativeEvidence、TestOrcaLocalIPCNativeProbe、TestOrcaTerminalQueryLive、TestUsageLocalAcceptanceRepoCleanupLive、TestOrcaNativeStateLiveLifecycle、TestShortInputProbeInspect、TestOrcaWorkspaceStartupLive；消费方 skip 为 TestOrcaStoppedNativeProbe，均不计通过资格。迁移中两轮编译及首次定向遗漏旧字段/私有 helper 调用导致失败，修正后通过，原失败包和日志保留。
 
 没有真实 Orca/模型场次；本批签收现行合同的结构等价，不授予 B5 新候选接线资格。未知结果、清理和真实活动停止仍须按 B5 的新冻结 scope/正式 Runner 执行复验。
+
+## 独立审计确认问题及单独修复
+
+固定 `1bcc5d4` 相对 `649c386` 独立审计发现一项 P2：基础清单 decoder 仅保存解析标记，却复用 full decoder 的 `*bool Truncated`；重复 `truncated:true` 后 `truncated:null` 会使 full 指针变 nil，旧 bool 解码仍保留 true，新 sole-terminal 消费者可能认领截断清单。
+
+修复改为独立 BasicTerminalInventory（自己的 rows、bool 和解析标记），sole 消费完整基础值。完整清单 decoder 和原停止判据不改。补原生及本机/远端实际 sole 的 true→null 拒绝、false→null 接受反例，原字段范围仍保持；未把 null 一律当作失败来改变旧合同。
+
+修复后定向 23 根/146 子节点、150 叶例，0 fail/skip。修复 source_digest `dc8c29d517a896586617a8a6498f07cb729c66e8a5ea0abefba88f6dd1a40686`，单独[证据](evidence/orca-close-inventory-audit-fix-20261102/README.md)；保留本批原归档不覆盖。待原独立审计者复核修复。

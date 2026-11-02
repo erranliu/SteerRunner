@@ -12,15 +12,23 @@ type InventoryHosts struct {
 }
 
 type TerminalInventory struct {
-	Terminals             []Terminal      `json:"terminals"`
-	Truncated             *bool           `json:"truncated"`
-	Total                 *int            `json:"totalCount"`
-	Hosts                 *InventoryHosts `json:"hostScope"`
-	decoded, basicDecoded bool
+	Terminals []Terminal      `json:"terminals"`
+	Truncated *bool           `json:"truncated"`
+	Total     *int            `json:"totalCount"`
+	Hosts     *InventoryHosts `json:"hostScope"`
+	decoded   bool
+	basic     BasicTerminalInventory
 }
 
-func (i TerminalInventory) Decoded() bool      { return i.decoded }
-func (i TerminalInventory) BasicDecoded() bool { return i.basicDecoded }
+type BasicTerminalInventory struct {
+	Terminals []Terminal
+	Truncated bool
+	decoded   bool
+}
+
+func (i TerminalInventory) Decoded() bool                 { return i.decoded }
+func (i TerminalInventory) Basic() BasicTerminalInventory { return i.basic }
+func (i BasicTerminalInventory) Decoded() bool            { return i.decoded }
 func WorktreeTerminalListArgs(selector string) []string {
 	return []string{"terminal", "list", "--worktree", selector, "--json"}
 }
@@ -30,11 +38,7 @@ func DecodeTerminalInventory(result Result) TerminalInventory {
 	value.decoded = err == nil
 	// The sole-terminal consumer historically read only these two fields.
 	// Unconsumed total/host extensions must not change that reader's contract.
-	var basic struct {
-		Terminals []Terminal
-		Truncated bool
-	}
-	value.basicDecoded = json.Unmarshal(result.Payload, &basic) == nil
+	value.basic.decoded = json.Unmarshal(result.Payload, &value.basic) == nil
 	return value
 }
 
