@@ -1,6 +1,6 @@
 # Spec：Orca 终端发送能力 B2b
 
-日期：2026-11-02。状态：已实现、定向验证通过，待实施后独立审计；见[验收](../acceptance/orca-terminal-send-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，依赖已接入的 B2a 基础构造/解码；对应 [Plan](orca-terminal-send-capability.plan.md)。调查基线 `7240c16`。
+日期：2026-11-02。状态：已完成，定向验证及实施后独立审计通过；见[验收](../acceptance/orca-terminal-send-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，依赖已接入的 B2a 基础构造/解码；对应 [Plan](orca-terminal-send-capability.plan.md)。调查基线 `7240c16`。
 
 ## 1. 目标和边界
 
