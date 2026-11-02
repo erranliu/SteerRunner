@@ -1,6 +1,6 @@
 # Orca 资源创建 B4b 验收
 
-日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据 [Spec](../spec/orca-resource-create-capability.spec.md) / [Plan](../spec/orca-resource-create-capability.plan.md)。
+日期：2026-11-02。状态：已完成，受控验证及实施后独立审计通过。依据 [Spec](../spec/orca-resource-create-capability.spec.md) / [Plan](../spec/orca-resource-create-capability.plan.md)。
 
 ## 职责、消费者和删除
 
@@ -18,6 +18,10 @@ creationCall/ServeCreationOwner 未修改；B2a 编译/解码、原创建目录/
 | --- | --- |
 | ORC-01–02 | 新能力/旧 checkpoint 对照 2 根/25 子节点、25 叶例通过；完整旧 argv、bare/agent/显式空值、空格/引号/中文、坏原生/业务字段、旧 JSON/摘要保持 |
 | ORC-02–03 | 原消费者、命令/owner/未知恢复和控制定向 34 根/141 子节点、147 叶例通过，0 fail/skip；原 caller-loss、延迟/缺失/外来回执、deadline 及零重建断言保留 |
-| ORC-04 | 两包编译、依赖守卫 1 根及 git diff --check 通过；原持久声明及旧构造删除 diff 已核对；待独立审计 |
+| ORC-04 | 两包编译、依赖守卫 1 根及 git diff --check 通过；原持久声明及旧构造删除 diff 已核对；独立审计通过 |
 
 子节点含分组节点，叶例另计，重叠集合不相加。原 Plan 的 TestNativeControl* 当前无该命名根例，真实控制消费者由 TestFixedControl* 覆盖；不把空模式计为通过。没有真实 Orca/模型或新 B5 资格，现行停止 scope 和支持合同保持。
+
+## 独立审计
+
+固定 `7023035` 相对 `99ed34f` 独立只读审计通过，未发现确认 P0/P1/P2。审计者核对三类 argv、原生/checkpoint 字段与错误、owner 零重发、6 文件/归档摘要和固定源码摘要及统计，并独立复跑新增、34 根原回归和守卫/diff。未操作真实 Orca/模型，无代码修复需求。

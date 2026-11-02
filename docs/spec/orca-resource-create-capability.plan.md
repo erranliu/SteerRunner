@@ -1,6 +1,6 @@
 # Plan：Orca 资源创建 B4b
 
-日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据 [Spec](orca-resource-create-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4a 审计确认问题先独立修复。
+日期：2026-11-02。状态：已完成，受控验证及实施后独立审计通过。依据 [Spec](orca-resource-create-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4a 审计确认问题先独立修复。
 
 ## P0 范围
 
