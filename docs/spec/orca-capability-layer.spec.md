@@ -224,4 +224,3 @@ B4d/B5 的停止反例可复用 `TestRemoteStopPreservesUninvokedCloseAndCancels
 | [远端原生](orca-remote-native.spec.md) | 当前无远端 helper 的执行和停止合同；是共享原生链路的可行基础 |
 | [通用提交](orca-native-submit.spec.md) | 当前输入冻结、编译、接受/开始及原输入证明；不因抽象放宽 |
 | [本机停止收敛](orca-local-codex-stop-simplification.spec.md) | 当前登记资源及 scope；B0–B4 不改当前合同，B5 候选合同单独冻结和验收，已部署合同在 B6 前保持 |
-
