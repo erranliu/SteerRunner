@@ -125,7 +125,7 @@ func (m Manifest) Validate() error {
 			actual, err := filepath.EvalSymlinks(tool.Path)
 			body, readErr := os.ReadFile(tool.Path)
 			sum := sha256.Sum256(body)
-			if err != nil || readErr != nil || !filepath.IsAbs(tool.Path) || !strings.EqualFold(actual, tool.Path) || tool.SHA256 != hex.EncodeToString(sum[:]) {
+			if err != nil || readErr != nil || !filepath.IsAbs(tool.Path) || !strings.EqualFold(actual, filepath.Clean(tool.Path)) || tool.SHA256 != hex.EncodeToString(sum[:]) {
 				return errors.New("native candidate tool identity changed")
 			}
 		}
