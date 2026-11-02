@@ -5,6 +5,7 @@ param(
     [string]$FromEvidence='',
     [string]$OutDir='',
     [string]$RunnerExe='',
+    [string[]]$ResultFileCase=@(),
     [ValidateRange(1,60)][int]$TimeoutMinutes=25
 )
 $ErrorActionPreference='Stop'
@@ -16,16 +17,16 @@ $taskCatalogPath=Join-Path $taskRoot 'tests/catalog.json'
 $taskCatalog=Get-Content -LiteralPath $taskCatalogPath -Raw | ConvertFrom-Json
 Assert-SRControlledSelectionCatalog $taskCatalog
 if ($List) {
-    if ($Group.Count -or $Combination.Count -or $FromEvidence -or $OutDir -or $RunnerExe) { throw 'List cannot be combined with selection, evidence or output arguments' }
+    if ($Group.Count -or $Combination.Count -or $FromEvidence -or $OutDir -or $RunnerExe -or $ResultFileCase.Count) { throw 'List cannot be combined with selection, evidence or output arguments' }
     $taskCatalog.controlled_selection | ConvertTo-Json -Depth 10
     exit 0
 }
 $taskSelection=$null
 if ($FromEvidence) {
-    if ($Group.Count -or $Combination.Count -or $RunnerExe) { throw 'FromEvidence only imports timings; selection and RunnerExe are unsupported' }
+    if ($Group.Count -or $Combination.Count -or $RunnerExe -or $ResultFileCase.Count) { throw 'FromEvidence only imports timings; selection and RunnerExe are unsupported' }
     $FromEvidence=(Resolve-Path -LiteralPath $FromEvidence).Path
 } else {
-    $taskSelection=Resolve-SRControlledSelection $taskCatalog $Group $Combination
+    $taskSelection=Resolve-SRControlledSelection $taskCatalog $Group $Combination $ResultFileCase
     Assert-SRNoLiveOptIn
 }
 if (-not $OutDir) { $OutDir=Join-Path $taskRoot ('.evidence/controlled-selection-'+[Guid]::NewGuid().ToString('N').Substring(0,10)) }
@@ -44,11 +45,13 @@ try {
         $taskEvidence=Join-Path $taskOut 'controlled'
         $taskExpected=@($taskSelection.tests)
         $taskArguments=@{OutDir=$taskEvidence;Pattern=$taskSelection.pattern;TimeoutMinutes=$TimeoutMinutes}
+        if ($taskSelection.result_file_cases.Count) { $taskArguments['ResultFileCase']=@($taskSelection.result_file_cases) }
         if ($RunnerExe) { $taskArguments['RunnerExe']=$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RunnerExe) }
         & (Join-Path $PSScriptRoot 'test-foundation.ps1') @taskArguments | Out-Host
         $null=Wait-SRControlledResult $taskEvidence ([DateTime]::UtcNow.AddMinutes($TimeoutMinutes).AddSeconds(30))
     }
-    $taskTimings=Get-SRControlledTimingReport $taskCatalog $taskEvidence $taskExpected
+    $taskExpectedCases=@(if($taskSelection){$taskSelection.result_file_cases})
+    $taskTimings=Get-SRControlledTimingReport $taskCatalog $taskEvidence $taskExpected $taskExpectedCases
     Write-SRPrerequisiteJSON (Join-Path $taskOut 'timings.json') $taskTimings
     $taskSummary['evidence']=$taskEvidence
     $taskSummary['timing_report']=Join-Path $taskOut 'timings.json'

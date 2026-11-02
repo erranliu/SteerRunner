@@ -5,10 +5,15 @@ param(
     [string]$ContentNativeModel = '',
     [string]$PreparedArtifactsDirectory = '',
     [string]$RunnerExe = '',
+    [string[]]$ResultFileCase = @(),
     [ValidateRange(1,60)][int]$TimeoutMinutes = 25
 )
 $ErrorActionPreference = 'Stop'
 $taskRepo = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if ($ResultFileCase.Count) {
+    . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
+    Assert-SRResultFileCaseSelection $ResultFileCase
+}
 
 if (-not $OutDir) { $OutDir = Join-Path $taskRepo ('.evidence/foundation-' + [DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')) }
 $taskEvidence = [IO.Path]::GetFullPath($OutDir)
@@ -55,6 +60,7 @@ function Quote-WindowsArgument([string]$Argument) {
 # The caller selects the aggregate harness budget. Individual CLI, preparation,
 # fault and scenario polling deadlines are unchanged.
 $taskArgs = @("-test.run=$Pattern", '-test.v', "-test.timeout=$($TimeoutMinutes)m", '-runner-exe', $taskRunnerExe, '-evidence-dir', $taskEvidence,'-helper-exe',$taskHelperExe)
+if ($ResultFileCase.Count) { $taskArgs += @('-result-file-cases', ($ResultFileCase -join ',')) }
 
 if ($ContentNativeExecutable) { $taskArgs += @('-content-native-exe', (Resolve-Path -LiteralPath $ContentNativeExecutable).Path) }
 if ($ContentNativeModel) { $taskArgs += @('-content-native-model', $ContentNativeModel) }
@@ -82,6 +88,7 @@ $taskMetadata = [ordered]@{
     pid = $taskCreated.ProcessId
     process_started_at = if($taskProcess){$taskProcess.CreationDate.ToUniversalTime().ToString('o')}else{''}
     pattern = $Pattern
+    result_file_cases = @($ResultFileCase)
     runner_sha256 = $taskArtifactIdentity.runner_sha256
     fixture_sha256 = $taskArtifactIdentity.fixture_sha256
     native_fixture_sha256 = $taskArtifactIdentity.native_fixture_sha256

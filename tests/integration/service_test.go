@@ -54,6 +54,10 @@ func TestMain(m *testing.M) {
 		os.Exit(runJobHelper())
 	}
 	flag.Parse()
+	if _, err := selectedResultFileCases(*resultFileCasesFlag); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(2)
+	}
 	helperEXE = *helperFlag
 	if *evidenceFlag == "" {
 		*evidenceFlag = os.Getenv("STEERRUNNER_TEST_EVIDENCE_DIR")
@@ -111,11 +115,19 @@ func TestMain(m *testing.M) {
 		fmt.Fprintln(os.Stderr, "No foundation scenario matched.")
 		code = 1
 	}
+	if code == 0 && *resultFileCasesFlag != "" && len(resultFileCaseResults) == 0 {
+		fmt.Fprintln(os.Stderr, "Explicit ResultFile selection did not execute.")
+		code = 1
+	}
 	if root != "" {
 		os.RemoveAll(root)
 	}
 	if *evidenceFlag != "" {
-		body, _ := json.Marshal(map[string]any{"exit_code": code, "scenario_count": testCount.Load(), "exe": runnerEXE, "finished_at": time.Now().UTC().Format(time.RFC3339Nano)})
+		result := map[string]any{"exit_code": code, "scenario_count": testCount.Load(), "exe": runnerEXE, "finished_at": time.Now().UTC().Format(time.RFC3339Nano)}
+		if len(resultFileCaseResults) > 0 {
+			result["result_file_cases"] = resultFileCaseResults
+		}
+		body, _ := json.Marshal(result)
 		_ = os.WriteFile(filepath.Join(*evidenceFlag, "result.json"), body, 0600)
 	}
 	if report != nil {
