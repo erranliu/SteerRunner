@@ -19,6 +19,7 @@ import (
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/process"
+	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 	"github.com/erranliu/SteerRunner/internal/storage"
 )
@@ -36,6 +37,53 @@ type sharedNativeWire struct {
 	sends      int
 	afterClose func()
 	beforeShow func()
+}
+
+type candidateIdlePort struct {
+	b.LifecyclePort
+	idle    bool
+	queries int
+}
+
+func (p *candidateIdlePort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
+	p.queries++
+	return b.LifecycleRecoveryEvidence{SessionAvailable: true, ResourceAvailable: true, SessionIdle: p.idle}, nil
+}
+
+func TestSharedNativeBusinessFeedbackAdmission(t *testing.T) {
+	for _, environment := range []string{"", "paired-worker"} {
+		for _, idle := range []bool{false, true} {
+			t.Run(environment+map[bool]string{true: "/idle", false: "/active"}[idle], func(t *testing.T) {
+				e, w, wire, _, id := sharedNativeEngine(t, environment)
+				for _, step := range []string{workflow.StepImplement, workflow.StepPRReady} {
+					r := e.runs[id]
+					r.Status, r.Workflow.StepID = "waiting_input", step
+					response := e.Handle("reply", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "feedback-reject-" + step, Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
+					if response.OK || response.Error.Code != "invalid_state" || e.runs[id].PendingFeedback != nil || wire.sends != 0 {
+						t.Fatal("active native question or milestone acquired a feedback edge", response)
+					}
+				}
+				r := e.runs[id]
+				r.Status, r.Workflow.StepID = "waiting_input", workflow.StepImplementInput
+				before, session := len(r.Workflow.StageInputs), r.Snapshot.Session.SessionID
+				response := e.Handle("reply", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "business-feedback", Input: canonical(contracts.ReplyInput{ExpectedRevision: r.Revision, Kind: "feedback", Text: "Continue implementation"})})
+				if !response.OK || e.runs[id].PendingFeedback == nil || wire.sends != 0 {
+					t.Fatal("frozen implementation input edge rejected", response)
+				}
+				port := &candidateIdlePort{idle: idle}
+				if continued := e.feedback(id, w, port); continued != idle || port.queries != 1 || wire.sends != 0 || e.runs[id].Snapshot.Session.SessionID != session {
+					t.Fatal("feedback bypassed original idle qualification", continued, port.queries)
+				}
+				want := before
+				if idle {
+					want++
+				}
+				if len(e.runs[id].Workflow.StageInputs) != want {
+					t.Fatal("feedback froze an unexpected number of inputs")
+				}
+			})
+		}
+	}
 }
 
 func (h *sharedNativeWire) OutputCommand(_ context.Context, command b.LaunchCommand) ([]byte, error) {
