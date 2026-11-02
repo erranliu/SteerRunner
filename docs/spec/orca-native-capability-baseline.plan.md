@@ -1,13 +1,13 @@
 # Plan：Orca 无 helper 原生可行性核验 B0
 
-日期：2026-11-02。状态：待实施。依据 [Spec](orca-native-capability-baseline.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本 Plan 只执行 B0，代码基线 `efa871cfffb950505bf2f0a325ec7751fb4be7f3`；既有长期设计文档工作树差异属于本任务，不覆盖或回退。
+日期：2026-11-02。状态：P0–P5 已完成，P6 验收已记录、独立审计待完成；见[验收](../acceptance/orca-native-capability-baseline.md)。依据 [Spec](orca-native-capability-baseline.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本 Plan 只执行 B0，代码基线 `efa871cfffb950505bf2f0a325ec7751fb4be7f3`；既有长期设计文档工作树差异属于本任务，不覆盖或回退。
 
 ## P0 固定现场与实现边界
 
-- [ ] 记录当前源码、分支、Orca CLI/Codex 版本及摘要；使用会话已选定的 Orca CLI，读取版本匹配 guide/help，禁止临时换构建。
-- [ ] 在调用方进程屏蔽隐式 Orca 路由，明确本机/远端目标及其 user-data 来源；不改全局环境和配对配置，不把认证原文写入日志。
-- [ ] 使用现有 fixture/Orca 机制为两端分别分配本轮专属空 worktree，保存完整 ID/runtime；未知创建仅对账，不重建。探针内部只创建终端。
-- [ ] 固定本批白名单和当前生产文件摘要。仅允许测试文件、现有脚本的新 opt-in 模式与文档；记录旧 long-input/controlled 模式的前置及结果条件，后续逐项回归。
+- [x] 记录当前源码、分支、Orca CLI/Codex 版本及摘要；使用会话已选定的 Orca CLI，读取版本匹配 guide/help，禁止临时换构建。
+- [x] 在调用方进程屏蔽隐式 Orca 路由，明确本机/远端目标及其 user-data 来源；不改全局环境和配对配置，不把认证原文写入日志。
+- [x] 使用现有 fixture/Orca 机制为两端分别分配本轮专属空 worktree，保存完整 ID/runtime；未知创建仅对账，不重建。探针内部只创建终端。
+- [x] 固定本批白名单和当前生产文件摘要。仅允许测试文件、现有脚本的新 opt-in 模式与文档；记录旧 long-input/controlled 模式的前置及结果条件，后续逐项回归。
 
 本批可在测试中读取当前 profile/State/Turn，但不修改它们的生产结构。提前确认本机无 helper 的 NewLifecycle 构造接线可用，以及当前正式本机 verifyStopped 不接受此终端范围；后者是差距，不是本批应绕过的门禁。
 
@@ -84,8 +84,8 @@ git diff --check
 
 ## P6 验收、commit 与独立审计
 
-- [ ] 新增 `docs/acceptance/orca-native-capability-baseline.md`，按 OCB0-01–07 记录实际源码/产物、命令、命中数、双端原始证据、失败/补验、业务和清理各自结论。
-- [ ] 能力差距表至少列原输入/完整 final/同会话后续、启动模型偏好与实际模型未核验、workspace/audited 未验、Git/PR 未验、原终端停止与本机现行 helper scope 的差别。
+- [x] 新增 `docs/acceptance/orca-native-capability-baseline.md`，按 OCB0-01–07 记录实际源码/产物、命令、命中数、双端原始证据、失败/补验、业务和清理各自结论。
+- [x] 能力差距表至少列原输入/完整 final/同会话后续、启动模型偏好与实际模型未核验、workspace/audited 未验、Git/PR 未验、原终端停止与本机现行 helper scope 的差别。
 - [ ] 更新长期路线 B0 状态及 Spec/Plan 实际状态。只有双端及清理证据齐备才能标完成；不更新生产支持或 B5 资格。
 - [ ] 按用户目标提交本批实现和验收 commit，不提阶段 PR；之后由独立只读审计者核对设计、实际 diff、生产不变、证据和未知零重发。
 - [ ] 确认的修复单独 commit，补跑受影响检查/新现场并记录审计结论；未修问题和未验范围保留。全部批次完成后再统一提一个 PR，不合并或部署。

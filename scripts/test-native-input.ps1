@@ -1,7 +1,7 @@
 param(
     [string]$Target = '',
     [Parameter(Mandatory)][string]$OutDir,
-    [ValidateSet('long-input','controlled')][string]$Mode = 'long-input',
+    [ValidateSet('long-input','controlled','capability-baseline')][string]$Mode = 'long-input',
     [ValidateRange(1,30)][int]$Repeat = 1
 )
 $ErrorActionPreference = 'Stop'
@@ -65,7 +65,10 @@ if ($Mode -eq 'controlled') {
     return
 }
 $taskSource['orca_cli_sha256']=(Get-FileHash -LiteralPath $taskTarget.CLI).Hash
-if (-not $taskTarget.Environment) {
+if ($Mode -eq 'capability-baseline') {
+    if ($taskTarget.Launch.PSObject.Properties['runtime_executable'] -and $taskTarget.Launch.runtime_executable) { throw 'Capability probe forbids a managed helper' }
+    if ($taskTarget.Launch.PSObject.Properties['audit_model'] -and $taskTarget.Launch.audit_model) { throw 'Capability probe forbids managed audit configuration' }
+} elseif (-not $taskTarget.Environment) {
     if (-not $taskTarget.Launch.runtime_executable -or -not $taskTarget.Launch.repository_url) { throw 'Local native probe needs the existing agent helper and original repository URL' }
     $taskSource['agent_sha256']=(Get-FileHash -LiteralPath $taskTarget.Launch.runtime_executable).Hash
 }
@@ -87,7 +90,15 @@ try {
     if ($LASTEXITCODE -ne 0 -or $taskLog -notmatch '(?m)^--- PASS: TestOrcaNativeStateLiveLifecycle ' -or $taskLog -match '(?m)^--- SKIP:') { throw 'Native input probe failed, skipped or did not execute' }
     $taskResult=Get-Content -LiteralPath (Join-Path $taskOut 'native-result.json') -Raw | ConvertFrom-Json
     if (-not $taskResult.completed -or -not $taskResult.cleaned_up) { throw 'Missing original completion or confirmed cleanup' }
-    if ($taskResult.submit_calls -ne 1 -or $taskResult.text_only_calls -ne 0 -or $taskResult.bare_enter_calls -ne 0 -or $taskResult.screen_reads -ne 0 -or $taskResult.business_inputs -ne 1) { throw 'Expected one generic submit, zero split inputs/screen reads and one original input' }
+    if ($Mode -eq 'capability-baseline') {
+        if ($taskResult.mode -cne $Mode -or $taskResult.submit_calls -ne 2 -or $taskResult.business_inputs -ne 2 -or $taskResult.turns.Count -ne 2 -or $taskResult.helper_calls -ne 0 -or $taskResult.created_terminals -ne 1 -or $taskResult.managed_evidence -or $taskResult.close_calls -gt 1 -or $taskResult.failure -or $taskResult.cleanup_error) { throw 'Incomplete native capability evidence or managed path used' }
+        $taskRequests = @{}
+        foreach ($taskTurn in $taskResult.turns) {
+            if (-not $taskTurn.Request -or $taskRequests.ContainsKey($taskTurn.Request) -or $taskTurn.Submits -ne 1 -or -not $taskTurn.Accepted -or -not $taskTurn.Started -or -not $taskTurn.Completed -or -not $taskTurn.Original -or $taskTurn.Provider -cne $taskResult.provider -or $taskTurn.Final -cne $taskTurn.Expected) { throw 'Two independently verified original capability turns are required' }
+            $taskRequests[$taskTurn.Request] = $true
+        }
+        if ($taskResult.text_only_calls -ne 0 -or $taskResult.bare_enter_calls -ne 0 -or $taskResult.screen_reads -ne 0) { throw 'Unexpected split input or screen consumption' }
+    } elseif ($taskResult.submit_calls -ne 1 -or $taskResult.text_only_calls -ne 0 -or $taskResult.bare_enter_calls -ne 0 -or $taskResult.screen_reads -ne 0 -or $taskResult.business_inputs -ne 1) { throw 'Expected one generic submit, zero split inputs/screen reads and one original input' }
     $taskAfter=Get-SRSourceIdentity $taskRepo $taskSourcePaths
     if ($taskAfter.source_digest -cne $taskIdentity.source_digest) { throw 'Probe source changed during execution' }
     $taskSource.passed=$true
