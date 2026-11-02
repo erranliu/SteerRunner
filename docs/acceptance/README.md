@@ -60,3 +60,5 @@
 - [个人执行器 P3：恢复/兼容删除与人工对账](personal-executor-p3.md)：state/v7、生产净减少 558 行；完整 L1 720 测试、Controlled 26/26、三条真实最小链路通过，P4 未推进。
 
 - [个人执行器 P4：问答输入职责收口](personal-executor-p4.md)：私有选择入口 2→1，净增 23 行的窄能力取代跨层重复；145 项组件、25 项 application 定向及 3 项公开受控通过，无协议变化，不重跑全后端。
+
+| Orca 能力层 B4a 仓库与工作区查询 | [验收](orca-resource-query-capability.md)：1 根/17 个能力子节点、24 根/77 个原消费者子节点及依赖守卫通过；待独立审计 |

@@ -1,6 +1,6 @@
 # Spec：Orca 仓库与工作区查询 B4a
 
-日期：2026-11-02。状态：待实施。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-query-capability.plan.md)。调查基线 `8d77b9b`。
+日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-query-capability.plan.md)。调查基线 `8d77b9b`。
 
 ## 1. 目标与范围
 
@@ -29,3 +29,5 @@ Orca 能力只消费明确 selector/目标和原 Result，不接收项目路径�
 | ORQ-04 | 持久/依赖及审计闭环 | 原 Worktree/创建/profile/state/target 编码 diff、依赖守卫、直接证据及独立审计 |
 
 纯查询迁移采用受控验证，不新增真实资源或模型场次，不改变 B5 资格。
+
+实施记录：已接入两个真实查询消费者，原策略/预算/持久格式保持；验证与删除清单见[验收](../acceptance/orca-resource-query-capability.md)。

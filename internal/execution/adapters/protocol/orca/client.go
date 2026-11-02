@@ -63,17 +63,6 @@ type Terminal struct {
 
 func (t Terminal) Exited() bool { return t.Status == "exited" }
 
-type Worktree struct {
-	ID          string `json:"id"`
-	InstanceID  string `json:"instanceId"`
-	RepoID      string `json:"repoId"`
-	Path        string `json:"path"`
-	Head        string `json:"head"`
-	Branch      string `json:"branch"`
-	BaseRef     string `json:"baseRef"`
-	DisplayName string `json:"displayName"`
-}
-
 func (c Client) ShowTerminal(ctx context.Context, handle string) (Terminal, error) {
 	if handle == "" {
 		return Terminal{}, errors.New("missing original Orca terminal")
