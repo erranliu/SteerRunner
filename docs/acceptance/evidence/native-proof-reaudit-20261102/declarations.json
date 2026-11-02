@@ -1,0 +1,24 @@
+{
+  "added_declarations": [
+    "internal/application|func readCompletionCheckpoint",
+    "internal/execution/adapters/codex|func ReadCompletionCheckpoint",
+    "internal/execution/adapters/codex|func ValidatePolicyResourceForProfile"
+  ],
+  "base_commit": "da8155e0d1fe871527bf29d63f74bfe5252c545b",
+  "changed_go_files": [
+    "internal/application/engine.go",
+    "internal/application/policy.go",
+    "internal/application/workspace_source.go",
+    "internal/execution/adapters/codex/owner_checkpoint.go",
+    "internal/execution/adapters/codex/policy_resources.go"
+  ],
+  "identical_retained_declarations": 41,
+  "identical_retained_types": 9,
+  "modified_retained_declarations": [
+    "internal/application|func *Engine.originalCheckpoint",
+    "internal/application|func *Engine.verifyPolicyResources"
+  ],
+  "moved_declarations_identical": {},
+  "note": "Package-scoped keys include method receiver. All changed production files included; test files excluded and audited separately. Imports/comments excluded. Authorized modified declarations are checked by allowlist and reviewed/tested for exact intended changes. Baseline reference inventory and manual entry-point review establish removed-closure consumers separately.",
+  "removed_declarations": []
+}

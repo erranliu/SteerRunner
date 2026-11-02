@@ -1,0 +1,92 @@
+[
+  {
+    "file": "artifacts.json",
+    "bytes": 389,
+    "sha256": "7D6238DB718352257BF8F0837E0C4DFBAEA6DF5827E36130DD1F8A5B2F3DA907"
+  },
+  {
+    "file": "commands.json",
+    "bytes": 3282,
+    "sha256": "ACD66ACDC53585EA4F6C159CF474259B1D1C1FE16B487383D5B3569897EC3F76"
+  },
+  {
+    "file": "controlled-import-summary.json",
+    "bytes": 766,
+    "sha256": "320CABD9CC2F04E3D380FECE73D7F2C27E9897B57F8FF9468F89F46CB8A4A793"
+  },
+  {
+    "file": "declarations.json",
+    "bytes": 1263,
+    "sha256": "8DC0DAEFF1EE5068D78CED848D26DC1059CD1044521CAEDDE6FF09A2FF6563D5"
+  },
+  {
+    "file": "final-source-identity.json",
+    "bytes": 182,
+    "sha256": "DD072392363894AA978E86BFB61F81009584478DE11F93A37351D169C82A4B32"
+  },
+  {
+    "file": "implementation-before-integration.json",
+    "bytes": 1096,
+    "sha256": "4114B9339D01CA21AA9FF2B743307551A5B8D90894E746473007E35AB28C207A"
+  },
+  {
+    "file": "main-wire.json",
+    "bytes": 145494,
+    "sha256": "2765FFF305A58706195CB1B7C2D381D709AF4F2ED44492181B4D050F6729B56A"
+  },
+  {
+    "file": "public-integration.log",
+    "bytes": 6399,
+    "sha256": "4C9E6B19FD4B57F8645D41E7632B504802E087A89D20D4D3DC19F1AB8F62389F"
+  },
+  {
+    "file": "public-result.json",
+    "bytes": 503,
+    "sha256": "28CF622643837EAEC25F6FBDC47DF0C207E48DC14777016E943D361ABF5171C7"
+  },
+  {
+    "file": "public-source-identity.json",
+    "bytes": 739,
+    "sha256": "D7B3F640D9EF40254F0B6E5CEBDC287000734F06FA7B53965863D2BDAAAE7E13"
+  },
+  {
+    "file": "runner-build.json",
+    "bytes": 422,
+    "sha256": "28117ECDBDF23D20BF72AC46FC657D3576DA824FC8AA0B7DB5D0B8CE73B2DD19"
+  },
+  {
+    "file": "scope.json",
+    "bytes": 180,
+    "sha256": "779980D88C1B66CF898917089775609E6DC7499D16F1D1A803F5C4354A1A4F00"
+  },
+  {
+    "file": "targeted-argv.json",
+    "bytes": 1196,
+    "sha256": "61499614441FEFEBCCE04AF0B9C80D8A62E6D8645732ADF11AC57ED37A95B30A"
+  },
+  {
+    "file": "targeted-summary.json",
+    "bytes": 180,
+    "sha256": "8961E14DEF8AD688DE58223C748701B324CEA81BFF98AA08D5B2F9510F1DF3EC"
+  },
+  {
+    "file": "targeted.jsonl",
+    "bytes": 94728,
+    "sha256": "D8AF5E356BCC488AE827953286E163871F7FF2750A3319722654A1A1F0237FFA"
+  },
+  {
+    "file": "upstream-wire-changes.json",
+    "bytes": 205,
+    "sha256": "3D62FA33E53DC160A9B5F3B5F297C56FE7688DA65A5DBF324CEC103771A19DE7"
+  },
+  {
+    "file": "wire-comparison.json",
+    "bytes": 245,
+    "sha256": "96E9B63F24A1357DC6AF05C1004B4F4320E0DD9BAEFDAC1C9E751CD98CCE62D0"
+  },
+  {
+    "file": "wire.json",
+    "bytes": 145494,
+    "sha256": "2765FFF305A58706195CB1B7C2D381D709AF4F2ED44492181B4D050F6729B56A"
+  }
+]

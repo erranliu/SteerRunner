@@ -1,0 +1,22 @@
+[
+  {
+    "Time": "2026-11-02T16:48:34.7780771+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRResumeWorkflowRetainsOriginalReportSource",
+    "Output": "    feedback_test.go:30: frozen input budget unavailable; candidate not sent\n"
+  },
+  {
+    "Time": "2026-11-02T16:48:34.7780771+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRResumeWorkflowRetainsOriginalReportSource",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:48:34.7813282+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Elapsed": 0.359
+  }
+]

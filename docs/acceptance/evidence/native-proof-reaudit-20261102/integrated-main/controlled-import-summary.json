@@ -1,0 +1,16 @@
+{
+  "mode": "timing-import",
+  "started_at": "2026-11-02T09:35:34.6300531Z",
+  "qualification_eligible": false,
+  "complete_controlled_passed": false,
+  "finished_at": "2026-11-02T09:35:35.1189623Z",
+  "validation_scope": "controlled-selection",
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\native-proof-pr\\foundation",
+  "timing_report": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\native-proof-pr\\controlled-import\\timings.json",
+  "schema": "steerrunner-controlled-selection/v1",
+  "selection": null,
+  "observed_top_level_seconds": 146.39,
+  "catalog_sha256": "4ede8cfbb42a3e61393439950fe5c486674828d337d5850ff35e97fc89789865",
+  "duration_seconds": 0.5102485,
+  "status": "passed"
+}

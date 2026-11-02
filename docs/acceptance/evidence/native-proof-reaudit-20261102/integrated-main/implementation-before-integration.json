@@ -1,0 +1,30 @@
+[
+  {
+    "path": "internal/application/engine.go",
+    "sha256": "065D59F914490A48FA5E8240DAACF56DC7C39EC6578B3BA334EC2337AB1CCF3E"
+  },
+  {
+    "path": "internal/application/policy.go",
+    "sha256": "FEA4ECCA4625E3D5A94422BA75DE653A930F7E0258C8B48AF6D7DD7D9FA17285"
+  },
+  {
+    "path": "internal/application/workspace_source.go",
+    "sha256": "917987DE663B8F675BF7AA0865637DD6919759EF4799E898CE32E678C5283E5B"
+  },
+  {
+    "path": "internal/execution/adapters/codex/owner_checkpoint.go",
+    "sha256": "0ABC28ABACD3A79A9C77CCA054ECB117ADA13AD9F8A11A2C046B99349A16F2BC"
+  },
+  {
+    "path": "internal/execution/adapters/codex/policy_resources.go",
+    "sha256": "1D71E4FD405FDE5AE798AF32FDCF9643E82B8B9AB74B0FD535809F5D807FABDF"
+  },
+  {
+    "path": "internal/application/native_proof_boundary_test.go",
+    "sha256": "100A490585C06441E5D9B6D22FF0AD3AD247C4132453BB4217E30F97C0C84F52"
+  },
+  {
+    "path": "internal/execution/adapters/codex/policy_profile_boundary_test.go",
+    "sha256": "05760CB503B455316041ADF1DD085826D060F8BEE04F4FD13265F8FDB51B2C80"
+  }
+]

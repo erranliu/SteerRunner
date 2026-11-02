@@ -1,0 +1,34 @@
+internal\host\execution_owner.go:17:func launchExecutionOwner(ctx context.Context, stateDir, ownerDir string) error {
+internal\host\server.go:49:		return codex.ServeExecutionOwner(ctx, dir)
+internal\host\server.go:85:	engine, err := application.New(ctx, dir, store, logger, func(ctx context.Context, ownerDir string) error { return launchExecutionOwner(ctx, dir, ownerDir) })
+internal\application\control.go:208:	if r.Snapshot.Ref.External.Kind == "" && !unknown(r) && codex.ExecutionOwner(r.Snapshot) == nil {
+internal\application\workspace_source.go:48:func (e *Engine) originalCheckpoint(r *runstate.Record, w *worker, input workflow.StageInput) *workflow.WorkspaceSource {
+internal\application\workspace_source.go:49:	if owner := codex.ExecutionOwner(r.Snapshot); owner != nil && owner.WorkspaceCheckpoints {
+internal\application\workspace_source.go:50:		f, diagnostic, err := codex.ReadExecutionCheckpoint(r.Snapshot, input.CommandID, r.Snapshot.Session.SessionID, r.Snapshot.Session.CurrentTurnID)
+internal\execution\adapters\orcatransport\creation_owner.go:155:		err = l.setup.LaunchExecutionOwner(launchCtx, dir)
+internal\application\policy.go:29:		payload, err := codex.DecodePolicyResourceEnvelope(*s.PolicyResources, identity)
+internal\application\policy.go:33:		profile, err := codex.DecodeProfileConfigEnvelope(r.Profile, codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest})
+internal\application\policy.go:60:	bound, err := codex.BuildPolicyResourceEnvelope(ctx, codex.PolicyResourceBuildRequest{
+internal\application\policy.go:71:	if _, err := codex.DecodePolicyResourceEnvelope(bound.Envelope, identity); err != nil {
+internal\execution\adapters\codex\access_mode_test.go:46:		_, err = DecodePolicyResourceEnvelope(envelope, id)
+internal\application\result_acquisition_test.go:58:	f := e.originalCheckpoint(r, w, *input)
+internal\application\results.go:90:		checkpoint = e.originalCheckpoint(r, owner, inputCopy)
+internal\execution\adapters\codex\execution_owner.go:29:	WorkspaceCheckpoints bool              `json:"workspace_checkpoints,omitempty"`
+internal\execution\adapters\codex\execution_owner.go:162:func ServeExecutionOwner(ctx context.Context, dir string) error {
+internal\execution\adapters\codex\execution_owner.go:190:	identity := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: dir, Process: *id, RuntimeSHA256: sha, ExitPublicKey: hex.EncodeToString(public), WorkspaceCheckpoints: true}
+internal\execution\adapters\codex\execution_owner.go:367:	return l.setup.LaunchExecutionOwner(ctx, dir)
+internal\execution\adapters\codex\execution_owner.go:378:func ExecutionOwner(snapshot b.LifecycleSnapshot) *ExecutionOwnerIdentity {
+internal\execution\adapters\codex\lifecycle.go:38:	profile, err := DecodeProfileConfigEnvelope(setup.ProfileData, ProfileConfigIdentity{
+internal\execution\adapters\codex\owner_checkpoint.go:76:// ReadExecutionCheckpoint verifies only the original signed terminal facts.
+internal\execution\adapters\codex\owner_checkpoint.go:78:func ReadExecutionCheckpoint(snapshot b.LifecycleSnapshot, commandID, sessionID, turnID string) (b.WorkspaceInspection, string, error) {
+internal\execution\adapters\codex\owner_checkpoint.go:79:	identity := ExecutionOwner(snapshot)
+internal\execution\adapters\codex\owner_checkpoint.go:80:	if identity == nil || !identity.WorkspaceCheckpoints {
+internal\execution\adapters\codex\owner_checkpoint_test.go:38:	owner := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: t.TempDir(), Process: r.Snapshot.Ref.External, RuntimeSHA256: string(make([]byte, 64)), ExitPublicKey: hex.EncodeToString(public), WorkspaceCheckpoints: true}
+internal\execution\adapters\codex\owner_checkpoint_test.go:60:	fact, _, err := ReadExecutionCheckpoint(r.Snapshot, originalCommand, "session", "turn")
+internal\execution\adapters\codex\owner_checkpoint_test.go:79:		if _, _, err := ReadExecutionCheckpoint(s, command, session, turn); err == nil {
+internal\execution\adapters\codex\owner_checkpoint_test.go:86:	if _, _, err := ReadExecutionCheckpoint(r.Snapshot, originalCommand, "session", "turn"); err == nil {
+internal\execution\adapters\codex\policy_resources.go:76:func DecodeProfileConfigEnvelope(data []executionbackend.ImplementationDataEnvelope, identity ProfileConfigIdentity) (ProfileConfig, error) {
+internal\execution\adapters\codex\policy_resources.go:80:func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuildRequest, probe PolicyVersionProbe) (BoundPolicyResources, error) {
+internal\execution\adapters\codex\policy_resources.go:158:func DecodePolicyResourceEnvelope(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity) (PolicyResourcePayload, error) {
+internal\execution\adapters\codex\policy_test.go:65:		payload, err := DecodePolicyResourceEnvelope(envelope, identity)
+internal\execution\adapters\codex\ps2_configuration_test.go:42:		_, err = DecodePolicyResourceEnvelope(envelope, identity)

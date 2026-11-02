@@ -1,0 +1,182 @@
+[
+  {
+    "file": "artifacts.json",
+    "bytes": 389,
+    "sha256": "5E0FF11898AB381E96640B9216828283FC95A85A1E7CD6C69C8055D8C5748CEC"
+  },
+  {
+    "file": "commands.json",
+    "bytes": 3359,
+    "sha256": "59E0FE17066FA7C6ACC86D2D7535C3A6C99B1143823D71CB226504502FF8284E"
+  },
+  {
+    "file": "consumers.txt",
+    "bytes": 2140,
+    "sha256": "B23DB166B5DAC8C0579A5052BF32FC5D82CD6797F172272E208C90768E61C8E2"
+  },
+  {
+    "file": "controlled-import-summary.json",
+    "bytes": 775,
+    "sha256": "79951030FD92E1B7A28F149FE2C42CA113D914FFEA8BDA6A86C904916BF195FE"
+  },
+  {
+    "file": "current-source-files.json",
+    "bytes": 121778,
+    "sha256": "256E5BEE8540BFDF26B6894C15571B421F5F5A552EB83A07B28817908C4E16CB"
+  },
+  {
+    "file": "declarations.json",
+    "bytes": 1263,
+    "sha256": "F7B5C20D407DF03A541133E9694A46C75BFDCCD7C4D1428231E4DA0B252902F7"
+  },
+  {
+    "file": "final-source-identity.json",
+    "bytes": 182,
+    "sha256": "F30E5A58978C47A501988CF1BC543CBADD67C881AF38FBB822B9EA9E9AF20CC4"
+  },
+  {
+    "file": "implementation-before-update.json",
+    "bytes": 1096,
+    "sha256": "D093B363D6AB1F55A0C07C24BED40E0B321B7B2467A29EFEC4F9D6D499666102"
+  },
+  {
+    "file": "main-update.json",
+    "bytes": 170,
+    "sha256": "A798445DEDAEA2503B3DE04492AAD3D83174E8251771187B4CB08BC92D698E33"
+  },
+  {
+    "file": "public-integration.log",
+    "bytes": 6416,
+    "sha256": "B68921F72D2C339268D561E0A025D6BD0831D9BF658A1DD5089AD8A5E3350A97"
+  },
+  {
+    "file": "public-result.json",
+    "bytes": 192,
+    "sha256": "7B182462DB2E972E7C8B37CA3797901B75F9414E031A2DE9186C40720CD26952"
+  },
+  {
+    "file": "public-source-identity.json",
+    "bytes": 739,
+    "sha256": "BBA2D88A416AC60DD26D96575FF5853DA78AAEAA57971F81BBD708460975A4B7"
+  },
+  {
+    "file": "runner-build.json",
+    "bytes": 422,
+    "sha256": "42652A17677F22E08C4626B43925504E952718F98760D7041BC3A129D893E6C6"
+  },
+  {
+    "file": "scope.json",
+    "bytes": 512,
+    "sha256": "0E01E01F418823AEF1763D5EA0DB861514823B84F13969FA9D8742E11D6FB103"
+  },
+  {
+    "file": "targeted.jsonl",
+    "bytes": 82528,
+    "sha256": "4280AA9B4DE4D25168CDC709CE3D820DC44DCE4A36FF6466A33D93ED42079654"
+  },
+  {
+    "file": "test-summary.json",
+    "bytes": 16664,
+    "sha256": "F01EDB986125E0CA57C2CA2CAEEB9C9EA192C7255D6F58E4188403BBDEED6313"
+  },
+  {
+    "file": "wire-comparison.json",
+    "bytes": 128,
+    "sha256": "6B50EC23FB9FA9E9316C6EEA966472187AB5D184BCC3B5D4EA0E4A3390008C5F"
+  },
+  {
+    "file": "integrated-main/artifacts.json",
+    "bytes": 389,
+    "sha256": "7D6238DB718352257BF8F0837E0C4DFBAEA6DF5827E36130DD1F8A5B2F3DA907"
+  },
+  {
+    "file": "integrated-main/commands.json",
+    "bytes": 3282,
+    "sha256": "ACD66ACDC53585EA4F6C159CF474259B1D1C1FE16B487383D5B3569897EC3F76"
+  },
+  {
+    "file": "integrated-main/controlled-import-summary.json",
+    "bytes": 766,
+    "sha256": "320CABD9CC2F04E3D380FECE73D7F2C27E9897B57F8FF9468F89F46CB8A4A793"
+  },
+  {
+    "file": "integrated-main/declarations.json",
+    "bytes": 1263,
+    "sha256": "8DC0DAEFF1EE5068D78CED848D26DC1059CD1044521CAEDDE6FF09A2FF6563D5"
+  },
+  {
+    "file": "integrated-main/final-source-identity.json",
+    "bytes": 182,
+    "sha256": "DD072392363894AA978E86BFB61F81009584478DE11F93A37351D169C82A4B32"
+  },
+  {
+    "file": "integrated-main/implementation-before-integration.json",
+    "bytes": 1096,
+    "sha256": "4114B9339D01CA21AA9FF2B743307551A5B8D90894E746473007E35AB28C207A"
+  },
+  {
+    "file": "integrated-main/main-wire.json",
+    "bytes": 145494,
+    "sha256": "2765FFF305A58706195CB1B7C2D381D709AF4F2ED44492181B4D050F6729B56A"
+  },
+  {
+    "file": "integrated-main/manifest.json",
+    "bytes": 2694,
+    "sha256": "6B6FDF854DBDBFE7A2884213B0083865EC46C7285D9EC59CC25DFCD078AE0BFA"
+  },
+  {
+    "file": "integrated-main/public-integration.log",
+    "bytes": 6399,
+    "sha256": "4C9E6B19FD4B57F8645D41E7632B504802E087A89D20D4D3DC19F1AB8F62389F"
+  },
+  {
+    "file": "integrated-main/public-result.json",
+    "bytes": 503,
+    "sha256": "28CF622643837EAEC25F6FBDC47DF0C207E48DC14777016E943D361ABF5171C7"
+  },
+  {
+    "file": "integrated-main/public-source-identity.json",
+    "bytes": 739,
+    "sha256": "D7B3F640D9EF40254F0B6E5CEBDC287000734F06FA7B53965863D2BDAAAE7E13"
+  },
+  {
+    "file": "integrated-main/runner-build.json",
+    "bytes": 422,
+    "sha256": "28117ECDBDF23D20BF72AC46FC657D3576DA824FC8AA0B7DB5D0B8CE73B2DD19"
+  },
+  {
+    "file": "integrated-main/scope.json",
+    "bytes": 180,
+    "sha256": "779980D88C1B66CF898917089775609E6DC7499D16F1D1A803F5C4354A1A4F00"
+  },
+  {
+    "file": "integrated-main/targeted-argv.json",
+    "bytes": 1196,
+    "sha256": "61499614441FEFEBCCE04AF0B9C80D8A62E6D8645732ADF11AC57ED37A95B30A"
+  },
+  {
+    "file": "integrated-main/targeted-summary.json",
+    "bytes": 180,
+    "sha256": "8961E14DEF8AD688DE58223C748701B324CEA81BFF98AA08D5B2F9510F1DF3EC"
+  },
+  {
+    "file": "integrated-main/targeted.jsonl",
+    "bytes": 94728,
+    "sha256": "D8AF5E356BCC488AE827953286E163871F7FF2750A3319722654A1A1F0237FFA"
+  },
+  {
+    "file": "integrated-main/upstream-wire-changes.json",
+    "bytes": 205,
+    "sha256": "3D62FA33E53DC160A9B5F3B5F297C56FE7688DA65A5DBF324CEC103771A19DE7"
+  },
+  {
+    "file": "integrated-main/wire-comparison.json",
+    "bytes": 245,
+    "sha256": "96E9B63F24A1357DC6AF05C1004B4F4320E0DD9BAEFDAC1C9E751CD98CCE62D0"
+  },
+  {
+    "file": "integrated-main/wire.json",
+    "bytes": 145494,
+    "sha256": "2765FFF305A58706195CB1B7C2D381D709AF4F2ED44492181B4D050F6729B56A"
+  }
+]

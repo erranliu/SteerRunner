@@ -1,0 +1,16 @@
+internal/application\engine.go:461:	return codex.ReadCompletionCheckpoint(snapshot, commandID, snapshot.Session.SessionID, snapshot.Session.CurrentTurnID)
+internal/application\policy.go:29:		return codex.ValidatePolicyResourceForProfile(*s.PolicyResources, identity, r.Profile, codex.ProfileConfigIdentity{ProjectID: s.Session.ProjectID, ProfileID: r.ID, AcceptedConfigVersion: r.InputDigest})
+internal/execution/adapters/codex\execution_owner.go:29:	WorkspaceCheckpoints bool              `json:"workspace_checkpoints,omitempty"`
+internal/execution/adapters/codex\execution_owner.go:190:	identity := ExecutionOwnerIdentity{Protocol: ExecutionOwnerProtocol, Directory: dir, Process: *id, RuntimeSHA256: sha, ExitPublicKey: hex.EncodeToString(public), WorkspaceCheckpoints: true}
+internal/execution/adapters/codex\owner_checkpoint.go:76:// ReadCompletionCheckpoint reports whether the original binding requires a
+internal/execution/adapters/codex\owner_checkpoint.go:79:func ReadCompletionCheckpoint(snapshot b.LifecycleSnapshot, commandID, sessionID, turnID string) (fact b.WorkspaceInspection, diagnostic string, required bool, err error) {
+internal/execution/adapters/codex\owner_checkpoint.go:81:	if identity == nil || !identity.WorkspaceCheckpoints {
+internal/execution/adapters/codex\owner_checkpoint.go:84:	fact, diagnostic, err = ReadExecutionCheckpoint(snapshot, commandID, sessionID, turnID)
+internal/execution/adapters/codex\owner_checkpoint.go:88:// ReadExecutionCheckpoint verifies only the original signed terminal facts.
+internal/execution/adapters/codex\owner_checkpoint.go:90:func ReadExecutionCheckpoint(snapshot b.LifecycleSnapshot, commandID, sessionID, turnID string) (b.WorkspaceInspection, string, error) {
+internal/execution/adapters/codex\owner_checkpoint.go:92:	if identity == nil || !identity.WorkspaceCheckpoints {
+internal/execution/adapters/codex\policy_resources.go:80:// ValidatePolicyResourceForProfile interprets the native permission contract
+internal/execution/adapters/codex\policy_resources.go:82:func ValidatePolicyResourceForProfile(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity, profiles []executionbackend.ImplementationDataEnvelope, profileIdentity ProfileConfigIdentity) error {
+internal/execution/adapters/codex\policy_resources.go:205:		if arg == "sandbox_mode=read-only" {
+internal/execution/adapters/codex\policy_resources.go:208:		if arg == "sandbox_mode=danger-full-access" {
+internal/execution/adapters/codex\policy.go:80:	args := []string{"--config", "sandbox_mode=" + p.Sandbox,

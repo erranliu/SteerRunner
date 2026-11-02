@@ -1,0 +1,1002 @@
+[
+  {
+    "Time": "2026-11-02T16:51:15.3588529+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/accepted-waiting-start",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:15.5031586+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/paused-resume",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:15.6248187+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/stopped-late-final",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:15.7371452+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/accepted-waiting-start",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:51:15.8682146+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/paused-resume",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-11-02T16:51:15.9850163+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/stopped-late-final",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:17.577985+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/accepted-waiting-start",
+    "Elapsed": 1.59
+  },
+  {
+    "Time": "2026-11-02T16:51:20.1478397+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/paused-resume",
+    "Elapsed": 2.57
+  },
+  {
+    "Time": "2026-11-02T16:51:21.8128544+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/stopped-late-final",
+    "Elapsed": 1.66
+  },
+  {
+    "Time": "2026-11-02T16:51:21.8128544+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+    "Elapsed": 6.6
+  },
+  {
+    "Time": "2026-11-02T16:51:21.9059771+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/development/codex-app-server",
+    "Elapsed": 0.09
+  },
+  {
+    "Time": "2026-11-02T16:51:21.9977133+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/development/orca-terminal",
+    "Elapsed": 0.09
+  },
+  {
+    "Time": "2026-11-02T16:51:22.083504+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/development-audited/codex-app-server",
+    "Elapsed": 0.09
+  },
+  {
+    "Time": "2026-11-02T16:51:22.1651355+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/development-audited/orca-terminal",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:51:22.2620875+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/execute/codex-app-server",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:51:22.4433699+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/execute/orca-terminal",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-11-02T16:51:22.6337996+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/conversation/codex-app-server",
+    "Elapsed": 0.19
+  },
+  {
+    "Time": "2026-11-02T16:51:23.8073017+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries/generate/codex-app-server",
+    "Elapsed": 1.17
+  },
+  {
+    "Time": "2026-11-02T16:51:23.8073017+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetLegalWorkflowEntries",
+    "Elapsed": 1.99
+  },
+  {
+    "Time": "2026-11-02T16:51:30.5713852+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetSuccessorsAndDraftResume/report",
+    "Elapsed": 6.76
+  },
+  {
+    "Time": "2026-11-02T16:51:36.6766705+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetSuccessorsAndDraftResume/audit-draft",
+    "Elapsed": 6.11
+  },
+  {
+    "Time": "2026-11-02T16:51:36.6766705+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetSuccessorsAndDraftResume",
+    "Elapsed": 12.87
+  },
+  {
+    "Time": "2026-11-02T16:51:36.6772271+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetReadsSavedLegacySources",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:36.9413119+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/copy",
+    "Elapsed": 0.26
+  },
+  {
+    "Time": "2026-11-02T16:51:37.3572174+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/stage-missing",
+    "Elapsed": 0.42
+  },
+  {
+    "Time": "2026-11-02T16:51:38.6693704+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/source-budget",
+    "Elapsed": 1.31
+  },
+  {
+    "Time": "2026-11-02T16:51:38.8546659+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/both-budgets",
+    "Elapsed": 0.19
+  },
+  {
+    "Time": "2026-11-02T16:51:38.9706261+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/different-copy",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:39.1119432+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/command",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:39.4595929+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/step",
+    "Elapsed": 0.35
+  },
+  {
+    "Time": "2026-11-02T16:51:39.6236682+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/version",
+    "Elapsed": 0.16
+  },
+  {
+    "Time": "2026-11-02T16:51:39.9435389+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/attempt",
+    "Elapsed": 0.32
+  },
+  {
+    "Time": "2026-11-02T16:51:41.1231444+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/prompt",
+    "Elapsed": 1.18
+  },
+  {
+    "Time": "2026-11-02T16:51:41.3197249+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/model",
+    "Elapsed": 0.2
+  },
+  {
+    "Time": "2026-11-02T16:51:41.4740279+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/effort",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:41.5872376+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/policy",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:51:41.6962442+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/sha",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:51:41.8793302+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/provenance",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-11-02T16:51:41.9619931+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/accounting",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:51:42.0618361+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/committed-input",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:51:42.1893362+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding/save-failure",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-11-02T16:51:42.1893362+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetCopyRequiresOriginalUnsentBinding",
+    "Elapsed": 5.51
+  },
+  {
+    "Time": "2026-11-02T16:51:42.3120732+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair/outcome_unknown",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:42.4659972+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair/accepted",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:42.4659972+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair",
+    "Elapsed": 0.28
+  },
+  {
+    "Time": "2026-11-02T16:51:42.6170415+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestFrozenBudgetFirstRenderCommitFailureDoesNotPublish",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:42.8068662+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+    "Elapsed": 0.19
+  },
+  {
+    "Time": "2026-11-02T16:51:43.1062164+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+    "Elapsed": 0.3
+  },
+  {
+    "Time": "2026-11-02T16:51:43.8257221+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+    "Elapsed": 0.72
+  },
+  {
+    "Time": "2026-11-02T16:51:43.9456913+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:44.0298138+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:51:44.2130161+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationExplicitRetryReplayAndLostResource/resolved",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-11-02T16:51:44.3564168+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationExplicitRetryReplayAndLostResource/unknown",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:44.5063486+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationExplicitRetryReplayAndLostResource/lost",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:44.5063486+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationExplicitRetryReplayAndLostResource",
+    "Elapsed": 0.48
+  },
+  {
+    "Time": "2026-11-02T16:51:44.6945524+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationStopWinsDuringRead",
+    "Elapsed": 0.19
+  },
+  {
+    "Time": "2026-11-02T16:51:44.9148246+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualReconciliationCommitFailureAndRestart",
+    "Elapsed": 0.22
+  },
+  {
+    "Time": "2026-11-02T16:51:45.057918+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualLateFactsPreserveBusinessPause",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:45.1334696+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualLostResourceDuringContinuation",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:51:45.280393+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRManualExpiredControlDoesNotRenewQueryOnReload",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:51:47.0627049+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload",
+    "Elapsed": 1.78
+  },
+  {
+    "Time": "2026-11-02T16:51:53.1228864+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofKeepsAuditAncestryCheck",
+    "Elapsed": 6.06
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9721048+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativePolicyMismatchBlocksNewDispatch",
+    "Elapsed": 0.85
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9726497+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeProofBusinessKnowledgeBoundary",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9726497+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/ready",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9732484+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/attempt",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9732484+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/generation",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9732484+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/session",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9732484+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/missing",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9738469+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9738469+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/unverified",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.9738469+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/stopping",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.974404+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:53.974404+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:54.0764568+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationReconciliationKeepsPartialBinding",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:51:54.173643+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopSerializesWithNativeDispatch",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:51:54.2786896+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationIntentCommitFailureDoesNotDispatch",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:51:54.3978733+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROperationReceiptCommitFailureReconcilesOriginal",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:54.5373252+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopBindingCommitFailureDoesNotDispatch",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:54.5400852+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:51:54.6766436+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRLongTurnCanPrepareNextStage",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:51:54.7905141+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/orca-terminal",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:51:54.8678338+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload/codex-app-server",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:51:54.8678338+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload",
+    "Elapsed": 0.19
+  },
+  {
+    "Time": "2026-11-02T16:51:54.9703966+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStartupFailureBlocksBeforePreparationDeadline",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:51:55.091762+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRAcceptedResourceUsesOriginalOperation/pending",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:55.2114103+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRAcceptedResourceUsesOriginalOperation/deadline",
+    "Elapsed": 0.12
+  },
+  {
+    "Time": "2026-11-02T16:51:55.2114103+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRAcceptedResourceUsesOriginalOperation",
+    "Elapsed": 0.24
+  },
+  {
+    "Time": "2026-11-02T16:52:04.3177434+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAtomicCompletion",
+    "Elapsed": 9.11
+  },
+  {
+    "Time": "2026-11-02T16:52:05.2919242+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryMissingCheckpoint",
+    "Elapsed": 0.97
+  },
+  {
+    "Time": "2026-11-02T16:52:06.0095964+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthority",
+    "Elapsed": 0.72
+  },
+  {
+    "Time": "2026-11-02T16:52:15.2971212+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRABudgetReportOnce",
+    "Elapsed": 9.29
+  },
+  {
+    "Time": "2026-11-02T16:52:41.1138964+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication/stop",
+    "Elapsed": 25.82
+  },
+  {
+    "Time": "2026-11-02T16:53:00.7403277+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication/new-source",
+    "Elapsed": 19.63
+  },
+  {
+    "Time": "2026-11-02T16:53:22.667089+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication/head-drift",
+    "Elapsed": 21.93
+  },
+  {
+    "Time": "2026-11-02T16:53:42.9472246+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication/wrong-pr-head",
+    "Elapsed": 20.28
+  },
+  {
+    "Time": "2026-11-02T16:53:42.9472246+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConcurrencyPublication",
+    "Elapsed": 87.65
+  },
+  {
+    "Time": "2026-11-02T16:53:42.9510255+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAConfigRejectBeforeEffects",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:53:57.486516+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAuditObservedReportWork",
+    "Elapsed": 14.54
+  },
+  {
+    "Time": "2026-11-02T16:53:58.0921823+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRATransitionUnknownNativeGate",
+    "Elapsed": 0.61
+  },
+  {
+    "Time": "2026-11-02T16:54:03.1686169+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityQuestionSource",
+    "Elapsed": 5.08
+  },
+  {
+    "Time": "2026-11-02T16:54:03.8554613+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryConsumedInput",
+    "Elapsed": 0.69
+  },
+  {
+    "Time": "2026-11-02T16:54:05.6878985+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAStateAuthorityMilestone",
+    "Elapsed": 1.83
+  },
+  {
+    "Time": "2026-11-02T16:54:10.8095551+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAFeedbackSupersedesUnsent",
+    "Elapsed": 5.12
+  },
+  {
+    "Time": "2026-11-02T16:54:11.6528403+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+    "Elapsed": 0.84
+  },
+  {
+    "Time": "2026-11-02T16:54:11.734923+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown",
+    "Elapsed": 0.08
+  },
+  {
+    "Time": "2026-11-02T16:54:11.7990912+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped",
+    "Elapsed": 0.06
+  },
+  {
+    "Time": "2026-11-02T16:54:11.7990912+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:54:11.9311862+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=/original",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-11-02T16:54:12.0402681+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=/changed-resource",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:54:12.0402681+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=",
+    "Elapsed": 0.24
+  },
+  {
+    "Time": "2026-11-02T16:54:12.1510495+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources/original",
+    "Elapsed": 0.11
+  },
+  {
+    "Time": "2026-11-02T16:54:12.2775189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources/changed-resource",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-11-02T16:54:12.2775189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources",
+    "Elapsed": 0.24
+  },
+  {
+    "Time": "2026-11-02T16:54:12.2775189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent",
+    "Elapsed": 0.48
+  },
+  {
+    "Time": "2026-11-02T16:54:12.3688482+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/orca-terminal",
+    "Elapsed": 0.09
+  },
+  {
+    "Time": "2026-11-02T16:54:12.4659802+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/codex-app-server",
+    "Elapsed": 0.1
+  },
+  {
+    "Time": "2026-11-02T16:54:12.6082101+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable/orca-local-codex",
+    "Elapsed": 0.14
+  },
+  {
+    "Time": "2026-11-02T16:54:12.6082101+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopTransportQueueBudgetRemainsBoundedAndCancellable",
+    "Elapsed": 0.33
+  },
+  {
+    "Time": "2026-11-02T16:54:12.8257562+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRemoteStopBudgetCanCompleteAnOriginalCLICall",
+    "Elapsed": 0.22
+  },
+  {
+    "Time": "2026-11-02T16:54:12.9563003+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRUnreachableStopKeepsRevisionStableWithoutLosingProgress",
+    "Elapsed": 0.13
+  },
+  {
+    "Time": "2026-11-02T16:54:13.1021218+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original",
+    "Elapsed": 0.15
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt",
+    "Elapsed": 0.18
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation",
+    "Elapsed": 0.33
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:13.283189+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:28.5314414+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAAuditLifecycle",
+    "Elapsed": 15.25
+  },
+  {
+    "Time": "2026-11-02T16:54:38.9051652+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRARecoveryBusinessInput",
+    "Elapsed": 10.37
+  },
+  {
+    "Time": "2026-11-02T16:54:38.9051652+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAVersionRejectLegacy",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:54:43.8708424+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary/unreported",
+    "Elapsed": 4.97
+  },
+  {
+    "Time": "2026-11-02T16:54:49.968015+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary/unknown",
+    "Elapsed": 6.1
+  },
+  {
+    "Time": "2026-11-02T16:54:55.5781347+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary/failed",
+    "Elapsed": 5.61
+  },
+  {
+    "Time": "2026-11-02T16:55:01.6355745+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary/cancelled",
+    "Elapsed": 6.06
+  },
+  {
+    "Time": "2026-11-02T16:55:07.0477607+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary/business-blocked",
+    "Elapsed": 5.41
+  },
+  {
+    "Time": "2026-11-02T16:55:07.0477607+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestRAUnreportedOutcomeBoundary",
+    "Elapsed": 28.14
+  },
+  {
+    "Time": "2026-11-02T16:55:07.0621326+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Elapsed": 232.329
+  }
+]
