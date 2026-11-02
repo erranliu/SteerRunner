@@ -16,8 +16,8 @@ func (e *Engine) inspectSource(r *runstate.Record, preHead string) *workflow.Wor
 	defer cancel()
 	var f b.WorkspaceInspection
 	var err error
-	if r.Request.Execution.Adapter == "orca-terminal" && r.Request.Execution.Target.Kind == "orca_environment" {
-		err = errors.New("native remote workspace provenance is unreported; no helper or caller Git fallback")
+	if r.Request.Execution.Adapter == "orca-terminal" && (r.Request.Execution.Target.Kind == "orca_environment" || r.StopEvidenceScope == "orca_terminal") {
+		err = errors.New("native Orca workspace provenance is unreported; no helper or caller Git fallback")
 	} else if r.Request.Execution.Adapter == "orca-terminal" {
 		w := e.workers[r.ID]
 		if w == nil {

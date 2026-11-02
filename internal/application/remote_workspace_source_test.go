@@ -56,11 +56,19 @@ func TestLocalOrcaWorkspaceSourceRequiresOriginalOwnerWithoutFallback(t *testing
 type readOnlyUnsupportedWorkspaceOwner struct{ b.LifecyclePort }
 
 func TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner(t *testing.T) {
-	p := &originalRemoteWorkspaceOwner{}
-	e := &Engine{ctx: context.Background(), workers: map[string]*worker{"run": {port: p}}}
-	r := &runstate.Record{ID: "run", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: "paired"}}}, RepositoryPath: t.TempDir()}
-	got := e.inspectSource(r, "")
-	if got.Qualified || got.Diagnostic == "" || p.calls != 0 {
-		t.Fatal("native remote source gained helper or caller qualification", got, p.calls)
+	for _, target := range []string{"orca_environment", "local"} {
+		t.Run(target, func(t *testing.T) {
+			p := &originalRemoteWorkspaceOwner{}
+			e := &Engine{ctx: context.Background(), workers: map[string]*worker{"run": {port: p}}}
+			r := &runstate.Record{ID: "run", Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: target, Environment: "paired"}}}, RepositoryPath: t.TempDir()}
+			if target == "local" {
+				r.Request.Execution.Target.Environment = ""
+				r.StopEvidenceScope = "orca_terminal"
+			}
+			got := e.inspectSource(r, "")
+			if got.Qualified || got.Diagnostic == "" || p.calls != 0 {
+				t.Fatal("native remote source gained helper or caller qualification", got, p.calls)
+			}
+		})
 	}
 }

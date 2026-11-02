@@ -893,6 +893,122 @@
           }
         }
       ]
+    },
+    {
+      "id": "orca-local.native-development",
+      "level": "L3",
+      "driver": "native-capability-runner",
+      "target": "orca-local",
+      "agent": "codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-native-codex",
+                "target_kind": "local",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "orca-local.native-active-stop",
+      "level": "L3",
+      "driver": "native-capability-runner",
+      "target": "orca-local",
+      "agent": "codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-local-native-codex",
+                "target_kind": "local",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.native-development",
+      "level": "L3",
+      "driver": "native-capability-runner",
+      "target": "orca-environment",
+      "agent": "codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "pr_ready",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-native-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "orca-remote.native-active-stop",
+      "level": "L3",
+      "driver": "native-capability-runner",
+      "target": "orca-environment",
+      "agent": "codex",
+      "timeout_minutes": 30,
+      "cases": [
+        {
+          "id": "default",
+          "outcome": "stopped",
+          "requirements": {
+            "operation": "submit",
+            "publication": true,
+            "roles": {
+              "primary": {
+                "agent": "codex",
+                "adapter": "orca-terminal",
+                "configuration": "orca-remote-native-codex",
+                "target_kind": "orca_environment",
+                "access_mode": "full_access",
+                "workflow": "development"
+              }
+            },
+            "admin": false
+          }
+        }
+      ]
     }
   ]
 }

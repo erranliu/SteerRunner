@@ -74,6 +74,16 @@ function Get-SRNativeResources($Manifest,$Scenario,$View) {
     return $taskResources
 }
 function Assert-SRNativeScenario($Manifest,$Result,$Scenario) {
+	if ($Manifest.driver -eq 'native-capability-runner') {
+		if ($Result.exit_code -ne 0 -or $Result.scenario_count -ne 1 -or $Scenario.scenario -cne $Manifest.scenario -or $Scenario.level -cne $Manifest.level -or $Scenario.stage -cne 'completed' -or $Scenario.stop_evidence_scope -cne 'orca_terminal' -or -not $Scenario.run_id -or -not $Scenario.provider_session) { throw 'Native candidate result lacks its original completed execution/scope' }
+		foreach ($taskField in @('passed','run_stopped','service_stopped','offline_verified','no_legacy_calls')) {
+			if ((Get-SRResultField $Scenario $taskField) -isnot [bool] -or -not (Get-SRResultField $Scenario $taskField)) { throw ('Native candidate boundary unverified: ' + $taskField) }
+		}
+		if ($Manifest.scenario.EndsWith('native-active-stop')) {
+			if ($Scenario.active_verified -cne $true -or (Get-SRResultField $Scenario 'pr_url')) { throw 'Native activity-stop result lacks its original active request or unexpectedly published' }
+		} elseif ($Scenario.feedback_verified -cne $true -or $Scenario.pr_url -cnotmatch '^https://github.com/erranliu/SteerlineTest/pull/[1-9][0-9]*$' -or $Scenario.head_revision -cnotmatch '^[a-f0-9]{40}$') { throw 'Native development result lacks same-session feedback and verified unmerged PR head' }
+		return
+	}
     if ((Get-SRResultField $Result 'exit_code') -ne 0 -or (Get-SRResultField $Result 'scenario_count') -ne 1) { throw 'Live scenario did not execute exactly once and pass' }
     if ((Get-SRResultField $Scenario 'scenario') -cne $Manifest.scenario -or (Get-SRResultField $Scenario 'level') -cne $Manifest.level) { throw 'Live scenario identity differs from its manifest' }
     if ($Manifest.driver -eq 'result-acquisition') {

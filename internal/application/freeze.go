@@ -204,7 +204,11 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 			}
 			settings.AgentLaunch.RuntimeExecutable = helper
 		}
-		profile := orca.Profile{Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
+		nativeTerminal := agent == "codex" && settings.AgentLaunch.RuntimeExecutable == "" && request.Workflow.ID == "development" && request.Workflow.Version == 2
+		if nativeTerminal && settings.AccessMode == "" {
+			settings.AccessMode = "full_access"
+		}
+		profile := orca.Profile{NativeTerminal: nativeTerminal, Executable: executable, Args: settings.Transport.Args, WaitTimeout: settings.Transport.WaitTimeout, Environment: request.Execution.Target.Environment}
 		target = profile.Target()
 		kind, protocol = b.BackendOrca, b.ProtocolOrcaTerminalV3
 		launch := agentlaunch.Config{AccessMode: settings.AccessMode, Executable: settings.AgentLaunch.Executable, Args: settings.AgentLaunch.Args, Model: settings.AgentLaunch.Model, ReasoningEffort: settings.AgentLaunch.ReasoningEffort}
@@ -247,7 +251,9 @@ func freeze(ctx context.Context, dir string, input contracts.Request) (*runstate
 		}
 		r.Request.Execution.Settings = canonical(settings)
 		key, codec, payload = orca.ProfileKey, orca.ProfileVersion, canonical(profile)
-		if profile.Environment != "" {
+		if profile.NativeTerminal {
+			codec = orca.NativeProfileVersion
+		} else if profile.Environment != "" {
 			codec = orca.NativeRemoteProfileVersion
 		}
 	}

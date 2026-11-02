@@ -16,7 +16,7 @@ const NativeStopDiagnostic = "Stopped the original Orca terminal; detached backg
 // Scope describes the frozen contract, including when its proof is unavailable.
 // The Run saves it as a contract fact, never as authority to resume or resend.
 func (l *Lifecycle) StopEvidenceScope() string {
-	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion {
+	if l.profile.Environment != "" && l.profileVersion != NativeRemoteProfileVersion && l.profileVersion != NativeProfileVersion {
 		return ""
 	}
 	return StopScope(l.profile, l.setup.Snapshot.Ref.Agent.Name)
@@ -40,7 +40,7 @@ func StopEvidenceScope(setup b.LifecycleSetup) (string, error) {
 	return scope, err
 }
 
-func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, closeOriginal bool) (receipt b.LifecycleReceipt, err error) {
+func (l *Lifecycle) nativeStopResult(ctx context.Context, r b.LifecycleRequest, closeOriginal bool) (receipt b.LifecycleReceipt, err error) {
 	receipt = b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationUnknown}
 	progress := stopProgress{Version: 1, Phase: "attempted"}
 	defer func() { receipt.Operation.Receipt, _ = json.Marshal(progress) }()
@@ -115,10 +115,10 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 	return receipt, nil
 }
 
-func (l *Lifecycle) reconcileRemoteStop(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
+func (l *Lifecycle) reconcileNativeStop(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, b.LifecycleObserver, error) {
 	var saved b.LifecycleReceipt
 	var progress stopProgress
 	firstClose := json.Unmarshal(r.Operation.Receipt, &saved) == nil && saved.ValidateFor(r) == nil && json.Unmarshal(saved.Operation.Receipt, &progress) == nil && progress.Version == 1 && progress.Phase == "not-attempted" && !saved.State.Stopped
-	receipt, err := l.remoteStopResult(ctx, r, firstClose)
+	receipt, err := l.nativeStopResult(ctx, r, firstClose)
 	return receipt, nil, err
 }

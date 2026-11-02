@@ -441,7 +441,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			hadStart := turn.Native.WorkingAt > 0
 			input := observation.bindInput(&s, turn.Native)
 			sample.AgentState = s
-			linked := l.profile.Environment == "" && turn.Native.WorkingAt > 0 || err == nil && observation.linked(sample, turn.Native)
+			linked := !l.profile.nativeTerminalContract() && turn.Native.WorkingAt > 0 || err == nil && observation.linked(sample, turn.Native)
 			turn.Native.signal(s, turn, received(sample, l.clock()), linked, input)
 			issue := turn.Native.diagnostic()
 			if issue != "" {
@@ -578,7 +578,7 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 		if observation.supplements(sample, turn.Native) && turn.Native.Conflict == "" {
 			verified = turn.Native.end(s, turn, received(sample, l.clock()), true, input)
 		} else {
-			verified = turn.Native.query(s, turn, received(sample, l.clock()), l.profile.Environment == "" && turn.Native.WorkingAt > 0, input)
+			verified = turn.Native.query(s, turn, received(sample, l.clock()), !l.profile.nativeTerminalContract() && turn.Native.WorkingAt > 0, input)
 		}
 		if turn.Native.Waiting != "" {
 			diagnostic = turn.Native.Waiting

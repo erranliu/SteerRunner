@@ -67,8 +67,20 @@ func testOfflineVerificationAfterWriterExitWithoutShutdownReceipt(t *testing.T) 
 
 // Persist only the original identity through the real SQLite store, then invoke
 // the public offline EXE. The fixture permits inventory reads and no mutation.
-func testRemoteOfflineScope(t *testing.T) {
-	for _, mode := range []string{"absent", "active", "truncated", "legacy", "uncreated", "uncreated-mixed", "invalid-profile"} {
+func testRemoteOfflineScope(t *testing.T) { testOrcaOfflineScope(t, "fixture-remote", false) }
+
+func testNativeCandidateOfflineScope(t *testing.T) {
+	for _, environment := range []string{"", "fixture-remote"} {
+		t.Run(environment, func(t *testing.T) { testOrcaOfflineScope(t, environment, true) })
+	}
+}
+
+func testOrcaOfflineScope(t *testing.T, environment string, candidate bool) {
+	modes := []string{"absent", "active", "truncated", "legacy", "uncreated", "uncreated-mixed", "invalid-profile"}
+	if candidate {
+		modes = append(modes, "missing-scope", "old-state")
+	}
+	for _, mode := range modes {
 		t.Run(mode, func(t *testing.T) {
 			dir := t.TempDir()
 			if err := os.MkdirAll(filepath.Join(dir, "service"), 0700); err != nil {
@@ -82,9 +94,9 @@ func testRemoteOfflineScope(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			profile := orca.Profile{Executable: exe, Args: []string{"--native-inventory-fixture", inventory}, Environment: "fixture-remote", WaitTimeout: "1s"}
+			profile := orca.Profile{NativeTerminal: candidate, Executable: exe, Args: []string{"--native-inventory-fixture", inventory}, Environment: environment, WaitTimeout: "1s"}
 			id, attempt, config := strings.Repeat("a", 32), strings.Repeat("b", 32), strings.Repeat("c", 64)
-			process := b.ProcessIdentity{Kind: "orca_terminal", Executable: exe, ExecutionHost: profile.Environment, RuntimeID: "original", WorktreeID: "repo::C:/original", Terminal: "original-terminal", Incarnation: "original-incarnation"}
+			process := b.ProcessIdentity{Kind: "orca_terminal", Executable: exe, ExecutionHost: profile.Target().ExecutionHost, RuntimeID: "original", WorktreeID: "repo::C:/original", Terminal: "original-terminal", Incarnation: "original-incarnation"}
 			snap := b.LifecycleSnapshot{Ref: b.ExecutionRef{Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: profile.Target(), Agent: b.AgentSpec{Name: "codex"}, RunID: id, AttemptID: attempt, External: process}, Session: b.SessionContext{ProjectID: "project", ExecutionID: id, WorkflowRunID: id, AttemptID: attempt}, ConfigurationDigest: config, ResourceGeneration: "original-generation"}
 			makeEnvelope := func(meta b.ImplementationDataEnvelope, value any) b.ImplementationDataEnvelope {
 				raw, _ := json.Marshal(value)
@@ -95,6 +107,9 @@ func testRemoteOfflineScope(t *testing.T) {
 				return e
 			}
 			version := orca.NativeRemoteProfileVersion
+			if candidate {
+				version = orca.NativeProfileVersion
+			}
 			if mode == "legacy" {
 				version = 3 // Retired profile, rejected before native inventory.
 			}
@@ -114,7 +129,14 @@ func testRemoteOfflineScope(t *testing.T) {
 					state.Control = &orca.ControlTerminal{}
 				}
 			}
-			snap.Implementation = []b.ImplementationDataEnvelope{makeEnvelope(b.ImplementationDataEnvelope{CodecVersion: orca.StateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: "project", ExecutionID: id, AttemptID: attempt, Generation: snap.ResourceGeneration, ConfigDigest: config}, state)}
+			stateVersion := orca.StateVersion
+			if candidate {
+				stateVersion = orca.NativeStateVersion
+			}
+			if mode == "old-state" {
+				stateVersion = orca.LocalStateVersion
+			}
+			snap.Implementation = []b.ImplementationDataEnvelope{makeEnvelope(b.ImplementationDataEnvelope{CodecVersion: stateVersion, Purpose: b.ImplementationResourcePurpose, ImplementationKey: orca.StateKey, ProjectID: "project", ExecutionID: id, AttemptID: attempt, Generation: snap.ResourceGeneration, ConfigDigest: config}, state)}
 			rows := []any{}
 			if mode == "active" {
 				rows = append(rows, map[string]any{"handle": process.Terminal, "incarnationId": process.Incarnation, "worktreeId": process.WorktreeID, "connected": true})
@@ -124,6 +146,12 @@ func testRemoteOfflineScope(t *testing.T) {
 				t.Fatal(err)
 			}
 			record := &runstate.Record{ID: id, Revision: 1, InputDigest: config, StopStatus: "stopped", Snapshot: snap, Profile: []b.ImplementationDataEnvelope{frozen}, RepositoryPath: dir, Request: contracts.RunRequest{Execution: contracts.Execution{Adapter: "orca-terminal", Target: contracts.Target{Kind: "orca_environment", Environment: profile.Environment}}}}
+			if environment == "" {
+				record.Request.Execution.Target = contracts.Target{Kind: "local"}
+			}
+			if candidate && mode != "missing-scope" {
+				record.StopEvidenceScope = "orca_terminal"
+			}
 			store, err := storage.Open(dir)
 			if err != nil {
 				t.Fatal(err)
@@ -154,17 +182,17 @@ func testRemoteOfflineScope(t *testing.T) {
 				t.Fatal(proof)
 			}
 			after, _ := os.ReadFile(filepath.Join(dir, "runner.db"))
-			if !bytes.Equal(before, after) || bytes.Contains(after, []byte("stop_evidence_scope")) {
+			if !bytes.Equal(before, after) || !candidate && bytes.Contains(after, []byte("stop_evidence_scope")) {
 				t.Fatal("offline verification modified storage or persisted scope")
 			}
-			if strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" || mode == "legacy" {
+			if strings.HasPrefix(mode, "uncreated") || mode == "invalid-profile" || mode == "legacy" || mode == "missing-scope" || mode == "old-state" {
 				if _, err := os.Stat(inventory + ".calls"); !os.IsNotExist(err) {
 					t.Fatal("uncreated record caused inventory or helper effect", err)
 				}
 				return
 			}
 			calls, err := os.ReadFile(inventory + ".calls")
-			if err != nil || !bytes.Contains(calls, []byte("terminal")) || bytes.Contains(calls, []byte("create")) {
+			if err != nil || !bytes.Contains(calls, []byte("terminal")) || bytes.Contains(calls, []byte("create")) || bytes.Contains(calls, []byte("close")) || bytes.Contains(calls, []byte("send")) {
 				t.Fatal("offline read was not isolated", err, string(calls))
 			}
 		})

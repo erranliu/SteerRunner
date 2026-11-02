@@ -396,6 +396,7 @@ func TestSRServiceOwnership(t *testing.T) {
 	t.Run("reused_owner_pid", testFixtureOwnerExitWithReusedPID)
 	t.Run("offline_verification", testOfflineVerificationAfterWriterExitWithoutShutdownReceipt)
 	t.Run("remote_offline_scope", testRemoteOfflineScope)
+	t.Run("native_candidate_offline_scope", testNativeCandidateOfflineScope)
 	t.Run("queries_do_not_start", func(t *testing.T) {
 		dir := filepath.Join(t.TempDir(), "runner")
 		for _, args := range [][]string{{"capabilities"}, {"inspect", "--request-id", "missing"}, {"events", "--run-id", "missing"}} {

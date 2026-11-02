@@ -32,7 +32,7 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 	if err = VerifyTerminalStopped(ctx, l.client, state.Process); err != nil {
 		return err
 	}
-	if l.profile.Environment != "" {
+	if l.profile.nativeTerminalContract() {
 
 		return ctx.Err()
 	}

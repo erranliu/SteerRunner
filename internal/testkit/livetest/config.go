@@ -255,7 +255,12 @@ func assessCase(config TestConfig, scenario Scenario, test Case, catalog resourc
 		if required.Adapter == "orca-terminal" {
 			var orca contracts.OrcaSettings
 			_ = json.Unmarshal(value.Execution.Settings, &orca)
-			if !filepath.IsAbs(orca.Transport.Executable) || (required.TargetKind == "local" && (!filepath.IsAbs(orca.AgentLaunch.RuntimeExecutable) || len(orca.AgentLaunch.RuntimeSHA256) != 64)) {
+			if scenario.Driver == "native-capability-runner" {
+				if _, err := nativeCandidateSettings(value.Execution.Settings); err != nil {
+					add(path, "invalid_configuration", err.Error())
+				}
+			}
+			if !filepath.IsAbs(orca.Transport.Executable) || (required.TargetKind == "local" && scenario.Driver != "native-capability-runner" && (!filepath.IsAbs(orca.AgentLaunch.RuntimeExecutable) || len(orca.AgentLaunch.RuntimeSHA256) != 64)) {
 				add(path, "missing_configuration", "Orca tests require an absolute transport; local managed tests also require helper references.")
 			}
 			if fixtureOK && !filepath.IsAbs(fixture.Repository.LocalPath) {

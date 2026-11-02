@@ -22,6 +22,8 @@ const RemoteURL = "https://github.com/erranliu/SteerlineTest.git"
 const Artifact = "evidence/native-101.md"
 
 type Manifest struct {
+	NativeCLI           *Tool                   `json:"native_cli,omitempty"`
+	AuditTransport      *Tool                   `json:"audit_transport,omitempty"`
 	RequirementsSHA256  string                  `json:"requirements_sha256,omitempty"`
 	ConfigurationSHA256 string                  `json:"configuration_sha256,omitempty"`
 	ConfigurationPath   string                  `json:"configuration_path,omitempty"`
@@ -103,6 +105,35 @@ func (m Manifest) RunWorkflow(overrides map[string]string) (contracts.Workflow, 
 }
 
 func (m Manifest) Validate() error {
+	if m.Driver != "native-capability-runner" && (m.NativeCLI != nil || m.AuditTransport != nil) {
+		return errors.New("native candidate tools require their registered driver")
+	}
+	if m.Driver == "native-capability-runner" {
+		scenario, _, err := Lookup(m.Scenario, "default")
+		settings, settingsErr := nativeCandidateSettings(m.Execution.Settings)
+		target := "orca-environment"
+		if m.Execution.Target.Kind == "local" {
+			target = "orca-local"
+		}
+		if err != nil || settingsErr != nil || scenario.Driver != m.Driver || scenario.Target != target || m.Level != "L3" || m.Execution.Adapter != "orca-terminal" || m.Workflow != nil && (m.Workflow.ID != "development" || m.Workflow.Version != 2) {
+			return errors.New("native candidate fixture differs from its registered contract")
+		}
+		if m.NativeCLI == nil || m.AuditTransport == nil || settings.Transport.Executable != m.AuditTransport.Path || m.NativeCLI.Path == m.AuditTransport.Path {
+			return errors.New("native candidate requires distinct frozen CLI and audit transport")
+		}
+		for _, tool := range []*Tool{m.NativeCLI, m.AuditTransport} {
+			actual, err := filepath.EvalSymlinks(tool.Path)
+			body, readErr := os.ReadFile(tool.Path)
+			sum := sha256.Sum256(body)
+			if err != nil || readErr != nil || !filepath.IsAbs(tool.Path) || !strings.EqualFold(actual, tool.Path) || tool.SHA256 != hex.EncodeToString(sum[:]) {
+				return errors.New("native candidate tool identity changed")
+			}
+		}
+		relative, err := filepath.Rel(m.Root, m.AuditTransport.Path)
+		if err != nil || relative == "." || relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+			return errors.New("native candidate audit transport escapes fixture")
+		}
+	}
 	if m.Scenario == "orca-local.pi-full-access" || m.Scenario == "orca-remote.full-access" || m.CaseID == "graceful-active-full-access" || m.CaseID == "kill-active-full-access" {
 		return errors.New("retired permission case; select its canonical full_access scenario")
 	}
@@ -170,7 +201,7 @@ func (m Manifest) Validate() error {
 	if (m.Schema != "steerrunner-test/v1" && m.Schema != "steerrunner-test/v2") || !idPattern.MatchString(m.ID) || !scenarioPattern.MatchString(m.Scenario) || m.Driver == "" || createdErr != nil || createdAt.IsZero() {
 		return errors.New("invalid live fixture identity")
 	}
-	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "progress-file") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
+	if m.Schema == "steerrunner-test/v1" && ((m.Driver != "result-acquisition" && m.Driver != "development-smoke" && m.Driver != "development-feedback" && m.Driver != "development-multirun" && m.Driver != "development-audited" && m.Driver != "progress-file" && m.Driver != "native-capability-runner") || m.Stability != nil || m.CaseID != "" || m.RepeatIndex != 0) {
 		return errors.New("v1 requires a development fixture without stability fields")
 	}
 	if m.Schema == "steerrunner-test/v2" {
@@ -228,7 +259,7 @@ func (m Manifest) Validate() error {
 				if contracts.DecodeStrict(m.Execution.Settings, &settings) != nil {
 					return errors.New("invalid local Orca settings")
 				}
-				if settings.AccessMode != mode || settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64 {
+				if settings.AccessMode != mode || m.Driver != "native-capability-runner" && (settings.AgentLaunch.RuntimeExecutable == "" || len(settings.AgentLaunch.RuntimeSHA256) != 64) {
 					return errors.New("local Orca requires its frozen native runtime and case access mode")
 				}
 				if scenario.Agent != "" && settings.AgentName() != scenario.Agent {
@@ -287,6 +318,28 @@ func (m Manifest) Validate() error {
 		}
 	}
 	return nil
+}
+
+func nativeCandidateSettings(raw json.RawMessage) (contracts.OrcaSettings, error) {
+	var settings contracts.OrcaSettings
+	if contracts.DecodeStrict(raw, &settings) != nil || settings.AgentName() != "codex" || settings.AccessMode != "full_access" || settings.AgentLaunch.RuntimeExecutable != "" || settings.AgentLaunch.RuntimeSHA256 != "" {
+		return settings, errors.New("native candidate requires helper-free full-access Codex")
+	}
+	var fields map[string]json.RawMessage
+	_ = json.Unmarshal(raw, &fields)
+	for name, value := range fields {
+		if !strings.EqualFold(name, "agent_launch") {
+			continue
+		}
+		var launch map[string]json.RawMessage
+		_ = json.Unmarshal(value, &launch)
+		for key := range launch {
+			if strings.EqualFold(key, "runtime_executable") || strings.EqualFold(key, "runtime_sha256") {
+				return settings, errors.New("native candidate fixture contains a helper field")
+			}
+		}
+	}
+	return settings, nil
 }
 
 func (m Manifest) OrcaRuntimeID() (string, error) {

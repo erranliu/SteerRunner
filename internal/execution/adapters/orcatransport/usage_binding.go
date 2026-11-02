@@ -160,14 +160,14 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 	found := false
 	for _, e := range profile {
 		if e.ImplementationKey == ProfileKey {
-			if e.CodecVersion != ProfileVersion && e.CodecVersion != NativeRemoteProfileVersion && e.CodecVersion != FullAccessTerminalProfileVersion {
+			if e.CodecVersion != ProfileVersion && e.CodecVersion != NativeRemoteProfileVersion && e.CodecVersion != FullAccessTerminalProfileVersion && e.CodecVersion != NativeProfileVersion {
 				return binding, p, State{}, errors.New("FORMAT_UNSUPPORTED")
 			}
 			if e.Validate() != nil {
 				return binding, p, State{}, errors.New("IDENTITY_UNVERIFIED")
 			}
 			var err error
-			p, err = DecodeProfile(e.Payload)
+			p, err = decodeProfileCodec(e.Payload, e.CodecVersion)
 			if err != nil {
 				return binding, p, State{}, err
 			}
@@ -177,13 +177,10 @@ func UsageBinding(profile []b.ImplementationDataEnvelope, s b.LifecycleSnapshot,
 	if !found {
 		return binding, p, State{}, errors.New("FORMAT_UNSUPPORTED")
 	}
-	if p.Environment != "" && binding.Agent != "codex" {
+	if p.nativeTerminalContract() && binding.Agent != "codex" {
 		return binding, p, State{}, errors.New("PRODUCTION_BINDING_UNSUPPORTED")
 	}
-	version := LocalStateVersion
-	if p.Environment != "" {
-		version = StateVersion
-	}
+	version := p.stateCodec()
 	var state State
 	found = false
 	for _, e := range s.Implementation {

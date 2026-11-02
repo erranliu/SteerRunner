@@ -12,12 +12,15 @@ const ProfileKey = "orca.terminal-profile"
 const ProfileVersion = 6
 const NativeRemoteProfileVersion = 4
 const FullAccessTerminalProfileVersion = 6
+const NativeProfileVersion = 9
+const NativeStateVersion = 9
 const LocalStateVersion = 8
 const StateKey = "orca.terminal-state"
 const StateVersion = 7
 
 // Environment is routing only; local and paired execution have the same ports.
 type Profile struct {
+	NativeTerminal             bool            `json:"native_terminal,omitempty"`
 	Terminal                   *TerminalConfig `json:"terminal,omitempty"`
 	RuntimeSHA256              string          `json:"runtime_sha256,omitempty"`
 	RuntimeExecutable          string          `json:"runtime_executable,omitempty"`
@@ -26,6 +29,18 @@ type Profile struct {
 	Args                       []string        `json:"args,omitempty"`
 	Environment                string          `json:"environment,omitempty"`
 	WaitTimeout                string          `json:"wait_timeout"`
+}
+
+func (p Profile) nativeTerminalContract() bool { return p.NativeTerminal || p.Environment != "" }
+
+func (p Profile) stateCodec() int {
+	if p.NativeTerminal {
+		return NativeStateVersion
+	}
+	if p.Environment == "" {
+		return LocalStateVersion
+	}
+	return StateVersion
 }
 
 func DecodeProfile(data []byte) (Profile, error) {
