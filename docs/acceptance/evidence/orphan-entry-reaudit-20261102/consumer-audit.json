@@ -1,0 +1,111 @@
+{
+  "baseline_files_scanned": 788,
+  "removed_distinct_symbols": 33,
+  "baseline_symbol_files": {
+    "cloneTurn": [
+      "internal/execution/adapters/codex/lifecycle.go"
+    ],
+    "rawObject": [
+      "internal/execution/adapters/codex/conversation.go"
+    ],
+    "fakeOrcaRemove": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "ValidateExecutionOperation": [
+      "internal/execution/backend/record_validation.go"
+    ],
+    "VerifyProgressDirectories": [
+      "internal/execution/workspace/progress.go"
+    ],
+    "FakeTerminal": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "firstNonEmpty": [
+      "internal/execution/adapters/codex/conversation.go"
+    ],
+    "writeTerminalFile": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "PendingIdentity": [
+      "internal/execution/adapters/codex/intent.go"
+    ],
+    "nonEmpty": [
+      "internal/execution/adapters/codex/conversation.go"
+    ],
+    "fakeOrcaOK": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "FactAdmission": [
+      "internal/execution/workflow/execution_facts.go"
+    ],
+    "WriteTerminalFixtureState": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "ValidateWorkspaceTerminal": [
+      "internal/execution/adapters/protocol/orca/client.go"
+    ],
+    "InspectWorkspace": [
+      "internal/execution/adapters/orcatransport/workspace.go"
+    ],
+    "TerminalFixtureStatePath": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "fakeOrcaErr": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "FindRepo": [
+      "internal/execution/adapters/protocol/orca/client.go"
+    ],
+    "ErrRepoUnavailable": [
+      "internal/execution/adapters/protocol/orca/client.go"
+    ],
+    "fakeOrcaRead": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "runLogPath": [
+      "internal/application/engine.go"
+    ],
+    "commitHash": [
+      "internal/execution/backend/record_validation.go",
+      "internal/execution/publication/pr.go",
+      "internal/execution/publication/provider.go"
+    ],
+    "FactStatus": [
+      "internal/execution/workflow/execution_facts.go"
+    ],
+    "fakeOrcaShow": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "StableOperationID": [
+      "internal/execution/backend/record_validation.go"
+    ],
+    "ReadTerminalFixtureState": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "fakeOrcaTerminalCreate": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "nativeArg": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "tryNativeOrcaStateLock": [
+      "internal/testkit/protocol/native_lock_other.go",
+      "internal/testkit/protocol/native_lock_windows.go"
+    ],
+    "stringField": [
+      "internal/execution/adapters/codex/conversation.go"
+    ],
+    "TerminalFixtureState": [
+      "internal/testkit/protocol/terminal.go"
+    ],
+    "NormalizeProfile": [
+      "internal/execution/adapters/orcatransport/profile.go"
+    ],
+    "ValidateExecutionRef": [
+      "internal/execution/backend/record_validation.go"
+    ]
+  },
+  "scope_exception": "publication.commitHash is a separate live variable, preserved unchanged",
+  "no_external_consumers_of_deleted_closure": true,
+  "all_build_tag_sources_scanned": true
+}

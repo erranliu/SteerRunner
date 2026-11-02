@@ -1,0 +1,380 @@
+{
+  "components": {
+    "exit_code": 1,
+    "top_level": {
+      "pass": 399,
+      "skip": 8,
+      "fail": 46
+    },
+    "subtests": {
+      "pass": 1255,
+      "fail": 68
+    },
+    "skipped": [
+      "TestProcessHostCommandHelper",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestServiceStopWorkerHelper",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "failed_top_level": [
+      "TestFullAccessCommandHasNoCodexSandboxDependency",
+      "TestGiteaQueryReadsPRHeadIdentity",
+      "TestOrcaCLIPreparationSharesMutexAndRecoversKilledOwner",
+      "TestResultFileLaunchCombinationsAndExactUnwrap",
+      "TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread",
+      "TestProgressLaunchUsesActualExecutionDirectory",
+      "TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts",
+      "TestExecutionOwnerServiceCancellationClosesOnlyClientConnection",
+      "TestR2ArtifactChangesDuringReadNeverReturnBytes",
+      "TestR2ArtifactContainment",
+      "TestRAWorkspaceSource",
+      "TestOwnedJobReconnectAndStopIncludesStartedDescendant",
+      "TestContentRepositoryUnsafeAndLimits",
+      "TestR2GitRejectsConcurrentChange",
+      "TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCalls",
+      "TestProgressFileBytesAndAtomicReplacement",
+      "TestCreationOwnerRetainsWorkspaceAcrossCallerLoss",
+      "TestResultFileBytesAndAtomicReplacement",
+      "TestLocalWorkspacePrepareInspectResourcesAndCleanup",
+      "TestNativeConsoleHasInteractiveHandlesAndLiteralArguments",
+      "TestPrepareRejectsHeadChangedByCheckoutHook",
+      "TestCreationOwnerInitialTerminalPlanSurvivesDelayedWorkspaceReceipt",
+      "TestNativeViewerVerifiesLiveBindingWithReadsOnly",
+      "TestNativeViewerAttachesWithoutPromptOrPolicyOverrides",
+      "TestRemoteModelBridgeRejectsInvalidOriginalRequest",
+      "TestRemoteModelBridgeRejectsUnboundInvalidRequest",
+      "TestRemoteModelBridgePreservesLargeNativeReplies",
+      "TestRemoteModelBridgeUsesOriginalNativeConnection",
+      "TestStateConnectionFailureClassification",
+      "TestRemoteWorkspaceAuditUsesOriginalGitOwner",
+      "TestOrcaNativeStateStream",
+      "TestWorkerRuntimeTempUsesFixedAdmin",
+      "TestCreationOwnerUnknownAndForeignEvidenceNeverRedispatch",
+      "TestCreationOwnerControlReceiptSurvivesServiceLoss",
+      "TestCreationOwnerIncompleteLaunchClaimNeverRetries",
+      "TestCreationOwnerStartupUsesOriginalDeadline",
+      "TestCreationOwnerMissingTerminalReceiptNeverAdoptsInventory",
+      "TestAsyncQuestionObserveSteerAndReconcile",
+      "TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths",
+      "TestCreationOwnerInitialTerminalReceiptAndEmptyRecovery",
+      "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+      "TestNativeReceiptPublicationAcrossWindowsReaders",
+      "TestMockAppServerThreadAndTurnContract",
+      "TestTerminalStartupFailureCanStopWithoutInventingWorker",
+      "TestManagedNativeChannelRejectsMissingChangedAndLateFacts",
+      "TestManagedStopWaitsForOriginalExitAndAuthenticationCleanup"
+    ],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/evidence",
+        "action": "skip",
+        "elapsed": 0
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/nativeaudit",
+        "action": "skip",
+        "elapsed": 0.001
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/runstate",
+        "action": "skip",
+        "elapsed": 0
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+        "action": "pass",
+        "elapsed": 1.923
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/model",
+        "action": "pass",
+        "elapsed": 1.968
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+        "action": "pass",
+        "elapsed": 2.226
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+        "action": "pass",
+        "elapsed": 2.283
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/hostenv",
+        "action": "pass",
+        "elapsed": 2.753
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+        "action": "pass",
+        "elapsed": 2.975
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+        "action": "fail",
+        "elapsed": 3.169
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+        "action": "pass",
+        "elapsed": 3.403
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/contracts",
+        "action": "pass",
+        "elapsed": 3.673
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/resources",
+        "action": "pass",
+        "elapsed": 4.862
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/testkit/protocol",
+        "action": "fail",
+        "elapsed": 3.513
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/storage",
+        "action": "pass",
+        "elapsed": 11.378
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/process",
+        "action": "fail",
+        "elapsed": 23.115
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+        "action": "fail",
+        "elapsed": 23.236
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+        "action": "fail",
+        "elapsed": 31.815
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+        "action": "fail",
+        "elapsed": 33.267
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "action": "fail",
+        "elapsed": 57.933
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+        "action": "fail",
+        "elapsed": 73.517
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "action": "fail",
+        "elapsed": 129.711
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+        "action": "fail",
+        "elapsed": 302.702
+      }
+    ],
+    "non_json_lines": [],
+    "started_but_unfinished_top_level": [
+      "TestCodexSocketHandshakeHonorsCancellationWithoutDeadline"
+    ]
+  },
+  "application": {
+    "exit_code": 1,
+    "top_level": {
+      "pass": 45,
+      "fail": 4
+    },
+    "subtests": {
+      "pass": 81,
+      "fail": 5
+    },
+    "skipped": [],
+    "failed_top_level": [
+      "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+      "TestFrozenBudgetSuccessorsAndDraftResume",
+      "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+      "TestSingleExecutionLateFinalPreservesOriginalStop"
+    ],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "action": "fail",
+        "elapsed": 56.339
+      }
+    ],
+    "non_json_lines": [],
+    "started_but_unfinished_top_level": []
+  },
+  "components-final": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 447,
+      "skip": 8
+    },
+    "subtests": {
+      "pass": 1343
+    },
+    "skipped": [
+      "TestProcessHostCommandHelper",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "failed_top_level": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/evidence",
+        "action": "skip",
+        "elapsed": 0
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/nativeaudit",
+        "action": "skip",
+        "elapsed": 0
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/runstate",
+        "action": "skip",
+        "elapsed": 0
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/model",
+        "action": "pass",
+        "elapsed": 1.23
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+        "action": "pass",
+        "elapsed": 1.246
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+        "action": "pass",
+        "elapsed": 1.328
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+        "action": "pass",
+        "elapsed": 1.369
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/contracts",
+        "action": "pass",
+        "elapsed": 1.585
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+        "action": "pass",
+        "elapsed": 1.5939999999999999
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+        "action": "pass",
+        "elapsed": 1.645
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/hostenv",
+        "action": "pass",
+        "elapsed": 1.808
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+        "action": "pass",
+        "elapsed": 1.877
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/publication",
+        "action": "pass",
+        "elapsed": 2.185
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/resources",
+        "action": "pass",
+        "elapsed": 2.748
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/testkit/protocol",
+        "action": "pass",
+        "elapsed": 4.515
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/process",
+        "action": "pass",
+        "elapsed": 4.9190000000000005
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/storage",
+        "action": "pass",
+        "elapsed": 6.72
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+        "action": "pass",
+        "elapsed": 11.332
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+        "action": "pass",
+        "elapsed": 23.537
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+        "action": "pass",
+        "elapsed": 25.429
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "action": "pass",
+        "elapsed": 43.59
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+        "action": "pass",
+        "elapsed": 53.562
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "action": "pass",
+        "elapsed": 88.706
+      }
+    ],
+    "non_json_lines": [],
+    "started_but_unfinished_top_level": []
+  },
+  "application-final": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 49
+    },
+    "subtests": {
+      "pass": 86
+    },
+    "skipped": [],
+    "failed_top_level": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "action": "pass",
+        "elapsed": 39.546
+      }
+    ],
+    "non_json_lines": [],
+    "started_but_unfinished_top_level": []
+  }
+}

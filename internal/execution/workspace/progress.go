@@ -24,9 +24,6 @@ func ProgressDirectories(worktree, id string, prepare bool) (map[string]string, 
 func ResultDirectories(worktree, id string, prepare bool) (map[string]string, error) {
 	return fileDirectories(worktree, id, prepare, true)
 }
-func VerifyProgressDirectories(worktree, id string, expected map[string]string) error {
-	return verifyFileDirectories(worktree, id, expected, false)
-}
 func InitializeProgress(worktree, id string, directories map[string]string, initial []byte) error {
 	return initializeFile(worktree, id, directories, initial, false)
 }

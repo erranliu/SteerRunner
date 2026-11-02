@@ -18,7 +18,6 @@ import (
 	"github.com/erranliu/SteerRunner/internal/storage"
 	"github.com/erranliu/SteerRunner/internal/textanalysis"
 	"log"
-	"path/filepath"
 	"sync"
 	"time"
 )
@@ -524,5 +523,3 @@ func (e *Engine) ResourceSettlementError() error {
 	}
 	return errors.Join(failures...)
 }
-
-func runLogPath(dir, id string) string { return filepath.Join(dir, "logs", id+".log") }

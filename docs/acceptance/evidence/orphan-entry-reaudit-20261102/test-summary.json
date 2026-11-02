@@ -1,0 +1,73 @@
+{
+  "application": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 15
+    },
+    "subtests": {
+      "pass": 13
+    },
+    "top_level_names": [
+      "TestSREventAckPreservesOriginalCommitBoundary",
+      "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+      "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+      "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+      "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+      "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+      "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+      "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+      "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+      "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+      "TestSROperationReconciliationKeepsPartialBinding",
+      "TestSRStopSerializesWithNativeDispatch",
+      "TestSROperationIntentCommitFailureDoesNotDispatch",
+      "TestSROperationReceiptCommitFailureReconcilesOriginal",
+      "TestSRStopBindingCommitFailureDoesNotDispatch"
+    ],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "action": "pass"
+      }
+    ]
+  },
+  "consumers": {
+    "exit_code": 0,
+    "top_level": {
+      "pass": 10
+    },
+    "subtests": {
+      "pass": 18
+    },
+    "top_level_names": [
+      "TestObserverSingleAckPreservesWaitFailureAndCancellation",
+      "TestLifecycleCandidateRequiresOneMatchingInput",
+      "TestLifecycleRequestRequiresOriginalDurableOperation",
+      "TestLifecycleReceiptCloneOwnsImplementationPayloadAndFacts",
+      "TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead",
+      "TestRecoveryHistoryIdleRequiresOriginalStoppedTurn",
+      "TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts",
+      "TestAsyncQuestionObserveSteerAndReconcile",
+      "TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt",
+      "TestMockAppServerThreadAndTurnContract"
+    ],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "action": "pass"
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/backend",
+        "action": "pass"
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/testkit/protocol",
+        "action": "pass"
+      },
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "action": "pass"
+      }
+    ]
+  }
+}

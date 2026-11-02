@@ -325,20 +325,3 @@ func waitWorkspaceTerminal(ctx context.Context) error {
 		return nil
 	}
 }
-
-func InspectWorkspace(ctx context.Context, client native.Client, ref b.ExecutionRef, project string) (b.WorkspaceInspection, error) {
-	result, err := client.MetaCall(ctx, "worktree", "show", "--worktree", "id:"+ref.External.WorktreeID, "--json")
-	if err != nil {
-		return b.WorkspaceInspection{}, err
-	}
-	var shown struct {
-		Worktree native.Worktree `json:"worktree"`
-	}
-	if json.Unmarshal(result.Payload, &shown) != nil || result.RuntimeID != ref.External.RuntimeID || shown.Worktree.ID != ref.External.WorktreeID || shown.Worktree.Path != ref.WorkspacePath || strings.TrimPrefix(shown.Worktree.Branch, "refs/heads/") != ref.WorkspaceBranch || len(shown.Worktree.Head) != 40 {
-		return b.WorkspaceInspection{}, errors.New("original Orca revision identity changed")
-	}
-	// This is deliberately revision evidence on BOTH hosts. No center-local
-	// filesystem access or fictitious remote working-tree cleanliness is used.
-	value := b.WorkspaceInspection{InspectionScope: "revision", Repository: project, Worktree: shown.Worktree.Path, Branch: ref.WorkspaceBranch, Base: ref.BaseCommit, Head: shown.Worktree.Head, CheckedAt: time.Now().UTC()}
-	return value, nil
-}

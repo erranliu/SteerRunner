@@ -1,0 +1,60 @@
+{
+  "wire_before": {
+    "command": "go run ./.evidence/orphan-entry-cleanup/wire-audit.go .evidence/orphan-entry-cleanup/wire-before.json",
+    "exit_code": 0,
+    "phase": "before product edits"
+  },
+  "wire_after": {
+    "command": "go run ./.evidence/orphan-entry-cleanup/wire-audit.go .evidence/orphan-entry-cleanup/wire-after.json",
+    "exit_code": 0
+  },
+  "declarations": {
+    "command": "go run ./.evidence/orphan-entry-cleanup/declarations.go",
+    "exit_code": 0
+  },
+  "components_first": {
+    "command": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage ./internal/testkit/protocol -count=1 -timeout 5m -json",
+    "sandbox": "workspace-write",
+    "exit_code": 1,
+    "log": "components.jsonl.gz"
+  },
+  "application_first": {
+    "command": "go test ./internal/application -run '^(TestSREventAck.*|TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStop.*|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*|TestRemoteStopBudget.*)$' -count=1 -timeout 5m -json",
+    "sandbox": "workspace-write",
+    "exit_code": 1,
+    "log": "application.jsonl.gz"
+  },
+  "components_final": {
+    "command": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage ./internal/testkit/protocol -count=1 -timeout 5m -json",
+    "sandbox": "require_escalated",
+    "exit_code": 0,
+    "log": "components-final.jsonl.gz"
+  },
+  "application_final": {
+    "command": "go test ./internal/application -run '^(TestSREventAck.*|TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStop.*|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*|TestRemoteStopBudget.*)$' -count=1 -timeout 5m -json",
+    "sandbox": "require_escalated",
+    "exit_code": 0,
+    "log": "application-final.jsonl.gz"
+  },
+  "build": {
+    "command": "scripts/build.ps1 -OutFile .evidence/orphan-entry-cleanup/bin/steerrunner.exe",
+    "exit_code": 0
+  },
+  "live_native_compile": {
+    "command": "go test -c -tags live -o .evidence/orphan-entry-cleanup/compile/native.test.exe ./tests/native",
+    "exit_code": 0
+  },
+  "live_integration_compile": {
+    "command": "go test -c -tags live -o .evidence/orphan-entry-cleanup/compile/integration-live.test.exe ./tests/integration",
+    "exit_code": 0
+  },
+  "foundation": {
+    "command": "scripts/test-foundation.ps1 -OutDir .evidence/orphan-entry-cleanup/foundation -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$' -RunnerExe .evidence/orphan-entry-cleanup/bin/steerrunner.exe -TimeoutMinutes 8",
+    "sandbox": "require_escalated",
+    "launch_exit_code": 0,
+    "result_exit_code": 0,
+    "scenario_count": 3,
+    "skips": 0
+  },
+  "notes": "No production or test source changed between first failures and final passes. Exact raw logs retained. Initial audit-tool name-collision/count assertions are recorded in audit-tool-notes.txt, not presented as product tests. Read-only CIM diagnostic in sandbox was unavailable; official foundation ran via its normal independent harness with required permission."
+}

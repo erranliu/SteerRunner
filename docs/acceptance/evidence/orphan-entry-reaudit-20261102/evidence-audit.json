@@ -1,0 +1,60 @@
+{
+  "base_commit": "111bcd35bdfd7969d4c4575b5fe62204b41486fb",
+  "latest_main": "111bcd35bdfd7969d4c4575b5fe62204b41486fb",
+  "code_matches_qualified_source": true,
+  "authorized_source_files_changed": [
+    "internal/application/engine.go",
+    "internal/execution/adapters/codex/conversation.go",
+    "internal/execution/adapters/codex/intent.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/orcatransport/profile.go",
+    "internal/execution/adapters/orcatransport/workspace.go",
+    "internal/execution/adapters/protocol/orca/client.go",
+    "internal/execution/backend/record_validation.go",
+    "internal/execution/workflow/execution_facts.go",
+    "internal/execution/workspace/progress.go",
+    "internal/testkit/protocol/native_lock_other.go",
+    "internal/testkit/protocol/native_lock_windows.go",
+    "internal/testkit/protocol/terminal.go"
+  ],
+  "other_source_files_identical": 777,
+  "explicit_original_consumers_preserved": [
+    "internal/testkit/protocol/appserver.go",
+    "internal/testkit/protocol/staged.go",
+    "internal/testkit/protocol/staged_test.go",
+    "internal/execution/adapters/codex/mock_helper_cd67_test.go",
+    "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "internal/execution/adapters/codex/history_binding_fixture_test.go",
+    "tests/helpers/native/main.go",
+    "tests/helpers/native/orca_creation.go",
+    "internal/application/worker.go",
+    "internal/application/observation.go",
+    "internal/application/control.go",
+    "internal/application/manual.go",
+    "internal/application/verify_stopped.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/operation/record.go",
+    "internal/execution/reliable/operation/effect.go",
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go"
+  ],
+  "all_original_test_sources_identical": true,
+  "evidence_checksums_valid": true,
+  "wire_bytes_identical": 145116,
+  "wire_sha256": "47d983e8958718ee57ba1a13f00e3504c51ff6268e964062f2ad6ef35c471367",
+  "raw_log_recount": {
+    "components-final": {
+      "pass": 447,
+      "fail": 0,
+      "skip": 8
+    },
+    "application-final": {
+      "pass": 49,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "public_scenarios": 3,
+  "runner_sha256": "2606bfdafa88228761ee363d942f2850344b93945593fdaafbe32e6eba1555f1",
+  "source_digest": "ea6c2908ede069baee09f0a14b4738e12e03a728dfc0ed1eb4da0b4b80508257"
+}

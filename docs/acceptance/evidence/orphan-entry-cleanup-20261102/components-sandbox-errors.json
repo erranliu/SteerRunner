@@ -1,0 +1,206 @@
+[
+  {
+    "test": "TestGiteaQueryReadsPRHeadIdentity",
+    "message": "pr_test.go:135: PR API request failed: Get \"http://127.0.0.1:56859/api/v1/repos/o/r/pulls/8\": dial tcp 127.0.0.1:56859: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestResultFileLaunchCombinationsAndExactUnwrap",
+    "message": "progress_test.go:45: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestResultFileLaunchCombinationsAndExactUnwrap2219400566/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestProgressLaunchUsesActualExecutionDirectory",
+    "message": "progress_test.go:116: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestProgressLaunchUsesActualExecutionDirectory72987003/001/owner's workspace/.git/config: Permission denied"
+  },
+  {
+    "test": "TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts",
+    "message": "staged_test.go:29: Git [init --bare remote.git]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts1688412344/001/remote.git/config: Permission denied"
+  },
+  {
+    "test": "TestRAWorkspaceSource",
+    "message": "audit_test.go:23: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestRAWorkspaceSource2038420885\\001\\repo]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRAWorkspaceSource2038420885/001/repo/.git/config: Permission denied"
+  },
+  {
+    "test": "TestContentRepositoryUnsafeAndLimits",
+    "message": "content_repository_test.go:28: git failed: exit status 128 (error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestContentRepositoryUnsafeAndLimits3012877631/001/.git/config: Permission denied"
+  },
+  {
+    "test": "TestR2GitRejectsConcurrentChange/dirty",
+    "message": "current_git_test.go:25: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestR2GitRejectsConcurrentChangedirty2717682007\\001\\repo]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestR2GitRejectsConcurrentChangedirty2717682007/001/repo/.git/config: Permission denied"
+  },
+  {
+    "test": "TestR2GitRejectsConcurrentChange/commit",
+    "message": "current_git_test.go:25: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestR2GitRejectsConcurrentChangecommit957649855\\001\\repo]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestR2GitRejectsConcurrentChangecommit957649855/001/repo/.git/config: Permission denied"
+  },
+  {
+    "test": "TestR2GitRejectsConcurrentChange/header_like_rename",
+    "message": "current_git_test.go:25: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestR2GitRejectsConcurrentChangeheader_like_rename1032269757\\001\\repo]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestR2GitRejectsConcurrentChangeheader_like_rename1032269757/001/repo/.git/config: Permission denied"
+  },
+  {
+    "test": "TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCalls",
+    "message": "file_source_test.go:25: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCall462203849\\001\\original]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestResultFileWorkspaceProofRetainsOriginalChecksWithBoundedCall462203849/001/original/.git/config: Permission denied"
+  },
+  {
+    "test": "TestLocalWorkspacePrepareInspectResourcesAndCleanup",
+    "message": "workspace_test.go:36: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestLocalWorkspacePrepareInspectResourcesAndCleanup3708587938\\001\\repository]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestLocalWorkspacePrepareInspectResourcesAndCleanup3708587938/001/repository/.git/config: Permission denied"
+  },
+  {
+    "test": "TestPrepareRejectsHeadChangedByCheckoutHook",
+    "message": "workspace_test.go:134: git [init -q -b main C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestPrepareRejectsHeadChangedByCheckoutHook653185984\\001\\repository]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestPrepareRejectsHeadChangedByCheckoutHook653185984/001/repository/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/missing-newline",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63456\": dial tcp 127.0.0.1:63456: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/truncated",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63459\": dial tcp 127.0.0.1:63459: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/changed-byte",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63462\": dial tcp 127.0.0.1:63462: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/mixed-input",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63465\": dial tcp 127.0.0.1:63465: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/foreign-thread",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63468\": dial tcp 127.0.0.1:63468: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/wrong-model",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63471\": dial tcp 127.0.0.1:63471: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/new-thread",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63474\": dial tcp 127.0.0.1:63474: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/7/steer",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63477\": dial tcp 127.0.0.1:63477: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/missing-newline",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63480\": dial tcp 127.0.0.1:63480: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/truncated",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63483\": dial tcp 127.0.0.1:63483: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/changed-byte",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63486\": dial tcp 127.0.0.1:63486: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/mixed-input",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63489\": dial tcp 127.0.0.1:63489: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/foreign-thread",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63492\": dial tcp 127.0.0.1:63492: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/wrong-model",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63495\": dial tcp 127.0.0.1:63495: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/new-thread",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63498\": dial tcp 127.0.0.1:63498: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsInvalidOriginalRequest/\"native-request\"/steer",
+    "message": "remote_models_test.go:61: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63501\": dial tcp 127.0.0.1:63501: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsUnboundInvalidRequest/missing",
+    "message": "remote_models_test.go:142: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63504\": dial tcp 127.0.0.1:63504: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsUnboundInvalidRequest/null",
+    "message": "remote_models_test.go:142: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63507\": dial tcp 127.0.0.1:63507: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsUnboundInvalidRequest/true",
+    "message": "remote_models_test.go:142: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63510\": dial tcp 127.0.0.1:63510: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeRejectsUnboundInvalidRequest/{}",
+    "message": "remote_models_test.go:142: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63513\": dial tcp 127.0.0.1:63513: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgePreservesLargeNativeReplies",
+    "message": "remote_models_test.go:226: failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63516\": dial tcp 127.0.0.1:63516: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteModelBridgeUsesOriginalNativeConnection",
+    "message": "remote_models_test.go:342: unauthenticated bridge access admitted failed to WebSocket dial: failed to send handshake request: Get \"http://127.0.0.1:63519\": dial tcp 127.0.0.1:63519: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/clean",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerclean2376948225/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/dirty",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerdirty3048764032/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/hidden-index",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerhidden-index914512391/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/sparse",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnersparse966431143/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-repository",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-repository3193712113/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-session",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-session2341414524/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-helper",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-helper2703723257/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-workspace",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-workspace3440205248/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-branch",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-branch3433170817/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-base",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-base3546249624/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRemoteWorkspaceAuditUsesOriginalGitOwner/foreign-pre-head",
+    "message": "remote_workspace_test.go:33: git [init --initial-branch=main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestRemoteWorkspaceAuditUsesOriginalGitOwnerforeign-pre-head302168681/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestAsyncQuestionObserveSteerAndReconcile",
+    "message": "async_transport_test.go:34: app-server did not become ready at its fixed endpoint: dial tcp 127.0.0.1:63551: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths",
+    "message": "linked_workspace_cd67_test.go:34: git [init -q C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths313858497\\001\\repo]: exit status 128: error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}/AC/Temp/TestCodexLinkedWorktreePathsOnlyGrantsFixedGitPaths313858497/001/repo/.git/config: Permission denied"
+  },
+  {
+    "test": "TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers",
+    "message": "Error: EPERM: operation not permitted, rename 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p2723986829\\001\\original.json.tmp' -> 'C:\\Users\\lmas1\\AppData\\Local\\Packages\\sandbox.{75cb032e-68bf-40d2-a47d-2cd1d2058667}\\AC\\Temp\\TestNativeReceiptPublicationAcrossWindowsReadersreader-closes-p2723986829\\001\\original.json'"
+  },
+  {
+    "test": "TestNativeReceiptPublicationAcrossWindowsReaders/reader-closes-publication-recovers",
+    "message": "code: 'EPERM',"
+  },
+  {
+    "test": "TestMockAppServerThreadAndTurnContract",
+    "message": "stream_contract_cd67_test.go:55: app-server did not become ready at its fixed endpoint: dial tcp 127.0.0.1:63731: connectex: An attempt was made to access a socket in a way forbidden by its access permissions."
+  },
+  {
+    "test": "TestCodexSocketHandshakeHonorsCancellationWithoutDeadline",
+    "message": "panic: test timed out after 5m0s"
+  }
+]

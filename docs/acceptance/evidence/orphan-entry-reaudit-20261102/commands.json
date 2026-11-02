@@ -1,0 +1,27 @@
+{
+  "application": {
+    "command": "go test ./internal/application -run '^(TestSREventAck.*|TestSROperation.*|TestLocalCodex.*|TestServiceGeneration.*|TestFrozenBudgetMissingDoesNotGateOriginalResults|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopSerializesWithNativeDispatch)$' -count=1 -timeout 3m -json",
+    "permission": "require_escalated",
+    "exit_code": 0
+  },
+  "consumers": {
+    "command": "go test ./internal/execution/adapters/codex ./internal/testkit/protocol ./internal/execution/backend ./internal/execution/adapters/orcatransport -run '^(TestAsyncQuestionObserveSteerAndReconcile|TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt|TestMockAppServerThreadAndTurnContract|TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts|TestObserverSingleAckPreservesWaitFailureAndCancellation|TestLifecycle.*|TestRecoveryHistory.*)$' -count=1 -timeout 3m -json",
+    "permission": "require_escalated",
+    "exit_code": 0
+  },
+  "declarations": {
+    "command": "go run ./.evidence/orphan-entry-reaudit/declarations.go",
+    "exit_code": 0
+  },
+  "wire": {
+    "command": "go run ./.evidence/orphan-entry-reaudit/wire-audit.go .evidence/orphan-entry-reaudit/wire.json",
+    "exit_code": 0
+  },
+  "audit_tool_notes": [
+    "Initial read-only evidence checker referenced a nonexistent application/stop.go; corrected the explicit inspection path to actual control.go/manual.go/verify_stopped.go. All-source manifest verification was already unchanged.",
+    "Two initial Go audit invocations ran before their preparatory script completed and exited with source-file-not-found; they did not compile or run. Reissued after preparation completed, both exit0. No product/test changes."
+  ],
+  "source_changes_this_reaudit": [],
+  "scope": "No production/test fixes required. Existing full component/live/public qualification is tied to the same source bytes and preserved unchanged; only targeted audits rerun.",
+  "confirmed_delivery_fix": "Root .gitattributes protects only the two new evidence directories with -text -whitespace. Restaged with scoped git add --renormalize. Original raw evidence unchanged; index blobs and both SHA manifests explicitly verified."
+}

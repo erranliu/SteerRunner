@@ -1,0 +1,583 @@
+{
+  "runLogPath": [
+    {
+      "file": "internal/application/engine.go",
+      "line": 528,
+      "text": "func runLogPath(dir, id string) string { return filepath.Join(dir, \"logs\", id+\".log\") }"
+    }
+  ],
+  "StableOperationID": [
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 23,
+      "text": "func StableOperationID(value string) bool {"
+    },
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 49,
+      "text": "if op.Version != ExecutionRecordVersion || !StableOperationID(op.ID) || !StableExecutionID(op.RunID) || !StableExecutionID(op.AttemptID) || len(op.PayloadDigest) != 64 || op.Action == \"\" || op.Backend == \"\" || op.Protocol == \"\" || op.Target.ID == \"\" {"
+    }
+  ],
+  "ValidateExecutionRef": [
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 35,
+      "text": "func ValidateExecutionRef(ref ExecutionRef) error {"
+    },
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 64,
+      "text": "if err := ValidateExecutionRef(*op.Ref); err != nil {"
+    }
+  ],
+  "ValidateExecutionOperation": [
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 48,
+      "text": "func ValidateExecutionOperation(op Operation) error {"
+    }
+  ],
+  "commitHash": [
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 9,
+      "text": "var commitHash = regexp.MustCompile(`^(?:[0-9a-f]{40}|[0-9a-f]{64})$`)"
+    },
+    {
+      "file": "internal/execution/backend/record_validation.go",
+      "line": 39,
+      "text": "if ref.Target.ID == \"\" || ref.Agent.Name == \"\" || !commitHash.MatchString(ref.BaseCommit) {"
+    },
+    {
+      "file": "internal/execution/publication/pr.go",
+      "line": 14,
+      "text": "var commitHash = regexp.MustCompile(`^(?:[0-9a-f]{40}|[0-9a-f]{64})$`)"
+    },
+    {
+      "file": "internal/execution/publication/provider.go",
+      "line": 123,
+      "text": "if !info.Merged || info.MergedAt == nil || info.MergedAt.IsZero() || info.MergeCommit == nil || !commitHash.MatchString(*info.MergeCommit) {"
+    }
+  ],
+  "FactAdmission": [
+    {
+      "file": "internal/execution/workflow/execution_facts.go",
+      "line": 3,
+      "text": "// FactAdmission concerns business visibility of a normalized notification."
+    },
+    {
+      "file": "internal/execution/workflow/execution_facts.go",
+      "line": 5,
+      "text": "func FactAdmission(status, event string) bool {"
+    }
+  ],
+  "FactStatus": [
+    {
+      "file": "internal/execution/workflow/execution_facts.go",
+      "line": 16,
+      "text": "func FactStatus(event string, pendingQuestion bool) string {"
+    }
+  ],
+  "VerifyProgressDirectories": [
+    {
+      "file": "internal/execution/workspace/progress.go",
+      "line": 27,
+      "text": "func VerifyProgressDirectories(worktree, id string, expected map[string]string) error {"
+    }
+  ],
+  "nonEmpty": [
+    {
+      "file": "internal/execution/adapters/codex/conversation.go",
+      "line": 7,
+      "text": "func nonEmpty(values ...string) string {"
+    },
+    {
+      "file": "internal/execution/adapters/codex/conversation.go",
+      "line": 31,
+      "text": "func firstNonEmpty(values ...string) string { return nonEmpty(values...) }"
+    }
+  ],
+  "rawObject": [
+    {
+      "file": "internal/execution/adapters/codex/conversation.go",
+      "line": 16,
+      "text": "func rawObject(raw json.RawMessage) map[string]json.RawMessage {"
+    }
+  ],
+  "stringField": [
+    {
+      "file": "internal/execution/adapters/codex/conversation.go",
+      "line": 25,
+      "text": "func stringField(fields map[string]json.RawMessage, name string) string {"
+    }
+  ],
+  "firstNonEmpty": [
+    {
+      "file": "internal/execution/adapters/codex/conversation.go",
+      "line": 31,
+      "text": "func firstNonEmpty(values ...string) string { return nonEmpty(values...) }"
+    }
+  ],
+  "PendingIdentity": [
+    {
+      "file": "internal/execution/adapters/codex/intent.go",
+      "line": 4,
+      "text": "func PendingIdentity(id string) (turnID, commandID string) { return \"\", id }"
+    }
+  ],
+  "cloneTurn": [
+    {
+      "file": "internal/execution/adapters/codex/lifecycle.go",
+      "line": 844,
+      "text": "func cloneTurn(turn *executionbackend.TurnInput) *executionbackend.TurnInput {"
+    }
+  ],
+  "NormalizeProfile": [
+    {
+      "file": "internal/execution/adapters/orcatransport/profile.go",
+      "line": 49,
+      "text": "func NormalizeProfile(data []byte) ([]byte, []string, error) {"
+    }
+  ],
+  "InspectWorkspace": [
+    {
+      "file": "internal/execution/adapters/orcatransport/workspace.go",
+      "line": 329,
+      "text": "func InspectWorkspace(ctx context.Context, client native.Client, ref b.ExecutionRef, project string) (b.WorkspaceInspection, error) {"
+    }
+  ],
+  "FindRepo": [
+    {
+      "file": "internal/execution/adapters/protocol/orca/client.go",
+      "line": 27,
+      "text": "func FindRepo(ctx context.Context, call func(context.Context, ...string) (json.RawMessage, error), repository string) (string, error) {"
+    }
+  ],
+  "ErrRepoUnavailable": [
+    {
+      "file": "internal/execution/adapters/protocol/orca/client.go",
+      "line": 25,
+      "text": "var ErrRepoUnavailable = errors.New(\"fixed Orca repository is unavailable\")"
+    },
+    {
+      "file": "internal/execution/adapters/protocol/orca/client.go",
+      "line": 39,
+      "text": "return \"\", ErrRepoUnavailable"
+    },
+    {
+      "file": "internal/execution/adapters/protocol/orca/client.go",
+      "line": 46,
+      "text": "return \"\", ErrRepoUnavailable"
+    }
+  ],
+  "ValidateWorkspaceTerminal": [
+    {
+      "file": "internal/execution/adapters/protocol/orca/client.go",
+      "line": 171,
+      "text": "func ValidateWorkspaceTerminal(t Terminal, path, branch string) error {"
+    }
+  ],
+  "FakeTerminal": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 59,
+      "text": "func FakeTerminal(stateDir string, argv []string) int {"
+    }
+  ],
+  "ReadTerminalFixtureState": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 37,
+      "text": "func ReadTerminalFixtureState(dir, handle string) (TerminalFixtureState, error) {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 103,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 118,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 194,
+      "text": "st, e := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 238,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    }
+  ],
+  "TerminalFixtureState": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 18,
+      "text": "type TerminalFixtureState struct {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 32,
+      "text": "func WriteTerminalFixtureState(dir string, st TerminalFixtureState) error {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 37,
+      "text": "func ReadTerminalFixtureState(dir, handle string) (TerminalFixtureState, error) {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 40,
+      "text": "return TerminalFixtureState{}, e"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 42,
+      "text": "var st TerminalFixtureState"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 155,
+      "text": "state := TerminalFixtureState{Handle: handle, Incarnation: \"inc_\" + handle, Worktree: selector, Branch: strings.TrimSpace(string(branchBytes))}"
+    }
+  ],
+  "TerminalFixtureStatePath": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 30,
+      "text": "func TerminalFixtureStatePath(dir, handle string) string { return filepath.Join(dir, handle+\".json\") }"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 34,
+      "text": "return writeTerminalFile(TerminalFixtureStatePath(dir, st.Handle), b)"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 38,
+      "text": "b, e := os.ReadFile(TerminalFixtureStatePath(dir, handle))"
+    }
+  ],
+  "WriteTerminalFixtureState": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 32,
+      "text": "func WriteTerminalFixtureState(dir string, st TerminalFixtureState) error {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 108,
+      "text": "if err = WriteTerminalFixtureState(stateDir, st); err != nil {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 124,
+      "text": "if err = WriteTerminalFixtureState(stateDir, st); err != nil {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 156,
+      "text": "if err = WriteTerminalFixtureState(stateDir, state); err != nil {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 167,
+      "text": "if err = WriteTerminalFixtureState(stateDir, state); err != nil {"
+    }
+  ],
+  "fakeOrcaErr": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 53,
+      "text": "func fakeOrcaErr(code, msg string) int {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 78,
+      "text": "return fakeOrcaErr(\"repo_origin_missing\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 101,
+      "text": "return fakeOrcaErr(\"switch_failed\", \"injected UI switch failure\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 105,
+      "text": "return fakeOrcaErr(\"terminal_handle_stale\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 109,
+      "text": "return fakeOrcaErr(\"state\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 116,
+      "text": "return fakeOrcaErr(\"close_failed\", \"injected close failure\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 120,
+      "text": "return fakeOrcaErr(\"terminal_handle_stale\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 125,
+      "text": "return fakeOrcaErr(\"state\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 132,
+      "text": "return fakeOrcaErr(\"unknown\", \"unknown orca command\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 138,
+      "text": "return fakeOrcaErr(\"terminal_create\", \"focus must be requested after the terminal is bound\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 145,
+      "text": "return fakeOrcaErr(\"terminal_create\", \"native step terminal requires exact worktree, title and command\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 148,
+      "text": "return fakeOrcaErr(\"terminal_create\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 152,
+      "text": "return fakeOrcaErr(\"terminal_create\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 157,
+      "text": "return fakeOrcaErr(\"terminal_create\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 160,
+      "text": "return fakeOrcaErr(\"terminal_create\", \"fake Orca native step execution requires Windows PowerShell\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 168,
+      "text": "return fakeOrcaErr(\"terminal_create\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 174,
+      "text": "return fakeOrcaErr(\"terminal_create\", fmt.Sprintf(\"command failed: %v: %s\", runErr, output))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 196,
+      "text": "return fakeOrcaErr(\"terminal_handle_stale\", \"terminal handle stale\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 202,
+      "text": "return fakeOrcaErr(\"overlapping_observation\", lockErr.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 240,
+      "text": "return fakeOrcaErr(\"terminal_handle_stale\", err.Error())"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 247,
+      "text": "return fakeOrcaErr(\"cursor_invalid\", \"invalid cursor\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 252,
+      "text": "return fakeOrcaErr(\"limit_invalid\", \"invalid limit\")"
+    }
+  ],
+  "fakeOrcaOK": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 47,
+      "text": "func fakeOrcaOK(result map[string]any) int {"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 69,
+      "text": "return fakeOrcaOK(map[string]any{\"target\": map[string]string{\"kind\": \"local\"}, \"runtime\": map[string]any{\"state\": \"ready\", \"reachable\": true, \"runtimeId\": \"fake-runtime\", \"appVersion\": \"1.4.223\"}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 73,
+      "text": "return fakeOrcaOK(map[string]any{\"repos\": []any{map[string]any{\"id\": \"fake-repo\", \"path\": filepath.ToSlash(cwd), \"kind\": \"git\"}}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 80,
+      "text": "return fakeOrcaOK(map[string]any{\"repo\": map[string]any{\"id\": \"fake-repo\", \"kind\": \"git\", \"gitRemoteIdentity\": map[string]string{\"remoteUrl\": strings.TrimSpace(string(url))}}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 111,
+      "text": "return fakeOrcaOK(map[string]any{\"terminal\": map[string]any{\"handle\": st.Handle}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 129,
+      "text": "return fakeOrcaOK(map[string]any{\"close\": map[string]any{\"handle\": st.Handle, \"ptyKilled\": st.Closed}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 176,
+      "text": "return fakeOrcaOK(map[string]any{\"terminal\": map[string]any{\"handle\": handle, \"worktreePath\": filepath.ToSlash(selector), \"branch\": \"refs/heads/\" + state.Branch}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 187,
+      "text": "return fakeOrcaOK(map[string]any{\"removed\": true})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 234,
+      "text": "return fakeOrcaOK(map[string]any{\"terminal\": map[string]any{\"handle\": st.Handle, \"incarnationId\": inc, \"status\": status, \"connected\": connected, \"orphaned\": orphaned, \"worktreePath\": filepath.ToSlash(st.Worktree), \"branch\": \"refs/heads/\" + st.Branch, \"executionHostId\": \"local\", \"agentIdentity\": os.Getenv(\"STEERRUNNER_FAKE_ORCA_AGENT_IDENTITY\")}})"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 275,
+      "text": "return fakeOrcaOK(map[string]any{\"terminal\": map[string]any{\"handle\": st.Handle, \"source\": source, \"tail\": st.OutputLines[position:end], \"nextCursor\": strconv.Itoa(end), \"oldestCursor\": strconv.Itoa(st.OldestCursor), \"status\": \"running\"}})"
+    }
+  ],
+  "fakeOrcaRead": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 113,
+      "text": "return fakeOrcaRead(stateDir, argv[2:])"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 237,
+      "text": "func fakeOrcaRead(stateDir string, argv []string) int {"
+    }
+  ],
+  "fakeOrcaRemove": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 88,
+      "text": "return fakeOrcaRemove(argv[2:])"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 179,
+      "text": "func fakeOrcaRemove(argv []string) int {"
+    }
+  ],
+  "fakeOrcaShow": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 98,
+      "text": "return fakeOrcaShow(stateDir, argv[2:])"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 190,
+      "text": "func fakeOrcaShow(stateDir string, argv []string) int {"
+    }
+  ],
+  "fakeOrcaTerminalCreate": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 96,
+      "text": "return fakeOrcaTerminalCreate(stateDir, argv[2:])"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 135,
+      "text": "func fakeOrcaTerminalCreate(stateDir string, argv []string) int {"
+    }
+  ],
+  "nativeArg": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 103,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 118,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 141,
+      "text": "selector := strings.TrimPrefix(nativeArg(argv, \"--worktree\"), \"path:\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 142,
+      "text": "title := nativeArg(argv, \"--title\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 143,
+      "text": "command := nativeArg(argv, \"--command\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 180,
+      "text": "selector := nativeArg(argv, \"--worktree\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 194,
+      "text": "st, e := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 238,
+      "text": "st, err := ReadTerminalFixtureState(stateDir, nativeArg(argv, \"--terminal\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 242,
+      "text": "cursor := nativeArg(argv, \"--cursor\")"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 250,
+      "text": "limit, err := strconv.Atoi(nativeArg(argv, \"--limit\"))"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 285,
+      "text": "func nativeArg(args []string, key string) string {"
+    }
+  ],
+  "tryNativeOrcaStateLock": [
+    {
+      "file": "internal/testkit/protocol/native_lock_other.go",
+      "line": 7,
+      "text": "func tryNativeOrcaStateLock(path string) (func(), error) {"
+    },
+    {
+      "file": "internal/testkit/protocol/native_lock_windows.go",
+      "line": 11,
+      "text": "func tryNativeOrcaStateLock(path string) (func(), error) {"
+    }
+  ],
+  "writeTerminalFile": [
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 34,
+      "text": "return writeTerminalFile(TerminalFixtureStatePath(dir, st.Handle), b)"
+    },
+    {
+      "file": "internal/testkit/protocol/terminal.go",
+      "line": 277,
+      "text": "func writeTerminalFile(path string, value []byte) error {"
+    }
+  ]
+}

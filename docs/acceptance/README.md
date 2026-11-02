@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 零消费者生产入口与孤立夹具清尾 | [专项验收](orphan-entry-cleanup.md) / [实现再审计](orphan-entry-reaudit.md)：设计先行，生产净减201行、孤立夹具净减333行；共享夹具/断言、持久格式及保留链路未改，496个组件/application顶层与3个公开场景通过，再审计25个定向通过；首轮沙箱失败/超时及skip单列 |
 | 单事件确认与旧环境分支收口 | [专项验收](event-ack-cleanup.md) / [实现再审计](event-ack-reaudit.md)：原提交/可选消息/owner journal边界保持，492个组件/application顶层和3个公开场景通过；持久格式不变，生产净减105行；新夹具首轮失败/skip单列 |
 | 旧历史采集支线与 Orca Backend 清理 | [专项验收](history-adapter-cleanup.md) / [实现再审计](history-adapter-reaudit.md)：设计审计后实施，phase/恢复夹具共享遗漏已修正；生产净减 986 行，持久格式不变，490 个组件/application 顶层及两个公开场景通过；失败/skip/同产物关联单列 |
 | 旧规则与 Lifecycle 接口清理 | [专项验收](dormant-lifecycle-cleanup.md) / [实现再审计](dormant-lifecycle-reaudit.md)：设计审计后实施；生产净减 688 行，486 个组件/application 顶层及 3 个公开场景通过，编码不变；skip/首轮编译失败单列，无新增真机资格 |
