@@ -1,0 +1,21 @@
+{
+  "finding": "Default text=auto/eol=lf normalized raw CRLF acceptance evidence in Git index; SHA manifests would fail after checkout.",
+  "example_before_fix": {
+    "file": "docs/acceptance/evidence/orphan-entry-cleanup-20261102/commands.json",
+    "working_bytes": 3813,
+    "indexed_bytes": 3754
+  },
+  "fix": {
+    "file": ".gitattributes",
+    "scoped_patterns": [
+      "docs/acceptance/evidence/orphan-entry-cleanup-20261102/** -text -whitespace",
+      "docs/acceptance/evidence/orphan-entry-reaudit-20261102/** -text -whitespace"
+    ],
+    "restage": "git add --renormalize -- <both scoped evidence directories>; ordinary git add did not refresh existing index blobs after attribute change"
+  },
+  "staged_files_checked_before_adding_this_record": 47,
+  "all_indexed_evidence_bytes_equal_original_working_bytes": true,
+  "both_staged_SHA256_manifests_valid": true,
+  "original_test_and_wire_evidence_unchanged": true,
+  "final_delivery_check": "Repeat full index-byte and manifest verification after staging this record and updated reaudit manifest."
+}

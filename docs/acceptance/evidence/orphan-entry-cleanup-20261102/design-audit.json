@@ -1,0 +1,69 @@
+{
+  "base_commit": "111bcd35bdfd7969d4c4575b5fe62204b41486fb",
+  "production_diff_before_design": "",
+  "documents": {
+    "docs\\spec\\orphan-entry-cleanup.spec.md": "b06722865a6d173ec4e9195f3ea4bf49ed3ab0ec0af07963ff534fa7ee27af10",
+    "docs\\spec\\orphan-entry-cleanup.plan.md": "ac951fa132026d7ff0a7b4ad8e47402a23bb0d3c8fb2c8cb67ce2e20aa7abca5"
+  },
+  "candidate_files_A": {
+    "internal/application/engine.go": [
+      "runLogPath"
+    ],
+    "internal/execution/backend/record_validation.go": [
+      "StableOperationID",
+      "ValidateExecutionRef",
+      "ValidateExecutionOperation",
+      "commitHash"
+    ],
+    "internal/execution/workflow/execution_facts.go": [
+      "FactAdmission",
+      "FactStatus"
+    ],
+    "internal/execution/workspace/progress.go": [
+      "VerifyProgressDirectories"
+    ],
+    "internal/execution/adapters/codex/conversation.go": [
+      "nonEmpty",
+      "rawObject",
+      "stringField",
+      "firstNonEmpty"
+    ],
+    "internal/execution/adapters/codex/intent.go": [
+      "PendingIdentity"
+    ],
+    "internal/execution/adapters/codex/lifecycle.go": [
+      "cloneTurn"
+    ],
+    "internal/execution/adapters/orcatransport/profile.go": [
+      "NormalizeProfile"
+    ],
+    "internal/execution/adapters/orcatransport/workspace.go": [
+      "InspectWorkspace"
+    ],
+    "internal/execution/adapters/protocol/orca/client.go": [
+      "FindRepo",
+      "ErrRepoUnavailable",
+      "ValidateWorkspaceTerminal"
+    ]
+  },
+  "candidate_files_B": [
+    "internal/testkit/protocol/terminal.go",
+    "internal/testkit/protocol/native_lock_windows.go",
+    "internal/testkit/protocol/native_lock_other.go"
+  ],
+  "external_candidate_consumers": [],
+  "decision": "pass: closed deletion only; actual lifecycle/owner/helper entry points retained; C and durable models excluded",
+  "scope_collision_note": "Initial raw-name scan rejected publication.commitHash. It is a separate package variable with a real provider.go consumer and must remain byte-identical. No production edits occurred during either design scan. Initial wire capture did not run because audit aborted.",
+  "shared_fixture_consumers": {
+    "MockAppServerStdio/Main": "internal/execution/adapters/codex/mock_helper_cd67_test.go",
+    "MockAppServerConnection/AppServerState": "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "StagedBusiness": [
+      "tests/helpers/native/main.go",
+      "internal/testkit/protocol/staged_test.go"
+    ],
+    "historyFixtureBinding": "Codex history/recovery shared fixture retained",
+    "orcaCreationFixture": "tests/helpers/native/main.go --orca-create-fixture branch"
+  },
+  "baseline_source_files": 790,
+  "scanned_files": 774
+}

@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os/exec"
-	"strings"
 	"time"
 
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -21,30 +20,6 @@ type Config struct {
 }
 
 const WorktreeTrashDirectory = ".orca-worktree-trash"
-
-var ErrRepoUnavailable = errors.New("fixed Orca repository is unavailable")
-
-func FindRepo(ctx context.Context, call func(context.Context, ...string) (json.RawMessage, error), repository string) (string, error) {
-	raw, err := call(ctx, "repo", "list", "--json")
-	if err != nil {
-		return "", err
-	}
-	var listing struct {
-		Repos []struct {
-			ID   string `json:"id"`
-			Path string `json:"path"`
-		} `json:"repos"`
-	}
-	if json.Unmarshal(raw, &listing) != nil {
-		return "", ErrRepoUnavailable
-	}
-	for _, repo := range listing.Repos {
-		if strings.EqualFold(strings.ReplaceAll(repo.Path, "\\", "/"), strings.ReplaceAll(repository, "\\", "/")) {
-			return repo.ID, nil
-		}
-	}
-	return "", ErrRepoUnavailable
-}
 
 type Client struct{ config Config }
 
@@ -165,12 +140,6 @@ func (c Client) InspectBoundTerminal(ctx context.Context, _ b.ExecutionTarget, p
 func validateBoundTerminal(t Terminal, p b.ProcessIdentity) error {
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || t.RuntimeID != p.RuntimeID || t.Handle != p.Terminal || t.IncarnationID != p.Incarnation {
 		return &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original Orca runtime/terminal/incarnation changed"}
-	}
-	return nil
-}
-func ValidateWorkspaceTerminal(t Terminal, path, branch string) error {
-	if t.WorktreePath != path || strings.TrimPrefix(t.Branch, "refs/heads/") != branch {
-		return errors.New("original Orca workspace/branch changed")
 	}
 	return nil
 }

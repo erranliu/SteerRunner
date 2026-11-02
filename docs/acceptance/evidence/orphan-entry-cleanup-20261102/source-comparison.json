@@ -1,0 +1,43 @@
+{
+  "source_files_before": 790,
+  "authorized_changed_files": [
+    "internal/application/engine.go",
+    "internal/execution/adapters/codex/conversation.go",
+    "internal/execution/adapters/codex/intent.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/orcatransport/profile.go",
+    "internal/execution/adapters/orcatransport/workspace.go",
+    "internal/execution/adapters/protocol/orca/client.go",
+    "internal/execution/backend/record_validation.go",
+    "internal/execution/workflow/execution_facts.go",
+    "internal/execution/workspace/progress.go",
+    "internal/testkit/protocol/native_lock_other.go",
+    "internal/testkit/protocol/native_lock_windows.go",
+    "internal/testkit/protocol/terminal.go"
+  ],
+  "unchanged_files": 777,
+  "all_test_sources_helpers_scripts_configs_unchanged": true,
+  "shared_fixtures_unchanged": true,
+  "C_and_persistent_models_unchanged": true,
+  "remaining_candidate_references": {
+    "runLogPath": "",
+    "StableOperationID": "",
+    "ValidateExecutionRef": "",
+    "ValidateExecutionOperation": "",
+    "commitHash": "internal\\execution\\publication\\provider.go:123:\t\tif !info.Merged || info.MergedAt == nil || info.MergedAt.IsZero() || info.MergeCommit == nil || !commitHash.MatchString(*info.MergeCommit) {\ninternal\\execution\\publication\\pr.go:14:var commitHash = regexp.MustCompile(`^(?:[0-9a-f]{40}|[0-9a-f]{64})$`)\n",
+    "FactAdmission": "",
+    "FactStatus": "",
+    "VerifyProgressDirectories": "",
+    "nonEmpty": "",
+    "rawObject": "",
+    "stringField": "",
+    "firstNonEmpty": "",
+    "PendingIdentity": "",
+    "cloneTurn": "",
+    "NormalizeProfile": "",
+    "InspectWorkspace": "",
+    "FindRepo": "",
+    "ErrRepoUnavailable": "",
+    "ValidateWorkspaceTerminal": ""
+  }
+}

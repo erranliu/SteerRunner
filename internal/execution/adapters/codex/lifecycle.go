@@ -841,15 +841,6 @@ func optionalProcess(identity executionbackend.ProcessIdentity) *executionbacken
 	return &copy
 }
 
-func cloneTurn(turn *executionbackend.TurnInput) *executionbackend.TurnInput {
-	if turn == nil {
-		return nil
-	}
-	copy := *turn
-	copy.LinkedWorktreePaths = append([]string(nil), turn.LinkedWorktreePaths...)
-	return &copy
-}
-
 func lifecycleSession(snapshot executionbackend.LifecycleSnapshot, sessionID, turnID string) executionbackend.SessionContext {
 	fixed := snapshot.Session
 	fixed.SessionID, fixed.CurrentTurnID = sessionID, turnID

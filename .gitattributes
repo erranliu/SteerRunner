@@ -47,3 +47,6 @@ docs/acceptance/evidence/history-adapter-cleanup-20261102/** -text -whitespace
 docs/acceptance/evidence/history-adapter-reaudit-20261102/** -text -whitespace
 docs/acceptance/evidence/event-ack-cleanup-20261102/** -text -whitespace
 docs/acceptance/evidence/event-ack-reaudit-20261102/** -text -whitespace
+
+docs/acceptance/evidence/orphan-entry-cleanup-20261102/** -text -whitespace
+docs/acceptance/evidence/orphan-entry-reaudit-20261102/** -text -whitespace

@@ -1,0 +1,13 @@
+{
+  "pid": 25076,
+  "process_started_at": "2026-11-02T04:48:37.8292740Z",
+  "pattern": "^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$",
+  "runner_sha256": "2606BFDAFA88228761EE363D942F2850344B93945593FDAAFBE32E6EBA1555F1",
+  "fixture_sha256": "D8B8BFEFFDB72F0725C7E733F520B87AD863C9662518B21E320B74A9C97F0325",
+  "native_fixture_sha256": "63039AC7E192720B534F4891283F6DA3BE1C1B92AB8F5ADB79C3B4CBEFAAEA2A",
+  "source_commit": "111bcd35bdfd7969d4c4575b5fe62204b41486fb",
+  "source_dirty": true,
+  "go_version": "go version go1.26.4 windows/amd64",
+  "os_version": "Microsoft Windows NT 10.0.26200.0",
+  "machine": "LIUMING-ASUS"
+}

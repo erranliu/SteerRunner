@@ -46,21 +46,6 @@ func DecodeProfile(data []byte) (Profile, error) {
 	}
 	return p, nil
 }
-func NormalizeProfile(data []byte) ([]byte, []string, error) {
-	p, err := DecodeProfile(data)
-	if err != nil {
-		return nil, nil, err
-	}
-	raw, err := json.Marshal(p)
-	target := "本机"
-	if p.Environment != "" {
-		target = p.Environment
-	}
-	if p.Terminal != nil {
-		return raw, []string{"Orca：终端通信 · " + target, "启动与权限：执行主机的 Runner 工具策略 · " + p.Terminal.AccessMode, "结果：原 TUI 正式扩展事实"}, err
-	}
-	return raw, []string{"Orca：终端通信 · " + target, "启动与权限：由执行主机的 Orca 原生设置管理", "结果：同一终端的普通回复"}, err
-}
 
 func (p Profile) Target() b.ExecutionTarget {
 	wire, _ := json.Marshal(struct {

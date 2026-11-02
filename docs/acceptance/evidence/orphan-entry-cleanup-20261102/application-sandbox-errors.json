@@ -1,0 +1,30 @@
+[
+  {
+    "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/accepted-waiting-start",
+    "message": "frozen_budget_audit_test.go:19: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestFrozenBudgetMissingDoesNotGateOriginalResultsexecuteaccept2918387051/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/paused-resume",
+    "message": "frozen_budget_audit_test.go:19: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestFrozenBudgetMissingDoesNotGateOriginalResultsexecutepaused4157330424/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/stopped-late-final",
+    "message": "frozen_budget_audit_test.go:19: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestFrozenBudgetMissingDoesNotGateOriginalResultsexecutestoppe4282113461/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestFrozenBudgetSuccessorsAndDraftResume/report",
+    "message": "frozen_budget_test.go:121: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestFrozenBudgetSuccessorsAndDraftResumereport2944564510/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestFrozenBudgetSuccessorsAndDraftResume/audit-draft",
+    "message": "frozen_budget_test.go:121: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestFrozenBudgetSuccessorsAndDraftResumeaudit-draft626543952/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+    "message": "result_acquisition_test.go:284: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestRAResumeConsumedActiveInputWaitsForOriginalEvidence605082471/002/.git/config: Permission denied"
+  },
+  {
+    "test": "TestSingleExecutionLateFinalPreservesOriginalStop",
+    "message": "result_file_test.go:514: git [init -b main]: exit status 128 error: could not write config file C:/Users/lmas1/AppData/Local/Packages/sandbox.{0c4dce02-56cd-4ffd-a14b-6a50a11e2b26}/AC/Temp/TestSingleExecutionLateFinalPreservesOriginalStop2359598896/002/.git/config: Permission denied"
+  }
+]
