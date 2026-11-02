@@ -1,6 +1,6 @@
 # Plan：Orca 状态与会话读取 B3
 
-日期：2026-11-02。状态：P0–P4 完成，P5 验收已记录、独立审计待完成；见[验收](../acceptance/orca-state-session-capability.md)。依据 [Spec](orca-state-session-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。基线 `d30cd2b`，B0/B1/B2 已通过独立审计。
+日期：2026-11-02。状态：P0–P5 完成，独立审计未发现确认的 P0/P1/P2；见[验收](../acceptance/orca-state-session-capability.md)。依据 [Spec](orca-state-session-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。基线 `d30cd2b`，B0/B1/B2 已通过独立审计。
 
 ## P0 固定语义、类型和调用清单
 

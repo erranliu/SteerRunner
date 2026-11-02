@@ -1,6 +1,6 @@
 # Orca 状态与会话读取 B3 验收
 
-日期：2026-11-02。状态：实现、定向及两包全集通过，待实施后独立审计。依据 [Spec](../spec/orca-state-session-capability.spec.md) / [Plan](../spec/orca-state-session-capability.plan.md)。本批不启用新组合，不平移 B0/B1 现场或授予 B5 资格。
+日期：2026-11-02。状态：实现、定向、两包全集及实施后独立审计通过。依据 [Spec](../spec/orca-state-session-capability.spec.md) / [Plan](../spec/orca-state-session-capability.plan.md)。本批不启用新组合，不平移 B0/B1 现场或授予 B5 资格。
 
 ## 1. 能力与策略所有权
 
@@ -33,4 +33,6 @@ state_feed/state_query_feed 及解码/查询使用自有 StateResource，原生�
 
 ## 3. 独立审计
 
-实现提交后独立只读审计一次；确认问题独立 commit 修复并补受影响验证。完成前 B3 保持待审计。
+对实现提交 `8d77b9b` 相对 `310f270` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核 45 文件职责/证明/格式 diff、12 文件 bytes/hash、源码摘要及全部统计，确认原非 nil 反例没有因改传 nil 空过。
+
+reader、原输入/thin/corroborated、恢复/CRLF/followup、状态/观察/codec、原 WS、依赖守卫和固定提交 diff 检查独立复跑通过。未独立重跑全集或真实场景；未运行模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。

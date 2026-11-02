@@ -2,7 +2,7 @@
 
 维护日期：2026-11-02。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
-状态：B0、B1、B2a–B2d 已完成并通过实施后独立审计；B3 已实现、定向与两包全集通过，待实施后独立审计；后续批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
+状态：B0、B1、B2a–B2d、B3 已完成并通过实施后独立审计；B4a 已有 Spec/Plan，待实施；后续批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
 
 ## 1. 设计目标与范围
 
@@ -132,8 +132,8 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | B2b Terminal 发送 | 已完成 | [Spec](orca-terminal-send-capability.spec.md) / [Plan](orca-terminal-send-capability.plan.md) / [验收](../acceptance/orca-terminal-send-capability.md)；业务/agent-start/control 共用原生发送 | 三处对应命令/身份解码重复已删除，正文与阶段意义仍属消费方 | 原参数、接受/开始区别、字段范围及未知恢复验证通过；独立审计通过 |
 | B2c Terminal 读取 | 已完成 | [Spec](orca-terminal-read-capability.spec.md) / [Plan](orca-terminal-read-capability.plan.md) / [验收](../acceptance/orca-terminal-read-capability.md)；readiness/control 共用单页 read | 两处参数/结构重复已删除，原字段范围、窗口及回执用途保持 | cursor、完整行、取消、分页身份围栏及原消费者回归通过；独立审计通过 |
 | B2d Terminal 等待 | 已完成 | [Spec](orca-terminal-wait-capability.spec.md) / [Plan](orca-terminal-wait-capability.plan.md) / [验收](../acceptance/orca-terminal-wait-capability.md)；原双端 composer 共用原生 wait | 唯一旧 wait 参数/结构已删除，等待不承担业务完成证明 | 原参数/期限、前后身份及负面等待/取消/原输入回归通过；独立审计通过 |
-| B3 状态与会话读取 | 验证通过，待独立审计 | [Spec](orca-state-session-capability.spec.md) / [Plan](orca-state-session-capability.plan.md) / [验收](../acceptance/orca-state-session-capability.md)；原生消息/状态与执行认领分离，双端接入一份策略 | 协议状态已移除执行身份/原输入证明，原策略迁至执行侧 | 多用户原样读取、错误归属拒绝、原围栏/来源及两包全集通过；独立审计待完成 |
-| B4a 仓库与工作区查询 | 待实施 | 共用 repo/worktree 查询、原生资源及完整性信息 | 目标 selector 选择留给消费方，删除重复查询/解析 | 原主机、仓库身份、基线和歧义拒绝保持 |
+| B3 状态与会话读取 | 已完成 | [Spec](orca-state-session-capability.spec.md) / [Plan](orca-state-session-capability.plan.md) / [验收](../acceptance/orca-state-session-capability.md)；原生消息/状态与执行认领分离，双端接入一份策略 | 协议状态已移除执行身份/原输入证明，原策略迁至执行侧 | 多用户原样读取、错误归属拒绝、原围栏/来源及两包全集通过；独立审计通过 |
+| B4a 仓库与工作区查询 | 待实施 | [Spec](orca-resource-query-capability.spec.md) / [Plan](orca-resource-query-capability.plan.md)；共用实际 repo list/worktree show 原生查询 | 目标 selector 选择留给消费方，删除对应查询/解析 | 原主机、仓库身份、基线和歧义拒绝保持 |
 | B4b 资源创建 | 待实施 | 组合 B2a 与 worktree/terminal 创建、回执操作，接入原 creation owner | 原 owner 保留首次资格及对账，删除创建专属协议拼装/解析 | 未知零重发，原命令/摘要/编码及资源归属保持 |
 | B4c 受限文件操作 | 待实施 | 按 §4.3 分离原生文件能力、Run 路径生成及用途策略 | progress/result/staging 消费公共读写，能力层不解释 Run | 路径范围、原主机、分块、限额和完整性保持；业务路径/限额由消费方显式提供 |
 | B4d 关闭与完整清单 | 待实施 | 共用原终端 close 和完整清单读取，接入双端停止/只读核验 | 删除重复协议处理，停止合同仍归执行层；完成能力包依赖与语义检查 | 关闭未知零重发、原 incarnation/host 范围保持，不扩大当前 stop scope |

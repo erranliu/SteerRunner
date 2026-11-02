@@ -1,6 +1,6 @@
 # Spec：Orca 状态与会话读取 B3
 
-日期：2026-11-02。状态：已实现、定向及两包全集通过，待实施后独立审计；见[验收](../acceptance/orca-state-session-capability.md)。依据[长期路线 B3 及职责迁移表](orca-capability-layer.spec.md#43-最小职责迁移表)，对应 [Plan](orca-state-session-capability.plan.md)。调查基线 `d30cd2b`；消费已完成的 B0 能力结论及 B1/B2 公共能力。
+日期：2026-11-02。状态：已完成，定向、两包全集及实施后独立审计通过；见[验收](../acceptance/orca-state-session-capability.md)。依据[长期路线 B3 及职责迁移表](orca-capability-layer.spec.md#43-最小职责迁移表)，对应 [Plan](orca-state-session-capability.plan.md)。调查基线 `d30cd2b`；消费已完成的 B0 能力结论及 B1/B2 公共能力。
 
 ## 1. 目标
 
