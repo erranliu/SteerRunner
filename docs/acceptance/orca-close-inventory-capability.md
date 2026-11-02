@@ -1,6 +1,6 @@
 # Orca 关闭与完整清单 B4d 验收
 
-日期：2026-11-02。状态：实现、定向及两包全集通过，待实施后独立审计。依据 [Spec](../spec/orca-close-inventory-capability.spec.md) / [Plan](../spec/orca-close-inventory-capability.plan.md)。
+日期：2026-11-02。状态：已完成；实现、定向及两包全集通过，独立审计唯一 P2 已单独修复并复核关闭。依据 [Spec](../spec/orca-close-inventory-capability.spec.md) / [Plan](../spec/orca-close-inventory-capability.plan.md)。
 
 ## 职责与消费者
 
@@ -35,4 +35,8 @@ soleWorkspaceTerminal 与 initialWorkspaceTerminalRecovery 接入公共列表参
 
 修复改为独立 BasicTerminalInventory（自己的 rows、bool 和解析标记），sole 消费完整基础值。完整清单 decoder 和原停止判据不改。补原生及本机/远端实际 sole 的 true→null 拒绝、false→null 接受反例，原字段范围仍保持；未把 null 一律当作失败来改变旧合同。
 
-修复后定向 23 根/146 子节点、150 叶例，0 fail/skip。修复 source_digest `dc8c29d517a896586617a8a6498f07cb729c66e8a5ea0abefba88f6dd1a40686`，单独[证据](evidence/orca-close-inventory-audit-fix-20261102/README.md)；保留本批原归档不覆盖。待原独立审计者复核修复。
+修复后定向 23 根/146 子节点、150 叶例，0 fail/skip。修复 source_digest `dc8c29d517a896586617a8a6498f07cb729c66e8a5ea0abefba88f6dd1a40686`，单独[证据](evidence/orca-close-inventory-audit-fix-20261102/README.md)；保留本批原归档不覆盖。
+
+修复提交 `0dfbb53` 已由原独立审计者复核关闭，无剩余确认 P0/P1/P2。原 12 文件和修复 3 文件、704 文件源码摘要及所有统计吻合；能力、原停止/workspace/owner、错误映射和依赖守卫独立复跑通过。审计者另补正式 CLI 离线两个子例通过。
+
+收口时发现原 consumers 正则未包含 TestSRServiceOwnership；在 `0dfbb53` 上准确补跑 offline_verification、remote_offline_scope，1 根/9 子节点、8 叶例，0 fail/skip，见[单独证据](evidence/orca-close-inventory-offline-20261102/README.md)。原 49 根已覆盖 application 离线机制，但不能替代这两个 integration 入口，故原统计不改写。无真实 Orca/模型操作，不扩大 B5 资格。
