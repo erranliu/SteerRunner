@@ -110,3 +110,11 @@ $state = 'C:/RunnerState/spec-plan'
 `generate.repository.paths` 可显式列出所需普通文件的完整仓库相对路径；省略该字段表示整棵提交树。显式清单必须非空、无重复且逐项存在，不能使用目录、通配符或链接，选择失败不会回退整仓。公开能力 `generate.repository.selection` 为 `explicit_file_paths_or_whole_tree`。
 
 4096 文件、64 MiB 正文与 1 MiB manifest 上限只统计实际冻结的文件。所选文件直接读取原提交的 blob，`repository_source.commit/tree` 仍指向原提交及根树，逐文件 blob/SHA256/size 不变；未选中的大资源不会被复制。执行后仍按完整 manifest 核验本次私有快照的不可变性。此选择只控制生成调查材料，不选择或删减项目测试。
+
+## 冻结文件材料
+
+`generate.materials` 支持 `kind=file`（conversation 仍仅 inline）。调用方以原 UTF-8 `content` 传输正文；Runner 沿原输入冻结机制写入 `inputs/<run>/<path>` 私有普通文件，模型提示只包含逻辑 `path`、真实绝对 `file` 位置和 `sha256`，不展开正文。文件与固定 Git 源码分开，不替换仓库快照的同名文件，也不加入 `repository_source.files`。
+
+公开 `generate.file_materials` 的 contract 为 `frozen_private_files/v1`，最多 64 个文件、合计 4 MiB 原始正文，同时遵循原 8 MiB 请求上限。路径必须是可移植相对名称；拒绝越界、Windows 保留名、大小写重复、文件/目录前缀冲突及重定向。Run 的 `materials` 与结果的 `file_materials` 提供独立的原路径、摘要、快照路径和执行位置，调用方须与原请求逐项核验。
+
+派发、恢复和结果采用均核验原文件。缺失或漂移明确失败，不能从调用方当前文件重建或回退 inline。原请求重放/未知结果查询及停止、结算规则保持。实际模型读取仍须独立验收，manifest 只证明可读文件的固定来源。

@@ -61,10 +61,19 @@ func freezeContent(ctx context.Context, dir string, r *runstate.Record, attempt,
 			return nil, contracts.Fail(2, "invalid_input", "Material must be bounded UTF-8 text.")
 		}
 		fixed := filepath.Join(dir, "inputs", r.ID, filepath.FromSlash(doc.Path))
+		if doc.Kind == "file" {
+			if err := checkMaterialParents(filepath.Join(dir, "inputs", r.ID), fixed); err != nil {
+				return nil, err
+			}
+		}
 		if err := writeFixed(fixed, content); err != nil {
 			return nil, err
 		}
-		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Digest: reliable.Digest(content), SnapshotPath: fixed, ExecutionLocation: "prompt:" + doc.Path}, Content: string(content)})
+		location := "prompt:" + doc.Path
+		if doc.Kind == "file" {
+			location = fixed
+		}
+		r.Materials = append(r.Materials, runstate.Material{MaterialView: contracts.MaterialView{Kind: doc.Kind, Path: doc.Path, Digest: reliable.Digest(content), SnapshotPath: fixed, ExecutionLocation: location}, Content: string(content)})
 	}
 	target := b.ExecutionTarget{ID: "local", ExecutionHost: "local"}
 	agent := b.AgentSpec{Name: "codex"}
@@ -105,6 +114,9 @@ func contentParts(r *runstate.Record, message string) ([]m.InputPart, error) {
 	if err := verifyContentDirectory(r); err != nil {
 		return nil, err
 	}
+	if err := verifyFrozenMaterials(r); err != nil {
+		return nil, err
+	}
 	instruction, _, _ := r.Request.ContentInput()
 	if message != "" {
 		return []m.InputPart{{Source: "caller.message", Owner: m.CallerInput, Text: message}}, nil
@@ -114,6 +126,14 @@ func contentParts(r *runstate.Record, message string) ([]m.InputPart, error) {
 		prefix := ""
 		if i > 0 {
 			prefix = ","
+		}
+		if material.Kind == "file" {
+			ref, err := json.Marshal(map[string]string{"path": material.Path, "file": material.ExecutionLocation, "sha256": material.Digest})
+			if err != nil {
+				return nil, err
+			}
+			parts = append(parts, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: prefix}, m.InputPart{Source: "caller.material", Owner: m.CallerInput, Text: string(ref)})
+			continue
 		}
 		encoded := string(canonical(material.Content))
 		parts = append(parts, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: prefix + `{"content":"`}, m.InputPart{Source: "caller.material", Owner: m.CallerInput, Text: encoded[1 : len(encoded)-1]}, m.InputPart{Source: "content.material_frame", Owner: m.RunnerInput, Text: `","path":` + string(canonical(material.Path)) + `,"sha256":` + string(canonical(material.Digest)) + `}`})
@@ -143,11 +163,16 @@ func finishContent(r *runstate.Record, input workflow.StageInput, value b.TurnEv
 	final := contracts.FinalView{CommandID: input.CommandID, AttemptID: input.AttemptID, SessionID: value.SessionID, TurnID: value.TurnID, NativeOutcome: result.NativeOutcome, Verified: result.ContentVerified, Source: value.FinalSource, ItemID: value.FinalItemID, Text: result.Content, Diagnostic: result.Diagnostic}
 	content := &contracts.ContentResult{Status: "failed", Source: final, Diagnostic: result.Failure}
 	content.RepositorySource = r.RepositorySource
+	for _, material := range r.Materials {
+		if material.Kind == "file" {
+			content.FileMaterials = append(content.FileMaterials, material.MaterialView)
+		}
+	}
 	if result.Succeeded && result.ContentVerified && result.NativeOutcome == "succeeded" && result.Failure == "" {
 		content.Status, content.Text = "succeeded", result.Content
 		if oversized {
 			content.Status, content.Text, content.Diagnostic = "failed", "", "generate_result_limit_exceeded_or_invalid_utf8"
-		} else if r.RepositorySource != nil && verifyContentDirectory(r) != nil {
+		} else if workflow.Content(r.Request.Workflow.ID) && verifyFrozenMaterials(r) != nil {
 			content.Status, content.Text, content.Diagnostic = "failed", "", "repository_snapshot_changed"
 		} else if r.Request.Generate != nil && len(r.Request.Generate.OutputSchema) > 0 {
 			data, err := ra.ValidateOutput(r.Request.Generate.OutputSchema, result.Content)

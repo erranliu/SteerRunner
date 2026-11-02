@@ -5,6 +5,7 @@ import (
 	ra "github.com/erranliu/SteerRunner/internal/execution/resultacquisition"
 	"path/filepath"
 	"strings"
+	"unicode/utf8"
 )
 
 type DirectoryAccess struct {
@@ -32,6 +33,8 @@ const MaxGenerateResultBytes = 1 << 20
 const MaxGenerateRepositoryBytes = 64 << 20
 const MaxGenerateRepositoryFiles = 4096
 const MaxGenerateRepositoryManifestBytes = 1 << 20
+const MaxGenerateFileMaterials = 64
+const MaxGenerateFileMaterialBytes = 4 << 20
 
 type GenerateRepository struct {
 	LocalPath string   `json:"local_path"`
@@ -91,9 +94,27 @@ func validateContentRun(data []byte, r RunRequest) *Fault {
 		return invalid
 	}
 	seen := map[string]bool{}
+	fileCount, fileBytes := 0, 0
 	for _, d := range materials {
-		if !safeDocument(d) || d.Kind != "inline" || seen[strings.ToLower(d.Path)] {
+		shape := d
+		if shape.Kind == "file" {
+			shape.Kind = "inline"
+		}
+		if !safeDocument(shape) || (d.Kind != "inline" && (r.Generate == nil || d.Kind != "file")) || seen[strings.ToLower(d.Path)] {
 			return invalid
+		}
+		if d.Kind == "file" {
+			fileCount++
+			fileBytes += len(*d.Content)
+			if !ValidFileMaterialPath(d.Path) || !utf8.ValidString(*d.Content) || fileCount > MaxGenerateFileMaterials || fileBytes > MaxGenerateFileMaterialBytes {
+				return invalid
+			}
+		}
+		for previous := range seen {
+			current := strings.ToLower(d.Path)
+			if strings.HasPrefix(current, previous+"/") || strings.HasPrefix(previous, current+"/") {
+				return invalid
+			}
 		}
 		seen[strings.ToLower(d.Path)] = true
 	}
@@ -139,6 +160,7 @@ func validateContentRun(data []byte, r RunRequest) *Fault {
 }
 
 type ContentResult struct {
+	FileMaterials    []MaterialView    `json:"file_materials,omitempty"`
 	RepositorySource *RepositorySource `json:"repository_source,omitempty"`
 	Status           string            `json:"status"`
 	Text             string            `json:"text,omitempty"`
@@ -146,6 +168,22 @@ type ContentResult struct {
 	Diagnostic       string            `json:"diagnostic,omitempty"`
 	Source           FinalView         `json:"source"`
 }
+
+// File material names are portable relative labels, never caller host paths.
+func ValidFileMaterialPath(name string) bool {
+	if !ValidArtifactPath(name) {
+		return false
+	}
+	for _, part := range strings.Split(name, "/") {
+		base := strings.ToUpper(strings.SplitN(part, ".", 2)[0])
+		if base == ".GIT" || strings.EqualFold(part, ".git") || base == "CON" || base == "PRN" || base == "AUX" || base == "NUL" ||
+			(len(base) == 4 && (strings.HasPrefix(base, "COM") || strings.HasPrefix(base, "LPT")) && base[3] >= '1' && base[3] <= '9') {
+			return false
+		}
+	}
+	return true
+}
+
 type HistoryEntry struct {
 	RequestCommandID string         `json:"request_command_id,omitempty"`
 	CommandID        string         `json:"command_id"`
