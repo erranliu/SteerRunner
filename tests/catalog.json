@@ -116,6 +116,15 @@
       ],
       "result-parser": [
         "TestSRResultAcquisition"
+      ],
+      "restart-continuation": [
+        "TestSRRestartPreservesAuthorization"
+      ],
+      "restart-create-receipt": [
+        "TestSRRestartPreservesAuthorization"
+      ],
+      "restart-pending-stop": [
+        "TestSRRestartPreservesAuthorization"
       ]
     },
     "result_file_cases": {
@@ -142,6 +151,22 @@
           "parser-unsupported",
           "parser-complete",
           "parser-tool"
+        ]
+      },
+      "restart-continuation": {
+        "TestSRRestartPreservesAuthorization": [
+          "graceful",
+          "kill"
+        ]
+      },
+      "restart-create-receipt": {
+        "TestSRRestartPreservesAuthorization": [
+          "creation_receipt"
+        ]
+      },
+      "restart-pending-stop": {
+        "TestSRRestartPreservesAuthorization": [
+          "pending_stop"
         ]
       }
     }

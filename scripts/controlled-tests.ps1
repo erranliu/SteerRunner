@@ -1,6 +1,7 @@
 # Test selection and diagnostic timings only; never creates prerequisite proof.
 function Get-SRControlledCaseDefinitions {
     [ordered]@{
+        TestSRRestartPreservesAuthorization=@('graceful','kill','creation_receipt','pending_stop')
         TestSRResultFile=@('optional-file-failure-business-loop','final-seal')
         TestSRResultAcquisition=@('plain-marker','audit-zero','audit-positive','audit-offline','audit-report','parser-unsupported','parser-complete','parser-tool')
     }

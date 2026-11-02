@@ -44,6 +44,22 @@ Reject 'case-path-wildcard' {ConvertTo-SRControlledCasePlan @('TestSRResultAcqui
 Reject 'case-path-duplicate' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/plain-marker','TestSRResultAcquisition/plain-marker')}
 Reject 'legacy-generic-conflict' {Resolve-SRControlledSelection $taskCatalog @('files') @() @('final-seal') @('TestSRResultFile/final-seal')}
 $taskChecks.Add('per-parent-case-default-union-and-isolation')
+$restartParent='TestSRRestartPreservesAuthorization'
+$restartIDs=@('graceful','kill','creation_receipt','pending_stop')
+$restartAll=Resolve-SRControlledSelection $taskCatalog @() @('restart-continuation','restart-create-receipt','restart-pending-stop')
+$restartWide=Resolve-SRControlledSelection $taskCatalog @() @('restart-pending-stop','execute-stop')
+$restartMixed=Resolve-SRControlledSelection $taskCatalog @() @('restart-pending-stop','runtime-files','result-plain')
+foreach($plan in @($taskAll,$seal,$restartAll,$restartWide)) {
+    if(($plan.cases[$restartParent] -join ',') -cne ($restartIDs -join ',')){throw 'Restart default/execute-stop/union lost one of its four cases'}
+}
+if(($restartMixed.cases[$restartParent] -join ',') -cne 'pending_stop' -or $restartMixed.cases['TestSRResultFile'].Count -ne 2 -or
+    ($restartMixed.cases['TestSRResultAcquisition'] -join ',') -cne 'plain-marker' -or $restartMixed.pattern.Contains('/')){throw 'Restart selection leaked across parents'}
+$restartOverride=Resolve-SRControlledSelection $taskCatalog @() @('execute-stop') @() @("$restartParent/creation_receipt")
+if(($restartOverride.cases[$restartParent] -join ',') -cne 'creation_receipt' -or ($restartOverride.result_file_cases -join ',') -cne 'final-seal'){throw 'Explicit Restart override changed ResultFile selection'}
+Reject 'restart-unknown-case' {ConvertTo-SRControlledCasePlan @("$restartParent/unknown")}
+Reject 'restart-duplicate-case' {ConvertTo-SRControlledCasePlan @("$restartParent/graceful","$restartParent/graceful")}
+Reject 'restart-foreign-parent-case' {ConvertTo-SRControlledCasePlan @('TestSRResultAcquisition/graceful')}
+$taskChecks.Add('restart-four-default-execute-stop-union-and-parent-isolation')
 Reject 'empty' {Resolve-SRControlledSelection $taskCatalog}
 Reject 'mixed-kinds' {Resolve-SRControlledSelection $taskCatalog @('files') @('execute-stop')}
 Reject 'unknown' {Resolve-SRControlledSelection $taskCatalog @('missing')}
@@ -127,7 +143,7 @@ $result|ConvertTo-Json -Depth 5|Set-Content (Join-Path $OutDir 'result.json')
 @{pid=2147483646}|ConvertTo-Json|Set-Content (Join-Path $OutDir 'source-identity.json')
 '@)
 $taskShell=(Get-Process -Id $PID).Path
-foreach ($id in @('execute-stop','all-mock','acceptance-control','result-plain','result-audit','result-parser')) {
+foreach ($id in @('execute-stop','all-mock','acceptance-control','result-plain','result-audit','result-parser','restart-continuation','restart-create-receipt','restart-pending-stop')) {
     $output=Join-Path $taskRoot $id
     & $taskShell -NoProfile -File (Join-Path $taskMock 'scripts/test-controlled.ps1') -Combination $id -OutDir $output *> (Join-Path $taskRoot ($id+'.log'))
     if ($LASTEXITCODE -ne 0) {throw "Selection entry failed: $id"}
@@ -212,6 +228,47 @@ $acqGateRejected=$false
 try{Assert-SRControlledEvidence $acqFullNegative @($taskCatalog.controlled_scenarios) | Out-Null}catch{$acqGateRejected=$_.Exception.Message -like '*Actual ResultAcquisition cases differ*'}
 if(-not $acqGateRejected){throw 'Full parent count hid incomplete acquisition cases'}
 $taskChecks.Add('full-27-count-requires-all-eight-acquisition-cases')
+$restartSource=Join-Path $taskRoot 'restart-continuation/controlled'
+$restartProof=Get-SRControlledCaseEvidence $restartSource $restartParent @('graceful','kill')
+if($restartProof.required_paths.Count -ne 2){throw 'Restart continuation lost actual two-case proof'}
+Reject 'restart-subset-not-default-four' {Get-SRControlledCaseEvidence $restartSource $restartParent $restartIDs}
+$restartNegative=Join-Path $taskRoot 'restart-negatives'
+$null=New-Item -ItemType Directory -Path $restartNegative
+$restartLog=[IO.File]::ReadAllText((Join-Path $restartSource 'integration.log'))
+$restartResult=[IO.File]::ReadAllText((Join-Path $restartSource 'result.json'))
+foreach($mode in @('parent-only','missing-case','skipped-case','foreign-case','duplicate-case','missing-receipt','wrong-parent','false-receipt','string-duration')) {
+    $log=$restartLog;$result=$restartResult|ConvertFrom-Json
+    switch($mode) {
+        'parent-only' {$log="=== RUN   $restartParent`n--- PASS: $restartParent (1.00s)"}
+        'missing-case' {$log=($log -split "`n" | Where-Object {$_ -notlike "*$restartParent/kill*"}) -join "`n"}
+        'skipped-case' {$log=$log.Replace("--- PASS: $restartParent/kill","--- SKIP: $restartParent/kill")}
+        'foreign-case' {$log=$log.Replace('/kill','/pending_stop')}
+        'duplicate-case' {$log+="`n=== RUN   $restartParent/kill`n"}
+        'missing-receipt' {$result.PSObject.Properties.Remove('controlled_cases')}
+        'wrong-parent' {$result.controlled_cases.PSObject.Properties.Remove($restartParent)}
+        'false-receipt' {$result.controlled_cases.$restartParent[0].passed=$false}
+        'string-duration' {$result.controlled_cases.$restartParent[0].duration_seconds='0.5'}
+    }
+    [IO.File]::WriteAllText((Join-Path $restartNegative 'integration.log'),$log)
+    JSON (Join-Path $restartNegative 'result.json') $result
+    Reject ('restart-proof-'+$mode) {Get-SRControlledCaseEvidence $restartNegative $restartParent @('graceful','kill')}
+}
+# Check the complete gate both in the full 27 and when Restart is the only
+# expected supported parent, so the case guard cannot depend on ResultFile/Acquisition.
+foreach($scope in @('full-27','restart-only')) {
+    $negative=Join-Path $taskRoot ('partial-restart-'+$scope)
+    $null=New-Item -ItemType Directory -Path $negative
+    $sourceDirectory=if($scope -eq 'full-27'){$taskFullSource}else{$restartSource}
+    foreach($name in @('integration.log','result.json','source-identity.json')){Copy-Item -LiteralPath (Join-Path $sourceDirectory $name) -Destination (Join-Path $negative $name)}
+    $partial=Get-Content (Join-Path $negative 'result.json') -Raw|ConvertFrom-Json
+    $partial.controlled_cases.$restartParent=@($partial.controlled_cases.$restartParent | Where-Object {$_.id -eq 'graceful'})
+    JSON (Join-Path $negative 'result.json') $partial
+    $expected=if($scope -eq 'full-27'){@($taskCatalog.controlled_scenarios)}else{@($restartParent)}
+    $rejected=$false
+    try{Assert-SRControlledEvidence $negative $expected | Out-Null}catch{$rejected=$_.Exception.Message -like '*Actual RestartPreservesAuthorization cases differ*'}
+    if(-not $rejected){throw "Complete $scope count bypassed Restart case proof"}
+    $taskChecks.Add('complete-case-gate-'+$scope+'-requires-four-restart-cases')
+}
 $source=Join-Path $taskRoot 'execute-stop/controlled'
 $before=(Get-FileHash (Join-Path $source 'integration.log')).Hash
 $import=Join-Path $taskRoot 'import'
