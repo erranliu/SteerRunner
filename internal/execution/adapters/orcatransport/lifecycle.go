@@ -749,42 +749,29 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		// not this CLI parameter. Local and remote inputs use the same encoding.
 		text = strings.ReplaceAll(text, "\n", "\r")
 	}
-	args := []string{"terminal", "send", "--terminal", state.Process.Terminal, "--text", text, "--enter", "--retry-request", turn.Request, "--json"}
+	send := native.TerminalSend{Handle: state.Process.Terminal, Text: text, RequestID: turn.Request}
 	if l.profileVersion == NativeRemoteProfileVersion {
 		// Orca's default receipt may precede the original turn-start observation.
 		// Wait on this single accepted request; timeout never resends input and
 		// is only a hint; original native input/history must prove business start.
-		args = append(args, "--wait-submit", "20")
+		send.WaitSubmitSeconds = 20
 	}
-	result, callErr := l.client.MetaCallWithTimeout(ctx, 50*time.Second, args...)
+	result, sent, callErr := l.client.SendTerminalWithTimeout(ctx, 50*time.Second, send)
 	receipt.Operation.Receipt = append([]byte(nil), result.Payload...)
-	var sent struct {
-		Send struct {
-			Handle   string `json:"handle"`
-			Accepted *bool  `json:"accepted"`
-			Prompt   struct {
-				RequestID          string   `json:"requestId"`
-				ProcessIncarnation string   `json:"processIncarnation"`
-				Stages             []string `json:"stages"`
-				Provider           string   `json:"provider"`
-				Observation        string   `json:"observation"`
-			} `json:"prompt"`
-		} `json:"send"`
-	}
-	bound := json.Unmarshal(result.Payload, &sent) == nil && result.RuntimeID == state.Process.RuntimeID && sent.Send.Handle == state.Process.Terminal && sent.Send.Prompt.RequestID == turn.Request && sent.Send.Prompt.ProcessIncarnation == state.Process.Incarnation && !result.CallUncertain && result.ErrorCode == ""
-	if bound && sent.Send.Accepted != nil && !*sent.Send.Accepted && len(sent.Send.Prompt.Stages) == 0 {
+	bound := sent.Matches(native.TerminalIdentity{RuntimeID: state.Process.RuntimeID, Handle: state.Process.Terminal, IncarnationID: state.Process.Incarnation}, turn.Request) && sent.Prompt.Decoded() && !result.CallUncertain && result.ErrorCode == ""
+	if bound && sent.Accepted != nil && !*sent.Accepted && len(sent.Prompt.Stages) == 0 {
 		turn.Rejected = true
 		receipt.Disposition = b.OperationRejected
 		receipt.Implementation, err = l.envelope(s, state)
 		l.closeStateFeed()
 		return receipt, errors.Join(err, errors.New("original native input explicitly rejected; no input was accepted"))
 	}
-	if !bound || sent.Send.Accepted == nil || !*sent.Send.Accepted {
+	if !bound || sent.Accepted == nil || !*sent.Accepted {
 		l.closeStateFeed()
 		return receipt, errors.Join(callErr, errors.New("original terminal input outcome is unknown; do not resend"))
 	}
 	if l.profile.Terminal == nil && s.Ref.Agent.Name == "codex" {
-		prompt := sent.Send.Prompt
+		prompt := sent.Prompt
 		stages := prompt.Stages
 		validStages := len(stages) == 1 && stages[0] == "input_accepted" ||
 			len(stages) == 2 && stages[0] == "input_accepted" && stages[1] == "turn_started"
@@ -794,7 +781,7 @@ func (l *Lifecycle) submit(ctx context.Context, r b.LifecycleRequest) (b.Lifecyc
 		}
 	}
 	turn.Accepted = true
-	for _, stage := range sent.Send.Prompt.Stages {
+	for _, stage := range sent.Prompt.Stages {
 		if stage == "turn_started" && l.profile.Terminal == nil && s.Ref.Agent.Name != "codex" {
 			turn.Started = true
 		}

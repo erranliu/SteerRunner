@@ -7,6 +7,7 @@ import (
 	"errors"
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"os"
 	"path/filepath"
@@ -153,15 +154,8 @@ func (l *Lifecycle) dispatchControl(ctx context.Context, state State, q codex.Re
 		return result, err
 	}
 	raw, _ := json.Marshal(q)
-	r, err := l.client.MetaCall(ctx, "terminal", "send", "--terminal", state.Control.Process.Terminal, "--text", base64.RawURLEncoding.EncodeToString(raw), "--enter", "--retry-request", nativeRequest(q.ID), "--json")
-	var value struct {
-		Send struct {
-			Handle   string
-			Accepted bool
-			Prompt   struct{ RequestID, ProcessIncarnation string }
-		}
-	}
-	if err != nil || r.CallUncertain || r.RuntimeID != state.Control.Process.RuntimeID || json.Unmarshal(r.Payload, &value) != nil || !value.Send.Accepted || value.Send.Handle != state.Control.Process.Terminal || value.Send.Prompt.RequestID != nativeRequest(q.ID) || value.Send.Prompt.ProcessIncarnation != state.Control.Process.Incarnation {
+	r, sent, err := l.client.SendTerminal(ctx, native.TerminalSend{Handle: state.Control.Process.Terminal, Text: base64.RawURLEncoding.EncodeToString(raw), RequestID: nativeRequest(q.ID)})
+	if err != nil || r.CallUncertain || !sent.Matches(native.TerminalIdentity{RuntimeID: state.Control.Process.RuntimeID, Handle: state.Control.Process.Terminal, IncarnationID: state.Control.Process.Incarnation}, nativeRequest(q.ID)) || sent.Accepted == nil || !*sent.Accepted {
 		return result, errors.New("original native control send unresolved; same request retained")
 	}
 	for {
