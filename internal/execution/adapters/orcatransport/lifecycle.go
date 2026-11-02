@@ -114,7 +114,7 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 		return nil, err
 	}
 	l := &Lifecycle{setup: setup, profile: p, profileVersion: version, stateFactory: factory, clock: func() time.Time { return time.Now().UTC() }}
-	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, native.UploadWorkspaceArtifact
+	l.probeProcess, l.uploadStopArtifact = process.NewServiceFacts().Probe, UploadWorkspaceArtifact
 	call := func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		command := cliLaunchCommand(p, p.Executable, setup.RepositoryPath, timeout, args...)
 		if err := process.CheckCommandLine(command.Executable, command.Args); err != nil {

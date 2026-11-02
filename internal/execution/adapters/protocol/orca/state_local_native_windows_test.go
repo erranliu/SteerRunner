@@ -130,7 +130,7 @@ func TestOrcaLocalIPCNativeProbe(t *testing.T) {
 	report["reopened_original_terminal"] = true
 	report["observation_mode"] = "native-query"
 	payload := bytes.Repeat([]byte(runtime+"\n"), 12000)
-	if err := UploadWorkspaceArtifact(ctx, "", runtime, "id:"+made.Worktree.ID, ".sr-runtime-stage/ipc-probe.bin", bytes.NewReader(payload)); err != nil {
+	if err := UploadScopedFile(ctx, "", runtime, "id:"+made.Worktree.ID, FileScope{Root: ".sr-runtime-stage", RelativePath: ".sr-runtime-stage/ipc-probe.bin"}, 384<<10, bytes.NewReader(payload)); err != nil {
 		t.Fatal(err)
 	}
 	actual, err := os.ReadFile(filepath.Join(made.Worktree.Path, ".sr-runtime-stage", "ipc-probe.bin"))

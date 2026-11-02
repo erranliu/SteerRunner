@@ -1,6 +1,6 @@
 # Spec：Orca 受限文件能力 B4c
 
-日期：2026-11-02。状态：待实施。对应 [Plan](orca-scoped-files-capability.plan.md) 和[长期设计 §4.3](orca-capability-layer.spec.md#43-最小职责迁移表)。调查基线 `7023035`。
+日期：2026-11-02。状态：实现及受控验证通过，待实施后独立审计。对应 [Plan](orca-scoped-files-capability.plan.md) 和[长期设计 §4.3](orca-capability-layer.spec.md#43-最小职责迁移表)。调查基线 `7023035`。
 
 ## 目标和边界
 
@@ -26,3 +26,5 @@ ProgressSource/ResultSource 继续统一一份 Run 绑定策略，生成各自�
 | OSF-04 | 格式/证据/审计闭环 | 持久白名单、依赖守卫、实际非零命中和归档、独立审计 |
 
 受控原生 IPC/WS 与消费方等价验证不计真实模型、Runner 或新停止资格。
+
+职责迁移、实际生产接线、旧实现删除及验证见[验收](../acceptance/orca-scoped-files-capability.md)。

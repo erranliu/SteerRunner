@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
-	nativeorca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+	nativeorca "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/storage"
