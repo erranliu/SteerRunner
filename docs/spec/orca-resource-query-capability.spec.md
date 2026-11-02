@@ -1,6 +1,6 @@
 # Spec：Orca 仓库与工作区查询 B4a
 
-日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-query-capability.plan.md)。调查基线 `8d77b9b`。
+日期：2026-11-02。状态：已完成，受控验证及实施后独立审计通过。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-query-capability.plan.md)。调查基线 `8d77b9b`。
 
 ## 1. 目标与范围
 

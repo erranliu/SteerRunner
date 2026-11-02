@@ -1,6 +1,6 @@
 # Orca 仓库与工作区查询 B4a 验收
 
-日期：2026-11-02。状态：实现和受控回归通过，待实施后独立审计。依据 [Spec](../spec/orca-resource-query-capability.spec.md) / [Plan](../spec/orca-resource-query-capability.plan.md)。
+日期：2026-11-02。状态：实现、受控回归及实施后独立审计通过。依据 [Spec](../spec/orca-resource-query-capability.spec.md) / [Plan](../spec/orca-resource-query-capability.plan.md)。
 
 ## 职责和接线
 
@@ -18,6 +18,10 @@ protocol/orca/resource_query.go 提供 Repository/RepositoryInventory、纯 repo
 | --- | --- |
 | ORQ-01 | 新能力 1 根/17 子节点、15 叶例通过；原 argv、全部原资源字段、截断、缺失/坏字段、忽略未消费扩展、原错误/响应丢失和非空 selector 零调用验证通过 |
 | ORQ-02–03 | 原消费者/恢复/预算/撤销/owner 24 根/77 子节点、86 叶例通过，0 fail/skip；包括原仓库歧义/缺 ID/截断拒绝、恢复精确身份和零再发现/重建 |
-| ORQ-04 | workflow 依赖守卫 1 根通过；原持久声明及依赖 diff、git diff --check 通过；独立审计待提交后执行 |
+| ORQ-04 | workflow 依赖守卫 1 根通过；原持久声明及依赖 diff、git diff --check 通过；独立审计通过 |
 
 子节点含分组节点，叶例另计。没有新真实 Orca 资源或模型场次；这是纯查询结构等价验证，不计 B5 真实 Runner 资格。原停止 scope、输入和证据合同不变。
+
+## 独立审计
+
+固定提交 `d949e1c` 相对 `1352885` 的独立只读审计通过，未发现确认的 P0/P1/P2；原 Worktree 声明、参数、预算、策略及未知恢复保持。审计者复核 5 文件/归档摘要和固定源码摘要、全部统计，并独立复跑新能力、24 根原回归和依赖守卫及 diff 检查。没有真实 Orca/模型操作，无代码修复需求。
