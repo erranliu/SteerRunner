@@ -1,6 +1,6 @@
 # Plan：Orca 原生合同正式启用与旧消费者收口 B6
 
-日期：2026-11-03。状态：待实施。对应 [Spec](orca-native-rollout.spec.md)。基线 `0f22212`，B5 已签收。
+日期：2026-11-03。状态：实现与受控验证已完成，最终资格及独立审计进行中。对应 [Spec](orca-native-rollout.spec.md)。基线 `0f22212`，B5 已签收。
 
 ## P0 变更面
 
