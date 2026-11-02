@@ -95,6 +95,8 @@ Run token/独立费用增量入口：`go test ./internal/usage/... ./internal/co
 
 远端已完成 Codex Run 的显式现场入口为 `TestUsageRemoteCodexLive` / `TestRunUsageRemotePublicLive`，所需变量及撤回/清理证明见同一验收记录，默认 skip，标准 L1 拒绝远端 opt-in 遗留。手工整仓 Go 入口应使用 `go test ./... -count=1 -timeout 45m -json`：2026-10-21 实测 application 全包 625.267 秒、`TestSRResultAcquisition` 串行整组 738.65 秒，均可能超过 Go 默认 package 10 分钟上限。该聚合预算不延长产品调用或场景内期限；完整受控入口本已采用 45 分钟预算。
 
+固定 L1 的 Go 包级聚合预算为 20 分钟。2026-11-02 完整执行在应用包已通过大量用例、仍推进最后的审计场景时触及旧 12 分钟上限；该上限不足以容纳当前串行 Git/SQLite/原生进程测试。调整只针对整包聚合，不延长产品操作或用例内期限，不改包清单、skip 白名单、断言、覆盖率、框架和原生驱动守卫。原失败与最终复验见[文件材料验收](acceptance/generate-files.md)。
+
 裸 `go test ./...` 还会包含 L4 的 `TestSREdgeResourcePressure`（20 轮完整提交/发布/停止及进程退出/句柄检查），并非 L1 入口。常规分层运行使用下文脚本和 catalog；全仓审计保留此测试，不为缩短耗时削减轮数。
 
 内容流程的最小定向入口为 `./scripts/test-content-workflows.ps1`；附加

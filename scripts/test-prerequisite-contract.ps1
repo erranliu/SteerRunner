@@ -240,7 +240,7 @@ function Invoke-SRL1Core([string]$Root, [string]$Output, $Catalog, [bool]$Defaul
     $taskFramework = Join-Path $taskOut 'framework'
     & (Join-Path $PSScriptRoot 'test-framework.ps1') -Evidence $taskFramework | Out-Host
     $taskCoverage = Join-Path $taskOut 'coverage.out'
-    & go test @($taskCatalog.l1_packages) -count=1 -timeout=12m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
+    & go test @($taskCatalog.l1_packages) -count=1 -timeout=20m -json "-coverprofile=$taskCoverage" 1> (Join-Path $taskOut 'l1.jsonl') 2> (Join-Path $taskOut 'l1-stderr.log')
     $taskUnitCode = $LASTEXITCODE
     # The two formal native extensions are part of L1, including on machines
     # without model credentials or a running Orca instance.

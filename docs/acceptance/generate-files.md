@@ -17,3 +17,13 @@
 曾有 execute/1 回归因内容 final 检查范围过宽失败，现限定为内容 workflow，原失败日志保留。真实链中调用方曾不接受 input_file、提前采用 settling、模型抄错引用摘要；调用方分别修复来源类型、等待正常停止、由平台核验原 Git 后填写摘要，未放宽 Runner 原始字节检查。每次新现场独立验证，没有重发未知请求。
 
 当前仅交付配套源码与隔离验证。未部署安装版，未以本机隔离 provider 代替真实外部 GitHub/Gitea PR 或浏览器资格。
+
+## 2026-11-02 后续授权：修复完整 L1
+
+用户要求修复 Runner L1 后把两仓 PR 转正式。原三处失败已修复：边界扫描改为枚举全部实际 execution 子目录，保留 forbidden 规则和负例；报告恢复夹具通过正式 FreezeInput 补齐原预算，并额外核对恢复后的 Prompt/Budget 不变；样本流测试在锁内保存接收时间、等待墙钟晚于原接收时间后 Drain，保留严格 Before 并逐项核对原时间戳。生产提示、预算门槛和原生接收代码未修改；原夹具正文 old frozen prompt 为 UTF-8 17→17 字节，仅补原预算事实。独立只读审核 review_roadmap_newlines 对三处实际差异复审无发现。
+
+- 定向 `diagnostics/runner-l1-repair-owner-20261102T161529692Z/go-test.jsonl`：22 项含子例通过，零 fail/skip；原预算缺失拒绝等反例保留。
+- `diagnostics/orca-feed-repeat-20261102T161530849Z/go-test.jsonl`：样本流叶例重复 100 次全部通过（父/子共 200 个 pass 事件），零 fail/skip。
+- 同步 Runner main=761f916af352d22f51eab4b5967f9a390eeebd17 后，干净提交 06a9214ad54dcaa9283368103de80be1c73e602f 的完整 L1 `test-results/runner-L1-repaired-20261102T161644437Z/summary.json` 仍为失败：三处原失败已通过、734 个顶层通过，但 application 整包达到固定 12 分钟后 panic，TestRAAuditLifecycle 仍在正常执行原 Git 调查。framework、29 项终端扩展、native compile/零匹配守卫均通过。该失败不改写为成功。
+- 聚合预算调整 12m→20m，包/用例清单、允许的原生 opt-in skip、断言及各操作/用例期限不变；不排除应用包、不拆分重选以伪装完整通过。最终完整入口复验结果完成后追加。
+- 配套真实链使用上述干净 Runner 构建 EXE SHA256=41de9144c4c999298628e24511f24767f5f3cb5d2959b23edfd80fc55b35be08，source digest=30dc64bec16156fdb0e62af9b5911d4c21392aa5bccf1789e44d7a8f2cba1463。`diagnostics/live-runner-l1-repaired-20261102T161722633Z` 被模型抄错 confirmed_digest 的 schema 校验拒绝，原 Run stopped、resources_settled=true，原失败保留；独立新现场 `diagnostics/live-runner-l1-repaired-confirmation-20261102T162140859Z/summary.json` 通过（243.930s），两次 generate、六份文档、实际隔离 Git/provider 发布合并与 SQLite 两任务一依赖，公开正常停止及资源结算通过。无原请求重发或校验放宽。
