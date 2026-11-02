@@ -1,6 +1,6 @@
 # Spec：Orca 双端原生 Runner 候选 B5
 
-日期：2026-11-02。状态：候选实现已接线，受控验证已执行；真实 Runner 资格与实施后独立审计进行中，B5 未签收。依据[长期设计 §6.2–6.3](orca-capability-layer.spec.md#62-b5-的候选生产接线和真实-runner-验收)，对应 [Plan](orca-shared-native-runner.plan.md)。调查基线 `c9b9c4b`，B0–B4d 已完成；B4d 唯一审计 P2 已独立修复并关闭。
+日期：2026-11-02。状态：已实施，OSR-01–05 全部通过；最终 ac361dd 同构建四场真实资格及实施后独立审计均已闭环。依据[长期设计 §6.2–6.3](orca-capability-layer.spec.md#62-b5-的候选生产接线和真实-runner-验收)，对应 [Plan](orca-shared-native-runner.plan.md)。调查基线 `c9b9c4b`，B0–B4d 已完成；B4d 唯一审计 P2 已独立修复并关闭。
 
 ## 1. 候选支持与合同
 

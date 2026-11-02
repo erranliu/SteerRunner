@@ -1,6 +1,6 @@
 # Plan：Orca 双端原生 Runner 候选 B5
 
-日期：2026-11-02。状态：候选实现已接线，受控验证已执行；真实 Runner 资格与实施后独立审计进行中，B5 未签收。依据 [Spec](orca-shared-native-runner.spec.md) 和[长期路线](orca-capability-layer.spec.md)。本批包含候选实现与真实资格两个依赖阶段，不能只完成前者便签收 B5。
+日期：2026-11-02。状态：已实施，OSR-01–05 全部通过；最终 ac361dd 同构建四场真实资格及实施后独立审计均已闭环。依据 [Spec](orca-shared-native-runner.spec.md) 和[长期路线](orca-capability-layer.spec.md)。本批包含候选实现与真实资格两个依赖阶段，不能只完成前者便签收 B5。
 
 ## P0 候选范围与固定格式
 
