@@ -1,4 +1,4 @@
-package orca
+package orcatransport
 
 import (
 	"context"
@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
@@ -82,7 +83,7 @@ func TestOrcaNativeInputPagesRequireExactlyOneOriginalUser(t *testing.T) {
 			})
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
-			input, err := QueryNativeInput(ctx, "", "runtime", "provider", "original.jsonl", 10)
+			input, err := queryNativeInput(ctx, "", "runtime", "provider", "original.jsonl", 10)
 			ok := mode == "single" || mode == "paged"
 			if (err == nil) != ok || ok && (input.ID != "original" || input.Text != "original full prompt" || input.Baseline != 10) {
 				t.Fatal(mode, input, err)
@@ -128,11 +129,11 @@ func TestOrcaNativeInputCannotCombineDifferentMainRecords(t *testing.T) {
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
 			p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}
-			before, err := QueryOriginalAgent(ctx, "", p, "tab:leaf")
+			before, err := native.QueryOriginalAgent(ctx, "", orcaStateResource(p), "tab:leaf")
 			if err != nil {
 				t.Fatal(err)
 			}
-			after, err := QueryOriginalInput(ctx, "", p, "tab:leaf", 10, before)
+			after, err := queryOriginalInput(ctx, "", p, "tab:leaf", 10, before)
 			if (err == nil) != (mode == "same") || mode == "same" && after.NativeInput == nil {
 				t.Fatal("mixed source acquired input proof", mode, after.NativeInput, err)
 			}
@@ -143,7 +144,7 @@ func TestOrcaNativeInputCannotCombineDifferentMainRecords(t *testing.T) {
 func TestOrcaNativeInputQueryRejectsIdentityChangeDuringRead(t *testing.T) {
 	for _, mode := range []string{"same", "provider", "path", "marker", "main", "boundary", "restored", "interrupted", "tool-output", "prompt", "authority", "incarnation", "revision-backwards"} {
 		t.Run(mode, func(t *testing.T) {
-			before := AgentState{PaneKey: "tab:leaf", AgentType: "codex", MainAgent: &MainAgentState{State: "working", StateStartedAt: 11}, TurnStartedAt: 15, UpdatedAt: 20, MetadataObservation: &StateObservation{Origin: "hook", Kind: "transition", AuthorityID: "authority", Incarnation: 1, Revision: 12, ObservedAt: 20}}
+			before := native.AgentState{PaneKey: "tab:leaf", AgentType: "codex", MainAgent: &native.MainAgentState{State: "working", StateStartedAt: 11}, TurnStartedAt: 15, UpdatedAt: 20, MetadataObservation: &native.StateObservation{Origin: "hook", Kind: "transition", AuthorityID: "authority", Incarnation: 1, Revision: 12, ObservedAt: 20}}
 			before.ProviderSession.ID, before.ProviderSession.TranscriptPath = "provider", "original.jsonl"
 			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
 				state := map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "mainAgent": map[string]any{"state": "working", "stateStartedAt": 11}, "turnStartedAt": 15, "updatedAt": 20, "providerSession": map[string]string{"id": "provider", "transcriptPath": "original.jsonl"}}
@@ -190,7 +191,7 @@ func TestOrcaNativeInputQueryRejectsIdentityChangeDuringRead(t *testing.T) {
 			})
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
-			s, err := QueryOriginalInput(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}, "tab:leaf", 10, before)
+			s, err := queryOriginalInput(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}, "tab:leaf", 10, before)
 			if (err == nil) != (mode == "same") || mode == "same" && (s.NativeInput == nil || s.NativeInput.Text != "original") {
 				t.Fatal(mode, s.NativeInput, err)
 			}

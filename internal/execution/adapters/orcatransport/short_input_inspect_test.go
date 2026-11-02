@@ -45,10 +45,10 @@ func TestShortInputProbeInspect(t *testing.T) {
 	state, err := native.QueryState(ctx, target.Environment, target.Runtime, "id:"+terminal.WorktreeID)
 	record := map[string]any{"query_at": time.Now().UTC(), "state": state, "state_error": errorText(err)}
 	if err == nil {
-		decoded, e := native.DecodeOriginalState(state, identity)
+		decoded, e := native.DecodeOriginalState(state, orcaStateResource(identity))
 		record["decoded"], record["decode_error"] = decoded, errorText(e)
 		if e == nil {
-			sample, e := native.QueryOriginalSample(ctx, target.Environment, identity, decoded.PaneKey)
+			sample, e := native.QueryOriginalSample(ctx, target.Environment, orcaStateResource(identity), decoded.PaneKey)
 			record["original_sample"], record["sample_error"] = sample, errorText(e)
 			if e == nil {
 				// Diagnostic boundary only: the original second input already passed its
@@ -56,7 +56,7 @@ func TestShortInputProbeInspect(t *testing.T) {
 				raw, _ = os.ReadFile(filepath.Join(root, "actual-cli-006.json"))
 				var gate struct{ Started time.Time }
 				_ = json.Unmarshal(raw, &gate)
-				input, e := native.QueryNativeInput(ctx, target.Environment, target.Runtime, sample.ProviderSession.ID, sample.ProviderSession.TranscriptPath, gate.Started.UnixMilli())
+				input, e := queryNativeInput(ctx, target.Environment, target.Runtime, sample.ProviderSession.ID, sample.ProviderSession.TranscriptPath, gate.Started.UnixMilli())
 				record["input"], record["input_error"] = input, errorText(e)
 				if input != nil {
 					record["public_pages"] = input.Pages
@@ -74,7 +74,7 @@ func TestShortInputProbeInspect(t *testing.T) {
 		raw, _ = os.ReadFile(filepath.Join(root, "actual-cli-006.json"))
 		var gate struct{ Started time.Time }
 		_ = json.Unmarshal(raw, &gate)
-		input, e := native.QueryNativeInput(ctx, target.Environment, target.Runtime, saved.Ready.ProviderSession.ID, saved.Ready.ProviderSession.TranscriptPath, gate.Started.UnixMilli())
+		input, e := queryNativeInput(ctx, target.Environment, target.Runtime, saved.Ready.ProviderSession.ID, saved.Ready.ProviderSession.TranscriptPath, gate.Started.UnixMilli())
 		record["input"], record["input_error"], record["source"] = input, errorText(e), "recorded_original_provider_after_cleanup; diagnostic_only"
 		if input != nil {
 			record["public_pages"] = input.Pages

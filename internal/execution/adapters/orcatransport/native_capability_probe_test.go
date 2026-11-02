@@ -248,9 +248,9 @@ func runNativeCapabilityProbe(t *testing.T) {
 	for {
 		raw, e := native.QueryState(ctx, target.Environment, target.Runtime, target.Worktree)
 		if e == nil {
-			ready, e = native.DecodeOriginalState(raw, p)
+			ready, e = native.DecodeOriginalState(raw, orcaStateResource(p))
 			if e == nil {
-				ready, e = native.QueryOriginalAgent(ctx, target.Environment, p, ready.PaneKey)
+				ready, e = native.QueryOriginalAgent(ctx, target.Environment, orcaStateResource(p), ready.PaneKey)
 			}
 		}
 		if e == nil && ready.MainAgent != nil && ready.MainAgent.State == "done" && ready.LastAssistantMessage == "READY" && ready.ProviderSession.ID != "" {
@@ -359,11 +359,11 @@ func runNativeCapabilityProbe(t *testing.T) {
 		}
 		evidence.ManagedEvidence = evidence.ManagedEvidence || state.RemoteReadiness != nil || state.Control != nil || state.TerminalReadiness != nil ||
 			completedTurn.Recorded != nil || completedTurn.Extension != nil || completedTurn.WireFormat != "" || receipt.TurnEvidence.FinalSource != NativeReplySource
-		sample, err := native.QueryOriginalSample(ctx, target.Environment, p, ready.PaneKey)
+		sample, err := native.QueryOriginalSample(ctx, target.Environment, orcaStateResource(p), ready.PaneKey)
 		if err != nil {
 			t.Fatal(err)
 		}
-		verified, err := native.QueryOriginalInput(ctx, target.Environment, p, ready.PaneKey, completedTurn.Native.BaseRootAt, sample.AgentState)
+		verified, err := queryOriginalInput(ctx, target.Environment, p, ready.PaneKey, completedTurn.Native.BaseRootAt, sample.AgentState)
 		writeLocalProbe(t, host, root, fmt.Sprintf("turn-%d-original.json", index+1), verified)
 		writeLocalProbe(t, host, root, fmt.Sprintf("turn-%d-state.json", index+1), state)
 		turn.Provider, turn.Final, turn.Started, turn.Completed, turn.Submits = verified.ProviderSession.ID, receipt.TurnEvidence.LastMessage, completedTurn.Started, completedTurn.Settled, host.businessSubmits.Load()-before

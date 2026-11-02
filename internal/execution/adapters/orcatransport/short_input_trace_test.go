@@ -57,16 +57,16 @@ func (r *shortInputTrace) write(kind string, value any) {
 		r.err = err
 	}
 }
-func traceAgent(s native.AgentState, p b.ProcessIdentity) any {
-	value := map[string]any{"state": s, "metadata_observation": s.MetadataObservation, "thin_metadata": s.ThinMetadata, "can_query_completion_input": s.CanQueryCompletionInput()}
-	if s.NativeInput != nil {
-		value["native_input"], value["public_pages"] = s.NativeInput, s.NativeInput.Pages
-		value["matches_original_query"], value["matches_original_process"] = s.NativeInput.MatchesOriginalQuery(s), s.NativeInput.MatchesOriginalProcess(p)
+func traceAgent(s native.AgentState, p b.ProcessIdentity, input *nativeInput) any {
+	value := map[string]any{"state": s, "metadata_observation": s.MetadataObservation, "thin_metadata": s.ThinMetadata, "can_query_completion_input": canQueryCompletionInput(s)}
+	if input != nil {
+		value["native_input"], value["public_pages"] = input, input.Pages
+		value["matches_original_query"], value["matches_original_process"] = input.MatchesOriginalQuery(s), input.MatchesOriginalProcess(p)
 	}
 	return value
 }
 func traceSample(s native.StateSample, p b.ProcessIdentity) any {
-	return map[string]any{"agent": traceAgent(s.AgentState, p), "received_at": s.ReceivedAt, "sample_kind": s.Kind}
+	return map[string]any{"agent": traceAgent(s.AgentState, p, nil), "received_at": s.ReceivedAt, "sample_kind": s.Kind}
 }
 
 type shortTraceFeed struct {
@@ -126,10 +126,10 @@ func (r *shortInputTrace) attach(l *Lifecycle) {
 		return s, err
 	}
 	input := l.queryInput
-	l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
-		r.write("query.input.begin", map[string]any{"process": p, "pane": pane, "baseline": baseline, "before": traceAgent(before, p)})
+	l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (originalInputState, error) {
+		r.write("query.input.begin", map[string]any{"process": p, "pane": pane, "baseline": baseline, "before": traceAgent(before, p, nil)})
 		s, err := input(ctx, p, pane, baseline, before)
-		r.write("query.input.end", map[string]any{"after": traceAgent(s, p), "error": errorText(err), "identity_error": errors.Is(err, native.ErrStateIdentityChanged), "context_error": errorText(ctx.Err())})
+		r.write("query.input.end", map[string]any{"after": traceAgent(s.AgentState, p, s.NativeInput), "error": errorText(err), "identity_error": errors.Is(err, native.ErrStateIdentityChanged), "context_error": errorText(ctx.Err())})
 		return s, err
 	}
 }
@@ -150,11 +150,11 @@ func (r *shortInputTrace) failure(l *Lifecycle, s b.LifecycleSnapshot, creator n
 	r.write("failure.saved", map[string]any{"input_index": index, "state": state, "error": errorText(err)})
 	ctx, cancel := context.WithTimeout(context.Background(), 25*time.Second)
 	defer cancel()
-	sample, err := native.QueryOriginalSample(ctx, l.profile.Environment, p, pane)
+	sample, err := native.QueryOriginalSample(ctx, l.profile.Environment, orcaStateResource(p), pane)
 	r.write("failure.native", map[string]any{"sample": traceSample(sample, p), "error": errorText(err)})
 	if err == nil {
 		if turn := turnFor(&state, command(s)); turn != nil {
-			input, e := native.QueryNativeInput(ctx, l.profile.Environment, p.RuntimeID, sample.ProviderSession.ID, sample.ProviderSession.TranscriptPath, turn.Native.BaseRootAt)
+			input, e := queryNativeInput(ctx, l.profile.Environment, p.RuntimeID, sample.ProviderSession.ID, sample.ProviderSession.TranscriptPath, turn.Native.BaseRootAt)
 			r.write("failure.public_input", map[string]any{"input": input, "error": errorText(e)})
 			if input != nil {
 				r.write("failure.public_pages", input.Pages)

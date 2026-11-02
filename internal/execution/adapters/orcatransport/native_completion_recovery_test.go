@@ -107,7 +107,7 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 		t.Run(kind, func(t *testing.T) {
 			now := time.Unix(100, 0).UTC()
 			turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
-			turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false)
+			turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false, nil)
 			changed := fixtureState(12, "", "done")
 			changed.LastAssistantMessage = "must not accept"
 			switch kind {
@@ -132,9 +132,9 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 				changed.ToolOutput, changed.Prompt = true, "foreign input"
 			}
 			if kind == "boundary" {
-				turn.Native.signal(changed, &turn, now, false)
+				turn.Native.signal(changed, &turn, now, false, nil)
 			} else {
-				turn.Native.query(changed, &turn, now, false)
+				turn.Native.query(changed, &turn, now, false, nil)
 			}
 			if turn.Native.Conflict == "" || turn.Native.Waiting != "" {
 				t.Fatal("missing prompt hid positive conflict", turn.Native)
@@ -145,7 +145,7 @@ func TestOrcaNativeMissingPromptCannotHideConflict(t *testing.T) {
 			}
 			end := fixtureState(13, turn.Prompt, "done")
 			end.LastAssistantMessage = "later valid-looking final"
-			if turn.Native.query(end, &turn, now.Add(time.Minute), false) {
+			if turn.Native.query(end, &turn, now.Add(time.Minute), false, nil) {
 				t.Fatal("restore or later query erased conflict")
 			}
 		})
@@ -216,23 +216,23 @@ func TestOrcaNativeFinalRetainsVerifiedInputBinding(t *testing.T) {
 func TestOrcaNativeVerifiedFinalSurvivesWaitingDisplay(t *testing.T) {
 	now := time.Unix(100, 0).UTC()
 	turn := Turn{Accepted: true, Started: true, Prompt: "original", Native: nativeBaseline(fixtureState(10, "previous", "done"), now)}
-	turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false)
+	turn.Native.signal(fixtureState(11, turn.Prompt, "working"), &turn, now, false, nil)
 	end := fixtureState(12, turn.Prompt, "done")
 	end.LastAssistantMessage = "Complete original final"
-	turn.Native.signal(end, &turn, now, false)
+	turn.Native.signal(end, &turn, now, false, nil)
 	if !turn.Native.hasFinal() {
 		t.Fatal("original final missing")
 	}
 	waiting := fixtureState(13, turn.Prompt, "waiting")
-	turn.Native.signal(waiting, &turn, now, false)
-	turn.Native.query(waiting, &turn, now, false)
+	turn.Native.signal(waiting, &turn, now, false, nil)
+	turn.Native.query(waiting, &turn, now, false, nil)
 	if turn.Native.diagnostic() != "" || turn.Native.ReplyBody != end.LastAssistantMessage {
 		t.Fatal("later display state revoked original final", turn.Native)
 	}
 	// A subsequent positively identified input boundary is still a conflict.
 	other := fixtureState(14, "", "working")
 	other.Observation.Boundary = true
-	turn.Native.signal(other, &turn, now, false)
+	turn.Native.signal(other, &turn, now, false, nil)
 	if turn.Native.Conflict == "" {
 		t.Fatal("saved final hid an observed foreign input")
 	}

@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 // Opt-in decoding of real local pipe responses, never a fake state generator.
@@ -36,7 +34,7 @@ func TestOrcaLocalPipeNativeEvidence(t *testing.T) {
 	if !report.Local || report.Paired || len(report.Rounds) != 2 {
 		t.Fatal("not a two-round unpaired local sample")
 	}
-	process := b.ProcessIdentity{Kind: "orca_terminal", RuntimeID: report.Fixed.Runtime, WorktreeID: report.Fixed.Worktree, Terminal: report.Fixed.Handle, Incarnation: report.Fixed.Incarnation}
+	process := StateResource{RuntimeID: report.Fixed.Runtime, WorktreeID: report.Fixed.Worktree, Handle: report.Fixed.Handle, IncarnationID: report.Fixed.Incarnation}
 	for _, round := range report.Rounds {
 		t.Run(round.Label, func(t *testing.T) {
 			accepted, started := false, false

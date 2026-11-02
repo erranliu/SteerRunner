@@ -1,6 +1,6 @@
 # Spec：Orca 状态与会话读取 B3
 
-日期：2026-11-02。状态：待实施。依据[长期路线 B3 及职责迁移表](orca-capability-layer.spec.md#43-最小职责迁移表)，对应 [Plan](orca-state-session-capability.plan.md)。调查基线 `d30cd2b`；消费已完成的 B0 能力结论及 B1/B2 公共能力。
+日期：2026-11-02。状态：已实现、定向及两包全集通过，待实施后独立审计；见[验收](../acceptance/orca-state-session-capability.md)。依据[长期路线 B3 及职责迁移表](orca-capability-layer.spec.md#43-最小职责迁移表)，对应 [Plan](orca-state-session-capability.plan.md)。调查基线 `d30cd2b`；消费已完成的 B0 能力结论及 B1/B2 公共能力。
 
 ## 1. 目标
 
@@ -12,7 +12,7 @@
 
 ### 2.1 状态和资源
 
-状态 API/StateFeedFactory 使用 Orca 自有 StateResource，包含 runtime、worktree、terminal handle、incarnation；连接 environment 仍明确传入。DecodeOriginalState、OpenStateFeed、QueryOriginalAgent/Sample 及本机 query feed 不再接收 backend.ProcessIdentity。执行适配器在边界转换，原输入证明中对完整执行 ProcessIdentity 的比较留在执行侧，不降格为只比较四个字段。
+状态 API/原生 feed 构造使用 Orca 自有 StateResource，包含 runtime、worktree、terminal handle、incarnation；连接 environment 仍明确传入。DecodeOriginalState、OpenStateFeed、QueryOriginalAgent/Sample 及本机 query feed 不再接收 backend.ProcessIdentity。执行适配器在边界转换，原输入证明中对完整执行 ProcessIdentity 的比较留在执行侧，不降格为只比较四个字段。无消费者的原协议 StateFeedFactory 类型声明随之退役，执行侧保留实际使用的窄 factory。
 
 AgentState、StateSample 继续表达原生原 pane/provider/main 状态、authority/revision、元数据有无、完整性/断线和 initial/query/notification/接收时间。原查询中的同 pane/provider/主状态元数据交叉核对属于原生资源事实，保持；thin 元数据只表示原投影缺失事实，不在协议层提供“可以认领输入”的方法。
 

@@ -130,10 +130,10 @@ func TestNativeCRLFPastePreservesOriginalInputAndCompletion(t *testing.T) {
 			}
 			thinInputRPC(t, state.Process, end, transcript, mode == "duplicate-input", true)
 			l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.StateSample, error) {
-				return native.QueryOriginalSample(ctx, "", p, pane)
+				return native.QueryOriginalSample(ctx, "", orcaStateResource(p), pane)
 			}
-			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (native.AgentState, error) {
-				return native.QueryOriginalInput(ctx, "", p, pane, baseline, before)
+			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (originalInputState, error) {
+				return queryOriginalInput(ctx, "", p, pane, baseline, before)
 			}
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
 			r, message, err := l.observeOnce(context.Background(), s)

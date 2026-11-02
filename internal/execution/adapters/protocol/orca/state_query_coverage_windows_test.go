@@ -12,8 +12,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func TestOriginalAgentQueryProviderMetadataAvailability(t *testing.T) {
@@ -40,7 +38,7 @@ func TestOriginalAgentQueryProviderMetadataAvailability(t *testing.T) {
 					ipcReply(conn, req, "runtime", map[string]any{"worktree": "original", "tabs": []any{map[string]any{"terminal": "terminal", "incarnationId": "incarnation", "parentTabId": "tab", "leafId": leaf, "agentStatus": map[string]any{"providerSession": map[string]string{"id": provider}}}}})
 				}
 			})
-			p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "original", Terminal: "terminal", Incarnation: "incarnation"}
+			p := StateResource{RuntimeID: "runtime", WorktreeID: "original", Handle: "terminal", IncarnationID: "incarnation"}
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
 			_, err := QueryOriginalAgent(ctx, "", p, "tab:leaf")
@@ -126,7 +124,7 @@ func TestOriginalAgentQueryCoversLimitedSnapshot(t *testing.T) {
 			})
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
-			state, err := QueryOriginalAgent(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "original", Terminal: "terminal", Incarnation: "incarnation"}, "tab:leaf")
+			state, err := QueryOriginalAgent(ctx, "", StateResource{RuntimeID: "runtime", WorktreeID: "original", Handle: "terminal", IncarnationID: "incarnation"}, "tab:leaf")
 			if scenario.ok {
 				if err != nil || state.LastAssistantMessage != "original" || state.ProviderSession.ID != "provider" {
 					t.Fatal("original query lost target beyond first page", state, err)
@@ -175,7 +173,7 @@ func TestOriginalAgentQueryRetainedStampRequiresSameMainRecord(t *testing.T) {
 			})
 			ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 			defer cancel()
-			s, err := QueryOriginalAgent(ctx, "", b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "original", Terminal: "terminal", Incarnation: "incarnation"}, "tab:leaf")
+			s, err := QueryOriginalAgent(ctx, "", StateResource{RuntimeID: "runtime", WorktreeID: "original", Handle: "terminal", IncarnationID: "incarnation"}, "tab:leaf")
 			if err != nil || (s.TurnStartedAt == 10) != (mode == "same" || mode == "matching-query-marker") || s.LastAssistantMessage != "original" {
 				t.Fatal("query mixed independent records", s, err)
 			}

@@ -3,20 +3,18 @@ package orca
 import (
 	"context"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 // Local IPC exposes authoritative snapshots, not notifications. The lifecycle
 // owns query timing and completion proof; this feed never synthesizes events.
 type localQueryFeed struct {
-	process b.ProcessIdentity
+	process StateResource
 	initial StateSample
 	closed  context.Context
 	cancel  context.CancelFunc
 }
 
-func openLocalQueryFeed(ctx context.Context, p b.ProcessIdentity) (StateFeed, error) {
+func openLocalQueryFeed(ctx context.Context, p StateResource) (StateFeed, error) {
 	raw, err := QueryState(ctx, "", p.RuntimeID, "id:"+p.WorktreeID)
 	if err != nil {
 		return nil, err

@@ -88,13 +88,13 @@ func TestNativeFollowupAfterCompletedToolTurn(t *testing.T) {
 			}
 			thinInputRPCAt(t, state.Process, current, text, false, 13001, true)
 			l.queryNative = func(ctx context.Context, p b.ProcessIdentity, pane string) (native.StateSample, error) {
-				return native.QueryOriginalSample(ctx, "", p, pane)
+				return native.QueryOriginalSample(ctx, "", orcaStateResource(p), pane)
 			}
-			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, sample native.AgentState) (native.AgentState, error) {
+			l.queryInput = func(ctx context.Context, p b.ProcessIdentity, pane string, baseline int64, sample native.AgentState) (originalInputState, error) {
 				if baseline != 12000 {
 					t.Fatal("wrong second baseline", baseline)
 				}
-				return native.QueryOriginalInput(ctx, "", p, pane, baseline, sample)
+				return queryOriginalInput(ctx, "", p, pane, baseline, sample)
 			}
 			l.clock = func() time.Time { return time.Unix(162, 0).UTC() }
 			r, _, err = l.observeOnce(context.Background(), s)

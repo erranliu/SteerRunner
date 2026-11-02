@@ -47,7 +47,7 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			for _, kind := range []string{"success", "agent-changed", "missing-agent", "provider-changed", "missing-root", "unreported-outcome", "explicit-unknown", "failed", "cancelled", "session-start", "child-working", "tool-output", "restored", "truncated"} {
 				t.Run(kind, func(t *testing.T) {
 					turn := Turn{Accepted: true, Started: true, Prompt: "task", Native: nativeBaseline(base, now)}
-					turn.Native.signal(start, &turn, now, false)
+					turn.Native.signal(start, &turn, now, false, nil)
 					current := end
 					root := *end.MainAgent
 					current.MainAgent = &root
@@ -79,15 +79,15 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 					case "truncated":
 						current.LastAssistantMessage = strings.Repeat("x", 8000)
 					}
-					completed := turn.Native.query(current, &turn, now.Add(time.Second), false)
+					completed := turn.Native.query(current, &turn, now.Add(time.Second), false, nil)
 					want := kind == "success" || kind == "truncated" || kind == "unreported-outcome" && agent == "codex"
 					if completed != want {
 						t.Fatal("wrong root completion decision", completed, turn.Native)
 					}
-					if kind == "agent-changed" && (turn.Native.Conflict == "" || turn.Native.query(end, &turn, now.Add(2*time.Second), false)) {
+					if kind == "agent-changed" && (turn.Native.Conflict == "" || turn.Native.query(end, &turn, now.Add(2*time.Second), false, nil)) {
 						t.Fatal("a queried agent replacement was forgotten", turn.Native)
 					}
-					if kind == "missing-agent" && (turn.Native.Conflict != "" || !turn.Native.query(end, &turn, now.Add(2*time.Second), false)) {
+					if kind == "missing-agent" && (turn.Native.Conflict != "" || !turn.Native.query(end, &turn, now.Add(2*time.Second), false, nil)) {
 						t.Fatal("temporarily missing metadata was treated as an agent replacement", turn.Native)
 					}
 					if kind == "success" && turn.Native.ReplyBody != end.LastAssistantMessage || kind == "truncated" && turn.Native.ReplyDigest != "" {
@@ -107,13 +107,13 @@ func TestCodexNativeEvidenceIsolation(t *testing.T) {
 			turn := Turn{Accepted: true, Started: true, Prompt: "task", Native: restored}
 			missing := start
 			missing.AgentType = ""
-			turn.Native.signal(missing, &turn, now, false)
+			turn.Native.signal(missing, &turn, now, false, nil)
 			if turn.Native.WorkingAt != 0 || turn.Native.Conflict != "" {
 				t.Fatal("missing agent metadata started or permanently failed the turn")
 			}
 			foreign := start
 			foreign.AgentType = "foreign"
-			turn.Native.signal(foreign, &turn, now, false)
+			turn.Native.signal(foreign, &turn, now, false, nil)
 			if turn.Native.WorkingAt != 0 || turn.Native.Conflict == "" {
 				t.Fatal("foreign agent hook started the original turn")
 			}

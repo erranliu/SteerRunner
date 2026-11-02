@@ -140,10 +140,10 @@ func runNativeInputLiveProbe(t *testing.T) {
 		raw, e := native.QueryState(startup, target.Environment, target.Runtime, "id:"+identity.WorktreeID)
 		var state native.AgentState
 		if e == nil {
-			state, e = native.DecodeOriginalState(raw, identity)
+			state, e = native.DecodeOriginalState(raw, orcaStateResource(identity))
 		}
 		if e == nil {
-			sample, queryErr := native.QueryOriginalSample(startup, target.Environment, identity, state.PaneKey)
+			sample, queryErr := native.QueryOriginalSample(startup, target.Environment, orcaStateResource(identity), state.PaneKey)
 			e = queryErr
 			state = sample.AgentState
 		}
@@ -294,12 +294,12 @@ func runNativeInputLiveProbe(t *testing.T) {
 				if e != nil || r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || strings.TrimSpace(r.TurnEvidence.LastMessage) != marker {
 					t.Fatal("original final unverified", e, r.Diagnostic)
 				}
-				sample, err := native.QueryOriginalSample(ctx, target.Environment, identity, ready.PaneKey)
+				sample, err := native.QueryOriginalSample(ctx, target.Environment, orcaStateResource(identity), ready.PaneKey)
 				if err != nil {
 					t.Fatal(err)
 				}
-				verified, err := native.QueryOriginalInput(ctx, target.Environment, identity, ready.PaneKey, ready.MainAgent.StateStartedAt, sample.AgentState)
-				if err != nil || verified.NativeInput == nil || verified.NativeInput.Text != nativePromptText(prompt) || !verified.NativeInput.MatchesOriginalProcess(identity) || !verified.NativeInput.MatchesOriginalQuery(verified) || verified.LastAssistantMessage != marker || verified.MainAgent.StateStartedAt <= ready.MainAgent.StateStartedAt {
+				verified, err := queryOriginalInput(ctx, target.Environment, identity, ready.PaneKey, ready.MainAgent.StateStartedAt, sample.AgentState)
+				if err != nil || verified.NativeInput == nil || verified.NativeInput.Text != nativePromptText(prompt) || !verified.NativeInput.MatchesOriginalProcess(identity) || !verified.NativeInput.MatchesOriginalQuery(verified.AgentState) || verified.LastAssistantMessage != marker || verified.MainAgent.StateStartedAt <= ready.MainAgent.StateStartedAt {
 					t.Fatal("independent original input/final mismatch", err)
 				}
 				record["original_query"] = verified

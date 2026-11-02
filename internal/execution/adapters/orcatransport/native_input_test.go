@@ -10,8 +10,8 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-func recordedInput(input b.TurnInput, s native.AgentState) *native.NativeInput {
-	return &native.NativeInput{ID: "original-user-row", Text: input.Prompt, Timestamp: 11001, Baseline: 10000, Observation: s.Observation}
+func recordedInput(input b.TurnInput, s native.AgentState) *nativeInput {
+	return &nativeInput{ID: "original-user-row", Text: input.Prompt, Timestamp: 11001, Baseline: 10000, Observation: s.Observation}
 }
 
 func TestOrcaNativeInputQueryRecoversCompactedWorkingAndFinal(t *testing.T) {
@@ -38,12 +38,13 @@ func TestOrcaNativeInputQueryRecoversCompactedWorkingAndFinal(t *testing.T) {
 			feed.initial, feed.current = progress, progress
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
 			queries := 0
-			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, baseline int64, current native.AgentState) (native.AgentState, error) {
+			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, baseline int64, rawCurrent native.AgentState) (originalInputState, error) {
+				current := originalInputState{AgentState: rawCurrent}
 				queries++
 				if baseline != 10000 {
 					t.Fatal("wrong original baseline", baseline)
 				}
-				current.NativeInput = recordedInput(input, current)
+				current.NativeInput = recordedInput(input, current.AgentState)
 				return current, nil
 			}
 			r, _, err = l.observeOnce(context.Background(), s)
@@ -95,8 +96,9 @@ func TestOrcaNativeInputCachedBindingCannotCrossBoundary(t *testing.T) {
 			progress.Prompt, progress.TurnStartedAt = "", 11500
 			feed.current = progress
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
-			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, current native.AgentState) (native.AgentState, error) {
-				current.NativeInput = recordedInput(input, current)
+			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, rawCurrent native.AgentState) (originalInputState, error) {
+				current := originalInputState{AgentState: rawCurrent}
+				current.NativeInput = recordedInput(input, current.AgentState)
 				return current, nil
 			}
 			r, _, err = l.observeOnce(context.Background(), s)
@@ -151,8 +153,9 @@ func TestOrcaNativeInputQueryCannotHideLaterNotification(t *testing.T) {
 			end.TurnStartedAt, end.LastAssistantMessage = 11500, "original result"
 			feed.current = end
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
-			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, current native.AgentState) (native.AgentState, error) {
-				current.NativeInput = recordedInput(input, current)
+			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, rawCurrent native.AgentState) (originalInputState, error) {
+				current := originalInputState{AgentState: rawCurrent}
+				current.NativeInput = recordedInput(input, current.AgentState)
 				later := messageProgress(input, 13, "foreign progress")
 				later.TurnStartedAt = 12500
 				if fault == "foreign-prompt" {
@@ -193,7 +196,8 @@ func TestOrcaNativeInputIdentityErrorRemainsDurable(t *testing.T) {
 			feed.current = progress
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
 			calls := 0
-			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, current native.AgentState) (native.AgentState, error) {
+			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, rawCurrent native.AgentState) (originalInputState, error) {
+				current := originalInputState{AgentState: rawCurrent}
 				calls++
 				if mode == "identity-error" {
 					return current, fmt.Errorf("%w: original pane changed", native.ErrStateIdentityChanged)
@@ -204,7 +208,7 @@ func TestOrcaNativeInputIdentityErrorRemainsDurable(t *testing.T) {
 				} else {
 					after.SessionBoundary = true
 				}
-				return after, fmt.Errorf("original native input changed during read")
+				return originalInputState{AgentState: after}, fmt.Errorf("original native input changed during read")
 			}
 			r, _, err = l.observeOnce(context.Background(), s)
 			if err != nil {
@@ -240,8 +244,9 @@ func TestOrcaNativeInputCachedBindingHandlesFeedAndStaleSamples(t *testing.T) {
 			progress.Prompt, progress.TurnStartedAt = "", 11500
 			feed.current = progress
 			l.clock = func() time.Time { return time.Unix(131, 0).UTC() }
-			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, current native.AgentState) (native.AgentState, error) {
-				current.NativeInput = recordedInput(input, current)
+			l.queryInput = func(_ context.Context, _ b.ProcessIdentity, _ string, _ int64, rawCurrent native.AgentState) (originalInputState, error) {
+				current := originalInputState{AgentState: rawCurrent}
+				current.NativeInput = recordedInput(input, current.AgentState)
 				return current, nil
 			}
 			r, _, err = l.observeOnce(context.Background(), s)
@@ -315,30 +320,30 @@ func TestOrcaNativeInputProofRejectsUnboundHistory(t *testing.T) {
 			end := fixtureState(12, "", "done")
 			end.TurnStartedAt = 11500
 			end.LastAssistantMessage = "unverified"
-			end.NativeInput = recordedInput(input, end)
+			evidence := recordedInput(input, end)
 			switch fault {
 			case "text":
-				end.NativeInput.Text = "foreign"
+				evidence.Text = "foreign"
 			case "prefix-only":
-				end.NativeInput.Text = input.Prompt + "foreign suffix"
+				evidence.Text = input.Prompt + "foreign suffix"
 			case "baseline":
-				end.NativeInput.Baseline--
+				evidence.Baseline--
 			case "missing-id":
-				end.NativeInput.ID = ""
+				evidence.ID = ""
 			case "old-row":
-				end.NativeInput.Timestamp = 10000
+				evidence.Timestamp = 10000
 			case "future-row":
-				end.NativeInput.Timestamp = end.UpdatedAt + 1
+				evidence.Timestamp = end.UpdatedAt + 1
 			case "authority":
-				end.NativeInput.Observation.AuthorityID = "other"
+				evidence.Observation.AuthorityID = "other"
 			case "incarnation":
-				end.NativeInput.Observation.Incarnation++
+				evidence.Observation.Incarnation++
 			case "revision":
-				end.NativeInput.Observation.Revision = 0
+				evidence.Observation.Revision = 0
 			case "observation-time":
-				end.NativeInput.Observation.ObservedAt = 0
+				evidence.Observation.ObservedAt = 0
 			case "observation-before-main":
-				end.NativeInput.Observation.ObservedAt = end.MainAgent.StateStartedAt - 1
+				evidence.Observation.ObservedAt = end.MainAgent.StateStartedAt - 1
 			case "no-start":
 				turn.Started = false
 			case "no-acceptance":
@@ -363,7 +368,7 @@ func TestOrcaNativeInputProofRejectsUnboundHistory(t *testing.T) {
 			case "conflict":
 				turn.Native.Conflict = "historical conflict"
 			}
-			turn.Native.query(end, turn, time.Unix(131, 0), false)
+			turn.Native.query(end, turn, time.Unix(131, 0), false, evidence)
 			if turn.Native.hasFinal() {
 				t.Fatal("foreign history accepted", fault)
 			}

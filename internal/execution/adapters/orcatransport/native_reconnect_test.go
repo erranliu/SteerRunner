@@ -81,7 +81,7 @@ func TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence(t *test
 			now := time.Unix(100, 0).UTC()
 			turn := Turn{Accepted: true, Started: true, Prompt: "original"}
 			turn.Native = nativeBaseline(fixtureState(10, "previous", "done"), now)
-			turn.Native.signal(messageStart(b.TurnInput{Prompt: turn.Prompt}), &turn, now, false)
+			turn.Native.signal(messageStart(b.TurnInput{Prompt: turn.Prompt}), &turn, now, false, nil)
 			end := fixtureState(12, "", "done")
 			end.TurnStartedAt = 11000
 			end.LastAssistantMessage = "foreign or unverifiable result"
@@ -134,7 +134,7 @@ func TestOrcaCompletionQueryRetainedStartRejectsForeignOrMissingEvidence(t *test
 			case "truncated":
 				end.LastAssistantMessage = strings.Repeat("x", 8000)
 			}
-			turn.Native.query(end, &turn, now.Add(time.Minute), false)
+			turn.Native.query(end, &turn, now.Add(time.Minute), false, nil)
 			if turn.Native.hasFinal() {
 				t.Fatal("unverified result became a final", turn.Native)
 			}

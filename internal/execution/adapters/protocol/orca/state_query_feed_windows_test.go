@@ -7,8 +7,6 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func TestOrcaLocalQueryFeed(t *testing.T) {
@@ -40,7 +38,7 @@ func TestOrcaLocalQueryFeed(t *testing.T) {
 		}
 	})
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	p := b.ProcessIdentity{RuntimeID: "runtime", WorktreeID: "worktree", Terminal: "terminal", Incarnation: "incarnation"}
+	p := StateResource{RuntimeID: "runtime", WorktreeID: "worktree", Handle: "terminal", IncarnationID: "incarnation"}
 	feed, err := OpenStateFeed(ctx, "", p)
 	cancel() // Initialization timeout does not own the feed lifetime.
 	if err != nil {
