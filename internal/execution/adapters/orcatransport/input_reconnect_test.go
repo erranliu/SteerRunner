@@ -6,11 +6,19 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
+
+// The query reaches its real readiness deadline before reporting the original
+// transient provider failure; setup scheduling cannot consume a tiny test budget.
+type deadlineStateFeed struct{ *countedStateFeed }
+
+func (f *deadlineStateFeed) Query(ctx context.Context) (native.StateSample, error) {
+	<-ctx.Done()
+	return f.countedStateFeed.Query(ctx)
+}
 
 func TestOrcaPreSendReconnect(t *testing.T) {
 	for _, scenario := range []string{"open", "repeated-open", "query", "agent-query", "agent-query-exhausted", "provider-query", "provider-query-exhausted", "identity", "authentication", "provider-changed", "terminal-changed", "exhausted", "cancelled"} {
@@ -29,11 +37,8 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 			transient := &native.StateConnectionError{Cause: errors.New("dial failed")}
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
-			if scenario == "exhausted" || scenario == "agent-query-exhausted" || scenario == "provider-query-exhausted" {
-				l.profile.WaitTimeout = "20ms"
-			}
 			opens := 0
-			l.stateFactory = func(context.Context, string, b.ProcessIdentity) (native.StateFeed, error) {
+			l.stateFactory = func(openCtx context.Context, _ string, _ b.ProcessIdentity) (native.StateFeed, error) {
 				opens++
 				if scenario == "repeated-open" && opens < 3 {
 					return nil, transient
@@ -52,11 +57,20 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 				case "query":
 					first.err = transient
 					return first, nil
+				case "exhausted":
+					<-openCtx.Done()
+					return nil, transient
 				case "agent-query", "agent-query-exhausted":
 					first.err = native.ErrOriginalMainAgentUnavailable
+					if scenario == "agent-query-exhausted" {
+						return &deadlineStateFeed{first}, nil
+					}
 					return first, nil
 				case "provider-query", "provider-query-exhausted":
 					first.err = fmt.Errorf("%w: provider metadata currently unavailable", native.ErrOriginalMainAgentUnavailable)
+					if scenario == "provider-query-exhausted" {
+						return &deadlineStateFeed{first}, nil
+					}
 					return first, nil
 				case "provider-changed":
 					restored.initial.ProviderSession.ID = "foreign"
@@ -87,6 +101,14 @@ func TestOrcaPreSendReconnect(t *testing.T) {
 			} else {
 				if err == nil || r.Disposition != b.OperationRejected || host.nativeSends != 0 {
 					t.Fatalf("unverified readiness sent input: %+v, %v", r, err)
+				}
+				if scenario == "exhausted" || scenario == "agent-query-exhausted" || scenario == "provider-query-exhausted" {
+					if !errors.Is(err, context.DeadlineExceeded) {
+						t.Fatal("original readiness deadline was not exhausted", err)
+					}
+					if scenario != "exhausted" && first.queries != 1 {
+						t.Fatal("deadline did not occur in the original query", first.queries)
+					}
 				}
 				if (scenario == "identity" || scenario == "authentication" || scenario == "cancelled" || scenario == "exhausted" || scenario == "agent-query-exhausted" || scenario == "provider-query-exhausted") && opens != 1 {
 					t.Fatal("terminal failure retried", opens)
@@ -152,10 +174,15 @@ func TestOrcaPrepareSessionReconnect(t *testing.T) {
 
 func TestOrcaPreSendReconnectCancellationDuringBackoff(t *testing.T) {
 	l, _, s := fixture(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	opens := 0
 	l.stateFactory = func(context.Context, string, b.ProcessIdentity) (native.StateFeed, error) {
 		opens++
-		return nil, &native.StateConnectionError{Cause: context.DeadlineExceeded}
+		// Deliver cancellation after the first connection attempt, so the
+		// recovery backoff observes it without a setup-time scheduling race.
+		cancel()
+		return nil, &native.StateConnectionError{Cause: errors.New("dial failed")}
 	}
 	// Use a valid original terminal so the failure occurs in connection setup.
 	r, _, err := l.Execute(context.Background(), request(s, b.LifecyclePrepareWorkspace, b.LifecycleInput{Workspace: &s.WorkspacePlan}))
@@ -163,10 +190,8 @@ func TestOrcaPreSendReconnectCancellationDuringBackoff(t *testing.T) {
 		t.Fatal(err)
 	}
 	bind(&s, r)
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Millisecond)
-	defer cancel()
 	_, err = l.ready(ctx, s)
-	if !errors.Is(err, context.DeadlineExceeded) || opens != 1 {
+	if !errors.Is(err, context.Canceled) || opens != 1 {
 		t.Fatal("cancellation lost", err)
 	}
 }
