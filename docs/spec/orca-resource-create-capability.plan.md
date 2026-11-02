@@ -1,6 +1,6 @@
 # Plan：Orca 资源创建 B4b
 
-日期：2026-11-02。状态：待实施。依据 [Spec](orca-resource-create-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4a 审计确认问题先独立修复。
+日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据 [Spec](orca-resource-create-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4a 审计确认问题先独立修复。
 
 ## P0 范围
 
@@ -24,3 +24,5 @@ workflow TestSRExecutionDependencyBoundary、git diff --check、旧构造删除�
 ## P3 收口
 
 按 ORC-01–04 保存验收、命令/源码身份/原日志，更新路线和索引，提交实现；独立只读审计确认修复另提 commit。所有批次完成后才提统一 PR。
+
+实施与旧实现删除、实际测试命中及范围见[验收](../acceptance/orca-resource-create-capability.md)。

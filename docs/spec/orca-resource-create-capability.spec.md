@@ -1,6 +1,6 @@
 # Spec：Orca 资源创建 B4b
 
-日期：2026-11-02。状态：待实施。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-create-capability.plan.md)。调查基线 `d949e1c`。B4a 的确认问题须先独立修复。
+日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-resource-create-capability.plan.md)。调查基线 `d949e1c`。B4a 的确认问题须先独立修复。
 
 ## 目标和边界
 
@@ -26,3 +26,5 @@ workspaceCreation、initialTerminalCheckpoint、creationPlan/Result/Started、Pr
 | ORC-04 | 验证与审计闭环 | 受控测试实际命中、依赖/持久白名单、直接证据及提交后独立审计 |
 
 本批保持原 wire 和执行合同，采用受控等价验证，不新增真实资源/模型或 B5 资格。
+
+实施与旧实现删除、实际测试命中及范围见[验收](../acceptance/orca-resource-create-capability.md)。
