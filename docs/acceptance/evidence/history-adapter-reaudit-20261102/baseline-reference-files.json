@@ -1,0 +1,944 @@
+{
+  "TestHistoryDiscoveryRejectsWorkspaceReplacementAndKeepsSourceAttempts": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationSourceCanonical": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationRunSource": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "Observe": [
+    "client/steerrunner-client.ps1",
+    "internal/application/run_observation.go",
+    "internal/execution/adapters/codex/async_transport_test.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/backend/backend.go",
+    "internal/host/server.go",
+    "internal/storage/observation.go",
+    "internal/storage/observation_test.go",
+    "scripts/test-client.ps1",
+    "skills/steerrunner-run/SKILL.md",
+    "tests/integration/creation_recovery_test.go"
+  ],
+  "Validate": [
+    "client/steerrunner-client.ps1",
+    "internal/application/freeze.go",
+    "internal/application/input_budget.go",
+    "internal/application/observation.go",
+    "internal/application/preparation_query.go",
+    "internal/application/workflow.go",
+    "internal/cli/cli.go",
+    "internal/cli/configuration_test.go",
+    "internal/contracts/recovery.go",
+    "internal/cost/cost.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/config.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/adapters/codex/launch.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/remote_control.go",
+    "internal/execution/adapters/codex/remote_workspace.go",
+    "internal/execution/adapters/orcatransport/control_checkpoint.go",
+    "internal/execution/adapters/orcatransport/control_terminal_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/native_stop.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go",
+    "internal/execution/adapters/orcatransport/usage_binding.go",
+    "internal/execution/adapters/orcatransport/workspace_audit.go",
+    "internal/execution/adapters/protocol/orca/native_input.go",
+    "internal/execution/backend/host.go",
+    "internal/execution/backend/implementation_data.go",
+    "internal/execution/backend/implementation_data_test.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/backend/lifecycle_test.go",
+    "internal/execution/backend/preparation_query.go",
+    "internal/execution/backend/publication.go",
+    "internal/execution/backend/question_route_test.go",
+    "internal/execution/evidence/conversation.go",
+    "internal/execution/publication/policy.go",
+    "internal/execution/reliable/binding.go",
+    "internal/execution/reliable/intent.go",
+    "internal/execution/reliable/operation/effect.go",
+    "internal/execution/reliable/operation/operation.go",
+    "internal/execution/reliable/operation/record.go",
+    "internal/execution/reliable/plan.go",
+    "internal/execution/resultacquisition/config.go",
+    "internal/execution/resultacquisition/format.go",
+    "internal/execution/terminaltools/tool.go",
+    "internal/execution/terminaltools/tool_windows_test.go",
+    "internal/host/usage.go",
+    "internal/resources/configuration_test.go",
+    "internal/resources/content_repository_test.go",
+    "internal/resources/content_test.go",
+    "internal/resources/execution_wait_test.go",
+    "internal/resources/naming_test.go",
+    "internal/resources/result_file_test.go",
+    "internal/resources/run_evidence_test.go",
+    "internal/resources/usage_test.go",
+    "internal/resources/validation.go",
+    "internal/resources/validation_test.go",
+    "internal/storage/usage.go",
+    "internal/testkit/livetest/cases.go",
+    "internal/testkit/livetest/cases_test.go",
+    "internal/testkit/livetest/config_test.go",
+    "internal/testkit/livetest/control_audit.go",
+    "internal/testkit/livetest/evidence.go",
+    "internal/testkit/livetest/evidence_test.go",
+    "internal/testkit/livetest/manifest.go",
+    "internal/testkit/livetest/manifest_test.go",
+    "internal/textanalysis/analyzer.go",
+    "internal/usage/api/policy.go",
+    "internal/usage/api/policy_test.go",
+    "internal/usage/ledger.go",
+    "internal/usage/ledger_test.go",
+    "internal/usage/parsers/parse.go",
+    "internal/usage/parsers/parse_test.go",
+    "tests/helpers/stability/main.go",
+    "tests/native/run_test.go",
+    "tests/native/stability_test.go"
+  ],
+  "HistoryPage": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "CapabilityStatus": [
+    "internal/execution/backend/capability.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "insidePath": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "Backend": [
+    "internal/application/content.go",
+    "internal/application/freeze.go",
+    "internal/application/local_codex_stop_test.go",
+    "internal/contracts/view.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/backend_test.go",
+    "internal/execution/adapters/codex/binding_isolation_cd67_test.go",
+    "internal/execution/adapters/codex/content_readiness.go",
+    "internal/execution/adapters/codex/content_test.go",
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/execution_owner_test.go",
+    "internal/execution/adapters/codex/git_boundary_live_test.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/native_viewer.go",
+    "internal/execution/adapters/codex/native_viewer_test.go",
+    "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "internal/execution/adapters/codex/recovery.go",
+    "internal/execution/adapters/codex/recovery_history_test.go",
+    "internal/execution/adapters/codex/sandbox_readiness.go",
+    "internal/execution/adapters/codex/service_lifecycle.go",
+    "internal/execution/adapters/codex/service_lifecycle_test.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/lifecycle_test.go",
+    "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_input_local_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_live_test.go",
+    "internal/execution/adapters/orcatransport/profile_decode.go",
+    "internal/execution/adapters/orcatransport/workspace_live_test.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/backend/capability.go",
+    "internal/execution/backend/contracts_test.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/backend/operation.go",
+    "internal/execution/backend/record_validation.go",
+    "internal/execution/evidence/conversation.go",
+    "internal/execution/reliable/operation/record.go",
+    "internal/host/orca_native_test.go",
+    "internal/runstate/record.go",
+    "tests/experiments/audit_output_test.go",
+    "tests/integration/verify_stopped_test.go"
+  ],
+  "Kill": [
+    "client/steerrunner-client.ps1",
+    "internal/application/content_test.go",
+    "internal/application/observation_test.go",
+    "internal/execution/adapters/codex/async_transport_test.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/backend_test.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/git_boundary_live_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/remote_agent.go",
+    "internal/execution/adapters/codex/remote_exit.go",
+    "internal/execution/adapters/codex/remote_models_native_test.go",
+    "internal/execution/adapters/codex/service_lifecycle.go",
+    "internal/execution/adapters/codex/service_lifecycle_test.go",
+    "internal/execution/adapters/codex/stream_contract_cd67_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/observer.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_windows_test.go",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go",
+    "internal/execution/adapters/protocol/orca/cli_lock_windows_test.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/process/facts_linux.go",
+    "internal/execution/process/facts_windows.go",
+    "internal/execution/process/host.go",
+    "internal/execution/process/job_reference_windows_test.go",
+    "internal/execution/terminaltools/tool.go",
+    "internal/execution/workspace/git.go",
+    "internal/execution/workspace/workspace_test.go",
+    "internal/host/platform_windows.go",
+    "internal/textanalysis/job_windows.go",
+    "scripts/test-viewer.ps1",
+    "tests/experiments/audit_output_test.go",
+    "tests/integration/creation_recovery_test.go",
+    "tests/integration/job_windows_test.go",
+    "tests/integration/manual_test.go",
+    "tests/native/stability_test.go"
+  ],
+  "TestHistoryReadRejectsReplacedProjectBeforeOpeningClient": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "Identity": [
+    "internal/application/content_test.go",
+    "internal/application/control.go",
+    "internal/application/observation_test.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/backend_test.go",
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/execution_owner_test.go",
+    "internal/execution/adapters/codex/git_boundary_live_test.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "internal/execution/adapters/codex/recovery.go",
+    "internal/execution/adapters/codex/recovery_history_test.go",
+    "internal/execution/adapters/codex/remote_agent.go",
+    "internal/execution/adapters/codex/remote_exit.go",
+    "internal/execution/adapters/codex/remote_exit_test.go",
+    "internal/execution/adapters/codex/service_lifecycle.go",
+    "internal/execution/adapters/codex/service_lifecycle_test.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/adapters/orcatransport/completion_query_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/observer.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/conversation/source.go",
+    "internal/execution/process/facts_linux.go",
+    "internal/execution/process/facts_windows.go",
+    "internal/execution/workspace/workspace_test.go",
+    "internal/storage/usage_test.go",
+    "internal/testkit/livetest/completion.go",
+    "internal/usage/ledger.go",
+    "internal/usage/parsers/parse.go",
+    "tests/integration/content_recovery_native_test.go",
+    "tests/integration/content_recovery_test.go",
+    "tests/integration/content_test.go",
+    "tests/integration/generation_test.go",
+    "tests/integration/workflow_test.go",
+    "tests/native/stability_test.go"
+  ],
+  "TestConversationHistoryProtocolHelper": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationWrite": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/conversation/source.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "historyPosition": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "IdentityNative": [
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "historyFixtureTurn": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationHistoryReadRequest": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "directoryExists": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "isHex": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "FinalAvailability": [
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "BodyCompleteness": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ReadPage": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "BodyComplete": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "DiscoverHistory": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "CapabilityVerified": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/backend/capability.go"
+  ],
+  "ConversationMessageComplete": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationEvent": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/conversation/source.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationTurnCancelled": [
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "SourceKey": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "Probe": [
+    "internal/application/control.go",
+    "internal/application/verify_stopped.go",
+    "internal/execution/adapters/codex/remote_exit.go",
+    "internal/execution/adapters/codex/remote_exit_test.go",
+    "internal/execution/adapters/codex/remote_turn.go",
+    "internal/execution/adapters/codex/remote_workspace.go",
+    "internal/execution/adapters/codex/remote_workspace_test.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/short_input_trace_test.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_windows_test.go",
+    "internal/execution/adapters/orcatransport/verify_stopped_test.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/backend/host.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/backend/lifecycle_test.go",
+    "internal/execution/process/facts_linux.go",
+    "internal/execution/process/facts_other.go",
+    "internal/execution/process/facts_windows.go",
+    "internal/execution/process/job_reference_windows.go",
+    "internal/execution/process/job_reference_windows_test.go",
+    "internal/execution/process/service_facts.go",
+    "internal/host/orca_native_test.go",
+    "internal/testkit/livetest/connection.go",
+    "scripts/probe-orca-pi.ps1",
+    "scripts/test-native-input.ps1",
+    "tests/integration/generation_test.go",
+    "tests/native/local_cleanup_test.go",
+    "tests/native/terminal_reliability_test.go"
+  ],
+  "IdentityDerived": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationTurnStarted": [
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationCheckpoint": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "bindingGap": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "cloneStringMap": [
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "codexHistoryCursor": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "validIdentityQuality": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "FinalAvailable": [
+    "internal/contracts/view.go",
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go",
+    "internal/runstate/record.go",
+    "tests/integration/edge_test.go",
+    "tests/integration/workflow_test.go",
+    "tests/native/progress_test.go"
+  ],
+  "TestHistoryMixedTurnRetainsOnlyCompleteFinal": [
+    "internal/execution/adapters/codex/final_history_test.go"
+  ],
+  "historyBindingFile": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "CapabilityNotTested": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/backend/capability.go"
+  ],
+  "bindingMatches": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "ItemIdentity": [
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "historyPositionEnvelope": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "historyCapabilities": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "clip": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/workspace/git.go"
+  ],
+  "ConversationCapabilityReport": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/conversation/source.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "CapabilityUnsupported": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/backend/capability.go"
+  ],
+  "ConversationGap": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ExecutionProbe": [
+    "internal/execution/backend/backend.go"
+  ],
+  "ExecutionBackend": [
+    "internal/execution/backend/backend.go"
+  ],
+  "ReadHistory": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "UserAgent": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/protocol/codexapp/client.go"
+  ],
+  "InspectWorkspace": [
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/adapters/orcatransport/workspace.go",
+    "internal/execution/backend/backend.go"
+  ],
+  "NewConversationAdapter": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "encodeHistoryPosition": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "Event": [
+    "internal/cli/usage_integration_test.go",
+    "internal/cli/usage_local_live_test.go",
+    "internal/cli/usage_remote_live_test.go",
+    "internal/contracts/view.go",
+    "internal/cost/cost.go",
+    "internal/cost/cost_test.go",
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/conversation/source.go",
+    "internal/execution/evidence/conversation.go",
+    "internal/storage/runs.go",
+    "internal/storage/usage.go",
+    "internal/storage/usage_test.go",
+    "internal/usage/api/api.go",
+    "internal/usage/collect/collector.go",
+    "internal/usage/ledger.go",
+    "internal/usage/ledger_test.go",
+    "internal/usage/parsers/parse.go",
+    "tests/native/multirun_test.go"
+  ],
+  "ConversationAdapter": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "IdentityUnknown": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "TestHistoryPositionCannotCrossItsOriginalBinding": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationVersion": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ReadMetadata": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "MapHistoryTurn": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "CapabilityReport": [
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/backend/capability.go"
+  ],
+  "ConversationHistorySource": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "decodeHistoryPosition": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "MaxConversationBodyBytes": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "validExecutionID": [
+    "internal/execution/adapters/codex/conversation_adapter.go"
+  ],
+  "ExecutionStopper": [
+    "internal/execution/backend/backend.go"
+  ],
+  "ConversationDiscoveryResult": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "FinalPending": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationCapability": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "FinalUnknown": [
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationSession": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "codexPendingTurn": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "NativeHome": [
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "TestHistoryAdapterRejectsOversizedNativeCursor": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationSourceRole": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "conversationItemKey": [
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "ConversationTurnCompleted": [
+    "internal/execution/adapters/codex/final_history_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "FinalAbsent": [
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationInputWait": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "BodyPartial": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationHistoryBatch": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "ConversationEventType": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "localConversationHistoryBindingPath": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationDiscovery": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "historyFixtureStop": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "Capability": [
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/backend/capability.go",
+    "internal/execution/reliable/plan.go"
+  ],
+  "Close": [
+    "client/steerrunner-client.ps1",
+    "internal/application/answer_test.go",
+    "internal/application/artifact_regression_test.go",
+    "internal/application/artifact_test.go",
+    "internal/application/content_test.go",
+    "internal/application/control.go",
+    "internal/application/freeze.go",
+    "internal/application/generation_recovery_test.go",
+    "internal/application/observation.go",
+    "internal/application/observation_test.go",
+    "internal/application/operation_test.go",
+    "internal/application/orca_agent_test.go",
+    "internal/application/report_policy_test.go",
+    "internal/application/resource_test.go",
+    "internal/application/result_acquisition_test.go",
+    "internal/application/result_file_test.go",
+    "internal/application/runtime_files.go",
+    "internal/application/shutdown_test.go",
+    "internal/application/stop_progress_test.go",
+    "internal/application/text_acquisition_test.go",
+    "internal/application/worker.go",
+    "internal/application/workflow_test.go",
+    "internal/cli/cli.go",
+    "internal/cli/usage_integration_test.go",
+    "internal/cli/usage_local_live_test.go",
+    "internal/cli/usage_local_terminal_live_test.go",
+    "internal/cli/usage_remote_live_test.go",
+    "internal/codexcommand/executable.go",
+    "internal/execution/adapters/codex/ask_journal.go",
+    "internal/execution/adapters/codex/async_reply.go",
+    "internal/execution/adapters/codex/async_transport_test.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/backend_test.go",
+    "internal/execution/adapters/codex/connection.go",
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/execution_owner_test.go",
+    "internal/execution/adapters/codex/git_boundary_live_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/history_binding.go",
+    "internal/execution/adapters/codex/launch.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/native_viewer.go",
+    "internal/execution/adapters/codex/native_viewer_test.go",
+    "internal/execution/adapters/codex/outcome.go",
+    "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "internal/execution/adapters/codex/recovery.go",
+    "internal/execution/adapters/codex/remote_agent.go",
+    "internal/execution/adapters/codex/remote_exit.go",
+    "internal/execution/adapters/codex/remote_exit_test.go",
+    "internal/execution/adapters/codex/remote_models.go",
+    "internal/execution/adapters/codex/remote_models_native_test.go",
+    "internal/execution/adapters/codex/remote_models_test.go",
+    "internal/execution/adapters/codex/remote_turn.go",
+    "internal/execution/adapters/codex/remote_workspace.go",
+    "internal/execution/adapters/codex/service_lifecycle.go",
+    "internal/execution/adapters/codex/service_lifecycle_test.go",
+    "internal/execution/adapters/codex/stream_contract_cd67_test.go",
+    "internal/execution/adapters/orcatransport/completion_query_test.go",
+    "internal/execution/adapters/orcatransport/creation_owner.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/local_connection_windows_test.go",
+    "internal/execution/adapters/orcatransport/native_completion_recovery_test.go",
+    "internal/execution/adapters/orcatransport/native_fixture_test.go",
+    "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_input_local_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_live_test.go",
+    "internal/execution/adapters/orcatransport/native_reconnect_test.go",
+    "internal/execution/adapters/orcatransport/native_state.go",
+    "internal/execution/adapters/orcatransport/native_state_test.go",
+    "internal/execution/adapters/orcatransport/native_thin_query_windows_test.go",
+    "internal/execution/adapters/orcatransport/observer.go",
+    "internal/execution/adapters/orcatransport/observer_queue_test.go",
+    "internal/execution/adapters/orcatransport/public_message_test.go",
+    "internal/execution/adapters/orcatransport/receipt_write_windows_test.go",
+    "internal/execution/adapters/orcatransport/recovery_state_test.go",
+    "internal/execution/adapters/orcatransport/short_input_live_probe_test.go",
+    "internal/execution/adapters/orcatransport/short_input_trace_test.go",
+    "internal/execution/adapters/orcatransport/terminal_query_windows_test.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_windows_test.go",
+    "internal/execution/adapters/orcatransport/terminal_runtime.go",
+    "internal/execution/adapters/protocol/codexapp/client.go",
+    "internal/execution/adapters/protocol/codexapp/transport.go",
+    "internal/execution/adapters/protocol/codexapp/transport_test.go",
+    "internal/execution/adapters/protocol/orca/cli_lock_windows_test.go",
+    "internal/execution/adapters/protocol/orca/client.go",
+    "internal/execution/adapters/protocol/orca/progress.go",
+    "internal/execution/adapters/protocol/orca/result_file_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_connection_test.go",
+    "internal/execution/adapters/protocol/orca/state_feed.go",
+    "internal/execution/adapters/protocol/orca/state_local.go",
+    "internal/execution/adapters/protocol/orca/state_local_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed.go",
+    "internal/execution/adapters/protocol/orca/state_query_feed_windows_test.go",
+    "internal/execution/adapters/protocol/orca/state_stream_test.go",
+    "internal/execution/adapters/protocol/orca/state_subscription.go",
+    "internal/execution/adapters/protocol/orca/usage_files.go",
+    "internal/execution/adapters/protocol/orca/usage_local_cleanup_live_test.go",
+    "internal/execution/backend/backend.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/process/facts_linux.go",
+    "internal/execution/process/facts_windows.go",
+    "internal/execution/process/host.go",
+    "internal/execution/process/job_reference_windows.go",
+    "internal/execution/process/job_reference_windows_test.go",
+    "internal/execution/publication/gitea.go",
+    "internal/execution/publication/pr_test.go",
+    "internal/execution/terminaltools/tool.go",
+    "internal/execution/workspace/artifact.go",
+    "internal/execution/workspace/directory_windows.go",
+    "internal/execution/workspace/git.go",
+    "internal/execution/workspace/progress.go",
+    "internal/execution/workspace/workspace_test.go",
+    "internal/host/broker_windows.go",
+    "internal/host/broker_windows_test.go",
+    "internal/host/client.go",
+    "internal/host/endpoint_publication_windows_test.go",
+    "internal/host/execution_owner.go",
+    "internal/host/host.go",
+    "internal/host/inspect_offline.go",
+    "internal/host/inspect_offline_test.go",
+    "internal/host/orca_native_test.go",
+    "internal/host/platform_other.go",
+    "internal/host/platform_windows.go",
+    "internal/host/release.go",
+    "internal/host/retired_state_test.go",
+    "internal/host/server.go",
+    "internal/host/service_binding_test.go",
+    "internal/host/shutdown.go",
+    "internal/host/shutdown_windows_test.go",
+    "internal/host/startup_input.go",
+    "internal/host/usage.go",
+    "internal/host/verify_stopped.go",
+    "internal/runview/publish_windows.go",
+    "internal/storage/format_test.go",
+    "internal/storage/observation_test.go",
+    "internal/storage/reader_test.go",
+    "internal/storage/result_acquisition_test.go",
+    "internal/storage/runs.go",
+    "internal/storage/runs_test.go",
+    "internal/storage/store.go",
+    "internal/storage/store_test.go",
+    "internal/storage/transitions_test.go",
+    "internal/storage/usage.go",
+    "internal/storage/usage_test.go",
+    "internal/testkit/livetest/config.go",
+    "internal/testkit/livetest/control_audit.go",
+    "internal/testkit/protocol/appserver.go",
+    "internal/testkit/protocol/native_lock_other.go",
+    "internal/testkit/protocol/terminal.go",
+    "internal/textanalysis/cli.go",
+    "internal/textanalysis/cli_test.go",
+    "internal/usage/collect/collector.go",
+    "internal/usage/collect/collector_test.go",
+    "internal/usage/collect/identity_windows.go",
+    "internal/usage/collect/remote_live_test.go",
+    "internal/usage/parsers/parse.go",
+    "internal/usage/parsers/parse_test.go",
+    "scripts/stability-network.ps1",
+    "scripts/test-scheduler.ps1",
+    "tests/client/fixture/main.go",
+    "tests/experiments/audit_output_test.go",
+    "tests/helpers/native/main.go",
+    "tests/helpers/stability/main.go",
+    "tests/integration/cli_wait_retry_test.go",
+    "tests/integration/creation_recovery_test.go",
+    "tests/integration/edge_test.go",
+    "tests/integration/frozen_budget_test.go",
+    "tests/integration/generation_test.go",
+    "tests/integration/service_test.go",
+    "tests/integration/storage_fault_test.go",
+    "tests/integration/verify_stopped_test.go",
+    "tests/native/cli_wait_retry_test.go",
+    "tests/native/initialization_stop_test.go",
+    "tests/native/local_cleanup_test.go",
+    "tests/native/local_models_test.go",
+    "tests/native/progress_test.go",
+    "tests/native/run_evidence_test.go",
+    "tests/native/run_test.go",
+    "tests/native/sandbox_audit_test.go",
+    "tests/native/stability_test.go",
+    "tests/native/terminal_reliability_test.go",
+    "viewer/io_windows.go"
+  ],
+  "IdentityQuality": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "BodyTruncated": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "TestHistoryPageCandidateIsRecreatedAfterDiscardAndLateFinalKeepsTurnIdentity": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "ConversationAttemptSource": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "StopExecution": [
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/backend/backend.go"
+  ],
+  "startHistoryFixtureProcess": [
+    "internal/execution/adapters/codex/conversation_adapter_test.go"
+  ],
+  "MaxHistoryCursorBytes": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/conversation_adapter_test.go",
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "EventIDFallback": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "client": [
+    "README.md",
+    "client/README.md",
+    "client/steerrunner-client.ps1",
+    "internal/cli/cli.go",
+    "internal/execution/adapters/codex/async_reply.go",
+    "internal/execution/adapters/codex/async_transport_test.go",
+    "internal/execution/adapters/codex/backend.go",
+    "internal/execution/adapters/codex/connection.go",
+    "internal/execution/adapters/codex/content_permissions.go",
+    "internal/execution/adapters/codex/content_readiness.go",
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/adapters/codex/git_boundary_live_test.go",
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/native_viewer.go",
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/adapters/codex/recovery.go",
+    "internal/execution/adapters/codex/remote_agent.go",
+    "internal/execution/adapters/codex/remote_models.go",
+    "internal/execution/adapters/codex/remote_models_native_test.go",
+    "internal/execution/adapters/codex/remote_models_test.go",
+    "internal/execution/adapters/codex/stream_contract_cd67_test.go",
+    "internal/execution/adapters/orcatransport/agent.go",
+    "internal/execution/adapters/orcatransport/backend.go",
+    "internal/execution/adapters/orcatransport/control_checkpoint.go",
+    "internal/execution/adapters/orcatransport/control_stream_test.go",
+    "internal/execution/adapters/orcatransport/control_terminal.go",
+    "internal/execution/adapters/orcatransport/control_terminal_test.go",
+    "internal/execution/adapters/orcatransport/creation_owner.go",
+    "internal/execution/adapters/orcatransport/creation_owner_test.go",
+    "internal/execution/adapters/orcatransport/extensions/terminal-tools.mjs",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/local_authentication.go",
+    "internal/execution/adapters/orcatransport/local_codex_history.go",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go",
+    "internal/execution/adapters/orcatransport/local_codex_stop_test.go",
+    "internal/execution/adapters/orcatransport/local_connection_windows_test.go",
+    "internal/execution/adapters/orcatransport/local_preparation_stream_test.go",
+    "internal/execution/adapters/orcatransport/native_start.go",
+    "internal/execution/adapters/orcatransport/native_stop.go",
+    "internal/execution/adapters/orcatransport/native_submit_queue_test.go",
+    "internal/execution/adapters/orcatransport/native_submit_test.go",
+    "internal/execution/adapters/orcatransport/native_thin_query_windows_test.go",
+    "internal/execution/adapters/orcatransport/observer_queue_test.go",
+    "internal/execution/adapters/orcatransport/preparation_retry_test.go",
+    "internal/execution/adapters/orcatransport/repository_query.go",
+    "internal/execution/adapters/orcatransport/repository_query_test.go",
+    "internal/execution/adapters/orcatransport/stop_test.go",
+    "internal/execution/adapters/orcatransport/terminal_receipt_windows_test.go",
+    "internal/execution/adapters/orcatransport/verify_stopped.go",
+    "internal/execution/adapters/orcatransport/verify_stopped_test.go",
+    "internal/execution/adapters/orcatransport/workspace.go",
+    "internal/execution/adapters/orcatransport/workspace_initial_terminal.go",
+    "internal/execution/adapters/orcatransport/workspace_initial_terminal_test.go",
+    "internal/execution/adapters/orcatransport/workspace_live_test.go",
+    "internal/execution/adapters/orcatransport/workspace_test.go",
+    "internal/execution/adapters/protocol/codexapp/client.go",
+    "internal/execution/adapters/protocol/codexapp/transport.go",
+    "internal/execution/adapters/protocol/codexapp/transport_test.go",
+    "internal/execution/adapters/protocol/orca/preparation_call_test.go",
+    "internal/execution/adapters/protocol/orca/state_local_windows_test.go",
+    "internal/execution/publication/gitea.go",
+    "internal/execution/publication/pr_test.go",
+    "internal/host/instance_binding_test.go",
+    "internal/testkit/livetest/diagnostic.go",
+    "internal/testkit/livetest/diagnostic_test.go",
+    "internal/testkit/livetest/local_audit.go",
+    "internal/testkit/livetest/remote_audit_test.go",
+    "internal/testkit/livetest/remote_cleanup.go",
+    "internal/testkit/livetest/remote_cleanup_test.go",
+    "scripts/delivery-contract.ps1",
+    "scripts/install-client.ps1",
+    "scripts/package-client.ps1",
+    "scripts/probe-orca-pi.ps1",
+    "scripts/test-client-package.ps1",
+    "scripts/test-client.ps1",
+    "scripts/test-delivery.ps1",
+    "skills/steerrunner-configure/SKILL.md",
+    "skills/steerrunner-run/SKILL.md",
+    "tests/framework/delivery-test.ps1",
+    "tests/integration/creation_recovery_test.go",
+    "tests/integration/service_test.go",
+    "tests/native/local_cleanup_test.go",
+    "tests/native/sandbox_audit_test.go",
+    "tests/native/stability_test.go"
+  ],
+  "ConversationTurnFailed": [
+    "internal/execution/adapters/codex/history.go",
+    "internal/execution/evidence/conversation.go"
+  ],
+  "CheckHistory": [
+    "internal/execution/adapters/codex/history.go"
+  ],
+  "ConversationSourcePort": [
+    "internal/execution/adapters/codex/conversation_adapter.go",
+    "internal/execution/conversation/source.go"
+  ],
+  "ConversationBodyRef": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "BodyMissing": [
+    "internal/execution/evidence/conversation.go"
+  ],
+  "ConversationSourceFallback": [
+    "internal/execution/evidence/conversation.go"
+  ]
+}

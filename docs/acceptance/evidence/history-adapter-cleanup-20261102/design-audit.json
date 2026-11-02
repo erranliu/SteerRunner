@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-02",
+  "base_commit": "e2bc0a578047fa38293edbe411b15a386ddd20a4",
+  "production_modified_before_audit": false,
+  "spec_sha256": "2c1c129f8c447406086cd231e2e83cc09f541117784d2211d9955c9aa4e9cb4f",
+  "plan_sha256": "08b6b5ed5322b5c0da1b100515bad0dc6864429455835ceaf8945225fdd07645",
+  "result": "passed",
+  "shared_boundaries": [
+    "HistoryBinding read/write/type/identity retained for lifecycle.readRecoveryThread",
+    "InspectHistoryTurn retained for lifecycle.readRecoveryOutcome",
+    "64 KiB binding read limit moved unchanged from retired adapter",
+    "OpenHistory initialization, Job settlement and thread/read retained",
+    "PublicMessage/acceptEvent and content Workflow are separate live consumers"
+  ],
+  "deleted_tests": "conversation_adapter_test.go and final_history_test.go only cover retired closure; helpers have no outside consumers",
+  "excluded": [
+    "BindingSnapshot old environment branches",
+    "persistent fields/actions/decoders",
+    "Intents/Snapshot.Operations",
+    "usage access leases"
+  ]
+}

@@ -1,6 +1,6 @@
 # Spec：SteerRunner 产品与 CLI 契约
 
-维护日期：2026-11-01；本次核对代码基线：`51e897f` 加旧规则/Lifecycle 清理工作树差异。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
+维护日期：2026-11-02；本次核对代码基线：`e2bc0a5` 加旧历史采集/Orca Backend 清理工作树差异。本文长期维护 Runner 的能力、可靠性承诺和 CLI 契约，不随某一批实施结束而归档。
 
 ## 长期产品承诺
 
@@ -100,6 +100,14 @@ scope 在新 Run 受理时冻结，公开为可选 `stop_evidence_scope`。state
 保留 state/v8 的全部持久字段和动作/解码，以及 Intents/Snapshot.Operations 表示；公开 capabilities、资源摘要和编码未变。生产净减 688 行，收益为规则与维护面减少；未测同条件耗时，不承诺提速。该批取得受影响组件和三项公开受控资格，未部署/发布，不增加真实模型或完整 L1/L2/L3 资格。
 
 2026-11-02 [实现再审计](../acceptance/dormant-lifecycle-reaudit.md)复核全部保留声明和实际入口，确认持久格式及原执行、恢复、停止承诺保持；完整组件组与补充恢复/停止测试通过，无新增生产修复。
+
+### 现行实现清理：旧历史采集与 Orca Backend
+
+2026-11-02 已按 [Spec](history-adapter-cleanup.spec.md) / [Plan](history-adapter-cleanup.plan.md) 实施并完成[专项验收](../acceptance/history-adapter-cleanup.md)。删除无生产装配的 Codex 历史分页采集/旧事件模型和未构造的 Orca Backend 包装、三个旧接口及其私有能力报告。真实 history binding 文件/编码、原 thread 恢复、完整 final、公开消息和当前 conversation Workflow 保留；共享 MessagePhase、64 KiB 原读取常量及恢复测试夹具迁址保留。
+
+生产净减 986 行；state/v8、持久字段/动作解码、双操作表示、公开 capabilities/资源摘要和原执行/恢复/停止承诺不变。最小验收包含 490 个组件/application 顶层和两个公开受控场景；8 项 skip/3 个无测试包、两次编译遗漏与修复均单列。维护面减少不等于任务提速；未部署/发布，无新增真实模型或完整 L1/L2/L3 资格。
+
+同日[实现再审计](../acceptance/history-adapter-reaudit.md)重新核对全部保留声明、真实消费者及共享恢复夹具，未发现新增确认缺陷；持久格式和原执行/恢复/停止承诺保持，44个补充定向顶层通过。生产/测试源码与初轮最终验收一致，最新资格以该再审计报告为准。
 
 ### 文档分工与维护规则
 

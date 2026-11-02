@@ -1,0 +1,9 @@
+{
+  "source_inputs_checked": 685,
+  "binaries_checked": 3,
+  "source_or_artifact_or_initial_evidence_mismatches": [],
+  "archived_before_after_wire_equal": true,
+  "wire_bytes": 140590,
+  "wire_sha256": "3e1bc96bf664599f27e75b8c3845da2ace8c1b36cf4aa55068f2dbd6efad3cd8",
+  "regenerated_wire_matches_original_baseline": true
+}

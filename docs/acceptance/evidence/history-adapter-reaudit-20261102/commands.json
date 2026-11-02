@@ -1,0 +1,14 @@
+{
+  "declarations": "go run .evidence/history-adapter-reaudit/declarations.go",
+  "wire": "go run .evidence/history-adapter-cleanup/wire-audit.go .evidence/history-adapter-reaudit/wire.json",
+  "codex": "go test ./internal/execution/adapters/codex -run '^(TestRecovery.*|TestExecutionOwner.*|TestServiceStopWorkerFacts|TestIndependentOwnerServiceDetachPreservesOriginalTree|TestPublicMessageWhitelistAndIdentity)$' -count=1 -timeout 3m -json",
+  "application": "go test ./internal/application -run '^(TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop)$' -count=1 -timeout 3m -json",
+  "exit_codes": {
+    "declarations": 0,
+    "wire": 0,
+    "codex": 0,
+    "application": 0
+  },
+  "base_and_latest_main": "e2bc0a578047fa38293edbe411b15a386ddd20a4",
+  "production_test_source_changed_during_reaudit": false
+}

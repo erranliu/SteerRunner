@@ -1,0 +1,10 @@
+{
+  "reason": "only original shared _test.go helper was moved after CLI run; production unchanged",
+  "runner_bytes_equal": true,
+  "runner_sha256": "bc04dfd98bf3ecb4eb0b3573229b74d90765c3e03942a21c67d923bbb5efe31a",
+  "before_source_digest": "33eac2acddfed0f163b1dd8fd75460f6c31e5542e5396d1bcb8e82071c74e522",
+  "final_source_digest": "27dfbf4af085f233d1d01a4ac59aeb1bf3c6c722ea667191107d57901ad9f2eb",
+  "final_rebuild_exit_code": 0,
+  "public_scenarios_reexecuted": false,
+  "public_scenarios_applicable_to_final_binary": true
+}

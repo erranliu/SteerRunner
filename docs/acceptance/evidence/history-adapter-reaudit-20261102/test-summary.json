@@ -1,0 +1,80 @@
+{
+  "codex": {
+    "exit_code": 0,
+    "counts": {
+      "pass_sub": 20,
+      "pass_top": 14
+    },
+    "top_tests": [
+      "TestExecutionOwnerJournalWakesOriginalObservationWithoutNativeBroadcast",
+      "TestExecutionOwnerAllowsOnlyQualifiedLaterAttemptForOriginalIdleThread",
+      "TestExecutionOwnerServiceCancellationClosesOnlyClientConnection",
+      "TestExecutionOwnerRejectsInputOutsideOriginalPayload",
+      "TestExecutionOwnerRejectsForeignRunConfigurationAndWorkspace",
+      "TestExecutionOwnerExitRequiresSignatureAndCompleteOriginalBinding",
+      "TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint",
+      "TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature",
+      "TestPublicMessageWhitelistAndIdentity",
+      "TestRecoveryProcessIdentityRequiresPositiveNativeProof",
+      "TestRecoveryHistoryRejectsChangedFrozenBindingBeforeNativeRead",
+      "TestRecoveryHistoryIdleRequiresOriginalStoppedTurn",
+      "TestServiceStopWorkerFacts",
+      "TestIndependentOwnerServiceDetachPreservesOriginalTree"
+    ],
+    "skipped": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "action": "pass",
+        "elapsed": 7.395
+      }
+    ]
+  },
+  "application": {
+    "exit_code": 0,
+    "counts": {
+      "pass_top": 30,
+      "pass_sub": 21
+    },
+    "top_tests": [
+      "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+      "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+      "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+      "TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata",
+      "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+      "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+      "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+      "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+      "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+      "TestSRManualReconciliationExplicitRetryReplayAndLostResource",
+      "TestSRManualReconciliationStopWinsDuringRead",
+      "TestSRManualReconciliationCommitFailureAndRestart",
+      "TestSRManualLateFactsPreserveBusinessPause",
+      "TestSRManualLostResourceDuringContinuation",
+      "TestSRManualExpiredControlDoesNotRenewQueryOnReload",
+      "TestSRObservationDiagnosticIsDurableAndRecoverable",
+      "TestSRObservationDiagnosticBindingAndControlIsolation",
+      "TestSRObservationAttachmentUpdatesDiagnostic",
+      "TestSRObservationGapSurvivesStartAcknowledgement",
+      "TestSRObservationAttachmentCommitsBeforePublishingObserver",
+      "TestSRObservationUnchangedProjectionStillCommitsIdentity",
+      "TestSRObservationCommitFailureKeepsEventReplayable",
+      "TestSROperationReconciliationKeepsPartialBinding",
+      "TestSRStopSerializesWithNativeDispatch",
+      "TestSROperationIntentCommitFailureDoesNotDispatch",
+      "TestSROperationReceiptCommitFailureReconcilesOriginal",
+      "TestSRStopBindingCommitFailureDoesNotDispatch",
+      "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+      "TestSingleExecutionLateFinalPreservesOriginalStop",
+      "TestSRStopRecoversLateCreationFactsUnderOriginalIntent"
+    ],
+    "skipped": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "action": "pass",
+        "elapsed": 32.916
+      }
+    ]
+  }
+}

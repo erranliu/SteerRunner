@@ -1,0 +1,6 @@
+{
+  "original_helper_body_preserved": true,
+  "retained_recovery_test_unchanged": true,
+  "caller": "recovery_history_test.go:40",
+  "fixture_command_role": "frozen comparison only; test has no process port and requires rejection before native read"
+}

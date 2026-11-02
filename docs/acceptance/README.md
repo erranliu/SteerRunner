@@ -4,6 +4,7 @@
 
 | 范围 | 记录与适用边界 |
 | --- | --- |
+| 旧历史采集支线与 Orca Backend 清理 | [专项验收](history-adapter-cleanup.md) / [实现再审计](history-adapter-reaudit.md)：设计审计后实施，phase/恢复夹具共享遗漏已修正；生产净减 986 行，持久格式不变，490 个组件/application 顶层及两个公开场景通过；失败/skip/同产物关联单列 |
 | 旧规则与 Lifecycle 接口清理 | [专项验收](dormant-lifecycle-cleanup.md) / [实现再审计](dormant-lifecycle-reaudit.md)：设计审计后实施；生产净减 688 行，486 个组件/application 顶层及 3 个公开场景通过，编码不变；skip/首轮编译失败单列，无新增真机资格 |
 | 退出证明生产端与旧预算重建清尾（state/v8） | [初轮验收](exit-proof-budget-cleanup.md) / [实现再审计](exit-proof-budget-reaudit.md)：修正合法受理夹具、补九个原结果回归；专属 exit 文件 I/O 和三类预算反推删除；原 Job/reader、直接签名、历史读取及 unknown/stop 保持，净减 186 行；未部署/发布 |
 | 本机 Orca Codex 停止条件收敛（state/v8） | [初轮验收](orca-local-codex-stop-simplification.md) / [实现再审计](orca-local-codex-stop-reaudit.md)：登记原终端/helper/根身份，删除签名退出及控制关闭证明门禁；受影响组件、3 项公开受控、客户端合同和一条真实停止探针通过；不证明全部后代退出，不授予完整 L2/L3 |
