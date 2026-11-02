@@ -1,6 +1,6 @@
 # Spec：Orca 公共命令构造 B2a
 
-日期：2026-11-02。状态：已实现、定向回归通过，待实施后独立审计；见[验收](../acceptance/orca-cli-construction-capability.md)。依据[长期路线 B2a](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-cli-construction-capability.plan.md)。调查基线 `c9097a7`。
+日期：2026-11-02。状态：已完成，定向回归及实施后独立审计通过；见[验收](../acceptance/orca-cli-construction-capability.md)。依据[长期路线 B2a](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-cli-construction-capability.plan.md)。调查基线 `c9097a7`。
 
 ## 1. 目标和边界
 

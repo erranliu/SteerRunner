@@ -1,6 +1,6 @@
 # Orca 公共命令构造 B2a 验收
 
-日期：2026-11-02。状态：实现与定向回归通过，待实施后独立审计。依据 [Spec](../spec/orca-cli-construction-capability.spec.md) / [Plan](../spec/orca-cli-construction-capability.plan.md)。本批只迁移纯命令构造及基础解码，不增加产品或真实后端资格。
+日期：2026-11-02。状态：实现、定向回归及实施后独立审计通过。依据 [Spec](../spec/orca-cli-construction-capability.spec.md) / [Plan](../spec/orca-cli-construction-capability.plan.md)。本批只迁移纯命令构造及基础解码，不增加产品或真实后端资格。
 
 ## 1. 职责迁移
 
@@ -28,4 +28,6 @@ protocol/orca/cli_command.go 的 CompileCLICommand 消费 executable、前缀参
 
 ## 3. 独立审计
 
-实现提交后独立只读审计一次；确认问题另行 commit 并补受影响验证。该步骤完成前 B2a 不标全部完成。
+对实现提交 `7240c16` 相对 `93096ac` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核三处构造和两处解码、全部持久类型/派发边界，以及 6 个归档文件 bytes/hash 和源码摘要。
+
+新增三根、原 21 根回归、workflow 依赖守卫及固定提交 diff 检查独立复跑通过；进程/锁夹具使用正常权限。审计未启动模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。
