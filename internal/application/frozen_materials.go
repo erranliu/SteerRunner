@@ -25,6 +25,19 @@ func verifyFrozenMaterials(r *runstate.Record) error {
 		}
 	}
 	for _, material := range r.Materials {
+		if material.Kind == "file" {
+			if !filepath.IsAbs(material.SnapshotPath) || material.ExecutionLocation != material.SnapshotPath {
+				return errors.New("original file material execution location changed")
+			}
+			for cursor := material.SnapshotPath; ; cursor = filepath.Dir(cursor) {
+				if materialPathRedirected(cursor) {
+					return errors.New("original file material path is redirected")
+				}
+				if cursor == filepath.Dir(cursor) {
+					break
+				}
+			}
+		}
 		if material.Digest != ra.Digest([]byte(material.Content)) || !filepath.IsAbs(material.SnapshotPath) {
 			return errors.New("original frozen material identity is invalid")
 		}
@@ -46,4 +59,51 @@ func verifyFrozenMaterials(r *runstate.Record) error {
 		}
 	}
 	return nil
+}
+
+// Prepare only fresh, non-redirected private input directories. Existing files
+// are qualified by writeFixed and then by the original frozen-material verifier.
+func checkMaterialParents(root, file string) error {
+	relative, err := filepath.Rel(root, file)
+	if err != nil || !filepath.IsLocal(relative) || relative == "." {
+		return errors.New("file material escaped its private root")
+	}
+	parents := []string{}
+	for cursor := filepath.Dir(file); ; cursor = filepath.Dir(cursor) {
+		parents = append(parents, cursor)
+		if cursor == filepath.Dir(cursor) {
+			break
+		}
+	}
+	for i := len(parents) - 1; i >= 0; i-- {
+		cursor := parents[i]
+		info, err := os.Lstat(cursor)
+		if os.IsNotExist(err) {
+			if err = os.Mkdir(cursor, 0700); err != nil {
+				return err
+			}
+		} else if err != nil || !info.IsDir() {
+			return errors.New("file material parent is not a directory")
+		}
+		actual, err := filepath.EvalSymlinks(cursor)
+		if err != nil || materialPathRedirected(cursor) || !sameMaterialPath(actual, cursor) {
+			return errors.New("file material directory is redirected")
+		}
+	}
+	if info, err := os.Lstat(file); err == nil {
+		actual, resolveErr := filepath.EvalSymlinks(file)
+		if !info.Mode().IsRegular() || materialPathRedirected(file) || resolveErr != nil || !sameMaterialPath(actual, file) {
+			return errors.New("file material is not a private regular file")
+		}
+	} else if !os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
+func sameMaterialPath(a, b string) bool {
+	if runtime.GOOS == "windows" {
+		return strings.EqualFold(filepath.Clean(a), filepath.Clean(b))
+	}
+	return filepath.Clean(a) == filepath.Clean(b)
 }

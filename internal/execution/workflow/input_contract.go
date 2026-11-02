@@ -15,7 +15,7 @@ func InputContract() any {
 	return map[string]any{
 		"project_policies": map[string]any{"slots": PolicySlots(), "read_template": PolicyReadTemplate, "when": "only state.policy_slots with exists=true in the frozen project commit; Runner input budget; no inline content"},
 		"body":             "state.prompt; explicit prompt_overrides replaces only the original body, including audit.execute's default format",
-		"content":          map[string]any{"task_label": ContentTaskLabel, "material_label": ContentMaterialsLabel, "material_frame": "JSON array: content (escaped caller text), path, sha256 (Runner framing and facts)", "repository": ContentRepositoryInstruction, "schema": ContentSchemaInstruction},
+		"content":          map[string]any{"task_label": ContentTaskLabel, "material_label": ContentMaterialsLabel, "material_frame": "JSON array: inline content or frozen file location, path and sha256; file bodies are not expanded", "repository": ContentRepositoryInstruction, "schema": ContentSchemaInstruction},
 		"facts_label":      FactsLabel,
 		"materials":        "implementation execute: Spec/Plan and distinct reference paths in the original worktree",
 		"facts":            "report source=original command_id, optional failure; exact turn/version/digest and audit/publication prerequisites stay program-verified, never internal ledgers",

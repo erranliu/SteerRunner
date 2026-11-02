@@ -23,6 +23,9 @@ func contentInputSchema(schemas map[string]any, id string) map[string]any {
 	p["instruction"] = map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}
 	p["directory"] = map[string]any{"type": "object", "required": []string{"path", "access"}, "additionalProperties": false, "properties": map[string]any{"path": map[string]any{"type": "string", "minLength": 1}, "access": map[string]any{"const": "read_only"}}}
 	p["materials"] = map[string]any{"type": "array", "items": map[string]any{"type": "object", "required": []string{"kind", "path", "content"}, "additionalProperties": false, "properties": map[string]any{"kind": map[string]any{"const": "inline"}, "path": map[string]any{"type": "string", "minLength": 1}, "content": map[string]any{"type": "string"}, "commit": map[string]any{"const": ""}}}}
+	if id == "generate" {
+		p["materials"].(map[string]any)["items"].(map[string]any)["properties"].(map[string]any)["kind"] = map[string]any{"enum": []string{"inline", "file"}}
+	}
 	return map[string]any{"type": "object", "required": []string{"title", "workflow", "execution", id}, "additionalProperties": false, "allOf": schemas["run_configuration"].(map[string]any)["allOf"], "properties": map[string]any{
 		"title": map[string]any{"type": "string", "minLength": 1, "pattern": `\S`}, "correlation": shapeSchema(reflect.TypeFor[map[string]string]()), id: input,
 		"name_prefix": namePrefixSchema(),
