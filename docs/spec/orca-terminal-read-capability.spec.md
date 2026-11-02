@@ -1,6 +1,6 @@
 # Spec：Orca 终端读取能力 B2c
 
-日期：2026-11-02。状态：待实施。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-read-capability.plan.md)。调查基线 `44a3a2c`，消费 B2a 的既有命令/Result 能力和 B1 原身份查询。
+日期：2026-11-02。状态：已实现、定向回归通过，待实施后独立审计；见[验收](../acceptance/orca-terminal-read-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-read-capability.plan.md)。调查基线 `44a3a2c`，消费 B2a 的既有命令/Result 能力和 B1 原身份查询。
 
 ## 1. 目标
 
