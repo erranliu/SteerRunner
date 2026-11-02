@@ -153,7 +153,7 @@ func (l *Lifecycle) PolicyCapabilities() b.LifecyclePolicyCapabilities {
 	if l.profile.Environment != "" {
 		policy = "configured_native_launch_parameters; execution_host_existing_authentication; business_read_only_is_prompt_policy"
 	}
-	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: resource, Session: b.MechanismApplicable}, ServiceStopBehavior: ServiceStopBehavior, StructuredFinalEvidence: true, ReportToolPolicy: policy, ResumeActiveObservation: true, LinkedWorkspaceWriteRoots: false, SeparateTurnStart: true}
+	return b.LifecyclePolicyCapabilities{Preparation: b.PreparationCapabilities{Workspace: b.MechanismApplicable, Resource: resource, Session: b.MechanismApplicable}, ReportToolPolicy: policy}
 }
 
 func (l *Lifecycle) validate(s b.LifecycleSnapshot) error {
@@ -357,51 +357,6 @@ func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native
 		return t, fmt.Errorf("original Orca agent/worktree changed (worktree=%q expected=%q agent=%q orphaned=%t)", t.WorktreeID, s.Ref.External.WorktreeID, t.AgentIdentity, t.Orphaned)
 	}
 	return t, nil
-}
-
-func (l *Lifecycle) PreflightLifecycle(ctx context.Context, setup b.LifecycleSetup) (b.CapabilityReport, error) {
-	if err := l.validate(setup.Snapshot); err != nil {
-		return b.CapabilityReport{}, err
-	}
-	if err := l.agentExecutionSupport(setup.Snapshot.Ref.Agent.Name); err != nil {
-		return b.CapabilityReport{}, err
-	}
-	if (setup.Snapshot.Ref.Agent.Name == "pi" || setup.Snapshot.Ref.Agent.Name == "dsh") && (l.profile.Environment != "" || l.profile.Terminal == nil || len(l.profile.RuntimeSHA256) != 64) {
-		return b.CapabilityReport{}, errors.New("terminal agent requires a frozen local managed runtime and native receipt profile; zero business input")
-	}
-	r, err := l.client.MetaCall(ctx, "status", "--json")
-	if err != nil {
-		return b.CapabilityReport{}, fmt.Errorf("Orca terminal preflight: %w", err)
-	}
-	var status struct {
-		Runtime struct {
-			State        string   `json:"state"`
-			AppVersion   string   `json:"appVersion"`
-			Capabilities []string `json:"capabilities"`
-		} `json:"runtime"`
-	}
-	if json.Unmarshal(r.Payload, &status) != nil || r.RuntimeID == "" || status.Runtime.State != "ready" {
-		return b.CapabilityReport{}, errors.New("Orca runtime is not ready")
-	}
-	supported := false
-	for _, cap := range status.Runtime.Capabilities {
-		if cap == "terminal.prompt-delivery.v1" {
-			supported = true
-		}
-	}
-	if !supported {
-		return b.CapabilityReport{}, errors.New("Orca prompt identity/replay capability is unavailable")
-	}
-	if l.nativeAccess {
-		if l.profile.Environment == "" {
-			if err := l.verifyLocalObservation(ctx, r.RuntimeID); err != nil {
-				return b.CapabilityReport{}, err
-			}
-		} else if _, err := native.QueryWorktreeAgents(ctx, l.profile.Environment, r.RuntimeID); err != nil {
-			return b.CapabilityReport{}, fmt.Errorf("Orca native observation authentication/access: %w", err)
-		}
-	}
-	return b.CapabilityReport{Version: 1, Backend: b.BackendOrca, Protocol: b.ProtocolOrcaTerminalV3, Target: setup.Snapshot.Ref.Target, Agent: setup.Snapshot.Ref.Agent, PlatformVersion: status.Runtime.AppVersion, CheckedAt: time.Now().UTC(), Capabilities: []b.Capability{{Name: "start", Status: b.CapabilityVerified}, {Name: "observe", Status: b.CapabilityVerified}, {Name: "output_final_answer", Status: b.CapabilityVerified, Evidence: "original accepted request, bound native main-agent start/end and complete native final body"}}}, nil
 }
 
 // Probe the already registered source before creating a business workspace.
@@ -1135,19 +1090,6 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 	return receipt, nil
 }
 
-func (l *Lifecycle) CleanupLifecycle(ctx context.Context, r b.LifecycleRequest) (b.LifecycleReceipt, error) {
-	if r.Input.Cleanup == nil || len(r.Input.Cleanup.Resources) != 1 || r.Input.Cleanup.Resources[0] != r.Snapshot.Ref.External {
-		return b.LifecycleReceipt{Operation: r.Operation, Disposition: b.OperationRejected}, errors.New("cleanup differs from original terminal")
-	}
-	copy := r
-	copy.Operation.Action = string(b.LifecycleStopExecution)
-	copy.Input = b.LifecycleInput{Stop: &b.StopInput{}}
-	// Keep the original operation binding; cleanup and stop have the same exact resource effect.
-	receipt, err := l.StopLifecycle(ctx, copy, nil)
-	receipt.Operation = r.Operation
-	return receipt, err
-}
-
 func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot, owned b.StopHandle) (b.LifecycleStateFacts, error) {
 	if err := l.validate(s); err != nil {
 		return b.LifecycleStateFacts{}, err
@@ -1177,9 +1119,6 @@ func (l *Lifecycle) ShutdownLifecycle(ctx context.Context, s b.LifecycleSnapshot
 		return b.LifecycleStateFacts{}, err
 	}
 	return b.LifecycleStateFacts{Stopped: true, WorkerAbsent: true}, nil
-}
-func (l *Lifecycle) InspectLifecycleWorkspace(ctx context.Context, s b.LifecycleSnapshot) (b.WorkspaceInspection, error) {
-	return InspectWorkspace(ctx, l.client, s.Ref, s.Session.ProjectID)
 }
 func (l *Lifecycle) VerifyManualRecovery(ctx context.Context, s b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {

@@ -113,13 +113,6 @@ func Next(ctx context.Context, port b.LifecyclePreparationPort, snapshot b.Lifec
 	return candidate, candidate.Validate()
 }
 
-func KnownAction(action b.LifecycleAction) bool {
-	switch action {
-	case b.LifecyclePrepareWorkspace, b.LifecycleCreateResource, b.LifecyclePrepareSession, b.LifecycleStartTurn, b.LifecycleSubmitInput, b.LifecycleReportCompletion, b.LifecycleDeliverFeedback, b.LifecycleAcknowledge, b.LifecycleStopObservation, b.LifecycleStopExecution, b.LifecycleCleanup, b.LifecycleHostAction:
-		return true
-	}
-	return false
-}
 func UnresolvedCandidate(snapshot b.LifecycleSnapshot) (b.LifecycleCandidate, bool, error) {
 	for _, operation := range snapshot.Operations {
 		if operation.Status != b.OperationInFlight && operation.Status != b.OperationUnknown {

@@ -15,7 +15,6 @@ const FullAccessTerminalProfileVersion = 6
 const LocalStateVersion = 8
 const StateKey = "orca.terminal-state"
 const StateVersion = 7
-const ServiceStopBehavior = b.ContinueExecutionOnServiceStop
 
 // Environment is routing only; local and paired execution have the same ports.
 type Profile struct {

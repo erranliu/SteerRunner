@@ -1,0 +1,11 @@
+internal/execution/backend/preparation_query.go:89:type PreparationProgress func(string, func(*PreparationQuery) error) (*PreparationQuery, error)
+internal/execution/backend/preparation_query.go:93:func WithPreparationProgress(ctx context.Context, progress PreparationProgress) context.Context {
+internal/execution/backend/preparation_query.go:96:func PreparationProgressFrom(ctx context.Context) PreparationProgress {
+internal/execution/backend/preparation_query.go:97:	progress, _ := ctx.Value(preparationProgressKey{}).(PreparationProgress)
+scripts/probe-orca-pi.ps1:43:function Read-ProbeReceipt([string]$Name, [string]$Stage) {
+scripts/probe-orca-pi.ps1:117:    $taskReady = Read-ProbeReceipt 'readiness' 'ready'
+scripts/probe-orca-pi.ps1:134:        Read-ProbeReceipt 'readiness' 'ready' | Out-Null
+scripts/probe-orca-pi.ps1:152:        $taskFinal = Read-ProbeReceipt $taskCommandID 'settled'
+scripts/test-generation-recovery.ps1:13:function Wait-RecoveryResult([string]$Directory, [int]$Expected) {
+scripts/test-generation-recovery.ps1:32:    $null = Wait-RecoveryResult $taskControlled 4
+scripts/test-generation-recovery.ps1:37:        $null = Wait-RecoveryResult $taskNative 1

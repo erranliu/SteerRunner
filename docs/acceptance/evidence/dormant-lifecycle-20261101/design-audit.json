@@ -1,0 +1,11 @@
+{
+  "passed_before_production_edits": true,
+  "base_commit": "51e897fb694ef8afe61a380da83fe0de895ec4d1",
+  "findings_resolved_in_scope": [
+    "keep verifyLocalObservation production workspace consumer",
+    "preserve mixed service lifecycle actual Job assertions",
+    "preserve mixed reliable policy actual continuation/result assertions",
+    "keep all persistent fields, actions, decoders and Cleanup facts"
+  ],
+  "wire_baseline": "wire-before.json"
+}

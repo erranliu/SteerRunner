@@ -1,0 +1,152 @@
+{
+  "components-final": {
+    "top_pass": 442,
+    "sub_pass": 1331,
+    "skip": [
+      null,
+      null,
+      null,
+      null,
+      "TestProcessHostCommandHelper",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "fail": [
+      "github.com/erranliu/SteerRunner/internal/execution/reliable"
+    ],
+    "packages": [
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/model",
+        "seconds": 0.627
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/backend",
+        "seconds": 0.675
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/reliable/operation",
+        "seconds": 0.82
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/workflow",
+        "seconds": 1.031
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/codexapp",
+        "seconds": 1.073
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/contracts",
+        "seconds": 1.093
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/resultacquisition",
+        "seconds": 1.115
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/hostenv",
+        "seconds": 1.223
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/publication",
+        "seconds": 1.6440000000000001
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/resources",
+        "seconds": 1.8559999999999999
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/storage",
+        "seconds": 3.293
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/process",
+        "seconds": 4.167
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/terminaltools",
+        "seconds": 11.036
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca",
+        "seconds": 26
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/agentlaunch",
+        "seconds": 26.533
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+        "seconds": 37.35
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/workspace",
+        "seconds": 48.199
+      },
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "seconds": 84.85
+      }
+    ],
+    "test_skip": [
+      "TestProcessHostCommandHelper",
+      "TestOrcaLocalPipeNativeEvidence",
+      "TestOrcaNativeStateLiveLifecycle",
+      "TestOrcaLocalIPCNativeProbe",
+      "TestUsageLocalAcceptanceRepoCleanupLive",
+      "TestServiceStopWorkerHelper",
+      "TestShortInputProbeInspect",
+      "TestOrcaWorkspaceStartupLive"
+    ],
+    "no_test_packages": [
+      "github.com/erranliu/SteerRunner/internal/execution/conversation",
+      "github.com/erranliu/SteerRunner/internal/execution/evidence",
+      "github.com/erranliu/SteerRunner/internal/execution/nativeaudit",
+      "github.com/erranliu/SteerRunner/internal/runstate"
+    ]
+  },
+  "reliable-final": {
+    "top_pass": 10,
+    "sub_pass": 20,
+    "skip": [],
+    "fail": [],
+    "packages": [
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/execution/reliable",
+        "seconds": 0.877
+      }
+    ],
+    "test_skip": [],
+    "no_test_packages": []
+  },
+  "application-final": {
+    "top_pass": 34,
+    "sub_pass": 69,
+    "skip": [],
+    "fail": [],
+    "packages": [
+      {
+        "name": "github.com/erranliu/SteerRunner/internal/application",
+        "seconds": 19.926
+      }
+    ],
+    "test_skip": [],
+    "no_test_packages": []
+  },
+  "foundation-final": {
+    "result": {
+      "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\dormant-lifecycle\\bin\\steerrunner.exe",
+      "exit_code": 0,
+      "finished_at": "2026-11-01T15:22:53.3495Z",
+      "scenario_count": 3
+    },
+    "top_pass": 3,
+    "sub_pass": 22,
+    "skips": 0
+  }
+}

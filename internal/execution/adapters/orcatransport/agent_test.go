@@ -11,17 +11,13 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
-func TestUnqualifiedAgentPreflightHasNoSideEffects(t *testing.T) {
+func TestUnqualifiedAgentAdmissionHasNoSideEffects(t *testing.T) {
 	for _, agent := range []string{"pi", "dsh", "future-agent"} {
 		t.Run(agent, func(t *testing.T) {
 			l, host, snapshot := fixture(t)
 			snapshot.Ref.Agent.Name = agent
 			l.setup.Snapshot = snapshot
-			report, err := l.PreflightLifecycle(context.Background(), l.setup)
 			var failure *b.BackendError
-			if !errors.As(err, &failure) || failure.Code != b.BackendUnsupported || !strings.Contains(failure.Diagnostic, "terminal_agent_evidence_unsupported") || len(report.Capabilities) != 0 {
-				t.Fatal("missing native capability was admitted", report, err)
-			}
 			if _, err := l.PreparationFacts(context.Background(), snapshot); !errors.As(err, &failure) || failure.Code != b.BackendUnsupported {
 				t.Fatal("preparation bypassed admission", err)
 			}

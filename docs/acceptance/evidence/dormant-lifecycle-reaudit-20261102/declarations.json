@@ -1,0 +1,454 @@
+{
+  "base_commit": "51e897fb694ef8afe61a380da83fe0de895ec4d1",
+  "baseline_identifier_files_excluding_historical_docs": {
+    "AcceptHostFact": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "AcceptedResult": [
+      "internal/execution/reliable/result.go"
+    ],
+    "BeginTurn": [
+      "internal/execution/reliable/staged_recovery_test.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/turn_test.go"
+    ],
+    "BlockerChange": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "BlockerRevision": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "ClassifyRecovery": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_policy.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "ContinuationConstraints": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/result.go"
+    ],
+    "ContinueExecutionOnServiceStop": [
+      "internal/execution/adapters/codex/lifecycle.go",
+      "internal/execution/adapters/codex/service_lifecycle_test.go",
+      "internal/execution/adapters/orcatransport/profile.go",
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "CurrentObservation": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "CurrentTurn": [
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/turn_test.go"
+    ],
+    "EnvironmentDeadline": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "FailedStart": [
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "HostEnvironmentPort": [
+      "internal/execution/backend/environment.go"
+    ],
+    "HostFact": [
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/environment.go"
+    ],
+    "HostInputObservation": [
+      "internal/execution/backend/environment.go"
+    ],
+    "HostOutput": [
+      "internal/execution/backend/environment.go"
+    ],
+    "HostProbeObservation": [
+      "internal/execution/backend/environment.go"
+    ],
+    "HostReadInput": [
+      "internal/execution/backend/environment.go"
+    ],
+    "HostTurnFacts": [
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/environment.go"
+    ],
+    "InputNotSubmitted": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "InspectLifecycleWorkspace": [
+      "internal/execution/adapters/codex/lifecycle.go",
+      "internal/execution/adapters/orcatransport/lifecycle.go",
+      "internal/execution/backend/lifecycle.go",
+      "internal/execution/workspace/lifecycle.go"
+    ],
+    "InvalidatesPreparation": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "KnownAction": [
+      "internal/execution/reliable/plan.go"
+    ],
+    "LifecycleCleanupPort": [
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "LifecycleProbePort": [
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "LifecycleWorkspacePort": [
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "ObservationIdentity": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "ObservationTimeout": [
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "OriginalWorkspace": [
+      "internal/execution/reliable/workspace.go"
+    ],
+    "PreparationControl": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationProgress": [
+      "internal/execution/backend/preparation_query.go",
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationReady": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationRecover": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationState": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationVerify": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationWait": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "PreparationWindow": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "ProbeCapabilities": [
+      "internal/execution/adapters/codex/capability.go",
+      "internal/execution/adapters/codex/capability_test.go",
+      "internal/execution/adapters/codex/lifecycle.go"
+    ],
+    "ProbeConfig": [
+      "internal/execution/adapters/codex/capability.go",
+      "internal/execution/adapters/codex/capability_test.go",
+      "internal/execution/adapters/codex/lifecycle.go"
+    ],
+    "ProbeError": [
+      "internal/execution/adapters/codex/capability.go",
+      "internal/execution/adapters/codex/capability_test.go"
+    ],
+    "ProbeManagedCLI": [
+      "internal/execution/adapters/codex/capability.go"
+    ],
+    "ProbePlan": [
+      "internal/execution/backend/environment.go"
+    ],
+    "ProbePort": [
+      "internal/execution/adapters/codex/capability.go",
+      "internal/execution/adapters/codex/capability_test.go",
+      "internal/execution/adapters/codex/lifecycle.go"
+    ],
+    "ProbeReceipt": [
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/environment.go"
+    ],
+    "ProbeSettled": [
+      "internal/execution/reliable/environment.go"
+    ],
+    "ProbeToolEvidence": [
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/environment.go"
+    ],
+    "QualificationTimeout": [
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryChange": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryCompleted": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryDisposition": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryFacts": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_policy.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryInterrupted": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryNotice": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryObservationAttached": [
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryObservationUnavailable": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryOperationUnknown": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryOriginalCompleted": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryOriginalInterrupted": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryQuestion": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryResult": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryRevision": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "RecoveryRunning": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryUnverified": [
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/reliable/recovery_test.go"
+    ],
+    "RecoveryWritersUnverified": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "ServiceStopBehavior": [
+      "internal/execution/adapters/codex/lifecycle.go",
+      "internal/execution/adapters/codex/service_lifecycle_test.go",
+      "internal/execution/adapters/orcatransport/lifecycle.go",
+      "internal/execution/adapters/orcatransport/profile.go",
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "SessionPrepared": [
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "StartAccepted": [
+      "internal/execution/reliable/policy_test.go",
+      "internal/execution/reliable/recovery_policy.go"
+    ],
+    "StopExecutionOnServiceStop": [
+      "internal/execution/adapters/codex/lifecycle.go",
+      "internal/execution/adapters/codex/service_lifecycle_test.go",
+      "internal/execution/backend/lifecycle.go"
+    ],
+    "StopTurn": [
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/turn_test.go"
+    ],
+    "ToolContext": [
+      "internal/execution/backend/environment.go"
+    ],
+    "TurnAuthority": [
+      "internal/execution/reliable/staged_recovery_test.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/turn_test.go"
+    ],
+    "TurnState": [
+      "internal/execution/reliable/staged_recovery_test.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/turn_test.go"
+    ],
+    "probeLifecycleCapabilities": [
+      "internal/execution/adapters/codex/lifecycle.go"
+    ]
+  },
+  "changed_go_files": [
+    "internal/execution/adapters/codex/capability.go",
+    "internal/execution/adapters/codex/capability_test.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/codex/service_lifecycle_test.go",
+    "internal/execution/adapters/orcatransport/agent_test.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/profile.go",
+    "internal/execution/backend/environment.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/environment.go",
+    "internal/execution/reliable/plan.go",
+    "internal/execution/reliable/policy_test.go",
+    "internal/execution/reliable/recovery.go",
+    "internal/execution/reliable/recovery_policy.go",
+    "internal/execution/reliable/recovery_test.go",
+    "internal/execution/reliable/result.go",
+    "internal/execution/reliable/staged_recovery_test.go",
+    "internal/execution/reliable/turn.go",
+    "internal/execution/reliable/turn_test.go",
+    "internal/execution/reliable/workspace.go",
+    "internal/execution/workspace/lifecycle.go"
+  ],
+  "deleted_declarations": {
+    "internal/execution/adapters/codex/capability.go": [
+      "func *ProbeError.Error",
+      "func *ProbeError.Unwrap",
+      "func ProbeCapabilities",
+      "func ProbeManagedCLI",
+      "type ProbeConfig",
+      "type ProbeError",
+      "type ProbePort"
+    ],
+    "internal/execution/adapters/codex/lifecycle.go": [
+      "const ServiceStopBehavior",
+      "func ExecutionLifecycle.CleanupLifecycle",
+      "func ExecutionLifecycle.InspectLifecycleWorkspace",
+      "func ExecutionLifecycle.PreflightLifecycle",
+      "func probeLifecycleCapabilities"
+    ],
+    "internal/execution/adapters/orcatransport/lifecycle.go": [
+      "func *Lifecycle.CleanupLifecycle",
+      "func *Lifecycle.InspectLifecycleWorkspace",
+      "func *Lifecycle.PreflightLifecycle"
+    ],
+    "internal/execution/adapters/orcatransport/profile.go": [
+      "const ServiceStopBehavior"
+    ],
+    "internal/execution/backend/environment.go": [
+      "type HostEnvironmentPort",
+      "type HostFact",
+      "type HostInputObservation",
+      "type HostOutput",
+      "type HostProbeObservation",
+      "type HostReadInput",
+      "type HostTurnFacts",
+      "type ProbePlan",
+      "type ProbeReceipt",
+      "type ProbeToolEvidence",
+      "type ToolContext"
+    ],
+    "internal/execution/backend/lifecycle.go": [
+      "const ContinueExecutionOnServiceStop",
+      "const StopExecutionOnServiceStop",
+      "func ServiceStopBehavior.Valid",
+      "type LifecycleCleanupPort",
+      "type LifecycleProbePort",
+      "type LifecycleWorkspacePort",
+      "type ServiceStopBehavior"
+    ],
+    "internal/execution/reliable/environment.go": [
+      "const PreparationReady",
+      "const PreparationRecover",
+      "const PreparationVerify",
+      "const PreparationWait",
+      "func AcceptHostFact",
+      "func BlockerChange",
+      "func EnvironmentDeadline",
+      "func InvalidatesPreparation",
+      "func PreparationState",
+      "func ProbeSettled",
+      "type BlockerRevision",
+      "type PreparationControl",
+      "type PreparationProgress"
+    ],
+    "internal/execution/reliable/plan.go": [
+      "func KnownAction"
+    ],
+    "internal/execution/reliable/recovery.go": [
+      "const RecoveryCompleted",
+      "const RecoveryInterrupted",
+      "const RecoveryQuestion",
+      "const RecoveryRunning",
+      "const RecoveryUnverified",
+      "func ClassifyRecovery",
+      "type RecoveryDisposition",
+      "type RecoveryFacts"
+    ],
+    "internal/execution/reliable/recovery_policy.go": [
+      "const RecoveryObservationAttached",
+      "const RecoveryObservationUnavailable",
+      "const RecoveryOperationUnknown",
+      "const RecoveryOriginalCompleted",
+      "const RecoveryOriginalInterrupted",
+      "const RecoveryWritersUnverified",
+      "func CurrentObservation",
+      "func FailedStart",
+      "func InputNotSubmitted",
+      "func ObservationTimeout",
+      "func PreparationWindow",
+      "func QualificationTimeout",
+      "func RecoveryChange",
+      "func RecoveryResult",
+      "func SessionPrepared",
+      "func StartAccepted",
+      "type ObservationIdentity",
+      "type RecoveryNotice",
+      "type RecoveryRevision"
+    ],
+    "internal/execution/reliable/result.go": [
+      "func AcceptedResult",
+      "func ContinuationConstraints.RequiresAuthorization",
+      "type ContinuationConstraints"
+    ],
+    "internal/execution/reliable/turn.go": [
+      "func BeginTurn",
+      "func CurrentTurn",
+      "func StopTurn",
+      "type TurnAuthority",
+      "type TurnState"
+    ],
+    "internal/execution/reliable/workspace.go": [
+      "func OriginalWorkspace"
+    ],
+    "internal/execution/workspace/lifecycle.go": [
+      "func InspectLifecycleWorkspace"
+    ]
+  },
+  "identical_retained_declarations": 165,
+  "identical_retained_types": 42,
+  "modified_declarations": {
+    "internal/execution/adapters/codex/lifecycle.go": [
+      "func ExecutionLifecycle.PolicyCapabilities",
+      "func NewExecutionLifecycle",
+      "type ExecutionLifecycle"
+    ],
+    "internal/execution/adapters/orcatransport/lifecycle.go": [
+      "func *Lifecycle.PolicyCapabilities"
+    ],
+    "internal/execution/backend/lifecycle.go": [
+      "type LifecyclePolicyCapabilities",
+      "type LifecyclePort"
+    ]
+  },
+  "note": "Identifier inventory includes definitions and same-name identifiers in unrelated packages; reviewed against package and legal entry points. Unchanged files are identical in git diff; comments/imports are excluded from AST comparison.",
+  "production_files": [
+    "internal/execution/adapters/codex/capability.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/profile.go",
+    "internal/execution/backend/environment.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/environment.go",
+    "internal/execution/reliable/plan.go",
+    "internal/execution/reliable/recovery.go",
+    "internal/execution/reliable/recovery_policy.go",
+    "internal/execution/reliable/result.go",
+    "internal/execution/reliable/turn.go",
+    "internal/execution/reliable/workspace.go",
+    "internal/execution/workspace/lifecycle.go"
+  ]
+}

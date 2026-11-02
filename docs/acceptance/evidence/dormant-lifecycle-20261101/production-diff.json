@@ -1,0 +1,30 @@
+{
+  "A": {
+    "added": 0,
+    "deleted": 407,
+    "net_removed": 407,
+    "paths": [
+      "internal/execution/reliable/environment.go",
+      "internal/execution/reliable/turn.go",
+      "internal/execution/reliable/recovery.go",
+      "internal/execution/backend/environment.go",
+      "internal/execution/reliable/recovery_policy.go",
+      "internal/execution/reliable/result.go",
+      "internal/execution/reliable/workspace.go"
+    ]
+  },
+  "B": {
+    "added": 5,
+    "deleted": 286,
+    "net_removed": 281,
+    "paths": [
+      "internal/execution/adapters/codex/capability.go",
+      "internal/execution/adapters/codex/lifecycle.go",
+      "internal/execution/adapters/orcatransport/lifecycle.go",
+      "internal/execution/adapters/orcatransport/profile.go",
+      "internal/execution/backend/lifecycle.go",
+      "internal/execution/reliable/plan.go",
+      "internal/execution/workspace/lifecycle.go"
+    ]
+  }
+}

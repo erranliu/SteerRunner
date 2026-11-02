@@ -6,7 +6,6 @@ import (
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"reflect"
 	"testing"
-	"time"
 )
 
 type preparationFixture struct {
@@ -80,23 +79,6 @@ func TestReliablePreparationApplicability(t *testing.T) {
 	}
 }
 
-func TestReliableInputOutcomeBoundaries(t *testing.T) {
-	for _, tc := range []struct {
-		turn, input, session string
-		unsent               bool
-	}{
-		{"", "", "", true}, {"rejected", "", "confirmed", true}, {"accepted", "", "confirmed", false}, {"outcome_unknown", "", "", false}, {"", "in_flight", "", false}, {"", "", "outcome_unknown", false},
-	} {
-		if got := InputNotSubmitted(tc.turn, tc.input, tc.session); got != tc.unsent {
-			t.Fatalf("%+v got=%v", tc, got)
-		}
-	}
-	receipt := b.LifecycleReceipt{Disposition: b.OperationAccepted, State: b.LifecycleStateFacts{InputAccepted: true}}
-	if StartAccepted(receipt, nil, true) {
-		t.Fatal("acceptance inferred start")
-	}
-}
-
 func TestReliableRecoveryAndAuthorization(t *testing.T) {
 	e := b.LifecycleRecoveryEvidence{SessionAvailable: true, ResourceAvailable: true}
 	if !CanContinueOriginal(e) {
@@ -106,48 +88,9 @@ func TestReliableRecoveryAndAuthorization(t *testing.T) {
 	if CanContinueOriginal(e) {
 		t.Fatal("lost resource authorized restoration")
 	}
-	available := true
-	prior := RecoveryRevision{State: "running", SessionAvailable: &available, Version: 4}
-	unchanged := RecoveryChange(prior, RecoveryFacts{WorkerLive: true}, true, false)
-	if unchanged.Version != 4 {
-		t.Fatal("same facts invalidated consent")
-	}
-	changed := RecoveryChange(prior, RecoveryFacts{WorkerLive: true}, true, true)
-	if changed.Version != 5 || changed.State != "unverified" {
-		t.Fatal("unknown effects did not invalidate consent")
-	}
-	for _, tc := range []struct {
-		dead, completed, writers, unknown bool
-		err                               error
-		want                              RecoveryNotice
-	}{
-		{true, false, false, false, nil, RecoveryWritersUnverified}, {true, true, true, true, nil, RecoveryOperationUnknown}, {true, true, true, false, nil, RecoveryOriginalCompleted}, {true, false, true, false, nil, RecoveryOriginalInterrupted}, {false, false, false, false, errors.New("disconnected"), RecoveryObservationUnavailable},
-	} {
-		if got := RecoveryResult(tc.dead, tc.completed, tc.writers, tc.unknown, tc.err); got != tc.want {
-			t.Fatalf("recovery notice=%s want=%s", got, tc.want)
-		}
-	}
-	if !(ContinuationConstraints{PriorOwner: true}).RequiresAuthorization() {
-		t.Fatal("prior service bypassed authority")
-	}
-	at := time.Now()
-	if PreparationWindow(at, at, time.Second) != 0 {
-		t.Fatal("expired preparation renewed its budget")
-	}
 }
 
 func TestReliableLateFacts(t *testing.T) {
-	original := ObservationIdentity{ExecutionID: "one", AttemptID: "old", Generation: "g", RecoveryVersion: 2}
-	current := original
-	current.AttemptID = "new"
-	if CurrentObservation(current, original) {
-		t.Fatal("late attempt accepted")
-	}
-	current = original
-	current.ExecutionID = "sibling"
-	if CurrentObservation(current, original) {
-		t.Fatal("sibling observation accepted")
-	}
 	s := b.SessionContext{CurrentCommandID: "command", CurrentTurnID: "turn", SessionID: "session"}
 	e := b.TurnEvidence{CommandID: "command", TurnID: "turn", SessionID: "session", Started: true, Completed: true, Succeeded: true, LastMessage: "final"}
 	result, err := NormalizeResult(s, e)

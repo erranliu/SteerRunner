@@ -10,19 +10,6 @@ import (
 
 var ErrStale = b.ErrTurnStale
 
-// AcceptedResult is a first-wins comparison of the already settled original
-// result. Native provenance is never reinterpreted by business routing.
-func AcceptedResult(previous *b.TurnEvidence, incoming b.TurnEvidence) (bool, error) {
-	if previous == nil {
-		return false, nil
-	}
-	p := *previous
-	if p.TurnID != incoming.TurnID || p.SessionID != incoming.SessionID || p.LastMessage != incoming.LastMessage || p.Succeeded != incoming.Succeeded || p.FinalSource != incoming.FinalSource || p.FinalItemID != incoming.FinalItemID || p.FinalVerified != incoming.FinalVerified || p.FinalNativeSessionID != incoming.FinalNativeSessionID || p.FinalNativeTurnID != incoming.FinalNativeTurnID || p.Failure != incoming.Failure || p.FinalDiagnostic != incoming.FinalDiagnostic || p.NativeOutcome != incoming.NativeOutcome {
-		return false, errors.New("conflicting duplicate stage result")
-	}
-	return true, nil
-}
-
 func VerifiedContent(verified bool, source, item string) bool {
 	return verified && source != "" && item != ""
 }
@@ -57,12 +44,4 @@ func NormalizeResult(session b.SessionContext, evidence b.TurnEvidence) (Result,
 	// complete, normally collected original final. Explicit unknown stays blocked.
 	eligible := outcome == "succeeded" || outcome == "unreported" && verified && strings.TrimSpace(evidence.LastMessage) != "" && evidence.Failure == ""
 	return Result{CommandID: evidence.CommandID, TurnID: evidence.TurnID, SessionID: evidence.SessionID, Succeeded: evidence.Succeeded && eligible, NativeOutcome: outcome, Content: evidence.LastMessage, Failure: evidence.Failure, Diagnostic: evidence.FinalDiagnostic, ContentVerified: verified}, nil
-}
-
-type ContinuationConstraints struct {
-	RecoveryRequired, PriorOwner, QuestionPending, OutcomeUnknown, EnvironmentBlocked, UnconfirmedAnswer bool
-}
-
-func (c ContinuationConstraints) RequiresAuthorization() bool {
-	return c.RecoveryRequired || c.PriorOwner || c.QuestionPending || c.OutcomeUnknown || c.EnvironmentBlocked || c.UnconfirmedAnswer
 }

@@ -1,0 +1,14 @@
+{
+  "retired_symbols_in_current_sources": [],
+  "preserved_live_consumers": {
+    "verifyLocalObservation": "orcatransport/workspace.go",
+    "CanContinueOriginal": "application/continuation.go",
+    "ValidateResultBinding": "application/observation.go",
+    "RecordTurnStart": "application/observation.go and reliable/session.go",
+    "ApplySessionReceipt": "application/worker.go",
+    "NormalizeResult": "application/results.go",
+    "StopLifecycle and ShutdownLifecycle": "application/control.go"
+  },
+  "public_or_persistent_fields_removed": false,
+  "cleanup_facts_and_actions_kept": true
+}
