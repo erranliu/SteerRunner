@@ -1,6 +1,6 @@
 # Plan：Orca 仓库与工作区查询 B4a
 
-日期：2026-11-02。状态：待实施。依据 [Spec](orca-resource-query-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B3 审计确认问题先独立修复，不混入本批。
+日期：2026-11-02。状态：实现及受控验证通过，待提交后独立审计。依据 [Spec](orca-resource-query-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B3 审计确认问题先独立修复，不混入本批。
 
 ## P0 现行范围
 
@@ -24,3 +24,5 @@ go test -json 记录真实 roots/子节点/fail/skip；新功能先跑再必要�
 ## P3 收口
 
 按 ORQ-01–04 写 docs/acceptance/orca-resource-query-capability.md，列实际两个查询、消费者、删除清单和未迁范围；同步路线/索引。提交实现后独立只读审计一次，确认修复独立 commit 并补受影响验证，不提阶段 PR。全部闭环才标完成。
+
+实施记录：已接入两个真实查询消费者，原策略/预算/持久格式保持；验证与删除清单见[验收](../acceptance/orca-resource-query-capability.md)。

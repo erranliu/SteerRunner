@@ -112,14 +112,11 @@ func (l *Lifecycle) prepareWorkspace(ctx context.Context, r b.LifecycleRequest, 
 	ctx, cancel := context.WithTimeout(ctx, wait)
 	defer cancel()
 	if reconcile {
-		result, queryErr := l.client.MetaCall(ctx, "worktree", "show", "--worktree", "id:"+worktree.ID, "--json")
+		result, shown, queryErr := l.client.ShowWorktree(ctx, "id:"+worktree.ID)
 		if queryErr != nil {
 			return receipt, queryErr
 		}
-		var shown struct {
-			Worktree native.Worktree `json:"worktree"`
-		}
-		if json.Unmarshal(result.Payload, &shown) != nil || result.RuntimeID != created.RuntimeID || shown.Worktree != worktree {
+		if !shown.Decoded() || result.RuntimeID != created.RuntimeID || shown.Worktree != worktree {
 			return receipt, errors.New("original Orca workspace creation identity changed")
 		}
 	}
@@ -267,13 +264,8 @@ func (l *Lifecycle) workspaceRepository(ctx context.Context) (selector, runtimeI
 	if err != nil {
 		return "", "", fmt.Errorf("cannot query Orca repository inventory for directory %q: %w", name, err)
 	}
-	var listing struct {
-		Repos []struct {
-			ID, Path, Kind string
-		} `json:"repos"`
-		Truncated bool `json:"truncated"`
-	}
-	if json.Unmarshal(result.Payload, &listing) != nil || result.RuntimeID == "" || listing.Truncated {
+	listing := native.DecodeRepositoryInventory(result)
+	if !listing.Decoded() || result.RuntimeID == "" || listing.Truncated {
 		return "", "", errors.New("Orca repository inventory is incomplete")
 	}
 	for _, repo := range listing.Repos {

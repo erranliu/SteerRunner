@@ -58,7 +58,7 @@ func preparationTransient(result native.Result, err error) bool {
 }
 
 func (l *Lifecycle) queryRepositoryInventory(ctx context.Context) (native.Result, error) {
-	return l.queryPreparation(ctx, "repository_inventory", "repo", "list", "--json")
+	return l.queryPreparation(ctx, "repository_inventory", native.RepositoryListArgs()...)
 }
 
 func (l *Lifecycle) queryPreparation(ctx context.Context, name string, args ...string) (result native.Result, outErr error) {
