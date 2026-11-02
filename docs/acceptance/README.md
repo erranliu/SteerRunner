@@ -19,6 +19,7 @@
 | Orca 能力层 B4a 仓库与工作区查询 | [验收](orca-resource-query-capability.md)：1 根/17 个能力子节点、24 根/77 个原消费者子节点及依赖守卫通过；独立审计通过 |
 | Orca 能力层 B4b 资源创建 | [验收](orca-resource-create-capability.md)：2 根/25 新子节点、34 根/141 原回归子节点和依赖守卫通过；独立审计通过 |
 | Orca 能力层 B4c 受限文件 | [验收](orca-scoped-files-capability.md)：最终 5 根/24 子节点、52 根/131 原回归子节点、WS/守卫/生产与 live-tag 编译通过；独立审计通过 |
+| Orca 能力层 B6 正式合同与收口 | [验收](orca-native-rollout.md)：公开合同/保留例外和升级排空同步，最终集成构建双端开发/反馈/未合并 PR #756/#757、活动停止和真实离线四场通过；164文件与实施后独立审计 clean |
 | Orca 能力层 B5 双端原生 Runner 候选 | [验收](orca-shared-native-runner.md)：最终同源码/构建双端开发、原会话反馈、未合并 PR #754/#755、活动停止及真实离线闭环；424 文件证据和独立审计通过，限 Codex/development/2 与 orca_terminal |
 | Orca 能力层 B4d 关闭与完整清单 | [验收](orca-close-inventory-capability.md)：协议无执行依赖、一次 close/完整清单和执行结算分离；两包全集及原停止/离线回归通过，独立审计唯一 P2 已修复并关闭 |
 | 旧历史采集支线与 Orca Backend 清理 | [专项验收](history-adapter-cleanup.md) / [实现再审计](history-adapter-reaudit.md)：设计审计后实施，phase/恢复夹具共享遗漏已修正；生产净减 986 行，持久格式不变，490 个组件/application 顶层及两个公开场景通过；失败/skip/同产物关联单列 |
