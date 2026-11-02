@@ -39,6 +39,15 @@ func TestNativeCandidateManifestIsolation(t *testing.T) {
 	if err := m.Validate(); err != nil {
 		t.Fatal("valid native fixture rejected", err)
 	}
+	t.Run("forward-slash-cli", func(t *testing.T) {
+		portable := m
+		cli := native
+		cli.Path = filepath.ToSlash(cli.Path)
+		portable.NativeCLI = &cli
+		if err := portable.Validate(); err != nil {
+			t.Fatal("canonical Windows slash variant rejected", err)
+		}
+	})
 	for _, fault := range []string{"missing-cli", "missing-audit", "changed-cli", "changed-audit", "other-driver", "other-workflow", "helper-null", "helper-empty", "helper-upper"} {
 		t.Run(fault, func(t *testing.T) {
 			bad := m
