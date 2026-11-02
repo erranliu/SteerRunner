@@ -131,6 +131,10 @@ function Assert-SRControlledEvidence([string]$Directory, [string[]]$Expected) {
     $passed = @([regex]::Matches($log, '(?m)^--- PASS: (Test\w+) \(') | ForEach-Object { $_.Groups[1].Value })
     Assert-SRPrerequisiteSet $passed $Expected 'Controlled'
     if ($result.exit_code -ne 0 -or $result.scenario_count -ne $Expected.Count -or $log -match '--- (SKIP|FAIL):' -or -not (Test-SRControlledHarnessComplete $Directory)) { throw 'Controlled prerequisite failed, skipped or is still running' }
+    if ($Expected -ccontains 'TestSRResultFile') {
+        . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
+        $null=Get-SRResultFileCaseEvidence $Directory @(Get-SRResultFileCaseIDs)
+    }
     $identity = Get-Content -LiteralPath (Join-Path $Directory 'source-identity.json') -Raw | ConvertFrom-Json
     foreach ($artifact in @(@{name='steerrunner.exe';field='runner_sha256'},@{name='integration.test.exe';field='fixture_sha256'},@{name='native-fixture.exe';field='native_fixture_sha256'})) {
         if ((Get-SRFileDigest (Join-Path $Directory $artifact.name)) -ine $identity.($artifact.field)) { throw 'Controlled artifact identity changed' }
@@ -291,7 +295,8 @@ function Invoke-SRControlledStage([string]$Root, [string]$Output, $Catalog, [boo
     # Diagnostic output is additive. It does not change complete-stage gates or proof inventory.
     try {
         . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
-        $timings=Get-SRControlledTimingReport $Catalog $directory @($Catalog.controlled_scenarios)
+        $expectedCases=@(if (@($Catalog.controlled_scenarios) -ccontains 'TestSRResultFile') { Get-SRResultFileCaseIDs })
+        $timings=Get-SRControlledTimingReport $Catalog $directory @($Catalog.controlled_scenarios) $expectedCases
         $record['timing_report']=Join-Path $directory 'timings.json'
         Write-SRPrerequisiteJSON $record.timing_report $timings
     } catch { $record['timing_error']=$_.Exception.Message }

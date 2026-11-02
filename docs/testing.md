@@ -201,7 +201,7 @@ PR。现行顶层数量统一见[当前清单与资格边界](test-catalog.md#�
 
 | Combination ID | 固定测试集合 |
 | --- | --- |
-| execute-stop | SingleExecutionColdStop、ResultFile、NativeUnknownAndStop、RestartPreservesAuthorization |
+| execute-stop | SingleExecutionColdStop、ResultFile 的 final-seal、NativeUnknownAndStop、RestartPreservesAuthorization |
 | runtime-files | ProgressFile、ResultFile |
 | content-flow | content 组的五项，加 NativeUnknownAndStop、ManualReconciliation |
 | acceptance-control | foundation 与 recovery 两组的十二项 |
@@ -222,9 +222,45 @@ PR。现行顶层数量统一见[当前清单与资格边界](test-catalog.md#�
 
 `timings.json` 只累计 Go 顶层 `--- PASS/FAIL/SKIP: Test… (…s)`，不重复累计子测试；记录逐项状态、主分组、分组已观测数量/缺项、已观测耗时合计、最慢十项和原 log/result/source-identity 摘要。未完成项的耗时为 null，零执行、缺结果、重复记录、未知测试、失败/跳过或精确集合不匹配不能报告选测通过。顶层耗时合计不等于构建/准备/清理在内的入口墙钟耗时；日志精度为 Go 输出的百分之一秒，不用它推导细粒度性能收益。
 
+ResultFile 的实际子场景明细另见下节。报告新增 `subtests`（逐条实际运行/结果，不加入顶层合计）与 `result_file_coverage`；要求子场景回执和日志相互吻合，不能用父测试通过或顶层计数代替。
+
 完整 Controlled 阶段也附加 `controlled/timings.json`，并在阶段 record 中记录路径。它是诊断附件，不增加完整资格的证据清单或门禁；统计不可用时记录 `timing_error`，原完整测试及资格判定仍按原规则执行。旧日志可通过 FromEvidence 只读统计，但不重写旧结果、不补签旧资格、不合并不同构建的通过或成本。
 
 历史成本样本：按本次分组只读统计 [P3 原完整日志](acceptance/evidence/personal-executor-p3-20261101/complete/controlled/integration.log)，当时 26 项共 1441.64 秒顶层耗时；workflow 541.29、recovery 326.17、files 279.39、foundation 112.44、content 94.71、orca-cli 87.64 秒。最慢项为 ResultAcquisition 475.80 秒和 ResultFile 155.87 秒。files 当时只有三项、缺 ColdStop；这些是原 v7 构建的成本样本，不是当前完整集合耗时，也不代表已取得加速收益。
+
+### ResultFile 职责与定向粒度（2026-11-02）
+
+`TestSRResultFile` 仍是完整 Controlled 的一个顶层测试，默认执行下列两类子场景；完整集合仍为 27 项。仅调整测试编排和取证，不修改产品实现、等待预算、四种启用组合或原业务/停止断言。
+
+| 子场景 ID | 保留的独有覆盖 |
+| --- | --- |
+| optional-file-failure-business-loop | enabled-0..3 四种 progress/result 启用组合；普通文件阻断两个通道目录；每项独立现场到达原 pr_ready、原生输入恰为 3、授权不被文件故障阻断、正式停止；启用 result 时闭合为 version=0 且有诊断，不能伪造字节 |
+| final-seal | enabled-0..3 四种健康组合；同服务四 Run 的路径/原生环境隔离、禁用通道不创建目录、种子字节、运行中 pending/不刷新、progress 更新、错误实例查询拒绝；原子替换后的任意字节/大小/SHA/版本/时间、停止一次封存、查询及服务重启不刷新、原输入零重发 |
+
+原健康流程只增加 `final-seal` 名称和四个 enabled 子场景，原失败条件与断言调用保留。服务、仓库和 Run 仍按原流程隔离；本轮不引入跨 case 的可变夹具共享。
+
+`execute-stop` 固定组合现在只选择 ResultFile 的 `final-seal`；其他顶层测试和其 graceful/kill/creation_receipt/pending_stop 等子场景照常执行。`runtime-files`、files 组和完整 Controlled 仍执行 ResultFile 两类流程。修改共享停止、通道初始化或文件故障机制时，应选择完整文件矩阵；组合并集按较宽覆盖合并，不能因同时选择 execute-stop 就删掉故障流程。
+
+```powershell
+# execute/1 停止及封存；ResultFile 只选择 final-seal。
+./scripts/test-controlled.ps1 -Combination execute-stop -OutDir .evidence/execute-seal-new
+# 共享停止/文件改动：并集保留两类 ResultFile 和 ProgressFile。
+./scripts/test-controlled.ps1 -Combination execute-stop,runtime-files -OutDir .evidence/shared-stop-new
+# 显式覆盖只接受这两个精确 ID；可按现有 PowerShell 数组方式同时指定两个。
+./scripts/test-controlled.ps1 -Group files -ResultFileCase optional-file-failure-business-loop -OutDir .evidence/file-faults-new
+# 单个父测试的底层定向入口；沿原 foundation 机制等待独立进程与 result.json 后再核验结果。
+./scripts/test-foundation.ps1 -Pattern '^TestSRResultFile$' -ResultFileCase final-seal -OutDir .evidence/result-seal-new
+```
+
+`-ResultFileCase` 仅作用于 ResultFile，内部传入独立的 `-result-file-cases` 标志，不使用全局 Go 子路径过滤。未知/重复 ID、选择集合没有 ResultFile、与 List/FromEvidence 混用均拒绝。未传此参数的 foundation/full 入口仍执行两类；其他测试看不到新的子路径过滤条件。
+
+每次新执行在 `result.json.result_file_cases` 记录实际执行的 ID、成功布尔和包含清理的耗时；`source-identity.json` 保存显式选择，选测 summary 保存解析后的精确集合。Go 端拒绝选中的父场景或 enabled 变体未执行；公开选测和完整前置另外核验对应 RUN/PASS、四个 enabled 叶例、重复/跳过/失败/多余场景及实际回执，完整前置必须具备两类实际覆盖。定向执行全部父测试但缺其中一类仍不能取得完整资格。
+
+历史日志缺新子场景回执时只能只读统计耗时，`result_file_coverage.status=unverified_import`，不补写实际覆盖或完整资格。子场景耗时用于说明成本分布，不与父测试时间重复累计。
+
+本轮成本验证固定同一 Runner，最终默认全量和定向使用字节相同的 integration driver。默认 ResultFile 两类/八变体通过，顶层 205.11 秒（故障闭环 121.76、封存 83.35）；最终 execute-stop 的 ResultFile 只执行 final-seal/四变体，82.15 秒，该样本定向成本减少 59.95%。这是省去定向范围之外的四项故障业务闭环，不是让完整验证跳过它们。
+
+execute-stop 原版基线墙钟 307.29 秒，最终样本 279.10 秒；中间候选样本分别为 238.40 和 363.18 秒，波动明显，不能认定有稳定的组合整体提速。原版 ResultFile 的旧样本为 150.33 秒，最终默认全量为上述 205.11 秒，完整验证没有取得提速证据。本轮只验证相关测试及实际子场景，不授予完整 L1/Controlled 27 项或真实模型资格。原日志、失败反例、产物摘要与全部耗时样本保留于本工作副本 `.evidence/resultfile-granularity-20261102/`，可用同一固定 Runner 和上述入口复验；不把不同样本相加为覆盖或收益。
 
 ## 测试清单维护规则
 

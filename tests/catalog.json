@@ -108,6 +108,11 @@
         "TestSRResourceCreationRecovery",
         "TestSRManualReconciliation"
       ]
+    },
+    "result_file_cases": {
+      "execute-stop": [
+        "final-seal"
+      ]
     }
   },
   "scenarios": [

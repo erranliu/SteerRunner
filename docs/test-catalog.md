@@ -224,6 +224,8 @@ L4 的候选扩展只有证明独有覆盖、冻结可重现触发与唯一预�
 
 Controlled 的六个主分组、四个固定选测组合、只读历史耗时统计与报告字段见[执行说明](testing.md#controlled-分组固定选测与耗时2026-11-02)。元数据位于 `tests/catalog.json.controlled_selection`，不改变原完整集合；选测即使覆盖全部注册项也不授予完整资格，不生成前置复用证明。
 
+ResultFile 仍占一个顶层注册，默认执行 `optional-file-failure-business-loop` 与 `final-seal`，各保留 enabled-0..3；`execute-stop` 仅收窄 ResultFile 为 final-seal，完整入口及 runtime-files/files 组保持两类。原断言对照、组合并集、实际叶例取证及资格拒绝规则见[ResultFile 定向说明](testing.md#resultfile-职责与定向粒度2026-11-02)。L3/L4 注册、分级和测试内容未调整。
+
 专项内部子变体、审计子变体和并行调度框架检查另在原始日志登记，不重复计为通用 case。
 
 | 专项 ID | 现行入口与断言 |

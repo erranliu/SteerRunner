@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -18,10 +19,75 @@ import (
 	"github.com/erranliu/SteerRunner/internal/contracts"
 )
 
+var resultFileCasesFlag = flag.String("result-file-cases", "", "Exact ResultFile case IDs, comma separated; empty runs both")
+var resultFileCaseResults []resultFileCaseResult
+
+type resultFileCaseResult struct {
+	ID              string  `json:"id"`
+	Passed          bool    `json:"passed"`
+	DurationSeconds float64 `json:"duration_seconds"`
+}
+
+func selectedResultFileCases(value string) ([]string, error) {
+	all := []string{"optional-file-failure-business-loop", "final-seal"}
+	if value == "" {
+		return all, nil
+	}
+	seen := map[string]bool{}
+	for _, id := range strings.Split(value, ",") {
+		if (id != all[0] && id != all[1]) || seen[id] {
+			return nil, fmt.Errorf("unknown or duplicate ResultFile case: %q", id)
+		}
+		seen[id] = true
+	}
+	selected := []string{}
+	for _, id := range all {
+		if seen[id] {
+			selected = append(selected, id)
+		}
+	}
+	return selected, nil
+}
+
+func runResultFileVariant(t *testing.T, mask int, run func(*testing.T)) bool {
+	t.Helper()
+	executed := false
+	passed := t.Run(fmt.Sprintf("enabled-%d", mask), func(t *testing.T) {
+		executed = true
+		run(t)
+	})
+	if !executed {
+		t.Fatalf("required ResultFile enable variant did not execute: %d", mask)
+	}
+	return passed
+}
+
 // Controlled public-EXE loop only: the native fixture is not a real remote Agent.
 func TestSRResultFile(t *testing.T) {
 	testCount.Add(1)
-	t.Run("optional-file-failure-business-loop", testOptionalFilesDoNotGateWorkflow)
+	selected, err := selectedResultFileCases(*resultFileCasesFlag)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, id := range selected {
+		executed := false
+		started := time.Now()
+		passed := t.Run(id, func(t *testing.T) {
+			executed = true
+			if id == "final-seal" {
+				testResultFileFinalSeal(t)
+			} else {
+				testOptionalFilesDoNotGateWorkflow(t)
+			}
+		})
+		if !executed {
+			t.Fatalf("required ResultFile case did not execute: %s; use -result-file-cases, not a global subtest filter", id)
+		}
+		resultFileCaseResults = append(resultFileCaseResults, resultFileCaseResult{ID: id, Passed: passed, DurationSeconds: time.Since(started).Seconds()})
+	}
+}
+
+func testResultFileFinalSeal(t *testing.T) {
 	dir, req := setupRun(t)
 	t.Setenv("STEERLINE_PROGRESS_FILE", "C:/foreign-run/progress.bin")
 	t.Setenv("STEERLINE_RESULT_FILE", "C:/foreign-run/result.bin")
@@ -37,7 +103,7 @@ func TestSRResultFile(t *testing.T) {
 		Sealed                                  contracts.ResultFileView
 	}
 	fixtures := []fixture{}
-	read := func(command, id string) contracts.ResultFileView {
+	read := func(t *testing.T, command, id string) contracts.ResultFileView {
 		response := call(t, dir, []string{command, "--run-id", id}, "", 0)
 		var v contracts.ResultFileView
 		raw, _ := json.Marshal(response.Data)
@@ -49,20 +115,20 @@ func TestSRResultFile(t *testing.T) {
 		}
 		return v
 	}
-	waitResult := func(id string) contracts.ResultFileView {
+	waitResult := func(t *testing.T, id string) contracts.ResultFileView {
 		t.Helper()
 		until := time.Now().Add(20 * time.Second)
 		for time.Now().Before(until) {
-			v := read("result-file", id)
+			v := read(t, "result-file", id)
 			if v.CollectionStatus == "closed" {
 				return v
 			}
 			time.Sleep(100 * time.Millisecond)
 		}
-		t.Fatal("final result timeout", read("result-file", id))
+		t.Fatal("final result timeout", read(t, "result-file", id))
 		return contracts.ResultFileView{}
 	}
-	stop := func(id string) {
+	stop := func(t *testing.T, id string) {
 		t.Helper()
 		v := runView(t, call(t, dir, []string{"inspect", "--run-id", id}, "", 0))
 		if v.StopStatus == "stopped" {
@@ -74,105 +140,109 @@ func TestSRResultFile(t *testing.T) {
 	}
 	defer func() {
 		for _, f := range fixtures {
-			stop(f.ID)
+			stop(t, f.ID)
 		}
 	}()
 	base := append([]byte(nil), req.Input...)
 	for i, combo := range []struct{ progress, result bool }{{false, false}, {true, false}, {false, true}, {true, true}} {
-		var input contracts.RunRequest
-		_ = json.Unmarshal(base, &input)
-		if combo.progress {
-			input.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: "cHJvZ3Jlc3M="}
-		}
-		if combo.result {
-			input.ResultFile = &contracts.ResultFileInput{InitialContentBase64: "c2VlZA=="}
-		}
-		req.RequestID = fmt.Sprintf("final-result-%d", i)
-		req.Input, _ = json.Marshal(input)
-		raw, _ := json.Marshal(req)
-		response := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
-		id := response.Data.(map[string]any)["run_id"].(string)
-		fixtures = append(fixtures, fixture{ID: id, Progress: combo.progress, Result: combo.result})
-		f := &fixtures[len(fixtures)-1]
-		run := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
-		f.Workspace = run.Execution.Workspace
-		resultPath := filepath.Join(f.Workspace, ".steerrunner", "result", id, "result.bin")
-		progressPath := filepath.Join(f.Workspace, ".steerrunner", "progress", id, "progress.bin")
-		if combo.result {
-			f.ResultPath = resultPath
-		}
-		if combo.progress {
-			f.ProgressPath = progressPath
-		}
-		if resultPath == progressPath || !filepath.IsAbs(resultPath) {
-			t.Fatal("file path isolation")
-		}
-		v := read("result-file", id)
-		expected := "disabled"
-		if combo.result {
-			expected = "pending"
-		}
-		if v.CollectionStatus != expected || v.Version != 0 || v.ContentBase64 != nil || v.ObservedAt != nil || v.SHA256 != "" {
-			t.Fatal("result was collected while running", v)
-		}
-		if combo.result {
-			initial, err := os.ReadFile(resultPath)
-			if err != nil || string(initial) != "seed" {
-				t.Fatal("initialization", err, string(initial))
+		if !runResultFileVariant(t, i, func(t *testing.T) {
+			var input contracts.RunRequest
+			_ = json.Unmarshal(base, &input)
+			if combo.progress {
+				input.ProgressFile = &contracts.ProgressFileInput{InitialContentBase64: "cHJvZ3Jlc3M="}
 			}
-			f.Final = []byte{0, 255, 'r', byte(i)}
-			if err := os.WriteFile(resultPath+".tmp", f.Final, 0600); err != nil {
-				t.Fatal(err)
+			if combo.result {
+				input.ResultFile = &contracts.ResultFileInput{InitialContentBase64: "c2VlZA=="}
 			}
-			if err := os.Rename(resultPath+".tmp", resultPath); err != nil {
-				t.Fatal(err)
+			req.RequestID = fmt.Sprintf("final-result-%d", i)
+			req.Input, _ = json.Marshal(input)
+			raw, _ := json.Marshal(req)
+			response := call(t, dir, []string{"submit", "--input", "-"}, string(raw), 0)
+			id := response.Data.(map[string]any)["run_id"].(string)
+			fixtures = append(fixtures, fixture{ID: id, Progress: combo.progress, Result: combo.result})
+			f := &fixtures[len(fixtures)-1]
+			run := waitRun(t, dir, id, func(v contracts.RunView) bool { return v.Execution.TurnID != "" })
+			f.Workspace = run.Execution.Workspace
+			resultPath := filepath.Join(f.Workspace, ".steerrunner", "result", id, "result.bin")
+			progressPath := filepath.Join(f.Workspace, ".steerrunner", "progress", id, "progress.bin")
+			if combo.result {
+				f.ResultPath = resultPath
 			}
-		} else if _, err := os.Stat(filepath.Dir(resultPath)); !os.IsNotExist(err) {
-			t.Fatal("disabled result created file", err)
-		}
-		if combo.progress {
-			if err := os.WriteFile(progressPath, []byte("progress-live"), 0600); err != nil {
-				t.Fatal(err)
+			if combo.progress {
+				f.ProgressPath = progressPath
 			}
-			until := time.Now().Add(20 * time.Second)
-			for {
-				p := read("progress-file", id)
-				if p.ContentBase64 != nil && *p.ContentBase64 == base64.StdEncoding.EncodeToString([]byte("progress-live")) {
-					break
+			if resultPath == progressPath || !filepath.IsAbs(resultPath) {
+				t.Fatal("file path isolation")
+			}
+			v := read(t, "result-file", id)
+			expected := "disabled"
+			if combo.result {
+				expected = "pending"
+			}
+			if v.CollectionStatus != expected || v.Version != 0 || v.ContentBase64 != nil || v.ObservedAt != nil || v.SHA256 != "" {
+				t.Fatal("result was collected while running", v)
+			}
+			if combo.result {
+				initial, err := os.ReadFile(resultPath)
+				if err != nil || string(initial) != "seed" {
+					t.Fatal("initialization", err, string(initial))
 				}
-				if time.Now().After(until) {
-					t.Fatal("progress delivery", p)
+				f.Final = []byte{0, 255, 'r', byte(i)}
+				if err := os.WriteFile(resultPath+".tmp", f.Final, 0600); err != nil {
+					t.Fatal(err)
 				}
-				time.Sleep(100 * time.Millisecond)
+				if err := os.Rename(resultPath+".tmp", resultPath); err != nil {
+					t.Fatal(err)
+				}
+			} else if _, err := os.Stat(filepath.Dir(resultPath)); !os.IsNotExist(err) {
+				t.Fatal("disabled result created file", err)
 			}
-		} else if read("progress-file", id).CollectionStatus != "disabled" {
-			t.Fatal("progress enabled unexpectedly")
-		}
-		if got := read("result-file", id); !reflect.DeepEqual(v, got) {
-			t.Fatal("running write refreshed result", v, got)
-		}
-		// The native process, not the parent shell, reports its actual environment.
-		calls, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
-		if err != nil {
-			t.Fatal(err)
-		}
-		found := false
-		for _, line := range bytes.Split(calls, []byte("\n")) {
-			var event map[string]any
-			if json.Unmarshal(line, &event) != nil || event["method"] != "result/environment" {
-				continue
+			if combo.progress {
+				if err := os.WriteFile(progressPath, []byte("progress-live"), 0600); err != nil {
+					t.Fatal(err)
+				}
+				until := time.Now().Add(20 * time.Second)
+				for {
+					p := read(t, "progress-file", id)
+					if p.ContentBase64 != nil && *p.ContentBase64 == base64.StdEncoding.EncodeToString([]byte("progress-live")) {
+						break
+					}
+					if time.Now().After(until) {
+						t.Fatal("progress delivery", p)
+					}
+					time.Sleep(100 * time.Millisecond)
+				}
+			} else if read(t, "progress-file", id).CollectionStatus != "disabled" {
+				t.Fatal("progress enabled unexpectedly")
 			}
-			cwd, _ := event["cwd"].(string)
-			if !strings.EqualFold(filepath.Clean(cwd), filepath.Clean(f.Workspace)) {
-				continue
+			if got := read(t, "result-file", id); !reflect.DeepEqual(v, got) {
+				t.Fatal("running write refreshed result", v, got)
 			}
-			found = true
-			if event["path"] != f.ResultPath || event["progress_path"] != f.ProgressPath {
-				t.Fatal("inherited or crossed environment", event, f)
+			// The native process, not the parent shell, reports its actual environment.
+			calls, err := os.ReadFile(filepath.Join(os.Getenv("STEERRUNNER_FIXTURE_STATE"), "calls.jsonl"))
+			if err != nil {
+				t.Fatal(err)
 			}
-		}
-		if !found {
-			t.Fatal("native environment unobserved")
+			found := false
+			for _, line := range bytes.Split(calls, []byte("\n")) {
+				var event map[string]any
+				if json.Unmarshal(line, &event) != nil || event["method"] != "result/environment" {
+					continue
+				}
+				cwd, _ := event["cwd"].(string)
+				if !strings.EqualFold(filepath.Clean(cwd), filepath.Clean(f.Workspace)) {
+					continue
+				}
+				found = true
+				if event["path"] != f.ResultPath || event["progress_path"] != f.ProgressPath {
+					t.Fatal("inherited or crossed environment", event, f)
+				}
+			}
+			if !found {
+				t.Fatal("native environment unobserved")
+			}
+		}) {
+			t.FailNow()
 		}
 	}
 	nativeBefore := countNative(t, "turn/start")
@@ -180,15 +250,15 @@ func TestSRResultFile(t *testing.T) {
 		f := &fixtures[i]
 		if f.Result {
 			call(t, dir, []string{"result-file", "--run-id", f.ID, "--expected-instance-id", "wrong-instance"}, "", 5)
-			if read("result-file", f.ID).CollectionStatus != "pending" {
+			if read(t, "result-file", f.ID).CollectionStatus != "pending" {
 				t.Fatal("query collected result")
 			}
 		}
-		stop(f.ID)
+		stop(t, f.ID)
 		if !f.Result {
 			continue
 		}
-		f.Sealed = waitResult(f.ID)
+		f.Sealed = waitResult(t, f.ID)
 		v := f.Sealed
 		if v.Version != 1 || v.Diagnostic != "" || v.ContentBase64 == nil || v.ObservedAt == nil {
 			t.Fatal(v)
@@ -200,7 +270,7 @@ func TestSRResultFile(t *testing.T) {
 		if err := os.WriteFile(f.ResultPath, []byte("after-seal"), 0600); err != nil {
 			t.Fatal(err)
 		}
-		if !reflect.DeepEqual(v, read("result-file", f.ID)) {
+		if !reflect.DeepEqual(v, read(t, "result-file", f.ID)) {
 			t.Fatal("query refreshed seal")
 		}
 	}
@@ -211,7 +281,7 @@ func TestSRResultFile(t *testing.T) {
 	service = serviceInfo(t, call(t, dir, []string{"service", "start"}, "", 0))
 	cleanupService(t, dir, service)
 	for _, f := range fixtures {
-		if f.Result && !reflect.DeepEqual(f.Sealed, read("result-file", f.ID)) {
+		if f.Result && !reflect.DeepEqual(f.Sealed, read(t, "result-file", f.ID)) {
 			t.Fatal("restart refreshed seal", f)
 		}
 	}
@@ -228,7 +298,7 @@ func TestSRResultFile(t *testing.T) {
 
 func testOptionalFilesDoNotGateWorkflow(t *testing.T) {
 	for mask := 0; mask < 4; mask++ {
-		t.Run(fmt.Sprintf("enabled-%d", mask), func(t *testing.T) {
+		runResultFileVariant(t, mask, func(t *testing.T) {
 			dir, req := setupRun(t)
 			var input contracts.RunRequest
 			if err := json.Unmarshal(req.Input, &input); err != nil {
