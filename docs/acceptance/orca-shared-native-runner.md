@@ -13,3 +13,9 @@
 新增注册 driver 只通过正式 CLI 提交/反馈/停止，不构造 Run/Snapshot，不代模型发布、不合并测试 PR；记录精确 CLI/转发器/Runner 身份，验证同原 terminal/provider 的 pre-pr_ready 反馈、测试 PR 仓库/base/head、原清单、Run stop/service stop/真实离线复核。四个真实场次尚未执行。OSR-03/04 真实部分及 OSR-05 审计待闭环。
 
 当前原始记录在 .evidence/orca-b5；完成时按已有可复现 UTF-8 文件与 SHA256 格式归档，含初始失败。
+
+后续修订：77c7ad8 修复测试 Manifest 对 Windows 正斜杠 CLI 路径的误拒绝；独立审计复核通过。1334745 补双端正式 Engine 的 totalCount/rows 不符反例，两个叶例全通过，不重发关闭、不结算。排队释放屏障后的正常主机权限复验通过；沙箱 Git 临时仓库写权限失败另保留。
+
+真实场次 5a64408f87c1 在 service start 前因测试路径比较失败；准备终端已确认关闭，无 Run/PR。场次 3e4b30af354f 正式 Run 03dabd99220327b14179c99ad70c0058 已验证原请求 Started、完整 needs_input final，业务反馈被 Engine 的旧 gate 拒绝：workflow.FeedbackStep 明确支持 input.Continue，Engine 只认 ManualImplementation。本次 Run stop、service stop、真实 offline 验证均通过，关闭一次、零旧链，但业务场次仍为 failed、没有 PR，不能计资格。
+
+针对上述入口不一致，允许 waiting_input 的冻结业务 input Continue/ManualImplementation，活动 native question 的 execute 状态和 milestone 继续拒绝；原 qualifyContinuation 的 session/resource/idle 校验不改。新增双端正式 Engine 的 idle/active 四例验证：先保存显式 feedback，只有原会话 idle 才冻结一个后继输入，非 idle 零输入/零派发；活动 execute 和 milestone 入口均拒绝。四例通过。准备未执行的远端 674b961e26f4 不记资格，保留其已关闭准备终端与 base。

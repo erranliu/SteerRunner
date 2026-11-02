@@ -315,7 +315,7 @@ func (e *Engine) Handle(command, runID, requestID, commandID, after string, limi
 				if state.Kind == "milestone" {
 					return reject(contracts.Fail(5, "invalid_state", "This milestone has no feedback transition."))
 				}
-				if r.Status != "blocked" && !(r.Status == "waiting_input" && state.ManualImplementation != "") {
+				if r.Status != "blocked" && !(r.Status == "waiting_input" && state.Kind == "input" && (state.ManualImplementation != "" || state.Continue != "")) {
 					return reject(contracts.Fail(5, "invalid_state", "Business feedback requires an ended original turn."))
 				}
 				if r.PendingFeedback != nil {
