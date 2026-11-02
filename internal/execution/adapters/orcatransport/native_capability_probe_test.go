@@ -49,6 +49,9 @@ type capabilityEvidence struct {
 	BareEnter        uint64            `json:"bare_enter_calls"`
 	ScreenReads      uint64            `json:"screen_reads"`
 	Failure          string            `json:"failure"`
+	CreationUnknown  bool              `json:"creation_unknown"`
+	CreationError    string            `json:"creation_error"`
+	ManualCleanup    string            `json:"manual_cleanup"`
 }
 
 func validateCapabilityTarget(target nativeInputProbeTarget) error {
@@ -69,7 +72,7 @@ func (e capabilityEvidence) validate() error {
 		e.Process.Incarnation == "" || e.Process.WorktreeID == "" || e.Provider == "" ||
 		!localProbeEmptyCensus(e.Before, e.Process.RuntimeID) || !localProbeEmptyCensus(e.After, e.Process.RuntimeID) ||
 		e.HelperCalls != 0 || e.CreatedTerminals != 1 || e.ManagedEvidence || e.CloseCalls < 0 || e.CloseCalls > 1 || !e.Completed || !e.CleanedUp ||
-		e.CleanupError != "" || e.Failure != "" || len(e.Turns) != 2 || e.BusinessInputs != 2 || e.SubmitCalls != 2 ||
+		e.CleanupError != "" || e.Failure != "" || e.CreationUnknown || e.CreationError != "" || e.ManualCleanup != "" || len(e.Turns) != 2 || e.BusinessInputs != 2 || e.SubmitCalls != 2 ||
 		e.TextOnly != 0 || e.BareEnter != 0 || e.ScreenReads != 0 {
 		return errors.New("native capability qualification is incomplete or uses the managed path")
 	}
@@ -136,6 +139,43 @@ func closeCapabilityTerminal(ctx context.Context, client native.Client, p b.Proc
 	return 1, errorText(closeErr), verifyErr
 }
 
+func cleanupCapabilityProbe(ctx context.Context, client native.Client, target nativeInputProbeTarget, e *capabilityEvidence) error {
+	var closeErr error
+	if e.CreationUnknown {
+		// A census is evidence for manual reconciliation, not authority to adopt
+		// a terminal whose exact creation identity was never received.
+		e.ManualCleanup = fmt.Sprintf("creation identity unknown; inspect target.json and terminal-create.json, then reconcile runtime=%q environment=%q worktree=%q with after_census; no automatic close or replacement", target.Runtime, target.Environment, target.Worktree)
+		closeErr = errors.New("capability creation identity unknown; manual reconciliation required")
+	} else {
+		e.CloseCalls, e.CloseError, closeErr = closeCapabilityTerminal(ctx, client, e.Process)
+	}
+	var censusErr error
+	e.After, censusErr = client.MetaCall(ctx, "terminal", "list", "--worktree", target.Worktree, "--json")
+	err := errors.Join(closeErr, censusErr)
+	e.CleanupError = errorText(err)
+	e.CleanedUp = err == nil && !e.CreationUnknown && localProbeEmptyCensus(e.After, target.Runtime)
+	if !e.CleanedUp {
+		return errors.Join(err, errors.New("capability original terminal cleanup remains unverified"))
+	}
+	return nil
+}
+
+func createCapabilityTerminal(ctx context.Context, client native.Client, target nativeInputProbeTarget, launch string, e *capabilityEvidence) (native.Result, error) {
+	e.CreationUnknown = true
+	created, err := client.MetaCall(ctx, "terminal", "create", "--worktree", target.Worktree, "--title", "SteerRunner B0 native capability", "--command", launch, "--json")
+	var made struct{ Terminal native.Terminal }
+	if err != nil || created.CallUncertain || created.RuntimeID != target.Runtime || json.Unmarshal(created.Payload, &made) != nil ||
+		made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != strings.TrimPrefix(target.Worktree, "id:") {
+		err = errors.Join(err, errors.New("capability creation unknown; no replacement or ambiguous cleanup"))
+		e.CreationError = err.Error()
+		return created, err
+	}
+	e.Process = b.ProcessIdentity{Kind: "orca_terminal", Executable: target.CLI, RuntimeID: target.Runtime, Terminal: made.Terminal.Handle,
+		Incarnation: made.Terminal.IncarnationID, WorktreeID: made.Terminal.WorktreeID, ExecutionHost: (Profile{Environment: target.Environment}).Target().ExecutionHost}
+	e.CreationUnknown = false
+	return created, nil
+}
+
 func runNativeCapabilityProbe(t *testing.T) {
 	root := os.Getenv("STEERRUNNER_ORCA_STATE_PROBE_ROOT")
 	var target nativeInputProbeTarget
@@ -184,27 +224,22 @@ func runNativeCapabilityProbe(t *testing.T) {
 	if err != nil || !localProbeEmptyCensus(evidence.Before, target.Runtime) {
 		t.Fatal("capability probe requires an empty complete original worktree", err)
 	}
-	created, err := creator.MetaCall(ctx, "terminal", "create", "--worktree", target.Worktree, "--title", "SteerRunner B0 native capability", "--command", launch, "--json")
-	writeLocalProbe(t, host, root, "terminal-create.json", created)
-	var made struct{ Terminal native.Terminal }
-	if err != nil || created.CallUncertain || created.RuntimeID != target.Runtime || json.Unmarshal(created.Payload, &made) != nil ||
-		made.Terminal.Handle == "" || made.Terminal.IncarnationID == "" || made.Terminal.WorktreeID != strings.TrimPrefix(target.Worktree, "id:") {
-		t.Fatal("capability creation unknown; no replacement or ambiguous cleanup", err)
-	}
-	p := b.ProcessIdentity{Kind: "orca_terminal", Executable: target.CLI, RuntimeID: target.Runtime, Terminal: made.Terminal.Handle,
-		Incarnation: made.Terminal.IncarnationID, WorktreeID: made.Terminal.WorktreeID, ExecutionHost: profile.Target().ExecutionHost}
-	evidence.Process = p
+	// Register before the mutation: response loss or an incomplete identity must
+	// still produce the read-only census and manual reconciliation record.
+	evidence.CreationUnknown = true
 	defer func() {
 		cleanup, done := context.WithTimeout(context.Background(), 45*time.Second)
 		defer done()
-		evidence.CloseCalls, evidence.CloseError, err = closeCapabilityTerminal(cleanup, creator, p)
-		evidence.CleanupError = errorText(err)
-		evidence.After, err = census(cleanup)
-		evidence.CleanedUp = evidence.CleanupError == "" && err == nil && localProbeEmptyCensus(evidence.After, p.RuntimeID)
-		if !evidence.CleanedUp {
-			t.Error("capability original terminal cleanup remains unverified", evidence.CleanupError, err)
+		if err := cleanupCapabilityProbe(cleanup, creator, target, &evidence); err != nil {
+			t.Error(err)
 		}
 	}()
+	created, err := createCapabilityTerminal(ctx, creator, target, launch, &evidence)
+	writeLocalProbe(t, host, root, "terminal-create.json", created)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := evidence.Process
 	terminal, err := creator.InspectBoundTerminal(ctx, profile.Target(), p)
 	if err != nil {
 		t.Fatal(err)
@@ -473,6 +508,47 @@ func TestOrcaCapabilityProbeCleanup(t *testing.T) {
 			want := scenario == "closed" || scenario == "lost-response"
 			if (err == nil) != want || closeCalls > 1 || calls != closeCalls || scenario == "lost-response" && closeError == "" {
 				t.Fatal("wrong terminal cleanup qualification", calls, closeCalls, closeError, err)
+			}
+		})
+	}
+}
+
+func TestOrcaCapabilityProbeUnknownCreation(t *testing.T) {
+	for _, scenario := range []string{"response-loss-empty", "response-loss-ambiguous", "missing-identity", "census-error"} {
+		t.Run(scenario, func(t *testing.T) {
+			var calls []string
+			target := nativeInputProbeTarget{Runtime: "original-runtime", Environment: "fixed-remote", Worktree: "id:repo::C:/owned"}
+			client := native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+				calls = append(calls, args[0]+" "+args[1])
+				if len(calls) == 1 && calls[0] == "terminal create" {
+					if scenario == "missing-identity" {
+						return []byte(`{"ok":true,"result":{"terminal":{"handle":"unclaimed"}},"_meta":{"runtimeId":"original-runtime"}}`), nil
+					}
+					return nil, errors.New("creation response lost")
+				}
+				if strings.Join(args, " ") != "terminal list --worktree "+target.Worktree+" --json" {
+					t.Fatal("unknown creation must only query the original worktree", args)
+				}
+				if scenario == "census-error" {
+					return nil, errors.New("inventory unavailable")
+				}
+				result := capabilityCensus(target.Runtime)
+				if scenario == "response-loss-ambiguous" {
+					result.Payload = json.RawMessage(`{"terminals":[{"handle":"unclaimed","incarnationId":"new","worktreeId":"repo::C:/owned"}],"totalCount":1,"truncated":false,"hostScope":{"hostIds":["local"],"omittedHostIds":[]}}`)
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": result.Payload, "_meta": map[string]string{"runtimeId": target.Runtime}})
+			}})
+			e := capabilityEvidence{}
+			if _, err := createCapabilityTerminal(context.Background(), client, target, "fixed native launch", &e); err == nil {
+				t.Fatal("unknown creation accepted")
+			}
+			err := cleanupCapabilityProbe(context.Background(), client, target, &e)
+			if err == nil || strings.Join(calls, ",") != "terminal create,terminal list" || e.CloseCalls != 0 || e.CleanedUp || e.CleanupError == "" || e.CreationError == "" || !e.CreationUnknown ||
+				!strings.Contains(e.ManualCleanup, target.Runtime) || !strings.Contains(e.ManualCleanup, target.Environment) || !strings.Contains(e.ManualCleanup, target.Worktree) {
+				t.Fatal("unknown creation lost reconciliation facts or acquired cleanup authority", e, err)
+			}
+			if scenario != "census-error" && (e.After.RuntimeID != target.Runtime || len(e.After.Payload) == 0) {
+				t.Fatal("original census not retained", e.After)
 			}
 		})
 	}

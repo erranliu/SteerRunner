@@ -1,6 +1,6 @@
 # Orca 无 helper 原生可行性 B0 验收
 
-日期：2026-11-02。状态：实现、确定性回归和双端原生现场通过；实施后独立审计待完成。本报告依据 [Spec](../spec/orca-native-capability-baseline.spec.md) / [Plan](../spec/orca-native-capability-baseline.plan.md)，只证明[长期设计 B0](../spec/orca-capability-layer.spec.md#61-b0-的可行性证据与零旧链调用)，不授予 B5 真实 Runner 开发资格。
+日期：2026-11-02。状态：实现、确定性回归和双端原生现场通过；独立审计的唯一 P2 已修复并经原审计者只读复核关闭。本报告依据 [Spec](../spec/orca-native-capability-baseline.spec.md) / [Plan](../spec/orca-native-capability-baseline.plan.md)，只证明[长期设计 B0](../spec/orca-capability-layer.spec.md#61-b0-的可行性证据与零旧链调用)，不授予 B5 真实 Runner 开发资格。
 
 ## 1. 源码和产物
 
@@ -46,4 +46,10 @@
 
 ## 5. 后继及审计
 
-本机和远端的底层可行性已取得直接证据；B3 可消费这些已证能力及上述差距，不据此删除 managed 业务链。B1/B2a 仍按独立收益逐批实施。独立审计完成及确认问题修复前，长期路线 B0 保持“验证通过、待审计”，不标全部完成。
+独立只读审计复核实现提交 `fe49bbb`、全部 125 个归档文件的字节数/SHA256、双端原输入及清单；复跑三组定向测试和脚本 parser 通过。确认一个 P2：未知创建响应或缺完整身份会在清理 defer 注册前退出，遗漏创建后的只读清单和人工处置记录；未发现 P0/P1。
+
+修复将清理注册移到创建前。未知创建保留首次错误、原 runtime/environment/worktree、after_census 及人工对账说明，后续只有一次原清单读取，不自动认领或关闭清单中的终端。新增响应丢失且清单为空、响应丢失且存在未认领终端、回执缺身份、清单不可用四例，均断言实际调用序列为一次 create、一次 list、零 close。修复后 4 根、30 子例通过，0 fail/skip；原始日志见 [audit-fix.jsonl](evidence/orca-native-capability-baseline-20261102/audit-fix.jsonl)。
+
+双端真实模型资格对应 §1 的原构建；该未知创建分支修复只用确定性故障验证，没有重跑模型，也不将旧现场摘要改成修复后的源码摘要。生产代码和正常两轮证明不变。
+
+本机和远端的底层可行性已取得直接证据；B3 可消费这些已证能力及上述差距，不据此删除 managed 业务链。B1/B2a 仍按独立收益逐批实施。

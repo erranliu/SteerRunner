@@ -6,6 +6,7 @@
 - local-02、remote-01：最终同源、同 EXE 的双端新终端现场，passed=true。
 - controlled-final.jsonl / controlled-summary.json：3 个新根、26 个子例，0 fail/skip。
 - regression-final.jsonl：11 个原回归根、132 个子例，0 fail/skip。
+- audit-fix.jsonl：独立审计确认的未知创建分支修复，4 根、30 子例，0 fail/skip；独立于原归档，不更改既有现场字节及构建摘要。
 - 根目录 fixture/tooling 记录：专属 worktree 分配、初始 shell 精确关闭，以及 Codex 版本/命令定义摘要的补采与终端清理；不混入业务发送计数。
 
 证据为本批非秘密 nonce 和公开原生事实，未保存配对凭据、认证帧或完整环境。读取正文证明只能使用原输入查询和正式 final，tooling 的终端流只用于版本元数据。

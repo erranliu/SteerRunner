@@ -1,6 +1,6 @@
 # Spec：Orca 无 helper 原生可行性核验 B0
 
-日期：2026-11-02。状态：已实现，双端底层验证通过，实施后独立审计待完成。代码基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。对应 [Plan](orca-native-capability-baseline.plan.md)，结果见[验收](../acceptance/orca-native-capability-baseline.md)，依据[能力层长期设计 B0](orca-capability-layer.spec.md#61-b0-的可行性证据与零旧链调用)。
+日期：2026-11-02。状态：已完成，双端底层验证及实施后独立审计通过，确认问题已修复并复核。代码基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。对应 [Plan](orca-native-capability-baseline.plan.md)，结果见[验收](../acceptance/orca-native-capability-baseline.md)，依据[能力层长期设计 B0](orca-capability-layer.spec.md#61-b0-的可行性证据与零旧链调用)。
 
 ## 1. 目标和交付
 

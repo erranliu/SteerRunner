@@ -1,6 +1,6 @@
 # Plan：Orca 无 helper 原生可行性核验 B0
 
-日期：2026-11-02。状态：P0–P5 已完成，P6 验收已记录、独立审计待完成；见[验收](../acceptance/orca-native-capability-baseline.md)。依据 [Spec](orca-native-capability-baseline.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本 Plan 只执行 B0，代码基线 `efa871cfffb950505bf2f0a325ec7751fb4be7f3`；既有长期设计文档工作树差异属于本任务，不覆盖或回退。
+日期：2026-11-02。状态：P0–P6 已完成，独立审计确认的 P2 已修复并只读复核；见[验收](../acceptance/orca-native-capability-baseline.md)。依据 [Spec](orca-native-capability-baseline.spec.md) 和[长期路线](orca-capability-layer.spec.md#6-分批实施路线)。本 Plan 只执行 B0，代码基线 `efa871cfffb950505bf2f0a325ec7751fb4be7f3`；既有长期设计文档工作树差异属于本任务，不覆盖或回退。
 
 ## P0 固定现场与实现边界
 
@@ -86,8 +86,8 @@ git diff --check
 
 - [x] 新增 `docs/acceptance/orca-native-capability-baseline.md`，按 OCB0-01–07 记录实际源码/产物、命令、命中数、双端原始证据、失败/补验、业务和清理各自结论。
 - [x] 能力差距表至少列原输入/完整 final/同会话后续、启动模型偏好与实际模型未核验、workspace/audited 未验、Git/PR 未验、原终端停止与本机现行 helper scope 的差别。
-- [ ] 更新长期路线 B0 状态及 Spec/Plan 实际状态。只有双端及清理证据齐备才能标完成；不更新生产支持或 B5 资格。
-- [ ] 按用户目标提交本批实现和验收 commit，不提阶段 PR；之后由独立只读审计者核对设计、实际 diff、生产不变、证据和未知零重发。
-- [ ] 确认的修复单独 commit，补跑受影响检查/新现场并记录审计结论；未修问题和未验范围保留。全部批次完成后再统一提一个 PR，不合并或部署。
+- [x] 更新长期路线 B0 状态及 Spec/Plan 实际状态。只有双端及清理证据齐备才能标完成；不更新生产支持或 B5 资格。
+- [x] 按用户目标提交本批实现和验收 commit，不提阶段 PR；之后由独立只读审计者核对设计、实际 diff、生产不变、证据和未知零重发。
+- [x] 确认的修复单独 commit，补跑受影响检查并经原审计者复核；未知创建 P2 已关闭，未验范围保留。全部批次完成后再统一提一个 PR，不合并或部署。
 
 停止条件：OCB0-01–07 全部有直接证据，资源已确认收尾，独立审计完成且确认问题已修复。本批未完成不阻止长期路线允许的 B1/B2a 独立收益工作，但不能开始依赖 B0 通过的 B3。
