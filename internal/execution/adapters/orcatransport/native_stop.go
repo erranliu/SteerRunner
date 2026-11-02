@@ -56,9 +56,9 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 		return receipt, errors.New("original remote Orca resource binding is incomplete")
 	}
 	var closeFailure error
-	if l.client.VerifyTerminalStopped(ctx, p) != nil && closeOriginal {
+	if VerifyTerminalStopped(ctx, l.client, p) != nil && closeOriginal {
 		progress.Phase = "not-attempted"
-		t, inspectErr := l.client.InspectBoundTerminal(ctx, l.profile.Target(), p)
+		t, inspectErr := InspectBoundTerminal(ctx, l.client, p)
 		if inspectErr != nil {
 			return receipt, inspectErr
 		}
@@ -73,7 +73,7 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 		progress.Phase = "attempted"
 		// A lost close response is reconciled only through the same inventory.
 		// This function never repeats close; absence does not invent a receipt.
-		proof, closeErr := l.client.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+		proof, closeErr := CloseTerminalChecked(ctx, l.client, p.Terminal, p.RuntimeID)
 		if native.IsCLIQueueError(closeErr) {
 			// The shared CLI queue proves no command process was invoked. Keep
 			// the existing first-close authorization instead of making a safe
@@ -93,7 +93,7 @@ func (l *Lifecycle) remoteStopResult(ctx context.Context, r b.LifecycleRequest, 
 	}
 	until := time.Now().Add(3 * time.Second)
 	for {
-		err = l.client.VerifyTerminalStopped(ctx, p)
+		err = VerifyTerminalStopped(ctx, l.client, p)
 		if err == nil {
 			break
 		}

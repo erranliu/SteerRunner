@@ -29,7 +29,7 @@ func (l *Lifecycle) verifyStopped(ctx context.Context, s b.LifecycleSnapshot) er
 	if state.Process.Kind != "orca_terminal" || state.Process != s.Ref.External || state.Process.ExecutionHost != l.profile.Target().ExecutionHost || state.Process.Executable != l.profile.Executable {
 		return errors.New("original Orca resource binding is incomplete")
 	}
-	if err = l.client.VerifyTerminalStopped(ctx, state.Process); err != nil {
+	if err = VerifyTerminalStopped(ctx, l.client, state.Process); err != nil {
 		return err
 	}
 	if l.profile.Environment != "" {
@@ -68,7 +68,7 @@ func (l *Lifecycle) originalForStop(ctx context.Context, s b.LifecycleSnapshot) 
 		_, err := l.original(ctx, s)
 		return err
 	}
-	t, err := l.client.InspectBoundTerminal(ctx, l.profile.Target(), s.Ref.External)
+	t, err := InspectBoundTerminal(ctx, l.client, s.Ref.External)
 	if err != nil {
 		return err
 	}

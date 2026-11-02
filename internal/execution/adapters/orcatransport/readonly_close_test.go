@@ -1,8 +1,9 @@
-package orca
+package orcatransport
 
 import (
 	"context"
 	"encoding/json"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"testing"
 	"time"
 
@@ -14,8 +15,8 @@ func TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory(t *testing.T) {
 	for _, mode := range []string{"absent", "still-listed", "truncated", "missing-local", "foreign-runtime", "replacement", "foreign-worktree"} {
 		t.Run(mode, func(t *testing.T) {
 			queries, closes := 0, 0
-			c := New(Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
-				term := Terminal{Handle: p.Terminal, IncarnationID: p.Incarnation, WorktreeID: p.WorktreeID, Connected: false}
+			c := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+				term := native.Terminal{Handle: p.Terminal, IncarnationID: p.Incarnation, WorktreeID: p.WorktreeID, Connected: false}
 				var result any
 				runtime := p.RuntimeID
 				switch args[0] + " " + args[1] {
@@ -32,7 +33,7 @@ func TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory(t *testing.T) {
 					if len(args) != 5 || args[3] != "id:"+p.WorktreeID {
 						t.Fatal("query escaped original worktree", args)
 					}
-					terms := []Terminal{}
+					terms := []native.Terminal{}
 					if mode == "still-listed" {
 						terms = append(terms, term)
 					}
@@ -50,7 +51,7 @@ func TestReadonlyCloseStaleDisconnectedCardUsesOriginalInventory(t *testing.T) {
 				}
 				return json.Marshal(map[string]any{"ok": true, "result": result, "_meta": map[string]string{"runtimeId": runtime}})
 			}})
-			proof, err := c.CloseReadonlyTerminal(context.Background(), p)
+			proof, err := CloseReadonlyTerminal(context.Background(), c, p)
 			if (err == nil) != (mode == "absent") || mode == "absent" && proof.Disposition != "confirmed" || closes != 0 {
 				t.Fatal("stale card reconciliation", proof, err, queries, closes)
 			}

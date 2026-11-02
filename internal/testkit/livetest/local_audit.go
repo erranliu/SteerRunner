@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	orcaexec "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"strconv"
@@ -41,7 +42,7 @@ func LocalPermissionAudit(ctx context.Context, client native.Client, process b.P
 		err = errors.Join(err, closeErr)
 	}()
 	for {
-		if _, err = client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, original); err != nil {
+		if _, err = orcaexec.InspectBoundTerminal(ctx, client, original); err != nil {
 			return audit, err
 		}
 		// Cursor reads use original complete output lines. The default screen

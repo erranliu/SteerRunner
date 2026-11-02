@@ -109,7 +109,7 @@ func TestOrcaWorkspaceStartupLive(t *testing.T) {
 				defer cleanupCancel()
 				handle := creation.Terminal.Handle
 				if handle != "" {
-					proof, closeErr := client.CloseTerminalChecked(cleanup, handle, creation.RuntimeID)
+					proof, closeErr := CloseTerminalChecked(cleanup, client, handle, creation.RuntimeID)
 					if closeErr != nil || proof.Disposition != "confirmed" {
 						t.Error("terminal cleanup unverified", closeErr)
 						return

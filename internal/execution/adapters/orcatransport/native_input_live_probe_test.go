@@ -112,13 +112,13 @@ func runNativeInputLiveProbe(t *testing.T) {
 			}
 			return
 		}
-		inspected, e := creator.InspectBoundTerminal(cleanup, profile.Target(), identity)
+		inspected, e := InspectBoundTerminal(cleanup, creator, identity)
 		if e == nil && inspected.WorktreeID != identity.WorktreeID {
 			e = fmt.Errorf("original emergency cleanup worktree changed")
 		}
 		var proof b.StopReceipt
 		if e == nil {
-			proof, e = creator.CloseTerminalChecked(cleanup, identity.Terminal, identity.RuntimeID)
+			proof, e = CloseTerminalChecked(cleanup, creator, identity.Terminal, identity.RuntimeID)
 		}
 		record["cleanup"] = proof
 		record["emergency_cleanup"] = true

@@ -1,9 +1,10 @@
-package orca
+package orcatransport
 
 import (
 	"context"
 	"encoding/json"
 	"errors"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	"testing"
 	"time"
 
@@ -15,8 +16,8 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 	for _, name := range []string{"absent", "exited", "unrelated-omitted", "active", "disconnected", "incarnation", "runtime", "worktree", "duplicate", "truncated", "count", "missing-count", "missing-host", "omitted-original", "missing-terminals", "offline", "cancelled"} {
 		t.Run(name, func(t *testing.T) {
 			runtime := p.RuntimeID
-			term := Terminal{Handle: p.Terminal, IncarnationID: p.Incarnation, WorktreeID: p.WorktreeID, Status: "exited"}
-			v := map[string]any{"terminals": []Terminal{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
+			term := native.Terminal{Handle: p.Terminal, IncarnationID: p.Incarnation, WorktreeID: p.WorktreeID, Status: "exited"}
+			v := map[string]any{"terminals": []native.Terminal{}, "truncated": false, "totalCount": 0, "hostScope": map[string]any{"hostIds": []string{"local"}, "omittedHostIds": []string{}}}
 			switch name {
 			case "exited", "active", "disconnected", "incarnation", "worktree", "duplicate":
 				if name == "active" || name == "disconnected" {
@@ -28,7 +29,7 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 				if name == "worktree" {
 					term.WorktreeID = "other"
 				}
-				terms := []Terminal{term}
+				terms := []native.Terminal{term}
 				if name == "duplicate" {
 					terms = append(terms, term)
 				}
@@ -52,7 +53,7 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 				delete(v, "terminals")
 			}
 			calls := 0
-			c := New(Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+			c := native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 				calls++
 				if len(args) != 5 || args[0] != "terminal" || args[1] != "list" || args[3] != "id:"+p.WorktreeID {
 					t.Fatalf("unexpected effect: %v", args)
@@ -67,7 +68,7 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 			if name == "cancelled" {
 				cancel()
 			}
-			err := c.VerifyTerminalStopped(ctx, p)
+			err := VerifyTerminalStopped(ctx, c, p)
 			want := name == "absent" || name == "exited" || name == "unrelated-omitted"
 			if (err == nil) != want || calls != 1 {
 				t.Fatalf("%s: %v calls=%d", name, err, calls)
@@ -75,7 +76,7 @@ func TestTerminalStoppedRequiresCompleteOriginalHost(t *testing.T) {
 			// The recovery close must apply exactly the same completeness/identity
 			// checks before using an absent original PTY as cleanup evidence.
 			calls = 0
-			original, inventoryErr := c.originalTerminalInventory(ctx, p)
+			original, inventoryErr := originalTerminalInventory(ctx, c, p)
 			inventoryPass := want || name == "active" || name == "disconnected"
 			if (inventoryErr == nil) != inventoryPass || calls != 1 {
 				t.Fatal("inventory consumers diverged", original, inventoryErr, calls)
@@ -102,14 +103,14 @@ func TestTerminalsStoppedUseOneCompleteOriginalInventory(t *testing.T) {
 				originals = nil
 			}
 			calls := 0
-			c := New(Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
+			c := native.New(native.Config{Output: func(_ context.Context, _ time.Duration, args ...string) ([]byte, error) {
 				calls++
 				if len(args) != 5 || args[0] != "terminal" || args[1] != "list" || args[3] != "id:worktree" {
 					t.Fatal("unexpected effect", args)
 				}
-				terms := []Terminal{}
+				terms := []native.Terminal{}
 				if mode == "exited" || mode == "active-reader" || mode == "changed-incarnation" {
-					term := Terminal{Handle: "reader-two", IncarnationID: "reader-two-inc", WorktreeID: "worktree", Status: "exited"}
+					term := native.Terminal{Handle: "reader-two", IncarnationID: "reader-two-inc", WorktreeID: "worktree", Status: "exited"}
 					if mode == "active-reader" {
 						term.Status = "running"
 					}
@@ -126,7 +127,7 @@ func TestTerminalsStoppedUseOneCompleteOriginalInventory(t *testing.T) {
 				}
 				return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"terminals": terms, "totalCount": len(terms), "truncated": mode == "truncated", "hostScope": map[string]any{"hostIds": hosts, "omittedHostIds": omitted}}, "_meta": map[string]string{"runtimeId": "original"}})
 			}})
-			err := c.VerifyTerminalsStopped(context.Background(), originals)
+			err := VerifyTerminalsStopped(context.Background(), c, originals)
 			want := mode == "absent" || mode == "exited"
 			wantCalls := 1
 			if mode == "foreign-runtime" || mode == "foreign-worktree" || mode == "missing-identity" || mode == "empty-identities" {

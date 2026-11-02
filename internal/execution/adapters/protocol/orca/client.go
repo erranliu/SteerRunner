@@ -9,13 +9,10 @@ import (
 	"errors"
 	"os/exec"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 type Config struct {
 	CommandTimeout string
-	Target         b.ExecutionTarget
 	Output         func(context.Context, time.Duration, ...string) ([]byte, error)
 }
 
@@ -80,39 +77,37 @@ func (c Client) ShowTerminal(ctx context.Context, handle string) (Terminal, erro
 	value.Terminal.RuntimeID = r.RuntimeID
 	return value.Terminal, nil
 }
-func (c Client) InspectBoundTerminal(ctx context.Context, _ b.ExecutionTarget, p b.ProcessIdentity) (Terminal, error) {
-	t, err := c.ShowTerminal(ctx, p.Terminal)
+func (c Client) InspectTerminal(ctx context.Context, identity TerminalIdentity) (Terminal, error) {
+	t, err := c.ShowTerminal(ctx, identity.Handle)
 	if err != nil {
 		return t, err
 	}
-	return t, validateBoundTerminal(t, p)
+	return t, validateTerminalIdentity(t, identity)
 }
 
-func validateBoundTerminal(t Terminal, p b.ProcessIdentity) error {
-	if err := validateTerminalIdentity(t, TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation}); err != nil {
-		return &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: err.Error(), Cause: err}
-	}
-	return nil
+type TerminalClosure struct {
+	Handle    string `json:"handle"`
+	PtyKilled bool   `json:"ptyKilled"`
 }
-func (c Client) CloseTerminalChecked(ctx context.Context, handle, runtime string) (b.StopReceipt, error) {
+type TerminalCloseIdentityError struct{}
+
+func (*TerminalCloseIdentityError) Error() string { return "original terminal close is unverified" }
+
+// CloseTerminal performs exactly one native close. PTY facts do not establish
+// an execution's stop scope or authorize a retry after a lost response.
+func (c Client) CloseTerminal(ctx context.Context, handle, runtime string) (Result, TerminalClosure, error) {
 	if handle == "" || runtime == "" {
-		return b.StopReceipt{}, errors.New("missing exact terminal close identity")
+		return Result{}, TerminalClosure{}, errors.New("missing exact terminal close identity")
 	}
 	r, err := c.MetaCall(ctx, "terminal", "close", "--terminal", handle, "--json")
 	if err != nil {
-		return b.StopReceipt{}, err
+		return r, TerminalClosure{}, err
 	}
 	var value struct {
-		Close struct {
-			Handle    string `json:"handle"`
-			PtyKilled bool   `json:"ptyKilled"`
-		} `json:"close"`
+		Close TerminalClosure `json:"close"`
 	}
 	if json.Unmarshal(r.Payload, &value) != nil || r.RuntimeID != runtime || value.Close.Handle != handle {
-		return b.StopReceipt{}, &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original terminal close is unverified"}
+		return r, TerminalClosure{}, &TerminalCloseIdentityError{}
 	}
-	if value.Close.PtyKilled {
-		return b.StopReceipt{Disposition: "confirmed"}, nil
-	}
-	return b.StopReceipt{Disposition: "accepted"}, nil
+	return r, value.Close, nil
 }

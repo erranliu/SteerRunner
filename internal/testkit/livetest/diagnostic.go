@@ -3,6 +3,7 @@ package livetest
 import (
 	"context"
 	"errors"
+	orcaexec "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 
 	orca "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
@@ -37,6 +38,6 @@ func DiagnosticRead(ctx context.Context, call func(context.Context, ...string) (
 // cleanup, while the same still-live incarnation permits continuing this exact
 // facility-close intent. This never sends model input or creates a resource.
 func CloseAuxiliaryTerminal(ctx context.Context, client orca.Client, original b.ProcessIdentity) error {
-	_, err := client.CloseReadonlyTerminal(ctx, original)
+	_, err := orcaexec.CloseReadonlyTerminal(ctx, client, original)
 	return err
 }

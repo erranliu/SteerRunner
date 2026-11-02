@@ -125,17 +125,17 @@ func auditCapabilityCalls(root, cli, launch string) (created, helpers int, err e
 // The capability probe proves only terminal absence. The production local
 // managed scope intentionally remains unchanged and is not invoked here.
 func closeCapabilityTerminal(ctx context.Context, client native.Client, p b.ProcessIdentity) (int, string, error) {
-	if err := client.VerifyTerminalStopped(ctx, p); err == nil {
+	if err := VerifyTerminalStopped(ctx, client, p); err == nil {
 		return 0, "", nil
 	}
-	t, err := client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p)
+	t, err := InspectBoundTerminal(ctx, client, p)
 	if err != nil || t.WorktreeID != p.WorktreeID {
 		return 0, "", errors.Join(err, errors.New("capability cleanup original worktree is unverified"))
 	}
-	_, closeErr := client.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+	_, closeErr := CloseTerminalChecked(ctx, client, p.Terminal, p.RuntimeID)
 	// Never repeat close, including a lost response. The complete original-host
 	// inventory is the independent proof; a close receipt alone is insufficient.
-	verifyErr := client.VerifyTerminalStopped(ctx, p)
+	verifyErr := VerifyTerminalStopped(ctx, client, p)
 	return 1, errorText(closeErr), verifyErr
 }
 
@@ -240,7 +240,7 @@ func runNativeCapabilityProbe(t *testing.T) {
 		t.Fatal(err)
 	}
 	p := evidence.Process
-	terminal, err := creator.InspectBoundTerminal(ctx, profile.Target(), p)
+	terminal, err := InspectBoundTerminal(ctx, creator, p)
 	if err != nil {
 		t.Fatal(err)
 	}

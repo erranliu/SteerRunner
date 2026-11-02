@@ -15,15 +15,12 @@ import (
 // is bounded to this exact new workspace; no terminal is created or replaced.
 func (l *Lifecycle) soleWorkspaceTerminal(ctx context.Context, worktree, runtime string) (native.Terminal, error) {
 	for {
-		result, err := l.workspaceTerminalQuery(ctx, "terminal", "list", "--worktree", "id:"+worktree, "--json")
+		result, err := l.workspaceTerminalQuery(ctx, native.WorktreeTerminalListArgs("id:"+worktree)...)
 		if err != nil {
 			return native.Terminal{}, err
 		}
-		var listing struct {
-			Terminals []native.Terminal
-			Truncated bool
-		}
-		if json.Unmarshal(result.Payload, &listing) != nil || result.RuntimeID != runtime || listing.Truncated {
+		listing := native.DecodeTerminalInventory(result)
+		if !listing.BasicDecoded() || result.RuntimeID != runtime || listing.Truncated != nil && *listing.Truncated {
 			return native.Terminal{}, errors.New("original workspace terminal inventory is unverified")
 		}
 		if len(listing.Terminals) > 1 {

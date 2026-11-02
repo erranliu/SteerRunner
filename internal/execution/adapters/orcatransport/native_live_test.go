@@ -138,7 +138,7 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 	defer func() {
 		cleanup, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
-		proof, err := creator.CloseTerminalChecked(cleanup, terminal.Handle, runtime)
+		proof, err := CloseTerminalChecked(cleanup, creator, terminal.Handle, runtime)
 		record["cleaned_up"] = err == nil && proof.Disposition == "confirmed"
 		if err != nil || proof.Disposition != "confirmed" {
 			t.Error("probe cleanup unverified", err)

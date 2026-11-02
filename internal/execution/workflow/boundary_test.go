@@ -31,6 +31,10 @@ func TestSRWorkflowDevelopment(t *testing.T) {
 	}
 }
 func forbidden(path, layer string) bool {
+	if layer == "orcacapability" && strings.HasPrefix(path, "github.com/erranliu/SteerRunner/internal/") {
+		const capability = "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
+		return path != capability && !strings.HasPrefix(path, capability+"/")
+	}
 	if strings.Contains(path, "SteerLine") || strings.Contains(path, "/application") || strings.Contains(path, "/runstate") || strings.Contains(path, "/storage") || strings.Contains(path, "/task") {
 		return true
 	}
@@ -79,7 +83,7 @@ func TestSRExecutionDependencyBoundary(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				if forbidden(value, layer) {
+				if forbidden(value, layer) || strings.Contains(filepath.ToSlash(path), "/adapters/protocol/orca/") && forbidden(value, "orcacapability") {
 					t.Errorf("%s imports forbidden owner %s", path, value)
 				}
 			}
@@ -89,7 +93,7 @@ func TestSRExecutionDependencyBoundary(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	for _, negative := range []struct{ layer, path string }{{"backend", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"model", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"adapters", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"backend", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/reliable/operation"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
+	for _, negative := range []struct{ layer, path string }{{"orcacapability", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"orcacapability", "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca_legacy"}, {"orcacapability", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"orcacapability", "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"}, {"backend", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"model", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"adapters", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"backend", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/backend"}, {"workflow", "github.com/erranliu/SteerRunner/internal/execution/reliable/operation"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/workflow"}, {"reliable", "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"}, {"adapters", "github.com/erranliu/SteerRunner/internal/storage"}, {"backend", "github.com/erranliu/SteerLine/internal/task"}} {
 		if !forbidden(negative.path, negative.layer) {
 			t.Fatal("guard did not catch a forbidden dependency")
 		}

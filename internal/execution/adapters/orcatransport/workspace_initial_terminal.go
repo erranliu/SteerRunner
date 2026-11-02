@@ -100,7 +100,7 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 		if p.Kind != "orca_terminal" || p.RuntimeID != c.RuntimeID || p.WorktreeID != c.Worktree.ID || p.Terminal == "" || p.Incarnation == "" {
 			return native.Terminal{}, errors.New("initial terminal checkpoint identity changed")
 		}
-		t, e := l.client.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p)
+		t, e := InspectBoundTerminal(ctx, l.client, p)
 		if e != nil || t.WorktreeID != c.Worktree.ID {
 			return t, errors.Join(e, errors.New("original initial terminal unavailable"))
 		}
@@ -111,20 +111,12 @@ func (l *Lifecycle) initialWorkspaceTerminalRecovery(ctx context.Context, s b.Li
 	}
 	emptySince := time.Now()
 	for {
-		r, e := l.workspaceTerminalQuery(ctx, "terminal", "list", "--worktree", "id:"+c.Worktree.ID, "--json")
+		r, e := l.workspaceTerminalQuery(ctx, native.WorktreeTerminalListArgs("id:"+c.Worktree.ID)...)
 		if e != nil {
 			return native.Terminal{}, e
 		}
-		var v struct {
-			Terminals []native.Terminal
-			Truncated *bool
-			Total     *int `json:"totalCount"`
-			Hosts     *struct {
-				IDs     []string `json:"hostIds"`
-				Omitted []string `json:"omittedHostIds"`
-			} `json:"hostScope"`
-		}
-		if json.Unmarshal(r.Payload, &v) != nil || r.RuntimeID != c.RuntimeID || v.Truncated != nil && *v.Truncated {
+		v := native.DecodeTerminalInventory(r)
+		if !v.Decoded() || r.RuntimeID != c.RuntimeID || v.Truncated != nil && *v.Truncated {
 			return native.Terminal{}, errors.New("original initial terminal inventory unverified")
 		}
 		if len(v.Terminals) > 1 {

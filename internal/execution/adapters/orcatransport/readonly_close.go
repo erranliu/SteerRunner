@@ -1,20 +1,21 @@
-package orca
+package orcatransport
 
 import (
 	"context"
 	"errors"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 // CloseReadonlyTerminal reconciles one already-owned auxiliary facility. A
 // complete original-runtime inventory can prove absence; only the same live
 // incarnation permits continuing its close. It never creates or sends input.
-func (c Client) CloseReadonlyTerminal(ctx context.Context, p b.ProcessIdentity) (b.StopReceipt, error) {
+func CloseReadonlyTerminal(ctx context.Context, client native.Client, p b.ProcessIdentity) (b.StopReceipt, error) {
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
 		return b.StopReceipt{}, errors.New("readonly close identity missing")
 	}
 	inventory := func() (bool, error) {
-		t, e := c.originalTerminalInventory(ctx, p)
+		t, e := originalTerminalInventory(ctx, client, p)
 		if e != nil {
 			return false, e
 		}
@@ -30,7 +31,7 @@ func (c Client) CloseReadonlyTerminal(ctx context.Context, p b.ProcessIdentity) 
 		if e := ctx.Err(); e != nil {
 			return b.StopReceipt{}, e
 		}
-		t, e := c.InspectBoundTerminal(ctx, b.ExecutionTarget{}, p)
+		t, e := InspectBoundTerminal(ctx, client, p)
 		if e != nil {
 			var identity *b.BackendError
 			if errors.As(e, &identity) && identity.Code == b.BackendIdentityMismatch {
@@ -61,7 +62,7 @@ func (c Client) CloseReadonlyTerminal(ctx context.Context, p b.ProcessIdentity) 
 			}
 			return b.StopReceipt{}, errors.New("readonly original terminal is not verifiably live")
 		}
-		proof, ce := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+		proof, ce := CloseTerminalChecked(ctx, client, p.Terminal, p.RuntimeID)
 		if ce == nil && proof.Disposition == "confirmed" {
 			return proof, nil
 		}
