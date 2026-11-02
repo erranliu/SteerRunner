@@ -9,6 +9,7 @@
 | Orca 能力层 B2a 公共命令构造 | [验收](orca-cli-construction-capability.md)：3 根/13 个新增子例、21 根/35 个回归子例和依赖守卫通过；共用构造/解码，旧字节及派发边界保持；独立审计通过 |
 | Orca 能力层 B2b 终端发送 | [验收](orca-terminal-send-capability.md)：4 根/71 个字段范围子例、37 根/222 个消费方子例、基础协议及依赖守卫通过（有重叠不相加）；独立审计通过 |
 | Orca 能力层 B2c 终端读取 | [验收](orca-terminal-read-capability.md)：4 根/64 个新能力/接线子例、22 根/149 个原消费者子例及依赖守卫通过（有重叠）；独立审计通过 |
+| Orca 能力层 B2d 终端等待 | [验收](orca-terminal-wait-capability.md)：2 根/22 个新增子例、14 根/103 个回归子例及依赖守卫通过；wait 的预算/围栏及就绪与业务状态区别保持；待实施后独立审计 |
 
 | 权限资源与原完成证明职责收口 | [专项验收](native-proof-boundaries.md) / [再审计](native-proof-reaudit.md)：原编码/提交/执行/恢复/停止及共享夹具保持；初轮448组件/57定向/3公开场景，最终整合38定向及3公开场景通过；初轮失败/时限边界保留，预算旧夹具随上游修复后通过 |
 | 新意图写入边界与展示残留清尾 | [专项验收](new-intent-boundary-cleanup.md) / [再审计](new-intent-boundary-reaudit.md)：四类新构造拒绝，历史/原对账/停止、持久格式及共享夹具保持，净减26行；初轮498顶层及3公开场景，再审计27定向及最新主线3公开场景通过；失败/skip/计时边界单列 |

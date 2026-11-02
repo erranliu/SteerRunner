@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -554,6 +555,57 @@ func TestOriginalTerminalRPCStopAndRecoveryKeepOriginalIdentity(t *testing.T) {
 				}
 			})
 		}
+	}
+}
+
+func TestComposerWaitKeepsOriginalFences(t *testing.T) {
+	for _, scenario := range []string{"ready", "replace-before", "replace-after", "runtime", "busy", "missing", "bad-wait", "cancelled"} {
+		t.Run(scenario, func(t *testing.T) {
+			l, _, s, terminal := originalQueryFixture(t)
+			var queries atomic.Int32
+			terminalQueryIPC(t, terminal, func(conn net.Conn, id, runtime string) {
+				current := terminal
+				n := queries.Add(1)
+				if scenario == "replace-before" || scenario == "replace-after" && n == 2 {
+					current.IncarnationID = "replacement"
+				}
+				writeTerminalQueryReply(conn, id, runtime, map[string]any{"terminal": current})
+			})
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+			defer cancel()
+			waits := 0
+			l.client = native.New(native.Config{Output: func(_ context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+				waits++
+				if timeout != 2*time.Second || !reflect.DeepEqual(args, []string{"terminal", "wait", "--terminal", terminal.Handle, "--for", "tui-idle", "--timeout-ms", "1000", "--json"}) {
+					t.Fatal("composer altered wait or sent business input", args, timeout)
+				}
+				if scenario == "cancelled" {
+					cancel()
+					return nil, ctx.Err()
+				}
+				runtime := terminal.RuntimeID
+				if scenario == "runtime" {
+					runtime = "foreign"
+				}
+				var wait any = map[string]any{"satisfied": scenario != "busy"}
+				if scenario == "missing" {
+					wait = map[string]any{}
+				} else if scenario == "bad-wait" {
+					wait = "invalid"
+				}
+				return json.Marshal(map[string]any{"ok": true, "result": map[string]any{"wait": wait}, "_meta": map[string]string{"runtimeId": runtime}})
+			}})
+			err := l.waitOriginalComposer(ctx, s)
+			wantQueries, wantWaits := int32(1), 1
+			if scenario == "ready" || scenario == "replace-after" {
+				wantQueries = 2
+			} else if scenario == "replace-before" {
+				wantWaits = 0
+			}
+			if (err == nil) != (scenario == "ready") || waits != wantWaits || queries.Load() != wantQueries || scenario == "cancelled" && !errors.Is(err, context.Canceled) {
+				t.Fatal("composer lost original fences or ignored a negative wait", err, waits, queries.Load())
+			}
+		})
 	}
 }
 

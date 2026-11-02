@@ -2,9 +2,7 @@ package orcatransport
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
-	"strconv"
 	"time"
 
 	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
@@ -19,19 +17,12 @@ func (l *Lifecycle) waitOriginalComposer(ctx context.Context, snapshot b.Lifecyc
 	if err != nil {
 		return err
 	}
-	result, err := l.client.MetaCallWithTimeout(ctx, budget+time.Second,
-		"terminal", "wait", "--terminal", snapshot.Ref.External.Terminal,
-		"--for", "tui-idle", "--timeout-ms", strconv.FormatInt(budget.Milliseconds(), 10), "--json")
+	result, wait, err := l.client.WaitTerminal(ctx, budget+time.Second, native.TerminalWait{Handle: snapshot.Ref.External.Terminal, Condition: "tui-idle", TimeoutMillis: budget.Milliseconds()})
 	if err != nil {
 		return err
 	}
-	var value struct {
-		Wait struct {
-			Satisfied bool `json:"satisfied"`
-		} `json:"wait"`
-	}
 	if result.RuntimeID != snapshot.Ref.External.RuntimeID || result.CallUncertain || result.ErrorCode != "" ||
-		json.Unmarshal(result.Payload, &value) != nil || !value.Wait.Satisfied {
+		!wait.Decoded() || !wait.Satisfied {
 		return errors.New("Original Codex composer is not verified idle; no task input was sent")
 	}
 	_, err = l.original(ctx, snapshot)
