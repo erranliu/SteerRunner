@@ -1,6 +1,6 @@
 # Spec：Orca 关闭与完整清单 B4d
 
-日期：2026-11-02。状态：实现及受控验证通过，待实施后独立审计。对应 [Plan](orca-close-inventory-capability.plan.md)，依据[长期设计](orca-capability-layer.spec.md)。调查基线 `5cd7c79`。
+日期：2026-11-02。状态：已完成；独立审计唯一 P2 已单独修复并复核关闭。对应 [Plan](orca-close-inventory-capability.plan.md)，依据[长期设计](orca-capability-layer.spec.md)。调查基线 `5cd7c79`。
 
 ## 目标与边界
 
