@@ -1,5 +1,7 @@
 # Spec：Orca 本机与远程连接统一
 
+> 2026-11-03 当前合同更新：已验证的 Codex/development/2/full_access 在本机与明确 environment 共用无 helper 原生合同，scope=orca_terminal；实际模型和 workspace audit 不继承 managed 保证。显式 managed/audited/Pi/DSH/其他 workflow 及旧记录保持各自消费者，见[当前 Orca 合同](../orca-execution.md)与 [B6 Spec](orca-native-rollout.spec.md)。下文历史格式与验收不改写、不平移资格。
+
 > 2026-11-01 当前边界：以[个人执行器简化 Spec](personal-executor-simplification.spec.md) / [Plan](personal-executor-simplification.plan.md)为准。当前为 state/v7、user_version=7，默认 `%LOCALAPPDATA%/SteerRunner-v7`；拒绝 v6 及更旧目录，不迁移或代替原版本收尾。同构建服务重启接回原资源；升级先由原版本排空原生资源和未完成操作/控制，pr_ready 不等于排空。verify-takeover、跨构建活动任务接管及资源重建已删除。未知操作有界查询后转人工，显式 resume 最多 30 秒只读对账原操作，不重发输入、不创建替代资源，业务等待及 stop/close 保持。未来格式/契约兼容且已排空时可继续原目录并查询历史，不因 EXE 变化强制换目录。下文旧格式、接管矩阵及恢复资源条款仅供历史溯源，不覆盖此边界；原验收证据保持原构建结论。
 
 > 2026-10-31 适用范围更新：认证与存储版本以 [host-native-auth Spec](host-native-auth.spec.md) / [Plan](host-native-auth.plan.md) 为准。新建开发执行使用宿主 Git/gh/SSH 登录；broker、CA、socket、认证租期/撤销证明已移除。仅支持全新 state/v6，不读取或迁移旧 Run；旧版执行由原版本结算。本文的 read_only、原生远端、身份绑定和未知操作对账条款继续适用，旧认证与旧格式兼容条款仅供历史溯源。

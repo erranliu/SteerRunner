@@ -1,6 +1,6 @@
 # Spec：Orca 原生合同正式启用与旧消费者收口 B6
 
-日期：2026-11-03。状态：待实施。依据[长期设计](orca-capability-layer.spec.md) §6.2–6.3；前置 B5 已由 `0f22212` 签收，最终 `ac361dd` 同构建双端开发与活动停止、原资源/真实离线及独立审计全部通过。
+日期：2026-11-03。状态：实现与受控验证已完成，最终资格及独立审计进行中。依据[长期设计](orca-capability-layer.spec.md) §6.2–6.3；前置 B5 已由 `0f22212` 签收，最终 `ac361dd` 同构建双端开发与活动停止、原资源/真实离线及独立审计全部通过。
 
 ## 1. 正式支持及例外
 
@@ -20,7 +20,7 @@ PreparationFacts 在 agentExecutionSupport 已成功之后再次检查 Pi/DSH Te
 
 ## 3. 升级与验证
 
-state/v8、user_version、profile/state codecs 4/6/7/8/9、路由摘要、原 receipt/stop progress 均不变。原 EXE 先排空 Run 与未决 operation，service stop 后由原 EXE 真实 verify-stopped；新 EXE 使用 fresh 目录，不接管旧 writer、不迁移摘要或历史证明、不为本批添加旧任务接管器。
+state/v8、user_version、profile/state codecs 4/6/7/8/9、路由摘要、原 receipt/stop progress 均不变。原 EXE 先排空 Run 与未决 operation，service stop 后由原 EXE 真实 verify-stopped；本批新 EXE 使用 fresh 目录；兼容客户端可选择原服务实例，但不代表替换旧 writer、不迁移摘要或历史证明、不为本批添加旧任务接管器。
 
 B6 改变公开能力输出及准备检查源码，因此冻结最终 Runner/driver/CLI，执行双端 fresh 正式开发与独立活动停止四场；沿 B5 正式 driver 受理/冻结/原会话反馈/真实 commit-push-PR（不合并）/Run stop/service stop/真实 offline，重复 §6.3 受控停止故障矩阵与排队/blocked 首次停止。B5 结果只是前置，不能代替最终构建。
 

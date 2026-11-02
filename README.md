@@ -35,6 +35,8 @@ SteerRunner 是面向个人本机与多机开发的 AI 执行器。
 - 目前支持的Agent是Codex, Pi，Deepseek Harness，这个扩展很容易，有需求的话给我发私信，很快会扩展更多Agent支持(这个是Orca提供的全Agent适配能力，这边只是个薄壳)
 - 目前没有资源自动清理功能，也就是每次运行会留下一个worktree，你要自己清理，推荐在Orca里开个Agent来批量清理。
 
+本机与远端 Orca 的 **Codex/development/2/full_access** 可使用同一无 helper 原生合同；两端只改变明确 target/连接。停止范围为原终端，实际模型未独立核验、工作区审计 unreported。显式 managed、audited、Pi/DSH 等仍按各自合同，不继承此资格。配置、保证及升级排空见[Orca 双端执行合同](docs/orca-execution.md)。
+
 ## 跟使用Orca有什么区别？
 
 - Orca本身就支持把远端机器上的项目映射到本机去操作，但还是对话式的，虽然有通知，但为任务创建worktree，找到Spec下执行指令，提PR，并不算方便。特别是很难管理远端worktree的基线。

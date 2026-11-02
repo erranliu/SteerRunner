@@ -95,8 +95,23 @@ func Capabilities() any {
 		viewerAdapters = append(viewerAdapters, "codex-app-server")
 	}
 	return map[string]any{
-		"model_input_contract":      ModelInputContract(),
-		"stop_evidence":             map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; not all descendants or host credentials"},
+		"model_input_contract": ModelInputContract(),
+		"stop_evidence":        map[string]any{"run_property": "stop_evidence_scope", "frozen": true, "schema": json.RawMessage(Read("stop-evidence.schema.json")), "orca_terminal": "original runtime/worktree/local-host terminal identity verified exited or absent in a complete inventory; native local and environment contracts; not all descendants or host credentials", "orca_local_codex_resources": "original Orca business/control terminals and registered local helper/app-server roots; explicit managed local Codex contract; not all descendants or host credentials"},
+		"orca_execution_contracts": map[string]any{
+			"native": map[string]any{
+				"agent": "codex", "workflow": contracts.Workflow{ID: "development", Version: 2}, "access_mode": "full_access",
+				"target_kinds": []string{"local", "orca_environment"}, "selection": "no configured agent_launch.runtime_executable",
+				"stop_evidence_scope": "orca_terminal", "actual_model": "unverified_launch_preference_only", "workspace_audit": "unreported",
+				"working_start": "independent original unique-input query; no stream coverage; completion requires separate full original evidence",
+			},
+			"retained_managed_local": map[string]any{
+				"selection":                 "explicit nonempty agent_launch.runtime_executable; existing agent/workflow gates still apply",
+				"consumers":                 []string{"Codex managed model/workspace audit and recorded roots", "Pi/DSH managed tools and evidence"},
+				"codex_stop_evidence_scope": orca.LocalCodexStopScope, "qualification": "existing managed contract; does not inherit native qualification",
+			},
+			"historical_records": "original profile/state read, reconciliation and drain; no reinterpretation or automatic migration",
+			"other_combinations": "existing admission/evidence gates; no native qualification inherited for audited, other agents or workflows",
+		},
 		"execution_wait":            map[string]any{"contract": b.ExecutionWaitContract, "same_snapshot": true, "run_property": "execution_wait", "schema": json.RawMessage(Read("execution-wait.schema.json"))},
 		"run_observation":           map[string]any{"contract": contracts.RunObservationContract, "same_snapshot": true, "max_events": 500},
 		"recovery":                  map[string]any{"state_format": "steerrunner-state/v8", "same_build_restart": true, "resource_rebuild": false, "upgrade": "drain original resources and unresolved operations with the original executable; use a fresh state directory", "manual_reconciliation": "resume queries original operations for at most 30 seconds; no replacement resources"},

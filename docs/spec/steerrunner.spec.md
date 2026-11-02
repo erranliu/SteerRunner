@@ -70,7 +70,7 @@ SteerRunner 是面向个人、运行在本人管理和信任的本机及多台�
 
 Workflow 完成条件按具体定义解释，不能把 `pr_ready` 的资源边界套用到全部流程。内容结果状态与 cleanup/stop 状态分别报告；generate 成功结果已取得但清理失败时保留这两个事实，不能以结果成功覆盖未结算状态。conversation 的一轮结束也不自动关闭会话，close/stop 沿其显式控制契约。详见[内容流程契约](content-workflows.spec.md)。
 
-当前停止保证按冻结后端分别表达：原生远端 Orca 的 `orca_terminal` 核实原终端；本机 Orca 受管 Codex 的 `orca_local_codex_resources` 核实原业务/控制终端及 helper、app-server 原根进程；直接 Codex 和 Pi/DSH 沿各自现行机制。PC-R06 不将这些范围扩大为主机级清场。
+当前停止保证按冻结合同分别表达：Codex/development/2/full_access 不配置 helper 时，本机与远端 Orca 均以 `orca_terminal` 核实原终端；本机显式受管 Codex 的 `orca_local_codex_resources` 核实原业务/控制终端及 helper、app-server 原根进程；直接 Codex 和 Pi/DSH 沿各自现行机制。原生合同实际模型未独立核验、workspace audit unreported，不继承 audited 资格。选择、保留例外与排空见[Orca 双端执行合同](../orca-execution.md)。PC-R06 不将这些范围扩大为主机级清场。
 
 <a id="待实施的承诺收敛本机-orca-codex-停止"></a>
 ### 现行停止范围：本机 Orca Codex

@@ -383,10 +383,6 @@ func (l *Lifecycle) PreparationFacts(_ context.Context, s b.LifecycleSnapshot) (
 	if err := l.agentExecutionSupport(s.Ref.Agent.Name); err != nil {
 		return b.PreparationFacts{}, err
 	}
-	if (s.Ref.Agent.Name == "pi" || s.Ref.Agent.Name == "dsh") && (l.profile.Terminal == nil || l.profile.Environment != "" || len(l.profile.RuntimeSHA256) != 64) {
-		return b.PreparationFacts{}, errors.New("native terminal preparation profile missing; zero business input")
-	}
-
 	if s.Workspace.Path == "" {
 		return b.PreparationFacts{Workspace: b.GateRequired, Resource: b.GateUnverified, Session: b.GateUnverified}, nil
 	}
