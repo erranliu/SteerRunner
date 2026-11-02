@@ -144,18 +144,18 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 		record["emergency_cleanup"] = true
 		if l != nil {
 			if st, e := l.state(snapshot); e == nil && st.Control != nil {
-				proof, e := creator.CloseReadonlyTerminal(cleanup, st.Control.Process)
+				proof, e := CloseReadonlyTerminal(cleanup, creator, st.Control.Process)
 				record["emergency_control"], record["emergency_control_error"] = proof, errorText(e)
 			}
 		}
-		_, identityErr := creator.InspectBoundTerminal(cleanup, b.ExecutionTarget{}, mainIdentity)
+		_, identityErr := InspectBoundTerminal(cleanup, creator, mainIdentity)
 		proof, e := b.StopReceipt{}, identityErr
 		var progress stopProgress
 		if saved, ok := record["stop_receipt"].(b.LifecycleReceipt); ok {
 			_ = json.Unmarshal(saved.Operation.Receipt, &progress)
 		}
 		if e == nil && progress.Phase != "attempted" && progress.Phase != "business-confirmed" && progress.Phase != "confirmed" {
-			proof, e = creator.CloseTerminalChecked(cleanup, mainIdentity.Terminal, mainIdentity.RuntimeID)
+			proof, e = CloseTerminalChecked(cleanup, creator, mainIdentity.Terminal, mainIdentity.RuntimeID)
 		}
 		record["emergency_terminal"], record["emergency_terminal_error"] = proof, errorText(e)
 		record["emergency_census_empty"] = waitEmpty(cleanup, "emergency_census")

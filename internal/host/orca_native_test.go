@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	orcaexec "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -412,7 +413,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 		verify("stopped-without-proof-files", true)
 
 	} else {
-		proof, e := c.CloseTerminalChecked(ctx, p.Terminal, p.RuntimeID)
+		proof, e := orcaexec.CloseTerminalChecked(ctx, c, p.Terminal, p.RuntimeID)
 		if e != nil || proof.Disposition != "confirmed" {
 			t.Fatal("native original PTY close unverified", proof, e)
 		}
@@ -422,7 +423,7 @@ func TestOrcaStoppedNativeProbe(t *testing.T) {
 	// the production query fail-closed; wait for the actual original-host fact
 	// here, without another close, alternate identity or input.
 	for until := time.Now().Add(10 * time.Second); ; {
-		err = c.VerifyTerminalStopped(ctx, p)
+		err = orcaexec.VerifyTerminalStopped(ctx, c, p)
 		if err == nil {
 			break
 		}

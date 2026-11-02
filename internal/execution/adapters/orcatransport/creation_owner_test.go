@@ -46,7 +46,7 @@ func ownedCreationFixture(t *testing.T, environment string) (*Lifecycle, *fakeHo
 	l.setup.CommandTimeout = 3 * time.Second
 	h := &creationTestHost{ManagedProcessHost: f, output: f.OutputCommand}
 	l.setup.ProcessHost = h
-	l.client = native.New(native.Config{Target: l.profile.Target(), CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
+	l.client = native.New(native.Config{CommandTimeout: "1s", Output: func(ctx context.Context, d time.Duration, args ...string) ([]byte, error) {
 		return h.OutputCommand(ctx, b.LaunchCommand{Executable: l.profile.Executable, Args: args, Timeout: d})
 	}})
 	return l, f, s, h

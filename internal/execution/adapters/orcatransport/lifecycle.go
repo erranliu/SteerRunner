@@ -136,7 +136,7 @@ func NewLifecycleWithStateFactory(setup b.LifecycleSetup, factory stateFeedFacto
 		}
 		return invoke(ctx)
 	}
-	l.client = native.New(native.Config{CommandTimeout: "40s", Target: p.Target(), Output: call})
+	l.client = native.New(native.Config{CommandTimeout: "40s", Output: call})
 	return l, nil
 }
 
@@ -325,7 +325,7 @@ func command(s b.LifecycleSnapshot) string {
 func (l *Lifecycle) boundTerminal(ctx context.Context, p b.ProcessIdentity) (native.Terminal, error) {
 	if !l.nativeAccess {
 		// The explicit state-factory constructor uses isolated CLI fixtures.
-		return l.client.InspectBoundTerminal(ctx, l.profile.Target(), p)
+		return InspectBoundTerminal(ctx, l.client, p)
 	}
 	t, err := native.QueryBoundTerminal(ctx, l.profile.Environment, native.TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation})
 	var identity *native.TerminalIdentityError
@@ -1048,7 +1048,7 @@ func (l *Lifecycle) StopLifecycle(ctx context.Context, r b.LifecycleRequest, own
 		return receipt, err
 	}
 	progress.Phase = "attempted"
-	proof, err := l.client.CloseTerminalChecked(stopCtx, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
+	proof, err := CloseTerminalChecked(stopCtx, l.client, r.Snapshot.Ref.External.Terminal, r.Snapshot.Ref.External.RuntimeID)
 	if err != nil {
 		return receipt, err
 	}

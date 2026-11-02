@@ -6,8 +6,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 )
 
 func fixtureClient(result any, runtime string) Client {
@@ -17,10 +15,10 @@ func fixtureClient(result any, runtime string) Client {
 }
 
 func TestBoundTerminalRejectsRuntimeAndIncarnationReplacement(t *testing.T) {
-	p := b.ProcessIdentity{Terminal: "original", RuntimeID: "runtime", Incarnation: "incarnation"}
+	p := TerminalIdentity{Handle: "original", RuntimeID: "runtime", IncarnationID: "incarnation"}
 	for _, field := range []string{"valid", "runtime", "handle", "incarnation"} {
 		t.Run(field, func(t *testing.T) {
-			terminal := Terminal{Handle: p.Terminal, IncarnationID: p.Incarnation}
+			terminal := Terminal{Handle: p.Handle, IncarnationID: p.IncarnationID}
 			runtime := p.RuntimeID
 			switch field {
 			case "runtime":
@@ -30,7 +28,7 @@ func TestBoundTerminalRejectsRuntimeAndIncarnationReplacement(t *testing.T) {
 			case "incarnation":
 				terminal.IncarnationID = "replacement"
 			}
-			_, err := fixtureClient(map[string]any{"terminal": terminal}, runtime).InspectBoundTerminal(context.Background(), b.ExecutionTarget{}, p)
+			_, err := fixtureClient(map[string]any{"terminal": terminal}, runtime).InspectTerminal(context.Background(), p)
 			if (err == nil) != (field == "valid") {
 				t.Fatalf("%s: %v", field, err)
 			}
@@ -48,14 +46,14 @@ func TestTerminalCloseRequiresExactRuntimeHandleAndPtyProof(t *testing.T) {
 			if field == "handle" {
 				handle = "replacement"
 			}
-			receipt, err := fixtureClient(map[string]any{"close": map[string]any{"handle": handle, "ptyKilled": field != "no-proof"}}, runtime).CloseTerminalChecked(context.Background(), "original", "runtime")
+			_, receipt, err := fixtureClient(map[string]any{"close": map[string]any{"handle": handle, "ptyKilled": field != "no-proof"}}, runtime).CloseTerminal(context.Background(), "original", "runtime")
 			if field == "runtime" || field == "handle" {
 				if err == nil {
 					t.Fatal("foreign close accepted")
 				}
 				return
 			}
-			if err != nil || (receipt.Disposition == "confirmed") != (field == "confirmed") {
+			if err != nil || receipt.PtyKilled != (field == "confirmed") {
 				t.Fatal(receipt, err)
 			}
 		})

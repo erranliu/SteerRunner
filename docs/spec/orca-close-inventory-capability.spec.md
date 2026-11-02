@@ -1,6 +1,6 @@
 # Spec：Orca 关闭与完整清单 B4d
 
-日期：2026-11-02。状态：待实施。对应 [Plan](orca-close-inventory-capability.plan.md)，依据[长期设计](orca-capability-layer.spec.md)。调查基线 `5cd7c79`。
+日期：2026-11-02。状态：实现及受控验证通过，待实施后独立审计。对应 [Plan](orca-close-inventory-capability.plan.md)，依据[长期设计](orca-capability-layer.spec.md)。调查基线 `5cd7c79`。
 
 ## 目标与边界
 
@@ -26,3 +26,5 @@ client.go 移除执行 Config 字段/原执行签名和结算映射；readonly_c
 | OCI-02 | 所有停止/只读及准备消费者接入，原策略只有一份 | 原 exact identity/backend 错误、分层字段范围、startup 与 scope 保持、旧实现删除 |
 | OCI-03 | 未知关闭只读恢复，未派发区别保持 | 原双端 stop/队列/回执丢失/替换 incarnation/完整清单负例及调用计数；无候选资格平移 |
 | OCI-04 | 依赖/编码和审计闭环 | 原持久声明、能力依赖守卫、受影响编译/原回归/证据及实施后独立审计 |
+
+实际迁移/删除、全部消费者、持久边界和验证见[验收](../acceptance/orca-close-inventory-capability.md)。

@@ -66,7 +66,7 @@ func (l *Lifecycle) verifyLocalCodexStopped(ctx context.Context, s b.LifecycleSn
 		return err
 	}
 	// This one inventory proves both terminals on the original runtime's local host.
-	if err := l.client.VerifyTerminalsStopped(ctx, terminals); err != nil {
+	if err := VerifyTerminalsStopped(ctx, l.client, terminals); err != nil {
 		return err
 	}
 	for _, root := range roots {
@@ -108,17 +108,17 @@ func (l *Lifecycle) stopLocalCodex(ctx context.Context, r b.LifecycleRequest, fi
 			cancel()
 		}
 		for _, target := range terminals {
-			if l.client.VerifyTerminalStopped(ctx, target) == nil {
+			if VerifyTerminalStopped(ctx, l.client, target) == nil {
 				continue
 			}
-			t, e := l.client.InspectBoundTerminal(ctx, l.profile.Target(), target)
+			t, e := InspectBoundTerminal(ctx, l.client, target)
 			branchMatches := strings.TrimPrefix(t.Branch, "refs/heads/") == r.Snapshot.Workspace.Branch || len(state.Turns) == 0 && !state.LaunchConfirmed && t.Branch == ""
 			pathMatches := strings.EqualFold(strings.ReplaceAll(t.WorktreePath, "\\", "/"), strings.ReplaceAll(r.Snapshot.Workspace.Path, "\\", "/"))
 			if e == nil && (t.WorktreeID != target.WorktreeID || target == state.Process && (!pathMatches || !branchMatches)) {
 				e = &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: "original local stop workspace changed"}
 			}
 			if e == nil {
-				_, e = l.client.CloseTerminalChecked(ctx, target.Terminal, target.RuntimeID)
+				_, e = CloseTerminalChecked(ctx, l.client, target.Terminal, target.RuntimeID)
 			}
 			var mismatch *b.BackendError
 			if errors.As(e, &mismatch) && mismatch.Code == b.BackendIdentityMismatch {

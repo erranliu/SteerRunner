@@ -1,6 +1,6 @@
 # Plan：Orca 受限文件能力 B4c
 
-日期：2026-11-02。状态：实现及受控验证通过，待实施后独立审计。依据 [Spec](orca-scoped-files-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4b 确认审计问题先独立修复。
+日期：2026-11-02。状态：已完成，受控验证及实施后独立审计通过。依据 [Spec](orca-scoped-files-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4b 确认审计问题先独立修复。
 
 ## P0 固定职责
 

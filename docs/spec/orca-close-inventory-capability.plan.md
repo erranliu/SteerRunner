@@ -1,6 +1,6 @@
 # Plan：Orca 关闭与完整清单 B4d
 
-日期：2026-11-02。状态：待实施。依据 [Spec](orca-close-inventory-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4c 确认问题先独立修复。
+日期：2026-11-02。状态：实现及受控验证通过，待实施后独立审计。依据 [Spec](orca-close-inventory-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B4c 确认问题先独立修复。
 
 ## P0 固定边界
 
@@ -24,3 +24,5 @@
 ## P3 收口
 
 写验收和证据、同步路线/索引，提交实现后独立只读审计，确认修复独立 commit。B4d 完成后才按 B5 冻结候选完整生产接线和真实 Runner 验收计划；不提阶段 PR。
+
+实际迁移/删除、全部消费者、持久边界和验证见[验收](../acceptance/orca-close-inventory-capability.md)。

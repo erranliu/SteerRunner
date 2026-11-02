@@ -79,7 +79,7 @@ func TestLocalIPCQueryCapabilityBeforeCreation(t *testing.T) {
 	l.nativeAccess = true
 	// Only named-pipe observation is native here; command output stays on the
 	// fake host while preparation exercises its isolated CLI gate.
-	l.client = native.New(native.Config{CommandTimeout: "40s", Target: l.profile.Target(), Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
+	l.client = native.New(native.Config{CommandTimeout: "40s", Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 		return host.OutputCommand(ctx, b.LaunchCommand{Executable: l.profile.Executable, Args: args, WorkingDirectory: l.setup.RepositoryPath, Timeout: timeout})
 	}})
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
