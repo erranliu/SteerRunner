@@ -1,0 +1,139 @@
+param([Parameter(Mandatory=$true)][string]$Repository,[Parameter(Mandatory=$true)][string]$Evidence)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+. (Join-Path $Repository 'scripts/controlled-tests.ps1')
+. (Join-Path $Repository 'scripts/test-prerequisite-contract.ps1')
+$taskRoot=Join-Path $Evidence 'controlled-selection'
+$null=New-Item -ItemType Directory -Path $taskRoot
+$taskCatalog=Get-Content -LiteralPath (Join-Path $Repository 'tests/catalog.json') -Raw | ConvertFrom-Json
+$taskWire=$taskCatalog | ConvertTo-Json -Depth 40
+$taskChecks=[Collections.Generic.List[string]]::new()
+function Reject([string]$Name,[scriptblock]$Action) {
+    $rejected=$false
+    try { & $Action | Out-Null } catch { $rejected=$true }
+    if (-not $rejected) { throw "Expected rejection: $Name" }
+    $taskChecks.Add($Name)
+}
+function JSON([string]$Path,$Value) { [IO.File]::WriteAllText($Path,($Value | ConvertTo-Json -Depth 40),[Text.UTF8Encoding]::new($false)) }
+Assert-SRControlledSelectionCatalog $taskCatalog
+$taskAll=Resolve-SRControlledSelection $taskCatalog @($taskCatalog.controlled_selection.groups.PSObject.Properties.Name)
+if (($taskAll.tests -join ',') -cne ($taskCatalog.controlled_scenarios -join ',') -or $taskAll.tests.Count -ne 27) { throw 'Primary groups lost or reordered complete Controlled tests' }
+foreach ($kind in @('groups','combinations')) {
+    foreach ($definition in $taskCatalog.controlled_selection.$kind.PSObject.Properties) {
+        $selection=if($kind -eq 'groups'){Resolve-SRControlledSelection $taskCatalog @($definition.Name)}else{Resolve-SRControlledSelection $taskCatalog @() @($definition.Name)}
+        $matched=@($taskCatalog.controlled_scenarios | Where-Object {$_ -cmatch $selection.pattern})
+        if (($matched -join ',') -cne ($selection.tests -join ',') -or 'TestUnregistered' -cmatch $selection.pattern) { throw 'Selection is not exact' }
+    }
+}
+$taskChecks.Add('all-groups-and-combinations-exact')
+Reject 'empty' {Resolve-SRControlledSelection $taskCatalog}
+Reject 'mixed-kinds' {Resolve-SRControlledSelection $taskCatalog @('files') @('execute-stop')}
+Reject 'unknown' {Resolve-SRControlledSelection $taskCatalog @('missing')}
+Reject 'wildcard' {Resolve-SRControlledSelection $taskCatalog @('*')}
+Reject 'case-sensitive' {Resolve-SRControlledSelection $taskCatalog @('Files')}
+Reject 'duplicate-id' {Resolve-SRControlledSelection $taskCatalog @('files','files')}
+foreach ($mode in @('missing-owner','duplicate-owner','unknown-test','duplicate-combination-test','empty-combination')) {
+    $catalog=$taskWire | ConvertFrom-Json
+    switch ($mode) {
+        'missing-owner' {$catalog.controlled_selection.groups.files=@($catalog.controlled_selection.groups.files | Select-Object -Skip 1)}
+        'duplicate-owner' {$catalog.controlled_selection.groups.files+=@('TestSRStandalonePackage')}
+        'unknown-test' {$catalog.controlled_selection.combinations.'execute-stop'+=@('TestUnknown')}
+        'duplicate-combination-test' {$catalog.controlled_selection.combinations.'execute-stop'+=@('TestSRResultFile')}
+        'empty-combination' {$catalog.controlled_selection.combinations.'execute-stop'=@()}
+    }
+    Reject $mode {Assert-SRControlledSelectionCatalog $catalog}
+}
+$taskTiming=Join-Path $taskRoot 'timing-source'
+$null=New-Item -ItemType Directory -Path $taskTiming
+$taskLog="=== RUN   TestSRResultFile`n=== RUN   TestSRResultFile/child`n    --- PASS: TestSRResultFile/child (2.50s)`n--- PASS: TestSRResultFile (3.25s)`n"
+[IO.File]::WriteAllText((Join-Path $taskTiming 'integration.log'),$taskLog)
+JSON (Join-Path $taskTiming 'result.json') @{exit_code=0;scenario_count=1}
+$timings=Get-SRControlledTimingReport $taskCatalog $taskTiming @('TestSRResultFile')
+if ($timings.status -ne 'passed' -or $timings.observed_top_level_seconds -ne 3.25 -or $timings.tests.Count -ne 1 -or $timings.complete_controlled_passed -or $timings.qualification_eligible -or @($timings.groups | Where-Object {$_.id -eq 'files'})[0].observed_seconds -ne 3.25) { throw 'Timing double-counted children or granted qualification' }
+$taskChecks.Add('top-level-only-group-cost')
+foreach ($mode in @('zero','skip','fail','unfinished','duplicate','unknown','unexpected','missing','count','exit','missing-result')) {
+    $log=$taskLog; $expected=@('TestSRResultFile');$result=@{exit_code=0;scenario_count=1}
+    switch ($mode) {
+        'zero' {$log='';$result.scenario_count=0}
+        'skip' {$log=$log.Replace('--- PASS: TestSRResultFile (','--- SKIP: TestSRResultFile (')}
+        'fail' {$log=$log.Replace('--- PASS: TestSRResultFile (','--- FAIL: TestSRResultFile (')}
+        'unfinished' {$log="=== RUN   TestSRResultFile`n"}
+        'duplicate' {$log+=$taskLog}
+        'unknown' {$log=$log.Replace('TestSRResultFile','TestForeign')}
+        'unexpected' {$expected=@('TestSRProgressFile')}
+        'missing' {$expected+=@('TestSRProgressFile')}
+        'count' {$result.scenario_count=2}
+        'exit' {$result.exit_code=1}
+    }
+    [IO.File]::WriteAllText((Join-Path $taskTiming 'integration.log'),$log)
+    JSON (Join-Path $taskTiming 'result.json') $result
+    if ($mode -eq 'missing-result') {Remove-Item -LiteralPath (Join-Path $taskTiming 'result.json')}
+    $timings=Get-SRControlledTimingReport $taskCatalog $taskTiming $expected
+    if ($timings.status -eq 'passed' -or $timings.qualification_eligible -or $timings.complete_controlled_passed) {throw "Invalid timing passed: $mode"}
+    if ($mode -eq 'unfinished' -and $null -ne $timings.tests[0].duration_seconds) {throw 'Unfinished test acquired a zero duration'}
+    $taskChecks.Add('timing-'+$mode)
+}
+# Run the real selection entry against an isolated, deterministic foundation peer.
+$taskMock=Join-Path $taskRoot 'repository'
+$null=New-Item -ItemType Directory -Path (Join-Path $taskMock 'scripts'),(Join-Path $taskMock 'tests')
+foreach ($name in @('test-controlled.ps1','controlled-tests.ps1','test-prerequisite-contract.ps1','delivery-contract.ps1')) {Copy-Item -LiteralPath (Join-Path $Repository ('scripts/'+$name)) -Destination (Join-Path $taskMock ('scripts/'+$name))}
+$mockCatalog=$taskWire | ConvertFrom-Json
+$mockCatalog.controlled_selection.combinations | Add-Member -NotePropertyName 'all-mock' -NotePropertyValue @($mockCatalog.controlled_scenarios)
+JSON (Join-Path $taskMock 'tests/catalog.json') $mockCatalog
+[IO.File]::WriteAllText((Join-Path $taskMock 'scripts/test-foundation.ps1'),@'
+param($OutDir,$Pattern,$TimeoutMinutes,$RunnerExe)
+$null=New-Item -ItemType Directory -Path $OutDir
+$catalog=Get-Content (Join-Path $PSScriptRoot '../tests/catalog.json') -Raw|ConvertFrom-Json
+$selected=@($catalog.controlled_scenarios|Where-Object{$_ -cmatch $Pattern})
+$log=($selected|ForEach-Object{"=== RUN   $_`n--- PASS: $_ (1.00s)"}) -join "`n"
+[IO.File]::WriteAllText((Join-Path $OutDir 'integration.log'),$log)
+@{exit_code=0;scenario_count=$selected.Count}|ConvertTo-Json|Set-Content (Join-Path $OutDir 'result.json')
+@{pid=2147483646}|ConvertTo-Json|Set-Content (Join-Path $OutDir 'source-identity.json')
+'@)
+$taskShell=(Get-Process -Id $PID).Path
+foreach ($id in @('execute-stop','all-mock')) {
+    $output=Join-Path $taskRoot $id
+    & $taskShell -NoProfile -File (Join-Path $taskMock 'scripts/test-controlled.ps1') -Combination $id -OutDir $output *> (Join-Path $taskRoot ($id+'.log'))
+    if ($LASTEXITCODE -ne 0) {throw "Selection entry failed: $id"}
+    $summary=Get-Content (Join-Path $output 'summary.json') -Raw|ConvertFrom-Json
+    if ($summary.status -ne 'passed' -or $summary.validation_scope -ne 'controlled-selection' -or $summary.complete_controlled_passed -or $summary.qualification_eligible -or (Test-Path (Join-Path $output 'prerequisites.json')) -or (Test-Path (Join-Path $output 'controlled/prerequisites.json'))) {throw 'Selected execution gained complete qualification'}
+    Reject ('not-reusable-'+$id) {Read-SRPrerequisites $Repository $output}
+}
+$taskChecks.Add('all-27-selected-still-no-qualification')
+$source=Join-Path $taskRoot 'execute-stop/controlled'
+$before=(Get-FileHash (Join-Path $source 'integration.log')).Hash
+$import=Join-Path $taskRoot 'import'
+& $taskShell -NoProfile -File (Join-Path $taskMock 'scripts/test-controlled.ps1') -FromEvidence $source -OutDir $import *> (Join-Path $taskRoot 'import.log')
+if ($LASTEXITCODE -ne 0 -or (Get-FileHash (Join-Path $source 'integration.log')).Hash -cne $before) {throw 'Timing import failed or rewrote source'}
+$summary=Get-Content (Join-Path $import 'summary.json') -Raw|ConvertFrom-Json
+if ($summary.mode -ne 'timing-import' -or $summary.qualification_eligible) {throw 'Timing import gained qualification'}
+$taskChecks.Add('read-only-timing-import')
+# Exercise the existing full-stage function: diagnostics must not add a gate,
+# and a selected subset must still fail its unchanged complete-count gate.
+[IO.File]::WriteAllText((Join-Path $taskMock 'scripts/stage-check.ps1'),@'
+param($Output)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'test-prerequisite-contract.ps1')
+function Get-SRPrerequisiteSnapshotOrUnavailable { @{supported=$true} }
+function Save-SRPrerequisiteStage { param($Root,$Output,$Name,$Start,$Record) @{status='passed'} }
+$root=Split-Path $PSScriptRoot -Parent
+$catalog=Get-Content (Join-Path $root 'tests/catalog.json') -Raw|ConvertFrom-Json
+foreach($mode in @('full','diagnostic-unavailable','subset')) {
+    $out=Join-Path $Output $mode
+    $null=New-Item -ItemType Directory -Path $out
+    if($mode -eq 'diagnostic-unavailable'){$catalog.PSObject.Properties.Remove('controlled_selection')}
+    if($mode -eq 'subset'){$catalog.controlled_scenarios+=@('TestRequiredButNotExecuted')}
+    $stage=Invoke-SRControlledStage $root $out $catalog
+    if($mode -eq 'subset') {
+        if($stage.passed){throw 'Subset obtained complete-stage success'}
+    } elseif(-not $stage.passed) {throw 'Diagnostics changed full-stage success'}
+    if($mode -eq 'full' -and -not(Test-Path $stage.record.timing_report)){throw 'Full stage lost timing attachment'}
+    if($mode -eq 'diagnostic-unavailable' -and -not $stage.record.ContainsKey('timing_error')){throw 'Diagnostic failure was not recorded'}
+}
+'@)
+& $taskShell -NoProfile -File (Join-Path $taskMock 'scripts/stage-check.ps1') -Output (Join-Path $taskRoot 'stages') *> (Join-Path $taskRoot 'stages.log')
+if ($LASTEXITCODE -ne 0) {throw 'Complete-stage qualification or additive timing behavior changed'}
+$taskChecks.Add('complete-stage-gates-unchanged')
+JSON (Join-Path $taskRoot 'verified.json') @{passed=$true;checks=@($taskChecks.ToArray())}
+Write-Output "Controlled selection/timing contracts passed: $($taskChecks.Count)"

@@ -288,6 +288,13 @@ function Invoke-SRControlledStage([string]$Root, [string]$Output, $Catalog, [boo
     $result=Wait-SRControlledResult $directory $until
     $record=@{level='Controlled';exit_code=$result.exit_code;scenario_count=$result.scenario_count;evidence=$directory;started_at=$srStarted}
     $passed=$result.exit_code -eq 0 -and $result.scenario_count -eq @($Catalog.controlled_scenarios).Count -and -not (Select-String -LiteralPath (Join-Path $directory 'integration.log') -Pattern '--- SKIP:' -Quiet)
+    # Diagnostic output is additive. It does not change complete-stage gates or proof inventory.
+    try {
+        . (Join-Path $PSScriptRoot 'controlled-tests.ps1')
+        $timings=Get-SRControlledTimingReport $Catalog $directory @($Catalog.controlled_scenarios)
+        $record['timing_report']=Join-Path $directory 'timings.json'
+        Write-SRPrerequisiteJSON $record.timing_report $timings
+    } catch { $record['timing_error']=$_.Exception.Message }
     $stage=Save-SRPrerequisiteStage $Root $Output 'controlled' $srStart $record @() $DefaultCatalog
     @{record=$record;stage=$stage;passed=$passed}
 }

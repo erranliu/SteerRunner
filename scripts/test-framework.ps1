@@ -25,6 +25,9 @@ $taskCases = @(
 $taskResults = @()
 & (Join-Path $taskRepo 'tests/framework/catalog-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
 $taskResults += @{name='catalog-expansion-compatibility';passed=$true}
+& $taskShell -NoProfile -File (Join-Path $taskRepo 'tests/framework/controlled-selection-test.ps1') -Repository $taskRepo -Evidence $taskEvidence *> (Join-Path $taskEvidence 'controlled-selection-framework.log')
+if ($LASTEXITCODE -ne 0) { throw 'Controlled selection/timing checks failed; inspect controlled-selection-framework.log' }
+$taskResults += @{name='controlled-selection-and-timings';passed=$true}
 & (Join-Path $taskRepo 'tests/framework/configuration-test.ps1') -Repository $taskRepo -Evidence $taskEvidence -CatalogPaths @((Join-Path $taskEvidence 'catalog/legacy-catalog.json'),(Join-Path $taskEvidence 'catalog/frozen-catalog.json'))
 $taskResults += @{name='independent-configuration';passed=$true}
 & (Join-Path $taskRepo 'tests/framework/runtime-cache-test.ps1') -Repository $taskRepo -Evidence $taskEvidence
