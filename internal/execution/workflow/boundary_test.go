@@ -52,7 +52,16 @@ func forbidden(path, layer string) bool {
 	return false
 }
 func TestSRExecutionDependencyBoundary(t *testing.T) {
-	for _, layer := range []string{"model", "workflow", "resultacquisition", "reliable", "backend", "adapters", "workspace", "publication", "process", "evidence", "conversation"} {
+	layers, err := os.ReadDir("..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Discover every current execution owner, including newly added packages.
+	for _, entry := range layers {
+		if !entry.IsDir() {
+			continue
+		}
+		layer := entry.Name()
 		root := filepath.Join("..", layer)
 		err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
 			if err != nil {

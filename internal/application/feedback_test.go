@@ -6,12 +6,18 @@ import (
 
 	"github.com/erranliu/SteerRunner/internal/contracts"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
+	m "github.com/erranliu/SteerRunner/internal/execution/model"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/runstate"
 )
 
 func TestSRResumeWorkflowRetainsOriginalReportSource(t *testing.T) {
 	input := workflow.StageInput{CommandID: "old-report", AttemptID: "old-attempt", StepID: workflow.StepReport, Prompt: "old frozen prompt", SourceCommandID: "implementation", SourceTurnID: "implementation-turn", ReportToolPolicy: "original-policy"}
+	var err error
+	input.Prompt, input.Budget, err = m.FreezeInput(m.InputPart{Source: "workflow.body", Owner: m.CallerInput, Text: input.Prompt})
+	if err != nil {
+		t.Fatal(err)
+	}
 	r := &runstate.Record{Allowed: true, PromptBodies: map[string]string{workflow.StepReport: "old frozen prompt"}, Materials: []runstate.Material{{MaterialView: contracts.MaterialView{SnapshotPath: "spec.md"}}, {MaterialView: contracts.MaterialView{SnapshotPath: "plan.md"}}}}
 	r.Request.Workflow = contracts.Workflow{ID: "development", Version: 2}
 	r.Request.Execution.Adapter = "codex-app-server"
@@ -30,7 +36,7 @@ func TestSRResumeWorkflowRetainsOriginalReportSource(t *testing.T) {
 		t.Fatal(err)
 	}
 	queued := r.Workflow.StageInputs[len(r.Workflow.StageInputs)-1]
-	if queued.CommandID == "old-report" || queued.CommandID == "" || queued.AttemptID != "old-attempt" || queued.StepID != workflow.StepReport || queued.SourceCommandID != input.SourceCommandID || queued.SourceTurnID != input.SourceTurnID || queued.ReportToolPolicy != input.ReportToolPolicy || r.NextStage != nil {
+	if queued.CommandID == "old-report" || queued.CommandID == "" || queued.AttemptID != "old-attempt" || queued.StepID != workflow.StepReport || queued.SourceCommandID != input.SourceCommandID || queued.SourceTurnID != input.SourceTurnID || queued.ReportToolPolicy != input.ReportToolPolicy || !reflect.DeepEqual(queued.Budget, input.Budget) || queued.Prompt != input.Prompt || r.NextStage != nil {
 		t.Fatal("resumed report lost its original source or native policy", queued)
 	}
 	if r.Snapshot.Session.SessionID != "original-session" || !reflect.DeepEqual(r.Workflow.StageInputs[1], input) || !r.Allowed || r.ResumeRequired {

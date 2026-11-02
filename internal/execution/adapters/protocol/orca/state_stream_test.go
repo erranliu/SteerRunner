@@ -158,9 +158,13 @@ func TestOrcaNativeStateStream(t *testing.T) {
 				}
 				defer feed.Close()
 				f := feed.(*nativeStateFeed)
+				var buffered []StateSample
 				for {
 					f.mu.Lock()
 					ready := len(f.updates) == 2
+					if ready {
+						buffered = append([]StateSample(nil), f.updates...)
+					}
 					f.mu.Unlock()
 					if ready {
 						break
@@ -171,10 +175,29 @@ func TestOrcaNativeStateStream(t *testing.T) {
 					case <-time.After(time.Millisecond):
 					}
 				}
-				consumedAt := time.Now().UTC()
+				// The platform wall clock can return the same tick for receive and
+				// drain. Advance past both buffered receive times before consuming;
+				// retain the strict before-drain assertion and the original stamps.
+				var consumedAt time.Time
+				for {
+					consumedAt = time.Now().UTC()
+					if consumedAt.After(buffered[0].ReceivedAt) && consumedAt.After(buffered[1].ReceivedAt) {
+						break
+					}
+					select {
+					case <-ctx.Done():
+						t.Fatal("wall clock did not advance past buffered receives")
+					case <-time.After(time.Millisecond):
+					}
+				}
 				samples, err := feed.Drain()
 				if err != nil || len(samples) != 2 || samples[0].Kind != SampleInitial || samples[1].Kind != SampleNotification || samples[1].LastAssistantMessage != "public" || samples[1].ReceivedAt.IsZero() || !samples[1].ReceivedAt.Before(consumedAt) || !samples[0].ReceivedAt.Equal(feed.Initial().ReceivedAt) {
 					t.Fatal("receive metadata was lost or stamped at drain", samples, err)
+				}
+				for i := range samples {
+					if !samples[i].ReceivedAt.Equal(buffered[i].ReceivedAt) {
+						t.Fatal("drain changed the buffered receive timestamp", samples[i], buffered[i])
+					}
 				}
 				if samples, err = feed.Drain(); err != nil || len(samples) != 0 {
 					t.Fatal(samples, err)
