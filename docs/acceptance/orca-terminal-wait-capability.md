@@ -1,6 +1,6 @@
 # Orca 终端等待能力 B2d 验收
 
-日期：2026-11-02。状态：实现与定向回归通过，待实施后独立审计。依据 [Spec](../spec/orca-terminal-wait-capability.spec.md) / [Plan](../spec/orca-terminal-wait-capability.plan.md)。本批不改变调用条件或正式业务资格。
+日期：2026-11-02。状态：实现、定向回归及实施后独立审计通过。依据 [Spec](../spec/orca-terminal-wait-capability.spec.md) / [Plan](../spec/orca-terminal-wait-capability.plan.md)。本批不改变调用条件或正式业务资格。
 
 ## 1. 能力与唯一生产入口
 
@@ -24,4 +24,6 @@ protocol/orca/terminal_wait.go 使用自有 TerminalWait/TerminalWaitReceipt 和
 
 ## 3. 独立审计
 
-实现提交后独立只读审计一次，确认问题另行 commit 并补受影响验证；该步骤完成前 B2d 保持待审计。
+对实现提交 `3fd71fd` 相对 `39bc670` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核唯一消费者、参数/0ms/预算/原围栏/调用条件、无 Started 升级与持久格式变化，以及全部 5 个证据文件 bytes/hash 和源码摘要。
+
+新增检查、原定向回归、依赖守卫和固定提交 diff 检查均独立复跑通过。未启动模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。
