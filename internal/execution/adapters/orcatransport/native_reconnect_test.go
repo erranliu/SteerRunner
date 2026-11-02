@@ -180,7 +180,6 @@ func TestOrcaCompletionQueryReconnectObserverCommitsFinal(t *testing.T) {
 				}
 			}
 			event.Persisted <- nil
-			event.Processed <- nil
 		case <-time.After(2 * time.Second):
 			t.Fatal("reattached observer did not finish")
 		}

@@ -1,0 +1,69 @@
+{
+  "application": {
+    "exit_code": 0,
+    "counts": {
+      "pass_sub": 25,
+      "pass_top": 31
+    },
+    "top_tests": [
+      "TestSREventAckPreservesOriginalCommitBoundary",
+      "TestServiceGenerationPreservesDurableAuthorizationAndBusinessState",
+      "TestServiceGenerationUnknownOperationVersionNeverReachesNativeReconciliation",
+      "TestServiceGenerationControlScopeRetainsOnlyOriginalQuestionAndSource",
+      "TestWorkflowRecoveryChecksExecutionSemanticsInsteadOfCatalogMetadata",
+      "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+      "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+      "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+      "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+      "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+      "TestSRManualReconciliationExplicitRetryReplayAndLostResource",
+      "TestSRManualReconciliationStopWinsDuringRead",
+      "TestSRManualReconciliationCommitFailureAndRestart",
+      "TestSRManualLateFactsPreserveBusinessPause",
+      "TestSRManualLostResourceDuringContinuation",
+      "TestSRManualExpiredControlDoesNotRenewQueryOnReload",
+      "TestSRObservationDiagnosticIsDurableAndRecoverable",
+      "TestSRObservationDiagnosticBindingAndControlIsolation",
+      "TestSRObservationAttachmentUpdatesDiagnostic",
+      "TestSRObservationGapSurvivesStartAcknowledgement",
+      "TestSRObservationAttachmentCommitsBeforePublishingObserver",
+      "TestSRObservationUnchangedProjectionStillCommitsIdentity",
+      "TestSRObservationCommitFailureKeepsEventReplayable",
+      "TestSROperationReconciliationKeepsPartialBinding",
+      "TestSRStopSerializesWithNativeDispatch",
+      "TestSROperationIntentCommitFailureDoesNotDispatch",
+      "TestSROperationReceiptCommitFailureReconcilesOriginal",
+      "TestSRStopBindingCommitFailureDoesNotDispatch",
+      "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+      "TestSingleExecutionLateFinalPreservesOriginalStop",
+      "TestSRStopRecoversLateCreationFactsUnderOriginalIntent"
+    ],
+    "skipped": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/application",
+        "action": "pass",
+        "elapsed": 11.553
+      }
+    ]
+  },
+  "observer": {
+    "exit_code": 0,
+    "counts": {
+      "pass_sub": 3,
+      "pass_top": 2
+    },
+    "top_tests": [
+      "TestObserverSingleAckPreservesWaitFailureAndCancellation",
+      "TestObserverQueueCancellationKeepsOriginalObservationWithoutResend"
+    ],
+    "skipped": [],
+    "packages": [
+      {
+        "package": "github.com/erranliu/SteerRunner/internal/execution/adapters/orcatransport",
+        "action": "pass",
+        "elapsed": 0.809
+      }
+    ]
+  }
+}

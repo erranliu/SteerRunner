@@ -914,7 +914,7 @@ func (observer *lifecycleObserver) forward() {
 			fact.SourceEventID = value.Envelope.Method + ":" + digestValue(value.Envelope)
 		}
 		persisted := make(chan error, 1)
-		event := executionbackend.LifecycleEvent{Fact: fact, Summary: value.Summary, Kind: value.Kind, Status: value.Status, Title: value.Title, Persisted: persisted}
+		event := executionbackend.LifecycleEvent{Fact: fact, Persisted: persisted}
 		event.PublicMessage = value.PublicMessage
 		select {
 		case observer.events <- event:

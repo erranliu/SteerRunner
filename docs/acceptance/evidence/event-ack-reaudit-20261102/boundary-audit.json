@@ -1,0 +1,29 @@
+{
+  "exact_boundary_and_unchanged_source_checks": {
+    "internal/application/worker.go": "only original Processed reply block removed; entire remainder identical",
+    "internal/execution/adapters/codex/execution_owner.go": "only original Processed reply block removed; entire remainder identical",
+    "internal/application/observation.go": "unchanged",
+    "internal/application/last_message.go": "unchanged",
+    "internal/execution/adapters/codex/observe.go": "unchanged",
+    "internal/execution/reliable/session.go": "unchanged",
+    "internal/application/control.go": "unchanged",
+    "internal/execution/adapters/orcatransport/lifecycle.go": "unchanged",
+    "internal/execution/adapters/codex/async_transport_test.go": "unchanged",
+    "internal/execution/adapters/codex/recovery.go": "unchanged",
+    "internal/execution/reliable/operation/effect.go": "unchanged",
+    "internal/execution/adapters/orcatransport/observer.go": "only dead labels, Processed allocation and second select removed; original first ack/error/cancel and entire remaining observe loop identical"
+  },
+  "nine_fixtures_original_assertions_unchanged": [
+    "internal/execution/adapters/orcatransport/native_completion_recovery_test.go",
+    "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_input_local_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_live_test.go",
+    "internal/execution/adapters/orcatransport/native_reconnect_test.go",
+    "internal/execution/adapters/orcatransport/native_state_test.go",
+    "internal/execution/adapters/orcatransport/observer_queue_test.go",
+    "internal/execution/adapters/orcatransport/public_message_test.go",
+    "internal/execution/adapters/orcatransport/short_input_live_probe_test.go"
+  ],
+  "trace_review": "same original turn iff no Observation and Started/Completed fact; execution otherwise; same JSON key/other fields; bottom-level Codex Kind/Status retained",
+  "new_confirmed_defects": []
+}

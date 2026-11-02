@@ -1,0 +1,19 @@
+{
+  "declarations": "go run .evidence/event-ack-reaudit/declarations.go",
+  "wire": "go run .evidence/event-ack-cleanup/wire-audit.go .evidence/event-ack-reaudit/wire.json",
+  "application": "go test ./internal/application -run '^(TestSREventAck.*|TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop)$' -count=1 -timeout 3m -json",
+  "observer": "go test ./internal/execution/adapters/orcatransport -run '^(TestObserverSingleAck.*|TestObserverQueue.*|TestPublicMessage.*)$' -count=1 -timeout 3m -json",
+  "exit_codes": {
+    "declarations": 0,
+    "wire": 0,
+    "application": 0,
+    "observer": 0
+  },
+  "base_and_latest_main": "72b589baebb47c248fe0845352f400237cc0ed02",
+  "production_test_source_changed_during_reaudit": false,
+  "matched_observer_top_tests": [
+    "TestObserverSingleAckPreservesWaitFailureAndCancellation",
+    "TestObserverQueueCancellationKeepsOriginalObservationWithoutResend"
+  ],
+  "note": "PublicMessage prefix matched no additional observer tests; report actual two top-level matches, not pattern alternatives."
+}

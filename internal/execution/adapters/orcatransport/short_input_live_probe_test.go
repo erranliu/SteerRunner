@@ -136,7 +136,6 @@ func runShortInputSequence(t *testing.T, ctx context.Context, l *Lifecycle, s b.
 				trace.event(i+1, event, s, l)
 				completed = event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 				event.Persisted <- nil
-				event.Processed <- nil
 			case <-ctx.Done():
 				obs.Close(context.Background())
 				trace.write("observer.timeout", map[string]any{"input_index": i + 1, "error": errorText(ctx.Err())})

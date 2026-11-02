@@ -70,21 +70,7 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot, first *b.PublicMessage) b.Lif
 			close(o.finished)
 		}()
 		send := func(event b.LifecycleEvent) bool {
-			event.Kind = "turn"
-			if event.Observation != nil {
-				event.Kind, event.Status, event.Title = "execution", "observing", "Worker observation available"
-				if event.Observation.Diagnostic != "" {
-					event.Status, event.Title = "waiting", "Worker reply unavailable"
-				}
-			} else if event.Fact.Kind == b.EventStarted {
-				event.Status, event.Title = "started", "Worker input started"
-			} else if event.Fact.Kind == b.EventCompleted {
-				event.Status, event.Title = "completed", "Worker reply committed"
-			} else {
-				event.Kind, event.Status, event.Title = "execution", "observing", "Worker output observed"
-			}
 			event.Persisted = make(chan error, 1)
-			event.Processed = make(chan error, 1)
 			select {
 			case o.events <- event:
 			case <-ctx.Done():
@@ -92,15 +78,6 @@ func (l *Lifecycle) observe(s b.LifecycleSnapshot, first *b.PublicMessage) b.Lif
 			}
 			select {
 			case err := <-event.Persisted:
-				if err != nil {
-					observerErr = err
-					return false
-				}
-			case <-ctx.Done():
-				return false
-			}
-			select {
-			case err := <-event.Processed:
 				if err != nil {
 					observerErr = err
 					return false

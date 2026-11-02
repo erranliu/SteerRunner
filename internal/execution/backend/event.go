@@ -4,26 +4,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
-	"time"
 )
-
-type Observation struct {
-	Liveness   string    `json:"liveness"`
-	Connection string    `json:"connection"`
-	ObservedAt time.Time `json:"observed_at"`
-	Source     string    `json:"source"`
-	Diagnostic string    `json:"diagnostic,omitempty"`
-}
-
-type OutputBatch struct {
-	Data          []byte    `json:"data"`
-	Source        string    `json:"source"`
-	RetainedFrom  string    `json:"retained_from,omitempty"`
-	ObservedAt    time.Time `json:"observed_at"`
-	NextCursor    string    `json:"next_cursor,omitempty"`
-	Gap           bool      `json:"gap,omitempty"`
-	SourceChanged bool      `json:"source_changed,omitempty"`
-}
 
 var prURL = regexp.MustCompile("https?://[^\\s<>\"'`()]+/(?:pulls|pull)/[0-9]+")
 
@@ -119,14 +100,3 @@ const (
 	EventWorkObserved  EventKind = "work_observed"
 	EventEscalation    EventKind = "escalation"
 )
-
-// EventBatch couples generic event facts to the source's consumption token.
-// The token is only valid for acknowledgement after the facts are committed.
-type EventBatch struct {
-	Source        string
-	DeliveryID    string
-	ExecutionID   string
-	AttemptID     string
-	ExternalRunID string
-	Facts         []EventFact
-}

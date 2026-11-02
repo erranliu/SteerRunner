@@ -1,0 +1,6 @@
+{
+  "equal": true,
+  "bytes": 145116,
+  "sha256": "47d983e8958718ee57ba1a13f00e3504c51ff6268e964062f2ad6ef35c471367",
+  "includes": "selected durable AST types, representative Run/snapshot/request/receipt/operation/HistoryBinding, capabilities/resource digest"
+}
