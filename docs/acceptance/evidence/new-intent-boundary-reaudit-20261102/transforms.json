@@ -1,0 +1,35 @@
+{
+  "whole_production_file_transforms_match": [
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/agentlaunch/config.go",
+    "internal/execution/backend/lifecycle.go",
+    "internal/execution/reliable/operation/operation.go",
+    "internal/execution/reliable/plan.go"
+  ],
+  "critical_unchanged_paths": [
+    "internal/application/worker.go",
+    "internal/application/manual.go",
+    "internal/application/control.go",
+    "internal/application/verify_stopped.go",
+    "internal/storage/runs.go",
+    "internal/storage/store.go",
+    "internal/execution/reliable/operation/record.go",
+    "internal/execution/reliable/operation/effect.go",
+    "internal/execution/adapters/codex/execution_owner.go",
+    "internal/execution/adapters/codex/lifecycle.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go",
+    "internal/execution/adapters/orcatransport/local_codex_stop.go",
+    "internal/testkit/protocol/appserver.go",
+    "internal/testkit/protocol/staged.go",
+    "internal/testkit/protocol/staged_test.go",
+    "internal/execution/adapters/codex/mock_helper_cd67_test.go",
+    "internal/execution/adapters/codex/reattach_receipt_cd67_test.go",
+    "internal/execution/adapters/codex/history_binding_fixture_test.go",
+    "internal/execution/adapters/codex/async_transport_test.go",
+    "tests/helpers/native/main.go",
+    "tests/helpers/native/orca_creation.go"
+  ],
+  "original_test_files_modified_by_this_task": [],
+  "no_new_inputvalue_gate_in_saved_decoder_owner_Invoke_or_stop": true,
+  "PreparationFacts_and_ObservationEvent_transient_only": true
+}

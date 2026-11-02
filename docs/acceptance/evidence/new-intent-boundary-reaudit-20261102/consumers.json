@@ -1,0 +1,63 @@
+{
+  "InputValue": [
+    "scripts\\test-client.ps1:33:function Invoke-Client([string]$Action,$InputValue,[int]$Expected=0,[switch]$NonGit) {",
+    "scripts\\test-client.ps1:37:    if ($null -ne $InputValue) { [IO.File]::WriteAllText($taskInput,($InputValue | ConvertTo-Json -Depth 50),(New-Object Text.UTF8Encoding($false)));$taskArgs+=@('-InputFile',$taskInput) }",
+    "internal\\execution\\reliable\\operation\\record.go:28:\tvalue, err := InputValue(candidate.Action, candidate.Input)",
+    "internal\\execution\\reliable\\operation\\operation.go:9:// InputValue constructs new intents only. Saved operations retain their original",
+    "internal\\execution\\reliable\\operation\\operation.go:11:func InputValue(action executionbackend.LifecycleAction, input executionbackend.LifecycleInput) (any, error) {"
+  ],
+  "CandidateForOperation": [
+    "internal\\application\\new_intent_boundary_test.go:79:\t\t\tdecoded, err := b.CandidateForOperation(op)",
+    "internal\\application\\new_intent_boundary_test.go:92:\t\t\tif _, err := b.CandidateForOperation(malformed); err == nil {",
+    "internal\\execution\\backend\\lifecycle.go:463:// CandidateForOperation reconstructs the original single-step value so a",
+    "internal\\execution\\backend\\lifecycle.go:465:func CandidateForOperation(operation Operation) (LifecycleCandidate, error) {",
+    "internal\\execution\\reliable\\plan.go:116:\t\tcandidate, err := b.CandidateForOperation(operation)",
+    "internal\\execution\\reliable\\operation\\operation.go:10:// input and are decoded by backend.CandidateForOperation, not rebuilt here.",
+    "internal\\execution\\adapters\\codex\\execution_owner.go:84:\toriginal, err := b.CandidateForOperation(request.Operation)"
+  ],
+  "LifecycleReportCompletion": [
+    "internal\\execution\\backend\\lifecycle.go:29:\tLifecycleReportCompletion LifecycleAction = \"report_completion\"",
+    "internal\\execution\\backend\\lifecycle.go:130:\tcase LifecycleReportCompletion:",
+    "internal\\execution\\backend\\lifecycle.go:303:\tcase LifecyclePrepareWorkspace, LifecycleCreateResource, LifecyclePrepareSession, LifecycleStartTurn, LifecycleSubmitInput, LifecycleReportCompletion,",
+    "internal\\execution\\backend\\lifecycle.go:498:\tcase LifecycleReportCompletion:",
+    "internal\\application\\new_intent_boundary_test.go:21:\t\t{action: b.LifecycleReportCompletion, input: b.LifecycleInput{Completion: &b.CompletionInput{TurnID: \"original-turn\", Outcome: \"succeeded\", Subject: \"saved\", Body: \"saved\"}}},"
+  ],
+  "LifecycleAcknowledge": [
+    "internal\\application\\new_intent_boundary_test.go:22:\t\t{action: b.LifecycleAcknowledge, input: b.LifecycleInput{Ack: &b.AcknowledgeInput{DeliveryID: \"original-delivery\"}}},",
+    "internal\\execution\\backend\\lifecycle_test.go:42:\t\t\t\tAction: LifecycleAcknowledge,",
+    "internal\\execution\\backend\\lifecycle.go:31:\tLifecycleAcknowledge      LifecycleAction = \"acknowledge_delivery\"",
+    "internal\\execution\\backend\\lifecycle.go:134:\tcase LifecycleAcknowledge:",
+    "internal\\execution\\backend\\lifecycle.go:304:\t\tLifecycleDeliverFeedback, LifecycleAcknowledge, LifecycleStopObservation,",
+    "internal\\execution\\backend\\lifecycle.go:510:\tcase LifecycleAcknowledge:"
+  ],
+  "LifecycleCleanup": [
+    "internal\\application\\new_intent_boundary_test.go:23:\t\t{action: b.LifecycleCleanup, input: b.LifecycleInput{Cleanup: &b.CleanupInput{Resources: []b.ProcessIdentity{{Kind: \"os\", PID: 7, Created: \"original\"}}}}},",
+    "internal\\execution\\backend\\lifecycle.go:34:\tLifecycleCleanup          LifecycleAction = \"cleanup_resources\"",
+    "internal\\execution\\backend\\lifecycle.go:138:\tcase LifecycleCleanup:",
+    "internal\\execution\\backend\\lifecycle.go:305:\t\tLifecycleStopExecution, LifecycleCleanup, LifecycleHostAction:",
+    "internal\\execution\\backend\\lifecycle.go:522:\tcase LifecycleCleanup:"
+  ],
+  "LifecycleHostAction": [
+    "internal\\execution\\backend\\lifecycle_test.go:20:\tif err := (LifecycleCandidate{Action: LifecycleHostAction, Input: LifecycleInput{Host: &HostActionInput{Kind: HostOpenOriginal}}}).Validate(); err == nil {",
+    "internal\\execution\\backend\\lifecycle.go:35:\tLifecycleHostAction       LifecycleAction = \"host_action\"",
+    "internal\\execution\\backend\\lifecycle.go:140:\tcase LifecycleHostAction:",
+    "internal\\execution\\backend\\lifecycle.go:305:\t\tLifecycleStopExecution, LifecycleCleanup, LifecycleHostAction:",
+    "internal\\execution\\backend\\lifecycle.go:528:\tcase LifecycleHostAction:",
+    "internal\\application\\new_intent_boundary_test.go:24:\t\t{action: b.LifecycleHostAction, input: b.LifecycleInput{Host: &b.HostActionInput{Kind: b.HostRemoveFeedback, Worktree: t.TempDir(), WorkflowRun: \"run\", TurnID: \"original-turn\"}}},"
+  ],
+  "ObservationEvent": [
+    "internal\\execution\\adapters\\codex\\async_transport_test.go:52:\tasked := make(chan codexworker.ObservationEvent, 1)",
+    "internal\\execution\\adapters\\codex\\async_transport_test.go:59:\t\t}, func(e codexworker.ObservationEvent) bool {",
+    "internal\\execution\\adapters\\codex\\backend.go:323:\tEvents   chan ObservationEvent",
+    "internal\\execution\\adapters\\codex\\backend.go:334:\to := &Observation{Process: process, Events: make(chan ObservationEvent, 64), Done: make(chan error, 1), Finished: make(chan struct{}), cancel: cancel}",
+    "internal\\execution\\adapters\\codex\\backend.go:341:\t\tcompleted, err := Observe(ctx, client, journal, threadID, turnID, replay, func(e codexapp.Envelope) error { _, err := ParseAskCall(e, threadID, turnID); return err }, func(event ObservationEvent) bool {",
+    "internal\\execution\\adapters\\codex\\observe.go:14:type ObservationEvent struct {",
+    "internal\\execution\\adapters\\codex\\observe.go:25:func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, validateAsk func(codexapp.Envelope) error, deliver func(ObservationEvent) bool, terminal ...func() error) (completed bool, err error) {",
+    "internal\\execution\\adapters\\codex\\observe.go:27:\t\tif !deliver(ObservationEvent{Envelope: envelope, Forward: true, Kind: \"question\", Status: \"pending\"}) {",
+    "internal\\execution\\adapters\\codex\\observe.go:63:\t\t\tevent := ObservationEvent{Envelope: envelope, Forward: true}",
+    "internal\\execution\\adapters\\codex\\observe.go:65:\t\t\t\tif !deliver(ObservationEvent{Envelope: envelope, PublicMessage: message}) {"
+  ],
+  "Display": [
+    "internal\\host\\server.go:213:\t// Display is a best-effort projection. It owns no execution authorization."
+  ]
+}

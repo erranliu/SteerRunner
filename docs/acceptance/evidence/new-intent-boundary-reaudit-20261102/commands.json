@@ -1,0 +1,58 @@
+{
+  "base": "66cc0acf50b675c75458d9d6281139e16158a3a3",
+  "application": {
+    "command": "go test ./internal/application -run '^(TestSRNewIntentBoundary.*|TestSREventAck.*|TestSROperation.*|TestLocalCodex.*|TestServiceGeneration.*|TestFrozenBudgetMissingDoesNotGateOriginalResults|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopSerializesWithNativeDispatch)$' -count=1 -timeout 3m -json",
+    "permission": "require_escalated",
+    "first_log": "application.jsonl.gz",
+    "first_exit_code": 1,
+    "final_log": "application-final.jsonl.gz",
+    "final_exit_code": 0
+  },
+  "failed_case_recheck": {
+    "command": "go test ./internal/application -run '^TestFrozenBudgetMissingDoesNotGateOriginalResults$' -count=1 -timeout 2m -json",
+    "permission": "require_escalated",
+    "exit_code": 0,
+    "log": "budget-recheck.jsonl.gz"
+  },
+  "consumers": {
+    "command": "go test ./internal/execution/adapters/codex ./internal/testkit/protocol ./internal/execution/backend ./internal/execution/adapters/orcatransport -run '^(TestAsyncQuestionObserveSteerAndReconcile|TestAppServerPendingFeedbackRecoveryUsesNewTurnReceipt|TestMockAppServerThreadAndTurnContract|TestStagedFixtureConsumesCurrentPromptsWithRealGitFacts|TestObserverSingleAckPreservesWaitFailureAndCancellation|TestLifecycle.*|TestRecoveryHistory.*)$' -count=1 -timeout 3m -json",
+    "permission": "require_escalated",
+    "exit_code": 0
+  },
+  "AST": {
+    "command": "go run ./.evidence/new-intent-boundary-reaudit/declarations.go",
+    "exit_code": 0
+  },
+  "wire": {
+    "command": "go run ./.evidence/new-intent-boundary-reaudit/wire-audit.go .evidence/new-intent-boundary-reaudit/wire.json",
+    "exit_code": 0
+  },
+  "build": {
+    "command": "scripts/build.ps1 -OutFile .evidence/new-intent-boundary-reaudit/bin/steerrunner.exe",
+    "exit_code": 0
+  },
+  "live_compile": {
+    "commands": [
+      "go test -c -tags live -o .evidence/new-intent-boundary-reaudit/compile/native.test.exe ./tests/native",
+      "go test -c -tags live -o .evidence/new-intent-boundary-reaudit/compile/integration-live.test.exe ./tests/integration"
+    ],
+    "exit_codes": [
+      0,
+      0
+    ]
+  },
+  "foundation": {
+    "command": "scripts/test-foundation.ps1 -OutDir .evidence/new-intent-boundary-reaudit/foundation -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$' -RunnerExe .evidence/new-intent-boundary-reaudit/bin/steerrunner.exe -TimeoutMinutes 8",
+    "permission": "require_escalated",
+    "launch_exit_code": 0,
+    "result_exit_code": 0,
+    "scenarios": 3,
+    "skips": 0
+  },
+  "timings": {
+    "command": "scripts/test-controlled.ps1 -FromEvidence .evidence/new-intent-boundary-reaudit/foundation -OutDir .evidence/new-intent-boundary-reaudit/timings",
+    "exit_code": 0,
+    "qualification_eligible": false
+  },
+  "changes_during_reaudit": "Fast-forward from 98309f8 to 66cc0ac: upstream test scripts/catalog/integration fixtures only. Task product and new regression sources unchanged; no original test/fixture/timeout/assertion modified by this audit. File initialization failure remains archived; root cause not conclusively identified."
+}

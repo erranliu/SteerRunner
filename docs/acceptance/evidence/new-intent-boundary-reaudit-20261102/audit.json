@@ -1,0 +1,19 @@
+{
+  "initial_base": "98309f835012c5ea43cad2245a11341a0d9fc040",
+  "current_base": "66cc0acf50b675c75458d9d6281139e16158a3a3",
+  "upstream_changed_source_files": [
+    "scripts/controlled-tests.ps1",
+    "scripts/test-controlled.ps1",
+    "scripts/test-foundation.ps1",
+    "scripts/test-prerequisite-contract.ps1",
+    "tests/catalog.json",
+    "tests/framework/controlled-selection-test.ps1",
+    "tests/integration/result_file_test.go",
+    "tests/integration/service_test.go"
+  ],
+  "initial_product_and_new_regression_sources_unchanged": true,
+  "initial_evidence_checksums_valid": true,
+  "inputvalue_factory_only": true,
+  "factory_restriction_not_in_saved_validation_or_owner_or_Invoke": true,
+  "frozen_source_count": 788
+}

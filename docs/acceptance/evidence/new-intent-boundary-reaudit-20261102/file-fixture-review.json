@@ -1,0 +1,12 @@
+{
+  "initial_failure": "TestFrozenBudgetMissingDoesNotGateOriginalResults: three execute subcases fail before test body in existing resultFixture initialization, read_failed",
+  "unchanged_paths": [
+    "internal/application/runtime_files.go",
+    "internal/application/result_file.go",
+    "internal/application/result_file_test.go",
+    "internal/application/frozen_budget_audit_test.go",
+    "internal/execution/workspace/progress.go"
+  ],
+  "isolated_recheck_exit": 0,
+  "root_cause": "Not conclusively established; no source change on this initialization path. No product/fixture assertions or deadlines modified. Original failure retained and same full selection rechecked."
+}

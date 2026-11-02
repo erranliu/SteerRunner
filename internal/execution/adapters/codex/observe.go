@@ -14,19 +14,17 @@ import (
 type ObservationEvent struct {
 	PublicMessage *b.PublicMessage
 	Persisted     chan error
-	Summary       string
 	Envelope      codexapp.Envelope
 	Forward       bool
 	Kind          string
 	Status        string
-	Title         string
 }
 
 // Observe journals native notifications before reporting them to the service.
 // The deliver callback must not return true until the event is durable.
 func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, threadID, turnID string, replay []codexapp.Envelope, validateAsk func(codexapp.Envelope) error, deliver func(ObservationEvent) bool, terminal ...func() error) (completed bool, err error) {
 	for _, envelope := range replay {
-		if !deliver(ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true, Kind: "question", Status: "pending", Title: "Codex needs a decision"}) {
+		if !deliver(ObservationEvent{Envelope: envelope, Forward: true, Kind: "question", Status: "pending"}) {
 			return false, nil
 		}
 	}
@@ -62,7 +60,7 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 			if err := journal.Sync(); err != nil {
 				return false, err
 			}
-			event := ObservationEvent{Envelope: envelope, Summary: envelope.Method, Forward: true}
+			event := ObservationEvent{Envelope: envelope, Forward: true}
 			if message := publicMessage(envelope, threadID, turnID, time.Now().UTC()); message != nil {
 				if !deliver(ObservationEvent{Envelope: envelope, PublicMessage: message}) {
 					if ctx.Err() != nil {
@@ -79,7 +77,7 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 						}
 					}
 					event.Forward = false
-					event.Kind, event.Status, event.Title = "question", "rejected", "Unsupported Codex question"
+					event.Kind, event.Status = "question", "rejected"
 					if !deliver(event) {
 						if ctx.Err() == nil {
 							return false, errors.New("unsupported Codex question could not be recorded")
@@ -93,7 +91,7 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 				if err := client.RejectRequest(envelope.ID, codexapp.RejectUnauthorizedRequest); err != nil {
 					return false, err
 				}
-				event.Kind, event.Status, event.Title = "approval", "rejected", "Unsupported Codex host request"
+				event.Kind, event.Status = "approval", "rejected"
 				if !deliver(event) {
 					if ctx.Err() == nil {
 						return false, errors.New("unsupported Codex host request could not be recorded")
@@ -104,12 +102,12 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 			}
 			switch envelope.Method {
 			case "turn/started":
-				event.Kind, event.Status, event.Title = "turn", "started", "Codex turn started"
+				event.Kind, event.Status = "turn", "started"
 			case "item/tool/call":
-				event.Kind, event.Status, event.Title = "question", "pending", "Codex needs a decision"
+				event.Kind, event.Status = "question", "pending"
 			case "item/completed":
 				if IsAsyncQuestion(envelope) {
-					event.Kind, event.Status, event.Title = "question", "pending", "Codex async question"
+					event.Kind, event.Status = "question", "pending"
 					break
 				}
 				var params struct {
@@ -120,9 +118,9 @@ func Observe(ctx context.Context, client *codexapp.Client, journal *os.File, thr
 				if json.Unmarshal(envelope.Params, &params) != nil || params.Item.Type != "dynamicToolCall" {
 					continue
 				}
-				event.Kind, event.Status, event.Title = "question", "completed", "Codex decision tool completed"
+				event.Kind, event.Status = "question", "completed"
 			case "turn/completed":
-				event.Kind, event.Status, event.Title = "turn", "completed", "Codex turn completed"
+				event.Kind, event.Status = "turn", "completed"
 			default:
 				continue
 			}

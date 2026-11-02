@@ -1,0 +1,267 @@
+{
+  "complete_controlled_passed": false,
+  "passed_count": 3,
+  "qualification_eligible": false,
+  "incomplete_tests": [],
+  "result_file_coverage": {
+    "expected_cases": [],
+    "status": "not_required"
+  },
+  "status": "passed",
+  "validation_scope": "controlled-timing",
+  "observed_count": 3,
+  "expected_tests": [],
+  "missing_tests": [],
+  "observed_top_level_seconds": 253.18,
+  "subtests": [
+    {
+      "status": "pass",
+      "duration_seconds": 39.39,
+      "test": "TestSRRestartPreservesAuthorization/creation_receipt"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 36.16,
+      "test": "TestSRRestartPreservesAuthorization/graceful"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 50.62,
+      "test": "TestSRRestartPreservesAuthorization/kill"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 39.79,
+      "test": "TestSRRestartPreservesAuthorization/pending_stop"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 2.39,
+      "test": "TestSRServiceOwnership/concurrent_alias"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 3.19,
+      "test": "TestSRServiceOwnership/different_release"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 28.0,
+      "test": "TestSRServiceOwnership/offline_verification"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 4.19,
+      "test": "TestSRServiceOwnership/parent_job"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 2.58,
+      "test": "TestSRServiceOwnership/parent_job/allow"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 1.6,
+      "test": "TestSRServiceOwnership/parent_job/deny"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.12,
+      "test": "TestSRServiceOwnership/queries_do_not_start"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 1.4,
+      "test": "TestSRServiceOwnership/remote_offline_scope"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.27,
+      "test": "TestSRServiceOwnership/remote_offline_scope/absent"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.36,
+      "test": "TestSRServiceOwnership/remote_offline_scope/active"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.12,
+      "test": "TestSRServiceOwnership/remote_offline_scope/invalid-profile"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.11,
+      "test": "TestSRServiceOwnership/remote_offline_scope/legacy"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.31,
+      "test": "TestSRServiceOwnership/remote_offline_scope/truncated"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.11,
+      "test": "TestSRServiceOwnership/remote_offline_scope/uncreated"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.11,
+      "test": "TestSRServiceOwnership/remote_offline_scope/uncreated-mixed"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 0.03,
+      "test": "TestSRServiceOwnership/reused_owner_pid"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 5.4,
+      "test": "TestSRServiceOwnership/shutdown_receipt"
+    },
+    {
+      "status": "pass",
+      "duration_seconds": 2.83,
+      "test": "TestSRServiceOwnership/stale_writer"
+    }
+  ],
+  "errors": [],
+  "slowest": [
+    {
+      "group": "recovery",
+      "status": "pass",
+      "duration_seconds": 165.96,
+      "test": "TestSRRestartPreservesAuthorization"
+    },
+    {
+      "group": "foundation",
+      "status": "pass",
+      "duration_seconds": 47.53,
+      "test": "TestSRServiceOwnership"
+    },
+    {
+      "group": "recovery",
+      "status": "pass",
+      "duration_seconds": 39.69,
+      "test": "TestSRNativeUnknownAndStop"
+    }
+  ],
+  "schema": "steerrunner-controlled-timings/v1",
+  "evidence": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\foundation",
+  "groups": [
+    {
+      "observed_seconds": 47.53,
+      "registered_count": 5,
+      "observed_count": 1,
+      "id": "foundation",
+      "missing_tests": [
+        "TestSRStandalonePackage",
+        "TestSRInputFreeze",
+        "TestSRPermissionQualification",
+        "TestSRStorageLogsEvents"
+      ],
+      "measured_count": 1
+    },
+    {
+      "observed_seconds": 0.0,
+      "registered_count": 5,
+      "observed_count": 0,
+      "id": "workflow",
+      "missing_tests": [
+        "TestSRRunWorkflow",
+        "TestSRPublicationIdentity",
+        "TestSRPublicationBeforeWorkflowReady",
+        "TestSRWorkflowDiscoveryAndSelection",
+        "TestSRResultAcquisition"
+      ],
+      "measured_count": 0
+    },
+    {
+      "observed_seconds": 205.65,
+      "registered_count": 7,
+      "observed_count": 2,
+      "id": "recovery",
+      "missing_tests": [
+        "TestSRStabilityLostSubmitResponse",
+        "TestSRStabilityRevocationAcrossRestart",
+        "TestSRMultipleRunsIsolation",
+        "TestSRResourceCreationRecovery",
+        "TestSRManualReconciliation"
+      ],
+      "measured_count": 2
+    },
+    {
+      "observed_seconds": 0.0,
+      "registered_count": 5,
+      "observed_count": 0,
+      "id": "content",
+      "missing_tests": [
+        "TestSRContentGenerate",
+        "TestSRContentRepository",
+        "TestSRContentConversation",
+        "TestSRContentQuestionAndUnknown",
+        "TestSRContentGenerationRecovery"
+      ],
+      "measured_count": 0
+    },
+    {
+      "observed_seconds": 0.0,
+      "registered_count": 4,
+      "observed_count": 0,
+      "id": "files",
+      "missing_tests": [
+        "TestSRRunEvidenceR2",
+        "TestSRProgressFile",
+        "TestSRResultFile",
+        "TestSRSingleExecutionColdStop"
+      ],
+      "measured_count": 0
+    },
+    {
+      "observed_seconds": 0.0,
+      "registered_count": 1,
+      "observed_count": 0,
+      "id": "orca-cli",
+      "missing_tests": [
+        "TestSROrcaCLIWaitRetry"
+      ],
+      "measured_count": 0
+    }
+  ],
+  "sources": [
+    {
+      "sha256": "3c4e11c3714a639b882e5520e0d63ddf0885bc0452bcb49ed23d7cf62baed3f5",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\foundation\\integration.log"
+    },
+    {
+      "sha256": "a5b914ab2b96fd2e2b8c789613fd36bf30a857a599bad2290a15051501fd1fb0",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\foundation\\result.json"
+    },
+    {
+      "sha256": "0c2c50db4ee11972dbe329e06947af2c4c4a37a5d6543c2389d959472d2a7bd9",
+      "path": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\new-intent-boundary-reaudit\\foundation\\source-identity.json"
+    }
+  ],
+  "unexpected_tests": [],
+  "unknown_tests": [],
+  "tests": [
+    {
+      "group": "recovery",
+      "status": "pass",
+      "duration_seconds": 39.69,
+      "test": "TestSRNativeUnknownAndStop"
+    },
+    {
+      "group": "recovery",
+      "status": "pass",
+      "duration_seconds": 165.96,
+      "test": "TestSRRestartPreservesAuthorization"
+    },
+    {
+      "group": "foundation",
+      "status": "pass",
+      "duration_seconds": 47.53,
+      "test": "TestSRServiceOwnership"
+    }
+  ]
+}

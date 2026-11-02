@@ -684,7 +684,6 @@ const (
 type PreparationFacts struct {
 	Workspace, Resource, Session PreparationGate
 	ResourceRequired             *ResourceIntent
-	Cleanup                      *CleanupInput
 }
 type LifecyclePreparationPort interface {
 	PreparationFacts(context.Context, LifecycleSnapshot) (PreparationFacts, error)
