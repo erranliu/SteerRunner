@@ -1,6 +1,6 @@
 # Spec：Orca 原终端查询能力 B1
 
-日期：2026-11-02。状态：待实施。依据[长期能力层设计 B1](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-query-capability.plan.md)。调查基线：`fe49bbb`；B0 的后续审计修复独立提交并保留。
+日期：2026-11-02。状态：已实现，双端查询及受控回归通过，待实施后独立审计；见[验收](../acceptance/orca-terminal-query-capability.md)。依据[长期能力层设计 B1](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-query-capability.plan.md)。调查基线：`fe49bbb`；B0 的后续审计修复独立提交并保留。
 
 ## 1. 目标
 

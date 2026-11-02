@@ -73,7 +73,7 @@ func queryInputTerminal(ctx context.Context, environment string, p b.ProcessIden
 	if p.RuntimeID == "" || p.Terminal == "" || p.Incarnation == "" || p.WorktreeID == "" {
 		return Terminal{}, stateIdentityError("original native input terminal identity is incomplete")
 	}
-	t, err := queryTerminal(ctx, environment, p)
+	t, err := queryTerminal(ctx, environment, TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation})
 	if err != nil {
 		return Terminal{}, err
 	}

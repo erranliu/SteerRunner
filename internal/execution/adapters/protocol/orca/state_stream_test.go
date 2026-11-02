@@ -134,7 +134,7 @@ func TestOrcaNativeStateStream(t *testing.T) {
 			if strings.HasPrefix(scenario, "terminal-query") {
 				queryCtx, stop := context.WithTimeout(ctx, 300*time.Millisecond)
 				defer stop()
-				terminal, err := QueryBoundTerminal(queryCtx, "test-remote", b.ProcessIdentity{RuntimeID: "runtime", Terminal: "terminal", Incarnation: "incarnation"})
+				terminal, err := QueryBoundTerminal(queryCtx, "test-remote", TerminalIdentity{RuntimeID: "runtime", Handle: "terminal", IncarnationID: "incarnation"})
 				switch scenario {
 				case "terminal-query":
 					if err != nil || terminal.RuntimeID != "runtime" || terminal.WorktreeID != "worktree" || terminal.WorktreePath != "/original" || terminal.AgentIdentity != "codex" {

@@ -326,20 +326,26 @@ func command(s b.LifecycleSnapshot) string {
 	return s.Session.CurrentCommandID
 }
 
+func (l *Lifecycle) boundTerminal(ctx context.Context, p b.ProcessIdentity) (native.Terminal, error) {
+	if !l.nativeAccess {
+		// The explicit state-factory constructor uses isolated CLI fixtures.
+		return l.client.InspectBoundTerminal(ctx, l.profile.Target(), p)
+	}
+	t, err := native.QueryBoundTerminal(ctx, l.profile.Environment, native.TerminalIdentity{RuntimeID: p.RuntimeID, Handle: p.Terminal, IncarnationID: p.Incarnation})
+	var identity *native.TerminalIdentityError
+	if errors.As(err, &identity) {
+		err = &b.BackendError{Code: b.BackendIdentityMismatch, Diagnostic: identity.Error(), Cause: err}
+	}
+	return t, err
+}
+
 func (l *Lifecycle) original(ctx context.Context, s b.LifecycleSnapshot) (native.Terminal, error) {
 	state, stateErr := l.state(s)
 	if stateErr != nil {
 		return native.Terminal{}, stateErr
 	}
 	initializing := l.setup.AgentLaunchCommand != "" && !state.LaunchConfirmed
-	var t native.Terminal
-	var err error
-	if l.nativeAccess {
-		t, err = native.QueryBoundTerminal(ctx, l.profile.Environment, s.Ref.External)
-	} else {
-		// The explicit state-factory constructor uses isolated CLI fixtures.
-		t, err = l.client.InspectBoundTerminal(ctx, l.profile.Target(), s.Ref.External)
-	}
+	t, err := l.boundTerminal(ctx, s.Ref.External)
 	if err != nil {
 		return t, err
 	}
