@@ -1,6 +1,6 @@
 # Orca 终端发送能力 B2b 验收
 
-日期：2026-11-02。状态：实现与定向验证通过，待实施后独立审计。依据 [Spec](../spec/orca-terminal-send-capability.spec.md) / [Plan](../spec/orca-terminal-send-capability.plan.md)，本批不改变生产支持或授予 B5 资格。
+日期：2026-11-02。状态：实现、定向验证及实施后独立审计通过。依据 [Spec](../spec/orca-terminal-send-capability.spec.md) / [Plan](../spec/orca-terminal-send-capability.plan.md)，本批不改变生产支持或授予 B5 资格。
 
 ## 1. 能力与消费
 
@@ -33,4 +33,6 @@ submit、launchAgent、dispatchControl 均接入新能力，三处手工 send ar
 
 ## 3. 审计
 
-实现提交后独立只读审计一次；确认修复单独 commit 并补受影响验证，该步骤完成前 B2b 不标完成。
+对实现提交 `44a3a2c` 相对 `441b3b9` 的独立只读审计通过，未发现确认的 P0/P1/P2。审计者复核三类消费者、原字段范围、正文/参数/timeout/派发及持久格式、全部 11 个归档文件 bytes/hash 和源码摘要。
+
+新增能力、消费方定向集、基础协议、依赖守卫和固定提交 diff 检查均独立复跑通过；原进程夹具使用正常权限。未启动模型或操作真实 Orca 资源，不扩大资格。无确认问题，因此无代码修复 commit。
