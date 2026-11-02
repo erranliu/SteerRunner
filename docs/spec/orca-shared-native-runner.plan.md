@@ -18,7 +18,7 @@
 
 新增双端候选真实构造/codec/准入/冻结测试，不手工省略 profile 或 scope；验证新标记旧 codec 拒绝、helper 残留、状态/usage/只读映射和原请求证明。复用原 NativePrompt/OriginalInput/NativeProof/跟随回合、预算和 CRLF 回归。
 
-在 application 的正式冻结/Engine/原 operation/存储路径覆盖候选双端活动撤销与禁止新 send、未知 close 一次、提交失败和重入、替换 incarnation/host/count/trunc 及排队未派发。使用屏障/故障点与实际调用计数，不把旧 LocalCodexStop 测试更名当新覆盖。准确补跑 TestSRServiceOwnership 的 offline_verification/remote_offline_scope 并新增本机候选正式 CLI 子例。
+在 application 的正式冻结/Engine/原 operation/存储路径覆盖候选双端活动撤销与禁止新 send、未知 close 一次、提交失败和重入、替换 incarnation/host/count/trunc 及排队未派发。使用屏障/故障点与实际调用计数，不把旧 LocalCodexStop 测试更名当新覆盖。补 working Started→done/同前缀第二 user/替换 provider/incarnation/partial 或截断 final/后续 working 通知反例，严格隔离活动输入证明与完成及流资格；Blocked 且输入已禁用的 Run 仍保留合法首次 stop，已尝试/未知 stop 只查询。准确补跑 TestSRServiceOwnership 的 offline_verification/remote_offline_scope 并新增本机候选正式 CLI 子例。
 
 必要两包/application/contracts/resources/workflow 定向，生产与 live-tag 编译、依赖守卫及持久格式 diff。记录实际根/子节点/叶例、fail/skip，不用零匹配签收。
 

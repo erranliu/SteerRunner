@@ -197,16 +197,18 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 					save(t, "cleanup-original-query.json", map[string]any{"resource": original, "error": resourceErr.Error()})
 				}
 			}
-			if err == nil && view.NewInputsAllowed && !stopAttempted {
-				stopAttempted = true
-				response, stopErr := command(m, dir, []string{"stop", "--run-id", r.RunID, "--input", "-"}, ptrRequest(request("b5-stop", contracts.RevisionInput{ExpectedRevision: view.Revision})))
-				save(t, "online-stop-receipt.json", response)
-				if stopErr != nil {
-					t.Error("original stop response unavailable; reconciliation remains required", stopErr)
-				}
-			}
 			for until := time.Now().Add(2 * time.Minute); time.Now().Before(until); time.Sleep(time.Second) {
 				view, err = inspect(m, dir, r.RunID, false)
+				if err == nil && view.StopStatus == "" && !stopAttempted {
+					// A blocked Run can already forbid inputs while still owning
+					// its original live terminal. That is not a stop receipt.
+					stopAttempted = true
+					response, stopErr := command(m, dir, []string{"stop", "--run-id", r.RunID, "--input", "-"}, ptrRequest(request("b5-stop", contracts.RevisionInput{ExpectedRevision: view.Revision})))
+					save(t, "online-stop-receipt.json", response)
+					if stopErr != nil {
+						t.Error("original stop response unavailable; reconciliation remains required", stopErr)
+					}
+				}
 				if err == nil && !view.NewInputsAllowed && view.StopStatus == "stopped" && view.StopEvidenceScope == "orca_terminal" {
 					r.RunStopped = true
 					save(t, "online-stopped.json", view)
@@ -297,7 +299,7 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 		selection.PromptOverrides = map[string]string{}
 	}
 	if active {
-		selection.PromptOverrides[workflow.StepImplement] = "This is an isolated activity-stop qualification. Run a native PowerShell tool command Start-Sleep -Seconds 120 and wait for it; do not modify files, commit, push or create a PR. The caller will revoke this original Run while the request is active."
+		selection.PromptOverrides[workflow.StepImplement] = "This is an isolated activity-stop qualification. Run a native PowerShell tool command Start-Sleep -Seconds 120 and wait for it; do not modify files, commit, push or create a PR. The caller will revoke this original Run while the request is active. If the command returns before revocation, return exactly {\"outcome\":\"needs_input\",\"summary\":\"Activity window missed\",\"question\":\"Stop this qualification Run\"}; do not declare success or continue to publication."
 	} else {
 		selection.PromptOverrides[workflow.StepImplement] = "On the FIRST implementation input in this original session return exactly {\"outcome\":\"needs_input\",\"summary\":\"Awaiting native candidate feedback\",\"question\":\"Please authorize the frozen smoke implementation\"}; do not call tools or change files on that first input. On a later separate caller feedback in this same session implement the frozen Spec and Plan and run its real checker. Do not repeat this question after receiving feedback. Preserve the fixture tooling. Never merge a pull request."
 	}
@@ -333,15 +335,18 @@ func sharedNativeRunner(t *testing.T, m livetest.Manifest) {
 		if view.Status == "blocked" || view.ResumeRequired {
 			t.Fatal("candidate execution blocked", view.Phase, view.Diagnostic)
 		}
+		if active && view.Step != workflow.StepImplement {
+			t.Fatal("activity window ended before original Started/working verification; stop this original Run")
+		}
 		if active && view.Execution.TurnStarted {
 			resource, state, stateErr := candidateState(m, client, view)
-			if stateErr == nil && state.MainAgent != nil && state.MainAgent.State == "working" && state.ProviderSession.ID != "" && state.Observation != nil && state.Observation.Revision > 0 {
+			if stateErr == nil && state.MainAgent != nil && state.MainAgent.State == "working" && state.ProviderSession.ID != "" && state.MetadataObservation.ValidHookTransition() && state.TurnStartedAt == state.MainAgent.StateStartedAt {
 				original = resource
 				r.Provider = state.ProviderSession.ID
 				r.ActiveVerified = true
 				r.Stage = "active-stop"
 				checkpoint()
-				save(t, "active-original.json", map[string]any{"run": view, "resource": resource, "state": state})
+				save(t, "active-original.json", map[string]any{"run": view, "resource": resource, "state": state, "metadata_observation": state.MetadataObservation})
 				break
 			}
 		} else if !active && !r.FeedbackVerified && view.Status == "waiting_input" && view.Question != nil {
