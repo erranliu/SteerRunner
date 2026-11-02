@@ -1,0 +1,11 @@
+[
+  "test",
+  "./internal/execution/adapters/codex",
+  "./internal/application",
+  "./internal/contracts",
+  "-run",
+  "^(TestPolicyResourceMatchesOriginalProfile|TestPolicyResourceAcceptsNewerNativeVersion|TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess|TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature|TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint|TestNative.*|TestRAAtomicCompletion|TestRARecoveryMissingCheckpoint|TestRAStateAuthority|TestRATransitionUnknownNativeGate|TestRARecoveryConsumedInput|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestFrozenBudgetMissingDoesNotGateOriginalResults|TestFrozenBudgetUnknownReconcileAndStopDoNotRepair|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation|TestSROperationReconciliationKeepsPartialBinding|TestLocalCodex.*|TestSRManualReconciliationStopWinsDuringRead|TestSRShutdownSettlementUsesCommittedFinalNativeEvidence|TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence|TestSRResumeWorkflowRetainsOriginalReportSource|TestContentFileMaterial.*|TestGenerateFileMaterialContract)$",
+  "-count=1",
+  "-timeout=5m",
+  "-json"
+]

@@ -77,6 +77,25 @@ func DecodeProfileConfigEnvelope(data []executionbackend.ImplementationDataEnvel
 	return profileConfigFromEnvelopes(data, identity)
 }
 
+// ValidatePolicyResourceForProfile interprets the native permission contract
+// once, inside the adapter. Neither input is rebuilt or changed by this check.
+func ValidatePolicyResourceForProfile(envelope executionbackend.ImplementationDataEnvelope, identity PolicyResourceIdentity, profiles []executionbackend.ImplementationDataEnvelope, profileIdentity ProfileConfigIdentity) error {
+	payload, err := DecodePolicyResourceEnvelope(envelope, identity)
+	if err != nil {
+		return err
+	}
+	profile, err := DecodeProfileConfigEnvelope(profiles, profileIdentity)
+	if err != nil {
+		return err
+	}
+	// The strict resource decoder already verifies the contract's exact mode
+	// and argv. Match its conclusion instead of parsing native arguments again.
+	if payload.Contract == PolicyContract && profile.AccessMode == "full_access" || payload.Contract == ReadOnlyPolicyContract && profile.AccessMode == "read_only" {
+		return nil
+	}
+	return errors.New("permission resources differ from frozen access mode")
+}
+
 func BuildPolicyResourceEnvelope(ctx context.Context, request PolicyResourceBuildRequest, probe PolicyVersionProbe) (BoundPolicyResources, error) {
 	if probe == nil || request.Workspace == "" || request.ResourceIdentity.Generation == "" || request.ResourceIdentity.ConfigDigest == "" {
 		return BoundPolicyResources{}, errors.New("permission resource build identity or version probe is incomplete")

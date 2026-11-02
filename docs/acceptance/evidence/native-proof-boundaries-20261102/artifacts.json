@@ -1,0 +1,14 @@
+[
+  {
+    "file": "steerrunner.exe",
+    "Hash": "7C2831A8CF7F3C94DC4D1C2729A8DDDEE36E0C20F7D1E1F6A0E0E58A7BEABFA3"
+  },
+  {
+    "file": "native-live.test.exe",
+    "Hash": "C7E26463DCA5A24E4917EB12E7D8007C2CB150604148C8FD3EAFD66119DB752B"
+  },
+  {
+    "file": "integration-live.test.exe",
+    "Hash": "D3303DB0ACF8E1DC22C183895E499B76F151DE276BC12C3D70C623EDCE30581C"
+  }
+]

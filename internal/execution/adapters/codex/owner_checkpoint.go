@@ -73,6 +73,18 @@ func writeOwnerCheckpoint(setup b.LifecycleSetup, identity ExecutionOwnerIdentit
 	return setup.ProcessHost.WriteExecutionFile(path, encode(signedRemoteExit{Body: body, Signature: ed25519.Sign(key, body)}))
 }
 
+// ReadCompletionCheckpoint reports whether the original binding requires a
+// signed checkpoint. A missing or invalid required proof remains an error,
+// never permission to sample a replacement completion from the current Git HEAD.
+func ReadCompletionCheckpoint(snapshot b.LifecycleSnapshot, commandID, sessionID, turnID string) (fact b.WorkspaceInspection, diagnostic string, required bool, err error) {
+	identity := ExecutionOwner(snapshot)
+	if identity == nil || !identity.WorkspaceCheckpoints {
+		return fact, "", false, nil
+	}
+	fact, diagnostic, err = ReadExecutionCheckpoint(snapshot, commandID, sessionID, turnID)
+	return fact, diagnostic, true, err
+}
+
 // ReadExecutionCheckpoint verifies only the original signed terminal facts.
 // Missing/invalid facts never authorize reconstructing them from current HEAD.
 func ReadExecutionCheckpoint(snapshot b.LifecycleSnapshot, commandID, sessionID, turnID string) (b.WorkspaceInspection, string, error) {

@@ -1,0 +1,98 @@
+[
+  {
+    "Time": "2026-11-02T16:39:15.3098931+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/full_access",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:15.3098931+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/read_only",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:15.3105486+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/full_access",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:15.3122741+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/read_only",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:15.3122741+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:15.3190218+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Elapsed": 3.541
+  },
+  {
+    "Time": "2026-11-02T16:39:15.4092728+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload",
+    "Output": "    native_proof_boundary_test.go:73: app-server binding is incomplete\n"
+  },
+  {
+    "Time": "2026-11-02T16:39:15.4556869+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload",
+    "Elapsed": 1.04
+  },
+  {
+    "Time": "2026-11-02T16:39:21.8791398+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofKeepsAuditAncestryCheck",
+    "Output": "    native_proof_boundary_test.go:124: app-server binding is incomplete\n"
+  },
+  {
+    "Time": "2026-11-02T16:39:21.9498627+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofKeepsAuditAncestryCheck",
+    "Elapsed": 6.49
+  },
+  {
+    "Time": "2026-11-02T16:39:23.8600403+08:00",
+    "Action": "output",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativePolicyMismatchBlocksNewDispatch",
+    "Output": "    native_proof_boundary_test.go:145: implementation data has an unsupported version or incomplete owner identity\n"
+  },
+  {
+    "Time": "2026-11-02T16:39:23.9076328+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativePolicyMismatchBlocksNewDispatch",
+    "Elapsed": 1.96
+  },
+  {
+    "Time": "2026-11-02T16:39:23.9082137+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeProofBusinessKnowledgeBoundary",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:39:23.9184821+08:00",
+    "Action": "fail",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Elapsed": 10.046
+  }
+]

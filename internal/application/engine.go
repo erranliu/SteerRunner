@@ -455,6 +455,12 @@ func (e *Engine) port(r *runstate.Record, w *worker) (b.LifecyclePort, error) {
 	return p, err
 }
 
+// Static native-proof wiring; business source checks do not interpret owner
+// capabilities or private checkpoint formats. The query has no dispatch port.
+func readCompletionCheckpoint(snapshot b.LifecycleSnapshot, commandID string) (b.WorkspaceInspection, string, bool, error) {
+	return codex.ReadCompletionCheckpoint(snapshot, commandID, snapshot.Session.SessionID, snapshot.Session.CurrentTurnID)
+}
+
 func (e *Engine) refreshPR(id string) error {
 	e.mu.Lock()
 	r := e.runs[id]

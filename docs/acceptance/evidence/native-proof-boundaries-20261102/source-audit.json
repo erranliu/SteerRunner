@@ -1,0 +1,15 @@
+{
+  "baseline_files": 786,
+  "unchanged_files": 781,
+  "changed_files": [
+    "internal/application/engine.go",
+    "internal/application/policy.go",
+    "internal/application/workspace_source.go",
+    "internal/execution/adapters/codex/owner_checkpoint.go",
+    "internal/execution/adapters/codex/policy_resources.go"
+  ],
+  "original_test_files": 350,
+  "changed_original_tests": [],
+  "unexpected_changes": [],
+  "state_types_and_original_readers_unchanged": true
+}

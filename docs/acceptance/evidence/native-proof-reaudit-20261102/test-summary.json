@@ -1,0 +1,434 @@
+{
+  "base_commit": "da8155e0d1fe871527bf29d63f74bfe5252c545b",
+  "targeted_exit_code": 0,
+  "top_pass": 33,
+  "fail": [],
+  "skip": [],
+  "passed_tests": [
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestExplicitPermissionsPreserveReadOnlyAndFrozenFullAccess",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly/ready",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly/workspace_changed",
+      "Elapsed": 0.01
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly/session_changed",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly/process_changed",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly/envelope_changed",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerVerifiesLiveBindingWithReadsOnly",
+      "Elapsed": 0.02
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestNativeViewerAttachesWithoutPromptOrPolicyOverrides",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestExecutionOwnerContentCompletionNeedsNoGitCheckpoint",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestExecutionOwnerCheckpointPinsOriginalTerminalAndSignature",
+      "Elapsed": 0.03
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/full_access",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/read_only",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/full_access",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/read_only",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceMatchesOriginalProfile",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+      "Test": "TestPolicyResourceAcceptsNewerNativeVersion",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/accepted-waiting-start",
+      "Elapsed": 2.34
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/paused-resume",
+      "Elapsed": 0.78
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/conversation/stopped-late-final",
+      "Elapsed": 0.19
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/accepted-waiting-start",
+      "Elapsed": 0.16
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/paused-resume",
+      "Elapsed": 0.19
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/generate/stopped-late-final",
+      "Elapsed": 0.26
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/accepted-waiting-start",
+      "Elapsed": 2.78
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/paused-resume",
+      "Elapsed": 2.58
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults/execute/stopped-late-final",
+      "Elapsed": 1.76
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetMissingDoesNotGateOriginalResults",
+      "Elapsed": 11.05
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair/outcome_unknown",
+      "Elapsed": 0.43
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair/accepted",
+      "Elapsed": 0.93
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestFrozenBudgetUnknownReconcileAndStopDoNotRepair",
+      "Elapsed": 1.36
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestLocalCodexStopLostReceiptCommitOnlyReconciles",
+      "Elapsed": 1.54
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestLocalCodexStopCommittedWithoutReceiptOnlyReconciles",
+      "Elapsed": 0.16
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestLocalCodexStopNewRequestCannotReplacePendingStop",
+      "Elapsed": 0.15
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestLocalCodexStopPreservesOtherRunsOriginalResource",
+      "Elapsed": 0.26
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestLocalCodexOfflineStoppedWithoutResourceRejectsUnknownCreation",
+      "Elapsed": 0.28
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRManualReconciliationStopWinsDuringRead",
+      "Elapsed": 0.32
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload",
+      "Elapsed": 1.15
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeCompletionProofKeepsAuditAncestryCheck",
+      "Elapsed": 6.51
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop/original-continuation",
+      "Elapsed": 2.76
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop/stop-before-proof",
+      "Elapsed": 1.09
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop",
+      "Elapsed": 3.85
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativePolicyMismatchBlocksNewDispatch",
+      "Elapsed": 1.11
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeProofBusinessKnowledgeBoundary",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/ready",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/attempt",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/generation",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/session",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/missing",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/unsupported",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/unverified",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/stopping",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution/launch_failed",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeViewerUsesOriginalTargetWithoutExecution",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROperationReconciliationKeepsPartialBinding",
+      "Elapsed": 2.4
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestNativeRemoteWorkspaceSourceNeverCallsHelperOwner",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRAAtomicCompletion",
+      "Elapsed": 9.78
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRARecoveryMissingCheckpoint",
+      "Elapsed": 1.85
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRAStateAuthority",
+      "Elapsed": 0.67
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRATransitionUnknownNativeGate",
+      "Elapsed": 0.77
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRARecoveryConsumedInput",
+      "Elapsed": 0.6
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestRAResumeConsumedActiveInputWaitsForOriginalEvidence",
+      "Elapsed": 1.59
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/detached_unknown",
+      "Elapsed": 1.42
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence/native_stopped",
+      "Elapsed": 0.19
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRShutdownSettlementUsesCommittedFinalNativeEvidence",
+      "Elapsed": 1.6
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=/original",
+      "Elapsed": 0.35
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=/changed-resource",
+      "Elapsed": 0.21
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=",
+      "Elapsed": 0.56
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources/original",
+      "Elapsed": 0.25
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources/changed-resource",
+      "Elapsed": 0.2
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent/scope=orca_local_codex_resources",
+      "Elapsed": 0.46
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopRecoversLateCreationFactsUnderOriginalIntent",
+      "Elapsed": 1.01
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/original",
+      "Elapsed": 0.14
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation/foreign-receipt",
+      "Elapsed": 0.15
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSRStopProgressSurvivesStorageReloadUnderOriginalOperation",
+      "Elapsed": 0.29
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/gone",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/owner_alive",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/root_alive",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unmanaged",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_owner",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/unknown_root",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/orca",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence/persisted_stopped",
+      "Elapsed": 0
+    },
+    {
+      "Package": "github.com/erranliu/SteerRunner/internal/application",
+      "Test": "TestSROfflineStoppedRequiresManagedOwnerAndRootAbsence",
+      "Elapsed": 0
+    }
+  ],
+  "native_live_compile_exit_code": 0,
+  "integration_live_compile_exit_code": 0,
+  "runner_build_exit_code": 0,
+  "public_result": {
+    "exe": "C:\\Users\\lmas1\\.codex\\worktrees\\cdc6\\SteerRunner\\.evidence\\native-proof-reaudit\\steerrunner.exe",
+    "exit_code": 0,
+    "finished_at": "2026-11-02T09:17:15.4549745Z",
+    "scenario_count": 3
+  },
+  "public_skip": 0,
+  "product_defects_found": 0,
+  "modified_production_since_initial_implementation": [],
+  "new_test": "TestNativeCompletionProofWaitsAtResultCommitAndPreservesStop",
+  "initial_full_application_failure_and_timeout_remain_recorded": true,
+  "complete_L1_L2_L3_qualification": false
+}

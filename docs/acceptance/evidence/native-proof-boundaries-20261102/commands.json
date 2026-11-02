@@ -1,0 +1,167 @@
+[
+  {
+    "kind": "source/codec audit",
+    "argv": [
+      "go",
+      "run",
+      "./.evidence/native-proof-boundaries/wire-audit.go",
+      ".evidence/native-proof-boundaries/wire-before.json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "new regressions attempts",
+    "argv": [
+      "go",
+      "test",
+      "./internal/execution/adapters/codex",
+      "./internal/application",
+      "-run",
+      "^(TestPolicyResourceMatchesOriginalProfile|TestNativeCompletionProof.*|TestNativePolicyMismatchBlocksNewDispatch|TestNativeProofBusinessKnowledgeBoundary)$",
+      "-count=1",
+      "-timeout=3m",
+      "-json"
+    ],
+    "exit_codes": [
+      1,
+      1,
+      0
+    ],
+    "notes": "Only added fixture identity/prepared-workspace facts corrected; product source unchanged after initial implementation"
+  },
+  {
+    "kind": "declarations",
+    "argv": [
+      "go",
+      "run",
+      "./.evidence/native-proof-boundaries/declarations.go"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "wire comparison",
+    "argv": [
+      "go",
+      "run",
+      "./.evidence/native-proof-boundaries/wire-audit.go",
+      ".evidence/native-proof-boundaries/wire-after.json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "component/full application attempt",
+    "argv": [
+      "go",
+      "test",
+      "./internal/execution/...",
+      "./internal/application",
+      "./internal/runstate",
+      "./internal/contracts",
+      "./internal/resources",
+      "./internal/storage",
+      "./internal/testkit/protocol",
+      "-count=1",
+      "-timeout=6m",
+      "-json"
+    ],
+    "exit_code": 1,
+    "notes": "20 component packages passed; application old missing Budget fixture failed and total package timeout expired"
+  },
+  {
+    "kind": "baseline reproduce",
+    "argv": [
+      "go",
+      "test",
+      "-overlay",
+      ".evidence/native-proof-boundaries/baseline-overlay.json",
+      "./internal/application",
+      "-run",
+      "^TestSRResumeWorkflowRetainsOriginalReportSource$",
+      "-count=1",
+      "-timeout=1m",
+      "-json"
+    ],
+    "exit_code": 1,
+    "notes": "All five production files overlaid by original HEAD source and both new test files excluded"
+  },
+  {
+    "kind": "affected application",
+    "argv": [
+      "go",
+      "test",
+      "./internal/application",
+      "-run",
+      "^(TestNative.*|TestRA.*|TestSROperation.*|TestSRStop.*|TestSRUnreachableStop.*|TestSRShutdown.*|TestSROfflineStopped.*|TestSRLongTurn.*|TestSRPreparationDeadline.*|TestSRStartupFailure.*|TestSRAcceptedResource.*|TestLocalCodex.*|TestRemoteStopBudget.*|TestFrozen.*|TestManual.*|TestSRManual.*|TestSRGeneration.*)$",
+      "-count=1",
+      "-timeout=6m",
+      "-json"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "native live compile",
+    "argv": [
+      "go",
+      "test",
+      "-tags",
+      "live",
+      "-c",
+      "-o",
+      ".evidence/native-proof-boundaries/native-live.test.exe",
+      "./tests/native"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "integration live compile",
+    "argv": [
+      "go",
+      "test",
+      "-tags",
+      "live",
+      "-c",
+      "-o",
+      ".evidence/native-proof-boundaries/integration-live.test.exe",
+      "./tests/integration"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "official runner build",
+    "argv": [
+      "./scripts/build.ps1",
+      "-OutFile",
+      ".evidence/native-proof-boundaries/steerrunner.exe"
+    ],
+    "exit_code": 0
+  },
+  {
+    "kind": "public controlled",
+    "argv": [
+      "./scripts/test-foundation.ps1",
+      "-OutDir",
+      ".evidence/native-proof-boundaries/foundation",
+      "-Pattern",
+      "^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$",
+      "-RunnerExe",
+      ".evidence/native-proof-boundaries/steerrunner.exe",
+      "-TimeoutMinutes",
+      "12"
+    ],
+    "launcher_exit_code": 0,
+    "harness_exit_code": 0,
+    "scenario_count": 3
+  },
+  {
+    "kind": "timing import only",
+    "argv": [
+      "./scripts/test-controlled.ps1",
+      "-FromEvidence",
+      ".evidence/native-proof-boundaries/foundation",
+      "-OutDir",
+      ".evidence/native-proof-boundaries/controlled-import"
+    ],
+    "exit_code": 0,
+    "qualification_eligible": false
+  }
+]

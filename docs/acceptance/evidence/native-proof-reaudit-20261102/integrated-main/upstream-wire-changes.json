@@ -1,0 +1,9 @@
+{
+  "from": "95e53cb",
+  "to": "efa871cfffb950505bf2f0a325ec7751fb4be7f3",
+  "changed_capture_keys": [
+    "capabilities",
+    "resource_digest"
+  ],
+  "ab_capture_equals_integrated_main": true
+}

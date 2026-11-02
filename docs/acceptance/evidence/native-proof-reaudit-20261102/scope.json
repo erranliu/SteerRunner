@@ -1,0 +1,15 @@
+{
+  "tracked_test_files": 351,
+  "modified_tracked_tests": [],
+  "changed_production": [
+    "internal/application/engine.go",
+    "internal/application/policy.go",
+    "internal/application/workspace_source.go",
+    "internal/execution/adapters/codex/owner_checkpoint.go",
+    "internal/execution/adapters/codex/policy_resources.go"
+  ],
+  "new_test_files": [
+    "internal/application/native_proof_boundary_test.go",
+    "internal/execution/adapters/codex/policy_profile_boundary_test.go"
+  ]
+}

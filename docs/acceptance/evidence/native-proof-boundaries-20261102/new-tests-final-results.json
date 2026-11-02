@@ -1,0 +1,77 @@
+[
+  {
+    "Time": "2026-11-02T16:42:18.233019+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofWaitsForOriginalDespiteCacheAndReload",
+    "Elapsed": 0.6
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5414859+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/full_access",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5414859+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/full_access/read_only",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5425886+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/full_access",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5425886+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile/read_only/read_only",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5431363+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Test": "TestPolicyResourceMatchesOriginalProfile",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:19.5458293+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/execution/adapters/codex",
+    "Elapsed": 2.557
+  },
+  {
+    "Time": "2026-11-02T16:42:22.5226947+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeCompletionProofKeepsAuditAncestryCheck",
+    "Elapsed": 4.29
+  },
+  {
+    "Time": "2026-11-02T16:42:23.0102886+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativePolicyMismatchBlocksNewDispatch",
+    "Elapsed": 0.49
+  },
+  {
+    "Time": "2026-11-02T16:42:23.0113703+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Test": "TestNativeProofBusinessKnowledgeBoundary",
+    "Elapsed": 0
+  },
+  {
+    "Time": "2026-11-02T16:42:23.021225+08:00",
+    "Action": "pass",
+    "Package": "github.com/erranliu/SteerRunner/internal/application",
+    "Elapsed": 5.765
+  }
+]

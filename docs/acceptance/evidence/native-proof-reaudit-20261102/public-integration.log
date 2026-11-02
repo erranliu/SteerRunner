@@ -1,0 +1,53 @@
+=== RUN   TestSRServiceOwnership
+=== RUN   TestSRServiceOwnership/reused_owner_pid
+=== RUN   TestSRServiceOwnership/offline_verification
+=== RUN   TestSRServiceOwnership/remote_offline_scope
+=== RUN   TestSRServiceOwnership/remote_offline_scope/absent
+=== RUN   TestSRServiceOwnership/remote_offline_scope/active
+=== RUN   TestSRServiceOwnership/remote_offline_scope/truncated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/legacy
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated
+=== RUN   TestSRServiceOwnership/remote_offline_scope/uncreated-mixed
+=== RUN   TestSRServiceOwnership/remote_offline_scope/invalid-profile
+=== RUN   TestSRServiceOwnership/queries_do_not_start
+=== RUN   TestSRServiceOwnership/concurrent_alias
+=== RUN   TestSRServiceOwnership/parent_job
+=== RUN   TestSRServiceOwnership/parent_job/allow
+=== RUN   TestSRServiceOwnership/parent_job/deny
+=== RUN   TestSRServiceOwnership/different_release
+=== RUN   TestSRServiceOwnership/stale_writer
+=== RUN   TestSRServiceOwnership/shutdown_receipt
+--- PASS: TestSRServiceOwnership (43.73s)
+    --- PASS: TestSRServiceOwnership/reused_owner_pid (0.02s)
+    --- PASS: TestSRServiceOwnership/offline_verification (27.94s)
+    --- PASS: TestSRServiceOwnership/remote_offline_scope (1.34s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/absent (0.33s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/active (0.34s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/truncated (0.24s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/legacy (0.11s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated (0.11s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/uncreated-mixed (0.10s)
+        --- PASS: TestSRServiceOwnership/remote_offline_scope/invalid-profile (0.10s)
+    --- PASS: TestSRServiceOwnership/queries_do_not_start (0.08s)
+    --- PASS: TestSRServiceOwnership/concurrent_alias (3.44s)
+    --- PASS: TestSRServiceOwnership/parent_job (3.41s)
+        --- PASS: TestSRServiceOwnership/parent_job/allow (2.09s)
+        --- PASS: TestSRServiceOwnership/parent_job/deny (1.32s)
+    --- PASS: TestSRServiceOwnership/different_release (1.68s)
+    --- PASS: TestSRServiceOwnership/stale_writer (3.26s)
+    --- PASS: TestSRServiceOwnership/shutdown_receipt (2.55s)
+=== RUN   TestSRNativeUnknownAndStop
+--- PASS: TestSRNativeUnknownAndStop (25.92s)
+=== RUN   TestSRRestartPreservesAuthorization
+=== RUN   TestSRRestartPreservesAuthorization/graceful
+    workflow_test.go:585: original={InstanceID:7e613c4d51f29743a05b9cbd95910079 StateDir:c:\users\lmas1\appdata\local\temp\sr-1134215709\runner PID:53492 ProcessCreated:134380845374521933 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:febc0f93e64f725b8d48b82c404786ffcee35b1fc001b6a352a080b041d4ff01 ExecutableSHA256:b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:7e613c4d51f29743a05b9cbd95910079 UsagePolicy:0x2b7b1f9623f0} candidate={InstanceID:98f8ad348a4f49271aff656df873258d StateDir:c:\users\lmas1\appdata\local\temp\sr-1134215709\runner PID:44708 ProcessCreated:134380845614455594 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:febc0f93e64f725b8d48b82c404786ffcee35b1fc001b6a352a080b041d4ff01 ExecutableSHA256:b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:98f8ad348a4f49271aff656df873258d UsagePolicy:0x2b7b202336e0} owner={Kind:os PID:48064 Created:01dd6aaac33275d6 Executable:c:\users\lmas1\appdata\local\temp\sr-1134215709\runner\runtimes\b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:47872 Created:01dd6aaac371847d Executable:c:\users\lmas1\.codex\worktrees\cdc6\steerrunner\.evidence\native-proof-reaudit\foundation\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/kill
+    workflow_test.go:585: original={InstanceID:51b13a5fe95221644bb25c0dbe54f122 StateDir:c:\users\lmas1\appdata\local\temp\sr-2368255082\runner PID:45296 ProcessCreated:134380845666665152 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:febc0f93e64f725b8d48b82c404786ffcee35b1fc001b6a352a080b041d4ff01 ExecutableSHA256:b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:51b13a5fe95221644bb25c0dbe54f122 UsagePolicy:0x2b7b1e9a7650} candidate={InstanceID:b34970e41b930b13c9e9b45aeb7ed79a StateDir:c:\users\lmas1\appdata\local\temp\sr-2368255082\runner PID:2240 ProcessCreated:134380845905855512 Status:ready Detached:true Version:0.2.0-dev.4 Protocol:steerrunner-cli/v1 ResourceDigest:febc0f93e64f725b8d48b82c404786ffcee35b1fc001b6a352a080b041d4ff01 ExecutableSHA256:b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea LastShutdown:<nil> UsagePolicyDigest:c011c146545d05b9834e9789142bd1012b03d13bb46c142aa22301ddf49d8ae1 UsagePolicyRevision:b34970e41b930b13c9e9b45aeb7ed79a UsagePolicy:0x2b7b202bc7b0} owner={Kind:os PID:54228 Created:01dd6aaad4d51477 Executable:c:\users\lmas1\appdata\local\temp\sr-2368255082\runner\runtimes\b6c52f207b806de0310be20e79fb54cd453a59dfba1923cb8e9a87c7638480ea\steerrunner.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:} native={Kind:os PID:38176 Created:01dd6aaad50aa8e0 Executable:c:\users\lmas1\.codex\worktrees\cdc6\steerrunner\.evidence\native-proof-reaudit\foundation\native-fixture.exe Terminal: RuntimeID: Incarnation: ExecutionHost: WorktreeID:}
+=== RUN   TestSRRestartPreservesAuthorization/creation_receipt
+=== RUN   TestSRRestartPreservesAuthorization/pending_stop
+--- PASS: TestSRRestartPreservesAuthorization (99.55s)
+    --- PASS: TestSRRestartPreservesAuthorization/graceful (28.67s)
+    --- PASS: TestSRRestartPreservesAuthorization/kill (29.75s)
+    --- PASS: TestSRRestartPreservesAuthorization/creation_receipt (19.87s)
+    --- PASS: TestSRRestartPreservesAuthorization/pending_stop (21.26s)
+PASS

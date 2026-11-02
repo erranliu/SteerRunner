@@ -3,7 +3,6 @@ package application
 import (
 	"context"
 	"errors"
-	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"github.com/erranliu/SteerRunner/internal/execution/workflow"
 	"github.com/erranliu/SteerRunner/internal/execution/workspace"
@@ -46,13 +45,13 @@ func (e *Engine) inspectSource(r *runstate.Record, preHead string) *workflow.Wor
 }
 
 func (e *Engine) originalCheckpoint(r *runstate.Record, w *worker, input workflow.StageInput) *workflow.WorkspaceSource {
-	if owner := codex.ExecutionOwner(r.Snapshot); owner != nil && owner.WorkspaceCheckpoints {
-		f, diagnostic, err := codex.ReadExecutionCheckpoint(r.Snapshot, input.CommandID, r.Snapshot.Session.SessionID, r.Snapshot.Session.CurrentTurnID)
-		if err != nil {
-			// The journal can be observed through another native connection before
-			// the owner's checkpoint is durable. Do not consume the source yet.
-			return nil
-		}
+	f, diagnostic, required, err := readCompletionCheckpoint(r.Snapshot, input.CommandID)
+	if err != nil {
+		// The journal can be observed through another native connection before
+		// its required checkpoint is durable. Do not consume the source yet.
+		return nil
+	}
+	if required {
 		fact := &workflow.WorkspaceSource{Repository: f.Repository, Worktree: f.Worktree, Branch: f.Branch, Base: f.Base, Head: f.Head, Tree: f.Tree, Dirty: f.Dirty, Qualified: f.Qualified, Diagnostic: diagnostic}
 		if f.Repository != r.RepositoryPath || f.Worktree != r.Snapshot.WorkspacePlan.Path || f.Branch != r.Snapshot.WorkspacePlan.Branch || f.Base != r.Snapshot.WorkspacePlan.BaseCommit {
 			fact.Qualified, fact.Diagnostic = false, "original completion workspace differs from frozen repository"

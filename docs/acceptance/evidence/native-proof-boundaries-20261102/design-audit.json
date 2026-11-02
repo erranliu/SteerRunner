@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "base_commit": "95e53cb191611837c59411a046da0c510c152d29",
+  "production_diff_empty": true,
+  "decision": "static completion query preserves record contract independently of optional ports; policy decoder contract/mode consistency reused",
+  "spec_sha256": "9B4C090F0ABF47351D9ACB50A34AFC32322345BF5E0AF8E582F47167127679B6",
+  "plan_sha256": "D38236DF8CDDF8C30AA6D941F6A580396120DFF1C121E458EA8BEB4215871A5E",
+  "wire_before_sha256": "A5EC2F5E94487C7B4CEA1711A50B23A423BC41AAF0C2D5444E0B9EC5284C7C16"
+}
