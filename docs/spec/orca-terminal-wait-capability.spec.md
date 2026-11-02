@@ -1,6 +1,6 @@
 # Spec：Orca 终端等待能力 B2d
 
-日期：2026-11-02。状态：已实现、定向回归通过，待实施后独立审计；见[验收](../acceptance/orca-terminal-wait-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-wait-capability.plan.md)。调查基线 `d26be92`。
+日期：2026-11-02。状态：已完成，定向回归及实施后独立审计通过；见[验收](../acceptance/orca-terminal-wait-capability.md)。依据[长期路线](orca-capability-layer.spec.md#6-分批实施路线)，对应 [Plan](orca-terminal-wait-capability.plan.md)。调查基线 `d26be92`。
 
 ## 1. 目标及责任
 
