@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	codex "github.com/erranliu/SteerRunner/internal/execution/adapters/codex"
+	native "github.com/erranliu/SteerRunner/internal/execution/adapters/protocol/orca"
 	b "github.com/erranliu/SteerRunner/internal/execution/backend"
 	"strings"
 	"time"
@@ -46,25 +47,18 @@ func (l *Lifecycle) readLocalCodexReadiness(ctx context.Context, s b.LifecycleSn
 	if l.profile.Environment != "" {
 		return ready, errors.New("helper preparation is local only")
 	}
-	result, err := l.client.MetaCall(ctx, "terminal", "read", "--terminal", s.Ref.External.Terminal, "--cursor", "0", "--limit", "1000", "--json")
+	result, page, err := l.client.ReadTerminal(ctx, native.TerminalRead{Handle: s.Ref.External.Terminal, Cursor: 0, Limit: 1000})
 	if err != nil {
 		return ready, err
 	}
-	var value struct {
-		Terminal struct {
-			Handle, Source, OldestCursor string
-			Tail                         []string
-			Truncated, Limited           *bool
-		}
-	}
-	if result.CallUncertain || json.Unmarshal(result.Payload, &value) != nil || result.RuntimeID != s.Ref.External.RuntimeID || value.Terminal.Handle != s.Ref.External.Terminal {
+	if result.CallUncertain || !page.Matches(s.Ref.External.RuntimeID, s.Ref.External.Terminal) {
 		return ready, errors.New("remote readiness original terminal changed")
 	}
-	if value.Terminal.Source != "stream" || value.Terminal.OldestCursor != "0" || value.Terminal.Truncated == nil || *value.Terminal.Truncated || value.Terminal.Limited == nil || *value.Terminal.Limited {
+	if page.Source != "stream" || page.OldestCursor != "0" || page.Truncated == nil || *page.Truncated || page.Limited == nil || *page.Limited {
 		return ready, errors.New("remote readiness output stream incomplete or unavailable")
 	}
 	found := 0
-	for _, line := range value.Terminal.Tail {
+	for _, line := range page.Tail {
 		line = strings.TrimSpace(line)
 		if strings.HasPrefix(line, codex.RemoteFailurePrefix) {
 			code := strings.TrimPrefix(line, codex.RemoteFailurePrefix)

@@ -1,6 +1,6 @@
 # Plan：Orca 终端读取能力 B2c
 
-日期：2026-11-02。状态：待实施。依据 [Spec](orca-terminal-read-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B2b 独立审计确认问题先单独修复，再实施本批。
+日期：2026-11-02。状态：P0–P2 完成，P3 验收已记录、独立审计待完成；见[验收](../acceptance/orca-terminal-read-capability.md)。依据 [Spec](orca-terminal-read-capability.spec.md) 和[长期设计](orca-capability-layer.spec.md)。B2b 独立审计通过，无确认问题。
 
 ## P0 固定行为和白名单
 

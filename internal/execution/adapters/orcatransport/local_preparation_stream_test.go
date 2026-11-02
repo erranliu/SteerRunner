@@ -17,7 +17,7 @@ import (
 func TestLocalPreparationOriginalStream(t *testing.T) {
 	for _, path := range []string{"control", "readiness"} {
 		t.Run(path, func(t *testing.T) {
-			for _, fault := range []string{"complete", "empty", "screen", "screen-unavailable", "missing-source", "truncated", "missing-truncated", "limited", "missing-limited", "dropped-prefix", "missing-oldest", "wrong-runtime", "wrong-terminal", "invalid-encoding", "partial-line", "changed-binding"} {
+			for _, fault := range []string{"complete", "empty", "screen", "screen-unavailable", "missing-source", "truncated", "missing-truncated", "limited", "missing-limited", "dropped-prefix", "missing-oldest", "wrong-runtime", "wrong-terminal", "invalid-encoding", "partial-line", "changed-binding", "bad-next", "bad-latest"} {
 				t.Run(fault, func(t *testing.T) {
 					l, host, snapshot, control := fixtureFixedControl(t)
 					state, err := l.state(snapshot)
@@ -76,6 +76,10 @@ func TestLocalPreparationOriginalStream(t *testing.T) {
 						runtime = "foreign"
 					case "wrong-terminal":
 						terminal["handle"] = "foreign"
+					case "bad-next":
+						terminal["nextCursor"] = 42
+					case "bad-latest":
+						terminal["latestCursor"] = []any{}
 					}
 					original, reads := l.client, 0
 					l.client = native.New(native.Config{Output: func(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
@@ -96,7 +100,7 @@ func TestLocalPreparationOriginalStream(t *testing.T) {
 						}
 					} else {
 						ready, readErr := l.readLocalCodexReadiness(context.Background(), snapshot)
-						if (readErr == nil) != (fault == "complete") || fault == "empty" && !errors.Is(readErr, errRemoteReadinessPending) || readErr == nil && ready.SessionID != control.ready.SessionID {
+						if (readErr == nil) != (fault == "complete" || fault == "bad-next" || fault == "bad-latest") || fault == "empty" && !errors.Is(readErr, errRemoteReadinessPending) || readErr == nil && ready.SessionID != control.ready.SessionID {
 							t.Fatal("readiness stream qualification", ready, readErr)
 						}
 					}
