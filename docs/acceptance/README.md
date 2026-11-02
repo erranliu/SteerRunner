@@ -5,6 +5,7 @@
 | 范围 | 记录与适用边界 |
 | --- | --- |
 | 权限资源与原完成证明职责收口 | [专项验收](native-proof-boundaries.md) / [再审计](native-proof-reaudit.md)：原编码/提交/执行/恢复/停止及共享夹具保持；初轮448组件/57定向/3公开场景，最终整合38定向及3公开场景通过；初轮失败/时限边界保留，预算旧夹具随上游修复后通过 |
+| Orca 能力层 B0 原生可行性 | [验收](orca-native-capability-baseline.md)：双端同源同 EXE 各两轮无 helper 原生输入及原终端清理通过；26 个新增、132 个原回归子例通过；首轮报告失败保留，实施后独立审计待完成；不授予 B5 开发资格 |
 | 新意图写入边界与展示残留清尾 | [专项验收](new-intent-boundary-cleanup.md) / [再审计](new-intent-boundary-reaudit.md)：四类新构造拒绝，历史/原对账/停止、持久格式及共享夹具保持，净减26行；初轮498顶层及3公开场景，再审计27定向及最新主线3公开场景通过；失败/skip/计时边界单列 |
 | 零消费者生产入口与孤立夹具清尾 | [专项验收](orphan-entry-cleanup.md) / [实现再审计](orphan-entry-reaudit.md)：设计先行，生产净减201行、孤立夹具净减333行；共享夹具/断言、持久格式及保留链路未改，496个组件/application顶层与3个公开场景通过，再审计25个定向通过；首轮沙箱失败/超时及skip单列 |
 | 单事件确认与旧环境分支收口 | [专项验收](event-ack-cleanup.md) / [实现再审计](event-ack-reaudit.md)：原提交/可选消息/owner journal边界保持，492个组件/application顶层和3个公开场景通过；持久格式不变，生产净减105行；新夹具首轮失败/skip单列 |
