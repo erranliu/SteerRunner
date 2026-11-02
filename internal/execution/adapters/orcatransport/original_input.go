@@ -94,6 +94,9 @@ func queryNativeInput(ctx context.Context, environment, runtime, provider, path 
 func queryOriginalInput(ctx context.Context, environment string, process b.ProcessIdentity, pane string, baseline int64, before native.AgentState) (originalInputState, error) {
 	ctx, cancel := context.WithTimeout(ctx, 40*time.Second)
 	defer cancel()
+	if corroboratedWorkingInput(before) {
+		return queryFencedWorkingInput(ctx, environment, process, pane, baseline, before)
+	}
 	if before.MetadataObservation == nil || canQueryCompletionInput(before) {
 		return queryFencedCompletionInput(ctx, environment, process, pane, baseline, before)
 	}
@@ -129,12 +132,13 @@ type originalInputQuery struct {
 	process b.ProcessIdentity
 	state   native.AgentState
 	input   nativeInput
+	working bool
 }
 
 // MatchesOriginalQuery binds a unique user row to the exact independently
 // queried native completion. A copied proof cannot authorize another record.
 func (i *nativeInput) MatchesOriginalQuery(s native.AgentState) bool {
-	return i != nil && i.query != nil && i.ID == i.query.input.ID && i.Text == i.query.input.Text &&
+	return i != nil && i.query != nil && !i.query.working && i.ID == i.query.input.ID && i.Text == i.query.input.Text &&
 		i.Timestamp == i.query.input.Timestamp && i.Baseline == i.query.input.Baseline && sameOriginalCompletion(i.query.state, s)
 }
 

@@ -442,7 +442,23 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			input := observation.bindInput(&s, turn.Native)
 			sample.AgentState = s
 			linked := !l.profile.nativeTerminalContract() && turn.Native.WorkingAt > 0 || err == nil && observation.linked(sample, turn.Native)
-			turn.Native.signal(s, turn, received(sample, l.clock()), linked, input)
+			if l.profile.NativeTerminal && turn.Native.WorkingAt == 0 {
+				// Query-only candidate starts never let a later same-prefix
+				// notification manufacture the first working root or coverage.
+				turn.Native.rejectIdentity(s)
+				turn.Native.rejectWorkingMetadata(s)
+				if stateHint(s) != turn.Native.Hint && s.State == "done" {
+					turn.Native.Hint, turn.Native.HintPending = stateHint(s), true
+				}
+				if s.MainAgent != nil && s.MainAgent.StateStartedAt > turn.Native.BaseRootAt && s.UpdatedAt >= s.MainAgent.StateStartedAt {
+					turn.Native.rejectProvenance(s, turn)
+					if s.Interrupted {
+						turn.Native.reject("Native original input was interrupted")
+					}
+				}
+			} else {
+				turn.Native.signal(s, turn, received(sample, l.clock()), linked, input)
+			}
 			issue := turn.Native.diagnostic()
 			if issue != "" {
 				diagnostic = issue
@@ -514,7 +530,10 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			return turn.Native.diagnostic()
 		}
 		if !turn.Started {
-			started, startErr := l.queryCompletedOriginalStart(ctx, snapshot, state, turn, s)
+			started, startErr := l.queryWorkingOriginalStart(ctx, snapshot, state, turn, s)
+			if startErr == nil && !turn.Started {
+				started, startErr = l.queryCompletedOriginalStart(ctx, snapshot, state, turn, started.AgentState)
+			}
 			s, input = started.AgentState, started.NativeInput
 			if startErr != nil {
 				return startErr.Error()
@@ -527,6 +546,24 @@ func (l *Lifecycle) observeNative(ctx context.Context, snapshot b.LifecycleSnaps
 			if !turn.Started {
 				return "Original input has no verified original turn/input proof; no input was resent"
 			}
+		}
+		// An independently queried working input grants Started only. Without
+		// an observed working root, even a nonempty done preview must reacquire
+		// the complete unique input proof; a shared prefix cannot settle a turn.
+		if l.profile.NativeTerminal && turn.Started && turn.Native.WorkingAt == 0 && !turn.Native.hasFinal() &&
+			s.MainAgent != nil && s.MainAgent.State == "done" && !input.MatchesOriginalQuery(s) {
+			candidate := *turn
+			candidate.Started = false
+			checked, completionErr := l.queryCompletedOriginalStart(ctx, snapshot, state, &candidate, s)
+			turn.Native = candidate.Native
+			if completionErr != nil {
+				return completionErr.Error()
+			}
+			if !candidate.Started {
+				return "Original completion lacks a fresh fenced unique-input proof"
+			}
+			s, input = checked.AgentState, checked.NativeInput
+			sample.AgentState = s
 		}
 		if l.queryInput != nil && s.Prompt == "" && turn.Accepted && turn.Started && turn.Native.agentName() == "codex" &&
 			s.MainAgent != nil && s.UpdatedAt >= s.MainAgent.StateStartedAt &&

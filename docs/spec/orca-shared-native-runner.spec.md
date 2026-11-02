@@ -22,6 +22,8 @@ freeze 在两端无 helper Codex 的选定组合上生成同一候选 profile/co
 
 候选两端共用 composer wait、单次原 send、20 秒提交等待提示、CR 输入编译和原回合证明；准备/状态拒绝 helper 残留。public candidate/last-message 映射同样覆盖本机候选。Run 路径、预算、正文、授权、证明和持久化仍在执行层，不能回迁到 Orca 能力包。
 
+codec 9 候选的活动 Started 通过独立 working 输入查询核验：原 terminal/incarnation/worktree 前后围栏、相同 provider/pane、完整唯一 user 行及冻结 baseline、同一 working root/stamp/prompt 与有效 hook metadata 前后稳定。send 的 turn_started 仍只是提示。此证明只置 Started，不赋完成、首个 WorkingAt/root/authority 或通知流覆盖；后续同前缀 working 通知不能授予这些资格。尚无可信 streamed working root 的候选 done（包括非空 preview）必须重新取得独立 done-only 完整唯一输入证明，不能沿用 working 证明或只比前 200 字。旧 4/6 profile 不取得这项新授权。
+
 stop 与 Shutdown/只读验证按冻结合同选择，不再以 environment 是否非空代替候选合同。原 operation 和 receipt/stop progress 格式保留；新 state codec 只区分合同，不建立第二账本。UsageBinding 等所有生产 profile/state 消费者识别新 codec，禁止借新版清单/旧标签授予资源结算。
 
 ## 3. 成功业务资格

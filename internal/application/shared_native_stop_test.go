@@ -45,6 +45,24 @@ type candidateIdlePort struct {
 	queries int
 }
 
+func TestSharedNativeBlockedRunRetainsFirstStopAuthority(t *testing.T) {
+	for _, environment := range []string{"", "paired-worker"} {
+		t.Run(environment, func(t *testing.T) {
+			e, w, wire, _, id := sharedNativeEngine(t, environment)
+			r := e.runs[id]
+			r.Allowed, r.Status = false, "blocked"
+			response := e.Handle("stop", id, "", "", "", 0, false, &contracts.Request{Protocol: contracts.Protocol, RequestID: "blocked-original-stop", Input: canonical(contracts.RevisionInput{ExpectedRevision: r.Revision})})
+			if !response.OK {
+				t.Fatal("blocked inputs lost original stop authority", response)
+			}
+			e.stopRun(id, w, w.port)
+			if e.runs[id].StopStatus != "stopped" || wire.closes != 1 || wire.sends != 0 {
+				t.Fatal("blocked original resources were not stopped once", wire.closes, e.runs[id].View())
+			}
+		})
+	}
+}
+
 func (p *candidateIdlePort) VerifyManualRecovery(context.Context, b.LifecycleSnapshot) (b.LifecycleRecoveryEvidence, error) {
 	p.queries++
 	return b.LifecycleRecoveryEvidence{SessionAvailable: true, ResourceAvailable: true, SessionIdle: p.idle}, nil

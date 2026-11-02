@@ -11,14 +11,26 @@ import (
 )
 
 func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T) {
+	testCorroboratedInputResources(t, false)
+}
+
+func TestCorroboratedWorkingInputRequiresStableOriginalResources(t *testing.T) {
+	testCorroboratedInputResources(t, true)
+}
+
+func testCorroboratedInputResources(t *testing.T, working bool) {
 	for _, fault := range []string{"none", "positive-incarnation", "preview", "changed-preview", "incarnation", "observation-incarnation", "observation-incarnation-backward", "workspace", "branch", "provider", "path", "main-time", "body", "authority", "revision", "revision-backward", "marker", "missing-marker", "missing-observation", "partial-observation", "missing-incarnation", "null-incarnation", "negative-incarnation", "unsafe-incarnation", "mismatched-main", "boundary", "restored", "tool-output", "duplicate", "same-text-duplicate", "shortened-user"} {
 		t.Run(fault, func(t *testing.T) {
 			reads, shows := 0, 0
+			phase, root := "done", 20
+			if working {
+				phase, root = "working", 12
+			}
 			localIPCFixture(t, func(conn net.Conn, req ipcTestRequest) {
-				main := map[string]any{"state": "done", "stateStartedAt": 20}
+				main := map[string]any{"state": phase, "stateStartedAt": root}
 				provider := map[string]string{"id": "provider", "transcriptPath": "original.jsonl"}
-				state := map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "state": "done", "prompt": "", "mainAgent": main, "updatedAt": 20, "turnStartedAt": 12, "lastAssistantMessage": "canonical final"}
-				if fault == "preview" || fault == "changed-preview" {
+				state := map[string]any{"paneKey": "tab:leaf", "agentType": "codex", "state": phase, "prompt": "", "mainAgent": main, "updatedAt": 20, "turnStartedAt": 12, "lastAssistantMessage": "canonical final"}
+				if working || fault == "preview" || fault == "changed-preview" {
 					state["prompt"] = "original full input"
 				}
 				observation := map[string]any{"origin": "hook", "kind": "transition", "authorityId": "authority", "incarnation": 0, "revision": 2, "observedAt": 20}
@@ -89,7 +101,7 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				case "worktree.ps":
 					ipcReply(conn, req, "runtime", map[string]any{"worktrees": []any{map[string]any{"worktreeId": "worktree", "agents": []any{state}}}, "totalCount": 1, "truncated": false})
 				case "session.tabs.list":
-					metadata := map[string]any{"state": "done", "agentType": "codex", "providerSession": provider, "mainAgent": main, "observation": observation, "turnStartedAt": marker}
+					metadata := map[string]any{"state": phase, "agentType": "codex", "providerSession": provider, "mainAgent": main, "observation": observation, "turnStartedAt": marker}
 					switch fault {
 					case "missing-marker":
 						delete(metadata, "turnStartedAt")
@@ -125,15 +137,24 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 				t.Fatal(err)
 			}
 			after, err := queryOriginalInput(context.Background(), "", p, "tab:leaf", 10, before)
+			matches := func(i *nativeInput, state native.AgentState) bool {
+				if working {
+					return i.matchesWorkingQuery(p, state)
+				}
+				return i.MatchesOriginalQuery(state)
+			}
 			if fault != "none" && fault != "preview" && fault != "positive-incarnation" {
-				if err == nil && after.NativeInput.MatchesOriginalQuery(after.AgentState) {
+				if err == nil && matches(after.NativeInput, after.AgentState) {
 					t.Fatal("unverified record acquired completion query proof", fault)
 				}
 				return
 			}
 			i := after.NativeInput
-			if err != nil || !i.MatchesOriginalQuery(after.AgentState) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
+			if err != nil || !matches(i, after.AgentState) || !i.MatchesOriginalProcess(p) || i.Observation != nil || after.LastAssistantMessage != "canonical final" || shows != 2 {
 				t.Fatal("full metadata did not bind exact canonical completion", err, after, shows)
+			}
+			if working && i.MatchesOriginalQuery(after.AgentState) {
+				t.Fatal("working proof granted completion authority")
 			}
 			foreignProcess := p
 			foreignProcess.Executable = "another-execution-owner"
@@ -144,17 +165,17 @@ func TestCorroboratedCompletionInputRequiresStableOriginalResources(t *testing.T
 			meta := *after.MetadataObservation
 			meta.Revision++
 			changed.MetadataObservation = &meta
-			if i.MatchesOriginalQuery(changed.AgentState) {
+			if matches(i, changed.AgentState) {
 				t.Fatal("proof authorized a different metadata revision")
 			}
 			after.MetadataObservation.Revision++
-			if i.MatchesOriginalQuery(after.AgentState) {
+			if matches(i, after.AgentState) {
 				t.Fatal("in-place metadata mutation changed the frozen query proof")
 			}
 			raw, _ := json.Marshal(i)
 			var decoded nativeInput
 			_ = json.Unmarshal(raw, &decoded)
-			if decoded.MatchesOriginalQuery(after.AgentState) {
+			if matches(&decoded, after.AgentState) {
 				t.Fatal("wire input fabricated query authority")
 			}
 		})
