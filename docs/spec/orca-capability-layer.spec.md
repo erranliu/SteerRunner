@@ -127,7 +127,7 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | 批次 | 状态 | 抽象与接入 | 同批收敛收益 | 完成条件 |
 | --- | --- | --- | --- | --- |
 | B0 原生可行性核验 | 已完成 | [Spec](orca-native-capability-baseline.spec.md) / [Plan](orca-native-capability-baseline.plan.md) / [验收](../acceptance/orca-native-capability-baseline.md)；双端无 helper 的两轮原输入、完整 final、同会话后续及原终端清理通过 | 取得共同底层能力及合同差距，生产不变 | 独立审计完成，未知创建记录缺口已修复；不签收开发业务资格 |
-| B1 原终端查询 | 待实施 | 在现有能力实现中使用 Orca 身份/结果类型，业务终端及本机控制终端共用查询入口 | 删除控制流读取前后专属 CLI show 查询；生产使用明确目标的原生查询 | 能力测试无执行快照依赖；原身份围栏保持；指定位置 CLI show 为零；本机/远端查询验证 |
+| B1 原终端查询 | 待实施 | [Spec](orca-terminal-query-capability.spec.md) / [Plan](orca-terminal-query-capability.plan.md)；使用 Orca 身份/结果类型，业务终端及本机控制终端共用查询入口 | 删除控制流读取前后专属 CLI show 查询；生产使用明确目标的原生查询 | 能力测试无执行快照依赖；原身份围栏保持；指定位置 CLI show 为零；本机/远端查询验证 |
 | B2a 公共命令构造 | 待实施 | 共用路由、环境屏蔽、参数编译和基础 envelope 解码，接入日常调用及 creation owner 的对应构造/校验 | 删除重复构造，保持原命令和创建计划编码 | 参数、摘要、编码及派发前回调位置不变；不顺带重写创建流程 |
 | B2b Terminal 发送 | 待实施 | 双端共用 send 操作和接受回执解码 | 删除对应命令拼装及解析；正文编译仍属 Agent 层 | 原请求、实际参数、接受/开始区别和未知零重发保持 |
 | B2c Terminal 读取 | 待实施 | 共用原始 read 和分页事实，接入 readiness/control 等对应消费者 | 删除重复 envelope 读取，消费者保留从头/保留窗口及回执用途规则 | cursor、完整行、截断、取消和前后身份围栏保持 |
