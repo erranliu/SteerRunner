@@ -2,7 +2,7 @@
 
 维护日期：2026-11-02。设计核对基线：`efa871cfffb950505bf2f0a325ec7751fb4be7f3`。
 
-状态：B0、B1 已完成并通过实施后独立审计；B2a 已有 Spec/Plan，待实施；其余批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
+状态：B0、B1 已完成并通过实施后独立审计；B2a 已实现、回归通过，待实施后独立审计；其余批次待实施。本文持续维护，不随某一批实施结束归档。当前运行行为、支持组合及验证资格仍以生产代码、[长期产品承诺](steerrunner.spec.md#长期产品承诺)和对应验收为准。
 
 ## 1. 设计目标与范围
 
@@ -128,7 +128,7 @@ Agent 的提示词包装、输入预算、逻辑正文规范化、Codex 终端�
 | --- | --- | --- | --- | --- |
 | B0 原生可行性核验 | 已完成 | [Spec](orca-native-capability-baseline.spec.md) / [Plan](orca-native-capability-baseline.plan.md) / [验收](../acceptance/orca-native-capability-baseline.md)；双端无 helper 的两轮原输入、完整 final、同会话后续及原终端清理通过 | 取得共同底层能力及合同差距，生产不变 | 独立审计完成，未知创建记录缺口已修复；不签收开发业务资格 |
 | B1 原终端查询 | 已完成 | [Spec](orca-terminal-query-capability.spec.md) / [Plan](orca-terminal-query-capability.plan.md) / [验收](../acceptance/orca-terminal-query-capability.md)；使用 Orca 身份/结果类型，业务终端及本机控制终端共用查询入口 | 控制每页两次 CLI show 已删除，原身份围栏保持 | 双端无模型查询、受控分页/替换/取消及原回归通过；独立审计通过 |
-| B2a 公共命令构造 | 待实施 | [Spec](orca-cli-construction-capability.spec.md) / [Plan](orca-cli-construction-capability.plan.md)；共用路由、环境屏蔽、参数编译和基础 envelope 解码，接入日常调用及 creation owner 的对应构造/校验 | 删除重复构造，保持原命令和创建计划编码 | 参数、摘要、编码及派发前回调位置不变；不顺带重写创建流程 |
+| B2a 公共命令构造 | 验证通过，待独立审计 | [Spec](orca-cli-construction-capability.spec.md) / [Plan](orca-cli-construction-capability.plan.md) / [验收](../acceptance/orca-cli-construction-capability.md)；共用路由、环境屏蔽、参数编译和基础 envelope 解码，接入日常调用及 creation owner 的对应构造/校验 | 三处专属拼接及 owner 专属基础结果解码已删除，原命令和创建计划编码保持 | 旧命令字节/摘要、唯一派发、回调及定向回归通过；独立审计待完成 |
 | B2b Terminal 发送 | 待实施 | 双端共用 send 操作和接受回执解码 | 删除对应命令拼装及解析；正文编译仍属 Agent 层 | 原请求、实际参数、接受/开始区别和未知零重发保持 |
 | B2c Terminal 读取 | 待实施 | 共用原始 read 和分页事实，接入 readiness/control 等对应消费者 | 删除重复 envelope 读取，消费者保留从头/保留窗口及回执用途规则 | cursor、完整行、截断、取消和前后身份围栏保持 |
 | B2d Terminal 等待 | 待实施 | 共用 wait 操作及原生等待结果，接入双端输入就绪消费者 | 删除对应命令构造，等待不承担业务完成证明 | 原等待参数、截止时间、原终端身份和取消保持 |

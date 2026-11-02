@@ -25,39 +25,6 @@ type Client struct{ config Config }
 
 func New(config Config) Client { return Client{config: config} }
 
-type Result struct {
-	Payload       json.RawMessage
-	RuntimeID     string
-	ErrorCode     string
-	ErrorMessage  string
-	CallUncertain bool
-}
-type Envelope struct {
-	OK     bool            `json:"ok"`
-	Result json.RawMessage `json:"result"`
-	Error  *struct {
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	} `json:"error"`
-	Meta struct {
-		RuntimeID string `json:"runtimeId"`
-	} `json:"_meta"`
-}
-
-func ParseEnvelope(raw []byte) (Envelope, error) {
-	var value Envelope
-	err := json.Unmarshal(bytes.TrimPrefix(raw, []byte{0xef, 0xbb, 0xbf}), &value)
-	if err != nil {
-		return value, err
-	}
-	if !value.OK {
-		if value.Error != nil {
-			return value, errors.New(value.Error.Message)
-		}
-		return value, errors.New("Orca CLI rejected request")
-	}
-	return value, nil
-}
 func (c Client) Raw(ctx context.Context, timeout time.Duration, args ...string) ([]byte, error) {
 	return c.config.Output(ctx, timeout, args...)
 }
@@ -74,14 +41,9 @@ func (c Client) MetaCallWithTimeout(ctx context.Context, timeout time.Duration, 
 	if len(bytes.TrimSpace(raw)) == 0 && IsCLIQueueError(callErr) {
 		return Result{}, callErr
 	}
-	envelope, parseErr := ParseEnvelope(raw)
 	var exit *exec.ExitError
 	uncertain := callErr != nil && (!errors.As(callErr, &exit) || !exit.Exited())
-	result := Result{Payload: envelope.Result, RuntimeID: envelope.Meta.RuntimeID, CallUncertain: uncertain}
-	if envelope.Error != nil {
-		result.ErrorCode = envelope.Error.Code
-		result.ErrorMessage = envelope.Error.Message
-	}
+	result, parseErr := DecodeCLIResult(raw, uncertain)
 	return result, errors.Join(callErr, parseErr)
 }
 
