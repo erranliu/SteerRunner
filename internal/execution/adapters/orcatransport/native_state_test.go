@@ -404,7 +404,6 @@ func TestOrcaObserverDeliversNativeFinalWithoutScreen(t *testing.T) {
 				}
 			}
 			event.Persisted <- nil
-			event.Processed <- nil
 		case err := <-observer.Done():
 			if err != nil || completed != 1 {
 				t.Fatal("native final delivery failed", err, completed)

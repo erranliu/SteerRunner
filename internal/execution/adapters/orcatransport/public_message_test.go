@@ -210,7 +210,6 @@ func TestOrcaPublicMessageObserverKeepsStartedAndCompletedFacts(t *testing.T) {
 				}
 			}
 			event.Persisted <- nil
-			event.Processed <- nil
 		case err := <-done:
 			if err != nil || started != 1 || completed != 1 || messages != 1 || host.nativeSends != 1 {
 				t.Fatal("message swallowed lifecycle facts", started, completed, messages, err)

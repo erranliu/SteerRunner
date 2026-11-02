@@ -296,7 +296,6 @@ func runLocalNativeInputProbe(t *testing.T, root string, target nativeInputProbe
 			record["last_fact"] = json.RawMessage(data)
 			complete := event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 			event.Persisted <- nil
-			event.Processed <- nil
 			if !complete {
 				continue
 			}

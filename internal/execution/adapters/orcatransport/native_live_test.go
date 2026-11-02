@@ -260,7 +260,6 @@ func TestOrcaNativeStateLiveLifecycle(t *testing.T) {
 				}
 				completed = event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 				event.Persisted <- nil
-				event.Processed <- nil
 				if queryOnly && event.Observation != nil && event.Observation.Diagnostic == nativePromptMissing {
 					if len(queries) == 0 || queries[len(queries)-1].Prompt != "" || queries[len(queries)-1].MainAgent == nil || queries[len(queries)-1].MainAgent.State != "done" {
 						t.Fatal("missing-prompt diagnostic has no original query")

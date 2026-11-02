@@ -136,7 +136,11 @@ func (r *shortInputTrace) attach(l *Lifecycle) {
 
 func (r *shortInputTrace) event(index int, event b.LifecycleEvent, s b.LifecycleSnapshot, l *Lifecycle) {
 	state, err := l.state(s)
-	r.write("observer.event", map[string]any{"input_index": index, "kind": event.Kind, "fact": event.Fact, "observation": event.Observation, "public_message": event.PublicMessage, "implementation": event.Implementation, "snapshot_session": s.Session, "state": state, "state_error": errorText(err)})
+	kind := "execution"
+	if event.Observation == nil && (event.Fact.Kind == b.EventStarted || event.Fact.Kind == b.EventCompleted) {
+		kind = "turn"
+	}
+	r.write("observer.event", map[string]any{"input_index": index, "kind": kind, "fact": event.Fact, "observation": event.Observation, "public_message": event.PublicMessage, "implementation": event.Implementation, "snapshot_session": s.Session, "state": state, "state_error": errorText(err)})
 }
 
 // Called only after the sole attempted input has failed observation. Uses a

@@ -34,6 +34,7 @@
 | 实例绑定与同快照 observe | [公开读取与受理边界 Plan](spec/reliability-simplification.plan.md) |
 | 执行可见性与原会话查看 | [可见性 Plan](spec/execution-observability.plan.md)、[原会话查看 Plan](spec/native-session-viewer.plan.md)；[Orca 最后消息 Spec](spec/orca-last-message.spec.md) / [Plan](spec/orca-last-message.plan.md)，实现结果归入原可见性及远端原生验收 |
 | Git 基线、工作区名称及 PR 元数据 | [基线刷新 Plan](spec/repository-base-refresh.plan.md)、[名称前缀 Plan](spec/worktree-name-prefix.plan.md)、[PR 元数据 Plan](spec/pr-merge-metadata.plan.md) |
+| 单事件确认与旧环境分支收口 | [Spec](spec/event-ack-cleanup.spec.md) / [Plan](spec/event-ack-cleanup.plan.md) / [初轮验收](acceptance/event-ack-cleanup.md) / [实现再审计](acceptance/event-ack-reaudit.md)：保留原提交语义，双确认收敛及无消费者字段/旧环境模型退役，生产净减105行 |
 | 旧历史采集支线与 Orca Backend 清理 | [Spec](spec/history-adapter-cleanup.spec.md) / [Plan](spec/history-adapter-cleanup.plan.md) / [初轮验收](acceptance/history-adapter-cleanup.md) / [实现再审计](acceptance/history-adapter-reaudit.md)：无装配历史采集和旧包装退役，真实 history binding/final/恢复保持，生产净减 986 行 |
 | 旧准备/恢复规则与 Lifecycle 接口清理 | [Spec](spec/dormant-lifecycle-cleanup.spec.md) / [Plan](spec/dormant-lifecycle-cleanup.plan.md) / [初轮验收](acceptance/dormant-lifecycle-cleanup.md) / [实现再审计](acceptance/dormant-lifecycle-reaudit.md)：无入口规则及三端口/六字段删除，编码与真实可靠性机制保持，生产净减 688 行 |
 | 当前内部执行职责 | [执行边界 Spec](spec/execution-boundary-refactor.spec.md) / [Plan](spec/execution-boundary-refactor.plan.md) |

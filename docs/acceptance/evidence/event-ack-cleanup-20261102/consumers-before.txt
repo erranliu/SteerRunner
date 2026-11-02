@@ -1,0 +1,43 @@
+internal\application\worker.go:38:				if event.Processed != nil {
+internal\application\worker.go:39:					event.Processed <- err
+internal\execution\backend\event.go:18:type OutputBatch struct {
+internal\execution\backend\event.go:123:// EventBatch couples generic event facts to the source's consumption token.
+internal\execution\backend\event.go:125:type EventBatch struct {
+internal\execution\backend\lifecycle.go:627:	Processed      chan error
+internal\execution\backend\lifecycle.go:653:	if event.Candidate != nil {
+internal\execution\backend\lifecycle.go:654:		candidate := event.Candidate.Clone()
+internal\execution\backend\lifecycle.go:655:		event.Candidate = &candidate
+internal\execution\backend\lifecycle.go:781:type LifecycleResolver interface {
+internal\execution\reliable\plan.go:38:const CleanupStepLimit = 8
+internal\execution\adapters\codex\execution_owner.go:306:						if event.Processed != nil {
+internal\execution\adapters\codex\execution_owner.go:307:							event.Processed <- nil
+internal\execution\adapters\orcatransport\native_completion_recovery_test.go:294:			event.Processed <- nil
+internal\execution\reliable\binding.go:26:	Environment                                                                     *EnvironmentBinding
+internal\execution\reliable\binding.go:27:	PolicyResources                                                                 *PolicyBinding
+internal\execution\reliable\binding.go:29:type EnvironmentBinding struct {
+internal\execution\reliable\binding.go:34:type PolicyBinding struct{ WriteRoots []string }
+internal\execution\adapters\orcatransport\native_input_live_probe_test.go:292:			event.Processed <- nil
+internal\execution\adapters\orcatransport\native_input_local_probe_test.go:299:			event.Processed <- nil
+internal\execution\adapters\orcatransport\native_reconnect_test.go:183:			event.Processed <- nil
+internal\execution\adapters\orcatransport\native_live_test.go:263:				event.Processed <- nil
+internal\execution\adapters\orcatransport\native_state_test.go:407:			event.Processed <- nil
+internal\execution\adapters\codex\observe.go:82:					event.Kind, event.Status, event.Title = "question", "rejected", "Unsupported Codex question"
+internal\execution\adapters\codex\observe.go:96:				event.Kind, event.Status, event.Title = "approval", "rejected", "Unsupported Codex host request"
+internal\execution\adapters\codex\observe.go:107:				event.Kind, event.Status, event.Title = "turn", "started", "Codex turn started"
+internal\execution\adapters\codex\observe.go:109:				event.Kind, event.Status, event.Title = "question", "pending", "Codex needs a decision"
+internal\execution\adapters\codex\observe.go:112:					event.Kind, event.Status, event.Title = "question", "pending", "Codex async question"
+internal\execution\adapters\codex\observe.go:123:				event.Kind, event.Status, event.Title = "question", "completed", "Codex decision tool completed"
+internal\execution\adapters\codex\observe.go:125:				event.Kind, event.Status, event.Title = "turn", "completed", "Codex turn completed"
+internal\execution\adapters\orcatransport\observer.go:73:			event.Kind = "turn"
+internal\execution\adapters\orcatransport\observer.go:75:				event.Kind, event.Status, event.Title = "execution", "observing", "Worker observation available"
+internal\execution\adapters\orcatransport\observer.go:77:					event.Status, event.Title = "waiting", "Worker reply unavailable"
+internal\execution\adapters\orcatransport\observer.go:80:				event.Status, event.Title = "started", "Worker input started"
+internal\execution\adapters\orcatransport\observer.go:82:				event.Status, event.Title = "completed", "Worker reply committed"
+internal\execution\adapters\orcatransport\observer.go:84:				event.Kind, event.Status, event.Title = "execution", "observing", "Worker output observed"
+internal\execution\adapters\orcatransport\observer.go:87:			event.Processed = make(chan error, 1)
+internal\execution\adapters\orcatransport\observer.go:103:			case err := <-event.Processed:
+internal\execution\adapters\orcatransport\observer_queue_test.go:56:			if event.Processed != nil {
+internal\execution\adapters\orcatransport\observer_queue_test.go:57:				event.Processed <- nil
+internal\execution\adapters\orcatransport\public_message_test.go:213:			event.Processed <- nil
+internal\execution\adapters\orcatransport\short_input_live_probe_test.go:139:				event.Processed <- nil
+internal\execution\adapters\orcatransport\short_input_trace_test.go:139:	r.write("observer.event", map[string]any{"input_index": index, "kind": event.Kind, "fact": event.Fact, "observation": event.Observation, "public_message": event.PublicMessage, "implementation": event.Implementation, "snapshot_session": s.Session, "state": state, "state_error": errorText(err)})

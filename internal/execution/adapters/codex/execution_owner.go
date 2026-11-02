@@ -303,9 +303,6 @@ func ServeExecutionOwner(ctx context.Context, dir string) error {
 						if event.Persisted != nil {
 							event.Persisted <- nil
 						}
-						if event.Processed != nil {
-							event.Processed <- nil
-						}
 					}
 				}()
 			}

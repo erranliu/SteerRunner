@@ -289,7 +289,6 @@ func runNativeInputLiveProbe(t *testing.T) {
 			}
 			completed := event.Fact.Kind == b.EventCompleted && event.Fact.Completed
 			event.Persisted <- nil
-			event.Processed <- nil
 			if completed {
 				r, _, e = l.ObserveLifecycle(ctx, s)
 				if e != nil || r.TurnEvidence == nil || !r.TurnEvidence.FinalVerified || strings.TrimSpace(r.TurnEvidence.LastMessage) != marker {

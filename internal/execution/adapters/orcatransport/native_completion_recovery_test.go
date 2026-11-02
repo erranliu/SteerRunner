@@ -291,7 +291,6 @@ func TestOrcaObserverReportsChangingGapAndRecovery(t *testing.T) {
 				}
 			}
 			event.Persisted <- nil
-			event.Processed <- nil
 			if event.Fact.Kind == b.EventCompleted {
 				if len(diagnostics) != 3 || diagnostics[0] == "" || diagnostics[1] == "" || diagnostics[0] == diagnostics[1] || diagnostics[2] != "" || host.nativeSends != 1 {
 					t.Fatal("diagnostic lifecycle lost", diagnostics, host.nativeSends)

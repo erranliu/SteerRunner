@@ -1,0 +1,166 @@
+{
+  "production": {
+    "A": {
+      "added": 5,
+      "deleted": 43,
+      "net_removed": 38
+    },
+    "B": {
+      "added": 0,
+      "deleted": 67,
+      "net_removed": 67
+    }
+  },
+  "production_net_removed": 105,
+  "test_added": 197,
+  "test_deleted": 12,
+  "files": [
+    {
+      "path": "internal/application/worker.go",
+      "added": 0,
+      "deleted": 3,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/codex/execution_owner.go",
+      "added": 0,
+      "deleted": 3,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/codex/lifecycle.go",
+      "added": 1,
+      "deleted": 1,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_completion_recovery_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_input_local_probe_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_live_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_reconnect_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/native_state_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer.go",
+      "added": 0,
+      "deleted": 23,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/observer_queue_test.go",
+      "added": 0,
+      "deleted": 3,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/public_message_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/short_input_live_probe_test.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/short_input_trace_test.go",
+      "added": 5,
+      "deleted": 1,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/backend/event.go",
+      "added": 0,
+      "deleted": 30,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/execution/backend/lifecycle.go",
+      "added": 4,
+      "deleted": 13,
+      "group": "A",
+      "test": false
+    },
+    {
+      "path": "internal/execution/reliable/binding.go",
+      "added": 0,
+      "deleted": 32,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/execution/reliable/plan.go",
+      "added": 0,
+      "deleted": 1,
+      "group": "B",
+      "test": false
+    },
+    {
+      "path": "internal/application/event_ack_test.go",
+      "added": 111,
+      "deleted": 0,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/adapters/orcatransport/event_ack_test.go",
+      "added": 81,
+      "deleted": 0,
+      "group": "A",
+      "test": true
+    },
+    {
+      "path": "internal/execution/backend/lifecycle.go (LifecycleResolver only)",
+      "added": 0,
+      "deleted": 4,
+      "group": "B",
+      "test": false
+    }
+  ]
+}

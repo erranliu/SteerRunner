@@ -616,15 +616,10 @@ type LifecycleEvent struct {
 	Observation    *ObservationStatus
 	Fact           EventFact
 	Implementation []ImplementationDataEnvelope
-	Candidate      *LifecycleCandidate
-	DeliveryID     string
-	DeliveryFinal  bool
-	Summary        string
-	Kind           string
-	Status         string
-	Title          string
-	Persisted      chan error
-	Processed      chan error
+	// Persisted replies at the original consumer boundary: durable facts after
+	// commit, optional/duplicate facts after handling, owner events after the
+	// native journal has been flushed. It does not imply a fresh Run transaction.
+	Persisted chan error
 }
 
 // ObservationStatus describes availability of original execution evidence.
@@ -650,10 +645,6 @@ func (event LifecycleEvent) Clone() LifecycleEvent {
 	}
 	event.Implementation = cloneImplementationData(event.Implementation)
 	event.Fact = cloneFacts([]EventFact{event.Fact})[0]
-	if event.Candidate != nil {
-		candidate := event.Candidate.Clone()
-		event.Candidate = &candidate
-	}
 	return event
 }
 
@@ -776,10 +767,6 @@ type LifecyclePort interface {
 	LifecycleStopPort
 	LifecycleRecoveryPort
 	LifecyclePolicyPort
-}
-
-type LifecycleResolver interface {
-	ResolveLifecycle(LifecycleSetup) (LifecyclePort, error)
 }
 
 // LifecycleSetup carries only fixed, non-secret values needed to construct an

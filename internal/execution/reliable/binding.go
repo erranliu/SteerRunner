@@ -23,24 +23,11 @@ type BindingSnapshot struct {
 	Process                                                                         *executionbackend.ProcessIdentity
 	SessionID, SessionGeneration, PendingCommandID, PendingTurnID, CurrentTurnID    string
 	ImplementationData                                                              []executionbackend.ImplementationDataEnvelope
-	Environment                                                                     *EnvironmentBinding
-	PolicyResources                                                                 *PolicyBinding
 }
-type EnvironmentBinding struct {
-	OriginalTerminal       *executionbackend.ProcessIdentity
-	Runtime, LaunchCommand string
-	WriteRoots             []string
-}
-type PolicyBinding struct{ WriteRoots []string }
 
 func MergeReceipt(value BindingSnapshot, receipt executionbackend.LifecycleReceipt) (BindingSnapshot, error) {
 	candidate := value
 	candidate.ImplementationData = append([]executionbackend.ImplementationDataEnvelope(nil), value.ImplementationData...)
-	if value.Environment != nil {
-		env := *value.Environment
-		env.WriteRoots = append([]string(nil), env.WriteRoots...)
-		candidate.Environment = &env
-	}
 	if err := mergeReceipt(&candidate, receipt); err != nil {
 		return value, err
 	}
@@ -103,27 +90,12 @@ func mergeReceipt(execution *BindingSnapshot, receipt executionbackend.Lifecycle
 		}
 		execution.Target.WorktreeID = receipt.State.WorktreeID
 	}
-	if receipt.OriginalHost != nil && execution.Environment != nil {
-		original := *receipt.OriginalHost
-		if execution.Environment.OriginalTerminal != nil && !SameProcess(*execution.Environment.OriginalTerminal, original) {
-			return ErrStale
-		}
-		execution.Environment.OriginalTerminal = &original
-		execution.Environment.Runtime = original.RuntimeID
-	}
 	if receipt.Process != nil {
 		if execution.Process != nil && *execution.Process != *receipt.Process && !SameProcess(*execution.Process, *receipt.Process) {
 			return ErrStale
 		}
 		process := *receipt.Process
 		execution.Process = &process
-		if execution.Environment != nil {
-			if execution.Environment.OriginalTerminal != nil && !SameProcess(*execution.Environment.OriginalTerminal, process) {
-				return ErrStale
-			}
-			execution.Environment.OriginalTerminal = &process
-			execution.Environment.Runtime = process.RuntimeID
-		}
 	}
 	if receipt.State.SessionID != "" {
 		if execution.SessionID != "" && execution.SessionID != receipt.State.SessionID {
@@ -152,10 +124,6 @@ func mergeReceipt(execution *BindingSnapshot, receipt executionbackend.Lifecycle
 		if err := putEnvelope(execution, envelope); err != nil {
 			return err
 		}
-	}
-	if execution.Environment != nil && execution.Environment.OriginalTerminal != nil && execution.PolicyResources != nil && receipt.State.LaunchCommand != "" {
-		execution.Environment.LaunchCommand = receipt.State.LaunchCommand
-		execution.Environment.WriteRoots = append([]string(nil), execution.PolicyResources.WriteRoots...)
 	}
 	return nil
 }

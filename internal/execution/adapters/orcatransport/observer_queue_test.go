@@ -53,9 +53,6 @@ func TestObserverQueueCancellationKeepsOriginalObservationWithoutResend(t *testi
 			if event.Persisted != nil {
 				event.Persisted <- nil
 			}
-			if event.Processed != nil {
-				event.Processed <- nil
-			}
 		case err := <-observer.Done():
 			if err != nil || !completed || queued != 1 {
 				t.Fatal("original observation failed after a non-dispatched read", err, completed, queued)

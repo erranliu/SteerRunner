@@ -1,0 +1,28 @@
+{
+  "wire": "go run .evidence/event-ack-cleanup/wire-audit.go .evidence/event-ack-cleanup/wire-before.json (before source edits); same tool to wire-after.json after implementation",
+  "declarations": "go run .evidence/event-ack-cleanup/declarations.go",
+  "focused_application": "go test ./internal/application -run '^TestSREventAckPreservesOriginalCommitBoundary$' -count=1 -timeout 2m -json",
+  "focused_observer": "go test ./internal/execution/adapters/orcatransport -run '^TestObserverSingleAckPreservesWaitFailureAndCancellation$' -count=1 -timeout 2m -json",
+  "components": "go test ./internal/execution/... ./internal/runstate ./internal/contracts ./internal/resources ./internal/storage -count=1 -timeout 5m -json",
+  "application": "go test ./internal/application -run '^(TestSREventAck.*|TestSROperation.*|TestSRManual.*|TestSRObservation.*|TestSRStopSerializesWithNativeDispatch|TestSRStopBindingCommitFailureDoesNotDispatch|TestSRStopRecoversLateCreationFactsUnderOriginalIntent|TestFrozenBudget.*|TestSRPreparationQuery.*|TestRAResumeConsumedActiveInputWaitsForOriginalEvidence|TestSingleExecutionLateFinalPreservesOriginalStop|TestSRExecutionWaitStopKeepsControlPriority|TestSRPreparationDeadlinePreservesQueuedOrcaBudgetAcrossReload|TestLocalCodex.*|TestServiceGeneration.*|TestWorkflowRecovery.*|TestAnswerInputCapability.*|TestContentRecovery.*)$' -count=1 -timeout 5m -json",
+  "build": "scripts/build.ps1 -OutFile .evidence/event-ack-cleanup/bin/steerrunner.exe",
+  "compile": [
+    "go test -c -tags live -o .evidence/event-ack-cleanup/bin/native.test.exe ./tests/native",
+    "go test -c -tags live -o .evidence/event-ack-cleanup/bin/integration-live.test.exe ./tests/integration"
+  ],
+  "foundation": "scripts/test-foundation.ps1 -OutDir .evidence/event-ack-cleanup/foundation -Pattern '^(TestSRNativeUnknownAndStop|TestSRRestartPreservesAuthorization|TestSRServiceOwnership)$' -RunnerExe .evidence/event-ack-cleanup/bin/steerrunner.exe -TimeoutMinutes 8",
+  "final_exit_codes": {
+    "wire_before": 0,
+    "wire_after": 0,
+    "declarations": 0,
+    "focused_application": 0,
+    "focused_observer_retry": 0,
+    "components": 0,
+    "application": 0,
+    "build": 0,
+    "native_compile": 0,
+    "integration_compile": 0,
+    "foundation": 0
+  },
+  "first_focused_observer_exit_code": 1
+}

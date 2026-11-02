@@ -35,9 +35,6 @@ func (e *Engine) run(id string, w *worker) {
 				if event.Persisted != nil {
 					event.Persisted <- err
 				}
-				if event.Processed != nil {
-					event.Processed <- err
-				}
 				if err != nil {
 					e.logger.Printf("event commit unavailable run=%s", id)
 				}

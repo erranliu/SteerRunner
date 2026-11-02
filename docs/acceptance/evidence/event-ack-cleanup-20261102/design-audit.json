@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-02",
+  "base_commit": "72b589baebb47c248fe0845352f400237cc0ed02",
+  "production_diff_before_audit": [],
+  "result": "passed",
+  "spec_sha256": "74620df7f2c012842bbc43a78f9e27eddd8210c45afd2a5484b882b417f0771b",
+  "plan_sha256": "4431548be4b350e74df14716a409a432476f9da6c2df8f91bb6c9a934b311700",
+  "ack_boundaries": [
+    "durable facts: reply after original acceptEvent/commitLocked returns, propagate same error",
+    "duplicate/ignored/public-message: keep original nil/no-new-transaction semantics",
+    "independent owner: drain replies after native journal fsync, not a Runner DB commit"
+  ],
+  "shared_consumers": [
+    "nine Processed test/probe files retain original assertions",
+    "short_input_trace_test reads event.Kind: preserve diagnostic classification by deriving from original facts",
+    "Codex raw ObservationEvent.Kind/Status are consumed by async question tests and stay unchanged",
+    "binding.Environment/PolicyResources are never assigned by actual ApplySessionReceipt constructor",
+    "ExecutionRecordVersion and ReconciliationStepLimit have actual consumers and remain"
+  ],
+  "persistent_scope": "No persistent types/fields/actions/decoders or double ledgers removed; LifecycleEvent and BindingSnapshot have no current persisted root"
+}

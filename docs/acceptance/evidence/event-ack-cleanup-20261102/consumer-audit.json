@@ -1,0 +1,25 @@
+{
+  "unchanged_live_files": [
+    "internal/application/observation.go",
+    "internal/application/last_message.go",
+    "internal/execution/adapters/codex/observe.go",
+    "internal/execution/reliable/session.go",
+    "internal/application/control.go",
+    "internal/execution/adapters/orcatransport/lifecycle.go"
+  ],
+  "nine_existing_fixtures_only_remove_second_ack": [
+    "internal/execution/adapters/orcatransport/native_completion_recovery_test.go",
+    "internal/execution/adapters/orcatransport/native_input_live_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_input_local_probe_test.go",
+    "internal/execution/adapters/orcatransport/native_live_test.go",
+    "internal/execution/adapters/orcatransport/native_reconnect_test.go",
+    "internal/execution/adapters/orcatransport/native_state_test.go",
+    "internal/execution/adapters/orcatransport/observer_queue_test.go",
+    "internal/execution/adapters/orcatransport/public_message_test.go",
+    "internal/execution/adapters/orcatransport/short_input_live_probe_test.go"
+  ],
+  "raw_codex_question_tests_unchanged": true,
+  "short_trace_consumer": "same turn/execution classification and JSON shape derived from Fact/Observation; original source evidence not rewritten",
+  "persistent_format": "LifecycleEvent and BindingSnapshot have no current storage/RPC roots; persistent same-name fields and codecs retained",
+  "deleted_symbols_moved": false
+}

@@ -35,7 +35,6 @@ func ValidatePreparationCapabilities(c b.PreparationCapabilities) error {
 
 const PreparationStepLimit = 16
 const ReconciliationStepLimit = 8
-const CleanupStepLimit = 8
 
 func (e *GateError) Error() string { return "preparation " + e.Gate + " is " + string(e.Status) }
 func gate(name string, decl b.Applicability, fact b.PreparationGate) (bool, error) {
